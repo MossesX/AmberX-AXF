@@ -158,6 +158,13 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 ## To carry on
 
+### Auto-land finished builds (`auto-land`, Urgent, Opus) — branch `claude/auto-land-2`, PR #270
+- **Asked (Brett, Nov 3 2026, voice):** finished builds land by themselves with zero tokens: reuse the push banner's merge path, plain scripts only; an agent only for a real code conflict or red CI needing code; UI Review stays the gate; stop claude-sync dropping files into finished worktrees; blocked = one plain push; fix the empty console overview; settings + commands; a no-LLM test.
+- **On the branch:** `apps/console-web/plugins/push-banner/land/` (land-core.mjs, land.mjs, land.test.mjs), push banner server/UI/help/plugin.json, `deploy/install-console.sh` (cron `axf-auto-land`), CI step, `framework/plan/builds-store-core.mjs` storeSummary, build-queue/engine-rpc/mcp_server, build-orchestrator health item + test.py, report `_claude/builds/reports/auto-land.md`.
+- **Left:** merge (push banner; UI Review r-20261103-6537ada7 waits for Brett). #267 (main CI fix) still had two red jobs at 18:40 UTC (Build engine sweep, Gradle kernel tests) whose logs were unreadable while the GitHub token was rate-limited; read them and fix. After merge: `tail /var/log/axf-auto-land.log`, `node apps/console-web/plugins/push-banner/land/land.mjs list`. axHub#36 (claude-sync hold) already installed on the VPS.
+- **Checks:** `node apps/console-web/plugins/push-banner/land/land.test.mjs`, `python3 apps/console-web/plugins/push-banner/test.py`, `python3 apps/console-web/plugins/build-orchestrator/test.py`.
+- **First message:** "Carry on auto-land (Urgent): read the To carry on block and `_claude/builds/reports/auto-land.md`, check PR #267's red jobs and #270's CI, fix what's red."
+
 ### Model upgrades need Brett (`model-upgrade-approval`, Urgent, Opus)
 - **Asked (Brett, Nov 3 2026, voice):** a build may switch to a lower model on its own (recorded); switching to a higher model needs Brett's explicit approval (console click or axHub confirm, never veto, never self-approved). Ranking in model-policy (Fable above Opus). Enforce in orchestrator approve/phase logic, console server, launcher/build_start/agent jobs, briefs; axHub approval path; audit; tests; PR.
 - **On the branch:** `framework/core/model-policy.mjs` (`switches`, `modelRank`, `switchKind`), `framework/core/model-switch.mjs`, `framework/cli/model-gate.mjs` (launch gate, audit, mark-self), orchestrator core/CLI/server/UI, console MCP tool `orchestrator_upgrade_approve`, `deploy/claude-headless.sh` gate + brief line, swarm planner gate, rules/decisions/README/CLAUDE.md, tests.
