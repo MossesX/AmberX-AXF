@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T13:52:17.718Z",
+ "updatedAt": "2026-11-03T13:58:30.397Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -501,7 +501,7 @@
    "branch": "claude/refactor-all",
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
    "createdAt": "2026-10-27T16:56:46.231Z",
-   "updatedAt": "2026-10-30T18:10:39.641Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-30T18:10:39.641Z",
    "notes": [
     {
@@ -559,6 +559,10 @@
     {
      "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
      "at": "2026-10-28T19:31:15.654Z"
+    },
+    {
+     "text": "Reconciler: PR #166 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [
@@ -2644,7 +2648,7 @@
    "branch": "claude/amberx-handsfree",
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/141",
    "createdAt": "2026-10-27T23:42:02.902Z",
-   "updatedAt": "2026-10-28T19:08:50.204Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T19:08:50.137Z",
    "notes": [
     {
@@ -2654,6 +2658,10 @@
     {
      "text": "Merged in PR #141 (claude/amberx-handsfree)",
      "at": "2026-10-28T19:08:50.203Z"
+    },
+    {
+     "text": "Reconciler: PR #141 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -2744,12 +2752,16 @@
    "branch": "claude/amberx-notes",
    "pr": "#144",
    "createdAt": "2026-10-28T00:32:03.143Z",
-   "updatedAt": "2026-10-28T02:35:09.837Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T02:35:09.837Z",
    "notes": [
     {
      "text": "Built and merged in PR #144; live on amberx.amberxai.com (new FastAPI server) Oct 28 02:34 UTC.",
      "at": "2026-10-28T02:35:00.000Z"
+    },
+    {
+     "text": "Reconciler: PR #144 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -3038,12 +3050,16 @@
    "branch": "fix/interface-scope-settings",
    "pr": "#146",
    "createdAt": "2026-10-28T03:03:09.005Z",
-   "updatedAt": "2026-10-28T04:36:58.577Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T04:36:58.472Z",
    "notes": [
     {
      "text": "Merged PR #146 (5cc390d), branch fix/interface-scope-settings",
      "at": "2026-10-28T04:36:58.577Z"
+    },
+    {
+     "text": "Reconciler: PR #146 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -3189,12 +3205,16 @@
    "branch": "fix/hubsync-own-look-source",
    "pr": "#148",
    "createdAt": "2026-10-28T05:10:31.665Z",
-   "updatedAt": "2026-10-28T05:19:54.279Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T05:19:54.195Z",
    "notes": [
     {
      "text": "Merged PR #148 (1359f5f), branch fix/hubsync-own-look-source",
      "at": "2026-10-28T05:19:54.279Z"
+    },
+    {
+     "text": "Reconciler: PR #148 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -3231,12 +3251,16 @@
    "branch": "fix/banner-snap",
    "pr": "#149",
    "createdAt": "2026-10-28T05:01:49.680Z",
-   "updatedAt": "2026-10-28T09:55:08.020Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T09:55:07.941Z",
    "notes": [
     {
      "text": "Merged PR #149, branch fix/banner-snap",
      "at": "2026-10-28T09:55:08.019Z"
+    },
+    {
+     "text": "Reconciler: PR #149 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -3273,12 +3297,16 @@
    "branch": "claude/banner-fix-fallback",
    "pr": "",
    "createdAt": "2026-10-28T09:55:19.427Z",
-   "updatedAt": "2026-10-28T10:11:22.506Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T10:11:22.405Z",
    "notes": [
     {
      "text": "Merged in PR #151 (claude/banner-fix-fallback)",
      "at": "2026-10-28T10:11:22.506Z"
+    },
+    {
+     "text": "Reconciler: PR #152; PR #152 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -3351,12 +3379,16 @@
    "branch": "claude/amberx-push",
    "pr": "#154",
    "createdAt": "2026-10-28T14:39:25.869Z",
-   "updatedAt": "2026-10-28T14:52:00.673Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T14:52:00.612Z",
    "notes": [
     {
      "text": "Merged PR #154, branch claude/amberx-push",
      "at": "2026-10-28T14:52:00.673Z"
+    },
+    {
+     "text": "Reconciler: PR #154 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -3429,9 +3461,14 @@
    "branch": "claude/amberx-voice-center",
    "pr": "#153",
    "createdAt": "2026-10-28T13:59:55.535Z",
-   "updatedAt": "2026-10-28T15:29:37.365Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T15:29:37.365Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #153 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -4054,12 +4091,16 @@
    "branch": "claude/amberx-assistant-agents",
    "pr": "#156",
    "createdAt": "2026-10-28T15:41:17.167Z",
-   "updatedAt": "2026-10-28T15:54:37.605Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T15:54:37.523Z",
    "notes": [
     {
      "text": "Merged PR #156, branch claude/amberx-assistant-agents",
      "at": "2026-10-28T15:54:37.605Z"
+    },
+    {
+     "text": "Reconciler: PR #156 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -4096,12 +4137,16 @@
    "branch": "claude/amberx-claude-tokens",
    "pr": "#157",
    "createdAt": "2026-10-28T16:55:24.086Z",
-   "updatedAt": "2026-10-28T17:04:41.550Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T17:04:41.490Z",
    "notes": [
     {
      "text": "Merged PR #157, branch claude/amberx-claude-tokens",
      "at": "2026-10-28T17:04:41.549Z"
+    },
+    {
+     "text": "Reconciler: PR #157 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -4946,7 +4991,7 @@
    "branch": "claude/refactor-all",
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-29T07:38:54.593Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-29T07:38:54.593Z",
    "notes": [
     {
@@ -4984,6 +5029,10 @@
     {
      "text": "Oct 29 2026 03:08 EDT (Brett): 'Make the matrix a plugin accessible from Build in the app menu' — feature-matrix s62–s67 un-skipped and built now; app menu Build ▸ Feature matrix added to s65.",
      "at": "2026-10-29T07:08:32.671Z"
+    },
+    {
+     "text": "Reconciler: PR #168 names s87, s88, s89 done; PR #166 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [
@@ -6646,9 +6695,14 @@
    "branch": "claude/mosses-build-tools",
    "pr": "#164",
    "createdAt": "2026-10-29T03:53:16.640Z",
-   "updatedAt": "2026-10-29T03:53:16.932Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-29T03:53:16.932Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #164 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -6719,9 +6773,14 @@
    "branch": "claude/assistant-no-subagents",
    "pr": "",
    "createdAt": "2026-10-29T05:57:18.585Z",
-   "updatedAt": "2026-10-29T05:57:18.705Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-29T05:57:18.706Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #167; PR #167 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -6856,7 +6915,7 @@
    "branch": "claude/veto-everywhere + claude/veto-complete (AXF + axHub)",
    "pr": "",
    "createdAt": "2026-10-30T13:20:06.580Z",
-   "updatedAt": "2026-11-01T02:31:12.796Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:31:12.147Z",
    "notes": [
     {
@@ -6870,6 +6929,10 @@
     {
      "text": "s3+s9 closed by Leftovers: axHub claude/veto-everywhere + veto-complete are on axHub main, the live server runs 209951f (server default AXHUB_CONFIRM_AS=veto, 90 s); docs already cover 90 s + Approve/Shelve; shared RULES deduped (stale 3-minute veto copy, older auto-merge + chores copies removed). Tests: axHub pnpm test 514/514 (Node 22), AmberX test.mjs 2045/2045 + tsc, approvals-banner 10/10.",
      "at": "2026-11-01T02:31:12.796Z"
+    },
+    {
+     "text": "Reconciler: PR #176; PR #176 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -6888,7 +6951,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
+     "doneAt": "2026-11-03T13:57:06.541Z",
      "note": "",
      "uid": "st-6g4qgu"
     },
@@ -6906,7 +6969,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
+     "doneAt": "2026-11-03T13:57:06.541Z",
      "note": "",
      "uid": "st-j97xe4"
     },
@@ -6942,7 +7005,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
+     "doneAt": "2026-11-03T13:57:06.541Z",
      "note": "",
      "uid": "st-rykbk4"
     },
@@ -7050,7 +7113,7 @@
    "branch": "feat/agent-voice",
    "pr": "",
    "createdAt": "2026-10-30T11:36:24.622Z",
-   "updatedAt": "2026-11-01T02:31:46.572Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:31:46.110Z",
    "notes": [
     {
@@ -7060,6 +7123,10 @@
     {
      "text": "s9 closed by Leftovers: it was 'waiting' only on the PR approval (45ca37d6) + merge; feat/agent-voice is fully on main, so nothing waits on Brett. plugin-lifecycle check clean, test.py 37/37, test.mts 22/22.",
      "at": "2026-11-01T02:31:46.572Z"
+    },
+    {
+     "text": "Reconciler: PR #177; PR #177 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -7240,12 +7307,16 @@
    "branch": "claude/pr-only-merge",
    "pr": "",
    "createdAt": "2026-10-30T17:55:48.511Z",
-   "updatedAt": "2026-10-30T18:04:28.290Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-30T18:04:28.210Z",
    "notes": [
     {
      "text": "Built on branch claude/pr-only-merge (push banner 0.5.0); PR opened through the push banner (veto call). test.py 132 checks.",
      "at": "2026-10-30T18:04:28.290Z"
+    },
+    {
+     "text": "Reconciler: PR #183; PR #183 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -7318,7 +7389,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-27T03:19:49.625Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T03:19:49.625Z",
    "notes": [
     {
@@ -7328,6 +7399,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/apply-all-levels (PR #115); PR #115; PR #115 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -7418,7 +7493,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-27T03:48:42.596Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T03:48:42.596Z",
    "notes": [
     {
@@ -7432,6 +7507,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/amberx-empty-shell (PR #118); PR #118; PR #118 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -7522,7 +7601,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-27T04:05:32.031Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T04:05:32.031Z",
    "notes": [
     {
@@ -7532,6 +7611,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/fresh-look-done (PR #120); PR #120; PR #120 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -7549,7 +7632,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-27T17:25:19.327Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T17:25:19.327Z",
    "notes": [
     {
@@ -7563,6 +7646,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/design-packages-10 (PR #124); PR #124; PR #124 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -7580,7 +7667,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-27T16:39:39.618Z",
-   "updatedAt": "2026-10-27T16:44:18.183Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T16:39:39.618Z",
    "notes": [
     {
@@ -7594,6 +7681,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/build-orchestrator (PR #122); PR #122; PR #122 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -7611,7 +7702,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-27T19:00:00.000Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T19:30:00.000Z",
    "notes": [
     {
@@ -7625,6 +7716,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/build-profiles (PR #127); PR #127; PR #127 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -7715,7 +7810,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-27T19:05:30.186Z",
-   "updatedAt": "2026-10-27T19:23:01.225Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T19:23:01.118Z",
    "notes": [
     {
@@ -7729,6 +7824,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/amberx-appearance-lock (PR #126); PR #126; PR #126 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -7828,7 +7927,7 @@
    "branch": "claude/orch-pending-sync",
    "pr": "",
    "createdAt": "2026-10-28T01:07:25.673Z",
-   "updatedAt": "2026-11-01T02:28:35.357Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:28:34.899Z",
    "notes": [
     {
@@ -7838,6 +7937,10 @@
     {
      "text": "s3 closed by Leftovers (claude/leftovers): the bridge was retired by urgent-builds (one store), so the rule now describes the store; CI test = check-builds-store.mjs + builds-store verify (already in android.yml); README already updated. No PR: pushed to main per Brett's leftovers brief.",
      "at": "2026-11-01T02:28:35.357Z"
+    },
+    {
+     "text": "Reconciler: PR #143; PR #143 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -8474,9 +8577,14 @@
    "branch": "claude/project-thread-646cjb",
    "pr": "229",
    "createdAt": "2026-11-01T22:38:15.391Z",
-   "updatedAt": "2026-11-02T05:32:27.281Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-02T05:32:27.282Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #229 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -9017,9 +9125,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-01T23:09:37.031Z",
-   "updatedAt": "2026-11-02T00:30:06.535Z",
+   "updatedAt": "2026-11-03T13:56:31.369Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Estimates added (orch-live-sync s6): the small-steps check needs one on every step.",
+     "at": "2026-11-03T13:56:31.369Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -9029,7 +9142,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "20m",
      "files": [],
      "checks": [],
      "session": "same",
@@ -9047,7 +9160,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "30m",
      "files": [],
      "checks": [],
      "session": "same",
@@ -9065,7 +9178,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "15m",
      "files": [],
      "checks": [],
      "session": "same",
@@ -9090,9 +9203,14 @@
    "branch": "claude/walkthrough-random-look",
    "pr": "",
    "createdAt": "2026-11-02T19:41:22.804Z",
-   "updatedAt": "2026-11-02T19:41:23.513Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #240; PR #240 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
