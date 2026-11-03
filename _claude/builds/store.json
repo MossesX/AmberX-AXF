@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 270,
- "updatedAt": "2026-11-03T17:26:11.821Z",
+ "rev": 271,
+ "updatedAt": "2026-11-03T17:26:21.886Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50544,7 +50544,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T17:25:54.980Z",
+   "updatedAt": "2026-11-03T17:26:18.986Z",
    "builtAt": "",
    "notes": [
     {
@@ -50606,6 +50606,10 @@
     {
      "text": "Landed claude/theme-veto-pass (PR #262) on main at 16620d72",
      "at": "2026-11-03T17:25:54.980Z"
+    },
+    {
+     "text": "Landed claude/pass-all (PR #264) on main at 16620d72",
+     "at": "2026-11-03T17:26:18.986Z"
     }
    ],
    "approvals": [],
@@ -50862,7 +50866,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
