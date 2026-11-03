@@ -805,3 +805,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s5 done (urgent) · orchestrator
 - 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s6 done (urgent) · orchestrator
 - 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s7 done (urgent) · orchestrator
+- 2026-11-03 18:36 UTC · `crew-live` s6 done (urgent) · orchestrator
