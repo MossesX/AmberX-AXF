@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 339,
- "updatedAt": "2026-11-03T18:37:01.019Z",
+ "rev": 340,
+ "updatedAt": "2026-11-03T18:37:20.916Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -53455,15 +53455,15 @@
    "title": "Auto-land finished builds (zero-token merge pipeline)",
    "category": "",
    "detail": "Relaunch of stopped auto-land as auto-land-2 (Brett, Nov 3 2026, voice). Agent: Earl the Ear. Plain-script merge pipeline reusing the push banner batch merge; AI only for real conflicts / red CI needing code.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/auto-land-2",
    "pr": "#270",
    "createdAt": "2026-11-03T18:01:41.577Z",
-   "updatedAt": "2026-11-03T18:30:37.438Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T18:37:09.577Z",
+   "builtAt": "2026-11-03T18:37:09.577Z",
    "notes": [
     {
      "text": "Relaunched as auto-land-2 (worktree /root/axf-builds/auto-land-2, branch claude/auto-land-2) after the first auto-land run stopped. Brett's correction: zero tokens for merging.",
@@ -53650,12 +53650,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:37:09.577Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T18:01:41.578Z",
-     "updatedAt": "2026-11-03T18:01:41.578Z"
+     "updatedAt": "2026-11-03T18:37:09.607Z"
     }
    ],
    "profiles": [
@@ -53666,7 +53666,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
