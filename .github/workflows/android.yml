@@ -169,6 +169,7 @@ jobs:
             npx -y tsx framework/spec/check-agent-card.mts             # agent-card@1: registry, fixture replay, validators agree, four starters, schema
             npx -y tsx framework/spec/check-job-type.mts               # job-type@1: registry, fixture replay, validators agree, starter job types, schema
             npx -y tsx framework/spec/check-headless-tabs.mts          # headless tabs: live cost meter + context chain (deploy/claude-meter.mjs), terminal pure helpers
+            npx -y tsx framework/spec/check-claude-session.mts         # claude-session lib: Terminal reads it, companion helpers (Gizmo)
             npx -y tsx framework/spec/check-swarm.mts                  # agent swarm contracts (agent@1 … swarm-run@1): fixture replay, field-naming validators, model policy, schema snapshots, shipped roster, plugin uses the framework's
             npx -y tsx framework/spec/check-help.mts                   # help@1 + Help mode: registry, fixture replay (auto ids, index, intros, coverage, ratchet), validators agree, every shipped pack, runtime switch
             npx -y tsx framework/spec/check-help-mode.mts              # Help mode in the DOM (jsdom): switch, hover / long-press / badge tooltips, dismiss, No help yet, What is this?, intro once per screen
