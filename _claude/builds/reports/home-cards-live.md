@@ -83,5 +83,5 @@ feeds), the card menu opens, and the phone viewport shows the cards added on des
 - Kotlin card engine deferred (Android on hold).
 
 ## Screenshots
-UI Review group `home-cards-live - Nov 3 <time>` (desktop 1280 + phone 412): Home with starters, Suggested cards,
+UI Review item `r-20261103-88aadcbf`, group `home-cards-live - Nov 3 4:15 PM` (desktop 1280 + phone 412): Home with starters, Suggested cards,
 after Add all, the Add card dialog, the card menu.
