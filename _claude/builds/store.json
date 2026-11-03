@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 560,
- "updatedAt": "2026-11-03T23:52:54.131Z",
+ "rev": 561,
+ "updatedAt": "2026-11-03T23:54:52.243Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -61881,15 +61881,15 @@
    "title": "Terminal: drag handle + hold-drag tabs, context chain as a tree, settings context menu, per-pane text size",
    "category": "Terminal",
    "detail": "Brett (Nov 3 2026, voice): no spot to drag the Terminal window (all tabs); context chain must show chained MD files as an indented tree; context menu on the Terminal opens its settings (addendum 1); text size per pane, smaller phone default (addendum 2). Agent: Landin Lenny (headless worktree session). Builds on window-resize-fix #278.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/terminal-drag-chain-tree",
    "pr": "#292",
    "createdAt": "2026-11-03T21:50:21.572Z",
-   "updatedAt": "2026-11-03T22:41:46.267Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T23:53:24.331Z",
+   "builtAt": "2026-11-03T23:53:24.331Z",
    "notes": [
     {
      "text": "Clash: terminal-tabs-left (running, another session) changes TerminalHost too; note left on it to reuse WindowGrip orientation=column + useTabPress. terminal-sessions-nav #286 (built, open) also touches TerminalHost; whichever merges second resolves.",
@@ -62044,7 +62044,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {

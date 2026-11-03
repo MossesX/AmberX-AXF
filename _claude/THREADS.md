@@ -569,8 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 19:32 UTC · `window-resize-fix` added (3 steps) (current) · orchestrator
-- 2026-11-03 19:47 UTC · `terminal-vps-host` s2 done, s4 done, s5 done, → complete, note (current) · foreign-write
 - 2026-11-03 19:47 UTC · `window-resize-fix` s1 done, → running (current) · orchestrator
 - 2026-11-03 19:12 UTC · `claude-settings` s5 done (urgent) · orchestrator
 - 2026-11-03 19:48 UTC · `terminal-vps-host` added (5 steps) (current) · foreign-write
@@ -969,3 +967,5 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 23:52 UTC · `gizmo-companion` s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s14 done, note (current) · foreign-write
 - 2026-11-03 23:52 UTC · `plugin-lazy-load` added (9 steps) (current) · foreign-write
 - 2026-11-03 23:52 UTC · `lenny-land-all` added (7 steps) (current) · foreign-write
+- 2026-11-03 23:52 UTC · `terminal-drag-chain-tree` s6 done, → complete (current) · orchestrator
+- 2026-11-03 23:53 UTC · `terminal-drag-chain-tree` → built (current) · orchestrator
