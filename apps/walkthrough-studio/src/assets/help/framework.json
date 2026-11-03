@@ -1516,6 +1516,16 @@
         "title": "Id",
         "text": "The id column: Its id — the name the code uses. Tap the header to sort by it.",
         "kind": "column"
+      },
+      {
+        "target": "pane",
+        "title": "Pane layout",
+        "text": "One of the preset pane layouts. Tap it to see its preview below; double-tap to apply it at once."
+      },
+      {
+        "target": "apply-layout",
+        "title": "Apply layout",
+        "text": "Lays the open tabs out on the layout you picked, spread evenly over its panes. The pane limit holds: a layout with more panes uses only its first ones."
       }
     ],
     "intros": [

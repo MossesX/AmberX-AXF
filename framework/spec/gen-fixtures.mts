@@ -1614,7 +1614,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     route: ['amberx:file.save', 'axhub:nav:home', 'console:tb:run', 'molly.home', 'nope:x', ':x', 'amberx:'].map((id) => ({ id, out: routePick(id, ['amberx', 'axhub', 'console']) })),
     // every pick of the merged model routes back to the app that sent it (or the host)
     routed: chromePicks(merged).map((p) => ({ id: p.id, route: routePick(p.id, merged.apps) })),
-    message: [parseEmbedMessage({ $axf: 'embed@1', type: 'chrome', chrome: axhub }), parseEmbedMessage({ $axf: 'embed@1', type: 'chrome', chrome: { app: 'x' } }), parseEmbedMessage({ $axf: 'embed@1', type: 'chrome-request' }), parseEmbedMessage(JSON.stringify({ $axf: 'embed@1', type: 'chrome', chrome: amberx }))],
+    message: [parseEmbedMessage({ $axf: 'embed@1', type: 'chrome', chrome: axhub }), parseEmbedMessage({ $axf: 'embed@1', type: 'chrome', chrome: { app: 'x' } }), parseEmbedMessage({ $axf: 'embed@1', type: 'chrome-request' }), parseEmbedMessage(JSON.stringify({ $axf: 'embed@1', type: 'chrome', chrome: amberx })), parseEmbedMessage({ $axf: 'embed@1', type: 'context', x: 12.4, y: 30, target: 'canvas', payload: 'row-3' })],
   });
 }
 // Window engine geometry (windows-terminal s17, Oct 28 2026): the 8 resize handles (hit-testing, cursors), resize maths

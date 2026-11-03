@@ -2104,6 +2104,14 @@
         "label": "AmberX",
         "active": "notes"
       }
+    },
+    {
+      "$axf": "embed@1",
+      "type": "context",
+      "x": 12,
+      "y": 30,
+      "target": "canvas",
+      "payload": "row-3"
     }
   ]
 }

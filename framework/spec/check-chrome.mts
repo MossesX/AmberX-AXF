@@ -29,7 +29,7 @@ eq(mergeChrome(null, [B.amberx, { ...B.amberx, nav: [] }], { activeApp: 'nope' }
 eq(chromePicks(f.merged), f.picks, 'picks'); eq(activeNav(f.merged), f.active, 'active nav'); eq(activeNav(f.noHost), f.activeNone, 'no active nav');
 for (const c of f.route) eq(routePick(c.id, ['amberx', 'axhub', 'console']), c.out, `route ${c.id}`);
 for (const c of f.routed) eq(routePick(c.id, f.merged.apps), c.route, `routed ${c.id}`);
-f.message.forEach((m: unknown, i: number) => eq([parseEmbedMessage({ $axf: 'embed@1', type: 'chrome', chrome: B.axhub }), parseEmbedMessage({ $axf: 'embed@1', type: 'chrome', chrome: { app: 'x' } }), parseEmbedMessage({ $axf: 'embed@1', type: 'chrome-request' }), parseEmbedMessage(JSON.stringify({ $axf: 'embed@1', type: 'chrome', chrome: B.amberx }))][i], m, `message #${i}`));
+f.message.forEach((m: unknown, i: number) => eq([parseEmbedMessage({ $axf: 'embed@1', type: 'chrome', chrome: B.axhub }), parseEmbedMessage({ $axf: 'embed@1', type: 'chrome', chrome: { app: 'x' } }), parseEmbedMessage({ $axf: 'embed@1', type: 'chrome-request' }), parseEmbedMessage(JSON.stringify({ $axf: 'embed@1', type: 'chrome', chrome: B.amberx })), parseEmbedMessage({ $axf: 'embed@1', type: 'context', x: 12.4, y: 30, target: 'canvas', payload: 'row-3' })][i], m, `message #${i}`));
 
 // ---- invariants ----
 {

@@ -1,6 +1,6 @@
 /* Toolbar designer: layout only. Colours, sizes and borders come from the engine tokens. */
-.axp-toolbar-designer__head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--fx-space); }
-.axp-toolbar-designer__cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--fx-space); min-height: 0; }
+.axp-toolbar-designer__head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--fx-dens-gap-xl); }
+.axp-toolbar-designer__cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--fx-dens-gap-xl); min-height: 0; }
 .axp-toolbar-designer__col { display: flex; flex-direction: column; gap: calc(var(--fx-space) / 2); min-width: 0; max-height: 60vh; overflow: auto; padding: calc(var(--fx-space) / 2); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
 .axp-toolbar-designer__col h3 { margin: 0; }
 .axp-toolbar-designer__group > summary { cursor: pointer; font-weight: 600; padding-block: calc(var(--fx-space) / 2); }

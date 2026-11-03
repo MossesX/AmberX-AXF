@@ -8,14 +8,14 @@
 .axp-xlayout-body > .molly-slot { flex: 1 1 auto; }
 
 /* toolbars on an edge: stacked across it, never over the app (they take their own room) */
-.axp-xlayout-edge { display: flex; flex: 0 0 auto; gap: var(--fx-space); padding: calc(var(--fx-space) / 2); background: var(--fx-surface); border: 0 solid var(--fx-border); overflow: auto; scroll-snap-type: x proximity; }
+.axp-xlayout-edge { display: flex; flex: 0 0 auto; gap: var(--fx-dens-gap-xl); padding: calc(var(--fx-space) / 2); background: var(--fx-surface); border: 0 solid var(--fx-border); overflow: auto; scroll-snap-type: x proximity; }
 .axp-xlayout-edge[data-edge='top'] { border-bottom-width: var(--fx-border-w); }
 .axp-xlayout-edge[data-edge='bottom'] { border-top-width: var(--fx-border-w); }
 .axp-xlayout-edge[data-edge='left'] { flex-direction: column; border-right-width: var(--fx-border-w); scroll-snap-type: y proximity; }
 .axp-xlayout-edge[data-edge='right'] { flex-direction: column; border-left-width: var(--fx-border-w); scroll-snap-type: y proximity; }
 .axp-xlayout-bar { display: flex; flex: 0 0 auto; align-items: center; gap: calc(var(--fx-space) / 2); scroll-snap-align: start; }
 .axp-xlayout-bar[data-edge='left'], .axp-xlayout-bar[data-edge='right'] { flex-direction: column; }
-.axp-xlayout-bar .fx-toolbar__group { display: flex; flex-direction: inherit; gap: inherit; padding-inline-start: var(--fx-space); border-inline-start: var(--fx-border-w) solid var(--fx-border); }
+.axp-xlayout-bar .fx-toolbar__group { display: flex; flex-direction: inherit; gap: inherit; padding-inline-start: var(--fx-dens-gap-xl); border-inline-start: var(--fx-border-w) solid var(--fx-border); }
 
 /* IDE mode: the dock fills the app area */
 .axp-xlayout-ide { display: flex; flex: 1 1 auto; min-width: 0; min-height: 0; }
@@ -26,7 +26,7 @@
 body:has(.fx-dragghost) .molly-frame, body:has(.fx-splitter.is-active) .molly-frame { pointer-events: none; }
 
 /* settings */
-.axp-xlayout-slot { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto; gap: var(--fx-space); align-items: end; }
-.axp-xlayout-apps { margin: 0; padding-inline-start: calc(var(--fx-space) * 2); display: grid; gap: calc(var(--fx-space) / 2); }
+.axp-xlayout-slot { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto; gap: var(--fx-dens-gap-xl); align-items: end; }
+.axp-xlayout-apps { margin: 0; padding-inline-start: var(--fx-dens-gap-3xl); display: grid; gap: calc(var(--fx-space) / 2); }
 .axp-xlayout-code { margin: 0; white-space: pre-wrap; font-family: var(--fx-font-mono); font-size: var(--fx-font-size); }
 @media (max-width: 480px) { .axp-xlayout-slot { grid-template-columns: minmax(0, 1fr); } }
