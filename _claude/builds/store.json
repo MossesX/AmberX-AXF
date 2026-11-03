@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 483,
- "updatedAt": "2026-11-03T21:30:36.816Z",
+ "rev": 484,
+ "updatedAt": "2026-11-03T21:31:17.252Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55933,12 +55933,16 @@
    "branch": "claude/ui-review-predicted",
    "pr": "#285",
    "createdAt": "2026-11-03T19:54:18.485Z",
-   "updatedAt": "2026-11-03T21:30:23.262Z",
+   "updatedAt": "2026-11-03T21:30:43.754Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Agent: Snap Sully (sully), booked as a swarm-run@1 (source assign). Built on main after ui-review-shots s1-s3 (its storage finding: all shots live in the bind-mounted store, nothing to move).",
      "at": "2026-11-03T19:55:30.345Z"
+    },
+    {
+     "text": "Reconciler: PR #285",
+     "at": "2026-11-03T21:30:43.754Z"
     }
    ],
    "approvals": [],
