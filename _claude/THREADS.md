@@ -962,3 +962,6 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 20:26 UTC · `window-resize-fix` added (3 steps) (current) · foreign-write
 - 2026-11-03 20:26 UTC · `terminal-sessions-nav` added (4 steps) (current) · foreign-write
 - 2026-11-03 20:26 UTC · `profile-manager` added (6 steps) (current) · foreign-write
+- 2026-11-03 20:26 UTC · `follow-amber` s7 done, → complete (urgent) · orchestrator
+- 2026-11-03 20:26 UTC · `follow-amber` → built, PR #280 (urgent) · orchestrator
+- 2026-11-03 20:26 UTC · `follow-amber` note (urgent) · orchestrator
