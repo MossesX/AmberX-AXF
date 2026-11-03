@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T14:12:25.156Z",
+ "updatedAt": "2026-11-03T14:53:34.479Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1100,16 +1100,21 @@
    "title": "What's new banner",
    "category": "Banners",
    "detail": "A What's new banner showing features merged to main and deployed, grouped by date, build and app (Brett, Nov 3 2026, voice).",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/whats-new-banner",
-   "pr": "",
+   "pr": "#260",
    "createdAt": "2026-11-03T14:04:58.611Z",
-   "updatedAt": "2026-11-03T14:12:25.135Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-03T14:53:34.449Z",
+   "builtAt": "2026-11-03T14:53:33.448Z",
+   "notes": [
+    {
+     "text": "All 5 steps built on Opus; PR #260 (claude/whats-new-banner), UI Review r-20261103-8861306a waiting. Plugin folder whats-shipped (systems check owns whats-new).",
+     "at": "2026-11-03T14:53:34.449Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -1197,8 +1202,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T14:53:33.448Z",
      "note": "",
      "uid": "st-mw0rf3bt0a8tis"
     }
