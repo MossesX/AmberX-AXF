@@ -334,7 +334,7 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
       {menu && createPortal(
         <>
           <div className={`${P}__scrim`} onClick={() => setMenu(null)} onContextMenu={(e) => { e.preventDefault(); setMenu(null); }} />
-          <div className={`${P}__menu fx-popover`} role="menu" style={{ left: Math.min(menu.x, innerWidth - 220), top: Math.min(menu.y, innerHeight - 320) }}>
+          <div className={`${P}__menu fx-popover`} role="menu" style={{ left: Math.min(menu.x, innerWidth - 220), top: Math.max(8, Math.min(menu.y, innerHeight - 380)) }}>
             {menuItem('Copy', 'copy', () => { if (term?.hasSelection()) void navigator.clipboard?.writeText(term.getSelection()); }, !term?.hasSelection())}
             {menuItem('Paste', 'paste', () => void pasteFromClipboard(false))}
             {menuItem('Paste as plain text', 'paste', () => void pasteFromClipboard(true))}
@@ -343,6 +343,8 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
             {menuItem('Search', 'search', () => setSearch(''))}
             {menuItem('Open link', 'external', () => { const sel = term?.getSelection().trim() ?? ''; if (/^https?:\/\/\S+$/.test(sel)) window.open(sel, '_blank', 'noopener,noreferrer'); else rt.toast('Select a link first', 'warning'); })}
             {menuItem('Rename tab', 'edit', onRename)}
+            {menuItem('Terminal settings', 'settings', () => rt.dispatch('settings.open:terminal'))}
+            {menuItem('Settings placement…', 'layout', () => rt.dispatch('settings.placement:ai.amberx.axf.console.terminal'))}
             {menuItem('Close terminal', 'x', close)}
           </div>
         </>, document.body,

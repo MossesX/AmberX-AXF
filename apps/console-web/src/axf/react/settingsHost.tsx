@@ -262,8 +262,8 @@ function PlacementPreview({ pick, look }: { pick: SettingsPlacementPick; look: S
   useEffect(() => { setN((x) => x + 1); }, [sig]);
   const kind = pick.placement === 'inside' ? pick.mode : pick.placement === 'dialog' ? 'dialog' : 'window';
   return (
-    <div className="axf-sp-preview" aria-label="Preview" style={vars} {...attrs} data-axf-sp-kind={kind}>
-      <div className="axf-sp-preview__host" key={n}>
+    <div className="axf-sp-preview" aria-label="Preview" data-axf-sp-kind={kind}>
+      <div className="axf-sp-preview__host" key={n} style={vars} {...attrs}>
         <span className="fx-muted axf-sp-preview__label"><Icon name="eye" /> Preview</span>
         {look.dim && kind !== 'split' && kind !== 'inline' && kind !== 'tab' && <div className="axf-sp-scrim" />}
         <div className={`axf-sp axf-sp--${kind === 'window' ? 'dialog' : kind} axf-sp-preview__panel`}><span className="axf-sp-preview__bar" /><span className="axf-sp-preview__bar" /><span className="axf-sp-preview__bar" /></div>

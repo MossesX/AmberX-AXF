@@ -682,7 +682,7 @@
     "src/axf/react/library.ts": "b2df10f53133437d",
     "src/axf/react/placement.tsx": "e50243526c856169",
     "src/axf/react/pluginRecords.ts": "b0165b309076c3d3",
-    "src/axf/react/settingsHost.tsx": "bd9726d34e8ddd3e",
+    "src/axf/react/settingsHost.tsx": "6a2818e595e231c8",
     "src/axf/react/studio/AccountView.tsx": "06157f15d56df859",
     "src/axf/react/studio/AssetPreview.tsx": "2dfd1aeadf351cda",
     "src/axf/react/studio/AssetStudio.tsx": "94e538086c261ab2",
@@ -778,6 +778,6 @@
     "src/axf/schemas/shared-assets.json": "7d6a5bb4f0b2a9c3",
     "src/axf/schemas/swarm.json": "72c7999aebb9e8c2",
     "src/axf/schemas/ui-review.json": "6cbca899c45dd994",
-    "src/axf/ui/axf.css": "028c757827806c63"
+    "src/axf/ui/axf.css": "e95fcbe1256e84e4"
   }
 }

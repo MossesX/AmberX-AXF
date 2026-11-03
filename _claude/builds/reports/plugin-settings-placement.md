@@ -42,6 +42,7 @@ Main Settings: unchanged; every plugin's settings still live there (the settings
 | `plugin-commands.mjs check` settings-placement / console-terminal | n/a / 13+10 | 5 reads + 3 commands / 13+10 |
 | `plugin-lifecycle.mjs check settings-placement` | n/a | clean |
 | `check-theme.mjs`, `check-controls.mjs` | pass | pass (940 files) |
+| Terminal's own right-click menu | no settings items | + Terminal settings, Settings placement… |
 | `help-coverage.mjs --check` | 100% | 100% (18 new framework entries) |
 | `menu-reach.mts` | ok | ok (346 checks) |
 | `build-defaults.mjs`, console `tsc --noEmit` | pass | pass |
@@ -50,6 +51,23 @@ Main Settings: unchanged; every plugin's settings still live there (the settings
 ## Screenshots
 
 `_claude/builds/reports/plugin-settings-placement/shots/` (desktop 1366×860, phone 412×915).
+
+Local console from this branch, headless Chromium, dark; picks set through the new REST command
+(`PUT /api/plugins/settings-placement/placements/console-terminal`). The Terminal's own panels show "Loading…" because
+the test console's terminal server was still busy; the placement itself is what these show.
+
+| Shot | What |
+|---|---|
+| ![](plugin-settings-placement/shots/terminal-pane-left-desktop.png) | Terminal gear → settings slide out of the left edge **inside the Terminal window** (default) |
+| ![](plugin-settings-placement/shots/terminal-pane-left-phone.png) | Same on a phone: the pane takes 88% of the Terminal |
+| ![](plugin-settings-placement/shots/terminal-split-desktop.png) | Inside · split view (right) |
+| ![](plugin-settings-placement/shots/terminal-dropdown-desktop.png) | Inside · drop-down panel from the top right |
+| ![](plugin-settings-placement/shots/terminal-tab-desktop.png) | Inside · new tab in the Terminal (← Terminal / Settings) |
+| ![](plugin-settings-placement/shots/terminal-dialog-desktop.png) | Pop-up dialog (dimmed behind) |
+| ![](plugin-settings-placement/shots/terminal-dialog-phone.png) | Pop-up dialog on a phone |
+| ![](plugin-settings-placement/shots/terminal-context-menu-desktop.png) | Right-click in the Terminal → Settings placement… : the picker with look, animation and live preview |
+| ![](plugin-settings-placement/shots/placement-page-desktop.png) | Settings → Plugins → Settings placement: every plugin, its pick, Change / Try it |
+| ![](plugin-settings-placement/shots/placement-page-phone.png) | Same on a phone |
 
 ## Gaps / notes
 
