@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T20:43:49.521Z",
+ "updatedAt": "2026-11-03T20:44:13.688Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4689,12 +4689,16 @@
    "branch": "claude/smart-menus",
    "pr": "#281",
    "createdAt": "2026-11-03T19:45:20.635Z",
-   "updatedAt": "2026-11-03T20:43:38.552Z",
+   "updatedAt": "2026-11-03T20:43:42.106Z",
    "builtAt": "2026-11-03T20:43:38.552Z",
    "notes": [
     {
      "text": "Agent: Earl the Ear (headless, Opus). All steps Opus; no model switch.",
      "at": "2026-11-03T19:45:24.278Z"
+    },
+    {
+     "text": "All 7 steps done on Opus; PR #281 open, UI Review r-20261103-1450743b waiting. Follow-ups (not in this build): menu-style asset type + Fable review of the smart-menu engine contract (an Opus->Fable upgrade, needs Brett's approval); axHub admin to allow console_context on axf-console.",
+     "at": "2026-11-03T20:43:42.106Z"
     }
    ],
    "approvals": [],
