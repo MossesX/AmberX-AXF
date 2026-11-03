@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 438,
- "updatedAt": "2026-11-03T20:37:52.422Z",
+ "rev": 439,
+ "updatedAt": "2026-11-03T20:38:14.262Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55712,7 +55712,7 @@
    "branch": "claude/smart-menus",
    "pr": "",
    "createdAt": "2026-11-03T19:45:20.635Z",
-   "updatedAt": "2026-11-03T20:13:10.181Z",
+   "updatedAt": "2026-11-03T20:37:45.498Z",
    "builtAt": "",
    "notes": [
     {
@@ -55848,12 +55848,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T20:37:45.498Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T19:45:20.636Z",
-     "updatedAt": "2026-11-03T19:45:20.636Z"
+     "updatedAt": "2026-11-03T20:37:45.573Z"
     },
     {
      "id": "s7",
