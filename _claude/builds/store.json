@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 315,
- "updatedAt": "2026-11-03T18:17:03.888Z",
+ "rev": 316,
+ "updatedAt": "2026-11-03T18:20:32.134Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -28900,7 +28900,7 @@
    "branch": "claude/builds-one-page-done",
    "pr": "#134",
    "createdAt": "2026-10-27T19:11:22.011Z",
-   "updatedAt": "2026-11-03T18:02:48.952Z",
+   "updatedAt": "2026-11-03T18:20:21.482Z",
    "builtAt": "",
    "notes": [
     {
@@ -29266,28 +29266,6 @@
      "updatedAt": "2026-11-03T18:10:06.703Z"
     },
     {
-     "id": "s17-16",
-     "uid": "st-mw0zlof60117cu",
-     "title": "",
-     "text": "Old screens become thin redirects to their Builds view (pending, build queue, build-orchestrator, plan, tracker); every nav/menu/context way in kept",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T18:02:48.952Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-03T17:54:02.788Z",
-     "updatedAt": "2026-11-03T18:10:06.703Z"
-    },
-    {
      "id": "s16-15",
      "uid": "st-mw0zlwfb0171rx",
      "title": "",
@@ -29362,7 +29340,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -29395,7 +29373,35 @@
    "queue": null,
    "defaultAt": "2026-10-31T23:41:15.585Z",
    "rearranged": false,
-   "removedSteps": [],
+   "removedSteps": [
+    {
+     "step": {
+      "id": "s17-16",
+      "uid": "st-mw0zlof60117cu",
+      "title": "",
+      "text": "Old screens become thin redirects to their Builds view (pending, build queue, build-orchestrator, plan, tracker); every nav/menu/context way in kept",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "20 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": true,
+      "doneAt": "2026-11-03T18:02:48.952Z",
+      "note": "",
+      "rev": 2,
+      "createdAt": "2026-11-03T17:54:02.788Z",
+      "updatedAt": "2026-11-03T18:10:06.703Z"
+     },
+     "at": "2026-11-03T18:20:21.483Z",
+     "why": "removed in the orchestrator",
+     "by": "snap-sully"
+    }
+   ],
    "legacy": [
     {
      "file": "_claude/builds/profiles/refactor/orchestrator.json",
