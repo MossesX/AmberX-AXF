@@ -119,11 +119,9 @@ button.axp-build-manager-banner__main { all: unset; box-sizing: border-box; flex
 .axp-build-manager__head.is-static:hover { background: transparent }
 .axp-build-manager__row.is-failed { border-color: var(--fx-danger) }
 
-@media (max-width: 720px) {
-  .axp-build-manager__totals { grid-template-columns: repeat(2, minmax(0, 1fr)) }
-  .axp-build-manager__field { flex: 1 1 calc(50% - var(--fx-space)) }
-  .axp-build-manager__field select { min-width: 0; width: 100% }
-}
+:where([data-fx-narrow]) .axp-build-manager__totals { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+:where([data-fx-narrow]) .axp-build-manager__field { flex: 1 1 calc(50% - var(--fx-space)) }
+:where([data-fx-narrow]) .axp-build-manager__field select { min-width: 0; width: 100% }
 /* Clean up: take builds off the list (already built / removed) */
 .axp-build-manager__takeoff { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); margin-top: var(--fx-dens-gap-md) }
 .axp-build-manager__cleanup { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface) }
@@ -206,6 +204,4 @@ button.axp-build-manager__head { gap: var(--fx-dens-gap-xs); padding: var(--fx-d
 .axp-build-manager__live-step { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-build-manager__filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none }
 .axp-build-manager__filters .axp-build-manager__field { flex: none }
-@media (max-width: 640px) {
-  .axp-build-manager__filters .axp-build-manager__field { flex: 1 1 0; min-width: calc(var(--fx-font-size) * 5.5) }
-}
+:where([data-fx-small]) .axp-build-manager__filters .axp-build-manager__field { flex: 1 1 0; min-width: calc(var(--fx-font-size) * 5.5) }

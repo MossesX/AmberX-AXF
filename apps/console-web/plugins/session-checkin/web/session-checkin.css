@@ -38,7 +38,7 @@
 .axp-session-checkin__pre { margin: var(--fx-dens-gap-md) 0 0; padding: var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm); white-space: pre-wrap; overflow-wrap: anywhere; max-height: calc(var(--fx-row-h) * 14); overflow: auto }
 .axp-session-checkin__scroll { overflow-x: auto }
 .axp-session-checkin__num { width: calc(var(--fx-space) * 10) }
-@media (max-width: 560px) { .axp-session-checkin__tiles { grid-template-columns: repeat(2, minmax(0, 1fr)) } .axp-session-checkin__when { width: calc(var(--fx-space) * 7) } }
+:where([data-fx-small]) .axp-session-checkin__tiles { grid-template-columns: repeat(2, minmax(0, 1fr)) } :where([data-fx-small]) .axp-session-checkin__when { width: calc(var(--fx-space) * 7) }
 
 /* Compact layout (Angel screens-compact, Oct 30 2026): one-line head, icon actions, chip strip + filter dropdown, tight rows. */
 .axp-session-checkin__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0 }
@@ -47,15 +47,11 @@
 .axp-session-checkin__strip { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs); min-width: 0 }
 .axp-session-checkin__filter { width: auto; max-width: 100% }
 .axp-session-checkin__list .axp-session-checkin__row { padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl) }
-@media (max-width: 640px) {
-  .axp-session-checkin__filter { flex: 1 }
-  .axp-session-checkin__effort { display: none }
-}
+:where([data-fx-small]) .axp-session-checkin__filter { flex: 1 }
+:where([data-fx-small]) .axp-session-checkin__effort { display: none }
 .axp-session-checkin__stepnow { display: none }
 .axp-session-checkin__device { border-width: var(--fx-border-w) 0 0; border-radius: 0; padding: var(--fx-dens-gap-xl) 0 0 }
-@media (max-width: 640px) {
-  .axp-session-checkin__stepnow { display: block }
-  .axp-session-checkin__steps { display: none }
-}
+:where([data-fx-small]) .axp-session-checkin__stepnow { display: block }
+:where([data-fx-small]) .axp-session-checkin__steps { display: none }
 .fx-pagehead > div:first-child:has(> .axp-session-checkin__lede) { flex: 1 1 16em; min-width: 0; max-width: 100% }
 .axp-session-checkin__notice { flex-wrap: nowrap; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl) }

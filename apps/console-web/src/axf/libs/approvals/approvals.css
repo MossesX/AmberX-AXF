@@ -37,7 +37,7 @@
 /* Approve / Deny on every row: big targets that share the row's width, sized from the theme's spacing (about 32 px,
    44 px on a phone). Layout only; the buttons are the framework's. */
 .axf-approvals__actions > .fx-btn { flex: 1 1 0; min-height: max(var(--fx-row-h), calc(var(--fx-space) * 4), 2rem); justify-content: center }
-@media (max-width: 720px) { .axf-approvals__actions > .fx-btn { min-height: max(calc(var(--fx-space) * 5.5), 2.75rem) } }
+:where([data-fx-narrow]) .axf-approvals__actions > .fx-btn { min-height: max(calc(var(--fx-space) * 5.5), 2.75rem) }
 .axf-approvals__framed { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md); min-height: 0; flex: 1 1 auto }
 .axf-approvals__frame { width: 100%; height: min(60vh, calc(var(--fx-row-h) * 18)); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface) }
 .axf-approvals__note { margin: 0 }
@@ -91,13 +91,11 @@
 /* Deny / Approve inside: big targets sharing the width (about 32 px, 44 px on a phone). */
 .axf-apx__decide { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md) }
 .axf-apx__decide > .fx-btn { flex: 1 1 0; min-height: max(var(--fx-row-h), calc(var(--fx-space) * 4), 2rem); justify-content: center }
-@media (max-width: 720px) {
-  .axf-apx__decide > .fx-btn { min-height: max(calc(var(--fx-space) * 5.5), 2.75rem) }
-  .axf-apx__head { flex-wrap: wrap }
-  .axf-apx__sum { flex-basis: calc(100% - calc(var(--fx-space) * 5)) }
-  .axf-apx__quick { order: 3; flex: 1 1 100% }
-  .axf-apx__quick > * { flex: 1 1 0 }
-}
+:where([data-fx-narrow]) .axf-apx__decide > .fx-btn { min-height: max(calc(var(--fx-space) * 5.5), 2.75rem) }
+:where([data-fx-narrow]) .axf-apx__head { flex-wrap: wrap }
+:where([data-fx-narrow]) .axf-apx__sum { flex-basis: calc(100% - calc(var(--fx-space) * 5)) }
+:where([data-fx-narrow]) .axf-apx__quick { order: 3; flex: 1 1 100% }
+:where([data-fx-narrow]) .axf-apx__quick > * { flex: 1 1 0 }
 .axf-apx--stack .axf-apx__head { flex-wrap: wrap }
 .axf-apx--stack .axf-apx__sum { flex-basis: calc(100% - calc(var(--fx-space) * 5)) }
 .axf-apx--stack .axf-apx__quick { order: 3; flex: 1 1 100% }

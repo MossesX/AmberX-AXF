@@ -67,6 +67,10 @@ jobs:
         run: node apps/console-web/plugins/session-checkin/test.mjs
       - name: Project wizard plugin (new AXF app / GitHub / folder sources, GitHub + VPS homes, Claude.ai kit, folder guard)
         run: node apps/console-web/plugins/project-wizard/test.mjs
+      - name: Token control plugin (control@1 runner — tokens in the look, AmberX, planner, gate, confirm, CLI, client forms)  # axf-plugin:token-control
+        run: node apps/console-web/plugins/token-control/test.mjs  # axf-plugin:token-control
+      - name: Console commands plugin (control@1 console domain — CLI words, runner gate + resolve + deliver, confirm, send to a console)  # axf-plugin:console-commands
+        run: node apps/console-web/plugins/console-commands/test.mjs  # axf-plugin:console-commands
       - name: Deploy helpers (framework/deploy) — bash -n, shellcheck, self-test; installers that source them
         run: |
           set -e
@@ -147,11 +151,17 @@ jobs:
             npx -y tsx framework/spec/check-alerts.mts
             npx -y tsx framework/spec/check-widgets.mts
             npx -y tsx framework/spec/check-windows.mts                # window engine: 8 resize handles, maximize / restore, frames, snapping (windows.json)
+            npx -y tsx framework/spec/check-dock.mts                   # dock engine (dock@1): pane tree, drop zones, pane limit, splitters, snapshots, dock-layout@1 presets (dock.json)
+            npx -y tsx framework/spec/check-xlayout.mts                # xlayout@1 (Molly as one app): apps, merge modes, IDE block, toolbar slots, guest URLs (xlayout.json)
+            npx -y tsx framework/spec/check-chrome.mts                 # chrome@1: guests send chrome as data, the host merges under namespaces and routes picks back (chrome.json)
             npx -y tsx framework/spec/check-meters.mts                 # gauge + meter control assets: fixture replay, starters, enums
             npx -y tsx framework/spec/check-customize.mts              # tab-group asset + per-asset appearance tokens, 100 icon sets, apply to all
             npx -y tsx framework/spec/check-settings-ui.mts            # settings interface asset: fixture replay, starters, enums
             npx -y tsx framework/spec/check-design-package.mts         # design-package@1 + behavior-theme@1 rules, starters, the Amber context menu
             npx -y tsx framework/spec/check-scale.mts                  # typography@1 + density@1 + sizing@1: registry, defaults, tokens, fixture, starters, validators agree, hub slots
+            npx -y tsx framework/spec/check-layout-tokens.mts          # every layout parameter is a token: registry = asset-types, defaults, normalize, --fx-layout-* vars, grid reads tokens, validators agree, starters, schema, fixture
+            npx -y tsx framework/spec/check-control.mts                # control@1: one command schema for tokens, AmberX entities and the planner: registry, gate (roles × ops), confirm flow, errors, projections, snapshot, fixture
+            npx -y tsx framework/spec/check-console-commands.mts       # console commands (control@1 console domain): catalog, resolve by id/title/words, action policy, clients, runner, messages
             npx -y tsx framework/spec/check-agent-card.mts             # agent-card@1: registry, fixture replay, validators agree, four starters, schema
             npx -y tsx framework/spec/check-job-type.mts               # job-type@1: registry, fixture replay, validators agree, starter job types, schema
             npx -y tsx framework/spec/check-headless-tabs.mts          # headless tabs: live cost meter + context chain (deploy/claude-meter.mjs), terminal pure helpers
@@ -206,6 +216,7 @@ jobs:
             python apps/console-web/server/test_app_catalog.py
             python apps/console-web/server/test_build_profiles.py
             python apps/console-web/server/test_previews.py          # Watch live: registry, signed keys, /preview proxy auth (HTTP + HMR WebSocket)
+            python apps/console-web/plugins/console-commands/server/test_console_commands.py  # console commands: consoles announce + stream, resolve, deliver + ack, per-user mailbox, confirm  # axf-plugin:console-commands
             python apps/amberx-droid/server/test_server.py           # AmberX server: wall, admin-only AI config, write-only keys, fallback, intent checks, caps, SPA paths
           } 2>&1 | tee /tmp/web-tests.log
       - name: Report web/Python test failures to the "CI build errors" issue

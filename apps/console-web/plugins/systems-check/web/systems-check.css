@@ -56,7 +56,7 @@
 .axp-systems-check-guided__pane { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); min-width: 0 }
 .axp-systems-check-guided__done { display: flex; flex-direction: column; align-items: center; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-4xl); color: var(--fx-success) }
 .axp-systems-check-show-sm { display: none }
-@media (max-width: 720px) { .axp-systems-check-hide-sm { display: none } .axp-systems-check-show-sm { display: inline } .axp-systems-check-guided { grid-template-columns: minmax(0, 1fr) } .axp-systems-check-banner__sum { display: none } }
+:where([data-fx-narrow]) .axp-systems-check-hide-sm { display: none } :where([data-fx-narrow]) .axp-systems-check-show-sm { display: inline } :where([data-fx-narrow]) .axp-systems-check-guided { grid-template-columns: minmax(0, 1fr) } :where([data-fx-narrow]) .axp-systems-check-banner__sum { display: none }
 .fx-dialog:has(.axp-systems-check) { width: min(calc(var(--fx-space) * 120), 100%); max-height: min(92dvh, calc(var(--fx-space) * 110)) }
 .fx-dialog:has(.axp-systems-check) .axp-systems-check { width: auto }
 .axp-systems-check-run.is-waiting { color: var(--fx-warning); border-color: var(--fx-warning); animation: axp-systems-check-pulse 1.6s ease-in-out infinite }
@@ -117,11 +117,9 @@ span.axp-systems-check-banner__text { display: block; text-overflow: ellipsis }
 .axp-systems-check__counts { gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-xl) }
 .axp-systems-check-table td { padding-top: var(--fx-dens-gap-sm); padding-bottom: var(--fx-dens-gap-sm) }
 .axp-systems-check-exp > td { padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl) }
-@media (max-width: 720px) {
-  span.axp-systems-check-sumline { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: calc(100vw - var(--fx-space) * 16) }
-  .axp-systems-check-row.is-open span.axp-systems-check-sumline { white-space: normal }
-  .axp-systems-check__cards { grid-template-columns: minmax(0, 1fr) }
-}
+:where([data-fx-narrow]) span.axp-systems-check-sumline { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: calc(100vw - var(--fx-space) * 16) }
+:where([data-fx-narrow]) .axp-systems-check-row.is-open span.axp-systems-check-sumline { white-space: normal }
+:where([data-fx-narrow]) .axp-systems-check__cards { grid-template-columns: minmax(0, 1fr) }
 /* Live key + health checks (Oct 30 2026): a broken item says what it breaks and since when on a second line (on phones
    what broke gets its own line too, since the summary column is hidden there). Each line stays one line with an ellipsis
    (the Oct 26 one-line rule); tapping the item opens it whole. Layout only. */
@@ -129,4 +127,4 @@ span.axp-systems-check-banner__text { display: block; text-overflow: ellipsis }
 .axp-systems-check-banner__item > .axp-systems-check-why, .axp-systems-check-banner__item > .axp-systems-check-banner__plain { flex: 1 1 100%; display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-left: var(--fx-dens-gap-2xl) }
 .axp-systems-check-body > .axp-systems-check-why, .axp-systems-check-keys__item > .axp-systems-check-why { display: block; overflow-wrap: anywhere }
 .axp-systems-check-banner__item > .axp-systems-check-banner__plain { display: none }
-@media (max-width: 720px) { .axp-systems-check-banner__item > .axp-systems-check-banner__plain { display: block } }
+:where([data-fx-narrow]) .axp-systems-check-banner__item > .axp-systems-check-banner__plain { display: block }

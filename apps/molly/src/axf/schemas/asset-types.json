@@ -163,6 +163,21 @@
         }
       },
       "optional_fields": {
+        "statusHeight": "status bar height, px (default 26)",
+        "regionGap": "gap between the grid's regions, × --fx-space (default 0)",
+        "mainPadTop": "main area padding top on desktop, × --fx-space (default 2.4)",
+        "mainPadX": "main area padding left/right on desktop, × --fx-space (default 4)",
+        "mainPadBottom": "main area padding bottom on desktop, × --fx-space (default 6)",
+        "phoneMainPadTop": "main area padding top on a phone, × --fx-space (default 1.6)",
+        "phoneMainPadX": "main area padding left/right on a phone, × --fx-space (default 1.6)",
+        "phoneMainPadBottom": "main area padding bottom on a phone, × --fx-space (default 4)",
+        "phoneNavItemMin": "least width of a nav item in the phone's bottom strip, px (default 64)",
+        "phoneEdge": "inset of dropdowns and toasts from the phone's edges, px (default 8)",
+        "tinyMaxWidth": "viewport cut-off, px (default 480): at or under it the root carries data-fx-tiny",
+        "smallMaxWidth": "viewport cut-off, px (default 640): data-fx-small",
+        "phoneMaxWidth": "viewport cut-off, px (default 760): data-fx-narrow, the single-column phone grid",
+        "mediumMaxWidth": "viewport cut-off, px (default 900): data-fx-medium",
+        "largeMaxWidth": "viewport cut-off, px (default 1200): data-fx-large",
         "slots": "region → list of asset types that region accepts. Overrides the defaults in `slots.defaults` per region; a chrome region renders only when it accepts its asset type. Keys must be a region in `slots.regions`, values known asset types.",
         "repeat": "list of repeating slots (engine core/engines/repeat.ts): { id, dataSet, region? (a slot region, default main), style? (`repeat.styles`, default stacked), columns? (1-12, grid/cards; default grid 3, cards 2), max? (0 = all), fallback? { type?, id?, label? } }. The slot draws one item per entry of the data set the page declares under `dataSet`; when the page declares none or it is empty, the fallback slot draws instead."
       },
@@ -175,6 +190,12 @@
         ],
         "default": "stacked",
         "maxColumns": 12
+      },
+      "description": "The shell's grid and every layout value (engine core/engines/layout.ts, rules core/engines/layout-rules.mjs): nav side + width, inspector side + width, menubar / toolbar / status switches, content width, status bar height, the gap between regions, the main area's padding on desktop and on a phone, the phone edge inset and nav item minimum, and the viewport cut-offs (tiny < small < phone < medium < large). Every parameter is a token (Nov 2 2026): each field compiles to --fx-layout-<field> and the optional ones default to the framework's own look, so an asset may set only the grid. The viewport cut-offs become root attributes (data-fx-tiny / -small / -narrow / -medium / -large) the stylesheets select on instead of px breakpoints.",
+      "tokens": {
+        "prefix": "layout",
+        "rules": "core/engines/layout-rules.mjs",
+        "note": "Every field below compiles to --fx-layout-<field in kebab-case>: numbers as px or × --fx-space, enums as their word, switches as 1 / 0. The compiled grid (fixture layout.json → compiled) keeps px numbers for native ports; the web grid vars read the tokens."
       }
     },
     "app-menu": {
@@ -1112,6 +1133,47 @@
         "slot": false,
         "asset": false
       },
+      "optional": true
+    },
+    "dock-layout": {
+      "label": "Pane layout",
+      "group": "Navigation",
+      "icon": "layout",
+      "description": "A preset arrangement of dock panes (dock-layout@1, engine core/engines/dock.ts): a tree of numbered panes split horizontally or vertically with weights, applied to a window's dock by spreading its open tabs over the panes; drawn as a preview thumbnail before it is applied. Used by every host that docks tabs (MD Studio, xLayout's IDE mode, the Theme Editor). The framework ships ten starters; every app bakes them (shared).",
+      "required": [
+        "panes",
+        "tree"
+      ],
+      "optional_fields": {
+        "tree": "{ kind: leaf, pane: 1..n } | { kind: split, vertical: boolean, children: [tree…], weights: [number…] } — every pane number 1..n once; n ≤ 12",
+        "hint": "one line for pickers (`Editor with a terminal below`)",
+        "main": "the pane a new tab opens in when none is picked (1-based; default 1)"
+      },
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional": true
+    },
+    "xlayout": {
+      "label": "xLayout",
+      "group": "System",
+      "icon": "layout",
+      "description": "Molly as one app (xlayout@1, engine core/engines/xlayout.ts): the host-side layout that frames several apps (AmberX, axHub web, the Dev Console) and makes them look like one — which apps, how each kind of chrome is handled (host = only the host's, merged = one bar merged from every app's with the guests hiding theirs and sending them as data, guest = each app keeps its own), the IDE switch (pane limit, dock-layout@1 preset in force, presets offered, an optional inline preset tree) and up to three plugin toolbar slots (visible, location, items opening in the main area, a floating window or a pane). Host-only: standalone apps never load one (not shared). The chrome merge is chrome@1 (core/engines/chrome.ts), the pane tree dock@1.",
+      "required": [
+        "apps"
+      ],
+      "optional_fields": {
+        "apps": "[{ id: [a-z0-9-], label, url: https…, icon? }] — the apps the host frames, ≤ 12; id is the namespace prefix of every item the app sends (`<app>:<id>`)",
+        "merge": "{ banner | app-menu | nav-menu | context-menu | toolbar | widgets: host | merged | guest } — defaults: banner host, the rest merged",
+        "ide": "{ on: boolean, paneLimit 1..64 (default 6), preset: dock-layout id (default ide), presets: [dock-layout ids] (default the ten starters), tree?: preset tree }",
+        "toolbars": "[{ slot 1..3, visible, location: top | bottom | left | right, label?, items: [{ id, label, icon?, app?, action, open: main | floating | pane }] }] — missing slots get defaults (1 top visible, 2 bottom hidden, 3 right hidden)"
+      },
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "shared": false,
       "optional": true
     },
     "behavior-theme": {
