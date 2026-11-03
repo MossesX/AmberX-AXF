@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T20:47:46.983Z",
+ "updatedAt": "2026-11-03T20:48:30.071Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10,6 +10,16 @@
  },
  "builds": [
   {
+   "notes": [
+    {
+     "text": "Assigned: Ping Paulie (all-rounder router not on this checkout). Live fix: key in /opt/axf/.axf-console/plugins/console-terminal/ssh (bind mount), host 172.16.1.1 (coolify gateway), pubkey in /root/.ssh/authorized_keys with from=172.16.0.0/12. headless ready:true, 6 sessions, meters with cost.",
+     "at": "2026-11-03T19:31:28.416Z"
+    },
+    {
+     "text": "Reconciler: branch claude/terminal-vps-host (PR #274); PR #274",
+     "at": "2026-11-03T19:40:47.953Z"
+    }
+   ],
    "id": "terminal-vps-host",
    "title": "Terminal VPS host: headless tabs attach to build tmux sessions",
    "category": "Ops > Terminal",
@@ -23,16 +33,6 @@
    "createdAt": "2026-11-03T19:31:10.365Z",
    "updatedAt": "2026-11-03T19:40:53.260Z",
    "builtAt": "2026-11-03T19:40:51.453Z",
-   "notes": [
-    {
-     "text": "Assigned: Ping Paulie (all-rounder router not on this checkout). Live fix: key in /opt/axf/.axf-console/plugins/console-terminal/ssh (bind mount), host 172.16.1.1 (coolify gateway), pubkey in /root/.ssh/authorized_keys with from=172.16.0.0/12. headless ready:true, 6 sessions, meters with cost.",
-     "at": "2026-11-03T19:31:28.416Z"
-    },
-    {
-     "text": "Reconciler: branch claude/terminal-vps-host (PR #274); PR #274",
-     "at": "2026-11-03T19:40:47.953Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -126,23 +126,10 @@
      "note": "",
      "uid": "st-mw132l3e0aawvn"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "window-resize-fix",
-   "title": "Window resize fix + Terminal settings dialog placement (urgent)",
-   "category": "Bug fix",
-   "detail": "Brett (Nov 3 2026, voice): floating windows must be resizable (Terminal cannot be resized), and Terminal settings placement \"dialog\" opens nothing. Agent: Landin Lenny (headless worktree session). Merge on Brett order.",
-   "status": "complete",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/window-resize-fix",
-   "pr": "#278",
-   "mergedAt": "2026-11-03T20:06:05Z",
-   "createdAt": "2026-11-03T19:32:33.504Z",
-   "updatedAt": "2026-11-03T20:12:38.085Z",
-   "builtAt": "2026-11-03T20:12:35.030Z",
    "notes": [
     {
      "text": "Reconciler: branch claude/window-resize-fix (no PR yet)",
@@ -157,6 +144,20 @@
      "at": "2026-11-03T20:12:36.260Z"
     }
    ],
+   "id": "window-resize-fix",
+   "title": "Window resize fix + Terminal settings dialog placement (urgent)",
+   "category": "Bug fix",
+   "detail": "Brett (Nov 3 2026, voice): floating windows must be resizable (Terminal cannot be resized), and Terminal settings placement \"dialog\" opens nothing. Agent: Landin Lenny (headless worktree session). Merge on Brett order.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/window-resize-fix",
+   "pr": "#278",
+   "mergedAt": "2026-11-03T20:06:05Z",
+   "createdAt": "2026-11-03T19:32:33.504Z",
+   "updatedAt": "2026-11-03T20:12:38.085Z",
+   "builtAt": "2026-11-03T20:12:35.030Z",
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -214,9 +215,11 @@
      "note": "",
      "uid": "st-mw134d6a0601hn"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "terminal-sessions-nav",
    "title": "Terminal: sessions navigation rail",
    "category": "Console > Terminal",
@@ -230,7 +233,6 @@
    "createdAt": "2026-11-03T19:58:59.822Z",
    "updatedAt": "2026-11-03T20:19:17.505Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -306,9 +308,11 @@
      "note": "",
      "uid": "st-mw142d5l08ii3v"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "profile-manager",
    "title": "Build profiles manager (browse, view, create, edit, switch, duplicate, merge, move builds, archive, delete/restore, cleanup)",
    "category": "Builds",
@@ -322,7 +326,6 @@
    "createdAt": "2026-11-03T19:59:06.499Z",
    "updatedAt": "2026-11-03T20:14:29.392Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -445,9 +448,11 @@
      "note": "",
      "uid": "st-mw142icj0gnre8"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "build-prompt-origin",
    "title": "Show what Brett said (verbatim prompt) on every build",
    "category": "Builds",
@@ -461,7 +466,6 @@
    "createdAt": "2026-11-03T20:23:37.380Z",
    "updatedAt": "2026-11-03T20:30:35.517Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -555,9 +559,11 @@
      "note": "",
      "uid": "st-mw14y1dv0a0od8"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "plugin-settings-placement",
    "title": "Plugin settings placement: inside the plugin, pane, dialog, window or main",
    "category": "Framework",
@@ -571,7 +577,6 @@
    "createdAt": "2026-11-03T20:30:14.217Z",
    "updatedAt": "2026-11-03T20:47:31.966Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -683,9 +688,11 @@
      "note": "",
      "uid": "st-mw15gx3q06vi5f"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "banner-ref-links",
    "title": "Banner reference links: tap a mention to open what it refers to",
    "category": "Framework",
@@ -699,7 +706,6 @@
    "createdAt": "2026-11-03T20:47:37.192Z",
    "updatedAt": "2026-11-03T20:47:46.653Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -793,7 +799,8 @@
      "note": "",
      "uid": "st-mw15swa70ag93s"
     }
-   ]
+   ],
+   "rev": 0
   }
  ]
 }
