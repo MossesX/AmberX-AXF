@@ -568,9 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:56 UTC · `theme-editor` s1 done, s2 done, s3 done, s4 done, s5 done, → built, branch claude/theme-editor, PR #243, note (urgent) · orch-live-sync
-- 2026-11-03 13:56 UTC · `token-control` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, → built, branch claude/token-control-opus, PR #250, note (urgent) · orch-live-sync
-- 2026-11-03 13:57 UTC · `enterprise-branding` merged, note (main-framework, refactor) · reconciler
 - 2026-11-03 13:57 UTC · `apply-all-levels` branch claude/apply-all-levels, PR #115, merged, note (main-framework, refactor) · reconciler
 - 2026-11-03 13:57 UTC · `amberx-empty-shell` branch claude/amberx-empty-shell, PR #118, merged, note (main-framework, refactor) · reconciler
 - 2026-11-03 13:57 UTC · `fresh-look` branch claude/fresh-look-done, PR #120, merged, note (main-framework, refactor) · reconciler
@@ -968,3 +965,6 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 20:53 UTC · `build-prompt-origin` s5 done, → complete (current) · orchestrator
 - 2026-11-03 20:53 UTC · `build-prompt-origin` → built, PR #282 (current) · builds-live
 - 2026-11-03 20:55 UTC · `build-prompt-origin` s3 done, s5 done, → complete (current) · foreign-write
+- 2026-11-03 20:55 UTC · `plugin-settings-placement` s3 done, → running (current) · orchestrator
+- 2026-11-03 20:55 UTC · `plugin-settings-placement` s4 done (current) · orchestrator
+- 2026-11-03 20:55 UTC · `plugin-settings-placement` s5 done (current) · orchestrator
