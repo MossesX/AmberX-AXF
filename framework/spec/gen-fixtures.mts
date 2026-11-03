@@ -209,15 +209,24 @@ write('layout.json', Object.fromEntries(load('layout').map((a) => [a.id, { compi
     'path-on-list': { op: 'list', target: 'tokens.layout', path: 'navWidth' },
     'wrong-frame': { $axf: 'asset@1', op: 'list', target: 'tokens.layout' },
     'not-an-object': 'nope',
+    'console-open-screen': { op: 'act', target: 'console.screens', path: 'plan studio', action: 'open', by: 'claude' },
+    'console-open-settings': { op: 'act', target: 'console.settings', path: 'plugins/token-control', action: 'open', input: { to: 'all' } },
+    'console-list-actions': { op: 'list', target: 'console.actions', select: { q: 'theme', limit: 20 } },
+    'console-run-action': { op: 'act', target: 'console.actions', path: 'assets.random', action: 'run' },
+    'console-back': { op: 'act', target: 'console.nav', path: 'here', action: 'back' },
+    'console-nav-unknown-path': { op: 'act', target: 'console.nav', path: 'forward', action: 'back' },
+    'console-set-screen': { op: 'set', target: 'console.screens', path: 'home', value: 'x' },
+    'console-clients': { op: 'list', target: 'console.clients' },
   };
   const roles: Record<string, string[]> = {
     admin: ['*'], control: ['control.*'], tokens: ['control.tokens.*'], reader: ['control.tokens.read', 'control.amberx.read', 'control.planner.read'],
     'amberx-writer': ['control.amberx.read', 'control.amberx.write'], none: [],
+    'console-navigator': ['control.console.read', 'control.console.navigate'],
   };
   const token = controlConfirmToken(remove, salt, NOW);
   write('control.json', {
     commands: cmds,
-    registry: { ops: registry.ops, effects: registry.effects, permissions: registry.permissions, targets: CONTROL_TARGET_IDS, targetOps: Object.fromEntries(CONTROL_TARGET_IDS.map((t) => [t, (registry.targets as Record<string, { ops: string[] }>)[t].ops])) },
+    registry: { ops: registry.ops, effects: registry.effects, actEffects: registry.actEffects, permissions: registry.permissions, targets: CONTROL_TARGET_IDS, targetOps: Object.fromEntries(CONTROL_TARGET_IDS.map((t) => [t, (registry.targets as Record<string, { ops: string[] }>)[t].ops])) },
     paths: Object.fromEntries(CONTROL_TARGET_IDS.map((t) => [t, controlPaths(t)?.map((p) => p.id) ?? null])),
     normalize: Object.fromEntries(Object.entries(cmds).map(([k, c]) => [k, normalizeControl(c)])),
     errors: Object.fromEntries(Object.entries(cmds).map(([k, c]) => [k, controlErrors(c)])),

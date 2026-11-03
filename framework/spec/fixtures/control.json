@@ -231,7 +231,59 @@
       "op": "list",
       "target": "tokens.layout"
     },
-    "not-an-object": "nope"
+    "not-an-object": "nope",
+    "console-open-screen": {
+      "op": "act",
+      "target": "console.screens",
+      "path": "plan studio",
+      "action": "open",
+      "by": "claude"
+    },
+    "console-open-settings": {
+      "op": "act",
+      "target": "console.settings",
+      "path": "plugins/token-control",
+      "action": "open",
+      "input": {
+        "to": "all"
+      }
+    },
+    "console-list-actions": {
+      "op": "list",
+      "target": "console.actions",
+      "select": {
+        "q": "theme",
+        "limit": 20
+      }
+    },
+    "console-run-action": {
+      "op": "act",
+      "target": "console.actions",
+      "path": "assets.random",
+      "action": "run"
+    },
+    "console-back": {
+      "op": "act",
+      "target": "console.nav",
+      "path": "here",
+      "action": "back"
+    },
+    "console-nav-unknown-path": {
+      "op": "act",
+      "target": "console.nav",
+      "path": "forward",
+      "action": "back"
+    },
+    "console-set-screen": {
+      "op": "set",
+      "target": "console.screens",
+      "path": "home",
+      "value": "x"
+    },
+    "console-clients": {
+      "op": "list",
+      "target": "console.clients"
+    }
   },
   "registry": {
     "ops": [
@@ -252,6 +304,25 @@
       "remove": "destructive",
       "act": "write"
     },
+    "actEffects": {
+      "console.screens": {
+        "open": "navigate"
+      },
+      "console.dialogs": {
+        "open": "navigate"
+      },
+      "console.settings": {
+        "open": "navigate"
+      },
+      "console.actions": {
+        "run": "write"
+      },
+      "console.nav": {
+        "back": "navigate",
+        "home": "navigate",
+        "close": "navigate"
+      }
+    },
     "permissions": {
       "control.tokens.read": "tokens: read",
       "control.tokens.write": "tokens: write",
@@ -261,7 +332,11 @@
       "control.amberx.delete": "amberx: delete",
       "control.planner.read": "planner: read",
       "control.planner.write": "planner: write",
-      "control.planner.delete": "planner: delete"
+      "control.planner.delete": "planner: delete",
+      "control.console.read": "console: read",
+      "control.console.write": "console: write",
+      "control.console.delete": "console: delete",
+      "control.console.navigate": "console: navigate"
     },
     "targets": [
       "tokens.theme",
@@ -276,7 +351,13 @@
       "amberx.items",
       "amberx.lists",
       "planner.plans",
-      "planner.builds"
+      "planner.builds",
+      "console.screens",
+      "console.dialogs",
+      "console.settings",
+      "console.actions",
+      "console.nav",
+      "console.clients"
     ],
     "targetOps": {
       "tokens.theme": [
@@ -364,6 +445,33 @@
         "add",
         "remove",
         "act"
+      ],
+      "console.screens": [
+        "list",
+        "get",
+        "act"
+      ],
+      "console.dialogs": [
+        "list",
+        "get",
+        "act"
+      ],
+      "console.settings": [
+        "list",
+        "get",
+        "act"
+      ],
+      "console.actions": [
+        "list",
+        "get",
+        "act"
+      ],
+      "console.nav": [
+        "get",
+        "act"
+      ],
+      "console.clients": [
+        "list"
       ]
     }
   },
@@ -523,7 +631,15 @@
     "amberx.items": null,
     "amberx.lists": null,
     "planner.plans": null,
-    "planner.builds": null
+    "planner.builds": null,
+    "console.screens": null,
+    "console.dialogs": null,
+    "console.settings": null,
+    "console.actions": null,
+    "console.nav": [
+      "here"
+    ],
+    "console.clients": null
   },
   "normalize": {
     "list-layout": {
@@ -792,6 +908,66 @@
     },
     "not-an-object": {
       "$axf": "control@1"
+    },
+    "console-open-screen": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "console.screens",
+      "path": "plan studio",
+      "action": "open",
+      "by": "claude"
+    },
+    "console-open-settings": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "console.settings",
+      "path": "plugins/token-control",
+      "action": "open",
+      "input": {
+        "to": "all"
+      }
+    },
+    "console-list-actions": {
+      "$axf": "control@1",
+      "op": "list",
+      "target": "console.actions",
+      "select": {
+        "q": "theme",
+        "limit": 20
+      }
+    },
+    "console-run-action": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "console.actions",
+      "path": "assets.random",
+      "action": "run"
+    },
+    "console-back": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "console.nav",
+      "path": "here",
+      "action": "back"
+    },
+    "console-nav-unknown-path": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "console.nav",
+      "path": "forward",
+      "action": "back"
+    },
+    "console-set-screen": {
+      "$axf": "control@1",
+      "op": "set",
+      "target": "console.screens",
+      "path": "home",
+      "value": "x"
+    },
+    "console-clients": {
+      "$axf": "control@1",
+      "op": "list",
+      "target": "console.clients"
     }
   },
   "errors": {
@@ -851,7 +1027,7 @@
       "op must be one of: list, get, set, reset, add, remove, act"
     ],
     "wrong-target": [
-      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds"
+      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients"
     ],
     "token-op-on-entity": [
       "amberx.items does not take reset (it takes list, get, set, add, remove, act)"
@@ -867,8 +1043,20 @@
     ],
     "not-an-object": [
       "op must be one of: list, get, set, reset, add, remove, act",
-      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds"
-    ]
+      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients"
+    ],
+    "console-open-screen": [],
+    "console-open-settings": [],
+    "console-list-actions": [],
+    "console-run-action": [],
+    "console-back": [],
+    "console-nav-unknown-path": [
+      "console.nav has no token forward (control list console.nav names them)"
+    ],
+    "console-set-screen": [
+      "console.screens does not take set (it takes list, get, act)"
+    ],
+    "console-clients": []
   },
   "gate": {
     "admin": {
@@ -1063,6 +1251,48 @@
         "code": "invalid",
         "requires": null,
         "confirm": null
+      },
+      "console-open-screen": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.console.navigate"
+      },
+      "console-open-settings": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.console.navigate"
+      },
+      "console-list-actions": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.console.read"
+      },
+      "console-run-action": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.console.write"
+      },
+      "console-back": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.console.navigate"
+      },
+      "console-nav-unknown-path": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-clients": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.console.read"
       }
     },
     "control": {
@@ -1257,6 +1487,48 @@
         "code": "invalid",
         "requires": null,
         "confirm": null
+      },
+      "console-open-screen": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.console.navigate"
+      },
+      "console-open-settings": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.console.navigate"
+      },
+      "console-list-actions": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.console.read"
+      },
+      "console-run-action": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.console.write"
+      },
+      "console-back": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.console.navigate"
+      },
+      "console-nav-unknown-path": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-clients": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.console.read"
       }
     },
     "tokens": {
@@ -1458,6 +1730,54 @@
         "ok": false,
         "code": "invalid",
         "requires": null,
+        "confirm": null
+      },
+      "console-open-screen": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-open-settings": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-list-actions": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
+        "confirm": null
+      },
+      "console-run-action": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.write",
+        "confirm": null
+      },
+      "console-back": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-nav-unknown-path": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-clients": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
         "confirm": null
       }
     },
@@ -1667,6 +1987,54 @@
         "code": "invalid",
         "requires": null,
         "confirm": null
+      },
+      "console-open-screen": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-open-settings": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-list-actions": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
+        "confirm": null
+      },
+      "console-run-action": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.write",
+        "confirm": null
+      },
+      "console-back": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-nav-unknown-path": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-clients": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
+        "confirm": null
       }
     },
     "amberx-writer": {
@@ -1874,6 +2242,54 @@
         "ok": false,
         "code": "invalid",
         "requires": null,
+        "confirm": null
+      },
+      "console-open-screen": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-open-settings": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-list-actions": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
+        "confirm": null
+      },
+      "console-run-action": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.write",
+        "confirm": null
+      },
+      "console-back": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-nav-unknown-path": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-clients": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
         "confirm": null
       }
     },
@@ -2087,6 +2503,309 @@
         "code": "invalid",
         "requires": null,
         "confirm": null
+      },
+      "console-open-screen": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-open-settings": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-list-actions": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
+        "confirm": null
+      },
+      "console-run-action": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.write",
+        "confirm": null
+      },
+      "console-back": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-nav-unknown-path": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-clients": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
+        "confirm": null
+      }
+    },
+    "console-navigator": {
+      "list-layout": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "get-theme": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "set-layout": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-layout-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-layout-unknown": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-theme": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-theme-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-style": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-style-enum": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-sizing": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-sizing-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-look": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-slot": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "reset-all": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "add-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "add-item-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "set-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "list-items": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.read",
+        "confirm": null
+      },
+      "list-items-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.read",
+        "confirm": null
+      },
+      "act-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "act-item-missing-input": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "act-item-unknown": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "remove-system-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.delete",
+        "confirm": null
+      },
+      "act-build-step": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "act-build-approve": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "act-plan-build": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "add-plan": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "remove-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.delete",
+        "confirm": null
+      },
+      "wrong-op": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "wrong-target": {
+        "ok": false,
+        "code": "not_found",
+        "requires": null,
+        "confirm": null
+      },
+      "token-op-on-entity": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "entity-op-on-token": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "path-on-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "wrong-frame": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "not-an-object": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-open-screen": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.console.navigate"
+      },
+      "console-open-settings": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.console.navigate"
+      },
+      "console-list-actions": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.console.read"
+      },
+      "console-run-action": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.write",
+        "confirm": null
+      },
+      "console-back": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.console.navigate"
+      },
+      "console-nav-unknown-path": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-clients": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.console.read"
       }
     }
   },

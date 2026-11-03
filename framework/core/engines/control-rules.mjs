@@ -2,7 +2,10 @@
  * control@1 — one command schema for everything the Token control plugin lets an API, MCP tool or CLI change
  * (Brett, Nov 2 2026, build token-control s3): every token (colour theme, style theme, layout, typography, density,
  * sizing, look tokens, per-asset custom tokens, the active asset per slot), every AmberX entity (notes, to-dos, tasks
- * and their lists) and the planner (Plan Studio plans, orchestrator builds and their steps).
+ * and their lists) and the planner (Plan Studio plans, orchestrator builds and their steps). Since build
+ * console-commands (Brett, Nov 3 2026): the `console` domain, so a Claude session can load screens, dialogs and
+ * settings tabs in Brett's open console, run its registered actions and go back (core/engines/console-commands.mjs
+ * resolves and delivers them; the running console reports what it has).
  *
  * ONE registry: the ops, the targets (what each one is, the ops it takes, its paths and fields, its verbs), the
  * permissions, the effect of each op, the confirm rule for deletes, the result envelope, and the projections every
@@ -15,7 +18,8 @@
  *   { $axf: 'control@1', op, target, path?, value?, action?, select?, confirm?, by?, reason? }
  *   op      list | get | set | reset | add | remove | act
  *   target  tokens.theme | tokens.style | tokens.layout | tokens.typography | tokens.density | tokens.sizing |
- *           tokens.look | tokens.custom | tokens.slots | amberx.items | amberx.lists | planner.plans | planner.builds
+ *           tokens.look | tokens.custom | tokens.slots | amberx.items | amberx.lists | planner.plans | planner.builds |
+ *           console.screens | console.dialogs | console.settings | console.actions | console.nav | console.clients
  *   path    the token id / entity id (get, set, reset, remove, act; reset without a path = everything of the target)
  *   value   what to set (set) or the new entity (add)
  *   action  the verb for `act` (per target: done, move, approve, step, …)
@@ -34,13 +38,19 @@ import { LAYOUT_ENUMS, LAYOUT_FIELDS, LAYOUT_SWITCHES, layoutErrors, layoutToken
 
 export const CONTROL_FRAME = 'control@1';
 export const CONTROL_OPS = ['list', 'get', 'set', 'reset', 'add', 'remove', 'act'];
-export const CONTROL_DOMAINS = ['tokens', 'amberx', 'planner'];
+export const CONTROL_DOMAINS = ['tokens', 'amberx', 'planner', 'console'];
 /** What each op does to the world (the MCP annotations and the permission it needs come from this). */
 export const CONTROL_EFFECT = { list: 'read', get: 'read', set: 'write', reset: 'write', add: 'write', remove: 'destructive', act: 'write' };
-/** Permission suffix per effect: control.<domain>.<suffix>. */
-export const CONTROL_PERMISSION_SUFFIX = { read: 'read', write: 'write', destructive: 'delete' };
+/** Permission suffix per effect: control.<domain>.<suffix>. `navigate` (open a screen, go back) changes what a screen
+ *  shows and no data; only targets that declare it in `actEffect` have it. */
+export const CONTROL_PERMISSION_SUFFIX = { read: 'read', write: 'write', destructive: 'delete', navigate: 'navigate' };
+/** Domains whose acts may navigate (they get a control.<domain>.navigate permission). */
+const NAVIGATING_DOMAINS = ['console'];
 /** The permission grammar (declared in an app's uac-policy; `control.*` = everything). */
-export const CONTROL_PERMISSIONS = Object.fromEntries(CONTROL_DOMAINS.flatMap((d) => Object.values(CONTROL_PERMISSION_SUFFIX).map((s) => [`control.${d}.${s}`, `${d}: ${s}`])));
+export const CONTROL_PERMISSIONS = Object.fromEntries([
+  ...CONTROL_DOMAINS.flatMap((d) => ['read', 'write', 'delete'].map((s) => [`control.${d}.${s}`, `${d}: ${s}`])),
+  ...NAVIGATING_DOMAINS.map((d) => [`control.${d}.navigate`, `${d}: navigate`]),
+]);
 /** Wire codes (INTEROP.md; never change meaning). */
 export const CONTROL_WIRE = { INVALID: 'invalid', DENIED: 'denied', NOT_FOUND: 'not_found', VALIDATION: 'validation', CONFIRMATION_REQUIRED: 'confirmation_required', NOT_IMPLEMENTED: 'not_implemented', UNEXPECTED: 'unexpected' };
 /** How long a confirm token is good for (ms), and the bucket it is computed in. */
@@ -62,6 +72,9 @@ const LIST_FIELDS = { name: 'string', parent: 'string|null', order: 'number', ic
 const PLAN_FIELDS = { title: 'string', summary: 'string', goal: 'string', why: 'string', category: 'string', tags: 'string[]', project: 'string', profile: 'string', status: 'enum:idea,draft,parked,ready,building,done,dropped', priority: 'enum:P0,P1,P2,P3', targetDate: 'string', owner: 'string', steps: 'object[]', requirements: 'object[]', acceptance: 'object[]', decisions: 'object[]', questions: 'object[]', risks: 'object[]', outOfScope: 'object[]', links: 'object[]', body: 'string' };
 const BUILD_FIELDS = { title: 'string', category: 'string', detail: 'string', status: 'enum:pending,running,waiting,blocked,failed,complete,archived', hidden: 'boolean', branch: 'string', pr: 'string', steps: 'object[]' };
 const STEP_FIELDS = { text: 'string', title: 'string', model: 'enum:Fable,Opus', estimate: 'string', why: 'string', phase: 'string', group: 'string', files: 'string[]', checks: 'string[]', done: 'boolean', note: 'string' };
+
+const CONSOLE_SELECT = { q: 'string', limit: 'number', client: 'string' };
+const CONSOLE_DELIVERY = 'Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).';
 
 const scalePaths = (type) => [...Object.keys(SCALE_FIELDS[type]), ...Object.keys(SCALE_ENUMS[type] ?? {})];
 const TOKEN_OPS = ['list', 'get', 'set', 'reset'];
@@ -86,6 +99,12 @@ export const CONTROL_TARGETS = {
   'amberx.lists': { domain: 'amberx', label: 'AmberX lists', ops: ENTITY_OPS, paths: 'entity', fields: LIST_FIELDS, select: { parent: 'string|null', q: 'string' }, acts: { move: { parent: 'string|null' }, reorder: { ids: 'string[]' }, rename: { name: 'string' } }, doc: 'The list tree items live in (Inbox and the plugin lists are system lists: they can be renamed, never removed).', protected: ['inbox', 'plugins', 'voice-notes'] },
   'planner.plans': { domain: 'planner', label: 'Plan Studio plans', ops: ENTITY_OPS, paths: 'entity', fields: PLAN_FIELDS, select: { status: 'string', priority: 'string', category: 'string', tag: 'string', project: 'string', q: 'string', limit: 'number' }, acts: { park: {}, build: { profile: 'string', buildId: 'string' }, restore: { version: 'number' }, export: { format: 'enum:json,md' }, step: { step: 'string', done: 'boolean' }, comment: { text: 'string' } }, doc: 'plan@1 plans (console → Builds → Plan Studio): “put it in a plan for later” lands here as parked; `build` turns one into an orchestrator build.' },
   'planner.builds': { domain: 'planner', label: 'Build orchestrator builds', ops: ENTITY_OPS, paths: 'entity', fields: BUILD_FIELDS, select: { profile: 'string', status: 'string', category: 'string', q: 'string', includeHidden: 'boolean', limit: 'number' }, acts: { step: { step: 'string', done: 'boolean' }, approve: { phase: 'number' }, status: { status: 'string' }, note: { text: 'string' }, rename: { title: 'string' }, 'rename-step': { step: 'string', title: 'string' }, 'add-step': { text: 'string', model: 'enum:Fable,Opus', estimate: 'string', after: 'string' }, 'edit-step': { step: 'string', patch: 'object' }, 'skip-step': { step: 'string', why: 'string' }, 'remove-step': { step: 'string', why: 'string' }, 'move-step': { step: 'string', to: 'number' }, archive: {}, hide: {}, unhide: {} }, stepFields: STEP_FIELDS, doc: 'builds@1 records through the orchestrator (the one builds store; profiles are a field): every change is journalled, Pending / queue / Build manager are projections.' },
+  'console.screens': { domain: 'console', label: 'Console screens', ops: ['list', 'get', 'act'], paths: 'host', select: CONSOLE_SELECT, acts: { open: {} }, actEffect: { open: 'navigate' }, doc: `Every screen (view) the open console has, its plugins' too. path = the view id, its title or words to search for ("plan studio", "builds"); act open shows it. ${CONSOLE_DELIVERY}` },
+  'console.dialogs': { domain: 'console', label: 'Console dialogs', ops: ['list', 'get', 'act'], paths: 'host', select: CONSOLE_SELECT, acts: { open: {} }, actEffect: { open: 'navigate' }, doc: `Every dialog the open console registers (by id, title or search words); act open shows it (input.arg = its optional argument). ${CONSOLE_DELIVERY}` },
+  'console.settings': { domain: 'console', label: 'Console settings tabs', ops: ['list', 'get', 'act'], paths: 'host', select: CONSOLE_SELECT, acts: { open: {} }, actEffect: { open: 'navigate' }, doc: `Every Settings tab and sub-tab (Settings → Plugins → <plugin> is a sub-tab: its id, "plugins/<id>" or its title); act open shows it, input.anchor scrolls to one setting or group. ${CONSOLE_DELIVERY}` },
+  'console.actions': { domain: 'console', label: 'Console actions', ops: ['list', 'get', 'act'], paths: 'host', select: CONSOLE_SELECT, acts: { run: {} }, actEffect: { run: 'write' }, doc: `Every registered action (the action bus: menus, toolbars, search). act run runs it in the open console under its own policy: an action that only navigates needs control.console.navigate, one that changes data needs control.console.write plus the permission the action itself requires, and a destructive one also a confirm token. input.args = its arguments ("swap:color-theme:dark" or ["color-theme", "dark"]). ${CONSOLE_DELIVERY}` },
+  'console.nav': { domain: 'console', label: 'Console navigation', ops: ['get', 'act'], paths: 'static', acts: { back: {}, home: {}, close: {} }, actEffect: { back: 'navigate', home: 'navigate', close: 'navigate' }, doc: `Where the open console is (get here: screen, dialog, settings tab) and moving it: back (closes an open dialog first, else the screen before), home (the first screen), close (the open dialog). ${CONSOLE_DELIVERY}` },
+  'console.clients': { domain: 'console', label: 'Open consoles', ops: ['list'], paths: 'host', select: { limit: 'number' }, doc: 'The consoles open right now for the caller (one per browser tab: id, app, title, device, screen, last used). Console commands go to the one used last unless input.to says otherwise.' },
 };
 export const CONTROL_TARGET_IDS = Object.keys(CONTROL_TARGETS);
 
@@ -98,6 +117,7 @@ export const CONTROL_ALIASES = {
   list: { target: 'amberx.lists' },
   plan: { target: 'planner.plans' },
   build: { target: 'planner.builds' },
+  console: { target: 'console.*', note: 'axf console open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients] [words]' },
 };
 
 /* ================================================================== helpers */
@@ -105,13 +125,15 @@ export const CONTROL_ALIASES = {
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:@/-]{0,159}$/;
 const COLOR = /^(#[0-9a-fA-F]{3,8}|(rgb|hsl)a?\(\s*[\d.%]+\s*[, ]\s*[\d.%]+\s*[, ]\s*[\d.%]+\s*([,/]\s*[\d.%]+\s*)?\)|transparent|currentColor)$/;
-const PLAIN = { tokens: 'tokens', amberx: 'amberx', planner: 'planner' };
+const PLAIN = { tokens: 'tokens', amberx: 'amberx', planner: 'planner', console: 'console' };
 
 export const isControlTarget = (t) => typeof t === 'string' && t in CONTROL_TARGETS;
 export const controlDomain = (target) => CONTROL_TARGETS[target]?.domain ?? null;
 export const controlEffect = (op) => CONTROL_EFFECT[op] ?? null;
-/** The permission a command needs: control.<domain>.<read|write|delete>. */
-export const controlPermission = (target, op) => (isControlTarget(target) && op in CONTROL_EFFECT ? `control.${controlDomain(target)}.${CONTROL_PERMISSION_SUFFIX[CONTROL_EFFECT[op]]}` : null);
+/** What a command does to the world: the op's effect, or the act verb's own (`actEffect`: console navigation). */
+export const controlEffectOf = (target, op, action) => (op === 'act' && CONTROL_TARGETS[target]?.actEffect?.[action]) || CONTROL_EFFECT[op] || null;
+/** The permission a command needs: control.<domain>.<read|write|delete|navigate>. */
+export const controlPermission = (target, op, action) => (isControlTarget(target) && op in CONTROL_EFFECT ? `control.${controlDomain(target)}.${CONTROL_PERMISSION_SUFFIX[controlEffectOf(target, op, action)]}` : null);
 
 /** The static paths of a token target (the ids `list` answers without a running app), or null for host / entity targets. */
 export function controlPaths(target) {
@@ -130,6 +152,7 @@ export function controlPaths(target) {
         ...Object.entries(SCALE_ENUMS[type] ?? {}).map(([id, options]) => ({ id, kind: 'enum', options: [...options] })),
       ];
     }
+    case 'console.nav': return [{ id: 'here', kind: 'location' }];
     default: return null;
   }
 }
@@ -281,8 +304,8 @@ export function controlGate(raw, grants, opts = {}) {
   if (!isControlTarget(c.target)) return { ok: false, code: CONTROL_WIRE.NOT_FOUND, message: `no target ${String(c.target)}` };
   const t = CONTROL_TARGETS[c.target];
   if (!t.ops.includes(c.op)) return { ok: false, code: CONTROL_WIRE.INVALID, message: `${c.target} does not take ${c.op}` };
-  const effect = CONTROL_EFFECT[c.op];
-  const requires = controlPermission(c.target, c.op);
+  const effect = controlEffectOf(c.target, c.op, c.action);
+  const requires = controlPermission(c.target, c.op, c.action);
   if (!controlGranted(grants, requires)) return { ok: false, code: CONTROL_WIRE.DENIED, message: `${c.op} ${c.target} needs ${requires}`, requires, effect };
   const errors = controlErrors(c);
   if (errors.length) return { ok: false, code: CONTROL_WIRE.VALIDATION, message: errors.join('; '), errors, requires, effect };
@@ -301,7 +324,7 @@ export function controlGate(raw, grants, opts = {}) {
 export function controlResult(command, data, audit = null) {
   const c = normalizeControl(command);
   const out = { $axf: CONTROL_FRAME, ok: true, op: c.op, target: c.target, ...(c.path !== undefined ? { path: c.path } : {}), ...(c.action !== undefined ? { action: c.action } : {}), ...data };
-  if (CONTROL_EFFECT[c.op] !== 'read') out.audit = { by: audit?.by ?? c.by ?? 'unknown', reason: audit?.reason ?? c.reason ?? '', at: audit?.at ?? new Date(0).toISOString() };
+  if (controlEffectOf(c.target, c.op, c.action) !== 'read') out.audit = { by: audit?.by ?? c.by ?? 'unknown', reason: audit?.reason ?? c.reason ?? '', at: audit?.at ?? new Date(0).toISOString() };
   return out;
 }
 /** A failure envelope (the gate's answer, or a runner's). */
@@ -392,7 +415,7 @@ export function controlCli() {
       'axf control act <target> <path> <action> [json input]',
       'axf control targets | tools | routes | schema',
     ],
-    aliases: Object.fromEntries(Object.entries(CONTROL_ALIASES).map(([a, v]) => [a, v.target === 'tokens.*' ? 'axf token <theme|style|layout|typography|density|sizing|look|custom|slots> <op> …' : `axf ${a} <op> … = axf control <op> ${v.target}${v.preset ? ` (${Object.entries(v.preset).map(([k, x]) => `${k}=${x}`).join(', ')})` : ''}`])),
+    aliases: Object.fromEntries(Object.entries(CONTROL_ALIASES).map(([a, v]) => [a, v.target === 'tokens.*' ? 'axf token <theme|style|layout|typography|density|sizing|look|custom|slots> <op> …' : v.target === 'console.*' ? v.note : `axf ${a} <op> … = axf control <op> ${v.target}${v.preset ? ` (${Object.entries(v.preset).map(([k, x]) => `${k}=${x}`).join(', ')})` : ''}`])),
     targets: CONTROL_TARGET_IDS,
   };
 }
@@ -403,6 +426,7 @@ export function controlRegistry() {
     $axf: CONTROL_FRAME,
     ops: CONTROL_OPS,
     effects: CONTROL_EFFECT,
+    actEffects: Object.fromEntries(Object.entries(CONTROL_TARGETS).filter(([, t]) => t.actEffect).map(([id, t]) => [id, t.actEffect])),
     domains: CONTROL_DOMAINS,
     permissions: CONTROL_PERMISSIONS,
     wire: CONTROL_WIRE,

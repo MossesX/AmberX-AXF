@@ -23,7 +23,7 @@ what it needs, and what it answers are decided here once, so the docs, the tools
 | Field | Meaning |
 |---|---|
 | `op` | `list` · `get` · `set` · `reset` · `add` · `remove` · `act` |
-| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` |
+| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` |
 | `path` | the token id (`navWidth`, `accent`, `scale.md`, `button.radius@amber`) or the record id; `get`/`set`/`remove`/`act` need it, `reset` without one resets the whole target |
 | `value` | what to set (a token value, or the fields to change on a record) · the new record for `add` |
 | `action` + `input` | the verb for `act` and what it wants (`done`, `move {list}`, `approve {phase}`, `step {step, done}` …) |
@@ -31,7 +31,8 @@ what it needs, and what it answers are decided here once, so the docs, the tools
 | `confirm` | the confirm token a `remove` sends on its second call |
 | `by`, `reason` | who and why; audited on every write |
 
-Effects: `list`/`get` read · `set`/`reset`/`add`/`act` write · `remove` destructive. The MCP tool annotations (`readOnlyHint`,
+Effects: `list`/`get` read · `set`/`reset`/`add`/`act` write · `remove` destructive · a target's `actEffect` may make a verb
+`navigate` (console `open`, `back`, `home`, `close`: changes what a screen shows, no data). The MCP tool annotations (`readOnlyHint`,
 `destructiveHint`) and the permission a call needs come from the effect.
 
 ## Targets
@@ -51,9 +52,20 @@ builds store; every write journalled). Verbs are the orchestrator's own actions 
 `rename-step`, `add-step`, `edit-step`, `skip-step`, `remove-step`, `move-step`, `archive`, `hide`, `unhide`) and Plan Studio's
 (`park`, `build`, `restore`, `export`, `step`, `comment`).
 
+**Console** (`console.*`, build console-commands, Nov 3 2026): Brett tells a Claude session "open Plan Studio" and his open console
+goes there. `console.screens`, `console.dialogs` and `console.settings` (tabs and sub-tabs, `plugins/<id>`) take `act open` with
+`path` = the id, the title or words to search for; `console.actions` takes `act run` (input `args`); `console.nav` (path `here`)
+takes `get` (where the console is) and `act back | home | close`; `console.clients` lists the consoles open for the caller. Every
+list and resolve runs against the catalog the open consoles report (their search index: views, settings tabs, dialogs, actions),
+so plugins' screens are found too. Every act takes `input.to`: `recent` (default, the console used last), `all`, or a client id.
+Delivery and resolution: `core/engines/console-commands.mjs`; the console server's `console-commands` plugin keeps one mailbox
+per signed-in user (the console token and hub admins share the owner's) and streams to each open console, which runs the command
+through its own runtime (`rt.search.focus`, `rt.dispatch`) and acks what it opened.
+
 ## Auth
 
-Permissions: `control.<domain>.read | write | delete` (`control.tokens.write`, `control.amberx.delete`, …), declared in an app's
+Permissions: `control.<domain>.read | write | delete` (`control.tokens.write`, `control.amberx.delete`, …), plus
+`control.console.navigate` for console verbs that only navigate, declared in an app's
 uac-policy; `control.*`, `control.<domain>.*` and `*` are wildcards (the UAC engine's own rule). The console token = the admin role;
 a call through axHub carries the hub user's role; a remote caller never exceeds the app's own UAC role (INTEROP.md). The gate, in order:
 
@@ -61,6 +73,12 @@ a call through axHub carries the hub user's role; a remote caller never exceeds 
 2. the caller's grants cover the permission (`denied`, naming it);
 3. the command validates (`validation`, every problem named: unknown token, value out of range, missing input, bad filter);
 4. a destructive op carries a valid confirm token (else `confirmation_required` with the token).
+
+Console actions keep their own policy on top: `console.actions run` is gated as `control.console.write`, then the console engine
+looks the action up — an action that only navigates (`nav:`, `dialog:`, `settings.open:`, windows, help, search) needs only
+`control.console.navigate`; one that `requires` a UAC permission needs it in the caller's grants too; one marked destructive
+(`effect: 'destructive'` on the action, or a known destructive id) needs `control.console.delete` and a confirm token, the same
+two-step flow as `remove`. The open console then runs it under the signed-in user's own role (`rt.dispatch` checks `requires`).
 
 ## Deletes need confirm
 
