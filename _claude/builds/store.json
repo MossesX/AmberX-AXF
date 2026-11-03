@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 275,
- "updatedAt": "2026-11-03T17:35:18.790Z",
+ "rev": 276,
+ "updatedAt": "2026-11-03T17:42:41.106Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50544,7 +50544,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T17:35:16.317Z",
+   "updatedAt": "2026-11-03T17:42:37.105Z",
    "builtAt": "",
    "notes": [
     {
@@ -50614,6 +50614,10 @@
     {
      "text": "Landed claude/plugin-commands-auto (PR #263) on main at cdd568c2",
      "at": "2026-11-03T17:35:04.816Z"
+    },
+    {
+     "text": "Landed claude/axhub-veto-pass-web (PR #261) on main at bc344492",
+     "at": "2026-11-03T17:42:37.105Z"
     }
    ],
    "approvals": [],
@@ -50870,7 +50874,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
