@@ -208,8 +208,8 @@ function DoneItem({ d, sha }: { d: Done; sha?: string }) {
       <div className="axp-push-banner__entry">
         <span className="axp-push-banner__line">
           <span className="axp-push-banner__chip" title={d.repo}>{short(d.repo)}</span>
-          {d.url ? <a className="axp-push-banner__name is-title" href={d.url} target="_blank" rel="noopener noreferrer" title="Open on GitHub">{d.number ? `#${d.number} ` : ''}<RefText text={d.title || d.branch} /></a>
-            : <span className="axp-push-banner__name is-title"><RefText text={d.title || d.branch} /></span>}
+          {d.url ? <a className="axp-push-banner__name is-title" href={d.url} target="_blank" rel="noopener noreferrer" title="Open on GitHub">{d.number ? `#${d.number} ` : ''}<RefText text={d.title || d.branch || ''} /></a>
+            : <span className="axp-push-banner__name is-title"><RefText text={d.title || d.branch || ''} /></span>}
         </span>
         <span className="axp-push-banner__line axp-push-banner__meta">
           <span className="axp-push-banner__pill is-ready"><Icon name="check-circle" size={11} />{merged ? 'Merged' : `Pulled ${d.base || 'main'} in`}</span>

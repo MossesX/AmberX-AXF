@@ -120,7 +120,7 @@ function installRefs(rt: AxfRuntime): void {
       { id: 'refs.open', label: `Open ${p.label}`, icon: 'external', action: `refs.open:${payload}` },
       { id: 'refs.window', label: 'Open in new window', icon: 'maximize', action: `refs.window:${payload}` },
       ...(p.changing.length || t?.reviews?.length ? [{ id: 'refs.review', label: 'Show in UI Review', icon: 'eye', action: `refs.review:${payload}` }] : []),
-      ...(p.changing.length ? [{ id: 'refs.build', label: `Show the build that's changing it (${p.changing[0].label})`, icon: 'play', action: `refs.build:${payload}` }] : []),
+      ...(p.changing.length ? [{ id: 'refs.build', label: `Show the build that's changing it (${p.changing[0]?.label ?? ""})`, icon: 'play', action: `refs.build:${payload}` }] : []),
       { id: 'refs.copy', label: 'Copy link', icon: 'copy', action: `refs.copy:${payload}` },
     ];
   });
@@ -177,7 +177,7 @@ function PeekCard({ rt, peek, at, onClose }: { rt: AxfRuntime; peek: RefPeek; at
       {peek.candidates.length > 0 && (
         <div className="fx-ref-peek__also">
           <span className="fx-ref-peek__detail">Or did it mean</span>
-          {peek.candidates.slice(0, 5).map((c) => <Button key={c.id} size="sm" variant="ghost" icon={KIND_ICON[c.kind] ?? 'info'} onClick={() => go(c.id)}>{c.label} · {KIND_LABEL[c.kind] ?? c.kind}</Button>)}
+          {peek.candidates.slice(0, 5).map((c) => <Button key={c.id} size="sm" tone="ghost" icon={KIND_ICON[c.kind] ?? 'info'} onClick={() => go(c.id)}>{c.label} · {KIND_LABEL[c.kind] ?? c.kind}</Button>)}
         </div>
       )}
       <div className="fx-ref-peek__actions">
