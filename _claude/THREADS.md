@@ -568,11 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 15:58 UTC · `crew-retrain` added (8 steps) (breakroom) · orchestrator
-- 2026-11-03 15:58 UTC · `crew-retrain` → running (breakroom) · orchestrator
-- 2026-11-03 15:58 UTC · `crew-retrain` s1 done (breakroom) · orchestrator
-- 2026-11-03 16:05 UTC · `crew-retrain` s2 done (breakroom) · orchestrator
-- 2026-11-03 16:05 UTC · `crew-retrain` s3 done (breakroom) · orchestrator
 - 2026-11-03 16:05 UTC · `crew-retrain` s4 done (breakroom) · orchestrator
 - 2026-11-03 16:07 UTC · `notes-vault` PR #256, merged (urgent) · builds-live
 - 2026-11-03 16:07 UTC · `land-everything` note (urgent) · orchestrator
@@ -968,3 +963,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 21:23 UTC · `whats-new-open-fix` added (5 steps) (current) · orchestrator
 - 2026-11-03 21:23 UTC · `whats-new-open-fix` added (5 steps) (current) · foreign-write
 - 2026-11-03 21:25 UTC · `whats-new-open-fix` added (10 steps) (current) · foreign-write
+- 2026-11-03 21:10 UTC · `git-status-board` added (6 steps) (current) · claude-session (Snap Sully)
+- 2026-11-03 21:11 UTC · `batch-manager` note (angel) · claude-session (Snap Sully)
+- 2026-11-03 21:26 UTC · `banner-ref-links` s2 done, s3 done, s4 done (current) · foreign-write
+- 2026-11-03 21:26 UTC · `urgent-main-ci-green` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:26 UTC · `whats-new-open-fix` added (20 steps) (current) · foreign-write
