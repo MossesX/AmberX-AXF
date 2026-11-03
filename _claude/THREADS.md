@@ -569,9 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 19:11 UTC · `follow-amber` s3 done (urgent) · orchestrator
-- 2026-11-03 19:11 UTC · `follow-amber` s4 done (urgent) · orchestrator
-- 2026-11-03 19:12 UTC · `ui-review-shots` s2 done (urgent) · orchestrator
 - 2026-11-03 19:12 UTC · `claude-settings` s4 done (urgent) · orchestrator
 - 2026-11-03 19:13 UTC · `follow-amber` s5 done (urgent) · orchestrator
 - 2026-11-03 19:13 UTC · `ui-review-shots` note (urgent) · orchestrator
@@ -969,3 +966,6 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 23:18 UTC · `molly-banners` PR #294 (current) · builds-live
 - 2026-11-03 23:26 UTC · `gizmo-companion` s3 done, s4 done, s5 done, s6 done, s7 done (current) · foreign-write
 - 2026-11-03 23:26 UTC · `molly-nav-submenus` branch claude/molly-nav-submenus, PR #295 (current) · builds-live
+- 2026-11-03 23:25 UTC · `molly-banners` PR #294, note (current) · foreign-write
+- 2026-11-03 23:25 UTC · `gizmo-companion` s3 done, s4 done, s5 done, s6 done, branch claude/gizmo-companion, note (current) · foreign-write
+- 2026-11-03 23:26 UTC · `gizmo-companion` s7 done (current) · foreign-write
