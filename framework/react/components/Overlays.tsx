@@ -112,7 +112,8 @@ export function ContextMenuHost() {
       const banner = !!t.closest('[data-fx-ctx-target="axf-banner"], [data-fx-ctx-target="banner"]') && !t.closest('input, textarea, .fx-ctx');
       if (!banner && t.closest('input, textarea, .fx-ctx, [data-fx-ctx-ignore]')) return;
       if (!banner && !t.closest('.fx-shell')) return;
-      if (rt.slotHidden('context-menu')) return; // hidden: the browser's own menu
+      // hidden: the browser's own menu, unless a host that took the context menu shows it (embed@1, rt.openContext forwards)
+      if (rt.slotHidden('context-menu') && !rt.hostTakes('context-menu')) return;
       e.preventDefault();
       open(t, e.clientX, e.clientY);
     };
@@ -120,7 +121,7 @@ export function ContextMenuHost() {
     let timer: ReturnType<typeof setTimeout> | undefined;
     let start: { x: number; y: number } | null = null;
     const onDown = (e: PointerEvent) => {
-      if (e.pointerType !== 'touch' || rt.slotHidden('context-menu')) return;
+      if (e.pointerType !== 'touch' || (rt.slotHidden('context-menu') && !rt.hostTakes('context-menu'))) return;
       const t = e.target as Element;
       const banner = !!t.closest('[data-fx-ctx-target="axf-banner"], [data-fx-ctx-target="banner"]') && !t.closest('input, textarea, .fx-ctx');
       if (!banner && (t.closest('input, textarea, .fx-ctx, [data-fx-ctx-ignore]') || !t.closest('.fx-shell'))) return;

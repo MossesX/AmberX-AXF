@@ -184,7 +184,7 @@ def check(cond, msg):
 
 print("push-banner self-test")
 cfg = c.get("/p/config").json()
-check(cfg["repos"] == ["MossesX/AmberX-AXF", "MossesX/axHub", "MossesX/Build-Pilot"], "default repos: AmberX-AXF, axHub, Build-Pilot")
+check(cfg["repos"] == ["MossesX/AmberX-AXF", "MossesX/axHub"], "default repos: AmberX-AXF, axHub")
 # Pull main in: a PR through GitHub's update-branch (head pinned), a branch without one as a merge commit on it
 u = c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "number": 18})
 check(u.status_code == 400 and "confirm" in u.json()["detail"], "pull main in: needs the typed confirm")

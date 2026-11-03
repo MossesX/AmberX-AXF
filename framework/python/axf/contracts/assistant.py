@@ -6,7 +6,7 @@ framework/spec/fixtures/assistant.json. Everything here is pure (no I/O): secret
 a model, the profile fallback chain, what a non-admin may set and how their params are clamped, permission wildcards,
 batch titles, tool-argument summaries, SSE framing, owner-kind renaming, and the chat-context rule (`ChatContext.extra`).
 
-Hosts (the console's ai-assistant plugin, Build Pilot's server, …) import it; the reusable host runtime (providers,
+Hosts (the console's ai-assistant plugin, other app servers, …) import it; the reusable host runtime (providers,
 live-session hosts, safety helpers) is the sibling package `axf.assistant_host`.
 """
 from __future__ import annotations

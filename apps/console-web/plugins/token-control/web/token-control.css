@@ -1,0 +1,12 @@
+/* Token control page (theme tokens only: framework/spec/THEMING.md). Layout only; controls keep the framework's look. */
+.axf-tc-wrap { flex-wrap: wrap; }
+.axf-tc-pick { min-width: calc(var(--fx-space) * 24); flex: 1 1 calc(var(--fx-space) * 24); }
+.axf-tc-scroll { overflow-x: auto; }
+.axf-tc-table td { vertical-align: middle; }
+.axf-tc-inline { margin: 0; }
+.axf-tc-inline .fx-field__label { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); }
+.axf-tc-over td:first-child { border-inline-start: var(--fx-border-w) solid var(--fx-accent); }
+.axf-tc-small { font-size: var(--fx-type-scale-xs); }
+.axf-tc-pre { white-space: pre-wrap; word-break: break-word; max-block-size: calc(var(--fx-space) * 64); overflow: auto; }
+.axf-tc-target { padding-block: var(--fx-dens-gap-sm); border-block-end: var(--fx-border-w) solid var(--fx-border); }
+.axf-tc-h { margin: 0; font-size: var(--fx-font-size); }

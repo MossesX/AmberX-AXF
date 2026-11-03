@@ -878,7 +878,10 @@ from starlette.types import Receive, Scope, Send  # noqa: E402
 
 from mcp_server import build_server  # noqa: E402
 
-_mcp = build_server(lambda op, **a: engine(op, "mcp", **a), terminal=lambda since: [l for l in _state["terminal"] if l["at"] > since])
+from mcp_server import control_runner  # noqa: E402
+from mcp_server import console_runner  # noqa: E402
+_mcp = build_server(lambda op, **a: engine(op, "mcp", **a), terminal=lambda since: [l for l in _state["terminal"] if l["at"] > since],
+                    control=control_runner(ROOT), console=console_runner(ROOT))
 # Stateless JSON responses: works behind Traefik/Coolify and across container restarts. Host checks are off because
 # the endpoint is reached through a proxy under the console's own domain; the bearer token is the gate.
 _mcp_http = _mcp.streamable_http_app(streamable_http_path="/mcp", stateless_http=True, json_response=True,
@@ -1191,49 +1194,28 @@ console_context.set_context(ROOT=ROOT, GITHUB_REPO=GITHUB_REPO, PLUGINS=PLUGINS,
 
 load_plugins()
 _prune_plugin_state()
+
+# Contract paths a capability serves (the provider plugin's router mounted a second time, same auth; 404 while no
+# enabled plugin provides it). control@1 = framework/spec/CONTROL.md's /api/control routes (the Token control plugin);
+# console-commands@1 = /api/console (open screens, dialogs, settings, run actions in the open console).
+CAPABILITY_MOUNTS = {"control@1": "/api/control"}
+CAPABILITY_MOUNTS["console-commands@1"] = "/api/console"  # the Console commands plugin  axf-plugin:console-commands
+
+
+def _capability_guard(name: str):
+    def guard() -> None:
+        if plugin_services.get(name) is None:
+            raise HTTPException(404, f"no enabled plugin provides {name}")
+    return guard
+
+
+for _cap, _prefix in CAPABILITY_MOUNTS.items():
+    _svc = plugin_services.get(_cap)
+    if _svc is not None and getattr(_svc, "router", None) is not None:
+        app.include_router(_svc.router, prefix=_prefix, dependencies=[Depends(auth), Depends(_capability_guard(_cap))])
+        log("plugins", f"{_cap} served at {_prefix}")
 WALL_USER_PLUGINS = frozenset(f for f, i in PLUGINS.items() if i.get("wallUsers") is True)
 USER_GRANTABLE_PLUGINS = frozenset(f for f, i in PLUGINS.items() if i.get("userGrantable") is True)
-
-
-# ---------------------------------------------------------------- app-ci@1: APKs on GitHub Actions (Build Pilot's Build APK)
-import app_ci  # noqa: E402
-
-APP_CI = app_ci.AppCi(ROOT, GITHUB_REPO, lambda: os.environ.get("GITHUB_TOKEN", ""), ROOT / ".axf-console" / "app-apks")
-_app_ci_lock = __import__("threading").Lock()
-
-
-@app.post("/api/apps/apk", dependencies=[Depends(auth)])
-def app_apk_start(body: dict[str, Any]) -> dict[str, Any]:
-    """Publish apps/<name> to branch pilot/<name> and start the pilot-apk workflow there."""
-    if not _app_ci_lock.acquire(blocking=False):
-        raise HTTPException(409, "another APK build is being published; try again in a moment")
-    try:
-        r = APP_CI.publish(str(body.get("dir") or ""))
-        log("build", f"APK build started for {r['dir']} on {r['branch']}")
-        return r
-    except app_ci.CiError as e:
-        raise HTTPException(400, str(e)) from None
-    finally:
-        _app_ci_lock.release()
-
-
-@app.get("/api/apps/apk", dependencies=[Depends(auth_always)])
-def app_apk_status(dir: str) -> dict[str, Any]:
-    try:
-        return APP_CI.status(dir if app_ci.APP_DIR_RE.match(dir) else "apps/-")
-    except app_ci.CiError as e:
-        raise HTTPException(502, str(e)) from None
-
-
-@app.get("/api/apps/apk/file", dependencies=[Depends(auth_always)])
-def app_apk_file(dir: str) -> Any:
-    if not app_ci.APP_DIR_RE.match(dir):
-        raise HTTPException(400, "dir must be apps/<name>")
-    try:
-        path = APP_CI.apk(dir)
-    except app_ci.CiError as e:
-        raise HTTPException(409, str(e)) from None
-    return FileResponse(path, media_type="application/vnd.android.package-archive", filename=f"{dir.split('/', 1)[1]}-debug.apk")
 
 
 # ---- App catalog (app-catalog@1, app_catalog.py): every framework app's APK, filed on axHub for its Apps page ----------
@@ -1263,8 +1245,8 @@ def app_catalog_sync(body: dict[str, Any] | None = None) -> dict[str, Any]:
 # ---- Plugin catalog (plugin-catalog@1, framework/cli/plugin-catalog.mjs): plugins kept on axHub ----------------------
 # /projects/_shared/_data/plugin-catalog (the console mounts /projects). Console token on every route (admins only behind
 # the wall); never on MCP. Installing a console plugin unpacks it into this clone, runs its lifecycle install and commits
-# it to the repo on GitHub, so the 5-minute update rebuilds the console with it. Other apps (Build Pilot) read packages
-# here with the console token and install them on their side.
+# it to the repo on GitHub, so the 5-minute update rebuilds the console with it. Other apps read packages here with
+# the console token and install them on their side.
 CATALOG_CLI = ROOT / "framework" / "cli" / "plugin-catalog.mjs"
 import threading as _threading  # noqa: E402
 _catalog_lock = _threading.Lock()
@@ -1321,7 +1303,7 @@ def catalog_list(kind: str = "") -> dict[str, Any]:
 
 @app.get("/api/plugin-catalog/package", dependencies=[Depends(auth_always)])
 def catalog_package(kind: str, folder: str, version: str = "") -> Any:
-    """A verified plugin-package@1 (files in base64). Build Pilot fetches pilot plugins here, server to server."""
+    """A verified plugin-package@1 (files in base64). Other apps fetch their plugins here, server to server."""
     _catalog_args(kind, folder)
     if version and not _CATALOG_VERSION.match(version):
         raise HTTPException(400, "bad version")
@@ -1448,7 +1430,7 @@ def catalog_remove(body: dict[str, Any]) -> dict[str, Any]:
 
 # ---- App plugins (plugin-catalog kinds with `into`, e.g. axhub → apps/axhub-web/src/plugins): the console holds the
 # repo, so it installs another app's web plugins for it and commits just that folder; the app's own 5-minute update
-# rebuilds with it. Patches' Plugins per app calls these server to server. Console token; never on MCP.
+# rebuilds with it. Console token; never on MCP.
 _APP_PLUGIN_KINDS = {"axhub", "amberx"}
 # What happens once the change is on GitHub. AmberX is an APK: CI builds it and the app catalog offers the new build.
 _APP_PLUGIN_AFTER = {"amberx": ("CI builds a new AmberX APK with it; the app catalog offers it after that run.",

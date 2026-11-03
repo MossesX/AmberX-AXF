@@ -13,7 +13,7 @@ Settings (the feed's config.json, edited in Settings → Plugins → Activity �
 Push through axHub: one hub-notification@1 file per notification in axHub's shared inbox
 (`/projects/_shared/_data/notifications/inbox/<YYYY>/<MM>/`, `AXF_NOTIFY_INBOX` overrides, `off` = none; group
 readable so the hub serves it), plus a console alert (key `activity:<id>`), which is what reaches the phone today
-(Patches serves console alerts; ntfy / web push per Settings → Alerts). Nothing here holds a secret: titles and
+(AmberX serves console alerts; ntfy / web push per Settings → Alerts). Nothing here holds a secret: titles and
 details are already redacted by the feed.
 
 Completions are found by watching states (``scan``): an item seen active and now finished, or one that started and

@@ -37,7 +37,7 @@ eq(engine.BEHAVIOR_SWITCHES, [...BEHAVIOR_SWITCHES], 'build engine mirrors the b
 
 /* ---- starters and every app's copies validate (core validator = build engine validator) ---- */
 const appAssets = (a: string) => (['console-web', 'axhub-web', 'amberx-droid'].includes(a) ? `apps/${a}/src/axf/assets` : `apps/${a}/src/assets`); // shared set baked there (shared-assets.mjs)
-const dirs = ['framework/assets', ...['console-web', 'axhub-web', 'patches-web', 'amberx-droid', 'walkthrough-studio'].map(appAssets)];
+const dirs = ['framework/assets', ...['console-web', 'axhub-web', 'amberx-droid', 'walkthrough-studio'].map(appAssets)];
 let files = 0;
 for (const base of dirs) for (const t of ['behavior-theme', 'design-package']) {
   const dir = new URL(`${base}/${t}/`, root);

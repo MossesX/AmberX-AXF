@@ -16,7 +16,7 @@
 # Functions that build `docker run` arguments append to a bash array named by their first argument (nameref), so
 # arguments are never word-split. All private locals start with `_axf` so they never shadow the caller's array.
 #
-# Security notes (kept from the copies this came from: deploy/install-console.sh and Build Pilot's deploy/install.sh):
+# Security notes (kept from the copies this came from: deploy/install-console.sh and an earlier app installer):
 #   - the strip middleware runs before forwardAuth, so a client can never send its own X-Auth-User/Role/Perms/Via/Sig;
 #     the app still trusts those headers only when they carry the hub's signature (X-Auth-Sig, HMAC with the secret)
 #   - the wall switches itself on only once the hub really can sign someone in (never locks you out on a fresh hub),

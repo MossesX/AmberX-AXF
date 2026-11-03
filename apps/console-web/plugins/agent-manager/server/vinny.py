@@ -63,9 +63,7 @@ STATES_OPEN = ("asking", "waiting", "running")
 DEFAULT_SETTINGS = {"listen": True, "maxPerMessage": 5, "autoFixFirst": True}
 
 # App tokens on the VPS: (app, env key, file). Values are never printed.
-APP_TOKENS = (("Patches", "APP_TOKEN", "/opt/patches-web/.app/env"),
-              ("Build Pilot", "BP_TOKEN", "/opt/build-pilot/.build-pilot/env"),
-              ("Dev Console", "AXF_TOKEN", "/opt/axf/.axf-console/env"))
+APP_TOKENS = (("Dev Console", "AXF_TOKEN", "/opt/axf/.axf-console/env"),)
 TOKENS_COMMAND = "; ".join(
     f"v=$(sed -n 's/^{k}=//p' {f} 2>/dev/null | head -n1); "
     f"if [ -n \"$v\" ]; then echo \"{a} {k}: set, ${{#v}} characters, fingerprint $(printf %s \"$v\" | sha256sum | cut -c1-8), in {f}\"; "
@@ -88,7 +86,7 @@ DEFAULT_COMMANDS: list[dict[str, Any]] = [
     # the value: the output passes through axHub, the run log and the dialog, so only length + an 8-character
     # fingerprint, plus the command Brett runs himself to copy it (into Project settings, never into chat).
     {"id": "app-tokens", "name": "App tokens: where they are (never the value)", "kind": "vps",
-     "triggers": ["app tokens", "app token", "token status", "where are the tokens", "patches token", "pilot token", "console token", "/tokens"],
+     "triggers": ["app tokens", "app token", "token status", "where are the tokens", "console token", "/tokens"],
      "command": TOKENS_COMMAND, "timeout": 60, "fixes": []},
 ]
 # Defaults added after a book was first written are added to it once (a removal afterwards is respected).

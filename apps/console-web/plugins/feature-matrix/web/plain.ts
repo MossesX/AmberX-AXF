@@ -94,7 +94,6 @@ export const ITEMS: Record<string, Plain> = {
   'interface-roller:s15': { title: 'Tests + wrap-up', does: 'Checks, screenshots, report and notes.' },
   'tools-plugin:s1': { title: 'Tools plugin shell', does: 'Create the plugin with its menu entry and install/uninstall.' },
   'tools-plugin:s2': { title: 'Move Claude handoff in', does: 'Claude handoff lives under the Tools plugin.' },
-  'tools-plugin:s3': { title: 'Tools tab in Patches', does: 'A Tools tab in Patches (on hold: Patches is paused).' },
   'tools-plugin:s4': { title: 'Tests + wrap-up', does: 'Checks and notes.' },
   'pending-grid-view:s1': { title: 'Hide + archive', does: 'Pending builds can be hidden or archived.' },
   'pending-grid-view:s2': { title: 'Table view', does: 'A sortable table with summary, date, time and cost.' },

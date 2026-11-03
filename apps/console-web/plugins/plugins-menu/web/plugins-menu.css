@@ -38,14 +38,12 @@
 .axp-plugins-menu__entry-body { padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xs) 0 }
 .axp-plugins-menu__loc { margin: var(--fx-dens-gap-xs) 0 0; font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm); overflow-wrap: anywhere }
 .axp-plugins-menu__form { padding-top: var(--fx-dens-gap-md) }
-@media (max-width: 640px) {
-  .axp-plugins-menu__body, .axp-plugins-menu__body--narrow, .axp-plugins-menu__body--wide, .axp-plugins-menu.is-right .axp-plugins-menu__body { grid-template-columns: minmax(0, 1fr); max-height: none }
-  .axp-plugins-menu__col { border: 0; padding: 0; max-height: 30vh }
-  .axp-plugins-menu__filters { grid-template-columns: minmax(0, 1fr) auto }
-  .axp-plugins-menu__filters > select { grid-column: 1 / -1 }
-  .axp-plugins-menu { min-width: 0 }
-  .axp-plugins-menu__col { max-height: 24vh }
-}
+:where([data-fx-small]) .axp-plugins-menu__body, :where([data-fx-small]) .axp-plugins-menu__body--narrow, :where([data-fx-small]) .axp-plugins-menu__body--wide, :where([data-fx-small]) .axp-plugins-menu.is-right .axp-plugins-menu__body { grid-template-columns: minmax(0, 1fr); max-height: none }
+:where([data-fx-small]) .axp-plugins-menu__col { border: 0; padding: 0; max-height: 30vh }
+:where([data-fx-small]) .axp-plugins-menu__filters { grid-template-columns: minmax(0, 1fr) auto }
+:where([data-fx-small]) .axp-plugins-menu__filters > select { grid-column: 1 / -1 }
+:where([data-fx-small]) .axp-plugins-menu { min-width: 0 }
+:where([data-fx-small]) .axp-plugins-menu__col { max-height: 24vh }
 .axp-plugins-menu__add > summary { cursor: pointer; padding-block: var(--fx-dens-gap-sm) }
 .axp-plugins-menu-info { min-width: 0; }
 .axp-plugins-menu-info__dl { display: grid; grid-template-columns: max-content 1fr; gap: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); margin: 0; }

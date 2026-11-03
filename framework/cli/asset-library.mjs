@@ -327,7 +327,7 @@ function stylePackageAssets() {
 /* ───────────────────────── seeds: navigation menus + paired behaviour themes (s21, s22) ───────────────────────── */
 
 // Pages every web app on the framework may have; a nav menu lists a set and each app draws only the pages it has
-// (NavMenu drops items whose view isn't registered), so one menu serves the console, axHub, Patches, AmberX ….
+// (NavMenu drops items whose view isn't registered), so one menu serves the console, axHub, AmberX ….
 const P = {
   home: ['home', 'Home', 'home'], settings: ['settings', 'Settings', 'settings'], account: ['account', 'Account', 'user'],
   assets: ['assets', 'Assets', 'layers'], components: ['components', 'Components', 'grid'], demos: ['demos', 'Demos', 'play'],

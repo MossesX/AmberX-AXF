@@ -601,20 +601,6 @@
         "draft": true
       },
       {
-        "target": "build-pilot",
-        "title": "Build Pilot",
-        "text": "Builds pilot.",
-        "kind": "menu-item",
-        "draft": true
-      },
-      {
-        "target": "action:console.open:pilot",
-        "title": "Open Pilot in a new tab",
-        "text": "Opens pilot in a new tab.",
-        "kind": "menu-item",
-        "draft": true
-      },
-      {
         "target": "axhub",
         "title": "axHub",
         "text": "Shows “axHub”.",

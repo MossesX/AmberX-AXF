@@ -153,7 +153,7 @@ public data class Message(
 
 /**
  * What the app attaches to a turn: the view it was sent from, its title, selected text, a note — plus [extra], an open
- * bag for host-specific context (Build Pilot's `projectId`, …). Well-known keys live in [ChatContextKeys]; any other
+ * bag for host-specific context (a `projectId`, …). Well-known keys live in [ChatContextKeys]; any other
  * key passes through untouched. [ChatContextRules.normalize] is the rule every port applies before storing or using a
  * context (sizes capped, bad shapes dropped) — fixture `chatContext` in spec/fixtures/assistant.json.
  */
@@ -188,7 +188,7 @@ public data class ChatContext(
 
 /** Well-known `ChatContext.extra` keys (documented in spec/ASSISTANT.md); hosts may add their own. */
 public object ChatContextKeys {
-    /** id of the project the chat is about (Build Pilot); 1–64 chars */
+    /** id of the project the chat is about; 1–64 chars */
     public const val PROJECT_ID: String = "projectId"
     /** id of the app (`axf.manifest.json` name or project manifest name) the chat is about */
     public const val APP_ID: String = "appId"

@@ -1,5 +1,5 @@
 """AI providers for any Python assistant host: one canonical chat format, three wire protocols (framework/python,
-`axf.assistant_host.providers`; the console's ai-assistant plugin and Build Pilot's server run on it).
+`axf.assistant_host.providers`; the console's ai-assistant plugin runs on it).
 
 Provider kinds come from the framework registry framework/schemas/ai-providers.json (assistant@1, shared with the web
 core and the Kotlin kernel) plus whatever the host's `extra_kinds()` hook returns (e.g. <dataDir>/providers.json).
@@ -26,7 +26,7 @@ Host hooks (module attributes a host sets once at start; defaults are safe for a
   PRIVATE_ROOTS          () -> extra absolute roots whose private folders are denied (the host's repo root)
   ENV_PREFIXES_HIDDEN    env var prefixes dropped from the CLI's environment ("AXF_" + the host's own)
   USER_AGENT             the user-agent header sent to providers
-  HOST_LABEL             how the host is named in error messages ("the console server", "the Build Pilot server")
+  HOST_LABEL             how the host is named in error messages ("the console server", "the app server")
 """
 from __future__ import annotations
 
@@ -47,7 +47,7 @@ from typing import Any, Callable, Iterator
 # ---------------------------------------------------------------- catalog (assistant@1: framework/schemas/ai-providers.json)
 
 # framework/python/axf/assistant_host/providers.py → framework/schemas/ai-providers.json; AXF_PROVIDERS_FILE overrides
-# (a host that bakes the schema elsewhere, e.g. Build Pilot's src/axf/schemas/, points here).
+# (a host that bakes the schema elsewhere, e.g. an app's src/axf/schemas/, points here).
 _SCHEMA = Path(os.environ.get("AXF_PROVIDERS_FILE") or Path(__file__).resolve().parents[3] / "schemas" / "ai-providers.json")
 
 # ---------------------------------------------------------------- host hooks (see the module docstring)

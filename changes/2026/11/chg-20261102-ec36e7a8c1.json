@@ -1,0 +1,58 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261102-ec36e7a8c1",
+  "createdAt": "2026-11-02T14:52:20.925Z",
+  "updatedAt": "2026-11-02T14:52:21.401Z",
+  "kind": "build",
+  "title": "# Make axHub's Hostinger service load its token from the environment Problem: calls to the `hosting…",
+  "asked": "# Make axHub's Hostinger service load its token from the environment Problem: calls to the `hostinger` service fail with `The credential for \"hostinger\" is not available` (check with `axhub vault status`). Brett added HOSTINGER_API_TOKEN as a locked runtime env var in Coolify and redeployed, but it still fails. There is no `axhub` CLI inside the axhub-web container. Also check deploy wiring: the Coolify-managed axHub app runs as container `jghxpzuudkahgznvffiwtwmj-*` (redeployed today, built with HOSTINGER_API_TOKEN as a build ARG, which Docker warned about), while a separate `axhub-web` container (axhub-web:latest) has been up for hours. Work out which one actually serves axHub/the MCP connector and say so plainly in the PR. Do this: 1. Find how the vault and service credentials are loaded (code, config, storage location, key naming for `hostinger`). 2. Make the hostinger credential fall back to the `HOSTINGER_API_TOKEN` env var when the vault has no entry (keep vault first). Never log or return the value. 3. Remove HOSTINGER_API_TOKEN from any Dockerfile ARG/ENV so it is runtime-only. 4. If a vault CLI or web page exists, document the exact command/steps to set the credential in the install docs. 5. Add a test for the env fallback. 6. Open a PR with a short, phone-readable description: what was wrong, which container is live, and anything Brett must click in Coolify (exact steps). Do not merge or deploy. Rules: no sub-agents, never print secrets, clean commits. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, patches-web, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once.",
+  "repos": [
+    "MossesX/axHub"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "3f4d721a-466",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "surface": "headless",
+  "startedAt": "2026-11-02T14:52:20.925Z",
+  "finishedAt": "2026-11-02T14:52:21.401Z",
+  "lastSeenAt": "2026-11-02T14:52:20.925Z",
+  "actual": {
+    "minutes": 0,
+    "costUsd": 0,
+    "inputTokens": 0,
+    "outputTokens": 0,
+    "cacheReadTokens": 0,
+    "cacheWriteTokens": 0,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "doing": "Starting",
+  "resume": {
+    "repo": "MossesX/axHub",
+    "folder": "/root/axf-builds/axhub-hostinger-cred",
+    "branch": "claude/axhub-hostinger-cred",
+    "base": "998f03f164bfb991bf4a313c3b617b33f2691d77",
+    "head": "998f03f164bfb991bf4a313c3b617b33f2691d77",
+    "pushed": true,
+    "dirty": 1,
+    "files": [
+      ".axf-watch-live.log"
+    ],
+    "at": "2026-11-02T14:52:21.451Z"
+  }
+}

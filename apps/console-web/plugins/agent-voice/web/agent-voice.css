@@ -2,7 +2,7 @@
 .axp-agent-voice__h1 { display: flex; align-items: center; gap: var(--fx-dens-gap-xl) }
 .axp-agent-voice__headbtns, .axp-agent-voice__chips, .axp-agent-voice__actions { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); align-items: center }
 .axp-agent-voice__split { display: grid; grid-template-columns: minmax(200px, 260px) minmax(0, 1fr); gap: var(--fx-dens-gap-xl); align-items: start }
-@media (max-width: 720px) { .axp-agent-voice__split { grid-template-columns: minmax(0, 1fr) } }
+:where([data-fx-narrow]) .axp-agent-voice__split { grid-template-columns: minmax(0, 1fr) }
 .axp-agent-voice__agents { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0 }
 .axp-agent-voice__list { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); max-height: 70vh; overflow: auto }
 .axp-agent-voice__agent { display: flex; align-items: center; gap: var(--fx-dens-gap-md); justify-content: flex-start; text-align: left; width: 100% }

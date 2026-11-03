@@ -190,7 +190,7 @@ function ToolbarButton({ item: it, variant, lockedNote }: { item: ToolbarItem; v
   if (rt.takenByHost({ action: it.action })) return null; // the host app does this (embed@1 takes)
   const count = it.badge ? rt.badge(it.badge) : 0;
   const pressed = it.checked ? rt.toolbarChecked(it.checked) : null;
-  // a hook of a function the host locks (plugins inside Patches): greyed out, its note as the tooltip
+  // a hook of a function the host locks (e.g. plugins): greyed out, its note as the tooltip
   const hostLock = rt.lockedByHost({ action: it.action }) ?? lockedNote;
   const off = gate === 'disable' || !!hostLock;
   return (

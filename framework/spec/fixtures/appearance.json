@@ -31,6 +31,8 @@
     "divider",
     "badge",
     "settings",
+    "dock-layout",
+    "xlayout",
     "behavior-theme",
     "design-package",
     "style-package",
@@ -168,7 +170,7 @@
         "accent": "rgb(31,111,235)",
         "scheme": "light"
       },
-      "updatedBy": "build-pilot",
+      "updatedBy": "axhub-web",
       "updatedAt": "2026-10-21T01:00:00Z"
     },
     "hidden-clear": {
@@ -209,7 +211,7 @@
       "updatedAt": "2026-10-21T01:00:00Z"
     }
   },
-  "serialized": "{\n  \"$axf\": \"appearance@1\",\n  \"slots\": {\n    \"color-theme\": \"neon-tide\",\n    \"layout\": \"focus-top\",\n    \"style-theme\": \"glass-orbit\",\n    \"toolbar\": \"standard-icons\"\n  },\n  \"spacing\": \"compact\",\n  \"hidden\": {\n    \"color-theme\": true,\n    \"nav-menu\": false,\n    \"toolbar\": true\n  },\n  \"palette\": {\n    \"bg\": \"#f2f5f8\",\n    \"accent\": \"rgb(31,111,235)\",\n    \"scheme\": \"light\"\n  },\n  \"updatedBy\": \"build-pilot\",\n  \"updatedAt\": \"2026-10-21T01:00:00Z\"\n}",
+  "serialized": "{\n  \"$axf\": \"appearance@1\",\n  \"slots\": {\n    \"color-theme\": \"neon-tide\",\n    \"layout\": \"focus-top\",\n    \"style-theme\": \"glass-orbit\",\n    \"toolbar\": \"standard-icons\"\n  },\n  \"spacing\": \"compact\",\n  \"hidden\": {\n    \"color-theme\": true,\n    \"nav-menu\": false,\n    \"toolbar\": true\n  },\n  \"palette\": {\n    \"bg\": \"#f2f5f8\",\n    \"accent\": \"rgb(31,111,235)\",\n    \"scheme\": \"light\"\n  },\n  \"updatedBy\": \"axhub-web\",\n  \"updatedAt\": \"2026-10-21T01:00:00Z\"\n}",
   "palette": {
     "amber-ember": {
       "bg": "#0f0d0a",

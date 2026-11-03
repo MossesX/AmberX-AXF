@@ -6,6 +6,7 @@
 import { installLibrary } from './libraries.mjs';
 import { brandAssetErrors } from '../core/engines/brand-rules.mjs';
 import { isScaleType, scaleErrors, scaleSchemaProperties } from '../core/engines/scale-rules.mjs';
+import { isLayoutType, layoutErrors, layoutSchemaProperties } from '../core/engines/layout-rules.mjs';
 import { helpErrors } from '../core/engines/help-rules.mjs';
 import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../core/engines/agent-card-rules.mjs';
 import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engines/job-type-rules.mjs';
@@ -161,6 +162,8 @@ export function validateAsset(raw) {
   if (raw.type === 'behavior-theme') errors.push(...behaviorErrors(raw.data));
   // typography@1 / density@1 / sizing@1: ONE validator shared with core (core/engines/scale-rules.mjs)
   errors.push(...scaleErrors(raw.type, raw.data));
+  // layout tokens (every layout parameter is a token): ONE validator shared with core (core/engines/layout-rules.mjs)
+  errors.push(...layoutErrors(raw.type, raw.data));
   // help@1: ONE validator shared with core (core/engines/help-rules.mjs)
   errors.push(...helpErrors(raw.type, raw.data));
   // agent-card@1: ONE validator shared with core (core/engines/agent-card-rules.mjs)
@@ -451,7 +454,7 @@ export const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replac
  * apps left on defaults look identical.
  */
 /**
- * Designed assets an app ships with (Build Pilot's banner / toolbar designers, …): asset@1 documents written into the
+ * Designed assets an app ships with (banner / toolbar designers, …): asset@1 documents written into the
  * app's own assets folder before the slot picks are checked, so a pick may name one of them. Each is validated like a
  * framework asset; ids must not collide with a framework starter of the same type.
  */
@@ -783,6 +786,8 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     if (type === 'context-menu') props.targets = { type: 'object', required: ts.nested?.targets ?? [], additionalProperties: { type: 'array', items: menuItem } };
     // scale assets (typography, density, sizing): every group optional, fields typed + ranged from the shared registry
     if (isScaleType(type)) Object.assign(props, scaleSchemaProperties(type));
+    // layout: every token field typed + ranged from the shared registry (the required list stays the grid)
+    if (isLayoutType(type)) Object.assign(props, layoutSchemaProperties());
     if (type === AGENT_CARD_TYPE) Object.assign(props, agentCardSchemaProperties());
     if (type === JOB_TYPE) Object.assign(props, jobTypeSchemaProperties());
     const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : undefined;
@@ -879,7 +884,7 @@ export function listModules() {
   return [...settings.matchAll(/include\("(:[^"]+)"\)/g)].map((m) => m[1].slice(1)).map((name) => {
     const readme = join(ANDROID_DIR, name, 'README.md');
     const first = existsSync(readme) ? readFileSync(readme, 'utf8').split('\n').find((l) => l && !l.startsWith('#'))?.trim() ?? '' : '';
-    // Modules this one builds on: its Gradle `project(":x")` dependencies (Build Pilot highlights them when one is picked).
+    // Modules this one builds on: its Gradle `project(":x")` dependencies (a designer highlights them when one is picked).
     const gradle = join(ANDROID_DIR, name, 'build.gradle.kts');
     const dependsOn = existsSync(gradle) ? [...new Set([...readFileSync(gradle, 'utf8').matchAll(/project\(\s*"(:[^"]+)"\s*\)/g)].map((m) => m[1].slice(1)).filter((d) => d !== name))] : [];
     return { name, kind: name.startsWith('lib-') ? 'library' : name.startsWith('axf-') ? 'framework' : 'other', description: first, dependsOn };

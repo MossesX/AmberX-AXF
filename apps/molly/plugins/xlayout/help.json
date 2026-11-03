@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "xlayout-help",
+  "name": "xLayout help",
+  "version": "0.1.0",
+  "description": "Help mode entries for Molly's xLayout plugin (help@1).",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:xlayout",
+    "entries": [
+      { "target": "xlayout", "title": "xLayout settings", "text": "How Molly holds its apps: IDE mode and its pane layout and limit, the three toolbars and where they sit, and which apps have joined Molly's menus." },
+      { "target": "ide-mode", "title": "IDE mode", "text": "On: apps open as tabs in panes you drag by their tab, resize with the bars between them and dock on any edge. Off: one app at a time, filling the page." },
+      { "target": "pane-layout", "title": "Pane layout", "text": "The layout IDE mode starts with. Choose layout shows each one with a preview first." },
+      { "target": "pane-limit", "title": "Pane limit", "text": "The most panes on screen at once. A tab dropped past the limit joins a pane as a tab instead of opening a new one." },
+      { "target": "choose-layout", "title": "Choose layout", "text": "Opens the layout picker: tap a layout to see its preview and which apps land where, then Apply layout." },
+      { "target": "customize", "title": "Customize", "text": "Opens the Toolbar designer for this toolbar: pick its items from every app and screen, and where each one opens. Needs the Toolbar designer plugin." },
+      { "target": "where", "title": "Where", "text": "The edge of the app area this toolbar sits on: top, bottom, left or right." },
+      { "target": "apply-layout", "title": "Apply layout", "text": "Turns IDE mode on, opens enough apps to fill the panes and lays them out as previewed." },
+      { "target": "action:xlayout.ide", "title": "IDE mode", "text": "Switches between one app at a time and apps in panes." },
+      { "target": "action:xlayout.layout", "title": "Pane layout", "text": "Pick one of the preset pane layouts, with a preview before it applies." },
+      { "target": "action:xlayout.open:pane", "title": "Open in a pane", "text": "Opens this app in a new pane beside the current one (IDE mode). Past the pane limit it joins the current pane as a tab." },
+      { "target": "action:xlayout.open:floating", "title": "Open in a floating window", "text": "Opens this app in a window of its own that you can move, resize and dock back." },
+      { "target": "action:xlayout.customize", "title": "Customize toolbar", "text": "Opens the Toolbar designer for the toolbar you right-clicked." }
+    ],
+    "intros": [
+      { "screen": "xlayout", "title": "xLayout", "steps": [
+        { "say": "Molly shows AmberX, axHub and the Console as one app: one menu bar, one navigation and one right-click menu hold all of theirs.", "target": "" },
+        { "say": "Turn on IDE mode to put apps side by side in panes, then pick a layout with Choose layout.", "target": "ide-mode" }
+      ] }
+    ]
+  }
+}

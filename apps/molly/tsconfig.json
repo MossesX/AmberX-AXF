@@ -15,5 +15,5 @@
     "noEmit": true,
     "types": ["vite/client"]
   },
-  "include": ["src", "axf.manifest.json"]
+  "include": ["src", "plugins", "axf.manifest.json"]
 }

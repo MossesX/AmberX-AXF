@@ -1,0 +1,67 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261101-5a98df913a",
+  "createdAt": "2026-11-01T17:33:27.316Z",
+  "updatedAt": "2026-11-01T17:33:28.197Z",
+  "kind": "edit",
+  "title": "# hub-only-look — apps take their appearance from axHub, period Brett's rule (Nov 1 2026, verbatim)…",
+  "asked": "# hub-only-look — apps take their appearance from axHub, period Brett's rule (Nov 1 2026, verbatim): \"The apps should only get appearance from axhub period.\" Also: \"if you select design package in one app it changes it for all! Any theme change applies to all.\" Today the look is the shared document `shared/settings/appearance.json` on axHub's data server (framework `HubAppearanceSource`, runtime `attachAppearanceSource` / `applyAppearance` / `pushAppearance`). PR #224 (1156332c) already made a hub-applied look bring the console back to its Main tab and closed the Active assets pane by default. This build removes every remaining way an app shows a look that did not come from axHub. ## Do 1. **Remove the follow switch.** `APPEARANCE_FOLLOW_KEY` (`axf.hub.appearance.follow`), `appearanceFollowing` / `setAppearanceFollowing` / `syncAppearanceFollow`, the `appearance.hub` action, the \"Get the look from axHub\" row in framework/libs/settings, framework/libs/hubstatus, help packs (framework.json + app copies). A developer app with a source always reads and writes the hub. Clear any saved `false` value on start (one-time migration, logged to the terminal). 2. **Console interface tabs** (`apps/console-web/src/interfaceTabs.tsx`, `InterfaceScope`): tabs that draw the app under an interface's own look break the rule. Remove the GizmoX Night / AmberX Signature look tabs from the console's main window (Main only; the tab bar goes when there is one tab). Choosing an interface still works through `applyInterface`, which goes to the hub. Keep the `scoped()` runtime API only if something else still needs it; if nothing does, remove it with its tests. Default `console.interfaceTabs` = []. 3. **Dev escape hatch** `AXF_APPEARANCE_HUB=off` / `appearanceHub: 'off'` in the console server and `apps/console-web/src/hubAppearance.tsx`: remove. No hub = the waiting screen, as already decided Oct 20 2026. 4. **Every AmberX app attaches the hub source unconditionally** (`axhub-web`, `console-web`, `amberx-droid`, `patches-web`, `walkthrough-studio`, `demo` if it is one of Brett's apps — check its manifest): no `if (manifest.developer?.hub)` gate; the hub address defaults to `DEFAULT_HUB`. The hubsync lib's `off` look state goes (keep `own` = source attached by the app itself; it's still the hub). 5. **Look tweaks that stay on one device** (Sliders, per-asset tokens: `isAppearanceSetting` keys, anything with `scope: 'device'` that changes how the app looks): they must reach the hub and apply in every app. Either carry them in appearance@1 (extend the schema + parse/merge + Kotlin) or make sure the hub settings mirror carries them to every app; pick one, say why in the report. Help mode / connection settings stay per device (not appearance). 6. **Design package from any app = all apps.** Confirm the package's settings plan (`packageSettingsPlan`) and extras reach the other apps, not just its slots. Add a test: apply a design package in runtime A, feed the written doc to runtime B, B ends with the same active slots, spacing, hidden chrome and package settings. 7. **Android/Kotlin port**: mirror 1, 4, 5 in `framework/android` (and the inspector toggle from PR #224: setting `axf.inspector.shown`, closed by default). Fixtures in framework/spec where the engines have them. 8. Re-bake apps (`node framework/cli/rebake.mjs status` then `apply`; Patches only if its edited files can be moved into the framework, else leave it and say so). Typecheck console-web and axhub-web (`npx tsc --noEmit`). 9. Spec: update framework/spec/APPEARANCE-SOURCE.md with the rule in one line at the top. ## Don't - Don't change the hub document path, the data server, or the waiting-screen behaviour. - Don't touch the agent-swarm builds or anything in section 4 of the Nov 1 handoff. - Don't print secrets; never cat `/opt/axf/.axf-console/secrets.env`. ## Finish Commit on this branch (clean messages), report at `_claude/builds/reports/hub-only-look.md` (what was removed, the choice in 5, be…",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "session": "62bd7be6-1f1",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "surface": "headless",
+  "startedAt": "2026-11-01T17:33:27.316Z",
+  "finishedAt": "2026-11-01T17:33:28.197Z",
+  "lastSeenAt": "2026-11-01T17:33:27.316Z",
+  "actual": {
+    "minutes": 0,
+    "costUsd": 0,
+    "inputTokens": 0,
+    "outputTokens": 0,
+    "cacheReadTokens": 0,
+    "cacheWriteTokens": 0,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "doing": "Starting",
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/hub-only-look",
+    "branch": "claude/hub-only-look",
+    "base": "1156332cec82a5a2c8a21252f72fde296f3bf986",
+    "head": "1156332cec82a5a2c8a21252f72fde296f3bf986",
+    "pushed": true,
+    "dirty": 10,
+    "files": [
+      "_claude/sessions/",
+      "changes/2026/11/chg-20261101-2b7c5db07b.json",
+      "changes/2026/11/chg-20261101-2f247c6891.json",
+      "changes/2026/11/chg-20261101-5d59b692a8.json",
+      "changes/2026/11/chg-20261101-a83c2abebc.json",
+      "changes/2026/11/chg-20261101-c501acb3f3.json",
+      "changes/2026/11/chg-20261101-dd4adcce3d.json",
+      "changes/2026/11/chg-20261101-ebabdc3fed.json",
+      "sessions/archive/2026/11/cc-c33bc905-9b60-4381-ab7a-b395130ab59d.json",
+      "sessions/archive/2026/11/cc-ef566660-e59d-46a8-8c2c-7a14cbed0c22.json"
+    ],
+    "at": "2026-11-01T17:33:28.336Z"
+  }
+}
