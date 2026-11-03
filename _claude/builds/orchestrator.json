@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T17:09:42.955Z",
+ "updatedAt": "2026-11-03T17:22:33.061Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -50,6 +50,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -258,6 +259,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -514,6 +516,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -714,6 +717,7 @@
      "at": "2026-10-27T19:52:28.958Z"
     }
    ],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1613,6 +1617,7 @@
      "at": "2026-10-27T19:52:29.038Z"
     }
    ],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1911,6 +1916,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2007,6 +2013,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2296,6 +2303,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2603,6 +2611,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2811,6 +2820,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -2838,6 +2848,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3109,6 +3120,7 @@
    "builtAt": "2026-10-18T04:21:56.128Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -3132,6 +3144,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -3150,6 +3163,7 @@
    "builtAt": "2026-10-18T06:07:53.368Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -3168,6 +3182,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3480,6 +3495,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3728,6 +3744,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3778,6 +3795,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -3801,6 +3819,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4063,6 +4082,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -4086,6 +4106,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -4109,6 +4130,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4299,6 +4321,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -4322,6 +4345,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4710,6 +4734,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -5080,6 +5105,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -5814,6 +5840,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -6000,6 +6027,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -6302,6 +6330,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -6420,6 +6449,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -6560,6 +6590,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -6692,6 +6723,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -6824,6 +6856,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -6847,6 +6880,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -6870,6 +6904,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -6948,6 +6983,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -6971,6 +7007,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7031,6 +7068,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7127,6 +7165,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7187,6 +7226,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -7205,6 +7245,7 @@
    "builtAt": "2026-10-23T00:40:17.479Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -7223,6 +7264,7 @@
    "builtAt": "2026-10-23T00:51:52.239Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -7241,6 +7283,7 @@
    "builtAt": "2026-10-23T01:13:32.733Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -7264,6 +7307,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7432,6 +7476,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7564,6 +7609,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7732,6 +7778,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -7750,6 +7797,7 @@
    "builtAt": "2026-10-23T05:33:18.963Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -7768,6 +7816,7 @@
    "builtAt": "2026-10-23T05:40:04.677Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7841,6 +7890,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7919,6 +7969,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -8015,6 +8066,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -8137,6 +8189,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -8299,6 +8352,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -8413,6 +8467,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -8617,6 +8672,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -8762,6 +8818,7 @@
    "builtAt": "2026-10-23T15:25:41.808Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -8894,6 +8951,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -8912,6 +8970,7 @@
    "builtAt": "2026-10-23T17:46:25.430Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -8930,6 +8989,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -9008,6 +9068,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -9140,6 +9201,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -9267,6 +9329,7 @@
    "builtAt": "2026-10-23T17:50:04.908Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -9285,6 +9348,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -9345,6 +9409,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -9427,6 +9492,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -9541,6 +9607,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -9564,6 +9631,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -9642,6 +9710,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -9733,6 +9802,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -9851,6 +9921,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -9911,6 +9982,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -9989,6 +10061,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -10007,6 +10080,7 @@
    "builtAt": "2026-10-25T14:47:07.826Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -10025,6 +10099,7 @@
    "builtAt": "2026-10-25T14:46:42.221Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -10152,6 +10227,7 @@
    "builtAt": "2026-10-25T10:22:26.878Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -10175,6 +10251,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -10193,6 +10270,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -10211,6 +10289,7 @@
    "builtAt": "2026-10-25T16:38:09.847Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -10234,6 +10313,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -10361,6 +10441,7 @@
    "builtAt": "2026-10-25T16:44:19.565Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -10439,6 +10520,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -10530,6 +10612,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -10842,6 +10925,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -10860,6 +10944,7 @@
    "builtAt": "2026-10-25T19:51:25.195Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -10883,6 +10968,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -10961,6 +11047,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -11039,6 +11126,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -11148,6 +11236,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -11244,6 +11333,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -11340,6 +11430,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -11539,6 +11630,7 @@
    "builtAt": "2026-10-26T22:35:28.810Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -11562,6 +11654,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -11676,6 +11769,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -11790,6 +11884,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -11881,6 +11976,7 @@
    "builtAt": "2026-10-26T23:13:52.182Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -11899,6 +11995,7 @@
    "builtAt": "2026-10-26T23:31:24.422Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -11917,6 +12014,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -11972,6 +12070,7 @@
    "builtAt": "2026-10-26T23:45:55.448Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -11990,6 +12089,7 @@
    "builtAt": "2026-10-26T22:28:29.520Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -12008,6 +12108,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -12077,6 +12178,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -12181,6 +12283,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -12290,6 +12393,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -12395,6 +12499,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -12426,6 +12531,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -12607,6 +12713,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -12643,6 +12750,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -12679,6 +12787,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -12788,6 +12897,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -12806,6 +12916,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -12824,6 +12935,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -12842,6 +12954,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -12860,6 +12973,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -12878,6 +12992,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -12896,6 +13011,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -12914,6 +13030,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -12932,6 +13049,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -12950,6 +13068,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -12968,6 +13087,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -12986,6 +13106,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -13004,6 +13125,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -13022,6 +13144,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -13040,6 +13163,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -13058,6 +13182,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -13076,6 +13201,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -13094,6 +13220,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -13112,6 +13239,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -13130,6 +13258,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -13148,6 +13277,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -13166,6 +13296,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -13184,6 +13315,7 @@
    "builtAt": "2026-10-17T16:21:12.015Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -13202,6 +13334,7 @@
    "builtAt": "2026-10-17T16:21:12.015Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -13220,6 +13353,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -13383,6 +13517,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -13401,6 +13536,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -13564,6 +13700,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -13709,6 +13846,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -13944,6 +14082,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -14053,6 +14192,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -14144,6 +14284,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -14289,6 +14430,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -14614,6 +14756,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -14813,6 +14956,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -14940,6 +15084,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -15067,6 +15212,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -15194,6 +15340,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -15321,6 +15468,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -15448,6 +15596,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -15575,6 +15724,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -15702,6 +15852,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -15829,6 +15980,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -15956,6 +16108,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -16083,6 +16236,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -16210,6 +16364,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -16337,6 +16492,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -16446,6 +16602,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -16573,6 +16730,7 @@
    "builtAt": "2026-10-18T14:17:14.449Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -16596,6 +16754,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -16660,6 +16819,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -16774,6 +16934,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -16996,6 +17157,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -17110,6 +17272,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -17214,6 +17377,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -17494,6 +17658,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -17724,6 +17889,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -17788,6 +17954,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -17870,6 +18037,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -18002,6 +18170,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -18029,6 +18198,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -18052,6 +18222,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -18075,6 +18246,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -18098,6 +18270,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -18180,6 +18353,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -18207,6 +18381,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -18343,6 +18518,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -18475,6 +18651,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -18751,6 +18928,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -18774,6 +18952,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -18809,6 +18988,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -18832,6 +19012,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -18855,6 +19036,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -18882,6 +19064,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -18905,6 +19088,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -18928,6 +19112,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -18946,6 +19131,7 @@
    "builtAt": "2026-11-01T07:52:02.425Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",

@@ -9,7 +9,8 @@
  * cost meter, pay, statuses, chat lines, banter and the vibe filter.
  */
 
-import { ALLOWED_MODELS, DEFAULT_MODEL, MODEL_IDS as POLICY_IDS, MODEL_TIERS as POLICY_TIERS, coerceModel, modelForWork, modelKey } from '../../../../../framework/core/model-policy.mjs';
+import { ALLOWED_MODELS, DEFAULT_MODEL, MODEL_IDS as POLICY_IDS, MODEL_TIERS as POLICY_TIERS, coerceModel, modelForWork, modelKey, modelRank } from '../../../../../framework/core/model-policy.mjs';
+import { heldSteps } from '../../../../../framework/core/model-switch.mjs';
 import * as rules from '../../../../../framework/core/engines/swarm-rules.mjs';
 import * as chat from '../../../../../framework/core/engines/swarm-chat.mjs';
 import { reactCount, vibeFilter } from '../../../../../framework/core/engines/swarm-vibe.mjs';
@@ -151,12 +152,17 @@ export function planJobs(builds, roster, opts = {}) {
   const eligible = opts.eligible ?? (() => true);
   const jobs = []; const warnings = [];
   for (const b of Array.isArray(builds) ? builds : [builds]) {
+    // Model upgrades need Brett (framework/core/model-switch.mjs, Nov 3 2026): steps in an upgrade phase he hasn't
+    // approved get no job, and no step goes to an agent on a higher model than it is pinned to.
+    const held = heldSteps(b);
     for (const s of b.steps ?? []) {
       if ((s.done === true && !opts.includeDone) || s.skip === true) continue;
+      if (held.has(s.id) && s.done !== true) { warnings.push(`${b.id}.${s.id}: waits for Brett to approve the model upgrade to ${s.model} (orchestrator.mjs request-upgrade); no job`); continue; }
       const files = stepFiles(s);
       const pool = roster.agents.filter((a) => !a.jobsOnly && eligible(a, { stepId: s.id, buildId: b.id, estimate: s.estimate }));
-      const tier = requiredTier(s); // agents that can reach the job's model come first
-      const able = pool.filter((a) => !pickModel(a, tier).short);
+      const tier = requiredTier(s); // agents that run the job's own model come first, then any that can reach it
+      const exact = pool.filter((a) => !pickModel(a, tier).short && pickModel(a, tier).model === tier);
+      const able = exact.length ? exact : pool.filter((a) => !pickModel(a, tier).short);
       const hit = matchAgent(s.text, files, able.length ? able : pool);
       const id = `${b.id}.${s.id}`;
       if (!hit) { warnings.push(`${id}: no agent can take it (everyone is off, benched or broke)`); continue; }
@@ -166,6 +172,7 @@ export function planJobs(builds, roster, opts = {}) {
       if (hit.score === 0) warnings.push(`${id}: no clear specialist (name files in the step); went to ${a.name}${fb ? ' (the roster\'s fallback)' : ''}`);
       const pick = pickModel(a, tier);
       if (pick.short) warnings.push(`${id}: ${a.name} tops out at ${pick.model}; job wants ${tier}`);
+      if (modelRank(pick.model) > modelRank(tier)) { warnings.push(`${id}: ${a.name} would run it on ${pick.model} but the step is pinned to ${tier}: a model upgrade needs Brett's approval; no job`); continue; }
       const leases = files.filter((f) => !isShared(f, opts.sharedFiles));
       const shared = files.filter((f) => isShared(f, opts.sharedFiles));
       // no named files: lease the agent's whole area, so the job is sequenced against anything in it

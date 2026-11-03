@@ -505,6 +505,8 @@ write('hide.json', {
     empty: '',
     'code-shaped': JSON.stringify({ $axf: 'appearance@1', slots: { layout: 'classic-ide' }, assets: [{ type: 'color-theme', id: 'evil', data: {} }], script: 'alert(1)' }),
     'too-big': JSON.stringify({ $axf: 'appearance@1', pad: 'x'.repeat(20000) }),
+    // the retired appearance-package slot an older build wrote is dropped on read (Nov 3 2026)
+    'retired-slot': JSON.stringify({ $axf: 'appearance@1', slots: { 'appearance-package': 'fresh', 'design-package': 'hub-default', layout: 'classic-ide' } }),
   };
   const has = (t: string, id: string) => ['color-theme:arctic-daylight', 'style-theme:glass-orbit', 'layout:classic-ide', 'layout:focus-top', 'toolbar:standard-icons', 'uac-policy:admin-only'].includes(`${t}:${id}`);
   const base = parseAppearance(docs.full);
