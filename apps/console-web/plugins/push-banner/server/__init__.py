@@ -277,11 +277,11 @@ class Pushes:
         n = cmp.get("behind_by") if isinstance(cmp, dict) else None
         return n if isinstance(n, int) and not isinstance(n, bool) else None
 
-    def _code_behind(self, gh: github.GitHubClient, repo: str, base: str, head: str) -> int | None:
+    def _code_behind(self, gh: github.GitHubClient, repo: str, base: str, head: str, known: int | None = None) -> int | None:
         """Like _behind, but commits on <base> that are only status data don't count: builds-live.mjs publishes every
         builds store write to main as a `[skip ci]` commit under _claude/, so every PR would be behind again minutes
         after it was brought up to date, and re-tested forever (auto-land, Nov 3 2026). Behind only by those = 0."""
-        n = self._behind(gh, repo, base, head)
+        n = known if known is not None else self._behind(gh, repo, base, head)
         if not n:
             return n
         if n > 250:
@@ -415,7 +415,7 @@ class Pushes:
             behind = item["mergeState"] == "behind" or (not item["fork"] and item["base"] == base and (behind_of.get(item["head"]) or 0) > 0)
             if behind and item["ci"] == "success" and item["mergeable"] is True and not item["draft"] and sha:
                 try:  # behind only by status-only commits counts as up to date (_code_behind)
-                    behind = (self._code_behind(gh, repo, base, sha) or 0) > 0
+                    behind = (self._code_behind(gh, repo, base, sha, behind_of.get(item["head"]) if not item["fork"] else None) or 0) > 0
                 except (github.GitHubError, ValueError):
                     pass
             item["ready"] = item["ci"] == "success" and item["mergeable"] is True and not item["draft"] and not behind
