@@ -1,0 +1,626 @@
+{
+  "tokens": [
+    {
+      "field": "navWidth",
+      "token": "--fx-layout-nav-width",
+      "kind": "number",
+      "unit": "px",
+      "default": 224,
+      "min": 0,
+      "max": 640
+    },
+    {
+      "field": "inspectorWidth",
+      "token": "--fx-layout-inspector-width",
+      "kind": "number",
+      "unit": "px",
+      "default": 280,
+      "min": 0,
+      "max": 800
+    },
+    {
+      "field": "contentMaxWidth",
+      "token": "--fx-layout-content-max-width",
+      "kind": "number",
+      "unit": "px",
+      "default": 0,
+      "min": 0,
+      "max": 4000
+    },
+    {
+      "field": "statusHeight",
+      "token": "--fx-layout-status-height",
+      "kind": "number",
+      "unit": "px",
+      "default": 26,
+      "min": 16,
+      "max": 64
+    },
+    {
+      "field": "regionGap",
+      "token": "--fx-layout-region-gap",
+      "kind": "number",
+      "unit": "space",
+      "default": 0,
+      "min": 0,
+      "max": 4
+    },
+    {
+      "field": "mainPadTop",
+      "token": "--fx-layout-main-pad-top",
+      "kind": "number",
+      "unit": "space",
+      "default": 2.4,
+      "min": 0,
+      "max": 12
+    },
+    {
+      "field": "mainPadX",
+      "token": "--fx-layout-main-pad-x",
+      "kind": "number",
+      "unit": "space",
+      "default": 4,
+      "min": 0,
+      "max": 12
+    },
+    {
+      "field": "mainPadBottom",
+      "token": "--fx-layout-main-pad-bottom",
+      "kind": "number",
+      "unit": "space",
+      "default": 6,
+      "min": 0,
+      "max": 16
+    },
+    {
+      "field": "phoneMainPadTop",
+      "token": "--fx-layout-phone-main-pad-top",
+      "kind": "number",
+      "unit": "space",
+      "default": 1.6,
+      "min": 0,
+      "max": 8
+    },
+    {
+      "field": "phoneMainPadX",
+      "token": "--fx-layout-phone-main-pad-x",
+      "kind": "number",
+      "unit": "space",
+      "default": 1.6,
+      "min": 0,
+      "max": 8
+    },
+    {
+      "field": "phoneMainPadBottom",
+      "token": "--fx-layout-phone-main-pad-bottom",
+      "kind": "number",
+      "unit": "space",
+      "default": 4,
+      "min": 0,
+      "max": 12
+    },
+    {
+      "field": "phoneNavItemMin",
+      "token": "--fx-layout-phone-nav-item-min",
+      "kind": "number",
+      "unit": "px",
+      "default": 64,
+      "min": 40,
+      "max": 200
+    },
+    {
+      "field": "phoneEdge",
+      "token": "--fx-layout-phone-edge",
+      "kind": "number",
+      "unit": "px",
+      "default": 8,
+      "min": 0,
+      "max": 40
+    },
+    {
+      "field": "tinyMaxWidth",
+      "token": "--fx-layout-tiny-max-width",
+      "kind": "number",
+      "unit": "px",
+      "default": 480,
+      "min": 200,
+      "max": 900
+    },
+    {
+      "field": "smallMaxWidth",
+      "token": "--fx-layout-small-max-width",
+      "kind": "number",
+      "unit": "px",
+      "default": 640,
+      "min": 240,
+      "max": 1200
+    },
+    {
+      "field": "phoneMaxWidth",
+      "token": "--fx-layout-phone-max-width",
+      "kind": "number",
+      "unit": "px",
+      "default": 760,
+      "min": 320,
+      "max": 1600
+    },
+    {
+      "field": "mediumMaxWidth",
+      "token": "--fx-layout-medium-max-width",
+      "kind": "number",
+      "unit": "px",
+      "default": 900,
+      "min": 320,
+      "max": 2000
+    },
+    {
+      "field": "nav",
+      "token": "--fx-layout-nav",
+      "kind": "enum",
+      "options": [
+        "left",
+        "right",
+        "top"
+      ],
+      "default": "left"
+    },
+    {
+      "field": "toolbarPosition",
+      "token": "--fx-layout-toolbar-position",
+      "kind": "enum",
+      "options": [
+        "top",
+        "bottom"
+      ],
+      "default": "top"
+    },
+    {
+      "field": "inspector",
+      "token": "--fx-layout-inspector",
+      "kind": "enum",
+      "options": [
+        "left",
+        "right",
+        "none"
+      ],
+      "default": "none"
+    },
+    {
+      "field": "showMenubar",
+      "token": "--fx-layout-show-menubar",
+      "kind": "switch",
+      "default": true
+    },
+    {
+      "field": "showToolbar",
+      "token": "--fx-layout-show-toolbar",
+      "kind": "switch",
+      "default": true
+    },
+    {
+      "field": "showStatusbar",
+      "token": "--fx-layout-show-statusbar",
+      "kind": "switch",
+      "default": true
+    }
+  ],
+  "defaults": {
+    "navWidth": 224,
+    "inspectorWidth": 280,
+    "contentMaxWidth": 0,
+    "statusHeight": 26,
+    "regionGap": 0,
+    "mainPadTop": 2.4,
+    "mainPadX": 4,
+    "mainPadBottom": 6,
+    "phoneMainPadTop": 1.6,
+    "phoneMainPadX": 1.6,
+    "phoneMainPadBottom": 4,
+    "phoneNavItemMin": 64,
+    "phoneEdge": 8,
+    "tinyMaxWidth": 480,
+    "smallMaxWidth": 640,
+    "phoneMaxWidth": 760,
+    "mediumMaxWidth": 900,
+    "nav": "left",
+    "toolbarPosition": "top",
+    "inspector": "none",
+    "showMenubar": true,
+    "showToolbar": true,
+    "showStatusbar": true
+  },
+  "normalize": {
+    "empty": {
+      "navWidth": 224,
+      "inspectorWidth": 280,
+      "contentMaxWidth": 0,
+      "statusHeight": 26,
+      "regionGap": 0,
+      "mainPadTop": 2.4,
+      "mainPadX": 4,
+      "mainPadBottom": 6,
+      "phoneMainPadTop": 1.6,
+      "phoneMainPadX": 1.6,
+      "phoneMainPadBottom": 4,
+      "phoneNavItemMin": 64,
+      "phoneEdge": 8,
+      "tinyMaxWidth": 480,
+      "smallMaxWidth": 640,
+      "phoneMaxWidth": 760,
+      "mediumMaxWidth": 900,
+      "nav": "left",
+      "toolbarPosition": "top",
+      "inspector": "none",
+      "showMenubar": true,
+      "showToolbar": true,
+      "showStatusbar": true
+    },
+    "grid-only": {
+      "nav": "left",
+      "navWidth": 224,
+      "showMenubar": true,
+      "showToolbar": true,
+      "toolbarPosition": "top",
+      "showStatusbar": true,
+      "inspector": "right",
+      "inspectorWidth": 280,
+      "contentMaxWidth": 0,
+      "statusHeight": 26,
+      "regionGap": 0,
+      "mainPadTop": 2.4,
+      "mainPadX": 4,
+      "mainPadBottom": 6,
+      "phoneMainPadTop": 1.6,
+      "phoneMainPadX": 1.6,
+      "phoneMainPadBottom": 4,
+      "phoneNavItemMin": 64,
+      "phoneEdge": 8,
+      "tinyMaxWidth": 480,
+      "smallMaxWidth": 640,
+      "phoneMaxWidth": 760,
+      "mediumMaxWidth": 900
+    },
+    "clamped": {
+      "nav": "left",
+      "navWidth": 640,
+      "showMenubar": true,
+      "showToolbar": true,
+      "toolbarPosition": "top",
+      "showStatusbar": true,
+      "inspector": "right",
+      "inspectorWidth": 800,
+      "contentMaxWidth": 0,
+      "statusHeight": 16,
+      "regionGap": 4,
+      "mainPadX": 0,
+      "phoneEdge": 40,
+      "tinyMaxWidth": 200,
+      "mainPadTop": 2.4,
+      "mainPadBottom": 6,
+      "phoneMainPadTop": 1.6,
+      "phoneMainPadX": 1.6,
+      "phoneMainPadBottom": 4,
+      "phoneNavItemMin": 64,
+      "smallMaxWidth": 640,
+      "phoneMaxWidth": 760,
+      "mediumMaxWidth": 900
+    },
+    "rounded": {
+      "nav": "left",
+      "navWidth": 201,
+      "showMenubar": true,
+      "showToolbar": true,
+      "toolbarPosition": "top",
+      "showStatusbar": true,
+      "inspector": "right",
+      "inspectorWidth": 280,
+      "contentMaxWidth": 0,
+      "regionGap": 0.333,
+      "mainPadTop": 1.235,
+      "statusHeight": 26,
+      "mainPadX": 4,
+      "mainPadBottom": 6,
+      "phoneMainPadTop": 1.6,
+      "phoneMainPadX": 1.6,
+      "phoneMainPadBottom": 4,
+      "phoneNavItemMin": 64,
+      "phoneEdge": 8,
+      "tinyMaxWidth": 480,
+      "smallMaxWidth": 640,
+      "phoneMaxWidth": 760,
+      "mediumMaxWidth": 900
+    },
+    "bad-values": {
+      "nav": "left",
+      "navWidth": 224,
+      "showMenubar": true,
+      "showToolbar": true,
+      "toolbarPosition": "top",
+      "showStatusbar": true,
+      "inspector": "right",
+      "inspectorWidth": 280,
+      "contentMaxWidth": 0,
+      "statusHeight": 26,
+      "slots": {
+        "nav": []
+      },
+      "regionGap": 0,
+      "mainPadTop": 2.4,
+      "mainPadX": 4,
+      "mainPadBottom": 6,
+      "phoneMainPadTop": 1.6,
+      "phoneMainPadX": 1.6,
+      "phoneMainPadBottom": 4,
+      "phoneNavItemMin": 64,
+      "phoneEdge": 8,
+      "tinyMaxWidth": 480,
+      "smallMaxWidth": 640,
+      "phoneMaxWidth": 760,
+      "mediumMaxWidth": 900
+    }
+  },
+  "vars": {
+    "defaults": {
+      "--fx-layout-nav-width": "224px",
+      "--fx-layout-inspector-width": "280px",
+      "--fx-layout-content-max-width": "0px",
+      "--fx-layout-status-height": "26px",
+      "--fx-layout-region-gap": "calc(var(--fx-space) * 0)",
+      "--fx-layout-main-pad-top": "calc(var(--fx-space) * 2.4)",
+      "--fx-layout-main-pad-x": "calc(var(--fx-space) * 4)",
+      "--fx-layout-main-pad-bottom": "calc(var(--fx-space) * 6)",
+      "--fx-layout-phone-main-pad-top": "calc(var(--fx-space) * 1.6)",
+      "--fx-layout-phone-main-pad-x": "calc(var(--fx-space) * 1.6)",
+      "--fx-layout-phone-main-pad-bottom": "calc(var(--fx-space) * 4)",
+      "--fx-layout-phone-nav-item-min": "64px",
+      "--fx-layout-phone-edge": "8px",
+      "--fx-layout-tiny-max-width": "480px",
+      "--fx-layout-small-max-width": "640px",
+      "--fx-layout-phone-max-width": "760px",
+      "--fx-layout-medium-max-width": "900px",
+      "--fx-layout-nav": "left",
+      "--fx-layout-toolbar-position": "top",
+      "--fx-layout-inspector": "none",
+      "--fx-layout-show-menubar": "1",
+      "--fx-layout-show-toolbar": "1",
+      "--fx-layout-show-statusbar": "1"
+    },
+    "studio-dock": {
+      "--fx-layout-nav-width": "84px",
+      "--fx-layout-inspector-width": "250px",
+      "--fx-layout-content-max-width": "0px",
+      "--fx-layout-status-height": "26px",
+      "--fx-layout-region-gap": "calc(var(--fx-space) * 0)",
+      "--fx-layout-main-pad-top": "calc(var(--fx-space) * 2.4)",
+      "--fx-layout-main-pad-x": "calc(var(--fx-space) * 4)",
+      "--fx-layout-main-pad-bottom": "calc(var(--fx-space) * 6)",
+      "--fx-layout-phone-main-pad-top": "calc(var(--fx-space) * 1.6)",
+      "--fx-layout-phone-main-pad-x": "calc(var(--fx-space) * 1.6)",
+      "--fx-layout-phone-main-pad-bottom": "calc(var(--fx-space) * 4)",
+      "--fx-layout-phone-nav-item-min": "64px",
+      "--fx-layout-phone-edge": "8px",
+      "--fx-layout-tiny-max-width": "480px",
+      "--fx-layout-small-max-width": "640px",
+      "--fx-layout-phone-max-width": "760px",
+      "--fx-layout-medium-max-width": "900px",
+      "--fx-layout-nav": "left",
+      "--fx-layout-toolbar-position": "bottom",
+      "--fx-layout-inspector": "left",
+      "--fx-layout-show-menubar": "0",
+      "--fx-layout-show-toolbar": "1",
+      "--fx-layout-show-statusbar": "1"
+    },
+    "custom": {
+      "--fx-layout-nav-width": "224px",
+      "--fx-layout-inspector-width": "320px",
+      "--fx-layout-content-max-width": "1200px",
+      "--fx-layout-status-height": "30px",
+      "--fx-layout-region-gap": "calc(var(--fx-space) * 0.5)",
+      "--fx-layout-main-pad-top": "calc(var(--fx-space) * 2.4)",
+      "--fx-layout-main-pad-x": "calc(var(--fx-space) * 2)",
+      "--fx-layout-main-pad-bottom": "calc(var(--fx-space) * 6)",
+      "--fx-layout-phone-main-pad-top": "calc(var(--fx-space) * 1.6)",
+      "--fx-layout-phone-main-pad-x": "calc(var(--fx-space) * 1.6)",
+      "--fx-layout-phone-main-pad-bottom": "calc(var(--fx-space) * 4)",
+      "--fx-layout-phone-nav-item-min": "64px",
+      "--fx-layout-phone-edge": "8px",
+      "--fx-layout-tiny-max-width": "480px",
+      "--fx-layout-small-max-width": "640px",
+      "--fx-layout-phone-max-width": "700px",
+      "--fx-layout-medium-max-width": "900px",
+      "--fx-layout-nav": "right",
+      "--fx-layout-toolbar-position": "top",
+      "--fx-layout-inspector": "left",
+      "--fx-layout-show-menubar": "0",
+      "--fx-layout-show-toolbar": "1",
+      "--fx-layout-show-statusbar": "1",
+      "--fx-layout-nav-orientation": "vertical",
+      "--fx-grid-areas": "\"toolbar toolbar toolbar\" \"inspector main nav\" \"status status status\"",
+      "--fx-grid-cols": "var(--fx-layout-inspector-width) minmax(0, 1fr) var(--fx-layout-nav-width)",
+      "--fx-grid-rows": "auto minmax(0, 1fr) auto",
+      "--fx-grid-areas-m": "\"toolbar\" \"main\" \"nav\"",
+      "--fx-grid-rows-m": "auto minmax(0, 1fr) auto",
+      "--fx-content-max": "var(--fx-layout-content-max-width)"
+    }
+  },
+  "viewports": {
+    "defaults": [
+      {
+        "attr": "data-fx-tiny",
+        "field": "tinyMaxWidth",
+        "maxWidth": 480
+      },
+      {
+        "attr": "data-fx-small",
+        "field": "smallMaxWidth",
+        "maxWidth": 640
+      },
+      {
+        "attr": "data-fx-narrow",
+        "field": "phoneMaxWidth",
+        "maxWidth": 760
+      },
+      {
+        "attr": "data-fx-medium",
+        "field": "mediumMaxWidth",
+        "maxWidth": 900
+      }
+    ],
+    "custom": [
+      {
+        "attr": "data-fx-tiny",
+        "field": "tinyMaxWidth",
+        "maxWidth": 400
+      },
+      {
+        "attr": "data-fx-small",
+        "field": "smallMaxWidth",
+        "maxWidth": 600
+      },
+      {
+        "attr": "data-fx-narrow",
+        "field": "phoneMaxWidth",
+        "maxWidth": 800
+      },
+      {
+        "attr": "data-fx-medium",
+        "field": "mediumMaxWidth",
+        "maxWidth": 1000
+      }
+    ]
+  },
+  "errors": {
+    "grid-only": [],
+    "other-type": [],
+    "not-an-object": [
+      "data must be an object"
+    ],
+    "out-of-range": [
+      "data.navWidth must be a number from 0 to 640",
+      "data.statusHeight must be a number from 16 to 64",
+      "data.regionGap must be a number from 0 to 4",
+      "data.phoneEdge must be a number from 0 to 40"
+    ],
+    "not-whole": [
+      "data.navWidth must be a whole number",
+      "data.statusHeight must be a whole number"
+    ],
+    "bad-words": [
+      "data.nav must be one of: left, right, top",
+      "data.toolbarPosition must be one of: top, bottom",
+      "data.inspector must be one of: left, right, none",
+      "data.showMenubar must be true or false"
+    ],
+    "viewports-out-of-order": [
+      "data.smallMaxWidth (700) must be below data.phoneMaxWidth (600)"
+    ],
+    "viewports-one-set": [
+      "data.phoneMaxWidth (760) must be below data.mediumMaxWidth (700)"
+    ],
+    "unknown": []
+  },
+  "ranges": {
+    "navWidth": {
+      "default": 224,
+      "min": 0,
+      "max": 640,
+      "unit": "px"
+    },
+    "inspectorWidth": {
+      "default": 280,
+      "min": 0,
+      "max": 800,
+      "unit": "px"
+    },
+    "contentMaxWidth": {
+      "default": 0,
+      "min": 0,
+      "max": 4000,
+      "unit": "px"
+    },
+    "statusHeight": {
+      "default": 26,
+      "min": 16,
+      "max": 64,
+      "unit": "px"
+    },
+    "regionGap": {
+      "default": 0,
+      "min": 0,
+      "max": 4,
+      "unit": "space"
+    },
+    "mainPadTop": {
+      "default": 2.4,
+      "min": 0,
+      "max": 12,
+      "unit": "space"
+    },
+    "mainPadX": {
+      "default": 4,
+      "min": 0,
+      "max": 12,
+      "unit": "space"
+    },
+    "mainPadBottom": {
+      "default": 6,
+      "min": 0,
+      "max": 16,
+      "unit": "space"
+    },
+    "phoneMainPadTop": {
+      "default": 1.6,
+      "min": 0,
+      "max": 8,
+      "unit": "space"
+    },
+    "phoneMainPadX": {
+      "default": 1.6,
+      "min": 0,
+      "max": 8,
+      "unit": "space"
+    },
+    "phoneMainPadBottom": {
+      "default": 4,
+      "min": 0,
+      "max": 12,
+      "unit": "space"
+    },
+    "phoneNavItemMin": {
+      "default": 64,
+      "min": 40,
+      "max": 200,
+      "unit": "px"
+    },
+    "phoneEdge": {
+      "default": 8,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    "tinyMaxWidth": {
+      "default": 480,
+      "min": 200,
+      "max": 900,
+      "unit": "px"
+    },
+    "smallMaxWidth": {
+      "default": 640,
+      "min": 240,
+      "max": 1200,
+      "unit": "px"
+    },
+    "phoneMaxWidth": {
+      "default": 760,
+      "min": 320,
+      "max": 1600,
+      "unit": "px"
+    },
+    "mediumMaxWidth": {
+      "default": 900,
+      "min": 320,
+      "max": 2000,
+      "unit": "px"
+    }
+  }
+}

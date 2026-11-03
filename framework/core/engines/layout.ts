@@ -3,10 +3,33 @@
  * fixed regions (menubar, toolbar, nav, main, inspector, status) and the
  * engine decides where each one sits. A separate single-column grid is
  * produced for narrow (phone) viewports.
+ *
+ * Every layout parameter is a token (Nov 2 2026, build token-control): the rules in layout-rules.mjs (shared with the
+ * build engine) name every field, its default, range and unit, and `layoutVars` compiles each one to
+ * `--fx-layout-<field>` beside the grid vars. The compiled struct stays port-neutral (px numbers, what the Kotlin
+ * kernel and the conformance fixture compare); the web grid vars read the tokens (`var(--fx-layout-nav-width)`), so
+ * a token override moves the grid live.
  */
 import spec from '../../schemas/asset-types.json';
 import type { LayoutData } from '../types';
 import type { VarMap } from './theme';
+import { LAYOUT_VIEWPORTS, layoutErrors, layoutToken, layoutTokenVars, layoutTokens, normalizeLayout } from './layout-rules.mjs';
+
+export { LAYOUT_ENUMS, LAYOUT_FIELDS, LAYOUT_SWITCHES, LAYOUT_VIEWPORTS, layoutErrors, layoutFieldNames, layoutToken, layoutTokenVars, layoutTokens, layoutValue, normalizeLayout, type LayoutTokenInfo, type LayoutUnit } from './layout-rules.mjs';
+
+/** The framework's own layout values (what an asset that sets only the grid gets for everything else). */
+export const DEFAULT_LAYOUT: NormalizedLayout = normalizeLayout({} as LayoutData) as NormalizedLayout;
+/** A layout with every token field filled in. */
+export type NormalizedLayout = LayoutData & Required<Pick<LayoutData, 'statusHeight' | 'regionGap' | 'mainPadTop' | 'mainPadX' | 'mainPadBottom' | 'phoneMainPadTop' | 'phoneMainPadX' | 'phoneMainPadBottom' | 'phoneNavItemMin' | 'phoneEdge' | 'tinyMaxWidth' | 'smallMaxWidth' | 'phoneMaxWidth' | 'mediumMaxWidth'>>;
+
+/** Validation entry for the asset validator (empty for other types). */
+export const layoutAssetErrors = (type: string, data: unknown): string[] => layoutErrors(type, data);
+
+/** The root attributes the viewport cut-offs stamp (data-fx-tiny / -small / -narrow / -medium), with the max width each one watches. */
+export function layoutViewports(l: LayoutData): { attr: string; field: string; maxWidth: number }[] {
+  const n = normalizeLayout(l) as NormalizedLayout;
+  return LAYOUT_VIEWPORTS.map((v) => ({ attr: v.attr, field: v.field, maxWidth: n[v.field as keyof NormalizedLayout] as number }));
+}
 
 export type Region = 'menubar' | 'toolbar' | 'nav' | 'main' | 'inspector' | 'status';
 
@@ -47,12 +70,15 @@ export interface CompiledLayout {
   navOrientation: 'vertical' | 'horizontal';
   /** region → accepted asset types (defaults merged with the layout's `slots`) */
   slots: CompiledSlots;
+  /** the desktop grid's columns, left to right (nav / inspector / main); `columns` holds their sizes in the same order */
+  columnRegions: string[];
 }
 
 const row = (cells: string[]) => `"${cells.join(' ')}"`;
 
 /** `hidden`: slot types the user hid (core/engines/hide.ts); their regions drop out like a refusing slot. */
-export function compileLayout(l: LayoutData, hidden: readonly string[] = []): CompiledLayout {
+export function compileLayout(raw: LayoutData, hidden: readonly string[] = []): CompiledLayout {
+  const l = normalizeLayout(raw) as NormalizedLayout;
   const cols: string[] = [];
   const sizes: string[] = [];
   const push = (name: string, size: string) => {
@@ -109,17 +135,32 @@ export function compileLayout(l: LayoutData, hidden: readonly string[] = []): Co
     mobileRows: mRows.join(' '),
     navOrientation: nav === 'top' ? 'horizontal' : 'vertical',
     slots,
+    columnRegions: cols,
   };
 }
 
-export function layoutVars(l: LayoutData, hidden: readonly string[] = []): VarMap {
+/**
+ * Root CSS vars: every `--fx-layout-*` token, then the grid. The grid's column sizes read the width tokens
+ * (`var(--fx-layout-nav-width)`), so changing a token changes the grid; the compiled struct keeps the px numbers.
+ */
+export function layoutVars(raw: LayoutData, hidden: readonly string[] = []): VarMap {
+  const l = normalizeLayout(raw) as NormalizedLayout;
   const c = compileLayout(l, hidden);
+  const token = (region: string) => (region === 'nav' ? `var(${layoutToken('navWidth')})` : region === 'inspector' ? `var(${layoutToken('inspectorWidth')})` : 'minmax(0, 1fr)');
   return {
+    ...layoutTokenVars(l),
+    [layoutToken('navOrientation')]: c.navOrientation,
     '--fx-grid-areas': c.areas,
-    '--fx-grid-cols': c.columns,
+    '--fx-grid-cols': c.columnRegions.map(token).join(' '),
     '--fx-grid-rows': c.rows,
     '--fx-grid-areas-m': c.mobileAreas,
     '--fx-grid-rows-m': c.mobileRows,
-    '--fx-content-max': l.contentMaxWidth > 0 ? `${l.contentMaxWidth}px` : 'none',
+    '--fx-content-max': l.contentMaxWidth > 0 ? `var(${layoutToken('contentMaxWidth')})` : 'none',
   };
+}
+
+/** Re-exported for editors: the token list with the current values of one layout filled in. */
+export function layoutTokenValues(raw: LayoutData): (ReturnType<typeof layoutTokens>[number] & { value: number | string | boolean })[] {
+  const n = normalizeLayout(raw) as Record<string, unknown>;
+  return layoutTokens().map((t) => ({ ...t, value: n[t.field] as number | string | boolean }));
 }

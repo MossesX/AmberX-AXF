@@ -211,6 +211,28 @@ export interface LayoutData {
   inspector: 'left' | 'right' | 'none';
   inspectorWidth: number;
   contentMaxWidth: number;
+  /* Every layout parameter is a token (core/engines/layout-rules.mjs): the fields below default to the framework's own look. */
+  /** status bar height, px */
+  statusHeight?: number;
+  /** gap between the grid's regions, × --fx-space */
+  regionGap?: number;
+  /** the main area's padding on desktop, × --fx-space */
+  mainPadTop?: number;
+  mainPadX?: number;
+  mainPadBottom?: number;
+  /** the main area's padding on a phone, × --fx-space */
+  phoneMainPadTop?: number;
+  phoneMainPadX?: number;
+  phoneMainPadBottom?: number;
+  /** the least width of a nav item in the phone's bottom strip, px */
+  phoneNavItemMin?: number;
+  /** inset of dropdowns and toasts from the phone's edges, px */
+  phoneEdge?: number;
+  /** viewport cut-offs (max-width px; tiny < small < phone < medium) → root attributes data-fx-tiny / -small / -narrow / -medium */
+  tinyMaxWidth?: number;
+  smallMaxWidth?: number;
+  phoneMaxWidth?: number;
+  mediumMaxWidth?: number;
   /** region → asset types it accepts; overrides the defaults in asset-types.json (layout.slots.defaults) */
   slots?: Partial<Record<string, string[]>>;
   /** repeating slots: one item per entry of a data set the page declares (core/engines/repeat.ts) */

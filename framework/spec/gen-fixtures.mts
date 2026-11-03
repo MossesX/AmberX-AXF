@@ -9,7 +9,7 @@ import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
 import { AGENT_CARD_SAMPLE, agentCardErrors, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
 import { buildHelpIndex, helpCoverage, helpErrors, helpTarget, introToShow, introToWalkthrough, markSeen, normalizeHelpPack, ratchetErrors, resolveHelp, slugLabel } from '../core/engines/help-rules.mjs';
-import { compileLayout, layoutVars } from '../core/engines/layout';
+import { DEFAULT_LAYOUT, LAYOUT_FIELDS, compileLayout, layoutErrors, layoutTokenVars, layoutTokens, layoutVars, layoutViewports, normalizeLayout } from '../core/engines/layout';
 import { compileRepeats, declaredDataSets, missingDataSets, repeatVars, REPEAT_DEFAULT_COLUMNS, REPEAT_DEFAULT_STYLE, REPEAT_MAX_COLUMNS, REPEAT_STYLES } from '../core/engines/repeat';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from '../core/engines/components';
 import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/engines/uac';
@@ -164,6 +164,40 @@ write('help.json', {
   },
 });
 write('layout.json', Object.fromEntries(load('layout').map((a) => [a.id, { compiled: compileLayout(a.data), vars: layoutVars(a.data) }])));
+// Every layout parameter is a token (core/engines/layout-rules.mjs): the registry, the defaults, normalize (fill, clamp,
+// round, keep other keys), the token vars for a few inputs, the viewport cut-offs and what the validator reports.
+{
+  const grid = { nav: 'left', navWidth: 224, showMenubar: true, showToolbar: true, toolbarPosition: 'top', showStatusbar: true, inspector: 'right', inspectorWidth: 280, contentMaxWidth: 0 } as const;
+  write('layout-tokens.json', {
+    tokens: layoutTokens(),
+    defaults: DEFAULT_LAYOUT,
+    normalize: {
+      empty: normalizeLayout({}),
+      'grid-only': normalizeLayout(grid),
+      clamped: normalizeLayout({ ...grid, navWidth: 5000, inspectorWidth: 900, statusHeight: 1, regionGap: 9, mainPadX: -2, phoneEdge: 400, tinyMaxWidth: 50 }),
+      rounded: normalizeLayout({ ...grid, navWidth: 200.6, regionGap: 0.33333, mainPadTop: 1.23456 }),
+      'bad-values': normalizeLayout({ ...grid, navWidth: 'wide', nav: 'middle', showStatusbar: 'yes', statusHeight: null, slots: { nav: [] } }),
+    },
+    vars: {
+      defaults: layoutTokenVars(null),
+      'studio-dock': layoutTokenVars(load('layout').find((a) => a.id === 'studio-dock')!.data),
+      custom: layoutVars({ ...grid, nav: 'right', inspector: 'left', inspectorWidth: 320, contentMaxWidth: 1200, statusHeight: 30, regionGap: 0.5, mainPadX: 2, phoneMaxWidth: 700, showMenubar: false }),
+    },
+    viewports: { defaults: layoutViewports(grid), custom: layoutViewports({ ...grid, tinyMaxWidth: 400, smallMaxWidth: 600, phoneMaxWidth: 800, mediumMaxWidth: 1000 }) },
+    errors: {
+      'grid-only': layoutErrors('layout', grid),
+      'other-type': layoutErrors('button', { navWidth: 'x' }),
+      'not-an-object': layoutErrors('layout', 'nope'),
+      'out-of-range': layoutErrors('layout', { ...grid, navWidth: 5000, statusHeight: 1, regionGap: 9, phoneEdge: -1 }),
+      'not-whole': layoutErrors('layout', { ...grid, navWidth: 200.5, statusHeight: 26.4 }),
+      'bad-words': layoutErrors('layout', { ...grid, nav: 'middle', toolbarPosition: 'left', inspector: 'top', showMenubar: 'yes' }),
+      'viewports-out-of-order': layoutErrors('layout', { ...grid, phoneMaxWidth: 600, smallMaxWidth: 700 }),
+      'viewports-one-set': layoutErrors('layout', { ...grid, mediumMaxWidth: 700 }),
+      unknown: layoutErrors('layout', { ...grid, somethingElse: 12 }),
+    },
+    ranges: Object.fromEntries(Object.entries(LAYOUT_FIELDS).map(([f, [def, min, max, unit]]) => [f, { default: def, min, max, unit }])),
+  });
+}
 // Slot contract cases: a region that refuses its chrome drops out of the grid on every port.
 const base = load('layout').find((a) => a.id === 'studio-dock')?.data ?? load('layout')[0].data;
 write('layout-slots.json', Object.fromEntries([...Object.entries({

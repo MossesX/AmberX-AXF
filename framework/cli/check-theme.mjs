@@ -36,6 +36,7 @@ import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, relative, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SCALE_TYPES, scaleVars } from '../core/engines/scale-rules.mjs';
+import { layoutToken, layoutTokenVars } from '../core/engines/layout-rules.mjs';
 import { adoptLine } from './scale-adopt.mjs';
 import { writeFileSync } from 'node:fs';
 
@@ -64,6 +65,9 @@ for (const f of walk(join(FRAMEWORK, 'core')).filter((f) => /\.(ts|mjs)$/.test(f
 }
 // Scale tokens (typography@1, density@1, sizing@1) are built from one registry, not written out as literals.
 for (const t of SCALE_TYPES) for (const k of Object.keys(scaleVars(t, null))) known.add(k);
+// Layout tokens (every layout parameter is a token, core/engines/layout-rules.mjs): the same.
+for (const k of Object.keys(layoutTokenVars(null))) known.add(k);
+known.add(layoutToken('navOrientation'));
 // Colour tokens come from the color-theme assets' token keys (engines/theme.ts: --fx-${kebab(key)}).
 for (const f of walk(join(FRAMEWORK, 'assets/color-theme')).filter((f) => f.endsWith('.json'))) {
   const tokens = JSON.parse(readFileSync(f, 'utf8'))?.data?.tokens ?? {};

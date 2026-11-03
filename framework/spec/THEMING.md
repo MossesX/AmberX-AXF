@@ -11,7 +11,7 @@ port follows the same rules with Compose tokens.
 | --- | --- | --- |
 | theme (`core/engines/theme.ts`) | `color-theme` | one `--fx-<token>` per colour token: `--fx-bg`, `--fx-surface`, `--fx-surface2`, `--fx-surface3`, `--fx-text`, `--fx-muted`, `--fx-border`, `--fx-accent`, `--fx-accent-text`, `--fx-accent-soft`, `--fx-success`, `--fx-warning`, `--fx-danger`, … |
 | theme | `style-theme` | `--fx-font`, `--fx-font-display`, `--fx-font-mono`, `--fx-font-size`, `--fx-space`, `--fx-radius-sm/md/lg`, `--fx-border-w`, `--fx-shadow-sm/md/lg`, `--fx-motion`, `--fx-blur`, `--fx-heading-weight`, `--fx-tracking`, `--fx-row-h`, `--fx-density-k`, and the transparency tokens below |
-| layout (`core/engines/layout.ts`) | `layout` | `--fx-grid-*`, `--fx-content-max` and the shell's regions |
+| layout (`core/engines/layout.ts`, rules `layout-rules.mjs`) | `layout` | every layout parameter as `--fx-layout-<field>` (nav / inspector widths, content width, status height, region gap, main paddings desktop + phone, phone edge + nav item minimum, viewport cut-offs, the sides and switches), plus `--fx-grid-*` (columns read the width tokens), `--fx-content-max` and the shell's regions. The cut-offs become root attributes `data-fx-tiny` / `-small` / `-narrow` / `-medium`; select on those, never on a px breakpoint |
 | components (`core/engines/components.ts`) | `button`, `slider`, `container`, … | `--fx-btn-*`, `--fx-slider-*`, … plus `data-fx-*` attributes |
 
 **Controls come from the framework (Oct 22 2026, rule "Plugins inherit the app's style").** A plugin or library never
