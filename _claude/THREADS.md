@@ -503,3 +503,4 @@ VPS). The session reads the rules and this file first, as usual.
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
 - 2026-11-03 13:53 UTC · `orch-live-sync` s1 done (urgent) · orchestrator
+- 2026-11-03 13:54 UTC · `xlayout` s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done (big-dog) · builds-live
