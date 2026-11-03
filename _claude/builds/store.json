@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 186,
- "updatedAt": "2026-11-03T16:05:37.686Z",
+ "rev": 187,
+ "updatedAt": "2026-11-03T16:07:20.586Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50425,11 +50425,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 6
+    "urgent": 7
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -50663,9 +50663,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/notes-vault",
-   "pr": "https://github.com/MossesX/AmberX-AXF/pull/256",
+   "pr": "#256",
+   "mergedAt": "2026-11-03T16:07:18.707Z",
    "createdAt": "2026-11-03T14:09:24.568Z",
-   "updatedAt": "2026-11-03T14:10:57.365Z",
+   "updatedAt": "2026-11-03T16:07:19.784Z",
    "builtAt": "2026-11-03T14:10:56.767Z",
    "notes": [],
    "approvals": [],
@@ -50811,7 +50812,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
