@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 304,
- "updatedAt": "2026-11-03T18:06:56.647Z",
+ "rev": 305,
+ "updatedAt": "2026-11-03T18:07:26.869Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50681,15 +50681,15 @@
    "title": "Land everything: merge finished branches to main and deploy",
    "category": "Urgent",
    "detail": "Brett, Nov 3 2026 (voice): land the finished work on main and deploy; UI Review waived except banners (banner-pack, banner-editor, banners-one not landed).",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T18:06:47.832Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T18:07:13.043Z",
+   "builtAt": "2026-11-03T18:07:13.043Z",
    "notes": [
     {
      "text": "Landed claude/notes-vault (PR #256) on main at 5a6311a3",
@@ -51002,12 +51002,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:07:13.043Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-03T15:32:06.060Z",
-     "updatedAt": "2026-11-03T16:44:26.222Z"
+     "updatedAt": "2026-11-03T18:07:13.077Z"
     }
    ],
    "profiles": [
@@ -51018,7 +51018,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 59,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
