@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 535,
- "updatedAt": "2026-11-03T22:26:31.537Z",
+ "rev": 536,
+ "updatedAt": "2026-11-03T22:27:49.047Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -65912,7 +65912,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-03T22:26:18.873Z",
+   "updatedAt": "2026-11-03T22:26:30.544Z",
    "builtAt": "",
    "notes": [
     {
@@ -65943,7 +65943,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T22:26:19.553Z"
+     "updatedAt": "2026-11-03T22:27:41.661Z"
     },
     {
      "id": "s2",
@@ -65960,12 +65960,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T22:26:30.544Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T22:18:50.824Z"
+     "updatedAt": "2026-11-03T22:27:41.661Z"
     },
     {
      "id": "s3",
@@ -66353,7 +66353,37 @@
    "rev": 4,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "session",
+    "planId": "",
+    "createdAt": "2026-11-03T22:18:50.820Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw1927q50kp8hq": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50lgz29": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50mxxmp": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50nom6p": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50o4880": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50ph88r": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50qynnq": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50rs6y6": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50sx2kp": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50ts2ss": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50u3iw6": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50vzd3o": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50wktdc": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50xfddn": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50yrq9q": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50zl3ym": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q510yqiw": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q511lo8v": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q512l9n0": "2026-11-03T22:18:50.824Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-03T22:18:50.824Z",
    "rearranged": false,
