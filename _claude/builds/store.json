@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 282,
- "updatedAt": "2026-11-03T17:54:09.241Z",
+ "rev": 283,
+ "updatedAt": "2026-11-03T17:54:19.473Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -28893,7 +28893,7 @@
    "title": "Builds: one dataset, one page with selectable views (Plan, Tracker, Queue, Pending, Orchestrator)",
    "category": "Console UI",
    "detail": "Brett, Oct 27 2026: Plans, Tracker, Build queue, Pending builds and the Build orchestrator are separate files (plan.json, tracker.json, build-queue.json, pending.json, _claude/builds/orchestrator.json) that drift (pending complete never marks the plan built; 91 of 100 pending items unlinked). Merge into one dataset; one Builds page with the views selectable from a toolbar and everywhere else that fits (app menu, context menu, shortcuts, banners, deep links). Every view, Orchestrator included, defaults to the Pending builds look: a table with expandable rows; better nested info in every list. Folds in pending-grid-view. tracker.json stays a generated export for the Android console and /tracker. Web only (Android hold).",
-   "status": "archived",
+   "status": "running",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
@@ -29047,7 +29047,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-11-03T17:54:03.804Z"
+     "updatedAt": "2026-11-03T17:54:13.652Z"
     },
     {
      "id": "s6",
@@ -29069,7 +29069,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-11-03T17:54:03.804Z"
+     "updatedAt": "2026-11-03T17:54:13.652Z"
     },
     {
      "id": "s7",
@@ -29201,7 +29201,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-11-03T17:54:03.804Z"
+     "updatedAt": "2026-11-03T17:54:13.652Z"
     },
     {
      "id": "s14",
@@ -29230,7 +29230,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-11-03T17:54:03.804Z"
+     "updatedAt": "2026-11-03T17:54:13.652Z"
     },
     {
      "id": "s15",
@@ -29284,6 +29284,28 @@
      "updatedAt": "2026-11-03T17:54:02.851Z"
     },
     {
+     "id": "s16-15",
+     "uid": "st-mw0zlwfb0171rx",
+     "title": "",
+     "text": "Old screens become thin redirects to their Builds view (pending, build queue, build-orchestrator, plan, tracker); every nav/menu/context way in kept",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T17:54:13.199Z",
+     "updatedAt": "2026-11-03T17:54:13.223Z"
+    },
+    {
      "id": "s13",
      "uid": "st-re4dux",
      "title": "",
@@ -29314,7 +29336,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -29341,7 +29363,7 @@
      "st-31fetj": "2026-10-27T19:11:22.011Z",
      "st-crj9vs": "2026-10-27T19:11:22.011Z",
      "st-n8ym5e": "2026-10-27T19:11:22.011Z",
-     "st-mw0zlof60117cu": "2026-11-03T17:53:48.928Z",
+     "st-mw0zlwfb0171rx": "2026-11-03T17:53:48.928Z",
      "st-re4dux": "2026-10-27T19:11:22.011Z"
     }
    },

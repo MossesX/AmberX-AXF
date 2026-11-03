@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T17:54:09.241Z",
+ "updatedAt": "2026-11-03T17:54:19.473Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1997,7 +1997,7 @@
    "title": "Builds: one dataset, one page with selectable views (Plan, Tracker, Queue, Pending, Orchestrator)",
    "category": "Console UI",
    "detail": "Brett, Oct 27 2026: Plans, Tracker, Build queue, Pending builds and the Build orchestrator are separate files (plan.json, tracker.json, build-queue.json, pending.json, _claude/builds/orchestrator.json) that drift (pending complete never marks the plan built; 91 of 100 pending items unlinked). Merge into one dataset; one Builds page with the views selectable from a toolbar and everywhere else that fits (app menu, context menu, shortcuts, banners, deep links). Every view, Orchestrator included, defaults to the Pending builds look: a table with expandable rows; better nested info in every list. Folds in pending-grid-view. tracker.json stays a generated export for the Android console and /tracker. Web only (Android hold).",
-   "status": "archived",
+   "status": "running",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
@@ -2326,6 +2326,24 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw0zlof60117cu"
+    },
+    {
+     "id": "s16-15",
+     "text": "Old screens become thin redirects to their Builds view (pending, build queue, build-orchestrator, plan, tracker); every nav/menu/context way in kept",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw0zlwfb0171rx"
     },
     {
      "id": "s13",
