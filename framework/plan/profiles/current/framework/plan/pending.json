@@ -1,0 +1,1110 @@
+{
+ "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
+ "$axf": "pending@1",
+ "updatedAt": "2026-11-03T21:45:25.573Z",
+ "artifact": "",
+ "items": [
+  {
+   "id": "terminal-vps-host",
+   "title": "Terminal VPS host: headless tabs attach to build tmux sessions",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Assigned: Ping Paulie (all-rounder router not on this checkout). Live fix: key in /opt/axf/.axf-console/plugins/console-terminal/ssh (bind mount), host 172.16.1.1 (coolify gateway), pubkey in /root/.ssh/authorized_keys with from=172.16.0.0/12. headless ready:true, 6 sessions, meters with cost.",
+     "at": "2026-11-03T19:31:28.416Z"
+    },
+    {
+     "text": "Reconciler: branch claude/terminal-vps-host (PR #274); PR #274",
+     "at": "2026-11-03T19:40:47.953Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] Configure the Terminal VPS host: console ed25519 key, authorized on the host, host = coolify gateway",
+     "at": "2026-11-03T19:31:10.365Z",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-11-03T19:31:23.156Z"
+    },
+    {
+     "text": "[Opus] Persist the setting across redeploys (bind-mounted dataDir) and auto-detect the host",
+     "at": "2026-11-03T19:31:10.365Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-03T19:37:52.475Z"
+    },
+    {
+     "text": "[Opus] Verify headless list, meters and auto-opened tabs",
+     "at": "2026-11-03T19:31:10.365Z",
+     "estimate": "10 min",
+     "done": true,
+     "doneAt": "2026-11-03T19:31:25.587Z"
+    },
+    {
+     "text": "[Opus] health@1 check: Terminal VPS host ready, with Auto fix",
+     "at": "2026-11-03T19:31:10.365Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T19:37:53.543Z"
+    },
+    {
+     "text": "[Opus] Report, THREADS, PR",
+     "at": "2026-11-03T19:31:10.365Z",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-11-03T19:40:51.453Z"
+    }
+   ],
+   "createdAt": "2026-11-03T19:31:10.365Z",
+   "builtAt": "2026-11-03T19:40:51.453Z",
+   "updatedAt": "2026-11-03T19:40:53.260Z",
+   "source": "console"
+  },
+  {
+   "id": "window-resize-fix",
+   "title": "Window resize fix + Terminal settings dialog placement (urgent)",
+   "detail": "Brett (Nov 3 2026, voice): floating windows must be resizable (Terminal cannot be resized), and Terminal settings placement \"dialog\" opens nothing. Agent: Landin Lenny (headless worktree session). Merge on Brett order.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Reconciler: branch claude/window-resize-fix (no PR yet)",
+     "at": "2026-11-03T20:00:43.692Z"
+    },
+    {
+     "text": "Reconciler: PR #278; PR #278 merged",
+     "at": "2026-11-03T20:10:46.177Z"
+    },
+    {
+     "text": "Merged PR #278 (836a290d) on Brett's order; console, axhub-web, amberx-web, molly redeployed and verified serving the fix. CI on main was already red on 3 unrelated jobs (widget types, molly xlayout opens:false, Kotlin widget tests) since 17:45 UTC; this PR's own steps passed. UI Review r-20261103-35553277 for the record. Agent: Landin' Lenny.",
+     "at": "2026-11-03T20:12:36.260Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] Find why floating windows cannot be resized; fix window host (8 edges, touch targets, double-tap title)",
+     "at": "2026-11-03T19:32:33.504Z",
+     "done": true,
+     "doneAt": "2026-11-03T19:47:23.937Z"
+    },
+    {
+     "text": "[Opus] Fix settings placement dialog for Terminal and every plugin with the option",
+     "at": "2026-11-03T19:32:33.504Z",
+     "done": true,
+     "doneAt": "2026-11-03T19:59:32.298Z"
+    },
+    {
+     "text": "[Opus] Tests, screenshots, UI Review, report, PR, merge, deploy",
+     "at": "2026-11-03T19:32:33.504Z",
+     "done": true,
+     "doneAt": "2026-11-03T20:12:35.030Z"
+    }
+   ],
+   "createdAt": "2026-11-03T19:32:33.504Z",
+   "builtAt": "2026-11-03T20:12:35.030Z",
+   "updatedAt": "2026-11-03T20:12:38.085Z",
+   "source": "console"
+  },
+  {
+   "id": "terminal-sessions-nav",
+   "title": "Terminal: sessions navigation rail",
+   "detail": "Brett, Nov 3 2026 (voice): a collapsible left nav rail in the existing Terminal plugin listing live sessions (My sessions: tmux/Claude Code + claude.ai chat/voice mirrored from axHub activity; Agents: headless builds; Connections), mirror read-only + Jump in, console_session_note MCP tool. Builds on terminal-vps-host (PR #274). Agent: Earl the Ear (router not on main).",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Left nav rail: collapsible (icons collapsed, full open, hamburger on phone), framework nav + tokens, remembers state; My sessions / Agents / Connections; tap = open/focus tab; right-click menu (open, split, open in Moshi, stop with confirm, info)",
+     "at": "2026-11-03T19:58:59.824Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:19:13.572Z"
+    },
+    {
+     "text": "[Opus] My sessions: tmux Claude Code mirror read-only + Jump in (writable attach); claude.ai sessions as axHub activity feed per session; MCP console_session_note + rule",
+     "at": "2026-11-03T19:58:59.824Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:19:15.457Z"
+    },
+    {
+     "text": "[Opus] Live session list (websocket): started + running timer, sort/search/filter, collapsible groups, Recent group linking Session browser",
+     "at": "2026-11-03T19:58:59.824Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:19:17.505Z"
+    },
+    {
+     "text": "[Opus] Commands once -> REST + MCP + CLI (list, mirror, jump in, stop); tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T19:58:59.824Z",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-11-03T19:58:59.822Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T20:19:17.505Z",
+   "source": "console"
+  },
+  {
+   "id": "profile-manager",
+   "title": "Build profiles manager (browse, view, create, edit, switch, duplicate, merge, move builds, archive, delete/restore, cleanup)",
+   "detail": "Brett, Nov 3 2026 (voice): grow the build-profiles plugin into a full manager page. Assigned agent: Landin' Lenny. Keep the plugin id, data and every existing feature. Commands declared once -> REST + MCP + CLI (reads allow, changes veto, data delete confirm).",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] profiles.mjs: stats per profile (builds by status, pending, queue, cost spent/left, last activity), update colour/icon, duplicate, merge, move-builds, archive/unarchive, remove→restorable, restore, owner-only purge; cleanup scan + fix; tests",
+     "at": "2026-11-03T19:59:06.507Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:02:37.470Z"
+    },
+    {
+     "text": "[Opus] build-profiles server router: commands declared once (list, get, create, update, select, duplicate, merge, move-builds, archive, remove, restore, purge, cleanup) -> REST + MCP + CLI via plugin-commands@1, read/write/destructive flags",
+     "at": "2026-11-03T19:59:06.507Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:04:12.538Z"
+    },
+    {
+     "text": "[Opus] Manager page UI: grid of every profile (collapsible rows, counts, cost, last activity), sort/search/filter, expand = builds, pending, queue, plan, files",
+     "at": "2026-11-03T19:59:06.507Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:14:26.844Z"
+    },
+    {
+     "text": "[Opus] Profile view + Create/Edit/Duplicate/Merge/Move builds/Archive/Delete/Restore dialogs, banner chip colour/icon, context menu 'Build profiles...' and 'Move to profile'",
+     "at": "2026-11-03T19:59:06.507Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:14:28.220Z"
+    },
+    {
+     "text": "[Opus] Cleanup helper (archived builds that are really complete) with one-tap fix; typecheck, theme/controls checks, plugin-commands check",
+     "at": "2026-11-03T19:59:06.507Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:14:29.392Z"
+    },
+    {
+     "text": "[Opus] Phone + desktop screenshots, UI Review item, report _claude/builds/reports/profile-manager.md, THREADS, PR",
+     "at": "2026-11-03T19:59:06.507Z",
+     "estimate": "25 min"
+    }
+   ],
+   "createdAt": "2026-11-03T19:59:06.499Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T20:14:29.392Z",
+   "source": "voice"
+  },
+  {
+   "id": "build-prompt-origin",
+   "title": "Show what Brett said (verbatim prompt) on every build",
+   "detail": "Brett, Nov 3 2026 (voice), verbatim: \"All the build entries, like wherever it shows a build in the build manager, pending, all that, I need it to show the prompt, what I said, the verbatim prompt that kicked it off, that initiated it.\" Every build entry (Build manager, Pending, Queue, Orchestrator, Steps, Builds page) shows the verbatim prompt that started it, its brief and later addenda.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Data: origin record (build-origin@1) on every build in the builds store: said verbatim, at, source, session/link, by, brief, addenda; schema + merge rules that never lose it (store, live publish, git merge driver, sidecar)",
+     "at": "2026-11-03T20:23:37.394Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:23:48.536Z"
+    },
+    {
+     "text": "[Opus] Capture: claude-headless.sh / vps.build_start (brief block), orchestrator add, pending_change add, Plan Studio turn-into-build accept origin.said; brief template '## Brett said (verbatim)' + addenda parsed; rule in RULES.md + CLAUDE.md",
+     "at": "2026-11-03T20:23:37.394Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:25:11.182Z"
+    },
+    {
+     "text": "[Opus] UI: 'What Brett said' quote block at the top of every expanded build row (Build manager, Builds page, Pending, Orchestrator, Steps), first line as the collapsed subtitle, search covers it",
+     "at": "2026-11-03T20:23:37.394Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:53:22.412Z"
+    },
+    {
+     "text": "[Opus] Backfill: fill origin for existing builds from brief files, pending detail, notes; mark non-verbatim ones 'from the brief, may be paraphrased'",
+     "at": "2026-11-03T20:23:37.394Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:30:35.517Z"
+    },
+    {
+     "text": "[Opus] Commands once -> REST + MCP + CLI (get origin, add addendum), tests, screenshots, UI Review item, report, THREADS, PR",
+     "at": "2026-11-03T20:23:37.394Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:53:24.237Z"
+    }
+   ],
+   "createdAt": "2026-11-03T20:23:37.380Z",
+   "builtAt": "2026-11-03T20:53:24.237Z",
+   "updatedAt": "2026-11-03T20:53:25.027Z",
+   "source": "code"
+  },
+  {
+   "id": "plugin-settings-placement",
+   "title": "Plugin settings placement: inside the plugin, pane, dialog, window or main",
+   "detail": "Brett (Nov 3 2026, voice): every plugin chooses where its settings open (inside the plugin: slide-out pane L/R/T/B, drop-down, new tab, split, inline; pop-up dialog; floating window; main settings page), with a fallback pane when in-plugin is impossible, and per-placement look + animation (tokens only, reduced motion). Picker in every plugin's settings, its context menu and Settings > Plugins > Settings placement. Terminal first. Agent: Reel Rhonda (headless worktree session, not on main).",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] s1 settings-placement@1 contract: placements, sub-choices, defaults, asset type + engine + fixture",
+     "at": "2026-11-03T20:30:14.219Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:47:29.109Z"
+    },
+    {
+     "text": "[Opus] s2 Fallback: in-plugin impossible (no host region, compact) -> slide-out pane over the plugin",
+     "at": "2026-11-03T20:30:14.219Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:47:31.966Z"
+    },
+    {
+     "text": "[Opus] s3 Look + animation per placement (slide/fade/scale/drop/push/none, duration, easing, edge, size, dim, blur, radius, shadow; tokens; reduced motion; live preview)",
+     "at": "2026-11-03T20:30:14.219Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:55:47.761Z"
+    },
+    {
+     "text": "[Opus] s4 Picker UI: top row in each plugin's settings, context menu 'Settings placement...', Settings > Plugins > Settings placement page; Terminal first",
+     "at": "2026-11-03T20:30:14.219Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:55:49.003Z"
+    },
+    {
+     "text": "[Opus] s5 plugin@1 settingsHost capability, one settings renderer in any host, CI check pane+dialog+main",
+     "at": "2026-11-03T20:30:14.219Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:55:50.337Z"
+    },
+    {
+     "text": "[Opus] s6 Commands -> REST + MCP + CLI; tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T20:30:14.219Z",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-11-03T20:30:14.217Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T20:55:50.337Z",
+   "source": "console"
+  },
+  {
+   "id": "banner-ref-links",
+   "title": "Banner reference links: tap a mention to open what it refers to",
+   "detail": "Brett (Nov 3 2026, voice): in banner entries (in progress, merged, live, build/status banners, Codebase changes), text that mentions a real thing (screen, settings page, plugin, dialog, toolbar, build, PR, agent, file) becomes a hook: tap = peek card, double-tap = open + highlight, long-press = context menu. ref@1 resolver from the console registries, explicit 'touches:' refs win. Applied in the generic banner item renderer; banner-pack (#251), banner-editor (#254), banners-one untouched. Agent: Ping Paulie (headless worktree session, not on main). Branch claude/banner-ref-links.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built by Ping Paulie (headless worktree). PR #287, UI Review r-20261103-1ad2ede3 waiting. Gaps: swarm roster agents not targets (no capability), no touches field on builds yet (text only), UI Review has no per-item deep link. Fable review suggested for the ref@1 contract.",
+     "at": "2026-11-03T21:45:25.479Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] s1 ref@1 resolver: registries (screens, settings, plugins, dialogs, toolbars, menus, builds, PRs, agents, files), exact/alias matching, explicit touches: refs win",
+     "at": "2026-11-03T20:47:37.195Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:56:54.797Z"
+    },
+    {
+     "text": "[Opus] s2 Interaction: dotted underline (tokens); tap = peek card, double-tap = open + highlight, long-press/right-click = context menu",
+     "at": "2026-11-03T20:47:37.195Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T21:19:53.668Z"
+    },
+    {
+     "text": "[Opus] s3 Every section: In progress, Merged, Ready, Live, build/status banners, Codebase changes; existing part opens live one ('being changed by <build>'), new part opens its UI Review item",
+     "at": "2026-11-03T20:47:37.195Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T21:19:56.666Z"
+    },
+    {
+     "text": "[Opus] s4 Apply through the generic banner item renderer (no banner-pack/banner-editor/banners-one edits; overlap noted)",
+     "at": "2026-11-03T20:47:37.195Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-03T21:19:59.441Z"
+    },
+    {
+     "text": "[Opus] s5 Commands once -> REST + MCP + CLI; tests; phone + desktop shots; UI Review; report; THREADS; PR",
+     "at": "2026-11-03T20:47:37.195Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T21:45:20.551Z"
+    }
+   ],
+   "createdAt": "2026-11-03T20:47:37.192Z",
+   "builtAt": "2026-11-03T21:45:20.552Z",
+   "updatedAt": "2026-11-03T21:45:25.479Z",
+   "source": "console"
+  },
+  {
+   "id": "molly-console-commands",
+   "title": "Molly: console commands reach the embedded console; every app gets the control surface",
+   "detail": "",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-03T21:38:07.301Z"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T21:38:09.752Z"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T21:46:07.637Z"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-03T21:46:10.264Z"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-11-03T21:05:30.629Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T21:46:10.264Z",
+   "source": "console"
+  },
+  {
+   "id": "git-status-board",
+   "title": "Git status board (grids for push / pull / CI / merge / held / deployed / stale)",
+   "detail": "Brett, Nov 3 2026 (voice): \"Where do I view items at git status? ... what needs to be pulled, merged ... I want to be able to view everything in grids with expandable rows.\" Replaces pending batch-manager (batch grid + badges, PR sub-grid + Fix, dense phone pass, PR browser rows with plain-English lead, Merge/Hold, left click review, right-click menu). Predicted shots live in ui-review-predicted. Built by Snap Sully (session).",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Server data layer: git worktrees (ahead/behind), GitHub PRs + checks via axf.github@1, builds store, ui-review holds, containers; section classifier (no LLM)",
+     "at": "2026-11-03T21:10:39.299Z",
+     "estimate": "30",
+     "done": true,
+     "doneAt": "2026-11-03T21:26:46.134Z"
+    },
+    {
+     "text": "[Opus] Commands declared once: REST routes + MCP + CLI (sections, pr detail, merge via push banner, hold, update from main, rerun, fix job, close, land/kill)",
+     "at": "2026-11-03T21:10:39.299Z",
+     "estimate": "30",
+     "done": true,
+     "doneAt": "2026-11-03T21:26:47.860Z"
+    },
+    {
+     "text": "[Opus] Web view: section tabs as framework grids, collapsed rows (PR#, plain-English lead, branch, agent, badge, CI dot, ahead/behind, age, cost)",
+     "at": "2026-11-03T21:10:39.299Z",
+     "estimate": "30"
+    },
+    {
+     "text": "[Opus] Expanded rows: checks with error lines, commits, files + diff, build steps, UI Review link, blockers + what clears them, action buttons",
+     "at": "2026-11-03T21:10:39.299Z",
+     "estimate": "30"
+    },
+    {
+     "text": "[Opus] Batch grid with live badges, PR sub-grid, merge order; live feed updates; Show in Git status context-menu hooks",
+     "at": "2026-11-03T21:10:39.299Z",
+     "estimate": "30"
+    },
+    {
+     "text": "[Opus] Tests (zero LLM imports, classifier), lifecycle install/uninstall, help, screenshots + UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:10:39.299Z",
+     "estimate": "30"
+    },
+    {
+     "text": "[Opus] Server data layer: git worktrees (ahead/behind), GitHub PRs + checks via axf.github@1, builds store, ui-review holds, containers; section classifier (no LLM)",
+     "at": "2026-11-03T21:10:39.299Z",
+     "estimate": "30"
+    },
+    {
+     "text": "[Opus] Commands declared once: REST routes + MCP + CLI (sections, pr detail, merge via push banner, hold, update from main, rerun, fix job, close, land/kill)",
+     "at": "2026-11-03T21:10:39.299Z",
+     "estimate": "30"
+    },
+    {
+     "text": "[Opus] Web view: section tabs as framework grids, collapsed rows (PR#, plain-English lead, branch, agent, badge, CI dot, ahead/behind, age, cost)",
+     "at": "2026-11-03T21:10:39.299Z",
+     "estimate": "30"
+    },
+    {
+     "text": "[Opus] Expanded rows: checks with error lines, commits, files + diff, build steps, UI Review link, blockers + what clears them, action buttons",
+     "at": "2026-11-03T21:10:39.299Z",
+     "estimate": "30"
+    },
+    {
+     "text": "[Opus] Batch grid with live badges, PR sub-grid, merge order; live feed updates; Show in Git status context-menu hooks",
+     "at": "2026-11-03T21:10:39.299Z",
+     "estimate": "30"
+    },
+    {
+     "text": "[Opus] Tests (zero LLM imports, classifier), lifecycle install/uninstall, help, screenshots + UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:10:39.299Z",
+     "estimate": "30"
+    }
+   ],
+   "createdAt": "2026-11-03T21:10:39.295Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T21:26:47.860Z",
+   "source": "console"
+  },
+  {
+   "id": "urgent-main-ci-green",
+   "title": "URGENT: main CI green (widgets fixture, xlayout opens, Kotlin widget tests)",
+   "detail": "Found by window-resize-fix (#278): main CI red on three jobs, blocking auto-merge for every PR. Agent: Earl the Ear (headless).",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [
+    {
+     "text": "Agent: Earl the Ear (headless). Six CI failures fixed at the root on PR #284; ci-main health check names failing jobs, Auto fix queues new ci-fix job (Greenlight Gina). s3 waits for #284 to go green and merge, then the waiting PRs get updated from main.",
+     "at": "2026-11-03T21:31:51.198Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] Read the latest failing main CI run and get the exact failures",
+     "at": "2026-11-03T21:12:18.219Z",
+     "done": true,
+     "doneAt": "2026-11-03T21:12:20.518Z"
+    },
+    {
+     "text": "[Opus] Fix each failure at the root (widgets fixture, xlayout opens, Kotlin banner test)",
+     "at": "2026-11-03T21:12:18.219Z",
+     "done": true,
+     "doneAt": "2026-11-03T21:12:22.113Z"
+    },
+    {
+     "text": "[Opus] Get main green: small PR; refresh the waiting PRs from main",
+     "at": "2026-11-03T21:12:18.219Z"
+    },
+    {
+     "text": "[Opus] health@1 check: red banner item when main CI is red, with an Auto fix that queues an ops-fix job",
+     "at": "2026-11-03T21:12:18.219Z",
+     "done": true,
+     "doneAt": "2026-11-03T21:31:47.371Z"
+    },
+    {
+     "text": "[Opus] Report, THREADS, store steps",
+     "at": "2026-11-03T21:12:18.219Z",
+     "done": true,
+     "doneAt": "2026-11-03T21:31:49.702Z"
+    }
+   ],
+   "createdAt": "2026-11-03T21:12:18.212Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T21:31:51.198Z",
+   "source": "console"
+  },
+  {
+   "id": "whats-new-open-fix",
+   "title": "Bug fix: tapping the What's new banner item opens nothing; dialogs cannot be closed on phone",
+   "detail": "Brett (Nov 3 2026, voice): \"I see the What's new banner and I'm clicking it. But I'm not seeing anything.\" Addendum: \"I have this banner open. I can't close it.\" Tap opens the panel every time (phone/desktop, standalone/Molly); every dialog closes by X, outside tap, back/Escape, swipe down; control@1 console.dialogs close. Agent: Janitor Joey.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [
+    {
+     "text": "Assigned: Janitor Joey (router not on this checkout). Cause: (1) console-terminal auto-opens a floating window (z 60) over the Banners strip (z 42) on phones, swallowing taps on the strip's What's new row; (2) that row (systems-check) only expands inline in a 45vh-capped strip, it never opened the What's new panel. Top-bar chip itself works.",
+     "at": "2026-11-03T21:36:04.573Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] Reproduce the dead tap and find the cause",
+     "at": "2026-11-03T21:23:34.425Z",
+     "done": true,
+     "doneAt": "2026-11-03T21:36:01.248Z"
+    },
+    {
+     "text": "[Opus] Fix the banner tap for What's new and every other banner item",
+     "at": "2026-11-03T21:23:34.425Z"
+    },
+    {
+     "text": "[Opus] Dialog close: X, outside tap, back/Escape, swipe down on phone",
+     "at": "2026-11-03T21:23:34.425Z"
+    },
+    {
+     "text": "[Opus] console.dialogs close action + console_dialog close",
+     "at": "2026-11-03T21:23:34.425Z"
+    },
+    {
+     "text": "[Opus] Tests, screenshots, report, THREADS, PR",
+     "at": "2026-11-03T21:23:34.425Z"
+    }
+   ],
+   "createdAt": "2026-11-03T21:23:34.422Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T21:36:04.573Z",
+   "source": "console"
+  }
+ ]
+}

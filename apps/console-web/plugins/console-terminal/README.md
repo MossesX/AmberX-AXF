@@ -25,10 +25,24 @@
 - **Context chain** (`web/ChainPane.tsx`, `GET headless/<name>/chain`): the files the session takes in, in order, nested
   under the file that imported them, with their rules typed out one at a time (`chainSpeed`: slow / normal / fast /
   all), Pause, Skip to the end. Pure helpers in `web/headless-core.ts`; check `framework/spec/check-headless-tabs.mts`.
+  **A tree (Nov 3 2026, `terminal-drag-chain-tree`):** each file sits indented under the file that pulled it in — an
+  @import, a path a loaded file mentions that the session then Read (`reference`), or one it says to read first / on
+  every load (`session-start rule`); the rest are roots (`session-start`, `read`, `nested memory`). Each row: fold ▸/▾,
+  file icon, name + folder, why it loaded, rule count. The reveal walks the tree depth-first; tapping a file types its
+  content out again. The meter (`deploy/claude-meter.mjs`) records `reason`, `parentI` and `why` per item; the route
+  also returns `tree` (the same items nested, `sessions.chain_tree`).
+- **Window grip, menus, text size (Nov 3 2026, `terminal-drag-chain-tree`):** the strip starts with the framework's
+  `WindowGrip` (drag = move, double-tap = maximize; 44 px on touch), tabs use `useTabPress` (tap switches, horizontal
+  drag reorders, press-and-hold then move or a vertical pull drags the window, long-press = tab menu). Right-click /
+  long-press on the strip, grip, toolbar or empty body shows the window menu, **Terminal settings** first (also first in
+  the tab menu and the terminal text menu; it opens where *Opens in* says). Text size per pane (`web/textsize.ts`): the
+  terminal text and the context chain each have A− / size (tap = reset) / A+ on the toolbar for the pane last touched,
+  Ctrl/Cmd + − / = / 0, Ctrl + wheel and pinch; every tab remembers its size on the device (and for its Claude Code
+  profile); defaults `fontSize` (computer), `fontSizePhone` (0 = Auto: the theme's small text token), `chainTextSize` (%).
 
 **Windows-style terminal (v0.3.0, Oct 28 2026, Opus).** One floating window per terminal host (tab kind
 `terminal-host`, `web/TerminalHost.tsx`) drawn like Windows Terminal: its own tab strip (icon, title, status dot, close;
-double-click renames, middle-click closes, drag reorders; right-click = Connection…, rename, duplicate, colour, move to
+double-click renames, middle-click closes, horizontal drag reorders; right-click = Connection…, rename, duplicate, colour, move to
 a new window, close / others / to the right), **+** and **∨** (Claude Code…, every Claude Code profile, Shell…, the
 console, the VPS host, containers, Settings), a hideable command toolbar (Claude Code, the tab's connection, find, text
 size, mouse + Mosh modes, copy / paste, settings), Mica, and Windows keys (Ctrl+Shift+T / W / D, Ctrl+Tab, Ctrl+Alt+1…9,

@@ -37,7 +37,10 @@ DEFAULTS: dict[str, Any] = {"$axf": "terminal-settings@1", "idleMinutes": 60, "m
                                                 "prompt": "", "icon": "sparkles", "color": "", "connection": "console"}],
                             "defaultClaudeProfile": "default",
                             # headless tabs (Nov 3 2026): persistent tmux-backed tabs, split pane, context chain pacing
-                            "persistTabs": True, "splitDefault": "side", "chainSpeed": "normal", "showChain": True}
+                            "persistTabs": True, "splitDefault": "side", "chainSpeed": "normal", "showChain": True,
+                            # text size per pane (terminal-drag-chain-tree, Nov 3 2026): phone text 0 = Auto (the theme's
+                            # small text token), context chain as a % of the theme's text
+                            "fontSizePhone": 0, "chainTextSize": 100}
 
 CHOICES: dict[str, tuple[str, ...]] = {"scheme": ("app", "campbell", "one-half-dark", "one-half-light", "solarized-dark", "tango-dark", "vintage"),
                                       "cursorStyle": ("bar", "block", "underline"), "bell": ("none", "visual", "sound"),
@@ -96,7 +99,10 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
         for k, lo, hi in (("idleMinutes", 5, 24 * 60), ("moshKeepMinutes", 1, 24 * 60), ("fontSize", 9, 28)):
             if k in patch:
                 s[k] = max(lo, min(int(patch[k]), hi))
-        for k, lo, hi in (("scrollback", 500, 200000), ("padding", 0, 4)):
+        if "fontSizePhone" in patch:
+            v = int(patch["fontSizePhone"])
+            s["fontSizePhone"] = 0 if v <= 0 else max(7, min(v, 28))
+        for k, lo, hi in (("scrollback", 500, 200000), ("padding", 0, 4), ("chainTextSize", 60, 200)):
             if k in patch:
                 s[k] = max(lo, min(int(patch[k]), hi))
         if "lineHeight" in patch:

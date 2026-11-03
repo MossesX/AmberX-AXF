@@ -4,7 +4,7 @@ import { Icon } from '../components/Icon';
 import { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from '../components/Brand';
 import { useScopeId } from '../components/InterfaceScope';
 import type { Pane, TabGroup, TabSpec, WindowManager, WindowSettings, WindowSpec, WindowState, Corner, DragPreview, ResizeEdge, WindowFrame } from '../../core/engines/windows';
-import { effectiveToolbar, forcesToolbar, isFloating, isMaximized, paneGroups, rectOf, resizeCursor, windowFrame, CORNERS, RESIZE_EDGES } from '../../core/engines/windows';
+import { effectiveToolbar, forcesToolbar, isFloating, isMaximized, paneGroups, rectOf, resizeCursor, tabPressIntent, windowFrame, CORNERS, RESIZE_EDGES, TAB_HOLD_MS, type TabPressIntent } from '../../core/engines/windows';
 import { DockDropOverlay, DockHost, DockPaneView, dockLayoutDialog } from './DockHost';
 
 /* ------------------------------------------------------------------ */
@@ -166,6 +166,10 @@ export interface WindowFrameHooks {
   maximized: boolean;
   /** pointer-down on whatever acts as the title bar: starts the move (restores a maximized window under the pointer first); double-tap = maximize / restore */
   startMove: (e: React.PointerEvent) => void;
+  /** start a move from a point (no double-tap check): a tab held then dragged (useTabPress); call `to` per pointer move, `end` once */
+  moveFrom: (x: number, y: number) => { to: (x: number, y: number) => void; end: () => void };
+  /** a WindowGrip in the content says it is there (returns the release); with none, a frameless window draws its own */
+  claimGrip: () => () => void;
   /** pointer-down on a resize handle */
   startResize: (e: React.PointerEvent, edge: ResizeEdge) => void;
   minimize: () => void;
@@ -182,10 +186,98 @@ export function WindowResizeHandles({ onStart }: { onStart: (e: React.PointerEve
   return <>{RESIZE_EDGES.map((edge) => <div key={edge} className={`fx-window__edge fx-window__edge--${edge}`} style={{ cursor: resizeCursor(edge) }} onPointerDown={(e) => onStart(e, edge)} aria-hidden />)}</>;
 }
 
+/**
+ * The move grip of a frameless window (terminal-drag-chain-tree, Nov 3 2026): an always-present drag area the content's
+ * own chrome can never cover (put it first in the tab strip; `column` for a stacked tab list). Drag = move the window,
+ * double-tap / double-click = maximize / restore; at least a 44 px target on a touch screen (theme tokens). Renders
+ * nothing outside a floating window. While one is mounted the host skips its fallback grip.
+ */
+export function WindowGrip({ orientation = 'row', className = '', onContextMenu }: { orientation?: 'row' | 'column'; className?: string; onContextMenu?: (e: React.MouseEvent) => void }) {
+  const f = useContext(FrameCtx);
+  const claim = f?.claimGrip;
+  useEffect(() => claim?.(), [claim]);
+  if (!f) return null;
+  return (
+    <div className={`fx-window__grip fx-window__grip--${orientation} ${className}`.trim()} role="button" tabIndex={-1} aria-label="Move window (double-tap to maximize)"
+      title="Drag to move · double-click to maximize" onPointerDown={f.startMove} onContextMenu={onContextMenu} data-fx-window-grip={f.w.id}>
+      <Icon name="grip" size={14} />
+    </div>
+  );
+}
+
+/** What a tab press turned into, for the strip that owns the tabs (useTabPress). */
+export interface TabPressHandlers {
+  /** hold released without moving: a long-press menu on touch (a mouse hold is a plain tap) */
+  onHold?: (x: number, y: number) => void;
+  /** horizontal drag: the pointer's x while it moves, then once more on release (`end`) or `cancel` */
+  onReorder?: (x: number, phase: 'move' | 'end' | 'cancel') => void;
+  /** the gesture changed (armed = held long enough, the next move drags the window) */
+  onIntent?: (intent: TabPressIntent) => void;
+}
+
+/**
+ * Pointer-down handler for the tabs of a frameless window's strip: tap (the tab's own click still runs), horizontal
+ * drag = reorder, press and hold then move = drag the window, vertical pull = drag the window, long-press released =
+ * onHold (the browser's own long-press context menu is held back so it doesn't open as well). Docked (no frame), a
+ * drag that would move the window does nothing. The click that follows a drag is swallowed.
+ */
+export function useTabPress() {
+  const f = useContext(FrameCtx);
+  return (e: React.PointerEvent, h: TabPressHandlers = {}) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    if ((e.target as HTMLElement).closest('button, input, form')) return;
+    const x0 = e.clientX, y0 = e.clientY, t0 = Date.now(), touch = e.pointerType !== 'mouse';
+    let intent: TabPressIntent = 'pending';
+    let mv: ReturnType<WindowFrameHooks['moveFrom']> | null = null;
+    const set = (i: TabPressIntent) => { if (i !== intent) { intent = i; h.onIntent?.(i); } };
+    const timer = window.setTimeout(() => { if (intent === 'pending') { set('armed'); if (touch) navigator.vibrate?.(8); } }, TAB_HOLD_MS);
+    const menu = (ev: Event) => { ev.preventDefault(); ev.stopPropagation(); }; // long-press on Android fires contextmenu mid-press
+    const swallow = () => { const kill = (ev: Event) => { ev.preventDefault(); ev.stopPropagation(); }; window.addEventListener('click', kill, { capture: true, once: true }); window.setTimeout(() => window.removeEventListener('click', kill, { capture: true }), 60); };
+    const move = (ev: PointerEvent) => {
+      if (intent === 'pending' || intent === 'armed') {
+        const next = tabPressIntent({ dx: ev.clientX - x0, dy: ev.clientY - y0, heldMs: Date.now() - t0 });
+        if (next === 'window') { set('window'); mv = f ? f.moveFrom(x0, y0) : null; }
+        else if (next === 'reorder') set('reorder');
+        else return;
+      }
+      if (intent === 'window') mv?.to(ev.clientX, ev.clientY);
+      else if (intent === 'reorder') h.onReorder?.(ev.clientX, 'move');
+    };
+    const done = (ev: PointerEvent) => {
+      window.clearTimeout(timer);
+      window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', done); window.removeEventListener('pointercancel', done);
+      window.setTimeout(() => window.removeEventListener('contextmenu', menu, true), 0);
+      const cancelled = ev.type === 'pointercancel';
+      if (intent === 'window') { mv?.end(); swallow(); }
+      else if (intent === 'reorder') { h.onReorder?.(ev.clientX, cancelled ? 'cancel' : 'end'); swallow(); }
+      else if (!cancelled && tabPressIntent({ dx: ev.clientX - x0, dy: ev.clientY - y0, heldMs: Date.now() - t0, released: true }) === 'hold' && touch && h.onHold) { h.onHold(x0, y0); swallow(); }
+      set('pending');
+    };
+    window.addEventListener('pointermove', move); window.addEventListener('pointerup', done); window.addEventListener('pointercancel', done);
+    window.addEventListener('contextmenu', menu, true);
+  };
+}
+
 /** Shared pointer plumbing for move + resize (mouse, pen and touch: pointer events with capture, touch-action none in CSS). */
 function useWindowDrag(w: WindowSpec) {
   const wm = useWindowManager();
   const lastTap = useRef(0);
+  // one move, from the press point: a maximized window restores under the pointer once it really moves; the grab
+  // offset is where the pointer sits inside the window, so the engine snaps from pointer minus offset each step (a pull
+  // never accumulates); s18: screen / window edges, zones, split preview
+  const moveFrom = (x0: number, y0: number) => {
+    wm.focus(w.id);
+    const cur = wm.state.windows.find((x) => x.id === w.id) ?? w;
+    let restored = !isMaximized(cur); const grab = y0 - cur.y;
+    let ox = x0 - cur.x, oy = y0 - cur.y;
+    return {
+      to: (x: number, y: number) => {
+        if (!restored) { if (Math.hypot(x - x0, y - y0) < 6) return; const r = wm.dragRestore(w.id, x, y, grab); restored = true; if (r) { ox = x - r.x; oy = y - r.y; } return; }
+        wm.dragTo(w.id, x - ox, y - oy, x, y, Date.now());
+      },
+      end: () => wm.settle(w.id),
+    };
+  };
   const startMove = (e: React.PointerEvent) => {
     if (e.button !== undefined && e.button !== 0) return;
     e.preventDefault(); wm.focus(w.id);
@@ -193,16 +285,9 @@ function useWindowDrag(w: WindowSpec) {
     const now = Date.now();
     if (now - lastTap.current < 320) { lastTap.current = 0; wm.toggleMaximize(w.id); return; }
     lastTap.current = now;
-    const lx = e.clientX, ly = e.clientY; let restored = !isMaximized(w);
-    const grab = e.clientY - (e.currentTarget as HTMLElement).getBoundingClientRect().top;
-    // grab offset: where the pointer sits inside the window; the unsnapped position is pointer minus offset, and the
-    // engine snaps from there each step (so a pull never accumulates); s18: screen / window edges, zones, split preview
-    let ox = e.clientX - w.x, oy = e.clientY - w.y;
-    const move = (ev: PointerEvent) => {
-      if (!restored) { if (Math.hypot(ev.clientX - lx, ev.clientY - ly) < 6) return; const r = wm.dragRestore(w.id, ev.clientX, ev.clientY, grab); restored = true; if (r) { ox = ev.clientX - r.x; oy = ev.clientY - r.y; } return; }
-      wm.dragTo(w.id, ev.clientX - ox, ev.clientY - oy, ev.clientX, ev.clientY, Date.now());
-    };
-    const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up); wm.settle(w.id); };
+    const m = moveFrom(e.clientX, e.clientY);
+    const move = (ev: PointerEvent) => m.to(ev.clientX, ev.clientY);
+    const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up); m.end(); };
     window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
   };
   const startResize = (e: React.PointerEvent, edge: ResizeEdge) => {
@@ -214,7 +299,7 @@ function useWindowDrag(w: WindowSpec) {
     const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up); wm.settle(w.id); };
     window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
   };
-  return { startMove, startResize };
+  return { startMove, moveFrom, startResize };
 }
 
 /**
@@ -229,11 +314,13 @@ function FloatingWindow({ w }: { w: WindowSpec }) {
   const wm = rt.windows;
   const s = useWindowState();
   const layout = s.layouts[w.id];
-  const { startMove, startResize } = useWindowDrag(w);
+  const { startMove, moveFrom, startResize } = useWindowDrag(w);
   const frame = windowFrame(w);
   const maximized = isMaximized(w);
+  const [grips, setGrips] = useState(0);
+  const claimGrip = useRef(() => { setGrips((n) => n + 1); return () => setGrips((n) => n - 1); }).current;
   const hooks: WindowFrameHooks = {
-    w, frame, maximized, startMove, startResize, canMinimize: wm.canMinimize,
+    w, frame, maximized, startMove, moveFrom, claimGrip, startResize, canMinimize: wm.canMinimize,
     minimize: () => wm.minimizeToNextCorner(w.id), toggleMaximize: () => wm.toggleMaximize(w.id), close: () => wm.close(w.id),
   };
   // branding@1: floating windows use the `floating-window` slot, every other window the `window` slot
@@ -256,6 +343,8 @@ function FloatingWindow({ w }: { w: WindowSpec }) {
             </div>
           )}
           {frame === 'standard' && effectiveToolbar(w) && <WindowToolbar w={w} />}
+          {/* terminal-drag-chain-tree: a frameless window whose content shows no WindowGrip still gets one to move it by */}
+          {frame === 'frameless' && grips === 0 && <div className="fx-window__grip fx-window__grip--float" role="button" aria-label="Move window (double-tap to maximize)" title="Drag to move · double-click to maximize" onPointerDown={startMove}><Icon name="grip" size={14} /></div>}
           <div className="fx-window__body">{layout ? <DockHost windowId={w.id} empty={<div className="fx-empty">Empty window</div>} /> : <div className="fx-empty">Empty window</div>}<BrandWatermark slot={brandSlot} /></div>
         </div>
         {/* window-resize-fix (Nov 3 2026): the handles sit in their own layer just above the window (same z, drawn after

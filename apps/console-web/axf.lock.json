@@ -551,7 +551,7 @@
     "src/axf/core/engines/theme.ts": "916b12b59f4520e4",
     "src/axf/core/engines/uac.ts": "b7c1348f9ffe8c68",
     "src/axf/core/engines/widgets.ts": "23212e79b93e8497",
-    "src/axf/core/engines/windows.ts": "846185a380a9ebc9",
+    "src/axf/core/engines/windows.ts": "231732b3a5d40d5a",
     "src/axf/core/engines/work.ts": "1aedb6bc4b7bfe98",
     "src/axf/core/engines/xlayout.ts": "c747255988311553",
     "src/axf/core/index.ts": "0891179e8e032fbf",
@@ -661,7 +661,7 @@
     "src/axf/react/components/Controls.tsx": "0627e2446e099ab4",
     "src/axf/react/components/Forms.tsx": "e26fe52e23777ae7",
     "src/axf/react/components/Help.tsx": "d6acade09e5698c1",
-    "src/axf/react/components/Icon.tsx": "e8148c3e8da3b31d",
+    "src/axf/react/components/Icon.tsx": "aaffc4e642b60605",
     "src/axf/react/components/InterfaceScope.tsx": "c610cb111863aadd",
     "src/axf/react/components/LookEditor.tsx": "b9114a8bd91acd64",
     "src/axf/react/components/Markdown.tsx": "f1a77bb0436ed1f8",
@@ -677,8 +677,8 @@
     "src/axf/react/components/Widgets.tsx": "6d1442ad79d7775a",
     "src/axf/react/editorSync.ts": "4d2dfe9847350acb",
     "src/axf/react/hubAppearance.ts": "d7f3983fdd82b80b",
-    "src/axf/react/index.ts": "2201f2920599cae4",
-    "src/axf/react/library.ts": "923d66f8f64fb37b",
+    "src/axf/react/index.ts": "603d6d2d1c94a227",
+    "src/axf/react/library.ts": "a1e3ee41389eca00",
     "src/axf/react/placement.tsx": "e50243526c856169",
     "src/axf/react/pluginRecords.ts": "b0165b309076c3d3",
     "src/axf/react/studio/AccountView.tsx": "06157f15d56df859",
@@ -688,7 +688,7 @@
     "src/axf/react/studio/OutputTerminal.tsx": "1ac995fb7275d62c",
     "src/axf/react/studio/builtinDialogs.tsx": "5d35a316a9d81b93",
     "src/axf/react/windows/DockHost.tsx": "aed2738feff1e3c9",
-    "src/axf/react/windows/WindowHost.tsx": "9cbebe654e3f62ab",
+    "src/axf/react/windows/WindowHost.tsx": "66767874d57f37ef",
     "src/axf/schemas/ai-providers.json": "2e1e445fb70ba223",
     "src/axf/schemas/app-structure.json": "b757aff49521a626",
     "src/axf/schemas/asset-types.android.json": "c31b8af1ae8fa030",
@@ -776,6 +776,6 @@
     "src/axf/schemas/shared-assets.json": "7d6a5bb4f0b2a9c3",
     "src/axf/schemas/swarm.json": "72c7999aebb9e8c2",
     "src/axf/schemas/ui-review.json": "6cbca899c45dd994",
-    "src/axf/ui/axf.css": "fd00dab03441749d"
+    "src/axf/ui/axf.css": "0d63f557f6c4128a"
   }
 }
