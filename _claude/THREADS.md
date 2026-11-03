@@ -754,3 +754,5 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 18:10 UTC · `md-studio` s1 done (urgent) · orchestrator
 - 2026-11-03 18:10 UTC · `md-studio` s2 done (urgent) · orchestrator
 - 2026-11-03 18:15 UTC · `crew-live` added (7 steps) (urgent) · orchestrator
+- 2026-11-03 18:15 UTC · `crew-live` branch claude/crew-live (urgent) · builds-live
+- 2026-11-03 18:15 UTC · `crew-live` s1 done, → running (urgent) · orchestrator
