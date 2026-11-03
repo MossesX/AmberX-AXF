@@ -12,7 +12,7 @@ export const api = pluginApi(FOLDER, 'Push banner');
 
 export interface PullInfo { number: number | null; title: string; url: string; draft: boolean; ci: 'none' | 'running' | 'failure' | 'success' | 'unknown' }
 export interface Branch { name: string; ahead: number | null; behind: number | null; sha?: string; subject?: string; date?: string; url?: string; hidden?: boolean; pr: PullInfo | null; error: string; /** no PR, not behind its base: merges cleanly */ clean?: boolean; ci?: PullInfo['ci']; canMerge?: boolean }
-export interface Pull { number: number; title: string; url: string; draft: boolean; head: string; base: string; fork: boolean; author: string; updated: string; ci: PullInfo['ci']; mergeable: boolean | null; mergeState?: string; ready: boolean; hidden?: boolean; sha?: string }
+export interface Pull { number: number; title: string; url: string; draft: boolean; head: string; base: string; fork: boolean; author: string; updated: string; ci: PullInfo['ci']; mergeable: boolean | null; mergeState?: string; ready: boolean; hidden?: boolean; sha?: string; land?: { build: string; state: string; kind: string; why: string } }
 export interface RepoBranches { repo: string; base: string; url: string; branches: Branch[]; pulls?: Pull[]; error: string }
 export interface PullRow extends Pull { repo: string; key: string; ahead: number | null; behind: number | null }
 /** A successful Merge or Pull main in, kept (every device, 7 days) until its trash can is tapped. */
