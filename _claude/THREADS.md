@@ -819,3 +819,5 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 19:01 UTC · `crew-live` note (urgent) · orchestrator
 - 2026-11-03 19:02 UTC · `claude-settings` added (7 steps) (urgent) · orchestrator
 - 2026-11-03 19:02 UTC · `follow-amber` added (7 steps) (urgent) · orchestrator
+- 2026-11-03 19:02 UTC · `claude-settings` note (urgent) · orchestrator
+- 2026-11-03 19:02 UTC · `claude-settings` branch claude/claude-settings (urgent) · builds-live
