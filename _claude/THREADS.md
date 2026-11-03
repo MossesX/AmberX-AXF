@@ -781,3 +781,14 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 18:29 UTC · `builds-one-page` s13 done, → complete, note (refactor) · foreign-write
 - 2026-11-03 18:29 UTC · `crew-live` s2 done (urgent) · orchestrator
 - 2026-11-03 18:29 UTC · `crew-live` s4 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s3 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s4 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s5 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s6 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s7 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s8 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s9 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s11 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s12 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s13 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s14 done (urgent) · orchestrator
