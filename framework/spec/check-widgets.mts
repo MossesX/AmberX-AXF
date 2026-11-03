@@ -8,7 +8,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
-import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, moveOnHost, normalizeArrangement, placeOnHost, placeToolbarWidgets, snapIndex, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
+import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, moveOnHost, removeFromHost, addToHost, hostPalette, normalizeArrangement, placeOnHost, placeToolbarWidgets, snapIndex, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { validateAsset } from '../core/validate';
 import { AxfRuntime } from '../core/runtime';
 
@@ -167,13 +167,69 @@ const eq = (a: unknown, b: unknown, msg: string) => { assert.deepEqual(a, b, msg
   rt.dispatch('widgets.arrange:banner'); ok(!rt.arranging(), 'arrange rt: action toggles off');
   rt.setArranging('nohost'); ok(!rt.arranging(), 'arrange rt: unknown host never arranges');
   const menu = rt.contextExtras.get('*:widgets')!('banner');
-  ok(menu.some((m) => m.action === 'widgets.arrange:banner') && menu.some((m) => m.action === 'widgets.reset:banner'), 'arrange rt: banner right-click offers Arrange + Put back');
+  ok(menu.some((m) => m.action === 'banner.edit' && m.label === 'Edit banner…') && menu.some((m) => m.action === 'widgets.reset:banner'), 'arrange rt: banner right-click offers Edit banner + Put back');
   eq(rt.contextExtras.get('*:widgets')!('default'), [], 'arrange rt: other targets get nothing');
   rt.dispatch('widgets.reset:banner');
   eq(rt.banner().placed.right.map((p) => p.key), rightBefore, 'arrange rt: reset puts it back');
   eq(rt.settings.get('axf.widgets.arrange.banner'), null, 'arrange rt: reset clears the setting');
   rt.moveHostItem('banner', 'badge:new', 'left', 0); rt.reset();
   eq(rt.settings.get('axf.widgets.arrange.banner'), null, 'arrange rt: Reset to defaults clears arrangements');
+}
+
+// banner editor (Nov 3 2026): fixture replay (widgets.json → edit) + the runtime's remove / add / palette / undo / banner.edit
+{
+  const e = read('widgets.json').edit;
+  const has = (t: string, id: string) => read('widgets.json').exists.includes(`${t}:${id}`);
+  const place = (a: any) => placeOnHost(e.own, e.extra, has, e.types, e.sides, a);
+  eq(normalizeArrangement(e.normalize.in, e.sides), e.normalize.out, 'edit: normalize keeps true flags only');
+  let placed: any = e.plain, arr: any = {};
+  for (const st of e.steps) {
+    const next = st.op === 'remove' ? removeFromHost(placed, arr, st.key, e.sides)
+      : st.op === 'add' ? addToHost(placed, arr, st.key, st.side, st.index, e.sides, e.types)
+      : moveOnHost(placed, arr, st.key, st.side, st.index, e.sides);
+    eq(next, st.arrange, `edit: ${st.op} ${st.key}`);
+    if (st.placed) eq(place(next), st.placed, `edit: placed after ${st.op} ${st.key}`);
+    arr = next; placed = place(next);
+  }
+  const p = e.plain;
+  eq(removeFromHost(p, {}, 'clock:nope', e.sides), e.noops['remove-unknown'], 'edit: remove unknown is a no-op');
+  eq(addToHost(p, {}, 'badge:new', 'left', 0, e.sides, e.types), e.noops['add-placed'], 'edit: add placed is a no-op');
+  eq(addToHost(p, {}, 'button:x', 'left', 0, e.sides, e.types), e.noops['add-wrong-type'], 'edit: add wrong type is a no-op');
+  eq(addToHost(p, {}, 'clock:digital-24h', 'up', 0, e.sides, e.types), e.noops['add-bad-side'], 'edit: add bad side is a no-op');
+  eq(addToHost(p, {}, 'clock', 'left', 0, e.sides, e.types), e.noops['add-bad-key'], 'edit: add bad key is a no-op');
+  eq(hostPalette(e.palette.placed, e.palette.arrange, e.palette.candidates, e.types), e.palette.out, 'edit: palette (removed first, no dupes, host types only)');
+
+  const assets = readdirSync(join(root, 'assets')).flatMap((t) => readdirSync(join(root, 'assets', t)).filter((n) => n.endsWith('.json')).map((n) => JSON.parse(readFileSync(join(root, 'assets', t, n), 'utf8'))));
+  const defaults = JSON.parse(readFileSync(join(root, 'defaults.json'), 'utf8'));
+  const rt = new AxfRuntime({ manifest: { app: { id: 'test', name: 'Test' }, defaults } as never, assets, storageKey: 'test:banner-editor' });
+  rt.attachToBanner({ type: 'badge', id: 'new', at: 'right', origin: 'p1' });
+  const all = () => Object.values(rt.banner().placed).flat().map((x) => x.key);
+  const before = all();
+  rt.dispatch('banner.edit'); ok(rt.arranging('banner'), 'edit rt: banner.edit turns edit mode on');
+  ok(!rt.canUndoArrange('banner'), 'edit rt: nothing to undo yet');
+  ok(rt.removeHostItem('banner', 'badge:new'), 'edit rt: remove ok');
+  ok(!all().includes('badge:new'), 'edit rt: removed badge is gone');
+  rt.attachToBanner({ type: 'badge', id: 'new', at: 'right', origin: 'p1' });
+  ok(!all().includes('badge:new'), 'edit rt: a plugin re-attaching does not bring it back');
+  const pal = rt.hostPalette('banner');
+  ok(pal[0]?.key === 'badge:new' && pal[0].removed, 'edit rt: palette offers the removed badge first');
+  ok(pal.every((x) => !before.filter((k) => k !== 'badge:new').includes(x.key)), 'edit rt: palette leaves out what is on the banner');
+  const extraKey = pal.find((x) => !x.removed)?.key;
+  ok(!!extraKey && rt.addHostItem('banner', extraKey!), 'edit rt: add a widget from the palette');
+  eq(rt.banner().placed.right.at(-1)?.key, extraKey, 'edit rt: added at the end of the right side');
+  ok(!rt.addHostItem('banner', extraKey!), 'edit rt: adding twice refused');
+  ok(rt.undoHostArrangement('banner'), 'edit rt: undo add');
+  ok(!all().includes(extraKey!), 'edit rt: undo took the added widget off');
+  ok(rt.undoHostArrangement('banner'), 'edit rt: undo remove');
+  eq(all(), before, 'edit rt: undo twice = where we started');
+  ok(!rt.undoHostArrangement('banner'), 'edit rt: nothing left to undo');
+  rt.removeHostItem('banner', 'badge:new'); rt.dispatch('widgets.reset:banner');
+  eq(all(), before, 'edit rt: reset brings removed widgets back');
+  ok(rt.undoHostArrangement('banner') && !all().includes('badge:new'), 'edit rt: reset can be undone');
+  rt.dispatch('widgets.remove:banner:badge:new'); rt.dispatch('widgets.add:banner:badge:new');
+  ok(all().includes('badge:new'), 'edit rt: widgets.add / widgets.remove actions (key with a colon)');
+  rt.dispatch('banner.edit:off'); ok(!rt.arranging(), 'edit rt: banner.edit:off leaves');
+  ok(rt.contextExtras.get('*:widgets')!('banner').some((m) => m.action === 'widgets.undo:banner'), 'edit rt: right-click offers Undo');
 }
 
 console.log(`check-widgets: ${checks} checks ok`);
