@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 291,
- "updatedAt": "2026-11-03T18:02:10.439Z",
+ "rev": 299,
+ "updatedAt": "2026-11-03T18:04:43.568Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -28900,7 +28900,7 @@
    "branch": "claude/builds-one-page-done",
    "pr": "#134",
    "createdAt": "2026-10-27T19:11:22.011Z",
-   "updatedAt": "2026-11-03T17:56:10.354Z",
+   "updatedAt": "2026-11-03T18:02:48.952Z",
    "builtAt": "",
    "notes": [
     {
@@ -29090,12 +29090,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:42.317Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T18:02:57.488Z"
     },
     {
      "id": "s8",
@@ -29112,12 +29112,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:43.720Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T18:02:57.488Z"
     },
     {
      "id": "s9",
@@ -29134,12 +29134,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:45.135Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T18:02:57.488Z"
     },
     {
      "id": "s10",
@@ -29156,12 +29156,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:46.138Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T18:02:57.488Z"
     },
     {
      "id": "s11",
@@ -29178,12 +29178,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:46.936Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T18:02:57.488Z"
     },
     {
      "id": "s12",
@@ -29258,15 +29258,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:47.995Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T18:02:57.488Z"
     },
     {
-     "id": "s30",
+     "id": "s17-16",
      "uid": "st-mw0zlof60117cu",
      "title": "",
      "text": "Old screens become thin redirects to their Builds view (pending, build queue, build-orchestrator, plan, tracker); every nav/menu/context way in kept",
@@ -29280,12 +29280,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:48.952Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T17:54:02.788Z",
-     "updatedAt": "2026-11-03T17:54:02.851Z"
+     "updatedAt": "2026-11-03T18:02:57.488Z"
     },
     {
      "id": "s16-15",
@@ -29324,12 +29324,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:48.952Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T17:53:48.928Z",
-     "updatedAt": "2026-11-03T17:53:48.956Z"
+     "updatedAt": "2026-11-03T18:02:49.034Z"
     },
     {
      "id": "s13",
@@ -29362,7 +29362,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -50688,7 +50688,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T17:42:37.105Z",
+   "updatedAt": "2026-11-03T18:04:33.904Z",
    "builtAt": "",
    "notes": [
     {
@@ -50783,11 +50783,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T16:07:30.479Z",
+     "doneAt": "2026-11-03T18:02:04.461Z",
      "note": "",
-     "rev": 3,
+     "rev": 4,
      "createdAt": "2026-11-03T15:32:06.060Z",
-     "updatedAt": "2026-11-03T16:43:31.040Z"
+     "updatedAt": "2026-11-03T18:02:04.554Z"
     },
     {
      "id": "s2",
@@ -50805,11 +50805,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T16:14:14.427Z",
+     "doneAt": "2026-11-03T18:02:41.980Z",
      "note": "",
-     "rev": 3,
+     "rev": 4,
      "createdAt": "2026-11-03T15:32:06.060Z",
-     "updatedAt": "2026-11-03T16:43:36.450Z"
+     "updatedAt": "2026-11-03T18:02:42.014Z"
     },
     {
      "id": "s3",
@@ -50827,11 +50827,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T16:24:07.209Z",
+     "doneAt": "2026-11-03T18:03:34.422Z",
      "note": "",
-     "rev": 3,
+     "rev": 4,
      "createdAt": "2026-11-03T15:32:06.060Z",
-     "updatedAt": "2026-11-03T16:43:41.964Z"
+     "updatedAt": "2026-11-03T18:03:34.475Z"
     },
     {
      "id": "s4",
@@ -50849,11 +50849,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T16:29:56.545Z",
+     "doneAt": "2026-11-03T18:04:10.335Z",
      "note": "",
-     "rev": 3,
+     "rev": 4,
      "createdAt": "2026-11-03T15:32:06.060Z",
-     "updatedAt": "2026-11-03T16:43:47.234Z"
+     "updatedAt": "2026-11-03T18:04:10.369Z"
     },
     {
      "id": "s5",
@@ -50871,11 +50871,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T16:41:42.519Z",
+     "doneAt": "2026-11-03T18:04:33.904Z",
      "note": "",
-     "rev": 3,
+     "rev": 4,
      "createdAt": "2026-11-03T15:32:06.060Z",
-     "updatedAt": "2026-11-03T16:43:52.538Z"
+     "updatedAt": "2026-11-03T18:04:33.957Z"
     },
     {
      "id": "s6",
@@ -51018,7 +51018,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -53110,7 +53110,7 @@
    "branch": "claude/builds-one-page-done",
    "pr": "",
    "createdAt": "2026-11-03T17:53:08.980Z",
-   "updatedAt": "2026-11-03T17:53:50.835Z",
+   "updatedAt": "2026-11-03T18:02:36.092Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -53175,12 +53175,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:36.092Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T17:53:08.985Z",
-     "updatedAt": "2026-11-03T17:53:08.985Z"
+     "updatedAt": "2026-11-03T18:02:57.488Z"
     },
     {
      "id": "s4",
@@ -53235,7 +53235,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

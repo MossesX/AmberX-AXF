@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| Land everything (Urgent `land-everything`, Opus; Brett Nov 3 voice: "Just go. Get everything live."): 17 AmberX-AXF PRs + 3 axHub PRs landed on main and deployed; banner PRs #251 #254 and banners-one left for Brett | complete | `claude/land-everything` | — | Report `_claude/builds/reports/land-everything.md`. Brett: banner PRs, hub delete for kill-patches-pilot s7 | 2026-11-03 |
 | Plugin commands, automatically (Urgent `plugin-commands-auto`; Brett Nov 3 voice): every plugin, existing and new, exposes all of its commands and reads through control@1 on REST `/api/control/<plugin>/<command>`, MCP `<plugin>_<command>` (+ `plugin_commands` / `plugin_read` / `plugin_run`) and CLI `axf <plugin> <command>`, made automatically from routes, actions, data folder and plugin.json `commands`; lifecycle check + CI enforce it. Opus. Base token-control-opus (#250) + console-commands (#249) merged in | PR open (all 6 steps done; UI Review waiting) | `claude/plugin-commands-auto` | [#263](https://github.com/MossesX/AmberX-AXF/pull/263) (merges after #250 and #249; UI Review r-20261103-3345d3d4) | axHub admin: allow `<plugin>_*`, `plugin_commands`, `plugin_read`, `plugin_run` on the `axf-console` service. Report `_claude/builds/reports/plugin-commands-auto.md` | 2026-11-03 |
 | Model upgrades need Brett (Urgent `model-upgrade-approval`, Opus; Brett Nov 3, voice: "You can downgrade, but you can't upgrade."; replaces stopped `model-switch-approval`): downgrades pass + recorded; upgrades only by Brett's console click or axHub approval (`axf.orchestrator_upgrade_approve`, confirm); enforced in orchestrator core/CLI/server, launcher (`model-gate.mjs`), swarm planner; audit marked 3 self-approved upgrades + #247's switch | review | `claude/model-upgrade-approval` | #253 | axHub side: set `axf.orchestrator_upgrade_approve` to confirm and forward a signed approval header to downstream (axHub repo) | Nov 3 2026 |
 | Console commands (Urgent `console-commands`; Brett Nov 3 07:16 ET voice): tell Amber to load screens — control@1 `console` namespace (open screen/dialog/settings tab, run action, back, list), live delivery to his open console, REST + MCP (axHub) + CLI `axf console …`. Opus. Builds on token-control (#246 + claude/token-control-opus) | PR open, UI review waiting (all 8 steps done) | `claude/console-commands` | [#249](https://github.com/MossesX/AmberX-AXF/pull/249) | auto-merge when CI green + UI Review approved; axHub: make sure service `axf-console` is registered and set console_* tools to allow (Brett, axHub admin) | 2026-11-03 |
@@ -566,6 +567,23 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
+- 2026-11-03 16:07 UTC · landed `claude/notes-vault` (PR#256) on main at 5a6311a3 · land-everything
+- 2026-11-03 16:14 UTC · landed `claude/agent-chats-hub` (PR#248) on main at c985c38d · land-everything
+- 2026-11-03 16:24 UTC · landed `claude/kill-patches-pilot` (PR#258) on main at e697c302 · land-everything
+- 2026-11-03 16:30 UTC · landed `claude/headless-tabs` (PR#259) on main at a8186b83 · land-everything
+- 2026-11-03 16:41 UTC · landed `claude/whats-new-banner` (PR#260) on main at 6ff111a1 · land-everything
+- 2026-11-03 16:48 UTC · landed `claude/molly-fable` (PR#245) on main at bffc2601 · land-everything
+- 2026-11-03 16:48 UTC · landed `claude/xlayout-opus` (PR#252) on main at bffc2601 · land-everything
+- 2026-11-03 17:03 UTC · landed `claude/token-control-opus` (PR#250) on main at 0a85ab65 · land-everything
+- 2026-11-03 17:04 UTC · landed `claude/console-commands` (PR#249) on main at 0a85ab65 · land-everything
+- 2026-11-03 17:09 UTC · landed `claude/theme-editor` (PR#243) on main at 6f20dd54 · land-everything
+- 2026-11-03 17:17 UTC · landed `claude/model-upgrade-approval` (PR#253) on main at 03d1d75f · land-everything
+- 2026-11-03 17:19 UTC · landed `claude/one-look-default-2` (PR#244) on main at 4ff2cc50 · land-everything
+- 2026-11-03 17:26 UTC · landed `claude/theme-veto-pass` (PR#262) on main at 16620d72 · land-everything
+- 2026-11-03 17:26 UTC · landed `claude/pass-all` (PR#264) on main at 16620d72 · land-everything
+- 2026-11-03 17:35 UTC · landed `claude/plugin-commands-auto` (PR#263) on main at cdd568c2 · land-everything
+- 2026-11-03 17:42 UTC · landed `claude/axhub-veto-pass-web` (PR#261) on main at bc344492 · land-everything
+- 2026-11-03 17:42 UTC · landed axHub `claude/kill-patches-pilot` (#32) at d3cf462 and `claude/axhub-veto-pass` (#33/#34) at 6334d34, deployed · land-everything
 - 2026-11-03 13:53 UTC · `orch-live-sync` s1 done (urgent) · orchestrator
 - 2026-11-03 13:54 UTC · `xlayout` s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done (big-dog) · builds-live
 - 2026-11-03 14:45 UTC · `headless-tabs` s1–s7 done (urgent) · PR #259 · UI Review r-20261103-3sp5x01
@@ -710,3 +728,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 17:56 UTC · `builds-one-page` PR #134, note (refactor) · reconciler
 - 2026-11-03 17:56 UTC · `builds-one-page` note (refactor) · foreign-write
 - 2026-11-03 17:56 UTC · `menu-scroll` added (6 steps) (urgent) · orchestrator
+- 2026-11-03 17:59 UTC · `builds-one-page` note (refactor) · foreign-write
+- 2026-11-03 18:01 UTC · `auto-land` added (8 steps) (urgent) · orchestrator
+- 2026-11-03 18:01 UTC · `auto-land` note (urgent) · orchestrator
+- 2026-11-03 18:02 UTC · `builds-one-page-done` s3 done (urgent) · snap-sully
+- 2026-11-03 18:02 UTC · `builds-one-page` s7 done (refactor) · snap-sully
+- 2026-11-03 18:02 UTC · `builds-one-page` s8 done (refactor) · snap-sully
+- 2026-11-03 18:02 UTC · `builds-one-page` s9 done (refactor) · snap-sully
+- 2026-11-03 18:02 UTC · `builds-one-page` s10 done (refactor) · snap-sully
+- 2026-11-03 18:02 UTC · `builds-one-page` s11 done (refactor) · snap-sully
+- 2026-11-03 18:02 UTC · `builds-one-page` s15 done (refactor) · snap-sully
+- 2026-11-03 18:02 UTC · `builds-one-page` s16 done (refactor) · snap-sully
+- 2026-11-03 18:02 UTC · `builds-one-page` s7 done, s8 done, s9 done, s10 done, s11 done, s15 done, s30 done (refactor) · foreign-write
+- 2026-11-03 18:02 UTC · `builds-one-page-done` s3 done (urgent) · foreign-write
