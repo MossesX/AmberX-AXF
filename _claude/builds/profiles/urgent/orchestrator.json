@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T18:01:49.058Z",
+ "updatedAt": "2026-11-03T18:02:10.439Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3158,9 +3158,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T18:01:41.577Z",
-   "updatedAt": "2026-11-03T18:01:41.577Z",
+   "updatedAt": "2026-11-03T18:01:43.308Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Relaunched as auto-land-2 (worktree /root/axf-builds/auto-land-2, branch claude/auto-land-2) after the first auto-land run stopped. Brett's correction: zero tokens for merging.",
+     "at": "2026-11-03T18:01:43.308Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
