@@ -218,7 +218,8 @@ def decide(item: dict, decision: str, comment: str = "", by: str = "brett", at: 
 
 
 def review_state(items: list[dict], branch: str = "", pr: int | None = None) -> dict:
-    mine = [it for it in items if (branch and it.get("branch") == branch) or (pr and it.get("pr") == pr)]
+    # a predicted look is approved for the look, not for merging: only real screens count for a branch / PR
+    mine = [it for it in items if ((branch and it.get("branch") == branch) or (pr and it.get("pr") == pr)) and (predicted_mod.prediction_of(it) or {}).get("state") != "predicted"]
     c = {k: 0 for k in STATUSES}
     for it in mine:
         if it.get("status") in c:

@@ -157,7 +157,9 @@ async function predict(id, { worktree = val(flags.worktree), force = !!flags.for
     build: b.id, name: `Predicted look: ${b.title}`.slice(0, 200), app: appName(primary.app), screen: spec.screens.map((s) => s.title).join(', '),
     kind: primary.blocks.some((x) => x.type === 'settings') && primary.id === 'settings' ? 'settings' : 'screen',
     group: `Predicted looks - ${day()}`, source: process.env.AXF_SURFACE === 'headless' ? 'headless' : 'claude-code', submittedBy: `build:${b.id}`,
-    branch: b.branch || undefined, pr: b.pr || undefined, notes: `Predicted from the brief and ${b.steps.length} steps${files.length ? ` + ${files.length} files touched so far` : ''}. Mockup made by rules ($0, no model). Approve the look before the build spends money; Ask changes sends your comment to the build.`,
+    // no branch / PR while it is only a prediction: a look waiting for approval must never hold the build's merge
+    // (ui-review@1 state); predict/real links them when the real screens arrive
+    notes: `Predicted from the brief and ${b.steps.length} steps${files.length ? ` + ${files.length} files touched so far` : ''}. Mockup made by rules ($0, no model). Approve the look before the build spends money; Ask changes sends your comment to the build.`,
     prediction: pred, files: filesBody(pics),
   };
   let res;
