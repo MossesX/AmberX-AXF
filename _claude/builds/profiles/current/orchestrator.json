@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T19:47:35.076Z",
+ "updatedAt": "2026-11-03T19:48:02.873Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -133,14 +133,14 @@
    "title": "Window resize fix + Terminal settings dialog placement (urgent)",
    "category": "Bug fix",
    "detail": "Brett (Nov 3 2026, voice): floating windows must be resizable (Terminal cannot be resized), and Terminal settings placement \"dialog\" opens nothing. Agent: Landin Lenny (headless worktree session). Merge on Brett order.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
-   "pendingId": "window-resize-fix",
+   "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T19:32:33.504Z",
-   "updatedAt": "2026-11-03T19:32:33.504Z",
+   "updatedAt": "2026-11-03T19:47:23.937Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -159,10 +159,10 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T19:47:23.937Z",
      "note": "",
-     "uid": "st-mw134p8001p42n"
+     "uid": "st-mw134d6a04twsq"
     },
     {
      "id": "s2",
@@ -180,7 +180,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw134p8002sqdt"
+     "uid": "st-mw134d6a05nreq"
     },
     {
      "id": "s3",
@@ -198,7 +198,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw134p8003s7i3"
+     "uid": "st-mw134d6a0601hn"
     }
    ]
   }

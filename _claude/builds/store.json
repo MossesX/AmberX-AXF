@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 390,
- "updatedAt": "2026-11-03T19:47:35.076Z",
+ "rev": 391,
+ "updatedAt": "2026-11-03T19:48:02.873Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55368,14 +55368,14 @@
    "title": "Window resize fix + Terminal settings dialog placement (urgent)",
    "category": "Bug fix",
    "detail": "Brett (Nov 3 2026, voice): floating windows must be resizable (Terminal cannot be resized), and Terminal settings placement \"dialog\" opens nothing. Agent: Landin Lenny (headless worktree session). Merge on Brett order.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
-   "pendingId": "window-resize-fix",
+   "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T19:32:33.504Z",
-   "updatedAt": "2026-11-03T19:32:33.504Z",
+   "updatedAt": "2026-11-03T19:47:23.937Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -55383,7 +55383,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mw134p8001p42n",
+     "uid": "st-mw134d6a04twsq",
      "title": "",
      "text": "Find why floating windows cannot be resized; fix window host (8 edges, touch targets, double-tap title)",
      "model": "Opus",
@@ -55396,16 +55396,16 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T19:47:23.937Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T19:32:33.504Z",
-     "updatedAt": "2026-11-03T19:32:48.869Z"
+     "updatedAt": "2026-11-03T19:47:24.253Z"
     },
     {
      "id": "s2",
-     "uid": "st-mw134p8002sqdt",
+     "uid": "st-mw134d6a05nreq",
      "title": "",
      "text": "Fix settings placement dialog for Terminal and every plugin with the option",
      "model": "Opus",
@@ -55423,11 +55423,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-03T19:32:33.504Z",
-     "updatedAt": "2026-11-03T19:32:48.869Z"
+     "updatedAt": "2026-11-03T19:32:33.504Z"
     },
     {
      "id": "s3",
-     "uid": "st-mw134p8003s7i3",
+     "uid": "st-mw134d6a0601hn",
      "title": "",
      "text": "Tests, screenshots, UI Review, report, PR, merge, deploy",
      "model": "Opus",
@@ -55445,7 +55445,7 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-03T19:32:33.504Z",
-     "updatedAt": "2026-11-03T19:32:48.869Z"
+     "updatedAt": "2026-11-03T19:32:33.504Z"
     }
    ],
    "profiles": [
@@ -55456,26 +55456,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-03T19:32:33.504Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mw134p8001p42n": "2026-11-03T19:32:33.504Z",
-     "st-mw134p8002sqdt": "2026-11-03T19:32:33.504Z",
-     "st-mw134p8003s7i3": "2026-11-03T19:32:33.504Z"
-    }
-   },
+   "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-03T19:32:48.869Z",
+   "defaultAt": "2026-11-03T19:32:33.504Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
