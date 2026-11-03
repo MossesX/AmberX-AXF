@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 314,
- "updatedAt": "2026-11-03T18:16:36.429Z",
+ "rev": 315,
+ "updatedAt": "2026-11-03T18:17:03.888Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -53256,16 +53256,21 @@
    "title": "Scrollable menus that stay on screen",
    "category": "Framework > Menus",
    "detail": "Brett, Nov 3 2026 (voice): application menus need to be scrollable when they reach beyond the screen. Framework level: menubar dropdowns, submenus, context and overflow menus cap to the available viewport height (safe areas, banner, keyboard via visualViewport), scroll inside with fade hints, flip/shift before scrolling, submenus open left at the right edge. Tokens only. Agent: Janitor Joey.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/menu-scroll",
-   "pr": "",
+   "pr": "#268",
    "createdAt": "2026-11-03T17:56:44.297Z",
-   "updatedAt": "2026-11-03T18:16:06.227Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-03T18:16:10.379Z",
+   "builtAt": "2026-11-03T18:16:08.260Z",
+   "notes": [
+    {
+     "text": "Built by Janitor Joey (Opus). PR #268, UI Review r-20261103-2637fd91. menu-fit@1 engine + menuFit.ts; checks 14/14, browser 7/16 -> 16/16. Report _claude/builds/reports/menu-scroll.md",
+     "at": "2026-11-03T18:16:09.646Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -53394,12 +53399,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:16:08.260Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T17:56:44.298Z",
-     "updatedAt": "2026-11-03T17:56:44.298Z"
+     "updatedAt": "2026-11-03T18:16:08.361Z"
     }
    ],
    "profiles": [
@@ -53410,7 +53415,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
