@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T02:40:26.219Z",
+ "updatedAt": "2026-11-03T11:26:13.298Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -258,16 +258,21 @@
    "title": "Shared dock engine: split, float, re-dock, drop zones, layout presets (used by MD Studio, xLayout, Theme Editor)",
    "category": "Urgent",
    "detail": "Brett Nov 2 2026 21:30 ET picked 'shared dock engine first'. Extends framework/core/engines/windows (panes, tab groups) + framework/react/windows/WindowHost. Covers xLayout s3 (Big Dog) pane engine; xLayout s7/s8 use it. Android twin = deferred gap in PORTING.md (Android on hold).",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T02:32:21.328Z",
-   "updatedAt": "2026-11-03T02:32:21.328Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-03T11:18:39.122Z",
+   "builtAt": "2026-11-03T11:18:38.786Z",
+   "notes": [
+    {
+     "text": "Built on branch claude/molly-fable (headless Fable run molly-fable, Nov 3 2026): core/engines/dock.ts, dock-layout@1 (10 starters baked into every app), react/windows/DockHost.tsx, spec/fixtures/dock.json + check-dock.mts. PR opened at the end of the run; the push banner merges it.",
+     "at": "2026-11-03T11:18:39.122Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -283,8 +288,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:08:41.380Z",
      "note": "",
      "uid": "st-mw02odif05ltyd"
     },
@@ -301,8 +306,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:08:42.061Z",
      "note": "",
      "uid": "st-mw02odif06xc5b"
     },
@@ -319,8 +324,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:13:29.561Z",
      "note": "",
      "uid": "st-mw02odif07d08o"
     },
@@ -337,8 +342,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:13:29.965Z",
      "note": "",
      "uid": "st-mw02odif08osb7"
     }
