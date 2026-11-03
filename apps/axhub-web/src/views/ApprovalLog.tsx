@@ -2,18 +2,22 @@
  * The approvals log (decision #94): every request with about sixty named fields and its timeline, filtered, sorted and
  * paged by the hub (`/auth/api/approvals/log`). Tap a row for every field. The auto-approve windows are listed under
  * it, and the whole log downloads as JSON. Calls that ran without an approval (axHub decision 110, e.g. vps.build_*) have no
- * request page, so their tool, arguments, who ran it, when and the result show right on the row instead.
+ * request page, so their tool, arguments, who ran it, when and the result show right on the row instead. Calls that
+ * ran under a timed pass (axHub decision 112) show the same way, with the pass named; `#/approvals/log?pass=any|<id>`
+ * opens the log filtered to them.
  */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Chip, Container, Note, SelectField, TextField, useRuntime } from '../axf/react';
 import { directRunRows, ranWithoutApproval, relTime } from '../hub/core';
-import { go } from '../hub/route';
+import { go, useRouteParams } from '../hub/route';
 import { HUB } from '../hub/useHub';
 import { HubGate, useHubJson, when } from './hubPage';
 
 type Entry = Record<string, unknown> & { id: string; confirmationId: string; qualifiedTool: string; status: string; createdAt: string; summary: string; decidedBy?: string; decisionSeconds?: number; events?: { at: string; kind?: string; note?: string }[] };
 interface LogPage {
   total: number; page: number; pages: number; tools: string[]; statuses: string[]; counts: Record<string, number>; entries: Entry[];
+  /** axHub decision 112: how many calls ran under a pass (absent on older hubs). */
+  underPass?: number;
   windows: { id: string; minutes: number; by: string; openedAt?: string; until: string; closedAt?: string; closedBy?: string; approvedCount: number }[];
 }
 
@@ -30,7 +34,10 @@ function Log() {
   const [sort, setSort] = useState('newest');
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState('');
-  const query = new URLSearchParams({ q, status, via, tool, sort, page: String(page) }).toString();
+  const routePass = useRouteParams('approvals-log').pass ?? '';
+  const [pass, setPass] = useState(routePass);
+  useEffect(() => { setPage(1); setPass(routePass); }, [routePass]);
+  const query = new URLSearchParams({ q, status, via, tool, sort, page: String(page), ...(pass ? { pass } : {}) }).toString();
   const res = useHubJson<LogPage>(`/auth/api/approvals/log?${query}`);
   const d = res.data;
   const reset = (f: (v: string) => void) => (v: string) => { setPage(1); f(v); };
@@ -57,6 +64,8 @@ function Log() {
               options={(d?.statuses ?? []).map((s) => ({ value: s, label: `${s}${d?.counts[s] ? ` (${d.counts[s]})` : ''}` }))} />
             <SelectField label="Decided" value={via} onChange={reset(setVia)} empty="Any way"
               options={[{ value: 'pending', label: 'Not decided' }, { value: 'web', label: 'On the web' }, { value: 'cli', label: 'In the terminal' }, { value: 'auto', label: 'Automatically' }, { value: 'other', label: 'Other' }]} />
+            <SelectField label="Pass" value={pass === '' || pass === 'any' ? pass : 'one'} onChange={(v) => { setPage(1); setPass(v === 'one' ? pass : v); }} empty="With or without"
+              options={[{ value: 'any', label: `Ran under a pass${d?.underPass ? ` (${d.underPass})` : ''}` }, ...(pass && pass !== 'any' ? [{ value: 'one', label: `Pass ${pass.slice(0, 8)}…` }] : [])]} />
             <SelectField label="Tool" value={tool} onChange={reset(setTool)} empty="Any tool" options={(d?.tools ?? []).map((t) => ({ value: t, label: t }))} />
             <SelectField label="Sort" value={sort} onChange={reset(setSort)}
               options={[{ value: 'newest', label: 'Newest first' }, { value: 'oldest', label: 'Oldest first' }, { value: 'tool', label: 'Tool' }, { value: 'status', label: 'Status' }, { value: 'wait', label: 'Longest wait' }]} />

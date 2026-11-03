@@ -27,6 +27,12 @@
             "view": "go-pass"
           },
           {
+            "id": "passes",
+            "label": "Passes",
+            "icon": "clock",
+            "view": "passes"
+          },
+          {
             "id": "approvals-log",
             "label": "Approvals log",
             "icon": "list",

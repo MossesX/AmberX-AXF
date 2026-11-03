@@ -7,7 +7,7 @@
  * Nothing here touches the network: every case is a hand-written reply.
  */
 import { keepSessionOnFailure, MISSES_SHOWN, sameJson, showReading, shownError } from './src/hub/core.ts';
-import { directRunRows, ranWithoutApproval } from './src/hub/core.ts';
+import { directRunRows, ranUnderPass, ranWithoutApproval, passClock, passCovers, passSecondsLeft, patternList } from './src/hub/core.ts';
 import { countdownKey, nextSort, replyBase, requestedKey, shownRow, sourceChips, sourceKind, sourceWho, afterPick, approveNowPaths, bashCommand, clipboardFor, clock, errorText, handoffGauges, heldActions, localToUtcMinute, parseRoute, pickOf, waitingCount, waitingTitle, platformOf, relTime, routeHash, safeFilePath, sessionsFor, signInUrl, stepGroups } from './src/hub/core.ts';
 import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../framework/libs/hub/apps.ts';
 
@@ -167,6 +167,11 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   eq(parseRoute(`#/approvals/${ID}`), { view: 'approval', params: { id: ID } }, 'one request (the hub redirects /auth/admin/approvals/<id> here)');
   eq(parseRoute('#/approvals/not-an-id'), { view: 'home', params: {} }, 'a bad id is the list');
   eq(parseRoute('#/approvals/log'), { view: 'approvals-log', params: {} }, 'the log');
+  eq(parseRoute('#/approvals/log?pass=any'), { view: 'approvals-log', params: { pass: 'any' } }, 'the log, calls under any pass (axHub decision 112)');
+  eq(parseRoute(`#/approvals/log?pass=${ID}`), { view: 'approvals-log', params: { pass: ID } }, 'the log, calls under one pass');
+  eq(parseRoute('#/approvals/log?pass=feed%3Aaxf-console%3Ap1'), { view: 'approvals-log', params: { pass: 'feed:axf-console:p1' } }, 'a console feed pass id');
+  eq(parseRoute('#/approvals/log?pass=%3Cscript%3E'), { view: 'approvals-log', params: {} }, 'a bad pass filter is dropped');
+  eq(parseRoute('#/passes'), { view: 'passes', params: {} }, '#/passes opens the Passes page');
   eq(parseRoute('#/users'), { view: 'users', params: {} }, 'users');
   eq(parseRoute('#/account'), { view: 'account', params: {} }, 'account');
   eq(parseRoute('#/apps'), { view: 'apps', params: {} }, 'apps');
@@ -178,7 +183,7 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   eq(parseRoute('#/Settings'), { view: 'home', params: {} }, 'a view name with capitals is home');
   eq(parseRoute('#/a/b/c'), { view: 'home', params: {} }, 'deep unknown routes are home');
   eq(parseRoute('#/%E0%A4%A'), { view: 'home', params: {} }, 'a broken escape is home');
-  for (const [view, params] of [['home', {}], ['home', { status: 'postponed' }], ['approval', { id: ID }], ['approvals-log', {}], ['users', {}], ['account', {}], ['handoff', {}], ['handoff-run', { id: RUN }], ['handoff-run', { id: RUN, file: 'a/b.md' }], ['settings', {}]]) {
+  for (const [view, params] of [['home', {}], ['home', { status: 'postponed' }], ['approval', { id: ID }], ['approvals-log', {}], ['approvals-log', { pass: 'any' }], ['approvals-log', { pass: ID }], ['passes', {}], ['users', {}], ['account', {}], ['handoff', {}], ['handoff-run', { id: RUN }], ['handoff-run', { id: RUN, file: 'a/b.md' }], ['settings', {}]]) {
     eq(parseRoute(routeHash(view, params)), { view, params }, `${view} ${JSON.stringify(params)} round-trips`);
   }
   eq(routeHash('approval', { id: 'x' }), '#/approvals', 'a bad id never goes into the hash');
@@ -243,7 +248,7 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   ok(/orderActions\(item\.actions\)/.test(detail) && /filter\(\(a\) => a === 'approve'\)/.test(detail), 'Approve comes first among the actions');
   const nav = JSON.parse(readFileSync(`${here}src/assets/nav-menu/axhub-web.json`, 'utf8'));
   const navViews = nav.data.sections.flatMap((x) => x.items.map((i) => i.view));
-  for (const v of ['home', 'approvals-log', 'users', 'handoff', 'account', 'apps']) ok(navViews.includes(v), `the nav reaches ${v}`);
+  for (const v of ['home', 'approvals-log', 'passes', 'users', 'handoff', 'account', 'apps']) ok(navViews.includes(v), `the nav reaches ${v}`);
 }
 
 /* ---------------------------------------------------------------- Approve now on every waiting row (Oct 31 2026) */
@@ -354,6 +359,25 @@ console.log('Approvals log — calls that ran without an approval (decision 110)
   eq([bare.tool, bare.arguments, bare.result, bare.when], ['vps.build_list', '(no arguments)', 'error · timeout · 250 ms', '2026-11-01T02:00:00.000Z'], 'bare entry: tool from service + tool, no arguments, failed');
   ok(!('who' in bare), 'empty rows are left out');
   eq(directRunRows({ status: 'ran without approval', qualifiedTool: 'vps.build_land', command: 'land leftovers', summary: 'x', argumentKeys: ['a'] }).find((r) => r.key === 'arguments').value, 'land leftovers', 'arguments: the command when the hub sent one');
+}
+
+/* ---------------------------------------------------------------- timed passes (axHub decision 112) */
+{
+  eq(passSecondsLeft(1800, 1_000_000, 1_000_000 + 65_000), 1735, 'counts down on the device from the hub\'s seconds left');
+  eq(passSecondsLeft(10, 0, 60_000), 0, 'never below zero');
+  eq(passSecondsLeft(Number.NaN, 0, 0), 0, 'nonsense is ended');
+  eq([passClock(1735), passClock(3729), passClock(5), passClock(0)], ['28:55', '1:02:09', '0:05', 'ended'], 'the clock');
+  eq(passCovers({ service: 'axf-console', tools: ['control_set', 'control_reset'], scope: ['tokens.theme'] }), 'axf-console · control_set, control_reset · scope tokens.theme', 'what a pass covers');
+  eq(passCovers({ service: 'axf-console', tools: ['*'] }), 'axf-console · every tool', '* reads as every tool');
+  eq(patternList(' tokens.theme, tokens.layout  tokens.theme '), ['tokens.theme', 'tokens.layout'], 'patterns from a field');
+  eq(patternList('  '), undefined, 'an empty field is no patterns');
+  const under = { status: 'ran under pass', qualifiedTool: 'axf-console.control_set', summary: 'axf-console.control_set with arguments {"target":"tokens.theme"}', decidedBy: 'pass p1 (web:brett)', passId: 'p1', passGrantedBy: 'web:brett', passExpiresAt: '2026-11-03T15:30:00.000Z', ranAt: '2026-11-03T15:01:00.000Z' };
+  ok(ranUnderPass(under) && ranWithoutApproval(under), 'a call under a pass has no request page: shown inline');
+  ok(!ranUnderPass({ status: 'ran' }), 'an approved call is not under a pass');
+  const rows = Object.fromEntries(directRunRows(under).map((r) => [r.key, r.value]));
+  eq(rows.pass, 'p1 · granted by web:brett · ends 2026-11-03T15:30:00.000Z', 'the pass is named on the row');
+  eq(rows.why, 'pass p1 (web:brett)', 'why it ran: the pass');
+  eq(Object.fromEntries(directRunRows({ ...under, status: 'failed under pass', resultStatus: undefined }).map((r) => [r.key, r.value])).result.split(' · ')[0], 'error', 'failed under a pass reads as an error');
 }
 
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);

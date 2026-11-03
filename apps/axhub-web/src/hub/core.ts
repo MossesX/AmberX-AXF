@@ -13,6 +13,8 @@ export const APPROVAL_ID_RE = /^[0-9a-f-]{36}$/;
 export const RUN_ID_RE = /^\d{8}-\d{6}-[a-z0-9]{4}$/;
 /** A view name the shell knows, for routes that aren't one of the hub's own. */
 const VIEW_RE = /^[a-z][a-z0-9-]{0,40}$/;
+/** The log's pass filter: `any`, or a pass id (stored ids are UUIDs, feed ids `feed:<service>:<id>`). */
+const PASS_FILTER_RE = /^(any|[A-Za-z0-9][A-Za-z0-9:._-]{0,99})$/;
 /** Grid filters the hub knows (`APPROVAL_FILTERS` there). */
 export const APPROVAL_FILTERS = ['all', 'pending', 'postponed', 'approved', 'declined', 'ignored', 'revoked', 'used', 'expired'] as const;
 
@@ -36,7 +38,11 @@ export function parseRoute(hash: string): Route {
     const status = query.get('status') ?? '';
     return { view: 'home', params: (APPROVAL_FILTERS as readonly string[]).includes(status) && status !== 'all' ? { status } : {} };
   }
-  if (a === 'approvals' && b === 'log' && parts.length === 2) return { view: 'approvals-log', params: {} };
+  if (a === 'approvals' && b === 'log' && parts.length === 2) {
+    // `?pass=any|<id>`: the calls that ran under a pass (axHub decision 112)
+    const pass = query.get('pass') ?? '';
+    return { view: 'approvals-log', params: PASS_FILTER_RE.test(pass) ? { pass } : {} };
+  }
   if (a === 'approvals' && b && APPROVAL_ID_RE.test(b) && parts.length === 2) {
     const pick = pickOf(query.get('do'));
     return { view: 'approval', params: pick ? { id: b, do: pick } : { id: b } };
@@ -56,7 +62,7 @@ export function routeHash(view: string, params: Record<string, string> = {}): st
     case 'home':
       return params.status && params.status !== 'all' && (APPROVAL_FILTERS as readonly string[]).includes(params.status) ? `#/approvals?status=${params.status}` : '#/approvals';
     case 'approvals-log':
-      return '#/approvals/log';
+      return PASS_FILTER_RE.test(params.pass ?? '') ? `#/approvals/log?pass=${encodeURIComponent(params.pass!)}` : '#/approvals/log';
     case 'approval':
       if (!APPROVAL_ID_RE.test(params.id ?? '')) return '#/approvals';
       return pickOf(params.do) ? `#/approvals/${params.id}?do=${params.do}` : `#/approvals/${params.id}`;
@@ -334,7 +340,10 @@ export type LogEntryView = Record<string, unknown>;
  * request page would open empty. The log shows its details inline instead.
  */
 export const ranWithoutApproval = (e: LogEntryView): boolean =>
-  typeof e.status === 'string' && e.status.endsWith('without approval');
+  typeof e.status === 'string' && (e.status.endsWith('without approval') || e.status.endsWith('under pass'));
+
+/** A call that ran under a timed pass (axHub decision 112): no veto countdown, no request page; the pass is named. */
+export const ranUnderPass = (e: LogEntryView): boolean => typeof e.status === 'string' && e.status.endsWith('under pass');
 
 const txt = (v: unknown): string => (typeof v === 'string' ? v.trim() : typeof v === 'number' && Number.isFinite(v) ? String(v) : '');
 
@@ -347,7 +356,7 @@ export function directRunRows(e: LogEntryView): { key: string; label: string; va
   const who = [Object.hasOwn(SOURCE_LABEL, source) ? SOURCE_LABEL[source] : source, txt(e.sourceSession), txt(e.callerName) || txt(e.callerId)]
     .filter((v, i, a) => v && a.indexOf(v) === i).join(' · ');
   const ms = typeof e.runMs === 'number' && Number.isFinite(e.runMs) ? e.runMs : null;
-  const result = [txt(e.resultStatus) || (e.status === 'failed without approval' ? 'error' : 'ok'), txt(e.errorCode),
+  const result = [txt(e.resultStatus) || (e.status === 'failed without approval' || e.status === 'failed under pass' ? 'error' : 'ok'), txt(e.errorCode),
     txt(e.jobId) ? `job ${txt(e.jobId)}` : '', ms === null ? '' : ms < 1000 ? `${Math.round(ms)} ms` : `${(ms / 1000).toFixed(1)} s`].filter(Boolean).join(' · ');
   const rows: { key: string; label: string; value: string; time?: boolean; mono?: boolean }[] = [
     { key: 'tool', label: 'Tool', value: txt(e.toolTitle) && txt(e.toolTitle) !== tool ? `${tool} — ${txt(e.toolTitle)}` : tool, mono: true },
@@ -356,6 +365,40 @@ export function directRunRows(e: LogEntryView): { key: string; label: string; va
     { key: 'when', label: 'When', value: txt(e.ranAt) || txt(e.createdAt), time: true },
     { key: 'result', label: 'Result', value: result },
     { key: 'why', label: 'Approval', value: txt(e.decidedBy) || 'no approval needed (policy allow)' },
+    { key: 'pass', label: 'Pass', value: txt(e.passId) ? `${txt(e.passId)}${txt(e.passGrantedBy) ? ` · granted by ${txt(e.passGrantedBy)}` : ''}${txt(e.passExpiresAt) ? ` · ends ${txt(e.passExpiresAt)}` : ''}` : '', mono: true },
   ];
   return rows.filter((r) => r.value);
+}
+
+/* ─────────────────────────────────────────────────────────── timed passes (axHub decision 112) */
+
+/**
+ * Seconds a pass still has, counted down on this device from the hub's `secondsLeft` at `fetchedAt` (the hub's clock
+ * decides when it ends; this only keeps the number moving between reads).
+ */
+export function passSecondsLeft(secondsLeft: number, fetchedAt: number, now: number = Date.now()): number {
+  if (!Number.isFinite(secondsLeft) || secondsLeft <= 0) return 0;
+  return Math.max(0, Math.round(secondsLeft - (now - fetchedAt) / 1000));
+}
+
+/** `29:05`, `1:02:09`, or `ended`. */
+export function passClock(seconds: number): string {
+  if (!Number.isFinite(seconds) || seconds <= 0) return 'ended';
+  const s = Math.floor(seconds);
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return h > 0 ? `${h}:${pad(m)}:${pad(s % 60)}` : `${m}:${pad(s % 60)}`;
+}
+
+/** What a pass covers, in one line: `axf-console · control_set, control_reset · scope tokens.theme`. */
+export function passCovers(p: { service: string; tools: string[]; scope?: string[] }): string {
+  const tools = p.tools.length === 1 && p.tools[0] === '*' ? 'every tool' : p.tools.join(', ');
+  return [p.service, tools, p.scope?.length ? `scope ${p.scope.join(', ')}` : ''].filter(Boolean).join(' · ');
+}
+
+/** A comma or space separated field → patterns (empty → undefined). */
+export function patternList(text: string): string[] | undefined {
+  const list = text.split(/[\s,]+/).map((x) => x.trim()).filter(Boolean);
+  return list.length ? [...new Set(list)] : undefined;
 }
