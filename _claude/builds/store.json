@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 216,
- "updatedAt": "2026-11-03T14:25:47.373Z",
+ "rev": 220,
+ "updatedAt": "2026-11-03T14:43:49.756Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50193,9 +50193,14 @@
    "branch": "claude/kill-patches-pilot",
    "pr": "",
    "createdAt": "2026-11-03T14:10:11.184Z",
-   "updatedAt": "2026-11-03T14:25:47.327Z",
+   "updatedAt": "2026-11-03T14:43:49.733Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "s7 partial: axHub PR #32 open; /projects/patches* snapshotted not deleted (no axHub MCP here, needs veto call); MossesX/Build-Pilot archive needs Brett (token 403); DNS records remain.",
+     "at": "2026-11-03T14:43:49.733Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -50301,12 +50306,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T14:43:48.200Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T14:10:11.187Z",
-     "updatedAt": "2026-11-03T14:10:11.187Z"
+     "updatedAt": "2026-11-03T14:43:48.223Z"
     },
     {
      "id": "s6",
@@ -50323,12 +50328,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T14:43:48.735Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T14:10:11.187Z",
-     "updatedAt": "2026-11-03T14:10:11.187Z"
+     "updatedAt": "2026-11-03T14:43:48.762Z"
     },
     {
      "id": "s7",
@@ -50367,12 +50372,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T14:43:49.260Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T14:10:11.187Z",
-     "updatedAt": "2026-11-03T14:10:11.187Z"
+     "updatedAt": "2026-11-03T14:43:49.281Z"
     }
    ],
    "profiles": [
@@ -50383,7 +50388,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

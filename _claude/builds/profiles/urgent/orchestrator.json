@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T14:25:47.373Z",
+ "updatedAt": "2026-11-03T14:43:49.756Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1107,9 +1107,14 @@
    "branch": "claude/kill-patches-pilot",
    "pr": "",
    "createdAt": "2026-11-03T14:10:11.184Z",
-   "updatedAt": "2026-11-03T14:25:47.327Z",
+   "updatedAt": "2026-11-03T14:43:49.733Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "s7 partial: axHub PR #32 open; /projects/patches* snapshotted not deleted (no axHub MCP here, needs veto call); MossesX/Build-Pilot archive needs Brett (token 403); DNS records remain.",
+     "at": "2026-11-03T14:43:49.733Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -1197,8 +1202,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T14:43:48.200Z",
      "note": "",
      "uid": "st-mw0rlsih0ddwo9"
     },
@@ -1215,8 +1220,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T14:43:48.735Z",
      "note": "",
      "uid": "st-mw0rlsih0e8ey2"
     },
@@ -1251,8 +1256,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T14:43:49.260Z",
      "note": "",
      "uid": "st-mw0rlsih0gtf2c"
     }
