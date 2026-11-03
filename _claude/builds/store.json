@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 316,
- "updatedAt": "2026-11-03T18:20:32.134Z",
+ "rev": 321,
+ "updatedAt": "2026-11-03T18:23:58.099Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -28893,15 +28893,15 @@
    "title": "Builds: one dataset, one page with selectable views (Plan, Tracker, Queue, Pending, Orchestrator)",
    "category": "Console UI",
    "detail": "Brett, Oct 27 2026: Plans, Tracker, Build queue, Pending builds and the Build orchestrator are separate files (plan.json, tracker.json, build-queue.json, pending.json, _claude/builds/orchestrator.json) that drift (pending complete never marks the plan built; 91 of 100 pending items unlinked). Merge into one dataset; one Builds page with the views selectable from a toolbar and everywhere else that fits (app menu, context menu, shortcuts, banners, deep links). Every view, Orchestrator included, defaults to the Pending builds look: a table with expandable rows; better nested info in every list. Folds in pending-grid-view. tracker.json stays a generated export for the Android console and /tracker. Web only (Android hold).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
    "branch": "claude/builds-one-page-done",
-   "pr": "#134",
+   "pr": "#269",
    "createdAt": "2026-10-27T19:11:22.011Z",
-   "updatedAt": "2026-11-03T18:20:21.482Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T18:22:41.268Z",
+   "builtAt": "2026-11-03T18:22:40.093Z",
    "notes": [
     {
      "text": "Oct 27 18:15 Brett: folded in 'date + time on every entry, newest (last updated) first in every grid regardless of filter' as two Opus steps before tests (asked for Refactor profile; folded here since this build owns the one dataset).",
@@ -28926,6 +28926,10 @@
     {
      "text": "Reconciler: PR #134; PR #134 names s1, s2, s3, s4 done",
      "at": "2026-11-03T17:56:10.354Z"
+    },
+    {
+     "text": "Nov 3 2026: all steps done on claude/builds-one-page-done, PR #269 (UI Review r-20261103-abd35505). Built by Snap Sully (builds-one-page-done, Urgent). Stale claude/builds-one-page-finish ported and superseded; PRs #134 and #130 superseded. Report _claude/builds/reports/builds-one-page-done.md",
+     "at": "2026-11-03T18:22:41.268Z"
     }
    ],
    "approvals": [
@@ -29266,28 +29270,6 @@
      "updatedAt": "2026-11-03T18:10:06.703Z"
     },
     {
-     "id": "s16-15",
-     "uid": "st-mw0zlwfb0171rx",
-     "title": "",
-     "text": "Old screens become thin redirects to their Builds view (pending, build queue, build-orchestrator, plan, tracker); every nav/menu/context way in kept",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-03T17:54:13.199Z",
-     "updatedAt": "2026-11-03T17:54:13.223Z"
-    },
-    {
      "id": "s16",
      "uid": "st-mw0zldp801my37",
      "title": "",
@@ -29324,12 +29306,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:22:40.092Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T18:23:44.668Z"
     }
    ],
    "profiles": [
@@ -29340,7 +29322,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -29398,6 +29380,33 @@
       "updatedAt": "2026-11-03T18:10:06.703Z"
      },
      "at": "2026-11-03T18:20:21.483Z",
+     "why": "removed in the orchestrator",
+     "by": "snap-sully"
+    },
+    {
+     "step": {
+      "id": "s16-15",
+      "uid": "st-mw0zlwfb0171rx",
+      "title": "",
+      "text": "Old screens become thin redirects to their Builds view (pending, build queue, build-orchestrator, plan, tracker); every nav/menu/context way in kept",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "20 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-03T17:54:13.199Z",
+      "updatedAt": "2026-11-03T17:54:13.223Z"
+     },
+     "at": "2026-11-03T18:20:22.189Z",
      "why": "removed in the orchestrator",
      "by": "snap-sully"
     }
@@ -53114,16 +53123,21 @@
    "title": "Builds: finish the one Builds page (builds-one-page s5-s15) on current main",
    "category": "Console UI",
    "detail": "Brett, Nov 3 2026 (voice): finish builds-one-page. Assigned agent: Snap Sully. Verify which of s5-s15 really landed, port claude/builds-one-page-finish onto current main, build the rest: ONE Builds page, views over the ONE live store, every view command through control@1 (REST + MCP + CLI). Tests, report, PR, mark builds-one-page complete, close the stale finish branch.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/builds-one-page-done",
-   "pr": "",
+   "pr": "#269",
    "createdAt": "2026-11-03T17:53:08.980Z",
-   "updatedAt": "2026-11-03T18:02:36.092Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-03T18:22:44.636Z",
+   "builtAt": "2026-11-03T18:22:43.443Z",
+   "notes": [
+    {
+     "text": "Agent Snap Sully (snap-sully). PR #269, UI Review r-20261103-abd35505 waiting. builds-one-page un-archived and built (complete once #269 merges).",
+     "at": "2026-11-03T18:22:44.636Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -53208,12 +53222,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:22:42.312Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T17:53:08.985Z",
-     "updatedAt": "2026-11-03T17:53:08.985Z"
+     "updatedAt": "2026-11-03T18:22:42.348Z"
     },
     {
      "id": "s5",
@@ -53230,12 +53244,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:22:43.443Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T17:53:08.985Z",
-     "updatedAt": "2026-11-03T17:53:08.985Z"
+     "updatedAt": "2026-11-03T18:22:43.480Z"
     }
    ],
    "profiles": [
@@ -53246,7 +53260,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -53437,14 +53451,14 @@
    "title": "Auto-land finished builds (zero-token merge pipeline)",
    "category": "",
    "detail": "Relaunch of stopped auto-land as auto-land-2 (Brett, Nov 3 2026, voice). Agent: Earl the Ear. Plain-script merge pipeline reusing the push banner batch merge; AI only for real conflicts / red CI needing code.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T18:01:41.577Z",
-   "updatedAt": "2026-11-03T18:01:43.308Z",
+   "updatedAt": "2026-11-03T18:20:42.014Z",
    "builtAt": "",
    "notes": [
     {
@@ -53470,12 +53484,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T18:20:42.014Z",
+     "note": "Survey: push banner auto-merge already opens PRs, pulls main in via GitHub, waits for CI, respects UI Review, one merge per round. Gaps: status-only commits keep every PR behind main; CodeRabbit skipped counted as CI passed; GitHub update-branch conflicts on builds files; no ordering. #265 crew-retrain: UI Review waiting + real code conflicts with main (agent-swarm jobs.mjs/test.mjs, claude-headless.sh). Main CI was red: PR #267.",
+     "rev": 2,
      "createdAt": "2026-11-03T18:01:41.578Z",
-     "updatedAt": "2026-11-03T18:01:41.578Z"
+     "updatedAt": "2026-11-03T18:20:42.071Z"
     },
     {
      "id": "s2",
@@ -53640,7 +53654,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
