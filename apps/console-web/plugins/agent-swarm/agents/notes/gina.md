@@ -1,0 +1,2 @@
+- Kotlin kernel tests can't run on the VPS (no JDK/SDK): CI is the compiler. Read the test report artifact for the assertion message.
+- gen-fixtures.mts imports from many engines: watch for two engines exporting the same name.
