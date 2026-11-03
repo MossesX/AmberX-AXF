@@ -1,0 +1,192 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "theme-editor-help",
+  "name": "Theme editor help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:theme-editor.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:theme-editor",
+    "entries": [
+      {
+        "target": "view:theme-editor",
+        "title": "Theme editor",
+        "text": "Edit colour and style themes token by token: a Colour section and a Style section with every token in folding categories. Copy a theme, save it, load any theme.",
+        "kind": "screen"
+      },
+      {
+        "target": "theme-editor",
+        "title": "Theme editor settings",
+        "text": "The Theme editor under Settings \u2192 Plugins: the editor itself, its starting view, and install & uninstall."
+      },
+      {
+        "target": "view",
+        "title": "View",
+        "text": "Switches how the tokens are shown: Tree (folding categories), Grid (one table), Swatches (colours and samples) or Compare (your draft next to another theme).",
+        "kind": "control"
+      },
+      {
+        "target": "tree",
+        "title": "Tree view",
+        "text": "Sections and categories you fold open, with an editor for every token.",
+        "kind": "button"
+      },
+      {
+        "target": "grid",
+        "title": "Grid view",
+        "text": "Every token in one table with its category and an editor.",
+        "kind": "button"
+      },
+      {
+        "target": "swatches",
+        "title": "Swatches view",
+        "text": "Colours as swatches and style tokens as samples; tap one to edit it.",
+        "kind": "button"
+      },
+      {
+        "target": "compare",
+        "title": "Compare view",
+        "text": "Puts your draft next to another theme, marks what differs and lets you take the other value.",
+        "kind": "button"
+      },
+      {
+        "target": "find-a-token",
+        "title": "Find a token",
+        "text": "Filters every section to tokens whose name, path or category matches what you type.",
+        "kind": "field"
+      },
+      {
+        "target": "copy",
+        "title": "Copy",
+        "text": "Starts a new theme from the one you're editing: both sections become an unsaved draft, ready for a new name.",
+        "kind": "button"
+      },
+      {
+        "target": "copy-both-themes-as-asset-json",
+        "title": "Copy as JSON",
+        "text": "Copies the colour and style drafts to the clipboard as standard asset@1 JSON, for pasting into another app or a file.",
+        "kind": "button"
+      },
+      {
+        "target": "load-themes-from-asset-json-on-the-clipboard",
+        "title": "Paste themes",
+        "text": "Loads colour or style themes from asset@1 JSON on the clipboard into the editor as drafts.",
+        "kind": "button"
+      },
+      {
+        "target": "load-a-theme-file",
+        "title": "Load a theme file",
+        "text": "Opens an asset@1 theme file (one theme or a list) and loads it into the editor.",
+        "kind": "button"
+      },
+      {
+        "target": "back-to-the-active-themes",
+        "title": "Back to the active themes",
+        "text": "Throws away your unsaved edits and shows the themes in force again.",
+        "kind": "button"
+      },
+      {
+        "target": "load-colour-theme",
+        "title": "Load colour theme",
+        "text": "Picks any colour theme the app has (built-in, saved in the editor or the Theme manager) to edit. Nothing changes until you save.",
+        "kind": "field"
+      },
+      {
+        "target": "load-style-theme",
+        "title": "Load style theme",
+        "text": "Picks any style theme the app has to edit. Nothing changes until you save.",
+        "kind": "field"
+      },
+      {
+        "target": "theme-name",
+        "title": "Theme name",
+        "text": "The name your saved themes get. The colour part is saved as <name>-colors and the style part as <name>-style.",
+        "kind": "field"
+      },
+      {
+        "target": "save-apply",
+        "title": "Save & apply",
+        "text": "Saves the edited sections as standard asset@1 themes and applies them. The pick goes to the hub look, so every app follows.",
+        "kind": "button"
+      },
+      {
+        "target": "load",
+        "title": "Load",
+        "text": "Loads this saved theme into the editor to change it.",
+        "kind": "button"
+      },
+      {
+        "target": "take",
+        "title": "Take",
+        "text": "Copies the other theme's value for this token into your draft.",
+        "kind": "button"
+      },
+      {
+        "target": "compare-with",
+        "title": "Compare with",
+        "text": "The theme your draft is compared with.",
+        "kind": "field"
+      },
+      {
+        "target": "only-differences",
+        "title": "Only differences",
+        "text": "Lists only the tokens where your draft and the other theme differ.",
+        "kind": "toggle"
+      },
+      {
+        "target": "values-other-themes-use",
+        "title": "Values other themes use",
+        "text": "Picks a value another theme of this kind uses for the token, such as a font stack or a shadow.",
+        "kind": "field"
+      },
+      {
+        "target": "a-field",
+        "title": "Preview field",
+        "text": "A sample field drawn with your draft, so you can see it before saving. Typing here does nothing.",
+        "kind": "field"
+      },
+      {
+        "target": "a-switch",
+        "title": "Preview switch",
+        "text": "A sample switch drawn with your draft. It does nothing.",
+        "kind": "toggle"
+      },
+      {
+        "target": "axf.theme-editor.view",
+        "title": "Starting view",
+        "text": "The view the Theme editor opens in: Tree, Grid, Swatches or Compare.",
+        "kind": "control"
+      },
+      {
+        "target": "axf.theme-editor.showunset",
+        "title": "List tokens the theme doesn't set",
+        "text": "Shows every token the asset types and other themes know, even when the theme you're editing leaves it out (marked \u201cnot set\u201d).",
+        "kind": "control"
+      }
+    ],
+    "intros": [
+      {
+        "screen": "theme-editor",
+        "title": "Theme editor",
+        "steps": [
+          {
+            "say": "Pick a view up here: tree, grid, swatches or compare.",
+            "target": "view"
+          },
+          {
+            "say": "Every colour and style token is listed in folding categories. Change any value; the preview card shows the draft.",
+            "target": ""
+          },
+          {
+            "say": "Name it and tap Save and apply. Every app follows through the hub look.",
+            "target": "save-apply"
+          }
+        ]
+      }
+    ]
+  }
+}
