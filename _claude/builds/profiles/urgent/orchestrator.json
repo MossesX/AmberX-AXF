@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T19:18:29.311Z",
+ "updatedAt": "2026-11-03T19:21:12.744Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3920,12 +3920,16 @@
    "branch": "claude/claude-settings",
    "pr": "",
    "createdAt": "2026-11-03T19:02:12.964Z",
-   "updatedAt": "2026-11-03T19:12:27.586Z",
+   "updatedAt": "2026-11-03T19:20:58.529Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Agent: Janitor Joey (headless, Opus). All steps Opus (plugin work, no cross-port contract).",
      "at": "2026-11-03T19:02:13.957Z"
+    },
+    {
+     "text": "agent-pick (branch claude/agent-pick) added plugin claude-session with three Claude settings: Claude agent (default), Ask me every session, Ask for headless too (GET/PUT /api/plugins/claude-session/agent-settings, MCP claude_session_agent_settings[_set]). Build claude-settings' registry to list them (they stay stored there); its claude_settings_get should include them. Avoid the folder name 'claude' (the lifecycle check flags every \"claude\" string).",
+     "at": "2026-11-03T19:20:58.529Z"
     }
    ],
    "approvals": [],

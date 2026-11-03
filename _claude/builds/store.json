@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 377,
- "updatedAt": "2026-11-03T19:18:29.311Z",
+ "rev": 378,
+ "updatedAt": "2026-11-03T19:21:12.744Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -54403,12 +54403,16 @@
    "branch": "claude/claude-settings",
    "pr": "",
    "createdAt": "2026-11-03T19:02:12.964Z",
-   "updatedAt": "2026-11-03T19:12:27.586Z",
+   "updatedAt": "2026-11-03T19:20:58.529Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Agent: Janitor Joey (headless, Opus). All steps Opus (plugin work, no cross-port contract).",
      "at": "2026-11-03T19:02:13.957Z"
+    },
+    {
+     "text": "agent-pick (branch claude/agent-pick) added plugin claude-session with three Claude settings: Claude agent (default), Ask me every session, Ask for headless too (GET/PUT /api/plugins/claude-session/agent-settings, MCP claude_session_agent_settings[_set]). Build claude-settings' registry to list them (they stay stored there); its claude_settings_get should include them. Avoid the folder name 'claude' (the lifecycle check flags every \"claude\" string).",
+     "at": "2026-11-03T19:20:58.529Z"
     }
    ],
    "approvals": [],
@@ -54577,7 +54581,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
