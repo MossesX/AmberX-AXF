@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 555,
- "updatedAt": "2026-11-03T23:33:02.143Z",
+ "rev": 557,
+ "updatedAt": "2026-11-03T23:39:09.422Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -62077,14 +62077,14 @@
    "title": "Molly: navigation sub menus that slide open + Navigation settings",
    "category": "Molly",
    "detail": "Brett (Nov 3 2026, voice): \"I want Molly to have the console's navigation menu slide open, like when you click console, have a sub menu slide open, show its menu, and same thing for AXHub and AmberX. Have a sub menu slide open with an animation and give the navigation menu its own settings interface to control everything. The theme, the way it looks, its animation, its behavior, all that.\" Agent: Reel Rhonda (headless worktree, not on main). Model: Opus for every step (Claude decides): the nav-style contract is web-only, additive and opt-in; Android twin deferred in PORTING.md; flagged for a Fable review per the shared rule.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-nav-submenus",
    "pr": "#295",
    "createdAt": "2026-11-03T21:55:24.277Z",
-   "updatedAt": "2026-11-03T23:26:36.144Z",
+   "updatedAt": "2026-11-03T23:31:31.530Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -62105,12 +62105,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:27:29.343Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T21:55:24.280Z",
-     "updatedAt": "2026-11-03T22:14:35.347Z"
+     "updatedAt": "2026-11-03T23:27:31.439Z"
     },
     {
      "id": "s2",
@@ -62127,12 +62127,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:28:58.948Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T21:55:24.280Z",
-     "updatedAt": "2026-11-03T22:14:35.347Z"
+     "updatedAt": "2026-11-03T23:29:00.850Z"
     },
     {
      "id": "s3",
@@ -62149,12 +62149,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:30:17.525Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T21:55:24.280Z",
-     "updatedAt": "2026-11-03T22:14:35.347Z"
+     "updatedAt": "2026-11-03T23:30:20.649Z"
     },
     {
      "id": "s4",
@@ -62171,12 +62171,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:31:31.530Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T21:55:24.280Z",
-     "updatedAt": "2026-11-03T22:14:35.347Z"
+     "updatedAt": "2026-11-03T23:31:36.050Z"
     },
     {
      "id": "s5",
@@ -65619,7 +65619,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -65990,9 +65990,9 @@
    "source": "session",
    "pendingId": "",
    "branch": "claude/gizmo-companion",
-   "pr": "",
+   "pr": "#296",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-03T23:28:19.444Z",
+   "updatedAt": "2026-11-03T23:36:42.140Z",
    "builtAt": "",
    "notes": [
     {
@@ -66002,6 +66002,10 @@
     {
      "text": "Reconciler: branch claude/gizmo-companion (no PR yet)",
      "at": "2026-11-03T23:23:29.528Z"
+    },
+    {
+     "text": "Reconciler: PR #296",
+     "at": "2026-11-03T23:36:42.140Z"
     }
    ],
    "approvals": [],
@@ -66181,7 +66185,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T23:26:49.951Z"
+     "updatedAt": "2026-11-03T23:28:18.131Z"
     },
     {
      "id": "s9",
@@ -66313,7 +66317,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T23:28:25.527Z"
+     "updatedAt": "2026-11-03T23:28:49.646Z"
     },
     {
      "id": "s15",
@@ -66330,12 +66334,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:29:26.740Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T22:18:50.824Z"
+     "updatedAt": "2026-11-03T23:32:08.731Z"
     },
     {
      "id": "s16",
@@ -66396,12 +66400,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:31:41.429Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T22:18:50.824Z"
+     "updatedAt": "2026-11-03T23:32:08.731Z"
     },
     {
      "id": "s19",
@@ -66437,7 +66441,37 @@
    "rev": 12,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "session",
+    "planId": "",
+    "createdAt": "2026-11-03T22:18:50.820Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw1927q50kp8hq": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50lgz29": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50mxxmp": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50nom6p": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50o4880": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50ph88r": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50qynnq": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50rs6y6": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50sx2kp": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50ts2ss": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50u3iw6": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50vzd3o": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50wktdc": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50xfddn": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50yrq9q": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50zl3ym": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q510yqiw": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q511lo8v": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q512l9n0": "2026-11-03T22:18:50.824Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-03T22:18:50.824Z",
    "rearranged": false,
