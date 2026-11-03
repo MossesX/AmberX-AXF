@@ -5,7 +5,7 @@ references." Urgent profile build `kill-patches-pilot`, Opus, branch `claude/kil
 
 ## PRs
 
-- AmberX-AXF: `claude/kill-patches-pilot` (PR link in THREADS.md; the push banner merges it once CI is green).
+- AmberX-AXF: https://github.com/MossesX/AmberX-AXF/pull/258
 - axHub: https://github.com/MossesX/axHub/pull/32
 
 ## Removed from AmberX-AXF
