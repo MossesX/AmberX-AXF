@@ -38,6 +38,7 @@ function CommandRow({ p, c }: { p: PluginCommandEntry; c: PluginCommand }) {
     setOut(JSON.stringify(r, null, 2));
   };
   const cli = pluginCommandCli({ plugins: [{ ...p, commands: [c] }] }).commands[0]?.usage ?? '';
+  const here = p.app === 'console-web' && p.enabled !== false;
   return (
     <li className="axf-pc__row">
       <div className="axf-pc__head">
@@ -45,7 +46,7 @@ function CommandRow({ p, c }: { p: PluginCommandEntry; c: PluginCommand }) {
         <span>{c.title}</span>
         <Chip>{c.effect === 'read' ? 'read' : c.effect === 'destructive' ? 'deletes' : c.effect === 'navigate' ? 'opens' : 'changes'}</Chip>
         {c.confirm && <Chip>confirm</Chip>}
-        <Button size="sm" icon={open ? 'chevron-up' : 'chevron-down'} onClick={() => setOpen(!open)} data-help="pc-details">{open ? 'Less' : 'Try'}</Button>
+        {here && <Button size="sm" icon={open ? 'chevron-up' : 'chevron-down'} onClick={() => setOpen(!open)} data-help="pc-details">{open ? 'Less' : 'Try'}</Button>}
       </div>
       {open && (
         <div className="fx-stack axf-pc__body">

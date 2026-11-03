@@ -1,0 +1,5 @@
+[
+ {"name": "plugin-commands", "steps": [{"eval": "AXF.navigate('plugin-commands')", "wait": 6000}]},
+ {"name": "plugin-commands-try", "steps": [{"eval": "AXF.navigate('plugin-commands')", "wait": 6000}, {"click": "text=Try >> nth=0"}, {"wait": 800}, {"eval": "[...document.querySelectorAll(\"button\")].find((b) => b.textContent.trim() === \"Read\").click()"}, {"wait": 2500}]},
+ {"name": "plugin-commands-settings", "steps": [{"eval": "AXF.dispatch('settings.open:plugin-commands')", "wait": 4000}]}
+]

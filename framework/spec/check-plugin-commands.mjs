@@ -96,14 +96,14 @@ eq(unread.map((u) => u.why), ['route path is not a string literal'], 'a route th
 /* ---- scanning web actions */
 const TS = `
   register(rt) {
-    rt.actions.register('demo.open', () => rt.navigate('demo'), { label: 'Open demo' });
+    rt.actions.register('demo.open', () => rt.navigate('demo'), { label: 'Open what\\'s new' });
     rt.actions.register('demo.delete', (_a, ctx) => ctx, { label: 'Delete row', searchable: false });
     rt.actions.register("demo.sync", async () => {
       await go();
     }, { label: "Sync now" });
   }`;
 const acts = scanWebActions(TS);
-eq(acts.map((a) => [a.id, a.label, a.context]), [['demo.open', 'Open demo', false], ['demo.delete', 'Delete row', true], ['demo.sync', 'Sync now', false]], 'actions with labels; a handler reading ctx acts on a row');
+eq(acts.map((a) => [a.id, a.label, a.context]), [['demo.open', "Open what's new", false], ['demo.delete', 'Delete row', true], ['demo.sync', 'Sync now', false]], 'actions with labels; a handler reading ctx acts on a row');
 eq([actionEffect('demo.open'), actionEffect('demo.delete'), actionEffect('demo.sync')], ['navigate', 'destructive', 'write'], 'action effects by their words');
 eq([routeEffect('GET', '/x'), routeEffect('POST', '/x'), routeEffect('DELETE', '/x'), routeEffect('POST', '/snapshots/{id}/restore')], ['read', 'write', 'destructive', 'destructive'], 'route effects');
 
@@ -139,7 +139,7 @@ eq(off.commands.map((c) => c.id), ['state', 'info'], 'auto: false = only what is
 
 /* ---- registry, resolve, requests, inputs */
 const reg = pluginCommandRegistry([{ folder: 'demo', app: 'console-web', manifest, routes, unread: [], actions: acts, hasData: true }, { folder: 'notes', app: 'amberx-droid', manifest: { name: 'Notes' }, routes: [], actions: [{ id: 'notes.new', label: 'New' }] }]);
-eq(reg.plugins.map((p) => `${p.app}:${p.folder}`), ['amberx-droid:notes', 'console-web:demo'], 'sorted by app, then folder');
+eq(reg.plugins.map((p) => `${p.app}:${p.folder}`), ['console-web:demo', 'amberx-droid:notes'], 'the console\'s plugins first, then by app and folder');
 eq(resolvePluginCommand(reg, 'demo/state').command.id, 'state', 'resolve <plugin>/<command>');
 eq(resolvePluginCommand(reg, 'amberx-droid:notes/action-new').plugin.app, 'amberx-droid', 'app-qualified paths');
 eq(resolvePluginCommand(reg, 'demo/nope'), null, 'unknown');

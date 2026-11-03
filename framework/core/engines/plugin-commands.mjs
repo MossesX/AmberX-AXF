@@ -168,9 +168,9 @@ export function scanWebActions(src, file = 'web/index.tsx') {
     const line = text.slice(0, m.index).split('\n').length;
     const tail = text.slice(m.index + m[0].length, m.index + m[0].length + 1200);
     const handler = /^\s*(async\s*)?\(([^)]*)\)/.exec(tail);
-    const labelm = /\{\s*[^{}]*?\blabel:\s*(['"`])((?:(?!\1).){1,160})\1/.exec(tail.split(/\n\s*rt\.actions\.register\(/)[0]);
+    const labelm = /\{\s*[^{}]*?\blabel:\s*(['"`])((?:\\.|(?!\1)[^\\]){1,160})\1/.exec(tail.split(/\n\s*rt\.actions\.register\(/)[0]);
     const searchable = !/searchable:\s*false/.test(tail.split('\n')[0] + (tail.split('\n')[1] ?? ''));
-    out.push({ id: m[2], label: labelm ? labelm[2] : '', context: !!handler && /,\s*\w+/.test(handler[2]), searchable, file, line });
+    out.push({ id: m[2], label: labelm ? labelm[2].replace(/\\(.)/g, '$1') : '', context: !!handler && /,\s*\w+/.test(handler[2]), searchable, file, line });
   }
   return out;
 }
@@ -326,7 +326,7 @@ export function derivePluginCommands(plugin) {
 /* ================================================================== the registry */
 
 /**
- * The registry: one entry per plugin. `plugins` = [{ folder, app, manifest, routes, unread, actions, hasData, enabled }].
+ * The registry: one entry per plugin, the console's first. `plugins` = [{ folder, app, manifest, routes, unread, actions, hasData, enabled }].
  * `app` names where the plugin runs (console-web, amberx-droid, axhub-web); only the console's plugins run here.
  */
 export function pluginCommandRegistry(plugins) {
@@ -336,7 +336,7 @@ export function pluginCommandRegistry(plugins) {
     const list = (v) => (Array.isArray(v) ? v.filter((x) => typeof x === 'string').slice(0, 60) : []);
     return { folder: p.folder, app: p.app || 'console-web', id: str(m.id, 160), name: str(m.name, 120) || p.folder, version: str(m.version, 40), description: str(m.description, 2000),
       provides: list(m.provides), needs: [...list(m.needs), ...list(m.requires)], optional: list(m.optional), dataDir: str(m.lifecycle?.dataDir, 300), enabled: p.enabled !== false, ...d };
-  }).sort((a, b) => (a.app === b.app ? a.folder.localeCompare(b.folder) : a.app.localeCompare(b.app)));
+  }).sort((a, b) => (a.app === b.app ? a.folder.localeCompare(b.folder) : a.app === 'console-web' ? -1 : b.app === 'console-web' ? 1 : a.app.localeCompare(b.app)));
   return { $axf: PLUGIN_COMMANDS_FRAME, plugins: entries };
 }
 

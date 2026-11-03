@@ -515,7 +515,7 @@
     "src/axf/core/engines/mcp.ts": "b5534a64b2063b25",
     "src/axf/core/engines/placement.ts": "b284bf2b62773677",
     "src/axf/core/engines/plugin-commands.d.mts": "eda6d23854d35b44",
-    "src/axf/core/engines/plugin-commands.mjs": "cb23f7660cff78fe",
+    "src/axf/core/engines/plugin-commands.mjs": "05e856c87b0a9c43",
     "src/axf/core/engines/plugins.ts": "c523edb6a915e01e",
     "src/axf/core/engines/repeat.ts": "d1413b93c571298c",
     "src/axf/core/engines/roll.ts": "5a7d2630f6d63409",
