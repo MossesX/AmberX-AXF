@@ -29,6 +29,7 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, Request
+from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import JSONResponse
 
 import plugin_services
@@ -112,12 +113,13 @@ def _console(command: dict[str, Any]) -> Any:
     return plugin_services.get("console-commands@1") if str(command.get("target") or "").startswith("console.") else None
 
 
-def _go(request: Request, command: dict[str, Any]) -> JSONResponse:
+async def _go(request: Request, command: dict[str, Any]) -> JSONResponse:
+    """Off the event loop: the runner is a subprocess, and a console command waits for the consoles' acks on this loop."""
     svc = _console(command)
     if svc is not None:
-        return answer(svc.run_for(request, command))
+        return answer(await run_in_threadpool(svc.run_for, request, command))
     grants, name = caller(request)
-    return answer(run(command, grants, by=command.get("by") or name))
+    return answer(await run_in_threadpool(lambda: run(command, grants, by=command.get("by") or name)))
 
 
 @router.get("/meta/registry")
@@ -137,49 +139,49 @@ def audit_log(n: int = 50) -> Any:
 @router.post("")
 @router.post("/")
 async def any_command(request: Request) -> JSONResponse:
-    return _go(request, await _body(request))
+    return await _go(request, await _body(request))
 
 
 @router.get("/{target}")
-def list_(target: str, request: Request) -> JSONResponse:
+async def list_(target: str, request: Request) -> JSONResponse:
     select = {k: _parse(v) for k, v in request.query_params.items()}
-    return _go(request, {"op": "list", "target": target, **({"select": select} if select else {})})
+    return await _go(request, {"op": "list", "target": target, **({"select": select} if select else {})})
 
 
 @router.post("/{target}/reset")
 async def reset(target: str, request: Request) -> JSONResponse:
     b = await _body(request)
-    return _go(request, {"op": "reset", "target": target, **({"path": b["path"]} if b.get("path") else {}), **_audit_fields(b)})
+    return await _go(request, {"op": "reset", "target": target, **({"path": b["path"]} if b.get("path") else {}), **_audit_fields(b)})
 
 
 @router.post("/{target}/{path:path}/act/{action}")
 async def act(target: str, path: str, action: str, request: Request) -> JSONResponse:
     b = await _body(request)
-    return _go(request, {"op": "act", "target": target, "path": path, "action": action, "input": b.get("input") or {}, **_audit_fields(b)})
+    return await _go(request, {"op": "act", "target": target, "path": path, "action": action, "input": b.get("input") or {}, **_audit_fields(b)})
 
 
 @router.get("/{target}/{path:path}")
-def get(target: str, path: str, request: Request) -> JSONResponse:
-    return _go(request, {"op": "get", "target": target, "path": path})
+async def get(target: str, path: str, request: Request) -> JSONResponse:
+    return await _go(request, {"op": "get", "target": target, "path": path})
 
 
 @router.put("/{target}/{path:path}")
 async def set_(target: str, path: str, request: Request) -> JSONResponse:
     b = await _body(request)
-    return _go(request, {"op": "set", "target": target, "path": path, "value": b.get("value"), **_audit_fields(b)})
+    return await _go(request, {"op": "set", "target": target, "path": path, "value": b.get("value"), **_audit_fields(b)})
 
 
 @router.post("/{target}")
 async def add(target: str, request: Request) -> JSONResponse:
     b = await _body(request)
-    return _go(request, {"op": "add", "target": target, "value": b.get("value"), **_audit_fields(b)})
+    return await _go(request, {"op": "add", "target": target, "value": b.get("value"), **_audit_fields(b)})
 
 
 @router.delete("/{target}/{path:path}")
 async def remove(target: str, path: str, request: Request) -> JSONResponse:
     b = await _body(request)
     confirm = b.get("confirm") or request.query_params.get("confirm")
-    return _go(request, {"op": "remove", "target": target, "path": path, **({"confirm": confirm} if confirm else {}), **_audit_fields(b)})
+    return await _go(request, {"op": "remove", "target": target, "path": path, **({"confirm": confirm} if confirm else {}), **_audit_fields(b)})
 
 
 class Control:

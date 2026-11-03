@@ -37,6 +37,7 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
+from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import JSONResponse, StreamingResponse
 
 import plugin_services
@@ -198,6 +199,11 @@ def run_for(request: Request, command: dict[str, Any]) -> dict[str, Any]:
     return run(command, grants, command.get("by") or name, audience)
 
 
+async def go(request: Request, command: dict[str, Any]) -> JSONResponse:
+    """Run off the event loop: the answer waits for the consoles' acks, which arrive on this same loop."""
+    return answer(await run_in_threadpool(run_for, request, command))
+
+
 def _audit(b: dict[str, Any]) -> dict[str, Any]:
     return {k: b[k] for k in ("by", "reason") if isinstance(b.get(k), str) and b[k]}
 
@@ -326,25 +332,25 @@ def recent(request: Request, n: int = 20) -> dict[str, Any]:
 @router.post("")
 @router.post("/")
 async def any_command(request: Request) -> JSONResponse:
-    return answer(run_for(request, await _body(request)))
+    return await go(request, await _body(request))
 
 
 @router.post("/open")
 async def open_screen(request: Request) -> JSONResponse:
     b = await _body(request)
-    return answer(run_for(request, {"op": "act", "target": "console.screens", "path": b.get("screen") or b.get("path") or b.get("q"), "action": "open", **_to(b), **_audit(b)}))
+    return await go(request, {"op": "act", "target": "console.screens", "path": b.get("screen") or b.get("path") or b.get("q"), "action": "open", **_to(b), **_audit(b)})
 
 
 @router.post("/dialog")
 async def open_dialog(request: Request) -> JSONResponse:
     b = await _body(request)
-    return answer(run_for(request, {"op": "act", "target": "console.dialogs", "path": b.get("id") or b.get("path") or b.get("q"), "action": "open", **_to(b, arg=b.get("arg")), **_audit(b)}))
+    return await go(request, {"op": "act", "target": "console.dialogs", "path": b.get("id") or b.get("path") or b.get("q"), "action": "open", **_to(b, arg=b.get("arg")), **_audit(b)})
 
 
 @router.post("/settings")
 async def open_settings(request: Request) -> JSONResponse:
     b = await _body(request)
-    return answer(run_for(request, {"op": "act", "target": "console.settings", "path": b.get("tab") or b.get("path") or b.get("q"), "action": "open", **_to(b, anchor=b.get("anchor")), **_audit(b)}))
+    return await go(request, {"op": "act", "target": "console.settings", "path": b.get("tab") or b.get("path") or b.get("q"), "action": "open", **_to(b, anchor=b.get("anchor")), **_audit(b)})
 
 
 @router.post("/action")
@@ -353,7 +359,7 @@ async def run_action(request: Request) -> JSONResponse:
     cmd = {"op": "act", "target": "console.actions", "path": b.get("id") or b.get("path") or b.get("q"), "action": "run", **_to(b, args=b.get("args")), **_audit(b)}
     if b.get("confirm"):
         cmd["confirm"] = b["confirm"]
-    return answer(run_for(request, cmd))
+    return await go(request, cmd)
 
 
 @router.post("/back")
@@ -361,21 +367,21 @@ async def run_action(request: Request) -> JSONResponse:
 @router.post("/close")
 async def nav(request: Request) -> JSONResponse:
     b = await _body(request)
-    return answer(run_for(request, {"op": "act", "target": "console.nav", "path": "here", "action": request.url.path.rstrip("/").rsplit("/", 1)[-1], **_to(b), **_audit(b)}))
+    return await go(request, {"op": "act", "target": "console.nav", "path": "here", "action": request.url.path.rstrip("/").rsplit("/", 1)[-1], **_to(b), **_audit(b)})
 
 
 @router.get("/where")
-def where(request: Request) -> JSONResponse:
-    return answer(run_for(request, {"op": "get", "target": "console.nav", "path": "here"}))
+async def where(request: Request) -> JSONResponse:
+    return await go(request, {"op": "get", "target": "console.nav", "path": "here"})
 
 
 @router.get("/list")
-def list_(request: Request, kind: str = "screens", q: str = "", limit: int = 50, client: str = "") -> JSONResponse:
+async def list_(request: Request, kind: str = "screens", q: str = "", limit: int = 50, client: str = "") -> JSONResponse:
     target = {"screens": "console.screens", "dialogs": "console.dialogs", "settings": "console.settings", "actions": "console.actions", "clients": "console.clients"}.get(kind, f"console.{kind}")
     select: dict[str, Any] = {k: v for k, v in {"q": q, "client": client}.items() if v}
     if target != "console.clients" or limit != 50:
         select["limit"] = max(1, min(limit, 500))
-    return answer(run_for(request, {"op": "list", "target": target, **({"select": select} if select else {})}))
+    return await go(request, {"op": "list", "target": target, **({"select": select} if select else {})})
 
 
 class ConsoleCommands:
