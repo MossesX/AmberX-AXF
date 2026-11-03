@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-02T19:41:23.535Z",
+ "updatedAt": "2026-11-03T02:40:26.219Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -358,12 +358,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-02T18:47:31.123Z",
-   "updatedAt": "2026-11-02T18:49:26.580Z",
+   "updatedAt": "2026-11-03T02:32:23.313Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Brett Nov 2 13:49 ET: the Toolbar designer is its own plugin, not part of xLayout. xLayout calls it through a capability service (e.g. axf.toolbar-designer@1).",
      "at": "2026-11-02T18:49:26.580Z"
+    },
+    {
+     "text": "Nov 2 21:30 ET: s3 pane engine is covered by Urgent build dock-engine (shared with MD Studio + Theme Editor); s7/s8 build on it. Don't build s3 separately.",
+     "at": "2026-11-03T02:32:23.312Z"
     }
    ],
    "approvals": [],
