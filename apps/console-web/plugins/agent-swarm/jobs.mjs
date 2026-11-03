@@ -1,12 +1,21 @@
 #!/usr/bin/env node
 /**
- * Agent jobs: route a recurring job (job-type@1) to the hired agent who owns it and launch it headless.
+ * Agent jobs: route a job (job-type@1) to an agent who can take it and launch it headless. Every agent on the job
+ * crew is an all-rounder (Brett, Nov 3 2026), and every headless session is booked on a named agent before it starts.
  * Reached through `node framework/cli/agent-job.mjs …` (found by capability service:agent-jobs@1), the console's
  * Breakroom → Jobs (Run), or directly:
  *
  *   node apps/console-web/plugins/agent-swarm/jobs.mjs list                         job types, owner, last run, next, cost
- *   … <job-type> [--input k=v]… [--dry-run]     route + brief + launch (deploy/claude-headless.sh, session <agent>-<job>)
- *   … run <job-type> [--input k=v]… [--dry-run]  same
+ *   … <job-type> [--input k=v]… [--agent <id>] [--dry-run]   route + brief + launch (deploy/claude-headless.sh, session <agent>-<job>)
+ *   … run <job-type> [--input k=v]… [--agent <id>] [--dry-run]  same (--agent: this agent, not the router's pick)
+ *   … book --name <slug> [--agent <id>] [--job feature-build] [--cwd d] [--log f] [--model m] [--sh]
+ *                                                a headless launch that is starting now (deploy/claude-headless.sh): book it
+ *                                                on the agent given, else the router's pick (never nobody); --sh prints
+ *                                                agent_id=… agent_name=… for the launcher
+ *   … assign <build-name> [--agent <id>] [--job feature-build] [--cwd d] [--log f]
+ *                                                attach a build already running or finished (its worktree under
+ *                                                AXF_BUILDS_ROOT, default /root/axf-builds/<name>) to an agent; the sweep
+ *                                                books its usage and report on the card
  *   … due [--run]                                scheduled job types that are due (and launch them)
  *   … event <name> [--input k=v]… [--run]        job types triggered by that event (and launch them)
  *   … sweep                                      finished runs: usage, status and report onto the agent (stats, cost, chat)
@@ -67,14 +76,14 @@ function updateRun(runId, patch) {
 export function run(typeId, opts = {}) {
   const at = opts.at ?? new Date().toISOString();
   const jt = findType(typeId); const roster = loadRoster(); const st = loadState(); const runs = loadRuns(); const table = priceTable();
-  const r = jc.route(jt, roster, st, runs, table, at);
+  const r = jc.route(jt, roster, st, runs, table, at, { agent: opts.agent });
   if (!r.ok) {
     if (!opts.dry) say([jc.unassignedLine(jt, r.why)]);
     return { ok: false, unassigned: r.unassigned, why: r.why, tried: r.tried, jobType: jt.id };
   }
   const values = jc.checkInputs(jt, opts.inputs ?? {});
   const runId = jc.runIdFor(jt, at); const agent = r.agent;
-  const skill = loadSkills()[agent.skill] ?? null;
+  const skills = loadSkills(); const skill = skills[jt.data.specialty] ?? skills[agent.skill] ?? null; // the job's skill page, whoever takes it
   const brief = jc.jobBrief(jt, agent, { values, at, runId, skill, notes: loadNotes(agent.id), persona: loadPersona() });
   const args = jc.jobArgs(jt, agent, r.model); const session = jc.sessionName(agent, jt);
   if (opts.dry) return { ok: true, dry: true, jobType: jt.id, agent: agent.id, model: r.model, cap: r.cap, session, runId, brief, args };
@@ -82,7 +91,7 @@ export function run(typeId, opts = {}) {
   const wt = jobWorktree(jt, runId, runId.slice(-15));
   const briefFile = join(dataDir(), 'job-briefs', `${runId}.md`); mkdirSync(join(dataDir(), 'job-briefs'), { recursive: true }); writeFileSync(briefFile, `${brief.text}\n`);
   const log = `.axf-job-${runId}.log`.slice(0, 80);
-  const p = spawnSync('bash', [launcher(), '--name', session, '--brief', briefFile, '--log', log, '--', ...args], { cwd: wt.path, encoding: 'utf8', env: { ...process.env, AXF_SURFACE: 'agent-job', AXF_MODEL: r.model, AXF_SESSION: session }, timeout: 60000 });
+  const p = spawnSync('bash', [launcher(), '--name', session, '--brief', briefFile, '--log', log, '--', ...args], { cwd: wt.path, encoding: 'utf8', env: { ...process.env, AXF_SURFACE: 'agent-job', AXF_MODEL: r.model, AXF_SESSION: session, AXF_AGENT: agent.id, AXF_AGENT_BOOKED: runId }, timeout: 60000 });
   if (p.status !== 0) throw new Error(`launch failed: ${(p.stderr || p.stdout || '').trim().slice(-400)}`);
   // started now, or queued by the agent cap (agent-slots@1): a waiter starts it when a desk frees
   const started = /started (\S+)/.exec(p.stdout ?? ''); const tmux = started && !started[1].startsWith('pid') ? started[1] : '';
@@ -128,8 +137,9 @@ export function sweep(opts = {}) {
     const waiting = !!r.queued && !existsSync(raw) && Date.now() - Date.parse(r.startedAt) < QUEUE_PATIENCE_MS;
     const alive = opts.alive ? opts.alive(r) : waiting || tmuxAlive(r);
     if (!tr.final && alive) continue;
-    const o = core.runOutcome(tr, { exitCode: tr.final ? (tr.isError ? 1 : 0) : 1 });
-    const rec = updateRun(r.jobId, { endedAt: new Date().toISOString(), status: tr.final ? o.status : 'error', reason: tr.final ? o.reason : 'the session ended without a result', report: o.report, usage: tr.usage, budgetTokens: core.budgetTokens(tr.usage), turns: tr.turns, reportedCost: tr.reportedCost });
+    const build = jc.isBuildRun(r);
+    const o = build ? jc.buildOutcome(tr) : core.runOutcome(tr, { exitCode: tr.final ? (tr.isError ? 1 : 0) : 1 });
+    const rec = updateRun(r.jobId, { endedAt: new Date().toISOString(), status: tr.final || build ? o.status : 'error', reason: tr.final || build ? o.reason : 'the session ended without a result', report: o.report, usage: tr.usage, budgetTokens: core.budgetTokens(tr.usage), turns: tr.turns, reportedCost: tr.reportedCost });
     if (!rec) continue;
     // the final message is kept as the run's report (read-only jobs can't write files): data folder, by run id
     if (tr.text) { const f = join(dataDir(), 'job-reports', `${rec.jobId}.md`); mkdirSync(join(dataDir(), 'job-reports'), { recursive: true }); writeFileSync(f, `${tr.text.trim()}\n`); updateRun(rec.jobId, { reportFile: f }); }
@@ -150,6 +160,57 @@ export function hire(typeId) {
   return { agent, skill };
 }
 
+export const buildsRoot = () => process.env.AXF_BUILDS_ROOT || '/root/axf-builds';
+const nameSlug = (s) => String(s ?? '').replace(/[^A-Za-z0-9._-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 48);
+
+/**
+ * Book one headless session on an agent: the agent asked for, else the router's pick for the job type (default
+ * feature-build) with force (the launch is starting: someone always books it, the card says when nobody was free).
+ * opts: { name, agent, job, cwd, log, model, session, at, startedAt, inputs, source }. Writes the run (swarm-run@1,
+ * kind job) and the boss's chat line. Returns { ok, agent, run, forced, why }.
+ */
+export function book(opts = {}) {
+  const at = opts.at ?? new Date().toISOString();
+  const name = nameSlug(opts.name); if (!name) throw new Error('book needs --name <build or session name>');
+  const jt = findType(opts.job || 'feature-build'); const roster = loadRoster(); const st = loadState(); const runs = loadRuns(); const table = priceTable();
+  const r = jc.route(jt, roster, st, runs, table, at, { agent: opts.agent, force: true });
+  if (!r.ok) throw new Error(r.why);
+  const agent = r.agent; const model = core.MODEL_TIERS.includes(opts.model) ? opts.model : r.model;
+  const runId = `job-${jt.id}-${name}-${(opts.startedAt || at).replace(/[^0-9]/g, '').slice(0, 12)}`.slice(0, 120);
+  const prior = runs.find((x) => x.jobId === runId);
+  if (prior) return { ok: true, agent: roster.agents.find((a) => a.id === prior.agent) ?? agent, run: prior, forced: false, why: 'already booked', existing: true };
+  const log = opts.log || `${name}.log`;
+  const rec = { ...jc.jobRunRecord(jt, agent, model, { runId, at: opts.startedAt || at, session: opts.session || name, brief: { report: '', group: '', tokens: 0 }, cwd: opts.cwd || process.cwd(), branch: opts.branch || '', log, inputs: { build: name, ...(opts.inputs ?? {}) } }), tmux: opts.tmux || '', build: name, source: opts.source || 'launcher', forced: !!r.forced };
+  const all = loadRuns(); all.push(rec); writeJson(runsFile(), { $axf: 'swarm-runs@1', runs: all.slice(-5000) });
+  withState((s) => {
+    core.post(s, [jc.assignJobLine({ ...jt, name: `${jt.name} ${name}` }, agent, model, r.cap)], at);
+    if (r.forced) s.notices.push({ at, agent: agent.id, text: `${agent.name} booked on ${name} with nobody free: ${r.why}` });
+  });
+  return { ok: true, agent, run: rec, forced: !!r.forced, why: r.why };
+}
+
+/** A build's worktree details: .axhub-build.json (axHub build_start) for the model and start time, the <name>.log stream. */
+export function buildInfo(name, cwd = '') {
+  const dir = cwd || join(buildsRoot(), name);
+  if (!existsSync(dir)) throw new Error(`no worktree for ${name} at ${dir} (pass --cwd)`);
+  const meta = readJson(join(dir, '.axhub-build.json'), {}) ?? {};
+  const logs = readdirSync(dir).filter((f) => /\.log$/.test(f) && existsSync(join(dir, f.replace(/\.log$/, '.jsonl'))));
+  const log = logs.find((f) => f === `${name}.log`) ?? logs.find((f) => f.startsWith('.axf-')) ?? logs[0] ?? `${name}.log`;
+  const startedAt = Number.isFinite(meta.startedAt) ? new Date(meta.startedAt * 1000).toISOString() : '';
+  return { dir, log, model: typeof meta.model === 'string' ? meta.model : '', startedAt, repo: meta.repo ?? '', base: meta.base ?? '' };
+}
+
+/** Attach a build already running or finished to an agent (back-assign); the sweep then books its usage on the card. */
+export function assign(name, opts = {}) {
+  const n = nameSlug(name); if (!n) throw new Error('assign needs a build name');
+  const info = buildInfo(n, opts.cwd);
+  const tmuxNames = (spawnSync('tmux', ['ls', '-F', '#S'], { encoding: 'utf8' }).stdout ?? '').split('\n').filter(Boolean);
+  const tmux = tmuxNames.find((t) => t === `axf-${n}` || t.endsWith(`-${n}`)) ?? '';
+  const r = book({ name: n, agent: opts.agent, job: opts.job, cwd: info.dir, log: opts.log || info.log, model: info.model, startedAt: info.startedAt || undefined, session: n, tmux, source: 'assign', inputs: info.repo ? { repo: info.repo } : {} });
+  const closed = r.existing ? [] : sweep();
+  return { ...r, closed: closed.includes(r.run.jobId) };
+}
+
 /** --input k=v pairs → { k: v }. */
 export function parseInputs(args) {
   const o = {};
@@ -161,19 +222,30 @@ export async function main(argv) {
   const json = argv.includes('--json'); const args = argv.filter((a) => a !== '--json');
   const out = (o, text) => console.log(json ? JSON.stringify(o) : text);
   const flag = (f) => args.includes(f);
-  const pos = args.filter((a, i) => !a.startsWith('--') && args[i - 1] !== '--input');
+  const VALUED = ['--input', '--agent', '--name', '--job', '--cwd', '--log', '--model', '--session'];
+  const val = (f) => { const i = args.indexOf(f); return i >= 0 ? args[i + 1] ?? '' : ''; };
+  const pos = args.filter((a, i) => !a.startsWith('--') && !VALUED.includes(args[i - 1]));
   const [cmd = 'list', ...rest] = pos;
   if (cmd === 'list') {
     sweep(); const v = list();
-    return out({ ok: true, jobs: v }, v.map((j) => `${j.id.padEnd(20)} ${(j.owners.map((o) => o.name).join(', ') || 'UNASSIGNED').padEnd(16)} ${j.trigger.kind.padEnd(9)} next ${j.next ? j.next.slice(0, 16) : '—'.padEnd(16)} last ${j.lastRun ? `${j.lastRun.at.slice(0, 16)} ${j.lastRun.status}` : '—'} · ${j.cost.runs} runs ${core.fmtUsd(j.cost.usd)}${j.routeWhy ? `\n  ! ${j.routeWhy}` : ''}`).join('\n') || 'No job types.');
+    return out({ ok: true, jobs: v }, v.map((j) => `${j.id.padEnd(20)} ${(j.owners.length ? `${j.owners[0].name}${j.owners.length > 1 ? ` +${j.owners.length - 1}` : ''}` : 'UNASSIGNED').padEnd(20)} ${j.trigger.kind.padEnd(9)} next ${j.next ? j.next.slice(0, 16) : '—'.padEnd(16)} last ${j.lastRun ? `${j.lastRun.at.slice(0, 16)} ${j.lastRun.status}` : '—'} · ${j.cost.runs} runs ${core.fmtUsd(j.cost.usd)}${j.routeWhy ? `\n  ! ${j.routeWhy}` : ''}`).join('\n') || 'No job types.');
   }
   if (cmd === 'sweep') { const c = sweep(); return out({ ok: true, closed: c }, c.length ? `closed ${c.join(', ')}` : 'nothing finished'); }
   if (cmd === 'hire') { const r = hire(rest[0]); return out({ ok: true, ...r }, `hired ${r.agent.name} (${r.agent.id}) for ${rest[0]}`); }
   if (cmd === 'due') { const r = due({ run: flag('--run'), inputs: parseInputs(args) }); return out({ ok: true, due: r }, r.map((x) => `${x.id}${x.ok === false ? ` ! ${x.why}` : ''}`).join('\n') || 'nothing due'); }
   if (cmd === 'event') { const r = event(rest[0], { run: flag('--run'), inputs: parseInputs(args) }); return out({ ok: true, jobs: r }, r.map((x) => `${x.id}${x.ok === false ? ` ! ${x.why}` : ''}`).join('\n') || `no job types for ${rest[0]}`); }
+  if (cmd === 'book') {
+    const r = book({ name: val('--name') || rest[0], agent: val('--agent'), job: val('--job'), cwd: val('--cwd'), log: val('--log'), model: val('--model'), session: val('--session'), inputs: parseInputs(args) });
+    if (flag('--sh')) return console.log(`agent_id=${r.agent.id} agent_name="${r.agent.name.replace(/[^A-Za-z0-9 '._-]/g, '')}" agent_run=${r.run.jobId}`);
+    return out({ ok: true, agent: r.agent.id, run: r.run, forced: r.forced, why: r.why }, `${r.run.build} booked on ${r.agent.name} (${r.agent.id})${r.forced ? ` · ${r.why}` : ''}`);
+  }
+  if (cmd === 'assign') {
+    const r = assign(rest[0], { agent: val('--agent'), job: val('--job'), cwd: val('--cwd'), log: val('--log') });
+    return out({ ok: true, agent: r.agent.id, run: r.run, closed: r.closed, existing: !!r.existing }, `${r.run.build} → ${r.agent.name} (${r.agent.id})${r.existing ? ' · already booked' : r.closed ? ' · finished, booked on the card' : ' · running'}`);
+  }
   const typeId = cmd === 'run' ? rest[0] : cmd;
   if (!typeId) throw new Error('which job type? (agent-job.mjs list)');
-  const r = run(typeId, { inputs: parseInputs(args), dry: flag('--dry-run') });
+  const r = run(typeId, { inputs: parseInputs(args), dry: flag('--dry-run'), agent: val('--agent') });
   if (!r.ok) { process.exitCode = 3; return out(r, `${r.unassigned ? 'UNASSIGNED' : 'NOT ROUTED'}: ${r.why}`); }
   return out(r, r.dry ? `would run as ${r.agent} (${r.model}, up to ${core.fmtUsd(r.cap)}), session axf-${r.session}\n\n${r.brief.text}\n\nclaude ${r.args.map((a) => (a.includes(' ') ? JSON.stringify(a) : a)).join(' ')}` : `${r.run.jobId}: ${r.run.agent} on ${r.run.model} · ${r.launched}`);
 }

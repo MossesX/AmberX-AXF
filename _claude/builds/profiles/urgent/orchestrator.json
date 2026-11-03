@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T15:32:17.517Z",
+ "updatedAt": "2026-11-03T16:12:18.409Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -367,12 +367,16 @@
    "pr": "#242",
    "mergedAt": "2026-11-03T02:54:56Z",
    "createdAt": "2026-11-03T02:32:21.910Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-03T14:09:29.660Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: branch claude/md-studio-theme-editor-plan (PR #242); PR #242; PR #242 merged",
      "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Notes scope added by notes-vault (Nov 3 2026): consume axf.notes@1 from the notes-browser plugin, never its folder.",
+     "at": "2026-11-03T14:09:29.660Z"
     }
    ],
    "approvals": [],
@@ -556,6 +560,27 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw02odym0kawwn"
+    },
+    {
+     "id": "s11",
+     "text": "Notes scope: a 4th scope 'Notes' in the file column showing /projects/_shared/_claude/notes with the same folders, reusing notes-browser's server route (capability axf.notes@1: list/read/write(if_version)/move/remove/history; optional, hide the scope when absent)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [
+      "apps/console-web/plugins/notes-browser/server/__init__.py",
+      "apps/console-web/plugins/notes-browser/server/store.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw0rkw0w01h950"
     }
    ]
   },
@@ -1104,6 +1129,134 @@
    ]
   },
   {
+   "id": "notes-vault",
+   "title": "Notes vault: gather Brett's saved notes into /projects/_shared/_claude/notes, notes-browser plugin, MD Studio Notes scope",
+   "category": "Urgent",
+   "detail": "Brett Nov 3 2026 (voice): gather the hand-saved notes scattered across the axHub projects tree into one shared place, add a quick notes browser plugin, and add a Notes scope to MD Studio.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/notes-vault",
+   "pr": "#256",
+   "mergedAt": "2026-11-03T16:07:18.707Z",
+   "createdAt": "2026-11-03T14:09:24.568Z",
+   "updatedAt": "2026-11-03T16:07:19.784Z",
+   "builtAt": "2026-11-03T14:10:56.767Z",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Find the notes: inventory hand-saved notes across /projects (owner MCP writes, loose md/txt, install/command notes), excluding system files",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:09:25.339Z",
+     "note": "",
+     "uid": "st-mw0rksji0734t4"
+    },
+    {
+     "id": "s2",
+     "text": "Move them to /projects/_shared/_claude/notes/{sessions,handoffs,plans,install,misc} with versions kept; update references; pointer files; notes/INDEX.md",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:09:26.289Z",
+     "note": "",
+     "uid": "st-mw0rksji08rkog"
+    },
+    {
+     "id": "s3",
+     "text": "Add notes/orchestrator/orch-live-sync-2026-11-03.md",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:09:27.137Z",
+     "note": "",
+     "uid": "st-mw0rksji09p1rw"
+    },
+    {
+     "id": "s4",
+     "text": "notes-browser console plugin: server route on the hub notes folder, tree + rendered markdown, search, sort, new/rename/move/delete, conflict-safe edit; Settings > Plugins sub-tab, help pack, lifecycle",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:09:27.962Z",
+     "note": "",
+     "uid": "st-mw0rksji0a06ja"
+    },
+    {
+     "id": "s5",
+     "text": "MD Studio: add Notes scope step to md-studio; expose notes-browser route as capability service axf.notes@1",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:09:28.539Z",
+     "note": "",
+     "uid": "st-mw0rksji0bjf1f"
+    },
+    {
+     "id": "s6",
+     "text": "Tests, check-theme/check-controls, lifecycle check, UI Review shots, report _claude/builds/reports/notes-vault.md, THREADS.md, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:10:56.767Z",
+     "note": "",
+     "uid": "st-mw0rksji0cv0wp"
+    }
+   ]
+  },
+  {
    "id": "land-everything",
    "title": "Land everything: merge finished branches to main and deploy",
    "category": "Urgent",
@@ -1115,9 +1268,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T15:32:07.476Z",
+   "updatedAt": "2026-11-03T16:07:30.479Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Landed claude/notes-vault (PR #256) on main at 5a6311a3",
+     "at": "2026-11-03T16:07:25.644Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -1133,8 +1291,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T16:07:30.479Z",
      "note": "",
      "uid": "st-mw0uj4uc0c3tyz"
     },
