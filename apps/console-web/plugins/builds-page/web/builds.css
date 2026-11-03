@@ -55,6 +55,10 @@
 /* one-line rows: name, then the summary in what room is left */
 .axp-builds__cell-one { display: flex; align-items: center; min-width: 0; width: 100%; gap: var(--fx-dens-gap-md); white-space: nowrap }
 .axp-builds__cell-one > .axp-builds__name { flex: 0 1 auto; min-width: 0 }
+/* grid rows size to their content (max-content): bound the title so a long name ellipsizes instead of pushing the
+   other columns off the row */
+.axp-builds__cell-one { max-width: calc(var(--fx-font-size) * 36) }
+:where([data-fx-small]) .axp-builds__cell-one { max-width: calc(var(--fx-font-size) * 15) }
 .axp-builds__ellipsis { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-builds__rel { position: relative; display: inline-flex }
 .axp-builds__popover { position: absolute; top: 100%; left: 0; z-index: 5; min-width: calc(var(--fx-font-size) * 11) }
