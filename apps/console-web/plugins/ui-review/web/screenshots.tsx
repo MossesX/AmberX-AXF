@@ -32,14 +32,18 @@ const isPhone = () => globalThis.matchMedia?.('(max-width: 640px)').matches ?? f
 const blobs = new Map<string, Promise<string>>();
 function fileUrl(id: string): Promise<string> {
   let p = blobs.get(id);
-  if (!p) { p = pluginFetch(FOLDER, `shots/file?id=${encodeURIComponent(id)}`).then(async (r) => { if (!r.ok) throw new Error(String(r.status)); return URL.createObjectURL(await r.blob()); }); blobs.set(id, p); p.catch(() => blobs.delete(id)); }
+  if (!p) {
+    const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 20000); // never wait forever behind other requests
+    p = pluginFetch(FOLDER, `shots/file?id=${encodeURIComponent(id)}`, { signal: ctl.signal }).then(async (r) => { if (!r.ok) throw new Error(String(r.status)); return URL.createObjectURL(await r.blob()); }).finally(() => clearTimeout(t));
+    blobs.set(id, p); p.catch(() => blobs.delete(id));
+  }
   return p;
 }
 function Pic({ id, alt, className }: { id: string; alt: string; className?: string }) {
   const [url, setUrl] = useState('');
   const [failed, setFailed] = useState(false);
   useEffect(() => { let live = true; setUrl(''); setFailed(false); fileUrl(id).then((u) => live && setUrl(u), () => live && setFailed(true)); return () => { live = false; }; }, [id]);
-  if (failed) return <span className={`axp-ui-review__noimg ${className ?? ''}`}><Icon name="alert" size={14} /></span>;
+  if (failed) return <span className={`axp-ui-review__noimg is-failed ${className ?? ''}`} role="img" aria-label={`Shot missing: ${alt}`} title="Shot missing"><Icon name="alert" size={14} /><span className="axp-ui-review__noimg-text">Shot missing</span></span>;
   return url ? <img src={url} alt={alt} className={className} draggable={false} loading="lazy" /> : <span className={`axp-ui-review__noimg ${className ?? ''}`} aria-busy="true" />;
 }
 
