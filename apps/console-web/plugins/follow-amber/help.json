@@ -1,0 +1,25 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "follow-amber-help",
+  "name": "Follow Amber help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Follow Amber plugin (help@1): its settings tab and the approval pop-up.",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:follow-amber",
+    "entries": [
+      {
+        "target": "follow-amber",
+        "title": "Follow Amber settings",
+        "text": "One switch for all your consoles. On: whenever Amber mentions a screen, settings tab, dialog or anything that needs you, the console opens it and highlights it, and axHub approvals pop up here with one-tap Approve and Deny. Off: nothing opens by itself and approvals stay in the approvals banner."
+      },
+      {
+        "target": "follow-amber.approval",
+        "title": "Approval waiting",
+        "text": "A call axHub holds for you. Veto calls show the countdown: Deny stops it, Approve runs it now. Calls that need your approval run only if you approve. The exact call is folded under the description. Several waiting: they queue, held calls first. Where the console can't sign the decision for you, axHub's own page opens inside the pop-up for the tap."
+      }
+    ]
+  }
+}
