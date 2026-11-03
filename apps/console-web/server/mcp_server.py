@@ -43,9 +43,10 @@ Start with `overview`, then `build_next` to see what to build next and which mod
 Before starting any build, check `pending_list`: builds parked until their model (usually Fable) is available.
 Builds over 30 minutes are split into steps of 30 minutes or less: `pending_steps` / `build_queue` list them, and you tick
 one off with `pending_change(action="step", …)` or `build_steps(index=…, done=True)` as you finish it.
-Model policy (top three models only): Fable 5.1 where the work needs the strongest reasoning (kernel internals,
-porting, cross-port contracts, heavy refactors); Opus 5.5 for everything else; Sonnet 5.5 only where it is clearly
-enough. Security-adjacent work (servers, shells, auth, deploy) stays on Opus.
+Model policy (framework/core/model-policy.mjs): Opus or Fable only, never Sonnet or Haiku. Fable 5.1 for foundation
+work (kernel internals, porting, cross-port contracts, schemas, heavy refactors); Opus 5.5 for everything else.
+Model switches: a downgrade (Fable → Opus) is fine; an UPGRADE (Opus → Fable) needs Brett's approval. Stop at it and
+ask (orchestrator.mjs request-upgrade); never approve one yourself.
 When you finish building a step, call `build_step` with action "complete": the epic and its linked features are
 marked built in the feature tracker, and steps that depended on it are re-checked for rework.
 After reordering with `build_reorder`, call `build_reprocess` (apply=false to preview, then apply=true)."""
@@ -382,6 +383,20 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
 
     # ------------------------------------------------------------------ Standards: project manifests
 
+    @mcp.tool(annotations=WRITE)
+    async def orchestrator_upgrade_approve(build: str, phase: int, request: str = "") -> dict[str, Any]:
+        """Brett approves a model UPGRADE (e.g. Opus → Fable) on one phase of a Build orchestrator build. axHub runs this
+        only after Brett approves it there (policy confirm, never veto); a session asks with
+        `orchestrator.mjs request-upgrade <build> <phase>`, sends this call once through axHub with its reason, and stops.
+        Never call it directly: a Claude session, headless build or agent calling it is refused and changes nothing.
+        Downgrades need no approval."""
+        if not re.fullmatch(r"[a-z0-9][a-z0-9._-]{0,79}", build or "") or not (0 <= int(phase) < 200):
+            raise ToolError("build is an orchestrator build id and phase its 0-based index")
+        r = await anyio.to_thread.run_sync(lambda: upgrade_via_axhub(build, int(phase), request))
+        if not r.get("ok"):
+            raise ToolError(r.get("error") or "upgrade approval failed")
+        return {"build": build, "phase": phase, "log": r.get("log", [])}
+
     @mcp.tool(annotations=READ)
     async def project_list() -> dict[str, Any]:
         """Every project in the repo with a manifest (project.manifest.json, project-manifest@1): its name (= its folder
@@ -536,14 +551,39 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
     return mcp
 
 
+# ---------------------------------------------------------------------- model upgrades (Nov 3 2026)
+
+ORCH_CLI = Path(__file__).resolve().parents[1] / "plugins" / "build-orchestrator" / "orchestrator.mjs"
+
+
+def upgrade_via_axhub(build: str, phase: int, request: str = "") -> dict[str, Any]:
+    """Record Brett's axHub approval of an upgrade in the orchestrator (framework/core/model-switch.mjs). The CLI still
+    refuses when this process runs inside a Claude session, headless build or agent (the local stdio server under Claude
+    Code), so only the console server, called by axHub after Brett's approval, records it."""
+    env = {k: v for k, v in os.environ.items() if k not in ("AXF_APPROVER", "AXF_APPROVER_VIA")}
+    env.update(AXF_APPROVER=f"brett (axHub approval{' ' + request[:60] if request else ''})", AXF_APPROVER_VIA="axhub", AXF_ACTOR="axhub-approval")
+    change = {"action": "approve", "id": build, "phase": phase}
+    p = subprocess.run(["node", str(ORCH_CLI), "act", json.dumps(change), "--json"], cwd=ORCH_CLI.parents[4], capture_output=True, text=True, timeout=60, env=env)
+    lines = p.stdout.strip().splitlines()
+    try:
+        return json.loads(lines[-1]) if lines else {"ok": False, "error": p.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        return {"ok": False, "error": (p.stderr or p.stdout).strip()[-600:]}
+
+
 # ---------------------------------------------------------------------- control@1 tools (framework/spec/CONTROL.md)
 
 CONTROL_TARGETS = ("tokens.theme", "tokens.style", "tokens.layout", "tokens.typography", "tokens.density", "tokens.sizing", "tokens.look",
                    "tokens.custom", "tokens.slots", "amberx.items", "amberx.lists", "planner.plans", "planner.builds",
-                   "console.screens", "console.dialogs", "console.settings", "console.actions", "console.nav", "console.clients")
+                   "console.screens", "console.dialogs", "console.settings", "console.actions", "console.nav", "console.clients", "pass.scopes",
+                   "plugins.commands", "plugins.reads")
 ControlTarget = Literal["tokens.theme", "tokens.style", "tokens.layout", "tokens.typography", "tokens.density", "tokens.sizing", "tokens.look",
                         "tokens.custom", "tokens.slots", "amberx.items", "amberx.lists", "planner.plans", "planner.builds",
-                        "console.screens", "console.dialogs", "console.settings", "console.actions", "console.nav", "console.clients"]
+                        "console.screens", "console.dialogs", "console.settings", "console.actions", "console.nav", "console.clients", "pass.scopes",
+                        "plugins.commands", "plugins.reads"]
+PassScope = Literal["all", "theme", "style", "layout", "tokens"]
+# all = everything (the default since build pass-all); tokens = theme, style and layout together
+PASS_SCOPE_IDS = {"all": "all", "theme": "tokens.theme", "style": "tokens.style", "layout": "tokens.layout", "tokens": "tokens.*"}
 DESTRUCTIVE = ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=True, openWorldHint=False)
 IDEMPOTENT = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=True, openWorldHint=False)
 
@@ -607,7 +647,9 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
         planner.builds: step {step, done}, approve {phase}, status {status}, note {text}, rename {title},
         rename-step {step, title}, add-step {text, model, estimate, after}, edit-step {step, patch},
         skip-step {step, why}, remove-step {step, why}, move-step {step, to}, archive, hide, unhide
-        (input.profile picks the build profile)."""
+        (input.profile picks the build profile). pass.scopes (path all|tokens.theme|style|layout|*): grant {minutes,
+        reason, include_irreversible} (a request Brett approves), revoke, undo; approve / deny only work from Brett's
+        own session."""
         return await go({"op": "act", "target": target, "path": path, "action": action, "input": input or {}, "by": by, "reason": reason})
 
     # AmberX shortcuts (the same commands, named for what people ask)
@@ -654,6 +696,41 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
         """Delete an AmberX item (and its subtasks). First call answers confirmation_required with a token; confirm with
         the user, then call again with it."""
         return await go({"op": "remove", "target": "amberx.items", "path": id, "confirm": confirm})
+
+    # Veto passes (control-pass@1, CONTROL.md → Veto passes): "allow everything for the next 30 minutes". pass_* are the
+    # names; token_pass_* (build theme-veto-pass) stay as the same tools under their old names.
+
+    async def pass_grant(scope: PassScope = "all", minutes: int = 30, reason: str = "", include_irreversible: bool = False, by: str = "") -> dict[str, Any]:
+        """Ask for a timed veto pass. scope all (the default) = every command through the API, MCP or CLI on every
+        plugin and every call axHub holds runs without the veto countdown, ordinary deletes without the confirm token;
+        theme / style / layout / tokens = only token set / reset there. Irreversible deletes (AmberX hard deletes, tools
+        axHub marks irreversible) still confirm unless include_irreversible (all only). This only files a request:
+        Brett approves it once (console banner → Pass, or axHub's approval), never this tool. Minutes 1-240 (default
+        30). Asking again for a scope with an active pass replaces it from the approval on. Tell Brett in one line that
+        it is waiting."""
+        inp: dict[str, Any] = {"minutes": minutes, **({"reason": reason} if reason else {}), **({"include_irreversible": True} if include_irreversible else {})}
+        return await go({"op": "act", "target": "pass.scopes", "path": PASS_SCOPE_IDS[scope], "action": "grant", "input": inp, "by": by, "reason": reason})
+
+    async def pass_status(scope: Literal["", "all", "theme", "style", "layout", "tokens"] = "") -> dict[str, Any]:
+        """Which veto passes are on, until when, and any request waiting for Brett, in plain words ("Every command runs
+        without veto until 10:42 AM"). No scope = every scope."""
+        if scope:
+            return await go({"op": "get", "target": "pass.scopes", "path": PASS_SCOPE_IDS[scope]})
+        return await go({"op": "list", "target": "pass.scopes"})
+
+    async def pass_revoke(scope: PassScope = "all", by: str = "", reason: str = "") -> dict[str, Any]:
+        """End a veto pass now (and withdraw a waiting request for it): commands in the scope need the veto again."""
+        return await go({"op": "act", "target": "pass.scopes", "path": PASS_SCOPE_IDS[scope], "action": "revoke", "input": {}, "by": by, "reason": reason})
+
+    async def pass_undo(scope: PassScope = "all", by: str = "", reason: str = "") -> dict[str, Any]:
+        """Roll back what the scope's latest pass changed that can be rolled back (every token goes back to what it was
+        before the pass first touched it) and list what can't (`notUndoable`: AmberX, planner and other commands, each
+        named). The pass itself stays as it is."""
+        return await go({"op": "act", "target": "pass.scopes", "path": PASS_SCOPE_IDS[scope], "action": "undo", "input": {}, "by": by, "reason": reason})
+
+    for fn, ann in ((pass_grant, WRITE), (pass_status, READ), (pass_revoke, IDEMPOTENT), (pass_undo, WRITE)):
+        mcp.tool(annotations=ann)(fn)
+        mcp.tool(name=f"token_{fn.__name__}", annotations=ann, description=f"Same as {fn.__name__} (old name). {fn.__doc__}")(fn)
 
     @mcp.tool(annotations=WRITE)
     async def plan_park(title: str, summary: str = "", category: str = "", body: str = "") -> dict[str, Any]:

@@ -4,5 +4,6 @@
   "name": "AI connection",
   "version": "0.1.1",
   "description": "Connects AmberX to an AI through AmberX's own server, which holds the keys and switches providers: Claude plan or Claude API, any mainstream LLM as a fallback, keep-alive, a status badge on the banner, and Ask my notes.",
+  "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "opus", "builtAt": "2026-10-27" }
 }

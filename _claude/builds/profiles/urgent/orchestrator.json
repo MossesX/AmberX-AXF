@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T17:09:42.955Z",
+ "updatedAt": "2026-11-03T17:35:18.790Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -39,6 +39,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -280,6 +281,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -381,6 +383,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -611,6 +614,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -730,6 +734,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -986,6 +991,426 @@
    ]
   },
   {
+   "id": "model-upgrade-approval",
+   "title": "Model upgrades need Brett's approval; downgrades don't",
+   "category": "Urgent",
+   "detail": "Brett Nov 3 2026 (voice): a headless build approved its own phase switch. Downgrade = allowed, recorded; upgrade = Brett's approval only (console click or axHub confirm), never self-approved. Ranking in model-policy (Fable above Opus). Replaces the stopped model-switch-approval build.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/model-upgrade-approval",
+   "pr": "#253",
+   "mergedAt": "2026-11-03T17:16:50.568Z",
+   "createdAt": "2026-11-03T12:41:39.428Z",
+   "updatedAt": "2026-11-03T17:16:51.661Z",
+   "builtAt": "2026-11-03T12:42:55.129Z",
+   "notes": [
+    {
+     "text": "PR #253 open (push banner merges it). Left: axHub repo side (confirm policy + signed approval header), UI Review shots of the Approvals tab.",
+     "at": "2026-11-03T12:42:56.171Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Ranking + switch rules in model-policy; framework/core/model-switch.mjs (who may approve, phases, held steps)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T12:41:40.209Z",
+     "note": "",
+     "uid": "st-mw0ofxx6072tca"
+    },
+    {
+     "id": "s2",
+     "text": "Orchestrator core: downgrade passes + recorded, upgrade needs approver; request-upgrade/deny-upgrade; edit-step raise; briefs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T12:41:40.868Z",
+     "note": "",
+     "uid": "st-mw0ofxx608i9e9"
+    },
+    {
+     "id": "s3",
+     "text": "CLI + console server + console MCP tool (axHub confirm path): approver only from Brett",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T12:41:41.835Z",
+     "note": "",
+     "uid": "st-mw0ofxx609lb7d"
+    },
+    {
+     "id": "s4",
+     "text": "Launcher gate (model-gate.mjs from claude-headless.sh) + swarm planner gate",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T12:41:42.956Z",
+     "note": "",
+     "uid": "st-mw0ofxx60a8q4g"
+    },
+    {
+     "id": "s5",
+     "text": "Audit + mark self-approved; rules, decisions, README, CLAUDE.md",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T12:41:44.092Z",
+     "note": "",
+     "uid": "st-mw0ofxx60bt5fj"
+    },
+    {
+     "id": "s6",
+     "text": "Tests (orchestrator, swarm, model-policy, server), THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T12:42:55.128Z",
+     "note": "",
+     "uid": "st-mw0ofxx60clwya"
+    }
+   ]
+  },
+  {
+   "id": "theme-veto-pass",
+   "title": "Theme veto pass: timed no-veto window for token changes",
+   "category": "Token control",
+   "detail": "Brett, Nov 3 2026 (voice): a timed pass (\"allow theme changes for the next 30 minutes\") during which token set/reset runs without the axHub veto. Grant approved once by Brett; server-side expiry; deletes never covered; banner chip with countdown; audit + undo; read tools annotated read-only; contract with axHub build axhub-veto-pass. Based on PR #250 (merge after it).",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/theme-veto-pass",
+   "pr": "#262",
+   "mergedAt": "2026-11-03T17:25:37.071Z",
+   "createdAt": "2026-11-03T15:18:04.896Z",
+   "updatedAt": "2026-11-03T17:25:37.890Z",
+   "builtAt": "2026-11-03T15:46:07.456Z",
+   "notes": [
+    {
+     "text": "All 7 steps done. PR #262 (base claude/token-control-opus, merge after #250). UI Review r-20261103-dbed7dea waiting. axHub side: build axhub-veto-pass.",
+     "at": "2026-11-03T15:46:08.447Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "control@1 pass resource: grant/status/revoke/list/undo, scopes tokens.theme|style|layout|*, minutes 1-240, one pass per scope, deletes never covered",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T15:45:04.721Z",
+     "note": "",
+     "uid": "st-mw0u13sq08mw8t"
+    },
+    {
+     "id": "s2",
+     "text": "Grant needs owner approval once (model-upgrade-approval pattern); covered set/reset skip veto until server-side expiry",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T15:45:06.084Z",
+     "note": "",
+     "uid": "st-mw0u13sq09v7el"
+    },
+    {
+     "id": "s3",
+     "text": "Expose in REST, MCP (token_pass_*) and CLI (axf token pass …) with plain-language answers",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T15:45:06.925Z",
+     "note": "",
+     "uid": "st-mw0u13sq0aramw"
+    },
+    {
+     "id": "s4",
+     "text": "Banner chip with live countdown (revoke/extend), 2-minute warning, audit + THREADS line per grant and change, pass.undo",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T15:45:07.572Z",
+     "note": "",
+     "uid": "st-mw0u13sq0b16ms"
+    },
+    {
+     "id": "s5",
+     "text": "Read-only annotations on every read tool + recommended axHub policy doc",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T15:45:08.233Z",
+     "note": "",
+     "uid": "st-mw0u13sq0ct7mb"
+    },
+    {
+     "id": "s6",
+     "text": "axHub contract: signed GET /pass, scope stamp per call (docs for axhub-veto-pass)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T15:45:08.911Z",
+     "note": "",
+     "uid": "st-mw0u13sq0dofga"
+    },
+    {
+     "id": "s7",
+     "text": "Help pack, tests, theme/controls checks, lifecycle, report, THREADS, PR after #250",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T15:46:07.456Z",
+     "note": "",
+     "uid": "st-mw0u13sq0eu8ac"
+    }
+   ]
+  },
+  {
+   "id": "plugin-commands-auto",
+   "title": "Plugin commands, automatically: every plugin's commands and reads on REST, MCP and the CLI through control@1",
+   "category": "Urgent",
+   "detail": "Brett Nov 3 2026 (voice): every plugin, existing and new, automatically exposes all of its commands and reads through control@1, so they appear in the REST API, the MCP server and the CLI with no per-plugin work; Brett drives the console by talking to Claude through axHub. Base claude/token-control-opus (#250) + claude/console-commands (#249) merged in; reuses the console-commands action catalog instead of a second registry. Merges after #250 and #249.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/plugin-commands-auto",
+   "pr": "#263",
+   "mergedAt": "2026-11-03T17:34:51.924Z",
+   "createdAt": "2026-11-03T15:19:27.930Z",
+   "updatedAt": "2026-11-03T17:34:52.755Z",
+   "builtAt": "2026-11-03T15:55:54.169Z",
+   "notes": [
+    {
+     "text": "PR #263 open (merges after #250 and #249); UI Review r-20261103-3345d3d4 waiting; axHub admin: allow <plugin>_*, plugin_commands, plugin_read, plugin_run on axf-console",
+     "at": "2026-11-03T15:55:55.142Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Command declaration: plugin.json commands (id, title, description, input schema, output, readOnly/destructive, confirm) + existing action registrations become commands",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T15:40:33.850Z",
+     "note": "",
+     "uid": "st-mw0u2vv5076u3i"
+    },
+    {
+     "id": "s2",
+     "text": "Auto surfaces: REST /api/control/<plugin>/<command>, MCP <plugin>_<command> with annotations, CLI axf <plugin> <command>, help text; hot-registered on install, removed on uninstall",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T15:40:34.506Z",
+     "note": "",
+     "uid": "st-mw0u2vv5086sdz"
+    },
+    {
+     "id": "s3",
+     "text": "Reads: list/get reads (readOnly) over every plugin's data",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T15:40:35.242Z",
+     "note": "",
+     "uid": "st-mw0u2vv509iujl"
+    },
+    {
+     "id": "s4",
+     "text": "Backfill: every existing plugin's commands + reads declared; inventory in the report",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T15:40:36.059Z",
+     "note": "",
+     "uid": "st-mw0u2vv50a9asc"
+    },
+    {
+     "id": "s5",
+     "text": "Enforcement: lifecycle check + _template fail on unexposed actions or no reads; scaffold includes commands",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T15:46:24.517Z",
+     "note": "",
+     "uid": "st-mw0u2vv50bdglp"
+    },
+    {
+     "id": "s6",
+     "text": "Docs page, help packs, tests, theme/controls checks, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T15:55:54.169Z",
+     "note": "",
+     "uid": "st-mw0u2vv50cjo31"
+    }
+   ]
+  },
+  {
    "id": "console-commands",
    "title": "Console commands over API, MCP and CLI: Amber loads screens, dialogs, settings and actions in Brett's open console",
    "category": "Urgent",
@@ -1007,6 +1432,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1155,6 +1581,122 @@
    ]
   },
   {
+   "id": "pass-all",
+   "title": "Pass all: timed pass covers every command by default",
+   "category": "Token control",
+   "detail": "Brett, Nov 3 2026 (voice), correcting theme-veto-pass: \"It's 30 minutes to do whatever I tell you.\" control@1 pass gains scope all (default): any command through API, MCP or CLI on every plugin runs without the veto while the pass is live. Narrow scopes stay. Ordinary deletes covered by all; commands marked irreversible still confirm unless include_irreversible. Grant still needs Brett once. axHub side: build axhub-pass-all (same scope + flag). Banner chip names the scope; undo lists what cannot be rolled back. Based on claude/theme-veto-pass (PR #262).",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/pass-all",
+   "pr": "#264",
+   "mergedAt": "2026-11-03T17:26:06.916Z",
+   "createdAt": "2026-11-03T15:53:52.125Z",
+   "updatedAt": "2026-11-03T17:26:07.052Z",
+   "builtAt": "2026-11-03T16:07:53.371Z",
+   "notes": [
+    {
+     "text": "All 5 steps done. Commits fast-forwarded onto claude/theme-veto-pass (PR #262). UI Review r-20261103-7cd5aa8b waiting. axHub side: build axhub-pass-all.",
+     "at": "2026-11-03T16:07:53.873Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "control-pass@1 engine + schema: scope all (default), include_irreversible, coverage for any target/verb, irreversible marking",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:00:49.354Z",
+     "note": "",
+     "uid": "st-mw0vb4lw063ze6"
+    },
+    {
+     "id": "s2",
+     "text": "Server enforcement: console API + MCP + CLI writes consult the all pass on every plugin (not only token-control)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:03:15.012Z",
+     "note": "",
+     "uid": "st-mw0vb4lw07e6ht"
+    },
+    {
+     "id": "s3",
+     "text": "Banner chip: Everything / scope label; undo rolls back what can be rolled back and lists the rest",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:03:15.530Z",
+     "note": "",
+     "uid": "st-mw0vb4lw08qyoz"
+    },
+    {
+     "id": "s4",
+     "text": "CONTROL.md axHub contract (axhub-pass-all), docs/help/CLI (axf pass grant 30 [--scope]), tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:07:38.814Z",
+     "note": "",
+     "uid": "st-mw0vb4lw09va96"
+    },
+    {
+     "id": "s5",
+     "text": "Push onto claude/theme-veto-pass (fast-forward), note on PR #262, THREADS + store",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:07:53.371Z",
+     "note": "",
+     "uid": "st-mw0vb4lw0axukf"
+    }
+   ]
+  },
+  {
    "id": "orch-live-sync",
    "title": "Orchestrator live sync: every step reaches main at once",
    "category": "Urgent",
@@ -1176,6 +1718,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1330,6 +1873,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1481,6 +2025,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1591,6 +2136,7 @@
    "builtAt": "2026-11-03T14:10:56.767Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1732,6 +2278,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1880,6 +2427,134 @@
    ]
   },
   {
+   "id": "console-wake",
+   "title": "Console wake: console commands always reach a console (queue + deliver on reconnect, wake via AmberX when closed)",
+   "category": "Urgent",
+   "detail": "Brett Nov 3 2026 (voice): console commands fail with not_found when the tab is not connected (approval inside the console dropped client cc-cq7hakm3a02p for 2 s at 17:18:49 UTC; redeploys; tab sleep; browser closed). Rule: no matter what, a console command must reach a console; if the browser is closed, open it. Agent: Ping Paulie.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-03T17:22:15.174Z",
+   "updatedAt": "2026-11-03T17:31:23.232Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "s0 Register in Urgent (orchestrator id console-wake) + banner entry",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T17:22:26.074Z",
+     "note": "",
+     "uid": "st-mw0ygshp074x2i"
+    },
+    {
+     "id": "s2",
+     "text": "s1 Queue + deliver: per-user queue (TTL 2 min), deliver on connect/reconnect, MCP waits up to ~60 s, dedupe; fix the approval-inside-console disconnect",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T17:31:23.232Z",
+     "note": "",
+     "uid": "st-mw0ygshp08u4wg"
+    },
+    {
+     "id": "s3",
+     "text": "s2 Wake via AmberX: server asks axHub/AmberX to open console.amberxai.com?axf-cmd=<id> when no client in ~3 s; AmberX AXPP open_url (allowlist amberxai.com, full-screen intent notification); axHub amberx.open_url relay (separate PR)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw0ygshp091v3r"
+    },
+    {
+     "id": "s4",
+     "text": "s3 Settings: Settings > Plugins > Console commands: wake through AmberX (on), queue TTL, browser",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw0ygshp0ajpyd"
+    },
+    {
+     "id": "s5",
+     "text": "s4 Visibility: toast 'Amber: opening <screen>' on queued delivery; MCP result says live / after reconnect / woke via AmberX",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw0ygshp0bvfnd"
+    },
+    {
+     "id": "s6",
+     "text": "s5 Tests (queue, TTL, dedupe, reconnect, wake w/ fake device), axHub tests, AmberX JUnit allowlist; report; THREADS; PRs; checklist item for APK install",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw0ygshp0cuh19"
+    }
+   ]
+  },
+  {
    "id": "land-everything",
    "title": "Land everything: merge finished branches to main and deploy",
    "category": "Urgent",
@@ -1891,7 +2566,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T17:09:41.054Z",
+   "updatedAt": "2026-11-03T17:35:16.317Z",
    "builtAt": "",
    "notes": [
     {
@@ -1941,9 +2616,30 @@
     {
      "text": "Landed claude/theme-editor (PR #243) on main at 6f20dd54",
      "at": "2026-11-03T17:09:41.054Z"
+    },
+    {
+     "text": "Landed claude/model-upgrade-approval (PR #253) on main at 03d1d75f",
+     "at": "2026-11-03T17:17:00.392Z"
+    },
+    {
+     "text": "Landed claude/one-look-default-2 (PR #244) on main at 4ff2cc50",
+     "at": "2026-11-03T17:19:33.729Z"
+    },
+    {
+     "text": "Landed claude/theme-veto-pass (PR #262) on main at 16620d72",
+     "at": "2026-11-03T17:25:54.980Z"
+    },
+    {
+     "text": "Landed claude/pass-all (PR #264) on main at 16620d72",
+     "at": "2026-11-03T17:26:18.986Z"
+    },
+    {
+     "text": "Landed claude/plugin-commands-auto (PR #263) on main at cdd568c2",
+     "at": "2026-11-03T17:35:04.816Z"
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2084,8 +2780,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T17:19:41.958Z",
      "note": "",
      "uid": "st-mw0uj4uc0j16t8"
     },
@@ -2102,8 +2798,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T17:35:16.317Z",
      "note": "",
      "uid": "st-mw0uj4uc0khig5"
     },

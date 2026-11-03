@@ -1,0 +1,8 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.fixture-todos",
+  "name": "Fixture todos",
+  "version": "0.1.0",
+  "description": "A test plugin with commands and a delete.",
+  "commands": { "$axf": "plugin-commands@1", "auto": true }
+}

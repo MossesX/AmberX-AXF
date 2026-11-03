@@ -31,6 +31,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { gitAuthEnv, scrub } from './github.mjs';
 import { applyToPluginFile } from './build-defaults.mjs';
 import { installClash } from './plugin-instances.mjs';
+import { coverage as commandCoverage } from './plugin-commands.mjs';
 
 export const ROOT = resolve(process.env.AXF_ROOT || join(dirname(fileURLToPath(import.meta.url)), '../..'));
 // An app's own plugins folder (e.g. apps/molly/plugins) instead of the console's: AXF_PLUGINS_DIR, relative to the root.
@@ -381,6 +382,8 @@ export function check(folder, { afterUninstall = false } = {}) {
     if (!p.manifest.lifecycle) problems.push('plugin.json has no "lifecycle" block (plugin-lifecycle@1)');
     if (!existsSync(join(p.dir, 'install.mjs'))) problems.push('no install.mjs');
     if (!existsSync(join(p.dir, 'uninstall.mjs'))) problems.push('no uninstall.mjs');
+    // plugin-commands@1 (Brett, Nov 3 2026): every command and read is exposed through control@1, or says why not
+    for (const e of commandCoverage([folder])[0]?.errors ?? []) problems.push(`commands: ${e}`);
   }
   for (const r of stale) problems.push(`stale reference ${r.file}:${r.line}: ${r.text}`);
   return { ok: problems.length === 0, problems, references: refs };

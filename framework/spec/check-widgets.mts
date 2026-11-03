@@ -70,15 +70,15 @@ const eq = (a: unknown, b: unknown, msg: string) => { assert.deepEqual(a, b, msg
   const warnings = () => rt.terminal.lines.filter((l) => l.level === 'warn' && l.channel === 'widgets');
   const before = rt.banner();
   eq(before.placed.center.map((p) => p.key), ['search-bar:everything'], 'default banner: search in the center');
-  eq(before.placed.right.map((p) => p.key), ['clock:digital-12h'], 'default banner: clock right');
+  eq(before.placed.right.map((p) => p.key), ['theme-switch:day-night', 'clock:digital-12h'], 'default banner: day/night switch and clock right (the switch moved into the framework copy, Nov 3 2026)');
   // a plugin badge, replaced, then detached by origin
   const off = rt.attachToBanner({ type: 'badge', id: 'new', at: 'left', order: 5, origin: 'p1' });
   eq(rt.banner().placed.left.map((p) => `${p.key}@${p.origin}`), ['badge:new@p1'], 'badge attached');
   rt.attachToBanner({ type: 'badge', id: 'new', at: 'right', origin: 'p2' });
   eq(rt.banner().placed.left.length, 0, 'same type+id replaces (moved to the right)');
-  eq(rt.banner().placed.right.map((p) => p.key), ['clock:digital-12h', 'badge:new'], 'order: asset clock (10) then runtime badge (1000)');
+  eq(rt.banner().placed.right.map((p) => p.key), ['theme-switch:day-night', 'clock:digital-12h', 'badge:new'], 'order: asset switch and clock (10, 11) then runtime badge (1000)');
   rt.detachFromBanner('p2');
-  eq(rt.banner().placed.right.map((p) => p.key), ['clock:digital-12h'], 'detached by origin');
+  eq(rt.banner().placed.right.map((p) => p.key), ['theme-switch:day-night', 'clock:digital-12h'], 'detached by origin');
   off(); // already gone: no-op
   // bad calls warn but never throw
   rt.attachToBanner({ type: 'button', id: 'rounded-solid', at: 'left', origin: 'p3' } as never);

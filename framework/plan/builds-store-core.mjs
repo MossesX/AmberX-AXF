@@ -40,6 +40,8 @@
  * Ids never change: renaming changes title only, so links, PRs and history keep pointing at the same record.
  */
 
+import { normApproval, normRequest } from '../core/model-switch.mjs';
+
 export const SCHEMA = 'builds@1';
 export const MODELS = ['Fable', 'Opus'];
 /** `built` = every step done, its PR not merged yet (Nov 3 2026, orch-live-sync); `complete` once the PR merged. */
@@ -56,7 +58,7 @@ const stepModel = (m) => (m === 'Fable' ? 'Fable' : 'Opus');
 const clone = (o) => JSON.parse(JSON.stringify(o));
 const nowIso = () => new Date().toISOString();
 export const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
-const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'steps'];
+const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'steps'];
 const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note'];
 
 // ------------------------------------------------------------------ records
@@ -125,7 +127,8 @@ export function normBuild(b, ctx = {}) {
     updatedAt: str(o.updatedAt, 40) || at,
     builtAt: FINISHED.includes(o.status) ? str(o.builtAt, 40) : '',
     notes: (Array.isArray(o.notes) ? o.notes : []).map((n) => ({ text: str(n?.text, 2000), at: str(n?.at, 40) })).filter((n) => n.text),
-    approvals: (Array.isArray(o.approvals) ? o.approvals : []).map((a) => ({ phase: Number(a?.phase) || 0, from: str(a?.from, 10), to: str(a?.to, 10), at: str(a?.at, 40) })),
+    approvals: (Array.isArray(o.approvals) ? o.approvals : []).map(normApproval), // model-switch.mjs: who approved, how
+    upgradeRequests: (Array.isArray(o.upgradeRequests) ? o.upgradeRequests : []).map(normRequest).filter((r) => r.id),
     steps,
     profiles,
     order,

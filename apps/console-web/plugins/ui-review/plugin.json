@@ -20,6 +20,7 @@
     "env": ["AXF_UI_REVIEW_DIR", "AXF_CONSOLE_URL"],
     "mentions": ["apps/console-web/plugins/README.md", "_claude/shared/rules/RULES.md"]
   },
+  "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "opus", "builtAt": "2026-10-30", "replaces": ["ai.amberx.axf.console.design-packs"] },
   "opens": "main"
 }

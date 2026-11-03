@@ -12,6 +12,7 @@
   "optional": ["service:axf.llm@1", "service:axf.agents@1", "service:axf.containers@1", "service:axf.snapshots@1"],
   "scopes": ["ROUTES"],
   "enabledByDefault": true,
+  "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "opus", "builtAt": "2026-10-18" },
   "banner": false,
   "tabable": false,

@@ -37,7 +37,7 @@ Claude project with its homes on GitHub / the VPS / a local git folder and a Cla
 - `feature-matrix` — Feature matrix (Builds → Feature matrix, next to the Build orchestrator; also the `builds.toolbar` button on the Builds pages): every build's keep / skip list (feature-matrix@1: grouped items with minutes, model, why; never deleted) as one dataset of expandable rows (build, profile, date added, time cost of kept items, kept / skipped, needs apply, last applied); Apply pushes skips + estimates to every table the build lives in (orchestrator, pending, build queue, plan, change log through `axf.changes@1`) with the framework's Apply engine; a row hook (grid-hook@1, lib-datagrid) on every builds grid; files `_claude/builds/[profiles/<id>/]matrices.json` mirrored to its data folder; CLI `matrix.mjs`; self-test `test.mjs` + `test.py`. <!-- axf-plugin:feature-matrix -->
 - `build-breaker` — Build Breaker (Builds → Build Breaker; also the `builds.toolbar` button): everything Brett asked for across the project (build-asks@1), one line per ask (plain title, date + time, status badge with icon, build time · cost · model), grids per app and per plugin in two collapsible containers, plus a flat Timeline; search, status / model / date filters, sort, group-by, expand / collapse all; a row opens to the plain description, his own words, sources, branch / PR links and the build's row hooks (feature matrix). Adds a permanent **Build** item to every context menu listing every build page that exists. Seed `data/asks.jsonl` (JSON Lines) merged with its data folder copy; CLI `asks.mjs add | set-status | list | check`; server `GET asks`; self-test `test.mjs`. <!-- axf-plugin:build-breaker -->
 - `plan-studio` — Plan Studio (Builds → Plan Studio, Builds → New plan…, banner **+ Plan**, right-click, `builds.toolbar`; also in AmberX): every plan (plan@1, JSON + Markdown body; schema `schema/plan.schema.json`, fixtures, migrations from plan@0 / pending@1) entered by hand in a sectioned editor (templates, autosave, history with diff + restore, duplicate check), nested categories, tree / grid / sub-grids / board / roadmap / reader; a Catalog of every plugin, app, library, framework module and axHub with features have / partial / planned / idea; plain-English AI box (rules first, `axf.llm@1` for the rest, shown as a diff); voice conversation (mic-lease@1, agent-voice@1 else device speech); Turn into a build (orchestrator, live progress). Store: the hub's `_data/plan-studio/` (axhub.memory_read/write `plan-studio/plans/<id>.json`); CLI `plans.mjs`; capability `plans@1`. <!-- axf-plugin:plan-studio -->
-- `token-control` — Token control (Framework → Token control): control@1 (framework/spec/CONTROL.md) for every theme / style / layout / typography / density / sizing token (overrides ride the axHub look, `axf.tokens.*`), the active asset per slot, AmberX notes / to-dos / tasks / lists and the planner (plans@1, orchestrator@1). REST `/api/control`, MCP `control_*` / `amberx_*` / `plan_park`, CLI `axf control | token | note | todo | task | list | plan | build`, shared client `web/client.mjs`; page with Tokens, Try it (REST / MCP / CLI forms), Docs and Audit. Deletes need a confirm token. Capability `control@1`. <!-- axf-plugin:token-control -->
+- `token-control` — Token control (Framework → Token control): control@1 (framework/spec/CONTROL.md) for every theme / style / layout / typography / density / sizing token (overrides ride the axHub look, `axf.tokens.*`), the active asset per slot, AmberX notes / to-dos / tasks / lists and the planner (plans@1, orchestrator@1). REST `/api/control`, MCP `control_*` / `amberx_*` / `plan_park`, CLI `axf control | token | note | todo | task | list | plan | build`, shared client `web/client.mjs`; page with Tokens, Try it (REST / MCP / CLI forms), Docs and Audit. Deletes need a confirm token. Veto passes (`pass.scopes`, control-pass@1): Brett approves a timed pass once and every command (scope `all`, the default) or token set / reset in a narrow scope skips the axHub veto until it ends, irreversible deletes only when included; banner chip `token-pass`, Passes tab, MCP `pass_*` (= `token_pass_*`), CLI `axf pass grant 30`, `axf token pass …`, signed `GET /api/plugins/token-control/pass` for axHub. Capability `control@1`. <!-- axf-plugin:token-control -->
 - `alerts-bell` — the developer alerts bell on the banner instead of the toolbar: an `action-button` (bell → `alerts.open`) + a `counter` on `alerts.unread` (hidden at zero, 99+); show/hide and side in its settings tab "Alerts bell"; the alerts library stays in the framework; web-only; self-test `test.py`. <!-- axf-plugin:alerts-bell -->
 - `plugin-manager` — the Plugin Manager (Fable rebuild Oct 20 2026): every plugin's health, enable/disable, its UI and settings (opened or shown inline), logs, files, install & uninstall, and dependencies in detail (needs, providers, dependents, clashes) from the cross-port `plugin-inventory@1` engine (`framework/core/engines/plugins.ts` = `server/engine.py` = Kotlin); views cards/table/detail/dependency graph/install in layouts Studio/Mission control/Terminal/Catalog; link in the default context menu; settings tab "Plugin Manager"; self-test `test.py`. <!-- axf-plugin:plugin-manager -->
 - `build-manager` — nav → Builds → Build manager: one search bar over three tabs. Remaining: everything still to build (pending, build queue, plan; one row per build), time left, steps, needs split, totals per model, **Start build now** (dependencies first, never on top of a running build, headless Claude Code on the VPS through axHub `vps.run` after approval, then checks). Live: every build any session on any machine reported to axHub (`axf.changes@1`) in real time + the activity feed (`axf.activity@1`). Built: finished builds with time and cost (actual or estimated), totals by model / week. Banner while something builds; settings tab "Build manager"; self-test `test.py` + `test.mjs`. <!-- axf-plugin:build-manager -->
@@ -151,6 +151,34 @@ plugin runs and drops it with the plugin, so uninstalling leaves nothing behind.
 template's `help.json`; draft the rest from your code with `node framework/cli/help-coverage.mjs --draft console-web`
 and edit the drafts into plain English (drop `draft`). CI fails if help coverage falls (`help-coverage.mjs --check`,
 ratchet `framework/spec/help-coverage.json`). Rules: `framework/core/engines/help-rules.mjs`.
+
+## Commands (plugin-commands@1, Nov 3 2026) — everything a plugin can do is reachable by Claude, the API and the CLI
+
+Brett drives the console by talking to Claude through axHub, so every plugin exposes all of its commands and reads
+through control@1 (`plugins.commands`, `plugins.reads`; `framework/spec/CONTROL.md`) with no per-plugin wiring. The
+registry is made from what the plugin already has (`framework/core/engines/plugin-commands.mjs`): its server routes
+(GET = a read; POST / PUT / PATCH = a command; DELETE, or a path that says delete / reset / restore / clear …, = a delete
+that needs a confirm token), its registered actions (`rt.actions.register('<id>', …, { label })`, run in the open
+console), its data folder (`data`, `data-file`, secrets redacted) and `info`. Each one is then on REST
+(`/api/control/<plugin>/<command>`), MCP (`<plugin>_<command>` with read-only / destructive annotations, plus
+`plugin_commands`, `plugin_read`, `plugin_run`) and the CLI (`axf <plugin> <command> --field value`, `axf plugins`),
+added and removed as plugins are installed, removed or turned on and off.
+
+Every plugin.json carries the block (the template has it):
+
+```json
+"commands": { "$axf": "plugin-commands@1", "auto": true, "items": [
+  { "route": "POST /search", "id": "search", "title": "Search plans", "readOnly": true,
+    "input": { "type": "object", "properties": { "q": { "type": "string" } }, "required": ["q"] } },
+  { "route": "GET /events", "skip": "server-sent events stream, not a command" }
+] }
+```
+
+`items` give a command a better id, title, description, input schema or output, fix a flag the words got wrong
+(`readOnly`, `destructive`, `confirm`, `navigate`), add a command, or skip a route / action **with a reason**. Keep route
+paths string literals so they can be read. `noReads: "<why>"` only when the plugin truly has nothing to read. The
+lifecycle check and CI fail a plugin whose route or action can't be exposed, whose declaration names something gone, that
+skips without a reason, has no reads, or has no block: `node framework/cli/plugin-commands.mjs check [folder]`.
 
 ## Menus and UI editors
 

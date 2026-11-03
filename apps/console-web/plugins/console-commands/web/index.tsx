@@ -14,6 +14,7 @@ import type { AxfRuntime } from '@console/axf/core';
 import { followSse, sseJson } from '@console/axf/core/sse';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { appMenu } from './menu';
 import './console-commands.css';
 import { consoleCatalogFrom, consoleMessageErrors, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
 
@@ -181,6 +182,7 @@ export const plugin: AxfWebLibrary = {
   label: 'Console commands',
   version: '0.1.0',
   builtWith: { model: 'opus', builtAt: '2026-11-03' },
+  appMenu,
   slots: { 'app.frame.cover': [{ id: 'console-commands.client', order: 99, render: () => <ConsoleCommandsClient /> }] },
   settingsTabs: [{ id: FOLDER, label: 'Console commands', icon: 'radio', order: 92, parent: 'plugins', description: 'Let Claude sessions open screens, dialogs and settings in this console' }],
   settings: [{

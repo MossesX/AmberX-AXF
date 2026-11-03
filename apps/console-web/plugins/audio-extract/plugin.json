@@ -17,6 +17,7 @@
   ],
   "scopes": [],
   "enabledByDefault": false,
+  "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "opus", "builtAt": "2026-10-30" },
   "banner": false,
   "tabable": false,

@@ -73,7 +73,8 @@ node apps/console-web/plugins/build-orchestrator/orchestrator.mjs              #
 node apps/console-web/plugins/build-orchestrator/orchestrator.mjs next         # the next step (or the approval it waits on) # axf-plugin:build-orchestrator
 node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief <id>   # paste-ready brief: the current phase only # axf-plugin:build-orchestrator
 node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step <id> <stepId> [undo] # axf-plugin:build-orchestrator
-node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act approve <id> <phase>   # only after Brett approves (card) # axf-plugin:build-orchestrator
+node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>  # at a model UPGRADE: ask Brett, then stop # axf-plugin:build-orchestrator
+node framework/cli/model-gate.mjs audit                                                     # upgrades approved so far, and by whom # axf-plugin:build-orchestrator
 ```
 
 Every tick goes live to main by itself (see *Live on main*); never trust a branch's or main's export alone: run
@@ -85,7 +86,7 @@ Approvals, Rules).
 - Stay in **one session**; a step marked *new session* is the only reason to start another.
 - **No sub-agents** unless a step is marked *sub-agent ok*.
 - A brief carries **only the current phase**; read only the files its steps list.
-- Stop at the end of a phase. When the next phase switches model, ask Brett with a card, then `act approve`.
+- Stop at the end of a phase. A phase that switches to a **lower** model (Fable → Opus) just goes on (recorded). A phase that switches to a **higher** model (Opus → Fable) is Brett's call only (Nov 3 2026): run `request-upgrade`, tell him, and stop. Never `act approve` an upgrade yourself (it is refused for sessions, agents and headless builds anyway); he approves in the console or on axHub.
 
 ## Which model a step gets
 
