@@ -753,3 +753,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 18:10 UTC · `builds-one-page` s7 done, s8 done, s9 done, s10 done, s11 done, s15 done, s30 done, s30 done, note (refactor) · foreign-write
 - 2026-11-03 18:10 UTC · `md-studio` s1 done (urgent) · orchestrator
 - 2026-11-03 18:10 UTC · `md-studio` s2 done (urgent) · orchestrator
+- 2026-11-03 18:15 UTC · `crew-live` added (7 steps) (urgent) · orchestrator
