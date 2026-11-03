@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 451,
- "updatedAt": "2026-11-03T20:53:52.185Z",
+ "rev": 452,
+ "updatedAt": "2026-11-03T20:54:13.065Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -56388,15 +56388,15 @@
    "title": "Show what Brett said (verbatim prompt) on every build",
    "category": "Builds",
    "detail": "Brett, Nov 3 2026 (voice), verbatim: \"All the build entries, like wherever it shows a build in the build manager, pending, all that, I need it to show the prompt, what I said, the verbatim prompt that kicked it off, that initiated it.\" Every build entry (Build manager, Pending, Queue, Orchestrator, Steps, Builds page) shows the verbatim prompt that started it, its brief and later addenda.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "code",
    "pendingId": "",
    "branch": "claude/build-prompt-origin",
-   "pr": "",
+   "pr": "#282",
    "createdAt": "2026-11-03T20:23:37.380Z",
-   "updatedAt": "2026-11-03T20:53:22.412Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T20:53:25.027Z",
+   "builtAt": "2026-11-03T20:53:24.237Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -56516,12 +56516,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T20:53:24.237Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T20:23:37.394Z",
-     "updatedAt": "2026-11-03T20:23:37.394Z"
+     "updatedAt": "2026-11-03T20:53:24.280Z"
     }
    ],
    "profiles": [
@@ -56532,7 +56532,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
