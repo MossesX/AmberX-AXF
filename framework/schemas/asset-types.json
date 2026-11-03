@@ -1114,6 +1114,26 @@
       },
       "optional": true
     },
+    "dock-layout": {
+      "label": "Pane layout",
+      "group": "Navigation",
+      "icon": "layout",
+      "description": "A preset arrangement of dock panes (dock-layout@1, engine core/engines/dock.ts): a tree of numbered panes split horizontally or vertically with weights, applied to a window's dock by spreading its open tabs over the panes; drawn as a preview thumbnail before it is applied. Used by every host that docks tabs (MD Studio, xLayout's IDE mode, the Theme Editor). The framework ships ten starters; every app bakes them (shared).",
+      "required": [
+        "panes",
+        "tree"
+      ],
+      "optional_fields": {
+        "tree": "{ kind: leaf, pane: 1..n } | { kind: split, vertical: boolean, children: [tree…], weights: [number…] } — every pane number 1..n once; n ≤ 12",
+        "hint": "one line for pickers (`Editor with a terminal below`)",
+        "main": "the pane a new tab opens in when none is picked (1-based; default 1)"
+      },
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional": true
+    },
     "behavior-theme": {
       "label": "Behaviour theme",
       "group": "Themes",

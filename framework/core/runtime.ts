@@ -15,6 +15,7 @@ import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyl
 import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normalizeCustomSlot, type CustomSlot, type CustomValues } from './engines/customize';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
+import { normalizeDockLayout } from './engines/dock';
 import { normalizePlacement, placementKey, placementRoute, PLACEMENT_TAB_GROUP, type Placement, type UiRef } from './engines/placement';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
 import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
@@ -2239,6 +2240,14 @@ export class AxfRuntime {
     a.register('windows.maximize', ([w]) => w && wm.toggleMaximize(w), { label: 'Maximize / restore window', params: true });
     a.register('windows.snap', ([w, zone = 'left']) => w && wm.snapTo(w, zone as import('./engines/windows').SnapZone), { label: 'Snap window to a zone', params: true });
     a.register('windows.focus', ([w]) => w && wm.focus(w), { label: 'Focus window', params: true });
+    // dock@1 (Nov 3 2026): re-dock a floating window along a side of the main dock; lay the open tabs out on a preset
+    a.register('windows.redockInto', ([w, side = 'right']) => w && wm.redockInto(w, { target: 'root', zone: (['left', 'right', 'top', 'bottom'].includes(side) ? side : 'right') as import('./engines/dock').DockSide }), { label: 'Redock window into the dock', params: true });
+    a.register('windows.layout', ([preset = '', w = '']) => {
+      const asset = preset ? this.registry.get('dock-layout', preset) : undefined;
+      if (!asset) { this.toast(`No pane layout "${preset}"`, 'warning', 'Pane layout'); return; }
+      const target = w && wm.state.windows.some((x) => x.id === w) ? w : wm.mainWindowId;
+      if (!wm.applyPreset(normalizeDockLayout(asset.data), target)) this.toast('Open some tabs first: a layout spreads the open tabs over its panes.', 'info', asset.name);
+    }, { label: 'Apply a pane layout', params: true });
     a.register('windows.openFloating', ([kind = 'placeholder', title = 'Window', payload = '']) => wm.openFloating([{ id: `tab-${Date.now()}`, title, kind, payload }], title), { label: 'Open floating window', searchable: false });
     a.register('terminal.open', ([channel = '']) => wm.openFloating([{ id: `terminal-${Date.now()}`, title: 'Output', kind: 'terminal', payload: channel, icon: 'terminal' }], 'Output terminal', 'floating', 520, 320), { label: 'Open output terminal' });
     a.register('terminal.dialog', ([channel = '']) => this.openDialog('terminal', { channel }), { label: 'Output terminal (dialog)' });

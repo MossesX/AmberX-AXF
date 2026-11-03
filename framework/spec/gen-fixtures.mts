@@ -37,6 +37,8 @@ import { APPS_FEED_MAX_BYTES, APPS_FEED_PATH, APPS_MAX, VERSIONS_MAX, appsFeedUr
 import { libraryCards, paramDefaultText, paramError, paramToJson, parseBoilerplate, parseBoilerplateIndex, parseCatalog, parseLibrariesIndex, parseLibrary, parseStatusMap, parseTracker } from '../core/catalog';
 import { CONDITION_KINDS, DEFAULT_BACKOFF_FACTOR, DELAY_KINDS, FALLBACK_OUTCOME, JOB_EFFECTS, JOB_EVENT_TYPES, JOB_PHASES, STOP_REASONS, WORK_CONTRACT, WORK_PLACEHOLDERS, WORK_POLL_CAPABILITY, clampInterval, delayFor, initialJobState, replayJob, shouldRestart, unmetConditions, validateJobSpec, workKinds, type DelayRule, type JobEvent, type JobSpec } from '../core/engines/work';
 import { DEFAULT_SNAP_RULES, RESIZE_EDGES, RESIZE_HANDLE, RESIZE_HANDLE_TOUCH, SNAP_ZONES, WINDOW_MIN, armSplit, dragRestore, hitResizeEdge, maximizeWindow, maximizedRect, resizeCursor, resizeRect, resolveOverlap, restoreWindow, snapRect, snapZoneAt, snapZoneRect, splitDrop, toggleMaximized, topmostAt, type Rect, type ResizeEdge, type SplitArm, type WindowSpec } from '../core/engines/windows';
+import { DEFAULT_DOCK_RULES, DOCK_CONTRACT, DOCK_LAYOUT_MAX_PANES, DOCK_SIDES, DOCK_ZONES, applyDockDrop, applyPreset, clampWeights, countPanes, dockDropAt, dockDropRect, dockLayoutErrors, dockZoneAt, dropIsLimited, enforcePaneLimit, headerIndexAt, normalizeDockLayout, normalizeDockRules, normalizeTree, paneAt, parseTab, parseTree, pathOf, presetRects, presetSvg, presetTree, removePane, resizeSplit, restoreDock, serializeDock, splitPane, splitRoot, type DockDrop, type DockState, type GroupBox } from '../core/engines/dock';
+import type { Pane, TabGroup } from '../core/engines/windows';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -1463,6 +1465,91 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   });
 }
 
+// Dock engine (dock@1, dock-engine s1–s2, Nov 3 2026; core/engines/dock.ts): pane trees with a limit, drop zones
+// (header / centre / pane edge / host edge), splitter resize with a weight floor, snapshots, layout presets
+// (dock-layout@1 starters) with thumbnails. Kotlin `DockEngine.kt` (deferred, PORTING.md) replays the same file.
+{
+  const R = DEFAULT_DOCK_RULES;
+  const leaf = (groupId: string): Pane => ({ kind: 'leaf', groupId });
+  const split = (vertical: boolean, children: Pane[], weights: number[]): Pane => ({ kind: 'split', vertical, children, weights });
+  const group = (id: string, tabs: string[], windowId = 'main'): TabGroup => ({ id, tabs: tabs.map((t) => ({ id: t, title: t.toUpperCase(), kind: 'doc', payload: `p/${t}` })), active: 0, windowId });
+  const rulesCases: unknown[] = [null, {}, { paneLimit: 3 }, { paneLimit: 0, minWeight: 2, headerBand: -4, edgeBand: 3.7, centreFraction: 1.5, splitRatio: 0.05, rootRatio: 'x' }, { paneLimit: 99.9 }];
+  const weightCases: [number[], number, number?][] = [[[1, 1], 2], [[3, 1], 2], [[1, 1, 1], 3], [[0.02, 0.98], 2], [[0.01, 0.01, 0.98], 3], [[-1, NaN, 2], 3], [[], 4], [[5], 1], [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 12, 0.1], [[0.5, 0.5], 2, 0.3], [[0.9, 0.1], 2, 0.2]];
+  const nested = split(false, [leaf('a'), split(false, [leaf('b'), leaf('c')], [1, 3]), split(true, [leaf('d')], [1])], [2, 2, 0]);
+  const normalizeCases: Record<string, Pane | null> = {
+    null: null, leaf: leaf('a'), 'two equal': split(false, [leaf('a'), leaf('b')], [1, 1]), 'flatten same orientation + collapse one child + fix weights': nested,
+    'grid kept': { kind: 'grid', rows: 2, cols: 2, cells: [leaf('a'), leaf('b'), leaf('c'), leaf('d')] }, 'grid with a nested split cell': { kind: 'grid', rows: 1, cols: 2, cells: [leaf('a'), split(true, [leaf('b'), leaf('c')], [1, 1])] },
+    'single grid cell collapses': { kind: 'grid', rows: 1, cols: 1, cells: [leaf('a')] }, 'empty split': split(true, [], []),
+  };
+  const base: Pane = split(false, [leaf('a'), split(true, [leaf('b'), leaf('c')], [0.6, 0.4])], [0.3, 0.7]);
+  const splitCases: [string, string, 'left' | 'right' | 'top' | 'bottom', number?][] = [['a', 'left'], ['a', 'right'], ['a', 'top'], ['a', 'bottom'], ['b', 'top'], ['b', 'bottom', 0.25], ['c', 'left'], ['c', 'right', 0.3], ['zzz', 'left']].map(([g, s, r]) => [`${g}-${s}${r ? `-${r}` : ''}`, g as string, s as 'left', r as number | undefined]);
+  const rootCases: ['left' | 'right' | 'top' | 'bottom', Pane | null, number?][] = [['left', base], ['right', base], ['top', base], ['bottom', base, 0.5], ['right', null], ['left', leaf('a')], ['top', split(true, [leaf('a'), leaf('b')], [1, 1])]];
+  const resizeCases: [number[], number, number][] = [[[], 0, 0.1], [[], 0, -0.1], [[], 0, 0.9], [[], 0, -5], [[1], 0, 0.2], [[1], 0, -0.35], [[1], 1, 0.1], [[], 5, 0.1], [[9], 0, 0.1], [[], 0, NaN]];
+  // zones over one pane 300×200 at (100, 50) with a 32 px header; drops over a host 800×600 holding three panes
+  const box: GroupBox = { groupId: 'a', rect: { x: 100, y: 50, width: 300, height: 200 }, header: 32 };
+  const zoneProbes: [number, number][] = [[250, 60], [250, 81], [250, 82], [250, 150], [110, 150], [390, 150], [250, 90], [250, 245], [120, 240], [380, 90], [99, 100], [401, 100], [250, 49], [250, 251], [175, 100], [176, 100], [250, 125], [250, 124]];
+  const host = { x: 0, y: 0, width: 800, height: 600 };
+  const boxes: GroupBox[] = [{ groupId: 'a', rect: { x: 0, y: 0, width: 240, height: 600 }, header: 32 }, { groupId: 'b', rect: { x: 240, y: 0, width: 560, height: 420 }, header: 32 }, { groupId: 'c', rect: { x: 240, y: 420, width: 560, height: 180 }, header: 32 }];
+  const tabRights = (gid: string) => (gid === 'b' ? [300, 360, 420] : gid === 'a' ? [60] : []);
+  const dropProbes: [number, number][] = [[8, 300], [792, 300], [400, 8], [400, 592], [120, 10], [120, 300], [20, 300], [220, 300], [120, 60], [120, 560], [330, 10], [500, 10], [520, 200], [260, 200], [780, 200], [520, 60], [520, 400], [520, 500], [250, 500], [900, 300], [-1, 300], [16, 300], [17, 300]];
+  const indexCases: [number, number[]][] = [[0, [60, 120, 180]], [89, [60, 120, 180]], [90, [60, 120, 180]], [150, [60, 120, 180]], [1000, [60, 120, 180]], [10, []], [59, [60]], [60, [60]]];
+  const state: DockState = { tree: split(false, [leaf('a'), split(true, [leaf('b'), leaf('c')], [0.7, 0.3])], [0.3, 0.7]), groups: { a: group('a', ['t1', 't2']), b: group('b', ['t3']), c: group('c', ['t4', 't5', 't6']) } };
+  const drops: Record<string, [string, DockDrop, Partial<typeof R>?]> = {
+    'header: t1 to b at 0': ['t1', { target: 'group', groupId: 'b', zone: 'header', index: 0 }],
+    'header: t1 within a to the end': ['t1', { target: 'group', groupId: 'a', zone: 'header', index: 2 }],
+    'header: t2 within a to the start': ['t2', { target: 'group', groupId: 'a', zone: 'header', index: 0 }],
+    'centre: t3 joins c (b empties, its leaf goes)': ['t3', { target: 'group', groupId: 'c', zone: 'centre' }],
+    'side: t4 splits a on the right': ['t4', { target: 'group', groupId: 'a', zone: 'right' }],
+    'side: t4 splits b below (joins the vertical split)': ['t4', { target: 'group', groupId: 'b', zone: 'bottom' }],
+    'side: t3 (only tab) onto its own side = unchanged': ['t3', { target: 'group', groupId: 'b', zone: 'left' }],
+    'side: t3 (only tab) onto its own header = reorder only': ['t3', { target: 'group', groupId: 'b', zone: 'header', index: 0 }],
+    'root: t5 along the top': ['t5', { target: 'root', zone: 'top' }],
+    'root: t5 along the left of a left-right split joins it': ['t5', { target: 'root', zone: 'left' }],
+    'limit 3: a side drop joins the target as a tab': ['t4', { target: 'group', groupId: 'a', zone: 'left' }, { paneLimit: 3 }],
+    'limit 3: a root drop joins the first pane': ['t4', { target: 'root', zone: 'bottom' }, { paneLimit: 3 }],
+    'limit 3: moving the only tab of a pane to a side still fits': ['t3', { target: 'group', groupId: 'a', zone: 'top' }, { paneLimit: 3 }],
+    'unknown tab = unchanged': ['nope', { target: 'root', zone: 'top' }],
+    'unknown group = unchanged': ['t1', { target: 'group', groupId: 'zzz', zone: 'centre' }],
+  };
+  const drop = (name: string) => { const [tab, d, o] = drops[name]!; const rules = normalizeDockRules({ ...R, ...(o ?? {}) }); const out = applyDockDrop(state, tab, d, 'new', 'main', rules); return { tab, drop: d, rules: o ?? null, limited: dropIsLimited(state, tab, d, rules), unchanged: out === state, tree: out.tree, groups: Object.fromEntries(Object.entries(out.groups).map(([k, g]) => [k, { tabs: g.tabs.map((t) => t.id), active: g.active, windowId: g.windowId }])) }; };
+  const limitState: DockState = { tree: split(false, [leaf('a'), leaf('b'), leaf('c'), leaf('d')], [1, 1, 1, 1]), groups: { a: group('a', ['t1']), b: group('b', ['t2']), c: group('c', ['t3', 't4']), d: group('d', ['t5']), x: group('x', ['t9'], 'win-1') } };
+  const limited = enforcePaneLimit(limitState, normalizeDockRules({ paneLimit: 2 }));
+  const snap = serializeDock(state);
+  const rawRestore = { $axf: DOCK_CONTRACT, tree: { kind: 'split', vertical: false, children: [{ kind: 'leaf', groupId: 'a' }, { kind: 'leaf', groupId: 'ghost' }, { kind: 'split', vertical: true, children: [{ kind: 'leaf', groupId: 'b' }, 'junk', { kind: 'leaf', groupId: 'c' }], weights: [1, 'x', 1] }], weights: [1, 1, 2] },
+    groups: { a: { tabs: [{ id: 't1', title: 'T1', kind: 'doc' }, { id: 't1', title: 'again', kind: 'doc' }, { id: 'bad id!', kind: 'doc' }, { kind: 'doc' }], active: 9 }, b: { tabs: [{ id: 't3', kind: 'doc', payload: 'p', icon: 'file', closable: false }], active: -2 }, c: { tabs: [{ id: 't1', title: 'dup across groups', kind: 'doc' }] }, 'bad id!': { tabs: [{ id: 'z', kind: 'doc' }] }, orphan: { tabs: [{ id: 't8', kind: 'doc' }], active: 0 }, empty: { tabs: [] } } };
+  const restoreCases: Record<string, unknown> = { 'round trip': snap, 'junk cleaned': rawRestore, 'not a dock': { $axf: 'windows@1', groups: {} }, 'no groups': { $axf: DOCK_CONTRACT, groups: {} }, 'string': 'nope', 'over the limit': { $axf: DOCK_CONTRACT, tree: null, groups: { a: { tabs: [{ id: 'a1', kind: 'doc' }] }, b: { tabs: [{ id: 'b1', kind: 'doc' }] }, c: { tabs: [{ id: 'c1', kind: 'doc' }] } } } };
+  const presets = load('dock-layout');
+  const tabIds = ['t1', 't2', 't3', 't4', 't5'];
+  const presetApply: DockState = { tree: split(false, [leaf('g1'), leaf('g2')], [1, 1]), groups: { g1: group('g1', ['t1', 't2', 't3']), g2: group('g2', ['t4', 't5']), far: group('far', ['t9'], 'win-2') } };
+  const badLayouts: Record<string, unknown> = { 'nothing': null, 'string': 'x', 'repeat pane': { panes: 2, tree: { kind: 'split', vertical: false, children: [{ kind: 'leaf', pane: 1 }, { kind: 'leaf', pane: 1 }], weights: [1, 1] } }, 'gap in numbering': { panes: 2, tree: { kind: 'split', vertical: true, children: [{ kind: 'leaf', pane: 1 }, { kind: 'leaf', pane: 3 }], weights: [1, 1] } }, 'panes mismatch': { panes: 3, tree: { kind: 'split', vertical: true, children: [{ kind: 'leaf', pane: 1 }, { kind: 'leaf', pane: 2 }], weights: [1, 1] } }, 'one-child split collapses': { panes: 1, tree: { kind: 'split', vertical: true, children: [{ kind: 'leaf', pane: 1 }], weights: [1] } }, 'bad main + hint': { panes: 1, tree: { kind: 'leaf', pane: 1 }, main: 4, hint: 7 }, 'too many': { panes: 13, tree: { kind: 'split', vertical: false, children: Array.from({ length: 13 }, (_, i) => ({ kind: 'leaf', pane: i + 1 })), weights: [] } } };
+  write('dock.json', {
+    contract: DOCK_CONTRACT, rules: R, sides: DOCK_SIDES, zoneList: DOCK_ZONES, maxPresetPanes: DOCK_LAYOUT_MAX_PANES,
+    normalizeRules: rulesCases.map((input) => ({ input, rules: normalizeDockRules(input as never) })),
+    weights: weightCases.map(([w, n, min]) => ({ weights: w, n, min: min ?? null, out: clampWeights(w, n, min) })),
+    normalize: Object.entries(normalizeCases).map(([name, tree]) => ({ name, tree, out: normalizeTree(tree), panes: countPanes(normalizeTree(tree)) })),
+    paths: { tree: base, of: ['a', 'b', 'c', 'zzz'].map((g) => ({ group: g, path: pathOf(base, g) })), at: [[], [0], [1], [1, 0], [1, 1], [1, 2], [0, 0]].map((p) => ({ path: p, node: paneAt(base, p) })) },
+    split: { base, cases: splitCases.map(([name, g, side, ratio]) => ({ name, group: g, side, ratio: ratio ?? null, out: splitPane(base, g, side, 'new', ratio) })) },
+    splitRoot: rootCases.map(([side, tree, ratio]) => ({ side, tree, ratio: ratio ?? null, out: splitRoot(tree, side, 'new', ratio) })),
+    remove: ['a', 'b', 'c', 'zzz'].map((g) => ({ group: g, out: removePane(base, g) })).concat([{ group: 'a', out: removePane(leaf('a'), 'a') }]),
+    resize: resizeCases.map(([path, index, delta]) => ({ path, index, delta: Number.isNaN(delta) ? 'NaN' : delta, out: resizeSplit(base, path, index, delta) })),
+    zones: { box, probes: zoneProbes.map(([px, py]) => ({ px, py, zone: dockZoneAt(box, px, py), zoneDefaultHeader: dockZoneAt({ groupId: 'a', rect: box.rect }, px, py) })) },
+    headerIndex: indexCases.map(([px, rights]) => ({ px, rights, index: headerIndexAt(px, rights) })),
+    drops: { host, boxes, tabRights: { a: tabRights('a'), b: tabRights('b'), c: tabRights('c') }, probes: dropProbes.map(([px, py]) => { const d = dockDropAt(host, boxes, px, py, R, tabRights); return { px, py, drop: d, rect: d ? dockDropRect(d, host, d.target === 'group' ? boxes.find((b) => b.groupId === d.groupId) ?? null : null) : null }; }), noBoxesEdge: dockDropAt(host, [], 8, 300, R, tabRights) },
+    apply: { state: { tree: state.tree, groups: Object.fromEntries(Object.entries(state.groups).map(([k, g]) => [k, { tabs: g.tabs.map((t) => t.id), active: g.active, windowId: g.windowId }])) }, cases: Object.keys(drops).map((name) => ({ name, ...drop(name) })) },
+    limit: { state: { tree: limitState.tree, groups: Object.fromEntries(Object.entries(limitState.groups).map(([k, g]) => [k, g.tabs.map((t) => t.id)])) }, paneLimit: 2, out: { tree: limited.tree, groups: Object.fromEntries(Object.entries(limited.groups).map(([k, g]) => [k, g.tabs.map((t) => t.id)])) } },
+    snapshot: snap,
+    restore: Object.entries(restoreCases).map(([name, raw]) => { const r = restoreDock(raw, 'main', normalizeDockRules(name === 'over the limit' ? { paneLimit: 2 } : null)); return { name, raw, out: r ? { tree: r.tree, groups: Object.fromEntries(Object.entries(r.groups).map(([k, g]) => [k, { tabs: g.tabs, active: g.active, windowId: g.windowId }])) } : null }; }),
+    parseTab: [{ id: 't', kind: 'doc' }, { id: 't', title: 'T', kind: 'doc', payload: 'p', icon: 'file', closable: false }, { id: 'bad id!', kind: 'doc' }, { id: 't', kind: 'bad kind!' }, { id: 't', kind: 'doc', icon: 'Bad Icon', closable: true }, 'x', null, { id: 't', kind: 'doc', payload: 7 }].map((raw) => ({ raw, tab: parseTab(raw) })),
+    parseTree: [rawRestore.tree, { kind: 'leaf', groupId: 'a' }, { kind: 'leaf', groupId: 'nope' }, { kind: 'grid', rows: 2, cols: 2, cells: [{ kind: 'leaf', groupId: 'a' }, { kind: 'leaf', groupId: 'b' }, { kind: 'leaf', groupId: 'c' }, { kind: 'leaf', groupId: 'nope' }] }, { kind: 'grid', rows: 1, cols: 3, cells: [{ kind: 'leaf', groupId: 'a' }, { kind: 'leaf', groupId: 'b' }, { kind: 'leaf', groupId: 'c' }] }, { kind: 'what' }, []].map((raw) => ({ raw, tree: parseTree(raw, (g) => ['a', 'b', 'c'].includes(g)) })),
+    presets: {
+      starters: Object.fromEntries(presets.map((a) => { const d = normalizeDockLayout(a.data); return [a.id, { normalized: d, errors: dockLayoutErrors(a.data), tree: presetTree(d, ['g1', 'g2', 'g3', 'g4']), rects: presetRects(d), svg: presetSvg(d) }]; })),
+      bad: Object.entries(badLayouts).map(([name, raw]) => ({ name, raw, normalized: normalizeDockLayout(raw), errors: dockLayoutErrors(raw) })),
+      apply: presets.map((a) => { const d = normalizeDockLayout(a.data); const out = applyPreset(presetApply, d, 'main', (n) => `new-${n}`, normalizeDockRules({ paneLimit: 3 })); return { preset: a.id, tabs: tabIds, paneLimit: 3, tree: out.tree, groups: Object.fromEntries(Object.entries(out.groups).map(([k, g]) => [k, { tabs: g.tabs.map((t) => t.id), windowId: g.windowId }])) }; }),
+      applyState: { tree: presetApply.tree, groups: Object.fromEntries(Object.entries(presetApply.groups).map(([k, g]) => [k, { tabs: g.tabs, active: g.active, windowId: g.windowId }])) },
+      applyEmpty: applyPreset({ tree: null, groups: {} }, normalizeDockLayout(presets[0]!.data), 'main', (n) => `new-${n}`),
+    },
+  });
+}
 // Window engine geometry (windows-terminal s17, Oct 28 2026): the 8 resize handles (hit-testing, cursors), resize maths
 // with size floors (opposite edge fixed, no viewport clamp: windows may leave the screen), maximize / restore and the
 // title-bar drag that restores a maximized window under the pointer. Kotlin `Windows.kt` replays the same file.

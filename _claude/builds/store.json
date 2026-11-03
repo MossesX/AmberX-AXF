@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 156,
- "updatedAt": "2026-11-03T02:40:26.219Z",
+ "rev": 160,
+ "updatedAt": "2026-11-03T11:13:29.998Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -48776,15 +48776,15 @@
    "title": "Shared dock engine: split, float, re-dock, drop zones, layout presets (used by MD Studio, xLayout, Theme Editor)",
    "category": "Urgent",
    "detail": "Brett Nov 2 2026 21:30 ET picked 'shared dock engine first'. Extends framework/core/engines/windows (panes, tab groups) + framework/react/windows/WindowHost. Covers xLayout s3 (Big Dog) pane engine; xLayout s7/s8 use it. Android twin = deferred gap in PORTING.md (Android on hold).",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T02:32:21.328Z",
-   "updatedAt": "2026-11-03T02:32:21.328Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T11:13:29.965Z",
+   "builtAt": "2026-11-03T11:13:29.965Z",
    "notes": [],
    "approvals": [],
    "steps": [
@@ -48803,12 +48803,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:08:41.380Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T02:32:21.329Z",
-     "updatedAt": "2026-11-03T02:32:21.329Z"
+     "updatedAt": "2026-11-03T11:08:41.418Z"
     },
     {
      "id": "s2",
@@ -48825,12 +48825,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:08:42.061Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T02:32:21.329Z",
-     "updatedAt": "2026-11-03T02:32:21.329Z"
+     "updatedAt": "2026-11-03T11:08:42.117Z"
     },
     {
      "id": "s3",
@@ -48847,12 +48847,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:13:29.561Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T02:32:21.329Z",
-     "updatedAt": "2026-11-03T02:32:21.329Z"
+     "updatedAt": "2026-11-03T11:13:29.593Z"
     },
     {
      "id": "s4",
@@ -48869,12 +48869,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:13:29.965Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T02:32:21.329Z",
-     "updatedAt": "2026-11-03T02:32:21.329Z"
+     "updatedAt": "2026-11-03T11:13:29.998Z"
     }
    ],
    "profiles": [
@@ -48885,7 +48885,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

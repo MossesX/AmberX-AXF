@@ -31,6 +31,7 @@
     "divider": false,
     "badge": false,
     "settings": false,
+    "dock-layout": false,
     "behavior-theme": true,
     "design-package": false,
     "style-package": false,

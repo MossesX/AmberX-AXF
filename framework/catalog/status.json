@@ -2030,7 +2030,7 @@
     "module": "axf-ui"
   },
   "ui.windows.persist": {
-    "status": "placeholder",
+    "status": "partial",
     "wave": 2,
     "module": "axf-ui"
   },
