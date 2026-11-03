@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T20:01:18.540Z",
+ "updatedAt": "2026-11-03T20:01:29.807Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4552,7 +4552,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T19:43:04.673Z",
-   "updatedAt": "2026-11-03T19:43:07.850Z",
+   "updatedAt": "2026-11-03T20:00:21.689Z",
    "builtAt": "",
    "notes": [
     {
@@ -4576,8 +4576,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T20:00:18.561Z",
      "note": "",
      "uid": "st-mw13hw6d07pb4u"
     },
@@ -4594,8 +4594,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T20:00:19.768Z",
      "note": "",
      "uid": "st-mw13hw6d081k6f"
     },
@@ -4630,8 +4630,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T20:00:20.707Z",
      "note": "",
      "uid": "st-mw13hw6h0a7gfa"
     },
@@ -4648,8 +4648,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T20:00:21.689Z",
      "note": "",
      "uid": "st-mw13hw6h0b1se8"
     },

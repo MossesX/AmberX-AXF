@@ -913,3 +913,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 20:00 UTC · `window-resize-fix` s1 done (current) · foreign-write
 - 2026-11-03 20:00 UTC · `terminal-sessions-nav` added (8 steps) (current) · foreign-write
 - 2026-11-03 20:00 UTC · `profile-manager` added (6 steps) (current) · foreign-write
+- 2026-11-03 20:00 UTC · `home-cards-live` s1 done (urgent) · orchestrator
+- 2026-11-03 20:00 UTC · `home-cards-live` s2 done (urgent) · orchestrator
+- 2026-11-03 20:00 UTC · `home-cards-live` s4 done (urgent) · orchestrator
+- 2026-11-03 20:00 UTC · `home-cards-live` s5 done (urgent) · orchestrator
