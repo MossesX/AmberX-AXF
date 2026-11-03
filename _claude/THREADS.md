@@ -889,3 +889,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 19:50 UTC · `claude-settings` PR #275, note (urgent) · reconciler
 - 2026-11-03 19:50 UTC · `claude-settings` → built, PR #275 (urgent) · builds-live
 - 2026-11-03 19:50 UTC · `claude-settings` note (urgent) · orchestrator
+- 2026-11-03 19:50 UTC · `claude-settings` s7 done, → built, PR #275, note (urgent) · builds-live
