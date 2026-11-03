@@ -156,6 +156,18 @@
 :where(:not([data-fx-narrow])) .axp-ui-review__cols { grid-auto-columns: minmax(calc(var(--fx-font-size) * 18), 1fr); }
 :where(:not([data-fx-narrow])) .axp-ui-review__thumbs { grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-font-size) * 10), 1fr)); }
 
+/* Phones: `:where(:not([data-fx-narrow]))` above also matches any ancestor without the flag (body, the app root), so the
+   wide layout leaked onto phones and the item detail's columns overlapped. These put the phone layout back. */
+:where([data-fx-narrow]) .axp-ui-review__bar > .axp-ui-review__search { flex: 1 1 100%; }
+:where([data-fx-narrow]) .axp-ui-review__bar > .axp-ui-review__sel { flex: 1 1 calc(var(--fx-font-size) * 7); }
+:where([data-fx-narrow]) .axp-ui-review__detail { grid-template-columns: minmax(0, 1fr); }
+:where([data-fx-narrow]) .axp-ui-review__detail .axp-ui-review__facts { border-inline-start: 0; }
+:where([data-fx-narrow]) .axp-ui-review__browser { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+:where([data-fx-narrow]) .axp-ui-review__files { flex-direction: row; overflow-x: auto; overflow-y: hidden; border-inline-end: 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+:where([data-fx-narrow]) .axp-ui-review__file { flex-direction: column; width: calc(var(--fx-font-size) * 5.6); text-align: center; }
+:where([data-fx-narrow]) .axp-ui-review__thumb, :where([data-fx-narrow]) .axp-ui-review__file .axp-ui-review__noimg { width: calc(var(--fx-font-size) * 3.6); height: calc(var(--fx-font-size) * 5.2); }
+:where([data-fx-narrow]) .axp-ui-review__fname { font-size: var(--fx-type-scale-xs); text-align: center; white-space: normal; overflow: visible; }
+
 /* Predicted looks (ui-prediction@1): the badge, the predicted / real / before switch, and the mockup page itself. */
 .axp-ui-review__predict { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) / 2); }
 .axp-ui-review__cost { font-variant-numeric: tabular-nums; }
