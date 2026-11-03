@@ -1,0 +1,2 @@
+/* Reference links: the try box (theme tokens only; the links themselves are the framework's .fx-ref). */
+.axp-ref-links__try { margin: 0; padding: var(--fx-dens-gap-xl); border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-md); line-height: 1.6; }

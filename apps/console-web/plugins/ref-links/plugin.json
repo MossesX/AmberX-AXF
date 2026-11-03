@@ -1,0 +1,137 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.ref-links",
+  "name": "Reference links",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Text in the banners (In progress, Ready to merge, Merged, Live, the build and status banners, Codebase changes) that mentions a real part of the app is a link: a screen, a settings tab, section or single setting, a plugin, dialog, toolbar, menu, component, build, PR, agent or file. Tap = a peek card (what it is, where it lives, whether a build is changing it), double-tap = open it and highlight it, hold or right-click = Open, Open in new window, Show in UI Review, Show the build that's changing it, Copy link. A build's declared refs ('touches: settings.terminal, toolbar.terminal') win over names. Plain matching from the console's own registries (ref@1), no model, no tokens. Also over REST, the MCP tools ref_links_find / ref_links_resolve / ref_links_open and `axf ref-links …`.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "settings-tab:ref-links",
+    "service:ref-links@1"
+  ],
+  "optional": [
+    "service:console-commands@1",
+    "service:ui-review@1",
+    "service:axf.agents@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/ref-links",
+    "env": [
+      "AXF_REPO_ROOT"
+    ],
+    "mentions": [
+      "_claude/THREADS.md",
+      ".github/workflows/android.yml"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "id": "targets",
+        "route": "GET /targets",
+        "title": "Every reference target",
+        "description": "Every thing a reference can point at right now: builds (with what they declare they touch, PR, UI Review items), plugins, the open console's screens, dialogs and settings tabs, agents.",
+        "readOnly": true,
+        "output": "{ targets: ref@1 targets }"
+      },
+      {
+        "id": "find",
+        "route": "POST /find",
+        "title": "Find references in text",
+        "description": "The mentions of real things in a line of text (screens, settings, plugins, toolbars, builds, PRs, files…), each with the ref id it points at. Explicit touches win over names.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string",
+              "description": "the text (a banner entry, a build title, a note)"
+            },
+            "touches": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "explicit refs that win, e.g. settings.terminal, toolbar.terminal"
+            }
+          },
+          "required": [
+            "text"
+          ]
+        },
+        "output": "ref@1 { spans: [{ start, end, text, ref, kind, via, ambiguous?, candidates?, missing? }], refs, targets }"
+      },
+      {
+        "id": "resolve",
+        "route": "POST /resolve",
+        "title": "Resolve one reference",
+        "description": "One ref by id (settings.terminal, screen:plan-studio, build:<id>, #123) or by a few words (\"terminal settings\").",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "ref": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "ref"
+          ]
+        },
+        "output": "{ target, ambiguous?, candidates? }"
+      },
+      {
+        "id": "open",
+        "route": "POST /open",
+        "title": "Open what a reference points at",
+        "description": "Brett's open console opens it and highlights it (like double-tapping the link): how = open (default), window (a new window), review (its UI Review item) or build (the build changing it). Only navigates.",
+        "readOnly": false,
+        "input": {
+          "type": "object",
+          "properties": {
+            "ref": {
+              "type": "string"
+            },
+            "how": {
+              "type": "string",
+              "enum": [
+                "open",
+                "window",
+                "review",
+                "build"
+              ]
+            },
+            "to": {
+              "type": "string",
+              "description": "recent (default), all, or a console client id"
+            }
+          },
+          "required": [
+            "ref"
+          ]
+        },
+        "output": "the console's answer (delivered: what each open console did)"
+      }
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-03"
+  },
+  "help": "help.json",
+  "opens": false
+}

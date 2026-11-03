@@ -53,6 +53,7 @@ jobs:
       - run: node framework/spec/check-github-app.mjs                # github-app@1 broker: manifest, callback exchange, file modes, JWT, token cache, git/gh helpers, user refresh, health
       - run: node framework/spec/check-ui-review.mjs                 # ui-review-item@1: fixtures, schema snapshots, migration, every UI Review submitter names + times its items
       - run: node framework/spec/check-session.mjs                   # session@1 (Chat viewer): fixtures, redaction, chain hash, schema snapshots
+      - run: node framework/spec/check-refs.mjs                      # ref@1: mentions in banner text → links (fixtures/refs.json: names, kind words, explicit touches, PRs, files, peek)
       - run: node framework/cli/help-coverage.mjs --check            # Help mode: every control in the framework chrome, the console + plugins and axHub web has help; fails if coverage drops below framework/spec/help-coverage.json
       - run: node framework/cli/axf.mjs libraries
       - name: Asset conformance — every web CSS/TSX and Kotlin UI (handwritten or generated) takes its look from asset tokens; file:line + token to use
@@ -71,6 +72,8 @@ jobs:
         run: node apps/console-web/plugins/token-control/test.mjs  # axf-plugin:token-control
       - name: Console commands plugin (control@1 console domain — CLI words, runner gate + resolve + deliver, confirm, send to a console)  # axf-plugin:console-commands
         run: node apps/console-web/plugins/console-commands/test.mjs  # axf-plugin:console-commands
+      - name: Reference links plugin (ref@1 runner — builds store + plugin targets, find, explicit touches, ambiguous, missing, resolve, CLI)  # axf-plugin:ref-links
+        run: node apps/console-web/plugins/ref-links/test.mjs  # axf-plugin:ref-links
       - name: Plugin commands plugin (control@1 plugins domain — runner gate, reads, dispatch, confirm, CLI)  # axf-plugin:plugin-commands
         run: node apps/console-web/plugins/plugin-commands/test.mjs  # axf-plugin:plugin-commands
       - name: Deploy helpers (framework/deploy) — bash -n, shellcheck, self-test; installers that source them
@@ -221,6 +224,7 @@ jobs:
             python apps/console-web/server/test_build_profiles.py
             python apps/console-web/server/test_previews.py          # Watch live: registry, signed keys, /preview proxy auth (HTTP + HMR WebSocket)
             python apps/console-web/plugins/console-commands/server/test_console_commands.py  # console commands: consoles announce + stream, resolve, deliver + ack, per-user mailbox, confirm  # axf-plugin:console-commands
+            python apps/console-web/plugins/ref-links/server/test_ref_links.py  # reference links: targets (catalog, agents, UI Review), find, resolve, open → refs.<how> through console-commands@1  # axf-plugin:ref-links
             python apps/console-web/server/test_mcp_tools.py         # console MCP: read tools read-only, deletes destructive, veto pass tools
             python apps/console-web/plugins/plugin-commands/server/test_plugin_commands.py  # plugin commands: /api/control/<plugin>/<command>, deletes confirm, actions to the console, MCP tools follow the plugins  # axf-plugin:plugin-commands
             python apps/amberx-droid/server/test_server.py           # AmberX server: wall, admin-only AI config, write-only keys, fallback, intent checks, caps, SPA paths

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 448,
- "updatedAt": "2026-11-03T20:48:30.071Z",
+ "rev": 458,
+ "updatedAt": "2026-11-03T20:57:14.359Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -35,12 +35,6 @@
    "maxStepMinutes": 30
   },
   "big-dog": {
-   "sameSession": true,
-   "subAgents": false,
-   "approveModelSwitch": true,
-   "maxStepMinutes": 30
-  },
-  "current": {
    "sameSession": true,
    "subAgents": false,
    "approveModelSwitch": true,
@@ -56394,15 +56388,15 @@
    "title": "Show what Brett said (verbatim prompt) on every build",
    "category": "Builds",
    "detail": "Brett, Nov 3 2026 (voice), verbatim: \"All the build entries, like wherever it shows a build in the build manager, pending, all that, I need it to show the prompt, what I said, the verbatim prompt that kicked it off, that initiated it.\" Every build entry (Build manager, Pending, Queue, Orchestrator, Steps, Builds page) shows the verbatim prompt that started it, its brief and later addenda.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "code",
    "pendingId": "",
    "branch": "claude/build-prompt-origin",
-   "pr": "",
+   "pr": "#282",
    "createdAt": "2026-11-03T20:23:37.380Z",
-   "updatedAt": "2026-11-03T20:30:35.517Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T20:53:25.027Z",
+   "builtAt": "2026-11-03T20:53:24.237Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -56466,12 +56460,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T20:53:22.412Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T20:23:37.394Z",
-     "updatedAt": "2026-11-03T20:23:37.394Z"
+     "updatedAt": "2026-11-03T20:56:53.826Z"
     },
     {
      "id": "s4",
@@ -56510,12 +56504,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T20:53:24.237Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T20:23:37.394Z",
-     "updatedAt": "2026-11-03T20:23:37.394Z"
+     "updatedAt": "2026-11-03T20:56:53.826Z"
     }
    ],
    "profiles": [
@@ -56526,7 +56520,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -56549,7 +56543,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T20:30:14.217Z",
-   "updatedAt": "2026-11-03T20:47:31.966Z",
+   "updatedAt": "2026-11-03T20:55:50.337Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -56575,7 +56569,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T20:30:14.219Z",
-     "updatedAt": "2026-11-03T20:47:35.480Z"
+     "updatedAt": "2026-11-03T20:53:20.425Z"
     },
     {
      "id": "s2",
@@ -56597,7 +56591,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T20:30:14.219Z",
-     "updatedAt": "2026-11-03T20:47:36.056Z"
+     "updatedAt": "2026-11-03T20:53:20.425Z"
     },
     {
      "id": "s3",
@@ -56614,12 +56608,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T20:55:47.761Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T20:30:14.219Z",
-     "updatedAt": "2026-11-03T20:38:18.461Z"
+     "updatedAt": "2026-11-03T20:56:53.826Z"
     },
     {
      "id": "s4",
@@ -56636,12 +56630,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T20:55:49.003Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T20:30:14.219Z",
-     "updatedAt": "2026-11-03T20:38:18.461Z"
+     "updatedAt": "2026-11-03T20:56:53.826Z"
     },
     {
      "id": "s5",
@@ -56658,12 +56652,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T20:55:50.337Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T20:30:14.219Z",
-     "updatedAt": "2026-11-03T20:38:18.461Z"
+     "updatedAt": "2026-11-03T20:56:53.826Z"
     },
     {
      "id": "s6",
@@ -56696,7 +56690,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -58519,7 +58513,7 @@
    "branch": "claude/banner-ref-links",
    "pr": "",
    "createdAt": "2026-11-03T20:47:37.192Z",
-   "updatedAt": "2026-11-03T20:47:46.653Z",
+   "updatedAt": "2026-11-03T20:56:54.797Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -58540,12 +58534,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T20:56:54.797Z",
+     "note": "framework/core/engines/refs.mjs (ref@1) + fixtures/refs.json + check-refs.mjs (34 checks), CI",
+     "rev": 2,
      "createdAt": "2026-11-03T20:47:37.195Z",
-     "updatedAt": "2026-11-03T20:47:37.195Z"
+     "updatedAt": "2026-11-03T20:56:54.950Z"
     },
     {
      "id": "s2",
@@ -58644,7 +58638,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

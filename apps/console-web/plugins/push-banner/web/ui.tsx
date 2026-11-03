@@ -1,6 +1,6 @@
 /** Push banner UI: the banner (open pull requests + branches not on main, grouped by what's ready) and the settings panel. Theme tokens only. */
 import { useEffect, useState, type ReactNode } from 'react';
-import { Button, Icon, Switch, useAxfState, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { Button, Icon, RefText, Switch, useAxfState, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { ago, bannerOn, doneKeys, doneRows, failedKeys, failedRows, fixWithClaude, jobOf, REPAIR_ALL, removeFailed, repair, repairAll, load, loadDetail, mergePr, needsPull, openPr, PULL_ALL, pullAll, pullMain, pullRows, removeDone, rows, saveClaude, setHidden, useStore, api, type Done, type Failed, type PullRow, type Row } from './store';
 
 const CI_WORD: Record<string, string> = { success: 'CI passed', failure: 'CI failed', running: 'CI running', none: 'no CI yet', unknown: 'CI unknown' };
@@ -103,7 +103,7 @@ function Expander({ open, onToggle, chip, title, label }: { open: boolean; onTog
   return (
     <button type="button" data-fx-row className="axp-push-banner__line axp-push-banner__expand" aria-expanded={open} title={open ? 'Hide the details' : 'Show the details'} aria-label={`${label}: ${open ? 'hide' : 'show'} details`} onClick={onToggle}>
       <span className="axp-push-banner__chip">{chip}</span>
-      <span className="axp-push-banner__name is-title">{title}</span>
+      <span className="axp-push-banner__name is-title"><RefText text={title} /></span>
       <Icon name={open ? 'chevron-up' : 'chevron-down'} size={14} />
     </button>
   );
@@ -156,7 +156,7 @@ function BranchItem({ r }: { r: Row }) {
           {r.ahead == null ? <span className="is-danger">couldn’t compare{r.error ? `: ${r.error}` : ''}</span> : <span>{r.ahead} ahead{r.behind ? ` · ${r.behind} behind` : ''}</span>}
           {r.date && <span>{ago(r.date)}</span>}
         </span>
-        {r.subject && <span className="axp-push-banner__sub">{r.subject}</span>}
+        {r.subject && <span className="axp-push-banner__sub"><RefText text={r.subject} /></span>}
         <Note k={r.key} />
         {open && <Details k={r.key} repo={r.repo} branch={r.name} url={r.url ?? ''} lines={[`${r.name} → ${r.base} · no pull request yet`]} />}
       </div>
@@ -187,7 +187,7 @@ function CleanItem({ r }: { r: Row }) {
           <span>{r.ahead} ahead · no conflicts · no PR yet</span>
           {r.date && <span>{ago(r.date)}</span>}
         </span>
-        {r.subject && <span className="axp-push-banner__sub">{r.subject}</span>}
+        {r.subject && <span className="axp-push-banner__sub"><RefText text={r.subject} /></span>}
         <Note k={r.key} />
         {open && <Details k={r.key} repo={r.repo} branch={r.name} url={r.url ?? ''} lines={[`${r.name} → ${r.base} · not behind ${r.base} · it reaches ${r.base} only through a pull request (auto-merge opens one)`]} />}
       </div>
@@ -208,8 +208,8 @@ function DoneItem({ d, sha }: { d: Done; sha?: string }) {
       <div className="axp-push-banner__entry">
         <span className="axp-push-banner__line">
           <span className="axp-push-banner__chip" title={d.repo}>{short(d.repo)}</span>
-          {d.url ? <a className="axp-push-banner__name is-title" href={d.url} target="_blank" rel="noopener noreferrer" title="Open on GitHub">{d.number ? `#${d.number} ` : ''}{d.title || d.branch}</a>
-            : <span className="axp-push-banner__name is-title">{d.title || d.branch}</span>}
+          {d.url ? <a className="axp-push-banner__name is-title" href={d.url} target="_blank" rel="noopener noreferrer" title="Open on GitHub">{d.number ? `#${d.number} ` : ''}<RefText text={d.title || d.branch} /></a>
+            : <span className="axp-push-banner__name is-title"><RefText text={d.title || d.branch} /></span>}
         </span>
         <span className="axp-push-banner__line axp-push-banner__meta">
           <span className="axp-push-banner__pill is-ready"><Icon name="check-circle" size={11} />{merged ? 'Merged' : `Pulled ${d.base || 'main'} in`}</span>

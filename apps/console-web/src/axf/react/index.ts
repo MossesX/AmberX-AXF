@@ -36,3 +36,4 @@ export { pluginRecordOfLibrary, pluginRecordsFromRuntime, runtimeInventory } fro
 export { HubAppearanceSource, DEFAULT_HUB, type HubAppearanceOptions } from './hubAppearance';
 export { WaitingForHub } from './components/Waiting';
 export { WatchLiveLink, WatchLiveWindow, watchLiveSrc, type WatchLivePreview } from './components/WatchLive';
+export { RefText, REFS_SETTING, addRefSource, refSourcesChanged, refIndexOf, openRef, refLink, type RefTextProps, type RefHow } from './components/RefText';
