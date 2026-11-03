@@ -99,3 +99,66 @@ banner Brett tunes afterwards is kept until the next package load. Flagged below
 - Apps: `src/axf/{core,react,ui,schemas,libs,assets}` re-baked (console, axHub web, AmberX); `assets-overrides/banner/`
   removed in all three. `apps/molly` (new, also ships the shared set) got the asset re-bake only; its framework code
   was already stale before this build and is not touched.
+
+## Screenshots (UI Review → group "One look - Nov 1", PR #244)
+
+UI Review items (waiting): `r-20261103-544dadf5` (console, before + after), `r-20261103-e9462e34` (axHub web),
+`r-20261103-ce0a234a` (AmberX).
+
+Console before = `origin/main` (what #228 merged), after = this branch; axHub web and AmberX after only, with the live
+hub document mocked in the browser (so they show Hub Default with the colour override the hub carries right now,
+Arctic Daylight). Files: `_claude/builds/reports/one-look-default/shots/{before,after}/` (console) and
+`after/{axhub-web,amberx-droid}/`. Captured with `framework/cli/rebuild-shots.mjs` (console, hub source off) and
+`shots/apps-shots.mjs` (the two apps, built dist + Playwright routes for the hub).
+
+| Screen | Phone | Desktop |
+|---|---|---|
+| Console home, before | ![](one-look-default/shots/before/home-phone.png) | ![](one-look-default/shots/before/home-desktop.png) |
+| Console home, after | ![](one-look-default/shots/after/home-phone.png) | ![](one-look-default/shots/after/home-desktop.png) |
+| Console Settings → Appearance, after | ![](one-look-default/shots/after/appearance-phone.png) | ![](one-look-default/shots/after/appearance-desktop.png) |
+| Console, style changed ("Hub Default (style changed)") | ![](one-look-default/shots/after/appearance-style-changed-phone.png) | ![](one-look-default/shots/after/appearance-style-changed-desktop.png) |
+| axHub web home | ![](one-look-default/shots/after/axhub-web/home-phone.png) | ![](one-look-default/shots/after/axhub-web/home-desktop.png) |
+| axHub web Settings → Appearance | ![](one-look-default/shots/after/axhub-web/appearance-phone.png) | ![](one-look-default/shots/after/axhub-web/appearance-desktop.png) |
+| AmberX home | ![](one-look-default/shots/after/amberx-droid/home-phone.png) | ![](one-look-default/shots/after/amberx-droid/home-desktop.png) |
+| AmberX Settings → Appearance | ![](one-look-default/shots/after/amberx-droid/appearance-phone.png) | ![](one-look-default/shots/after/amberx-droid/appearance-desktop.png) |
+
+The console's before and after look the same on purpose: the apps already carried the switch in their override; the
+change is where the asset lives (one framework copy, fixture-pinned) and that no app can fork it again.
+
+## Checks
+
+| Check | Before (main) | After |
+|---|---|---|
+| `check-hub-look.mts` | 42 | **110** (slot swap loads the package, Restore in full, retired slot, the three real apps) |
+| `check-widgets.mts` | 248 (clock right) | 248 (clock + switch right) |
+| `check-appearance.mts` | 107 | 107 (fixture row `retired-slot` added, regenerated) |
+| `check-design-package.mts` | 1238 | 1238 |
+| `gen-fixtures.mts` | — | `banner.json` (+20 lines), `appearance.json` (+19); nothing else moved |
+| `validate --framework` | 479 | 479 |
+| `shared-assets.mjs check` | 4 apps, 471 | 4 apps, 471, no own copies (the three banner overrides are gone) |
+| check-theme, check-controls, check-conform, check-help (214), help-coverage, menu-reach (324), settings-ui (43), appearance-lock (27), banner-hide (58), interface (68), roller (138), scale (485), style-packages (857), project fixtures (16) | pass | pass |
+| AmberX `test.mjs` / axHub web `test.mjs` | 2184 / 232 | 2184 / 232 |
+| `tsc --noEmit` + `vite build`: console, axHub web, AmberX | pass | pass |
+| `tracker.mjs --check` | "391 item(s) without a status" | same (pre-existing, not this build) |
+
+Not run here: `check-help-mode.mts` (jsdom; CI), Gradle / Kotlin (CI; the Kotlin banner and appearance tests replay the
+same fixtures and their own doc lists, so nothing new is pinned on the Kotlin side until the twin lands),
+`theme-swap.mjs` (Playwright in CI).
+
+## Known gaps and questions
+
+- **Loading a design package with extras clears plugin look settings** (banner prefs included): design-package@1's
+  "whole look" semantics since Oct 27; `hub-default` ships `settings: {}`. Brett said plugin settings stay editable and
+  shared, which they are, but a Design theme pick resets them. If that's not wanted, the fix is one line in
+  `packageSettingsPlan` (don't clear keys a package doesn't name) and a spec note; not changed here.
+- **Kotlin twin deferred** (Android on hold): `AppearanceEngine.NEVER` + the `retired-slot` test row, the three
+  `AxfRuntime` changes, `DesignPackageEngine` precedence functions (`PORTING.md`).
+- The live hub document still carries the retired `appearance-package: fresh` slot; it disappears with the first write
+  by any app running this build (dropped on read already).
+- The phone banner clips its right side (clock cut at 412 px, search collapsed to "Se") in both before and after:
+  the "attached things snap, never overlap" rule (Oct 28) says the host should scroll sideways; pre-existing, not touched.
+- `apps/molly` ships the shared assets (re-baked here) but its framework code was already stale before this build.
+- `apps/console-web/src/hubAppearance.tsx` is only the hub source attach (not a look editor): nothing to remove there.
+  Build Pilot's own Look page is in the Build-Pilot repo, out of scope.
+- The 25 Claude files `claude-sync` holds (THREADS.md, the builds store, journal, orchestrator exports: changed on the
+  hub and in the repo) were not resolved by this session; Brett picks a side (`claude-sync resolve … --keep local|hub`).
