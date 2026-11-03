@@ -279,7 +279,7 @@ class Manager:
                 raise ValueError("attach is the name of an axf-… or axt-… tmux session")
             if attach:  # a headless Claude Code session claude-headless.sh started (or a detached tab): watch it (and type into it) here
                 q = shlex.quote(attach)
-                remote = (f"tmux capture-pane -p -e -J -S -{REPLAY_LINES} -t ={q} 2>/dev/null; tmux attach -t ={q} 2>/dev/null || "
+                remote = (f"tmux capture-pane -p -e -J -S -{REPLAY_LINES} -t ={q}: 2>/dev/null; tmux attach -t ={q} 2>/dev/null || "
                           "{ echo 'That session has ended; its log is in its folder (.axf-*.log).'; exec \"${SHELL:-bash}\" -l; }")
                 tmux, where = attach, "vps"
             elif tab_tmux:
@@ -432,10 +432,10 @@ def tmux_script(name: str, command: str, cwd: str, cols: int, rows: int, fallbac
     unset = ("env " + " ".join(f"-u {k}" for k in keys) + " ") if keys else ""
     new = (f"{unset}tmux new-session -d -s {q} -x {max(10, min(cols, 500))} -y {max(5, min(rows, 300))}"
            + (f" -c {shlex.quote(cwd)}" if cwd else "") + (f" {envs}" if envs else "") + f" {shlex.quote(command)} || exit 1; "
-           f"tmux set-option -t ={q} history-limit 50000 >/dev/null; tmux set-option -t ={q} status off >/dev/null; "
-           f"tmux set-option -t ={q} @axf_kind tab >/dev/null")
+           f"tmux set-option -t ={q}: history-limit 50000 >/dev/null; tmux set-option -t ={q}: status off >/dev/null; "
+           f"tmux set-option -t ={q}: @axf_kind tab >/dev/null")
     return (f"if ! command -v tmux >/dev/null 2>&1; then {fallback or 'exec ' + command}; fi; "
-            f"if tmux has-session -t ={q} 2>/dev/null; then tmux capture-pane -p -e -J -S -{REPLAY_LINES} -t ={q} 2>/dev/null; else {new}; fi; "
+            f"if tmux has-session -t ={q} 2>/dev/null; then tmux capture-pane -p -e -J -S -{REPLAY_LINES} -t ={q}: 2>/dev/null; else {new}; fi; "
             f"exec tmux attach -t ={q}")
 
 
@@ -609,7 +609,7 @@ def meters(names: list[str]) -> dict[str, Any]:
     if _meter_cache["value"] is not None and _meter_cache["key"] == key and now - _meter_cache["at"] < METER_TTL:
         return _meter_cache["value"]
     remote = (f'd="{HEADLESS_DIR}"; for s in {" ".join(shlex.quote(n) for n in names)}; do '
-              'm="$(tmux show-options -t "=$s" -v @axf_meter 2>/dev/null)"; [ -n "$m" ] || m="$d/$s.meter.json"; '
+              'm="$(tmux show-options -t "=$s:" -v @axf_meter 2>/dev/null)"; [ -n "$m" ] || m="$d/$s.meter.json"; '
               '[ -r "$m" ] && { printf "%s\t" "$s"; head -c 65536 "$m" | tr -d "\n"; echo; }; done; true')
     out, why = _vps_run(st, remote)
     items: dict[str, Any] = {}
@@ -634,7 +634,7 @@ def chain(name: str) -> dict[str, Any]:
     if not _vps_ready(st):
         raise ValueError("the VPS tab isn't set up")
     q = shlex.quote(name)
-    remote = (f'd="{HEADLESS_DIR}"; c="$(tmux show-options -t ={q} -v @axf_chain 2>/dev/null)"; [ -n "$c" ] || c="$d/{name}.chain.json"; '
+    remote = (f'd="{HEADLESS_DIR}"; c="$(tmux show-options -t ={q}: -v @axf_chain 2>/dev/null)"; [ -n "$c" ] || c="$d/{name}.chain.json"; '
               '[ -r "$c" ] && head -c 4000000 "$c"; true')
     out, why = _vps_run(st, remote, timeout=20)
     if why:
