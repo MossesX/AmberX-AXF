@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 195,
- "updatedAt": "2026-11-03T16:14:38.259Z",
+ "rev": 196,
+ "updatedAt": "2026-11-03T16:22:58.546Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50466,10 +50466,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/crew-retrain",
+   "pr": "#265",
    "createdAt": "2026-11-03T15:58:12.029Z",
-   "updatedAt": "2026-11-03T16:12:16.094Z",
+   "updatedAt": "2026-11-03T16:22:57.550Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -50659,7 +50659,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
