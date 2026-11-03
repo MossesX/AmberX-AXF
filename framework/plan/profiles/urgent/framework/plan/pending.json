@@ -529,6 +529,57 @@
    "builtAt": "2026-11-03T14:10:56.767Z",
    "updatedAt": "2026-11-03T14:10:57.365Z",
    "source": "console"
+  },
+  {
+   "id": "orch-live-sync",
+   "title": "Orchestrator live sync: every step reaches main at once",
+   "detail": "Brett, Nov 3 2026 (voice): every completed step, however small, must reach the orchestrator and show on main immediately, so banners and THREADS follow every step. Store writes go live to main as status-only commits; branch + PR auto-link; reconciler for open PRs and claude/* branches; banners + THREADS follow the store; session-start rule; backfill.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Live status writes to main: store writes committed to main at once as status-only commits (git plumbing on origin/main, bounded rebase-retry, never force), per-build newer-wins merge, journal union",
+     "at": "2026-11-03T13:39:29.177Z",
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-03T13:53:26.701Z"
+    },
+    {
+     "text": "[Opus] Branch + PR auto-link: build branch/pr fields set and written live; built-awaiting-merge when all steps done but the PR is open, complete when merged",
+     "at": "2026-11-03T13:39:29.177Z",
+     "estimate": "25m"
+    },
+    {
+     "text": "[Opus] Reconciler: scan open PRs and claude/* branches, match to builds, fill branch/pr, mark finished work, flag orphans (report + banner alert), on session start and a timer",
+     "at": "2026-11-03T13:39:29.177Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] Banners + THREADS follow the store: every live status change pushes the banner update and appends a THREADS.md line",
+     "at": "2026-11-03T13:39:29.177Z",
+     "estimate": "20m"
+    },
+    {
+     "text": "[Opus] Session-start rule: sessions run the reconciler and read the live store first, never the main export alone",
+     "at": "2026-11-03T13:39:29.177Z",
+     "estimate": "10m"
+    },
+    {
+     "text": "[Opus] Backfill: dock-engine, token-control, urgent-builds, theme-editor; reconciler across angel, big-dog, breakroom, refactor, urgent",
+     "at": "2026-11-03T13:39:29.177Z",
+     "estimate": "25m"
+    },
+    {
+     "text": "[Opus] Tests (retry, parallel writes, merge no-regress, reconciler matching), local CI block, report, THREADS, PR",
+     "at": "2026-11-03T13:39:29.177Z",
+     "estimate": "30m"
+    }
+   ],
+   "createdAt": "2026-11-03T13:39:29.176Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T13:53:26.701Z",
+   "source": "console"
   }
  ]
 }

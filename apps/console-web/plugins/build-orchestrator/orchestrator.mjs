@@ -64,7 +64,7 @@ async function main(argv) {
   if (cmd === 'where') return out({ ok: true, file: trackerFile() }, trackerFile());
   if (cmd === 'list' || cmd === 'state') return out({ ok: true, state: s }, s.builds.filter((b) => !b.hidden && b.status !== 'archived').map((b) => line(b, s.rules)).join('\n') || 'No builds.');
   if (cmd === 'next') {
-    const b = rest[0] ? s.builds.find((x) => x.id === rest[0]) : s.builds.find((x) => !x.hidden && !['complete', 'archived'].includes(x.status));
+    const b = rest[0] ? s.builds.find((x) => x.id === rest[0]) : s.builds.find((x) => !x.hidden && !['built', 'complete', 'archived'].includes(x.status));
     if (!b) return out({ ok: true, next: null }, 'Nothing left to build.');
     const n = core.nextUp(b, s.rules);
     return out({ ok: true, id: b.id, ...n }, `${b.title} (${b.id})\n${n.done ? 'complete' : n.needsApproval ? `Needs Brett's approval: switch ${n.phase.from} → ${n.phase.model} (phase ${n.phase.index + 1})` : `Next: ${n.step.id} on ${n.step.model} — ${n.step.text}`}`);

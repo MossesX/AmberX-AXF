@@ -146,7 +146,7 @@ export function state() {
           pending: count(f['framework/plan/pending.json'], (j) => (j.items ?? []).filter((i) => i.status !== 'complete').length),
           plan: count(f['framework/plan/plan.json'], (j) => (j.features ?? []).length),
           queue: count(f['framework/plan/build-queue.json'], (j) => (j.order ?? []).length),
-          orchestrator: count(f.orchestrator, (j) => (j.builds ?? []).filter((b) => b.status !== 'complete' && b.status !== 'archived').length),
+          orchestrator: count(f.orchestrator, (j) => (j.builds ?? []).filter((b) => !['built', 'complete', 'archived'].includes(b.status)).length),
           tracked: count(f['tracker.json'], (j) => (j.items ?? []).length),
         },
         files: Object.fromEntries(Object.entries(f).map(([k, v]) => [k, rel(v)])),
