@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T19:59:54.644Z",
+ "updatedAt": "2026-11-03T20:00:22.548Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -136,11 +136,11 @@
    "status": "running",
    "hidden": false,
    "source": "console",
-   "pendingId": "",
+   "pendingId": "window-resize-fix",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T19:32:33.504Z",
-   "updatedAt": "2026-11-03T19:47:23.937Z",
+   "updatedAt": "2026-11-03T19:59:32.298Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -162,7 +162,7 @@
      "done": true,
      "doneAt": "2026-11-03T19:47:23.937Z",
      "note": "",
-     "uid": "st-mw134d6a04twsq"
+     "uid": "st-mw134p8001p42n"
     },
     {
      "id": "s2",
@@ -177,10 +177,10 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T19:59:32.298Z",
      "note": "",
-     "uid": "st-mw134d6a05nreq"
+     "uid": "st-mw134p8002sqdt"
     },
     {
      "id": "s3",
@@ -198,7 +198,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw134d6a0601hn"
+     "uid": "st-mw134p8003s7i3"
     }
    ]
   },
@@ -236,7 +236,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw142hcg01mxls"
+     "uid": "st-mw1437oa01ouhz"
     },
     {
      "id": "s2",
@@ -254,7 +254,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw142hcg02mrv9"
+     "uid": "st-mw1437oa02wzx2"
     },
     {
      "id": "s3",
@@ -272,7 +272,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw142hcg035lqv"
+     "uid": "st-mw1437oa03khlt"
     },
     {
      "id": "s4",
@@ -290,7 +290,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw142hcg04isku"
+     "uid": "st-mw1437oa04dhl9"
     },
     {
      "id": "s5-4",
@@ -308,7 +308,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw142d5l05wepo"
+     "uid": "st-mw142hcg01mxls"
     },
     {
      "id": "s6-5",
@@ -326,7 +326,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw142d5l06exed"
+     "uid": "st-mw142hcg02mrv9"
     },
     {
      "id": "s7-6",
@@ -344,10 +344,82 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw142d5l07t8bi"
+     "uid": "st-mw142hcg035lqv"
     },
     {
      "id": "s8-7",
+     "text": "Commands once -> REST + MCP + CLI (list, mirror, jump in, stop); tests, screenshots, UI Review, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw142hcg04isku"
+    },
+    {
+     "id": "s9-8",
+     "text": "Left nav rail: collapsible (icons collapsed, full open, hamburger on phone), framework nav + tokens, remembers state; My sessions / Agents / Connections; tap = open/focus tab; right-click menu (open, split, open in Moshi, stop with confirm, info)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw142d5l05wepo"
+    },
+    {
+     "id": "s10-9",
+     "text": "My sessions: tmux Claude Code mirror read-only + Jump in (writable attach); claude.ai sessions as axHub activity feed per session; MCP console_session_note + rule",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw142d5l06exed"
+    },
+    {
+     "id": "s11-10",
+     "text": "Live session list (websocket): started + running timer, sort/search/filter, collapsible groups, Recent group linking Session browser",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw142d5l07t8bi"
+    },
+    {
+     "id": "s12-11",
      "text": "Commands once -> REST + MCP + CLI (list, mirror, jump in, stop); tests, screenshots, UI Review, report, THREADS, PR",
      "model": "Opus",
      "why": "",
