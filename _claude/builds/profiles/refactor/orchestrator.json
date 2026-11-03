@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T17:56:50.513Z",
+ "updatedAt": "2026-11-03T18:10:16.100Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2004,7 +2004,7 @@
    "branch": "claude/builds-one-page-done",
    "pr": "#134",
    "createdAt": "2026-10-27T19:11:22.011Z",
-   "updatedAt": "2026-11-03T17:56:10.354Z",
+   "updatedAt": "2026-11-03T18:02:48.952Z",
    "builtAt": "",
    "notes": [
     {
@@ -2168,8 +2168,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:42.317Z",
      "note": "",
      "uid": "st-g9f9ft"
     },
@@ -2186,8 +2186,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:43.720Z",
      "note": "",
      "uid": "st-pwsmyj"
     },
@@ -2204,8 +2204,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:45.135Z",
      "note": "",
      "uid": "st-1ugpm65"
     },
@@ -2222,8 +2222,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:46.138Z",
      "note": "",
      "uid": "st-1brmv5a"
     },
@@ -2240,8 +2240,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:46.936Z",
      "note": "",
      "uid": "st-15xdrlf"
     },
@@ -2308,13 +2308,13 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:47.995Z",
      "note": "",
      "uid": "st-n8ym5e"
     },
     {
-     "id": "s30",
+     "id": "s17-16",
      "text": "Old screens become thin redirects to their Builds view (pending, build queue, build-orchestrator, plan, tracker); every nav/menu/context way in kept",
      "model": "Opus",
      "why": "",
@@ -2326,8 +2326,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:48.952Z",
      "note": "",
      "uid": "st-mw0zlof60117cu"
     },
@@ -2362,8 +2362,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:48.952Z",
      "note": "",
      "uid": "st-mw0zldp801my37"
     },
