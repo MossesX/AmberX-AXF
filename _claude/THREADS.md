@@ -568,9 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:10 UTC · `md-studio` s1 done (urgent) · orchestrator
-- 2026-11-03 18:10 UTC · `md-studio` s2 done (urgent) · orchestrator
-- 2026-11-03 18:15 UTC · `crew-live` added (7 steps) (urgent) · orchestrator
 - 2026-11-03 18:15 UTC · `crew-live` branch claude/crew-live (urgent) · builds-live
 - 2026-11-03 18:15 UTC · `crew-live` s1 done, → running (urgent) · orchestrator
 - 2026-11-03 18:16 UTC · `menu-scroll` s5 done (urgent) · orchestrator
@@ -968,3 +965,6 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 22:12 UTC · `plugin-settings-placement` s6 done, → complete, note (current) · foreign-write
 - 2026-11-03 22:12 UTC · `terminal-drag-chain-tree` s3 done, s4 done, s5 done (current) · foreign-write
 - 2026-11-03 22:12 UTC · `molly-banners` added (5 steps) (current) · foreign-write
+- 2026-11-03 22:12 UTC · `terminal-tabs-left` s1 done (current) · orchestrator
+- 2026-11-03 22:12 UTC · `terminal-tabs-left` s2 done (current) · orchestrator
+- 2026-11-03 22:12 UTC · `terminal-tabs-left` s3 done (current) · orchestrator
