@@ -7,3 +7,4 @@ _claude/builds/store.json merge=axf-builds
 _claude/builds/orchestrator.json merge=axf-builds
 _claude/builds/profiles/*/orchestrator.json merge=axf-builds
 _claude/builds/journal/*.jsonl merge=axf-builds
+_claude/builds/origins.json merge=axf-builds

@@ -130,11 +130,11 @@ export function profiles() { try { return readProfiles().profiles?.map((p) => ({
 export function orchBuilds(profile) { return readJson(orchFile(profile), { builds: [] }).builds ?? []; }
 
 /** Turn a plan into a build: preview (no write) or add it to the profile's orchestrator and link both ways. */
-export function turnIntoBuild(id, { profile, buildId, preview = false, by = '' } = {}) {
+export function turnIntoBuild(id, { profile, buildId, preview = false, by = '', said = '' } = {}) {
   const plan = getPlan(id);
   if (!plan) throw new Error(`no plan ${id}`);
   const prof = profile || plan.profile || activeProfile().id;
-  const change = pc.toBuild(plan, { profile: prof, id: buildId });
+  const change = pc.toBuild(plan, { profile: prof, id: buildId, said, by });
   if (preview) return { ok: true, preview: true, change, profile: prof, minutes: change.steps.reduce((m, s) => m + pc.minutesOf(s.estimate), 0) };
   const f = orchFile(prof);
   const st = readJson(f, { $axf: 'orchestrator@1', builds: [] });
@@ -143,7 +143,7 @@ export function turnIntoBuild(id, { profile, buildId, preview = false, by = '' }
   const now = new Date().toISOString();
   st.builds.push({
     id: change.id, title: change.title, category: change.category, detail: change.detail, status: 'pending', hidden: false, source: 'plan-studio', pendingId: '', branch: '', pr: '',
-    createdAt: now, updatedAt: now, builtAt: '', notes: [{ text: `Plan Studio plan: ${plan.id} (${plan.title})`, at: now }], approvals: [],
+    createdAt: now, updatedAt: now, builtAt: '', notes: [{ text: `Plan Studio plan: ${plan.id} (${plan.title})`, at: now }], approvals: [], ...(change.origin ? { origin: change.origin } : {}),
     steps: change.steps.map((s, i) => ({ id: `s${i + 1}`, text: s.text, model: s.model, why: '', phase: s.phase, group: '', estimate: s.estimate, files: [], checks: [], session: 'same', agent: false, skip: false, done: false, doneAt: '', note: '' })),
   });
   writeJson(f, st);
@@ -256,7 +256,7 @@ export async function api(req) {
       const f = e.features.find((x) => x.id === r.feature) ?? { id: r.feature || pc.slug(r.title), title: r.title || r.feature, state: 'idea' };
       return { ok: true, plan: pc.planFromFeature(e, f) };
     }
-    case 'build': return turnIntoBuild(r.id, { profile: r.profile, buildId: r.buildId, preview: !!r.preview, by });
+    case 'build': return turnIntoBuild(r.id, { profile: r.profile, buildId: r.buildId, preview: !!r.preview, by, said: typeof r.said === 'string' ? r.said : '' });
     case 'sync-builds': return { ok: true, changed: syncBuilds() };
     case 'ai': return aiTurn(r.text, { planId: r.plan, reply: r.reply ?? null, apply: !!r.apply, by: by || 'AI' });
     case 'ai-apply': { // apply edits the page already showed as a diff

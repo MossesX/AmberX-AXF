@@ -107,6 +107,15 @@ if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$GA
   fi
 fi
 
+# What Brett said (build-origin@1, Nov 3 2026): the brief's "## Brett said (verbatim)" block (and any "## Addendum N"
+# blocks) go onto the build's record in the builds store as origin.said / addenda, with the brief and who launched it,
+# so every view of the build shows his exact words. Once, before the slot (like the gate). Never stops the run.
+ORIGIN_CLI="$HERE/../framework/cli/build-origin.mjs"
+if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$ORIGIN_CLI" ]] && [[ "${AXF_ORIGIN:-on}" != off ]]; then
+  origin_line="$(node "$ORIGIN_CLI" capture --brief "$brief" --name "$name" --by "${agent:-$name}" 2>&1 | tail -2)" || true
+  [[ -n "$origin_line" ]] && echo "claude-headless: $origin_line" >&2
+fi
+
 if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   if [[ -n "$envfile" && -f "$envfile" && -O "$envfile" ]]; then
     # shellcheck disable=SC1090

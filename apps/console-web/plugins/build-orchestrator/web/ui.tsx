@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Icon, Segmented, Slot, useRuntime } from '@console/axf/react';
+import { BuildOrigin, Button, Icon, Segmented, Slot, originSubtitle, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import { WatchLiveFor } from '@console/watchLive';
@@ -21,7 +21,7 @@ export const FOLDER = 'build-orchestrator';
 registerRowRefTarget('axf-orchestrator-build', (id) => (id ? { kind: 'orchestrator', id } : null));
 const api = pluginApi(FOLDER, 'Build orchestrator', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
 type Step = { id: string; text: string; model: 'Fable' | 'Opus'; why: string; phase: string; group: string; estimate: string; files: string[]; checks: string[]; session: 'same' | 'new'; agent: boolean; done: boolean; doneAt: string; note: string };
-type Build = { id: string; title: string; category: string; detail: string; status: string; hidden: boolean; source: string; pendingId: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt: string; notes: { text: string; at: string }[]; approvals: { phase: number; from: string; to: string; at: string; by?: string; via?: string; kind?: string; selfApproved?: boolean }[]; upgradeRequests?: { id: string; phase: number; from: string; to: string; at: string; by: string; state: string }[]; steps: Step[] };
+type Build = { id: string; title: string; category: string; detail: string; status: string; hidden: boolean; source: string; pendingId: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt: string; notes: { text: string; at: string }[]; approvals: { phase: number; from: string; to: string; at: string; by?: string; via?: string; kind?: string; selfApproved?: boolean }[]; upgradeRequests?: { id: string; phase: number; from: string; to: string; at: string; by: string; state: string }[]; origin?: unknown; steps: Step[] };
 type Rules = { sameSession: boolean; subAgents: boolean; approveModelSwitch: boolean; maxStepMinutes: number };
 type State = { updatedAt: string; rules: Rules; builds: Build[] };
 type Res = { ok: boolean; error?: string; state?: State; log?: string[]; brief?: string };
@@ -182,6 +182,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
           {core.STATUSES.map((s) => <button data-fx-row key={s} className={`pd-badge oc-badge is-${s}`} disabled={busy || s === b.status} onClick={async () => { if (await act({ action: 'status', id: b.id, status: s })) setStatusOpen(false); }}>{(core.STATUS_LABEL as Record<string, string>)[s]}</button>)}
         </div>
       )}
+      {!embedded && <BuildOrigin origin={b.origin} showEmpty />}
       <div className="pd-meta">
         <span className={`pd-date ${b.builtAt ? 'is-built' : ''}`} title={`Added ${fmtTime(b.createdAt)}`}><Icon name={b.builtAt ? 'check-circle' : 'clock'} size={13} />{b.builtAt ? `Built ${fmtDate(b.builtAt)}` : `Added ${fmtDate(b.createdAt)}`}</span>
         {p.total > 0 && <span className="pd-est"><Icon name="check-circle" size={13} />{p.done}/{p.total} steps{p.minutesLeft ? ` · ${core.formatMinutes(p.minutesLeft)} left` : ''}</span>}
@@ -397,7 +398,7 @@ const usdFor = (model: string, minutes: number) => (minutes ? pendingCore.costFo
 const money = (v: number) => (v ? pendingCore.formatUsd(v) : '—');
 const toggleIn = (list: readonly string[], v: string, on?: boolean) => { const has = list.includes(v); const want = on ?? !has; return want ? (has ? [...list] : [...list, v]) : list.filter((x) => x !== v); };
 const nextSort = (cur: GridSort, col: string | null): GridSort => (!col ? null : cur?.col === col ? (cur.dir === 1 ? { col, dir: -1 } : null) : { col, dir: 1 });
-const summary = (b: Build) => { const t = (b.detail || '').replace(/\s+/g, ' ').trim(); const dot = t.search(/[.!?](\s|$)/); return dot > 0 && dot < 160 ? t.slice(0, dot + 1) : t.length > 160 ? `${t.slice(0, 157)}…` : t; };
+const summary = (b: Build) => { const said = originSubtitle(b.origin, 160); if (said) return `“${said}”`; const t = (b.detail || '').replace(/\s+/g, ' ').trim(); const dot = t.search(/[.!?](\s|$)/); return dot > 0 && dot < 160 ? t.slice(0, dot + 1) : t.length > 160 ? `${t.slice(0, 157)}…` : t; };
 const STATUS_TONE: Record<string, string> = { pending: 'muted', running: 'accent', waiting: 'warning', blocked: 'warning', failed: 'danger', complete: 'success', archived: 'muted' };
 
 /** Time and dollars for a build: total and left, priced per step on the step's own model. */
@@ -459,6 +460,7 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
           rowCtx={(b) => ({ target: 'axf-orchestrator-build', payload: b.id })} rowRef={(b) => ({ kind: 'orchestrator', id: b.id })}
           renderDetail={(b) => (
             <div className="oc-detail">
+              <BuildOrigin origin={b.origin} showEmpty />
               <StepGrid b={b} rules={rules} busy={busy} act={act} hidden={stepHidden} setHidden={setStepHidden} />
               <BuildCard b={b} rules={rules} busy={busy} act={act} embedded />
             </div>

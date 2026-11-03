@@ -33,6 +33,9 @@
  *     legacy                       where the record came from in the migration ({ file, profile, id })
  *     copies                       other copies of the same build found during the migration, kept verbatim
  *
+ *     origin                       build-origin@1 (framework/core/build-origin.mjs): Brett's verbatim words that started it,
+ *                                  when / where / who launched it, the brief, later addenda; merged, never overwritten
+ *
  *   StepRecord = orchestrator@1 step fields (id, text, model, why, phase, group, estimate, files, checks, session,
  *     agent, skip, done, doneAt, note) plus uid (never changes, also across a harvest), title (rename; shown instead
  *     of the text when set), rev, createdAt, updatedAt, origin ({ build, step } it was harvested or divided from).
@@ -41,6 +44,7 @@
  */
 
 import { normApproval, normRequest } from '../core/model-switch.mjs';
+import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
 
 export const SCHEMA = 'builds@1';
 export const MODELS = ['Fable', 'Opus'];
@@ -58,7 +62,7 @@ const stepModel = (m) => (m === 'Fable' ? 'Fable' : 'Opus');
 const clone = (o) => JSON.parse(JSON.stringify(o));
 const nowIso = () => new Date().toISOString();
 export const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
-const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'steps'];
+const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
 const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note'];
 
 // ------------------------------------------------------------------ records
@@ -111,6 +115,7 @@ export function normBuild(b, ctx = {}) {
   const profiles = [...new Set((Array.isArray(o.profiles) ? o.profiles : [o.profile || ctx.profile || BASE_PROFILE]).map((p) => str(p, 40)).filter(Boolean))];
   const order = {};
   for (const p of profiles) order[p] = Number.isFinite(o.order?.[p]) ? o.order[p] : (Number.isFinite(ctx.order) ? ctx.order : 0);
+  const origin = normOrigin(o.origin); // build-origin@1: what Brett said that started it (framework/core/build-origin.mjs)
   return {
     id,
     title: str(o.title, 300) || 'Untitled build',
@@ -129,6 +134,7 @@ export function normBuild(b, ctx = {}) {
     notes: (Array.isArray(o.notes) ? o.notes : []).map((n) => ({ text: str(n?.text, 2000), at: str(n?.at, 40) })).filter((n) => n.text),
     approvals: (Array.isArray(o.approvals) ? o.approvals : []).map(normApproval), // model-switch.mjs: who approved, how
     upgradeRequests: (Array.isArray(o.upgradeRequests) ? o.upgradeRequests : []).map(normRequest).filter((r) => r.id),
+    ...(origin ? { origin } : {}),
     steps,
     profiles,
     order,
@@ -348,7 +354,8 @@ export function absorbOrchestrator(store, profile, orch, { now = nowIso(), by = 
     }
     if (rec.deleted) { rec.deleted = false; rec.deletedAt = ''; }
     if (!rec.profiles.includes(profile)) { rec.profiles.push(profile); rec.order[profile] = nextOrder(s, profile); }
-    for (const k of ORCH_BUILD_KEYS) if (k !== 'steps' && k !== 'id' && ob[k] !== undefined) rec[k] = clone(ob[k]);
+    for (const k of ORCH_BUILD_KEYS) if (k !== 'steps' && k !== 'id' && k !== 'origin' && ob[k] !== undefined) rec[k] = clone(ob[k]);
+    { const og = mergeOrigin(ob.origin, rec.origin); if (og) rec.origin = og; } // his words are never lost on a write
     mergeSteps(rec, ob.steps ?? [], now, by, 'removed in the orchestrator');
     followDefault(rec, now);
     if (!newerOnly) rec.order[profile] = i;
@@ -395,6 +402,7 @@ export function itemOfBuild(b, now = nowIso()) {
   };
   if (p.planId || b.planRef) item.planId = p.planId || b.planRef;
   if (p.estimate) item.estimate = p.estimate;
+  if (b.origin) item.origin = clone(b.origin);
   return item;
 }
 
@@ -415,7 +423,7 @@ export function buildFromItem(it, profile, { now = nowIso(), seed = '', order = 
   const subs = Array.isArray(it.subPrompts) ? it.subPrompts : [];
   const prefixSteps = subs.some((p) => PREFIX.test(str(p.text)));
   const b = normBuild({
-    id: it.id, title: it.title, detail: it.detail, status: orchStatusOfPending(it.status) ?? 'pending', source: it.source || 'pending', pendingId: it.id,
+    id: it.id, title: it.title, detail: it.detail, status: orchStatusOfPending(it.status) ?? 'pending', source: it.source || 'pending', pendingId: it.id, origin: it.origin,
     createdAt: it.createdAt || now, updatedAt: it.updatedAt || now, builtAt: done ? it.builtAt || now : '', notes: it.notes ?? [],
     profiles: [profile], order: { [profile]: order },
     steps: subs.map((p, k) => ({
@@ -458,6 +466,7 @@ export function absorbPending(store, profile, pending, change = null, { now = no
     const prefix = b.pending?.prefixSteps ?? (it.subPrompts ?? []).some((p) => PREFIX.test(str(p.text)));
     b.title = str(it.title, 300) || b.title;
     b.detail = str(it.detail, 8000);
+    { const og = mergeOrigin(it.origin, b.origin); if (og) b.origin = og; }
     if (it.status !== shownItem.status) { // only a real status change on the Pending side moves the build
       const st = orchStatusOfPending(it.status);
       if (st) { if (st !== b.status) { b.status = st; b.builtAt = st === 'complete' ? it.builtAt || now : ''; } }

@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { WatchLiveFor } from '@console/watchLive';
-import { Button, Icon, IconButton, Slot, Switch, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { BuildOrigin, Button, Icon, IconButton, Slot, Switch, originSubtitle, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { addedByLabel, addedByOf, filterRows, GONE_LABEL, goneRows, MODELS, ORIGIN_LABEL, ORIGINS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type GoneKind, type LiveEntry, type Origin, type Row, type SortKey, type Source } from './merge.mjs';
 import { abandonBuild, bannerOn, defaultSort, isStuckLive, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, helpers, takeOff, tickStep, useStore, onStore, usd, verifyBuild, type StartPlan, type Store } from './store';
 import { builtRows, builtTotals, filterBuilt, filterSessions, ITEM_STATUS_LABEL, liveFromChanges, matches, money, PERIOD_LABEL, PERIODS, sessionsFromChanges, type ChangeLive, type Period, type SessionItem, type SessionRow } from './history.mjs';
@@ -645,6 +645,7 @@ function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; o
           <span className="axp-build-manager__title">{row.title}</span>
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={14} />
         </span>
+        {originSubtitle(row.brett) && <span className="axf-origin-sub" title={originSubtitle(row.brett, 600)}>“{originSubtitle(row.brett)}”</span>}
         <span className="axp-build-manager__chips">
           <Badge icon={SOURCE_ICON[row.source]}>{SOURCE_LABEL[row.source]}</Badge>
           {row.origin === 'auto' && <Badge icon={ORIGIN_ICON.auto} title={`Added automatically by ${addedByLabel(row.addedBy)}`}>auto</Badge>}
@@ -669,6 +670,7 @@ function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; o
       {starting && <StartPanel row={row} onClose={() => setStarting(false)} />}
       {open && (
         <div className="axp-build-manager__body">
+          <BuildOrigin origin={row.brett} showEmpty={row.source === 'pending'} />
           {row.detail && <p className="axp-build-manager__detail">{row.detail.length > 400 ? `${row.detail.slice(0, 400)}…` : row.detail}</p>}
           <dl className="axp-build-manager__facts">
             <dt>Id</dt><dd><code>{row.id}</code></dd>

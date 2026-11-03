@@ -388,6 +388,22 @@ def pending() -> Any:
     return engine("pending")
 
 
+@app.get("/api/builds/{build_id}/origin")
+def build_origin(build_id: str) -> Any:
+    """What Brett said that started a build (build-origin@1, framework/cli/build-origin.mjs): any view that names a build reads it here."""
+    if len(build_id) > 80 or not build_id.replace("-", "").replace(".", "").replace("_", "").replace(":", "").replace("/", "").isalnum():
+        raise HTTPException(400, "not a build id")
+    proc = subprocess.run(["node", str(ROOT / "framework" / "cli" / "build-origin.mjs"), "get", build_id, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=30)
+    out = proc.stdout.strip().splitlines()
+    try:
+        res = json.loads(out[-1]) if out else {"ok": False, "error": "no output"}
+    except json.JSONDecodeError:
+        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-400:]}
+    if not res.get("ok"):
+        raise HTTPException(404, str(res.get("error", "no build")))
+    return res
+
+
 @app.post("/api/pending", dependencies=[Depends(auth)])
 async def pending_act(request: Request) -> Any:
     """One change: {action: add|update|status|note|sub|remove, ...} — see framework/plan/pending-core.mjs."""

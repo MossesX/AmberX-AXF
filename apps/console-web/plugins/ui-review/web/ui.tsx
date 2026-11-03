@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { Button, Checkbox, Icon, IconButton, Segmented, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
+import { OriginFor } from '@console/buildOrigin';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as core from './review-core.mjs';
 import * as cf from './conform.mjs';
@@ -81,6 +82,7 @@ export function Detail({ it }: { it: Item }) {
           {it.pack && <><dt>Look</dt><dd><span className="axp-ui-review__sw" aria-hidden="true">{it.pack.swatches.map((c, i) => <i key={i} style={{ background: c }} />)}</span> {it.pack.scheme === 'dark' ? 'Dark' : 'Light'} · {it.pack.font}px · {it.pack.radius}px</dd></>}
           <dt>Status</dt><dd><StatusChip status={it.status} /></dd>
         </dl>
+        {it.build && <OriginFor build={it.build} />}
         {it.notes && <p className="axp-ui-review__notes">{it.notes}</p>}
         <textarea className="fx-input axp-ui-review__comment" rows={2} value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Your comment (what to change, why)…" aria-label="Your comment" />
         <div className="axp-ui-review__acts">

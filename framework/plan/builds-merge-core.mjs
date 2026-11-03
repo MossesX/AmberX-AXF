@@ -14,6 +14,7 @@
  * stay; all steps done = complete, or `built` (built, awaiting merge) while the build's PR is open and not merged.
  */
 import { STATUSES, normBuild, normalizeStore } from './builds-store-core.mjs';
+import { mergeOrigin } from '../core/build-origin.mjs';
 
 const str = (v) => (typeof v === 'string' ? v : '');
 const clone = (o) => JSON.parse(JSON.stringify(o));
@@ -69,6 +70,8 @@ export function mergeBuild(a, b) {
   const have = new Set(out.steps.map((s) => s.uid));
   lose.steps.forEach((s, i) => { if (!have.has(s.uid) && str(s.createdAt) > str(win.updatedAt)) { combined = true; out.steps.splice(Math.min(i, out.steps.length), 0, clone(s)); } });
   for (const k of ['branch', 'pr', 'mergedAt', 'category']) if (!str(out[k]) && str(lose[k])) { out[k] = lose[k]; combined = true; }
+  // what Brett said that started it: never blanked or replaced by a copy that has less (build-origin@1)
+  if (win.origin || lose.origin) { const og = mergeOrigin(win.origin, lose.origin); if (og) out.origin = og; }
   const key = (n) => `${n.at}|${n.text}`;
   const seenNotes = new Set(out.notes.map(key));
   for (const n of lose.notes ?? []) if (!seenNotes.has(key(n))) { out.notes.push(clone(n)); seenNotes.add(key(n)); combined = true; }
