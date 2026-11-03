@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T14:01:21.566Z",
+ "updatedAt": "2026-11-03T14:12:25.156Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -20,7 +20,6 @@
    "pendingId": "",
    "branch": "claude/agent-swarm",
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/196",
-   "mergedAt": "2026-11-01T00:13:51Z",
    "createdAt": "2026-10-31T05:27:46.906Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-31T23:53:03.392Z",
@@ -426,7 +425,6 @@
    "pendingId": "",
    "branch": "claude/agent-swarm-fable-rebuild",
    "pr": "#247",
-   "mergedAt": "2026-11-03T12:10:18Z",
    "createdAt": "2026-10-31T05:27:48.056Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-03T12:01:23.473Z",

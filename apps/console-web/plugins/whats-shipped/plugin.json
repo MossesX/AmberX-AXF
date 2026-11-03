@@ -1,0 +1,40 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.whats-shipped",
+  "name": "What's new",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "A What's new widget on the banner: a ticker of the newest features merged to main (and deployed), with an unread count. Tap it for the panel: everything shipped, grouped by date, by build or by app, with search, details (what it does, where to find it, PR and report links), mark read and new-since-last-visit highlighting. Built from what actually shipped (merged pull requests, the builds store, build reports, Codebase changes entries); no model tokens.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "asset:status/shipped",
+    "banner:right",
+    "dialog:whats-shipped.panel",
+    "settings-tab:whats-shipped"
+  ],
+  "optional": [],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "builtWith": { "model": "opus", "builtAt": "2026-11-03" },
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/whats-shipped",
+    "env": [
+      "AXF_WHATS_SHIPPED_DIR"
+    ],
+    "mentions": [
+      "CLAUDE.md", "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/README.md", "framework/spec/PORTING.md"
+    ]
+  },
+  "help": "help.json",
+  "opens": false
+}

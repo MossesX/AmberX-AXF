@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "status",
+  "id": "shipped",
+  "name": "What's new",
+  "version": "1.0.0",
+  "description": "On while features merged to main are unread (counter `shipped.unread`). The What's new console plugin repaints it as a ticker of the newest titles and opens its panel on tap.",
+  "author": "AmberX AXF",
+  "tags": [
+    "status",
+    "banner-pack"
+  ],
+  "data": {
+    "counter": "shipped.unread",
+    "onLabel": "What's new",
+    "offLabel": "What's new",
+    "onTone": "accent",
+    "offTone": "muted",
+    "dot": true
+  }
+}
