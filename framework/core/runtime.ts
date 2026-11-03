@@ -13,6 +13,7 @@ import { scaleThemeVars } from './engines/scale';
 import { LAYOUT_VIEWPORTS, layoutViewports, layoutVars } from './engines/layout';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
 import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normalizeCustomSlot, type CustomSlot, type CustomValues } from './engines/customize';
+import { CONTROL_TOKEN_SLOTS, applyTokenOverrides, effectiveTokenOverrides } from './engines/control-tokens.mjs';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { normalizePlacement, placementKey, placementRoute, PLACEMENT_TAB_GROUP, type Placement, type UiRef } from './engines/placement';
@@ -1908,8 +1909,16 @@ export class AxfRuntime {
   /* ---------------- rendering ---------------- */
 
   /** Compile every active asset into CSS vars + root data-attributes. */
+  /** An asset's data with the control@1 token overrides of its set written in (engines/control-tokens.mjs). */
+  private withTokenOverrides<T>(target: string, type: AssetType, data: T): T {
+    const spec = (CONTROL_TOKEN_SLOTS as Record<string, { key: string }>)[target];
+    if (!spec || data === undefined || data === null) return data;
+    const o = effectiveTokenOverrides(this.settings.get(spec.key), (this.state.active as Record<string, string | undefined>)[type]);
+    return Object.keys(o).length ? applyTokenOverrides(target, data, o) : data;
+  }
+
   compileStyles(): { vars: VarMap; attrs: Record<string, string> } {
-    const color = this.asset('color-theme').data;
+    const color = this.withTokenOverrides('tokens.theme', 'color-theme', this.asset('color-theme').data);
     const parts = [
       buttonStyle(this.asset('button').data),
       sliderStyle(this.asset('slider').data),
@@ -1927,10 +1936,14 @@ export class AxfRuntime {
     ];
     const vars: VarMap = {
       ...colorThemeVars(color),
-      ...styleThemeVars(this.asset('style-theme').data, this.spacing()),
+      ...styleThemeVars(this.withTokenOverrides('tokens.style', 'style-theme', this.asset('style-theme').data), this.spacing()),
       // the scale assets (typography, density, sizing): every size the stylesheet and components read; defaults when an app has none
-      ...scaleThemeVars({ typography: this.assetOrNull('typography' as AssetType)?.data, density: this.assetOrNull('density' as AssetType)?.data, sizing: this.assetOrNull('sizing' as AssetType)?.data }),
-      ...layoutVars(this.inspectorLayout(this.asset('layout').data), this.hiddenSlots()),
+      ...scaleThemeVars({
+        typography: this.withTokenOverrides('tokens.typography', 'typography' as AssetType, this.assetOrNull('typography' as AssetType)?.data ?? (this.settings.get(CONTROL_TOKEN_SLOTS['tokens.typography'].key) ? {} : undefined)),
+        density: this.withTokenOverrides('tokens.density', 'density' as AssetType, this.assetOrNull('density' as AssetType)?.data ?? (this.settings.get(CONTROL_TOKEN_SLOTS['tokens.density'].key) ? {} : undefined)),
+        sizing: this.withTokenOverrides('tokens.sizing', 'sizing' as AssetType, this.assetOrNull('sizing' as AssetType)?.data ?? (this.settings.get(CONTROL_TOKEN_SLOTS['tokens.sizing'].key) ? {} : undefined)),
+      }),
+      ...layoutVars(this.inspectorLayout(this.withTokenOverrides('tokens.layout', 'layout', this.asset('layout').data)), this.hiddenSlots()),
       ...bannerVars(this.assetOrNull('banner')?.data, this.slotHidden('banner')),
       // branding package (optional): palette slots as --fx-brand-1/2/3, the brand name, the accent when it asks for it
       ...brandingVars(this.assetOrNull('branding' as AssetType)?.data ?? { brand: { name: '' }, marks: {} }),

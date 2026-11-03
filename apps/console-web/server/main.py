@@ -1191,6 +1191,24 @@ console_context.set_context(ROOT=ROOT, GITHUB_REPO=GITHUB_REPO, PLUGINS=PLUGINS,
 
 load_plugins()
 _prune_plugin_state()
+
+# Contract paths a capability serves (the provider plugin's router mounted a second time, same auth; 404 while no
+# enabled plugin provides it). control@1 = framework/spec/CONTROL.md's /api/control routes (the Token control plugin).
+CAPABILITY_MOUNTS = {"control@1": "/api/control"}
+
+
+def _capability_guard(name: str):
+    def guard() -> None:
+        if plugin_services.get(name) is None:
+            raise HTTPException(404, f"no enabled plugin provides {name}")
+    return guard
+
+
+for _cap, _prefix in CAPABILITY_MOUNTS.items():
+    _svc = plugin_services.get(_cap)
+    if _svc is not None and getattr(_svc, "router", None) is not None:
+        app.include_router(_svc.router, prefix=_prefix, dependencies=[Depends(auth), Depends(_capability_guard(_cap))])
+        log("plugins", f"{_cap} served at {_prefix}")
 WALL_USER_PLUGINS = frozenset(f for f, i in PLUGINS.items() if i.get("wallUsers") is True)
 USER_GRANTABLE_PLUGINS = frozenset(f for f, i in PLUGINS.items() if i.get("userGrantable") is True)
 

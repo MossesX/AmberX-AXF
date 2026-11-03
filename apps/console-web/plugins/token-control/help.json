@@ -1,0 +1,37 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "token-control-help",
+  "name": "Token control help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Token control plugin (help@1): the page, its tabs, the try-it panels and the settings tab.",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:token-control",
+    "entries": [
+      { "target": "view:token-control", "title": "Token control", "text": "Change any theme, style, layout, typography, density or sizing token, the active asset per slot, AmberX notes, to-dos, tasks and lists, and Plan Studio plans and orchestrator builds, from one place. The same commands work through the REST API, the MCP tools and the CLI.", "kind": "screen" },
+      { "target": "tc-tab-tokens", "title": "Tokens", "text": "Every token of the picked set with its value now. Change one and it becomes an override in the axHub look, so every app takes it. Reset drops the override and the theme's own value comes back." },
+      { "target": "tc-tab-try", "title": "Try it", "text": "Build a command by picking the op and the target, fill the fields, and run it. The panel shows the same command as a REST call, an MCP tool call and a CLI line, so you can copy whichever you need." },
+      { "target": "tc-tab-docs", "title": "Docs", "text": "Every target with its ops, fields, filters and verbs, generated from the control@1 schema, plus guides and examples for the API, MCP and CLI." },
+      { "target": "tc-tab-audit", "title": "Audit", "text": "Every change made through Token control: who, why, what and when. Reads are not logged." },
+      { "target": "tc-token-set", "title": "Token set", "text": "Which set of tokens to show: colour theme, style theme, layout, typography, density, sizing or the active asset per slot." },
+      { "target": "tc-token-value", "title": "Token value", "text": "Type a new value and press Set. Numbers stay inside the token's range; colours take #rgb, #rrggbb, rgb() or hsl()." },
+      { "target": "tc-token-reset", "title": "Reset token", "text": "Drops this token's override from the axHub look. Every app goes back to the active theme's own value." },
+      { "target": "tc-run", "title": "Run", "text": "Sends the command to the console's control API. A delete answers with a confirm token first; press Run again with the token filled in to really delete." },
+      { "target": "tc-copy", "title": "Copy", "text": "Copies this form of the command (REST, MCP or CLI) to the clipboard." },
+      { "target": "token-control", "title": "Token control settings", "text": "Install and uninstall the plugin and see its checks. Uninstall keeps token overrides in the axHub look; reset them first if they should go." }
+    ],
+    "intros": [
+      {
+        "screen": "token-control",
+        "title": "Token control",
+        "steps": [
+          { "say": "This page changes any token, AmberX note or planner item. Tokens shows every token with its value now.", "target": "tc-tab-tokens" },
+          { "say": "Try it builds a command and shows it as an API call, an MCP tool call and a CLI line.", "target": "tc-tab-try" },
+          { "say": "Docs lists every target with its fields and verbs, with examples.", "target": "tc-tab-docs" }
+        ]
+      }
+    ]
+  }
+}
