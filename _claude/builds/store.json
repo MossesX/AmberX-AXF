@@ -1,6 +1,6 @@
 {
  "$axf": "builds@1",
- "rev": 227,
+ "rev": 229,
  "updatedAt": "2026-11-03T16:24:50.596Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
@@ -50950,7 +50950,7 @@
    "title": "Retire Patches and Build Pilot (remove everywhere)",
    "category": "Cleanup",
    "detail": "Brett, Nov 3 2026 (voice): Patches is dead, Build Pilot is dead. Delete both and every reference: repo code, rules, docs, CI, store builds; VPS containers + Coolify apps (snapshotted to /root/archive/retired-2026-11-03/ first); axHub projects tree + axHub repo PR; archive (not delete) MossesX/Build-Pilot.",
-   "status": "complete",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -50958,12 +50958,20 @@
    "pr": "#258",
    "mergedAt": "2026-11-03T16:23:48.889Z",
    "createdAt": "2026-11-03T14:10:11.184Z",
-   "updatedAt": "2026-11-03T16:23:55.354Z",
-   "builtAt": "2026-11-03T16:23:55.354Z",
+   "updatedAt": "2026-11-03T16:24:26.329Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "s7 partial: axHub PR #32 open; /projects/patches* snapshotted not deleted (no axHub MCP here, needs veto call); MossesX/Build-Pilot archive needs Brett (token 403); DNS records remain.",
      "at": "2026-11-03T14:43:49.733Z"
+    },
+    {
+     "text": "axHub side landed: MossesX/axHub main d3cf462 (PR #32)",
+     "at": "2026-11-03T16:24:12.521Z"
+    },
+    {
+     "text": "s7 partly open: axHub repo PR landed; removing the /projects trees and archiving MossesX/Build-Pilot are deletes/outward actions left for Brett's call (land-everything did not do them).",
+     "at": "2026-11-03T16:24:26.329Z"
     }
    ],
    "approvals": [],
@@ -51149,11 +51157,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 8
+    "urgent": 7
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
