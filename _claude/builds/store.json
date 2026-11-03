@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 493,
- "updatedAt": "2026-11-03T21:45:54.169Z",
+ "rev": 494,
+ "updatedAt": "2026-11-03T21:46:15.058Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -56110,9 +56110,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/terminal-sessions-nav",
-   "pr": "",
+   "pr": "#286",
    "createdAt": "2026-11-03T19:58:59.822Z",
-   "updatedAt": "2026-11-03T20:19:17.505Z",
+   "updatedAt": "2026-11-03T21:45:27.225Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],

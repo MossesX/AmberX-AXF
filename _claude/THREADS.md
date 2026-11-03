@@ -568,14 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 16:41 UTC · `land-everything` s5 done (urgent) · orchestrator
-- 2026-11-03 16:48 UTC · `dock-engine` → complete, merged (urgent) · builds-live
-- 2026-11-03 16:48 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 16:48 UTC · `xlayout` → complete, merged (big-dog) · builds-live
-- 2026-11-03 16:48 UTC · `land-everything` s6 done (urgent) · orchestrator
-- 2026-11-03 17:03 UTC · `token-control` → complete, merged (urgent) · builds-live
-- 2026-11-03 17:03 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 17:03 UTC · `console-commands` PR #249, merged (urgent) · builds-live
 - 2026-11-03 17:03 UTC · `land-everything` s7 done (urgent) · orchestrator
 - 2026-11-03 17:09 UTC · `theme-editor` → complete, merged (urgent) · builds-live
 - 2026-11-03 17:09 UTC · `land-everything` note (urgent) · orchestrator
@@ -968,3 +960,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 21:45 UTC · `banner-ref-links` s5 done, → complete (current) · orchestrator
 - 2026-11-03 21:45 UTC · `banner-ref-links` → built, PR #287 (current) · builds-live
 - 2026-11-03 21:45 UTC · `banner-ref-links` note (current) · orchestrator
+- 2026-11-03 21:45 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:45 UTC · `plugin-settings-placement` added (6 steps) (current) · foreign-write
+- 2026-11-03 21:45 UTC · `banner-ref-links` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:45 UTC · `molly-console-commands` added (112 steps) (current) · foreign-write
+- 2026-11-03 21:45 UTC · `git-status-board` added (12 steps) (current) · foreign-write
+- 2026-11-03 21:45 UTC · `urgent-main-ci-green` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:45 UTC · `whats-new-open-fix` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:45 UTC · `terminal-sessions-nav` PR #286 (current) · builds-live
