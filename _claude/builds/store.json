@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 257,
- "updatedAt": "2026-11-03T17:03:59.193Z",
+ "rev": 258,
+ "updatedAt": "2026-11-03T17:09:35.950Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -49566,14 +49566,15 @@
    "title": "Theme Editor plugin: colour + style sections, every token, copy/save/load, multi-view toolbar",
    "category": "Urgent",
    "detail": "Brett Nov 2 2026 21:30 ET: theme editor plugin that lets you copy, save, load. Colour section and style section, each collapsible, with collapsible categories listing every possible token; toolbar with multiple views. Own plugin, reusing the Theme manager's token tree through a capability service (both stay installed). Look rule: saves go to the axHub appearance document / asset@1 themes.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/theme-editor",
    "pr": "#243",
+   "mergedAt": "2026-11-03T17:09:34.322Z",
    "createdAt": "2026-11-03T02:32:22.611Z",
-   "updatedAt": "2026-11-03T13:56:31.369Z",
+   "updatedAt": "2026-11-03T17:09:35.121Z",
    "builtAt": "2026-11-03T13:56:31.369Z",
    "notes": [
     {
@@ -49706,7 +49707,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
