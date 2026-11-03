@@ -4,7 +4,7 @@
   "id": "production-guard",
   "name": "Production guard",
   "version": "1.0.0",
-  "description": "A loud PRODUCTION tag on an accent bar, online state, alerts and the UTC clock.",
+  "description": "A loud red PRODUCTION tag on a raised bar, online state, alerts and the UTC clock.",
   "author": "AmberX AXF",
   "tags": [
     "banner",
@@ -13,7 +13,7 @@
   ],
   "data": {
     "height": 32,
-    "surface": "accent",
+    "surface": "raised",
     "logo": {
       "show": true,
       "text": "AmberX"

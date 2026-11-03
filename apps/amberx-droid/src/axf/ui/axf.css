@@ -135,6 +135,9 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 .fx-banner::-webkit-scrollbar, .fx-toolbar::-webkit-scrollbar, .fx-menubar__menus::-webkit-scrollbar { display: none; }
 .fx-banner.is-raised { background: var(--fx-surface); box-shadow: var(--fx-shadow-sm); }
 .fx-banner.is-accent { background: var(--fx-accent); color: var(--fx-accent-text); }
+/* On the accent surface every widget tone paints in the accent's text colour, so a status, counter or label stays readable
+   whatever the colour theme (Nov 3 2026, banner boilerplates); the tone still shows in its icon and dot shape. */
+.fx-banner.is-accent { --fx-success: var(--fx-accent-text); --fx-warning: var(--fx-accent-text); --fx-danger: var(--fx-accent-text); --fx-info: var(--fx-accent-text); --fx-muted: color-mix(in srgb, var(--fx-accent-text) calc(var(--fx-opacity-muted) * 100%), transparent); }
 .fx-banner.has-divider { border-bottom: var(--fx-border-w) solid var(--fx-border); }
 .fx-banner__side { display: flex; align-items: center; gap: var(--fx-dens-gap-lg); min-width: 0; height: 100%; }
 .fx-banner__side.is-center { min-width: min-content; }
@@ -144,7 +147,8 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 .fx-banner .fx-widget-search { min-width: calc(var(--fx-space) * 12); }
 /* while arranging, the drop bar under the banner must show (and dragging needs no scroll) */
 .fx-banner.is-arranging { overflow: visible; }
-@media (max-width: 480px) { .fx-banner__side.is-left { justify-content: flex-start; } .fx-banner__side .fx-widget-label, .fx-banner__side .fx-widget-progress__label { display: none; } }
+/* Bold labels (environment tags: PRODUCTION, STAGING, DEV) stay on a phone; plain labels give way (Nov 3 2026). */
+@media (max-width: 480px) { .fx-banner__side.is-left { justify-content: flex-start; } .fx-banner__side .fx-widget-label:not(.is-bold), .fx-banner__side .fx-widget-progress__label { display: none; } }
 .fx-banner__side.is-center { justify-content: center; justify-content: safe center; }
 .fx-banner__side.is-right { justify-content: flex-end; justify-content: safe flex-end; }
 .fx-banner__logo { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md); font-family: var(--fx-font-display); font-weight: 700; color: var(--fx-text); white-space: nowrap; }

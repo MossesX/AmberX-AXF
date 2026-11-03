@@ -46,7 +46,7 @@
     "src/axf/assets/banner/phone-compact.json": "d329ca903f06ce4a",
     "src/axf/assets/banner/phone-thumb.json": "376b0131caba3da4",
     "src/axf/assets/banner/presenter.json": "dd659dd07541af74",
-    "src/axf/assets/banner/production-guard.json": "4d400b74fe83b1aa",
+    "src/axf/assets/banner/production-guard.json": "702674acecc34487",
     "src/axf/assets/banner/search-first.json": "91661673f69574e6",
     "src/axf/assets/banner/shuffle.json": "debe59d691739201",
     "src/axf/assets/banner/staging.json": "82823650e8711568",
@@ -256,7 +256,7 @@
     "src/axf/assets/gauge/level-bar.json": "435fec8b1594b54a",
     "src/axf/assets/gauge/ring.json": "5ecbde49e69ce769",
     "src/axf/assets/gauge/tick-arc.json": "d5510dc75def0035",
-    "src/axf/assets/help/framework.json": "5f4da0e553e2929b",
+    "src/axf/assets/help/framework.json": "0049df442da8118e",
     "src/axf/assets/icon-pack/amberx-outline.json": "7998b0691a1b17c4",
     "src/axf/assets/icon-pack/pack-021.json": "6278666a57fef164",
     "src/axf/assets/icon-pack/pack-053.json": "02893f5231e88356",
@@ -671,7 +671,7 @@
     "src/axf/react/components/AppMenu.tsx": "4eb87590b8b70b67",
     "src/axf/react/components/Arrange.tsx": "aec537aca7f7f4ee",
     "src/axf/react/components/Banner.tsx": "862bfd685d8d5647",
-    "src/axf/react/components/BannerGallery.tsx": "aa059bd73db166da",
+    "src/axf/react/components/BannerGallery.tsx": "931d7b9e24329823",
     "src/axf/react/components/BannerGroup.tsx": "bf29c024591b48c3",
     "src/axf/react/components/BannerSettings.tsx": "3a80f0965cc6f22e",
     "src/axf/react/components/Brand.tsx": "6a760e003265bf1f",
@@ -790,6 +790,6 @@
     "src/axf/schemas/shared-assets.json": "b6ae846e323ed674",
     "src/axf/schemas/swarm.json": "72c7999aebb9e8c2",
     "src/axf/schemas/ui-review.json": "6cbca899c45dd994",
-    "src/axf/ui/axf.css": "b1c38137bb1ce945"
+    "src/axf/ui/axf.css": "d4d60d6614a0e022"
   }
 }

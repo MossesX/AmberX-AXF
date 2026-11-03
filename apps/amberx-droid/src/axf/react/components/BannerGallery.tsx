@@ -9,11 +9,12 @@
  */
 import { useMemo, useState } from 'react';
 import type { AxfRuntime } from '../../core';
-import { BANNER_SIDES, bannerSurface, bannerVars, placeAttachments } from '../../core/engines/banner';
+import { BANNER_SIDES, bannerHeight, bannerSurface, bannerVars, placeAttachments } from '../../core/engines/banner';
 import type { BadgeData, BannerData } from '../../core/types';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import type { DialogMap } from './Overlays';
 import { BannerBadge } from './Banner';
+import { BrandMark, useBrandPlace } from './Brand';
 import { Button, Chip, Segmented } from './Controls';
 import { Icon } from './Icon';
 import { widgetRenderer } from './Widgets';
@@ -60,6 +61,10 @@ export function BannerPreview({ data }: { data: BannerData }) {
   const rt = useRuntime();
   useAxfState();
   const placed = placeAttachments(data, [], (t, i) => rt.registry.has(t as never, i));
+  // the brand slot draws the mark as the real banner does (a lockup already carries the name)
+  const brand = useBrandPlace('banner');
+  const drawsMark = !!brand?.svg;
+  const showText = data.logo?.text && (!drawsMark || brand?.mode === 'mark' || brand?.mode === 'animated');
   return (
     <div className="fx-banner-gallery__frame" aria-hidden="true" {...{ inert: '' }} style={bannerVars(data)}>
       <div className={`fx-banner is-${bannerSurface(data)}${data.divider === false ? '' : ' has-divider'}`}>
@@ -67,8 +72,8 @@ export function BannerPreview({ data }: { data: BannerData }) {
           <div key={side} className={`fx-banner__side is-${side}`}>
             {side === 'left' && data.logo?.show !== false && (
               <span className="fx-banner__logo">
-                <span className="fx-brand__mark" aria-hidden="true" />
-                {data.logo?.text && <span className="fx-banner__name">{data.logo.text}</span>}
+                {drawsMark ? <BrandMark slot="banner" height={Math.round(bannerHeight(data.height) * 0.55)} /> : <span className="fx-brand__mark" aria-hidden="true" />}
+                {showText && <span className="fx-banner__name">{data.logo?.text}</span>}
               </span>
             )}
             {placed[side].map((a) => <span key={a.key} className="fx-banner__item"><PreviewWidget type={a.type} id={a.id} /></span>)}
