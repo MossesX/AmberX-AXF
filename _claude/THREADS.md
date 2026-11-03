@@ -569,11 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:31 UTC · `md-studio` → built (urgent) · orchestrator
-- 2026-11-03 18:32 UTC · `crew-live` s3 done (urgent) · orchestrator
-- 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s4 done (urgent) · orchestrator
-- 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s5 done (urgent) · orchestrator
-- 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s6 done (urgent) · orchestrator
 - 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s7 done (urgent) · orchestrator
 - 2026-11-03 18:36 UTC · `crew-live` s6 done (urgent) · orchestrator
 - 2026-11-03 18:37 UTC · `auto-land` s8 done, → built (urgent) · orchestrator
@@ -969,3 +964,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 22:54 UTC · `urgent-main-ci-green` note (current) · foreign-write
 - 2026-11-03 22:54 UTC · `terminal-tabs-left` note (current) · foreign-write
 - 2026-11-03 22:55 UTC · `plugin-lazy-load` added (3 steps) (current) · orchestrator
+- 2026-11-03 22:55 UTC · `urgent-main-ci-green` note (current) · foreign-write
+- 2026-11-03 22:55 UTC · `terminal-tabs-left` note (current) · foreign-write
+- 2026-11-03 22:55 UTC · `lenny-land-all` added (7 steps) (current) · orchestrator
+- 2026-11-03 22:56 UTC · `urgent-main-ci-green` note (current) · foreign-write
+- 2026-11-03 22:56 UTC · `terminal-tabs-left` note (current) · foreign-write
