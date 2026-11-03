@@ -9,7 +9,7 @@
  * cost meter, pay, statuses, chat lines, banter and the vibe filter.
  */
 
-import { ALLOWED_MODELS, DEFAULT_MODEL, MODEL_IDS as POLICY_IDS, MODEL_TIERS as POLICY_TIERS, coerceModel } from '../../../../../framework/core/model-policy.mjs';
+import { ALLOWED_MODELS, DEFAULT_MODEL, MODEL_IDS as POLICY_IDS, MODEL_TIERS as POLICY_TIERS, coerceModel, modelForWork, modelKey } from '../../../../../framework/core/model-policy.mjs';
 import * as rules from '../../../../../framework/core/engines/swarm-rules.mjs';
 
 // ---------------------------------------------------------------- contracts (framework/core/engines/swarm-rules.mjs)
@@ -50,12 +50,6 @@ export const checkRoster = (roster, skills = {}) => rules.rosterErrors(roster, s
 
 // ---------------------------------------------------------------- job planner (swarm-job@1)
 
-const TIER_WORDS = {
-  fable: /\b(contract|schema|migration|cross-port|kernel|engine internals?|asset type|design the)\b/i,
-  opus: /\b(refactor|engine|kernel|security|migration|contract|runner|merge|lease|concurren\w*|planner|scor\w+)\b/i,
-  haiku: /\b(docs?|readme|rename|typo|manifest|plugin\.json|status line|changelog|wording|copy)\b/i,
-};
-const CHEAP_SKILLS = ['docs', 'plugin-manifests'];
 const PATH_RE = /(?:[\w.-]+\/)+[\w.*-]+\/?|\b[\w-]+\.(?:mjs|ts|tsx|py|json|md|kt|kts|css)\b/g;
 
 /** `**` = any folders, `*` = anything but a slash; a pattern ending in `/` matches everything under it. */
@@ -65,14 +59,25 @@ export function globMatch(pattern, file) {
   return re.test(file);
 }
 const isShared = (f, shared = SHARED_FILES) => shared.some((s) => (s.endsWith('/') ? f.startsWith(s) : f === s));
+// The literal folder a glob starts in ('' when it starts with a wildcard): "apps/<star>/src/" gives "apps/".
+const globRoot = (p) => p.slice(0, p.indexOf('*')).replace(/[^/]*$/, '');
 
-/** Do two leases touch the same file? Paths, folders (`x/`) and globs. */
+/**
+ * Do two leases touch the same file? Paths, folders (`x/`) and globs. A glob whose literal root sits inside the other
+ * lease's folder (or holds it) may reach the same files, so that counts too; a glob starting with a wildcard is only
+ * compared file by file (leases never carry one: the planner keeps `**` patterns out of area leases).
+ */
 export function leasesOverlap(a, b) {
   for (const x of a) for (const y of b) {
     if (x === y) return true;
     if (globMatch(x, y) || globMatch(y, x)) return true;
     if (x.endsWith('/') && y.startsWith(x)) return true;
     if (y.endsWith('/') && x.startsWith(y)) return true;
+    for (const [g, o] of [[x, y], [y, x]]) {
+      if (!g.includes('*') || g.startsWith('*')) continue;
+      const root = globRoot(g);
+      if (root && o.endsWith('/') && !o.includes('*') && (o.startsWith(root) || root.startsWith(o))) return true;
+    }
   }
   return false;
 }
@@ -85,7 +90,11 @@ export function stepFiles(step) {
   return [...new Set(found.filter((p) => /\.[a-z]{1,5}$/.test(p) || /^(apps|framework|_claude|deploy|\.github)\//.test(p)))];
 }
 
-/** The agent whose skill fits a step best (keywords ×2, path patterns ×3). Ties go to the cheaper salary. */
+/**
+ * The agent whose skill fits a step best (keywords ×2, path patterns ×3). Ties go to the cheaper salary. A step nobody
+ * matches (score 0) goes to the most capable agent in the pool (largest token budget, then most turns), never to the
+ * cheapest one by accident; the planner warns so the step can name its files.
+ */
 export function matchAgent(text, files, agents) {
   const low = ` ${str(text, 8000).toLowerCase()} `;
   let best = null;
@@ -93,18 +102,20 @@ export function matchAgent(text, files, agents) {
     let score = 0;
     for (const k of a.keywords) if (new RegExp(`(^|[^a-z0-9])${k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^a-z0-9]|$)`).test(low)) score += 2;
     for (const f of files) if (a.paths.some((p) => globMatch(p, f))) score += 3;
-    if (!best || score > best.score || (score === best.score && a.salary < best.agent.salary)) best = { agent: a, score };
+    const tie = best && score === best.score;
+    const wins = !best || score > best.score || (tie && (score > 0 ? a.salary < best.agent.salary : a.tokenBudget > best.agent.tokenBudget || (a.tokenBudget === best.agent.tokenBudget && a.maxTurns > best.agent.maxTurns)));
+    if (wins) best = { agent: a, score };
   }
   return best;
 }
 
-/** Cheapest tier that can do the step: Fable only for contract/design work pinned to Fable; the rest the policy's default (cheap tiers are coerced up). */
-export function requiredTier(step, skill) {
-  const text = str(step?.text, 4000);
-  if (step?.model === 'Fable' && TIER_WORDS.fable.test(text)) return 'fable';
-  if (TIER_WORDS.opus.test(text)) return 'opus';
-  if (CHEAP_SKILLS.includes(skill) || TIER_WORDS.haiku.test(text)) return coerceModel(CHEAP_SKILLS.includes(skill) ? 'haiku' : 'sonnet');
-  return coerceModel('sonnet');
+/**
+ * The model a step needs, through the model policy only: the orchestrator's pin on the step (`model`, any spelling)
+ * when it has one, else the policy's own rule for its words (foundation work → Fable, the rest → the default).
+ */
+export function requiredTier(step) {
+  const pin = modelKey(step?.model);
+  return pin ? coerceModel(pin) : modelForWork(str(step?.text, 4000));
 }
 /** The cheapest model the agent allows at or above the tier (or its dearest, flagged, when none reaches it). */
 export function pickModel(agent, tier) {
@@ -131,7 +142,8 @@ export function budgetFor(agent, step, tune = {}) {
  * Builds are orchestrator@1 builds; several at once share one lease table, so many builds run side by side.
  *   opts.eligible(agent, job) → true when the agent may take the job (statuses, pay); default: everyone.
  *   opts.tune → { scale } budget multiplier. opts.includeDone → plan done steps too (checks and merges after the tick).
- * Returns { jobs, waves, warnings }. A job's `wave` is when it may start; `after` lists the jobs it waits for.
+ * Returns { jobs, waves, warnings }. A job's `wave` is when it may start; `after` lists the jobs it waits for. Every
+ * job is a swarm-job@1 record (the contract's normalizer shapes it).
  */
 export function planJobs(builds, roster, opts = {}) {
   const eligible = opts.eligible ?? (() => true);
@@ -141,31 +153,30 @@ export function planJobs(builds, roster, opts = {}) {
       if ((s.done === true && !opts.includeDone) || s.skip === true) continue;
       const files = stepFiles(s);
       const pool = roster.agents.filter((a) => !a.jobsOnly && eligible(a, { stepId: s.id, buildId: b.id, estimate: s.estimate }));
-      const want = requiredTier(s, null); // agents that can reach the job's tier come first
-      const able = pool.filter((a) => !pickModel(a, want).short);
+      const tier = requiredTier(s); // agents that can reach the job's model come first
+      const able = pool.filter((a) => !pickModel(a, tier).short);
       const hit = matchAgent(s.text, files, able.length ? able : pool);
       const id = `${b.id}.${s.id}`;
       if (!hit) { warnings.push(`${id}: no agent can take it (everyone is off, benched or broke)`); continue; }
       const a = hit.agent;
       if (hit.score === 0) warnings.push(`${id}: no clear specialist (name files in the step); went to ${a.name}`);
-      const tier = requiredTier(s, a.skill);
       const pick = pickModel(a, tier);
       if (pick.short) warnings.push(`${id}: ${a.name} tops out at ${pick.model}; job wants ${tier}`);
       const leases = files.filter((f) => !isShared(f, opts.sharedFiles));
       const shared = files.filter((f) => isShared(f, opts.sharedFiles));
       // no named files: lease the agent's whole area, so the job is sequenced against anything in it
       const area = leases.length ? leases : a.paths.filter((p) => !p.startsWith('**'));
-      jobs.push({ $axf: 'swarm-job@1', id, buildId: b.id, stepId: s.id, text: str(s.text, 2000), estimate: str(s.estimate, 20), agent: a.id, skill: a.skill, tier, model: pick.model, match: hit.score,
-        leases: area, leaseKind: leases.length ? 'files' : area.length ? 'area' : 'all', shared, budget: budgetFor(a, s, opts.tune ?? roster.tune), checks: list(s.checks, 20, 300), wave: 0, after: [] });
+      jobs.push(rules.normJob({ id, buildId: b.id, stepId: s.id, text: s.text, estimate: s.estimate, agent: a.id, skill: a.skill, tier, model: pick.model, match: hit.score,
+        leases: area, leaseKind: leases.length ? 'files' : area.length ? 'area' : 'all', shared, budget: budgetFor(a, s, opts.tune ?? roster.tune), checks: s.checks, wave: 0, after: [] }));
     }
   }
-  // overlap sequencing, in order: a job waits for every earlier job it overlaps with ('all' overlaps everything)
+  // overlap sequencing, in order: a job waits for every earlier job it overlaps with ('all' overlaps everything),
+  // and an agent works one job at a time, whichever builds they belong to
   for (let i = 0; i < jobs.length; i += 1) {
     const j = jobs[i];
     for (let k = 0; k < i; k += 1) {
       const e = jobs[k];
-      const clash = j.leaseKind === 'all' || e.leaseKind === 'all' || leasesOverlap(j.leases, e.leases)
-        || (e.buildId === j.buildId && e.agent === j.agent); // one agent works one job of a build at a time
+      const clash = j.leaseKind === 'all' || e.leaseKind === 'all' || leasesOverlap(j.leases, e.leases) || e.agent === j.agent;
       if (clash) { j.after.push(e.id); j.wave = Math.max(j.wave, e.wave + 1); }
     }
   }
@@ -314,8 +325,8 @@ export function mergeQueue(plan, runs, merged = []) {
 /** A merge-fixer job for a conflict between a merged job and the one that wouldn't merge. */
 export function fixerJob(job, files, roster, withJob = '') {
   const a = roster.agents.find((x) => x.skill === 'merge-fixer') ?? roster.agents[0];
-  return { $axf: 'swarm-job@1', id: `${job.buildId}.fix-${job.stepId}`, buildId: job.buildId, stepId: `fix-${job.stepId}`, text: `Resolve the merge conflict from ${job.id}${withJob ? ` against ${withJob}` : ''}: ${files.join(', ')}`,
-    estimate: '15 min', agent: a.id, skill: a.skill, tier: 'sonnet', model: pickModel(a, 'sonnet').model, match: 0, leases: list(files, 200, 400), leaseKind: 'files', shared: [], budget: budgetFor(a, { estimate: '15 min' }), checks: job.checks, wave: job.wave, after: [job.id], fixes: job.id };
+  return rules.normJob({ id: `${job.buildId}.fix-${job.stepId}`, buildId: job.buildId, stepId: `fix-${job.stepId}`, text: `Resolve the merge conflict from ${job.id}${withJob ? ` against ${withJob}` : ''}: ${files.join(', ')}`,
+    estimate: '15 min', agent: a.id, skill: a.skill, tier: DEFAULT_MODEL, model: pickModel(a, DEFAULT_MODEL).model, match: 0, leases: files, leaseKind: 'files', shared: [], budget: budgetFor(a, { estimate: '15 min' }), checks: job.checks, wave: job.wave, after: [job.id], fixes: job.id });
 }
 
 /**
