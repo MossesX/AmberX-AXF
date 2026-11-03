@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T22:44:22.349Z",
+ "updatedAt": "2026-11-03T22:51:45.649Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3233,12 +3233,16 @@
    "branch": "claude/terminal-drag-chain-tree",
    "pr": "#292",
    "createdAt": "2026-11-03T21:50:21.572Z",
-   "updatedAt": "2026-11-03T22:39:26.960Z",
+   "updatedAt": "2026-11-03T22:41:46.267Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Clash: terminal-tabs-left (running, another session) changes TerminalHost too; note left on it to reuse WindowGrip orientation=column + useTabPress. terminal-sessions-nav #286 (built, open) also touches TerminalHost; whichever merges second resolves.",
      "at": "2026-11-03T22:31:25.143Z"
+    },
+    {
+     "text": "Overlap note from terminal-tabs-left: the Terminal can now show tabs in a left/right stack (web/TabStack.tsx, own pointer reorder); the strip's tab markup was left untouched so both merge cleanly. If a shared hold-to-drag engine lands here, TabStack can adopt it.",
+     "at": "2026-11-03T22:41:46.267Z"
     }
    ],
    "approvals": [],
@@ -6266,7 +6270,7 @@
    "branch": "claude/terminal-tabs-left",
    "pr": "",
    "createdAt": "2026-11-03T22:02:33.805Z",
-   "updatedAt": "2026-11-03T22:39:58.535Z",
+   "updatedAt": "2026-11-03T22:48:44.541Z",
    "builtAt": "",
    "notes": [
     {

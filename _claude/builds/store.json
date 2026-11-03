@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 541,
- "updatedAt": "2026-11-03T22:44:22.349Z",
+ "rev": 542,
+ "updatedAt": "2026-11-03T22:51:45.649Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -61883,12 +61883,16 @@
    "branch": "claude/terminal-drag-chain-tree",
    "pr": "#292",
    "createdAt": "2026-11-03T21:50:21.572Z",
-   "updatedAt": "2026-11-03T22:39:26.960Z",
+   "updatedAt": "2026-11-03T22:41:46.267Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Clash: terminal-tabs-left (running, another session) changes TerminalHost too; note left on it to reuse WindowGrip orientation=column + useTabPress. terminal-sessions-nav #286 (built, open) also touches TerminalHost; whichever merges second resolves.",
      "at": "2026-11-03T22:31:25.143Z"
+    },
+    {
+     "text": "Overlap note from terminal-tabs-left: the Terminal can now show tabs in a left/right stack (web/TabStack.tsx, own pointer reorder); the strip's tab markup was left untouched so both merge cleanly. If a shared hold-to-drag engine lands here, TabStack can adopt it.",
+     "at": "2026-11-03T22:41:46.267Z"
     }
    ],
    "approvals": [],
@@ -62038,7 +62042,24 @@
    "rev": 9,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-03T21:50:21.572Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw181l0f07ais9": "2026-11-03T21:50:21.573Z",
+     "st-mw181l0f08jnp4": "2026-11-03T21:50:21.573Z",
+     "st-mw181l0f09g4jt": "2026-11-03T21:50:21.573Z",
+     "st-mw181l0f0az4he": "2026-11-03T21:50:21.573Z",
+     "st-mw181l0f0b03yx": "2026-11-03T21:50:21.573Z",
+     "st-mw181l0f0cuy8c": "2026-11-03T21:50:21.573Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-03T21:50:21.573Z",
    "rearranged": false,
@@ -65616,7 +65637,7 @@
    "branch": "claude/terminal-tabs-left",
    "pr": "",
    "createdAt": "2026-11-03T22:02:33.805Z",
-   "updatedAt": "2026-11-03T22:39:58.535Z",
+   "updatedAt": "2026-11-03T22:48:44.541Z",
    "builtAt": "",
    "notes": [
     {
