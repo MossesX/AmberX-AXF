@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T22:08:44.133Z",
+ "updatedAt": "2026-11-03T22:08:56.083Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -567,15 +567,15 @@
    "title": "Plugin settings placement: inside the plugin, pane, dialog, window or main",
    "category": "Framework",
    "detail": "Brett (Nov 3 2026, voice): every plugin chooses where its settings open (inside the plugin: slide-out pane L/R/T/B, drop-down, new tab, split, inline; pop-up dialog; floating window; main settings page), with a fallback pane when in-plugin is impossible, and per-placement look + animation (tokens only, reduced motion). Picker in every plugin's settings, its context menu and Settings > Plugins > Settings placement. Terminal first. Agent: Reel Rhonda (headless worktree session, not on main).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/plugin-settings-placement",
    "pr": "#289",
    "createdAt": "2026-11-03T20:30:14.217Z",
-   "updatedAt": "2026-11-03T22:08:21.551Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T22:08:50.723Z",
+   "builtAt": "2026-11-03T22:08:49.404Z",
    "notes": [
     {
      "text": "Reconciler: branch claude/plugin-settings-placement (no PR yet)",
@@ -584,6 +584,10 @@
     {
      "text": "Reconciler: PR #289",
      "at": "2026-11-03T22:00:30.460Z"
+    },
+    {
+     "text": "Built by Reel Rhonda (headless worktree, Opus). PR #289; UI Review submitted (group 'plugin-settings-placement - Nov 3 10:15 PM'). Report _claude/builds/reports/plugin-settings-placement.md. Follow-ups: Fable review of the settings-placement@1 contract, a shared-presets asset type, exit animations, more plugins adopting <SettingsHost>.",
+     "at": "2026-11-03T22:08:50.723Z"
     }
    ],
    "approvals": [],
@@ -692,8 +696,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T22:08:49.404Z",
      "note": "",
      "uid": "st-mw15gx3q06vi5f"
     }
