@@ -41,7 +41,8 @@
     "tokens",
     "amberx",
     "planner",
-    "console"
+    "console",
+    "pass"
   ],
   "permissions": {
     "control.tokens.read": "tokens: read",
@@ -56,6 +57,9 @@
     "control.console.read": "console: read",
     "control.console.write": "console: write",
     "control.console.delete": "console: delete",
+    "control.pass.read": "pass: read",
+    "control.pass.write": "pass: write",
+    "control.pass.delete": "pass: delete",
     "control.console.navigate": "console: navigate"
   },
   "wire": {
@@ -1307,6 +1311,9 @@
           "done": "boolean"
         }
       },
+      "irreversible": [
+        "remove"
+      ],
       "doc": "amberx-notes@1 items (apps/amberx-droid notes core): every note, to-do and task on every device. kind picks the shape; a task may have subtasks (parent) and a checklist."
     },
     "amberx.lists": {
@@ -1343,6 +1350,9 @@
           "name": "string"
         }
       },
+      "irreversible": [
+        "remove"
+      ],
       "doc": "The list tree items live in (Inbox and the plugin lists are system lists: they can be renamed, never removed).",
       "protected": [
         "inbox",
@@ -1632,6 +1642,105 @@
         "limit": "number"
       },
       "doc": "The consoles open right now for the caller (one per browser tab: id, app, title, device, screen, last used). Console commands go to the one used last unless input.to says otherwise."
+    },
+    "pass.scopes": {
+      "domain": "pass",
+      "label": "Veto passes",
+      "ops": [
+        "list",
+        "get",
+        "act"
+      ],
+      "paths": [
+        {
+          "id": "all",
+          "kind": "scope",
+          "label": "Everything",
+          "targets": [
+            "*"
+          ],
+          "ops": [
+            "set",
+            "reset",
+            "add",
+            "remove",
+            "act"
+          ]
+        },
+        {
+          "id": "tokens.theme",
+          "kind": "scope",
+          "label": "Theme",
+          "targets": [
+            "tokens.theme"
+          ],
+          "ops": [
+            "set",
+            "reset"
+          ]
+        },
+        {
+          "id": "tokens.style",
+          "kind": "scope",
+          "label": "Style",
+          "targets": [
+            "tokens.style"
+          ],
+          "ops": [
+            "set",
+            "reset"
+          ]
+        },
+        {
+          "id": "tokens.layout",
+          "kind": "scope",
+          "label": "Layout",
+          "targets": [
+            "tokens.layout"
+          ],
+          "ops": [
+            "set",
+            "reset"
+          ]
+        },
+        {
+          "id": "tokens.*",
+          "kind": "scope",
+          "label": "All tokens",
+          "targets": [
+            "tokens.theme",
+            "tokens.style",
+            "tokens.layout"
+          ],
+          "ops": [
+            "set",
+            "reset"
+          ]
+        }
+      ],
+      "scopes": [
+        "all",
+        "tokens.theme",
+        "tokens.style",
+        "tokens.layout",
+        "tokens.*"
+      ],
+      "acts": {
+        "grant": {
+          "minutes": "number",
+          "reason": "string",
+          "include_irreversible": "boolean"
+        },
+        "approve": {
+          "request": "string"
+        },
+        "deny": {
+          "request": "string"
+        },
+        "revoke": {},
+        "undo": {}
+      },
+      "doc": "Timed veto passes (control-pass@1): \"allow everything for the next 30 minutes\". path = the scope: all (the default: every command on every target and every call axHub holds, ordinary deletes included; irreversible deletes only with include_irreversible) or a narrow token scope (tokens.theme, tokens.style, tokens.layout, tokens.*: set / reset only). grant files a request the owner approves once; revoke ends it; undo rolls back what can be rolled back and lists what can't. The pass target itself is never covered."
     }
   },
   "aliases": {
@@ -1669,6 +1778,10 @@
     "console": {
       "target": "console.*",
       "note": "axf console open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients] [words]"
+    },
+    "pass": {
+      "target": "pass.scopes",
+      "note": "axf pass grant 30 (everything) · axf pass grant 30 --scope theme · status · revoke · undo (also `axf token pass …`)"
     }
   },
   "tools": [
@@ -1703,7 +1816,8 @@
               "console.settings",
               "console.actions",
               "console.nav",
-              "console.clients"
+              "console.clients",
+              "pass.scopes"
             ],
             "description": "what to control"
           },
@@ -1753,7 +1867,8 @@
               "console.settings",
               "console.actions",
               "console.nav",
-              "console.clients"
+              "console.clients",
+              "pass.scopes"
             ],
             "description": "what to control"
           },
@@ -1804,7 +1919,8 @@
               "console.settings",
               "console.actions",
               "console.nav",
-              "console.clients"
+              "console.clients",
+              "pass.scopes"
             ],
             "description": "what to control"
           },
@@ -1862,7 +1978,8 @@
               "console.settings",
               "console.actions",
               "console.nav",
-              "console.clients"
+              "console.clients",
+              "pass.scopes"
             ],
             "description": "what to control"
           },
@@ -1920,7 +2037,8 @@
               "console.settings",
               "console.actions",
               "console.nav",
-              "console.clients"
+              "console.clients",
+              "pass.scopes"
             ],
             "description": "what to control"
           },
@@ -1978,7 +2096,8 @@
               "console.settings",
               "console.actions",
               "console.nav",
-              "console.clients"
+              "console.clients",
+              "pass.scopes"
             ],
             "description": "what to control"
           },
@@ -2040,7 +2159,8 @@
               "console.settings",
               "console.actions",
               "console.nav",
-              "console.clients"
+              "console.clients",
+              "pass.scopes"
             ],
             "description": "what to control"
           },
@@ -2132,7 +2252,9 @@
       "axf control add <target> <json>",
       "axf control remove <target> <path> [--confirm <token>]   (first run prints the token)",
       "axf control act <target> <path> <action> [json input]",
-      "axf control targets | tools | routes | schema"
+      "axf control targets | tools | routes | schema",
+      "axf pass grant [minutes] [--scope all|theme|style|layout|tokens] [--include-irreversible] [--reason why]   (everything by default; Brett approves it once)",
+      "axf pass status · axf pass revoke [--scope …] · axf pass undo [--scope …]   (also axf token pass grant theme 30)"
     ],
     "aliases": {
       "token": "axf token <theme|style|layout|typography|density|sizing|look|custom|slots> <op> …",
@@ -2142,7 +2264,8 @@
       "list": "axf list <op> … = axf control <op> amberx.lists",
       "plan": "axf plan <op> … = axf control <op> planner.plans",
       "build": "axf build <op> … = axf control <op> planner.builds",
-      "console": "axf console open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients] [words]"
+      "console": "axf console open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients] [words]",
+      "pass": "axf pass <op> … = axf control <op> pass.scopes"
     },
     "targets": [
       "tokens.theme",
@@ -2163,7 +2286,8 @@
       "console.settings",
       "console.actions",
       "console.nav",
-      "console.clients"
+      "console.clients",
+      "pass.scopes"
     ]
   },
   "schema": {
@@ -2210,7 +2334,8 @@
           "console.settings",
           "console.actions",
           "console.nav",
-          "console.clients"
+          "console.clients",
+          "pass.scopes"
         ]
       },
       "path": {
@@ -3164,6 +3289,46 @@
           }
         },
         "paths": "host"
+      },
+      "pass.scopes": {
+        "description": "Timed veto passes (control-pass@1): \"allow everything for the next 30 minutes\". path = the scope: all (the default: every command on every target and every call axHub holds, ordinary deletes included; irreversible deletes only with include_irreversible) or a narrow token scope (tokens.theme, tokens.style, tokens.layout, tokens.*: set / reset only). grant files a request the owner approves once; revoke ends it; undo rolls back what can be rolled back and lists what can't. The pass target itself is never covered.",
+        "ops": [
+          "list",
+          "get",
+          "act"
+        ],
+        "acts": {
+          "grant": {
+            "minutes": {
+              "type": "number"
+            },
+            "reason": {
+              "type": "string"
+            },
+            "include_irreversible": {
+              "type": "boolean"
+            }
+          },
+          "approve": {
+            "request": {
+              "type": "string"
+            }
+          },
+          "deny": {
+            "request": {
+              "type": "string"
+            }
+          },
+          "revoke": {},
+          "undo": {}
+        },
+        "paths": [
+          "all",
+          "tokens.theme",
+          "tokens.style",
+          "tokens.layout",
+          "tokens.*"
+        ]
       }
     }
   }
