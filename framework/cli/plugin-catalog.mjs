@@ -7,15 +7,14 @@
  *     catalog.json                                  plugin-catalog@1: the index (one entry per kind + folder, latest version)
  *     packages/<kind>/<folder>/<version>.json       plugin-package@1: the plugin's files, base64, with a content hash
  * The Dev Console mounts /projects, so it reads and writes the folder directly; axHub serves the same folder through
- * its axhub.memory_* tools (project "shared", area "data"). Other apps (Build Pilot) reach it through the console.
+ * its axhub.memory_* tools (project "shared", area "data"). Other apps reach it through the console.
  * Resolution: AXF_PLUGIN_CATALOG (exact folder; "off" = none), else <AXHUB_PROJECTS_DIR or /projects>/_shared/_data/plugin-catalog
  * when that projects folder exists, else no catalog (commands say so).
  *
  * Kinds are an open registry (KINDS below): `console` = Dev Console plugins (plugin@1, any files),
- * `pilot` = Build Pilot plugins (pilot-plugin@1, web only: plugin.json, README.md, web/**), `axhub` = axHub web app
- * plugins (axhub-plugin@1, web only; `into` = the app folder in this repo they install into, see app-install). Add a kind there.
+ * `axhub` = axHub web app plugins (axhub-plugin@1, web only: plugin.json, README.md, web/**; `into` = the app folder in this repo they install into, see app-install). Add a kind there.
  *
- * Safety (the same checks run on pack, publish, read and install, and in Build Pilot's Python copy):
+ * Safety (the same checks run on pack, publish, read and install, and in the Python copy, axf_server.plugin_package):
  *  - folder names ^[a-z0-9][a-z0-9-]{1,47}$; file paths relative, plain segments, no "..", no dot-files, no symlinks
  *  - never secret-looking files (.env*, keys, *.pem, credentials.json, secrets.env), never node_modules/dist/caches
  *  - at most 600 files, 2 MB per file, 8 MB per plugin
@@ -24,7 +23,7 @@
  *  - installing never overwrites a different plugin (same folder, other id) and never a folder that is a symlink
  *
  *   node framework/cli/plugin-catalog.mjs where
- *   node framework/cli/plugin-catalog.mjs list [--kind console|pilot]
+ *   node framework/cli/plugin-catalog.mjs list [--kind console|axhub|amberx]
  *   node framework/cli/plugin-catalog.mjs show <kind> <folder>
  *   node framework/cli/plugin-catalog.mjs pack <dir> --kind <kind> [--out file.json]
  *   node framework/cli/plugin-catalog.mjs publish <dir> --kind <kind> [--from "who/where"] [--console https://console.amberxai.com]
@@ -63,7 +62,6 @@ const ROOT = resolve(process.env.AXF_ROOT || join(dirname(fileURLToPath(import.m
 /** Open registry of plugin kinds. `allow` limits which files a plugin of that kind may carry (null = any safe file). */
 export const KINDS = {
   console: { label: 'Dev Console plugin', manifest: 'plugin@1', allow: null, idPattern: /^[a-z][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)+$/ },
-  pilot: { label: 'Build Pilot plugin', manifest: 'pilot-plugin@1', allow: /^(plugin\.json|README\.md|web\/.+)$/, idPattern: /^[a-z][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)+$/ },
   // axHub's web app (apps/axhub-web, static files the hub only hosts: decision #93, the hub server never runs them).
   axhub: { label: 'axHub web plugin', manifest: 'axhub-plugin@1', allow: /^(plugin\.json|README\.md|web\/.+)$/, idPattern: /^[a-z][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)+$/, into: 'apps/axhub-web/src/plugins' },
   // AmberX (apps/amberx-droid): the voice + monitoring Android app (web in a Capacitor shell); web files only.
@@ -138,7 +136,7 @@ export function checkManifest(kind, m, folder) {
   const problems = [];
   if (!m || typeof m !== 'object' || Array.isArray(m)) return ['plugin.json is not an object'];
   if (m.$axf !== k.manifest) problems.push(`plugin.json must be ${k.manifest} (got ${JSON.stringify(m.$axf)})`);
-  if (typeof m.id !== 'string' || !k.idPattern.test(m.id) || m.id.length > 120) problems.push('plugin.json id must be a dotted lowercase id (e.g. ai.amberx.pilot.my-plugin)');
+  if (typeof m.id !== 'string' || !k.idPattern.test(m.id) || m.id.length > 120) problems.push('plugin.json id must be a dotted lowercase id (e.g. ai.amberx.axhub.my-plugin)');
   if (typeof m.name !== 'string' || !m.name.trim() || m.name.length > 80) problems.push('plugin.json needs a name (≤ 80 characters)');
   if (typeof m.version !== 'string' || !VERSION_RE.test(m.version)) problems.push('plugin.json needs a version like 1.2.3');
   if (folder && m.folder && m.folder !== folder) problems.push(`plugin.json folder "${m.folder}" differs from "${folder}"`);
@@ -148,7 +146,7 @@ export function checkManifest(kind, m, folder) {
   return problems;
 }
 
-/** sha256 over every file, in path order: path \0 size \0 bytes. Build Pilot's Python copy computes the same. */
+/** sha256 over every file, in path order: path \0 size \0 bytes. The Python copy computes the same. */
 export function contentHash(files) {
   const h = createHash('sha256');
   for (const f of [...files].sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0))) {
@@ -215,7 +213,7 @@ export function pack(dir, kind, folder) {
       if (s.isDirectory()) { if (SKIP.has(name)) continue; walk(p, r); continue; }
       if (!s.isFile()) continue;
       if (SECRET_RE.test(r)) continue; // never packed (a secret-looking file left in a plugin folder)
-      if (KINDS[kind].allow && !KINDS[kind].allow.test(r)) continue; // e.g. a pilot plugin's tests or notes
+      if (KINDS[kind].allow && !KINDS[kind].allow.test(r)) continue; // e.g. a web-only plugin's tests or notes
       if (name.startsWith('.')) continue;
       const pp = pathProblem(kind, r);
       if (pp) throw new Error(pp);

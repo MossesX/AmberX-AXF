@@ -146,7 +146,7 @@ export async function main(argv) {
   if (argv[0] === 'console') argv = argv.slice(1);
   const [cmd] = argv;
   if (!cmd || cmd === 'help' || cmd === '--help') {
-    console.log([USAGE, '', 'Examples:', '  axf console open plan studio', '  axf console settings plugins/token-control', '  axf console action terminal.open', '  axf console list screens build', '  axf console back · axf console where · axf console clients',
+    console.log([USAGE, '', 'Examples:', '  axf console open plan studio', '  axf console settings plugins', '  axf console action terminal.open', '  axf console list screens build', '  axf console back · axf console where · axf console clients',
       '', `MCP tools (console /mcp, and through axHub): ${CONSOLE_TOOLS.join(', ')}`, `REST: POST ${API_PATH} (a whole control@1 command), POST ${API_PATH}/open {screen} …`].join('\n'));
     return 0;
   }

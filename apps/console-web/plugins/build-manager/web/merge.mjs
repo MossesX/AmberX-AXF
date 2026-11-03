@@ -267,9 +267,9 @@ export function statusesOf(rows) {
 /* ---------------- live tracker ---------------- */
 
 const ACTIVE = ['queued', 'running', 'waiting'];
-const BRANCH_RE = /\b(fable|rebuild|harvest|pilot)\/([A-Za-z0-9._-]+)/;
+const BRANCH_RE = /\b(fable|rebuild|harvest)\/([A-Za-z0-9._-]+)/;
 
-/** The build row an activity item is about: its branch (fable/<id>, rebuild/<id>, harvest/…, pilot/…) or a report naming it. */
+/** The build row an activity item is about: its branch (fable/<id>, rebuild/<id>, harvest/…) or a report naming it. */
 export function linkRow(item, rows) {
   const text = `${str(item?.title)}\n${str(item?.detail)}\n${str(item?.id)}`;
   const index = new Map();

@@ -1,8 +1,7 @@
 /**
  * Hub — where this app is pointed, whether the browser is signed in, and one tap to each of the hub's pages (they
  * are this app's pages since axHub decision #96). Also says plainly where the look comes from, since this is a developer app: the shared
- * appearance document on the hub's data server, the same one the Dev Console, Build Pilot and
- * Patches follow.
+ * appearance document on the hub's data server, the same one the Dev Console follows.
  */
 import { Button, Chip, Container, Note, useRuntime } from '../axf/react';
 import { formatWhen } from '../axf/libs/hub';
@@ -87,7 +86,7 @@ export function HubView() {
           <p className="fx-muted">
             Themes, spacing and hidden chrome are read from <span className="fx-mono">shared/settings/appearance.json</span>{' '}
             on the hub's data server and followed live. Change them in Settings → Appearance and every developer app — this
-            one, the Dev Console, Build Pilot, Patches — follows.
+            one and the Dev Console — follows.
           </p>
           <div className="fx-row fx-row--wrap">
             <Button icon="settings" onClick={() => window.location.hash = ''}>Settings → Appearance</Button>

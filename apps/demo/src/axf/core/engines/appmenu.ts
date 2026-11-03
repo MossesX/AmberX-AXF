@@ -115,12 +115,12 @@ export interface AppMenuEnv {
   providers: readonly string[];
   maxDepth?: number;
   /**
-   * Hooks the host app took over (embed@1 `takes`, e.g. settings inside Patches): an item whose action or live list is
+   * Hooks the host app took over (embed@1 `takes`, e.g. settings): an item whose action or live list is
    * one of them is dropped. Absent = nothing taken.
    */
   taken?: (item: { action?: string; provider?: string }) => boolean;
   /**
-   * Hooks of a function the host locks (embed@1 take with `lock`, e.g. plugins inside Patches): the item stays, greyed
+   * Hooks of a function the host locks (embed@1 take with `lock`, e.g. plugins): the item stays, greyed
    * out (`locked`). Absent = nothing locked.
    */
   locked?: (item: { action?: string; provider?: string }) => boolean;

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T15:55:55.163Z",
+ "updatedAt": "2026-11-03T17:19:43.836Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -20,6 +20,7 @@
    "pendingId": "",
    "branch": "claude/project-thread-nxdu3m",
    "pr": "230",
+   "mergedAt": "2026-11-02T04:01:24Z",
    "createdAt": "2026-11-02T02:43:38.594Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "",
@@ -30,6 +31,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -229,6 +231,7 @@
    "builtAt": "2026-11-02T14:39:53.393Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -360,11 +363,12 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/xlayout-opus",
+   "pr": "#252",
+   "mergedAt": "2026-11-03T16:48:36.572Z",
    "createdAt": "2026-11-02T18:47:31.123Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "2026-11-03T15:17:43.646Z",
+   "updatedAt": "2026-11-03T16:48:36.736Z",
+   "builtAt": "2026-11-03T13:57:06.541Z",
    "notes": [
     {
      "text": "Brett Nov 2 13:49 ET: the Toolbar designer is its own plugin, not part of xLayout. xLayout calls it through a capability service (e.g. axf.toolbar-designer@1).",
@@ -381,9 +385,14 @@
     {
      "text": "Reconciler: branch claude/xlayout-opus (PR #252); PR #252; PR #252 names s4, s5, s6, s7, s8, s9, s10, s11, s12 done",
      "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Built: Fable s1-s3 branch claude/molly-fable PR #245; Opus s4-s12 branch claude/xlayout-opus PR #252 (merge after #245). UI Review waiting: group 'xlayout - Nov 3 7:28 AM'.",
+     "at": "2026-11-03T12:30:44.031Z"
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",

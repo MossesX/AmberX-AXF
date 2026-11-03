@@ -83,7 +83,7 @@ NOW[0] = feed_mod._ms(T) / 1000 + 120  # two minutes after the runs started
 
 print("config")
 r = c.get("/p/config")
-check(r.status_code == 200 and r.json()["repos"][0] == "MossesX/AmberX-AXF" and "MossesX/axHub" in r.json()["repos"], "default repos: the console repo, axHub, Build Pilot")
+check(r.status_code == 200 and r.json()["repos"][0] == "MossesX/AmberX-AXF" and "MossesX/axHub" in r.json()["repos"], "default repos: the console repo, axHub")
 check(set(r.json()["sourceLabels"]) == {"github", "update", "assistant", "services", "reports", "holds"}, "six built-in sources (work on hold included)")
 check(c.put("/p/config", json={"repos": ["not a repo"]}).status_code == 400, "a bad repo name is refused")
 check(c.put("/p/config", json={"lingerS": "x"}).status_code == 400, "a bad number is refused")
@@ -141,7 +141,7 @@ def limited(path):
 
 
 mod.FEED._gh_get = limited
-mod.FEED.set_config({"repos": ["MossesX/AmberX-AXF", "MossesX/axHub", "MossesX/Build-Pilot"]})
+mod.FEED.set_config({"repos": ["MossesX/AmberX-AXF", "MossesX/axHub", "MossesX/studiox"]})
 n = len(calls)
 snap = c.get("/p/items").json()
 check(len(calls) == n + 1 and any("rate limit is used up" in e and "isn't a missing permission" in e for e in snap["errors"]), "a rate-limit 403 says so (not a permission) and stops after the first repo")
@@ -151,7 +151,7 @@ check(len(calls) == n + 1 and mod.FEED.github_status()["backoffUntil"], "…then
 hc = sys.modules["axf_console_plugins.activity_test.health"]
 check(hc.github_check(mod.FEED.github_status(), True)["status"] == "warn" and "paused until" in hc.github_check(mod.FEED.github_status(), True)["summary"], "health item: amber while it backs off, with the reason")
 check(hc.github_check({"errors": ["GitHub MossesX/axHub: GitHub 401: Bad credentials"], "checkedAt": 1}, True)["status"] == "error", "health item: red with GitHub's own words on a refused read")
-check(hc.github_check({"errors": [], "checkedAt": 1, "notes": ["axHub's GitHub token can't see MossesX/Build-Pilot (404: …)"]}, True)["status"] == "warn", "health item: amber naming the repo axHub's token can't see")
+check(hc.github_check({"errors": [], "checkedAt": 1, "notes": ["axHub's GitHub token can't see MossesX/studiox (404: …)"]}, True)["status"] == "warn", "health item: amber naming the repo axHub's token can't see")
 NOW[0] += 11 * 60
 mod.FEED._gh_get = fake_gh
 mod.FEED._gh_cache = None
@@ -181,13 +181,13 @@ check(not any("no token" in e for e in gf.snapshot()["errors"]) and len(hub.path
 class HubNoBP(FakeHub):
     def get(self, path):
         self.paths.append(path)
-        if "Build-Pilot" in path:
+        if "studiox" in path:
             raise feed_mod.github.GitHubError(404, '"github" answered HTTP 404: Not Found')
         return {"workflow_runs": []}
 
 
 hub2 = HubNoBP()
-lf = feed_mod.Feed(Path(tempfile.mkdtemp()), ROOT, default_repos=["MossesX/AmberX-AXF", "MossesX/Build-Pilot"], github_token=lambda: "local-token", github_client=lambda: hub2, now=lambda: NOW[0])
+lf = feed_mod.Feed(Path(tempfile.mkdtemp()), ROOT, default_repos=["MossesX/AmberX-AXF", "MossesX/studiox"], github_token=lambda: "local-token", github_client=lambda: hub2, now=lambda: NOW[0])
 locals_ = []
 orig_cls = feed_mod.github.GitHubClient
 class FakeLocal(orig_cls):  # noqa: E302
@@ -199,7 +199,7 @@ try:
     snap = lf.snapshot()
 finally:
     feed_mod.github.GitHubClient = orig_cls
-check(not snap["errors"] and len(locals_) == 1 and "Build-Pilot" in locals_[0] and any(i["id"].startswith("gh:MossesX/Build-Pilot:") for i in snap["items"]),
+check(not snap["errors"] and len(locals_) == 1 and "studiox" in locals_[0] and any(i["id"].startswith("gh:MossesX/studiox:") for i in snap["items"]),
       "a repo axHub's token can't see (404) is read with the console's own token")
 
 print("reports")

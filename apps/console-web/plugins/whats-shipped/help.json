@@ -1,0 +1,120 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "whats-shipped-help",
+  "name": "whats-shipped help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:whats-shipped.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:whats-shipped",
+    "entries": [
+      {
+        "target": "build-report",
+        "title": "Build report",
+        "text": "Opens the build's report on GitHub: what was built, the tests and the known gaps.",
+        "kind": "link"
+      },
+      {
+        "target": "mark-unread",
+        "title": "Mark unread",
+        "text": "Puts this feature back on the unread count, so the banner shows it again.",
+        "kind": "button"
+      },
+      {
+        "target": "mark-read",
+        "title": "Mark read",
+        "text": "Takes this feature off the unread count. Opening a feature marks it read too.",
+        "kind": "button"
+      },
+      {
+        "target": "mark-all-read",
+        "title": "Mark all read",
+        "text": "Marks everything in the list read; the banner count goes to zero.",
+        "kind": "button"
+      },
+      {
+        "target": "check-now",
+        "title": "Check now",
+        "text": "Rebuilds the list from what merged to main right now, instead of waiting for the next check.",
+        "kind": "button"
+      },
+      {
+        "target": "search",
+        "title": "Search",
+        "text": "Narrows the list as you type. Every word must match the title, summary, build, app or PR number.",
+        "kind": "field"
+      },
+      {
+        "target": "group",
+        "title": "Group",
+        "text": "Groups the list by date (Today, Yesterday, This week, Older), by build or by app. Your pick is remembered on this device.",
+        "kind": "control"
+      },
+      {
+        "target": "how-far-back",
+        "title": "How far back",
+        "text": "How many days of merged features the banner and the panel show.",
+        "kind": "field"
+      },
+      {
+        "target": "only-what-is-deployed",
+        "title": "Only what is deployed",
+        "text": "On: only features a deploy has carried out since they merged. Off: everything merged to main.",
+        "kind": "toggle"
+      },
+      {
+        "target": "include-every-app",
+        "title": "Include every app",
+        "text": "Clears the app picks so features from every app, plugin and the framework show.",
+        "kind": "button"
+      },
+      {
+        "target": "back-to-the-defaults",
+        "title": "Back to the defaults",
+        "text": "Goes back to 30 days, every app, merged and deployed both shown.",
+        "kind": "button"
+      },
+      {
+        "target": "show-whats-new-on-the-banner",
+        "title": "Show What's new on the banner",
+        "text": "Shows or hides the What's new ticker on the banner on this device. The panel stays in the Builds menu.",
+        "kind": "field"
+      },
+      {
+        "target": "step-through-the-unread-titles",
+        "title": "Step through the unread titles",
+        "text": "On: the banner rotates through the unread feature titles every few seconds. Off: it shows only the newest one.",
+        "kind": "field"
+      },
+      {
+        "target": "whats-shipped",
+        "title": "What's new",
+        "text": "Settings for the What's new banner: what it shows and whether it is on the banner.",
+        "kind": "tab"
+      },
+      {
+        "target": "action:whats-shipped.open",
+        "title": "Show what's new",
+        "text": "Opens the What's new panel: every feature merged to main, grouped by date, build or app.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:whats-shipped.read-all",
+        "title": "Mark all read",
+        "text": "Marks every feature in What's new read.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:whats-shipped.check",
+        "title": "Check now",
+        "text": "Rebuilds What's new from the latest merges.",
+        "kind": "menu-item"
+      }
+    ],
+    "intros": []
+  }
+}

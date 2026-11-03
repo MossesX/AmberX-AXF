@@ -30,6 +30,35 @@ node framework/cli/builds-store.mjs restore <id> <rev>  # put it back as it was 
 The Builds page (console and AmberX: Builds → Builds) shows it: Builds and Steps views, rename, drag to reorder,
 divide, harvest / split into N, Restore default, a draft until Apply, live progress bars. <!-- axf-plugin:builds-page -->
 
+## Live on main (since Nov 3 2026)
+
+Brett: "every completed step, no matter how small, must reach the orchestrator and appear on main immediately".
+Every store write that changes a build (step ticked, status, note, branch, PR) is published to **main** at once as its
+own status-only commit (`Builds live: … [skip ci]`), whatever branch the session is on (`framework/cli/builds-live.mjs`):
+fetched main + this checkout's changed builds, merged per build and per step **newer wins**
+(`framework/plan/builds-merge-core.mjs`), journal lines appended, one line per change in THREADS.md's **Live build
+log**, orchestrator exports regenerated, pushed (rebase-retry when main moved, never forced). Main's newer builds then
+come back into the checkout and into the console's checkout (`/opt/axf`), so the banners show it now. Code still goes
+through the branch and its PR. The console's auto-update skips the rebuild when only `_claude/` changed.
+
+- **Status:** `built` = every step done, the build's PR not merged yet ("Built · awaiting merge"); `complete` once the
+  PR merged (`mergedAt`) or when the build has no PR.
+- **Reconciler** (`framework/cli/builds-reconcile.mjs`): open and merged PRs and `claude/*` branches matched to builds
+  (branch/PR field, branch name = build id or id-prefixed, PR title/body/commits naming the build's steps as done);
+  fills blank branch/PR, ticks steps a PR names (step note = the PR), records merges, lists orphans. Runs at session
+  start (`.claude/settings.json` hook), every 10 min on the VPS (cron `axf-builds-reconcile`), and by hand.
+- **Merging a branch:** the builds files merge newer-wins through the `axf-builds` git driver (`.gitattributes`,
+  registered per clone by `builds-live.mjs install`); a PR that conflicts only there: `builds-live.mjs heal <branch>`.
+- **Broken:** changes that can't reach main stay queued (`builds-live.mjs status`); the systems check item
+  **Builds reach main live** turns red after 15 min, amber for orphan PRs/branches or a reconciler that hasn't run.
+
+```bash
+node framework/cli/builds-live.mjs sync                 # session start: send what is newer here, take main's newer builds
+node framework/cli/builds-live.mjs status | flush       # outbox, last publish, last error / publish now
+node framework/cli/builds-live.mjs link <id> --branch <b> --pr <n> [--merged]
+node framework/cli/builds-reconcile.mjs [--apply]       # dry run / write what it is sure of + the report
+```
+
 ## Build profiles
 
 Each build profile (build-profiles@1, `framework/cli/profiles.mjs`) is a field on the builds in the store. The
@@ -44,10 +73,12 @@ node apps/console-web/plugins/build-orchestrator/orchestrator.mjs              #
 node apps/console-web/plugins/build-orchestrator/orchestrator.mjs next         # the next step (or the approval it waits on) # axf-plugin:build-orchestrator
 node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief <id>   # paste-ready brief: the current phase only # axf-plugin:build-orchestrator
 node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step <id> <stepId> [undo] # axf-plugin:build-orchestrator
-node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act approve <id> <phase>   # only after Brett approves (card) # axf-plugin:build-orchestrator
+node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>  # at a model UPGRADE: ask Brett, then stop # axf-plugin:build-orchestrator
+node framework/cli/model-gate.mjs audit                                                     # upgrades approved so far, and by whom # axf-plugin:build-orchestrator
 ```
 
-Commit `_claude/builds/store.json` and `_claude/builds/journal/` with the work after every step. Console: **Builds → Build orchestrator** (tabs Builds,
+Every tick goes live to main by itself (see *Live on main*); never trust a branch's or main's export alone: run
+`builds-live.mjs sync` (the session-start hook does) before reading. Console: **Builds → Build orchestrator** (tabs Builds,
 Approvals, Rules).
 
 ## Token rules (on every build, editable in the Rules tab)
@@ -55,7 +86,7 @@ Approvals, Rules).
 - Stay in **one session**; a step marked *new session* is the only reason to start another.
 - **No sub-agents** unless a step is marked *sub-agent ok*.
 - A brief carries **only the current phase**; read only the files its steps list.
-- Stop at the end of a phase. When the next phase switches model, ask Brett with a card, then `act approve`.
+- Stop at the end of a phase. A phase that switches to a **lower** model (Fable → Opus) just goes on (recorded). A phase that switches to a **higher** model (Opus → Fable) is Brett's call only (Nov 3 2026): run `request-upgrade`, tell him, and stop. Never `act approve` an upgrade yourself (it is refused for sessions, agents and headless builds anyway); he approves in the console or on axHub.
 
 ## Which model a step gets
 

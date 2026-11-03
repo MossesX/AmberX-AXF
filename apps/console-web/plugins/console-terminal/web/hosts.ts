@@ -9,7 +9,8 @@ import type { AxfRuntime } from '@console/axf/core';
 import type { Open, SessionInfo } from './api';
 
 export type Conn = 'connecting' | 'live' | 'reconnecting' | 'closed';
-export interface HostSession { id: string; title: string; open: Open; color?: string }
+/** split = the tab's two panes (headless tabs: session + context chain); renamed = the title was typed, keep it over the agent name. */
+export interface HostSession { id: string; title: string; open: Open; color?: string; split?: 'side' | 'stacked' | 'none'; renamed?: boolean }
 export interface HostState { sessions: HostSession[]; active: string | null }
 
 /** What a mounted session lets its host do (the toolbar acts on the session in front). */

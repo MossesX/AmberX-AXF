@@ -7,8 +7,13 @@ interactive CLI session). Sessions live on the server (sessions.py) so Mosh mode
 
   GET  status | targets | sessions | log
   POST sessions {kind, container?, cwd?, attach?, confirmProtected?, mosh?, cols, rows}   (attach = an axf-… tmux session, kind vps)
-  GET  headless                        headless Claude Code sessions on the VPS (tmux axf-…)
-  POST sessions/{id}/mosh {on}       DELETE sessions/{id}
+  GET  headless                        headless Claude Code sessions on the VPS (tmux axf-…, agent + model tags)
+  GET  headless/meters?names=a,b       their live meters (headless-meter@1: status, cost, tokens), one ssh call, cached 2 s
+  GET  headless/{name}/chain           a session's context chain (context-chain@1)
+  GET  tmux                            every persistent session (axt-… tabs on the VPS and in the console, axf-… runs)
+  POST tmux/kill {name, where}         end one for good (the tab's Kill session)
+  POST sessions {…, tmux}              tmux = the tab's axt-… name: the tab runs inside that tmux session (persistTabs)
+  POST sessions/{id}/mosh {on}       DELETE sessions/{id} (detaches a persistent tab)   POST sessions/{id}/kill
   WS   sessions/{id}/ws?ticket=…&have=<offset>
   GET/PUT settings      POST ssh/keygen {replace?}
 """
@@ -112,6 +117,57 @@ def set_mosh(sid: str, body: dict[str, Any]) -> dict[str, Any]:
     return s.info()
 
 
+@router.post("/sessions/{sid}/kill")
+def kill_session(sid: str) -> dict[str, Any]:
+    """Kill session: the tmux session ends for good (a plain tab just closes)."""
+    try:
+        s = sessions.MANAGER.get(sid)
+    except KeyError as e:
+        raise _err(e) from None
+    name, where = s.tmux, s.where
+    sessions.MANAGER.close(sid, "killed")
+    if name and where:
+        try:
+            sessions.kill_tmux(name, where)
+        except KeyError:
+            pass  # already gone
+        except Exception as e:  # noqa: BLE001
+            raise _err(e) from None
+    return {"ok": True, "tmux": name}
+
+
+@router.get("/tmux")
+def tmux_list() -> dict[str, Any]:
+    v = sessions.vps_tmux()
+    return {"vps": v, "console": sessions.console_tmux(), "attach": {x["name"]: sessions.attach_commands(x["name"], x["where"])
+                                                                        for x in [*v["items"], *sessions.console_tmux()]}}
+
+
+@router.post("/tmux/kill")
+def tmux_kill(body: dict[str, Any]) -> dict[str, Any]:
+    name, where = str(body.get("name") or ""), str(body.get("where") or "")
+    try:
+        for s in list(sessions.MANAGER.sessions.values()):
+            if s.tmux == name and s.where == where:
+                sessions.MANAGER.close(s.id, "killed")
+        return sessions.kill_tmux(name, where)
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+
+
+@router.get("/headless/meters")
+def headless_meters(names: str = "") -> dict[str, Any]:
+    return sessions.meters([n for n in names.split(",") if n])
+
+
+@router.get("/headless/{name}/chain")
+def headless_chain(name: str) -> dict[str, Any]:
+    try:
+        return sessions.chain(name)
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+
+
 @router.delete("/sessions/{sid}")
 def close_session(sid: str) -> dict[str, Any]:
     sessions.MANAGER.close(sid, "closed by you")
@@ -141,7 +197,7 @@ async def attach(ws: WebSocket, sid: str) -> None:
         while True:
             data = await q.get()
             if data is None:
-                await ws.send_text(json.dumps({"type": "exit"}))
+                await ws.send_text(json.dumps({"type": "exit", "reason": s.close_reason or "exited", "tmux": s.tmux}))
                 await ws.close()
                 return
             await ws.send_bytes(data)

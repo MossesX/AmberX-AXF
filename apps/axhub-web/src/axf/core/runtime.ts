@@ -10,11 +10,16 @@ import { announceWatchLiveRuntime } from './watch-live';
 import { ActionBus, FRAMEWORK_MODULE, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
 import { colorThemeVars, styleThemeVars, type VarMap } from './engines/theme';
 import { scaleThemeVars } from './engines/scale';
-import { layoutVars } from './engines/layout';
+import { LAYOUT_VIEWPORTS, layoutViewports, layoutVars } from './engines/layout';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
 import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normalizeCustomSlot, type CustomSlot, type CustomValues } from './engines/customize';
+import { CONTROL_TOKEN_SLOTS, applyTokenOverrides, effectiveTokenOverrides } from './engines/control-tokens.mjs';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
+import { normalizeDockLayout } from './engines/dock';
+import { CHROME_CONTRACT, emptyChrome, type ChromeBundle, type ChromeNavItem, type ChromeToolbarItem } from './engines/chrome';
+/** The embed@1 functions whose chrome a host may take over and draw merged (chrome@1). */
+const CHROME_TAKES: readonly string[] = ['app-menu', 'nav-menu', 'context-menu', 'toolbar', 'widgets'];
 import { normalizePlacement, placementKey, placementRoute, PLACEMENT_TAB_GROUP, type Placement, type UiRef } from './engines/placement';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
 import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
@@ -270,6 +275,42 @@ export class AxfRuntime {
   /** The help id the "What is this?" panel shows (null = closed); a screen intro asked to replay. */
   private helpPanelId: string | null = null;
   private helpReplay: string | null = null;
+  /** Viewport cut-offs being watched (layout tokens tinyMaxWidth … largeMaxWidth): the matchMedia lists and what each one says now. */
+  private viewportKeyWatched = '';
+  private viewportLists: { attr: string; list: { matches: boolean; addEventListener?: (t: 'change', f: () => void) => void; addListener?: (f: () => void) => void; removeEventListener?: (t: 'change', f: () => void) => void; removeListener?: (f: () => void) => void }; on: () => void }[] = [];
+
+  /**
+   * Every layout parameter is a token (Nov 2026): the layout's viewport cut-offs become root attributes
+   * (data-fx-tiny / -small / -narrow / -medium / -large) stylesheets select on instead of px breakpoints. The runtime
+   * watches `(max-width: <cut-off>px)` for each; a change re-renders (the provider re-applies the root attributes).
+   */
+  private ensureViewportWatch(): void {
+    const vps = layoutViewports(this.asset('layout').data);
+    const key = vps.map((v) => v.maxWidth).join(',');
+    if (key === this.viewportKeyWatched) return;
+    this.viewportKeyWatched = key;
+    for (const w of this.viewportLists) (w.list.removeEventListener ?? w.list.removeListener)?.call(w.list, 'change' as never, w.on as never);
+    this.viewportLists = [];
+    if (typeof globalThis.matchMedia !== 'function') return;
+    for (const v of vps) {
+      const list = globalThis.matchMedia(`(max-width: ${v.maxWidth}px)`);
+      const on = () => this.set({});
+      if (typeof list.addEventListener === 'function') list.addEventListener('change', on);
+      else (list as { addListener?: (f: () => void) => void }).addListener?.(on);
+      this.viewportLists.push({ attr: v.attr, list, on });
+    }
+  }
+
+  /** The viewport attributes in force now (`data-fx-narrow` → '1' …); '' keys absent when the viewport is wider. */
+  viewportAttrs(): Record<string, string> {
+    this.ensureViewportWatch();
+    const out: Record<string, string> = {};
+    for (const w of this.viewportLists) if (w.list.matches) out[w.attr] = '1';
+    return out;
+  }
+
+  /** A string that changes whenever a viewport attribute changes (a render dependency for the provider). */
+  viewportKey(): string { return Object.keys(this.viewportAttrs()).join(','); }
 
   constructor(opts: AxfRuntimeOptions) {
     this.manifest = opts.manifest;
@@ -1015,6 +1056,9 @@ export class AxfRuntime {
       this.toast(`No ${type} asset with id "${target}".`, 'warning', 'Swap failed');
       return false;
     }
+    // A design package is never "just a slot": moving it means loading the package (its themes, extras; overrides
+    // cleared), or every other app on the hub would show the package while this one kept the old themes (Nov 3 2026).
+    if (type === DESIGN_PACKAGE_TYPE) return this.applyDesignPackage(next);
     if (next === this.state.active[type] && type !== STYLE_PACKAGE_TYPE) return true;
     this.terminal.ok('hot-swap', `${type}: ${this.state.active[type]} → ${next}`);
     // a style package is a set of controls: picking one swaps every member it names (engines/stylepackage.ts)
@@ -1155,8 +1199,7 @@ export class AxfRuntime {
    * Chrome that belongs to the host while this app runs inside it (embed@1): what it hides for the whole app (its banner
    * by default, plus what a taken function hides, e.g. the app menu). On a page the host shows alone (settings page
    * mode) every bit of chrome is hidden for that page only, so only the whole-app part counts. Settings leave rows about
-   * this chrome out instead of greying them (Brett, Oct 23 2026: "if a program runs inside Patches don't grey out its
-   * settings").
+   * this chrome out instead of greying them (Brett, Oct 23 2026: settings of chrome a host owns aren't greyed out).
    */
   slotOwnedByHost(type: AssetType): boolean {
     const e = this.embedded;
@@ -1249,8 +1292,14 @@ export class AxfRuntime {
     return captureDesignPackage({ active: this.state.active as Record<string, string>, types: ASSET_TYPES, spacing: this.spacing(), hidden, values: this.settings.savedValues() }, withExtras);
   }
 
-  /** The design package last applied in this app, if any (Restore default appearance forgets it). */
+  /**
+   * The design package loaded in this app, if any: the `design-package` slot, which rides the shared look, so every app
+   * on the hub names the same one (the local `axf.appearance.design` note is only written for older readers; a slot
+   * that is a known package always wins over it, Nov 3 2026). After Restore default appearance: the app's default package.
+   */
   appliedDesignPackage(): string | undefined {
+    const active = this.state.active[DESIGN_PACKAGE_TYPE as AssetType];
+    if (active && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, active)) return active;
     let v = this.settings.get(DESIGN_APPLIED_KEY);
     if (typeof v !== 'string') {
       // the retired appearance package's pick: the shipped packages kept their ids, so move it over once
@@ -1264,7 +1313,7 @@ export class AxfRuntime {
    * Apply design package `id`: its style, colour, layout and behaviour themes; and when it carries extras, the other
    * slots, spacing, shown / hidden chrome and the other appearance settings too (the whole look).
    */
-  applyDesignPackage(id: string): boolean {
+  applyDesignPackage(id: string, opts: { quiet?: boolean } = {}): boolean {
     if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
     const a = this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id);
     if (!a) { this.toast(`No design package "${id}".`, 'warning', 'Design package'); return false; }
@@ -1290,6 +1339,7 @@ export class AxfRuntime {
     this.settings.set(DESIGN_APPLIED_KEY, id);
     if (this.settings.get(PACKAGE_APPLIED_KEY) !== null) this.settings.clear(PACKAGE_APPLIED_KEY);
     this.terminal.ok('hot-swap', `design package ${id} applied (${Object.keys(slots).length} slots, ${Object.keys(plan.set).length} settings)`);
+    if (opts.quiet) return true; // part of a bigger step (Restore default): that step says what happened
     this.toast(`${a.name} applied.`, 'success', 'Design package');
     this.lookApplied('design-package', id);
     return true;
@@ -1324,6 +1374,10 @@ export class AxfRuntime {
     for (const k of Object.keys(this.settings.savedValues())) if (isAppearanceSetting(k) || k === SPACING_KEY || k === PACKAGE_APPLIED_KEY || k === DESIGN_APPLIED_KEY) this.settings.clear(k);
     this.reset();
     this.pushAppearance({ spacing: this.spacing() });
+    // The default look is the app's default design theme, loaded in full (its spacing and chrome too), with no style
+    // or colour override left (precedence rule 3): Restore = load the default design package again (Nov 3 2026).
+    const def = (this.manifest.defaults as Record<string, string | undefined>)[DESIGN_PACKAGE_TYPE];
+    if (def && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, def)) this.applyDesignPackage(def, { quiet: true });
     this.terminal.ok('hot-swap', 'default appearance restored');
     this.toast('Default appearance restored.', 'success', 'Appearance');
     this.lookApplied('default', '');
@@ -1622,9 +1676,9 @@ export class AxfRuntime {
 
   navigate(view: string) {
     if (this.openPlaced(`view:${view}`)) return;
-    // A view the host took over (embed@1 takes: the settings view inside Patches) opens in the host instead.
+    // A view the host took over (embed@1 takes: e.g. the settings view) opens in the host instead.
     if (embedTakenView(this.embedded, view)) { this.askHost(`nav:${view}`); return; }
-    // A view of a function the host locks (plugins inside Patches): say who manages it instead of opening it.
+    // A view of a function the host locks (e.g. plugins): say who manages it instead of opening it.
     const lock = this.lockedByHost({ view });
     if (lock) { this.toast(lock, 'info', `Managed in ${embedHostLabel(this.embedded)}`); return; }
     this.set({ view, context: null });
@@ -1657,6 +1711,8 @@ export class AxfRuntime {
   }
 
   openContext(x: number, y: number, target: string, payload?: string) {
+    // A host that takes the context menu (embed@1 `context-menu`, Molly's xLayout) shows its one menu for this app.
+    if (this.forwardContext(x, y, target, payload)) return;
     if (this.slotHidden('context-menu')) return;
     this.set({ context: { x, y, target, payload, scope: this.uiScope } });
   }
@@ -1666,9 +1722,9 @@ export class AxfRuntime {
   }
 
   dispatch(spec: string, ctx: Omit<ActionContext, 'runtime'> = {}): boolean {
-    // A hook of a function the host took over (embed@1): the host does it (e.g. Patches' combined settings).
+    // A hook of a function the host took over (embed@1): the host does it (e.g. a host's combined settings).
     if (embedTakenBy(this.embedded, spec)) return this.askHost(spec);
-    // A hook of a function the host locks (plugins inside Patches): shown greyed out; running it only says who manages it.
+    // A hook of a function the host locks (e.g. plugins): shown greyed out; running it only says who manages it.
     const lock = this.lockedByHost({ action: spec });
     if (lock) { this.toast(lock, 'info', `Managed in ${embedHostLabel(this.embedded)}`); return false; }
     return this.actions.dispatch(spec, { runtime: this, ...ctx });
@@ -1688,8 +1744,8 @@ export class AxfRuntime {
   }
 
   /**
-   * Is this action / view / live list a hook of a function the host locks (embed@1 take with `lock`, e.g. plugins
-   * inside Patches)? Returns the note to show (`Plugins are managed in Patches`), or null. Chrome keeps such hooks on
+   * Is this action / view / live list a hook of a function the host locks (embed@1 take with `lock`, e.g. plugins)?
+   * Returns the note to show (`Plugins are managed in <host>`), or null. Chrome keeps such hooks on
    * screen greyed out with the note as their tooltip.
    */
   lockedByHost(what: { action?: string; view?: string; provider?: string }): string | null {
@@ -1699,7 +1755,7 @@ export class AxfRuntime {
     return embedLockNote(e, fn);
   }
 
-  /** The note for a whole function the host locks (`plugins` → `Plugins are managed in Patches`), or null. */
+  /** The note for a whole function the host locks (`plugins` → `Plugins are managed in <host>`), or null. */
   hostLockNote(fn: string): string | null { return embedLockNote(this.embedded, fn); }
 
   /* ---------------- embed@1: the host manages this app's plugins (take `plugins`) ---------------- */
@@ -1765,12 +1821,14 @@ export class AxfRuntime {
       if (m?.type === 'open-tab' && this.embedded?.page === 'settings') this.actions.dispatch(`settings.open:${m.tab}`, { runtime: this });
       if (m?.type === 'open-tab' && this.embedded?.page === 'banners') this.actions.dispatch(`banners.settings:${m.tab}`, { runtime: this });
       if (m?.type === 'menu-request') void this.shareAppMenu({ force: true, refresh: true });
+      if (m?.type === 'chrome-request') void this.shareChrome({ force: true });
       if (m?.type === 'run') this.runSharedMenuItem(m.id);
       if (m?.type === 'plugins-enabled' && this.hostTakes('plugins')) this.receiveHostPlugins(m.plugins);
       if (m?.type === 'plugins-request' && this.reportedPlugins) this.reportPluginsToHost(this.reportedPlugins);
     };
-    // the app itself in a tab shares its menu; a page the host shows alone (its settings page) doesn't
-    if (this.hostTakes('app-menu') && !this.embedded?.page) this.startMenuShare();
+    // the app itself in a tab shares its menu (and, chrome@1, its navigation / context menus / toolbar / widgets when the
+    // host takes them); a page the host shows alone (its settings page) doesn't
+    if (CHROME_TAKES.some((t) => this.hostTakes(t)) && !this.embedded?.page) this.startMenuShare();
     // Android hosts can't post into the page; they call this instead (evaluateJavascript).
     (globalThis as unknown as { AxfEmbedGuest?: { receive: (json: string) => void } }).AxfEmbedGuest = { receive: (json: string) => handle(json) };
     const g = globalThis as unknown as { addEventListener?: (t: string, f: (e: { data: unknown; source: unknown }) => void) => void; parent?: unknown };
@@ -1809,7 +1867,7 @@ export class AxfRuntime {
     const unref = (t: unknown) => (t as { unref?: () => void } | null)?.unref?.();
     const later = (ms: number, refresh = false) => {
       if (this.sharedMenuTimer) clearTimeout(this.sharedMenuTimer);
-      this.sharedMenuTimer = setTimeout(() => { this.sharedMenuTimer = null; void this.shareAppMenu({ refresh }); }, ms);
+      this.sharedMenuTimer = setTimeout(() => { this.sharedMenuTimer = null; void this.shareAppMenu({ refresh }); void this.shareChrome(); }, ms);
       unref(this.sharedMenuTimer);
     };
     unref(setTimeout(() => { later(0, true); this.subscribe(() => later(1500)); }, 600));
@@ -1822,6 +1880,17 @@ export class AxfRuntime {
    */
   async shareAppMenu(opts: { force?: boolean; refresh?: boolean } = {}): Promise<boolean> {
     if (!this.hostTakes('app-menu') || this.embedded?.page) return false;
+    const { menus, run } = await this.buildSharedMenus(opts);
+    const msg: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'menu', menus };
+    const text = JSON.stringify(msg);
+    for (const [k, v] of run) this.sharedMenuRun.set(k, v);
+    if (!opts.force && text === this.sharedMenuText) return false;
+    this.sharedMenuText = text;
+    return this.postToHost(msg);
+  }
+
+  /** The application menu as data (ids `m<menu>.<item>…`), and id → action for the items the host may run back. */
+  private async buildSharedMenus(opts: { refresh?: boolean } = {}): Promise<{ menus: EmbedMenu[]; run: Map<string, string> }> {
     const run = new Map<string, string>();
     const MAX_DEPTH = 4;
     const list = async (provider: string): Promise<CompiledMenuItem[]> => {
@@ -1854,11 +1923,85 @@ export class AxfRuntime {
       const items = (await Promise.all(m.items.map((it, i) => conv(it, `m${mi}.${i}`, 1)))).filter((k): k is EmbedMenuItem => !!k);
       if (items.some((k) => !k.separator)) menus.push({ id: `m${mi}`, label: m.label, items });
     }
-    const msg: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'menu', menus };
+    return { menus, run };
+  }
+
+  /* ---------------- chrome@1: the host draws this app's navigation / context menus / toolbar / widgets ---------------- */
+
+  private sharedChromeText = '';
+
+  /**
+   * Send this app's chrome to the host that took it over (`chrome` message, engines/chrome.ts): the application menu
+   * (when the host takes `app-menu`), the navigation menu (`nav-menu`: ids `nav:<view>`, locked by the access policy),
+   * the context menus (`context-menu`: every target's items, ids `ctx.<target>.<i>…`), the toolbar (`toolbar`: ids
+   * `tb.<group>.<i>`) and nothing else — DATA only, the actions stay here (`runSharedMenuItem`). Unchanged chrome isn't
+   * sent again unless `force`. False when the host takes none of it, or this is a page the host shows alone.
+   */
+  async shareChrome(opts: { force?: boolean; refresh?: boolean } = {}): Promise<boolean> {
+    if (this.embedded?.page || !CHROME_TAKES.some((t) => this.hostTakes(t))) return false;
+    const run = new Map<string, string>();
+    const app = this.manifest.app.id.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 32) || 'app';
+    const bundle: ChromeBundle = { ...emptyChrome(app, this.manifest.app.name), $axf: CHROME_CONTRACT };
+    if (this.hostTakes('app-menu')) { const m = await this.buildSharedMenus(opts); bundle.menus = m.menus; for (const [k, v] of m.run) run.set(k, v); }
+    if (this.hostTakes('nav-menu')) {
+      const nav = this.assetOrNull('nav-menu')?.data;
+      for (const sec of nav?.sections ?? []) {
+        const items: ChromeNavItem[] = [];
+        for (const it of sec.items) {
+          const gate = this.gate(it.requires);
+          if (gate === 'hide') continue;
+          const id = `nav:${it.view}`;
+          const out: ChromeNavItem = { id, label: it.label };
+          if (it.icon) out.icon = it.icon;
+          const n = it.badge ? this.badge(it.badge) : 0; if (n > 0) out.badge = n;
+          if (gate === 'disable') out.locked = true; else run.set(id, id);
+          items.push(out);
+        }
+        if (items.length) bundle.nav.push(sec.label ? { label: sec.label, items } : { items });
+      }
+      bundle.active = `nav:${this.state.view}`;
+    }
+    if (this.hostTakes('context-menu')) {
+      const ctx = this.assetOrNull('context-menu')?.data;
+      const conv = (items: readonly MenuItem[], prefix: string, depth: number): EmbedMenuItem[] => items.flatMap((it, i) => {
+        const id = `${prefix}.${i}`;
+        if (it.separator) return [{ id, label: '', separator: true } as EmbedMenuItem];
+        const gate = this.gate(it.requires);
+        if (gate === 'hide' || !it.label) return [];
+        const out: EmbedMenuItem = { id, label: it.label };
+        if (it.icon) out.icon = it.icon;
+        if (gate === 'disable') out.locked = true;
+        if (it.items?.length && depth < 4) { const kids = conv(it.items, id, depth + 1); if (kids.some((k) => !k.separator)) out.items = kids; }
+        if (!out.items) { if (!it.action) return []; if (!out.locked) run.set(id, it.action); }
+        return [out];
+      });
+      for (const [target, items] of Object.entries(ctx?.targets ?? {})) {
+        const list = conv(items, `ctx.${target}`, 1);
+        if (list.some((k) => !k.separator)) bundle.context.push({ target, items: list });
+      }
+    }
+    if (this.hostTakes('toolbar')) {
+      const tb = this.assetOrNull('toolbar')?.data;
+      for (const [gi, g] of (tb?.groups ?? []).entries()) {
+        const items: ChromeToolbarItem[] = [];
+        for (const [i, it] of g.items.entries()) {
+          const gate = this.gate(it.requires);
+          if (gate === 'hide') continue;
+          const id = `tb.${g.id || gi}.${i}`;
+          const out: ChromeToolbarItem = { id, label: it.label, icon: it.icon || 'circle' };
+          const n = it.badge ? this.badge(it.badge) : 0; if (n > 0) out.badge = n;
+          if (it.checked && resolveChecked(it.checked, this.appMenuEnv()) === true) out.pressed = true;
+          if (gate === 'disable') out.locked = true; else run.set(id, it.action);
+          items.push(out);
+        }
+        if (items.length) bundle.toolbars.push(g.label ? { id: g.id || `g${gi}`, label: g.label, items } : { id: g.id || `g${gi}`, items });
+      }
+    }
+    const msg: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'chrome', chrome: bundle };
     const text = JSON.stringify(msg);
-    this.sharedMenuRun = run;
-    if (!opts.force && text === this.sharedMenuText) return false;
-    this.sharedMenuText = text;
+    for (const [k, v] of run) this.sharedMenuRun.set(k, v);
+    if (!opts.force && text === this.sharedChromeText) return false;
+    this.sharedChromeText = text;
     return this.postToHost(msg);
   }
 
@@ -1866,14 +2009,36 @@ export class AxfRuntime {
   runSharedMenuItem(id: string): boolean {
     const action = this.sharedMenuRun.get(id);
     if (!action) { this.terminal.warn('menus', `the host asked to run menu item "${id}", which this app didn't offer`); return false; }
-    return this.dispatch(action);
+    // a context-menu item runs with the payload of the element that was right-clicked here
+    const payload = id.startsWith('ctx.') ? this.forwardedContext?.payload : undefined;
+    return this.dispatch(action, payload ? { payload } : {});
+  }
+
+  /** The last right-click sent to the host (its payload is what a context item the host runs back acts on). */
+  private forwardedContext: { target: string; payload?: string } | null = null;
+
+  /** Send a right-click to a host that takes the context menu (`context` message); false = show it here as usual. */
+  forwardContext(x: number, y: number, target: string, payload?: string): boolean {
+    if (!this.hostTakes('context-menu') || this.embedded?.page) return false;
+    const msg: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'context', x, y, target, ...(payload ? { payload } : {}) };
+    if (!this.postToHost(msg)) return false;
+    this.forwardedContext = { target, ...(payload ? { payload } : {}) };
+    return true;
   }
 
   /* ---------------- rendering ---------------- */
 
   /** Compile every active asset into CSS vars + root data-attributes. */
+  /** An asset's data with the control@1 token overrides of its set written in (engines/control-tokens.mjs). */
+  private withTokenOverrides<T>(target: string, type: AssetType, data: T): T {
+    const spec = (CONTROL_TOKEN_SLOTS as Record<string, { key: string }>)[target];
+    if (!spec || data === undefined || data === null) return data;
+    const o = effectiveTokenOverrides(this.settings.get(spec.key), (this.state.active as Record<string, string | undefined>)[type]);
+    return Object.keys(o).length ? applyTokenOverrides(target, data, o) : data;
+  }
+
   compileStyles(): { vars: VarMap; attrs: Record<string, string> } {
-    const color = this.asset('color-theme').data;
+    const color = this.withTokenOverrides('tokens.theme', 'color-theme', this.asset('color-theme').data);
     const parts = [
       buttonStyle(this.asset('button').data),
       sliderStyle(this.asset('slider').data),
@@ -1891,10 +2056,14 @@ export class AxfRuntime {
     ];
     const vars: VarMap = {
       ...colorThemeVars(color),
-      ...styleThemeVars(this.asset('style-theme').data, this.spacing()),
+      ...styleThemeVars(this.withTokenOverrides('tokens.style', 'style-theme', this.asset('style-theme').data), this.spacing()),
       // the scale assets (typography, density, sizing): every size the stylesheet and components read; defaults when an app has none
-      ...scaleThemeVars({ typography: this.assetOrNull('typography' as AssetType)?.data, density: this.assetOrNull('density' as AssetType)?.data, sizing: this.assetOrNull('sizing' as AssetType)?.data }),
-      ...layoutVars(this.inspectorLayout(this.asset('layout').data), this.hiddenSlots()),
+      ...scaleThemeVars({
+        typography: this.withTokenOverrides('tokens.typography', 'typography' as AssetType, this.assetOrNull('typography' as AssetType)?.data ?? (this.settings.get(CONTROL_TOKEN_SLOTS['tokens.typography'].key) ? {} : undefined)),
+        density: this.withTokenOverrides('tokens.density', 'density' as AssetType, this.assetOrNull('density' as AssetType)?.data ?? (this.settings.get(CONTROL_TOKEN_SLOTS['tokens.density'].key) ? {} : undefined)),
+        sizing: this.withTokenOverrides('tokens.sizing', 'sizing' as AssetType, this.assetOrNull('sizing' as AssetType)?.data ?? (this.settings.get(CONTROL_TOKEN_SLOTS['tokens.sizing'].key) ? {} : undefined)),
+      }),
+      ...layoutVars(this.inspectorLayout(this.withTokenOverrides('tokens.layout', 'layout', this.asset('layout').data)), this.hiddenSlots()),
       ...bannerVars(this.assetOrNull('banner')?.data, this.slotHidden('banner')),
       // branding package (optional): palette slots as --fx-brand-1/2/3, the brand name, the accent when it asks for it
       ...brandingVars(this.assetOrNull('branding' as AssetType)?.data ?? { brand: { name: '' }, marks: {} }),
@@ -1905,7 +2074,7 @@ export class AxfRuntime {
     parts.push(behaviorStyle(behavior, reducedMotion));
     // the window manager follows the behaviour theme's `windows` group (stack / snap / minimize) from the same compile
     this.windows.setPlacement(normalizeBehavior(behavior).windows);
-    const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme };
+    const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme, ...this.viewportAttrs() };
     const brandId = this.state.active['branding' as AssetType];
     if (brandId) attrs['data-fx-brand'] = brandId;
     if (this.busyCount > 0 && normalizeBehavior(behavior).feedback.busyCursor) attrs['data-fx-busy'] = '1';
@@ -2139,6 +2308,8 @@ export class AxfRuntime {
     const { vars, attrs } = this.compileStyles();
     for (const [k, v] of Object.entries(vars)) el.style.setProperty(k, v);
     for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+    // viewport attributes come and go with the window width
+    for (const v of LAYOUT_VIEWPORTS) if (!(v.attr in attrs)) el.removeAttribute(v.attr);
     el.style.colorScheme = attrs['data-fx-scheme'] ?? 'light';
   }
 
@@ -2239,6 +2410,14 @@ export class AxfRuntime {
     a.register('windows.maximize', ([w]) => w && wm.toggleMaximize(w), { label: 'Maximize / restore window', params: true });
     a.register('windows.snap', ([w, zone = 'left']) => w && wm.snapTo(w, zone as import('./engines/windows').SnapZone), { label: 'Snap window to a zone', params: true });
     a.register('windows.focus', ([w]) => w && wm.focus(w), { label: 'Focus window', params: true });
+    // dock@1 (Nov 3 2026): re-dock a floating window along a side of the main dock; lay the open tabs out on a preset
+    a.register('windows.redockInto', ([w, side = 'right']) => w && wm.redockInto(w, { target: 'root', zone: (['left', 'right', 'top', 'bottom'].includes(side) ? side : 'right') as import('./engines/dock').DockSide }), { label: 'Redock window into the dock', params: true });
+    a.register('windows.layout', ([preset = '', w = '']) => {
+      const asset = preset ? this.registry.get('dock-layout', preset) : undefined;
+      if (!asset) { this.toast(`No pane layout "${preset}"`, 'warning', 'Pane layout'); return; }
+      const target = w && wm.state.windows.some((x) => x.id === w) ? w : wm.mainWindowId;
+      if (!wm.applyPreset(normalizeDockLayout(asset.data), target)) this.toast('Open some tabs first: a layout spreads the open tabs over its panes.', 'info', asset.name);
+    }, { label: 'Apply a pane layout', params: true });
     a.register('windows.openFloating', ([kind = 'placeholder', title = 'Window', payload = '']) => wm.openFloating([{ id: `tab-${Date.now()}`, title, kind, payload }], title), { label: 'Open floating window', searchable: false });
     a.register('terminal.open', ([channel = '']) => wm.openFloating([{ id: `terminal-${Date.now()}`, title: 'Output', kind: 'terminal', payload: channel, icon: 'terminal' }], 'Output terminal', 'floating', 520, 320), { label: 'Open output terminal' });
     a.register('terminal.dialog', ([channel = '']) => this.openDialog('terminal', { channel }), { label: 'Output terminal (dialog)' });

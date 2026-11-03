@@ -34,7 +34,9 @@ import { installClash } from './plugin-instances.mjs';
 import { coverage as commandCoverage } from './plugin-commands.mjs';
 
 export const ROOT = resolve(process.env.AXF_ROOT || join(dirname(fileURLToPath(import.meta.url)), '../..'));
-export const PLUGINS_DIR = join(ROOT, 'apps/console-web/plugins');
+// An app's own plugins folder (e.g. apps/molly/plugins) instead of the console's: AXF_PLUGINS_DIR, relative to the root.
+export const PLUGINS_DIR = resolve(ROOT, process.env.AXF_PLUGINS_DIR || 'apps/console-web/plugins');
+const PLUGINS_REL = relative(ROOT, PLUGINS_DIR);
 const STATE = resolve(process.env.AXF_STATE || join(ROOT, '.axf-console/state.json'));
 const BACKUPS = join(ROOT, '.axf-console/plugin-backups');
 const FOLDER_RE = /^[a-z0-9][a-z0-9-]{1,47}$/;
@@ -124,7 +126,8 @@ export function scanReferences(p) {
     if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/') || file.startsWith(CHANGES_DIR + '/') || file.startsWith(HANDOFF_DIR + '/') || file.startsWith(BUILDS_DIR + '/') || file.startsWith(SESSIONS_DIR + '/') || HANDOFF_NOTE.test(relative(ROOT, file))) continue;
     // Another plugin's own tests may name plugins as data (e.g. the rebuild tracker's fixtures); only its runtime
     // code is held to "never by folder name".
-    const inOtherPlugin = file.startsWith(PLUGINS_DIR + '/') && !/^test[._]/.test(file.split('/').pop());
+    // Generated bundles (*.gen.mjs) copy an app's own code, so its folder names there are data, not plugin references.
+    const inOtherPlugin = file.startsWith(PLUGINS_DIR + '/') && !/^test[._]/.test(file.split('/').pop()) && !/\.gen\.m?js$/.test(file);
     const lines = readFileSync(file, 'utf8').split('\n');
     lines.forEach((line, i) => {
       const hit = needles.some((n) => line.includes(n)) || (inOtherPlugin && quoted.some((q) => line.includes(q)));
@@ -192,7 +195,7 @@ export function list() {
 
 export async function install(folder, { noState = false } = {}, log = () => {}) {
   const p = readManifest(folder);
-  if (!p.present) throw new Error(`plugin ${folder} is not in apps/console-web/plugins (its code must be there first, e.g. from a git pull)`);
+  if (!p.present) throw new Error(`plugin ${folder} is not in ${PLUGINS_REL} (its code must be there first, e.g. from a git pull)`);
   // The build engine's default rules (build-defaults@1): fill missing defaults, refuse what a rule requires.
   const d = applyToPluginFile(join(p.dir, 'plugin.json'), { write: true });
   if (d.problems.length) throw new Error(`${folder}/plugin.json: ${d.problems.map((x) => x.message).join('; ')}`);
@@ -216,7 +219,7 @@ export async function install(folder, { noState = false } = {}, log = () => {}) 
 /** The plugin's declared self-checks (hooks.mjs → checks(ctx)), without installing anything. */
 export async function runChecks(folder) {
   const p = readManifest(folder);
-  if (!p.present) throw new Error(`plugin ${folder} is not in apps/console-web/plugins`);
+  if (!p.present) throw new Error(`plugin ${folder} is not in ${PLUGINS_REL}`);
   const h = await hooks(p);
   if (!h.checks) return { folder, checks: [], declared: false };
   const raw = await h.checks(ctxFor(p, () => {}));
@@ -278,8 +281,8 @@ export async function uninstall(folder, opts = {}, log = () => {}) {
     }
     result.mentions = stripMentions(p, dry, log);
     if (p.present) {
-      if (dry) log(`would delete apps/console-web/plugins/${folder}/ (${sizeOf(p.dir).files} files)`);
-      else { rmSync(p.dir, { recursive: true, force: true }); log(`deleted apps/console-web/plugins/${folder}/`); }
+      if (dry) log(`would delete ${PLUGINS_REL}/${folder}/ (${sizeOf(p.dir).files} files)`);
+      else { rmSync(p.dir, { recursive: true, force: true }); log(`deleted ${PLUGINS_REL}/${folder}/`); }
       result.code = true;
     } else log('plugin code already gone');
     if (!dry) {
@@ -294,7 +297,7 @@ export async function uninstall(folder, opts = {}, log = () => {}) {
 /** Commit the folder removal (+ stripped doc lines) in a temporary worktree of origin's branch and push it. */
 function publishRemoval(p, log) {
   return publishToSource((wt, git) => {
-    const rel = `apps/console-web/plugins/${p.folder}`;
+    const rel = `${PLUGINS_REL}/${p.folder}`;
     if (existsSync(join(wt, rel))) git(['-C', wt, 'rm', '-r', '-q', '--', rel]);
     for (const mm of p.lifecycle.mentions ?? []) {
       const f = resolve(wt, mm);
@@ -312,9 +315,9 @@ function publishRemoval(p, log) {
  */
 export function publishAddition(folder, message, log = () => {}) {
   const p = readManifest(folder);
-  if (!p.present) throw new Error(`apps/console-web/plugins/${folder} is not in this clone`);
+  if (!p.present) throw new Error(`${PLUGINS_REL}/${folder} is not in this clone`);
   return publishToSource((wt, git) => {
-    const rel = `apps/console-web/plugins/${folder}`;
+    const rel = `${PLUGINS_REL}/${folder}`;
     rmSync(join(wt, rel), { recursive: true, force: true });
     cpSync(p.dir, join(wt, rel), { recursive: true, verbatimSymlinks: true, filter: (src) => !SKIP_DIRS.has(src.split('/').pop()) });
     git(['-C', wt, 'add', '-A', '--', rel]);
@@ -371,7 +374,7 @@ export function check(folder, { afterUninstall = false } = {}) {
   const stale = refs.filter((r) => !r.managed);
   const problems = [];
   if (afterUninstall) {
-    if (p.present) problems.push(`apps/console-web/plugins/${folder}/ still exists`);
+    if (p.present) problems.push(`${PLUGINS_REL}/${folder}/ still exists`);
     if (existsSync(safeDataDir(p))) problems.push(`${p.lifecycle.dataDir} still exists`);
     if (Object.prototype.hasOwnProperty.call(readState().plugins ?? {}, folder)) problems.push('console state still has an entry');
     for (const r of refs.filter((x) => x.managed)) problems.push(`managed doc line left in ${r.file}:${r.line}`);

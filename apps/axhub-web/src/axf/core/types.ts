@@ -40,6 +40,8 @@ export const ASSET_TYPES = [
   'divider',
   'badge',
   'settings',
+  'dock-layout',
+  'xlayout',
   'behavior-theme',
   'design-package',
   'style-package',
@@ -58,7 +60,7 @@ export const ASSET_TYPES = [
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'behavior-theme', 'design-package', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'help'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'behavior-theme', 'design-package', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'help'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -211,6 +213,29 @@ export interface LayoutData {
   inspector: 'left' | 'right' | 'none';
   inspectorWidth: number;
   contentMaxWidth: number;
+  /* Every layout parameter is a token (core/engines/layout-rules.mjs): the fields below default to the framework's own look. */
+  /** status bar height, px */
+  statusHeight?: number;
+  /** gap between the grid's regions, × --fx-space */
+  regionGap?: number;
+  /** the main area's padding on desktop, × --fx-space */
+  mainPadTop?: number;
+  mainPadX?: number;
+  mainPadBottom?: number;
+  /** the main area's padding on a phone, × --fx-space */
+  phoneMainPadTop?: number;
+  phoneMainPadX?: number;
+  phoneMainPadBottom?: number;
+  /** the least width of a nav item in the phone's bottom strip, px */
+  phoneNavItemMin?: number;
+  /** inset of dropdowns and toasts from the phone's edges, px */
+  phoneEdge?: number;
+  /** viewport cut-offs (max-width px; tiny < small < phone < medium < large) → root attributes data-fx-tiny / -small / -narrow / -medium / -large */
+  tinyMaxWidth?: number;
+  smallMaxWidth?: number;
+  phoneMaxWidth?: number;
+  mediumMaxWidth?: number;
+  largeMaxWidth?: number;
   /** region → asset types it accepts; overrides the defaults in asset-types.json (layout.slots.defaults) */
   slots?: Partial<Record<string, string[]>>;
   /** repeating slots: one item per entry of a data set the page declares (core/engines/repeat.ts) */
@@ -556,6 +581,8 @@ export interface AssetDataMap {
   divider: DividerData;
   badge: BadgeData;
   settings: SettingsData;
+  'dock-layout': import('./engines/dock').DockLayoutData;
+  xlayout: import('./engines/xlayout').XLayoutData;
   'behavior-theme': BehaviorThemeData;
   'design-package': DesignPackageData;
   'style-package': import('./engines/stylepackage').StylePackageData;
@@ -577,7 +604,7 @@ export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
 /** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'behavior-theme' | 'design-package' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'help';
+export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'behavior-theme' | 'design-package' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'help';
 
 export interface AxfManifest {
   $axf: 'manifest@1';

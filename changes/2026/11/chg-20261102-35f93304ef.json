@@ -1,0 +1,58 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261102-35f93304ef",
+  "createdAt": "2026-11-02T14:26:23.737Z",
+  "updatedAt": "2026-11-02T14:26:24.252Z",
+  "kind": "build",
+  "title": "# Install docs: Hostinger setup steps Add a Hostinger section to axHub's install/setup docs (find t…",
+  "asked": "# Install docs: Hostinger setup steps Add a Hostinger section to axHub's install/setup docs (find the existing install files, e.g. INSTALL.md, README setup, docs/install). Keep it short, numbered, phone-readable. Never include real secret values. Steps to document: 1. Get a Hostinger API [hidden] -> Account -> API -> create token (note scopes needed: DNS, VPS, domains). Never paste it into chat. 2. Add it to Coolify: open the axHub app -> Environment Variables -> add HOSTINGER_API_TOKEN, mark as secret, save, redeploy axHub. 3. Verify: ask Claude/Amber to run a Hostinger DNS read through axHub. 4. Claude connector (optional, direct): in Claude Settings -> Connectors, add the Hostinger connector; start a new chat so its tools load. 5. axHub MCP route: a separate branch (claude/axhub-mcp-service) adds an `mcp` service type and a `hostinger-mcp` service; note it may need the same token and link to that PR once it exists. If key names differ there, use whatever that branch defines and mention HOSTINGER_API_TOKEN as the default. Open a PR, do not merge or deploy. No sub-agents. Clean commits. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, patches-web, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once.",
+  "repos": [
+    "MossesX/axHub"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "40915eb5-5b4",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "surface": "headless",
+  "startedAt": "2026-11-02T14:26:23.737Z",
+  "finishedAt": "2026-11-02T14:26:24.252Z",
+  "lastSeenAt": "2026-11-02T14:26:23.737Z",
+  "actual": {
+    "minutes": 0,
+    "costUsd": 0,
+    "inputTokens": 0,
+    "outputTokens": 0,
+    "cacheReadTokens": 0,
+    "cacheWriteTokens": 0,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "doing": "Starting",
+  "resume": {
+    "repo": "MossesX/axHub",
+    "folder": "/root/axf-builds/install-docs-hostinger",
+    "branch": "claude/install-docs-hostinger",
+    "base": "998f03f164bfb991bf4a313c3b617b33f2691d77",
+    "head": "998f03f164bfb991bf4a313c3b617b33f2691d77",
+    "pushed": true,
+    "dirty": 1,
+    "files": [
+      ".axf-watch-live.log"
+    ],
+    "at": "2026-11-02T14:26:24.304Z"
+  }
+}

@@ -14,6 +14,13 @@
  *                                     note <id> <text> · rename <id> <title> · rename-step <id> <stepId> <title>
  *                                     archive|hide|unhide|remove <id>
  *   … act --json '{"action":…}'       any change from orchestrator-core.mjs apply()
+ *   … request-upgrade <id> <phase>    a session reached a model UPGRADE: file the request and print the axHub approval
+ *                                     to ask for (Brett approves; nobody else can)
+ *
+ * Model switches (framework/core/model-switch.mjs, Brett, Nov 3 2026): a downgrade passes by itself; an upgrade needs
+ * Brett. Approving one here works only when the caller is Brett: the console server (his signed-in click) or its
+ * axHub-approved MCP tool set AXF_APPROVER + AXF_APPROVER_VIA, and nothing in the environment says the caller is a
+ * Claude session, a headless build or an agent. An `approver` inside a --json change is never trusted.
  *   … where                           the tracker file in use
  *   --json on any command prints JSON (the console server uses this).
  */
@@ -21,6 +28,7 @@ import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from '
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './web/orchestrator-core.mjs';
+import { approverFrom, upgradeLine } from '../../../../framework/core/model-switch.mjs';
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
 import { storeFile, withStore, loadStore } from '../../../../framework/cli/builds-store.mjs';
 import { absorbOrchestrator, projectOrchestrator } from '../../../../framework/plan/builds-store-core.mjs';
@@ -43,6 +51,8 @@ export function save(state, by = 'orchestrator') {
 }
 /** One change: applied to the profile's view of the store and taken back into it, under the store lock (versioned). */
 export function act(change, by = process.env.AXF_ACTOR || 'orchestrator') {
+  change = withApprover(change);
+  if (change.approver) by = `${change.approver.by} (${change.approver.via})`;
   if (legacy()) { const r = core.apply(load(), change); save(r.state); return r; }
   const p = profile();
   let r;
@@ -50,9 +60,27 @@ export function act(change, by = process.env.AXF_ACTOR || 'orchestrator') {
   return r;
 }
 
+/** The change with the approver this process may give (never one it was handed): Brett only, from the environment. */
+export function withApprover(change, env = process.env) {
+  const { approver: _drop, ...c } = change && typeof change === 'object' ? change : {};
+  const a = approverFrom(env);
+  return a.ok ? { ...c, approver: { by: a.by, via: a.via } } : c;
+}
+
+/** The axHub approval a session asks for at an upgrade (confirm policy on axHub: Brett approves, then it runs). */
+export function upgradeAsk(b, p, req) {
+  const what = upgradeLine(b.id, p);
+  return {
+    tool: 'axf.orchestrator_upgrade_approve',
+    arguments: { build: b.id, phase: p.index, request: req?.id ?? '' },
+    reason: { title: `Upgrade ${b.id} phase ${p.index + 1}: ${p.from} → ${p.model}`.slice(0, 120),
+      description: `${what}. Approving lets the build run phase ${p.index + 1}${p.label ? ` (${p.label})` : ''} on ${p.model} (${p.steps.filter((s) => !s.done && !s.skip).length} steps left). Deny keeps it on ${p.from}; the session has stopped and waits.` },
+  };
+}
+
 function line(b, rules) {
   const p = core.progress(b); const n = core.nextUp(b, rules);
-  const next = n.done ? 'done' : n.needsApproval ? `approve ${n.phase.from}→${n.phase.model}` : `${n.step?.model} ${n.step?.id}`;
+  const next = n.done ? 'done' : n.needsApproval ? `Brett: upgrade ${n.phase.from}→${n.phase.model}` : `${n.step?.model} ${n.step?.id}`;
   return `${b.id.padEnd(34)} ${core.STATUS_LABEL[b.status].padEnd(15)} ${String(p.done).padStart(2)}/${p.total} steps · ${core.formatMinutes(p.minutesLeft) || '0 min'} left · next: ${next}`;
 }
 
@@ -64,12 +92,21 @@ async function main(argv) {
   if (cmd === 'where') return out({ ok: true, file: trackerFile() }, trackerFile());
   if (cmd === 'list' || cmd === 'state') return out({ ok: true, state: s }, s.builds.filter((b) => !b.hidden && b.status !== 'archived').map((b) => line(b, s.rules)).join('\n') || 'No builds.');
   if (cmd === 'next') {
-    const b = rest[0] ? s.builds.find((x) => x.id === rest[0]) : s.builds.find((x) => !x.hidden && !['complete', 'archived'].includes(x.status));
+    const b = rest[0] ? s.builds.find((x) => x.id === rest[0]) : s.builds.find((x) => !x.hidden && !['built', 'complete', 'archived'].includes(x.status));
     if (!b) return out({ ok: true, next: null }, 'Nothing left to build.');
     const n = core.nextUp(b, s.rules);
-    return out({ ok: true, id: b.id, ...n }, `${b.title} (${b.id})\n${n.done ? 'complete' : n.needsApproval ? `Needs Brett's approval: switch ${n.phase.from} → ${n.phase.model} (phase ${n.phase.index + 1})` : `Next: ${n.step.id} on ${n.step.model} — ${n.step.text}`}`);
+    return out({ ok: true, id: b.id, ...n }, `${b.title} (${b.id})\n${n.done ? 'complete' : n.needsApproval ? `Needs Brett's approval: model UPGRADE ${n.phase.from} → ${n.phase.model} (phase ${n.phase.index + 1}). Stop here: request-upgrade ${b.id} ${n.phase.index}` : `Next: ${n.step.id} on ${n.step.model} — ${n.step.text}`}`);
   }
   if (cmd === 'brief') { const b = s.builds.find((x) => x.id === rest[0]); if (!b) throw new Error(`no build "${rest[0]}"`); const t = core.brief(b, s.rules); return out({ ok: true, brief: t }, t); }
+  if (cmd === 'request-upgrade') {
+    const [id, ph] = rest; const r = act({ action: 'request-upgrade', id, phase: Number(ph), by: process.env.AXF_SESSION || process.env.AXF_ACTOR || 'session' });
+    const b = r.build; const p = core.phases(b)[Number(ph)]; const req = b.upgradeRequests.find((x) => x.phase === p.index && x.state !== 'denied');
+    const ask = upgradeAsk(b, p, req);
+    return out({ ok: true, request: req, ask, log: r.log }, [...r.log,
+      'Only Brett can approve a model upgrade. Ask him once, then stop this session (do no work on that phase):',
+      `  axHub call ${ask.tool} ${JSON.stringify(ask.arguments)} with reason ${JSON.stringify(ask.reason)}`,
+      '  (no axHub here: the request shows in the console, Build orchestrator → Approve upgrade, for Brett)'].join('\n'));
+  }
   if (cmd === 'act') {
     let change;
     if (rest[0]?.startsWith('{')) change = JSON.parse(rest[0]);

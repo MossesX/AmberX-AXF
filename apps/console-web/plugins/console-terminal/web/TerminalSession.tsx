@@ -5,12 +5,25 @@
  * copy/paste, its own right-click / long-press menu, a multi-line paste warning and a phone key row.
  * The server session is closed only when the session is closed in its host, never on unmount (moving a session to
  * another window remounts it on the same server session).
+ * Persistent tabs (headless-tabs, Nov 3 2026): VPS and console tabs get a tmux name (axt-…) the first time they start,
+ * kept with the tab. Whenever the link is lost for good (server session gone, console restarted, page reloaded) the tab
+ * opens a new link on the same name: the server replays the pane's scrollback and re-attaches, so nothing is lost.
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { Button, Icon, useRuntime } from '@console/axf/react';
-import { SCHEMES, getSettings, loadXterm, lookOptions, onSettings, parseOpen, post, socketUrl, tabPrefs, tabSessions, themeFromTokens, type Open, type SessionInfo, type Settings, type XTerm } from './api';
-import { setCtl, type Conn, type HostSession } from './hosts';
+import { SCHEMES, call, getSettings, loadXterm, lookOptions, onSettings, parseOpen, post, socketUrl, tabPrefs, tabSessions, themeFromTokens, type Open, type SessionInfo, type Settings, type TmuxSession, type XTerm } from './api';
+import { patchSession, setCtl, type Conn, type HostSession } from './hosts';
+
+export { persistable, tmuxName } from './headless-core';
+import { persistable, tmuxName } from './headless-core';
+/** Is this tmux session still there? (the link ended: re-attach, or the session itself ended) */
+async function tmuxAlive(name: string, where: string | null | undefined): Promise<boolean> {
+  try {
+    const r = await call<{ vps: { items: TmuxSession[] }; console: TmuxSession[] }>('tmux');
+    return (where === 'console' ? r.console : r.vps.items).some((x) => x.name === name);
+  } catch { return true; } // can't tell: try to attach (the server says if it ended)
+}
 
 /** The bell: flash the screen, or a short soft tone. */
 function ring(el: HTMLElement, how: string) {
@@ -33,6 +46,7 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
   const rt = useRuntime();
   const tab = { id: session.id };
   const open = useMemo(() => session.open ?? parseOpen(''), [session.open]);
+  const openRef = useRef(open); openRef.current = open;
   const host = useRef<HTMLDivElement>(null);
   const termRef = useRef<XTerm | null>(null);
   const fitRef = useRef<{ fit(): void } | null>(null);
@@ -82,7 +96,17 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
           if (msg.info) setInfo(msg.info);
           setConn('live'); setErr('');
           const fit = fitRef.current; if (fit) { fit.fit(); if (t) ws.send(`\x00resize:${t.cols},${t.rows}`); }
-        } else if (msg.type === 'exit') { setConn('closed'); alive.current = false; }
+        } else if (msg.type === 'exit') {
+          const m2 = msg as { reason?: string; tmux?: string | null };
+          // the link ended but a persistent tab's tmux session may still be there (ssh dropped, reaped): attach again
+          if (m2.tmux && !['killed', 'console token reset', 'closed by you'].includes(m2.reason ?? '')) {
+            const name = m2.tmux; const where = info?.where ?? (openRef.current.kind === 'vps' || openRef.current.via === 'vps' ? 'vps' : 'console');
+            wsRef.current = null; ws.onclose = null;
+            void tmuxAlive(name, where).then((up) => { if (up && alive.current) reattach(); else { setConn('closed'); alive.current = false; } });
+            return;
+          }
+          setConn('closed'); alive.current = false;
+        }
         return;
       }
       const bytes = new Uint8Array(m.data as ArrayBuffer);
@@ -93,21 +117,28 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
     ws.onclose = (e) => {
       if (wsRef.current !== ws) return;
       wsRef.current = null;
+      if (alive.current && e.code === 4404 && openRef.current.tmux) { reattach(); return; } // server session gone, tmux lives on
       if (!alive.current || e.code === 4404) { setConn('closed'); return; }
       void retry(sid, attempt, 'connection lost');
     };
   };
   const retry = async (sid: string, attempt: number, why: string) => {
     if (!alive.current) return;
-    const maxTries = mosh ? Infinity : 8;
+    const maxTries = mosh || openRef.current.tmux || openRef.current.attach ? Infinity : 8;
     if (attempt >= maxTries) { setConn('closed'); setErr(why); return; }
     setConn('reconnecting');
     await new Promise((r) => setTimeout(r, Math.min(5000, 400 * 2 ** Math.min(attempt, 4))));
     await connect(sid, attempt + 1);
   };
 
-  const start = async (o: Open) => {
+  /** A new link on the same tmux session (the old one is gone): the server replays the scrollback first. */
+  const reattach = () => { tabSessions.delete(tab.id); setConn('reconnecting'); setTimeout(() => { if (alive.current) void start(openRef.current); }, 600); };
+  const start = async (o0: Open) => {
     setErr('');
+    let o = o0;
+    if (!o.tmux && persistable(o) && settingsRef.current?.persistTabs !== false) {
+      o = { ...o, tmux: tmuxName(o) }; openRef.current = o; patchSession(session.id, { open: o });
+    }
     try {
       let sid = tabSessions.get(tab.id);
       if (!sid) {
@@ -178,7 +209,7 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
       };
       el.addEventListener('paste', onPaste, true);
       cleanups.push(() => el.removeEventListener('paste', onPaste, true));
-      void start(open);
+      void start(openRef.current);
     })();
     const onTheme = () => { const t = termRef.current; if (t && host.current && (settingsRef.current?.scheme ?? 'app') === 'app') t.options.theme = themeFromTokens(host.current); };
     const mo = new MutationObserver(onTheme);
@@ -235,7 +266,7 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
     <button type="button" role="menuitem" className="fx-menu__item" disabled={disabled} onClick={() => { setMenu(null); fn(); }}><Icon name={icon} size={13} /> {label}</button>
   );
 
-  const restart = () => { alive.current = true; tabSessions.delete(tab.id); offset.current = 0; termRef.current?.reset(); void start(open); };
+  const restart = () => { alive.current = true; tabSessions.delete(tab.id); offset.current = 0; termRef.current?.reset(); void start(openRef.current); };
   // the host's toolbar and tab strip act on this session through its control handle
   useEffect(() => {
     const t = () => termRef.current;

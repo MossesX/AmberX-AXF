@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.terminal",
   "name": "Terminal",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Windows-style terminal: a Windows Terminal window with its own tab strip (rename, colour, drag to reorder, duplicate, move to a new window), a command toolbar and Windows keys. Claude Code tabs open on any connection (console container, VPS root, any container, axHub) through a connection picker; right-click a tab for its Connection manager. Claude Code profiles (model, permissions, flags, folder, first prompt, colour, default connection). Live settings: colour schemes, font, cursor, line height, padding, bell, scrollback, startup, tab width. Mouse mode, Mosh mode, copy/paste, phone key row, idle timeout and a session log. Settings → Plugins → Terminal.",
+  "description": "Windows-style terminal: a Windows Terminal window with its own tab strip (rename, colour, drag to reorder, duplicate, move to a new window), a command toolbar and Windows keys. Claude Code tabs open on any connection (console container, VPS root, any container, axHub) through a connection picker; right-click a tab for its Connection manager. Claude Code profiles (model, permissions, flags, folder, first prompt, colour, default connection). Live settings: colour schemes, font, cursor, line height, padding, bell, scrollback, startup, tab width. Mouse mode, Mosh mode, copy/paste, phone key row, idle timeout and a session log. Settings → Plugins → Terminal. Persistent tabs: VPS and console tabs live in tmux sessions that survive reloads, sleep and restarts (Open in Moshi copies the attach command; closing detaches, Kill session ends one). Headless builds open their own tab with the agent, model, live cost and status, split into the session and its context chain.",
   "targets": [
     "axf-console"
   ],
@@ -47,7 +47,8 @@
     "mentions": [
       "CLAUDE.md",
       "_claude/memory/STATUS.md",
-      "apps/console-web/plugins/README.md"
+      "apps/console-web/plugins/README.md",
+      "framework/spec/PORTING.md"
     ]
   },
   "opens": "window"

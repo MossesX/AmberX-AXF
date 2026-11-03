@@ -13,7 +13,8 @@
   "provides": [
     "view:theme-manager",
     "settings-tab:theme-manager",
-    "action:theme-manager.open"
+    "action:theme-manager.open",
+    "service:axf.token-tree@1"
   ],
   "uiEditor": [
     "theme",

@@ -611,7 +611,7 @@
         "text": "Moves it one place down the list."
       },
       {
-        "target": "hide-it-inside-a-host-app-patches",
+        "target": "hide-it-inside-a-host-app",
         "title": "Hide inside a host app",
         "text": "Hides this banner when the app runs inside another app's frame, so you don't see two.",
         "kind": "toggle"
@@ -1516,6 +1516,16 @@
         "title": "Id",
         "text": "The id column: Its id — the name the code uses. Tap the header to sort by it.",
         "kind": "column"
+      },
+      {
+        "target": "pane",
+        "title": "Pane layout",
+        "text": "One of the preset pane layouts. Tap it to see its preview below; double-tap to apply it at once."
+      },
+      {
+        "target": "apply-layout",
+        "title": "Apply layout",
+        "text": "Lays the open tabs out on the layout you picked, spread evenly over its panes. The pane limit holds: a layout with more panes uses only its first ones."
       }
     ],
     "intros": [

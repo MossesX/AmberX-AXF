@@ -130,7 +130,7 @@ e("up", "Move up", "Moves it one place up.")
 e("down", "Move down", "Moves it one place down.")
 e("move-up", "Move up", "Moves it one place up the list.")
 e("move-down", "Move down", "Moves it one place down the list.")
-e("hide-it-inside-a-host-app-patches", "Hide inside a host app", "Hides this banner when the app runs inside another app's frame, so you don't see two.", kind="toggle")
+e("hide-it-inside-a-host-app", "Hide inside a host app", "Hides this banner when the app runs inside another app's frame, so you don't see two.", kind="toggle")
 
 # --- settings library
 e("view:settings", "Settings", "Everything you can change: the look (Appearance), who you are (Account), what it talks to (Connections), plugins, and Help mode under About.", "Open Appearance and tap Next on any slot.", kind="screen")

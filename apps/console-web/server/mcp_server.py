@@ -43,9 +43,10 @@ Start with `overview`, then `build_next` to see what to build next and which mod
 Before starting any build, check `pending_list`: builds parked until their model (usually Fable) is available.
 Builds over 30 minutes are split into steps of 30 minutes or less: `pending_steps` / `build_queue` list them, and you tick
 one off with `pending_change(action="step", …)` or `build_steps(index=…, done=True)` as you finish it.
-Model policy (top three models only): Fable 5.1 where the work needs the strongest reasoning (kernel internals,
-porting, cross-port contracts, heavy refactors); Opus 5.5 for everything else; Sonnet 5.5 only where it is clearly
-enough. Security-adjacent work (servers, shells, auth, deploy) stays on Opus.
+Model policy (framework/core/model-policy.mjs): Opus or Fable only, never Sonnet or Haiku. Fable 5.1 for foundation
+work (kernel internals, porting, cross-port contracts, schemas, heavy refactors); Opus 5.5 for everything else.
+Model switches: a downgrade (Fable → Opus) is fine; an UPGRADE (Opus → Fable) needs Brett's approval. Stop at it and
+ask (orchestrator.mjs request-upgrade); never approve one yourself.
 When you finish building a step, call `build_step` with action "complete": the epic and its linked features are
 marked built in the feature tracker, and steps that depended on it are re-checked for rework.
 After reordering with `build_reorder`, call `build_reprocess` (apply=false to preview, then apply=true)."""
@@ -382,6 +383,20 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
 
     # ------------------------------------------------------------------ Standards: project manifests
 
+    @mcp.tool(annotations=WRITE)
+    async def orchestrator_upgrade_approve(build: str, phase: int, request: str = "") -> dict[str, Any]:
+        """Brett approves a model UPGRADE (e.g. Opus → Fable) on one phase of a Build orchestrator build. axHub runs this
+        only after Brett approves it there (policy confirm, never veto); a session asks with
+        `orchestrator.mjs request-upgrade <build> <phase>`, sends this call once through axHub with its reason, and stops.
+        Never call it directly: a Claude session, headless build or agent calling it is refused and changes nothing.
+        Downgrades need no approval."""
+        if not re.fullmatch(r"[a-z0-9][a-z0-9._-]{0,79}", build or "") or not (0 <= int(phase) < 200):
+            raise ToolError("build is an orchestrator build id and phase its 0-based index")
+        r = await anyio.to_thread.run_sync(lambda: upgrade_via_axhub(build, int(phase), request))
+        if not r.get("ok"):
+            raise ToolError(r.get("error") or "upgrade approval failed")
+        return {"build": build, "phase": phase, "log": r.get("log", [])}
+
     @mcp.tool(annotations=READ)
     async def project_list() -> dict[str, Any]:
         """Every project in the repo with a manifest (project.manifest.json, project-manifest@1): its name (= its folder
@@ -534,6 +549,26 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
                 + f"\n\nWhen done: build_step(id='{n['id']}', action='start') before you begin and build_step(id='{n['id']}', action='complete') when it passes.")
 
     return mcp
+
+
+# ---------------------------------------------------------------------- model upgrades (Nov 3 2026)
+
+ORCH_CLI = Path(__file__).resolve().parents[1] / "plugins" / "build-orchestrator" / "orchestrator.mjs"
+
+
+def upgrade_via_axhub(build: str, phase: int, request: str = "") -> dict[str, Any]:
+    """Record Brett's axHub approval of an upgrade in the orchestrator (framework/core/model-switch.mjs). The CLI still
+    refuses when this process runs inside a Claude session, headless build or agent (the local stdio server under Claude
+    Code), so only the console server, called by axHub after Brett's approval, records it."""
+    env = {k: v for k, v in os.environ.items() if k not in ("AXF_APPROVER", "AXF_APPROVER_VIA")}
+    env.update(AXF_APPROVER=f"brett (axHub approval{' ' + request[:60] if request else ''})", AXF_APPROVER_VIA="axhub", AXF_ACTOR="axhub-approval")
+    change = {"action": "approve", "id": build, "phase": phase}
+    p = subprocess.run(["node", str(ORCH_CLI), "act", json.dumps(change), "--json"], cwd=ORCH_CLI.parents[4], capture_output=True, text=True, timeout=60, env=env)
+    lines = p.stdout.strip().splitlines()
+    try:
+        return json.loads(lines[-1]) if lines else {"ok": False, "error": p.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        return {"ok": False, "error": (p.stderr or p.stdout).strip()[-600:]}
 
 
 # ---------------------------------------------------------------------- control@1 tools (framework/spec/CONTROL.md)

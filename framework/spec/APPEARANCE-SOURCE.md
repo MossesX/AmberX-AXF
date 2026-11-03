@@ -11,7 +11,7 @@ is a settings document on the hub, never fetched from the hub's web app. A chang
 there and every other one follows live. **When axHub is down, a developer app doesn't run**: it shows a
 "Waiting for axHub" screen until the hub is back. No local fallback, no default-theme operation, no cached copy.
 
-Developer apps: the AXF Dev Console (web and Android), Build Pilot (web now, Android when it exists), axHub's own
+Developer apps: the AXF Dev Console (web and Android), axHub's own
 pages, the AXHub phone app, and any future app that opts in. **Not** every app built on AXF: an ordinary app keeps its
 own local settings. Voice Vault is deliberately out (offline password vault).
 
@@ -93,7 +93,7 @@ What the runtime does with it:
 ## Implementations
 
 - **Web** `framework/react/hubAppearance.ts` → `HubAppearanceSource({ hub, appId })`: fetch with `credentials: 'include'`
-  (the browser's hub session cookie; the console, Build Pilot and the hub are same-site under `.amberxai.com`),
+  (the browser's hub session cookie; the console and the hub are same-site under `.amberxai.com`),
   `If-Match` on every save, 409 → re-read + re-merge our keys + one retry, SSE live updates (polling when `live: false`),
   backoff, re-read on `focus` / `online`. https only (http for localhost). Attached by `src/main.tsx` when the manifest has
   `developer.hub` (`axf init --developer [hub]`); the console attaches it from `/api/me` → `appearanceHub`
@@ -120,12 +120,30 @@ changes is the design pack overridden with the individual packs." Engine: `core/
 `swap`, `applyDesignPackage`, `designOverrides()`.
 
 1. While a design package is loaded (slot `design-package`), its `style-theme` and `color-theme` are in force. A style
-   or colour slot the document still carries is ignored.
+   or colour slot the document still carries is ignored. **The app's default package counts as loaded:** a document
+   without a `design-package` slot (or naming one this app doesn't ship) leaves the app on its manifest default,
+   `hub-default`, and that package's themes win over the document's style and colour slots the same way.
 2. Picking a style or colour theme afterwards records an override for that part only, in the look setting
    `axf.appearance.overrides` (`{ "style-theme"?: id, "color-theme"?: id }`), which rides `settings` like every other
-   look setting, so every app agrees. Picking the package's own theme drops that override.
-3. Loading a design package (again) clears every override. Restore default clears them too.
-4. An override or package theme the app doesn't ship falls back (override → package → the pick), never a broken look.
+   look setting, so every app agrees. Picking the package's own theme drops that override. The slot itself is pushed
+   too (`slots.style-theme`), so an app without the package (or an older build) still sees the pick.
+3. Loading a design package (again) clears every override. **A design package is never just a slot** (Nov 3 2026):
+   `swap('design-package', id)`, the generic `swap:design-package:<id|next|prev>` action and `design.package:<…>` all
+   load the package (`applyDesignPackage`: its four themes, its extras, overrides cleared), so no app can carry the
+   package slot with another package's themes. Loading the package already loaded is a reload (overrides cleared).
+4. **Restore default = the default design theme loaded in full** (Nov 3 2026): every look setting and override cleared,
+   the manifest defaults restored, then the manifest's default package applied with its extras (spacing, chrome), so
+   "Restore" in any app puts every app on exactly Hub Default. `appliedDesignPackage()` is the loaded package = the
+   `design-package` slot (shared), never a local note, so every app names the same one.
+5. An override or package theme the app doesn't ship falls back (override → package → the pick), never a broken look.
+   A package the app doesn't ship is skipped like any slot id (the app stays on its default package, warned in the
+   terminal); since every listed app ships every shared asset this only happens for an app-own package.
+
+Why the overrides ride `settings` and not a first-class document field (Fable review, Nov 3 2026): the document's
+contract (`appearance@1`, fixture `appearance.json`, Kotlin `AppearanceEngine`) stays unchanged on both ports; the key
+is a look setting by the same rule as every plugin look setting (per key, last write wins, cleared when the document
+doesn't list it), and `resolveAppearance` never has to know about packages. The cost is that two keys describe one
+pick (`slots.style-theme` and the override), which `designLookSlots` reconciles; the fixture-pinned engine stays pure.
 
 Settings → Appearance in every app is selection only: Design theme, Style theme, Colour theme, Restore. The status
 line reads "Hub Default (style changed)". Plugin settings (Banner settings and its Apply to all) still edit their own
@@ -133,7 +151,9 @@ look, shared through the same document.
 
 **Retired look settings:** `axf.look` (Sliders), `axf.custom.*` (per-asset tokens) and `axf.roll.*` (rolls) are never
 applied or sent; a document that still carries them is cleaned once by the first app that reads it
-(`RETIRED_LOOK_SETTINGS`, `isRetiredLookSetting`).
+(`RETIRED_LOOK_SETTINGS`, `isRetiredLookSetting`). **Retired slot:** `appearance-package` (the type the design package
+replaced) is in `APPEARANCE_NEVER`: dropped on read like `uac-policy`, never "skipped", and gone from the hub with the
+next write by any app (`mergeAppearance` normalizes). Fixture row `retired-slot`.
 
 **Default look:** design package `hub-default` (style theme `hub`, colour theme `hub-night`) is the default of the Dev
 Console (GizmoX AI Studio), axHub web and AmberX.
@@ -148,7 +168,6 @@ a hub outage already blocks it at the proxy. **Emergency paths (unchanged, docum
    off (decision Oct 21 2026: a saved `.axf-console/wall` = `off` makes `/api/me` report `appearanceHub: "off"`), so
    the console runs on its own local settings while the hub is repaired. `AXF_WALL=on` brings both back. An explicit
    `AXF_APPEARANCE_HUB` always wins (`off`, or another hub).
-3. Build Pilot: `VITE_AXF_HUB` at build time; its server has no hub dependency.
 
 Security: the document is not an injection path (ids validated against the app's registry, values shape-checked,
 unknown fields dropped, size-capped, `uac-policy` excluded, the hub refuses non-JSON and oversized bodies); hub down

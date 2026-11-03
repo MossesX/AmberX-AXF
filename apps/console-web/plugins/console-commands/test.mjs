@@ -19,7 +19,7 @@ const t = (name, fn) => { fn(); n++; };
 
 t('CLI words', () => {
   assert.deepEqual(commandFromArgv(['open', 'plan', 'studio']).command, { op: 'act', target: 'console.screens', path: 'plan studio', action: 'open' });
-  assert.deepEqual(commandFromArgv(['console', 'settings', 'plugins/token-control', '--anchor', 'setting:x', '--to', 'all']).command, { op: 'act', target: 'console.settings', path: 'plugins/token-control', action: 'open', input: { to: 'all', anchor: 'setting:x' } });
+  assert.deepEqual(commandFromArgv(['console', 'settings', 'plugins/sample-tools', '--anchor', 'setting:x', '--to', 'all']).command, { op: 'act', target: 'console.settings', path: 'plugins/sample-tools', action: 'open', input: { to: 'all', anchor: 'setting:x' } });
   assert.deepEqual(commandFromArgv(['action', 'swap', 'color-theme', 'dark', '--confirm', 'c1.x']).command, { op: 'act', target: 'console.actions', path: 'swap', action: 'run', input: { args: ['color-theme', 'dark'] }, confirm: 'c1.x' });
   assert.deepEqual(commandFromArgv(['back']).command, { op: 'act', target: 'console.nav', path: 'here', action: 'back' });
   assert.deepEqual(commandFromArgv(['where']).command, { op: 'get', target: 'console.nav', path: 'here' });
