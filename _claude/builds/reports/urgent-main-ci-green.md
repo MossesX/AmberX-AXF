@@ -16,6 +16,7 @@ Main run 41709421500 (merge of #278). Each CI step stops at its first failure, s
 | Build engine sweep | `plugins.mjs --check`: xLayout `opens` is false | `apps/molly/plugins/xlayout/plugin.json` provides a view and a dialog, so the locked `plugin.opens.main` rule needs a placement | `"opens": "main"` |
 | Build engine sweep (hidden) | `check-profiles.mjs`: `current` not registered | Builds-live status commits added `_claude/builds/profiles/current/` to main; the repo snapshot of `framework/plan/profiles.json` predated the profile | Synced from the hub copy |
 | Build engine sweep (hidden) | `framework/deploy/test.sh`: "changed: command run" | `axf_update_script` skips the rebuild when only `_claude/` changed (64840a29); the test's empty commits now count as no change | Test commits a real file change; new case for the `_claude`-only skip |
+| Build engine sweep (hidden) | plugin lifecycle: 4 stale references to `plugins/build-orchestrator` | Unmarked mentions added by builds-live / model-gate work: a THREADS.md line, the upgrade note in `deploy/claude-headless.sh`, `check-builds-live.mjs`, the shared dated handoff note | Markers + lifecycle `mentions` for the first three (launcher reads the note as optional); dated handoff notes in `_claude/shared/notes/handoffs/` count as history, like `_claude/memory/handoff-*.md` |
 
 No test was skipped, deleted or loosened. No UI changed, so no UI Review item.
 
