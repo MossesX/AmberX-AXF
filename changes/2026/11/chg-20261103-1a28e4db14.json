@@ -2,7 +2,7 @@
   "$axf": "change-log@1",
   "id": "chg-20261103-1a28e4db14",
   "createdAt": "2026-11-03T13:44:32.024Z",
-  "updatedAt": "2026-11-03T14:04:02.516Z",
+  "updatedAt": "2026-11-03T14:11:00.674Z",
   "kind": "build",
   "title": "# Build: notes-vault (Urgent profile) Requested by Brett, Nov 3 2026 (voice).",
   "asked": "# Build: notes-vault (Urgent profile) Requested by Brett, Nov 3 2026 (voice). GO given. Build it now. ## Goal Brett has random note files he asked Claude to save over time (\"save this\", \"make a command\", install notes, etc.) scattered across the axHub projects tree. Gather them into ONE location, add a quick browser plugin for them, and add a Notes section to MD Studio. ## First - Register this build in the Urgent profile through the orchestrator/store (id `notes-vault`, branch claude/notes-vault) with the steps below, and the in-progress banner entry, per standing session rules. Check the pending queue. - Coordinate with the running build `orch-live-sync` (same profile, touches the builds store): never hand-edit store.json; go through the orchestrator CLI. ## Steps - s1 Find the notes. Search /projects/amberx-axf/_claude, /projects/amberx-axf/_data, /projects/_shared/_claude, /projects/_shared/_data (and the other project folders) for hand-saved notes: files written via MCP by the owner (`updatedBy: ai_client:owner via mcp` in the hub's version metadata), loose md/txt files that are not build output, and anything about installs / install scripts / commands / \"save this\". Known so far (amberx-axf _claude): `fuck-you.md`, `plans/axhub-vault-management.md`, `sessions/2026-11-01.md`, `sessions/2026-11-02.md`, `memory/handoff-2026-11-01.md`, `memory/handoff-2026-11-02.md`, `memory/handoff-2026-11-03.md`. Brett specifically remembers an \"install\" notes file; find it. EXCLUDE system files: THREADS.md, STATUS.md, decisions.md, RULES.md, persona.md, README files, builds/**, handoff/** (generated package), memory/docs/** build docs, reports, shots. Write the inventory to the report before moving anything. - s2 Move them to one place: `/projects/_shared/_claude/notes/` (shared, so every project and session sees them), in subfolders by kind (sessions/, handoffs/, plans/, install/, misc/). Use the hub's memory API semantics so versions are kept (write new, then delete old with history kept). Before moving, grep rules/instructions/session-start code for references to the old paths (e.g. handoff-YYYY-MM-DD.md loaded at session start) and update them; if something must stay at the old path for a loader, leave a one-line pointer file there instead of breaking it. Add `notes/INDEX.md` listing every note with a one-line description and date. - s3 Add the new note: create `notes/orchestrator/orch-live-sync-2026-11-03.md` with the content in the APPENDIX below. - s4 Quick browser plugin `notes-browser` in the console (plugin.json, install/uninstall, Settings > Plugins sub-tab, help pack): left column = folders/notes from `/projects/_shared/_claude/notes` via a small server route on the hub memory API; right = rendered markdown; search box; sort by date; new note / rename / move between folders / delete (delete confirms); edit toggle with conflict-safe save (if_version). Tokens only, follows the hub look. Small and fast, no dock engine dependency. - s5 MD Studio: MD Studio is not built yet (Urgent build `md-studio`, pending, depends on dock-engine). Add a step to the md-studio build in the store (via orchestrator CLI): \"Notes scope: a 4th scope 'Notes' in the file column showing /projects/_shared/_claude/notes with the same folders, reusing notes-browser's server route\". Also expose the notes-browser route as a capability service so MD Studio can consume it. - s6 Tests, check-theme/check-controls, lifecycle, UI Review shots, report `_claude/builds/reports/notes-vault.md` (inventory: old path -> new path), THREADS.md, open the PR. Mark each step done through the store as you go. Code, comments and commits stay clean and professional. ## APPENDIX: content for notes/orchestrator/orch-live-sync-2026-11-03.md # Orchestrator Live Sync - Nov 3 2026 notes ## Why the orchestrator was stale - `_claude/builds/profiles/*/orchestrator.json` is only a read-only export of `_claude/builds/store.json`. - Sessions write the store on their own feature branch, so ma…",
@@ -37,21 +37,53 @@
     },
     {
       "text": "s4 notes-browser plugin",
-      "state": "running",
-      "startedAt": "2026-11-03T13:52:18.075Z"
+      "state": "done",
+      "startedAt": "2026-11-03T13:52:18.075Z",
+      "finishedAt": "2026-11-03T14:11:00.248Z"
+    },
+    {
+      "text": "s5 md-studio Notes scope + axf.notes@1",
+      "state": "done",
+      "startedAt": "2026-11-03T14:11:00.389Z",
+      "finishedAt": "2026-11-03T14:11:00.389Z"
+    },
+    {
+      "text": "s6 tests, shots, report, PR",
+      "state": "done",
+      "startedAt": "2026-11-03T14:11:00.522Z",
+      "finishedAt": "2026-11-03T14:11:00.522Z"
     }
   ],
-  "result": null,
+  "result": {
+    "state": "done",
+    "summary": "Notes moved to /projects/_shared/_claude/notes (12 notes + install pointers, versions kept, INDEX); notes-browser plugin + axf.notes@1; md-studio s11; PR #256",
+    "branch": "claude/notes-vault",
+    "commits": [
+      {
+        "sha": "8249e15d"
+      }
+    ],
+    "tests": {
+      "notes-browser test.py": {
+        "before": "0",
+        "after": "28/28"
+      }
+    },
+    "links": {
+      "report": "_claude/builds/reports/notes-vault.md"
+    }
+  },
   "closed": null,
-  "state": "running",
-  "status": "running",
+  "state": "done",
+  "status": "done",
   "buildRef": {
     "kind": "orch",
     "id": "notes-vault"
   },
   "surface": "headless",
   "startedAt": "2026-11-03T13:44:32.024Z",
-  "lastSeenAt": "2026-11-03T14:04:02.516Z",
+  "finishedAt": "2026-11-03T14:11:00.674Z",
+  "lastSeenAt": "2026-11-03T14:11:00.522Z",
   "estimate": {
     "minutes": 115,
     "costUsd": 16.1
@@ -63,8 +95,7 @@
     "_claude/builds",
     "_claude/THREADS.md"
   ],
-  "doing": "Running: Probe after 9 seconds",
-  "progress": 0.75,
+  "progress": 1,
   "resume": {
     "repo": "MossesX/AmberX-AXF",
     "folder": "/root/axf-builds/notes-vault",
