@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 325,
- "updatedAt": "2026-11-03T18:28:37.643Z",
+ "rev": 326,
+ "updatedAt": "2026-11-03T18:29:05.544Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -53458,12 +53458,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T18:01:41.577Z",
-   "updatedAt": "2026-11-03T18:28:25.306Z",
+   "updatedAt": "2026-11-03T18:28:27.252Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Relaunched as auto-land-2 (worktree /root/axf-builds/auto-land-2, branch claude/auto-land-2) after the first auto-land run stopped. Brett's correction: zero tokens for merging.",
      "at": "2026-11-03T18:01:43.308Z"
+    },
+    {
+     "text": "s3 claude-sync hold: axHub PR #36 (claude-sync leaves a checkout with .claude-sync-hold alone), installed on the VPS ahead of merge; land.mjs writes the file in finished worktrees.",
+     "at": "2026-11-03T18:28:27.252Z"
     }
    ],
    "approvals": [],
@@ -53572,12 +53576,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:28:26.342Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T18:01:41.578Z",
-     "updatedAt": "2026-11-03T18:01:41.578Z"
+     "updatedAt": "2026-11-03T18:28:26.381Z"
     },
     {
      "id": "s6",
@@ -53654,7 +53658,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
