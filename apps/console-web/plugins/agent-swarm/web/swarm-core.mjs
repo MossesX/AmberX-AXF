@@ -683,12 +683,8 @@ export function agentStats(runs, agentId, table, feedSize = 10) {
   const feed = mine.slice(-feedSize).reverse().map((r) => ({ jobId: r.jobId, buildId: r.buildId, at: r.endedAt || r.startedAt, status: r.status, model: r.model, usd: runCost(r, table), summary: r.report?.summary ?? r.reason ?? '' }));
   return { runs: mine.length, done, failed, successRate: mine.length ? done / mine.length : null, favoriteModel: favorite, lastSeen: last, feed };
 }
-/** Avatar colours: theme tokens only (the contract's AVATAR_TOKENS), so every avatar follows the theme; the agent's hue picks its pair. */
-export function avatarColors(av) {
-  const T = rules.AVATAR_TOKENS;
-  const i = Math.floor((av?.hue ?? 0) / 45) % T.length;
-  return { hair: T[i], shirt: T[(i + 3 + (av?.hair ?? 0)) % T.length] };
-}
+/** The avatar is drawn from the card rules' model (theme tokens only; one part list for every port). */
+export { avatarColors, avatarModel } from '../../../../../framework/core/engines/agent-card-rules.mjs';
 
 // ---------------------------------------------------------------- group chat
 
