@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 333,
- "updatedAt": "2026-11-03T18:31:29.875Z",
+ "rev": 334,
+ "updatedAt": "2026-11-03T18:31:38.211Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -49622,11 +49622,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/md-studio-theme-editor-plan",
-   "pr": "#242",
+   "branch": "claude/md-studio",
+   "pr": "#271",
    "mergedAt": "2026-11-03T02:54:56Z",
    "createdAt": "2026-11-03T02:32:21.910Z",
-   "updatedAt": "2026-11-03T18:29:29.929Z",
+   "updatedAt": "2026-11-03T18:31:27.014Z",
    "builtAt": "",
    "notes": [
     {
@@ -49965,7 +49965,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
