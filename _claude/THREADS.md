@@ -568,7 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 15:20 UTC · `orch-live-sync` → complete, merged, note (urgent) · reconciler
 - 2026-11-03 15:32 UTC · `land-everything` added (11 steps) (urgent) · orchestrator
 - 2026-11-03 15:32 UTC · `land-everything` → running (urgent) · orchestrator
 - 2026-11-03 15:58 UTC · `crew-retrain` added (8 steps) (breakroom) · orchestrator
@@ -968,3 +967,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 21:19 UTC · `banner-ref-links` s3 done (current) · orchestrator
 - 2026-11-03 21:19 UTC · `banner-ref-links` s4 done (current) · orchestrator
 - 2026-11-03 21:22 UTC · `banner-ref-links` s2 done, s3 done, s4 done (current) · foreign-write
+- 2026-11-03 21:23 UTC · `whats-new-open-fix` added (5 steps) (current) · orchestrator
