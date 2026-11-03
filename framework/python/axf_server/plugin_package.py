@@ -1,10 +1,10 @@
 """plugin-package@1 checks — the Python port of framework/cli/plugin-catalog.mjs (the reference).
 
 A package is `{"$axf": "plugin-package@1", "kind", "folder", "id"?, "version"?, "sha256"?, "files": [{path, b64}]}`.
-Any server that receives one (Build Pilot installing a pilot plugin read through the console, a future Python app)
+Any server that receives one (an app installing a plugin read through the console, a future Python app)
 checks it again on its own side, whatever the sender says:
 
-    pkg = verify_package(raw, expect_sha256=entry["sha256"], kind="pilot", folder="extra-steps")
+    pkg = verify_package(raw, expect_sha256=entry["sha256"], kind="axhub", folder="extra-steps")
     for path, data in decode_files(pkg): …   # only after verify_package passed
 
 Python's `$` also matches before a trailing newline (JS's doesn't), so the patterns here end in \\Z.
@@ -13,7 +13,7 @@ Same rules, same messages and same content hash as the .mjs, pinned by `framewor
   * kinds are an open registry (`KINDS`; add one with `register_kind`); folder names ^[a-z0-9][a-z0-9-]{1,47}$
   * file paths: relative, plain segments, no "..", no dot-files, no backslash/NUL, ≤ 200 characters, never
     node_modules/dist/caches, never secret-looking files (.env*, keys, *.pem, credentials.json, secrets.env), and
-    only what the kind allows (pilot: plugin.json, README.md, web/**)
+    only what the kind allows (axhub: plugin.json, README.md, web/**)
   * at most 600 files, 2 MB per file, 8 MB per plugin; a path listed twice (any case) or both file and folder
   * plugin.json must parse and match the kind's manifest tag, a dotted lowercase id, a name, a version like 1.2.3
   * content hash = sha256 over every file in path order: path \\0 size \\0 bytes
@@ -54,7 +54,6 @@ class Kind:
 
 KINDS: dict[str, Kind] = {
     "console": Kind("Dev Console plugin", "plugin@1", None),
-    "pilot": Kind("Build Pilot plugin", "pilot-plugin@1", re.compile(r"^(plugin\.json|README\.md|web\/.+)\Z"), r"^(plugin\.json|README\.md|web\/.+)$"),
     "axhub": Kind("axHub web plugin", "axhub-plugin@1", re.compile(r"^(plugin\.json|README\.md|web\/.+)\Z"), r"^(plugin\.json|README\.md|web\/.+)$"),
     "amberx": Kind("AmberX plugin", "amberx-plugin@1", re.compile(r"^(plugin\.json|README\.md|web\/.+)\Z"), r"^(plugin\.json|README\.md|web\/.+)$"),
 }
@@ -144,7 +143,7 @@ def check_manifest(kind: str, m: Any, folder: str | None = None) -> list[str]:
         problems.append(f"plugin.json must be {k.manifest} (got {got})")
     mid = m.get("id")
     if not isinstance(mid, str) or not k.id_pattern.search(mid) or _u16len(mid) > 120:
-        problems.append("plugin.json id must be a dotted lowercase id (e.g. ai.amberx.pilot.my-plugin)")
+        problems.append("plugin.json id must be a dotted lowercase id (e.g. ai.amberx.axhub.my-plugin)")
     name = m.get("name")
     if not isinstance(name, str) or not name.strip() or _u16len(name) > 80:
         problems.append("plugin.json needs a name (≤ 80 characters)")

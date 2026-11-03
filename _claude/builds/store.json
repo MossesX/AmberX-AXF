@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 176,
- "updatedAt": "2026-11-03T14:01:21.566Z",
+ "rev": 216,
+ "updatedAt": "2026-11-03T14:25:47.373Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -1986,7 +1986,6 @@
    "pendingId": "",
    "branch": "claude/refactor-all",
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
-   "mergedAt": "2026-10-29T03:49:47Z",
    "createdAt": "2026-10-27T16:56:46.231Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-30T18:10:39.641Z",
@@ -6726,12 +6725,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-18T04:10:00.000Z",
-   "updatedAt": "2026-10-23T18:22:53.000Z",
+   "updatedAt": "2026-11-03T14:24:43.493Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Overlaps settings-asset (new `settings` asset type, branch claude/project-thread-55oakl); build with settings-asset-fable.",
      "at": "2026-10-23T18:22:53.000Z"
+    },
+    {
+     "text": "Nov 3 2026: Build Pilot is retired; s13 only covers the console's asset designer now.",
+     "at": "2026-11-03T14:24:43.493Z"
     }
    ],
    "approvals": [],
@@ -7053,7 +7056,7 @@
    },
    "kind": "build",
    "planRef": "x.assets.templates",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -8740,16 +8743,21 @@
    "title": "Build Pilot plugin contract (Fable rebuild)",
    "category": "",
    "detail": "Rebuild the pilot-plugin@1 contract in MossesX/Build-Pilot (src/pilot/contract.ts + stacks.ts): stack-scoped plugins (one stack, several, or * for all), steps, build patches, compose/merge/conflict rules, checks, and the pilot-project@1 format, so it ports cleanly to the Android version of Build Pilot and to every future stack. The Opus version was built Oct 19 2026; keep its tests (tests/contract.test.ts) passing or replace them with stricter ones, and keep the five Android/all-stack plugins working.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "build-pilot-contract",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-19T11:40:14.809Z",
-   "updatedAt": "2026-10-21T04:46:12.595Z",
+   "updatedAt": "2026-11-03T14:24:20.944Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:20.226Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -8959,7 +8967,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -9001,19 +9009,23 @@
    "title": "Build Pilot: AI assistant + agent manager + assembling agent (Fable)",
    "category": "",
    "detail": "Port the console AI assistant and agent manager into Build Pilot (MossesX/Build-Pilot), and make the assembling agent (pilot-assembler) run there as a local backend in server/assembly.py instead of the Dev Console. The agent may only add features from existing plugins, libraries, modules, boilerplates, assets and build options, or build NEW AXF libraries (approved by a person). Rule: all assembly of apps goes through the agent. Also rebuild the Opus feature manager plugin (plugins/feature-manager, built Oct 19 2026) and the gate (pilot-assembly@1, server/assembly.py); keep server/test_server.py passing or replace it with stricter tests.",
-   "status": "complete",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "build-pilot-agents",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-19T12:02:10.988Z",
-   "updatedAt": "2026-10-21T03:35:03.528Z",
-   "builtAt": "2026-10-21T03:35:03.527Z",
+   "updatedAt": "2026-11-03T14:24:22.675Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Fable rebuild done Oct 20 2026 (Build-Pilot main 2dfb08e): assistant + agent manager in Build Pilot, local assembler backend, manual mode. Tests 157 → 282. Agents move to axHub later: axhub-agent-host.",
      "at": "2026-10-21T03:35:03.528Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:21.829Z"
     }
    ],
    "approvals": [],
@@ -9026,7 +9038,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -9065,9 +9077,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-21T03:33:11.548Z",
-   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "updatedAt": "2026-11-03T14:24:42.740Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Nov 3 2026: s12 (Build Pilot backend) skipped, Build Pilot is retired.",
+     "at": "2026-11-03T14:24:42.740Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -9326,13 +9343,13 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "skip": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-21T04:46:12.595Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T14:24:42.023Z"
     },
     {
      "id": "s13",
@@ -9519,7 +9536,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -9579,12 +9596,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-21T03:58:03.794Z",
-   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "updatedAt": "2026-11-03T14:24:41.067Z",
    "builtAt": "",
    "notes": [
     {
      "text": "ON HOLD (Brett, Oct 21 2026): don't build the console or Build Pilot Android apps any more — Brett will finish them himself later. Never start this item (or any step of it) unless he says so.",
      "at": "2026-10-21T10:20:04.159Z"
+    },
+    {
+     "text": "Nov 3 2026: Build Pilot is retired; the Pilot tab is dropped, only the axHub tab remains in scope.",
+     "at": "2026-11-03T14:24:41.067Z"
     }
    ],
    "approvals": [],
@@ -10016,7 +10037,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -10068,19 +10089,23 @@
    "title": "Console Android app: native Pilot + axHub tabs (no web content)",
    "category": "",
    "detail": "Brett, Oct 20 2026: option B — Build Pilot and the axHub admin pages running natively in the Android console app (Compose), no web views. This is the Android version of Build Pilot (roadmap) plus a native hub admin client, built as small Fable steps that each stand alone. Depends on the pending `axhub-agent-host` for sessions and on axHub's admin API (its step 4). Work on it a little at a time: every sub prompt ships something usable.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "console-android-native-tabs",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-21T03:58:03.806Z",
-   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "updatedAt": "2026-11-03T14:24:24.258Z",
    "builtAt": "",
    "notes": [
     {
      "text": "ON HOLD (Brett, Oct 21 2026): don't build the console or Build Pilot Android apps any more — Brett will finish them himself later. Never start this item (or any step of it) unless he says so.",
      "at": "2026-10-21T10:20:04.160Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:23.528Z"
     }
    ],
    "approvals": [],
@@ -10952,7 +10977,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -11024,15 +11049,15 @@
    "title": "Patches: Android wrapper app (Console + Pilot + axHub tabs) + embed@1",
    "category": "",
    "detail": "Brett, Oct 21 2026 (voice): take the Console / Pilot / axHub tab group out of the Dev Console so Console, Build Pilot and axHub are each their own app again, and make a new app, Patches, that is just one banner + a tab group showing the three apps in tabs; when an app runs inside Patches its own banner is hidden and Patches shows the one banner. Android first (Android hold lifted for Patches, Oct 21; web Patches later). Design Brett chose: native Android shell, web tabs — the Dev Console (console.amberxai.com), Build Pilot (pilot.amberxai.com) and axHub each load in an origin-locked WebView kept alive across tab switches; Build Pilot has no Android app yet, so its tab is the web app. The framework gains embed@1 (cross-port): a host marks the pages it embeds and the embedded app hides the chrome the host shows (its banner by default) over the user's own choice, which stays saved for standalone runs. Model: Fable (changes how GUIs work across apps). Built on Opus-free Fable session Oct 21 2026 in branch fable/patches-wrapper.",
-   "status": "complete",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "patches-wrapper",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-21T16:26:16.023Z",
-   "updatedAt": "2026-10-23T11:41:00.284Z",
-   "builtAt": "2026-10-21T16:56:48.038Z",
+   "updatedAt": "2026-11-03T14:24:25.869Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Hub copy of this list (axhub.memory_* project amberx-axf, data area) held only 10 items on Oct 21 2026 while the repo snapshot held 20 — check `claude-sync status` on the VPS before trusting either; this item was added to the repo snapshot by the Fable build session.",
@@ -11041,6 +11066,10 @@
     {
      "text": "Built Oct 21 2026 on Fable: branch fable/patches-wrapper, PR #5; Android CI green (kernel tests incl. EmbedConformanceTest, lib-hub, patches-debug.apk 20.6 MB). Report _claude/memory/docs/rebuilds/patches-wrapper.md.",
      "at": "2026-10-21T16:56:48.036Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:25.126Z"
     }
    ],
    "approvals": [],
@@ -11252,7 +11281,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -11880,19 +11909,23 @@
    "title": "Patches manages the plugins of the apps it hosts (Opus)",
    "category": "",
    "detail": "Brett, Oct 22 2026: when Patches loads developer apps in tabs, Patches owns all plugins. New embed@1 take `plugins`: inside such a host an app loads only the plugins Patches has installed and enabled for it (its own on/off switches don't apply), and its plugin hooks (Settings → Plugins, Plugin Manager, plugin switches, plugin menu entries) are greyed out with \"Plugins are managed in Patches\". The app reports the plugins it has (`plugins` message); Patches compares with its own list, tries to install the missing ones by itself, and shows a Systems check entry with Auto fix while any are missing. Web first (patches-web + console); Patches Android and Kotlin twin deferred.",
-   "status": "complete",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "patches-plugins",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T18:37:44.249Z",
-   "updatedAt": "2026-10-22T18:47:18.905Z",
-   "builtAt": "2026-10-22T18:47:18.490Z",
+   "updatedAt": "2026-11-03T14:24:27.083Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Built Oct 22 2026 on Opus, branch claude/project-thread-eew3jm. Not screenshot-verified (the apps wait for axHub in the build sandbox).",
      "at": "2026-10-22T18:47:18.545Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:26.534Z"
     }
    ],
    "approvals": [],
@@ -12038,7 +12071,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -12077,14 +12110,14 @@
    "title": "Patches manages hosted apps' plugins (Fable rebuild)",
    "category": "",
    "detail": "Fable rebuild of the Opus build `patches-plugins` (Brett, Oct 22 2026: Fable was suggested, Opus chosen, so a Fable rebuild is parked). Revisit the embed@1 `plugins` take as a cross-port contract: the lock mode for taken hooks, the `plugins` / `plugins-enabled` messages, where plugins really run inside a host, and the Kotlin twin once the Android hold lifts. Start by reading the Opus build's report and replacing it in place.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "patches-plugins-fable",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T18:37:44.308Z",
-   "updatedAt": "2026-10-23T12:52:32.760Z",
+   "updatedAt": "2026-11-03T14:24:28.286Z",
    "builtAt": "",
    "notes": [
     {
@@ -12094,6 +12127,10 @@
     {
      "text": "On hold: Brett paused all work on Patches globally (Oct 28 2026). Do not build until he lifts the pause.",
      "at": "2026-10-28T15:22:00.000Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:27.688Z"
     }
    ],
    "approvals": [],
@@ -12239,7 +12276,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -14711,15 +14748,15 @@
    "title": "Patches settings tab group (every app + plugin tab) + banner hide / hide all / hide-for-N-minutes",
    "category": "",
    "detail": "Brett, Oct 23 2026. (1) Apps inside Patches: no greyed-out settings; their settings UI is a tab of Patches settings (a tab for Patches and every app / plugin tab with a settings UI); the settings hook opens Patches settings on that tab; Patches context menu gets a Settings submenu, one entry per tab. (2) plugin@1 `banner` field; every banner has Hide (keeps logging), indented Hide all banners (tooltip lists them), synced everywhere, last change wins; a timer checkbox + 2-digit minutes field: a hide lasts N minutes, then the banner shows again.",
-   "status": "complete",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "patches-settings-banner-hide",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T12:52:32.715Z",
-   "updatedAt": "2026-10-23T13:27:34.324Z",
-   "builtAt": "2026-10-23T13:04:14.162Z",
+   "updatedAt": "2026-11-03T14:24:29.747Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Built on Opus, branch claude/project-thread-t9zktq (draft PR).",
@@ -14728,6 +14765,10 @@
     {
      "text": "Oct 23 2026 follow-up (Brett: settings that affect the UI render at once): every settings change re-renders the app (runtime state bump, coalesced), unchanged saves are no-ops, other frames/tabs saving are read at once (storage events in the runtime). Same branch / PR #42.",
      "at": "2026-10-23T13:27:34.324Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:29.010Z"
     }
    ],
    "approvals": [],
@@ -14895,7 +14936,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -14935,14 +14976,14 @@
    "title": "Patches settings tab group + banner hide switches (Fable rebuild)",
    "category": "",
    "detail": "Fable rebuild of the Opus build `patches-settings-banner-hide` (Brett, Oct 23 2026: Fable suggested, Opus chosen). Revisit the embed@1 settings take (tab group, settings hook focus), the banner hide state as a cross-port contract (Kotlin twin when the Android hold lifts). Start by reading the Opus build report (branch claude/project-thread-t9zktq) and replacing it in place.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "patches-settings-banner-hide-fable",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T12:52:32.722Z",
-   "updatedAt": "2026-10-23T18:22:53.000Z",
+   "updatedAt": "2026-11-03T14:24:31.034Z",
    "builtAt": "",
    "notes": [
     {
@@ -14956,6 +14997,10 @@
     {
      "text": "On hold: Brett paused all work on Patches globally (Oct 28 2026). Do not build until he lifts the pause.",
      "at": "2026-10-28T15:22:00.000Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:30.381Z"
     }
    ],
    "approvals": [],
@@ -15079,7 +15124,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -16731,12 +16776,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T18:22:53.000Z",
-   "updatedAt": "2026-10-25T20:12:14.980Z",
+   "updatedAt": "2026-11-03T14:24:44.230Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Oct 25 2026: shared-settings-interface (Opus) adds framework asset settings/console as the default for every web app with settings, a dedicated Appearance → Settings interface picker, and ships the same settings assets in every app. The Fable rebuild should keep those ids.",
      "at": "2026-10-25T20:12:14.980Z"
+    },
+    {
+     "text": "Nov 3 2026: Patches is retired; s4 has no Patches settings tab group to feed.",
+     "at": "2026-11-03T14:24:44.230Z"
     }
    ],
    "approvals": [],
@@ -16860,7 +16909,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -17403,19 +17452,23 @@
    "title": "Patches: plugin grid per app tab with Apply (real install/uninstall)",
    "category": "",
    "detail": "A Patches grid: rows = every plugin Patches knows (its list, each app, the catalog), one column per app in the tabs, a checkbox each; Apply really installs or uninstalls in each app (Console via its plugin catalog / lifecycle API with the console token, server to server). Gizmo, Oct 24 2026.",
-   "status": "complete",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "patches-app-plugins-grid",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-24T23:27:02.390Z",
-   "updatedAt": "2026-10-24T23:31:30.405Z",
-   "builtAt": "2026-10-24T23:31:30.264Z",
+   "updatedAt": "2026-11-03T14:24:32.234Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Built on Opus, branch claude/project-thread-2ijgui",
      "at": "2026-10-24T23:31:30.313Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:31.660Z"
     }
    ],
    "approvals": [],
@@ -17473,7 +17526,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -17508,16 +17561,21 @@
    "title": "Patches Plugins per app: Pilot + axHub columns editable",
    "category": "",
    "detail": "Pilot adapter (Build Pilot plugin-catalog install/uninstall routes, bundled plugins locked) and axHub plugin support: catalog kind axhub, Dev Console install/uninstall into apps/axhub-web/src/plugins committed to GitHub, axhub-web plugin loader, Patches axhub adapter. Gizmo, Oct 25 2026.",
-   "status": "complete",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "patches-app-plugins-pilot-axhub",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-25T09:48:50.977Z",
-   "updatedAt": "2026-10-25T09:53:20.403Z",
-   "builtAt": "2026-10-25T09:53:20.403Z",
-   "notes": [],
+   "updatedAt": "2026-11-03T14:24:33.536Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:32.915Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -17595,7 +17653,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -17631,16 +17689,21 @@
    "title": "Banners only in the Console; Patches column in Plugins per app; banner plugin names",
    "category": "",
    "detail": "",
-   "status": "complete",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "patches-banners-console-only",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-25T10:28:58.310Z",
-   "updatedAt": "2026-10-25T10:28:58.310Z",
-   "builtAt": "2026-10-25T10:28:58.310Z",
-   "notes": [],
+   "updatedAt": "2026-11-03T14:24:35.071Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:34.282Z"
+    }
+   ],
    "approvals": [],
    "steps": [],
    "profiles": [
@@ -17651,7 +17714,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -21123,7 +21186,6 @@
    "pendingId": "apply-all-levels",
    "branch": "claude/apply-all-levels",
    "pr": "#115",
-   "mergedAt": "2026-10-27T03:33:15Z",
    "createdAt": "2026-10-27T03:19:49.625Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T03:19:49.625Z",
@@ -21661,7 +21723,6 @@
    "pendingId": "amberx-empty-shell",
    "branch": "claude/amberx-empty-shell",
    "pr": "#118",
-   "mergedAt": "2026-10-27T03:54:31Z",
    "createdAt": "2026-10-27T03:48:42.596Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T03:48:42.596Z",
@@ -21937,7 +21998,6 @@
    "pendingId": "fresh-look",
    "branch": "claude/fresh-look-done",
    "pr": "#120",
-   "mergedAt": "2026-10-27T22:25:38Z",
    "createdAt": "2026-10-27T04:05:32.031Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T04:05:32.031Z",
@@ -22288,7 +22348,6 @@
    "pendingId": "design-packages-10",
    "branch": "claude/design-packages-10",
    "pr": "#124",
-   "mergedAt": "2026-10-27T17:59:47Z",
    "createdAt": "2026-10-27T17:25:19.327Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T17:25:19.327Z",
@@ -22397,7 +22456,6 @@
    "pendingId": "build-orchestrator",
    "branch": "claude/build-orchestrator",
    "pr": "#122",
-   "mergedAt": "2026-10-27T18:17:28Z",
    "createdAt": "2026-10-27T16:39:39.618Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T16:39:39.618Z",
@@ -22514,7 +22572,6 @@
    "pendingId": "build-profiles",
    "branch": "claude/build-profiles",
    "pr": "#127",
-   "mergedAt": "2026-10-27T22:12:19Z",
    "createdAt": "2026-10-27T19:00:00.000Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T19:30:00.000Z",
@@ -22790,7 +22847,6 @@
    "pendingId": "amberx-appearance-lock",
    "branch": "claude/amberx-appearance-lock",
    "pr": "#126",
-   "mergedAt": "2026-10-27T19:22:41Z",
    "createdAt": "2026-10-27T19:05:30.186Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T19:23:01.118Z",
@@ -29288,7 +29344,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-27T23:01:35.786Z",
-   "updatedAt": "2026-10-28T19:31:15.654Z",
+   "updatedAt": "2026-11-03T14:24:40.470Z",
    "builtAt": "",
    "notes": [
     {
@@ -29310,6 +29366,10 @@
     {
      "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
      "at": "2026-10-27T22:41:47.258Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches is retired, so the Tools tab in Patches web (s3) is gone; the Tools plugin itself is unaffected.",
+     "at": "2026-11-03T14:24:40.470Z"
     }
    ],
    "approvals": [],
@@ -29411,7 +29471,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -29459,7 +29519,6 @@
    "pendingId": "",
    "branch": "claude/amberx-handsfree",
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/141",
-   "mergedAt": "2026-10-28T00:27:04Z",
    "createdAt": "2026-10-27T23:42:02.902Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T19:08:50.137Z",
@@ -29624,7 +29683,6 @@
    "pendingId": "",
    "branch": "claude/amberx-notes",
    "pr": "#144",
-   "mergedAt": "2026-10-28T02:20:51Z",
    "createdAt": "2026-10-28T00:32:03.143Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T02:35:09.837Z",
@@ -30038,7 +30096,6 @@
    "pendingId": "",
    "branch": "fix/interface-scope-settings",
    "pr": "#146",
-   "mergedAt": "2026-10-28T04:36:45Z",
    "createdAt": "2026-10-28T03:03:09.005Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T04:36:58.472Z",
@@ -30304,7 +30361,6 @@
    "pendingId": "",
    "branch": "fix/hubsync-own-look-source",
    "pr": "#148",
-   "mergedAt": "2026-10-28T05:19:35Z",
    "createdAt": "2026-10-28T05:10:31.665Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T05:19:54.195Z",
@@ -30396,7 +30452,6 @@
    "pendingId": "",
    "branch": "fix/banner-snap",
    "pr": "#149",
-   "mergedAt": "2026-10-28T09:54:53Z",
    "createdAt": "2026-10-28T05:01:49.680Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T09:55:07.941Z",
@@ -30488,7 +30543,6 @@
    "pendingId": "",
    "branch": "claude/banner-fix-fallback",
    "pr": "#152",
-   "mergedAt": "2026-10-28T10:19:39Z",
    "createdAt": "2026-10-28T09:55:19.427Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T10:11:22.405Z",
@@ -30626,7 +30680,6 @@
    "pendingId": "",
    "branch": "claude/amberx-push",
    "pr": "#154",
-   "mergedAt": "2026-10-28T14:51:50Z",
    "createdAt": "2026-10-28T14:39:25.869Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T14:52:00.612Z",
@@ -30764,7 +30817,6 @@
    "pendingId": "",
    "branch": "claude/amberx-voice-center",
    "pr": "#153",
-   "mergedAt": "2026-10-28T15:21:29Z",
    "createdAt": "2026-10-28T13:59:55.535Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T15:29:37.365Z",
@@ -31637,7 +31689,6 @@
    "pendingId": "",
    "branch": "claude/amberx-assistant-agents",
    "pr": "#156",
-   "mergedAt": "2026-10-28T15:54:26Z",
    "createdAt": "2026-10-28T15:41:17.167Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T15:54:37.523Z",
@@ -31729,7 +31780,6 @@
    "pendingId": "",
    "branch": "claude/amberx-claude-tokens",
    "pr": "#157",
-   "mergedAt": "2026-10-28T17:04:30Z",
    "createdAt": "2026-10-28T16:55:24.086Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T17:04:41.490Z",
@@ -32936,7 +32986,6 @@
    "pendingId": "refactor-all",
    "branch": "claude/refactor-all",
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
-   "mergedAt": "2026-10-29T03:49:47Z",
    "createdAt": "2026-10-28T19:31:15.654Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-29T07:38:54.593Z",
@@ -35126,7 +35175,6 @@
    "pendingId": "",
    "branch": "claude/mosses-build-tools",
    "pr": "#164",
-   "mergedAt": "2026-10-29T04:01:03Z",
    "createdAt": "2026-10-29T03:53:16.640Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-29T03:53:16.932Z",
@@ -35260,7 +35308,6 @@
    "pendingId": "",
    "branch": "claude/assistant-no-subagents",
    "pr": "#167",
-   "mergedAt": "2026-10-29T06:15:14Z",
    "createdAt": "2026-10-29T05:57:18.585Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-29T05:57:18.706Z",
@@ -35508,7 +35555,6 @@
    "pendingId": "",
    "branch": "claude/veto-everywhere + claude/veto-complete (AXF + axHub)",
    "pr": "#176",
-   "mergedAt": "2026-10-31T07:26:37Z",
    "createdAt": "2026-10-30T13:20:06.580Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:31:12.147Z",
@@ -35792,7 +35838,6 @@
    "pendingId": "",
    "branch": "feat/agent-voice",
    "pr": "#177",
-   "mergedAt": "2026-10-31T07:26:37Z",
    "createdAt": "2026-10-30T11:36:24.622Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:31:46.110Z",
@@ -36072,7 +36117,6 @@
    "pendingId": "",
    "branch": "claude/pr-only-merge",
    "pr": "#183",
-   "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-30T17:55:48.511Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-30T18:04:28.210Z",
@@ -36347,7 +36391,6 @@
    "pendingId": "",
    "branch": "claude/orch-pending-sync",
    "pr": "#143",
-   "mergedAt": "2026-10-31T07:26:37Z",
    "createdAt": "2026-10-28T01:07:25.673Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:28:34.899Z",
@@ -36494,7 +36537,6 @@
    "pendingId": "",
    "branch": "angel/home-cards-queue",
    "pr": "#171",
-   "mergedAt": "2026-10-30T16:37:20Z",
    "createdAt": "2026-10-29T18:34:09.323Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "",
@@ -37055,7 +37097,6 @@
    "pendingId": "",
    "branch": "claude/angel-settings",
    "pr": "#175",
-   "mergedAt": "2026-10-30T16:37:18Z",
    "createdAt": "2026-10-30T13:01:42.736Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-30T13:06:41.972Z",
@@ -37719,7 +37760,6 @@
    "pendingId": "",
    "branch": "claude/angel-ui-assets",
    "pr": "#181",
-   "mergedAt": "2026-10-31T07:02:46Z",
    "createdAt": "2026-10-30T17:31:49.428Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-31T09:07:22.007Z",
@@ -38487,7 +38527,6 @@
    "pendingId": "",
    "branch": "claude/layout-repeating-slots",
    "pr": "#191",
-   "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-31T09:07:21.792Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "",
@@ -38743,7 +38782,7 @@
    "title": "Session browser: Claude sessions + headless agent runs, live",
    "category": "",
    "detail": "Brett, Oct 30 2026 (voice): a full-blown session browser for regular Claude sessions AND every headless agent run, monitoring in real time. Live grid, collapsible rows like every other grid: agent, build, job, model, status badge (running, done, failed, killed for budget), tokens, dollars, duration, started time; updates live. Expand a row: plain-English rundown of what it built and exactly what changed (item, what was wrong, before/after), taken from real commits and file changes. Tabs: Context (all text that flowed into its context and what it said back), Tools (every command and file edit), Conversation for regular sessions. Watch a running agent live and kill it. Links to PR/commit/file. Sort, search, filter. Built on Session check-in archive + Codebase changes log + the agent-swarm runner's JSON reports and stream logs. Prices everywhere: the row shows the run's exact total cost (from usage). Expanded 'what it did' shows a price next to every line (estimated: tokens of the turns that produced that change, labelled 'est.'). Context tab: cost per turn; Tools tab: cost per command. Totals at the bottom plus a per-model breakdown.",
-   "status": "built",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -38751,7 +38790,7 @@
    "pr": "#195",
    "createdAt": "2026-10-31T09:07:21.792Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: PR #195; PR #195 names s1, s2, s3, s4, s5, s6, s7 done",
@@ -39506,7 +39545,6 @@
    "pendingId": "",
    "branch": "claude/audio-output-recorder",
    "pr": "#194",
-   "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-31T09:07:21.792Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:37:25.448Z",
@@ -40042,7 +40080,6 @@
    "pendingId": "",
    "branch": "claude/live-key-checks",
    "pr": "#182",
-   "mergedAt": "2026-10-31T07:26:37Z",
    "createdAt": "2026-10-30T18:21:59.378Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:34:24.794Z",
@@ -40391,7 +40428,6 @@
    "pendingId": "",
    "branch": "claude/ui-review",
    "pr": "#184",
-   "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-30T17:59:21.357Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:36:07.629Z",
@@ -40671,7 +40707,6 @@
    "pendingId": "",
    "branch": "claude/plans",
    "pr": "#185",
-   "mergedAt": "2026-10-31T07:26:37Z",
    "createdAt": "2026-10-30T18:21:11.429Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-30T19:00:33.461Z",
@@ -41016,7 +41051,6 @@
    "pendingId": "",
    "branch": "claude/audio-extract",
    "pr": "#187",
-   "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-30T21:56:25.813Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:36:25.826Z",
@@ -41250,7 +41284,6 @@
    "pendingId": "",
    "branch": "claude/agent-swarm",
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/196",
-   "mergedAt": "2026-11-01T00:13:51Z",
    "createdAt": "2026-10-31T05:27:46.906Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-31T23:53:03.392Z",
@@ -41756,7 +41789,6 @@
    "pendingId": "",
    "branch": "claude/urgent-builds",
    "pr": "",
-   "mergedAt": "2026-11-01T00:00:00.000Z",
    "createdAt": "2026-10-31T23:31:50.472Z",
    "updatedAt": "2026-11-03T13:56:31.369Z",
    "builtAt": "",
@@ -43031,7 +43063,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-24T22:41:46.759Z",
-   "updatedAt": "2026-10-25T01:48:24.340Z",
+   "updatedAt": "2026-11-03T14:24:35.778Z",
    "builtAt": "",
    "notes": [
     {
@@ -43041,6 +43073,10 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at b3d22af4); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:35.778Z"
     }
    ],
    "approvals": [],
@@ -43362,7 +43398,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -43417,12 +43453,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-25T01:48:37.694Z",
-   "updatedAt": "2026-10-25T01:48:37.694Z",
+   "updatedAt": "2026-11-03T14:24:36.456Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Recovered from git history (framework/plan/pending.json at b3d22af4); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:36.456Z"
     }
    ],
    "approvals": [],
@@ -43678,7 +43718,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -43730,7 +43770,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-25T01:46:49.283Z",
-   "updatedAt": "2026-10-25T01:47:06.976Z",
+   "updatedAt": "2026-11-03T14:24:37.109Z",
    "builtAt": "",
    "notes": [
     {
@@ -43740,6 +43780,10 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at 2296fcc6); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:37.109Z"
     }
    ],
    "approvals": [],
@@ -43797,7 +43841,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -44233,12 +44277,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T04:37:07.881Z",
-   "updatedAt": "2026-10-23T04:37:08.190Z",
+   "updatedAt": "2026-11-03T14:24:37.788Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Recovered from git history (framework/plan/pending.json at 7fca09e1); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:37.788Z"
     }
    ],
    "approvals": [],
@@ -44251,7 +44299,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -44536,12 +44584,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T20:09:10.620Z",
-   "updatedAt": "2026-10-22T20:09:16.475Z",
+   "updatedAt": "2026-11-03T14:24:38.461Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Recovered from git history (framework/plan/pending.json at cf7b6424); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:38.461Z"
     }
    ],
    "approvals": [],
@@ -44554,7 +44606,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -44594,12 +44646,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T20:26:47.722Z",
-   "updatedAt": "2026-10-22T20:26:56.001Z",
+   "updatedAt": "2026-11-03T14:24:39.159Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Recovered from git history (framework/plan/pending.json at cf7b6424); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:39.159Z"
     }
    ],
    "approvals": [],
@@ -44745,7 +44801,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -44792,12 +44848,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T20:26:47.860Z",
-   "updatedAt": "2026-10-22T20:26:47.860Z",
+   "updatedAt": "2026-11-03T14:24:39.837Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Recovered from git history (framework/plan/pending.json at cf7b6424); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:39.837Z"
     }
    ],
    "approvals": [],
@@ -44943,7 +45003,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -45851,7 +45911,6 @@
    "pendingId": "",
    "branch": "claude/agent-swarm-fable-rebuild",
    "pr": "#247",
-   "mergedAt": "2026-11-03T12:10:18Z",
    "createdAt": "2026-10-31T05:27:48.056Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-03T12:01:23.473Z",
@@ -47388,7 +47447,6 @@
    "pendingId": "",
    "branch": "claude/project-thread-646cjb",
    "pr": "229",
-   "mergedAt": "2026-11-02T01:38:15Z",
    "createdAt": "2026-11-01T22:38:15.391Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-02T05:32:27.282Z",
@@ -48177,7 +48235,6 @@
    "pendingId": "",
    "branch": "claude/project-thread-nxdu3m",
    "pr": "230",
-   "mergedAt": "2026-11-02T04:01:24Z",
    "createdAt": "2026-11-02T02:43:38.594Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "",
@@ -48614,7 +48671,7 @@
    "title": "xLayout: Molly as one app (one banner, app menu, nav, context menu, toolbars) + IDE panes + plugin toolbars",
    "category": "Molly",
    "detail": "Brett Nov 2 2026 13:46 ET: Molly is whack. Create application menus, navigation menus, context menus, toolbars and a banner that integrate all the apps (AmberX, axHub web, Dev Console): only ONE banner, application menu, navigation menu and context menu render, covering the whole page; the user must not be able to tell it is multiple apps. New plugin xLayout renders it that way. A switch makes it IDE style: draggable, resizable, dockable panes. Plugin toolbars: from the plugin's settings, show/hide up to 3 toolbars and set each default location. A hook in those settings opens a Toolbar designer dialog: pick items from a list of every plugin and screen; each item opens in the main area or a floating window, or (IDE mode on) a pane. Right-clicking any toolbar also has a hook to open the Toolbar designer. IDE mode limits the number of panes and offers ~10 predetermined pane layouts with a preview before applying. Molly-only: standalone, each app stays exactly as it is. Replaces the queued 'Molly: one app' item. Rules: assets/tokens only, framework controls, settings level toolbar, plugin lifecycle, UI Review.",
-   "status": "built",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -48622,7 +48679,7 @@
    "pr": "#252",
    "createdAt": "2026-11-02T18:47:31.123Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Brett Nov 2 13:49 ET: the Toolbar designer is its own plugin, not part of xLayout. xLayout calls it through a capability service (e.g. axf.toolbar-designer@1).",
@@ -48961,7 +49018,6 @@
    "pendingId": "",
    "branch": "claude/walkthrough-random-look",
    "pr": "#240",
-   "mergedAt": "2026-11-02T19:54:16Z",
    "createdAt": "2026-11-02T19:41:22.804Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "",
@@ -49042,7 +49098,7 @@
    "title": "Shared dock engine: split, float, re-dock, drop zones, layout presets (used by MD Studio, xLayout, Theme Editor)",
    "category": "Urgent",
    "detail": "Brett Nov 2 2026 21:30 ET picked 'shared dock engine first'. Extends framework/core/engines/windows (panes, tab groups) + framework/react/windows/WindowHost. Covers xLayout s3 (Big Dog) pane engine; xLayout s7/s8 use it. Android twin = deferred gap in PORTING.md (Android on hold).",
-   "status": "built",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -49050,7 +49106,7 @@
    "pr": "#245",
    "createdAt": "2026-11-03T02:32:21.328Z",
    "updatedAt": "2026-11-03T13:56:31.369Z",
-   "builtAt": "2026-11-03T13:56:31.369Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Backfill (orch-live-sync s6): all 4 steps built on Fable in PR #245, branch claude/molly-fable (Fable foundation for Molly: dock@1 engine, dock-layout@1 presets, DockHost). Built, awaiting merge.",
@@ -49178,7 +49234,6 @@
    "pendingId": "",
    "branch": "claude/md-studio-theme-editor-plan",
    "pr": "#242",
-   "mergedAt": "2026-11-03T02:54:56Z",
    "createdAt": "2026-11-03T02:32:21.910Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "",
@@ -49435,7 +49490,7 @@
    "title": "Theme Editor plugin: colour + style sections, every token, copy/save/load, multi-view toolbar",
    "category": "Urgent",
    "detail": "Brett Nov 2 2026 21:30 ET: theme editor plugin that lets you copy, save, load. Colour section and style section, each collapsible, with collapsible categories listing every possible token; toolbar with multiple views. Own plugin, reusing the Theme manager's token tree through a capability service (both stay installed). Look rule: saves go to the axHub appearance document / asset@1 themes.",
-   "status": "built",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -49443,7 +49498,7 @@
    "pr": "#243",
    "createdAt": "2026-11-03T02:32:22.611Z",
    "updatedAt": "2026-11-03T13:56:31.369Z",
-   "builtAt": "2026-11-03T13:56:31.369Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Backfill (orch-live-sync s6): branch claude/theme-editor has all 5 steps (13f79c99 plugin s1-s4; d24cd2dd phone layout + tests; PR #243 open, waiting in UI Review r-20261103-6a35ef38). Built, awaiting merge.",
@@ -49587,7 +49642,7 @@
    "title": "Token control plugin: API + MCP + CLI for every token, AmberX tasks/to-dos/notes and the planner, interactive docs",
    "category": "Urgent",
    "detail": "Brett Nov 2 2026 21:38 ET: new plugin, powerful API and MCP and CLI server/client that can change every single token (theme, style, layout); every layout parameter is a token. Connect MCP, API and CLI to Claude and axHub. API and MCP control every aspect of AmberX tasks, to-dos and notes, and the console's planner (Brett: both Plan Studio and the Build orchestrator). Extensive interactive documentation. Folds in the dead VPS build amberx-full-mcp-api (do not relaunch it separately). Overlaps the blocked interactive docs engine (docs-engine/plan.md): reuse it if it lands first.",
-   "status": "built",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -49595,7 +49650,7 @@
    "pr": "#250",
    "createdAt": "2026-11-03T02:40:26.204Z",
    "updatedAt": "2026-11-03T13:56:31.369Z",
-   "builtAt": "2026-11-03T13:56:31.369Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Backfill (orch-live-sync s6): s1-s3 built on Fable in PR #246 (claude/token-control), s4-s14 on Opus in PR #250 (claude/token-control-opus). Both PRs open; the build shows PR #250 (the later one). Built, awaiting merge.",
@@ -49937,7 +49992,7 @@
    "title": "Orchestrator live sync: every step reaches main at once",
    "category": "Urgent",
    "detail": "Brett, Nov 3 2026 (voice): every completed step, however small, must reach the orchestrator and show on main immediately, so banners and THREADS follow every step. Store writes go live to main as status-only commits; branch + PR auto-link; reconciler for open PRs and claude/* branches; banners + THREADS follow the store; session-start rule; backfill.",
-   "status": "built",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -49945,7 +50000,7 @@
    "pr": "#255",
    "createdAt": "2026-11-03T13:39:29.176Z",
    "updatedAt": "2026-11-03T14:01:20.820Z",
-   "builtAt": "2026-11-03T14:01:20.821Z",
+   "builtAt": "",
    "notes": [],
    "approvals": [],
    "steps": [
@@ -50121,6 +50176,219 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-03T13:39:29.177Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "kill-patches-pilot",
+   "title": "Retire Patches and Build Pilot (remove everywhere)",
+   "category": "Cleanup",
+   "detail": "Brett, Nov 3 2026 (voice): Patches is dead, Build Pilot is dead. Delete both and every reference: repo code, rules, docs, CI, store builds; VPS containers + Coolify apps (snapshotted to /root/archive/retired-2026-11-03/ first); axHub projects tree + axHub repo PR; archive (not delete) MossesX/Build-Pilot.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/kill-patches-pilot",
+   "pr": "",
+   "createdAt": "2026-11-03T14:10:11.184Z",
+   "updatedAt": "2026-11-03T14:25:47.327Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw0rlsih09h7qw",
+     "title": "",
+     "text": "Remove Patches apps (apps/patches, apps/patches-web) and Build Pilot code/integration from the repo",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:25:43.844Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:10:11.187Z",
+     "updatedAt": "2026-11-03T14:25:43.898Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw0rlsih0awxn6",
+     "title": "",
+     "text": "Remove Patches/Pilot from framework, console, other apps, CI workflows, deploy, catalog, tracker",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:25:45.123Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:10:11.187Z",
+     "updatedAt": "2026-11-03T14:25:45.157Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw0rlsih0b1esl",
+     "title": "",
+     "text": "Rewrite rules/CLAUDE.md/STATUS/decisions/THREADS; delete Patches/Pilot docs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:25:46.326Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:10:11.187Z",
+     "updatedAt": "2026-11-03T14:25:46.349Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw0rlsih0c6yl3",
+     "title": "",
+     "text": "Archive Patches/Pilot builds in the store and pending lists",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:25:47.327Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:10:11.187Z",
+     "updatedAt": "2026-11-03T14:25:47.373Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mw0rlsih0ddwo9",
+     "title": "",
+     "text": "Builds and checks pass (tsc, vite, check-theme/controls, lifecycle); open PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T14:10:11.187Z",
+     "updatedAt": "2026-11-03T14:10:11.187Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mw0rlsih0e8ey2",
+     "title": "",
+     "text": "VPS: snapshot then remove patches-web/build-pilot containers, Coolify apps, routes, images",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T14:10:11.187Z",
+     "updatedAt": "2026-11-03T14:10:11.187Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mw0rlsih0fbd3d",
+     "title": "",
+     "text": "axHub: remove /projects trees + projects.md entries; axHub repo PR; archive MossesX/Build-Pilot",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T14:10:11.187Z",
+     "updatedAt": "2026-11-03T14:10:11.187Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mw0rlsih0gtf2c",
+     "title": "",
+     "text": "Write report _claude/builds/reports/kill-patches-pilot.md",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T14:10:11.187Z",
+     "updatedAt": "2026-11-03T14:10:11.187Z"
+    }
+   ],
+   "profiles": [
+    "urgent"
+   ],
+   "order": {
+    "urgent": 6
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 5,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-03T14:10:11.187Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

@@ -56,7 +56,7 @@ done
 raw="${log%.log}.jsonl"
 
 WATCH_LIVE="$HERE/../framework/cli/watch-live.mjs"
-WATCH_NOTE='Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note "<what you are changing>"` (apps: console-web, axhub-web, amberx-droid, patches-web, walkthrough-studio, demo, framework, console, axhub-android, voicevault).'
+WATCH_NOTE='Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note "<what you are changing>"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault).'
 SLOTS="$HERE/../framework/cli/agent-slots.mjs"
 slots_on() { [[ "${AXF_SLOTS:-on}" != off ]] && command -v node >/dev/null && [[ -f "$SLOTS" ]]; }
 HEAVY_NOTE="Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as \`node $SLOTS heavy -- <command>\` so only a few run at once."

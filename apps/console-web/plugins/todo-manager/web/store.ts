@@ -1,6 +1,6 @@
 /**
  * Todo manager — talks to the plugin's server part and keeps one shared copy of the lists, the open list's contents and
- * the type schema, so every view (the page, a Patches tab, the editor dialog) shows the same thing.
+ * the type schema, so every view (the page, a host's tab, the editor dialog) shows the same thing.
  */
 import { useSyncExternalStore } from 'react';
 import { pluginApi } from '@console/plugins';

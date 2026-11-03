@@ -1,8 +1,0 @@
-<resources>
-    <!-- Only the window background/splash; everything visible is styled by AXF theme tokens. -->
-    <style name="Theme.Axf" parent="android:Theme.Material.NoActionBar">
-        <item name="android:windowBackground">#0f0d0a</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-    </style>
-</resources>

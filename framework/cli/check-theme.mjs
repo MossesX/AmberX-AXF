@@ -28,7 +28,7 @@
  *
  * Allowlisted: the framework's token/asset definition files (framework/core engines, framework/ui/axf.css's own
  * --fx-* defaults and optional component-token fallbacks, axf-ui's theme/ package that turns tokens into Compose
- * values). Frozen code (all Android work is on hold; all Patches work is paused) is held to a ratchet baseline,
+ * values). Frozen code (all Android work is on hold) is held to a ratchet baseline,
  * framework/spec/conform-baseline.json: it may only shrink (`--update-baseline` rewrites it after a fix).
  * Put `theme-ok` in a comment on a line to allow a deliberate exception (e.g. a colour input's default value).
  */
@@ -99,7 +99,6 @@ const apps = readdirSync(join(ROOT, 'apps'));
 const DEFINITION_FILES = new Set(['framework/ui/axf.css']);
 /** Frozen code: findings are counted against framework/spec/conform-baseline.json instead of failing outright. */
 const FROZEN = [
-  { re: /^apps\/patches(-web)?\//, why: 'all Patches work is paused (Brett, Oct 28 2026)' },
   { re: /\.kt$/, why: 'all Android work is on hold (Brett, Oct 21 2026); generated Kotlin (templates) has no baseline' },
 ];
 const GENERATED_KT = /^framework\/(templates|library-templates|boilerplates)\//;
@@ -249,7 +248,7 @@ if (!paths.length) {
     const sorted = Object.fromEntries(Object.entries(frozenCounts).sort(([a], [b]) => a.localeCompare(b)));
     writeFileSync(BASELINE, JSON.stringify({
       schema: 'conform-baseline@1',
-      note: 'Asset-conformance findings in frozen code (Android on hold, Patches paused). check-theme.mjs fails if a file goes above its count; fix and run --update-baseline to shrink it. New files never get an entry.',
+      note: 'Asset-conformance findings in frozen code (Android on hold). check-theme.mjs fails if a file goes above its count; fix and run --update-baseline to shrink it. New files never get an entry.',
       total: Object.values(sorted).reduce((a, b) => a + b, 0),
       files: sorted,
     }, null, 2) + '\n');

@@ -5,7 +5,7 @@ with its own persistent memory (type and settings per agent), trained from Firec
 and MCP servers. Add-on agents install as bundles (five ship with the plugin: coder = Mosses, vinny = Vinny (VPS root through axHub), molly = Molly (AmberX developer agent, walkthroughs), axf-expert, ai-expert).
 
 The definition format is the framework contract agent-definition@1 (framework/core/agents.ts = Python
-`axf.contracts.agents` in framework/python = Kotlin ai.amberx.axf.kernel.agents), so Build Pilot and other AXF apps
+`axf.contracts.agents` in framework/python = Kotlin ai.amberx.axf.kernel.agents), so other AXF apps
 load the same agents; the safety helpers come from `axf.assistant_host.safety` (harvested Oct 21 2026).
 
 Integration (plugin_services, capability names only — never another plugin's folder):
@@ -204,7 +204,7 @@ def status() -> dict[str, Any]:
 
 @router.get("/contract")
 def contract_info() -> dict[str, Any]:
-    """The definition contract this server implements, for apps that load the same agents (Build Pilot)."""
+    """The definition contract this server implements, for other apps that load the same agents."""
     return {"$axf": contract.AGENT_CONTRACT, "collections": list(contract.COLLECTIONS), "addon": contract.AGENT_ADDON_TAG, "libraryItem": contract.AGENT_LIBRARY_ITEM_TAG,
             "memory": contract.AGENT_MEMORY_TAG, "memoryTypes": list(contract.MEMORY_TYPES), "memoryKinds": list(contract.MEMORY_KINDS), "toolKinds": list(contract.TOOL_KINDS),
             "workflowModes": list(contract.WORKFLOW_MODES), "sourceTypes": list(contract.TRAINING_SOURCE_TYPES), "schedules": list(contract.TRAINING_SCHEDULES),

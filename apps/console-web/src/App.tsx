@@ -30,7 +30,6 @@ import { consoleSettings } from './consoleSettings';
 import { accountLibrary, useBindAccount } from './account';
 import { hubAppearanceLibrary, useHubAppearance } from './hubAppearance';
 import { menuLibrary } from './menuLibrary';
-import { BannerStrip, isBannerStrip, useBannerRelay, useBannersInConsole } from './bannerStrip';
 
 /** Developer alerts (framework library), stored and pushed by the console server. */
 const alertsLibrary = createAlertsLibrary({ transport: consoleAlertsTransport, crashWhere: 'console', serviceWorkerUrl: '/alerts-sw.js' });
@@ -104,7 +103,7 @@ function usePlugins() {
   }, [reload]);
   // Search bar (banner widget): plan features, tracker items, pending builds and plugins on top of the framework's own.
   useEffect(() => installConsoleSearch(rt), [rt]);
-  // Inside a host that manages plugins (Patches, embed@1 take `plugins`): tell it which plugins the console has, and run
+  // Inside a host that manages plugins (embed@1 take `plugins`): tell it which plugins the console has, and run
   // only the ones it enabled for the console (Brett, Oct 22 2026). The console's own switches stay as they are for when
   // it runs on its own.
   const managed = rt.hostTakes('plugins');
@@ -152,29 +151,21 @@ function Shell() {
   const pageTitle = allViews[st.view]?.title;
   useEffect(() => { document.title = pageTitle && st.view !== 'home' ? `${pageTitle} · ${brandName}` : brandName; }, [pageTitle, brandName, st.view]);
   // Plugin banners (codebase changes, builds, activity, approvals, systems check, keys, What's new) sit above the page
-  // (slot app.frame.banners) when the console runs on its own. As a tab in Patches the console page shows none of them:
-  // Patches shows them above every tab through the banner strip page (`?axf-strip=banners`, src/bannerStrip.tsx), which
-  // is only them (Brett, Oct 21 2026). The console's own banners (the menu rescue note) stay on the console page.
-  const inConsole = useBannersInConsole();
-  useBannerRelay();
+  // (slot app.frame.banners). The console's own banners (the menu rescue note) stay plain.
   const consoleOwn = useMemo(() => new Set((menuLibrary.banners ?? []).map((b) => b.id)), []);
-  const banners = useMemo(() => plugins.contributed.banners.filter((b) => (isBannerStrip
-    ? !consoleOwn.has(b.id)
-    : consoleOwn.has(b.id) || inConsole)), [plugins.contributed.banners, consoleOwn, inConsole]);
+  const banners = plugins.contributed.banners;
   // Every plugin banner goes through Banner settings (framework BannerSettings.tsx): right-click / long-press any of them →
   // Banner settings, one tab per banner, its look and behaviour (Brett, Oct 22 2026). The console's own rescue note stays plain.
   const rt = useRuntime();
   const bannerPrefs = useBannerPrefsTick();
   const slots = useMemo(() => {
-    // Always called: it registers Banner settings and the full banner list, which the dialog needs even when this page
-    // shows none (the console tab inside Patches opens it for banners Patches shows through the strip).
-    const all = plugins.contributed.banners.filter((b) => !consoleOwn.has(b.id));
-    const framed = bannerSlotDefs(rt, all, banners.filter((b) => !consoleOwn.has(b.id)));
-    if (!banners.length && !isBannerStrip) return plugins.contributed.slots;
+    // Always called: it registers Banner settings and the full banner list, which the dialog needs.
+    const all = banners.filter((b) => !consoleOwn.has(b.id));
+    const framed = bannerSlotDefs(rt, all, all);
+    if (!banners.length) return plugins.contributed.slots;
     const own = banners.filter((b) => consoleOwn.has(b.id)).map((b) => ({ id: b.id, order: b.order, render: () => b.render() }));
-    return { ...(isBannerStrip ? {} : plugins.contributed.slots), [FRAME_BANNERS_SLOT]: [...(isBannerStrip ? [] : plugins.contributed.slots[FRAME_BANNERS_SLOT] ?? []), ...own, ...framed] };
-  }, [banners, plugins.contributed.banners, plugins.contributed.slots, consoleOwn, rt, bannerPrefs]);
-  if (isBannerStrip) return <SlotsProvider slots={slots}><BannerStrip /></SlotsProvider>;
+    return { ...plugins.contributed.slots, [FRAME_BANNERS_SLOT]: [...(plugins.contributed.slots[FRAME_BANNERS_SLOT] ?? []), ...own, ...framed] };
+  }, [banners, plugins.contributed.slots, consoleOwn, rt, bannerPrefs]);
   // The GizmoX interface tabs (each drawing the console under its own interface's look) are gone: the look comes from
   // axHub only (Brett, Nov 1 2026). Applying an interface still works through Settings → Appearance and goes to the hub.
   return (

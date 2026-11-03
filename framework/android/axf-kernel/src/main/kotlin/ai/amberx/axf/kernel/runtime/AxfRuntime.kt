@@ -569,7 +569,7 @@ public class AxfRuntime(
     }
 
     /**
-     * Replace a module's own asset in place (e.g. Patches' application menu, rebuilt from the menus the apps in its tabs
+     * Replace a module's own asset in place (e.g. a host's application menu, rebuilt from the menus the apps in its tabs
      * send): registered, recompiled when it's the active one, never persisted, swapped or pushed to the hub.
      */
     public fun replaceAsset(raw: JsonObject, origin: String): RegisterResult {

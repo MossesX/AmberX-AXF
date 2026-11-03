@@ -200,7 +200,6 @@ jobs:
             npx -y tsx framework/spec/check-watch-live.mts             # watch-live@1: focus params, asset hot swap (no reload), registry, targets, focus file, Vite plugin
             python apps/console-web/server/test_alerts.py
             python apps/console-web/server/test_wall_users.py
-            python apps/console-web/server/test_app_ci.py
             python apps/console-web/server/test_plugin_catalog.py
             python apps/console-web/server/test_app_catalog.py
             python apps/console-web/server/test_build_profiles.py
@@ -403,10 +402,6 @@ jobs:
         with:
           name: axhub-debug.apk
           path: apps/axhub-android/app/build/outputs/apk/debug/*.apk
-      - uses: actions/upload-artifact@v4
-        with:
-          name: patches-debug.apk
-          path: apps/patches/app/build/outputs/apk/debug/*.apk
       - uses: actions/upload-artifact@v4
         with:
           name: app-apks
