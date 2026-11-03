@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 174,
- "updatedAt": "2026-11-03T13:57:32.777Z",
+ "rev": 176,
+ "updatedAt": "2026-11-03T14:01:21.566Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -49937,15 +49937,15 @@
    "title": "Orchestrator live sync: every step reaches main at once",
    "category": "Urgent",
    "detail": "Brett, Nov 3 2026 (voice): every completed step, however small, must reach the orchestrator and show on main immediately, so banners and THREADS follow every step. Store writes go live to main as status-only commits; branch + PR auto-link; reconciler for open PRs and claude/* branches; banners + THREADS follow the store; session-start rule; backfill.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/orch-live-sync",
-   "pr": "",
+   "pr": "#255",
    "createdAt": "2026-11-03T13:39:29.176Z",
-   "updatedAt": "2026-11-03T13:57:31.980Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T14:01:20.820Z",
+   "builtAt": "2026-11-03T14:01:20.821Z",
    "notes": [],
    "approvals": [],
    "steps": [
@@ -50099,12 +50099,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T14:01:20.820Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T13:39:29.177Z",
-     "updatedAt": "2026-11-03T13:39:29.177Z"
+     "updatedAt": "2026-11-03T14:01:20.844Z"
     }
    ],
    "profiles": [
@@ -50115,7 +50115,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
