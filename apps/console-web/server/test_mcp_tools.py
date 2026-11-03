@@ -6,6 +6,7 @@ destructive, and the veto pass tools are there (builds theme-veto-pass, pass-all
 from __future__ import annotations
 
 import asyncio
+import json
 import re
 import sys
 from pathlib import Path
@@ -61,5 +62,28 @@ ok(sent[-1]["path"] == "tokens.layout" and sent[-1]["action"] == "revoke", "revo
 asyncio.run(server.call_tool("pass_undo", {}))
 ok(sent[-1]["path"] == "all" and sent[-1]["action"] == "undo", "undo defaults to everything")
 ok("pass.scopes" in mcp_server.CONTROL_TARGETS, "control_* tools take pass.scopes")
+
+# Claude settings (build claude-settings): the read tool runs without a veto; the set tool never changes an owner-only setting
+import os  # noqa: E402
+import tempfile  # noqa: E402
+
+ok(tools["claude_settings_get"].annotations.read_only_hint is True, "claude_settings_get reads")
+ok(tools["claude_settings_set"].annotations.read_only_hint is not True, "claude_settings_set writes")
+with tempfile.TemporaryDirectory() as tmp:
+    os.environ["AXF_CLAUDE_SETTINGS_FILE"] = f"{tmp}/settings.json"
+    os.environ["AXF_CLAUDE_SETTINGS_DATA"] = tmp
+    got = asyncio.run(server.call_tool("claude_settings_get", {}))
+    text = json.dumps(got, default=str)
+    ok("noWait.enabled" in text and "talking.length" in text, "claude_settings_get answers every setting")
+    asyncio.run(server.call_tool("claude_settings_set", {"values": {"talking.length": "detailed"}}))
+    ok("detailed" in json.dumps(asyncio.run(server.call_tool("claude_settings_get", {"key": "talking.length"})), default=str), "a non-owner setting changes over MCP")
+    try:
+        asyncio.run(server.call_tool("claude_settings_set", {"values": {"noWait.enabled": True}}))
+        refused = False
+    except Exception as e:  # noqa: BLE001 — ToolError
+        refused = "denied" in str(e)
+    ok(refused, "No wait can't be switched on over MCP")
+    ok("false" in json.dumps(asyncio.run(server.call_tool("claude_settings_get", {"key": "noWait.enabled"})), default=str).lower(), "No wait stays off")
+    del os.environ["AXF_CLAUDE_SETTINGS_FILE"], os.environ["AXF_CLAUDE_SETTINGS_DATA"]
 
 print(f"✓ console MCP tools — {checks} checks, {len(tools)} tools, {len(READ_TOOLS)} read-only")

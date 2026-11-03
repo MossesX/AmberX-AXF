@@ -369,6 +369,36 @@ class Control:
         svc = _console(command)
         return svc.run(command, grants, by) if svc is not None else run(command, grants, by)
 
+    def owner(self, request: Request) -> dict[str, str] | None:
+        """Brett's approval as this request carries it (his signed-in console session, or a console with no token),
+        else None. Other plugins use it for their owner-only switches (Claude settings)."""
+        return owner_approval(request)[0]
+
+    def owner_pass(self, request: Request, action: str, scope: str = "all", input_: dict[str, Any] | None = None, reason: str = "") -> dict[str, Any]:
+        """Grant or revoke a veto pass for an owner-only switch in another plugin (Claude settings → No wait). The
+        approval comes from this request only, never from the caller's arguments: without Brett's signed-in session a
+        grant stays a request waiting for him, like any other."""
+        if action not in ("grant", "revoke"):
+            return {"ok": False, "code": "invalid", "message": f"owner_pass does not {action}"}
+        grants, name = caller(request)
+        approver, _ = owner_approval(request)
+        cmd = {"op": "act", "target": PASS, "path": _scope({"scope": scope}), "action": action, "input": input_ or {}, "by": name, "reason": reason}
+        return run(cmd, grants, by=name, approver=approver)
+
+    def renew_pass(self, scope: str, input_: dict[str, Any], reason: str) -> dict[str, Any]:
+        """Re-grant a pass that Brett's own approval is keeping on ("until I turn it off"): only while an active pass
+        for the scope exists that he approved himself (console or local), named after him as a standing renewal."""
+        status = run({"op": "get", "target": PASS, "path": _scope({"scope": scope})}, ["*"], by="renew")
+        item = ((status.get("data") or status).get("item") or {}) if isinstance(status, dict) else {}
+        active = item.get("active") or {}
+        via = str(active.get("approvedVia") or active.get("approved_via") or "")
+        who = str(active.get("approvedBy") or active.get("approved_by") or "")
+        if not active or via not in ("console", "local") or not who:
+            return {"ok": False, "code": "denied", "message": "no pass of Brett's own to renew"}
+        approver = {"via": via, "name": who if who.endswith("(standing)") else f"{who} (standing)"}
+        cmd = {"op": "act", "target": PASS, "path": _scope({"scope": scope}), "action": "grant", "input": input_, "by": "claude-settings", "reason": reason}
+        return run(cmd, ["*"], by="claude-settings", approver=approver)
+
     def pass_publication(self) -> Any:
         """The veto pass publication (what GET pass answers, unsigned) for in-process readers."""
         out = meta("pass-publication")
