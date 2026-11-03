@@ -15,7 +15,7 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, designLookLabel, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
+import { AssetToolbar, askBannerTab, BannerGallery, bannerGalleryDialog, installBannerGallery, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
@@ -840,6 +840,8 @@ export const library: AxfWebLibrary = {
     rt.settings.onChange('axf.display.fontScale', () => applyDisplay(rt));
     rt.settings.onChange('axf.display.animations', () => applyDisplay(rt));
     rt.actions.register('app.settings', () => rt.navigate(VIEW), { label: 'Settings' });
+    // Banner boilerplates (Nov 3 2026): the gallery dialog, its action and the banner's right-click entry.
+    installBannerGallery(rt);
     // The level toolbar's own menu and actions (Brett, Oct 28 2026: default on, hideable from its menu or the setting).
     rt.actions.register('settings.levelbar', ([v]) => rt.settings.set(SETTINGS_LEVEL_BAR_KEY, v === 'on' ? true : v === 'off' ? false : rt.settings.get(SETTINGS_LEVEL_BAR_KEY) === false), { label: 'Show or hide the settings level toolbar', params: true });
     rt.actions.register('settings.level', ([l]) => { const lv = settingsLevel(settingsUi(rt), l); if (l) rt.settings.set(SETTINGS_LEVEL_KEY, lv); }, { label: 'Pick the settings level', params: true });
@@ -872,6 +874,7 @@ export const library: AxfWebLibrary = {
   },
   dialogs: {
     [LEVEL_EDITOR_DIALOG]: { title: 'Settings levels', icon: 'sliders', searchable: true, render: () => <LevelEditor /> },
+    ...bannerGalleryDialog,
   },
   settingsTabs: Object.values(SETTINGS_TABS),
   settings: [
@@ -906,6 +909,7 @@ export const library: AxfWebLibrary = {
     { id: 'axf.account.role', tab: 'account', title: 'Role', icon: 'shield', order: 10, render: () => <RolePanel /> },
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
     { id: DESIGN_PANEL_ID, tab: 'appearance', title: 'Look', icon: 'palette', order: 0, render: () => <LookPickerPanel /> },
+    { id: 'axf.appearance.banner', tab: 'appearance', title: 'Banner', icon: 'grid', order: 5, render: () => <BannerGallery /> },
     { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
     { id: 'axf.banners', tab: 'banners', title: 'Every banner', icon: 'bell', order: 10, render: () => <BannerSettingsPanel /> },
     { id: 'axf.about', tab: 'about', title: 'About', icon: 'info', order: 10, render: () => <AboutPanel /> },

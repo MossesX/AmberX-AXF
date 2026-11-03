@@ -1516,6 +1516,62 @@
         "title": "Id",
         "text": "The id column: Its id — the name the code uses. Tap the header to sort by it.",
         "kind": "column"
+      },
+      {
+        "target": "action:banners.gallery",
+        "title": "Banner boilerplates",
+        "text": "Opens the gallery of ready-made banners: each one is a live preview of a different arrangement of logo, clock, search, counters, status and buttons. Pick one to use it.",
+        "more": "The banner you pick is saved on axHub, so every app on the framework switches to it at once. The gallery is also under Settings → Appearance → Banner, and on the banner's right-click (long-press) menu.",
+        "tryIt": "Right-click the banner and choose Banner boilerplates…",
+        "related": [
+          "action:banners.edit",
+          "view:settings"
+        ],
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:banners.edit",
+        "title": "Edit banner",
+        "text": "Edits the banner in use: move, add or remove its widgets. They snap into place and never overlap.",
+        "more": "Until the banner editor is installed this starts Arrange widgets on the live banner (drag a widget to move it; Done when finished). Changes go to axHub with the rest of the look.",
+        "related": [
+          "action:banners.gallery"
+        ],
+        "kind": "menu-item"
+      },
+      {
+        "target": "use-this-banner",
+        "title": "Use this banner",
+        "text": "Switches every app to this banner. It is saved on axHub with the rest of the look.",
+        "more": "Nothing reloads. Pick another one any time, or use Edit to tweak the one you picked.",
+        "related": [
+          "action:banners.edit"
+        ],
+        "kind": "button"
+      },
+      {
+        "target": "in-use",
+        "title": "In use",
+        "text": "This is the banner every app shows right now.",
+        "kind": "button"
+      },
+      {
+        "target": "desktop",
+        "title": "Desktop preview",
+        "text": "Shows each banner preview at full width, the way it looks on a desktop.",
+        "related": [
+          "phone"
+        ],
+        "kind": "button"
+      },
+      {
+        "target": "phone",
+        "title": "Phone preview",
+        "text": "Shows each banner preview at phone width (412 px), so you can see what fits on a phone. A full banner scrolls sideways and snaps; nothing overlaps.",
+        "related": [
+          "desktop"
+        ],
+        "kind": "button"
       }
     ],
     "intros": [

@@ -192,6 +192,21 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-toolbar__widgets { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xl); min-width: 0; flex: none; }
 .fx-toolbar.is-arranging .fx-toolbar__widgets { min-width: calc(var(--fx-space) * 6); min-height: calc(var(--fx-space) * 3); border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-sm); padding: 0 var(--fx-dens-gap-md); }
 
+/* ---------------- banner gallery: every banner asset as a card with a live preview (react/components/BannerGallery.tsx) ---------------- */
+.fx-banner-gallery__bar { align-items: center; gap: var(--fx-dens-gap-md); }
+.fx-banner-gallery__bar .fx-seg { flex-wrap: wrap; }
+.fx-banner-gallery__hint { margin: 0; }
+.fx-banner-gallery__grid { display: grid; gap: var(--fx-dens-gap-lg); grid-template-columns: minmax(0, 1fr); }
+.fx-banner-gallery__grid.is-phone { grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--fx-space) * 51.5)), 1fr)); }
+.fx-banner-gallery__card { display: flex; flex-direction: column; min-width: 0; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); overflow: hidden; }
+.fx-banner-gallery__card.is-on { border-color: var(--fx-accent); box-shadow: 0 0 0 var(--fx-border-w) var(--fx-accent); }
+.fx-banner-gallery__frame { display: flex; min-width: 0; overflow: hidden; pointer-events: none; user-select: none; background: var(--fx-bg); border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.fx-banner-gallery__grid.is-phone .fx-banner-gallery__frame { width: calc(var(--fx-space) * 51.5); max-width: 100%; }
+.fx-banner-gallery__frame > .fx-banner { flex: 1; z-index: auto; }
+.fx-banner-gallery__info { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); min-width: 0; }
+.fx-banner-gallery__title { gap: var(--fx-dens-gap-sm); min-width: 0; flex-wrap: wrap; }
+.fx-banner-gallery__desc { margin: 0; }
+
 /* ---------------- arrange mode: drag widgets on a host, they snap between the others (react/components/Arrange.tsx) ---------------- */
 .fx-banner.is-arranging .fx-banner__side { overflow: visible; outline: var(--fx-border-w) dashed var(--fx-border); outline-offset: -2px; border-radius: var(--fx-radius-sm); min-height: 70%; }
 .fx-arrange__item { cursor: grab; touch-action: none; user-select: none; border-radius: var(--fx-radius-sm); outline: var(--fx-border-w) solid color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
