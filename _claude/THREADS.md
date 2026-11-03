@@ -841,3 +841,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 19:13 UTC · `follow-amber` s5 done (urgent) · orchestrator
 - 2026-11-03 19:13 UTC · `ui-review-shots` note (urgent) · orchestrator
 - 2026-11-03 19:13 UTC · `ui-review-shots` s3 done (urgent) · orchestrator
+- 2026-11-03 19:15 UTC · `agent-pick` s1 done, → running (urgent) · Snap Sully (claude code)

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 373,
- "updatedAt": "2026-11-03T19:14:52.719Z",
+ "rev": 374,
+ "updatedAt": "2026-11-03T19:15:47.801Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -54790,14 +54790,14 @@
    "title": "Agent pick: every Claude session runs as the agent Brett assigns",
    "category": "Claude",
    "detail": "Brett, Nov 3 2026 (voice). Every Claude session (voice/chat Amber, Claude Code, headless) runs AS an agent Brett assigns. Agent manager 'Assign to Claude' + context menu; Claude settings 'Claude agent' default + 'Ask me every session' (default on); agent picker dialog (avatars, status, job, cost, hours, pay, rating; expand for all stats + hooks); MCP claude_session_start pops the picker as a console approval (+ axHub fallback + push), default agent until answered; work/cost/commits booked on the agent (AXF_AGENT), persona/voice field; claude_agent_get. Rule in RULES.md + CLAUDE.md. Zero tokens. Agent: Snap Sully.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T19:04:24.442Z",
-   "updatedAt": "2026-11-03T19:04:24.442Z",
+   "updatedAt": "2026-11-03T19:15:33.046Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -54818,12 +54818,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T19:15:33.046Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T19:04:24.443Z",
-     "updatedAt": "2026-11-03T19:04:24.443Z"
+     "updatedAt": "2026-11-03T19:15:33.111Z"
     },
     {
      "id": "s2",
@@ -55006,7 +55006,7 @@
     "urgent"
    ],
    "order": {
-    "urgent": 25
+    "urgent": 24
    },
    "kind": "build",
    "planRef": "",
