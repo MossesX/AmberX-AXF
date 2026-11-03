@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T21:55:46.771Z",
+ "updatedAt": "2026-11-03T21:58:07.109Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3479,7 +3479,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1882hx0689tl"
+     "uid": "st-mw18bg9f01kf7x"
     },
     {
      "id": "s2",
@@ -3497,7 +3497,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1882hx07s4h6"
+     "uid": "st-mw18bg9f02s9y2"
     },
     {
      "id": "s3",
@@ -3515,7 +3515,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1882hx08xt5k"
+     "uid": "st-mw18bg9f03zelj"
     },
     {
      "id": "s4",
@@ -3533,10 +3533,100 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1882hx09vlqo"
+     "uid": "st-mw18bg9f04ztyc"
     },
     {
      "id": "s5",
+     "text": "s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw18bg9f05ml02"
+    },
+    {
+     "id": "s6-5",
+     "text": "s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1882hx0689tl"
+    },
+    {
+     "id": "s7-6",
+     "text": "s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1882hx07s4h6"
+    },
+    {
+     "id": "s8-7",
+     "text": "s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1882hx08xt5k"
+    },
+    {
+     "id": "s9-8",
+     "text": "s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1882hx09vlqo"
+    },
+    {
+     "id": "s10-9",
      "text": "s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
      "model": "Opus",
      "why": "",
