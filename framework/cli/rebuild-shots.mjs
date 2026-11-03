@@ -7,7 +7,7 @@
 // variables for the API and Vite (AXF_APPEARANCE_HUB=http://127.0.0.1:18080 points the console at a local hub). A shot
 // may carry "signIn": {"url", "username", "password"}: the browser posts that sign-in form first (a local hub's
 // /auth/login) so the app has a hub session; "path" (the page to open, default "/") and "userAgent" (a suffix such as
-// "AXF-Embed/patches") show the console the way a host app embeds it (embed@1).
+// "AXF-Embed/host") show the console the way a host app embeds it (embed@1).
 //
 // Starts the console API (uvicorn, scratch data dir, throwaway token) and Vite from <checkout>/apps/console-web,
 // opens it in headless Chromium (Playwright), and for every shot runs its steps and saves
@@ -66,7 +66,7 @@ const saved = [];
 try {
   for (const shot of shots) {
     for (const vp of shot.viewports || ['phone', 'desktop']) {
-      // "userAgent" (a host app's marker, e.g. "AXF-Embed/patches") and "path" (e.g. "/?axf-embed=patches") show the console as another app embeds it (embed@1).
+      // "userAgent" (a host app's marker, e.g. "AXF-Embed/host") and "path" (e.g. "/?axf-embed=host") show the console as another app embeds it (embed@1).
       const ctx = await browser.newContext({ ...VIEWPORTS[vp], colorScheme: shot.colorScheme || 'dark', ...(shot.userAgent ? { userAgent: `Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Mobile Safari/537.36 ${shot.userAgent}` } : {}) });
       await ctx.addInitScript((t) => { try { localStorage.setItem('axf-console:token', t); } catch { /* blocked */ } }, token);
       const page = await ctx.newPage(); page.setDefaultNavigationTimeout(Number(args['nav-timeout']) || 30_000); page.on('pageerror', (e) => console.error(`[page error] ${shot.name}: ${e.message}\n${(e.stack ?? '').split('\n').slice(0, 4).join('\n')}`));

@@ -11,7 +11,7 @@ public data class Embed(val host: String, val hidden: List<String>, val takes: L
 /**
  * Embed engine (embed@1) — an app running inside another app's frame. Mirrors core/engines/embed.ts.
  *
- * A host app (Patches: one banner, the Dev Console / Build Pilot / axHub in tabs) marks the pages it embeds, and the
+ * A host app (e.g. one banner with other apps in tabs) marks the pages it embeds, and the
  * embedded app hides the chrome the host already shows (its banner by default), so there is one banner on screen.
  * Standalone, the same app keeps its own banner. Nothing is stored: the marker rides on every page load.
  *
@@ -21,7 +21,7 @@ public data class Embed(val host: String, val hidden: List<String>, val takes: L
  * `<host>` is `[a-z0-9][a-z0-9-]{0,31}`; the types are hideable chrome types; unknown or non-hideable types are dropped;
  * none (valid) named = [DEFAULT_HIDDEN]; `none` = hide nothing. A marker without a valid host is no marker.
  *
- * Host side (Patches): [userAgentSuffix] / [embedUrl] mark what a WebView loads. Guest side: [detect].
+ * Host side: [userAgentSuffix] / [embedUrl] mark what a WebView loads. Guest side: [detect].
  * Fixture: spec/fixtures/embed.json.
  */
 public object EmbedEngine {

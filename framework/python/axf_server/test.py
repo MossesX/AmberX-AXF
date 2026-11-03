@@ -59,15 +59,15 @@ for c in W["cases"]:
     check(got == c["expect"], f"wall fixture: {c['name']}")
 check(wall.sign(W["secret"], "conrad", "user", "console.themes,assistant.chat", "console.amberxai.com", W["now"]) == W["cases"][0]["sig"], "sign() = fixture")
 for c in W["callers"]:
-    env = {f"BP_{k}": v for k, v in c["env"].items()}
-    got = wall.Wall("BP_", env=env.get).caller(c["headers"], now=W["now"])
+    env = {f"APP_{k}": v for k, v in c["env"].items()}
+    got = wall.Wall("APP_", env=env.get).caller(c["headers"], now=W["now"])
     want = c["expect"]
     check((got.public() if got else None) == (dict(want, perms=sorted(want["perms"])) if want else None), f"wall caller fixture: {c['name']}")
 check(W["maxAgeS"] == wall.MAX_AGE_S and W["minSecret"] == wall.MIN_SECRET, "fixture limits = module limits")
 
-# prefixes: the console's AXF_ never reads Build Pilot's BP_ and vice versa
+# prefixes: the console's AXF_ never reads another app's APP_ and vice versa
 env = {"AXF_TRUST_WALL": "1", "AXF_WALL_SECRET": W["secret"]}
-check(wall.Wall("AXF_", env=env.get).trusted() and not wall.Wall("BP_", env=env.get).trusted(), "env prefix picks the vars")
+check(wall.Wall("AXF_", env=env.get).trusted() and not wall.Wall("APP_", env=env.get).trusted(), "env prefix picks the vars")
 check(not wall.Wall("AXF_", env={"AXF_TRUST_WALL": "1", "AXF_WALL_SECRET": "x" * 31}.get).trusted(), "31-char secret: not trusted")
 try:
     wall.Wall("axf")
@@ -121,20 +121,20 @@ for c in P["cases"]:
     except plugin_package.PackageError as e:
         got = {"ok": False, "error": str(e)}
     check(got == c["expect"], f"package fixture: {c['name']}: {got} vs {c['expect']}")
-good = next(c for c in P["cases"] if c["name"] == "valid pilot plugin")
+good = next(c for c in P["cases"] if c["name"] == "valid axhub plugin")
 try:
     plugin_package.verify_package(good["pkg"], kind="console")
     check(False, "kind filter")
 except plugin_package.PackageError:
     check(True, "kind filter")
 try:
-    plugin_package.verify_package(good["pkg"], kind="pilot", folder="other")
+    plugin_package.verify_package(good["pkg"], kind="axhub", folder="other")
     check(False, "folder filter")
 except plugin_package.PackageError as e:
     check("folder" in str(e), "folder filter")
-ok_pkg = plugin_package.verify_package(good["pkg"], kind="pilot", folder="extra-steps")
+ok_pkg = plugin_package.verify_package(good["pkg"], kind="axhub", folder="extra-steps")
 check([p for p, _ in plugin_package.decode_files(ok_pkg)] == ["plugin.json", "README.md", "web/index.tsx"], "decode_files")
-check(plugin_package.path_problem("pilot", "web/x.ts\n") != "", "a trailing newline is not a valid path (\\Z, not $)")
+check(plugin_package.path_problem("axhub", "web/x.ts\n") != "", "a trailing newline is not a valid path (\\Z, not $)")
 
 # ---------------------------------------------------------------- 3. storage
 with tempfile.TemporaryDirectory() as tmp:
@@ -365,7 +365,7 @@ try:
                 check(True, f"bad token {bad!r}")
 
     tok = {"v": "T"}
-    cc = console_client.ConsoleClient(base, token=lambda: tok["v"], token_hint="BP_CONSOLE_TOKEN")
+    cc = console_client.ConsoleClient(base, token=lambda: tok["v"], token_hint="APP_CONSOLE_TOKEN")
     hits.clear()
     check(cc.call("GET", "/api/ok")["path"] == "/api/ok" and hits[-1][2]["authorization"] == "Bearer T", "console call + bearer")
     check(cc.call("POST", "/api/echo", {"z": 1})["body"] == '{"z": 1}', "console POST JSON")
@@ -379,7 +379,7 @@ try:
         cc.call("GET", "/api/redir-same")
         check(False, "console redirect")
     except console_client.ConsoleError as e:
-        check("redirected" in str(e) and "BP_CONSOLE_TOKEN" in str(e), "console redirect = sign-in wall, never followed")
+        check("redirected" in str(e) and "APP_CONSOLE_TOKEN" in str(e), "console redirect = sign-in wall, never followed")
     try:
         cc.call("GET", "/api/err")
         check(False, "console error")

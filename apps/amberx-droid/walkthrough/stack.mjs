@@ -5,7 +5,7 @@
 //   device 'desktop' (1920×1080, console + axHub read live, every write kept in the browser) or 'phone' (AmberX, demo data)
 //   slide: '<id>'  an explainer slide (explainer.html) for the parts with no screen of their own
 // Helpers (record.mjs): slide, step, steps, open, view, hl, click, type, scroll, wait, go, calm, settings, menu.
-// Facts must match the code and docs; nothing unbuilt is promised (Android on hold, Patches paused are said as such).
+// Facts must match the code and docs; nothing unbuilt is promised (Android on hold is said as such).
 // Narration is written to be spoken: letters spelled out (A-X-F, M-C-P, V-P-S), "ax hub" for axHub.
 // Edit here, or edit lines in AmberX (Walkthrough → Edit the voice), then: WALKTHROUGH=stack bash walkthrough/rebuild.sh
 import { walkthroughErrors as baseErrors } from './script.mjs';
@@ -108,7 +108,7 @@ ch({ id: 'ports', title: 'One design, two ports', device: 'desktop', slide: 'por
   ex("On the Android side there's the kernel, pure Kotlin, no Android imports at all. The platform stuff, the screens, the storage, the network, all of it sits behind seams in separate modules. So the brain runs anywhere a JVM runs, and the conformance tests run in C-I on every push.", 'ports', 3),
   ex("Why bother? Because when the engines agree, a theme you make on the web looks the same on the phone. A layout you design once lays out the same everywhere. A plugin's model behaves the same. You're not porting an app. You're porting a design that already proved itself.", 'ports'),
   ex("Now, straight talk, because I don't sugarcoat. All Android framework work is on hold right now. The boss parked it. The code that's there still compiles in C-I, the kernel tests still run, but new Kotlin features wait until he picks it back up himself.", 'ports'),
-  ex("The exceptions are AmberX's Capacitor shell, which you'll see later, and Voice Vault. Patches, the app that held the other apps in tabs, is paused completely. I'm telling you what's real, not selling you a dream.", 'ports'),
+  ex("The exceptions are AmberX's Capacitor shell, which you'll see later, and Voice Vault. I'm telling you what's real, not selling you a dream.", 'ports'),
   ex("Then there's interop. The kernel never knows a protocol. Protocols are modules that plug in an adapter. Exposure is default deny, so nothing gets out unless it's switched on, and a remote caller can never get more power than the local role allows. Never.", 'path'),
   ex("And the wire error codes never change meaning. Once a code means something, it means it forever. That's how you build stuff that other stuff can trust for years, not weeks. Boring? Maybe. But boring is what keeps the lights on, kid.", 'path'),
   ex("There's even a planned Python port down the road. Same deal: the fixtures say what's right, the new port proves it matches. That's the beauty of a contract you can actually run.", 'ports', 3),
@@ -357,11 +357,10 @@ ch({ id: 'family', title: 'The family of apps', device: 'desktop', slide: 'stack
   ex("The demo app. It's the untouched output of axf init, deployed to axf dot amberx A-I dot com. On purpose. It's the proof that a brand new app, straight out of the engine, works and looks right without anybody hand polishing it.", 'stack', 1),
   ex("The Dev Console, which you've seen, on the web. There's an Android showcase of it too, built in Compose on the Kotlin side, that's parked with the rest of the Android work. Its code still compiles in C-I every push.", 'stack', 2),
   ex("Ax hub has its own repo, its own server, its own rules and its own decision log. It never depends on A-X-F underneath. A-X-F plugs into it from the outside, so the hub stays standalone and anybody's tools could connect to it the same way.", 'stack', 4),
-  ex("Build Pilot is the one to watch. It's a plugin driven app designer, built on A-X-F, web first. Its plugins can serve one stack, several, or all of them, and it builds through this repo's engine, through the Dev Console. Android's the first stack it targets. Design an app, and the engine makes it real.", 'builds'),
   ex("Voice Vault is the voice notes app, one of the few Android apps allowed to move right now. Its notes flow into AmberX under their own list, read only, so a thought you said into one app shows up in the other.", 'stack', 2),
-  ex("Walkthrough Studio is an app for making walkthroughs like this one, with its own assets for the recorder, the review and the compile. And then there's Patches, the app that held the console, Build Pilot and ax hub in tabs. It's paused, globally, until the boss says otherwise.", 'stack', 4),
+  ex("Walkthrough Studio is an app for making walkthroughs like this one, with its own assets for the recorder, the review and the compile.", 'stack', 4),
   ex("And then the ancestors. An earlier desktop AmberX in Python with Qt, dormant. And AmberX A-I Studio, a separate Next dot J-S line with its own core. Neither one uses this repo. They're where a lot of the ideas got tested before A-X-F did them right.", 'stack', 6),
-  ex("Every one of those projects that belongs to the family has a validated manifest in this repo. Eleven of them. And anything unrelated never gets a manifest and never gets touched. The family's the family. Everybody else stays out of the kitchen.", 'stack', 6),
+  ex("Every one of those projects that belongs to the family has a validated manifest in this repo. Nine of them. And anything unrelated never gets a manifest and never gets touched. The family's the family. Everybody else stays out of the kitchen.", 'stack', 6),
 ] });
 
 // extra ─────────────────────────────────────────────────────────── what it's worth
@@ -399,7 +398,7 @@ ch({ id: 'answers', title: 'Straight answers', device: 'desktop', slide: 'why', 
   ex("Isn't hot swapping the look slow or flickery? Nah. The engines compile assets into variables, and the browser just repaints. On Android, the same tokens drive Compose. It's the cheapest kind of change a screen can make.", 'swap', 3),
   ex("Do I have to use React? The reference port is React for now, and that's where the conventions get set. But the core engines are framework agnostic TypeScript, and Kotlin has the same engines. Another port proves itself the same way: match the fixtures.", 'ports', 3),
   ex("What about secrets? None in the repo, logs, chat or the shared memory. Environment variables and GitHub secrets only. A secrets scan runs over every frame of this very video before it's published, plus a blur on password and key fields.", 'stack'),
-  ex("What's not done? Straight up: Android framework work is on hold. Patches is paused. The H-R department for the agents is shelved. A few pending builds are parked waiting on the boss. I'd rather tell you that than have you find out the hard way.", 'stack'),
+  ex("What's not done? Straight up: Android framework work is on hold. The H-R department for the agents is shelved. A few pending builds are parked waiting on the boss. I'd rather tell you that than have you find out the hard way.", 'stack'),
   ex("And can I change what you're saying right now? Yep. Open the walkthrough in AmberX, hit Edit the voice, rewrite my lines, pick a different voice, change the speed. Re-voice, and only the lines you changed get redone. I'm not precious about it, kid.", 'stack'),
 ] });
 

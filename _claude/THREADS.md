@@ -35,6 +35,9 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
 | What's new banner (Urgent `whats-new-banner`; Brett Nov 3, voice): banner ticker + unread count of features merged to main, panel grouped by date / build / app, search, details, read marks, settings. Plugin `whats-shipped` (display name What's new; the folder name avoids the systems check's own `whats-new` strip), feed whats-new@1 from merged PRs (GitHub, else git), builds store, reports, Codebase changes; deployed from deploy.yml runs or the `site` branch. Report `_claude/builds/reports/whats-new-banner.md`. | built, PR #260 open, waiting in UI Review r-20261103-8861306a | `claude/whats-new-banner` | #260 | Brett: approve the UI Review item; later switch the feed's rebuild trigger to orch-live-sync's builds-live events once on main (seam in `Sources.fingerprint`) | 2026-11-03 |
+| Headless tabs (Urgent `headless-tabs`, 7 steps, Opus; Brett Nov 3, voice): every console terminal tab lives in a tmux session (re-attach + scrollback replay, Open in Moshi, detach vs Kill session); every headless run opens its own tab with agent · model · live cost + status dot (`deploy/claude-meter.mjs`, model-pricing.json, reconciled to total_cost_usd); split pane with the context chain (CLAUDE.md load order, imports, rules, Reads; rules typed out one at a time) | review (all 7 steps done; PR open, waits for UI Review) | `claude/headless-tabs` | [#259](https://github.com/MossesX/AmberX-AXF/pull/259) | Report `_claude/builds/reports/headless-tabs.md`. Brett: approve UI Review r-20261103-3sp5x01 (group `headless-tabs - Nov 3 9:44 AM`). Console needs a redeploy for tmux in the image. Tests: terminal 97/97, check-headless-tabs 30/30 | 2026-11-03 |
+| Retire Patches and Build Pilot (Urgent `kill-patches-pilot`; Brett Nov 3, voice: "Patches is dead … Build Pilot dead"): removed both apps and every reference (repo, rules, store builds archived), VPS containers/Coolify apps after a snapshot to `/root/archive/retired-2026-11-03/`, axHub projects, axHub repo PR; MossesX/Build-Pilot archived | review (PR open, the push banner merges it) | `claude/kill-patches-pilot` | [#258](https://github.com/MossesX/AmberX-AXF/pull/258), axHub [#32](https://github.com/MossesX/axHub/pull/32) | report `_claude/builds/reports/kill-patches-pilot.md` | 2026-11-03 |
+| Agent group chats on axHub (Breakroom profile; Brett Nov 3 voice): read-only redacted mirror of the Breakroom group chat on the hub (`agent-swarm/chats/` in amberx-axf `_data`, read with `axhub.memory_read`), a mentions-of-Brett filter (CLI + API), and a Breakroom "About Brett" view | PR open, UI Review waiting | `claude/agent-chats-hub` | (see PR) | push banner merges once CI + UI Review pass | 2026-11-03 |
 | Notes vault (Urgent `notes-vault`, Opus; Brett Nov 3, voice): every hand-saved note (handoffs, session logs, plans, install notes, saved commands) moved into `/projects/_shared/_claude/notes/` with hub versions kept + `notes/INDEX.md`; console plugin `notes-browser` (Plugins → Notes) + capability `axf.notes@1`; md-studio s11 Notes scope | review (s1–s6 done; PR open, the push banner merges it; UI Review waiting) | `claude/notes-vault` | [#256](https://github.com/MossesX/AmberX-AXF/pull/256) | Report `_claude/builds/reports/notes-vault.md`. Brett: settle the `claude-sync` holds for the moved files in other checkouts (keep hub = delete local) | 2026-11-03 |
 | Orchestrator live sync (Urgent `orch-live-sync`, Opus, 7 steps; Brett Nov 3, voice: "every completed step must reach the orchestrator and appear on main immediately"): store writes go live to main as status-only commits (`framework/cli/builds-live.mjs`), newer-wins merge, `built` = awaiting merge, reconciler (`builds-reconcile.mjs`, session start + 10-min cron), banner item `builds-live`, THREADS Live build log | review (all 7 steps done; PR open, the push banner merges it) | `claude/orch-live-sync` | [#255](https://github.com/MossesX/AmberX-AXF/pull/255) | Backfill live on main: dock-engine/token-control/theme-editor built, urgent-builds archived, xlayout 12/12; reconciler fixed 43 builds; 28 orphan PRs + 2 branches flagged. Report `_claude/builds/reports/orch-live-sync.md`. Brett: none needed | 2026-11-03 |
 | AmberX app backups (Urgent `amberx-backup-fix`, Opus; Brett Nov 3, voice): `amberx-app-backup-1` restart-looped since ~Oct 3 because backup.sh had CRLF line endings (Windows upload). Fixed live on the VPS (LF script, CR-stripping entrypoint, 26 h healthcheck), fresh dump verified by a full scratch restore, new systems-check item `amberx-backups` | review (VPS fix live; PR open, the push banner merges it) | `claude/amberx-backup-fix` | opening | Brett: carry `.gitattributes` (`*.sh text eol=lf`) + the compose `backup` changes into the AmberX source repo on Windows, or the next deploy.ts upload reverts the compose. Old dumps archived in /opt/amberx-app/backups-archive. Report `_claude/builds/reports/amberx-backup-fix.md` | 2026-11-03 |
@@ -516,6 +519,7 @@ VPS). The session reads the rules and this file first, as usual.
 
 - 2026-11-03 13:53 UTC · `orch-live-sync` s1 done (urgent) · orchestrator
 - 2026-11-03 13:54 UTC · `xlayout` s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done (big-dog) · builds-live
+- 2026-11-03 14:45 UTC · `headless-tabs` s1–s7 done (urgent) · PR #259 · UI Review r-20261103-3sp5x01
 - 2026-11-03 13:55 UTC · `orch-live-sync` s2 done (urgent) · orchestrator
 - 2026-11-03 13:55 UTC · `orch-live-sync` s3 done (urgent) · orchestrator
 - 2026-11-03 13:55 UTC · `orch-live-sync` s4 done (urgent) · orchestrator
@@ -587,3 +591,22 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 16:07 UTC · `land-everything` note (urgent) · orchestrator
 - 2026-11-03 16:07 UTC · `land-everything` s1 done (urgent) · orchestrator
 - 2026-11-03 16:07 UTC · `crew-retrain` s5 done (breakroom) · orchestrator
+- 2026-11-03 16:12 UTC · `crew-retrain` s6 done (breakroom) · orchestrator
+- 2026-11-03 16:14 UTC · `tools-plugin` note (refactor) · foreign-write
+- 2026-11-03 16:14 UTC · `land-everything` note (urgent) · orchestrator
+- 2026-11-03 16:14 UTC · `land-everything` s2 done (urgent) · orchestrator
+- 2026-11-03 16:22 UTC · `tools-plugin` note (refactor) · foreign-write
+- 2026-11-03 16:22 UTC · `crew-retrain` branch claude/crew-retrain, PR #265 (breakroom) · builds-live
+- 2026-11-03 16:23 UTC · `crew-retrain` s7 done (breakroom) · orchestrator
+- 2026-11-03 16:23 UTC · `crew-retrain` s8 done, → built (breakroom) · orchestrator
+- 2026-11-03 16:23 UTC · `crew-retrain` note (breakroom) · orchestrator
+- 2026-11-03 16:23 UTC · `land-everything` note (urgent) · orchestrator
+- 2026-11-03 16:23 UTC · `kill-patches-pilot` PR #258, merged (urgent) · builds-live
+- 2026-11-03 16:23 UTC · `kill-patches-pilot` → complete (urgent) · orchestrator
+- 2026-11-03 16:24 UTC · `land-everything` note (urgent) · orchestrator
+- 2026-11-03 16:24 UTC · `land-everything` s3 done (urgent) · orchestrator
+- 2026-11-03 16:24 UTC · `kill-patches-pilot` → running, note (urgent) · orchestrator
+- 2026-11-03 16:24 UTC · `kill-patches-pilot` → complete (urgent) · orchestrator
+- 2026-11-03 16:29 UTC · `headless-tabs` PR #259, merged (urgent) · builds-live
+- 2026-11-03 16:29 UTC · `land-everything` note (urgent) · orchestrator
+- 2026-11-03 16:29 UTC · `land-everything` s4 done (urgent) · orchestrator

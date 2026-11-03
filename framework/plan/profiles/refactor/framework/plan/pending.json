@@ -1029,6 +1029,10 @@
     {
      "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
      "at": "2026-10-27T22:41:47.258Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches is retired, so the Tools tab in Patches web (s3) is gone; the Tools plugin itself is unaffected.",
+     "at": "2026-11-03T14:24:40.470Z"
     }
    ],
    "subPrompts": [
@@ -1055,7 +1059,7 @@
    ],
    "createdAt": "2026-10-22T14:05:33.771Z",
    "builtAt": "",
-   "updatedAt": "2026-10-28T19:31:15.654Z",
+   "updatedAt": "2026-11-03T14:24:40.470Z",
    "source": "chat"
   },
   {

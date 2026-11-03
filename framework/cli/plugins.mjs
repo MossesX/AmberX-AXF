@@ -37,7 +37,7 @@ export function builtPlugins(root = ROOT) {
 }
 
 /**
- * `tabable` (plugin@1, Oct 22 2026): can a host app (Patches) add this plugin to its tab group? Every plugin declares it
+ * `tabable` (plugin@1, Oct 22 2026): can a host app (embed@1) add this plugin to its tab group? Every plugin declares it
  * (false by default); `true` = its first page (`view:<id>` in provides), `{view, label?, icon?}` = that page, which it
  * must provide. A plugin without a page (settings only) can't be tabable.
  */

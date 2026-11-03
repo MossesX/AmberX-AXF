@@ -2,7 +2,7 @@
  * The console is a developer app (Brett's decision, Oct 20 2026): its look and settings come from axHub's data server
  * (`shared/settings/appearance.json`, framework `HubAppearanceSource`), it waits for the hub instead of running
  * without it, and every change made here (Settings → Appearance, the theme manager, a roll) is saved there, so every
- * other developer app (Build Pilot, the AXHub phone app, the Android console, axHub's own pages) follows it live.
+ * other developer app (the AXHub phone app, the Android console, axHub's own pages) follows it live.
  *
  * The hub's address comes from the console server (`GET /api/me` → `hub`, the same AXF_WALL_HUB the wall uses), so a
  * local dev console against a local hub works too; until the server answers, the default hub is used.
@@ -61,7 +61,7 @@ function HubLookPanel() {
     <div className="fx-stack">
       <p style={{ margin: 0 }}>
         Every choice on this page is saved to axHub (<span className="fx-mono">{hubOrigin()}</span>, document <span className="fx-mono">shared/settings/appearance.json</span>)
-        and every developer app follows it live: this console, Build Pilot, the AXHub phone app, the Android console and axHub's own pages.
+        and every developer app follows it live: this console, the AXHub phone app, the Android console and axHub's own pages.
         A change made in any of them shows up here too.
       </p>
       <div className="fx-row fx-row--wrap">

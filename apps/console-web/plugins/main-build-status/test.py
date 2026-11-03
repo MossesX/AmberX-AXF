@@ -170,12 +170,12 @@ check(it["state"] == "unknown" and "GITHUB_TOKEN" in it["error"] and len(SEEN) =
 os.environ["GITHUB_TOKEN"] = TOKEN
 
 # config
-r = c.put("/p/config", json={"watch": [{"repo": "MossesX/axHub", "branch": "main", "workflow": "Android framework + console"}, {"repo": "MossesX/Build-Pilot", "branch": "dev", "workflow": "123"}]})
+r = c.put("/p/config", json={"watch": [{"repo": "MossesX/axHub", "branch": "main", "workflow": "Android framework + console"}, {"repo": "MossesX/studiox", "branch": "dev", "workflow": "123"}]})
 check(r.status_code == 200 and len(r.json()["watch"]) == 2, "config: an open list of watches saved")
 f = Path(os.environ["AXF_MAIN_BUILD_STATUS_DIR"]) / "config.json"
 check((f.stat().st_mode & 0o777) == 0o600 and TOKEN not in f.read_text(), "config file private (0600), no secrets")
 RUNS["/repos/MossesX/axHub/actions/runs"] = [run(8, name="Other"), run(9, name="Android framework + console", conclusion="failure")]
-RUNS["/repos/MossesX/Build-Pilot/actions/workflows/123/runs"] = [run(10)]
+RUNS["/repos/MossesX/studiox/actions/workflows/123/runs"] = [run(10)]
 JOBS[9] = []
 items = status()["items"]
 check(items[0]["state"] == "failure" and items[0]["runNumber"] == 109, "workflow by name: runs filtered by the name GitHub shows")

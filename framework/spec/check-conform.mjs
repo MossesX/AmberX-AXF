@@ -5,7 +5,7 @@
  *   1. check-theme.mjs fails on non-conformant web CSS / TSX and Kotlin UI in a generated app (outside the repo), and
  *      names the token to use;
  *   2. scale-adopt's adoptLine moves those literals onto tokens, and the adopted code passes;
- *   3. the frozen-code baseline only lists frozen code (Android Kotlin, Patches), never anything else.
+ *   3. the frozen-code baseline only lists frozen code (Android Kotlin), never anything else.
  *
  *   node framework/spec/check-conform.mjs
  */
@@ -57,8 +57,8 @@ try {
 }
 
 const base = JSON.parse(readFileSync(join(ROOT, 'framework/spec/conform-baseline.json'), 'utf8'));
-const stray = Object.keys(base.files ?? {}).filter((f) => !(f.endsWith('.kt') && !/^framework\/(templates|library-templates|boilerplates)\//.test(f)) && !/^apps\/patches(-web)?\//.test(f));
-ok(!stray.length, `baseline only holds frozen code (Android Kotlin, Patches)${stray.length ? `: ${stray.join(', ')}` : ''}`);
+const stray = Object.keys(base.files ?? {}).filter((f) => !(f.endsWith('.kt') && !/^framework\/(templates|library-templates|boilerplates)\//.test(f)));
+ok(!stray.length, `baseline only holds frozen code (Android Kotlin)${stray.length ? `: ${stray.join(', ')}` : ''}`);
 
 console.log(bad ? `✗ ${bad} of ${n} conformance self-checks failed` : `✓ conformance self-test — ${n} checks`);
 process.exit(bad ? 1 : 0);

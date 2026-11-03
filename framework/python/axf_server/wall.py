@@ -14,7 +14,7 @@ and `<PREFIX>WALL_SECRET` here (≥ 32 characters), and only when the installer 
 `framework/spec/check-axf-server.mjs`).
 
     wall = Wall("AXF_")          # the Dev Console (AXF_WALL_SECRET, AXF_TRUST_WALL)
-    wall = Wall("BP_")           # Build Pilot (BP_WALL_SECRET, BP_TRUST_WALL)
+    wall = Wall("APP_")          # another app (APP_WALL_SECRET, APP_TRUST_WALL)
     c = wall.caller(request.headers)      # Caller | None
     wall.same_origin(request)             # browser-session writes come from this site
     user_may(c, method, path, …)          # the console's default-deny rules for signed-in hub users

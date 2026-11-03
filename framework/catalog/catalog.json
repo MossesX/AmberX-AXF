@@ -612,7 +612,7 @@
             {
               "id": "f.pyserver",
               "title": "Shared Python server helpers (axf_server): sign-in wall, private storage, safe outbound HTTP, credentials, console client, plugin package checks",
-              "note": "One copy for every AXF app server (console, plugins, Build Pilot); cross-language parts pinned by spec/fixtures (wall-signature, plugin-package).",
+              "note": "One copy for every AXF app server (console, plugins); cross-language parts pinned by spec/fixtures (wall-signature, plugin-package).",
               "tag": "lock",
               "recommended": true,
               "suggests": []
@@ -862,7 +862,7 @@
             {
               "id": "k.embed",
               "title": "Embed engine (embed@1): a host app marks the pages it embeds (query / user-agent marker); the embedded app hides the chrome the host shows (its banner by default) over the user's choice",
-              "note": "framework/core/engines/embed.ts = ai.amberx.axf.kernel.engine.EmbedEngine, hide engine `forced` layer, AxfRuntime.embedded / slotHiddenByHost on both ports; fixture spec/fixtures/embed.json (spec/check-embed.mts, EmbedConformanceTest); first host: apps/patches (Oct 21 2026, Fable; Kotlin written without a compiler)",
+              "note": "framework/core/engines/embed.ts = ai.amberx.axf.kernel.engine.EmbedEngine, hide engine `forced` layer, AxfRuntime.embedded / slotHiddenByHost on both ports; fixture spec/fixtures/embed.json (spec/check-embed.mts, EmbedConformanceTest) (Oct 21 2026, Fable; Kotlin written without a compiler)",
               "tag": "lib",
               "recommended": true,
               "suggests": []
@@ -1663,13 +1663,13 @@
             {
               "id": "lib.hubsync",
               "title": "axHub sync library: one look, settings and data for every app and device; look always/follow/off, Settings screen values and app tables on axHub, settings interface to connect and configure",
-              "note": "framework/libs/hubsync (core.ts rules, sync.ts HubSync/FollowSource/startHubSync, index.tsx hubSyncLibrary + Settings → Plugins → axHub sync); check spec/check-hubsync.mts; console plugin hub-sync; Voice Vault Kotlin twin in app code (Oct 24 2026, Opus)",
+              "note": "framework/libs/hubsync (core.ts rules, sync.ts HubSync/FollowSource/startHubSync, index.tsx hubSyncLibrary + Settings \u2192 Plugins \u2192 axHub sync); check spec/check-hubsync.mts; console plugin hub-sync; Voice Vault Kotlin twin in app code (Oct 24 2026, Opus)",
               "tag": "lib",
               "recommended": false
             },
             {
               "id": "lib.hubstore",
-              "title": "axHub storage library: an app's settings and data on axHub's data server instead of the device; two classes (HubSettings, HubData); when installed (Build Pilot, axf install) pick settings only, all data, or some tables",
+              "title": "axHub storage library: an app's settings and data on axHub's data server instead of the device; two classes (HubSettings, HubData); when installed (axf install) pick settings only, all data, or some tables",
               "note": "framework/libs/hubstore + library.json (parts settings {file, mirror}, data {mode all|some, tables, folder}); check spec/check-hubstore.mts; first used by the console's Voice notes plugin (Oct 23 2026, Opus; Android twin deferred)",
               "tag": "lib",
               "recommended": false,
@@ -3508,14 +3508,6 @@
               "title": "In-app browser / WebView running the web demo (axf.amberxai.com)",
               "note": "",
               "tag": "lib",
-              "recommended": false,
-              "suggests": []
-            },
-            {
-              "id": "c.patches",
-              "title": "Patches: one banner, three tabs \u2014 the Dev Console, Build Pilot and axHub as web apps in origin-locked web views kept alive across tabs (embed@1 host)",
-              "note": "apps/patches (android-compose developer app) + lib-hub WebAppView / WebAppHolder (Oct 21 2026, Fable; written without a compiler)",
-              "tag": "app",
               "recommended": false,
               "suggests": []
             },
