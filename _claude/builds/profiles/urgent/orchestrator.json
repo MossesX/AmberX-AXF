@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T17:09:42.955Z",
+ "updatedAt": "2026-11-03T17:17:12.902Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -39,6 +39,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -280,6 +281,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -381,6 +383,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -611,6 +614,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -730,6 +734,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -986,6 +991,140 @@
    ]
   },
   {
+   "id": "model-upgrade-approval",
+   "title": "Model upgrades need Brett's approval; downgrades don't",
+   "category": "Urgent",
+   "detail": "Brett Nov 3 2026 (voice): a headless build approved its own phase switch. Downgrade = allowed, recorded; upgrade = Brett's approval only (console click or axHub confirm), never self-approved. Ranking in model-policy (Fable above Opus). Replaces the stopped model-switch-approval build.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/model-upgrade-approval",
+   "pr": "#253",
+   "mergedAt": "2026-11-03T17:16:50.568Z",
+   "createdAt": "2026-11-03T12:41:39.428Z",
+   "updatedAt": "2026-11-03T17:16:51.661Z",
+   "builtAt": "2026-11-03T12:42:55.129Z",
+   "notes": [
+    {
+     "text": "PR #253 open (push banner merges it). Left: axHub repo side (confirm policy + signed approval header), UI Review shots of the Approvals tab.",
+     "at": "2026-11-03T12:42:56.171Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Ranking + switch rules in model-policy; framework/core/model-switch.mjs (who may approve, phases, held steps)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T12:41:40.209Z",
+     "note": "",
+     "uid": "st-mw0ofxx6072tca"
+    },
+    {
+     "id": "s2",
+     "text": "Orchestrator core: downgrade passes + recorded, upgrade needs approver; request-upgrade/deny-upgrade; edit-step raise; briefs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T12:41:40.868Z",
+     "note": "",
+     "uid": "st-mw0ofxx608i9e9"
+    },
+    {
+     "id": "s3",
+     "text": "CLI + console server + console MCP tool (axHub confirm path): approver only from Brett",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T12:41:41.835Z",
+     "note": "",
+     "uid": "st-mw0ofxx609lb7d"
+    },
+    {
+     "id": "s4",
+     "text": "Launcher gate (model-gate.mjs from claude-headless.sh) + swarm planner gate",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T12:41:42.956Z",
+     "note": "",
+     "uid": "st-mw0ofxx60a8q4g"
+    },
+    {
+     "id": "s5",
+     "text": "Audit + mark self-approved; rules, decisions, README, CLAUDE.md",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T12:41:44.092Z",
+     "note": "",
+     "uid": "st-mw0ofxx60bt5fj"
+    },
+    {
+     "id": "s6",
+     "text": "Tests (orchestrator, swarm, model-policy, server), THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T12:42:55.128Z",
+     "note": "",
+     "uid": "st-mw0ofxx60clwya"
+    }
+   ]
+  },
+  {
    "id": "console-commands",
    "title": "Console commands over API, MCP and CLI: Amber loads screens, dialogs, settings and actions in Brett's open console",
    "category": "Urgent",
@@ -1007,6 +1146,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1176,6 +1316,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1330,6 +1471,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1481,6 +1623,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1591,6 +1734,7 @@
    "builtAt": "2026-11-03T14:10:56.767Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1732,6 +1876,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1891,7 +2036,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T17:09:41.054Z",
+   "updatedAt": "2026-11-03T17:17:11.298Z",
    "builtAt": "",
    "notes": [
     {
@@ -1941,9 +2086,14 @@
     {
      "text": "Landed claude/theme-editor (PR #243) on main at 6f20dd54",
      "at": "2026-11-03T17:09:41.054Z"
+    },
+    {
+     "text": "Landed claude/model-upgrade-approval (PR #253) on main at 03d1d75f",
+     "at": "2026-11-03T17:17:00.392Z"
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2084,8 +2234,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T17:17:11.298Z",
      "note": "",
      "uid": "st-mw0uj4uc0j16t8"
     },
