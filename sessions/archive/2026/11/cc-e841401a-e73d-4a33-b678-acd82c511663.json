@@ -1,0 +1,78 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-e841401a-e73d-4a33-b678-acd82c511663",
+ "source": "claude-code",
+ "sessionId": "e841401a-e73d-4a33-b678-acd82c511663",
+ "project": "axhub",
+ "title": "# Build: one-look-default (Fable) Brett, Nov 1 2026 (voice, verbatim): \"How come the refactor didn't compress banners. …",
+ "startedAt": "2026-11-01T20:49:14.928Z",
+ "endedAt": "2026-11-01T20:49:15.929Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/one-look-default",
+  "repo": "",
+  "branch": "claude/one-look-default"
+ },
+ "user": "Brett (root)",
+ "models": [],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-01T20:49:15.447Z",
+   "kind": "prompt",
+   "text": "# Build: one-look-default (Fable) Brett, Nov 1 2026 (voice, verbatim): \"How come the refactor didn't compress banners. I need a new default style and color theme that GizmoX, amberx, and axhub all inherit from axhub. Change in one changed all. Then I need the 2 new themes to be combined into a default design theme. When a design theme is loaded the individual style and color themes are not applied. Only when something changes is the design pack overridden with the individual packs. Remove all appearance and theme editing abilities from the settings interface that is read from axHub and change…",
+   "model": "",
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0,
+   "costEstimated": false,
+   "seconds": 0,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [
+    "chg-20261101-f178462b59"
+   ],
+   "features": [],
+   "output": "You've hit your weekly limit · resets Nov 3, 7am (UTC)"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261101-f178462b59"
+ ],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 0,
+  "output": 0,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thinking": 0,
+  "costUsd": 0,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0
+ },
+ "ingestedAt": "2026-11-01T20:49:16.067Z"
+}
