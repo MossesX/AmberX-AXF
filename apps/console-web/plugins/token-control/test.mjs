@@ -168,15 +168,17 @@ const BRETT = { via: 'console', name: 'brett' };
 const grant = (scope, minutes, opts = {}) => runControl({ op: 'act', target: 'pass.scopes', path: scope, action: 'grant', input: minutes === undefined ? {} : { minutes }, by: 'claude' }, opts);
 const passOf = async (scope, now) => (await runControl({ op: 'get', target: 'pass.scopes', path: scope }, { now })).item;
 
-await test('pass engine: scopes, coverage, minutes, deletes never covered', () => {
+await test('pass engine: scopes, coverage, minutes, narrow scopes never cover deletes', () => {
   assert.equal(pc.passScopeOf({ op: 'set', target: 'tokens.theme' }), 'tokens.theme');
   assert.equal(pc.passScopeOf({ op: 'reset', target: 'tokens.layout' }), 'tokens.layout');
-  assert.equal(pc.passScopeOf({ op: 'remove', target: 'amberx.items' }), null);
-  assert.equal(pc.passScopeOf({ op: 'set', target: 'tokens.slots' }), null, 'slot swaps are not in a token scope');
-  assert.equal(pc.passScopeOf({ op: 'set', target: 'amberx.items' }), null);
-  assert.deepEqual(pc.passScopesFor({ op: 'set', target: 'tokens.style' }), ['tokens.style', 'tokens.*']);
+  assert.equal(pc.passScopeOf({ op: 'remove', target: 'amberx.items' }), 'all', 'every other write falls in all');
+  assert.equal(pc.passScopeOf({ op: 'set', target: 'tokens.slots' }), 'all', 'slot swaps are in no token scope, only all');
+  assert.equal(pc.passScopeOf({ op: 'set', target: 'amberx.items' }), 'all');
+  assert.equal(pc.passScopeOf({ op: 'get', target: 'amberx.items' }), null, 'reads need no pass');
+  assert.equal(pc.passScopeOf({ op: 'act', target: 'pass.scopes', action: 'grant' }), null, 'a pass never covers the pass target');
+  assert.deepEqual(pc.passScopesFor({ op: 'set', target: 'tokens.style' }), ['all', 'tokens.style', 'tokens.*']);
   assert.equal(pc.passMinutes(undefined), 30); assert.equal(pc.passMinutes(0), 1); assert.equal(pc.passMinutes(999), 240); assert.equal(pc.passMinutes(90, 60), 60);
-  assert.equal(pc.passScopeId('colours'), 'tokens.theme'); assert.equal(pc.passScopeId('all'), 'tokens.*'); assert.equal(pc.passScopeId('nope'), null);
+  assert.equal(pc.passScopeId('colours'), 'tokens.theme'); assert.equal(pc.passScopeId('all'), 'all'); assert.equal(pc.passScopeId('everything'), 'all'); assert.equal(pc.passScopeId(''), 'all', 'no scope = everything'); assert.equal(pc.passScopeId('tokens'), 'tokens.*'); assert.equal(pc.passScopeId('nope'), null);
   const p = { id: 'p', scope: 'tokens.*', state: 'active', expiresAt: new Date(1e12 + 60000).toISOString() };
   for (const op of ['remove', 'add', 'act']) assert.equal(pc.passCovering([p], { op, target: 'tokens.theme' }, 1e12), null, `${op} is never covered`);
   assert.equal(pc.passCovering([p], { op: 'set', target: 'tokens.theme' }, 1e12), p);
@@ -212,10 +214,10 @@ await test('pass: Brett\'s own grant is on at once; covered writes are logged; d
   assert.equal((await passOf('tokens.*')).active.changes, 3);
   const other = await runControl({ op: 'set', target: 'tokens.sizing', path: 'button.height', value: 2.5 });
   assert.equal(other.ok, true);
-  assert.equal(other.passScope, null); assert.equal(other.pass, undefined, 'sizing is outside every pass scope');
+  assert.equal(other.passScope, 'all'); assert.equal(other.pass, undefined, 'sizing is outside every token scope: only an all pass covers it');
   const a = await runControl({ op: 'add', target: 'amberx.items', value: { text: 'pass cannot delete me' } });
   const rm = await runControl({ op: 'remove', target: 'amberx.items', path: a.item.id });
-  assert.equal(rm.code, 'confirmation_required', 'deletes are never covered by a pass');
+  assert.equal(rm.code, 'confirmation_required', 'a token pass never covers deletes');
   const log = readFileSync(process.env.AXF_THREADS_FILE, 'utf8');
   assert.match(log, /## Token passes \(log\)/); assert.match(log, /granted 30 min by brett \(console\)/); assert.match(log, /claude: tokens\.layout navWidth .* → 220/);
   const { readAudit } = await import('./lib/common.mjs');
@@ -264,7 +266,7 @@ await test('pass: extend replaces and keeps the change log; revoke; expiry on th
 await test('pass: signed publication, check, CLI words', async () => {
   await grant('tokens.theme', 15, { approver: BRETT });
   const p = passLib.publication();
-  assert.equal(p.body.$axf, 'control-pass@1'); assert.equal(p.body.active.length, 1); assert.deepEqual(p.body.never, ['remove', 'add', 'act']);
+  assert.equal(p.body.$axf, 'control-pass@1'); assert.equal(p.body.active.length, 1); assert.equal(p.body.default, 'all'); assert.deepEqual(p.body.excluded, ['pass.scopes']); assert.deepEqual(p.body.scopes.all.targets, ['*']);
   assert.ok(passLib.verifyPayload(p.payload, p.signature)); assert.ok(!passLib.verifyPayload(p.payload.replace('tokens.theme', 'tokens.style'), p.signature));
   assert.ok(!passLib.verifyPayload(p.payload, p.signature, Date.now() + 10 * 60000), 'old signatures expire');
   assert.ok(passLib.coveringPass({ op: 'set', target: 'tokens.theme' })); assert.equal(passLib.coveringPass({ op: 'remove', target: 'tokens.theme' }), null);
@@ -275,6 +277,65 @@ await test('pass: signed publication, check, CLI words', async () => {
   try { assert.equal(await main(['token', 'pass', 'status']), 0); assert.equal(await main(['token', 'pass', 'grant', 'layout', '5']), 0); } finally { console.log = log; }
   assert.match(printed, /Theme changes run without veto until/); assert.match(printed, /waiting for Brett/, 'the CLI without a terminal only files a request');
   await runControl({ op: 'act', target: 'pass.scopes', path: 'tokens.theme', action: 'revoke' });
+});
+
+await test('pass all: everything by default, ordinary deletes skip the confirm, irreversible ones only when included', async () => {
+  // CLI: no scope = everything; --scope narrows; the old word order still works
+  assert.deepEqual(commandFromArgv(['pass', 'grant', '30']).command, { op: 'act', target: 'pass.scopes', action: 'grant', path: 'all', input: { minutes: 30 } });
+  assert.equal(commandFromArgv(['pass', 'grant', '30', '--scope', 'theme']).command.path, 'tokens.theme');
+  assert.equal(commandFromArgv(['pass', 'grant', '--include-irreversible']).command.input.include_irreversible, true);
+  assert.equal(commandFromArgv(['pass', 'revoke']).command.path, 'all');
+  assert.equal(commandFromArgv(['pass', 'status']).command.op, 'list');
+  assert.equal((await runControl({ op: 'act', target: 'pass.scopes', path: 'tokens.theme', action: 'grant', input: { include_irreversible: true } })).code, 'validation', 'include_irreversible only goes with all');
+
+  const g = await grant('all', 30, { approver: BRETT });
+  assert.equal(g.item.state, 'active'); assert.equal(g.item.label, 'Everything'); assert.equal(g.item.include_irreversible, false);
+  assert.match(g.text, /^Every command runs without veto until /);
+  // a token write in a narrow scope, a host token, an AmberX add and set: all covered and logged
+  const t = await runControl({ op: 'set', target: 'tokens.theme', path: 'accent', value: '#224466', by: 'claude' }); // theme-ok
+  assert.equal(t.pass.scope, 'all'); assert.equal(t.passScope, 'tokens.theme');
+  const sz = await runControl({ op: 'set', target: 'tokens.sizing', path: 'button.height', value: 2.25, by: 'claude' });
+  assert.equal(sz.pass.id, g.item.id, 'sizing is covered by all');
+  const a = await runControl({ op: 'add', target: 'amberx.items', value: { kind: 'todo', text: 'made under the pass' }, by: 'claude' });
+  assert.equal(a.pass.id, g.item.id);
+  assert.equal((await runControl({ op: 'set', target: 'amberx.items', path: a.item.id, value: { pinned: true }, by: 'claude' })).pass.id, g.item.id);
+  // an ordinary delete (a plan: its history brings it back) runs without the confirm token
+  const plan = await runControl({ op: 'add', target: 'planner.plans', value: { title: 'Pass plan' }, by: 'claude' });
+  const prm = await runControl({ op: 'remove', target: 'planner.plans', path: plan.item.id, by: 'claude' });
+  assert.equal(prm.ok, true); assert.equal(prm.confirmSkipped, true); assert.equal(prm.pass.id, g.item.id);
+  // an AmberX hard delete is irreversible: it still confirms, and says why
+  const irr = await runControl({ op: 'remove', target: 'amberx.items', path: a.item.id, by: 'claude' });
+  assert.equal(irr.code, 'confirmation_required'); assert.equal(irr.irreversible, true);
+  // a pass never grants or approves a pass
+  const self = await grant('tokens.layout', 10);
+  assert.equal(self.item.state, 'pending', 'a grant under an all pass is still only a request');
+  await runControl({ op: 'act', target: 'pass.scopes', path: 'tokens.layout', action: 'revoke', by: 'test' });
+  // axHub's question for any held call
+  assert.ok(passLib.coveringCall({ tool: 'vps.run' })); assert.equal(passLib.coveringCall({ tool: 'github.repos/delete', irreversible: true }), null);
+  // undo: tokens go back, the rest is listed
+  const before = (await passOf('all')).active;
+  assert.equal(before.undoable, 2); assert.ok(before.notUndoable >= 4, 'add, set, plan add, plan remove');
+  const u = await runControl({ op: 'act', target: 'pass.scopes', path: 'all', action: 'undo', by: 'brett' });
+  assert.equal(u.restored.length, 2); assert.ok(u.notUndoable.some((x) => x.op === 'remove' && x.target === 'planner.plans'));
+  assert.match(u.text, /can't be rolled back automatically: .*add amberx\.items .*made under the pass/);
+  assert.equal((await runControl({ op: 'get', target: 'tokens.sizing', path: 'button.height' })).value, 2.5, 'sizing back to its override from before the pass');
+  assert.match(readFileSync(process.env.AXF_THREADS_FILE, 'utf8'), /\(all\) · claude: remove planner\.plans/);
+
+  // include_irreversible: Brett's own grant (or axHub's signature over the flag) reaches hard deletes
+  const req = await runControl({ op: 'act', target: 'pass.scopes', path: 'all', action: 'grant', input: { minutes: 10, include_irreversible: true }, by: 'claude' });
+  assert.equal(req.item.state, 'pending');
+  const narrowSig = passLib.signPayload(passLib.approvalMessage(req.item.id, 'all', 10, 'brett'));
+  assert.equal((await runControl({ op: 'act', target: 'pass.scopes', path: 'all', action: 'approve', input: { request: req.item.id } }, { proof: { approver: 'brett', signature: narrowSig } })).code, 'denied', 'an approval without the flag does not approve a wider request');
+  const sig = passLib.signPayload(passLib.approvalMessage(req.item.id, 'all', 10, 'brett', true));
+  const ok = await runControl({ op: 'act', target: 'pass.scopes', path: 'all', action: 'approve', input: { request: req.item.id } }, { proof: { approver: 'brett', signature: sig } });
+  assert.equal(ok.item.state, 'active'); assert.equal(ok.item.include_irreversible, true); assert.match(ok.text, /irreversible deletes included/);
+  const gone = await runControl({ op: 'remove', target: 'amberx.items', path: a.item.id, by: 'claude' });
+  assert.equal(gone.ok, true); assert.equal(gone.confirmSkipped, true);
+  assert.ok(passLib.coveringCall({ tool: 'github.repos/delete', irreversible: true }));
+  const rv = await runControl({ op: 'act', target: 'pass.scopes', path: 'all', action: 'revoke', by: 'brett' });
+  assert.match(rv.text, /^Everything pass revoked: commands need the veto again\.$/);
+  assert.equal((await runControl({ op: 'remove', target: 'planner.plans', path: 'nope' })).code, 'confirmation_required', 'after the pass deletes confirm again');
+  await runControl({ op: 'reset', target: 'tokens.theme' });
 });
 
 rmSync(T, { recursive: true, force: true });

@@ -1287,6 +1287,9 @@
           "done": "boolean"
         }
       },
+      "irreversible": [
+        "remove"
+      ],
       "doc": "amberx-notes@1 items (apps/amberx-droid notes core): every note, to-do and task on every device. kind picks the shape; a task may have subtasks (parent) and a checklist."
     },
     "amberx.lists": {
@@ -1323,6 +1326,9 @@
           "name": "string"
         }
       },
+      "irreversible": [
+        "remove"
+      ],
       "doc": "The list tree items live in (Inbox and the plugin lists are system lists: they can be renamed, never removed).",
       "protected": [
         "inbox",
@@ -1406,6 +1412,21 @@
       ],
       "paths": [
         {
+          "id": "all",
+          "kind": "scope",
+          "label": "Everything",
+          "targets": [
+            "*"
+          ],
+          "ops": [
+            "set",
+            "reset",
+            "add",
+            "remove",
+            "act"
+          ]
+        },
+        {
           "id": "tokens.theme",
           "kind": "scope",
           "label": "Theme",
@@ -1457,6 +1478,7 @@
         }
       ],
       "scopes": [
+        "all",
         "tokens.theme",
         "tokens.style",
         "tokens.layout",
@@ -1465,7 +1487,8 @@
       "acts": {
         "grant": {
           "minutes": "number",
-          "reason": "string"
+          "reason": "string",
+          "include_irreversible": "boolean"
         },
         "approve": {
           "request": "string"
@@ -1476,7 +1499,7 @@
         "revoke": {},
         "undo": {}
       },
-      "doc": "Timed veto passes (control-pass@1): \"allow theme changes for the next 30 minutes\". path = the scope (tokens.theme, tokens.style, tokens.layout, tokens.*); grant files a request the owner approves once, then set / reset in the scope skip the axHub veto until it ends; revoke ends it, undo rolls back every change made under it. Deletes are never covered."
+      "doc": "Timed veto passes (control-pass@1): \"allow everything for the next 30 minutes\". path = the scope: all (the default: every command on every target and every call axHub holds, ordinary deletes included; irreversible deletes only with include_irreversible) or a narrow token scope (tokens.theme, tokens.style, tokens.layout, tokens.*: set / reset only). grant files a request the owner approves once; revoke ends it; undo rolls back what can be rolled back and lists what can't. The pass target itself is never covered."
     },
     "planner.builds": {
       "domain": "planner",
@@ -1605,7 +1628,7 @@
     },
     "pass": {
       "target": "pass.scopes",
-      "note": "also `axf token pass …`: axf token pass grant theme 30 · status · revoke theme · undo theme"
+      "note": "axf pass grant 30 (everything) · axf pass grant 30 --scope theme · status · revoke · undo (also `axf token pass …`)"
     }
   },
   "tools": [
@@ -2035,8 +2058,8 @@
       "axf control remove <target> <path> [--confirm <token>]   (first run prints the token)",
       "axf control act <target> <path> <action> [json input]",
       "axf control targets | tools | routes | schema",
-      "axf token pass grant <theme|style|layout|all> [minutes] [--reason why]   (Brett approves it once)",
-      "axf token pass status | list · axf token pass revoke <scope> · axf token pass undo <scope>"
+      "axf pass grant [minutes] [--scope all|theme|style|layout|tokens] [--include-irreversible] [--reason why]   (everything by default; Brett approves it once)",
+      "axf pass status · axf pass revoke [--scope …] · axf pass undo [--scope …]   (also axf token pass grant theme 30)"
     ],
     "aliases": {
       "token": "axf token <theme|style|layout|typography|density|sizing|look|custom|slots> <op> …",
@@ -2782,7 +2805,7 @@
         "paths": "entity"
       },
       "pass.scopes": {
-        "description": "Timed veto passes (control-pass@1): \"allow theme changes for the next 30 minutes\". path = the scope (tokens.theme, tokens.style, tokens.layout, tokens.*); grant files a request the owner approves once, then set / reset in the scope skip the axHub veto until it ends; revoke ends it, undo rolls back every change made under it. Deletes are never covered.",
+        "description": "Timed veto passes (control-pass@1): \"allow everything for the next 30 minutes\". path = the scope: all (the default: every command on every target and every call axHub holds, ordinary deletes included; irreversible deletes only with include_irreversible) or a narrow token scope (tokens.theme, tokens.style, tokens.layout, tokens.*: set / reset only). grant files a request the owner approves once; revoke ends it; undo rolls back what can be rolled back and lists what can't. The pass target itself is never covered.",
         "ops": [
           "list",
           "get",
@@ -2795,6 +2818,9 @@
             },
             "reason": {
               "type": "string"
+            },
+            "include_irreversible": {
+              "type": "boolean"
             }
           },
           "approve": {
@@ -2811,6 +2837,7 @@
           "undo": {}
         },
         "paths": [
+          "all",
           "tokens.theme",
           "tokens.style",
           "tokens.layout",

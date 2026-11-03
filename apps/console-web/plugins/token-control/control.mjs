@@ -19,28 +19,39 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  CONTROL_ALIASES, CONTROL_OPS, CONTROL_TARGETS, CONTROL_TARGET_IDS, CONTROL_WIRE, controlCli, controlFailure, controlGate, controlRegistry,
+  CONTROL_ALIASES, CONTROL_EFFECT, CONTROL_OPS, CONTROL_TARGETS, CONTROL_TARGET_IDS, CONTROL_WIRE, controlCli, controlFailure, controlGate, controlIrreversible, controlRegistry,
   controlResult, controlRoutes, controlSchema, controlTools, normalizeControl,
 } from '../../../../framework/core/engines/control-rules.mjs';
 import { ControlError, audit, confirmSalt, readAudit } from './lib/common.mjs';
 import { appearanceFile, runTokens } from './lib/tokens.mjs';
 import { notesDir, runAmberx } from './lib/amberx.mjs';
 import { runPlanner } from './lib/planner.mjs';
-import { coveringPass, passSettings, publication, recordPassChanges, runPass, savePassSettings } from './lib/pass.mjs';
-import { PASS_SCOPE_IDS, PASS_TARGET, passScopeId, passScopeOf } from '../../../../framework/core/engines/control-pass.mjs';
+import { coveringCall, coveringPass, passSettings, publication, recordPassChanges, recordPassCommand, runPass, savePassSettings } from './lib/pass.mjs';
+import { PASS_DEFAULT_SCOPE, PASS_SCOPE_IDS, PASS_TARGET, passScopeId, passScopeOf, passScopeWord } from '../../../../framework/core/engines/control-pass.mjs';
 
 /** The token rows a write may change, by id (what a covered write records as before / after). */
 function tokenState(c) {
   const rows = c.path ? [runTokens({ op: 'get', target: c.target, path: c.path }).item] : runTokens({ op: 'list', target: c.target }).items;
   return Object.fromEntries(rows.map((r) => [r.id, { overridden: !!r.overridden, value: r.value ?? null }]));
 }
+/** tokenState, or null when the target can't list its rows here (host tokens: the change is logged as a command). */
+function tokenStateOrNull(c) {
+  try { return tokenState(c); } catch { return null; }
+}
+/** A short title for the record a command touches (so the log and undo's "can't roll back" list say what it was). */
+function recordTitle(c) {
+  if (!c.path || CONTROL_TARGETS[c.target]?.paths !== 'entity' || CONTROL_TARGETS[c.target].domain !== 'amberx') return '';
+  try { const it = runAmberx({ op: 'get', target: c.target, path: c.path }).item; return String(it?.title || it?.text || it?.name || '').slice(0, 60); } catch { return ''; }
+}
 
 /**
  * Run one control@1 command. `grants` = the caller's permissions (the console token = ['*']; a wall user's role
  * grants; already capped for a remote caller). `preset` = fields an alias fixes (`axf todo …` → kind todo).
  * `approver` / `proof` = how the transport reached Brett (veto passes only; lib/pass.mjs): never from the command.
- * Every write answer carries `passScope` (the scope a veto pass would need, null = none can cover it) and, when an
- * active pass covered it, `pass { id, scope, expiresAt }`; the change is then logged on the pass for undo.
+ * Every write answer carries `passScope` (the narrowest scope a veto pass would need, null = none can cover it) and,
+ * when an active pass covered it, `pass { id, scope, expiresAt }`; the change is then logged on the pass (token writes
+ * with before / after, for undo; every other command as a record undo lists). A delete an `all` pass covers runs
+ * without the confirm token (`confirmSkipped`), except an irreversible one unless the pass includes irreversible.
  */
 export async function runControl(raw, { grants = ['*'], by = '', preset = null, now = Date.now(), approver = null, proof = null } = {}) {
   const c = normalizeControl(raw);
@@ -50,21 +61,26 @@ export async function runControl(raw, { grants = ['*'], by = '', preset = null, 
     if (c.op === 'list') c.select = { ...preset, ...(c.select ?? {}) };
     if (c.op === 'add' && c.value && typeof c.value === 'object') c.value = { ...preset, ...c.value };
   }
-  const gate = controlGate(c, grants, { salt: confirmSalt(), now });
+  const isWrite = CONTROL_TARGETS[c.target] && CONTROL_EFFECT[c.op] && CONTROL_EFFECT[c.op] !== 'read';
+  const pass = isWrite && passScopeOf(c) ? coveringPass(c, now) : null;
+  const gate = controlGate(c, grants, { salt: confirmSalt(), now, passCovers: !!pass });
   if (!gate.ok) {
     const { ok: _ok, code, message, ...extra } = gate;
-    return controlFailure(code, message, { op: c.op, target: c.target, ...(c.path ? { path: c.path } : {}), ...extra });
+    const why = gate.code === CONTROL_WIRE.CONFIRMATION_REQUIRED && controlIrreversible(c) && coveringCall({ target: c.target }, now) ? { irreversible: true, note: 'this delete can\'t be undone: the pass on now doesn\'t include irreversible commands, so it still confirms' } : {};
+    return controlFailure(code, message, { op: c.op, target: c.target, ...(c.path ? { path: c.path } : {}), ...extra, ...why });
   }
   const domain = CONTROL_TARGETS[c.target].domain;
   try {
     const scope = gate.effect === 'read' ? null : passScopeOf(c);
-    const pass = scope ? coveringPass(c, now) : null;
-    const before = pass ? tokenState(c) : null;
+    const tokenWrite = !!pass && domain === 'tokens' && ['set', 'reset'].includes(c.op);
+    const before = tokenWrite ? tokenStateOrNull(c) : null;
+    const title = pass && !before ? recordTitle(c) : '';
     const data = domain === 'tokens' ? runTokens(c) : domain === 'amberx' ? runAmberx(c) : domain === 'pass' ? runPass(c, { approver, proof, now, runTokens }) : await runPlanner(c);
     const at = new Date(now).toISOString();
-    if (pass) recordPassChanges(pass.id, c, before, tokenState(c), now);
+    if (pass && before) recordPassChanges(pass.id, c, before, tokenState(c), now);
+    else if (pass) recordPassCommand(pass.id, c, `${c.op}${c.action ? ` ${c.action}` : ''} ${c.target}${c.path ? ` ${c.path}` : data?.item?.id ? ` ${data.item.id}` : ''}${title ? ` ("${title}")` : ''}`, now);
     if (gate.effect !== 'read' && domain !== 'pass') audit({ by: c.by || 'unknown', reason: c.reason ?? '', op: c.op, target: c.target, path: c.path, action: c.action, value: c.value, input: c.input, ...(pass ? { pass: pass.id } : {}) });
-    const stamp = gate.effect === 'read' || domain === 'pass' ? {} : { passScope: scope, ...(pass ? { pass: { id: pass.id, scope: pass.scope, expiresAt: pass.expiresAt } } : {}) };
+    const stamp = gate.effect === 'read' || domain === 'pass' ? {} : { passScope: scope, ...(pass ? { pass: { id: pass.id, scope: pass.scope, expiresAt: pass.expiresAt }, ...(gate.effect === 'destructive' ? { confirmSkipped: true } : {}) } : {}) };
     return controlResult(c, { ...data, ...stamp }, { by: c.by || 'unknown', reason: c.reason ?? '', at });
   } catch (e) {
     if (e instanceof ControlError) return controlFailure(e.code, e.message, { op: c.op, target: c.target, ...(c.path ? { path: c.path } : {}), ...e.extra });
@@ -88,7 +104,7 @@ function flags(argv) {
     const a = argv[i];
     if (!a.startsWith('--') || a === '--') { out._.push(a); continue; }
     const [k, inline] = a.slice(2).split(/=(.*)/s);
-    const takes = !['json', 'remote', 'help', 'yes', 'deep', 'include-hidden'].includes(k) || (k === 'remote' && argv[i + 1] && /^https?:/.test(argv[i + 1]));
+    const takes = !['json', 'remote', 'help', 'yes', 'deep', 'include-hidden', 'include-irreversible'].includes(k) || (k === 'remote' && argv[i + 1] && /^https?:/.test(argv[i + 1]));
     const v = inline !== undefined ? inline : takes && argv[i + 1] !== undefined && !argv[i + 1].startsWith('--') ? argv[++i] : true;
     if (k === 'select' || k === 'field' || k === 'input') { const [fk, fv] = String(v).split(/=(.*)/s); (out[k === 'input' ? 'field' : k])[fk] = parseValue(fv); }
     else out[k] = v;
@@ -124,13 +140,19 @@ export function commandFromArgv(argv) {
   let op = words.shift();
   if (!target) target = words.shift();
   if (target === PASS_TARGET) {
-    // axf token pass status [scope] · grant <scope> [minutes] · revoke | undo <scope> · approve | deny <scope> <request>
-    if (!op || op === 'status') op = words.length ? 'get' : 'list';
-    if (words[0] !== undefined) {
-      const sc = passScopeId(words[0]);
-      if (!sc) return { error: `no pass scope ${words[0]} (theme, style, layout, all = ${PASS_SCOPE_IDS.join(', ')})` };
-      words[0] = sc;
-    } else if (op !== 'list') return { error: `axf token pass ${op} <theme|style|layout|all>…` };
+    // axf pass grant [minutes] [--scope all|theme|style|layout|tokens] [--include-irreversible] · status [scope] ·
+    // revoke | undo [scope] · approve | deny [scope] <request>; also the old word order: axf token pass grant theme 30.
+    // No scope named = all (everything).
+    if (!op || op === 'status') op = words.length || typeof f.scope === 'string' ? 'get' : 'list';
+    let sc = typeof f.scope === 'string' ? passScopeId(f.scope) : null;
+    if (typeof f.scope === 'string' && !sc) return { error: `no pass scope ${f.scope} (all, theme, style, layout, tokens = ${PASS_SCOPE_IDS.join(', ')})` };
+    if (!sc && words[0] !== undefined && !/^\d+$/.test(words[0]) && !/^pass-/.test(words[0])) {
+      sc = passScopeId(words[0]);
+      if (!sc) return { error: `no pass scope ${words[0]} (all, theme, style, layout, tokens = ${PASS_SCOPE_IDS.join(', ')})` };
+      words.shift();
+    }
+    if (op !== 'list') words.unshift(sc ?? PASS_DEFAULT_SCOPE);
+    if (f['include-irreversible'] === true) f.field.include_irreversible = true;
   }
   if (!op || !target) return { error: 'usage: axf control <op> <target> … (axf control help)' };
   if (!CONTROL_TARGET_IDS.includes(target)) return { error: `unknown target ${target} (${CONTROL_TARGET_IDS.join(', ')})` };
@@ -169,7 +191,8 @@ export function commandFromArgv(argv) {
       // booleans a verb wants default to true; a trailing undo / off / false turns them off (axf build step <id> s3 undo)
       const off = ['undo', 'off', 'false', 'no'].includes(String(words[words.length - 1] ?? '').toLowerCase());
       if (off && wants[0] && typeof cmd.input[wants[0]] === 'string') cmd.input[wants[0]] = words.slice(0, -1).join(' ');
-      for (const [k, decl] of Object.entries(t.acts?.[cmd.action] ?? {})) if (decl === 'boolean' && !(k in cmd.input)) cmd.input[k] = !off;
+      // (not on passes: include_irreversible is only ever on when asked for by name)
+      if (target !== PASS_TARGET) for (const [k, decl] of Object.entries(t.acts?.[cmd.action] ?? {})) if (decl === 'boolean' && !(k in cmd.input)) cmd.input[k] = !off;
       break;
     }
     default: break;
@@ -217,8 +240,10 @@ function help() {
     'Token control (control@1): every token, AmberX note / to-do / task / list, Plan Studio plan and orchestrator build.',
     '', ...u.usage.map((l) => `  ${l}`), '', 'Aliases:', ...Object.values(u.aliases).map((l) => `  ${l}`), '',
     'Examples:',
-    '  axf token pass grant theme 30     (theme changes skip the veto for 30 min once Brett approves)',
-    '  axf token pass status · axf token pass revoke theme · axf token pass undo theme',
+    '  axf pass grant 30                 (everything skips the veto for 30 min once Brett approves)',
+    '  axf pass grant 30 --scope theme   (only theme changes)',
+    '  axf pass grant 30 --include-irreversible   (hard deletes too, no confirm)',
+    '  axf pass status · axf pass revoke · axf pass undo   (undo lists what it can\'t roll back)',
     '  axf token layout get navWidth',
     '  axf token theme set accent "#ff8800" --reason "warmer accent"',  // theme-ok: an example value in the help text
     '  axf token layout reset navWidth',
@@ -245,8 +270,9 @@ async function terminalApproval(command) {
   const { createInterface } = await import('node:readline/promises');
   const rl = createInterface({ input: process.stdin, output: process.stdout });
   try {
-    const word = command.path === 'tokens.*' ? 'all' : command.path.slice('tokens.'.length);
-    const typed = (await rl.question(`${command.action} the ${command.path} veto pass as Brett? Type "${word}" to confirm (anything else files a request): `)).trim().toLowerCase();
+    const word = passScopeWord(command.path);
+    const irr = command.input?.include_irreversible === true ? ' (irreversible deletes included)' : '';
+    const typed = (await rl.question(`${command.action} the ${command.path === 'all' ? 'everything' : command.path}${irr} veto pass as Brett? Type "${word}" to confirm (anything else files a request): `)).trim().toLowerCase();
     return typed === word ? { via: 'cli-tty', name: process.env.AXF_OWNER || 'brett' } : null;
   } finally { rl.close(); }
 }
@@ -275,9 +301,19 @@ export async function main(argv) {
   if (cmd === 'audit') { const rows = readAudit(Number(argv[1]) || 30); out(rows, rows.map((r) => `${r.at} ${r.by} ${r.op} ${r.target}${r.path ? ` ${r.path}` : ''}${r.action ? ` ${r.action}` : ''}${r.reason ? ` — ${r.reason}` : ''}`).join('\n') || 'no writes yet'); return 0; }
   if (cmd === 'pass-publication') { const p = publication(); console.log(JSON.stringify({ body: p.body, payload: p.payload, signature: p.signature })); return 0; }
   if (cmd === 'pass-check') {
-    const c = { op: argv[2] || 'set', target: argv[1] };
+    // pass-check <control target> [op]  ·  pass-check --call <service.tool> [--irreversible]   (an axHub call)
+    const irreversible = argv.includes('--irreversible');
+    const ci = argv.indexOf('--call');
+    if (ci >= 0) {
+      const tool = argv[ci + 1] || '';
+      const p = coveringCall({ tool, irreversible });
+      out({ ok: true, call: tool, irreversible, scope: 'all', covered: !!p, ...(p ? { pass: { id: p.id, scope: p.scope, expiresAt: p.expiresAt } } : {}) }, p ? `covered by ${p.id} until ${p.expiresAt}` : `not covered (needs an all pass${irreversible ? ' with include_irreversible' : ''})`);
+      return 0;
+    }
+    const c = { op: argv[2] && !argv[2].startsWith('--') ? argv[2] : 'set', target: argv[1] };
     const scope = passScopeOf(c); const p = scope ? coveringPass(c) : null;
-    out({ ok: true, target: c.target, op: c.op, scope, covered: !!p, ...(p ? { pass: { id: p.id, scope: p.scope, expiresAt: p.expiresAt } } : {}) }, p ? `covered by ${p.id} until ${p.expiresAt}` : scope ? `not covered (needs a ${scope} pass)` : 'no pass can cover this');
+    const irr = controlIrreversible(c);
+    out({ ok: true, target: c.target, op: c.op, scope, irreversible: irr, covered: !!p, ...(p ? { pass: { id: p.id, scope: p.scope, expiresAt: p.expiresAt } } : {}) }, p ? `covered by ${p.id} until ${p.expiresAt}` : scope ? `not covered (needs a ${scope} pass${irr ? ' with include_irreversible' : ''})` : 'no pass can cover this');
     return 0;
   }
   if (cmd === 'pass-settings') { const s = argv[1] && argv[1].startsWith('{') ? savePassSettings(JSON.parse(argv[1])) : passSettings(); out({ ok: true, ...s }, `max ${s.maxMinutes} min · ${s.timeZone}`); return 0; }

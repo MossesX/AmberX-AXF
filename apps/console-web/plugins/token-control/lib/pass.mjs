@@ -1,5 +1,5 @@
 /**
- * Veto passes (control-pass@1, framework/core/engines/control-pass.mjs; build theme-veto-pass): the store, the owner
+ * Veto passes (control-pass@1, framework/core/engines/control-pass.mjs; builds theme-veto-pass, pass-all): the store, the owner
  * approval, the change log every covered write adds to, undo, the signed publication axHub reads, and the log lines.
  *
  * Store: `passes.json` in the plugin's data folder (one file every transport on this machine shares, like the salt).
@@ -12,9 +12,10 @@ import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  PASS_APPROVED_VIA, PASS_FRAME, PASS_MAX_MINUTES, PASS_REQUEST_TTL_MS, PASS_SCOPES, PASS_SCOPE_IDS, passActive, passCovering,
-  passMinutes, passPending, passPublic, passPublication, passScopeOf, passSentence, passStateAt, passUndoPlan, passWithChange,
+  PASS_APPROVED_VIA, PASS_FRAME, PASS_MAX_MINUTES, PASS_REQUEST_TTL_MS, PASS_SCOPES, PASS_SCOPE_IDS, passActive, passCommandChange, passCovering,
+  passCoveringCall, passMinutes, passNotUndoable, passPending, passPublic, passPublication, passScopeOf, passSentence, passStateAt, passUndoPlan, passWithChange,
 } from '../../../../../framework/core/engines/control-pass.mjs';
+import { controlIrreversible } from '../../../../../framework/core/engines/control-rules.mjs';
 import { ControlError, DATA_DIR, ROOT, audit } from './common.mjs';
 
 const FILE = () => join(DATA_DIR, 'passes.json');
@@ -119,21 +120,26 @@ export function verifyPayload(payload, header, now = Date.now(), secret = passSe
   const got = Buffer.from(s.v, 'hex');
   return want.length === got.length && timingSafeEqual(want, got);
 }
-/** The message axHub signs when Brett approves a grant: `approve.<request id>.<scope>.<minutes>.<approver>`. */
-export const approvalMessage = (requestId, scope, minutes, approver) => `approve.${requestId}.${scope}.${minutes}.${approver}`;
+/**
+ * The message axHub signs when Brett approves a grant: `approve.<request id>.<scope>.<minutes>.<approver>`, with
+ * `.irreversible` on the end when the request includes irreversible commands (so an approval can't be replayed wider).
+ */
+export const approvalMessage = (requestId, scope, minutes, approver, includeIrreversible = false) => `approve.${requestId}.${scope}.${minutes}.${approver}${includeIrreversible ? '.irreversible' : ''}`;
 
 /** The owner approval a transport hands in → { via, name } or null. axHub's proof is checked against the request. */
 function ownerOf(approver, proof, req, now) {
   if (approver && PASS_APPROVED_VIA.includes(approver.via) && approver.via !== 'axhub') return { via: approver.via, name: String(approver.name || 'brett').slice(0, 80) };
   if (proof && req) {
     const name = String(proof.approver || '').slice(0, 80);
-    if (name && verifyPayload(approvalMessage(req.id, req.scope, req.minutes, name), proof.signature, now)) return { via: 'axhub', name };
+    if (name && verifyPayload(approvalMessage(req.id, req.scope, req.minutes, name, req.includeIrreversible === true), proof.signature, now)) return { via: 'axhub', name };
   }
   return null;
 }
 
 /* ------------------------------------------------------------------ the pass.scopes target */
 
+/** "No theme pass is on." / "No pass is on." (the all scope needs no word). */
+const passNoun = (id) => (id === 'all' ? '' : `${PASS_SCOPES[id].plain.toLowerCase()} `);
 const newId = () => `pass-${Date.now().toString(36)}-${randomBytes(3).toString('hex')}`;
 const latest = (d, scope, states) => d.passes.find((p) => p.scope === scope && states.includes(p.state));
 
@@ -164,12 +170,12 @@ export function runPass(c, { approver = null, proof = null, now = Date.now(), ru
   const scopeRow = (id) => {
     const active = latest(d, id, ['active']);
     const pending = d.passes.find((p) => p.scope === id && passPending(p, now));
-    return { id, label: PASS_SCOPES[id].label, targets: PASS_SCOPES[id].targets, active: view(active), pending: view(pending), text: active ? passSentence(active, now, timeZone) : pending ? passSentence(pending, now, timeZone) : `${PASS_SCOPES[id].plain} changes go through the veto.` };
+    return { id, label: PASS_SCOPES[id].label, targets: PASS_SCOPES[id].targets, active: view(active), pending: view(pending), text: active ? passSentence(active, now, timeZone) : pending ? passSentence(pending, now, timeZone) : `${PASS_SCOPES[id].what} go${id === 'all' ? 'es' : ''} through the veto.` };
   };
   if (c.op === 'list') {
     const items = PASS_SCOPE_IDS.map(scopeRow);
     const on = items.filter((x) => x.active);
-    return { items, total: items.length, maxMinutes, recent: d.passes.slice(0, 20).map(view), text: on.length ? on.map((x) => x.text).join(' ') : 'No veto pass is on: every token change goes through the veto.' };
+    return { items, total: items.length, maxMinutes, recent: d.passes.slice(0, 20).map(view), text: on.length ? on.map((x) => x.text).join(' ') : 'No veto pass is on: every command goes through the veto.' };
   }
   if (c.op === 'get') { const row = scopeRow(c.path); return { item: row, value: row.active ? 'active' : row.pending ? 'pending' : 'off', text: row.text }; }
 
@@ -180,17 +186,18 @@ export function runPass(c, { approver = null, proof = null, now = Date.now(), ru
       const minutes = passMinutes(input.minutes, maxMinutes);
       // a waiting request for the same scope is replaced (one request per scope)
       for (const p of d.passes) if (p.scope === c.path && passPending(p, now)) { p.state = 'lapsed'; p.endedAt = new Date(now).toISOString(); p.endedBy = 'replaced'; }
-      const req = { id: newId(), scope: c.path, state: 'pending', minutes, reason: String(input.reason ?? c.reason ?? '').slice(0, 300), requestedBy: by, requestedAt: new Date(now).toISOString(), changes: [] };
+      const irr = c.path === 'all' && input.include_irreversible === true;
+      const req = { id: newId(), scope: c.path, state: 'pending', minutes, reason: String(input.reason ?? c.reason ?? '').slice(0, 300), ...(irr ? { includeIrreversible: true } : {}), requestedBy: by, requestedAt: new Date(now).toISOString(), changes: [] };
       d.passes.unshift(req);
       const owner = ownerOf(approver, proof, req, now);
       if (owner) {
         activate(d, req, owner, now);
         writeStore(d);
-        logLine(req, `granted ${minutes} min by ${owner.name} (${owner.via})${req.extends ? `, replacing ${req.extends}` : ''}${req.reason ? ` — ${req.reason}` : ''}`, { by: owner.name, action: 'grant' });
+        logLine(req, `granted ${minutes} min${irr ? ' (irreversible included)' : ''} by ${owner.name} (${owner.via})${req.extends ? `, replacing ${req.extends}` : ''}${req.reason ? ` — ${req.reason}` : ''}`, { by: owner.name, action: 'grant' });
         return { changed: true, item: view(req), text: passSentence(req, now, timeZone) };
       }
       writeStore(d);
-      logLine(req, `requested ${minutes} min by ${by}, waiting for Brett${req.reason ? ` — ${req.reason}` : ''}`, { by, action: 'request' });
+      logLine(req, `requested ${minutes} min${irr ? ' (irreversible included)' : ''} by ${by}, waiting for Brett${req.reason ? ` — ${req.reason}` : ''}`, { by, action: 'request' });
       return {
         changed: true, item: view(req), text: passSentence(req, now, timeZone),
         approval: { required: true, request: req.id, expiresAt: new Date(now + PASS_REQUEST_TTL_MS).toISOString(), how: ['Brett taps Approve on the console banner (Token pass) or on Token control → Passes', 'or approves the held call in axHub (it signs the approval: framework/spec/CONTROL.md → Veto passes)'] },
@@ -215,26 +222,31 @@ export function runPass(c, { approver = null, proof = null, now = Date.now(), ru
     case 'revoke': {
       const p = latest(d, c.path, ['active']);
       const pend = d.passes.filter((x) => x.scope === c.path && passPending(x, now));
-      if (!p && !pend.length) return { changed: false, item: null, text: `No ${PASS_SCOPES[c.path].plain.toLowerCase()} pass is on.` };
+      if (!p && !pend.length) return { changed: false, item: null, text: `No ${passNoun(c.path)}pass is on.` };
       const at = new Date(now).toISOString();
       for (const x of [p, ...pend].filter(Boolean)) { x.state = x.state === 'pending' ? 'denied' : 'revoked'; x.endedAt = at; x.endedBy = by; }
       writeStore(d);
       if (p) logLine(p, `revoked by ${by} with ${p.changes?.length ?? 0} change(s)`, { by, action: 'revoke' });
       for (const x of pend) logLine(x, `request withdrawn by ${by}`, { by, action: 'revoke' });
-      return { changed: true, item: view(p ?? pend[0]), text: p ? `${PASS_SCOPES[c.path].plain} pass revoked: changes need the veto again.` : 'The waiting request was withdrawn.' };
+      return { changed: true, item: view(p ?? pend[0]), text: p ? `${PASS_SCOPES[c.path].label} pass revoked: ${c.path === 'all' ? 'commands' : 'changes'} need the veto again.` : 'The waiting request was withdrawn.' };
     }
     case 'undo': {
       const p = d.passes.find((x) => x.scope === c.path && (x.changes?.length ?? 0) > 0 && !x.undoneAt);
-      if (!p) return { changed: false, item: null, text: `Nothing to undo: no ${PASS_SCOPES[c.path].plain.toLowerCase()} pass has changes left.` };
+      if (!p) return { changed: false, item: null, restored: [], notUndoable: [], text: `Nothing to undo: no ${passNoun(c.path)}pass has changes left.` };
       const plan = passUndoPlan(p);
+      const manual = passNotUndoable(p);
       const done = []; const failed = [];
       for (const step of plan) {
         try { runTokens({ ...step, by: `pass-undo:${by}` }); done.push(step); } catch (e) { failed.push({ ...step, error: e?.message ?? String(e) }); }
       }
-      p.undoneAt = new Date(now).toISOString(); p.undoneBy = by; p.undoneChanges = p.changes.length; p.changes = [];
+      p.undoneAt = new Date(now).toISOString(); p.undoneBy = by; p.undoneChanges = p.changes.length; p.notUndone = manual; p.changes = [];
       writeStore(d);
-      logLine(p, `undo by ${by}: ${done.length} token(s) put back${failed.length ? `, ${failed.length} failed` : ''}`, { by, action: 'undo' });
-      return { changed: done.length > 0, item: view(p), restored: done, ...(failed.length ? { failed } : {}), text: `Rolled back ${done.length} token(s) changed under the ${PASS_SCOPES[c.path].plain.toLowerCase()} pass${failed.length ? ` (${failed.length} could not be put back)` : ''}.${passActive(p, now) ? ' The pass is still on.' : ''}` };
+      logLine(p, `undo by ${by}: ${done.length} token(s) put back${failed.length ? `, ${failed.length} failed` : ''}${manual.length ? `, ${manual.length} command(s) can't be rolled back: ${manual.map((m) => m.what).join('; ').slice(0, 400)}` : ''}`, { by, action: 'undo' });
+      const tail = manual.length ? ` ${manual.length} command(s) can't be rolled back automatically: ${manual.map((m) => m.what).join('; ')}.` : '';
+      return {
+        changed: done.length > 0, item: view(p), restored: done, notUndoable: manual, ...(failed.length ? { failed } : {}),
+        text: `Rolled back ${done.length} token(s) changed under the ${PASS_SCOPES[c.path].label.toLowerCase()} pass${failed.length ? ` (${failed.length} could not be put back)` : ''}.${tail}${passActive(p, now) ? ' The pass is still on.' : ''}`,
+      };
     }
     default: throw new ControlError('invalid', `pass.scopes has no action ${c.action}`);
   }
@@ -242,10 +254,30 @@ export function runPass(c, { approver = null, proof = null, now = Date.now(), ru
 
 /* ------------------------------------------------------------------ covered writes */
 
-/** The active pass covering a command now, or null (deletes: always null). */
+/**
+ * The active pass covering a command now, or null (reads and the pass target: always null). Irreversible commands
+ * (control@1 marks them per target) are covered only by an `all` pass granted with include_irreversible.
+ */
 export function coveringPass(command, now = Date.now()) {
   if (!passScopeOf(command)) return null;
-  return passCovering(loadPasses(now).passes, command, now);
+  return passCovering(loadPasses(now).passes, command, now, { irreversible: controlIrreversible(command) });
+}
+
+/** The active pass covering a call axHub holds (any service and tool; `irreversible` as axHub marks it), or null. */
+export function coveringCall(call, now = Date.now()) {
+  return passCoveringCall(loadPasses(now).passes, call, now);
+}
+
+/** Record a command an `all` pass let through that isn't a token write: logged on the pass, listed by undo. */
+export function recordPassCommand(passId, command, what = '', now = Date.now()) {
+  const d = readStore();
+  const p = d.passes.find((x) => x.id === passId);
+  if (!p) return null;
+  const ch = passCommandChange(command, now, what);
+  Object.assign(p, passWithChange(p, ch));
+  writeStore(d);
+  logLine(p, `${ch.by}: ${ch.what}`, { by: ch.by, action: 'change', change: { target: ch.target, ...(ch.path ? { path: ch.path } : {}), op: ch.op, undoable: false } });
+  return ch;
 }
 
 /** Record what a covered write changed: one change per token whose value or override state moved. */

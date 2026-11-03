@@ -1,0 +1,109 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-7d1a5e96-f973-4553-9fb1-c8219e743f35",
+ "source": "claude-code",
+ "sessionId": "7d1a5e96-f973-4553-9fb1-c8219e743f35",
+ "project": "axhub",
+ "title": "# Build: notes-vault (Urgent profile) Requested by Brett, Nov 3 2026 (voice). GO given. Build it now. ## Goal Brett has…",
+ "startedAt": "2026-11-03T13:44:31.148Z",
+ "endedAt": "2026-11-03T14:11:39.945Z",
+ "minutes": 27,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/notes-vault",
+  "repo": "",
+  "branch": "claude/notes-vault"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-03T13:44:31.741Z",
+   "kind": "prompt",
+   "text": "# Build: notes-vault (Urgent profile) Requested by Brett, Nov 3 2026 (voice). GO given. Build it now. ## Goal Brett has random note files he asked Claude to save over time (\"save this\", \"make a command\", install notes, etc.) scattered across the axHub projects tree. Gather them into ONE location, add a quick browser plugin for them, and add a Notes section to MD Studio. ## First - Register this build in the Urgent profile through the orchestrator/store (id `notes-vault`, branch claude/notes-vault) with the steps below, and the in-progress banner entry, per standing session rules. Check the pe…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 236,
+    "output": 79255,
+    "cacheRead": 17140400,
+    "cacheWrite": 214911,
+    "thinking": 15386
+   },
+   "costUsd": 6.0886,
+   "costEstimated": false,
+   "seconds": 1628,
+   "tools": {
+    "Bash": 108,
+    "ToolSearch": 1,
+    "mcp__claude_ai_axHub__describe_service": 2,
+    "Write": 7,
+    "Edit": 2,
+    "Read": 5
+   },
+   "commands": 108,
+   "files": [
+    "/root/axf-runs/notes-vault/move.mjs",
+    "/root/axf-builds/notes-vault/_claude/builds/reports/notes-vault.md",
+    "/root/axf-builds/notes-vault/_claude/shared/instructions/projects-and-sync.md",
+    "/root/axf-builds/notes-vault/apps/console-web/plugins/notes-browser/server/store.py",
+    "/root/axf-builds/notes-vault/apps/console-web/plugins/notes-browser/server/__init__.py",
+    "/root/axf-builds/notes-vault/apps/console-web/plugins/notes-browser/web/menu.ts",
+    "/root/axf-builds/notes-vault/apps/console-web/plugins/notes-browser/web/index.tsx",
+    "/root/axf-builds/notes-vault/apps/console-web/plugins/notes-browser/test.py"
+   ],
+   "changeIds": [
+    "chg-20261103-1a28e4db14"
+   ],
+   "features": [
+    "orch:notes-vault"
+   ],
+   "output": "Done, boss. Every note you had Claude save is now in one place, the Notes plugin is built, and PR #256 is open. The push banner merges it once CI goes green. **Where they are:** `/projects/_shared/_claude/notes/`, so every project and session sees them. There's an `INDEX.md` with a one-line descrip…"
+  }
+ ],
+ "files": [
+  "/root/axf-runs/notes-vault/move.mjs",
+  "/root/axf-builds/notes-vault/_claude/builds/reports/notes-vault.md",
+  "/root/axf-builds/notes-vault/_claude/shared/instructions/projects-and-sync.md",
+  "/root/axf-builds/notes-vault/apps/console-web/plugins/notes-browser/server/store.py",
+  "/root/axf-builds/notes-vault/apps/console-web/plugins/notes-browser/server/__init__.py",
+  "/root/axf-builds/notes-vault/apps/console-web/plugins/notes-browser/web/menu.ts",
+  "/root/axf-builds/notes-vault/apps/console-web/plugins/notes-browser/web/index.tsx",
+  "/root/axf-builds/notes-vault/apps/console-web/plugins/notes-browser/test.py"
+ ],
+ "changeIds": [
+  "chg-20261103-1a28e4db14"
+ ],
+ "features": [
+  "orch:notes-vault"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 236,
+  "output": 79255,
+  "cacheRead": 17140400,
+  "cacheWrite": 214911,
+  "thinking": 15386,
+  "costUsd": 6.0886,
+  "costEstimated": false,
+  "toolCalls": 125,
+  "commands": 108,
+  "filesTouched": 8,
+  "reportedUsd": 6.7334
+ },
+ "ingestedAt": "2026-11-03T14:11:40.440Z"
+}

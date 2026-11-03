@@ -533,6 +533,7 @@
     "amberx.lists": null,
     "planner.plans": null,
     "pass.scopes": [
+      "all",
       "tokens.theme",
       "tokens.style",
       "tokens.layout",

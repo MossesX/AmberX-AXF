@@ -84,13 +84,19 @@ export const CONTROL_TARGETS = {
   'tokens.look': { domain: 'tokens', label: 'Look tokens', ops: TOKEN_OPS, paths: 'host', value: 'host', doc: 'look@1 (core/engines/looktokens.ts): compact, row height, text size, corners, tone, motion, banner behaviour… The running app lists the ids; a set stores only what changed.' },
   'tokens.custom': { domain: 'tokens', label: 'Per-asset custom tokens', ops: TOKEN_OPS, paths: 'host', value: 'host', pathShape: '<asset type>.<token>[@<asset id>]', doc: 'asset-customize@1 (core/engines/customize.ts): the extra tokens of every customizable asset type (button.radius, toolbar.iconSet, …), shared or per asset id.' },
   'tokens.slots': { domain: 'tokens', label: 'Active asset per slot', ops: TOKEN_OPS, paths: 'host', value: 'asset-id', doc: 'Which asset is active for each appearance slot (color-theme, style-theme, layout, button, …): set = hot-swap (runtime.swap), reset = the app default. Shared through the axHub look like every other look change.' },
-  'amberx.items': { domain: 'amberx', label: 'AmberX notes, to-dos and tasks', ops: ENTITY_OPS, paths: 'entity', fields: ITEM_FIELDS, select: { kind: `enum:${ITEM_KINDS.join(',')}`, list: 'string', deep: 'boolean', status: 'enum:open,doing,done,not-done', tag: 'string', q: 'string', pinned: 'boolean', starred: 'boolean', due: 'enum:overdue,today,upcoming,later,none', limit: 'number' }, acts: { done: {}, undone: {}, move: { list: 'string' }, merge: { ids: 'string[]' }, pin: { on: 'boolean' }, star: { on: 'boolean' }, check: { item: 'string', done: 'boolean' } }, doc: 'amberx-notes@1 items (apps/amberx-droid notes core): every note, to-do and task on every device. kind picks the shape; a task may have subtasks (parent) and a checklist.' },
-  'amberx.lists': { domain: 'amberx', label: 'AmberX lists', ops: ENTITY_OPS, paths: 'entity', fields: LIST_FIELDS, select: { parent: 'string|null', q: 'string' }, acts: { move: { parent: 'string|null' }, reorder: { ids: 'string[]' }, rename: { name: 'string' } }, doc: 'The list tree items live in (Inbox and the plugin lists are system lists: they can be renamed, never removed).', protected: ['inbox', 'plugins', 'voice-notes'] },
+  'amberx.items': { domain: 'amberx', label: 'AmberX notes, to-dos and tasks', ops: ENTITY_OPS, paths: 'entity', fields: ITEM_FIELDS, select: { kind: `enum:${ITEM_KINDS.join(',')}`, list: 'string', deep: 'boolean', status: 'enum:open,doing,done,not-done', tag: 'string', q: 'string', pinned: 'boolean', starred: 'boolean', due: 'enum:overdue,today,upcoming,later,none', limit: 'number' }, acts: { done: {}, undone: {}, move: { list: 'string' }, merge: { ids: 'string[]' }, pin: { on: 'boolean' }, star: { on: 'boolean' }, check: { item: 'string', done: 'boolean' } }, irreversible: ['remove'], doc: 'amberx-notes@1 items (apps/amberx-droid notes core): every note, to-do and task on every device. kind picks the shape; a task may have subtasks (parent) and a checklist.' },
+  'amberx.lists': { domain: 'amberx', label: 'AmberX lists', ops: ENTITY_OPS, paths: 'entity', fields: LIST_FIELDS, select: { parent: 'string|null', q: 'string' }, acts: { move: { parent: 'string|null' }, reorder: { ids: 'string[]' }, rename: { name: 'string' } }, irreversible: ['remove'], doc: 'The list tree items live in (Inbox and the plugin lists are system lists: they can be renamed, never removed).', protected: ['inbox', 'plugins', 'voice-notes'] },
   'planner.plans': { domain: 'planner', label: 'Plan Studio plans', ops: ENTITY_OPS, paths: 'entity', fields: PLAN_FIELDS, select: { status: 'string', priority: 'string', category: 'string', tag: 'string', project: 'string', q: 'string', limit: 'number' }, acts: { park: {}, build: { profile: 'string', buildId: 'string' }, restore: { version: 'number' }, export: { format: 'enum:json,md' }, step: { step: 'string', done: 'boolean' }, comment: { text: 'string' } }, doc: 'plan@1 plans (console → Builds → Plan Studio): “put it in a plan for later” lands here as parked; `build` turns one into an orchestrator build.' },
-  'pass.scopes': { domain: 'pass', label: 'Veto passes', ops: ['list', 'get', 'act'], paths: 'scope', scopes: PASS_SCOPE_IDS, acts: PASS_ACTS, doc: 'Timed veto passes (control-pass@1): "allow theme changes for the next 30 minutes". path = the scope (tokens.theme, tokens.style, tokens.layout, tokens.*); grant files a request the owner approves once, then set / reset in the scope skip the axHub veto until it ends; revoke ends it, undo rolls back every change made under it. Deletes are never covered.' },
+  'pass.scopes': { domain: 'pass', label: 'Veto passes', ops: ['list', 'get', 'act'], paths: 'scope', scopes: PASS_SCOPE_IDS, acts: PASS_ACTS, doc: 'Timed veto passes (control-pass@1): "allow everything for the next 30 minutes". path = the scope: all (the default: every command on every target and every call axHub holds, ordinary deletes included; irreversible deletes only with include_irreversible) or a narrow token scope (tokens.theme, tokens.style, tokens.layout, tokens.*: set / reset only). grant files a request the owner approves once; revoke ends it; undo rolls back what can be rolled back and lists what can\'t. The pass target itself is never covered.' },
   'planner.builds': { domain: 'planner', label: 'Build orchestrator builds', ops: ENTITY_OPS, paths: 'entity', fields: BUILD_FIELDS, select: { profile: 'string', status: 'string', category: 'string', q: 'string', includeHidden: 'boolean', limit: 'number' }, acts: { step: { step: 'string', done: 'boolean' }, approve: { phase: 'number' }, status: { status: 'string' }, note: { text: 'string' }, rename: { title: 'string' }, 'rename-step': { step: 'string', title: 'string' }, 'add-step': { text: 'string', model: 'enum:Fable,Opus', estimate: 'string', after: 'string' }, 'edit-step': { step: 'string', patch: 'object' }, 'skip-step': { step: 'string', why: 'string' }, 'remove-step': { step: 'string', why: 'string' }, 'move-step': { step: 'string', to: 'number' }, archive: {}, hide: {}, unhide: {} }, stepFields: STEP_FIELDS, doc: 'builds@1 records through the orchestrator (the one builds store; profiles are a field): every change is journalled, Pending / queue / Build manager are projections.' },
 };
 export const CONTROL_TARGET_IDS = Object.keys(CONTROL_TARGETS);
+
+/** Can't this command be undone? (a hard delete nothing brings back: the target lists the op in `irreversible`) */
+export function controlIrreversible(raw) {
+  const c = isObj(raw) ? raw : {};
+  return !!CONTROL_TARGETS[c.target]?.irreversible?.includes(c.op);
+}
 
 /** Short CLI aliases: `axf token …` = tokens.<x>, `axf note|todo|task …` = amberx.items with kind preset, and so on. */
 export const CONTROL_ALIASES = {
@@ -101,7 +107,7 @@ export const CONTROL_ALIASES = {
   list: { target: 'amberx.lists' },
   plan: { target: 'planner.plans' },
   build: { target: 'planner.builds' },
-  pass: { target: 'pass.scopes', note: 'also `axf token pass …`: axf token pass grant theme 30 · status · revoke theme · undo theme' },
+  pass: { target: 'pass.scopes', note: 'axf pass grant 30 (everything) · axf pass grant 30 --scope theme · status · revoke · undo (also `axf token pass …`)' },
 };
 
 /* ================================================================== helpers */
@@ -279,7 +285,8 @@ export function controlGranted(grants, perm) {
 
 /**
  * Gate a command before running it. `grants` = the caller's permissions (its role's, already capped by the app's
- * UAC role for a remote caller); `opts.salt` + `opts.now` for the confirm token. Returns { ok: true, effect, requires,
+ * UAC role for a remote caller); `opts.salt` + `opts.now` for the confirm token; `opts.passCovers` = an active veto
+ * pass covers this command (control-pass@1, worked out by the runner), so a delete runs without the confirm token. Returns { ok: true, effect, requires,
  * command } or { ok: false, code, message, requires?, confirm? } (confirmation_required carries the token to send back).
  */
 export function controlGate(raw, grants, opts = {}) {
@@ -293,7 +300,7 @@ export function controlGate(raw, grants, opts = {}) {
   if (!controlGranted(grants, requires)) return { ok: false, code: CONTROL_WIRE.DENIED, message: `${c.op} ${c.target} needs ${requires}`, requires, effect };
   const errors = controlErrors(c);
   if (errors.length) return { ok: false, code: CONTROL_WIRE.VALIDATION, message: errors.join('; '), errors, requires, effect };
-  if (effect === 'destructive') {
+  if (effect === 'destructive' && !opts.passCovers) {
     const salt = opts.salt ?? '';
     if (!controlConfirmValid(c, c.confirm, salt, opts.now)) {
       return { ok: false, code: CONTROL_WIRE.CONFIRMATION_REQUIRED, message: `${c.op} ${c.target} ${c.path} deletes; send the same command again with this confirm token within ${CONTROL_CONFIRM_TTL_MS / 60000} minutes`, requires, effect, confirm: controlConfirmToken(c, salt, opts.now), ttlMs: CONTROL_CONFIRM_TTL_MS };
@@ -398,8 +405,8 @@ export function controlCli() {
       'axf control remove <target> <path> [--confirm <token>]   (first run prints the token)',
       'axf control act <target> <path> <action> [json input]',
       'axf control targets | tools | routes | schema',
-      'axf token pass grant <theme|style|layout|all> [minutes] [--reason why]   (Brett approves it once)',
-      'axf token pass status | list · axf token pass revoke <scope> · axf token pass undo <scope>',
+      'axf pass grant [minutes] [--scope all|theme|style|layout|tokens] [--include-irreversible] [--reason why]   (everything by default; Brett approves it once)',
+      'axf pass status · axf pass revoke [--scope …] · axf pass undo [--scope …]   (also axf token pass grant theme 30)',
     ],
     aliases: Object.fromEntries(Object.entries(CONTROL_ALIASES).map(([a, v]) => [a, v.target === 'tokens.*' ? 'axf token <theme|style|layout|typography|density|sizing|look|custom|slots> <op> …' : `axf ${a} <op> … = axf control <op> ${v.target}${v.preset ? ` (${Object.entries(v.preset).map(([k, x]) => `${k}=${x}`).join(', ')})` : ''}`])),
     targets: CONTROL_TARGET_IDS,

@@ -1,11 +1,16 @@
 /**
- * control-pass@1 — timed veto passes for control@1 (Brett, Nov 3 2026, build theme-veto-pass): "allow theme changes
- * for the next 30 minutes". While a pass is active for a scope, the token changes that fall in it (set / reset of the
- * scope's targets) run without axHub's veto countdown; nothing else does.
+ * control-pass@1 — timed veto passes for control@1 (Brett, Nov 3 2026, builds theme-veto-pass and pass-all): "allow
+ * everything for the next 30 minutes" ("It's 30 minutes to do whatever I tell you"). While a pass is active for a
+ * scope, the commands that fall in it run without axHub's veto countdown (and, for `all`, without the console's own
+ * delete confirm).
  *
  * Rules (pure; no IO, no clock of its own: every function takes `now`):
- *   - A scope names the targets and ops it covers (PASS_SCOPES, append-only; later e.g. `amberx.notes`). `tokens.*`
- *     covers the three token scopes. Deletes and every other destructive op are NEVER covered: they still confirm.
+ *   - A scope names the targets and ops it covers (PASS_SCOPES, append-only). `all` is the default and covers every
+ *     write on every target and every call axHub holds (any service, any tool), ordinary deletes included. The narrow
+ *     token scopes (tokens.theme / style / layout, and tokens.* for the three) cover set / reset only.
+ *   - Irreversible commands (a hard delete nothing can bring back: control@1 marks them per target, axHub per tool)
+ *     are covered only by an `all` pass granted with `include_irreversible: true`; otherwise they still confirm.
+ *   - The pass target itself (pass.scopes) is never covered: a pass can't grant, approve or widen a pass.
  *   - One pass per scope. Granting a scope that already has an active pass replaces it once approved: the new length
  *     runs from the approval, so "another 30 minutes" means 30 minutes from then. The change log carries over, so
  *     undo still rolls back everything since the first grant.
@@ -15,38 +20,51 @@
  *   - Minutes 1..max (default 30; max PASS_MAX_MINUTES, lowered by the console's setting, never raised).
  *
  * The record (control-pass@1):
- *   { id, scope, state: pending | active | revoked | expired | lapsed | denied, minutes, reason, requestedBy,
- *     requestedAt, approvedBy?, approvedVia?, grantedAt?, expiresAt?, endedAt?, endedBy?, undoneAt?, changes: [change…] }
- *   change = { at, by, target, path, op, before: { overridden, value }, after: { overridden, value } }
+ *   { id, scope, state: pending | active | revoked | expired | lapsed | denied, minutes, reason, includeIrreversible?,
+ *     requestedBy, requestedAt, approvedBy?, approvedVia?, grantedAt?, expiresAt?, endedAt?, endedBy?, undoneAt?,
+ *     changes: [change…] }
+ *   token change = { at, by, target, path, op, before: { overridden, value }, after: { overridden, value } }
+ *   other change = { at, by, target, path?, op, action?, undoable: false, what }   (logged; undo lists it, can't put it back)
  */
 
 export const PASS_FRAME = 'control-pass@1';
 export const PASS_TARGET = 'pass.scopes';
 export const PASS_MAX_MINUTES = 240;
 export const PASS_DEFAULT_MINUTES = 30;
+/** The scope a grant gets when it names none: everything. */
+export const PASS_DEFAULT_SCOPE = 'all';
 export const PASS_REQUEST_TTL_MS = 15 * 60 * 1000;
 /** The warning chip shows this long before a pass ends. */
 export const PASS_WARN_MS = 2 * 60 * 1000;
 /** Changes kept per pass (the oldest first-touch of every token is always kept, so undo stays exact). */
 export const PASS_CHANGES_MAX = 400;
-/** The ops a pass may cover: writes that change a value and can be put back. Never remove (destructive), add or act. */
+/** The ops a narrow (token) scope covers: writes that change a value and can be put back. */
 export const PASS_COVERABLE_OPS = ['set', 'reset'];
+/** The ops the `all` scope covers: every write, deletes included (irreversible ones only with include_irreversible). */
+export const PASS_ALL_OPS = ['set', 'reset', 'add', 'remove', 'act'];
+/** Targets no pass ever covers (a pass can't grant, approve or widen a pass). */
+export const PASS_EXCLUDED_TARGETS = [PASS_TARGET];
 
 /**
- * The scopes. `targets`: the control@1 targets it covers; `ops`: which ops on them; `includes`: other scopes it stands
- * for (`tokens.*`). Append-only: a new scope (amberx.notes, planner.steps…) is a new entry here.
+ * The scopes. `targets`: the control@1 targets it covers (`*` = every target and every axHub call); `ops`: which ops
+ * on them; `includes`: other scopes it stands for. `what`: how a sentence names what it lets through. Append-only: a
+ * new scope (amberx.notes, planner.steps…) is a new entry here.
  */
 export const PASS_SCOPES = {
-  'tokens.theme': { label: 'Theme', plain: 'Theme', targets: ['tokens.theme'], ops: PASS_COVERABLE_OPS, doc: 'Colour theme tokens (accent, bg, surface, text…).' },
-  'tokens.style': { label: 'Style', plain: 'Style', targets: ['tokens.style'], ops: PASS_COVERABLE_OPS, doc: 'Style theme tokens (fonts, radii, spacing, shadows, transparencies).' },
-  'tokens.layout': { label: 'Layout', plain: 'Layout', targets: ['tokens.layout'], ops: PASS_COVERABLE_OPS, doc: 'Layout tokens (nav and inspector sides and widths, paddings, gaps, chrome switches).' },
-  'tokens.*': { label: 'All tokens', plain: 'Theme, style and layout', targets: ['tokens.theme', 'tokens.style', 'tokens.layout'], ops: PASS_COVERABLE_OPS, includes: ['tokens.theme', 'tokens.style', 'tokens.layout'], doc: 'Theme, style and layout tokens together.' },
+  all: { label: 'Everything', plain: 'Everything', what: 'Every command', targets: ['*'], ops: PASS_ALL_OPS, includes: ['tokens.theme', 'tokens.style', 'tokens.layout', 'tokens.*'], doc: 'Every command through the API, MCP or CLI on every plugin (tokens, AmberX notes and tasks, planner and orchestrator, console commands, everything axHub holds), ordinary deletes included. Irreversible deletes only with include_irreversible.' },
+  'tokens.theme': { label: 'Theme', plain: 'Theme', what: 'Theme changes', targets: ['tokens.theme'], ops: PASS_COVERABLE_OPS, doc: 'Colour theme tokens (accent, bg, surface, text…).' },
+  'tokens.style': { label: 'Style', plain: 'Style', what: 'Style changes', targets: ['tokens.style'], ops: PASS_COVERABLE_OPS, doc: 'Style theme tokens (fonts, radii, spacing, shadows, transparencies).' },
+  'tokens.layout': { label: 'Layout', plain: 'Layout', what: 'Layout changes', targets: ['tokens.layout'], ops: PASS_COVERABLE_OPS, doc: 'Layout tokens (nav and inspector sides and widths, paddings, gaps, chrome switches).' },
+  'tokens.*': { label: 'All tokens', plain: 'Theme, style and layout', what: 'Theme, style and layout changes', targets: ['tokens.theme', 'tokens.style', 'tokens.layout'], ops: PASS_COVERABLE_OPS, includes: ['tokens.theme', 'tokens.style', 'tokens.layout'], doc: 'Theme, style and layout tokens together.' },
 };
 export const PASS_SCOPE_IDS = Object.keys(PASS_SCOPES);
-/** Short words people say → scope ids (`axf token pass grant theme 30`). */
-export const PASS_SCOPE_WORDS = { theme: 'tokens.theme', colour: 'tokens.theme', color: 'tokens.theme', colours: 'tokens.theme', colors: 'tokens.theme', style: 'tokens.style', layout: 'tokens.layout', all: 'tokens.*', tokens: 'tokens.*', '*': 'tokens.*' };
+/** Short words people say → scope ids (`axf pass grant 30 --scope theme`). */
+export const PASS_SCOPE_WORDS = {
+  all: 'all', everything: 'all', any: 'all', '*': 'all',
+  theme: 'tokens.theme', colour: 'tokens.theme', color: 'tokens.theme', colours: 'tokens.theme', colors: 'tokens.theme', style: 'tokens.style', layout: 'tokens.layout', tokens: 'tokens.*',
+};
 /** The verbs of the pass.scopes target (control@1 `act`), with the input each one takes. */
-export const PASS_ACTS = { grant: { minutes: 'number', reason: 'string' }, approve: { request: 'string' }, deny: { request: 'string' }, revoke: {}, undo: {} };
+export const PASS_ACTS = { grant: { minutes: 'number', reason: 'string', include_irreversible: 'boolean' }, approve: { request: 'string' }, deny: { request: 'string' }, revoke: {}, undo: {} };
 /** How an owner approval arrived (the transport sets it; a command can't). */
 export const PASS_APPROVED_VIA = ['console', 'axhub', 'local', 'cli-tty'];
 
@@ -54,21 +72,28 @@ export const PASS_STATES = ['pending', 'active', 'revoked', 'expired', 'lapsed',
 
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 
-/** A word or id → the scope id, or null. */
+/** A word or id → the scope id, or null ('' = the default scope, everything). */
 export function passScopeId(word) {
   if (typeof word !== 'string') return null;
   const w = word.trim();
   if (w in PASS_SCOPES) return w;
+  if (!w) return PASS_DEFAULT_SCOPE;
   const low = w.toLowerCase();
   return PASS_SCOPE_WORDS[low] ?? (`tokens.${low}` in PASS_SCOPES ? `tokens.${low}` : null);
 }
 
-/** The narrowest scope a control@1 command falls in (null = no pass can ever cover it). Destructive ops: always null. */
+/** Short word for a scope id, the one the CLI and the terminal confirmation use (`all`, `theme`, `tokens`). */
+export const passScopeWord = (id) => (id === 'all' ? 'all' : id === 'tokens.*' ? 'tokens' : String(id).replace(/^tokens\./, ''));
+
+/**
+ * The narrowest scope a control@1 command falls in (null = no pass can ever cover it: reads, which need none, and the
+ * pass target itself). Token set / reset → its token scope; every other write on any target → `all`.
+ */
 export function passScopeOf(command) {
   const c = isObj(command) ? command : {};
-  if (!PASS_COVERABLE_OPS.includes(c.op)) return null;
+  if (!PASS_ALL_OPS.includes(c.op) || PASS_EXCLUDED_TARGETS.includes(c.target) || typeof c.target !== 'string' || !c.target) return null;
   for (const [id, s] of Object.entries(PASS_SCOPES)) if (!s.includes && s.targets.includes(c.target) && s.ops.includes(c.op)) return id;
-  return null;
+  return PASS_DEFAULT_SCOPE;
 }
 
 /** Every scope whose pass would cover this command (its own scope and the wider ones that include it). */
@@ -77,6 +102,9 @@ export function passScopesFor(command) {
   if (!own) return [];
   return PASS_SCOPE_IDS.filter((id) => id === own || PASS_SCOPES[id].includes?.includes(own));
 }
+
+/** Does this pass's grant reach irreversible commands? (only an `all` pass granted with include_irreversible) */
+export const passReachesIrreversible = (p) => !!p && p.scope === 'all' && p.includeIrreversible === true;
 
 /** The minutes a grant asks for, clamped: 1..max, whole minutes, default 30. `max` is the console's setting (≤ 240). */
 export function passMinutes(v, max = PASS_MAX_MINUTES) {
@@ -94,6 +122,8 @@ export function passGrantErrors(scope, input, max = PASS_MAX_MINUTES) {
   const i = isObj(input) ? input : {};
   if (i.minutes !== undefined && (typeof i.minutes !== 'number' || !Number.isFinite(i.minutes) || i.minutes < 1)) errors.push(`minutes must be a number from 1 to ${Math.min(PASS_MAX_MINUTES, max)}`);
   if (i.reason !== undefined && typeof i.reason !== 'string') errors.push('reason must be a string');
+  if (i.include_irreversible !== undefined && typeof i.include_irreversible !== 'boolean') errors.push('include_irreversible must be true or false');
+  if (i.include_irreversible === true && passScopeId(scope) !== 'all') errors.push('include_irreversible only goes with the all scope');
   return errors;
 }
 
@@ -112,11 +142,25 @@ export function passStateAt(p, now = Date.now()) {
   return p.state;
 }
 
-/** The active pass covering this command at `now`, or null. Destructive and unknown commands: always null. */
-export function passCovering(passes, command, now = Date.now()) {
+/**
+ * The active pass covering this command at `now`, or null. `opts.irreversible`: the command can't be undone (control@1
+ * marks it per target): only an `all` pass with include_irreversible covers it.
+ */
+export function passCovering(passes, command, now = Date.now(), opts = {}) {
   const scopes = passScopesFor(command);
   if (!scopes.length) return null;
-  return (Array.isArray(passes) ? passes : []).find((p) => scopes.includes(p.scope) && passActive(p, now)) ?? null;
+  return (Array.isArray(passes) ? passes : []).find((p) => scopes.includes(p.scope) && passActive(p, now) && (!opts.irreversible || passReachesIrreversible(p))) ?? null;
+}
+
+/**
+ * The active pass covering a call axHub holds (any service, any tool), or null: what axHub asks before it skips the
+ * hold. `call` = { service?, tool?, irreversible? }; only an `all` pass covers a call that isn't a control@1 command
+ * (a control@1 command through axHub can go through passCovering for its narrow scope too).
+ */
+export function passCoveringCall(passes, call = {}, now = Date.now()) {
+  const c = isObj(call) ? call : {};
+  if (c.target === PASS_TARGET) return null;
+  return (Array.isArray(passes) ? passes : []).find((p) => p.scope === 'all' && passActive(p, now) && (!c.irreversible || passReachesIrreversible(p))) ?? null;
 }
 
 /** "10:42 AM" in Brett's time (America/New_York unless the console says otherwise). */
@@ -135,26 +179,34 @@ export function passLeft(ms) {
 /** One plain sentence for a pass at `now` (what the API, MCP and CLI answer with). */
 export function passSentence(p, now = Date.now(), timeZone) {
   if (!p) return 'No pass.';
-  const what = `${PASS_SCOPES[p.scope]?.plain ?? p.scope} changes`;
+  const what = PASS_SCOPES[p.scope]?.what ?? `${p.scope} changes`;
+  const noun = (PASS_SCOPES[p.scope]?.plain ?? p.scope).toLowerCase();
+  const irr = p.includeIrreversible ? ', irreversible deletes included' : '';
   switch (passStateAt(p, now)) {
-    case 'active': return `${what} run without veto until ${passClock(p.expiresAt, timeZone)} (${passLeft(passRemainingMs(p, now))} left).`;
-    case 'pending': return `${what} without veto for ${p.minutes} min: waiting for Brett to approve (console banner → Token pass, or axHub).`;
-    case 'expired': return `The ${what.toLowerCase()} pass ended at ${passClock(p.expiresAt, timeZone)}; changes need the veto again.`;
-    case 'lapsed': return `The request for a ${what.toLowerCase()} pass lapsed: nobody approved it within ${PASS_REQUEST_TTL_MS / 60000} minutes.`;
-    case 'revoked': return `The ${what.toLowerCase()} pass was revoked${p.endedBy ? ` by ${p.endedBy}` : ''}; changes need the veto again.`;
-    case 'denied': return `The request for a ${what.toLowerCase()} pass was denied.`;
+    case 'active': return `${what} run${p.scope === 'all' ? 's' : ''} without veto${irr} until ${passClock(p.expiresAt, timeZone)} (${passLeft(passRemainingMs(p, now))} left).`;
+    case 'pending': return `${what} without veto${irr} for ${p.minutes} min: waiting for Brett to approve (console banner → Pass, or axHub).`;
+    case 'expired': return `The ${noun} pass ended at ${passClock(p.expiresAt, timeZone)}; ${p.scope === 'all' ? 'commands' : 'changes'} need the veto again.`;
+    case 'lapsed': return `The request for a ${noun} pass lapsed: nobody approved it within ${PASS_REQUEST_TTL_MS / 60000} minutes.`;
+    case 'revoked': return `The ${noun} pass was revoked${p.endedBy ? ` by ${p.endedBy}` : ''}; ${p.scope === 'all' ? 'commands' : 'changes'} need the veto again.`;
+    case 'denied': return `The request for a ${noun} pass was denied.`;
     default: return `${what}: ${p.state}.`;
   }
 }
 
+/** A change that undo can put back: a token write logged with its value before and after. */
+export const passChangeUndoable = (ch) => !!ch && ch.undoable !== false && isObj(ch.before) && typeof ch.path === 'string';
+/** The key undo groups token changes by (target + token id); other commands each stand alone. */
+const changeKey = (ch, i) => (passChangeUndoable(ch) ? `${ch.target}\u0000${ch.path}` : `#${i}`);
+
 /**
- * The changes to make to put back everything a pass changed: per (target, path), the value before the pass first
- * touched it. Newest first so a later override never re-applies over an earlier one.
+ * The changes to make to put back everything a pass changed that can be put back: per (target, path), the value
+ * before the pass first touched it. Newest first so a later override never re-applies over an earlier one.
  */
 export function passUndoPlan(p) {
   const first = new Map();
   for (const ch of Array.isArray(p?.changes) ? p.changes : []) {
-    const k = `${ch.target}\u0000${ch.path ?? ''}`;
+    if (!passChangeUndoable(ch)) continue;
+    const k = changeKey(ch);
     if (!first.has(k)) first.set(k, ch);
   }
   return [...first.values()].reverse().map((ch) => (ch.before?.overridden
@@ -162,13 +214,31 @@ export function passUndoPlan(p) {
     : { op: 'reset', target: ch.target, ...(ch.path ? { path: ch.path } : {}) }));
 }
 
+/** The commands run under a pass that undo can't put back (oldest first), in plain words: what to check by hand. */
+export function passNotUndoable(p) {
+  return (Array.isArray(p?.changes) ? p.changes : []).filter((ch) => !passChangeUndoable(ch)).map((ch) => ({
+    at: ch.at, by: ch.by, op: ch.op, target: ch.target, ...(ch.path ? { path: ch.path } : {}), ...(ch.action ? { action: ch.action } : {}),
+    what: ch.what || `${ch.op}${ch.action ? ` ${ch.action}` : ''} ${ch.target}${ch.path ? ` ${ch.path}` : ''}`,
+  }));
+}
+
+/** One log entry for a command an `all` pass let through that isn't a token write (kept for the record; not undoable). */
+export function passCommandChange(command, now = Date.now(), what = '') {
+  const c = isObj(command) ? command : {};
+  return {
+    at: new Date(now).toISOString(), by: c.by || 'unknown', op: c.op, target: c.target, ...(c.path ? { path: c.path } : {}), ...(c.action ? { action: c.action } : {}),
+    undoable: false, what: String(what || `${c.op}${c.action ? ` ${c.action}` : ''} ${c.target}${c.path ? ` ${c.path}` : ''}`).slice(0, 200),
+  };
+}
+
 /** Add a change to a pass's log, keeping it bounded (the first touch of every token always stays, so undo is exact). */
 export function passWithChange(p, change) {
   const changes = [...(Array.isArray(p.changes) ? p.changes : []), change];
   if (changes.length <= PASS_CHANGES_MAX) return { ...p, changes };
   const seen = new Set();
-  const keep = changes.filter((ch) => { const k = `${ch.target}\u0000${ch.path ?? ''}`; if (seen.has(k)) return false; seen.add(k); return true; });
-  return { ...p, changes: [...keep, ...changes.slice(-(PASS_CHANGES_MAX - keep.length))].slice(-PASS_CHANGES_MAX), trimmed: true };
+  const keep = changes.filter((ch, i) => { if (!passChangeUndoable(ch)) return false; const k = changeKey(ch, i); if (seen.has(k)) return false; seen.add(k); return true; });
+  const rest = changes.filter((ch) => !keep.includes(ch)).slice(-Math.max(0, PASS_CHANGES_MAX - keep.length));
+  return { ...p, changes: [...keep, ...rest].sort((x, y) => String(x.at).localeCompare(String(y.at))).slice(-PASS_CHANGES_MAX), trimmed: true };
 }
 
 /** The public view of a pass (what GET /pass publishes and the banner reads): no change bodies, the state at `now`. */
@@ -180,7 +250,9 @@ export function passPublic(p, now = Date.now(), timeZone) {
     ...(p.grantedAt ? { grantedAt: p.grantedAt } : {}), ...(p.expiresAt ? { expiresAt: p.expiresAt } : {}),
     ...(p.endedAt ? { endedAt: p.endedAt, endedBy: p.endedBy ?? '' } : {}),
     remainingMs: passRemainingMs(p, now), warn: state === 'active' && passRemainingMs(p, now) <= PASS_WARN_MS,
-    changes: Array.isArray(p.changes) ? p.changes.length : 0, covers: PASS_SCOPES[p.scope]?.targets ?? [], ops: PASS_SCOPES[p.scope]?.ops ?? [],
+    label: PASS_SCOPES[p.scope]?.label ?? p.scope, include_irreversible: p.includeIrreversible === true,
+    changes: Array.isArray(p.changes) ? p.changes.length : 0, undoable: passUndoPlan(p).length, notUndoable: passNotUndoable(p).length,
+    covers: PASS_SCOPES[p.scope]?.targets ?? [], ops: PASS_SCOPES[p.scope]?.ops ?? [],
     text: passSentence(p, now, timeZone),
   };
 }
@@ -194,6 +266,9 @@ export function passPublication(passes, now = Date.now(), timeZone) {
     active: list.filter((p) => passActive(p, now)).map((p) => passPublic(p, now, timeZone)),
     pending: list.filter((p) => passPending(p, now)).map((p) => passPublic(p, now, timeZone)),
     scopes: Object.fromEntries(Object.entries(PASS_SCOPES).map(([id, s]) => [id, { label: s.label, targets: s.targets, ops: s.ops, ...(s.includes ? { includes: s.includes } : {}) }])),
-    never: ['remove', 'add', 'act'],
+    default: PASS_DEFAULT_SCOPE,
+    // what no pass covers: the pass target itself; irreversible calls only under an all pass with include_irreversible
+    excluded: PASS_EXCLUDED_TARGETS,
+    irreversible: 'covered only by an active all pass with include_irreversible: true',
   };
 }

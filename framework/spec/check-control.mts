@@ -12,7 +12,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
   CONTROL_ALIASES, CONTROL_EFFECT, CONTROL_FRAME, CONTROL_OPS, CONTROL_PERMISSIONS, CONTROL_TARGETS, CONTROL_TARGET_IDS, CONTROL_WIRE,
-  canonicalControl, controlCli, controlConfirmToken, controlConfirmValid, controlErrors, controlFailure, controlGate, controlGranted, controlPaths, controlPermission, controlRegistry, controlResult, controlRoutes, controlSchema, controlTools, normalizeControl,
+  canonicalControl, controlCli, controlIrreversible, controlConfirmToken, controlConfirmValid, controlErrors, controlFailure, controlGate, controlGranted, controlPaths, controlPermission, controlRegistry, controlResult, controlRoutes, controlSchema, controlTools, normalizeControl,
 } from '../core/engines/control-rules.mjs';
 import { layoutFieldNames } from '../core/engines/layout-rules.mjs';
 import { SCALE_FIELDS, SCALE_ENUMS } from '../core/engines/scale-rules.mjs';
@@ -107,6 +107,9 @@ ok(second.ok && second.effect === 'destructive', 'the same command with the toke
 eq(controlGate({ ...remove, path: 'it-43', confirm: first.ok ? '' : first.confirm }, ['*'], { salt, now: NOW }).code, 'confirmation_required', 'the token does not confirm another record');
 eq(controlGate({ ...remove, confirm: first.ok ? '' : first.confirm }, ['*'], { salt: 'other', now: NOW }).code, 'confirmation_required', 'another salt refuses it');
 eq(controlGate({ ...remove, confirm: first.ok ? '' : first.confirm }, ['*'], { salt, now: NOW + 25 * 60_000 }).code, 'confirmation_required', 'expired after two buckets');
+ok(controlGate(remove, ['*'], { salt, now: NOW, passCovers: true }).ok, 'a delete an active pass covers runs without the token (pass-all)');
+ok(controlIrreversible({ op: 'remove', target: 'amberx.items' }) && controlIrreversible({ op: 'remove', target: 'amberx.lists' }), 'AmberX hard deletes are marked irreversible');
+ok(!controlIrreversible({ op: 'remove', target: 'planner.plans' }) && !controlIrreversible({ op: 'remove', target: 'planner.builds' }) && !controlIrreversible({ op: 'set', target: 'amberx.items' }), 'plan and build deletes can be brought back: not irreversible');
 ok(controlConfirmValid(remove, controlConfirmToken(remove, salt, NOW), salt, NOW + 10 * 60_000), 'good in the next bucket');
 eq(canonicalControl({ reason: 'x', path: 'it-42', target: 'amberx.items', op: 'remove' }), canonicalControl(remove), 'canonical form ignores by / reason and key order');
 ok(canonicalControl({ ...remove, value: { b: 1, a: 2 } }) === canonicalControl({ ...remove, value: { a: 2, b: 1 } }), 'nested keys sorted');
