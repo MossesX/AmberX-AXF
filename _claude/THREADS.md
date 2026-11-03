@@ -591,3 +591,6 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 16:22 UTC · `tools-plugin` note (refactor) · foreign-write
 - 2026-11-03 16:22 UTC · `crew-retrain` branch claude/crew-retrain, PR #265 (breakroom) · builds-live
 - 2026-11-03 16:23 UTC · `crew-retrain` s7 done (breakroom) · orchestrator
+- 2026-11-03 16:23 UTC · `crew-retrain` s8 done, → built (breakroom) · orchestrator
+- 2026-11-03 16:23 UTC · `crew-retrain` note (breakroom) · orchestrator
+- 2026-11-03 16:23 UTC · `land-everything` note (urgent) · orchestrator
