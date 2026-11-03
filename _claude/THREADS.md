@@ -896,3 +896,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 19:55 UTC · `agent-pick` branch claude/agent-pick, PR #276 (urgent) · builds-live
 - 2026-11-03 19:55 UTC · `ui-review-predicted` note (urgent) · orchestrator
 - 2026-11-03 19:55 UTC · `batch-manager` note (angel) · orchestrator
+- 2026-11-03 19:56 UTC · `ui-review-shots` s4 done (urgent) · orchestrator
