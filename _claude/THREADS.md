@@ -568,11 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:57 UTC · `pr-only-merge` PR #183, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `orch-pending-sync` PR #143, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `home-cards` branch angel/home-cards-queue, PR #171, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `settings-compact` PR #175, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `ui-all-assets` PR #181, merged, note (angel) · reconciler
 - 2026-11-03 13:57 UTC · `element-inspector` s1 done, s2 done, s4 done, → running, PR #192, note (angel) · reconciler
 - 2026-11-03 13:57 UTC · `layout-repeating-slots` s2 done, → running, PR #191, merged, note (angel) · reconciler
 - 2026-11-03 13:57 UTC · `session-history` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, → built, PR #195, note (angel) · reconciler
@@ -968,3 +963,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 21:05 UTC · `molly-console-commands` added (7 steps) (current) · orchestrator
 - 2026-11-03 21:08 UTC · `molly-console-commands` added (7 steps) (current) · foreign-write
 - 2026-11-03 21:10 UTC · `git-status-board` added (6 steps) (current) · foreign-write
+- 2026-11-03 20:54 UTC · `home-cards-live` branch claude/home-cards-live, note (urgent) · reconciler
+- 2026-11-03 21:11 UTC · `plugin-settings-placement` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 21:11 UTC · `banner-ref-links` s1 done (current) · foreign-write
+- 2026-11-03 21:11 UTC · `molly-console-commands` added (14 steps) (current) · foreign-write
+- 2026-11-03 21:11 UTC · `git-status-board` added (6 steps) (current) · foreign-write

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T21:10:52.940Z",
+ "updatedAt": "2026-11-03T21:11:51.112Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4570,6 +4570,10 @@
     {
      "text": "Reconciler: PR #283",
      "at": "2026-11-03T21:03:58.646Z"
+    },
+    {
+     "text": "Reconciler: branch claude/home-cards-live (no PR yet)",
+     "at": "2026-11-03T20:54:49.605Z"
     }
    ],
    "approvals": [],
