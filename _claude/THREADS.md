@@ -568,7 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 17:22 UTC · `console-wake` s1 done (urgent) · orchestrator
 - 2026-11-03 17:25 UTC · `theme-veto-pass` PR #262, merged (urgent) · builds-live
 - 2026-11-03 17:25 UTC · `land-everything` note (urgent) · orchestrator
 - 2026-11-03 17:26 UTC · `pass-all` PR #264, merged (urgent) · builds-live
@@ -968,3 +967,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 21:48 UTC · `molly-console-commands` branch claude/molly-console-commands, PR #288 (current) · builds-live
 - 2026-11-03 21:48 UTC · `plugin-settings-placement` note (current) · foreign-write
 - 2026-11-03 21:48 UTC · `molly-console-commands` note (current) · orchestrator
+- 2026-11-03 21:50 UTC · `molly-console-commands` s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, note (current) · foreign-write

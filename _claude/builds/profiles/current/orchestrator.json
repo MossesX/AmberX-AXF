@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T21:49:27.651Z",
+ "updatedAt": "2026-11-03T21:50:26.528Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -834,7 +834,7 @@
    "upgradeRequests": [],
    "steps": [
     {
-     "id": "s1",
+     "id": "s106-105",
      "text": "Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
      "model": "Opus",
      "why": "",
@@ -846,13 +846,13 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T21:38:07.301Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
      "uid": "st-mw16ycsa01p2nd"
     },
     {
-     "id": "s2",
+     "id": "s107-106",
      "text": "Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
      "model": "Opus",
      "why": "",
@@ -864,13 +864,13 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T21:38:09.752Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
      "uid": "st-mw16ycsa02dumc"
     },
     {
-     "id": "s3",
+     "id": "s108-107",
      "text": "Same for the axHub and AmberX frames inside Molly",
      "model": "Opus",
      "why": "",
@@ -882,13 +882,13 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T21:46:07.637Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
      "uid": "st-mw16ycsa03hk8i"
     },
     {
-     "id": "s4",
+     "id": "s109-108",
      "text": "console-wake path: wake/relay through Molly when Molly is the open app",
      "model": "Opus",
      "why": "",
@@ -900,8 +900,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T21:46:10.264Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
      "uid": "st-mw16ycsa04dqei"
     },

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 502,
- "updatedAt": "2026-11-03T21:49:27.651Z",
+ "rev": 503,
+ "updatedAt": "2026-11-03T21:50:26.528Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -58712,7 +58712,7 @@
    "upgradeRequests": [],
    "steps": [
     {
-     "id": "s1",
+     "id": "s106-105",
      "uid": "st-mw16ycsa01p2nd",
      "title": "",
      "text": "Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
@@ -58726,15 +58726,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T21:38:07.301Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-03T21:05:30.630Z",
-     "updatedAt": "2026-11-03T21:38:07.387Z"
+     "updatedAt": "2026-11-03T21:50:20.141Z"
     },
     {
-     "id": "s2",
+     "id": "s107-106",
      "uid": "st-mw16ycsa02dumc",
      "title": "",
      "text": "Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
@@ -58748,15 +58748,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T21:38:09.752Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-03T21:05:30.630Z",
-     "updatedAt": "2026-11-03T21:38:09.810Z"
+     "updatedAt": "2026-11-03T21:50:20.141Z"
     },
     {
-     "id": "s3",
+     "id": "s108-107",
      "uid": "st-mw16ycsa03hk8i",
      "title": "",
      "text": "Same for the axHub and AmberX frames inside Molly",
@@ -58770,15 +58770,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T21:46:07.637Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-03T21:05:30.630Z",
-     "updatedAt": "2026-11-03T21:46:07.860Z"
+     "updatedAt": "2026-11-03T21:50:20.141Z"
     },
     {
-     "id": "s4",
+     "id": "s109-108",
      "uid": "st-mw16ycsa04dqei",
      "title": "",
      "text": "console-wake path: wake/relay through Molly when Molly is the open app",
@@ -58792,12 +58792,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T21:46:10.264Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-03T21:05:30.630Z",
-     "updatedAt": "2026-11-03T21:46:10.401Z"
+     "updatedAt": "2026-11-03T21:50:20.141Z"
     },
     {
      "id": "s5",
