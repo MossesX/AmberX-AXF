@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 394,
- "updatedAt": "2026-11-03T19:50:34.084Z",
+ "rev": 395,
+ "updatedAt": "2026-11-03T19:50:59.473Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -54400,15 +54400,15 @@
    "title": "Claude plugin: Claude settings on axHub (No wait, builds, talking, notifications), read by every session",
    "category": "Claude",
    "detail": "Brett, Nov 3 2026 (voice): a Claude plugin with a whole bunch of settings for Claude, kept on axHub, that every Claude session checks and acts on. No wait (owner-only) = a standing all-scope veto pass created on Brett's signed-in click, revoked when switched off; Include irreversible (owner-only); builds, verification, talking, notifications, memory groups; open registry. MCP claude_settings_get (read) / claude_settings_set (non-owner settings only). Agent: Janitor Joey.",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/claude-settings",
-   "pr": "",
+   "pr": "#275",
    "createdAt": "2026-11-03T19:02:12.964Z",
-   "updatedAt": "2026-11-03T19:50:24.731Z",
-   "builtAt": "2026-11-03T19:50:24.731Z",
+   "updatedAt": "2026-11-03T19:50:31.855Z",
+   "builtAt": "2026-11-03T19:50:31.855Z",
    "notes": [
     {
      "text": "Agent: Janitor Joey (headless, Opus). All steps Opus (plugin work, no cross-port contract).",
@@ -54417,6 +54417,10 @@
     {
      "text": "agent-pick (branch claude/agent-pick) added plugin claude-session with three Claude settings: Claude agent (default), Ask me every session, Ask for headless too (GET/PUT /api/plugins/claude-session/agent-settings, MCP claude_session_agent_settings[_set]). Build claude-settings' registry to list them (they stay stored there); its claude_settings_get should include them. Avoid the folder name 'claude' (the lifecycle check flags every \"claude\" string).",
      "at": "2026-11-03T19:20:58.529Z"
+    },
+    {
+     "text": "Reconciler: PR #275",
+     "at": "2026-11-03T19:50:31.855Z"
     }
    ],
    "approvals": [],
