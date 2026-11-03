@@ -10,7 +10,7 @@ export const DEFAULT_RULES: { sameSession: boolean; subAgents: boolean; approveM
 export const MODEL_GUIDE: Record<string, string>;
 export const UNCATEGORISED: string;
 export interface Group { label: string; steps: any[]; done: number; skipped: number; minutesLeft: number }
-export interface Phase { index: number; model: 'Fable' | 'Opus'; label: string; name: string; from: string; gate: boolean; approved: boolean; done: boolean; minutesLeft: number; steps: any[]; groups: Group[] }
+export interface Phase { index: number; model: 'Fable' | 'Opus'; label: string; name: string; from: string; gate: boolean; kind: '' | 'upgrade' | 'downgrade' | 'same'; upgrade: boolean; approved: boolean; done: boolean; minutesLeft: number; steps: any[]; groups: Group[] }
 export function categories(builds: any[]): { name: string; count: number }[];
 export function estimateMinutes(e: unknown): number | null;
 export function formatMinutes(min: number | null | undefined): string;

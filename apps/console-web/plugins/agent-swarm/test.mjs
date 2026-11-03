@@ -52,8 +52,23 @@ t('skill match picks the specialist', () => {
   assert.deepEqual(p.jobs.map((j) => j.agent), ['rio', 'py', 'doc']);
 });
 t('the model comes from the policy: the step\'s pin wins, else foundation words → Fable, else the default', () => {
-  const p = c.planJobs(B('b', [{ text: 'Update the README docs' }, { text: 'React card view' }, { text: 'Design the agent contract schema', model: 'Fable' }, { text: 'Refactor the engine' }]), roster);
+  const b = { ...B('b', [{ text: 'Update the README docs' }, { text: 'React card view' }, { text: 'Design the agent contract schema', model: 'Fable' }, { text: 'Refactor the engine' }]), approvals: [{ phase: 1, from: 'Opus', to: 'Fable', by: 'brett', via: 'console' }] };
+  const p = c.planJobs(b, roster);
   assert.deepEqual(p.jobs.map((j) => j.model), ['opus', 'opus', 'fable', 'opus'], 'cheap tiers run as Opus (model policy); an Opus pin holds even on engine words');
+});
+t('model upgrades need Brett: an unapproved Opus → Fable phase gets no job; a self-approval does not count; downgrades run', () => {
+  const steps = [{ text: 'Update the README docs' }, { text: 'Design the agent contract schema', model: 'Fable' }, { text: 'Refactor the engine' }];
+  const none = c.planJobs(B('b', steps), roster);
+  assert.deepEqual(none.jobs.map((j) => j.stepId), ['s1', 's3']); assert.ok(none.warnings.some((w) => /b\.s2: waits for Brett/.test(w)));
+  const self = c.planJobs({ ...B('b', steps), approvals: [{ phase: 1, from: 'Opus', to: 'Fable', selfApproved: true }] }, roster);
+  assert.ok(!self.jobs.some((j) => j.stepId === 's2'));
+  const down = c.planJobs(B('d', [{ text: 'Design the agent contract schema', model: 'Fable' }, { text: 'Update the README docs' }]), roster);
+  assert.deepEqual(down.jobs.map((j) => j.model), ['fable', 'opus'], 'Fable → Opus needs nobody');
+});
+t('no step goes to an agent on a higher model than its pin', () => {
+  const only = { ...roster, agents: roster.agents.map((a) => ({ ...a, models: ['fable'] })) };
+  const p = c.planJobs(B('b', [{ text: 'Update the README docs' }]), only);
+  assert.equal(p.jobs.length, 0); assert.ok(p.warnings.some((w) => /model upgrade needs Brett's approval/.test(w)));
   const u = c.planJobs({ id: 'u', steps: [{ id: 's1', text: 'Tidy the React settings page copy' }, { id: 's2', text: 'New asset type + schema for cards in framework/assets/' }, { id: 's3', text: 'Kotlin twin of the React view', model: '[Fable] pinned' }, { id: 's4', text: 'docs', model: 'sonnet' }] }, roster);
   assert.deepEqual(u.jobs.map((j) => [j.tier, j.model]), [['opus', 'opus'], ['fable', 'fable'], ['fable', 'fable'], ['opus', 'opus']], 'unpinned: the policy\'s foundation rule; any pin spelling; a Sonnet pin runs as Opus');
   assert.equal(c.requiredTier({ text: 'kernel engine twin' }), 'fable'); assert.equal(c.requiredTier({ text: 'x', model: 'Opus 5.5' }), 'opus');
