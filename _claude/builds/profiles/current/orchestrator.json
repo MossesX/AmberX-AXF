@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T21:43:12.836Z",
+ "updatedAt": "2026-11-03T21:45:25.573Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10,16 +10,6 @@
  },
  "builds": [
   {
-   "notes": [
-    {
-     "text": "Assigned: Ping Paulie (all-rounder router not on this checkout). Live fix: key in /opt/axf/.axf-console/plugins/console-terminal/ssh (bind mount), host 172.16.1.1 (coolify gateway), pubkey in /root/.ssh/authorized_keys with from=172.16.0.0/12. headless ready:true, 6 sessions, meters with cost.",
-     "at": "2026-11-03T19:31:28.416Z"
-    },
-    {
-     "text": "Reconciler: branch claude/terminal-vps-host (PR #274); PR #274",
-     "at": "2026-11-03T19:40:47.953Z"
-    }
-   ],
    "id": "terminal-vps-host",
    "title": "Terminal VPS host: headless tabs attach to build tmux sessions",
    "category": "Ops > Terminal",
@@ -33,6 +23,16 @@
    "createdAt": "2026-11-03T19:31:10.365Z",
    "updatedAt": "2026-11-03T19:40:53.260Z",
    "builtAt": "2026-11-03T19:40:51.453Z",
+   "notes": [
+    {
+     "text": "Assigned: Ping Paulie (all-rounder router not on this checkout). Live fix: key in /opt/axf/.axf-console/plugins/console-terminal/ssh (bind mount), host 172.16.1.1 (coolify gateway), pubkey in /root/.ssh/authorized_keys with from=172.16.0.0/12. headless ready:true, 6 sessions, meters with cost.",
+     "at": "2026-11-03T19:31:28.416Z"
+    },
+    {
+     "text": "Reconciler: branch claude/terminal-vps-host (PR #274); PR #274",
+     "at": "2026-11-03T19:40:47.953Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -126,24 +126,9 @@
      "note": "",
      "uid": "st-mw132l3e0aawvn"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Reconciler: branch claude/window-resize-fix (no PR yet)",
-     "at": "2026-11-03T20:00:43.692Z"
-    },
-    {
-     "text": "Reconciler: PR #278; PR #278 merged",
-     "at": "2026-11-03T20:10:46.177Z"
-    },
-    {
-     "text": "Merged PR #278 (836a290d) on Brett's order; console, axhub-web, amberx-web, molly redeployed and verified serving the fix. CI on main was already red on 3 unrelated jobs (widget types, molly xlayout opens:false, Kotlin widget tests) since 17:45 UTC; this PR's own steps passed. UI Review r-20261103-35553277 for the record. Agent: Landin' Lenny.",
-     "at": "2026-11-03T20:12:36.260Z"
-    }
-   ],
    "id": "window-resize-fix",
    "title": "Window resize fix + Terminal settings dialog placement (urgent)",
    "category": "Bug fix",
@@ -158,6 +143,20 @@
    "createdAt": "2026-11-03T19:32:33.504Z",
    "updatedAt": "2026-11-03T20:12:38.085Z",
    "builtAt": "2026-11-03T20:12:35.030Z",
+   "notes": [
+    {
+     "text": "Reconciler: branch claude/window-resize-fix (no PR yet)",
+     "at": "2026-11-03T20:00:43.692Z"
+    },
+    {
+     "text": "Reconciler: PR #278; PR #278 merged",
+     "at": "2026-11-03T20:10:46.177Z"
+    },
+    {
+     "text": "Merged PR #278 (836a290d) on Brett's order; console, axhub-web, amberx-web, molly redeployed and verified serving the fix. CI on main was already red on 3 unrelated jobs (widget types, molly xlayout opens:false, Kotlin widget tests) since 17:45 UTC; this PR's own steps passed. UI Review r-20261103-35553277 for the record. Agent: Landin' Lenny.",
+     "at": "2026-11-03T20:12:36.260Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -215,11 +214,9 @@
      "note": "",
      "uid": "st-mw134d6a0601hn"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [],
    "id": "terminal-sessions-nav",
    "title": "Terminal: sessions navigation rail",
    "category": "Console > Terminal",
@@ -233,6 +230,7 @@
    "createdAt": "2026-11-03T19:58:59.822Z",
    "updatedAt": "2026-11-03T20:19:17.505Z",
    "builtAt": "",
+   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -308,11 +306,9 @@
      "note": "",
      "uid": "st-mw142d5l08ii3v"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [],
    "id": "profile-manager",
    "title": "Build profiles manager (browse, view, create, edit, switch, duplicate, merge, move builds, archive, delete/restore, cleanup)",
    "category": "Builds",
@@ -326,6 +322,7 @@
    "createdAt": "2026-11-03T19:59:06.499Z",
    "updatedAt": "2026-11-03T20:14:29.392Z",
    "builtAt": "",
+   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -448,11 +445,9 @@
      "note": "",
      "uid": "st-mw142icj0gnre8"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [],
    "id": "build-prompt-origin",
    "title": "Show what Brett said (verbatim prompt) on every build",
    "category": "Builds",
@@ -466,6 +461,7 @@
    "createdAt": "2026-11-03T20:23:37.380Z",
    "updatedAt": "2026-11-03T20:53:25.027Z",
    "builtAt": "2026-11-03T20:53:24.237Z",
+   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -559,11 +555,9 @@
      "note": "",
      "uid": "st-mw14y1dv0a0od8"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [],
    "id": "plugin-settings-placement",
    "title": "Plugin settings placement: inside the plugin, pane, dialog, window or main",
    "category": "Framework",
@@ -577,6 +571,7 @@
    "createdAt": "2026-11-03T20:30:14.217Z",
    "updatedAt": "2026-11-03T20:55:50.337Z",
    "builtAt": "",
+   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -688,24 +683,28 @@
      "note": "",
      "uid": "st-mw15gx3q06vi5f"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [],
    "id": "banner-ref-links",
    "title": "Banner reference links: tap a mention to open what it refers to",
    "category": "Framework",
    "detail": "Brett (Nov 3 2026, voice): in banner entries (in progress, merged, live, build/status banners, Codebase changes), text that mentions a real thing (screen, settings page, plugin, dialog, toolbar, build, PR, agent, file) becomes a hook: tap = peek card, double-tap = open + highlight, long-press = context menu. ref@1 resolver from the console registries, explicit 'touches:' refs win. Applied in the generic banner item renderer; banner-pack (#251), banner-editor (#254), banners-one untouched. Agent: Ping Paulie (headless worktree session, not on main). Branch claude/banner-ref-links.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/banner-ref-links",
-   "pr": "",
+   "pr": "#287",
    "createdAt": "2026-11-03T20:47:37.192Z",
-   "updatedAt": "2026-11-03T21:19:59.441Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T21:45:25.479Z",
+   "builtAt": "2026-11-03T21:45:20.552Z",
+   "notes": [
+    {
+     "text": "Built by Ping Paulie (headless worktree). PR #287, UI Review r-20261103-1ad2ede3 waiting. Gaps: swarm roster agents not targets (no capability), no touches field on builds yet (text only), UI Review has no per-item deep link. Fable review suggested for the ref@1 contract.",
+     "at": "2026-11-03T21:45:25.479Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -794,16 +793,14 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:45:20.551Z",
+     "note": "PR #287; UI Review r-20261103-1ad2ede3; report _claude/builds/reports/banner-ref-links.md",
      "uid": "st-mw15swa70ag93s"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [],
    "id": "molly-console-commands",
    "title": "Molly: console commands reach the embedded console; every app gets the control surface",
    "category": "Molly",
@@ -817,6 +814,7 @@
    "createdAt": "2026-11-03T21:05:30.629Z",
    "updatedAt": "2026-11-03T21:38:09.752Z",
    "builtAt": "",
+   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -2836,11 +2834,9 @@
      "note": "",
      "uid": "st-mw16fwjw0edhg2"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [],
    "id": "git-status-board",
    "title": "Git status board (grids for push / pull / CI / merge / held / deployed / stale)",
    "category": "Console > Plugins",
@@ -2854,6 +2850,7 @@
    "createdAt": "2026-11-03T21:10:39.295Z",
    "updatedAt": "2026-11-03T21:26:47.860Z",
    "builtAt": "",
+   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -3073,16 +3070,9 @@
      "note": "",
      "uid": "st-mw16mny806m87d"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Agent: Earl the Ear (headless). Six CI failures fixed at the root on PR #284; ci-main health check names failing jobs, Auto fix queues new ci-fix job (Greenlight Gina). s3 waits for #284 to go green and merge, then the waiting PRs get updated from main.",
-     "at": "2026-11-03T21:31:51.198Z"
-    }
-   ],
    "id": "urgent-main-ci-green",
    "title": "URGENT: main CI green (widgets fixture, xlayout opens, Kotlin widget tests)",
    "category": "Ops",
@@ -3096,6 +3086,12 @@
    "createdAt": "2026-11-03T21:12:18.212Z",
    "updatedAt": "2026-11-03T21:31:51.198Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "Agent: Earl the Ear (headless). Six CI failures fixed at the root on PR #284; ci-main health check names failing jobs, Auto fix queues new ci-fix job (Greenlight Gina). s3 waits for #284 to go green and merge, then the waiting PRs get updated from main.",
+     "at": "2026-11-03T21:31:51.198Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -3189,8 +3185,7 @@
      "note": "",
      "uid": "st-mw16on0s0apxt0"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
    "id": "whats-new-open-fix",
