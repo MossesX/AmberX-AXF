@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 517,
- "updatedAt": "2026-11-03T22:02:52.836Z",
+ "rev": 518,
+ "updatedAt": "2026-11-03T22:03:07.151Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -61366,7 +61366,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -61379,12 +61379,12 @@
     "builtAt": "",
     "prefixSteps": true,
     "stepAt": {
-     "st-mw16nui60ft3fy": "2026-11-03T21:10:39.299Z",
-     "st-mw16nui60gsmhh": "2026-11-03T21:10:39.299Z",
-     "st-mw16nui60h8t32": "2026-11-03T21:10:39.299Z",
-     "st-mw16nui60ip92g": "2026-11-03T21:10:39.299Z",
-     "st-mw16nui60j23km": "2026-11-03T21:10:39.299Z",
-     "st-mw16nui60kg5g2": "2026-11-03T21:10:39.299Z"
+     "st-mw16mny80188hr": "2026-11-03T21:10:39.299Z",
+     "st-mw16mny802yhn0": "2026-11-03T21:10:39.299Z",
+     "st-mw16mny803fljh": "2026-11-03T21:10:39.299Z",
+     "st-mw16mny804ynif": "2026-11-03T21:10:39.299Z",
+     "st-mw16mny805bl21": "2026-11-03T21:10:39.299Z",
+     "st-mw16mny806m87d": "2026-11-03T21:10:39.299Z"
     }
    },
    "queue": null,
@@ -61414,9 +61414,9 @@
       "createdAt": "2026-11-03T21:10:39.299Z",
       "updatedAt": "2026-11-03T21:10:46.045Z"
      },
-     "at": "2026-11-03T22:02:15.279Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-03T22:01:52.904Z",
+     "why": "removed in the orchestrator",
+     "by": "claude-session (Snap Sully)"
     },
     {
      "step": {
@@ -61441,9 +61441,9 @@
       "createdAt": "2026-11-03T21:10:39.299Z",
       "updatedAt": "2026-11-03T21:10:46.045Z"
      },
-     "at": "2026-11-03T22:02:15.279Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-03T22:01:57.689Z",
+     "why": "removed in the orchestrator",
+     "by": "claude-session (Snap Sully)"
     },
     {
      "step": {
@@ -61468,9 +61468,9 @@
       "createdAt": "2026-11-03T21:10:39.299Z",
       "updatedAt": "2026-11-03T21:10:46.045Z"
      },
-     "at": "2026-11-03T22:02:15.279Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-03T22:02:01.126Z",
+     "why": "removed in the orchestrator",
+     "by": "claude-session (Snap Sully)"
     },
     {
      "step": {
@@ -61495,9 +61495,9 @@
       "createdAt": "2026-11-03T21:10:39.299Z",
       "updatedAt": "2026-11-03T21:10:46.045Z"
      },
-     "at": "2026-11-03T22:02:15.279Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-03T22:02:08.246Z",
+     "why": "removed in the orchestrator",
+     "by": "claude-session (Snap Sully)"
     },
     {
      "step": {
@@ -61522,9 +61522,9 @@
       "createdAt": "2026-11-03T21:10:39.299Z",
       "updatedAt": "2026-11-03T21:10:46.045Z"
      },
-     "at": "2026-11-03T22:02:15.279Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-03T22:02:11.758Z",
+     "why": "removed in the orchestrator",
+     "by": "claude-session (Snap Sully)"
     },
     {
      "step": {
@@ -61549,9 +61549,9 @@
       "createdAt": "2026-11-03T21:10:39.299Z",
       "updatedAt": "2026-11-03T21:10:46.045Z"
      },
-     "at": "2026-11-03T22:02:15.279Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-03T22:02:13.270Z",
+     "why": "removed in the orchestrator",
+     "by": "claude-session (Snap Sully)"
     }
    ],
    "legacy": [],
