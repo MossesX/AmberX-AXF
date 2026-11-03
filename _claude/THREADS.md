@@ -760,3 +760,52 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 18:16 UTC · `menu-scroll` s6 done, → complete (urgent) · orchestrator
 - 2026-11-03 18:16 UTC · `menu-scroll` note (urgent) · orchestrator
 - 2026-11-03 18:16 UTC · `menu-scroll` → built, PR #268 (urgent) · builds-live
+- 2026-11-03 18:20 UTC · `auto-land` s1 done, → running (urgent) · orchestrator
+- 2026-11-03 18:22 UTC · `builds-one-page-done` PR #269 (urgent) · builds-live
+- 2026-11-03 18:22 UTC · `builds-one-page` PR #269 (refactor) · builds-live
+- 2026-11-03 18:22 UTC · `builds-one-page` s13 done, → built (refactor) · snap-sully
+- 2026-11-03 18:22 UTC · `builds-one-page` note (refactor) · snap-sully
+- 2026-11-03 18:22 UTC · `builds-one-page-done` s4 done (urgent) · snap-sully
+- 2026-11-03 18:22 UTC · `builds-one-page-done` s5 done, → built (urgent) · snap-sully
+- 2026-11-03 18:22 UTC · `builds-one-page-done` note (urgent) · snap-sully
+- 2026-11-03 18:23 UTC · `builds-one-page` s13 done, → complete, note (refactor) · foreign-write
+- 2026-11-03 18:23 UTC · `toolbar-tap-confirm` added (21 steps) (urgent) · orchestrator
+- 2026-11-03 18:24 UTC · `toolbar-tap-confirm` branch claude/toolbar-tap-confirm (urgent) · orchestrator
+- 2026-11-03 18:24 UTC · `toolbar-tap-confirm` note (urgent) · orchestrator
+- 2026-11-03 18:25 UTC · `builds-one-page` s16-15 done, s13 done, → complete, note (refactor) · foreign-write
+- 2026-11-03 18:25 UTC · `auto-land` s2 done (urgent) · orchestrator
+- 2026-11-03 18:25 UTC · `auto-land` s3 done (urgent) · orchestrator
+- 2026-11-03 18:28 UTC · `auto-land` s4 done (urgent) · orchestrator
+- 2026-11-03 18:28 UTC · `auto-land` s5 done (urgent) · orchestrator
+- 2026-11-03 18:28 UTC · `auto-land` note (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `builds-one-page` s13 done, → complete, note (refactor) · foreign-write
+- 2026-11-03 18:29 UTC · `crew-live` s2 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `crew-live` s4 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s3 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s4 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s5 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s6 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s7 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s8 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s9 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s11 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s12 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s13 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s14 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `toolbar-tap-confirm` s2 done, → running (urgent) · orchestrator
+- 2026-11-03 18:30 UTC · `auto-land` branch claude/auto-land-2, PR #270, note (urgent) · reconciler
+- 2026-11-03 18:30 UTC · `auto-land` s6 done (urgent) · orchestrator
+- 2026-11-03 18:30 UTC · `auto-land` s7 done (urgent) · orchestrator
+- 2026-11-03 18:31 UTC · `md-studio` branch claude/md-studio, PR #271 (urgent) · builds-live
+- 2026-11-03 18:31 UTC · `md-studio` s10 done, → complete (urgent) · orchestrator
+- 2026-11-03 18:31 UTC · `md-studio` note (urgent) · orchestrator
+- 2026-11-03 18:31 UTC · `md-studio` → built (urgent) · orchestrator
+- 2026-11-03 18:32 UTC · `crew-live` s3 done (urgent) · orchestrator
+- 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s4 done (urgent) · orchestrator
+- 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s5 done (urgent) · orchestrator
+- 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s6 done (urgent) · orchestrator
+- 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s7 done (urgent) · orchestrator
+- 2026-11-03 18:36 UTC · `crew-live` s6 done (urgent) · orchestrator
+- 2026-11-03 18:37 UTC · `auto-land` s8 done, → built (urgent) · orchestrator
+- 2026-11-03 18:37 UTC · `auto-land` note (urgent) · orchestrator
+- 2026-11-03 18:37 UTC · `toolbar-tap-confirm` s3 done (urgent) · orchestrator
