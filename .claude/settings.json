@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && node framework/cli/builds-live.mjs pull --quiet; node framework/cli/builds-reconcile.mjs --apply --brief 2>&1 | sed 's/^/[builds] /' | head -40; true",
+            "timeout": 90
+          }
+        ]
+      }
+    ]
+  }
+}

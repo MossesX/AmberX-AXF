@@ -10,8 +10,11 @@
 
 export const SCHEMA = 'orchestrator@1';
 export const MODELS = ['Fable', 'Opus'];
-export const STATUSES = ['pending', 'running', 'waiting', 'blocked', 'failed', 'complete', 'archived'];
-export const STATUS_LABEL = { pending: 'Pending', running: 'Running', waiting: 'Needs approval', blocked: 'Blocked', failed: 'Failed', complete: 'Complete', archived: 'Archived' };
+/** `built` = every step done but the build's PR is not merged yet; `complete` once it merged (or it has no PR). */
+export const STATUSES = ['pending', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
+export const STATUS_LABEL = { pending: 'Pending', running: 'Running', waiting: 'Needs approval', blocked: 'Blocked', failed: 'Failed', built: 'Built · awaiting merge', complete: 'Complete', archived: 'Archived' };
+/** Finished work: no steps left (built waits only on its PR). */
+export const isFinished = (status) => status === 'built' || status === 'complete';
 export const SORTS = ['status', 'added', 'built', 'left', 'next', 'category', 'title'];
 export const SORT_LABEL = { status: 'Status', added: 'Date added', built: 'Date built', left: 'Time left', next: 'Next model', category: 'Category', title: 'Title' };
 export const UNCATEGORISED = 'Uncategorised';
@@ -87,9 +90,10 @@ function normBuild(b) {
     pendingId: str(o.pendingId, 80),
     branch: str(o.branch, 200),
     pr: str(o.pr, 200),
+    ...(str(o.mergedAt) ? { mergedAt: str(o.mergedAt, 40) } : {}),
     createdAt: str(o.createdAt, 40) || now(),
     updatedAt: str(o.updatedAt, 40) || now(),
-    builtAt: o.status === 'complete' ? str(o.builtAt, 40) : '',
+    builtAt: isFinished(o.status) ? str(o.builtAt, 40) : '',
     notes: (Array.isArray(o.notes) ? o.notes : []).map((n) => ({ text: str(n?.text, 2000), at: str(n?.at, 40) })).filter((n) => n.text),
     approvals: (Array.isArray(o.approvals) ? o.approvals : []).map((a) => ({ phase: Number(a?.phase) || 0, from: str(a?.from, 10), to: str(a?.to, 10), at: str(a?.at, 40) })),
     steps,
@@ -174,9 +178,9 @@ export function splitCheck(build, rules = DEFAULT_RULES) {
 export function derivedStatus(build, rules) {
   if (['blocked', 'failed', 'archived'].includes(build.status)) return build.status;
   if (!build.steps.length) return build.status; // nothing to derive from (e.g. a Pending item built before it had steps)
-  if (build.status === 'complete' && !build.steps.some((s) => s.done)) return 'complete'; // built without ticking its steps
+  if (isFinished(build.status) && !build.steps.some((s) => s.done)) return build.pr && !build.mergedAt ? 'built' : 'complete'; // built without ticking its steps
   const n = nextUp(build, rules);
-  if (n.done) return 'complete';
+  if (n.done) return build.pr && !build.mergedAt ? 'built' : 'complete';
   if (n.needsApproval) return 'waiting';
   return build.steps.some((s) => s.done) || build.status === 'running' ? 'running' : 'pending';
 }
@@ -243,11 +247,11 @@ export function apply(state, change) {
       b = normBuild({ id, title: it.title, detail: it.detail, source: 'pending', pendingId: it.id, steps: (it.subPrompts ?? []).map((p) => ({ text: p.text, estimate: p.estimate, model, done: p.done, doneAt: p.doneAt })) });
       s.builds.push(b); log.push(`imported pending ${it.id} as ${id}`); break;
     }
-    case 'update': { b = find(); for (const k of ['title', 'detail', 'branch', 'pr', 'category']) if (typeof c[k] === 'string') b[k] = str(c[k], k === 'detail' ? 8000 : k === 'category' ? 60 : 300); if (Array.isArray(c.steps)) b.steps = c.steps.map(normStep); log.push(`updated ${b.id}`); break; }
+    case 'update': { b = find(); for (const k of ['title', 'detail', 'branch', 'pr', 'mergedAt', 'category']) if (typeof c[k] === 'string') b[k] = str(c[k], k === 'detail' ? 8000 : k === 'category' ? 60 : 300); if (Array.isArray(c.steps)) b.steps = c.steps.map(normStep); log.push(`updated ${b.id}`); break; }
     case 'rename': { b = find(); const t = str(c.title, 300).trim(); if (!t) throw new Error('a build needs a name'); b.title = t; log.push(`${b.id} renamed "${t}"`); break; } // the id never changes
     case 'rename-step': { b = find(); const st = stepOf(b); const t = str(c.title, 200).trim(); if (!t) throw new Error('a step needs a name'); st.title = t; log.push(`${b.id} ${st.id} renamed "${t}"`); break; }
     case 'remove': { b = find(); s.builds = s.builds.filter((x) => x !== b); log.push(`removed ${b.id}`); break; }
-    case 'status': { b = find(); if (!STATUSES.includes(c.status)) throw new Error(`unknown status ${c.status}`); b.status = c.status; b.builtAt = c.status === 'complete' ? now() : ''; log.push(`${b.id} → ${c.status}`); break; }
+    case 'status': { b = find(); if (!STATUSES.includes(c.status)) throw new Error(`unknown status ${c.status}`); b.status = c.status; b.builtAt = isFinished(c.status) ? (b.builtAt || now()) : ''; log.push(`${b.id} → ${c.status}`); break; }
     case 'archive': { b = find(); b.status = 'archived'; log.push(`archived ${b.id}`); break; }
     case 'hide': case 'unhide': { b = find(); b.hidden = c.action === 'hide'; log.push(`${c.action} ${b.id}`); break; }
     case 'note': { b = find(); if (!str(c.text).trim()) throw new Error('empty note'); b.notes.push({ text: str(c.text, 2000), at: now() }); log.push(`note on ${b.id}`); break; }
@@ -264,7 +268,7 @@ export function apply(state, change) {
     case 'rules': { for (const k of Object.keys(DEFAULT_RULES)) if (k in (c.rules ?? {})) s.rules[k] = typeof DEFAULT_RULES[k] === 'number' ? Math.max(5, Math.min(240, Number(c.rules[k]) || 30)) : c.rules[k] === true; log.push('rules saved'); break; }
     default: throw new Error(`unknown action ${c.action}`);
   }
-  if (b && s.builds.includes(b)) { b.updatedAt = now(); const st = derivedStatus(b, s.rules); if (st !== b.status && !(c.action === 'status')) { if (st === 'complete') b.builtAt = now(); b.status = st; } }
+  if (b && s.builds.includes(b)) { b.updatedAt = now(); const st = derivedStatus(b, s.rules); if (st !== b.status && !(c.action === 'status')) { if (isFinished(st) && !b.builtAt) b.builtAt = now(); b.status = st; } }
   s.updatedAt = now();
   return { state: s, build: b && s.builds.includes(b) ? b : undefined, log };
 }
