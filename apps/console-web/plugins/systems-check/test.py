@@ -624,6 +624,25 @@ ci = lambda runs: probes.github_ci_main(SECRET, R, lambda *a, **k: (200, {}, jso
 check(ci([{"path": "a.yml", "name": "Android", "conclusion": "success"}, {"path": "a.yml", "name": "Android", "conclusion": "failure"}])["status"] == "ok", "CI on main: newest run per workflow counts")
 r = ci([{"path": "d.yml", "name": "Deploy", "conclusion": "failure", "html_url": "https://github.com/x/actions/runs/1"}])
 check(r["status"] == "error" and "Deploy" in r["summary"] and r["link"].startswith("https://"), "CI failing on main: red with the run link")
+def ci_jobs(url, *a, **k):
+    if "/jobs" in url:
+        return 200, {}, json.dumps({"jobs": [{"name": "Gradle", "conclusion": "failure"}, {"name": "Web", "conclusion": "success"}, {"name": "Sweep", "conclusion": "failure"}]})
+    return 200, {}, json.dumps({"workflow_runs": [{"id": 7, "path": "a.yml", "name": "Android", "conclusion": "failure", "head_sha": "abc1234def", "html_url": "https://github.com/x/actions/runs/7"}]})
+r = probes.github_ci_main(SECRET, R, ci_jobs)
+check(r["status"] == "error" and r["jobs"] == ["Gradle", "Sweep"] and "Gradle, Sweep" in r["summary"] and r["sha"] == "abc1234def"
+      and "failing jobs: Gradle, Sweep" in r["details"][0], "CI failing on main: names the failing jobs")
+r = probes.github_ci_main(SECRET, R, lambda url, *a, **k: (500, {}, "") if "/jobs" in url else ci_jobs(url))
+check(r["status"] == "error" and r["jobs"] == [] and "Android" in r["summary"], "jobs unreadable: still red, names the workflow")
+asked = []
+q = hc.queue_ci_fix({"status": "error", "jobs": ["Gradle"], "sha": "abc1234def", "link": "https://github.com/x/actions/runs/7"},
+                    run=lambda *a: asked.append(a) or {"ok": True, "agent": "tex", "runId": "job-ci-fix-1"})
+check(q["state"] == "started" and q["jobId"] == "job-ci-fix-1" and "tex" in q["message"] and asked[0][0] == "ci-fix"
+      and "jobs=Gradle" in asked[0] and "sha=abc1234def" in asked[0], "ci-main auto fix: queues a ci-fix job with the run, jobs and commit")
+q = hc.queue_ci_fix({"status": "error", "jobs": ["Gradle"], "sha": "abc1234def"}, run=lambda *a: asked.append(a) or {"ok": True})
+check(q["state"] == "started" and len(asked) == 1, "one fix job per red commit")
+q = hc.queue_ci_fix({"status": "error", "jobs": [], "sha": "fff0000"}, run=lambda *a: {"ok": False, "why": "nobody owns Fix red CI on main"})
+check(q["state"] == "failed" and "nobody owns" in q["message"], "no agent free: the auto fix fails and the item stays red")
+check(hc.queue_ci_fix({"status": "ok"}, run=lambda *a: asked.append(a) or {})["state"] == "done" and len(asked) == 1, "green again: nothing queued")
 
 class Usage:
     def __init__(self, used): self.total, self.free = 100e9, (1 - used) * 100e9
