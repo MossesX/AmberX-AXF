@@ -5,6 +5,8 @@ import { FOLDER, SwarmCostChip, SwarmPage } from './ui';
 import { COLOR_BY_VIBE_ACTION, KEYS } from './chat-settings';
 import { VIBE_COLORS } from './swarm-core.mjs';
 import { appMenu } from './menu';
+import { PROFILE_EVENT } from './cards';
+import { writeLocal } from '@console/api';
 
 function Desks() {
   const filled = useSlotFilled('swarm.settings.desks');
@@ -16,6 +18,13 @@ export const plugin: AxfWebLibrary = {
   label: 'Agent swarm',
   version: '0.2.0',
   register(rt) {
+    // an agent's employee card (profile: info, stats, pay, history) from anywhere: agent-swarm.profile:<agent id>
+    rt.actions.register('agent-swarm.profile', ([id = '']) => {
+      if (!id) return;
+      writeLocal('swarm-profile', id); writeLocal('swarm-tab', 'crew');
+      rt.navigate('agent-swarm');
+      setTimeout(() => window.dispatchEvent(new CustomEvent(PROFILE_EVENT, { detail: id })), 0);
+    }, { label: 'Open an agent\'s employee card', params: true, searchable: false });
     rt.actions.register(COLOR_BY_VIBE_ACTION, () => rt.settings.set(KEYS.colorByVibe, !rt.settings.get(KEYS.colorByVibe)), { label: 'Color chat messages by vibe' });
   },
   views: { 'agent-swarm': { title: 'Agent swarm', icon: 'user', keywords: ['swarm', 'agents', 'jobs', 'leases', 'cost', 'tokens', 'headless'], render: () => <SwarmPage /> } },

@@ -1,4 +1,4 @@
-import { createElement, useState } from 'react';
+import { createElement, useEffect, useState } from 'react';
 import { Button, Chip, Slot } from '@console/axf/react';
 import * as consoleApi from '@console/api';
 import * as core from './swarm-core.mjs';
@@ -32,10 +32,15 @@ export function Avatar({ a, size = 56 }: { a: Agent; size?: number }) {
   );
 }
 
+/** Window event the agent-swarm.profile action sends with an agent id: the Crew tab opens that profile. */
+export const PROFILE_EVENT = 'axf-swarm:profile';
+
 type JobRef = { id: string; name: string };
 export function CrewTab({ state, stats, act, jobsBy = {}, onFeed }: { state: SwarmState; stats: Record<string, Stats>; act: Act; jobsBy?: Record<string, JobRef[]>; onFeed: (jobId: string) => void }) {
   const [open, setOpen] = useState<string>(() => consoleApi.readLocal('swarm-profile', ''));
   const pick = (id: string) => { setOpen(id); consoleApi.writeLocal('swarm-profile', id); };
+  // the agent-swarm.profile action (an avatar's right-click "Open employee card", anywhere in the console)
+  useEffect(() => { const on = (e: Event) => setOpen(String((e as CustomEvent).detail ?? '')); window.addEventListener(PROFILE_EVENT, on); return () => window.removeEventListener(PROFILE_EVENT, on); }, []);
   const a = state.roster.agents.find((x) => x.id === open);
   if (a) return <Profile a={a} state={state} st={stats[a.id]!} act={act} jobs={jobsBy[a.id] ?? []} onBack={() => pick('')} onFeed={onFeed} />;
   return (

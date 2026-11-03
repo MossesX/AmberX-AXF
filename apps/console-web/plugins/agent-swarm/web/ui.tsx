@@ -3,7 +3,7 @@ import { Button, Icon, useRuntime } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridSort } from '@console/axf/libs/datagrid';
 import * as consoleApi from '@console/api';
 import * as core from './swarm-core.mjs';
-import { Avatar, CrewTab } from './cards';
+import { Avatar, CrewTab, PROFILE_EVENT } from './cards';
 import { CardsTab } from './idcards';
 import { ChatTab } from './chat';
 import { ChatSettingsTab } from './chat-settings';
@@ -33,6 +33,7 @@ export function SwarmPage() {
   const stats = useMemo(() => (state ? Object.fromEntries(state.roster.agents.map((a) => [a.id, core.agentStats(state.runs, a.id, state.prices)])) : {}), [state]);
   const doAct: Act = async (c) => { const l = await act(c); for (const x of l ?? []) rt.terminal.log('swarm', x, 'ok'); return l; };
   useEffect(() => { consoleApi.writeLocal('swarm-tab', tab); }, [tab]);
+  useEffect(() => { const on = () => setTab('crew'); window.addEventListener(PROFILE_EVENT, on); return () => window.removeEventListener(PROFILE_EVENT, on); }, []);
   if (!state) return <div className="fx-empty">{error || 'Loading the agent swarm…'}</div>;
   return (
     <div className="fx-stack fx-stack--lg">

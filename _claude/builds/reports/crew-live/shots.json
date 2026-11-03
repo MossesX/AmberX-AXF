@@ -1,0 +1,5 @@
+[
+  { "name": "crew", "steps": [{ "search": "Crew" }, { "wait": 9000 }], "viewports": ["phone", "laptop"] },
+  { "name": "crew-expanded", "steps": [{ "search": "Crew" }, { "wait": 9000 }, { "eval": "(() => { const b = [...document.querySelectorAll('.axf-grid-row')].find((r) => r.textContent.includes('Ping Paulie')) || document.querySelector('.axf-grid-row'); const t = b && b.querySelector('button[aria-label=\"Expand row\"]'); (t || b) && (t || b).click(); return !!b; })()" }, { "wait": 12000 }, { "eval": "(() => { const f = document.querySelector('.axp-crew__file'); f && f.click(); return !!f; })()" }, { "wait": 6000 }], "viewports": ["phone", "laptop"] },
+  { "name": "orchestrator", "steps": [{ "search": "Build orchestrator" }, { "wait": 9000 }], "viewports": ["phone", "laptop"] }
+]
