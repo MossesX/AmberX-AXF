@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "search-bar",
+  "id": "wide",
+  "name": "Search wide",
+  "version": "1.0.0",
+  "description": "A wide search bar for search-first layouts; same results as Search everything.",
+  "author": "AmberX AXF",
+  "tags": [
+    "search-bar",
+    "banner-pack"
+  ],
+  "data": {
+    "placeholder": "Search everything…",
+    "maxResults": 12,
+    "width": "wide",
+    "shortcut": true
+  }
+}

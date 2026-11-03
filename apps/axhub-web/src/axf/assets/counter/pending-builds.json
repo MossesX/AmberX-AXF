@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "counter",
+  "id": "pending-builds",
+  "name": "Pending builds",
+  "version": "1.0.0",
+  "description": "Builds waiting on the pending list (counter `pending.open`); hidden at zero.",
+  "author": "AmberX AXF",
+  "tags": [
+    "counter",
+    "banner-pack"
+  ],
+  "data": {
+    "counter": "pending.open",
+    "tone": "accent",
+    "hideAtZero": true,
+    "icon": "hammer",
+    "label": "pending",
+    "max": 99
+  }
+}

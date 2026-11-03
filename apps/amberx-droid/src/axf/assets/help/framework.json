@@ -1516,6 +1516,98 @@
         "title": "Id",
         "text": "The id column: Its id — the name the code uses. Tap the header to sort by it.",
         "kind": "column"
+      },
+      {
+        "target": "action:banners.gallery",
+        "title": "Banner boilerplates",
+        "text": "Opens the gallery of ready-made banners: each one is a live preview of a different arrangement of logo, clock, search, counters, status and buttons. Pick one to use it.",
+        "more": "The banner you pick is saved on axHub, so every app on the framework switches to it at once. The gallery is also under Settings → Appearance → Banner, and on the banner's right-click (long-press) menu.",
+        "tryIt": "Right-click the banner and choose Banner boilerplates…",
+        "related": [
+          "action:banners.edit",
+          "view:settings"
+        ],
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:banners.edit",
+        "title": "Edit banner",
+        "text": "Edits the banner in use: move, add or remove its widgets. They snap into place and never overlap.",
+        "more": "Opens the banner editor on the live banner: drag a widget to move it, × or drag it off the bar to remove it, Add puts one back, Undo and Reset are on its bar, and Boilerplates brings you back to the gallery. Changes go to axHub with the rest of the look.",
+        "related": [
+          "action:banners.gallery"
+        ],
+        "kind": "menu-item"
+      },
+      {
+        "target": "use-this-banner",
+        "title": "Use this banner",
+        "text": "Switches every app to this banner. It is saved on axHub with the rest of the look.",
+        "more": "Nothing reloads. The banner starts as it ships (any moves or removals from the editor are cleared). Pick another one any time, or use Edit to tweak the one you picked.",
+        "related": [
+          "action:banners.edit"
+        ],
+        "kind": "button"
+      },
+      {
+        "target": "in-use",
+        "title": "In use",
+        "text": "This is the banner every app shows right now.",
+        "kind": "button"
+      },
+      {
+        "target": "desktop",
+        "title": "Desktop preview",
+        "text": "Shows each banner preview at full width, the way it looks on a desktop.",
+        "related": [
+          "phone"
+        ],
+        "kind": "button"
+      },
+      {
+        "target": "phone",
+        "title": "Phone preview",
+        "text": "Shows each banner preview at phone width (412 px), so you can see what fits on a phone. A full banner scrolls sideways and snaps; nothing overlaps.",
+        "related": [
+          "desktop"
+        ],
+        "kind": "button"
+      },
+      {
+        "target": "boilerplates",
+        "title": "Boilerplates",
+        "text": "Leaves the banner editor and opens the gallery of ready-made banners, so you can start from another one.",
+        "related": [
+          "action:banners.gallery"
+        ],
+        "kind": "button"
+      },
+      {
+        "target": "undo",
+        "title": "Undo",
+        "text": "Takes back the last change: a widget moved, removed or added on the banner.",
+        "tryIt": "Ctrl+Z (Cmd+Z) while editing the banner.",
+        "kind": "button"
+      },
+      {
+        "target": "edit-banner",
+        "title": "Edit banner",
+        "text": "Puts the banner in edit mode: drag widgets to move them (they snap), × or drag one off the bar to remove it, Add puts widgets on it.",
+        "more": "Also: long-press the banner on a phone, or right-click it → Edit banner. The arrangement is part of the look on axHub, so every app follows.",
+        "related": [
+          "put-banner-widgets-back",
+          "action:banners.gallery"
+        ],
+        "kind": "button"
+      },
+      {
+        "target": "put-banner-widgets-back",
+        "title": "Put banner widgets back",
+        "text": "Puts the banner back the way it ships: every widget you moved goes back to its place and every one you removed comes back.",
+        "related": [
+          "edit-banner"
+        ],
+        "kind": "button"
       }
     ],
     "intros": [

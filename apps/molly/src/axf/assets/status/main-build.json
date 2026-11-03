@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "status",
+  "id": "main-build",
+  "name": "Main build",
+  "version": "1.0.0",
+  "description": "On while a build on main is running (counter `build.main.running`).",
+  "author": "AmberX AXF",
+  "tags": [
+    "status",
+    "banner-pack"
+  ],
+  "data": {
+    "counter": "build.main.running",
+    "onLabel": "Building",
+    "offLabel": "Main idle",
+    "onTone": "accent",
+    "offTone": "muted",
+    "dot": true
+  }
+}

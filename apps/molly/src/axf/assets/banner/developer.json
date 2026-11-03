@@ -1,0 +1,79 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "developer",
+  "name": "Developer",
+  "version": "1.0.0",
+  "description": "Builds, approvals and push at a glance: main build state, failing CI, profile progress on the left; search in the middle; pending builds, approvals, alerts, terminal and clock on the right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "developer"
+  ],
+  "data": {
+    "height": 32,
+    "surface": "raised",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "status",
+        "id": "main-build",
+        "at": "left",
+        "order": 10
+      },
+      {
+        "type": "counter",
+        "id": "main-failing",
+        "at": "left",
+        "order": 20
+      },
+      {
+        "type": "progress",
+        "id": "builds",
+        "at": "left",
+        "order": 30
+      },
+      {
+        "type": "search-bar",
+        "id": "everything",
+        "at": "center",
+        "order": 10
+      },
+      {
+        "type": "counter",
+        "id": "pending-builds",
+        "at": "right",
+        "order": 10
+      },
+      {
+        "type": "counter",
+        "id": "approvals",
+        "at": "right",
+        "order": 20
+      },
+      {
+        "type": "counter",
+        "id": "alerts",
+        "at": "right",
+        "order": 30
+      },
+      {
+        "type": "action-button",
+        "id": "terminal",
+        "at": "right",
+        "order": 40
+      },
+      {
+        "type": "clock",
+        "id": "digital-24h",
+        "at": "right",
+        "order": 50
+      }
+    ],
+    "divider": true
+  }
+}

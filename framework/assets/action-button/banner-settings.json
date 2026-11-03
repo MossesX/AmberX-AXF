@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "action-button",
+  "id": "banner-settings",
+  "name": "Banner settings",
+  "version": "1.0.0",
+  "description": "Opens Banner settings.",
+  "author": "AmberX AXF",
+  "tags": [
+    "action-button",
+    "banner-pack"
+  ],
+  "data": {
+    "icon": "bell",
+    "label": "Banners",
+    "action": "banners.settings",
+    "show": "icon",
+    "tooltip": "Banner settings"
+  }
+}

@@ -135,6 +135,9 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 .fx-banner::-webkit-scrollbar, .fx-toolbar::-webkit-scrollbar, .fx-menubar__menus::-webkit-scrollbar { display: none; }
 .fx-banner.is-raised { background: var(--fx-surface); box-shadow: var(--fx-shadow-sm); }
 .fx-banner.is-accent { background: var(--fx-accent); color: var(--fx-accent-text); }
+/* On the accent surface every widget tone paints in the accent's text colour, so a status, counter or label stays readable
+   whatever the colour theme (Nov 3 2026, banner boilerplates); the tone still shows in its icon and dot shape. */
+.fx-banner.is-accent { --fx-success: var(--fx-accent-text); --fx-warning: var(--fx-accent-text); --fx-danger: var(--fx-accent-text); --fx-info: var(--fx-accent-text); --fx-muted: color-mix(in srgb, var(--fx-accent-text) calc(var(--fx-opacity-muted) * 100%), transparent); }
 .fx-banner.has-divider { border-bottom: var(--fx-border-w) solid var(--fx-border); }
 .fx-banner__side { display: flex; align-items: center; gap: var(--fx-dens-gap-lg); min-width: 0; height: 100%; }
 .fx-banner__side.is-center { min-width: min-content; }
@@ -144,7 +147,8 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 .fx-banner .fx-widget-search { min-width: calc(var(--fx-space) * 12); }
 /* while arranging, the drop bar under the banner must show (and dragging needs no scroll) */
 .fx-banner.is-arranging { overflow: visible; }
-@media (max-width: 480px) { .fx-banner__side.is-left { justify-content: flex-start; } .fx-banner__side .fx-widget-label, .fx-banner__side .fx-widget-progress__label { display: none; } }
+/* Bold labels (environment tags: PRODUCTION, STAGING, DEV) stay on a phone; plain labels give way (Nov 3 2026). */
+@media (max-width: 480px) { .fx-banner__side.is-left { justify-content: flex-start; } .fx-banner__side .fx-widget-label:not(.is-bold), .fx-banner__side .fx-widget-progress__label { display: none; } }
 .fx-banner__side.is-center { justify-content: center; justify-content: safe center; }
 .fx-banner__side.is-right { justify-content: flex-end; justify-content: safe flex-end; }
 .fx-banner__logo { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md); font-family: var(--fx-font-display); font-weight: 700; color: var(--fx-text); white-space: nowrap; }
@@ -192,6 +196,21 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-toolbar__widgets { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xl); min-width: 0; flex: none; }
 .fx-toolbar.is-arranging .fx-toolbar__widgets { min-width: calc(var(--fx-space) * 6); min-height: calc(var(--fx-space) * 3); border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-sm); padding: 0 var(--fx-dens-gap-md); }
 
+/* ---------------- banner gallery: every banner asset as a card with a live preview (react/components/BannerGallery.tsx) ---------------- */
+.fx-banner-gallery__bar { align-items: center; gap: var(--fx-dens-gap-md); }
+.fx-banner-gallery__bar .fx-seg { flex-wrap: wrap; }
+.fx-banner-gallery__hint { margin: 0; }
+.fx-banner-gallery__grid { display: grid; gap: var(--fx-dens-gap-lg); grid-template-columns: minmax(0, 1fr); }
+.fx-banner-gallery__grid.is-phone { grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--fx-space) * 51.5)), 1fr)); }
+.fx-banner-gallery__card { display: flex; flex-direction: column; min-width: 0; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); overflow: hidden; }
+.fx-banner-gallery__card.is-on { border-color: var(--fx-accent); box-shadow: 0 0 0 var(--fx-border-w) var(--fx-accent); }
+.fx-banner-gallery__frame { display: flex; min-width: 0; overflow: hidden; pointer-events: none; user-select: none; background: var(--fx-bg); border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.fx-banner-gallery__grid.is-phone .fx-banner-gallery__frame { width: calc(var(--fx-space) * 51.5); max-width: 100%; }
+.fx-banner-gallery__frame > .fx-banner { flex: 1; z-index: auto; }
+.fx-banner-gallery__info { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); min-width: 0; }
+.fx-banner-gallery__title { gap: var(--fx-dens-gap-sm); min-width: 0; flex-wrap: wrap; }
+.fx-banner-gallery__desc { margin: 0; }
+
 /* ---------------- arrange mode: drag widgets on a host, they snap between the others (react/components/Arrange.tsx) ---------------- */
 .fx-banner.is-arranging .fx-banner__side { overflow: visible; outline: var(--fx-border-w) dashed var(--fx-border); outline-offset: -2px; border-radius: var(--fx-radius-sm); min-height: 70%; }
 .fx-arrange__item { cursor: grab; touch-action: none; user-select: none; border-radius: var(--fx-radius-sm); outline: var(--fx-border-w) solid color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
@@ -203,6 +222,25 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-banner > .fx-arrange__bar { position: absolute; top: calc(100% + 4px); left: 50%; transform: translateX(-50%); z-index: 41; white-space: nowrap; }
 .fx-arrange__hint { color: var(--fx-muted); }
 @media (max-width: 480px) { .fx-arrange__hint { display: none; } }
+/* banner editor (Nov 3 2026): × on every widget, drag off to remove, palette, Undo / Reset / Done; big targets on touch */
+.fx-arrange__item { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); }
+.fx-arrange__item.is-off { outline-color: var(--fx-danger); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.fx-arrange__item > .fx-arrange__remove { pointer-events: auto; position: relative; width: calc(var(--fx-space) * 2); height: calc(var(--fx-space) * 2); border-radius: 999px; color: var(--fx-danger); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.fx-arrange__item > .fx-arrange__remove:hover { color: var(--fx-accent-text); background: var(--fx-danger); }
+.fx-arrange__remove::before { content: ''; position: absolute; inset: calc(var(--fx-space) * -0.5); }
+.fx-arrange__actions { gap: var(--fx-dens-gap-xs); align-items: center; flex: none; }
+.fx-banner > .fx-arrange__bar--editor { flex-wrap: wrap; justify-content: center; max-width: calc(100vw - var(--fx-space) * 2); }
+.fx-arrange__palette { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); max-height: calc(var(--fx-space) * 30); overflow: auto; padding-top: var(--fx-dens-gap-xs); border-top: var(--fx-border-w) solid var(--fx-border); }
+.fx-arrange__type { margin-left: var(--fx-dens-gap-xs); color: var(--fx-muted); font-size: var(--fx-type-scale-sm); }
+@media (max-width: 480px) {
+  .fx-banner > .fx-arrange__bar--editor { left: var(--fx-space); right: var(--fx-space); transform: none; white-space: normal; max-width: none; }
+  .fx-arrange__bar--editor .fx-arrange__actions { flex: 1 1 auto; justify-content: space-between; }
+}
+@media (pointer: coarse) {
+  .fx-arrange__item > .fx-arrange__remove { width: calc(var(--fx-space) * 2.5); height: calc(var(--fx-space) * 2.5); }
+  .fx-arrange__remove::before { inset: calc(var(--fx-space) * -1.25); }
+  .fx-arrange__bar--editor .fx-btn { min-height: calc(var(--fx-space) * 5.5); padding-inline: var(--fx-dens-gap-2xl); }
+}
 .fx-toolbar__widget .fx-banner__clock { color: var(--fx-muted); font-size: var(--fx-type-scale-md); padding: 0 var(--fx-dens-gap-xl); }
 /* widget kinds (logo, action button, label, status, counter, progress, avatar, link, theme switch, spacer, divider) */
 .fx-widget-logo, .fx-widget-label, .fx-widget-status, .fx-widget-counter, .fx-widget-progress, .fx-widget-avatar, .fx-widget-link, .fx-widget-theme { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); white-space: nowrap; font: inherit; color: inherit; }

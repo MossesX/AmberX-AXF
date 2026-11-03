@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "action-button",
+  "id": "arrange",
+  "name": "Arrange widgets",
+  "version": "1.0.0",
+  "description": "Starts arranging the widgets on the banners and toolbars (drag to move, snaps).",
+  "author": "AmberX AXF",
+  "tags": [
+    "action-button",
+    "banner-pack"
+  ],
+  "data": {
+    "icon": "move",
+    "label": "Arrange",
+    "action": "widgets.arrange",
+    "show": "icon",
+    "tooltip": "Arrange widgets"
+  }
+}

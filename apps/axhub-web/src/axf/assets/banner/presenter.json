@@ -1,0 +1,31 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "presenter",
+  "name": "Presenter",
+  "version": "1.0.0",
+  "description": "Clean for screen sharing: a tall plain bar with the logo and the weekday clock, no counters, no divider.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "presenter"
+  ],
+  "data": {
+    "height": 40,
+    "surface": "flat",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "clock",
+        "id": "weekday-12h",
+        "at": "right",
+        "order": 10
+      }
+    ],
+    "divider": false
+  }
+}

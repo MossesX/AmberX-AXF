@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "action-button",
+  "id": "help-tour",
+  "name": "Help",
+  "version": "1.0.0",
+  "description": "Starts the help tour of this screen.",
+  "author": "AmberX AXF",
+  "tags": [
+    "action-button",
+    "banner-pack"
+  ],
+  "data": {
+    "icon": "help",
+    "label": "Help",
+    "action": "help.intro",
+    "show": "icon",
+    "tooltip": "Help"
+  }
+}

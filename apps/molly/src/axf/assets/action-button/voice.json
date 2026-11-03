@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "action-button",
+  "id": "voice",
+  "name": "Talk to Amber",
+  "version": "1.0.0",
+  "description": "Opens Amber, the agent voice (mic).",
+  "author": "AmberX AXF",
+  "tags": [
+    "action-button",
+    "banner-pack"
+  ],
+  "data": {
+    "icon": "mic",
+    "label": "Amber",
+    "action": "agent-voice.open",
+    "show": "both",
+    "tone": "accent",
+    "tooltip": "Talk to Amber"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "minimal",
+  "name": "Minimal",
+  "version": "1.0.0",
+  "description": "Just the logo and a clock. Nothing else.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "essentials"
+  ],
+  "data": {
+    "height": 24,
+    "surface": "flat",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "clock",
+        "id": "digital-12h",
+        "at": "right",
+        "order": 10
+      }
+    ],
+    "divider": true
+  }
+}

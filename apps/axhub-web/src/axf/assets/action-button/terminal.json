@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "action-button",
+  "id": "terminal",
+  "name": "Terminal",
+  "version": "1.0.0",
+  "description": "Opens the app terminal.",
+  "author": "AmberX AXF",
+  "tags": [
+    "action-button",
+    "banner-pack"
+  ],
+  "data": {
+    "icon": "terminal",
+    "label": "Terminal",
+    "action": "terminal.open",
+    "show": "icon",
+    "tooltip": "Terminal"
+  }
+}

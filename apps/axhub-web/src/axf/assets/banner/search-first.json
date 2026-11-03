@@ -1,0 +1,37 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "search-first",
+  "name": "Search first",
+  "version": "1.0.0",
+  "description": "A wide search bar is the banner: logo left, settings on the right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "search"
+  ],
+  "data": {
+    "height": 36,
+    "surface": "raised",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "search-bar",
+        "id": "wide",
+        "at": "center",
+        "order": 10
+      },
+      {
+        "type": "action-button",
+        "id": "settings",
+        "at": "right",
+        "order": 10
+      }
+    ],
+    "divider": true
+  }
+}

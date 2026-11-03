@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "shuffle",
+  "name": "Shuffle",
+  "version": "1.0.0",
+  "description": "For trying the pack: a Next banner button and Banner settings on the right of a thin bar.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "essentials"
+  ],
+  "data": {
+    "height": 24,
+    "surface": "flat",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "search-bar",
+        "id": "compact",
+        "at": "center",
+        "order": 10
+      },
+      {
+        "type": "action-button",
+        "id": "next-banner",
+        "at": "right",
+        "order": 10
+      },
+      {
+        "type": "action-button",
+        "id": "banner-settings",
+        "at": "right",
+        "order": 20
+      },
+      {
+        "type": "clock",
+        "id": "digital-12h",
+        "at": "right",
+        "order": 30
+      }
+    ],
+    "divider": true
+  }
+}

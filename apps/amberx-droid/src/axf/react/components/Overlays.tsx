@@ -124,8 +124,16 @@ export function ContextMenuHost() {
       const t = e.target as Element;
       const banner = !!t.closest('[data-fx-ctx-target="axf-banner"], [data-fx-ctx-target="banner"]') && !t.closest('input, textarea, .fx-ctx');
       if (!banner && (t.closest('input, textarea, .fx-ctx, [data-fx-ctx-ignore]') || !t.closest('.fx-shell'))) return;
+      // Banner editor (Brett, Nov 3 2026): holding the framework banner edits it (move, remove, add widgets) instead of
+      // opening the menu; while it is being edited a press is a drag, never a menu.
+      const editsBanner = !!t.closest('[data-fx-ctx-target="banner"]') && rt.canArrange();
+      if (editsBanner && rt.arranging('banner')) return;
       start = { x: e.clientX, y: e.clientY };
-      timer = setTimeout(() => open(t, e.clientX, e.clientY), rt.behavior().interaction.longPressMs); // behaviour theme (was 550 ms)
+      timer = setTimeout(() => {
+        if (!editsBanner) return open(t, e.clientX, e.clientY);
+        (navigator as Navigator & { vibrate?: (ms: number) => boolean }).vibrate?.(15);
+        rt.dispatch('banner.edit:on');
+      }, rt.behavior().interaction.longPressMs); // behaviour theme (was 550 ms)
     };
     const cancel = (e: Event) => {
       const p = e as PointerEvent;

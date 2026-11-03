@@ -1,0 +1,44 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "approvals-watch",
+  "name": "Approvals watch",
+  "version": "1.0.0",
+  "description": "Held axHub calls in the middle of an accent bar so a veto is never missed; clock on the right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "notifications",
+    "developer"
+  ],
+  "data": {
+    "height": 32,
+    "surface": "accent",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "counter",
+        "id": "approvals",
+        "at": "center",
+        "order": 10
+      },
+      {
+        "type": "counter",
+        "id": "alerts",
+        "at": "center",
+        "order": 20
+      },
+      {
+        "type": "clock",
+        "id": "digital-12h",
+        "at": "right",
+        "order": 10
+      }
+    ],
+    "divider": false
+  }
+}

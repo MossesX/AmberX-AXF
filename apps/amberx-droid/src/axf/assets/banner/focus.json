@@ -1,0 +1,31 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "focus",
+  "name": "Focus",
+  "version": "1.0.0",
+  "description": "Do-not-disturb: no logo, no counters, only a quiet clock in the middle.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "focus"
+  ],
+  "data": {
+    "height": 20,
+    "surface": "flat",
+    "logo": {
+      "show": false,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "clock",
+        "id": "digital-12h",
+        "at": "center",
+        "order": 10
+      }
+    ],
+    "divider": false
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "dashboard-dense",
+  "name": "Dashboard dense",
+  "version": "1.0.0",
+  "description": "Everything on one 28 px line: online, AI, main build; search and build progress; pending, approvals, alerts, failing, clock and account.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "dashboard"
+  ],
+  "data": {
+    "height": 28,
+    "surface": "flat",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "status",
+        "id": "online",
+        "at": "left",
+        "order": 10
+      },
+      {
+        "type": "status",
+        "id": "ai",
+        "at": "left",
+        "order": 20
+      },
+      {
+        "type": "status",
+        "id": "main-build",
+        "at": "left",
+        "order": 30
+      },
+      {
+        "type": "search-bar",
+        "id": "compact",
+        "at": "center",
+        "order": 10
+      },
+      {
+        "type": "progress",
+        "id": "builds",
+        "at": "center",
+        "order": 20
+      },
+      {
+        "type": "counter",
+        "id": "pending-builds",
+        "at": "right",
+        "order": 10
+      },
+      {
+        "type": "counter",
+        "id": "approvals",
+        "at": "right",
+        "order": 20
+      },
+      {
+        "type": "counter",
+        "id": "alerts",
+        "at": "right",
+        "order": 30
+      },
+      {
+        "type": "counter",
+        "id": "main-failing",
+        "at": "right",
+        "order": 40
+      },
+      {
+        "type": "clock",
+        "id": "digital-24h",
+        "at": "right",
+        "order": 50
+      },
+      {
+        "type": "avatar",
+        "id": "account",
+        "at": "right",
+        "order": 60
+      }
+    ],
+    "divider": true
+  }
+}

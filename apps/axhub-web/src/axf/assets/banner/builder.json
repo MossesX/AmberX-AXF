@@ -1,0 +1,55 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "builder",
+  "name": "Builder",
+  "version": "1.0.0",
+  "description": "A build cockpit: the profile progress bar wide in the middle, main build state and failing CI beside it, pending builds on the right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "developer"
+  ],
+  "data": {
+    "height": 32,
+    "surface": "raised",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "status",
+        "id": "main-build",
+        "at": "center",
+        "order": 10
+      },
+      {
+        "type": "progress",
+        "id": "build",
+        "at": "center",
+        "order": 20
+      },
+      {
+        "type": "counter",
+        "id": "main-failing",
+        "at": "center",
+        "order": 30
+      },
+      {
+        "type": "counter",
+        "id": "pending-builds",
+        "at": "right",
+        "order": 10
+      },
+      {
+        "type": "clock",
+        "id": "digital-24h",
+        "at": "right",
+        "order": 20
+      }
+    ],
+    "divider": true
+  }
+}
