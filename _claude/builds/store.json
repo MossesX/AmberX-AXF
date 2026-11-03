@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 316,
- "updatedAt": "2026-11-03T18:20:32.134Z",
+ "rev": 317,
+ "updatedAt": "2026-11-03T18:20:51.871Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -53437,14 +53437,14 @@
    "title": "Auto-land finished builds (zero-token merge pipeline)",
    "category": "",
    "detail": "Relaunch of stopped auto-land as auto-land-2 (Brett, Nov 3 2026, voice). Agent: Earl the Ear. Plain-script merge pipeline reusing the push banner batch merge; AI only for real conflicts / red CI needing code.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T18:01:41.577Z",
-   "updatedAt": "2026-11-03T18:01:43.308Z",
+   "updatedAt": "2026-11-03T18:20:42.014Z",
    "builtAt": "",
    "notes": [
     {
@@ -53470,12 +53470,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T18:20:42.014Z",
+     "note": "Survey: push banner auto-merge already opens PRs, pulls main in via GitHub, waits for CI, respects UI Review, one merge per round. Gaps: status-only commits keep every PR behind main; CodeRabbit skipped counted as CI passed; GitHub update-branch conflicts on builds files; no ordering. #265 crew-retrain: UI Review waiting + real code conflicts with main (agent-swarm jobs.mjs/test.mjs, claude-headless.sh). Main CI was red: PR #267.",
+     "rev": 2,
      "createdAt": "2026-11-03T18:01:41.578Z",
-     "updatedAt": "2026-11-03T18:01:41.578Z"
+     "updatedAt": "2026-11-03T18:20:42.071Z"
     },
     {
      "id": "s2",
@@ -53640,7 +53640,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
