@@ -707,3 +707,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 17:53 UTC · `builds-one-page` note (refactor) · snap-sully
 - 2026-11-03 17:53 UTC · `builds-one-page` branch claude/builds-one-page-done (refactor) · snap-sully
 - 2026-11-03 17:53 UTC · `builds-one-page-done` s2 done (urgent) · snap-sully
+- 2026-11-03 17:56 UTC · `builds-one-page` PR #134, note (refactor) · reconciler

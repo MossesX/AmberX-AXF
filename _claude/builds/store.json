@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 287,
- "updatedAt": "2026-11-03T17:55:23.975Z",
+ "rev": 288,
+ "updatedAt": "2026-11-03T17:56:16.806Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -28898,9 +28898,9 @@
    "source": "chat",
    "pendingId": "",
    "branch": "claude/builds-one-page-done",
-   "pr": "",
+   "pr": "#134",
    "createdAt": "2026-10-27T19:11:22.011Z",
-   "updatedAt": "2026-11-03T17:53:50.160Z",
+   "updatedAt": "2026-11-03T17:56:10.354Z",
    "builtAt": "",
    "notes": [
     {
@@ -28922,6 +28922,10 @@
     {
      "text": "Nov 3 2026 (builds-one-page-done, Snap Sully): verified against main. s5, s6, s12, s14 landed with the one builds store (urgent-builds, merged 2a057cc4) and orch-pending-sync (#143). s7-s11, s15, s16 were built on claude/builds-one-page-finish (c4b77a6e, never pushed) and are being ported onto current main on claude/builds-one-page-done.",
      "at": "2026-11-03T17:53:49.561Z"
+    },
+    {
+     "text": "Reconciler: PR #134; PR #134 names s1, s2, s3, s4 done",
+     "at": "2026-11-03T17:56:10.354Z"
     }
    ],
    "approvals": [
@@ -29358,7 +29362,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
