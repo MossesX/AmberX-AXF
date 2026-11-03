@@ -1,0 +1,29 @@
+{
+  "$axf": "asset@1",
+  "type": "xlayout",
+  "id": "molly",
+  "name": "Molly",
+  "version": "1.0.0",
+  "description": "Molly as one app: AmberX, axHub and the Dev Console behind one banner, one application menu, one navigation menu and one context menu; IDE mode off by default with the ten starter pane layouts offered; one plugin toolbar on top, two more slots hidden.",
+  "author": "AmberX AXF",
+  "tags": ["molly", "host"],
+  "data": {
+    "apps": [
+      { "id": "amberx", "label": "AmberX", "url": "https://amberx.amberxai.com", "icon": "sparkles" },
+      { "id": "axhub", "label": "axHub", "url": "https://axhub.amberxai.com", "icon": "shield" },
+      { "id": "console", "label": "Console", "url": "https://console.amberxai.com", "icon": "terminal" }
+    ],
+    "merge": { "banner": "host", "app-menu": "merged", "nav-menu": "merged", "context-menu": "merged", "toolbar": "merged", "widgets": "merged" },
+    "ide": { "on": false, "paneLimit": 6, "preset": "ide", "presets": ["single", "two-columns", "two-rows", "main-side", "side-main", "main-bottom", "three-columns", "top-two-below", "grid-2x2", "ide"] },
+    "toolbars": [
+      { "slot": 1, "visible": true, "location": "top", "label": "Molly", "items": [
+        { "id": "home", "label": "Home", "icon": "home", "action": "nav:home", "open": "main" },
+        { "id": "amberx-home", "label": "AmberX", "icon": "sparkles", "app": "amberx", "action": "nav:home", "open": "main" },
+        { "id": "hub-approvals", "label": "Approvals", "icon": "shield", "app": "axhub", "action": "nav:approvals", "open": "floating" },
+        { "id": "console-builds", "label": "Builds", "icon": "terminal", "app": "console", "action": "nav:build", "open": "pane" }
+      ] },
+      { "slot": 2, "visible": false, "location": "bottom", "label": "Tools", "items": [] },
+      { "slot": 3, "visible": false, "location": "right", "label": "Side", "items": [] }
+    ]
+  }
+}

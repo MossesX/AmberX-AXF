@@ -47,20 +47,18 @@
 .axp-project-wizard__sub { font-size: var(--fx-type-root-sm); color: var(--fx-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-project-wizard__detail { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl) var(--fx-dens-gap-2xl); border-top: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); overflow-wrap: anywhere }
 .axp-project-wizard__detail th { white-space: nowrap; vertical-align: top }
-@media (max-width: 720px) { .axp-project-wizard__cards { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
-@media (max-width: 560px) { .axp-project-wizard__grid { grid-template-columns: minmax(0, 1fr) } }
+:where([data-fx-narrow]) .axp-project-wizard__cards { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+:where([data-fx-small]) .axp-project-wizard__grid { grid-template-columns: minmax(0, 1fr) }
 
 /* Compact layout (Angel screens-compact, Oct 30 2026): one-line head, step label on phones, tight source picks. */
 .axp-project-wizard__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0 }
 .axp-project-wizard__stepnow { display: none }
 .axp-project-wizard__card { padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl) }
 .axp-project-wizard__row { padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl) }
-@media (max-width: 640px) {
-  .axp-project-wizard__stepnow { display: block }
-  .axp-project-wizard__steps { display: none }
-  .axp-project-wizard__card { flex-direction: row; align-items: center; gap: var(--fx-dens-gap-md) }
-  .axp-project-wizard__card span { display: none }
-  .axp-project-wizard__cards { gap: var(--fx-dens-gap-md) }
-}
+:where([data-fx-small]) .axp-project-wizard__stepnow { display: block }
+:where([data-fx-small]) .axp-project-wizard__steps { display: none }
+:where([data-fx-small]) .axp-project-wizard__card { flex-direction: row; align-items: center; gap: var(--fx-dens-gap-md) }
+:where([data-fx-small]) .axp-project-wizard__card span { display: none }
+:where([data-fx-small]) .axp-project-wizard__cards { gap: var(--fx-dens-gap-md) }
 .fx-pagehead > div:first-child:has(> .axp-project-wizard__lede) { flex: 1 1 16em; min-width: 0; max-width: 100% }
 .axp-project-wizard__notice { flex-wrap: nowrap; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl) }

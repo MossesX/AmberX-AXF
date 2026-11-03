@@ -3,7 +3,7 @@
 .axp-theme-manager__bad { color: var(--fx-danger); margin: 0 }
 .axp-theme-manager__warn { display: flex; gap: var(--fx-dens-gap-md); align-items: center; margin: 0; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-warning); font-size: var(--fx-type-root-md) }
 .axp-theme-manager__main { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--fx-dens-gap-xl); align-items: start }
-@media (max-width: 760px) { .axp-theme-manager__main { grid-template-columns: 1fr } }
+:where([data-fx-narrow]) .axp-theme-manager__main { grid-template-columns: 1fr }
 .axp-theme-manager__treebox, .axp-theme-manager__editor { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-lg); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); min-width: 0 }
 .axp-theme-manager__tree { list-style: none; margin: 0; padding: 0; max-height: 60vh; overflow: auto }
 .axp-theme-manager__tree .axp-theme-manager__tree { max-height: none; overflow: visible }

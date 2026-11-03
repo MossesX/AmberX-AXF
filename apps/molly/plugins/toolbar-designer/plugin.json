@@ -1,0 +1,27 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.molly.toolbar-designer",
+  "name": "Toolbar designer",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Pick what each of Molly's toolbars holds, from every plugin and screen (Molly's pages and actions, each app's navigation, menus and toolbars), and where each item opens: the main area, a floating window or a pane. Reached through its capability axf.toolbar-designer@1: the settings hook and right-click on any toolbar.",
+  "targets": ["molly"],
+  "provides": ["service:axf.toolbar-designer@1", "dialog:toolbar-designer", "settings-tab:toolbar-designer"],
+  "scopes": [],
+  "enabledByDefault": true,
+  "optional": ["axf.xlayout@1"],
+  "banner": false,
+  "tabable": false,
+  "uiEditor": ["builder"],
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/toolbar-designer",
+    "env": [],
+    "mentions": ["_claude/memory/STATUS.md", "apps/molly/README.md"]
+  },
+  "builtWith": { "model": "opus", "builtAt": "2026-11-03", "branch": "claude/xlayout-opus" },
+  "help": "help.json",
+  "opens": "dialog"
+}

@@ -12,7 +12,8 @@
   ],
   "provides": [
     "view:build-orchestrator",
-    "settings-tab:build-orchestrator"
+    "settings-tab:build-orchestrator",
+    "service:orchestrator@1"
   ],
   "scopes": [
     "ROUTES"

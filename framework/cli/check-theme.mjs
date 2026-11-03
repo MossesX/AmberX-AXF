@@ -18,6 +18,10 @@
  *    (> 3.5 space, > 2.3× text: icons, empty states) and 1em are left alone, as scale-adopt leaves them.
  *  - fonts: a literal font-family stack instead of --fx-font / --fx-font-mono / --fx-font-display
  *  - rem sizes and em spacing (font-size / padding / margin / gap / border-radius)
+ *  - layout (token-control s2, Nov 2026): a px breakpoint in a media query; the layout asset's viewport cut-offs
+ *    (tinyMaxWidth … largeMaxWidth) are root attributes data-fx-tiny / -small / -narrow / -medium / -large, so
+ *    select on `:where([data-fx-narrow]) …` (`node framework/cli/layout-adopt.mjs <path>` rewrites it; `layout-ok`
+ *    on the line allows a deliberate exception such as print or orientation rules)
  *
  * Asset conformance (Brett, Oct 31 2026, build asset-conform; shared rule "Handwritten code conforms to the asset
  * system"): EVERY web CSS/TSX file gets every rule, handwritten or generated: libraries, plugins, framework React + CSS,
@@ -36,6 +40,7 @@ import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, relative, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SCALE_TYPES, scaleVars } from '../core/engines/scale-rules.mjs';
+import { layoutToken, layoutTokenVars } from '../core/engines/layout-rules.mjs';
 import { adoptLine } from './scale-adopt.mjs';
 import { writeFileSync } from 'node:fs';
 
@@ -64,6 +69,9 @@ for (const f of walk(join(FRAMEWORK, 'core')).filter((f) => /\.(ts|mjs)$/.test(f
 }
 // Scale tokens (typography@1, density@1, sizing@1) are built from one registry, not written out as literals.
 for (const t of SCALE_TYPES) for (const k of Object.keys(scaleVars(t, null))) known.add(k);
+// Layout tokens (every layout parameter is a token, core/engines/layout-rules.mjs): the same.
+for (const k of Object.keys(layoutTokenVars(null))) known.add(k);
+known.add(layoutToken('navOrientation'));
 // Colour tokens come from the color-theme assets' token keys (engines/theme.ts: --fx-${kebab(key)}).
 for (const f of walk(join(FRAMEWORK, 'assets/color-theme')).filter((f) => f.endsWith('.json'))) {
   const tokens = JSON.parse(readFileSync(f, 'utf8'))?.data?.tokens ?? {};
@@ -153,6 +161,8 @@ const RULES = [
   { id: 'size', re: /(?:^|[;{\s'"])(?:padding[\w-]*|margin[\w-]*|gap|rowGap|columnGap|border-radius|borderRadius)\s*:\s*['"]?[^;}'"]*?(?<![\w.-])(?:0?\.\d+|[1-9][\d.]*)em\b/g, msg: 'spacing in em; use --fx-dens-gap-* / --fx-radius-*' },
   { id: 'size', re: /(?:^|[;{\s'"])(?:border(?:-(?:top|bottom|left|right|inline|block)(?:-(?:start|end))?)?(?:-width)?|border(?:Top|Bottom|Left|Right)?(?:Width)?)\s*:\s*['"`]?[^;}'"`]*?(?<![\w.-])\d*\.?\d+px\b/g, msg: 'hard-coded border width; use var(--fx-border-w) (× n)' },
   { id: 'font', re: /(?:^|[;{\s])(?:font-family\s*:\s*(?!\s*(?:var\(--fx-font|inherit|initial|unset|\$\{))[^;}$]|fontFamily\s*:\s*['"](?!var\(--fx-font|inherit)[^'"]*(?:,|monospace|serif|system-ui|ui-))/g, msg: 'literal font; use var(--fx-font) / var(--fx-font-mono) / var(--fx-font-display) (the style theme\'s fonts)' },
+  // layout (token-control s2, Nov 2026): a px breakpoint can't follow the layout asset's cut-offs; the runtime stamps them on the root
+  { id: 'layout', re: /@media[^{]*\(\s*(?:max|min)-width\s*:\s*\d/g, msg: 'px breakpoint; select on the layout\'s viewport attributes instead (:where([data-fx-tiny | -small | -narrow | -medium | -large]) …, layout tokens tinyMaxWidth … largeMaxWidth; node framework/cli/layout-adopt.mjs <path> rewrites it)' },
 ];
 
 /** The asset token a finding should use, from scale-adopt's mapping (or null when it can't tell). */
@@ -192,6 +202,7 @@ for (const { path, profile: base } of scans) {
       const report = (msg) => found(f, i, line, msg);
       for (const r of RULES) {
         if (profile === 'colour' && !COLOUR.includes(r.id) && r.id !== 'fallback' && r.id !== 'scale' && !(r.id === 'reserved' && !inFramework)) continue;
+        if (r.id === 'layout' && /layout-ok/.test(line)) continue;
         if (profile === 'definition' && (r.id === 'reserved' || r.id === 'fallback')) continue;
         if (r.test) { if (!scaleOk && r.test(line)) report(r.msg); continue; }
         r.re.lastIndex = 0;

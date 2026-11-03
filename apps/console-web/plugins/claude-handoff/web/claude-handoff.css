@@ -35,11 +35,11 @@
 
 .axp-claude-handoff-inst__gauges { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--fx-dens-gap-md) }
 .axp-claude-handoff-inst__gauges.is-focus .fx-gauge svg { max-width: calc(var(--fx-space) * 6) }
-@media (max-width: 520px) { .axp-claude-handoff-inst__gauges { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+:where([data-fx-small]) .axp-claude-handoff-inst__gauges { grid-template-columns: repeat(2, minmax(0, 1fr)) }
 
 .axp-claude-handoff-inst__body { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: var(--fx-dens-gap-xl); min-height: 0 }
 .is-groups-right .axp-claude-handoff-inst__body > .axp-claude-handoff-inst__cats { order: 2 }
-@media (max-width: 620px) { .axp-claude-handoff-inst__body { grid-template-columns: minmax(0, 1fr) } .is-groups-right .axp-claude-handoff-inst__body > .axp-claude-handoff-inst__cats { order: 0 } }
+:where([data-fx-small]) .axp-claude-handoff-inst__body { grid-template-columns: minmax(0, 1fr) } :where([data-fx-small]) .is-groups-right .axp-claude-handoff-inst__body > .axp-claude-handoff-inst__cats { order: 0 }
 .axp-claude-handoff-inst__cats { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); max-height: calc(var(--fx-row-h) * 12); overflow: auto }
 .axp-claude-handoff-inst__cat { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid transparent; transition: background 0.3s, border-color 0.3s }
 .axp-claude-handoff-inst__cat.is-working { border-color: var(--fx-accent); background: var(--fx-accent-soft) }
@@ -172,4 +172,4 @@
 .axp-claude-handoff__clip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0 }
 .axp-claude-handoff__row > .fx-field { flex: 1; min-width: 0; margin: 0 }
 .fx-pagehead > div:first-child:has(> .axp-claude-handoff__lede) { flex: 1 1 16em; min-width: 0; max-width: 100% }
-@media (max-width: 640px) { .axp-claude-handoff-files__by { display: none } }
+:where([data-fx-small]) .axp-claude-handoff-files__by { display: none }

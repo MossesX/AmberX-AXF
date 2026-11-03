@@ -55,11 +55,9 @@
 .axp-agent-manager__wizard-body { max-height: 62vh; overflow: auto; padding-right: var(--fx-dens-gap-md) }
 .axp-agent-manager__wizard-nav { justify-content: space-between }
 
-@media (max-width: 760px) {
-  .axp-agent-manager__split { grid-template-columns: minmax(0, 1fr) }
-  .axp-agent-manager__list { max-height: 40vh }
-  .axp-agent-manager__example { grid-template-columns: minmax(0, 1fr) }
-}
+:where([data-fx-narrow]) .axp-agent-manager__split { grid-template-columns: minmax(0, 1fr) }
+:where([data-fx-narrow]) .axp-agent-manager__list { max-height: 40vh }
+:where([data-fx-narrow]) .axp-agent-manager__example { grid-template-columns: minmax(0, 1fr) }
 .axp-agent-manager__uses { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
 .axp-agent-manager__uses li { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); overflow-wrap: anywhere }
 .axp-agent-manager__diff .is-add { color: var(--fx-success) }
@@ -84,25 +82,21 @@
 .axp-agent-manager__wizrow:hover { background: var(--fx-surface2) }
 .axp-agent-manager__wizrow > span { display: flex; flex-direction: column; min-width: 0 }
 .axp-agent-manager__wizrow .fx-small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
-@media (max-width: 640px) {
-  .axp-agent-manager__tabs { display: none }
-  .axp-agent-manager__tabpick { display: block }
-  .axp-agent-manager__list, .axp-agent-manager__editor { padding: 0; border: 0; background: transparent; border-radius: 0 }
-  .axp-agent-manager__list { max-height: 34vh; border-bottom: var(--fx-border-w) solid var(--fx-border) }
-  .axp-agent-manager__item { padding: var(--fx-dens-gap-md) }
-  .axp-agent-manager__split { gap: var(--fx-dens-gap-xl) }
-  .axp-agent-manager__card { padding: var(--fx-dens-gap-xl) 0; border-width: 0 0 var(--fx-border-w); border-radius: 0; background: transparent }
-  .axp-agent-manager__cols { grid-template-columns: minmax(0, 1fr) }
-}
+:where([data-fx-small]) .axp-agent-manager__tabs { display: none }
+:where([data-fx-small]) .axp-agent-manager__tabpick { display: block }
+:where([data-fx-small]) .axp-agent-manager__list, :where([data-fx-small]) .axp-agent-manager__editor { padding: 0; border: 0; background: transparent; border-radius: 0 }
+:where([data-fx-small]) .axp-agent-manager__list { max-height: 34vh; border-bottom: var(--fx-border-w) solid var(--fx-border) }
+:where([data-fx-small]) .axp-agent-manager__item { padding: var(--fx-dens-gap-md) }
+:where([data-fx-small]) .axp-agent-manager__split { gap: var(--fx-dens-gap-xl) }
+:where([data-fx-small]) .axp-agent-manager__card { padding: var(--fx-dens-gap-xl) 0; border-width: 0 0 var(--fx-border-w); border-radius: 0; background: transparent }
+:where([data-fx-small]) .axp-agent-manager__cols { grid-template-columns: minmax(0, 1fr) }
 .axp-agent-manager__stepnow { display: none }
-@media (max-width: 640px) {
-  .axp-agent-manager__stepnow { display: block }
-  .axp-agent-manager__wizard .axp-agent-manager__steps { display: none }
-  .axp-agent-manager__wizard-body { max-height: 58vh }
-}
+:where([data-fx-small]) .axp-agent-manager__stepnow { display: block }
+:where([data-fx-small]) .axp-agent-manager__wizard .axp-agent-manager__steps { display: none }
+:where([data-fx-small]) .axp-agent-manager__wizard-body { max-height: 58vh }
 .axp-agent-manager__item { align-items: flex-start; width: 100% }
 .fx-pagehead > div:first-child:has(> .axp-agent-manager__lede) { flex: 1 1 16em; min-width: 0; max-width: 100% }
 .axp-agent-manager .axp-agent-manager__tabpick { display: none }
-@media (max-width: 640px) { .axp-agent-manager .axp-agent-manager__tabs { display: none } .axp-agent-manager .axp-agent-manager__tabpick { display: block } }
+:where([data-fx-small]) .axp-agent-manager .axp-agent-manager__tabs { display: none } :where([data-fx-small]) .axp-agent-manager .axp-agent-manager__tabpick { display: block }
 .axp-agent-manager__cmdhead { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0 }
 .axp-agent-manager__item > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100% }

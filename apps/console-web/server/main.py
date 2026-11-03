@@ -878,7 +878,10 @@ from starlette.types import Receive, Scope, Send  # noqa: E402
 
 from mcp_server import build_server  # noqa: E402
 
-_mcp = build_server(lambda op, **a: engine(op, "mcp", **a), terminal=lambda since: [l for l in _state["terminal"] if l["at"] > since])
+from mcp_server import control_runner  # noqa: E402
+from mcp_server import console_runner  # noqa: E402
+_mcp = build_server(lambda op, **a: engine(op, "mcp", **a), terminal=lambda since: [l for l in _state["terminal"] if l["at"] > since],
+                    control=control_runner(ROOT), console=console_runner(ROOT))
 # Stateless JSON responses: works behind Traefik/Coolify and across container restarts. Host checks are off because
 # the endpoint is reached through a proxy under the console's own domain; the bearer token is the gate.
 _mcp_http = _mcp.streamable_http_app(streamable_http_path="/mcp", stateless_http=True, json_response=True,
@@ -1191,6 +1194,26 @@ console_context.set_context(ROOT=ROOT, GITHUB_REPO=GITHUB_REPO, PLUGINS=PLUGINS,
 
 load_plugins()
 _prune_plugin_state()
+
+# Contract paths a capability serves (the provider plugin's router mounted a second time, same auth; 404 while no
+# enabled plugin provides it). control@1 = framework/spec/CONTROL.md's /api/control routes (the Token control plugin);
+# console-commands@1 = /api/console (open screens, dialogs, settings, run actions in the open console).
+CAPABILITY_MOUNTS = {"control@1": "/api/control"}
+CAPABILITY_MOUNTS["console-commands@1"] = "/api/console"  # the Console commands plugin  axf-plugin:console-commands
+
+
+def _capability_guard(name: str):
+    def guard() -> None:
+        if plugin_services.get(name) is None:
+            raise HTTPException(404, f"no enabled plugin provides {name}")
+    return guard
+
+
+for _cap, _prefix in CAPABILITY_MOUNTS.items():
+    _svc = plugin_services.get(_cap)
+    if _svc is not None and getattr(_svc, "router", None) is not None:
+        app.include_router(_svc.router, prefix=_prefix, dependencies=[Depends(auth), Depends(_capability_guard(_cap))])
+        log("plugins", f"{_cap} served at {_prefix}")
 WALL_USER_PLUGINS = frozenset(f for f, i in PLUGINS.items() if i.get("wallUsers") is True)
 USER_GRANTABLE_PLUGINS = frozenset(f for f, i in PLUGINS.items() if i.get("userGrantable") is True)
 

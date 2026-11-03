@@ -5,7 +5,11 @@
     "notifications",
     "app-menu",
     "banners",
-    "plugins"
+    "plugins",
+    "nav-menu",
+    "context-menu",
+    "toolbar",
+    "widgets"
   ],
   "takes": [
     {

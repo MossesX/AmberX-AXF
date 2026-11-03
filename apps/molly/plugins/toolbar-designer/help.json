@@ -1,0 +1,25 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "toolbar-designer-help",
+  "name": "Toolbar designer help",
+  "version": "0.1.0",
+  "description": "Help mode entries for Molly's Toolbar designer plugin (help@1).",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:toolbar-designer",
+    "entries": [
+      { "target": "toolbar-designer", "title": "Toolbar designer", "text": "Opens the designer for one of the three toolbars. Right-click any toolbar → Customize toolbar does the same." },
+      { "target": "toolbar", "title": "Toolbar", "text": "Which of the three toolbars you are editing." },
+      { "target": "find", "title": "Find", "text": "Filters the items on the left by name or by where they come from." },
+      { "target": "opens-in", "title": "Opens in", "text": "Where tapping this item opens its app: the main area, a floating window, or a pane beside the current one (IDE mode; it floats while IDE mode is off)." },
+      { "target": "move-up", "title": "Move up", "text": "Moves the item one place earlier on the toolbar." },
+      { "target": "move-down", "title": "Move down", "text": "Moves the item one place later on the toolbar." },
+      { "target": "try-it", "title": "Try it", "text": "Runs the item now, the way the toolbar will." },
+      { "target": "save-toolbar", "title": "Save toolbar", "text": "Saves the list on the right as this toolbar's items. The toolbar changes at once." },
+      { "target": "action:toolbar-designer.open", "title": "Toolbar designer", "text": "Pick what a toolbar holds, from every app and screen, and where each item opens." }
+    ],
+    "intros": []
+  }
+}

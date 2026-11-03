@@ -10,4 +10,4 @@
 .axp-main-build-status__go { align-self: flex-start; text-decoration: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm) }
 .axp-main-build-status__watch { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 10), 1fr)); gap: var(--fx-dens-gap-md); align-items: end; padding-bottom: var(--fx-dens-gap-md); border-bottom: var(--fx-border-w) solid var(--fx-border) }
 /* Phones: the banner's right side is crowded (day/night, clock, this, the alerts bell); keep just the coloured dot here. */
-@media (max-width: 480px) { .fx-banner__item[data-axf-origin='ai.amberx.axf.console.main-build-status'] .fx-widget-status > span:not(.fx-widget-status__dot) { display: none } }
+:where([data-fx-tiny]) .fx-banner__item[data-axf-origin='ai.amberx.axf.console.main-build-status'] .fx-widget-status > span:not(.fx-widget-status__dot) { display: none }

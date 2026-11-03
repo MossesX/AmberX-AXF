@@ -1,0 +1,56 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.token-control",
+  "name": "Token control",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "One API, MCP server and CLI for everything control@1 covers: every theme, style, layout, typography, density and sizing token (a set is an override that rides the axHub look, so every app follows), the active asset per slot, every AmberX note, to-do, task and list, and the planner (Plan Studio plans, orchestrator builds and their steps). REST under /api/control, MCP tools control_* and amberx_* on the console's /mcp (and through axHub), CLI `axf control` with the aliases `axf token | note | todo | task | list | plan | build`. Deletes always need a confirm token. Interactive docs with try-it panels for all three, generated from the control@1 schema.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:token-control",
+    "settings-tab:token-control",
+    "service:control@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [
+    "plans@1"
+  ],
+  "banner": false,
+  "tabable": {
+    "view": "token-control",
+    "label": "Token control",
+    "icon": "sliders"
+  },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/token-control",
+    "env": [
+      "AXF_CONTROL_SALT",
+      "AXF_APPEARANCE_FILE",
+      "AXF_AMBERX_NOTES_DIR"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "_claude/memory/STATUS.md",
+      "_claude/THREADS.md",
+      "apps/console-web/plugins/README.md",
+      "framework/spec/CONTROL.md",
+      "framework/cli/axf.mjs",
+      "apps/console-web/server/mcp_server.py",
+      ".github/workflows/android.yml"
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-03"
+  },
+  "help": "help.json",
+  "opens": "main"
+}
