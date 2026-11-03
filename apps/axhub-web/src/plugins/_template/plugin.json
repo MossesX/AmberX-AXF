@@ -4,5 +4,6 @@
   "name": "Example",
   "version": "0.1.0",
   "description": "Starting point for an axHub web plugin.",
+  "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "opus", "builtAt": "2026-10-25" }
 }

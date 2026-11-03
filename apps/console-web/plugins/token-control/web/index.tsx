@@ -6,6 +6,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { controlClient, controlForms, type ControlAnswer, type ControlCommand } from './client.mjs';
 import { GUIDES } from './docs';
 import { appMenu } from './menu';
+import { PassBanner, PassSettings, PassesTab } from './pass';
 import './token-control.css';
 
 /** The folder name under plugins/: the routes live at /api/plugins/token-control/ (and /api/control/). */
@@ -214,7 +215,7 @@ function AuditTab() {
 
 /* ------------------------------------------------------------------ the page */
 
-type Tab = 'tokens' | 'try' | 'docs' | 'audit';
+type Tab = 'tokens' | 'passes' | 'try' | 'docs' | 'audit';
 
 function TokenControlView() {
   const { reg, err } = useRegistry();
@@ -226,12 +227,14 @@ function TokenControlView() {
       <header className="fx-pagehead"><div><p className="fx-eyebrow">Plugin · control@1</p><h1>Token control</h1><p className="fx-muted">Change any token, AmberX note or planner item, and see the same command as an API call, an MCP tool and a CLI line.</p></div></header>
       <Segmented label="Token control" value={tab} onChange={setTab} className="axf-tc-wrap" options={[
         { value: 'tokens', label: <span data-help="tc-tab-tokens">Tokens</span>, icon: 'sliders' },
+        { value: 'passes', label: <span data-help="tc-tab-passes">Passes</span>, icon: 'key' },
         { value: 'try', label: <span data-help="tc-tab-try">Try it</span>, icon: 'play' },
         { value: 'docs', label: <span data-help="tc-tab-docs">Docs</span>, icon: 'book' },
         { value: 'audit', label: <span data-help="tc-tab-audit">Audit</span>, icon: 'list' },
       ]} />
       {err && <Note tone="danger">{err}</Note>}
       {tab === 'tokens' && <TokensTab />}
+      {tab === 'passes' && <PassesTab />}
       {tab === 'try' && reg && <TryTab reg={reg} preset={preset} />}
       {tab === 'docs' && reg && <DocsTab reg={reg} tryIt={tryIt} />}
       {tab === 'audit' && <AuditTab />}
@@ -242,10 +245,13 @@ function TokenControlView() {
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.token-control',
   label: 'Token control',
-  version: '0.1.0',
+  version: '0.2.0',
   appMenu,
   views: { 'token-control': { title: 'Token control', icon: 'sliders', render: () => <TokenControlView /> } },
   nav: { label: 'Plugins', items: [{ id: 'token-control', label: 'Token control', icon: 'sliders', view: 'token-control' }] },
   settingsTabs: [{ id: 'token-control', label: 'Token control', icon: 'sliders', order: 90, parent: 'plugins' }],
-  settingsPanels: [{ id: 'token-control.lifecycle', tab: 'token-control', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+  // After Codebase changes (4.7) and the Claude handoff reminder (4.9), before approvals (5): renders nothing without a pass.
+  banners: [{ id: 'token-pass', label: 'Pass', icon: 'key', settingsTab: 'token-control', order: 4.95, render: () => <PassBanner /> }],
+  settingsPanels: [{ id: 'token-control.passes', tab: 'token-control', title: 'Veto passes', icon: 'key', order: 20, render: () => <PassSettings /> },
+    { id: 'token-control.lifecycle', tab: 'token-control', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

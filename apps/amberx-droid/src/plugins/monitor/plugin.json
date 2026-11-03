@@ -4,5 +4,6 @@
   "name": "Background monitoring",
   "version": "0.1.1",
   "description": "Watches axHub with the screen off: approval alerts, auto-approval and the wake phrase, through the Android watch service.",
+  "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "opus", "builtAt": "2026-10-25" }
 }

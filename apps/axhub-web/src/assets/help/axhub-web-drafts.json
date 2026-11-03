@@ -1,0 +1,72 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "axhub-web-drafts",
+  "name": "axhub-web help (drafts)",
+  "version": "0.1.0",
+  "description": "Help mode entries for axhub-web. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "axhub-web",
+    "entries": [
+      {
+        "target": "view:passes",
+        "title": "Passes",
+        "text": "Timed passes: while one is active, the calls it covers run at once instead of waiting on a veto countdown. Grant, extend and revoke them here.",
+        "kind": "screen"
+      },
+      {
+        "target": "pass",
+        "title": "Pass",
+        "text": "Which pass this row is: what it covers, who granted it and when it ends.",
+        "kind": "field"
+      },
+      {
+        "target": "ran-under-a-pass",
+        "title": "Ran under a pass",
+        "text": "Shows only the log entries for calls that ran under a pass instead of waiting for approval.",
+        "kind": "button"
+      },
+      {
+        "target": "min-from-now",
+        "title": "min from now",
+        "text": "Moves the pass's end to that many minutes from now.",
+        "kind": "button"
+      },
+      {
+        "target": "its-calls",
+        "title": "Its calls",
+        "text": "Lists every call that ran under this pass.",
+        "kind": "button"
+      },
+      {
+        "target": "service",
+        "title": "Service",
+        "text": "The service the pass covers; * covers every service.",
+        "kind": "field"
+      },
+      {
+        "target": "scope-control-target-matches-anything",
+        "title": "Scope (control@1 target; * matches anything)",
+        "text": "Narrows the pass to a control@1 target such as tokens.theme; * matches any target.",
+        "kind": "field"
+      },
+      {
+        "target": "tools-empty-every-tool-in-the-scope",
+        "title": "Tools (empty = every tool in the scope)",
+        "text": "Narrows the pass to these tools; leave it empty for every tool in the scope.",
+        "kind": "field"
+      },
+      {
+        "target": "what-for",
+        "title": "What for",
+        "text": "Why the pass is granted. It is kept in the audit log with the pass.",
+        "kind": "field"
+      }
+    ],
+    "intros": []
+  }
+}

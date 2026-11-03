@@ -35,6 +35,7 @@
       "_claude/memory/docs/rebuilds/lib-mcp.md"
     ]
   },
+  "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "fable", "builtAt": "2026-10-20" },
   "opens": "main"
 }

@@ -1,0 +1,7 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.fixture-quiet",
+  "name": "Fixture quiet",
+  "version": "0.1.0",
+  "description": "A test plugin with an action and nothing to read, and no commands block."
+}

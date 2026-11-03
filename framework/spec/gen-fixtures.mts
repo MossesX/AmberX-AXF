@@ -221,11 +221,16 @@ write('layout.json', Object.fromEntries(load('layout').map((a) => [a.id, { compi
     'console-nav-unknown-path': { op: 'act', target: 'console.nav', path: 'forward', action: 'back' },
     'console-set-screen': { op: 'set', target: 'console.screens', path: 'home', value: 'x' },
     'console-clients': { op: 'list', target: 'console.clients' },
+    'plugin-list': { op: 'list', target: 'plugins.commands', select: { plugin: 'example' } },
+    'plugin-read': { op: 'act', target: 'plugins.reads', path: 'example/state', action: 'read' },
+    'plugin-run': { op: 'act', target: 'plugins.commands', path: 'example/entries', action: 'run', input: { title: 'x' }, by: 'claude' },
+    'plugin-set': { op: 'set', target: 'plugins.commands', path: 'example/state', value: 1 },
   };
   const roles: Record<string, string[]> = {
     admin: ['*'], control: ['control.*'], tokens: ['control.tokens.*'], reader: ['control.tokens.read', 'control.amberx.read', 'control.planner.read'],
     'amberx-writer': ['control.amberx.read', 'control.amberx.write'], none: [],
     'console-navigator': ['control.console.read', 'control.console.navigate'],
+    'plugin-reader': ['control.plugins.read'],
   };
   const token = controlConfirmToken(remove, salt, NOW);
   write('control.json', {

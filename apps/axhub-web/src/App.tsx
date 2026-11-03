@@ -8,6 +8,7 @@ import { Approvals } from './views/Approvals';
 import { ApprovalDetail } from './views/ApprovalDetail';
 import { ApprovalLog } from './views/ApprovalLog';
 import { GoPass } from './views/GoPass';
+import { Passes } from './views/Passes';
 import { HandoffList, HandoffRun } from './views/Handoff';
 import { HubAccount } from './views/HubAccount';
 import { Users } from './views/Users';
@@ -30,6 +31,7 @@ const views: ViewMap = {
   hub: { title: 'Hub', icon: 'external', keywords: ['axhub', 'session', 'sign in'], render: () => <HubView /> },
   approval: { title: 'Request', icon: 'shield', render: () => <ApprovalDetail /> },
   'go-pass': { title: 'Go pass', icon: 'check', keywords: ['go', 'pass', 'session', 'rules', 'threads'], render: () => <GoPass /> },
+  passes: { title: 'Passes', icon: 'clock', keywords: ['pass', 'veto', 'allow', 'theme', 'timer'], render: () => <Passes /> },
   'approvals-log': { title: 'Approvals log', icon: 'list', keywords: ['log', 'history', 'auto-approve'], render: () => <ApprovalLog /> },
   apps: { title: 'Apps', icon: 'download', keywords: ['apk', 'download', 'catalog'], render: () => <Apps /> },
   users: { title: 'Users', icon: 'user', keywords: ['accounts', 'permissions', 'roles'], render: () => <Users /> },

@@ -1,0 +1,72 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "plugin-commands-help",
+  "name": "Plugin commands help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Plugin commands plugin (help@1): its page, its settings tab and its buttons.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:plugin-commands",
+    "entries": [
+      {
+        "target": "plugin-commands",
+        "title": "Plugin commands",
+        "text": "Every plugin's commands and reads, made automatically from each plugin's routes, actions, data folder and plugin.json. Claude reaches them through axHub as MCP tools, the REST API at /api/control/<plugin>/<command>, and the CLI axf <plugin> <command>. A new plugin shows up by itself."
+      },
+      {
+        "target": "pc-details",
+        "title": "Try",
+        "text": "Opens a command: what it does, its REST route, MCP tool and CLI line, and a box to run it."
+      },
+      {
+        "target": "pc-run",
+        "title": "Read / Run",
+        "text": "Runs the command with the JSON input above, as the console. One that deletes answers with a confirm token first; press again to send it."
+      },
+      {
+        "target": "pc-refresh",
+        "title": "Refresh",
+        "text": "Reads every plugin's commands again (they also update by themselves when a plugin is installed, removed, or turned on or off)."
+      },
+      {
+        "target": "pc-sync",
+        "title": "Bring them in step now",
+        "text": "Rebuilds the MCP tools for plugins straight away instead of waiting for the 30-second check."
+      },
+      {
+        "target": "plugin-commands.settings",
+        "title": "MCP tools and last commands",
+        "text": "The two MCP switches (plugin tools at all, and one tool per command) and the last plugin commands that ran, who ran them and how they went."
+      },
+      {
+        "target": "all",
+        "title": "All",
+        "text": "Shows every command and read of every plugin."
+      },
+      {
+        "target": "reads",
+        "title": "Reads",
+        "text": "Shows only what can be read: GET routes, data folders and plugin info. Reads never change anything."
+      },
+      {
+        "target": "commands",
+        "title": "Commands",
+        "text": "Shows only commands: routes that change something and actions that run in your open console. One that deletes needs a confirm token."
+      },
+      {
+        "target": "plugin-tools-on-the-consoles-mcp",
+        "title": "Plugin tools on the console's MCP",
+        "text": "On: Claude sees plugin tools on the console's MCP (and through axHub). Off: no plugin tools at all; the REST API and the CLI still work."
+      },
+      {
+        "target": "one-tool-per-command-off-only-plugin-commands-plugin-read-and-plugin-run",
+        "title": "One tool per command",
+        "text": "On: every command and read gets its own MCP tool named <plugin>_<command>. Off: only plugin_commands, plugin_read and plugin_run, which reach the same commands by path."
+      }
+    ]
+  }
+}

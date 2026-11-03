@@ -4,6 +4,7 @@
   "name": "Terminal (held commands)",
   "version": "0.2.0",
   "description": "The Terminal for held commands (veto@1): one tab per held call with its countdown, Deny / Approve / Shelve and the output when the hub runs it. The notices, the veto screen and the alarm come from the Approvals banner plugin (console), which AmberX loads too.",
+  "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": {
     "model": "opus",
     "builtAt": "2026-10-30"

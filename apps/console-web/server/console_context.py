@@ -2,7 +2,8 @@
 
     import console_context as cx
     cx.ROOT, cx.current_token(), cx.persist_root(), cx.data_path(rel), cx.build_profile(), cx.PLUGINS, cx.set_plugin_enabled(folder, on), cx.log(channel, text, level), cx.GITHUB_REPO,
-    cx.terminal_lines(), cx.raise_alert({source, severity, title, body?, key?, link?}), cx.resolve_alerts([keys])
+    cx.terminal_lines(), cx.raise_alert({source, severity, title, body?, key?, link?}), cx.resolve_alerts([keys]),
+    cx.asgi_app (the console's ASGI app), cx.mcp_server (its MCP server: plugins may add and remove tools)
 
 Read-only by convention. Plugins never import main.py.
 """
@@ -30,6 +31,10 @@ terminal_lines: Callable[[], list[dict[str, Any]]] = lambda: []  # noqa: E731 â€
 # No-ops until main.py wires the alert hub (it is created after the plugins load); plugins call them at request time.
 raise_alert: Callable[[dict[str, Any]], dict[str, Any]] = lambda inp: {}  # noqa: E731
 resolve_alerts: Callable[[list[str]], None] = lambda keys: None  # noqa: E731
+# The console's ASGI app (a plugin calls another plugin's route in-process) and its MCP server (the Plugin commands
+# plugin adds <plugin>_<command> tools as plugins come and go). None until main.py sets them.
+asgi_app: Any = None
+mcp_server: Any = None
 
 
 def set_context(**kw: Any) -> None:

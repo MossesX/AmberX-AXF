@@ -1,7 +1,7 @@
 // Types for control-rules.mjs (control@1: one command schema for tokens, AmberX entities and the planner).
 export type ControlOp = 'list' | 'get' | 'set' | 'reset' | 'add' | 'remove' | 'act';
 export type ControlEffect = 'read' | 'write' | 'destructive' | 'navigate';
-export type ControlDomain = 'tokens' | 'amberx' | 'planner' | 'console';
+export type ControlDomain = 'tokens' | 'amberx' | 'planner' | 'console' | 'plugins';
 export type ControlWireCode = 'invalid' | 'denied' | 'not_found' | 'validation' | 'confirmation_required' | 'not_implemented' | 'unexpected';
 export interface ControlCommand {
   $axf?: 'control@1';
