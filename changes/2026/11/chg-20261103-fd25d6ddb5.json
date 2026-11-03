@@ -1,0 +1,25 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261103-fd25d6ddb5",
+  "createdAt": "2026-11-03T12:25:16.086Z",
+  "updatedAt": "2026-11-03T12:25:16.086Z",
+  "kind": "fix",
+  "title": "Auto fix: builds-stuck",
+  "asked": "Systems check auto-fix (Mark the stuck builds stalled) for builds-stuck, by console.",
+  "repos": [],
+  "model": "",
+  "who": {
+    "user": "systems-check"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "marked 12 stuck builds stalled",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "done",
+  "status": "done"
+}

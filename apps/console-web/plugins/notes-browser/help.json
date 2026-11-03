@@ -1,0 +1,124 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "notes-browser-help",
+  "name": "Notes help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Notes browser plugin (help@1).",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:notes-browser",
+    "entries": [
+      {
+        "target": "view:notes",
+        "title": "Notes",
+        "text": "Every note you asked Claude to save, in one place on the hub: handoffs, session logs, plans, install notes and saved commands. Pick one on the left to read it.",
+        "kind": "screen"
+      },
+      {
+        "target": "new-note",
+        "title": "New note",
+        "text": "Makes a new note in the folder you pick and opens it for editing."
+      },
+      {
+        "target": "new-folder",
+        "title": "New folder",
+        "text": "Adds a folder to the notes. Notes can be moved into it afterwards."
+      },
+      {
+        "target": "reload",
+        "title": "Reload",
+        "text": "Reads the notes again from the hub, to pick up notes another session just saved."
+      },
+      {
+        "target": "search-notes",
+        "title": "Search notes",
+        "text": "Shows only the notes whose title or text contains every word you type."
+      },
+      {
+        "target": "sort-notes",
+        "title": "Sort notes",
+        "text": "Newest puts the most recently changed notes first; Name sorts them by title."
+      },
+      {
+        "target": "edit",
+        "title": "Edit",
+        "text": "Turns the note into editable text. Save only goes through when nobody else changed the note since you opened it; otherwise reload it first."
+      },
+      {
+        "target": "save",
+        "title": "Save",
+        "text": "Saves your changes to the hub. The old text is kept in the hub's history."
+      },
+      {
+        "target": "rename",
+        "title": "Rename",
+        "text": "Gives the note a new name (and folder, if you pick one). Its history stays on the hub."
+      },
+      {
+        "target": "move-to",
+        "title": "Move to",
+        "text": "Moves the note to another folder."
+      },
+      {
+        "target": "delete",
+        "title": "Delete",
+        "text": "Asks first, then takes the note out of the notes. The hub keeps its last text in its history."
+      },
+      {
+        "target": "reload-the-note",
+        "title": "Reload the note",
+        "text": "Someone else saved this note after you opened it. Reloads their version so you can redo your change on top of it."
+      },
+      {
+        "target": "newest",
+        "title": "Newest",
+        "text": "Sorts the notes so the most recently changed come first."
+      },
+      {
+        "target": "name",
+        "title": "Name",
+        "text": "Sorts the notes by title, A to Z."
+      },
+      {
+        "target": "note-text-markdown",
+        "title": "Note text (Markdown)",
+        "text": "The note's text while Edit is on. Markdown: # for headings, - for lists, backticks for code."
+      },
+      {
+        "target": "note-title",
+        "title": "Note title",
+        "text": "The new note's title; it also becomes its file name."
+      },
+      {
+        "target": "folder",
+        "title": "Folder",
+        "text": "The folder the note goes in."
+      },
+      {
+        "target": "notes-browser",
+        "title": "Notes settings",
+        "text": "Where the notes are kept, and the plugin's install and uninstall panel."
+      }
+    ],
+    "intros": [
+      {
+        "screen": "notes",
+        "title": "Notes",
+        "steps": [
+          {
+            "say": "Every note you asked Claude to save is here, sorted into folders on the left.",
+            "target": ""
+          },
+          {
+            "say": "Search finds a note by any word in it. Tap one to read it; switch Edit on to change it.",
+            "target": "search-notes"
+          }
+        ]
+      }
+    ]
+  }
+}

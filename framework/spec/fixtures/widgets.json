@@ -1,18 +1,15 @@
 {
   "widgetTypes": [
     "clock",
-    "search-bar",
-    "action-button",
-    "logo",
-    "label",
-    "status",
     "counter",
-    "progress",
+    "status",
+    "badge",
     "avatar",
+    "progress",
+    "search-bar",
+    "label",
     "link",
-    "theme-switch",
-    "spacer",
-    "divider"
+    "theme-switch"
   ],
   "attachableTypes": [
     "clock",
@@ -544,11 +541,10 @@
   "kinds": {
     "tones": [
       "neutral",
+      "accent",
       "success",
       "warning",
-      "danger",
-      "accent",
-      "muted"
+      "danger"
     ],
     "tone": {
       "7": {

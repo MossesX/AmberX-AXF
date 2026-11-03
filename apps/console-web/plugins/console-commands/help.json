@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "console-commands-help",
+  "name": "Console commands help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Console commands plugin (help@1): its settings tab, the open consoles list and the last commands.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:console-commands",
+    "entries": [
+      {
+        "target": "console-commands",
+        "title": "Console commands settings",
+        "text": "Lets a Claude session (Amber), the REST API or the CLI open screens, dialogs and settings tabs in this console, run its actions and go back. Opening only moves the screen; an action that changes data still needs its own permission, and one that deletes or resets needs a confirm."
+      },
+      {
+        "target": "console-commands.enabled",
+        "title": "Let Claude sessions move this console",
+        "text": "On: this console listens for console commands and goes where they say. Off: it stops listening, and commands go to your other open consoles."
+      },
+      {
+        "target": "console-commands.toast",
+        "title": "Show a note for each command",
+        "text": "Shows a short note each time a command moves this console, saying who asked and what opened."
+      },
+      {
+        "target": "cc-refresh",
+        "title": "Refresh",
+        "text": "Reloads the list of open consoles and the last commands from the console server."
+      },
+      {
+        "target": "let-claude-sessions-move-this-console",
+        "title": "Let Claude sessions move this console",
+        "text": "On: this console listens for console commands and goes where they say. Off: it stops listening, and commands go to your other open consoles."
+      },
+      {
+        "target": "show-a-note-for-each-command",
+        "title": "Show a note for each command",
+        "text": "Shows a short note each time a command moves this console, saying who asked and what opened."
+      }
+    ]
+  }
+}

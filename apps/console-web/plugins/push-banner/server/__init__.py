@@ -78,7 +78,7 @@ from . import claudefix
 
 router = APIRouter()
 
-DEFAULT_REPOS = ["MossesX/AmberX-AXF", "MossesX/axHub", "MossesX/Build-Pilot"]
+DEFAULT_REPOS = ["MossesX/AmberX-AXF", "MossesX/axHub"]
 # Branches that are never "waiting for main": the demo site's build output and GitHub Pages.
 ALWAYS_HIDDEN = {"site", "gh-pages"}
 # Branches that never get a PR opened by autoPr (the go-pass branch is axHub's pass file, never merged).

@@ -18,10 +18,31 @@
     "remove": "destructive",
     "act": "write"
   },
+  "actEffects": {
+    "console.screens": {
+      "open": "navigate"
+    },
+    "console.dialogs": {
+      "open": "navigate"
+    },
+    "console.settings": {
+      "open": "navigate"
+    },
+    "console.actions": {
+      "run": "write"
+    },
+    "console.nav": {
+      "back": "navigate",
+      "home": "navigate",
+      "close": "navigate"
+    }
+  },
   "domains": [
     "tokens",
     "amberx",
-    "planner"
+    "planner",
+    "console",
+    "pass"
   ],
   "permissions": {
     "control.tokens.read": "tokens: read",
@@ -32,7 +53,14 @@
     "control.amberx.delete": "amberx: delete",
     "control.planner.read": "planner: read",
     "control.planner.write": "planner: write",
-    "control.planner.delete": "planner: delete"
+    "control.planner.delete": "planner: delete",
+    "control.console.read": "console: read",
+    "control.console.write": "console: write",
+    "control.console.delete": "console: delete",
+    "control.pass.read": "pass: read",
+    "control.pass.write": "pass: write",
+    "control.pass.delete": "pass: delete",
+    "control.console.navigate": "console: navigate"
   },
   "wire": {
     "INVALID": "invalid",
@@ -1283,6 +1311,9 @@
           "done": "boolean"
         }
       },
+      "irreversible": [
+        "remove"
+      ],
       "doc": "amberx-notes@1 items (apps/amberx-droid notes core): every note, to-do and task on every device. kind picks the shape; a task may have subtasks (parent) and a checklist."
     },
     "amberx.lists": {
@@ -1319,6 +1350,9 @@
           "name": "string"
         }
       },
+      "irreversible": [
+        "remove"
+      ],
       "doc": "The list tree items live in (Inbox and the plugin lists are system lists: they can be renamed, never removed).",
       "protected": [
         "inbox",
@@ -1483,6 +1517,230 @@
         "note": "string"
       },
       "doc": "builds@1 records through the orchestrator (the one builds store; profiles are a field): every change is journalled, Pending / queue / Build manager are projections."
+    },
+    "console.screens": {
+      "domain": "console",
+      "label": "Console screens",
+      "ops": [
+        "list",
+        "get",
+        "act"
+      ],
+      "paths": "host",
+      "select": {
+        "q": "string",
+        "limit": "number",
+        "client": "string"
+      },
+      "acts": {
+        "open": {}
+      },
+      "actEffect": {
+        "open": "navigate"
+      },
+      "doc": "Every screen (view) the open console has, its plugins' too. path = the view id, its title or words to search for (\"plan studio\", \"builds\"); act open shows it. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
+    },
+    "console.dialogs": {
+      "domain": "console",
+      "label": "Console dialogs",
+      "ops": [
+        "list",
+        "get",
+        "act"
+      ],
+      "paths": "host",
+      "select": {
+        "q": "string",
+        "limit": "number",
+        "client": "string"
+      },
+      "acts": {
+        "open": {}
+      },
+      "actEffect": {
+        "open": "navigate"
+      },
+      "doc": "Every dialog the open console registers (by id, title or search words); act open shows it (input.arg = its optional argument). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
+    },
+    "console.settings": {
+      "domain": "console",
+      "label": "Console settings tabs",
+      "ops": [
+        "list",
+        "get",
+        "act"
+      ],
+      "paths": "host",
+      "select": {
+        "q": "string",
+        "limit": "number",
+        "client": "string"
+      },
+      "acts": {
+        "open": {}
+      },
+      "actEffect": {
+        "open": "navigate"
+      },
+      "doc": "Every Settings tab and sub-tab (Settings → Plugins → <plugin> is a sub-tab: its id, \"plugins/<id>\" or its title); act open shows it, input.anchor scrolls to one setting or group. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
+    },
+    "console.actions": {
+      "domain": "console",
+      "label": "Console actions",
+      "ops": [
+        "list",
+        "get",
+        "act"
+      ],
+      "paths": "host",
+      "select": {
+        "q": "string",
+        "limit": "number",
+        "client": "string"
+      },
+      "acts": {
+        "run": {}
+      },
+      "actEffect": {
+        "run": "write"
+      },
+      "doc": "Every registered action (the action bus: menus, toolbars, search). act run runs it in the open console under its own policy: an action that only navigates needs control.console.navigate, one that changes data needs control.console.write plus the permission the action itself requires, and a destructive one also a confirm token. input.args = its arguments (\"swap:color-theme:dark\" or [\"color-theme\", \"dark\"]). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
+    },
+    "console.nav": {
+      "domain": "console",
+      "label": "Console navigation",
+      "ops": [
+        "get",
+        "act"
+      ],
+      "paths": [
+        {
+          "id": "here",
+          "kind": "location"
+        }
+      ],
+      "acts": {
+        "back": {},
+        "home": {},
+        "close": {}
+      },
+      "actEffect": {
+        "back": "navigate",
+        "home": "navigate",
+        "close": "navigate"
+      },
+      "doc": "Where the open console is (get here: screen, dialog, settings tab) and moving it: back (closes an open dialog first, else the screen before), home (the first screen), close (the open dialog). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
+    },
+    "console.clients": {
+      "domain": "console",
+      "label": "Open consoles",
+      "ops": [
+        "list"
+      ],
+      "paths": "host",
+      "select": {
+        "limit": "number"
+      },
+      "doc": "The consoles open right now for the caller (one per browser tab: id, app, title, device, screen, last used). Console commands go to the one used last unless input.to says otherwise."
+    },
+    "pass.scopes": {
+      "domain": "pass",
+      "label": "Veto passes",
+      "ops": [
+        "list",
+        "get",
+        "act"
+      ],
+      "paths": [
+        {
+          "id": "all",
+          "kind": "scope",
+          "label": "Everything",
+          "targets": [
+            "*"
+          ],
+          "ops": [
+            "set",
+            "reset",
+            "add",
+            "remove",
+            "act"
+          ]
+        },
+        {
+          "id": "tokens.theme",
+          "kind": "scope",
+          "label": "Theme",
+          "targets": [
+            "tokens.theme"
+          ],
+          "ops": [
+            "set",
+            "reset"
+          ]
+        },
+        {
+          "id": "tokens.style",
+          "kind": "scope",
+          "label": "Style",
+          "targets": [
+            "tokens.style"
+          ],
+          "ops": [
+            "set",
+            "reset"
+          ]
+        },
+        {
+          "id": "tokens.layout",
+          "kind": "scope",
+          "label": "Layout",
+          "targets": [
+            "tokens.layout"
+          ],
+          "ops": [
+            "set",
+            "reset"
+          ]
+        },
+        {
+          "id": "tokens.*",
+          "kind": "scope",
+          "label": "All tokens",
+          "targets": [
+            "tokens.theme",
+            "tokens.style",
+            "tokens.layout"
+          ],
+          "ops": [
+            "set",
+            "reset"
+          ]
+        }
+      ],
+      "scopes": [
+        "all",
+        "tokens.theme",
+        "tokens.style",
+        "tokens.layout",
+        "tokens.*"
+      ],
+      "acts": {
+        "grant": {
+          "minutes": "number",
+          "reason": "string",
+          "include_irreversible": "boolean"
+        },
+        "approve": {
+          "request": "string"
+        },
+        "deny": {
+          "request": "string"
+        },
+        "revoke": {},
+        "undo": {}
+      },
+      "doc": "Timed veto passes (control-pass@1): \"allow everything for the next 30 minutes\". path = the scope: all (the default: every command on every target and every call axHub holds, ordinary deletes included; irreversible deletes only with include_irreversible) or a narrow token scope (tokens.theme, tokens.style, tokens.layout, tokens.*: set / reset only). grant files a request the owner approves once; revoke ends it; undo rolls back what can be rolled back and lists what can't. The pass target itself is never covered."
     }
   },
   "aliases": {
@@ -1516,6 +1774,14 @@
     },
     "build": {
       "target": "planner.builds"
+    },
+    "console": {
+      "target": "console.*",
+      "note": "axf console open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients] [words]"
+    },
+    "pass": {
+      "target": "pass.scopes",
+      "note": "axf pass grant 30 (everything) · axf pass grant 30 --scope theme · status · revoke · undo (also `axf token pass …`)"
     }
   },
   "tools": [
@@ -1544,7 +1810,14 @@
               "amberx.items",
               "amberx.lists",
               "planner.plans",
-              "planner.builds"
+              "planner.builds",
+              "console.screens",
+              "console.dialogs",
+              "console.settings",
+              "console.actions",
+              "console.nav",
+              "console.clients",
+              "pass.scopes"
             ],
             "description": "what to control"
           },
@@ -1588,7 +1861,14 @@
               "amberx.items",
               "amberx.lists",
               "planner.plans",
-              "planner.builds"
+              "planner.builds",
+              "console.screens",
+              "console.dialogs",
+              "console.settings",
+              "console.actions",
+              "console.nav",
+              "console.clients",
+              "pass.scopes"
             ],
             "description": "what to control"
           },
@@ -1633,7 +1913,14 @@
               "amberx.items",
               "amberx.lists",
               "planner.plans",
-              "planner.builds"
+              "planner.builds",
+              "console.screens",
+              "console.dialogs",
+              "console.settings",
+              "console.actions",
+              "console.nav",
+              "console.clients",
+              "pass.scopes"
             ],
             "description": "what to control"
           },
@@ -1685,7 +1972,14 @@
               "amberx.items",
               "amberx.lists",
               "planner.plans",
-              "planner.builds"
+              "planner.builds",
+              "console.screens",
+              "console.dialogs",
+              "console.settings",
+              "console.actions",
+              "console.nav",
+              "console.clients",
+              "pass.scopes"
             ],
             "description": "what to control"
           },
@@ -1737,7 +2031,14 @@
               "amberx.items",
               "amberx.lists",
               "planner.plans",
-              "planner.builds"
+              "planner.builds",
+              "console.screens",
+              "console.dialogs",
+              "console.settings",
+              "console.actions",
+              "console.nav",
+              "console.clients",
+              "pass.scopes"
             ],
             "description": "what to control"
           },
@@ -1789,7 +2090,14 @@
               "amberx.items",
               "amberx.lists",
               "planner.plans",
-              "planner.builds"
+              "planner.builds",
+              "console.screens",
+              "console.dialogs",
+              "console.settings",
+              "console.actions",
+              "console.nav",
+              "console.clients",
+              "pass.scopes"
             ],
             "description": "what to control"
           },
@@ -1845,7 +2153,14 @@
               "amberx.items",
               "amberx.lists",
               "planner.plans",
-              "planner.builds"
+              "planner.builds",
+              "console.screens",
+              "console.dialogs",
+              "console.settings",
+              "console.actions",
+              "console.nav",
+              "console.clients",
+              "pass.scopes"
             ],
             "description": "what to control"
           },
@@ -1937,7 +2252,9 @@
       "axf control add <target> <json>",
       "axf control remove <target> <path> [--confirm <token>]   (first run prints the token)",
       "axf control act <target> <path> <action> [json input]",
-      "axf control targets | tools | routes | schema"
+      "axf control targets | tools | routes | schema",
+      "axf pass grant [minutes] [--scope all|theme|style|layout|tokens] [--include-irreversible] [--reason why]   (everything by default; Brett approves it once)",
+      "axf pass status · axf pass revoke [--scope …] · axf pass undo [--scope …]   (also axf token pass grant theme 30)"
     ],
     "aliases": {
       "token": "axf token <theme|style|layout|typography|density|sizing|look|custom|slots> <op> …",
@@ -1946,7 +2263,9 @@
       "task": "axf task <op> … = axf control <op> amberx.items (kind=task)",
       "list": "axf list <op> … = axf control <op> amberx.lists",
       "plan": "axf plan <op> … = axf control <op> planner.plans",
-      "build": "axf build <op> … = axf control <op> planner.builds"
+      "build": "axf build <op> … = axf control <op> planner.builds",
+      "console": "axf console open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients] [words]",
+      "pass": "axf pass <op> … = axf control <op> pass.scopes"
     },
     "targets": [
       "tokens.theme",
@@ -1961,7 +2280,14 @@
       "amberx.items",
       "amberx.lists",
       "planner.plans",
-      "planner.builds"
+      "planner.builds",
+      "console.screens",
+      "console.dialogs",
+      "console.settings",
+      "console.actions",
+      "console.nav",
+      "console.clients",
+      "pass.scopes"
     ]
   },
   "schema": {
@@ -2002,7 +2328,14 @@
           "amberx.items",
           "amberx.lists",
           "planner.plans",
-          "planner.builds"
+          "planner.builds",
+          "console.screens",
+          "console.dialogs",
+          "console.settings",
+          "console.actions",
+          "console.nav",
+          "console.clients",
+          "pass.scopes"
         ]
       },
       "path": {
@@ -2837,6 +3170,165 @@
           "unhide": {}
         },
         "paths": "entity"
+      },
+      "console.screens": {
+        "description": "Every screen (view) the open console has, its plugins' too. path = the view id, its title or words to search for (\"plan studio\", \"builds\"); act open shows it. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
+        "ops": [
+          "list",
+          "get",
+          "act"
+        ],
+        "select": {
+          "q": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "client": {
+            "type": "string"
+          }
+        },
+        "acts": {
+          "open": {}
+        },
+        "paths": "host"
+      },
+      "console.dialogs": {
+        "description": "Every dialog the open console registers (by id, title or search words); act open shows it (input.arg = its optional argument). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
+        "ops": [
+          "list",
+          "get",
+          "act"
+        ],
+        "select": {
+          "q": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "client": {
+            "type": "string"
+          }
+        },
+        "acts": {
+          "open": {}
+        },
+        "paths": "host"
+      },
+      "console.settings": {
+        "description": "Every Settings tab and sub-tab (Settings → Plugins → <plugin> is a sub-tab: its id, \"plugins/<id>\" or its title); act open shows it, input.anchor scrolls to one setting or group. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
+        "ops": [
+          "list",
+          "get",
+          "act"
+        ],
+        "select": {
+          "q": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "client": {
+            "type": "string"
+          }
+        },
+        "acts": {
+          "open": {}
+        },
+        "paths": "host"
+      },
+      "console.actions": {
+        "description": "Every registered action (the action bus: menus, toolbars, search). act run runs it in the open console under its own policy: an action that only navigates needs control.console.navigate, one that changes data needs control.console.write plus the permission the action itself requires, and a destructive one also a confirm token. input.args = its arguments (\"swap:color-theme:dark\" or [\"color-theme\", \"dark\"]). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
+        "ops": [
+          "list",
+          "get",
+          "act"
+        ],
+        "select": {
+          "q": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "client": {
+            "type": "string"
+          }
+        },
+        "acts": {
+          "run": {}
+        },
+        "paths": "host"
+      },
+      "console.nav": {
+        "description": "Where the open console is (get here: screen, dialog, settings tab) and moving it: back (closes an open dialog first, else the screen before), home (the first screen), close (the open dialog). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
+        "ops": [
+          "get",
+          "act"
+        ],
+        "acts": {
+          "back": {},
+          "home": {},
+          "close": {}
+        },
+        "paths": [
+          "here"
+        ]
+      },
+      "console.clients": {
+        "description": "The consoles open right now for the caller (one per browser tab: id, app, title, device, screen, last used). Console commands go to the one used last unless input.to says otherwise.",
+        "ops": [
+          "list"
+        ],
+        "select": {
+          "limit": {
+            "type": "number"
+          }
+        },
+        "paths": "host"
+      },
+      "pass.scopes": {
+        "description": "Timed veto passes (control-pass@1): \"allow everything for the next 30 minutes\". path = the scope: all (the default: every command on every target and every call axHub holds, ordinary deletes included; irreversible deletes only with include_irreversible) or a narrow token scope (tokens.theme, tokens.style, tokens.layout, tokens.*: set / reset only). grant files a request the owner approves once; revoke ends it; undo rolls back what can be rolled back and lists what can't. The pass target itself is never covered.",
+        "ops": [
+          "list",
+          "get",
+          "act"
+        ],
+        "acts": {
+          "grant": {
+            "minutes": {
+              "type": "number"
+            },
+            "reason": {
+              "type": "string"
+            },
+            "include_irreversible": {
+              "type": "boolean"
+            }
+          },
+          "approve": {
+            "request": {
+              "type": "string"
+            }
+          },
+          "deny": {
+            "request": {
+              "type": "string"
+            }
+          },
+          "revoke": {},
+          "undo": {}
+        },
+        "paths": [
+          "all",
+          "tokens.theme",
+          "tokens.style",
+          "tokens.layout",
+          "tokens.*"
+        ]
       }
     }
   }

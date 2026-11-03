@@ -39,17 +39,17 @@ def b64(s: str) -> str:
     return base64.b64encode(s.encode()).decode()
 
 
-man = {"$axf": "pilot-plugin@1", "id": "ai.amberx.pilot.extra-steps", "name": "Extra steps", "version": "1.0.0", "stacks": ["*"]}
-pkg = {"$axf": "plugin-package@1", "kind": "pilot", "folder": "extra-steps", "files": [{"path": "plugin.json", "b64": b64(json.dumps(man))}, {"path": "web/index.tsx", "b64": b64("export const plugin = {};")}]}
+man = {"$axf": "axhub-plugin@1", "id": "ai.amberx.axhub.extra-steps", "name": "Extra steps", "version": "1.0.0", "stacks": ["*"]}
+pkg = {"$axf": "plugin-package@1", "kind": "axhub", "folder": "extra-steps", "files": [{"path": "plugin.json", "b64": b64(json.dumps(man))}, {"path": "web/index.tsx", "b64": b64("export const plugin = {};")}]}
 
 check("list needs the token", c.get("/api/plugin-catalog").status_code == 401)
 r = c.get("/api/plugin-catalog", headers=H)
 check("empty catalog lists", r.status_code == 200 and r.json()["items"] == [] and "root" not in r.json())
 check("publish needs the token", c.post("/api/plugin-catalog/publish", json={"package": pkg}).status_code == 401)
 r = c.post("/api/plugin-catalog/publish", headers=H, json={"package": pkg, "from": "test"})
-check("publish a pilot package", r.status_code == 200 and r.json()["published"] is True)
+check("publish an axhub package", r.status_code == 200 and r.json()["published"] is True)
 r = c.post("/api/plugin-catalog/publish", headers=H, json={"package": {**pkg, "files": pkg["files"] + [{"path": "server/x.py", "b64": b64("x")}]}})
-check("pilot package with server code refused", r.status_code == 400)
+check("axhub package with server code refused", r.status_code == 400)
 r = c.post("/api/plugin-catalog/publish", headers=H, json={"folder": "plugin-switches"})
 check("publish a console plugin from this clone", r.status_code == 200 and r.json()["item"]["folder"] == "plugin-switches")
 check("publish an unknown folder = 404", c.post("/api/plugin-catalog/publish", headers=H, json={"folder": "no-such-plugin"}).status_code == 404)
@@ -65,12 +65,12 @@ check("python twin: a second build of a loaded plugin is refused", bool(build_de
 check("python twin: required model", any(p["rule"] == "plugin.builtWith.model" for p in build_defaults.apply_defaults("plugin", {"provides": ["view:x"]})["problems"]))
 check("python twin: UI plugin opens in the main area", build_defaults.apply_defaults("plugin", {"provides": ["view:x"], "builtWith": {"model": "opus", "builtAt": "2026-10-23"}})["value"]["opens"] == "main")
 check("python twin: false stays a valid opens value", not build_defaults.apply_defaults("plugin", {"opens": False, "builtWith": {"model": "opus", "builtAt": "2026-10-23"}})["problems"])
-check("kind filter", [i["kind"] for i in c.get("/api/plugin-catalog?kind=pilot", headers=H).json()["items"]] == ["pilot"])
-r = c.get("/api/plugin-catalog/package?kind=pilot&folder=extra-steps", headers=H)
+check("kind filter", [i["kind"] for i in c.get("/api/plugin-catalog?kind=axhub", headers=H).json()["items"]] == ["axhub"])
+r = c.get("/api/plugin-catalog/package?kind=axhub&folder=extra-steps", headers=H)
 check("package served", r.status_code == 200 and r.json()["sha256"] and len(r.json()["files"]) == 2)
-check("package needs the token", c.get("/api/plugin-catalog/package?kind=pilot&folder=extra-steps").status_code == 401)
-check("missing package = 404", c.get("/api/plugin-catalog/package?kind=pilot&folder=nope-nope", headers=H).status_code == 404)
-check("bad folder refused", c.get("/api/plugin-catalog/package?kind=pilot&folder=../x", headers=H).status_code == 400)
+check("package needs the token", c.get("/api/plugin-catalog/package?kind=axhub&folder=extra-steps").status_code == 401)
+check("missing package = 404", c.get("/api/plugin-catalog/package?kind=axhub&folder=nope-nope", headers=H).status_code == 404)
+check("bad folder refused", c.get("/api/plugin-catalog/package?kind=axhub&folder=../x", headers=H).status_code == 400)
 check("install needs confirm", c.post("/api/plugin-catalog/install", headers=H, json={"folder": "plugin-switches"}).status_code == 400)
 r = c.post("/api/plugin-catalog/install", headers=H, json={"folder": "plugin-switches", "confirm": "plugin-switches"})
 check("install over an installed plugin without update refused", r.status_code == 400 and "already installed" in r.json().get("detail", ""))
@@ -96,11 +96,11 @@ try:
     check("bad folder refused", c.post("/api/app-plugins/axhub/install", headers=H, json={"folder": "../x", "confirm": "../x"}).status_code == 400)
 finally:
     shutil.rmtree(hdir, ignore_errors=True)
-check("remove needs confirm", c.post("/api/plugin-catalog/remove", headers=H, json={"kind": "pilot", "folder": "extra-steps"}).status_code == 400)
-r = c.post("/api/plugin-catalog/remove", headers=H, json={"kind": "pilot", "folder": "extra-steps", "confirm": "extra-steps"})
+check("remove needs confirm", c.post("/api/plugin-catalog/remove", headers=H, json={"kind": "axhub", "folder": "extra-steps"}).status_code == 400)
+r = c.post("/api/plugin-catalog/remove", headers=H, json={"kind": "axhub", "folder": "extra-steps", "confirm": "extra-steps"})
 check("remove from the catalog", r.status_code == 200 and all(i["folder"] != "extra-steps" for i in c.get("/api/plugin-catalog", headers=H).json()["items"]))
 os.environ["AXF_PLUGIN_CATALOG"] = "off"
-check("no catalog = 503 on package", c.get("/api/plugin-catalog/package?kind=pilot&folder=extra-steps", headers=H).status_code == 503)
+check("no catalog = 503 on package", c.get("/api/plugin-catalog/package?kind=axhub&folder=extra-steps", headers=H).status_code == 503)
 check("no catalog = list says unreachable", c.get("/api/plugin-catalog", headers=H).json()["reachable"] is False)
 
 print(f"console plugin catalog: {ok} passed, {fail} failed")

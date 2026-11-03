@@ -134,7 +134,7 @@ export function paletteFromColorTheme(data: { scheme?: string; tokens?: Record<s
 }
 
 /**
- * Merge one app's change into the document (a save from Settings → Appearance, the theme manager or Build Pilot's
+ * Merge one app's change into the document (a save from Settings → Appearance, the theme manager or a designer's
  * Look). Per key, last write wins (the framework's UI-editor rule): keys the change doesn't name are kept from `base`
  * — slots of types this app doesn't have included, so one app never erases another app's choices.
  */

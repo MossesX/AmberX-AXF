@@ -7,7 +7,7 @@
  * file notes into subcategories. Everything (settings and lists) lives on axHub's data server through the framework's
  * lib-hubstore, never on this device. The listener that does the talking is Voice Vault on Android.
  *
- * Settings → Plugins → Voice notes. The page (view `voice-notes`, tabable, so Patches can add it as a tab) fetches the
+ * Settings → Plugins → Voice notes. The page (view `voice-notes`, tabable, so a host app can add it as a tab) fetches the
  * notes the listener saved to table `notes` on axHub: newest first, by list and subcategory, search, copy, delete.
  */
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';

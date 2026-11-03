@@ -123,3 +123,53 @@
 .axp-terminal__profile .fx-row { align-items: center; gap: var(--fx-dens-gap-md); flex-wrap: wrap }
 /* menus portal to <body> (a blurred window is a containing block for fixed children): above every window */
 .axp-wt__menu.fx-popover, .axp-terminal__menu.fx-popover { z-index: 901 }
+
+/* Headless tabs (Nov 3 2026): status dot, agent · model · live cost on the tab, the split panes, the context chain. */
+.axp-wt__state { flex: none; width: calc(var(--fx-space) * 0.625); height: calc(var(--fx-space) * 0.625); border-radius: 999px; background: var(--fx-muted) }
+.axp-wt__state.is-working, .axp-wt__state.is-starting { background: var(--fx-accent); animation: axp-wt-pulse calc(var(--fx-motion) * 8) var(--fx-ease) infinite }
+.axp-wt__state.is-waiting { background: var(--fx-warning) }
+.axp-wt__state.is-done { background: var(--fx-success) }
+.axp-wt__state.is-failed { background: var(--fx-danger) }
+@keyframes axp-wt-pulse { 50% { opacity: var(--fx-opacity-muted) } }
+@media (prefers-reduced-motion: reduce) { .axp-wt__state { animation: none !important } }
+.axp-wt__meta { flex: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); font-size: var(--fx-type-root-xs); color: var(--fx-muted); white-space: nowrap }
+.axp-wt__model { padding: 0 var(--fx-dens-gap-xs); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-text) }
+.axp-wt__cost { font-family: var(--fx-font-mono); font-variant-numeric: tabular-nums; color: var(--fx-text) }
+.axp-wt__cost.is-estimate { color: var(--fx-muted) }
+.axp-wt--tabs-compact .axp-wt__model { display: none }
+.axp-wt__tab.is-headless { flex: 0 0 auto; max-width: calc(var(--fx-space) * 44) }
+.axp-wt__tab.is-headless .axp-wt__name { flex: 0 1 auto; min-width: calc(var(--fx-space) * 5) }
+
+.axp-wt__body > .axp-split { position: absolute; inset: 0 }
+.axp-split[hidden] { display: none }
+.axp-split { display: flex; flex-direction: column; min-height: 0; min-width: 0 }
+.axp-split__probe { position: absolute; visibility: hidden; pointer-events: none; height: 0; width: calc(var(--fx-type-root-md) * 40) }
+.axp-split__row { position: relative; flex: 1; display: flex; min-height: 0; min-width: 0 }
+.axp-split__pane { position: relative; flex: 1 1 0; min-width: 0; min-height: 0 }
+.axp-split__pane > .axp-terminal { position: absolute; inset: 0; min-height: 0 }
+.axp-split--side .axp-split__pane--b { border-left: var(--fx-border-w) solid var(--fx-border) }
+.axp-split--stacked .axp-split__row { flex-direction: column }
+.axp-split--stacked .axp-split__pane--b { border-top: var(--fx-border-w) solid var(--fx-border) }
+.axp-split--swipe .axp-split__row { overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none }
+.axp-split--swipe .axp-split__row::-webkit-scrollbar { display: none }
+.axp-split--swipe .axp-split__pane { flex: 0 0 100%; scroll-snap-align: start; scroll-snap-stop: always }
+.axp-split__pager { display: flex; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); border-bottom: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2) }
+
+.axp-chain { position: absolute; inset: 0; display: flex; flex-direction: column; min-height: 0; background: var(--fx-surface); color: var(--fx-text) }
+.axp-chain__bar { display: flex; align-items: center; flex-wrap: wrap; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); border-bottom: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2) }
+.axp-chain__title { font-size: var(--fx-type-root-sm) }
+.axp-chain__count { font-size: var(--fx-type-root-xs); color: var(--fx-muted); white-space: nowrap }
+.axp-chain__list { flex: 1; min-height: 0; overflow: auto; padding: var(--fx-dens-gap-xs) 0 }
+.axp-chain__empty { margin: 0; padding: var(--fx-dens-gap-xl); font-size: var(--fx-type-root-sm); color: var(--fx-muted) }
+.axp-chain__file { padding-left: calc(var(--fx-dens-gap-xl) * var(--axp-chain-depth, 0)) }
+.axp-chain__head { width: 100%; gap: var(--fx-dens-gap-xs); font-size: var(--fx-type-root-sm) }
+.axp-chain__file.is-active > .axp-chain__head { color: var(--fx-accent) }
+.axp-chain__path { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--fx-font-mono); text-align: left }
+.axp-chain__via { flex: none; font-size: var(--fx-type-root-xs); color: var(--fx-muted) }
+.axp-chain__rules { margin: 0; padding: 0 var(--fx-dens-gap-xl) var(--fx-dens-gap-md) calc(var(--fx-dens-gap-xl) * 2); list-style: none; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.axp-chain__rule { padding-left: calc(var(--fx-dens-gap-xl) * var(--axp-chain-level, 0)); font-size: var(--fx-type-root-sm); line-height: var(--fx-type-line-normal); overflow-wrap: anywhere }
+.axp-chain__rule.is-item::before { content: '•'; margin-right: var(--fx-dens-gap-md); color: var(--fx-muted) }
+.axp-chain__rule.is-heading { font-weight: 700; color: var(--fx-accent) }
+.axp-chain__caret { display: inline-block; width: calc(var(--fx-space) * 0.5); height: 1em; margin-left: var(--fx-dens-gap-2xs); vertical-align: text-bottom; background: var(--fx-accent); animation: axp-chain-blink calc(var(--fx-motion) * 6) steps(1) infinite }
+@keyframes axp-chain-blink { 50% { opacity: 0 } }
+@media (prefers-reduced-motion: reduce) { .axp-chain__caret { animation: none } }

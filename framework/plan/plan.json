@@ -5951,7 +5951,7 @@
    "priority": "P1",
    "wave": 1,
    "effort": "",
-   "summary": "One copy for every AXF app server (console, plugins, Build Pilot); cross-language parts pinned by spec/fixtures (wall-signature, plugin-package).",
+   "summary": "One copy for every AXF app server (console, plugins); cross-language parts pinned by spec/fixtures (wall-signature, plugin-package).",
    "ports": {},
    "capabilities": [],
    "dependsOn": [],
@@ -7309,7 +7309,7 @@
    "priority": "P1",
    "wave": 2,
    "effort": "",
-   "summary": "framework/core/engines/embed.ts = ai.amberx.axf.kernel.engine.EmbedEngine, hide engine `forced` layer, AxfRuntime.embedded / slotHiddenByHost on both ports; fixture spec/fixtures/embed.json (spec/check-embed.mts, EmbedConformanceTest); first host: apps/patches (Oct 21 2026, Fable; Kotlin written without a compiler)",
+   "summary": "framework/core/engines/embed.ts = ai.amberx.axf.kernel.engine.EmbedEngine, hide engine `forced` layer, AxfRuntime.embedded / slotHiddenByHost on both ports; fixture spec/fixtures/embed.json (spec/check-embed.mts, EmbedConformanceTest) (Oct 21 2026, Fable; Kotlin written without a compiler)",
    "ports": {
     "android": {
      "status": "built",
@@ -7335,7 +7335,7 @@
     "kernel",
     "lib"
    ],
-   "notes": "embed@1 on web + Android: engine, hide forced layer, runtime, settings greying; Patches is the first host",
+   "notes": "embed@1 on web + Android: engine, hide forced layer, runtime, settings greying",
    "source": "catalog",
    "history": [
     {
@@ -12256,7 +12256,7 @@
   },
   {
    "id": "lib.hubstore",
-   "title": "axHub storage library: an app's settings and data on axHub's data server instead of the device; two classes (HubSettings, HubData); when installed (Build Pilot, axf install) pick settings only, all data, or some tables",
+   "title": "axHub storage library: an app's settings and data on axHub's data server instead of the device; two classes (HubSettings, HubData); when installed (axf install) pick settings only, all data, or some tables",
    "area": "Kernel",
    "group": "UI library — every customization token",
    "kind": "feature",
@@ -12314,7 +12314,7 @@
    "priority": "P3",
    "wave": 3,
    "effort": "",
-   "summary": "Suggested together with axHub storage library: an app's settings and data on axHub's data server instead of the device; two classes (HubSettings, HubData); when installed (Build Pilot, axf install) pick settings only, all data, or some tables.",
+   "summary": "Suggested together with axHub storage library: an app's settings and data on axHub's data server instead of the device; two classes (HubSettings, HubData); when installed (axf install) pick settings only, all data, or some tables.",
    "ports": {},
    "capabilities": [],
    "dependsOn": [
@@ -13457,7 +13457,7 @@
     "kernel",
     "lib"
    ],
-   "notes": "lib-hub WebAppView hosts web-port AXF apps in Patches (embed@1 marker, no JS bridge yet); the bridged engine itself is still a placeholder",
+   "notes": "lib-hub WebAppView hosts web-port AXF apps in a host app (embed@1 marker, no JS bridge yet); the bridged engine itself is still a placeholder",
    "source": "catalog",
    "history": [
     {
@@ -13499,7 +13499,7 @@
     "kernel",
     "lib"
    ],
-   "notes": "Python host runtime built (framework/python/axf/assistant_host: providers for 18 kinds + 3 protocols, live-session@1 LocalHost, safety) on the assistant@1 contract (axf.contracts.assistant); hosts: console ai-assistant plugin, Build Pilot server. Web in-process engine and Android module not built (contract + client only).",
+   "notes": "Python host runtime built (framework/python/axf/assistant_host: providers for 18 kinds + 3 protocols, live-session@1 LocalHost, safety) on the assistant@1 contract (axf.contracts.assistant); hosts: console ai-assistant plugin. Web in-process engine and Android module not built (contract + client only).",
    "source": "catalog",
    "history": [
     {
@@ -21077,48 +21077,6 @@
    "history": [
     {
      "at": "2026-10-17",
-     "text": "Imported from the feature catalog"
-    }
-   ],
-   "model": "opus",
-   "modelReason": "Default: Opus 5.5"
-  },
-  {
-   "id": "c.patches",
-   "title": "Patches: one banner, three tabs — the Dev Console, Build Pilot and axHub as web apps in origin-locked web views kept alive across tabs (embed@1 host)",
-   "area": "Demos later",
-   "group": "Dev, server and AI",
-   "kind": "feature",
-   "status": "built",
-   "priority": "P3",
-   "wave": 3,
-   "effort": "",
-   "summary": "apps/patches (android-compose developer app) + lib-hub WebAppView / WebAppHolder (Oct 21 2026, Fable; written without a compiler)",
-   "ports": {},
-   "capabilities": [],
-   "dependsOn": [],
-   "catalog": [
-    "c.patches"
-   ],
-   "modules": [
-    "apps/patches"
-   ],
-   "files": [],
-   "acceptance": [],
-   "warnings": [],
-   "recommendations": [],
-   "previews": [],
-   "screenshots": [],
-   "links": [],
-   "tags": [
-    "demos",
-    "app"
-   ],
-   "notes": "Android first; web tabs. Native tabs, a web Patches and a tab bridge are placeholders (patches.native-tabs, patches.web, patches.bridge)",
-   "source": "catalog",
-   "history": [
-    {
-     "at": "2026-10-21",
      "text": "Imported from the feature catalog"
     }
    ],

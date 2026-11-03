@@ -4,14 +4,26 @@ One interface for **AmberX**, **axHub** and the **Dev Console**, at https://moll
 Big Dog profile, Opus; a Fable version comes later as its own build).
 
 - Each app stays its own app at its own address (`amberx.amberxai.com`, `axhub.amberxai.com`, `console.amberxai.com`)
-  and runs exactly the same on its own. Molly only frames that address: plain URL, no embed marker, nothing hidden,
-  taken over or merged.
+  and runs exactly the same on its own. Without plugins Molly only frames that address (plain URL, nothing hidden or
+  merged); with xLayout the frames carry the embed@1 marker and Molly merges their chrome (below).
 - Frames are kept alive (`src/molly/FrameDeck.tsx`): switching apps never reloads them. Reload or open the one on screen
   on its own from the Molly menu or toolbar.
 - Deep links: `#/<app>/<route>` (for example `#/console/builds`) open straight on that app's route.
 - The look comes from axHub only (`developer.hub`), like every app; Molly ships the shared asset set at `src/axf/assets`.
   Its own assets are its nav menu, app menu and toolbar (`src/assets/*/molly.json`). The app list is `src/molly/apps.ts`.
 - The only changes outside this folder: axHub web's and AmberX's `frame-ancestors` now allow `https://molly.amberxai.com`.
+
+- **Plugins** live in `plugins/<folder>/` (found by folder: `plugins/*/web/index.tsx` exporting `plugin`; deleting a
+  folder removes it) and change Molly only through `src/molly/host.ts` (frame address, frame mount, what an app's view
+  shows, extra views, capability services).
+- **xLayout** (`plugins/xlayout`, asset `src/assets/xlayout/molly.json`): Molly as ONE app. The apps hide their banner,
+  application menu, navigation, context menu and toolbar and send them as data; Molly shows one menu bar (a menu per
+  app), one navigation (a section per app), one context menu (a right-click inside an app opens it too) and their
+  toolbars. IDE mode puts the apps in draggable, resizable, dockable panes (ten preset layouts with a preview, pane
+  limit); three toolbars (show / hide, edge). Settings → Plugins → xLayout. <!-- axf-plugin:xlayout -->
+- **Toolbar designer** (`plugins/toolbar-designer`, capability `axf.toolbar-designer@1`): picks what each toolbar holds
+  from every app and screen and where each item opens (main area, floating window, pane); from its settings tab, View
+  → Toolbar designer and right-click on any toolbar. <!-- axf-plugin:toolbar-designer -->
 
 ```bash
 npm install && npm run dev      # :5173

@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-31T09:11:54.339Z",
+  "generatedAt": "2026-11-03T14:26:22.176Z",
   "summary": {
     "foundations": {
       "built": 68,
@@ -36,12 +36,12 @@
       "coverage": 47
     },
     "demos": {
-      "built": 12,
+      "built": 11,
       "partial": 5,
       "placeholder": 4,
       "planned": 63,
-      "total": 84,
-      "coverage": 14
+      "total": 83,
+      "coverage": 13
     }
   },
   "items": [
@@ -1154,7 +1154,7 @@
       "status": "built",
       "wave": 2,
       "module": "axf-kernel",
-      "notes": "embed@1 on web + Android: engine, hide forced layer, runtime, settings greying; Patches is the first host"
+      "notes": "embed@1 on web + Android: engine, hide forced layer, runtime, settings greying"
     },
     {
       "id": "k.appmenu",
@@ -2329,7 +2329,7 @@
       "id": "lib.hubstore",
       "tab": "kernel",
       "group": "ui-library-every-customization-token",
-      "title": "axHub storage library: an app's settings and data on axHub's data server instead of the device; two classes (HubSettings, HubData); when installed (Build Pilot, axf install) pick settings only, all data, or some tables",
+      "title": "axHub storage library: an app's settings and data on axHub's data server instead of the device; two classes (HubSettings, HubData); when installed (axf install) pick settings only, all data, or some tables",
       "tag": "lib",
       "status": "built",
       "wave": 1,
@@ -2646,7 +2646,7 @@
       "status": "placeholder",
       "wave": 2,
       "module": null,
-      "notes": "lib-hub WebAppView hosts web-port AXF apps in Patches (embed@1 marker, no JS bridge yet); the bridged engine itself is still a placeholder"
+      "notes": "lib-hub WebAppView hosts web-port AXF apps in a host app (embed@1 marker, no JS bridge yet); the bridged engine itself is still a placeholder"
     },
     {
       "id": "w.ai",
@@ -2657,7 +2657,7 @@
       "status": "partial",
       "wave": 2,
       "module": "python/axf/assistant_host",
-      "notes": "Python host runtime built (framework/python/axf/assistant_host: providers for 18 kinds + 3 protocols, live-session@1 LocalHost, safety) on the assistant@1 contract (axf.contracts.assistant); hosts: console ai-assistant plugin, Build Pilot server. Web in-process engine and Android module not built (contract + client only)."
+      "notes": "Python host runtime built (framework/python/axf/assistant_host: providers for 18 kinds + 3 protocols, live-session@1 LocalHost, safety) on the assistant@1 contract (axf.contracts.assistant); hosts: console ai-assistant plugin. Web in-process engine and Android module not built (contract + client only)."
     },
     {
       "id": "w.mcp",
@@ -4644,17 +4644,6 @@
       "wave": 3,
       "module": null,
       "notes": ""
-    },
-    {
-      "id": "c.patches",
-      "tab": "demos",
-      "group": "dev-server-and-ai",
-      "title": "Patches: one banner, three tabs — the Dev Console, Build Pilot and axHub as web apps in origin-locked web views kept alive across tabs (embed@1 host)",
-      "tag": "app",
-      "status": "built",
-      "wave": 3,
-      "module": "apps/patches",
-      "notes": "Android first; web tabs. Native tabs, a web Patches and a tab bridge are placeholders (patches.native-tabs, patches.web, patches.bridge)"
     },
     {
       "id": "c.mcp",

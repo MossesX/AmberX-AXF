@@ -1,6 +1,6 @@
 /* AI assistant — web API layer. Types and the client come from the framework's assistant contract (assistant@1,
  * framework/core/assistant.ts); this file binds them to the console (pluginFetch adds the console token) and adds the
- * plugin's extra routes (config, profiles, compare, usage, batches). Build Pilot and other apps use the same core. */
+ * plugin's extra routes (config, profiles, compare, usage, batches). Other apps use the same core. */
 import { HttpAssistantClient, type AssistantStatus, type ProviderKind, type ProviderProfile } from '@console/axf/core';
 import { pluginApi, pluginFetch } from '@console/plugins';
 

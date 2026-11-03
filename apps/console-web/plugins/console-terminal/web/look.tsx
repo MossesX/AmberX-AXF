@@ -16,6 +16,7 @@ export const LEVELS: Record<string, Level> = {
   fontFamily: 'basic', cursorStyle: 'basic', mica: 'basic', newTab: 'basic', tabWidth: 'basic', closeConfirm: 'basic', copyOnSelect: 'basic', pasteWarn: 'basic',
   'profile.name': 'basic', 'profile.model': 'basic', 'profile.connection': 'basic', 'profile.color': 'basic',
   lineHeight: 'developer', scrollback: 'developer', padding: 'developer', bell: 'developer', cursorBlink: 'developer', mouseDefault: 'developer', moshDefault: 'developer',
+  persistTabs: 'basic', splitDefault: 'basic', chainSpeed: 'simple', showChain: 'basic',
   'profile.permissionMode': 'developer', 'profile.flags': 'developer', 'profile.cwd': 'developer', 'profile.prompt': 'developer', 'profile.icon': 'developer',
 };
 
@@ -74,6 +75,24 @@ export function BehaviourPanel() {
       <L k="mouseDefault"><Switch label="New tabs start in mouse mode" checked={s.mouseDefault} onChange={(v) => save({ mouseDefault: v })} /></L>
       <L k="moshDefault"><Switch label="New tabs start in Mosh mode" checked={s.moshDefault} onChange={(v) => save({ moshDefault: v })} /></L>
       <p className="fx-small fx-muted">Keys: Ctrl+Shift+T new tab · Ctrl+Shift+W close · Ctrl+Shift+D duplicate · Ctrl+Tab / Ctrl+Shift+Tab next / previous · Ctrl+Alt+1…9 jump · Ctrl+= / Ctrl+- text size · Ctrl+Shift+F find · Ctrl+Shift+C / V copy, paste.</p>
+      <span className="fx-small">{msg}</span>
+    </div>
+  );
+}
+
+/** Headless tabs (Nov 3 2026): persistent tabs, the split and the context chain's pace. */
+export function HeadlessPanel() {
+  const { s, msg, save } = useLive();
+  if (!s) return <p className="fx-muted">{msg || 'Loading…'}</p>;
+  return (
+    <div className="fx-stack axp-terminal-settings">
+      <L k="persistTabs"><Switch label="Tabs live in tmux sessions (survive reloads, sleep and restarts; attach from Moshi)" checked={s.persistTabs} onChange={(v) => save({ persistTabs: v })} /></L>
+      <L k="showChain"><Switch label="Headless tabs show the context chain next to the session" checked={s.showChain} onChange={(v) => save({ showChain: v })} /></L>
+      <div className="axp-terminal__cols">
+        <L k="splitDefault"><SelectField label="Split for new headless tabs" value={s.splitDefault} options={[{ value: 'side', label: 'Side by side' }, { value: 'stacked', label: 'Stacked' }, { value: 'none', label: 'No split' }]} onChange={(v) => save({ splitDefault: v as Settings['splitDefault'] })} /></L>
+        <L k="chainSpeed"><SelectField label="Context chain speed" value={s.chainSpeed} options={[{ value: 'slow', label: 'Slow' }, { value: 'normal', label: 'Normal' }, { value: 'fast', label: 'Fast' }, { value: 'instant', label: 'All at once' }]} onChange={(v) => save({ chainSpeed: v as Settings['chainSpeed'] })} /></L>
+      </div>
+      <p className="fx-small fx-muted">Each tab keeps its split (right-click the tab). Closing a tab detaches; Kill session in the tab menu ends it. On a phone the two panes swipe.</p>
       <span className="fx-small">{msg}</span>
     </div>
   );

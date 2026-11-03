@@ -2,7 +2,7 @@
  * Agent definitions — agent-definition@1 (kernel contract, web reference).
  *
  * One format for AI agents and the parts they are built from, so every AXF app (the Dev Console's agent manager,
- * Build Pilot, Android apps) loads the same agents: an **agent** = persona + lingo packs + skills + tools +
+ * Android apps) loads the same agents: an **agent** = persona + lingo packs + skills + tools +
  * delegates + model + memory config; **add-ons** (agent-addon@1) bundle agents with their parts and seed memory;
  * **library items** (agent-library-item@1) carry one part on its own.
  *
