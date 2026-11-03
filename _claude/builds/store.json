@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 538,
- "updatedAt": "2026-11-03T22:31:26.348Z",
+ "rev": 539,
+ "updatedAt": "2026-11-03T22:33:15.345Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -61883,9 +61883,14 @@
    "branch": "claude/terminal-drag-chain-tree",
    "pr": "",
    "createdAt": "2026-11-03T21:50:21.572Z",
-   "updatedAt": "2026-11-03T22:08:18.498Z",
+   "updatedAt": "2026-11-03T22:31:25.143Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Clash: terminal-tabs-left (running, another session) changes TerminalHost too; note left on it to reuse WindowGrip orientation=column + useTabPress. terminal-sessions-nav #286 (built, open) also touches TerminalHost; whichever merges second resolves.",
+     "at": "2026-11-03T22:31:25.143Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -62030,7 +62035,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
