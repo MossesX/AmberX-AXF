@@ -1,0 +1,12 @@
+[
+ {"name": "home", "steps": [
+   {"eval": "window.scrollTo(0,0)", "wait": 1200}
+ ]},
+ {"name": "appearance", "steps": [
+   {"eval": "AXF.dispatch('settings.open:appearance')", "wait": 1500}
+ ]},
+ {"name": "appearance-style-changed", "steps": [
+   {"eval": "AXF.swap('style-theme','glass-orbit')", "wait": 600},
+   {"eval": "AXF.dispatch('settings.open:appearance')", "wait": 1500}
+ ]}
+]
