@@ -568,7 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:55 UTC · `orch-live-sync` s4 done (urgent) · orchestrator
 - 2026-11-03 13:56 UTC · `urgent-builds` → archived, merged, note (urgent) · orch-live-sync
 - 2026-11-03 13:56 UTC · `orch-step-click` note (refactor) · orch-live-sync
 - 2026-11-03 13:56 UTC · `dock-engine` s1 done, s2 done, s3 done, s4 done, → built, branch claude/molly-fable, PR #245, note (urgent) · orch-live-sync
@@ -968,3 +967,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 20:49 UTC · `banner-ref-links` added (5 steps) (current) · foreign-write
 - 2026-11-03 20:53 UTC · `plugin-settings-placement` s1 done, s2 done (current) · foreign-write
 - 2026-11-03 20:53 UTC · `banner-ref-links` added (10 steps) (current) · foreign-write
+- 2026-11-03 20:53 UTC · `build-prompt-origin` s3 done (current) · orchestrator
