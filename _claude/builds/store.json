@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 428,
- "updatedAt": "2026-11-03T20:19:35.985Z",
+ "rev": 429,
+ "updatedAt": "2026-11-03T20:21:31.371Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55905,7 +55905,7 @@
    "branch": "claude/ui-review-predicted",
    "pr": "",
    "createdAt": "2026-11-03T19:54:18.485Z",
-   "updatedAt": "2026-11-03T20:18:57.587Z",
+   "updatedAt": "2026-11-03T20:21:13.847Z",
    "builtAt": "",
    "notes": [
     {
@@ -55997,12 +55997,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T20:21:13.847Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T19:54:18.487Z",
-     "updatedAt": "2026-11-03T19:54:18.487Z"
+     "updatedAt": "2026-11-03T20:21:13.959Z"
     },
     {
      "id": "s5",
@@ -56057,7 +56057,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
