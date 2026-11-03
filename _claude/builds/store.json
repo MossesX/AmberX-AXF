@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 250,
- "updatedAt": "2026-11-03T16:48:37.637Z",
+ "rev": 251,
+ "updatedAt": "2026-11-03T16:48:44.613Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50275,7 +50275,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T16:48:30.092Z",
+   "updatedAt": "2026-11-03T16:48:43.714Z",
    "builtAt": "",
    "notes": [
     {
@@ -50309,6 +50309,10 @@
     {
      "text": "Landed claude/molly-fable (PR #245) on main at bffc2601",
      "at": "2026-11-03T16:48:30.092Z"
+    },
+    {
+     "text": "Landed claude/xlayout-opus (PR #252) on main at bffc2601",
+     "at": "2026-11-03T16:48:43.713Z"
     }
    ],
    "approvals": [],
@@ -50564,7 +50568,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
