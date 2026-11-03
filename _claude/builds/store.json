@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 170,
- "updatedAt": "2026-11-03T12:44:16.973Z",
+ "rev": 176,
+ "updatedAt": "2026-11-03T12:45:26.736Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -49701,15 +49701,15 @@
    "title": "Banner editor: long-press / right-click Edit banner, drag + snap, remove, add back, reset, undo",
    "category": "",
    "detail": "Brett Nov 3 2026 (voice): top of the queue. Builds on the existing arrange mode (widgets engine HostArrangement + Arrange.tsx). Arrangement gains hidden/added entries (engine + fixture), palette of every banner widget, undo, long-press + context menu Edit banner, banner.edit command, Settings > Appearance entry. Saved in axf.widgets.arrange.banner (appearance@1 look key, every app follows). Kotlin twin deferred.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/banner-editor",
-   "pr": "",
+   "pr": "https://github.com/MossesX/AmberX-AXF/pull/254",
    "createdAt": "2026-11-03T12:21:52.735Z",
-   "updatedAt": "2026-11-03T12:21:52.735Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T12:45:26.712Z",
+   "builtAt": "2026-11-03T12:45:26.712Z",
    "notes": [],
    "approvals": [],
    "steps": [
@@ -49728,12 +49728,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:45:23.357Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T12:21:52.736Z",
-     "updatedAt": "2026-11-03T12:21:52.736Z"
+     "updatedAt": "2026-11-03T12:45:23.386Z"
     },
     {
      "id": "s2",
@@ -49750,12 +49750,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:45:23.942Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T12:21:52.736Z",
-     "updatedAt": "2026-11-03T12:21:52.736Z"
+     "updatedAt": "2026-11-03T12:45:23.967Z"
     },
     {
      "id": "s3",
@@ -49772,12 +49772,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:45:24.494Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T12:21:52.736Z",
-     "updatedAt": "2026-11-03T12:21:52.736Z"
+     "updatedAt": "2026-11-03T12:45:24.523Z"
     },
     {
      "id": "s4",
@@ -49794,12 +49794,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:45:25.229Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T12:21:52.736Z",
-     "updatedAt": "2026-11-03T12:21:52.736Z"
+     "updatedAt": "2026-11-03T12:45:25.253Z"
     }
    ],
    "profiles": [
@@ -49810,7 +49810,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
