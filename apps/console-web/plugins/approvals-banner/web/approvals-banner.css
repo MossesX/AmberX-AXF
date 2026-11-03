@@ -37,14 +37,10 @@ button.axp-approvals-banner__text { flex-wrap: nowrap; white-space: nowrap; over
 .axp-approvals-banner__row > .fx-iconbtn { flex: 0 0 auto }
 .axp-approvals-banner__pending .axp-approvals-banner__text { font-weight: 400 }
 button.axp-approvals-banner__more { all: unset; cursor: pointer; padding-left: var(--fx-dens-gap-4xl) }
-@media (max-width: 720px) {
-  .axp-approvals-banner__row > .axp-approvals-banner__acts > .fx-btn, .axp-approvals-banner__acts > .axp-approvals-banner__shelve { min-height: max(calc(var(--fx-space) * 5.5), 2.75rem) }
-  .axp-approvals-banner__acts > .axp-approvals-banner__shelve { min-width: max(calc(var(--fx-space) * 5.5), 2.75rem) }
-}
-@media (max-width: 480px) {
-  .axp-approvals-banner__row > .axp-approvals-banner__acts > .fx-btn { min-width: calc(var(--fx-space) * 9) }
-  .axp-approvals-banner__runs { display: none }
-}
+:where([data-fx-narrow]) .axp-approvals-banner__row > .axp-approvals-banner__acts > .fx-btn, :where([data-fx-narrow]) .axp-approvals-banner__acts > .axp-approvals-banner__shelve { min-height: max(calc(var(--fx-space) * 5.5), 2.75rem) }
+:where([data-fx-narrow]) .axp-approvals-banner__acts > .axp-approvals-banner__shelve { min-width: max(calc(var(--fx-space) * 5.5), 2.75rem) }
+:where([data-fx-tiny]) .axp-approvals-banner__row > .axp-approvals-banner__acts > .fx-btn { min-width: calc(var(--fx-space) * 9) }
+:where([data-fx-tiny]) .axp-approvals-banner__runs { display: none }
 .axp-veto-screen__time { display: flex; align-items: baseline; gap: var(--fx-dens-gap-xl); flex-wrap: wrap; }
 .axp-veto-screen__count { font-size: calc(var(--fx-font-size) * 2.4); font-variant-numeric: tabular-nums; font-weight: 700; }
 .axp-veto-screen__count.is-urgent { color: var(--fx-danger); }

@@ -5,7 +5,7 @@
  * app's button asset, style theme and spacing restyle it:
  *
  *   - its className carries a framework control class: fx-btn (or <Button>), fx-iconbtn (<IconButton>), fx-chip,
- *     fx-seg__opt (<Segmented>), fx-tab, fx-menu__item, fx-nav__item; or
+ *     fx-seg__opt (<Segmented>), fx-tab, fx-menu__item, fx-nav__item, fx-toolbtn (a toolbar button, styled by the toolbar asset); or
  *   - it is a whole row / card you tap, marked `data-fx-row` (no control chrome of its own; the plugin lays it out).
  *
  * And a plugin's own class on such a control may lay it out (margin, flex, order, width…) but never restyle it: rules
@@ -36,7 +36,7 @@ const ROOTS = roots.length ? roots : [
 /** Where the framework's controls and chrome are defined: their buttons ARE the controls (allowlisted). */
 const DEFINES = ['framework/react/components', 'framework/react/windows'];
 
-export const CONTROL_CLASSES = ['fx-btn', 'fx-iconbtn', 'fx-chip', 'fx-seg__opt', 'fx-tab', 'fx-menu__item', 'fx-nav__item'];
+export const CONTROL_CLASSES = ['fx-btn', 'fx-iconbtn', 'fx-chip', 'fx-seg__opt', 'fx-tab', 'fx-menu__item', 'fx-nav__item', 'fx-toolbtn'];
 export const RESTYLE_PROPS = ['background', 'background-color', 'color', 'border', 'border-color', 'border-radius', 'padding', 'font-size', 'font-weight', 'box-shadow', 'text-transform'];
 
 function walk(dir, out = []) {

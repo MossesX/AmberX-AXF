@@ -13,4 +13,5 @@
 .axp-notes-browser__main { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0 }
 .axp-notes-browser__bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--fx-dens-gap-md) }
 .axp-notes-browser__doc { max-height: min(72vh, calc(var(--fx-row-h) * 28)); overflow: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); padding: var(--fx-dens-gap-xl) }
-@media (max-width: 720px) { .axp-notes-browser__cols { grid-template-columns: minmax(0, 1fr) } .axp-notes-browser__tree { max-height: calc(var(--fx-row-h) * 10) } }
+:where([data-fx-narrow]) .axp-notes-browser__cols { grid-template-columns: minmax(0, 1fr) }
+:where([data-fx-narrow]) .axp-notes-browser__tree { max-height: calc(var(--fx-row-h) * 10) }

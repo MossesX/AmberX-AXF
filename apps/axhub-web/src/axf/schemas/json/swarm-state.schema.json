@@ -1,0 +1,463 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/swarm-state.schema.json",
+  "title": "AmberX AXF swarm runtime state (swarm-state@1)",
+  "description": "Generated from framework/core/engines/swarm-rules.mjs. Statuses, pay, history, chat, chat settings, ID cards and Breakroom hires.",
+  "type": "object",
+  "required": [
+    "agents"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "swarm-state@1"
+    },
+    "updatedAt": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+        },
+        {
+          "const": ""
+        }
+      ]
+    },
+    "rules": {
+      "type": "object",
+      "properties": {
+        "rageQuitAfter": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 50
+        }
+      }
+    },
+    "agents": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "enum": [
+              "on-duty",
+              "off-duty",
+              "injured",
+              "medical-leave",
+              "probation",
+              "fired",
+              "custom",
+              "suspended",
+              "quit"
+            ]
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "until": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+              },
+              {
+                "const": ""
+              }
+            ]
+          },
+          "custom": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 40
+              },
+              "works": {
+                "type": "boolean"
+              }
+            }
+          },
+          "salary": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "topups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "at": {
+                  "type": "string"
+                },
+                "usd": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "pay": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "at": {
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": [
+                    "raise",
+                    "dock"
+                  ]
+                },
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "note": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "bonuses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "at": {
+                  "type": "string"
+                },
+                "jobId": {
+                  "type": "string"
+                },
+                "usd": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "brokeSaid": {
+            "type": "string"
+          },
+          "failStreak": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "at": {
+                  "type": "string"
+                },
+                "from": {
+                  "type": "string"
+                },
+                "to": {
+                  "type": "string"
+                },
+                "note": {
+                  "type": "string"
+                },
+                "by": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "identity": {
+            "type": "object",
+            "propertyNames": {
+              "enum": [
+                "name",
+                "role",
+                "specialty",
+                "photo",
+                "employeeId",
+                "email",
+                "hiredAt",
+                "catchphrase",
+                "signature"
+              ]
+            },
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "card": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+              },
+              {
+                "const": ""
+              }
+            ]
+          }
+        }
+      }
+    },
+    "chat": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "agents": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "chatSettings": {
+      "type": "object",
+      "properties": {
+        "vibe": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 500
+        },
+        "chattiness": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "cussing": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "drama": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "preset": {
+          "type": "string"
+        },
+        "overrides": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "vibe": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 500
+              },
+              "chattiness": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "cussing": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "drama": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              }
+            }
+          }
+        },
+        "banterBudget": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "saved": {
+          "type": "array",
+          "maxItems": 30,
+          "items": {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "vibe": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 500
+              },
+              "chattiness": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "cussing": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "drama": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              }
+            }
+          }
+        }
+      }
+    },
+    "messages": {
+      "type": "array",
+      "maxItems": 2000,
+      "items": {
+        "type": "object",
+        "required": [
+          "from",
+          "kind",
+          "text"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "at": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "assign",
+              "lease",
+              "report",
+              "handoff",
+              "merge",
+              "status",
+              "discipline",
+              "pay",
+              "banter",
+              "brett"
+            ]
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "jobId": {
+            "type": "string"
+          },
+          "vibe": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "toned": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "banterSpend": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "at": {
+            "type": "string"
+          },
+          "usd": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "notices": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "at": {
+            "type": "string"
+          },
+          "agent": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "cards": {
+      "type": "object",
+      "properties": {
+        "default": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+            },
+            {
+              "const": ""
+            }
+          ]
+        },
+        "designs": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "$ref": "axf/agent-card.schema.json"
+          }
+        }
+      }
+    },
+    "hired": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "$ref": "axf/agent.schema.json"
+      }
+    },
+    "hiredSkills": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string",
+            "maxLength": 3000
+          }
+        }
+      }
+    }
+  }
+}

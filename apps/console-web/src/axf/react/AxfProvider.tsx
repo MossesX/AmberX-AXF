@@ -77,9 +77,11 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
   const hidden = runtime.hiddenSlots().join(',');
   // The Spacing choice scales the style theme (core/engines/spacing.ts), so it re-applies too.
   const spacing = runtime.spacing();
+  // The viewport cut-offs (layout tokens) stamp data-fx-tiny / -small / -narrow / -medium / -large on the root; a width change re-applies them.
+  const viewport = runtime.viewportKey();
   useLayoutEffect(() => {
     runtime.applyTo(document.documentElement);
-  }, [runtime, state.active, hidden, spacing]);
+  }, [runtime, state.active, hidden, spacing, viewport]);
 
   // Extra tokens per asset (Settings → Appearance → Assets; core/engines/customize.ts) as one sheet.
   const customSheet = runtime.customSheet();

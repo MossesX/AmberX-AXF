@@ -24,15 +24,10 @@
 .axp-axhub-row .axp-axhub-held > .axp-axhub-held__shelve { flex: 0 0 auto; min-width: max(var(--fx-row-h), calc(var(--fx-space) * 4), 2rem); min-height: max(var(--fx-row-h), calc(var(--fx-space) * 4), 2rem); }
 /* The button a notice picked (`?do=`): ringed in the focus colour until tapped. */
 .axp-axhub-pair > .fx-btn.is-picked, .axp-axhub-held > .is-picked { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: calc(var(--fx-border-w) * 2); }
-@media (max-width: 720px) {
-  .axp-axhub-pair > .fx-btn { min-height: max(calc(var(--fx-space) * 5.5), 2.75rem); }
-  .axp-axhub-row .axp-axhub-held > .axp-axhub-held__shelve { min-width: max(calc(var(--fx-space) * 5.5), 2.75rem); min-height: max(calc(var(--fx-space) * 5.5), 2.75rem); }
-}
-@media (max-width: 480px) {
-  .axp-axhub-pair > .fx-btn { min-width: calc(var(--fx-space) * 9); }
-  /* the request's own page: the pair takes the whole width, two big halves */
-  .axp-axhub-held--big > .axp-axhub-pair, [data-axf-anchor="approval-actions"] > .axp-axhub-pair { display: grid; flex: 1 1 100%; }
-}
+:where([data-fx-narrow]) .axp-axhub-pair > .fx-btn { min-height: max(calc(var(--fx-space) * 5.5), 2.75rem); }
+:where([data-fx-narrow]) .axp-axhub-row .axp-axhub-held > .axp-axhub-held__shelve { min-width: max(calc(var(--fx-space) * 5.5), 2.75rem); min-height: max(calc(var(--fx-space) * 5.5), 2.75rem); }
+:where([data-fx-tiny]) .axp-axhub-pair > .fx-btn { min-width: calc(var(--fx-space) * 9); }
+:where([data-fx-tiny]) .axp-axhub-held--big > .axp-axhub-pair, :where([data-fx-tiny]) [data-axf-anchor="approval-actions"] > .axp-axhub-pair { display: grid; flex: 1 1 100%; }
 /* Approvals grid (axHub 109 who asked): the title gives way first (ellipsis), the tool chip and the buttons never shrink.
    Layout only: the chips and buttons are the framework's. */
 .axp-axhub-what { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0; }

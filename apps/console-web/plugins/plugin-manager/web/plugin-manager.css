@@ -264,69 +264,57 @@
 .axp-plugin-manager-install__note { margin: 0; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-plugin-manager-install__share code { word-break: break-all }
 
-@media (max-width: 1500px) {
-  .axp-plugin-manager-studio.has-drawer { grid-template-columns: minmax(0, 1fr) minmax(calc(var(--fx-space) * 20), calc(var(--fx-space) * 26)) }
-  .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__rail { grid-column: 1 / -1; position: static; flex-direction: row; overflow-x: auto; align-items: center }
-  .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__rail .axp-plugin-manager-eyebrow, .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__layouts { display: none }
-  .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__title { margin: 0 var(--fx-dens-gap-xl) 0 0; font-size: var(--fx-type-root-xl) }
-  .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__filters { flex-direction: row; margin: 0 }
-  .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__filter { white-space: nowrap }
-  .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__phonebar { display: inline-flex }
-}
+:where([data-fx-large]) .axp-plugin-manager-studio.has-drawer { grid-template-columns: minmax(0, 1fr) minmax(calc(var(--fx-space) * 20), calc(var(--fx-space) * 26)) }
+:where([data-fx-large]) .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__rail { grid-column: 1 / -1; position: static; flex-direction: row; overflow-x: auto; align-items: center }
+:where([data-fx-large]) .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__rail .axp-plugin-manager-eyebrow, :where([data-fx-large]) .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__layouts { display: none }
+:where([data-fx-large]) .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__title { margin: 0 var(--fx-dens-gap-xl) 0 0; font-size: var(--fx-type-root-xl) }
+:where([data-fx-large]) .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__filters { flex-direction: row; margin: 0 }
+:where([data-fx-large]) .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__filter { white-space: nowrap }
+:where([data-fx-large]) .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__phonebar { display: inline-flex }
 
 /* ---------- phones ---------- */
-@media (max-width: 900px) {
-  .axp-plugin-manager-studio, .axp-plugin-manager-studio.has-drawer { grid-template-columns: minmax(0, 1fr) }
-  .axp-plugin-manager-studio__rail { position: static; flex-direction: row; flex-wrap: nowrap; overflow-x: auto; align-items: center }
-  .axp-plugin-manager-studio__rail .axp-plugin-manager-eyebrow, .axp-plugin-manager-studio__layouts { display: none }
-  .axp-plugin-manager-studio__title { margin: 0 var(--fx-dens-gap-xl) 0 0; font-size: var(--fx-type-root-xl) }
-  .axp-plugin-manager-studio__filters { flex-direction: row; margin: 0 }
-  .fx-chip.axp-plugin-manager-studio__filter { white-space: nowrap }
-  .axp-plugin-manager-studio__drawer { position: static; max-height: none; order: -1 }
-  .axp-plugin-manager-mission__grid { grid-template-columns: minmax(0, 1fr) }
-  .axp-plugin-manager-mission__signals { position: static; max-height: none; order: -1 }
-  .axp-plugin-manager-md { grid-template-columns: minmax(0, 1fr) }
-  .axp-plugin-manager-md__list { flex-direction: row; overflow-x: auto; max-height: none }
-  .axp-plugin-manager-md__item[data-fx-row] { flex: none }
-  .axp-plugin-manager-hero { padding: var(--fx-dens-gap-2xl); gap: var(--fx-dens-gap-xl) }
-  .axp-plugin-manager-hero .axp-plugin-manager-mono--lg { width: calc(var(--fx-space) * 4.5); height: calc(var(--fx-space) * 4.5); font-size: var(--fx-type-root-xl) }
-  .axp-plugin-manager-hero__text h2 { font-size: var(--fx-type-root-xl) }
-  .axp-plugin-manager-term__ps1 { display: none }
-  .axp-plugin-manager-studio__phonebar { display: inline-flex }
-  .axp-plugin-manager-hero__text > p:not(.axp-plugin-manager-eyebrow) { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden }
-}
+:where([data-fx-medium]) .axp-plugin-manager-studio, :where([data-fx-medium]) .axp-plugin-manager-studio.has-drawer { grid-template-columns: minmax(0, 1fr) }
+:where([data-fx-medium]) .axp-plugin-manager-studio__rail { position: static; flex-direction: row; flex-wrap: nowrap; overflow-x: auto; align-items: center }
+:where([data-fx-medium]) .axp-plugin-manager-studio__rail .axp-plugin-manager-eyebrow, :where([data-fx-medium]) .axp-plugin-manager-studio__layouts { display: none }
+:where([data-fx-medium]) .axp-plugin-manager-studio__title { margin: 0 var(--fx-dens-gap-xl) 0 0; font-size: var(--fx-type-root-xl) }
+:where([data-fx-medium]) .axp-plugin-manager-studio__filters { flex-direction: row; margin: 0 }
+:where([data-fx-medium]) .fx-chip.axp-plugin-manager-studio__filter { white-space: nowrap }
+:where([data-fx-medium]) .axp-plugin-manager-studio__drawer { position: static; max-height: none; order: -1 }
+:where([data-fx-medium]) .axp-plugin-manager-mission__grid { grid-template-columns: minmax(0, 1fr) }
+:where([data-fx-medium]) .axp-plugin-manager-mission__signals { position: static; max-height: none; order: -1 }
+:where([data-fx-medium]) .axp-plugin-manager-md { grid-template-columns: minmax(0, 1fr) }
+:where([data-fx-medium]) .axp-plugin-manager-md__list { flex-direction: row; overflow-x: auto; max-height: none }
+:where([data-fx-medium]) .axp-plugin-manager-md__item[data-fx-row] { flex: none }
+:where([data-fx-medium]) .axp-plugin-manager-hero { padding: var(--fx-dens-gap-2xl); gap: var(--fx-dens-gap-xl) }
+:where([data-fx-medium]) .axp-plugin-manager-hero .axp-plugin-manager-mono--lg { width: calc(var(--fx-space) * 4.5); height: calc(var(--fx-space) * 4.5); font-size: var(--fx-type-root-xl) }
+:where([data-fx-medium]) .axp-plugin-manager-hero__text h2 { font-size: var(--fx-type-root-xl) }
+:where([data-fx-medium]) .axp-plugin-manager-term__ps1 { display: none }
+:where([data-fx-medium]) .axp-plugin-manager-studio__phonebar { display: inline-flex }
+:where([data-fx-medium]) .axp-plugin-manager-hero__text > p:not(.axp-plugin-manager-eyebrow) { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden }
 
 /* compact on phones (Oct 30 2026): no side column, one card per row */
-@media (max-width: 640px) {
-  .axp-plugin-manager-studio, .axp-plugin-manager-studio.has-drawer { grid-template-columns: minmax(0, 1fr) }
-  .axp-plugin-manager-cards, .axp-plugin-manager--studio .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-cards { grid-template-columns: minmax(0, 1fr) }
-}
+:where([data-fx-small]) .axp-plugin-manager-studio, :where([data-fx-small]) .axp-plugin-manager-studio.has-drawer { grid-template-columns: minmax(0, 1fr) }
+:where([data-fx-small]) .axp-plugin-manager-cards, :where([data-fx-small]) .axp-plugin-manager--studio .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-cards { grid-template-columns: minmax(0, 1fr) }
 
 /* Compact studio (Brett, Oct 30 2026, screens-compact): on a narrow screen the filter chips become one dropdown, the
    view switch shows its icons only (names stay as tooltips), and every plugin card is one tight row: monogram · name
    with a one-line description and meta · quick actions. Layout only. */
 select.fx-input.axp-plugin-manager-studio__filtersel { display: none; width: auto }
 .axp-plugin-manager-studio__bar { gap: var(--fx-dens-gap-md) }
-@media (max-width: 900px) {
-  .axp-plugin-manager-studio__filters { display: none }
-  select.fx-input.axp-plugin-manager-studio__filtersel { display: block }
-  .axp-plugin-manager-studio__rail { gap: var(--fx-dens-gap-md) }
-  .axp-plugin-manager-studio { gap: var(--fx-dens-gap-lg) }
-}
-@media (max-width: 640px) {
-  .axp-plugin-manager-studio__bar .fx-seg__opt > span { display: none }
-  .axp-plugin-manager-studio__bar .axp-plugin-manager-search { flex-basis: 100% }
-  .axp-plugin-manager--studio .axp-plugin-manager-cards { gap: 0; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); overflow: hidden }
-  .axp-plugin-manager--studio .axp-plugin-manager-card { flex-direction: row; align-items: center; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); border: 0; border-radius: 0; box-shadow: none }
-  .axp-plugin-manager--studio .axp-plugin-manager-card + .axp-plugin-manager-card { border-top: var(--fx-border-w) solid var(--fx-border) }
-  .axp-plugin-manager--studio .axp-plugin-manager-card__body { flex: 1 1 auto; gap: var(--fx-dens-gap-2xs) }
-  .axp-plugin-manager--studio .axp-plugin-manager-card__title { flex-wrap: nowrap; overflow: hidden; white-space: nowrap }
-  .axp-plugin-manager--studio .axp-plugin-manager-card__title > strong { min-width: 0; overflow: hidden; text-overflow: ellipsis }
-  .axp-plugin-manager--studio .axp-plugin-manager-card__desc { -webkit-line-clamp: 1 }
-  .axp-plugin-manager--studio .axp-plugin-manager-card__meta { flex-wrap: nowrap; overflow: hidden; white-space: nowrap }
-  .axp-plugin-manager--studio .axp-plugin-manager-card__actions { margin-top: 0; flex: none }
-}
-@media (max-width: 640px) {
-  .axp-plugin-manager--studio .axp-plugin-manager-card__actions .axp-plugin-manager-iconbtns { gap: 0 }
-  .axp-plugin-manager--studio .axp-plugin-manager-card__cover { align-self: flex-start }
-}
+:where([data-fx-medium]) .axp-plugin-manager-studio__filters { display: none }
+:where([data-fx-medium]) select.fx-input.axp-plugin-manager-studio__filtersel { display: block }
+:where([data-fx-medium]) .axp-plugin-manager-studio__rail { gap: var(--fx-dens-gap-md) }
+:where([data-fx-medium]) .axp-plugin-manager-studio { gap: var(--fx-dens-gap-lg) }
+:where([data-fx-small]) .axp-plugin-manager-studio__bar .fx-seg__opt > span { display: none }
+:where([data-fx-small]) .axp-plugin-manager-studio__bar .axp-plugin-manager-search { flex-basis: 100% }
+:where([data-fx-small]) .axp-plugin-manager--studio .axp-plugin-manager-cards { gap: 0; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); overflow: hidden }
+:where([data-fx-small]) .axp-plugin-manager--studio .axp-plugin-manager-card { flex-direction: row; align-items: center; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); border: 0; border-radius: 0; box-shadow: none }
+:where([data-fx-small]) .axp-plugin-manager--studio .axp-plugin-manager-card + .axp-plugin-manager-card { border-top: var(--fx-border-w) solid var(--fx-border) }
+:where([data-fx-small]) .axp-plugin-manager--studio .axp-plugin-manager-card__body { flex: 1 1 auto; gap: var(--fx-dens-gap-2xs) }
+:where([data-fx-small]) .axp-plugin-manager--studio .axp-plugin-manager-card__title { flex-wrap: nowrap; overflow: hidden; white-space: nowrap }
+:where([data-fx-small]) .axp-plugin-manager--studio .axp-plugin-manager-card__title > strong { min-width: 0; overflow: hidden; text-overflow: ellipsis }
+:where([data-fx-small]) .axp-plugin-manager--studio .axp-plugin-manager-card__desc { -webkit-line-clamp: 1 }
+:where([data-fx-small]) .axp-plugin-manager--studio .axp-plugin-manager-card__meta { flex-wrap: nowrap; overflow: hidden; white-space: nowrap }
+:where([data-fx-small]) .axp-plugin-manager--studio .axp-plugin-manager-card__actions { margin-top: 0; flex: none }
+:where([data-fx-small]) .axp-plugin-manager--studio .axp-plugin-manager-card__actions .axp-plugin-manager-iconbtns { gap: 0 }
+:where([data-fx-small]) .axp-plugin-manager--studio .axp-plugin-manager-card__cover { align-self: flex-start }
