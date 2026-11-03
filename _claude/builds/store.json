@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 550,
- "updatedAt": "2026-11-03T23:21:03.650Z",
+ "rev": 551,
+ "updatedAt": "2026-11-03T23:23:43.823Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -65817,14 +65817,18 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-banners",
-   "pr": "",
+   "pr": "#294",
    "createdAt": "2026-11-03T22:04:42.483Z",
-   "updatedAt": "2026-11-03T23:12:55.949Z",
+   "updatedAt": "2026-11-03T23:23:29.528Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Assigned: Amber (headless Opus session, worktree /root/axf-builds/molly-banners, branch claude/molly-banners)",
      "at": "2026-11-03T22:04:53.462Z"
+    },
+    {
+     "text": "Reconciler: PR #294",
+     "at": "2026-11-03T23:23:29.528Z"
     }
    ],
    "approvals": [],
@@ -65949,7 +65953,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -65985,15 +65989,19 @@
    "hidden": false,
    "source": "session",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/gizmo-companion",
    "pr": "",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-03T22:26:30.544Z",
+   "updatedAt": "2026-11-03T23:23:29.528Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Assigned: Gizmo (headless Opus session, worktree /root/axf-builds/gizmo-companion, branch claude/gizmo-companion)",
      "at": "2026-11-03T22:18:55.429Z"
+    },
+    {
+     "text": "Reconciler: branch claude/gizmo-companion (no PR yet)",
+     "at": "2026-11-03T23:23:29.528Z"
     }
    ],
    "approvals": [],
@@ -66426,7 +66434,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
