@@ -9,7 +9,7 @@
    "title": "Urgent: master cleanup (one builds store) + Steps view + live progress bars",
    "detail": "Brett, Oct 31 2026 (GO given). Spec: /projects/amberx-axf/_data/framework/plan/specs/prompt-profiles-and-queue-reconciler.md items 4, 4b, 4c. One Orchestrator-owned builds store (profiles = a field), every write versioned (journal), Console init regenerate-from-plan removed, old files read-only one release; one Builds plugin; Steps view (atomic step records, drag reorder steps + builds, multi-select, divide, harvest + split-into-N, Restore default, draft until Apply/Discard, rename builds/steps/profiles); live progress bars per build and profile.",
    "model": "Opus",
-   "status": "complete",
+   "status": "pending",
    "notes": [
     {
      "text": "All work committed on claude/urgent-builds (local); s12 push blocked: host has no GitHub token (banner alert blocked:push:claude/urgent-builds).",
@@ -18,6 +18,10 @@
     {
      "text": "s12 closed by the Leftovers session (claude/leftovers): merged to main as 2a057cc4, report updated, stale push alerts resolved.",
      "at": "2026-11-01T02:26:59.880Z"
+    },
+    {
+     "text": "Backfill (orch-live-sync s6): complete and merged (2a057cc4); archived off the active list.",
+     "at": "2026-11-03T13:56:31.369Z"
     }
    ],
    "subPrompts": [
@@ -107,8 +111,8 @@
     }
    ],
    "createdAt": "2026-10-31T23:31:50.472Z",
-   "builtAt": "2026-11-01T02:26:59.508Z",
-   "updatedAt": "2026-11-01T02:26:59.880Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T13:56:31.369Z",
    "source": "console"
   },
   {
@@ -117,32 +121,45 @@
    "detail": "Brett Nov 2 2026 21:30 ET picked 'shared dock engine first'. Extends framework/core/engines/windows (panes, tab groups) + framework/react/windows/WindowHost. Covers xLayout s3 (Big Dog) pane engine; xLayout s7/s8 use it. Android twin = deferred gap in PORTING.md (Android on hold).",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Backfill (orch-live-sync s6): all 4 steps built on Fable in PR #245, branch claude/molly-fable (Fable foundation for Molly: dock@1 engine, dock-layout@1 presets, DockHost). Built, awaiting merge.",
+     "at": "2026-11-03T13:56:31.369Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Fable] Engine: split tree (horizontal/vertical), drop zones (any tab header, split edges, centre), undock to floating, re-dock, pane limit, serialize/restore",
      "at": "2026-11-03T02:32:21.329Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     },
     {
      "text": "[Fable] Fixture + engine tests; PORTING.md deferred Kotlin twin",
      "at": "2026-11-03T02:32:21.329Z",
-     "estimate": "25m"
+     "estimate": "25m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     },
     {
      "text": "[Fable] React DockHost on WindowHost: drag tabs between headers, hover drop-zone overlay shows the split, splitter resize, tokens only",
      "at": "2026-11-03T02:32:21.329Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     },
     {
      "text": "[Fable] 10 layout presets as data + preview thumbnails (for xLayout IDE mode and MD Studio IDE view)",
      "at": "2026-11-03T02:32:21.329Z",
-     "estimate": "25m"
+     "estimate": "25m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     }
    ],
    "createdAt": "2026-11-03T02:32:21.328Z",
    "builtAt": "",
-   "updatedAt": "2026-11-03T02:32:21.328Z",
+   "updatedAt": "2026-11-03T13:56:31.369Z",
    "source": "console"
   },
   {
@@ -151,7 +168,16 @@
    "detail": "Brett Nov 2 2026 21:30 ET: powerful MD file browser/editor. Opens multiple md files in a tab group with floating, dockable, resizable tabs. A column lists every md file in collapsible categories by scope: Project, Claude, Repo; an edit switch makes a file editable. If a file references other files the chain shows as branches; clicking a referenced name splits the viewing area (setting: vertical or horizontal). Right-click any file in the column: open in horizontal or vertical split. A split section can be undocked, floated, and dropped as a tab in any tab header or into a split (the split shows while hovering). Toolbar with 3 views plus a 4th IDE-style view, each changing how everything renders. Drag snippets into files; wizards that create Claude md files (CLAUDE.md, rules, persona, threads, skills...), categorized by what they do and by scope (project, Claude, repo). Builds on dock-engine.",
    "model": "Opus",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: branch claude/md-studio-theme-editor-plan (PR #242); PR #242; PR #242 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Notes scope added by notes-vault (Nov 3 2026): consume axf.notes@1 from the notes-browser plugin, never its folder.",
+     "at": "2026-11-03T14:09:29.660Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Opus] Plugin scaffold: plugin.json, install/uninstall, Settings > Plugins > MD Studio (level toolbar), help pack",
@@ -202,11 +228,16 @@
      "text": "[Opus] Tests, check-theme/check-controls, lifecycle, UI Review shots, PR",
      "at": "2026-11-03T02:32:21.912Z",
      "estimate": "30m"
+    },
+    {
+     "text": "[Opus] Notes scope: a 4th scope 'Notes' in the file column showing /projects/_shared/_claude/notes with the same folders, reusing notes-browser's server route (capability axf.notes@1: list/read/write(if_version)/move/remove/history; optional, hide the scope when absent)",
+     "at": "2026-11-03T14:09:29.093Z",
+     "estimate": "20m"
     }
    ],
    "createdAt": "2026-11-03T02:32:21.910Z",
    "builtAt": "",
-   "updatedAt": "2026-11-03T02:32:21.910Z",
+   "updatedAt": "2026-11-03T14:09:29.660Z",
    "source": "console"
   },
   {
@@ -215,121 +246,288 @@
    "detail": "Brett Nov 2 2026 21:30 ET: theme editor plugin that lets you copy, save, load. Colour section and style section, each collapsible, with collapsible categories listing every possible token; toolbar with multiple views. Own plugin, reusing the Theme manager's token tree through a capability service (both stay installed). Look rule: saves go to the axHub appearance document / asset@1 themes.",
    "model": "Opus",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Backfill (orch-live-sync s6): branch claude/theme-editor has all 5 steps (13f79c99 plugin s1-s4; d24cd2dd phone layout + tests; PR #243 open, waiting in UI Review r-20261103-6a35ef38). Built, awaiting merge.",
+     "at": "2026-11-03T13:56:31.369Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Opus] Plugin scaffold + use the Theme manager's token tree via a capability service",
      "at": "2026-11-03T02:32:22.612Z",
-     "estimate": "20m"
+     "estimate": "20m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     },
     {
      "text": "[Opus] Colour and Style sections, collapsible, with collapsible categories listing every token (from asset types)",
      "at": "2026-11-03T02:32:22.612Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     },
     {
      "text": "[Opus] Copy, save, load themes (asset@1), live apply through the hub look",
      "at": "2026-11-03T02:32:22.612Z",
-     "estimate": "25m"
+     "estimate": "25m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     },
     {
      "text": "[Opus] Toolbar with multiple views (tree, grid, swatches, compare)",
      "at": "2026-11-03T02:32:22.612Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     },
     {
      "text": "[Opus] Tests, checks, lifecycle, UI Review shots, PR",
      "at": "2026-11-03T02:32:22.612Z",
-     "estimate": "25m"
+     "estimate": "25m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     }
    ],
    "createdAt": "2026-11-03T02:32:22.611Z",
    "builtAt": "",
-   "updatedAt": "2026-11-03T02:32:22.611Z",
+   "updatedAt": "2026-11-03T13:56:31.369Z",
    "source": "console"
   },
   {
    "id": "token-control",
    "title": "Token control plugin: API + MCP + CLI for every token, AmberX tasks/to-dos/notes and the planner, interactive docs",
    "detail": "Brett Nov 2 2026 21:38 ET: new plugin, powerful API and MCP and CLI server/client that can change every single token (theme, style, layout); every layout parameter is a token. Connect MCP, API and CLI to Claude and axHub. API and MCP control every aspect of AmberX tasks, to-dos and notes, and the console's planner (Brett: both Plan Studio and the Build orchestrator). Extensive interactive documentation. Folds in the dead VPS build amberx-full-mcp-api (do not relaunch it separately). Overlaps the blocked interactive docs engine (docs-engine/plan.md): reuse it if it lands first.",
-   "model": "Fable",
+   "model": "Opus",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Backfill (orch-live-sync s6): s1-s3 built on Fable in PR #246 (claude/token-control), s4-s14 on Opus in PR #250 (claude/token-control-opus). Both PRs open; the build shows PR #250 (the later one). Built, awaiting merge.",
+     "at": "2026-11-03T13:56:31.369Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Fable] Every layout parameter becomes a token: layout asset type/schema, engine, fixtures (audit what's still literal)",
      "at": "2026-11-03T02:40:26.205Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     },
     {
      "text": "[Fable] Layout tokens reach every framework component; check-theme flags any layout literal",
      "at": "2026-11-03T02:40:26.205Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     },
     {
      "text": "[Fable] control@1 contract: one command schema for tokens (list/get/set/reset across theme, style, layout), AmberX entities (tasks, to-dos, notes, everything), planner (Plan Studio plans + orchestrator builds); auth, deletes need confirm",
      "at": "2026-11-03T02:40:26.205Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     },
     {
      "text": "[Opus] Plugin scaffold token-control: plugin.json, install/uninstall, Settings > Plugins sub-tab, help pack",
      "at": "2026-11-03T02:40:26.205Z",
-     "estimate": "20m"
+     "estimate": "20m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     },
     {
      "text": "[Opus] Server: REST API for tokens; writes go to the axHub appearance document / asset overrides so every app follows",
      "at": "2026-11-03T02:40:26.205Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     },
     {
      "text": "[Opus] MCP server for tokens; registered as an axHub service and in .mcp.json for Claude",
      "at": "2026-11-03T02:40:26.205Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     },
     {
      "text": "[Opus] CLI client: axf token list/get/set/reset, plus notes, to-dos, tasks, plans, builds",
      "at": "2026-11-03T02:40:26.205Z",
-     "estimate": "25m"
+     "estimate": "25m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     },
     {
      "text": "[Opus] AmberX API: CRUD for tasks, to-dos, notes and every other AmberX entity (folded in from amberx-full-mcp-api)",
      "at": "2026-11-03T02:40:26.205Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     },
     {
      "text": "[Opus] AmberX as MCP tools through axHub, deletes confirm",
      "at": "2026-11-03T02:40:26.205Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     },
     {
      "text": "[Opus] Planner control: Plan Studio plans + orchestrator builds/steps through API, MCP and CLI",
      "at": "2026-11-03T02:40:26.205Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     },
     {
      "text": "[Opus] Shared JS client library used by the CLI and the console UI",
      "at": "2026-11-03T02:40:26.205Z",
-     "estimate": "25m"
+     "estimate": "25m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     },
     {
      "text": "[Opus] Interactive docs: try-it panels for API, MCP and CLI generated from the control@1 schema",
      "at": "2026-11-03T02:40:26.205Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     },
     {
      "text": "[Opus] Docs: guides, examples, help packs for every command",
      "at": "2026-11-03T02:40:26.205Z",
-     "estimate": "25m"
+     "estimate": "25m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     },
     {
      "text": "[Opus] Tests, check-theme/check-controls, lifecycle, UI Review shots, PR",
      "at": "2026-11-03T02:40:26.205Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z"
     }
    ],
    "createdAt": "2026-11-03T02:40:26.204Z",
    "builtAt": "",
-   "updatedAt": "2026-11-03T02:40:26.204Z",
+   "updatedAt": "2026-11-03T13:56:31.369Z",
+   "source": "console"
+  },
+  {
+   "id": "orch-live-sync",
+   "title": "Orchestrator live sync: every step reaches main at once",
+   "detail": "Brett, Nov 3 2026 (voice): every completed step, however small, must reach the orchestrator and show on main immediately, so banners and THREADS follow every step. Store writes go live to main as status-only commits; branch + PR auto-link; reconciler for open PRs and claude/* branches; banners + THREADS follow the store; session-start rule; backfill.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Live status writes to main: store writes committed to main at once as status-only commits (git plumbing on origin/main, bounded rebase-retry, never force), per-build newer-wins merge, journal union",
+     "at": "2026-11-03T13:39:29.177Z",
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-03T13:53:26.701Z"
+    },
+    {
+     "text": "[Opus] Branch + PR auto-link: build branch/pr fields set and written live; built-awaiting-merge when all steps done but the PR is open, complete when merged",
+     "at": "2026-11-03T13:39:29.177Z",
+     "estimate": "25m",
+     "done": true,
+     "doneAt": "2026-11-03T13:55:02.244Z"
+    },
+    {
+     "text": "[Opus] Reconciler: scan open PRs and claude/* branches, match to builds, fill branch/pr, mark finished work, flag orphans (report + banner alert), on session start and a timer",
+     "at": "2026-11-03T13:39:29.177Z",
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-03T13:55:07.662Z"
+    },
+    {
+     "text": "[Opus] Banners + THREADS follow the store: every live status change pushes the banner update and appends a THREADS.md line",
+     "at": "2026-11-03T13:39:29.177Z",
+     "estimate": "20m",
+     "done": true,
+     "doneAt": "2026-11-03T13:55:12.303Z"
+    },
+    {
+     "text": "[Opus] Session-start rule: sessions run the reconciler and read the live store first, never the main export alone",
+     "at": "2026-11-03T13:39:29.177Z",
+     "estimate": "10m",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:26.853Z"
+    },
+    {
+     "text": "[Opus] Backfill: dock-engine, token-control, urgent-builds, theme-editor; reconciler across angel, big-dog, breakroom, refactor, urgent",
+     "at": "2026-11-03T13:39:29.177Z",
+     "estimate": "25m",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:31.980Z"
+    },
+    {
+     "text": "[Opus] Tests (retry, parallel writes, merge no-regress, reconciler matching), local CI block, report, THREADS, PR",
+     "at": "2026-11-03T13:39:29.177Z",
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-03T14:01:20.820Z"
+    }
+   ],
+   "createdAt": "2026-11-03T13:39:29.176Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T14:01:20.820Z",
+   "source": "console"
+  },
+  {
+   "id": "notes-vault",
+   "title": "Notes vault: gather Brett's saved notes into /projects/_shared/_claude/notes, notes-browser plugin, MD Studio Notes scope",
+   "detail": "Brett Nov 3 2026 (voice): gather the hand-saved notes scattered across the axHub projects tree into one shared place, add a quick notes browser plugin, and add a Notes scope to MD Studio.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Find the notes: inventory hand-saved notes across /projects (owner MCP writes, loose md/txt, install/command notes), excluding system files",
+     "at": "2026-11-03T14:09:24.569Z",
+     "estimate": "20m",
+     "done": true,
+     "doneAt": "2026-11-03T14:09:25.339Z"
+    },
+    {
+     "text": "[Opus] Move them to /projects/_shared/_claude/notes/{sessions,handoffs,plans,install,misc} with versions kept; update references; pointer files; notes/INDEX.md",
+     "at": "2026-11-03T14:09:24.569Z",
+     "estimate": "25m",
+     "done": true,
+     "doneAt": "2026-11-03T14:09:26.289Z"
+    },
+    {
+     "text": "[Opus] Add notes/orchestrator/orch-live-sync-2026-11-03.md",
+     "at": "2026-11-03T14:09:24.569Z",
+     "estimate": "5m",
+     "done": true,
+     "doneAt": "2026-11-03T14:09:27.137Z"
+    },
+    {
+     "text": "[Opus] notes-browser console plugin: server route on the hub notes folder, tree + rendered markdown, search, sort, new/rename/move/delete, conflict-safe edit; Settings > Plugins sub-tab, help pack, lifecycle",
+     "at": "2026-11-03T14:09:24.569Z",
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-03T14:09:27.962Z"
+    },
+    {
+     "text": "[Opus] MD Studio: add Notes scope step to md-studio; expose notes-browser route as capability service axf.notes@1",
+     "at": "2026-11-03T14:09:24.569Z",
+     "estimate": "10m",
+     "done": true,
+     "doneAt": "2026-11-03T14:09:28.539Z"
+    },
+    {
+     "text": "[Opus] Tests, check-theme/check-controls, lifecycle check, UI Review shots, report _claude/builds/reports/notes-vault.md, THREADS.md, PR",
+     "at": "2026-11-03T14:09:24.569Z",
+     "estimate": "25m",
+     "done": true,
+     "doneAt": "2026-11-03T14:10:56.767Z"
+    }
+   ],
+   "createdAt": "2026-11-03T14:09:24.568Z",
+   "builtAt": "2026-11-03T14:10:56.767Z",
+   "updatedAt": "2026-11-03T14:10:57.365Z",
    "source": "console"
   }
  ]

@@ -1,0 +1,78 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-3f4d721a-4669-40b3-a490-a6e11e4bea9b",
+ "source": "claude-code",
+ "sessionId": "3f4d721a-4669-40b3-a490-a6e11e4bea9b",
+ "project": "axhub",
+ "title": "# Make axHub's Hostinger service load its token from the environment Problem: calls to the `hostinger` service fail wit…",
+ "startedAt": "2026-11-02T14:52:20.159Z",
+ "endedAt": "2026-11-02T14:52:21.306Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/axhub-hostinger-cred",
+  "repo": "",
+  "branch": "claude/axhub-hostinger-cred"
+ },
+ "user": "Brett (root)",
+ "models": [],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-02T14:52:20.864Z",
+   "kind": "prompt",
+   "text": "# Make axHub's Hostinger service load its token from the environment Problem: calls to the `hostinger` service fail with `The credential for \"hostinger\" is not available` (check with `axhub vault status`). Brett added HOSTINGER_API_TOKEN as a locked runtime env var in Coolify and redeployed, but it still fails. There is no `axhub` CLI inside the axhub-web container. Also check deploy wiring: the Coolify-managed axHub app runs as container `jghxpzuudkahgznvffiwtwmj-*` (redeployed today, built with HOSTINGER_API_TOKEN as a build ARG, which Docker warned about), while a separate `axhub-web` cont…",
+   "model": "",
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0,
+   "costEstimated": false,
+   "seconds": 0,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [
+    "chg-20261102-ec36e7a8c1"
+   ],
+   "features": [],
+   "output": "You've hit your weekly limit · resets 7am (UTC)"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261102-ec36e7a8c1"
+ ],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 0,
+  "output": 0,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thinking": 0,
+  "costUsd": 0,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0
+ },
+ "ingestedAt": "2026-11-02T14:52:21.436Z"
+}
