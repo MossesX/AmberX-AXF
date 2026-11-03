@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T23:54:52.243Z",
+ "updatedAt": "2026-11-03T23:57:35.923Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3238,8 +3238,8 @@
    "branch": "claude/terminal-drag-chain-tree",
    "pr": "#292",
    "createdAt": "2026-11-03T21:50:21.572Z",
-   "updatedAt": "2026-11-03T23:53:24.331Z",
-   "builtAt": "2026-11-03T23:53:24.331Z",
+   "updatedAt": "2026-11-03T23:55:24.932Z",
+   "builtAt": "2026-11-03T23:55:24.932Z",
    "notes": [
     {
      "text": "Clash: terminal-tabs-left (running, another session) changes TerminalHost too; note left on it to reuse WindowGrip orientation=column + useTabPress. terminal-sessions-nav #286 (built, open) also touches TerminalHost; whichever merges second resolves.",
@@ -3248,6 +3248,10 @@
     {
      "text": "Overlap note from terminal-tabs-left: the Terminal can now show tabs in a left/right stack (web/TabStack.tsx, own pointer reorder); the strip's tab markup was left untouched so both merge cleanly. If a shared hold-to-drag engine lands here, TabStack can adopt it.",
      "at": "2026-11-03T22:41:46.267Z"
+    },
+    {
+     "text": "All 6 steps done, PR #292 open. UI Review r-20261103-axtev01 (desktop shot; phone shots blocked by VPS load ~100, Snap Sully job queued). Tests: check-headless-tabs 30->58, window-handles-check 30->35, check-windows 383=383, console-terminal tree checks pass (its token-reset check fails on main too). Agent: Landin' Lenny.",
+     "at": "2026-11-03T23:53:57.137Z"
     }
    ],
    "approvals": [],
@@ -3368,15 +3372,15 @@
    "title": "Molly: navigation sub menus that slide open + Navigation settings",
    "category": "Molly",
    "detail": "Brett (Nov 3 2026, voice): \"I want Molly to have the console's navigation menu slide open, like when you click console, have a sub menu slide open, show its menu, and same thing for AXHub and AmberX. Have a sub menu slide open with an animation and give the navigation menu its own settings interface to control everything. The theme, the way it looks, its animation, its behavior, all that.\" Agent: Reel Rhonda (headless worktree, not on main). Model: Opus for every step (Claude decides): the nav-style contract is web-only, additive and opt-in; Android twin deferred in PORTING.md; flagged for a Fable review per the shared rule.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-nav-submenus",
    "pr": "#295",
    "createdAt": "2026-11-03T21:55:24.277Z",
-   "updatedAt": "2026-11-03T23:41:32.221Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T23:54:29.725Z",
+   "builtAt": "2026-11-03T23:54:29.725Z",
    "notes": [
     {
      "text": "Agent: Reel Rhonda. s1-s4 built; PR #295. s5 left: UI Review submission (after screenshots). Fable review of the nav-style contract recommended (Opus-built foundation, shared rule).",
@@ -3471,8 +3475,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:54:29.725Z",
      "note": "",
      "uid": "st-mw18wqll0b6cki"
     }
