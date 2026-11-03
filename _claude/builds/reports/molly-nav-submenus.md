@@ -74,3 +74,5 @@ its behavior, all that."
 - Android twin deferred (`framework/spec/PORTING.md`).
 - The nav-style contract was built on Opus (web-only, additive, opt-in). Under the shared rule, Opus-built foundation
   work gets a Fable review.
+
+UI Review: item r-20261103-80599690, group "molly-nav-submenus - Nov 3 11:45 PM" (waiting). Shots: `_claude/builds/reports/molly-nav-submenus/shots/`.

@@ -595,6 +595,7 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
   transform: translateY(0); opacity: 1; transition: transform var(--fx-navs-dur) var(--fx-navs-ease), opacity var(--fx-navs-dur) var(--fx-navs-ease); }
 .fx-nav__sheet[data-open='false'] { transform: translateY(calc(var(--fx-space) * 4)); opacity: 0; pointer-events: none; }
 .fx-nav__sheet-head { display: flex; align-items: center; justify-content: space-between; }
+.fx-nav__sheet-head .fx-nav__label { display: block; padding: 0 var(--fx-dens-gap-md); }
 .fx-nav__sheet .fx-nav__sub-inner { overflow: visible; }
 .fx-nav__sheet .fx-nav__item { flex-direction: row; font-size: var(--fx-type-scale-md); justify-content: flex-start; padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl); }
 :where([data-fx-narrow]) .fx-navs .fx-nav .fx-nav__chev { display: none; }
