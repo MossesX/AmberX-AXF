@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| Claude settings (Urgent `claude-settings`, Opus, agent Janitor Joey; Brett Nov 3 voice: "I need a plugin called Claude. Claude settings… that you check on axHub and then act accordingly."): Claude plugin, settings on axHub (`/projects/_shared/_data/claude/settings.json`), MCP `claude_settings_get`/`_set`, No wait = standing all-scope veto pass from Brett's click (off revokes), owner-only enforced, open registry, rule in RULES.md + CLAUDE.md | PR open (all 7 steps done; UI Review waiting) | `claude/claude-settings` | (see Live build log) | follow-amber should read `followAmber.enabled` instead of its own switch; follow-up: launcher/orchestrator enforce budget caps + max parallel. Report `_claude/builds/reports/claude-settings.md` | 2026-11-03 |
 | Land everything (Urgent `land-everything`, Opus; Brett Nov 3 voice: "Just go. Get everything live."): 17 AmberX-AXF PRs + 3 axHub PRs landed on main and deployed; banner PRs #251 #254 and banners-one left for Brett | complete | `claude/land-everything` | — | Report `_claude/builds/reports/land-everything.md`. Brett: banner PRs, hub delete for kill-patches-pilot s7 | 2026-11-03 |
 | Plugin commands, automatically (Urgent `plugin-commands-auto`; Brett Nov 3 voice): every plugin, existing and new, exposes all of its commands and reads through control@1 on REST `/api/control/<plugin>/<command>`, MCP `<plugin>_<command>` (+ `plugin_commands` / `plugin_read` / `plugin_run`) and CLI `axf <plugin> <command>`, made automatically from routes, actions, data folder and plugin.json `commands`; lifecycle check + CI enforce it. Opus. Base token-control-opus (#250) + console-commands (#249) merged in | PR open (all 6 steps done; UI Review waiting) | `claude/plugin-commands-auto` | [#263](https://github.com/MossesX/AmberX-AXF/pull/263) (merges after #250 and #249; UI Review r-20261103-3345d3d4) | axHub admin: allow `<plugin>_*`, `plugin_commands`, `plugin_read`, `plugin_run` on the `axf-console` service. Report `_claude/builds/reports/plugin-commands-auto.md` | 2026-11-03 |
 | Model upgrades need Brett (Urgent `model-upgrade-approval`, Opus; Brett Nov 3, voice: "You can downgrade, but you can't upgrade."; replaces stopped `model-switch-approval`): downgrades pass + recorded; upgrades only by Brett's console click or axHub approval (`axf.orchestrator_upgrade_approve`, confirm); enforced in orchestrator core/CLI/server, launcher (`model-gate.mjs`), swarm planner; audit marked 3 self-approved upgrades + #247's switch | review | `claude/model-upgrade-approval` | #253 | axHub side: set `axf.orchestrator_upgrade_approve` to confirm and forward a signed approval header to downstream (axHub repo) | Nov 3 2026 |
@@ -156,6 +157,12 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 
 ## To carry on
+
+### Claude settings (`claude-settings`, Urgent, Opus) — branch `claude/claude-settings`
+- Asked: Brett, Nov 3 2026 (voice): a Claude plugin with settings for Claude kept on axHub that every session reads and follows; No wait owner-only (standing veto pass), Follow Amber shared, builds/verification/talking/notifications/memory groups, open registry, MCP get/set, owner-only enforced, rule in RULES.md + CLAUDE.md.
+- State: all 7 steps done, PR open, UI Review waiting. Report `_claude/builds/reports/claude-settings.md`.
+- Checks: the Claude plugin's `test.mjs` and `test.py` (console image), `python3 apps/console-web/server/test_mcp_tools.py`.
+- Waits on: Brett's UI Review; which copy of shared `RULES.md` claude-sync keeps (held). Follow-ups: follow-amber reads `followAmber.enabled`; launcher enforces budget caps / max parallel.
 
 ### Model upgrades need Brett (`model-upgrade-approval`, Urgent, Opus)
 - **Asked (Brett, Nov 3 2026, voice):** a build may switch to a lower model on its own (recorded); switching to a higher model needs Brett's explicit approval (console click or axHub confirm, never veto, never self-approved). Ranking in model-policy (Fable above Opus). Enforce in orchestrator approve/phase logic, console server, launcher/build_start/agent jobs, briefs; axHub approval path; audit; tests; PR.
@@ -813,3 +820,29 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 18:52 UTC · `toolbar-tap-confirm` PR #272 (urgent) · builds-live
 - 2026-11-03 18:52 UTC · `toolbar-tap-confirm` note (urgent) · orchestrator
 - 2026-11-03 18:54 UTC · `toolbar-tap-confirm` s8 done, note (urgent) · reconciler
+
+## Token passes (log)
+
+One line per veto pass grant, change made under it, revoke, undo and end (Token control plugin).
+
+- 2026-11-03 19:10 UTC · pass `pass-mw12cl4e-b5b7d3` (all) · granted 60 min by brett (console) — Claude settings: No wait on
+- 2026-11-03 19:10 UTC · pass `pass-mw12cli7-c0d2f0` (all) · granted 240 min (irreversible included) by brett (console), replacing pass-mw12cl4e-b5b7d3 — Claude settings: No wait on
+- 2026-11-03 19:10 UTC · pass `pass-mw12cmdw-d4a481` (all) · granted 240 min (irreversible included) by brett (standing) (console), replacing pass-mw12cli7-c0d2f0 — test renewal
+- 2026-11-03 19:10 UTC · pass `pass-mw12cmdw-d4a481` (all) · revoked by brett with 0 change(s)
+- 2026-11-03 19:11 UTC · pass `pass-mw12cn42-085d02` (all) · granted 60 min (irreversible included) by brett (console) — Claude settings: No wait on
+- 2026-11-03 19:11 UTC · pass `pass-mw12cn42-085d02` (all) · revoked by banner with 0 change(s)
+- 2026-11-03 19:11 UTC · pass `pass-mw12couv-469e6e` (all) · requested 30 min by mcp, waiting for Brett
+- 2026-11-03 19:33 UTC · pass `pass-mw135d4r-9ad036` (all) · granted 60 min by brett (console) — Claude settings: No wait on
+- 2026-11-03 19:33 UTC · pass `pass-mw135e08-e40cba` (all) · granted 240 min (irreversible included) by brett (console), replacing pass-mw135d4r-9ad036 — Claude settings: No wait on
+- 2026-11-03 19:33 UTC · pass `pass-mw135f5i-048355` (all) · granted 240 min (irreversible included) by brett (standing) (console), replacing pass-mw135e08-e40cba — test renewal
+- 2026-11-03 19:33 UTC · pass `pass-mw135f5i-048355` (all) · revoked by brett with 0 change(s)
+- 2026-11-03 19:33 UTC · pass `pass-mw135ggk-9ce967` (all) · granted 60 min (irreversible included) by brett (console) — Claude settings: No wait on
+- 2026-11-03 19:33 UTC · pass `pass-mw135ggk-9ce967` (all) · revoked by banner with 0 change(s)
+- 2026-11-03 19:33 UTC · pass `pass-mw135hr0-d066cb` (all) · requested 30 min by mcp, waiting for Brett
+- 2026-11-03 19:42 UTC · pass `pass-mw13ha5q-9029e5` (all) · granted 60 min by brett (console) — Claude settings: No wait on
+- 2026-11-03 19:42 UTC · pass `pass-mw13hai8-f89931` (all) · granted 240 min (irreversible included) by brett (console), replacing pass-mw13ha5q-9029e5 — Claude settings: No wait on
+- 2026-11-03 19:42 UTC · pass `pass-mw13hb7m-9e3a88` (all) · granted 240 min (irreversible included) by brett (standing) (console), replacing pass-mw13hai8-f89931 — test renewal
+- 2026-11-03 19:42 UTC · pass `pass-mw13hb7m-9e3a88` (all) · revoked by brett with 0 change(s)
+- 2026-11-03 19:42 UTC · pass `pass-mw13hbun-81e9ef` (all) · granted 60 min (irreversible included) by brett (console) — Claude settings: No wait on
+- 2026-11-03 19:42 UTC · pass `pass-mw13hbun-81e9ef` (all) · revoked by banner with 0 change(s)
+- 2026-11-03 19:42 UTC · pass `pass-mw13hcji-5062a1` (all) · requested 30 min by mcp, waiting for Brett

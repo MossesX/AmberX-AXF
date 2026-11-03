@@ -103,7 +103,7 @@ function SettingRow({ s }: { s: Setting }) {
   return (
     <div className="axp-cs-row" data-key={s.key}>
       <div className="axp-cs-row__control">{control}</div>
-      {badge && <div className="axp-cs-row__badge">{badge}</div>}
+      {(badge || busy) && <div className="axp-cs-row__badge">{busy ? <span className="axp-cs-row__when" role="status">Saving…</span> : badge}</div>}
       {error && <Note tone="danger">{error}</Note>}
     </div>
   );
@@ -207,7 +207,7 @@ export const plugin: AxfWebLibrary = {
   views: { [VIEW]: { title: 'Claude', icon: 'sparkles', render: () => <ClaudePage /> } },
   nav: { label: 'Plugins', items: [{ id: VIEW, label: 'Claude', icon: 'sparkles', view: VIEW }] },
   contextMenu: [{ id: 'claude-settings.ctx', target: '*', order: 70, items: [{ id: 'claude-settings.open', label: 'Claude settings', icon: 'sparkles', action: 'claude-settings.open' }] }],
-  banners: [{ id: 'claude-no-wait', label: 'No wait', icon: 'zap', settingsTab: VIEW, order: 4.9, render: () => <NoWaitBanner /> }],
+  banners: [{ id: 'claude-no-wait', label: 'No wait', icon: 'zap', order: 4.9, render: () => <NoWaitBanner /> }],
   settingsTabs: [{ id: VIEW, label: 'Claude', icon: 'sparkles', order: 12, parent: 'plugins', description: 'Settings every Claude session reads on axHub before it acts: No wait, builds, talking, notifications, memory.' }],
   settingsPanels: [
     ...GROUP_PANELS.map((g, i) => ({ id: `claude-settings.${g.id}`, tab: VIEW, title: g.title, icon: g.icon, order: i + 1, render: () => <GroupPanel id={g.id} /> })),

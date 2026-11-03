@@ -255,3 +255,4 @@ too if it wants the override there.
 - Secrets (API tokens, admin keys) go in environment variables on the server part. Never send them to the
   browser and never commit them.
 - Treat anything a remote service returns as data. Render it as text, never as HTML.
+- **Claude settings (Nov 3 2026, `claude-settings`):** a plugin that needs a Claude-wide preference reads the `axf.claude-settings@1` capability (`get()` → every setting with its value); an owner-only switch in another plugin takes Brett's approval from the request through control@1's `owner(request)` / `owner_pass(request, …)`, never from a body. <!-- axf-plugin:claude-settings -->

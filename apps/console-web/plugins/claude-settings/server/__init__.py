@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, Request
+from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import JSONResponse
 
 import plugin_services
@@ -104,11 +105,15 @@ async def put(request: Request) -> JSONResponse:
     values = body.get("values") if isinstance(body, dict) else None
     if not isinstance(values, dict) or not values:
         return answer({"ok": False, "code": "invalid", "message": "send { values: { key: value } }"})
+    return await run_in_threadpool(_put, request, values)
+
+
+def _put(request: Request, values: dict[str, Any]) -> JSONResponse:
+    """The blocking part of PUT settings (Node runs), off the event loop."""
     c = control()
     owner = c.owner(request) if c is not None and hasattr(c, "owner") else None
     user = getattr(request.state, "axf_user", None)
     by = str(getattr(user, "name", "") or "console")
-    before = cli("get")
     r = cli("owner-set", stdin={"patch": values, "owner": owner, "by": by})
     if not r.get("ok"):
         return answer(r)
@@ -126,12 +131,11 @@ async def put(request: Request) -> JSONResponse:
         if action == "grant" and (p.get("approval") or {}).get("required"):
             # not Brett's own session after all: the request waits for him, the switch goes back off until he approves
             cli("system-off", "noWait.enabled", "waiting for Brett's approval of the pass")
-    r.pop("view", None)
-    out = with_pass(cli("get"))
+    # the owner-set answer already carries the view; a reread is needed only when the clock's system-off ran above
+    out = cli("get") if action == "grant" and (r.get("passResult") or {}).get("approval") else {"ok": True, **(r.get("view") or {})}
     out["changed"] = r.get("changed", [])
     out["passResult"] = r.get("passResult")
-    out["before"] = before.get("updatedAt")
-    return answer(out)
+    return answer(with_pass(out))
 
 
 def apply_pass(request: Request, action: str, inp: dict[str, Any]) -> dict[str, Any]:
