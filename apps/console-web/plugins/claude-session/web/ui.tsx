@@ -104,7 +104,7 @@ function RowView({ r, isDefault, current, onPick, busy }: { r: Row; isDefault: b
             <div><dt>Rating</dt><dd><Stars v={r.rating} /></dd></div>
           </dl>
         </button>
-        <Button size="sm" tone={current ? 'quiet' : 'primary'} disabled={busy || current} onClick={() => onPick(r.id)}>{current ? 'Picked' : 'Pick'}</Button>
+        <Button tone={current ? 'quiet' : 'primary'} disabled={busy || current} onClick={() => onPick(r.id)}>{current ? 'Picked' : 'Pick'}</Button>
       </div>
       {open && (
         <div className="axp-claude-session__details">
@@ -174,6 +174,7 @@ export function PickerView({ ask, close }: { ask?: SessionView | null; close?: (
         <p className="axp-claude-session__ask"><Icon name="sparkles" size={14} /> <b>{CLIENT[ask.client] ?? ask.client}</b> started{ask.summary ? `: ${ask.summary}` : ''}. It works as <b>{ask.agent.name}</b> until you pick.{ask.hub ? <span className="fx-small fx-muted"> ({ask.hub})</span> : null}</p>
       ) : <p className="fx-small fx-muted">Pick the agent every new Claude session works as. Its costs and commits go on that agent's card.</p>}
       {error && <p className="fx-small" role="alert"><Icon name="alert" size={14} /> {error}</p>}
+      {!data && !error && <p className="fx-small fx-muted">Loading the crew…</p>}
       {data && !data.crew && <p className="fx-small" role="alert"><Icon name="alert" size={14} /> The Agent swarm is off, so there is no crew to pick from.</p>}
       <TextField label="Find an agent" value={q} onChange={setQ} placeholder="name, role or job" />
       <ul className="axp-claude-session__list" aria-label="Agents">

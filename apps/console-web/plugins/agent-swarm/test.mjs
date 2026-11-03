@@ -422,6 +422,7 @@ t('book: a Claude session on an agent card grows, then closes once (agent-pick)'
   const dir = mkdtempSync(join(tmpdir(), 'swarm-book-'));
   const run = (...a) => JSON.parse(spawnSync(process.execPath, [new URL('./swarm.mjs', import.meta.url).pathname, ...a, '--json'], { encoding: 'utf8', env: { ...process.env, AXF_SWARM_DIR: dir, AXF_SWARM_CHATS_DIR: 'off' } }).stdout);
   let r = run('book', JSON.stringify({ session: 's1', agent: 'Snap Sully', usd: 0.5, commits: ['abc1234'] }));
+  assert.equal(run('crew').crew.find((x) => x.id === 'sully').stats.failed, 0, 'an open session is not a failure');
   assert.equal(r.run.agent, 'sully'); assert.equal(r.run.status, 'running'); assert.equal(r.run.kind, 'job'); assert.equal(r.run.jobType, 'agent-session');
   r = run('book', JSON.stringify({ session: 's1', agent: 'sully', usd: 1, commits: ['def5678'], final: true }));
   assert.equal(r.run.status, 'done'); assert.match(r.run.report.summary, /commits: abc1234, def5678/);

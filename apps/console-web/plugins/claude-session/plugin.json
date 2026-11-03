@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Every Claude session (voice and chat Amber, Claude Code, headless builds) works as a crew agent Brett assigns (agent-pick@1). A session calls claude_session_start first; with 'Ask me every session' on (the default), the console pops the agent picker (every agent with avatar, status, current job, today's cost, hours, pay, rating; tap a row for every stat and links to the card, history, Session browser, Terminal and group chat) and axHub gets one held approval as the fallback (pushed to the phone through the AmberX app). Until Brett picks, the session is the default agent. claude_session_agent tells a session who it is (persona / voice notes, avatar, intro); claude_session_book puts its cost, time and commits on the agent's card. 'Assign to Claude' on every crew card and in the agent right-click menu; Settings → Plugins → Claude: Claude agent, Ask me every session, Ask for headless too. No model calls.",
+  "description": "Every Claude session (voice and chat Amber, Claude Code, headless builds) works as a crew agent Brett assigns (agent-pick@1). A session calls claude_session_start first; with 'Ask me every session' on (the default), the console pops the agent picker (every agent with avatar, status, current job, today's cost, hours, pay, rating; tap a row for every stat and links to the card, history, Session browser, Terminal and group chat) and axHub gets one held approval as the fallback (pushed to the phone through the AmberX app). Until Brett picks, the session is the default agent. claude_session_agent tells a session who it is (persona / voice notes, avatar, intro); claude_session_book puts its cost, time and commits on the agent's card. 'Assign to Claude' on every crew card and in the agent right-click menu; Settings → Plugins → Claude sessions: Claude agent, Ask me every session, Ask for headless too. No model calls.",
   "targets": [
     "axf-console"
   ],
@@ -52,5 +52,5 @@
     "builtAt": "2026-11-03"
   },
   "help": "help.json",
-  "opens": false
+  "opens": "dialog"
 }

@@ -190,7 +190,8 @@ export function crew() {
   const mins = (r) => { const a = Date.parse(r.startedAt); const b = Date.parse(r.endedAt || at); return Number.isFinite(a) && Number.isFinite(b) && b > a ? (b - a) / 60000 : 0; };
   return s.roster.agents.map((a) => {
     const as = s.swarm.agents[a.id] ?? core.normAgentState({}); const mine = s.runs.filter((r) => r.agent === a.id);
-    const st = core.agentStats(s.runs, a.id, s.prices, 8); const timed = mine.filter((r) => r.endedAt);
+    // an open Claude session (status running) is neither a success nor a failure yet
+    const st = core.agentStats(s.runs.filter((r) => r.status !== 'running'), a.id, s.prices, 8); const timed = mine.filter((r) => r.endedAt);
     return {
       id: a.id, name: core.cardIdentity(a, as).name, role: a.role, specialty: a.specialty, avatar: a.avatar, catchphrase: a.catchphrase, bio: a.bio, jobsOnly: a.jobsOnly,
       status: as.status, statusLabel: core.statusLabel(as), works: core.STATUSES[as.status]?.works !== false,
