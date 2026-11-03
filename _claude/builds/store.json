@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 165,
- "updatedAt": "2026-11-03T12:01:23.504Z",
+ "rev": 167,
+ "updatedAt": "2026-11-03T12:23:10.875Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -279,7 +279,7 @@
    },
    "big-dog": {
     "artifact": "",
-    "updatedAt": "2026-11-03T11:52:58.737Z"
+    "updatedAt": "2026-11-03T12:19:05.532Z"
    }
   }
  },
@@ -48403,7 +48403,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-02T18:47:31.123Z",
-   "updatedAt": "2026-11-03T11:52:58.707Z",
+   "updatedAt": "2026-11-03T12:19:05.493Z",
    "builtAt": "",
    "notes": [
     {
@@ -48502,12 +48502,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:10:50.866Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:22:46.433Z"
     },
     {
      "id": "s5",
@@ -48524,12 +48524,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:10:51.267Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:22:46.433Z"
     },
     {
      "id": "s6",
@@ -48546,12 +48546,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:10:51.670Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:22:46.433Z"
     },
     {
      "id": "s7",
@@ -48568,12 +48568,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:10:52.072Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:22:46.433Z"
     },
     {
      "id": "s8",
@@ -48590,12 +48590,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:10:52.492Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:22:46.433Z"
     },
     {
      "id": "s9",
@@ -48612,12 +48612,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:19:04.835Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:22:46.433Z"
     },
     {
      "id": "s10",
@@ -48634,12 +48634,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:19:05.493Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:49:25.863Z"
+     "updatedAt": "2026-11-03T12:22:46.433Z"
     },
     {
      "id": "s11",
@@ -48694,7 +48694,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -49678,6 +49678,153 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-03T02:40:26.205Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "banner-pack",
+   "title": "Banner boilerplates pack",
+   "category": "Chrome",
+   "detail": "Brett Nov 3 2026 (voice): a shitload of boilerplate banners to pick and then edit in the banner editor. 20+ banner assets, a gallery picker with live preview (saves through axHub), shipped with every app.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/banner-pack",
+   "pr": "",
+   "createdAt": "2026-11-03T12:23:10.852Z",
+   "updatedAt": "2026-11-03T12:23:10.852Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw0ns6jf06stnl",
+     "title": "",
+     "text": "20+ boilerplate banner assets (+ a few widget assets they need)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T12:23:10.853Z",
+     "updatedAt": "2026-11-03T12:23:10.853Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw0ns6jf074kpm",
+     "title": "",
+     "text": "Ship them as shared assets (bake every app)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T12:23:10.853Z",
+     "updatedAt": "2026-11-03T12:23:10.853Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw0ns6jf08lhk4",
+     "title": "",
+     "text": "Banner gallery picker with live preview (Settings > Appearance, editor hook)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T12:23:10.853Z",
+     "updatedAt": "2026-11-03T12:23:10.853Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw0ns6jf09wo7m",
+     "title": "",
+     "text": "Checks, help pack, UI Review shots",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T12:23:10.853Z",
+     "updatedAt": "2026-11-03T12:23:10.853Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mw0ns6jf0ay47n",
+     "title": "",
+     "text": "THREADS, merge main, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T12:23:10.853Z",
+     "updatedAt": "2026-11-03T12:23:10.853Z"
+    }
+   ],
+   "profiles": [
+    "urgent"
+   ],
+   "order": {
+    "urgent": 5
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-03T12:23:10.853Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
