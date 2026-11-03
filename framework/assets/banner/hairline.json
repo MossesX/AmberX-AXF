@@ -1,0 +1,32 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "hairline",
+  "name": "Hairline",
+  "version": "1.0.0",
+  "description": "The thinnest banner: 16 px, no logo, a clock on the right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "essentials",
+    "phone"
+  ],
+  "data": {
+    "height": 16,
+    "surface": "flat",
+    "logo": {
+      "show": false,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "clock",
+        "id": "digital-24h",
+        "at": "right",
+        "order": 10
+      }
+    ],
+    "divider": false
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "brand-center",
+  "name": "Brand centered",
+  "version": "1.0.0",
+  "description": "The brand in the middle of an accent bar; theme switch and clock on the right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "brand"
+  ],
+  "data": {
+    "height": 36,
+    "surface": "accent",
+    "logo": {
+      "show": false,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "logo",
+        "id": "wordmark",
+        "at": "center",
+        "order": 10
+      },
+      {
+        "type": "theme-switch",
+        "id": "amberx-day-night",
+        "at": "right",
+        "order": 10
+      },
+      {
+        "type": "clock",
+        "id": "digital-12h",
+        "at": "right",
+        "order": 20
+      }
+    ],
+    "divider": false
+  }
+}

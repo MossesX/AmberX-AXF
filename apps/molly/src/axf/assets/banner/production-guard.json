@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "production-guard",
+  "name": "Production guard",
+  "version": "1.0.0",
+  "description": "A loud PRODUCTION tag on an accent bar, online state, alerts and the UTC clock.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "ops"
+  ],
+  "data": {
+    "height": 32,
+    "surface": "accent",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "label",
+        "id": "production",
+        "at": "left",
+        "order": 10
+      },
+      {
+        "type": "status",
+        "id": "online",
+        "at": "left",
+        "order": 20
+      },
+      {
+        "type": "counter",
+        "id": "alerts",
+        "at": "right",
+        "order": 10
+      },
+      {
+        "type": "clock",
+        "id": "utc",
+        "at": "right",
+        "order": 20
+      }
+    ],
+    "divider": true
+  }
+}

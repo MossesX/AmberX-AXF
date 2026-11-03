@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "voice-first",
+  "name": "Voice first",
+  "version": "1.0.0",
+  "description": "Amber up front: a big Talk to Amber button and her live state in the middle; AI working state and the clock on the right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "voice"
+  ],
+  "data": {
+    "height": 40,
+    "surface": "accent",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "action-button",
+        "id": "voice",
+        "at": "center",
+        "order": 10
+      },
+      {
+        "type": "status",
+        "id": "voice",
+        "at": "center",
+        "order": 20
+      },
+      {
+        "type": "status",
+        "id": "ai-working",
+        "at": "right",
+        "order": 10
+      },
+      {
+        "type": "clock",
+        "id": "digital-12h",
+        "at": "right",
+        "order": 20
+      }
+    ],
+    "divider": false
+  }
+}

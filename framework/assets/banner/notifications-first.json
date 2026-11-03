@@ -1,0 +1,55 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "notifications-first",
+  "name": "Notifications first",
+  "version": "1.0.0",
+  "description": "Alerts, approvals and pending builds lead on the left; search in the middle; clock on the right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "notifications"
+  ],
+  "data": {
+    "height": 32,
+    "surface": "raised",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "counter",
+        "id": "alerts",
+        "at": "left",
+        "order": 10
+      },
+      {
+        "type": "counter",
+        "id": "approvals",
+        "at": "left",
+        "order": 20
+      },
+      {
+        "type": "counter",
+        "id": "pending-builds",
+        "at": "left",
+        "order": 30
+      },
+      {
+        "type": "search-bar",
+        "id": "everything",
+        "at": "center",
+        "order": 10
+      },
+      {
+        "type": "clock",
+        "id": "digital-12h",
+        "at": "right",
+        "order": 10
+      }
+    ],
+    "divider": true
+  }
+}

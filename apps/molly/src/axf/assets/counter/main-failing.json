@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "counter",
+  "id": "main-failing",
+  "name": "Main failing",
+  "version": "1.0.0",
+  "description": "CI red on main (counter `build.main.failing`); hidden at zero.",
+  "author": "AmberX AXF",
+  "tags": [
+    "counter",
+    "banner-pack"
+  ],
+  "data": {
+    "counter": "build.main.failing",
+    "tone": "danger",
+    "hideAtZero": true,
+    "icon": "x-circle",
+    "label": "failing"
+  }
+}

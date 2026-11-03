@@ -1,0 +1,43 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "status-strip",
+  "name": "Status strip",
+  "version": "1.0.0",
+  "description": "Three states across the bar: online on the left, AI in the middle, main build on the right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "dashboard"
+  ],
+  "data": {
+    "height": 24,
+    "surface": "flat",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "status",
+        "id": "online",
+        "at": "left",
+        "order": 10
+      },
+      {
+        "type": "status",
+        "id": "ai",
+        "at": "center",
+        "order": 10
+      },
+      {
+        "type": "status",
+        "id": "main-build",
+        "at": "right",
+        "order": 10
+      }
+    ],
+    "divider": true
+  }
+}

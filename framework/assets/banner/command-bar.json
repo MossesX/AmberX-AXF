@@ -1,0 +1,62 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "command-bar",
+  "name": "Command bar",
+  "version": "1.0.0",
+  "description": "Search plus the tools: terminal, arrange widgets, banner settings, next banner and settings.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "developer",
+    "search"
+  ],
+  "data": {
+    "height": 32,
+    "surface": "raised",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "search-bar",
+        "id": "everything",
+        "at": "center",
+        "order": 10
+      },
+      {
+        "type": "action-button",
+        "id": "terminal",
+        "at": "right",
+        "order": 10
+      },
+      {
+        "type": "action-button",
+        "id": "arrange",
+        "at": "right",
+        "order": 20
+      },
+      {
+        "type": "action-button",
+        "id": "banner-settings",
+        "at": "right",
+        "order": 30
+      },
+      {
+        "type": "action-button",
+        "id": "next-banner",
+        "at": "right",
+        "order": 40
+      },
+      {
+        "type": "action-button",
+        "id": "settings",
+        "at": "right",
+        "order": 50
+      }
+    ],
+    "divider": true
+  }
+}

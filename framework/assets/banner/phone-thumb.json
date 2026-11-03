@@ -1,0 +1,44 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "phone-thumb",
+  "name": "Phone thumb",
+  "version": "1.0.0",
+  "description": "Phone first, one-thumb: Amber, alerts and settings, a short clock. No search (use the menu).",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "phone",
+    "voice"
+  ],
+  "data": {
+    "height": 32,
+    "surface": "raised",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "action-button",
+        "id": "voice",
+        "at": "right",
+        "order": 10
+      },
+      {
+        "type": "counter",
+        "id": "alerts",
+        "at": "right",
+        "order": 20
+      },
+      {
+        "type": "action-button",
+        "id": "settings",
+        "at": "right",
+        "order": 30
+      }
+    ],
+    "divider": false
+  }
+}

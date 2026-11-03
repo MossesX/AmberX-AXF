@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "clock",
+  "id": "weekday-12h",
+  "name": "Weekday clock",
+  "version": "1.0.0",
+  "description": "12-hour clock with the weekday and date.",
+  "author": "AmberX AXF",
+  "tags": [
+    "clock",
+    "banner-pack"
+  ],
+  "data": {
+    "format": "12h",
+    "seconds": false,
+    "date": "weekday",
+    "mono": false
+  }
+}

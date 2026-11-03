@@ -1,0 +1,55 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "ai-assistant",
+  "name": "AI assistant",
+  "version": "1.0.0",
+  "description": "AI state on the left (connected, working), Amber and search on the right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "voice"
+  ],
+  "data": {
+    "height": 32,
+    "surface": "raised",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "status",
+        "id": "ai",
+        "at": "left",
+        "order": 10
+      },
+      {
+        "type": "status",
+        "id": "ai-working",
+        "at": "left",
+        "order": 20
+      },
+      {
+        "type": "search-bar",
+        "id": "everything",
+        "at": "center",
+        "order": 10
+      },
+      {
+        "type": "status",
+        "id": "voice",
+        "at": "right",
+        "order": 10
+      },
+      {
+        "type": "action-button",
+        "id": "voice",
+        "at": "right",
+        "order": 20
+      }
+    ],
+    "divider": true
+  }
+}

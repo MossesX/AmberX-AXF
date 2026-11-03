@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "clock",
+  "id": "utc",
+  "name": "UTC clock",
+  "version": "1.0.0",
+  "description": "24-hour UTC clock with seconds, for ops and logs.",
+  "author": "AmberX AXF",
+  "tags": [
+    "clock",
+    "banner-pack"
+  ],
+  "data": {
+    "format": "24h",
+    "seconds": true,
+    "date": "none",
+    "timezone": "UTC",
+    "mono": true
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "status",
+  "id": "ai-working",
+  "name": "AI working",
+  "version": "1.0.0",
+  "description": "On while the AI assistant is working (counter `ai.working`).",
+  "author": "AmberX AXF",
+  "tags": [
+    "status",
+    "banner-pack"
+  ],
+  "data": {
+    "counter": "ai.working",
+    "onLabel": "Working",
+    "offLabel": "Idle",
+    "onTone": "accent",
+    "offTone": "muted",
+    "dot": true
+  }
+}

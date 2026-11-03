@@ -1,0 +1,43 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "phone-compact",
+  "name": "Phone compact",
+  "version": "1.0.0",
+  "description": "Made for a 412 px phone: logo, a compact search and alerts plus account on the right. Nothing wraps.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "phone"
+  ],
+  "data": {
+    "height": 28,
+    "surface": "flat",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "search-bar",
+        "id": "compact",
+        "at": "center",
+        "order": 10
+      },
+      {
+        "type": "counter",
+        "id": "alerts",
+        "at": "right",
+        "order": 10
+      },
+      {
+        "type": "avatar",
+        "id": "account",
+        "at": "right",
+        "order": 20
+      }
+    ],
+    "divider": true
+  }
+}

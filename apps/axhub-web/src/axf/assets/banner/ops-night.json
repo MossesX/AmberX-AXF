@@ -1,0 +1,43 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "ops-night",
+  "name": "Ops night watch",
+  "version": "1.0.0",
+  "description": "Ops on a dark accent bar: alerts first, online state, UTC with seconds.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "ops"
+  ],
+  "data": {
+    "height": 28,
+    "surface": "accent",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "counter",
+        "id": "alerts",
+        "at": "left",
+        "order": 10
+      },
+      {
+        "type": "status",
+        "id": "online",
+        "at": "left",
+        "order": 20
+      },
+      {
+        "type": "clock",
+        "id": "utc",
+        "at": "right",
+        "order": 10
+      }
+    ],
+    "divider": false
+  }
+}

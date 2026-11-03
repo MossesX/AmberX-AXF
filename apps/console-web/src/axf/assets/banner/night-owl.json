@@ -1,0 +1,37 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "night-owl",
+  "name": "Night owl",
+  "version": "1.0.0",
+  "description": "The day/night switch up front with a 12-hour clock; for late sessions.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "essentials"
+  ],
+  "data": {
+    "height": 28,
+    "surface": "raised",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "theme-switch",
+        "id": "day-night",
+        "at": "right",
+        "order": 10
+      },
+      {
+        "type": "clock",
+        "id": "digital-12h",
+        "at": "right",
+        "order": 20
+      }
+    ],
+    "divider": true
+  }
+}

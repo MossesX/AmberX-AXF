@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "action-button",
+  "id": "next-banner",
+  "name": "Next banner",
+  "version": "1.0.0",
+  "description": "Swaps to the next banner (try every boilerplate).",
+  "author": "AmberX AXF",
+  "tags": [
+    "action-button",
+    "banner-pack"
+  ],
+  "data": {
+    "icon": "shuffle",
+    "label": "Next banner",
+    "action": "swap:banner:next",
+    "show": "icon",
+    "tooltip": "Next banner"
+  }
+}

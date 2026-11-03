@@ -1,0 +1,55 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "account",
+  "name": "Account",
+  "version": "1.0.0",
+  "description": "Account first: help, docs, settings and your avatar on the right; search in the middle.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "essentials"
+  ],
+  "data": {
+    "height": 32,
+    "surface": "raised",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "search-bar",
+        "id": "everything",
+        "at": "center",
+        "order": 10
+      },
+      {
+        "type": "link",
+        "id": "docs",
+        "at": "right",
+        "order": 10
+      },
+      {
+        "type": "action-button",
+        "id": "help-tour",
+        "at": "right",
+        "order": 20
+      },
+      {
+        "type": "action-button",
+        "id": "settings",
+        "at": "right",
+        "order": 30
+      },
+      {
+        "type": "avatar",
+        "id": "account",
+        "at": "right",
+        "order": 40
+      }
+    ],
+    "divider": true
+  }
+}

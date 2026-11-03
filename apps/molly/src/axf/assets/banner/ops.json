@@ -1,0 +1,67 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "ops",
+  "name": "Ops",
+  "version": "1.0.0",
+  "description": "VPS health and alerts: environment and online state on the left, alerts, AI and a UTC clock on the right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "ops"
+  ],
+  "data": {
+    "height": 32,
+    "surface": "raised",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "label",
+        "id": "production",
+        "at": "left",
+        "order": 10
+      },
+      {
+        "type": "status",
+        "id": "online",
+        "at": "left",
+        "order": 20
+      },
+      {
+        "type": "search-bar",
+        "id": "compact",
+        "at": "center",
+        "order": 10
+      },
+      {
+        "type": "counter",
+        "id": "alerts",
+        "at": "right",
+        "order": 10
+      },
+      {
+        "type": "status",
+        "id": "ai",
+        "at": "right",
+        "order": 20
+      },
+      {
+        "type": "clock",
+        "id": "utc",
+        "at": "right",
+        "order": 30
+      },
+      {
+        "type": "theme-switch",
+        "id": "day-night",
+        "at": "right",
+        "order": 40
+      }
+    ],
+    "divider": true
+  }
+}

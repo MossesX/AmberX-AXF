@@ -1,0 +1,37 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "kiosk",
+  "name": "Kiosk",
+  "version": "1.0.0",
+  "description": "A tall 48 px banner with the wordmark in the middle and the weekday clock on the right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "presenter"
+  ],
+  "data": {
+    "height": 48,
+    "surface": "raised",
+    "logo": {
+      "show": false,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "logo",
+        "id": "wordmark",
+        "at": "center",
+        "order": 10
+      },
+      {
+        "type": "clock",
+        "id": "weekday-12h",
+        "at": "right",
+        "order": 10
+      }
+    ],
+    "divider": true
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "dev-sandbox",
+  "name": "Dev sandbox",
+  "version": "1.0.0",
+  "description": "A DEV tag, version label, main build state and the terminal: for local work.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "boilerplate",
+    "developer"
+  ],
+  "data": {
+    "height": 28,
+    "surface": "flat",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "label",
+        "id": "dev",
+        "at": "left",
+        "order": 10
+      },
+      {
+        "type": "label",
+        "id": "version",
+        "at": "left",
+        "order": 20
+      },
+      {
+        "type": "status",
+        "id": "main-build",
+        "at": "center",
+        "order": 10
+      },
+      {
+        "type": "action-button",
+        "id": "terminal",
+        "at": "right",
+        "order": 10
+      },
+      {
+        "type": "clock",
+        "id": "digital-24h",
+        "at": "right",
+        "order": 20
+      }
+    ],
+    "divider": true
+  }
+}

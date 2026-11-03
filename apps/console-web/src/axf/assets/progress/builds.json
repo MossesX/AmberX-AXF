@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "progress",
+  "id": "builds",
+  "name": "Builds progress",
+  "version": "1.0.0",
+  "description": "Progress of the active build profile (counter `builds.pct`, 0 to 100).",
+  "author": "AmberX AXF",
+  "tags": [
+    "progress",
+    "banner-pack"
+  ],
+  "data": {
+    "counter": "builds.pct",
+    "max": 100,
+    "width": "compact",
+    "label": "Builds",
+    "tone": "accent",
+    "showValue": true
+  }
+}

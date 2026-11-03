@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "status",
+  "id": "voice",
+  "name": "Amber voice",
+  "version": "1.0.0",
+  "description": "On while Amber (agent voice) is live (counter `agentvoice.live`); tap opens the voices.",
+  "author": "AmberX AXF",
+  "tags": [
+    "status",
+    "banner-pack"
+  ],
+  "data": {
+    "counter": "agentvoice.live",
+    "onLabel": "Amber live",
+    "offLabel": "Amber",
+    "onTone": "success",
+    "offTone": "muted",
+    "link": "agent-voice.open",
+    "dot": true
+  }
+}
