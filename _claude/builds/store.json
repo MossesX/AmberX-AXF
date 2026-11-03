@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 224,
- "updatedAt": "2026-11-03T16:23:56.266Z",
+ "rev": 225,
+ "updatedAt": "2026-11-03T16:24:02.178Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50269,7 +50269,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T16:23:06.879Z",
+   "updatedAt": "2026-11-03T16:24:00.634Z",
    "builtAt": "",
    "notes": [
     {
@@ -50287,6 +50287,10 @@
     {
      "text": "crew-retrain (PR #265, Breakroom) is ready too: land it last, after the rest. It changes deploy/claude-headless.sh (every launch booked on a named agent).",
      "at": "2026-11-03T16:23:06.879Z"
+    },
+    {
+     "text": "Landed claude/kill-patches-pilot (PR #258) on main at e697c302",
+     "at": "2026-11-03T16:24:00.634Z"
     }
    ],
    "approvals": [],
@@ -50542,7 +50546,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
