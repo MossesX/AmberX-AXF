@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 352,
- "updatedAt": "2026-11-03T19:03:15.974Z",
+ "rev": 353,
+ "updatedAt": "2026-11-03T19:03:45.139Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -54593,16 +54593,21 @@
    "title": "Follow Amber: the console opens what Amber talks about, and axHub approvals pop up in the console",
    "category": "Console",
    "detail": "Brett, Nov 3 2026 (voice). One switch in the Dev Console, Follow Amber. On: whenever Amber mentions a console screen, dialog, build, setting or plugin she calls console_show and the console opens it, focused and highlighted; every axHub held/confirm call for Brett pops up as an approval dialog in the console (title, description, collapsible call, countdown, one-tap Approve / Deny, queue). Off: nothing auto-opens. Navigation tools never wait on a veto. Agent: Reel Rhonda.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/follow-amber",
    "pr": "",
    "createdAt": "2026-11-03T19:02:35.761Z",
-   "updatedAt": "2026-11-03T19:02:35.761Z",
+   "updatedAt": "2026-11-03T19:02:38.957Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Agent: Reel Rhonda (headless, Opus). All steps Opus; no model switch.",
+     "at": "2026-11-03T19:02:37.612Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -54769,7 +54774,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
