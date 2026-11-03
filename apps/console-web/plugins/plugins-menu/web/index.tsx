@@ -532,7 +532,7 @@ function InstallerSettings({ config, onSaved }: { config: Config | null; onSaved
       <Switch label="Commit installs to GitHub" hint="So the console keeps the plugin after its 5-minute update (needs GITHUB_TOKEN)." checked={config.publish} onChange={(v) => void set({ publish: v })} />
       <Switch label="Keep the old build's data when replacing" checked={config.keepDataOnReplace} onChange={(v) => void set({ keepDataOnReplace: v })} />
       <Switch label="List plugins that are already installed" checked={config.showInstalled} onChange={(v) => void set({ showInstalled: v })} />
-      <Switch label="List Build Pilot plugins too" hint="Shown read-only: they install in Build Pilot." checked={config.showOtherKinds} onChange={(v) => void set({ showOtherKinds: v })} />
+      <Switch label="List other apps' plugins too" hint="Shown read-only: they install in their own app." checked={config.showOtherKinds} onChange={(v) => void set({ showOtherKinds: v })} />
       <Switch label="Read the archives when the installer opens" checked={config.checkOnOpen} onChange={(v) => void set({ checkOnOpen: v })} />
       <Switch label="Type the folder name to confirm" hint="Off: tap the button twice instead." checked={config.confirmTyping} onChange={(v) => void set({ confirmTyping: v })} />
       <SelectField label="Sort by" value={config.sort} onChange={(v) => void set({ sort: v })} options={[{ value: 'name', label: 'Name' }, { value: 'archive', label: 'Archive' }, { value: 'newest', label: 'Newest' }, { value: 'model', label: 'Model' }]} />

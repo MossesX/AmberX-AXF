@@ -1,7 +1,7 @@
 /**
  * Install view: the plugin catalog on axHub (plugin-catalog@1, /projects/_shared/_data/plugin-catalog).
  * Console plugins install here (unpacked into this clone, lifecycle install, committed to GitHub so the console
- * rebuilds with them); plugins for other apps (Build Pilot) are listed so they can be shared or taken out, and are
+ * rebuilds with them); plugins for other apps (axHub web, AmberX) are listed so they can be shared or taken out, and are
  * installed from those apps. Any console plugin in this clone can be published to the catalog.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -104,7 +104,7 @@ export function InstallView({ inv, onChanged }: ViewProps) {
       {error && <p className="axp-plugin-manager-offline"><Icon name="cloud" size={14} /> {error}</p>}
       {cat && !cat.reachable && <p className="axp-plugin-manager-offline"><Icon name="cloud" size={14} /> The catalog isn't reachable from this console: it needs the axhub-projects volume mounted at /projects (deploy/install-console.sh does that).</p>}
       {note && <p className="axp-plugin-manager-install__note">{note}</p>}
-      {kind !== 'console' && <p className="fx-muted fx-small">These plugins are installed from their own app (e.g. Build Pilot → Plugins → Install). Here you can see and take them out of the catalog.</p>}
+      {kind !== 'console' && <p className="fx-muted fx-small">These plugins are installed for their own app. Here you can see and take them out of the catalog.</p>}
 
       {cat?.reachable && items.length === 0 && <EmptyState icon="package" compact>Nothing in the catalog for {kind === 'console' ? 'the console' : kinds.find(([k]) => k === kind)?.[1] ?? kind} yet.{kind === 'console' ? ' Publish one below.' : ''}</EmptyState>}
       <ul className="axp-plugin-manager-install__list">
@@ -168,7 +168,6 @@ export function InstallView({ inv, onChanged }: ViewProps) {
             </select>
             <Button tone="primary" icon="upload" disabled={!share || !!busy || !cat?.reachable} onClick={() => void publish()}>{busy.startsWith('share:') ? 'Publishing…' : 'Publish'}</Button>
           </div>
-          <span className="fx-muted fx-small">Build Pilot plugins are published from a Build-Pilot clone: <code>AXF_TOKEN=… node framework/cli/plugin-catalog.mjs publish ../build-pilot/plugins/&lt;folder&gt; --kind pilot --console https://console.amberxai.com</code></span>
         </section>
       )}
     </div>

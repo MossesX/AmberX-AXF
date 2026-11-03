@@ -1,7 +1,7 @@
 # AI assistant — `assistant@1`
 
-**Rule (Brett, Oct 2026):** the assistant is cross-app. Every AXF app that ships an assistant (the Dev Console and
-Build Pilot today, Android later) shares one contract; the chat engine lives in a host module, the UI in the app.
+**Rule (Brett, Oct 2026):** the assistant is cross-app. Every AXF app that ships an assistant (the Dev Console
+today, Android later) shares one contract; the chat engine lives in a host module, the UI in the app.
 
 ## Contract
 
@@ -24,7 +24,7 @@ Build Pilot today, Android later) shares one contract; the chat engine lives in 
 - **Chat context** (`ChatContext`, what a turn carries about where it was sent from): `view`, `title`, `selection`, `note`
   and **`extra`**, an open bag for host-specific context so a host never needs a one-off field. Well-known keys
   (`CHAT_CONTEXT_KEYS` = Kotlin `ChatContextKeys` = Python `CHAT_CONTEXT_KEYS`): `projectId` (the project the chat is
-  about — Build Pilot), `appId`, `path`, `route`; any other key passes through untouched, in order. Every port applies
+  about), `appId`, `path`, `route`; any other key passes through untouched, in order. Every port applies
   `normalizeChatContext` (= `ChatContextRules.normalize` = `normalize_chat_context`) before storing or using one:
   known fields cut to 200/300/4000/2000 characters; `extra` keys match `[A-Za-z0-9_.-]{1,64}`, at most 32 keys (and
   32 items per array), strings cut to 2000, depth ≤ 4, non-finite numbers dropped, and an `extra` over 16 000 JSON
@@ -45,7 +45,7 @@ Build Pilot today, Android later) shares one contract; the chat engine lives in 
   `providers.extra_kinds`, `providers.stored_secret_names`, `providers.PRIVATE_DIRS` / `PRIVATE_ROOTS` /
   `ENV_PREFIXES_HIDDEN` (what the Claude Code CLI may never see), `providers.HOST_LABEL`, `providers.USER_AGENT`,
   `sessions.LocalHost(folder, label=…, note=…, restart_reason=…)`, `sessions.axhub_placeholder(runs_on=…)`. A host
-  never copies these modules; Build Pilot bakes them with `scripts/bake-contracts.mjs` from `framework/python`.
+  never copies these modules; an app outside this repo bakes them from `framework/python`.
 - **Capabilities:** the engine provides `axf.llm@1` (`profiles()`, `complete()`, `embed()`) and `axf.live-sessions@1`;
   hosts come from `live-session@1` (`framework/spec/LIVE-SESSIONS.md`).
 
@@ -54,7 +54,6 @@ Build Pilot today, Android later) shares one contract; the chat engine lives in 
 | App | Engine | UI | Status |
 | --- | --- | --- | --- |
 | Dev Console (web) | `apps/console-web/plugins/ai-assistant/server` on `axf.assistant_host` | plugin web part on `HttpAssistantClient` | **built** (Fable rebuild Oct 20 2026; on the framework packages since the Oct 21 2026 harvest) | <!-- axf-plugin:ai-assistant -->
-| Build Pilot | its own server on baked copies of `axf.contracts` + `axf.assistant_host` (`scripts/bake-contracts.mjs`; `server/assistant.py`, routes `/api/assistant/*`) | its own, on `HttpAssistantClient` | **built** (Fable rebuild `build-pilot-agents`, Oct 20–21 2026); re-bake from `framework/python` pending |
 | Android | a module implementing `AssistantClient` (HTTP/AXPP/in-process) | Compose | planned (kernel contract only) |
 
 ## Not yet

@@ -1,6 +1,6 @@
 """AmberX AXF — shared Python server helpers (stdlib only, typed).
 
-Every AXF app with a Python server (the Dev Console's FastAPI API and its plugins, Build Pilot's server, future
+Every AXF app with a Python server (the Dev Console's FastAPI API and its plugins, future
 apps) uses these instead of keeping its own copy. Each module is small, has no third-party dependencies and is
 covered by `framework/python/axf_server/test.py`; the cross-language parts replay fixtures in `framework/spec/fixtures`
 (`wall-signature.json`, `plugin-package.json`) that `framework/spec/check-axf-server.mjs` replays in Node.
@@ -20,7 +20,7 @@ covered by `framework/python/axf_server/test.py`; the cross-language parts repla
 
 Import path: the package lives in `framework/python`; put that folder on `sys.path` (the console's
 `server/axf_framework.py` does it, the console image sets PYTHONPATH) and `import axf_server.<module>`.
-Apps outside this repo bake the package in (Build Pilot: `scripts/bake-contracts.mjs` → `server/axf_server/`).
+Apps outside this repo bake the package in (copy it to their `server/axf_server/`).
 """
 from __future__ import annotations
 

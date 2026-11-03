@@ -28,7 +28,7 @@ Plugins    Plugin Manager · Install from the catalog… · Plugin Manager in a 
            one entry per plugin (Activity, Agents ▸, AI assistant ▸, App tabs, Approvals banner, Build manager,
            Claude badge, Container access, Fable rebuilds, Feature assistant ▸, MCP servers ▸, New project,
            Sessions, Snapshots, Systems check ▸, Terminal ▸, Theme manager) · All plugins ▸ · Plugin settings
-Apps       Build Pilot ▸ (Show in a tab, Open in a new tab) · axHub ▸ (Waiting for approval ▸, Check now, Approvals,
+Apps       axHub ▸ (Waiting for approval ▸, Check now, Approvals,
            App catalog, Users, Your hub account, Show the app catalog in a tab, Open axHub) · Demo site ▸
            Back to the console · App tabs ▸ · App tabs settings
 View       ✓ Toolbar · ✓ Side navigation · ✓ Banner · All bars and menus ▸ · Look ▸ (next colour/style/layout,

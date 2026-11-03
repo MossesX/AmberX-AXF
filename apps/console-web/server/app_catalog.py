@@ -27,12 +27,11 @@ import zipfile
 from pathlib import Path
 from typing import Any, Callable
 
-import app_ci
 import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf_server import github, http as axf_http, storage
 
 KEEP = 3
-MAX_BUNDLE = app_ci.MAX_APK  # the bundle download is capped at this size
+MAX_BUNDLE = 200 * 1024 * 1024  # the bundle download is capped at this size
 MAX_APP = 300 * 1024 * 1024
 PROJECT_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,63}$")
 VERSION_RE = re.compile(r"^[0-9A-Za-z][0-9A-Za-z.+_-]{0,31}$")

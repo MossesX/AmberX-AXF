@@ -724,7 +724,7 @@ export function SettingsView() {
   const ui = useSettingsUi();
   const wide = useWide();
   const isList = ui.layout === 'list';
-  // Inside a host that manages plugins (embed@1 take `plugins`, Patches) the plugin list (Settings → Plugins itself) isn't
+  // Inside a host that manages plugins (embed@1 take `plugins`) the plugin list (Settings → Plugins itself) isn't
   // shown: the host installs and switches them. Each plugin's own settings stay, as usual (never greyed out).
   const pluginLock = rt.hostLockNote('plugins');
   // Every tab as the settings asset arranges it (order, labels, left out), then split into top tabs and sub-tabs.
@@ -1216,7 +1216,7 @@ export const library: AxfWebLibrary = {
   },
   views: {
     [VIEW]: { title: 'Settings', icon: 'settings', render: () => <SettingsView /> },
-    // Banners on their own: the page a host shows in its own settings (embed@1 page `banners`, Patches' Banners tab).
+    // Banners on their own: the page a host shows in its own settings (embed@1 page `banners`).
     [BANNERS_VIEW]: { title: 'Banners', icon: 'bell', render: () => <div className="fx-stack fx-stack--lg axf-settings"><header className="fx-pagehead"><div><p className="fx-eyebrow">Settings</p><h1>Banners</h1></div></header><BannerSettingsPanel /></div> },
   },
   dialogs: {

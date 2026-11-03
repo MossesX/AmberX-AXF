@@ -1,7 +1,7 @@
 /**
  * axHub web plugins (catalog kind `axhub`, axhub-plugin@1): each folder in `src/plugins/<folder>/` has a `plugin.json`
  * and `web/index.tsx` exporting `library` (an AxfWebLibrary). The Dev Console installs them from the plugin catalog
- * (`plugin-catalog.mjs app-install axhub <folder>`, Patches → Plugins per app) and commits the folder to GitHub; this
+ * (`plugin-catalog.mjs app-install axhub <folder>`) and commits the folder to GitHub; this
  * app's 5-minute update rebuilds with it. They run only in the browser: the hub's server never loads them (decision #93).
  * Folders starting with "_" (the template) never load.
  */

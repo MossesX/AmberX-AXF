@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- Patches serves the notifications when it is installed: AXHub checks for it and stays quiet (ApprovalWatch). -->
+    <!-- AmberX serves the notifications when it is installed: AXHub checks for it and stays quiet (ApprovalWatch). -->
     <queries>
-        <package android:name="ai.amberx.axf.patches" />
         <package android:name="ai.amberx.droid" />
     </queries>
     <!-- Every framework module contributes its own manifest pieces (lib-notifications: POST_NOTIFICATIONS + full-screen
