@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T18:52:16.210Z",
+ "updatedAt": "2026-11-03T18:52:39.674Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3504,12 +3504,16 @@
    "branch": "claude/toolbar-tap-confirm",
    "pr": "#272",
    "createdAt": "2026-11-03T18:23:45.044Z",
-   "updatedAt": "2026-11-03T18:52:05.710Z",
+   "updatedAt": "2026-11-03T18:52:37.784Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Agent: Landin' Lenny (headless, Opus). Phase 1 (s1-s12) Opus; s13-s14 contracts pinned Fable need Brett's upgrade approval.",
      "at": "2026-11-03T18:24:05.589Z"
+    },
+    {
+     "text": "Part 1 (s1-s7) in PR #272, UI Review r-20261103-6815df1d. s8-s12 Opus next; s13-s14 Fable need Brett's upgrade approval.",
+     "at": "2026-11-03T18:52:37.784Z"
     }
    ],
    "approvals": [],
