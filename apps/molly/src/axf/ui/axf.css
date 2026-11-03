@@ -1464,6 +1464,10 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 [data-axf-sp-edge='right'] > .axf-sp--pane { inset: 0 0 0 auto; width: var(--axf-sp-size); min-width: min(100%, calc(var(--fx-space) * 34)); }
 [data-axf-sp-edge='top'] > .axf-sp--pane { inset: 0 0 auto 0; height: var(--axf-sp-size); min-height: min(100%, calc(var(--fx-space) * 24)); }
 [data-axf-sp-edge='bottom'] > .axf-sp--pane { inset: auto 0 0 0; height: var(--axf-sp-size); min-height: min(100%, calc(var(--fx-space) * 24)); }
+/* a phone or a narrow plugin: a pane (and a dialog) takes most of it, whatever size was picked */
+[data-axf-sphost-compact][data-axf-sp-edge='left'] > .axf-sp--pane, [data-axf-sphost-compact][data-axf-sp-edge='right'] > .axf-sp--pane { width: max(var(--axf-sp-size), 88%); }
+[data-axf-sphost-compact][data-axf-sp-edge='top'] > .axf-sp--pane, [data-axf-sphost-compact][data-axf-sp-edge='bottom'] > .axf-sp--pane { height: max(var(--axf-sp-size), 70%); }
+[data-axf-sphost-compact] > .axf-sp--dialog { width: calc(100% - var(--fx-space) * 4); }
 /* push: the plugin moves aside as the pane comes in */
 .axf-sphost[data-axf-sphost-open='pane'][data-axf-sp-anim='push'][data-axf-sp-edge='left'] > .axf-sphost__content { transform: translateX(var(--axf-sp-size)); }
 .axf-sphost[data-axf-sphost-open='pane'][data-axf-sp-anim='push'][data-axf-sp-edge='right'] > .axf-sphost__content { transform: translateX(calc(var(--axf-sp-size) * -1)); }
@@ -1484,7 +1488,7 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 /* inline: a section above the plugin's content */
 .axf-sp--inline { flex: 0 1 auto; max-height: var(--axf-sp-size); margin: var(--fx-dens-gap-sm); }
 /* page level: the pop-up dialog and the pane over the page */
-.axf-sp-layer { position: fixed; inset: 0; z-index: 70; pointer-events: none; }
+.axf-sp-layer { position: fixed; inset: 0; z-index: 69; /* above floating windows (60), under dialogs (70), menus and toasts */ pointer-events: none; }
 .axf-sp-layer > * { pointer-events: auto; }
 .axf-sp-layer[data-axf-sp-dim='off'][data-axf-sp-via='page-pane'] > .axf-sp-scrim { display: none; }
 .axf-sp--dialog { position: absolute; z-index: 2; width: min(calc(100% - var(--fx-space) * 4), max(var(--axf-sp-size), calc(var(--fx-space) * 46))); max-height: calc(100% - var(--fx-space) * 8); }

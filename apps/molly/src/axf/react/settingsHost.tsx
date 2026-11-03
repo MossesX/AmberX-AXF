@@ -145,7 +145,7 @@ export function SettingsHost({ owner, modes, label = 'Back', className, children
   const touch = () => { const h = hosts.get(id); if (h) h.usedAt = Date.now(); };
   const panel = s ? <SurfacePanel s={s} className={`axf-sp--${mode}`} /> : null;
   return (
-    <div ref={ref} className={`axf-sphost ${className ?? ''}`} data-axf-sphost={owner} data-axf-sphost-open={mode} style={vars} {...attrs} onPointerDownCapture={touch} onFocusCapture={touch}>
+    <div ref={ref} className={`axf-sphost ${className ?? ''}`} data-axf-sphost={owner} data-axf-sphost-open={mode} data-axf-sphost-compact={s && isCompact(ref.current) ? '' : undefined} style={vars} {...attrs} onPointerDownCapture={touch} onFocusCapture={touch}>
       {mode === 'tab' && (
         <div className="axf-sphost__tabs">
           <Segmented size="sm" label="Show" value={showing} onChange={setShowing} options={[{ value: 'plugin', label, icon: 'arrow-left' }, { value: 'settings', label: 'Settings', icon: 'settings' }]} />
@@ -171,7 +171,7 @@ export function SettingsPageSurfaces() {
       {page.map((s) => {
         const { vars, attrs } = lookStyle(s.route.look);
         return (
-          <div key={s.key} className="axf-sp-layer" data-axf-sp-via={s.route.via} style={vars} {...attrs}>
+          <div key={s.key} className="axf-sp-layer" data-axf-sp-via={s.route.via} data-axf-sphost-compact={isCompact(null) ? '' : undefined} style={vars} {...attrs}>
             {s.route.look.dim || s.route.via === 'dialog' ? <div className="axf-sp-scrim" onClick={() => closeSettingsSurface(s.key)} /> : null}
             <SurfacePanel s={s} className={s.route.via === 'dialog' ? 'axf-sp--dialog' : 'axf-sp--pane'} />
           </div>
