@@ -15,13 +15,8 @@ import { Button, Icon, useRuntime } from '@console/axf/react';
 import { SCHEMES, call, getSettings, loadXterm, lookOptions, onSettings, parseOpen, post, socketUrl, tabPrefs, tabSessions, themeFromTokens, type Open, type SessionInfo, type Settings, type TmuxSession, type XTerm } from './api';
 import { patchSession, setCtl, type Conn, type HostSession } from './hosts';
 
-/** Tabs that can live in a tmux session: shells and Claude Code on the VPS or in the console (not container TTYs). */
-export const persistable = (o: Open) => !o.attach && (o.kind === 'console' || o.kind === 'vps' || (o.kind === 'claude' && (o.via ?? 'console') !== 'container'));
-/** A fresh tmux name for a tab: axt-<what>-<random>. Pure apart from the random part. */
-export function tmuxName(o: Open, rand = Math.random().toString(36).slice(2, 8)): string {
-  const what = o.kind === 'claude' ? `claude-${o.via ?? 'console'}` : o.kind;
-  return `axt-${what}-${rand}`.replace(/[^A-Za-z0-9._-]/g, '-').slice(0, 60);
-}
+export { persistable, tmuxName } from './headless-core';
+import { persistable, tmuxName } from './headless-core';
 /** Is this tmux session still there? (the link ended: re-attach, or the session itself ended) */
 async function tmuxAlive(name: string, where: string | null | undefined): Promise<boolean> {
   try {

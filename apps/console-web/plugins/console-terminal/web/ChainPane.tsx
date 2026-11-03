@@ -12,37 +12,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Icon, Segmented } from '@console/axf/react';
 import { call, type Settings } from './api';
 import { meterOf, useMeters } from './meters';
+import { advance, steps, type ChainItem, type Speed } from './headless-core';
 
-export interface ChainRule { kind: 'heading' | 'item'; level: number; text: string }
-export interface ChainItem { i: number; path: string; rel: string; via: string; depth: number; parent: string; at: string; rules: ChainRule[] }
-export type Speed = Settings['chainSpeed'];
-
-/** Characters per second and the pause after each rule, per speed. */
-export const PACE: Record<Speed, { cps: number; pauseMs: number }> = {
-  slow: { cps: 18, pauseMs: 900 }, normal: { cps: 45, pauseMs: 450 }, fast: { cps: 140, pauseMs: 120 }, instant: { cps: Infinity, pauseMs: 0 },
-};
-
-/** The reveal order: each file (rule -1 = its header), then each of its rules. Pure. */
-export function steps(items: ChainItem[]): { item: number; rule: number; len: number }[] {
-  const out: { item: number; rule: number; len: number }[] = [];
-  items.forEach((it, k) => { out.push({ item: k, rule: -1, len: 0 }); it.rules.forEach((r, j) => out.push({ item: k, rule: j, len: r.text.length })); });
-  return out;
-}
-
-/** Advance a reveal cursor by `ms` of time. Returns the new {step, chars, wait}. Pure, so the pacing is testable. */
-export function advance(cur: { step: number; chars: number; wait: number }, seq: { len: number; rule: number }[], ms: number, speed: Speed): { step: number; chars: number; wait: number } {
-  const pace = PACE[speed];
-  let { step, chars, wait } = cur;
-  let left = ms;
-  while (left > 0 && step < seq.length) {
-    if (wait > 0) { const w = Math.min(wait, left); wait -= w; left -= w; if (wait > 0) break; step++; chars = 0; continue; }
-    const s = seq[step]!;
-    if (s.rule === -1) { wait = pace.pauseMs; if (!wait) { step++; chars = 0; } continue; }
-    if (!Number.isFinite(pace.cps)) { chars = s.len; } else { const n = Math.floor((left * pace.cps) / 1000); if (n <= 0) break; const take = Math.min(n, s.len - chars); chars += take; left -= (take * 1000) / pace.cps; }
-    if (chars >= s.len) { wait = pace.pauseMs; if (!wait) { step++; chars = 0; } }
-  }
-  return { step, chars, wait };
-}
+export type { ChainItem, ChainRule, Speed } from './headless-core';
 
 const VIA_ICON: Record<string, string> = { 'user memory': 'user', 'project memory': 'file', 'project rules': 'shield', 'nested memory': 'folder', import: 'layers', read: 'eye' };
 const P = 'axp-chain';

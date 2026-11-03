@@ -7,32 +7,8 @@
 import { useSyncExternalStore } from 'react';
 import { call } from './api';
 
-export type MeterStatus = 'starting' | 'working' | 'waiting' | 'done' | 'failed';
-export interface Meter {
-  session: string; name: string; agent: string; model: string; modelKey: string; status: MeterStatus; toolRunning: boolean; ended: boolean;
-  costUsd: number; costEstimated: boolean; priced: boolean; tokens: { input: number; output: number; cacheRead: number; cacheWrite: number };
-  turns: number; tools: number; runs: number; lastEventAt: string; startedAt: string; chainCount: number; chainVersion: number;
-}
-
-const WAIT_AFTER_MS = 60_000;
-/** working → waiting when nothing came for a minute and no tool is running (Claude Code is quiet). Pure. */
-export function statusOf(m: Pick<Meter, 'status' | 'toolRunning' | 'lastEventAt'> | null | undefined, now = Date.now()): MeterStatus | null {
-  if (!m) return null;
-  if (m.status === 'working' && !m.toolRunning && now - Date.parse(m.lastEventAt) > WAIT_AFTER_MS) return 'waiting';
-  return m.status;
-}
-/** 'claude-opus-5-5' → 'Opus 5.5', 'opus' → 'Opus', '' → ''. Pure. */
-export function modelName(id: string): string {
-  const m = /(fable|opus|sonnet|haiku)[-_ ]?(\d+)?(?:[-_.](\d+))?/i.exec(id || '');
-  if (!m) return id || '';
-  const fam = m[1]!.charAt(0).toUpperCase() + m[1]!.slice(1).toLowerCase();
-  return m[2] ? `${fam} ${m[2]}${m[3] ? `.${m[3]}` : ''}` : fam;
-}
-/** $0.00 under $10, $12.3 under $100, $123 above. Pure. */
-export function money(v: number | null | undefined): string {
-  if (typeof v !== 'number' || !Number.isFinite(v)) return '';
-  return v < 10 ? `$${v.toFixed(2)}` : v < 100 ? `$${v.toFixed(1)}` : `$${Math.round(v)}`;
-}
+export { modelName, money, statusOf, type Meter, type MeterStatus } from './headless-core';
+import type { Meter } from './headless-core';
 
 const meters = new Map<string, Meter>();
 const wanted = new Map<string, number>(); // session → how many tabs show it

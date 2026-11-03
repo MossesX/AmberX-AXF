@@ -146,7 +146,7 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
           const label = !s.renamed && m?.agent ? m.agent : s.title;
           return (
             <div key={s.id} role="tab" aria-selected={on} tabIndex={on ? 0 : -1} draggable={!renaming}
-              className={`fx-tab ${P}__tab ${on ? 'is-active' : ''}`} style={s.color ? { ['--axp-wt-tint' as string]: `var(--fx-${s.color})` } : undefined} data-tint={s.color ? '' : undefined}
+              className={`fx-tab ${P}__tab ${on ? 'is-active' : ''} ${hl ? 'is-headless' : ''}`} style={s.color ? { ['--axp-wt-tint' as string]: `var(--fx-${s.color})` } : undefined} data-tint={s.color ? '' : undefined}
               title={`${label}${m ? ` · ${modelName(m.model)} · ${money(m.costUsd)}${m.costEstimated ? ' (estimate)' : ''} · ${st}` : ''}${s.open ? ` · ${describe(s.open)}` : ''}`}
               onClick={() => activate(tab.id, s.id)}
               onDoubleClick={() => setRenaming({ id: s.id, text: s.title })}

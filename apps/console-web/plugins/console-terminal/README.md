@@ -2,6 +2,30 @@
 
 `ai.amberx.axf.console.terminal` · built on Opus (Oct 18 2026).
 
+**Headless tabs (v0.4.0, Nov 3 2026, Opus; Urgent build `headless-tabs`).**
+- **Persistent tabs:** VPS and console tabs (shells and Claude Code) run inside a tmux session named `axt-…` (the
+  browser picks it once and keeps it with the tab; setting `persistTabs`). The ssh / pty link is only an attachment:
+  after a reload, a sleeping phone, a reaped link or a console restart the tab opens a new link on the same name, which
+  replays the pane's last 3000 lines (`tmux capture-pane`) and re-attaches. Closing a tab detaches (the tmux session
+  lives on and shows in ∨ → Running sessions); right-click → **Kill session…** ends it after a confirm; **Open in
+  Moshi** copies `mosh root@<vps> -- tmux attach -t <name>` (console tabs go through `docker exec`). Container tabs keep
+  the server-side ring only. The console image installs tmux (`server/Dockerfile`).
+- **Headless sessions:** `deploy/claude-headless.sh` tags each run's tmux session (`@axf_agent`, `@axf_model`,
+  `@axf_meter`, `@axf_chain`, `@axf_cwd`, `@axf_kind`), appends `session-start` / `session-end` to
+  `$AXF_HEADLESS_DIR/events.jsonl` (default `/var/tmp/axf-headless`), and its stream printer keeps
+  `<session>.meter.json` (headless-meter@1) and `<session>.chain.json` (context-chain@1) there
+  (`deploy/claude-meter.mjs`). Every running `axf-…` session no live window shows gets a tab, on every load too, unless
+  that tab was closed by hand (`web/headless.ts`).
+- **Tab title:** agent (the swarm agent's name via `AXF_AGENT`, else the build name), model, live cost (usage ×
+  `framework/schemas/model-pricing.json`, replaced by Claude Code's `total_cost_usd` when a run ends; grey while it is an
+  estimate) and a status dot: working / waiting (quiet a minute, no tool running) / done / failed (`web/meters.ts`,
+  `GET headless/meters`, one ssh call for all tabs, cached 2 s).
+- **Split pane** (`web/SplitView.tsx`): session + context chain side by side or stacked (tab menu, remembered per tab;
+  default `splitDefault`); narrower than about 40 characters of text per pane it becomes a swipeable row.
+- **Context chain** (`web/ChainPane.tsx`, `GET headless/<name>/chain`): the files the session takes in, in order, nested
+  under the file that imported them, with their rules typed out one at a time (`chainSpeed`: slow / normal / fast /
+  all), Pause, Skip to the end. Pure helpers in `web/headless-core.ts`; check `framework/spec/check-headless-tabs.mts`.
+
 **Windows-style terminal (v0.3.0, Oct 28 2026, Opus).** One floating window per terminal host (tab kind
 `terminal-host`, `web/TerminalHost.tsx`) drawn like Windows Terminal: its own tab strip (icon, title, status dot, close;
 double-click renames, middle-click closes, drag reorders; right-click = Connection…, rename, duplicate, colour, move to

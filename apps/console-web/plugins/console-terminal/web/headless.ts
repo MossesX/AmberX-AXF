@@ -15,7 +15,8 @@ import { call } from './api';
 import { newTab } from './open';
 import { focusSession, host, hostIds } from './hosts';
 
-export interface Headless { name: string; createdAt: number; agent?: string; model?: string; kind?: string; attached?: number }
+export type { Headless } from './headless-core';
+import type { Headless } from './headless-core';
 interface Answer { ready: boolean; on: boolean; items: Headless[]; why: string; now: number }
 
 const CLOSED_KEY = 'axf.terminal.headless.closed';
@@ -31,10 +32,8 @@ const closed = load(CLOSED_KEY);
 /** Brett closed this headless session's tab: don't open it again by itself. */
 export function markClosed(name: string) { if (NAME.test(name)) { closed.add(name); store(CLOSED_KEY, closed); } }
 
-/** The sessions to open: running, not shown by any live tab, not closed by Brett. Oldest first. Pure. */
-export function toOpen(items: Headless[], shown: Set<string>, closedSet: Set<string>): Headless[] {
-  return items.filter((h) => NAME.test(h.name) && !shown.has(h.name) && !closedSet.has(h.name)).sort((a, b) => a.createdAt - b.createdAt);
-}
+export { toOpen } from './headless-core';
+import { toOpen } from './headless-core';
 
 /** Headless sessions a tab in a live terminal window shows now. */
 function shownNow(rt: AxfRuntime): Map<string, string> {
