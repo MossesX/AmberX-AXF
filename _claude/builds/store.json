@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 358,
- "updatedAt": "2026-11-03T19:06:21.495Z",
+ "rev": 359,
+ "updatedAt": "2026-11-03T19:07:00.392Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -54600,7 +54600,7 @@
    "branch": "claude/follow-amber",
    "pr": "",
    "createdAt": "2026-11-03T19:02:35.761Z",
-   "updatedAt": "2026-11-03T19:05:04.788Z",
+   "updatedAt": "2026-11-03T19:06:19.219Z",
    "builtAt": "",
    "notes": [
     {
@@ -54648,12 +54648,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T19:06:19.219Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T19:02:35.762Z",
-     "updatedAt": "2026-11-03T19:02:35.762Z"
+     "updatedAt": "2026-11-03T19:06:19.249Z"
     },
     {
      "id": "s3",
