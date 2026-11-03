@@ -6,10 +6,16 @@
  * actions through `rt.dispatch` (which checks the action's own `requires` against the signed-in role). Then it acks
  * what it did. Brett's open console goes where a Claude session says, and nothing else on the page changes.
  *
- * Settings → Plugins → Console commands: on / off for this console, a toast per command, the open consoles, the last commands.
+ * Console wake (Nov 3 2026): a command that found no open console waits on the server and arrives when this tab says
+ * hello; a tab opened by AmberX carries `?axf-cmd=<id>` and asks for that one first. A command is run once per tab even
+ * if it arrives twice (reconnects), and the tab only says goodbye when the page really goes away (not when React
+ * re-renders it, which used to make the server drop the console for a moment and lose a command).
+ *
+ * Settings → Plugins → Console commands: on / off for this console, a toast per command, waking through AmberX, how long
+ * a command waits, the browser AmberX opens, the open consoles, waiting and last commands.
  */
 import { useEffect, useState } from 'react';
-import { Button, Container, Note, useRuntime, type AxfWebLibrary } from '@console/axf/react';
+import { Button, Container, Note, SelectField, Switch, useRuntime, type AxfWebLibrary } from '@console/axf/react';
 import type { AxfRuntime } from '@console/axf/core';
 import { followSse, sseJson } from '@console/axf/core/sse';
 import { pluginFetch } from '@console/plugins';
@@ -33,6 +39,38 @@ function clientId(): string {
     return n;
   } catch { return `cc-${Math.random().toString(36).slice(2, 12)}`; }
 }
+
+/** Commands this tab already ran (id → its ack), so one that arrives again after a reconnect isn't run twice. */
+const DONE_KEY = 'axf.console-commands.done';
+function doneOf(id: string): [boolean, string] | null {
+  try { const v = (JSON.parse(sessionStorage.getItem(DONE_KEY) ?? '{}') as Record<string, [boolean, string]>)[id]; return v ?? null; } catch { return null; }
+}
+function markDone(id: string, res: [boolean, string]) {
+  try {
+    const all = JSON.parse(sessionStorage.getItem(DONE_KEY) ?? '{}') as Record<string, [boolean, string]>;
+    all[id] = res;
+    const keys = Object.keys(all);
+    for (const k of keys.slice(0, Math.max(0, keys.length - 50))) delete all[k];
+    sessionStorage.setItem(DONE_KEY, JSON.stringify(all));
+  } catch { /* storage unavailable: the server still delivers each queued command once */ }
+}
+
+/** The queued command this page was opened for (AmberX opens `…/?axf-cmd=<id>`); taken off the address once read. */
+function pickedCommand(): string {
+  try {
+    const u = new URL(window.location.href);
+    const id = u.searchParams.get('axf-cmd') ?? '';
+    if (!id) return '';
+    u.searchParams.delete('axf-cmd');
+    window.history.replaceState(window.history.state, '', u.toString());
+    return /^[A-Za-z0-9_-]{1,40}$/.test(id) ? id : '';
+  } catch { return ''; }
+}
+
+/** Who the toast names: the session's name when it gave one, else Amber. */
+const who = (by?: string) => (by && !['mcp', 'console', 'unknown', 'cli'].includes(by) ? by : 'Amber');
+/** "opened Terminal" → "opening Terminal" for a command that waited for this console. */
+const ongoing = (msg: string) => msg.replace(/^opened /, 'opening ').replace(/^ran /, 'running ');
 
 const device = () => (typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches ? 'phone' : 'desktop');
 const post = (path: string, body: unknown, keepalive = false) => pluginFetch(FOLDER, path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), keepalive });
@@ -90,12 +128,15 @@ function ConsoleCommandsClient() {
     const id = clientId();
     const history: string[] = [rt.getState().view];
     let catalogKey = '';
+    let pick = pickedCommand();
     const announce = (used = false) => {
       const catalog = catalogOf(rt);
       const key = `${catalog.items.length}:${catalog.items.map((i) => i.id).join(',').length}`;
       if (key === catalogKey && !used) return post('seen', { client: id, here: catalog.here }).catch(() => undefined);
       catalogKey = key;
-      return post('hello', { client: id, app: 'console-web', title: document.title, device: device(), catalog, here: catalog.here, used }).catch(() => undefined);
+      const body = { client: id, app: 'console-web', title: document.title, device: device(), catalog, here: catalog.here, used: used || !!pick, ...(pick ? { pick } : {}) };
+      pick = '';
+      return post('hello', body).catch(() => undefined);
     };
     void announce(document.hasFocus());
     let lastView = rt.getState().view;
@@ -108,33 +149,72 @@ function ConsoleCommandsClient() {
     window.addEventListener('focus', used);
     document.addEventListener('visibilitychange', onVisible);
     const beat = setInterval(() => void announce(false), HEARTBEAT_MS);
-    const bye = () => { void post('bye', { client: id }, true).catch(() => undefined); };
+    // Only when the page really goes away (not into the back/forward cache, not a React re-render): a bye makes the
+    // server stop sending here at once.
+    const bye = (e: PageTransitionEvent) => { if (!e.persisted) void post('bye', { client: id }, true).catch(() => undefined); };
     window.addEventListener('pagehide', bye);
     const stop = followSse(
       (signal) => pluginFetch(FOLDER, `stream?client=${encodeURIComponent(id)}`, { signal }),
       (f) => {
-        const m = sseJson<ConsoleMessage>(f);
-        if (!m?.id) return;
+        const m = sseJson<ConsoleMessage | { $axf: 'console-hello@1' }>(f);
+        // the server restarted and lost this console's catalog: say hello again so commands resolve here
+        if (m?.$axf === 'console-hello@1') { catalogKey = ''; void announce(document.visibilityState === 'visible'); return; }
+        if (!m || !('id' in m) || !m.id) return;
+        const again = doneOf(m.id);
+        if (again) { void post('ack', { client: id, id: m.id, ok: again[0], message: again[1], here: hereOf(rt) }).catch(() => undefined); return; }
         let res: [boolean, string];
         try { res = runMessage(rt, m, history); } catch (e) { res = [false, String((e as Error)?.message ?? e)]; }
-        if (res[0] && rt.settings.get(KEYS.toast) !== false) rt.toast(`${m.by ? `${m.by}: ` : ''}${res[1]}`, 'info', 'Console command');
+        markDone(m.id, res);
+        if (res[0] && rt.settings.get(KEYS.toast) !== false) rt.toast(`${who(m.by)}: ${m.delivery ? ongoing(res[1]) : res[1]}`, 'info', 'Console command');
         void post('ack', { client: id, id: m.id, ok: res[0], message: res[1], here: hereOf(rt) }).catch(() => undefined);
       },
     );
-    return () => { stop(); offState(); clearInterval(beat); window.removeEventListener('focus', used); document.removeEventListener('visibilitychange', onVisible); window.removeEventListener('pagehide', bye); bye(); };
+    return () => { stop(); offState(); clearInterval(beat); window.removeEventListener('focus', used); document.removeEventListener('visibilitychange', onVisible); window.removeEventListener('pagehide', bye); };
   }, [rt, on]);
   return null;
 }
 
 interface ClientRow { id: string; device: string; user: string; lastUsed: number; live: boolean; here: ConsoleHere; items: number }
-interface RecentRow { at: string; by: string; target: string; path: string; action: string; ok: boolean; message: string; delivered: { client: string; ok: boolean; message: string }[] }
+interface RecentRow { at: string; by: string; target: string; path: string; action: string; ok: boolean; message: string; how?: string; delivered: { client: string; ok: boolean; message: string }[] }
+interface QueueRow { id: string; state: string; at: string; expiresAt: string; path: string; action: string; by: string; wake: { sent: boolean; message: string } | null }
+interface WakeSettings { wake: boolean; ttlS: number; browser: 'chrome' | 'default' }
+
+const TTL_CHOICES = [30, 60, 120, 300, 600, 900].map((s) => ({ value: String(s), label: s < 60 ? `${s} seconds` : `${s / 60} minute${s === 60 ? '' : 's'}` }));
+
+/** Settings → Plugins → Console commands: what happens when no console is open (kept on the console server). */
+function WakePanel() {
+  const [cfg, setCfg] = useState<WakeSettings | null>(null);
+  const [owner, setOwner] = useState(false);
+  const [err, setErr] = useState('');
+  useEffect(() => {
+    pluginFetch(FOLDER, 'settings').then((r) => r.json()).then((j: { settings: WakeSettings; owner: boolean }) => { setCfg(j.settings); setOwner(j.owner); }, () => setErr('The Console commands server part is not answering.'));
+  }, []);
+  const save = (change: Partial<WakeSettings>) => post('settings', change).then((r) => r.json()).then((j: { settings?: WakeSettings; detail?: string }) => {
+    if (j.settings) { setCfg(j.settings); setErr(''); } else setErr(j.detail ?? 'Not saved.');
+  }, () => setErr('Not saved: the server part is not answering.'));
+  if (!cfg) return err ? <Note tone="warning">{err}</Note> : <p className="axf-cc__muted">Loading…</p>;
+  return (
+    <div className="fx-stack">
+      {err && <Note tone="warning">{err}</Note>}
+      <Switch label="Wake the console through AmberX when it's closed" checked={cfg.wake} disabled={!owner} onChange={(on) => void save({ wake: on })}
+        hint="A command that finds no open console waits here; after a few seconds AmberX on your phone opens the console so it runs. Needs the AmberX app with console wake." />
+      <SelectField label="How long a command waits for a console" value={String(cfg.ttlS)} options={TTL_CHOICES}
+        hint="After this it's dropped and never runs late." onChange={(v) => void save({ ttlS: Number(v) })} />
+      <SelectField label="Browser AmberX opens" value={cfg.browser} options={[{ value: 'chrome', label: 'Chrome (default browser when Chrome is missing)' }, { value: 'default', label: 'The phone\'s default browser' }]}
+        onChange={(v) => void save({ browser: v as WakeSettings['browser'] })} />
+      {!owner && <Note tone="info">Only the console's owner changes these.</Note>}
+    </div>
+  );
+}
 
 /** Settings → Plugins → Console commands: the open consoles and the last commands. */
 function ConsolesPanel() {
   const [clients, setClients] = useState<ClientRow[] | null>(null);
   const [recent, setRecent] = useState<RecentRow[]>([]);
+  const [queue, setQueue] = useState<QueueRow[]>([]);
   const [err, setErr] = useState('');
   const load = () => Promise.all([
+    pluginFetch(FOLDER, 'queue').then((r) => r.json()).then((j: { items?: QueueRow[] }) => setQueue(j.items ?? [])),
     pluginFetch(FOLDER, 'clients').then((r) => r.json()).then((j: { items?: ClientRow[] }) => setClients(j.items ?? [])),
     pluginFetch(FOLDER, 'recent').then((r) => r.json()).then((j: { items?: RecentRow[] }) => setRecent(j.items ?? [])),
   ]).then(() => setErr(''), () => setErr('The Console commands server part is not answering.'));
@@ -157,13 +237,25 @@ function ConsolesPanel() {
         )}
         <Button icon="refresh" onClick={() => void load()} data-help="cc-refresh">Refresh</Button>
       </Container>
+      <Container title="Waiting commands" icon="clock">
+        {!queue.length ? <p className="axf-cc__muted">Nothing is waiting. A command that finds no open console waits here until one opens.</p> : (
+          <ul className="axf-cc__list">
+            {queue.map((q) => (
+              <li key={q.id} className="axf-cc__row">
+                <span className="axf-cc__id">{q.state} · {q.action} {q.path}</span>
+                <span className="axf-cc__muted">{q.by} · {new Date(q.at).toLocaleTimeString()} · {q.state === 'queued' ? `until ${new Date(q.expiresAt).toLocaleTimeString()}` : ''}{q.wake ? ` · ${q.wake.message}` : ''}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Container>
       <Container title="Last commands" icon="list">
         {!recent.length ? <p className="axf-cc__muted">None yet. Ask Amber to open a screen, or run <code>axf console open plan studio</code>.</p> : (
           <ul className="axf-cc__list">
             {recent.map((r, i) => (
               <li key={`${r.at}-${i}`} className="axf-cc__row">
                 <span className="axf-cc__id">{r.ok ? '✓' : '✗'} {r.action} {r.path}</span>
-                <span className="axf-cc__muted">{r.by} · {new Date(r.at).toLocaleTimeString()} · {r.ok ? r.delivered.map((d) => `${d.client}: ${d.message}`).join(' · ') || 'sent' : r.message}</span>
+                <span className="axf-cc__muted">{r.by} · {new Date(r.at).toLocaleTimeString()}{r.how ? ` · ${r.how}` : ''} · {r.ok ? r.delivered.map((d) => `${d.client}: ${d.message}`).join(' · ') || 'sent' : r.message}</span>
               </li>
             ))}
           </ul>
@@ -179,7 +271,7 @@ function ConsolesPanel() {
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Console commands',
-  version: '0.1.0',
+  version: '0.2.0',
   builtWith: { model: 'opus', builtAt: '2026-11-03' },
   slots: { 'app.frame.cover': [{ id: 'console-commands.client', order: 99, render: () => <ConsoleCommandsClient /> }] },
   settingsTabs: [{ id: FOLDER, label: 'Console commands', icon: 'radio', order: 92, parent: 'plugins', description: 'Let Claude sessions open screens, dialogs and settings in this console' }],
@@ -192,6 +284,7 @@ export const plugin: AxfWebLibrary = {
     ],
   }],
   settingsPanels: [
+    { id: 'console-commands.wake', tab: FOLDER, title: 'When no console is open', icon: 'smartphone', order: 15, render: () => <WakePanel /> },
     { id: 'console-commands.consoles', tab: FOLDER, title: 'Open consoles and last commands', icon: 'monitor', order: 20, render: () => <ConsolesPanel /> },
     { id: 'console-commands.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],

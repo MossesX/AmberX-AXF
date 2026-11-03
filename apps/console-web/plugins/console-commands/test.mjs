@@ -47,12 +47,17 @@ t('runner: gate, resolve, deliver', () => {
   assert.equal(c1.code, 'confirmation_required');
   assert.ok(runConsole({ op: 'act', target: 'console.actions', path: 'assets.reset', action: 'run', confirm: c1.confirm }, { clients }).ok, 'confirmed');
   assert.equal(runConsole({ op: 'list', target: 'console.screens' }, { clients }).items.length, 2, 'bogus catalog items dropped');
-  assert.equal(runConsole({ op: 'act', target: 'console.nav', path: 'here', action: 'back' }, { clients: [] }).code, 'not_found', 'no console open');
+  const none = runConsole({ op: 'act', target: 'console.nav', path: 'here', action: 'back' }, { clients: [] });
+  assert.equal(none.code, 'not_found', 'no console open');
+  assert.equal(none.noConsole, true, 'no console open is flagged, so the server queues it (console-wake)');
+  assert.ok(!runConsole({ op: 'act', target: 'console.screens', path: 'nothing-here', action: 'open' }, { clients: [{ id: 'tab-1', lastSeen: Date.now(), catalog: { items: [{ kind: 'screen', id: 'home', label: 'Home' }] } }] }).noConsole, 'an unknown screen is not flagged');
   assert.ok(confirmSalt().length >= 32, 'salt kept in the data folder');
 });
 
 t('answers as text', () => {
   assert.equal(formatAnswer({ ok: true, op: 'act', action: 'open', target: 'console.screens', item: { id: 'plan-studio', label: 'Plan Studio' }, delivered: [{ client: 'tab-1', ok: true, message: 'opened Plan Studio' }] }), '✓ open Plan Studio (plan-studio) → tab-1: opened Plan Studio');
+  assert.ok(formatAnswer({ ok: true, op: 'act', action: 'open', target: 'console.screens', item: { id: 'home', label: 'Home' }, queued: true, message: 'queued, waiting for the console' }).startsWith('queued: open Home'), 'queued');
+  assert.ok(formatAnswer({ ok: true, op: 'act', action: 'open', target: 'console.screens', item: { id: 'home', label: 'Home' }, delivery: { how: 'woke via AmberX' }, delivered: [{ client: 'tab-1', ok: true, message: 'opened Home' }] }).includes('(woke via AmberX)'), 'says how');
   assert.ok(formatAnswer({ ok: false, code: 'confirmation_required', message: 'm', confirm: 'c1.abc' }).includes('c1.abc'));
   assert.equal(formatAnswer({ ok: true, op: 'list', target: 'console.clients', items: [] }), 'no console is open right now');
   assert.ok(formatAnswer({ ok: true, op: 'get', target: 'console.nav', value: { screen: 'home' } }).includes('screen home'));

@@ -221,7 +221,9 @@ export function consoleMessageErrors(m) {
 /* ================================================================== the console domain of control@1 */
 
 const fail = (code, message, extra = {}) => ({ ok: false, code, message, ...extra });
-const noConsole = () => fail(CONTROL_WIRE.NOT_FOUND, 'no console is open for you right now: open the Dev Console (https://console.amberxai.com) in a browser, then try again');
+// `noConsole: true` tells the console server nothing is connected (rather than "no such screen"), so it can queue the
+// command and deliver it when a console connects (console-wake, Nov 3 2026).
+const noConsole = () => fail(CONTROL_WIRE.NOT_FOUND, 'no console is open for you right now: open the Dev Console (https://console.amberxai.com) in a browser, then try again', { noConsole: true });
 
 /**
  * Run an already-gated control@1 command of the console domain against what the open consoles reported.

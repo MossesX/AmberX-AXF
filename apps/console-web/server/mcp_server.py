@@ -704,8 +704,11 @@ Delivery = str  # "recent" (the console used last), "all", or a client id from c
 
 def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], dict[str, Any]]) -> None:
     """The console_* tools (= CONSOLE_TOOLS in core/engines/console-commands.mjs): what a Claude session calls when Brett
-    says "open Plan Studio". Each answer says what the open console did (`delivered`: per console ok + message). A
-    failure raises a ToolError with its wire code, except confirmation_required (returned, so the token is seen)."""
+    says "open Plan Studio". Each answer says what the open console did (`delivered`: per console ok + message) and how
+    it got there (`delivery.how`: live, after reconnect, woke via AmberX, or queued). No console open: the command waits
+    on the console server (up to a minute here, 2 minutes there by default) and AmberX opens the console on Brett's
+    phone; `queued: true` = still waiting when this returned (it runs when a console opens). A failure raises a
+    ToolError with its wire code, except confirmation_required (returned, so the token is seen)."""
 
     async def go(command: dict[str, Any]) -> dict[str, Any]:
         command = {k: v for k, v in command.items() if v not in (None, "", {})}
@@ -782,7 +785,7 @@ def console_runner(root: Path) -> Callable[[dict[str, Any]], dict[str, Any]]:
         req = urllib.request.Request(url, data=json.dumps({"$axf": "control@1", **command}).encode(), method="POST",
                                      headers={"content-type": "application/json", **({"authorization": f"Bearer {os.environ['AXF_TOKEN']}"} if os.environ.get("AXF_TOKEN") else {})})
         try:
-            with urllib.request.urlopen(req, timeout=30) as res:
+            with urllib.request.urlopen(req, timeout=90) as res:  # a queued command waits up to a minute for a console
                 return json.loads(res.read().decode() or "{}")
         except urllib.error.HTTPError as e:
             try:
