@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T21:43:12.836Z",
+ "updatedAt": "2026-11-03T21:45:30.459Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -690,15 +690,15 @@
    "title": "Banner reference links: tap a mention to open what it refers to",
    "category": "Framework",
    "detail": "Brett (Nov 3 2026, voice): in banner entries (in progress, merged, live, build/status banners, Codebase changes), text that mentions a real thing (screen, settings page, plugin, dialog, toolbar, build, PR, agent, file) becomes a hook: tap = peek card, double-tap = open + highlight, long-press = context menu. ref@1 resolver from the console registries, explicit 'touches:' refs win. Applied in the generic banner item renderer; banner-pack (#251), banner-editor (#254), banners-one untouched. Agent: Ping Paulie (headless worktree session, not on main). Branch claude/banner-ref-links.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/banner-ref-links",
    "pr": "",
    "createdAt": "2026-11-03T20:47:37.192Z",
-   "updatedAt": "2026-11-03T21:19:59.441Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T21:45:20.551Z",
+   "builtAt": "2026-11-03T21:45:20.552Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -788,9 +788,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:45:20.551Z",
+     "note": "PR #287; UI Review r-20261103-1ad2ede3; report _claude/builds/reports/banner-ref-links.md",
      "uid": "st-mw15swa70ag93s"
     }
    ]
