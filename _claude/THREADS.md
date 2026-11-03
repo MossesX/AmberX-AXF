@@ -568,15 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:22 UTC · `builds-one-page` s13 done, → built (refactor) · snap-sully
-- 2026-11-03 18:22 UTC · `builds-one-page` note (refactor) · snap-sully
-- 2026-11-03 18:22 UTC · `builds-one-page-done` s4 done (urgent) · snap-sully
-- 2026-11-03 18:22 UTC · `builds-one-page-done` s5 done, → built (urgent) · snap-sully
-- 2026-11-03 18:22 UTC · `builds-one-page-done` note (urgent) · snap-sully
-- 2026-11-03 18:23 UTC · `builds-one-page` s13 done, → complete, note (refactor) · foreign-write
-- 2026-11-03 18:23 UTC · `toolbar-tap-confirm` added (21 steps) (urgent) · orchestrator
-- 2026-11-03 18:24 UTC · `toolbar-tap-confirm` branch claude/toolbar-tap-confirm (urgent) · orchestrator
-- 2026-11-03 18:24 UTC · `toolbar-tap-confirm` note (urgent) · orchestrator
 - 2026-11-03 18:25 UTC · `builds-one-page` s16-15 done, s13 done, → complete, note (refactor) · foreign-write
 - 2026-11-03 18:25 UTC · `auto-land` s2 done (urgent) · orchestrator
 - 2026-11-03 18:25 UTC · `auto-land` s3 done (urgent) · orchestrator
@@ -968,3 +959,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 22:12 UTC · `terminal-tabs-left` s1 done, s2 done, s3 done (current) · foreign-write
 - 2026-11-03 22:12 UTC · `molly-banners` s1 done (current) · orchestrator
 - 2026-11-03 22:12 UTC · `molly-banners` s4 done (current) · orchestrator
+- 2026-11-03 22:14 UTC · `terminal-sessions-nav` s4 done, → complete, note (current) · foreign-write
+- 2026-11-03 22:14 UTC · `plugin-settings-placement` s6 done, → complete, note (current) · foreign-write
+- 2026-11-03 22:14 UTC · `banner-ref-links` s5 done, → complete, note (current) · foreign-write
+- 2026-11-03 22:14 UTC · `molly-console-commands` note (current) · foreign-write
+- 2026-11-03 22:14 UTC · `git-status-board` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 22:14 UTC · `terminal-drag-chain-tree` added (6 steps) (current) · foreign-write
+- 2026-11-03 22:14 UTC · `molly-nav-submenus` added (80 steps) (current) · foreign-write
+- 2026-11-03 22:14 UTC · `terminal-tabs-left` added (5 steps) (current) · foreign-write
+- 2026-11-03 22:14 UTC · `molly-banners` added (5 steps) (current) · foreign-write
