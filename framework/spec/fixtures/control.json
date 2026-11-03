@@ -242,7 +242,7 @@
     "console-open-settings": {
       "op": "act",
       "target": "console.settings",
-      "path": "plugins/token-control",
+      "path": "plugins/sample-tools",
       "action": "open",
       "input": {
         "to": "all"
@@ -921,7 +921,7 @@
       "$axf": "control@1",
       "op": "act",
       "target": "console.settings",
-      "path": "plugins/token-control",
+      "path": "plugins/sample-tools",
       "action": "open",
       "input": {
         "to": "all"

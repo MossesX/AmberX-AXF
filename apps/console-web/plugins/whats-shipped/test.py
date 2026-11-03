@@ -22,21 +22,21 @@ TOKEN = "ghp_" + "W" * 36
 
 # ---------------------------------------------------------------- a small repo folder
 ROOT = TMP / "root"
-(ROOT / "apps" / "console-web" / "plugins" / "theme-editor").mkdir(parents=True)
+(ROOT / "apps" / "console-web" / "plugins" / "sample-editor").mkdir(parents=True)
 (ROOT / "apps" / "axhub-web").mkdir(parents=True)
 (ROOT / "apps" / "molly").mkdir(parents=True)
 (ROOT / "apps" / "molly" / "project.manifest.json").write_text(json.dumps({"name": "molly", "displayName": "Molly"}))
-(ROOT / "apps" / "console-web" / "plugins" / "theme-editor" / "plugin.json").write_text(json.dumps({"name": "Theme Editor"}))
+(ROOT / "apps" / "console-web" / "plugins" / "sample-editor" / "plugin.json").write_text(json.dumps({"name": "Theme Editor"}))
 (ROOT / "_claude" / "builds" / "reports").mkdir(parents=True)
 STORE = {"builds": [
-    {"id": "theme-editor", "title": "Theme Editor plugin", "profiles": ["urgent"], "status": "complete", "pr": "#243", "branch": "claude/theme-editor", "steps": []},
+    {"id": "sample-editor", "title": "Theme Editor plugin", "profiles": ["urgent"], "status": "complete", "pr": "#243", "branch": "claude/sample-editor", "steps": []},
     {"id": "dock-engine", "title": "Shared dock engine", "profiles": ["urgent"], "status": "pending", "pr": "", "branch": "",
      "steps": [{"id": "s1", "branch": "claude/molly-fable", "pr": ""}]},
     {"id": "quiet-fix", "title": "Quiet fix shipped by hand", "profiles": ["main-framework"], "status": "complete", "merged": True, "mergedAt": "2026-11-02T08:00:00Z", "branch": "claude/quiet"},
     {"id": "gone", "title": "Deleted", "deleted": True, "pr": "#999"},
 ]}
 (ROOT / "_claude" / "builds" / "store.json").write_text(json.dumps(STORE))
-(ROOT / "_claude" / "builds" / "reports" / "theme-editor.md").write_text(
+(ROOT / "_claude" / "builds" / "reports" / "sample-editor.md").write_text(
     "# Theme Editor — report (Nov 3 2026, Opus)\n\n## Tests\n- 12 pass\n\n## What changed\n\n- Colour and style sections list every token\n- Copy, save and load themes\n\n## Known gaps\n- none\n")
 (ROOT / "changes" / "2026" / "11").mkdir(parents=True)
 (ROOT / "changes" / "2026" / "11" / "chg-1.json").write_text(json.dumps(
@@ -45,20 +45,20 @@ STORE = {"builds": [
 # ---------------------------------------------------------------- fakes
 SEEN: list[str] = []
 PRS = [
-    {"number": 250, "title": "feat(token-control): Token control plugin", "merged_at": "2026-11-03T12:00:00Z", "merge_commit_sha": "a" * 40,
-     "head": {"ref": "claude/token-control-opus"}, "html_url": "https://github.com/MossesX/AmberX-AXF/pull/250", "body": "Every token from one API.\n\nMore."},
+    {"number": 250, "title": "feat(sample-tools): Token control plugin", "merged_at": "2026-11-03T12:00:00Z", "merge_commit_sha": "a" * 40,
+     "head": {"ref": "claude/sample-tools-opus"}, "html_url": "https://github.com/MossesX/AmberX-AXF/pull/250", "body": "Every token from one API.\n\nMore."},
     {"number": 245, "title": "Molly Fable foundation", "merged_at": "2026-11-03T09:00:00Z", "merge_commit_sha": "b" * 40,
      "head": {"ref": "claude/molly-fable"}, "html_url": "https://github.com/MossesX/AmberX-AXF/pull/245", "body": ""},
     {"number": 243, "title": "Theme Editor plugin", "merged_at": "2026-10-20T09:00:00Z", "merge_commit_sha": "c" * 40,
-     "head": {"ref": "claude/theme-editor"}, "html_url": "javascript:alert(1)", "body": ""},
+     "head": {"ref": "claude/sample-editor"}, "html_url": "javascript:alert(1)", "body": ""},
     {"number": 242, "title": "Plan MD Studio", "merged_at": "2026-11-02T09:00:00Z", "merge_commit_sha": "d" * 40,
      "head": {"ref": "claude/plan"}, "html_url": "https://github.com/MossesX/AmberX-AXF/pull/242", "body": ""},
     {"number": 241, "title": "never merged", "merged_at": None, "head": {"ref": "x"}},
 ]
 FILES = {
-    250: ["apps/console-web/plugins/token-control/web/index.tsx", "framework/core/engines/layout.ts", "apps/axhub-web/src/axf/core/x.ts"],
+    250: ["apps/console-web/plugins/sample-tools/web/index.tsx", "framework/core/engines/layout.ts", "apps/axhub-web/src/axf/core/x.ts"],
     245: ["framework/core/engines/dock.ts", "apps/molly/src/App.tsx", "apps/molly/_claude/x.md"],
-    243: ["apps/console-web/plugins/theme-editor/web/index.tsx"],
+    243: ["apps/console-web/plugins/sample-editor/web/index.tsx"],
     242: ["_claude/THREADS.md", "framework/plan/plan.json", "changes/2026/11/c.json"],
 }
 DEPLOYS = [{"conclusion": "success", "updated_at": "2026-11-03T11:00:00Z"}, {"conclusion": "success", "updated_at": "2026-10-21T00:00:00Z"}]
@@ -78,7 +78,7 @@ def fake_get(path: str):
     return {}
 
 
-GIT_LOG = ("1" * 40 + "\x1f" + "p" * 40 + " q\x1f2026-11-03T12:00:00+00:00\x1fMerge pull request #250 from MossesX/claude/token-control-opus\x1fToken control plugin\n\x1e"
+GIT_LOG = ("1" * 40 + "\x1f" + "p" * 40 + " q\x1f2026-11-03T12:00:00+00:00\x1fMerge pull request #250 from MossesX/claude/sample-tools-opus\x1fToken control plugin\n\x1e"
            + "2" * 40 + "\x1f" + "r" * 40 + " s\x1f2026-11-01T12:00:00+00:00\x1fMerge branch 'main' into x\x1f\x1e")
 
 
@@ -89,7 +89,7 @@ def fake_git(args: list[str]) -> str:
     if args[0] == "log" and "--merges" in args:
         return GIT_LOG
     if args[0] == "diff":
-        return "apps/console-web/plugins/token-control/web/index.tsx\nframework/core/x.ts\n"
+        return "apps/console-web/plugins/sample-tools/web/index.tsx\nframework/core/x.ts\n"
     if args[0] == "log":
         return "2026-11-03T13:00:00+00:00\n"
     raise RuntimeError("unknown")
@@ -132,7 +132,7 @@ NOW["t"] = mod._ts("2026-11-03T14:00:00Z")
 
 cfg = c.get("/p/config").json()
 check(cfg["days"] == 30 and cfg["apps"] == [] and cfg["deployedOnly"] is False and cfg["deployWorkflows"] == ["deploy.yml"], "default config: 30 days, every app, merged, deploy.yml")
-check({"id": "plugin:theme-editor", "label": "Theme Editor", "kind": "plugin"} in cfg["appChoices"] and any(a["id"] == "app:molly" and a["label"] == "Molly" for a in cfg["appChoices"]),
+check({"id": "plugin:sample-editor", "label": "Theme Editor", "kind": "plugin"} in cfg["appChoices"] and any(a["id"] == "app:molly" and a["label"] == "Molly" for a in cfg["appChoices"]),
       "app choices from manifests and plugin.json")
 
 f = c.get("/p/feed").json()
@@ -142,7 +142,7 @@ check(ids == ["pr-250", "pr-245", "build-quiet-fix", "pr-243"], f"one item per m
 by = {i["id"]: i for i in f["items"]}
 t = by["pr-250"]
 check(t["title"] == "Token control plugin", "commit-speak prefix dropped from the title")
-check([a["id"] for a in t["apps"]] == ["app:console-web", "plugin:token-control", "framework"],
+check([a["id"] for a in t["apps"]] == ["app:console-web", "plugin:sample-tools", "framework"],
       "apps from changed paths: app, plugin, framework (baked src/axf copies ignored)")
 check(not any(a["id"] == "app:axhub-web" for a in t["apps"]), "a baked framework copy in another app is not that app's feature")
 check(t["summary"] == "Every token from one API." and t["pr"] == {"number": 250, "url": "https://github.com/MossesX/AmberX-AXF/pull/250"}, "summary from the PR body's first paragraph; PR link")
@@ -153,7 +153,7 @@ check(m["build"] == {"id": "dock-engine", "title": "Shared dock engine", "profil
 check(m["summary"] == "Dock engine: split, float and re-dock panes.", "summary from the Codebase changes entry for the branch")
 check([a["id"] for a in m["apps"]] == ["app:molly", "framework"] and m["where"] == "Molly", "app _claude files ignored; where = the app")
 te = by["pr-243"]
-check(te["build"]["id"] == "theme-editor" and te["report"] == "_claude/builds/reports/theme-editor.md", "build matched by its PR number; report linked")
+check(te["build"]["id"] == "sample-editor" and te["report"] == "_claude/builds/reports/sample-editor.md", "build matched by its PR number; report linked")
 check(te["summary"] == "Colour and style sections list every token" and te["details"] == ["Colour and style sections list every token", "Copy, save and load themes"], "wording from the report's What changed bullets")
 check(te["deployed"] is True and te["deployedAt"] == "2026-10-21T00:00:00Z", "a deploy after the merge carried it (the first one after)")
 check(te["pr"]["url"] == "", "a link that isn't https://github.com is dropped")

@@ -214,7 +214,7 @@ write('layout.json', Object.fromEntries(load('layout').map((a) => [a.id, { compi
     'wrong-frame': { $axf: 'asset@1', op: 'list', target: 'tokens.layout' },
     'not-an-object': 'nope',
     'console-open-screen': { op: 'act', target: 'console.screens', path: 'plan studio', action: 'open', by: 'claude' },
-    'console-open-settings': { op: 'act', target: 'console.settings', path: 'plugins/token-control', action: 'open', input: { to: 'all' } },
+    'console-open-settings': { op: 'act', target: 'console.settings', path: 'plugins/sample-tools', action: 'open', input: { to: 'all' } },
     'console-list-actions': { op: 'list', target: 'console.actions', select: { q: 'theme', limit: 20 } },
     'console-run-action': { op: 'act', target: 'console.actions', path: 'assets.random', action: 'run' },
     'console-back': { op: 'act', target: 'console.nav', path: 'here', action: 'back' },

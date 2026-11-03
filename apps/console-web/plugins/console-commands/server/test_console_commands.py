@@ -64,7 +64,7 @@ CATALOG = {"app": "console-web", "items": [
     {"kind": "screen", "id": "home", "label": "Home"},
     {"kind": "screen", "id": "plan-studio", "label": "Plan Studio", "keywords": ["plans"]},
     {"kind": "screen", "id": "build-orchestrator", "label": "Build orchestrator"},
-    {"kind": "settings", "id": "token-control", "label": "Token control", "parent": "plugins"},
+    {"kind": "settings", "id": "sample-tools", "label": "Token control", "parent": "plugins"},
     {"kind": "dialog", "id": "asset-json", "label": "Asset JSON"},
     {"kind": "action", "id": "terminal.open", "label": "Open output terminal"},
     {"kind": "action", "id": "assets.reset", "label": "Reset to defaults"},
@@ -119,7 +119,7 @@ ok(phone_got and phone_got[-1]["op"] == "open" and phone_got[-1]["kind"] == "scr
 eq(phone_got[-1]["$axf"], "console-command@1", "message frame")
 
 # ---- whole command, settings sub-tab with anchor, back
-j = client.post("/api/console", json={"op": "act", "target": "console.settings", "path": "plugins/token-control", "action": "open", "input": {"anchor": "settings-group:x"}}).json()
+j = client.post("/api/console", json={"op": "act", "target": "console.settings", "path": "plugins/sample-tools", "action": "open", "input": {"anchor": "settings-group:x"}}).json()
 ok(j["ok"] and phone_got[-1]["kind"] == "settings" and phone_got[-1]["anchor"] == "settings-group:x", "settings sub-tab through the whole-command route")
 ok(client.post("/api/console/back", json={}).json()["ok"] and phone_got[-1]["op"] == "back", "back")
 ok(client.post("/api/console/home", json={}).json()["ok"] and phone_got[-1]["op"] == "home", "home")
