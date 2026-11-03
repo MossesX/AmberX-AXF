@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 389,
- "updatedAt": "2026-11-03T19:45:40.856Z",
+ "rev": 390,
+ "updatedAt": "2026-11-03T19:47:35.076Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55366,7 +55366,7 @@
   {
    "id": "window-resize-fix",
    "title": "Window resize fix + Terminal settings dialog placement (urgent)",
-   "category": "",
+   "category": "Bug fix",
    "detail": "Brett (Nov 3 2026, voice): floating windows must be resizable (Terminal cannot be resized), and Terminal settings placement \"dialog\" opens nothing. Agent: Landin Lenny (headless worktree session). Merge on Brett order.",
    "status": "pending",
    "hidden": false,
