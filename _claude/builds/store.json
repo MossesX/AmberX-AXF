@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 193,
- "updatedAt": "2026-11-03T15:45:08.932Z",
+ "rev": 196,
+ "updatedAt": "2026-11-03T15:46:08.471Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -49977,16 +49977,21 @@
    "title": "Theme veto pass: timed no-veto window for token changes",
    "category": "Token control",
    "detail": "Brett, Nov 3 2026 (voice): a timed pass (\"allow theme changes for the next 30 minutes\") during which token set/reset runs without the axHub veto. Grant approved once by Brett; server-side expiry; deletes never covered; banner chip with countdown; audit + undo; read tools annotated read-only; contract with axHub build axhub-veto-pass. Based on PR #250 (merge after it).",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/theme-veto-pass",
-   "pr": "",
+   "pr": "https://github.com/MossesX/AmberX-AXF/pull/262",
    "createdAt": "2026-11-03T15:18:04.896Z",
-   "updatedAt": "2026-11-03T15:45:08.911Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-03T15:46:08.447Z",
+   "builtAt": "2026-11-03T15:46:07.456Z",
+   "notes": [
+    {
+     "text": "All 7 steps done. PR #262 (base claude/token-control-opus, merge after #250). UI Review r-20261103-dbed7dea waiting. axHub side: build axhub-veto-pass.",
+     "at": "2026-11-03T15:46:08.447Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -50136,12 +50141,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T15:46:07.456Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T15:18:04.897Z",
-     "updatedAt": "2026-11-03T15:18:04.897Z"
+     "updatedAt": "2026-11-03T15:46:07.481Z"
     }
    ],
    "profiles": [
@@ -50152,7 +50157,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
