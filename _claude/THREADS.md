@@ -568,7 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 17:16 UTC · `model-upgrade-approval` PR #253, merged (urgent) · builds-live
 - 2026-11-03 17:17 UTC · `land-everything` note (urgent) · orchestrator
 - 2026-11-03 17:17 UTC · `land-everything` s8 done (urgent) · orchestrator
 - 2026-11-03 17:17 UTC · `land-everything` note (urgent) · foreign-write
@@ -968,3 +967,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 21:45 UTC · `terminal-sessions-nav` s4 done, → built (current) · orchestrator
 - 2026-11-03 21:45 UTC · `terminal-sessions-nav` note (current) · orchestrator
 - 2026-11-03 21:46 UTC · `terminal-sessions-nav` s4 done, → complete, note (current) · foreign-write
+- 2026-11-03 21:46 UTC · `banner-ref-links` s5 done, → complete, note (current) · foreign-write
