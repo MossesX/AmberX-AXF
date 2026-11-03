@@ -568,8 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 16:23 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 16:23 UTC · `kill-patches-pilot` PR #258, merged (urgent) · builds-live
 - 2026-11-03 16:23 UTC · `kill-patches-pilot` → complete (urgent) · orchestrator
 - 2026-11-03 16:24 UTC · `land-everything` note (urgent) · orchestrator
 - 2026-11-03 16:24 UTC · `land-everything` s3 done (urgent) · orchestrator
@@ -968,3 +966,5 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 21:31 UTC · `urgent-main-ci-green` note (current) · orchestrator
 - 2026-11-03 21:35 UTC · `git-status-board` s1 done, s2 done (current) · foreign-write
 - 2026-11-03 21:35 UTC · `urgent-main-ci-green` s4 done, s5 done, note (current) · foreign-write
+- 2026-11-03 21:36 UTC · `whats-new-open-fix` s1 done, → running (current) · orchestrator
+- 2026-11-03 21:36 UTC · `whats-new-open-fix` note (current) · orchestrator
