@@ -857,3 +857,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 19:31 UTC · `terminal-vps-host` s1 done (current) · orchestrator
 - 2026-11-03 19:31 UTC · `terminal-vps-host` s3 done (current) · orchestrator
 - 2026-11-03 19:31 UTC · `terminal-vps-host` note (current) · orchestrator
+- 2026-11-03 19:32 UTC · `window-resize-fix` added (3 steps) (current) · foreign-write

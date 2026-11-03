@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T19:31:52.799Z",
+ "updatedAt": "2026-11-03T19:32:53.988Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -121,6 +121,80 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw132l3e0aawvn"
+    }
+   ]
+  },
+  {
+   "id": "window-resize-fix",
+   "title": "Window resize fix + Terminal settings dialog placement (urgent)",
+   "category": "",
+   "detail": "Brett (Nov 3 2026, voice): floating windows must be resizable (Terminal cannot be resized), and Terminal settings placement \"dialog\" opens nothing. Agent: Landin Lenny (headless worktree session). Merge on Brett order.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "window-resize-fix",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-03T19:32:33.504Z",
+   "updatedAt": "2026-11-03T19:32:33.504Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Find why floating windows cannot be resized; fix window host (8 edges, touch targets, double-tap title)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw134p8001p42n"
+    },
+    {
+     "id": "s2",
+     "text": "Fix settings placement dialog for Terminal and every plugin with the option",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw134p8002sqdt"
+    },
+    {
+     "id": "s3",
+     "text": "Tests, screenshots, UI Review, report, PR, merge, deploy",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw134p8003s7i3"
     }
    ]
   }
