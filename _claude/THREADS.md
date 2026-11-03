@@ -569,7 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 19:05 UTC · `follow-amber` s1 done (urgent) · foreign-write
 - 2026-11-03 19:06 UTC · `claude-settings` s1 done, → running (urgent) · orchestrator
 - 2026-11-03 19:06 UTC · `follow-amber` s2 done (urgent) · orchestrator
 - 2026-11-03 19:07 UTC · `claude-settings` s2 done (urgent) · orchestrator
@@ -969,3 +968,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 23:12 UTC · `lenny-land-all` → running (current) · foreign-write
 - 2026-11-03 23:12 UTC · `lenny-land-all` → running (current) · foreign-write
 - 2026-11-03 23:13 UTC · `molly-banners` s2 done, s3 done (current) · foreign-write
+- 2026-11-03 23:20 UTC · `molly-banners` s2 done, s3 done (current) · foreign-write
