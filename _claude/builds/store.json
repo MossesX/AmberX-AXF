@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 474,
- "updatedAt": "2026-11-03T21:20:42.525Z",
+ "rev": 475,
+ "updatedAt": "2026-11-03T21:21:07.426Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -58654,26 +58654,10 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-03T20:47:37.192Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mw15swa706xlpy": "2026-11-03T20:47:37.195Z",
-     "st-mw15swa707c5kf": "2026-11-03T20:47:37.195Z",
-     "st-mw15swa708359b": "2026-11-03T20:47:37.195Z",
-     "st-mw15swa7090lnd": "2026-11-03T20:47:37.195Z",
-     "st-mw15swa70ag93s": "2026-11-03T20:47:37.195Z"
-    }
-   },
+   "pending": null,
    "queue": null,
    "defaultAt": "2026-11-03T20:47:37.195Z",
    "rearranged": false,
