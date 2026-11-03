@@ -568,15 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:02 UTC · `builds-one-page` s15 done (refactor) · snap-sully
-- 2026-11-03 18:02 UTC · `builds-one-page` s16 done (refactor) · snap-sully
-- 2026-11-03 18:02 UTC · `builds-one-page` s7 done, s8 done, s9 done, s10 done, s11 done, s15 done, s30 done (refactor) · foreign-write
-- 2026-11-03 18:02 UTC · `builds-one-page-done` s3 done (urgent) · foreign-write
-- 2026-11-03 18:06 UTC · `land-everything` s10 done (urgent) · orchestrator
-- 2026-11-03 18:07 UTC · `land-everything` s11 done, → complete (urgent) · orchestrator
-- 2026-11-03 18:07 UTC · `builds-one-page` s7 done, s8 done, s9 done, s10 done, s11 done, s15 done, s30 done, s30 done (refactor) · foreign-write
-- 2026-11-03 18:07 UTC · `menu-scroll` s1 done, → running (urgent) · orchestrator
-- 2026-11-03 18:07 UTC · `menu-scroll` s2 done (urgent) · orchestrator
 - 2026-11-03 18:07 UTC · `menu-scroll` s3 done (urgent) · orchestrator
 - 2026-11-03 18:07 UTC · `menu-scroll` s4 done (urgent) · orchestrator
 - 2026-11-03 18:07 UTC · `land-everything` branch claude/land-everything, merged (urgent) · builds-live
@@ -968,3 +959,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 22:03 UTC · `terminal-drag-chain-tree` s4 done (current) · orchestrator
 - 2026-11-03 22:08 UTC · `molly-banners` added (5 steps) (current) · foreign-write
 - 2026-11-03 22:08 UTC · `terminal-drag-chain-tree` s5 done (current) · orchestrator
+- 2026-11-03 22:08 UTC · `terminal-sessions-nav` s4 done, → complete, note (current) · foreign-write
+- 2026-11-03 22:08 UTC · `plugin-settings-placement` note (current) · foreign-write
+- 2026-11-03 22:08 UTC · `banner-ref-links` s5 done, → complete, note (current) · foreign-write
+- 2026-11-03 22:08 UTC · `molly-console-commands` s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, note (current) · foreign-write
+- 2026-11-03 22:08 UTC · `git-status-board` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 22:08 UTC · `terminal-drag-chain-tree` added (6 steps) (current) · foreign-write
+- 2026-11-03 22:08 UTC · `molly-nav-submenus` added (40 steps) (current) · foreign-write
+- 2026-11-03 22:08 UTC · `terminal-tabs-left` added (5 steps) (current) · foreign-write
+- 2026-11-03 22:08 UTC · `plugin-settings-placement` branch claude/plugin-settings-placement, PR #289 (current) · builds-live
