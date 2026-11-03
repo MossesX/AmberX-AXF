@@ -8,7 +8,8 @@ import { ModelChip, fmtTime, statusText, type Act, type Agent, type SwarmState }
 
 /*
  * Crew: one card per agent (avatar, name, role, specialty, status, hire date, spend, jobs, success rate, failures,
- * avg cost per job, favourite model, last seen, catchphrase, salary, spent, left, bonuses). Tap a card for the profile: bio, skill, pay,
+ * avg cost per job, favourite model, last seen, catchphrase, salary, spent, left, bonuses). Slot `swarm.agent.actions` ({agentId,
+ * name, where}) under each card and on the profile's bar takes other plugins' buttons (e.g. Assign to Claude). Tap a card for the profile: bio, skill, pay,
  * status history and a feed of the latest runs with their cost. Everything is inside the console; no outside
  * social accounts.
  */
@@ -81,6 +82,7 @@ function Card({ a, state, st, act, jobs, onOpen }: { a: Agent; state: SwarmState
         <p className="sw-card__quote">“{idn.catchphrase}”</p>
       </button>
       {BENCHED.includes(as.status) && <div className="sw-bar"><Button size="sm" icon="refresh" onClick={() => void act({ action: 'rehire', agent: a.id })}>Rehire</Button>{as.note && <span className="fx-muted">{as.note}</span>}</div>}
+      <Slot name="swarm.agent.actions" props={{ agentId: a.id, name: idn.name, where: 'card' }} />
     </article>
   );
 }
@@ -135,7 +137,7 @@ function Profile({ a, state, st, act, jobs, onBack, onFeed }: { a: Agent; state:
   const as = state.swarm.agents[a.id]!; const skill = state.skills[a.skill]; const idn = core.cardIdentity(a, as);
   return (
     <div className="fx-stack">
-      <div className="sw-bar"><Button icon="undo" onClick={onBack}>Crew</Button></div>
+      <div className="sw-bar"><Button icon="undo" onClick={onBack}>Crew</Button><Slot name="swarm.agent.actions" props={{ agentId: a.id, name: idn.name, where: 'profile' }} /></div>
       <div className="sw-card sw-card--profile">
         <div className="sw-card__head">
           <Avatar a={a} size={88} />

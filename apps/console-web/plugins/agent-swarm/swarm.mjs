@@ -12,6 +12,8 @@
  *   … act --json '{"action":…}'          any change from swarm-core.mjs applyChange()
  *   … act salary <agent> <usd> [note]     weekly salary = budget (higher = raise, lower = docked) · act topup <agent> <usd>
  *   … sessions                           runs with the agent's status and spend (for the session browser)
+ *   … crew                               the crew in one compact read (the Claude agent picker)
+ *   … book '<json>'                      book a Claude session on an agent's card ({session, agent, usd?, summary?, commits?, final?})
  *   … chat [n] | banter [--dry-run]      the group chat | one cheap small-model batch of banter
  *   … mentions [n] [--negative]          chat messages about Brett (the boss, the owner), newest first, redacted
  *   … chats-export                       rewrite the hub's read-only chat mirror now (breakroom-chats@1)
@@ -152,6 +154,56 @@ export function pack(job, handoffs = []) {
 export const runsFile = () => join(dataDir(), 'runs.json');
 export const loadRuns = () => { const r = readJson(runsFile(), { runs: [] }); return Array.isArray(r.runs) ? r.runs : []; };
 export function saveRun(run) { const runs = loadRuns(); runs.push(run); writeJson(runsFile(), { $axf: 'swarm-runs@1', runs: runs.slice(-5000) }); return run; }
+
+/**
+ * Book a Claude session on an agent's card (agent-pick, Nov 3 2026): a `job` run of job type `agent-session`, one
+ * record per session (`jobId` = `session-<id>`), replaced on every booking so cost and time grow with the session.
+ * `final: true` closes it: the report is posted in the chat and the run counts like any finished job.
+ */
+export const SESSION_JOB_TYPE = 'agent-session';
+export function book(entry) {
+  const e = entry && typeof entry === 'object' ? entry : {};
+  const sid = String(e.session ?? '').replace(/[^A-Za-z0-9._-]/g, '').slice(0, 80);
+  if (!sid) throw new Error('book needs a session id');
+  const roster = loadRoster();
+  const agent = roster.agents.find((a) => a.id === e.agent || a.name === e.agent);
+  if (!agent) throw new Error(`no agent "${e.agent ?? ''}" on the crew`);
+  const jobId = `session-${sid}`; const runs = loadRuns(); const prev = runs.find((r) => r.jobId === jobId);
+  if (prev && prev.agent !== agent.id) throw new Error(`session ${sid} is booked on ${prev.agent}, not ${agent.id}`);
+  const now = new Date().toISOString(); const final = e.final === true;
+  const commits = [...new Set([...(prev?.report?.summary?.match(/(?<=commits: )[0-9a-f, ]+/)?.[0]?.split(/,\s*/) ?? []), ...(Array.isArray(e.commits) ? e.commits : [])].map((c) => String(c).trim()).filter((c) => /^[0-9a-f]{7,40}$/.test(c)))].slice(-40);
+  const summary = [String(e.summary ?? prev?.report?.summary?.replace(/\s*· commits: [0-9a-f, ]+$/, '') ?? '').slice(0, 300), commits.length ? `commits: ${commits.join(', ')}` : ''].filter(Boolean).join(' · ');
+  const rec = core.normRun({
+    kind: 'job', jobType: SESSION_JOB_TYPE, jobId, buildId: String(e.build ?? prev?.buildId ?? ''), agent: agent.id, model: e.model ?? prev?.model ?? 'opus',
+    startedAt: prev?.startedAt || String(e.startedAt ?? now), endedAt: final ? now : '', status: final ? (e.status === 'failed' ? 'failed' : 'done') : 'running',
+    reportedCost: Number.isFinite(Number(e.usd)) ? Number(e.usd) : prev?.reportedCost ?? null, usage: e.usage ?? prev?.usage ?? null, session: sid,
+    branch: String(e.branch ?? prev?.branch ?? ''), report: { status: e.status === 'failed' ? 'failed' : 'done', summary },
+  });
+  writeJson(runsFile(), { $axf: 'swarm-runs@1', runs: [...runs.filter((r) => r.jobId !== jobId), rec].slice(-5000) });
+  if (final && prev?.status === 'running') chatAfterRun(rec, roster);
+  return rec;
+}
+
+/** The crew in one compact read (the Claude agent picker): who, status, pay, spend, stats, raises, latest runs. */
+export function crew() {
+  const s = state(); const at = new Date().toISOString(); const day = core.dayStart(at); const week = core.weekStart(at);
+  const mins = (r) => { const a = Date.parse(r.startedAt); const b = Date.parse(r.endedAt || at); return Number.isFinite(a) && Number.isFinite(b) && b > a ? (b - a) / 60000 : 0; };
+  return s.roster.agents.map((a) => {
+    const as = s.swarm.agents[a.id] ?? core.normAgentState({}); const mine = s.runs.filter((r) => r.agent === a.id);
+    const st = core.agentStats(s.runs, a.id, s.prices, 8); const timed = mine.filter((r) => r.endedAt);
+    return {
+      id: a.id, name: core.cardIdentity(a, as).name, role: a.role, specialty: a.specialty, avatar: a.avatar, catchphrase: a.catchphrase, bio: a.bio, jobsOnly: a.jobsOnly,
+      status: as.status, statusLabel: core.statusLabel(as), works: core.STATUSES[as.status]?.works !== false,
+      running: mine.filter((r) => r.status === 'running').map((r) => ({ jobId: r.jobId, buildId: r.buildId, startedAt: r.startedAt, summary: r.report?.summary ?? '' })),
+      pay: s.pay[a.id], spend: { today: s.spend[a.id]?.today.usd ?? 0, week: s.spend[a.id]?.week.usd ?? 0, all: s.spend[a.id]?.all.usd ?? 0, avgPerJob: s.spend[a.id]?.avgPerJob ?? 0 },
+      minutes: { today: Math.round(mine.filter((r) => (r.endedAt || at) >= day).reduce((t, r) => t + mins(r), 0)), week: Math.round(mine.filter((r) => (r.endedAt || at) >= week).reduce((t, r) => t + mins(r), 0)), avgPerJob: timed.length ? Math.round(timed.reduce((t, r) => t + mins(r), 0) / timed.length) : 0 },
+      stats: { runs: st.runs, done: st.done, failed: st.failed, successRate: st.successRate, favoriteModel: st.favoriteModel, lastSeen: st.lastSeen }, feed: st.feed,
+      raises: (as.pay ?? []).slice(-10).reverse(), bonuses: (as.bonuses ?? []).length,
+      // write-ups: the discipline side of the status history (suspended, probation, fired, rage-quit)
+      writeups: (as.history ?? []).filter((h) => ['suspended', 'probation', 'fired', 'quit'].includes(h.to)).slice(-10).reverse(),
+    };
+  });
+}
 
 /** Plan → pack → worktree → claude -p → record. `dry` returns the brief and the command instead of running. */
 export async function run(buildId, ref, opts = {}) {
@@ -317,6 +369,8 @@ export async function main(argv) {
     return out({ ok: true, roster: r, skills: sk, problems }, [...r.agents.map((a) => `${a.id.padEnd(6)} ${a.name.padEnd(12)} ${a.skill.padEnd(17)} ${a.models.join('/')}`), ...problems.map((p) => `! ${p}`)].join('\n'));
   }
   if (cmd === 'state') return out({ ok: true, state: state() }, JSON.stringify(state(), null, 1));
+  if (cmd === 'crew') { const c = crew(); return out({ ok: true, crew: c }, c.map((a) => `${a.id.padEnd(8)} ${a.name.padEnd(16)} ${a.statusLabel.padEnd(12)} today ${core.fmtUsd(a.spend.today)} · ${a.stats.done} done`).join('\n')); }
+  if (cmd === 'book') { const r = book(JSON.parse(rest[0] ?? '{}')); return out({ ok: true, run: r }, `${r.jobId} on ${r.agent}: ${r.status}${r.reportedCost != null ? ` · ${core.fmtUsd(r.reportedCost)}` : ''}`); }
   if (cmd === 'cost') {
     const m = state().meter; const row = (k, v) => `${k.padEnd(28)} ${String(v.runs).padStart(4)} runs ${core.fmtTokens(v.tokens).padStart(7)} tok ${core.fmtUsd(v.usd).padStart(8)}`;
     return out({ ok: true, meter: m }, [row('TOTAL', m.total), '— by agent', ...Object.entries(m.byAgent).map(([k, v]) => row(k, v)), '— by build', ...Object.entries(m.byBuild).map(([k, v]) => row(k, v)), '— by job', ...Object.entries(m.byJob).map(([k, v]) => row(k, v))].join('\n'));
