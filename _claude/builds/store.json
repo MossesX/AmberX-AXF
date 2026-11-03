@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 337,
- "updatedAt": "2026-11-03T18:34:04.047Z",
+ "rev": 338,
+ "updatedAt": "2026-11-03T18:34:30.293Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -53881,7 +53881,7 @@
    "branch": "claude/toolbar-tap-confirm",
    "pr": "",
    "createdAt": "2026-11-03T18:23:45.044Z",
-   "updatedAt": "2026-11-03T18:33:51.650Z",
+   "updatedAt": "2026-11-03T18:33:53.404Z",
    "builtAt": "",
    "notes": [
     {
@@ -53995,12 +53995,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:33:52.210Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-03T18:23:45.045Z",
-     "updatedAt": "2026-11-03T18:24:02.876Z"
+     "updatedAt": "2026-11-03T18:33:52.238Z"
     },
     {
      "id": "s6",
@@ -54017,12 +54017,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:33:52.778Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-03T18:23:45.045Z",
-     "updatedAt": "2026-11-03T18:24:02.876Z"
+     "updatedAt": "2026-11-03T18:33:52.809Z"
     },
     {
      "id": "s7",
@@ -54039,12 +54039,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:33:53.404Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-03T18:23:45.045Z",
-     "updatedAt": "2026-11-03T18:24:02.876Z"
+     "updatedAt": "2026-11-03T18:33:53.432Z"
     },
     {
      "id": "s8",
@@ -54363,7 +54363,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
