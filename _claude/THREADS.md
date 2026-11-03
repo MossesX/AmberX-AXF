@@ -821,3 +821,79 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 18:52 UTC · `toolbar-tap-confirm` note (urgent) · orchestrator
 - 2026-11-03 18:54 UTC · `toolbar-tap-confirm` s8 done, note (urgent) · reconciler
 - 2026-11-03 18:58 UTC · `crew-live` s5 done (urgent) · orchestrator
+- 2026-11-03 19:00 UTC · `crew-live` PR #273 (urgent) · builds-live
+- 2026-11-03 19:01 UTC · `crew-live` s7 done, → built (urgent) · orchestrator
+- 2026-11-03 19:01 UTC · `crew-live` note (urgent) · orchestrator
+- 2026-11-03 19:02 UTC · `claude-settings` added (7 steps) (urgent) · orchestrator
+- 2026-11-03 19:02 UTC · `follow-amber` added (7 steps) (urgent) · orchestrator
+- 2026-11-03 19:02 UTC · `claude-settings` note (urgent) · orchestrator
+- 2026-11-03 19:02 UTC · `claude-settings` branch claude/claude-settings (urgent) · builds-live
+- 2026-11-03 19:02 UTC · `follow-amber` note (urgent) · orchestrator
+- 2026-11-03 19:02 UTC · `follow-amber` → running (urgent) · orchestrator
+- 2026-11-03 19:04 UTC · `agent-pick` added (9 steps) (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:05 UTC · `follow-amber` s1 done (urgent) · orchestrator
+- 2026-11-03 19:05 UTC · `follow-amber` s1 done (urgent) · foreign-write
+- 2026-11-03 19:06 UTC · `claude-settings` s1 done, → running (urgent) · orchestrator
+- 2026-11-03 19:06 UTC · `follow-amber` s2 done (urgent) · orchestrator
+- 2026-11-03 19:07 UTC · `claude-settings` s2 done (urgent) · orchestrator
+- 2026-11-03 19:07 UTC · `claude-settings` s3 done (urgent) · orchestrator
+- 2026-11-03 19:09 UTC · `ui-review-shots` added (5 steps) (urgent) · orchestrator
+- 2026-11-03 19:09 UTC · `ui-review-shots` s1 done, → running (urgent) · orchestrator
+- 2026-11-03 19:09 UTC · `ui-review-shots` note (urgent) · orchestrator
+- 2026-11-03 19:09 UTC · `ui-review-shots` branch claude/ui-review-shots (urgent) · builds-live
+- 2026-11-03 19:11 UTC · `follow-amber` s3 done (urgent) · orchestrator
+- 2026-11-03 19:11 UTC · `follow-amber` s4 done (urgent) · orchestrator
+- 2026-11-03 19:12 UTC · `ui-review-shots` s2 done (urgent) · orchestrator
+- 2026-11-03 19:12 UTC · `claude-settings` s4 done (urgent) · orchestrator
+- 2026-11-03 19:13 UTC · `follow-amber` s5 done (urgent) · orchestrator
+- 2026-11-03 19:13 UTC · `ui-review-shots` note (urgent) · orchestrator
+- 2026-11-03 19:13 UTC · `ui-review-shots` s3 done (urgent) · orchestrator
+- 2026-11-03 19:15 UTC · `agent-pick` s1 done, → running (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:15 UTC · `agent-pick` s2 done (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:15 UTC · `agent-pick` s3 done (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:15 UTC · `agent-pick` s4 done (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:15 UTC · `agent-pick` s5 done (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:14 UTC · `follow-amber` s6 done (urgent) · orchestrator
+- 2026-11-03 19:20 UTC · `claude-settings` note (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:21 UTC · `follow-amber` note (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:21 UTC · `agent-pick` s6 done (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:21 UTC · `agent-pick` s7 done (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:21 UTC · `agent-pick` s8 done (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:31 UTC · `terminal-vps-host` added (5 steps) (current) · orchestrator
+- 2026-11-03 19:31 UTC · `terminal-vps-host` → running (current) · orchestrator
+- 2026-11-03 19:31 UTC · `terminal-vps-host` s1 done (current) · orchestrator
+- 2026-11-03 19:31 UTC · `terminal-vps-host` s3 done (current) · orchestrator
+- 2026-11-03 19:31 UTC · `terminal-vps-host` note (current) · orchestrator
+- 2026-11-03 19:32 UTC · `window-resize-fix` added (3 steps) (current) · foreign-write
+- 2026-11-03 19:37 UTC · `window-resize-fix` added (3 steps) (current) · foreign-write
+- 2026-11-03 19:37 UTC · `terminal-vps-host` s2 done (current) · orchestrator
+- 2026-11-03 19:37 UTC · `terminal-vps-host` s4 done (current) · orchestrator
+- 2026-11-03 19:38 UTC · `terminal-vps-host` s2 done, s4 done (current) · foreign-write
+- 2026-11-03 19:38 UTC · `terminal-vps-host` s2 done, s4 done (current) · builds-live
+- 2026-11-03 19:40 UTC · `terminal-vps-host` branch claude/terminal-vps-host, PR #274, note (current) · reconciler
+- 2026-11-03 19:40 UTC · `terminal-vps-host` note (current) · foreign-write
+- 2026-11-03 19:40 UTC · `terminal-vps-host` s5 done, → complete (current) · orchestrator
+- 2026-11-03 19:40 UTC · `terminal-vps-host` → built, branch claude/terminal-vps-host, PR #274 (current) · builds-live
+- 2026-11-03 19:42 UTC · `terminal-vps-host` s5 done, → complete (current) · foreign-write
+- 2026-11-03 19:43 UTC · `home-cards-live` added (6 steps) (urgent) · orchestrator
+- 2026-11-03 19:43 UTC · `home-cards-live` note (urgent) · orchestrator
+- 2026-11-03 19:43 UTC · `home-cards-live` → running (urgent) · orchestrator
+- 2026-11-03 19:43 UTC · `home-cards` note (angel) · orchestrator
+- 2026-11-03 19:43 UTC · `home-cards` → archived (angel) · orchestrator
+- 2026-11-03 19:45 UTC · `smart-menus` added (7 steps) (urgent) · orchestrator
+- 2026-11-03 19:45 UTC · `smart-menus` → running (urgent) · orchestrator
+- 2026-11-03 19:45 UTC · `smart-menus` note (urgent) · orchestrator
+- 2026-11-03 19:32 UTC · `terminal-vps-host` added (5 steps) (current) · foreign-write
+- 2026-11-03 19:32 UTC · `window-resize-fix` added (3 steps) (current) · orchestrator
+- 2026-11-03 19:47 UTC · `terminal-vps-host` s2 done, s4 done, s5 done, → complete, note (current) · foreign-write
+- 2026-11-03 19:47 UTC · `window-resize-fix` s1 done, → running (current) · orchestrator
+- 2026-11-03 19:12 UTC · `claude-settings` s5 done (urgent) · orchestrator
+- 2026-11-03 19:48 UTC · `terminal-vps-host` added (5 steps) (current) · foreign-write
+- 2026-11-03 19:48 UTC · `window-resize-fix` added (3 steps) (current) · foreign-write
+- 2026-11-03 19:48 UTC · `claude-settings` s6 done (urgent) · orchestrator
+- 2026-11-03 19:48 UTC · `claude-settings` s6 done (urgent) · builds-live
+- 2026-11-03 19:50 UTC · `claude-settings` s7 done, → complete (urgent) · orchestrator
+- 2026-11-03 19:50 UTC · `claude-settings` PR #275, note (urgent) · reconciler
+- 2026-11-03 19:50 UTC · `claude-settings` → built, PR #275 (urgent) · builds-live
+- 2026-11-03 19:50 UTC · `claude-settings` note (urgent) · orchestrator
+- 2026-11-03 19:50 UTC · `claude-settings` s7 done, → built, PR #275, note (urgent) · builds-live
