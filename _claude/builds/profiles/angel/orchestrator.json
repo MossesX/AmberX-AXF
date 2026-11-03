@@ -31,7 +31,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -463,7 +462,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -594,7 +592,6 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -655,7 +652,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -765,7 +761,6 @@
    "builtAt": "2026-10-30T21:21:37.560Z",
    "notes": [],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -892,7 +887,6 @@
      "at": "2026-10-31T09:07:21.794Z"
     }
    ],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1006,7 +1000,6 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1175,7 +1168,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1267,7 +1259,6 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1383,7 +1374,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1475,7 +1465,6 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1536,7 +1525,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1682,7 +1670,6 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1918,7 +1905,6 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2060,7 +2046,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2170,7 +2155,6 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2280,7 +2264,6 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2404,7 +2387,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2654,7 +2636,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2846,7 +2827,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3096,7 +3076,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",

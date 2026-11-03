@@ -50,7 +50,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -259,7 +258,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -576,7 +574,6 @@
      "at": "2026-10-27T19:52:28.958Z"
     }
    ],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1476,7 +1473,6 @@
      "at": "2026-10-27T19:52:29.038Z"
     }
    ],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1775,7 +1771,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1916,7 +1911,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2032,7 +2026,6 @@
      "at": "2026-10-27T20:01:41.480Z"
     }
    ],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2350,7 +2343,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2458,7 +2450,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2575,7 +2566,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2681,7 +2671,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2783,7 +2772,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3083,7 +3071,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3121,7 +3108,6 @@
    "builtAt": "2026-10-28T04:45:09.447Z",
    "notes": [],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3241,7 +3227,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3289,7 +3274,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3337,7 +3321,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3421,7 +3404,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3501,7 +3483,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3782,7 +3763,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3951,7 +3931,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4038,7 +4017,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4140,7 +4118,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4188,7 +4165,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4235,7 +4211,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4386,7 +4361,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4631,7 +4605,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4674,7 +4647,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4847,7 +4819,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4966,7 +4937,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -5101,7 +5071,6 @@
      "at": "2026-10-29T01:29:16.757Z"
     }
    ],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -6752,7 +6721,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -6832,7 +6800,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -6879,7 +6846,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -6989,7 +6955,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7185,7 +7150,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7377,7 +7341,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7465,7 +7428,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7575,7 +7537,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7681,7 +7642,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -7718,7 +7678,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -7755,7 +7714,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -7792,7 +7750,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7902,7 +7859,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -7930,7 +7886,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -8018,7 +7973,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -8102,7 +8056,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -8235,7 +8188,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -8386,7 +8338,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -8550,7 +8501,6 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -8666,7 +8616,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -9215,7 +9164,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -9295,7 +9243,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",

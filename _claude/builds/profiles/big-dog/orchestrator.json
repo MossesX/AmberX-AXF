@@ -31,7 +31,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -231,7 +230,6 @@
    "builtAt": "2026-11-02T14:39:53.393Z",
    "notes": [],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -392,7 +390,6 @@
     }
    ],
    "approvals": [],
-   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
