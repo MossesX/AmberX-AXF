@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 473,
- "updatedAt": "2026-11-03T21:20:06.339Z",
+ "rev": 474,
+ "updatedAt": "2026-11-03T21:20:42.525Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -58529,7 +58529,7 @@
    "branch": "claude/banner-ref-links",
    "pr": "",
    "createdAt": "2026-11-03T20:47:37.192Z",
-   "updatedAt": "2026-11-03T20:56:54.797Z",
+   "updatedAt": "2026-11-03T21:19:59.441Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -58572,12 +58572,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:19:53.668Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T20:47:37.195Z",
-     "updatedAt": "2026-11-03T20:47:37.195Z"
+     "updatedAt": "2026-11-03T21:20:18.400Z"
     },
     {
      "id": "s3",
@@ -58594,12 +58594,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:19:56.666Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T20:47:37.195Z",
-     "updatedAt": "2026-11-03T20:47:37.195Z"
+     "updatedAt": "2026-11-03T21:20:18.400Z"
     },
     {
      "id": "s4",
@@ -58616,12 +58616,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:19:59.441Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T20:47:37.195Z",
-     "updatedAt": "2026-11-03T20:47:37.195Z"
+     "updatedAt": "2026-11-03T21:20:18.400Z"
     },
     {
      "id": "s5",
@@ -58654,10 +58654,26 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-03T20:47:37.192Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw15swa706xlpy": "2026-11-03T20:47:37.195Z",
+     "st-mw15swa707c5kf": "2026-11-03T20:47:37.195Z",
+     "st-mw15swa708359b": "2026-11-03T20:47:37.195Z",
+     "st-mw15swa7090lnd": "2026-11-03T20:47:37.195Z",
+     "st-mw15swa70ag93s": "2026-11-03T20:47:37.195Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-03T20:47:37.195Z",
    "rearranged": false,
