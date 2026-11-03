@@ -251,7 +251,7 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Plugins', items: [{ id: 'token-control', label: 'Token control', icon: 'sliders', view: 'token-control' }] },
   settingsTabs: [{ id: 'token-control', label: 'Token control', icon: 'sliders', order: 90, parent: 'plugins' }],
   // After Codebase changes (4.7) and the Claude handoff reminder (4.9), before approvals (5): renders nothing without a pass.
-  banners: [{ id: 'token-pass', label: 'Token pass', icon: 'key', settingsTab: 'token-control', order: 4.95, render: () => <PassBanner /> }],
+  banners: [{ id: 'token-pass', label: 'Pass', icon: 'key', settingsTab: 'token-control', order: 4.95, render: () => <PassBanner /> }],
   settingsPanels: [{ id: 'token-control.passes', tab: 'token-control', title: 'Veto passes', icon: 'key', order: 20, render: () => <PassSettings /> },
     { id: 'token-control.lifecycle', tab: 'token-control', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

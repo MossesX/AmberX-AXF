@@ -26,12 +26,12 @@
       {
         "target": "tc-tab-passes",
         "title": "Passes",
-        "text": "Veto passes: let token changes in one scope (theme, style, layout or all three) run without axHub's veto for a while, e.g. 30 minutes. Brett approves each pass once; deletes are never covered. Every change made under a pass is logged and Undo puts them all back in one go."
+        "text": "Veto passes: let every command run without axHub's veto for a while, e.g. 30 minutes (Everything, the default), or only token changes in one scope (theme, style, layout or all three). Brett approves each pass once; irreversible deletes still confirm unless the pass includes them. Every change made under a pass is logged and Undo puts them all back in one go."
       },
       {
         "target": "banner:token-pass",
-        "title": "Token pass",
-        "text": "Shows while a veto pass is on: the scope and a live countdown. Extend starts it again from now, Undo puts back every change made under it, Revoke ends it. It turns to a warning two minutes before it ends. When Claude or an agent asks for a pass, the request shows here with Approve and Deny.",
+        "title": "Pass",
+        "text": "Shows while a veto pass is on: what it covers (Everything, or the scope) and a live countdown, e.g. Everything: 29:41 left. Extend starts it again from now, Undo puts back every change made under it, Revoke ends it. It turns to a warning two minutes before it ends. When Claude or an agent asks for a pass, the request shows here with Approve and Deny.",
         "kind": "banner"
       },
       {
@@ -148,13 +148,13 @@
       {
         "target": "extend",
         "title": "Extend",
-        "text": "Starts the pass again from now for its full length, so token changes keep skipping the veto. From your own console session it is on at once.",
+        "text": "Starts the pass again from now for its full length, so commands keep skipping the veto. From your own console session it is on at once.",
         "kind": "button"
       },
       {
         "target": "revoke",
         "title": "Revoke",
-        "text": "Ends the pass now (or withdraws a waiting request): token changes in its scope go through the veto again.",
+        "text": "Ends the pass now (or withdraws a waiting request): commands in its scope go through the veto again.",
         "kind": "button"
       },
       {
@@ -166,8 +166,14 @@
       {
         "target": "start-pass",
         "title": "Start pass",
-        "text": "Starts a veto pass for the picked scope and minutes. From your own console session it is on at once; from anywhere else it waits for your approval.",
+        "text": "Starts a veto pass for the picked scope (Everything by default) and minutes. From your own console session it is on at once; from anywhere else it waits for your approval.",
         "kind": "button"
+      },
+      {
+        "target": "include-irreversible-deletes",
+        "title": "Include irreversible deletes",
+        "text": "Only with Everything: hard deletes nothing can bring back (AmberX notes, to-dos and lists; tools axHub marks irreversible) also skip the confirm while the pass is on. Off by default.",
+        "kind": "field"
       },
       {
         "target": "longest-pass-minutes",

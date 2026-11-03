@@ -95,24 +95,35 @@ A new target or verb is added to `CONTROL_TARGETS` (append-only) and every proje
 
 ## Veto passes (control-pass@1)
 
-Status: since Nov 3 2026 (Urgent build `theme-veto-pass`, Opus). Reference: `framework/core/engines/control-pass.mjs` (pure); store,
-approval and signing: `apps/console-web/plugins/token-control/lib/pass.mjs`. The axHub side is build `axhub-veto-pass` (axHub repo); <!-- axf-plugin:token-control -->
-this section is the contract both sides follow.
+Status: since Nov 3 2026 (Urgent builds `theme-veto-pass` and `pass-all`, Opus). Reference: `framework/core/engines/control-pass.mjs`
+(pure); store, approval and signing: `apps/console-web/plugins/token-control/lib/pass.mjs`. The axHub side is build <!-- axf-plugin:token-control -->
+`axhub-veto-pass` plus `axhub-pass-all` (axHub repo); this section is the contract both sides follow.
 
-Brett (Nov 3 2026): "allow theme changes for the next 30 minutes". Every changing call through axHub is a veto call (90 s
-countdown). A **pass** lets the token changes of one scope run at once for a while, after Brett approved the pass itself once.
+Brett (Nov 3 2026): "allow everything for the next 30 minutes … It's 30 minutes to do whatever I tell you." Every changing call
+through axHub is a veto call (90 s countdown). A **pass** lets every command run at once for a while, after Brett approved the pass
+itself once. By default it covers **everything**; a narrower token scope is still there for "only theme changes".
 
 ### Scopes
 
-| Scope | Covers | CLI word |
+| Scope | Covers | CLI |
 |---|---|---|
-| `tokens.theme` | `set` / `reset` on `tokens.theme` | `theme` (`colour`, `color`) |
-| `tokens.style` | `set` / `reset` on `tokens.style` | `style` |
-| `tokens.layout` | `set` / `reset` on `tokens.layout` | `layout` |
-| `tokens.*` | the three above | `all` |
+| `all` (**default**) | every write on every control@1 target (`set`, `reset`, `add`, `remove`, `act`: tokens, AmberX notes / to-dos / tasks / lists, Plan Studio plans, orchestrator builds) and **every call axHub holds** (any service, any tool: console commands, VPS, GitHub, notes vault, …). Ordinary deletes run without the confirm token. | `axf pass grant 30` (`all`, `everything`) |
+| `tokens.theme` | `set` / `reset` on `tokens.theme` | `--scope theme` (`colour`, `color`) |
+| `tokens.style` | `set` / `reset` on `tokens.style` | `--scope style` |
+| `tokens.layout` | `set` / `reset` on `tokens.layout` | `--scope layout` |
+| `tokens.*` | the three above | `--scope tokens` |
 
-`PASS_SCOPES` is append-only (later e.g. `amberx.notes`). A pass **never** covers `remove` (deletes still confirm), `add` or
-`act`, and never any target outside its scope (`tokens.slots`, typography, density, sizing, AmberX, planner).
+`PASS_SCOPES` is append-only. A narrow scope never covers `remove`, `add`, `act` or a target outside it. **No pass ever covers the
+pass target itself** (`pass.scopes`, the `pass_*` / `token_pass_*` tools): a pass can't grant, approve or widen a pass.
+
+**Irreversible commands** are the exception inside `all`: a delete nothing can bring back. control@1 marks them per target
+(`CONTROL_TARGETS[t].irreversible`, today `remove` on `amberx.items` and `amberx.lists`, hard deletes on every device; a plan's
+delete keeps its history and a build's is journalled, so those are ordinary); axHub marks its own tools (see below). They still
+confirm unless the `all` grant was made with **`include_irreversible: true`** (`axf pass grant 30 --include-irreversible`). The
+flag only goes with `all`. A covered irreversible command answers `confirmation_required` with `irreversible: true` and a note.
+
+Word change: until `pass-all`, the CLI word `all` meant `tokens.*`; it now means everything. `tokens` is the word for the three
+token scopes.
 
 ### Commands
 
@@ -120,22 +131,23 @@ countdown). A **pass** lets the token changes of one scope run at once for a whi
 
 | Verb | Input | What it does |
 |---|---|---|
-| `grant` | `minutes?` (1-240, default 30, capped by the console's *Longest pass* setting), `reason?` | files a request; on at once only when the transport carries Brett's approval |
+| `grant` | `minutes?` (1-240, default 30, capped by the console's *Longest pass* setting), `reason?`, `include_irreversible?` (all only) | files a request; on at once only when the transport carries Brett's approval |
 | `approve` / `deny` | `request` | Brett only (see below): turns a waiting request on / refuses it |
 | `revoke` | – | ends the scope's pass now and withdraws a waiting request |
-| `undo` | – | puts back every token the scope's latest pass changed, each to its value before the pass first touched it; the pass stays as it is |
+| `undo` | – | rolls back what can be rolled back: every token the scope's latest pass changed goes back to its value before the pass first touched it. Everything else (AmberX, planner, other commands) is listed in `notUndoable` (`{at, by, op, target, path?, action?, what}`) and in the answer's `text`, to check by hand. The pass stays as it is |
 
 One pass per scope: an approved grant on a scope that already has an active pass replaces it from the approval on and carries its
 change log (so undo still reaches the first change). Requests nobody approves lapse after 15 minutes. **Expiry is the server's
 clock** (`passActive(p, now)`); no client decides it.
 
 Transports: REST under the plugin mount `/api/plugins/token-control/pass…` (`GET pass` signed publication, `GET pass/status`, <!-- axf-plugin:token-control -->
-`GET pass/check?target=&op=`, `POST pass/grant {scope, minutes?, reason?}`, `POST pass/approve|deny {scope, request}`,
-`POST pass/revoke|undo {scope}`, `GET|PUT pass/settings`); the generic `/api/control` routes and `control_act` with
-`target: pass.scopes`; MCP `token_pass_grant`, `token_pass_status`, `token_pass_revoke`, `token_pass_undo`; CLI
-`axf token pass grant theme 30`, `axf token pass status`, `axf token pass revoke theme`, `axf token pass undo theme`. Answers carry
-`text`, one plain sentence: "Theme changes run without veto until 10:42 AM (30 min left)." (time zone: the setting, default
-America/New_York).
+`GET pass/check?target=&op=` or `?call=<service.tool>&irreversible=`, `POST pass/grant {scope = all, minutes?, reason?,
+include_irreversible?}`, `POST pass/approve|deny {scope, request}`, `POST pass/revoke|undo {scope = all}`, `GET|PUT pass/settings`);
+the generic `/api/control` routes and `control_act` with `target: pass.scopes`; MCP `pass_grant` (scope `all` by default),
+`pass_status`, `pass_revoke`, `pass_undo` (the `token_pass_*` names are the same tools); CLI `axf pass grant 30`,
+`axf pass grant 30 --scope theme`, `axf pass grant 30 --include-irreversible`, `axf pass status`, `axf pass revoke`, `axf pass undo`
+(and the older `axf token pass grant theme 30`). Answers carry `text`, one plain sentence: "Every command runs without veto until
+10:42 AM (30 min left)." (time zone: the setting, default America/New_York).
 
 ### A grant traces to Brett
 
@@ -144,13 +156,15 @@ A command can never say it was approved. The runner takes the approval from the 
 - `console`: the request came from Brett's signed-in axHub session in the console (wall caller `via: "session"`, admin). The
   banner and the Passes tab send owner actions without the console token, so the session is what the server sees; a bearer
   token (what agents, the CLI and the MCP hold) only ever files a request.
-- `axhub`: axHub forwards Brett's own approval of the held `token_pass_grant` call (a straight approval, never a veto: a pass must
+- `axhub`: axHub forwards Brett's own approval of the held `pass_grant` call (a straight approval, never a veto: a pass must
   not turn on by a countdown nobody watched) as `POST pass/approve {scope, request}` with headers
   `X-AXF-Pass-Approver: <hub user>` and `X-AXF-Pass-Approval: t=<ms>,v1=<hex>` where
-  `hex = HMAC-SHA256(secret, "<t>.approve.<request>.<scope>.<minutes>.<hub user>")`, good for five minutes.
+  `hex = HMAC-SHA256(secret, "<t>.approve.<request>.<scope>.<minutes>.<hub user>")`, with `.irreversible` appended when the request
+  has `include_irreversible` (so an approval of a plain pass can't turn on a wider one), good for five minutes. axHub's approval
+  page says "Everything for 30 min" (and "irreversible deletes included" when set).
 - `local`: a console with no token configured at all (local development).
-- `cli-tty`: `axf token pass grant|approve` at a real terminal, after typing the scope word back. Pipes, scripts and agents' shells
-  have no terminal and only file a request.
+- `cli-tty`: `axf pass grant|approve` at a real terminal, after typing the scope word back (`all`, `theme`, …). Pipes, scripts and
+  agents' shells have no terminal and only file a request.
 
 MCP tools and the `control@1` capability never carry an approval. Deny needs the same proof; revoke and undo don't (they only take
 power away or put values back).
@@ -161,36 +175,56 @@ power away or put values back).
 `hex = HMAC-SHA256(secret, "<t>.<exact response body>")`:
 
 ```json
-{ "$axf": "control-pass@1", "at": "…", "active": [{ "id": "pass-…", "scope": "tokens.theme", "state": "active", "expiresAt": "…",
-  "remainingMs": 1740000, "warn": false, "covers": ["tokens.theme"], "ops": ["set", "reset"], "approvedBy": "brett", "text": "…" }],
-  "pending": [], "scopes": { "tokens.theme": { "targets": ["tokens.theme"], "ops": ["set", "reset"] }, "tokens.*": { "includes": [ … ] } },
-  "never": ["remove", "add", "act"] }
+{ "$axf": "control-pass@1", "at": "…", "active": [{ "id": "pass-…", "scope": "all", "label": "Everything", "state": "active",
+  "include_irreversible": false, "expiresAt": "…", "remainingMs": 1740000, "warn": false, "covers": ["*"],
+  "ops": ["set", "reset", "add", "remove", "act"], "changes": 3, "undoable": 1, "notUndoable": 2, "approvedBy": "brett", "text": "…" }],
+  "pending": [], "scopes": { "all": { "targets": ["*"], "ops": [ … ], "includes": [ … ] }, "tokens.theme": { "targets": ["tokens.theme"], "ops": ["set", "reset"] }, … },
+  "default": "all", "excluded": ["pass.scopes"], "irreversible": "covered only by an active all pass with include_irreversible: true" }
 ```
+
+(The `never` field of the theme-veto-pass publication is gone: what a scope covers is its `targets` + `ops`.)
 
 The secret is `AXF_PASS_SECRET`, else `AXF_WALL_SECRET` (the console's copy of the hub's wall secret, already on both sides).
 axHub refuses a publication whose signature fails or is older than five minutes.
 
-**Deciding a held call** (axHub): map the tool call to `{target, op}` (`control_set` / `control_reset` → their `target` + op;
-`token_pass_*` are never skipped), find an active pass whose `covers` has the target and whose `ops` has the op, with
-`expiresAt` ahead of axHub's own clock too; if one is found, run the call at once and note the pass id on the job, else hold it as
-usual. `GET pass/check?target=…&op=…` answers the same question for one call (`{scope, covered, pass?}`).
+**Deciding a held call** (axHub, build `axhub-pass-all`):
 
-**Stamp on every answer**: every control@1 write answer carries `passScope` (the scope a pass would need; `null` = no pass can cover
-it) and, when an active pass covered it, `pass {id, scope, expiresAt}`, so axHub and the logs see which pass a change ran under.
+1. The pass tools (`pass_*`, `token_pass_*`, `control_act` on `pass.scopes`) are never skipped.
+2. Is the call irreversible? axHub marks its own tools (a hard delete of a repo, a branch, files on the hub, a database row with
+   no history; `irreversible: true` in the tool's hub policy). For the console's control@1 tools, `control_remove` /
+   `amberx_remove` on `amberx.items` / `amberx.lists` are irreversible (`pass/check` answers `irreversible`).
+3. If an active pass with `scope: "all"` and `expiresAt` ahead of axHub's own clock is published, and the call isn't irreversible
+   or the pass has `include_irreversible: true`: run the call at once (no countdown, no hold) and note the pass id on the job.
+4. Otherwise, for a control@1 `set` / `reset` on a token target, a narrow pass whose `covers` has the target and `ops` the op
+   covers it as before.
+5. Else hold it as usual.
+
+`GET pass/check?call=<service.tool>&irreversible=true|false` answers step 3 for one call (`{scope: "all", covered, pass?}`);
+`GET pass/check?target=…&op=…` answers it for one control@1 command (`{scope, irreversible, covered, pass?}`).
+
+**Inside the console** the runner applies the same rule: a control@1 write an active pass covers runs; a `remove` it covers runs
+without the confirm token (`confirmSkipped: true` on the answer); an irreversible one still confirms unless the pass includes
+irreversible commands.
+
+**Stamp on every answer**: every control@1 write answer carries `passScope` (the narrowest scope a pass would need: the token scope
+for token set / reset, `all` for every other write, `null` for the pass target) and, when an active pass covered it,
+`pass {id, scope, expiresAt}`, so axHub and the logs see which pass a change ran under.
 
 ### Visibility and safety
 
-- Banner chip (Token pass): one chip per active pass with a live countdown, **Extend**, **Undo N**, **Revoke**; it turns to the
-  warning tone with "ending soon" two minutes before the end. Waiting requests show as "<who> asks: …" with **Approve** / **Deny**.
-- Every grant, request, approval, change (who, token, old → new), revoke, undo and end is one audit row (`audit.jsonl`, with the pass
-  id) and one line under `## Token passes (log)` in THREADS.md (the hub's copy where mounted).
+- Banner chip (Pass): one chip per active pass, **"Everything: 29:41 left"** (or the scope name: "Theme: 4:10 left"; "+irreversible"
+  when included) with **Extend**, **Undo N**, **Revoke**; it turns to the warning tone with "ending soon" two minutes before the
+  end. Waiting requests show as "<who> asks: everything without veto for 30 min" with **Approve** / **Deny**.
+- Every grant, request, approval, change (who, token, old → new; or the command for anything else), revoke, undo (with what it
+  couldn't roll back) and end is one audit row (`audit.jsonl`, with the pass id) and one line under `## Token passes (log)` in
+  THREADS.md (the hub's copy where mounted).
 - Each pass keeps its changes (bounded to 400, the first touch of every token always kept so undo is exact).
 
 ### Recommended axHub policy for the console MCP
 
 | Tool kind | Policy | Why |
 |---|---|---|
-| `readOnlyHint: true` (every `*_list`, `*_get`, `*_status`, `*_find`, `overview`, `build_queue`, `build_next`, `pending_list`, `pending_steps`, `project_*` reads, `tracker_summary`, `libraries`, `build_options`, `app_validate`, `terminal_tail`, `token_pass_status`) | **allow**: run at once, no veto | they change nothing; `apps/console-web/server/test_mcp_tools.py` fails CI if a read tool loses the hint |
-| writes (`readOnlyHint: false`, `destructiveHint: false`) | **veto** (90 s), skipped while a pass covers the call | normal changes |
-| `destructiveHint: true` (`control_remove`, `amberx_remove`) | **confirm**: Brett approves; never covered by a pass | deletes; the runner's confirm token still applies on top |
-| `token_pass_grant` | **approval** (straight, not veto), forwarded as the signed approval above | a pass must trace to Brett |
+| `readOnlyHint: true` (every `*_list`, `*_get`, `*_status`, `*_find`, `overview`, `build_queue`, `build_next`, `pending_list`, `pending_steps`, `project_*` reads, `tracker_summary`, `libraries`, `build_options`, `app_validate`, `terminal_tail`, `pass_status`, `token_pass_status`) | **allow**: run at once, no veto | they change nothing; `apps/console-web/server/test_mcp_tools.py` fails CI if a read tool loses the hint |
+| writes (`readOnlyHint: false`, `destructiveHint: false`) | **veto** (90 s), skipped while an `all` pass (or a narrow pass covering the call) is on | normal changes |
+| `destructiveHint: true` (`control_remove`, `amberx_remove`) | **confirm**; skipped while an `all` pass is on, unless the call is irreversible and the pass doesn't include irreversible | deletes; the runner applies the same rule to its confirm token |
+| `pass_grant`, `token_pass_grant` | **approval** (straight, not veto), forwarded as the signed approval above; never skipped | a pass must trace to Brett |
