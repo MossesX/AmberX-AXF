@@ -5,16 +5,16 @@
   ],
   "hosts": [
     {
-      "input": "patches",
-      "host": "patches"
+      "input": "host",
+      "host": "host"
     },
     {
-      "input": "Patches",
-      "host": "patches"
+      "input": "Host",
+      "host": "host"
     },
     {
-      "input": " patches ",
-      "host": "patches"
+      "input": " host ",
+      "host": "host"
     },
     {
       "input": "dev-console",
@@ -158,18 +158,18 @@
       "embed": null
     },
     {
-      "input": "?axf-embed=patches",
+      "input": "?axf-embed=host",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
       }
     },
     {
-      "input": "?axf-embed=patches&axf-embed-hide=banner,toolbar",
+      "input": "?axf-embed=host&axf-embed-hide=banner,toolbar",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "toolbar",
           "banner"
@@ -177,9 +177,9 @@
       }
     },
     {
-      "input": "?a=b&axf-embed=Patches&axf-embed-hide=layout",
+      "input": "?a=b&axf-embed=Host&axf-embed-hide=layout",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -194,9 +194,9 @@
       "embed": null
     },
     {
-      "input": "axf-embed=patches&axf-embed-hide=toolbar",
+      "input": "axf-embed=host&axf-embed-hide=toolbar",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "toolbar"
         ]
@@ -209,18 +209,18 @@
   ],
   "userAgents": [
     {
-      "input": "Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 Chrome/130 Mobile Safari/537.36 AXF-Embed/patches",
+      "input": "Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 Chrome/130 Mobile Safari/537.36 AXF-Embed/host",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
       }
     },
     {
-      "input": "Mozilla/5.0 (Linux; Android 16) Chrome/130 Mobile AXF-Embed/patches/banner+toolbar",
+      "input": "Mozilla/5.0 (Linux; Android 16) Chrome/130 Mobile AXF-Embed/host/banner+toolbar",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "toolbar",
           "banner"
@@ -228,9 +228,9 @@
       }
     },
     {
-      "input": "Mozilla/5.0 (X11; Linux) AXF-Embed/patches/layout Safari/537.36",
+      "input": "Mozilla/5.0 (X11; Linux) AXF-Embed/host/layout Safari/537.36",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -250,13 +250,13 @@
       }
     },
     {
-      "input": "Mozilla/5.0 NotAXF-Embed/patches",
+      "input": "Mozilla/5.0 NotAXF-Embed/host",
       "embed": null
     },
     {
-      "input": "Mozilla/5.0 AXF-Embed/patches/none Chrome/130",
+      "input": "Mozilla/5.0 AXF-Embed/host/none Chrome/130",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": []
       }
     },
@@ -271,10 +271,10 @@
   ],
   "detect": [
     {
-      "search": "?axf-embed=patches",
-      "userAgent": "Mozilla/5.0 (X11; Linux) AXF-Embed/patches/layout Safari/537.36",
+      "search": "?axf-embed=host",
+      "userAgent": "Mozilla/5.0 (X11; Linux) AXF-Embed/host/layout Safari/537.36",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -282,9 +282,9 @@
     },
     {
       "search": "?x=1",
-      "userAgent": "Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 Chrome/130 Mobile Safari/537.36 AXF-Embed/patches",
+      "userAgent": "Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 Chrome/130 Mobile Safari/537.36 AXF-Embed/host",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -292,9 +292,9 @@
     },
     {
       "search": "",
-      "userAgent": "Mozilla/5.0 (Linux; Android 16) Chrome/130 Mobile AXF-Embed/patches/banner+toolbar",
+      "userAgent": "Mozilla/5.0 (Linux; Android 16) Chrome/130 Mobile AXF-Embed/host/banner+toolbar",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "toolbar",
           "banner"
@@ -303,9 +303,9 @@
     },
     {
       "search": "?axf-embed=bad%20id",
-      "userAgent": "Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 Chrome/130 Mobile Safari/537.36 AXF-Embed/patches",
+      "userAgent": "Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 Chrome/130 Mobile Safari/537.36 AXF-Embed/host",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -313,42 +313,42 @@
     },
     {
       "search": "",
-      "userAgent": "Mozilla/5.0 AXF-Embed/patches/none Chrome/130",
+      "userAgent": "Mozilla/5.0 AXF-Embed/host/none Chrome/130",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": []
       }
     }
   ],
   "suffix": [
     {
-      "host": "patches",
+      "host": "host",
       "hidden": null,
-      "suffix": "AXF-Embed/patches"
+      "suffix": "AXF-Embed/host"
     },
     {
-      "host": "patches",
+      "host": "host",
       "hidden": [
         "banner"
       ],
-      "suffix": "AXF-Embed/patches"
+      "suffix": "AXF-Embed/host"
     },
     {
-      "host": "patches",
+      "host": "host",
       "hidden": [
         "banner",
         "toolbar"
       ],
-      "suffix": "AXF-Embed/patches/toolbar+banner"
+      "suffix": "AXF-Embed/host/toolbar+banner"
     },
     {
-      "host": "patches",
+      "host": "host",
       "hidden": [
         "toolbar",
         "banner",
         "layout"
       ],
-      "suffix": "AXF-Embed/patches/toolbar+banner"
+      "suffix": "AXF-Embed/host/toolbar+banner"
     },
     {
       "host": "dev-console",
@@ -356,57 +356,57 @@
       "suffix": "AXF-Embed/dev-console"
     },
     {
-      "host": "patches",
+      "host": "host",
       "hidden": [
         "nothing"
       ],
-      "suffix": "AXF-Embed/patches"
+      "suffix": "AXF-Embed/host"
     },
     {
-      "host": "patches",
+      "host": "host",
       "hidden": [
         "none"
       ],
-      "suffix": "AXF-Embed/patches/none"
+      "suffix": "AXF-Embed/host/none"
     }
   ],
   "urls": [
     {
       "url": "https://console.amberxai.com/",
-      "host": "patches",
+      "host": "host",
       "hidden": null,
-      "out": "https://console.amberxai.com/?axf-embed=patches"
+      "out": "https://console.amberxai.com/?axf-embed=host"
     },
     {
       "url": "https://console.amberxai.com/?x=1#view",
-      "host": "patches",
+      "host": "host",
       "hidden": null,
-      "out": "https://console.amberxai.com/?x=1&axf-embed=patches#view"
+      "out": "https://console.amberxai.com/?x=1&axf-embed=host#view"
     },
     {
-      "url": "https://pilot.amberxai.com/app?axf-embed=old&axf-embed-hide=toolbar",
-      "host": "patches",
+      "url": "https://other.amberxai.com/app?axf-embed=old&axf-embed-hide=toolbar",
+      "host": "host",
       "hidden": [
         "banner"
       ],
-      "out": "https://pilot.amberxai.com/app?axf-embed=patches"
+      "out": "https://other.amberxai.com/app?axf-embed=host"
     },
     {
       "url": "https://axhub.amberxai.com/apps",
-      "host": "patches",
+      "host": "host",
       "hidden": [
         "banner",
         "toolbar"
       ],
-      "out": "https://axhub.amberxai.com/apps?axf-embed=patches&axf-embed-hide=toolbar,banner"
+      "out": "https://axhub.amberxai.com/apps?axf-embed=host&axf-embed-hide=toolbar,banner"
     },
     {
       "url": "https://h/p#only-hash",
-      "host": "patches",
+      "host": "host",
       "hidden": [
         "layout"
       ],
-      "out": "https://h/p?axf-embed=patches#only-hash"
+      "out": "https://h/p?axf-embed=host#only-hash"
     }
   ]
 }

@@ -66,7 +66,7 @@ hPanel → VPS → **Firewall** → create a rule set and attach it to the VPS:
 
 hPanel → Domains → `<domain>` → **DNS records**. Add `A` records pointing at `<vps-ip>`, TTL 3600:
 
-`axhub`, `console`, `coolify`, `axf`, `pilot`, `patches`
+`axhub`, `console`, `coolify`, `axf`
 
 (Or one wildcard `*` record to `<vps-ip>` covers them all.)
 
@@ -583,7 +583,7 @@ For OpenAI or ElevenLabs voices instead, paste the key in the same settings (it 
 Help mode makes every AmberX app explain itself: tooltips on every button, menu item, switch, slider, tab, column and
 banner, a short intro the first time you open a screen, and a **What is this?** panel with the longer story. Off means
 no tooltips and no clutter. It's in the framework, so the console, every plugin page, axHub web, AmberX web and
-Walkthrough Studio all have it (Patches is paused and gets it when it's re-baked).
+Walkthrough Studio all have it.
 
 ### Step 39. Turn it on
 

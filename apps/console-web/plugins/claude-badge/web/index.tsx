@@ -134,7 +134,7 @@ export const plugin: AxfWebLibrary = {
   version: '0.2.0',
   appMenu,
   provides: ['banner.badge.claude'],
-  // Only a badge on the app's banner: inside a host that hides the banner (Patches) it isn't loaded (embed@1 skipWhen).
+  // Only a badge on the app's banner: inside a host that hides the banner it isn't loaded (embed@1 skipWhen).
   embed: { skipWhen: ['hidden:banner'] },
   register(rt) {
     runtime = rt;

@@ -41,7 +41,6 @@ steps were missing. Treat totals as "at least".
 | `app-port-engine` Port a non-AXF app (bake/rebuild) | 2 d → **1 d** | 16 | step 13: attach MossesX/xGallery and review its report; step 14 pushes a branch there |
 | `lib-clone` Clone an install with data | 1 d → **6 h** | 12 | step 1: which data is copied by default; users/members kept?; step 10: attach xGallery |
 | `plugin-conflicts` Conflict alarm + AI patches (**unsafe**) | 6 h → **6.5 h** | 13 | steps 1–2 are the design notes; step 3: Brett approves the design (conflict kinds, overlay patches, backup + reinstall) before it leaves `unsafe` |
-| `build-pilot-contract` Build Pilot contract (Fable rebuild) | 5 h → **4.5 h** | 9 | step 1: attach MossesX/Build-Pilot |
 | `axhub-agent-host` Agents + sessions on axHub | 2 d → **1.5 d** | 20 | step 1: attach MossesX/axHub; step 19: approve the hub redeploy and run a turn from the phone |
 | `console-android-app-tabs` (already split by the other session) | 1.5 d → **1 d** | 10 → 19 | — (every step was over 30 min; re-cut 1a/1b/2a… keeping the original numbering) |
 | `console-android-native-tabs` (already split) | 7.5 d → **2.5 d** | 12 → 39 | — (same; the old 1.5 d / 1 d steps became 4–6 pieces each) |
@@ -77,7 +76,7 @@ Complete items untouched. Every open item now has an estimate. **Time left on th
 1. `named-asset-rule` step 2 — two decisions (rename vs alias; element assets required or opt-in).
 2. `lib-clone` step 1 — what a clone copies by default; users/members kept or not.
 3. `plugin-conflicts` step 3 — approve the design notes before the item leaves `unsafe`.
-4. Repos to attach when their step comes: Build-Pilot (`build-pilot-contract` 1), axHub (`axhub-agent-host` 1), xGallery (`app-port-engine` 13, `lib-clone` 10).
+4. Repos to attach when their step comes: axHub (`axhub-agent-host` 1), xGallery (`app-port-engine` 13, `lib-clone` 10).
 5. `axhub-agent-host` step 19 — approve the hub redeploy, run one turn from the phone.
 6. `x.console.repo` step 1 — say go (and pick the dependency style).
 7. `x.deploy.console` — confirm the VPS cron, then it's done.

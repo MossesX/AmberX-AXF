@@ -2004,23 +2004,23 @@
         "name": "ok-one",
         "base": "https://axhub.amberxai.com",
         "status": 200,
-        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"patches\",\"name\":\"Patches\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
+        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"notes\",\"name\":\"Notes\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
         "feed": {
           "status": "ok",
           "updatedAt": "2026-10-21T18:05:00.000Z",
           "apps": [
             {
-              "project": "patches",
-              "name": "Patches",
+              "project": "notes",
+              "name": "Notes",
               "platform": "android",
               "latest": {
                 "version": "0.1.0",
                 "build": 12,
-                "file": "patches-0.1.0-b12.apk",
+                "file": "notes-0.1.0-b12.apk",
                 "size": 7340032,
                 "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "builtAt": "2026-10-21T18:00:00.000Z",
-                "url": "https://axhub.amberxai.com/apps/download/patches/patches-0.1.0-b12.apk"
+                "url": "https://axhub.amberxai.com/apps/download/notes/notes-0.1.0-b12.apk"
               },
               "earlier": []
             }
@@ -2044,42 +2044,42 @@
         "name": "ok-earlier-builds",
         "base": "https://axhub.amberxai.com",
         "status": 200,
-        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"patches\",\"name\":\"Patches\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.0.9\",\"build\":11,\"file\":\"patches-0.0.9-b11.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.0.8\",\"build\":10,\"file\":\"patches-0.0.8-b10.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
+        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"notes\",\"name\":\"Notes\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.0.9\",\"build\":11,\"file\":\"notes-0.0.9-b11.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.0.8\",\"build\":10,\"file\":\"notes-0.0.8-b10.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
         "feed": {
           "status": "ok",
           "updatedAt": "2026-10-21T18:05:00.000Z",
           "apps": [
             {
-              "project": "patches",
-              "name": "Patches",
+              "project": "notes",
+              "name": "Notes",
               "platform": "android",
               "latest": {
                 "version": "0.1.0",
                 "build": 12,
-                "file": "patches-0.1.0-b12.apk",
+                "file": "notes-0.1.0-b12.apk",
                 "size": 7340032,
                 "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "builtAt": "2026-10-21T18:00:00.000Z",
-                "url": "https://axhub.amberxai.com/apps/download/patches/patches-0.1.0-b12.apk"
+                "url": "https://axhub.amberxai.com/apps/download/notes/notes-0.1.0-b12.apk"
               },
               "earlier": [
                 {
                   "version": "0.0.9",
                   "build": 11,
-                  "file": "patches-0.0.9-b11.apk",
+                  "file": "notes-0.0.9-b11.apk",
                   "size": 7340032,
                   "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                   "builtAt": "2026-10-21T18:00:00.000Z",
-                  "url": "https://axhub.amberxai.com/apps/download/patches/patches-0.0.9-b11.apk"
+                  "url": "https://axhub.amberxai.com/apps/download/notes/notes-0.0.9-b11.apk"
                 },
                 {
                   "version": "0.0.8",
                   "build": 10,
-                  "file": "patches-0.0.8-b10.apk",
+                  "file": "notes-0.0.8-b10.apk",
                   "size": 7340032,
                   "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                   "builtAt": "2026-10-21T18:00:00.000Z",
-                  "url": "https://axhub.amberxai.com/apps/download/patches/patches-0.0.8-b10.apk"
+                  "url": "https://axhub.amberxai.com/apps/download/notes/notes-0.0.8-b10.apk"
                 }
               ]
             }
@@ -2134,23 +2134,23 @@
         "name": "ok-name-and-platform-default",
         "base": "https://axhub.amberxai.com",
         "status": 200,
-        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"patches\",\"platform\":42,\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
+        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"notes\",\"platform\":42,\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
         "feed": {
           "status": "ok",
           "updatedAt": "2026-10-21T18:05:00.000Z",
           "apps": [
             {
-              "project": "patches",
-              "name": "patches",
+              "project": "notes",
+              "name": "notes",
               "platform": "android",
               "latest": {
                 "version": "0.1.0",
                 "build": 12,
-                "file": "patches-0.1.0-b12.apk",
+                "file": "notes-0.1.0-b12.apk",
                 "size": 7340032,
                 "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "builtAt": "2026-10-21T18:00:00.000Z",
-                "url": "https://axhub.amberxai.com/apps/download/patches/patches-0.1.0-b12.apk"
+                "url": "https://axhub.amberxai.com/apps/download/notes/notes-0.1.0-b12.apk"
               },
               "earlier": []
             }
@@ -2162,23 +2162,23 @@
         "name": "ok-latest-from-versions",
         "base": "https://axhub.amberxai.com",
         "status": 200,
-        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"patches\",\"name\":\"Patches\",\"platform\":\"android\",\"latest\":null,\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
+        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"notes\",\"name\":\"Notes\",\"platform\":\"android\",\"latest\":null,\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
         "feed": {
           "status": "ok",
           "updatedAt": "2026-10-21T18:05:00.000Z",
           "apps": [
             {
-              "project": "patches",
-              "name": "Patches",
+              "project": "notes",
+              "name": "Notes",
               "platform": "android",
               "latest": {
                 "version": "0.1.0",
                 "build": 12,
-                "file": "patches-0.1.0-b12.apk",
+                "file": "notes-0.1.0-b12.apk",
                 "size": 7340032,
                 "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "builtAt": "2026-10-21T18:00:00.000Z",
-                "url": "https://axhub.amberxai.com/apps/download/patches/patches-0.1.0-b12.apk"
+                "url": "https://axhub.amberxai.com/apps/download/notes/notes-0.1.0-b12.apk"
               },
               "earlier": []
             }
@@ -2190,23 +2190,23 @@
         "name": "bad-project-dropped",
         "base": "https://axhub.amberxai.com",
         "status": 200,
-        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"../etc\",\"name\":\"Patches\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]},{\"project\":\"Patches\",\"name\":\"Patches\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]},{\"project\":\"\",\"name\":\"Patches\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]},{\"project\":\"patches\",\"name\":\"Patches\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
+        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"../etc\",\"name\":\"Notes\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]},{\"project\":\"Notes\",\"name\":\"Notes\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]},{\"project\":\"\",\"name\":\"Notes\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]},{\"project\":\"notes\",\"name\":\"Notes\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
         "feed": {
           "status": "ok",
           "updatedAt": "2026-10-21T18:05:00.000Z",
           "apps": [
             {
-              "project": "patches",
-              "name": "Patches",
+              "project": "notes",
+              "name": "Notes",
               "platform": "android",
               "latest": {
                 "version": "0.1.0",
                 "build": 12,
-                "file": "patches-0.1.0-b12.apk",
+                "file": "notes-0.1.0-b12.apk",
                 "size": 7340032,
                 "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "builtAt": "2026-10-21T18:00:00.000Z",
-                "url": "https://axhub.amberxai.com/apps/download/patches/patches-0.1.0-b12.apk"
+                "url": "https://axhub.amberxai.com/apps/download/notes/notes-0.1.0-b12.apk"
               },
               "earlier": []
             }
@@ -2218,23 +2218,23 @@
         "name": "duplicate-project-dropped",
         "base": "https://axhub.amberxai.com",
         "status": 200,
-        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"patches\",\"name\":\"Patches\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]},{\"project\":\"patches\",\"name\":\"Again\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
+        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"notes\",\"name\":\"Notes\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]},{\"project\":\"notes\",\"name\":\"Again\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
         "feed": {
           "status": "ok",
           "updatedAt": "2026-10-21T18:05:00.000Z",
           "apps": [
             {
-              "project": "patches",
-              "name": "Patches",
+              "project": "notes",
+              "name": "Notes",
               "platform": "android",
               "latest": {
                 "version": "0.1.0",
                 "build": 12,
-                "file": "patches-0.1.0-b12.apk",
+                "file": "notes-0.1.0-b12.apk",
                 "size": 7340032,
                 "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "builtAt": "2026-10-21T18:00:00.000Z",
-                "url": "https://axhub.amberxai.com/apps/download/patches/patches-0.1.0-b12.apk"
+                "url": "https://axhub.amberxai.com/apps/download/notes/notes-0.1.0-b12.apk"
               },
               "earlier": []
             }
@@ -2246,7 +2246,7 @@
         "name": "bad-file-dropped",
         "base": "https://axhub.amberxai.com",
         "status": 200,
-        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"patches\",\"name\":\"Patches\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"../../etc/passwd\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"evil.sh\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
+        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"notes\",\"name\":\"Notes\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"../../etc/passwd\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"evil.sh\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
         "feed": {
           "status": "ok",
           "updatedAt": "2026-10-21T18:05:00.000Z",
@@ -2258,7 +2258,7 @@
         "name": "bad-size-dropped",
         "base": "https://axhub.amberxai.com",
         "status": 200,
-        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"patches\",\"name\":\"Patches\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":-1,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b13.apk\",\"size\":\"big\",\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b14.apk\",\"size\":5000000000,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
+        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"notes\",\"name\":\"Notes\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":-1,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b13.apk\",\"size\":\"big\",\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b14.apk\",\"size\":5000000000,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
         "feed": {
           "status": "ok",
           "updatedAt": "2026-10-21T18:05:00.000Z",
@@ -2270,23 +2270,23 @@
         "name": "foreign-url-ignored",
         "base": "https://axhub.amberxai.com",
         "status": 200,
-        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"patches\",\"name\":\"Patches\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\",\"url\":\"https://evil.example/x.apk\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
+        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"notes\",\"name\":\"Notes\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\",\"url\":\"https://evil.example/x.apk\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
         "feed": {
           "status": "ok",
           "updatedAt": "2026-10-21T18:05:00.000Z",
           "apps": [
             {
-              "project": "patches",
-              "name": "Patches",
+              "project": "notes",
+              "name": "Notes",
               "platform": "android",
               "latest": {
                 "version": "0.1.0",
                 "build": 12,
-                "file": "patches-0.1.0-b12.apk",
+                "file": "notes-0.1.0-b12.apk",
                 "size": 7340032,
                 "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "builtAt": "2026-10-21T18:00:00.000Z",
-                "url": "https://axhub.amberxai.com/apps/download/patches/patches-0.1.0-b12.apk"
+                "url": "https://axhub.amberxai.com/apps/download/notes/notes-0.1.0-b12.apk"
               },
               "earlier": []
             }
@@ -2298,23 +2298,23 @@
         "name": "bad-sha-and-build",
         "base": "https://axhub.amberxai.com",
         "status": 200,
-        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"patches\",\"name\":\"Patches\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":-4,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"xyz\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
+        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"notes\",\"name\":\"Notes\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":-4,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"xyz\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
         "feed": {
           "status": "ok",
           "updatedAt": "2026-10-21T18:05:00.000Z",
           "apps": [
             {
-              "project": "patches",
-              "name": "Patches",
+              "project": "notes",
+              "name": "Notes",
               "platform": "android",
               "latest": {
                 "version": "0.1.0",
                 "build": null,
-                "file": "patches-0.1.0-b12.apk",
+                "file": "notes-0.1.0-b12.apk",
                 "size": 7340032,
                 "sha256": "",
                 "builtAt": "2026-10-21T18:00:00.000Z",
-                "url": "https://axhub.amberxai.com/apps/download/patches/patches-0.1.0-b12.apk"
+                "url": "https://axhub.amberxai.com/apps/download/notes/notes-0.1.0-b12.apk"
               },
               "earlier": []
             }
@@ -2326,33 +2326,33 @@
         "name": "duplicate-files-dropped",
         "base": "https://axhub.amberxai.com",
         "status": 200,
-        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"patches\",\"name\":\"Patches\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.0.9\",\"build\":11,\"file\":\"patches-0.0.9-b11.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
+        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"notes\",\"name\":\"Notes\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.0.9\",\"build\":11,\"file\":\"notes-0.0.9-b11.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
         "feed": {
           "status": "ok",
           "updatedAt": "2026-10-21T18:05:00.000Z",
           "apps": [
             {
-              "project": "patches",
-              "name": "Patches",
+              "project": "notes",
+              "name": "Notes",
               "platform": "android",
               "latest": {
                 "version": "0.1.0",
                 "build": 12,
-                "file": "patches-0.1.0-b12.apk",
+                "file": "notes-0.1.0-b12.apk",
                 "size": 7340032,
                 "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "builtAt": "2026-10-21T18:00:00.000Z",
-                "url": "https://axhub.amberxai.com/apps/download/patches/patches-0.1.0-b12.apk"
+                "url": "https://axhub.amberxai.com/apps/download/notes/notes-0.1.0-b12.apk"
               },
               "earlier": [
                 {
                   "version": "0.0.9",
                   "build": 11,
-                  "file": "patches-0.0.9-b11.apk",
+                  "file": "notes-0.0.9-b11.apk",
                   "size": 7340032,
                   "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                   "builtAt": "2026-10-21T18:00:00.000Z",
-                  "url": "https://axhub.amberxai.com/apps/download/patches/patches-0.0.9-b11.apk"
+                  "url": "https://axhub.amberxai.com/apps/download/notes/notes-0.0.9-b11.apk"
                 }
               ]
             }
@@ -2364,69 +2364,69 @@
         "name": "too-many-versions",
         "base": "https://axhub.amberxai.com",
         "status": 200,
-        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"patches\",\"name\":\"Patches\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":1,\"file\":\"patches-0.1.0-b1.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":2,\"file\":\"patches-0.1.0-b2.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":3,\"file\":\"patches-0.1.0-b3.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":4,\"file\":\"patches-0.1.0-b4.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":5,\"file\":\"patches-0.1.0-b5.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":6,\"file\":\"patches-0.1.0-b6.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":7,\"file\":\"patches-0.1.0-b7.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":8,\"file\":\"patches-0.1.0-b8.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":9,\"file\":\"patches-0.1.0-b9.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
+        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[{\"project\":\"notes\",\"name\":\"Notes\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":1,\"file\":\"notes-0.1.0-b1.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":2,\"file\":\"notes-0.1.0-b2.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":3,\"file\":\"notes-0.1.0-b3.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":4,\"file\":\"notes-0.1.0-b4.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":5,\"file\":\"notes-0.1.0-b5.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":6,\"file\":\"notes-0.1.0-b6.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":7,\"file\":\"notes-0.1.0-b7.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":8,\"file\":\"notes-0.1.0-b8.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},{\"version\":\"0.1.0\",\"build\":9,\"file\":\"notes-0.1.0-b9.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
         "feed": {
           "status": "ok",
           "updatedAt": "2026-10-21T18:05:00.000Z",
           "apps": [
             {
-              "project": "patches",
-              "name": "Patches",
+              "project": "notes",
+              "name": "Notes",
               "platform": "android",
               "latest": {
                 "version": "0.1.0",
                 "build": 12,
-                "file": "patches-0.1.0-b12.apk",
+                "file": "notes-0.1.0-b12.apk",
                 "size": 7340032,
                 "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "builtAt": "2026-10-21T18:00:00.000Z",
-                "url": "https://axhub.amberxai.com/apps/download/patches/patches-0.1.0-b12.apk"
+                "url": "https://axhub.amberxai.com/apps/download/notes/notes-0.1.0-b12.apk"
               },
               "earlier": [
                 {
                   "version": "0.1.0",
                   "build": 1,
-                  "file": "patches-0.1.0-b1.apk",
+                  "file": "notes-0.1.0-b1.apk",
                   "size": 7340032,
                   "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                   "builtAt": "2026-10-21T18:00:00.000Z",
-                  "url": "https://axhub.amberxai.com/apps/download/patches/patches-0.1.0-b1.apk"
+                  "url": "https://axhub.amberxai.com/apps/download/notes/notes-0.1.0-b1.apk"
                 },
                 {
                   "version": "0.1.0",
                   "build": 2,
-                  "file": "patches-0.1.0-b2.apk",
+                  "file": "notes-0.1.0-b2.apk",
                   "size": 7340032,
                   "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                   "builtAt": "2026-10-21T18:00:00.000Z",
-                  "url": "https://axhub.amberxai.com/apps/download/patches/patches-0.1.0-b2.apk"
+                  "url": "https://axhub.amberxai.com/apps/download/notes/notes-0.1.0-b2.apk"
                 },
                 {
                   "version": "0.1.0",
                   "build": 3,
-                  "file": "patches-0.1.0-b3.apk",
+                  "file": "notes-0.1.0-b3.apk",
                   "size": 7340032,
                   "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                   "builtAt": "2026-10-21T18:00:00.000Z",
-                  "url": "https://axhub.amberxai.com/apps/download/patches/patches-0.1.0-b3.apk"
+                  "url": "https://axhub.amberxai.com/apps/download/notes/notes-0.1.0-b3.apk"
                 },
                 {
                   "version": "0.1.0",
                   "build": 4,
-                  "file": "patches-0.1.0-b4.apk",
+                  "file": "notes-0.1.0-b4.apk",
                   "size": 7340032,
                   "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                   "builtAt": "2026-10-21T18:00:00.000Z",
-                  "url": "https://axhub.amberxai.com/apps/download/patches/patches-0.1.0-b4.apk"
+                  "url": "https://axhub.amberxai.com/apps/download/notes/notes-0.1.0-b4.apk"
                 },
                 {
                   "version": "0.1.0",
                   "build": 5,
-                  "file": "patches-0.1.0-b5.apk",
+                  "file": "notes-0.1.0-b5.apk",
                   "size": 7340032,
                   "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                   "builtAt": "2026-10-21T18:00:00.000Z",
-                  "url": "https://axhub.amberxai.com/apps/download/patches/patches-0.1.0-b5.apk"
+                  "url": "https://axhub.amberxai.com/apps/download/notes/notes-0.1.0-b5.apk"
                 }
               ]
             }
@@ -3951,7 +3951,7 @@
         "name": "apps-not-array",
         "base": "https://axhub.amberxai.com",
         "status": 200,
-        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":{\"project\":\"patches\"}}",
+        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":{\"project\":\"notes\"}}",
         "feed": {
           "status": "ok",
           "updatedAt": "2026-10-21T18:05:00.000Z",
@@ -3963,23 +3963,23 @@
         "name": "entries-not-objects",
         "base": "https://axhub.amberxai.com",
         "status": 200,
-        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[\"x\",null,[1],5,{\"project\":\"patches\",\"name\":\"Patches\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"patches-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
+        "body": "{\"updatedAt\":\"2026-10-21T18:05:00.000Z\",\"apps\":[\"x\",null,[1],5,{\"project\":\"notes\",\"name\":\"Notes\",\"platform\":\"android\",\"latest\":{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"},\"versions\":[{\"version\":\"0.1.0\",\"build\":12,\"file\":\"notes-0.1.0-b12.apk\",\"size\":7340032,\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"builtAt\":\"2026-10-21T18:00:00.000Z\"}]}]}",
         "feed": {
           "status": "ok",
           "updatedAt": "2026-10-21T18:05:00.000Z",
           "apps": [
             {
-              "project": "patches",
-              "name": "Patches",
+              "project": "notes",
+              "name": "Notes",
               "platform": "android",
               "latest": {
                 "version": "0.1.0",
                 "build": 12,
-                "file": "patches-0.1.0-b12.apk",
+                "file": "notes-0.1.0-b12.apk",
                 "size": 7340032,
                 "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "builtAt": "2026-10-21T18:00:00.000Z",
-                "url": "https://axhub.amberxai.com/apps/download/patches/patches-0.1.0-b12.apk"
+                "url": "https://axhub.amberxai.com/apps/download/notes/notes-0.1.0-b12.apk"
               },
               "earlier": []
             }

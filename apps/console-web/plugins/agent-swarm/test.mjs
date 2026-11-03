@@ -551,4 +551,32 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
   });
 }
 
+// chat watch: read-only hub mirror + mentions of Brett (breakroom-chats@1)
+{
+  const w = await import('./web/chat-watch.mjs');
+  const st = { chat: { enabled: true }, messages: [
+    { id: 'a', at: '2026-11-03T10:00:00.000Z', from: 'boss', kind: 'assign', text: 'Brett wants this today.' },
+    { id: 'b', at: '2026-11-03T10:01:00.000Z', from: 'rio', kind: 'banter', text: 'Brett is a cheapskate, docked my pay again.' },
+    { id: 'c', at: '2026-11-03T10:02:00.000Z', from: 'kat', kind: 'report', text: 'Done. Q for Brett: which theme? key ghp_abcdefghijklmnopqrstuvwxyz0123456789' },
+    { id: 'd', at: '2026-11-03T10:03:00.000Z', from: 'kat', kind: 'banter', text: 'Boss gave me the merge, he said ship it.' },
+    { id: 'e', at: '2026-11-03T10:04:00.000Z', from: 'brett', kind: 'brett', text: 'Brett here.' },
+  ] };
+  t('mentions: about Brett only, newest first, Boss and Brett posts skipped, tone marked', () => {
+    const m = w.mentions(st, roster); assert.deepEqual(m.map((x) => x.id), ['c', 'b']);
+    assert.equal(m[1].tone, 'negative'); assert.equal(m[0].tone, 'neutral'); assert.deepEqual(w.mentions(st, roster, { negativeOnly: true }).map((x) => x.id), ['b']);
+    assert.equal(m[1].fromName, roster.agents.find((a) => a.id === 'rio').name);
+  });
+  t('a bare "Boss" is the orchestrator, "the boss" is Brett', () => { assert.deepEqual(w.mentionHits('Boss gave me the job'), []); assert.deepEqual(w.mentionHits('the boss docked me'), ['the boss']); assert.deepEqual(w.mentionHits('he said ok'), []); });
+  t('secrets are redacted on the way out', () => { const d = w.chatDocs(st, roster, '2026-11-03T11:00:00.000Z'); const all = JSON.stringify(d); assert.ok(!all.includes('ghp_abc')); assert.match(all, /redacted:github-token/); assert.equal(d['index.json'].readOnly, true); assert.equal(d['index.json'].mentions.path, 'agent-swarm/chats/mentions.json'); });
+  t('the hub mirror is written on save and only into its own folder', () => {
+    const d = mkdtempSync(join(tmpdir(), 'axf-chats-')); const hub = join(d, 'hub');
+    writeFileSync(join(d, 'state.json'), JSON.stringify(st));
+    const r = spawnSync(process.execPath, [new URL('./swarm.mjs', import.meta.url).pathname, 'act', 'say', 'hi', 'crew', '--json'], { env: { ...process.env, AXF_SWARM_DIR: d, AXF_SWARM_CHATS_DIR: hub }, encoding: 'utf8' });
+    assert.equal(r.status, 0, r.stderr); assert.deepEqual(readdirSync(hub).sort(), ['group.json', 'index.json', 'mentions.json']);
+    const g = JSON.parse(readFileSync(join(hub, 'group.json'), 'utf8')); assert.equal(g.messages.at(-1).text, 'hi crew');
+    const m = spawnSync(process.execPath, [new URL('./swarm.mjs', import.meta.url).pathname, 'mentions', '--negative', '--json'], { env: { ...process.env, AXF_SWARM_DIR: d }, encoding: 'utf8' });
+    assert.equal(JSON.parse(m.stdout).count, 1);
+  });
+}
+
 console.log(`agent-swarm: ${n} checks passed`);

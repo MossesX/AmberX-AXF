@@ -24,7 +24,7 @@ export interface PluginManifest {
   scopes?: string[];
   targets?: string[];
   enabledByDefault?: boolean;
-  /** can a host app (Patches) add this plugin to its tab group? false (default) | true (its first page) | {view, label?, icon?} */
+  /** can a host app add this plugin to its tab group? false (default) | true (its first page) | {view, label?, icon?} */
   tabable?: boolean | { view: string; label?: string; icon?: string };
   /** the model that built it (plugin@1 builtWith, Oct 23 2026) */
   builtWith?: { model: string; builtAt?: string; rebuildOf?: string; replacedBy?: string; replaces?: string[] };
@@ -89,9 +89,8 @@ export function enabledPlugins(status: PluginStatus[] | null): BundledPlugin[] {
 }
 
 /**
- * Inside a host that manages plugins (embed@1 take `plugins`, Patches; Brett Oct 22 2026: "disable all plugins from the
- * apps and only enable them in Patches"): the plugins to run are the ones the host enabled for the console, whatever
- * the console's own switches say. null = the host hasn't answered yet: run none.
+ * Inside a host that manages plugins (embed@1 take `plugins`): the plugins to run are the ones the host enabled for
+ * the console, whatever the console's own switches say. null = the host hasn't answered yet: run none.
  */
 export function hostEnabledPlugins(hostIds: readonly string[] | null): BundledPlugin[] {
   if (!hostIds) return [];
@@ -119,7 +118,7 @@ export function pluginReport(status: PluginStatus[] | null): EmbedPlugin[] {
   const on = new Set(enabledPlugins(status));
   return bundledPlugins.filter((p) => p.library).map((p) => {
     const t = pluginTab(p);
-    // its own settings tab rides along, so a host (Patches) can give that plugin tab a settings tab of its own
+    // its own settings tab rides along, so a host can give that plugin tab a settings tab of its own
     const settings = p.library?.settingsTabs?.[0]?.id;
     const tab = t && settings ? { ...t, settings } : t;
     const model = p.manifest.builtWith?.model;

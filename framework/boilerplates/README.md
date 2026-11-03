@@ -16,7 +16,7 @@ Categorized starting points for apps built on AmberX AXF. Each folder holds a `b
 **Screenshots (optional, Oct 20 2026):** real captures of an app built from the boilerplate go in
 `<id>/screenshots/` (PNG, JPEG or WebP, plain file names, up to 5 MB each; no SVG) and are listed in
 `screenshots` (`screen` = a screen id, optional; `caption` optional). The Dev Console serves them at
-`GET /api/boilerplates/<id>/screenshots/<file>` (admins / console token). Build Pilot shows them in each
+`GET /api/boilerplates/<id>/screenshots/<file>` (admins / console token). A designer can show them in each
 boilerplate's expanded row; a boilerplate without screenshots shows previews rendered from its screen kinds.
 Captures are made by the **Boilerplate screenshots** workflow (`.github/workflows/boilerplate-shots.yml`, run by
 hand): it builds each boilerplate's Android app, runs it on an emulator, taps through its screens

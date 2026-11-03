@@ -16,7 +16,7 @@
 # Functions that build `docker run` arguments append to a bash array named by their first argument (nameref), so
 # arguments are never word-split. All private locals start with `_axf` so they never shadow the caller's array.
 #
-# Security notes (kept from the copies this came from: deploy/install-console.sh and Build Pilot's deploy/install.sh):
+# Security notes (kept from the copies this came from: deploy/install-console.sh and an earlier app installer):
 #   - the strip middleware runs before forwardAuth, so a client can never send its own X-Auth-User/Role/Perms/Via/Sig;
 #     the app still trusts those headers only when they carry the hub's signature (X-Auth-Sig, HMAC with the secret)
 #   - the wall switches itself on only once the hub really can sign someone in (never locks you out on a fresh hub),
@@ -182,8 +182,8 @@ axf_wall_labels() {
 axf_update_script() {
   local _axf_path="$1" _axf_dir="$2" _axf_branch="$3" _axf_log="$4" _axf_cmd="$5" _axf_st="${6:-}"
   shift 5; [ "$#" -gt 0 ] && shift
-  local _axf_cond='[ "$before" = "$(git rev-parse HEAD)" ]' _axf_m
-  for _axf_m in "$@"; do _axf_cond="$_axf_cond && [ ! -f \"$_axf_m\" ]"; done
+  local _axf_cond='[ "$before" = "$(git rev-parse HEAD)" ]' _axf_data='git diff --quiet "$before" HEAD -- . '"'"':(exclude)_claude'"'"'' _axf_m
+  for _axf_m in "$@"; do _axf_cond="$_axf_cond && [ ! -f \"$_axf_m\" ]"; _axf_data="$_axf_data && [ ! -f \"$_axf_m\" ]"; done
   {
     printf '%s\n' '#!/usr/bin/env bash' \
       '# Written by framework/deploy/axf-deploy.sh (axf_update_script). One block, so bash reads it all before running:' \
@@ -192,7 +192,8 @@ axf_update_script() {
     [ -n "${AXF_UPDATE_PRELUDE:-}" ] && printf '%s\n' "$AXF_UPDATE_PRELUDE"
     printf '%s\n' \
       "before=\$(git rev-parse HEAD); ${AXF_UPDATE_FETCH:-git} fetch -q origin $_axf_branch && git reset -q --hard origin/$_axf_branch" \
-      "$_axf_cond && exit 0  # unchanged (and no marker asks for a re-run)"
+      "$_axf_cond && exit 0  # unchanged (and no marker asks for a re-run)" \
+      "$_axf_data && exit 0  # only _claude/ changed (builds-live status commits): the checkout is current, nothing to rebuild"
     if [ -n "$_axf_st" ]; then
       printf '%s\n' '# Progress for the app'"'"'s Activity banner (activity@1, source "update"). No secrets in it.' \
         "st=\"$_axf_st\"; after=\$(git rev-parse HEAD); t0=\$(date +%s)" \

@@ -44,7 +44,10 @@ import { normApproval, normRequest } from '../core/model-switch.mjs';
 
 export const SCHEMA = 'builds@1';
 export const MODELS = ['Fable', 'Opus'];
-export const STATUSES = ['pending', 'running', 'waiting', 'blocked', 'failed', 'complete', 'archived'];
+/** `built` = every step done, its PR not merged yet (Nov 3 2026, orch-live-sync); `complete` once the PR merged. */
+export const STATUSES = ['pending', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
+/** Statuses that count as finished work (progress, Pending list). */
+export const FINISHED = ['built', 'complete'];
 export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 30 };
 export const BASE_PROFILE = 'main-framework';
 
@@ -55,7 +58,7 @@ const stepModel = (m) => (m === 'Fable' ? 'Fable' : 'Opus');
 const clone = (o) => JSON.parse(JSON.stringify(o));
 const nowIso = () => new Date().toISOString();
 export const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
-const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'steps'];
+const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'steps'];
 const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note'];
 
 // ------------------------------------------------------------------ records
@@ -119,9 +122,10 @@ export function normBuild(b, ctx = {}) {
     pendingId: str(o.pendingId, 80),
     branch: str(o.branch, 200),
     pr: str(o.pr, 200),
+    ...(str(o.mergedAt) ? { mergedAt: str(o.mergedAt, 40) } : {}), // when its PR merged (built → complete)
     createdAt: str(o.createdAt, 40) || at,
     updatedAt: str(o.updatedAt, 40) || at,
-    builtAt: o.status === 'complete' ? str(o.builtAt, 40) : '',
+    builtAt: FINISHED.includes(o.status) ? str(o.builtAt, 40) : '',
     notes: (Array.isArray(o.notes) ? o.notes : []).map((n) => ({ text: str(n?.text, 2000), at: str(n?.at, 40) })).filter((n) => n.text),
     approvals: (Array.isArray(o.approvals) ? o.approvals : []).map(normApproval), // model-switch.mjs: who approved, how
     upgradeRequests: (Array.isArray(o.upgradeRequests) ? o.upgradeRequests : []).map(normRequest).filter((r) => r.id),
@@ -263,7 +267,7 @@ export function diffStores(before, after, now = nowIso()) {
 export function pendingStatusOf(b) {
   const own = b.pending?.status;
   if (b.status === 'archived') return own || 'complete';
-  if (b.status === 'complete') return 'complete';
+  if (FINISHED.includes(b.status)) return 'complete';
   if (b.status === 'failed') return 'failed';
   if (b.status === 'blocked' && (own === 'unsafe' || own === 'broken')) return own;
   return 'pending';
@@ -280,7 +284,7 @@ export function buildProgress(b) {
   const steps = b.steps.filter((s) => !s.skip);
   const total = steps.length;
   const done = steps.filter((s) => s.done).length;
-  const finished = ['complete', 'archived'].includes(b.status);
+  const finished = [...FINISHED, 'archived'].includes(b.status);
   const pct = total ? Math.round((done / total) * 100) : finished ? 100 : 0;
   const active = b.status === 'running' || (done > 0 && done < total && !finished);
   return { total, done, pct, active, status: b.status };
@@ -291,9 +295,9 @@ export function profileProgress(store, profile) {
   let total = 0; let done = 0; let active = false; let complete = 0;
   for (const b of list) {
     const p = buildProgress(b);
-    if (p.total) { total += p.total; done += p.done; } else { total += 1; done += b.status === 'complete' ? 1 : 0; }
+    if (p.total) { total += p.total; done += p.done; } else { total += 1; done += FINISHED.includes(b.status) ? 1 : 0; }
     if (p.active) active = true;
-    if (b.status === 'complete') complete += 1;
+    if (FINISHED.includes(b.status)) complete += 1;
   }
   return { builds: list.length, complete, total, done, pct: total ? Math.round((done / total) * 100) : 0, active };
 }
@@ -301,7 +305,7 @@ export function profileProgress(store, profile) {
 // ------------------------------------------------------------------ orchestrator@1 projection
 
 const orchStep = (s) => { const o = {}; for (const k of ORCH_STEP_KEYS) o[k] = s[k]; o.uid = s.uid; if (s.title) o.title = s.title; return o; };
-const orchBuild = (b) => { const o = {}; for (const k of ORCH_BUILD_KEYS) o[k] = k === 'steps' ? b.steps.map(orchStep) : clone(b[k]); return o; };
+const orchBuild = (b) => { const o = {}; for (const k of ORCH_BUILD_KEYS) if (b[k] !== undefined) o[k] = k === 'steps' ? b.steps.map(orchStep) : clone(b[k]); return o; };
 
 export function projectOrchestrator(store, profile) {
   return { $axf: 'orchestrator@1', updatedAt: store.updatedAt, rules: { ...DEFAULT_RULES, ...(store.rules[profile] ?? {}) }, builds: buildsOf(store, profile).map(orchBuild) };
@@ -457,7 +461,7 @@ export function absorbPending(store, profile, pending, change = null, { now = no
     if (it.status !== shownItem.status) { // only a real status change on the Pending side moves the build
       const st = orchStatusOfPending(it.status);
       if (st) { if (st !== b.status) { b.status = st; b.builtAt = st === 'complete' ? it.builtAt || now : ''; } }
-      else if (['complete', 'failed', 'blocked', 'archived'].includes(b.status) && it.status === 'pending') { b.status = b.steps.some((x) => x.done) ? 'running' : 'pending'; b.builtAt = ''; }
+      else if (['built', 'complete', 'failed', 'blocked', 'archived'].includes(b.status) && it.status === 'pending') { b.status = b.steps.some((x) => x.done) ? 'running' : 'pending'; b.builtAt = ''; }
     }
     const incoming = (it.subPrompts ?? []).map((p, k) => {
       const t = prefix ? plain(p.text) : str(p.text);

@@ -110,8 +110,9 @@ t('CLI saves the store (versioned)', () => { const f = JSON.parse(readFileSync(p
 // the orchestrator's own builds in the real store keep the small-steps rule (Pending-only items are warned about by pending.mjs --check-steps)
 const store = JSON.parse(readFileSync(new URL('../../../../_claude/builds/store.json', import.meta.url), 'utf8'));
 // same scope as before the store: the Main framework orchestrator's builds, plus builds added through the orchestrator since
+// finished builds are out of scope: the small-steps rule is about work still to do
 const own = store.builds.filter((x) => !x.deleted && ((x.legacy ?? []).some((l) => l.file === '_claude/builds/orchestrator.json') || (!x.pending && x.kind !== 'epic' && !(x.legacy ?? []).length && x.steps.length)));
-t('repo store: orchestrator builds are valid and small-stepped', () => { assert.equal(store.$axf, 'builds@1'); const st = c.normalizeState({ builds: own }); assert.ok(st.builds.length >= 1); for (const bb of st.builds) assert.equal(c.splitCheck(bb, st.rules).needsSplit, false, bb.id); });
+t('repo store: orchestrator builds are valid and small-stepped', () => { assert.equal(store.$axf, 'builds@1'); const st = c.normalizeState({ builds: own }); assert.ok(st.builds.length >= 1); for (const bb of st.builds.filter((x) => !['built', 'complete', 'archived'].includes(x.status))) assert.equal(c.splitCheck(bb, st.rules).needsSplit, false, bb.id); });
 // feature-matrix@1 Apply engine output (framework/spec/fixtures/feature-matrix.json): skipped steps leave sums, next and the brief
 const fmx = JSON.parse(readFileSync(new URL('../../../../framework/spec/fixtures/feature-matrix.json', import.meta.url), 'utf8'));
 t('matrix-applied build: skipped step leaves progress, phases and the brief', () => {

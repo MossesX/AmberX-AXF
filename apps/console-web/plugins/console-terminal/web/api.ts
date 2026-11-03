@@ -15,11 +15,16 @@ export type Via = 'console' | 'vps' | 'container' | 'axhub';
 /** What a tab opens. Claude Code tabs carry `via` (+ `container`) for their connection and their profile's options. */
 export interface Open {
   kind: Kind; container?: string; cwd?: string; confirmProtected?: boolean; title?: string; attach?: string;
+  /** The persistent tmux session (axt-…) this tab lives in: picked once, kept with the tab, re-attached after any drop. */
+  tmux?: string;
   via?: Via; profile?: string; model?: string; permissionMode?: string; flags?: string[]; prompt?: string;
 }
 /** A place a tab can connect to (GET connections). */
 export interface Connection { id: string; via: Via; container?: string; label: string; detail: string; icon: string; badge?: string | null; ready: boolean; claude: boolean; shell?: boolean; why: string; group?: string }
-export interface SessionInfo { id: string; kind: Kind; title: string; target: string; cwd: string; mosh: boolean; badge: string | null; protected: boolean; createdAt: number; attached: number; closed: boolean }
+export interface AttachCmd { mosh: string; ssh: string; tmux: string }
+export interface SessionInfo { id: string; kind: Kind; title: string; target: string; cwd: string; mosh: boolean; badge: string | null; protected: boolean; createdAt: number; attached: number; closed: boolean; tmux?: string | null; where?: 'vps' | 'console' | null; attachCmd?: AttachCmd | null }
+/** A persistent tmux session the terminal knows (GET tmux). */
+export interface TmuxSession { name: string; createdAt: number; attached: number; kind: 'headless' | 'tab' | string; agent: string; model: string; cwd: string; where: 'vps' | 'console' }
 export interface Settings {
   idleMinutes: number; moshKeepMinutes: number; fontSize: number; copyOnSelect: boolean; pasteWarn: boolean; mouseDefault: boolean; moshDefault: boolean; showHubRuns: boolean; showHeadless: boolean; user: string;
   vps: { host: string; port: number; user: string }; sshKey: boolean; claudeToken: boolean; publicKey?: string;
@@ -28,6 +33,8 @@ export interface Settings {
   cursorBlink: boolean; scrollback: number; padding: number; bell: 'none' | 'visual' | 'sound'; closeConfirm: boolean;
   startup: 'claude' | 'console' | 'picker' | 'none'; newTab: 'picker' | 'same'; tabWidth: 'equal' | 'compact' | 'title';
   claudeProfiles: ClaudeProfile[]; defaultClaudeProfile: string;
+  // headless tabs (Nov 3 2026)
+  persistTabs: boolean; splitDefault: 'side' | 'stacked' | 'none'; chainSpeed: 'slow' | 'normal' | 'fast' | 'instant'; showChain: boolean;
 }
 /** A Claude Code profile: how a Claude Code tab starts (Oct 28 2026). */
 export interface ClaudeProfile { id: string; name: string; model: string; permissionMode: string; flags: string[]; cwd: string; prompt: string; icon: string; color: string; connection: string }

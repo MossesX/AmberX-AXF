@@ -65,7 +65,7 @@ and a secrets scan. This build lifts that into a shared recorder and adds a seco
 | 16 | Why it matters: speed, one look everywhere, Claude-native, what's next | diagram | 2 |
 
 Rules for the words (same as AmberX's script): facts match the code and docs; nothing unbuilt is promised (Android
-work on hold, Patches paused, HR shelved are skipped or named as on hold); persona only in narration, captions follow
+work on hold, HR shelved are skipped or named as on hold); persona only in narration, captions follow
 the narration word for word; no slurs, no sexual stuff.
 
 ## Steps

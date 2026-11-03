@@ -1,7 +1,7 @@
 /**
  * AmberX plugins (catalog kind `amberx`, amberx-plugin@1): each folder in `src/plugins/<folder>/` has a `plugin.json`
  * and `web/index.tsx` exporting `library` (an AxfWebLibrary). The Dev Console installs them from the plugin catalog
- * (`plugin-catalog.mjs app-install amberx <folder>`, Patches → Plugins per app) and commits the folder to GitHub; this
+ * (`plugin-catalog.mjs app-install amberx <folder>`) and commits the folder to GitHub; this
  * app's 5-minute update rebuilds with it. They run only in the browser: the Android shell loads the same bundle.
  * Folders starting with "_" (the template) never load.
  *
