@@ -568,7 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 17:26 UTC · landed `claude/theme-veto-pass` (PR#262) on main at 16620d72 · land-everything
 - 2026-11-03 17:26 UTC · landed `claude/pass-all` (PR#264) on main at 16620d72 · land-everything
 - 2026-11-03 17:35 UTC · landed `claude/plugin-commands-auto` (PR#263) on main at cdd568c2 · land-everything
 - 2026-11-03 17:42 UTC · landed `claude/axhub-veto-pass-web` (PR#261) on main at bc344492 · land-everything
@@ -968,3 +967,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 20:43 UTC · `smart-menus` s7 done, → built (urgent) · orchestrator
 - 2026-11-03 20:43 UTC · `smart-menus` note (urgent) · orchestrator
 - 2026-11-03 20:44 UTC · `smart-menus` s7 done, → built (urgent) · foreign-write
+- 2026-11-03 20:47 UTC · `plugin-settings-placement` s1 done (current) · foreign-write
