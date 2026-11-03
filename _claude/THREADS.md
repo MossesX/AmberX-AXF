@@ -863,3 +863,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 19:37 UTC · `terminal-vps-host` s4 done (current) · orchestrator
 - 2026-11-03 19:38 UTC · `terminal-vps-host` s2 done, s4 done (current) · foreign-write
 - 2026-11-03 19:38 UTC · `terminal-vps-host` s2 done, s4 done (current) · builds-live
+- 2026-11-03 19:40 UTC · `terminal-vps-host` branch claude/terminal-vps-host, PR #274, note (current) · reconciler
