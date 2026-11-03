@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 468,
- "updatedAt": "2026-11-03T21:12:44.773Z",
+ "rev": 469,
+ "updatedAt": "2026-11-03T21:13:08.519Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -59642,7 +59642,7 @@
    "status": "running",
    "hidden": false,
    "source": "console",
-   "pendingId": "urgent-main-ci-green",
+   "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T21:12:18.212Z",
@@ -59654,7 +59654,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mw16p28t01j6hk",
+     "uid": "st-mw16on0s06f8hs",
      "title": "",
      "text": "Read the latest failing main CI run and get the exact failures",
      "model": "Opus",
@@ -59670,13 +59670,13 @@
      "done": true,
      "doneAt": "2026-11-03T21:12:20.518Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T21:12:18.219Z",
-     "updatedAt": "2026-11-03T21:12:37.871Z"
+     "updatedAt": "2026-11-03T21:12:20.607Z"
     },
     {
      "id": "s2",
-     "uid": "st-mw16p28t02ktid",
+     "uid": "st-mw16on0s07twwn",
      "title": "",
      "text": "Fix each failure at the root (widgets fixture, xlayout opens, Kotlin banner test)",
      "model": "Opus",
@@ -59692,13 +59692,13 @@
      "done": true,
      "doneAt": "2026-11-03T21:12:22.113Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T21:12:18.219Z",
-     "updatedAt": "2026-11-03T21:12:37.871Z"
+     "updatedAt": "2026-11-03T21:12:22.262Z"
     },
     {
      "id": "s3",
-     "uid": "st-mw16p28t03lupa",
+     "uid": "st-mw16on0s080oj5",
      "title": "",
      "text": "Get main green: small PR; refresh the waiting PRs from main",
      "model": "Opus",
@@ -59716,11 +59716,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-03T21:12:18.219Z",
-     "updatedAt": "2026-11-03T21:12:37.871Z"
+     "updatedAt": "2026-11-03T21:12:18.219Z"
     },
     {
      "id": "s4",
-     "uid": "st-mw16p28t04rlr2",
+     "uid": "st-mw16on0s09bkwg",
      "title": "",
      "text": "health@1 check: red banner item when main CI is red, with an Auto fix that queues an ops-fix job",
      "model": "Opus",
@@ -59738,11 +59738,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-03T21:12:18.219Z",
-     "updatedAt": "2026-11-03T21:12:37.871Z"
+     "updatedAt": "2026-11-03T21:12:18.219Z"
     },
     {
      "id": "s5",
-     "uid": "st-mw16p28t05mvwt",
+     "uid": "st-mw16on0s0apxt0",
      "title": "",
      "text": "Report, THREADS, store steps",
      "model": "Opus",
@@ -59760,7 +59760,7 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-03T21:12:18.219Z",
-     "updatedAt": "2026-11-03T21:12:37.871Z"
+     "updatedAt": "2026-11-03T21:12:18.219Z"
     }
    ],
    "profiles": [
@@ -59771,28 +59771,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-03T21:12:18.212Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mw16p28t01j6hk": "2026-11-03T21:12:18.219Z",
-     "st-mw16p28t02ktid": "2026-11-03T21:12:18.219Z",
-     "st-mw16p28t03lupa": "2026-11-03T21:12:18.219Z",
-     "st-mw16p28t04rlr2": "2026-11-03T21:12:18.219Z",
-     "st-mw16p28t05mvwt": "2026-11-03T21:12:18.219Z"
-    }
-   },
+   "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-03T21:12:37.871Z",
+   "defaultAt": "2026-11-03T21:12:18.219Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
