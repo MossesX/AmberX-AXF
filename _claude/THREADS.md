@@ -568,9 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:57 UTC · `amberx-notes` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `fix-interface-scope-settings` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `fix-hubsync-look-source` merged, note (refactor) · reconciler
 - 2026-11-03 13:57 UTC · `fix-banner-snap` merged, note (refactor) · reconciler
 - 2026-11-03 13:57 UTC · `banner-fix-fallback` PR #152, merged, note (refactor) · reconciler
 - 2026-11-03 13:57 UTC · `amberx-push` merged, note (refactor) · reconciler
@@ -968,3 +965,6 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 20:56 UTC · `banner-ref-links` s1 done (current) · orchestrator
 - 2026-11-03 20:57 UTC · `banner-ref-links` → running, branch claude/banner-ref-links (current) · foreign-write
 - 2026-11-03 21:00 UTC · `home-cards-live` branch claude/home-cards-live, note (urgent) · reconciler
+- 2026-11-03 21:02 UTC · `build-prompt-origin` s3 done, s5 done, → complete (current) · foreign-write
+- 2026-11-03 21:02 UTC · `plugin-settings-placement` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 21:02 UTC · `banner-ref-links` s1 done (current) · foreign-write
