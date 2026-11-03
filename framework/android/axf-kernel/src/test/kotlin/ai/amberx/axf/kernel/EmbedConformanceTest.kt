@@ -88,7 +88,7 @@ class EmbedConformanceTest {
         assertFalse(solo.slotHidden("banner"))
         assertFalse(solo.slotHiddenByHost("banner"))
 
-        val inside = runtime(Embed("patches", listOf("banner")))
+        val inside = runtime(Embed("host", listOf("banner")))
         assertTrue(inside.slotHidden("banner"))
         assertTrue(inside.slotHiddenByHost("banner"))
         assertEquals(solo.slotHidden("toolbar"), inside.slotHidden("toolbar"), "other chrome untouched")
@@ -96,7 +96,7 @@ class EmbedConformanceTest {
         assertTrue(inside.slotHidden("banner"), "show refused while embedded")
         assertTrue(inside.hiddenSlots().contains("banner"))
 
-        val both = runtime(Embed("patches", listOf("banner", "toolbar")))
+        val both = runtime(Embed("host", listOf("banner", "toolbar")))
         assertTrue(both.hiddenSlots().containsAll(listOf("banner", "toolbar")))
     }
 }

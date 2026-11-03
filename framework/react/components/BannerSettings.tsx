@@ -512,7 +512,7 @@ export function BannerSettingsPanel({ initial }: { initial?: string }) {
               <Button tone="ghost" icon="chevron-up" disabled={at <= 0} onClick={() => move(-1)}>Up</Button>
               <Button tone="ghost" icon="chevron-down" disabled={at >= shownOrder.length - 1} onClick={() => move(1)}>Down</Button>
             </div>
-            <Switch label="Hide it inside a host app (Patches)" checked={p.hideInHost} onChange={(v) => set({ hideInHost: v })} />
+            <Switch label="Hide it inside a host app" checked={p.hideInHost} onChange={(v) => set({ hideInHost: v })} />
           </Section>
           {b.settingsTab && ownSettings && (
             <Section title={`${bannerLabel(b)} settings`}>{ownSettings(b.settingsTab)}</Section>

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 163,
- "updatedAt": "2026-11-03T11:09:57.869Z",
+ "rev": 236,
+ "updatedAt": "2026-11-03T16:41:43.306Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -276,6 +276,10 @@
    "breakroom": {
     "artifact": "",
     "updatedAt": "2026-11-01T02:11:52.634Z"
+   },
+   "big-dog": {
+    "artifact": "",
+    "updatedAt": "2026-11-03T11:52:58.737Z"
    }
   }
  },
@@ -1982,8 +1986,9 @@
    "pendingId": "",
    "branch": "claude/refactor-all",
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
+   "mergedAt": "2026-10-29T03:49:47Z",
    "createdAt": "2026-10-27T16:56:46.231Z",
-   "updatedAt": "2026-10-30T18:10:39.641Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-30T18:10:39.641Z",
    "notes": [
     {
@@ -2041,6 +2046,10 @@
     {
      "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
      "at": "2026-10-28T19:31:15.654Z"
+    },
+    {
+     "text": "Reconciler: PR #166 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [
@@ -3095,7 +3104,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -6717,12 +6726,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-18T04:10:00.000Z",
-   "updatedAt": "2026-10-23T18:22:53.000Z",
+   "updatedAt": "2026-11-03T14:24:43.493Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Overlaps settings-asset (new `settings` asset type, branch claude/project-thread-55oakl); build with settings-asset-fable.",
      "at": "2026-10-23T18:22:53.000Z"
+    },
+    {
+     "text": "Nov 3 2026: Build Pilot is retired; s13 only covers the console's asset designer now.",
+     "at": "2026-11-03T14:24:43.493Z"
     }
    ],
    "approvals": [],
@@ -7044,7 +7057,7 @@
    },
    "kind": "build",
    "planRef": "x.assets.templates",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -8731,16 +8744,21 @@
    "title": "Build Pilot plugin contract (Fable rebuild)",
    "category": "",
    "detail": "Rebuild the pilot-plugin@1 contract in MossesX/Build-Pilot (src/pilot/contract.ts + stacks.ts): stack-scoped plugins (one stack, several, or * for all), steps, build patches, compose/merge/conflict rules, checks, and the pilot-project@1 format, so it ports cleanly to the Android version of Build Pilot and to every future stack. The Opus version was built Oct 19 2026; keep its tests (tests/contract.test.ts) passing or replace them with stricter ones, and keep the five Android/all-stack plugins working.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "build-pilot-contract",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-19T11:40:14.809Z",
-   "updatedAt": "2026-10-21T04:46:12.595Z",
+   "updatedAt": "2026-11-03T14:24:20.944Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:20.226Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -8950,7 +8968,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -8992,19 +9010,23 @@
    "title": "Build Pilot: AI assistant + agent manager + assembling agent (Fable)",
    "category": "",
    "detail": "Port the console AI assistant and agent manager into Build Pilot (MossesX/Build-Pilot), and make the assembling agent (pilot-assembler) run there as a local backend in server/assembly.py instead of the Dev Console. The agent may only add features from existing plugins, libraries, modules, boilerplates, assets and build options, or build NEW AXF libraries (approved by a person). Rule: all assembly of apps goes through the agent. Also rebuild the Opus feature manager plugin (plugins/feature-manager, built Oct 19 2026) and the gate (pilot-assembly@1, server/assembly.py); keep server/test_server.py passing or replace it with stricter tests.",
-   "status": "complete",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "build-pilot-agents",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-19T12:02:10.988Z",
-   "updatedAt": "2026-10-21T03:35:03.528Z",
-   "builtAt": "2026-10-21T03:35:03.527Z",
+   "updatedAt": "2026-11-03T14:24:22.675Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Fable rebuild done Oct 20 2026 (Build-Pilot main 2dfb08e): assistant + agent manager in Build Pilot, local assembler backend, manual mode. Tests 157 → 282. Agents move to axHub later: axhub-agent-host.",
      "at": "2026-10-21T03:35:03.528Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:21.829Z"
     }
    ],
    "approvals": [],
@@ -9017,7 +9039,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -9056,9 +9078,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-21T03:33:11.548Z",
-   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "updatedAt": "2026-11-03T14:24:42.740Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Nov 3 2026: s12 (Build Pilot backend) skipped, Build Pilot is retired.",
+     "at": "2026-11-03T14:24:42.740Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -9317,13 +9344,13 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "skip": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-21T04:46:12.595Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T14:24:42.023Z"
     },
     {
      "id": "s13",
@@ -9510,7 +9537,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -9570,12 +9597,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-21T03:58:03.794Z",
-   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "updatedAt": "2026-11-03T14:24:41.067Z",
    "builtAt": "",
    "notes": [
     {
      "text": "ON HOLD (Brett, Oct 21 2026): don't build the console or Build Pilot Android apps any more — Brett will finish them himself later. Never start this item (or any step of it) unless he says so.",
      "at": "2026-10-21T10:20:04.159Z"
+    },
+    {
+     "text": "Nov 3 2026: Build Pilot is retired; the Pilot tab is dropped, only the axHub tab remains in scope.",
+     "at": "2026-11-03T14:24:41.067Z"
     }
    ],
    "approvals": [],
@@ -10007,7 +10038,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -10059,19 +10090,23 @@
    "title": "Console Android app: native Pilot + axHub tabs (no web content)",
    "category": "",
    "detail": "Brett, Oct 20 2026: option B — Build Pilot and the axHub admin pages running natively in the Android console app (Compose), no web views. This is the Android version of Build Pilot (roadmap) plus a native hub admin client, built as small Fable steps that each stand alone. Depends on the pending `axhub-agent-host` for sessions and on axHub's admin API (its step 4). Work on it a little at a time: every sub prompt ships something usable.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "console-android-native-tabs",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-21T03:58:03.806Z",
-   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "updatedAt": "2026-11-03T14:24:24.258Z",
    "builtAt": "",
    "notes": [
     {
      "text": "ON HOLD (Brett, Oct 21 2026): don't build the console or Build Pilot Android apps any more — Brett will finish them himself later. Never start this item (or any step of it) unless he says so.",
      "at": "2026-10-21T10:20:04.160Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:23.528Z"
     }
    ],
    "approvals": [],
@@ -10943,7 +10978,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -11015,15 +11050,15 @@
    "title": "Patches: Android wrapper app (Console + Pilot + axHub tabs) + embed@1",
    "category": "",
    "detail": "Brett, Oct 21 2026 (voice): take the Console / Pilot / axHub tab group out of the Dev Console so Console, Build Pilot and axHub are each their own app again, and make a new app, Patches, that is just one banner + a tab group showing the three apps in tabs; when an app runs inside Patches its own banner is hidden and Patches shows the one banner. Android first (Android hold lifted for Patches, Oct 21; web Patches later). Design Brett chose: native Android shell, web tabs — the Dev Console (console.amberxai.com), Build Pilot (pilot.amberxai.com) and axHub each load in an origin-locked WebView kept alive across tab switches; Build Pilot has no Android app yet, so its tab is the web app. The framework gains embed@1 (cross-port): a host marks the pages it embeds and the embedded app hides the chrome the host shows (its banner by default) over the user's own choice, which stays saved for standalone runs. Model: Fable (changes how GUIs work across apps). Built on Opus-free Fable session Oct 21 2026 in branch fable/patches-wrapper.",
-   "status": "complete",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "patches-wrapper",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-21T16:26:16.023Z",
-   "updatedAt": "2026-10-23T11:41:00.284Z",
-   "builtAt": "2026-10-21T16:56:48.038Z",
+   "updatedAt": "2026-11-03T14:24:25.869Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Hub copy of this list (axhub.memory_* project amberx-axf, data area) held only 10 items on Oct 21 2026 while the repo snapshot held 20 — check `claude-sync status` on the VPS before trusting either; this item was added to the repo snapshot by the Fable build session.",
@@ -11032,6 +11067,10 @@
     {
      "text": "Built Oct 21 2026 on Fable: branch fable/patches-wrapper, PR #5; Android CI green (kernel tests incl. EmbedConformanceTest, lib-hub, patches-debug.apk 20.6 MB). Report _claude/memory/docs/rebuilds/patches-wrapper.md.",
      "at": "2026-10-21T16:56:48.036Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:25.126Z"
     }
    ],
    "approvals": [],
@@ -11243,7 +11282,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -11871,19 +11910,23 @@
    "title": "Patches manages the plugins of the apps it hosts (Opus)",
    "category": "",
    "detail": "Brett, Oct 22 2026: when Patches loads developer apps in tabs, Patches owns all plugins. New embed@1 take `plugins`: inside such a host an app loads only the plugins Patches has installed and enabled for it (its own on/off switches don't apply), and its plugin hooks (Settings → Plugins, Plugin Manager, plugin switches, plugin menu entries) are greyed out with \"Plugins are managed in Patches\". The app reports the plugins it has (`plugins` message); Patches compares with its own list, tries to install the missing ones by itself, and shows a Systems check entry with Auto fix while any are missing. Web first (patches-web + console); Patches Android and Kotlin twin deferred.",
-   "status": "complete",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "patches-plugins",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T18:37:44.249Z",
-   "updatedAt": "2026-10-22T18:47:18.905Z",
-   "builtAt": "2026-10-22T18:47:18.490Z",
+   "updatedAt": "2026-11-03T14:24:27.083Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Built Oct 22 2026 on Opus, branch claude/project-thread-eew3jm. Not screenshot-verified (the apps wait for axHub in the build sandbox).",
      "at": "2026-10-22T18:47:18.545Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:26.534Z"
     }
    ],
    "approvals": [],
@@ -12029,7 +12072,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -12068,14 +12111,14 @@
    "title": "Patches manages hosted apps' plugins (Fable rebuild)",
    "category": "",
    "detail": "Fable rebuild of the Opus build `patches-plugins` (Brett, Oct 22 2026: Fable was suggested, Opus chosen, so a Fable rebuild is parked). Revisit the embed@1 `plugins` take as a cross-port contract: the lock mode for taken hooks, the `plugins` / `plugins-enabled` messages, where plugins really run inside a host, and the Kotlin twin once the Android hold lifts. Start by reading the Opus build's report and replacing it in place.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "patches-plugins-fable",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T18:37:44.308Z",
-   "updatedAt": "2026-10-23T12:52:32.760Z",
+   "updatedAt": "2026-11-03T14:24:28.286Z",
    "builtAt": "",
    "notes": [
     {
@@ -12085,6 +12128,10 @@
     {
      "text": "On hold: Brett paused all work on Patches globally (Oct 28 2026). Do not build until he lifts the pause.",
      "at": "2026-10-28T15:22:00.000Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:27.688Z"
     }
    ],
    "approvals": [],
@@ -12230,7 +12277,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -14702,15 +14749,15 @@
    "title": "Patches settings tab group (every app + plugin tab) + banner hide / hide all / hide-for-N-minutes",
    "category": "",
    "detail": "Brett, Oct 23 2026. (1) Apps inside Patches: no greyed-out settings; their settings UI is a tab of Patches settings (a tab for Patches and every app / plugin tab with a settings UI); the settings hook opens Patches settings on that tab; Patches context menu gets a Settings submenu, one entry per tab. (2) plugin@1 `banner` field; every banner has Hide (keeps logging), indented Hide all banners (tooltip lists them), synced everywhere, last change wins; a timer checkbox + 2-digit minutes field: a hide lasts N minutes, then the banner shows again.",
-   "status": "complete",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "patches-settings-banner-hide",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T12:52:32.715Z",
-   "updatedAt": "2026-10-23T13:27:34.324Z",
-   "builtAt": "2026-10-23T13:04:14.162Z",
+   "updatedAt": "2026-11-03T14:24:29.747Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Built on Opus, branch claude/project-thread-t9zktq (draft PR).",
@@ -14719,6 +14766,10 @@
     {
      "text": "Oct 23 2026 follow-up (Brett: settings that affect the UI render at once): every settings change re-renders the app (runtime state bump, coalesced), unchanged saves are no-ops, other frames/tabs saving are read at once (storage events in the runtime). Same branch / PR #42.",
      "at": "2026-10-23T13:27:34.324Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:29.010Z"
     }
    ],
    "approvals": [],
@@ -14886,7 +14937,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -14926,14 +14977,14 @@
    "title": "Patches settings tab group + banner hide switches (Fable rebuild)",
    "category": "",
    "detail": "Fable rebuild of the Opus build `patches-settings-banner-hide` (Brett, Oct 23 2026: Fable suggested, Opus chosen). Revisit the embed@1 settings take (tab group, settings hook focus), the banner hide state as a cross-port contract (Kotlin twin when the Android hold lifts). Start by reading the Opus build report (branch claude/project-thread-t9zktq) and replacing it in place.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "patches-settings-banner-hide-fable",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T12:52:32.722Z",
-   "updatedAt": "2026-10-23T18:22:53.000Z",
+   "updatedAt": "2026-11-03T14:24:31.034Z",
    "builtAt": "",
    "notes": [
     {
@@ -14947,6 +14998,10 @@
     {
      "text": "On hold: Brett paused all work on Patches globally (Oct 28 2026). Do not build until he lifts the pause.",
      "at": "2026-10-28T15:22:00.000Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:30.381Z"
     }
    ],
    "approvals": [],
@@ -15070,7 +15125,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -16722,12 +16777,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T18:22:53.000Z",
-   "updatedAt": "2026-10-25T20:12:14.980Z",
+   "updatedAt": "2026-11-03T14:24:44.230Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Oct 25 2026: shared-settings-interface (Opus) adds framework asset settings/console as the default for every web app with settings, a dedicated Appearance → Settings interface picker, and ships the same settings assets in every app. The Fable rebuild should keep those ids.",
      "at": "2026-10-25T20:12:14.980Z"
+    },
+    {
+     "text": "Nov 3 2026: Patches is retired; s4 has no Patches settings tab group to feed.",
+     "at": "2026-11-03T14:24:44.230Z"
     }
    ],
    "approvals": [],
@@ -16851,7 +16910,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -17394,19 +17453,23 @@
    "title": "Patches: plugin grid per app tab with Apply (real install/uninstall)",
    "category": "",
    "detail": "A Patches grid: rows = every plugin Patches knows (its list, each app, the catalog), one column per app in the tabs, a checkbox each; Apply really installs or uninstalls in each app (Console via its plugin catalog / lifecycle API with the console token, server to server). Gizmo, Oct 24 2026.",
-   "status": "complete",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "patches-app-plugins-grid",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-24T23:27:02.390Z",
-   "updatedAt": "2026-10-24T23:31:30.405Z",
-   "builtAt": "2026-10-24T23:31:30.264Z",
+   "updatedAt": "2026-11-03T14:24:32.234Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Built on Opus, branch claude/project-thread-2ijgui",
      "at": "2026-10-24T23:31:30.313Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:31.660Z"
     }
    ],
    "approvals": [],
@@ -17464,7 +17527,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -17499,16 +17562,21 @@
    "title": "Patches Plugins per app: Pilot + axHub columns editable",
    "category": "",
    "detail": "Pilot adapter (Build Pilot plugin-catalog install/uninstall routes, bundled plugins locked) and axHub plugin support: catalog kind axhub, Dev Console install/uninstall into apps/axhub-web/src/plugins committed to GitHub, axhub-web plugin loader, Patches axhub adapter. Gizmo, Oct 25 2026.",
-   "status": "complete",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "patches-app-plugins-pilot-axhub",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-25T09:48:50.977Z",
-   "updatedAt": "2026-10-25T09:53:20.403Z",
-   "builtAt": "2026-10-25T09:53:20.403Z",
-   "notes": [],
+   "updatedAt": "2026-11-03T14:24:33.536Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:32.915Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -17586,7 +17654,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -17622,16 +17690,21 @@
    "title": "Banners only in the Console; Patches column in Plugins per app; banner plugin names",
    "category": "",
    "detail": "",
-   "status": "complete",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "patches-banners-console-only",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-25T10:28:58.310Z",
-   "updatedAt": "2026-10-25T10:28:58.310Z",
-   "builtAt": "2026-10-25T10:28:58.310Z",
-   "notes": [],
+   "updatedAt": "2026-11-03T14:24:35.071Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:34.282Z"
+    }
+   ],
    "approvals": [],
    "steps": [],
    "profiles": [
@@ -17642,7 +17715,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -21112,10 +21185,11 @@
    "hidden": false,
    "source": "chat",
    "pendingId": "apply-all-levels",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/apply-all-levels",
+   "pr": "#115",
+   "mergedAt": "2026-10-27T03:33:15Z",
    "createdAt": "2026-10-27T03:19:49.625Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T03:19:49.625Z",
    "notes": [
     {
@@ -21125,6 +21199,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/apply-all-levels (PR #115); PR #115; PR #115 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -21228,7 +21306,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -21645,10 +21723,11 @@
    "hidden": false,
    "source": "chat",
    "pendingId": "amberx-empty-shell",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/amberx-empty-shell",
+   "pr": "#118",
+   "mergedAt": "2026-10-27T03:54:31Z",
    "createdAt": "2026-10-27T03:48:42.596Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T03:48:42.596Z",
    "notes": [
     {
@@ -21662,6 +21741,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/amberx-empty-shell (PR #118); PR #118; PR #118 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -21765,7 +21848,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -21916,10 +21999,11 @@
    "hidden": false,
    "source": "chat",
    "pendingId": "fresh-look",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/fresh-look-done",
+   "pr": "#120",
+   "mergedAt": "2026-10-27T22:25:38Z",
    "createdAt": "2026-10-27T04:05:32.031Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T04:05:32.031Z",
    "notes": [
     {
@@ -21929,6 +22013,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/fresh-look-done (PR #120); PR #120; PR #120 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -21943,7 +22031,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -22262,10 +22350,11 @@
    "hidden": false,
    "source": "chat",
    "pendingId": "design-packages-10",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/design-packages-10",
+   "pr": "#124",
+   "mergedAt": "2026-10-27T17:59:47Z",
    "createdAt": "2026-10-27T17:25:19.327Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T17:25:19.327Z",
    "notes": [
     {
@@ -22279,6 +22368,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/design-packages-10 (PR #124); PR #124; PR #124 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -22293,7 +22386,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -22366,10 +22459,11 @@
    "hidden": false,
    "source": "chat",
    "pendingId": "build-orchestrator",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/build-orchestrator",
+   "pr": "#122",
+   "mergedAt": "2026-10-27T18:17:28Z",
    "createdAt": "2026-10-27T16:39:39.618Z",
-   "updatedAt": "2026-10-27T16:44:18.183Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T16:39:39.618Z",
    "notes": [
     {
@@ -22383,6 +22477,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/build-orchestrator (PR #122); PR #122; PR #122 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -22397,7 +22495,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -22478,10 +22576,11 @@
    "hidden": false,
    "source": "chat",
    "pendingId": "build-profiles",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/build-profiles",
+   "pr": "#127",
+   "mergedAt": "2026-10-27T22:12:19Z",
    "createdAt": "2026-10-27T19:00:00.000Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T19:30:00.000Z",
    "notes": [
     {
@@ -22495,6 +22594,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/build-profiles (PR #127); PR #127; PR #127 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -22598,7 +22701,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -22749,10 +22852,11 @@
    "hidden": false,
    "source": "chat",
    "pendingId": "amberx-appearance-lock",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/amberx-appearance-lock",
+   "pr": "#126",
+   "mergedAt": "2026-10-27T19:22:41Z",
    "createdAt": "2026-10-27T19:05:30.186Z",
-   "updatedAt": "2026-10-27T19:23:01.225Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T19:23:01.118Z",
    "notes": [
     {
@@ -22766,6 +22870,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/amberx-appearance-lock (PR #126); PR #126; PR #126 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -22780,7 +22888,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -29244,7 +29352,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-27T23:01:35.786Z",
-   "updatedAt": "2026-10-28T19:31:15.654Z",
+   "updatedAt": "2026-11-03T14:24:40.470Z",
    "builtAt": "",
    "notes": [
     {
@@ -29266,6 +29374,10 @@
     {
      "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
      "at": "2026-10-27T22:41:47.258Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches is retired, so the Tools tab in Patches web (s3) is gone; the Tools plugin itself is unaffected.",
+     "at": "2026-11-03T14:24:40.470Z"
     }
    ],
    "approvals": [],
@@ -29367,7 +29479,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -29415,8 +29527,9 @@
    "pendingId": "",
    "branch": "claude/amberx-handsfree",
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/141",
+   "mergedAt": "2026-10-28T00:27:04Z",
    "createdAt": "2026-10-27T23:42:02.902Z",
-   "updatedAt": "2026-10-28T19:08:50.204Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T19:08:50.137Z",
    "notes": [
     {
@@ -29426,6 +29539,10 @@
     {
      "text": "Merged in PR #141 (claude/amberx-handsfree)",
      "at": "2026-10-28T19:08:50.203Z"
+    },
+    {
+     "text": "Reconciler: PR #141 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -29527,7 +29644,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -29575,13 +29692,18 @@
    "pendingId": "",
    "branch": "claude/amberx-notes",
    "pr": "#144",
+   "mergedAt": "2026-10-28T02:20:51Z",
    "createdAt": "2026-10-28T00:32:03.143Z",
-   "updatedAt": "2026-10-28T02:35:09.837Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T02:35:09.837Z",
    "notes": [
     {
      "text": "Built and merged in PR #144; live on amberx.amberxai.com (new FastAPI server) Oct 28 02:34 UTC.",
      "at": "2026-10-28T02:35:00.000Z"
+    },
+    {
+     "text": "Reconciler: PR #144 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -29925,7 +30047,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -29984,13 +30106,18 @@
    "pendingId": "",
    "branch": "fix/interface-scope-settings",
    "pr": "#146",
+   "mergedAt": "2026-10-28T04:36:45Z",
    "createdAt": "2026-10-28T03:03:09.005Z",
-   "updatedAt": "2026-10-28T04:36:58.577Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T04:36:58.472Z",
    "notes": [
     {
      "text": "Merged PR #146 (5cc390d), branch fix/interface-scope-settings",
      "at": "2026-10-28T04:36:58.577Z"
+    },
+    {
+     "text": "Reconciler: PR #146 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -30026,7 +30153,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -30245,13 +30372,18 @@
    "pendingId": "",
    "branch": "fix/hubsync-own-look-source",
    "pr": "#148",
+   "mergedAt": "2026-10-28T05:19:35Z",
    "createdAt": "2026-10-28T05:10:31.665Z",
-   "updatedAt": "2026-10-28T05:19:54.279Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T05:19:54.195Z",
    "notes": [
     {
      "text": "Merged PR #148 (1359f5f), branch fix/hubsync-own-look-source",
      "at": "2026-10-28T05:19:54.279Z"
+    },
+    {
+     "text": "Reconciler: PR #148 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -30287,7 +30419,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -30332,13 +30464,18 @@
    "pendingId": "",
    "branch": "fix/banner-snap",
    "pr": "#149",
+   "mergedAt": "2026-10-28T09:54:53Z",
    "createdAt": "2026-10-28T05:01:49.680Z",
-   "updatedAt": "2026-10-28T09:55:08.020Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T09:55:07.941Z",
    "notes": [
     {
      "text": "Merged PR #149, branch fix/banner-snap",
      "at": "2026-10-28T09:55:08.019Z"
+    },
+    {
+     "text": "Reconciler: PR #149 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -30374,7 +30511,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -30418,14 +30555,19 @@
    "source": "chat",
    "pendingId": "",
    "branch": "claude/banner-fix-fallback",
-   "pr": "",
+   "pr": "#152",
+   "mergedAt": "2026-10-28T10:19:39Z",
    "createdAt": "2026-10-28T09:55:19.427Z",
-   "updatedAt": "2026-10-28T10:11:22.506Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T10:11:22.405Z",
    "notes": [
     {
      "text": "Merged in PR #151 (claude/banner-fix-fallback)",
      "at": "2026-10-28T10:11:22.506Z"
+    },
+    {
+     "text": "Reconciler: PR #152; PR #152 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -30505,7 +30647,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -30552,13 +30694,18 @@
    "pendingId": "",
    "branch": "claude/amberx-push",
    "pr": "#154",
+   "mergedAt": "2026-10-28T14:51:50Z",
    "createdAt": "2026-10-28T14:39:25.869Z",
-   "updatedAt": "2026-10-28T14:52:00.673Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T14:52:00.612Z",
    "notes": [
     {
      "text": "Merged PR #154, branch claude/amberx-push",
      "at": "2026-10-28T14:52:00.673Z"
+    },
+    {
+     "text": "Reconciler: PR #154 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -30638,7 +30785,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -30685,10 +30832,16 @@
    "pendingId": "",
    "branch": "claude/amberx-voice-center",
    "pr": "#153",
+   "mergedAt": "2026-10-28T15:21:29Z",
    "createdAt": "2026-10-28T13:59:55.535Z",
-   "updatedAt": "2026-10-28T15:29:37.365Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T15:29:37.365Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #153 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -31008,7 +31161,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -31552,13 +31705,18 @@
    "pendingId": "",
    "branch": "claude/amberx-assistant-agents",
    "pr": "#156",
+   "mergedAt": "2026-10-28T15:54:26Z",
    "createdAt": "2026-10-28T15:41:17.167Z",
-   "updatedAt": "2026-10-28T15:54:37.605Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T15:54:37.523Z",
    "notes": [
     {
      "text": "Merged PR #156, branch claude/amberx-assistant-agents",
      "at": "2026-10-28T15:54:37.605Z"
+    },
+    {
+     "text": "Reconciler: PR #156 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -31594,7 +31752,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -31639,13 +31797,18 @@
    "pendingId": "",
    "branch": "claude/amberx-claude-tokens",
    "pr": "#157",
+   "mergedAt": "2026-10-28T17:04:30Z",
    "createdAt": "2026-10-28T16:55:24.086Z",
-   "updatedAt": "2026-10-28T17:04:41.550Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T17:04:41.490Z",
    "notes": [
     {
      "text": "Merged PR #157, branch claude/amberx-claude-tokens",
      "at": "2026-10-28T17:04:41.549Z"
+    },
+    {
+     "text": "Reconciler: PR #157 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -31681,7 +31844,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -32841,8 +33004,9 @@
    "pendingId": "refactor-all",
    "branch": "claude/refactor-all",
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
+   "mergedAt": "2026-10-29T03:49:47Z",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-29T07:38:54.593Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-29T07:38:54.593Z",
    "notes": [
     {
@@ -32880,6 +33044,10 @@
     {
      "text": "Oct 29 2026 03:08 EDT (Brett): 'Make the matrix a plugin accessible from Build in the app menu' — feature-matrix s62–s67 un-skipped and built now; app menu Build ▸ Feature matrix added to s65.",
      "at": "2026-10-29T07:08:32.671Z"
+    },
+    {
+     "text": "Reconciler: PR #168 names s87, s88, s89 done; PR #166 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [
@@ -34893,7 +35061,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -35026,10 +35194,16 @@
    "pendingId": "",
    "branch": "claude/mosses-build-tools",
    "pr": "#164",
+   "mergedAt": "2026-10-29T04:01:03Z",
    "createdAt": "2026-10-29T03:53:16.640Z",
-   "updatedAt": "2026-10-29T03:53:16.932Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-29T03:53:16.932Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #164 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -35107,7 +35281,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -35153,11 +35327,17 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/assistant-no-subagents",
-   "pr": "",
+   "pr": "#167",
+   "mergedAt": "2026-10-29T06:15:14Z",
    "createdAt": "2026-10-29T05:57:18.585Z",
-   "updatedAt": "2026-10-29T05:57:18.705Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-29T05:57:18.706Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #167; PR #167 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -35191,7 +35371,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -35395,9 +35575,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/veto-everywhere + claude/veto-complete (AXF + axHub)",
-   "pr": "",
+   "pr": "#176",
+   "mergedAt": "2026-10-31T07:26:37Z",
    "createdAt": "2026-10-30T13:20:06.580Z",
-   "updatedAt": "2026-11-01T02:31:12.796Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:31:12.147Z",
    "notes": [
     {
@@ -35411,6 +35592,10 @@
     {
      "text": "s3+s9 closed by Leftovers: axHub claude/veto-everywhere + veto-complete are on axHub main, the live server runs 209951f (server default AXHUB_CONFIRM_AS=veto, 90 s); docs already cover 90 s + Approve/Shelve; shared RULES deduped (stale 3-minute veto copy, older auto-merge + chores copies removed). Tests: axHub pnpm test 514/514 (Node 22), AmberX test.mjs 2045/2045 + tsc, approvals-banner 10/10.",
      "at": "2026-11-01T02:31:12.796Z"
+    },
+    {
+     "text": "Reconciler: PR #176; PR #176 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -35431,11 +35616,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
+     "doneAt": "2026-11-03T13:57:06.541Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T14:11:38.768Z"
     },
     {
      "id": "s2",
@@ -35453,11 +35638,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
+     "doneAt": "2026-11-03T13:57:06.541Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T14:11:38.768Z"
     },
     {
      "id": "s3",
@@ -35497,11 +35682,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
+     "doneAt": "2026-11-03T13:57:06.541Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T14:11:38.768Z"
     },
     {
      "id": "s5",
@@ -35622,7 +35807,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -35674,9 +35859,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "feat/agent-voice",
-   "pr": "",
+   "pr": "#177",
+   "mergedAt": "2026-10-31T07:26:37Z",
    "createdAt": "2026-10-30T11:36:24.622Z",
-   "updatedAt": "2026-11-01T02:31:46.572Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:31:46.110Z",
    "notes": [
     {
@@ -35686,6 +35872,10 @@
     {
      "text": "s9 closed by Leftovers: it was 'waiting' only on the PR approval (45ca37d6) + merge; feat/agent-voice is fully on main, so nothing waits on Brett. plugin-lifecycle check clean, test.py 37/37, test.mts 22/22.",
      "at": "2026-11-01T02:31:46.572Z"
+    },
+    {
+     "text": "Reconciler: PR #177; PR #177 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -35897,7 +36087,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -35949,14 +36139,19 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/pr-only-merge",
-   "pr": "",
+   "pr": "#183",
+   "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-30T17:55:48.511Z",
-   "updatedAt": "2026-10-30T18:04:28.290Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-30T18:04:28.210Z",
    "notes": [
     {
      "text": "Built on branch claude/pr-only-merge (push banner 0.5.0); PR opened through the push banner (veto call). test.py 132 checks.",
      "at": "2026-10-30T18:04:28.290Z"
+    },
+    {
+     "text": "Reconciler: PR #183; PR #183 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -36036,7 +36231,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -36219,9 +36414,10 @@
    "source": "chat",
    "pendingId": "",
    "branch": "claude/orch-pending-sync",
-   "pr": "",
+   "pr": "#143",
+   "mergedAt": "2026-10-31T07:26:37Z",
    "createdAt": "2026-10-28T01:07:25.673Z",
-   "updatedAt": "2026-11-01T02:28:35.357Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:28:34.899Z",
    "notes": [
     {
@@ -36231,6 +36427,10 @@
     {
      "text": "s3 closed by Leftovers (claude/leftovers): the bridge was retired by urgent-builds (one store), so the rule now describes the store; CI test = check-builds-store.mjs + builds-store verify (already in android.yml); README already updated. No PR: pushed to main per Brett's leftovers brief.",
      "at": "2026-11-01T02:28:35.357Z"
+    },
+    {
+     "text": "Reconciler: PR #143; PR #143 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -36315,7 +36515,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -36360,12 +36560,18 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "angel/home-cards-queue",
+   "pr": "#171",
+   "mergedAt": "2026-10-30T16:37:20Z",
    "createdAt": "2026-10-29T18:34:09.323Z",
-   "updatedAt": "2026-10-29T18:34:09.324Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: branch angel/home-cards-queue (PR #171); PR #171; PR #171 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -36855,7 +37061,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -36916,11 +37122,17 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/angel-settings",
-   "pr": "",
+   "pr": "#175",
+   "mergedAt": "2026-10-30T16:37:18Z",
    "createdAt": "2026-10-30T13:01:42.736Z",
-   "updatedAt": "2026-10-30T13:06:42.016Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-30T13:06:41.972Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #175; PR #175 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -37067,7 +37279,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -37574,14 +37786,19 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/angel-ui-assets",
-   "pr": "",
+   "pr": "#181",
+   "mergedAt": "2026-10-31T07:02:46Z",
    "createdAt": "2026-10-30T17:31:49.428Z",
-   "updatedAt": "2026-10-31T09:07:22.074Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-31T09:07:22.007Z",
    "notes": [
     {
      "text": "Oct 31 2026 (Opus, headless): s3–s5 on claude/ui-all-assets — compact defaults tightened, 7 text + 9 spacing steps, root text twins, scale-adopt codemod moved ~1,720 sizes in 80 files (axf.css, console, all plugin pages, libs, AmberX, axhub-web, Walkthrough, templates), check-theme rule scale, theme-swap swaps the three types, 26 design packages name them, report _claude/builds/reports/ui-all-assets-2026-10-31.md",
      "at": "2026-10-31T09:07:22.073Z"
+    },
+    {
+     "text": "Reconciler: PR #181; PR #181 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [
@@ -37716,7 +37933,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -38002,16 +38219,21 @@
    "title": "Element inspector (Android first)",
    "category": "",
    "detail": "Brett, Oct 30 2026 (voice): Left click only. Press-drag: panel follows, live updates to element under pointer. Release closes. Double click pins; pinned panel drags and resizes. Current fields + size.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/element-inspector",
-   "pr": "",
+   "pr": "#192",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #192; PR #192 names s1, s2, s4 done",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -38029,12 +38251,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #192 (claude/element-inspector)",
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T13:57:06.543Z"
     },
     {
      "id": "s2",
@@ -38051,12 +38273,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #192 (claude/element-inspector)",
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T13:57:06.543Z"
     },
     {
      "id": "s3",
@@ -38095,12 +38317,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #192 (claude/element-inspector)",
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T13:57:06.543Z"
     }
    ],
    "profiles": [
@@ -38111,7 +38333,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -38327,16 +38549,22 @@
    "title": "Layouts: repeating slots",
    "category": "",
    "detail": "Brett, Oct 30 2026 (voice): Many-slots with style (tabs/cards/grid/stacked) + fallback slot; pages declare data sets. Web + Android + fixtures.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/layout-repeating-slots",
-   "pr": "",
+   "pr": "#191",
+   "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #191; PR #191 merged; PR #191 names s2 done",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -38376,12 +38604,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #191 (claude/layout-repeating-slots)",
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T13:57:06.543Z"
     },
     {
      "id": "s3",
@@ -38436,7 +38664,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -38583,16 +38811,21 @@
    "title": "Session browser: Claude sessions + headless agent runs, live",
    "category": "",
    "detail": "Brett, Oct 30 2026 (voice): a full-blown session browser for regular Claude sessions AND every headless agent run, monitoring in real time. Live grid, collapsible rows like every other grid: agent, build, job, model, status badge (running, done, failed, killed for budget), tokens, dollars, duration, started time; updates live. Expand a row: plain-English rundown of what it built and exactly what changed (item, what was wrong, before/after), taken from real commits and file changes. Tabs: Context (all text that flowed into its context and what it said back), Tools (every command and file edit), Conversation for regular sessions. Watch a running agent live and kill it. Links to PR/commit/file. Sort, search, filter. Built on Session check-in archive + Codebase changes log + the agent-swarm runner's JSON reports and stream logs. Prices everywhere: the row shows the run's exact total cost (from usage). Expanded 'what it did' shows a price next to every line (estimated: tokens of the turns that produced that change, labelled 'est.'). Context tab: cost per turn; Tools tab: cost per command. Totals at the bottom plus a per-model breakdown.",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/session-history",
-   "pr": "",
+   "pr": "#195",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "2026-11-03T13:57:06.541Z",
+   "notes": [
+    {
+     "text": "Reconciler: PR #195; PR #195 names s1, s2, s3, s4, s5, s6, s7 done",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -38610,12 +38843,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #195 (claude/session-history)",
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T13:57:06.543Z"
     },
     {
      "id": "s2",
@@ -38632,12 +38865,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #195 (claude/session-history)",
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T13:57:06.543Z"
     },
     {
      "id": "s3",
@@ -38654,12 +38887,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #195 (claude/session-history)",
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T13:57:06.543Z"
     },
     {
      "id": "s4",
@@ -38676,12 +38909,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #195 (claude/session-history)",
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T13:57:06.543Z"
     },
     {
      "id": "s5",
@@ -38698,12 +38931,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #195 (claude/session-history)",
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T13:57:06.543Z"
     },
     {
      "id": "s6",
@@ -38720,12 +38953,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #195 (claude/session-history)",
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T13:57:06.543Z"
     },
     {
      "id": "s7",
@@ -38742,12 +38975,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #195 (claude/session-history)",
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-03T13:57:06.543Z"
     }
    ],
    "profiles": [
@@ -38758,7 +38991,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -39340,9 +39573,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/audio-output-recorder",
-   "pr": "",
+   "pr": "#194",
+   "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-01T02:37:25.448Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:37:25.448Z",
    "notes": [
     {
@@ -39352,6 +39586,10 @@
     {
      "text": "s3-s5 recorded done with a plain step update, NOT a model-switch approval: the Fable→Opus gate is for starting a phase, and this work had already shipped in PR #194 (e46b8079). No approval was recorded for Brett.",
      "at": "2026-11-01T02:37:21.093Z"
+    },
+    {
+     "text": "Reconciler: PR #194; PR #194 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -39475,7 +39713,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -39871,9 +40109,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/live-key-checks",
-   "pr": "",
+   "pr": "#182",
+   "mergedAt": "2026-10-31T07:26:37Z",
    "createdAt": "2026-10-30T18:21:59.378Z",
-   "updatedAt": "2026-11-01T02:34:25.216Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:34:24.794Z",
    "notes": [
     {
@@ -39883,6 +40122,10 @@
     {
      "text": "s7+s12 done by Leftovers (claude/leftovers): push banner builds its client from axf.github@1 (reads through axHub, local GITHUB_TOKEN fallback; writes still local), lists branches with no local token, and registers its own health@1 check push-banner-github (red no route / amber reads only / green). push-banner test.py 132→141, systems-check 216/216.",
      "at": "2026-11-01T02:34:25.216Z"
+    },
+    {
+     "text": "Reconciler: PR #182; PR #182 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -40160,7 +40403,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -40215,9 +40458,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-review",
-   "pr": "",
+   "pr": "#184",
+   "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-30T17:59:21.357Z",
-   "updatedAt": "2026-11-01T02:36:07.977Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:36:07.629Z",
    "notes": [
     {
@@ -40227,6 +40471,10 @@
     {
      "text": "s9 done by Leftovers: push banner auto-merge skips and Merge refuses PRs whose ui-review@1 state holds (waiting/changes/rejected; error = held); PR numbers only for AmberX-AXF, other repos by branch. push-banner test 141→150.",
      "at": "2026-11-01T02:36:07.977Z"
+    },
+    {
+     "text": "Reconciler: PR #184; PR #184 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -40438,7 +40686,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -40490,14 +40738,19 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/plans",
-   "pr": "",
+   "pr": "#185",
+   "mergedAt": "2026-10-31T07:26:37Z",
    "createdAt": "2026-10-30T18:21:11.429Z",
-   "updatedAt": "2026-10-30T19:00:38.179Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-30T19:00:33.461Z",
    "notes": [
     {
      "text": "Built on claude/plans (12/12 steps). Push + PR + closing #159 sent as a veto call (no GitHub credentials in the sandbox). Report: _claude/memory/docs/plan-studio/README.md",
      "at": "2026-10-30T19:00:33.519Z"
+    },
+    {
+     "text": "Reconciler: PR #185; PR #185 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -40775,7 +41028,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -40830,9 +41083,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/audio-extract",
-   "pr": "",
+   "pr": "#187",
+   "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-30T21:56:25.813Z",
-   "updatedAt": "2026-11-01T02:36:26.239Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:36:25.826Z",
    "notes": [
     {
@@ -40842,6 +41096,10 @@
     {
      "text": "s7 closed by Leftovers: claude/audio-extract is on main; test.mts 24/24, AmberX test.mjs 2045/2045 + tsc (Node 22), plugin-lifecycle clean. The new AmberX APK comes from CI (amberx-debug.apk).",
      "at": "2026-11-01T02:36:26.239Z"
+    },
+    {
+     "text": "Reconciler: PR #187; PR #187 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -41009,7 +41267,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -41060,8 +41318,9 @@
    "pendingId": "",
    "branch": "claude/agent-swarm",
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/196",
+   "mergedAt": "2026-11-01T00:13:51Z",
    "createdAt": "2026-10-31T05:27:46.906Z",
-   "updatedAt": "2026-10-31T23:53:03.393Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-31T23:53:03.392Z",
    "notes": [
     {
@@ -41071,6 +41330,10 @@
     {
      "text": "s1/s3/s4 (Fable-pinned: card preview, card designer, agent-card@1 asset type) built on Opus Oct 31 2026 per Brett's go-live brief; folded into the parked Fable rebuild agent-swarm-fable-rebuild. Default card design picked as corporate-badge (headless run, Brett changes it in Swarm -> ID cards -> Make default). Android renderer deferred (Android on hold, PORTING.md). Branch claude/agent-swarm, pushed to main.",
      "at": "2026-10-31T23:53:03.302Z"
+    },
+    {
+     "text": "Reconciler: PR #196 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [
@@ -41533,7 +41796,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -41555,15 +41818,16 @@
    "title": "Urgent: master cleanup (one builds store) + Steps view + live progress bars",
    "category": "Builds > Data cleanup",
    "detail": "Brett, Oct 31 2026 (GO given). Spec: /projects/amberx-axf/_data/framework/plan/specs/prompt-profiles-and-queue-reconciler.md items 4, 4b, 4c. One Orchestrator-owned builds store (profiles = a field), every write versioned (journal), Console init regenerate-from-plan removed, old files read-only one release; one Builds plugin; Steps view (atomic step records, drag reorder steps + builds, multi-select, divide, harvest + split-into-N, Restore default, draft until Apply/Discard, rename builds/steps/profiles); live progress bars per build and profile.",
-   "status": "complete",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/urgent-builds",
    "pr": "",
+   "mergedAt": "2026-11-01T00:00:00.000Z",
    "createdAt": "2026-10-31T23:31:50.472Z",
-   "updatedAt": "2026-11-01T02:26:59.880Z",
-   "builtAt": "2026-11-01T02:26:59.508Z",
+   "updatedAt": "2026-11-03T13:56:31.369Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "All work committed on claude/urgent-builds (local); s12 push blocked: host has no GitHub token (banner alert blocked:push:claude/urgent-builds).",
@@ -41572,6 +41836,10 @@
     {
      "text": "s12 closed by the Leftovers session (claude/leftovers): merged to main as 2a057cc4, report updated, stale push alerts resolved.",
      "at": "2026-11-01T02:26:59.880Z"
+    },
+    {
+     "text": "Backfill (orch-live-sync s6): complete and merged (2a057cc4); archived off the active list.",
+     "at": "2026-11-03T13:56:31.369Z"
     }
    ],
    "approvals": [],
@@ -41849,7 +42117,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -42831,7 +43099,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-24T22:41:46.759Z",
-   "updatedAt": "2026-10-25T01:48:24.340Z",
+   "updatedAt": "2026-11-03T14:24:35.778Z",
    "builtAt": "",
    "notes": [
     {
@@ -42841,6 +43109,10 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at b3d22af4); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:35.778Z"
     }
    ],
    "approvals": [],
@@ -43162,7 +43434,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -43217,12 +43489,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-25T01:48:37.694Z",
-   "updatedAt": "2026-10-25T01:48:37.694Z",
+   "updatedAt": "2026-11-03T14:24:36.456Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Recovered from git history (framework/plan/pending.json at b3d22af4); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:36.456Z"
     }
    ],
    "approvals": [],
@@ -43478,7 +43754,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -43530,7 +43806,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-25T01:46:49.283Z",
-   "updatedAt": "2026-10-25T01:47:06.976Z",
+   "updatedAt": "2026-11-03T14:24:37.109Z",
    "builtAt": "",
    "notes": [
     {
@@ -43540,6 +43816,10 @@
     {
      "text": "Recovered from git history (framework/plan/pending.json at 2296fcc6); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:37.109Z"
     }
    ],
    "approvals": [],
@@ -43597,7 +43877,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -44033,12 +44313,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T04:37:07.881Z",
-   "updatedAt": "2026-10-23T04:37:08.190Z",
+   "updatedAt": "2026-11-03T14:24:37.788Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Recovered from git history (framework/plan/pending.json at 7fca09e1); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:37.788Z"
     }
    ],
    "approvals": [],
@@ -44051,7 +44335,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -44336,12 +44620,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T20:09:10.620Z",
-   "updatedAt": "2026-10-22T20:09:16.475Z",
+   "updatedAt": "2026-11-03T14:24:38.461Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Recovered from git history (framework/plan/pending.json at cf7b6424); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:38.461Z"
     }
    ],
    "approvals": [],
@@ -44354,7 +44642,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -44394,12 +44682,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T20:26:47.722Z",
-   "updatedAt": "2026-10-22T20:26:56.001Z",
+   "updatedAt": "2026-11-03T14:24:39.159Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Recovered from git history (framework/plan/pending.json at cf7b6424); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:39.159Z"
     }
    ],
    "approvals": [],
@@ -44545,7 +44837,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -44592,12 +44884,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T20:26:47.860Z",
-   "updatedAt": "2026-10-22T20:26:47.860Z",
+   "updatedAt": "2026-11-03T14:24:39.837Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Recovered from git history (framework/plan/pending.json at cf7b6424); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:39.837Z"
     }
    ],
    "approvals": [],
@@ -44743,7 +45039,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -45645,15 +45941,16 @@
    "title": "Fable rebuild: agent swarm (steps Opus built that were pinned to Fable)",
    "category": "Breakroom",
    "detail": "Fable suggested, Opus chosen rule: s1-s3, s11, s12, s15 of agent-swarm were pinned to Fable and built on Opus (branch claude/agent-swarm). The Fable build starts by reading and then replacing the Opus version.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/agent-swarm-fable-rebuild",
+   "pr": "#247",
+   "mergedAt": "2026-11-03T12:10:18Z",
    "createdAt": "2026-10-31T05:27:48.056Z",
-   "updatedAt": "2026-11-01T11:27:17.235Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "2026-11-03T12:01:23.473Z",
    "notes": [
     {
      "text": "Oct 31 2026: agent-swarm grew to 19 steps on main (renumbered). Fable-pinned steps built on Opus now: s1 card preview page, s2 roster + skills, s3 card designer, s4 agent-card@1 asset type (framework/core/engines/agent-card-rules.mjs, react/components/AgentCard.tsx, fixture agent-card.json, check-agent-card.mts), s5 job planner, s6 context packer, s14 cards + profiles, s15 group chat, s18 chat settings. The Fable rebuild covers all of them; its agent-card@1 review may keep or replace the Opus contract (Kotlin twin still deferred while Android is on hold).",
@@ -45662,9 +45959,20 @@
     {
      "text": "Nov 1 2026, Fable review (claude/fable-review, report _claude/builds/reports/fable-review.md): verdict REBUILD, this build. Reviewed OK and NOT to be rebuilt: agent-card@1 (one rules file drives both validators, fixture, defaults, open enums) and job-type@1 (now on the model policy). What the rebuild must do: move the swarm contracts (agent@1, agent-skill@1, swarm-roster@1, swarm-state@1, swarm-job@1, swarm-run@1, swarm-report@1) out of the plugin into framework/core/engines/swarm-rules.mjs with ONE registry, a JSON snapshot in framework/schemas, JSON Schemas, a fixture in framework/spec/fixtures and a check in CI; a swarm-run@1 record shared with agent jobs (kind job); every model choice through framework/core/model-policy.mjs (already applied: roster and planner run Opus or Fable only). The 19-step Opus build stays in place until this lands.",
      "at": "2026-11-01T11:25:25.676Z"
+    },
+    {
+     "text": "Reconciler: branch claude/agent-swarm-fable-rebuild (PR #247); PR #247; PR #247 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-03T12:01:22.767Z"
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -45690,12 +45998,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:32:15.362Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-01T11:27:16.963Z"
+     "updatedAt": "2026-11-03T11:32:15.386Z"
     },
     {
      "id": "s2",
@@ -45712,12 +46020,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:36:29.042Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-01T00:27:19.617Z"
+     "updatedAt": "2026-11-03T11:36:29.062Z"
     },
     {
      "id": "s3",
@@ -45734,12 +46042,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:40:49.733Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-01T00:27:19.617Z"
+     "updatedAt": "2026-11-03T11:40:49.752Z"
     },
     {
      "id": "s4",
@@ -45756,12 +46064,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:44:46.881Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-01T11:27:17.257Z"
+     "updatedAt": "2026-11-03T11:44:46.905Z"
     },
     {
      "id": "s5",
@@ -45778,12 +46086,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:54:11.600Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-01T00:27:19.617Z"
+     "updatedAt": "2026-11-03T11:54:11.626Z"
     },
     {
      "id": "s6",
@@ -45800,12 +46108,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:54:12.080Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-01T00:27:19.617Z"
+     "updatedAt": "2026-11-03T11:54:12.098Z"
     },
     {
      "id": "s7",
@@ -45822,12 +46130,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:01:23.473Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-01T00:27:19.617Z"
+     "updatedAt": "2026-11-03T12:01:23.504Z"
     }
    ],
    "profiles": [
@@ -45838,7 +46146,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -47176,10 +47484,16 @@
    "pendingId": "",
    "branch": "claude/project-thread-646cjb",
    "pr": "229",
+   "mergedAt": "2026-11-02T01:38:15Z",
    "createdAt": "2026-11-01T22:38:15.391Z",
-   "updatedAt": "2026-11-02T05:32:27.281Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-02T05:32:27.282Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #229 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -47829,7 +48143,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -47852,9 +48166,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-01T23:09:37.031Z",
-   "updatedAt": "2026-11-02T00:30:06.535Z",
+   "updatedAt": "2026-11-03T13:56:31.369Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Estimates added (orch-live-sync s6): the small-steps check needs one on every step.",
+     "at": "2026-11-03T13:56:31.369Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -47866,7 +48185,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "20m",
      "files": [],
      "checks": [],
      "session": "same",
@@ -47875,9 +48194,9 @@
      "done": true,
      "doneAt": "2026-11-02T00:30:06.083Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-01T23:09:37.032Z",
-     "updatedAt": "2026-11-02T00:30:06.144Z"
+     "updatedAt": "2026-11-03T14:11:38.768Z"
     },
     {
      "id": "s2",
@@ -47888,7 +48207,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "30m",
      "files": [],
      "checks": [],
      "session": "same",
@@ -47897,9 +48216,9 @@
      "done": true,
      "doneAt": "2026-11-02T00:30:06.534Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-01T23:09:37.032Z",
-     "updatedAt": "2026-11-02T00:30:06.565Z"
+     "updatedAt": "2026-11-03T14:11:38.768Z"
     },
     {
      "id": "s3",
@@ -47910,7 +48229,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "15m",
      "files": [],
      "checks": [],
      "session": "same",
@@ -47919,9 +48238,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T23:09:37.032Z",
-     "updatedAt": "2026-11-01T23:09:37.032Z"
+     "updatedAt": "2026-11-03T14:11:38.768Z"
     }
    ],
    "profiles": [
@@ -47932,7 +48251,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -47954,10 +48273,16 @@
    "pendingId": "",
    "branch": "claude/project-thread-nxdu3m",
    "pr": "230",
+   "mergedAt": "2026-11-02T04:01:24Z",
    "createdAt": "2026-11-02T02:43:38.594Z",
-   "updatedAt": "2026-11-02T03:37:45.139Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #230 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -48189,7 +48514,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -48385,15 +48710,15 @@
    "title": "xLayout: Molly as one app (one banner, app menu, nav, context menu, toolbars) + IDE panes + plugin toolbars",
    "category": "Molly",
    "detail": "Brett Nov 2 2026 13:46 ET: Molly is whack. Create application menus, navigation menus, context menus, toolbars and a banner that integrate all the apps (AmberX, axHub web, Dev Console): only ONE banner, application menu, navigation menu and context menu render, covering the whole page; the user must not be able to tell it is multiple apps. New plugin xLayout renders it that way. A switch makes it IDE style: draggable, resizable, dockable panes. Plugin toolbars: from the plugin's settings, show/hide up to 3 toolbars and set each default location. A hook in those settings opens a Toolbar designer dialog: pick items from a list of every plugin and screen; each item opens in the main area or a floating window, or (IDE mode on) a pane. Right-clicking any toolbar also has a hook to open the Toolbar designer. IDE mode limits the number of panes and offers ~10 predetermined pane layouts with a preview before applying. Molly-only: standalone, each app stays exactly as it is. Replaces the queued 'Molly: one app' item. Rules: assets/tokens only, framework controls, settings level toolbar, plugin lifecycle, UI Review.",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/xlayout-opus",
+   "pr": "#252",
    "createdAt": "2026-11-02T18:47:31.123Z",
-   "updatedAt": "2026-11-03T02:32:23.313Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "2026-11-03T13:57:06.541Z",
    "notes": [
     {
      "text": "Brett Nov 2 13:49 ET: the Toolbar designer is its own plugin, not part of xLayout. xLayout calls it through a capability service (e.g. axf.toolbar-designer@1).",
@@ -48402,6 +48727,14 @@
     {
      "text": "Nov 2 21:30 ET: s3 pane engine is covered by Urgent build dock-engine (shared with MD Studio + Theme Editor); s7/s8 build on it. Don't build s3 separately.",
      "at": "2026-11-03T02:32:23.312Z"
+    },
+    {
+     "text": "s3 (pane engine) covered by dock-engine (Urgent, complete on branch claude/molly-fable): core/engines/dock.ts + DockHost. s1-s2 built on Fable on the same branch (xlayout@1, chrome@1). s4-s12 are the Opus phase: run from this branch after it merges.",
+     "at": "2026-11-03T11:26:12.532Z"
+    },
+    {
+     "text": "Reconciler: branch claude/xlayout-opus (PR #252); PR #252; PR #252 names s4, s5, s6, s7, s8, s9, s10, s11, s12 done",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -48421,12 +48754,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:26:10.521Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T11:54:11.352Z"
     },
     {
      "id": "s2",
@@ -48443,12 +48776,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:26:11.187Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T11:54:11.352Z"
     },
     {
      "id": "s3",
@@ -48465,12 +48798,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:26:11.848Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T11:54:11.352Z"
     },
     {
      "id": "s4",
@@ -48487,12 +48820,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:10:50.866Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T13:39:10.728Z"
     },
     {
      "id": "s5",
@@ -48509,12 +48842,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:10:51.267Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T13:39:10.728Z"
     },
     {
      "id": "s6",
@@ -48531,12 +48864,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:10:51.670Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T13:39:10.728Z"
     },
     {
      "id": "s7",
@@ -48553,12 +48886,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:10:52.072Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T13:39:10.728Z"
     },
     {
      "id": "s8",
@@ -48575,12 +48908,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:10:52.492Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T13:39:10.728Z"
     },
     {
      "id": "s9",
@@ -48597,12 +48930,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:19:04.835Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T13:39:10.728Z"
     },
     {
      "id": "s10",
@@ -48619,12 +48952,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:19:05.493Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:49:25.863Z"
+     "updatedAt": "2026-11-03T13:39:10.728Z"
     },
     {
      "id": "s11",
@@ -48641,12 +48974,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:23:15.405Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T13:39:10.728Z"
     },
     {
      "id": "s12",
@@ -48663,12 +48996,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T14:11:38.768Z"
     }
    ],
    "profiles": [
@@ -48679,10 +49012,33 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-02T18:47:31.123Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mvzm2laq0d1lyo": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0e7r3v": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0fclz5": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0gvbw5": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0h9whn": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0ibbrv": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0j8ndz": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0kh5x0": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0llcwd": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0mvdp5": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0n3jer": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0oes0p": "2026-11-02T18:47:31.125Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-02T18:47:31.125Z",
    "rearranged": false,
@@ -48700,11 +49056,17 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/walkthrough-random-look",
-   "pr": "",
+   "pr": "#240",
+   "mergedAt": "2026-11-02T19:54:16Z",
    "createdAt": "2026-11-02T19:41:22.804Z",
-   "updatedAt": "2026-11-02T19:41:23.513Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #240; PR #240 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -48760,7 +49122,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -48776,16 +49138,21 @@
    "title": "Shared dock engine: split, float, re-dock, drop zones, layout presets (used by MD Studio, xLayout, Theme Editor)",
    "category": "Urgent",
    "detail": "Brett Nov 2 2026 21:30 ET picked 'shared dock engine first'. Extends framework/core/engines/windows (panes, tab groups) + framework/react/windows/WindowHost. Covers xLayout s3 (Big Dog) pane engine; xLayout s7/s8 use it. Android twin = deferred gap in PORTING.md (Android on hold).",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/molly-fable",
+   "pr": "#245",
    "createdAt": "2026-11-03T02:32:21.328Z",
-   "updatedAt": "2026-11-03T02:32:21.328Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-03T13:56:31.369Z",
+   "builtAt": "2026-11-03T13:56:31.369Z",
+   "notes": [
+    {
+     "text": "Backfill (orch-live-sync s6): all 4 steps built on Fable in PR #245, branch claude/molly-fable (Fable foundation for Molly: dock@1 engine, dock-layout@1 presets, DockHost). Built, awaiting merge.",
+     "at": "2026-11-03T13:56:31.369Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -48803,12 +49170,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #245 (claude/molly-fable)",
+     "rev": 2,
      "createdAt": "2026-11-03T02:32:21.329Z",
-     "updatedAt": "2026-11-03T02:32:21.329Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     },
     {
      "id": "s2",
@@ -48825,12 +49192,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #245 (claude/molly-fable)",
+     "rev": 2,
      "createdAt": "2026-11-03T02:32:21.329Z",
-     "updatedAt": "2026-11-03T02:32:21.329Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     },
     {
      "id": "s3",
@@ -48847,12 +49214,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #245 (claude/molly-fable)",
+     "rev": 2,
      "createdAt": "2026-11-03T02:32:21.329Z",
-     "updatedAt": "2026-11-03T02:32:21.329Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     },
     {
      "id": "s4",
@@ -48869,12 +49236,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #245 (claude/molly-fable)",
+     "rev": 2,
      "createdAt": "2026-11-03T02:32:21.329Z",
-     "updatedAt": "2026-11-03T02:32:21.329Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     }
    ],
    "profiles": [
@@ -48885,7 +49252,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -48905,12 +49272,22 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/md-studio-theme-editor-plan",
+   "pr": "#242",
+   "mergedAt": "2026-11-03T02:54:56Z",
    "createdAt": "2026-11-03T02:32:21.910Z",
-   "updatedAt": "2026-11-03T02:32:21.910Z",
+   "updatedAt": "2026-11-03T14:09:29.660Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: branch claude/md-studio-theme-editor-plan (PR #242); PR #242; PR #242 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Notes scope added by notes-vault (Nov 3 2026): consume axf.notes@1 from the notes-browser plugin, never its folder.",
+     "at": "2026-11-03T14:09:29.660Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -49132,6 +49509,31 @@
      "rev": 1,
      "createdAt": "2026-11-03T02:32:21.912Z",
      "updatedAt": "2026-11-03T02:32:21.912Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mw0rkw0w01h950",
+     "title": "",
+     "text": "Notes scope: a 4th scope 'Notes' in the file column showing /projects/_shared/_claude/notes with the same folders, reusing notes-browser's server route (capability axf.notes@1: list/read/write(if_version)/move/remove/history; optional, hide the scope when absent)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [
+      "apps/console-web/plugins/notes-browser/server/__init__.py",
+      "apps/console-web/plugins/notes-browser/server/store.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T14:09:29.093Z",
+     "updatedAt": "2026-11-03T14:09:29.121Z"
     }
    ],
    "profiles": [
@@ -49142,7 +49544,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -49158,16 +49560,20 @@
    "title": "Theme Editor plugin: colour + style sections, every token, copy/save/load, multi-view toolbar",
    "category": "Urgent",
    "detail": "Brett Nov 2 2026 21:30 ET: theme editor plugin that lets you copy, save, load. Colour section and style section, each collapsible, with collapsible categories listing every possible token; toolbar with multiple views. Own plugin, reusing the Theme manager's token tree through a capability service (both stay installed). Look rule: saves go to the axHub appearance document / asset@1 themes.",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/theme-editor",
+   "pr": "#243",
    "createdAt": "2026-11-03T02:32:22.611Z",
-   "updatedAt": "2026-11-03T11:09:57.836Z",
-   "builtAt": "2026-11-03T11:09:51.572Z",
+   "updatedAt": "2026-11-03T13:56:31.369Z",
+   "builtAt": "2026-11-03T13:56:31.369Z",
    "notes": [
+    {
+     "text": "Backfill (orch-live-sync s6): branch claude/theme-editor has all 5 steps (13f79c99 plugin s1-s4; d24cd2dd phone layout + tests; PR #243 open, waiting in UI Review r-20261103-6a35ef38). Built, awaiting merge.",
+     "at": "2026-11-03T13:56:31.369Z"
+    },
     {
      "text": "Built on claude/theme-editor, PR #243 (waiting in UI Review r-20261103-6a35ef38). Panes use the existing layout; switch to the dock engine once dock-engine lands.",
      "at": "2026-11-03T11:09:57.836Z"
@@ -49191,11 +49597,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T10:58:10.322Z",
-     "note": "",
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #243 (claude/theme-editor)",
      "rev": 2,
      "createdAt": "2026-11-03T02:32:22.612Z",
-     "updatedAt": "2026-11-03T10:58:10.341Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     },
     {
      "id": "s2",
@@ -49213,11 +49619,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T10:58:10.665Z",
-     "note": "",
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #243 (claude/theme-editor)",
      "rev": 2,
      "createdAt": "2026-11-03T02:32:22.612Z",
-     "updatedAt": "2026-11-03T10:58:10.696Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     },
     {
      "id": "s3",
@@ -49235,11 +49641,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T10:58:11.007Z",
-     "note": "",
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #243 (claude/theme-editor)",
      "rev": 2,
      "createdAt": "2026-11-03T02:32:22.612Z",
-     "updatedAt": "2026-11-03T10:58:11.047Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     },
     {
      "id": "s4",
@@ -49257,11 +49663,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T10:58:11.411Z",
-     "note": "",
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #243 (claude/theme-editor)",
      "rev": 2,
      "createdAt": "2026-11-03T02:32:22.612Z",
-     "updatedAt": "2026-11-03T10:58:11.465Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     },
     {
      "id": "s5",
@@ -49279,11 +49685,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T11:09:43.662Z",
-     "note": "",
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #243 (claude/theme-editor)",
      "rev": 2,
      "createdAt": "2026-11-03T02:32:22.612Z",
-     "updatedAt": "2026-11-03T11:09:43.685Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     }
    ],
    "profiles": [
@@ -49310,16 +49716,21 @@
    "title": "Token control plugin: API + MCP + CLI for every token, AmberX tasks/to-dos/notes and the planner, interactive docs",
    "category": "Urgent",
    "detail": "Brett Nov 2 2026 21:38 ET: new plugin, powerful API and MCP and CLI server/client that can change every single token (theme, style, layout); every layout parameter is a token. Connect MCP, API and CLI to Claude and axHub. API and MCP control every aspect of AmberX tasks, to-dos and notes, and the console's planner (Brett: both Plan Studio and the Build orchestrator). Extensive interactive documentation. Folds in the dead VPS build amberx-full-mcp-api (do not relaunch it separately). Overlaps the blocked interactive docs engine (docs-engine/plan.md): reuse it if it lands first.",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/token-control-opus",
+   "pr": "#250",
    "createdAt": "2026-11-03T02:40:26.204Z",
-   "updatedAt": "2026-11-03T02:40:26.204Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-03T13:56:31.369Z",
+   "builtAt": "2026-11-03T13:56:31.369Z",
+   "notes": [
+    {
+     "text": "Backfill (orch-live-sync s6): s1-s3 built on Fable in PR #246 (claude/token-control), s4-s14 on Opus in PR #250 (claude/token-control-opus). Both PRs open; the build shows PR #250 (the later one). Built, awaiting merge.",
+     "at": "2026-11-03T13:56:31.369Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -49337,12 +49748,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #246 (claude/token-control)",
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     },
     {
      "id": "s2",
@@ -49359,12 +49770,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #246 (claude/token-control)",
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     },
     {
      "id": "s3",
@@ -49381,12 +49792,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #246 (claude/token-control)",
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     },
     {
      "id": "s4",
@@ -49403,12 +49814,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     },
     {
      "id": "s5",
@@ -49425,12 +49836,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     },
     {
      "id": "s6",
@@ -49447,12 +49858,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     },
     {
      "id": "s7",
@@ -49469,12 +49880,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     },
     {
      "id": "s8",
@@ -49491,12 +49902,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     },
     {
      "id": "s9",
@@ -49513,12 +49924,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     },
     {
      "id": "s10",
@@ -49535,12 +49946,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     },
     {
      "id": "s11",
@@ -49557,12 +49968,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     },
     {
      "id": "s12",
@@ -49579,12 +49990,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     },
     {
      "id": "s13",
@@ -49601,12 +50012,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     },
     {
      "id": "s14",
@@ -49623,12 +50034,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T13:56:31.515Z"
     }
    ],
    "profiles": [
@@ -49639,12 +50050,1485 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-03T02:40:26.205Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "orch-live-sync",
+   "title": "Orchestrator live sync: every step reaches main at once",
+   "category": "Urgent",
+   "detail": "Brett, Nov 3 2026 (voice): every completed step, however small, must reach the orchestrator and show on main immediately, so banners and THREADS follow every step. Store writes go live to main as status-only commits; branch + PR auto-link; reconciler for open PRs and claude/* branches; banners + THREADS follow the store; session-start rule; backfill.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/orch-live-sync",
+   "pr": "#255",
+   "mergedAt": "2026-11-03T15:19:36Z",
+   "createdAt": "2026-11-03T13:39:29.176Z",
+   "updatedAt": "2026-11-03T15:20:49.826Z",
+   "builtAt": "2026-11-03T14:01:20.821Z",
+   "notes": [
+    {
+     "text": "Reconciler: PR #255 merged; PR #255 names s1, s2, s3, s4, s5, s6, s7 done",
+     "at": "2026-11-03T15:20:49.826Z"
+    }
+   ],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw0qib74086zoo",
+     "title": "",
+     "text": "Live status writes to main: store writes committed to main at once as status-only commits (git plumbing on origin/main, bounded rebase-retry, never force), per-build newer-wins merge, journal union",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [
+      "framework/cli/builds-store.mjs",
+      "framework/plan/builds-store-core.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T13:53:26.701Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T13:39:29.177Z",
+     "updatedAt": "2026-11-03T13:53:26.724Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw0qib7409si5s",
+     "title": "",
+     "text": "Branch + PR auto-link: build branch/pr fields set and written live; built-awaiting-merge when all steps done but the PR is open, complete when merged",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T13:55:02.244Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T13:39:29.177Z",
+     "updatedAt": "2026-11-03T13:55:02.277Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw0qib740ar92l",
+     "title": "",
+     "text": "Reconciler: scan open PRs and claude/* branches, match to builds, fill branch/pr, mark finished work, flag orphans (report + banner alert), on session start and a timer",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T13:55:07.662Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T13:39:29.177Z",
+     "updatedAt": "2026-11-03T13:55:07.718Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw0qib740busjm",
+     "title": "",
+     "text": "Banners + THREADS follow the store: every live status change pushes the banner update and appends a THREADS.md line",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T13:55:12.303Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T13:39:29.177Z",
+     "updatedAt": "2026-11-03T13:55:12.334Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mw0qib740cp96r",
+     "title": "",
+     "text": "Session-start rule: sessions run the reconciler and read the live store first, never the main export alone",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T13:57:26.853Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T13:39:29.177Z",
+     "updatedAt": "2026-11-03T13:57:26.875Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mw0qib740dp920",
+     "title": "",
+     "text": "Backfill: dock-engine, token-control, urgent-builds, theme-editor; reconciler across angel, big-dog, breakroom, refactor, urgent",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T13:57:31.980Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T13:39:29.177Z",
+     "updatedAt": "2026-11-03T13:57:32.009Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mw0qib740en9dq",
+     "title": "",
+     "text": "Tests (retry, parallel writes, merge no-regress, reconciler matching), local CI block, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:01:20.820Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T13:39:29.177Z",
+     "updatedAt": "2026-11-03T14:01:20.844Z"
+    }
+   ],
+   "profiles": [
+    "urgent"
+   ],
+   "order": {
+    "urgent": 5
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 11,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-03T13:39:29.177Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "land-everything",
+   "title": "Land everything: merge finished branches to main and deploy",
+   "category": "Urgent",
+   "detail": "Brett, Nov 3 2026 (voice): land the finished work on main and deploy; UI Review waived except banners (banner-pack, banner-editor, banners-one not landed).",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-03T15:32:06.059Z",
+   "updatedAt": "2026-11-03T16:41:42.519Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Landed claude/notes-vault (PR #256) on main at 5a6311a3",
+     "at": "2026-11-03T16:07:25.644Z"
+    },
+    {
+     "text": "Landed claude/agent-chats-hub (PR #248) on main at 92be01a0",
+     "at": "2026-11-03T16:14:09.456Z"
+    },
+    {
+     "text": "Correction: agent-chats-hub landed at c985c38d",
+     "at": "2026-11-03T16:14:37.124Z"
+    },
+    {
+     "text": "crew-retrain (PR #265, Breakroom) is ready too: land it last, after the rest. It changes deploy/claude-headless.sh (every launch booked on a named agent).",
+     "at": "2026-11-03T16:23:06.879Z"
+    },
+    {
+     "text": "Landed claude/kill-patches-pilot (PR #258) on main at e697c302",
+     "at": "2026-11-03T16:24:00.634Z"
+    },
+    {
+     "text": "Landed claude/headless-tabs (PR #259) on main at a8186b83",
+     "at": "2026-11-03T16:29:52.087Z"
+    },
+    {
+     "text": "Landed claude/whats-new-banner (PR #260) on main at 6ff111a1",
+     "at": "2026-11-03T16:41:36.785Z"
+    }
+   ],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw0uj4uc0c3tyz",
+     "title": "",
+     "text": "Land notes-vault: merge main, local CI, merge to main, close PR, update build",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:07:30.479Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T15:32:06.060Z",
+     "updatedAt": "2026-11-03T16:07:30.507Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw0uj4uc0d46ul",
+     "title": "",
+     "text": "Land agent-chats-hub: merge main, local CI, merge to main, close PR, update build",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:14:14.427Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T15:32:06.060Z",
+     "updatedAt": "2026-11-03T16:14:14.450Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw0uj4uc0ewtjn",
+     "title": "",
+     "text": "Land kill-patches-pilot (+axHub): merge main, local CI, merge to main, close PR, update build",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:24:07.209Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T15:32:06.060Z",
+     "updatedAt": "2026-11-03T16:24:07.235Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw0uj4uc0fd2na",
+     "title": "",
+     "text": "Land headless-tabs: merge main, local CI, merge to main, close PR, update build",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:29:56.545Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T15:32:06.060Z",
+     "updatedAt": "2026-11-03T16:29:56.566Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mw0uj4uc0g79td",
+     "title": "",
+     "text": "Land whats-new-banner: merge main, local CI, merge to main, close PR, update build",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:41:42.519Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T15:32:06.060Z",
+     "updatedAt": "2026-11-03T16:41:42.545Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mw0uj4uc0hgx0t",
+     "title": "",
+     "text": "Land molly-fable + xlayout-opus: merge main, local CI, merge to main, close PR, update build",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T15:32:06.060Z",
+     "updatedAt": "2026-11-03T15:32:06.060Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mw0uj4uc0ieadw",
+     "title": "",
+     "text": "Land token-control + token-control-opus + console-commands: merge main, local CI, merge to main, close PR, update build",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T15:32:06.060Z",
+     "updatedAt": "2026-11-03T15:32:06.060Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mw0uj4uc0j16t8",
+     "title": "",
+     "text": "Land theme-editor, one-look-default-2, model-upgrade-approval: merge main, local CI, merge to main, close PR, update build",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T15:32:06.060Z",
+     "updatedAt": "2026-11-03T15:32:06.060Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mw0uj4uc0khig5",
+     "title": "",
+     "text": "Land theme-veto-pass, plugin-commands-auto, axhub-veto-pass: merge main, local CI, merge to main, close PR, update build",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T15:32:06.060Z",
+     "updatedAt": "2026-11-03T15:32:06.060Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mw0uj4uc0l84ua",
+     "title": "",
+     "text": "Verify deploys + health (console, axHub web, AmberX web, Molly); paths-ignore for status commits",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T15:32:06.060Z",
+     "updatedAt": "2026-11-03T15:32:06.060Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mw0uj4uc0mytjc",
+     "title": "",
+     "text": "Register console + token-control MCP as axHub services; report land-everything.md",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T15:32:06.060Z",
+     "updatedAt": "2026-11-03T15:32:06.060Z"
+    }
+   ],
+   "profiles": [
+    "urgent"
+   ],
+   "order": {
+    "urgent": 10
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 18,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-03T15:32:06.060Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "crew-retrain",
+   "title": "Crew retrain: every agent an all-rounder, no anonymous sessions",
+   "category": "Breakroom",
+   "detail": "Brett, Nov 3 2026 (voice). Retrain, don't fire: every swarm agent can take every job type (skills, home job as preference only); new job types feature-build and ops-fix; router picks any free agent under budget; every headless launch is assigned to a named agent first and booked on its card; back-assign today's headless builds; Breakroom cards show skills, home job, current job. Booked on Landin' Lenny.",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/crew-retrain",
+   "pr": "#265",
+   "createdAt": "2026-11-03T15:58:12.029Z",
+   "updatedAt": "2026-11-03T16:23:06.193Z",
+   "builtAt": "2026-11-03T16:23:05.239Z",
+   "notes": [
+    {
+     "text": "All 8 steps done. PR #265 (claude/crew-retrain), UI Review r-20261103-5e7f222e waiting. Report _claude/builds/reports/crew-retrain.md. Land after land-everything's other PRs.",
+     "at": "2026-11-03T16:23:06.193Z"
+    }
+   ],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw0vgp5h09uh1v",
+     "title": "",
+     "text": "Register crew-retrain in the Breakroom profile + banner entry",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T15:58:19.537Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T15:58:12.030Z",
+     "updatedAt": "2026-11-03T15:58:19.561Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw0vgp5h0agp3p",
+     "title": "",
+     "text": "Job model: job types declare required skills; agents carry skills (all six get every skill); home job = preference",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:05:30.656Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T15:58:12.030Z",
+     "updatedAt": "2026-11-03T16:05:30.694Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw0vgp5h0b9ziq",
+     "title": "",
+     "text": "New job types feature-build and ops-fix",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:05:31.738Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T15:58:12.030Z",
+     "updatedAt": "2026-11-03T16:05:31.814Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw0vgp5h0cj1uk",
+     "title": "",
+     "text": "Router: any on-duty agent under budget, home job first, then least busy",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:05:32.857Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T15:58:12.030Z",
+     "updatedAt": "2026-11-03T16:05:32.879Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mw0vgp5h0ded72",
+     "title": "",
+     "text": "Launchers require an agent: claude-headless.sh + build_start take AXF_AGENT (auto-assign), --agent flag, agent-job.mjs assign",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:07:20.795Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T15:58:12.030Z",
+     "updatedAt": "2026-11-03T16:07:20.817Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mw0vgp5h0e19ae",
+     "title": "",
+     "text": "Back-assign today's headless builds round-robin and book them on the cards",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:12:16.094Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T15:58:12.030Z",
+     "updatedAt": "2026-11-03T16:15:27.925Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mw0vgp5h0fhwcm",
+     "title": "",
+     "text": "Breakroom UI: cards show all skills, home job, current job; roster shows who's free",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:23:04.430Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T15:58:12.030Z",
+     "updatedAt": "2026-11-03T16:23:04.461Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mw0vgp5h0g53iq",
+     "title": "",
+     "text": "Tests, theme/controls checks, lifecycle, report, THREADS.md, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:23:05.239Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T15:58:12.030Z",
+     "updatedAt": "2026-11-03T16:23:05.267Z"
+    }
+   ],
+   "profiles": [
+    "breakroom"
+   ],
+   "order": {
+    "breakroom": 4
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 12,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-03T15:58:12.030Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "notes-vault",
+   "title": "Notes vault: gather Brett's saved notes into /projects/_shared/_claude/notes, notes-browser plugin, MD Studio Notes scope",
+   "category": "Urgent",
+   "detail": "Brett Nov 3 2026 (voice): gather the hand-saved notes scattered across the axHub projects tree into one shared place, add a quick notes browser plugin, and add a Notes scope to MD Studio.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/notes-vault",
+   "pr": "#256",
+   "mergedAt": "2026-11-03T16:07:18.707Z",
+   "createdAt": "2026-11-03T14:09:24.568Z",
+   "updatedAt": "2026-11-03T16:07:19.784Z",
+   "builtAt": "2026-11-03T14:10:56.767Z",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw0rksji0734t4",
+     "title": "",
+     "text": "Find the notes: inventory hand-saved notes across /projects (owner MCP writes, loose md/txt, install/command notes), excluding system files",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:09:25.339Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:09:24.569Z",
+     "updatedAt": "2026-11-03T14:09:25.364Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw0rksji08rkog",
+     "title": "",
+     "text": "Move them to /projects/_shared/_claude/notes/{sessions,handoffs,plans,install,misc} with versions kept; update references; pointer files; notes/INDEX.md",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:09:26.289Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:09:24.569Z",
+     "updatedAt": "2026-11-03T14:09:26.320Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw0rksji09p1rw",
+     "title": "",
+     "text": "Add notes/orchestrator/orch-live-sync-2026-11-03.md",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:09:27.137Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:09:24.569Z",
+     "updatedAt": "2026-11-03T14:09:27.228Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw0rksji0a06ja",
+     "title": "",
+     "text": "notes-browser console plugin: server route on the hub notes folder, tree + rendered markdown, search, sort, new/rename/move/delete, conflict-safe edit; Settings > Plugins sub-tab, help pack, lifecycle",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:09:27.962Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:09:24.569Z",
+     "updatedAt": "2026-11-03T14:09:27.988Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mw0rksji0bjf1f",
+     "title": "",
+     "text": "MD Studio: add Notes scope step to md-studio; expose notes-browser route as capability service axf.notes@1",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:09:28.539Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:09:24.569Z",
+     "updatedAt": "2026-11-03T14:09:28.563Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mw0rksji0cv0wp",
+     "title": "",
+     "text": "Tests, check-theme/check-controls, lifecycle check, UI Review shots, report _claude/builds/reports/notes-vault.md, THREADS.md, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:10:56.767Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:09:24.569Z",
+     "updatedAt": "2026-11-03T14:10:56.800Z"
+    }
+   ],
+   "profiles": [
+    "urgent"
+   ],
+   "order": {
+    "urgent": 8
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 11,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-03T14:09:24.569Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "kill-patches-pilot",
+   "title": "Retire Patches and Build Pilot (remove everywhere)",
+   "category": "Cleanup",
+   "detail": "Brett, Nov 3 2026 (voice): Patches is dead, Build Pilot is dead. Delete both and every reference: repo code, rules, docs, CI, store builds; VPS containers + Coolify apps (snapshotted to /root/archive/retired-2026-11-03/ first); axHub projects tree + axHub repo PR; archive (not delete) MossesX/Build-Pilot.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/kill-patches-pilot",
+   "pr": "#258",
+   "mergedAt": "2026-11-03T16:23:48.889Z",
+   "createdAt": "2026-11-03T14:10:11.184Z",
+   "updatedAt": "2026-11-03T16:24:26.329Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "s7 partial: axHub PR #32 open; /projects/patches* snapshotted not deleted (no axHub MCP here, needs veto call); MossesX/Build-Pilot archive needs Brett (token 403); DNS records remain.",
+     "at": "2026-11-03T14:43:49.733Z"
+    },
+    {
+     "text": "axHub side landed: MossesX/axHub main d3cf462 (PR #32)",
+     "at": "2026-11-03T16:24:12.521Z"
+    },
+    {
+     "text": "s7 partly open: axHub repo PR landed; removing the /projects trees and archiving MossesX/Build-Pilot are deletes/outward actions left for Brett's call (land-everything did not do them).",
+     "at": "2026-11-03T16:24:26.329Z"
+    }
+   ],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw0rlsih09h7qw",
+     "title": "",
+     "text": "Remove Patches apps (apps/patches, apps/patches-web) and Build Pilot code/integration from the repo",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:25:43.844Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:10:11.187Z",
+     "updatedAt": "2026-11-03T14:25:43.898Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw0rlsih0awxn6",
+     "title": "",
+     "text": "Remove Patches/Pilot from framework, console, other apps, CI workflows, deploy, catalog, tracker",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:25:45.123Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:10:11.187Z",
+     "updatedAt": "2026-11-03T14:25:45.157Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw0rlsih0b1esl",
+     "title": "",
+     "text": "Rewrite rules/CLAUDE.md/STATUS/decisions/THREADS; delete Patches/Pilot docs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:25:46.326Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:10:11.187Z",
+     "updatedAt": "2026-11-03T14:25:46.349Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw0rlsih0c6yl3",
+     "title": "",
+     "text": "Archive Patches/Pilot builds in the store and pending lists",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:25:47.327Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:10:11.187Z",
+     "updatedAt": "2026-11-03T14:25:47.373Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mw0rlsih0ddwo9",
+     "title": "",
+     "text": "Builds and checks pass (tsc, vite, check-theme/controls, lifecycle); open PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:43:48.200Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:10:11.187Z",
+     "updatedAt": "2026-11-03T14:43:48.223Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mw0rlsih0e8ey2",
+     "title": "",
+     "text": "VPS: snapshot then remove patches-web/build-pilot containers, Coolify apps, routes, images",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:43:48.735Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:10:11.187Z",
+     "updatedAt": "2026-11-03T14:43:48.762Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mw0rlsih0fbd3d",
+     "title": "",
+     "text": "axHub: remove /projects trees + projects.md entries; axHub repo PR; archive MossesX/Build-Pilot",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T14:10:11.187Z",
+     "updatedAt": "2026-11-03T14:10:11.187Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mw0rlsih0gtf2c",
+     "title": "",
+     "text": "Write report _claude/builds/reports/kill-patches-pilot.md",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:43:49.260Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:10:11.187Z",
+     "updatedAt": "2026-11-03T14:43:49.281Z"
+    }
+   ],
+   "profiles": [
+    "urgent"
+   ],
+   "order": {
+    "urgent": 9
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 18,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-03T14:10:11.187Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "headless-tabs",
+   "title": "Headless tabs: persistent tmux-backed terminal tabs, auto-opened headless sessions with agent/model/live cost, split pane with the context chain",
+   "category": "Console > Terminal",
+   "detail": "Brett, Nov 3 2026 (voice). Every terminal tab backed by a persistent tmux session on the VPS (reconnect + scrollback replay, Moshi attach command, detach vs kill). Every headless session auto-opens a tab (also those started while the console was closed). Tab title: agent, model, live cost (stream-json usage x price table config), status dot. Split pane (vertical/horizontal) with the context chain: files read in order and rules revealed one at a time. Android: deferred gap in PORTING.md.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/headless-tabs",
+   "pr": "#259",
+   "mergedAt": "2026-11-03T16:29:45.837Z",
+   "createdAt": "2026-11-03T13:56:02.712Z",
+   "updatedAt": "2026-11-03T16:29:46.540Z",
+   "builtAt": "2026-11-03T14:44:38.397Z",
+   "notes": [
+    {
+     "text": "All 7 steps done on claude/headless-tabs, PR #259 open; UI Review r-20261103-3sp5x01 waiting for Brett. Report _claude/builds/reports/headless-tabs.md.",
+     "at": "2026-11-03T14:44:39.396Z"
+    }
+   ],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw0r3ltf088i2a",
+     "title": "",
+     "text": "s1 Persistent tmux-backed tabs + reconnect/resume; Moshi attach command; detach vs kill",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:11:39.099Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T13:56:02.712Z",
+     "updatedAt": "2026-11-03T14:11:39.129Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw0r3ltf09bvp4",
+     "title": "",
+     "text": "s2 Headless launcher emits session-start events (build name, agent, model, tmux session); console auto-opens tabs and lists running ones on load",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:11:39.786Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T13:56:02.712Z",
+     "updatedAt": "2026-11-03T14:11:39.808Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw0r3ltf0a77iz",
+     "title": "",
+     "text": "s3 stream-json capture alongside the human log; cost meter service (price table config) + live route",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:11:40.659Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T13:56:02.712Z",
+     "updatedAt": "2026-11-03T14:11:40.699Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw0r3ltf0bef6q",
+     "title": "",
+     "text": "s4 Tab title: agent, model, live cost, status dot",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:36:03.523Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T13:56:02.712Z",
+     "updatedAt": "2026-11-03T14:36:03.586Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mw0r3ltf0cvulu",
+     "title": "",
+     "text": "s5 Split pane with vertical/horizontal toggle + setting",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:36:04.366Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T13:56:02.712Z",
+     "updatedAt": "2026-11-03T14:36:04.397Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mw0r3ltf0d4goj",
+     "title": "",
+     "text": "s6 Context chain pane: tree in read order + slow rule-by-rule reveal, speed setting, skip",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:36:04.946Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T13:56:02.712Z",
+     "updatedAt": "2026-11-03T14:36:04.973Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mw0r3ltf0eiufi",
+     "title": "",
+     "text": "s7 Help pack, tests, check-theme/check-controls, lifecycle, UI Review shots, report, THREADS.md, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:44:38.397Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T13:56:02.712Z",
+     "updatedAt": "2026-11-03T14:44:38.418Z"
+    }
+   ],
+   "profiles": [
+    "urgent"
+   ],
+   "order": {
+    "urgent": 6
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 12,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-03T13:56:02.712Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "whats-new-banner",
+   "title": "What's new banner",
+   "category": "Banners",
+   "detail": "A What's new banner showing features merged to main and deployed, grouped by date, build and app (Brett, Nov 3 2026, voice).",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/whats-new-banner",
+   "pr": "#260",
+   "mergedAt": "2026-11-03T16:41:30.054Z",
+   "createdAt": "2026-11-03T14:04:58.611Z",
+   "updatedAt": "2026-11-03T16:41:30.871Z",
+   "builtAt": "2026-11-03T14:53:33.448Z",
+   "notes": [
+    {
+     "text": "All 5 steps built on Opus; PR #260 (claude/whats-new-banner), UI Review r-20261103-8861306a waiting. Plugin folder whats-shipped (systems check owns whats-new).",
+     "at": "2026-11-03T14:53:34.449Z"
+    }
+   ],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw0rf3bt06pknc",
+     "title": "",
+     "text": "Feed: whats-new@1 built from shipped builds, merged PRs, reports and change entries; server route + cached file",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:09:31.736Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:04:58.615Z",
+     "updatedAt": "2026-11-03T14:09:31.758Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw0rf3bt075p6w",
+     "title": "",
+     "text": "Banner: whats-new banner widget, ticker + unread count, tap opens panel",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:12:24.075Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:04:58.615Z",
+     "updatedAt": "2026-11-03T14:12:24.103Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw0rf3bt08jx0l",
+     "title": "",
+     "text": "Panel: group by date/build/app, search, details, mark read, new since last visit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:12:24.621Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:04:58.615Z",
+     "updatedAt": "2026-11-03T14:12:24.648Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw0rf3bt09vg1v",
+     "title": "",
+     "text": "Settings: show/hide, apps, how far back, deployed vs merged",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:12:25.135Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:04:58.615Z",
+     "updatedAt": "2026-11-03T14:12:25.156Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mw0rf3bt0a8tis",
+     "title": "",
+     "text": "Help pack, tests, theme/controls checks, lifecycle, UI Review shots, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:53:33.448Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:04:58.615Z",
+     "updatedAt": "2026-11-03T14:53:33.474Z"
+    }
+   ],
+   "profiles": [
+    "urgent"
+   ],
+   "order": {
+    "urgent": 7
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 10,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-03T14:04:58.615Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

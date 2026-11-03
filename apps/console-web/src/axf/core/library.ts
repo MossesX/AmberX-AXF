@@ -88,7 +88,7 @@ export function paramDefaults(params: readonly LibraryParam[]): Record<string, s
 
 /* ---------- library@1 parts: features inside a library, each configurable (Oct 22 2026) ----------
  * A library may offer `parts`: features an app includes or leaves out when it installs the library, each with its own
- * parameters (Build Pilot lists them as features under the library and lets a person configure each one). The
+ * parameters (a designer can list them as features under the library and let a person configure each one). The
  * installed config keeps the library's own params at the top level and `parts: { <part id>: { ...its params } }` for
  * every included part; a part that isn't there is left out. Kotlin twin deferred (Android on hold, PORTING.md). */
 

@@ -71,7 +71,7 @@ function wallFixture() {
     ['120 s old is still fresh', good({ ts: now - 120 }), true],
     ['stale: 121 s old', good({ ts: now - 121 }), false],
     ['from the future: 121 s ahead', good({ ts: now + 121 }), false],
-    ['wrong host (signed for another site)', good({ signHost: 'buildpilot.amberxai.com' }), false],
+    ['wrong host (signed for another site)', good({ signHost: 'other.amberxai.com' }), false],
     ['tampered perms', { ...good(), tamper: { perms: 'console.themes,assistant.chat,console.plugin.sample-terminal' } }, false],
     ['tampered role (user → admin)', { ...good(), tamper: { role: 'admin' } }, false],
     ['tampered user', { ...good(), tamper: { user: 'admin' } }, false],
@@ -116,25 +116,25 @@ function wallFixture() {
 
 const b64 = (s) => Buffer.from(s, 'utf8').toString('base64');
 const file = (path, text) => ({ path, b64: b64(text) });
-const pilotManifest = { $axf: 'pilot-plugin@1', id: 'ai.amberx.pilot.extra-steps', name: 'Extra steps', version: '1.2.0' };
+const webManifest = { $axf: 'axhub-plugin@1', id: 'ai.amberx.axhub.extra-steps', name: 'Extra steps', version: '1.2.0' };
 const consoleManifest = { $axf: 'plugin@1', id: 'ai.amberx.axf.console.hello-world', name: 'Hello world', version: '1.0.0', builtWith: { model: 'opus', builtAt: '2026-10-23' } };
 
 function packageCases() {
-  const pilot = (files, o = {}) => ({ $axf: 'plugin-package@1', kind: 'pilot', folder: 'extra-steps', files, ...o });
+  const web = (files, o = {}) => ({ $axf: 'plugin-package@1', kind: 'axhub', folder: 'extra-steps', files, ...o });
   const con = (files, o = {}) => ({ $axf: 'plugin-package@1', kind: 'console', folder: 'hello-world', files, ...o });
-  const pf = (m = pilotManifest) => file('plugin.json', JSON.stringify(m));
+  const pf = (m = webManifest) => file('plugin.json', JSON.stringify(m));
   const cf = (m = consoleManifest) => file('plugin.json', JSON.stringify(m));
   const base = [pf(), file('README.md', '# Extra steps\n'), file('web/index.tsx', 'export const plugin = {};\n')];
   const sorted = [file('web/zed.ts', 'z'), file('web/Alpha.ts', 'A'), file('web/_x.ts', '_'), file('web/a/z.ts', 'z'), file('README.md', 'r'), file('web/a-b.ts', '-'), file('web/a.b.ts', '.')];
   const hashOf = (files) => cat.contentHash(files);
   const cases = [
-    ['valid pilot plugin', pilot(base)],
+    ['valid axhub plugin', web(base)],
     ['valid console plugin with a server part and binary bytes', con([cf(), file('web/index.tsx', 'x'), { path: 'server/__init__.py', b64: Buffer.from([0, 255, 128, 10]).toString('base64') }, file('assets/logo.svg', '<svg/>')])],
     ['hash order follows UTF-16 code units (capitals before lower case, _ between)', con([...sorted, cf()])],
-    ['matching sha256 in the package', pilot(base, { sha256: hashOf(base) })],
-    ['sha256 in the package does not match', pilot(base, { sha256: '0'.repeat(64) })],
-    ['catalog entry hash does not match', pilot(base), '1'.repeat(64)],
-    ['catalog entry hash matches', pilot(base), hashOf(base)],
+    ['matching sha256 in the package', web(base, { sha256: hashOf(base) })],
+    ['sha256 in the package does not match', web(base, { sha256: '0'.repeat(64) })],
+    ['catalog entry hash does not match', web(base), '1'.repeat(64)],
+    ['catalog entry hash matches', web(base), hashOf(base)],
     ['secret-looking file (.env)', con([cf(), file('.env', 'X=1')])],
     ['secret-looking file (key.pem deep inside)', con([cf(), file('server/certs/key.pem', 'k')])],
     ['secrets.env', con([cf(), file('secrets.env', 'X=1')])],
@@ -149,14 +149,14 @@ function packageCases() {
     ['__pycache__ never shipped', con([cf(), file('server/__pycache__/a.pyc', 'x')])],
     ['non-ASCII segment', con([cf(), file('web/ünï.txt', 'x')])],
     ['path over 200 characters', con([cf(), file(`web/${'a'.repeat(198)}`, 'x')])],
-    ['pilot plugins carry web files only', pilot([...base, file('server/__init__.py', 'x')])],
+    ['axhub plugins carry web files only', web([...base, file('server/__init__.py', 'x')])],
     ['listed twice (any case)', con([cf(), file('web/A.ts', '1'), file('web/a.ts', '2')])],
     ['both a file and a folder', con([cf(), file('web', 'x'), file('web/a.ts', 'y')])],
     ['no plugin.json', con([file('web/index.tsx', 'x')])],
     ['plugin.json not JSON', con([file('plugin.json', '{nope'), file('web/index.tsx', 'x')])],
     ['plugin.json not an object', con([file('plugin.json', '[1,2]')])],
-    ['wrong manifest tag for the kind', pilot([pf({ ...pilotManifest, $axf: 'plugin@1' }), file('web/x.ts', 'x')])],
-    ['manifest tag missing', pilot([pf((({ $axf: _a, ...m }) => m)(pilotManifest)), file('web/x.ts', 'x')])],
+    ['wrong manifest tag for the kind', web([pf({ ...webManifest, $axf: 'plugin@1' }), file('web/x.ts', 'x')])],
+    ['manifest tag missing', web([pf((({ $axf: _a, ...m }) => m)(webManifest)), file('web/x.ts', 'x')])],
     ['bad id, empty name, bad version', con([cf({ $axf: 'plugin@1', id: 'Hello', name: '  ', version: '1.0', builtWith: consoleManifest.builtWith })])],
     ['manifest folder differs', con([cf({ ...consoleManifest, folder: 'other' })])],
     ['package version differs from plugin.json', con([cf(), file('web/x.ts', 'x')], { version: '9.9.9' })],
@@ -190,7 +190,7 @@ function packageFixture() {
     limits: cat.LIMITS,
     kinds: Object.fromEntries(Object.entries(cat.KINDS).map(([k, v]) => [k, { label: v.label, manifest: v.manifest, allow: v.allow ? v.allow.source : null }])),
     pathProblems: ['plugin.json', 'web/a b.ts', 'web/ok-1_2@3+4.ts', 'dist/x.js', 'a//b', '', 'web/app.KEY', 'README.md'].flatMap((p) =>
-      ['console', 'pilot'].map((kind) => ({ kind, path: p, expect: cat.pathProblem(kind, p) }))),
+      ['console', 'axhub'].map((kind) => ({ kind, path: p, expect: cat.pathProblem(kind, p) }))),
     cases: packageCases(),
   };
 }

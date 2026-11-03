@@ -36,6 +36,7 @@
     "mentions": [
       "_claude/memory/STATUS.md",
       "_claude/rules/RULES.md",
+      "_claude/THREADS.md",
       "install_steps.md"
     ]
   },

@@ -35,11 +35,14 @@ DEFAULTS: dict[str, Any] = {"$axf": "terminal-settings@1", "idleMinutes": 60, "m
                             "startup": "claude", "newTab": "picker", "tabWidth": "equal",
                             "claudeProfiles": [{"id": "default", "name": "Default", "model": "", "permissionMode": "default", "flags": [], "cwd": "",
                                                 "prompt": "", "icon": "sparkles", "color": "", "connection": "console"}],
-                            "defaultClaudeProfile": "default"}
+                            "defaultClaudeProfile": "default",
+                            # headless tabs (Nov 3 2026): persistent tmux-backed tabs, split pane, context chain pacing
+                            "persistTabs": True, "splitDefault": "side", "chainSpeed": "normal", "showChain": True}
 
 CHOICES: dict[str, tuple[str, ...]] = {"scheme": ("app", "campbell", "one-half-dark", "one-half-light", "solarized-dark", "tango-dark", "vintage"),
                                       "cursorStyle": ("bar", "block", "underline"), "bell": ("none", "visual", "sound"),
-                                      "startup": ("claude", "console", "picker", "none"), "newTab": ("picker", "same"), "tabWidth": ("equal", "compact", "title")}
+                                      "startup": ("claude", "console", "picker", "none"), "newTab": ("picker", "same"), "tabWidth": ("equal", "compact", "title"),
+                                      "splitDefault": ("side", "stacked", "none"), "chainSpeed": ("slow", "normal", "fast", "instant")}
 PROFILE_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
 CONN_ID = re.compile(r"^(console|vps|axhub|container:[A-Za-z0-9_.-]{1,128})$")
 
@@ -122,7 +125,7 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
         for k in ("windowsLook", "mica", "toolbar", "cursorBlink", "closeConfirm"):
             if k in patch:
                 s[k] = bool(patch[k])
-        for k in ("copyOnSelect", "pasteWarn", "mouseDefault", "moshDefault", "showHubRuns", "showHeadless"):
+        for k in ("copyOnSelect", "pasteWarn", "mouseDefault", "moshDefault", "showHubRuns", "showHeadless", "persistTabs", "showChain"):
             if k in patch:
                 s[k] = bool(patch[k])
         if "user" in patch:

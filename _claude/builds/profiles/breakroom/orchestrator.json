@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T11:09:57.869Z",
+ "updatedAt": "2026-11-03T16:41:43.306Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -20,8 +20,9 @@
    "pendingId": "",
    "branch": "claude/agent-swarm",
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/196",
+   "mergedAt": "2026-11-01T00:13:51Z",
    "createdAt": "2026-10-31T05:27:46.906Z",
-   "updatedAt": "2026-10-31T23:53:03.393Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-31T23:53:03.392Z",
    "notes": [
     {
@@ -31,6 +32,10 @@
     {
      "text": "s1/s3/s4 (Fable-pinned: card preview, card designer, agent-card@1 asset type) built on Opus Oct 31 2026 per Brett's go-live brief; folded into the parked Fable rebuild agent-swarm-fable-rebuild. Default card design picked as corporate-badge (headless run, Brett changes it in Swarm -> ID cards -> Make default). Android renderer deferred (Android on hold, PORTING.md). Branch claude/agent-swarm, pushed to main.",
      "at": "2026-10-31T23:53:03.302Z"
+    },
+    {
+     "text": "Reconciler: PR #196 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [
@@ -415,15 +420,16 @@
    "title": "Fable rebuild: agent swarm (steps Opus built that were pinned to Fable)",
    "category": "Breakroom",
    "detail": "Fable suggested, Opus chosen rule: s1-s3, s11, s12, s15 of agent-swarm were pinned to Fable and built on Opus (branch claude/agent-swarm). The Fable build starts by reading and then replacing the Opus version.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/agent-swarm-fable-rebuild",
+   "pr": "#247",
+   "mergedAt": "2026-11-03T12:10:18Z",
    "createdAt": "2026-10-31T05:27:48.056Z",
-   "updatedAt": "2026-11-01T11:27:17.235Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "2026-11-03T12:01:23.473Z",
    "notes": [
     {
      "text": "Oct 31 2026: agent-swarm grew to 19 steps on main (renumbered). Fable-pinned steps built on Opus now: s1 card preview page, s2 roster + skills, s3 card designer, s4 agent-card@1 asset type (framework/core/engines/agent-card-rules.mjs, react/components/AgentCard.tsx, fixture agent-card.json, check-agent-card.mts), s5 job planner, s6 context packer, s14 cards + profiles, s15 group chat, s18 chat settings. The Fable rebuild covers all of them; its agent-card@1 review may keep or replace the Opus contract (Kotlin twin still deferred while Android is on hold).",
@@ -432,9 +438,20 @@
     {
      "text": "Nov 1 2026, Fable review (claude/fable-review, report _claude/builds/reports/fable-review.md): verdict REBUILD, this build. Reviewed OK and NOT to be rebuilt: agent-card@1 (one rules file drives both validators, fixture, defaults, open enums) and job-type@1 (now on the model policy). What the rebuild must do: move the swarm contracts (agent@1, agent-skill@1, swarm-roster@1, swarm-state@1, swarm-job@1, swarm-run@1, swarm-report@1) out of the plugin into framework/core/engines/swarm-rules.mjs with ONE registry, a JSON snapshot in framework/schemas, JSON Schemas, a fixture in framework/spec/fixtures and a check in CI; a swarm-run@1 record shared with agent jobs (kind job); every model choice through framework/core/model-policy.mjs (already applied: roster and planner run Opus or Fable only). The 19-step Opus build stays in place until this lands.",
      "at": "2026-11-01T11:25:25.676Z"
+    },
+    {
+     "text": "Reconciler: branch claude/agent-swarm-fable-rebuild (PR #247); PR #247; PR #247 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-03T12:01:22.767Z"
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -458,8 +475,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:32:15.362Z",
      "note": "",
      "uid": "st-mvx3bvuv089xhn"
     },
@@ -476,8 +493,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:36:29.042Z",
      "note": "",
      "uid": "st-mvx3bvuv09vwf3"
     },
@@ -494,8 +511,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:40:49.733Z",
      "note": "",
      "uid": "st-mvx3bvuv0a7v2s"
     },
@@ -512,8 +529,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:44:46.881Z",
      "note": "",
      "uid": "st-mvx3bvuv0bb25l"
     },
@@ -530,8 +547,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:54:11.600Z",
      "note": "",
      "uid": "st-mvx3bvuv0ckonb"
     },
@@ -548,8 +565,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:54:12.080Z",
      "note": "",
      "uid": "st-mvx3bvuv0djqhy"
     },
@@ -566,8 +583,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:01:23.473Z",
      "note": "",
      "uid": "st-mvx3bvuv0e7mgm"
     }
@@ -798,6 +815,174 @@
      "doneAt": "2026-11-01T07:20:50.958Z",
      "note": "",
      "uid": "st-mvxgvlsd055pzx"
+    }
+   ]
+  },
+  {
+   "id": "crew-retrain",
+   "title": "Crew retrain: every agent an all-rounder, no anonymous sessions",
+   "category": "Breakroom",
+   "detail": "Brett, Nov 3 2026 (voice). Retrain, don't fire: every swarm agent can take every job type (skills, home job as preference only); new job types feature-build and ops-fix; router picks any free agent under budget; every headless launch is assigned to a named agent first and booked on its card; back-assign today's headless builds; Breakroom cards show skills, home job, current job. Booked on Landin' Lenny.",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/crew-retrain",
+   "pr": "#265",
+   "createdAt": "2026-11-03T15:58:12.029Z",
+   "updatedAt": "2026-11-03T16:23:06.193Z",
+   "builtAt": "2026-11-03T16:23:05.239Z",
+   "notes": [
+    {
+     "text": "All 8 steps done. PR #265 (claude/crew-retrain), UI Review r-20261103-5e7f222e waiting. Report _claude/builds/reports/crew-retrain.md. Land after land-everything's other PRs.",
+     "at": "2026-11-03T16:23:06.193Z"
+    }
+   ],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Register crew-retrain in the Breakroom profile + banner entry",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T15:58:19.537Z",
+     "note": "",
+     "uid": "st-mw0vgp5h09uh1v"
+    },
+    {
+     "id": "s2",
+     "text": "Job model: job types declare required skills; agents carry skills (all six get every skill); home job = preference",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:05:30.656Z",
+     "note": "",
+     "uid": "st-mw0vgp5h0agp3p"
+    },
+    {
+     "id": "s3",
+     "text": "New job types feature-build and ops-fix",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:05:31.738Z",
+     "note": "",
+     "uid": "st-mw0vgp5h0b9ziq"
+    },
+    {
+     "id": "s4",
+     "text": "Router: any on-duty agent under budget, home job first, then least busy",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:05:32.857Z",
+     "note": "",
+     "uid": "st-mw0vgp5h0cj1uk"
+    },
+    {
+     "id": "s5",
+     "text": "Launchers require an agent: claude-headless.sh + build_start take AXF_AGENT (auto-assign), --agent flag, agent-job.mjs assign",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:07:20.795Z",
+     "note": "",
+     "uid": "st-mw0vgp5h0ded72"
+    },
+    {
+     "id": "s6",
+     "text": "Back-assign today's headless builds round-robin and book them on the cards",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:12:16.094Z",
+     "note": "",
+     "uid": "st-mw0vgp5h0e19ae"
+    },
+    {
+     "id": "s7",
+     "text": "Breakroom UI: cards show all skills, home job, current job; roster shows who's free",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:23:04.430Z",
+     "note": "",
+     "uid": "st-mw0vgp5h0fhwcm"
+    },
+    {
+     "id": "s8",
+     "text": "Tests, theme/controls checks, lifecycle, report, THREADS.md, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T16:23:05.239Z",
+     "note": "",
+     "uid": "st-mw0vgp5h0g53iq"
     }
    ]
   }

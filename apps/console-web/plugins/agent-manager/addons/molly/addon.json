@@ -37,7 +37,7 @@
       {
         "id": "molly.codebase",
         "name": "Knows the codebase",
-        "description": "Answers any question about AmberX, the Dev Console, axHub, Build Pilot and the AXF framework from the repository.",
+        "description": "Answers any question about AmberX, the Dev Console, axHub and the AXF framework from the repository.",
         "instructions": "1. Search first (repo_search), then read the files that answer it (repo_read). Rules and decisions: CLAUDE.md, _claude/shared/rules/RULES.md, _claude/rules/RULES.md, _claude/memory/decisions.md; status: grep _claude/memory/STATUS.md and _claude/THREADS.md for the feature.\n2. Answer plainly and short (it may be read aloud), naming the files.\n3. If the answer is 'tap through these screens', offer a walkthrough.",
         "triggers": [
           "how does",

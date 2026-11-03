@@ -34,6 +34,14 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| What's new banner (Urgent `whats-new-banner`; Brett Nov 3, voice): banner ticker + unread count of features merged to main, panel grouped by date / build / app, search, details, read marks, settings. Plugin `whats-shipped` (display name What's new; the folder name avoids the systems check's own `whats-new` strip), feed whats-new@1 from merged PRs (GitHub, else git), builds store, reports, Codebase changes; deployed from deploy.yml runs or the `site` branch. Report `_claude/builds/reports/whats-new-banner.md`. | built, PR #260 open, waiting in UI Review r-20261103-8861306a | `claude/whats-new-banner` | #260 | Brett: approve the UI Review item; later switch the feed's rebuild trigger to orch-live-sync's builds-live events once on main (seam in `Sources.fingerprint`) | 2026-11-03 |
+| Headless tabs (Urgent `headless-tabs`, 7 steps, Opus; Brett Nov 3, voice): every console terminal tab lives in a tmux session (re-attach + scrollback replay, Open in Moshi, detach vs Kill session); every headless run opens its own tab with agent · model · live cost + status dot (`deploy/claude-meter.mjs`, model-pricing.json, reconciled to total_cost_usd); split pane with the context chain (CLAUDE.md load order, imports, rules, Reads; rules typed out one at a time) | review (all 7 steps done; PR open, waits for UI Review) | `claude/headless-tabs` | [#259](https://github.com/MossesX/AmberX-AXF/pull/259) | Report `_claude/builds/reports/headless-tabs.md`. Brett: approve UI Review r-20261103-3sp5x01 (group `headless-tabs - Nov 3 9:44 AM`). Console needs a redeploy for tmux in the image. Tests: terminal 97/97, check-headless-tabs 30/30 | 2026-11-03 |
+| Retire Patches and Build Pilot (Urgent `kill-patches-pilot`; Brett Nov 3, voice: "Patches is dead … Build Pilot dead"): removed both apps and every reference (repo, rules, store builds archived), VPS containers/Coolify apps after a snapshot to `/root/archive/retired-2026-11-03/`, axHub projects, axHub repo PR; MossesX/Build-Pilot archived | review (PR open, the push banner merges it) | `claude/kill-patches-pilot` | [#258](https://github.com/MossesX/AmberX-AXF/pull/258), axHub [#32](https://github.com/MossesX/axHub/pull/32) | report `_claude/builds/reports/kill-patches-pilot.md` | 2026-11-03 |
+| Agent group chats on axHub (Breakroom profile; Brett Nov 3 voice): read-only redacted mirror of the Breakroom group chat on the hub (`agent-swarm/chats/` in amberx-axf `_data`, read with `axhub.memory_read`), a mentions-of-Brett filter (CLI + API), and a Breakroom "About Brett" view | PR open, UI Review waiting | `claude/agent-chats-hub` | (see PR) | push banner merges once CI + UI Review pass | 2026-11-03 |
+| Notes vault (Urgent `notes-vault`, Opus; Brett Nov 3, voice): every hand-saved note (handoffs, session logs, plans, install notes, saved commands) moved into `/projects/_shared/_claude/notes/` with hub versions kept + `notes/INDEX.md`; console plugin `notes-browser` (Plugins → Notes) + capability `axf.notes@1`; md-studio s11 Notes scope | review (s1–s6 done; PR open, the push banner merges it; UI Review waiting) | `claude/notes-vault` | [#256](https://github.com/MossesX/AmberX-AXF/pull/256) | Report `_claude/builds/reports/notes-vault.md`. Brett: settle the `claude-sync` holds for the moved files in other checkouts (keep hub = delete local) | 2026-11-03 |
+| Orchestrator live sync (Urgent `orch-live-sync`, Opus, 7 steps; Brett Nov 3, voice: "every completed step must reach the orchestrator and appear on main immediately"): store writes go live to main as status-only commits (`framework/cli/builds-live.mjs`), newer-wins merge, `built` = awaiting merge, reconciler (`builds-reconcile.mjs`, session start + 10-min cron), banner item `builds-live`, THREADS Live build log | review (all 7 steps done; PR open, the push banner merges it) | `claude/orch-live-sync` | [#255](https://github.com/MossesX/AmberX-AXF/pull/255) | Backfill live on main: dock-engine/token-control/theme-editor built, urgent-builds archived, xlayout 12/12; reconciler fixed 43 builds; 28 orphan PRs + 2 branches flagged. Report `_claude/builds/reports/orch-live-sync.md`. Brett: none needed | 2026-11-03 |
+| AmberX app backups (Urgent `amberx-backup-fix`, Opus; Brett Nov 3, voice): `amberx-app-backup-1` restart-looped since ~Oct 3 because backup.sh had CRLF line endings (Windows upload). Fixed live on the VPS (LF script, CR-stripping entrypoint, 26 h healthcheck), fresh dump verified by a full scratch restore, new systems-check item `amberx-backups` | review (VPS fix live; PR open, the push banner merges it) | `claude/amberx-backup-fix` | opening | Brett: carry `.gitattributes` (`*.sh text eol=lf`) + the compose `backup` changes into the AmberX source repo on Windows, or the next deploy.ts upload reverts the compose. Old dumps archived in /opt/amberx-app/backups-archive. Report `_claude/builds/reports/amberx-backup-fix.md` | 2026-11-03 |
+| Fable rebuild: agent swarm (Breakroom `agent-swarm-fable-rebuild`, 7 steps, Fable s1–s6 + Opus s7; Brett Nov 3, voice: "finish the Breakroom profile"): the swarm's seven contracts into `framework/core/engines/swarm-rules.mjs` (one registry, normalizers, field-naming validators, JSON Schemas, snapshot `schemas/swarm.json`, fixture `spec/fixtures/swarm.json`, `check-swarm.mts` in CI; plugin re-exports them), then planner, context packer, card/avatar check, group chat contract, vibe engine, differences report | review (all 7 steps done; PR open, the push banner merges it) | `claude/agent-swarm-fable-rebuild` | [#247](https://github.com/MossesX/AmberX-AXF/pull/247) | s1: contracts in the framework. s2: planner on the model policy, `fallback` agent, folder-vs-glob overlap, one agent one job across builds. s3: best-hit snippets, folder outlines (real brief 4321 → 352 tokens). s4: avatar as a part list from the card rules. s5: chat contract `swarm-chat.mjs`. s6: vibe engine `swarm-vibe.mjs`; `check-swarm.mts` 223 checks. s7: report `_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md` + LOG.md; no shots (the sandbox console cannot render without axHub; same pixels anyway). Brett: none needed | 2026-11-03 |
 | Token control plugin (Urgent `token-control`; Brett Nov 2 21:38 ET): API + MCP + CLI server/client for every theme/style/layout token (every layout param a token), wired to Claude + axHub; full control of AmberX tasks/to-dos/notes + Plan Studio + orchestrator; interactive docs. s1-s3 Fable, s4-s14 Opus. Folds in amberx-full-mcp-api (don't relaunch it) | queued (needs a Fable session) | `claude/token-control` (not made) | - | s1 on Fable | 2026-11-02 |
 | Shared dock engine (Urgent `dock-engine`, Fable): split/float/re-dock/drop zones/10 layout presets on the windows engine; used by MD Studio, xLayout (replaces its s3), Theme Editor | queued (needs a Fable session) | `claude/dock-engine` (not made) | - | run first | 2026-11-02 |
 | MD Studio plugin (Urgent `md-studio`, Opus; Brett Nov 2 21:30 ET): md browser/editor, scope column Project/Claude/Repo, docking tabs, reference branches + click-to-split, 3 views + IDE view, snippets, Claude-file wizards | queued (after dock-engine) | `claude/md-studio` (not made) | - | waits on dock-engine | 2026-11-02 |
@@ -138,6 +146,23 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 
 ## To carry on
+
+### Notes vault (`notes-vault`, Urgent, Opus) — branch `claude/notes-vault`
+- Asked: gather Brett's scattered saved notes into one place, a quick notes browser plugin, a Notes section for MD Studio.
+- Done: notes moved on the hub (write new, delete old with versions kept), INDEX, orch-live-sync note, `notes-browser` plugin (server on axHub memory-dir semantics, 28-check `test.py`), md-studio s11, report, UI Review shots.
+- Left: PR merge (automatic). After merge, other checkouts may hold the moved files in `claude-sync` (deleted on the hub): keep hub.
+- Checks: `python3 apps/console-web/plugins/notes-browser/test.py`, `node framework/cli/check-theme.mjs`, `check-controls.mjs`, `help-coverage.mjs --check`. <!-- axf-plugin:notes-browser -->
+### Orchestrator live sync (`orch-live-sync`)
+Done (PR open). If a later session must carry on: read `_claude/builds/reports/orch-live-sync.md` (Known gaps). Follow-ups worth a build: wire `builds-live.mjs heal` into the push banner's *Pull failed* path; let the GitHub App bypass protection for `_claude/`-only commits if main protection ever tightens; attach the 28 orphan PRs to builds or close them. Checks: `node framework/spec/check-builds-live.mjs`, `node framework/cli/builds-live.mjs status`, `node framework/cli/builds-reconcile.mjs`.
+
+### Fable rebuild: agent swarm (`agent-swarm-fable-rebuild`, Breakroom, Fable) — branch `claude/agent-swarm-fable-rebuild`
+- **Asked in full (Brett, Nov 3 2026, voice):** "go on agent-swarm-fable-rebuild, finish the Breakroom profile." Run every step the orchestrator brief lists (7), tick each with `AXF_BUILD_PROFILE=breakroom node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step agent-swarm-fable-rebuild <sN> done`, commit + push often, open the PR at the end (the push banner merges it), UI Review shots for any visible change. Opus or Fable only, never Sonnet; Fable reviewed first (`_claude/builds/reports/fable-review.md` §6) and this rebuild does only what it flagged (agent-card@1 stays). <!-- axf-plugin:build-orchestrator -->
+- **Done so far:** s1 — `framework/core/engines/swarm-rules.mjs` (+ `.d.mts`): registry `SWARM`, normalizers + validators for agent@1, agent-skill@1, swarm-roster@1, swarm-state@1, swarm-job@1, swarm-run@1 (kinds build / job), swarm-report@1, `parseReport`, `budgetTokens`, `jsonSchemas()`; `axf schemas` writes `schemas/swarm.json` + 7 JSON Schemas; fixture `spec/fixtures/swarm.json` + `spec/check-swarm.mts` (110 checks, in `android.yml`); the plugin's `web/swarm-core.mjs` re-exports the framework's contract (own copies removed), `runner.mjs` and `jobs-core.mjs` build runs through `normRun`; PORTING.md deferred-gap line. s2 — planner: `requiredTier` = the step's pin (any spelling, coerced) else `modelForWork` from model-policy@1 (dead Haiku/Sonnet word lists removed); `matchAgent` sends a zero-score step to the most capable agent (largest budget), not the cheapest; `leasesOverlap` catches a folder lease vs a glob rooted inside it; `planJobs` sequences one agent to one job at a time across builds and shapes every job with `normJob`; `fixerJob` on the policy default; 5 new tests (85 total). s3 — packer: `extractSnippet` scores hit lines (one per distinct task word, +1 for a definition line; words on more than a quarter of the file's lines are skipped) and keeps the best within the 120-line cap, printed in file order; `folderIndex` / `indexBlocks` give area jobs an outline of each leased folder (own files + subfolders with counts, 60 lines shared across folders), `swarm.mjs listFolder` walks folders skipping build output; prefix wording allows reading inside leased folders; swarm-roster@1 gained `fallback` (agent for unmatched steps; validated; schema + fixture). Measured: prefix 442 tokens, skills 120–225, the real s3 brief 4321 → 352 prompt tokens. 87 tests. s4 — card layout: `AgentCard.tsx` draws only `cardModel` + `.fx-idcard` tokens (confirmed, no change). Avatar: geometry and paints moved from `cards.tsx` into `core/engines/agent-card-rules.mjs` (`AVATAR_HAIR`, `AVATAR_FACE_SHAPES`, `AVATAR_GEAR_PARTS`, `AVATAR_PAINTS`, `avatarColors`, `avatarModel` → `{ box, face, hair, gear, hue, tokens, parts[] }`, paints are roles or theme tokens, never colours); the React `Avatar` renders the part list; `AGENT_CARD_SAMPLE` gained `avatar` (and its favourite model is Opus, not Sonnet); fixture `agent-card.json` gained `avatar` (sample, junk, every face, every gear, hue bands) and `check-agent-card.mts` replays it + sweeps every face×gear×hair (84 checks). Same pixels as before (same paths, same classes), so no UI Review item. s5 — `core/engines/swarm-chat.mjs` (+ `.d.mts`): `SPEAKERS` / `JOB_KINDS` / `messageErrors` (field-naming), `chatOn` + `post(state, msgs, at, filter)` (switches; the vibe engine is the filter hook), `namer` (roster / map / function), builders `assignLine`, `leaseLines(plan, names, overlap)`, `reportLines`, `mergeLines`, `statusLine`, `payLine` (raise / dock / topup / bonus), `brokeLine`, `disciplineLines` (suspend / suspension-over / back-from-leave / rehire / quit), `hiredLine`, `newCardsLine`, `waitingLine`, `assignJobLine`, `unassignedLine`; banter: `BANTER`, `BANTER_MOMENTS`, `banterLine`, `reactors`, `banterPrompt`, `parseBanter` (caps as constants). The plugin core, `jobs-core.mjs`, `jobs.mjs` and `swarm.mjs` build every line through them (inline Boss strings removed). Fixture `spec/fixtures/swarm-chat.json` replayed in `check-swarm.mts` (messages, every builder, banter, post). PORTING.md line. s6 — `core/engines/swarm-vibe.mjs` (+ `.d.mts`): `VIBE_WORDS` (cuss levels + replacements, sarcasm, drama, slang, identity guard), `VIBE_WEIGHTS`, `VIBE_LEVELS`, `ACRONYMS`, `PREVIEW_LINES`; `settingsFor`, `scoreVibe`, `cleanCussing`, `calmDown`, `vibeFilter`, `reactionsFor`, `banterToday`, `banterAllowed`, `reactCount`, `previewLine`, `vibeShade`; the plugin core re-exports them and feeds `vibeFilter` to the chat engine's `post`. Fixture `spec/fixtures/swarm-vibe.json` (scores, cleaning, calming, every filter rule, reactions, the daily budget, preview, shade) replayed in `check-swarm.mts` (223 checks). PORTING.md line.
+- **s7 (Opus-pinned; written by this Fable session on Brett's "do every step"):** report `_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md`, LOG.md entry, `shots.json` kept (the sandbox console shows only "Waiting for axHub" under Playwright, so the captures were discarded; same pixels by construction). `plugin.json` lists `_claude/THREADS.md` as a managed mention so the lifecycle check accepts the path references in this block.
+- **Steps left:** none. The PR is open; the push banner merges it when CI is green. If CI is red, fix on this branch (`check-swarm.mts` runs in `android.yml` next to `check-job-type.mts`).
+- **Read first:** `framework/core/engines/swarm-rules.mjs`, `framework/spec/check-swarm.mts`, `apps/console-web/plugins/agent-swarm/web/swarm-core.mjs`, `apps/console-web/plugins/agent-swarm/test.mjs`. <!-- axf-plugin:agent-swarm -->
+- **Checks:** `npx -y tsx framework/spec/check-swarm.mts` · `node apps/console-web/plugins/agent-swarm/test.mjs` · `node framework/spec/check-model-policy.mjs` · `cd apps/console-web && npm run typecheck`. <!-- axf-plugin:agent-swarm -->
+- **Waits on:** nothing. **First message:** "Carry on agent-swarm-fable-rebuild (Breakroom) on Fable from s2: `AXF_BUILD_PROFILE=breakroom node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief agent-swarm-fable-rebuild`." <!-- axf-plugin:build-orchestrator -->
 
 ### dock-engine, md-studio, theme-editor (profile Urgent)
 - Asked in full: the orchestrator builds' detail (Brett Nov 2 2026 21:30 ET). Order: dock-engine (Fable) first; md-studio after it; theme-editor any time.
@@ -487,3 +512,103 @@ VPS). The session reads the rules and this file first, as usual.
 - **Model:** Fable s1–s2 (feature-matrix@1 contract + apply engine), Opus s3–s8 (console plugin, views, grid hooks, seed, ship). Approval card at the switch.
 - **Read first:** apps/console-web/plugins/build-orchestrator (web/orchestrator-core.mjs), framework/cli/pending.mjs, framework/cli/build-queue.mjs, apps/console-web/plugins/build-manager, apps/console-web/plugins/changes-grid, orchestrator build share-search s1 (grid-attach@1). <!-- axf-plugin:build-orchestrator -->
 - **First message for the new chat (Fable):** "Start orchestrator build feature-matrix (refactor) in AmberX-AXF: Fable phase s1–s2 on branch fable/feature-matrix. Read the brief with orchestrator.mjs brief feature-matrix." <!-- axf-plugin:build-orchestrator -->
+
+## Live build log
+
+<!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
+
+- 2026-11-03 13:53 UTC · `orch-live-sync` s1 done (urgent) · orchestrator
+- 2026-11-03 13:54 UTC · `xlayout` s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done (big-dog) · builds-live
+- 2026-11-03 14:45 UTC · `headless-tabs` s1–s7 done (urgent) · PR #259 · UI Review r-20261103-3sp5x01
+- 2026-11-03 13:55 UTC · `orch-live-sync` s2 done (urgent) · orchestrator
+- 2026-11-03 13:55 UTC · `orch-live-sync` s3 done (urgent) · orchestrator
+- 2026-11-03 13:55 UTC · `orch-live-sync` s4 done (urgent) · orchestrator
+- 2026-11-03 13:56 UTC · `urgent-builds` → archived, merged, note (urgent) · orch-live-sync
+- 2026-11-03 13:56 UTC · `orch-step-click` note (refactor) · orch-live-sync
+- 2026-11-03 13:56 UTC · `dock-engine` s1 done, s2 done, s3 done, s4 done, → built, branch claude/molly-fable, PR #245, note (urgent) · orch-live-sync
+- 2026-11-03 13:56 UTC · `theme-editor` s1 done, s2 done, s3 done, s4 done, s5 done, → built, branch claude/theme-editor, PR #243, note (urgent) · orch-live-sync
+- 2026-11-03 13:56 UTC · `token-control` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, → built, branch claude/token-control-opus, PR #250, note (urgent) · orch-live-sync
+- 2026-11-03 13:57 UTC · `enterprise-branding` merged, note (main-framework, refactor) · reconciler
+- 2026-11-03 13:57 UTC · `apply-all-levels` branch claude/apply-all-levels, PR #115, merged, note (main-framework, refactor) · reconciler
+- 2026-11-03 13:57 UTC · `amberx-empty-shell` branch claude/amberx-empty-shell, PR #118, merged, note (main-framework, refactor) · reconciler
+- 2026-11-03 13:57 UTC · `fresh-look` branch claude/fresh-look-done, PR #120, merged, note (main-framework, refactor) · reconciler
+- 2026-11-03 13:57 UTC · `design-packages-10` branch claude/design-packages-10, PR #124, merged, note (main-framework, refactor) · reconciler
+- 2026-11-03 13:57 UTC · `build-orchestrator` branch claude/build-orchestrator, PR #122, merged, note (main-framework, refactor) · reconciler
+- 2026-11-03 13:57 UTC · `build-profiles` branch claude/build-profiles, PR #127, merged, note (main-framework, refactor) · reconciler
+- 2026-11-03 13:57 UTC · `amberx-appearance-lock` branch claude/amberx-appearance-lock, PR #126, merged, note (main-framework, refactor) · reconciler
+- 2026-11-03 13:57 UTC · `amberx-handsfree` merged, note (refactor) · reconciler
+- 2026-11-03 13:57 UTC · `amberx-notes` merged, note (refactor) · reconciler
+- 2026-11-03 13:57 UTC · `fix-interface-scope-settings` merged, note (refactor) · reconciler
+- 2026-11-03 13:57 UTC · `fix-hubsync-look-source` merged, note (refactor) · reconciler
+- 2026-11-03 13:57 UTC · `fix-banner-snap` merged, note (refactor) · reconciler
+- 2026-11-03 13:57 UTC · `banner-fix-fallback` PR #152, merged, note (refactor) · reconciler
+- 2026-11-03 13:57 UTC · `amberx-push` merged, note (refactor) · reconciler
+- 2026-11-03 13:57 UTC · `amberx-voice-center` merged, note (refactor) · reconciler
+- 2026-11-03 13:57 UTC · `amberx-assistant-agents` merged, note (refactor) · reconciler
+- 2026-11-03 13:57 UTC · `amberx-claude-tokens` merged, note (refactor) · reconciler
+- 2026-11-03 13:57 UTC · `refactor-all` merged, note (refactor) · reconciler
+- 2026-11-03 13:57 UTC · `mosses-build-tools` merged, note (refactor) · reconciler
+- 2026-11-03 13:57 UTC · `assistant-no-subagents` PR #167, merged, note (refactor) · reconciler
+- 2026-11-03 13:57 UTC · `veto-everywhere` PR #176, merged, note (refactor) · reconciler
+- 2026-11-03 13:57 UTC · `agent-voice` PR #177, merged, note (refactor) · reconciler
+- 2026-11-03 13:57 UTC · `pr-only-merge` PR #183, merged, note (refactor) · reconciler
+- 2026-11-03 13:57 UTC · `orch-pending-sync` PR #143, merged, note (refactor) · reconciler
+- 2026-11-03 13:57 UTC · `home-cards` branch angel/home-cards-queue, PR #171, merged, note (angel) · reconciler
+- 2026-11-03 13:57 UTC · `settings-compact` PR #175, merged, note (angel) · reconciler
+- 2026-11-03 13:57 UTC · `ui-all-assets` PR #181, merged, note (angel) · reconciler
+- 2026-11-03 13:57 UTC · `element-inspector` s1 done, s2 done, s4 done, → running, PR #192, note (angel) · reconciler
+- 2026-11-03 13:57 UTC · `layout-repeating-slots` s2 done, → running, PR #191, merged, note (angel) · reconciler
+- 2026-11-03 13:57 UTC · `session-history` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, → built, PR #195, note (angel) · reconciler
+- 2026-11-03 13:57 UTC · `audio-output-recorder` PR #194, merged, note (angel) · reconciler
+- 2026-11-03 13:57 UTC · `live-key-checks` PR #182, merged, note (angel) · reconciler
+- 2026-11-03 13:57 UTC · `ui-review` PR #184, merged, note (angel) · reconciler
+- 2026-11-03 13:57 UTC · `plan-studio` PR #185, merged, note (angel) · reconciler
+- 2026-11-03 13:57 UTC · `audio-extract` PR #187, merged, note (angel) · reconciler
+- 2026-11-03 13:57 UTC · `agent-swarm` merged, note (breakroom) · reconciler
+- 2026-11-03 13:57 UTC · `agent-swarm-fable-rebuild` branch claude/agent-swarm-fable-rebuild, PR #247, merged, note (breakroom) · reconciler
+- 2026-11-03 13:57 UTC · `stack-walkthrough` merged, note (refactor) · reconciler
+- 2026-11-03 13:57 UTC · `molly-opus` merged, note (big-dog) · reconciler
+- 2026-11-03 13:57 UTC · `xlayout` s12 done, → built, branch claude/xlayout-opus, PR #252, note (big-dog) · reconciler
+- 2026-11-03 13:57 UTC · `walkthrough-random-look` PR #240, merged, note (refactor) · reconciler
+- 2026-11-03 13:57 UTC · `md-studio` branch claude/md-studio-theme-editor-plan, PR #242, merged, note (urgent) · reconciler
+- 2026-11-03 13:57 UTC · `orch-live-sync` s5 done (urgent) · orchestrator
+- 2026-11-03 13:57 UTC · `orch-live-sync` s6 done (urgent) · orchestrator
+- 2026-11-03 14:01 UTC · `orch-live-sync` PR #255 (urgent) · builds-live
+- 2026-11-03 14:01 UTC · `orch-live-sync` s7 done, → built (urgent) · orchestrator
+- 2026-11-03 14:45 UTC · `whats-new-banner` s1–s4 done, s5 tests/checks/shots done, PR opening (urgent) · claude/whats-new-banner
+- 2026-11-03 14:53 UTC · `whats-new-banner` s5 done, PR #260, UI Review r-20261103-8861306a waiting (urgent) · claude/whats-new-banner
+- 2026-11-03 15:20 UTC · `orch-live-sync` → complete, merged, note (urgent) · reconciler
+- 2026-11-03 15:32 UTC · `land-everything` added (11 steps) (urgent) · orchestrator
+- 2026-11-03 15:32 UTC · `land-everything` → running (urgent) · orchestrator
+- 2026-11-03 15:58 UTC · `crew-retrain` added (8 steps) (breakroom) · orchestrator
+- 2026-11-03 15:58 UTC · `crew-retrain` → running (breakroom) · orchestrator
+- 2026-11-03 15:58 UTC · `crew-retrain` s1 done (breakroom) · orchestrator
+- 2026-11-03 16:05 UTC · `crew-retrain` s2 done (breakroom) · orchestrator
+- 2026-11-03 16:05 UTC · `crew-retrain` s3 done (breakroom) · orchestrator
+- 2026-11-03 16:05 UTC · `crew-retrain` s4 done (breakroom) · orchestrator
+- 2026-11-03 16:07 UTC · `notes-vault` PR #256, merged (urgent) · builds-live
+- 2026-11-03 16:07 UTC · `land-everything` note (urgent) · orchestrator
+- 2026-11-03 16:07 UTC · `land-everything` s1 done (urgent) · orchestrator
+- 2026-11-03 16:07 UTC · `crew-retrain` s5 done (breakroom) · orchestrator
+- 2026-11-03 16:12 UTC · `crew-retrain` s6 done (breakroom) · orchestrator
+- 2026-11-03 16:14 UTC · `tools-plugin` note (refactor) · foreign-write
+- 2026-11-03 16:14 UTC · `land-everything` note (urgent) · orchestrator
+- 2026-11-03 16:14 UTC · `land-everything` s2 done (urgent) · orchestrator
+- 2026-11-03 16:22 UTC · `tools-plugin` note (refactor) · foreign-write
+- 2026-11-03 16:22 UTC · `crew-retrain` branch claude/crew-retrain, PR #265 (breakroom) · builds-live
+- 2026-11-03 16:23 UTC · `crew-retrain` s7 done (breakroom) · orchestrator
+- 2026-11-03 16:23 UTC · `crew-retrain` s8 done, → built (breakroom) · orchestrator
+- 2026-11-03 16:23 UTC · `crew-retrain` note (breakroom) · orchestrator
+- 2026-11-03 16:23 UTC · `land-everything` note (urgent) · orchestrator
+- 2026-11-03 16:23 UTC · `kill-patches-pilot` PR #258, merged (urgent) · builds-live
+- 2026-11-03 16:23 UTC · `kill-patches-pilot` → complete (urgent) · orchestrator
+- 2026-11-03 16:24 UTC · `land-everything` note (urgent) · orchestrator
+- 2026-11-03 16:24 UTC · `land-everything` s3 done (urgent) · orchestrator
+- 2026-11-03 16:24 UTC · `kill-patches-pilot` → running, note (urgent) · orchestrator
+- 2026-11-03 16:24 UTC · `kill-patches-pilot` → complete (urgent) · orchestrator
+- 2026-11-03 16:29 UTC · `headless-tabs` PR #259, merged (urgent) · builds-live
+- 2026-11-03 16:29 UTC · `land-everything` note (urgent) · orchestrator
+- 2026-11-03 16:29 UTC · `land-everything` s4 done (urgent) · orchestrator
+- 2026-11-03 16:41 UTC · `whats-new-banner` merged (urgent) · builds-live
+- 2026-11-03 16:41 UTC · `land-everything` note (urgent) · orchestrator
+- 2026-11-03 16:41 UTC · `land-everything` s5 done (urgent) · orchestrator

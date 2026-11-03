@@ -1,0 +1,1471 @@
+{
+ "$axf": "fixture@1",
+ "about": "agent swarm contracts (core/engines/swarm-rules.mjs); regenerate: npx -y tsx framework/spec/check-swarm.mts --write",
+ "at": "2026-11-03T14:00:00.000Z",
+ "inputs": {
+  "agent": {
+   "$axf": "agent@1",
+   "id": "rio",
+   "name": "Rio React",
+   "role": "Front-end engineer",
+   "skill": "react-ui",
+   "specialty": "React views on the framework controls",
+   "keywords": [
+    "React",
+    "tsx",
+    "hook"
+   ],
+   "paths": [
+    "apps/console-web/plugins/**/web/",
+    "**/*.tsx"
+   ],
+   "models": [
+    "sonnet",
+    "fable"
+   ],
+   "tools": [
+    "Read",
+    "Edit",
+    "Grep"
+   ],
+   "maxTurns": 30,
+   "tokenBudget": 400000,
+   "salary": 20,
+   "hiredAt": "2026-10-31",
+   "avatar": {
+    "face": "square",
+    "hair": 4,
+    "gear": "shades",
+    "hue": 200
+   },
+   "catchphrase": "Ship it.",
+   "bio": "Lives in the console."
+  },
+  "skillMd": "---\n$axf: agent-skill@1\nid: react-ui\ntitle: React UI\n---\nBuild views from framework controls only.\n- Tokens only, no raw colours.\n",
+  "roster": {
+   "$axf": "swarm-roster@1",
+   "tune": {
+    "scale": 0.5,
+    "basis": "pilot"
+   },
+   "agents": [
+    {
+     "$axf": "agent@1",
+     "id": "rio",
+     "name": "Rio React",
+     "role": "Front-end engineer",
+     "skill": "react-ui",
+     "specialty": "React views on the framework controls",
+     "keywords": [
+      "React",
+      "tsx",
+      "hook"
+     ],
+     "paths": [
+      "apps/console-web/plugins/**/web/",
+      "**/*.tsx"
+     ],
+     "models": [
+      "sonnet",
+      "fable"
+     ],
+     "tools": [
+      "Read",
+      "Edit",
+      "Grep"
+     ],
+     "maxTurns": 30,
+     "tokenBudget": 400000,
+     "salary": 20,
+     "hiredAt": "2026-10-31",
+     "avatar": {
+      "face": "square",
+      "hair": 4,
+      "gear": "shades",
+      "hue": 200
+     },
+     "catchphrase": "Ship it.",
+     "bio": "Lives in the console."
+    },
+    {
+     "id": "doc",
+     "skill": "docs",
+     "tools": [
+      "Read",
+      "Edit"
+     ],
+     "models": [
+      "haiku"
+     ]
+    }
+   ]
+  },
+  "state": {
+   "updatedAt": "2026-11-03T14:00:00.000Z",
+   "rules": {
+    "rageQuitAfter": 2
+   },
+   "agents": {
+    "rio": {
+     "status": "probation",
+     "note": "watch the leases",
+     "cap": 30,
+     "history": [
+      {
+       "at": "2026-11-03T14:00:00.000Z",
+       "from": "On duty",
+       "to": "Probation",
+       "note": "watch the leases"
+      }
+     ],
+     "identity": {
+      "name": "Rio R.",
+      "photo": "https://example.test/rio.png"
+     },
+     "card": "license"
+    },
+    "gone": {
+     "status": "fired"
+    }
+   },
+   "chat": {
+    "enabled": true,
+    "agents": {
+     "doc": false
+    }
+   },
+   "chatSettings": {
+    "vibe": 999,
+    "chattiness": 65,
+    "cussing": -5,
+    "preset": "breakroom",
+    "overrides": {
+     "rio": {
+      "vibe": 50,
+      "drama": 200
+     }
+    },
+    "banterBudget": 2,
+    "saved": [
+     {
+      "name": "Friday",
+      "vibe": 333
+     }
+    ]
+   },
+   "messages": [
+    {
+     "id": "m1",
+     "at": "2026-11-03T14:00:00.000Z",
+     "from": "boss",
+     "kind": "assign",
+     "text": "Rio, you got b.s1.",
+     "jobId": "b.s1"
+    },
+    {
+     "from": "rio",
+     "kind": "nope",
+     "text": "yo",
+     "vibe": 120,
+     "toned": true
+    }
+   ],
+   "banterSpend": [
+    {
+     "at": "2026-11-03T14:00:00.000Z",
+     "usd": 0.1
+    }
+   ],
+   "notices": [
+    {
+     "at": "2026-11-03T14:00:00.000Z",
+     "agent": "rio",
+     "text": "probation run"
+    }
+   ],
+   "cards": {
+    "default": "corporate-badge",
+    "designs": [
+     {
+      "id": "my-pass",
+      "name": "My pass",
+      "data": {
+       "design": "backstage",
+       "front": [
+        "name",
+        "status"
+       ],
+       "labels": {
+        "status": "Access"
+       },
+       "evil": 1
+      }
+     },
+     {
+      "id": "X",
+      "data": {}
+     }
+    ]
+   },
+   "hired": [
+    {
+     "id": "paulie",
+     "skill": "site-checks",
+     "jobsOnly": true,
+     "tools": [
+      "Read"
+     ],
+     "models": [
+      "opus"
+     ]
+    }
+   ],
+   "hiredSkills": {
+    "site-checks": {
+     "title": "Site checks",
+     "body": "Ping the sites."
+    }
+   }
+  },
+  "job": {
+   "$axf": "swarm-job@1",
+   "id": "b.s1",
+   "buildId": "b",
+   "stepId": "s1",
+   "text": "React card in apps/x/web/ui.tsx",
+   "estimate": "20 min",
+   "agent": "rio",
+   "skill": "react-ui",
+   "tier": "sonnet",
+   "model": "sonnet",
+   "match": 5,
+   "leases": [
+    "apps/x/web/ui.tsx"
+   ],
+   "leaseKind": "files",
+   "shared": [
+    "_claude/THREADS.md"
+   ],
+   "budget": {
+    "tokens": 200000,
+    "maxTurns": 20
+   },
+   "checks": [
+    "tsc"
+   ],
+   "wave": 1,
+   "after": [
+    "a.s1"
+   ]
+  },
+  "report": {
+   "$axf": "swarm-report@1",
+   "status": "done",
+   "summary": "card added",
+   "files": [
+    "apps/x/web/ui.tsx"
+   ],
+   "checks": [
+    {
+     "name": "tsc",
+     "ok": true
+    },
+    {
+     "name": "lint",
+     "ok": "yes"
+    }
+   ],
+   "notes": "STATUS: card",
+   "handoff": "props renamed",
+   "question": ""
+  },
+  "buildRun": {
+   "$axf": "swarm-run@1",
+   "kind": "build",
+   "jobId": "b.s1",
+   "buildId": "b",
+   "stepId": "s1",
+   "agent": "rio",
+   "model": "haiku",
+   "startedAt": "2026-11-03T14:00:00.000Z",
+   "endedAt": "2026-11-03T14:20:00.000Z",
+   "status": "done",
+   "reason": "",
+   "report": {
+    "$axf": "swarm-report@1",
+    "status": "done",
+    "summary": "card added",
+    "files": [
+     "apps/x/web/ui.tsx"
+    ],
+    "checks": [
+     {
+      "name": "tsc",
+      "ok": true
+     },
+     {
+      "name": "lint",
+      "ok": "yes"
+     }
+    ],
+    "notes": "STATUS: card",
+    "handoff": "props renamed",
+    "question": ""
+   },
+   "usage": {
+    "input": 1000,
+    "output": 200,
+    "cacheRead": 5000,
+    "cacheWrite": 0
+   },
+   "budget": {
+    "tokens": 200000,
+    "maxTurns": 20
+   },
+   "turns": 7,
+   "reportedCost": 0.42,
+   "cwd": "/tmp/wt",
+   "branch": "swarm/b/s1",
+   "worktree": "/tmp/wt",
+   "lease": {
+    "ok": true,
+    "outside": [],
+    "shared": [],
+    "files": [
+     "apps/x/web/ui.tsx"
+    ]
+   }
+  },
+  "jobRun": {
+   "kind": "job",
+   "jobId": "job-site-check-2026-11-03-1400",
+   "buildId": "job:site-check",
+   "stepId": "site-check",
+   "jobType": "site-check",
+   "agent": "paulie",
+   "model": "opus",
+   "startedAt": "2026-11-03T14:00:00.000Z",
+   "endedAt": "",
+   "status": "running",
+   "reason": "",
+   "report": null,
+   "usage": null,
+   "reportedCost": null,
+   "turns": 0,
+   "budget": {
+    "tokens": 100000,
+    "maxTurns": 10
+   },
+   "session": "paulie-site-check",
+   "cwd": "/tmp/j",
+   "branch": "",
+   "worktree": "/tmp/j",
+   "log": "run.log",
+   "reportPath": "r/site-check/2026-11-03-1400.md",
+   "group": "Checks - Nov 3",
+   "inputs": {
+    "sites": "demo.amberxai.com"
+   },
+   "briefTokens": 800,
+   "tmux": "axf-paulie-site-check",
+   "queued": null
+  },
+  "reportText": "All done.\n```json\n{\"status\":\"done\",\"summary\":\"card added\",\"files\":[\"a.tsx\"],\"checks\":[{\"name\":\"tsc\",\"ok\":true}]}\n```\nthen\n```json\n{\"status\":\"meh\"}\n```"
+ },
+ "normalized": {
+  "agent": {
+   "$axf": "agent@1",
+   "id": "rio",
+   "name": "Rio React",
+   "role": "Front-end engineer",
+   "skill": "react-ui",
+   "jobsOnly": false,
+   "specialty": "React views on the framework controls",
+   "keywords": [
+    "react",
+    "tsx",
+    "hook"
+   ],
+   "paths": [
+    "apps/console-web/plugins/**/web/",
+    "**/*.tsx"
+   ],
+   "models": [
+    "opus",
+    "fable"
+   ],
+   "tools": [
+    "Read",
+    "Edit",
+    "Grep"
+   ],
+   "maxTurns": 30,
+   "tokenBudget": 400000,
+   "salary": 20,
+   "hiredAt": "2026-10-31",
+   "avatar": {
+    "face": "square",
+    "hair": 4,
+    "gear": "shades",
+    "hue": 200
+   },
+   "catchphrase": "Ship it.",
+   "bio": "Lives in the console."
+  },
+  "agentJunk": {
+   "$axf": "agent@1",
+   "id": "",
+   "name": "",
+   "role": "",
+   "skill": "",
+   "jobsOnly": false,
+   "specialty": "",
+   "keywords": [],
+   "paths": [],
+   "models": [
+    "opus"
+   ],
+   "tools": [],
+   "maxTurns": 20,
+   "tokenBudget": 300000,
+   "salary": 10,
+   "hiredAt": "",
+   "avatar": {
+    "face": "round",
+    "hair": 0,
+    "gear": "none",
+    "hue": 0
+   },
+   "catchphrase": "",
+   "bio": ""
+  },
+  "agentBlockedModels": [
+   "opus"
+  ],
+  "skill": {
+   "id": "react-ui",
+   "title": "React UI",
+   "schema": "agent-skill@1",
+   "body": "Build views from framework controls only.\n- Tokens only, no raw colours.",
+   "lines": 2,
+   "chars": 72
+  },
+  "skillNoFrontMatter": {
+   "id": "",
+   "title": "",
+   "schema": "",
+   "body": "Just a body.",
+   "lines": 1,
+   "chars": 12
+  },
+  "roster": {
+   "$axf": "swarm-roster@1",
+   "tune": {
+    "scale": 0.5,
+    "basis": "pilot"
+   },
+   "fallback": "",
+   "agents": [
+    {
+     "$axf": "agent@1",
+     "id": "rio",
+     "name": "Rio React",
+     "role": "Front-end engineer",
+     "skill": "react-ui",
+     "jobsOnly": false,
+     "specialty": "React views on the framework controls",
+     "keywords": [
+      "react",
+      "tsx",
+      "hook"
+     ],
+     "paths": [
+      "apps/console-web/plugins/**/web/",
+      "**/*.tsx"
+     ],
+     "models": [
+      "opus",
+      "fable"
+     ],
+     "tools": [
+      "Read",
+      "Edit",
+      "Grep"
+     ],
+     "maxTurns": 30,
+     "tokenBudget": 400000,
+     "salary": 20,
+     "hiredAt": "2026-10-31",
+     "avatar": {
+      "face": "square",
+      "hair": 4,
+      "gear": "shades",
+      "hue": 200
+     },
+     "catchphrase": "Ship it.",
+     "bio": "Lives in the console."
+    },
+    {
+     "$axf": "agent@1",
+     "id": "doc",
+     "name": "doc",
+     "role": "",
+     "skill": "docs",
+     "jobsOnly": false,
+     "specialty": "",
+     "keywords": [],
+     "paths": [],
+     "models": [
+      "opus"
+     ],
+     "tools": [
+      "Read",
+      "Edit"
+     ],
+     "maxTurns": 20,
+     "tokenBudget": 300000,
+     "salary": 10,
+     "hiredAt": "",
+     "avatar": {
+      "face": "round",
+      "hair": 0,
+      "gear": "none",
+      "hue": 0
+     },
+     "catchphrase": "",
+     "bio": ""
+    }
+   ]
+  },
+  "rosterJunk": {
+   "$axf": "swarm-roster@1",
+   "tune": {
+    "scale": 1,
+    "basis": ""
+   },
+   "fallback": "",
+   "agents": []
+  },
+  "state": {
+   "$axf": "swarm-state@1",
+   "updatedAt": "2026-11-03T14:00:00.000Z",
+   "rules": {
+    "rageQuitAfter": 2
+   },
+   "agents": {
+    "rio": {
+     "status": "probation",
+     "note": "watch the leases",
+     "until": "",
+     "custom": {
+      "name": "",
+      "works": false
+     },
+     "salary": 30,
+     "topups": [],
+     "pay": [],
+     "bonuses": [],
+     "brokeSaid": "",
+     "failStreak": 0,
+     "history": [
+      {
+       "at": "2026-11-03T14:00:00.000Z",
+       "from": "On duty",
+       "to": "Probation",
+       "note": "watch the leases",
+       "by": "brett"
+      }
+     ],
+     "identity": {
+      "name": "Rio R.",
+      "role": "",
+      "specialty": "",
+      "photo": "https://example.test/rio.png",
+      "employeeId": "",
+      "email": "",
+      "hiredAt": "",
+      "catchphrase": "",
+      "signature": ""
+     },
+     "card": "license"
+    },
+    "doc": {
+     "status": "on-duty",
+     "note": "",
+     "until": "",
+     "custom": {
+      "name": "",
+      "works": false
+     },
+     "salary": null,
+     "topups": [],
+     "pay": [],
+     "bonuses": [],
+     "brokeSaid": "",
+     "failStreak": 0,
+     "history": [],
+     "identity": {
+      "name": "",
+      "role": "",
+      "specialty": "",
+      "photo": "",
+      "employeeId": "",
+      "email": "",
+      "hiredAt": "",
+      "catchphrase": "",
+      "signature": ""
+     },
+     "card": ""
+    },
+    "gone": {
+     "status": "fired",
+     "note": "",
+     "until": "",
+     "custom": {
+      "name": "",
+      "works": false
+     },
+     "salary": null,
+     "topups": [],
+     "pay": [],
+     "bonuses": [],
+     "brokeSaid": "",
+     "failStreak": 0,
+     "history": [],
+     "identity": {
+      "name": "",
+      "role": "",
+      "specialty": "",
+      "photo": "",
+      "employeeId": "",
+      "email": "",
+      "hiredAt": "",
+      "catchphrase": "",
+      "signature": ""
+     },
+     "card": ""
+    }
+   },
+   "chat": {
+    "enabled": true,
+    "agents": {
+     "doc": false
+    }
+   },
+   "chatSettings": {
+    "vibe": 500,
+    "chattiness": 65,
+    "cussing": 0,
+    "drama": 20,
+    "preset": "breakroom",
+    "overrides": {
+     "rio": {
+      "vibe": 50,
+      "drama": 100
+     }
+    },
+    "banterBudget": 2,
+    "saved": [
+     {
+      "name": "Friday",
+      "vibe": 333,
+      "chattiness": 35,
+      "cussing": 30,
+      "drama": 20
+     }
+    ]
+   },
+   "messages": [
+    {
+     "id": "m1",
+     "at": "2026-11-03T14:00:00.000Z",
+     "from": "boss",
+     "kind": "assign",
+     "text": "Rio, you got b.s1.",
+     "jobId": "b.s1",
+     "vibe": null,
+     "toned": false
+    },
+    {
+     "id": "m1",
+     "at": "",
+     "from": "rio",
+     "kind": "banter",
+     "text": "yo",
+     "jobId": "",
+     "vibe": 120,
+     "toned": true
+    }
+   ],
+   "banterSpend": [
+    {
+     "at": "2026-11-03T14:00:00.000Z",
+     "usd": 0.1
+    }
+   ],
+   "notices": [
+    {
+     "at": "2026-11-03T14:00:00.000Z",
+     "agent": "rio",
+     "text": "probation run"
+    }
+   ],
+   "cards": {
+    "default": "corporate-badge",
+    "designs": [
+     {
+      "$axf": "asset@1",
+      "type": "agent-card",
+      "id": "my-pass",
+      "name": "My pass",
+      "version": "1.0.0",
+      "author": "Brett",
+      "data": {
+       "design": "backstage",
+       "front": [
+        "name",
+        "status"
+       ],
+       "labels": {
+        "status": "Access"
+       }
+      }
+     }
+    ]
+   },
+   "hired": [
+    {
+     "$axf": "agent@1",
+     "id": "paulie",
+     "name": "paulie",
+     "role": "",
+     "skill": "site-checks",
+     "jobsOnly": true,
+     "specialty": "",
+     "keywords": [],
+     "paths": [],
+     "models": [
+      "opus"
+     ],
+     "tools": [
+      "Read"
+     ],
+     "maxTurns": 20,
+     "tokenBudget": 300000,
+     "salary": 10,
+     "hiredAt": "",
+     "avatar": {
+      "face": "round",
+      "hair": 0,
+      "gear": "none",
+      "hue": 0
+     },
+     "catchphrase": "",
+     "bio": ""
+    }
+   ],
+   "hiredSkills": {
+    "site-checks": {
+     "id": "site-checks",
+     "title": "Site checks",
+     "body": "Ping the sites."
+    }
+   }
+  },
+  "stateJunk": {
+   "$axf": "swarm-state@1",
+   "updatedAt": "",
+   "rules": {
+    "rageQuitAfter": 3
+   },
+   "agents": {},
+   "chat": {
+    "enabled": true,
+    "agents": {}
+   },
+   "chatSettings": {
+    "vibe": 100,
+    "chattiness": 35,
+    "cussing": 30,
+    "drama": 20,
+    "preset": "crew",
+    "overrides": {},
+    "banterBudget": 0.5,
+    "saved": []
+   },
+   "messages": [],
+   "banterSpend": [],
+   "notices": [],
+   "cards": {
+    "default": "",
+    "designs": []
+   },
+   "hired": [],
+   "hiredSkills": {}
+  },
+  "job": {
+   "$axf": "swarm-job@1",
+   "id": "b.s1",
+   "buildId": "b",
+   "stepId": "s1",
+   "text": "React card in apps/x/web/ui.tsx",
+   "estimate": "20 min",
+   "agent": "rio",
+   "skill": "react-ui",
+   "tier": "opus",
+   "model": "opus",
+   "match": 5,
+   "leases": [
+    "apps/x/web/ui.tsx"
+   ],
+   "leaseKind": "files",
+   "shared": [
+    "_claude/THREADS.md"
+   ],
+   "budget": {
+    "tokens": 200000,
+    "maxTurns": 20
+   },
+   "checks": [
+    "tsc"
+   ],
+   "wave": 1,
+   "after": [
+    "a.s1"
+   ]
+  },
+  "jobJunk": {
+   "$axf": "swarm-job@1",
+   "id": "",
+   "buildId": "",
+   "stepId": "",
+   "text": "",
+   "estimate": "",
+   "agent": "",
+   "skill": "",
+   "tier": "opus",
+   "model": "opus",
+   "match": 0,
+   "leases": [],
+   "leaseKind": "all",
+   "shared": [],
+   "budget": {
+    "tokens": 300000,
+    "maxTurns": 20
+   },
+   "checks": [],
+   "wave": 0,
+   "after": []
+  },
+  "report": {
+   "$axf": "swarm-report@1",
+   "status": "done",
+   "summary": "card added",
+   "files": [
+    "apps/x/web/ui.tsx"
+   ],
+   "checks": [
+    {
+     "name": "tsc",
+     "ok": true
+    },
+    {
+     "name": "lint",
+     "ok": false
+    }
+   ],
+   "notes": "STATUS: card",
+   "handoff": "props renamed",
+   "question": ""
+  },
+  "reportJunk": {
+   "$axf": "swarm-report@1",
+   "status": "failed",
+   "summary": "",
+   "files": [],
+   "checks": [],
+   "notes": "",
+   "handoff": "",
+   "question": ""
+  },
+  "runBuild": {
+   "$axf": "swarm-run@1",
+   "kind": "build",
+   "jobId": "b.s1",
+   "buildId": "b",
+   "stepId": "s1",
+   "agent": "rio",
+   "model": "opus",
+   "startedAt": "2026-11-03T14:00:00.000Z",
+   "endedAt": "2026-11-03T14:20:00.000Z",
+   "status": "done",
+   "reason": "",
+   "report": {
+    "$axf": "swarm-report@1",
+    "status": "done",
+    "summary": "card added",
+    "files": [
+     "apps/x/web/ui.tsx"
+    ],
+    "checks": [
+     {
+      "name": "tsc",
+      "ok": true
+     },
+     {
+      "name": "lint",
+      "ok": false
+     }
+    ],
+    "notes": "STATUS: card",
+    "handoff": "props renamed",
+    "question": ""
+   },
+   "usage": {
+    "input": 1000,
+    "output": 200,
+    "cacheRead": 5000,
+    "cacheWrite": 0
+   },
+   "budgetTokens": 1700,
+   "budget": {
+    "tokens": 200000,
+    "maxTurns": 20
+   },
+   "turns": 7,
+   "reportedCost": 0.42,
+   "cwd": "/tmp/wt",
+   "branch": "swarm/b/s1",
+   "worktree": "/tmp/wt",
+   "lease": {
+    "ok": true,
+    "outside": [],
+    "shared": [],
+    "files": [
+     "apps/x/web/ui.tsx"
+    ]
+   }
+  },
+  "runJob": {
+   "$axf": "swarm-run@1",
+   "kind": "job",
+   "jobId": "job-site-check-2026-11-03-1400",
+   "buildId": "job:site-check",
+   "stepId": "site-check",
+   "agent": "paulie",
+   "model": "opus",
+   "startedAt": "2026-11-03T14:00:00.000Z",
+   "endedAt": "",
+   "status": "running",
+   "reason": "",
+   "report": null,
+   "usage": null,
+   "budgetTokens": 0,
+   "budget": {
+    "tokens": 100000,
+    "maxTurns": 10
+   },
+   "turns": 0,
+   "reportedCost": null,
+   "jobType": "site-check",
+   "cwd": "/tmp/j",
+   "branch": "",
+   "worktree": "/tmp/j",
+   "session": "paulie-site-check",
+   "tmux": "axf-paulie-site-check",
+   "log": "run.log",
+   "reportPath": "r/site-check/2026-11-03-1400.md",
+   "group": "Checks - Nov 3",
+   "inputs": {
+    "sites": "demo.amberxai.com"
+   },
+   "briefTokens": 800,
+   "queued": null
+  },
+  "runJunk": {
+   "$axf": "swarm-run@1",
+   "kind": "build",
+   "jobId": "",
+   "buildId": "",
+   "stepId": "",
+   "agent": "",
+   "model": "opus",
+   "startedAt": "",
+   "endedAt": "",
+   "status": "error",
+   "reason": "",
+   "report": null,
+   "usage": null,
+   "budgetTokens": 0,
+   "budget": {
+    "tokens": 0,
+    "maxTurns": 0
+   },
+   "turns": 0,
+   "reportedCost": null
+  }
+ },
+ "errors": {
+  "agent-ok": [],
+  "agent-sonnet": [
+   {
+    "field": "agent.models[0]",
+    "code": "invalid",
+    "message": "agent rio: model \"sonnet\" is not allowed: Opus 5.5 or Fable 5.1 only, never Sonnet 5.5 (Brett, 2026-11-01); it runs as opus"
+   }
+  ],
+  "agent-bad": [
+   {
+    "field": "agent.id",
+    "code": "invalid",
+    "message": "agent \"Rio R\": id is lowercase letters, digits and dashes"
+   },
+   {
+    "field": "agent.skill",
+    "code": "missing",
+    "message": "agent Rio R: skill is missing"
+   },
+   {
+    "field": "agent.models[0]",
+    "code": "invalid",
+    "message": "agent Rio R: model \"sonnet\" is not allowed: Opus 5.5 or Fable 5.1 only, never Sonnet 5.5 (Brett, 2026-11-01); it runs as opus"
+   },
+   {
+    "field": "agent.models[1]",
+    "code": "invalid",
+    "message": "agent Rio R: model \"gpt\" is not a Claude model the policy knows (haiku, sonnet, opus, fable)"
+   },
+   {
+    "field": "agent.tools",
+    "code": "missing",
+    "message": "agent Rio R: no tools"
+   },
+   {
+    "field": "agent.keywords",
+    "code": "invalid",
+    "message": "agent Rio R: keywords must be a list"
+   },
+   {
+    "field": "agent.maxTurns",
+    "code": "invalid",
+    "message": "agent Rio R: maxTurns must be a number from 1 to 200"
+   },
+   {
+    "field": "agent.salary",
+    "code": "invalid",
+    "message": "agent Rio R: salary must be a number from 0 to 10000"
+   },
+   {
+    "field": "agent.avatar.face",
+    "code": "invalid",
+    "message": "agent Rio R: avatar.face must be one of round, square, tall"
+   },
+   {
+    "field": "agent.avatar.hair",
+    "code": "invalid",
+    "message": "agent Rio R: avatar.hair must be 0 to 5"
+   },
+   {
+    "field": "agent.hiredAt",
+    "code": "invalid",
+    "message": "agent Rio R: hiredAt must be YYYY-MM-DD"
+   }
+  ],
+  "agent-junk": [
+   {
+    "field": "agent",
+    "code": "invalid",
+    "message": "agent must be an object"
+   }
+  ],
+  "skill-ok": [],
+  "skill-bad": [
+   {
+    "field": "skill.schema",
+    "code": "missing",
+    "message": "skill big: front matter needs $axf: agent-skill@1"
+   },
+   {
+    "field": "skill.body",
+    "code": "invalid",
+    "message": "skill big: longer than one page (80 lines, 399 chars)"
+   }
+  ],
+  "roster-ok": [],
+  "roster-blocked-models": [
+   {
+    "field": "agents[0].models[0]",
+    "code": "invalid",
+    "message": "agent rio: model \"sonnet\" is not allowed: Opus 5.5 or Fable 5.1 only, never Sonnet 5.5 (Brett, 2026-11-01); it runs as opus"
+   },
+   {
+    "field": "agents[1].models[0]",
+    "code": "invalid",
+    "message": "agent doc: model \"haiku\" is not allowed: Opus 5.5 or Fable 5.1 only, never Haiku 5.5 (Brett, 2026-11-01); it runs as opus"
+   }
+  ],
+  "roster-bad": [
+   {
+    "field": "$axf",
+    "code": "invalid",
+    "message": "$axf must be swarm-roster@1"
+   },
+   {
+    "field": "tune.scale",
+    "code": "invalid",
+    "message": "tune.scale must be 0.25 to 2"
+   },
+   {
+    "field": "agents[0].id",
+    "code": "invalid",
+    "message": "agent \"A b\": id is lowercase letters, digits and dashes"
+   },
+   {
+    "field": "agents[0].tools",
+    "code": "missing",
+    "message": "agent A b: no tools"
+   },
+   {
+    "field": "agents[0].skill",
+    "code": "invalid",
+    "message": "agent A b: no skill file for \"none\""
+   },
+   {
+    "field": "agents[1].id",
+    "code": "invalid",
+    "message": "agent \"A b\": id is lowercase letters, digits and dashes"
+   },
+   {
+    "field": "agents[1].skill",
+    "code": "missing",
+    "message": "agent A b: skill is missing"
+   },
+   {
+    "field": "agents[1].tools",
+    "code": "missing",
+    "message": "agent A b: no tools"
+   },
+   {
+    "field": "agents[1].id",
+    "code": "invalid",
+    "message": "agent \"A b\" is listed twice"
+   }
+  ],
+  "state-ok": [],
+  "state-bad": [
+   {
+    "field": "$axf",
+    "code": "invalid",
+    "message": "$axf must be swarm-state@1"
+   },
+   {
+    "field": "updatedAt",
+    "code": "invalid",
+    "message": "updatedAt must be an ISO timestamp"
+   },
+   {
+    "field": "rules.rageQuitAfter",
+    "code": "invalid",
+    "message": "rules.rageQuitAfter must be 1 to 50"
+   },
+   {
+    "field": "agents.rio.status",
+    "code": "invalid",
+    "message": "agents.rio.status must be one of on-duty, off-duty, injured, medical-leave, probation, fired, custom, suspended, quit"
+   },
+   {
+    "field": "agents.rio.salary",
+    "code": "invalid",
+    "message": "agents.rio.salary must be 0 to 100000"
+   },
+   {
+    "field": "agents.rio.card",
+    "code": "invalid",
+    "message": "agents.rio.card is not a card design id"
+   },
+   {
+    "field": "agents.rio.history",
+    "code": "invalid",
+    "message": "agents.rio.history must be a list"
+   },
+   {
+    "field": "agents.kat.custom.name",
+    "code": "missing",
+    "message": "agents.kat: a custom status needs a name"
+   },
+   {
+    "field": "chatSettings.vibe",
+    "code": "invalid",
+    "message": "chatSettings.vibe must be 1 to 500"
+   },
+   {
+    "field": "chatSettings.cussing",
+    "code": "invalid",
+    "message": "chatSettings.cussing must be 0 to 100"
+   },
+   {
+    "field": "chatSettings.banterBudget",
+    "code": "invalid",
+    "message": "chatSettings.banterBudget must be 0 to 1000"
+   },
+   {
+    "field": "chatSettings.overrides",
+    "code": "invalid",
+    "message": "chatSettings.overrides must map agent ids to sliders"
+   },
+   {
+    "field": "messages[0].kind",
+    "code": "invalid",
+    "message": "messages[0].kind must be one of assign, lease, report, handoff, merge, status, discipline, pay, banter, brett"
+   },
+   {
+    "field": "messages[0].text",
+    "code": "missing",
+    "message": "messages[0].text is missing"
+   },
+   {
+    "field": "messages[0].from",
+    "code": "missing",
+    "message": "messages[0].from is missing"
+   },
+   {
+    "field": "messages[1]",
+    "code": "invalid",
+    "message": "messages[1] must be an object"
+   },
+   {
+    "field": "cards.default",
+    "code": "invalid",
+    "message": "cards.default is not a card design id"
+   },
+   {
+    "field": "cards.designs[0].id",
+    "code": "invalid",
+    "message": "cards.designs[0].id is not a card design id"
+   },
+   {
+    "field": "hired[0].id",
+    "code": "invalid",
+    "message": "agent \"bad id\": id is lowercase letters, digits and dashes"
+   },
+   {
+    "field": "hired[0].skill",
+    "code": "missing",
+    "message": "agent bad id: skill is missing"
+   },
+   {
+    "field": "hired[0].tools",
+    "code": "missing",
+    "message": "agent bad id: no tools"
+   }
+  ],
+  "job-ok": [],
+  "job-sonnet": [
+   {
+    "field": "job.model",
+    "code": "invalid",
+    "message": "job.model: model \"sonnet\" is not allowed: Opus 5.5 or Fable 5.1 only, never Sonnet 5.5 (Brett, 2026-11-01); it runs as opus"
+   }
+  ],
+  "job-bad": [
+   {
+    "field": "job.$axf",
+    "code": "invalid",
+    "message": "job.$axf must be swarm-job@1"
+   },
+   {
+    "field": "job.id",
+    "code": "missing",
+    "message": "job.id is missing"
+   },
+   {
+    "field": "job.buildId",
+    "code": "missing",
+    "message": "job.buildId is missing"
+   },
+   {
+    "field": "job.stepId",
+    "code": "missing",
+    "message": "job.stepId is missing"
+   },
+   {
+    "field": "job.skill",
+    "code": "missing",
+    "message": "job.skill is missing"
+   },
+   {
+    "field": "job.agent",
+    "code": "invalid",
+    "message": "job.agent is not an agent id"
+   },
+   {
+    "field": "job.model",
+    "code": "invalid",
+    "message": "job.model: model \"sonnet\" is not allowed: Opus 5.5 or Fable 5.1 only, never Sonnet 5.5 (Brett, 2026-11-01); it runs as opus"
+   },
+   {
+    "field": "job.leases",
+    "code": "missing",
+    "message": "job.leases must be a list of paths"
+   },
+   {
+    "field": "job.leaseKind",
+    "code": "invalid",
+    "message": "job.leaseKind must be one of files, area, all"
+   },
+   {
+    "field": "job.budget.tokens",
+    "code": "invalid",
+    "message": "job.budget.tokens must be 1000 to 10000000"
+   },
+   {
+    "field": "job.budget.maxTurns",
+    "code": "invalid",
+    "message": "job.budget.maxTurns must be 1 to 200"
+   },
+   {
+    "field": "job.wave",
+    "code": "invalid",
+    "message": "job.wave must be a whole number"
+   },
+   {
+    "field": "job.after",
+    "code": "invalid",
+    "message": "job.after must be a list of job ids"
+   }
+  ],
+  "run-ok-build": [],
+  "run-haiku": [
+   {
+    "field": "run.model",
+    "code": "invalid",
+    "message": "run.model: model \"haiku\" is not allowed: Opus 5.5 or Fable 5.1 only, never Haiku 5.5 (Brett, 2026-11-01); it runs as opus"
+   },
+   {
+    "field": "run.report.checks[1]",
+    "code": "invalid",
+    "message": "run.report.checks[1] must be { name, ok }"
+   }
+  ],
+  "run-ok-job": [],
+  "run-bad": [
+   {
+    "field": "run.$axf",
+    "code": "invalid",
+    "message": "run.$axf must be swarm-run@1"
+   },
+   {
+    "field": "run.kind",
+    "code": "invalid",
+    "message": "run.kind must be one of build, job"
+   },
+   {
+    "field": "run.jobId",
+    "code": "missing",
+    "message": "run.jobId is missing"
+   },
+   {
+    "field": "run.model",
+    "code": "invalid",
+    "message": "run.model: model \"gpt\" is not a Claude model the policy knows (haiku, sonnet, opus, fable)"
+   },
+   {
+    "field": "run.startedAt",
+    "code": "invalid",
+    "message": "run.startedAt must be an ISO timestamp"
+   },
+   {
+    "field": "run.status",
+    "code": "invalid",
+    "message": "run.status must be one of running, done, failed, blocked, killed, error"
+   },
+   {
+    "field": "run.endedAt",
+    "code": "missing",
+    "message": "run: a finished run has an endedAt"
+   },
+   {
+    "field": "run.report.question",
+    "code": "missing",
+    "message": "run.report: a blocked report carries the exact question"
+   },
+   {
+    "field": "run.usage",
+    "code": "invalid",
+    "message": "run.usage must give input, output, cacheRead and cacheWrite token counts"
+   },
+   {
+    "field": "run.reportedCost",
+    "code": "invalid",
+    "message": "run.reportedCost must be a number or null"
+   }
+  ],
+  "report-ok": [],
+  "report-loose-check": [
+   {
+    "field": "report.checks[1]",
+    "code": "invalid",
+    "message": "report.checks[1] must be { name, ok }"
+   }
+  ],
+  "report-bad": [
+   {
+    "field": "report.summary",
+    "code": "invalid",
+    "message": "report.summary must be text"
+   },
+   {
+    "field": "report.files",
+    "code": "invalid",
+    "message": "report.files must be a list of paths"
+   },
+   {
+    "field": "report.checks[0]",
+    "code": "invalid",
+    "message": "report.checks[0] must be { name, ok }"
+   },
+   {
+    "field": "report.notes",
+    "code": "invalid",
+    "message": "report.notes must be text"
+   },
+   {
+    "field": "report.question",
+    "code": "missing",
+    "message": "report: a blocked report carries the exact question"
+   }
+  ],
+  "unknown-tag": [
+   {
+    "field": "$axf",
+    "code": "invalid",
+    "message": "\"widget@1\" is not a swarm record (agent@1, agent-skill@1, swarm-roster@1, swarm-state@1, swarm-job@1, swarm-run@1, swarm-report@1)"
+   }
+  ]
+ },
+ "parsed": {
+  "report": {
+   "$axf": "swarm-report@1",
+   "status": "done",
+   "summary": "card added",
+   "files": [
+    "a.tsx"
+   ],
+   "checks": [
+    {
+     "name": "tsc",
+     "ok": true
+    }
+   ],
+   "notes": "",
+   "handoff": "",
+   "question": ""
+  },
+  "none": null,
+  "badStatus": null
+ },
+ "budgetTokens": {
+  "usage": 1700,
+  "none": 0
+ }
+}

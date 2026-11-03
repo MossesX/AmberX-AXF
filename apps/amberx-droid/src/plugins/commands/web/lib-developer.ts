@@ -36,7 +36,7 @@ A('Builds', 'changes', 'Codebase changes', 'Reads the latest codebase changes lo
 A('Builds', 'estimate', 'Estimate a build', 'Molly estimates time and cost for a build idea.', ['estimate {text}', 'how long to build {text}'], 'Estimate time (minutes) and cost for building: {text}. Use the model pricing heuristic.', { slots: { text: 'text' } });
 
 /* ---------------------------------------------------------------- GitHub */
-A('GitHub', 'prs', 'Open PRs', 'Reads open pull requests and their CI state.', ['open prs', 'read pull requests', 'whats waiting to merge', 'list prs'], 'List open PRs in AmberX-AXF, axHub and Build-Pilot with CI state and conflicts.');
+A('GitHub', 'prs', 'Open PRs', 'Reads open pull requests and their CI state.', ['open prs', 'read pull requests', 'whats waiting to merge', 'list prs'], 'List open PRs in AmberX-AXF and axHub with CI state and conflicts.');
 A('GitHub', 'pr', 'Read a PR', 'Reads one PR: title, CI, files, conflicts.', ['read pr {number}', 'pull request {number}', 'what is pr {number}'], 'Read PR #{number} in AmberX-AXF: title, what it brings, CI on the head commit, conflicts.', { slots: { number: 'number' } });
 A('GitHub', 'merge', 'Merge a PR', 'Sends you the merge approval for a green PR.', ['merge pr {number}', 'merge {number}', 'ship pr {number}'], 'Send the axHub merge approval for PR #{number} in AmberX-AXF (merge-pr.sh, reason title "Merge PR #{number}: …") and retry until it merges, is declined or expires.', { ...SAFE, slots: { number: 'number' } });
 A('GitHub', 'ci', 'CI status', 'Reads the latest CI runs and failures.', ['ci status', 'did ci pass', 'is the build green', 'check ci'], 'Read the latest CI runs on main and open PRs; for failures read the "CI build errors" issue and summarize the cause.');
