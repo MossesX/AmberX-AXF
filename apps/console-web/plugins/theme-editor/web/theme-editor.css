@@ -6,7 +6,7 @@
 .axp-theme-editor__save { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2) }
 .axp-theme-editor__save .fx-input { width: auto; min-width: calc(var(--fx-space) * 16) }
 .axp-theme-editor__main { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--fx-dens-gap-xl); align-items: start }
-@media (max-width: 860px) { .axp-theme-editor__main { grid-template-columns: 1fr } }
+:where([data-fx-medium]) .axp-theme-editor__main { grid-template-columns: 1fr }
 
 /* tree view: collapsible categories */
 .axp-theme-editor__cats { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
