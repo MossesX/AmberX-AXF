@@ -568,7 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:57 UTC · `apply-all-levels` branch claude/apply-all-levels, PR #115, merged, note (main-framework, refactor) · reconciler
 - 2026-11-03 13:57 UTC · `amberx-empty-shell` branch claude/amberx-empty-shell, PR #118, merged, note (main-framework, refactor) · reconciler
 - 2026-11-03 13:57 UTC · `fresh-look` branch claude/fresh-look-done, PR #120, merged, note (main-framework, refactor) · reconciler
 - 2026-11-03 13:57 UTC · `design-packages-10` branch claude/design-packages-10, PR #124, merged, note (main-framework, refactor) · reconciler
@@ -968,3 +967,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 20:55 UTC · `plugin-settings-placement` s3 done, → running (current) · orchestrator
 - 2026-11-03 20:55 UTC · `plugin-settings-placement` s4 done (current) · orchestrator
 - 2026-11-03 20:55 UTC · `plugin-settings-placement` s5 done (current) · orchestrator
+- 2026-11-03 20:56 UTC · `plugin-settings-placement` s3 done, s4 done, s5 done (current) · foreign-write
