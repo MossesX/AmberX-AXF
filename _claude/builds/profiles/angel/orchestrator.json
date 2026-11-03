@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T13:58:30.397Z",
+ "updatedAt": "2026-11-03T14:09:29.691Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -18,12 +18,17 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "angel/home-cards-queue",
+   "pr": "#171",
    "createdAt": "2026-10-29T18:34:09.323Z",
-   "updatedAt": "2026-10-29T18:34:09.324Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: branch angel/home-cards-queue (PR #171); PR #171; PR #171 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -444,11 +449,16 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/angel-settings",
-   "pr": "",
+   "pr": "#175",
    "createdAt": "2026-10-30T13:01:42.736Z",
-   "updatedAt": "2026-10-30T13:06:42.016Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-30T13:06:41.972Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #175; PR #175 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -852,14 +862,18 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/angel-ui-assets",
-   "pr": "",
+   "pr": "#181",
    "createdAt": "2026-10-30T17:31:49.428Z",
-   "updatedAt": "2026-10-31T09:07:22.074Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-31T09:07:22.007Z",
    "notes": [
     {
      "text": "Oct 31 2026 (Opus, headless): s3–s5 on claude/ui-all-assets — compact defaults tightened, 7 text + 9 spacing steps, root text twins, scale-adopt codemod moved ~1,720 sizes in 80 files (axf.css, console, all plugin pages, libs, AmberX, axhub-web, Walkthrough, templates), check-theme rule scale, theme-swap swaps the three types, 26 design packages name them, report _claude/builds/reports/ui-all-assets-2026-10-31.md",
      "at": "2026-10-31T09:07:22.073Z"
+    },
+    {
+     "text": "Reconciler: PR #181; PR #181 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [
@@ -1135,16 +1149,21 @@
    "title": "Element inspector (Android first)",
    "category": "",
    "detail": "Brett, Oct 30 2026 (voice): Left click only. Press-drag: panel follows, live updates to element under pointer. Release closes. Double click pins; pinned panel drags and resizes. Current fields + size.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/element-inspector",
-   "pr": "",
+   "pr": "#192",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #192; PR #192 names s1, s2, s4 done",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -1160,9 +1179,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #192 (claude/element-inspector)",
      "uid": "st-itwi0"
     },
     {
@@ -1178,9 +1197,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #192 (claude/element-inspector)",
      "uid": "st-1xo9gdm"
     },
     {
@@ -1214,9 +1233,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #192 (claude/element-inspector)",
      "uid": "st-1oyx27m"
     }
    ]
@@ -1335,16 +1354,21 @@
    "title": "Layouts: repeating slots",
    "category": "",
    "detail": "Brett, Oct 30 2026 (voice): Many-slots with style (tabs/cards/grid/stacked) + fallback slot; pages declare data sets. Web + Android + fixtures.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/layout-repeating-slots",
-   "pr": "",
+   "pr": "#191",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #191; PR #191 merged; PR #191 names s2 done",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -1378,9 +1402,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #191 (claude/layout-repeating-slots)",
      "uid": "st-1vrku38"
     },
     {
@@ -1486,11 +1510,16 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/session-history",
-   "pr": "",
+   "pr": "#195",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #195; PR #195 names s1, s2, s3, s4, s5, s6, s7 done",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -1506,9 +1535,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #195 (claude/session-history)",
      "uid": "st-19nylsn"
     },
     {
@@ -1524,9 +1553,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #195 (claude/session-history)",
      "uid": "st-o2c2o9"
     },
     {
@@ -1542,9 +1571,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #195 (claude/session-history)",
      "uid": "st-1x22ozf"
     },
     {
@@ -1560,9 +1589,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #195 (claude/session-history)",
      "uid": "st-cpfvg9"
     },
     {
@@ -1578,9 +1607,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #195 (claude/session-history)",
      "uid": "st-1mt4wjb"
     },
     {
@@ -1596,9 +1625,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #195 (claude/session-history)",
      "uid": "st-17s4w29"
     },
     {
@@ -1614,9 +1643,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z",
+     "note": "PR #195 (claude/session-history)",
      "uid": "st-91c277"
     }
    ]
@@ -1993,9 +2022,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/audio-output-recorder",
-   "pr": "",
+   "pr": "#194",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-01T02:37:25.448Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:37:25.448Z",
    "notes": [
     {
@@ -2005,6 +2034,10 @@
     {
      "text": "s3-s5 recorded done with a plain step update, NOT a model-switch approval: the Fable→Opus gate is for starting a phase, and this work had already shipped in PR #194 (e46b8079). No approval was recorded for Brett.",
      "at": "2026-11-01T02:37:21.093Z"
+    },
+    {
+     "text": "Reconciler: PR #194; PR #194 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -2329,9 +2362,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/live-key-checks",
-   "pr": "",
+   "pr": "#182",
    "createdAt": "2026-10-30T18:21:59.378Z",
-   "updatedAt": "2026-11-01T02:34:25.216Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:34:24.794Z",
    "notes": [
     {
@@ -2341,6 +2374,10 @@
     {
      "text": "s7+s12 done by Leftovers (claude/leftovers): push banner builds its client from axf.github@1 (reads through axHub, local GITHUB_TOKEN fallback; writes still local), lists branches with no local token, and registers its own health@1 check push-banner-github (red no route / amber reads only / green). push-banner test.py 132→141, systems-check 216/216.",
      "at": "2026-11-01T02:34:25.216Z"
+    },
+    {
+     "text": "Reconciler: PR #182; PR #182 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -2573,9 +2610,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-review",
-   "pr": "",
+   "pr": "#184",
    "createdAt": "2026-10-30T17:59:21.357Z",
-   "updatedAt": "2026-11-01T02:36:07.977Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:36:07.629Z",
    "notes": [
     {
@@ -2585,6 +2622,10 @@
     {
      "text": "s9 done by Leftovers: push banner auto-merge skips and Merge refuses PRs whose ui-review@1 state holds (waiting/changes/rejected; error = held); PR numbers only for AmberX-AXF, other repos by branch. push-banner test 141→150.",
      "at": "2026-11-01T02:36:07.977Z"
+    },
+    {
+     "text": "Reconciler: PR #184; PR #184 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -2763,14 +2804,18 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/plans",
-   "pr": "",
+   "pr": "#185",
    "createdAt": "2026-10-30T18:21:11.429Z",
-   "updatedAt": "2026-10-30T19:00:38.179Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-30T19:00:33.461Z",
    "notes": [
     {
      "text": "Built on claude/plans (12/12 steps). Push + PR + closing #159 sent as a veto call (no GitHub credentials in the sandbox). Report: _claude/memory/docs/plan-studio/README.md",
      "at": "2026-10-30T19:00:33.519Z"
+    },
+    {
+     "text": "Reconciler: PR #185; PR #185 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -3003,9 +3048,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/audio-extract",
-   "pr": "",
+   "pr": "#187",
    "createdAt": "2026-10-30T21:56:25.813Z",
-   "updatedAt": "2026-11-01T02:36:26.239Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:36:25.826Z",
    "notes": [
     {
@@ -3015,6 +3060,10 @@
     {
      "text": "s7 closed by Leftovers: claude/audio-extract is on main; test.mts 24/24, AmberX test.mjs 2045/2045 + tsc (Node 22), plugin-lifecycle clean. The new AmberX APK comes from CI (amberx-debug.apk).",
      "at": "2026-11-01T02:36:26.239Z"
+    },
+    {
+     "text": "Reconciler: PR #187; PR #187 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],

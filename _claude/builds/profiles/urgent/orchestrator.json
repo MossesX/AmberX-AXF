@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T13:58:30.397Z",
+ "updatedAt": "2026-11-03T14:09:29.691Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14,15 +14,15 @@
    "title": "Urgent: master cleanup (one builds store) + Steps view + live progress bars",
    "category": "Builds > Data cleanup",
    "detail": "Brett, Oct 31 2026 (GO given). Spec: /projects/amberx-axf/_data/framework/plan/specs/prompt-profiles-and-queue-reconciler.md items 4, 4b, 4c. One Orchestrator-owned builds store (profiles = a field), every write versioned (journal), Console init regenerate-from-plan removed, old files read-only one release; one Builds plugin; Steps view (atomic step records, drag reorder steps + builds, multi-select, divide, harvest + split-into-N, Restore default, draft until Apply/Discard, rename builds/steps/profiles); live progress bars per build and profile.",
-   "status": "complete",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/urgent-builds",
    "pr": "",
    "createdAt": "2026-10-31T23:31:50.472Z",
-   "updatedAt": "2026-11-01T02:26:59.880Z",
-   "builtAt": "2026-11-01T02:26:59.508Z",
+   "updatedAt": "2026-11-03T13:56:31.369Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "All work committed on claude/urgent-builds (local); s12 push blocked: host has no GitHub token (banner alert blocked:push:claude/urgent-builds).",
@@ -31,6 +31,10 @@
     {
      "text": "s12 closed by the Leftovers session (claude/leftovers): merged to main as 2a057cc4, report updated, stale push alerts resolved.",
      "at": "2026-11-01T02:26:59.880Z"
+    },
+    {
+     "text": "Backfill (orch-live-sync s6): complete and merged (2a057cc4); archived off the active list.",
+     "at": "2026-11-03T13:56:31.369Z"
     }
    ],
    "approvals": [],
@@ -262,12 +266,17 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/molly-fable",
+   "pr": "#245",
    "createdAt": "2026-11-03T02:32:21.328Z",
-   "updatedAt": "2026-11-03T02:32:21.328Z",
+   "updatedAt": "2026-11-03T13:56:31.369Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Backfill (orch-live-sync s6): all 4 steps built on Fable in PR #245, branch claude/molly-fable (Fable foundation for Molly: dock@1 engine, dock-layout@1 presets, DockHost). Built, awaiting merge.",
+     "at": "2026-11-03T13:56:31.369Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -283,9 +292,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #245 (claude/molly-fable)",
      "uid": "st-mw02odif05ltyd"
     },
     {
@@ -301,9 +310,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #245 (claude/molly-fable)",
      "uid": "st-mw02odif06xc5b"
     },
     {
@@ -319,9 +328,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #245 (claude/molly-fable)",
      "uid": "st-mw02odif07d08o"
     },
     {
@@ -337,9 +346,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #245 (claude/molly-fable)",
      "uid": "st-mw02odif08osb7"
     }
    ]
@@ -353,15 +362,19 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/md-studio-theme-editor-plan",
+   "pr": "#242",
    "createdAt": "2026-11-03T02:32:21.910Z",
-   "updatedAt": "2026-11-03T13:58:29.219Z",
+   "updatedAt": "2026-11-03T14:09:29.660Z",
    "builtAt": "",
    "notes": [
     {
+     "text": "Reconciler: branch claude/md-studio-theme-editor-plan (PR #242); PR #242; PR #242 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
      "text": "Notes scope added by notes-vault (Nov 3 2026): consume axf.notes@1 from the notes-browser plugin, never its folder.",
-     "at": "2026-11-03T13:58:29.219Z"
+     "at": "2026-11-03T14:09:29.660Z"
     }
    ],
    "approvals": [],
@@ -565,7 +578,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw0r6qev01rp32"
+     "uid": "st-mw0rkw0w01h950"
     }
    ]
   },
@@ -578,12 +591,17 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/theme-editor",
+   "pr": "#243",
    "createdAt": "2026-11-03T02:32:22.611Z",
-   "updatedAt": "2026-11-03T02:32:22.611Z",
+   "updatedAt": "2026-11-03T13:56:31.369Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Backfill (orch-live-sync s6): branch claude/theme-editor has all 5 steps (13f79c99 plugin s1-s4; d24cd2dd phone layout + tests; PR #243 open, waiting in UI Review r-20261103-6a35ef38). Built, awaiting merge.",
+     "at": "2026-11-03T13:56:31.369Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -599,9 +617,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #243 (claude/theme-editor)",
      "uid": "st-mw02oei306092d"
     },
     {
@@ -617,9 +635,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #243 (claude/theme-editor)",
      "uid": "st-mw02oei3075o82"
     },
     {
@@ -635,9 +653,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #243 (claude/theme-editor)",
      "uid": "st-mw02oei308ow81"
     },
     {
@@ -653,9 +671,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #243 (claude/theme-editor)",
      "uid": "st-mw02oei309crve"
     },
     {
@@ -671,9 +689,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #243 (claude/theme-editor)",
      "uid": "st-mw02oei30awyca"
     }
    ]
@@ -687,12 +705,17 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/token-control-opus",
+   "pr": "#250",
    "createdAt": "2026-11-03T02:40:26.204Z",
-   "updatedAt": "2026-11-03T02:40:26.204Z",
+   "updatedAt": "2026-11-03T13:56:31.369Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Backfill (orch-live-sync s6): s1-s3 built on Fable in PR #246 (claude/token-control), s4-s14 on Opus in PR #250 (claude/token-control-opus). Both PRs open; the build shows PR #250 (the later one). Built, awaiting merge.",
+     "at": "2026-11-03T13:56:31.369Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -708,9 +731,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #246 (claude/token-control)",
      "uid": "st-mw02yrmz0fpbbh"
     },
     {
@@ -726,9 +749,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #246 (claude/token-control)",
      "uid": "st-mw02yrmz0gfinn"
     },
     {
@@ -744,9 +767,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #246 (claude/token-control)",
      "uid": "st-mw02yrmz0ht1h3"
     },
     {
@@ -762,9 +785,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
      "uid": "st-mw02yrmz0iq6o2"
     },
     {
@@ -780,9 +803,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
      "uid": "st-mw02yrmz0jnoy3"
     },
     {
@@ -798,9 +821,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
      "uid": "st-mw02yrmz0kj1ky"
     },
     {
@@ -816,9 +839,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
      "uid": "st-mw02yrmz0la49w"
     },
     {
@@ -834,9 +857,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
      "uid": "st-mw02yrmz0m3nbk"
     },
     {
@@ -852,9 +875,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
      "uid": "st-mw02yrmz0n9mut"
     },
     {
@@ -870,9 +893,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
      "uid": "st-mw02yrmz0omoxy"
     },
     {
@@ -888,9 +911,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
      "uid": "st-mw02yrmz0pprbg"
     },
     {
@@ -906,9 +929,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
      "uid": "st-mw02yrmz0qtqii"
     },
     {
@@ -924,9 +947,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
      "uid": "st-mw02yrmz0rne7c"
     },
     {
@@ -942,10 +965,158 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:56:31.369Z",
+     "note": "PR #250 (claude/token-control-opus)",
      "uid": "st-mw02yrmz0s00qx"
+    }
+   ]
+  },
+  {
+   "id": "orch-live-sync",
+   "title": "Orchestrator live sync: every step reaches main at once",
+   "category": "Urgent",
+   "detail": "Brett, Nov 3 2026 (voice): every completed step, however small, must reach the orchestrator and show on main immediately, so banners and THREADS follow every step. Store writes go live to main as status-only commits; branch + PR auto-link; reconciler for open PRs and claude/* branches; banners + THREADS follow the store; session-start rule; backfill.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/orch-live-sync",
+   "pr": "#255",
+   "createdAt": "2026-11-03T13:39:29.176Z",
+   "updatedAt": "2026-11-03T14:01:20.820Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Live status writes to main: store writes committed to main at once as status-only commits (git plumbing on origin/main, bounded rebase-retry, never force), per-build newer-wins merge, journal union",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [
+      "framework/cli/builds-store.mjs",
+      "framework/plan/builds-store-core.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T13:53:26.701Z",
+     "note": "",
+     "uid": "st-mw0qib74086zoo"
+    },
+    {
+     "id": "s2",
+     "text": "Branch + PR auto-link: build branch/pr fields set and written live; built-awaiting-merge when all steps done but the PR is open, complete when merged",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T13:55:02.244Z",
+     "note": "",
+     "uid": "st-mw0qib7409si5s"
+    },
+    {
+     "id": "s3",
+     "text": "Reconciler: scan open PRs and claude/* branches, match to builds, fill branch/pr, mark finished work, flag orphans (report + banner alert), on session start and a timer",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T13:55:07.662Z",
+     "note": "",
+     "uid": "st-mw0qib740ar92l"
+    },
+    {
+     "id": "s4",
+     "text": "Banners + THREADS follow the store: every live status change pushes the banner update and appends a THREADS.md line",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T13:55:12.303Z",
+     "note": "",
+     "uid": "st-mw0qib740busjm"
+    },
+    {
+     "id": "s5",
+     "text": "Session-start rule: sessions run the reconciler and read the live store first, never the main export alone",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T13:57:26.853Z",
+     "note": "",
+     "uid": "st-mw0qib740cp96r"
+    },
+    {
+     "id": "s6",
+     "text": "Backfill: dock-engine, token-control, urgent-builds, theme-editor; reconciler across angel, big-dog, breakroom, refactor, urgent",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T13:57:31.980Z",
+     "note": "",
+     "uid": "st-mw0qib740dp920"
+    },
+    {
+     "id": "s7",
+     "text": "Tests (retry, parallel writes, merge no-regress, reconciler matching), local CI block, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:01:20.820Z",
+     "note": "",
+     "uid": "st-mw0qib740en9dq"
     }
    ]
   },
@@ -960,8 +1131,8 @@
    "pendingId": "",
    "branch": "claude/notes-vault",
    "pr": "",
-   "createdAt": "2026-11-03T13:45:07.927Z",
-   "updatedAt": "2026-11-03T13:58:30.374Z",
+   "createdAt": "2026-11-03T14:09:24.568Z",
+   "updatedAt": "2026-11-03T14:09:28.539Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -980,9 +1151,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T13:50:46.632Z",
+     "doneAt": "2026-11-03T14:09:25.339Z",
      "note": "",
-     "uid": "st-mw0qpkl707yoyu"
+     "uid": "st-mw0rksji0734t4"
     },
     {
      "id": "s2",
@@ -998,9 +1169,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T13:52:17.153Z",
+     "doneAt": "2026-11-03T14:09:26.289Z",
      "note": "",
-     "uid": "st-mw0qpkl708gsnf"
+     "uid": "st-mw0rksji08rkog"
     },
     {
      "id": "s3",
@@ -1016,9 +1187,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T13:52:17.696Z",
+     "doneAt": "2026-11-03T14:09:27.137Z",
      "note": "",
-     "uid": "st-mw0qpkl709gj42"
+     "uid": "st-mw0rksji09p1rw"
     },
     {
      "id": "s4",
@@ -1034,9 +1205,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T13:58:29.843Z",
+     "doneAt": "2026-11-03T14:09:27.962Z",
      "note": "",
-     "uid": "st-mw0qpkl70azlye"
+     "uid": "st-mw0rksji0a06ja"
     },
     {
      "id": "s5",
@@ -1052,9 +1223,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T13:58:30.374Z",
+     "doneAt": "2026-11-03T14:09:28.539Z",
      "note": "",
-     "uid": "st-mw0qpkl70bjx3a"
+     "uid": "st-mw0rksji0bjf1f"
     },
     {
      "id": "s6",
@@ -1072,7 +1243,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw0qpkl70c4r0z"
+     "uid": "st-mw0rksji0cv0wp"
     }
    ]
   }
