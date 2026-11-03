@@ -46,7 +46,8 @@
     "mentions": [
       "CLAUDE.md",
       "_claude/memory/STATUS.md",
-      "apps/console-web/plugins/README.md"
+      "apps/console-web/plugins/README.md",
+      "framework/spec/PORTING.md"
     ]
   },
   "opens": "window"
