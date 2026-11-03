@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T12:41:44.143Z",
+ "updatedAt": "2026-11-03T12:42:56.202Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -933,16 +933,21 @@
    "title": "Model upgrades need Brett's approval; downgrades don't",
    "category": "Urgent",
    "detail": "Brett Nov 3 2026 (voice): a headless build approved its own phase switch. Downgrade = allowed, recorded; upgrade = Brett's approval only (console click or axHub confirm), never self-approved. Ranking in model-policy (Fable above Opus). Replaces the stopped model-switch-approval build.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/model-upgrade-approval",
-   "pr": "",
+   "pr": "https://github.com/MossesX/AmberX-AXF/pull/253",
    "createdAt": "2026-11-03T12:41:39.428Z",
-   "updatedAt": "2026-11-03T12:41:44.092Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-03T12:42:56.171Z",
+   "builtAt": "2026-11-03T12:42:55.129Z",
+   "notes": [
+    {
+     "text": "PR #253 open (push banner merges it). Left: axHub repo side (confirm policy + signed approval header), UI Review shots of the Approvals tab.",
+     "at": "2026-11-03T12:42:56.171Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -1049,8 +1054,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:42:55.128Z",
      "note": "",
      "uid": "st-mw0ofxx60clwya"
     }
