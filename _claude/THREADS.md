@@ -568,7 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:02 UTC · `builds-one-page` s11 done (refactor) · snap-sully
 - 2026-11-03 18:02 UTC · `builds-one-page` s15 done (refactor) · snap-sully
 - 2026-11-03 18:02 UTC · `builds-one-page` s16 done (refactor) · snap-sully
 - 2026-11-03 18:02 UTC · `builds-one-page` s7 done, s8 done, s9 done, s10 done, s11 done, s15 done, s30 done (refactor) · foreign-write
@@ -968,3 +967,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 22:03 UTC · `terminal-drag-chain-tree` s3 done (current) · orchestrator
 - 2026-11-03 22:03 UTC · `terminal-drag-chain-tree` s4 done (current) · orchestrator
 - 2026-11-03 22:08 UTC · `molly-banners` added (5 steps) (current) · foreign-write
+- 2026-11-03 22:08 UTC · `terminal-drag-chain-tree` s5 done (current) · orchestrator
