@@ -48,7 +48,7 @@ const HARVEST_DIR = join(ROOT, '_claude', 'memory', 'docs', 'harvest');
 const CHANGES_DIR = join(ROOT, 'changes');
 const HANDOFF_DIR = join(ROOT, '_claude/handoff'); // the Claude handoff kit: a generated snapshot of the docs, like the rebuild reports
 const SESSIONS_DIR = join(ROOT, 'sessions'); // the session check-in archive (session-log@1): records of past sessions, history like the changes log
-const HANDOFF_NOTE = /^_claude\/memory\/handoff-[0-9-]+\.md$/; // dated account-switch handoff notes: snapshots of a day, history
+const HANDOFF_NOTE = /^_claude\/(memory|shared\/notes\/handoffs)\/handoff-[0-9-]+\.md$/; // dated account-switch handoff notes (own or shared): snapshots of a day, history
 const SKIP_DIRS = new Set(['.git', 'node_modules', 'dist', 'dist-single', '.axf-console', '__pycache__', 'build', '.gradle']);
 const TEXT_EXT = /\.(md|mjs|js|cjs|ts|tsx|json|py|css|html|ya?ml|kt|kts|sh|txt|toml)$/i;
 
