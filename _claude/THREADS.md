@@ -568,7 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 17:56 UTC · `builds-one-page` note (refactor) · foreign-write
 - 2026-11-03 17:56 UTC · `menu-scroll` added (6 steps) (urgent) · orchestrator
 - 2026-11-03 17:59 UTC · `builds-one-page` note (refactor) · foreign-write
 - 2026-11-03 18:01 UTC · `auto-land` added (8 steps) (urgent) · orchestrator
@@ -968,3 +967,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 22:02 UTC · `git-status-board` s3 done, s4 done, s5 done (current) · foreign-write
 - 2026-11-03 22:02 UTC · `terminal-drag-chain-tree` s2 done (current) · foreign-write
 - 2026-11-03 22:02 UTC · `terminal-tabs-left` added (5 steps) (current) · Janitor Joey (terminal-tabs-left session)
+- 2026-11-03 22:02 UTC · `terminal-tabs-left` → running (current) · orchestrator
