@@ -185,7 +185,7 @@ function help() {
     '', ...u.usage.map((l) => `  ${l}`), '', 'Aliases:', ...Object.values(u.aliases).map((l) => `  ${l}`), '',
     'Examples:',
     '  axf token layout get navWidth',
-    '  axf token theme set accent "#ff8800" --reason "warmer accent"',
+    '  axf token theme set accent "#ff8800" --reason "warmer accent"',  // theme-ok: an example value in the help text
     '  axf token layout reset navWidth',
     '  axf token slots set color-theme arctic-daylight',
     '  axf todo add "Buy milk" --list groceries',
@@ -204,6 +204,7 @@ function help() {
 const q = (s) => (/^[\w@%+=:,./-]+$/.test(s) ? s : `'${String(s).replace(/'/g, "'\\''")}'`);
 
 export async function main(argv) {
+  if (argv[0] === 'control') argv = argv.slice(1); // `axf control …` = this file's own words
   const [cmd] = argv;
   const json = argv.includes('--json');
   const out = (o, text) => console.log(json ? JSON.stringify(o, null, 1) : text);

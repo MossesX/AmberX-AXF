@@ -41,6 +41,10 @@
  *   axf install <library> [appDir] [--param key=value …] [--yes]
  *                               add a library to an app: interactive wizard asks for the required parameters,
  *                               then writes manifest + gradle + App.kt + a generated <Name>Setup.kt
+ *   axf control <op> <target> …  control@1 (framework/spec/CONTROL.md): tokens, AmberX items/lists, plans, builds
+ *   axf token <set> <op> …       axf token layout set navWidth 200 · axf token theme reset accent · axf token slots set color-theme <id>
+ *   axf note|todo|task|list|plan|build <op|verb> …   axf todo add "Buy milk" · axf todo done <id> · axf build step <id> s3
+ *                               (needs a plugin providing service:control@1, the Token control plugin; axf control help)  <!-- axf-plugin:token-control -->
  */
 import { join, relative } from 'node:path';
 import { importUiLibrary, listPortedKits } from './ui-port.mjs';
@@ -51,6 +55,23 @@ import { FRAMEWORK_DIR, FRAMEWORK_VERSION, appOptions, init, listBoilerplates, l
 import { checkProject } from './project.mjs';
 
 const [cmd, ...rest] = process.argv.slice(2);
+
+// control@1 commands go to the plugin that provides the capability (never by folder name). `axf list <dir>` (assets)
+// stays as it was: `axf list` routes to control only when its next word is a control op or a list verb.
+const CONTROL_WORDS = new Set(['control', 'token', 'tokens', 'note', 'todo', 'task', 'plan', 'build']);
+const CONTROL_LIST_WORDS = new Set(['list', 'get', 'set', 'reset', 'add', 'remove', 'act', 'move', 'reorder', 'rename']);
+if (CONTROL_WORDS.has(cmd) || (cmd === 'list' && CONTROL_LIST_WORDS.has(rest[0]))) {
+  const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
+  const { join: joinPath } = await import('node:path');
+  const { pathToFileURL } = await import('node:url');
+  const plugins = joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps/console-web/plugins');
+  const dir = (exists(plugins) ? readdirSync(plugins) : []).sort().find((d) => {
+    try { return JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')).provides?.includes('service:control@1') && exists(joinPath(plugins, d, 'control.mjs')); } catch { return false; }
+  });
+  if (!dir) { console.error('no plugin provides control@1 (install the Token control plugin)'); process.exit(1); }
+  const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'control.mjs')).href);
+  process.exit(await main([cmd, ...rest]));
+}
 const flags = {};
 const args = [];
 for (let i = 0; i < rest.length; i++) {
