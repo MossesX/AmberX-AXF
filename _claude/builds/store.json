@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 247,
- "updatedAt": "2026-11-03T16:44:27.083Z",
+ "rev": 248,
+ "updatedAt": "2026-11-03T16:48:24.508Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -49142,14 +49142,15 @@
    "title": "Shared dock engine: split, float, re-dock, drop zones, layout presets (used by MD Studio, xLayout, Theme Editor)",
    "category": "Urgent",
    "detail": "Brett Nov 2 2026 21:30 ET picked 'shared dock engine first'. Extends framework/core/engines/windows (panes, tab groups) + framework/react/windows/WindowHost. Covers xLayout s3 (Big Dog) pane engine; xLayout s7/s8 use it. Android twin = deferred gap in PORTING.md (Android on hold).",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-fable",
    "pr": "#245",
+   "mergedAt": "2026-11-03T16:48:22.941Z",
    "createdAt": "2026-11-03T02:32:21.328Z",
-   "updatedAt": "2026-11-03T13:56:31.369Z",
+   "updatedAt": "2026-11-03T16:48:23.682Z",
    "builtAt": "2026-11-03T13:56:31.369Z",
    "notes": [
     {
@@ -49256,7 +49257,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

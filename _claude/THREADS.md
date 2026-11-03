@@ -614,3 +614,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 16:41 UTC · `whats-new-banner` merged (urgent) · builds-live
 - 2026-11-03 16:41 UTC · `land-everything` note (urgent) · orchestrator
 - 2026-11-03 16:41 UTC · `land-everything` s5 done (urgent) · orchestrator
+- 2026-11-03 16:48 UTC · `dock-engine` → complete, merged (urgent) · builds-live
