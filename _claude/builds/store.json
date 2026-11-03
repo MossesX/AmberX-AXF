@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 341,
- "updatedAt": "2026-11-03T18:37:42.338Z",
+ "rev": 342,
+ "updatedAt": "2026-11-03T18:38:10.590Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -53885,7 +53885,7 @@
    "branch": "claude/toolbar-tap-confirm",
    "pr": "",
    "createdAt": "2026-11-03T18:23:45.044Z",
-   "updatedAt": "2026-11-03T18:33:53.404Z",
+   "updatedAt": "2026-11-03T18:37:04.764Z",
    "builtAt": "",
    "notes": [
     {
@@ -53955,12 +53955,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:37:04.764Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-03T18:23:45.045Z",
-     "updatedAt": "2026-11-03T18:24:02.876Z"
+     "updatedAt": "2026-11-03T18:37:04.791Z"
     },
     {
      "id": "s4",
@@ -54367,7 +54367,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
