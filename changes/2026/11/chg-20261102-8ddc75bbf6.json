@@ -1,0 +1,58 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261102-8ddc75bbf6",
+  "createdAt": "2026-11-02T14:24:29.483Z",
+  "updatedAt": "2026-11-02T14:24:30.051Z",
+  "kind": "build",
+  "title": "# Add an MCP service type to axHub, then connect Hostinger through it Right now axHub services can …",
+  "asked": "# Add an MCP service type to axHub, then connect Hostinger through it Right now axHub services can be builtin, device, rest, or ssh. Hostinger is a read-only REST service. Brett wants axHub to proxy remote MCP servers, starting with the Hostinger MCP server, so Claude can work on hosting through axHub. 1. Add a new service type `mcp`. It should connect to a remote MCP server (streamable HTTP, SSE as fallback) and read the auth token from the axHub vault only. Never print, log, or return secrets. 2. Read the server's tools and show them through describe_service and call as `namespace.tool`, the same way the other service types do. 3. Policies: tools marked read-only (or names like list/get) use `allow`. Every tool that writes, deletes, or changes billing uses `confirm`. DNS writes use `confirm`. Policy should be configurable for each tool. 4. Register a `hostinger-mcp` service using the official Hostinger MCP server. If you can't find the URL or token in the vault, leave it disabled and write down exactly what Brett has to add. Keep the old `hostinger` REST service as it is. 5. Add tests: connect, list tools, an allowed call, and a call that must be confirmed. 6. Open a PR. Don't merge it and don't deploy. Rules: no sub-agents. Keep commits clean. The PR description should be short and easy to read on a phone and must include the vault key names Brett needs to set. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, patches-web, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once.",
+  "repos": [
+    "MossesX/axHub"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "42848888-f3f",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "surface": "headless",
+  "startedAt": "2026-11-02T14:24:29.483Z",
+  "finishedAt": "2026-11-02T14:24:30.051Z",
+  "lastSeenAt": "2026-11-02T14:24:29.483Z",
+  "actual": {
+    "minutes": 0,
+    "costUsd": 0,
+    "inputTokens": 0,
+    "outputTokens": 0,
+    "cacheReadTokens": 0,
+    "cacheWriteTokens": 0,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "doing": "Starting",
+  "resume": {
+    "repo": "MossesX/axHub",
+    "folder": "/root/axf-builds/axhub-mcp-service",
+    "branch": "claude/axhub-mcp-service",
+    "base": "998f03f164bfb991bf4a313c3b617b33f2691d77",
+    "head": "998f03f164bfb991bf4a313c3b617b33f2691d77",
+    "pushed": true,
+    "dirty": 1,
+    "files": [
+      ".axf-watch-live.log"
+    ],
+    "at": "2026-11-02T14:24:30.096Z"
+  }
+}
