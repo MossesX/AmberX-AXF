@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 512,
- "updatedAt": "2026-11-03T22:00:32.419Z",
+ "rev": 513,
+ "updatedAt": "2026-11-03T22:01:42.230Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -61844,7 +61844,7 @@
    "branch": "claude/terminal-drag-chain-tree",
    "pr": "",
    "createdAt": "2026-11-03T21:50:21.572Z",
-   "updatedAt": "2026-11-03T21:58:04.326Z",
+   "updatedAt": "2026-11-03T22:01:31.597Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -61887,12 +61887,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T22:01:31.597Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T21:50:21.573Z",
-     "updatedAt": "2026-11-03T21:50:21.573Z"
+     "updatedAt": "2026-11-03T22:01:31.649Z"
     },
     {
      "id": "s3",
@@ -61991,7 +61991,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
