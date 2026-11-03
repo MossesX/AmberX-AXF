@@ -1,0 +1,9 @@
+{
+  "$axf": "amberx-plugin@1",
+  "id": "ai.amberx.amberx.companion",
+  "name": "Gizmo (companion)",
+  "version": "0.1.0",
+  "description": "Gizmo, Brett's Claude companion in AmberX: a full-screen chat (streaming replies, markdown and code with copy, photos, images and files, stop, regenerate, edit and resend, chats with search, pin, rename, delete, export) and talk mode (push-to-talk or hands-free, spoken replies as they stream, talk over him to stop him, voice and speed). The brains are the Dev Console's AI assistant on the VPS as agent Gizmo (Claude Code on the Claude plan, tools and axHub connectors behind the usual approvals), reached through AmberX's server behind the axHub wall: no key in the APK. A text copy of each chat is kept on axHub.",
+  "commands": { "$axf": "plugin-commands@1", "auto": true },
+  "builtWith": { "model": "opus", "builtAt": "2026-11-03" }
+}

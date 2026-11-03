@@ -31,8 +31,8 @@ export interface Category {
 export const CATEGORIES: Category[] = [
   { id: 'notes', label: 'Notes', icon: 'file', triggers: ['note', 'notes', 'notebook'], view: 'notes', description: 'Notes, lists and sub-lists: take, find, sort, rename, move, read back, export.' },
   { id: 'tasks', label: 'Tasks', icon: 'check', triggers: ['task', 'tasks', 'todo', 'to do', 'todos'], view: 'tasks', description: 'Tasks and to-dos: add, due dates, priorities, checklists, subtasks, reviews.' },
-  { id: 'developer', label: 'Developer', icon: 'code', triggers: ['dev', 'developer', 'console', 'gizmo'], view: 'developer', description: 'Drive the Dev Console and the VPS through Molly: builds, PRs, checks, deploys, health.' },
-  { id: 'snippets', label: 'AI snippets', icon: 'sparkles', triggers: ['ask', 'molly', 'ai', 'snippet'], view: 'snippets', description: 'Ready-made prompts run through the AI (Molly): summarize, rewrite, plan, explain.' },
+  { id: 'developer', label: 'Developer', icon: 'code', triggers: ['dev', 'developer', 'console', 'gizmo'], view: 'developer', description: 'Drive the Dev Console and the VPS through Gizmo: builds, PRs, checks, deploys, health.' },
+  { id: 'snippets', label: 'AI snippets', icon: 'sparkles', triggers: ['ask', 'gizmo', 'ai', 'snippet'], view: 'snippets', description: 'Ready-made prompts run through the AI (Gizmo): summarize, rewrite, plan, explain.' },
 ];
 export const categoryOf = (id: string) => CATEGORIES.find((c) => c.id === id);
 
@@ -54,9 +54,9 @@ export type Step =
   | { do: 'wait'; ms: number }
   /** run another command by id (chains of chains) */
   | { do: 'run'; command: string }
-  /** send a prompt to Molly / the AI (`{slot}` filled); the answer is said and kept in slot `answer` */
+  /** send a prompt to Gizmo / the AI (`{slot}` filled); the answer is said and kept in slot `answer` */
   | { do: 'ai'; prompt: string; into?: string }
-  /** a developer task for Molly on the console / VPS (approvals happen on axHub) */
+  /** a developer task for Gizmo on the console / VPS (approvals happen on axHub) */
   | { do: 'molly'; task: string }
   /** a notes / tasks operation from ops.ts (`args` strings take `{slot}`) */
   | { do: 'op'; op: string; args?: Record<string, string> };
@@ -92,9 +92,9 @@ export interface Command {
   settings?: CommandSettings;
   /** off until the person switches it on */
   defaultOff?: boolean;
-  /** needs the AI connection / Molly */
+  /** needs the AI connection / Gizmo */
   needsAi?: boolean;
-  /** touches the console or VPS (Molly, approvals) */
+  /** touches the console or VPS (Gizmo, approvals) */
   developer?: boolean;
 }
 
@@ -426,7 +426,7 @@ export function describeStep(s: Step): string {
     case 'wait': return `Wait ${Math.round(s.ms / 100) / 10} s`;
     case 'run': return `Run command ${s.command}`;
     case 'ai': return `Ask the AI: “${s.prompt.slice(0, 80)}${s.prompt.length > 80 ? '…' : ''}”`;
-    case 'molly': return `Molly: ${s.task.slice(0, 80)}${s.task.length > 80 ? '…' : ''}`;
+    case 'molly': return `Gizmo: ${s.task.slice(0, 80)}${s.task.length > 80 ? '…' : ''}`;
     case 'op': return `${s.op.replace(/-/g, ' ')}${s.args ? ` (${Object.entries(s.args).map(([k, v]) => `${k}: ${v}`).join(', ')})` : ''}`;
   }
 }

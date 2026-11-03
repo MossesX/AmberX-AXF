@@ -47,6 +47,9 @@ check(lib.chatModelId('fable') === 'claude-fable-5-1' && lib.chatModelId('') ===
 check(lib.budgetState(1, 0).level === 'off', 'no cap = off');
 check(lib.budgetState(7, 10).level === 'ok' && lib.budgetState(8, 10).level === 'warn' && lib.budgetState(10.5, 10).level === 'over', 'ok / warn at 80 % / over');
 check(lib.budgetState(7, 10).left === '$3.00', 'left to spend');
+const pricing = { models: { opus: { input: 4, output: 20 }, fable: { input: 10, output: 50 } } };
+check(lib.tokenCost({ input: 1_000_000, output: 100_000 }, 'claude-opus-5-5', pricing) === 6 && lib.tokenCost({ input: 1_000_000, output: 0 }, 'fable', pricing) === 10, 'tokens priced per model');
+check(lib.tokenCost({ input: 1_000_000, output: 0 }, '', pricing) === 4, 'unknown model priced as Opus');
 
 // ---- speech
 const md = '# Heads up\n\nThe **build** is `green`. See [the PR](https://github.com/x/y/pull/1).\n\n```ts\nconst x = 1;\n```\n- one\n- two\n| a | b |\n|---|---|';

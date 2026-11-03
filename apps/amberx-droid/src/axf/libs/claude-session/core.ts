@@ -156,6 +156,14 @@ export function budgetState(spentUsd: number, capUsd: number): Budget {
   return { spentUsd: spent, capUsd, ratio, level: ratio >= 1 ? 'over' : ratio >= 0.8 ? 'warn' : 'ok', left: money(Math.max(0, capUsd - spent)) };
 }
 
+/** Tokens priced with model-pricing@1 (USD per million tokens; an unknown model is priced as Opus). Pure. */
+export function tokenCost(t: { input: number; output: number }, model: string, pricing: { models: Record<string, { input: number; output: number }> }): number {
+  const fam = modelName(model).split(' ')[0]!.toLowerCase();
+  const p = pricing.models[fam] ?? pricing.models.opus;
+  if (!p) return 0;
+  return ((t.input || 0) * p.input + (t.output || 0) * p.output) / 1_000_000;
+}
+
 /* ---------------------------------------------------------------- speech (spoken replies, talk mode) */
 
 /**
@@ -214,19 +222,19 @@ export function isInterrupt(heard: string): boolean {
 
 export interface ToolCardView { id: string; title: string; detail: string; state: 'running' | 'ok' | 'failed'; icon: string }
 const TOOL_LABELS: [RegExp, string, string][] = [
-  [/^axhub_call$|axhub/i, 'axHub', 'plug'],
+  [/^axhub_call$|axhub/i, 'axHub', 'cloud'],
   [/repo_(read|search)|read_file|grep|glob/i, 'Read the code', 'search'],
   [/vps|shell|bash|run/i, 'VPS command', 'terminal'],
-  [/github|pull|merge/i, 'GitHub', 'git-branch'],
-  [/memory/i, 'Memory', 'book-open'],
+  [/github|pull|merge/i, 'GitHub', 'github'],
+  [/memory/i, 'Memory', 'file'],
   [/build|orchestr|queue/i, 'Builds', 'hammer'],
-  [/review|ui-review/i, 'UI Review', 'image'],
-  [/fetch|web|http/i, 'Web', 'globe'],
+  [/review|ui-review/i, 'UI Review', 'eye'],
+  [/fetch|web|http/i, 'Web', 'external'],
 ];
 /** One tool call (LiveReply.tools entry or a message's tool log) as a card's title, detail and state. Pure. */
 export function toolCard(t: { id: string; name: string; input?: string; ok?: boolean; preview?: string; done?: boolean }): ToolCardView {
   const hit = TOOL_LABELS.find(([re]) => re.test(t.name));
   let detail = t.input ?? '';
   try { const j = JSON.parse(detail) as Record<string, unknown>; const tool = typeof j.tool === 'string' ? j.tool : typeof j.name === 'string' ? j.name : ''; if (tool) detail = tool; } catch { /* plain text input */ }
-  return { id: t.id, title: hit ? `${hit[1]} · ${t.name}` : t.name, detail: detail.slice(0, 160), state: !t.done ? 'running' : t.ok === false ? 'failed' : 'ok', icon: hit?.[2] ?? 'wrench' };
+  return { id: t.id, title: hit ? `${hit[1]} · ${t.name}` : t.name, detail: detail.slice(0, 160), state: !t.done ? 'running' : t.ok === false ? 'failed' : 'ok', icon: hit?.[2] ?? 'zap' };
 }

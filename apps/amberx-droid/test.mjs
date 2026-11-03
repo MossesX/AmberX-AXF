@@ -10,6 +10,7 @@ import * as voice from './src/plugins/voice/web/core.ts';
 import * as mon from './src/plugins/monitor/web/core.ts';
 import * as notes from './src/plugins/notes/web/core.ts';
 import * as hf from './src/plugins/voice/web/handsfree.ts';
+import * as companion from './src/plugins/companion/web/core.ts';
 import { HOSTED_URL, sharesHubSite } from './src/hosted.ts';
 import { readFileSync } from 'node:fs';
 import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../framework/libs/hub/apps.ts';
@@ -206,6 +207,22 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   const man = JSON.parse(readFileSync(`${here}axf.manifest.json`, 'utf8'));
   for (const t of ['dialog', 'container', 'tab-group', 'popup']) eq(man.defaults[t], 'amber-signature', `default ${t} is the Amber Signature one`);
   ok(!/#[0-9a-f]{3,8}\b/i.test(readFileSync(`${here}src/windows/windows.css`, 'utf8')), 'window CSS uses tokens only');
+}
+
+// Companion (Gizmo, build gizmo-companion): the text copy of a chat kept on axHub.
+{
+  const conv = { id: 'c1', title: 'Deploy', createdAt: 1, updatedAt: 2, pinned: true, archived: false, tags: [], settings: {}, messages: [
+    { id: 'm1', role: 'user', content: 'hi', createdAt: 10, images: [{ media_type: 'image/png', data: 'AAAA' }] },
+    { id: 'm2', role: 'assistant', content: 'step', createdAt: 11, meta: { step: true } },
+    { id: 't1', role: 'tool', content: 'tool out', createdAt: 12 },
+    { id: 'm3', role: 'assistant', content: 'x'.repeat(5000), createdAt: 13, meta: { model: 'claude-opus-5-5' } },
+  ] };
+  const copy = companion.chatCopy(conv);
+  eq(copy.messages.map((m) => m.role), ['user', 'assistant'], 'companion copy: user + final assistant messages only (no steps, no tools)');
+  ok(copy.messages[1].text.length === 4000 && copy.messages[1].model === 'claude-opus-5-5' && !JSON.stringify(copy).includes('AAAA'), 'companion copy: text capped, model kept, images left out');
+  ok(copy.$axf === 'companion-chat@1' && copy.pinned && companion.MIRROR.folder === 'companion', 'companion copy: contract, pinned, hub folder');
+  const many = { ...conv, messages: Array.from({ length: 250 }, (_, i) => ({ id: `u${i}`, role: 'user', content: String(i), createdAt: i })) };
+  ok(companion.chatCopy(many).messages.length === 200 && companion.chatCopy(many).messages[0].text === '50', 'companion copy: the last 200 messages');
 }
 
 // Pages (enterprise-branding s33): every page head has an eyebrow, a title and one sentence; icons exist in the
@@ -820,7 +837,7 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   ok(count('tasks', ['action']) >= 65, 'commands: 65+ task actions');
   ok(count('notes', ['chain', 'wizard']) + count('tasks', ['chain', 'wizard']) >= 25, 'commands: 25+ notes/tasks chains and wizards');
   ok(count('developer', ['action', 'chain', 'wizard']) >= 50 && count('snippets', ['action']) >= 30, 'commands: developer 50+, AI snippets 30+');
-  ok(LIBRARY.filter((c) => c.category === 'developer').every((c) => c.developer && c.needsAi), 'commands: every developer command goes through Molly');
+  ok(LIBRARY.filter((c) => c.category === 'developer').every((c) => c.developer && c.needsAi), 'commands: every developer command goes through Gizmo');
   for (const c of LIBRARY) for (const st of c.steps) if (st.do === 'op') ok(ops.OP_NAMES.includes(st.op), `commands: ${c.id} uses a real op (${st.op})`);
   const clash = new Map();
   for (const c of LIBRARY) for (const ph of c.phrases) { const k = `${c.category}:${ph.replace(/\{[a-z0-9_]+\}/g, '{}')}`; ok(!clash.has(k), `commands: phrase "${ph}" only once (${c.id}, ${clash.get(k)})`); clash.set(k, c.id); }
@@ -919,7 +936,7 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   {
     const f = fake([], { ai: false });
     const r = await rn.runCommand({ command: byId('dev.status'), slots: {} }, f.env);
-    ok(!r.ok && r.said[0].includes('Molly'), 'runner: developer commands need Molly');
+    ok(!r.ok && r.said[0].includes('Gizmo'), 'runner: developer commands need Gizmo');
   }
   {
     const f = fake(['yes']);
