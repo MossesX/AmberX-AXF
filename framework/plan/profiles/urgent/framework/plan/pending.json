@@ -110,6 +110,143 @@
    "builtAt": "2026-11-01T02:26:59.508Z",
    "updatedAt": "2026-11-01T02:26:59.880Z",
    "source": "console"
+  },
+  {
+   "id": "dock-engine",
+   "title": "Shared dock engine: split, float, re-dock, drop zones, layout presets (used by MD Studio, xLayout, Theme Editor)",
+   "detail": "Brett Nov 2 2026 21:30 ET picked 'shared dock engine first'. Extends framework/core/engines/windows (panes, tab groups) + framework/react/windows/WindowHost. Covers xLayout s3 (Big Dog) pane engine; xLayout s7/s8 use it. Android twin = deferred gap in PORTING.md (Android on hold).",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Fable] Engine: split tree (horizontal/vertical), drop zones (any tab header, split edges, centre), undock to floating, re-dock, pane limit, serialize/restore",
+     "at": "2026-11-03T02:32:21.329Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Fable] Fixture + engine tests; PORTING.md deferred Kotlin twin",
+     "at": "2026-11-03T02:32:21.329Z",
+     "estimate": "25m"
+    },
+    {
+     "text": "[Fable] React DockHost on WindowHost: drag tabs between headers, hover drop-zone overlay shows the split, splitter resize, tokens only",
+     "at": "2026-11-03T02:32:21.329Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Fable] 10 layout presets as data + preview thumbnails (for xLayout IDE mode and MD Studio IDE view)",
+     "at": "2026-11-03T02:32:21.329Z",
+     "estimate": "25m"
+    }
+   ],
+   "createdAt": "2026-11-03T02:32:21.328Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T02:32:21.328Z",
+   "source": "console"
+  },
+  {
+   "id": "md-studio",
+   "title": "MD Studio plugin: powerful Markdown browser/editor with docking tabs, reference chains, splits, 4 views, snippets, Claude-file wizards",
+   "detail": "Brett Nov 2 2026 21:30 ET: powerful MD file browser/editor. Opens multiple md files in a tab group with floating, dockable, resizable tabs. A column lists every md file in collapsible categories by scope: Project, Claude, Repo; an edit switch makes a file editable. If a file references other files the chain shows as branches; clicking a referenced name splits the viewing area (setting: vertical or horizontal). Right-click any file in the column: open in horizontal or vertical split. A split section can be undocked, floated, and dropped as a tab in any tab header or into a split (the split shows while hovering). Toolbar with 3 views plus a 4th IDE-style view, each changing how everything renders. Drag snippets into files; wizards that create Claude md files (CLAUDE.md, rules, persona, threads, skills...), categorized by what they do and by scope (project, Claude, repo). Builds on dock-engine.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Plugin scaffold: plugin.json, install/uninstall, Settings > Plugins > MD Studio (level toolbar), help pack",
+     "at": "2026-11-03T02:32:21.912Z",
+     "estimate": "20m"
+    },
+    {
+     "text": "[Opus] Server: md files by scope (Project / Claude / Repo) and category, read/write, reference graph",
+     "at": "2026-11-03T02:32:21.912Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] File column: collapsible scopes + categories, search, edit switch, right-click open in horizontal/vertical split",
+     "at": "2026-11-03T02:32:21.912Z",
+     "estimate": "25m"
+    },
+    {
+     "text": "[Opus] Tab group of md files on the dock engine: floating, dockable, resizable; drop on any tab header or split",
+     "at": "2026-11-03T02:32:21.912Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] Viewer/editor: rendered markdown, edit mode, save, dirty marks, conflict-safe writes",
+     "at": "2026-11-03T02:32:21.912Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] Reference chain as branches; click a referenced name to split; split direction setting",
+     "at": "2026-11-03T02:32:21.912Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] Toolbar: 3 views + IDE view, each re-renders column, tabs and panes differently",
+     "at": "2026-11-03T02:32:21.912Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] Snippets panel: categorized, drag into the editor",
+     "at": "2026-11-03T02:32:21.912Z",
+     "estimate": "25m"
+    },
+    {
+     "text": "[Opus] Wizards for Claude md files, categorized by purpose and scope (project, Claude, repo)",
+     "at": "2026-11-03T02:32:21.912Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] Tests, check-theme/check-controls, lifecycle, UI Review shots, PR",
+     "at": "2026-11-03T02:32:21.912Z",
+     "estimate": "30m"
+    }
+   ],
+   "createdAt": "2026-11-03T02:32:21.910Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T02:32:21.910Z",
+   "source": "console"
+  },
+  {
+   "id": "theme-editor",
+   "title": "Theme Editor plugin: colour + style sections, every token, copy/save/load, multi-view toolbar",
+   "detail": "Brett Nov 2 2026 21:30 ET: theme editor plugin that lets you copy, save, load. Colour section and style section, each collapsible, with collapsible categories listing every possible token; toolbar with multiple views. Own plugin, reusing the Theme manager's token tree through a capability service (both stay installed). Look rule: saves go to the axHub appearance document / asset@1 themes.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Plugin scaffold + use the Theme manager's token tree via a capability service",
+     "at": "2026-11-03T02:32:22.612Z",
+     "estimate": "20m"
+    },
+    {
+     "text": "[Opus] Colour and Style sections, collapsible, with collapsible categories listing every token (from asset types)",
+     "at": "2026-11-03T02:32:22.612Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] Copy, save, load themes (asset@1), live apply through the hub look",
+     "at": "2026-11-03T02:32:22.612Z",
+     "estimate": "25m"
+    },
+    {
+     "text": "[Opus] Toolbar with multiple views (tree, grid, swatches, compare)",
+     "at": "2026-11-03T02:32:22.612Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] Tests, checks, lifecycle, UI Review shots, PR",
+     "at": "2026-11-03T02:32:22.612Z",
+     "estimate": "25m"
+    }
+   ],
+   "createdAt": "2026-11-03T02:32:22.611Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T02:32:22.611Z",
+   "source": "console"
   }
  ]
 }
