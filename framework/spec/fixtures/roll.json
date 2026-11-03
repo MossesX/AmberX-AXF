@@ -32,6 +32,7 @@
     "badge": false,
     "settings": false,
     "dock-layout": false,
+    "xlayout": false,
     "behavior-theme": true,
     "design-package": false,
     "style-package": false,

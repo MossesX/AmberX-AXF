@@ -12,6 +12,7 @@ import { agentCardErrors } from './engines/agent-card-rules.mjs';
 import { jobTypeErrors } from './engines/job-type-rules.mjs';
 import { behaviorErrors } from './engines/behavior';
 import { dockLayoutErrors } from './engines/dock';
+import { xlayoutErrors } from './engines/xlayout';
 
 export interface ValidationResult {
   ok: boolean;
@@ -107,6 +108,8 @@ export function validateAsset(raw: unknown): ValidationResult {
   if (raw.type === 'behavior-theme') errors.push(...behaviorErrors(data));
   // dock-layout@1 (core/engines/dock.ts): pane numbers 1..n once each, panes = leaves, ≤ 12
   if (raw.type === 'dock-layout') errors.push(...dockLayoutErrors(data));
+  // xlayout@1 (core/engines/xlayout.ts): apps, merge modes, IDE block, three toolbar slots
+  if (raw.type === 'xlayout') errors.push(...xlayoutErrors(data));
   // typography@1 / density@1 / sizing@1: ONE validator shared with the build engine (core/engines/scale-rules.mjs)
   errors.push(...scaleErrors(raw.type, data));
   // help@1: ONE validator shared with the build engine (core/engines/help-rules.mjs)

@@ -39,6 +39,8 @@ import { CONDITION_KINDS, DEFAULT_BACKOFF_FACTOR, DELAY_KINDS, FALLBACK_OUTCOME,
 import { DEFAULT_SNAP_RULES, RESIZE_EDGES, RESIZE_HANDLE, RESIZE_HANDLE_TOUCH, SNAP_ZONES, WINDOW_MIN, armSplit, dragRestore, hitResizeEdge, maximizeWindow, maximizedRect, resizeCursor, resizeRect, resolveOverlap, restoreWindow, snapRect, snapZoneAt, snapZoneRect, splitDrop, toggleMaximized, topmostAt, type Rect, type ResizeEdge, type SplitArm, type WindowSpec } from '../core/engines/windows';
 import { DEFAULT_DOCK_RULES, DOCK_CONTRACT, DOCK_LAYOUT_MAX_PANES, DOCK_SIDES, DOCK_ZONES, applyDockDrop, applyPreset, clampWeights, countPanes, dockDropAt, dockDropRect, dockLayoutErrors, dockZoneAt, dropIsLimited, enforcePaneLimit, headerIndexAt, normalizeDockLayout, normalizeDockRules, normalizeTree, paneAt, parseTab, parseTree, pathOf, presetRects, presetSvg, presetTree, removePane, resizeSplit, restoreDock, serializeDock, splitPane, splitRoot, type DockDrop, type DockState, type GroupBox } from '../core/engines/dock';
 import type { Pane, TabGroup } from '../core/engines/windows';
+import { CHROME_KINDS, DEFAULT_MERGE, DEFAULT_PRESETS, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, dockRulesOf, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId as xNsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
+import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES, WIDGET_TYPES, activeNav, chromePicks, emptyChrome, mergeChrome, parseChromeBundle, routePick, type ChromeBundle } from '../core/engines/chrome';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -1548,6 +1550,71 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       applyState: { tree: presetApply.tree, groups: Object.fromEntries(Object.entries(presetApply.groups).map(([k, g]) => [k, { tabs: g.tabs, active: g.active, windowId: g.windowId }])) },
       applyEmpty: applyPreset({ tree: null, groups: {} }, normalizeDockLayout(presets[0]!.data), 'main', (n) => `new-${n}`),
     },
+  });
+}
+// xLayout (xlayout@1, Big Dog build xlayout s1, Nov 3 2026; core/engines/xlayout.ts): Molly as one app — apps, chrome merge
+// modes, the IDE block, three toolbar slots, namespacing, what the guests hide / the host takes, guest frame URLs.
+{
+  const starters = load('xlayout');
+  const apps = ['amberx', 'axhub', 'console'];
+  const badData: Record<string, unknown> = {
+    nothing: null, string: 'x', 'no apps': {}, 'apps not a list': { apps: 'amberx' },
+    'bad apps': { apps: [{ id: 'Amber X', label: 'A', url: 'https://a.example' }, { id: 'ok', label: '', url: 'http://plain.example' }, { id: 'ok', label: 'Again', url: 'https://ok.example/' }, 'x'] },
+    'bad merge + ide + toolbars': { apps: [{ id: 'a', label: 'A', url: 'https://a.example' }], merge: { banner: 'merged', toolbar: 'maybe', ribbon: 'host' }, ide: { on: 'yes', paneLimit: 0, preset: 'Bad Id', presets: 'ide', tree: { kind: 'what' } }, toolbars: [{ slot: 4 }, { slot: 1, visible: 'yes', location: 'middle', items: [{ id: 'x' }, { id: 'y', label: 'Y', action: 'nav:home', open: 'tab', app: 'nope' }] }, { slot: 1 }, 'x'] },
+    'merge not an object': { apps: [], merge: 'all' }, 'ide not an object': { apps: [], ide: true }, 'toolbars not a list': { apps: [], toolbars: {} },
+    'too many': { apps: Array.from({ length: 13 }, (_, i) => ({ id: `app-${i}`, label: `App ${i}`, url: `https://app-${i}.example` })), ide: { presets: Array.from({ length: 11 }, (_, i) => `p-${i}`) } },
+  };
+  const normalizeInputs: Record<string, unknown> = {
+    ...badData,
+    'full': starters[0]!.data,
+    'inline tree + custom presets': { apps: [{ id: 'a', label: 'A', url: 'https://a.example/' }], ide: { on: true, paneLimit: 3, presets: ['two-rows', 'ide', 'two-rows', 'Bad'], tree: { kind: 'split', vertical: true, children: [{ kind: 'leaf', pane: 1 }, { kind: 'leaf', pane: 2 }], weights: [3, 1] } } },
+    'ide preset falls back to the list': { apps: [], ide: { presets: ['two-columns', 'grid-2x2'] } },
+    'toolbar items namespaced + repeats dropped': { apps: [{ id: 'a', label: 'A', url: 'https://a.example' }], toolbars: [{ slot: 2, visible: true, location: 'left', items: [{ id: 'one', label: 'One', action: 'a:nav:home', app: 'a', open: 'pane' }, { id: 'two', label: 'Two', action: 'nav:home', app: 'A', open: 'floating', icon: 'home' }, { id: 'one', label: 'Again', action: 'x' }, { id: 'three', label: 'Three', action: 'host.thing' }] }] },
+  };
+  const molly = normalizeXLayout(starters[0]!.data);
+  const mergeCases: Record<string, Partial<Record<(typeof CHROME_KINDS)[number], (typeof MERGE_MODES)[number]>>> = {
+    default: {}, 'everything guest': Object.fromEntries(CHROME_KINDS.map((k) => [k, 'guest'])), 'everything host': Object.fromEntries(CHROME_KINDS.map((k) => [k, 'host'])),
+    'nav merged only': { ...Object.fromEntries(CHROME_KINDS.map((k) => [k, 'guest'])), 'nav-menu': 'merged' }, 'banner merged too': { banner: 'merged' },
+  };
+  write('xlayout.json', {
+    contract: XLAYOUT_CONTRACT, kinds: CHROME_KINDS, modes: MERGE_MODES, defaultMerge: DEFAULT_MERGE, slots: TOOLBAR_SLOT_COUNT, locations: TOOLBAR_LOCATIONS, openTargets: OPEN_TARGETS, defaultPresets: DEFAULT_PRESETS, limits: XLAYOUT_LIMITS,
+    starters: Object.fromEntries(starters.map((a) => [a.id, { normalized: normalizeXLayout(a.data), errors: xlayoutErrors(a.data), valid: validateAsset(a) }])),
+    normalize: Object.entries(normalizeInputs).map(([name, raw]) => ({ name, raw, out: normalizeXLayout(raw) })),
+    errors: Object.entries(badData).map(([name, raw]) => ({ name, raw, errors: xlayoutErrors(raw) })),
+    items: [[{ id: 'a', label: 'A', action: 'nav:home' }, apps], [{ id: 'a', label: 'A', action: 'nav:home', app: 'amberx', open: 'pane' }, apps], [{ id: 'a', label: 'A', action: 'amberx:nav:home', app: 'amberx' }, apps], [{ id: 'a', label: 'A', action: 'nav:home', app: 'nope' }, apps], [{ id: 'bad id!', label: 'A', action: 'x' }, apps], [{ id: 'a', label: '', action: 'x' }, apps], [{ id: 'a', label: 'A', action: 'x', open: 'tab', icon: 'Bad' }, apps], ['x', apps]].map(([raw, a]) => ({ raw, item: parseToolbarItem(raw, a as string[]) })),
+    open: OPEN_TARGETS.flatMap((o) => [true, false].map((ide) => ({ open: o, ideOn: ide, target: openTargetFor({ open: o }, ide) }))),
+    ns: { make: [['amberx', 'file.save'], ['console', 'nav:home']].map(([a, i]) => ({ app: a, id: i, ns: xNsId(a!, i!) })), split: ['amberx:file.save', 'console:nav:home', 'nope:x', 'amberx', ':x', 'amberx:', 'file.save'].map((v) => ({ id: v, out: splitNs(v, apps) })), strip: [['amberx:file.save', 'amberx'], ['file.save', 'amberx'], ['console:nav:home', 'amberx']].map(([id, a]) => ({ id, app: a, out: stripNs(id!, a!) })) },
+    merge: Object.entries(mergeCases).map(([name, m]) => { const d = normalizeXLayout({ apps: starters[0]!.data.apps, merge: m }); return { name, merge: d.merge, hidden: guestHidden(d), takes: guestTakes(d), url: guestUrl(d, d.apps[0]!), urlRoute: guestUrl(d, d.apps[2]!, 'molly', '#/build'), userAgent: guestUserAgent(d) }; }),
+    toolbars: { all: visibleToolbars(molly), top: visibleToolbars(molly, 'top'), bottom: visibleToolbars(molly, 'bottom'), everyOn: visibleToolbars({ toolbars: molly.toolbars.map((t) => ({ ...t, visible: true })) }).map((t) => t.slot) },
+    presets: { offered: idePresets(molly, ['ide', 'single', 'two-columns', 'other']), none: idePresets(molly, []), rules: dockRulesOf(molly), rulesClamped: dockRulesOf(normalizeXLayout({ apps: [], ide: { paneLimit: 99 } })) },
+  });
+}
+// Unified chrome (chrome@1, Big Dog build xlayout s2, Nov 3 2026; core/engines/chrome.ts): guests send their chrome as data,
+// the host merges it under namespaces and routes picks back.
+{
+  const amberx: ChromeBundle = { $axf: CHROME_CONTRACT, app: 'amberx', label: 'AmberX', menus: [{ id: 'app', label: 'AmberX', items: [{ id: 'home', label: 'Home', icon: 'home' }, { id: 'sep', label: '', separator: true }, { id: 'notes', label: 'Notes', count: 3, items: [{ id: 'notes.new', label: 'New note' }] }] }], nav: [{ label: 'AmberX', items: [{ id: 'home', label: 'Home', icon: 'home' }, { id: 'notes', label: 'Notes', badge: 3 }] }], active: 'notes', context: [{ target: 'default', items: [{ id: 'copy', label: 'Copy' }] }, { target: 'note', items: [{ id: 'note.delete', label: 'Delete note', icon: 'trash' }] }], toolbars: [{ id: 'main', label: 'Main', items: [{ id: 'record', label: 'Record', icon: 'mic', pressed: true }] }], widgets: [{ id: 'clock', type: 'clock', text: '10:42' }, { id: 'approvals', type: 'counter', label: 'Approvals', count: 2, tone: 'accent' }] };
+  const axhub: ChromeBundle = { $axf: CHROME_CONTRACT, app: 'axhub', label: 'axHub', menus: [{ id: 'hub', label: 'Hub', items: [{ id: 'approvals', label: 'Approvals', count: 2 }] }, { id: 'manage', label: 'Manage', items: [{ id: 'services', label: 'Services' }] }], nav: [{ items: [{ id: 'approvals', label: 'Approvals', badge: 2 }, { id: 'services', label: 'Services', locked: true }] }], active: 'approvals', context: [{ target: 'default', items: [{ id: 'refresh', label: 'Refresh' }] }], toolbars: [], widgets: [{ id: 'clock', type: 'clock', text: '10:42' }, { id: 'hub', type: 'status', text: 'Live', tone: 'success' }] };
+  const console_: ChromeBundle = { $axf: CHROME_CONTRACT, app: 'console', menus: [], nav: [{ label: 'Build', items: [{ id: 'build', label: 'Builds' }] }], context: [], toolbars: [{ id: 'tb', items: [{ id: 'run', label: 'Run', icon: 'play' }, { id: 'stop', label: 'Stop', icon: 'square', locked: true }] }], widgets: [] };
+  const host: ChromeBundle = { $axf: CHROME_CONTRACT, app: 'molly', label: 'Molly', menus: [{ id: 'molly', label: 'Molly', items: [{ id: 'molly.home', label: 'Home' }, { id: 'molly.layout', label: 'Layout…' }] }], nav: [{ items: [{ id: 'home', label: 'Home', icon: 'home' }] }], active: 'home', context: [{ target: 'default', items: [{ id: 'molly.settings', label: 'Settings' }] }], toolbars: [], widgets: [{ id: 'host-clock', type: 'clock', text: '10:42' }] };
+  const rawBundles: unknown[] = [
+    amberx, { ...amberx, app: 'Amber X' }, { $axf: 'chrome@2', app: 'amberx' }, { $axf: CHROME_CONTRACT, app: 'x', menus: 'nope', nav: [{ items: [{ id: 'bad id!', label: 'x' }, { id: 'ok', label: '' }, { id: 'ok2', label: 'Ok', icon: 'Bad Icon', badge: -1, locked: 'yes' }, { id: 'ok2', label: 'Repeat' }] }, { items: [] }, 'x'], active: 'missing', context: [{ target: 'bad target!', items: [{ id: 'a', label: 'A' }] }, { target: 'ok', items: [] }, { target: 'ok2', items: [{ id: 'a', label: 'A', items: [{ id: 'b', label: 'B' }] }] }], toolbars: [{ id: 'tb', items: [{ id: 'noicon', label: 'No icon' }, { id: 'x' }] }, { id: 'tb', items: [{ id: 'dup', label: 'Dup', icon: 'x' }] }], widgets: [{ id: 'w', type: 'ribbon' }, { id: 'c', type: 'clock', text: 'now', tone: 'loud', count: 2.9 }, { id: 'c', type: 'clock' }] },
+    JSON.stringify(axhub), 'not json', null, { $axf: CHROME_CONTRACT, app: 'empty' },
+  ];
+  const merged = mergeChrome(host, [amberx, axhub, console_], { order: ['console', 'amberx', 'axhub'], activeApp: 'axhub' });
+  const noHost = mergeChrome(null, [axhub, amberx]);
+  const flat = mergeChrome(host, [axhub, amberx], { menus: 'flat', widgetsOnce: false });
+  const twice = mergeChrome(null, [amberx, { ...amberx, nav: [] }], { activeApp: 'nope' });
+  write('chrome.json', {
+    contract: CHROME_CONTRACT, limits: CHROME_LIMITS, widgetTypes: WIDGET_TYPES, widgetTones: WIDGET_TONES,
+    empty: emptyChrome('x', 'X'),
+    parse: rawBundles.map((raw) => ({ raw, bundle: parseChromeBundle(raw) })),
+    bundles: { host, amberx, axhub, console: console_ },
+    merged, noHost, flat, twice,
+    picks: chromePicks(merged), active: activeNav(merged), activeNone: activeNav(noHost),
+    route: ['amberx:file.save', 'axhub:nav:home', 'console:tb:run', 'molly.home', 'nope:x', ':x', 'amberx:'].map((id) => ({ id, out: routePick(id, ['amberx', 'axhub', 'console']) })),
+    // every pick of the merged model routes back to the app that sent it (or the host)
+    routed: chromePicks(merged).map((p) => ({ id: p.id, route: routePick(p.id, merged.apps) })),
+    message: [parseEmbedMessage({ $axf: 'embed@1', type: 'chrome', chrome: axhub }), parseEmbedMessage({ $axf: 'embed@1', type: 'chrome', chrome: { app: 'x' } }), parseEmbedMessage({ $axf: 'embed@1', type: 'chrome-request' }), parseEmbedMessage(JSON.stringify({ $axf: 'embed@1', type: 'chrome', chrome: amberx }))],
   });
 }
 // Window engine geometry (windows-terminal s17, Oct 28 2026): the 8 resize handles (hit-testing, cursors), resize maths

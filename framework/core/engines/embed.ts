@@ -19,6 +19,7 @@
  * `userAgentSuffix` / `embedUrl` to mark what it loads; the guest side uses `detectEmbed`.
  */
 import { hideable, hideableTypes } from './hide';
+import { parseChromeBundle, type ChromeBundle } from './chrome';
 
 export interface Embed {
   /** the host app's id, e.g. `patches` */
@@ -178,6 +179,13 @@ const TAKES = new Map<string, EmbedTakeSpec>([
   // it has (`plugins`), and its plugin-management hooks (Plugin Manager, plugin switches, the plugin catalog, Settings →
   // Plugins) stay on screen greyed out with "Plugins are managed in <host>".
   ['plugins', { actions: ['plugin-switches.open', 'plugin-manager.open', 'plugin-manager.install', 'plugin-manager.window'], prefixes: ['plugin-manager.', 'plugin-switches.', 'plugin-catalog.', 'plugins-menu.', 'plugin-update.'], views: ['plugin-manager', 'plugins'], providers: ['console.plugins'], page: false, hides: [], lock: true }],
+  // Molly as one app (xlayout@1 / chrome@1, Brett Nov 2 2026): the host draws ONE navigation menu, context menu and set
+  // of toolbars / banner widgets merged from every app it frames. The app hides that chrome and sends it as data in a
+  // `chrome` message; the host runs a pick back with `run` (the id is the app's own, the host strips its namespace).
+  ['nav-menu', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: ['nav-menu'], lock: false }],
+  ['context-menu', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: ['context-menu'], lock: false }],
+  ['toolbar', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: ['toolbar'], lock: false }],
+  ['widgets', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: [], lock: false }],
 ]);
 
 /** Add (or replace) a function hosts can take over. Same id on every port (the Kotlin twin keeps the same registry). */
@@ -366,7 +374,11 @@ export type EmbedMessage =
   /** host → guest (the host takes `plugins`): the plugins the host has installed and enabled for this app; load only these */
   | { $axf: typeof EMBED_MESSAGE; type: 'plugins-enabled'; plugins: string[] }
   /** host → guest: send your plugin list again (after the host's own list changed or it just loaded) */
-  | { $axf: typeof EMBED_MESSAGE; type: 'plugins-request' };
+  | { $axf: typeof EMBED_MESSAGE; type: 'plugins-request' }
+  /** guest → host (the host takes nav-menu / context-menu / toolbar / widgets): the app's chrome as data (chrome@1, engines/chrome.ts) */
+  | { $axf: typeof EMBED_MESSAGE; type: 'chrome'; chrome: ChromeBundle }
+  /** host → guest: send your chrome now (the host just loaded, or its layout changed) */
+  | { $axf: typeof EMBED_MESSAGE; type: 'chrome-request' };
 
 /**
  * One plugin an app reports to its host (data only: id, name, version, whether the app had it on by itself). A tabable
@@ -418,7 +430,8 @@ export const EMBED_MESSAGE_LIMITS = { title: 120, body: 500, tag: 64, tab: 64, a
 const MENU_ITEM_ID = /^[A-Za-z0-9][A-Za-z0-9._:\/-]{0,159}$/;
 const ICON_ID = /^[a-z0-9][a-z0-9-]{0,39}$/;
 
-/** A menu an app sent, checked and cut to size (limits above; bad entries dropped, never the whole menu). */
+/** A menu an app sent, checked and cut to size (limits above; bad entries dropped, never the whole menu). Shared with chrome@1. */
+export function parseEmbedMenus(raw: unknown): EmbedMenu[] | null { return parseMenus(raw); }
 function parseMenus(raw: unknown): EmbedMenu[] | null {
   if (!Array.isArray(raw)) return null;
   const L = EMBED_MESSAGE_LIMITS;
@@ -502,7 +515,7 @@ export function parseEmbedMessage(raw: unknown): EmbedMessage | null {
     try { m = JSON.parse(raw); } catch { return null; }
     // a menu and a plugin list may be long (both capped by their own limits); every other message stays small
     const t = (m as { type?: unknown } | null)?.type;
-    if (raw.length > EMBED_MESSAGE_LIMITS.raw && t !== 'menu' && t !== 'plugins' && t !== 'plugins-enabled') return null;
+    if (raw.length > EMBED_MESSAGE_LIMITS.raw && t !== 'menu' && t !== 'plugins' && t !== 'plugins-enabled' && t !== 'chrome') return null;
   }
   if (!m || typeof m !== 'object' || Array.isArray(m)) return null;
   const o = m as Record<string, unknown>;
@@ -547,6 +560,11 @@ export function parseEmbedMessage(raw: unknown): EmbedMessage | null {
       return { $axf: EMBED_MESSAGE, type: 'plugins-enabled', plugins: ids };
     }
     case 'plugins-request': return { $axf: EMBED_MESSAGE, type: 'plugins-request' };
+    case 'chrome': {
+      const chrome = parseChromeBundle(o.chrome);
+      return chrome ? { $axf: EMBED_MESSAGE, type: 'chrome', chrome } : null;
+    }
+    case 'chrome-request': return { $axf: EMBED_MESSAGE, type: 'chrome-request' };
     default: return null;
   }
 }

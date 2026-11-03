@@ -16,6 +16,9 @@ import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normali
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { normalizeDockLayout } from './engines/dock';
+import { CHROME_CONTRACT, emptyChrome, type ChromeBundle, type ChromeNavItem, type ChromeToolbarItem } from './engines/chrome';
+/** The embed@1 functions whose chrome a host may take over and draw merged (chrome@1). */
+const CHROME_TAKES: readonly string[] = ['app-menu', 'nav-menu', 'context-menu', 'toolbar', 'widgets'];
 import { normalizePlacement, placementKey, placementRoute, PLACEMENT_TAB_GROUP, type Placement, type UiRef } from './engines/placement';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
 import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
@@ -1766,12 +1769,14 @@ export class AxfRuntime {
       if (m?.type === 'open-tab' && this.embedded?.page === 'settings') this.actions.dispatch(`settings.open:${m.tab}`, { runtime: this });
       if (m?.type === 'open-tab' && this.embedded?.page === 'banners') this.actions.dispatch(`banners.settings:${m.tab}`, { runtime: this });
       if (m?.type === 'menu-request') void this.shareAppMenu({ force: true, refresh: true });
+      if (m?.type === 'chrome-request') void this.shareChrome({ force: true });
       if (m?.type === 'run') this.runSharedMenuItem(m.id);
       if (m?.type === 'plugins-enabled' && this.hostTakes('plugins')) this.receiveHostPlugins(m.plugins);
       if (m?.type === 'plugins-request' && this.reportedPlugins) this.reportPluginsToHost(this.reportedPlugins);
     };
-    // the app itself in a tab shares its menu; a page the host shows alone (its settings page) doesn't
-    if (this.hostTakes('app-menu') && !this.embedded?.page) this.startMenuShare();
+    // the app itself in a tab shares its menu (and, chrome@1, its navigation / context menus / toolbar / widgets when the
+    // host takes them); a page the host shows alone (its settings page) doesn't
+    if (CHROME_TAKES.some((t) => this.hostTakes(t)) && !this.embedded?.page) this.startMenuShare();
     // Android hosts can't post into the page; they call this instead (evaluateJavascript).
     (globalThis as unknown as { AxfEmbedGuest?: { receive: (json: string) => void } }).AxfEmbedGuest = { receive: (json: string) => handle(json) };
     const g = globalThis as unknown as { addEventListener?: (t: string, f: (e: { data: unknown; source: unknown }) => void) => void; parent?: unknown };
@@ -1810,7 +1815,7 @@ export class AxfRuntime {
     const unref = (t: unknown) => (t as { unref?: () => void } | null)?.unref?.();
     const later = (ms: number, refresh = false) => {
       if (this.sharedMenuTimer) clearTimeout(this.sharedMenuTimer);
-      this.sharedMenuTimer = setTimeout(() => { this.sharedMenuTimer = null; void this.shareAppMenu({ refresh }); }, ms);
+      this.sharedMenuTimer = setTimeout(() => { this.sharedMenuTimer = null; void this.shareAppMenu({ refresh }); void this.shareChrome(); }, ms);
       unref(this.sharedMenuTimer);
     };
     unref(setTimeout(() => { later(0, true); this.subscribe(() => later(1500)); }, 600));
@@ -1823,6 +1828,17 @@ export class AxfRuntime {
    */
   async shareAppMenu(opts: { force?: boolean; refresh?: boolean } = {}): Promise<boolean> {
     if (!this.hostTakes('app-menu') || this.embedded?.page) return false;
+    const { menus, run } = await this.buildSharedMenus(opts);
+    const msg: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'menu', menus };
+    const text = JSON.stringify(msg);
+    for (const [k, v] of run) this.sharedMenuRun.set(k, v);
+    if (!opts.force && text === this.sharedMenuText) return false;
+    this.sharedMenuText = text;
+    return this.postToHost(msg);
+  }
+
+  /** The application menu as data (ids `m<menu>.<item>…`), and id → action for the items the host may run back. */
+  private async buildSharedMenus(opts: { refresh?: boolean } = {}): Promise<{ menus: EmbedMenu[]; run: Map<string, string> }> {
     const run = new Map<string, string>();
     const MAX_DEPTH = 4;
     const list = async (provider: string): Promise<CompiledMenuItem[]> => {
@@ -1855,11 +1871,85 @@ export class AxfRuntime {
       const items = (await Promise.all(m.items.map((it, i) => conv(it, `m${mi}.${i}`, 1)))).filter((k): k is EmbedMenuItem => !!k);
       if (items.some((k) => !k.separator)) menus.push({ id: `m${mi}`, label: m.label, items });
     }
-    const msg: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'menu', menus };
+    return { menus, run };
+  }
+
+  /* ---------------- chrome@1: the host draws this app's navigation / context menus / toolbar / widgets ---------------- */
+
+  private sharedChromeText = '';
+
+  /**
+   * Send this app's chrome to the host that took it over (`chrome` message, engines/chrome.ts): the application menu
+   * (when the host takes `app-menu`), the navigation menu (`nav-menu`: ids `nav:<view>`, locked by the access policy),
+   * the context menus (`context-menu`: every target's items, ids `ctx.<target>.<i>…`), the toolbar (`toolbar`: ids
+   * `tb.<group>.<i>`) and nothing else — DATA only, the actions stay here (`runSharedMenuItem`). Unchanged chrome isn't
+   * sent again unless `force`. False when the host takes none of it, or this is a page the host shows alone.
+   */
+  async shareChrome(opts: { force?: boolean; refresh?: boolean } = {}): Promise<boolean> {
+    if (this.embedded?.page || !CHROME_TAKES.some((t) => this.hostTakes(t))) return false;
+    const run = new Map<string, string>();
+    const app = this.manifest.app.id.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 32) || 'app';
+    const bundle: ChromeBundle = { ...emptyChrome(app, this.manifest.app.name), $axf: CHROME_CONTRACT };
+    if (this.hostTakes('app-menu')) { const m = await this.buildSharedMenus(opts); bundle.menus = m.menus; for (const [k, v] of m.run) run.set(k, v); }
+    if (this.hostTakes('nav-menu')) {
+      const nav = this.assetOrNull('nav-menu')?.data;
+      for (const sec of nav?.sections ?? []) {
+        const items: ChromeNavItem[] = [];
+        for (const it of sec.items) {
+          const gate = this.gate(it.requires);
+          if (gate === 'hide') continue;
+          const id = `nav:${it.view}`;
+          const out: ChromeNavItem = { id, label: it.label };
+          if (it.icon) out.icon = it.icon;
+          const n = it.badge ? this.badge(it.badge) : 0; if (n > 0) out.badge = n;
+          if (gate === 'disable') out.locked = true; else run.set(id, id);
+          items.push(out);
+        }
+        if (items.length) bundle.nav.push(sec.label ? { label: sec.label, items } : { items });
+      }
+      bundle.active = `nav:${this.state.view}`;
+    }
+    if (this.hostTakes('context-menu')) {
+      const ctx = this.assetOrNull('context-menu')?.data;
+      const conv = (items: readonly MenuItem[], prefix: string, depth: number): EmbedMenuItem[] => items.flatMap((it, i) => {
+        const id = `${prefix}.${i}`;
+        if (it.separator) return [{ id, label: '', separator: true } as EmbedMenuItem];
+        const gate = this.gate(it.requires);
+        if (gate === 'hide' || !it.label) return [];
+        const out: EmbedMenuItem = { id, label: it.label };
+        if (it.icon) out.icon = it.icon;
+        if (gate === 'disable') out.locked = true;
+        if (it.items?.length && depth < 4) { const kids = conv(it.items, id, depth + 1); if (kids.some((k) => !k.separator)) out.items = kids; }
+        if (!out.items) { if (!it.action) return []; if (!out.locked) run.set(id, it.action); }
+        return [out];
+      });
+      for (const [target, items] of Object.entries(ctx?.targets ?? {})) {
+        const list = conv(items, `ctx.${target}`, 1);
+        if (list.some((k) => !k.separator)) bundle.context.push({ target, items: list });
+      }
+    }
+    if (this.hostTakes('toolbar')) {
+      const tb = this.assetOrNull('toolbar')?.data;
+      for (const [gi, g] of (tb?.groups ?? []).entries()) {
+        const items: ChromeToolbarItem[] = [];
+        for (const [i, it] of g.items.entries()) {
+          const gate = this.gate(it.requires);
+          if (gate === 'hide') continue;
+          const id = `tb.${g.id || gi}.${i}`;
+          const out: ChromeToolbarItem = { id, label: it.label, icon: it.icon || 'circle' };
+          const n = it.badge ? this.badge(it.badge) : 0; if (n > 0) out.badge = n;
+          if (it.checked && resolveChecked(it.checked, this.appMenuEnv()) === true) out.pressed = true;
+          if (gate === 'disable') out.locked = true; else run.set(id, it.action);
+          items.push(out);
+        }
+        if (items.length) bundle.toolbars.push(g.label ? { id: g.id || `g${gi}`, label: g.label, items } : { id: g.id || `g${gi}`, items });
+      }
+    }
+    const msg: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'chrome', chrome: bundle };
     const text = JSON.stringify(msg);
-    this.sharedMenuRun = run;
-    if (!opts.force && text === this.sharedMenuText) return false;
-    this.sharedMenuText = text;
+    for (const [k, v] of run) this.sharedMenuRun.set(k, v);
+    if (!opts.force && text === this.sharedChromeText) return false;
+    this.sharedChromeText = text;
     return this.postToHost(msg);
   }
 

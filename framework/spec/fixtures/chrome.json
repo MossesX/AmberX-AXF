@@ -1,0 +1,2109 @@
+{
+  "contract": "chrome@1",
+  "limits": {
+    "apps": 12,
+    "label": 80,
+    "id": 160,
+    "icon": 40,
+    "navSections": 12,
+    "navItems": 120,
+    "context": 40,
+    "contextItems": 400,
+    "toolbars": 6,
+    "toolbarItems": 60,
+    "widgets": 12,
+    "text": 120,
+    "raw": 196608
+  },
+  "widgetTypes": [
+    "clock",
+    "counter",
+    "status",
+    "badge",
+    "avatar",
+    "progress",
+    "search-bar",
+    "label",
+    "link",
+    "theme-switch"
+  ],
+  "widgetTones": [
+    "neutral",
+    "accent",
+    "success",
+    "warning",
+    "danger"
+  ],
+  "empty": {
+    "$axf": "chrome@1",
+    "app": "x",
+    "label": "X",
+    "menus": [],
+    "nav": [],
+    "context": [],
+    "toolbars": [],
+    "widgets": []
+  },
+  "parse": [
+    {
+      "raw": {
+        "$axf": "chrome@1",
+        "app": "amberx",
+        "label": "AmberX",
+        "menus": [
+          {
+            "id": "app",
+            "label": "AmberX",
+            "items": [
+              {
+                "id": "home",
+                "label": "Home",
+                "icon": "home"
+              },
+              {
+                "id": "sep",
+                "label": "",
+                "separator": true
+              },
+              {
+                "id": "notes",
+                "label": "Notes",
+                "count": 3,
+                "items": [
+                  {
+                    "id": "notes.new",
+                    "label": "New note"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "nav": [
+          {
+            "label": "AmberX",
+            "items": [
+              {
+                "id": "home",
+                "label": "Home",
+                "icon": "home"
+              },
+              {
+                "id": "notes",
+                "label": "Notes",
+                "badge": 3
+              }
+            ]
+          }
+        ],
+        "active": "notes",
+        "context": [
+          {
+            "target": "default",
+            "items": [
+              {
+                "id": "copy",
+                "label": "Copy"
+              }
+            ]
+          },
+          {
+            "target": "note",
+            "items": [
+              {
+                "id": "note.delete",
+                "label": "Delete note",
+                "icon": "trash"
+              }
+            ]
+          }
+        ],
+        "toolbars": [
+          {
+            "id": "main",
+            "label": "Main",
+            "items": [
+              {
+                "id": "record",
+                "label": "Record",
+                "icon": "mic",
+                "pressed": true
+              }
+            ]
+          }
+        ],
+        "widgets": [
+          {
+            "id": "clock",
+            "type": "clock",
+            "text": "10:42"
+          },
+          {
+            "id": "approvals",
+            "type": "counter",
+            "label": "Approvals",
+            "count": 2,
+            "tone": "accent"
+          }
+        ]
+      },
+      "bundle": {
+        "$axf": "chrome@1",
+        "app": "amberx",
+        "menus": [
+          {
+            "id": "app",
+            "label": "AmberX",
+            "items": [
+              {
+                "id": "home",
+                "label": "Home",
+                "icon": "home"
+              },
+              {
+                "id": "sep",
+                "label": "",
+                "separator": true
+              },
+              {
+                "id": "notes",
+                "label": "Notes",
+                "count": 3,
+                "items": [
+                  {
+                    "id": "notes.new",
+                    "label": "New note"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "nav": [
+          {
+            "items": [
+              {
+                "id": "home",
+                "label": "Home",
+                "icon": "home"
+              },
+              {
+                "id": "notes",
+                "label": "Notes",
+                "badge": 3
+              }
+            ],
+            "label": "AmberX"
+          }
+        ],
+        "context": [
+          {
+            "target": "default",
+            "items": [
+              {
+                "id": "copy",
+                "label": "Copy"
+              }
+            ]
+          },
+          {
+            "target": "note",
+            "items": [
+              {
+                "id": "note.delete",
+                "label": "Delete note",
+                "icon": "trash"
+              }
+            ]
+          }
+        ],
+        "toolbars": [
+          {
+            "id": "main",
+            "items": [
+              {
+                "id": "record",
+                "label": "Record",
+                "icon": "mic",
+                "pressed": true
+              }
+            ],
+            "label": "Main"
+          }
+        ],
+        "widgets": [
+          {
+            "id": "clock",
+            "type": "clock",
+            "text": "10:42"
+          },
+          {
+            "id": "approvals",
+            "type": "counter",
+            "label": "Approvals",
+            "tone": "accent",
+            "count": 2
+          }
+        ],
+        "label": "AmberX",
+        "active": "notes"
+      }
+    },
+    {
+      "raw": {
+        "$axf": "chrome@1",
+        "app": "Amber X",
+        "label": "AmberX",
+        "menus": [
+          {
+            "id": "app",
+            "label": "AmberX",
+            "items": [
+              {
+                "id": "home",
+                "label": "Home",
+                "icon": "home"
+              },
+              {
+                "id": "sep",
+                "label": "",
+                "separator": true
+              },
+              {
+                "id": "notes",
+                "label": "Notes",
+                "count": 3,
+                "items": [
+                  {
+                    "id": "notes.new",
+                    "label": "New note"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "nav": [
+          {
+            "label": "AmberX",
+            "items": [
+              {
+                "id": "home",
+                "label": "Home",
+                "icon": "home"
+              },
+              {
+                "id": "notes",
+                "label": "Notes",
+                "badge": 3
+              }
+            ]
+          }
+        ],
+        "active": "notes",
+        "context": [
+          {
+            "target": "default",
+            "items": [
+              {
+                "id": "copy",
+                "label": "Copy"
+              }
+            ]
+          },
+          {
+            "target": "note",
+            "items": [
+              {
+                "id": "note.delete",
+                "label": "Delete note",
+                "icon": "trash"
+              }
+            ]
+          }
+        ],
+        "toolbars": [
+          {
+            "id": "main",
+            "label": "Main",
+            "items": [
+              {
+                "id": "record",
+                "label": "Record",
+                "icon": "mic",
+                "pressed": true
+              }
+            ]
+          }
+        ],
+        "widgets": [
+          {
+            "id": "clock",
+            "type": "clock",
+            "text": "10:42"
+          },
+          {
+            "id": "approvals",
+            "type": "counter",
+            "label": "Approvals",
+            "count": 2,
+            "tone": "accent"
+          }
+        ]
+      },
+      "bundle": null
+    },
+    {
+      "raw": {
+        "$axf": "chrome@2",
+        "app": "amberx"
+      },
+      "bundle": null
+    },
+    {
+      "raw": {
+        "$axf": "chrome@1",
+        "app": "x",
+        "menus": "nope",
+        "nav": [
+          {
+            "items": [
+              {
+                "id": "bad id!",
+                "label": "x"
+              },
+              {
+                "id": "ok",
+                "label": ""
+              },
+              {
+                "id": "ok2",
+                "label": "Ok",
+                "icon": "Bad Icon",
+                "badge": -1,
+                "locked": "yes"
+              },
+              {
+                "id": "ok2",
+                "label": "Repeat"
+              }
+            ]
+          },
+          {
+            "items": []
+          },
+          "x"
+        ],
+        "active": "missing",
+        "context": [
+          {
+            "target": "bad target!",
+            "items": [
+              {
+                "id": "a",
+                "label": "A"
+              }
+            ]
+          },
+          {
+            "target": "ok",
+            "items": []
+          },
+          {
+            "target": "ok2",
+            "items": [
+              {
+                "id": "a",
+                "label": "A",
+                "items": [
+                  {
+                    "id": "b",
+                    "label": "B"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "toolbars": [
+          {
+            "id": "tb",
+            "items": [
+              {
+                "id": "noicon",
+                "label": "No icon"
+              },
+              {
+                "id": "x"
+              }
+            ]
+          },
+          {
+            "id": "tb",
+            "items": [
+              {
+                "id": "dup",
+                "label": "Dup",
+                "icon": "x"
+              }
+            ]
+          }
+        ],
+        "widgets": [
+          {
+            "id": "w",
+            "type": "ribbon"
+          },
+          {
+            "id": "c",
+            "type": "clock",
+            "text": "now",
+            "tone": "loud",
+            "count": 2.9
+          },
+          {
+            "id": "c",
+            "type": "clock"
+          }
+        ]
+      },
+      "bundle": {
+        "$axf": "chrome@1",
+        "app": "x",
+        "menus": [],
+        "nav": [
+          {
+            "items": [
+              {
+                "id": "ok2",
+                "label": "Ok"
+              }
+            ]
+          }
+        ],
+        "context": [
+          {
+            "target": "ok2",
+            "items": [
+              {
+                "id": "a",
+                "label": "A",
+                "items": [
+                  {
+                    "id": "b",
+                    "label": "B"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "toolbars": [
+          {
+            "id": "tb",
+            "items": [
+              {
+                "id": "noicon",
+                "label": "No icon",
+                "icon": "circle"
+              }
+            ]
+          }
+        ],
+        "widgets": [
+          {
+            "id": "c",
+            "type": "clock",
+            "text": "now",
+            "count": 2
+          }
+        ]
+      }
+    },
+    {
+      "raw": "{\"$axf\":\"chrome@1\",\"app\":\"axhub\",\"label\":\"axHub\",\"menus\":[{\"id\":\"hub\",\"label\":\"Hub\",\"items\":[{\"id\":\"approvals\",\"label\":\"Approvals\",\"count\":2}]},{\"id\":\"manage\",\"label\":\"Manage\",\"items\":[{\"id\":\"services\",\"label\":\"Services\"}]}],\"nav\":[{\"items\":[{\"id\":\"approvals\",\"label\":\"Approvals\",\"badge\":2},{\"id\":\"services\",\"label\":\"Services\",\"locked\":true}]}],\"active\":\"approvals\",\"context\":[{\"target\":\"default\",\"items\":[{\"id\":\"refresh\",\"label\":\"Refresh\"}]}],\"toolbars\":[],\"widgets\":[{\"id\":\"clock\",\"type\":\"clock\",\"text\":\"10:42\"},{\"id\":\"hub\",\"type\":\"status\",\"text\":\"Live\",\"tone\":\"success\"}]}",
+      "bundle": {
+        "$axf": "chrome@1",
+        "app": "axhub",
+        "menus": [
+          {
+            "id": "hub",
+            "label": "Hub",
+            "items": [
+              {
+                "id": "approvals",
+                "label": "Approvals",
+                "count": 2
+              }
+            ]
+          },
+          {
+            "id": "manage",
+            "label": "Manage",
+            "items": [
+              {
+                "id": "services",
+                "label": "Services"
+              }
+            ]
+          }
+        ],
+        "nav": [
+          {
+            "items": [
+              {
+                "id": "approvals",
+                "label": "Approvals",
+                "badge": 2
+              },
+              {
+                "id": "services",
+                "label": "Services",
+                "locked": true
+              }
+            ]
+          }
+        ],
+        "context": [
+          {
+            "target": "default",
+            "items": [
+              {
+                "id": "refresh",
+                "label": "Refresh"
+              }
+            ]
+          }
+        ],
+        "toolbars": [],
+        "widgets": [
+          {
+            "id": "clock",
+            "type": "clock",
+            "text": "10:42"
+          },
+          {
+            "id": "hub",
+            "type": "status",
+            "text": "Live",
+            "tone": "success"
+          }
+        ],
+        "label": "axHub",
+        "active": "approvals"
+      }
+    },
+    {
+      "raw": "not json",
+      "bundle": null
+    },
+    {
+      "raw": null,
+      "bundle": null
+    },
+    {
+      "raw": {
+        "$axf": "chrome@1",
+        "app": "empty"
+      },
+      "bundle": {
+        "$axf": "chrome@1",
+        "app": "empty",
+        "menus": [],
+        "nav": [],
+        "context": [],
+        "toolbars": [],
+        "widgets": []
+      }
+    }
+  ],
+  "bundles": {
+    "host": {
+      "$axf": "chrome@1",
+      "app": "molly",
+      "label": "Molly",
+      "menus": [
+        {
+          "id": "molly",
+          "label": "Molly",
+          "items": [
+            {
+              "id": "molly.home",
+              "label": "Home"
+            },
+            {
+              "id": "molly.layout",
+              "label": "Layout…"
+            }
+          ]
+        }
+      ],
+      "nav": [
+        {
+          "items": [
+            {
+              "id": "home",
+              "label": "Home",
+              "icon": "home"
+            }
+          ]
+        }
+      ],
+      "active": "home",
+      "context": [
+        {
+          "target": "default",
+          "items": [
+            {
+              "id": "molly.settings",
+              "label": "Settings"
+            }
+          ]
+        }
+      ],
+      "toolbars": [],
+      "widgets": [
+        {
+          "id": "host-clock",
+          "type": "clock",
+          "text": "10:42"
+        }
+      ]
+    },
+    "amberx": {
+      "$axf": "chrome@1",
+      "app": "amberx",
+      "label": "AmberX",
+      "menus": [
+        {
+          "id": "app",
+          "label": "AmberX",
+          "items": [
+            {
+              "id": "home",
+              "label": "Home",
+              "icon": "home"
+            },
+            {
+              "id": "sep",
+              "label": "",
+              "separator": true
+            },
+            {
+              "id": "notes",
+              "label": "Notes",
+              "count": 3,
+              "items": [
+                {
+                  "id": "notes.new",
+                  "label": "New note"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "nav": [
+        {
+          "label": "AmberX",
+          "items": [
+            {
+              "id": "home",
+              "label": "Home",
+              "icon": "home"
+            },
+            {
+              "id": "notes",
+              "label": "Notes",
+              "badge": 3
+            }
+          ]
+        }
+      ],
+      "active": "notes",
+      "context": [
+        {
+          "target": "default",
+          "items": [
+            {
+              "id": "copy",
+              "label": "Copy"
+            }
+          ]
+        },
+        {
+          "target": "note",
+          "items": [
+            {
+              "id": "note.delete",
+              "label": "Delete note",
+              "icon": "trash"
+            }
+          ]
+        }
+      ],
+      "toolbars": [
+        {
+          "id": "main",
+          "label": "Main",
+          "items": [
+            {
+              "id": "record",
+              "label": "Record",
+              "icon": "mic",
+              "pressed": true
+            }
+          ]
+        }
+      ],
+      "widgets": [
+        {
+          "id": "clock",
+          "type": "clock",
+          "text": "10:42"
+        },
+        {
+          "id": "approvals",
+          "type": "counter",
+          "label": "Approvals",
+          "count": 2,
+          "tone": "accent"
+        }
+      ]
+    },
+    "axhub": {
+      "$axf": "chrome@1",
+      "app": "axhub",
+      "label": "axHub",
+      "menus": [
+        {
+          "id": "hub",
+          "label": "Hub",
+          "items": [
+            {
+              "id": "approvals",
+              "label": "Approvals",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "id": "manage",
+          "label": "Manage",
+          "items": [
+            {
+              "id": "services",
+              "label": "Services"
+            }
+          ]
+        }
+      ],
+      "nav": [
+        {
+          "items": [
+            {
+              "id": "approvals",
+              "label": "Approvals",
+              "badge": 2
+            },
+            {
+              "id": "services",
+              "label": "Services",
+              "locked": true
+            }
+          ]
+        }
+      ],
+      "active": "approvals",
+      "context": [
+        {
+          "target": "default",
+          "items": [
+            {
+              "id": "refresh",
+              "label": "Refresh"
+            }
+          ]
+        }
+      ],
+      "toolbars": [],
+      "widgets": [
+        {
+          "id": "clock",
+          "type": "clock",
+          "text": "10:42"
+        },
+        {
+          "id": "hub",
+          "type": "status",
+          "text": "Live",
+          "tone": "success"
+        }
+      ]
+    },
+    "console": {
+      "$axf": "chrome@1",
+      "app": "console",
+      "menus": [],
+      "nav": [
+        {
+          "label": "Build",
+          "items": [
+            {
+              "id": "build",
+              "label": "Builds"
+            }
+          ]
+        }
+      ],
+      "context": [],
+      "toolbars": [
+        {
+          "id": "tb",
+          "items": [
+            {
+              "id": "run",
+              "label": "Run",
+              "icon": "play"
+            },
+            {
+              "id": "stop",
+              "label": "Stop",
+              "icon": "square",
+              "locked": true
+            }
+          ]
+        }
+      ],
+      "widgets": []
+    }
+  },
+  "merged": {
+    "menus": [
+      {
+        "id": "molly",
+        "label": "Molly",
+        "app": null,
+        "items": [
+          {
+            "id": "molly.home",
+            "label": "Home",
+            "app": null
+          },
+          {
+            "id": "molly.layout",
+            "label": "Layout…",
+            "app": null
+          }
+        ]
+      },
+      {
+        "id": "amberx:app",
+        "label": "AmberX",
+        "app": "amberx",
+        "items": [
+          {
+            "id": "amberx:home",
+            "label": "Home",
+            "icon": "home",
+            "app": "amberx"
+          },
+          {
+            "id": "amberx:sep",
+            "label": "",
+            "separator": true,
+            "app": "amberx"
+          },
+          {
+            "id": "amberx:notes",
+            "label": "Notes",
+            "count": 3,
+            "app": "amberx",
+            "items": [
+              {
+                "id": "amberx:notes.new",
+                "label": "New note",
+                "app": "amberx"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "axhub:menu",
+        "label": "axHub",
+        "app": "axhub",
+        "items": [
+          {
+            "id": "axhub:hub",
+            "label": "Hub",
+            "app": "axhub",
+            "items": [
+              {
+                "id": "axhub:approvals",
+                "label": "Approvals",
+                "count": 2,
+                "app": "axhub"
+              }
+            ]
+          },
+          {
+            "id": "axhub:manage",
+            "label": "Manage",
+            "app": "axhub",
+            "items": [
+              {
+                "id": "axhub:services",
+                "label": "Services",
+                "app": "axhub"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "nav": [
+      {
+        "id": "host-0",
+        "app": null,
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "icon": "home",
+            "app": null,
+            "active": false
+          }
+        ]
+      },
+      {
+        "id": "axhub:nav",
+        "label": "axHub",
+        "app": "axhub",
+        "items": [
+          {
+            "id": "axhub:approvals",
+            "label": "Approvals",
+            "badge": 2,
+            "app": "axhub",
+            "active": true
+          },
+          {
+            "id": "axhub:services",
+            "label": "Services",
+            "locked": true,
+            "app": "axhub",
+            "active": false
+          }
+        ]
+      },
+      {
+        "id": "console:nav",
+        "label": "console",
+        "app": "console",
+        "items": [
+          {
+            "id": "console:build",
+            "label": "Builds",
+            "app": "console",
+            "active": false
+          }
+        ]
+      },
+      {
+        "id": "amberx:nav",
+        "label": "AmberX",
+        "app": "amberx",
+        "items": [
+          {
+            "id": "amberx:home",
+            "label": "Home",
+            "icon": "home",
+            "app": "amberx",
+            "active": false
+          },
+          {
+            "id": "amberx:notes",
+            "label": "Notes",
+            "badge": 3,
+            "app": "amberx",
+            "active": false
+          }
+        ]
+      }
+    ],
+    "context": {
+      "default": [
+        {
+          "id": "molly.settings",
+          "label": "Settings",
+          "app": null
+        },
+        {
+          "id": "amberx:sep-default",
+          "label": "",
+          "separator": true,
+          "app": "amberx"
+        },
+        {
+          "id": "amberx:copy",
+          "label": "Copy",
+          "app": "amberx"
+        },
+        {
+          "id": "axhub:sep-default",
+          "label": "",
+          "separator": true,
+          "app": "axhub"
+        },
+        {
+          "id": "axhub:refresh",
+          "label": "Refresh",
+          "app": "axhub"
+        }
+      ],
+      "note": [
+        {
+          "id": "amberx:note.delete",
+          "label": "Delete note",
+          "icon": "trash",
+          "app": "amberx"
+        }
+      ]
+    },
+    "toolbars": [
+      {
+        "id": "console:tb",
+        "label": "console",
+        "app": "console",
+        "items": [
+          {
+            "id": "console:run",
+            "label": "Run",
+            "icon": "play",
+            "app": "console"
+          },
+          {
+            "id": "console:stop",
+            "label": "Stop",
+            "icon": "square",
+            "locked": true,
+            "app": "console"
+          }
+        ]
+      },
+      {
+        "id": "amberx:main",
+        "label": "AmberX · Main",
+        "app": "amberx",
+        "items": [
+          {
+            "id": "amberx:record",
+            "label": "Record",
+            "icon": "mic",
+            "pressed": true,
+            "app": "amberx"
+          }
+        ]
+      }
+    ],
+    "widgets": [
+      {
+        "id": "host-clock",
+        "type": "clock",
+        "text": "10:42",
+        "app": null
+      },
+      {
+        "id": "amberx:approvals",
+        "type": "counter",
+        "label": "Approvals",
+        "count": 2,
+        "tone": "accent",
+        "app": "amberx"
+      },
+      {
+        "id": "axhub:hub",
+        "type": "status",
+        "text": "Live",
+        "tone": "success",
+        "app": "axhub"
+      }
+    ],
+    "notes": [
+      "amberx: clock widget \"clock\" left out, the host one is shown",
+      "axhub: clock widget \"clock\" left out, the host one is shown"
+    ],
+    "apps": [
+      "console",
+      "amberx",
+      "axhub"
+    ]
+  },
+  "noHost": {
+    "menus": [
+      {
+        "id": "axhub:menu",
+        "label": "axHub",
+        "app": "axhub",
+        "items": [
+          {
+            "id": "axhub:hub",
+            "label": "Hub",
+            "app": "axhub",
+            "items": [
+              {
+                "id": "axhub:approvals",
+                "label": "Approvals",
+                "count": 2,
+                "app": "axhub"
+              }
+            ]
+          },
+          {
+            "id": "axhub:manage",
+            "label": "Manage",
+            "app": "axhub",
+            "items": [
+              {
+                "id": "axhub:services",
+                "label": "Services",
+                "app": "axhub"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "amberx:app",
+        "label": "AmberX",
+        "app": "amberx",
+        "items": [
+          {
+            "id": "amberx:home",
+            "label": "Home",
+            "icon": "home",
+            "app": "amberx"
+          },
+          {
+            "id": "amberx:sep",
+            "label": "",
+            "separator": true,
+            "app": "amberx"
+          },
+          {
+            "id": "amberx:notes",
+            "label": "Notes",
+            "count": 3,
+            "app": "amberx",
+            "items": [
+              {
+                "id": "amberx:notes.new",
+                "label": "New note",
+                "app": "amberx"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "nav": [
+      {
+        "id": "axhub:nav",
+        "label": "axHub",
+        "app": "axhub",
+        "items": [
+          {
+            "id": "axhub:approvals",
+            "label": "Approvals",
+            "badge": 2,
+            "app": "axhub",
+            "active": false
+          },
+          {
+            "id": "axhub:services",
+            "label": "Services",
+            "locked": true,
+            "app": "axhub",
+            "active": false
+          }
+        ]
+      },
+      {
+        "id": "amberx:nav",
+        "label": "AmberX",
+        "app": "amberx",
+        "items": [
+          {
+            "id": "amberx:home",
+            "label": "Home",
+            "icon": "home",
+            "app": "amberx",
+            "active": false
+          },
+          {
+            "id": "amberx:notes",
+            "label": "Notes",
+            "badge": 3,
+            "app": "amberx",
+            "active": false
+          }
+        ]
+      }
+    ],
+    "context": {
+      "default": [
+        {
+          "id": "axhub:refresh",
+          "label": "Refresh",
+          "app": "axhub"
+        },
+        {
+          "id": "amberx:sep-default",
+          "label": "",
+          "separator": true,
+          "app": "amberx"
+        },
+        {
+          "id": "amberx:copy",
+          "label": "Copy",
+          "app": "amberx"
+        }
+      ],
+      "note": [
+        {
+          "id": "amberx:note.delete",
+          "label": "Delete note",
+          "icon": "trash",
+          "app": "amberx"
+        }
+      ]
+    },
+    "toolbars": [
+      {
+        "id": "amberx:main",
+        "label": "AmberX · Main",
+        "app": "amberx",
+        "items": [
+          {
+            "id": "amberx:record",
+            "label": "Record",
+            "icon": "mic",
+            "pressed": true,
+            "app": "amberx"
+          }
+        ]
+      }
+    ],
+    "widgets": [
+      {
+        "id": "axhub:clock",
+        "type": "clock",
+        "text": "10:42",
+        "app": "axhub"
+      },
+      {
+        "id": "axhub:hub",
+        "type": "status",
+        "text": "Live",
+        "tone": "success",
+        "app": "axhub"
+      },
+      {
+        "id": "amberx:approvals",
+        "type": "counter",
+        "label": "Approvals",
+        "count": 2,
+        "tone": "accent",
+        "app": "amberx"
+      }
+    ],
+    "notes": [
+      "amberx: clock widget \"clock\" left out, the axhub one is shown"
+    ],
+    "apps": [
+      "axhub",
+      "amberx"
+    ]
+  },
+  "flat": {
+    "menus": [
+      {
+        "id": "molly",
+        "label": "Molly",
+        "app": null,
+        "items": [
+          {
+            "id": "molly.home",
+            "label": "Home",
+            "app": null
+          },
+          {
+            "id": "molly.layout",
+            "label": "Layout…",
+            "app": null
+          }
+        ]
+      },
+      {
+        "id": "axhub:hub",
+        "label": "axHub · Hub",
+        "app": "axhub",
+        "items": [
+          {
+            "id": "axhub:approvals",
+            "label": "Approvals",
+            "count": 2,
+            "app": "axhub"
+          }
+        ]
+      },
+      {
+        "id": "axhub:manage",
+        "label": "axHub · Manage",
+        "app": "axhub",
+        "items": [
+          {
+            "id": "axhub:services",
+            "label": "Services",
+            "app": "axhub"
+          }
+        ]
+      },
+      {
+        "id": "amberx:app",
+        "label": "AmberX",
+        "app": "amberx",
+        "items": [
+          {
+            "id": "amberx:home",
+            "label": "Home",
+            "icon": "home",
+            "app": "amberx"
+          },
+          {
+            "id": "amberx:sep",
+            "label": "",
+            "separator": true,
+            "app": "amberx"
+          },
+          {
+            "id": "amberx:notes",
+            "label": "Notes",
+            "count": 3,
+            "app": "amberx",
+            "items": [
+              {
+                "id": "amberx:notes.new",
+                "label": "New note",
+                "app": "amberx"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "nav": [
+      {
+        "id": "host-0",
+        "app": null,
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "icon": "home",
+            "app": null,
+            "active": true
+          }
+        ]
+      },
+      {
+        "id": "axhub:nav",
+        "label": "axHub",
+        "app": "axhub",
+        "items": [
+          {
+            "id": "axhub:approvals",
+            "label": "Approvals",
+            "badge": 2,
+            "app": "axhub",
+            "active": false
+          },
+          {
+            "id": "axhub:services",
+            "label": "Services",
+            "locked": true,
+            "app": "axhub",
+            "active": false
+          }
+        ]
+      },
+      {
+        "id": "amberx:nav",
+        "label": "AmberX",
+        "app": "amberx",
+        "items": [
+          {
+            "id": "amberx:home",
+            "label": "Home",
+            "icon": "home",
+            "app": "amberx",
+            "active": false
+          },
+          {
+            "id": "amberx:notes",
+            "label": "Notes",
+            "badge": 3,
+            "app": "amberx",
+            "active": false
+          }
+        ]
+      }
+    ],
+    "context": {
+      "default": [
+        {
+          "id": "molly.settings",
+          "label": "Settings",
+          "app": null
+        },
+        {
+          "id": "axhub:sep-default",
+          "label": "",
+          "separator": true,
+          "app": "axhub"
+        },
+        {
+          "id": "axhub:refresh",
+          "label": "Refresh",
+          "app": "axhub"
+        },
+        {
+          "id": "amberx:sep-default",
+          "label": "",
+          "separator": true,
+          "app": "amberx"
+        },
+        {
+          "id": "amberx:copy",
+          "label": "Copy",
+          "app": "amberx"
+        }
+      ],
+      "note": [
+        {
+          "id": "amberx:note.delete",
+          "label": "Delete note",
+          "icon": "trash",
+          "app": "amberx"
+        }
+      ]
+    },
+    "toolbars": [
+      {
+        "id": "amberx:main",
+        "label": "AmberX · Main",
+        "app": "amberx",
+        "items": [
+          {
+            "id": "amberx:record",
+            "label": "Record",
+            "icon": "mic",
+            "pressed": true,
+            "app": "amberx"
+          }
+        ]
+      }
+    ],
+    "widgets": [
+      {
+        "id": "host-clock",
+        "type": "clock",
+        "text": "10:42",
+        "app": null
+      },
+      {
+        "id": "axhub:clock",
+        "type": "clock",
+        "text": "10:42",
+        "app": "axhub"
+      },
+      {
+        "id": "axhub:hub",
+        "type": "status",
+        "text": "Live",
+        "tone": "success",
+        "app": "axhub"
+      },
+      {
+        "id": "amberx:clock",
+        "type": "clock",
+        "text": "10:42",
+        "app": "amberx"
+      },
+      {
+        "id": "amberx:approvals",
+        "type": "counter",
+        "label": "Approvals",
+        "count": 2,
+        "tone": "accent",
+        "app": "amberx"
+      }
+    ],
+    "notes": [],
+    "apps": [
+      "axhub",
+      "amberx"
+    ]
+  },
+  "twice": {
+    "menus": [
+      {
+        "id": "amberx:app",
+        "label": "AmberX",
+        "app": "amberx",
+        "items": [
+          {
+            "id": "amberx:home",
+            "label": "Home",
+            "icon": "home",
+            "app": "amberx"
+          },
+          {
+            "id": "amberx:sep",
+            "label": "",
+            "separator": true,
+            "app": "amberx"
+          },
+          {
+            "id": "amberx:notes",
+            "label": "Notes",
+            "count": 3,
+            "app": "amberx",
+            "items": [
+              {
+                "id": "amberx:notes.new",
+                "label": "New note",
+                "app": "amberx"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "nav": [],
+    "context": {
+      "default": [
+        {
+          "id": "amberx:copy",
+          "label": "Copy",
+          "app": "amberx"
+        }
+      ],
+      "note": [
+        {
+          "id": "amberx:note.delete",
+          "label": "Delete note",
+          "icon": "trash",
+          "app": "amberx"
+        }
+      ]
+    },
+    "toolbars": [
+      {
+        "id": "amberx:main",
+        "label": "AmberX · Main",
+        "app": "amberx",
+        "items": [
+          {
+            "id": "amberx:record",
+            "label": "Record",
+            "icon": "mic",
+            "pressed": true,
+            "app": "amberx"
+          }
+        ]
+      }
+    ],
+    "widgets": [
+      {
+        "id": "amberx:clock",
+        "type": "clock",
+        "text": "10:42",
+        "app": "amberx"
+      },
+      {
+        "id": "amberx:approvals",
+        "type": "counter",
+        "label": "Approvals",
+        "count": 2,
+        "tone": "accent",
+        "app": "amberx"
+      }
+    ],
+    "notes": [
+      "amberx: sent its chrome again; the newer one is used"
+    ],
+    "apps": [
+      "amberx"
+    ]
+  },
+  "picks": [
+    {
+      "id": "molly.home",
+      "app": null
+    },
+    {
+      "id": "molly.layout",
+      "app": null
+    },
+    {
+      "id": "amberx:home",
+      "app": "amberx"
+    },
+    {
+      "id": "amberx:notes.new",
+      "app": "amberx"
+    },
+    {
+      "id": "axhub:approvals",
+      "app": "axhub"
+    },
+    {
+      "id": "axhub:services",
+      "app": "axhub"
+    },
+    {
+      "id": "home",
+      "app": null
+    },
+    {
+      "id": "axhub:approvals",
+      "app": "axhub"
+    },
+    {
+      "id": "axhub:services",
+      "app": "axhub"
+    },
+    {
+      "id": "console:build",
+      "app": "console"
+    },
+    {
+      "id": "amberx:home",
+      "app": "amberx"
+    },
+    {
+      "id": "amberx:notes",
+      "app": "amberx"
+    },
+    {
+      "id": "molly.settings",
+      "app": null
+    },
+    {
+      "id": "amberx:copy",
+      "app": "amberx"
+    },
+    {
+      "id": "axhub:refresh",
+      "app": "axhub"
+    },
+    {
+      "id": "amberx:note.delete",
+      "app": "amberx"
+    },
+    {
+      "id": "console:run",
+      "app": "console"
+    },
+    {
+      "id": "console:stop",
+      "app": "console"
+    },
+    {
+      "id": "amberx:record",
+      "app": "amberx"
+    }
+  ],
+  "active": {
+    "id": "axhub:approvals",
+    "label": "Approvals",
+    "badge": 2,
+    "app": "axhub",
+    "active": true
+  },
+  "activeNone": null,
+  "route": [
+    {
+      "id": "amberx:file.save",
+      "out": {
+        "app": "amberx",
+        "id": "file.save"
+      }
+    },
+    {
+      "id": "axhub:nav:home",
+      "out": {
+        "app": "axhub",
+        "id": "nav:home"
+      }
+    },
+    {
+      "id": "console:tb:run",
+      "out": {
+        "app": "console",
+        "id": "tb:run"
+      }
+    },
+    {
+      "id": "molly.home",
+      "out": {
+        "app": null,
+        "id": "molly.home"
+      }
+    },
+    {
+      "id": "nope:x",
+      "out": {
+        "app": null,
+        "id": "nope:x"
+      }
+    },
+    {
+      "id": ":x",
+      "out": {
+        "app": null,
+        "id": ":x"
+      }
+    },
+    {
+      "id": "amberx:",
+      "out": {
+        "app": null,
+        "id": "amberx:"
+      }
+    }
+  ],
+  "routed": [
+    {
+      "id": "molly.home",
+      "route": {
+        "app": null,
+        "id": "molly.home"
+      }
+    },
+    {
+      "id": "molly.layout",
+      "route": {
+        "app": null,
+        "id": "molly.layout"
+      }
+    },
+    {
+      "id": "amberx:home",
+      "route": {
+        "app": "amberx",
+        "id": "home"
+      }
+    },
+    {
+      "id": "amberx:notes.new",
+      "route": {
+        "app": "amberx",
+        "id": "notes.new"
+      }
+    },
+    {
+      "id": "axhub:approvals",
+      "route": {
+        "app": "axhub",
+        "id": "approvals"
+      }
+    },
+    {
+      "id": "axhub:services",
+      "route": {
+        "app": "axhub",
+        "id": "services"
+      }
+    },
+    {
+      "id": "home",
+      "route": {
+        "app": null,
+        "id": "home"
+      }
+    },
+    {
+      "id": "axhub:approvals",
+      "route": {
+        "app": "axhub",
+        "id": "approvals"
+      }
+    },
+    {
+      "id": "axhub:services",
+      "route": {
+        "app": "axhub",
+        "id": "services"
+      }
+    },
+    {
+      "id": "console:build",
+      "route": {
+        "app": "console",
+        "id": "build"
+      }
+    },
+    {
+      "id": "amberx:home",
+      "route": {
+        "app": "amberx",
+        "id": "home"
+      }
+    },
+    {
+      "id": "amberx:notes",
+      "route": {
+        "app": "amberx",
+        "id": "notes"
+      }
+    },
+    {
+      "id": "molly.settings",
+      "route": {
+        "app": null,
+        "id": "molly.settings"
+      }
+    },
+    {
+      "id": "amberx:copy",
+      "route": {
+        "app": "amberx",
+        "id": "copy"
+      }
+    },
+    {
+      "id": "axhub:refresh",
+      "route": {
+        "app": "axhub",
+        "id": "refresh"
+      }
+    },
+    {
+      "id": "amberx:note.delete",
+      "route": {
+        "app": "amberx",
+        "id": "note.delete"
+      }
+    },
+    {
+      "id": "console:run",
+      "route": {
+        "app": "console",
+        "id": "run"
+      }
+    },
+    {
+      "id": "console:stop",
+      "route": {
+        "app": "console",
+        "id": "stop"
+      }
+    },
+    {
+      "id": "amberx:record",
+      "route": {
+        "app": "amberx",
+        "id": "record"
+      }
+    }
+  ],
+  "message": [
+    {
+      "$axf": "embed@1",
+      "type": "chrome",
+      "chrome": {
+        "$axf": "chrome@1",
+        "app": "axhub",
+        "menus": [
+          {
+            "id": "hub",
+            "label": "Hub",
+            "items": [
+              {
+                "id": "approvals",
+                "label": "Approvals",
+                "count": 2
+              }
+            ]
+          },
+          {
+            "id": "manage",
+            "label": "Manage",
+            "items": [
+              {
+                "id": "services",
+                "label": "Services"
+              }
+            ]
+          }
+        ],
+        "nav": [
+          {
+            "items": [
+              {
+                "id": "approvals",
+                "label": "Approvals",
+                "badge": 2
+              },
+              {
+                "id": "services",
+                "label": "Services",
+                "locked": true
+              }
+            ]
+          }
+        ],
+        "context": [
+          {
+            "target": "default",
+            "items": [
+              {
+                "id": "refresh",
+                "label": "Refresh"
+              }
+            ]
+          }
+        ],
+        "toolbars": [],
+        "widgets": [
+          {
+            "id": "clock",
+            "type": "clock",
+            "text": "10:42"
+          },
+          {
+            "id": "hub",
+            "type": "status",
+            "text": "Live",
+            "tone": "success"
+          }
+        ],
+        "label": "axHub",
+        "active": "approvals"
+      }
+    },
+    null,
+    {
+      "$axf": "embed@1",
+      "type": "chrome-request"
+    },
+    {
+      "$axf": "embed@1",
+      "type": "chrome",
+      "chrome": {
+        "$axf": "chrome@1",
+        "app": "amberx",
+        "menus": [
+          {
+            "id": "app",
+            "label": "AmberX",
+            "items": [
+              {
+                "id": "home",
+                "label": "Home",
+                "icon": "home"
+              },
+              {
+                "id": "sep",
+                "label": "",
+                "separator": true
+              },
+              {
+                "id": "notes",
+                "label": "Notes",
+                "count": 3,
+                "items": [
+                  {
+                    "id": "notes.new",
+                    "label": "New note"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "nav": [
+          {
+            "items": [
+              {
+                "id": "home",
+                "label": "Home",
+                "icon": "home"
+              },
+              {
+                "id": "notes",
+                "label": "Notes",
+                "badge": 3
+              }
+            ],
+            "label": "AmberX"
+          }
+        ],
+        "context": [
+          {
+            "target": "default",
+            "items": [
+              {
+                "id": "copy",
+                "label": "Copy"
+              }
+            ]
+          },
+          {
+            "target": "note",
+            "items": [
+              {
+                "id": "note.delete",
+                "label": "Delete note",
+                "icon": "trash"
+              }
+            ]
+          }
+        ],
+        "toolbars": [
+          {
+            "id": "main",
+            "items": [
+              {
+                "id": "record",
+                "label": "Record",
+                "icon": "mic",
+                "pressed": true
+              }
+            ],
+            "label": "Main"
+          }
+        ],
+        "widgets": [
+          {
+            "id": "clock",
+            "type": "clock",
+            "text": "10:42"
+          },
+          {
+            "id": "approvals",
+            "type": "counter",
+            "label": "Approvals",
+            "tone": "accent",
+            "count": 2
+          }
+        ],
+        "label": "AmberX",
+        "active": "notes"
+      }
+    }
+  ]
+}

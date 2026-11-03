@@ -1134,6 +1134,27 @@
       },
       "optional": true
     },
+    "xlayout": {
+      "label": "xLayout",
+      "group": "System",
+      "icon": "layout",
+      "description": "Molly as one app (xlayout@1, engine core/engines/xlayout.ts): the host-side layout that frames several apps (AmberX, axHub web, the Dev Console) and makes them look like one — which apps, how each kind of chrome is handled (host = only the host's, merged = one bar merged from every app's with the guests hiding theirs and sending them as data, guest = each app keeps its own), the IDE switch (pane limit, dock-layout@1 preset in force, presets offered, an optional inline preset tree) and up to three plugin toolbar slots (visible, location, items opening in the main area, a floating window or a pane). Host-only: standalone apps never load one (not shared). The chrome merge is chrome@1 (core/engines/chrome.ts), the pane tree dock@1.",
+      "required": [
+        "apps"
+      ],
+      "optional_fields": {
+        "apps": "[{ id: [a-z0-9-], label, url: https…, icon? }] — the apps the host frames, ≤ 12; id is the namespace prefix of every item the app sends (`<app>:<id>`)",
+        "merge": "{ banner | app-menu | nav-menu | context-menu | toolbar | widgets: host | merged | guest } — defaults: banner host, the rest merged",
+        "ide": "{ on: boolean, paneLimit 1..64 (default 6), preset: dock-layout id (default ide), presets: [dock-layout ids] (default the ten starters), tree?: preset tree }",
+        "toolbars": "[{ slot 1..3, visible, location: top | bottom | left | right, label?, items: [{ id, label, icon?, app?, action, open: main | floating | pane }] }] — missing slots get defaults (1 top visible, 2 bottom hidden, 3 right hidden)"
+      },
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "shared": false,
+      "optional": true
+    },
     "behavior-theme": {
       "label": "Behaviour theme",
       "group": "Themes",
