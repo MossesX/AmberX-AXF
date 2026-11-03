@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 194,
- "updatedAt": "2026-11-03T16:14:15.248Z",
+ "rev": 195,
+ "updatedAt": "2026-11-03T16:14:38.259Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50177,7 +50177,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T16:14:14.427Z",
+   "updatedAt": "2026-11-03T16:14:37.124Z",
    "builtAt": "",
    "notes": [
     {
@@ -50187,6 +50187,10 @@
     {
      "text": "Landed claude/agent-chats-hub (PR #248) on main at 92be01a0",
      "at": "2026-11-03T16:14:09.456Z"
+    },
+    {
+     "text": "Correction: agent-chats-hub landed at c985c38d",
+     "at": "2026-11-03T16:14:37.124Z"
     }
    ],
    "approvals": [],
@@ -50442,7 +50446,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
