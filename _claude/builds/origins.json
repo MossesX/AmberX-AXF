@@ -1,0 +1,17 @@
+{
+ "$axf": "build-origins@1",
+ "origins": {
+  "build-prompt-origin": {
+   "said": "All the build entries, like wherever it shows a build in the build manager, pending, all that, I need it to show the prompt, what I said, the verbatim prompt that kicked it off, that initiated it.",
+   "at": "2026-11-03",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Janitor Joey (headless build-prompt-origin)",
+   "brief": "# Build: build-prompt-origin (Current profile)\n\nBrett, Nov 3 2026 (voice), verbatim: \"All the build entries, like wherever it shows a build in the build manager, pending, all that, I need it to show the prompt, what I said, the verbatim prompt that kicked it off, that initiated it.\"\nAssigned agent: whoever is free (router if on main; else **Janitor Joey**; record who). Register in `current` (id `build-prompt-origin`) + banner entry.\n\n## Build\n- s1 Data: every build / pending item / orchestrator build / queue epic in the builds store gets an `origin` record: {said: Brett's verbatim words (as transcribed, unedited), at, source: voice|chat|console|code, session/conversation id or link if known, by: which Claude session/agent launched it, brief: the full brief file text, addenda: [{said, at}] for later changes}. Schema + migration in the builds store (orch-live-sync rules), never lost on merge.\n- s2 Capture: `vps.build_start` / claude-headless.sh / orchestrator add / pending_change add / Plan Studio 'turn into a build' accept an `origin.said` field; the brief template gets a required '## Brett said (verbatim)' block that the launcher parses into origin.said. Addendum appends ('## Addendum N (Brett ...)') are parsed into addenda. Rule in shared RULES.md + CLAUDE.md: 'Every build launch includes Brett's exact words verbatim in origin.said / the Brett said block; paraphrase goes in the brief, never in place of his words.'\n- s3 UI: everywhere a build shows (Build manager, Builds page all views, Pending, Queue, Orchestrator, Steps, Build Breaker, What's New banner items, Crew rows, UI Review items, Session browser, PR rows): a 'What Brett said' quote block at the top of the expanded row (speech-bubble style, timestamp, source icon, link to the session), then the brief collapsible below, then addenda in order. Collapsed rows show the first line of what he said as the subtitle. Search covers it.\n- s4 Backfill: for every existing build, fill origin from what exists: the brief file's verbatim quotes (lines quoted after 'Brett ... (voice):'), pending item `detail` text ('Brett, Oct 30 2026 (voice): ...'), THREADS, reports. Mark backfilled ones 'from the brief, may be paraphrased' when it's not clearly verbatim.\n- s5 Commands declared once -> REST + MCP + CLI (get origin, add addendum). Zero tokens. Tests, screenshots, UI Review item, report `_claude/builds/reports/build-prompt-origin.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  }
+ }
+}
