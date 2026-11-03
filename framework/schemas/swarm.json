@@ -118,7 +118,8 @@
       ],
       "defaultScale": 1,
       "basis": 300
-    }
+    },
+    "fallback": ""
   },
   "state": {
     "statuses": {

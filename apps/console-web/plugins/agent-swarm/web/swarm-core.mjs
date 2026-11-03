@@ -158,8 +158,10 @@ export function planJobs(builds, roster, opts = {}) {
       const hit = matchAgent(s.text, files, able.length ? able : pool);
       const id = `${b.id}.${s.id}`;
       if (!hit) { warnings.push(`${id}: no agent can take it (everyone is off, benched or broke)`); continue; }
-      const a = hit.agent;
-      if (hit.score === 0) warnings.push(`${id}: no clear specialist (name files in the step); went to ${a.name}`);
+      // nobody matched: the roster's fallback agent when it names one and they can take it, else the most capable
+      const fb = hit.score === 0 && roster.fallback ? (able.length ? able : pool).find((x) => x.id === roster.fallback) : null;
+      const a = fb ?? hit.agent;
+      if (hit.score === 0) warnings.push(`${id}: no clear specialist (name files in the step); went to ${a.name}${fb ? ' (the roster\'s fallback)' : ''}`);
       const pick = pickModel(a, tier);
       if (pick.short) warnings.push(`${id}: ${a.name} tops out at ${pick.model}; job wants ${tier}`);
       const leases = files.filter((f) => !isShared(f, opts.sharedFiles));
@@ -189,13 +191,13 @@ export function planJobs(builds, roster, opts = {}) {
 
 /**
  * The shared prefix: identical bytes for every job of every agent, so prompt caching applies across the swarm.
- * Nothing job-specific goes in here (no ids, dates, paths). The persona block is added by step s8.
+ * Nothing job-specific goes in here (no ids, dates, paths). The persona block comes from agents/persona.md.
  */
 export function sharedPrefix(parts = {}) {
   return [
     'You are one specialist agent in the AmberX AXF agent swarm, run headless by the build orchestrator ("Boss").',
     'WORK RULES',
-    '- Do only the job in the message. Read and edit only the leased files listed there; the snippets are all the context you get. Do not explore the repo, list folders or read CLAUDE.md.',
+    '- Do only the job in the message. Read and edit only inside the leased files and folders listed there; the snippets and folder listings are the context you start from. Do not explore outside your lease, list other folders or read CLAUDE.md.',
     '- Never write shared files (_claude/THREADS.md, _claude/memory/STATUS.md, _claude/builds/, framework/catalog/, framework/plan/, tracker.json, CLAUDE.md, rules). Put what they need in your report\'s "notes"; Boss writes them after the merge.',
     '- Code, code comments and commit messages are clean and professional. No secrets anywhere.',
     '- Commit your work in this worktree with a plain one-line message. Do not push.',
@@ -207,48 +209,75 @@ export function sharedPrefix(parts = {}) {
 }
 
 const WORD = /[a-z][a-z0-9_-]{3,}/g;
-const STOP = new Set(['with', 'that', 'this', 'from', 'into', 'each', 'when', 'then', 'only', 'every', 'what', 'also', 'make', 'have', 'more', 'than', 'they', 'them', 'their', 'there', 'files', 'file', 'step']);
-export const SNIPPET = { wholeUpTo: 80, head: 12, context: 3, maxLines: 120 };
+const STOP = new Set(['with', 'that', 'this', 'from', 'into', 'each', 'when', 'then', 'only', 'every', 'what', 'also', 'make', 'have', 'more', 'than', 'they', 'them', 'their', 'there', 'files', 'file', 'step', 'should', 'will', 'must', 'never', 'always', 'where', 'which', 'while', 'about', 'after', 'before', 'same', 'other', 'under', 'over']);
+/** A line that defines something (an export, function, class, route, type): the API surface an agent needs to see. */
+const DEFINITION = /^\s*(export\s|def\s|class\s|function\s|fun\s|const\s[A-Za-z_$][\w$]*\s*=|interface\s|type\s[A-Z]|async\s+def\s|@router\.|@app\.)/;
+export const SNIPPET = { wholeUpTo: 80, head: 12, context: 3, maxLines: 120, commonShare: 0.25 };
 
 /**
  * The parts of one file a job needs: the whole file when it's short; else its head plus the lines that mention the
- * task's words (± context), merged, capped. Returns { path, whole, lines: [[from, to]], text }.
+ * task's words (± context), best hits first (a line scores one per distinct task word it carries, plus one when it
+ * defines something; task words that appear on more than a quarter of the file's lines say nothing and are skipped),
+ * merged and capped, printed in file order. Returns { path, whole, lines: [[from, to]], text, hits }.
  */
 export function extractSnippet(path, content, task, lim = SNIPPET) {
   const lines = str(content, 2_000_000).split('\n');
-  if (lines.length <= lim.wholeUpTo) return { path, whole: true, lines: [[1, lines.length]], text: lines.join('\n') };
-  const words = [...new Set((str(task, 8000).toLowerCase().match(WORD) ?? []).filter((w) => !STOP.has(w)))];
-  const ranges = [[0, Math.min(lim.head, lines.length) - 1]];
-  lines.forEach((l, i) => { const low = l.toLowerCase(); if (words.some((w) => low.includes(w))) ranges.push([Math.max(0, i - lim.context), Math.min(lines.length - 1, i + lim.context)]); });
-  ranges.sort((a, b) => a[0] - b[0]);
-  const merged = [];
-  for (const r of ranges) { const last = merged[merged.length - 1]; if (last && r[0] <= last[1] + 1) last[1] = Math.max(last[1], r[1]); else merged.push([...r]); }
-  const out = []; let used = 0; const kept = [];
-  for (const [a, b] of merged) {
-    if (used >= lim.maxLines) break;
-    const end = Math.min(b, a + (lim.maxLines - used) - 1);
-    out.push(`@@ lines ${a + 1}-${end + 1}`, ...lines.slice(a, end + 1)); kept.push([a + 1, end + 1]); used += end - a + 1;
+  if (lines.length <= lim.wholeUpTo) return { path, whole: true, lines: [[1, lines.length]], text: lines.join('\n'), hits: lines.length };
+  const lows = lines.map((l) => l.toLowerCase());
+  const words = [...new Set((str(task, 8000).toLowerCase().match(WORD) ?? []).filter((w) => !STOP.has(w)))]
+    .filter((w) => lows.filter((l) => l.includes(w)).length <= lines.length * (lim.commonShare ?? 1));
+  const scored = [];
+  lows.forEach((low, i) => { const n = words.filter((w) => low.includes(w)).length; if (n) scored.push({ i, score: n + (DEFINITION.test(lines[i]) ? 1 : 0) }); });
+  scored.sort((a, b) => b.score - a.score || a.i - b.i);
+  const ctx = lim.context; const headEnd = Math.min(lim.head, lines.length) - 1;
+  const chosen = new Set(); for (let i = 0; i <= headEnd; i += 1) chosen.add(i);
+  for (const { i } of scored) {
+    if (chosen.size >= lim.maxLines) break;
+    for (let k = Math.max(0, i - ctx); k <= Math.min(lines.length - 1, i + ctx) && chosen.size < lim.maxLines; k += 1) chosen.add(k);
   }
-  return { path, whole: false, lines: kept, text: out.join('\n') };
+  const idx = [...chosen].sort((a, b) => a - b);
+  const kept = []; for (const i of idx) { const last = kept[kept.length - 1]; if (last && i <= last[1] + 1) last[1] = i; else kept.push([i, i]); }
+  const out = []; for (const [a, b] of kept) out.push(`@@ lines ${a + 1}-${b + 1}`, ...lines.slice(a, b + 1));
+  return { path, whole: false, lines: kept.map(([a, b]) => [a + 1, b + 1]), text: out.join('\n'), hits: scored.length };
 }
 
 export const tokensOf = (text) => Math.ceil(str(text, 10_000_000).length / 4);
+export const FOLDER_INDEX_MAX = 60;
+
+/**
+ * What a leased folder holds, so an area job knows where to look without exploring: every file name when the folder
+ * is small, else an outline (its own files, then each subfolder with its file count). { path, names, total, outline }.
+ */
+export function folderIndex(path, names, max = FOLDER_INDEX_MAX) {
+  const all = list(names, 100000, 400).sort();
+  if (all.length <= max) return { path, names: all, total: all.length, outline: false };
+  const sub = new Map(); const own = [];
+  for (const n of all) { const i = n.indexOf('/'); if (i < 0) own.push(n); else sub.set(n.slice(0, i + 1), (sub.get(n.slice(0, i + 1)) ?? 0) + 1); }
+  return { path, names: [...own, ...[...sub.entries()].map(([d, c]) => `${d} (${c} files)`)].slice(0, max), total: all.length, outline: true };
+}
+/** Folder listings for one brief: the lines shared out so the whole set stays under the cap. */
+export function indexBlocks(indexes, max = FOLDER_INDEX_MAX) {
+  const share = Math.max(8, Math.floor(max / Math.max(1, indexes.length)));
+  return indexes.map((x) => { const shown = x.names.slice(0, share); const cut = x.names.length - shown.length; return `--- ${x.path} (${x.total} files${x.outline ? ', outline' : ''}) ---\n${shown.join('\n')}${cut > 0 ? `\n… ${cut} more` : ''}`; });
+}
 
 /**
  * One job's brief. `system` = shared prefix + the agent's skill (both cacheable; the prefix is the same for all),
- * `prompt` = the task, its leases and the snippets. Nothing else from the repo goes in.
+ * `prompt` = the task, its leases, the snippets of leased files and the listings of leased folders. Nothing else from
+ * the repo goes in.
  */
-export function packJob(job, { prefix, skill, snippets = [], handoffs = [] } = {}) {
+export function packJob(job, { prefix, skill, snippets = [], indexes = [], handoffs = [] } = {}) {
   const system = `${prefix}\nSKILL: ${skill?.title ?? job.skill}\n${skill?.body ?? ''}`.trim();
   const prompt = [
     `JOB ${job.id} (build ${job.buildId}, step ${job.stepId})`,
     `Task: ${job.text}`,
-    `Leased files (only these): ${job.leases.length ? job.leases.join(', ') : 'none named; ask in your report if you need one'}`,
+    `Leased files and folders (only these): ${job.leases.length ? job.leases.join(', ') : 'none named; ask in your report if you need one'}`,
     job.shared?.length ? `Shared files Boss will write after merge (do not touch; put lines in notes): ${job.shared.join(', ')}` : '',
     job.checks?.length ? `Checks to run: ${job.checks.join(' · ')}` : '',
     `Budget: ${job.budget.tokens} tokens, ${job.budget.maxTurns} turns. Over budget = killed, so be direct.`,
     ...handoffs.filter(Boolean).map((h) => `Handoff from an earlier job: ${str(h, 600)}`),
     ...snippets.map((s) => `--- ${s.path}${s.whole ? '' : ' (excerpt)'} ---\n${s.text}`),
+    ...indexBlocks(indexes),
   ].filter(Boolean).join('\n');
   return { jobId: job.id, model: job.model, system, prompt, tokens: { system: tokensOf(system), prompt: tokensOf(prompt) } };
 }

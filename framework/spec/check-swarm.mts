@@ -104,7 +104,9 @@ ok(N.skill.schema === 'agent-skill@1' && N.skill.id === 'react-ui' && N.skill.li
 eq(N.skillNoFrontMatter.body, 'Just a body.', 'a file without front matter is all body');
 eq(N.roster.agents[1].models, ['opus'], 'a Haiku-only roster agent runs as Opus');
 eq(N.roster.tune, { scale: 0.5, basis: 'pilot' }, 'tune kept');
-eq(N.rosterJunk, { $axf: 'swarm-roster@1', tune: { scale: 1, basis: '' }, agents: [] }, 'roster from junk');
+eq(N.rosterJunk, { $axf: 'swarm-roster@1', tune: { scale: 1, basis: '' }, fallback: '', agents: [] }, 'roster from junk');
+eq(S.normRoster({ ...roster, fallback: 'doc' }).fallback, 'doc', 'the fallback agent is kept');
+eq(fields(S.rosterErrors({ ...roster, fallback: 'ghost' }, skills)).filter((f) => f === 'fallback'), ['fallback'], 'a fallback who is not on the roster is named');
 eq(N.state.agents.rio.salary, 30, 'an old spend cap becomes the salary');
 eq(N.state.agents.rio.card, 'license', 'per-agent card design kept');
 eq(N.state.agents.rio.identity.name, 'Rio R.', 'identity edits kept');

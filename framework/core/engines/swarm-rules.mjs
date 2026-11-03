@@ -107,7 +107,8 @@ export const SWARM = {
     avatar: { faces: AVATAR_FACES, gear: AVATAR_GEAR, hair: [0, 5], hue: [0, 359], tokens: AVATAR_TOKENS },
   },
   skill: { required: ['id', 'title'], maxLines: 50, maxChars: 3000, maxFile: 20000 },
-  roster: { tune: { scale: [0.25, 2], defaultScale: 1, basis: 300 } },
+  /** `fallback`: the agent who takes a build step no skill matches ('' = the most capable agent on the roster). */
+  roster: { tune: { scale: [0.25, 2], defaultScale: 1, basis: 300 }, fallback: '' },
   state: {
     statuses: STATUSES, pickable: PICKABLE, defaultRules: { rageQuitAfter: 3 }, rageQuitRange: [1, 50], smallJobMinutes: 15,
     identityFields: IDENTITY_FIELDS, cardKeys: CARD_KEYS,
@@ -245,7 +246,7 @@ export function normRoster(r) {
   const o = isObj(r) ? r : {};
   const T = SWARM.roster.tune;
   const tune = isObj(o.tune) ? { scale: num(o.tune.scale, T.defaultScale, ...T.scale), basis: str(o.tune.basis, T.basis) } : { scale: T.defaultScale, basis: '' };
-  return { $axf: TAGS.roster, tune, agents: (Array.isArray(o.agents) ? o.agents : []).map(normAgent) };
+  return { $axf: TAGS.roster, tune, fallback: isAgentId(o.fallback) ? o.fallback : '', agents: (Array.isArray(o.agents) ? o.agents : []).map(normAgent) };
 }
 
 /** Problems with a roster and its skills ({ id: skill }). Empty = fine. */
@@ -268,6 +269,7 @@ export function rosterErrors(roster, skills = {}) {
     seen.add(a.id);
     if (typeof a.skill === 'string' && a.skill && !skills[a.skill]) out.push(err(`${p}.skill`, 'invalid', `agent ${a.id}: no skill file for "${a.skill}"`));
   });
+  if (roster.fallback !== undefined && roster.fallback !== '' && !roster.agents.some((a) => isObj(a) && a.id === roster.fallback)) out.push(err('fallback', 'invalid', `fallback "${roster.fallback}" is not an agent on the roster`));
   return out;
 }
 
@@ -605,7 +607,7 @@ export function jsonSchemas() {
   const roster = {
     ...head('swarm-roster', TAGS.roster, 'swarm roster', 'The agents and the budget tune.'),
     type: 'object', required: ['agents'],
-    properties: { $axf: { const: TAGS.roster }, about: { type: 'string' }, tune: { type: 'object', properties: { scale: rng(SWARM.roster.tune.scale), basis: { type: 'string', maxLength: SWARM.roster.tune.basis } } }, agents: { type: 'array', items: { $ref: 'axf/agent.schema.json' } } },
+    properties: { $axf: { const: TAGS.roster }, about: { type: 'string' }, tune: { type: 'object', properties: { scale: rng(SWARM.roster.tune.scale), basis: { type: 'string', maxLength: SWARM.roster.tune.basis } } }, fallback: { anyOf: [{ type: 'string', pattern: SWARM.idPattern }, { const: '' }] }, agents: { type: 'array', items: { $ref: 'axf/agent.schema.json' } } },
   };
   const sliders = { vibe: rng([VIBE.min, VIBE.max]), chattiness: rng([0, 100]), cussing: rng([0, 100]), drama: rng([0, 100]) };
   const stamped = (props) => ({ type: 'object', properties: { at: { type: 'string' }, ...props } });

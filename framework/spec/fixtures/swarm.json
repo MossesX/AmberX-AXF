@@ -464,6 +464,7 @@
     "scale": 0.5,
     "basis": "pilot"
    },
+   "fallback": "",
    "agents": [
     {
      "$axf": "agent@1",
@@ -542,6 +543,7 @@
     "scale": 1,
     "basis": ""
    },
+   "fallback": "",
    "agents": []
   },
   "state": {

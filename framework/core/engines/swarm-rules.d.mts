@@ -14,7 +14,7 @@ export interface Agent {
   models: Model[]; tools: string[]; maxTurns: number; tokenBudget: number; salary: number; hiredAt: string; avatar: Avatar; catchphrase: string; bio: string;
 }
 export interface Skill { id: string; title: string; schema: string; body: string; lines: number; chars: number }
-export interface Roster { $axf: 'swarm-roster@1'; tune: { scale: number; basis: string }; agents: Agent[] }
+export interface Roster { $axf: 'swarm-roster@1'; tune: { scale: number; basis: string }; fallback: string; agents: Agent[] }
 export interface ChatSettings { vibe: number; chattiness: number; cussing: number; drama: number; preset: string; overrides: Record<string, Partial<Record<'vibe' | 'chattiness' | 'cussing' | 'drama', number>>>; banterBudget: number; saved: { name: string; vibe: number; chattiness: number; cussing: number; drama: number }[] }
 export interface Message { id: string; at: string; from: string; kind: ChatKind; text: string; jobId: string; vibe: number | null; toned: boolean }
 export interface AgentState {
