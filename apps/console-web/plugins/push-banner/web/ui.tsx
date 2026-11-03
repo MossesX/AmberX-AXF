@@ -482,10 +482,10 @@ function AutoLandSettings() {
                 <span className="axp-push-banner__line"><span className="axp-push-banner__chip">{st.holds[x.id] ? 'held' : x.state}</span><span className="axp-push-banner__name">{x.id}{x.pr ? ` #${x.pr}` : ''}</span></span>
                 <span className="fx-small fx-muted">{x.reason ? x.reason.text.replace(`${x.id}: `, '') : 'Ready: merges at the next auto-merge round.'}</span>
               </span>
-              <span className="fx-row">
+              <div className="axp-push-banner__acts">
                 <Button size="sm" icon="play" onClick={() => act('now', x.id)}>Land now</Button>
                 {st.holds[x.id] ? <Button size="sm" icon="check" onClick={() => act('release', x.id)}>Release</Button> : <Button size="sm" icon="pause" onClick={() => act('hold', x.id)}>Hold</Button>}
-              </span>
+              </div>
             </li>
           ))}
         </ul>
