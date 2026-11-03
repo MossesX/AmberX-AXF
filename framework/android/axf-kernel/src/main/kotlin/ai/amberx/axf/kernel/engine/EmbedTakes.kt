@@ -85,6 +85,13 @@ public object EmbedTakes {
             listOf("console.plugins"),
             lock = true,
         ),
+        // Molly as one app (xlayout@1 / chrome@1, Nov 3 2026): the host draws one navigation menu, context menu and set
+        // of toolbars / banner widgets merged from every app it frames. Registry entries only (same ids as the web);
+        // the `chrome` / `chrome-request` messages are web-only for now (deferred, spec/PORTING.md).
+        "nav-menu" to EmbedTakeSpec(hides = listOf("nav-menu")),
+        "context-menu" to EmbedTakeSpec(hides = listOf("context-menu")),
+        "toolbar" to EmbedTakeSpec(hides = listOf("toolbar")),
+        "widgets" to EmbedTakeSpec(),
     )
     private val fnId = Regex("^[a-z0-9][a-z0-9-]{0,31}$")
     private val tabId = Regex("^[a-z0-9][a-z0-9._:-]{0,63}$", RegexOption.IGNORE_CASE)

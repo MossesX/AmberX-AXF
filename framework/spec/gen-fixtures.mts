@@ -38,6 +38,10 @@ import { APPS_FEED_MAX_BYTES, APPS_FEED_PATH, APPS_MAX, VERSIONS_MAX, appsFeedUr
 import { libraryCards, paramDefaultText, paramError, paramToJson, parseBoilerplate, parseBoilerplateIndex, parseCatalog, parseLibrariesIndex, parseLibrary, parseStatusMap, parseTracker } from '../core/catalog';
 import { CONDITION_KINDS, DEFAULT_BACKOFF_FACTOR, DELAY_KINDS, FALLBACK_OUTCOME, JOB_EFFECTS, JOB_EVENT_TYPES, JOB_PHASES, STOP_REASONS, WORK_CONTRACT, WORK_PLACEHOLDERS, WORK_POLL_CAPABILITY, clampInterval, delayFor, initialJobState, replayJob, shouldRestart, unmetConditions, validateJobSpec, workKinds, type DelayRule, type JobEvent, type JobSpec } from '../core/engines/work';
 import { DEFAULT_SNAP_RULES, RESIZE_EDGES, RESIZE_HANDLE, RESIZE_HANDLE_TOUCH, SNAP_ZONES, WINDOW_MIN, armSplit, dragRestore, hitResizeEdge, maximizeWindow, maximizedRect, resizeCursor, resizeRect, resolveOverlap, restoreWindow, snapRect, snapZoneAt, snapZoneRect, splitDrop, toggleMaximized, topmostAt, type Rect, type ResizeEdge, type SplitArm, type WindowSpec } from '../core/engines/windows';
+import { DEFAULT_DOCK_RULES, DOCK_CONTRACT, DOCK_LAYOUT_MAX_PANES, DOCK_SIDES, DOCK_ZONES, applyDockDrop, applyPreset, clampWeights, countPanes, dockDropAt, dockDropRect, dockLayoutErrors, dockZoneAt, dropIsLimited, enforcePaneLimit, headerIndexAt, normalizeDockLayout, normalizeDockRules, normalizeTree, paneAt, parseTab, parseTree, pathOf, presetRects, presetSvg, presetTree, removePane, resizeSplit, restoreDock, serializeDock, splitPane, splitRoot, type DockDrop, type DockState, type GroupBox } from '../core/engines/dock';
+import type { Pane, TabGroup } from '../core/engines/windows';
+import { CHROME_KINDS, DEFAULT_MERGE, DEFAULT_PRESETS, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, dockRulesOf, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId as xNsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
+import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES, WIDGET_TYPES, activeNav, chromePicks, emptyChrome, mergeChrome, parseChromeBundle, routePick, type ChromeBundle } from '../core/engines/chrome';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -1590,6 +1594,156 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   });
 }
 
+// Dock engine (dock@1, dock-engine s1–s2, Nov 3 2026; core/engines/dock.ts): pane trees with a limit, drop zones
+// (header / centre / pane edge / host edge), splitter resize with a weight floor, snapshots, layout presets
+// (dock-layout@1 starters) with thumbnails. Kotlin `DockEngine.kt` (deferred, PORTING.md) replays the same file.
+{
+  const R = DEFAULT_DOCK_RULES;
+  const leaf = (groupId: string): Pane => ({ kind: 'leaf', groupId });
+  const split = (vertical: boolean, children: Pane[], weights: number[]): Pane => ({ kind: 'split', vertical, children, weights });
+  const group = (id: string, tabs: string[], windowId = 'main'): TabGroup => ({ id, tabs: tabs.map((t) => ({ id: t, title: t.toUpperCase(), kind: 'doc', payload: `p/${t}` })), active: 0, windowId });
+  const rulesCases: unknown[] = [null, {}, { paneLimit: 3 }, { paneLimit: 0, minWeight: 2, headerBand: -4, edgeBand: 3.7, centreFraction: 1.5, splitRatio: 0.05, rootRatio: 'x' }, { paneLimit: 99.9 }];
+  const weightCases: [number[], number, number?][] = [[[1, 1], 2], [[3, 1], 2], [[1, 1, 1], 3], [[0.02, 0.98], 2], [[0.01, 0.01, 0.98], 3], [[-1, NaN, 2], 3], [[], 4], [[5], 1], [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 12, 0.1], [[0.5, 0.5], 2, 0.3], [[0.9, 0.1], 2, 0.2]];
+  const nested = split(false, [leaf('a'), split(false, [leaf('b'), leaf('c')], [1, 3]), split(true, [leaf('d')], [1])], [2, 2, 0]);
+  const normalizeCases: Record<string, Pane | null> = {
+    null: null, leaf: leaf('a'), 'two equal': split(false, [leaf('a'), leaf('b')], [1, 1]), 'flatten same orientation + collapse one child + fix weights': nested,
+    'grid kept': { kind: 'grid', rows: 2, cols: 2, cells: [leaf('a'), leaf('b'), leaf('c'), leaf('d')] }, 'grid with a nested split cell': { kind: 'grid', rows: 1, cols: 2, cells: [leaf('a'), split(true, [leaf('b'), leaf('c')], [1, 1])] },
+    'single grid cell collapses': { kind: 'grid', rows: 1, cols: 1, cells: [leaf('a')] }, 'empty split': split(true, [], []),
+  };
+  const base: Pane = split(false, [leaf('a'), split(true, [leaf('b'), leaf('c')], [0.6, 0.4])], [0.3, 0.7]);
+  const splitCases: [string, string, 'left' | 'right' | 'top' | 'bottom', number?][] = [['a', 'left'], ['a', 'right'], ['a', 'top'], ['a', 'bottom'], ['b', 'top'], ['b', 'bottom', 0.25], ['c', 'left'], ['c', 'right', 0.3], ['zzz', 'left']].map(([g, s, r]) => [`${g}-${s}${r ? `-${r}` : ''}`, g as string, s as 'left', r as number | undefined]);
+  const rootCases: ['left' | 'right' | 'top' | 'bottom', Pane | null, number?][] = [['left', base], ['right', base], ['top', base], ['bottom', base, 0.5], ['right', null], ['left', leaf('a')], ['top', split(true, [leaf('a'), leaf('b')], [1, 1])]];
+  const resizeCases: [number[], number, number][] = [[[], 0, 0.1], [[], 0, -0.1], [[], 0, 0.9], [[], 0, -5], [[1], 0, 0.2], [[1], 0, -0.35], [[1], 1, 0.1], [[], 5, 0.1], [[9], 0, 0.1], [[], 0, NaN]];
+  // zones over one pane 300×200 at (100, 50) with a 32 px header; drops over a host 800×600 holding three panes
+  const box: GroupBox = { groupId: 'a', rect: { x: 100, y: 50, width: 300, height: 200 }, header: 32 };
+  const zoneProbes: [number, number][] = [[250, 60], [250, 81], [250, 82], [250, 150], [110, 150], [390, 150], [250, 90], [250, 245], [120, 240], [380, 90], [99, 100], [401, 100], [250, 49], [250, 251], [175, 100], [176, 100], [250, 125], [250, 124]];
+  const host = { x: 0, y: 0, width: 800, height: 600 };
+  const boxes: GroupBox[] = [{ groupId: 'a', rect: { x: 0, y: 0, width: 240, height: 600 }, header: 32 }, { groupId: 'b', rect: { x: 240, y: 0, width: 560, height: 420 }, header: 32 }, { groupId: 'c', rect: { x: 240, y: 420, width: 560, height: 180 }, header: 32 }];
+  const tabRights = (gid: string) => (gid === 'b' ? [300, 360, 420] : gid === 'a' ? [60] : []);
+  const dropProbes: [number, number][] = [[8, 300], [792, 300], [400, 8], [400, 592], [120, 10], [120, 300], [20, 300], [220, 300], [120, 60], [120, 560], [330, 10], [500, 10], [520, 200], [260, 200], [780, 200], [520, 60], [520, 400], [520, 500], [250, 500], [900, 300], [-1, 300], [16, 300], [17, 300]];
+  const indexCases: [number, number[]][] = [[0, [60, 120, 180]], [89, [60, 120, 180]], [90, [60, 120, 180]], [150, [60, 120, 180]], [1000, [60, 120, 180]], [10, []], [59, [60]], [60, [60]]];
+  const state: DockState = { tree: split(false, [leaf('a'), split(true, [leaf('b'), leaf('c')], [0.7, 0.3])], [0.3, 0.7]), groups: { a: group('a', ['t1', 't2']), b: group('b', ['t3']), c: group('c', ['t4', 't5', 't6']) } };
+  const drops: Record<string, [string, DockDrop, Partial<typeof R>?]> = {
+    'header: t1 to b at 0': ['t1', { target: 'group', groupId: 'b', zone: 'header', index: 0 }],
+    'header: t1 within a to the end': ['t1', { target: 'group', groupId: 'a', zone: 'header', index: 2 }],
+    'header: t2 within a to the start': ['t2', { target: 'group', groupId: 'a', zone: 'header', index: 0 }],
+    'centre: t3 joins c (b empties, its leaf goes)': ['t3', { target: 'group', groupId: 'c', zone: 'centre' }],
+    'side: t4 splits a on the right': ['t4', { target: 'group', groupId: 'a', zone: 'right' }],
+    'side: t4 splits b below (joins the vertical split)': ['t4', { target: 'group', groupId: 'b', zone: 'bottom' }],
+    'side: t3 (only tab) onto its own side = unchanged': ['t3', { target: 'group', groupId: 'b', zone: 'left' }],
+    'side: t3 (only tab) onto its own header = reorder only': ['t3', { target: 'group', groupId: 'b', zone: 'header', index: 0 }],
+    'root: t5 along the top': ['t5', { target: 'root', zone: 'top' }],
+    'root: t5 along the left of a left-right split joins it': ['t5', { target: 'root', zone: 'left' }],
+    'limit 3: a side drop joins the target as a tab': ['t4', { target: 'group', groupId: 'a', zone: 'left' }, { paneLimit: 3 }],
+    'limit 3: a root drop joins the first pane': ['t4', { target: 'root', zone: 'bottom' }, { paneLimit: 3 }],
+    'limit 3: moving the only tab of a pane to a side still fits': ['t3', { target: 'group', groupId: 'a', zone: 'top' }, { paneLimit: 3 }],
+    'unknown tab = unchanged': ['nope', { target: 'root', zone: 'top' }],
+    'unknown group = unchanged': ['t1', { target: 'group', groupId: 'zzz', zone: 'centre' }],
+  };
+  const drop = (name: string) => { const [tab, d, o] = drops[name]!; const rules = normalizeDockRules({ ...R, ...(o ?? {}) }); const out = applyDockDrop(state, tab, d, 'new', 'main', rules); return { tab, drop: d, rules: o ?? null, limited: dropIsLimited(state, tab, d, rules), unchanged: out === state, tree: out.tree, groups: Object.fromEntries(Object.entries(out.groups).map(([k, g]) => [k, { tabs: g.tabs.map((t) => t.id), active: g.active, windowId: g.windowId }])) }; };
+  const limitState: DockState = { tree: split(false, [leaf('a'), leaf('b'), leaf('c'), leaf('d')], [1, 1, 1, 1]), groups: { a: group('a', ['t1']), b: group('b', ['t2']), c: group('c', ['t3', 't4']), d: group('d', ['t5']), x: group('x', ['t9'], 'win-1') } };
+  const limited = enforcePaneLimit(limitState, normalizeDockRules({ paneLimit: 2 }));
+  const snap = serializeDock(state);
+  const rawRestore = { $axf: DOCK_CONTRACT, tree: { kind: 'split', vertical: false, children: [{ kind: 'leaf', groupId: 'a' }, { kind: 'leaf', groupId: 'ghost' }, { kind: 'split', vertical: true, children: [{ kind: 'leaf', groupId: 'b' }, 'junk', { kind: 'leaf', groupId: 'c' }], weights: [1, 'x', 1] }], weights: [1, 1, 2] },
+    groups: { a: { tabs: [{ id: 't1', title: 'T1', kind: 'doc' }, { id: 't1', title: 'again', kind: 'doc' }, { id: 'bad id!', kind: 'doc' }, { kind: 'doc' }], active: 9 }, b: { tabs: [{ id: 't3', kind: 'doc', payload: 'p', icon: 'file', closable: false }], active: -2 }, c: { tabs: [{ id: 't1', title: 'dup across groups', kind: 'doc' }] }, 'bad id!': { tabs: [{ id: 'z', kind: 'doc' }] }, orphan: { tabs: [{ id: 't8', kind: 'doc' }], active: 0 }, empty: { tabs: [] } } };
+  const restoreCases: Record<string, unknown> = { 'round trip': snap, 'junk cleaned': rawRestore, 'not a dock': { $axf: 'windows@1', groups: {} }, 'no groups': { $axf: DOCK_CONTRACT, groups: {} }, 'string': 'nope', 'over the limit': { $axf: DOCK_CONTRACT, tree: null, groups: { a: { tabs: [{ id: 'a1', kind: 'doc' }] }, b: { tabs: [{ id: 'b1', kind: 'doc' }] }, c: { tabs: [{ id: 'c1', kind: 'doc' }] } } } };
+  const presets = load('dock-layout');
+  const tabIds = ['t1', 't2', 't3', 't4', 't5'];
+  const presetApply: DockState = { tree: split(false, [leaf('g1'), leaf('g2')], [1, 1]), groups: { g1: group('g1', ['t1', 't2', 't3']), g2: group('g2', ['t4', 't5']), far: group('far', ['t9'], 'win-2') } };
+  const badLayouts: Record<string, unknown> = { 'nothing': null, 'string': 'x', 'repeat pane': { panes: 2, tree: { kind: 'split', vertical: false, children: [{ kind: 'leaf', pane: 1 }, { kind: 'leaf', pane: 1 }], weights: [1, 1] } }, 'gap in numbering': { panes: 2, tree: { kind: 'split', vertical: true, children: [{ kind: 'leaf', pane: 1 }, { kind: 'leaf', pane: 3 }], weights: [1, 1] } }, 'panes mismatch': { panes: 3, tree: { kind: 'split', vertical: true, children: [{ kind: 'leaf', pane: 1 }, { kind: 'leaf', pane: 2 }], weights: [1, 1] } }, 'one-child split collapses': { panes: 1, tree: { kind: 'split', vertical: true, children: [{ kind: 'leaf', pane: 1 }], weights: [1] } }, 'bad main + hint': { panes: 1, tree: { kind: 'leaf', pane: 1 }, main: 4, hint: 7 }, 'too many': { panes: 13, tree: { kind: 'split', vertical: false, children: Array.from({ length: 13 }, (_, i) => ({ kind: 'leaf', pane: i + 1 })), weights: [] } } };
+  write('dock.json', {
+    contract: DOCK_CONTRACT, rules: R, sides: DOCK_SIDES, zoneList: DOCK_ZONES, maxPresetPanes: DOCK_LAYOUT_MAX_PANES,
+    normalizeRules: rulesCases.map((input) => ({ input, rules: normalizeDockRules(input as never) })),
+    weights: weightCases.map(([w, n, min]) => ({ weights: w, n, min: min ?? null, out: clampWeights(w, n, min) })),
+    normalize: Object.entries(normalizeCases).map(([name, tree]) => ({ name, tree, out: normalizeTree(tree), panes: countPanes(normalizeTree(tree)) })),
+    paths: { tree: base, of: ['a', 'b', 'c', 'zzz'].map((g) => ({ group: g, path: pathOf(base, g) })), at: [[], [0], [1], [1, 0], [1, 1], [1, 2], [0, 0]].map((p) => ({ path: p, node: paneAt(base, p) })) },
+    split: { base, cases: splitCases.map(([name, g, side, ratio]) => ({ name, group: g, side, ratio: ratio ?? null, out: splitPane(base, g, side, 'new', ratio) })) },
+    splitRoot: rootCases.map(([side, tree, ratio]) => ({ side, tree, ratio: ratio ?? null, out: splitRoot(tree, side, 'new', ratio) })),
+    remove: ['a', 'b', 'c', 'zzz'].map((g) => ({ group: g, out: removePane(base, g) })).concat([{ group: 'a', out: removePane(leaf('a'), 'a') }]),
+    resize: resizeCases.map(([path, index, delta]) => ({ path, index, delta: Number.isNaN(delta) ? 'NaN' : delta, out: resizeSplit(base, path, index, delta) })),
+    zones: { box, probes: zoneProbes.map(([px, py]) => ({ px, py, zone: dockZoneAt(box, px, py), zoneDefaultHeader: dockZoneAt({ groupId: 'a', rect: box.rect }, px, py) })) },
+    headerIndex: indexCases.map(([px, rights]) => ({ px, rights, index: headerIndexAt(px, rights) })),
+    drops: { host, boxes, tabRights: { a: tabRights('a'), b: tabRights('b'), c: tabRights('c') }, probes: dropProbes.map(([px, py]) => { const d = dockDropAt(host, boxes, px, py, R, tabRights); return { px, py, drop: d, rect: d ? dockDropRect(d, host, d.target === 'group' ? boxes.find((b) => b.groupId === d.groupId) ?? null : null) : null }; }), noBoxesEdge: dockDropAt(host, [], 8, 300, R, tabRights) },
+    apply: { state: { tree: state.tree, groups: Object.fromEntries(Object.entries(state.groups).map(([k, g]) => [k, { tabs: g.tabs.map((t) => t.id), active: g.active, windowId: g.windowId }])) }, cases: Object.keys(drops).map((name) => ({ name, ...drop(name) })) },
+    limit: { state: { tree: limitState.tree, groups: Object.fromEntries(Object.entries(limitState.groups).map(([k, g]) => [k, g.tabs.map((t) => t.id)])) }, paneLimit: 2, out: { tree: limited.tree, groups: Object.fromEntries(Object.entries(limited.groups).map(([k, g]) => [k, g.tabs.map((t) => t.id)])) } },
+    snapshot: snap,
+    restore: Object.entries(restoreCases).map(([name, raw]) => { const r = restoreDock(raw, 'main', normalizeDockRules(name === 'over the limit' ? { paneLimit: 2 } : null)); return { name, raw, out: r ? { tree: r.tree, groups: Object.fromEntries(Object.entries(r.groups).map(([k, g]) => [k, { tabs: g.tabs, active: g.active, windowId: g.windowId }])) } : null }; }),
+    parseTab: [{ id: 't', kind: 'doc' }, { id: 't', title: 'T', kind: 'doc', payload: 'p', icon: 'file', closable: false }, { id: 'bad id!', kind: 'doc' }, { id: 't', kind: 'bad kind!' }, { id: 't', kind: 'doc', icon: 'Bad Icon', closable: true }, 'x', null, { id: 't', kind: 'doc', payload: 7 }].map((raw) => ({ raw, tab: parseTab(raw) })),
+    parseTree: [rawRestore.tree, { kind: 'leaf', groupId: 'a' }, { kind: 'leaf', groupId: 'nope' }, { kind: 'grid', rows: 2, cols: 2, cells: [{ kind: 'leaf', groupId: 'a' }, { kind: 'leaf', groupId: 'b' }, { kind: 'leaf', groupId: 'c' }, { kind: 'leaf', groupId: 'nope' }] }, { kind: 'grid', rows: 1, cols: 3, cells: [{ kind: 'leaf', groupId: 'a' }, { kind: 'leaf', groupId: 'b' }, { kind: 'leaf', groupId: 'c' }] }, { kind: 'what' }, []].map((raw) => ({ raw, tree: parseTree(raw, (g) => ['a', 'b', 'c'].includes(g)) })),
+    presets: {
+      starters: Object.fromEntries(presets.map((a) => { const d = normalizeDockLayout(a.data); return [a.id, { normalized: d, errors: dockLayoutErrors(a.data), tree: presetTree(d, ['g1', 'g2', 'g3', 'g4']), rects: presetRects(d), svg: presetSvg(d) }]; })),
+      bad: Object.entries(badLayouts).map(([name, raw]) => ({ name, raw, normalized: normalizeDockLayout(raw), errors: dockLayoutErrors(raw) })),
+      apply: presets.map((a) => { const d = normalizeDockLayout(a.data); const out = applyPreset(presetApply, d, 'main', (n) => `new-${n}`, normalizeDockRules({ paneLimit: 3 })); return { preset: a.id, tabs: tabIds, paneLimit: 3, tree: out.tree, groups: Object.fromEntries(Object.entries(out.groups).map(([k, g]) => [k, { tabs: g.tabs.map((t) => t.id), windowId: g.windowId }])) }; }),
+      applyState: { tree: presetApply.tree, groups: Object.fromEntries(Object.entries(presetApply.groups).map(([k, g]) => [k, { tabs: g.tabs, active: g.active, windowId: g.windowId }])) },
+      applyEmpty: applyPreset({ tree: null, groups: {} }, normalizeDockLayout(presets[0]!.data), 'main', (n) => `new-${n}`),
+    },
+  });
+}
+// xLayout (xlayout@1, Big Dog build xlayout s1, Nov 3 2026; core/engines/xlayout.ts): Molly as one app — apps, chrome merge
+// modes, the IDE block, three toolbar slots, namespacing, what the guests hide / the host takes, guest frame URLs.
+{
+  const starters = load('xlayout');
+  const apps = ['amberx', 'axhub', 'console'];
+  const badData: Record<string, unknown> = {
+    nothing: null, string: 'x', 'no apps': {}, 'apps not a list': { apps: 'amberx' },
+    'bad apps': { apps: [{ id: 'Amber X', label: 'A', url: 'https://a.example' }, { id: 'ok', label: '', url: 'http://plain.example' }, { id: 'ok', label: 'Again', url: 'https://ok.example/' }, 'x'] },
+    'bad merge + ide + toolbars': { apps: [{ id: 'a', label: 'A', url: 'https://a.example' }], merge: { banner: 'merged', toolbar: 'maybe', ribbon: 'host' }, ide: { on: 'yes', paneLimit: 0, preset: 'Bad Id', presets: 'ide', tree: { kind: 'what' } }, toolbars: [{ slot: 4 }, { slot: 1, visible: 'yes', location: 'middle', items: [{ id: 'x' }, { id: 'y', label: 'Y', action: 'nav:home', open: 'tab', app: 'nope' }] }, { slot: 1 }, 'x'] },
+    'merge not an object': { apps: [], merge: 'all' }, 'ide not an object': { apps: [], ide: true }, 'toolbars not a list': { apps: [], toolbars: {} },
+    'too many': { apps: Array.from({ length: 13 }, (_, i) => ({ id: `app-${i}`, label: `App ${i}`, url: `https://app-${i}.example` })), ide: { presets: Array.from({ length: 11 }, (_, i) => `p-${i}`) } },
+  };
+  const normalizeInputs: Record<string, unknown> = {
+    ...badData,
+    'full': starters[0]!.data,
+    'inline tree + custom presets': { apps: [{ id: 'a', label: 'A', url: 'https://a.example/' }], ide: { on: true, paneLimit: 3, presets: ['two-rows', 'ide', 'two-rows', 'Bad'], tree: { kind: 'split', vertical: true, children: [{ kind: 'leaf', pane: 1 }, { kind: 'leaf', pane: 2 }], weights: [3, 1] } } },
+    'ide preset falls back to the list': { apps: [], ide: { presets: ['two-columns', 'grid-2x2'] } },
+    'toolbar items namespaced + repeats dropped': { apps: [{ id: 'a', label: 'A', url: 'https://a.example' }], toolbars: [{ slot: 2, visible: true, location: 'left', items: [{ id: 'one', label: 'One', action: 'a:nav:home', app: 'a', open: 'pane' }, { id: 'two', label: 'Two', action: 'nav:home', app: 'A', open: 'floating', icon: 'home' }, { id: 'one', label: 'Again', action: 'x' }, { id: 'three', label: 'Three', action: 'host.thing' }] }] },
+  };
+  const molly = normalizeXLayout(starters[0]!.data);
+  const mergeCases: Record<string, Partial<Record<(typeof CHROME_KINDS)[number], (typeof MERGE_MODES)[number]>>> = {
+    default: {}, 'everything guest': Object.fromEntries(CHROME_KINDS.map((k) => [k, 'guest'])), 'everything host': Object.fromEntries(CHROME_KINDS.map((k) => [k, 'host'])),
+    'nav merged only': { ...Object.fromEntries(CHROME_KINDS.map((k) => [k, 'guest'])), 'nav-menu': 'merged' }, 'banner merged too': { banner: 'merged' },
+  };
+  write('xlayout.json', {
+    contract: XLAYOUT_CONTRACT, kinds: CHROME_KINDS, modes: MERGE_MODES, defaultMerge: DEFAULT_MERGE, slots: TOOLBAR_SLOT_COUNT, locations: TOOLBAR_LOCATIONS, openTargets: OPEN_TARGETS, defaultPresets: DEFAULT_PRESETS, limits: XLAYOUT_LIMITS,
+    starters: Object.fromEntries(starters.map((a) => [a.id, { normalized: normalizeXLayout(a.data), errors: xlayoutErrors(a.data), valid: validateAsset(a) }])),
+    normalize: Object.entries(normalizeInputs).map(([name, raw]) => ({ name, raw, out: normalizeXLayout(raw) })),
+    errors: Object.entries(badData).map(([name, raw]) => ({ name, raw, errors: xlayoutErrors(raw) })),
+    items: [[{ id: 'a', label: 'A', action: 'nav:home' }, apps], [{ id: 'a', label: 'A', action: 'nav:home', app: 'amberx', open: 'pane' }, apps], [{ id: 'a', label: 'A', action: 'amberx:nav:home', app: 'amberx' }, apps], [{ id: 'a', label: 'A', action: 'nav:home', app: 'nope' }, apps], [{ id: 'bad id!', label: 'A', action: 'x' }, apps], [{ id: 'a', label: '', action: 'x' }, apps], [{ id: 'a', label: 'A', action: 'x', open: 'tab', icon: 'Bad' }, apps], ['x', apps]].map(([raw, a]) => ({ raw, item: parseToolbarItem(raw, a as string[]) })),
+    open: OPEN_TARGETS.flatMap((o) => [true, false].map((ide) => ({ open: o, ideOn: ide, target: openTargetFor({ open: o }, ide) }))),
+    ns: { make: [['amberx', 'file.save'], ['console', 'nav:home']].map(([a, i]) => ({ app: a, id: i, ns: xNsId(a!, i!) })), split: ['amberx:file.save', 'console:nav:home', 'nope:x', 'amberx', ':x', 'amberx:', 'file.save'].map((v) => ({ id: v, out: splitNs(v, apps) })), strip: [['amberx:file.save', 'amberx'], ['file.save', 'amberx'], ['console:nav:home', 'amberx']].map(([id, a]) => ({ id, app: a, out: stripNs(id!, a!) })) },
+    merge: Object.entries(mergeCases).map(([name, m]) => { const d = normalizeXLayout({ apps: starters[0]!.data.apps, merge: m }); return { name, merge: d.merge, hidden: guestHidden(d), takes: guestTakes(d), url: guestUrl(d, d.apps[0]!), urlRoute: guestUrl(d, d.apps[2]!, 'molly', '#/build'), userAgent: guestUserAgent(d) }; }),
+    toolbars: { all: visibleToolbars(molly), top: visibleToolbars(molly, 'top'), bottom: visibleToolbars(molly, 'bottom'), everyOn: visibleToolbars({ toolbars: molly.toolbars.map((t) => ({ ...t, visible: true })) }).map((t) => t.slot) },
+    presets: { offered: idePresets(molly, ['ide', 'single', 'two-columns', 'other']), none: idePresets(molly, []), rules: dockRulesOf(molly), rulesClamped: dockRulesOf(normalizeXLayout({ apps: [], ide: { paneLimit: 99 } })) },
+  });
+}
+// Unified chrome (chrome@1, Big Dog build xlayout s2, Nov 3 2026; core/engines/chrome.ts): guests send their chrome as data,
+// the host merges it under namespaces and routes picks back.
+{
+  const amberx: ChromeBundle = { $axf: CHROME_CONTRACT, app: 'amberx', label: 'AmberX', menus: [{ id: 'app', label: 'AmberX', items: [{ id: 'home', label: 'Home', icon: 'home' }, { id: 'sep', label: '', separator: true }, { id: 'notes', label: 'Notes', count: 3, items: [{ id: 'notes.new', label: 'New note' }] }] }], nav: [{ label: 'AmberX', items: [{ id: 'home', label: 'Home', icon: 'home' }, { id: 'notes', label: 'Notes', badge: 3 }] }], active: 'notes', context: [{ target: 'default', items: [{ id: 'copy', label: 'Copy' }] }, { target: 'note', items: [{ id: 'note.delete', label: 'Delete note', icon: 'trash' }] }], toolbars: [{ id: 'main', label: 'Main', items: [{ id: 'record', label: 'Record', icon: 'mic', pressed: true }] }], widgets: [{ id: 'clock', type: 'clock', text: '10:42' }, { id: 'approvals', type: 'counter', label: 'Approvals', count: 2, tone: 'accent' }] };
+  const axhub: ChromeBundle = { $axf: CHROME_CONTRACT, app: 'axhub', label: 'axHub', menus: [{ id: 'hub', label: 'Hub', items: [{ id: 'approvals', label: 'Approvals', count: 2 }] }, { id: 'manage', label: 'Manage', items: [{ id: 'services', label: 'Services' }] }], nav: [{ items: [{ id: 'approvals', label: 'Approvals', badge: 2 }, { id: 'services', label: 'Services', locked: true }] }], active: 'approvals', context: [{ target: 'default', items: [{ id: 'refresh', label: 'Refresh' }] }], toolbars: [], widgets: [{ id: 'clock', type: 'clock', text: '10:42' }, { id: 'hub', type: 'status', text: 'Live', tone: 'success' }] };
+  const console_: ChromeBundle = { $axf: CHROME_CONTRACT, app: 'console', menus: [], nav: [{ label: 'Build', items: [{ id: 'build', label: 'Builds' }] }], context: [], toolbars: [{ id: 'tb', items: [{ id: 'run', label: 'Run', icon: 'play' }, { id: 'stop', label: 'Stop', icon: 'square', locked: true }] }], widgets: [] };
+  const host: ChromeBundle = { $axf: CHROME_CONTRACT, app: 'molly', label: 'Molly', menus: [{ id: 'molly', label: 'Molly', items: [{ id: 'molly.home', label: 'Home' }, { id: 'molly.layout', label: 'Layout…' }] }], nav: [{ items: [{ id: 'home', label: 'Home', icon: 'home' }] }], active: 'home', context: [{ target: 'default', items: [{ id: 'molly.settings', label: 'Settings' }] }], toolbars: [], widgets: [{ id: 'host-clock', type: 'clock', text: '10:42' }] };
+  const rawBundles: unknown[] = [
+    amberx, { ...amberx, app: 'Amber X' }, { $axf: 'chrome@2', app: 'amberx' }, { $axf: CHROME_CONTRACT, app: 'x', menus: 'nope', nav: [{ items: [{ id: 'bad id!', label: 'x' }, { id: 'ok', label: '' }, { id: 'ok2', label: 'Ok', icon: 'Bad Icon', badge: -1, locked: 'yes' }, { id: 'ok2', label: 'Repeat' }] }, { items: [] }, 'x'], active: 'missing', context: [{ target: 'bad target!', items: [{ id: 'a', label: 'A' }] }, { target: 'ok', items: [] }, { target: 'ok2', items: [{ id: 'a', label: 'A', items: [{ id: 'b', label: 'B' }] }] }], toolbars: [{ id: 'tb', items: [{ id: 'noicon', label: 'No icon' }, { id: 'x' }] }, { id: 'tb', items: [{ id: 'dup', label: 'Dup', icon: 'x' }] }], widgets: [{ id: 'w', type: 'ribbon' }, { id: 'c', type: 'clock', text: 'now', tone: 'loud', count: 2.9 }, { id: 'c', type: 'clock' }] },
+    JSON.stringify(axhub), 'not json', null, { $axf: CHROME_CONTRACT, app: 'empty' },
+  ];
+  const merged = mergeChrome(host, [amberx, axhub, console_], { order: ['console', 'amberx', 'axhub'], activeApp: 'axhub' });
+  const noHost = mergeChrome(null, [axhub, amberx]);
+  const flat = mergeChrome(host, [axhub, amberx], { menus: 'flat', widgetsOnce: false });
+  const twice = mergeChrome(null, [amberx, { ...amberx, nav: [] }], { activeApp: 'nope' });
+  write('chrome.json', {
+    contract: CHROME_CONTRACT, limits: CHROME_LIMITS, widgetTypes: WIDGET_TYPES, widgetTones: WIDGET_TONES,
+    empty: emptyChrome('x', 'X'),
+    parse: rawBundles.map((raw) => ({ raw, bundle: parseChromeBundle(raw) })),
+    bundles: { host, amberx, axhub, console: console_ },
+    merged, noHost, flat, twice,
+    picks: chromePicks(merged), active: activeNav(merged), activeNone: activeNav(noHost),
+    route: ['amberx:file.save', 'axhub:nav:home', 'console:tb:run', 'molly.home', 'nope:x', ':x', 'amberx:'].map((id) => ({ id, out: routePick(id, ['amberx', 'axhub', 'console']) })),
+    // every pick of the merged model routes back to the app that sent it (or the host)
+    routed: chromePicks(merged).map((p) => ({ id: p.id, route: routePick(p.id, merged.apps) })),
+    message: [parseEmbedMessage({ $axf: 'embed@1', type: 'chrome', chrome: axhub }), parseEmbedMessage({ $axf: 'embed@1', type: 'chrome', chrome: { app: 'x' } }), parseEmbedMessage({ $axf: 'embed@1', type: 'chrome-request' }), parseEmbedMessage(JSON.stringify({ $axf: 'embed@1', type: 'chrome', chrome: amberx })), parseEmbedMessage({ $axf: 'embed@1', type: 'context', x: 12.4, y: 30, target: 'canvas', payload: 'row-3' })],
+  });
+}
 // Window engine geometry (windows-terminal s17, Oct 28 2026): the 8 resize handles (hit-testing, cursors), resize maths
 // with size floors (opposite edge fixed, no viewport clamp: windows may leave the screen), maximize / restore and the
 // title-bar drag that restores a maximized window under the pointer. Kotlin `Windows.kt` replays the same file.

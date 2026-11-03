@@ -1,0 +1,43 @@
+{
+  "$axf": "asset@1",
+  "type": "dock-layout",
+  "id": "three-columns",
+  "name": "Three columns",
+  "version": "1.0.0",
+  "description": "Three equal panes side by side (compare two files against a third). One of the ten starter pane layouts every dock host offers (dock-layout@1).",
+  "author": "AmberX AXF",
+  "tags": [
+    "dock",
+    "preset",
+    "columns",
+    "compare"
+  ],
+  "data": {
+    "panes": 3,
+    "tree": {
+      "kind": "split",
+      "vertical": false,
+      "children": [
+        {
+          "kind": "leaf",
+          "pane": 1
+        },
+        {
+          "kind": "leaf",
+          "pane": 2
+        },
+        {
+          "kind": "leaf",
+          "pane": 3
+        }
+      ],
+      "weights": [
+        1,
+        1,
+        1
+      ]
+    },
+    "hint": "Three equal panes side by side (compare two files against a third).",
+    "main": 2
+  }
+}
