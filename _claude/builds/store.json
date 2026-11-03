@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 511,
- "updatedAt": "2026-11-03T21:58:39.671Z",
+ "rev": 512,
+ "updatedAt": "2026-11-03T22:00:32.419Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -56578,14 +56578,18 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/plugin-settings-placement",
-   "pr": "",
+   "pr": "#289",
    "createdAt": "2026-11-03T20:30:14.217Z",
-   "updatedAt": "2026-11-03T21:47:40.726Z",
+   "updatedAt": "2026-11-03T22:00:30.460Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: branch claude/plugin-settings-placement (no PR yet)",
      "at": "2026-11-03T21:47:40.726Z"
+    },
+    {
+     "text": "Reconciler: PR #289",
+     "at": "2026-11-03T22:00:30.460Z"
     }
    ],
    "approvals": [],
@@ -56732,7 +56736,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
