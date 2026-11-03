@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 167,
- "updatedAt": "2026-11-03T11:26:13.298Z",
+ "rev": 175,
+ "updatedAt": "2026-11-03T12:10:52.524Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -253,6 +253,11 @@
    "angel": {
     "dirty": false,
     "updatedAt": "2026-10-29T18:33:29.973Z",
+    "history": []
+   },
+   "big-dog": {
+    "dirty": false,
+    "updatedAt": "2026-11-02T02:43:37.657Z",
     "history": []
    }
   },
@@ -45645,15 +45650,15 @@
    "title": "Fable rebuild: agent swarm (steps Opus built that were pinned to Fable)",
    "category": "Breakroom",
    "detail": "Fable suggested, Opus chosen rule: s1-s3, s11, s12, s15 of agent-swarm were pinned to Fable and built on Opus (branch claude/agent-swarm). The Fable build starts by reading and then replacing the Opus version.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T05:27:48.056Z",
-   "updatedAt": "2026-11-01T11:27:17.235Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T12:01:23.473Z",
+   "builtAt": "2026-11-03T12:01:23.473Z",
    "notes": [
     {
      "text": "Oct 31 2026: agent-swarm grew to 19 steps on main (renumbered). Fable-pinned steps built on Opus now: s1 card preview page, s2 roster + skills, s3 card designer, s4 agent-card@1 asset type (framework/core/engines/agent-card-rules.mjs, react/components/AgentCard.tsx, fixture agent-card.json, check-agent-card.mts), s5 job planner, s6 context packer, s14 cards + profiles, s15 group chat, s18 chat settings. The Fable rebuild covers all of them; its agent-card@1 review may keep or replace the Opus contract (Kotlin twin still deferred while Android is on hold).",
@@ -45690,12 +45695,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:32:15.362Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-01T11:27:16.963Z"
+     "updatedAt": "2026-11-03T11:52:50.420Z"
     },
     {
      "id": "s2",
@@ -45712,12 +45717,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:36:29.042Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-01T00:27:19.617Z"
+     "updatedAt": "2026-11-03T11:52:50.420Z"
     },
     {
      "id": "s3",
@@ -45734,12 +45739,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:40:49.733Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-01T00:27:19.617Z"
+     "updatedAt": "2026-11-03T11:52:50.420Z"
     },
     {
      "id": "s4",
@@ -45756,12 +45761,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:44:46.881Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-01T11:27:17.257Z"
+     "updatedAt": "2026-11-03T11:52:50.420Z"
     },
     {
      "id": "s5",
@@ -45778,12 +45783,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:54:11.600Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-01T00:27:19.617Z"
+     "updatedAt": "2026-11-03T12:10:50.537Z"
     },
     {
      "id": "s6",
@@ -45800,12 +45805,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:54:12.080Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-01T00:27:19.617Z"
+     "updatedAt": "2026-11-03T12:10:50.537Z"
     },
     {
      "id": "s7",
@@ -45822,12 +45827,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:01:23.473Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-01T00:27:19.617Z"
+     "updatedAt": "2026-11-03T12:10:50.537Z"
     }
    ],
    "profiles": [
@@ -45838,10 +45843,28 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-10-31T05:27:48.056Z",
+    "builtAt": "2026-11-03T12:01:23.473Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mvx3bvuv089xhn": "2026-11-01T00:27:19.617Z",
+     "st-mvx3bvuv09vwf3": "2026-11-01T00:27:19.617Z",
+     "st-mvx3bvuv0a7v2s": "2026-11-01T00:27:19.617Z",
+     "st-mvx3bvuv0bb25l": "2026-11-01T00:27:19.617Z",
+     "st-mvx3bvuv0ckonb": "2026-11-01T00:27:19.617Z",
+     "st-mvx3bvuv0djqhy": "2026-11-01T00:27:19.617Z",
+     "st-mvx3bvuv0e7mgm": "2026-11-01T00:27:19.617Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-01T00:27:19.617Z",
    "rearranged": false,
@@ -48392,7 +48415,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-02T18:47:31.123Z",
-   "updatedAt": "2026-11-03T11:26:13.275Z",
+   "updatedAt": "2026-11-03T12:10:52.492Z",
    "builtAt": "",
    "notes": [
     {
@@ -48408,7 +48431,14 @@
      "at": "2026-11-03T11:26:12.532Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-03T11:52:58.707Z"
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -48491,12 +48521,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:10:50.866Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:10:50.904Z"
     },
     {
      "id": "s5",
@@ -48513,12 +48543,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:10:51.267Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:10:51.298Z"
     },
     {
      "id": "s6",
@@ -48535,12 +48565,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:10:51.670Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:10:51.696Z"
     },
     {
      "id": "s7",
@@ -48557,12 +48587,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:10:52.072Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:10:52.126Z"
     },
     {
      "id": "s8",
@@ -48579,12 +48609,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:10:52.492Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:10:52.524Z"
     },
     {
      "id": "s9",
@@ -48683,7 +48713,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

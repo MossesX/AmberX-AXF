@@ -8,6 +8,7 @@ import { ChromeHost, RUN_ACTION } from './host';
 import { effectiveXLayout, FOLDER, K, PLUGIN_ID, SLOTS } from './model';
 import { declaredToolbars, barKey, TOOLBAR_CTX, WithToolbars } from './toolbars';
 import { APP_TAB, AppMain, AppTab, enterIde, keepIde, LAYOUT_DIALOG, LayoutPicker, openApp } from './workspace';
+import helpPack from '../help.json';
 import './xlayout.css';
 
 /**
@@ -124,6 +125,7 @@ export const plugin: AxfWebLibrary = {
   version: '0.1.0',
   provides: ['view:xlayout', 'dialog:xlayout.layout', 'settings-tab:xlayout'],
   builtWith: { model: 'opus', builtAt: '2026-11-03' },
+  help: helpPack.data as AxfWebLibrary['help'],
   register(rt) {
     if (host) return; // one host per page (StrictMode runs this twice in development)
     host = new ChromeHost(rt, () => effectiveXLayout(rt));
