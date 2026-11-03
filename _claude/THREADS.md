@@ -966,3 +966,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 20:26 UTC · `follow-amber` → built, PR #280 (urgent) · orchestrator
 - 2026-11-03 20:26 UTC · `follow-amber` note (urgent) · orchestrator
 - 2026-11-03 20:30 UTC · `plugin-settings-placement` added (6 steps) (current) · orchestrator
+- 2026-11-03 20:30 UTC · `build-prompt-origin` s4 done (current) · orchestrator
