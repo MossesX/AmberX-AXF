@@ -568,9 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:07 UTC · `land-everything` branch claude/land-everything, merged (urgent) · builds-live
-- 2026-11-03 18:09 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 18:10 UTC · `builds-one-page` s7 done, s8 done, s9 done, s10 done, s11 done, s15 done, s30 done, s30 done, note (refactor) · foreign-write
 - 2026-11-03 18:10 UTC · `md-studio` s1 done (urgent) · orchestrator
 - 2026-11-03 18:10 UTC · `md-studio` s2 done (urgent) · orchestrator
 - 2026-11-03 18:15 UTC · `crew-live` added (7 steps) (urgent) · orchestrator
@@ -968,3 +965,6 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 22:08 UTC · `plugin-settings-placement` branch claude/plugin-settings-placement, PR #289 (current) · builds-live
 - 2026-11-03 22:08 UTC · `plugin-settings-placement` s6 done, → built (current) · orchestrator
 - 2026-11-03 22:08 UTC · `plugin-settings-placement` note (current) · orchestrator
+- 2026-11-03 22:12 UTC · `plugin-settings-placement` s6 done, → complete, note (current) · foreign-write
+- 2026-11-03 22:12 UTC · `terminal-drag-chain-tree` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 22:12 UTC · `molly-banners` added (5 steps) (current) · foreign-write
