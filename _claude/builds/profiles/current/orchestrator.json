@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T20:48:30.071Z",
+ "updatedAt": "2026-11-03T20:50:06.378Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -719,7 +719,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw15t2wb01qsms"
+     "uid": "st-mw15vw0y0i2vyk"
     },
     {
      "id": "s2",
@@ -737,7 +737,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw15t2wb02la9p"
+     "uid": "st-mw15vw0y0jkyiz"
     },
     {
      "id": "s3",
@@ -755,7 +755,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw15t2wb0313n0"
+     "uid": "st-mw15vw0y0krs0p"
     },
     {
      "id": "s4",
@@ -773,10 +773,100 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw15t2wb04bnxw"
+     "uid": "st-mw15vw0y0lm6sx"
     },
     {
      "id": "s5",
+     "text": "s5 Commands once -> REST + MCP + CLI; tests; phone + desktop shots; UI Review; report; THREADS; PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw15vw0y0m4wsk"
+    },
+    {
+     "id": "s6-5",
+     "text": "s1 ref@1 resolver: registries (screens, settings, plugins, dialogs, toolbars, menus, builds, PRs, agents, files), exact/alias matching, explicit touches: refs win",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw15t2wb01qsms"
+    },
+    {
+     "id": "s7-6",
+     "text": "s2 Interaction: dotted underline (tokens); tap = peek card, double-tap = open + highlight, long-press/right-click = context menu",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw15t2wb02la9p"
+    },
+    {
+     "id": "s8-7",
+     "text": "s3 Every section: In progress, Merged, Ready, Live, build/status banners, Codebase changes; existing part opens live one ('being changed by <build>'), new part opens its UI Review item",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw15t2wb0313n0"
+    },
+    {
+     "id": "s9-8",
+     "text": "s4 Apply through the generic banner item renderer (no banner-pack/banner-editor/banners-one edits; overlap noted)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw15t2wb04bnxw"
+    },
+    {
+     "id": "s10-9",
      "text": "s5 Commands once -> REST + MCP + CLI; tests; phone + desktop shots; UI Review; report; THREADS; PR",
      "model": "Opus",
      "why": "",
