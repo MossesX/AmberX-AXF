@@ -51,13 +51,46 @@ t('skill match picks the specialist', () => {
   const p = c.planJobs(B('b', [{ text: 'React card view in apps/console-web/plugins/x/web/ui.tsx' }, { text: 'FastAPI route in apps/console-web/plugins/x/server/__init__.py' }, { text: 'Update the README docs' }]), roster);
   assert.deepEqual(p.jobs.map((j) => j.agent), ['rio', 'py', 'doc']);
 });
-t('cheapest capable model', () => {
+t('the model comes from the policy: the step\'s pin wins, else foundation words → Fable, else the default', () => {
   const p = c.planJobs(B('b', [{ text: 'Update the README docs' }, { text: 'React card view' }, { text: 'Design the agent contract schema', model: 'Fable' }, { text: 'Refactor the engine' }]), roster);
-  assert.deepEqual(p.jobs.map((j) => j.model), ['opus', 'opus', 'fable', 'opus'], 'cheap tiers run as Opus (model policy)');
+  assert.deepEqual(p.jobs.map((j) => j.model), ['opus', 'opus', 'fable', 'opus'], 'cheap tiers run as Opus (model policy); an Opus pin holds even on engine words');
+  const u = c.planJobs({ id: 'u', steps: [{ id: 's1', text: 'Tidy the React settings page copy' }, { id: 's2', text: 'New asset type + schema for cards in framework/assets/' }, { id: 's3', text: 'Kotlin twin of the React view', model: '[Fable] pinned' }, { id: 's4', text: 'docs', model: 'sonnet' }] }, roster);
+  assert.deepEqual(u.jobs.map((j) => [j.tier, j.model]), [['opus', 'opus'], ['fable', 'fable'], ['fable', 'fable'], ['opus', 'opus']], 'unpinned: the policy\'s foundation rule; any pin spelling; a Sonnet pin runs as Opus');
+  assert.equal(c.requiredTier({ text: 'kernel engine twin' }), 'fable'); assert.equal(c.requiredTier({ text: 'x', model: 'Opus 5.5' }), 'opus');
+});
+t('an agent that cannot reach the model is passed over; when nobody can, the dearest it has runs with a warning', () => {
+  const p = c.planJobs(B('b', [{ text: 'FastAPI route schema in apps/console-web/plugins/x/server/__init__.py', model: 'Fable' }]), roster);
+  assert.notEqual(p.jobs[0].agent, 'py', 'py tops out at Opus, so a Fable step goes to a specialist who has Fable'); assert.equal(p.jobs[0].model, 'fable');
+  const only = { ...roster, agents: roster.agents.filter((a) => a.id === 'py') };
+  const q = c.planJobs(B('b', [{ text: 'Python server', model: 'Fable' }]), only); assert.equal(q.jobs[0].model, 'opus'); assert.match(q.warnings[0], /tops out at opus; job wants fable/);
+});
+t('every planned job is a swarm-job@1 record', () => {
+  const p = c.planJobs([B('a', [{ text: 'React ui in apps/x/web/ui.tsx' }, { text: 'Update the README docs', files: ['_claude/THREADS.md'] }]), B('b', [{ text: 'nothing anyone knows' }])], roster);
+  for (const j of p.jobs) { assert.equal(j.$axf, 'swarm-job@1'); assert.deepEqual(c.jobErrors(j), [], j.id); }
+  const f = c.fixerJob(p.jobs[0], ['apps/x/web/ui.tsx'], roster, 'a.s2'); assert.deepEqual(c.jobErrors(f), []); assert.equal(f.model, 'opus');
+});
+t('a step nobody matches goes to the most capable agent, not the cheapest, with a warning', () => {
+  const p = c.planJobs(B('b', [{ text: 'nothing anyone knows' }]), roster);
+  const best = roster.agents.filter((a) => !a.jobsOnly).reduce((t, a) => (a.tokenBudget > t.tokenBudget ? a : t));
+  assert.equal(p.jobs[0].agent, best.id); assert.equal(p.jobs[0].match, 0); assert.match(p.warnings[0], /no clear specialist/);
+  assert.notEqual(p.jobs[0].agent, roster.agents.filter((a) => !a.jobsOnly).reduce((t, a) => (a.salary < t.salary ? a : t)).id, 'the $5 docs agent is not the default');
+  const r2 = c.normRoster({ ...roster, fallback: 'rio' }); const q = c.planJobs(B('b', [{ text: 'nothing anyone knows' }]), r2);
+  assert.equal(q.jobs[0].agent, 'rio'); assert.match(q.warnings[0], /roster's fallback/);
+  assert.equal(c.planJobs(B('b', [{ text: 'nothing anyone knows' }]), r2, { eligible: (a) => a.id !== 'rio' }).jobs[0].agent, best.id, 'a fallback who cannot work is passed over');
+  assert.deepEqual(c.checkRoster(c.normRoster({ ...roster, fallback: 'ghost' }), skills), ['fallback "ghost" is not an agent on the roster']);
 });
 t('overlapping leases are sequenced, others run together', () => {
   const p = c.planJobs([B('a', [{ text: 'React ui in apps/x/web/ui.tsx' }]), B('b', [{ text: 'Python apps/x/server/main.py' }, { text: 'More React in apps/x/web/ui.tsx' }])], roster);
   assert.deepEqual(p.jobs.map((j) => j.wave), [0, 0, 1]); assert.deepEqual(p.jobs[2].after, ['a.s1']); assert.deepEqual(p.waves, [['a.s1', 'b.s1'], ['b.s2']]);
+});
+t('one agent works one job at a time, across builds', () => {
+  const p = c.planJobs([B('a', [{ text: 'Python apps/a/server/x.py' }]), B('b', [{ text: 'Python apps/b/server/y.py' }, { text: 'React in apps/b/web/z.tsx' }])], roster);
+  assert.deepEqual(p.jobs.map((j) => j.agent), ['py', 'py', 'rio']); assert.deepEqual(p.jobs.map((j) => j.wave), [0, 1, 0]); assert.deepEqual(p.jobs[1].after, ['a.s1']);
+});
+t('a folder lease and a glob rooted inside it overlap; globs with different roots do not', () => {
+  assert.ok(c.leasesOverlap(['apps/console-web/'], ['apps/*/src/'])); assert.ok(c.leasesOverlap(['apps/*/src/'], ['apps/console-web/src/']));
+  assert.ok(!c.leasesOverlap(['apps/console-web/plugins/*/web/'], ['apps/console-web/plugins/*/server/'])); assert.ok(!c.leasesOverlap(['framework/android/'], ['apps/*/src/']));
+  assert.ok(!c.leasesOverlap(['**/*.kt'], ['**/*.kts'])); assert.ok(c.leasesOverlap(['**/*.json'], ['apps/x/plugin.json']));
 });
 t('shared files are never leased', () => { const j = c.planJobs(B('b', [{ text: 'docs', files: ['_claude/THREADS.md', 'apps/x/README.md'] }]), roster).jobs[0]; assert.deepEqual(j.leases, ['apps/x/README.md']); assert.deepEqual(j.shared, ['_claude/THREADS.md']); });
 t('done and skipped steps make no job; ineligible agents are passed over', () => {
@@ -75,11 +108,33 @@ t('short file goes whole, long file is excerpted', () => {
   const s = c.extractSnippet('b', big, 'Show salary left on the card');
   assert.equal(s.whole, false); assert.match(s.text, /salaryLeft/); assert.match(s.text, /@@ lines 1-12/); assert.ok(s.text.split('\n').length < 40);
 });
-t('brief carries only the job, its leases and snippets', () => {
-  const job = c.planJobs(B('b', [{ text: 'React card in apps/x/web/ui.tsx', files: ['apps/x/web/ui.tsx', '_claude/THREADS.md'] }]), roster).jobs[0];
-  const p = c.packJob(job, { prefix: c.sharedPrefix(), skill: skills['react-ui'], snippets: [c.extractSnippet('apps/x/web/ui.tsx', 'export const A = 1;', job.text)] });
-  assert.ok(p.system.startsWith(c.sharedPrefix())); assert.match(p.system, /React UI/); assert.match(p.prompt, /Leased files \(only these\): apps\/x\/web\/ui\.tsx/); assert.match(p.prompt, /Boss will write.*THREADS/); assert.match(p.prompt, /export const A/);
+t('the best hits win the cap: a definition carrying two task words at the end of a long file beats weak hits at the top', () => {
+  const lines = Array.from({ length: 900 }, (_, i) => `filler ${i}`);
+  for (let i = 20; i < 600; i += 4) lines[i] = `// salary note ${i}`; // 145 weak hits (one word) before the real thing
+  lines[850] = 'export function salaryLeft(agent, payday) {'; lines[851] = '  return agent.salary - spent;'; lines[852] = '}';
+  const s = c.extractSnippet('b', lines.join('\n'), 'Show salary left till payday on the card');
+  assert.match(s.text, /export function salaryLeft/); assert.match(s.text, /@@ lines 1-12/); assert.ok(s.text.split('\n').length <= c.SNIPPET.maxLines + 40);
+  assert.deepEqual(s.lines[0], [1, 12]); assert.ok(s.lines.every(([a, b]) => a <= b)); assert.ok(s.hits > 100);
+  const noisy = Array.from({ length: 300 }, (_, i) => (i === 150 ? 'const cardWidth = 4;' : `card ${i}`)).join('\n'); // "card" is on every line: says nothing
+  assert.match(c.extractSnippet('n', noisy, 'card width').text, /cardWidth/); assert.ok(c.extractSnippet('n', noisy, 'card width').text.split('\n').length < 30);
+});
+t('brief carries only the job, its leases, snippets and folder listings', () => {
+  const job = c.planJobs(B('b', [{ text: 'React card in apps/x/web/ui.tsx', files: ['apps/x/web/ui.tsx', 'apps/x/web/', '_claude/THREADS.md'] }]), roster).jobs[0];
+  const p = c.packJob(job, { prefix: c.sharedPrefix(), skill: skills['react-ui'], snippets: [c.extractSnippet('apps/x/web/ui.tsx', 'export const A = 1;', job.text)], indexes: [c.folderIndex('apps/x/web/', ['ui.tsx', 'cards.tsx', 'swarm.css'])] });
+  assert.ok(p.system.startsWith(c.sharedPrefix())); assert.match(p.system, /React UI/); assert.match(p.prompt, /Leased files and folders \(only these\): apps\/x\/web\/ui\.tsx, apps\/x\/web\//); assert.match(p.prompt, /Boss will write.*THREADS/); assert.match(p.prompt, /export const A/);
+  assert.match(p.prompt, /--- apps\/x\/web\/ \(3 files\) ---\ncards\.tsx\nswarm\.css\nui\.tsx/);
   assert.ok(p.tokens.system + p.tokens.prompt < 2500);
+  const big = c.folderIndex('f/', [...Array.from({ length: 200 }, (_, i) => `sub${i % 3}/f${String(i).padStart(3, '0')}.ts`), 'README.md']);
+  assert.deepEqual(big, { path: 'f/', names: ['README.md', 'sub0/ (67 files)', 'sub1/ (67 files)', 'sub2/ (66 files)'], total: 201, outline: true }, 'a big folder is an outline: own files, then subfolders with counts');
+  assert.match(c.packJob(job, { prefix: '', indexes: [big] }).prompt, /\(201 files, outline\) ---\nREADME\.md\nsub0\/ \(67 files\)/);
+  const flat = c.folderIndex('g/', Array.from({ length: 300 }, (_, i) => `g${String(i).padStart(3, '0')}.ts`)); assert.equal(flat.names.length, c.FOLDER_INDEX_MAX);
+  const four = c.indexBlocks([flat, flat, flat, flat]); assert.equal(four.length, 4); assert.ok(four.every((b) => b.split('\n').length <= 2 + c.FOLDER_INDEX_MAX / 4), 'four folders share the cap'); assert.match(four[0], /… \d+ more$/);
+});
+const { listFolder } = await import('./swarm.mjs');
+t('an area job gets its folders listed, not read', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'swarm-area-')); mkdirSync(join(dir, 'apps', 'z', 'web', 'node_modules'), { recursive: true });
+  writeFileSync(join(dir, 'apps', 'z', 'web', 'ui.tsx'), 'export const Z = 1;\n'); writeFileSync(join(dir, 'apps', 'z', 'web', 'node_modules', 'x.js'), '');
+  assert.deepEqual(listFolder(join(dir, 'apps', 'z')), ['web/ui.tsx']);
 });
 
 // s4 headless runner (fake Claude Code binaries)

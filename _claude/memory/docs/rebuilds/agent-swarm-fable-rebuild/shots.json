@@ -1,0 +1,5 @@
+[
+  { "name": "breakroom-crew", "steps": [{ "search": "Swarm" }, { "wait": 2500 }] },
+  { "name": "breakroom-idcards", "steps": [{ "search": "Swarm" }, { "wait": 1500 }, { "click": "text=ID cards" }, { "wait": 1500 }] },
+  { "name": "breakroom-chat", "steps": [{ "search": "Swarm" }, { "wait": 1500 }, { "click": "text=Group chat" }, { "wait": 1500 }] }
+]

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T02:40:26.219Z",
+ "updatedAt": "2026-11-03T12:01:23.504Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -358,7 +358,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-02T18:47:31.123Z",
-   "updatedAt": "2026-11-03T02:32:23.313Z",
+   "updatedAt": "2026-11-03T11:52:58.707Z",
    "builtAt": "",
    "notes": [
     {
@@ -368,6 +368,10 @@
     {
      "text": "Nov 2 21:30 ET: s3 pane engine is covered by Urgent build dock-engine (shared with MD Studio + Theme Editor); s7/s8 build on it. Don't build s3 separately.",
      "at": "2026-11-03T02:32:23.312Z"
+    },
+    {
+     "text": "s3 (pane engine) covered by dock-engine (Urgent, complete on branch claude/molly-fable): core/engines/dock.ts + DockHost. s1-s2 built on Fable on the same branch (xlayout@1, chrome@1). s4-s12 are the Opus phase: run from this branch after it merges.",
+     "at": "2026-11-03T11:26:12.532Z"
     }
    ],
    "approvals": [],
@@ -385,8 +389,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:26:10.521Z",
      "note": "",
      "uid": "st-mvzm2laq0d1lyo"
     },
@@ -403,8 +407,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:26:11.187Z",
      "note": "",
      "uid": "st-mvzm2laq0e7r3v"
     },
@@ -421,8 +425,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:26:11.848Z",
      "note": "",
      "uid": "st-mvzm2laq0fclz5"
     },
