@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 378,
- "updatedAt": "2026-11-03T19:21:12.744Z",
+ "rev": 379,
+ "updatedAt": "2026-11-03T19:21:51.244Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -54604,12 +54604,16 @@
    "branch": "claude/follow-amber",
    "pr": "",
    "createdAt": "2026-11-03T19:02:35.761Z",
-   "updatedAt": "2026-11-03T19:14:25.261Z",
+   "updatedAt": "2026-11-03T19:21:00.653Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Agent: Reel Rhonda (headless, Opus). All steps Opus; no model switch.",
      "at": "2026-11-03T19:02:37.612Z"
+    },
+    {
+     "text": "agent-pick (claude/agent-pick) pops the Claude agent picker through its own ask watcher (claude-session plugin polls GET /asks every 5 s, Brett's session only) plus a bell alert and a held axHub approval (axf.claude_session_answer). When follow-amber's pop-up stream lands, route those asks through it (dialog id claude.picker, props {ask}).",
+     "at": "2026-11-03T19:21:00.653Z"
     }
    ],
    "approvals": [],
@@ -54801,7 +54805,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T19:04:24.442Z",
-   "updatedAt": "2026-11-03T19:15:41.101Z",
+   "updatedAt": "2026-11-03T19:21:36.643Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -54932,12 +54936,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T19:21:31.611Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T19:04:24.443Z",
-     "updatedAt": "2026-11-03T19:04:24.443Z"
+     "updatedAt": "2026-11-03T19:21:31.639Z"
     },
     {
      "id": "s7",
@@ -54954,12 +54958,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T19:21:33.797Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T19:04:24.443Z",
-     "updatedAt": "2026-11-03T19:04:24.443Z"
+     "updatedAt": "2026-11-03T19:21:34.000Z"
     },
     {
      "id": "s8",
@@ -54976,12 +54980,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T19:21:36.643Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T19:04:24.443Z",
-     "updatedAt": "2026-11-03T19:04:24.443Z"
+     "updatedAt": "2026-11-03T19:21:36.719Z"
     },
     {
      "id": "s9",
@@ -55014,7 +55018,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -848,3 +848,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 19:15 UTC · `agent-pick` s5 done (urgent) · Snap Sully (claude code)
 - 2026-11-03 19:14 UTC · `follow-amber` s6 done (urgent) · orchestrator
 - 2026-11-03 19:20 UTC · `claude-settings` note (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:21 UTC · `follow-amber` note (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:21 UTC · `agent-pick` s6 done (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:21 UTC · `agent-pick` s7 done (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:21 UTC · `agent-pick` s8 done (urgent) · Snap Sully (claude code)
