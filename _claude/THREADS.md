@@ -569,13 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 19:00 UTC · `crew-live` PR #273 (urgent) · builds-live
-- 2026-11-03 19:01 UTC · `crew-live` s7 done, → built (urgent) · orchestrator
-- 2026-11-03 19:01 UTC · `crew-live` note (urgent) · orchestrator
-- 2026-11-03 19:02 UTC · `claude-settings` added (7 steps) (urgent) · orchestrator
-- 2026-11-03 19:02 UTC · `follow-amber` added (7 steps) (urgent) · orchestrator
-- 2026-11-03 19:02 UTC · `claude-settings` note (urgent) · orchestrator
-- 2026-11-03 19:02 UTC · `claude-settings` branch claude/claude-settings (urgent) · builds-live
 - 2026-11-03 19:02 UTC · `follow-amber` note (urgent) · orchestrator
 - 2026-11-03 19:02 UTC · `follow-amber` → running (urgent) · orchestrator
 - 2026-11-03 19:04 UTC · `agent-pick` added (9 steps) (urgent) · Snap Sully (claude code)
@@ -969,3 +962,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 22:48 UTC · `terminal-tabs-left` PR #293 (current) · builds-live
 - 2026-11-03 23:03 UTC · `lenny-land-all` added (7 steps) (current) · orchestrator
 - 2026-11-03 23:04 UTC · `lenny-land-all` → running (current) · orchestrator
+- 2026-11-03 23:11 UTC · `urgent-main-ci-green` note (current) · foreign-write
+- 2026-11-03 23:11 UTC · `whats-new-open-fix` s2 done, s3 done, s4 done, s5 done, → complete, note (current) · foreign-write
+- 2026-11-03 23:11 UTC · `terminal-drag-chain-tree` note (current) · foreign-write
+- 2026-11-03 23:11 UTC · `terminal-tabs-left` note (current) · foreign-write
+- 2026-11-03 23:11 UTC · `gizmo-companion` added (19 steps) (current) · foreign-write
+- 2026-11-03 23:11 UTC · `plugin-lazy-load` added (3 steps) (current) · foreign-write
+- 2026-11-03 23:11 UTC · `lenny-land-all` added (7 steps) (current) · foreign-write
