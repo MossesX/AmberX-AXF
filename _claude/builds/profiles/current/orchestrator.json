@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T21:46:15.058Z",
+ "updatedAt": "2026-11-03T21:46:36.204Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -221,16 +221,21 @@
    "title": "Terminal: sessions navigation rail",
    "category": "Console > Terminal",
    "detail": "Brett, Nov 3 2026 (voice): a collapsible left nav rail in the existing Terminal plugin listing live sessions (My sessions: tmux/Claude Code + claude.ai chat/voice mirrored from axHub activity; Agents: headless builds; Connections), mirror read-only + Jump in, console_session_note MCP tool. Builds on terminal-vps-host (PR #274). Agent: Earl the Ear (router not on main).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/terminal-sessions-nav",
    "pr": "#286",
    "createdAt": "2026-11-03T19:58:59.822Z",
-   "updatedAt": "2026-11-03T21:45:27.225Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-03T21:45:32.326Z",
+   "builtAt": "2026-11-03T21:45:30.056Z",
+   "notes": [
+    {
+     "text": "Agent: Earl the Ear. PR #286 (on #274). UI Review r-20261103-107a9e61 waiting. Report _claude/builds/reports/terminal-sessions-nav.md",
+     "at": "2026-11-03T21:45:32.326Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -301,8 +306,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:45:30.056Z",
      "note": "",
      "uid": "st-mw142d5l08ii3v"
     }
