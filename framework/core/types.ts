@@ -123,6 +123,21 @@ export interface MenuItem {
   tag?: MenuItemTag;
   /** a small chip after the badge (e.g. the tool, `vps.run`) */
   chip?: string;
+  /* ---- smart menus (engines/smartmenu.ts, smart-menu@1) ---- */
+  /** show only where this holds (target / state / screen / device / topic); conditional items form the context section */
+  when?: import('./engines/smartmenu').MenuWhen;
+  /** deletes, stops or throws something away: never promoted into a dynamic section (default: guessed from the action) */
+  destructive?: boolean;
+  /** a section heading row (dynamic sections), not an item */
+  heading?: boolean;
+  /** with `heading`: drawn folded until tapped */
+  collapsed?: boolean;
+  /** the dynamic section this row sits in */
+  section?: string;
+  /** the item a Suggested / Pinned / Talking-about copy stands for (picks are learned under it) */
+  source?: string;
+  /** a tiny muted hint after the label ("Used often here", the topic) */
+  hint?: string;
 }
 
 /** A live-list row's badge (`MenuItem.tag`). */
@@ -642,7 +657,8 @@ export interface AxfState {
   view: string;
   dialog: { id: string; props?: Record<string, unknown>; scope?: string } | null;
   toasts: Toast[];
-  context: { x: number; y: number; target: string; payload?: string; scope?: string } | null;
+  /** the open context menu; `state` = the target's state words (`data-fx-ctx-state`, smart menus) */
+  context: { x: number; y: number; target: string; payload?: string; scope?: string; state?: string[] } | null;
   /** increments on every state change */
   rev: number;
   /** increments on every successful hot-swap */

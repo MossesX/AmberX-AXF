@@ -5,6 +5,7 @@ import { Icon } from './Icon';
 import { BrandMark, BrandWatermark, brandHostProps } from './Brand';
 import { useScopeId } from './InterfaceScope';
 import { MenuList } from './MenuList';
+import { parseMenuState, type MenuItem } from '../../core';
 
 export interface DialogDef {
   title: string;
@@ -102,7 +103,9 @@ export function ContextMenuHost() {
       if ((target?.closest('[data-fx-scope]')?.getAttribute('data-fx-scope') ?? '') !== scope) return;
       const el = target?.closest('[data-fx-ctx-target]');
       const name = el?.getAttribute('data-fx-ctx-target') ?? 'default';
-      rt.openContext(x, y, name, el?.getAttribute('data-fx-ctx-payload') ?? undefined);
+      // the target's state words (`data-fx-ctx-state`, smart menus: running failed has-pr …), nearest one up the tree
+      const state = parseMenuState(target?.closest('[data-fx-ctx-state]')?.getAttribute('data-fx-ctx-state'));
+      rt.openContext(x, y, name, el?.getAttribute('data-fx-ctx-payload') ?? undefined, state);
     };
     const onCtx = (e: MouseEvent) => {
       // A touch long-press also fires the browser's own contextmenu: the long-press timer handles it, once.
@@ -179,16 +182,21 @@ export function ContextMenuHost() {
   const more = [...extra, ...fallback] as unknown as typeof base;
   const sep = base.length && more.length && !base[base.length - 1]?.separator ? [{ id: 'x-sep', separator: true } as unknown as (typeof base)[number]] : [];
   const tail = everywhere.length ? [{ id: 'ctx-everywhere-sep', separator: true }, ...everywhere] : [];
-  const items = [...base, ...sep, ...more, ...(tail as unknown as typeof base)];
+  // smart menus (engines/smartmenu.ts): the Menus plugin adds its dynamic sections above the fixed items; without it
+  // conditional (`when`) items that don't apply are just dropped
+  const open = rt.menuOpen('context', ctx.target || 'default', { payload: ctx.payload, state: ctx.state });
+  const items = rt.menuDraw(open, [...base, ...sep, ...more, ...(tail as unknown as typeof base)] as unknown as MenuItem[]);
   return (
     <div
       ref={ref}
       className="fx-ctx fx-popover"
-      style={{ left: pos?.x ?? state.context.x, top: pos?.y ?? state.context.y, visibility: pos ? 'visible' : 'hidden' }}
+      style={{ ...rt.menuLookVars(open.menu), left: pos?.x ?? state.context.x, top: pos?.y ?? state.context.y, visibility: pos ? 'visible' : 'hidden' }}
+      data-axf-menu={open.menu}
       onContextMenu={(e) => e.preventDefault()}
     >
       <MenuList
         items={items}
+        open={open}
         payload={state.context.payload}
         onDone={() => rt.closeContext()}
         showIcons={cm.showIcons}

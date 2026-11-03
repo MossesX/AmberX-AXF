@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
-import { filterMenu, resolveChecked, type AssetType, type MenuItem } from '../../core';
+import { filterMenu, resolveChecked, type AssetType, type MenuItem, type MenuOpen } from '../../core';
 import { useRuntime, useAxfState } from '../AxfProvider';
 import { Icon } from './Icon';
 import { Kbd } from './Controls';
@@ -10,6 +10,32 @@ interface MenuListProps {
   payload?: string;
   showIcons?: boolean;
   showShortcuts?: boolean;
+  /** where the menu was opened (smart menus): picks are reported to `rt.menuPicked` so the Menus plugin can learn */
+  open?: MenuOpen;
+}
+
+/**
+ * A dynamic section's heading row (smart menus: Talking about, Pinned, Suggested, context). Tapping it folds or unfolds
+ * the section; `data-axf-section` lets the Menus plugin's look (accent per section) and tests find it.
+ */
+export function MenuHeading({ item, folded, onToggle }: { item: MenuItem; folded: boolean; onToggle: () => void }) {
+  return (
+    <li className="fx-menu__li fx-menu__heading-li" role="presentation" data-axf-section={item.section}>
+      <button type="button" className="fx-menu__heading" aria-expanded={!folded} onClick={(e) => { e.stopPropagation(); onToggle(); }} data-help="menu-section">
+        {item.icon && <Icon name={item.icon} size={12} />}
+        <span className="fx-menu__heading-label">{item.label}</span>
+        <Icon name={folded ? 'chevron-right' : 'chevron-down'} size={12} />
+      </button>
+    </li>
+  );
+}
+
+/** Folded sections of an open menu: heading ids, starting from what the headings say (`collapsed`). */
+export function useFoldedSections(items: { id: string; heading?: boolean; collapsed?: boolean; section?: string }[]) {
+  const [folded, setFolded] = useState<ReadonlySet<string>>(() => new Set(items.filter((i) => i.heading && i.collapsed).map((i) => i.section ?? i.id)));
+  const toggle = (section: string) => setFolded((f) => { const n = new Set(f); if (n.has(section)) n.delete(section); else n.add(section); return n; });
+  const hidden = (i: { heading?: boolean; section?: string }) => !i.heading && !!i.section && folded.has(i.section);
+  return { folded, toggle, hidden };
 }
 
 /**
@@ -61,10 +87,11 @@ function dropTaken(items: MenuItem[], rt: ReturnType<typeof useRuntime>): MenuIt
 }
 
 /** Shared renderer for dropdown menus and context menus (UAC-aware, nested). */
-export function MenuList({ items, onDone, payload, showIcons = true, showShortcuts = true }: MenuListProps) {
+export function MenuList({ items, onDone, payload, showIcons = true, showShortcuts = true, open }: MenuListProps) {
   const rt = useRuntime();
   useAxfState();
   const [openSub, setOpenSub] = useState<string | null>(null);
+  const fold = useFoldedSections(items);
   // Hooks the host app took over (embed@1 takes, e.g. Settings) are dropped like hidden items.
   const visible = filterMenu(dropTaken(items, rt), (r) => rt.gate(r));
 
@@ -72,6 +99,8 @@ export function MenuList({ items, onDone, payload, showIcons = true, showShortcu
     <ul className="fx-menu" role="menu">
       {visible.map((item) => {
         if (item.separator) return <li key={item.id} className={item.spacer ? 'fx-menu__spacer' : 'fx-menu__sep'} role="separator" />;
+        if (item.heading) return <MenuHeading key={item.id} item={item} folded={fold.folded.has(item.section ?? item.id)} onToggle={() => fold.toggle(item.section ?? item.id)} />;
+        if (fold.hidden(item)) return null;
         // a hook of a function the host locks (e.g. plugins) stays, greyed out with its note
         const hostLock = item.action ? rt.lockedByHost({ action: item.action }) : null;
         const locked = rt.gate(item.requires) === 'disable' || !!hostLock;
@@ -84,6 +113,7 @@ export function MenuList({ items, onDone, payload, showIcons = true, showShortcu
             key={item.id}
             className="fx-menu__li"
             data-axf-item={item.id}
+            data-axf-section={item.section}
             onMouseEnter={() => setOpenSub(hasSub ? item.id : null)}
           >
             <button
@@ -101,6 +131,7 @@ export function MenuList({ items, onDone, payload, showIcons = true, showShortcu
                   return;
                 }
                 onDone();
+                if (open) rt.menuPicked(open, item);
                 if (item.action) rt.dispatch(item.action, { payload });
               }}
             >
@@ -108,13 +139,14 @@ export function MenuList({ items, onDone, payload, showIcons = true, showShortcu
                 <span className="fx-menu__icon">{locked ? <Icon name="lock" size={14} /> : <Icon name={item.icon} size={15} />}</span>
               )}
               <span className="fx-menu__label">{item.label}</span>
+              {item.hint && <span className="fx-menu__hint">{item.hint}</span>}
               {check !== null && <span className="fx-menu__check">{check && <Icon name="check" size={14} />}</span>}
               {showShortcuts && item.shortcut && <Kbd>{item.shortcut}</Kbd>}
               {hasSub && <Icon name="chevron-right" size={14} />}
             </button>
             {hasSub && openSub === item.id && (
               <MenuSub>
-                {item.items?.length ? <MenuList items={item.items} onDone={onDone} payload={payload} showIcons={showIcons} showShortcuts={showShortcuts} />
+                {item.items?.length ? <MenuList items={item.items} onDone={onDone} payload={payload} showIcons={showIcons} showShortcuts={showShortcuts} open={open} />
                   : <ProviderList id={item.provider!} onDone={onDone} payload={payload} showIcons={showIcons} showShortcuts={showShortcuts} />}
               </MenuSub>
             )}

@@ -40,6 +40,7 @@ const PREFIXES: string[] = [
   'axf.custom.',          // per-asset tokens (engines/customize.ts)
   'axf.roll.',            // Randomize / Assets in rolls switches
   'axf.banners.',         // banner looks, behaviour and hides (BannerSettings, engines/bannerhide.ts)
+  'axf.menus.look',       // smart menus' look (engines/smartmenu.ts MenuLook; Menus plugin)
   'axf.toolbar.collapsed',
   'axf.placement.',       // where each plugin's UI opens
   'axf.appearance.',      // the Appearance tab's own settings (spacing is written to its field too)

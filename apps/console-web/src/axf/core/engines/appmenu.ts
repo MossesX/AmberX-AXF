@@ -97,6 +97,14 @@ export interface CompiledMenuItem {
   expand?: string;
   tag?: MenuItemTag;
   chip?: string;
+  /** smart menus (engines/smartmenu.ts): condition, never-promote flag, and the dynamic-section fields of a composed row */
+  when?: import('./smartmenu').MenuWhen;
+  destructive?: boolean;
+  heading?: boolean;
+  collapsed?: boolean;
+  section?: string;
+  source?: string;
+  hint?: string;
 }
 export interface CompiledMenuButton extends MenuItemButton { locked: boolean }
 export interface CompiledMenu { id: string; label: string; origin: string; items: CompiledMenuItem[] }
@@ -140,6 +148,7 @@ type Node = {
   id: string; label?: string; icon?: string; action?: string; shortcut?: string; requires?: string; separator?: boolean;
   provider?: string; badge?: string; checked?: string;
   buttons?: MenuItemButton[]; detail?: string; deadline?: number; paused?: string; tag?: MenuItemTag; chip?: string; expand?: string;
+  when?: import('./smartmenu').MenuWhen; destructive?: boolean;
   items?: Node[]; origin: string; order: number; seq: number; before?: string; after?: string;
 };
 type MenuNode = { id: string; label: string; origin: string; order: number; seq: number; items: Node[] };
@@ -163,6 +172,8 @@ function toNode(it: MenuItem, origin: string, seq: number, defaults: { order?: n
     ...(it.tag && typeof it.tag.label === 'string' && it.tag.label ? { tag: { ...it.tag } } : {}),
     ...(typeof it.chip === 'string' && it.chip ? { chip: it.chip } : {}),
     ...(typeof it.expand === 'string' && it.expand ? { expand: it.expand } : {}),
+    ...(it.when && typeof it.when === 'object' ? { when: { ...it.when } } : {}),
+    ...(typeof it.destructive === 'boolean' ? { destructive: it.destructive } : {}),
   };
   const before = it.before ?? defaults.before;
   const after = it.after ?? defaults.after;
@@ -198,6 +209,8 @@ function strip(n: Node): MergedMenuItem {
   if (n.separator) out.separator = true;
   if (n.provider !== undefined) out.provider = n.provider;
   if (n.badge !== undefined) out.badge = n.badge;
+  if (n.when !== undefined) out.when = n.when;
+  if (n.destructive !== undefined) out.destructive = n.destructive;
   if (n.checked !== undefined) out.checked = n.checked;
   if (n.buttons) out.buttons = n.buttons;
   if (n.detail !== undefined) out.detail = n.detail;
@@ -332,6 +345,8 @@ function compileList(items: readonly MergedMenuItem[], env: AppMenuEnv, depth: n
     if (it.tag !== undefined) c.tag = it.tag;
     if (it.chip !== undefined) c.chip = it.chip;
     if (it.expand !== undefined) c.expand = it.expand;
+    if (it.when !== undefined) c.when = it.when;
+    if (it.destructive !== undefined) c.destructive = it.destructive;
     if (it.provider !== undefined) {
       if (!env.providers.includes(it.provider)) { notes.push(`${where}/${it.id}: live list "${it.provider}" is not registered`); continue; }
       if (depth >= max) { notes.push(`${where}/${it.id}: live list cut at depth ${max}`); continue; }
