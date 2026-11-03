@@ -590,3 +590,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 16:14 UTC · `land-everything` s2 done (urgent) · orchestrator
 - 2026-11-03 16:22 UTC · `tools-plugin` note (refactor) · foreign-write
 - 2026-11-03 16:22 UTC · `crew-retrain` branch claude/crew-retrain, PR #265 (breakroom) · builds-live
+- 2026-11-03 16:23 UTC · `crew-retrain` s7 done (breakroom) · orchestrator
