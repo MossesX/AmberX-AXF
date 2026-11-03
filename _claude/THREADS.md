@@ -568,8 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 16:07 UTC · `land-everything` s1 done (urgent) · orchestrator
-- 2026-11-03 16:07 UTC · `crew-retrain` s5 done (breakroom) · orchestrator
 - 2026-11-03 16:12 UTC · `crew-retrain` s6 done (breakroom) · orchestrator
 - 2026-11-03 16:14 UTC · `tools-plugin` note (refactor) · foreign-write
 - 2026-11-03 16:14 UTC · `land-everything` note (urgent) · orchestrator
@@ -968,3 +966,5 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 21:26 UTC · `git-status-board` s1 done, → running (current) · claude-session (Snap Sully)
 - 2026-11-03 21:26 UTC · `git-status-board` s2 done (current) · claude-session (Snap Sully)
 - 2026-11-03 21:27 UTC · `git-status-board` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 21:30 UTC · `git-status-board` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 21:30 UTC · `ui-review-predicted` PR #285 (urgent) · builds-live

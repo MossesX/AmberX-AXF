@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 482,
- "updatedAt": "2026-11-03T21:27:20.633Z",
+ "rev": 483,
+ "updatedAt": "2026-11-03T21:30:36.816Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55931,9 +55931,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-review-predicted",
-   "pr": "",
+   "pr": "#285",
    "createdAt": "2026-11-03T19:54:18.485Z",
-   "updatedAt": "2026-11-03T20:21:13.847Z",
+   "updatedAt": "2026-11-03T21:30:23.262Z",
    "builtAt": "",
    "notes": [
     {
@@ -56085,7 +56085,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
