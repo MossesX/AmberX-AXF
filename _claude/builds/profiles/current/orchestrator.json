@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T22:16:59.410Z",
+ "updatedAt": "2026-11-03T22:17:11.883Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3107,19 +3107,23 @@
    "title": "Bug fix: tapping the What's new banner item opens nothing; dialogs cannot be closed on phone",
    "category": "",
    "detail": "Brett (Nov 3 2026, voice): \"I see the What's new banner and I'm clicking it. But I'm not seeing anything.\" Addendum: \"I have this banner open. I can't close it.\" Tap opens the panel every time (phone/desktop, standalone/Molly); every dialog closes by X, outside tap, back/Escape, swipe down; control@1 console.dialogs close. Agent: Janitor Joey.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/whats-new-open-fix",
    "pr": "#290",
    "createdAt": "2026-11-03T21:23:34.422Z",
-   "updatedAt": "2026-11-03T22:16:57.677Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T22:17:02.033Z",
+   "builtAt": "2026-11-03T22:16:59.240Z",
    "notes": [
     {
      "text": "Assigned: Janitor Joey (router not on this checkout). Cause: (1) console-terminal auto-opens a floating window (z 60) over the Banners strip (z 42) on phones, swallowing taps on the strip's What's new row; (2) that row (systems-check) only expands inline in a 45vh-capped strip, it never opened the What's new panel. Top-bar chip itself works.",
      "at": "2026-11-03T21:36:04.573Z"
+    },
+    {
+     "text": "PR #290 open; UI Review r-20261103-049edfb2 waiting (holds the auto-merge until Brett approves). Report _claude/builds/reports/whats-new-open-fix.md",
+     "at": "2026-11-03T22:17:02.033Z"
     }
    ],
    "approvals": [],
@@ -3210,8 +3214,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T22:16:59.239Z",
      "note": "",
      "uid": "st-mw1734ua0alunm"
     }
