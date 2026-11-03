@@ -11,6 +11,13 @@
 # readable lines (deploy/claude-stream.mjs) and kept: <log> = what you see, <log minus .log>.jsonl = the raw stream.
 # When it finishes and nobody is attached, the tmux session ends after closeFinishedAfterSec (agent cap settings, default
 # 2 min; 120 s without the cap), logs kept. If a client is attached it waits for Enter up to a day.
+# Headless tabs (Nov 3 2026, Brett): the console opens a tab for every running session with the agent, the model and a
+# live cost. The run tags its tmux session (@axf_agent, @axf_model, @axf_meter, @axf_chain, @axf_cwd, @axf_kind) and
+# appends session-start / session-end lines to $AXF_HEADLESS_DIR/events.jsonl (default /var/tmp/axf-headless). The stream
+# printer keeps <session>.meter.json (headless-meter@1: status, cost from usage × framework/schemas/model-pricing.json,
+# reconciled to the result's total_cost_usd) and <session>.chain.json (context-chain@1: the files the session takes in,
+# with their rules) there, which the Terminal reads. Agent = --agent, else AXF_AGENT, else --name; model = AXF_MODEL,
+# else the --model in the claude args.
 # Without tmux it falls back to the old `nohup … &` (nothing to attach to; the systems check offers to install tmux).
 # Activity banner: before Claude starts, `activity.mjs hooks ensure` adds any Claude Code hook event missing from the
 # running user's ~/.claude/settings.json (root or axfbuild alike), so headless sessions report and close their lines.
@@ -36,7 +43,7 @@ set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export PATH="$HOME/.local/bin:$PATH"   # vps.run / cron shells don't load the profile; Claude Code installs here
 
-name="" brief="" log=".axf-headless.log" inner="" envfile="" mcp="" slot="" queued="" priority="${AXF_PRIORITY:-}"
+name="" brief="" log=".axf-headless.log" inner="" envfile="" mcp="" slot="" queued="" priority="${AXF_PRIORITY:-}" agent="${AXF_AGENT:-}"
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --name) name="$2"; shift 2 ;;
@@ -47,6 +54,7 @@ while [[ $# -gt 0 ]]; do
     --slot) slot="$2"; shift 2 ;;
     --queued) queued="$2"; shift 2 ;;
     --priority) priority="$2"; shift 2 ;;
+    --agent) agent="$2"; shift 2 ;;
     --) shift; break ;;
     *) echo "claude-headless: unknown option $1" >&2; exit 2 ;;
   esac
@@ -54,6 +62,20 @@ done
 [[ -n "$brief" && -f "$brief" ]] || { echo "claude-headless: --brief <file> is required" >&2; exit 2; }
 [[ "$log" =~ ^[A-Za-z0-9._-]{1,80}$ ]] || { echo "claude-headless: --log is a plain file name" >&2; exit 2; }
 raw="${log%.log}.jsonl"
+HDIR="${AXF_HEADLESS_DIR:-/var/tmp/axf-headless}"
+model="${AXF_MODEL:-}"
+if [[ -z "$model" ]]; then prev=""; for a in "$@"; do [[ "$prev" == --model ]] && model="$a"; [[ "$a" == --model=* ]] && model="${a#--model=}"; prev="$a"; done; fi
+agent="${agent:-$name}"
+hdir_ready() { mkdir -p "$HDIR" 2>/dev/null && { [[ -O "$HDIR" ]] && chmod 1777 "$HDIR" 2>/dev/null; true; } && [[ -w "$HDIR" ]]; }
+event() {   # $1 = session-start | session-end, $2 = tmux session, $3 = exit (end only); one JSON line, never fails the run
+  hdir_ready || return 0
+  command -v node >/dev/null || return 0
+  EV="$1" SES="$2" EXITC="${3:-}" AGENT="$agent" MODEL="$model" NAME="$name" LOGF="$(pwd)/$log" node -e '
+    const e = process.env; const line = { event: e.EV, session: e.SES, name: e.NAME, agent: e.AGENT, model: e.MODEL, cwd: process.cwd(), log: e.LOGF,
+      surface: e.AXF_SURFACE || "", at: new Date().toISOString(), ...(e.EXITC !== "" ? { exit: Number(e.EXITC) } : {}) };
+    require("fs").appendFileSync(require("path").join(e.HDIR, "events.jsonl"), JSON.stringify(line) + "\n");' 2>/dev/null || true
+}
+export HDIR
 
 WATCH_LIVE="$HERE/../framework/cli/watch-live.mjs"
 WATCH_NOTE='Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note "<what you are changing>"` (apps: console-web, axhub-web, amberx-droid, patches-web, walkthrough-studio, demo, framework, console, axhub-android, voicevault).'
@@ -97,7 +119,9 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   switches=0 max_switches="${AXF_ACCOUNT_SWITCHES:-3}"
   while :; do
     if command -v node >/dev/null; then
-      claude -p "$@" --output-format stream-json --verbose "$prompt" 2>&1 | tee "$raw" | node "$HERE/claude-stream.mjs" | tee "$log"
+      ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"; meter=()
+      hdir_ready && meter=(--meter "$HDIR/$ses.meter.json" --chain "$HDIR/$ses.chain.json" --session "$ses" --name "$name" --agent "$agent" --model "$model")
+      claude -p "$@" --output-format stream-json --verbose "$prompt" 2>&1 | tee "$raw" | node "$HERE/claude-stream.mjs" "${meter[@]}" | tee "$log"
     else
       claude -p "$@" "$prompt" 2>&1 | tee "$log"
     fi
@@ -114,6 +138,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   [[ -n "${mcp:-}" ]] && rm -f "$mcp"
   [[ -n "$wl" ]] && kill "$wl" 2>/dev/null   # the session ended: its previews stop and leave the registry
   printf '\n\033[1m── finished (exit %s) · log: %s/%s ──\033[0m\n' "$st" "$(pwd)" "$log"
+  event session-end "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")" "$st"
   # Nobody attached (the usual headless run): close ~2 min after claude exits, logs stay. Someone watching keeps the
   # old wait for Enter (up to a day). Finished sessions piling up used to block the cap and the queue (Nov 1 2026).
   session_now="$(tmux display-message -p '#S' 2>/dev/null || true)"
@@ -145,7 +170,7 @@ elif slots_on; then
   slot_id="" slot_started=1 slot_pos=0 slot_reason=none
   eval "$(node "$SLOTS" enqueue --name "$slug" --kind headless ${priority:+--priority "$priority"} --pid "$$" --cwd "$(pwd)" --sh 2>/dev/null | grep -E '^slot_id=[A-Za-z0-9-]+ slot_started=[01] slot_pos=[0-9]+ slot_reason=[a-z]+$')"
   if [[ -n "$slot_id" && "$slot_started" == 0 ]]; then
-    ${SETSID:-$(command -v setsid)} nohup bash "$HERE/claude-headless.sh" --queued "$slot_id" --name "$name" --brief "$brief" --log "$log" -- "$@" > .axf-queue.log 2>&1 &
+    ${SETSID:-$(command -v setsid)} nohup bash "$HERE/claude-headless.sh" --queued "$slot_id" --name "$name" --agent "$agent" --brief "$brief" --log "$log" -- "$@" > .axf-queue.log 2>&1 &
     why=""; [[ "$slot_reason" == memory ]] && why=", waiting for free memory"
     echo "queued at position $slot_pos ($slot_id$why) in $(pwd): starts by itself when a slot frees"
     exit 0
@@ -160,7 +185,7 @@ if ! command -v tmux >/dev/null; then
 fi
 tmux has-session -t "=$session" 2>/dev/null && session="$session-$(date +%H%M%S)"
 envs=()   # tmux starts the command in its server's environment: pass what the run needs explicitly
-for v in PATH HOME AXF_SURFACE AXF_MODEL AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE; do
+for v in PATH HOME AXF_SURFACE AXF_MODEL AXF_AGENT AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE; do
   [[ -n "${!v:-}" ]] && envs+=(-e "$v=${!v}")
 done
 # Secrets go through a private file, not tmux's command line: git auth (GIT_CONFIG_COUNT/KEY_n/VALUE_n, which tmux
@@ -173,6 +198,11 @@ secret="$(umask 077; mktemp "${TMPDIR:-/tmp}/axf-headless-env-XXXXXX")"
   [[ -n "$tok" ]] && printf 'export AXHUB_TOKEN=%q\n' "$tok"
 } > "$secret"
 tmux new-session -d -s "$session" -x 200 -y 50 -c "$(pwd)" "${envs[@]}" \
-  bash "$HERE/claude-headless.sh" --inner --name "$slug" --envfile "$secret" --brief "$brief" --log "$log" ${slot:+--slot "$slot"} -- "$@"
+  bash "$HERE/claude-headless.sh" --inner --name "$slug" --agent "$agent" --envfile "$secret" --brief "$brief" --log "$log" ${slot:+--slot "$slot"} -- "$@"
 tmux set-option -t "$session" history-limit 50000 >/dev/null 2>&1 || true
+# Headless tabs: what the console's Terminal shows on the tab (one `tmux ls` reads them all)
+for kv in "@axf_kind=headless" "@axf_agent=$agent" "@axf_model=$model" "@axf_cwd=$(pwd)" "@axf_meter=$HDIR/$session.meter.json" "@axf_chain=$HDIR/$session.chain.json"; do
+  tmux set-option -t "$session" "${kv%%=*}" "${kv#*=}" >/dev/null 2>&1 || true
+done
+event session-start "$session"
 echo "started $session in $(pwd)"

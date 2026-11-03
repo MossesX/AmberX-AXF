@@ -4,57 +4,72 @@
  * front". Launches go through deploy/claude-headless.sh, which runs them in a tmux session named axf-…; this polls the
  * plugin's `GET headless` (one ssh `tmux ls`, cached 8 s) every 5 s while the page is visible, and opens each new
  * session in a VPS tab attached to it (`tmux attach`), in the terminal window, which is restored, focused and raised.
- * Each session opens once per browser (remembered in localStorage when it's available). Setting: showHeadless.
+ * Headless tabs (Nov 3 2026, Brett): "every time a headless session starts, the console automatically opens a new tab
+ * attached to it; builds started while the console is closed too". Every running axf-… session that no live terminal
+ * window shows gets a tab, on every load as well, unless Brett closed that session's tab himself (remembered per
+ * browser; the ∨ menu's Running sessions brings it back). The tab is titled after the agent the launcher tagged the
+ * session with (else the build name). Setting: showHeadless.
  */
 import type { AxfRuntime } from '@console/axf/core';
 import { call } from './api';
 import { newTab } from './open';
-import { focusSession, hostOf } from './hosts';
+import { focusSession, host, hostIds } from './hosts';
 
-export interface Headless { name: string; createdAt: number }
+export interface Headless { name: string; createdAt: number; agent?: string; model?: string; kind?: string; attached?: number }
 interface Answer { ready: boolean; on: boolean; items: Headless[]; why: string; now: number }
 
-const SEEN_KEY = 'axf.terminal.headless.seen';
-const tabFor = new Map<string, string>(); // session name → tab id opened on this page
+const CLOSED_KEY = 'axf.terminal.headless.closed';
+const NAME = /^axf-[A-Za-z0-9._-]{1,64}$/;
 
-function loadSeen(): Set<string> {
-  try { return new Set(JSON.parse(localStorage.getItem(SEEN_KEY) || '[]') as string[]); } catch { return new Set(); }
+function load(key: string): Set<string> {
+  try { return new Set(JSON.parse(localStorage.getItem(key) || '[]') as string[]); } catch { return new Set(); }
 }
-function saveSeen(seen: Set<string>) {
-  try { localStorage.setItem(SEEN_KEY, JSON.stringify([...seen].slice(-200))); } catch { /* storage blocked: still works for this page */ }
+function store(key: string, v: Set<string>) {
+  try { localStorage.setItem(key, JSON.stringify([...v].slice(-200))); } catch { /* storage blocked: still works for this page */ }
+}
+const closed = load(CLOSED_KEY);
+/** Brett closed this headless session's tab: don't open it again by itself. */
+export function markClosed(name: string) { if (NAME.test(name)) { closed.add(name); store(CLOSED_KEY, closed); } }
+
+/** The sessions to open: running, not shown by any live tab, not closed by Brett. Oldest first. Pure. */
+export function toOpen(items: Headless[], shown: Set<string>, closedSet: Set<string>): Headless[] {
+  return items.filter((h) => NAME.test(h.name) && !shown.has(h.name) && !closedSet.has(h.name)).sort((a, b) => a.createdAt - b.createdAt);
 }
 
-/** The new sessions to open: running now and not opened before. Pure, for the self-test. */
-export function toOpen(items: Headless[], seen: Set<string>): Headless[] {
-  return items.filter((h) => /^axf-[A-Za-z0-9._-]{1,64}$/.test(h.name) && !seen.has(h.name)).sort((a, b) => a.createdAt - b.createdAt);
+/** Headless sessions a tab in a live terminal window shows now. */
+function shownNow(rt: AxfRuntime): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const hid of hostIds()) {
+    if (!rt.windows.groupOf(hid)) continue; // a host whose window is gone (not restored after a reload) shows nothing
+    for (const s of host(hid).sessions) if (s.open.attach) out.set(s.open.attach, s.id);
+  }
+  return out;
 }
-
-/** Bring a session's window up: restore it if minimized, focus it, raise it, show the session. */
-export function bringToFront(rt: AxfRuntime, sid: string) { focusSession(rt, sid); }
 
 /** Open (or bring forward) the attached VPS tab for one headless session. */
 export function openHeadless(rt: AxfRuntime, h: Headless) {
-  const known = tabFor.get(h.name);
-  if (known && hostOf(known)) { bringToFront(rt, known); return; }
-  const id = newTab(rt, { kind: 'vps', attach: h.name, title: `Claude: ${h.name.slice(4)}` });
-  tabFor.set(h.name, id);
-  bringToFront(rt, id);
+  const known = shownNow(rt).get(h.name);
+  if (known) { focusSession(rt, known); return; }
+  closed.delete(h.name); store(CLOSED_KEY, closed);
+  const id = newTab(rt, { kind: 'vps', attach: h.name, title: h.agent || `Claude: ${h.name.slice(4)}` });
+  focusSession(rt, id);
 }
 
 let started = false;
 export function watchHeadless(rt: AxfRuntime) {
   if (started) return;
   started = true;
-  const seen = loadSeen();
   const tick = async () => {
     if (document.visibilityState !== 'visible') return;
     try {
       const a = await call<Answer>('headless');
-      if (!a.on) return;
+      if (!a.on || !a.ready) return;
+      const shown = new Set(shownNow(rt).keys());
+      for (const h of toOpen(a.items, shown, closed)) openHeadless(rt, h);
       const running = new Set(a.items.map((h) => h.name));
-      for (const h of toOpen(a.items, seen)) { seen.add(h.name); openHeadless(rt, h); }
-      for (const n of [...seen]) if (!running.has(n) && a.ready) seen.delete(n); // ended: forget it (a reused name opens again)
-      saveSeen(seen);
+      let changed = false;
+      for (const n of [...closed]) if (!running.has(n)) { closed.delete(n); changed = true; } // ended: a reused name opens again
+      if (changed) store(CLOSED_KEY, closed);
     } catch { /* plugin off, VPS unreachable: try again next tick */ }
   };
   setInterval(() => void tick(), 5000);
