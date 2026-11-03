@@ -732,3 +732,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 18:01 UTC · `auto-land` added (8 steps) (urgent) · orchestrator
 - 2026-11-03 18:01 UTC · `auto-land` note (urgent) · orchestrator
 - 2026-11-03 18:02 UTC · `builds-one-page-done` s3 done (urgent) · snap-sully
+- 2026-11-03 18:02 UTC · `builds-one-page` s7 done (refactor) · snap-sully
+- 2026-11-03 18:02 UTC · `builds-one-page` s8 done (refactor) · snap-sully
+- 2026-11-03 18:02 UTC · `builds-one-page` s9 done (refactor) · snap-sully
+- 2026-11-03 18:02 UTC · `builds-one-page` s10 done (refactor) · snap-sully
+- 2026-11-03 18:02 UTC · `builds-one-page` s11 done (refactor) · snap-sully
+- 2026-11-03 18:02 UTC · `builds-one-page` s15 done (refactor) · snap-sully
+- 2026-11-03 18:02 UTC · `builds-one-page` s16 done (refactor) · snap-sully
