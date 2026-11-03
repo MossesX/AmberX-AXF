@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T22:03:37.663Z",
+ "updatedAt": "2026-11-03T22:08:20.359Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4188,6 +4188,121 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw18h9tx0asht3"
+    }
+   ]
+  },
+  {
+   "id": "molly-banners",
+   "title": "Molly: install the banners",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "molly-banners",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-03T22:04:42.483Z",
+   "updatedAt": "2026-11-03T22:04:54.318Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Assigned: Amber (headless Opus session, worktree /root/axf-builds/molly-banners, branch claude/molly-banners)",
+     "at": "2026-11-03T22:04:53.462Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Check first: Molly banners today vs Dev Console banners; list the gap in the report",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw18on3301win6"
+    },
+    {
+     "id": "s2",
+     "text": "Install one shared banner region in Molly chrome, items live from the console banner registry/plugins; taps act as in the console; embedded frames hide their own banner",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw18on3302hn5u"
+    },
+    {
+     "id": "s3",
+     "text": "Same settings as the console (per-banner settings + colours, per-banner show/hide in Molly), phone + desktop",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw18on3303de9y"
+    },
+    {
+     "id": "s4",
+     "text": "Leave banner-pack #251, banner-editor #254, banners-one alone; build on main; note overlap",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw18on33044wm3"
+    },
+    {
+     "id": "s5",
+     "text": "Tests, phone + desktop screenshots, UI Review item, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw18on3305gaot"
     }
    ]
   }
