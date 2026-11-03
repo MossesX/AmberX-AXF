@@ -17,6 +17,11 @@ is off, never on the console MCP; hub users never reach it: the plugin isn't use
     POST /update {repo, number | branch, confirm: "<repo>#<number>" | "<repo>:<branch>"}
                                     pulls the default branch into a branch that's behind it: a PR through GitHub's
                                     "update branch" (its head pinned), a branch without one as a merge commit on it
+    GET  /land | GET /land/blocked  auto-land: every finished build in landing order (PR, head, state, reason) | only the
+                                    blocked ones (land/land.mjs writes land.json on the VPS host every 3 minutes)
+    POST /land/now | /land/hold | /land/release {build, why?}
+                                    land one now (next round, first) | keep it from landing | let it land again; the
+                                    same land.mjs command the CLI runs (commands declared once in land/land-core.mjs)
     GET  /detail?repo=&number= | ?repo=&branch=
                                     one entry's details: its commits (newest first, up to 20) and the check runs on its
                                     head commit (name, state, link), plus GitHub's mergeable state for a PR
@@ -48,6 +53,13 @@ one round every 3 minutes (settings autoMerge + autoPr, both on by default):
   3. branch protection on main (require a PR, branches up to date, the CI checks every PR runs) is set where the token
      may and never loosened; where it can't, the systems check shows why with an Auto fix that tries again.
 
+Auto-land (Nov 3 2026, Brett: "zero tokens for merging"; settings autoLand + landWaitUi, both on): land/land.mjs runs
+on the VPS host and lands every finished build with plain scripts (worktree cleaned, main merged in with the builds files
+newer-wins, PR opened, CI started), and writes land.json. Auto-merge reads it: finished builds' PRs go first in its
+dependency order, their main pull-ins are left to the host (GitHub's update would conflict on the builds store), and
+"Wait for UI Review" off lets them merge without UI Review. Commits on main that are only status data (`[skip ci]`,
+files under _claude/, builds-live.mjs) never make a PR "behind". A skipped or neutral check run is not CI.
+
 main is never pushed to: a branch reaches main only through its PR. GitHub is reached through `axf.github@1` (the
 systems check's capability: axHub first, the local GITHUB_TOKEN as the fallback, Settings → Plugins → Systems check →
 GitHub route), so the banner still lists branches while the local token is dead; writes (PRs, merges, branch updates
@@ -61,6 +73,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import subprocess
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -88,6 +101,10 @@ CACHE_S = 120
 GITHUB_CAP = "axf.github@1"   # GitHub through axHub first, local GITHUB_TOKEN fallback (systems check, githubsvc.py)
 HEALTH_CAP = "axf.health@1"   # the banners' live checks (systems check, health.py)
 HEALTH_ID = "push-banner-github"
+STATUS_ONLY_MARK = "[skip ci]"   # status-only commits on main (framework/cli/builds-live.mjs); = land-core.mjs
+STATUS_PATHS = "_claude/"          # the only paths they touch
+LAND_SCRIPT = Path(__file__).resolve().parent.parent / "land" / "land.mjs"
+LAND_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,80}\Z")
 UI_REVIEW_CAP = "ui-review@1"  # PRs whose UI is waiting, has changes asked or is rejected in UI Review don't merge
 UI_REVIEW_REPO = os.environ.get("AXF_GITHUB_REPO") or "MossesX/AmberX-AXF"  # the repo UI Review's PR numbers belong to
 NO_ROUTE = "the console can't reach GitHub: neither axHub (AXHUB_TOKEN) nor GITHUB_TOKEN is set on the console server"
@@ -143,7 +160,10 @@ def compare_path(repo: str, base: str, branch: str) -> str:
 
 
 def ci_state(runs: list[dict[str, Any]]) -> str:
-    """One state for a commit's check runs: none | running | failure | success."""
+    """One state for a commit's check runs: none | running | failure | success. A skipped or neutral run (CodeRabbit with
+    nothing to review, a job that didn't run) is not CI: a head whose only runs are those has no CI result (Nov 3 2026,
+    auto-land: #265 counted as passed while no workflow had run on it)."""
+    runs = [r for r in runs if not (r.get("status") == "completed" and r.get("conclusion") in ("skipped", "neutral"))]
     if not runs:
         return "none"
     if any(r.get("status") != "completed" for r in runs):
@@ -180,10 +200,14 @@ class Pushes:
                 # Auto-merge (Oct 30 2026, Brett: "When stuff needs to merge automatic merge"): on unless switched off.
                 "autoMerge": raw.get("autoMerge") is not False,
                 # Every branch gets a PR (Oct 30 2026, Brett: "I want everything to need a PR"): on unless switched off.
-                "autoPr": raw.get("autoPr") is not False}
+                "autoPr": raw.get("autoPr") is not False,
+                # Auto-land (Nov 3 2026, Brett: "zero tokens for merging"): land/land.mjs lands finished builds; on unless off.
+                "autoLand": raw.get("autoLand") is not False,
+                # UI Review stays the gate: a held PR waits and merges by itself once Brett approves. On unless off.
+                "landWaitUi": raw.get("landWaitUi") is not False}
 
     def save_config(self, body: Any) -> dict[str, Any]:
-        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge", "autoPr"}:
+        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi"}:
             raise HTTPException(400, "send {repos: [owner/name …], hidden: [\"owner/name:branch\" …]}")
         cur = self.config()
         repos, hidden = cur["repos"], cur["hidden"]
@@ -200,7 +224,7 @@ class Pushes:
                     raise HTTPException(400, f"hidden entries look like owner/name:branch[@sha] ({_text(e, 80)!r})")
             hidden = list(dict.fromkeys(h))
         flags = {}
-        for k in ("claudeOnFail", "claudeShell", "autoMerge", "autoPr"):
+        for k in ("claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi"):
             if k in body and not isinstance(body[k], bool):
                 raise HTTPException(400, f"{k} is true or false")
             flags[k] = body[k] if k in body else cur[k]
@@ -252,6 +276,52 @@ class Pushes:
         cmp = gh.get(compare_path(repo, base, head))
         n = cmp.get("behind_by") if isinstance(cmp, dict) else None
         return n if isinstance(n, int) and not isinstance(n, bool) else None
+
+    def _code_behind(self, gh: github.GitHubClient, repo: str, base: str, head: str) -> int | None:
+        """Like _behind, but commits on <base> that are only status data don't count: builds-live.mjs publishes every
+        builds store write to main as a `[skip ci]` commit under _claude/, so every PR would be behind again minutes
+        after it was brought up to date, and re-tested forever (auto-land, Nov 3 2026). Behind only by those = 0."""
+        n = self._behind(gh, repo, base, head)
+        if not n:
+            return n
+        if n > 250:
+            return n
+        cmp = gh.get(f"{github.repo_path(repo, 'compare')}/{quote(head, safe='')}...{quote(base, safe='')}?per_page=100")
+        if not isinstance(cmp, dict):
+            return n
+        msgs = [str(((c.get("commit") or {}).get("message")) or "") for c in cmp.get("commits") or [] if isinstance(c, dict)]
+        files = [str(f.get("filename") or "") for f in cmp.get("files") or [] if isinstance(f, dict)]
+        if len(msgs) < n or len(files) >= 300:
+            return n
+        status_only = all(STATUS_ONLY_MARK in m for m in msgs) and all(f.startswith(STATUS_PATHS) for f in files)
+        return 0 if status_only else n
+
+    # ---- auto-land (land/land.mjs on the VPS host writes land.json; commands write land-control.json)
+    def land(self) -> dict[str, Any]:
+        st = storage.read_json(data_dir() / "land.json", {}) or {}
+        ctl = storage.read_json(data_dir() / "land-control.json", {}) or {}
+        cfg = self.config()
+        items = [x for x in st.get("items", []) if isinstance(x, dict)] if isinstance(st.get("items"), list) else []
+        holds = ctl.get("holds") if isinstance(ctl.get("holds"), dict) else {}
+        return {"$axf": "auto-land@1", "on": cfg["autoLand"], "waitUi": cfg["landWaitUi"], "at": st.get("at"), "items": items,
+                "holds": holds, "now": ctl.get("now") if isinstance(ctl.get("now"), list) else [],
+                "order": [n for n in st.get("order", []) if isinstance(n, int)] if isinstance(st.get("order"), list) else [],
+                "managed": [n for n in st.get("managed", []) if isinstance(n, int)] if isinstance(st.get("managed"), list) else []}
+
+    def land_command(self, cmd: str, body: Any) -> dict[str, Any]:
+        """now | hold | release: one implementation, land/land.mjs (the same file the CLI and the host runner use)."""
+        if not isinstance(body, dict) or set(body) - {"build", "why"} or not isinstance(body.get("build"), str) or not LAND_ID.match(body["build"]):
+            raise HTTPException(400, "send {build: <build id>, why?}")
+        args = ["node", str(LAND_SCRIPT), cmd, body["build"], "--json"]
+        if cmd == "hold" and isinstance(body.get("why"), str) and body["why"].strip():
+            args += ["--why", _text(body["why"], 200)]
+        try:
+            r = subprocess.run(args, capture_output=True, text=True, timeout=30, env={**os.environ, "AXF_PUSH_BANNER_DIR": str(data_dir())})
+        except (OSError, subprocess.TimeoutExpired) as e:
+            raise HTTPException(502, _text(str(e))) from None
+        if r.returncode != 0:
+            raise HTTPException(400, _text(r.stderr.strip() or r.stdout.strip() or f"land.mjs {cmd} failed"))
+        return {"ok": True, "command": cmd, "build": body["build"], **self.land()}
 
     def _repo(self, gh: github.GitHubClient, repo: str, hidden: set[str]) -> dict[str, Any]:
         out: dict[str, Any] = {"repo": repo, "base": "main", "url": f"{github.GIT_BASE}/{repo}", "branches": [], "pulls": [], "error": ""}
@@ -343,6 +413,11 @@ class Pushes:
                 pass
             # ready = it would merge now: not behind its base (pulled up to date first), CI passed, mergeable, not a draft
             behind = item["mergeState"] == "behind" or (not item["fork"] and item["base"] == base and (behind_of.get(item["head"]) or 0) > 0)
+            if behind and item["ci"] == "success" and item["mergeable"] is True and not item["draft"] and sha:
+                try:  # behind only by status-only commits counts as up to date (_code_behind)
+                    behind = (self._code_behind(gh, repo, base, sha) or 0) > 0
+                except (github.GitHubError, ValueError):
+                    pass
             item["ready"] = item["ci"] == "success" and item["mergeable"] is True and not item["draft"] and not behind
             return item
 
@@ -350,6 +425,14 @@ class Pushes:
             out["pulls"] = [x for x in pool.map(pull, [p for p in pulls if isinstance(p, dict)]) if x]
         out["pulls"].sort(key=lambda x: x.get("updated") or "", reverse=True)
         out["pulls"].sort(key=lambda x: not x["ready"])  # ready ones first, newest first within each group
+        if repo == UI_REVIEW_REPO:  # what auto-land says about each finished build's PR (the banner shows it as the reason)
+            by_pr = {x.get("pr"): x for x in self.land()["items"] if isinstance(x.get("pr"), int)}
+            for x in out["pulls"]:
+                hit = by_pr.get(x["number"])
+                if hit:
+                    r = hit.get("reason") if isinstance(hit.get("reason"), dict) else None
+                    x["land"] = {"build": _text(hit.get("id"), 80), "state": _text(hit.get("state"), 20),
+                                 "kind": _text(r.get("kind"), 20) if r else "", "why": _text(r.get("text"), 300) if r else ""}
         return out
 
     def branches(self, force: bool = False) -> dict[str, Any]:
@@ -535,7 +618,7 @@ class Pushes:
             return "unknown"
         return str(st.get("state") or "waiting") if st.get("holds") else ""
 
-    def merge(self, body: Any) -> dict[str, Any]:
+    def merge(self, body: Any, wait_ui: bool = True) -> dict[str, Any]:
         if not isinstance(body, dict) or set(body) - {"repo", "number", "confirm"}:
             raise HTTPException(400, "send {repo, number, confirm}")
         repo, number = body.get("repo"), body.get("number")
@@ -552,17 +635,17 @@ class Pushes:
                 raise HTTPException(409, "that PR isn't open")
             if p.get("draft") is True:
                 raise HTTPException(409, "that PR is a draft")
-            held = self.ui_hold(repo, number, _text((p.get("head") or {}).get("ref") if isinstance(p.get("head"), dict) else "", 200))
+            held = self.ui_hold(repo, number, _text((p.get("head") or {}).get("ref") if isinstance(p.get("head"), dict) else "", 200)) if wait_ui else ""
             if held:
                 raise HTTPException(409, f"held by UI Review ({held}): Brett approves its screenshots in UI Review first")
             task = self._task(repo, p, "merge", "merge it")
             sha = _text((p.get("head") or {}).get("sha"), 40)
             pbase = _text((p.get("base") or {}).get("ref") if isinstance(p.get("base"), dict) else "", 200) or "main"
             # Up to date with its base first (Oct 30 2026): a PR behind main gets main pulled in and re-tested, then merges.
-            behind = self._behind(gh, repo, pbase, sha) if sha else None
+            behind = self._code_behind(gh, repo, pbase, sha) if sha else None
             if behind is None:
                 raise HTTPException(409, f"GitHub couldn't say whether it's up to date with {pbase}: try again in a moment")
-            if behind > 0 or p.get("mergeable_state") == "behind":
+            if behind > 0:
                 raise HTTPException(409, f"it's behind {pbase}: pull {pbase} in first (auto-merge does it, then waits for CI on the new head)")
             if p.get("mergeable") is False:
                 raise HTTPException(409, "GitHub can't merge it: it has conflicts" + self._hand({**task, "failure": "it has conflicts with its base"}))
@@ -624,6 +707,10 @@ class Pushes:
                         done.append({"branch": f"{r['repo']}:{name}", "opened": None, "why": _text(str(e), 200)})
         # a failed pull is skipped until its PR gets a new commit (a fix) or it is taken off Pull failed
         failed = {d["key"]: d.get("sha", "") for d in self.failed()}
+        land = self.land() if cfg["autoLand"] else {"order": [], "managed": [], "waitUi": True}
+        rank = {n: i for i, n in enumerate(land["order"])}
+        managed = set(land["managed"])
+        wait_ui = land["waitUi"] is not False
         merged_one = False
         gh = self.gh()
         for r in state.get("repos", []):
@@ -631,23 +718,30 @@ class Pushes:
             queue = [p for p in r.get("pulls", []) if isinstance(p.get("number"), int) and not p.get("draft") and not p.get("hidden")
                      and not p.get("fork") and p.get("base") == base and failed.get(f"{repo}:#{p['number']}", None) not in ("", p.get("sha"))]
             queue.sort(key=lambda p: (p.get("created") or p.get("updated") or "", p["number"]))  # oldest first
+            if repo == UI_REVIEW_REPO and rank:  # finished builds first, in auto-land's dependency order (land.json)
+                queue.sort(key=lambda p: rank.get(p["number"], len(rank)))
             for p in queue:
                 key = f"{repo}#{p['number']}"
                 line = {"pr": key, "title": p.get("title", "")}
                 if p.get("ci") in ("failure", "none", "unknown"):
                     continue  # nothing to do until it is fixed (or, without CI, never)
-                held = self.ui_hold(repo, p["number"], p.get("head") or "")
+                held = self.ui_hold(repo, p["number"], p.get("head") or "") if wait_ui else ""
                 if held:  # waiting on Brett in UI Review: the next PR gets its turn
                     done.append({**line, "merged": False, "held": held, "why": f"held by UI Review ({held})"})
                     continue
                 try:
-                    behind = self._behind(gh, repo, base, p["sha"]) if p.get("sha") else None
+                    behind = self._code_behind(gh, repo, base, p["sha"]) if p.get("sha") else None
                 except (github.GitHubError, ValueError):
                     behind = None
                 if behind is None:
                     done.append({**line, "merged": False, "why": "GitHub couldn't say whether it's up to date: next round"})
                     break
-                if behind > 0 or p.get("mergeState") == "behind":
+                if behind > 0 and repo == UI_REVIEW_REPO and p["number"] in managed:
+                    # auto-land merges main in on the host (builds files newer-wins, logs unioned): GitHub's own update
+                    # would conflict on the builds store; the next PR gets its turn
+                    done.append({**line, "merged": False, "why": f"{behind} behind {base} in code: auto-land merges {base} in"})
+                    continue
+                if behind > 0:
                     try:
                         self.update({"repo": repo, "number": p["number"], "confirm": key})
                         done.append({**line, "merged": False, "pulled": True, "why": f"{behind} behind {base}: pulled {base} in, waiting for CI on the new head"})
@@ -666,7 +760,7 @@ class Pushes:
                     done.append({**line, "merged": False, "why": "ready: merges next round (one merge per round)"})
                     break
                 try:
-                    res = self.merge({"repo": repo, "number": p["number"], "confirm": key})
+                    res = self.merge({"repo": repo, "number": p["number"], "confirm": key}, wait_ui=wait_ui)
                     merged_one = bool(res.get("merged"))
                     done.append({**line, "merged": merged_one})
                 except HTTPException as e:
@@ -1127,6 +1221,32 @@ def claude_jobs() -> dict[str, Any]:
 @router.post("/claude")
 def claude_fix(body: Any = Body(None)) -> dict[str, Any]:
     return PUSHES.claude_fix(body)
+
+
+@router.get("/land")
+def land_list() -> dict[str, Any]:
+    return PUSHES.land()
+
+
+@router.get("/land/blocked")
+def land_blocked() -> dict[str, Any]:
+    st = PUSHES.land()
+    return {**st, "items": [x for x in st["items"] if x.get("state") == "blocked"]}
+
+
+@router.post("/land/now")
+def land_now(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.land_command("now", body)
+
+
+@router.post("/land/hold")
+def land_hold(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.land_command("hold", body)
+
+
+@router.post("/land/release")
+def land_release(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.land_command("release", body)
 
 
 @router.get("/config")
