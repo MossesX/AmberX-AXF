@@ -107,6 +107,23 @@ if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$GA
   fi
 fi
 
+LOOK="$HERE/../framework/cli/ui-predict.mjs"
+look_on() { [[ "${AXF_LOOK_GATE:-on}" != off ]] && command -v node >/dev/null && [[ -f "$LOOK" ]]; }
+# Predicted looks (ui-prediction@1, Brett Nov 3 2026): a build that changes UI gets its predicted look in UI Review at
+# launch (framework/cli/ui-predict.mjs gate starts it in the background). With "Wait for my look approval before UI
+# builds start" on (UI Review settings), it queues here until Brett approves the look: a waiter relaunches it by
+# itself once he does. A rejected look holds it (exit 3, never started). AXF_LOOK_GATE=off skips it.
+if [[ -z "$inner" && -z "$queued" ]] && look_on; then
+  look_line="$(node "$LOOK" gate --name "$name" --brief "$brief" 2>&1)"; look_st=$?
+  if (( look_st == 5 )); then echo "claude-headless: $look_line" >&2; echo "$look_line"; exit 3; fi
+  if (( look_st == 4 )); then
+    ${SETSID:-$(command -v setsid)} nohup bash -c 'node "$1" wait --name "$2" --brief "$3" && exec bash "${@:4}"' _ "$LOOK" "$name" "$brief" \
+      "$HERE/claude-headless.sh" --name "$name" --agent "$agent" --brief "$brief" --log "$log" ${priority:+--priority "$priority"} -- "$@" > .axf-look-wait.log 2>&1 &
+    echo "queued for look approval in $(pwd): $look_line (starts by itself once Brett approves the look in UI Review)"
+    exit 0
+  fi
+fi
+
 if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   if [[ -n "$envfile" && -f "$envfile" && -O "$envfile" ]]; then
     # shellcheck disable=SC1090
@@ -132,6 +149,12 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   [[ -n "$wl" ]] && prompt="$prompt"$'\n\n'"$WATCH_NOTE"
   [[ -n "$slot" ]] && slots_on && prompt="$prompt"$'\n\n'"$HEAVY_NOTE"
   prompt="$prompt"$'\n\n'"$UPGRADE_NOTE"
+  if look_on; then   # look changes Brett asked for on the predicted look ride along; the look refreshes as the diff grows
+    look_add="$(node "$LOOK" addenda --name "$name" --brief "$brief" 2>/dev/null)"
+    [[ -n "$look_add" ]] && prompt="$prompt"$'\n\n'"$look_add"
+    look_build="$(node "$LOOK" which --name "$name" --brief "$brief" 2>/dev/null)"
+    [[ -n "$look_build" ]] && nohup node "$LOOK" follow "$look_build" --worktree "$(pwd)" --parent "$$" > .axf-look-follow.log 2>&1 &
+  fi
   # Several Claude accounts (Nov 2 2026, Brett): when the run stops on a usage limit ("You've hit your weekly limit"),
   # AI keys switches to the next saved account that still answers and writes it to the VPS (the AI keys plugin),
   # then the run starts again on it. At most AXF_ACCOUNT_SWITCHES times (default 3; 0 turns it off).

@@ -368,5 +368,48 @@ last = (pr_.stdout.strip().splitlines() or [""])[-1].split()
 check(last[:3] == ["401", "401", "401"], f"intake refuses no token / a wrong token, reads too ({last} {pr_.stderr[-300:]})")
 check(last[3:6] == ["200", "console-token", "0"], f"intake takes the console token, records who, review queue untouched ({last})")
 
+
+# ---------------------------------------------------------------- predicted looks (ui-prediction@1, predicted.py)
+PRED = {"$axf": "ui-prediction@1", "build": "demo-look", "state": "predicted", "hash": "h1", "screens": [{"id": "settings", "app": "console-web", "title": "Settings"}],
+        "cost": {"usd": 0, "model": "rules", "tokens": 0}, "look": {"status": "waiting"}, "refreshes": 0, "addenda": []}
+PFILES = [{"name": "before-settings-phone.png", "data": b64}, {"name": "predicted-settings-phone.png", "data": b64}, {"name": "predicted-settings-desktop.png", "data": b64}]
+check(c.get("/p/settings").json()["waitForLook"] is False, "look approval setting defaults off")
+check(c.put("/p/settings", json={"waitForLook": "yes"}).status_code == 400, "setting must be a boolean")
+check(c.put("/p/settings", json={"waitForLook": True}).json()["waitForLook"] is True and c.get("/p/settings").json()["waitForLook"] is True, "setting saved on the server (the launcher reads it)")
+check(c.post("/p/predict", json={"build": "demo-look", "name": "Look", "files": PFILES}).status_code == 400, "predict needs a ui-prediction@1 block")
+v0 = c.get("/p/predicted?build=demo-look").json()["verdict"]
+check(not v0["go"] and v0["wait"] and v0["look"] == "none", f"setting on + no prediction yet = wait ({v0})")
+pr1 = c.post("/p/predict", json={"build": "demo-look", "name": "Demo look: Settings", "app": "Console", "screen": "Settings", "kind": "settings", "source": "headless",
+                                 "submittedBy": "build:demo-look", "group": "demo-look - predicted", "branch": "claude/demo-look", "prediction": PRED, "files": PFILES})
+pj = pr1.json()
+check(pr1.status_code == 200 and not pj["refreshed"] and pj["item"]["prediction"]["state"] == "predicted" and pj["item"]["status"] == "pending", f"predict makes a waiting predicted item ({pr1.text[:300]})")
+pid = pj["item"]["id"]
+check(len(pj["item"]["files"]["after"]) == 3 and {f["src"].split("/")[-1].split("-")[0] for f in pj["item"]["files"]["after"]} == {"before", "predicted"}, "pictures keep their roles in the file names")
+check(stored_ok(), "a predicted item conforms to ui-review-item@1")
+v1 = c.get("/p/predicted?build=demo-look").json()
+check(len(v1["items"]) == 1 and v1["verdict"]["wait"] and v1["verdict"]["look"] == "waiting", "listed; the build waits for the look")
+pr2 = c.post("/p/predict", json={"build": "demo-look", "prediction": {**PRED, "hash": "h2"}, "files": [{"name": "predicted-settings-phone.png", "data": b64}]}).json()
+check(pr2["refreshed"] and pr2["item"]["id"] == pid and pr2["item"]["prediction"]["refreshes"] == 1 and pr2["item"]["prediction"]["hash"] == "h2", "a second predict refreshes the same item")
+check(sum(1 for f in pr2["item"]["files"]["after"] if "/predicted-" in f["src"]) == 1 and any("/before-" in f["src"] for f in pr2["item"]["files"]["after"]), "refresh replaces the predicted pictures, keeps before")
+ch = c.post("/p/approve-look", json={"build": "demo-look", "decision": "changes", "comment": "Make the switch row taller"})
+it = next(x for x in c.get("/p/items").json()["items"] if x["id"] == pid)
+check(ch.status_code == 200 and it["prediction"]["look"]["status"] == "changes" and it["prediction"]["addenda"][0]["text"] == "Make the switch row taller" and it["status"] == "changes", "Ask changes: look + item status, comment kept as an addendum")
+check(c.get("/p/predicted?build=demo-look").json()["verdict"]["go"], "changes asked = the build may start with the addendum")
+c.post("/p/decide", json={"ids": [pid], "decision": "reject"})
+it = next(x for x in c.get("/p/items").json()["items"] if x["id"] == pid)
+v2 = c.get("/p/predicted?build=demo-look").json()["verdict"]
+check(it["prediction"]["look"]["status"] == "rejected" and not v2["go"] and not v2["wait"], "decide on a predicted item decides its look; rejected = held")
+c.post("/p/approve-look", json={"ids": [pid], "decision": "approve"})
+check(c.get("/p/predicted?build=demo-look").json()["verdict"]["go"], "approved look = go")
+check(mod.state(branch="claude/demo-look")["holds"] is False, "an approved look does not hold the branch")
+rl = c.post("/p/predict/real", json={"build": "demo-look", "pr": "91", "files": [{"name": "settings-phone.png", "data": b64}]}).json()
+check(rl["item"]["prediction"]["state"] == "real" and rl["item"]["status"] == "pending" and rl["item"]["prediction"]["look"]["status"] == "approved", "real shots: badge Real, waits for the real OK, look decision kept")
+check(any("/real-settings-phone" in f["src"] for f in rl["item"]["files"]["after"]) and any("/predicted-" in f["src"] for f in rl["item"]["files"]["after"]) and rl["item"]["pr"] == 91, "real + predicted pictures both kept (compare); PR linked")
+check(c.post("/p/approve-look", json={"build": "nobody"}).status_code == 404 and c.post("/p/predict/real", json={"build": "nobody", "files": PFILES[:1]}).status_code == 404, "unknown build refused")
+check(c.post("/p/predict", json={"build": "../x", "prediction": PRED, "files": PFILES}).status_code == 400, "bad build id refused")
+c.put("/p/settings", json={"waitForLook": False})
+check(c.get("/p/predicted?build=other").json()["verdict"]["go"], "setting off = every build goes")
+check(stored_ok(), "stores conform after the predicted flow")
+
 print(f"ui-review: {ok} checks ok" + (f", {len(fails)} failed" if fails else ""))
 sys.exit(1 if fails else 0)
