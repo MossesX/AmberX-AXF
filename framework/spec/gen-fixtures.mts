@@ -40,6 +40,8 @@ import { CONDITION_KINDS, DEFAULT_BACKOFF_FACTOR, DELAY_KINDS, FALLBACK_OUTCOME,
 import { DEFAULT_SNAP_RULES, RESIZE_EDGES, RESIZE_HANDLE, RESIZE_HANDLE_TOUCH, SNAP_ZONES, WINDOW_MIN, armSplit, dragRestore, hitResizeEdge, maximizeWindow, maximizedRect, resizeCursor, resizeRect, resolveOverlap, restoreWindow, snapRect, snapZoneAt, snapZoneRect, splitDrop, toggleMaximized, topmostAt, type Rect, type ResizeEdge, type SplitArm, type WindowSpec } from '../core/engines/windows';
 import { DEFAULT_DOCK_RULES, DOCK_CONTRACT, DOCK_LAYOUT_MAX_PANES, DOCK_SIDES, DOCK_ZONES, applyDockDrop, applyPreset, clampWeights, countPanes, dockDropAt, dockDropRect, dockLayoutErrors, dockZoneAt, dropIsLimited, enforcePaneLimit, headerIndexAt, normalizeDockLayout, normalizeDockRules, normalizeTree, paneAt, parseTab, parseTree, pathOf, presetRects, presetSvg, presetTree, removePane, resizeSplit, restoreDock, serializeDock, splitPane, splitRoot, type DockDrop, type DockState, type GroupBox } from '../core/engines/dock';
 import type { Pane, TabGroup } from '../core/engines/windows';
+import { NAV_STYLE_FIELDS, NAV_STYLE_FRAME, navArrange, navFollow, navPathTo, navStyleErrors, navStyleOutput, navToggle, normalizeNavStyle } from '../core/engines/navstyle';
+import { navFieldErrors } from '../core/engines/navstyle-rules.mjs';
 import { CHROME_KINDS, DEFAULT_MERGE, DEFAULT_PRESETS, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, dockRulesOf, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId as xNsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
 import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES, WIDGET_TYPES, activeNav, chromePicks, emptyChrome, mergeChrome, parseChromeBundle, routePick, type ChromeBundle } from '../core/engines/chrome';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
@@ -1721,6 +1723,62 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     merge: Object.entries(mergeCases).map(([name, m]) => { const d = normalizeXLayout({ apps: starters[0]!.data.apps, merge: m }); return { name, merge: d.merge, hidden: guestHidden(d), takes: guestTakes(d), url: guestUrl(d, d.apps[0]!), urlRoute: guestUrl(d, d.apps[2]!, 'molly', '#/build'), userAgent: guestUserAgent(d) }; }),
     toolbars: { all: visibleToolbars(molly), top: visibleToolbars(molly, 'top'), bottom: visibleToolbars(molly, 'bottom'), everyOn: visibleToolbars({ toolbars: molly.toolbars.map((t) => ({ ...t, visible: true })) }).map((t) => t.slot) },
     presets: { offered: idePresets(molly, ['ide', 'single', 'two-columns', 'other']), none: idePresets(molly, []), rules: dockRulesOf(molly), rulesClamped: dockRulesOf(normalizeXLayout({ apps: [], ide: { paneLimit: 99 } })) },
+  });
+}
+// Navigation style (nav-style@1, build molly-nav-submenus, Nov 3 2026; core/engines/navstyle.ts + navstyle-rules.mjs): the
+// look and behaviour of a nav with sub menus — normalize, validate, compile to tokens, and the pure sub-menu tree logic.
+{
+  const starters = load('nav-style');
+  const bad: Record<string, unknown> = {
+    nothing: null, string: 'x',
+    'bad values': { colors: { background: '#ff0000', active: 'accent2' }, font: { family: 'comic', weight: 450 }, animation: { kind: 'spin', durationMs: 5000, staggerMs: -4 }, behavior: { single: 'yes' }, accents: { console: 'rainbow' } },
+    'accents not an object': { accents: 'accent' },
+  };
+  const normalizeInputs: Record<string, unknown> = { ...bad, empty: {}, 'width max under min': { width: { min: 300, max: 200 } }, 'lists cleaned': { items: { order: 'console, axhub,,console,Bad Id!', hidden: ['amberx'], pinned: 'console' } } };
+  const tree = [
+    { id: 'home', view: 'home' },
+    { id: 'console', view: 'console', items: [{ id: 'build', view: '', items: [{ id: 'builds', view: 'console/nav:builds' }, { id: 'pending', view: 'console/nav:pending' }] }, { id: 'plugins', view: 'console/nav:plugins' }] },
+    { id: 'axhub', view: 'axhub', items: [{ id: 'approvals', view: 'axhub/nav:approvals' }] },
+  ];
+  const single = normalizeNavStyle({});
+  const multi = normalizeNavStyle({ behavior: { single: false, autoCollapse: false } });
+  const noFollow = normalizeNavStyle({ behavior: { followActive: false } });
+  write('nav-style.json', {
+    contract: NAV_STYLE_FRAME,
+    fields: NAV_STYLE_FIELDS,
+    starters: Object.fromEntries(starters.map((a) => [a.id, { normalized: normalizeNavStyle(a.data), errors: navStyleErrors(a.data), valid: validateAsset(a), output: navStyleOutput(a.data), reduced: navStyleOutput(a.data, { reducedMotion: true }) }])),
+    normalize: Object.entries(normalizeInputs).map(([name, raw]) => ({ name, raw, out: normalizeNavStyle(raw) })),
+    errors: Object.entries(bad).map(([name, raw]) => ({ name, raw, errors: navStyleErrors(raw) })),
+    fieldErrors: [['animation.kind', 'push'], ['animation.kind', 'spin'], ['animation.durationMs', 300], ['animation.durationMs', 9999], ['colors.active', 'accentSoft'], ['colors.active', '#fff'], ['accents.console', 'success'], ['accents.console', 'pink'], ['items.order', 'console,axhub'], ['nope.field', 1]].map(([path, value]) => ({ path, value, errors: navFieldErrors(path as string, value) })),
+    output: {
+      collapsed: navStyleOutput({}, { collapsed: true }),
+      resized: navStyleOutput({ width: { resizable: true, min: 180, max: 400 } }, { width: 999 }),
+      fixedWidth: navStyleOutput({ width: { size: 260 } }),
+      colours: navStyleOutput({ colors: { background: 'surface2', activeText: 'accent' }, font: { family: 'display', size: 'sm', weight: '600' }, layout: { density: 'compact' } }),
+    },
+    tree: {
+      tree,
+      path: ['console/nav:pending', 'axhub', 'nope', ''].map((v) => ({ view: v, path: navPathTo(tree, v) })),
+      toggle: [
+        { name: 'open console (single)', out: navToggle(tree, [], 'console', true) },
+        { name: 'open build inside console (single)', out: navToggle(tree, ['console'], 'build', true) },
+        { name: 'open axhub closes console (single)', out: navToggle(tree, ['console', 'build'], 'axhub', true) },
+        { name: 'open axhub keeps console (multi)', out: navToggle(tree, ['console', 'build'], 'axhub', false) },
+        { name: 'close console closes build', out: navToggle(tree, ['console', 'build', 'axhub'], 'console', false) },
+        { name: 'want open when open', out: navToggle(tree, ['console'], 'console', true, true) },
+      ],
+      follow: [
+        { name: 'page in build opens console + build, closes axhub', out: navFollow(tree, ['axhub'], 'console/nav:pending', single) },
+        { name: 'multi keeps axhub', out: navFollow(tree, ['axhub'], 'console/nav:pending', multi) },
+        { name: 'followActive off only closes', out: navFollow(tree, ['axhub'], 'console/nav:pending', noFollow) },
+        { name: 'app page opens its own', out: navFollow(tree, [], 'console', single) },
+        { name: 'unknown page keeps all', out: navFollow(tree, ['console'], 'nope', single) },
+      ],
+      arrange: [
+        { name: 'default', out: navArrange(tree, single) },
+        { name: 'order + hide + pin', out: navArrange(tree, normalizeNavStyle({ items: { order: 'axhub,console', hidden: 'home', pinned: 'console' } })) },
+      ],
+    },
   });
 }
 // Unified chrome (chrome@1, Big Dog build xlayout s2, Nov 3 2026; core/engines/chrome.ts): guests send their chrome as data,

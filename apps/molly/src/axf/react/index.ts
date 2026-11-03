@@ -7,6 +7,8 @@ export { Markdown, safeHref, type MarkdownProps } from './components/Markdown';
 export { Icon, ICON_NAMES } from './components/Icon';
 export { MenuList, MenuSub } from './components/MenuList';
 export { MenuBar, Toolbar, AssetToolbar, NavMenu, StatusBar, mergeNavSections } from './components/Chrome';
+export { NavTree } from './components/NavTree';
+export { NavStyleSettings, NavStyleGroup, NavStylePreview, useNavStyle, setNavStyleField, NAV_STYLE_GROUP_IDS, NAV_STYLE_GROUP_TITLES, NAV_STYLE_GROUP_ICONS, type NavStyleGroupId, type NavStyleItem } from './components/NavStyleSettings';
 export { AppMenuDropdown, AppMenuList, useIsPhone, APP_MENU_PHONE_QUERY, registerMenuRowDetails, menuRowOpen, type MenuRowDetails } from './components/AppMenu';
 export { Banner, BannerBadge, BannerClock } from './components/Banner';
 export { ArrangeBar, arrangedSide, useArrange, type ArrangeApi } from './components/Arrange';

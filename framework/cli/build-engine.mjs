@@ -8,6 +8,7 @@ import { brandAssetErrors } from '../core/engines/brand-rules.mjs';
 import { isScaleType, scaleErrors, scaleSchemaProperties } from '../core/engines/scale-rules.mjs';
 import { isLayoutType, layoutErrors, layoutSchemaProperties } from '../core/engines/layout-rules.mjs';
 import { helpErrors } from '../core/engines/help-rules.mjs';
+import { navStyleErrors, navStyleSchemaProperties } from '../core/engines/navstyle-rules.mjs';
 import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../core/engines/agent-card-rules.mjs';
 import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engines/job-type-rules.mjs';
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
@@ -166,6 +167,8 @@ export function validateAsset(raw) {
   errors.push(...layoutErrors(raw.type, raw.data));
   // help@1: ONE validator shared with core (core/engines/help-rules.mjs)
   errors.push(...helpErrors(raw.type, raw.data));
+  // nav-style@1: ONE validator shared with core and control@1 (core/engines/navstyle-rules.mjs)
+  if (raw.type === 'nav-style') errors.push(...navStyleErrors(raw.data).map((e) => `data.${e}`));
   // agent-card@1: ONE validator shared with core (core/engines/agent-card-rules.mjs)
   errors.push(...agentCardErrors(raw.type, raw.data));
   // job-type@1: ONE validator shared with core (core/engines/job-type-rules.mjs)
@@ -786,6 +789,7 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     if (type === 'context-menu') props.targets = { type: 'object', required: ts.nested?.targets ?? [], additionalProperties: { type: 'array', items: menuItem } };
     // scale assets (typography, density, sizing): every group optional, fields typed + ranged from the shared registry
     if (isScaleType(type)) Object.assign(props, scaleSchemaProperties(type));
+    if (type === 'nav-style') Object.assign(props, navStyleSchemaProperties());
     // layout: every token field typed + ranged from the shared registry (the required list stays the grid)
     if (isLayoutType(type)) Object.assign(props, layoutSchemaProperties());
     if (type === AGENT_CARD_TYPE) Object.assign(props, agentCardSchemaProperties());

@@ -527,6 +527,86 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 :where([data-fx-narrow]) .fx-nav__item::before { display: none !important; }
 :where([data-fx-narrow]) .fx-nav__badge { position: absolute; top: 0; right: var(--fx-layout-phone-edge); padding: 0 var(--fx-dens-gap-lg); }
 
+/* ---------------- nav sub menus (nav-style@1, react/components/NavTree.tsx) ----------------
+   Only a nav whose nav-menu asset opts in (navStyle: true) is drawn by NavTree; the engine (core/engines/navstyle.ts)
+   stamps data-fx-navs* on the root and the --fx-navs-* tokens. A colour, font or weight the style leaves to the theme
+   is not in data-fx-navs-set, so the rules above apply unchanged. */
+.fx-navs { position: relative; display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.fx-navs > .fx-nav { flex: 1 1 auto; min-height: 0; }
+.fx-navs[data-orient='horizontal'] { height: auto; }
+.fx-nav__head { display: flex; align-items: center; justify-content: space-between; gap: var(--fx-dens-gap-md); }
+.fx-nav__fold { margin-left: auto; }
+.fx-navs .fx-nav__item > .fx-icon:first-child { flex: none; }
+.fx-nav__chev { margin-left: auto; display: inline-flex; color: var(--fx-muted); transition: transform var(--fx-navs-dur) var(--fx-navs-ease); }
+.fx-nav__badge + .fx-nav__chev { margin-left: var(--fx-dens-gap-md); }
+[data-fx-navs-chevron='rotate'] .fx-nav__group[data-open='true'] > .fx-nav__item .fx-nav__chev { transform: rotate(90deg); }
+[data-fx-navs-chevron='flip'] .fx-nav__group[data-open='true'] > .fx-nav__item .fx-nav__chev { transform: rotate(180deg); }
+.fx-nav__item.is-within { color: var(--fx-text); }
+.fx-nav__group { display: flex; flex-direction: column; }
+.fx-nav__sub { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--fx-navs-dur) var(--fx-navs-ease); }
+.fx-nav__sub[data-open='true'] { grid-template-rows: 1fr; }
+.fx-nav__sub-inner { min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.fx-nav__sub[data-open='true'] > .fx-nav__sub-inner { padding-block: var(--fx-dens-gap-xs); }
+.fx-nav__sub .fx-nav__item, .fx-nav__sub .fx-nav__group > .fx-nav__item { padding-left: calc(var(--fx-dens-gap-2xl) + var(--fx-navs-indent)); }
+.fx-nav__sub .fx-nav__item[data-depth='2'], .fx-nav__sub .fx-nav__group[data-depth='2'] > .fx-nav__item { padding-left: calc(var(--fx-dens-gap-2xl) + var(--fx-navs-indent) * 2); }
+.fx-nav__sub .fx-nav__item[data-depth='3'], .fx-nav__sub .fx-nav__group[data-depth='3'] > .fx-nav__item { padding-left: calc(var(--fx-dens-gap-2xl) + var(--fx-navs-indent) * 3); }
+.fx-nav__sub .fx-nav__item { font-size: var(--fx-type-scale-sm); }
+.fx-nav--list .fx-nav__sub .fx-nav__item.is-active::before { left: calc(var(--fx-navs-indent) - var(--fx-dens-gap-lg)); }
+/* the item motion per kind; each item waits its turn (stagger × its place) */
+.fx-nav__sub-inner > * { transition: opacity var(--fx-navs-dur) var(--fx-navs-ease), transform var(--fx-navs-dur) var(--fx-navs-ease); transition-delay: calc(var(--fx-navs-stagger) * var(--navs-i, 0)); }
+.fx-nav__sub[data-open='false'] > .fx-nav__sub-inner > * { transition-delay: 0ms; }
+[data-fx-navs-anim='slide'] .fx-nav__sub[data-open='false'] > .fx-nav__sub-inner > * { opacity: 0; transform: translateY(calc(var(--fx-space) * -1)); }
+[data-fx-navs-anim='fade'] .fx-nav__sub[data-open='false'] > .fx-nav__sub-inner > * { opacity: 0; }
+[data-fx-navs-anim='push'] .fx-nav__sub[data-open='false'] > .fx-nav__sub-inner > * { opacity: 0; transform: translateX(calc(var(--fx-space) * -3)); }
+[data-fx-navs-anim='fade'] .fx-nav__sub { transition-duration: calc(var(--fx-navs-dur) * 0.6); }
+[data-fx-navs-anim='none'] .fx-nav__sub, [data-fx-navs-anim='none'] .fx-nav__sub-inner > *, [data-fx-navs-anim='none'] .fx-nav__chev { transition: none; }
+@media (prefers-reduced-motion: reduce) { [data-fx-navs] .fx-nav__sub, [data-fx-navs] .fx-nav__sub-inner > *, [data-fx-navs] .fx-nav__chev { transition: none; } }
+/* colours, fonts and weight the style names (data-fx-navs-set lists them) */
+[data-fx-navs-set~='background'] .fx-region--nav, [data-fx-navs-set~='background'] .fx-navs { background: var(--fx-navs-background); }
+[data-fx-navs-set~='text'] .fx-navs .fx-nav__item { color: var(--fx-navs-text); }
+[data-fx-navs-set~='hover'] .fx-navs .fx-nav__item:hover:not(:disabled) { background: var(--fx-navs-hover); }
+[data-fx-navs-set~='active'] .fx-navs .fx-nav__item.is-active { background: var(--fx-navs-active); }
+[data-fx-navs-set~='active-text'] .fx-navs .fx-nav__item.is-active { color: var(--fx-navs-active-text); }
+[data-fx-navs-set~='submenu'] .fx-navs .fx-nav__sub[data-open='true'], [data-fx-navs-set~='submenu'] .fx-nav__sheet { background: var(--fx-navs-submenu); border-radius: var(--fx-radius-sm); }
+[data-fx-navs-set~='accent'] .fx-navs .fx-nav__item.is-active::before, [data-fx-navs-set~='accent'] .fx-navs .fx-nav__group[data-open='true'] > .fx-nav__item .fx-nav__chev { background-color: transparent; color: var(--fx-navs-accent); }
+[data-fx-navs-set~='accent'] .fx-navs .fx-nav--list .fx-nav__item.is-active::before { background: var(--fx-navs-accent); }
+.fx-navs .fx-nav__item[data-accent='on'] > svg:first-child { color: var(--navs-accent); }
+.fx-navs .fx-nav__item[data-accent='on'].is-active::before, .fx-navs .fx-nav__item[data-accent='on'].is-within::before { background: var(--navs-accent); }
+[data-fx-navs-font='body'] .fx-navs .fx-nav__item { font-family: var(--fx-font); }
+[data-fx-navs-font='display'] .fx-navs .fx-nav__item { font-family: var(--fx-font-display); }
+[data-fx-navs-font='mono'] .fx-navs .fx-nav__item { font-family: var(--fx-font-mono); }
+[data-fx-navs-set~='size'] .fx-navs .fx-nav__item { font-size: var(--fx-navs-size); }
+[data-fx-navs-set~='weight'] .fx-navs .fx-nav__item { font-weight: var(--fx-navs-weight); }
+[data-fx-navs-icons='off'] .fx-navs .fx-nav:not(.fx-nav--rail) .fx-nav__item > .fx-icon:first-child { display: none; }
+/* collapsed to icons: labels, chevrons, badges and sub menus fold away (a tap on a group opens the nav again) */
+[data-fx-navs-collapsed='on'] .fx-navs .fx-nav__text, [data-fx-navs-collapsed='on'] .fx-navs .fx-nav__label, [data-fx-navs-collapsed='on'] .fx-navs .fx-nav__header,
+[data-fx-navs-collapsed='on'] .fx-navs .fx-nav__chev, [data-fx-navs-collapsed='on'] .fx-navs .fx-nav__badge, [data-fx-navs-collapsed='on'] .fx-navs .fx-nav__sub { display: none; }
+[data-fx-navs-collapsed='on'] .fx-navs .fx-nav { padding-inline: var(--fx-dens-gap-md); align-items: stretch; }
+[data-fx-navs-collapsed='on'] .fx-navs .fx-nav__item { justify-content: center; padding-inline: 0; }
+[data-fx-navs-collapsed='on'] .fx-navs .fx-nav__head { justify-content: center; }
+/* the resize edge */
+.fx-nav__resize { position: absolute; top: 0; bottom: 0; right: calc(var(--fx-space) * -0.5); width: var(--fx-space); cursor: col-resize; z-index: 2; }
+.fx-region--nav[data-side='right'] .fx-nav__resize { right: auto; left: calc(var(--fx-space) * -0.5); }
+.fx-nav__resize:hover, .fx-nav__resize:active { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
+/* phone: the bottom strip opens a group as a sheet that slides up above it */
+.fx-nav__sheet { position: absolute; left: var(--fx-layout-phone-edge); right: var(--fx-layout-phone-edge); bottom: 100%; z-index: 30; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs);
+  max-height: 60vh; overflow: auto; padding: var(--fx-dens-gap-lg); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border); border-bottom: 0;
+  border-radius: var(--fx-radius-md) var(--fx-radius-md) 0 0; box-shadow: var(--fx-shadow-md);
+  transform: translateY(0); opacity: 1; transition: transform var(--fx-navs-dur) var(--fx-navs-ease), opacity var(--fx-navs-dur) var(--fx-navs-ease); }
+.fx-nav__sheet[data-open='false'] { transform: translateY(calc(var(--fx-space) * 4)); opacity: 0; pointer-events: none; }
+.fx-nav__sheet-head { display: flex; align-items: center; justify-content: space-between; }
+.fx-nav__sheet .fx-nav__sub-inner { overflow: visible; }
+.fx-nav__sheet .fx-nav__item { flex-direction: row; font-size: var(--fx-type-scale-md); justify-content: flex-start; padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl); }
+:where([data-fx-narrow]) .fx-navs .fx-nav .fx-nav__chev { display: none; }
+:where([data-fx-narrow]) .fx-navs .fx-nav .fx-nav__group { display: contents; }
+.fx-nav__sheet .fx-nav__sub .fx-nav__item { padding-left: calc(var(--fx-dens-gap-2xl) + var(--fx-navs-indent)); }
+.fx-navs--preview { height: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); max-width: calc(var(--fx-space) * 34); }
+.fx-navs--preview .fx-nav { height: auto; overflow: visible; }
+.fx-navs-items { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); }
+.fx-navs-items__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-lg); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); }
+.fx-navs-items__name { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: calc(var(--fx-space) * 12); }
+.fx-navs-settings__title { font-size: var(--fx-type-scale-md); margin: 0; }
+
 /* ---------------- typography & page ---------------- */
 
 .fx-pagehead { display: flex; gap: var(--fx-dens-gap-3xl); justify-content: space-between; align-items: flex-end; flex-wrap: wrap; }

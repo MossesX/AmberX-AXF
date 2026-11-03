@@ -309,7 +309,9 @@
       "optional_fields": {
         "density": "compact | regular (default) | roomy — item padding",
         "indicator": "auto (default, per style) | bar | fill | none — active-item marker",
-        "showIcons": "boolean, default true"
+        "showIcons": "boolean, default true",
+        "navStyle": "boolean, default false — opt in to nav-style@1: items with children (NavItem.items) open sub menus that slide open, styled, timed and arranged by the nav-style asset in force",
+        "items": "per item: items?: [NavItem] — children (a sub menu; nested levels allowed). Shown as a sub menu only when navStyle is true"
       },
       "hideable": true
     },
@@ -1174,6 +1176,26 @@
         "asset": false
       },
       "shared": false,
+      "optional": true
+    },
+    "nav-style": {
+      "label": "Navigation style",
+      "group": "Navigation",
+      "icon": "menu",
+      "description": "How a navigation menu with sub menus looks and behaves (nav-style@1, engine core/engines/navstyle.ts, fields in navstyle-rules.mjs): colours (colour-theme token ids, never literal colours), fonts (style-theme family, typography scale step, weight), icons, density and indent, width (size, min, max, resizable, collapsible to icons), the sub-menu animation (slide, accordion, fade, push, none; duration, easing, stagger, chevron, reduced motion) and behaviour (one or many sub menus open, open on tap or hover, auto-collapse, remember, follow the active page, swipe to open on a phone), plus pinned, hidden and reordered top-level items and per-item accents. Every field has a default and theme leaves it to the stylesheet, so the standard preset draws a nav as it was. Only a nav-menu asset with navStyle: true reads it. Settings: the Navigation settings interface (framework/react/components/NavStyleSettings.tsx); control@1 target tokens.nav.",
+      "required": [],
+      "optional_fields": {
+        "colors": "{ background, text, hover, active, activeText, submenu, accent: theme | colour token }",
+        "font": "{ family: theme | body | display | mono, size: theme | 2xs | xs | sm | md | lg, weight: theme | 400..800 }",
+        "icons": "{ show: boolean, size: sm | md | lg }",
+        "layout": "{ density: theme | compact | regular | roomy, indent: 0..6 (× space) }",
+        "width": "{ size: 0 (the layout asset) | 0..480 px, min 48..320, max 160..640, resizable, collapsible }",
+        "animation": "{ kind: slide | accordion | fade | push | none, durationMs 0..1200 (0 = the theme motion), easing: theme | standard | emphasized | linear | spring | bounce, staggerMs 0..150, chevron: rotate | flip | none, reduced: system | always | never }",
+        "behavior": "{ single, openOn: tap | hover, autoCollapse, remember, followActive, swipe }",
+        "items": "{ order, hidden, pinned: comma-separated top-level item ids }",
+        "accents": "{ <item id>: colour token }"
+      },
+      "hideable": false,
       "optional": true
     },
     "behavior-theme": {

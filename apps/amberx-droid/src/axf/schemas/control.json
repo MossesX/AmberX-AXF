@@ -1799,6 +1799,425 @@
         "read": "read"
       },
       "doc": "Everything a plugin lets you read: its GET routes, its data folder (data, data-file) and its info. path = <plugin>/<read>; act read answers it (input = its query)."
+    },
+    "tokens.nav": {
+      "domain": "tokens",
+      "label": "Navigation style tokens",
+      "asset": "nav-style",
+      "ops": [
+        "list",
+        "get",
+        "set",
+        "reset"
+      ],
+      "paths": [
+        {
+          "id": "colors.background",
+          "kind": "enum",
+          "options": [
+            "theme",
+            "bg",
+            "surface",
+            "surface2",
+            "surface3",
+            "text",
+            "muted",
+            "border",
+            "accent",
+            "accentText",
+            "accentSoft",
+            "danger",
+            "success",
+            "warning",
+            "info",
+            "focus"
+          ],
+          "default": "theme",
+          "token": "nav-style colors.background"
+        },
+        {
+          "id": "colors.text",
+          "kind": "enum",
+          "options": [
+            "theme",
+            "bg",
+            "surface",
+            "surface2",
+            "surface3",
+            "text",
+            "muted",
+            "border",
+            "accent",
+            "accentText",
+            "accentSoft",
+            "danger",
+            "success",
+            "warning",
+            "info",
+            "focus"
+          ],
+          "default": "theme",
+          "token": "nav-style colors.text"
+        },
+        {
+          "id": "colors.hover",
+          "kind": "enum",
+          "options": [
+            "theme",
+            "bg",
+            "surface",
+            "surface2",
+            "surface3",
+            "text",
+            "muted",
+            "border",
+            "accent",
+            "accentText",
+            "accentSoft",
+            "danger",
+            "success",
+            "warning",
+            "info",
+            "focus"
+          ],
+          "default": "theme",
+          "token": "nav-style colors.hover"
+        },
+        {
+          "id": "colors.active",
+          "kind": "enum",
+          "options": [
+            "theme",
+            "bg",
+            "surface",
+            "surface2",
+            "surface3",
+            "text",
+            "muted",
+            "border",
+            "accent",
+            "accentText",
+            "accentSoft",
+            "danger",
+            "success",
+            "warning",
+            "info",
+            "focus"
+          ],
+          "default": "theme",
+          "token": "nav-style colors.active"
+        },
+        {
+          "id": "colors.activeText",
+          "kind": "enum",
+          "options": [
+            "theme",
+            "bg",
+            "surface",
+            "surface2",
+            "surface3",
+            "text",
+            "muted",
+            "border",
+            "accent",
+            "accentText",
+            "accentSoft",
+            "danger",
+            "success",
+            "warning",
+            "info",
+            "focus"
+          ],
+          "default": "theme",
+          "token": "nav-style colors.activeText"
+        },
+        {
+          "id": "colors.submenu",
+          "kind": "enum",
+          "options": [
+            "theme",
+            "bg",
+            "surface",
+            "surface2",
+            "surface3",
+            "text",
+            "muted",
+            "border",
+            "accent",
+            "accentText",
+            "accentSoft",
+            "danger",
+            "success",
+            "warning",
+            "info",
+            "focus"
+          ],
+          "default": "theme",
+          "token": "nav-style colors.submenu"
+        },
+        {
+          "id": "colors.accent",
+          "kind": "enum",
+          "options": [
+            "theme",
+            "bg",
+            "surface",
+            "surface2",
+            "surface3",
+            "text",
+            "muted",
+            "border",
+            "accent",
+            "accentText",
+            "accentSoft",
+            "danger",
+            "success",
+            "warning",
+            "info",
+            "focus"
+          ],
+          "default": "theme",
+          "token": "nav-style colors.accent"
+        },
+        {
+          "id": "font.family",
+          "kind": "enum",
+          "options": [
+            "theme",
+            "body",
+            "display",
+            "mono"
+          ],
+          "default": "theme",
+          "token": "nav-style font.family"
+        },
+        {
+          "id": "font.size",
+          "kind": "enum",
+          "options": [
+            "theme",
+            "2xs",
+            "xs",
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "theme",
+          "token": "nav-style font.size"
+        },
+        {
+          "id": "font.weight",
+          "kind": "enum",
+          "options": [
+            "theme",
+            "400",
+            "500",
+            "600",
+            "700",
+            "800"
+          ],
+          "default": "theme",
+          "token": "nav-style font.weight"
+        },
+        {
+          "id": "icons.show",
+          "kind": "boolean",
+          "default": true,
+          "token": "nav-style icons.show"
+        },
+        {
+          "id": "icons.size",
+          "kind": "enum",
+          "options": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md",
+          "token": "nav-style icons.size"
+        },
+        {
+          "id": "layout.density",
+          "kind": "enum",
+          "options": [
+            "theme",
+            "compact",
+            "regular",
+            "roomy"
+          ],
+          "default": "theme",
+          "token": "nav-style layout.density"
+        },
+        {
+          "id": "layout.indent",
+          "kind": "number",
+          "min": 0,
+          "max": 6,
+          "default": 3,
+          "token": "nav-style layout.indent"
+        },
+        {
+          "id": "width.size",
+          "kind": "number",
+          "min": 0,
+          "max": 480,
+          "default": 0,
+          "token": "nav-style width.size"
+        },
+        {
+          "id": "width.min",
+          "kind": "number",
+          "min": 48,
+          "max": 320,
+          "default": 160,
+          "token": "nav-style width.min"
+        },
+        {
+          "id": "width.max",
+          "kind": "number",
+          "min": 160,
+          "max": 640,
+          "default": 420,
+          "token": "nav-style width.max"
+        },
+        {
+          "id": "width.resizable",
+          "kind": "boolean",
+          "default": false,
+          "token": "nav-style width.resizable"
+        },
+        {
+          "id": "width.collapsible",
+          "kind": "boolean",
+          "default": true,
+          "token": "nav-style width.collapsible"
+        },
+        {
+          "id": "animation.kind",
+          "kind": "enum",
+          "options": [
+            "slide",
+            "accordion",
+            "fade",
+            "push",
+            "none"
+          ],
+          "default": "slide",
+          "token": "nav-style animation.kind"
+        },
+        {
+          "id": "animation.durationMs",
+          "kind": "number",
+          "min": 0,
+          "max": 1200,
+          "default": 220,
+          "token": "nav-style animation.durationMs"
+        },
+        {
+          "id": "animation.easing",
+          "kind": "enum",
+          "options": [
+            "theme",
+            "standard",
+            "emphasized",
+            "linear",
+            "spring",
+            "bounce"
+          ],
+          "default": "standard",
+          "token": "nav-style animation.easing"
+        },
+        {
+          "id": "animation.staggerMs",
+          "kind": "number",
+          "min": 0,
+          "max": 150,
+          "default": 24,
+          "token": "nav-style animation.staggerMs"
+        },
+        {
+          "id": "animation.chevron",
+          "kind": "enum",
+          "options": [
+            "rotate",
+            "flip",
+            "none"
+          ],
+          "default": "rotate",
+          "token": "nav-style animation.chevron"
+        },
+        {
+          "id": "animation.reduced",
+          "kind": "enum",
+          "options": [
+            "system",
+            "always",
+            "never"
+          ],
+          "default": "system",
+          "token": "nav-style animation.reduced"
+        },
+        {
+          "id": "behavior.single",
+          "kind": "boolean",
+          "default": true,
+          "token": "nav-style behavior.single"
+        },
+        {
+          "id": "behavior.openOn",
+          "kind": "enum",
+          "options": [
+            "tap",
+            "hover"
+          ],
+          "default": "tap",
+          "token": "nav-style behavior.openOn"
+        },
+        {
+          "id": "behavior.autoCollapse",
+          "kind": "boolean",
+          "default": true,
+          "token": "nav-style behavior.autoCollapse"
+        },
+        {
+          "id": "behavior.remember",
+          "kind": "boolean",
+          "default": true,
+          "token": "nav-style behavior.remember"
+        },
+        {
+          "id": "behavior.followActive",
+          "kind": "boolean",
+          "default": true,
+          "token": "nav-style behavior.followActive"
+        },
+        {
+          "id": "behavior.swipe",
+          "kind": "boolean",
+          "default": true,
+          "token": "nav-style behavior.swipe"
+        },
+        {
+          "id": "items.order",
+          "kind": "string",
+          "default": "",
+          "token": "nav-style items.order"
+        },
+        {
+          "id": "items.hidden",
+          "kind": "string",
+          "default": "",
+          "token": "nav-style items.hidden"
+        },
+        {
+          "id": "items.pinned",
+          "kind": "string",
+          "default": "",
+          "token": "nav-style items.pinned"
+        }
+      ],
+      "value": "field",
+      "doc": "nav-style@1 (core/engines/navstyle-rules.mjs): the navigation menu with sub menus: colours (colour-theme token ids), font, icons, density, width, the sub-menu animation, behaviour (one or many open, tap or hover, auto-collapse, remember, follow the active page, swipe), pinned / hidden / ordered items (comma-separated ids) and accents.<item id>. Only navs that opt in (nav-menu navStyle: true) read it."
     }
   },
   "aliases": {
@@ -1881,7 +2300,8 @@
               "console.clients",
               "pass.scopes",
               "plugins.commands",
-              "plugins.reads"
+              "plugins.reads",
+              "tokens.nav"
             ],
             "description": "what to control"
           },
@@ -1934,7 +2354,8 @@
               "console.clients",
               "pass.scopes",
               "plugins.commands",
-              "plugins.reads"
+              "plugins.reads",
+              "tokens.nav"
             ],
             "description": "what to control"
           },
@@ -1988,7 +2409,8 @@
               "console.clients",
               "pass.scopes",
               "plugins.commands",
-              "plugins.reads"
+              "plugins.reads",
+              "tokens.nav"
             ],
             "description": "what to control"
           },
@@ -2049,7 +2471,8 @@
               "console.clients",
               "pass.scopes",
               "plugins.commands",
-              "plugins.reads"
+              "plugins.reads",
+              "tokens.nav"
             ],
             "description": "what to control"
           },
@@ -2110,7 +2533,8 @@
               "console.clients",
               "pass.scopes",
               "plugins.commands",
-              "plugins.reads"
+              "plugins.reads",
+              "tokens.nav"
             ],
             "description": "what to control"
           },
@@ -2171,7 +2595,8 @@
               "console.clients",
               "pass.scopes",
               "plugins.commands",
-              "plugins.reads"
+              "plugins.reads",
+              "tokens.nav"
             ],
             "description": "what to control"
           },
@@ -2236,7 +2661,8 @@
               "console.clients",
               "pass.scopes",
               "plugins.commands",
-              "plugins.reads"
+              "plugins.reads",
+              "tokens.nav"
             ],
             "description": "what to control"
           },
@@ -2366,7 +2792,8 @@
       "console.clients",
       "pass.scopes",
       "plugins.commands",
-      "plugins.reads"
+      "plugins.reads",
+      "tokens.nav"
     ]
   },
   "schema": {
@@ -2416,7 +2843,8 @@
           "console.clients",
           "pass.scopes",
           "plugins.commands",
-          "plugins.reads"
+          "plugins.reads",
+          "tokens.nav"
         ]
       },
       "path": {
@@ -3478,6 +3906,51 @@
           "read": {}
         },
         "paths": "host"
+      },
+      "tokens.nav": {
+        "description": "nav-style@1 (core/engines/navstyle-rules.mjs): the navigation menu with sub menus: colours (colour-theme token ids), font, icons, density, width, the sub-menu animation, behaviour (one or many open, tap or hover, auto-collapse, remember, follow the active page, swipe), pinned / hidden / ordered items (comma-separated ids) and accents.<item id>. Only navs that opt in (nav-menu navStyle: true) read it.",
+        "ops": [
+          "list",
+          "get",
+          "set",
+          "reset"
+        ],
+        "paths": [
+          "colors.background",
+          "colors.text",
+          "colors.hover",
+          "colors.active",
+          "colors.activeText",
+          "colors.submenu",
+          "colors.accent",
+          "font.family",
+          "font.size",
+          "font.weight",
+          "icons.show",
+          "icons.size",
+          "layout.density",
+          "layout.indent",
+          "width.size",
+          "width.min",
+          "width.max",
+          "width.resizable",
+          "width.collapsible",
+          "animation.kind",
+          "animation.durationMs",
+          "animation.easing",
+          "animation.staggerMs",
+          "animation.chevron",
+          "animation.reduced",
+          "behavior.single",
+          "behavior.openOn",
+          "behavior.autoCollapse",
+          "behavior.remember",
+          "behavior.followActive",
+          "behavior.swipe",
+          "items.order",
+          "items.hidden",
+          "items.pinned"
+        ]
       }
     }
   }
