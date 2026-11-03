@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 501,
- "updatedAt": "2026-11-03T21:48:59.769Z",
+ "rev": 502,
+ "updatedAt": "2026-11-03T21:49:27.651Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -58700,9 +58700,14 @@
    "branch": "claude/molly-console-commands",
    "pr": "#288",
    "createdAt": "2026-11-03T21:05:30.629Z",
-   "updatedAt": "2026-11-03T21:48:54.685Z",
+   "updatedAt": "2026-11-03T21:48:58.463Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Fix on PR #288 (stacked on #266). s6/s7 addendum open.",
+     "at": "2026-11-03T21:48:58.463Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -61179,7 +61184,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

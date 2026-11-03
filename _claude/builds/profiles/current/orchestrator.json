@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T21:48:59.769Z",
+ "updatedAt": "2026-11-03T21:49:27.651Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -822,9 +822,14 @@
    "branch": "claude/molly-console-commands",
    "pr": "#288",
    "createdAt": "2026-11-03T21:05:30.629Z",
-   "updatedAt": "2026-11-03T21:48:54.685Z",
+   "updatedAt": "2026-11-03T21:48:58.463Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Fix on PR #288 (stacked on #266). s6/s7 addendum open.",
+     "at": "2026-11-03T21:48:58.463Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
