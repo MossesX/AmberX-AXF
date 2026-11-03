@@ -1,0 +1,138 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "git-status-help",
+  "name": "git-status help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:git-status.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:git-status",
+    "entries": [
+      {
+        "target": "action:git-status.open",
+        "title": "Git status",
+        "text": "Opens Git status: every PR, branch and VPS worktree sorted into what needs pushing, pulling, CI, merging, what is held and why, what merged today, what runs where and what is stale.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:git-status.show",
+        "title": "Show in Git status",
+        "text": "Opens Git status at this PR, branch or build, on the tab that holds it, with its row open.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "section",
+        "title": "Section tabs",
+        "text": "Each tab is one grid. Needs push: local commits not on GitHub, uncommitted files, pushed branches with no PR. Needs pull: behind main. In CI: running, queued or failed checks. Ready to merge: green and not held. Held: why it can't merge and what clears it. Merged today, Deployed, Stale, Batches.",
+        "kind": "tab"
+      },
+      {
+        "target": "check-now",
+        "title": "Check now",
+        "text": "Reads GitHub and the VPS checkouts again. The page also updates by itself every 20 seconds while it is open.",
+        "kind": "button"
+      },
+      {
+        "target": "merge",
+        "title": "Merge",
+        "text": "Merges this PR through the push banner: only when it is up to date with main, CI passed on its newest commit and nothing holds it.",
+        "kind": "button"
+      },
+      {
+        "target": "hold",
+        "title": "Hold",
+        "text": "Keeps this PR from merging (auto-merge skips it, Merge refuses it) until you tap it again.",
+        "kind": "button"
+      },
+      {
+        "target": "update-from-main",
+        "title": "Update from main",
+        "text": "Pulls main into this PR or branch so it is up to date and CI runs again.",
+        "kind": "button"
+      },
+      {
+        "target": "re-run-ci",
+        "title": "Re-run CI",
+        "text": "Runs the failed CI jobs on this PR's newest commit again.",
+        "kind": "button"
+      },
+      {
+        "target": "fix",
+        "title": "Fix",
+        "text": "Sends the PR and its failing lines to Merge Max (ops-fix job), who fixes it on its own branch. Uses that agent's budget.",
+        "kind": "button"
+      },
+      {
+        "target": "land",
+        "title": "Land",
+        "text": "Sends a stale branch to Landin' Lenny to bring it up to date with main and land it.",
+        "kind": "button"
+      },
+      {
+        "target": "close",
+        "title": "Close",
+        "text": "Closes this PR without merging it. Its branch stays.",
+        "kind": "button"
+      },
+      {
+        "target": "kill",
+        "title": "Kill",
+        "text": "Deletes a stale branch on GitHub that has no open PR.",
+        "kind": "button"
+      },
+      {
+        "target": "new-batch-from-ready",
+        "title": "New batch from ready",
+        "text": "Makes a push batch of every ready PR that isn't in a batch yet.",
+        "kind": "button"
+      },
+      {
+        "target": "merge-next",
+        "title": "Merge next",
+        "text": "Merges the first ready PR in this batch's order (pulling main in first when it is behind), or says what the first one waits for.",
+        "kind": "button"
+      },
+      {
+        "target": "view:git-status",
+        "title": "Git status",
+        "text": "Every PR, branch and VPS checkout in one page: pick a tab to see what needs pushing, pulling, CI, merging, what is held and why, what merged today, what runs where and what is stale. Tap a row to open it.",
+        "kind": "screen"
+      },
+      {
+        "target": "git-status",
+        "title": "Git status settings",
+        "text": "Install and uninstall Git status. It keeps only its holds and push batches.",
+        "kind": "tab"
+      },
+      {
+        "target": "new-batch",
+        "title": "New batch",
+        "text": "Starts a push batch with this PR in it; add more from their rows.",
+        "kind": "button"
+      },
+      {
+        "target": "open-ui-review",
+        "title": "Open UI Review",
+        "text": "Opens UI Review, where the screenshots holding this PR wait for your approval.",
+        "kind": "button"
+      },
+      {
+        "target": "remove-batch",
+        "title": "Remove batch",
+        "text": "Deletes this push batch. Its PRs stay open.",
+        "kind": "button"
+      },
+      {
+        "target": "take-out-of-batch",
+        "title": "Take out of batch",
+        "text": "Takes this PR out of the batch; it stays open.",
+        "kind": "button"
+      }
+    ],
+    "intros": []
+  }
+}

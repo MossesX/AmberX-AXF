@@ -1,0 +1,44 @@
+/* Git status: layout only, theme tokens only (controls keep the framework's look). Dense and phone first: one tab row
+   that scrolls sideways, one toolbar line, flat grids; on a phone a row is its lead line with a small meta line
+   (branch · agent · ahead/behind · age · cost) and the wide columns come back on a wider screen. */
+.axp-git-status { gap: var(--fx-dens-gap-lg); min-width: 0 }
+.axp-git-status__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-git-status__tabs { overflow-x: auto; scroll-snap-type: x proximity; min-width: 0 }
+.axp-git-status__tabs .fx-seg { flex-wrap: nowrap; width: max-content }
+.axp-git-status__bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0 }
+.axp-git-status__search { flex: 1 1 calc(var(--fx-font-size) * 14); min-width: 0 }
+select.fx-input.axp-git-status__sel, select.fx-input.axp-git-status__batchpick { flex: none; width: auto }
+.axp-git-status__lead { display: flex; flex-direction: column; min-width: 0; max-width: calc(var(--fx-space) * 64) }
+.axp-git-status__lead > strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-git-status__meta { display: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.axp-git-status__clip { display: block; max-width: calc(var(--fx-space) * 26); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-git-status__agent { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); max-width: calc(var(--fx-space) * 14); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-git-status__nowrap { white-space: nowrap }
+.axp-git-status__dot { display: inline-block; width: calc(var(--fx-space) * 1.25); height: calc(var(--fx-space) * 1.25); border-radius: 999px; background: var(--fx-muted) }
+.axp-git-status__dot--success { background: var(--fx-success) }
+.axp-git-status__dot--danger { background: var(--fx-danger) }
+.axp-git-status__dot--info { background: var(--fx-info) }
+.axp-git-status__detail { gap: var(--fx-dens-gap-md); min-width: 0 }
+.axp-git-status__line { display: flex; align-items: baseline; gap: var(--fx-dens-gap-xl); min-width: 0 }
+.axp-git-status__k { flex: none; min-width: calc(var(--fx-space) * 10) }
+.axp-git-status__v { min-width: 0 }
+.axp-git-status__list { margin: 0; padding-inline-start: var(--fx-dens-gap-xl) }
+.axp-git-status__actions { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm) }
+.axp-git-status__errs, .axp-git-status__diff { margin: var(--fx-dens-gap-xs) 0 0; padding: var(--fx-dens-gap-sm); font-family: var(--fx-font-mono); font-size: var(--fx-type-mono-size);
+  border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); overflow-x: auto; white-space: pre; max-height: calc(var(--fx-space) * 40) }
+.axp-git-status__diff .is-add, .axp-git-status__add { color: var(--fx-success) }
+.axp-git-status__diff .is-del, .axp-git-status__del { color: var(--fx-danger) }
+.axp-git-status__diff .is-hunk { color: var(--fx-info) }
+.axp-git-status__files { list-style: none; margin: 0; padding: 0 }
+.axp-git-status__file, .axp-git-status__linkbtn { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); width: 100%; padding: var(--fx-dens-gap-xs) 0; border: 0; background: none; color: inherit; font: inherit; text-align: start; cursor: pointer }
+.axp-git-status__body { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere }
+.axp-git-status__batch { gap: var(--fx-dens-gap-md); padding-block: var(--fx-dens-gap-md); border-top: var(--fx-border-w) solid var(--fx-border) }
+.axp-git-status__batchhead { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+.axp-git-status__badges { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs) }
+.axp-git-status__order { list-style: none; margin: 0; padding: 0 }
+.axp-git-status__orderrow { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0 }
+:where([data-fx-small]) .axp-git-status__meta { display: block }
+:where([data-fx-small]) .axp-git-status__lead { max-width: none }
+:where([data-fx-small]) .axp-git-status__lead > strong { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden }
+:where([data-fx-small]) .axp-git-status__line { flex-direction: column; gap: 0 }
+:where([data-fx-small]) .axp-git-status__k { min-width: 0 }
