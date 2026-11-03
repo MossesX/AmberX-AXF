@@ -1033,7 +1033,7 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-dock-drop__label { font-size: var(--fx-type-root-xs); text-transform: uppercase; letter-spacing: .06em; color: var(--fx-accent); background: var(--fx-surface); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-lg); border-radius: 999px; box-shadow: var(--fx-shadow-sm); white-space: nowrap; }
 .fx-dock-drop.is-limited .fx-dock-drop__label { color: var(--fx-warning); }
 .fx-dock-thumb { display: block; line-height: 0; }
-.fx-dock-thumb svg { width: 100%; height: auto; display: block; }
+.fx-dock-thumb > svg, .fx-btn .fx-dock-thumb > svg { width: 100%; height: auto; display: block; }
 .fx-dock-presets { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 140px), 1fr)); gap: var(--fx-dens-gap-lg); }
 .fx-dock-preset { display: flex; flex-direction: column; align-items: stretch; gap: var(--fx-dens-gap-md); text-align: start; height: auto; }
 .fx-dock-preset.is-selected { outline: calc(var(--fx-border-w) * 2) solid var(--fx-accent); outline-offset: calc(var(--fx-border-w) * -1); }
