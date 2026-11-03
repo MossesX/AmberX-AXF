@@ -54,6 +54,23 @@ t('runner: gate, resolve, deliver', () => {
   assert.ok(confirmSalt().length >= 32, 'salt kept in the data folder');
 });
 
+t('recent = the console in front (Molly)', () => {
+  const cat = { items: [{ kind: 'screen', id: 'home', label: 'Home' }] };
+  // the console inside Molly was touched last but Molly shows another app now; the phone's console is on screen
+  const two = [
+    { id: 'in-molly', app: 'molly/console-web', host: 'molly', front: false, lastUsed: NOW, lastSeen: NOW, catalog: cat },
+    { id: 'phone-1', front: true, lastUsed: NOW - 60_000, lastSeen: NOW, catalog: cat },
+  ];
+  const r = runConsole({ op: 'act', target: 'console.screens', path: 'home', action: 'open' }, { clients: two });
+  assert.deepEqual(r.deliver.to, ['phone-1'], 'the visible one wins over the one used last');
+  two[0].front = true;
+  assert.deepEqual(runConsole({ op: 'act', target: 'console.screens', path: 'home', action: 'open' }, { clients: two }).deliver.to, ['in-molly'], 'both in front: used last');
+  const list = runConsole({ op: 'list', target: 'console.clients' }, { clients: two });
+  const m = list.items.find((c) => c.id === 'in-molly');
+  assert.ok(m.app === 'molly/console-web' && m.host === 'molly' && m.front === true, JSON.stringify(m));
+  assert.equal(list.items.find((c) => c.id === 'phone-1').host, undefined, 'standalone has no host');
+});
+
 t('answers as text', () => {
   assert.equal(formatAnswer({ ok: true, op: 'act', action: 'open', target: 'console.screens', item: { id: 'plan-studio', label: 'Plan Studio' }, delivered: [{ client: 'tab-1', ok: true, message: 'opened Plan Studio' }] }), '✓ open Plan Studio (plan-studio) → tab-1: opened Plan Studio');
   assert.ok(formatAnswer({ ok: true, op: 'act', action: 'open', target: 'console.screens', item: { id: 'home', label: 'Home' }, queued: true, message: 'queued, waiting for the console' }).startsWith('queued: open Home'), 'queued');

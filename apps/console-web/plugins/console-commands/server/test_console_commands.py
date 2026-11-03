@@ -285,5 +285,24 @@ time.sleep(0.6)
 j = client.post("/api/console/open", json={"screen": "plan studio"}).json()
 ok(j["ok"] and again and again[-1]["target"] == "plan-studio", f"re-hello after a restart, then commands go through ({j.get('delivery')})")
 
+# the console inside Molly (molly-console-commands, Nov 3 2026): it says where it runs and whether Molly shows it; a
+# command for "the console Brett is using" goes to the one in front, even when another was touched last
+molly: list[dict] = []
+client.post("/api/console/seen", json={"client": "late-0001", "front": True})
+client.post("/api/console/hello", json={"client": "molly-0001", "app": "molly/console-web", "host": "molly", "front": False, "catalog": CATALOG, "used": True})
+fake_console("molly-0001", answers=molly)
+time.sleep(0.4)
+row = next(c for c in client.get("/api/console/clients").json()["items"] if c["id"] == "molly-0001")
+ok(row["app"] == "molly/console-web" and row["host"] == "molly" and row["front"] is False, f"Molly's console is listed as such ({row})")
+j = client.post("/api/console/open", json={"screen": "home"}).json()
+eq([d["client"] for d in j["delivered"]], ["late-0001"], "a console hidden behind another app in Molly is not 'recent'")
+client.post("/api/console/seen", json={"client": "molly-0001", "front": True, "used": True})
+j = client.post("/api/console/open", json={"screen": "plan studio"}).json()
+eq([d["client"] for d in j["delivered"]], ["molly-0001"], "once Molly shows it, it gets the command")
+ok(molly and molly[-1]["target"] == "plan-studio", "Molly's console ran it")
+eq(client.get("/api/console/clients").json()["items"][0]["id"], "molly-0001", "the console in front is listed first")
+client.post("/api/console/hello", json={"client": "molly-0001", "host": "Bad Host!", "catalog": CATALOG})
+eq(next(c for c in client.get("/api/console/clients").json()["items"] if c["id"] == "molly-0001").get("host", ""), "", "a malformed host name is dropped")
+
 print(f"✓ console commands server — {checks} checks", flush=True)
 os._exit(0)  # the fake consoles' streams are still open

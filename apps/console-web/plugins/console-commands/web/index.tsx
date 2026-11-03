@@ -127,15 +127,20 @@ function ConsoleCommandsClient() {
   useEffect(() => {
     if (!on || typeof window === 'undefined') return;
     const id = clientId();
+    // Inside a host (Molly) this console says so: app `molly/console-web`, and whether the host shows its frame now
+    // (`front`), so a command for "the console Brett is using" comes here only while he can see it.
+    const host = rt.embedded?.host ?? '';
+    const app = host ? `${host}/console-web` : 'console-web';
+    const where = () => ({ front: rt.inFront(), ...(host ? { host } : {}) });
     const history: string[] = [rt.getState().view];
     let catalogKey = '';
     let pick = pickedCommand();
     const announce = (used = false) => {
       const catalog = catalogOf(rt);
       const key = `${catalog.items.length}:${catalog.items.map((i) => i.id).join(',').length}`;
-      if (key === catalogKey && !used) return post('seen', { client: id, here: catalog.here }).catch(() => undefined);
+      if (key === catalogKey && !used) return post('seen', { client: id, here: catalog.here, ...where() }).catch(() => undefined);
       catalogKey = key;
-      const body = { client: id, app: 'console-web', title: document.title, device: device(), catalog, here: catalog.here, used: used || !!pick, ...(pick ? { pick } : {}) };
+      const body = { client: id, app, title: document.title, device: device(), catalog, here: catalog.here, ...where(), used: used || !!pick, ...(pick ? { pick } : {}) };
       pick = '';
       return post('hello', body).catch(() => undefined);
     };
@@ -145,8 +150,10 @@ function ConsoleCommandsClient() {
       const v = rt.getState().view;
       if (v !== lastView) { lastView = v; if (history[history.length - 1] !== v) history.push(v); if (history.length > 50) history.shift(); void post('seen', { client: id, here: hereOf(rt) }).catch(() => undefined); }
     });
-    const used = () => { void post('seen', { client: id, here: hereOf(rt), used: true }).catch(() => undefined); };
-    const onVisible = () => { if (document.visibilityState === 'visible') used(); };
+    const used = () => { void post('seen', { client: id, here: hereOf(rt), ...where(), used: true }).catch(() => undefined); };
+    const onVisible = () => { if (rt.inFront()) used(); else void post('seen', { client: id, ...where() }).catch(() => undefined); };
+    // the host showed or hid this console's frame (Molly switched apps): showing it means Brett is using it now
+    const offFront = rt.onFront(onVisible);
     window.addEventListener('focus', used);
     document.addEventListener('visibilitychange', onVisible);
     const beat = setInterval(() => void announce(false), HEARTBEAT_MS);
@@ -163,19 +170,21 @@ function ConsoleCommandsClient() {
         if (!m || !('id' in m) || !m.id) return;
         const again = doneOf(m.id);
         if (again) { void post('ack', { client: id, id: m.id, ok: again[0], message: again[1], here: hereOf(rt) }).catch(() => undefined); return; }
+        // inside a host, bring this console's frame to the front first, so Brett sees the command happen
+        if (host && !rt.inFront()) rt.bringToFront(`${who(m.by)}: ${m.label ?? m.target ?? m.op}`);
         let res: [boolean, string];
         try { res = runMessage(rt, m, history); } catch (e) { res = [false, String((e as Error)?.message ?? e)]; }
         markDone(m.id, res);
         if (res[0] && rt.settings.get(KEYS.toast) !== false) rt.toast(`${who(m.by)}: ${m.delivery ? ongoing(res[1]) : res[1]}`, 'info', 'Console command');
-        void post('ack', { client: id, id: m.id, ok: res[0], message: res[1], here: hereOf(rt) }).catch(() => undefined);
+        void post('ack', { client: id, id: m.id, ok: res[0], message: res[1], here: hereOf(rt), ...where() }).catch(() => undefined);
       },
     );
-    return () => { stop(); offState(); clearInterval(beat); window.removeEventListener('focus', used); document.removeEventListener('visibilitychange', onVisible); window.removeEventListener('pagehide', bye); };
+    return () => { stop(); offState(); offFront(); clearInterval(beat); window.removeEventListener('focus', used); document.removeEventListener('visibilitychange', onVisible); window.removeEventListener('pagehide', bye); };
   }, [rt, on]);
   return null;
 }
 
-interface ClientRow { id: string; device: string; user: string; lastUsed: number; live: boolean; here: ConsoleHere; items: number }
+interface ClientRow { id: string; app?: string; front?: boolean; device: string; user: string; lastUsed: number; live: boolean; here: ConsoleHere; items: number }
 interface RecentRow { at: string; by: string; target: string; path: string; action: string; ok: boolean; message: string; how?: string; delivered: { client: string; ok: boolean; message: string }[] }
 interface QueueRow { id: string; state: string; at: string; expiresAt: string; path: string; action: string; by: string; wake: { sent: boolean; message: string } | null }
 interface WakeSettings { wake: boolean; ttlS: number; browser: 'chrome' | 'default' }
@@ -230,7 +239,7 @@ function ConsolesPanel() {
             {clients.map((c) => (
               <li key={c.id} className="axf-cc__row">
                 <span className="axf-cc__id">{c.id}{c.id === me ? ' (this one)' : ''}</span>
-                <span>{c.device || 'browser'} · {c.here?.screenLabel ?? c.here?.screen ?? '—'}</span>
+                <span>{c.app && c.app !== 'console-web' ? `${c.app} · ` : ''}{c.device || 'browser'} · {c.here?.screenLabel ?? c.here?.screen ?? '—'}{c.front === false ? ' · hidden' : ''}</span>
                 <span className="axf-cc__muted">{c.live ? 'open' : 'gone quiet'} · {c.lastUsed ? new Date(c.lastUsed).toLocaleTimeString() : 'not used yet'} · {c.items} items</span>
               </li>
             ))}

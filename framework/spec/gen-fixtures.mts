@@ -484,6 +484,16 @@ write('hide.json', {
       { $axf: 'embed@1', type: 'plugins-request' },
       JSON.stringify({ $axf: 'embed@1', type: 'plugins', plugins: Array.from({ length: 250 }, (_, i) => ({ id: `ai.amberx.axf.p${i}`, name: `Plugin ${i}`, on: i % 2 === 0 })) }),
     ].map((m) => ({ input: m, message: parseEmbedMessage(m) })),
+    // Front messages (`show` guest → host, `shown` host → guest; Nov 3 2026). Web only so far (Kotlin deferred, PORTING.md).
+    frontMessages: [
+      { $axf: 'embed@1', type: 'show' },
+      { $axf: 'embed@1', type: 'show', reason: ' Amber: opening Plan Studio\n' },
+      { $axf: 'embed@1', type: 'show', reason: 7 },
+      { $axf: 'embed@1', type: 'shown', on: true },
+      { $axf: 'embed@1', type: 'shown', on: false },
+      { $axf: 'embed@1', type: 'shown', on: 'yes' },
+      { $axf: 'embed@1', type: 'shown' },
+    ].map((m) => ({ input: m, message: parseEmbedMessage(m) })),
     settingsTab: ['settings.open:appearance', 'settings.open', 'app.settings', 'settings.open:a b'].map((a) => ({ action: a, tab: settingsTabOf(a) ?? null })),
     // View pages (`view:<id>`: one view alone, e.g. a tabable plugin as a host's tab) and plugin tabs in a plugin report.
     // Web only so far (Kotlin deferred, PORTING.md).

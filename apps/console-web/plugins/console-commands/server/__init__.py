@@ -59,7 +59,8 @@ POLICY = ROOT / "apps" / "console-web" / "src" / "assets" / "uac-policy" / "cons
 STATUS = {"invalid": 400, "validation": 422, "denied": 403, "not_found": 404, "confirmation_required": 409, "not_implemented": 501, "unexpected": 500}
 CLIENT_RE = re.compile(r"^[A-Za-z0-9_-]{6,64}$")
 STALE_S = 90.0          # = CONSOLE_CLIENT_STALE_MS in core/engines/console-commands.mjs
-ACK_WAIT_S = 4.0        # how long an answer waits for the consoles to say what they did
+ACK_WAIT_S = 10.0       # how long an answer waits for the consoles to say what they did (4 s was too short on a
+                        # busy VPS: the ack itself queued behind other requests, Nov 3 2026)
 CATALOG_MAX_BYTES = 1_500_000
 OWNER = "owner"
 DELIVERY_WAIT_S = 60.0  # how long a call waits for a queued (or reconnecting) command to reach a console
@@ -112,7 +113,8 @@ def _now() -> float:
 
 def _public(c: dict[str, Any]) -> dict[str, Any]:
     """A client as the runner sees it (ms times, no queue)."""
-    return {"id": c["id"], "app": c.get("app", "console-web"), "title": c.get("title", ""), "device": c.get("device", ""), "user": c.get("user", ""),
+    return {"id": c["id"], "app": c.get("app", "console-web"), **({"host": c["host"]} if c.get("host") else {}), "front": c.get("front", True),
+            "title": c.get("title", ""), "device": c.get("device", ""), "user": c.get("user", ""),
             "lastUsed": int(c.get("lastUsed", 0) * 1000), "lastSeen": int(c.get("lastSeen", 0) * 1000), "here": c.get("here") or {}, "catalog": c.get("catalog") or {"items": []}}
 
 
@@ -127,6 +129,18 @@ def _client_of(body: dict[str, Any], audience: str, user: str) -> dict[str, Any]
         if c is None:
             c = _clients[cid] = {"id": cid, "audience": audience, "user": user, "lastUsed": 0.0, "lastSeen": _now(), "queue": None, "loop": None, "pending": []}
         return c
+
+
+HOST_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,30}$")
+
+
+def _front_of(c: dict[str, Any], b: dict[str, Any]) -> None:
+    """What a console says about where it is (under _lock): `front` = visible and shown by its host; `host` = the app it
+    runs inside (embed@1, e.g. molly)."""
+    if isinstance(b.get("front"), bool):
+        c["front"] = b["front"]
+    if isinstance(b.get("host"), str):
+        c["host"] = b["host"] if HOST_RE.match(b["host"]) else ""
 
 
 def _prune() -> None:
@@ -506,6 +520,7 @@ async def hello(request: Request) -> dict[str, Any]:
     with _lock:
         c.update({"app": str(b.get("app") or "console-web")[:60], "title": str(b.get("title") or "")[:120], "device": str(b.get("device") or "")[:20],
                   "catalog": cat, "here": b.get("here") if isinstance(b.get("here"), dict) else {}, "lastSeen": _now()})
+        _front_of(c, b)
         if b.get("used") or not c["lastUsed"]:
             c["lastUsed"] = _now()
     remember_catalog(audience, cat)
@@ -524,6 +539,7 @@ async def seen(request: Request) -> dict[str, Any]:
         c["lastSeen"] = _now()
         if isinstance(b.get("here"), dict):
             c["here"] = b["here"]
+        _front_of(c, b)
         if b.get("used"):
             c["lastUsed"] = _now()
     return {"ok": True}
@@ -590,6 +606,7 @@ async def ack(request: Request) -> dict[str, Any]:
         c["lastSeen"] = _now()
         if isinstance(b.get("here"), dict):
             c["here"] = b["here"]
+        _front_of(c, b)
         a = _acks.get(mid)
         if a is not None and cid in a["want"]:
             a["results"][cid] = {"client": cid, "ok": bool(b.get("ok")), "message": str(b.get("message") or "")[:300], "here": b.get("here") if isinstance(b.get("here"), dict) else {}}
@@ -603,7 +620,7 @@ def clients(request: Request) -> dict[str, Any]:
     _, _, audience = caller(request)
     now = _now() * 1000
     return {"ok": True, "items": [{k: v for k, v in c.items() if k != "catalog"} | {"items": len((c.get("catalog") or {}).get("items") or []), "live": now - c["lastSeen"] <= STALE_S * 1000}
-                                  for c in sorted(clients_of(audience), key=lambda x: -x["lastUsed"])]}
+                                  for c in sorted(clients_of(audience), key=lambda x: (not x.get("front", True), -x["lastUsed"]))]}
 
 
 @router.get("/recent")

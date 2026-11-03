@@ -63,7 +63,10 @@ goes there. `console.screens`, `console.dialogs` and `console.settings` (tabs an
 `path` = the id, the title or words to search for; `console.actions` takes `act run` (input `args`); `console.nav` (path `here`)
 takes `get` (where the console is) and `act back | home | close`; `console.clients` lists the consoles open for the caller. Every
 list and resolve runs against the catalog the open consoles report (their search index: views, settings tabs, dialogs, actions),
-so plugins' screens are found too. Every act takes `input.to`: `recent` (default, the console used last), `all`, or a client id.
+so plugins' screens are found too. Every act takes `input.to`: `recent` (default, the console Brett is looking at: a client in front wins, then the one used last), `all`, or a client id.
+A console inside a host says so (Nov 3 2026, build `molly-console-commands`): `app: molly/console-web`, `host: molly`, and `front` (its page is visible
+and the host shows its frame, embed@1 `shown`); before it runs a command while hidden it asks the host to bring it forward (embed@1 `show`), and
+Molly with xLayout opens the Console frame hidden at start (`warm`), so a command while Molly is open always lands in Molly.
 Delivery and resolution: `core/engines/console-commands.mjs`; the console server's `console-commands` plugin keeps one mailbox
 per signed-in user (the console token and hub admins share the owner's) and streams to each open console, which runs the command
 through its own runtime (`rt.search.focus`, `rt.dispatch`) and acks what it opened.

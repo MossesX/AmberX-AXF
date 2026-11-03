@@ -10,7 +10,8 @@
  * against that, so a new plugin's screen can be opened the moment it is installed.
  *
  *   catalog  { $axf: 'console-catalog@1', app, items: [{ kind, id, label, detail?, icon?, keywords?, requires?, effect?, params?, parent? }], here? }
- *   client   { id, app, title, device, user, lastUsed, here, catalog }   (one per open console tab, kept by the server)
+ *   client   { id, app, host?, front?, title, device, user, lastUsed, here, catalog }   (one per open console tab, kept by the server;
+ *            app `molly/console-web` + host `molly` inside Molly; front = visible and shown by its host)
  *   message  { $axf: 'console-command@1', id, op: open|run|back|home|close, kind?, target?, label?, spec?, anchor?, arg?, by, at }
  *
  * Kotlin twin deferred (Android on hold, spec/PORTING.md).
@@ -187,17 +188,23 @@ export function consoleActionNeeds(item) {
 
 /* ================================================================== clients + delivery */
 
-/** The consoles a command goes to: `recent` (the one used last), `all`, or a client id. Stale clients are left out. */
+/**
+ * The consoles a command goes to: `recent`, `all`, or a client id. Stale clients are left out. `recent` = the one Brett
+ * is looking at: a client in front (`front: true`: its page is visible and, inside a host such as Molly, the host shows
+ * its frame) wins over one that isn't, then the one used last (Nov 3 2026: a console hidden behind another app in Molly
+ * used to win because it was touched last).
+ */
 export function consolePickClients(clients, to = 'recent', now = Date.now()) {
   const live = (Array.isArray(clients) ? clients : []).filter((c) => c && c.id && now - (Number(c.lastSeen ?? c.lastUsed) || 0) <= CONSOLE_CLIENT_STALE_MS);
-  const sorted = [...live].sort((a, b) => (Number(b.lastUsed) || 0) - (Number(a.lastUsed) || 0));
+  const front = (c) => (c.front === false ? 0 : 1);
+  const sorted = [...live].sort((a, b) => front(b) - front(a) || (Number(b.lastUsed) || 0) - (Number(a.lastUsed) || 0));
   if (to === 'all') return sorted;
   if (!to || to === 'recent') return sorted.slice(0, 1);
   return sorted.filter((c) => c.id === to);
 }
 
 /** A client as `console.clients list` shows it (no catalog). */
-export const consoleClientSummary = (c) => ({ id: c.id, app: c.app ?? 'console-web', title: c.title ?? '', device: c.device ?? '', user: c.user ?? '', lastUsed: c.lastUsed ? new Date(Number(c.lastUsed)).toISOString() : '', here: normalizeHere(c.here), items: c.catalog?.items?.length ?? 0 });
+export const consoleClientSummary = (c) => ({ id: c.id, app: c.app ?? 'console-web', ...(c.host ? { host: c.host } : {}), front: c.front !== false, title: c.title ?? '', device: c.device ?? '', user: c.user ?? '', lastUsed: c.lastUsed ? new Date(Number(c.lastUsed)).toISOString() : '', here: normalizeHere(c.here), items: c.catalog?.items?.length ?? 0 });
 
 /** The message an open console receives. */
 export function consoleMessage(fields, { id, by = '', now = Date.now() } = {}) {

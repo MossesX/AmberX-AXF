@@ -88,7 +88,7 @@ export function FrameDeck() {
   const active = appOfView(view)?.id ?? null;
   const rects = useSlotRects();
   useSyncExternalStore(onMollyHooks, mollyHooksRev, mollyHooksRev);
-  const { frameUrl, onFrame } = mollyHooks();
+  const { frameUrl, onFrame, warm } = mollyHooks();
   // First address per app: a deep link on load (#/<app>/<route>), else the app's own start page.
   const [srcs] = useState(() => {
     const m = new Map<string, string>();
@@ -98,9 +98,9 @@ export function FrameDeck() {
   });
   const [opened, setOpened] = useState<string[]>(() => (active ? [active] : []));
   useEffect(() => {
-    const want = [...new Set([...(active ? [active] : []), ...rects.keys()])].filter((id) => !opened.includes(id));
+    const want = [...new Set([...(active ? [active] : []), ...rects.keys(), ...(warm ?? [])])].filter((id) => !opened.includes(id) && MOLLY_APPS.some((a) => a.id === id));
     if (want.length) setOpened((o) => [...o, ...want]);
-  }, [active, rects, opened]);
+  }, [active, rects, opened, warm]);
 
   return createPortal(
     <div className="molly-deck">
