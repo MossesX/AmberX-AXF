@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T22:12:19.279Z",
+ "updatedAt": "2026-11-03T22:12:39.130Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4918,13 +4918,13 @@
   {
    "id": "molly-banners",
    "title": "Molly: install the banners",
-   "category": "",
+   "category": "Molly",
    "detail": "",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
-   "pendingId": "molly-banners",
-   "branch": "",
+   "pendingId": "",
+   "branch": "claude/molly-banners",
    "pr": "",
    "createdAt": "2026-11-03T22:04:42.483Z",
    "updatedAt": "2026-11-03T22:04:54.318Z",
@@ -4954,7 +4954,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw18on3301win6"
+     "uid": "st-mw18k16w0613jq"
     },
     {
      "id": "s2",
@@ -4972,7 +4972,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw18on3302hn5u"
+     "uid": "st-mw18k16w07ser7"
     },
     {
      "id": "s3",
@@ -4990,7 +4990,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw18on3303de9y"
+     "uid": "st-mw18k16w08jx3j"
     },
     {
      "id": "s4",
@@ -5008,7 +5008,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw18on33044wm3"
+     "uid": "st-mw18k16w0997jg"
     },
     {
      "id": "s5",
@@ -5026,7 +5026,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw18on3305gaot"
+     "uid": "st-mw18k16w0anlxv"
     }
    ]
   }

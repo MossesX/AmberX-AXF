@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 526,
- "updatedAt": "2026-11-03T22:12:19.279Z",
+ "rev": 527,
+ "updatedAt": "2026-11-03T22:12:39.130Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -56729,7 +56729,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T20:30:14.219Z",
-     "updatedAt": "2026-11-03T22:12:07.083Z"
+     "updatedAt": "2026-11-03T22:12:36.595Z"
     }
    ],
    "profiles": [
@@ -61993,7 +61993,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T21:50:21.573Z",
-     "updatedAt": "2026-11-03T22:12:07.083Z"
+     "updatedAt": "2026-11-03T22:12:36.595Z"
     },
     {
      "id": "s6",
@@ -63873,7 +63873,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:02:33.806Z",
-     "updatedAt": "2026-11-03T22:12:07.791Z"
+     "updatedAt": "2026-11-03T22:12:36.595Z"
     },
     {
      "id": "s2",
@@ -63895,7 +63895,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:02:33.806Z",
-     "updatedAt": "2026-11-03T22:12:08.945Z"
+     "updatedAt": "2026-11-03T22:12:36.595Z"
     },
     {
      "id": "s3",
@@ -63917,7 +63917,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:02:33.806Z",
-     "updatedAt": "2026-11-03T22:12:10.232Z"
+     "updatedAt": "2026-11-03T22:12:36.595Z"
     },
     {
      "id": "s4",
@@ -63986,13 +63986,13 @@
   {
    "id": "molly-banners",
    "title": "Molly: install the banners",
-   "category": "",
+   "category": "Molly",
    "detail": "",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
-   "pendingId": "molly-banners",
-   "branch": "",
+   "pendingId": "",
+   "branch": "claude/molly-banners",
    "pr": "",
    "createdAt": "2026-11-03T22:04:42.483Z",
    "updatedAt": "2026-11-03T22:04:54.318Z",
@@ -64008,7 +64008,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mw18on3301win6",
+     "uid": "st-mw18k16w0613jq",
      "title": "",
      "text": "Check first: Molly banners today vs Dev Console banners; list the gap in the report",
      "model": "Opus",
@@ -64026,11 +64026,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-03T22:04:42.487Z",
-     "updatedAt": "2026-11-03T22:08:17.589Z"
+     "updatedAt": "2026-11-03T22:04:42.487Z"
     },
     {
      "id": "s2",
-     "uid": "st-mw18on3302hn5u",
+     "uid": "st-mw18k16w07ser7",
      "title": "",
      "text": "Install one shared banner region in Molly chrome, items live from the console banner registry/plugins; taps act as in the console; embedded frames hide their own banner",
      "model": "Opus",
@@ -64048,11 +64048,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-03T22:04:42.487Z",
-     "updatedAt": "2026-11-03T22:08:17.589Z"
+     "updatedAt": "2026-11-03T22:04:42.487Z"
     },
     {
      "id": "s3",
-     "uid": "st-mw18on3303de9y",
+     "uid": "st-mw18k16w08jx3j",
      "title": "",
      "text": "Same settings as the console (per-banner settings + colours, per-banner show/hide in Molly), phone + desktop",
      "model": "Opus",
@@ -64070,11 +64070,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-03T22:04:42.487Z",
-     "updatedAt": "2026-11-03T22:08:17.589Z"
+     "updatedAt": "2026-11-03T22:04:42.487Z"
     },
     {
      "id": "s4",
-     "uid": "st-mw18on33044wm3",
+     "uid": "st-mw18k16w0997jg",
      "title": "",
      "text": "Leave banner-pack #251, banner-editor #254, banners-one alone; build on main; note overlap",
      "model": "Opus",
@@ -64092,11 +64092,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-03T22:04:42.487Z",
-     "updatedAt": "2026-11-03T22:08:17.589Z"
+     "updatedAt": "2026-11-03T22:04:42.487Z"
     },
     {
      "id": "s5",
-     "uid": "st-mw18on3305gaot",
+     "uid": "st-mw18k16w0anlxv",
      "title": "",
      "text": "Tests, phone + desktop screenshots, UI Review item, report, THREADS, PR",
      "model": "Opus",
@@ -64114,7 +64114,7 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-03T22:04:42.487Z",
-     "updatedAt": "2026-11-03T22:08:17.589Z"
+     "updatedAt": "2026-11-03T22:04:42.487Z"
     }
    ],
    "profiles": [
@@ -64125,28 +64125,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-03T22:04:42.483Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mw18on3301win6": "2026-11-03T22:04:42.487Z",
-     "st-mw18on3302hn5u": "2026-11-03T22:04:42.487Z",
-     "st-mw18on3303de9y": "2026-11-03T22:04:42.487Z",
-     "st-mw18on33044wm3": "2026-11-03T22:04:42.487Z",
-     "st-mw18on3305gaot": "2026-11-03T22:04:42.487Z"
-    }
-   },
+   "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-03T22:08:17.589Z",
+   "defaultAt": "2026-11-03T22:04:42.487Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
