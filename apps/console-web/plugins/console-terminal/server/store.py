@@ -37,12 +37,16 @@ DEFAULTS: dict[str, Any] = {"$axf": "terminal-settings@1", "idleMinutes": 60, "m
                                                 "prompt": "", "icon": "sparkles", "color": "", "connection": "console"}],
                             "defaultClaudeProfile": "default",
                             # headless tabs (Nov 3 2026): persistent tmux-backed tabs, split pane, context chain pacing
-                            "persistTabs": True, "splitDefault": "side", "chainSpeed": "normal", "showChain": True}
+                            "persistTabs": True, "splitDefault": "side", "chainSpeed": "normal", "showChain": True,
+                            # tab position (Nov 3 2026): the default for devices that haven't picked their own (each device
+                            # keeps its own choice in the browser; GET/PUT tab-position reads and sets this default)
+                            "tabPosition": "top"}
 
 CHOICES: dict[str, tuple[str, ...]] = {"scheme": ("app", "campbell", "one-half-dark", "one-half-light", "solarized-dark", "tango-dark", "vintage"),
                                       "cursorStyle": ("bar", "block", "underline"), "bell": ("none", "visual", "sound"),
                                       "startup": ("claude", "console", "picker", "none"), "newTab": ("picker", "same"), "tabWidth": ("equal", "compact", "title"),
-                                      "splitDefault": ("side", "stacked", "none"), "chainSpeed": ("slow", "normal", "fast", "instant")}
+                                      "splitDefault": ("side", "stacked", "none"), "chainSpeed": ("slow", "normal", "fast", "instant"),
+                                      "tabPosition": ("top", "left", "right", "bottom")}
 PROFILE_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
 CONN_ID = re.compile(r"^(console|vps|axhub|container:[A-Za-z0-9_.-]{1,128})$")
 

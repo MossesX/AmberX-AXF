@@ -420,6 +420,42 @@
         "title": "Context chain speed",
         "text": "How fast the context chain types out the rules a session picks up. Slow is slower than real time on purpose.",
         "kind": "field"
+      },
+      {
+        "target": "tabs",
+        "title": "Tabs",
+        "text": "Phone or narrow window: slides out the list of tabs. You can also swipe in from the edge.",
+        "kind": "button"
+      },
+      {
+        "target": "hide-the-tabs",
+        "title": "Hide the tabs",
+        "text": "Slides the tab list away again (or swipe it back, or tap outside it).",
+        "kind": "button"
+      },
+      {
+        "target": "follow-the-default",
+        "title": "Follow the default",
+        "text": "Forgets this device's own tab position, so it goes back to the default set in Settings → Terminal.",
+        "kind": "button"
+      },
+      {
+        "target": "reset-the-width",
+        "title": "Reset the width",
+        "text": "Puts the tab stack back to its normal width.",
+        "kind": "button"
+      },
+      {
+        "target": "tab-position-this-device",
+        "title": "Tab position (this device)",
+        "text": "Where the tabs sit on this device: across the top, in a stack on the left or right, or along the bottom. Only this device changes.",
+        "kind": "field"
+      },
+      {
+        "target": "tab-position-default-for-every-device",
+        "title": "Tab position (default for every device)",
+        "text": "Where the tabs sit on every device that hasn't picked its own position.",
+        "kind": "field"
       }
     ],
     "intros": []

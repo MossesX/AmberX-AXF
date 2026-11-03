@@ -12,6 +12,7 @@ import { RunOutputTab, watchHubRuns } from './RunOutputTab';
 import { watchHeadless } from './headless';
 import './terminal.css';
 import { appMenu } from './menu';
+import { DEVICE_KEYS, TAB_POSITIONS, isPosition } from './tab-position-core';
 
 /*
  * Terminal plugin (web part):
@@ -19,7 +20,8 @@ import { appMenu } from './menu';
  *    sessions (container / console / VPS / Claude Code); legacy `terminal` tabs open as a host with one session
  *  - "Open terminal" on every right-click / long-press (runtime contextExtras key `*:terminal`); on a container or a
  *    folder the console marks (data-fx-ctx-target axf-container / axf-container-path) it opens right there
- *  - actions terminal.open[:<target>:<payload>], terminal.new
+ *  - actions terminal.open[:<target>:<payload>], terminal.new, terminal.tabs.position:<top|left|right|bottom>
+ *  - tabs at the top, in a left / right stack or along the bottom, per device (TabStack.tsx)
  *  - approved VPS / shell commands (axf.hub-runs@1) open in a read-only output tab once they've run (RunOutputTab.tsx)
  *  - headless Claude Code sessions on the VPS (tmux axf-…, deploy/claude-headless.sh) open in a VPS tab attached to
  *    them, with the terminal window restored, focused and brought to the front (headless.ts); the tab shows the agent,
@@ -48,6 +50,9 @@ export const plugin: AxfWebLibrary = {
       }
       return openFromContext(rt);
     }, () => openFromContext(rt)), { label: 'Open a terminal' });
+    // Tab position on this device (args: top | left | right | bottom; empty = follow the default); the tab menu and
+    // Settings → Terminal set it too, GET/PUT tab-position sets the default
+    rt.actions.register('terminal.tabs.position', ([p]) => { const v = String(p ?? '').trim(); if (v && !isPosition(v)) { rt.toast(`Tab position is ${TAB_POSITIONS.join(', ')}`, 'warning'); return; } rt.settings.set(DEVICE_KEYS.position, v); }, { label: 'Set the tab position on this device', params: true });
     rt.actions.register('terminal.claude', () => rt.openDialog('terminal.connect', { hostId: '', mode: 'claude' }), { label: 'New Claude Code tab (pick a connection)' });
     watchHubRuns(rt); // approved VPS / shell commands open here once they've run (setting showHubRuns)
     watchHeadless(rt); // headless Claude Code sessions on the VPS open here, window to the front (setting showHeadless)

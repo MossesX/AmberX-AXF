@@ -29,7 +29,11 @@
     "SHELL"
   ],
   "enabledByDefault": true,
-  "commands": { "$axf": "plugin-commands@1", "auto": true },
+  "commands": { "$axf": "plugin-commands@1", "auto": true, "items": [
+    { "route": "GET /tab-position", "id": "tab-position", "title": "Get the tab position", "description": "Where the terminal's tabs sit by default: top, left, right or bottom (each device can pick its own).", "output": "{position, choices}" },
+    { "route": "PUT /tab-position", "id": "tab-position-set", "title": "Set the tab position", "description": "Set the default tab position (top, left, right or bottom) for devices that haven't picked their own.", "output": "{position, choices}" },
+    { "action": "terminal.tabs.position", "id": "action-terminal-tabs-position", "title": "Set this device's tab position", "description": "Moves the tabs on the open console's device: args top, left, right or bottom (empty = follow the default)." }
+  ] },
   "builtWith": {
     "model": "opus",
     "builtAt": "2026-10-28"

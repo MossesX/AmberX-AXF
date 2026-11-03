@@ -213,6 +213,11 @@ for bad in ({"scheme": "matrix"}, {"cursorStyle": "laser"}, {"fontFamily": "x;}{
     check(c.put("/p/settings", json=bad).status_code == 400, f"settings refuse {json.dumps(bad)[:50]}")
 c.put("/p/settings", json={"claudeProfiles": [{"id": "default", "name": "Default"}], "defaultClaudeProfile": "gone"})
 check(c.get("/p/settings").json()["defaultClaudeProfile"] == "default", "a default profile that's gone falls back to the first")
+# tab position (Nov 3 2026): the default every device follows until it picks its own
+check(c.get("/p/tab-position").json() == {"position": "top", "choices": ["top", "left", "right", "bottom"]}, "tab position defaults to the top")
+check(c.put("/p/tab-position", json={"position": "left"}).json()["position"] == "left" and c.get("/p/settings").json()["tabPosition"] == "left", "tab position saves (left stack)")
+check(c.put("/p/tab-position", json={"position": "sideways"}).status_code == 400 and c.get("/p/tab-position").json()["position"] == "left", "tab position refuses an unknown place")
+c.put("/p/tab-position", json={"position": "top"})
 
 # VPS tab
 check(c.post("/p/sessions", json={"kind": "vps"}).status_code == 400, "VPS tab needs a host and a key first")

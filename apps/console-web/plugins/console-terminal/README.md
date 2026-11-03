@@ -2,6 +2,14 @@
 
 `ai.amberx.axf.console.terminal` · built on Opus (Oct 18 2026).
 
+**Tab position (Nov 3 2026, Opus; build `terminal-tabs-left`).** Settings → Tabs & behaviour → *Tab position*: Top,
+Left stack, Right stack or Bottom, per device (browser settings `terminal.tabs.*`); a device that hasn't picked follows
+the server default `tabPosition` (`GET/PUT tab-position`, MCP `console_terminal_tab_position[_set]`, CLI
+`axf console-terminal tab-position[-set]`; action `terminal.tabs.position:<place>` sets the open console's device). The
+stack (`web/TabStack.tsx`, rules in `web/tab-position-core.ts`) shows status, agent initials, title, model, live cost and
+close; collapses to icons, resizes from its edge, reorders by drag (hold on touch), scrolls; on a narrow window it is a
+slide-out (Tabs button or edge swipe). The strip above stays the title bar. Check `framework/spec/check-terminal-tab-position.mts`.
+
 **Headless tabs (v0.4.0, Nov 3 2026, Opus; Urgent build `headless-tabs`).**
 - **Persistent tabs:** VPS and console tabs (shells and Claude Code) run inside a tmux session named `axt-…` (the
   browser picks it once and keeps it with the tab; setting `persistTabs`). The ssh / pty link is only an attachment:

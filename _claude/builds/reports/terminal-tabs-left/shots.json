@@ -1,0 +1,207 @@
+[
+{
+"name": "tabs-left",
+"viewports": [
+"desktop",
+"phone"
+],
+"steps": [
+{
+"eval": "(()=>{const H=[{\"name\": \"axf-terminal-tabs-left\", \"agent\": \"Janitor Joey\", \"model\": \"claude-opus-5-5\", \"createdAt\": 1793740384040, \"kind\": \"headless\"}, {\"name\": \"axf-terminal-drag-chain-tree\", \"agent\": \"Landin' Lenny\", \"model\": \"claude-opus-5-5\", \"createdAt\": 1793742184040, \"kind\": \"headless\"}, {\"name\": \"axf-molly-nav-submenus\", \"agent\": \"Ping Paulie\", \"model\": \"claude-fable-5-1\", \"createdAt\": 1793743084040, \"kind\": \"headless\"}, {\"name\": \"axf-ui-review-predicted\", \"agent\": \"Snap Sully\", \"model\": \"claude-opus-5-5\", \"createdAt\": 1793743384040, \"kind\": \"headless\"}];const M={\"axf-terminal-tabs-left\": {\"session\": \"axf-terminal-tabs-left\", \"name\": \"axf-terminal-tabs-left\", \"agent\": \"Janitor Joey\", \"model\": \"claude-opus-5-5\", \"modelKey\": \"opus\", \"status\": \"working\", \"toolRunning\": true, \"ended\": false, \"costUsd\": 3.42, \"costEstimated\": false, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}, \"axf-terminal-drag-chain-tree\": {\"session\": \"axf-terminal-drag-chain-tree\", \"name\": \"axf-terminal-drag-chain-tree\", \"agent\": \"Landin' Lenny\", \"model\": \"claude-opus-5-5\", \"modelKey\": \"opus\", \"status\": \"waiting\", \"toolRunning\": false, \"ended\": false, \"costUsd\": 1.87, \"costEstimated\": false, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}, \"axf-molly-nav-submenus\": {\"session\": \"axf-molly-nav-submenus\", \"name\": \"axf-molly-nav-submenus\", \"agent\": \"Ping Paulie\", \"model\": \"claude-fable-5-1\", \"modelKey\": \"opus\", \"status\": \"done\", \"toolRunning\": false, \"ended\": true, \"costUsd\": 6.05, \"costEstimated\": false, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}, \"axf-ui-review-predicted\": {\"session\": \"axf-ui-review-predicted\", \"name\": \"axf-ui-review-predicted\", \"agent\": \"Snap Sully\", \"model\": \"claude-opus-5-5\", \"modelKey\": \"opus\", \"status\": \"working\", \"toolRunning\": true, \"ended\": false, \"costUsd\": 0.64, \"costEstimated\": true, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}};const of=window.fetch.bind(window);const J=(o)=>Promise.resolve(new Response(JSON.stringify(o),{headers:{'content-type':'application/json'}}));window.fetch=(u,i)=>{const s=String(u&&u.url||u);if(s.includes('/console-terminal/headless/meters'))return J({items:M});if(/console-terminal\\/headless\\/[^/]+\\/chain/.test(s))return J({items:[],version:1});if(s.endsWith('/console-terminal/headless')||s.includes('/console-terminal/headless?'))return J({ready:true,on:true,items:H,why:'',now:Date.now()});if(s.includes('/console-terminal/settings')&&!(i&&i.method==='PUT'))return of(u,i).then(r=>r.json()).then(j=>J({...j,showChain:false,closeConfirm:false}));return of(u,i)};localStorage.removeItem('axf.terminal.headless.closed');return true})()"
+},
+{
+"eval": "(()=>{const root=document.getElementById('root');const k=Object.keys(root).find(x=>x.startsWith('__reactContainer'));let st=[root[k]],rt=null,n=0;while(st.length&&n<200000){const f=st.pop();n++;if(!f)continue;const v=f.memoizedProps&&f.memoizedProps.value;if(v&&v.actions&&v.windows&&v.dispatch){rt=v;break}if(f.child)st.push(f.child);if(f.sibling)st.push(f.sibling)}window.__rt=rt;return !!rt})()"
+},
+{
+"eval": "window.__rt&&(window.__rt.settings.set('terminal.tabs.position','left'),window.__rt.settings.set('terminal.tabs.collapsed',false))"
+},
+{
+"eval": "window.__rt&&window.__rt.dispatch('terminal.open')",
+"wait": 4000
+},
+{
+"wait": 7000
+},
+{
+"eval": "(()=>{const b=document.querySelector('.axp-wt__cap[aria-label=\"Maximize\"]');b&&b.click()})()",
+"wait": 1200
+}
+]
+},
+{
+"name": "tabs-left-drawer",
+"viewports": [
+"phone"
+],
+"steps": [
+{
+"eval": "(()=>{const H=[{\"name\": \"axf-terminal-tabs-left\", \"agent\": \"Janitor Joey\", \"model\": \"claude-opus-5-5\", \"createdAt\": 1793740384040, \"kind\": \"headless\"}, {\"name\": \"axf-terminal-drag-chain-tree\", \"agent\": \"Landin' Lenny\", \"model\": \"claude-opus-5-5\", \"createdAt\": 1793742184040, \"kind\": \"headless\"}, {\"name\": \"axf-molly-nav-submenus\", \"agent\": \"Ping Paulie\", \"model\": \"claude-fable-5-1\", \"createdAt\": 1793743084040, \"kind\": \"headless\"}, {\"name\": \"axf-ui-review-predicted\", \"agent\": \"Snap Sully\", \"model\": \"claude-opus-5-5\", \"createdAt\": 1793743384040, \"kind\": \"headless\"}];const M={\"axf-terminal-tabs-left\": {\"session\": \"axf-terminal-tabs-left\", \"name\": \"axf-terminal-tabs-left\", \"agent\": \"Janitor Joey\", \"model\": \"claude-opus-5-5\", \"modelKey\": \"opus\", \"status\": \"working\", \"toolRunning\": true, \"ended\": false, \"costUsd\": 3.42, \"costEstimated\": false, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}, \"axf-terminal-drag-chain-tree\": {\"session\": \"axf-terminal-drag-chain-tree\", \"name\": \"axf-terminal-drag-chain-tree\", \"agent\": \"Landin' Lenny\", \"model\": \"claude-opus-5-5\", \"modelKey\": \"opus\", \"status\": \"waiting\", \"toolRunning\": false, \"ended\": false, \"costUsd\": 1.87, \"costEstimated\": false, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}, \"axf-molly-nav-submenus\": {\"session\": \"axf-molly-nav-submenus\", \"name\": \"axf-molly-nav-submenus\", \"agent\": \"Ping Paulie\", \"model\": \"claude-fable-5-1\", \"modelKey\": \"opus\", \"status\": \"done\", \"toolRunning\": false, \"ended\": true, \"costUsd\": 6.05, \"costEstimated\": false, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}, \"axf-ui-review-predicted\": {\"session\": \"axf-ui-review-predicted\", \"name\": \"axf-ui-review-predicted\", \"agent\": \"Snap Sully\", \"model\": \"claude-opus-5-5\", \"modelKey\": \"opus\", \"status\": \"working\", \"toolRunning\": true, \"ended\": false, \"costUsd\": 0.64, \"costEstimated\": true, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}};const of=window.fetch.bind(window);const J=(o)=>Promise.resolve(new Response(JSON.stringify(o),{headers:{'content-type':'application/json'}}));window.fetch=(u,i)=>{const s=String(u&&u.url||u);if(s.includes('/console-terminal/headless/meters'))return J({items:M});if(/console-terminal\\/headless\\/[^/]+\\/chain/.test(s))return J({items:[],version:1});if(s.endsWith('/console-terminal/headless')||s.includes('/console-terminal/headless?'))return J({ready:true,on:true,items:H,why:'',now:Date.now()});if(s.includes('/console-terminal/settings')&&!(i&&i.method==='PUT'))return of(u,i).then(r=>r.json()).then(j=>J({...j,showChain:false,closeConfirm:false}));return of(u,i)};localStorage.removeItem('axf.terminal.headless.closed');return true})()"
+},
+{
+"eval": "(()=>{const root=document.getElementById('root');const k=Object.keys(root).find(x=>x.startsWith('__reactContainer'));let st=[root[k]],rt=null,n=0;while(st.length&&n<200000){const f=st.pop();n++;if(!f)continue;const v=f.memoizedProps&&f.memoizedProps.value;if(v&&v.actions&&v.windows&&v.dispatch){rt=v;break}if(f.child)st.push(f.child);if(f.sibling)st.push(f.sibling)}window.__rt=rt;return !!rt})()"
+},
+{
+"eval": "window.__rt&&(window.__rt.settings.set('terminal.tabs.position','left'),window.__rt.settings.set('terminal.tabs.collapsed',false))"
+},
+{
+"eval": "window.__rt&&window.__rt.dispatch('terminal.open')",
+"wait": 4000
+},
+{
+"wait": 7000
+},
+{
+"eval": "(()=>{const b=document.querySelector('.axp-wt__cap[aria-label=\"Maximize\"]');b&&b.click()})()",
+"wait": 1200
+},
+{
+"eval": "document.querySelector('.axp-wt-stack__peek')?.click()",
+"wait": 900
+}
+]
+},
+{
+"name": "tabs-right",
+"viewports": [
+"desktop"
+],
+"steps": [
+{
+"eval": "(()=>{const H=[{\"name\": \"axf-terminal-tabs-left\", \"agent\": \"Janitor Joey\", \"model\": \"claude-opus-5-5\", \"createdAt\": 1793740384040, \"kind\": \"headless\"}, {\"name\": \"axf-terminal-drag-chain-tree\", \"agent\": \"Landin' Lenny\", \"model\": \"claude-opus-5-5\", \"createdAt\": 1793742184040, \"kind\": \"headless\"}, {\"name\": \"axf-molly-nav-submenus\", \"agent\": \"Ping Paulie\", \"model\": \"claude-fable-5-1\", \"createdAt\": 1793743084040, \"kind\": \"headless\"}, {\"name\": \"axf-ui-review-predicted\", \"agent\": \"Snap Sully\", \"model\": \"claude-opus-5-5\", \"createdAt\": 1793743384040, \"kind\": \"headless\"}];const M={\"axf-terminal-tabs-left\": {\"session\": \"axf-terminal-tabs-left\", \"name\": \"axf-terminal-tabs-left\", \"agent\": \"Janitor Joey\", \"model\": \"claude-opus-5-5\", \"modelKey\": \"opus\", \"status\": \"working\", \"toolRunning\": true, \"ended\": false, \"costUsd\": 3.42, \"costEstimated\": false, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}, \"axf-terminal-drag-chain-tree\": {\"session\": \"axf-terminal-drag-chain-tree\", \"name\": \"axf-terminal-drag-chain-tree\", \"agent\": \"Landin' Lenny\", \"model\": \"claude-opus-5-5\", \"modelKey\": \"opus\", \"status\": \"waiting\", \"toolRunning\": false, \"ended\": false, \"costUsd\": 1.87, \"costEstimated\": false, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}, \"axf-molly-nav-submenus\": {\"session\": \"axf-molly-nav-submenus\", \"name\": \"axf-molly-nav-submenus\", \"agent\": \"Ping Paulie\", \"model\": \"claude-fable-5-1\", \"modelKey\": \"opus\", \"status\": \"done\", \"toolRunning\": false, \"ended\": true, \"costUsd\": 6.05, \"costEstimated\": false, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}, \"axf-ui-review-predicted\": {\"session\": \"axf-ui-review-predicted\", \"name\": \"axf-ui-review-predicted\", \"agent\": \"Snap Sully\", \"model\": \"claude-opus-5-5\", \"modelKey\": \"opus\", \"status\": \"working\", \"toolRunning\": true, \"ended\": false, \"costUsd\": 0.64, \"costEstimated\": true, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}};const of=window.fetch.bind(window);const J=(o)=>Promise.resolve(new Response(JSON.stringify(o),{headers:{'content-type':'application/json'}}));window.fetch=(u,i)=>{const s=String(u&&u.url||u);if(s.includes('/console-terminal/headless/meters'))return J({items:M});if(/console-terminal\\/headless\\/[^/]+\\/chain/.test(s))return J({items:[],version:1});if(s.endsWith('/console-terminal/headless')||s.includes('/console-terminal/headless?'))return J({ready:true,on:true,items:H,why:'',now:Date.now()});if(s.includes('/console-terminal/settings')&&!(i&&i.method==='PUT'))return of(u,i).then(r=>r.json()).then(j=>J({...j,showChain:false,closeConfirm:false}));return of(u,i)};localStorage.removeItem('axf.terminal.headless.closed');return true})()"
+},
+{
+"eval": "(()=>{const root=document.getElementById('root');const k=Object.keys(root).find(x=>x.startsWith('__reactContainer'));let st=[root[k]],rt=null,n=0;while(st.length&&n<200000){const f=st.pop();n++;if(!f)continue;const v=f.memoizedProps&&f.memoizedProps.value;if(v&&v.actions&&v.windows&&v.dispatch){rt=v;break}if(f.child)st.push(f.child);if(f.sibling)st.push(f.sibling)}window.__rt=rt;return !!rt})()"
+},
+{
+"eval": "window.__rt&&(window.__rt.settings.set('terminal.tabs.position','right'),window.__rt.settings.set('terminal.tabs.collapsed',false))"
+},
+{
+"eval": "window.__rt&&window.__rt.dispatch('terminal.open')",
+"wait": 4000
+},
+{
+"wait": 7000
+},
+{
+"eval": "(()=>{const b=document.querySelector('.axp-wt__cap[aria-label=\"Maximize\"]');b&&b.click()})()",
+"wait": 1200
+}
+]
+},
+{
+"name": "tabs-left-collapsed",
+"viewports": [
+"desktop"
+],
+"steps": [
+{
+"eval": "(()=>{const H=[{\"name\": \"axf-terminal-tabs-left\", \"agent\": \"Janitor Joey\", \"model\": \"claude-opus-5-5\", \"createdAt\": 1793740384040, \"kind\": \"headless\"}, {\"name\": \"axf-terminal-drag-chain-tree\", \"agent\": \"Landin' Lenny\", \"model\": \"claude-opus-5-5\", \"createdAt\": 1793742184040, \"kind\": \"headless\"}, {\"name\": \"axf-molly-nav-submenus\", \"agent\": \"Ping Paulie\", \"model\": \"claude-fable-5-1\", \"createdAt\": 1793743084040, \"kind\": \"headless\"}, {\"name\": \"axf-ui-review-predicted\", \"agent\": \"Snap Sully\", \"model\": \"claude-opus-5-5\", \"createdAt\": 1793743384040, \"kind\": \"headless\"}];const M={\"axf-terminal-tabs-left\": {\"session\": \"axf-terminal-tabs-left\", \"name\": \"axf-terminal-tabs-left\", \"agent\": \"Janitor Joey\", \"model\": \"claude-opus-5-5\", \"modelKey\": \"opus\", \"status\": \"working\", \"toolRunning\": true, \"ended\": false, \"costUsd\": 3.42, \"costEstimated\": false, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}, \"axf-terminal-drag-chain-tree\": {\"session\": \"axf-terminal-drag-chain-tree\", \"name\": \"axf-terminal-drag-chain-tree\", \"agent\": \"Landin' Lenny\", \"model\": \"claude-opus-5-5\", \"modelKey\": \"opus\", \"status\": \"waiting\", \"toolRunning\": false, \"ended\": false, \"costUsd\": 1.87, \"costEstimated\": false, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}, \"axf-molly-nav-submenus\": {\"session\": \"axf-molly-nav-submenus\", \"name\": \"axf-molly-nav-submenus\", \"agent\": \"Ping Paulie\", \"model\": \"claude-fable-5-1\", \"modelKey\": \"opus\", \"status\": \"done\", \"toolRunning\": false, \"ended\": true, \"costUsd\": 6.05, \"costEstimated\": false, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}, \"axf-ui-review-predicted\": {\"session\": \"axf-ui-review-predicted\", \"name\": \"axf-ui-review-predicted\", \"agent\": \"Snap Sully\", \"model\": \"claude-opus-5-5\", \"modelKey\": \"opus\", \"status\": \"working\", \"toolRunning\": true, \"ended\": false, \"costUsd\": 0.64, \"costEstimated\": true, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}};const of=window.fetch.bind(window);const J=(o)=>Promise.resolve(new Response(JSON.stringify(o),{headers:{'content-type':'application/json'}}));window.fetch=(u,i)=>{const s=String(u&&u.url||u);if(s.includes('/console-terminal/headless/meters'))return J({items:M});if(/console-terminal\\/headless\\/[^/]+\\/chain/.test(s))return J({items:[],version:1});if(s.endsWith('/console-terminal/headless')||s.includes('/console-terminal/headless?'))return J({ready:true,on:true,items:H,why:'',now:Date.now()});if(s.includes('/console-terminal/settings')&&!(i&&i.method==='PUT'))return of(u,i).then(r=>r.json()).then(j=>J({...j,showChain:false,closeConfirm:false}));return of(u,i)};localStorage.removeItem('axf.terminal.headless.closed');return true})()"
+},
+{
+"eval": "(()=>{const root=document.getElementById('root');const k=Object.keys(root).find(x=>x.startsWith('__reactContainer'));let st=[root[k]],rt=null,n=0;while(st.length&&n<200000){const f=st.pop();n++;if(!f)continue;const v=f.memoizedProps&&f.memoizedProps.value;if(v&&v.actions&&v.windows&&v.dispatch){rt=v;break}if(f.child)st.push(f.child);if(f.sibling)st.push(f.sibling)}window.__rt=rt;return !!rt})()"
+},
+{
+"eval": "window.__rt&&(window.__rt.settings.set('terminal.tabs.position','left'),window.__rt.settings.set('terminal.tabs.collapsed',true))"
+},
+{
+"eval": "window.__rt&&window.__rt.dispatch('terminal.open')",
+"wait": 4000
+},
+{
+"wait": 7000
+},
+{
+"eval": "(()=>{const b=document.querySelector('.axp-wt__cap[aria-label=\"Maximize\"]');b&&b.click()})()",
+"wait": 1200
+}
+]
+},
+{
+"name": "tabs-bottom",
+"viewports": [
+"desktop"
+],
+"steps": [
+{
+"eval": "(()=>{const H=[{\"name\": \"axf-terminal-tabs-left\", \"agent\": \"Janitor Joey\", \"model\": \"claude-opus-5-5\", \"createdAt\": 1793740384040, \"kind\": \"headless\"}, {\"name\": \"axf-terminal-drag-chain-tree\", \"agent\": \"Landin' Lenny\", \"model\": \"claude-opus-5-5\", \"createdAt\": 1793742184040, \"kind\": \"headless\"}, {\"name\": \"axf-molly-nav-submenus\", \"agent\": \"Ping Paulie\", \"model\": \"claude-fable-5-1\", \"createdAt\": 1793743084040, \"kind\": \"headless\"}, {\"name\": \"axf-ui-review-predicted\", \"agent\": \"Snap Sully\", \"model\": \"claude-opus-5-5\", \"createdAt\": 1793743384040, \"kind\": \"headless\"}];const M={\"axf-terminal-tabs-left\": {\"session\": \"axf-terminal-tabs-left\", \"name\": \"axf-terminal-tabs-left\", \"agent\": \"Janitor Joey\", \"model\": \"claude-opus-5-5\", \"modelKey\": \"opus\", \"status\": \"working\", \"toolRunning\": true, \"ended\": false, \"costUsd\": 3.42, \"costEstimated\": false, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}, \"axf-terminal-drag-chain-tree\": {\"session\": \"axf-terminal-drag-chain-tree\", \"name\": \"axf-terminal-drag-chain-tree\", \"agent\": \"Landin' Lenny\", \"model\": \"claude-opus-5-5\", \"modelKey\": \"opus\", \"status\": \"waiting\", \"toolRunning\": false, \"ended\": false, \"costUsd\": 1.87, \"costEstimated\": false, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}, \"axf-molly-nav-submenus\": {\"session\": \"axf-molly-nav-submenus\", \"name\": \"axf-molly-nav-submenus\", \"agent\": \"Ping Paulie\", \"model\": \"claude-fable-5-1\", \"modelKey\": \"opus\", \"status\": \"done\", \"toolRunning\": false, \"ended\": true, \"costUsd\": 6.05, \"costEstimated\": false, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}, \"axf-ui-review-predicted\": {\"session\": \"axf-ui-review-predicted\", \"name\": \"axf-ui-review-predicted\", \"agent\": \"Snap Sully\", \"model\": \"claude-opus-5-5\", \"modelKey\": \"opus\", \"status\": \"working\", \"toolRunning\": true, \"ended\": false, \"costUsd\": 0.64, \"costEstimated\": true, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}};const of=window.fetch.bind(window);const J=(o)=>Promise.resolve(new Response(JSON.stringify(o),{headers:{'content-type':'application/json'}}));window.fetch=(u,i)=>{const s=String(u&&u.url||u);if(s.includes('/console-terminal/headless/meters'))return J({items:M});if(/console-terminal\\/headless\\/[^/]+\\/chain/.test(s))return J({items:[],version:1});if(s.endsWith('/console-terminal/headless')||s.includes('/console-terminal/headless?'))return J({ready:true,on:true,items:H,why:'',now:Date.now()});if(s.includes('/console-terminal/settings')&&!(i&&i.method==='PUT'))return of(u,i).then(r=>r.json()).then(j=>J({...j,showChain:false,closeConfirm:false}));return of(u,i)};localStorage.removeItem('axf.terminal.headless.closed');return true})()"
+},
+{
+"eval": "(()=>{const root=document.getElementById('root');const k=Object.keys(root).find(x=>x.startsWith('__reactContainer'));let st=[root[k]],rt=null,n=0;while(st.length&&n<200000){const f=st.pop();n++;if(!f)continue;const v=f.memoizedProps&&f.memoizedProps.value;if(v&&v.actions&&v.windows&&v.dispatch){rt=v;break}if(f.child)st.push(f.child);if(f.sibling)st.push(f.sibling)}window.__rt=rt;return !!rt})()"
+},
+{
+"eval": "window.__rt&&(window.__rt.settings.set('terminal.tabs.position','bottom'),window.__rt.settings.set('terminal.tabs.collapsed',false))"
+},
+{
+"eval": "window.__rt&&window.__rt.dispatch('terminal.open')",
+"wait": 4000
+},
+{
+"wait": 7000
+},
+{
+"eval": "(()=>{const b=document.querySelector('.axp-wt__cap[aria-label=\"Maximize\"]');b&&b.click()})()",
+"wait": 1200
+}
+]
+},
+{
+"name": "tabs-top",
+"viewports": [
+"desktop"
+],
+"steps": [
+{
+"eval": "(()=>{const H=[{\"name\": \"axf-terminal-tabs-left\", \"agent\": \"Janitor Joey\", \"model\": \"claude-opus-5-5\", \"createdAt\": 1793740384040, \"kind\": \"headless\"}, {\"name\": \"axf-terminal-drag-chain-tree\", \"agent\": \"Landin' Lenny\", \"model\": \"claude-opus-5-5\", \"createdAt\": 1793742184040, \"kind\": \"headless\"}, {\"name\": \"axf-molly-nav-submenus\", \"agent\": \"Ping Paulie\", \"model\": \"claude-fable-5-1\", \"createdAt\": 1793743084040, \"kind\": \"headless\"}, {\"name\": \"axf-ui-review-predicted\", \"agent\": \"Snap Sully\", \"model\": \"claude-opus-5-5\", \"createdAt\": 1793743384040, \"kind\": \"headless\"}];const M={\"axf-terminal-tabs-left\": {\"session\": \"axf-terminal-tabs-left\", \"name\": \"axf-terminal-tabs-left\", \"agent\": \"Janitor Joey\", \"model\": \"claude-opus-5-5\", \"modelKey\": \"opus\", \"status\": \"working\", \"toolRunning\": true, \"ended\": false, \"costUsd\": 3.42, \"costEstimated\": false, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}, \"axf-terminal-drag-chain-tree\": {\"session\": \"axf-terminal-drag-chain-tree\", \"name\": \"axf-terminal-drag-chain-tree\", \"agent\": \"Landin' Lenny\", \"model\": \"claude-opus-5-5\", \"modelKey\": \"opus\", \"status\": \"waiting\", \"toolRunning\": false, \"ended\": false, \"costUsd\": 1.87, \"costEstimated\": false, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}, \"axf-molly-nav-submenus\": {\"session\": \"axf-molly-nav-submenus\", \"name\": \"axf-molly-nav-submenus\", \"agent\": \"Ping Paulie\", \"model\": \"claude-fable-5-1\", \"modelKey\": \"opus\", \"status\": \"done\", \"toolRunning\": false, \"ended\": true, \"costUsd\": 6.05, \"costEstimated\": false, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}, \"axf-ui-review-predicted\": {\"session\": \"axf-ui-review-predicted\", \"name\": \"axf-ui-review-predicted\", \"agent\": \"Snap Sully\", \"model\": \"claude-opus-5-5\", \"modelKey\": \"opus\", \"status\": \"working\", \"toolRunning\": true, \"ended\": false, \"costUsd\": 0.64, \"costEstimated\": true, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}};const of=window.fetch.bind(window);const J=(o)=>Promise.resolve(new Response(JSON.stringify(o),{headers:{'content-type':'application/json'}}));window.fetch=(u,i)=>{const s=String(u&&u.url||u);if(s.includes('/console-terminal/headless/meters'))return J({items:M});if(/console-terminal\\/headless\\/[^/]+\\/chain/.test(s))return J({items:[],version:1});if(s.endsWith('/console-terminal/headless')||s.includes('/console-terminal/headless?'))return J({ready:true,on:true,items:H,why:'',now:Date.now()});if(s.includes('/console-terminal/settings')&&!(i&&i.method==='PUT'))return of(u,i).then(r=>r.json()).then(j=>J({...j,showChain:false,closeConfirm:false}));return of(u,i)};localStorage.removeItem('axf.terminal.headless.closed');return true})()"
+},
+{
+"eval": "(()=>{const root=document.getElementById('root');const k=Object.keys(root).find(x=>x.startsWith('__reactContainer'));let st=[root[k]],rt=null,n=0;while(st.length&&n<200000){const f=st.pop();n++;if(!f)continue;const v=f.memoizedProps&&f.memoizedProps.value;if(v&&v.actions&&v.windows&&v.dispatch){rt=v;break}if(f.child)st.push(f.child);if(f.sibling)st.push(f.sibling)}window.__rt=rt;return !!rt})()"
+},
+{
+"eval": "window.__rt&&(window.__rt.settings.set('terminal.tabs.position','top'),window.__rt.settings.set('terminal.tabs.collapsed',false))"
+},
+{
+"eval": "window.__rt&&window.__rt.dispatch('terminal.open')",
+"wait": 4000
+},
+{
+"wait": 7000
+},
+{
+"eval": "(()=>{const b=document.querySelector('.axp-wt__cap[aria-label=\"Maximize\"]');b&&b.click()})()",
+"wait": 1200
+}
+]
+},
+{
+"name": "tabs-left-menu",
+"viewports": [
+"desktop"
+],
+"steps": [
+{
+"eval": "(()=>{const H=[{\"name\": \"axf-terminal-tabs-left\", \"agent\": \"Janitor Joey\", \"model\": \"claude-opus-5-5\", \"createdAt\": 1793740384040, \"kind\": \"headless\"}, {\"name\": \"axf-terminal-drag-chain-tree\", \"agent\": \"Landin' Lenny\", \"model\": \"claude-opus-5-5\", \"createdAt\": 1793742184040, \"kind\": \"headless\"}, {\"name\": \"axf-molly-nav-submenus\", \"agent\": \"Ping Paulie\", \"model\": \"claude-fable-5-1\", \"createdAt\": 1793743084040, \"kind\": \"headless\"}, {\"name\": \"axf-ui-review-predicted\", \"agent\": \"Snap Sully\", \"model\": \"claude-opus-5-5\", \"createdAt\": 1793743384040, \"kind\": \"headless\"}];const M={\"axf-terminal-tabs-left\": {\"session\": \"axf-terminal-tabs-left\", \"name\": \"axf-terminal-tabs-left\", \"agent\": \"Janitor Joey\", \"model\": \"claude-opus-5-5\", \"modelKey\": \"opus\", \"status\": \"working\", \"toolRunning\": true, \"ended\": false, \"costUsd\": 3.42, \"costEstimated\": false, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}, \"axf-terminal-drag-chain-tree\": {\"session\": \"axf-terminal-drag-chain-tree\", \"name\": \"axf-terminal-drag-chain-tree\", \"agent\": \"Landin' Lenny\", \"model\": \"claude-opus-5-5\", \"modelKey\": \"opus\", \"status\": \"waiting\", \"toolRunning\": false, \"ended\": false, \"costUsd\": 1.87, \"costEstimated\": false, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}, \"axf-molly-nav-submenus\": {\"session\": \"axf-molly-nav-submenus\", \"name\": \"axf-molly-nav-submenus\", \"agent\": \"Ping Paulie\", \"model\": \"claude-fable-5-1\", \"modelKey\": \"opus\", \"status\": \"done\", \"toolRunning\": false, \"ended\": true, \"costUsd\": 6.05, \"costEstimated\": false, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}, \"axf-ui-review-predicted\": {\"session\": \"axf-ui-review-predicted\", \"name\": \"axf-ui-review-predicted\", \"agent\": \"Snap Sully\", \"model\": \"claude-opus-5-5\", \"modelKey\": \"opus\", \"status\": \"working\", \"toolRunning\": true, \"ended\": false, \"costUsd\": 0.64, \"costEstimated\": true, \"priced\": true, \"tokens\": {\"input\": 0, \"output\": 0, \"cacheRead\": 0, \"cacheWrite\": 0}, \"turns\": 3, \"tools\": 5, \"runs\": 1, \"lastEventAt\": \"2026-11-03T22:30:00Z\", \"startedAt\": \"2026-11-03T21:30:00Z\", \"chainCount\": 0, \"chainVersion\": 1}};const of=window.fetch.bind(window);const J=(o)=>Promise.resolve(new Response(JSON.stringify(o),{headers:{'content-type':'application/json'}}));window.fetch=(u,i)=>{const s=String(u&&u.url||u);if(s.includes('/console-terminal/headless/meters'))return J({items:M});if(/console-terminal\\/headless\\/[^/]+\\/chain/.test(s))return J({items:[],version:1});if(s.endsWith('/console-terminal/headless')||s.includes('/console-terminal/headless?'))return J({ready:true,on:true,items:H,why:'',now:Date.now()});if(s.includes('/console-terminal/settings')&&!(i&&i.method==='PUT'))return of(u,i).then(r=>r.json()).then(j=>J({...j,showChain:false,closeConfirm:false}));return of(u,i)};localStorage.removeItem('axf.terminal.headless.closed');return true})()"
+},
+{
+"eval": "(()=>{const root=document.getElementById('root');const k=Object.keys(root).find(x=>x.startsWith('__reactContainer'));let st=[root[k]],rt=null,n=0;while(st.length&&n<200000){const f=st.pop();n++;if(!f)continue;const v=f.memoizedProps&&f.memoizedProps.value;if(v&&v.actions&&v.windows&&v.dispatch){rt=v;break}if(f.child)st.push(f.child);if(f.sibling)st.push(f.sibling)}window.__rt=rt;return !!rt})()"
+},
+{
+"eval": "window.__rt&&(window.__rt.settings.set('terminal.tabs.position','left'),window.__rt.settings.set('terminal.tabs.collapsed',false))"
+},
+{
+"eval": "window.__rt&&window.__rt.dispatch('terminal.open')",
+"wait": 4000
+},
+{
+"wait": 7000
+},
+{
+"eval": "(()=>{const b=document.querySelector('.axp-wt__cap[aria-label=\"Maximize\"]');b&&b.click()})()",
+"wait": 1200
+},
+{
+"eval": "(()=>{const e=document.querySelectorAll('.axp-wt-stack__tab')[1];if(!e)return;const r=e.getBoundingClientRect();e.dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,clientX:r.left+60,clientY:r.top+10}))})()",
+"wait": 900
+}
+]
+}
+]

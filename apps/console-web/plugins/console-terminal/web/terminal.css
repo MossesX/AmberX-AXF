@@ -173,3 +173,80 @@
 .axp-chain__caret { display: inline-block; width: calc(var(--fx-space) * 0.5); height: 1em; margin-left: var(--fx-dens-gap-2xs); vertical-align: text-bottom; background: var(--fx-accent); animation: axp-chain-blink calc(var(--fx-motion) * 6) steps(1) infinite }
 @keyframes axp-chain-blink { 50% { opacity: 0 } }
 @media (prefers-reduced-motion: reduce) { .axp-chain__caret { animation: none } }
+
+/* Tab position (Nov 3 2026, TabStack.tsx): the tabs in a stack on the left or right, or along the bottom. The strip
+   above keeps the +, ∨, drag space and caption buttons (the frameless window's title bar); its tabs hide. The stack
+   width is a count of text-size steps (--axp-wt-stack-n, per device; text size, not --fx-space, so compact density
+   doesn't squeeze the titles); collapsed it is one icon column. The panes make room for it. */
+.axp-wt--tabs-at-left, .axp-wt--tabs-at-right { --axp-wt-stack-w: calc(var(--fx-type-root-md) * var(--axp-wt-stack-n)) }
+.axp-wt--stack-collapsed { --axp-wt-stack-w: calc(var(--fx-row-h) + var(--fx-dens-gap-md) * 2) }
+.axp-wt--tabs-at-left .axp-wt__strip > .axp-wt__tab, .axp-wt--tabs-at-right .axp-wt__strip > .axp-wt__tab, .axp-wt--tabs-at-bottom .axp-wt__strip > .axp-wt__tab { display: none }
+.axp-wt--tabs-at-left .axp-wt__strip, .axp-wt--tabs-at-right .axp-wt__strip, .axp-wt--tabs-at-bottom .axp-wt__strip { align-items: center; padding-bottom: var(--fx-dens-gap-xs) }
+/* the panes are their own stacking context, so xterm's layers never cover the stack, its slide-out or the Tabs button */
+.axp-wt--tabs-at-left .axp-wt__body > :not([class*='axp-wt-stack']), .axp-wt--tabs-at-right .axp-wt__body > :not([class*='axp-wt-stack']), .axp-wt--tabs-at-bottom .axp-wt__body > :not([class*='axp-wt-stack']) { z-index: 0 }
+.axp-wt--tabs-at-left .axp-wt__body > :not([class*='axp-wt-stack']) { left: var(--axp-wt-stack-w) }
+.axp-wt--tabs-at-right .axp-wt__body > :not([class*='axp-wt-stack']) { right: var(--axp-wt-stack-w) }
+.axp-wt--tabs-at-bottom .axp-wt__body > :not([class*='axp-wt-stack']) { bottom: calc(var(--fx-row-h) + var(--fx-dens-gap-md) * 2) }
+.axp-wt__body:has(> .axp-wt-stack.is-drawer) > :not([class*='axp-wt-stack']) { left: 0; right: 0 }
+
+.axp-wt-stack { position: absolute; z-index: 2; top: 0; bottom: 0; display: flex; flex-direction: column; min-height: 0; box-sizing: border-box;
+  width: var(--axp-wt-stack-w); background: var(--fx-surface2); color: var(--fx-text); font-size: var(--fx-type-root-sm) }
+.axp-wt-stack--left { left: 0; border-right: var(--fx-border-w) solid var(--fx-border) }
+.axp-wt-stack--right { right: 0; border-left: var(--fx-border-w) solid var(--fx-border) }
+.axp-wt-stack--bottom { top: auto; left: 0; right: 0; width: auto; flex-direction: row; border-top: var(--fx-border-w) solid var(--fx-border) }
+.axp-wt-stack__probe { position: absolute; visibility: hidden; pointer-events: none; height: 0; width: calc(var(--fx-type-root-md) * 40) }
+.axp-wt-stack__head { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); border-bottom: var(--fx-border-w) solid var(--fx-border); min-width: 0 }
+.axp-wt-stack--right .axp-wt-stack__head { flex-direction: row-reverse }
+.axp-wt-stack__title { flex: 1; min-width: 0; font-size: var(--fx-type-root-xs); color: var(--fx-muted); text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; overflow: hidden }
+.axp-wt-stack--right .axp-wt-stack__title { text-align: right }
+.axp-wt-stack__count { display: inline-block; min-width: calc(var(--fx-type-root-xs) * 1.6); padding: 0 var(--fx-dens-gap-xs); border-radius: 999px; text-align: center; font-variant-numeric: tabular-nums; background: var(--fx-surface3); color: var(--fx-text) }
+.axp-wt-stack__list { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); padding: var(--fx-dens-gap-xs); overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; touch-action: pan-y }
+.axp-wt-stack--bottom .axp-wt-stack__list { flex-direction: row; align-items: center; overflow-x: auto; overflow-y: hidden; touch-action: pan-x; scroll-snap-type: x proximity; scrollbar-width: none }
+.axp-wt-stack--bottom .axp-wt-stack__list::-webkit-scrollbar { display: none }
+.axp-wt-stack__tab { position: relative; flex: none; display: flex; align-items: center; gap: var(--fx-dens-gap-md); width: 100%; min-width: 0; box-sizing: border-box;
+  padding: var(--fx-dens-gap-md); border-radius: var(--fx-radius-md); box-shadow: none; user-select: none; cursor: default }
+.axp-wt-stack--bottom .axp-wt-stack__tab { width: auto; max-width: calc(var(--fx-type-root-md) * 18); scroll-snap-align: start }
+.axp-wt-stack__tab:hover { background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-hover) * 100%), transparent) }
+.axp-wt-stack__tab.is-active { background: var(--fx-surface); color: var(--fx-text) }
+.axp-wt-stack__tab[data-tint]::before { content: ''; position: absolute; top: var(--fx-radius-md); bottom: var(--fx-radius-md); left: 0; width: calc(var(--fx-border-w) * 3); border-radius: 0 999px 999px 0; background: var(--axp-wt-tint) }
+.axp-wt-stack--right .axp-wt-stack__tab[data-tint]::before { left: auto; right: 0; border-radius: 999px 0 0 999px }
+.axp-wt-stack--bottom .axp-wt-stack__tab[data-tint]::before { top: auto; bottom: 0; left: var(--fx-radius-md); right: var(--fx-radius-md); width: auto; height: calc(var(--fx-border-w) * 3); border-radius: 999px 999px 0 0 }
+.axp-wt-stack__tab.is-lifted { opacity: var(--fx-opacity-muted) }
+.axp-wt-stack__tab.is-drop-before { box-shadow: inset 0 calc(var(--fx-border-w) * 2) 0 var(--fx-focus) }
+.axp-wt-stack__tab.is-drop-after { box-shadow: inset 0 calc(var(--fx-border-w) * -2) 0 var(--fx-focus) }
+.axp-wt-stack--bottom .axp-wt-stack__tab.is-drop-before { box-shadow: inset calc(var(--fx-border-w) * 2) 0 0 var(--fx-focus) }
+.axp-wt-stack--bottom .axp-wt-stack__tab.is-drop-after { box-shadow: inset calc(var(--fx-border-w) * -2) 0 0 var(--fx-focus) }
+.axp-wt-stack.is-dragging .axp-wt-stack__tab { cursor: grabbing }
+.axp-wt-stack__lead { position: relative; flex: none; display: inline-flex; align-items: center; justify-content: center; width: calc(var(--fx-type-root-md) * 1.9); height: calc(var(--fx-type-root-md) * 1.9) }
+.axp-wt-stack__avatar { display: inline-flex; align-items: center; justify-content: center; width: 100%; height: 100%; border-radius: 999px; font-size: var(--fx-type-root-2xs); font-weight: 700; letter-spacing: .02em;
+  color: var(--fx-text); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-wt-stack__state { position: absolute; right: calc(var(--fx-border-w) * -1); bottom: calc(var(--fx-border-w) * -1); width: calc(var(--fx-type-root-md) * 0.6); height: calc(var(--fx-type-root-md) * 0.6); box-shadow: 0 0 0 calc(var(--fx-border-w) * 2) var(--fx-surface2) }
+.axp-wt-stack__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs) }
+.axp-wt-stack__meta { justify-content: flex-start; gap: calc(var(--fx-type-root-xs) * 0.5) }
+.axp-wt-stack__conn { flex: none }
+.axp-wt-stack__close { flex: none }
+.axp-wt-stack__tab:hover .axp-wt-stack__close, .axp-wt-stack__tab.is-active .axp-wt-stack__close, .axp-wt-stack__tab:focus-within .axp-wt-stack__close { opacity: 1 }
+.axp-wt-stack__foot { padding: var(--fx-dens-gap-xs); border-top: var(--fx-border-w) solid var(--fx-border) }
+.axp-wt-stack__add { width: 100%; justify-content: flex-start; white-space: nowrap; overflow: hidden }
+.axp-wt-stack__edge { position: absolute; top: 0; bottom: 0; width: calc(var(--fx-type-root-md) * 0.5); cursor: col-resize; touch-action: none; z-index: 1 }
+.axp-wt-stack--left .axp-wt-stack__edge { right: calc(var(--fx-type-root-md) * -0.25) }
+.axp-wt-stack--right .axp-wt-stack__edge { left: calc(var(--fx-type-root-md) * -0.25) }
+.axp-wt-stack__edge:hover, .axp-wt-stack__edge:focus-visible { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); outline: none }
+/* collapsed to icons: one column, titles in the tooltip */
+.axp-wt-stack.is-collapsed .axp-wt-stack__head { justify-content: center; padding-inline: 0 }
+.axp-wt-stack.is-collapsed .axp-wt-stack__tab { justify-content: center; padding-inline: 0 }
+.axp-wt-stack.is-collapsed .axp-wt-stack__conn { position: absolute; top: var(--fx-dens-gap-xs); right: var(--fx-dens-gap-xs) }
+.axp-wt-stack.is-collapsed .axp-wt-stack__add { justify-content: center; padding-inline: 0 }
+/* a narrow window (phone): the stack slides out over the panes */
+.axp-wt-stack.is-drawer { z-index: 6; width: min(calc(var(--fx-type-root-md) * 20), 85%); box-shadow: var(--fx-shadow-md); transition: transform calc(var(--fx-motion) * 2) var(--fx-ease) }
+.axp-wt-stack--left.is-drawer { transform: translateX(-105%) }
+.axp-wt-stack--right.is-drawer { transform: translateX(105%) }
+.axp-wt-stack.is-drawer.is-open { transform: none }
+.axp-wt-stack.is-drawer .axp-wt-stack__tab { min-height: var(--fx-row-h) }
+.axp-wt-stack.is-drawer .axp-wt-stack__close { opacity: 1 }
+.axp-wt-stack__scrim { position: absolute; inset: 0; z-index: 5; background: color-mix(in srgb, var(--fx-text) calc(var(--fx-opacity-scrim) * 100%), transparent) }
+.axp-wt-stack__peek { position: absolute; z-index: 5; top: var(--fx-dens-gap-md); gap: var(--fx-dens-gap-xs); width: auto; padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); color: var(--fx-text); background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border); box-shadow: var(--fx-shadow-sm) }
+.axp-wt-stack__peek--left { left: var(--fx-dens-gap-md) }
+.axp-wt-stack__peek--right { right: var(--fx-dens-gap-md) }
+@media (pointer: coarse) { .axp-wt-stack__close { opacity: 1 } }
+@media (prefers-reduced-motion: reduce) { .axp-wt-stack.is-drawer { transition: none } }

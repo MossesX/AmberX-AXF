@@ -8,11 +8,14 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Button, Icon, SelectField, Slider, Switch, TextField } from '@console/axf/react';
 import { SCHEMES, getSettings, onSettings, saveSettings, type ClaudeProfile, type Settings } from './api';
 import { blankProfile } from './profiles';
+import { useTabPosition } from './TabStack';
+import { TAB_POSITIONS, TAB_POSITION_LABELS, type TabPosition } from './tab-position-core';
 
 export type Level = 'simple' | 'basic' | 'developer' | 'administrator';
 /** Every terminal setting's level (what the level toolbar shows at Simple, Basic, Developer; Administrator = all). */
 export const LEVELS: Record<string, Level> = {
   scheme: 'simple', fontSize: 'simple', windowsLook: 'simple', toolbar: 'simple', startup: 'simple',
+  tabPosition: 'simple', tabPositionDefault: 'basic',
   fontFamily: 'basic', cursorStyle: 'basic', mica: 'basic', newTab: 'basic', tabWidth: 'basic', closeConfirm: 'basic', copyOnSelect: 'basic', pasteWarn: 'basic',
   'profile.name': 'basic', 'profile.model': 'basic', 'profile.connection': 'basic', 'profile.color': 'basic',
   lineHeight: 'developer', scrollback: 'developer', padding: 'developer', bell: 'developer', cursorBlink: 'developer', mouseDefault: 'developer', moshDefault: 'developer',
@@ -59,10 +62,15 @@ export function AppearancePanel() {
 
 export function BehaviourPanel() {
   const { s, msg, save } = useLive();
+  const tp = useTabPosition(s?.tabPosition);
   if (!s) return <p className="fx-muted">{msg || 'Loading…'}</p>;
+  const places = TAB_POSITIONS.map((value) => ({ value, label: TAB_POSITION_LABELS[value] }));
   return (
     <div className="fx-stack axp-terminal-settings">
       <div className="axp-terminal__cols">
+        <L k="tabPosition"><SelectField label="Tab position (this device)" value={tp.device ?? ''} options={[{ value: '', label: `Follow the default (${TAB_POSITION_LABELS[s.tabPosition] ?? 'Top'})` }, ...places]}
+          onChange={(v) => tp.setPosition((v || null) as TabPosition | null)} hint="Left or right = a stack you can collapse, resize and drag to reorder; on a phone it slides out" /></L>
+        <L k="tabPositionDefault"><SelectField label="Tab position (default for every device)" value={s.tabPosition} options={places} onChange={(v) => save({ tabPosition: v as Settings['tabPosition'] })} /></L>
         <L k="startup"><SelectField label="New terminal opens" value={s.startup} options={[{ value: 'claude', label: 'Claude Code (default profile)' }, { value: 'console', label: 'A console shell' }, { value: 'picker', label: 'The connection picker' }]} onChange={(v) => save({ startup: v as Settings['startup'] })} /></L>
         <L k="newTab"><SelectField label="The + button" value={s.newTab} options={[{ value: 'picker', label: 'Asks for a connection' }, { value: 'same', label: 'Opens one like the current tab' }]} onChange={(v) => save({ newTab: v as Settings['newTab'] })} /></L>
         <L k="tabWidth"><SelectField label="Tab width" value={s.tabWidth} options={[{ value: 'equal', label: 'Equal' }, { value: 'compact', label: 'Compact' }, { value: 'title', label: 'Fit the title' }]} onChange={(v) => save({ tabWidth: v as Settings['tabWidth'] })} /></L>

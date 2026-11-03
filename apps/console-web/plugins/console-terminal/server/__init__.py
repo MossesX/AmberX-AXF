@@ -15,7 +15,7 @@ interactive CLI session). Sessions live on the server (sessions.py) so Mosh mode
   POST sessions {…, tmux}              tmux = the tab's axt-… name: the tab runs inside that tmux session (persistTabs)
   POST sessions/{id}/mosh {on}       DELETE sessions/{id} (detaches a persistent tab)   POST sessions/{id}/kill
   WS   sessions/{id}/ws?ticket=…&have=<offset>
-  GET/PUT settings      POST ssh/keygen {replace?}
+  GET/PUT settings      GET/PUT tab-position {position}      POST ssh/keygen {replace?}
 """
 from __future__ import annotations
 
@@ -256,6 +256,22 @@ def get_settings() -> dict[str, Any]:
 def put_settings(body: dict[str, Any]) -> dict[str, Any]:
     try:
         return {**store.save_settings(body), "publicKey": store.public_key()}
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+
+
+@router.get("/tab-position")
+def get_tab_position() -> dict[str, Any]:
+    """Where the terminal's tabs sit: top (a strip), left or right (a vertical stack) or bottom. This is the default a
+    device follows until it picks its own in the tab strip's menu or Settings → Terminal (kept per device)."""
+    return {"position": store.settings()["tabPosition"], "choices": list(store.CHOICES["tabPosition"])}
+
+
+@router.put("/tab-position")
+def put_tab_position(body: dict[str, Any]) -> dict[str, Any]:
+    """Set the default tab position (top, left, right or bottom) for every device that hasn't picked its own."""
+    try:
+        return {"position": store.save_settings({"tabPosition": body.get("position")})["tabPosition"], "choices": list(store.CHOICES["tabPosition"])}
     except Exception as e:  # noqa: BLE001
         raise _err(e) from None
 

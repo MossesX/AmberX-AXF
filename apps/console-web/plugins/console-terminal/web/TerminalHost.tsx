@@ -12,6 +12,8 @@
  * waiting / done / failed, meters.ts) and splits into the session and its context chain (SplitView + ChainPane).
  * Closing a tab detaches from its tmux session; the tab menu has Open in Moshi (copies the attach command) and Kill
  * session (with a confirm). The ∨ menu lists running sessions no tab shows, to attach again.
+ * Tab position (Nov 3 2026, TabStack.tsx): the tabs can sit in a stack on the left or right, or along the bottom; the
+ * strip above stays the title bar. Per device (tab menu → Tab position, Settings → Terminal); setting tabPosition.
  * Closing the last tab closes the window, like Windows Terminal. Theme tokens only (axp-wt prefix); controls are the
  * framework's (fx-tab, fx-iconbtn, fx-btn, fx-menu__item) so the app's style still applies.
  */
@@ -28,6 +30,7 @@ import { follow, meterOf, modelName, money, statusOf, useMeters } from './meters
 import { SplitView, type Split } from './SplitView';
 import { ChainPane } from './ChainPane';
 import { markClosed } from './headless';
+import { TabStack, positionItems, useTabPosition } from './TabStack';
 
 const P = 'axp-wt';
 const ICONS: Record<string, string> = { console: 'terminal', vps: 'monitor', claude: 'sparkles', container: 'box', axhub: 'zap' };
@@ -90,6 +93,7 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
   const frame = useWindowFrame();
   const stripDown = (e: React.PointerEvent) => { if (!frame || (e.target as HTMLElement).closest('.fx-tab, button, input, form, [role="menu"]')) return; frame.startMove(e); };
   useEffect(() => { void getSettings().then(setSettings, () => undefined); return onSettings(setSettings); }, []);
+  const tp = useTabPosition(settings?.tabPosition);
   const dragFrom = useRef<number | null>(null);
   const root = useRef<HTMLDivElement>(null);
 
@@ -138,7 +142,7 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
   const target = front?.open ? describe(front.open) : '';
 
   return (
-    <div ref={root} className={`${P} ${settings?.mica === false ? '' : `${P}--mica`} ${settings?.windowsLook === false ? `${P}--plain` : ''} ${P}--tabs-${settings?.tabWidth ?? 'equal'}`} data-fx-ctx-ignore>
+    <div ref={root} className={`${P} ${settings?.mica === false ? '' : `${P}--mica`} ${settings?.windowsLook === false ? `${P}--plain` : ''} ${P}--tabs-${settings?.tabWidth ?? 'equal'} ${tp.rootClass}`} style={tp.rootStyle} data-fx-ctx-ignore>
       <div className={`${P}__strip ${frame ? `${P}__strip--titlebar` : ''}`} role="tablist" aria-label="Terminal tabs" onPointerDown={stripDown} onContextMenu={(e) => { if (!frame || (e.target as HTMLElement).closest('.fx-tab, button')) return; e.preventDefault(); e.stopPropagation(); rt.openContext(e.clientX, e.clientY, 'window-title', frame.w.id); }}>
         {h.sessions.map((s, i) => {
           const sc = ctl(s.id); const on = s.id === front?.id;
@@ -216,6 +220,7 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
           <button type="button" className="fx-btn fx-btn--ghost" onClick={() => setAsk(null)}>Cancel</button>
         </div>) : null; })()}
       <div className={`${P}__body`}>
+        {tp.position !== 'top' && <TabStack hostId={tab.id} sessions={h.sessions} frontId={front?.id ?? null} tp={tp} renaming={renaming} setRenaming={setRenaming} onClose={close} onMenu={setMenu} onNew={newLike} />}
         {h.sessions.map((s) => {
           const hl = headlessOf(s); const on = s.id === front?.id;
           return <SplitView key={s.id} split={splitOf(s)} active={on}
@@ -248,6 +253,8 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
               {item('Open in Moshi (copy command)', 'smartphone', () => copyAttach(s), { disabled: !tmuxOf(s) })}
               {item('Kill session…', 'x-circle', () => setKillAsk(s.id), { disabled: !tmuxOf(s) })}
               {!toolbar && item('Show the toolbar', 'layout', () => setToolbar(true))}
+              <div className={`${P}__mh`}>Tab position</div>
+              {positionItems(tp, () => setMenu(null))}
               <div className={`${P}__sepline`} />
               {item('Close tab', 'x', () => close(s.id), { hint: 'Ctrl+Shift+W' })}
               {item('Close other tabs', 'x', () => h.sessions.filter((x) => x.id !== s.id).forEach((x) => close(x.id)), { disabled: h.sessions.length < 2 })}

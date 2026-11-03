@@ -35,6 +35,8 @@ export interface Settings {
   claudeProfiles: ClaudeProfile[]; defaultClaudeProfile: string;
   // headless tabs (Nov 3 2026)
   persistTabs: boolean; splitDefault: 'side' | 'stacked' | 'none'; chainSpeed: 'slow' | 'normal' | 'fast' | 'instant'; showChain: boolean;
+  // tab position (Nov 3 2026): the default for devices that haven't picked their own (TabStack.tsx)
+  tabPosition: 'top' | 'left' | 'right' | 'bottom';
 }
 /** A Claude Code profile: how a Claude Code tab starts (Oct 28 2026). */
 export interface ClaudeProfile { id: string; name: string; model: string; permissionMode: string; flags: string[]; cwd: string; prompt: string; icon: string; color: string; connection: string }
