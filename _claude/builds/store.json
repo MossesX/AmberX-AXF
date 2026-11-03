@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 489,
- "updatedAt": "2026-11-03T21:38:16.829Z",
+ "rev": 490,
+ "updatedAt": "2026-11-03T21:38:38.643Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -58678,14 +58678,14 @@
    "title": "Molly: console commands reach the embedded console; every app gets the control surface",
    "category": "Molly",
    "detail": "",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T21:05:30.629Z",
-   "updatedAt": "2026-11-03T21:05:30.629Z",
+   "updatedAt": "2026-11-03T21:38:09.752Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -58706,12 +58706,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:38:07.301Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T21:05:30.630Z",
-     "updatedAt": "2026-11-03T21:19:51.177Z"
+     "updatedAt": "2026-11-03T21:38:07.387Z"
     },
     {
      "id": "s2",
@@ -58728,12 +58728,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:38:09.752Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T21:05:30.630Z",
-     "updatedAt": "2026-11-03T21:19:51.177Z"
+     "updatedAt": "2026-11-03T21:38:09.810Z"
     },
     {
      "id": "s3",
@@ -61164,7 +61164,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
