@@ -315,8 +315,15 @@ function TokenValue({ token, value, onChange }: { token: Token; value: Json | un
       )}
       {f.kind === 'string' && (
         <>
-          <TextField label={label} mono value={String(v ?? '')} onChange={(x) => { setV(x); onChange(x); }} />
-          {!!f.values?.length && f.values.length > 1 && <SelectField label="Values other themes use" value="" empty="Pick one…" options={f.values.map((x) => ({ value: JSON.stringify(x), label: String(x).slice(0, 60) }))} onChange={(x) => x && onChange(JSON.parse(x) as Json)} />}
+          <div className={`${P}__withpick`}>
+            <TextField label={label} mono value={String(v ?? '')} onChange={(x) => { setV(x); onChange(x); }} />
+            {!!f.values?.length && f.values.length > 1 && (
+              <select className={`fx-input ${P}__pick`} value="" aria-label="Values other themes use" title="Values other themes use" onChange={(e) => e.target.value && onChange(JSON.parse(e.target.value) as Json)}>
+                <option value="">Others…</option>
+                {f.values.map((x) => <option key={JSON.stringify(x)} value={JSON.stringify(x)}>{String(x).slice(0, 60)}</option>)}
+              </select>
+            )}
+          </div>
         </>
       )}
     </div>

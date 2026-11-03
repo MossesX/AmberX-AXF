@@ -1,3 +1,4 @@
+// @ts-nocheck: a Node test, not part of the console's build
 /*
  * Theme editor model test, on the real starter assets and the real token tree (the Theme manager's roll engine,
  * which provides axf.token-tree@1). Skips with a note when the Theme manager isn't installed.
