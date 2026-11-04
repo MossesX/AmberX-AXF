@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T15:57:09.987Z",
+ "updatedAt": "2026-11-04T15:57:34.003Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10692,14 +10692,14 @@
    "title": "Jump menu asset type (jump-menu@1): in-page section index with its own settings, location, display and right-click Settings / Change / Move; Plan Studio first consumer",
    "category": "Framework",
    "detail": "New shared optional asset type jump-menu@1 (rules + engine + fixture + schema + 5 starters + defaults.json), per-page settings as control@1 token overrides (tokens.jump), scroll-spy, right-click / long-press Settings / Change jump menu / Move like toolbars and banners, Plan Studio plan view replaces its hard-coded chip row, Assets screen picker, voice controls. Replaces the cancelled plan-studio-section-nav.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T15:29:59.385Z",
-   "updatedAt": "2026-11-04T15:57:06.659Z",
+   "updatedAt": "2026-11-04T15:57:09.977Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -10733,7 +10733,7 @@
      "done": true,
      "doneAt": "2026-11-04T15:47:53.756Z",
      "note": "",
-     "uid": "st-mw2a07an07iqbs"
+     "uid": "st-mw29w9v70cz5z4"
     },
     {
      "id": "s2",
@@ -10751,7 +10751,7 @@
      "done": true,
      "doneAt": "2026-11-04T15:57:06.659Z",
      "note": "",
-     "uid": "st-mw2a07an08d73h"
+     "uid": "st-mw29w9v70dwpp9"
     },
     {
      "id": "s3",
@@ -10766,10 +10766,10 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T15:57:08.626Z",
      "note": "",
-     "uid": "st-mw2a07an09d84f"
+     "uid": "st-mw29w9v70ehlez"
     },
     {
      "id": "s4",
@@ -10784,10 +10784,10 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T15:57:09.977Z",
      "note": "",
-     "uid": "st-mw2a07an0al9tl"
+     "uid": "st-mw29w9v70ffnc8"
     },
     {
      "id": "s5",
@@ -10805,7 +10805,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2a07an0b84gh"
+     "uid": "st-mw29w9v70g38uh"
     }
    ]
   }
