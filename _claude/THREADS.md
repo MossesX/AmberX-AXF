@@ -669,8 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:54 UTC · `toolbar-tap-confirm` s8 done, note (urgent) · reconciler
-- 2026-11-04 04:52 UTC · `lenny-land-all` s3 done (current) · orchestrator
 - 2026-11-04 04:52 UTC · `lenny-land-all` s4 done (current) · orchestrator
 - 2026-11-04 04:52 UTC · `lenny-land-all` note (current) · orchestrator
 - 2026-11-04 05:11 UTC · `claude-settings` → complete, merged, note (urgent) · reconciler
@@ -1069,6 +1067,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:06 UTC · `fable-review-nov3` added (7 steps) (current) · foreign-write
 - 2026-11-04 15:06 UTC · `app-voice-commands` added (6 steps) (current) · foreign-write
 - 2026-11-04 15:06 UTC · `apps-control-surface` added (5 steps) (current) · foreign-write
+- 2026-11-04 15:06 UTC · `console-wake-finish` s5 done, → built (current) · orchestrator
+- 2026-11-04 15:06 UTC · `console-wake-finish` note (current) · orchestrator
 
 ## Token passes (log)
 
