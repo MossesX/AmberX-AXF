@@ -1052,6 +1052,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 13:18 UTC · `bugs-board` note (current) · orchestrator
 - 2026-11-04 13:19 UTC · `requests-ledger` s5 done, → complete (current) · orchestrator
 - 2026-11-04 13:19 UTC · `requests-ledger` → built, branch claude/requests-ledger, PR #310 (current) · builds-live
+- 2026-11-04 13:24 UTC · `requests-ledger` s5 done, → complete (current) · foreign-write
+- 2026-11-04 13:24 UTC · `bugs-board` note (current) · foreign-write
 
 ## Token passes (log)
 
