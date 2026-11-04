@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T15:43:11.540Z",
+ "updatedAt": "2026-11-04T15:43:25.402Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -12135,7 +12135,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T14:43:48.090Z",
-   "updatedAt": "2026-11-04T15:32:52.322Z",
+   "updatedAt": "2026-11-04T15:43:11.935Z",
    "builtAt": "",
    "notes": [
     {
@@ -12149,6 +12149,10 @@
     {
      "text": "s0 done: Expenses PR #307 merged 15:14 UTC (CI fix: plugin-lifecycle ignores other apps' own plugin folders; grid save merges by entry id, 7 new checks). s2 done: voice-commands.mjs (surface/generate/check/registry/help/say/fill/bake), axf init --for-framework, templates, launcher note, CI check.",
      "at": "2026-11-04T15:32:25.522Z"
+    },
+    {
+     "text": "s3 done (console voice-commands plugin + Molly voice-control plugin), s4 done (manifests + generated assets: console 899, AmberX 44, Molly 17, axHub web 8, Walkthrough Studio 5, Expenses 7). Branch claude/app-voice-commands pushed; PR opening.",
+     "at": "2026-11-04T15:43:11.935Z"
     }
    ],
    "approvals": [
@@ -12260,8 +12264,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T15:43:10.891Z",
      "note": "",
      "uid": "st-mw288vhh0b68y3"
     },

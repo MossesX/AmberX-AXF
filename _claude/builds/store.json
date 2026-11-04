@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 795,
- "updatedAt": "2026-11-04T15:43:11.540Z",
+ "rev": 796,
+ "updatedAt": "2026-11-04T15:43:25.402Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -79426,7 +79426,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T14:43:48.090Z",
-   "updatedAt": "2026-11-04T15:32:52.322Z",
+   "updatedAt": "2026-11-04T15:43:11.935Z",
    "builtAt": "",
    "notes": [
     {
@@ -79440,6 +79440,10 @@
     {
      "text": "s0 done: Expenses PR #307 merged 15:14 UTC (CI fix: plugin-lifecycle ignores other apps' own plugin folders; grid save merges by entry id, 7 new checks). s2 done: voice-commands.mjs (surface/generate/check/registry/help/say/fill/bake), axf init --for-framework, templates, launcher note, CI check.",
      "at": "2026-11-04T15:32:25.522Z"
+    },
+    {
+     "text": "s3 done (console voice-commands plugin + Molly voice-control plugin), s4 done (manifests + generated assets: console 899, AmberX 44, Molly 17, axHub web 8, Walkthrough Studio 5, Expenses 7). Branch claude/app-voice-commands pushed; PR opening.",
+     "at": "2026-11-04T15:43:11.935Z"
     }
    ],
    "approvals": [
@@ -79569,12 +79573,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T15:43:10.891Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T14:43:48.095Z",
-     "updatedAt": "2026-11-04T14:43:48.095Z"
+     "updatedAt": "2026-11-04T15:43:10.938Z"
     },
     {
      "id": "s6",
@@ -79607,7 +79611,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
