@@ -582,9 +582,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 21:05 UTC · `molly-console-commands` added (7 steps) (current) · orchestrator
-- 2026-11-03 21:08 UTC · `molly-console-commands` added (7 steps) (current) · foreign-write
-- 2026-11-03 21:10 UTC · `git-status-board` added (6 steps) (current) · foreign-write
 - 2026-11-03 20:54 UTC · `home-cards-live` branch claude/home-cards-live, note (urgent) · reconciler
 - 2026-11-03 21:11 UTC · `plugin-settings-placement` s3 done, s4 done, s5 done (current) · foreign-write
 - 2026-11-03 21:11 UTC · `banner-ref-links` s1 done (current) · foreign-write
@@ -982,3 +979,6 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 02:46 UTC · `profile-switcher-widget` s2 done, s3 done, s4 done, note (current) · foreign-write
 - 2026-11-04 02:46 UTC · `app-style-override` s3 done (current) · orchestrator
 - 2026-11-04 02:47 UTC · `app-style-override` s4 done (current) · orchestrator
+- 2026-11-04 02:59 UTC · `crew-retrain` note (breakroom) · foreign-write
+- 2026-11-04 02:59 UTC · `browser-automation` note (current) · foreign-write
+- 2026-11-04 02:59 UTC · `profile-switcher-widget` note (current) · foreign-write
