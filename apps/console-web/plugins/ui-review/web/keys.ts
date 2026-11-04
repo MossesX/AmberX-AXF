@@ -7,10 +7,12 @@ export const PACKS_VIEW = 'design-packs';
 export const SHOTS_VIEW = 'ui-screenshots';
 /** A copied screenshot link: ?ui-shot=<id> opens UI Review → Screenshots on that picture. */
 export const SHOT_PARAM = 'ui-shot';
+/** A build's predicted look (?ui-mockup=<ui-mockup@1>): framework/cli/ui-predict.mjs captures this page. */
+export const MOCKUP_VIEW = 'ui-mockup';
 export const KEYS = {
   view: 'ui-review.view', sort: 'ui-review.sort', groupBy: 'ui-review.groupBy', section: 'ui-review.section',
   status: 'ui-review.status', device: 'ui-review.device', thumbs: 'ui-review.thumbs',
-  tab: 'ui-review.tab', shotGroup: 'ui-review.shotGroup', shotMode: 'ui-review.shotMode',
+  tab: 'ui-review.tab', shotGroup: 'ui-review.shotGroup', shotMode: 'ui-review.shotMode', compare: 'ui-review.compare',
 } as const;
 export const VIEWS = [
   { id: 'grid', label: 'Grid', icon: 'list' },

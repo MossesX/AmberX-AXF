@@ -52,6 +52,7 @@ jobs:
       - run: node framework/spec/check-github.mjs                    # lib-github: fixtures/github.json + Node client guards (= axf_server.github)
       - run: node framework/spec/check-github-app.mjs                # github-app@1 broker: manifest, callback exchange, file modes, JWT, token cache, git/gh helpers, user refresh, health
       - run: node framework/spec/check-ui-review.mjs                 # ui-review-item@1: fixtures, schema snapshots, migration, every UI Review submitter names + times its items
+      - run: node framework/spec/check-ui-predict.mjs                # ui-prediction@1 / ui-mockup@1: predicted looks before a build runs, look gate, CLI offline
       - run: node framework/spec/check-session.mjs                   # session@1 (Chat viewer): fixtures, redaction, chain hash, schema snapshots
       - run: node framework/spec/check-refs.mjs                      # ref@1: mentions in banner text → links (fixtures/refs.json: names, kind words, explicit touches, PRs, files, peek)
       - run: node framework/cli/help-coverage.mjs --check            # Help mode: every control in the framework chrome, the console + plugins and axHub web has help; fails if coverage drops below framework/spec/help-coverage.json

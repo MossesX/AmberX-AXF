@@ -10,6 +10,8 @@ Every UI a build makes is submitted here for Brett's approval (review-item@1), o
   GET  shot?path=r<n>/<file> | items/<id>/<file>    one screenshot (png/jpg/webp)
   GET  picks / PUT picks {picked: [ids]}             design-pack picks (the page allows 3)
   GET  state?branch=&pr=      ui-review@1: the strictest status of that branch's / PR's items, holds = don't merge yet
+  …    settings, predicted, predict, predict/real, approve-look
+                              predicted looks (ui-prediction@1, predicted.py): a build's mockup waits here before it runs
   …    shots/*                Screenshots tab (ui-screenshot@1, screenshots.py): ad-hoc pictures that never enter this
                               queue; shots/promote sends one in ("Send to review"), shots/migrate moves "Breakroom check:" items out
 
@@ -41,6 +43,7 @@ from . import conform as cf
 from . import schema as S
 from .screenshots import Store as ShotStore, resolve_group, router_for as shots_router
 from . import screenshots as shots_mod
+from . import predicted as predicted_mod
 
 router = APIRouter()
 FOLDER = "ui-review"
@@ -206,12 +209,17 @@ def decide(item: dict, decision: str, comment: str = "", by: str = "brett", at: 
     line = {"at": at, "by": by, "action": decision if decision in DECISIONS else status, "status": status}
     if c:
         line["comment"] = c
-    return {**item, "status": status, "comment": c or (item.get("comment", "") if status == item.get("status") else ""), "updatedAt": at,
-            "history": [*(item.get("history") or []), line][-200:]}
+    out = {**item, "status": status, "comment": c or (item.get("comment", "") if status == item.get("status") else ""), "updatedAt": at,
+           "history": [*(item.get("history") or []), line][-200:]}
+    p = predicted_mod.prediction_of(item)
+    if p and p.get("state") == "predicted" and decision in predicted_mod.LOOK_DECISIONS:
+        out["prediction"] = predicted_mod.decide_look(p, decision, c, by, at)  # deciding a predicted item = deciding its look
+    return out
 
 
 def review_state(items: list[dict], branch: str = "", pr: int | None = None) -> dict:
-    mine = [it for it in items if (branch and it.get("branch") == branch) or (pr and it.get("pr") == pr)]
+    # a predicted look is approved for the look, not for merging: only real screens count for a branch / PR
+    mine = [it for it in items if ((branch and it.get("branch") == branch) or (pr and it.get("pr") == pr)) and (predicted_mod.prediction_of(it) or {}).get("state") != "predicted"]
     c = {k: 0 for k in STATUSES}
     for it in mine:
         if it.get("status") in c:
@@ -289,7 +297,13 @@ def decide_many(ids: list[str], decision: str, comment: str = "", by: str = "bre
                 doc["items"].append(decide({"id": x, "kind": "design-pack", "status": "waiting", "comment": "", "history": []}, decision, comment, by, at))
                 changed.append(x)
         _save_items(doc)
+        decided = [doc["items"][by_id[x]] for x in changed if x in by_id]
+    after_decide(decided)  # Ask changes on a predicted look → the build gets the comment
     return {"changed": changed, "missing": [x for x in ids if x not in changed], "at": at}
+
+
+def after_decide(items: list[dict]) -> None:
+    """Replaced by predicted.router_for (sends Ask changes comments on predicted looks to their builds)."""
 
 
 class UiReviewService:
@@ -359,6 +373,8 @@ except OSError:
     pass
 plugin_services.provide("ui-review@1", UiReviewService(), FOLDER)
 router.include_router(shots_router(shots, promote_shot, migrate_shots))
+import sys as _sys  # noqa: E402
+router.include_router(predicted_mod.router_for(_sys.modules[__name__]))
 
 # ---------------------------------------------------------------- health@1: every open item's pictures load
 
