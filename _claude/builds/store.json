@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 808,
- "updatedAt": "2026-11-04T15:51:49.238Z",
+ "rev": 809,
+ "updatedAt": "2026-11-04T15:52:15.209Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -74197,7 +74197,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T14:21:14.916Z",
-   "updatedAt": "2026-11-04T15:51:10.543Z",
+   "updatedAt": "2026-11-04T15:51:35.864Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -74224,7 +74224,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "30 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -74233,9 +74233,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T14:21:14.918Z",
-     "updatedAt": "2026-11-04T14:31:19.257Z"
+     "updatedAt": "2026-11-04T15:51:36.195Z"
     },
     {
      "id": "s2",
@@ -74246,7 +74246,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "30 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -74255,9 +74255,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T14:21:14.918Z",
-     "updatedAt": "2026-11-04T14:31:19.257Z"
+     "updatedAt": "2026-11-04T15:51:36.195Z"
     },
     {
      "id": "s3",
@@ -74268,7 +74268,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "30 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -74277,9 +74277,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T14:21:14.918Z",
-     "updatedAt": "2026-11-04T14:31:19.257Z"
+     "updatedAt": "2026-11-04T15:51:36.195Z"
     }
    ],
    "profiles": [
@@ -74290,24 +74290,10 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-04T14:21:14.916Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mw27stnk01px4q": "2026-11-04T14:21:14.918Z",
-     "st-mw27stnk023jme": "2026-11-04T14:21:14.918Z",
-     "st-mw27stnk03n2rf": "2026-11-04T14:21:14.918Z"
-    }
-   },
+   "pending": null,
    "queue": null,
    "defaultAt": "2026-11-04T14:21:14.918Z",
    "rearranged": false,
@@ -74335,9 +74321,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74362,9 +74348,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74389,9 +74375,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74416,9 +74402,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74443,9 +74429,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74470,9 +74456,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74497,9 +74483,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74524,9 +74510,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74551,9 +74537,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74578,9 +74564,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74605,9 +74591,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74632,9 +74618,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74659,9 +74645,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74686,9 +74672,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74713,9 +74699,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74740,9 +74726,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74767,9 +74753,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74794,9 +74780,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74821,9 +74807,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74848,9 +74834,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74875,9 +74861,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74902,9 +74888,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74929,9 +74915,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74956,9 +74942,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -74983,9 +74969,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75010,9 +74996,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75037,9 +75023,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75064,9 +75050,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75091,9 +75077,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75118,9 +75104,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75145,9 +75131,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75172,9 +75158,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75199,9 +75185,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75226,9 +75212,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:22:36.280Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75253,9 +75239,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:22:36.280Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75280,9 +75266,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:22:36.280Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75307,9 +75293,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:22:36.280Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75334,9 +75320,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:22:36.280Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75361,9 +75347,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:22:36.280Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75388,9 +75374,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:21:43.481Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75415,9 +75401,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:21:43.481Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75442,9 +75428,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:21:43.481Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75469,9 +75455,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:21:14.918Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75496,9 +75482,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:21:14.918Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75523,9 +75509,9 @@
       "createdAt": "2026-11-04T14:21:14.918Z",
       "updatedAt": "2026-11-04T14:21:14.918Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:10.545Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     }
    ],
    "legacy": [],
@@ -75543,7 +75529,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T14:21:17.381Z",
-   "updatedAt": "2026-11-04T15:51:15.126Z",
+   "updatedAt": "2026-11-04T15:51:39.555Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -75570,7 +75556,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "30 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -75579,9 +75565,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T14:21:17.382Z",
-     "updatedAt": "2026-11-04T14:31:19.257Z"
+     "updatedAt": "2026-11-04T15:51:39.675Z"
     },
     {
      "id": "s2",
@@ -75592,7 +75578,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "30 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -75601,9 +75587,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T14:21:17.382Z",
-     "updatedAt": "2026-11-04T14:31:19.257Z"
+     "updatedAt": "2026-11-04T15:51:39.675Z"
     },
     {
      "id": "s3",
@@ -75614,7 +75600,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "30 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -75623,9 +75609,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T14:21:17.382Z",
-     "updatedAt": "2026-11-04T14:31:19.257Z"
+     "updatedAt": "2026-11-04T15:51:39.675Z"
     },
     {
      "id": "s4",
@@ -75636,7 +75622,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "30 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -75645,9 +75631,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T14:21:17.382Z",
-     "updatedAt": "2026-11-04T14:31:19.257Z"
+     "updatedAt": "2026-11-04T15:51:39.675Z"
     }
    ],
    "profiles": [
@@ -75658,25 +75644,10 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-04T14:21:17.381Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mw27stnk0p5m1f": "2026-11-04T14:21:17.382Z",
-     "st-mw27stnk0qhm7g": "2026-11-04T14:21:17.382Z",
-     "st-mw27stnk0ralrd": "2026-11-04T14:21:17.382Z",
-     "st-mw27stnk0seuxu": "2026-11-04T14:21:17.382Z"
-    }
-   },
+   "pending": null,
    "queue": null,
    "defaultAt": "2026-11-04T14:21:17.382Z",
    "rearranged": false,
@@ -75704,9 +75675,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75731,9 +75702,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75758,9 +75729,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75785,9 +75756,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75812,9 +75783,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75839,9 +75810,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75866,9 +75837,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75893,9 +75864,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75920,9 +75891,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75947,9 +75918,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -75974,9 +75945,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76001,9 +75972,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76028,9 +75999,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76055,9 +76026,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76082,9 +76053,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76109,9 +76080,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76136,9 +76107,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76163,9 +76134,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76190,9 +76161,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76217,9 +76188,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76244,9 +76215,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76271,9 +76242,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76298,9 +76269,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76325,9 +76296,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76352,9 +76323,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76379,9 +76350,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76406,9 +76377,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76433,9 +76404,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:31:19.257Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76460,9 +76431,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76487,9 +76458,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76514,9 +76485,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76541,9 +76512,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76568,9 +76539,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76595,9 +76566,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76622,9 +76593,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76649,9 +76620,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76676,9 +76647,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76703,9 +76674,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76730,9 +76701,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76757,9 +76728,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76784,9 +76755,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76811,9 +76782,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76838,9 +76809,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76865,9 +76836,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:24:21.197Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76892,9 +76863,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:22:36.280Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76919,9 +76890,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:22:36.280Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76946,9 +76917,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:22:36.280Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -76973,9 +76944,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:22:36.280Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -77000,9 +76971,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:22:36.280Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -77027,9 +76998,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:22:36.280Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -77054,9 +77025,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:22:36.280Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -77081,9 +77052,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:22:36.280Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -77108,9 +77079,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:21:43.481Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -77135,9 +77106,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:21:43.481Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -77162,9 +77133,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:21:43.481Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -77189,9 +77160,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:21:43.481Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -77216,9 +77187,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:21:17.382Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -77243,9 +77214,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:21:17.382Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -77270,9 +77241,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:21:17.382Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     },
     {
      "step": {
@@ -77297,9 +77268,9 @@
       "createdAt": "2026-11-04T14:21:17.382Z",
       "updatedAt": "2026-11-04T14:21:17.382Z"
      },
-     "at": "2026-11-04T15:51:16.401Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-04T15:51:15.128Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
     }
    ],
    "legacy": [],
