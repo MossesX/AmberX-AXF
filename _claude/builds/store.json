@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 678,
- "updatedAt": "2026-11-04T13:18:40.379Z",
+ "rev": 679,
+ "updatedAt": "2026-11-04T13:19:16.024Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -72639,15 +72639,15 @@
    "title": "Requests ledger: every single thing Brett asked for, in one list",
    "category": "Console > Builds",
    "detail": "Upgrade the Build Breaker plugin into the requests ledger: request@1 record per ask (builds, addenda, plans, bugs, follow-ups, crew), backfill, expandable rows with verbatim words, queue position, status and hooks; capture going forward via REST/MCP/CLI.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "voice",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T12:44:14.620Z",
-   "updatedAt": "2026-11-04T13:04:54.879Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T13:19:14.882Z",
+   "builtAt": "2026-11-04T13:19:14.882Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -72767,12 +72767,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T13:19:14.882Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T12:44:14.623Z",
-     "updatedAt": "2026-11-04T12:44:14.623Z"
+     "updatedAt": "2026-11-04T13:19:14.936Z"
     }
    ],
    "profiles": [
@@ -72783,7 +72783,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
