@@ -90,6 +90,36 @@
         "text": "Shows “Branches not on main”. Part of Build Breaker.",
         "kind": "menu-item",
         "draft": true
+      },
+      {
+        "target": "auto-land-finished-builds",
+        "title": "Auto-land finished builds",
+        "text": "Builds with every step done land by themselves: a plain script merges main in, opens the PR and starts CI. No AI, no tokens.",
+        "kind": "toggle"
+      },
+      {
+        "target": "wait-for-ui-review",
+        "title": "Wait for UI Review",
+        "text": "On: a PR waits until you approve its screenshots in UI Review, then merges by itself. Off: UI Review never holds a merge.",
+        "kind": "toggle"
+      },
+      {
+        "target": "land-now",
+        "title": "Land now",
+        "text": "Lands this build at the next round (within 3 minutes), ahead of the others. Releases a hold.",
+        "kind": "button"
+      },
+      {
+        "target": "hold",
+        "title": "Hold",
+        "text": "Keeps this finished build from landing until you release it.",
+        "kind": "button"
+      },
+      {
+        "target": "release",
+        "title": "Release",
+        "text": "Lets a held build land again.",
+        "kind": "button"
       }
     ],
     "intros": []
