@@ -34,6 +34,9 @@ function prune(items: readonly NavItem[], views: ViewMap, show: (it: NavItem) =>
 /** Icon size per nav-style step (px, like every Icon size); a brand icon pack draws at the same size. */
 const NAV_ICON_PX: Record<string, number> = { sm: 14, md: 17, lg: 20 };
 
+/** `inert` as a plain attribute: React 18 only passes it through as a string, React 19 types it as a boolean. */
+const inertWhen = (on: boolean): object => (on ? { inert: '' } : {});
+
 export function NavTree({ sections, views, style, orient, header }: { sections: Section[]; views: ViewMap; style: NavStyleData; orient: 'horizontal' | 'vertical'; header?: string }) {
   const rt = useRuntime();
   const state = useAxfState();
@@ -136,7 +139,7 @@ export function NavTree({ sections, views, style, orient, header }: { sections: 
       >
         {row}
         {(!narrow || sheet) && (
-          <div className="fx-nav__sub" role="group" aria-label={it.label} data-open={isOpen ? 'true' : 'false'} {...(isOpen ? {} : { inert: '' })}>
+          <div className="fx-nav__sub" role="group" aria-label={it.label} data-open={isOpen ? 'true' : 'false'} {...inertWhen(!isOpen)}>
             <div className="fx-nav__sub-inner">{renderItems(kids, depth + 1, sheet)}</div>
           </div>
         )}
@@ -201,7 +204,7 @@ export function NavTree({ sections, views, style, orient, header }: { sections: 
         ))}
       </nav>
       {narrow && (
-        <div className="fx-nav__sheet" role="group" aria-label={sheetOf?.label ?? 'Sub menu'} data-open={sheetOf ? 'true' : 'false'} {...(sheetOf ? {} : { inert: '' })}>
+        <div className="fx-nav__sheet" role="group" aria-label={sheetOf?.label ?? 'Sub menu'} data-open={sheetOf ? 'true' : 'false'} {...inertWhen(!sheetOf)}>
           {sheetOf && (
             <>
               <div className="fx-nav__sheet-head">
