@@ -958,6 +958,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 12:16 UTC · `molly-banners` → complete, merged (current) · builds-live
 - 2026-11-04 12:19 UTC · `hotfix-build-manager` added (4 steps) (current) · foreign-write
 - 2026-11-04 12:24 UTC · `hotfix-build-manager` added (4 steps) (current) · foreign-write
+- 2026-11-04 12:28 UTC · `hotfix-build-manager` s1 done, → running (current) · builds-page
 
 ## Token passes (log)
 
