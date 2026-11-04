@@ -133,6 +133,18 @@
    "from": "detail",
    "addenda": []
   },
+  "amberx-live-audio": {
+   "said": "Amber: \"Live voice doesn't work yet, because AmberX only uploads audio in 30-minute chunks... Want me to queue the AmberX update so it streams audio live?\" Brett: \"Yeah.\"",
+   "at": "2026-11-04T00:00:00Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "amberx-notes": {
    "said": "voice-controlled notes in lists/sub-lists (Plugins root: one list per plugin, made automatically), sort/transcribe/rename/move, task manager + todo, AI parsing with Claude plan/API switch + any LLM through AmberX own server, integrated web component, voice command section from the codebase, tabs. Data shared on axHub with Voice notes/Voice Vault. Sub-agents allowed (Brett).",
    "at": "2026-10-27",
@@ -788,6 +800,18 @@
    "said": "I don't want the approvals. Just put everything that needs to be on Fable on Fable. No more approvals. If it needs Fable, set it to be Fable. And what about yesterday? Was anything that needed to be Fable done with Opus?",
    "at": "2026-11-04T00:00:00Z",
    "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "fable-packager": {
+   "said": "From the orchestrator, package Fable, or make a build package. You select all the things that are waiting to be built with Fable: you open up a dialog or a window to list them all, then you select them and combine them into a build, and then you either send the build to a helper or add it to your own orchestrator as its own build. So you can easily create just-Fable builds alone, prioritize them, and send them to another helper to be done immediately.",
+   "at": "2026-11-04T16:31:00Z",
+   "source": "voice",
    "session": "",
    "link": "",
    "by": "",
@@ -1616,6 +1640,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "readme-rule-every-build": {
+   "said": "We gotta structure the documentation engine later anyway, so leave that out. Just get basic documentation. In Markdown.\n\n(Asked whether every future build should include a basic Markdown readme:) Yeah.",
+   "at": "2026-11-04T00:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "refactor-all": {

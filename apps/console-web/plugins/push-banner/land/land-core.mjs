@@ -15,7 +15,7 @@ export const LAND_FRAME = 'auto-land@1';
 export const CONTROL_FRAME = 'auto-land-control@1';
 
 /** Settings (push banner config.json): on unless switched off. */
-export const LAND_DEFAULTS = Object.freeze({ autoLand: true, landWaitUi: true });
+export const LAND_DEFAULTS = Object.freeze({ autoLand: false, landWaitUi: true });
 
 /** Commit messages of status-only commits on main (framework/cli/builds-live.mjs, the reconciler, the store). */
 export const STATUS_ONLY_MARK = '[skip ci]';

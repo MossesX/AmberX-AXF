@@ -52,6 +52,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | UI Review predicted looks (Urgent `ui-review-predicted`, Opus, agent Snap Sully; Brett Nov 3 voice: approve the look before an agent spends money): predicted mockups per screen (rules, $0) rendered with framework controls + current theme, captured with rebuild-shots next to the screen now; item *Predicted - approve the look*; Approve look / Ask changes (addendum) / Reject (held); setting *Wait for my look approval before UI builds start* (default off) gates the headless launcher; refresh while running, real shots at the end (badge Real, compare); backfill of 7 UI builds | PR open (all 6 steps done; UI Review waiting) | `claude/ui-review-predicted` | [#285](https://github.com/MossesX/AmberX-AXF/pull/285) (UI Review r-20261103-c9a82c5e; CI red only on main's own failures, fixed by `urgent-main-ci-green`) | Brett: approve the PR's shots + the 7 backfilled predicted looks. Report `_claude/builds/reports/ui-review-predicted.md` | 2026-11-03 |
 | Window resize fix (Current `window-resize-fix`, urgent, Opus; agent Landin' Lenny; Brett Nov 3 voice: "All floating windows need to be resizable" + Terminal settings Opens in = Dialog did nothing): handles in a grips layer straddling the border, touch-sized (row height on phones), corner grip on every frame; windows share one z layer so dialogs stay on top; `settings.open` honours a plugin's Opens in = Dialog. Merge on Brett's order | complete (merged on Brett's order; console, axHub web, AmberX web, Molly redeployed and verified) | `claude/window-resize-fix` | [#278](https://github.com/MossesX/AmberX-AXF/pull/278) | Report `_claude/builds/reports/window-resize-fix.md`. Follow-up: remember window size (engine, Fable) | 2026-11-03 |
 | Terminal sessions nav (Current `terminal-sessions-nav`, Opus, agent Earl the Ear (router not on main); Brett Nov 3 voice: collapsible left nav in the Terminal listing live sessions incl. his own Claude sessions, mirror + jump in): rail (My sessions / Agents / Connections / Recent, drawer on phone), read-only tmux mirrors + Jump in, claude.ai chat feeds via MCP `console_session_note` + console MCP call recorder, live websocket, commands sessions-* | review (all steps done; PR open, merges after #274; UI Review r-20261103-107a9e61 waiting for Brett) | `claude/terminal-sessions-nav` (on `claude/terminal-vps-host` #274) | [#286](https://github.com/MossesX/AmberX-AXF/pull/286) | Report `_claude/builds/reports/terminal-sessions-nav.md`. Brett: approve the UI Review; allow `console_session_note` in axHub's tool policy | 2026-11-03 |
+| Merge queue: test once, never twice (Current `merge-queue`, Opus, 6 steps; Brett Nov 4 voice: "We're paying to do these CI checks twice."; agent Landin' Lenny): GitHub's merge queue needs an org-owned repo, so ours lives in auto-land (`push-banner/land/merge-queue.mjs`, zero tokens): ready PRs stacked on `queue/pr-<n>` branches, tested once, green head merges with no retest, red kicked out with a reason and the rest rebuilt; CI scope (`framework/cli/ci-scope.mjs`): path filters per job + app build, light PR checks while the queue is on, main skips what the queue ran; Merge queue view + banner chip + REST/MCP/CLI | review (s1–s5 done; PR + live round left; UI Review r-20261104-d7a77e5c) | `claude/merge-queue` | – | Report `_claude/builds/reports/merge-queue.md` | 2026-11-04 |
 | Terminal VPS host (Current `terminal-vps-host`, Opus, agent Ping Paulie; Brett Nov 3: console Terminal showed no headless tabs): set up the Terminal's VPS host live (console ed25519 key in the bind-mounted dataDir, host 172.16.1.1, key in root authorized_keys from Docker networks only) → `headless` ready:true with 6 sessions + meters with cost; health@1 item `terminal-vps-host` with Auto fix | review (all steps done; PR open, the push banner merges it) | `claude/terminal-vps-host` | [#274](https://github.com/MossesX/AmberX-AXF/pull/274) | Report `_claude/builds/reports/terminal-vps-host.md`. Brett: none needed | 2026-11-03 |
 | Claude settings (Urgent `claude-settings`, Opus, agent Janitor Joey; Brett Nov 3 voice: "I need a plugin called Claude. Claude settings… that you check on axHub and then act accordingly."): Claude plugin, settings on axHub (`/projects/_shared/_data/claude/settings.json`), MCP `claude_settings_get`/`_set`, No wait = standing all-scope veto pass from Brett's click (off revokes), owner-only enforced, open registry, rule in RULES.md + CLAUDE.md | PR open (all 7 steps done; UI Review waiting) | `claude/claude-settings` | [#275](https://github.com/MossesX/AmberX-AXF/pull/275) (UI Review r-20261103-5bd8390c) | follow-amber should read `followAmber.enabled` instead of its own switch; follow-up: launcher/orchestrator enforce budget caps + max parallel. Report `_claude/builds/reports/claude-settings.md` | 2026-11-03 |
 | What Brett said on every build (Current `build-prompt-origin`, Opus, agent Janitor Joey; Brett Nov 3 voice: "I need it to show the prompt, what I said, the verbatim prompt that kicked it off"): build-origin@1 (`origin` on every build: verbatim `said`, at, source, session/link, by, brief, addenda) in the builds store + `_claude/builds/origins.json` sidecar, never lost on merge; launcher parses the brief's `## Brett said (verbatim)` block; orchestrator add / `pending_change` / Plan Studio take `said`; "What Brett said" block + subtitle in Build manager, Builds page, Pending, Orchestrator, UI Review; 136 builds backfilled (marked may be paraphrased) | review (all 5 steps done; PR open, waits for UI Review r-20261103-786e50e7) | `claude/build-prompt-origin` | [#282](https://github.com/MossesX/AmberX-AXF/pull/282) | Report `_claude/builds/reports/build-prompt-origin.md`. Not wired yet: Build queue, Build Breaker, What's New, Crew, Session browser, PR rows (`OriginFor` ready) | 2026-11-03 |
@@ -195,6 +196,11 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 - **Left:** s5 tail: PR CI green → auto-merge → `flock /run/axf-console-update.lock /usr/local/bin/axf-console-update` (or wait for the 5-min cron), then check `GET /api/perf`, `docker top axf-console` and the 500s are gone.
 - **Checks:** `node framework/spec/check-builds-store-lock.mjs`, `python apps/console-web/server/test_readcache.py`, `cd apps/console-web && npx tsx scripts/fetch-share-check.mts`.
 - **First message:** "Carry on urgent-console-perf from THREADS.md: land the PR and verify the live console numbers."
+### Merge queue (`merge-queue`, Current, Opus) — branch `claude/merge-queue`
+- **Asked:** Brett (voice, Nov 4 2026): stop paying for CI twice; stacked merge queue; "how am I going to access this merge queue?" Full brief in the build's origin (`node framework/cli/build-origin.mjs get merge-queue`).
+- **On the branch:** `push-banner/land/merge-queue-core.mjs`, `merge-queue.mjs`, `merge-queue.test.mjs`; `land.mjs` (queue round in every run, no main merge-in while the queue is on); push banner server (`/queue` routes, `mergeQueue` + `queueDepth`, auto-merge skips AmberX-AXF), web `queue.tsx` (view + chip), help, plugin.json 0.7.0; `framework/cli/ci-scope.mjs`, `framework/spec/check-ci-scope.mjs`, `.github/workflows/android.yml` (scope + light jobs, `queue/**`). Report `_claude/builds/reports/merge-queue.md`. <!-- axf-plugin:push-banner -->
+- **Left:** s6 (PR open, live dry run of `node apps/console-web/plugins/push-banner/land/merge-queue.mjs run --dry-run` once the shared GitHub token has calls again). Brett approves UI Review r-20261104-d7a77e5c. After merge + console redeploy: `node <console plugins>/push-banner/land/land.mjs queue list`, `tail /var/log/axf-auto-land.log`; the first queue round sets repo variable `AXF_MERGE_QUEUE=on`. <!-- axf-plugin:push-banner -->
+- **First message:** "Carry on merge-queue (Current): read its To carry on block and `_claude/builds/reports/merge-queue.md`, finish s6."
 
 ### Gizmo companion (`gizmo-companion`, Current, Opus) — branch `claude/gizmo-companion`
 - **Asked (Brett, Nov 3 2026, voice):** a full Claude companion in AmberX as a plugin, as complete as the Claude app (chat, voice, connectors, crew, projects + memory, every setting, overlay bubble, commands for other plugins); harvest AmberX's assistant + the Terminal's session code into a shared lib; brains on the VPS via axHub, no keys in the APK; Gizmo replaces agent Molly.
@@ -692,33 +698,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:21 UTC · `console-wake-finish` added (5 steps) (current) · foreign-write
-- 2026-11-04 14:21 UTC · `profile-lists-home-card` added (4 steps) (current) · foreign-write
-- 2026-11-04 14:21 UTC · `urgent-land-gizmo-chat` s1 done, → running (current) · orchestrator
-- 2026-11-04 14:21 UTC · `urgent-land-gizmo-chat` s2 done (current) · orchestrator
-- 2026-11-04 14:21 UTC · `urgent-land-gizmo-chat` branch claude/gizmo-companion, PR #296 (current) · builds-live
-- 2026-11-04 14:21 UTC · `land-round-2` note (current) · orchestrator
-- 2026-11-04 14:21 UTC · `gizmo-voice` added (3 steps) (current) · orchestrator
-- 2026-11-04 14:21 UTC · `gizmo-terminal` added (4 steps) (current) · orchestrator
-- 2026-11-04 14:21 UTC · `land-round-2` note (current) · foreign-write
-- 2026-11-04 14:21 UTC · `urgent-land-gizmo-chat` s1 done, s2 done (current) · foreign-write
-- 2026-11-04 14:21 UTC · `gizmo-voice` added (3 steps) (current) · foreign-write
-- 2026-11-04 14:21 UTC · `gizmo-terminal` added (4 steps) (current) · foreign-write
-- 2026-11-04 14:21 UTC · `crew-profiles` PR #315 (current) · builds-live
-- 2026-11-04 14:22 UTC · `land-round-2` note (current) · foreign-write
-- 2026-11-04 14:22 UTC · `crew-profiles` s5 done (current) · foreign-write
-- 2026-11-04 14:22 UTC · `urgent-land-gizmo-chat` s1 done, s2 done (current) · foreign-write
-- 2026-11-04 14:22 UTC · `gizmo-voice` added (6 steps) (current) · foreign-write
-- 2026-11-04 14:22 UTC · `gizmo-terminal` added (8 steps) (current) · foreign-write
-- 2026-11-04 14:22 UTC · `profile-lists-home-card` s3 done (current) · orchestrator
-- 2026-11-04 14:23 UTC · `profile-lists-home-card` s3 done (current) · foreign-write
-- 2026-11-04 14:24 UTC · `profile-switcher-widget` note (current) · foreign-write
-- 2026-11-04 14:24 UTC · `land-round-2` note (current) · foreign-write
-- 2026-11-04 14:24 UTC · `crew-profiles` s4 done, s5 done (current) · foreign-write
-- 2026-11-04 14:24 UTC · `urgent-land-gizmo-chat` added (4 steps) (current) · foreign-write
-- 2026-11-04 14:24 UTC · `console-wake-finish` added (5 steps) (current) · foreign-write
-- 2026-11-04 14:24 UTC · `profile-lists-home-card` added (4 steps) (current) · foreign-write
-- 2026-11-04 14:24 UTC · `gizmo-voice` added (12 steps) (current) · foreign-write
 - 2026-11-04 14:24 UTC · `gizmo-terminal` added (16 steps) (current) · foreign-write
 - 2026-11-04 14:24 UTC · `urgent-land-lazy-loader` merged (current) · builds-live
 - 2026-11-04 14:24 UTC · `plugin-lazy-load` merged, note (current) · builds-live
@@ -1092,6 +1071,33 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 19:03 UTC · `model-thinking-audit` PR #334 (current) · builds-live
 - 2026-11-04 19:03 UTC · `model-thinking-audit` s8 done, → built (current) · orchestrator
 - 2026-11-04 19:03 UTC · `model-thinking-audit` note (current) · orchestrator
+- 2026-11-04 19:08 UTC · `amberx-live-audio` added (6 steps) (angel) · orchestrator
+- 2026-11-04 19:14 UTC · `amberx-live-audio` s1 done, → running (angel) · orchestrator
+- 2026-11-04 19:14 UTC · `amberx-live-audio` s2 done (angel) · orchestrator
+- 2026-11-04 19:24 UTC · `amberx-live-audio` s3 done (angel) · orchestrator
+- 2026-11-04 19:24 UTC · `amberx-live-audio` s4 done (angel) · orchestrator
+- 2026-11-04 19:26 UTC · `handoff-2` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-04 19:26 UTC · `amberx-live-audio` s5 done (angel) · orchestrator
+- 2026-11-04 19:27 UTC · `amberx-live-audio` s6 done, → complete (angel) · orchestrator
+- 2026-11-04 19:27 UTC · `amberx-live-audio` → built (angel) · orchestrator
+- 2026-11-04 19:28 UTC · `amberx-live-audio` branch claude/amberx-live-audio, PR #335 (angel) · builds-live
+- 2026-11-04 19:28 UTC · `amberx-live-audio` note (angel) · orchestrator
+- 2026-11-04 19:31 UTC · `fable-packager` added (5 steps) (current) · foreign-write
+- 2026-11-04 19:31 UTC · `fable-packager` added (5 steps) (current) · orchestrator
+- 2026-11-04 19:35 UTC · `fable-packager` s1 done, → running (current) · orchestrator
+- 2026-11-04 19:36 UTC · `fable-packager` s2 done (current) · orchestrator
+- 2026-11-04 19:36 UTC · `fable-packager` branch claude/fable-packager (current) · builds-live
+- 2026-11-04 19:36 UTC · `fable-packager` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 19:45 UTC · `handoff-2` s6 done, s7 done, s8 done, s9 done (current) · foreign-write
+- 2026-11-04 19:45 UTC · `fable-packager` s3 done (current) · orchestrator
+- 2026-11-04 19:45 UTC · `fable-packager` s4 done (current) · orchestrator
+- 2026-11-04 19:49 UTC · `handoff-2` note (current) · orchestrator
+- 2026-11-04 19:51 UTC · `fable-packager` PR #336 (current) · builds-live
+- 2026-11-04 19:51 UTC · `fable-packager` s5 done, → built (current) · orchestrator
+- 2026-11-04 19:52 UTC · `fable-packager` s5 done, → complete (current) · foreign-write
+- 2026-11-04 19:52 UTC · `merge-queue` → complete, merged, note (current) · reconciler
+- 2026-11-04 19:52 UTC · `land-merge-queue-first` merged, note (urgent) · reconciler
+- 2026-11-04 19:55 UTC · `handoff-2` s10 done (current) · foreign-write
 
 ## Token passes (log)
 

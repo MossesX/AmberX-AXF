@@ -120,6 +120,48 @@
         "title": "Release",
         "text": "Lets a held build land again.",
         "kind": "button"
+      },
+      {
+        "target": "action:push-banner.queue",
+        "title": "Merge queue",
+        "text": "Opens the merge queue: every ready PR in the order it merges, each tested once.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "jump-to-front",
+        "title": "Jump to front",
+        "text": "Puts this PR first in the merge queue. Only your own click can do this.",
+        "kind": "button"
+      },
+      {
+        "target": "remove-from-queue",
+        "title": "Remove from queue",
+        "text": "Takes this PR out of the queue until its next commit. The ones behind it get retested without it.",
+        "kind": "button"
+      },
+      {
+        "target": "add-back",
+        "title": "Add back",
+        "text": "Puts a kicked-out PR back in the queue as it is, to be tested again.",
+        "kind": "button"
+      },
+      {
+        "target": "add-to-queue",
+        "title": "Add to queue",
+        "text": "Puts a PR you took out back in the merge queue.",
+        "kind": "button"
+      },
+      {
+        "target": "add-to-home",
+        "title": "Add to Home",
+        "text": "Shows the merge queue as a card on Home.",
+        "kind": "button"
+      },
+      {
+        "target": "merge-queue-test-each-pr-once",
+        "title": "Merge queue",
+        "text": "On: each PR is tested once on top of main and the PRs ahead of it, then merges with no second run.",
+        "kind": "toggle"
       }
     ],
     "intros": []

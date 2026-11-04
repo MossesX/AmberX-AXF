@@ -5,10 +5,15 @@ name: Android framework + console
 
 on:
   push:
-    branches: [main]
-    paths: ['framework/**', 'apps/**', '.github/workflows/android.yml']
+    # main, and the merge queue's queue/pr-<n> branches (main + every PR ahead + this one: the one full run a PR gets)
+    branches: [main, 'queue/**']
   pull_request:
   workflow_dispatch:
+
+# A queue branch that is rebuilt (a PR ahead of it was kicked out) cancels its old run instead of paying for both.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/heads/queue/') || github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
@@ -21,8 +26,52 @@ env:
   AXF_BUILD_PROFILE: main-framework
 
 jobs:
+  # What this change needs (framework/cli/ci-scope.mjs): path filters per job, light checks on PRs while the merge queue
+  # is on (repo variable AXF_MERGE_QUEUE=on), and nothing again on main when the queue already ran CI on the same code.
+  scope:
+    name: CI scope (what changed)
+    runs-on: ubuntu-latest
+    outputs:
+      mode: ${{ steps.s.outputs.mode }}
+      light: ${{ steps.s.outputs.light }}
+      engine: ${{ steps.s.outputs.engine }}
+      console: ${{ steps.s.outputs.console }}
+      axhubweb: ${{ steps.s.outputs.axhubweb }}
+      amberxweb: ${{ steps.s.outputs.amberxweb }}
+      molly: ${{ steps.s.outputs.molly }}
+      walkthrough: ${{ steps.s.outputs.walkthrough }}
+      amberx: ${{ steps.s.outputs.amberx }}
+      android: ${{ steps.s.outputs.android }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - id: s
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AXF_MERGE_QUEUE: ${{ vars.AXF_MERGE_QUEUE }}
+        run: node framework/cli/ci-scope.mjs gha --event "${{ github.event_name }}" --ref "${{ github.ref_name }}" --before "${{ github.event.before }}" >> "$GITHUB_OUTPUT"
+
+  light:
+    name: Light PR checks (full run happens once, in the merge queue)
+    needs: scope
+    if: ${{ needs.scope.outputs.light == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install --quiet -r apps/console-web/server/requirements.txt httpx
+      - run: node framework/cli/ci-scope.mjs light --run
+
   engine:
     name: Build engine sweep (Node)
+    needs: scope
+    if: ${{ needs.scope.outputs.engine == 'true' }}
     runs-on: ubuntu-latest
     env:
       AXF_BUILD_PROFILE: main-framework   # the sweep checks the base profile's data whatever profile Brett has saved
@@ -86,6 +135,10 @@ jobs:
         run: node apps/console-web/plugins/claude-settings/test.mjs  # axf-plugin:claude-settings
       - name: Auto-land (push banner) — zero tokens (no model client in the merge pipeline), landing rules, rounds on fake builds  # axf-plugin:push-banner
         run: node apps/console-web/plugins/push-banner/land/land.test.mjs  # axf-plugin:push-banner
+      - name: Merge queue (push banner) — stacking, blame + kick-out, rebuild without it, no retest on merge; real git, fake GitHub  # axf-plugin:push-banner
+        run: node apps/console-web/plugins/push-banner/land/merge-queue.test.mjs  # axf-plugin:push-banner
+      - name: CI scope — path filters per job, light PR checks while the merge queue is on, main skips what the queue already ran
+        run: node framework/spec/check-ci-scope.mjs
       - name: Deploy helpers (framework/deploy) — bash -n, shellcheck, self-test; installers that source them
         run: |
           set -e
@@ -114,6 +167,8 @@ jobs:
 
   console:
     name: Web Dev Console (React/TS) + Python API
+    needs: scope
+    if: ${{ needs.scope.outputs.console == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -131,21 +186,25 @@ jobs:
           sed -i 's/"builtWith": { "model": "", "builtAt": "" }/"builtWith": { "model": "opus", "builtAt": "2026-10-23" }/' plugins/ci-example/plugin.json
           npm ci && npm run build
       - name: axhub-web — re-bake the framework into it and build it
+        if: ${{ needs.scope.outputs.axhubweb == 'true' }}
         working-directory: apps/axhub-web
         run: |
           rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done && node ../../framework/cli/shared-assets.mjs bake .
           npm install --no-audit --no-fund --silent && npm run build
       - name: amberx-droid — re-bake the framework into it and build it
+        if: ${{ needs.scope.outputs.amberxweb == 'true' }}
         working-directory: apps/amberx-droid
         run: |
           rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done && node ../../framework/cli/shared-assets.mjs bake .
           npm install --no-audit --no-fund --silent && npm run build
       - name: molly — re-bake the framework into it and build it
+        if: ${{ needs.scope.outputs.molly == 'true' }}
         working-directory: apps/molly
         run: |
           rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done && node ../../framework/cli/shared-assets.mjs bake .
           npm install --no-audit --no-fund --silent && npm run build
       - name: walkthrough-studio — re-bake the framework into it and build it
+        if: ${{ needs.scope.outputs.walkthrough == 'true' }}
         working-directory: apps/walkthrough-studio
         run: |
           rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done
@@ -306,6 +365,8 @@ jobs:
 
   amberx:
     name: AmberX — web app in the Capacitor Android shell (APK + native unit tests)
+    needs: scope
+    if: ${{ needs.scope.outputs.amberx == 'true' }}
     runs-on: ubuntu-latest
     env:
       AXF_BUILD_NUMBER: ${{ github.run_number }}
@@ -355,8 +416,8 @@ jobs:
     name: Gradle — framework modules, kernel tests, console APK
     runs-on: ubuntu-latest
     # Waits for the AmberX shell so its APK joins the app catalog bundle; runs whatever that job's result.
-    needs: amberx
-    if: ${{ !cancelled() }}
+    needs: [scope, amberx]
+    if: ${{ !cancelled() && needs.scope.outputs.android == 'true' }}
     env:
       # Every app's versionCode = this run number, so each catalog build installs over the previous one.
       AXF_BUILD_NUMBER: ${{ github.run_number }}
