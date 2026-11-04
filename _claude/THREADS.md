@@ -698,10 +698,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:48 UTC · `fable-no-approval` added (3 steps) (current) · foreign-write
-- 2026-11-04 14:48 UTC · `fable-review-nov3` added (7 steps) (current) · foreign-write
-- 2026-11-04 14:48 UTC · `app-voice-commands` added (6 steps) (current) · foreign-write
-- 2026-11-04 14:48 UTC · `merge-queue` s1 done (current) · orchestrator
 - 2026-11-04 14:48 UTC · `merge-queue` s2 done (current) · orchestrator
 - 2026-11-04 14:48 UTC · `merge-queue` s3 done (current) · orchestrator
 - 2026-11-04 14:48 UTC · `merge-queue` s4 done (current) · orchestrator
@@ -1098,6 +1094,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 20:50 UTC · `build-optimizer` added (9 steps) (current) · foreign-write
 - 2026-11-04 20:50 UTC · `drag-to-tab` s1 done, → running (current) · orchestrator
 - 2026-11-04 20:53 UTC · `drag-to-tab` s2 done (current) · orchestrator
+- 2026-11-04 20:41 UTC · `molly-banner-match` branch claude/molly-banner-match, note (current) · reconciler
+- 2026-11-04 21:00 UTC · `molly-banner-match` note (current) · foreign-write
+- 2026-11-04 21:00 UTC · `drag-to-tab` added (5 steps) (current) · foreign-write
+- 2026-11-04 21:00 UTC · `build-optimizer` added (9 steps) (current) · foreign-write
 
 ## Token passes (log)
 
