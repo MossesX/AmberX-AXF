@@ -698,7 +698,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 15:11 UTC · `apps-control-surface` s1 done (current) · foreign-write
 - 2026-11-04 15:20 UTC · `expenses-port` → complete, merged, note (current) · reconciler
 - 2026-11-04 15:05 UTC · `urgent-land-gizmo-chat` note (current) · orchestrator
 - 2026-11-04 15:24 UTC · `expenses-port` note (current) · foreign-write
@@ -1098,6 +1097,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 21:38 UTC · `build-docs-walkthroughs` s2 done (angel) · orchestrator
 - 2026-11-04 21:28 UTC · `molly-banner-match` → pending, note (current) · reconciler
 - 2026-11-04 21:40 UTC · `molly-banner-match` → pending, note (current) · builds-live
+- 2026-11-04 21:41 UTC · `follow-amber-flash` added (4 steps) (angel) · orchestrator
 
 ## Token passes (log)
 
