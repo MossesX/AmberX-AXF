@@ -613,7 +613,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 21:19 UTC · `urgent-main-ci-green` added (5 steps) (current) · foreign-write
 - 2026-11-03 21:20 UTC · `banner-ref-links` s2 done, s3 done, s4 done (current) · foreign-write
 - 2026-11-03 21:19 UTC · `banner-ref-links` s2 done (current) · orchestrator
 - 2026-11-03 21:19 UTC · `banner-ref-links` s3 done (current) · orchestrator
@@ -1013,3 +1012,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 04:26 UTC · `lenny-land-all` s2 done (current) · orchestrator
 - 2026-11-04 04:27 UTC · `lenny-land-all` note (current) · orchestrator
 - 2026-11-04 04:28 UTC · `lenny-land-all` note (current) · foreign-write
+- 2026-11-04 04:33 UTC · `agent-pick` → complete, merged, note (urgent) · reconciler
