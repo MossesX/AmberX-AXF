@@ -30,7 +30,9 @@
 
     { "key": "builds.defaultModel", "group": "builds", "label": "Default model", "kind": "choice", "default": "split", "owner": true, "level": "basic",
       "options": [{ "value": "split", "label": "Split per step (orchestrator)" }, { "value": "opus", "label": "Opus" }, { "value": "fable", "label": "Fable" }],
-      "description": "Model for new builds. Split = the orchestrator pins each step to Opus or Fable. An upgrade to Fable still needs Brett's approval per phase." },
+      "description": "Model for new builds. Split = the orchestrator pins each step to Opus or Fable. Whether an upgrade to Fable waits for Brett is the Fable upgrades setting." },
+    { "key": "builds.fableUpgradeApproval", "group": "builds", "label": "Fable upgrades need my approval", "kind": "toggle", "default": false, "owner": true, "level": "basic",
+      "description": "Off (Brett, Nov 4 2026: \"No more approvals. If it needs Fable, set it to be Fable.\"): a phase or step that needs Fable runs on Fable by itself and the switch is logged on the build. On: every Opus → Fable upgrade waits for your console click or axHub approval." },
     { "key": "builds.launchWithoutAsking", "group": "builds", "label": "Launch builds without asking", "kind": "toggle", "default": false, "owner": true, "level": "basic",
       "description": "On: Claude starts a build as soon as it is in the orchestrator, without a card asking first." },
     { "key": "builds.maxParallel", "group": "builds", "label": "Max parallel builds", "kind": "number", "default": 3, "min": 1, "max": 12, "step": 1, "owner": "raise", "level": "developer",
