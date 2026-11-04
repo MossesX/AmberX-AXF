@@ -569,10 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 19:48 UTC · `claude-settings` s6 done (urgent) · orchestrator
-- 2026-11-03 19:48 UTC · `claude-settings` s6 done (urgent) · builds-live
-- 2026-11-03 19:50 UTC · `claude-settings` s7 done, → complete (urgent) · orchestrator
-- 2026-11-03 19:50 UTC · `claude-settings` PR #275, note (urgent) · reconciler
 - 2026-11-03 19:50 UTC · `claude-settings` → built, PR #275 (urgent) · builds-live
 - 2026-11-03 19:50 UTC · `claude-settings` note (urgent) · orchestrator
 - 2026-11-03 19:50 UTC · `claude-settings` s7 done, → built, PR #275, note (urgent) · builds-live
@@ -969,3 +965,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 23:54 UTC · `molly-nav-submenus` s5 done, → complete (current) · foreign-write
 - 2026-11-03 23:54 UTC · `terminal-drag-chain-tree` s6 done, → built (current) · orchestrator
 - 2026-11-03 23:55 UTC · `terminal-drag-chain-tree` → built (current) · orchestrator
+- 2026-11-03 23:54 UTC · `terminal-drag-chain-tree` → complete (current) · foreign-write
+- 2026-11-03 23:54 UTC · `molly-nav-submenus` s1 done, s2 done, s3 done, s4 done, note (current) · foreign-write
+- 2026-11-03 23:54 UTC · `molly-banners` note (current) · foreign-write
+- 2026-11-03 23:54 UTC · `gizmo-companion` s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s14 done, note (current) · foreign-write
