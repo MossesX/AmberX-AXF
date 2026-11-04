@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 828,
- "updatedAt": "2026-11-04T16:24:59.020Z",
+ "rev": 829,
+ "updatedAt": "2026-11-04T16:25:32.087Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -81293,7 +81293,7 @@
    "branch": "claude/molly-multi-instance-tabs",
    "pr": "",
    "createdAt": "2026-11-04T16:09:41.799Z",
-   "updatedAt": "2026-11-04T16:09:46.173Z",
+   "updatedAt": "2026-11-04T16:24:45.430Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -81326,12 +81326,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T16:24:45.430Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T16:09:41.805Z",
-     "updatedAt": "2026-11-04T16:09:41.805Z"
+     "updatedAt": "2026-11-04T16:25:15.037Z"
     },
     {
      "id": "s2",
@@ -81408,10 +81408,25 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-04T16:09:41.799Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw2bbc3r05plmj": "2026-11-04T16:09:41.805Z",
+     "st-mw2bbc3r06shfu": "2026-11-04T16:09:41.805Z",
+     "st-mw2bbc3r072ip3": "2026-11-04T16:09:41.805Z",
+     "st-mw2bbc3r08ttn3": "2026-11-04T16:09:41.805Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-04T16:09:41.805Z",
    "rearranged": false,

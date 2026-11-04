@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T16:24:59.020Z",
+ "updatedAt": "2026-11-04T16:25:32.087Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -11294,7 +11294,7 @@
    "branch": "claude/molly-multi-instance-tabs",
    "pr": "",
    "createdAt": "2026-11-04T16:09:41.799Z",
-   "updatedAt": "2026-11-04T16:09:46.173Z",
+   "updatedAt": "2026-11-04T16:24:45.430Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -11325,8 +11325,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T16:24:45.430Z",
      "note": "",
      "uid": "st-mw2bbc3r05plmj"
     },
