@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 891,
- "updatedAt": "2026-11-04T19:02:09.514Z",
+ "rev": 892,
+ "updatedAt": "2026-11-04T19:02:27.540Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -82016,6 +82016,16 @@
      }
     ]
    },
+   "recommendedModel": "Opus",
+   "recommendedThinking": "medium",
+   "modelWhy": "4 of 7 step(s) are foundation work (contract, fixture, build-todo-sync@1, builds@1, migration). 3 step(s) are plugin, screen, server or wiring work for Opus",
+   "adviceKind": "migration",
+   "adviceAt": "2026-11-04T18:55:12.566Z",
+   "adviceCost": {
+    "minutes": 0,
+    "usd": 0,
+    "what": "nothing to change"
+   },
    "steps": [
     {
      "id": "s1",
@@ -82035,6 +82045,11 @@
      "done": true,
      "doneAt": "2026-11-04T18:26:23.190Z",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "high",
+     "modelWhy": "foundation (schema, asset type, engine, contract): contract, fixture, build-todo-sync@1; Brett's rule is Fable for foundation work, high thinking",
+     "adviceKind": "foundation",
+     "adviceAt": "2026-11-04T18:55:12.566Z",
      "rev": 5,
      "createdAt": "2026-11-04T18:24:34.031Z",
      "updatedAt": "2026-11-04T18:55:12.567Z"
@@ -82057,6 +82072,11 @@
      "done": true,
      "doneAt": "2026-11-04T18:26:23.190Z",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "max",
+     "modelWhy": "schema migration / store contract: builds@1, migration, control@1; Brett's rule is Fable for foundation work, max thinking",
+     "adviceKind": "migration",
+     "adviceAt": "2026-11-04T18:55:12.566Z",
      "rev": 5,
      "createdAt": "2026-11-04T18:24:34.031Z",
      "updatedAt": "2026-11-04T18:55:12.567Z"
@@ -82079,6 +82099,11 @@
      "done": true,
      "doneAt": "2026-11-04T18:26:23.190Z",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "high",
+     "modelWhy": "foundation (schema, asset type, engine, contract): engine; Brett's rule is Fable for foundation work, high thinking",
+     "adviceKind": "foundation",
+     "adviceAt": "2026-11-04T18:55:12.566Z",
      "rev": 5,
      "createdAt": "2026-11-04T18:24:34.031Z",
      "updatedAt": "2026-11-04T18:55:12.567Z"
@@ -82101,6 +82126,11 @@
      "done": true,
      "doneAt": "2026-11-04T18:26:23.190Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.566Z",
      "rev": 5,
      "createdAt": "2026-11-04T18:24:34.031Z",
      "updatedAt": "2026-11-04T18:55:12.567Z"
@@ -82123,6 +82153,11 @@
      "done": true,
      "doneAt": "2026-11-04T18:26:23.190Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.566Z",
      "rev": 5,
      "createdAt": "2026-11-04T18:24:34.031Z",
      "updatedAt": "2026-11-04T18:55:12.567Z"
@@ -82145,6 +82180,11 @@
      "done": true,
      "doneAt": "2026-11-04T18:37:55.134Z",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "high",
+     "modelWhy": "foundation (schema, asset type, engine, contract): contract; Brett's rule is Fable for foundation work, high thinking",
+     "adviceKind": "foundation",
+     "adviceAt": "2026-11-04T18:55:12.566Z",
      "rev": 3,
      "createdAt": "2026-11-04T18:24:34.031Z",
      "updatedAt": "2026-11-04T18:55:12.567Z"
@@ -82167,6 +82207,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.566Z",
      "rev": 2,
      "createdAt": "2026-11-04T18:24:34.031Z",
      "updatedAt": "2026-11-04T18:55:12.567Z"
@@ -82220,6 +82265,16 @@
     "from": "",
     "addenda": []
    },
+   "recommendedModel": "Fable",
+   "recommendedThinking": "high",
+   "modelWhy": "2 of 11 step(s) are foundation work (registry, schemas, handoff@1, engine, engines). 9 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus",
+   "adviceKind": "foundation",
+   "adviceAt": "2026-11-04T18:55:12.567Z",
+   "adviceCost": {
+    "minutes": 0,
+    "usd": 0,
+    "what": "nothing to change"
+   },
    "steps": [
     {
      "id": "s1",
@@ -82241,7 +82296,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T18:45:40.327Z",
-     "updatedAt": "2026-11-04T19:01:48.248Z"
+     "updatedAt": "2026-11-04T19:02:17.379Z"
     },
     {
      "id": "s2",
@@ -82263,7 +82318,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T18:45:40.327Z",
-     "updatedAt": "2026-11-04T19:01:49.921Z"
+     "updatedAt": "2026-11-04T19:02:17.379Z"
     },
     {
      "id": "s3",

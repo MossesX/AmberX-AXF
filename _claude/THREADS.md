@@ -684,8 +684,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:14 UTC · `urgent-land-gizmo-chat` added (4 steps) (current) · orchestrator
-- 2026-11-04 14:14 UTC · `urgent-land-gizmo-chat` → running (current) · orchestrator
 - 2026-11-04 14:21 UTC · `profile-switcher-widget` note (current) · foreign-write
 - 2026-11-04 14:21 UTC · `crew-profiles` s4 done, s5 done (current) · foreign-write
 - 2026-11-04 14:21 UTC · `urgent-land-gizmo-chat` added (4 steps) (current) · foreign-write
@@ -1084,6 +1082,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 19:00 UTC · `build-todo-sync` note (current) · foreign-write
 - 2026-11-04 19:01 UTC · `handoff-2` s1 done (current) · orchestrator
 - 2026-11-04 19:01 UTC · `handoff-2` s2 done (current) · orchestrator
+- 2026-11-04 19:02 UTC · `build-todo-sync` note (current) · foreign-write
+- 2026-11-04 19:02 UTC · `handoff-2` s1 done, s2 done (current) · foreign-write
 
 ## Token passes (log)
 
