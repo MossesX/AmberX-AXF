@@ -1,0 +1,57 @@
+/* Companion (Gizmo): layout only (THEMING.md); every control is a framework control, sizes and colours are theme tokens. */
+.axp-companion { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; height: calc(100dvh - var(--fx-space) * 5); }
+.axp-companion--empty { align-items: center; justify-content: center; text-align: center; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-xl); }
+.axp-companion__clip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.axp-companion__grow { flex: 1 1 auto; min-width: 0; }
+.axp-companion__pad { padding: var(--fx-dens-gap-xl); }
+
+.axp-companion__bar { display: flex; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md); border-bottom: var(--fx-border-w) solid var(--fx-border); min-width: 0; }
+.axp-companion__title { display: flex; align-items: center; gap: var(--fx-dens-gap-md); flex: 1 1 auto; min-width: 0; }
+.axp-companion__bar > .fx-seg { flex: 0 0 auto; flex-wrap: nowrap; }
+.axp-companion__bar .fx-seg__opt { white-space: nowrap; }
+
+.axp-companion__drawer { position: absolute; inset: calc(var(--fx-space) * 3.5) auto 0 0; z-index: 2; display: flex; flex-direction: column; width: min(100%, calc(var(--fx-space) * 22)); background: var(--fx-surface); border-right: var(--fx-border-w) solid var(--fx-border); box-shadow: var(--fx-shadow-md); min-height: 0; }
+.axp-companion__drawerhead { display: flex; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md); }
+.axp-companion__drawerlist { flex: 1 1 auto; overflow: auto; padding: 0 var(--fx-dens-gap-md) var(--fx-dens-gap-md); min-height: 0; }
+.axp-companion__group { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); margin-top: var(--fx-dens-gap-lg); }
+.axp-companion__group > h4 { margin: 0; }
+.axp-companion__row { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); border-radius: var(--fx-radius-md); min-width: 0; }
+.axp-companion__row.is-active { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-companion__rowmain { display: flex; flex-direction: column; align-items: stretch; text-align: start; gap: var(--fx-dens-gap-xs); flex: 1 1 auto; min-width: 0; padding: var(--fx-dens-gap-md); background: transparent; border: 0; color: inherit; font: inherit; cursor: pointer; }
+
+.axp-companion__log { flex: 1 1 auto; overflow: auto; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-xl); min-height: 0; }
+.axp-companion__hello { align-items: center; text-align: center; gap: var(--fx-dens-gap-lg); margin: auto 0; }
+.axp-companion__hello > h2, .axp-companion__hello > p { margin: 0; }
+.axp-companion__starters { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--fx-dens-gap-md); }
+.axp-companion__msg { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); max-width: min(100%, calc(var(--fx-space) * 46)); min-width: 0; }
+.axp-companion__msg--user { align-self: flex-end; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); border-radius: var(--fx-radius-lg); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-companion__msg--assistant { align-self: stretch; }
+.axp-companion__usertext { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.axp-companion__imgs { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); }
+.axp-companion__imgs > img { max-width: calc(var(--fx-space) * 12); max-height: calc(var(--fx-space) * 12); border-radius: var(--fx-radius-md); object-fit: cover; }
+.axp-companion__msgtools { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); opacity: var(--fx-opacity-muted); }
+.axp-companion__msg:hover .axp-companion__msgtools, .axp-companion__msg:focus-within .axp-companion__msgtools { opacity: 1; }
+.axp-companion__note { margin: 0; color: var(--fx-muted); }
+.axp-companion__note--danger { color: var(--fx-danger); }
+
+.axp-companion__tools { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axp-companion__tool { border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); min-width: 0; }
+.axp-companion__tool--failed { border-color: var(--fx-danger); }
+.axp-companion__toolhead { display: flex; align-items: center; gap: var(--fx-dens-gap-md); width: 100%; min-width: 0; padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); background: transparent; border: 0; color: inherit; font: inherit; text-align: start; cursor: pointer; }
+.axp-companion__tooldetail { margin: 0; padding: var(--fx-dens-gap-md); overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+.axp-companion__composer { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md); border-top: var(--fx-border-w) solid var(--fx-border); }
+.axp-companion__talk { display: flex; align-items: center; gap: var(--fx-dens-gap-md); color: var(--fx-accent); min-width: 0; }
+.axp-companion__attached { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); }
+.axp-companion__inputrow { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); min-width: 0; }
+.axp-companion__input { width: 100%; resize: none; max-height: calc(var(--fx-space) * 10); }
+.axp-companion-voice { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); }
+
+/* Windows Terminal look (the console Terminal's axp-wt chrome, theme tokens only): acrylic surface, rounded window,
+   title-bar strip; in a floating window the bar drags the window and ends in the caption buttons. */
+.axp-companion--wt { background: color-mix(in srgb, var(--fx-surface3) calc(var(--fx-opacity-glass) * 100%), transparent); backdrop-filter: blur(var(--fx-blur)) saturate(1.4); border-radius: var(--fx-radius-lg); overflow: hidden; }
+.axp-companion--window { height: 100%; border-radius: 0; }
+.axp-companion__bar--titlebar { touch-action: none; user-select: none; cursor: default; padding-block: 0; padding-inline-end: 0; background: color-mix(in srgb, var(--fx-surface2) calc(var(--fx-opacity-glass) * 100%), transparent); }
+.axp-companion__grip { align-self: stretch; }
+.axp-companion__caption { flex: none; display: inline-flex; align-items: center; align-self: stretch; gap: 0; margin-inline-start: var(--fx-dens-gap-xs); }
+.axp-companion__cap { width: calc(var(--fx-space) * 5.75); height: 100%; min-height: calc(var(--fx-space) * 4); }

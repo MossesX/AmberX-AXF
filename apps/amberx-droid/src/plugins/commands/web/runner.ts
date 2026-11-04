@@ -23,7 +23,7 @@ export interface RunEnv {
   command(id: string): Effective | undefined;
   /** the AI connection is on and answering */
   aiReady(): boolean;
-  /** Molly (the console's agent) is reachable; developer commands need her (default: aiReady) */
+  /** Gizmo (the console's agent) is reachable; developer commands need him (default: aiReady) */
   mollyReady?(): boolean;
 }
 
@@ -74,7 +74,7 @@ export async function runCommand(hit: Pick<CommandHit, 'command' | 'slots'>, env
   if (depth > MAX_DEPTH) return stop('Too many commands inside commands.', false);
   const ready = cmd.developer ? (env.mollyReady?.() ?? env.aiReady()) : !cmd.needsAi || env.aiReady();
   if (!ready) {
-    await speak(cmd.developer ? 'Molly isn\'t connected, so developer commands are off. Open AI snippets to set her up.' : 'The AI isn\'t connected. Open AI snippets to set it up.');
+    await speak(cmd.developer ? 'Gizmo isn\'t connected, so developer commands are off. Open AI snippets to set him up.' : 'The AI isn\'t connected. Open AI snippets to set it up.');
     return stop('AI not connected.', false);
   }
   if (cmd.settings?.confirm && depth === 0) {
@@ -135,7 +135,7 @@ export async function runCommand(hit: Pick<CommandHit, 'command' | 'slots'>, env
       case 'ai':
       case 'molly': {
         const answer = step.do === 'ai' ? await env.ai(step.prompt) : await env.molly(step.task);
-        if (answer === null) { await speak(step.do === 'ai' ? 'The AI didn\'t answer.' : 'Molly didn\'t answer.'); return stop('No answer from the AI.', false, i); }
+        if (answer === null) { await speak(step.do === 'ai' ? 'The AI didn\'t answer.' : 'Gizmo didn\'t answer.'); return stop('No answer from the AI.', false, i); }
         slots[step.do === 'ai' && step.into ? step.into : 'answer'] = answer;
         if (!(step.do === 'ai' && step.into)) await speak(answer);
         last = answer;
