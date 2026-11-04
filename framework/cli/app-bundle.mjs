@@ -3,7 +3,7 @@
  * app-bundle@1 — gathers every built app made with the framework into one folder for the app catalog.
  *
  *   node framework/cli/app-bundle.mjs list [--android]          apps (dir, project, name, template) found under apps/
- *   node framework/cli/app-bundle.mjs collect <outDir> [--build N] [--commit SHA] [--run-url URL]
+ *   node framework/cli/app-bundle.mjs collect <outDir> [--build N] [--commit SHA] [--run-url URL] [--skip <app dir>]…
  *        copies each Android app's debug APK to <outDir>/<project>.apk and writes <outDir>/apps.json:
  *        { "$axf": "app-bundle@1", builtAt, build, commit, runUrl,
  *          apps: [{ project, name, appId, platform, version, versionCode, build, file, size, sha256 }] }
@@ -85,10 +85,13 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     const b = flag('build');
     const { bundle, missing } = await collect(resolve(rest[0]), { build: b ? Number(b) : null, commit: flag('commit'), runUrl: flag('run-url') });
     for (const a of bundle.apps) console.log(`✓ ${a.project} ${a.version}${a.build ? ` (build ${a.build})` : ''} · ${(a.size / 1e6).toFixed(1)} MB`);
-    for (const m of missing) console.error(`✗ ${m}: no debug APK (build it first)`);
-    if (missing.length) process.exit(1);
+    // --skip <dir> (repeatable): an app whose APK job didn't run this time (CI scope left it out) is left out of the
+    // bundle with a note instead of failing it; any other missing APK still fails
+    const skip = new Set(rest.flatMap((x, i) => (rest[i - 1] === '--skip' && x ? [x.replace(/\/$/, '')] : [])));
+    for (const m of missing) console.error(`${skip.has(m) ? '·' : '✗'} ${m}: no debug APK${skip.has(m) ? ' (its job did not run this time; left out of this bundle)' : ' (build it first)'}`);
+    if (missing.some((m) => !skip.has(m))) process.exit(1);
   } else {
-    console.error('Usage: app-bundle.mjs list [--android] [--dirs] | collect <outDir> [--build N] [--commit SHA] [--run-url URL]');
+    console.error('Usage: app-bundle.mjs list [--android] [--dirs] | collect <outDir> [--build N] [--commit SHA] [--run-url URL] [--skip <app dir>]…');
     process.exit(2);
   }
 }
