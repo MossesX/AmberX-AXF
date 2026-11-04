@@ -76,4 +76,17 @@ t('server part normalizes exactly like the web', () => {
   assert.deepEqual(out, cases.map((c) => normalizeLazyConfig(c)));
 });
 
+t('dev: each plugin entry is its own HMR boundary; hashes cover every plugin with a web part', async () => undefined);
+{
+  const { pluginChunks, pluginHashes } = await import('./plugin-chunks.mjs');
+  const p = pluginChunks({ pluginsDir: fileURLToPath(new URL('../plugins', import.meta.url)) });
+  p.configResolved({ command: 'serve' });
+  const refresh = p.transform('x;\n if (invalidateMessage) import.meta.hot.invalidate(invalidateMessage);\n', '/r/plugins/push-banner/web/index.tsx');
+  assert.ok(refresh.code.includes('axf:plugin-hot') && !refresh.code.includes('invalidate('), 'React Refresh invalidate replaced by a plugin swap');
+  assert.ok(p.transform('export const plugin = {};', '/r/plugins/push-banner/web/index.tsx?t=1').code.includes('import.meta.hot.accept'), 'entry without components accepts itself');
+  assert.equal(p.transform('x', '/r/plugins/push-banner/web/core.ts'), undefined, 'other files untouched');
+  const h = pluginHashes(fileURLToPath(new URL('../plugins', import.meta.url)));
+  assert.ok(h['plugin-manager'] && !Object.keys(h).some((f) => f.startsWith('_')), 'hashes for real plugins, never templates');
+}
+
 console.log(`${n} checks passed`);

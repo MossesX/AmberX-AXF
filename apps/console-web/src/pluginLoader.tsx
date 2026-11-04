@@ -136,7 +136,8 @@ class PluginLoader {
   private stubs = new Map<string, AxfWebLibrary>();
   private reasons = new Map<string, StartReason>();
   private waiters = new Map<string, (() => void)[]>();
-  private onScreen = new Set<string>();
+  /** how many of each plugin's pages / dialogs / slots / banners are mounted right now */
+  private onScreen = new Map<string, number>();
   /** plugins whose real register ran since they were last a stand-in */
   private live = new Set<string>();
   private recent = new Map<string, number>();
@@ -296,7 +297,7 @@ class PluginLoader {
   private lastSeen(folder: string) { this.recent.set(folder, Date.now()); }
 
   private evict() {
-    const keep = new Set<string>([...this.onScreen, ...[...this.reasons.entries()].filter(([, r]) => r !== 'used' && r !== 'learn').map(([f]) => f)]);
+    const keep = new Set<string>([...this.onScreen.keys(), ...[...this.reasons.entries()].filter(([, r]) => r !== 'used' && r !== 'learn').map(([f]) => f)]);
     for (const f of this.installed) if (this.shapes[f]?.banner || this.eagerWhy.has(f) || !this.freshShape(f)) keep.add(f);
     const out = evictions({ installed: [...this.installed], cfg: this.config, lastUsed: Object.fromEntries(this.recent), keep });
     for (const f of out) this.installed.delete(f);
@@ -309,7 +310,10 @@ class PluginLoader {
     write(KEYS.stats, this.stats);
     this.report();
   }
-  mounted(folder: string, on: boolean) { if (on) this.onScreen.add(folder); else this.onScreen.delete(folder); }
+  mounted(folder: string, on: boolean) {
+    const n = (this.onScreen.get(folder) ?? 0) + (on ? 1 : -1);
+    if (n > 0) this.onScreen.set(folder, n); else this.onScreen.delete(folder);
+  }
 
   /** Called by the shell after it installed libraries: resolves actions waiting for their real handler. */
   markInstalled() {
@@ -526,15 +530,24 @@ function Used({ folder, children }: { folder: string; children?: ReactNode }) {
   return <>{children}</>;
 }
 
-/** Wrap a library's pages, dialogs, tabs and settings panels so opening one counts as a use of its plugin. */
+/** On screen without being a use (slot content, banners): never evicted while shown, so it can't flip back and forth. */
+function Shown({ folder, children }: { folder: string; children?: ReactNode }) {
+  useEffect(() => { loader.mounted(folder, true); return () => loader.mounted(folder, false); }, [folder]);
+  return <>{children}</>;
+}
+
+/** Wrap a library's pages, dialogs, tabs and settings panels so opening one counts as a use of its plugin; slots and banners only mark it on screen. */
 export function countingUses(folder: string, lib: AxfWebLibrary): AxfWebLibrary {
   const wrap = (n: ReactNode) => createElement(Used, { folder }, n);
+  const shown = (n: ReactNode) => createElement(Shown, { folder }, n);
   return {
     ...lib,
     ...(lib.views ? { views: Object.fromEntries(Object.entries(lib.views).map(([k, v]) => [k, { ...v, render: () => wrap(v.render()) }])) } : {}),
     ...(lib.dialogs ? { dialogs: Object.fromEntries(Object.entries(lib.dialogs).map(([k, d]) => [k, { ...d, render: (p: Record<string, unknown>, close: () => void) => wrap(d.render(p, close)) }])) } : {}),
     ...(lib.tabs ? { tabs: Object.fromEntries(Object.entries(lib.tabs).map(([k, r]) => [k, (t: Parameters<typeof r>[0]) => wrap(r(t))])) } : {}),
     ...(lib.settingsPanels ? { settingsPanels: lib.settingsPanels.map((p) => ({ ...p, render: () => wrap(p.render() as ReactNode) })) } : {}),
+    ...(lib.slots ? { slots: Object.fromEntries(Object.entries(lib.slots).map(([k, defs]) => [k, defs.map((d) => ({ ...d, render: (props: Record<string, unknown>) => shown(d.render(props)) }))])) } : {}),
+    ...(lib.banners ? { banners: lib.banners.map((b) => ({ ...b, render: () => shown(b.render()) })) } : {}),
   };
 }
 
