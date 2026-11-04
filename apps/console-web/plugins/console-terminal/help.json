@@ -420,6 +420,36 @@
         "title": "Context chain speed",
         "text": "How fast the context chain types out the rules a session picks up. Slow is slower than real time on purpose.",
         "kind": "field"
+      },
+      {
+        "target": "sessions-list",
+        "title": "Sessions list",
+        "text": "Opens or closes the sessions list: My sessions (your own Claude Code and shell sessions, and your claude.ai chats), Agents (headless builds with their model, cost and status), Connections and Recent. On a phone it slides in from the left; swipe it back to close.",
+        "kind": "button"
+      },
+      {
+        "target": "jump-in",
+        "title": "Jump in",
+        "text": "Turns this read-only mirror into a live link on the same session, so what you type reaches it. On a claude.ai chat it opens the chat in claude.ai and keeps its feed here.",
+        "kind": "button"
+      },
+      {
+        "target": "session-browser",
+        "title": "Session browser",
+        "text": "Opens the Sessions page (Session check-in): every Claude session that has ended, with its model and cost.",
+        "kind": "button"
+      },
+      {
+        "target": "stop-session",
+        "title": "Stop session",
+        "text": "Ends this tmux session for good, for every device attached to it, Moshi included. Detaching a tab does not do this.",
+        "kind": "button"
+      },
+      {
+        "target": "action:terminal.sessions",
+        "title": "Terminal sessions",
+        "text": "Opens the Terminal's sessions rail: your sessions, agents, connections and recent ones, to mirror or jump into.",
+        "kind": "menu-item"
       }
     ],
     "intros": []

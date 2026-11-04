@@ -2,6 +2,33 @@
 
 `ai.amberx.axf.console.terminal` · built on Opus (Oct 18 2026).
 
+**Sessions nav (v0.5.0, Nov 3 2026, Opus; build `terminal-sessions-nav`).** A collapsible rail on the left of every
+terminal window (`web/nav.tsx`, model `server/nav.py`, answer `terminal-nav@1`; setting `sessionsNav`).
+- **Sections:** *My sessions* (Brett's own tmux sessions on the VPS and in the console, e.g. Claude Code over Moshi, the
+  persistent `axt-…` tabs, and his claude.ai chat / voice sessions as feeds), *Agents* (headless `axf-…` builds with
+  agent, model, live cost and status from the headless meters), *Connections* (where a tab can open) and *Recent* (ended,
+  with a link to the Session browser). Each row shows its start time and a running timer. Search, filter (all / live /
+  working / waiting), sort (started / activity / name), collapsible groups, all remembered per browser.
+- **Collapsed** = icons with status dots; **phone** = a drawer behind ☰ in the tab strip (or swipe from the left edge,
+  swipe back to close).
+- **Tap** opens or focuses the tab. A session of Brett's opens as a **read-only mirror** (`tmux attach -r`, and the
+  server drops typed input too); **Jump in** on the mirror bar re-attaches writable on the same tmux session. Headless
+  builds open as before (writable). **Right-click / long-press:** Open, Open in a new window, Jump in, Open in Moshi
+  (copies the attach command), Session info, Stop… (with a confirm; `POST nav/stop`).
+- **claude.ai chats:** claude.ai has no live transcript API, so a chat is mirrored from what reaches the console: the
+  lines it posts with the MCP tool `console_session_note` (session, text, source, agent, url) and every console MCP tool
+  it calls (tool, a secret-free argument summary, ok / error, time), grouped by the session name (`X-Axhub-Session`
+  header, else "axHub"). Its tab is a feed (`kind: 'feed'`); **Jump in** opens the chat's claude.ai link. Feeds live in
+  `feeds.json` (last 60 sessions × 200 lines, 0600). Capability `axf.session-feed@1` (note / record_call / feeds) is how
+  the console's MCP server posts into it. Zero tokens.
+- **Live:** websocket `nav/ws` (one per page, pushed on change, at once on a new feed line); falls back to polling `GET nav`.
+- **Commands** (plugin-commands@1, so REST + MCP + CLI): `sessions-list`, `sessions-feed`, `sessions-note`,
+  `sessions-stop` (destructive, confirm), and the console actions `sessions-mirror` / `sessions-jump`
+  (`terminal.mirror` / `terminal.jump` with args `[name, where]`).
+- **Known gap:** axHub does not pass the caller's session or correlation id to downstream MCP servers, and its audit log
+  is only readable from Brett's signed-in browser, so calls a chat makes to *other* axHub services are not in its feed;
+  only its console calls and its own `console_session_note` lines are.
+
 **Headless tabs (v0.4.0, Nov 3 2026, Opus; Urgent build `headless-tabs`).**
 - **Persistent tabs:** VPS and console tabs (shells and Claude Code) run inside a tmux session named `axt-…` (the
   browser picks it once and keeps it with the tab; setting `persistTabs`). The ssh / pty link is only an attachment:

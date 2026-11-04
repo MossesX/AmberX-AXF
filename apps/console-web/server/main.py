@@ -950,8 +950,9 @@ from mcp_server import build_server  # noqa: E402
 
 from mcp_server import control_runner  # noqa: E402
 from mcp_server import console_runner  # noqa: E402
+from mcp_server import CALLER as _MCP_CALLER, feed_recorder, session_note_runner  # noqa: E402
 _mcp = build_server(lambda op, **a: engine(op, "mcp", **a), terminal=lambda since: [l for l in _state["terminal"] if l["at"] > since],
-                    control=control_runner(ROOT), console=console_runner(ROOT))
+                    control=control_runner(ROOT), console=console_runner(ROOT), notes=session_note_runner(), on_call=feed_recorder())
 # Stateless JSON responses: works behind Traefik/Coolify and across container restarts. Host checks are off because
 # the endpoint is reached through a proxy under the console's own domain; the bearer token is the gate.
 _mcp_http = _mcp.streamable_http_app(streamable_http_path="/mcp", stateless_http=True, json_response=True,
@@ -969,6 +970,10 @@ class _McpEndpoint:
             if sent != f"Bearer {tok}":
                 await JSONResponse({"error": "unauthorized — send Authorization: Bearer <AXF_TOKEN>"}, status_code=401, headers={"www-authenticate": "Bearer"})(scope, receive, send)
                 return
+        # who is calling: each tool call goes into that session's mirror feed (Terminal → sessions nav)
+        h = dict(scope.get("headers") or []) if scope["type"] == "http" else {}
+        who = (h.get(b"x-axhub-session") or h.get(b"x-axf-session") or b"").decode(errors="replace")[:80]
+        _MCP_CALLER.set(who or ("axHub" if b"axhub" in h.get(b"user-agent", b"").lower() else "MCP client"))
         await _mcp_http(scope, receive, send)
 
 

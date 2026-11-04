@@ -235,7 +235,8 @@ c.delete(f"/p/sessions/{v['id']}")
 
 # headless Claude Code sessions (Oct 26 2026): tmux axf-… on the VPS, listed by one ssh tmux ls, attached in a VPS tab
 S = mod.sessions
-for bad in ("bash", "axf-x;rm -rf /", "axf-", "AXF-x", "axf-" + "a" * 70):
+# any plain tmux name attaches since the sessions nav (Brett's own sessions); anything that isn't one is refused
+for bad in ("axf-x;rm -rf /", "-oProxyCommand=x", "a b", "../x", "axf-" + "a" * 70):
     check(c.post("/p/sessions", json={"kind": "vps", "attach": bad}).status_code == 400, f"attach refuses {bad[:20]!r}")
 a = c.post("/p/sessions", json={"kind": "vps", "attach": "axf-fix-host-mosh"}).json()
 check(a["title"] == "Claude: fix-host-mosh" and a["badge"] == "HOST ROOT", "attach opens a VPS tab titled after the session")
@@ -397,6 +398,60 @@ c.put("/p/settings", json={"showHubRuns": False})
 check(c.get("/p/hub-runs").json()["items"] == [] and c.get("/p/settings").json()["showHubRuns"] is False, "switched off in Settings: nothing opens")
 c.put("/p/settings", json={"showHubRuns": True})
 plugin_services.withdraw("fake-agent-manager")
+# sessions nav (terminal-sessions-nav, Nov 3 2026): Brett's own tmux sessions, read-only mirrors, chat feeds, the model
+N = sys.modules["axf_console_plugins.terminal_test.nav"]
+S._headless_cache.update(at=0.0, value=None)
+S.RUNNER = fake_run
+ls = S.parse_ls(fake_run([]).stdout, mine=True)
+check([x["kind"] for x in ls] == ["headless", "mine", "headless", "tab"], "parse_ls(mine): Brett's own sessions come too, as kind mine")
+check("my-own-session" not in [x["name"] for x in S.parse_ls(fake_run([]).stdout)], "…but only when asked (headless / ∨ menu lists unchanged)")
+check("tmux attach -r -t =my-own-session" in S.attach_script("my-own-session", True) and "attach -r" not in S.attach_script("my-own-session"),
+      "a mirror attaches read-only (tmux attach -r); Jump in attaches writable")
+check(not S.ATTACH_RE.match("bad;name") and not S.ATTACH_RE.match("-x") and S.ATTACH_RE.match("my-own-session"), "only plain tmux names attach")
+ro = S.Session("vps", "m", "h", "", types.SimpleNamespace(read=lambda: b"", write=lambda d: (_ for _ in ()).throw(AssertionError("typed into a mirror"))), False, read_only=True)
+ro.write(b"rm -rf /\r")
+check(ro.info()["readOnly"] is True, "a read-only session drops typed input on the server too")
+S._headless_cache.update(at=0.0, value=None)
+t = c.get("/p/tmux").json()
+check([x["name"] for x in t["mine"] if x["where"] == "vps"] == ["my-own-session"] and "my-own-session" in t["attach"], "GET tmux lists Brett's own sessions apart (mine), with their attach command")
+check(N.summarise_args({"command": "uptime", "token": "s3cret", "apiKey": "x", "deep": {"a": 1}}) == 'command=uptime deep={"a":1}', "call lines drop secret-looking keys")
+r = c.post("/p/nav/note", json={"session": "Amber - terminal nav", "text": "checking the build", "source": "claude-ai-voice", "agent": "Earl the Ear", "url": "https://claude.ai/chat/abc"}).json()
+check(r["ok"] and r["feed"] == "chat:Amber-terminal-nav", "a chat posts a line into its own feed (console_session_note)")
+check(c.post("/p/nav/note", json={"session": "x", "text": "hi", "url": "https://evil.example/"}).status_code == 400, "the chat link must be claude.ai")
+check(c.post("/p/nav/note", json={"session": "bad;name", "text": "hi"}).status_code == 400, "session names are checked")
+plugin_services.get("axf.session-feed@1").record_call("Amber - terminal nav", "console_open", {"screen": "builds", "token": "nope"}, True, "", 12)
+plugin_services.get("axf.session-feed@1").record_call("", "plan_search", {"query": "x"}, False, "boom", 3)
+fd = c.get("/p/nav/feed?id=chat:Amber-terminal-nav").json()
+check([x["kind"] for x in fd["items"]] == ["note", "call"] and fd["items"][1]["tool"] == "console_open" and "nope" not in json.dumps(fd), "console MCP calls land in the caller's feed, no secrets")
+check(fd["agent"] == "Earl the Ear" and fd["source"] == "claude-ai-voice" and fd["url"] == "https://claude.ai/chat/abc", "the feed keeps agent, source and link")
+check(c.get("/p/nav/feed?id=chat:axHub").json()["items"][0]["ok"] is False, "a call with no session header goes to the axHub feed")
+check(c.get("/p/nav/feed?id=chat:nope").status_code == 404, "unknown feed is 404")
+m = c.get("/p/nav").json()
+check(m["$axf"] == "terminal-nav@1" and m["vps"]["ready"], "GET nav answers terminal-nav@1")
+check({x["name"] for x in m["mine"] if x["kind"] == "tmux"} >= {"my-own-session", "axt-vps-k3j9"}, "My sessions: Brett's own tmux and persistent tabs")
+check([x["name"] for x in m["agents"]] == ["axf-fix-host-mosh", "axf-pr-feature-x"] and m["agents"][0]["agent"] == "Vinnie", "Agents: the headless builds with their agent")
+check(any(x["id"] == "chat:Amber-terminal-nav" and x["kind"] == "chat" for x in m["mine"]), "My sessions: the chat feed")
+check([x["name"] for x in m["connections"]][:3] == ["console", "vps", "axhub"], "Connections: where a tab can open")
+S._headless_cache.update(at=0.0, value=None)
+S.RUNNER = lambda argv, **kw: R("axf-fix-host-mosh\t1761480000\t0\theadless\tVinnie\tclaude-opus-5-5\t/x\n")
+m2 = c.get("/p/nav").json()
+check("my-own-session" in [x["name"] for x in m2["recent"]] and all(x["endedAt"] for x in m2["recent"]), "an ended session moves to Recent")
+S._headless_cache.update(at=0.0, value=None)
+S.RUNNER = lambda argv, **kw: R("", 255)
+check(len(c.get("/p/nav").json()["recent"]) == len(m2["recent"]), "an ssh failure doesn't move live sessions to Recent")
+S.RUNNER = fake_run
+check(c.post("/p/nav/stop", json={"name": "bad;name", "where": "vps"}).status_code == 400, "stop: only tmux names")
+S._headless_cache.update(at=0.0, value=None)
+check(c.post("/p/nav/stop", json={"name": "my-own-session", "where": "vps"}).json()["ok"], "stop ends a tmux session")
+with c.websocket_connect("/p/nav/ws") as w:
+    first = json.loads(w.receive_text())
+    check(first["type"] == "nav" and first["model"]["$axf"] == "terminal-nav@1", "nav websocket sends the model on connect")
+    c.post("/p/nav/note", json={"session": "Amber - terminal nav", "text": "second line"})
+    nxt = json.loads(w.receive_text())
+    check(nxt["type"] == "nav" and any(x.get("lastLine") == "second line" for x in nxt["model"]["mine"]), "…and pushes at once when a feed gets a line")
+N._feeds = None
+check(N.feed("chat:Amber-terminal-nav")["items"][-1]["text"] == "second line", "feeds survive a restart (feeds.json)")
+
 root = os.environ["AXF_TERMINAL_DIR"]
 check(all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_file() and p.suffix != ".pub" and p.name != "known_hosts")
       and all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_dir()), "data files and folders private (public key and known_hosts inside a private folder)")

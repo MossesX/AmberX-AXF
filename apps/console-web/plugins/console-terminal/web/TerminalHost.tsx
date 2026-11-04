@@ -12,6 +12,9 @@
  * waiting / done / failed, meters.ts) and splits into the session and its context chain (SplitView + ChainPane).
  * Closing a tab detaches from its tmux session; the tab menu has Open in Moshi (copies the attach command) and Kill
  * session (with a confirm). The ∨ menu lists running sessions no tab shows, to attach again.
+ * Sessions nav (Nov 3 2026, nav.tsx): a collapsible rail on the left lists My sessions, Agents, Connections and Recent;
+ * on a phone it is a drawer behind the ☰ button in the strip (or a swipe from the left edge). A chat session opens as a
+ * feed tab (FeedPane) instead of a terminal. Setting: sessionsNav.
  * Closing the last tab closes the window, like Windows Terminal. Theme tokens only (axp-wt prefix); controls are the
  * framework's (fx-tab, fx-iconbtn, fx-btn, fx-menu__item) so the app's style still applies.
  */
@@ -28,9 +31,10 @@ import { follow, meterOf, modelName, money, statusOf, useMeters } from './meters
 import { SplitView, type Split } from './SplitView';
 import { ChainPane } from './ChainPane';
 import { markClosed } from './headless';
+import { FeedPane, SessionsRail } from './nav';
 
 const P = 'axp-wt';
-const ICONS: Record<string, string> = { console: 'terminal', vps: 'monitor', claude: 'sparkles', container: 'box', axhub: 'zap' };
+const ICONS: Record<string, string> = { console: 'terminal', vps: 'monitor', claude: 'sparkles', container: 'box', axhub: 'zap', feed: 'sparkles' };
 export const iconFor = (o: Open) => ICONS[o.kind] ?? 'terminal';
 
 /** Close a tab: its server link closes; a persistent tab's tmux session lives on (detached), like closing Moshi. */
@@ -92,6 +96,9 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
   useEffect(() => { void getSettings().then(setSettings, () => undefined); return onSettings(setSettings); }, []);
   const dragFrom = useRef<number | null>(null);
   const root = useRef<HTMLDivElement>(null);
+  const [drawer, setDrawer] = useState(false); // phone: the sessions nav as a drawer
+  const showNav = settings?.sessionsNav !== false;
+  const edge = useRef<number | null>(null); // phone: a swipe from the left edge opens the drawer
 
   const windowId = () => { const g = wm.groupOf(tab.id); return g ? wm.state.groups[g]?.windowId ?? null : null; };
   const add = (o: Open) => addSession(tab.id, { id: sessionId(), title: titleFor(o), open: o });
@@ -99,8 +106,8 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
   const close = (sid: string) => { const sc = ctl(sid); if (settings?.closeConfirm !== false && sc?.conn === 'live') setAsk(sid); else closeNow(sid); };
   const pick = (mode: 'claude' | 'shell') => rt.openDialog('terminal.connect', { hostId: tab.id, mode });
   const manage = (sid: string) => rt.openDialog('terminal.connection', { sessionId: sid });
-  const newLike = () => (settings?.newTab === 'same' || !front ? add(front?.open ? { ...front.open, attach: undefined, tmux: undefined } : { kind: 'console' }) : pick(front.open.kind === 'claude' ? 'claude' : 'shell'));
-  const duplicate = (s: HostSession) => addSession(tab.id, { id: sessionId(), title: s.title, open: { ...s.open, attach: undefined, tmux: undefined }, color: s.color }, h.sessions.indexOf(s) + 1);
+  const newLike = () => (settings?.newTab === 'same' || !front ? add(front?.open ? { ...front.open, attach: undefined, tmux: undefined, readOnly: undefined } : { kind: 'console' }) : pick(front.open.kind === 'claude' ? 'claude' : 'shell'));
+  const duplicate = (s: HostSession) => addSession(tab.id, { id: sessionId(), title: s.title, open: { ...s.open, attach: undefined, tmux: undefined, readOnly: undefined }, color: s.color }, h.sessions.indexOf(s) + 1);
   const toNewWindow = (s: HostSession) => { removeSession(s.id); newWindow(rt, [s]); };
 
   // the last tab closed: the window closes, like Windows Terminal
@@ -115,7 +122,7 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
       const k = e.key.toLowerCase(); const list = host(tab.id).sessions; const i = list.findIndex((s) => s.id === host(tab.id).active);
       const go = (j: number) => { const s = list[(j + list.length) % list.length]; if (s) activate(tab.id, s.id); };
       let done = true;
-      if (e.ctrlKey && e.shiftKey && k === 't') add(list[i]?.open ? { ...list[i]!.open, attach: undefined, tmux: undefined } : { kind: 'console' });
+      if (e.ctrlKey && e.shiftKey && k === 't') add(list[i]?.open ? { ...list[i]!.open, attach: undefined, tmux: undefined, readOnly: undefined } : { kind: 'console' });
       else if (e.ctrlKey && e.shiftKey && k === 'w') { const s = list[i]; if (s) close(s.id); }
       else if (e.ctrlKey && e.shiftKey && k === 'd') { const s = list[i]; if (s) duplicate(s); }
       else if (e.ctrlKey && k === 'tab') go(e.shiftKey ? i - 1 : i + 1);
@@ -173,6 +180,7 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
         <button type="button" className={`fx-iconbtn ${P}__new`} title="New tab (Ctrl+Shift+T)" aria-label="New tab" onClick={newLike}><Icon name="plus" size={14} /></button>
         <button type="button" className={`fx-iconbtn ${P}__new`} title="Open a tab: pick the connection" aria-label="New tab menu" aria-expanded={!!drop}
           onClick={(e) => { const r = (e.currentTarget as HTMLElement).getBoundingClientRect(); setDrop({ x: r.left, y: r.bottom + 2 }); }}><Icon name="chevron-down" size={14} /></button>
+        {showNav && <button type="button" className={`fx-iconbtn ${P}__new ${P}__hamburger`} title="Sessions" aria-label="Sessions list" aria-expanded={drawer} onClick={() => setDrawer(!drawer)}><Icon name="menu" size={14} /></button>}
         <span className={`${P}__drag`} />
         {frame && (
           <div className={`${P}__caption`} role="group" aria-label="Window">
@@ -183,6 +191,11 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
         )}
       </div>
 
+      <div className={`${P}__main`}
+        onTouchStart={(e) => { const x = e.touches[0]?.clientX ?? 0; const r = root.current?.getBoundingClientRect(); edge.current = r && x - r.left < 24 ? x : null; }}
+        onTouchEnd={(e) => { const x0 = edge.current; edge.current = null; const x1 = e.changedTouches[0]?.clientX; if (showNav && x0 !== null && x1 !== undefined && x1 - x0 > 60) setDrawer(true); }}>
+      {showNav && <SessionsRail hostId={tab.id} drawer={drawer} onDrawer={setDrawer} />}
+      <div className={`${P}__pane`}>
       {toolbar && (
         <div className={`${P}__toolbar`} role="toolbar" aria-label="Terminal commands">
           <button type="button" className="fx-btn fx-btn--ghost" title="New Claude Code tab: pick a connection" onClick={() => pick('claude')}><Icon name="sparkles" size={14} /> Claude Code</button>
@@ -219,10 +232,13 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
       <div className={`${P}__body`}>
         {h.sessions.map((s) => {
           const hl = headlessOf(s); const on = s.id === front?.id;
+          if (s.open.kind === 'feed' && s.open.feed) return <FeedPane key={s.id} feed={s.open.feed} active={on} />;
           return <SplitView key={s.id} split={splitOf(s)} active={on}
             a={<TerminalSession s={s} active={on} onClose={() => close(s.id)} onRename={() => setRenaming({ id: s.id, text: s.title })} />}
             b={hl ? <ChainPane session={hl} settings={settings} /> : null} />;
         })}
+      </div>
+      </div>
       </div>
 
       {(menu || drop) && createPortal(<>
@@ -266,10 +282,11 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
 /** One line saying where a tab is connected. */
 export function describe(o: Open): string {
   switch (o.kind) {
-    case 'console': return 'Console container';
-    case 'vps': return o.attach ? `VPS host · ${o.attach}` : 'VPS host (root)';
+    case 'console': return o.attach ? `Console · ${o.attach}${o.readOnly ? ' (mirror)' : ''}` : 'Console container';
+    case 'vps': return o.attach ? `VPS host · ${o.attach}${o.readOnly ? ' (mirror)' : ''}` : 'VPS host (root)';
     case 'claude': return `Claude Code · ${o.via === 'vps' ? 'VPS host' : o.via === 'axhub' ? 'axHub' : o.via === 'container' ? o.container ?? 'container' : 'console'}`;
     case 'container': return `Container · ${o.container ?? '?'}`;
+    case 'feed': return `Chat mirror · ${o.title ?? o.feed ?? ''}`;
     default: return String(o.kind);
   }
 }

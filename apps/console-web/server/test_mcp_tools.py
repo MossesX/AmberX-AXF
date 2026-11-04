@@ -86,6 +86,27 @@ with tempfile.TemporaryDirectory() as tmp:
     ok("false" in json.dumps(asyncio.run(server.call_tool("claude_settings_get", {"key": "noWait.enabled"})), default=str).lower(), "No wait stays off")
     del os.environ["AXF_CLAUDE_SETTINGS_FILE"], os.environ["AXF_CLAUDE_SETTINGS_DATA"]
 
+# sessions nav (terminal-sessions-nav): console_session_note posts into the caller's mirror feed; every call is recorded
+notes: list[dict] = []
+calls: list[tuple] = []
+s2 = mcp_server.build_server(lambda op, **a: {}, notes=lambda line: notes.append(line) or {"ok": True, "feed": "chat:x"},
+                             on_call=lambda *a: calls.append(a))
+t2 = {t.name: t for t in asyncio.run(s2.list_tools())}
+ok("console_session_note" in t2 and "console_session_note" not in tools, "console_session_note only when the server gets a notes runner")
+ok(t2["console_session_note"].annotations.read_only_hint is False and t2["console_session_note"].annotations.destructive_hint is False, "console_session_note is a plain write (allow)")
+tok = mcp_server.CALLER.set("Amber - chat")
+asyncio.run(s2.call_tool("console_session_note", {"text": "looking at builds", "session": "Amber - chat", "url": "https://claude.ai/chat/1"}))
+mcp_server.CALLER.reset(tok)
+ok(notes[-1] == {"text": "looking at builds", "session": "Amber - chat", "source": "claude-ai-text", "url": "https://claude.ai/chat/1"}, "the note reaches the feed with its session and link")
+ok(calls[-1][0] == "Amber - chat" and calls[-1][1] == "console_session_note" and calls[-1][3] is True, "each tool call is told to on_call with its caller")
+try:
+    asyncio.run(s2.call_tool("plan_feature", {"id": "nope"}))
+except Exception:  # noqa: BLE001
+    pass
+ok(calls[-1][1] == "plan_feature" and calls[-1][3] is False and calls[-1][4], "a failing call is recorded as failed, with the error")
+s3 = mcp_server.build_server(lambda op, **a: {}, on_call=lambda *a: (_ for _ in ()).throw(RuntimeError("listener broke")))
+ok(asyncio.run(s3.call_tool("app_validate", {"dir": "x"})) is not None, "a broken listener never fails the call")
+
 # Follow Amber (Nov 3 2026): opening and moving only navigate, so they are read-only (axHub runs them at once, no
 # veto); console_action can change data and stays a write; console_show / console_follow call follow-amber@1.
 csent: list[dict] = []

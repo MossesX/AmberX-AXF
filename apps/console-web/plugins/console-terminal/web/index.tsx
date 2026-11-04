@@ -1,7 +1,7 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, ID } from './api';
-import { newTab, openFromContext } from './open';
+import { findHost, newTab, openFromContext } from './open';
 import { ConnectDialog, ConnectionDialog } from './connections';
 import { getSettings } from './api';
 import { applyProfile } from './profiles';
@@ -10,6 +10,7 @@ import { ClaudePanel, GeneralPanel, MoshiPanel, SessionsPanel, VpsPanel } from '
 import { TerminalHost } from './TerminalHost';
 import { RunOutputTab, watchHubRuns } from './RunOutputTab';
 import { openHeadless, watchHeadless } from './headless';
+import { openByName } from './nav';
 import './terminal.css';
 import { appMenu } from './menu';
 
@@ -26,12 +27,13 @@ import { appMenu } from './menu';
  *    model, live cost and status (meters.ts) and splits into the session and its context chain (SplitView, ChainPane)
  *  - VPS and console tabs live in tmux sessions (axt-…): reload, sleep or a console restart re-attaches with the
  *    scrollback replayed; Open in Moshi copies the attach command; Kill session ends one
+ *  - sessions nav (nav.tsx): the left rail; actions terminal.mirror / terminal.jump [name, where], terminal.sessions
  *  - Settings → Plugins → Terminal
  */
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Terminal',
-  version: '0.4.0',
+  version: '0.5.0',
   appMenu,
   provides: ['axf.terminal'],
   register(rt) {
@@ -51,6 +53,10 @@ export const plugin: AxfWebLibrary = {
     // a headless run's own tab (the Crew, avatars' right-click "Open Terminal tab"): terminal.attach:<axf-… session>[:<title>]
     rt.actions.register('terminal.attach', ([name = '', title = '']) => { if (/^axf-[A-Za-z0-9._-]{1,64}$/.test(name)) openHeadless(rt, { name, createdAt: 0, agent: decodeURIComponent(title) }); }, { label: 'Open a headless run in a Terminal tab', params: true, searchable: false });
     rt.actions.register('terminal.claude', () => rt.openDialog('terminal.connect', { hostId: '', mode: 'claude' }), { label: 'New Claude Code tab (pick a connection)' });
+    // sessions nav (Nov 3 2026): mirror a session read-only, or jump in (writable; a chat opens claude.ai); args [name, where]
+    rt.actions.register('terminal.mirror', ([name, where]) => void openByName(rt, String(name ?? ''), String(where ?? ''), false), { label: 'Mirror a session (read-only)', params: true });
+    rt.actions.register('terminal.jump', ([name, where]) => void openByName(rt, String(name ?? ''), String(where ?? ''), true), { label: 'Jump into a session', params: true });
+    rt.actions.register('terminal.sessions', () => { if (!findHost(rt)) openFromContext(rt); else rt.toast('The sessions list is on the left of the terminal window', 'info'); }, { label: 'Terminal sessions' });
     watchHubRuns(rt); // approved VPS / shell commands open here once they've run (setting showHubRuns)
     watchHeadless(rt); // headless Claude Code sessions on the VPS open here, window to the front (setting showHeadless)
     rt.contextExtras.set('*:terminal', (target, payload) => [{ id: 'terminal.open', label: 'Open terminal', icon: 'terminal', action: `terminal.open:${encodeURIComponent(target ?? '')}:${encodeURIComponent(payload ?? '')}` }]);
