@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 740,
- "updatedAt": "2026-11-04T14:31:33.676Z",
+ "rev": 741,
+ "updatedAt": "2026-11-04T14:32:06.129Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -73679,7 +73679,7 @@
    "branch": "claude/console-wake-finish",
    "pr": "#317",
    "createdAt": "2026-11-04T14:15:32.628Z",
-   "updatedAt": "2026-11-04T14:31:19.918Z",
+   "updatedAt": "2026-11-04T14:31:25.030Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -73734,12 +73734,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T14:31:22.334Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T14:15:32.630Z",
-     "updatedAt": "2026-11-04T14:15:32.630Z"
+     "updatedAt": "2026-11-04T14:31:22.495Z"
     },
     {
      "id": "s3",
@@ -73778,12 +73778,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T14:31:25.030Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T14:15:32.630Z",
-     "updatedAt": "2026-11-04T14:15:32.630Z"
+     "updatedAt": "2026-11-04T14:31:25.213Z"
     },
     {
      "id": "s5",
@@ -73816,7 +73816,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
