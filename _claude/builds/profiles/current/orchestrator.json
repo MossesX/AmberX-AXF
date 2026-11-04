@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T19:02:27.540Z",
+ "updatedAt": "2026-11-04T19:03:10.759Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -11284,9 +11284,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/model-thinking-audit",
-   "pr": "",
+   "pr": "#334",
    "createdAt": "2026-11-04T17:53:07.338Z",
-   "updatedAt": "2026-11-04T18:41:38.728Z",
+   "updatedAt": "2026-11-04T19:03:09.391Z",
    "builtAt": "",
    "notes": [],
    "approvals": [
@@ -11327,6 +11327,17 @@
      }
     ]
    },
+   "recommendedModel": "Fable",
+   "recommendedThinking": "high",
+   "modelWhy": "Judging which work is foundation is itself a Fable call (contract s1-s3 on Fable, high thinking); the console and report steps are Opus work a Fable session finishes in the same run (a downgrade needs nobody).",
+   "adviceKind": "kernel",
+   "advicePinned": true,
+   "adviceAt": "2026-11-04T18:55:12.566Z",
+   "adviceCost": {
+    "minutes": 0,
+    "usd": 0,
+    "what": "nothing to change"
+   },
    "steps": [
     {
      "id": "s1",
@@ -11347,6 +11358,11 @@
      "done": true,
      "doneAt": "2026-11-04T18:09:37.906Z",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "max",
+     "modelWhy": "kernel / cross-port contract: cross-port, engine, fixture, contract…; Brett's rule is Fable for foundation work, max thinking",
+     "adviceKind": "kernel",
+     "adviceAt": "2026-11-04T18:55:12.566Z",
      "uid": "st-mw2f0ce90909ax"
     },
     {
@@ -11369,6 +11385,11 @@
      "done": true,
      "doneAt": "2026-11-04T18:09:39.819Z",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "max",
+     "modelWhy": "schema migration / store contract: builds@1, migration, one builds store, schema…; Brett's rule is Fable for foundation work, max thinking",
+     "adviceKind": "migration",
+     "adviceAt": "2026-11-04T18:55:12.566Z",
      "uid": "st-mw2f0ce90amrta"
     },
     {
@@ -11390,6 +11411,11 @@
      "done": true,
      "doneAt": "2026-11-04T18:09:41.637Z",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "high",
+     "modelWhy": "foundation (schema, asset type, engine, contract): engine, contract, framework/core/; Brett's rule is Fable for foundation work, high thinking",
+     "adviceKind": "foundation",
+     "adviceAt": "2026-11-04T18:55:12.566Z",
      "uid": "st-mw2f0ce90beuxk"
     },
     {
@@ -11411,6 +11437,11 @@
      "done": true,
      "doneAt": "2026-11-04T18:20:30.026Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.566Z",
      "uid": "st-mw2f0ce90cpw8w"
     },
     {
@@ -11432,6 +11463,11 @@
      "done": true,
      "doneAt": "2026-11-04T18:41:35.293Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.566Z",
      "uid": "st-mw2f0ce90d01et"
     },
     {
@@ -11453,6 +11489,11 @@
      "done": true,
      "doneAt": "2026-11-04T18:41:36.994Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.566Z",
      "uid": "st-mw2f0ce90epnex"
     },
     {
@@ -11477,6 +11518,11 @@
      "done": true,
      "doneAt": "2026-11-04T18:41:38.728Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.566Z",
      "uid": "st-mw2f0ce90fmfj2"
     },
     {
@@ -11498,6 +11544,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "low",
+     "modelWhy": "landing, docs, wording or a small fix (docs, readme, landing): routine, Opus on low thinking",
+     "adviceKind": "landing",
+     "adviceAt": "2026-11-04T18:55:12.566Z",
      "uid": "st-mw2f0ce90gsbo1"
     }
    ]
