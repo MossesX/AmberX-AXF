@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 935,
- "updatedAt": "2026-11-04T20:18:11.235Z",
+ "rev": 936,
+ "updatedAt": "2026-11-04T20:18:26.170Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -83011,15 +83011,15 @@
    "title": "Grid column hiding",
    "category": "Feature",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/grid-column-hiding",
    "pr": "#340",
    "createdAt": "2026-11-04T19:59:59.405Z",
-   "updatedAt": "2026-11-04T20:18:09.949Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T20:18:11.226Z",
+   "builtAt": "2026-11-04T20:18:11.226Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -83161,12 +83161,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T20:18:11.226Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T20:01:10.192Z",
-     "updatedAt": "2026-11-04T20:01:10.192Z"
+     "updatedAt": "2026-11-04T20:18:11.278Z"
     }
    ],
    "profiles": [
@@ -83177,7 +83177,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
