@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 643,
- "updatedAt": "2026-11-04T11:15:33.268Z",
+ "rev": 647,
+ "updatedAt": "2026-11-04T11:33:08.623Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -71596,18 +71596,23 @@
   {
    "id": "land-round-2",
    "title": "Land round 2: catch up and land the rest, Molly first",
-   "category": "",
+   "category": "Landing",
    "detail": "Agent: Landin' Lenny. One PR at a time: update from main, resolve conflicts keeping both sides, CI green, merge. Order: #288 (+#266) → #294 #295 → #296 → #298 → #281 #291 #293 → #289 #269 → #300. Don't merge WIP #299 #301 #302; close #297 if orphan dup. Redeploy console + Molly after #288, all apps at the end.",
    "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "land-round-2",
-   "branch": "",
+   "branch": "claude/land-round-2",
    "pr": "",
    "createdAt": "2026-11-04T10:43:58.630Z",
-   "updatedAt": "2026-11-04T10:43:59.318Z",
+   "updatedAt": "2026-11-04T11:19:51.154Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "#288 green on its head (test race fixed: polling waits; #266's wake help folded in), main merged, store pinned, pushed 59d8a6cb. GitHub Pull Requests partial outage since ~11:05 UTC: the PR still shows the old head, so it can't merge yet. #297 closed (superseded by #284, orphan). #294 #295 #296 #298 #281 #291 #293 #289 #269 merged with main locally and conflicts resolved, waiting their turn.",
+     "at": "2026-11-04T11:19:51.154Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -71830,7 +71835,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -72090,7 +72095,7 @@
    "branch": "claude/expenses-port",
    "pr": "",
    "createdAt": "2026-11-04T11:09:10.279Z",
-   "updatedAt": "2026-11-04T11:15:32.401Z",
+   "updatedAt": "2026-11-04T11:33:07.772Z",
    "builtAt": "",
    "notes": [
     {
@@ -72194,12 +72199,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-04T11:25:25.800Z",
+     "note": "Live on expenses-axf (built from AXF), same amberx-studio-data volume rw. Ledger 1 user / 524 entries / hash cb1a67d38fd2df05 before = after. Old image amberx-expenses:pre-axf; rollback: install.sh --rollback. Cron /etc/cron.d/amberx-expenses (flock, main).",
+     "rev": 2,
      "createdAt": "2026-11-04T11:09:10.280Z",
-     "updatedAt": "2026-11-04T11:09:10.280Z"
+     "updatedAt": "2026-11-04T11:25:25.848Z"
     },
     {
      "id": "s5",
@@ -72216,12 +72221,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-04T11:33:07.772Z",
+     "note": "/api/expenses/v1 (entries list/get/add/edit, accounts, totals, export) + scripts/expenses-cli.mjs + console MCP expenses_* (7 tools). Live; read-tested on the real ledger (524 entries), no live writes. Test 17 checks.",
+     "rev": 2,
      "createdAt": "2026-11-04T11:09:10.280Z",
-     "updatedAt": "2026-11-04T11:09:10.280Z"
+     "updatedAt": "2026-11-04T11:33:07.811Z"
     },
     {
      "id": "s6",
@@ -72254,7 +72259,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -923,6 +923,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 11:08 UTC · `terminal-no-focus` note (current) · foreign-write
 - 2026-11-04 11:09 UTC · `expenses-port` added (6 steps) (current) · orchestrator
 - 2026-11-04 11:11 UTC · `expenses-port` note (current) · orchestrator
+- 2026-11-04 11:12 UTC · `expenses-port` s1 done, → running (current) · orchestrator
+- 2026-11-04 11:12 UTC · `expenses-port` s2 done (current) · orchestrator
+- 2026-11-04 11:15 UTC · `expenses-port` s3 done (current) · orchestrator
+- 2026-11-04 10:43 UTC · `land-round-2` added (9 steps) (current) · orchestrator
+- 2026-11-04 10:43 UTC · `land-round-2` → running (current) · orchestrator
+- 2026-11-04 11:19 UTC · `terminal-no-focus` note (current) · foreign-write
+- 2026-11-04 11:19 UTC · `expenses-port` added (6 steps) (current) · foreign-write
+- 2026-11-04 11:19 UTC · `land-round-2` note (current) · orchestrator
+- 2026-11-04 11:25 UTC · `land-round-2` note (current) · foreign-write
+- 2026-11-04 11:25 UTC · `expenses-port` s4 done (current) · orchestrator
+- 2026-11-04 11:33 UTC · `expenses-port` s5 done (current) · orchestrator
 
 ## Token passes (log)
 
