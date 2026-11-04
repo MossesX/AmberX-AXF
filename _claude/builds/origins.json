@@ -469,6 +469,18 @@
    "from": "",
    "addenda": []
   },
+  "build-docs-walkthroughs": {
+   "said": "For everything that's already been built, every step that's already been built, I need to be able to right-click a step or a build and say: create documentation for this. Create a video for this build, which will then record a live video of a browser walkthrough, and I'll be able to select how long I want it to be and different things, and I'll also be able to input special stuff that I want covered.",
+   "at": "2026-11-04T00:00:00.000Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "build-manager-history": {
    "said": "every session on every machine reports builds to axHub (change-log@1 with build stats: ref, model, estimate, actual tokens/cost, status, heartbeat, surface, host, areas); Build manager shows them live, adds a Built history (cost + time by model/week), a search bar, and a context-menu Start build now (dependency closure, overlap guard, axHub vps.run headless Claude Code, verification). Backfill of everything already built. Branch feat/build-manager-history.",
    "at": "2026-10-21",
