@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 870,
- "updatedAt": "2026-11-04T18:20:43.301Z",
+ "rev": 871,
+ "updatedAt": "2026-11-04T18:20:58.692Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -81677,7 +81677,16 @@
    "updatedAt": "2026-11-04T18:20:30.026Z",
    "builtAt": "",
    "notes": [],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-04T18:20:30.026Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Go through my list of things that can be done and see what should be redone with Fable and put that next to it, and put the level of thinking that it should be on.",
@@ -81706,6 +81715,17 @@
      }
     ]
    },
+   "recommendedModel": "Fable",
+   "recommendedThinking": "high",
+   "modelWhy": "Judging which work is foundation is itself a Fable call (contract s1-s3 on Fable, high thinking); the console and report steps are Opus work a Fable session finishes in the same run (a downgrade needs nobody).",
+   "adviceKind": "kernel",
+   "advicePinned": true,
+   "adviceAt": "2026-11-04T18:20:25.173Z",
+   "adviceCost": {
+    "minutes": 0,
+    "usd": 0,
+    "what": "nothing to change"
+   },
    "steps": [
     {
      "id": "s1",
@@ -81728,6 +81748,11 @@
      "done": true,
      "doneAt": "2026-11-04T18:09:37.906Z",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "max",
+     "modelWhy": "kernel / cross-port contract: cross-port, engine, fixture, contract…; Brett's rule is Fable for foundation work, max thinking",
+     "adviceKind": "kernel",
+     "adviceAt": "2026-11-04T18:20:25.173Z",
      "rev": 4,
      "createdAt": "2026-11-04T17:53:07.344Z",
      "updatedAt": "2026-11-04T18:20:25.174Z"
@@ -81754,6 +81779,11 @@
      "done": true,
      "doneAt": "2026-11-04T18:09:39.819Z",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "max",
+     "modelWhy": "schema migration / store contract: builds@1, migration, one builds store, schema…; Brett's rule is Fable for foundation work, max thinking",
+     "adviceKind": "migration",
+     "adviceAt": "2026-11-04T18:20:25.173Z",
      "rev": 4,
      "createdAt": "2026-11-04T17:53:07.344Z",
      "updatedAt": "2026-11-04T18:20:25.174Z"
@@ -81779,6 +81809,11 @@
      "done": true,
      "doneAt": "2026-11-04T18:09:41.637Z",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "high",
+     "modelWhy": "foundation (schema, asset type, engine, contract): engine, contract, framework/core/; Brett's rule is Fable for foundation work, high thinking",
+     "adviceKind": "foundation",
+     "adviceAt": "2026-11-04T18:20:25.173Z",
      "rev": 4,
      "createdAt": "2026-11-04T17:53:07.344Z",
      "updatedAt": "2026-11-04T18:20:25.174Z"
@@ -81804,6 +81839,11 @@
      "done": true,
      "doneAt": "2026-11-04T18:20:30.026Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:20:25.173Z",
      "rev": 3,
      "createdAt": "2026-11-04T17:53:07.344Z",
      "updatedAt": "2026-11-04T18:20:36.851Z"
@@ -81829,6 +81869,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:20:25.173Z",
      "rev": 3,
      "createdAt": "2026-11-04T17:53:07.344Z",
      "updatedAt": "2026-11-04T18:20:25.174Z"
@@ -81854,6 +81899,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:20:25.173Z",
      "rev": 3,
      "createdAt": "2026-11-04T17:53:07.344Z",
      "updatedAt": "2026-11-04T18:20:25.174Z"
@@ -81882,6 +81932,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:20:25.173Z",
      "rev": 3,
      "createdAt": "2026-11-04T17:53:07.344Z",
      "updatedAt": "2026-11-04T18:20:25.174Z"
@@ -81907,6 +81962,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "low",
+     "modelWhy": "landing, docs, wording or a small fix (docs, readme, landing): routine, Opus on low thinking",
+     "adviceKind": "landing",
+     "adviceAt": "2026-11-04T18:20:25.173Z",
      "rev": 3,
      "createdAt": "2026-11-04T17:53:07.344Z",
      "updatedAt": "2026-11-04T18:20:25.174Z"
@@ -81920,29 +81980,10 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-04T17:53:07.338Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mw2f0ce90909ax": "2026-11-04T17:53:07.344Z",
-     "st-mw2f0ce90amrta": "2026-11-04T17:53:07.344Z",
-     "st-mw2f0ce90beuxk": "2026-11-04T17:53:07.344Z",
-     "st-mw2f0ce90cpw8w": "2026-11-04T17:53:07.344Z",
-     "st-mw2f0ce90d01et": "2026-11-04T17:53:07.344Z",
-     "st-mw2f0ce90epnex": "2026-11-04T17:53:07.344Z",
-     "st-mw2f0ce90fmfj2": "2026-11-04T17:53:07.344Z",
-     "st-mw2f0ce90gsbo1": "2026-11-04T17:53:07.344Z"
-    }
-   },
+   "pending": null,
    "queue": null,
    "defaultAt": "2026-11-04T17:53:07.344Z",
    "rearranged": false,
