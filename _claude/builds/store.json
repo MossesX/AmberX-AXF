@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 662,
- "updatedAt": "2026-11-04T12:37:16.527Z",
+ "rev": 663,
+ "updatedAt": "2026-11-04T12:44:13.519Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -39346,19 +39346,23 @@
    "title": "Element inspector (Android first)",
    "category": "",
    "detail": "Brett, Oct 30 2026 (voice): Left click only. Press-drag: panel follows, live updates to element under pointer. Release closes. Double click pins; pinned panel drags and resizes. Current fields + size.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/element-inspector",
    "pr": "#192",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: PR #192; PR #192 names s1, s2, s4 done",
      "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -39473,7 +39477,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -39702,7 +39706,7 @@
    "title": "Layouts: repeating slots",
    "category": "",
    "detail": "Brett, Oct 30 2026 (voice): Many-slots with style (tabs/cards/grid/stacked) + fallback slot; pages declare data sets. Web + Android + fixtures.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -39710,12 +39714,16 @@
    "pr": "#191",
    "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
+   "builtAt": "2026-11-04T12:44:12.117Z",
    "notes": [
     {
      "text": "Reconciler: PR #191; PR #191 merged; PR #191 names s2 done",
      "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Reconciler: PR #191 merged: complete",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -39830,7 +39838,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -49698,19 +49706,23 @@
    "title": "Fix: can't click steps in the Build orchestrator",
    "category": "Console",
    "detail": "Brett Nov 1 23:08: \"I can't click steps\" (Build orchestrator steps in the console). Code read: step rows are a DataGrid nested in the expanded build row (ui.tsx StepGrid); tick boxes are disabled when the build is complete or the phase is locked; tiny tick target on phone. Repro on desktop + phone first, then fix. Queued: waits for Brett's go.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-01T23:09:37.031Z",
-   "updatedAt": "2026-11-03T13:56:31.369Z",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Estimates added (orch-live-sync s6): the small-steps check needs one on every step.",
      "at": "2026-11-03T13:56:31.369Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -49803,7 +49815,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -49819,7 +49831,7 @@
    "title": "Molly: one interface for AmberX, axHub and the Dev Console (Opus)",
    "category": "Big Dog",
    "detail": "Brett, Nov 2 2026: combine AmberX, axHub and the console into one interface but keep them separate apps. Opus version named Molly at molly.amberxai.com; a Fable version comes later in its own build. New app apps/molly (own manifest, baked framework, shared assets) is a shell that shows each app at its own live URL in a kept-alive frame with one banner, one app switcher, one hub sign-in and the look from axHub. Hard rule: AmberX, axHub and the console are not edited and keep running on their own URLs exactly as now; the only allowed outside change is a frame-ancestors header allowing molly.amberxai.com, if needed. No embed marker, no takes, no hiding or merging their menus (same as the Patches rule). No plain axHub hub page, all data on axHub, no storage picker. Patches code is not touched (paused).",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -49827,12 +49839,16 @@
    "pr": "230",
    "mergedAt": "2026-11-02T04:01:24Z",
    "createdAt": "2026-11-02T02:43:38.594Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
+   "builtAt": "2026-11-04T12:44:12.117Z",
    "notes": [
     {
      "text": "Reconciler: PR #230 merged",
      "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Reconciler: PR #230 merged: complete",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -50079,7 +50095,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -50647,7 +50663,7 @@
    "title": "Walkthrough: random design package for stack chapters 5-10 (recording-only look)",
    "category": "",
    "detail": "Brett Nov 2 2026 14:36 ET: for the 90-minute walkthrough, change the design pack to a random one for chapters 5-10 (cli, console, plugins, builds, guardrails, agents). Chosen: recording-only look; the recorder rewrites only its own browser copy of the hub appearance document, the shared look on axHub never changes.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -50655,12 +50671,16 @@
    "pr": "#240",
    "mergedAt": "2026-11-02T19:54:16Z",
    "createdAt": "2026-11-02T19:41:22.804Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
+   "builtAt": "2026-11-04T12:44:12.117Z",
    "notes": [
     {
      "text": "Reconciler: PR #240; PR #240 merged",
      "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Reconciler: PR #240 merged: complete",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -50731,7 +50751,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -52820,7 +52840,7 @@
    "title": "Retire Patches and Build Pilot (remove everywhere)",
    "category": "Cleanup",
    "detail": "Brett, Nov 3 2026 (voice): Patches is dead, Build Pilot is dead. Delete both and every reference: repo code, rules, docs, CI, store builds; VPS containers + Coolify apps (snapshotted to /root/archive/retired-2026-11-03/ first); axHub projects tree + axHub repo PR; archive (not delete) MossesX/Build-Pilot.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -52828,8 +52848,8 @@
    "pr": "#258",
    "mergedAt": "2026-11-03T16:23:48.889Z",
    "createdAt": "2026-11-03T14:10:11.184Z",
-   "updatedAt": "2026-11-03T16:24:26.329Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
+   "builtAt": "2026-11-04T12:44:12.117Z",
    "notes": [
     {
      "text": "s7 partial: axHub PR #32 open; /projects/patches* snapshotted not deleted (no axHub MCP here, needs veto call); MossesX/Build-Pilot archive needs Brett (token 403); DNS records remain.",
@@ -52842,6 +52862,10 @@
     {
      "text": "s7 partly open: axHub repo PR landed; removing the /projects trees and archiving MossesX/Build-Pilot are deletes/outward actions left for Brett's call (land-everything did not do them).",
      "at": "2026-11-03T16:24:26.329Z"
+    },
+    {
+     "text": "Reconciler: PR #258 merged: complete",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -53044,7 +53068,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -55427,7 +55451,7 @@
    "title": "Toolbars plugin: tap-to-confirm on touch, per-toolbar settings + editor, drag-and-drop hooks",
    "category": "Toolbars",
    "detail": "Brett, Nov 3 2026 (voice) + Addendum 1. Every existing and future toolbar: first tap on touch shows the tip and arms the button for 3 s (configurable), second tap within the window runs it; mouse/pen stays single click with hover tooltip; decided per interaction. All of it is one Toolbars plugin (plugin@1) owning every toolbar: global settings, per-toolbar settings (synced), context-menu hooks (Toolbar settings / Edit toolbar / All toolbars), Toolbar editor (save as asset), drag-and-drop hooks anywhere via hook@1 + drop-target@1 contracts with per-target configure dialogs, move/copy, undo. Banners: only the generic drop target, no banner-pack/banner-editor/banners-one changes. Agent: Landin' Lenny. Note: no Terminal 'Tooltip mode' exists on main or any branch (headless-tabs #259 has 7 steps, no s8), so it is built fresh in the framework.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -55435,8 +55459,8 @@
    "pr": "#272",
    "mergedAt": "2026-11-04T04:11:27Z",
    "createdAt": "2026-11-03T18:23:45.044Z",
-   "updatedAt": "2026-11-04T04:13:39.547Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
+   "builtAt": "2026-11-04T12:44:12.117Z",
    "notes": [
     {
      "text": "Agent: Landin' Lenny (headless, Opus). Phase 1 (s1-s12) Opus; s13-s14 contracts pinned Fable need Brett's upgrade approval.",
@@ -55453,6 +55477,10 @@
     {
      "text": "Reconciler: PR #272 merged; PR #272 names s8 done",
      "at": "2026-11-04T04:13:39.547Z"
+    },
+    {
+     "text": "Reconciler: PR #272 merged: complete",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -55949,7 +55977,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -57990,16 +58018,21 @@
    "title": "Build profiles manager (browse, view, create, edit, switch, duplicate, merge, move builds, archive, delete/restore, cleanup)",
    "category": "Builds",
    "detail": "Brett, Nov 3 2026 (voice): grow the build-profiles plugin into a full manager page. Assigned agent: Landin' Lenny. Keep the plugin id, data and every existing feature. Commands declared once -> REST + MCP + CLI (reads allow, changes veto, data delete confirm).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "voice",
    "pendingId": "",
    "branch": "claude/profile-manager",
    "pr": "",
    "createdAt": "2026-11-03T19:59:06.499Z",
-   "updatedAt": "2026-11-03T20:14:29.392Z",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-04T12:44:12.117Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -58167,7 +58200,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -60490,7 +60523,7 @@
    "title": "Molly: console commands reach the embedded console; every app gets the control surface",
    "category": "Molly",
    "detail": "",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -60498,12 +60531,16 @@
    "pr": "#288",
    "mergedAt": "2026-11-04T12:05:57.348Z",
    "createdAt": "2026-11-03T21:05:30.629Z",
-   "updatedAt": "2026-11-04T12:05:58.643Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
+   "builtAt": "2026-11-04T12:44:12.117Z",
    "notes": [
     {
      "text": "Fix on PR #288 (stacked on #266). s6/s7 addendum open.",
      "at": "2026-11-03T21:48:58.463Z"
+    },
+    {
+     "text": "Reconciler: PR #288 merged: complete",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -62982,7 +63019,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -62998,16 +63035,21 @@
    "title": "Git status board (grids for push / pull / CI / merge / held / deployed / stale)",
    "category": "Console > Plugins",
    "detail": "Brett, Nov 3 2026 (voice): \"Where do I view items at git status? ... what needs to be pulled, merged ... I want to be able to view everything in grids with expandable rows.\" Replaces pending batch-manager (batch grid + badges, PR sub-grid + Fix, dense phone pass, PR browser rows with plain-English lead, Merge/Hold, left click review, right-click menu). Predicted shots live in ui-review-predicted. Built by Snap Sully (session).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "git-status-board",
    "branch": "claude/git-status-board",
    "pr": "#291",
    "createdAt": "2026-11-03T21:10:39.295Z",
-   "updatedAt": "2026-11-03T22:21:08.405Z",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-04T12:44:12.117Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -63152,7 +63194,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -63348,7 +63390,7 @@
    "title": "URGENT: main CI green (widgets fixture, xlayout opens, Kotlin widget tests)",
    "category": "Ops",
    "detail": "Found by window-resize-fix (#278): main CI red on three jobs, blocking auto-merge for every PR. Agent: Earl the Ear (headless).",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -63356,8 +63398,8 @@
    "pr": "#284",
    "mergedAt": "2026-11-03T22:42:17Z",
    "createdAt": "2026-11-03T21:12:18.212Z",
-   "updatedAt": "2026-11-03T22:54:25.249Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
+   "builtAt": "2026-11-04T12:44:12.117Z",
    "notes": [
     {
      "text": "Agent: Earl the Ear (headless). Six CI failures fixed at the root on PR #284; ci-main health check names failing jobs, Auto fix queues new ci-fix job (Greenlight Gina). s3 waits for #284 to go green and merge, then the waiting PRs get updated from main.",
@@ -63366,6 +63408,10 @@
     {
      "text": "Reconciler: PR #284 merged",
      "at": "2026-11-03T22:54:25.249Z"
+    },
+    {
+     "text": "Reconciler: PR #284 merged: complete",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -63490,7 +63536,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -68228,14 +68274,14 @@
    "title": "Terminal: tab position setting (top, left / right stack, bottom)",
    "category": "Terminal",
    "detail": "Brett (Nov 3 2026, voice): \"I want a setting in terminal to put all the tabs on the left side in a stack instead of across the top.\" Setting Tab position: Top | Left stack | Right stack | Bottom, per device, also in the tab context menu. Stack: title, agent, model, live cost, status dot, close; collapse to icons; resizable; drag to reorder; scrolls; title bar still drags. Phone: slide-out. Server default + REST/MCP/CLI get/set. Agent: Janitor Joey (headless worktree session; router not on this branch's main). Overlaps: terminal-sessions-nav (#286, open, adds a left rail) and terminal-drag-chain-tree (running, rewrites strip pointer handling): changes kept to a new TabStack file + CSS so all three merge cleanly.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/terminal-tabs-left",
    "pr": "#293",
    "createdAt": "2026-11-03T22:02:33.805Z",
-   "updatedAt": "2026-11-03T22:54:25.249Z",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
    "builtAt": "",
    "notes": [
     {
@@ -68249,6 +68295,10 @@
     {
      "text": "Reconciler: PR #293",
      "at": "2026-11-03T22:54:25.249Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -68373,7 +68423,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -68583,14 +68633,14 @@
    "title": "Gizmo: full Claude companion plugin in AmberX",
    "category": "AmberX",
    "detail": "## What Brett said (verbatim, Nov 3 2026, voice)\n\"I need a companion assistant... a sidekick that allows me to chat to your partner... put the plug-in in AmberX.\" \"A full all-out Claude companion, as full, powerful, as complete as the Claude app itself, with everything, all the features, every setting, the connectors, plugins, a full Claude suite.\" \"We can harvest the assistant code out in AmberX to build the new plugin.\" \"Build the plugin for Claude in AmberX, but make it full, complete. It's gotta be powerful.\"\n\nBooked to agent Gizmo (all-rounder, $8.00/h, AmberX guide/assistant; replaces agent Molly).\n\nDecisions: lives in AmberX (apps/amberx-droid) as a plugin; harvest AmberX assistant code + console Terminal Claude session code into a shared framework lib (claude-session) + AmberX plugin `companion`; console Terminal keeps working on the shared lib; brains run on the VPS as Claude Code sessions reached through axHub, no API keys in the APK; Gizmo is the face, Molly is no longer an agent.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "session",
    "pendingId": "",
    "branch": "claude/gizmo-companion",
    "pr": "#296",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-04T01:15:50.561Z",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
    "builtAt": "",
    "notes": [
     {
@@ -68608,6 +68658,10 @@
     {
      "text": "Reconciler: PR #296",
      "at": "2026-11-03T23:36:42.140Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -69040,7 +69094,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -69419,14 +69473,14 @@
    "title": "Automated Browser plugin (drive, record, edit, schedule)",
    "category": "Console > Plugins",
    "detail": "Brett, Nov 3 2026 (voice), verbatim: \"Make me a plugin that shows a browser that can be driven by the app, give it the ability to be automated and to record automation routines through the browser, like make it record in real time what you do and save the events, so you can redo everything that you just recorded, and have a powerful editor to see what each step is doing. Make it so that you can create workflows through the automated browser and record the steps, or do them automatically and record as you go, or record manually, and full powerful editing, able to tweak the JavaScript and whatever you gotta do to make it follow a routine, like go to a site and log in, or go to a site and go to a products page and grab something, and then have a scheduler built into it that you can schedule when to perform these routines.\" Addendum: \"Be able to manually record, or tell you to do it, so it needs to be integrated with the assistant or with its own access to the assistant.\" Browser runs on the VPS (Playwright + headless Chromium), live view over CDP screencast; REST + MCP + CLI; secrets by vault reference only. Booked to Snap Sully (no Polo card).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/browser-automation",
    "pr": "#299",
    "createdAt": "2026-11-04T00:31:47.837Z",
-   "updatedAt": "2026-11-04T02:11:39.850Z",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
    "builtAt": "",
    "notes": [
     {
@@ -69436,6 +69490,10 @@
     {
      "text": "s3 done: live view + settings; tsc clean (1 unused import fixed), theme/controls checks clean. Phone/desktop shots still to take: Vite page load timed out at 240 s with load avg ~95; retry with --start-timeout/--nav-timeout when the box is quieter.",
      "at": "2026-11-04T02:11:39.850Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -69802,7 +69860,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -69845,14 +69903,14 @@
    "title": "Profile switcher widget (filter builds by profile, All profiles, attach to any toolbar or banner)",
    "category": "Builds",
    "detail": "What Brett said (verbatim, Nov 3 2026, voice): \"I need a plugin that makes a widget that can be attached to a toolbar or a banner or whatever, that lets you select their build package. Also, select something that combines all build profiles.\" Addendum 1: \"So basically it's like a filter. They're all shown everywhere, but only one of them is rendered. Basically make it a filter. Always just show everything in every build profile, but it just effectively filters to hide them.\" Addendum 2: \"That said, it's gonna act upon what's visible.\" Profiles are a view filter (multi-select, All = no filter) shared by every builds table; bulk actions act only on what is visible; the active profile stays the target for new builds. Assigned agent: Ping Paulie (no Polo card).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "voice",
    "pendingId": "",
    "branch": "claude/profile-switcher-widget",
    "pr": "#300",
    "createdAt": "2026-11-04T00:40:48.340Z",
-   "updatedAt": "2026-11-04T02:35:08.371Z",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
    "builtAt": "",
    "notes": [
     {
@@ -69862,6 +69920,10 @@
     {
      "text": "Reconciler: PR #300",
      "at": "2026-11-04T02:14:30.962Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -70030,7 +70092,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -71426,19 +71488,23 @@
    "title": "App style override: axHub is the style source, per-app Override design / colors, reload + save to axHub",
    "category": "Appearance",
    "detail": "What Brett said (Nov 3 2026, voice): \"Put a button in each app's settings to override axHub's style, in design and colors.\" Addendum 1: \"And the hook will reload axHub, and you can also save design back to axHub.\" Context: axHub defines the default look for every app; apps inherit it live; manual edits override per setting with an 'Overriding axHub' note (same rule as molly-nav-submenus Addendum 6 and gizmo-companion's appearance add-on). Agent: Ping Paulie (no Polo card). Model: Opus for every step (Claude decides); additive web-only contract, Android twin deferred in PORTING.md; Fable review recommended per the shared rule.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/app-style-override",
    "pr": "#302",
    "createdAt": "2026-11-04T01:44:48.256Z",
-   "updatedAt": "2026-11-04T03:12:51.746Z",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: PR #302",
      "at": "2026-11-04T03:12:51.746Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -71585,7 +71651,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

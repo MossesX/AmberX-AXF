@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T12:37:16.527Z",
+ "updatedAt": "2026-11-04T12:44:13.519Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -9817,19 +9817,23 @@
    "title": "Fix: can't click steps in the Build orchestrator",
    "category": "Console",
    "detail": "Brett Nov 1 23:08: \"I can't click steps\" (Build orchestrator steps in the console). Code read: step rows are a DataGrid nested in the expanded build row (ui.tsx StepGrid); tick boxes are disabled when the build is complete or the phase is locked; tiny tick target on phone. Repro on desktop + phone first, then fix. Queued: waits for Brett's go.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-01T23:09:37.031Z",
-   "updatedAt": "2026-11-03T13:56:31.369Z",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Estimates added (orch-live-sync s6): the small-steps check needs one on every step.",
      "at": "2026-11-03T13:56:31.369Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -9908,7 +9912,7 @@
    "title": "Walkthrough: random design package for stack chapters 5-10 (recording-only look)",
    "category": "",
    "detail": "Brett Nov 2 2026 14:36 ET: for the 90-minute walkthrough, change the design pack to a random one for chapters 5-10 (cli, console, plugins, builds, guardrails, agents). Chosen: recording-only look; the recorder rewrites only its own browser copy of the hub appearance document, the shared look on axHub never changes.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -9916,12 +9920,16 @@
    "pr": "#240",
    "mergedAt": "2026-11-02T19:54:16Z",
    "createdAt": "2026-11-02T19:41:22.804Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
+   "builtAt": "2026-11-04T12:44:12.117Z",
    "notes": [
     {
      "text": "Reconciler: PR #240; PR #240 merged",
      "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Reconciler: PR #240 merged: complete",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],

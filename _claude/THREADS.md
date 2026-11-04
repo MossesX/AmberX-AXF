@@ -975,6 +975,22 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 12:18 UTC · `hotfix-build-manager` added (4 steps) (current) · orchestrator
 - 2026-11-04 12:18 UTC · `hotfix-build-manager` → running (current) · orchestrator
 - 2026-11-04 12:41 UTC · `urgent-land-lazy-loader` added (4 steps) (current) · foreign-write
+- 2026-11-04 12:44 UTC · `element-inspector` → pending, note (angel) · reconciler
+- 2026-11-04 12:44 UTC · `layout-repeating-slots` → complete, note (angel) · reconciler
+- 2026-11-04 12:44 UTC · `orch-step-click` → pending, note (refactor) · reconciler
+- 2026-11-04 12:44 UTC · `molly-opus` → complete, note (big-dog) · reconciler
+- 2026-11-04 12:44 UTC · `walkthrough-random-look` → complete, note (refactor) · reconciler
+- 2026-11-04 12:44 UTC · `kill-patches-pilot` → complete, note (urgent) · reconciler
+- 2026-11-04 12:44 UTC · `toolbar-tap-confirm` → complete, note (urgent) · reconciler
+- 2026-11-04 12:44 UTC · `profile-manager` → pending, note (current) · reconciler
+- 2026-11-04 12:44 UTC · `molly-console-commands` → complete, note (current) · reconciler
+- 2026-11-04 12:44 UTC · `git-status-board` → pending, note (current) · reconciler
+- 2026-11-04 12:44 UTC · `urgent-main-ci-green` → complete, note (current) · reconciler
+- 2026-11-04 12:44 UTC · `terminal-tabs-left` → pending, note (current) · reconciler
+- 2026-11-04 12:44 UTC · `gizmo-companion` → pending, note (current) · reconciler
+- 2026-11-04 12:44 UTC · `browser-automation` → pending, note (current) · reconciler
+- 2026-11-04 12:44 UTC · `profile-switcher-widget` → pending, note (current) · reconciler
+- 2026-11-04 12:44 UTC · `app-style-override` → pending, note (current) · reconciler
 
 ## Token passes (log)
 
