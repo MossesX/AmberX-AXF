@@ -662,10 +662,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:57 UTC · `orch-live-sync` s6 done (urgent) · orchestrator
-- 2026-11-03 14:01 UTC · `orch-live-sync` PR #255 (urgent) · builds-live
-- 2026-11-03 14:01 UTC · `orch-live-sync` s7 done, → built (urgent) · orchestrator
-- 2026-11-03 14:45 UTC · `whats-new-banner` s1–s4 done, s5 tests/checks/shots done, PR opening (urgent) · claude/whats-new-banner
 - 2026-11-03 14:53 UTC · `whats-new-banner` s5 done, PR #260, UI Review r-20261103-8861306a waiting (urgent) · claude/whats-new-banner
 - 2026-11-03 15:20 UTC · `orch-live-sync` → complete, merged, note (urgent) · reconciler
 - 2026-11-03 15:32 UTC · `land-everything` added (11 steps) (urgent) · orchestrator
@@ -1062,6 +1058,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:10 UTC · `terminal-no-focus` note (current) · reconciler
 - 2026-11-04 14:11 UTC · `land-round-2` note (current) · foreign-write
 - 2026-11-04 14:11 UTC · `crew-profiles` s3 done (current) · orchestrator
+- 2026-11-04 14:11 UTC · `terminal-no-focus` note (current) · foreign-write
+- 2026-11-04 14:11 UTC · `urgent-land-lazy-loader` s3 done, note (current) · foreign-write
+- 2026-11-04 14:11 UTC · `follow-amber-switch` s5 done, → complete (current) · foreign-write
+- 2026-11-04 14:11 UTC · `crew-profiles` added (6 steps) (current) · foreign-write
 
 ## Token passes (log)
 
