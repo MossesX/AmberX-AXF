@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 788,
- "updatedAt": "2026-11-04T15:33:05.563Z",
+ "rev": 789,
+ "updatedAt": "2026-11-04T15:33:18.046Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -79438,7 +79438,16 @@
      "at": "2026-11-04T15:32:25.522Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-04T15:32:24.370Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "\"It's voice control too - like I can control it with my voice, right?\" ... \"Anytime I build a new app or port an app like that, it needs to be noted whether it's for the framework development itself, and if so, it needs to build in voice commands for the API and MCP and CLI automatically, so they can be added to Molly and controlled by voice.\"",
@@ -79594,27 +79603,10 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-04T14:43:48.090Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mw288vhh07t3c0": "2026-11-04T14:43:48.095Z",
-     "st-mw288vhh087w8r": "2026-11-04T14:43:48.095Z",
-     "st-mw288vhh09e63j": "2026-11-04T14:43:48.095Z",
-     "st-mw288vhh0awe54": "2026-11-04T14:43:48.095Z",
-     "st-mw288vhh0b68y3": "2026-11-04T14:43:48.095Z",
-     "st-mw288vhh0cvfyx": "2026-11-04T14:43:48.095Z"
-    }
-   },
+   "pending": null,
    "queue": null,
    "defaultAt": "2026-11-04T14:43:48.095Z",
    "rearranged": false,
