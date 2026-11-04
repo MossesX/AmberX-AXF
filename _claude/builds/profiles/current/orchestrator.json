@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T22:42:31.349Z",
+ "updatedAt": "2026-11-04T23:01:19.281Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -12984,6 +12984,37 @@
      "uid": "st-mw2nsa4d0a54sn"
     }
    ]
+  },
+  {
+   "id": "fable-review-shipped-features-build-hook-contrac",
+   "title": "Fable review: Shipped features build hook contract",
+   "category": "",
+   "detail": "Shipped features s4 (the build hook contract: one framework event every build creator fires for create, status change, PR open/merge) was built on Opus by Brett's override, since the main account ran out of credits mid-build. Fable reviews it and rebuilds it where needed, along with feature-ledger@1 and deploy-log@1 (built on Fable by Gina but cut off before review/tests). Branch claude/shipped-features-r2; progress file _claude/builds/progress/shipped-features.md. Do it after the Shipped features PR lands, as a follow-up PR through the merge queue.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "fable-review-shipped-features-build-hook-contrac",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-04T23:01:17.835Z",
+   "updatedAt": "2026-11-04T23:01:17.835Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Alright, then add the Fable rebuild to the to-do list.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
