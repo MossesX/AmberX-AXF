@@ -10,9 +10,13 @@ export type VarMap = Record<string, string>;
 
 const kebab = (s: string) => s.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase());
 
+/** Attention-flash colours (Follow Amber): yellow and orange, with dark text on them, unless the colour theme sets its own. */
+export const FLASH_DEFAULTS = { flashA: '#ffd60a', flashB: '#ff8a00', flashText: '#1a1205' } as const;
+
 export function colorThemeVars(t: ColorThemeData): VarMap {
   const vars: VarMap = {};
   for (const [k, v] of Object.entries(t.tokens)) vars[`--fx-${kebab(k)}`] = v;
+  for (const [k, v] of Object.entries(FLASH_DEFAULTS)) vars[`--fx-${kebab(k)}`] ??= v;
   return vars;
 }
 

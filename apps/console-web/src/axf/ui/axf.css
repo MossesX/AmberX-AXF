@@ -567,6 +567,31 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 }
 .fx-search-flash { animation: fx-search-flash 1.8s ease; border-radius: var(--fx-radius-sm); }
 [data-reduced-motion] .fx-search-flash { animation: none !important; outline: 3px solid var(--fx-accent); outline-offset: 2px; }
+/* attention flash (Follow Amber): the background flashes --axf-attn-count times, alternating the theme's flash-a / flash-b
+   colours, one flash every --axf-attn-period. A keyframe pass is two flashes, so the iteration count is half the flash
+   count (5 = 2.5 passes: a b a b a). Background and box-shadow only, so nothing moves. Callers may set the four
+   --axf-attn-* properties inline (user settings); the class carries the defaults. Text on it takes --fx-flash-text. */
+@keyframes fx-attn-flash {
+  0%, 50%, 100% { background-color: transparent; box-shadow: 0 0 0 0 transparent; }
+  10%, 35% { background-color: var(--axf-attn-a); box-shadow: 0 0 0 calc(var(--fx-border-w) * 2) var(--axf-attn-a); color: var(--fx-flash-text); }
+  60%, 85% { background-color: var(--axf-attn-b); box-shadow: 0 0 0 calc(var(--fx-border-w) * 2) var(--axf-attn-b); color: var(--fx-flash-text); }
+}
+@keyframes fx-attn-pulse {
+  0%, 100% { outline-color: transparent; }
+  30%, 70% { outline-color: var(--axf-attn-a); }
+}
+.fx-attn-flash {
+  --axf-attn-a: var(--fx-flash-a);
+  --axf-attn-b: var(--fx-flash-b);
+  --axf-attn-count: 5;
+  --axf-attn-period: 500ms;
+  animation: fx-attn-flash calc(var(--axf-attn-period) * 2) linear calc(var(--axf-attn-count) / 2);
+  border-radius: var(--fx-radius-sm);
+}
+@media (prefers-reduced-motion: reduce) {
+  .fx-attn-flash { animation: fx-attn-pulse calc(var(--axf-attn-period) * 2) ease 1; outline: calc(var(--fx-border-w) * 2) solid transparent; outline-offset: var(--fx-border-w); }
+}
+[data-reduced-motion] .fx-attn-flash { animation: fx-attn-pulse calc(var(--axf-attn-period) * 2) ease 1; outline: calc(var(--fx-border-w) * 2) solid transparent; outline-offset: var(--fx-border-w); }
 
 /* ---------------- reference links (ref@1, RefText): a mention of a real thing in banner / build text ---------------- */
 .fx-ref {

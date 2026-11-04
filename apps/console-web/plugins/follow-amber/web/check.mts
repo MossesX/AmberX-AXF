@@ -8,7 +8,8 @@
  */
 import assert from 'node:assert/strict';
 import { fetchApprovals } from '@console/axf/libs/approvals';
-import { arrived, decide, highlightIsSelector, offers, parseFrame, pickNext, queueOf, routeOf } from './core.ts';
+import { FLASH_COUNT, arrived, decide, flashLabel, flashMs, flashPrefs, flashStyle, highlightIsSelector, matchScore, offers, parseFrame, pickBest, pickNext, queueOf, routeOf } from './core.ts';
+import { FLASH_DEFAULTS, colorThemeVars } from '@console/axf/core/engines/theme';
 
 let n = 0;
 const t = async (name: string, f: () => unknown) => { try { await f(); n++; } catch (e) { console.error(`✗ ${name}`); throw e; } };
@@ -159,6 +160,64 @@ await t('a refused decision says why and keeps the item', async () => {
   const r = await decide(f.items.find((i) => i.id === A1)!, true, { hub: HUB, origin: HUB, fetch: h.fetch });
   assert.equal(r.ok, false);
   assert.ok(r.message.length > 0);
+});
+
+/* ---------------- the flash (Brett, Nov 4 2026: "flash the background … five times", yellow and orange) ---------------- */
+
+await t('show frames carry the id the console reports against', () => {
+  const s = parseFrame({ $axf: 'follow-amber@1', type: 'show', id: 'abc123', kind: 'screen', target: 'builds' });
+  assert.equal(s?.type === 'show' && s.id, 'abc123');
+});
+
+await t('flash defaults: on, theme colours, five flashes, 2.5 s', () => {
+  const p = flashPrefs(() => undefined, FLASH_DEFAULTS.flashA, FLASH_DEFAULTS.flashB);
+  assert.deepEqual(p, { on: true, colorA: '', colorB: '', count: 5, speed: 'normal' });
+  assert.equal(flashMs(p), 2500);
+  assert.deepEqual(flashStyle(p), { '--axf-attn-count': '5', '--axf-attn-period': '500ms' });
+});
+
+await t('flash settings: picked colours override the theme, count and speed are clamped', () => {
+  const v: Record<string, unknown> = { 'follow-amber.flash': false, 'follow-amber.flash.colorA': '#00ff00', 'follow-amber.flash.colorB': FLASH_DEFAULTS.flashB, 'follow-amber.flash.count': 99, 'follow-amber.flash.speed': 'fast' };
+  const p = flashPrefs((k) => v[k], FLASH_DEFAULTS.flashA, FLASH_DEFAULTS.flashB);
+  assert.equal(p.on, false);
+  assert.equal(p.colorA, '#00ff00');
+  assert.equal(p.colorB, '', 'left at the default = follow the theme');
+  assert.equal(p.count, FLASH_COUNT.max);
+  assert.equal(flashStyle(p)['--axf-attn-a'], '#00ff00');
+  assert.equal(flashStyle(p)['--axf-attn-b'], undefined);
+  assert.equal(flashStyle(p)['--axf-attn-period'], '300ms');
+  assert.equal(flashPrefs((k) => ({ 'follow-amber.flash.count': 0, 'follow-amber.flash.colorA': 'red', 'follow-amber.flash.speed': 'warp' } as Record<string, unknown>)[k]).count, 5);
+  assert.equal(flashPrefs((k) => (k === 'follow-amber.flash.colorA' ? 'red' : undefined)).colorA, '', 'only #rrggbb colours');
+});
+
+await t('colour themes compile flash-a / flash-b / flash-text (yellow / orange / dark when a theme has none)', () => {
+  const base = { bg: '#000', surface: '#000', surface2: '#000', surface3: '#000', text: '#fff', muted: '#888', border: '#333', accent: '#f80', accentText: '#000', accentSoft: '#f80', danger: '#f00', success: '#0f0', warning: '#ff0', info: '#00f', focus: '#f80', shadow: '#000' }; // theme-ok: test data
+  const v = colorThemeVars({ scheme: 'dark', tokens: base });
+  assert.equal(v['--fx-flash-a'], FLASH_DEFAULTS.flashA);
+  assert.equal(v['--fx-flash-b'], FLASH_DEFAULTS.flashB);
+  assert.equal(v['--fx-flash-text'], FLASH_DEFAULTS.flashText);
+  assert.equal(colorThemeVars({ scheme: 'dark', tokens: { ...base, flashA: '#123456' } })['--fx-flash-a'], '#123456'); // theme-ok: test data
+});
+
+await t('best match: exact text, then the dialog on top, then visible, then the row itself', () => {
+  assert.equal(matchScore('Follow Amber flash', 'follow  amber FLASH'), 3);
+  assert.equal(matchScore('Follow Amber flash · Feature', 'Follow Amber flash'), 2);
+  assert.equal(matchScore('Build: Follow Amber flash', 'Follow Amber flash'), 1);
+  assert.equal(matchScore('Something else', 'Follow Amber flash'), 0);
+  const c = (text: string, onTop = false, visible = true, order = 0) => ({ text, onTop, visible, order });
+  assert.equal(pickBest([c('Follow Amber flash · Feature', false, true, 0), c('Follow Amber flash', false, false, 1)], 'Follow Amber flash'), 1, 'exact beats partial, even off screen');
+  assert.equal(pickBest([c('Builds', false, true, 0), c('Builds', true, true, 1)], 'builds'), 1, 'the dialog on top wins');
+  assert.equal(pickBest([c('Builds', false, false, 0), c('Builds', false, true, 1)], 'builds'), 1, 'the visible one wins');
+  assert.equal(pickBest([c('Plan Studio parked plans and more', false, true, 0), c('Plan Studio parked', false, true, 1)], 'plan studio'), 1, 'the shorter (the row, not its list)');
+  assert.equal(pickBest([c('Builds', false, true, 0), c('Builds', false, true, 1)], 'builds'), 0, 'then document order');
+  assert.equal(pickBest([c('Nope')], 'builds'), -1);
+  assert.equal(pickBest([c('x'.repeat(500) + 'builds')], 'builds'), -1, 'a whole page of text is not a match');
+});
+
+await t('what flashed is reported as a short label', () => {
+  assert.equal(flashLabel('  Follow Amber\n flash  ', 'x'), 'Follow Amber flash');
+  assert.equal(flashLabel('', 'Builds'), 'Builds');
+  assert.equal(flashLabel('y'.repeat(200), '').length, 80);
 });
 
 console.log(`✓ follow amber (web) — ${n} checks`);

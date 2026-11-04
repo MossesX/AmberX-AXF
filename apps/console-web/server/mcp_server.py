@@ -1016,7 +1016,9 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         it right away, focused and highlighted, with `say` as a note; when it's off this does nothing (shown: false).
         `target` = a screen, settings tab, dialog or navigation-only action by id, title or words ("plan studio",
         "plugins/<plugin>"), or kind:name (screen:, settings:, dialog:, action:, approval:<id> pops up a waiting
-        axHub approval). `highlight` = a CSS selector or exact visible text to flash once it's open. Only navigates."""
+        axHub approval). `highlight` = a CSS selector or exact visible text to flash once it's open (its background
+        flashes yellow / orange; no highlight = the opened screen or dialog flashes). The answer's `flashed` names what
+        flashed ('' = nothing found or the flash is off, null = no console reported). Only navigates."""
         return await follow("show", target=target, highlight=highlight, say=say, to=to)
 
     @mcp.tool(annotations=READ)

@@ -11,6 +11,8 @@ about opens on his screen right away, and axHub's held / confirm calls pop up in
                                                   approvals feed now and pops it up (a no-op when off)
   GET  stream?client=<id>                         server-sent events, one follow-amber@1 frame per `data:`
   GET  recent                                     the last things shown
+  POST flashed {id, client, label}                a console reports which item it flashed for a show (the show's
+                                                  result carries it as `flashed`, so Amber knows it landed)
 
 Showing only ever navigates. A show runs through the Console commands plugin (capability console-commands@1) with the
 single grant `control.console.navigate`, so its runner refuses anything that would change data; screens, settings
@@ -52,10 +54,14 @@ TRY_ORDER = ("screen", "settings", "dialog")
 NAVIGATE = ["control.console.navigate"]
 TEXT_MAX = 300
 CLIENT_MAX = 64
+# How long a show waits for the first console to say which item it flashed (the client looks for it up to 4 s).
+FLASH_WAIT_S = 5.0
 
 _lock = threading.Lock()
 _clients: dict[str, dict[str, Any]] = {}
 _recent: deque[dict[str, Any]] = deque(maxlen=30)
+# show id → {"event", "label", "client"}: filled by the first console that reports what it flashed
+_flashes: dict[str, dict[str, Any]] = {}
 
 
 def _data() -> Path:
@@ -173,12 +179,40 @@ def show(target: str, kind: str = "", highlight: str = "", say: str = "", to: st
         else:
             item = r.get("item") or {}
             label = item.get("label") or name
-            n = broadcast({"type": "show", "kind": k, "target": name, "label": label, "highlight": highlight, "say": say, "by": by})
+            sid = os.urandom(8).hex()
+            with _lock:
+                _flashes[sid] = {"event": threading.Event(), "label": None, "client": ""}
+            n = broadcast({"type": "show", "id": sid, "kind": k, "target": name, "label": label, "highlight": highlight, "say": say, "by": by})
+            flashed = wait_flashed(sid, FLASH_WAIT_S if n else 0)
             r = {"ok": True, "shown": True, **base, "kind": k, "label": label, "consoles": n, "delivered": r.get("delivered") or [], **({"delivery": r["delivery"]} if r.get("delivery") else {}),
-                 "message": f"opened {label}" + (f" and highlighted {highlight}" if highlight else "")}
+                 "flashed": flashed, "message": f"opened {label}" + (f", flashed {flashed}" if flashed else ("; nothing flashed (not found on screen, or the flash is off)" if flashed == "" else ""))}
     with _lock:
         _recent.appendleft({"at": _now_iso(), "by": by, "kind": r.get("kind", k), "target": name, "ok": bool(r.get("ok")), "shown": bool(r.get("shown")), "message": _text(r.get("message"))})
     return r
+
+
+def wait_flashed(sid: str, timeout: float) -> str | None:
+    """The label the first console flashed for show `sid` ('' = it found nothing or the flash is off), None = no report."""
+    with _lock:
+        f = _flashes.get(sid)
+    if f is None:
+        return None
+    if timeout > 0:
+        f["event"].wait(timeout)
+    with _lock:
+        _flashes.pop(sid, None)
+    return f["label"]
+
+
+def report_flashed(sid: str, label: str, client: str = "") -> bool:
+    """A console says what it flashed for a show; the first report wins. → whether the show was still waiting."""
+    with _lock:
+        f = _flashes.get(sid)
+        if f is None or f["label"] is not None:
+            return False
+        f["label"], f["client"] = _text(label, 80), _text(client, CLIENT_MAX)
+    f["event"].set()
+    return True
 
 
 def approval(aid: str = "", by: str = "amber", say: str = "") -> dict[str, Any]:
@@ -240,6 +274,13 @@ async def post_approval(request: Request) -> dict[str, Any]:
     name = _owner(request)
     b = await _body(request)
     return approval(_text(b.get("id"), 80), _text(b.get("by"), 80) or name, _text(b.get("say")))
+
+
+@router.post("/flashed")
+async def post_flashed(request: Request) -> dict[str, Any]:
+    _owner(request)
+    b = await _body(request)
+    return {"ok": True, "taken": report_flashed(_text(b.get("id"), 40), _text(b.get("label"), 80), _text(b.get("client"), CLIENT_MAX))}
 
 
 @router.get("/recent")

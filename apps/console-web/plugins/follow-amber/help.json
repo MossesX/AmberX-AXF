@@ -6,7 +6,9 @@
   "version": "0.1.0",
   "description": "Help mode entries for the Follow Amber plugin (help@1): its settings tab and the approval pop-up.",
   "author": "Brett",
-  "tags": ["help"],
+  "tags": [
+    "help"
+  ],
   "data": {
     "scope": "plugin:follow-amber",
     "entries": [
@@ -30,6 +32,36 @@
         "target": "show-the-banner-chip-while-following",
         "title": "Show the banner chip while following",
         "text": "On: a small Following Amber chip sits in the banner while Follow Amber is on; tap it to turn Follow Amber off.",
+        "kind": "field"
+      },
+      {
+        "target": "flash-it",
+        "title": "Flash it",
+        "text": "When Amber opens something for you, the item she means (the row, card, button or text she named, or the screen or dialog itself) flashes its background so you spot it. Off: it still opens and scrolls into view.",
+        "kind": "field"
+      },
+      {
+        "target": "first-colour",
+        "title": "First colour",
+        "text": "The first flash colour (yellow by default). Left at the default, the colour theme's flash colour is used.",
+        "kind": "field"
+      },
+      {
+        "target": "second-colour",
+        "title": "Second colour",
+        "text": "The second flash colour (orange by default); the flashes alternate between the two.",
+        "kind": "field"
+      },
+      {
+        "target": "flashes",
+        "title": "Flashes",
+        "text": "How many times it flashes (1 to 10, 5 by default).",
+        "kind": "field"
+      },
+      {
+        "target": "speed",
+        "title": "Speed",
+        "text": "How fast it flashes. Normal: five flashes take 2.5 seconds. With reduced motion on, it pulses an outline once instead.",
         "kind": "field"
       },
       {
