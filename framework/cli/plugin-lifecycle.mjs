@@ -49,6 +49,9 @@ const CHANGES_DIR = join(ROOT, 'changes');
 const HANDOFF_DIR = join(ROOT, '_claude/handoff'); // the Claude handoff kit: a generated snapshot of the docs, like the rebuild reports
 const SESSIONS_DIR = join(ROOT, 'sessions'); // the session check-in archive (session-log@1): records of past sessions, history like the changes log
 // The builds store's read-only exports (pending list + build queue, per profile) carry build notes: plans, like _claude/builds.
+// CI ratchet baselines (check-chrome-assets.mjs → framework/spec/chrome-baseline.json): per-file counts of findings that
+// may only shrink. A removed plugin's line only lowers a count nobody can exceed, so it is not a stale reference.
+const RATCHET_BASELINE = /^framework\/spec\/chrome-baseline\.json$/;
 const BUILD_EXPORT = /^framework\/plan\/(profiles\/[^/]+\/framework\/plan\/)?(pending|build-queue)\.json$/;
 const HANDOFF_NOTE = /^_claude\/(memory|shared\/notes\/handoffs)\/handoff-[0-9-]+\.md$/; // dated account-switch handoff notes (own or shared): snapshots of a day, history
 const SKIP_DIRS = new Set(['.git', 'node_modules', 'dist', 'dist-single', '.axf-console', '__pycache__', 'build', '.gradle']);
@@ -137,7 +140,7 @@ export function scanReferences(p) {
   for (const file of walk(ROOT)) {
     if (file.startsWith(p.dir + '/') || file === STATE) continue;
     // Rebuild and harvest reports (and their screenshots) and the changes log are history: they describe a plugin version and must outlive it.
-    if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/') || file.startsWith(CHANGES_DIR + '/') || file.startsWith(HANDOFF_DIR + '/') || file.startsWith(BUILDS_DIR + '/') || file.startsWith(SESSIONS_DIR + '/') || HANDOFF_NOTE.test(relative(ROOT, file)) || BUILD_EXPORT.test(relative(ROOT, file))) continue;
+    if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/') || file.startsWith(CHANGES_DIR + '/') || file.startsWith(HANDOFF_DIR + '/') || file.startsWith(BUILDS_DIR + '/') || file.startsWith(SESSIONS_DIR + '/') || HANDOFF_NOTE.test(relative(ROOT, file)) || BUILD_EXPORT.test(relative(ROOT, file)) || RATCHET_BASELINE.test(relative(ROOT, file))) continue;
     // Another plugin's own tests may name plugins as data (e.g. the rebuild tracker's fixtures); only its runtime
     // code is held to "never by folder name".
     // Generated bundles (*.gen.mjs) copy an app's own code, so its folder names there are data, not plugin references.

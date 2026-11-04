@@ -7,7 +7,8 @@ import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
-import { AGENT_CARD_SAMPLE, agentCardErrors, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
+import { AGENT_CARD_SAMPLE, agentCardErrors, avatarColors, avatarModel, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
+import { AVATAR_FACES, AVATAR_GEAR } from '../core/engines/swarm-rules.mjs';
 import { buildHelpIndex, helpCoverage, helpErrors, helpTarget, introToShow, introToWalkthrough, markSeen, normalizeHelpPack, ratchetErrors, resolveHelp, slugLabel } from '../core/engines/help-rules.mjs';
 import { DEFAULT_LAYOUT, LAYOUT_FIELDS, compileLayout, layoutBreakpointAttr, layoutErrors, layoutTokenVars, layoutTokens, layoutVars, layoutViewportAttrs, layoutViewports, normalizeLayout } from '../core/engines/layout';
 import { CONTROL_TARGET_IDS, canonicalControl, controlConfirmToken, controlConfirmValid, controlErrors, controlGate, controlHash, controlPaths, controlRegistry, controlResult, controlFailure, normalizeControl } from '../core/engines/control-rules.mjs';
@@ -100,6 +101,14 @@ write('agent-card.json', {
     'too-many': agentCardErrors('agent-card', { front: Array(13).fill('name') }),
     'not-an-object': agentCardErrors('agent-card', 'nope'),
     'other-type': agentCardErrors('button', { design: 'poster' }),
+  },
+  // the avatar (agent@1 face / hair / gear / hue → a part list of theme tokens): what every port draws
+  avatar: {
+    sample: avatarModel(AGENT_CARD_SAMPLE.avatar),
+    junk: avatarModel('nope'),
+    faces: Object.fromEntries(AVATAR_FACES.map((face) => [face, avatarModel({ face }).parts.find((x) => x.id === 'face')])),
+    gear: Object.fromEntries(AVATAR_GEAR.map((gear) => [gear, avatarModel({ gear }).parts.filter((x) => x.id.startsWith('gear'))])),
+    hues: Object.fromEntries([0, 45, 90, 180, 270, 359].map((hue) => [hue, avatarColors({ hue, hair: 0 })])),
   },
 });
 // Help mode (help@1; core/engines/help-rules.mjs): auto help ids, packs, the index (later wins, drafts never beat written), intros, coverage, ratchet, errors.
