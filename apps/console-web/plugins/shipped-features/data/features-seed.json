@@ -1,0 +1,6 @@
+{
+  "$axf": "feature-ledger@1",
+  "note": "AI split of AmberX-AXF and axHub history into individual features, merged last by the importer (ledger.mjs import). Each entry is a feature@1 (name, description, type, app, plugin, repo, prs, builds, commits, plannedAt, mergedAt) or, under edits, a feature-edit@1. Empty until a model pass fills it: `node apps/console-web/plugins/shipped-features/ledger/ledger.mjs seed-draft` writes the input for that pass.",
+  "features": [],
+  "edits": []
+}

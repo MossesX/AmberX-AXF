@@ -60,5 +60,27 @@ t('a created build plans its steps right away, with his words; statuses follow t
   D.closeDb(':memory:');
 });
 
+t('a merged PR dates its build, or becomes a feature / an edit of its own', async () => {
+  const { applyPr } = await import('./ledger/importers.mjs');
+  const db = D.openDb(':memory:');
+  D.putBuild(db, { id: 'grid', profile: 'angel', title: 'Grid', pr: 350, branch: 'claude/grid' });
+  const f = D.putFeature(db, { name: 'Status chips', plugin: 'shipped-features', status: 'in-pr', builds: [{ id: 'grid', profile: 'angel', role: 'added' }] });
+  assert.equal(applyPr(db, { repo: 'amberx-axf', number: 350, title: 'Grid', branch: 'claude/grid', mergedAt: '2026-11-05T00:00:00Z', mergeCommit: 'aaaaaaaa', files: [] }), 'dated');
+  assert.equal(D.getFeature(db, f.id).status, 'merged'); assert.equal(D.getFeature(db, f.id).mergeCommit, 'aaaaaaaa');
+  assert.equal(applyPr(db, { repo: 'amberx-axf', number: 351, title: 'feat: Repo checklist page', mergedAt: '2026-11-05T01:00:00Z', mergeCommit: 'bbbbbbbb', files: ['apps/console-web/plugins/repo-checklist/web/index.tsx'] }), 'feature');
+  assert.equal(applyPr(db, { repo: 'amberx-axf', number: 352, title: 'fix: status chips stalled tone', mergedAt: '2026-11-05T02:00:00Z', mergeCommit: 'cccccccc', files: ['apps/console-web/plugins/shipped-features/web/index.tsx'] }), 'edit');
+  assert.equal(D.listEdits(db, f.id)[0].kind, 'fixed'); assert.equal(D.listEdits(db, f.id)[0].status, 'merged');
+  assert.equal(applyPr(db, { repo: 'amberx-axf', number: 353, title: 'Builds live: 1 build change(s) [skip ci]', mergedAt: '2026-11-05T03:00:00Z', files: [] }), 'noise');
+  D.closeDb(':memory:');
+});
+t('live: first successful deploy containing the merge commit, per target; backfill is guessed', async () => {
+  const { liveFor } = await import('./ledger/live.mjs');
+  const recs = [{ target: 'console', sha: '1111111', at: '2026-11-05T00:10:00Z' }, { target: 'console', sha: '2222222', at: '2026-11-05T00:20:00Z', state: 'failed' }, { target: 'console', sha: '3333333', at: '2026-11-05T00:30:00Z' }, { target: 'axhub', sha: '4444444', at: '2026-11-05T00:40:00Z' }];
+  const contains = (dep, m) => (m === 'aaaaaaa' ? ['2222222', '3333333'].includes(dep) : false);
+  const live = liveFor(recs, 'aaaaaaa', 'amberx-axf', contains);
+  assert.deepEqual(Object.keys(live), ['console']); assert.equal(live.console.at, '2026-11-05T00:30:00Z', 'failed deploys never count');
+  assert.deepEqual(liveFor(recs, 'zzzzzzz', 'amberx-axf', contains), {});
+});
+
 for (const [name, fn] of tests) { try { await fn(); n += 1; } catch (e) { console.error(`✗ ${name}`); throw e; } }
 console.log(`shipped-features: ${n} checks passed`);

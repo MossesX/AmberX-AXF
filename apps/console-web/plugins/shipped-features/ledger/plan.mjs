@@ -43,8 +43,8 @@ export function scopeFromText(text, plugins = [], repo = 'amberx-axf') {
   const s = ` ${str(text, 6000).toLowerCase()} `;
   const hit = [...plugins].sort((a, b) => b.length - a.length).find((p) => p.length > 3 && new RegExp(`[^a-z0-9-]${p.replace(/[-]/g, '[- ]')}[^a-z0-9-]`).test(s));
   if (hit) return { app: 'console', plugin: hit };
-  if (/\bamberx(-droid)?\b|\bandroid app\b/.test(s)) return { app: 'amberx-droid', plugin: '' };
-  if (/\baxhub\b/.test(s)) return { app: 'axhub-web', plugin: '' };
+  if (/\bamberx-droid\b|\bamberx (android )?app\b/.test(s)) return { app: 'amberx-droid', plugin: '' };
+  if (/\baxhub[- ]web\b/.test(s)) return { app: 'axhub-web', plugin: '' };
   if (/\bconsole\b/.test(s)) return { app: 'console', plugin: '' };
   return { app: '', plugin: '' };
 }
