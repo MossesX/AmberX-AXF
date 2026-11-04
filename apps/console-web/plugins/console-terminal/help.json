@@ -420,6 +420,13 @@
         "title": "Context chain speed",
         "text": "How fast the context chain types out the rules a session picks up. Slow is slower than real time on purpose.",
         "kind": "field"
+      },
+      {
+        "target": "context-chain-text-size-share-of-the-themes-text",
+        "title": "Context chain text size (share of the theme’s text)",
+        "text": "Slide to set “Context chain text size (share of the theme’s text)”: left is less, right is more. Part of Terminal.",
+        "kind": "slider",
+        "draft": true
       }
     ],
     "intros": []
