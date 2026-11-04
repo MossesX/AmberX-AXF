@@ -10,16 +10,6 @@
  },
  "builds": [
   {
-   "notes": [
-    {
-     "text": "Assigned: Ping Paulie (all-rounder router not on this checkout). Live fix: key in /opt/axf/.axf-console/plugins/console-terminal/ssh (bind mount), host 172.16.1.1 (coolify gateway), pubkey in /root/.ssh/authorized_keys with from=172.16.0.0/12. headless ready:true, 6 sessions, meters with cost.",
-     "at": "2026-11-03T19:31:28.416Z"
-    },
-    {
-     "text": "Reconciler: branch claude/terminal-vps-host (PR #274); PR #274",
-     "at": "2026-11-03T19:40:47.953Z"
-    }
-   ],
    "id": "terminal-vps-host",
    "title": "Terminal VPS host: headless tabs attach to build tmux sessions",
    "category": "Ops > Terminal",
@@ -33,6 +23,16 @@
    "createdAt": "2026-11-03T19:31:10.365Z",
    "updatedAt": "2026-11-03T19:40:53.260Z",
    "builtAt": "2026-11-03T19:40:51.453Z",
+   "notes": [
+    {
+     "text": "Assigned: Ping Paulie (all-rounder router not on this checkout). Live fix: key in /opt/axf/.axf-console/plugins/console-terminal/ssh (bind mount), host 172.16.1.1 (coolify gateway), pubkey in /root/.ssh/authorized_keys with from=172.16.0.0/12. headless ready:true, 6 sessions, meters with cost.",
+     "at": "2026-11-03T19:31:28.416Z"
+    },
+    {
+     "text": "Reconciler: branch claude/terminal-vps-host (PR #274); PR #274",
+     "at": "2026-11-03T19:40:47.953Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -126,24 +126,9 @@
      "note": "",
      "uid": "st-mw132l3e0aawvn"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Reconciler: branch claude/window-resize-fix (no PR yet)",
-     "at": "2026-11-03T20:00:43.692Z"
-    },
-    {
-     "text": "Reconciler: PR #278; PR #278 merged",
-     "at": "2026-11-03T20:10:46.177Z"
-    },
-    {
-     "text": "Merged PR #278 (836a290d) on Brett's order; console, axhub-web, amberx-web, molly redeployed and verified serving the fix. CI on main was already red on 3 unrelated jobs (widget types, molly xlayout opens:false, Kotlin widget tests) since 17:45 UTC; this PR's own steps passed. UI Review r-20261103-35553277 for the record. Agent: Landin' Lenny.",
-     "at": "2026-11-03T20:12:36.260Z"
-    }
-   ],
    "id": "window-resize-fix",
    "title": "Window resize fix + Terminal settings dialog placement (urgent)",
    "category": "Bug fix",
@@ -158,6 +143,20 @@
    "createdAt": "2026-11-03T19:32:33.504Z",
    "updatedAt": "2026-11-03T20:12:38.085Z",
    "builtAt": "2026-11-03T20:12:35.030Z",
+   "notes": [
+    {
+     "text": "Reconciler: branch claude/window-resize-fix (no PR yet)",
+     "at": "2026-11-03T20:00:43.692Z"
+    },
+    {
+     "text": "Reconciler: PR #278; PR #278 merged",
+     "at": "2026-11-03T20:10:46.177Z"
+    },
+    {
+     "text": "Merged PR #278 (836a290d) on Brett's order; console, axhub-web, amberx-web, molly redeployed and verified serving the fix. CI on main was already red on 3 unrelated jobs (widget types, molly xlayout opens:false, Kotlin widget tests) since 17:45 UTC; this PR's own steps passed. UI Review r-20261103-35553277 for the record. Agent: Landin' Lenny.",
+     "at": "2026-11-03T20:12:36.260Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -215,16 +214,9 @@
      "note": "",
      "uid": "st-mw134d6a0601hn"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Agent: Earl the Ear. PR #286 (on #274). UI Review r-20261103-107a9e61 waiting. Report _claude/builds/reports/terminal-sessions-nav.md",
-     "at": "2026-11-03T21:45:32.326Z"
-    }
-   ],
    "id": "terminal-sessions-nav",
    "title": "Terminal: sessions navigation rail",
    "category": "Console > Terminal",
@@ -238,6 +230,12 @@
    "createdAt": "2026-11-03T19:58:59.822Z",
    "updatedAt": "2026-11-03T21:45:32.326Z",
    "builtAt": "2026-11-03T21:45:30.056Z",
+   "notes": [
+    {
+     "text": "Agent: Earl the Ear. PR #286 (on #274). UI Review r-20261103-107a9e61 waiting. Report _claude/builds/reports/terminal-sessions-nav.md",
+     "at": "2026-11-03T21:45:32.326Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -313,11 +311,9 @@
      "note": "",
      "uid": "st-mw142d5l08ii3v"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [],
    "id": "profile-manager",
    "title": "Build profiles manager (browse, view, create, edit, switch, duplicate, merge, move builds, archive, delete/restore, cleanup)",
    "category": "Builds",
@@ -331,6 +327,7 @@
    "createdAt": "2026-11-03T19:59:06.499Z",
    "updatedAt": "2026-11-03T20:14:29.392Z",
    "builtAt": "",
+   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -453,11 +450,9 @@
      "note": "",
      "uid": "st-mw142icj0gnre8"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [],
    "id": "build-prompt-origin",
    "title": "Show what Brett said (verbatim prompt) on every build",
    "category": "Builds",
@@ -471,6 +466,7 @@
    "createdAt": "2026-11-03T20:23:37.380Z",
    "updatedAt": "2026-11-03T20:53:25.027Z",
    "builtAt": "2026-11-03T20:53:24.237Z",
+   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -564,10 +560,22 @@
      "note": "",
      "uid": "st-mw14y1dv0a0od8"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
+   "id": "plugin-settings-placement",
+   "title": "Plugin settings placement: inside the plugin, pane, dialog, window or main",
+   "category": "Framework",
+   "detail": "Brett (Nov 3 2026, voice): every plugin chooses where its settings open (inside the plugin: slide-out pane L/R/T/B, drop-down, new tab, split, inline; pop-up dialog; floating window; main settings page), with a fallback pane when in-plugin is impossible, and per-placement look + animation (tokens only, reduced motion). Picker in every plugin's settings, its context menu and Settings > Plugins > Settings placement. Terminal first. Agent: Reel Rhonda (headless worktree session, not on main).",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/plugin-settings-placement",
+   "pr": "#289",
+   "createdAt": "2026-11-03T20:30:14.217Z",
+   "updatedAt": "2026-11-03T22:08:50.723Z",
+   "builtAt": "2026-11-03T22:08:49.404Z",
    "notes": [
     {
      "text": "Reconciler: branch claude/plugin-settings-placement (no PR yet)",
@@ -582,19 +590,6 @@
      "at": "2026-11-03T22:08:50.723Z"
     }
    ],
-   "id": "plugin-settings-placement",
-   "title": "Plugin settings placement: inside the plugin, pane, dialog, window or main",
-   "category": "Framework",
-   "detail": "Brett (Nov 3 2026, voice): every plugin chooses where its settings open (inside the plugin: slide-out pane L/R/T/B, drop-down, new tab, split, inline; pop-up dialog; floating window; main settings page), with a fallback pane when in-plugin is impossible, and per-placement look + animation (tokens only, reduced motion). Picker in every plugin's settings, its context menu and Settings > Plugins > Settings placement. Terminal first. Agent: Reel Rhonda (headless worktree session, not on main).",
-   "status": "built",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/plugin-settings-placement",
-   "pr": "#289",
-   "createdAt": "2026-11-03T20:30:14.217Z",
-   "updatedAt": "2026-11-03T22:08:50.723Z",
-   "builtAt": "2026-11-03T22:08:49.404Z",
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -706,16 +701,9 @@
      "note": "",
      "uid": "st-mw15gx3q06vi5f"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Built by Ping Paulie (headless worktree). PR #287, UI Review r-20261103-1ad2ede3 waiting. Gaps: swarm roster agents not targets (no capability), no touches field on builds yet (text only), UI Review has no per-item deep link. Fable review suggested for the ref@1 contract.",
-     "at": "2026-11-03T21:45:25.479Z"
-    }
-   ],
    "id": "banner-ref-links",
    "title": "Banner reference links: tap a mention to open what it refers to",
    "category": "Framework",
@@ -729,6 +717,12 @@
    "createdAt": "2026-11-03T20:47:37.192Z",
    "updatedAt": "2026-11-03T21:45:25.479Z",
    "builtAt": "2026-11-03T21:45:20.552Z",
+   "notes": [
+    {
+     "text": "Built by Ping Paulie (headless worktree). PR #287, UI Review r-20261103-1ad2ede3 waiting. Gaps: swarm roster agents not targets (no capability), no touches field on builds yet (text only), UI Review has no per-item deep link. Fable review suggested for the ref@1 contract.",
+     "at": "2026-11-03T21:45:25.479Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -822,16 +816,9 @@
      "note": "",
      "uid": "st-mw15swa70ag93s"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Fix on PR #288 (stacked on #266). s6/s7 addendum open.",
-     "at": "2026-11-03T21:48:58.463Z"
-    }
-   ],
    "id": "molly-console-commands",
    "title": "Molly: console commands reach the embedded console; every app gets the control surface",
    "category": "Molly",
@@ -845,6 +832,12 @@
    "createdAt": "2026-11-03T21:05:30.629Z",
    "updatedAt": "2026-11-03T21:48:58.463Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "Fix on PR #288 (stacked on #266). s6/s7 addendum open.",
+     "at": "2026-11-03T21:48:58.463Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -2864,11 +2857,9 @@
      "note": "",
      "uid": "st-mw16fwjw0edhg2"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [],
    "id": "git-status-board",
    "title": "Git status board (grids for push / pull / CI / merge / held / deployed / stale)",
    "category": "Console > Plugins",
@@ -2882,6 +2873,7 @@
    "createdAt": "2026-11-03T21:10:39.295Z",
    "updatedAt": "2026-11-03T22:21:08.405Z",
    "builtAt": "",
+   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -2993,20 +2985,9 @@
      "note": "",
      "uid": "st-mw16nui60kg5g2"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Agent: Earl the Ear (headless). Six CI failures fixed at the root on PR #284; ci-main health check names failing jobs, Auto fix queues new ci-fix job (Greenlight Gina). s3 waits for #284 to go green and merge, then the waiting PRs get updated from main.",
-     "at": "2026-11-03T21:31:51.198Z"
-    },
-    {
-     "text": "Reconciler: PR #284 merged",
-     "at": "2026-11-03T22:54:25.249Z"
-    }
-   ],
    "id": "urgent-main-ci-green",
    "title": "URGENT: main CI green (widgets fixture, xlayout opens, Kotlin widget tests)",
    "category": "Ops",
@@ -3021,6 +3002,16 @@
    "createdAt": "2026-11-03T21:12:18.212Z",
    "updatedAt": "2026-11-03T22:54:25.249Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "Agent: Earl the Ear (headless). Six CI failures fixed at the root on PR #284; ci-main health check names failing jobs, Auto fix queues new ci-fix job (Greenlight Gina). s3 waits for #284 to go green and merge, then the waiting PRs get updated from main.",
+     "at": "2026-11-03T21:31:51.198Z"
+    },
+    {
+     "text": "Reconciler: PR #284 merged",
+     "at": "2026-11-03T22:54:25.249Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -3114,20 +3105,9 @@
      "note": "",
      "uid": "st-mw16on0s0apxt0"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Assigned: Janitor Joey (router not on this checkout). Cause: (1) console-terminal auto-opens a floating window (z 60) over the Banners strip (z 42) on phones, swallowing taps on the strip's What's new row; (2) that row (systems-check) only expands inline in a 45vh-capped strip, it never opened the What's new panel. Top-bar chip itself works.",
-     "at": "2026-11-03T21:36:04.573Z"
-    },
-    {
-     "text": "PR #290 open; UI Review r-20261103-049edfb2 waiting (holds the auto-merge until Brett approves). Report _claude/builds/reports/whats-new-open-fix.md",
-     "at": "2026-11-03T22:17:02.033Z"
-    }
-   ],
    "id": "whats-new-open-fix",
    "title": "Bug fix: tapping the What's new banner item opens nothing; dialogs cannot be closed on phone",
    "category": "",
@@ -3141,6 +3121,16 @@
    "createdAt": "2026-11-03T21:23:34.422Z",
    "updatedAt": "2026-11-03T22:17:02.033Z",
    "builtAt": "2026-11-03T22:16:59.240Z",
+   "notes": [
+    {
+     "text": "Assigned: Janitor Joey (router not on this checkout). Cause: (1) console-terminal auto-opens a floating window (z 60) over the Banners strip (z 42) on phones, swallowing taps on the strip's What's new row; (2) that row (systems-check) only expands inline in a 45vh-capped strip, it never opened the What's new panel. Top-bar chip itself works.",
+     "at": "2026-11-03T21:36:04.573Z"
+    },
+    {
+     "text": "PR #290 open; UI Review r-20261103-049edfb2 waiting (holds the auto-merge until Brett approves). Report _claude/builds/reports/whats-new-open-fix.md",
+     "at": "2026-11-03T22:17:02.033Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -3234,10 +3224,22 @@
      "note": "",
      "uid": "st-mw1734ua0alunm"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
+   "id": "terminal-drag-chain-tree",
+   "title": "Terminal: drag handle + hold-drag tabs, context chain as a tree, settings context menu, per-pane text size",
+   "category": "Terminal",
+   "detail": "Brett (Nov 3 2026, voice): no spot to drag the Terminal window (all tabs); context chain must show chained MD files as an indented tree; context menu on the Terminal opens its settings (addendum 1); text size per pane, smaller phone default (addendum 2). Agent: Landin Lenny (headless worktree session). Builds on window-resize-fix #278.",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/terminal-drag-chain-tree",
+   "pr": "#292",
+   "createdAt": "2026-11-03T21:50:21.572Z",
+   "updatedAt": "2026-11-03T23:58:50.341Z",
+   "builtAt": "2026-11-03T23:55:24.932Z",
    "notes": [
     {
      "text": "Clash: terminal-tabs-left (running, another session) changes TerminalHost too; note left on it to reuse WindowGrip orientation=column + useTabPress. terminal-sessions-nav #286 (built, open) also touches TerminalHost; whichever merges second resolves.",
@@ -3252,19 +3254,6 @@
      "at": "2026-11-03T23:53:57.137Z"
     }
    ],
-   "id": "terminal-drag-chain-tree",
-   "title": "Terminal: drag handle + hold-drag tabs, context chain as a tree, settings context menu, per-pane text size",
-   "category": "Terminal",
-   "detail": "Brett (Nov 3 2026, voice): no spot to drag the Terminal window (all tabs); context chain must show chained MD files as an indented tree; context menu on the Terminal opens its settings (addendum 1); text size per pane, smaller phone default (addendum 2). Agent: Landin Lenny (headless worktree session). Builds on window-resize-fix #278.",
-   "status": "built",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/terminal-drag-chain-tree",
-   "pr": "#292",
-   "createdAt": "2026-11-03T21:50:21.572Z",
-   "updatedAt": "2026-11-03T23:58:50.341Z",
-   "builtAt": "2026-11-03T23:55:24.932Z",
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -3376,16 +3365,9 @@
      "note": "",
      "uid": "st-mw181l0f0cuy8c"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Agent: Reel Rhonda. s1-s4 built; PR #295. s5 left: UI Review submission (after screenshots). Fable review of the nav-style contract recommended (Opus-built foundation, shared rule).",
-     "at": "2026-11-03T23:32:48.430Z"
-    }
-   ],
    "id": "molly-nav-submenus",
    "title": "Molly: navigation sub menus that slide open + Navigation settings",
    "category": "Molly",
@@ -3399,6 +3381,12 @@
    "createdAt": "2026-11-03T21:55:24.277Z",
    "updatedAt": "2026-11-03T23:54:29.725Z",
    "builtAt": "2026-11-03T23:54:29.725Z",
+   "notes": [
+    {
+     "text": "Agent: Reel Rhonda. s1-s4 built; PR #295. s5 left: UI Review submission (after screenshots). Fable review of the nav-style contract recommended (Opus-built foundation, shared rule).",
+     "at": "2026-11-03T23:32:48.430Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -3492,10 +3480,22 @@
      "note": "",
      "uid": "st-mw18wqll0b6cki"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
+   "id": "terminal-tabs-left",
+   "title": "Terminal: tab position setting (top, left / right stack, bottom)",
+   "category": "Terminal",
+   "detail": "Brett (Nov 3 2026, voice): \"I want a setting in terminal to put all the tabs on the left side in a stack instead of across the top.\" Setting Tab position: Top | Left stack | Right stack | Bottom, per device, also in the tab context menu. Stack: title, agent, model, live cost, status dot, close; collapse to icons; resizable; drag to reorder; scrolls; title bar still drags. Phone: slide-out. Server default + REST/MCP/CLI get/set. Agent: Janitor Joey (headless worktree session; router not on this branch's main). Overlaps: terminal-sessions-nav (#286, open, adds a left rail) and terminal-drag-chain-tree (running, rewrites strip pointer handling): changes kept to a new TabStack file + CSS so all three merge cleanly.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/terminal-tabs-left",
+   "pr": "#293",
+   "createdAt": "2026-11-03T22:02:33.805Z",
+   "updatedAt": "2026-11-03T22:54:25.249Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Clash note from terminal-drag-chain-tree (branch claude/terminal-drag-chain-tree): the framework now has WindowGrip (react/windows/WindowHost.tsx; orientation=\"column\" for a stacked tab list, put it first) and useTabPress (tap / horizontal drag reorder / press-and-hold or vertical pull drags the window / long-press menu). The Terminal strip uses them and dropped HTML5 tab drag. TerminalHost.tsx also gained the window menu (Terminal settings first), per-pane text size (A-/size/A+, Ctrl+wheel, pinch). The left/right stack should reuse WindowGrip + useTabPress (with vertical reorder) instead of its own drag; expect a TerminalHost merge.",
@@ -3510,19 +3510,6 @@
      "at": "2026-11-03T22:54:25.249Z"
     }
    ],
-   "id": "terminal-tabs-left",
-   "title": "Terminal: tab position setting (top, left / right stack, bottom)",
-   "category": "Terminal",
-   "detail": "Brett (Nov 3 2026, voice): \"I want a setting in terminal to put all the tabs on the left side in a stack instead of across the top.\" Setting Tab position: Top | Left stack | Right stack | Bottom, per device, also in the tab context menu. Stack: title, agent, model, live cost, status dot, close; collapse to icons; resizable; drag to reorder; scrolls; title bar still drags. Phone: slide-out. Server default + REST/MCP/CLI get/set. Agent: Janitor Joey (headless worktree session; router not on this branch's main). Overlaps: terminal-sessions-nav (#286, open, adds a left rail) and terminal-drag-chain-tree (running, rewrites strip pointer handling): changes kept to a new TabStack file + CSS so all three merge cleanly.",
-   "status": "running",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/terminal-tabs-left",
-   "pr": "#293",
-   "createdAt": "2026-11-03T22:02:33.805Z",
-   "updatedAt": "2026-11-03T22:54:25.249Z",
-   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -3616,10 +3603,22 @@
      "note": "",
      "uid": "st-mw18h9tx0asht3"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
+   "id": "molly-banners",
+   "title": "Molly: install the banners",
+   "category": "Molly",
+   "detail": "",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/molly-banners",
+   "pr": "#294",
+   "createdAt": "2026-11-03T22:04:42.483Z",
+   "updatedAt": "2026-11-04T00:11:38.338Z",
+   "builtAt": "2026-11-04T00:10:45.823Z",
    "notes": [
     {
      "text": "Assigned: Amber (headless Opus session, worktree /root/axf-builds/molly-banners, branch claude/molly-banners)",
@@ -3634,19 +3633,6 @@
      "at": "2026-11-04T00:11:38.338Z"
     }
    ],
-   "id": "molly-banners",
-   "title": "Molly: install the banners",
-   "category": "Molly",
-   "detail": "",
-   "status": "built",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/molly-banners",
-   "pr": "#294",
-   "createdAt": "2026-11-03T22:04:42.483Z",
-   "updatedAt": "2026-11-04T00:11:38.338Z",
-   "builtAt": "2026-11-04T00:10:45.823Z",
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -3740,10 +3726,22 @@
      "note": "",
      "uid": "st-mw18k16w0anlxv"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
+   "id": "gizmo-companion",
+   "title": "Gizmo: full Claude companion plugin in AmberX",
+   "category": "AmberX",
+   "detail": "## What Brett said (verbatim, Nov 3 2026, voice)\n\"I need a companion assistant... a sidekick that allows me to chat to your partner... put the plug-in in AmberX.\" \"A full all-out Claude companion, as full, powerful, as complete as the Claude app itself, with everything, all the features, every setting, the connectors, plugins, a full Claude suite.\" \"We can harvest the assistant code out in AmberX to build the new plugin.\" \"Build the plugin for Claude in AmberX, but make it full, complete. It's gotta be powerful.\"\n\nBooked to agent Gizmo (all-rounder, $8.00/h, AmberX guide/assistant; replaces agent Molly).\n\nDecisions: lives in AmberX (apps/amberx-droid) as a plugin; harvest AmberX assistant code + console Terminal Claude session code into a shared framework lib (claude-session) + AmberX plugin `companion`; console Terminal keeps working on the shared lib; brains run on the VPS as Claude Code sessions reached through axHub, no API keys in the APK; Gizmo is the face, Molly is no longer an agent.",
+   "status": "running",
+   "hidden": false,
+   "source": "session",
+   "pendingId": "",
+   "branch": "claude/gizmo-companion",
+   "pr": "#296",
+   "createdAt": "2026-11-03T22:18:50.820Z",
+   "updatedAt": "2026-11-04T01:15:50.561Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Assigned: Gizmo (headless Opus session, worktree /root/axf-builds/gizmo-companion, branch claude/gizmo-companion)",
@@ -3762,19 +3760,6 @@
      "at": "2026-11-03T23:36:42.140Z"
     }
    ],
-   "id": "gizmo-companion",
-   "title": "Gizmo: full Claude companion plugin in AmberX",
-   "category": "AmberX",
-   "detail": "## What Brett said (verbatim, Nov 3 2026, voice)\n\"I need a companion assistant... a sidekick that allows me to chat to your partner... put the plug-in in AmberX.\" \"A full all-out Claude companion, as full, powerful, as complete as the Claude app itself, with everything, all the features, every setting, the connectors, plugins, a full Claude suite.\" \"We can harvest the assistant code out in AmberX to build the new plugin.\" \"Build the plugin for Claude in AmberX, but make it full, complete. It's gotta be powerful.\"\n\nBooked to agent Gizmo (all-rounder, $8.00/h, AmberX guide/assistant; replaces agent Molly).\n\nDecisions: lives in AmberX (apps/amberx-droid) as a plugin; harvest AmberX assistant code + console Terminal Claude session code into a shared framework lib (claude-session) + AmberX plugin `companion`; console Terminal keeps working on the shared lib; brains run on the VPS as Claude Code sessions reached through axHub, no API keys in the APK; Gizmo is the face, Molly is no longer an agent.",
-   "status": "running",
-   "hidden": false,
-   "source": "session",
-   "pendingId": "",
-   "branch": "claude/gizmo-companion",
-   "pr": "#296",
-   "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-04T01:15:50.561Z",
-   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -4120,16 +4105,9 @@
      "note": "",
      "uid": "st-mw1927q512l9n0"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Reconciler: PR #298",
-     "at": "2026-11-04T01:24:29.253Z"
-    }
-   ],
    "id": "plugin-lazy-load",
    "title": "Plugin lazy loader (console speed)",
    "category": "Console > Plugins",
@@ -4143,6 +4121,12 @@
    "createdAt": "2026-11-03T22:55:16.843Z",
    "updatedAt": "2026-11-04T01:24:29.253Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "Reconciler: PR #298",
+     "at": "2026-11-04T01:24:29.253Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -4200,16 +4184,9 @@
      "note": "",
      "uid": "st-mw1ad3pr06m09a"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "#270 auto-land merged (3caf0ee0) after two landing fixes (THREADS plugin references; UI Review read through the push banner's ui-review@1 route). #267 closed as superseded by #284. #251/#254 set to draft so auto-merge leaves them for Brett.",
-     "at": "2026-11-04T00:56:46.854Z"
-    }
-   ],
    "id": "lenny-land-all",
    "title": "Land everything finished (freeze plan step two)",
    "category": "Landing",
@@ -4223,6 +4200,12 @@
    "createdAt": "2026-11-03T23:03:01.354Z",
    "updatedAt": "2026-11-04T00:56:46.854Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "#270 auto-land merged (3caf0ee0) after two landing fixes (THREADS plugin references; UI Review read through the push banner's ui-review@1 route). #267 closed as superseded by #284. #251/#254 set to draft so auto-merge leaves them for Brett.",
+     "at": "2026-11-04T00:56:46.854Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -4352,20 +4335,9 @@
      "note": "",
      "uid": "st-mw1an31y0eizui"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Reconciler: PR #299; PR #299 names s1, s2, s3 done",
-     "at": "2026-11-04T01:43:43.665Z"
-    },
-    {
-     "text": "s3 done: live view + settings; tsc clean (1 unused import fixed), theme/controls checks clean. Phone/desktop shots still to take: Vite page load timed out at 240 s with load avg ~95; retry with --start-timeout/--nav-timeout when the box is quieter.",
-     "at": "2026-11-04T02:11:39.850Z"
-    }
-   ],
    "id": "browser-automation",
    "title": "Automated Browser plugin (drive, record, edit, schedule)",
    "category": "Console > Plugins",
@@ -4379,6 +4351,16 @@
    "createdAt": "2026-11-04T00:31:47.837Z",
    "updatedAt": "2026-11-04T02:11:39.850Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "Reconciler: PR #299; PR #299 names s1, s2, s3 done",
+     "at": "2026-11-04T01:43:43.665Z"
+    },
+    {
+     "text": "s3 done: live view + settings; tsc clean (1 unused import fixed), theme/controls checks clean. Phone/desktop shots still to take: Vite page load timed out at 240 s with load avg ~95; retry with --start-timeout/--nav-timeout when the box is quieter.",
+     "at": "2026-11-04T02:11:39.850Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -4670,20 +4652,9 @@
      "note": "",
      "uid": "st-mw1dt95p0wc6al"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Assigned: Ping Paulie (headless Opus session, worktree /root/axf-builds/profile-switcher-widget, branch claude/profile-switcher-widget)",
-     "at": "2026-11-04T00:41:54.056Z"
-    },
-    {
-     "text": "Reconciler: PR #300",
-     "at": "2026-11-04T02:14:30.962Z"
-    }
-   ],
    "id": "profile-switcher-widget",
    "title": "Profile switcher widget (filter builds by profile, All profiles, attach to any toolbar or banner)",
    "category": "Builds",
@@ -4697,6 +4668,16 @@
    "createdAt": "2026-11-04T00:40:48.340Z",
    "updatedAt": "2026-11-04T02:35:08.371Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "Assigned: Ping Paulie (headless Opus session, worktree /root/axf-builds/profile-switcher-widget, branch claude/profile-switcher-widget)",
+     "at": "2026-11-04T00:41:54.056Z"
+    },
+    {
+     "text": "Reconciler: PR #300",
+     "at": "2026-11-04T02:14:30.962Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -4808,16 +4789,9 @@
      "note": "",
      "uid": "st-mw1fwaya01kz74"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Reconciler: PR #301",
-     "at": "2026-11-04T03:12:51.746Z"
-    }
-   ],
    "id": "main-area-tabs",
    "title": "Main area tab group (tabs, positions, float and dock, split)",
    "category": "Console > Shell",
@@ -4831,6 +4805,12 @@
    "createdAt": "2026-11-04T01:34:59.457Z",
    "updatedAt": "2026-11-04T03:12:51.746Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "Reconciler: PR #301",
+     "at": "2026-11-04T03:12:51.746Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -5914,16 +5894,9 @@
      "note": "",
      "uid": "st-mw1g2jcf0a5sj5"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Reconciler: PR #302",
-     "at": "2026-11-04T03:12:51.746Z"
-    }
-   ],
    "id": "app-style-override",
    "title": "App style override: axHub is the style source, per-app Override design / colors, reload + save to axHub",
    "category": "Appearance",
@@ -5937,6 +5910,12 @@
    "createdAt": "2026-11-04T01:44:48.256Z",
    "updatedAt": "2026-11-04T03:12:51.746Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "Reconciler: PR #302",
+     "at": "2026-11-04T03:12:51.746Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -6048,8 +6027,7 @@
      "note": "",
      "uid": "st-mw1gf3s50hs10s"
     }
-   ],
-   "rev": 0
+   ]
   }
  ]
 }
