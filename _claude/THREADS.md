@@ -683,7 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 13:37 UTC · `land-round-2` s2 done, s3 done (current) · foreign-write
 - 2026-11-04 13:37 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · foreign-write
 - 2026-11-04 13:37 UTC · `follow-amber-switch` added (5 steps) (current) · foreign-write
 - 2026-11-04 13:26 UTC · `bugs-board` s1 done (current) · foreign-write
@@ -1083,6 +1082,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 16:56 UTC · `plugin-settings-placement` note (current) · foreign-write
 - 2026-11-04 16:56 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
 - 2026-11-04 16:56 UTC · `live-sessions-plugin` s3 done (current) · orchestrator
+- 2026-11-04 17:03 UTC · `live-sessions-plugin` s4 done (current) · orchestrator
 
 ## Token passes (log)
 
