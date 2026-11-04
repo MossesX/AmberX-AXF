@@ -582,7 +582,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 21:00 UTC · `home-cards-live` branch claude/home-cards-live, note (urgent) · reconciler
 - 2026-11-03 21:02 UTC · `build-prompt-origin` s3 done, s5 done, → complete (current) · foreign-write
 - 2026-11-03 21:02 UTC · `plugin-settings-placement` s3 done, s4 done, s5 done (current) · foreign-write
 - 2026-11-03 21:02 UTC · `banner-ref-links` s1 done (current) · foreign-write
@@ -982,3 +981,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 02:00 UTC · `profile-switcher-widget` s2 done, s3 done, s4 done (current) · foreign-write
 - 2026-11-04 02:04 UTC · `app-style-override` added (6 steps) (current) · foreign-write
 - 2026-11-04 02:05 UTC · `app-style-override` added (6 steps) (current) · foreign-write
+- 2026-11-04 02:26 UTC · `ui-review-shots` → complete, merged, note (urgent) · reconciler

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 603,
- "updatedAt": "2026-11-04T02:19:52.567Z",
+ "rev": 604,
+ "updatedAt": "2026-11-04T02:30:38.454Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55079,14 +55079,15 @@
    "title": "UI Review shows its pictures again",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-review-shots",
    "pr": "#277",
+   "mergedAt": "2026-11-04T02:12:59Z",
    "createdAt": "2026-11-03T19:09:04.730Z",
-   "updatedAt": "2026-11-03T19:56:34.846Z",
+   "updatedAt": "2026-11-04T02:26:33.241Z",
    "builtAt": "2026-11-03T19:56:34.846Z",
    "notes": [
     {
@@ -55104,6 +55105,10 @@
     {
      "text": "PR #277; UI Review r-20261103-17ef4a40 (group 'ui-review-shots - Nov 3 7:50 PM'); report _claude/builds/reports/ui-review-shots.md. Also fixed: phone zero-width preview (always-true :not([data-fx-narrow]) selector from layout-adopt).",
      "at": "2026-11-03T19:56:12.304Z"
+    },
+    {
+     "text": "Reconciler: PR #277 merged",
+     "at": "2026-11-04T02:26:33.241Z"
     }
    ],
    "approvals": [],
@@ -55228,7 +55233,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
