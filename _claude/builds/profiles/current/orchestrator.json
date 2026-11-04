@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T11:15:33.268Z",
+ "updatedAt": "2026-11-04T11:19:51.749Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6162,13 +6162,13 @@
   {
    "id": "land-round-2",
    "title": "Land round 2: catch up and land the rest, Molly first",
-   "category": "",
+   "category": "Landing",
    "detail": "Agent: Landin' Lenny. One PR at a time: update from main, resolve conflicts keeping both sides, CI green, merge. Order: #288 (+#266) → #294 #295 → #296 → #298 → #281 #291 #293 → #289 #269 → #300. Don't merge WIP #299 #301 #302; close #297 if orphan dup. Redeploy console + Molly after #288, all apps at the end.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
-   "pendingId": "land-round-2",
-   "branch": "",
+   "pendingId": "",
+   "branch": "claude/land-round-2",
    "pr": "",
    "createdAt": "2026-11-04T10:43:58.630Z",
    "updatedAt": "2026-11-04T10:43:59.318Z",
@@ -6205,7 +6205,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1zomxd01458w"
+     "uid": "st-mw1zogg90a559j"
     },
     {
      "id": "s2",
@@ -6223,7 +6223,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1zomxd02zuj8"
+     "uid": "st-mw1zogg90bw5z2"
     },
     {
      "id": "s3",
@@ -6241,7 +6241,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1zomxd03bh8n"
+     "uid": "st-mw1zogg90c4bto"
     },
     {
      "id": "s4",
@@ -6259,7 +6259,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1zomxd04lb6r"
+     "uid": "st-mw1zogg90dnsfx"
     },
     {
      "id": "s5",
@@ -6277,7 +6277,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1zomxd05b2au"
+     "uid": "st-mw1zogg90ef19d"
     },
     {
      "id": "s6",
@@ -6295,7 +6295,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1zomxd06oopl"
+     "uid": "st-mw1zogg90f227d"
     },
     {
      "id": "s7",
@@ -6313,7 +6313,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1zomxd07kc4c"
+     "uid": "st-mw1zogg90g6y9i"
     },
     {
      "id": "s8",
@@ -6331,7 +6331,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1zomxd08svvu"
+     "uid": "st-mw1zogg90hyzks"
     },
     {
      "id": "s9",
@@ -6349,7 +6349,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1zomxd09uycp"
+     "uid": "st-mw1zogg90il8xr"
     }
    ]
   },

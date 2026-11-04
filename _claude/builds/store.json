@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 643,
- "updatedAt": "2026-11-04T11:15:33.268Z",
+ "rev": 644,
+ "updatedAt": "2026-11-04T11:19:51.749Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -71596,13 +71596,13 @@
   {
    "id": "land-round-2",
    "title": "Land round 2: catch up and land the rest, Molly first",
-   "category": "",
+   "category": "Landing",
    "detail": "Agent: Landin' Lenny. One PR at a time: update from main, resolve conflicts keeping both sides, CI green, merge. Order: #288 (+#266) → #294 #295 → #296 → #298 → #281 #291 #293 → #289 #269 → #300. Don't merge WIP #299 #301 #302; close #297 if orphan dup. Redeploy console + Molly after #288, all apps at the end.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
-   "pendingId": "land-round-2",
-   "branch": "",
+   "pendingId": "",
+   "branch": "claude/land-round-2",
    "pr": "",
    "createdAt": "2026-11-04T10:43:58.630Z",
    "updatedAt": "2026-11-04T10:43:59.318Z",
@@ -71625,7 +71625,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mw1zomxd01458w",
+     "uid": "st-mw1zogg90a559j",
      "title": "",
      "text": "Land #288 console commands in Molly (fix red CI); close or land #266",
      "model": "Opus",
@@ -71643,11 +71643,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T10:43:58.631Z",
-     "updatedAt": "2026-11-04T10:44:06.959Z"
+     "updatedAt": "2026-11-04T10:43:58.631Z"
     },
     {
      "id": "s2",
-     "uid": "st-mw1zomxd02zuj8",
+     "uid": "st-mw1zogg90bw5z2",
      "title": "",
      "text": "Redeploy console + Molly; check console_show reaches Molly",
      "model": "Opus",
@@ -71665,11 +71665,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T10:43:58.631Z",
-     "updatedAt": "2026-11-04T10:44:06.959Z"
+     "updatedAt": "2026-11-04T10:43:58.631Z"
     },
     {
      "id": "s3",
-     "uid": "st-mw1zomxd03bh8n",
+     "uid": "st-mw1zogg90c4bto",
      "title": "",
      "text": "Land #294 Molly banners and #295 Molly nav submenus",
      "model": "Opus",
@@ -71687,11 +71687,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T10:43:58.631Z",
-     "updatedAt": "2026-11-04T10:44:06.959Z"
+     "updatedAt": "2026-11-04T10:43:58.631Z"
     },
     {
      "id": "s4",
-     "uid": "st-mw1zomxd04lb6r",
+     "uid": "st-mw1zogg90dnsfx",
      "title": "",
      "text": "Land #296 Gizmo companion chat",
      "model": "Opus",
@@ -71709,11 +71709,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T10:43:58.631Z",
-     "updatedAt": "2026-11-04T10:44:06.959Z"
+     "updatedAt": "2026-11-04T10:43:58.631Z"
     },
     {
      "id": "s5",
-     "uid": "st-mw1zomxd05b2au",
+     "uid": "st-mw1zogg90ef19d",
      "title": "",
      "text": "Land #298 console lazy loader",
      "model": "Opus",
@@ -71731,11 +71731,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T10:43:58.631Z",
-     "updatedAt": "2026-11-04T10:44:06.959Z"
+     "updatedAt": "2026-11-04T10:43:58.631Z"
     },
     {
      "id": "s6",
-     "uid": "st-mw1zomxd06oopl",
+     "uid": "st-mw1zogg90f227d",
      "title": "",
      "text": "Land #281 smart menus, #291 git status board, #293 terminal tab position",
      "model": "Opus",
@@ -71753,11 +71753,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T10:43:58.631Z",
-     "updatedAt": "2026-11-04T10:44:06.959Z"
+     "updatedAt": "2026-11-04T10:43:58.631Z"
     },
     {
      "id": "s7",
-     "uid": "st-mw1zomxd07kc4c",
+     "uid": "st-mw1zogg90g6y9i",
      "title": "",
      "text": "Land #289 plugin settings placement and #269 builds one page (fix red CI)",
      "model": "Opus",
@@ -71775,11 +71775,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T10:43:58.631Z",
-     "updatedAt": "2026-11-04T10:44:06.959Z"
+     "updatedAt": "2026-11-04T10:43:58.631Z"
     },
     {
      "id": "s8",
-     "uid": "st-mw1zomxd08svvu",
+     "uid": "st-mw1zogg90hyzks",
      "title": "",
      "text": "Land #300 profile switcher widget; close #297 if orphan",
      "model": "Opus",
@@ -71797,11 +71797,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T10:43:58.631Z",
-     "updatedAt": "2026-11-04T10:44:06.959Z"
+     "updatedAt": "2026-11-04T10:43:58.631Z"
     },
     {
      "id": "s9",
-     "uid": "st-mw1zomxd09uycp",
+     "uid": "st-mw1zogg90il8xr",
      "title": "",
      "text": "Redeploy all apps; report, THREADS",
      "model": "Opus",
@@ -71819,7 +71819,7 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T10:43:58.631Z",
-     "updatedAt": "2026-11-04T10:44:06.959Z"
+     "updatedAt": "2026-11-04T10:43:58.631Z"
     }
    ],
    "profiles": [
@@ -71830,32 +71830,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-04T10:43:58.630Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mw1zomxd01458w": "2026-11-04T10:43:58.631Z",
-     "st-mw1zomxd02zuj8": "2026-11-04T10:43:58.631Z",
-     "st-mw1zomxd03bh8n": "2026-11-04T10:43:58.631Z",
-     "st-mw1zomxd04lb6r": "2026-11-04T10:43:58.631Z",
-     "st-mw1zomxd05b2au": "2026-11-04T10:43:58.631Z",
-     "st-mw1zomxd06oopl": "2026-11-04T10:43:58.631Z",
-     "st-mw1zomxd07kc4c": "2026-11-04T10:43:58.631Z",
-     "st-mw1zomxd08svvu": "2026-11-04T10:43:58.631Z",
-     "st-mw1zomxd09uycp": "2026-11-04T10:43:58.631Z"
-    }
-   },
+   "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-04T10:44:06.959Z",
+   "defaultAt": "2026-11-04T10:43:58.631Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
