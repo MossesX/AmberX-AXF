@@ -92,3 +92,18 @@ locally with the appearance source off, picks made through the right-click menu)
   Molly's own settings interface opens in a dialog.
 - Expenses runs on the vendored core: its picks live in the app's kv store, not in the AXF settings registry, and it has
   no control@1 surface yet (follow-up with the Expenses re-theme).
+
+## Resume r2 (Nov 4 2026, Gina, Fable)
+
+Brett paused the build so the merge queue could land, then said "start building". PR #329 was red on the console job.
+
+- **Why CI was red:** `check-control.mts` pins the control@1 registry as append-only. `console.placement` had been inserted
+  inside the console block, shifting `pass.scopes` and the plugin targets. Fixed: `console.placement` is now the last target
+  (after `tokens.nav`), the check pins it there, `CONTROL.md` names and describes it (the check now requires that), the control
+  fixture and schema snapshot were regenerated, and the console, Molly, AmberX web and axHub web were re-baked.
+- **Queue readiness:** a dry merge against main showed five add/add conflicts, all synced data (`changes/…`, `sessions/archive/…`).
+  The branch now carries main's copies, so the queue sees no conflict. Nothing else was pulled from main (queue rule).
+- **Checks run here:** control@1 (375), console commands (66 + 8), plugin commands (57), settings-placement@1 (2007),
+  settings-placement server (20), console MCP tools (203), console-commands server (72; one timing flake on the first run,
+  green twice after), help coverage, agent-card and widgets fixtures, console and Expenses type-checks.
+- **Landing:** PR #329 is in the merge queue. The queue holds it while its UI Review item (r-20261104-da11afcc) waits for Brett.
