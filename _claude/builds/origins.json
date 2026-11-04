@@ -1976,6 +1976,33 @@
    "from": "detail",
    "addenda": []
   },
+  "three-layouts-per-screen": {
+   "said": "From now on, all plugin screens get three layouts, and come with a toolbar to select which one, with the toolbar hidden by default. Not old ones, only new ones.",
+   "at": "2026-11-04T00:00:00.000Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": [
+    {
+     "said": "So UI Review will only allow you to select from the three layouts it is going to generate.",
+     "at": "2026-11-04T00:00:00.000Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    },
+    {
+     "said": "Yep.",
+     "at": "2026-11-04T00:00:00.000Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    }
+   ]
+  },
   "token-control": {
    "said": "new plugin, powerful API and MCP and CLI server/client that can change every single token (theme, style, layout); every layout parameter is a token. Connect MCP, API and CLI to Claude and axHub. API and MCP control every aspect of AmberX tasks, to-dos and notes, and the console's planner (Brett: both Plan Studio and the Build orchestrator). Extensive interactive documentation. Folds in the dead VPS build amberx-full-mcp-api (do not relaunch it separately). Overlaps the blocked interactive docs engine (docs-engine/plan.md): reuse it if it lands first.",
    "at": "2026-11-02",
