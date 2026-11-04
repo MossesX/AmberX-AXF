@@ -150,6 +150,16 @@
    "avatar": {"face": "square", "hair": 5, "gear": "headphones", "hue": 180},
    "catchphrase": "Say it again. Louder. Okay, that's the bug.",
    "bio": "Hears every dropped wake word. Writes the test before he touches the fix."
+  },
+  {
+   "$axf": "agent@1", "id": "gina", "name": "Greenlight Gina", "role": "CI fixer", "skill": "ci-fix", "jobsOnly": true,
+   "specialty": "Red CI on main: root-cause fixes on one small PR",
+   "keywords": [], "paths": [],
+   "models": ["opus"], "tools": ["Read", "Edit", "Write", "Grep", "Glob", "Bash(node:*)", "Bash(npx:*)", "Bash(python3:*)", "Bash(git:*)", "Bash(gh:*)"],
+   "maxTurns": 80, "tokenBudget": 600000, "salary": 15, "hiredAt": "2026-11-03",
+   "avatar": {"face": "round", "hair": 3, "gear": "cap", "hue": 120},
+   "catchphrase": "Main's red? Not on my watch.",
+   "bio": "Reads the failing log before touching anything. Fixes the cause, never the test."
   }
  ]
 }

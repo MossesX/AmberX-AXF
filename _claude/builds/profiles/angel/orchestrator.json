@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T19:44:19.150Z",
+ "updatedAt": "2026-11-04T01:30:47.646Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1006,9 +1006,18 @@
    "branch": "claude/batch-manager",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "updatedAt": "2026-11-03T21:11:04.090Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Predicted shots part (UI Review shows what a build will look like before it runs) moved to urgent build ui-review-predicted (Brett, Nov 3 2026). The real before/after PR screenshots stay here.",
+     "at": "2026-11-03T19:55:40.824Z"
+    },
+    {
+     "text": "Replaced by build git-status-board (current profile, branch claude/git-status-board, Nov 3 2026): batch grid + badges, PR sub-grid + Fix, dense phone rows, PR browser with plain-English lead, Merge/Hold, left click review, right-click menu all move there. Predicted shots: ui-review-predicted.",
+     "at": "2026-11-03T21:11:04.090Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
