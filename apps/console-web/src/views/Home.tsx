@@ -21,7 +21,10 @@ export function Home() {
   const s = useStore();
   useAxfState();
   useHomeCardMenu(rt);
-  useMemo(() => homeLayout.setStarters(startersOf(rt)), [rt]);
+  // starters: the app's card assets and any a plugin registers (a plugin can load after Home)
+  const starters = startersOf(rt);
+  const starterKey = starters.map((x) => x.id).join();
+  useMemo(() => homeLayout.setStarters(starters), [rt, starterKey]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { void homeLayout.load(); }, []);
   const { where, loaded } = useHomeLayout();
   const cards = homeLayout.cards();

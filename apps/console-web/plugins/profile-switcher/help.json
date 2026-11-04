@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "profile-switcher-help",
+  "name": "profile-switcher help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:profile-switcher.",
+  "author": "AmberX AXF",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:profile-switcher",
+    "entries": [
+      { "target": "show-open-running-counts", "title": "Counts", "text": "Show how many builds are open and running next to each profile and on the widget.", "kind": "toggle" },
+      { "target": "widget", "title": "Full or compact", "text": "Full shows the profile names; compact shows a short name for a small toolbar.", "kind": "choice" },
+      { "target": "on-the-toolbar", "title": "On the toolbar", "text": "Put the profile switcher on the console's top toolbar.", "kind": "toggle" },
+      { "target": "on-the-banner", "title": "On the banner", "text": "Put the profile switcher on the banner as well.", "kind": "toggle" },
+      { "target": "colour", "title": "Profile colour", "text": "The colour of this profile's chip in every builds table. Colours come from the theme.", "kind": "choice" },
+      { "target": "listed", "title": "Listed", "text": "Show this profile in the switcher's list. A profile taken off the list keeps its builds.", "kind": "toggle" },
+      { "target": "show-all-profiles", "title": "Show all profiles", "text": "Take the filter off: every builds table shows the builds of every profile.", "kind": "button" },
+      { "target": "manage-profiles", "title": "Manage profiles", "text": "Create, rename or take build profiles off the list.", "kind": "button" }
+    ]
+  }
+}

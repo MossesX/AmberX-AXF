@@ -37,7 +37,9 @@ const shots = JSON.parse(readFileSync(args.shots, 'utf8'));
 const VIEWPORTS = { phone: { viewport: { width: 412, height: 915 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true }, desktop: { viewport: { width: 1366, height: 860 }, deviceScaleFactor: 1 }, laptop: { viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1 } };
 
 const freePort = () => new Promise((ok) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => ok(p)); }); });
-const waitFor = async (url, ms = 90000) => { const end = Date.now() + ms; while (Date.now() < end) { try { const r = await fetch(url); if (r.status < 500) return; } catch { /* not up */ } await new Promise((r) => setTimeout(r, 500)); } throw new Error(`timeout waiting for ${url}`); };
+// AXF_SHOTS_START_MS: how long the API and Vite may take to come up (a loaded VPS needs more than the default 90 s)
+const START_MS = Number(process.env.AXF_SHOTS_START_MS) || 90000;
+const waitFor = async (url, ms = START_MS) => { const end = Date.now() + ms; while (Date.now() < end) { try { const r = await fetch(url); if (r.status < 500) return; } catch { /* not up */ } await new Promise((r) => setTimeout(r, 500)); } throw new Error(`timeout waiting for ${url}`); };
 
 let playwright;
 const globalRoot = (() => { try { return execSync('npm root -g', { encoding: 'utf8' }).trim(); } catch { return ''; } })();

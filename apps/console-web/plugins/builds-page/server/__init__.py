@@ -57,7 +57,10 @@ def _profile(p: str | None) -> list[str]:
 
 
 @router.get("/state")
-def state(profile: str | None = None) -> dict[str, Any]:
+def state(profile: str | None = None, all: bool = False) -> dict[str, Any]:
+    """Builds + steps + progress + draft of one profile; all=true adds every other profile's builds (profile-filter@1)."""
+    if all:
+        return _run("state", json.dumps({"profile": _profile(profile)[0] if profile else "", "all": True}))
     return _run("state", *_profile(profile))
 
 

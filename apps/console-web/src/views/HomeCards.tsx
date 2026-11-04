@@ -7,7 +7,8 @@
  *
  * The layout (own cards, order, sizes, hidden, dismissed suggestions) is saved per user on axHub through
  * GET/PUT /api/home/layout (a local copy keeps Home drawn while the server is away). The console's five starter
- * cards are card@1 assets in src/assets/card.
+ * cards are card@1 assets in src/assets/card; a plugin may add starters (card assets it registers) and draw its own
+ * read as a panel (src/cardPanels.tsx), e.g. the Profile switcher's Build profiles card.
  */
 import { useEffect, useMemo, useState, useSyncExternalStore, type DragEvent, type ReactNode } from 'react';
 import {
@@ -21,6 +22,7 @@ import { authHeaders } from '../axf/libs/apiclient';
 import { consoleTokens, readLocal, writeLocal, type Status } from '../api';
 import { pluginFetch } from '../plugins';
 import { useStore, type ConsoleStore } from '../store';
+import { cardPanel, useCardPanels } from '../cardPanels';
 import { PlanSummaryCard } from './Plan';
 import { BuildSummaryCard } from './BuildManager';
 
@@ -178,15 +180,27 @@ export function useCardResult(card: CardData, store: ConsoleStore) {
 const HOME_CARD_CTX = 'cx-home.card';
 export const HOME_CARD_DRAG = 'application/x-axf-home-card';
 
-export function HomeCardView({ entry, index, onDropAt }: { entry: HomeCard; index: number; onDropAt: (e: DragEvent, index: number) => void }) {
-  const s = useStore();
-  const rt = useRuntime();
-  const { card } = entry;
-  const { value, error, loading, reload } = useCardResult(card, s);
+/** The renderer a `panel` card uses: a console read's own panel, or one a plugin registered for its read. */
+export function panelOf(card: CardData): (() => ReactNode) | undefined {
+  if (card.view !== 'panel') return undefined;
+  return card.source.kind === 'console' ? CONSOLE_READS[card.source.id ?? '']?.panel : cardPanel(card.source.plugin, card.source.command);
+}
+
+export function HomeCardView(props: { entry: HomeCard; index: number; onDropAt: (e: DragEvent, index: number) => void }) {
+  useCardPanels();
+  const { card } = props.entry;
+  const panel = panelOf(card);
+  if (panel) return <HomeCardFrame {...props}>{(drag) => <div {...drag} data-fx-ctx-target={HOME_CARD_CTX} data-fx-ctx-payload={props.entry.id}>{panel()}</div>}</HomeCardFrame>;
+  // a plugin panel whose plugin is off: draw the read's data with the engine's own view pick
+  return <HomeDataCard {...props} entry={card.view === 'panel' ? { ...props.entry, card: { ...card, view: 'auto' } } : props.entry} />;
+}
+
+type DragProps = Record<string, unknown> & { className: string };
+
+/** Drag to move and drop-target behaviour every Home card shares. */
+function HomeCardFrame({ entry, index, onDropAt, children }: { entry: HomeCard; index: number; onDropAt: (e: DragEvent, index: number) => void; children: (drag: DragProps) => ReactNode }) {
   const [over, setOver] = useState(false);
-  const model = useMemo(() => (value === undefined ? null : cardModel({ ...card, size: entry.size }, value)), [value, card, entry.size]);
-  const panel = card.source.kind === 'console' ? CONSOLE_READS[card.source.id ?? '']?.panel : undefined;
-  const drag = {
+  const drag: DragProps = {
     draggable: true,
     onDragStart: (e: DragEvent) => { e.dataTransfer.setData(HOME_CARD_DRAG, entry.id); e.dataTransfer.effectAllowed = 'move'; },
     onDragOver: (e: DragEvent) => { if (accepts(e)) { e.preventDefault(); setOver(true); } },
@@ -195,20 +209,28 @@ export function HomeCardView({ entry, index, onDropAt }: { entry: HomeCard; inde
     className: `cx-homecard${over ? ' is-over' : ''} fx-dcard--${entry.size}`,
     'data-card': entry.id,
   };
-  if (panel && card.view === 'panel') {
-    return <div {...drag} data-fx-ctx-target={HOME_CARD_CTX} data-fx-ctx-payload={entry.id}>{panel()}</div>;
-  }
+  return <>{children(drag)}</>;
+}
+
+function HomeDataCard({ entry, index, onDropAt }: { entry: HomeCard; index: number; onDropAt: (e: DragEvent, index: number) => void }) {
+  const s = useStore();
+  const rt = useRuntime();
+  const { card } = entry;
+  const { value, error, loading, reload } = useCardResult(card, s);
+  const model = useMemo(() => (value === undefined ? null : cardModel({ ...card, size: entry.size }, value)), [value, card, entry.size]);
   const more = (
     <IconButton icon="more" label={`${card.title}: card menu`} onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); rt.openContext(r.left, r.bottom, HOME_CARD_CTX, entry.id); }} />
   );
   return (
-    <div {...drag}>
-      <DataCard
-        title={card.title || 'Card'} icon={card.icon} model={model} loading={loading} error={error} size={entry.size}
-        ctx={HOME_CARD_CTX} ctxPayload={entry.id}
-        actions={<>{card.source.kind === 'command' && <IconButton icon="refresh" label="Read again" onClick={reload} />}{more}</>}
-      />
-    </div>
+    <HomeCardFrame entry={entry} index={index} onDropAt={onDropAt}>{(drag) => (
+      <div {...drag}>
+        <DataCard
+          title={card.title || 'Card'} icon={card.icon} model={model} loading={loading} error={error} size={entry.size}
+          ctx={HOME_CARD_CTX} ctxPayload={entry.id}
+          actions={<>{card.source.kind === 'command' && <IconButton icon="refresh" label="Read again" onClick={reload} />}{more}</>}
+        />
+      </div>
+    )}</HomeCardFrame>
   );
 }
 
@@ -352,7 +374,7 @@ export function HomeCardDialog({ id, draft, at, close }: { id?: string; draft?: 
       </div>
       <div className="cx-cardpick__preview">
         <p className="fx-eyebrow">Live preview {preview.loading && ready ? '· reading…' : ''}</p>
-        {card.view === 'panel' && plugin === 'console' ? CONSOLE_READS[command]?.panel?.() : <CardBody model={ready ? model : null} loading={ready && preview.loading} error={ready ? preview.error : undefined} />}
+        {panelOf(card) ? panelOf(card)?.() : <CardBody model={ready ? model : null} loading={ready && preview.loading} error={ready ? preview.error : undefined} />}
       </div>
       <div className="fx-row cx-cardpick__actions">
         <Button onClick={close}>Cancel</Button>
@@ -368,8 +390,16 @@ export function HomeCardDialog({ id, draft, at, close }: { id?: string; draft?: 
 export function useSuggestions() {
   const { registry } = useSources();
   const { layout } = useHomeLayout();
-  const have = homeLayout.cards().map((c) => c.card);
+  const have = homeLayout.cards().filter((c) => !c.hidden).map((c) => c.card);
   return useMemo(() => (registry ? suggestCards(registry, have).filter((x) => !layout.dismissed.includes(x.id)) : []), [registry, layout]); // eslint-disable-line react-hooks/exhaustive-deps
+}
+
+/** Add a suggested card; when the same card is on Home but hidden (a starter can't be removed), show it again. */
+function addSuggested(card: CardData) {
+  const k = cardKey(card);
+  const hidden = homeLayout.cards().find((c) => c.hidden && cardKey(c.card) === k);
+  if (hidden) homeLayout.apply({ op: 'show', id: hidden.id });
+  else homeLayout.apply({ op: 'add', card });
 }
 
 export function SuggestedCards({ onDone }: { onDone?: () => void }) {
@@ -380,11 +410,11 @@ export function SuggestedCards({ onDone }: { onDone?: () => void }) {
       <span className="fx-muted fx-small">Suggested cards</span>
       {list.map((x) => (
         <span key={x.id} className="cx-suggest__item" draggable onDragStart={(e) => e.dataTransfer.setData(CARD_DROP_MIME, JSON.stringify(x.card))}>
-          <Button size="sm" icon="plus" onClick={() => { homeLayout.apply({ op: 'add', card: x.card }); onDone?.(); }}>{x.card.title}</Button>
+          <Button size="sm" icon="plus" onClick={() => { addSuggested(x.card); onDone?.(); }}>{x.card.title}</Button>
           <IconButton icon="x" label={`Not now: ${x.card.title}`} onClick={() => homeLayout.apply({ op: 'dismiss', suggestion: x.id })} />
         </span>
       ))}
-      <Button size="sm" tone="primary" icon="plus" onClick={() => { list.forEach((x) => homeLayout.apply({ op: 'add', card: x.card })); onDone?.(); }}>Add all</Button>
+      <Button size="sm" tone="primary" icon="plus" onClick={() => { list.forEach((x) => addSuggested(x.card)); onDone?.(); }}>Add all</Button>
     </section>
   );
 }
