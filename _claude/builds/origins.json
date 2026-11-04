@@ -577,6 +577,18 @@
    "from": "detail",
    "addenda": []
   },
+  "console-wake-finish": {
+   "said": "Why isn't Follow Amber working? … [Amber offered to bump console wake up the line] Yes.",
+   "at": "2026-11-04T12:30:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "context-menu-editor": {
    "said": "Hold C + click: shows which menu fires there and its file. Drag an element into the map to save it; saves the action/destination, not the element. Pinned top: Build profiles submenu, Settings, user picks.",
    "at": "2026-10-30",
@@ -830,6 +842,30 @@
    "brief": "# GitHub App for the whole stack: one-click setup, tokens that never die (Brett, Nov 1 ~4 AM)\n\nRead CLAUDE.md, _claude/shared/rules/RULES.md, _claude/persona.md. Opus, one session. Git login works: plain `git push`. Never print secrets (private keys, client secrets, tokens) anywhere: logs, reports, commits, screenshots.\n\nWhy: personal tokens keep dying (401s, 403s on the banner), and the current fine-grained token can't create repos (the axp-backup build at /root/axf-builds/axp-backup is waiting on 3 private repos: axp-xchat, axp-devstudio, axp-demo). Brett wants this fixed for good.\n\n## 1. One-click setup (GitHub App Manifest flow)\n- Console page (behind the existing auth wall, admin only): Settings > GitHub > 'Create GitHub App'. It POSTs a manifest to https://github.com/settings/apps/new (personal account MossesX): name 'AmberX AXF Bot' (add suffix if taken), homepage the console URL, redirect/callback to the console, no webhook needed (or webhook off), public: false.\n- Permissions (repository): Administration RW, Contents RW, Pull requests RW, Actions RW, Workflows RW, Issues RW, Checks R, Commit statuses R, Metadata R.\n- Callback: exchange the code (POST /app-manifests/{code}/conversions), store app id, slug, client id, client secret, private key PEM and webhook secret in /opt/axf/.axf-console/github-app/ (dir 700, files 600, root-owned), never in git. Then send Brett to the install page (https://github.com/apps/<slug>/installations/new) with 'All repositories'. Detect the installation id after install (GET /app/installations with an app JWT).\n- Also offer 'Authorize as Brett' (OAuth user-to-server via the same app, with refresh tokens, stored the same way): needed because INSTALLATION tokens cannot create repos on a personal account; user access tokens from the app with Administration write can (POST /user/repos). Refresh automatically (8 h access / 6 month refresh); banner when refresh fails.\n\n## 2. Token broker\n- framework/cli/github-token.mjs (+ a tiny Python twin for the console server if it needs it): `installation` -> mints a JWT from the PEM, exchanges for an installation token, caches it (refresh at 50 min), prints it only to stdout for callers; `user` -> the refreshed user access token.\n- /usr/local/bin/axf-git-cred: use the installation token first, then the old GITHUB_TOKEN as fallback. `gh`: wrapper or GH_TOKEN via a helper so gh uses the app too. Keep the old token working as fallback until Brett deletes it.\n- Point every GitHub caller at the broker: push banner, live-key-checks, activity banner GitHub part (the 403s), build_land/build_start paths, the console updater, CI-status reads. Repo creation (`axf repo create <name> --private`) uses the user token.\n- axHub's github connector (MossesX/axHub, packages/connectors or the rest service config): add app-based auth via the same broker or its own JWT exchange; clone axHub next to the worktree, test (pnpm test, Node 22 via docker node:22), push its main, redeploy through Coolify the same way earlier builds did (token saved in the console, never printed). If that's too big, leave axHub on the old token and banner it as a follow-up.\n\n## 3. Health + banner\n- health@1 check: app key valid, installation present, installation token mints, user token refreshes, rate limit remaining. Red banner with the exact fix if any fail. Old-token expiry warning.\n- After setup works: re-run the axp-backup push automatically (create the 3 private repos with the user token, then `bash /root/axp-backup/bin/backup.sh` or whatever finish script that build left; read /root/axf-builds/axp-backup/axp-backup.log and /root/axp-backup/REPORT.md first). Never commit secrets; the backup's own secret scan must pass.\n\nFramework controls + theme/scale tokens only. Tests: manifest generation, callback exchange (mocked GitHub), file perms, JWT + token cache, git credential helper order + fallback, user-token refresh, health check states. Local test block from .github/workflows/android.yml + theme/controls/lifecycle checks. Phone + desktop screenshots of the setup page (no secrets on screen) to UI Review via framework/cli/shot.mjs, group 'GitHub App - Nov 1'. install_steps: new part 'GitHub App (no more tokens)' with the 3 taps. Commit, fetch+merge origin/main, retest, `git push origin HEAD:main` (never force). Report at _claude/builds/reports/github-app.md: what Brett taps, where things are stored (paths only), what now uses the app.",
    "verbatim": false,
    "from": "brief",
+   "addenda": []
+  },
+  "gizmo-terminal": {
+   "said": "It's gonna need an integrated terminal window that can be visible or hidden, and it can be placed at the bottom or the top, or the left or the right. And it can be completely configured.",
+   "at": "2026-11-04T14:21:17.381Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "gizmo-voice": {
+   "said": "Voice is step 2 and goes first in line.",
+   "at": "2026-11-04T14:21:14.916Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "grid-sort-filter": {
@@ -1358,6 +1394,18 @@
    "from": "detail",
    "addenda": []
   },
+  "profile-lists-home-card": {
+   "said": "I want a card on the home screen for build profiles. ... And I don't want them to be all one list and filters anymore. I want it back to separate lists. [then] Actually, no, never mind. Leave it as filters.",
+   "at": "2026-11-04T14:16:24.131Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "profile-manager": {
    "said": "a plugin to manage build profiles: view, browse, create, edit, delete, everything. Assigned agent: **Landin' Lenny** (book on his card; if busy and the all-rounder router is on main, whoever is free - record who). Register in the **current** profile (id `profile-manager`) + banner entry. (Profile `current` was just created; if it's missing, create it: `node framework/cli/profiles.mjs create \"Current\" --id current --select`.)",
    "at": "2026-11-03",
@@ -1710,6 +1758,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "urgent-land-gizmo-chat": {
+   "said": "Is the Claude chat feature built yet? ... So put another agent on to do it now.",
+   "at": "2026-11-04T14:14:12.849Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "urgent-land-lazy-loader": {

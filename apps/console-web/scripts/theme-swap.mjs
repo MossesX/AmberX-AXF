@@ -14,13 +14,16 @@ import { spawn } from 'node:child_process';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { chromium } from 'playwright';
 
-const PORT = 7098;
+const PORT = Number(process.env.THEME_SWAP_PORT) || 7098;
 const lines = [];
 const log = (m) => { lines.push(m); console.log(m); };
 /** In CI, problems also become annotations so they're readable without downloading logs. */
 const annotate = (m) => { if (process.env.GITHUB_ACTIONS) console.log(`::error title=Theme swap::${m.replace(/\n/g, '%0A')}`); };
 const server = spawn('npx', ['vite', 'preview', '--host', '127.0.0.1', '--port', String(PORT), '--strictPort'], { stdio: 'inherit' });
 let failed = false;
+let page;
+const errors = [];
+const consoleErrors = [];
 try {
   // Bind and probe 127.0.0.1 explicitly: on CI runners "localhost" can resolve to ::1 only.
   let up = false;
@@ -30,9 +33,9 @@ try {
   }
   if (!up) throw new Error(`vite preview did not start on 127.0.0.1:${PORT} within 30 s (is dist/ built?)`);
   const browser = await chromium.launch(process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {});
-  const page = await browser.newPage({ viewport: { width: 412, height: 900 } });
-  const errors = [];
+  page = await browser.newPage({ viewport: { width: 412, height: 900 } });
   page.on('pageerror', (e) => errors.push(String(e)));
+  page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource|ECONNREFUSED/.test(m.text())) consoleErrors.push(m.text()); });
   // No console server here: answer /api/me ourselves with the appearance source off (the console is a developer app and
   // would otherwise wait for axHub); the check is about the engines, not the hub.
   await page.route('**/api/me', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ wall: false, hub: 'https://axhub.amberxai.com', appearanceHub: 'off', user: null, admin: true, role: 'admin', themes: true, plugins: [] }) }));
@@ -147,6 +150,11 @@ try {
   await browser.close();
 } catch (err) {
   log(`✗ the check could not run: ${err instanceof Error ? err.message : String(err)}`);
+  // What the page looked like when it got stuck, so a CI failure says why without downloading anything.
+  if (errors.length) log(`✗ page errors:\n  ${errors.join('\n  ')}`);
+  if (consoleErrors.length) log(`✗ console errors:\n  ${consoleErrors.slice(0, 15).join('\n  ')}`);
+  const shown = await page?.evaluate(() => document.body?.innerText.replace(/\s+/g, ' ').slice(0, 600)).catch(() => '');
+  if (shown !== undefined) log(`✗ page text: ${shown || '(empty)'}`);
   failed = true;
 } finally {
   server.kill();

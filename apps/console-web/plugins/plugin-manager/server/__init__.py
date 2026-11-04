@@ -10,6 +10,14 @@ this plugin is off or removed. Never exposed through the console's MCP server (p
     GET /logs/{folder}?limit=&level= console terminal lines from or about that plugin
     GET /records                     the plain plugin-inventory@1 records + context (what the shared engine resolves:
                                      framework/core/engines/plugins.ts = Kotlin PluginInventoryEngine = server/engine.py)
+
+Lazy loader (plugin-lazy@1, src/pluginLoader.tsx; Settings → Plugins → Plugin Manager → Lazy loader). These routes are
+the REST / MCP / CLI surface too (plugin-commands@1 auto: `axf plugin-manager lazy`, MCP `plugin-manager_lazy…`):
+    GET  /lazy                       the config + the open console's last live table (state, size, load time, uses)
+    PUT  /lazy                       change it (partial: idle / cache / modes merge, lists replace); returns the config
+    PUT  /lazy/plugin/{folder}       one plugin's mode: {"mode": "start" | "open" | "off"} (core plugins can't be off)
+    POST /lazy/reset                 back to the defaults
+    POST /lazy/report                the console's live table (sent by the loader)
 """
 from __future__ import annotations
 
@@ -22,6 +30,7 @@ import console_context as cx
 import plugin_services
 
 from . import inventory as inv
+from . import lazy as lz
 
 router = APIRouter()
 
@@ -40,6 +49,10 @@ def _inventory() -> dict[str, Any]:
         terminal=cx.terminal_lines(),
         backups_dir=cx.ROOT / ".axf-console" / "plugin-backups",
     )
+
+
+def _lazy() -> lz.Store:
+    return lz.Store(cx.ROOT / ".axf-console" / "plugins" / "plugin-manager")
 
 
 def _folder(folder: str) -> str:
@@ -89,3 +102,44 @@ def logs(folder: str, limit: int = 200, level: str = "") -> dict[str, Any]:
     if level and level not in ("info", "ok", "warn", "error"):
         raise HTTPException(400, "level is info, ok, warn or error")
     return {"folder": folder, "lines": inv.logs_for(cx.terminal_lines(), folder, name, limit, level)}
+
+
+@router.get("/lazy")
+def lazy_get() -> dict[str, Any]:
+    st = _lazy()
+    return {"config": st.get(), "defaults": lz.normalize({}), "core": lz.CORE, "report": st.report()}
+
+
+@router.put("/lazy")
+def lazy_put(body: dict[str, Any]) -> dict[str, Any]:
+    st = _lazy()
+    patch = body.get("config", body) if isinstance(body, dict) else {}
+    return {"ok": True, "config": st.put(lz.merge(st.get(), patch))}
+
+
+@router.put("/lazy/plugin/{folder}")
+def lazy_plugin(folder: str, body: dict[str, Any]) -> dict[str, Any]:
+    folder = _folder(folder)
+    mode = body.get("mode") if isinstance(body, dict) else None
+    if mode not in lz.MODES:
+        raise HTTPException(400, "mode is start, open or off")
+    if mode == "off" and folder in lz.CORE:
+        raise HTTPException(400, f"{folder} is a core plugin and can't be switched off")
+    st = _lazy()
+    cfg = st.get()
+    cfg["modes"][folder] = mode
+    return {"ok": True, "config": st.put(cfg)}
+
+
+@router.post("/lazy/reset")
+def lazy_reset() -> dict[str, Any]:
+    return {"ok": True, "config": _lazy().reset()}
+
+
+@router.post("/lazy/report")
+def lazy_report(body: dict[str, Any]) -> dict[str, Any]:
+    try:
+        _lazy().save_report(body)
+    except ValueError as e:
+        raise HTTPException(400, str(e)) from e
+    return {"ok": True}

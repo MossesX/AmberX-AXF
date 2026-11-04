@@ -1711,8 +1711,19 @@ previews.mount(app, ROOT, current_token, _preview_allowed)
 
 # ---------------------------------------------------------------- the console itself
 
+class _HashedAssets(StaticFiles):
+    """Vite's /assets files carry a content hash in their name, so they never change: cache them for a year. With one chunk
+    per plugin (src/pluginLoader.tsx), a deploy re-downloads only the chunks that changed."""
+
+    async def get_response(self, path, scope):  # type: ignore[override]
+        r = await super().get_response(path, scope)
+        if r.status_code == 200:
+            r.headers["cache-control"] = "public, max-age=31536000, immutable"
+        return r
+
+
 if DIST.exists():
-    app.mount("/assets", StaticFiles(directory=DIST / "assets"), name="assets")
+    app.mount("/assets", _HashedAssets(directory=DIST / "assets"), name="assets")
     if (DIST / "data").exists():
         app.mount("/data", StaticFiles(directory=DIST / "data"), name="data")
 
