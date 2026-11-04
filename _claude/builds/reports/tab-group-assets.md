@@ -114,4 +114,4 @@ UI Review → Screenshots, group **"tab-group-assets - Nov 4 11:38 AM"** (nine s
 - The Terminal tab strip keeps its own drag and window menu; it is in the ratchet baseline (2 findings).
 - Banner `Move` has no positions (a banner is the top bar); the Banner settings dialog stays the richer editor and the chrome dialog links to it.
 - Android twins deferred (Android on hold): Compose `AxfTabGroup`, `ChromeSettingsRules`, the dialog (PORTING.md).
-- Screenshots: see the UI Review group named in the PR (non-blocking for this build).
+- The chrome settings dialog's Interface tab sits at the Developer level (the shared default's `levelOf`), so at Basic it is out of sight until the level bar is raised: by design, noted so nobody looks for it.
