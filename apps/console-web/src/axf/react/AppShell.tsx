@@ -16,6 +16,7 @@ import { Note } from './components/Forms';
 import { HelpLayer } from './components/Help';
 import { embedHostLabel, embedPageView } from '../core/engines/embed';
 import { placedParts } from './placement';
+import { MainTabsArea, useMainTabSettings } from './windows/MainTabs';
 
 export interface ViewDef {
   title: string;
@@ -38,13 +39,18 @@ export interface AppShellProps {
    * for views holding a live page (a host's app tabs are frames; moving or remounting a frame reloads it).
    */
   keep?: readonly string[];
+  /**
+   * main-tabs@1: the main area is a tab group (every screen opens as a tab; strip position, float / dock, split,
+   * saved across reloads). The person can still switch it off in Settings → Tab group. Off by default for apps.
+   */
+  mainTabs?: boolean;
 }
 
 /**
  * The application shell. Regions are placed by the layout engine
  * (CSS grid vars compiled from the active `layout` asset).
  */
-export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, inspector, tabs: declaredTabs = {}, keep = [] }: AppShellProps) {
+export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, inspector, tabs: declaredTabs = {}, keep = [], mainTabs = false }: AppShellProps) {
   const layout = useAsset('layout').data;
   const state = useAxfState();
   // Region slot contract: chrome mounts only where the layout's slot accepts its asset type.
@@ -72,6 +78,8 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.view, keepKey]);
   const keptNow = keep.filter((id) => views[id] && (kept.includes(id) || id === state.view));
+  const tabSettings = useMainTabSettings();
+  const tabbed = mainTabs && tabSettings.enabled;
 
   // Developer apps (an appearance source is attached): nothing but the waiting screen until the hub has answered the first
   // time (or says this browser may not read the look). A later re-read that fails keeps the app on screen (Nov 1 2026).
@@ -139,6 +147,11 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
           <NavMenu views={views} />
         </div>
       )}
+      {tabbed ? (
+      <main className="fx-region fx-main fx-main--tabs" style={{ gridArea: 'main' }} data-fx-ctx-target="canvas">
+        <MainTabsArea views={views} />
+      </main>
+      ) : (
       <main className="fx-region fx-main" style={{ gridArea: 'main' }} data-fx-ctx-target="canvas">
         {keptNow.map((id) => (
           <div key={`kept:${id}`} className="fx-main__inner fx-main__inner--kept" hidden={id !== state.view} data-axf-view={id}>
@@ -151,6 +164,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
           </div>
         )}
       </main>
+      )}
       {layout.inspector !== 'none' && rt.inspectorShown() && (
         <aside className="fx-region fx-region--inspector" style={{ gridArea: 'inspector' }} data-side={layout.inspector}>
           {inspector ?? <Inspector />}

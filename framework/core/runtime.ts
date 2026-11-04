@@ -1674,6 +1674,12 @@ export class AxfRuntime {
     return this.helpPanelId;
   }
 
+  /** Called on every navigate(), even to the screen already shown (main-tabs@1 reopens a closed tab for it). */
+  private readonly navListeners = new Set<(view: string) => void>();
+  onNavigate(fn: (view: string) => void): () => void { this.navListeners.add(fn); return () => { this.navListeners.delete(fn); }; }
+  /** The main-area tab group, while the shell shows one (main-tabs@1): what console commands list and drive. */
+  mainTabs: import('./engines/maintabs').MainTabsApi | null = null;
+
   navigate(view: string) {
     if (this.openPlaced(`view:${view}`)) return;
     // A view the host took over (embed@1 takes: e.g. the settings view) opens in the host instead.
@@ -1682,6 +1688,7 @@ export class AxfRuntime {
     const lock = this.lockedByHost({ view });
     if (lock) { this.toast(lock, 'info', `Managed in ${embedHostLabel(this.embedded)}`); return; }
     this.set({ view, context: null });
+    for (const fn of this.navListeners) fn(view);
   }
 
   openDialog(id: string, props?: Record<string, unknown>) {

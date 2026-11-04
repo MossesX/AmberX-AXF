@@ -20,7 +20,7 @@ import { randomBytes } from 'node:crypto';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CONTROL_TARGETS, controlFailure, controlGate, controlResult, normalizeControl } from '../../../../framework/core/engines/control-rules.mjs';
-import { CONSOLE_TOOLS, normalizeConsoleCatalog, runConsoleCommand } from '../../../../framework/core/engines/console-commands.mjs';
+import { CONSOLE_TOOLS, TAB_ACTIONS, TAB_TOOLS, normalizeConsoleCatalog, runConsoleCommand } from '../../../../framework/core/engines/console-commands.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '../../../..');
@@ -73,7 +73,7 @@ function flags(argv) {
 }
 
 const LIST_KINDS = { screens: 'console.screens', screen: 'console.screens', dialogs: 'console.dialogs', dialog: 'console.dialogs', settings: 'console.settings', actions: 'console.actions', action: 'console.actions', clients: 'console.clients', consoles: 'console.clients' };
-export const USAGE = 'usage: axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | close | where | list [screens|dialogs|settings|actions|clients] [words] | clients   [--to recent|all|<client>]';
+export const USAGE = 'usage: axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | close | where | list [screens|dialogs|settings|actions|clients] [words] | clients | tabs | tab open|close|float|dock <tab or screen>   [--to recent|all|<client>]';
 
 /** `axf console …` words → a control@1 console command, or { error }. */
 export function commandFromArgv(argv) {
@@ -97,6 +97,15 @@ export function commandFromArgv(argv) {
     case 'back': case 'home': case 'close': cmd = act('console.nav', verb, 'here'); break;
     case 'where': case 'here': cmd = { op: 'get', target: 'console.nav', path: 'here' }; break;
     case 'clients': case 'consoles': cmd = { op: 'list', target: 'console.clients' }; break;
+    // main-tabs@1: the main area's tab group
+    case 'tabs': cmd = { op: 'get', target: 'console.nav', path: 'here' }; break;
+    case 'tab': {
+      const [op, ...what] = rest;
+      const action = TAB_ACTIONS[op];
+      const q = what.join(' ').trim();
+      cmd = action && q ? { op: 'act', target: 'console.actions', path: action, action: 'run', input: { ...input, args: [q] } } : null;
+      break;
+    }
     case 'list': case 'ls': {
       const kind = LIST_KINDS[rest[0]];
       const q = (kind ? rest.slice(1) : rest).join(' ').trim();
@@ -109,11 +118,11 @@ export function commandFromArgv(argv) {
   if (!cmd) return { error: USAGE };
   if (typeof f.by === 'string') cmd.by = f.by;
   if (typeof f.reason === 'string') cmd.reason = f.reason;
-  return { command: cmd, base: typeof f.remote === 'string' ? f.remote : '', json: !!f.json };
+  return { command: cmd, base: typeof f.remote === 'string' ? f.remote : '', json: !!f.json, ...(verb === 'tabs' ? { format: 'tabs' } : {}) };
 }
 
-/** An answer as a person reads it. */
-export function formatAnswer(r) {
+/** An answer as a person reads it (`format: 'tabs'` = the open tabs of a `here` answer). */
+export function formatAnswer(r, format = '') {
   if (!r.ok) return r.code === 'confirmation_required' ? `${r.message}\nconfirm token: ${r.confirm}` : `${r.code}: ${r.message}`;
   if (r.op === 'list') {
     const rows = r.items ?? [];
@@ -121,7 +130,8 @@ export function formatAnswer(r) {
     if (r.target === 'console.clients') return rows.map((c) => `${c.id.padEnd(26)} ${(c.device || '').padEnd(8)} ${(c.here?.screen ?? '').padEnd(22)} ${c.lastUsed}  ${c.user}`).join('\n');
     return `${rows.map((i) => `${i.id.padEnd(32)} ${i.label}${i.params ? '  (needs args)' : ''}`).join('\n')}${r.total > rows.length ? `\n… ${r.total - rows.length} more (add words, or --limit N)` : ''}`;
   }
-  if (r.op === 'get') return r.item ? `${r.item.kind} ${r.item.id}: ${r.item.label}${r.item.detail ? ` (${r.item.detail})` : ''}` : `here: ${Object.entries(r.value ?? {}).map(([k, v]) => `${k} ${v}`).join(' · ') || 'unknown'}`;
+  if (format === 'tabs' && r.ok) return !Array.isArray(r.value?.tabs) ? 'this console shows no tab group' : r.value.tabs.length ? r.value.tabs.map((t) => `${t.active ? '●' : ' '} ${t.id.padEnd(28)} ${(t.where).padEnd(9)} ${t.title}${t.pinned ? '  (pinned)' : ''}${t.dirty ? '  (unsaved)' : ''}`).join('\n') : 'no tabs open';
+  if (r.op === 'get') return r.item ? `${r.item.kind} ${r.item.id}: ${r.item.label}${r.item.detail ? ` (${r.item.detail})` : ''}` : `here: ${Object.entries(r.value ?? {}).filter(([k]) => k !== 'tabs').map(([k, v]) => `${k} ${v}`).join(' · ') || 'unknown'}`;
   const sent = r.delivered ?? [];
   const what = r.item ? `${r.item.label} (${r.item.id})` : r.action;
   if (!sent.length) return `sent: ${r.action} ${what} (no console answered yet)`;
@@ -146,8 +156,8 @@ export async function main(argv) {
   if (argv[0] === 'console') argv = argv.slice(1);
   const [cmd] = argv;
   if (!cmd || cmd === 'help' || cmd === '--help') {
-    console.log([USAGE, '', 'Examples:', '  axf console open plan studio', '  axf console settings plugins', '  axf console action terminal.open', '  axf console list screens build', '  axf console back · axf console where · axf console clients',
-      '', `MCP tools (console /mcp, and through axHub): ${CONSOLE_TOOLS.join(', ')}`, `REST: POST ${API_PATH} (a whole control@1 command), POST ${API_PATH}/open {screen} …`].join('\n'));
+    console.log([USAGE, '', 'Examples:', '  axf console open plan studio', '  axf console settings plugins', '  axf console action terminal.open', '  axf console list screens build', '  axf console back · axf console where · axf console clients', '  axf console tabs · axf console tab open plan · axf console tab float plan · axf console tab dock plan',
+      '', `MCP tools (console /mcp, and through axHub): ${[...CONSOLE_TOOLS, ...TAB_TOOLS].join(', ')}`, `REST: POST ${API_PATH} (a whole control@1 command), POST ${API_PATH}/open {screen} …`].join('\n'));
     return 0;
   }
   if (cmd === 'run') {
@@ -160,7 +170,7 @@ export async function main(argv) {
   const { command, json } = parsed;
   if (!command.by) command.by = process.env.AXF_ACTOR || `cli:${process.env.USER || 'user'}`;
   const r = await sendToConsole(command, parsed.base ? { base: parsed.base } : {});
-  console.log(json ? JSON.stringify(r, null, 1) : formatAnswer(r));
+  console.log(json ? JSON.stringify(r, null, 1) : formatAnswer(r, parsed.format));
   if (!r.ok && r.code === 'confirmation_required') {
     if (!json) console.log(`repeat to run it: axf console ${argv.filter((a) => a !== '--json' && a !== 'console').map(sh).join(' ')} --confirm ${r.confirm}`);
     return 3;

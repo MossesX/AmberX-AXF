@@ -1,8 +1,8 @@
-import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { createContext, useContext, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { useRuntime } from '../AxfProvider';
 import { Icon } from '../components/Icon';
 import { Button } from '../components/Controls';
-import type { Pane } from '../../core/engines/windows';
+import type { Pane, TabGroup } from '../../core/engines/windows';
 import { paneGroups } from '../../core/engines/windows';
 import { normalizeDockLayout, presetSvg, type DockDropPreview, type DockLayoutData, type PanePath } from '../../core/engines/dock';
 import { TabGroupView, useWindowManager, useWindowState } from './WindowHost';
@@ -12,6 +12,9 @@ import { TabGroupView, useWindowManager, useWindowState } from './WindowHost';
  * so a dragged tab knows its drop zones (any tab header, a pane's centre, a pane's edges, the host's outer edges), and
  * shows where the tab would land. Everything visual reads theme tokens (framework/ui/axf.css, dock section).
  */
+
+/** How a dock draws its panes (main-tabs@1: the main area draws its own strip); unset = the standard tab group. */
+export const DockLeafContext = createContext<((group: TabGroup) => ReactNode) | null>(null);
 
 /** The dock of one window (main by default): its tree with splitters; `empty` shows when nothing is docked. */
 export function DockHost({ windowId, empty, className }: { windowId?: string; empty?: ReactNode; className?: string }) {
@@ -39,7 +42,8 @@ export function DockHost({ windowId, empty, className }: { windowId?: string; em
 /** A node of the tree: a tab group, a split with splitters between its children, or a grid. */
 export function DockPaneView({ pane, path, windowId }: { pane: Pane; path: PanePath; windowId: string }) {
   const s = useWindowState();
-  if (pane.kind === 'leaf') { const g = s.groups[pane.groupId]; return g ? <TabGroupView group={g} /> : null; }
+  const leaf = useContext(DockLeafContext);
+  if (pane.kind === 'leaf') { const g = s.groups[pane.groupId]; return g ? (leaf ? <>{leaf(g)}</> : <TabGroupView group={g} />) : null; }
   if (pane.kind === 'split') {
     const total = pane.weights.reduce((a, b) => a + b, 0) || 1;
     return (

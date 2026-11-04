@@ -6,6 +6,7 @@ import { useScopeId } from '../components/InterfaceScope';
 import type { Pane, TabGroup, TabSpec, WindowManager, WindowSettings, WindowSpec, WindowState, Corner, DragPreview, ResizeEdge, WindowFrame } from '../../core/engines/windows';
 import { effectiveToolbar, forcesToolbar, isFloating, isMaximized, paneGroups, rectOf, resizeCursor, windowFrame, CORNERS, RESIZE_EDGES } from '../../core/engines/windows';
 import { DockDropOverlay, DockHost, DockPaneView, dockLayoutDialog } from './DockHost';
+import { markStrip, stripAt } from './strips';
 
 /* ------------------------------------------------------------------ */
 /* registry of tab renderers + locals                                  */
@@ -17,6 +18,9 @@ const RenderersCtx = createContext<TabRenderers>({});
 const WindowCtx = createContext<WindowSpec | null>(null);
 /** The window a tab is rendered in (null in the main shell) — content reads `mode` from it (tree / grid). */
 export const useWindowSpec = () => useContext(WindowCtx);
+
+/** The tab renderers (kind → component) in force here: what a custom tab strip (main-tabs@1) draws its tabs with. */
+export const useTabRenderers = () => useContext(RenderersCtx);
 
 export function useWindowManager(): WindowManager { return useRuntime().windows; }
 export function useWindowState(): WindowState { const wm = useWindowManager(); return useSyncExternalStore(wm.subscribe.bind(wm), () => wm.state, () => wm.state); }
@@ -71,7 +75,7 @@ export function TabGroupView({ group }: { group: TabGroup }) {
   const brandHost = brandHostProps(brand);
   return (
     <div ref={ref} className={`fx-tabgroup ${brandHost.className}`.trim()} data-fx-ctx-target="tab-group" data-fx-ctx-payload={group.id} data-fx-tabs={group.tabs.length} data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
-      <div className="fx-tabgroup__bar" onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); rt.openContext(e.clientX, e.clientY, 'tab-group', group.id); }}>
+      <div className="fx-tabgroup__bar" data-fx-tabstrip={group.id} onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); rt.openContext(e.clientX, e.clientY, 'tab-group', group.id); }}>
         {brand?.svg && <span className="fx-tabgroup__brand"><BrandMark slot="tab-group" height={16} /></span>}
         {group.tabs.map((t, i) => <TabChip key={t.id} tab={t} group={group} active={i === group.active} onActivate={() => wm.activate(group.id, i)} />)}
         <span className="fx-tabgroup__spacer" />
@@ -198,11 +202,21 @@ function useWindowDrag(w: WindowSpec) {
     // grab offset: where the pointer sits inside the window; the unsnapped position is pointer minus offset, and the
     // engine snaps from there each step (so a pull never accumulates); s18: screen / window edges, zones, split preview
     let ox = e.clientX - w.x, oy = e.clientY - w.y;
+    // main-tabs@1: the title dragged onto a tab strip (any but its own) docks the window's tabs there
+    const self = (e.currentTarget as HTMLElement).closest('[data-fx-window]');
+    let strip: string | null = null;
     const move = (ev: PointerEvent) => {
       if (!restored) { if (Math.hypot(ev.clientX - lx, ev.clientY - ly) < 6) return; const r = wm.dragRestore(w.id, ev.clientX, ev.clientY, grab); restored = true; if (r) { ox = ev.clientX - r.x; oy = ev.clientY - r.y; } return; }
       wm.dragTo(w.id, ev.clientX - ox, ev.clientY - oy, ev.clientX, ev.clientY, Date.now());
+      strip = stripAt(ev.clientX, ev.clientY, self)?.group ?? null; markStrip(strip);
     };
-    const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up); wm.settle(w.id); };
+    const up = () => {
+      window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up);
+      markStrip(null);
+      const g = strip ? wm.state.groups[strip] : undefined;
+      if (g && g.windowId !== w.id) wm.redockInto(w.id, { target: 'group', groupId: g.id, zone: 'centre' }, g.windowId);
+      wm.settle(w.id); // clears the snap preview (and does nothing more once the window has docked)
+    };
     window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
   };
   const startResize = (e: React.PointerEvent, edge: ResizeEdge) => {

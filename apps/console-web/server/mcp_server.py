@@ -741,6 +741,8 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
 # ---------------------------------------------------------------------- console commands (control@1 console domain)
 
 CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients")
+# main-tabs@1 (= TAB_TOOLS in core/engines/console-commands.mjs): the console's main-area tab group
+TAB_TOOLS = ("tabs_list", "tab_open", "tab_close", "tab_float", "tab_dock")
 Delivery = str  # "recent" (the console used last), "all", or a client id from console_clients
 
 
@@ -804,6 +806,40 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         """What the open console has, so you can pick the right name: its screens, dialogs, settings tabs or actions,
         best matches for `q` first (all of them when q is empty)."""
         return await go({"op": "list", "target": f"console.{kind}", "select": {k: v for k, v in {"q": q, "limit": max(1, min(limit, 500))}.items() if v}})
+
+    # ------------------------------------------------------------------ main-area tab group (main-tabs@1)
+
+    async def run_tab(verb: str, q: str, to: str) -> dict[str, Any]:
+        return await go({"op": "act", "target": "console.actions", "path": f"tabs.{verb}", "action": "run", "input": inp(to, args=[q])})
+
+    @mcp.tool(annotations=READ)
+    async def tabs_list() -> dict[str, Any]:
+        """The tabs open in Brett's console: the main area's tab group and floating windows (id, screen, title, where,
+        active, pinned, unsaved). Empty when that console shows no tab group."""
+        r = await go({"op": "get", "target": "console.nav", "path": "here"})
+        here = (r.get("data") or {}).get("value") or r.get("value") or {}
+        return {"tabs": here.get("tabs", []), "screen": here.get("screen"), "client": (r.get("data") or {}).get("client") or r.get("client")}
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def tab_open(screen: str, to: Delivery = "recent") -> dict[str, Any]:
+        """Open a screen as a tab in the console's main area (or bring its tab up): its id, title or the start of it."""
+        return await run_tab("open", screen, to)
+
+    @mcp.tool(annotations=WRITE)
+    async def tab_close(tab: str, to: Delivery = "recent") -> dict[str, Any]:
+        """Close a tab: its id (tabs_list) or the screen it shows. It can be reopened from the strip (Reopen closed tab)."""
+        return await run_tab("close", tab, to)
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def tab_float(tab: str, to: Delivery = "recent") -> dict[str, Any]:
+        """Float a tab in its own window (tab id or screen)."""
+        return await run_tab("float", tab, to)
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def tab_dock(tab: str, to: Delivery = "recent") -> dict[str, Any]:
+        """Dock a floating window or tab back into the main area's tab group (window id, tab id or screen)."""
+        return await run_tab("dock", tab, to)
+
 
     @mcp.tool(annotations=READ)
     async def console_clients() -> dict[str, Any]:

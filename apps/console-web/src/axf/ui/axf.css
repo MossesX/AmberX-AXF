@@ -1437,3 +1437,54 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 }
 :where([data-fx-small]) .fx-help-panel { left: var(--fx-dens-gap-lg); right: var(--fx-dens-gap-lg); bottom: var(--fx-dens-gap-lg); width: auto; }
 :where([data-fx-small]) .fx-help-intro { bottom: var(--fx-dens-gap-lg); }
+
+/* ---------- main-area tab group (main-tabs@1, framework/react/windows/MainTabs.tsx) ---------- */
+/* The strip reuses the tab-group asset's classes (.fx-tabgroup__bar, .fx-tab), so swapping that asset restyles it. */
+.fx-main--tabs { overflow: hidden; display: flex; flex-direction: column; min-height: 0; }
+.fx-main--tabs > .fx-dock { flex: 1 1 auto; min-height: 0; height: auto; }
+.fx-maintabs { border: 0; border-radius: 0; background: var(--fx-bg); }
+.fx-maintabs--bottom { flex-direction: column-reverse; }
+.fx-maintabs--left { flex-direction: row; }
+.fx-maintabs--right { flex-direction: row-reverse; }
+.fx-maintabs__strip { position: relative; scroll-snap-type: x proximity; scrollbar-width: thin; overscroll-behavior: contain; touch-action: pan-x; }
+.fx-maintabs--bottom > .fx-maintabs__strip { border-bottom: 0; border-top: var(--fx-border-w) solid var(--fx-border); }
+.fx-maintabs--left > .fx-maintabs__strip, .fx-maintabs--right > .fx-maintabs__strip {
+  flex-direction: column; align-items: stretch; overflow-x: hidden; overflow-y: auto; scroll-snap-type: y proximity; touch-action: pan-y;
+  width: calc(var(--fx-space) * 24); max-width: 40%; border-bottom: 0;
+}
+.fx-maintabs--left > .fx-maintabs__strip { border-right: var(--fx-border-w) solid var(--fx-border); }
+.fx-maintabs--right > .fx-maintabs__strip { border-left: var(--fx-border-w) solid var(--fx-border); }
+.fx-maintabs--left .fx-maintabs__tab, .fx-maintabs--right .fx-maintabs__tab { justify-content: flex-start; }
+.fx-maintabs--left .fx-maintabs__tab .fx-tab__label, .fx-maintabs--right .fx-maintabs__tab .fx-tab__label { flex: 1 1 auto; }
+.fx-maintabs__tab { position: relative; scroll-snap-align: start; max-width: calc(var(--fx-space) * 30); }
+.fx-maintabs__tab .fx-tab__label { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.fx-maintabs--left .fx-maintabs__tab, .fx-maintabs--right .fx-maintabs__tab { max-width: none; }
+.fx-maintabs--compact .fx-maintabs__tab { padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-lg); gap: var(--fx-dens-gap-md); font-size: var(--fx-type-root-sm); }
+.fx-maintabs--large .fx-maintabs__tab { padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-2xl); font-size: var(--fx-font-size); }
+.fx-maintabs__tab.is-pinned .fx-tab__label { display: none; }
+.fx-maintabs__tab.is-pinned:not(:has(> .fx-icon)) .fx-tab__label { display: inline; }
+.fx-maintabs__pin { display: inline-flex; color: var(--fx-accent); }
+.fx-maintabs__pin .fx-icon { width: var(--fx-dens-gap-xl); height: var(--fx-dens-gap-xl); }
+.fx-maintabs__dirty { width: var(--fx-dens-gap-md); height: var(--fx-dens-gap-md); border-radius: 999px; background: var(--fx-warning); flex: 0 0 auto; }
+.fx-maintabs[data-fx-icons='off'] .fx-maintabs__tab > .fx-icon { display: none; }
+.fx-maintabs[data-fx-close='never'] .fx-tab__close,
+.fx-maintabs[data-fx-close='active'] .fx-maintabs__tab:not(.is-active) .fx-tab__close,
+.fx-maintabs[data-fx-close='hover'] .fx-maintabs__tab:not(.is-active):not(:hover):not(:focus-within) .fx-tab__close { visibility: hidden; }
+.fx-maintabs__tab.is-lifted { box-shadow: var(--fx-shadow-sm); outline: calc(var(--fx-border-w) * 2) solid var(--fx-accent); outline-offset: calc(var(--fx-border-w) * -2); }
+.fx-maintabs__drop { flex: 0 0 auto; align-self: stretch; width: calc(var(--fx-border-w) * 3); min-height: calc(var(--fx-border-w) * 3); border-radius: 999px; background: var(--fx-accent); }
+.fx-maintabs--left .fx-maintabs__drop, .fx-maintabs--right .fx-maintabs__drop { width: auto; height: calc(var(--fx-border-w) * 3); }
+.fx-tabgroup__bar.is-drop-target, .fx-maintabs__strip.is-drop-target { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface2)); outline: calc(var(--fx-border-w) * 2) dashed var(--fx-accent); outline-offset: calc(var(--fx-border-w) * -2); }
+.fx-maintabs__more { flex: 0 0 auto; position: sticky; right: 0; bottom: 0; background: var(--fx-surface2); }
+.fx-maintabs__body { padding: 0; overflow: auto; flex: 1 1 auto; min-width: 0; min-height: 0; }
+.fx-maintabs__page { min-height: 100%; box-sizing: border-box; }
+.fx-maintabs:not(.fx-maintabs--still) .fx-maintabs__page { animation: fx-maintabs-in var(--fx-motion) ease-out; }
+.fx-maintabs:not(.fx-maintabs--still) .fx-maintabs__tab { transition: background-color var(--fx-motion), color var(--fx-motion), box-shadow var(--fx-motion); }
+@keyframes fx-maintabs-in { from { opacity: var(--fx-opacity-muted); } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .fx-maintabs .fx-maintabs__page { animation: none; } }
+.fx-maintabs__empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--fx-dens-gap-xl); min-height: 100%; text-align: center; }
+/* split panes: each pane draws its own strip; a thin frame tells them apart */
+.fx-maintabs-dock .fx-split__cell > .fx-maintabs, .fx-maintabs-dock .fx-grid__cell > .fx-maintabs { border: var(--fx-border-w) solid var(--fx-border); }
+/* phone: a compact strip, close button only on the active tab, swipe between tabs */
+.fx-maintabs--narrow > .fx-maintabs__strip { padding: var(--fx-dens-gap-xs); gap: 0; }
+.fx-maintabs--narrow .fx-maintabs__tab { max-width: calc(var(--fx-space) * 20); }
+.fx-maintabs--narrow .fx-maintabs__body { touch-action: pan-y pinch-zoom; }

@@ -30,9 +30,17 @@ export const CONSOLE_LIST_DEFAULT = 50;
 export const CONSOLE_CLIENT_STALE_MS = 90_000;
 /** The MCP shortcut tools every console MCP server publishes (names are a contract: Claude sessions call them through axHub). */
 export const CONSOLE_TOOLS = ['console_open', 'console_dialog', 'console_settings', 'console_action', 'console_back', 'console_where', 'console_list', 'console_clients'];
+/**
+ * The main-area tab tools (main-tabs@1, build main-area-tabs): each runs the console's `tabs.<verb>` action with the
+ * tab or screen as its argument; tabs_list reads `here.tabs` (what the console reports).
+ */
+export const TAB_TOOLS = ['tabs_list', 'tab_open', 'tab_close', 'tab_float', 'tab_dock'];
+/** tab tool / CLI verb → the console action it runs. */
+export const TAB_ACTIONS = { open: 'tabs.open', close: 'tabs.close', float: 'tabs.float', dock: 'tabs.dock' };
+export const CONSOLE_TABS_MAX = 60;
 
 /** Action ids that only navigate (open, show, move a window): run with control.console.navigate alone. */
-const NAVIGATING = /^(nav|dialog|settings\.open|banners\.settings|windows\.[A-Za-z]+|terminal\.(open|dialog)|help(\.[A-Za-z.]+)?|help\.mode|search(\.[A-Za-z]+)?|inspector|asset\.json|plugins\.open|views?\.[A-Za-z.]+)$/;
+const NAVIGATING = /^(nav|dialog|settings\.open|banners\.settings|windows\.[A-Za-z]+|tabs\.[A-Za-z]+|terminal\.(open|dialog)|help(\.[A-Za-z.]+)?|help\.mode|search(\.[A-Za-z]+)?|inspector|asset\.json|plugins\.open|views?\.[A-Za-z.]+)$/;
 /** Words in an action id that mean it deletes or throws away something. */
 const DESTRUCTIVE = /(^|[.:_-])(delete|remove|reset|restore|clear|wipe|purge|uninstall|discard|drop|kill|destroy)([.:_-]|$)/i;
 
@@ -78,6 +86,13 @@ export function normalizeHere(raw) {
   const r = isObj(raw) ? raw : {};
   const out = {};
   for (const k of ['screen', 'screenLabel', 'dialog', 'settings']) { const v = str(r[k], 160); if (v) out[k] = v; }
+  // main-tabs@1: the open tabs (main area + floating windows), when the console shows a tab group
+  if (Array.isArray(r.tabs)) {
+    out.tabs = r.tabs.filter(isObj).map((t) => ({
+      id: str(t.id, 160), view: str(t.view, 160), title: str(t.title, 160), where: t.where === 'floating' ? 'floating' : 'main',
+      window: str(t.window, 160), group: str(t.group, 160), active: t.active === true, pinned: t.pinned === true, dirty: t.dirty === true,
+    })).filter((t) => t.id).slice(0, CONSOLE_TABS_MAX);
+  }
   return out;
 }
 

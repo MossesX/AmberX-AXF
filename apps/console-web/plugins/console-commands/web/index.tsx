@@ -46,6 +46,9 @@ function hereOf(rt: AxfRuntime): ConsoleHere {
   if (label) here.screenLabel = label;
   if (s.dialog) here.dialog = s.dialog.id;
   if (s.view === 'settings') { const t = rt.settings.get('axf.settings.lastTab'); if (typeof t === 'string' && t) here.settings = t; }
+  // main-tabs@1: the open tabs, for tabs_list / `axf console tabs`
+  const tabs = rt.mainTabs?.list();
+  if (tabs) here.tabs = tabs.map((t) => ({ ...t, view: t.view ?? '' }));
   return here;
 }
 

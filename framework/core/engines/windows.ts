@@ -465,6 +465,21 @@ export class WindowManager {
   dragStart(tabId: string, fromGroup: string, x: number, y: number) { this.set((s) => ({ ...s, drag: { tabId, fromGroup, x, y }, dockPreview: null })); }
   /** One step of a tab drag: the ghost follows, and the dock preview says where the tab would land (null = nowhere). */
   dragMove(x: number, y: number) { this.set((s) => (s.drag ? { ...s, drag: { ...s.drag, x, y }, dockPreview: this.dockPreviewAt(s, s.drag.tabId, x, y) } : s)); }
+  /** The ghost follows without a dock preview (the host shows its own drop mark, e.g. a place in a tab strip). */
+  dragGhost(x: number, y: number) { this.set((s) => (s.drag ? { ...s, drag: { ...s.drag, x, y }, dockPreview: null } : s)); }
+  /** Drop the drag without moving anything (the host handled the drop itself, or the pointer left). */
+  dragCancel() { this.set((s) => (s.drag || s.dockPreview ? { ...s, drag: null, dockPreview: null } : s)); }
+  /**
+   * Float one tab (main-tabs@1): it leaves its group (an emptied pane closes, an emptied floating window too) and opens
+   * in a new floating window, centred on the pointer when given. Returns the window id, or null when the tab is gone.
+   */
+  floatTab(tabId: string, x?: number, y?: number, width = 640, height = 480): string | null {
+    const from = Object.values(this._state.groups).find((g) => g.tabs.some((t) => t.id === tabId)); if (!from) return null;
+    const tab = from.tabs.find((t) => t.id === tabId)!;
+    this.closeTab(tabId);
+    const at = x !== undefined && y !== undefined ? { x: Math.max(0, Math.round(x - width / 2)), y: Math.max(0, Math.round(y - 16)) } : null;
+    return this.openFloating([tab], tab.title, 'floating', width, height, at?.x, at?.y);
+  }
   /** The drag ends: a dock drop zone wins, else the group under the point takes the tab (older hosts). */
   dragEnd(): boolean {
     const d = this._state.drag, p = this._state.dockPreview ?? null; if (!d) return false;

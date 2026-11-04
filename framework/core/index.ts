@@ -12,6 +12,7 @@ export * from './engines/looktokens';
 export * from './engines/uac';
 export * from './engines/actions';
 export * from './engines/windows';
+export * from './engines/maintabs';
 export * from './engines/roll';
 export * from './engines/hide';
 export * from './engines/embed';

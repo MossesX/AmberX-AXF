@@ -1,0 +1,49 @@
+{
+  "$comment": "main-tabs@1 (core/engines/maintabs.ts): the main area as a tab group. Replayed by spec/check-main-tabs.mts; the Kotlin twin replays the same file once Android work resumes (PORTING.md).",
+  "contract": "main-tabs@1",
+  "defaults": { "enabled": true, "position": "top", "size": "normal", "showIcons": true, "closeButtons": "hover", "maxTabs": 12, "openAs": "tab", "restore": true, "animation": true, "swipe": true },
+  "normalizeSettings": [
+    { "input": null, "out": { "enabled": true, "position": "top", "size": "normal", "showIcons": true, "closeButtons": "hover", "maxTabs": 12, "openAs": "tab", "restore": true, "animation": true, "swipe": true } },
+    { "input": { "position": "left", "size": "huge", "maxTabs": 99, "openAs": "replace", "enabled": "yes" }, "out": { "enabled": true, "position": "left", "size": "normal", "showIcons": true, "closeButtons": "hover", "maxTabs": 50, "openAs": "replace", "restore": true, "animation": true, "swipe": true } },
+    { "input": { "maxTabs": 0, "closeButtons": "never", "restore": false }, "out": { "enabled": true, "position": "top", "size": "normal", "showIcons": true, "closeButtons": "never", "maxTabs": 0, "openAs": "tab", "restore": false, "animation": true, "swipe": true } },
+    { "input": { "maxTabs": -3, "position": "diagonal" }, "out": { "enabled": true, "position": "top", "size": "normal", "showIcons": true, "closeButtons": "hover", "maxTabs": 0, "openAs": "tab", "restore": true, "animation": true, "swipe": true } }
+  ],
+  "tabs": ["a", "b", "c", "d", "e"],
+  "pinned": ["c"],
+  "closeOthers": [ { "keep": "b", "out": ["a", "d", "e"] }, { "keep": "c", "out": ["a", "b", "d", "e"] } ],
+  "closeRight": [ { "of": "b", "out": ["d", "e"] }, { "of": "e", "out": [] }, { "of": "zz", "out": [] } ],
+  "evict": [
+    { "active": "e", "max": 3, "order": ["d", "a", "b", "e"], "out": ["d", "a"] },
+    { "active": "a", "max": 3, "order": [], "out": ["b", "d"] },
+    { "active": "a", "max": 0, "order": [], "out": [] },
+    { "active": "a", "max": 9, "order": [], "out": [] },
+    { "active": "a", "max": 1, "order": [], "out": ["b", "d", "e"] }
+  ],
+  "pinnedFirst": { "pinned": ["d", "b"], "out": ["b", "d", "a", "c", "e"] },
+  "swipe": [
+    { "index": 0, "dir": "prev", "count": 3, "out": 0 }, { "index": 0, "dir": "next", "count": 3, "out": 1 },
+    { "index": 2, "dir": "next", "count": 3, "out": 2 }, { "index": 0, "dir": "next", "count": 0, "out": 0 }
+  ],
+  "swipeOf": [
+    { "dx": -120, "dy": 10, "out": "next" }, { "dx": 120, "dy": -20, "out": "prev" },
+    { "dx": 40, "dy": 0, "out": null }, { "dx": 120, "dy": 90, "out": null }
+  ],
+  "stripDrop": { "spans": [[0, 100], [100, 180], [180, 300]], "probes": [ { "at": -5, "out": 0 }, { "at": 60, "out": 1 }, { "at": 139, "out": 1 }, { "at": 141, "out": 2 }, { "at": 290, "out": 3 } ] },
+  "views": [ { "id": "home", "title": "Home" }, { "id": "plan-studio", "title": "Plan Studio" }, { "id": "build", "title": "Build queue" }, { "id": "pending", "title": "Pending builds" } ],
+  "resolve": [
+    { "q": "plan-studio", "out": "plan-studio" }, { "q": "Plan Studio", "out": "plan-studio" }, { "q": "plan studio", "out": "plan-studio" },
+    { "q": "pend", "out": "pending" }, { "q": "queue", "out": "build" }, { "q": "nothing", "out": null }, { "q": "", "out": null }
+  ],
+  "session": [
+    { "input": null, "out": { "$axf": "main-tabs@1", "dock": null, "pinned": [], "closed": [] } },
+    { "input": { "$axf": "other@1", "pinned": ["x"] }, "out": { "$axf": "main-tabs@1", "dock": null, "pinned": [], "closed": [] } },
+    { "input": { "$axf": "main-tabs@1", "dock": [], "pinned": ["a", "a", 3, "b"], "closed": [{ "view": "plan", "title": "Plan", "icon": "layers" }, { "title": "no view" }, "junk"] },
+      "out": { "$axf": "main-tabs@1", "dock": null, "pinned": ["a", "b"], "closed": [{ "view": "plan", "title": "Plan", "icon": "layers" }] } }
+  ],
+  "pushClosed": {
+    "stack": [ { "view": "plan", "title": "Plan" }, { "view": "home", "title": "Home" } ],
+    "tab": { "id": "view-home", "title": "Home", "kind": "axf-placed-view", "payload": "home", "icon": "home" },
+    "out": [ { "view": "home", "title": "Home", "icon": "home" }, { "view": "plan", "title": "Plan" } ],
+    "notAScreen": { "id": "t1", "title": "Output", "kind": "terminal", "payload": "" }
+  }
+}

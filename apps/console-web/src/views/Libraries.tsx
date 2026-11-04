@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Chip, Container, DockArea, useRuntime, useWindowManager } from '../axf/react';
+import { Button, Chip, Container, useRuntime, useWindowManager } from '../axf/react';
 import { useStore } from '../store';
 import * as api from '../api';
 import { LibraryTemplates } from './LibraryTemplates';
@@ -116,7 +116,6 @@ function UiLibraries() {
         <div className="fx-row fx-row--wrap"><Button tone="primary" icon="layers" disabled={!selected.size} onClick={compare}>Compare</Button><Button icon="x" onClick={() => setSelected(new Set())}>Clear</Button><Button icon="terminal" onClick={() => rt.dispatch('terminal.open:hot-swap')}>Terminal</Button></div>
       </header>
       <div className="fx-grid cx-panes">{pane('Hot-swappable (AXF kits)', hot, false)}{pane('Third-party / existing', third, true)}</div>
-      <Container title="Docked comparisons" icon="layout"><div style={{ height: 360 }}><DockArea empty={<div className="fx-empty">Nothing docked — redock a floating comparison window and its tab groups land here.</div>} /></div></Container>
     </div>
   );
 }

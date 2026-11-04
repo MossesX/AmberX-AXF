@@ -384,6 +384,24 @@ async def list_(request: Request, kind: str = "screens", q: str = "", limit: int
     return await go(request, {"op": "list", "target": target, **({"select": select} if select else {})})
 
 
+# ---------------------------------------------------------------------- routes: the main-area tab group (main-tabs@1)
+
+@router.get("/tabs")
+async def tabs(request: Request) -> JSONResponse:
+    """The open tabs of the console used last (main area + floating windows), from what it reports as `here.tabs`."""
+    return await go(request, {"op": "get", "target": "console.nav", "path": "here"})
+
+
+@router.post("/tab/{verb}")
+async def tab(request: Request, verb: str) -> JSONResponse:
+    """open | close | float | dock one tab: {"tab": "<tab id or screen>"} (also "screen" / "q")."""
+    if verb not in ("open", "close", "float", "dock"):
+        return answer({"ok": False, "code": "validation", "message": f"unknown tab command {verb}: open, close, float or dock"})
+    b = await _body(request)
+    q = b.get("tab") or b.get("screen") or b.get("q") or b.get("id")
+    return await go(request, {"op": "act", "target": "console.actions", "path": f"tabs.{verb}", "action": "run", **_to(b, args=[q] if q else None), **_audit(b)})
+
+
 class ConsoleCommands:
     """console-commands@1 for other plugins (Token control's /api/control hands console.* targets here), the /api/console
     mount and the console's MCP tools."""
