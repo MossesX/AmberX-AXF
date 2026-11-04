@@ -31,5 +31,34 @@ t('a verbatim prompt is never replaced by a paraphrase', () => {
   assert.equal(D.getPrompt(db, 'p-b1-0').said, 'his words'); D.closeDb(':memory:');
 });
 
+t('a created build plans its steps right away, with his words; statuses follow the build', async () => {
+  const H = await import('../../../../framework/core/build-hook.mjs'); const { applyEvents } = await import('./ledger/apply.mjs');
+  const db = D.openDb(':memory:');
+  const origin = { said: 'Put every feature in a list the moment it is planned.', at: '2026-11-04T21:34:07Z', source: 'chat', verbatim: true };
+  const s1 = { id: 's1', uid: 'u1', title: 'Status chips in the grid', files: ['apps/console-web/plugins/shipped-features/web/index.tsx'] };
+  const s2 = { id: 's2', uid: 'u2', title: 'Tests and report' };
+  const b = { id: 'sf-live', title: 'Shipped live', profiles: ['angel'], status: 'pending', rev: 1, steps: [s1, s2], origin, createdAt: '2026-11-04T21:35:00Z' };
+  const ev = (c) => H.eventsFromChange(c, { at: '2026-11-04T21:35:00Z', by: 'test' });
+  applyEvents(db, ev({ op: 'add', before: null, after: b }));
+  const [f] = D.listFeatures(db); assert.equal(D.listFeatures(db).length, 1, 'housekeeping steps are not features'); assert.equal(f.status, 'planned'); assert.equal(f.plugin, 'shipped-features');
+  assert.equal(D.getPrompt(db, f.prompts[0].id).said, origin.said);
+  applyEvents(db, ev({ op: 'change', before: b, after: { ...b, rev: 2, status: 'running', steps: [{ ...s1, done: true }, s2] } })); assert.equal(D.getFeature(db, f.id).status, 'building');
+  applyEvents(db, ev({ op: 'change', before: { ...b, status: 'running' }, after: { ...b, rev: 3, status: 'built', pr: '350' } })); assert.equal(D.getFeature(db, f.id).status, 'in-pr');
+  applyEvents(db, ev({ op: 'change', before: { ...b, status: 'built', pr: '350' }, after: { ...b, rev: 4, status: 'complete', pr: '350', mergedAt: '2026-11-05T00:00:00Z' } }));
+  assert.equal(D.getFeature(db, f.id).status, 'merged'); assert.equal(D.getFeature(db, f.id).mergedAt, '2026-11-05T00:00:00Z');
+  const again = applyEvents(db, ev({ op: 'add', before: null, after: b })); assert.equal(again, 0, 'replays are ignored');
+  // a later build touching the same feature is an edit, not a new feature
+  const b2 = { id: 'sf-chips-fix', title: 'Chip colours', profiles: ['urgent'], status: 'pending', rev: 1, steps: [{ id: 's1', uid: 'v1', title: 'Status chips in the grid: warn tone for stalled', files: ['apps/console-web/plugins/shipped-features/web/index.tsx'] }], origin: { said: 'Stalled should look different.', verbatim: true } };
+  applyEvents(db, ev({ op: 'add', before: null, after: b2 }));
+  assert.equal(D.listFeatures(db).length, 1); const [e] = D.listEdits(db, f.id); assert.equal(e.status, 'planned'); assert.equal(e.build, 'sf-chips-fix'); assert.equal(D.getFeature(db, f.id).beingEdited, true);
+  applyEvents(db, ev({ op: 'change', before: b2, after: { ...b2, rev: 2, deleted: true } })); assert.equal(D.listEdits(db, f.id)[0].status, 'cancelled', 'a cancelled build keeps its edit as Cancelled');
+  assert.equal(D.getFeature(db, f.id).beingEdited, false);
+  // a cancelled build keeps its planned features as Cancelled
+  const b3 = { id: 'sf-gone', title: 'Repo checklist', profiles: ['angel'], status: 'pending', rev: 1, steps: [{ id: 's1', uid: 'w1', title: 'Repo checklist page in the console' }] };
+  applyEvents(db, ev({ op: 'add', before: null, after: b3 })); applyEvents(db, ev({ op: 'change', before: b3, after: { ...b3, rev: 2, status: 'archived' } }));
+  assert.equal(D.listFeatures(db).find((x) => x.name.startsWith('Repo checklist')).status, 'cancelled');
+  D.closeDb(':memory:');
+});
+
 for (const [name, fn] of tests) { try { await fn(); n += 1; } catch (e) { console.error(`✗ ${name}`); throw e; } }
 console.log(`shipped-features: ${n} checks passed`);

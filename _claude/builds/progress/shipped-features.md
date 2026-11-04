@@ -22,7 +22,7 @@ s12), and rebuild only what it flags. Opus-built steps are marked (Opus, Fable r
 - [ ] s6 importers (AmberX-AXF + axHub, back to first commit) + AI feature split into data/features-seed.json
 - [ ] s7 deploy-log writers in every deploy script
 - [ ] s8 3-level grid with View by
-- [ ] s9 planned features on create: every build creator (vps.build_start, orchestrator add, pending_change add, Plan Studio "Turn into a build", helper taking a job) writes its planned features with Brett's verbatim prompt; steps become features (AI split, one-per-step fallback)
+- [x] s9 planned features on create (Opus): `ledger/hook.mjs` is the build-hook@1 listener; `ledger/apply.mjs` plans every step of a created build as a Planned feature (or a Planned edit of an existing one) with his verbatim prompt; `ledger/plan.mjs` splits steps (plain one-per-step fallback; `ctx.split` is the AI hook, not wired to a model yet) and skips housekeeping steps. Every creator is covered because they all write the builds store. Cancelled builds keep features as Cancelled. Journal backfill: 1634 features, 50 edits in ~5 s.
 - [ ] s10 live status per feature: Planned, Queued, Building, In PR, Merged, Live (+ Cancelled, Removed), fed by the builds store, PRs and deploy log; cancelled builds keep features as Cancelled (hidden by default)
 - [ ] s11 status column + chips at every level, sortable; quick filters Hide completed, Hide pending, status multi-select; remembered per device; group counts follow the filter
 - [ ] s12 edits: edits table (feature_id, build, pr, commit, prompt, model, agent, session, status, timestamps); later work touching a feature adds an edit instead of a new feature (AI match, fallback = same files/plugin + build/PR naming it); backfill from history
