@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T18:41:50.250Z",
+ "updatedAt": "2026-11-04T18:42:50.314Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10091,7 +10091,7 @@
   {
    "id": "fable-review-nov3",
    "title": "Fable review: Opus-built foundation work, Nov 3-4",
-   "category": "Plugin",
+   "category": "Builds > Fable review",
    "detail": "Read-and-fix review on Fable of foundation work built on Opus on Nov 3-4 2026 (schemas, asset types, contracts, engines, cross-app protocols). For each: read the contract, engine, fixtures and validators; fix what is wrong or unsafe to build on; keep everything else. Fixes go through one PR and merge when green. Report _claude/builds/reports/fable-review-nov3.md (what was checked, what changed, what was fine).",
    "status": "pending",
    "hidden": false,
@@ -10100,9 +10100,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T14:39:07.727Z",
-   "updatedAt": "2026-11-04T14:39:07.727Z",
+   "updatedAt": "2026-11-04T18:42:47.795Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "model-thinking-audit (Nov 4): the audit list is in _claude/builds/reports/model-thinking-audit.md and on every build (node framework/cli/model-advice.mjs audit --json; filter 'Fable candidates'). Consume it from there. s2 (plugin-settings-placement): the settings-placement@1 Fable review already ran as settings-placement-everywhere s2 (Fable, same PR #329), so s2 can be ticked against it. Top redo picks: orch-live-sync, pass-all, requests-ledger, settings-asset / appearance-asset-tokens (their parked -fable twins are the redo).",
+     "at": "2026-11-04T18:42:47.795Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -10116,6 +10121,16 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "recommendedModel": "Fable",
+   "recommendedThinking": "high",
+   "modelWhy": "6 of 7 step(s) are foundation work (cross-app, contract, gui behaviour, ref@1, settings-placement@1). 1 step(s) are landing, docs, wording or a small fix work for Opus",
+   "adviceKind": "foundation",
+   "adviceAt": "2026-11-04T18:20:25.170Z",
+   "adviceCost": {
+    "minutes": 0,
+    "usd": 0,
+    "what": "nothing to change"
    },
    "steps": [
     {
@@ -10134,6 +10149,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "high",
+     "modelWhy": "foundation (schema, asset type, engine, contract): cross-app, contract, gui behaviour, ref@1; Brett's rule is Fable for foundation work, high thinking",
+     "adviceKind": "foundation",
+     "adviceAt": "2026-11-04T18:20:25.170Z",
      "uid": "st-mw282v720ebl0b"
     },
     {
@@ -10152,6 +10172,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "high",
+     "modelWhy": "foundation (schema, asset type, engine, contract): contract, settings-placement@1; Brett's rule is Fable for foundation work, high thinking",
+     "adviceKind": "foundation",
+     "adviceAt": "2026-11-04T18:20:25.170Z",
      "uid": "st-mw282v720fy14w"
     },
     {
@@ -10170,6 +10195,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "high",
+     "modelWhy": "foundation (schema, asset type, engine, contract): embed@1; Brett's rule is Fable for foundation work, high thinking",
+     "adviceKind": "foundation",
+     "adviceAt": "2026-11-04T18:20:25.170Z",
      "uid": "st-mw282v720glhm9"
     },
     {
@@ -10188,6 +10218,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "high",
+     "modelWhy": "foundation (schema, asset type, engine, contract): contract; Brett's rule is Fable for foundation work, high thinking",
+     "adviceKind": "foundation",
+     "adviceAt": "2026-11-04T18:20:25.170Z",
      "uid": "st-mw282v720h7xhl"
     },
     {
@@ -10206,6 +10241,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "high",
+     "modelWhy": "foundation (schema, asset type, engine, contract): engine, contract, asset type, new asset type; Brett's rule is Fable for foundation work, high thinking",
+     "adviceKind": "foundation",
+     "adviceAt": "2026-11-04T18:20:25.170Z",
      "uid": "st-mw282v720iwc9l"
     },
     {
@@ -10224,6 +10264,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "high",
+     "modelWhy": "foundation (schema, asset type, engine, contract): asset-type; Brett's rule is Fable for foundation work, high thinking",
+     "adviceKind": "foundation",
+     "adviceAt": "2026-11-04T18:20:25.170Z",
      "uid": "st-mw282v720jrmat"
     },
     {
@@ -10242,6 +10287,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "low",
+     "modelWhy": "landing, docs, wording or a small fix (report): routine, Opus on low thinking",
+     "adviceKind": "landing",
+     "adviceAt": "2026-11-04T18:20:25.170Z",
      "uid": "st-mw282v720kocgr"
     }
    ]
