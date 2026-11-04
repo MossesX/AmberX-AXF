@@ -13,7 +13,7 @@ const skills = Object.fromEntries(readdirSync(here('./agents/skills/')).filter((
 
 // s1 roster + skills
 t('roster and skills are valid', () => assert.deepEqual(c.checkRoster(roster, skills), []));
-t('the eight build skills and the six job-crew skills exist', () => assert.deepEqual(Object.keys(skills).sort(), ['assets-themes', 'banner-janitor', 'docs', 'kotlin-compose', 'landing', 'listener-qa', 'merge-fixer', 'plugin-manifests', 'python-server', 'react-ui', 'screenshots', 'site-checks', 'tests', 'walkthroughs']));
+t('the eight build skills and the seven job-crew skills exist', () => assert.deepEqual(Object.keys(skills).sort(), ['assets-themes', 'banner-janitor', 'ci-fix', 'docs', 'kotlin-compose', 'landing', 'listener-qa', 'merge-fixer', 'plugin-manifests', 'python-server', 'react-ui', 'screenshots', 'site-checks', 'tests', 'walkthroughs']));
 t('job crew never gets build steps', () => { const p = c.planJobs([{ id: 'b', steps: [{ id: 's1', text: 'take screenshots of the site check page and land it', files: [] }] }], roster); assert.ok(p.jobs.every((j) => !roster.agents.find((a) => a.id === j.agent).jobsOnly)); });
 t('every skill is under one page', () => { for (const s of Object.values(skills)) assert.ok(s.lines <= c.SKILL_MAX_LINES && s.chars <= c.SKILL_MAX_CHARS, s.id); });
 t('models sort cheapest first, blocked ones coerced up (model policy: never Sonnet or Haiku)', () => { assert.deepEqual(c.normAgent({ id: 'x', models: ['opus', 'haiku', 'nope'] }).models, ['opus']); assert.deepEqual(c.normAgent({ id: 'y', models: ['fable', 'sonnet'] }).models, ['opus', 'fable']); assert.deepEqual(c.normAgent({ id: 'z' }).models, ['opus']); });
@@ -464,8 +464,8 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
   const types = jc.jobTypes(readdirSync(typesDir).map((f) => JSON.parse(readFileSync(join(typesDir, f), 'utf8'))));
   const at = '2026-11-04T12:00:00.000Z'; const table = c.prices(JSON.parse(readFileSync(here('../../../../framework/schemas/model-pricing.json'), 'utf8')));
   const site = types.find((x) => x.id === 'site-check');
-  t('job types: six starters, all valid, each owned by one hired crew member', () => {
-    assert.equal(types.length, 6); for (const jt of types) { assert.deepEqual(jt.errors, [], jt.id); const o = jc.owners(jt, roster, c.normState({}, roster)); assert.equal(o.length, 1, jt.id); assert.ok(o[0].jobsOnly, jt.id); }
+  t('job types: seven starters, all valid, each owned by one hired crew member', () => {
+    assert.equal(types.length, 7); for (const jt of types) { assert.deepEqual(jt.errors, [], jt.id); const o = jc.owners(jt, roster, c.normState({}, roster)); assert.equal(o.length, 1, jt.id); assert.ok(o[0].jobsOnly, jt.id); }
   });
   t('job-type validation: a bad job type is named and never routed', () => {
     const bad = jc.jobTypes([{ type: 'job-type', id: 'bad', name: 'Bad', data: { specialty: 'site-checks', budget: { tokens: 5 }, trigger: { kind: 'cron' }, brief: 'x {{nope}}' } }])[0];
