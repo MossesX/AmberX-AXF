@@ -180,6 +180,13 @@ export function SessionsView() {
   }, []);
   return (
     <section className="axp-live" aria-label="Live sessions">
+      <header className="fx-pagehead">
+        <div>
+          <p className="fx-eyebrow">Claude · live</p>
+          <h1>Live sessions</h1>
+          <p className="fx-muted">Every Claude session going on, human and headless, on every account, and the agent running each.</p>
+        </div>
+      </header>
       <div className="axp-live__bar" role="toolbar" aria-label="Live sessions filters">
         <span className="axp-live__total"><b>{snap?.counts.label ?? 'Loading…'}</b>{snap?.counts.watched ? ` · ${snap.counts.watched} watched` : ''}</span>
         <Segmented label="Kind" size="sm" value={f.kind} onChange={(kind) => setF({ ...f, kind })}
@@ -347,6 +354,13 @@ export function RecordingsView() {
   if (open) return <Player id={open} back={() => { setOpen(''); load(); }} />;
   return (
     <section className="axp-live" aria-label="Session recordings">
+      <header className="fx-pagehead">
+        <div>
+          <p className="fx-eyebrow">Claude · recorded</p>
+          <h1>Session recordings</h1>
+          <p className="fx-muted">Every recorded human session: search what was said, then replay it in real time with the voice.</p>
+        </div>
+      </header>
       <div className="axp-live__bar" role="toolbar" aria-label="Recordings filters">
         <span className="axp-live__total"><b>{items ? `${items.length} recorded session${items.length === 1 ? '' : 's'}` : 'Loading…'}</b></span>
         <Switch label="Favourites" checked={fav} onChange={setFav} />
