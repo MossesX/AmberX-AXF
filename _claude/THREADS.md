@@ -669,8 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:22 UTC · `builds-one-page` note (refactor) · snap-sully
-- 2026-11-03 18:22 UTC · `builds-one-page-done` s4 done (urgent) · snap-sully
 - 2026-11-03 18:22 UTC · `builds-one-page-done` s5 done, → built (urgent) · snap-sully
 - 2026-11-03 18:22 UTC · `builds-one-page-done` note (urgent) · snap-sully
 - 2026-11-03 18:23 UTC · `builds-one-page` s13 done, → complete, note (refactor) · foreign-write
@@ -1069,6 +1067,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:43 UTC · `app-voice-commands` added (6 steps) (current) · orchestrator
 - 2026-11-04 14:43 UTC · `app-voice-commands` note (current) · orchestrator
 - 2026-11-04 14:43 UTC · `app-voice-commands` → running (current) · orchestrator
+- 2026-11-04 14:43 UTC · `app-voice-commands` added (6 steps) (current) · foreign-write
+- 2026-11-04 14:43 UTC · `app-voice-commands` note (current) · foreign-write
 
 ## Token passes (log)
 
