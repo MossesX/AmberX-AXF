@@ -57,8 +57,8 @@ export const ASSET_TYPES = [
   'agent-card',
   'job-type',
   'card',
-  'help',
   'voice-command',
+  'help',
   'uac-policy',
 ] as const;
 

@@ -48,8 +48,8 @@
     "agent-card": false,
     "job-type": false,
     "card": false,
-    "help": false,
     "voice-command": false,
+    "help": false,
     "uac-policy": false
   },
   "cases": {

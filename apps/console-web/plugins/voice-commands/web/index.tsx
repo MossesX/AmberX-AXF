@@ -124,6 +124,7 @@ function VoicePage() {
   const needle = q.trim().toLowerCase();
   return (
     <div className="axp-voice" data-help="voice-page">
+      <header className="fx-pagehead"><div><p className="fx-eyebrow">Plugin · voice-command@1</p><h1>Voice commands</h1><p className="fx-muted">Say or type a command to any app; every app lists what it understands.</p></div></header>
       <Container title="Say a command" icon="mic">
         <SayBox app={pick} />
       </Container>
