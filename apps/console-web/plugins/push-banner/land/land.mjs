@@ -11,6 +11,7 @@
  *   node apps/console-web/plugins/push-banner/land/land.mjs run [--dry-run] [--only <build>] [--json]   one round
  *   … list | blocked [--json]            what the last round found (landing order, PR, state, reason)
  *   … now <build> | hold <build> [--why "…"] | release <build> | after <build> <other>
+ *   … queue list | add <pr> | remove <pr> | move <pr> <index>   the merge queue (merge-queue.mjs; it runs in every round)
  *
  * One round, per finished build (land-core.mjs isCandidate), in dependency order:
  *   1. its worktree: synced files committed on its own branch, scratch files skipped, untracked copies of hub files
@@ -36,6 +37,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
+import { queueRound, readQueue, readQueueConfig, main as queueMain } from './merge-queue.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SELF_REPO = resolve(HERE, '../../../../..');
@@ -269,6 +271,7 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
   let pulls = [];
   try { pulls = await gh('GET', `/repos/${s.slug}/pulls?state=open&per_page=100`); } catch (e) { log(`pulls: ${e.message}`); }
   const prOf = (br) => (Array.isArray(pulls) ? pulls : []).find((p) => p?.head?.ref === br && p?.base?.ref === s.base && (p?.head?.repo?.full_name || '').toLowerCase() === s.slug.toLowerCase());
+  const queueOn = readQueueConfig(s).mergeQueue; const queued = queueOn ? readQueue(s) : {};
   const items = [];
   const candById = new Map(cands.map((c) => [c.id, c]));
   for (const o of order) {
@@ -294,7 +297,11 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
           let mergeable = old.head === headNow && prev.mainSha === mainSha ? old.mergeable : undefined;
           if (pr && mergeable === undefined) { try { mergeable = (await gh('GET', `/repos/${s.slug}/pulls/${pr.number}`))?.mergeable; } catch { /* next round */ } }
           it.mergeable = typeof mergeable === 'boolean' ? mergeable : null;
-          const wants = codeBehind({ s, git, br: b.branch }) || mergeable === false || nowFirst.includes(b.id);
+          // with the merge queue on, main is combined in on the queue branch instead: pulling it into the branch would
+          // change the head and make the queue test it twice. Only a real conflict (GitHub won't even run the PR checks)
+          // gets main merged in, and never for a PR the queue is testing right now.
+          const inStack = queueOn && pr && (queued.stack || []).some((e) => e.pr === pr.number);
+          const wants = queueOn ? mergeable === false && !inStack : codeBehind({ s, git, br: b.branch }) || mergeable === false || nowFirst.includes(b.id);
           if (wants && merges >= core.MAX_MAIN_MERGES && !nowFirst.includes(b.id)) { it.state = 'queued'; it.reason = { kind: 'running', text: `${b.id}: waits its turn to have main merged in (${core.MAX_MAIN_MERGES} a round).`, quiet: true }; it.since = old.since || at; items.push(it); continue; }
           if (wants) {
             merges++;
@@ -374,8 +381,14 @@ export async function main(argv) {
   const known = core.LAND_COMMANDS.find((c) => c.cli === cmd);
   if (cmd === 'run') {
     const st = await round({ s, dry, only: opt('only'), log: (m) => !json && console.error(m) });
+    // the merge queue takes its turn in the same round (same cron, same lock): it merges what auto-land made ready
+    if (!opt('only')) {
+      try { const git = makeGit(s.repo); const mq = await queueRound({ s, git, gh: makeGitHub(s), api: makeConsole(s), dry, fetched: true, log: (m) => !json && console.error(m) }); st.queue = { on: mq.on, items: (mq.items || []).length, kicked: (mq.kicked || []).length }; }
+      catch (e) { if (!json) console.error(`merge queue: ${e.message}`); }
+    }
     return print(st, st.on === false ? 'auto-land is off (Settings → Plugins → Push banner → Auto-land)' : st.items.map(line).join('\n') || 'no finished builds to land');
   }
+  if (cmd === 'queue') return queueMain(argv.slice(argv.indexOf('queue') + 1));
   if (cmd === 'list' || cmd === 'blocked') {
     const st = readState(s); const items = (st.items || []).filter((x) => cmd === 'list' || x.state === 'blocked');
     return print({ ...st, items }, items.map(line).join('\n') || (cmd === 'blocked' ? 'nothing blocked' : 'no finished builds to land'));
