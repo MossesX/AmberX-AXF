@@ -1,7 +1,7 @@
 {
  "$axf": "bugs@1",
- "rev": 8,
- "updatedAt": "2026-11-04T13:30:41.965Z",
+ "rev": 9,
+ "updatedAt": "2026-11-04T13:37:50.441Z",
  "settings": {
   "autoOptimize": false,
   "maxPerBuild": 3,
@@ -322,6 +322,45 @@
    ],
    "createdAt": "2026-11-04T13:30:41.965Z",
    "updatedAt": "2026-11-04T13:30:41.965Z",
+   "deleted": false
+  },
+  {
+   "$axf": "bug@1",
+   "id": "b-builds-live-a-new-build-s-steps-",
+   "title": "Builds live: a new build's steps were duplicated on main with fresh uids, blocking every live publish",
+   "details": "bugs-board was added at 13:07; by 13:30 main held it with 14 steps (7 new uids + the 7 originals as s8-7…s14-13). builds-live flush then refused every publish (merged store not valid builds@1: duplicate live step uids) until the local record was deduped and made newest. Suspect: an export (profiles/*/orchestrator.json) absorbed without uids and merged as new steps.",
+   "status": "confirmed",
+   "severity": "high",
+   "app": "framework",
+   "area": "builds-live",
+   "tags": [
+    "builds-live",
+    "store",
+    "merge"
+   ],
+   "files": [
+    "framework/cli/builds-live.mjs",
+    "framework/plan/builds-merge-core.mjs"
+   ],
+   "reportedBy": "rhonda",
+   "reportedAt": "2026-11-04T13:37:50.441Z",
+   "said": "",
+   "build": "",
+   "profile": "",
+   "fixedPr": "",
+   "order": -1,
+   "needsBrett": false,
+   "candidates": [],
+   "bounces": 0,
+   "history": [
+    {
+     "at": "2026-11-04T13:37:50.441Z",
+     "by": "rhonda",
+     "what": "added"
+    }
+   ],
+   "createdAt": "2026-11-04T13:37:50.441Z",
+   "updatedAt": "2026-11-04T13:37:50.441Z",
    "deleted": false
   }
  ],
