@@ -1296,6 +1296,18 @@
    "from": "brief",
    "addenda": []
   },
+  "molly-banner-match": {
+   "said": "Make Molly's top banner asset the same as console. And when console's open in Molly, don't display its own banner.",
+   "at": "2026-11-04T15:25:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "headless",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "molly-multi-instance-tabs": {
    "said": "In Molly's xLayout IDE mode: \"How do I make a new tab in Molly?\" ... (there's no + button) ... \"Need to be able to add a tab so I can have multiple instances.\"\nAlso: \"How do I reset the layout? Because I run it IDE style and I made a bunch of tabs.\" He couldn't find Reset layout (it exists as the workspace action `layout-reset` in src/axf/libs/workspace, but he can't see it).\n\nADDENDUM 1 (Brett, voice, Nov 4): \"Any screen or any UI whatsoever can be dragged.\"",
    "at": "2026-11-04T16:00:00.000Z",
