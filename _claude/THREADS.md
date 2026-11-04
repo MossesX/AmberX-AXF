@@ -691,8 +691,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:24 UTC · `urgent-land-lazy-loader` s4 done, → complete (current) · orchestrator
-- 2026-11-04 14:24 UTC · `plugin-lazy-load` note (current) · orchestrator
 - 2026-11-04 14:27 UTC · `urgent-land-gizmo-chat` s3 done (current) · orchestrator
 - 2026-11-04 14:27 UTC · `plugin-lazy-load` note (current) · foreign-write
 - 2026-11-04 14:27 UTC · `urgent-land-lazy-loader` s4 done, → complete (current) · foreign-write
@@ -1091,6 +1089,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 19:56 UTC · `readme-rule-every-build` s2 done (main-framework) · orchestrator
 - 2026-11-04 19:56 UTC · `readme-rule-every-build` s3 done, → complete (main-framework) · orchestrator
 - 2026-11-04 19:56 UTC · `readme-rule-every-build` → built, PR #337 (main-framework) · builds-live
+- 2026-11-04 19:57 UTC · `land-merge-queue-first` → complete, note (urgent) · reconciler
+- 2026-11-04 19:59 UTC · `handoff-2` s11 done, → complete, note (current) · foreign-write
 
 ## Token passes (log)
 
