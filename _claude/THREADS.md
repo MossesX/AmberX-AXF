@@ -669,10 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 05:27 UTC · `terminal-drag-chain-tree` note (current) · foreign-write
-- 2026-11-04 05:27 UTC · `lenny-land-all` s6 done (current) · orchestrator
-- 2026-11-04 05:27 UTC · `lenny-land-all` s7 done, → complete (current) · orchestrator
-- 2026-11-04 05:27 UTC · `lenny-land-all` → built, branch claude/lenny-land-all, PR #304 (current) · builds-live
 - 2026-11-04 05:50 UTC · `lenny-land-all` → complete, merged, note (current) · reconciler
 - 2026-11-04 10:44 UTC · `land-round-2` added (9 steps) (current) · foreign-write
 - 2026-11-04 10:48 UTC · `terminal-no-focus` added (3 steps) (current) · foreign-write
@@ -1069,6 +1065,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:09 UTC · `app-voice-commands` s1 done, note (current) · foreign-write
 - 2026-11-04 15:09 UTC · `app-voice-commands` s1 done (current) · orchestrator
 - 2026-11-04 15:09 UTC · `app-voice-commands` note (current) · orchestrator
+- 2026-11-04 15:11 UTC · `urgent-land-gizmo-chat` note (current) · foreign-write
+- 2026-11-04 15:11 UTC · `console-wake-finish` s5 done, → complete, note (current) · foreign-write
+- 2026-11-04 15:11 UTC · `merge-queue` s6 done, → complete (current) · foreign-write
+- 2026-11-04 15:11 UTC · `app-voice-commands` s1 done, note (current) · foreign-write
 
 ## Token passes (log)
 
