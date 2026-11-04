@@ -43,13 +43,19 @@ class FakeConsole:
         target, path = command.get("target"), str(command.get("path"))
         if "control.console.write" not in (grants or []) and target == "console.actions" and path == "builds.delete":
             return {"ok": False, "code": "denied", "message": "act console.actions needs control.console.write"}
-        known = {"console.screens": {"plan studio": "Plan Studio", "builds": "Builds"}, "console.settings": {"follow amber": "Follow Amber"}, "console.actions": {"builds.open": "Open builds"}}
+        known = {"console.screens": {"plan studio": "Plan Studio", "builds": "Builds"}, "console.settings": {"follow amber": "Follow Amber"}, "console.actions": {"builds.open": "Open builds"},
+                 "apps.screens": {"to-dos": "To-dos", "approvals": "Approvals"}}
+        app = (command.get("input") or {}).get("app", "")
+        if target.startswith("apps.") and not app:
+            return {"ok": False, "code": "validation", "message": f"{target} needs the app"}
+        if app == "offline-app":
+            return {"ok": False, "code": "not_found", "message": "no Offline is open for you right now: open https://offline.amberxai.com", "noConsole": True, "app": "offline-app"}
         if path == "offline":
             return {"ok": False, "code": "not_found", "message": "no console is open for you right now: open the Dev Console"}
         label = known.get(target, {}).get(path.lower())
         if not label:
             return {"ok": False, "code": "not_found", "message": f"no {target} named {path}"}
-        return {"ok": True, "item": {"label": label}, "delivered": [{"client": "cc-abc123", "ok": True, "message": f"opened {label}"}]}
+        return {"ok": True, "item": {"label": label}, **({"app": {"amberx": "amberx-droid", "hub": "axhub-web"}.get(app, app)} if app else {}), "delivered": [{"client": "cc-abc123", "ok": True, "message": f"opened {label}"}]}
 
 
 fake = FakeConsole()
@@ -108,7 +114,7 @@ r = c.post(f"{P}/show", json={"target": "plan studio", "highlight": "h1", "say":
 ok(r["ok"] and r["shown"] is True and r["kind"] == "screen" and r["label"] == "Plan Studio", "a screen opens")
 cmd, grants, by = fake.calls[-1]
 ok(cmd["target"] == "console.screens" and cmd["action"] == "open" and cmd["path"] == "plan studio", "sent as console.screens open")
-ok(grants == ["control.console.navigate"], "with the navigate grant only (nothing that changes data can run)")
+ok(grants == ["control.console.navigate", "control.apps.navigate"], "with the navigate grants only (nothing that changes data can run)")
 ok("input" not in cmd, "to the console used last by default")
 got = drain()
 ok(got and got[-1]["type"] == "show" and got[-1]["highlight"] == "h1" and got[-1]["say"] == "here's the plan" and got[-1]["label"] == "Plan Studio", "the follow streams get the highlight and what Amber said")
@@ -158,6 +164,23 @@ ok(svc.show("plan studio")["shown"] is True, "follow-amber@1 show")
 c.post(f"{P}/state", json={"on": False})
 n = len(fake.calls)
 ok(svc.show("plan studio")["shown"] is False and len(fake.calls) == n, "switched off again: nothing opens")
+
+# ---------------------------------------------------------------- another app (apps-control-surface, Nov 4 2026)
+c.post(f"{P}/state", json={"on": True})
+r = svc.show("to-dos", app="amberx")
+ok(r["ok"] and r["shown"] is True and r["app"] == "amberx-droid" and r["label"] == "To-dos", f"a screen opens in AmberX ({r})")
+cmd, grants, by = fake.calls[-1]
+ok(cmd["target"] == "apps.screens" and cmd["input"] == {"app": "amberx"}, "sent as apps.screens open with input.app")
+ok(grants == ["control.console.navigate", "control.apps.navigate"], "navigate grants only, for the app too")
+ok("in amberx-droid" in r["message"], "the answer says where it opened")
+r = c.post(f"{P}/show", json={"target": "to-dos", "app": "amberx", "say": "your to-dos"}).json()
+ok(r["ok"] and r["shown"] is True and r["app"] == "amberx-droid", "REST show takes app")
+r = svc.show("plan studio", app="console")
+ok(r["ok"] and fake.calls[-1][0]["target"] == "console.screens", "app console = the console's own targets")
+r = svc.show("to-dos", app="offline-app")
+ok(r["ok"] is False and r.get("noConsole") is True and r["app"] == "offline-app", "no client of that app: the broker's noConsole answer comes through")
+r = svc.show("approval:ap-1", app="amberx")
+ok(r["ok"] is False and r.get("code") == "invalid", "approvals pop up in the console only")
 
 # ---------------------------------------------------------------- no Console commands: says so
 plugin_services.provide("console-commands@1", None, folder="console-commands")

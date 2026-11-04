@@ -80,8 +80,26 @@ waits up to 60 s. After 3 s with no console, the owner's AmberX phone is asked t
 to open `…/?axf-cmd=<id>`. Every sent answer carries `delivery.how`: `live` · `after reconnect` · `woke via AmberX` · `queued`
 (`queued: true`, still waiting when the call returned). A command for one named client that isn't there still answers `not_found`.
 
+**Apps** (`apps.*`, build apps-control-surface, Nov 4 2026, Brett: "Put EVERY app on the API, MCP and CLI"): the console's
+surface for every app on the framework. `apps.list` lists the apps (the registry `framework/schemas/apps.json`, apps@1: id,
+label, address, kind, aliases, plus any app whose client is connected) with their clients online and how many screens, dialogs,
+settings tabs and actions each reports. `apps.screens`, `apps.dialogs`, `apps.settings`, `apps.actions`, `apps.nav` and
+`apps.clients` are `console.*` with the app picked by `input.app` (act, get) or `select.app` (list): an id (`amberx-droid`), its
+label (`AmberX`) or an alias (`amberx`, `hub`, `molly`, `console`); `console.*` = `apps.*` with the app fixed to the Dev Console. Every
+app's open clients (one per browser tab or phone) report their catalog through the **control-surface library**
+(`framework/libs/control-surface`, installed by the app template, the Dev Console, AmberX, axHub web and Molly) to one broker,
+the console server's `console-commands` plugin, which keeps them per signed-in user, and the engine resolves against that app's
+clients only (`clientAppId` strips a host prefix: Molly's frames report `molly/<app>`). `recent` = that app's client in front,
+else used last. Messages carry `app`. No client of the app open: the engine answers `noConsole: true` with the app's label and
+`url`, the broker queues the command and asks AmberX through axHub to open that app's address with `?axf-cmd=<id>` (the Dev
+Console or any registered app). Permissions: `control.apps.read | navigate | write | delete`. MCP shortcuts: `apps_list`,
+`app_open`, `app_dialog`, `app_settings`, `app_action`, `app_back`, `app_where`, `app_list`, `app_clients`, `app_show` (`APP_TOOLS`);
+REST `/api/console/apps`, `/api/console/app/{open,dialog,settings,action,back,home,close,where,list,clients}` with `app`; CLI
+`axf apps`, `axf app <app> open <screen> …`. Kotlin twin deferred (PORTING.md).
+
 **Follow Amber** (build follow-amber, Nov 3 2026, Brett): one switch for the owner's consoles. While it is on, a Claude session
-calls MCP `console_show` {target, highlight?, say?} every time it mentions something in the console; the Follow Amber plugin
+calls MCP `console_show` {target, highlight?, say?, app?} every time it mentions something in the console or another app
+(`app` = which app opens it: the console by default, `amberx`, `hub`, `molly`…; the Follow Amber plugin
 (`follow-amber@1`) opens it through `console.screens` / `console.settings` / `console.dialogs` (a bare name is tried in that
 order; `kind:name` picks one; `approval:<id>` pops up a waiting axHub approval) with the single grant `control.console.navigate`,
 so a show can never change data, then highlights `highlight` (CSS selector or exact visible text) and shows `say` as a note.

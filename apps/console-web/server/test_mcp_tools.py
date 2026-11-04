@@ -122,7 +122,27 @@ calls: list[tuple[str, dict]] = []
 real_follow = mcp_server.follow_call
 mcp_server.follow_call = lambda op, args: calls.append((op, args)) or ({"ok": True, "on": True, "by": "Brett", "at": "", "clients": 1} if op == "state" else {"ok": True, "shown": True, "message": "opened Plan Studio"})
 r = asyncio.run(cserver.call_tool("console_show", {"target": "plan studio", "highlight": "h1", "say": "here's the plan"}))
-ok(calls[-1] == ("show", {"target": "plan studio", "highlight": "h1", "say": "here's the plan", "to": "recent"}), "console_show → follow-amber show with target, highlight, say")
+ok(calls[-1] == ("show", {"target": "plan studio", "highlight": "h1", "say": "here's the plan", "to": "recent", "app": ""}), "console_show → follow-amber show with target, highlight, say (app empty = the console)")
+# every app on the framework (apps-control-surface, Nov 4 2026): the same surface with `app`
+for name in mcp_server.APP_TOOLS:
+    ok(name in ctools, f"{name} exists")
+for name in ("apps_list", "app_open", "app_dialog", "app_settings", "app_back", "app_where", "app_list", "app_clients", "app_show"):
+    a = ctools[name].annotations
+    ok(a.read_only_hint is True and a.destructive_hint is not True, f"{name} only navigates or reads: read-only, so it never waits on a veto")
+ok(ctools["app_action"].annotations.read_only_hint is not True, "app_action can change data: it stays a write")
+asyncio.run(cserver.call_tool("app_open", {"app": "amberx", "screen": "to-dos"}))
+ok(csent[-1] == {"op": "act", "target": "apps.screens", "path": "to-dos", "action": "open", "input": {"app": "amberx"}, "by": "mcp"}, f"app_open → apps.screens open with input.app ({csent[-1]})")
+asyncio.run(cserver.call_tool("apps_list", {"online": True}))
+ok(csent[-1] == {"op": "list", "target": "apps.list", "select": {"online": True}, "by": "mcp"}, f"apps_list → apps.list ({csent[-1]})")
+asyncio.run(cserver.call_tool("app_where", {"app": "molly"}))
+ok(csent[-1] == {"op": "get", "target": "apps.nav", "path": "here", "input": {"app": "molly"}, "by": "mcp"}, "app_where → apps.nav get with input.app")
+asyncio.run(cserver.call_tool("app_list", {"app": "hub", "kind": "settings", "q": "pass"}))
+ok(csent[-1] == {"op": "list", "target": "apps.settings", "select": {"app": "hub", "q": "pass", "limit": 50}, "by": "mcp"}, "app_list → apps.<kind> list with select.app")
+asyncio.run(cserver.call_tool("app_show", {"app": "amberx", "target": "to-dos", "say": "your to-dos"}))
+ok(calls[-1] == ("show", {"target": "to-dos", "highlight": "", "say": "your to-dos", "to": "recent", "app": "amberx"}), "app_show → follow-amber show with app")
+asyncio.run(cserver.call_tool("console_show", {"target": "inbox", "app": "amberx"}))
+ok(calls[-1][1]["app"] == "amberx", "console_show takes app too")
+ok("apps_list" in mcp_server.INSTRUCTIONS and "app_show" in mcp_server.INSTRUCTIONS, "the server instructions tell Amber about the app tools")
 asyncio.run(cserver.call_tool("console_follow", {}))
 ok(calls[-1][0] == "state", "console_follow → follow-amber state")
 mcp_server.follow_call = lambda op, args: {"ok": False, "code": "not_implemented", "message": "off"}

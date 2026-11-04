@@ -30,6 +30,28 @@ t('CLI words', () => {
   assert.ok(commandFromArgv(['explode']).error, 'unknown verb');
 });
 
+t('CLI words: every app (apps-control-surface)', () => {
+  assert.deepEqual(commandFromArgv(['app', 'amberx', 'open', 'to-dos']).command, { op: 'act', target: 'apps.screens', path: 'to-dos', action: 'open', input: { app: 'amberx' } });
+  assert.deepEqual(commandFromArgv(['app', 'molly', 'action', 'xlayout.ide', '--to', 'all']).command, { op: 'act', target: 'apps.actions', path: 'xlayout.ide', action: 'run', input: { to: 'all', app: 'molly' } });
+  assert.deepEqual(commandFromArgv(['app', 'hub', 'where']).command, { op: 'get', target: 'apps.nav', path: 'here', input: { app: 'hub' } });
+  assert.deepEqual(commandFromArgv(['app', 'hub', 'list', 'settings', 'pass']).command, { op: 'list', target: 'apps.settings', select: { app: 'hub', q: 'pass' } });
+  assert.deepEqual(commandFromArgv(['app', 'amberx', 'clients']).command, { op: 'list', target: 'apps.clients', select: { app: 'amberx' } });
+  assert.deepEqual(commandFromArgv(['app', 'amberx', 'back']).command, { op: 'act', target: 'apps.nav', path: 'here', action: 'back', input: { app: 'amberx' } });
+  assert.deepEqual(commandFromArgv(['apps']).command, { op: 'list', target: 'apps.list' });
+  assert.deepEqual(commandFromArgv(['apps', 'amber', '--online']).command, { op: 'list', target: 'apps.list', select: { q: 'amber', online: true } });
+  assert.ok(commandFromArgv(['app']).error, 'app without a name is a usage error');
+  assert.ok(commandFromArgv(['app', 'amberx']).error, 'app without a verb is a usage error');
+  const apps = formatAnswer({ ok: true, op: 'list', target: 'apps.list', items: [{ id: 'amberx-droid', label: 'AmberX', online: 1, screens: 3, settings: 1, dialogs: 0, actions: 2, here: { screenLabel: 'Inbox' }, url: 'https://amberx.amberxai.com' }] });
+  assert.ok(apps.includes('amberx-droid') && apps.includes('1 online') && apps.includes('Inbox'), `apps rows (${apps})`);
+  const r = runConsole({ op: 'act', target: 'apps.screens', path: 'to-dos', action: 'open', input: { app: 'amberx' } }, { clients: [{ id: 'amber-1', app: 'amberx-droid', lastUsed: NOW, lastSeen: NOW, catalog: { items: [{ kind: 'screen', id: 'todos', label: 'To-dos' }] } }] });
+  assert.ok(r.ok && r.deliver.to.join() === 'amber-1' && r.deliver.message.app === 'amberx-droid' && r.app === 'amberx-droid', `runner: apps domain through the gate (${JSON.stringify(r)})`);
+  const denied = runConsole({ op: 'act', target: 'apps.screens', path: 'to-dos', action: 'open', input: { app: 'amberx' } }, { grants: ['control.console.navigate'], clients: [] });
+  assert.ok(!denied.ok && denied.code === 'denied' && denied.requires === 'control.apps.navigate', 'the console grant does not cover other apps');
+  const none = runConsole({ op: 'act', target: 'apps.screens', path: 'to-dos', action: 'open', input: { app: 'amberx' } }, { clients: [] });
+  assert.ok(!none.ok && none.noConsole === true && none.url === 'https://amberx.amberxai.com' && none.label === 'AmberX', `no AmberX open: noConsole with its address from framework/schemas/apps.json (${JSON.stringify(none)})`);
+  assert.ok(!runConsole({ op: 'list', target: 'tokens.theme' }).ok, 'other domains are refused here');
+});
+
 const NOW = Date.now();
 const clients = [{ id: 'tab-1', lastUsed: NOW, lastSeen: NOW, here: { screen: 'home' }, catalog: { items: [
   { kind: 'screen', id: 'plan-studio', label: 'Plan Studio' }, { kind: 'screen', id: 'home', label: 'Home' },

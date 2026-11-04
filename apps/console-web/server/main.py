@@ -92,7 +92,9 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(title="GizmoX AI Studio API", version="0.2.0", lifespan=lifespan)
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+# allow_credentials: an app on another subdomain of the site (axHub web, Molly) reaches the control surface broker with
+# the browser's own hub session (Starlette echoes the request's origin when it carries cookies); the wall still decides.
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"], allow_credentials=True)
 
 
 @app.middleware("http")
@@ -189,12 +191,20 @@ def _token_ok(request: HTTPConnection, tok: str) -> bool:
     return _hmac.compare_digest(got.encode(), f"Bearer {tok}".encode())
 
 
+# The control surface's client routes (hello / seen / ack / bye; apps-control-surface, Nov 4 2026): an app on another
+# subdomain of the same site (axHub web, Molly) registers itself and acks what it ran with the browser's own hub session.
+# These routes change no data (a tab says "I am open" and "I did it"), so a same-site origin is enough for them alone;
+# every other write keeps the same-origin rule.
+SAME_SITE_CLIENT_ROUTES = ("/api/console/hello", "/api/console/seen", "/api/console/ack", "/api/console/bye",
+                           "/api/plugins/console-commands/hello", "/api/plugins/console-commands/seen", "/api/plugins/console-commands/ack", "/api/plugins/console-commands/bye")  # axf-plugin:console-commands
+
+
 def _wall_admin(request: HTTPConnection) -> bool:
     """A browser signed in to axHub as an admin (only when the wall is on, see server/wall.py) counts as the token."""
     c = wall.wall_caller(request.headers)
     if not c or not c.admin:
         return False
-    if not wall.same_origin(request):
+    if not wall.same_origin(request) and not (request.url.path.rstrip("/") in SAME_SITE_CLIENT_ROUTES and wall.same_site(request)):
         raise HTTPException(403, "cross-site request refused")
     request.state.axf_user = c
     return True

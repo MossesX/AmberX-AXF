@@ -42,6 +42,24 @@
     },
     "plugins.reads": {
       "read": "read"
+    },
+    "apps.screens": {
+      "open": "navigate"
+    },
+    "apps.dialogs": {
+      "open": "navigate",
+      "close": "navigate"
+    },
+    "apps.settings": {
+      "open": "navigate"
+    },
+    "apps.actions": {
+      "run": "write"
+    },
+    "apps.nav": {
+      "back": "navigate",
+      "home": "navigate",
+      "close": "navigate"
     }
   },
   "domains": [
@@ -49,6 +67,7 @@
     "amberx",
     "planner",
     "console",
+    "apps",
     "pass",
     "plugins"
   ],
@@ -65,13 +84,17 @@
     "control.console.read": "console: read",
     "control.console.write": "console: write",
     "control.console.delete": "console: delete",
+    "control.apps.read": "apps: read",
+    "control.apps.write": "apps: write",
+    "control.apps.delete": "apps: delete",
     "control.pass.read": "pass: read",
     "control.pass.write": "pass: write",
     "control.pass.delete": "pass: delete",
     "control.plugins.read": "plugins: read",
     "control.plugins.write": "plugins: write",
     "control.plugins.delete": "plugins: delete",
-    "control.console.navigate": "console: navigate"
+    "control.console.navigate": "console: navigate",
+    "control.apps.navigate": "apps: navigate"
   },
   "wire": {
     "INVALID": "invalid",
@@ -2221,6 +2244,152 @@
       ],
       "value": "field",
       "doc": "nav-style@1 (core/engines/navstyle-rules.mjs): the navigation menu with sub menus: colours (colour-theme token ids), font, icons, density, width, the sub-menu animation, behaviour (one or many open, tap or hover, auto-collapse, remember, follow the active page, swipe), pinned / hidden / ordered items (comma-separated ids) and accents.<item id>. Only navs that opt in (nav-menu navStyle: true) read it."
+    },
+    "apps.list": {
+      "domain": "apps",
+      "label": "Apps on the framework",
+      "ops": [
+        "list"
+      ],
+      "paths": "host",
+      "select": {
+        "q": "string",
+        "online": "boolean",
+        "limit": "number"
+      },
+      "doc": "Every app that carries the control surface (framework/schemas/apps.json plus any app whose client is connected): id, label, address, kind, its clients online (device, screen, front) and how many screens, dialogs, settings tabs and actions it reports. select.online = only apps with a client open now."
+    },
+    "apps.screens": {
+      "domain": "apps",
+      "label": "App screens",
+      "ops": [
+        "list",
+        "get",
+        "act"
+      ],
+      "paths": "host",
+      "select": {
+        "app": "string",
+        "q": "string",
+        "limit": "number",
+        "client": "string"
+      },
+      "acts": {
+        "open": {}
+      },
+      "actEffect": {
+        "open": "navigate"
+      },
+      "doc": "Every screen (view) an app has, its plugins' too. path = the view id, its title or words to search for (\"to-dos\", \"approvals\"); act open shows it in that app. Every apps act takes input.app (the app: its id, label or an alias; apps.list names them) and optional input.to: recent (default: that app's client in front, else used last), all (every open client of that app) or a client id (apps.clients lists them). The console is apps.* with app \"console\" (console.* is the same surface for it)."
+    },
+    "apps.dialogs": {
+      "domain": "apps",
+      "label": "App dialogs",
+      "ops": [
+        "list",
+        "get",
+        "act"
+      ],
+      "paths": "host",
+      "select": {
+        "app": "string",
+        "q": "string",
+        "limit": "number",
+        "client": "string"
+      },
+      "acts": {
+        "open": {},
+        "close": {}
+      },
+      "actEffect": {
+        "open": "navigate",
+        "close": "navigate"
+      },
+      "doc": "Every dialog an app registers (by id, title or search words); act open shows it (input.arg = its optional argument), act close shuts it (path \"current\" = whichever dialog is open). Every apps act takes input.app (the app: its id, label or an alias; apps.list names them) and optional input.to: recent (default: that app's client in front, else used last), all (every open client of that app) or a client id (apps.clients lists them). The console is apps.* with app \"console\" (console.* is the same surface for it)."
+    },
+    "apps.settings": {
+      "domain": "apps",
+      "label": "App settings tabs",
+      "ops": [
+        "list",
+        "get",
+        "act"
+      ],
+      "paths": "host",
+      "select": {
+        "app": "string",
+        "q": "string",
+        "limit": "number",
+        "client": "string"
+      },
+      "acts": {
+        "open": {}
+      },
+      "actEffect": {
+        "open": "navigate"
+      },
+      "doc": "Every Settings tab and sub-tab of an app (Settings → Plugins → <plugin> is a sub-tab: its id, \"plugins/<id>\" or its title); act open shows it, input.anchor scrolls to one setting or group. Every apps act takes input.app (the app: its id, label or an alias; apps.list names them) and optional input.to: recent (default: that app's client in front, else used last), all (every open client of that app) or a client id (apps.clients lists them). The console is apps.* with app \"console\" (console.* is the same surface for it)."
+    },
+    "apps.actions": {
+      "domain": "apps",
+      "label": "App actions",
+      "ops": [
+        "list",
+        "get",
+        "act"
+      ],
+      "paths": "host",
+      "select": {
+        "app": "string",
+        "q": "string",
+        "limit": "number",
+        "client": "string"
+      },
+      "acts": {
+        "run": {}
+      },
+      "actEffect": {
+        "run": "write"
+      },
+      "doc": "Every registered action of an app (its action bus: menus, toolbars, search). act run runs it in that app under its own policy: an action that only navigates needs control.apps.navigate, one that changes data needs control.apps.write plus the permission the action itself requires, and a destructive one also a confirm token. input.args = its arguments. Every apps act takes input.app (the app: its id, label or an alias; apps.list names them) and optional input.to: recent (default: that app's client in front, else used last), all (every open client of that app) or a client id (apps.clients lists them). The console is apps.* with app \"console\" (console.* is the same surface for it)."
+    },
+    "apps.nav": {
+      "domain": "apps",
+      "label": "App navigation",
+      "ops": [
+        "get",
+        "act"
+      ],
+      "paths": [
+        {
+          "id": "here",
+          "kind": "location"
+        }
+      ],
+      "acts": {
+        "back": {},
+        "home": {},
+        "close": {}
+      },
+      "actEffect": {
+        "back": "navigate",
+        "home": "navigate",
+        "close": "navigate"
+      },
+      "doc": "Where an app is (get here with input.app: screen, dialog, settings tab, what its client in front shows) and moving it: back (closes an open dialog first, else the screen before), home (its first screen), close (the open dialog). Every apps act takes input.app (the app: its id, label or an alias; apps.list names them) and optional input.to: recent (default: that app's client in front, else used last), all (every open client of that app) or a client id (apps.clients lists them). The console is apps.* with app \"console\" (console.* is the same surface for it)."
+    },
+    "apps.clients": {
+      "domain": "apps",
+      "label": "Open app clients",
+      "ops": [
+        "list"
+      ],
+      "paths": "host",
+      "select": {
+        "app": "string",
+        "limit": "number"
+      },
+      "doc": "The clients open right now for the caller across every app (one per browser tab or phone: id, app, host, front, title, device, screen, last used), or one app's with select.app. Commands go to the app's client in front, else the one used last, unless input.to says otherwise."
     }
   },
   "aliases": {
@@ -2258,6 +2427,10 @@
     "console": {
       "target": "console.*",
       "note": "axf console open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients] [words]"
+    },
+    "app": {
+      "target": "apps.*",
+      "note": "axf app <app> open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients] [words] · axf apps (every app, its clients online)"
     },
     "pass": {
       "target": "pass.scopes",
@@ -2304,7 +2477,14 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "apps.list",
+              "apps.screens",
+              "apps.dialogs",
+              "apps.settings",
+              "apps.actions",
+              "apps.nav",
+              "apps.clients"
             ],
             "description": "what to control"
           },
@@ -2358,7 +2538,14 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "apps.list",
+              "apps.screens",
+              "apps.dialogs",
+              "apps.settings",
+              "apps.actions",
+              "apps.nav",
+              "apps.clients"
             ],
             "description": "what to control"
           },
@@ -2413,7 +2600,14 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "apps.list",
+              "apps.screens",
+              "apps.dialogs",
+              "apps.settings",
+              "apps.actions",
+              "apps.nav",
+              "apps.clients"
             ],
             "description": "what to control"
           },
@@ -2475,7 +2669,14 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "apps.list",
+              "apps.screens",
+              "apps.dialogs",
+              "apps.settings",
+              "apps.actions",
+              "apps.nav",
+              "apps.clients"
             ],
             "description": "what to control"
           },
@@ -2537,7 +2738,14 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "apps.list",
+              "apps.screens",
+              "apps.dialogs",
+              "apps.settings",
+              "apps.actions",
+              "apps.nav",
+              "apps.clients"
             ],
             "description": "what to control"
           },
@@ -2599,7 +2807,14 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "apps.list",
+              "apps.screens",
+              "apps.dialogs",
+              "apps.settings",
+              "apps.actions",
+              "apps.nav",
+              "apps.clients"
             ],
             "description": "what to control"
           },
@@ -2665,7 +2880,14 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "apps.list",
+              "apps.screens",
+              "apps.dialogs",
+              "apps.settings",
+              "apps.actions",
+              "apps.nav",
+              "apps.clients"
             ],
             "description": "what to control"
           },
@@ -2770,6 +2992,7 @@
       "plan": "axf plan <op> … = axf control <op> planner.plans",
       "build": "axf build <op> … = axf control <op> planner.builds",
       "console": "axf console open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients] [words]",
+      "app": "axf app <app> open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients] [words] · axf apps (every app, its clients online)",
       "pass": "axf pass <op> … = axf control <op> pass.scopes",
       "plugins": "axf plugins [plugin] | axf <plugin> <command> [--field value]… (every plugin's commands and reads)"
     },
@@ -2796,7 +3019,14 @@
       "pass.scopes",
       "plugins.commands",
       "plugins.reads",
-      "tokens.nav"
+      "tokens.nav",
+      "apps.list",
+      "apps.screens",
+      "apps.dialogs",
+      "apps.settings",
+      "apps.actions",
+      "apps.nav",
+      "apps.clients"
     ]
   },
   "schema": {
@@ -2847,7 +3077,14 @@
           "pass.scopes",
           "plugins.commands",
           "plugins.reads",
-          "tokens.nav"
+          "tokens.nav",
+          "apps.list",
+          "apps.screens",
+          "apps.dialogs",
+          "apps.settings",
+          "apps.actions",
+          "apps.nav",
+          "apps.clients"
         ]
       },
       "path": {
@@ -3955,6 +4192,159 @@
           "items.hidden",
           "items.pinned"
         ]
+      },
+      "apps.list": {
+        "description": "Every app that carries the control surface (framework/schemas/apps.json plus any app whose client is connected): id, label, address, kind, its clients online (device, screen, front) and how many screens, dialogs, settings tabs and actions it reports. select.online = only apps with a client open now.",
+        "ops": [
+          "list"
+        ],
+        "select": {
+          "q": {
+            "type": "string"
+          },
+          "online": {
+            "type": "boolean"
+          },
+          "limit": {
+            "type": "number"
+          }
+        },
+        "paths": "host"
+      },
+      "apps.screens": {
+        "description": "Every screen (view) an app has, its plugins' too. path = the view id, its title or words to search for (\"to-dos\", \"approvals\"); act open shows it in that app. Every apps act takes input.app (the app: its id, label or an alias; apps.list names them) and optional input.to: recent (default: that app's client in front, else used last), all (every open client of that app) or a client id (apps.clients lists them). The console is apps.* with app \"console\" (console.* is the same surface for it).",
+        "ops": [
+          "list",
+          "get",
+          "act"
+        ],
+        "select": {
+          "app": {
+            "type": "string"
+          },
+          "q": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "client": {
+            "type": "string"
+          }
+        },
+        "acts": {
+          "open": {}
+        },
+        "paths": "host"
+      },
+      "apps.dialogs": {
+        "description": "Every dialog an app registers (by id, title or search words); act open shows it (input.arg = its optional argument), act close shuts it (path \"current\" = whichever dialog is open). Every apps act takes input.app (the app: its id, label or an alias; apps.list names them) and optional input.to: recent (default: that app's client in front, else used last), all (every open client of that app) or a client id (apps.clients lists them). The console is apps.* with app \"console\" (console.* is the same surface for it).",
+        "ops": [
+          "list",
+          "get",
+          "act"
+        ],
+        "select": {
+          "app": {
+            "type": "string"
+          },
+          "q": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "client": {
+            "type": "string"
+          }
+        },
+        "acts": {
+          "open": {},
+          "close": {}
+        },
+        "paths": "host"
+      },
+      "apps.settings": {
+        "description": "Every Settings tab and sub-tab of an app (Settings → Plugins → <plugin> is a sub-tab: its id, \"plugins/<id>\" or its title); act open shows it, input.anchor scrolls to one setting or group. Every apps act takes input.app (the app: its id, label or an alias; apps.list names them) and optional input.to: recent (default: that app's client in front, else used last), all (every open client of that app) or a client id (apps.clients lists them). The console is apps.* with app \"console\" (console.* is the same surface for it).",
+        "ops": [
+          "list",
+          "get",
+          "act"
+        ],
+        "select": {
+          "app": {
+            "type": "string"
+          },
+          "q": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "client": {
+            "type": "string"
+          }
+        },
+        "acts": {
+          "open": {}
+        },
+        "paths": "host"
+      },
+      "apps.actions": {
+        "description": "Every registered action of an app (its action bus: menus, toolbars, search). act run runs it in that app under its own policy: an action that only navigates needs control.apps.navigate, one that changes data needs control.apps.write plus the permission the action itself requires, and a destructive one also a confirm token. input.args = its arguments. Every apps act takes input.app (the app: its id, label or an alias; apps.list names them) and optional input.to: recent (default: that app's client in front, else used last), all (every open client of that app) or a client id (apps.clients lists them). The console is apps.* with app \"console\" (console.* is the same surface for it).",
+        "ops": [
+          "list",
+          "get",
+          "act"
+        ],
+        "select": {
+          "app": {
+            "type": "string"
+          },
+          "q": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "client": {
+            "type": "string"
+          }
+        },
+        "acts": {
+          "run": {}
+        },
+        "paths": "host"
+      },
+      "apps.nav": {
+        "description": "Where an app is (get here with input.app: screen, dialog, settings tab, what its client in front shows) and moving it: back (closes an open dialog first, else the screen before), home (its first screen), close (the open dialog). Every apps act takes input.app (the app: its id, label or an alias; apps.list names them) and optional input.to: recent (default: that app's client in front, else used last), all (every open client of that app) or a client id (apps.clients lists them). The console is apps.* with app \"console\" (console.* is the same surface for it).",
+        "ops": [
+          "get",
+          "act"
+        ],
+        "acts": {
+          "back": {},
+          "home": {},
+          "close": {}
+        },
+        "paths": [
+          "here"
+        ]
+      },
+      "apps.clients": {
+        "description": "The clients open right now for the caller across every app (one per browser tab or phone: id, app, host, front, title, device, screen, last used), or one app's with select.app. Commands go to the app's client in front, else the one used last, unless input.to says otherwise.",
+        "ops": [
+          "list"
+        ],
+        "select": {
+          "app": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number"
+          }
+        },
+        "paths": "host"
       }
     }
   }

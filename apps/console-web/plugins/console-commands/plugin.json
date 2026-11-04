@@ -3,11 +3,11 @@
   "id": "ai.amberx.axf.console.console-commands",
   "lazy": { "core": "start" },
   "name": "Console commands",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Tell Amber (any Claude session) to load a screen and your open console goes there: open any screen, dialog or settings tab (sub-tabs too) by id, title or a few words, run any registered action, go back or home, and list what the console has. The control@1 console domain over REST (/api/console), MCP tools console_open, console_dialog, console_settings, console_action, console_back, console_where, console_list and console_clients on the console's /mcp (and through axHub), and the CLI `axf console …`. Opening and moving only navigate; an action that changes data keeps its own permission, and one that deletes or resets needs a confirm token. Commands go to the console you used last (or all of them, or one).",
+  "description": "Tell Amber (any Claude session) to load a screen and your open console goes there: open any screen, dialog or settings tab (sub-tabs too) by id, title or a few words, run any registered action, go back or home, and list what the console has. The control@1 console domain over REST (/api/console), MCP tools console_open, console_dialog, console_settings, console_action, console_back, console_where, console_list and console_clients on the console's /mcp (and through axHub), and the CLI `axf console …`. Since Nov 4 2026 it is also the control surface broker for every app on the framework (AmberX, axHub web, Molly, every app the template builds, through the framework's control-surface library): apps_list, app_show, app_open, app_dialog, app_settings, app_action, app_back, app_where, app_list, app_clients; REST /api/console/apps and /api/console/app/*; CLI `axf apps`, `axf app <app> …`. Opening and moving only navigate; an action that changes data keeps its own permission, and one that deletes or resets needs a confirm token. Commands go to the app's client in front, else the one used last (or all of them, or one); an app with nobody open is woken on Brett's phone through AmberX.",
   "targets": [
     "axf-console"
   ],
@@ -37,8 +37,9 @@
   },
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": {
-    "model": "opus",
-    "builtAt": "2026-11-03"
+    "model": "fable",
+    "builtAt": "2026-11-04",
+    "replaces": "opus"
   },
   "help": "help.json",
   "opens": false

@@ -22,6 +22,9 @@
  *   target  tokens.theme | tokens.style | tokens.layout | tokens.typography | tokens.density | tokens.sizing | tokens.nav |
  *           tokens.look | tokens.custom | tokens.slots | amberx.items | amberx.lists | planner.plans | planner.builds |
  *           console.screens | console.dialogs | console.settings | console.actions | console.nav | console.clients |
+ *           apps.list | apps.screens | apps.dialogs | apps.settings | apps.actions | apps.nav | apps.clients
+ *             (the same surface for every app on the framework, picked by input.app / select.app; build
+ *             apps-control-surface, Brett Nov 3 2026: "Put EVERY app on the API, MCP and CLI") |
  *           pass.scopes (timed veto passes, core/engines/control-pass.mjs) |
  *           plugins.commands | plugins.reads
  *   path    the token id / entity id (get, set, reset, remove, act; reset without a path = everything of the target)
@@ -44,14 +47,14 @@ import { PASS_ACTS, PASS_SCOPES, PASS_SCOPE_IDS, PASS_TARGET, passGrantErrors } 
 
 export const CONTROL_FRAME = 'control@1';
 export const CONTROL_OPS = ['list', 'get', 'set', 'reset', 'add', 'remove', 'act'];
-export const CONTROL_DOMAINS = ['tokens', 'amberx', 'planner', 'console', 'pass', 'plugins'];
+export const CONTROL_DOMAINS = ['tokens', 'amberx', 'planner', 'console', 'apps', 'pass', 'plugins'];
 /** What each op does to the world (the MCP annotations and the permission it needs come from this). */
 export const CONTROL_EFFECT = { list: 'read', get: 'read', set: 'write', reset: 'write', add: 'write', remove: 'destructive', act: 'write' };
 /** Permission suffix per effect: control.<domain>.<suffix>. `navigate` (open a screen, go back) changes what a screen
  *  shows and no data; only targets that declare it in `actEffect` have it. */
 export const CONTROL_PERMISSION_SUFFIX = { read: 'read', write: 'write', destructive: 'delete', navigate: 'navigate' };
 /** Domains whose acts may navigate (they get a control.<domain>.navigate permission). */
-const NAVIGATING_DOMAINS = ['console'];
+const NAVIGATING_DOMAINS = ['console', 'apps'];
 /** The permission grammar (declared in an app's uac-policy; `control.*` = everything). */
 export const CONTROL_PERMISSIONS = Object.fromEntries([
   ...CONTROL_DOMAINS.flatMap((d) => ['read', 'write', 'delete'].map((s) => [`control.${d}.${s}`, `${d}: ${s}`])),
@@ -82,6 +85,8 @@ const STEP_FIELDS = { text: 'string', title: 'string', model: 'enum:Fable,Opus',
 const CONSOLE_SELECT = { q: 'string', limit: 'number', client: 'string' };
 const PLUGIN_SELECT = { plugin: 'string', app: 'string', effect: 'enum:read,write,destructive,navigate', q: 'string', limit: 'number' };
 const CONSOLE_DELIVERY = 'Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).';
+const APP_SELECT = { app: 'string', q: 'string', limit: 'number', client: 'string' };
+const APP_DELIVERY = 'Every apps act takes input.app (the app: its id, label or an alias; apps.list names them) and optional input.to: recent (default: that app\'s client in front, else used last), all (every open client of that app) or a client id (apps.clients lists them). The console is apps.* with app "console" (console.* is the same surface for it).';
 
 const scalePaths = (type) => [...Object.keys(SCALE_FIELDS[type]), ...Object.keys(SCALE_ENUMS[type] ?? {})];
 const TOKEN_OPS = ['list', 'get', 'set', 'reset'];
@@ -116,6 +121,17 @@ export const CONTROL_TARGETS = {
   'plugins.commands': { domain: 'plugins', label: 'Plugin commands', ops: ['list', 'get', 'act'], paths: 'host', select: PLUGIN_SELECT, acts: { run: {} }, actEffect: { run: 'write' }, doc: `Every command of every plugin, made automatically from what the plugin has (core/engines/plugin-commands.mjs): its server routes, its registered actions and its plugin.json commands. path = <plugin>/<command> (list names them); act run runs it with input = what it takes. A command that deletes needs control.plugins.delete and a confirm token (the same two-step flow as remove); an action runs in the open console like console.actions.` },
   'plugins.reads': { domain: 'plugins', label: 'Plugin reads', ops: ['list', 'get', 'act'], paths: 'host', select: PLUGIN_SELECT, acts: { read: {} }, actEffect: { read: 'read' }, doc: 'Everything a plugin lets you read: its GET routes, its data folder (data, data-file) and its info. path = <plugin>/<read>; act read answers it (input = its query).' },
   'tokens.nav': { domain: 'tokens', label: 'Navigation style tokens', asset: 'nav-style', ops: TOKEN_OPS, paths: 'static', value: 'field', doc: 'nav-style@1 (core/engines/navstyle-rules.mjs): the navigation menu with sub menus: colours (colour-theme token ids), font, icons, density, width, the sub-menu animation, behaviour (one or many open, tap or hover, auto-collapse, remember, follow the active page, swipe), pinned / hidden / ordered items (comma-separated ids) and accents.<item id>. Only navs that opt in (nav-menu navStyle: true) read it.' },
+  // The control surface of every app on the framework (build apps-control-surface, Nov 2026): what console.* does for
+  // the Dev Console, apps.* does for AmberX, axHub web, Molly and every app the template builds. Each app's open
+  // clients report their catalog (screens, settings tabs, dialogs, actions) through the control-surface library;
+  // one broker (the console server) keeps them per signed-in user and delivers the commands. Append-only: after tokens.nav.
+  'apps.list': { domain: 'apps', label: 'Apps on the framework', ops: ['list'], paths: 'host', select: { q: 'string', online: 'boolean', limit: 'number' }, doc: 'Every app that carries the control surface (framework/schemas/apps.json plus any app whose client is connected): id, label, address, kind, its clients online (device, screen, front) and how many screens, dialogs, settings tabs and actions it reports. select.online = only apps with a client open now.' },
+  'apps.screens': { domain: 'apps', label: 'App screens', ops: ['list', 'get', 'act'], paths: 'host', select: APP_SELECT, acts: { open: {} }, actEffect: { open: 'navigate' }, doc: `Every screen (view) an app has, its plugins' too. path = the view id, its title or words to search for ("to-dos", "approvals"); act open shows it in that app. ${APP_DELIVERY}` },
+  'apps.dialogs': { domain: 'apps', label: 'App dialogs', ops: ['list', 'get', 'act'], paths: 'host', select: APP_SELECT, acts: { open: {}, close: {} }, actEffect: { open: 'navigate', close: 'navigate' }, doc: `Every dialog an app registers (by id, title or search words); act open shows it (input.arg = its optional argument), act close shuts it (path "current" = whichever dialog is open). ${APP_DELIVERY}` },
+  'apps.settings': { domain: 'apps', label: 'App settings tabs', ops: ['list', 'get', 'act'], paths: 'host', select: APP_SELECT, acts: { open: {} }, actEffect: { open: 'navigate' }, doc: `Every Settings tab and sub-tab of an app (Settings → Plugins → <plugin> is a sub-tab: its id, "plugins/<id>" or its title); act open shows it, input.anchor scrolls to one setting or group. ${APP_DELIVERY}` },
+  'apps.actions': { domain: 'apps', label: 'App actions', ops: ['list', 'get', 'act'], paths: 'host', select: APP_SELECT, acts: { run: {} }, actEffect: { run: 'write' }, doc: `Every registered action of an app (its action bus: menus, toolbars, search). act run runs it in that app under its own policy: an action that only navigates needs control.apps.navigate, one that changes data needs control.apps.write plus the permission the action itself requires, and a destructive one also a confirm token. input.args = its arguments. ${APP_DELIVERY}` },
+  'apps.nav': { domain: 'apps', label: 'App navigation', ops: ['get', 'act'], paths: 'static', acts: { back: {}, home: {}, close: {} }, actEffect: { back: 'navigate', home: 'navigate', close: 'navigate' }, doc: `Where an app is (get here with input.app: screen, dialog, settings tab, what its client in front shows) and moving it: back (closes an open dialog first, else the screen before), home (its first screen), close (the open dialog). ${APP_DELIVERY}` },
+  'apps.clients': { domain: 'apps', label: 'Open app clients', ops: ['list'], paths: 'host', select: { app: 'string', limit: 'number' }, doc: 'The clients open right now for the caller across every app (one per browser tab or phone: id, app, host, front, title, device, screen, last used), or one app\'s with select.app. Commands go to the app\'s client in front, else the one used last, unless input.to says otherwise.' },
 };
 export const CONTROL_TARGET_IDS = Object.keys(CONTROL_TARGETS);
 
@@ -135,6 +151,7 @@ export const CONTROL_ALIASES = {
   plan: { target: 'planner.plans' },
   build: { target: 'planner.builds' },
   console: { target: 'console.*', note: 'axf console open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients] [words]' },
+  app: { target: 'apps.*', note: 'axf app <app> open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients] [words] · axf apps (every app, its clients online)' },
   pass: { target: 'pass.scopes', note: 'axf pass grant 30 (everything) · axf pass grant 30 --scope theme · status · revoke · undo (also `axf token pass …`)' },
   plugins: { target: 'plugins.*', note: 'axf plugins [plugin] | axf <plugin> <command> [--field value]… (every plugin\'s commands and reads)' },
 };
@@ -144,7 +161,7 @@ export const CONTROL_ALIASES = {
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:@/-]{0,159}$/;
 const COLOR = /^(#[0-9a-fA-F]{3,8}|(rgb|hsl)a?\(\s*[\d.%]+\s*[, ]\s*[\d.%]+\s*[, ]\s*[\d.%]+\s*([,/]\s*[\d.%]+\s*)?\)|transparent|currentColor)$/;
-const PLAIN = { tokens: 'tokens', amberx: 'amberx', planner: 'planner', console: 'console', plugins: 'plugins' };
+const PLAIN = { tokens: 'tokens', amberx: 'amberx', planner: 'planner', console: 'console', apps: 'apps', plugins: 'plugins' };
 
 export const isControlTarget = (t) => typeof t === 'string' && t in CONTROL_TARGETS;
 export const controlDomain = (target) => CONTROL_TARGETS[target]?.domain ?? null;
@@ -172,7 +189,7 @@ export function controlPaths(target) {
       ];
     }
     case 'tokens.nav': return navStyleTokens().map((t) => ({ ...t, token: `nav-style ${t.id}` }));
-    case 'console.nav': return [{ id: 'here', kind: 'location' }];
+    case 'console.nav': case 'apps.nav': return [{ id: 'here', kind: 'location' }];
     case PASS_TARGET: return PASS_SCOPE_IDS.map((id) => ({ id, kind: 'scope', label: PASS_SCOPES[id].label, targets: [...PASS_SCOPES[id].targets], ops: [...PASS_SCOPES[id].ops] }));
     default: return null;
   }
@@ -443,7 +460,7 @@ export function controlCli() {
       'axf pass grant [minutes] [--scope all|theme|style|layout|tokens] [--include-irreversible] [--reason why]   (everything by default; Brett approves it once)',
       'axf pass status · axf pass revoke [--scope …] · axf pass undo [--scope …]   (also axf token pass grant theme 30)',
     ],
-    aliases: Object.fromEntries(Object.entries(CONTROL_ALIASES).map(([a, v]) => [a, v.target === 'tokens.*' ? 'axf token <theme|style|layout|typography|density|sizing|look|custom|slots> <op> …' : v.target === 'console.*' || v.target === 'plugins.*' ? v.note : `axf ${a} <op> … = axf control <op> ${v.target}${v.preset ? ` (${Object.entries(v.preset).map(([k, x]) => `${k}=${x}`).join(', ')})` : ''}`])),
+    aliases: Object.fromEntries(Object.entries(CONTROL_ALIASES).map(([a, v]) => [a, v.target === 'tokens.*' ? 'axf token <theme|style|layout|typography|density|sizing|look|custom|slots> <op> …' : v.target === 'console.*' || v.target === 'apps.*' || v.target === 'plugins.*' ? v.note : `axf ${a} <op> … = axf control <op> ${v.target}${v.preset ? ` (${Object.entries(v.preset).map(([k, x]) => `${k}=${x}`).join(', ')})` : ''}`])),
     targets: CONTROL_TARGET_IDS,
   };
 }

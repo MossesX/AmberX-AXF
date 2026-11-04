@@ -75,7 +75,9 @@ def _console_plugins() -> frozenset[str]:
             raw = ",".join(json.loads((DIST / "console-plugins.json").read_text()).get("folders") or [])
         except (OSError, ValueError, AttributeError, TypeError):
             raw = ""
-    return frozenset(f for f in re.split(r"[\s,]+", raw) if re.fullmatch(r"[a-z0-9][a-z0-9-]{0,63}", f))
+    # The control surface broker (apps-control-surface, Nov 4 2026) is always forwarded: AmberX's own client says hello
+    # to the console's console-commands plugin through here, so a Claude session can open this app's screens.
+    return frozenset(f for f in re.split(r"[\s,]+", raw) if re.fullmatch(r"[a-z0-9][a-z0-9-]{0,63}", f)) | {"console-commands"}
 
 
 CONSOLE_PLUGINS = _console_plugins()

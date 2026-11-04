@@ -92,6 +92,13 @@ check(not wall.same_origin(req("POST", {"host": "a.test", "origin": "https://b.a
 check(not wall.same_origin(req("POST", {"host": "a.test", "origin": "null"})), "null origin refused")
 check(not wall.same_origin(req("POST", {"host": "a.test"})), "no origin refused")
 check(wall.same_origin(req("POST", {"host": "a.test", "referer": "https://a.test/page"})), "referer fallback")
+# same_site: the control surface's client routes only (apps-control-surface): a sibling https subdomain of the same registrable domain
+check(wall.same_site(req("POST", {"host": "console.amberxai.com", "origin": "https://amberx.amberxai.com"})), "same_site: a sibling subdomain of the same site")
+check(wall.same_site(req("POST", {"host": "console.amberxai.com", "origin": "https://console.amberxai.com"})), "same_site: own origin")
+check(not wall.same_site(req("POST", {"host": "console.amberxai.com", "origin": "https://evil.example.com"})), "same_site: another site refused")
+check(not wall.same_site(req("POST", {"host": "console.amberxai.com", "origin": "http://amberx.amberxai.com"})), "same_site: http refused")
+check(not wall.same_site(req("POST", {"host": "console.amberxai.com", "origin": "null"})), "same_site: null origin refused")
+check(not wall.same_site(req("POST", {"host": "localhost:7090", "origin": "https://evil.example.com"})), "same_site: a bare host has no site")
 adm = {**hdrs, "x-auth-user": "admin", "x-auth-role": "admin", "x-auth-sig": wall.sign(W["secret"], "admin", "admin", "", "h.test", int(time.time()))}
 check(w.admin(req("GET", adm)) is not None and w.admin(req("POST", adm)) is None, "Wall.admin needs same origin for writes")
 check(w.admin(req("POST", {**adm, "origin": "https://h.test"})) is not None, "Wall.admin write from own origin")

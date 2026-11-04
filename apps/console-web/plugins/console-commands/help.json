@@ -30,7 +30,12 @@
       {
         "target": "cc-refresh",
         "title": "Refresh",
-        "text": "Reloads the list of open consoles and the last commands from the console server."
+        "text": "Reloads the apps, the open clients and the last commands from the console server."
+      },
+      {
+        "target": "cc-apps",
+        "title": "Apps on the surface",
+        "text": "Every app on the framework that Claude sessions can drive (the Dev Console, AmberX, axHub web, Molly, and any app whose client is connected): whether it is open right now, where it is, and how many screens, settings tabs, dialogs and actions it reports. Amber opens them with app_show, app_open and friends; the CLI with axf app <app> …"
       },
       {
         "target": "let-claude-sessions-move-this-console",

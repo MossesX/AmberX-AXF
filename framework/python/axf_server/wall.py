@@ -118,6 +118,26 @@ def same_origin(request: Any) -> bool:
         return False
 
 
+def same_site(request: Any) -> bool:
+    """A browser-session write from another https host of this site's own registrable domain (the apps on the framework
+    share one hub sign-in across *.amberxai.com). Narrower callers only: the console allows it for the control surface's
+    client routes alone (hello / seen / ack / bye), never for anything that changes data (apps-control-surface, Nov 4 2026)."""
+    if same_origin(request):
+        return True
+    host = _hdr(request.headers, "host").lower().split(":")[0]
+    src = _hdr(request.headers, "origin") or _hdr(request.headers, "referer")
+    if not src or src == "null" or not host:
+        return False
+    try:
+        u = urlsplit(src)
+    except ValueError:
+        return False
+    if u.scheme != "https" or not u.hostname:
+        return False
+    site = host.split(".")[-2:]
+    return len(site) == 2 and all(site) and u.hostname.lower().split(".")[-2:] == site
+
+
 def caller_of(request: Any) -> Caller | None:
     return getattr(request.state, "axf_user", None)
 

@@ -60,7 +60,10 @@ Chat and voice sessions (claude.ai, Amber): whenever you act, post one short lin
 live in the Terminal's sessions nav and jumps in from there.
 
 Follow Amber: check `console_follow`; while it is on, call `console_show` every time you mention something in Brett's
-console (a screen, settings tab, dialog, build, plugin, UI Review item), and his approvals pop up in the console."""
+console (a screen, settings tab, dialog, build, plugin, UI Review item), and his approvals pop up in the console.
+Every app on the framework is on this surface too (apps-control-surface): `apps_list` shows AmberX, axHub web, Molly and
+the console with their clients online; `app_show {app, target}` / `app_open {app, screen}` open a screen in that app
+(e.g. his to-dos in AmberX on his phone), `app_where`, `app_list`, `app_action`, `app_back` work the same way."""
 
 
 def _compact(f: dict[str, Any]) -> dict[str, Any]:
@@ -757,11 +760,13 @@ def _register_expenses_tools(mcp: MCPServer) -> None:
 CONTROL_TARGETS = ("tokens.theme", "tokens.style", "tokens.layout", "tokens.typography", "tokens.density", "tokens.sizing", "tokens.look",
                    "tokens.custom", "tokens.slots", "amberx.items", "amberx.lists", "planner.plans", "planner.builds",
                    "console.screens", "console.dialogs", "console.settings", "console.actions", "console.nav", "console.clients", "pass.scopes",
-                   "plugins.commands", "plugins.reads", "tokens.nav")
+                   "plugins.commands", "plugins.reads", "tokens.nav",
+                   "apps.list", "apps.screens", "apps.dialogs", "apps.settings", "apps.actions", "apps.nav", "apps.clients")
 ControlTarget = Literal["tokens.theme", "tokens.style", "tokens.layout", "tokens.typography", "tokens.density", "tokens.sizing", "tokens.look",
                         "tokens.custom", "tokens.slots", "amberx.items", "amberx.lists", "planner.plans", "planner.builds",
                         "console.screens", "console.dialogs", "console.settings", "console.actions", "console.nav", "console.clients", "pass.scopes",
-                        "plugins.commands", "plugins.reads", "tokens.nav"]
+                        "plugins.commands", "plugins.reads", "tokens.nav",
+                        "apps.list", "apps.screens", "apps.dialogs", "apps.settings", "apps.actions", "apps.nav", "apps.clients"]
 PassScope = Literal["all", "theme", "style", "layout", "tokens"]
 # all = everything (the default since build pass-all); tokens = theme, style and layout together
 PASS_SCOPE_IDS = {"all": "all", "theme": "tokens.theme", "style": "tokens.style", "layout": "tokens.layout", "tokens": "tokens.*"}
@@ -922,6 +927,8 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
 # ---------------------------------------------------------------------- console commands (control@1 console domain)
 
 CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients")
+# Every app on the framework (= APP_TOOLS in core/engines/console-commands.mjs; build apps-control-surface, Nov 4 2026)
+APP_TOOLS = ("apps_list", "app_open", "app_dialog", "app_settings", "app_action", "app_back", "app_where", "app_list", "app_clients", "app_show")
 FOLLOW_TOOLS = ("console_show", "console_follow")  # Follow Amber plugin (follow-amber@1)
 # Opening and moving only navigate, so they are annotated read-only: axHub's recommended preset (decision #112) runs
 # read-only tools at once, and navigation never waits on a veto countdown (Brett, Nov 3 2026: Follow Amber).
@@ -1010,14 +1017,91 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         return r
 
     @mcp.tool(annotations=NAVIGATE)
-    async def console_show(target: str, highlight: str = "", say: str = "", to: Delivery = "recent") -> dict[str, Any]:
+    async def console_show(target: str, highlight: str = "", say: str = "", to: Delivery = "recent", app: str = "") -> dict[str, Any]:
         """Follow Amber: call this EVERY time you mention something in Brett's Dev Console (a screen, a settings tab, a
         dialog, a build, a plugin, a UI Review item, anything that needs him). When Follow Amber is on, his console opens
         it right away, focused and highlighted, with `say` as a note; when it's off this does nothing (shown: false).
         `target` = a screen, settings tab, dialog or navigation-only action by id, title or words ("plan studio",
         "plugins/<plugin>"), or kind:name (screen:, settings:, dialog:, action:, approval:<id> pops up a waiting
-        axHub approval). `highlight` = a CSS selector or exact visible text to flash once it's open. Only navigates."""
-        return await follow("show", target=target, highlight=highlight, say=say, to=to)
+        axHub approval). `highlight` = a CSS selector or exact visible text to flash once it's open. `app` = which app
+        opens it (default the console; "amberx", "hub", "molly" or any id from apps_list). Only navigates."""
+        return await follow("show", target=target, highlight=highlight, say=say, to=to, app=app)
+
+    # ---- every app on the framework (apps domain of control@1): the same surface as the console_* tools, with `app`
+
+    def app_inp(app: str, to: str, **more: Any) -> dict[str, Any]:
+        return {**inp(to, **more), "app": app}
+
+    @mcp.tool(annotations=READ)
+    async def apps_list(q: str = "", online: bool = False) -> dict[str, Any]:
+        """Every app on the framework that Amber can drive (Dev Console, AmberX, axHub web, Molly, and any app whose
+        client is connected): id, label, address, aliases, its clients online right now (device, screen, in front) and how
+        many screens, dialogs, settings tabs and actions it reports. `online=true` = only apps open right now. Use the id or
+        an alias ("amberx", "hub", "molly", "console") as `app` in the app_* tools."""
+        select = {k: v for k, v in {"q": q, "online": online or None}.items() if v}
+        return await go({"op": "list", "target": "apps.list", "select": select or None})
+
+    @mcp.tool(annotations=NAVIGATE)
+    async def app_open(app: str, screen: str, to: Delivery = "recent") -> dict[str, Any]:
+        """Open a screen in an app Brett has open (its client in front, else used last; to="all" for every open one, or a
+        client id). `app` = "amberx" (his phone: Notes, To-dos, Lists, Inbox, Voice, Approvals…), "hub" (axHub web:
+        approvals, passes, users), "molly", "console", or an id from apps_list. `screen` = the view id, its title or a few
+        words; plugins' screens count. Not sure of the name? app_list(app, kind="screens", q="…") first. No client of that
+        app open: the command waits and AmberX is asked to open the app on Brett's phone."""
+        return await go({"op": "act", "target": "apps.screens", "path": screen, "action": "open", "input": app_inp(app, to)})
+
+    @mcp.tool(annotations=NAVIGATE)
+    async def app_dialog(app: str, dialog: str = "", arg: str = "", action: Literal["open", "close"] = "open", to: Delivery = "recent") -> dict[str, Any]:
+        """Open a dialog in an app by id, title or words (`arg` = the dialog's optional argument), or close one
+        (action="close": dialog="" or "current" shuts whichever is open)."""
+        if action == "close":
+            return await go({"op": "act", "target": "apps.dialogs", "path": dialog or "current", "action": "close", "input": app_inp(app, to)})
+        return await go({"op": "act", "target": "apps.dialogs", "path": dialog, "action": "open", "input": app_inp(app, to, arg=arg)})
+
+    @mcp.tool(annotations=NAVIGATE)
+    async def app_settings(app: str, tab: str, anchor: str = "", to: Delivery = "recent") -> dict[str, Any]:
+        """Open a Settings tab or sub-tab in an app: its id, "plugins/<plugin>" for a plugin's sub-tab, or its title.
+        `anchor` scrolls to one setting ("setting:<key>") or group."""
+        return await go({"op": "act", "target": "apps.settings", "path": tab, "action": "open", "input": app_inp(app, to, anchor=anchor)})
+
+    @mcp.tool(annotations=WRITE)
+    async def app_action(app: str, action: str, args: list[str] | None = None, confirm: str = "", to: Delivery = "recent") -> dict[str, Any]:
+        """Run a registered action in an app (its menus, toolbar and search use them): its id ("xlayout.ide" in Molly,
+        "notes.new" in AmberX), a spec with arguments or its label. Navigation-only actions run straight away; one that
+        changes data needs the permission the action itself requires; one that deletes or resets answers
+        confirmation_required with `confirm`: tell Brett what it will do, then call again with that token."""
+        return await go({"op": "act", "target": "apps.actions", "path": action, "action": "run", "input": app_inp(app, to, args=args or None), "confirm": confirm})
+
+    @mcp.tool(annotations=NAVIGATE)
+    async def app_back(app: str, move: Literal["back", "home", "close"] = "back", to: Delivery = "recent") -> dict[str, Any]:
+        """Move an app: back (closes an open dialog first, else the screen before), home, or close (the dialog)."""
+        return await go({"op": "act", "target": "apps.nav", "path": "here", "action": move, "input": app_inp(app, to)})
+
+    @mcp.tool(annotations=READ)
+    async def app_where(app: str) -> dict[str, Any]:
+        """Where an app is now: its screen, open dialog, settings tab, what the app adds (Molly: the app on screen), and
+        which client that is."""
+        return await go({"op": "get", "target": "apps.nav", "path": "here", "input": {"app": app}})
+
+    @mcp.tool(annotations=READ)
+    async def app_list(app: str, kind: Literal["screens", "dialogs", "settings", "actions"] = "screens", q: str = "", limit: int = 50) -> dict[str, Any]:
+        """What an app has, so you can pick the right name: its screens, dialogs, settings tabs or actions, best matches
+        for `q` first (all of them when q is empty)."""
+        return await go({"op": "list", "target": f"apps.{kind}", "select": {k: v for k, v in {"app": app, "q": q, "limit": max(1, min(limit, 500))}.items() if v}})
+
+    @mcp.tool(annotations=READ)
+    async def app_clients(app: str = "") -> dict[str, Any]:
+        """The app clients open right now across every app (one per browser tab or phone: id, app, host, in front, device,
+        screen, last used), or one app's. Commands go to the app's client in front, else the one used last, unless `to`
+        names another (or "all")."""
+        return await go({"op": "list", "target": "apps.clients", "select": {"app": app} if app else None})
+
+    @mcp.tool(annotations=NAVIGATE)
+    async def app_show(app: str, target: str, highlight: str = "", say: str = "", to: Delivery = "recent") -> dict[str, Any]:
+        """Follow Amber for any app: when Follow Amber is on, open what you mention in that app (a screen, settings tab or
+        dialog by id, title or words, or kind:name) focused and highlighted, with `say` as a note; off = nothing opens
+        (shown: false). Same as console_show with `app`. `app` = "amberx", "hub", "molly", "console" or an id from apps_list."""
+        return await follow("show", target=target, highlight=highlight, say=say, to=to, app=app)
 
     @mcp.tool(annotations=READ)
     async def console_follow() -> dict[str, Any]:
@@ -1041,7 +1125,7 @@ def follow_call(op: str, args: dict[str, Any]) -> dict[str, Any]:
             return {"ok": False, "code": "not_implemented", "message": "the Follow Amber plugin is turned off (Settings → Plugins)"}
         if op == "state":
             return {"ok": True, **svc.state()}
-        return svc.show(str(args.get("target") or ""), "", str(args.get("highlight") or ""), str(args.get("say") or ""), str(args.get("to") or "recent"), "amber (mcp)")
+        return svc.show(str(args.get("target") or ""), "", str(args.get("highlight") or ""), str(args.get("say") or ""), str(args.get("to") or "recent"), "amber (mcp)", str(args.get("app") or ""))
     import urllib.error
     import urllib.request
     base = os.environ.get("AXF_CONSOLE_URL", "https://console.amberxai.com").rstrip("/") + "/api/plugins/follow-amber/"  # axf-plugin:follow-amber

@@ -186,3 +186,21 @@ installLibraries(rt, [settingsLibrary, hubSyncLibrary, …]);   // reads manifes
 - **data**: `off`, `all` or a table list, in `shared/data-<app id>/`.
 - Settings → Plugins → **axHub sync**: Now (status, Sync now), Connect to axHub (address, project, Save and reconnect, Test connection, Sign in), What syncs. The connection is saved on the device (`axf.hubsync.connection`), never on the hub.
 - Android: Voice Vault's `sync/HubSync.kt` is the twin (Android framework work on hold).
+
+## control-surface (`ai.amberx.axf.control-surface`)
+
+Puts any AXF app on the API, MCP and CLI (build apps-control-surface, Fable, Nov 4 2026; Brett Nov 3 2026: "Put EVERY app
+on the API, MCP and CLI"). Core: `framework/core/engines/console-commands.mjs` (the console and apps domains of control@1,
+`apps.*` targets with `input.app` / `select.app`, the apps registry `framework/schemas/apps.json`). `libs/control-surface/client.ts`
+(no React) says hello to the broker (the console server's console-commands plugin) with the app's catalog built from its own
+search index and action bus (screens, dialogs, settings tabs and sub-tabs, actions, plugins' too), keeps a stream open, runs the
+`console-command@1` messages through the runtime (`rt.search.focus`, `rt.openDialog`, `rt.dispatch`, `rt.navigate`) and acks what it
+did; inside a host (Molly) it reports `<host>/<app>` and `front`, and asks to be brought forward first. `index.tsx` →
+`controlSurfaceLibrary` (defaults: the manifest's app id, the console's broker with the browser's own hub session) or
+`createControlSurfaceLibrary({ app?, transport?, extraItems?, extraHere?, run?, keys? })` (AmberX hands in its server proxy as the
+transport; Molly adds the app on screen to `here`). Settings → Plugins → Remote control: on / off for the device, a note per
+command. The template installs it, so every new app has it from day one; the Dev Console's Console commands plugin runs on the
+same client. MCP: `apps_list`, `app_show`, `app_open`, `app_dialog`, `app_settings`, `app_action`, `app_back`, `app_where`,
+`app_list`, `app_clients`; REST `/api/console/apps`, `/api/console/app/*`; CLI `axf apps`, `axf app <app> …`. Checks:
+`npx -y tsx framework/spec/check-console-commands.mts`, plus the Console commands plugin's `test.mjs` and
+`server/test_console_commands.py`. Spec: `framework/spec/CONTROL.md` → Apps.
