@@ -691,9 +691,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:38 UTC · `grid-sort-filter` note (angel) · orchestrator
-- 2026-11-04 14:38 UTC · `grid-sort-filter` note (angel) · orchestrator
-- 2026-11-04 14:38 UTC · `plugin-cleanup` note (angel) · orchestrator
 - 2026-11-04 14:38 UTC · `transcription-engine` note (angel) · orchestrator
 - 2026-11-04 14:38 UTC · `toolbar-tap-confirm` → running, note (urgent) · orchestrator
 - 2026-11-04 14:38 UTC · `browser-automation` → running, note (current) · orchestrator
@@ -1091,6 +1088,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 20:19 UTC · `land-merge-queue-first` → complete, note (urgent) · reconciler
 - 2026-11-04 20:25 UTC · `app-voice-commands` note (current) · orchestrator
 - 2026-11-04 20:29 UTC · `app-voice-commands` note (current) · foreign-write
+- 2026-11-04 20:17 UTC · `land-merge-queue-first` → complete, note (urgent) · reconciler
+- 2026-11-04 20:35 UTC · `app-voice-commands` note (current) · foreign-write
+- 2026-11-04 20:35 UTC · `grid-column-hiding` s12-11 done, → complete (current) · foreign-write
 
 ## Token passes (log)
 
