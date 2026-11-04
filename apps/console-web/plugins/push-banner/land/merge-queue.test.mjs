@@ -27,6 +27,8 @@ await t('not ready: draft, removed, kicked at the same head, UI Review, PR check
   assert.equal(q.notReady({ ...pr, ui: 'waiting' }, {}, { waitUi: false }), '');
   assert.match(q.notReady({ ...pr, ci: 'failure' }), /red/);
   assert.match(q.notReady({ ...pr, ci: 'running' }), /running/);
+  assert.match(q.notReady({ ...pr, ci: 'none' }), /not run yet/);
+  assert.equal(q.notReady({ ...pr, ci: 'none', conflicted: true }), '', 'no PR checks because it conflicts: straight to its queue run');
 });
 
 await t('queue order: Brett first, then landing order, then oldest', () => {

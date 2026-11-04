@@ -143,6 +143,8 @@ export async function queueRound({ s, git, gh, api, dry = false, now = () => new
     const fact = { number: p.number, title: String(p.title || '').slice(0, 200), branch: p.head.ref, head: p.head.sha, draft: !!p.draft, createdAt: p.created_at, url: p.html_url || '', build: b?.id || '', agent: agentOf(b, p) };
     if (old.head === fact.head && ['success', 'failure'].includes(old.prCi)) fact.ci = old.prCi;
     else { try { fact.ci = ciOf((await gh('GET', `/repos/${s.slug}/commits/${fact.head}/check-runs?per_page=100`))?.check_runs || []).ci; } catch { fact.ci = 'running'; } }
+    // no PR checks at all: does it conflict with main? (git, no API call)
+    if (fact.ci === 'none') fact.conflicted = git(['merge-tree', '--write-tree', '--quiet', `${s.remote}/${s.base}`, fact.head]).code === 1;
     if (cfg.waitUi) { const u = await api('GET', `/api/plugins/push-banner/ui-hold?branch=${encodeURIComponent(fact.branch)}&pr=${fact.number}`); fact.ui = u ? String(u.hold || '') : 'unknown'; }
     if (b && landCtl.holds?.[b.id]) fact.landHeld = landCtl.holds[b.id].why || 'held';
     fact.why = q.notReady(fact, ctl, { waitUi: cfg.waitUi });
@@ -170,6 +172,10 @@ export async function queueRound({ s, git, gh, api, dry = false, now = () => new
       const started = runs.map((r) => Date.parse(r.started_at || '')).filter((x) => x > 0);
       if (started.length) e.startedAt = new Date(Math.min(...started)).toISOString();
     } catch { e.ci = e.ci || 'running'; }
+    // pushed but no run started (a dropped push event): start one on the queue branch, once
+    if (e.ci === 'none' && !dry && !e.dispatched && Date.parse(at) - Date.parse(e.builtAt || at) > q.NO_RUN_MIN * 60000) {
+      try { await gh('POST', `/repos/${s.slug}/actions/workflows/${s.workflow || 'android.yml'}/dispatches`, { ref: q.queueBranch(e.pr) }); e.dispatched = at; } catch (err) { log(`queue: dispatch #${e.pr}: ${err.message}`); }
+    }
   }
   const d = q.decide(stack, Object.fromEntries(stack.map((e) => [e.pr, e.ci])));
   const merged = [...(prev.merged || [])].slice(-20);

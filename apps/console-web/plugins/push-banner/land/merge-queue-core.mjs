@@ -18,6 +18,8 @@ export const QUEUE_CONTROL_FRAME = 'merge-queue-control@1';
 /** Settings (push banner config.json): the queue is on unless switched off; `queueDepth` PRs are tested at once. */
 export const QUEUE_DEFAULTS = Object.freeze({ mergeQueue: true, queueDepth: 3 });
 export const QUEUE_DEPTH_MAX = 6;
+/** Minutes a queue commit may sit with no CI run before the runner starts one itself (workflow_dispatch). */
+export const NO_RUN_MIN = 10;
 /** Minutes one CI run takes when the queue has no history yet (learned from finished runs after that). */
 export const DEFAULT_RUN_MIN = 14;
 export const QUEUE_PREFIX = 'queue/pr-';
@@ -55,7 +57,9 @@ export function notReady(pr, ctl = {}, { waitUi = true } = {}) {
   if (pr.conflicts?.length) return `it conflicts with main in code (${pr.conflicts.slice(0, 3).join(', ')})`;
   if (pr.ci === 'failure') return 'its PR checks are red';
   if (pr.ci === 'running') return 'its PR checks are still running';
-  if (pr.ci === 'none') return 'its PR checks have not run yet';
+  // GitHub runs no PR checks on a PR that conflicts with main: the queue commit resolves data conflicts itself (and kicks
+  // a code conflict out with the files named), so such a PR goes straight to its one full run
+  if (pr.ci === 'none' && !pr.conflicted) return 'its PR checks have not run yet';
   return '';
 }
 
