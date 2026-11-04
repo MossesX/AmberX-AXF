@@ -32,7 +32,7 @@ export const SETTINGS_WINDOW_TAB = 'axf-settings-tab';
 export const SETTINGS_PLACEMENT_TAB = 'settings-placement';
 /** Context-menu contributions (`*:` = on every target): the plugin under the pointer, and "Settings opens in" for the screen. */
 const PLACEMENT_CTX = '*:axf-settings-placement';
-const SCREEN_CTX_TARGETS = ['canvas', 'nav-item', 'toolbar', 'window-title'] as const;
+const SCREEN_CTX = '*:axf-settings-opens-in';
 
 /** Standard tabs, in order. Ids are stable: libraries target them by id. */
 export const SETTINGS_TABS = {
@@ -1059,11 +1059,13 @@ export const library: AxfWebLibrary = {
     }, { label: 'Set where settings open', params: true });
     // The surfaces (dialog, panels, sheets, panes) render a tab, or the whole interface; the page-level ones live in slot app.frame.cover.
     setSettingsSurfaceContent((tab, _close, s) => (tab ? <TabSurface id={tab} screen={s.screen} /> : <SettingsView compact screen={s.screen} />));
-    // right-click / long-press a screen (its canvas, its nav item, the toolbar, a window title): "Settings opens in" (runtime contribution; the context-menu asset is untouched)
-    for (const target of SCREEN_CTX_TARGETS) {
-      const prev = rt.contextExtras.get(target);
-      rt.contextExtras.set(target, (t, payload) => [...(prev?.(t, payload) ?? []), ...(rt.embedded?.page ? [] : screenPlacementMenu(rt, target === 'nav-item' && payload && payload !== VIEW ? payload : rt.getState().view))]);
-    }
+    // right-click / long-press anywhere on a screen (its canvas, a card, its nav item, the toolbar, a window title…):
+    // "Settings opens in" for that screen (runtime contribution on every target; the context-menu asset is untouched)
+    rt.contextExtras.set(SCREEN_CTX, (target, payload) => {
+      if (rt.embedded?.page || rt.getState().view === VIEW && target !== 'nav-item') return [];
+      const view = target === 'nav-item' && payload && payload !== VIEW ? payload : rt.getState().view;
+      return screenPlacementMenu(rt, view);
+    });
     // right-click inside a plugin: "Settings placement…" (runtime contribution; the context-menu asset is untouched)
     const track = (e: Event) => {
       const el = (e.target as Element | null)?.closest?.('[data-axf-sphost],[data-axf-plugin]');
@@ -1074,7 +1076,7 @@ export const library: AxfWebLibrary = {
     rt.contextExtras.set(PLACEMENT_CTX, (target) => {
       const lib = lastOwner ? rt.libraries.find((l) => l.id === lastOwner) : undefined;
       const tab = lib?.ui?.settingsTabs[0];
-      if (!lib || !tab || (SCREEN_CTX_TARGETS as readonly string[]).includes(target ?? '')) return [];
+      if (!lib || !tab || target === 'canvas' || target === 'nav-item') return [];
       return [
         { id: 'axf-settings-open-placed', label: `${lib.label} settings`, icon: 'settings', action: `settings.open:${tab.id}` },
         { id: 'axf-settings-placement', label: 'Settings opens in…', icon: 'layout', action: `settings.placement:owner:${lib.id}` },
