@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 937,
- "updatedAt": "2026-11-04T20:18:41.952Z",
+ "rev": 938,
+ "updatedAt": "2026-11-04T20:20:22.439Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -81496,7 +81496,7 @@
    "title": "Land the merge queue first, then the waiting batch as one stack",
    "category": "Feature",
    "detail": "",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -81504,8 +81504,8 @@
    "pr": "#339",
    "mergedAt": "2026-11-04T19:51:03Z",
    "createdAt": "2026-11-04T17:34:06.563Z",
-   "updatedAt": "2026-11-04T20:11:37.555Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T20:20:21.397Z",
+   "builtAt": "2026-11-04T20:20:21.397Z",
    "notes": [
     {
      "text": "Reconciler: PR #320 merged",
@@ -81518,6 +81518,10 @@
     {
      "text": "Reconciler: PR #320 merged: complete",
      "at": "2026-11-04T20:01:11.298Z"
+    },
+    {
+     "text": "Reconciler: PR #339 merged: complete",
+     "at": "2026-11-04T20:20:21.397Z"
     }
    ],
    "approvals": [],
@@ -81676,7 +81680,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

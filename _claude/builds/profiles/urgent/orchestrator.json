@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T20:18:41.952Z",
+ "updatedAt": "2026-11-04T20:20:22.439Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -5595,7 +5595,7 @@
    "title": "Land the merge queue first, then the waiting batch as one stack",
    "category": "Feature",
    "detail": "",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -5603,8 +5603,8 @@
    "pr": "#339",
    "mergedAt": "2026-11-04T19:51:03Z",
    "createdAt": "2026-11-04T17:34:06.563Z",
-   "updatedAt": "2026-11-04T20:11:37.555Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T20:20:21.397Z",
+   "builtAt": "2026-11-04T20:20:21.397Z",
    "notes": [
     {
      "text": "Reconciler: PR #320 merged",
@@ -5617,6 +5617,10 @@
     {
      "text": "Reconciler: PR #320 merged: complete",
      "at": "2026-11-04T20:01:11.298Z"
+    },
+    {
+     "text": "Reconciler: PR #339 merged: complete",
+     "at": "2026-11-04T20:20:21.397Z"
     }
    ],
    "approvals": [],
