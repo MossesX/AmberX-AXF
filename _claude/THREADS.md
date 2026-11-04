@@ -893,6 +893,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 05:11 UTC · `banner-ref-links` → complete, merged, note (current) · reconciler
 - 2026-11-04 05:11 UTC · `whats-new-open-fix` → complete, merged, note (current) · reconciler
 - 2026-11-04 05:11 UTC · `terminal-drag-chain-tree` → complete, merged, note (current) · reconciler
+- 2026-11-04 05:27 UTC · `terminal-sessions-nav` note (current) · foreign-write
+- 2026-11-04 05:27 UTC · `build-prompt-origin` note (current) · foreign-write
+- 2026-11-04 05:27 UTC · `banner-ref-links` note (current) · foreign-write
+- 2026-11-04 05:27 UTC · `whats-new-open-fix` note (current) · foreign-write
+- 2026-11-04 05:27 UTC · `terminal-drag-chain-tree` note (current) · foreign-write
 
 ## Token passes (log)
 
