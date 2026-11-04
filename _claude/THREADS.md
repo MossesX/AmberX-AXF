@@ -675,78 +675,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 17:45 UTC · `console-wake` s5 done (urgent) · orchestrator
-- 2026-11-03 17:45 UTC · `console-wake` s6 done, → complete (urgent) · orchestrator
-- 2026-11-03 17:45 UTC · `console-wake` note (urgent) · orchestrator
-- 2026-11-03 17:45 UTC · `console-wake` → built, branch claude/console-wake, PR #266 (urgent) · builds-live
-- 2026-11-03 17:53 UTC · `builds-one-page-done` added (5 steps) (urgent) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page-done` s1 done, → running (urgent) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page` → running (refactor) · snap-sully
-- 2026-11-03 17:54 UTC · `builds-one-page` s5 done, s6 done, s12 done, s14 done, note (refactor) · foreign-write
-- 2026-11-03 17:54 UTC · `md-studio` → running (urgent) · orchestrator
-- 2026-11-03 17:54 UTC · `md-studio` note (urgent) · orchestrator
-- 2026-11-03 17:53 UTC · `builds-one-page` s5 done (refactor) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page` s6 done (refactor) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page` s12 done (refactor) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page` s14 done (refactor) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page` note (refactor) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page` branch claude/builds-one-page-done (refactor) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page-done` s2 done (urgent) · snap-sully
-- 2026-11-03 17:56 UTC · `builds-one-page` PR #134, note (refactor) · reconciler
-- 2026-11-03 17:56 UTC · `builds-one-page` note (refactor) · foreign-write
-- 2026-11-03 17:56 UTC · `menu-scroll` added (6 steps) (urgent) · orchestrator
-- 2026-11-03 17:59 UTC · `builds-one-page` note (refactor) · foreign-write
-- 2026-11-03 18:01 UTC · `auto-land` added (8 steps) (urgent) · orchestrator
-- 2026-11-03 18:01 UTC · `auto-land` note (urgent) · orchestrator
-- 2026-11-03 18:02 UTC · `builds-one-page-done` s3 done (urgent) · snap-sully
-- 2026-11-03 18:02 UTC · `builds-one-page` s7 done (refactor) · snap-sully
-- 2026-11-03 18:02 UTC · `builds-one-page` s8 done (refactor) · snap-sully
-- 2026-11-03 18:02 UTC · `builds-one-page` s9 done (refactor) · snap-sully
-- 2026-11-03 18:02 UTC · `builds-one-page` s10 done (refactor) · snap-sully
-- 2026-11-03 18:02 UTC · `builds-one-page` s11 done (refactor) · snap-sully
-- 2026-11-03 18:02 UTC · `builds-one-page` s15 done (refactor) · snap-sully
-- 2026-11-03 18:02 UTC · `builds-one-page` s16 done (refactor) · snap-sully
-- 2026-11-03 18:02 UTC · `builds-one-page` s7 done, s8 done, s9 done, s10 done, s11 done, s15 done, s30 done (refactor) · foreign-write
-- 2026-11-03 18:02 UTC · `builds-one-page-done` s3 done (urgent) · foreign-write
-- 2026-11-03 18:06 UTC · `land-everything` s10 done (urgent) · orchestrator
-- 2026-11-03 18:07 UTC · `land-everything` s11 done, → complete (urgent) · orchestrator
-- 2026-11-03 18:07 UTC · `builds-one-page` s7 done, s8 done, s9 done, s10 done, s11 done, s15 done, s30 done, s30 done (refactor) · foreign-write
-- 2026-11-03 18:07 UTC · `menu-scroll` s1 done, → running (urgent) · orchestrator
-- 2026-11-03 18:07 UTC · `menu-scroll` s2 done (urgent) · orchestrator
-- 2026-11-03 18:07 UTC · `menu-scroll` s3 done (urgent) · orchestrator
-- 2026-11-03 18:07 UTC · `menu-scroll` s4 done (urgent) · orchestrator
-- 2026-11-03 18:07 UTC · `land-everything` branch claude/land-everything, merged (urgent) · builds-live
-- 2026-11-03 18:09 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 18:10 UTC · `builds-one-page` s7 done, s8 done, s9 done, s10 done, s11 done, s15 done, s30 done, s30 done, note (refactor) · foreign-write
-- 2026-11-03 18:10 UTC · `md-studio` s1 done (urgent) · orchestrator
-- 2026-11-03 18:10 UTC · `md-studio` s2 done (urgent) · orchestrator
-- 2026-11-03 18:15 UTC · `crew-live` added (7 steps) (urgent) · orchestrator
-- 2026-11-03 18:15 UTC · `crew-live` branch claude/crew-live (urgent) · builds-live
-- 2026-11-03 18:15 UTC · `crew-live` s1 done, → running (urgent) · orchestrator
-- 2026-11-03 18:16 UTC · `menu-scroll` s5 done (urgent) · orchestrator
-- 2026-11-03 18:16 UTC · `menu-scroll` s6 done, → complete (urgent) · orchestrator
-- 2026-11-03 18:16 UTC · `menu-scroll` note (urgent) · orchestrator
-- 2026-11-03 18:16 UTC · `menu-scroll` → built, PR #268 (urgent) · builds-live
-- 2026-11-03 18:20 UTC · `auto-land` s1 done, → running (urgent) · orchestrator
-- 2026-11-03 18:22 UTC · `builds-one-page-done` PR #269 (urgent) · builds-live
-- 2026-11-03 18:22 UTC · `builds-one-page` PR #269 (refactor) · builds-live
-- 2026-11-03 18:22 UTC · `builds-one-page` s13 done, → built (refactor) · snap-sully
-- 2026-11-03 18:22 UTC · `builds-one-page` note (refactor) · snap-sully
-- 2026-11-03 18:22 UTC · `builds-one-page-done` s4 done (urgent) · snap-sully
-- 2026-11-03 18:22 UTC · `builds-one-page-done` s5 done, → built (urgent) · snap-sully
-- 2026-11-03 18:22 UTC · `builds-one-page-done` note (urgent) · snap-sully
-- 2026-11-03 18:23 UTC · `builds-one-page` s13 done, → complete, note (refactor) · foreign-write
-- 2026-11-03 18:23 UTC · `toolbar-tap-confirm` added (21 steps) (urgent) · orchestrator
-- 2026-11-03 18:24 UTC · `toolbar-tap-confirm` branch claude/toolbar-tap-confirm (urgent) · orchestrator
-- 2026-11-03 18:24 UTC · `toolbar-tap-confirm` note (urgent) · orchestrator
-- 2026-11-03 18:25 UTC · `builds-one-page` s16-15 done, s13 done, → complete, note (refactor) · foreign-write
-- 2026-11-03 18:25 UTC · `auto-land` s2 done (urgent) · orchestrator
-- 2026-11-03 18:25 UTC · `auto-land` s3 done (urgent) · orchestrator
-- 2026-11-03 18:28 UTC · `auto-land` s4 done (urgent) · orchestrator
-- 2026-11-03 18:28 UTC · `auto-land` s5 done (urgent) · orchestrator
-- 2026-11-03 18:28 UTC · `auto-land` note (urgent) · orchestrator
-- 2026-11-03 18:29 UTC · `builds-one-page` s13 done, → complete, note (refactor) · foreign-write
-- 2026-11-03 18:29 UTC · `crew-live` s2 done (urgent) · orchestrator
 - 2026-11-03 18:29 UTC · `crew-live` s4 done (urgent) · orchestrator
 - 2026-11-03 18:29 UTC · `md-studio` s3 done (urgent) · orchestrator
 - 2026-11-03 18:29 UTC · `md-studio` s4 done (urgent) · orchestrator
@@ -1075,6 +1003,78 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:24 UTC · `plugin-lazy-load` merged (current) · builds-live
 - 2026-11-04 14:24 UTC · `urgent-land-lazy-loader` s4 done, → complete (current) · orchestrator
 - 2026-11-04 14:24 UTC · `plugin-lazy-load` note (current) · orchestrator
+- 2026-11-04 14:27 UTC · `urgent-land-gizmo-chat` s3 done (current) · orchestrator
+- 2026-11-04 14:27 UTC · `plugin-lazy-load` note (current) · foreign-write
+- 2026-11-04 14:27 UTC · `urgent-land-lazy-loader` s4 done, → complete (current) · foreign-write
+- 2026-11-04 14:27 UTC · `urgent-land-gizmo-chat` s3 done (current) · foreign-write
+- 2026-11-04 14:27 UTC · `profile-lists-home-card` s3 done (current) · foreign-write
+- 2026-11-04 14:27 UTC · `crew-profiles` s6 done, → built (current) · orchestrator
+- 2026-11-04 14:27 UTC · `crew-profiles` note (current) · orchestrator
+- 2026-11-04 14:29 UTC · `plugin-lazy-load` → complete, note (current) · foreign-write
+- 2026-11-04 14:30 UTC · `urgent-land-lazy-loader` note (current) · foreign-write
+- 2026-11-04 14:30 UTC · `urgent-land-lazy-loader` note (current) · orchestrator
+- 2026-11-04 14:30 UTC · `urgent-land-lazy-loader` note (current) · builds-live
+- 2026-11-04 14:31 UTC · `plugin-lazy-load` → complete, note (current) · foreign-write
+- 2026-11-04 14:31 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 14:31 UTC · `land-round-2` note (current) · foreign-write
+- 2026-11-04 14:31 UTC · `urgent-land-lazy-loader` s4 done, → complete, note (current) · foreign-write
+- 2026-11-04 14:31 UTC · `crew-profiles` s4 done, s5 done, s6 done, → complete, note (current) · foreign-write
+- 2026-11-04 14:31 UTC · `urgent-land-gizmo-chat` s1 done, s2 done, s3 done (current) · foreign-write
+- 2026-11-04 14:31 UTC · `profile-lists-home-card` s2 done, s3 done, note (current) · foreign-write
+- 2026-11-04 14:31 UTC · `gizmo-voice` added (24 steps) (current) · foreign-write
+- 2026-11-04 14:31 UTC · `gizmo-terminal` added (32 steps) (current) · foreign-write
+- 2026-11-04 14:31 UTC · `console-wake-finish` PR #317 (current) · builds-live
+- 2026-11-04 14:28 UTC · `plugin-lazy-load` → complete, note (current) · reconciler
+- 2026-11-04 14:31 UTC · `urgent-land-lazy-loader` note (current) · foreign-write
+- 2026-11-04 14:31 UTC · `console-wake-finish` s2 done (current) · orchestrator
+- 2026-11-04 14:31 UTC · `console-wake-finish` s4 done (current) · orchestrator
+- 2026-11-04 14:32 UTC · `merge-queue` added (6 steps) (current) · orchestrator
+- 2026-11-04 14:32 UTC · `merge-queue` → running (current) · orchestrator
+- 2026-11-04 14:38 UTC · `profile-lists-home-card` PR #318 (current) · builds-live
+- 2026-11-04 14:38 UTC · `batch-manager` note (angel) · orchestrator
+- 2026-11-04 14:38 UTC · `grid-sort-filter` note (angel) · orchestrator
+- 2026-11-04 14:38 UTC · `grid-sort-filter` note (angel) · orchestrator
+- 2026-11-04 14:38 UTC · `grid-sort-filter` note (angel) · orchestrator
+- 2026-11-04 14:38 UTC · `plugin-cleanup` note (angel) · orchestrator
+- 2026-11-04 14:38 UTC · `transcription-engine` note (angel) · orchestrator
+- 2026-11-04 14:38 UTC · `toolbar-tap-confirm` → running, note (urgent) · orchestrator
+- 2026-11-04 14:38 UTC · `browser-automation` → running, note (current) · orchestrator
+- 2026-11-04 14:38 UTC · `browser-automation` note (current) · foreign-write
+- 2026-11-04 14:38 UTC · `profile-filter-tables` added (4 steps) (current) · orchestrator
+- 2026-11-04 14:38 UTC · `profile-switcher-widget` note (current) · orchestrator
+- 2026-11-04 14:38 UTC · `profile-switcher-widget` → archived (current) · orchestrator
+- 2026-11-04 14:38 UTC · `profile-lists-home-card` s4 done, → built (current) · orchestrator
+- 2026-11-04 14:38 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 14:38 UTC · `profile-lists-home-card` s4 done, → complete (current) · foreign-write
+- 2026-11-04 14:38 UTC · `profile-filter-tables` added (4 steps) (current) · foreign-write
+- 2026-11-04 14:39 UTC · `fable-no-approval` added (3 steps) (current) · fable-no-approval
+- 2026-11-04 14:39 UTC · `fable-review-nov3` added (7 steps) (current) · fable-no-approval
+- 2026-11-04 14:39 UTC · `fable-no-approval` s1 done, → running (current) · orchestrator
+- 2026-11-04 14:39 UTC · `fable-no-approval` s2 done (current) · orchestrator
+- 2026-11-04 14:39 UTC · `fable-no-approval` s2 done (current) · foreign-write
+- 2026-11-04 14:40 UTC · `toolbar-tap-confirm` → complete, note (urgent) · reconciler
+- 2026-11-04 14:43 UTC · `fable-no-approval` branch claude/fable-no-approval, PR #319 (current) · builds-live
+- 2026-11-04 14:43 UTC · `fable-no-approval` s3 done, → built (current) · orchestrator
+- 2026-11-04 14:43 UTC · `fable-no-approval` s3 done, → complete (current) · foreign-write
+- 2026-11-04 14:43 UTC · `app-voice-commands` added (6 steps) (current) · orchestrator
+- 2026-11-04 14:43 UTC · `app-voice-commands` note (current) · orchestrator
+- 2026-11-04 14:43 UTC · `app-voice-commands` → running (current) · orchestrator
+- 2026-11-04 14:43 UTC · `app-voice-commands` added (6 steps) (current) · foreign-write
+- 2026-11-04 14:43 UTC · `app-voice-commands` note (current) · foreign-write
+- 2026-11-04 14:48 UTC · `browser-automation` note (current) · foreign-write
+- 2026-11-04 14:48 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 14:48 UTC · `profile-lists-home-card` s4 done, → complete (current) · foreign-write
+- 2026-11-04 14:48 UTC · `profile-filter-tables` added (12 steps) (current) · foreign-write
+- 2026-11-04 14:48 UTC · `fable-no-approval` added (3 steps) (current) · foreign-write
+- 2026-11-04 14:48 UTC · `fable-review-nov3` added (7 steps) (current) · foreign-write
+- 2026-11-04 14:48 UTC · `app-voice-commands` added (6 steps) (current) · foreign-write
+- 2026-11-04 14:48 UTC · `merge-queue` s1 done (current) · orchestrator
+- 2026-11-04 14:48 UTC · `merge-queue` s2 done (current) · orchestrator
+- 2026-11-04 14:48 UTC · `merge-queue` s3 done (current) · orchestrator
+- 2026-11-04 14:48 UTC · `merge-queue` s4 done (current) · orchestrator
+- 2026-11-04 14:48 UTC · `merge-queue` s5 done (current) · orchestrator
+- 2026-11-04 14:48 UTC · `merge-queue` s1 done, s2 done, s3 done (current) · foreign-write
+- 2026-11-04 14:48 UTC · `merge-queue` s4 done, s5 done (current) · foreign-write
 
 ## Token passes (log)
 

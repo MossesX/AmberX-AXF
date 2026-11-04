@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T14:24:48.994Z",
+ "updatedAt": "2026-11-04T14:48:46.363Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3821,6 +3821,18 @@
     {
      "text": "Reconciler: PR #272 merged: complete",
      "at": "2026-11-04T12:44:12.117Z"
+    },
+    {
+     "text": "Model switch: phase 2 (Contracts) Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-04T14:38:23.212Z"
+    },
+    {
+     "text": "Reconciler: PR #272 merged: complete",
+     "at": "2026-11-04T14:40:45.811Z"
+    },
+    {
+     "text": "Reconciler: PR #272 merged: complete",
+     "at": "2026-11-04T14:40:26.654Z"
     }
    ],
    "id": "toolbar-tap-confirm",
@@ -3835,9 +3847,20 @@
    "pr": "#272",
    "mergedAt": "2026-11-04T04:11:27Z",
    "createdAt": "2026-11-03T18:23:45.044Z",
-   "updatedAt": "2026-11-04T12:44:12.117Z",
-   "builtAt": "2026-11-04T12:44:12.117Z",
-   "approvals": [],
+   "updatedAt": "2026-11-04T14:40:45.811Z",
+   "builtAt": "2026-11-04T14:40:45.811Z",
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-04T14:38:23.212Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "every EXISTING and FUTURE toolbar uses the Terminal's Tooltip mode (first tap shows what the button does and arms it lit for 3 s, second tap within 3 s runs it, duration configurable; built in headless-tabs PR #259, s8). The double tap is ONLY on phones / touch. On a computer it stays a normal single click (hover tooltip as usual) - 'it really works on a computer.' Assigned agent: **Landin' Lenny** (book on his card; AXF_AGENT=landin-lenny if supported). Register in Urgent (id `toolbar-tap-confirm`) + banner entry.",
