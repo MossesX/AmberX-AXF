@@ -662,13 +662,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 16:24 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 16:24 UTC · `land-everything` s3 done (urgent) · orchestrator
-- 2026-11-03 16:24 UTC · `kill-patches-pilot` → running, note (urgent) · orchestrator
-- 2026-11-03 16:24 UTC · `kill-patches-pilot` → complete (urgent) · orchestrator
-- 2026-11-03 16:29 UTC · `headless-tabs` PR #259, merged (urgent) · builds-live
-- 2026-11-03 16:29 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 16:29 UTC · `land-everything` s4 done (urgent) · orchestrator
 - 2026-11-03 16:41 UTC · `whats-new-banner` merged (urgent) · builds-live
 - 2026-11-03 16:41 UTC · `land-everything` note (urgent) · orchestrator
 - 2026-11-03 16:41 UTC · `land-everything` s5 done (urgent) · orchestrator
@@ -1062,6 +1055,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:19 UTC · `profile-lists-home-card` s2 done, note (current) · foreign-write
 - 2026-11-04 14:19 UTC · `crew-profiles` s5 done (current) · orchestrator
 - 2026-11-04 14:20 UTC · `crew-profiles` branch claude/crew-profiles (current) · builds-live
+- 2026-11-04 14:14 UTC · `urgent-land-gizmo-chat` added (4 steps) (current) · orchestrator
+- 2026-11-04 14:14 UTC · `urgent-land-gizmo-chat` → running (current) · orchestrator
+- 2026-11-04 14:21 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 14:21 UTC · `crew-profiles` s4 done, s5 done (current) · foreign-write
+- 2026-11-04 14:21 UTC · `urgent-land-gizmo-chat` added (4 steps) (current) · foreign-write
+- 2026-11-04 14:21 UTC · `console-wake-finish` added (5 steps) (current) · foreign-write
+- 2026-11-04 14:21 UTC · `profile-lists-home-card` added (4 steps) (current) · foreign-write
 
 ## Token passes (log)
 
