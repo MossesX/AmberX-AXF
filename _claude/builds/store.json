@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1000,
- "updatedAt": "2026-11-04T22:07:29.050Z",
+ "rev": 1001,
+ "updatedAt": "2026-11-04T22:09:40.944Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -85044,10 +85044,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/changes-chat-log",
+   "pr": "#347",
    "createdAt": "2026-11-04T21:53:46.271Z",
-   "updatedAt": "2026-11-04T22:04:45.452Z",
+   "updatedAt": "2026-11-04T22:09:39.686Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -85184,7 +85184,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
