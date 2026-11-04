@@ -683,24 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:04 UTC · `molly-opus` → complete, note (big-dog) · foreign-write
-- 2026-11-04 14:04 UTC · `walkthrough-random-look` → complete, note (refactor) · foreign-write
-- 2026-11-04 14:04 UTC · `profile-manager` note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `molly-console-commands` → complete, note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `git-status-board` note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `urgent-main-ci-green` → complete, note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `terminal-tabs-left` note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `gizmo-companion` note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `browser-automation` note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `profile-switcher-widget` note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `app-style-override` note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `land-round-2` s2 done, s3 done, note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `terminal-no-focus` note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `hotfix-build-manager` s1 done, s2 done, s3 done, s4 done, → complete, note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `requests-ledger` added (5 steps) (current) · foreign-write
-- 2026-11-04 14:04 UTC · `bugs-board` added (7 steps) (current) · foreign-write
-- 2026-11-04 14:04 UTC · `follow-amber-switch` added (5 steps) (current) · foreign-write
-- 2026-11-04 14:04 UTC · `urgent-land-lazy-loader` s3 done (current) · foreign-write
 - 2026-11-04 14:04 UTC · `urgent-land-lazy-loader` s3 done (current) · orchestrator
 - 2026-11-04 14:04 UTC · `urgent-land-lazy-loader` note (current) · orchestrator
 - 2026-11-04 14:04 UTC · `land-round-2` → running (current) · builds-live
@@ -1083,6 +1065,24 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 17:16 UTC · `live-sessions-plugin` s5 done (current) · foreign-write
 - 2026-11-04 17:16 UTC · `app-voice-commands` s6 done, → built (current) · orchestrator
 - 2026-11-04 17:16 UTC · `app-voice-commands` note (current) · orchestrator
+- 2026-11-04 16:42 UTC · `settings-placement-everywhere` s1 done, → running (current) · orchestrator
+- 2026-11-04 16:42 UTC · `settings-placement-everywhere` s1 done, s2 done (current) · orchestrator
+- 2026-11-04 16:43 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done (current) · orchestrator
+- 2026-11-04 16:43 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done (current) · orchestrator
+- 2026-11-04 16:43 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · orchestrator
+- 2026-11-04 16:47 UTC · `live-sessions-plugin` added (6 steps) (current) · foreign-write
+- 2026-11-04 16:47 UTC · `tab-group-assets` note (current) · orchestrator
+- 2026-11-04 16:47 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · orchestrator
+- 2026-11-04 16:55 UTC · `live-sessions-plugin` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 16:55 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done, PR #329 (current) · builds-live
+- 2026-11-04 16:55 UTC · `plugin-settings-placement` branch claude/settings-placement-everywhere, PR #329 (current) · builds-live
+- 2026-11-04 16:55 UTC · `plugin-settings-placement` note (current) · orchestrator
+- 2026-11-04 17:17 UTC · `app-voice-commands` s6 done, → complete, note (current) · foreign-write
+- 2026-11-04 17:17 UTC · `settings-placement-everywhere` note (current) · foreign-write
+- 2026-11-04 17:17 UTC · `live-sessions-plugin` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-04 17:17 UTC · `settings-placement-everywhere` s6 done (current) · orchestrator
+- 2026-11-04 17:17 UTC · `settings-placement-everywhere` s6 done, note (current) · orchestrator
+- 2026-11-04 17:18 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, → built (current) · orchestrator
 
 ## Token passes (log)
 
