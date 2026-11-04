@@ -569,10 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 20:00 UTC · `window-resize-fix` branch claude/window-resize-fix, note (current) · reconciler
-- 2026-11-03 20:10 UTC · `window-resize-fix` PR #278, merged, note (current) · reconciler
-- 2026-11-03 19:59 UTC · `window-resize-fix` s2 done (current) · orchestrator
-- 2026-11-03 20:00 UTC · `window-resize-fix` note (current) · foreign-write
 - 2026-11-03 20:00 UTC · `window-resize-fix` branch claude/window-resize-fix, PR #278 (current) · builds-live
 - 2026-11-03 20:12 UTC · `window-resize-fix` note (current) · foreign-write
 - 2026-11-03 20:12 UTC · `profile-manager` s1 done, s2 done (current) · foreign-write
@@ -969,3 +965,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 00:40 UTC · `browser-automation` added (16 steps) (current) · foreign-write
 - 2026-11-04 00:40 UTC · `profile-switcher-widget` added (5 steps) (current) · orchestrator
 - 2026-11-04 00:41 UTC · `profile-switcher-widget` note (current) · orchestrator
+- 2026-11-04 00:40 UTC · `plugin-lazy-load` s1 done (current) · orchestrator
+- 2026-11-04 00:41 UTC · `profile-switcher-widget` added (5 steps) (current) · foreign-write
+- 2026-11-04 00:41 UTC · `plugin-lazy-load` s2 done (current) · orchestrator
+- 2026-11-04 00:42 UTC · `profile-switcher-widget` note (current) · foreign-write

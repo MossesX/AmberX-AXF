@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 574,
- "updatedAt": "2026-11-04T00:45:30.332Z",
+ "rev": 575,
+ "updatedAt": "2026-11-04T00:47:48.833Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -67300,7 +67300,7 @@
    "branch": "claude/plugin-lazy-load",
    "pr": "",
    "createdAt": "2026-11-03T22:55:16.843Z",
-   "updatedAt": "2026-11-04T00:11:12.645Z",
+   "updatedAt": "2026-11-04T00:41:46.533Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -67321,12 +67321,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T00:40:43.360Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:55:16.846Z",
-     "updatedAt": "2026-11-03T22:55:16.846Z"
+     "updatedAt": "2026-11-04T00:40:45.651Z"
     },
     {
      "id": "s2",
@@ -67343,12 +67343,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T00:41:46.533Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:55:16.846Z",
-     "updatedAt": "2026-11-03T22:55:16.846Z"
+     "updatedAt": "2026-11-04T00:41:46.734Z"
     },
     {
      "id": "s3",
@@ -67381,7 +67381,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
