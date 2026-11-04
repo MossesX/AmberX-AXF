@@ -1,0 +1,209 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261103-abbd092bdb",
+  "createdAt": "2026-11-03T17:53:34.950Z",
+  "updatedAt": "2026-11-03T18:32:10.389Z",
+  "kind": "build",
+  "title": "# Build: md-studio (Urgent profile) Brett, Nov 3 2026 (voice): build MD Studio.",
+  "asked": "# Build: md-studio (Urgent profile) Brett, Nov 3 2026 (voice): build MD Studio. It was planned but NEVER built (no branch, no log). Assigned agent: **Reel Rhonda** (book on her agent-swarm card; set AXF_AGENT=reel-rhonda if supported, else record in report + store note). ## First - s0 Search the hub memory/notes (`/projects/_shared/_claude/notes/`, `/projects/amberx-axf/_claude/`, THREADS, store, plans/) and GitHub for any MD Studio plan/spec Brett wrote; that spec wins over this brief. Register in Urgent (id `md-studio`), banner entry. ## Build (unless his spec says otherwise) - MD Studio = a Markdown studio plugin for the Dev Console built ON the dock engine (molly-fable #245, now on main): dockable panes for file tree, editor, live preview, outline. - Editor with markdown toolbar (headings, bold/italic, lists, checklists, tables, code, links), live preview side by side or split, tabs for multiple docs, search/replace, autosave, version history with restore. - **Notes section step (required):** a Notes section that opens and edits everything in the Notes Vault (`/projects/_shared/_claude/notes/` incl. sessions/, handoffs/, plans/, install/, misc/, INDEX.md) using the Notes Vault commands that landed with plugin-commands-auto; plus opening hub memory/rules files and repo .md files. - Every command declared once so REST + MCP + CLI are generated (standing rule), so Amber can open/edit docs by voice. - Tokens/theme only for styling; works on phone (compact window class) first. - Tests, report `_claude/builds/reports/md-studio.md`, THREADS, PR, mark steps done through the store. Commits clean and professional. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Opus) is fine. An UPGRADE (e.g. Opus → Fable) needs Brett's approval: when you reach one, run `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>`, ask once, and stop. Never approve a model switch upgrade yourself (no `act approve` on an upgrade), never relaunch on a higher model.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "claude-opus-5-5",
+  "who": {
+    "session": "ba410620-460",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [
+    {
+      "text": "s1 scaffold + s2 server (scopes, refs, versions, chain) + tests",
+      "state": "done",
+      "startedAt": "2026-11-03T18:10:15.225Z",
+      "finishedAt": "2026-11-03T18:10:15.225Z"
+    },
+    {
+      "text": "UI: column, dock tabs, editor kit, views, snippets, wizards, context view",
+      "state": "done",
+      "startedAt": "2026-11-03T18:10:15.617Z",
+      "finishedAt": "2026-11-03T18:31:33.086Z"
+    },
+    {
+      "text": "UI, tests, shots, PR #271, UI Review",
+      "state": "done",
+      "startedAt": "2026-11-03T18:31:33.000Z",
+      "finishedAt": "2026-11-03T18:31:33.000Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "MD Studio plugin (14/14 steps): scopes Project/Claude/Repo/Notes, dock tabs, editor kit, 4 views, snippets, wizards, context view, voice commands; PR #271, UI Review waiting",
+    "branch": "claude/md-studio",
+    "commits": [
+      {
+        "sha": "93b12d87"
+      }
+    ],
+    "filesChanged": 25,
+    "tests": {
+      "md-studio test.py": {
+        "before": "new",
+        "after": "pass"
+      },
+      "md-studio test.mts": {
+        "before": "new",
+        "after": "pass"
+      }
+    },
+    "links": {
+      "report": "_claude/builds/reports/md-studio.md",
+      "pr": "https://github.com/MossesX/AmberX-AXF/pull/271"
+    }
+  },
+  "closed": null,
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "queue",
+    "id": "md-studio"
+  },
+  "surface": "headless",
+  "startedAt": "2026-11-03T17:53:34.950Z",
+  "finishedAt": "2026-11-03T18:31:33.086Z",
+  "lastSeenAt": "2026-11-03T18:31:33.000Z",
+  "estimate": {
+    "minutes": 300,
+    "costUsd": 42
+  },
+  "actual": {
+    "minutes": 38,
+    "costUsd": 8.8658,
+    "inputTokens": 266,
+    "outputTokens": 123478,
+    "cacheReadTokens": 25111733,
+    "cacheWriteTokens": 274570,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "claude/md-studio",
+  "areas": [
+    "apps/console-web/plugins/md-studio",
+    "_claude/builds/reports"
+  ],
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/md-studio",
+    "branch": "claude/md-studio",
+    "base": "6133cac8c87e92ff6bf9309757c5bfc90716b7fd",
+    "head": "5977900e4bb835054002426353161b042d87ad08",
+    "pushed": true,
+    "dirty": 70,
+    "files": [
+      "_claude/THREADS.md",
+      "_claude/builds/reports/md-studio.md",
+      "_claude/builds/reports/md-studio/shots/after/md-studio-browse-desktop.png",
+      "_claude/builds/reports/md-studio/shots/after/md-studio-browse-phone.png",
+      "_claude/builds/reports/md-studio/shots/after/md-studio-context-desktop.png",
+      "_claude/builds/reports/md-studio/shots/after/md-studio-context-phone.png",
+      "_claude/builds/reports/md-studio/shots/after/md-studio-ide-desktop.png",
+      "_claude/builds/reports/md-studio/shots/after/md-studio-ide-phone.png",
+      "_claude/builds/reports/md-studio/shots/after/md-studio-settings-desktop.png",
+      "_claude/builds/reports/md-studio/shots/after/md-studio-settings-phone.png",
+      "_claude/builds/reports/md-studio/shots/after/md-studio-wizards-desktop.png",
+      "_claude/builds/reports/md-studio/shots/after/md-studio-wizards-phone.png",
+      "_claude/builds/reports/md-studio/shots/after/md-studio-write-desktop.png",
+      "_claude/builds/reports/md-studio/shots/after/md-studio-write-phone.png",
+      "_claude/builds/reports/md-studio/shots/shots.json",
+      "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/md-studio/help.json",
+      "apps/console-web/plugins/md-studio/hooks.mjs",
+      "apps/console-web/plugins/md-studio/install.mjs",
+      "apps/console-web/plugins/md-studio/plugin.json",
+      "apps/console-web/plugins/md-studio/server/__init__.py",
+      "apps/console-web/plugins/md-studio/server/store.py",
+      "apps/console-web/plugins/md-studio/test.mts",
+      "apps/console-web/plugins/md-studio/test.py",
+      "apps/console-web/plugins/md-studio/uninstall.mjs",
+      "apps/console-web/plugins/md-studio/web/Column.tsx",
+      "apps/console-web/plugins/md-studio/web/Doc.tsx",
+      "apps/console-web/plugins/md-studio/web/index.tsx",
+      "apps/console-web/plugins/md-studio/web/md-studio.css",
+      "apps/console-web/plugins/md-studio/web/menu.ts",
+      "apps/console-web/plugins/md-studio/web/model.ts",
+      "apps/console-web/plugins/md-studio/web/state.ts",
+      "_claude/builds/journal/2026-11.jsonl",
+      "_claude/builds/orchestrator.json",
+      "_claude/builds/profiles/angel/orchestrator.json",
+      "_claude/builds/profiles/big-dog/orchestrator.json",
+      "_claude/builds/profiles/breakroom/orchestrator.json",
+      "_claude/builds/profiles/refactor/orchestrator.json",
+      "_claude/builds/profiles/urgent/orchestrator.json",
+      "_claude/builds/store.json",
+      "_claude/fuck-you.md",
+      "_claude/memory/docs/patches-banners.md",
+      "_claude/memory/docs/patches-banners/",
+      "_claude/memory/docs/rebuilds/patches-web-settings-notify.md",
+      "_claude/memory/docs/rebuilds/patches-web-settings-notify/",
+      "_claude/memory/docs/rebuilds/patches-wrapper.md",
+      "_claude/memory/docs/rebuilds/patches-wrapper/",
+      "_claude/memory/handoff-2026-11-01.md",
+      "changes/2026/11/chg-20261103-05d50b67f2.json",
+      "changes/2026/11/chg-20261103-1fd829429a.json",
+      "changes/2026/11/chg-20261103-327362d788.json",
+      "changes/2026/11/chg-20261103-344590cdbf.json",
+      "changes/2026/11/chg-20261103-410aa260cd.json",
+      "changes/2026/11/chg-20261103-4119d89552.json",
+      "changes/2026/11/chg-20261103-6a265e86de.json",
+      "changes/2026/11/chg-20261103-72af5f9c93.json",
+      "changes/2026/11/chg-20261103-bfa886bec9.json",
+      "changes/2026/11/chg-20261103-c883182fa3.json",
+      "changes/2026/11/chg-20261103-c9111db709.json",
+      "changes/2026/11/chg-20261103-cc5861aae2.json",
+      "changes/2026/11/chg-20261103-da7772b89b.json",
+      "framework/plan/profiles/urgent/framework/catalog/",
+      "framework/plan/profiles/urgent/framework/plan/plan.json",
+      "framework/plan/profiles/urgent/tracker.json",
+      "sessions/2026-10-31-amber-voice.md",
+      "sessions/archive/2026/11/cc-031b0190-e7d1-4b61-9582-c6802aa0dae6.json",
+      "sessions/archive/2026/11/cc-04dbe8a6-6209-44d4-87e5-62f696955ec8.json",
+      "sessions/archive/2026/11/cc-08ae1fc7-cbe3-4fea-b451-7ff633613126.json",
+      "sessions/archive/2026/11/cc-12768b98-0fc0-4747-a7ae-6d5b17aebac2.json",
+      "sessions/archive/2026/11/cc-131f9cf2-2a3b-4e4f-8571-dbadfc60fef2.json",
+      "sessions/archive/2026/11/cc-17ed7e1b-e54b-4aa1-b2fd-c48ed54b30dd.json",
+      "sessions/archive/2026/11/cc-190d2263-e446-44b7-9861-25a5c0666db9.json",
+      "sessions/archive/2026/11/cc-1f18bfef-ddd9-4c29-9188-908eadf6f6bd.json",
+      "sessions/archive/2026/11/cc-264b0249-9974-4768-84ae-9164d768aa51.json",
+      "sessions/archive/2026/11/cc-27f7667a-da7b-4b09-b007-0f86df4877b1.json",
+      "sessions/archive/2026/11/cc-291ed463-1f6d-4205-b17c-cd9d4200c893.json",
+      "sessions/archive/2026/11/cc-29e5f532-6a88-4649-aa5c-522edc2aedbe.json",
+      "sessions/archive/2026/11/cc-3e59dba3-4000-43aa-a118-f5202a3c02fe.json",
+      "sessions/archive/2026/11/cc-4213a612-cbfd-46ba-a82d-42e16c2e0331.json",
+      "sessions/archive/2026/11/cc-49de7806-eb67-4ca3-9a3c-f0d6dfe28bcf.json",
+      "sessions/archive/2026/11/cc-505cf2dc-e114-43a1-991b-68556768b6db.json",
+      "sessions/archive/2026/11/cc-57c5feae-0c61-4095-b03f-f5b69f562425.json",
+      "sessions/archive/2026/11/cc-668ccbca-9143-49ff-8088-b14f359ba4e1.json",
+      "sessions/archive/2026/11/cc-67a7e1e4-5ee8-420b-b041-fee0c6dec7e7.json",
+      "sessions/archive/2026/11/cc-84befb11-635d-4481-956a-40babe5f8714.json",
+      "sessions/archive/2026/11/cc-8c68abab-681d-4592-a2a8-f4132cbe62dd.json",
+      "sessions/archive/2026/11/cc-953c08c4-05e5-44bb-9d88-1e323a4874ed.json",
+      "sessions/archive/2026/11/cc-984cfeaf-5360-4d61-bed7-47b6ac72366c.json",
+      "sessions/archive/2026/11/cc-9db7720a-c6a8-48fe-8c54-a34ff717fd48.json",
+      "sessions/archive/2026/11/cc-9edc684c-1c95-4b56-9919-3e279d2d4757.json",
+      "sessions/archive/2026/11/cc-a4ad0a10-3a10-4318-8609-2dc2d5282e15.json",
+      "sessions/archive/2026/11/cc-b04d6149-024a-48ca-8258-4d0c4eae3a5c.json",
+      "sessions/archive/2026/11/cc-ba8e9765-805d-46c1-88ce-7bee0819db08.json",
+      "sessions/archive/2026/11/cc-bb121ca6-d776-4696-a0f1-6bbb27e0bb74.json",
+      "sessions/archive/2026/11/cc-bea2ed25-1b4b-4d13-bd60-7bee4e313031.json",
+      "sessions/archive/2026/11/cc-c36b8a7b-633b-4e23-8a85-7c26b3749d3f.json",
+      "sessions/archive/2026/11/cc-cf0f67dc-c62f-4532-9009-6c913839ddf0.json",
+      "sessions/archive/2026/11/cc-d425f8ca-a33c-49b2-9575-280db80af678.json",
+      "sessions/archive/2026/11/cc-e159d02d-8274-4f0e-be73-03acf2e19e25.json",
+      "sessions/archive/2026/11/cc-eec36937-42a3-41d4-be92-6d4e68d9aa1b.json",
+      "sessions/archive/2026/11/cc-fcc07d2a-12a0-42c2-a108-dcbe6e3fe96c.json",
+      "sessions/archive/2026/11/cc-ffa43f6c-21e2-4f93-851f-7a92b2246f7e.json"
+    ],
+    "at": "2026-11-03T18:32:10.663Z"
+  }
+}
