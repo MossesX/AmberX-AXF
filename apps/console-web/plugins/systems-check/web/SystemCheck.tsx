@@ -1,4 +1,5 @@
-import { Fragment, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { DataGrid, type GridColumn } from '@console/axf/libs/datagrid';
 import { BannerIcon, Button, Chip, Icon, Segmented, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
 import type { AxfRuntime } from '@console/axf/core';
 import * as api from '@console/api';
@@ -533,6 +534,7 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
   const [view, setView] = useState<View>('grid');
   const [open, setOpen] = useState<Set<string>>(() => new Set(focus ? [focus] : []));
   const [filter, setFilter] = useState<'issues' | 'all'>('issues');
+  const narrow = useMemo(() => (globalThis.matchMedia?.('(max-width: 640px)').matches ? ['service', 'summary'] : []), []);
   useEffect(() => { if (!s.loading) void loadSystemCheck(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   if (s.unauthorized) return <p>Set the console token (Settings → Account &amp; security) to run the systems check.</p>;
   if (!s.report) return <p className="fx-muted">{s.error || 'Running the systems check…'}</p>;
@@ -576,23 +578,15 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
         <div className="axp-systems-check__grid">
           <Segmented size="sm" label="Show" value={filter} onChange={setFilter} options={[{ value: 'issues', label: `Issues (${iss.length})` }, { value: 'all', label: `Everything (${r.checks.length})` }]} />
           {rows.length === 0 && <p className="fx-muted">No issues: everything the console needs is configured.</p>}
-          <table className="fx-table axp-systems-check-table">
-            <thead><tr><th aria-label="Expand" /><th>Status</th><th>Check</th><th className="axp-systems-check-hide-sm">Service</th><th className="axp-systems-check-hide-sm">Summary</th></tr></thead>
-            <tbody>
-              {rows.map((c) => (
-                <Fragment key={c.id}>
-                  <tr className={`axp-systems-check-row ${open.has(c.id) ? 'is-open' : ''}`} onClick={() => toggle(c.id)}>
-                    <td><button type="button" className="fx-iconbtn" aria-expanded={open.has(c.id)} aria-label={`Details for ${c.title}`} onClick={(e) => { e.stopPropagation(); toggle(c.id); }}><Icon name={open.has(c.id) ? 'chevron-down' : 'chevron-right'} size={14} /></button></td>
-                    <td>{s.run[c.id] ? <RunBadge r={s.run[c.id]} /> : <StatusChip s={c.status} />}</td>
-                    <td><strong>{c.title}</strong>{' '}<SourceBadge ai={isAiCheck(c)} /><span className="axp-systems-check-show-sm fx-small fx-muted axp-systems-check-sumline">{c.summary}</span></td>
-                    <td className="axp-systems-check-hide-sm">{r.services.find((x) => x.id === c.service)?.label ?? c.service}</td>
-                    <td className="axp-systems-check-hide-sm fx-small">{c.summary}</td>
-                  </tr>
-                  {open.has(c.id) && <tr className="axp-systems-check-exp"><td colSpan={5}><CheckBody c={c} /></td></tr>}
-                </Fragment>
-              ))}
-            </tbody>
-          </table>
+          <DataGrid<Check> id="systems-check" label="Systems check" compact rows={rows} hidden={narrow} rowId={(c) => c.id} rowLabel={(c) => c.title}
+            rowTone={(c) => (c.status === 'error' ? 'danger' : c.status === 'warn' ? 'warning' : c.status === 'ok' ? 'success' : 'muted')}
+            expanded={[...open]} onToggleExpand={toggle} onRowClick={(c) => toggle(c.id)} renderDetail={(c) => <CheckBody c={c} />}
+            columns={[
+              { id: 'status', label: 'Status', width: 'calc(var(--fx-space) * 14)', render: (c) => (s.run[c.id] ? <RunBadge r={s.run[c.id]} /> : <StatusChip s={c.status} />) },
+              { id: 'check', label: 'Check', fixed: true, width: 'minmax(calc(var(--fx-space) * 20), 2fr)', render: (c) => <span><strong>{c.title}</strong>{' '}<SourceBadge ai={isAiCheck(c)} /><span className="axp-systems-check-show-sm fx-small fx-muted axp-systems-check-sumline">{c.summary}</span></span> },
+              { id: 'service', label: 'Service', width: 'calc(var(--fx-space) * 16)', render: (c) => r.services.find((x) => x.id === c.service)?.label ?? c.service },
+              { id: 'summary', label: 'Summary', width: 'minmax(calc(var(--fx-space) * 20), 3fr)', render: (c) => <span className="fx-small">{c.summary}</span> },
+            ] satisfies GridColumn<Check>[]} />
         </div>
       )}
 

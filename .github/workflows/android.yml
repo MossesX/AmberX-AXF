@@ -114,6 +114,9 @@ jobs:
         run: node framework/cli/check-controls.mjs
       - name: Toolbars — every toolbar is a framework toolbar (role="toolbar" + settings id; tap-to-confirm off in code only with a recorded reason)
         run: node framework/cli/check-toolbars.mjs
+      - name: Grids — every grid is a lib-datagrid DataGrid (hideable columns); hand-made header tables only shrink (framework/spec/grids-baseline.json)
+        run: node framework/cli/check-grids.mjs
+      - run: npx -y tsx framework/spec/check-grid-columns.mts            # grid-columns@1: fixed / default-hidden columns, saved changes, show all, reset, names for voice
       - name: Asset conformance — the checker and the adopter agree (scale-adopt self-test)
         run: node framework/spec/check-conform.mjs
       - name: Plugin pages follow the design language (page heads with eyebrow + title + one sentence, no spinners; DESIGN-LANGUAGE §12)

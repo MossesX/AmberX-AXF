@@ -5,6 +5,7 @@
  * Framework controls only (they follow the app's button, style theme and spacing); plugin CSS lays things out.
  */
 import { useEffect, useMemo, useState } from 'react';
+import { DataGrid, type GridColumn, type GridSort } from '@console/axf/libs/datagrid';
 import { Button, Chip, Container, Field, Icon, IconButton, Note, Section, Segmented, SelectField, Switch, TextField, useAxfState, useRuntime } from '@console/axf/react';
 import {
   CORE_PARTS, DEFAULT_VIEW, FIELD_TYPES, KINDS, TONES, checklistText, childLists, dateInput, fromDateInput, groupEntries, listPaths, progress, readView, sortEntries, visible, words,
@@ -273,26 +274,25 @@ function Grid({ entries, sel, toggle }: { entries: Entry[]; sel: number[]; toggl
     for (const k of KINDS) for (const f of types[k].fields) if (f.showInGrid && !seen.has(f.key)) seen.set(f.key, f);
     return [...seen.values()];
   }, [types]);
+  const [sort, setSort] = useState<GridSort>(null);
   const cell = (v: unknown, f: FieldDef) => (v == null || v === '' ? '' : f.type === 'checkbox' ? (v ? '✓' : '') : f.type === 'date' ? new Date(Number(v)).toLocaleDateString() : Array.isArray(v) ? v.join(', ') : String(v));
+  const W = 'calc(var(--fx-space) * 12)';
+  const columns: GridColumn<Entry>[] = [
+    { id: 'select', label: 'Select', fixed: true, width: 'calc(var(--fx-space) * 4)', render: (e) => <input type="checkbox" aria-label={`Select ${e.title}`} checked={sel.includes(e.id)} onClick={(ev) => ev.stopPropagation()} onChange={() => toggle(e.id)} /> },
+    { id: 'title', label: 'Title', fixed: true, width: 'minmax(calc(var(--fx-space) * 20), 3fr)', sortable: true, sortValue: (e) => e.title.toLowerCase(), render: (e) => <button type="button" data-fx-row="" className="axp-todo__cellbtn" onClick={() => rt.openDialog(ENTRY_DIALOG, { id: e.id })}>{e.title}</button> },
+    { id: 'kind', label: 'Kind', width: W, sortable: true, sortValue: (e) => types[e.kind].label, render: (e) => types[e.kind].label },
+    { id: 'status', label: 'Status', width: W, sortable: true, sortValue: (e) => e.status, render: (e) => (types[e.kind].core.status === 'hidden' ? '' : words(e.status)) },
+    { id: 'priority', label: 'Priority', width: W, sortable: true, sortValue: (e) => e.priority, render: (e) => (types[e.kind].core.priority === 'hidden' ? '' : words(e.priority)) },
+    { id: 'due', label: 'Due', width: W, sortable: true, sortValue: (e) => e.dueAt ?? Infinity, render: (e) => (e.dueAt != null ? new Date(e.dueAt).toLocaleDateString() : '') },
+    { id: 'tags', label: 'Tags', width: 'minmax(calc(var(--fx-space) * 12), 1fr)', render: (e) => e.tags.join(', ') },
+    ...extra.map((f): GridColumn<Entry> => ({ id: `f-${f.key}`, label: f.label, width: W, render: (e) => cell(e.fields[f.key], f) })),
+  ];
   return (
     <div className="axp-todo__gridwrap">
-      <table className="fx-table axp-todo__grid">
-        <thead><tr><th aria-label="Select" /><th>Title</th><th>Kind</th><th>Status</th><th>Priority</th><th>Due</th><th>Tags</th>{extra.map((f) => <th key={f.key}>{f.label}</th>)}</tr></thead>
-        <tbody>
-          {entries.map((e) => (
-            <tr key={e.id} className={e.status === 'done' ? 'is-done' : ''} data-fx-ctx-target="axf-todo-entry" data-fx-ctx-payload={String(e.id)}>
-              <td><input type="checkbox" aria-label={`Select ${e.title}`} checked={sel.includes(e.id)} onChange={() => toggle(e.id)} /></td>
-              <td><button type="button" data-fx-row="" className="axp-todo__cellbtn" onClick={() => rt.openDialog(ENTRY_DIALOG, { id: e.id })}>{e.title}</button></td>
-              <td>{types[e.kind].label}</td>
-              <td>{types[e.kind].core.status === 'hidden' ? '' : words(e.status)}</td>
-              <td>{types[e.kind].core.priority === 'hidden' ? '' : words(e.priority)}</td>
-              <td>{e.dueAt != null ? new Date(e.dueAt).toLocaleDateString() : ''}</td>
-              <td>{e.tags.join(', ')}</td>
-              {extra.map((f) => <td key={f.key}>{cell(e.fields[f.key], f)}</td>)}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <DataGrid<Entry> id="todo-manager" label="To-dos" compact rows={entries} columns={columns} rowId={(e) => String(e.id)} rowLabel={(e) => e.title}
+        sort={sort} onSort={(c) => setSort((s) => (!c ? null : s?.col !== c ? { col: c, dir: 1 } : s.dir === 1 ? { col: c, dir: -1 } : null))}
+        rowTone={(e) => (e.status === 'done' ? 'success' : 'muted')} multi={sel.map(String)}
+        rowCtx={(e) => ({ target: 'axf-todo-entry', payload: String(e.id) })} />
     </div>
   );
 }

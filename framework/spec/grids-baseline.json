@@ -1,0 +1,29 @@
+{
+  "$axf": "grids-baseline@1",
+  "note": "Hand-made tables with a header row left when grid-column-hiding came in (Nov 4 2026). Counts may only shrink: convert to DataGrid, then check-grids.mjs --update-baseline.",
+  "total": 27,
+  "files": {
+    "apps/console-web/plugins/ai-assistant/web/settings.tsx": 3,
+    "apps/console-web/plugins/plugin-manager/web/LazyLoader.tsx": 1,
+    "apps/console-web/plugins/plugin-manager/web/views.tsx": 1,
+    "apps/console-web/plugins/session-checkin/web/index.tsx": 2,
+    "apps/console-web/plugins/token-control/web/index.tsx": 2,
+    "apps/console-web/plugins/ui-review/web/mockup.tsx": 1,
+    "apps/expenses/src/modules/accounts/AdminAuditTab.tsx": 1,
+    "apps/expenses/src/modules/accounts/AdminStorageTab.tsx": 2,
+    "apps/expenses/src/modules/accounts/AdminUsersTab.tsx": 1,
+    "apps/expenses/src/modules/accounts/CreditsDialog.tsx": 1,
+    "apps/expenses/src/modules/accounts/PermissionMatrix.tsx": 1,
+    "apps/expenses/src/modules/accounts/UsersPane.tsx": 1,
+    "apps/expenses/src/modules/expenses/DeleteSelectedDialog.tsx": 1,
+    "apps/expenses/src/modules/expenses/GridView.tsx": 1,
+    "apps/expenses/src/modules/expenses/ImageImportDialog.tsx": 1,
+    "apps/expenses/src/modules/expenses/ImportDialog.tsx": 1,
+    "apps/expenses/src/modules/expenses/ThemeTab.tsx": 1,
+    "apps/walkthrough-studio/src/studio/panes/capture.tsx": 1,
+    "framework/libs/alerts/index.tsx": 1,
+    "framework/libs/mcp/index.tsx": 1,
+    "framework/react/components/DataCard.tsx": 1,
+    "framework/react/studio/AccountView.tsx": 1
+  }
+}

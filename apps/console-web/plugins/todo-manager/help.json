@@ -179,6 +179,27 @@
         "text": "Undos changes. Part of Todo manager.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "column:priority",
+        "title": "Priority",
+        "text": "The “Priority” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
+      },
+      {
+        "target": "column:due",
+        "title": "Due",
+        "text": "The “Due” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
+      },
+      {
+        "target": "column:tags",
+        "title": "Tags",
+        "text": "The “Tags” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
       }
     ],
     "intros": []

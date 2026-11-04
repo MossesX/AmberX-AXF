@@ -411,11 +411,9 @@ function figures(b: Build) {
 /** Grid: one row per build, grouped by category (columns like the Pending builds grid); a row expands to its steps as a subgrid plus the build's actions. */
 function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules; busy: boolean; act: Act }) {
   const [sort, setSort] = useState<GridSort>(() => consoleApi.readLocal<GridSort>('orch-grid-sort', null));
-  const [hidden, setHidden] = useState<string[]>(() => consoleApi.readLocal<string[]>('orch-grid-hidden', ['left']));
-  const [stepHidden, setStepHidden] = useState<string[]>(() => consoleApi.readLocal<string[]>('orch-step-hidden', ['doneAt']));
   const [open, setOpen] = useState<string[]>([]);
   const [collapsed, setCollapsed] = useState<string[]>([]);
-  useEffect(() => { consoleApi.writeLocal('orch-grid-sort', sort); consoleApi.writeLocal('orch-grid-hidden', hidden); consoleApi.writeLocal('orch-step-hidden', stepHidden); }, [sort, hidden, stepHidden]);
+  useEffect(() => { consoleApi.writeLocal('orch-grid-sort', sort); }, [sort]);
   const fig = useMemo(() => new Map(builds.map((b) => [b.id, figures(b)])), [builds]);
   const groups: GridGroup<Build>[] = useMemo(() => {
     const by = new Map<string, Build[]>();
@@ -453,7 +451,7 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
       <div className="oc-grid">
         <DataGrid<Build> id="orch-builds" label="Builds" groups={groups} columns={cols} rowId={(b) => b.id} rowLabel={(b) => b.title}
           rowTone={(b) => STATUS_TONE[b.status] ?? 'muted'}
-          hidden={hidden} onToggleColumn={(c, show) => setHidden((h) => toggleIn(h, c, show))} onShowAll={() => setHidden([])}
+          hidden={ORCH_HIDDEN}
           sort={sort} onSort={(c) => setSort((s) => nextSort(s, c))}
           expanded={open} onToggleExpand={(id) => setOpen((o) => toggleIn(o, id))} onRowClick={(b) => setOpen((o) => toggleIn(o, b.id))}
           onToggleGroup={(id) => setCollapsed((c) => toggleIn(c, id))}
@@ -461,7 +459,7 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
           renderDetail={(b) => (
             <div className="oc-detail">
               <BuildOrigin origin={b.origin} showEmpty />
-              <StepGrid b={b} rules={rules} busy={busy} act={act} hidden={stepHidden} setHidden={setStepHidden} />
+              <StepGrid b={b} rules={rules} busy={busy} act={act} />
               <BuildCard b={b} rules={rules} busy={busy} act={act} embedded />
             </div>
           )} />
@@ -471,7 +469,9 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
 }
 
 /** The subgrid in an expanded row: every step, grouped by phase (a phase that switches model shows its approval). */
-function StepGrid({ b, rules, busy, act, hidden, setHidden }: { b: Build; rules: Rules; busy: boolean; act: Act; hidden: string[]; setHidden: (f: (h: string[]) => string[]) => void }) {
+const ORCH_HIDDEN = ['left'];
+const STEP_HIDDEN = ['doneAt'];
+function StepGrid({ b, rules, busy, act }: { b: Build; rules: Rules; busy: boolean; act: Act }) {
   const [sort, setSort] = useState<GridSort>(null);
   const [open, setOpen] = useState<string[]>([]);
   const next = core.nextUp(b, rules).step?.id;
@@ -512,7 +512,7 @@ function StepGrid({ b, rules, busy, act, hidden, setHidden }: { b: Build; rules:
       <DataGrid<GStep> id={`orch-steps-${b.id.replace(/[^a-z0-9-]/gi, '-')}`} label={`Steps of ${b.title}`} compact groups={groups} columns={cols}
         rowId={(s) => s.id} rowLabel={(s) => s.text}
         rowTone={(s) => (s.done ? 'success' : s.locked ? 'warning' : s.next ? 'accent' : 'muted')}
-        hidden={hidden} onToggleColumn={(c, show) => setHidden((h) => toggleIn(h, c, show))} onShowAll={() => setHidden(() => [])}
+        hidden={STEP_HIDDEN}
         sort={sort} onSort={(c) => setSort((x) => nextSort(x, c))}
         expanded={open} onToggleExpand={(id) => setOpen((o) => toggleIn(o, id))} onRowClick={(s) => setOpen((o) => toggleIn(o, s.id))}
         renderDetail={(s) => (

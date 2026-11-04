@@ -1,6 +1,7 @@
 /* Codebase changes — the banner, the log browser and the settings summary. Theme tokens only (codebase-changes.css). */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, Icon, IconButton, RefText, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { DataGrid, type GridColumn } from '@console/axf/libs/datagrid';
 import { MoreMenu } from './MoreMenu';
 import {
   CHANGED, KIND_ICON, NO_FILTERS, STATE_ICON, STATE_LABEL, VIEW, abandonEntry, ago, api, bannerOn, closeAll, closeEntry, isActive, NO_WORD_MS, quietMs, startedMs, stuckWhy, kindLabel, linkHref, loadEntry, loadOpen, loadResume,
@@ -201,10 +202,9 @@ function EntryDetail({ id, onChanged }: { id: string; onChanged: () => void }) {
             </ul>
           ) : null}
           {r.tests && Object.keys(r.tests).length > 0 && (
-            <table className="axp-codebase-changes__tests">
-              <thead><tr><th>Test</th><th>Before</th><th>After</th></tr></thead>
-              <tbody>{Object.entries(r.tests).map(([name, t]) => <tr key={name} className={t.state ? `is-${t.state}` : ''}><td>{name}</td><td>{t.before ?? '—'}</td><td>{t.after ?? (t.state ?? '—')}</td></tr>)}</tbody>
-            </table>
+            <DataGrid<[string, TestResult]> id="codebase-changes-tests" label="Tests" compact dataset={false} rows={Object.entries(r.tests)} rowId={([name]) => name} rowLabel={([name]) => name}
+              rowTone={([, t]) => (t.state === 'fail' ? 'danger' : t.state === 'pass' ? 'success' : 'muted')}
+              columns={TEST_COLUMNS} />
           )}
           {r.links && Object.keys(r.links).length > 0 && (
             <div className="axp-codebase-changes__line">
@@ -225,6 +225,13 @@ function EntryDetail({ id, onChanged }: { id: string; onChanged: () => void }) {
     </div>
   );
 }
+
+type TestResult = NonNullable<NonNullable<Entry['result']>['tests']>[string];
+const TEST_COLUMNS: GridColumn<[string, TestResult]>[] = [
+  { id: 'test', label: 'Test', fixed: true, width: 'minmax(calc(var(--fx-space) * 16), 2fr)', render: ([name]) => name },
+  { id: 'before', label: 'Before', width: 'minmax(calc(var(--fx-space) * 10), 1fr)', render: ([, t]) => t.before ?? '—' },
+  { id: 'after', label: 'After', width: 'minmax(calc(var(--fx-space) * 10), 1fr)', render: ([, t]) => t.after ?? (t.state ?? '—') },
+];
 
 function Row({ s, open, onToggle, onChanged }: { s: Summary; open: boolean; onToggle: () => void; onChanged: () => void }) {
   const ref = useRef<HTMLLIElement>(null);

@@ -94,7 +94,7 @@ function MatricesGrid({ data, busy, act, focus, lastReport }: { data: StateRes; 
   const rt = useRuntime();
   const [open, setOpen] = useState<string[]>([]);
   // a phone starts with the build, its time cost and status only (the rest come back from the grid's column menu)
-  const [hidden, setHidden] = useState<string[]>(() => (globalThis.matchMedia?.('(max-width: 640px)').matches ? ['profile', 'added', 'kept', 'updated'] : []));
+  const hidden = useMemo(() => (globalThis.matchMedia?.('(max-width: 640px)').matches ? ['profile', 'added', 'kept', 'updated'] : []), []);
   const [sort, setSort] = useState<GridSort>(() => ({ col: String(setting(rt, KEYS.sort, 'updated')) === 'added' ? 'added' : 'updated', dir: -1 }));
   const [show, setShow] = useState<Show>('all');
   const [profile, setProfile] = useState<string>('');
@@ -138,7 +138,7 @@ function MatricesGrid({ data, busy, act, focus, lastReport }: { data: StateRes; 
       )}
       {rows.length === 0 ? <EmptyState icon="list" action={{ label: 'Import open builds', icon: 'download', onClick: () => void act('import', { profile: data.active }) }}>{show !== 'all' || profile ? 'No matrices match.' : 'No feature matrices yet.'}</EmptyState> : (
         <DataGrid<fm.Row> id="feature-matrices" label="Feature matrices" groups={groups} columns={cols} rowId={(r) => r.id} rowLabel={(r) => r.title}
-          hidden={hidden} onToggleColumn={(c) => setHidden((h) => (h.includes(c) ? h.filter((x) => x !== c) : [...h, c]))} onShowAll={() => setHidden([])}
+          hidden={hidden}
           sort={sort} onSort={(c) => setSort((s) => (!c ? null : s?.col === c ? { col: c, dir: s.dir === 1 ? -1 : 1 } : { col: c, dir: -1 }))}
           expanded={open} onToggleExpand={toggle} onRowClick={(r) => toggle(r.id)}
           rowTone={(r) => (r.dirty ? 'warning' : r.appliedVersion > 0 ? 'success' : 'muted')}

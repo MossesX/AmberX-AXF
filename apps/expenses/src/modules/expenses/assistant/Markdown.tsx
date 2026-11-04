@@ -97,6 +97,7 @@ function parseBlocks(src: string): React.ReactNode[] {
       i += 2;
       const rows: string[][] = [];
       while (i < lines.length && /^\s*\|/.test(lines[i])) rows.push(splitRow(lines[i++]));
+      // axf-grid-exempt: a Markdown table is the writer's content, not a grid
       out.push(
         <table key={key++}>
           <thead>

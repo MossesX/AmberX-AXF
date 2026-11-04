@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { Button, Checkbox, Slider, useRuntime } from '@console/axf/react';
+import { DataGrid, type GridColumn } from '@console/axf/libs/datagrid';
 import * as core from './swarm-core.mjs';
 import { Bubble } from './chat';
-import type { Act, ChatSettings, SwarmState } from './ui-types';
+import type { Act, Agent, ChatSettings, SwarmState } from './ui-types';
 
 /*
  * Chat settings suite: the vibe ceiling (1–500), chattiness, cussing and drama sliders, per-agent overrides, the
@@ -87,21 +88,16 @@ export function ChatSettingsTab({ state, act }: { state: SwarmState; act: Act })
       </section>
       <section className="fx-stack">
         <h2 className="sw-wave">Per agent</h2>
-        <div className="sw-scroll"><table className="sw-table">
-          <thead><tr><th>Agent</th>{(Object.keys(SLIDER_INFO) as Key[]).map((k) => <th key={k} className="is-num">{SLIDER_INFO[k].label}</th>)}<th /></tr></thead>
-          <tbody>{state.roster.agents.map((a) => {
-            const o: Partial<Record<Key, number>> = cs.overrides[a.id] ?? {};
-            return (
-              <tr key={a.id}>
-                <td>{a.name}</td>
-                {(Object.keys(SLIDER_INFO) as Key[]).map((k) => (
-                  <td key={k} className="is-num"><input className="fx-input sw-num" type="number" min={k === 'vibe' ? 1 : 0} max={SLIDER_INFO[k].max} aria-label={`${a.name} ${SLIDER_INFO[k].label}`} placeholder={String(cs[k])} defaultValue={o[k] ?? ''} key={`${a.id}${k}${o[k] ?? ''}`}
-                    onBlur={(e) => { const v = e.target.value === '' ? null : Number(e.target.value); if (v !== (o[k] ?? null)) void act({ action: 'chat-settings', agent: a.id, override: { ...o, [k]: v } }); }} /></td>
-                ))}
-                <td>{Object.keys(o).length > 0 && <Button size="sm" onClick={() => void act({ action: 'chat-settings', agent: a.id, override: null })}>Use the room</Button>}</td>
-              </tr>);
-          })}</tbody>
-        </table></div>
+        <DataGrid<Agent> id="swarm-chat-agents" label="Chat settings per agent" compact dataset={false} rows={state.roster.agents} rowId={(a) => a.id} rowLabel={(a) => a.name}
+          columns={[
+            { id: 'agent', label: 'Agent', fixed: true, width: 'minmax(calc(var(--fx-space) * 14), 2fr)', render: (a) => a.name },
+            ...(Object.keys(SLIDER_INFO) as Key[]).map((k): GridColumn<Agent> => ({ id: k, label: SLIDER_INFO[k].label, align: 'end', width: 'calc(var(--fx-space) * 12)', render: (a) => {
+              const o: Partial<Record<Key, number>> = cs.overrides[a.id] ?? {};
+              return <input className="fx-input sw-num" type="number" min={k === 'vibe' ? 1 : 0} max={SLIDER_INFO[k].max} aria-label={`${a.name} ${SLIDER_INFO[k].label}`} placeholder={String(cs[k])} defaultValue={o[k] ?? ''} key={`${a.id}${k}${o[k] ?? ''}`}
+                onBlur={(e) => { const v = e.target.value === '' ? null : Number(e.target.value); if (v !== (o[k] ?? null)) void act({ action: 'chat-settings', agent: a.id, override: { ...o, [k]: v } }); }} />;
+            } })),
+            { id: 'reset', label: 'Use the room', fixed: true, width: 'calc(var(--fx-space) * 14)', render: (a) => (Object.keys(cs.overrides[a.id] ?? {}).length > 0 ? <Button size="sm" onClick={() => void act({ action: 'chat-settings', agent: a.id, override: null })}>Use the room</Button> : null) },
+          ]} />
         <p className="fx-muted">Blank = the room's setting.</p>
       </section>
     </div>
