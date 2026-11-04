@@ -115,3 +115,43 @@ Order steps to keep switches few: all Fable work of a build first where the depe
 
 Pending is a status of a build in the store, not a copy: the Pending list is the profile's projection of the store
 and a Pending change is absorbed back into it (`framework/cli/pending.mjs`). The orch-sync bridge is retired. <!-- axf-plugin:build-orchestrator -->
+
+## Model & thinking (model-advice@1, since Nov 4 2026)
+
+Brett: "Go through my list of things that can be done and see what should be redone with Fable and put that next to it,
+and put the level of thinking that it should be on." Every build and step carries a recommended model (Fable / Opus),
+a thinking level (low / medium / high / max = `claude --effort`) and why, from one engine
+(`framework/core/model-advice.mjs`): foundation or contract work = Fable, high or max; plugins and screens = Opus,
+medium; wording, small fixes and landing = Opus, low; gnarly debugging or architecture = Opus, high. Built work gets a
+verdict: keep, Fable review (read on Fable, fix what is wrong) or redo on Fable, with a cost. Recommendations only:
+nothing changes model by itself.
+
+- **Record fields** (builds@1, every build and step): `thinking`, `recommendedModel`, `recommendedThinking`, `modelWhy`,
+  `adviceKind`, `advicePinned`, `adviceAt`, `reviewOk`; builds also `verdict`, `adviceCost`. Every projection and read
+  (orchestrator, Pending, queue, Builds page, `planner.builds`, `pending_list`, `build_queue`) adds the view: `model`,
+  `thinking`, `recommendedModel`, `recommendedThinking`, `reviewStatus` (ok / look / dismissed), `modelWhy`, `verdict`.
+- **The icon:** green check = on its recommendation (or Brett OK'd it as is); yellow triangle = the recommendation
+  differs, or built work to review / redo. Right-click or long-press it: the row expands with why (now vs recommended,
+  reasons, what could go wrong, cost) and **Apply** / **Dismiss**, which only Brett can do (his console click or an
+  axHub approval; a session, agent or token caller is refused like a model upgrade). A change after his OK brings the
+  triangle back. One component for every screen: `framework/react/components/ModelAdvice.tsx`.
+- **On / off:** Settings → Builds → Show model & thinking (global, mirrored to the Claude setting
+  `builds.showModelThinking` on axHub) with a per-screen override; filters (model, thinking, check / triangle, Needs a
+  look, Fable candidates) are one shared setting every list reads. Voice: console actions `model-advice.show on|off|toggle`,
+  `model-advice.filter needs a look | fable candidates | model:Opus thinking:high | clear`, `model-advice.screen <id> on|off|inherit`.
+- **Sidecar:** `_claude/builds/advice.json` keeps every recommendation and OK next to the store (like `origins.json`), so a
+  session on older code can't drop them; every read heals, every write folds, the live publish merges it.
+- **Launcher:** the build's thinking level becomes `claude --effort` (`AXF_THINKING`, build_start, `deploy/claude-headless.sh`).
+
+```bash
+node framework/cli/model-advice.mjs audit [--write] [--force]     # every build + step, every profile (writes the store)
+node framework/cli/model-advice.mjs plans [--write]               # Plan Studio plans
+node framework/cli/model-advice.mjs queue                         # queued / running headless builds, from their briefs
+node framework/cli/model-advice.mjs report                        # _claude/builds/reports/model-thinking-audit.md
+node framework/cli/model-advice.mjs show <build>                  # one build, its steps, why
+node framework/cli/model-advice.mjs set-thinking <build> [<step>] <level>
+node framework/cli/model-advice.mjs apply|dismiss <build> [<step>]   # Brett only (refused for a session)
+node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act '{"action":"advise","id":"<build>"}'   # axf-plugin:build-orchestrator
+node framework/spec/check-model-advice.mjs                        # the contract (CI)
+```
+Curated overrides (pinned): `_claude/builds/model-advice.json` (`builds` by id, `picks` = the top "redo on Fable" list).

@@ -15,6 +15,7 @@
  */
 import { STATUSES, normBuild, normalizeStore } from './builds-store-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
+import { mergeAdvice } from '../core/model-advice.mjs';
 
 const str = (v) => (typeof v === 'string' ? v : '');
 const clone = (o) => JSON.parse(JSON.stringify(o));
@@ -69,12 +70,15 @@ export function mergeBuild(a, b) {
   const out = clone(win);
   const other = new Map(lose.steps.map((s) => [s.uid, s]));
   let combined = false;
-  out.steps = win.steps.map((s) => { const o = other.get(s.uid); if (o && newer(o, s) > 0) { combined = true; return clone(o); } return clone(s); });
+  // model-advice@1 on a step: the newer copy wins the step, but a copy written by code that never knew the advice fields
+  // can't blank them: the advice itself merges by its own dates
+  out.steps = win.steps.map((s) => { const o = other.get(s.uid); const pick = o && newer(o, s) > 0 ? (combined = true, clone(o)) : clone(s); return o ? { ...pick, ...mergeAdvice(s, o) } : pick; });
   const have = new Set(out.steps.map((s) => s.uid));
   lose.steps.forEach((s, i) => { if (!have.has(s.uid) && str(s.createdAt) > str(win.updatedAt)) { combined = true; out.steps.splice(Math.min(i, out.steps.length), 0, clone(s)); } });
   for (const k of ['branch', 'pr', 'mergedAt', 'category']) if (!str(out[k]) && str(lose[k])) { out[k] = lose[k]; combined = true; }
   // what Brett said that started it: never blanked or replaced by a copy that has less (build-origin@1)
   if (win.origin || lose.origin) { const og = mergeOrigin(win.origin, lose.origin); if (og) out.origin = og; }
+  Object.assign(out, mergeAdvice(win, lose)); // the recommendation, Brett's OK and the thinking level: by their own dates (model-advice@1)
   const key = (n) => `${n.at}|${n.text}`;
   const seenNotes = new Set(out.notes.map(key));
   for (const n of lose.notes ?? []) if (!seenNotes.has(key(n))) { out.notes.push(clone(n)); seenNotes.add(key(n)); combined = true; }

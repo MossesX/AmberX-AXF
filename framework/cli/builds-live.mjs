@@ -42,12 +42,14 @@ import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { REPO_ROOT } from './persist.mjs';
 import { gitAuthEnv, githubToken, scrub } from './github.mjs';
-import { adoptStore, journalDir, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, storeFile, storeText, withStore } from './builds-store.mjs';
+import { adoptStore, adviceFile, journalDir, mergeAdviceText, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, storeFile, storeText, withStore } from './builds-store.mjs';
+import { sidecarOf } from '../core/model-advice.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 const STORE_REL = '_claude/builds/store.json'; // = builds-store STORE_REL (not imported: the two modules import each other)
 const JOURNAL_REL = '_claude/builds/journal';
 const ORIGINS_REL = '_claude/builds/origins.json'; // = builds-store ORIGINS_REL (build-origin@1 sidecar)
+const ADVICE_REL = '_claude/builds/advice.json'; // = builds-store ADVICE_REL (model-advice@1 sidecar)
 const THREADS_REL = '_claude/THREADS.md';
 export const LIVE_HEAD = '## Live build log';
 const LIVE_NOTE = '<!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->';
@@ -214,6 +216,11 @@ export function publish(entries, { journalExtra = {} } = {}) {
       const fromRecords = JSON.stringify({ origins: Object.fromEntries(merged.builds.filter((b) => b.origin).map((b) => [b.id, b.origin])) });
       const text = mergeOriginsText(mergeOriginsText(show(base, ORIGINS_REL) ?? '', mine), fromRecords);
       if (text !== mergeOriginsText('', '') || show(base, ORIGINS_REL) !== null) files[ORIGINS_REL] = text; }
+    // model-advice@1: main's advice sidecar + every recommendation / OK on the merged records, never fewer
+    { let mine = ''; try { mine = readFileSync(adviceFile(), 'utf8'); } catch { /* none yet */ }
+      const fromRecords = JSON.stringify({ builds: Object.fromEntries(merged.builds.map((b) => [b.id, sidecarOf(b)]).filter(([, e]) => Object.keys(e).length)) });
+      const text = mergeAdviceText(mergeAdviceText(show(base, ADVICE_REL) ?? '', mine), fromRecords);
+      if (text !== mergeAdviceText('', '') || show(base, ADVICE_REL) !== null) files[ADVICE_REL] = text; }
     // what actually differs from main
     const changed = Object.entries(files).filter(([rel, text]) => show(base, rel) !== text);
     if (!changed.length) return { ok: true, sha: '', files: allFiles(base, files) };
@@ -275,6 +282,7 @@ export function pullFrom(files) {
     journals[m] = merge.mergeJournalText(t, mine);
   }
   if (files[ORIGINS_REL]) { let mine = ''; try { mine = readFileSync(originsFile(), 'utf8'); } catch { /* none yet */ } const t = mergeOriginsText(files[ORIGINS_REL], mine); if (t !== mine) writeFileSync(originsFile(), t); }
+  if (files[ADVICE_REL]) { let mine = ''; try { mine = readFileSync(adviceFile(), 'utf8'); } catch { /* none yet */ } const t = mergeAdviceText(files[ADVICE_REL], mine); if (t !== mine) writeFileSync(adviceFile(), t); }
   if (!taken.length && !Object.keys(journals).length && storeText(local) === storeText(next)) return { ok: true, taken: [] };
   adoptStore(next, { journals });
   return { ok: true, taken };

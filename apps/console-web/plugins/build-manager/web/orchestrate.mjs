@@ -71,6 +71,16 @@ export function pickModel(row, byId) {
   return m.startsWith('fable') ? 'fable' : m.startsWith('sonnet') ? 'sonnet' : 'opus';
 }
 
+/**
+ * The thinking level the build runs at (model-advice@1, Nov 4 2026): the row's own (the Pending item / build view carries
+ * `thinking` from its next step), else the model's default (Fable high, Opus medium). Never the recommendation: that stays
+ * a recommendation until Brett applies it.
+ */
+export function pickThinking(row, model) {
+  const t = str(row?.thinking).toLowerCase();
+  return ['low', 'medium', 'high', 'max'].includes(t) ? t : model === 'fable' ? 'high' : 'medium';
+}
+
 export function branchFor(row, model) {
   const id = norm(row.id).slice(0, 60) || 'build';
   return model === 'fable' ? `fable/${id}` : `build/${id}`;
@@ -156,21 +166,22 @@ export function planStart({ row, rows = [], features = [], queue = null, running
 
   const dontTouch = [...new Set(live.flatMap((e) => e.areas ?? []))];
   const verify = verifyChecks(areas);
-  const brief = briefFor({ row, model, branch, areas, deps, dontTouch, live, verify, rules, reportCmd });
-  return { ok: true, reasons, deps, order, model, branch, areas, dontTouch, verify, brief };
+  const thinking = pickThinking(row, model);
+  const brief = briefFor({ row, model, thinking, branch, areas, deps, dontTouch, live, verify, rules, reportCmd });
+  return { ok: true, reasons, deps, order, model, thinking, branch, areas, dontTouch, verify, brief };
 }
 
 /** Asset conformance (Brett, Oct 31 2026; shared rule "Handwritten code conforms to the asset system"), in every brief. */
 export const ASSET_RULE = 'UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.';
 
-export function briefFor({ row, model, branch, areas, deps, dontTouch, live, verify, rules, reportCmd }) {
+export function briefFor({ row, model, thinking = '', branch, areas, deps, dontTouch, live, verify, rules, reportCmd }) {
   const steps = (row.steps ?? []).map((s, i) => `${i + 1}. ${s.done ? '[done] ' : ''}${s.text}${s.estimateText ? ` (~${s.estimateText})` : ''}`);
   const ref = `${row.source}:${row.id}`;
   const minutes = row.left ?? row.total ?? '';
   return [
     `# Build: ${row.title}`,
     '',
-    `Started from the Build manager ("Start build now"). Model: ${model}. Work on branch \`${branch}\` (create it from origin/main), commit there, push it and open a PR. Never merge it.`,
+    `Started from the Build manager ("Start build now"). Model: ${model}${thinking ? ` · thinking: ${thinking} (claude --effort ${thinking}; model-advice@1)` : ''}. Work on branch \`${branch}\` (create it from origin/main), commit there, push it and open a PR. Never merge it.`,
     '',
     '## What to build',
     row.detail || '(no detail recorded: read the pending item / plan entry)',
@@ -213,11 +224,12 @@ export function headless(name, log, args, repoDir = '/opt/axf') {
     + `else nohup claude -p "$@" "$(cat .axf-brief.md)" > ${log} 2>&1 & echo "started pid $! in $(pwd)"; fi`;
 }
 
-export function launchCommand({ brief, branch, model, changeId, repoDir = '/opt/axf', workRoot = '/root/axf-builds' }) {
+export function launchCommand({ brief, branch, model, thinking = '', changeId, repoDir = '/opt/axf', workRoot = '/root/axf-builds' }) {
   const safeBranch = /^[A-Za-z0-9._/-]{1,120}$/.test(branch) && !branch.includes('..') ? branch : 'build/unnamed';
   const dir = `${workRoot}/${safeBranch.replace(/[^A-Za-z0-9._-]/g, '-')}`;
   const b64 = Buffer.from(brief, 'utf8').toString('base64');
   const m = ['fable', 'opus', 'sonnet'].includes(model) ? model : 'opus';
+  const th = ['low', 'medium', 'high', 'max'].includes(String(thinking)) ? String(thinking) : ''; // model-advice@1: the step's thinking level → claude --effort
   const id = /^chg-\d{8}-[0-9a-f]{6,16}$/.test(changeId) ? changeId : '';
   return [
     'set -e',
@@ -226,7 +238,7 @@ export function launchCommand({ brief, branch, model, changeId, repoDir = '/opt/
     `if [ ! -d ${sq(dir)} ]; then git -C ${sq(repoDir)} worktree add -q -B ${sq(safeBranch)} ${sq(dir)} origin/main; fi`,
     `cd ${sq(dir)}`,
     `echo ${sq(b64)} | base64 -d > .axf-brief.md`,
-    `export AXF_SURFACE=console-launch AXF_MODEL=${m}${id ? ` AXF_ADOPT_CHANGE=${id}` : ''} AXF_CLAUDE_AUTH=\${AXF_CLAUDE_AUTH:-plan}`,
-    headless(`build-${safeBranch}`, '.axf-build.log', `--model ${m} --permission-mode acceptEdits`, repoDir),
+    `export AXF_SURFACE=console-launch AXF_MODEL=${m}${th ? ` AXF_THINKING=${th}` : ''}${id ? ` AXF_ADOPT_CHANGE=${id}` : ''} AXF_CLAUDE_AUTH=\${AXF_CLAUDE_AUTH:-plan}`,
+    headless(`build-${safeBranch}`, '.axf-build.log', `--model ${m}${th ? ` --effort ${th}` : ''} --permission-mode acceptEdits`, repoDir),
   ].join('; ');
 }

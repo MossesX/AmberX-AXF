@@ -2,7 +2,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { WatchLiveFor } from '@console/watchLive';
-import { BuildOrigin, Button, Icon, IconButton, RefText, Slot, Switch, originSubtitle, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { AdviceFilterBar, BuildOrigin, Button, Icon, IconButton, ModelChips, RefText, Slot, Switch, matchesFilter, originSubtitle, useAdviceFilter, useBannerLaunchOpen, useRuntime, BannerIcon, type AdviceView } from '@console/axf/react';
+
+/** model-advice@1: the view a row or a step carries from the store's projections (model, thinking, recommendation, check / triangle). */
+function adviceView(a: { model?: string; thinking?: string; recommendedModel?: string; recommendedThinking?: string; reviewStatus?: string; modelWhy?: string; verdict?: string; adviceCost?: AdviceView['adviceCost']; stepsToLook?: number } | undefined, model: string): AdviceView | null {
+  if (!a || !a.reviewStatus) return null;
+  const m = a.model ?? model;
+  return { model: /fable/i.test(m) ? 'Fable' : 'Opus', thinking: a.thinking ?? '', recommendedModel: a.recommendedModel ?? '', recommendedThinking: a.recommendedThinking ?? '', reviewStatus: a.reviewStatus, modelWhy: a.modelWhy, verdict: a.verdict as AdviceView['verdict'], adviceCost: a.adviceCost ?? null, stepsToLook: a.stepsToLook ?? 0 };
+}
 import { addedByLabel, addedByOf, filterRows, GONE_LABEL, goneRows, MODELS, ORIGIN_LABEL, ORIGINS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type GoneKind, type LiveEntry, type Origin, type Row, type SortKey, type Source } from './merge.mjs';
 import { abandonBuild, bannerOn, defaultSort, isStuckLive, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, helpers, takeOff, tickStep, useStore, onStore, usd, verifyBuild, type StartPlan, type Store } from './store';
 import { builtRows, builtTotals, filterBuilt, filterSessions, ITEM_STATUS_LABEL, liveFromChanges, matches, money, PERIOD_LABEL, PERIODS, sessionsFromChanges, type ChangeLive, type Period, type SessionItem, type SessionRow } from './history.mjs';
@@ -112,7 +119,7 @@ function TrackerEntry({ e, now, finished }: { e: LiveEntry; now: number; finishe
       <div className="axp-build-manager__live-head">
         <span className={finished ? '' : 'axp-build-manager__spin'} aria-hidden><Icon name={finished ? (failed ? 'x-circle' : 'check-circle') : 'refresh'} size={14} /></span>
         <span className="axp-build-manager__live-title"><RefText text={e.row ? e.row.title : e.title} /></span>
-        {e.row && <ModelChip model={e.row.model} />}
+        {e.row && (adviceView(e.row.advice, e.row.model) ? <ModelChips screen="build-manager" view={adviceView(e.row.advice, e.row.model)} build={e.row.id} compact /> : <ModelChip model={e.row.model} />)}
       </div>
       <div className="axp-build-manager__live-meta">
         {finished ? <Badge icon={failed ? 'x' : 'check'} tone={failed ? 'danger' : 'ok'}>{failed ? 'Failed' : 'Finished'}</Badge> : null}
@@ -540,6 +547,7 @@ function StepsList({ row, canTick }: { row: Row; canTick: boolean }) {
               aria-label={`${st.done ? 'Done' : 'Not done'}: step ${i + 1}`} title={canTick ? 'Tick when done' : 'Read-only: this console has no step action yet'} />
             <span className="axp-build-manager__step-text">{st.text}</span>
           </label>
+          {st.reviewStatus && <ModelChips screen="build-manager" view={adviceView(st, row.model)} build={row.id} step={(st as { stepId?: string }).stepId} compact />}
           <span className="axp-build-manager__step-time">{st.estimateText ? `~${st.estimateText}${st.estimate != null && helpers.cost ? ` · ~${usd(helpers.cost(row.model, st.estimate))}` : ''}` : <span className="fx-muted">no estimate</span>}</span>
         </li>
       ))}
@@ -649,7 +657,7 @@ function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; o
         <span className="axp-build-manager__chips">
           <Badge icon={SOURCE_ICON[row.source]}>{SOURCE_LABEL[row.source]}</Badge>
           {row.origin === 'auto' && <Badge icon={ORIGIN_ICON.auto} title={`Added automatically by ${addedByLabel(row.addedBy)}`}>auto</Badge>}
-          <ModelChip model={row.model} />
+          {adviceView(row.advice, row.model) ? <ModelChips screen="build-manager" view={adviceView(row.advice, row.model)} build={row.id} title={row.title} /> : <ModelChip model={row.model} />}
           {(row.building || row.statusLabel !== SOURCE_LABEL[row.source]) && <Badge tone={row.status === 'unsafe' || row.status === 'broken' || row.status === 'failed' || row.status === 'rework' ? 'warn' : row.building ? 'ok' : undefined}>{row.building ? 'Building' : row.statusLabel}</Badge>}
           <SplitBadge row={row} />
           {row.gone && <Badge icon={row.gone.kind === 'built' ? 'check' : 'trash'} tone="muted" title={`Looks ${row.gone.kind}: ${row.gone.why}`}>Looks {row.gone.kind}</Badge>}
@@ -743,7 +751,8 @@ export function BuildManagerView() {
   useEffect(() => { const f = [...open][0]; if (f) setTimeout(() => document.getElementById(`axp-bm-${f.replace(/[^a-z0-9-]/gi, '-')}`)?.scrollIntoView({ block: 'center' }), 50); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const allowed = enabledSources();
   const base = useMemo(() => s.rows.filter((r) => allowed.includes(r.source)), [s.rows, allowed.join()]); // eslint-disable-line react-hooks/exhaustive-deps
-  const shown = useMemo(() => sortRows(filterRows(base, { model, sources, origins, addedBy, status, split }), sort).filter((r) => matches(query, r)), [base, model, sources, origins, addedBy, status, split, sort, query]);
+  const [adviceFilter] = useAdviceFilter(); // model-advice@1: the shared model / thinking / needs-a-look filter
+  const shown = useMemo(() => sortRows(filterRows(base, { model, sources, origins, addedBy, status, split }), sort).filter((r) => matches(query, r)).filter((r) => { const a = adviceView(r.advice, r.model); return a ? matchesFilter(a, adviceFilter) : true; }), [base, model, sources, origins, addedBy, status, split, sort, query, adviceFilter]);
   // a search that hits only other tabs says so
   const hits = useMemo(() => query ? {
     remaining: base.filter((r) => matches(query, r)).length,
@@ -784,6 +793,7 @@ export function BuildManagerView() {
         <input className="fx-input" type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search builds: title, id, notes, model, branch…" aria-label="Search remaining, live and built builds" />
         {query && <button type="button" className="fx-iconbtn" aria-label="Clear the search" onClick={() => setQuery('')}><Icon name="x" size={14} /></button>}
       </div>
+      <AdviceFilterBar screen="build-manager" counts={{ look: base.filter((r) => r.advice?.reviewStatus === 'look').length, fable: base.filter((r) => { const a = adviceView(r.advice, r.model); return a ? matchesFilter(a, { fable: true }) : false; }).length }} />
 
       <div className="axp-build-manager__tabs" role="tablist" aria-label="Build manager views">
         {([['remaining', 'Remaining', base.length, 'list'], ['live', 'Live', liveCount, 'refresh'], ['built', 'Built', builtCount, 'check-circle'], ['sessions', 'Sessions', sessionRows.length, 'users']] as const).map(([id, label, n, icon]) => (

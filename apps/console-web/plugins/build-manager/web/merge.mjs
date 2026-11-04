@@ -75,9 +75,12 @@ const PRIORITY = { P0: 0, P1: 1, P2: 2, P3: 3 };
 function readSteps(list, h) {
   return (Array.isArray(list) ? list : []).filter((s) => s && str(s.text).trim()).map((s) => {
     const estimateText = str(s.estimate).trim();
-    return { text: str(s.text).trim(), estimate: h.estimateMinutes(estimateText), estimateText, done: s.done === true, doneAt: str(s.doneAt) };
+    return { text: str(s.text).trim(), estimate: h.estimateMinutes(estimateText), estimateText, done: s.done === true, doneAt: str(s.doneAt), ...adviceOf(s) };
   });
 }
+/** model-advice@1 view fields the store projects on items, epics and steps (model, thinking, recommendation, check / triangle). */
+const ADVICE_VIEW = ['model', 'thinking', 'recommendedModel', 'recommendedThinking', 'reviewStatus', 'modelWhy', 'verdict', 'adviceCost', 'stepsToLook'];
+export function adviceOf(o) { const out = {}; for (const k of ADVICE_VIEW) if (o && typeof o === 'object' && o[k] !== undefined && o[k] !== '' && o[k] !== null) out[k] = o[k]; return out; }
 
 /**
  * Timing of one build. total = its own estimate, else its steps added up. left = total minus the done steps (a done
@@ -176,6 +179,7 @@ export function buildRows({ pending = [], queue = null, queueState = null, featu
       ...(p.planId && queuePos.has(p.planId) ? { queuePosition: queuePos.get(p.planId) } : {}),
       fable: model === 'Fable', building: linkedBuilding(p.planId), startedAt: linkedBuilding(p.planId) ? startedAt(byFeature.get(p.planId)) : 0,
       aliases: [p.id, p.planId, `${p.id}-fable`].filter(Boolean), ...goneOf(pendingGone(p, t, byFeature)),
+      ...(Object.keys(adviceOf(p)).length ? { advice: adviceOf(p) } : {}), // model-advice@1 (the Pending projection carries the view)
     });
   });
 
@@ -194,6 +198,7 @@ export function buildRows({ pending = [], queue = null, queueState = null, featu
       features: (s.features ?? []).map((f) => ({ id: f.id, title: f.title, status: f.status })),
       building, startedAt: building ? startedAt(epic) : 0, fable: false, aliases: [s.id],
       ...goneOf(featuresBuilt(s.features, 'every plan feature in this step is built') ?? completedBy(s.id)),
+      ...(rec.advice ? { advice: adviceOf(rec.advice) } : {}), // model-advice@1 (the queue projection carries the epic's view)
     });
   }
 

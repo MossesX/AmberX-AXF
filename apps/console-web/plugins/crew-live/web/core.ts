@@ -7,8 +7,10 @@ export type RunStatus = 'working' | 'waiting' | 'stuck' | 'idle';
 export interface Face { face: string; hair: number; gear: string; hue: number }
 export interface CrewAgent { id: string; name: string; role: string; avatar: Face | null; initials: string; known: boolean; salary?: number; status?: string; catchphrase?: string }
 export interface Tool { id: string; tool: string; what: string; target: string; state: 'running' | 'done' | 'failed'; costUsd: number }
-export interface Step { id: string; text: string; model: string; state: 'done' | 'now' | 'next'; doneAt: string }
-export interface BuildInfo { id: string; title: string; status: string; branch: string; pr: string; prUrl: string; steps: Step[]; done: number; total: number; now: Step | null; stepStartedAt: string | null; waitingApproval: boolean }
+/** model-advice@1 record fields the server passes through (the web computes the view: thinking, recommendation, check / triangle). */
+export interface AdviceRecord { thinking?: string; recommendedModel?: string; recommendedThinking?: string; modelWhy?: string; verdict?: string; adviceCost?: { minutes: number; usd: number; what: string }; reviewOk?: unknown }
+export interface Step extends AdviceRecord { id: string; text: string; model: string; state: 'done' | 'now' | 'next'; doneAt: string; done?: boolean; skip?: boolean }
+export interface BuildInfo extends AdviceRecord { id: string; title: string; status: string; branch: string; pr: string; prUrl: string; steps: Step[]; done: number; total: number; now: Step | null; stepStartedAt: string | null; waitingApproval: boolean }
 export interface Run {
   id: string; session: string; name: string; cwd: string; agent: CrewAgent; model: string; modelKey: string;
   startedAt: string | null; lastEventAt: string | null; costUsd: number; costExact: boolean;

@@ -276,7 +276,9 @@ def build_progress(b: dict[str, Any] | None, started: float | None) -> dict[str,
     for i, s in enumerate(steps):
         state = "done" if s.get("done") else "now" if i == now_i else "next"
         rows.append({"id": s.get("id"), "text": redact(s.get("title") or s.get("text") or "", 300), "model": s.get("model") or "", "state": state,
-                     "doneAt": s.get("doneAt") or ""})
+                     "doneAt": s.get("doneAt") or "", "done": bool(s.get("done")), "skip": False,
+                     # model-advice@1 record fields (the web computes the view: thinking, recommendation, check / triangle)
+                     **{k: s.get(k) for k in ("thinking", "recommendedModel", "recommendedThinking", "modelWhy", "reviewOk") if s.get(k) is not None}})
     step_started = None
     if now_i is not None:
         prev = [parse_ts(s.get("doneAt")) for s in steps[:now_i] if s.get("doneAt")]
@@ -288,6 +290,8 @@ def build_progress(b: dict[str, Any] | None, started: float | None) -> dict[str,
     return {"id": b["id"], "title": redact(b.get("title") or b["id"], 200), "status": b.get("status") or "", "branch": b.get("branch") or "",
             "pr": pr, "prUrl": pr if pr.startswith("http") else (f"https://github.com/MossesX/AmberX-AXF/pull/{pr.lstrip('#')}" if pr.lstrip("#").isdigit() else ""),
             "steps": rows, "done": sum(1 for r in rows if r["state"] == "done"), "total": len(rows),
+            # model-advice@1 on the build itself (the web computes the view)
+            **{k: b.get(k) for k in ("thinking", "recommendedModel", "recommendedThinking", "modelWhy", "verdict", "adviceCost", "reviewOk") if b.get(k) is not None},
             "now": next((r for r in rows if r["state"] == "now"), None), "stepStartedAt": iso(step_started),
             "waitingApproval": any(isinstance(u, dict) and (u.get("status") in ("", None, "pending", "requested")) for u in b.get("upgradeRequests") or []),
             "detail": str(b.get("detail") or "")}

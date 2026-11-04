@@ -45,6 +45,7 @@
 
 import { normApproval, normRequest } from '../core/model-switch.mjs';
 import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
+import { THINKING, VERDICTS, adviceRecord, buildView, stepView } from '../core/model-advice.mjs';
 
 export const SCHEMA = 'builds@1';
 export const MODELS = ['Fable', 'Opus'];
@@ -62,8 +63,13 @@ const stepModel = (m) => (m === 'Fable' ? 'Fable' : 'Opus');
 const clone = (o) => JSON.parse(JSON.stringify(o));
 const nowIso = () => new Date().toISOString();
 export const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
-const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
-const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note'];
+/** model-advice@1 (Nov 4 2026): the recommendation and its review state travel with every build and step, in every projection. */
+const ADVICE_STEP_KEYS = ['thinking', 'recommendedModel', 'recommendedThinking', 'modelWhy', 'adviceKind', 'advicePinned', 'adviceAt', 'reviewOk'];
+const ADVICE_BUILD_KEYS = [...ADVICE_STEP_KEYS, 'verdict', 'adviceCost'];
+const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', ...ADVICE_BUILD_KEYS, 'steps'];
+const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note', ...ADVICE_STEP_KEYS];
+
+const adviceFields = (o, opts) => adviceRecord(o, opts); // model-advice@1: only the fields that are set (untouched records stay byte-identical)
 
 // ------------------------------------------------------------------ records
 
@@ -98,6 +104,7 @@ export function normStep(s, i = 0, ctx = {}) {
     doneAt: o.done === true ? str(o.doneAt, 40) : '',
     note: str(o.note, 1000),
     ...(str(o.fm).trim() ? { fm: str(o.fm, 80).trim() } : {}),
+    ...adviceFields(o),
     rev: Number.isInteger(o.rev) && o.rev > 0 ? o.rev : 1,
     createdAt: str(o.createdAt, 40) || at,
     updatedAt: str(o.updatedAt, 40) || at,
@@ -135,6 +142,7 @@ export function normBuild(b, ctx = {}) {
     approvals: (Array.isArray(o.approvals) ? o.approvals : []).map(normApproval), // model-switch.mjs: who approved, how
     upgradeRequests: (Array.isArray(o.upgradeRequests) ? o.upgradeRequests : []).map(normRequest).filter((r) => r.id),
     ...(origin ? { origin } : {}),
+    ...adviceFields(o, { build: true }),
     steps,
     profiles,
     order,
@@ -205,6 +213,9 @@ export function validateStore(store) {
     for (const k of ['createdAt', 'updatedAt']) if (typeof b[k] !== 'string' || !ISO.test(b[k])) err(`${at}.${k}`, 'is not an ISO timestamp');
     if (b.deleted === true && !ISO.test(b.deletedAt ?? '')) err(`${at}.deletedAt`, 'a deleted build says when');
     if (!Array.isArray(b.notes) || b.notes.some((n) => !n || typeof n.text !== 'string')) err(`${at}.notes`, 'must be a list of { text, at }');
+    if (b.thinking !== undefined && !THINKING.includes(b.thinking)) err(`${at}.thinking`, `"${b.thinking}" is not one of ${THINKING.join(', ')}`);
+    if (b.recommendedModel !== undefined && !MODELS.includes(b.recommendedModel)) err(`${at}.recommendedModel`, `"${b.recommendedModel}" is not one of ${MODELS.join(', ')}`);
+    if (b.verdict !== undefined && !VERDICTS.includes(b.verdict)) err(`${at}.verdict`, `"${b.verdict}" is not one of ${VERDICTS.join(', ')}`);
     if (!Array.isArray(b.steps)) return err(`${at}.steps`, 'must be a list');
     const sids = new Set();
     b.steps.forEach((s, j) => {
@@ -213,6 +224,8 @@ export function validateStore(store) {
       if (typeof s.id !== 'string' || !s.id) err(`${sa}.id`, 'is missing'); else if (sids.has(s.id)) err(`${sa}.id`, `"${s.id}" appears twice in the build`); else sids.add(s.id);
       if (typeof s.uid !== 'string' || !s.uid) err(`${sa}.uid`, 'is missing'); else if (uids.has(s.uid)) err(`${sa}.uid`, `"${s.uid}" is also a live step of ${uids.get(s.uid)}`); else uids.set(s.uid, at);
       if (!MODELS.includes(s.model)) err(`${sa}.model`, `"${s.model}" is not one of ${MODELS.join(', ')} (model policy: Opus or Fable, never Sonnet)`);
+      if (s.thinking !== undefined && !THINKING.includes(s.thinking)) err(`${sa}.thinking`, `"${s.thinking}" is not one of ${THINKING.join(', ')}`);
+      if (s.recommendedModel !== undefined && !MODELS.includes(s.recommendedModel)) err(`${sa}.recommendedModel`, `"${s.recommendedModel}" is not one of ${MODELS.join(', ')}`);
       if (typeof s.text !== 'string' || !s.text.trim()) err(`${sa}.text`, 'is missing');
       if (!Number.isInteger(s.rev) || s.rev < 1) err(`${sa}.rev`, 'must be a whole number from 1');
     });
@@ -402,6 +415,7 @@ export function itemOfBuild(b, now = nowIso()) {
   const status = pendingStatusOf(b);
   const next = b.steps.find((s) => !s.done && !s.skip) ?? b.steps[b.steps.length - 1];
   const at = p.stepAt ?? {};
+  const bv = buildView(b); // model-advice@1: every read shows model, thinking, the recommendation and the review status
   const item = {
     id: b.pendingId || b.id, title: b.title, detail: b.detail,
     model: p.model === 'Sonnet' && !b.steps.length ? 'Sonnet' : next ? stepModel(next.model) : (p.model || 'Opus'),
@@ -414,7 +428,10 @@ export function itemOfBuild(b, now = nowIso()) {
       ...(s.done ? { done: true, doneAt: s.doneAt || b.updatedAt || now } : {}),
       ...(s.skip ? { skip: true } : {}),
       ...(s.fm ? { fm: s.fm } : {}),
+      stepId: s.id, // the orchestrator step id (apply / dismiss a step's recommendation from the Pending list)
+      ...adviceView(stepView(s)),
     })),
+    ...(({ model: _m, ...rest }) => rest)(adviceView(bv, true)), // the item's own `model` (above) stays: Sonnet items keep their word
     createdAt: p.createdAt || b.createdAt || now,
     builtAt: status === 'complete' ? (b.builtAt || p.builtAt || b.updatedAt || now) : '',
     updatedAt: b.updatedAt || now,
@@ -426,6 +443,17 @@ export function itemOfBuild(b, now = nowIso()) {
   return item;
 }
 
+/**
+ * The model-advice@1 fields a read adds (Brett, Nov 4 2026: "any query or anything that shows a build or a step"):
+ * model (the step's, or the build's current one), thinking, recommendedModel, recommendedThinking, reviewStatus, and
+ * modelWhy / verdict / adviceCost when there is a recommendation. Never written back as record fields (see absorb).
+ */
+export function adviceView(v, build = false) {
+  const out = { model: v.model, thinking: v.thinking, recommendedModel: v.recommendedModel, recommendedThinking: v.recommendedThinking, reviewStatus: v.reviewStatus };
+  if (v.modelWhy) out.modelWhy = v.modelWhy;
+  if (build) { if (v.verdict) out.verdict = v.verdict; if (v.adviceCost) out.adviceCost = v.adviceCost; if (v.stepsToLook) out.stepsToLook = v.stepsToLook; }
+  return out;
+}
 /** JSON with sorted keys: two items are the same whatever order their fields were written in. */
 function canon(v) { return JSON.stringify(v, (k, x) => (x && typeof x === 'object' && !Array.isArray(x) ? Object.fromEntries(Object.keys(x).sort().map((key) => [key, x[key]])) : x)); }
 
@@ -527,7 +555,8 @@ export function projectQueue(store, profile) {
   for (const b of epics) {
     const rec = { ...(b.queue ?? {}) };
     delete rec.steps;
-    if (b.steps.length) rec.steps = b.steps.map((x) => ({ text: x.text, ...(x.estimate ? { estimate: x.estimate } : {}), ...(x.done ? { done: true, doneAt: x.doneAt } : {}), ...(x.skip ? { skip: true } : {}), ...(x.fm ? { fm: x.fm } : {}) }));
+    if (b.steps.length) rec.steps = b.steps.map((x) => ({ text: x.text, ...(x.estimate ? { estimate: x.estimate } : {}), ...(x.done ? { done: true, doneAt: x.doneAt } : {}), ...(x.skip ? { skip: true } : {}), ...(x.fm ? { fm: x.fm } : {}), ...adviceView(stepView(x)) }));
+    rec.advice = (({ model: _m, ...rest }) => rest)(adviceView(buildView(b), true)); // model-advice@1 on the epic itself
     if (Object.keys(rec).length) steps[b.planRef || b.id] = rec;
   }
   return { $axf: 'build-queue@1', order: epics.map((b) => b.planRef || b.id), steps, dirty: m.dirty === true, updatedAt: m.updatedAt || store.updatedAt, history: clone(m.history ?? []) };
@@ -566,7 +595,7 @@ export function absorbQueue(store, profile, q, features = [], { now = nowIso() }
   for (const b of ordered) {
     const key = b.planRef || b.id;
     const rec = q.steps?.[key];
-    const { steps: small, ...r } = rec ?? {};
+    const { steps: small, advice: _advice, ...r } = rec ?? {}; // `advice` is a read-only projection (model-advice@1), never a queue field
     b.queue = Object.keys(r).length || b.queue ? r : b.queue;
     const incoming = (small ?? []).map((x, k) => ({ ...(b.steps[k] ?? {}), id: b.steps[k]?.id ?? `s${k + 1}`, text: str(x.text), estimate: str(x.estimate), done: x.done === true, doneAt: x.done ? x.doneAt || now : '', skip: x.skip === true, fm: x.fm }));
     if (JSON.stringify(incoming.map((x) => [x.text, x.estimate, x.done, x.skip])) !== JSON.stringify(b.steps.map((x) => [x.text, x.estimate, x.done, x.skip]))) { mergeSteps(b, incoming, now, 'build-queue', 'removed in the build queue'); followDefault(b, now); }

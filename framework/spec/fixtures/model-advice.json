@@ -1,0 +1,289 @@
+{
+  "$axf": "model-advice@1",
+  "cases": [
+    {
+      "text": "settings-placement@1 contract: placements, sub-choices, defaults, asset type + engine + fixture",
+      "files": [],
+      "kind": "foundation",
+      "model": "Fable",
+      "thinking": "high",
+      "signals": [
+        "contract",
+        "asset type",
+        "engine",
+        "fixture",
+        "settings-placement@1"
+      ]
+    },
+    {
+      "text": "ref@1 resolver: registries (screens, settings, plugins, dialogs, toolbars, menus, builds)",
+      "files": [],
+      "kind": "foundation",
+      "model": "Fable",
+      "thinking": "high",
+      "signals": [
+        "registries",
+        "ref@1"
+      ]
+    },
+    {
+      "text": "Live status writes to main: store writes committed at once, newer-wins merge per build and step, journal lines",
+      "files": [
+        "framework/plan/builds-merge-core.mjs"
+      ],
+      "kind": "migration",
+      "model": "Fable",
+      "thinking": "max",
+      "signals": [
+        "newer-wins",
+        "journal",
+        "framework/plan/"
+      ]
+    },
+    {
+      "text": "Kotlin twin of the embed engine, conformance fixture, wire codes never change meaning",
+      "files": [],
+      "kind": "kernel",
+      "model": "Fable",
+      "thinking": "max",
+      "signals": [
+        "conformance",
+        "wire codes",
+        "engine",
+        "fixture",
+        "kotlin twin"
+      ]
+    },
+    {
+      "text": "Picker UI: top row in each plugin settings, context menu entry, Settings > Plugins sub-tab",
+      "files": [
+        "apps/console-web/plugins/x/web/ui.tsx"
+      ],
+      "kind": "plugin",
+      "model": "Opus",
+      "thinking": "medium",
+      "signals": []
+    },
+    {
+      "text": "Server: REST routes for the ledger, pagination, tests",
+      "files": [
+        "apps/console-web/plugins/x/server/__init__.py"
+      ],
+      "kind": "plugin",
+      "model": "Opus",
+      "thinking": "medium",
+      "signals": []
+    },
+    {
+      "text": "Docs: guides, examples, help packs for every command from the control@1 schema",
+      "files": [],
+      "kind": "landing",
+      "model": "Opus",
+      "thinking": "low",
+      "signals": [
+        "docs"
+      ]
+    },
+    {
+      "text": "Tests (retry, parallel writes, merge no-regress), local CI block, report, THREADS, PR",
+      "files": [],
+      "kind": "landing",
+      "model": "Opus",
+      "thinking": "low",
+      "signals": [
+        "tests"
+      ]
+    },
+    {
+      "text": "Land PR #320 merge-queue: update from main once, one CI run, merge, redeploy the console",
+      "files": [],
+      "kind": "landing",
+      "model": "Opus",
+      "thinking": "low",
+      "signals": [
+        "land"
+      ]
+    },
+    {
+      "text": "Fix GET /api/build-queue 500 under load: investigate the lock, race between pollers, stale cache",
+      "files": [],
+      "kind": "debug",
+      "model": "Opus",
+      "thinking": "high",
+      "signals": [
+        "investigate",
+        "race",
+        "stale"
+      ]
+    },
+    {
+      "text": "Unify the three table components onto one shared grid; heavy refactor of every list screen",
+      "files": [],
+      "kind": "architecture",
+      "model": "Opus",
+      "thinking": "high",
+      "signals": [
+        "unify",
+        "heavy refactor"
+      ]
+    },
+    {
+      "text": "Rename the Pending tab to Parked and fix the typo in its tooltip",
+      "files": [],
+      "kind": "landing",
+      "model": "Opus",
+      "thinking": "low",
+      "signals": [
+        "rename"
+      ]
+    },
+    {
+      "text": "Every layout parameter becomes a token: layout asset type/schema, engine, fixtures",
+      "files": [
+        "framework/core/engines/layout.ts"
+      ],
+      "kind": "foundation",
+      "model": "Fable",
+      "thinking": "high",
+      "signals": [
+        "asset type",
+        "schema",
+        "engine",
+        "fixtures",
+        "framework/core/"
+      ]
+    },
+    {
+      "text": "New asset type tab-group@1 in asset-types.json with both validators and a Kotlin twin recorded in PORTING.md",
+      "files": [],
+      "kind": "foundation",
+      "model": "Fable",
+      "thinking": "high",
+      "signals": [
+        "asset type",
+        "asset-types",
+        "validators",
+        "new asset type",
+        "asset-types.json",
+        "both validators",
+        "kotlin twin",
+        "tab-group@1"
+      ]
+    }
+  ],
+  "builds": {
+    "built": {
+      "recommendedModel": "Fable",
+      "recommendedThinking": "high",
+      "verdict": "fable-review",
+      "adviceKind": "foundation",
+      "cost": {
+        "minutes": 15,
+        "usd": 6.19,
+        "what": "a Fable read of 1 foundation step(s) built on Opus, fixing only what is wrong"
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "recommendedModel": "Fable",
+          "recommendedThinking": "high",
+          "adviceKind": "foundation"
+        },
+        {
+          "id": "s2",
+          "recommendedModel": "Opus",
+          "recommendedThinking": "medium",
+          "adviceKind": "plugin"
+        },
+        {
+          "id": "s3",
+          "recommendedModel": "Opus",
+          "recommendedThinking": "low",
+          "adviceKind": "landing"
+        }
+      ]
+    },
+    "open": {
+      "recommendedModel": "Fable",
+      "recommendedThinking": "high",
+      "verdict": "",
+      "adviceKind": "foundation",
+      "cost": {
+        "minutes": 30,
+        "usd": 8.18,
+        "what": "1 open step(s) moved to Fable: the extra over Opus"
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "recommendedModel": "Fable",
+          "recommendedThinking": "high",
+          "adviceKind": "foundation"
+        },
+        {
+          "id": "s2",
+          "recommendedModel": "Opus",
+          "recommendedThinking": "medium",
+          "adviceKind": "plugin"
+        },
+        {
+          "id": "s3",
+          "recommendedModel": "Opus",
+          "recommendedThinking": "low",
+          "adviceKind": "landing"
+        }
+      ]
+    },
+    "heavy": {
+      "recommendedModel": "Fable",
+      "recommendedThinking": "max",
+      "verdict": "redo-on-fable",
+      "adviceKind": "migration",
+      "cost": {
+        "minutes": 30,
+        "usd": 18.15,
+        "what": "1 foundation step(s) built again on Fable (a kernel / migration step ran on Opus)"
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "recommendedModel": "Fable",
+          "recommendedThinking": "max",
+          "adviceKind": "migration"
+        },
+        {
+          "id": "s2",
+          "recommendedModel": "Opus",
+          "recommendedThinking": "medium",
+          "adviceKind": "plugin"
+        }
+      ]
+    },
+    "noSteps": {
+      "recommendedModel": "Fable",
+      "recommendedThinking": "high",
+      "verdict": "fable-review",
+      "adviceKind": "foundation",
+      "cost": {
+        "minutes": 30,
+        "usd": 12.38,
+        "what": "a Fable read of the contract (no steps recorded; rough)"
+      },
+      "steps": []
+    }
+  },
+  "filters": {
+    "needs a look": {
+      "needsLook": true
+    },
+    "fable high": {
+      "thinking": "high",
+      "fable": true
+    },
+    "model:Opus thinking:low": {
+      "model": "Opus",
+      "thinking": "low"
+    },
+    "clear": {}
+  }
+}

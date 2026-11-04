@@ -172,3 +172,14 @@ bars per build, step and profile. Report: `_claude/builds/reports/urgent-builds.
 ## Claude settings (Nov 3 2026)
 
 - **Claude has its own settings, on axHub, and every session follows them (Brett, Nov 3 2026, voice; build `claude-settings`, Urgent).** "I need a plugin called Claude. Claude settings. A setting to enable your no-wait in that. A whole bunch of settings that are for Claude, that you check on axHub and then act accordingly." The Claude plugin keeps one claude-settings@1 document in the hub's shared data (`/projects/_shared/_data/claude/settings.json`, every project); sessions read it at start and before acting (MCP `claude_settings_get`). Owner-only settings change only from Brett's signed-in console session (the same owner test as veto passes); a session, agent or tool can never change them, in either direction. No wait is not a new bypass: it is a standing all-scope veto pass (control-pass@1) that his click creates and switching off revokes, with "until I turn it off" renewing only a pass he approved himself, and night auto-off. The registry is open (data only). Follow Amber is one shared key (`followAmber.enabled`) that the follow-amber build reads instead of keeping its own switch.
+
+## Nov 4 2026 — Recommended model + thinking level next to every build and step (model-advice@1)
+
+Brett (voice): "Go through my list of things that can be done and see what should be redone with Fable and put that next
+to it, and put the level of thinking that it should be on." Then: a check mark when it is all set, a yellow triangle when
+it needs a look, right-click the icon to expand the row with why; the model and thinking chips anywhere a build or a step
+is shown, on every API / MCP / CLI read too, with filters and an on / off switch. Decision: one engine
+(`framework/core/model-advice.mjs`) judges every build, step and plan; the builds store keeps the recommendation and
+Brett's OK (sidecar `_claude/builds/advice.json`); Apply / Dismiss are his alone (same approver gate as a model upgrade);
+the thinking level reaches the launcher as `claude --effort`. Nothing changes model by itself. Report:
+`_claude/builds/reports/model-thinking-audit.md`. Build `model-thinking-audit` (Current, Fable).

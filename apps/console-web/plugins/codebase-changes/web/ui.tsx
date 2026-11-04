@@ -1,6 +1,6 @@
 /* Codebase changes — the banner, the log browser and the settings summary. Theme tokens only (codebase-changes.css). */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Button, Icon, IconButton, RefText, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { Button, Icon, IconButton, ModelChips, RefText, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { MoreMenu } from './MoreMenu';
 import {
   CHANGED, KIND_ICON, NO_FILTERS, STATE_ICON, STATE_LABEL, VIEW, abandonEntry, ago, api, bannerOn, closeAll, closeEntry, isActive, NO_WORD_MS, quietMs, startedMs, stuckWhy, kindLabel, linkHref, loadEntry, loadOpen, loadResume,
@@ -182,7 +182,7 @@ function EntryDetail({ id, onChanged }: { id: string; onChanged: () => void }) {
         <dt>Opened</dt><dd>{when(e.createdAt)}</dd>
         <dt>Updated</dt><dd>{when(e.updatedAt)} ({ago(e.updatedAt)})</dd>
         {e.repos.length > 0 && <><dt>Repo</dt><dd>{e.repos.join(', ')}</dd></>}
-        {e.model && <><dt>Model</dt><dd>{e.model}</dd></>}
+        {e.model && <><dt>Model</dt><dd><ModelChips screen="changes" view={{ model: /fable/i.test(e.model) ? 'Fable' : 'Opus', thinking: '', recommendedModel: '', recommendedThinking: '', reviewStatus: 'ok' }} compact /> <span className="fx-muted">{e.model}</span></dd></>}
         {(e.who.where || e.who.host) && <><dt>Where</dt><dd>{[e.who.where, e.who.host, e.who.user].filter(Boolean).join(' · ')}{e.who.session ? ` · session ${e.who.session}` : ''}</dd></>}
         <dt>Banner</dt><dd>{e.closed ? `closed ${when(e.closed.at)} by ${e.closed.by}` : 'showing'}</dd>
         <dt>Id</dt><dd><code>{e.id}</code></dd>

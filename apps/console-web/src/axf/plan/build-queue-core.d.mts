@@ -4,7 +4,10 @@ export type StepState = 'done' | 'rework' | 'active' | 'queued' | 'blocked' | 'd
 export interface QFeature { id: string; title: string; kind: string; status: string; dependsOn?: string[]; catalog?: string[]; epic?: string; model?: string; modelReason?: string; area?: string; priority?: string; wave?: number; effort?: string; summary?: string; acceptance?: { text: string; done: boolean }[] }
 export interface Rework { reasons: string[]; at: string; by: string }
 /** One small step of a big build (Oct 21 2026): same shape as a pending item's sub prompt, minus `at`. */
-export interface SmallStep { text: string; estimate?: string; done?: boolean; doneAt?: string }
+/** model-advice@1 view fields the builds store projects on steps and epics (read-only). */
+export interface AdviceFields { model?: string; thinking?: string; recommendedModel?: string; recommendedThinking?: string; reviewStatus?: string; modelWhy?: string; verdict?: string; adviceCost?: { minutes: number; usd: number; what: string }; stepsToLook?: number }
+export interface SmallStep extends AdviceFields { text: string; estimate?: string; done?: boolean; doneAt?: string; skip?: boolean; fm?: string }
+export function adviceOf(o: unknown): AdviceFields;
 export interface StepRecord { completedAt?: string; completedBy?: string; deps?: string[]; rework?: Rework | null; reopenedAt?: string; reworkedAt?: string; estimate?: string; steps?: SmallStep[] }
 export interface QueueState { $axf: 'build-queue@1'; order: string[]; steps: Record<string, StepRecord>; dirty: boolean; updatedAt: string; history: { at: string; by: string; text: string }[] }
 export interface StepView {
@@ -15,6 +18,8 @@ export interface StepView {
   completedAt: string | null; completedBy: string | null; rework: Rework | null;
   /** Build time: the record's own estimate, else its small steps added up ('' when neither). */
   estimate: string; steps: SmallStep[]; stepsDone: number; minutesTotal: number; minutesLeft: number; needsSplit: boolean; splitReasons: string[];
+  /** model-advice@1 on the epic itself (the queue projection's `advice`), when the store gave it */
+  advice?: AdviceFields;
 }
 export interface QueueView { steps: StepView[]; order: string[]; next: string | null; counts: Partial<Record<StepState, number>>; byModel: Partial<Record<ModelId, number>>; minutesLeftByModel: Partial<Record<ModelId, number>>; unsplit: string[]; violations: number; rework: number; dirty: boolean; updatedAt: string }
 export interface Proposal { order: string[]; moves: { id: string; title: string; from: number; to: number; reason: string }[]; rework: { id: string; title: string; reasons: string[]; model: string; already: boolean }[]; cycles: { id: string; title: string }[]; changed: boolean }

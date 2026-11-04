@@ -70,6 +70,20 @@ while [[ $# -gt 0 ]]; do
     *) echo "claude-headless: unknown option $1" >&2; exit 2 ;;
   esac
 done
+
+# ---- thinking (model-advice@1, Brett, Nov 4 2026): the build's thinking level becomes `claude --effort <level>`.
+# AXF_THINKING=low|medium|high|max (the launcher sets it from the build step; a level as the first word also works),
+# unless the claude args already carry --effort. An unknown word adds nothing (the model's own default applies).
+effort_args() {
+  local t="${AXF_THINKING:-}" a
+  for a in "$@"; do [[ "$a" == --effort || "$a" == --effort=* ]] && return 0; done
+  [[ -z "$t" && $# -gt 0 && "$1" != --* ]] && t="$1"
+  case "$t" in low|medium|high|max) printf -- '--effort %s' "$t" ;; *) : ;; esac
+}
+# ---- end thinking
+thinking="$(effort_args "$@")"; thinking="${thinking#--effort }"
+if [[ -n "$thinking" && "$thinking" != "--effort"* ]]; then set -- "$@" --effort "$thinking"; fi
+[[ -z "$thinking" ]] && { prev=""; for a in "$@"; do [[ "$prev" == --effort ]] && thinking="$a"; [[ "$a" == --effort=* ]] && thinking="${a#--effort=}"; prev="$a"; done; }
 [[ -n "$brief" && -f "$brief" ]] || { echo "claude-headless: --brief <file> is required" >&2; exit 2; }
 [[ "$log" =~ ^[A-Za-z0-9._-]{1,80}$ ]] || { echo "claude-headless: --log is a plain file name" >&2; exit 2; }
 raw="${log%.log}.jsonl"
@@ -274,7 +288,7 @@ tmux new-session -d -s "$session" -x 200 -y 50 -c "$(pwd)" "${envs[@]}" \
   bash "$HERE/claude-headless.sh" --inner --name "$slug" --agent "$agent" --envfile "$secret" --brief "$brief" --log "$log" ${slot:+--slot "$slot"} -- "$@"
 tmux set-option -t "$session" history-limit 50000 >/dev/null 2>&1 || true
 # Headless tabs: what the console's Terminal shows on the tab (one `tmux ls` reads them all)
-for kv in "@axf_kind=headless" "@axf_agent=$agent" "@axf_model=$model" "@axf_cwd=$(pwd)" "@axf_meter=$HDIR/$session.meter.json" "@axf_chain=$HDIR/$session.chain.json"; do
+for kv in "@axf_kind=headless" "@axf_agent=$agent" "@axf_model=$model" "@axf_thinking=$thinking" "@axf_cwd=$(pwd)" "@axf_meter=$HDIR/$session.meter.json" "@axf_chain=$HDIR/$session.chain.json"; do
   tmux set-option -t "$session" "${kv%%=*}" "${kv#*=}" >/dev/null 2>&1 || true
 done
 event session-start "$session"

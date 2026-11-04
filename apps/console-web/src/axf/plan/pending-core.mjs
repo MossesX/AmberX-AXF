@@ -44,8 +44,17 @@ const entry = (e) => ({
   ...(e?.done === true ? { done: true, doneAt: iso(e?.doneAt) || iso(e?.at) } : {}),
   ...(e?.skip === true ? { skip: true } : {}), // feature-matrix@1: skipped when the build runs, never removed
   ...(str(e?.fm).trim() ? { fm: str(e.fm, 80).trim() } : {}), // its feature-matrix item id
+  ...(str(e?.stepId).trim() ? { stepId: str(e.stepId, 40).trim() } : {}), // the orchestrator step id the store projects
+  ...adviceOf(e), // model-advice@1: the read-only view the store projects on a step
 });
 const entries = (list) => (Array.isArray(list) ? list : []).map(entry).filter((e) => e.text);
+/** model-advice@1 view fields the builds store projects on items and steps (model, thinking, recommendation, reviewStatus…); kept as read. */
+const ADVICE_VIEW = ['thinking', 'recommendedModel', 'recommendedThinking', 'reviewStatus', 'modelWhy', 'verdict', 'adviceCost', 'stepsToLook'];
+export function adviceOf(o, { withModel = true } = {}) {
+  const out = {};
+  for (const k of withModel ? ['model', ...ADVICE_VIEW] : ADVICE_VIEW) if (o && typeof o === 'object' && o[k] !== undefined && o[k] !== '' && o[k] !== null) out[k] = o[k];
+  return out;
+}
 
 /**
  * Build-time estimates (Oct 20 2026): every item and every sub prompt may carry `estimate`, a short human string
@@ -167,6 +176,7 @@ export function normalize(raw, now = new Date().toISOString()) {
     ...(str(raw?.estimate).trim() ? { estimate: str(raw.estimate).trim() } : {}),
     source: str(raw?.source) || 'console',
     ...originOf(raw),
+    ...adviceOf(raw, { withModel: false }), // model-advice@1: the store's read-only view (thinking, recommendation, reviewStatus, verdict…)
   };
 }
 /** build-origin@1 on an item: `origin`, or the `said` shortcut (Brett's verbatim words) on an add. */

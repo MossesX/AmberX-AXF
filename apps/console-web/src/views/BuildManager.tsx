@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Container, Icon, Slot, useRuntime } from '../axf/react';
+import { AdviceFilterBar, Button, Chip, Container, Icon, ModelChips, Slot, matchesFilter, useAdviceFilter, useRuntime, type AdviceView } from '../axf/react';
 import * as api from '../api';
 import { TokenDialog as ApiTokenDialog } from '../axf/libs/apiclient';
 import * as core from '../axf/plan/build-queue-core.mjs';
@@ -112,6 +112,11 @@ export async function initBuildSync(log: Log) {
 }
 
 const STATE_LABEL: Record<string, string> = { done: 'built', rework: 'needs rework', active: 'in progress', queued: 'queued', blocked: 'blocked', dropped: 'dropped', missing: 'missing' };
+/** model-advice@1 view of a queue step (the epic's build in the store), when the queue projection carries it. */
+const adviceOf = (s: StepView): AdviceView | null => {
+  const a = s.advice; if (!a) return null;
+  return { model: s.model === 'fable' ? 'Fable' : 'Opus', thinking: a.thinking ?? '', recommendedModel: a.recommendedModel ?? '', recommendedThinking: a.recommendedThinking ?? '', reviewStatus: a.reviewStatus ?? 'ok', modelWhy: a.modelWhy, verdict: a.verdict as AdviceView['verdict'], adviceCost: a.adviceCost ?? null, stepsToLook: a.stepsToLook ?? 0 };
+};
 
 /** A brief to paste into Claude Code for one step. */
 function brief(s: StepView) {
@@ -141,6 +146,7 @@ export function BuildManager() {
   const [drag, setDrag] = useState<string | null>(null);
   const [over, setOver] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [adviceFilter] = useAdviceFilter(); // model-advice@1: the shared model / thinking / needs-a-look filter
   useEffect(() => { loadQueue(); }, []);
   const view = useMemo(() => (loaded && state !== undefined ? core.computeQueue(features as unknown as QFeature[], state) : null), [features, loaded, state]);
   if (!view) return <div className="fx-empty">Loading the build queue…</div>;
@@ -169,7 +175,7 @@ export function BuildManager() {
     rt.openDialog('build-reprocess');
   };
   const copy = (s: StepView) => { navigator.clipboard?.writeText(brief(s)).then(() => rt.toast(`Brief for "${s.title}" copied — paste it into Claude Code (${s.modelLabel}).`, 'success'), () => rt.toast('Clipboard blocked', 'warning')); };
-  const shown = (list: StepView[]) => (model ? list.filter((s) => s.model === model) : list);
+  const shown = (list: StepView[]) => (model ? list.filter((s) => s.model === model) : list).filter((s) => { const a = adviceOf(s); return a ? matchesFilter(a, adviceFilter) : true; });
 
   return (
     <div className="fx-stack fx-stack--lg">
@@ -240,6 +246,7 @@ export function BuildManager() {
       <div className="fx-row fx-row--wrap">
         <label className="fx-row" style={{ gap: 'var(--fx-dens-gap-lg)' }}><input type="checkbox" checked={showDone} onChange={(e) => setShowDone(e.target.checked)} /> Show built steps ({done.length})</label>
         <label className="fx-row" style={{ gap: 'var(--fx-dens-gap-lg)' }}>Model<select className="fx-input" value={model} onChange={(e) => setModel(e.target.value as '' | api.ModelId)}><option value="">All</option>{api.MODELS.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}</select></label>
+        <AdviceFilterBar screen="queue" counts={{ look: view.steps.filter((s) => s.advice?.reviewStatus === 'look').length }} />
       </div>
 
       <div className="bm-queue" role="list">
@@ -272,7 +279,7 @@ function StepRow({ s, open, onToggle, busy, run, copy, draggable, onDragStart, o
           <span className="fx-grow"><span>{s.title}</span><span className="fx-muted fx-small fx-mono"> {s.id}</span></span>
         </button>
         <span className={`bm-state is-${s.state}`}>{STATE_LABEL[s.state]}</span>
-        <ModelChip model={s.model} reason={s.modelReason} />
+        {adviceOf(s) ? <ModelChips screen="queue" view={adviceOf(s)} build={s.id} title={s.title} /> : <ModelChip model={s.model} reason={s.modelReason} />}
         <TimePrice s={s} />
         <span className="bm-progress" title={`${s.progress}%${s.features.length ? ` · ${builtFeatures}/${s.features.length} features built` : ''}`}><span style={{ width: `${s.progress}%` }} /></span>
         {!s.ready && s.state !== 'done' && s.state !== 'rework' && <span title={`Waits on ${s.deps.filter((d) => !d.done).map((d) => d.title).join(', ')}`}><Icon name="lock" size={14} /></span>}
@@ -350,7 +357,7 @@ export function BuildSummaryCard() {
       {!view ? <p className="fx-muted">Loading…</p> : (
         <table className="fx-table"><tbody>
           <tr><th>Built</th><td>{(view.counts.done ?? 0) + (view.counts.rework ?? 0)}/{view.steps.length} steps</td></tr>
-          <tr><th>Next</th><td>{next ? <>{next.position}. {next.title} <ModelChip model={next.model} reason={next.modelReason} /></> : '—'}</td></tr>
+          <tr><th>Next</th><td>{next ? <>{next.position}. {next.title} {adviceOf(next) ? <ModelChips screen="home" view={adviceOf(next)} build={next.id} title={next.title} compact /> : <ModelChip model={next.model} reason={next.modelReason} />}</> : '—'}</td></tr>
           <tr><th>Needs attention</th><td>{view.rework ? <Chip tone="danger">{view.rework} rework</Chip> : null} {view.violations || view.dirty ? <Chip tone="warning">reprocess</Chip> : null}{!view.rework && !view.violations && !view.dirty ? 'nothing' : null}</td></tr>
         </tbody></table>
       )}

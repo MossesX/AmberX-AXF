@@ -5,8 +5,11 @@ export type PendingSort = 'status' | 'added' | 'built';
  * `estimate` = build time, a short string: "45 min", "2 h", "1.5 d" (Oct 20 2026).
  * Sub prompts are the item's steps (Oct 21 2026): `done` / `doneAt` (ISO) once ticked off.
  */
-export interface PendingEntry { text: string; at: string; estimate?: string; done?: boolean; doneAt?: string }
-export interface PendingItem {
+/** model-advice@1 view fields the builds store projects on items and steps (read-only). */
+export interface AdviceFields { model?: string; thinking?: string; recommendedModel?: string; recommendedThinking?: string; reviewStatus?: string; modelWhy?: string; verdict?: string; adviceCost?: { minutes: number; usd: number; what: string }; stepsToLook?: number }
+export interface PendingEntry extends AdviceFields { text: string; at: string; estimate?: string; done?: boolean; doneAt?: string; skip?: boolean; fm?: string; /** the orchestrator step id the store projects */ stepId?: string }
+export function adviceOf(o: unknown, opts?: { withModel?: boolean }): AdviceFields;
+export interface PendingItem extends Omit<AdviceFields, 'model'> {
   id: string; title: string; detail: string; model: PendingModel; status: PendingStatus;
   notes: PendingEntry[]; subPrompts: PendingEntry[];
   createdAt: string; builtAt: string; updatedAt: string; planId?: string; estimate?: string; source: string;
