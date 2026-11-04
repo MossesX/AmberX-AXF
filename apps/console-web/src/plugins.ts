@@ -1,8 +1,8 @@
 /**
  * Console plugins (apps/console-web/plugins/<folder>/, see plugins/README.md).
  *
- * Each plugin's web part is bundled at build time (Vite glob) and is an `AxfWebLibrary`: views, a nav
- * section, dialogs, tab renderers and actions. Which plugins run is decided by the backend
+ * Each plugin's web part is an `AxfWebLibrary` (views, a nav section, dialogs, tab renderers and actions) in its own
+ * chunk, loaded lazily by src/pluginLoader.tsx (plugin-lazy@1). Which plugins run is decided by the backend
  * (`GET /api/plugins`: enabled flags, server status); without a backend, plugins enabled by default run.
  * Folders starting with "_" are templates and never load.
  */
@@ -10,6 +10,7 @@ import type { AxfWebLibrary } from './axf/react/library';
 import type { EmbedPlugin, EmbedPluginTab } from './axf/core';
 import { authHeaders, createApiClient, STANDARD_MESSAGES, type ApiClient } from './axf/libs/apiclient';
 import { consoleTokens } from './api';
+import { loader, setHelpSource } from './pluginLoader';
 
 export interface PluginManifest {
   $axf: 'plugin@1';
@@ -37,9 +38,10 @@ export interface PluginManifest {
 export interface BundledPlugin {
   folder: string;
   manifest: PluginManifest;
-  library?: AxfWebLibrary;
+  /** the real library while installed, else its stand-in; undefined until its web part has loaded once */
+  readonly library?: AxfWebLibrary;
   /** Why the web part couldn't be used, if it couldn't. */
-  problem?: string;
+  readonly problem?: string;
 }
 
 export interface PluginStatus {
@@ -54,30 +56,58 @@ export interface PluginStatus {
 }
 
 const manifests = import.meta.glob(['../plugins/*/plugin.json', '!../plugins/_*/**'], { eager: true, import: 'default' }) as Record<string, PluginManifest>;
-const webParts = import.meta.glob(['../plugins/*/web/index.tsx', '!../plugins/_*/**'], { eager: true }) as Record<string, { plugin?: AxfWebLibrary }>;
 // Each plugin's own help (help@1 data; plugin.json `help`, default `help.json`): ships and uninstalls with the plugin.
 const helpFiles = import.meta.glob(['../plugins/*/help.json', '!../plugins/_*/**'], { eager: true, import: 'default' }) as Record<string, AxfWebLibrary['help']>;
+setHelpSource((folder) => helpFiles[`../plugins/${folder}/help.json`]);
 
 const folderOf = (path: string) => path.split('/')[2] ?? '';
 
+/**
+ * Manifests and help load at startup; each plugin's web part is its own chunk, loaded on first use (src/pluginLoader.tsx).
+ * `library` is the real library while the plugin is installed, else its stand-in (menus, views, commands that load it),
+ * else undefined until it has loaded once.
+ */
 export const bundledPlugins: BundledPlugin[] = Object.entries(manifests)
   .map(([path, manifest]) => {
     const folder = folderOf(path);
-    const web = webParts[`../plugins/${folder}/web/index.tsx`];
-    const out: BundledPlugin = { folder, manifest };
-    if (manifest?.$axf !== 'plugin@1') out.problem = 'plugin.json is not a plugin@1 manifest';
-    else if (!(manifest.targets ?? []).includes('axf-console')) out.problem = 'plugin.json targets do not include "axf-console"';
-    else if (!web) out.problem = 'no web/index.tsx';
-    else if (!web.plugin || typeof web.plugin !== 'object') out.problem = 'web/index.tsx does not export `plugin`';
-    else if (web.plugin.id !== manifest.id) out.problem = `web part id "${web.plugin.id}" differs from plugin.json id "${manifest.id}"`;
-    else {
-      out.library = web.plugin;
-      const help = helpFiles[`../plugins/${folder}/help.json`];
-      if (help && !web.plugin.help) web.plugin.help = help;
-    }
+    const fixed = manifest?.$axf !== 'plugin@1' ? 'plugin.json is not a plugin@1 manifest'
+      : !(manifest.targets ?? []).includes('axf-console') ? 'plugin.json targets do not include "axf-console"'
+      : !loader.folders.includes(folder) ? 'no web/index.tsx' : undefined;
+    const out = { folder, manifest } as BundledPlugin;
+    Object.defineProperties(out, {
+      library: {
+        enumerable: true,
+        get: () => {
+          if (fixed) return undefined;
+          const lib = loader.library(folder);
+          const id = loader.loadedId(folder);
+          return lib && (!id || id === manifest.id) ? lib : undefined;
+        },
+      },
+      problem: {
+        enumerable: true,
+        get: () => {
+          if (fixed) return fixed;
+          const id = loader.loadedId(folder);
+          if (id && id !== manifest.id) return `web part id "${id}" differs from plugin.json id "${manifest.id}"`;
+          return loader.problem(folder);
+        },
+      },
+    });
     return out;
   })
   .sort((a, b) => a.manifest.name.localeCompare(b.manifest.name));
+
+// Banner chunks (and the rest of the last visit's startup list) start downloading now, before React mounts.
+if (typeof window !== 'undefined') queueMicrotask(() => loader.boot(loader.lastEnabled()));
+
+/** Folders the backend (or, before it answers, the last visit) has enabled: what the lazy loader may load. */
+export function enabledFolders(status: PluginStatus[] | null): string[] {
+  return bundledPlugins.filter((p) => !p.problem || loader.problem(p.folder)).filter((p) => {
+    const s = status?.find((x) => x.folder === p.folder);
+    return s ? s.enabled : p.manifest.enabledByDefault !== false;
+  }).map((p) => p.folder);
+}
 
 /** Plugins to run, given the backend's status list (or null when there is no backend). */
 export function enabledPlugins(status: PluginStatus[] | null): BundledPlugin[] {
@@ -145,8 +175,7 @@ export async function fetchPluginStatus(): Promise<PluginStatus[] | null> {
   }
 }
 
-// Function declarations (hoisted) on purpose: the eager plugin glob above runs every plugin's web part before this
-// module's body, and plugins create their clients at load time.
+// Function declarations (hoisted) on purpose: plugins import these and create their clients at load time.
 function pluginUrl(folder: string, path: string): string { return `/api/plugins/${folder}/${path.replace(/^\/+/, '')}`; }
 
 /** Fetch for a plugin's own server routes (/api/plugins/<folder>/...), with the console token. */
