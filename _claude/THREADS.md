@@ -683,8 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:03 UTC · `terminal-no-focus` note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `orch-step-click` note (refactor) · foreign-write
 - 2026-11-04 14:04 UTC · `molly-opus` → complete, note (big-dog) · foreign-write
 - 2026-11-04 14:04 UTC · `walkthrough-random-look` → complete, note (refactor) · foreign-write
 - 2026-11-04 14:04 UTC · `profile-manager` note (current) · foreign-write
@@ -1083,6 +1081,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 17:07 UTC · `app-voice-commands` note (current) · orchestrator
 - 2026-11-04 17:07 UTC · `live-sessions-plugin` s5 done (current) · orchestrator
 - 2026-11-04 17:16 UTC · `live-sessions-plugin` s5 done (current) · foreign-write
+- 2026-11-04 17:16 UTC · `app-voice-commands` s6 done, → built (current) · orchestrator
+- 2026-11-04 17:16 UTC · `app-voice-commands` note (current) · orchestrator
 
 ## Token passes (log)
 

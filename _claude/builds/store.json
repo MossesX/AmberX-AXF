@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 849,
- "updatedAt": "2026-11-04T17:16:47.949Z",
+ "rev": 850,
+ "updatedAt": "2026-11-04T17:17:04.793Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -79954,15 +79954,15 @@
    "title": "Voice commands for every app: land Expenses, voice-command@1 contract, forFramework apps generate voice commands for API/MCP/CLI, Molly runs them",
    "category": "Framework",
    "detail": "Land Expenses PR #307 (CI fix, grid save merges by entry id, redeploy). voice-command@1 contract + project manifest forFramework. Template, axf init and launcher generate voice commands for forFramework apps; CI check. Molly registers and runs them by voice. Applied to Expenses, console, axHub web, AmberX, Molly, Gizmo. Agent: Reel Rhonda (no Polo card).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/app-voice-commands",
    "pr": "#323",
    "createdAt": "2026-11-04T14:43:48.090Z",
-   "updatedAt": "2026-11-04T17:07:20.954Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T17:16:50.593Z",
+   "builtAt": "2026-11-04T17:16:47.198Z",
    "notes": [
     {
      "text": "Assigned: Reel Rhonda (no Polo card). Headless worktree /root/axf-builds/app-voice-commands, session runs on Fable per the brief's standing Fable order (s1 Fable; the Opus steps run in the same session, no model switch, no upgrade phase).",
@@ -79987,6 +79987,10 @@
     {
      "text": "CI on PR #323: sweep + Gradle green after the type-order fix; console job failed only on CI's ci-example template copy in the voice check, fixed (template copies skipped). Head 745369512 running.",
      "at": "2026-11-04T17:07:20.954Z"
+    },
+    {
+     "text": "All steps done. PR #323 CI green (head 745369512); auto-merge waits for Brett's UI Review approval (r-20261104-1b7bca5f Molly dialog, r-20261104-a4e5d893 console page). Report _claude/builds/reports/app-voice-commands.md.",
+     "at": "2026-11-04T17:16:50.593Z"
     }
    ],
    "approvals": [
@@ -80138,12 +80142,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T17:16:47.198Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T14:43:48.095Z",
-     "updatedAt": "2026-11-04T14:43:48.095Z"
+     "updatedAt": "2026-11-04T17:16:47.296Z"
     }
    ],
    "profiles": [
@@ -80154,7 +80158,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
