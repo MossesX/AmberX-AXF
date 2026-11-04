@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T10:44:08.030Z",
+ "updatedAt": "2026-11-04T10:56:10.448Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6350,6 +6350,92 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw1zomxd09uycp"
+    }
+   ]
+  },
+  {
+   "id": "terminal-no-focus",
+   "title": "Terminal: new sessions stop stealing focus",
+   "category": "",
+   "detail": "New Terminal setting \"When a new session starts\": Do nothing / Add tab quietly (default; badge on the Terminal toolbar icon) / Bring Terminal to front. Headless launches no longer raise or switch the Terminal; explicit opens still do. REST + MCP + CLI.",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "terminal-no-focus",
+   "branch": "claude/terminal-no-focus",
+   "pr": "#305",
+   "createdAt": "2026-11-04T10:48:28.927Z",
+   "updatedAt": "2026-11-04T10:55:45.083Z",
+   "builtAt": "2026-11-04T10:55:44.452Z",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I don't want the terminal to come to the front on every session.",
+    "at": "2026-11-04T00:00:00Z",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "newSession setting (server store + REST/MCP/CLI command)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T10:53:50.061Z",
+     "note": "",
+     "uid": "st-mw1zu90g04a7fx"
+    },
+    {
+     "id": "s2",
+     "text": "Headless watcher: quiet tabs + toolbar badge, no window pop",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T10:53:50.702Z",
+     "note": "",
+     "uid": "st-mw1zu90g05qn57"
+    },
+    {
+     "id": "s3",
+     "text": "Settings UI, tests, report, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T10:55:44.452Z",
+     "note": "",
+     "uid": "st-mw1zu90g069oa8"
     }
    ]
   }
