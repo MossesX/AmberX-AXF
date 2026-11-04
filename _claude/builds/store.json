@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 580,
- "updatedAt": "2026-11-04T01:01:09.041Z",
+ "rev": 581,
+ "updatedAt": "2026-11-04T01:03:42.642Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -67417,7 +67417,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mw1adfon08byz9",
+     "uid": "st-mw1an31y08kual",
      "title": "",
      "text": "Land #270 auto-land first",
      "model": "Opus",
@@ -67434,12 +67434,12 @@
      "doneAt": "2026-11-04T00:55:26.046Z",
      "note": "",
      "rev": 2,
-     "createdAt": "2026-11-03T22:55:32.443Z",
-     "updatedAt": "2026-11-04T00:57:29.844Z"
+     "createdAt": "2026-11-03T23:03:01.355Z",
+     "updatedAt": "2026-11-04T00:55:27.531Z"
     },
     {
      "id": "s2",
-     "uid": "st-mw1adfon09n9wc",
+     "uid": "st-mw1an31y09ppg8",
      "title": "",
      "text": "Land #265-#269, #271-#277 oldest first (update from main, resolve, CI green, merge)",
      "model": "Opus",
@@ -67456,12 +67456,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-03T22:55:32.443Z",
-     "updatedAt": "2026-11-03T22:55:32.443Z"
+     "createdAt": "2026-11-03T23:03:01.355Z",
+     "updatedAt": "2026-11-03T23:03:01.355Z"
     },
     {
      "id": "s3",
-     "uid": "st-mw1adfon0acxc1",
+     "uid": "st-mw1an31y0ants3",
      "title": "",
      "text": "Land #280-#283, #285-#289",
      "model": "Opus",
@@ -67478,12 +67478,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-03T22:55:32.443Z",
-     "updatedAt": "2026-11-03T22:55:32.443Z"
+     "createdAt": "2026-11-03T23:03:01.355Z",
+     "updatedAt": "2026-11-03T23:03:01.355Z"
     },
     {
      "id": "s4",
-     "uid": "st-mw1adfon0bjteu",
+     "uid": "st-mw1an31y0bn4qk",
      "title": "",
      "text": "Land #290-#292 and #279",
      "model": "Opus",
@@ -67500,12 +67500,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-03T22:55:32.443Z",
-     "updatedAt": "2026-11-03T22:55:32.443Z"
+     "createdAt": "2026-11-03T23:03:01.355Z",
+     "updatedAt": "2026-11-03T23:03:01.355Z"
     },
     {
      "id": "s5",
-     "uid": "st-mw1adfon0cl6wg",
+     "uid": "st-mw1an31y0c6l63",
      "title": "",
      "text": "Close #267 as superseded by #284",
      "model": "Opus",
@@ -67522,12 +67522,12 @@
      "doneAt": "2026-11-04T00:56:03.656Z",
      "note": "",
      "rev": 2,
-     "createdAt": "2026-11-03T22:55:32.443Z",
-     "updatedAt": "2026-11-04T00:57:29.844Z"
+     "createdAt": "2026-11-03T23:03:01.355Z",
+     "updatedAt": "2026-11-04T00:56:05.549Z"
     },
     {
      "id": "s6",
-     "uid": "st-mw1adfon0djrrf",
+     "uid": "st-mw1an31y0dvaoi",
      "title": "",
      "text": "Redeploy console, Molly, axHub web, demo; confirm up",
      "model": "Opus",
@@ -67544,12 +67544,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-03T22:55:32.443Z",
-     "updatedAt": "2026-11-03T22:55:32.443Z"
+     "createdAt": "2026-11-03T23:03:01.355Z",
+     "updatedAt": "2026-11-03T23:03:01.355Z"
     },
     {
      "id": "s7",
-     "uid": "st-mw1adfon0el0oz",
+     "uid": "st-mw1an31y0eizui",
      "title": "",
      "text": "Report, older-PR list for Brett, THREADS",
      "model": "Opus",
@@ -67566,8 +67566,8 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-03T22:55:32.443Z",
-     "updatedAt": "2026-11-03T22:55:32.443Z"
+     "createdAt": "2026-11-03T23:03:01.355Z",
+     "updatedAt": "2026-11-03T23:03:01.355Z"
     }
    ],
    "profiles": [
@@ -67578,30 +67578,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-03T23:03:01.354Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mw1adfon08byz9": "2026-11-03T23:03:01.355Z",
-     "st-mw1adfon09n9wc": "2026-11-03T23:03:01.355Z",
-     "st-mw1adfon0acxc1": "2026-11-03T23:03:01.355Z",
-     "st-mw1adfon0bjteu": "2026-11-03T23:03:01.355Z",
-     "st-mw1adfon0cl6wg": "2026-11-03T23:03:01.355Z",
-     "st-mw1adfon0djrrf": "2026-11-03T23:03:01.355Z",
-     "st-mw1adfon0el0oz": "2026-11-03T23:03:01.355Z"
-    }
-   },
+   "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-03T22:55:32.443Z",
+   "defaultAt": "2026-11-03T23:03:01.355Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
