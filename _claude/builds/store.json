@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 610,
- "updatedAt": "2026-11-04T03:13:05.927Z",
+ "rev": 611,
+ "updatedAt": "2026-11-04T03:33:38.233Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -53714,19 +53714,24 @@
    "title": "Crew: live grid of every working agent (what each is doing, cost, files, diff) + agent avatars everywhere",
    "category": "Console > Agents",
    "detail": "Brett, Nov 3 2026 (voice). Assigned agent: Ping Paulie. Console plugin 'Crew' listing every agent currently working with exactly what each is doing, live: avatar, status, build + step, model, live timer, live cost, tokens, files touched, PR. Expanded: what I'm doing now (from stream events, no LLM), step list, files with live worktree diff, recent tool calls with cost, Terminal/Session browser links, stop. Off the clock section + totals. Shared AgentAvatar framework component + agent-avatar asset used across the console, agent context menu items. Zero tokens; commands as REST+MCP+CLI. Reuses headless meters (headless-tabs), headless events/stream logs, agent-swarm roster, builds store.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/crew-live",
    "pr": "#273",
+   "mergedAt": "2026-11-04T03:23:06Z",
    "createdAt": "2026-11-03T18:15:23.310Z",
-   "updatedAt": "2026-11-03T19:01:11.375Z",
+   "updatedAt": "2026-11-04T03:33:20.153Z",
    "builtAt": "2026-11-03T19:01:09.967Z",
    "notes": [
     {
      "text": "All 7 steps done on claude/crew-live, PR #273; UI Review r-20261103-b35b9201 waiting. Report _claude/builds/reports/crew-live.md.",
      "at": "2026-11-03T19:01:11.375Z"
+    },
+    {
+     "text": "Reconciler: PR #273 merged",
+     "at": "2026-11-04T03:33:20.153Z"
     }
    ],
    "approvals": [],
@@ -53895,7 +53900,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
