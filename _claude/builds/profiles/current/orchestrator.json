@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T05:28:46.737Z",
+ "updatedAt": "2026-11-04T05:50:43.639Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4290,14 +4290,15 @@
    "title": "Land everything finished (freeze plan step two)",
    "category": "Landing",
    "detail": "What Brett said (voice, Nov 3 2026): CI fix is done (PR #284 merged 22:42 UTC, main green). \"Number two.\" Plan step two = merge everything finished. \"Give me Lenny.\"\nAgent: Landin' Lenny. Land #270 first, then #265-#292 oldest first and #279; close #267 (superseded by #284); leave #251/#254 for Brett; list older PRs #207-#236 for him; redeploy all apps.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/lenny-land-all",
    "pr": "#304",
+   "mergedAt": "2026-11-04T05:40:41Z",
    "createdAt": "2026-11-03T23:03:01.354Z",
-   "updatedAt": "2026-11-04T05:27:42.641Z",
+   "updatedAt": "2026-11-04T05:50:41.843Z",
    "builtAt": "2026-11-04T05:27:40.234Z",
    "notes": [
     {
@@ -4311,6 +4312,10 @@
     {
      "text": "Batch #303 merged (7ce95f6b): #275 #282 #283 #286 #287 #290 #292 all show merged. 19 PRs landed in total. Console was down ~12 min (04:27-04:39 UTC): stacked console installers (no lock on its update cron) starved Docker; duplicates cancelled, flock added live and in deploy/install-console.sh.",
      "at": "2026-11-04T04:52:59.342Z"
+    },
+    {
+     "text": "Reconciler: PR #304 merged",
+     "at": "2026-11-04T05:50:41.843Z"
     }
    ],
    "approvals": [],
