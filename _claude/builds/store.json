@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 705,
- "updatedAt": "2026-11-04T14:05:33.346Z",
+ "rev": 706,
+ "updatedAt": "2026-11-04T14:09:59.590Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -71949,14 +71949,15 @@
    "title": "Terminal: new sessions stop stealing focus",
    "category": "",
    "detail": "New Terminal setting \"When a new session starts\": Do nothing / Add tab quietly (default; badge on the Terminal toolbar icon) / Bring Terminal to front. Headless launches no longer raise or switch the Terminal; explicit opens still do. REST + MCP + CLI.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "terminal-no-focus",
    "branch": "claude/terminal-no-focus",
    "pr": "#305",
+   "mergedAt": "2026-11-04T14:03:08Z",
    "createdAt": "2026-11-04T10:48:28.927Z",
-   "updatedAt": "2026-11-04T14:03:43.987Z",
+   "updatedAt": "2026-11-04T14:04:44.092Z",
    "builtAt": "2026-11-04T10:55:44.452Z",
    "notes": [
     {
@@ -71966,6 +71967,10 @@
     {
      "text": "Reconciler: PR #305 merged",
      "at": "2026-11-04T14:03:43.987Z"
+    },
+    {
+     "text": "Reconciler: PR #305 merged",
+     "at": "2026-11-04T14:04:44.092Z"
     }
    ],
    "approvals": [],
@@ -72058,7 +72063,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -72610,7 +72615,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T12:29:55.130Z",
-     "updatedAt": "2026-11-04T14:04:17.375Z"
+     "updatedAt": "2026-11-04T14:04:43.946Z"
     },
     {
      "id": "s4",
@@ -73237,16 +73242,16 @@
   {
    "id": "crew-profiles",
    "title": "Every employee gets a full agent profile (one roster, job titles, crew + ID cards)",
-   "category": "",
+   "category": "Breakroom > Crew",
    "detail": "One roster: every crew member is an Agent manager agent with a job title (Assistant for the former Agent manager agents). Profile sections persona, role, skills, tools, model, memory, safety, pay, stats, avatar, reports to. Roster adds Marco, Amber, Patches, Gizmo, Polo, Conrad, Chachi, Brownie, Ashes, Jennifer; Molly removed. Crew window rows: collapsible crew card + ID card, working on top. REST + MCP + CLI crew_list/crew_get/crew_update.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "code",
-   "pendingId": "crew-profiles",
+   "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T14:05:31.170Z",
-   "updatedAt": "2026-11-04T14:05:31.170Z",
+   "updatedAt": "2026-11-04T14:05:38.666Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -73261,12 +73266,34 @@
     "brief": "",
     "verbatim": true,
     "from": "",
-    "addenda": []
+    "addenda": [
+     {
+      "said": "From now on they're all agents and employees, they're all the same thing. They just have different job titles. The ones that are technically agents now, they'll be assistants, and they'll be the ones who control the assistant.",
+      "at": "",
+      "source": "voice",
+      "by": "joey",
+      "verbatim": true
+     },
+     {
+      "said": "All these containers in the Crew window need the crew cards and the ID cards, and they have to be collapsible to just show the name and the avatar.",
+      "at": "",
+      "source": "voice",
+      "by": "joey",
+      "verbatim": true
+     },
+     {
+      "said": "Once working, stay at the top.",
+      "at": "",
+      "source": "voice",
+      "by": "joey",
+      "verbatim": true
+     }
+    ]
    },
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mw26vo11018772",
+     "uid": "st-mw26vn4g07zb0z",
      "title": "",
      "text": "One profile model: crew-profile@1 roster store (persona, role, skills, tools, model, memory, safety, pay, stats, avatar, reportsTo, jobTitle); Agent manager agents linked as Assistants, no duplicate data",
      "model": "Opus",
@@ -73284,11 +73311,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T14:05:31.171Z",
-     "updatedAt": "2026-11-04T14:05:32.221Z"
+     "updatedAt": "2026-11-04T14:05:31.171Z"
     },
     {
      "id": "s2",
-     "uid": "st-mw26vo1102tft3",
+     "uid": "st-mw26vn4g08hxnm",
      "title": "",
      "text": "Roster: Brett (boss), Marco, Amber, Patches, Gizmo ($8), Polo, Conrad, Chachi, Brownie, Ashes, Jennifer + existing crew with titles; Molly removed from agent lists; stats kept; write-ups from shared memory",
      "model": "Opus",
@@ -73306,11 +73333,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T14:05:31.171Z",
-     "updatedAt": "2026-11-04T14:05:32.221Z"
+     "updatedAt": "2026-11-04T14:05:31.171Z"
     },
     {
      "id": "s3",
-     "uid": "st-mw26vo1103hmdh",
+     "uid": "st-mw26vn4g09ffpf",
      "title": "",
      "text": "REST + MCP + CLI: crew_list, crew_get, crew_update (owner-only pay, tools, safety, job title)",
      "model": "Opus",
@@ -73328,11 +73355,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T14:05:31.171Z",
-     "updatedAt": "2026-11-04T14:05:32.221Z"
+     "updatedAt": "2026-11-04T14:05:31.171Z"
     },
     {
      "id": "s4",
-     "uid": "st-mw26vo1104pif1",
+     "uid": "st-mw26vn4g0acafv",
      "title": "",
      "text": "Crew window: collapsible rows (avatar + name collapsed; crew card + ID card expanded), expand/collapse all, remembered per member, working on top",
      "model": "Opus",
@@ -73350,11 +73377,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T14:05:31.171Z",
-     "updatedAt": "2026-11-04T14:05:32.221Z"
+     "updatedAt": "2026-11-04T14:05:31.171Z"
     },
     {
      "id": "s5",
-     "uid": "st-mw26vo11056dyt",
+     "uid": "st-mw26vn4g0ba5vs",
      "title": "",
      "text": "Agent manager roster tab: profile with a tab per section, editable; Agent swarm + picker read the same roster",
      "model": "Opus",
@@ -73372,11 +73399,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T14:05:31.171Z",
-     "updatedAt": "2026-11-04T14:05:32.221Z"
+     "updatedAt": "2026-11-04T14:05:31.171Z"
     },
     {
      "id": "s6",
-     "uid": "st-mw26vo1106rqdm",
+     "uid": "st-mw26vn4g0c3hcf",
      "title": "",
      "text": "Rule in RULES.md, tests + type-check, screenshots to UI Review, report, PR",
      "model": "Opus",
@@ -73394,7 +73421,7 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T14:05:31.171Z",
-     "updatedAt": "2026-11-04T14:05:32.221Z"
+     "updatedAt": "2026-11-04T14:05:31.171Z"
     }
    ],
    "profiles": [
@@ -73405,29 +73432,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "code",
-    "planId": "",
-    "createdAt": "2026-11-04T14:05:31.170Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mw26vo11018772": "2026-11-04T14:05:31.171Z",
-     "st-mw26vo1102tft3": "2026-11-04T14:05:31.171Z",
-     "st-mw26vo1103hmdh": "2026-11-04T14:05:31.171Z",
-     "st-mw26vo1104pif1": "2026-11-04T14:05:31.171Z",
-     "st-mw26vo11056dyt": "2026-11-04T14:05:31.171Z",
-     "st-mw26vo1106rqdm": "2026-11-04T14:05:31.171Z"
-    }
-   },
+   "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-04T14:05:32.221Z",
+   "defaultAt": "2026-11-04T14:05:31.171Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
