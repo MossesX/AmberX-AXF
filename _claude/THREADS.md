@@ -683,7 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 13:53 UTC · `follow-amber-switch` s5 done, → built (current) · orchestrator
 - 2026-11-04 13:53 UTC · `follow-amber-switch` s5 done, → complete (current) · foreign-write
 - 2026-11-04 14:03 UTC · `terminal-no-focus` note (current) · foreign-write
 - 2026-11-04 14:04 UTC · `orch-step-click` note (refactor) · foreign-write
@@ -1083,6 +1082,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 17:07 UTC · `live-sessions-plugin` added (6 steps) (current) · foreign-write
 - 2026-11-04 17:07 UTC · `app-voice-commands` note (current) · foreign-write
 - 2026-11-04 17:07 UTC · `app-voice-commands` note (current) · orchestrator
+- 2026-11-04 17:07 UTC · `live-sessions-plugin` s5 done (current) · orchestrator
 
 ## Token passes (log)
 
