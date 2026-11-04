@@ -691,7 +691,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:27 UTC · `profile-lists-home-card` s3 done (current) · foreign-write
 - 2026-11-04 14:27 UTC · `crew-profiles` s6 done, → built (current) · orchestrator
 - 2026-11-04 14:27 UTC · `crew-profiles` note (current) · orchestrator
 - 2026-11-04 14:29 UTC · `plugin-lazy-load` → complete, note (current) · foreign-write
@@ -1091,6 +1090,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 20:01 UTC · `land-merge-queue-first` → complete, note (urgent) · foreign-write
 - 2026-11-04 20:01 UTC · `grid-column-hiding` added (6 steps) (current) · foreign-write
 - 2026-11-04 20:01 UTC · `land-merge-queue-first` note (urgent) · reconciler
+- 2026-11-04 20:05 UTC · `handoff-2` note (current) · foreign-write
 
 ## Token passes (log)
 
