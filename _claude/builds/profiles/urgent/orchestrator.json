@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T19:52:26.903Z",
+ "updatedAt": "2026-11-04T19:54:43.431Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -5601,10 +5601,16 @@
    "pendingId": "",
    "branch": "claude/merge-queue",
    "pr": "#320",
+   "mergedAt": "2026-11-04T19:51:03Z",
    "createdAt": "2026-11-04T17:34:06.563Z",
-   "updatedAt": "2026-11-04T18:01:23.628Z",
+   "updatedAt": "2026-11-04T19:52:46.552Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #320 merged",
+     "at": "2026-11-04T19:52:46.552Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {

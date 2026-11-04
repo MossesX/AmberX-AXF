@@ -691,8 +691,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:24 UTC · `console-wake-finish` added (5 steps) (current) · foreign-write
-- 2026-11-04 14:24 UTC · `profile-lists-home-card` added (4 steps) (current) · foreign-write
 - 2026-11-04 14:24 UTC · `gizmo-voice` added (12 steps) (current) · foreign-write
 - 2026-11-04 14:24 UTC · `gizmo-terminal` added (16 steps) (current) · foreign-write
 - 2026-11-04 14:24 UTC · `urgent-land-lazy-loader` merged (current) · builds-live
@@ -1091,6 +1089,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 19:51 UTC · `fable-packager` PR #336 (current) · builds-live
 - 2026-11-04 19:51 UTC · `fable-packager` s5 done, → built (current) · orchestrator
 - 2026-11-04 19:52 UTC · `fable-packager` s5 done, → complete (current) · foreign-write
+- 2026-11-04 19:52 UTC · `merge-queue` → complete, merged, note (current) · reconciler
+- 2026-11-04 19:52 UTC · `land-merge-queue-first` merged, note (urgent) · reconciler
 
 ## Token passes (log)
 

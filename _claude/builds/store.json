@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 918,
- "updatedAt": "2026-11-04T19:52:26.903Z",
+ "rev": 919,
+ "updatedAt": "2026-11-04T19:54:43.431Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -77290,16 +77290,22 @@
    "title": "Merge queue: test once, never twice",
    "category": "Landing",
    "detail": "Stacked merge queue in auto-land (GitHub's native merge queue needs an org-owned repo; MossesX is a personal account). Each ready PR is tested once on top of main + every PR ahead of it on a queue/pr-<n> branch; green head merges with no retest; red is kicked out with a plain reason and the ones behind are rebuilt without it. CI path filters (framework/cli/ci-scope.mjs), light checks on PRs while the queue is on, main push skips jobs the queue already ran on the same code. Merge queue view + banner chip + REST/MCP/CLI (mergequeue_list/add/remove/move). UI Review gate kept.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/merge-queue",
    "pr": "#320",
+   "mergedAt": "2026-11-04T19:51:03Z",
    "createdAt": "2026-11-04T14:32:10.064Z",
-   "updatedAt": "2026-11-04T15:08:13.941Z",
+   "updatedAt": "2026-11-04T19:52:46.552Z",
    "builtAt": "2026-11-04T15:08:13.941Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #320 merged",
+     "at": "2026-11-04T19:52:46.552Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -77456,7 +77462,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -81496,10 +81502,16 @@
    "pendingId": "",
    "branch": "claude/merge-queue",
    "pr": "#320",
+   "mergedAt": "2026-11-04T19:51:03Z",
    "createdAt": "2026-11-04T17:34:06.563Z",
-   "updatedAt": "2026-11-04T18:01:23.628Z",
+   "updatedAt": "2026-11-04T19:52:46.552Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #320 merged",
+     "at": "2026-11-04T19:52:46.552Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -81656,7 +81668,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
