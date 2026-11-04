@@ -1,0 +1,294 @@
+{
+  "$axf": "handoff-registry@1",
+  "frames": {
+    "link": "session-link@1",
+    "sync": "handoff@1",
+    "event": "session-event@1"
+  },
+  "roles": [
+    "primary",
+    "secondary"
+  ],
+  "clients": [
+    "code",
+    "chat",
+    "voice",
+    "headless",
+    "console"
+  ],
+  "sessionStatuses": [
+    "pending",
+    "working",
+    "idle",
+    "lunch",
+    "offline",
+    "ended"
+  ],
+  "claimKinds": [
+    "area",
+    "path"
+  ],
+  "offerModes": [
+    "whole",
+    "steps-new-build"
+  ],
+  "offerStatuses": [
+    "offered",
+    "accepted",
+    "rejected",
+    "held",
+    "withdrawn",
+    "expired"
+  ],
+  "assignmentStatuses": [
+    "queued",
+    "working",
+    "done",
+    "blocked",
+    "held",
+    "rejected",
+    "released",
+    "taken-back"
+  ],
+  "responses": [
+    "accept",
+    "reject",
+    "hold",
+    "release"
+  ],
+  "stepStates": [
+    "done",
+    "blocked",
+    "started"
+  ],
+  "reactions": [
+    "take-back",
+    "re-offer",
+    "re-split",
+    "reassign",
+    "wait",
+    "replan",
+    "none"
+  ],
+  "eventTypes": [
+    "link",
+    "session",
+    "claim",
+    "offer",
+    "assignment",
+    "message",
+    "build",
+    "replan",
+    "handover",
+    "sync",
+    "audit"
+  ],
+  "helperStates": [
+    "none",
+    "idle",
+    "working",
+    "lunch"
+  ],
+  "channel": "sessions",
+  "messageKinds": [
+    "session",
+    "handover",
+    "claim",
+    "report"
+  ],
+  "chatFilters": [
+    "all",
+    "handovers",
+    "blockers",
+    "mine"
+  ],
+  "areas": {
+    "terminal": [
+      "apps/console-web/plugins/console-terminal/**"
+    ],
+    "banner": [
+      "framework/react/components/Banner*.tsx",
+      "apps/console-web/plugins/*-banner/**"
+    ],
+    "kernel": [
+      "framework/core/**",
+      "framework/android/axf-kernel/**"
+    ],
+    "plugins": [
+      "apps/console-web/plugins/**"
+    ],
+    "builds": [
+      "_claude/builds/**"
+    ],
+    "spec": [
+      "framework/spec/**",
+      "framework/schemas/**"
+    ],
+    "console": [
+      "apps/console-web/src/**"
+    ]
+  },
+  "defaultSettings": {
+    "enforce": true,
+    "claimTtlSec": 1200,
+    "heartbeatSec": 60,
+    "idleSec": 600,
+    "lunchSec": 1800,
+    "offlineSec": 3600,
+    "slotSplit": {},
+    "sendDefault": "ask",
+    "askOnSend": true,
+    "hideDisconnected": false,
+    "eventLimit": 2000,
+    "freshForSec": 1800,
+    "approveNewAccounts": true,
+    "offerTtlSec": 3600
+  },
+  "ownerSettings": [
+    "enforce",
+    "approveNewAccounts",
+    "slotSplit"
+  ],
+  "actions": {
+    "state": {
+      "primary": true,
+      "secondary": true
+    },
+    "snapshot": {
+      "primary": true,
+      "secondary": true
+    },
+    "claims": {
+      "primary": true,
+      "secondary": true
+    },
+    "messages": {
+      "primary": true,
+      "secondary": true
+    },
+    "audit": {
+      "primary": true,
+      "secondary": true
+    },
+    "offers": {
+      "primary": true,
+      "secondary": true
+    },
+    "join": {
+      "primary": true,
+      "secondary": true
+    },
+    "heartbeat": {
+      "primary": true,
+      "secondary": true
+    },
+    "end": {
+      "primary": true,
+      "secondary": true
+    },
+    "sync": {
+      "primary": true,
+      "secondary": true
+    },
+    "claim": {
+      "primary": true,
+      "secondary": true
+    },
+    "release": {
+      "primary": true,
+      "secondary": true
+    },
+    "send": {
+      "primary": true,
+      "secondary": true
+    },
+    "inbox": {
+      "primary": true,
+      "secondary": true
+    },
+    "request-work": {
+      "primary": false,
+      "secondary": true
+    },
+    "respond": {
+      "primary": false,
+      "secondary": true
+    },
+    "step": {
+      "primary": true,
+      "secondary": true
+    },
+    "build-add": {
+      "primary": true,
+      "secondary": false
+    },
+    "build-queue": {
+      "primary": true,
+      "secondary": false
+    },
+    "build-start": {
+      "primary": true,
+      "secondary": false
+    },
+    "build-edit": {
+      "primary": true,
+      "secondary": false
+    },
+    "build-reorder": {
+      "primary": true,
+      "secondary": false
+    },
+    "build-cancel": {
+      "primary": true,
+      "secondary": false
+    },
+    "build-model": {
+      "primary": true,
+      "secondary": false
+    },
+    "plan-edit": {
+      "primary": true,
+      "secondary": false
+    },
+    "profile-edit": {
+      "primary": true,
+      "secondary": false
+    },
+    "offer": {
+      "primary": true,
+      "secondary": false
+    },
+    "assign": {
+      "primary": true,
+      "secondary": false
+    },
+    "take-back": {
+      "primary": true,
+      "secondary": false
+    },
+    "replan": {
+      "primary": true,
+      "secondary": false
+    },
+    "claim-job": {
+      "primary": true,
+      "secondary": false
+    },
+    "settings": {
+      "primary": false,
+      "secondary": false
+    },
+    "make-primary": {
+      "primary": false,
+      "secondary": false
+    },
+    "approve-account": {
+      "primary": false,
+      "secondary": false
+    },
+    "revoke": {
+      "primary": false,
+      "secondary": false
+    }
+  }
+}
