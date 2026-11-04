@@ -113,6 +113,153 @@
         "title": "Crew",
         "text": "Every agent working right now, live: what each is doing, their step, time, cost, tokens, files touched and PR. Tap a row for the details and the live diff.",
         "kind": "screen"
+      },
+      {
+        "target": "catchphrases-one-per-line",
+        "title": "Catchphrases (one per line)",
+        "text": "Where you set “Catchphrases (one per line)”. Change it and the app uses the new value. Part of Crew.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "in-group-chat",
+        "title": "In group chat",
+        "text": "Where you set “In group chat”. Change it and the app uses the new value. Part of Crew.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "job-title",
+        "title": "Job title",
+        "text": "Where you set “Job title”. Change it and the app uses the new value. Part of Crew.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "duties-one-per-line",
+        "title": "Duties (one per line)",
+        "text": "Where you set “Duties (one per line)”. Change it and the app uses the new value. Part of Crew.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "reports-to-member-id",
+        "title": "Reports to (member id)",
+        "text": "Where you set “Reports to (member id)”. Change it and the app uses the new value. Part of Crew.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "pronouns",
+        "title": "Pronouns",
+        "text": "Where you set “Pronouns”. Change it and the app uses the new value. Part of Crew.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "save-role",
+        "title": "Save role",
+        "text": "Saves role. Nothing is kept until you tap it. Part of Crew.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "skills-tag-level-comma-separated",
+        "title": "Skills (tag:level 1-5, comma separated)",
+        "text": "Where you set “Skills (tag:level 1-5, comma separated)”. Change it and the app uses the new value. Part of Crew.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "save-skills",
+        "title": "Save skills",
+        "text": "Saves skills. Nothing is kept until you tap it. Part of Crew.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "allowed-tools-one-per-line",
+        "title": "Allowed tools (one per line)",
+        "text": "Where you set “Allowed tools (one per line)”. Change it and the app uses the new value. Part of Crew.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "save-tools",
+        "title": "Save tools",
+        "text": "Saves tools. Nothing is kept until you tap it. Part of Crew.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "opus",
+        "title": "Opus",
+        "text": "Shows the “Opus” part of this screen. Part of Crew.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "fable",
+        "title": "Fable",
+        "text": "Shows the “Fable” part of this screen. Part of Crew.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "memory-scope",
+        "title": "Memory scope",
+        "text": "Where you set “Memory scope”. Change it and the app uses the new value. Part of Crew.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "save-memory",
+        "title": "Save memory",
+        "text": "Saves memory. Nothing is kept until you tap it. Part of Crew.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "safety-limits-one-per-line",
+        "title": "Safety limits (one per line)",
+        "text": "Where you set “Safety limits (one per line)”. Change it and the app uses the new value. Part of Crew.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "save-safety",
+        "title": "Save safety",
+        "text": "Saves safety. Nothing is kept until you tap it. Part of Crew.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "hourly-pay-usd-at-least",
+        "title": "Hourly pay (USD, at least 7.50)",
+        "text": "Where you set “Hourly pay (USD, at least 7.50)”. Change it and the app uses the new value. Part of Crew.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "save-pay",
+        "title": "Save pay",
+        "text": "Saves pay. Nothing is kept until you tap it. Part of Crew.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "crew-cards",
+        "title": "Crew cards",
+        "text": "Shows the “Crew cards” part of this screen. Part of Crew.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "table",
+        "title": "Table",
+        "text": "Shows the “Table” part of this screen. Part of Crew.",
+        "kind": "tab",
+        "draft": true
       }
     ]
   }

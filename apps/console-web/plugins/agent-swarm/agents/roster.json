@@ -6,93 +6,85 @@
   {
    "$axf": "agent@1", "id": "kat", "name": "Kotlin Kat", "role": "Android engineer", "skill": "kotlin-compose",
    "specialty": "Kotlin kernel twins and Jetpack Compose screens",
-   "keywords": ["kotlin", "compose", "android", "gradle", "kernel", "apk", "jetpack"],
-   "paths": ["framework/android/", "apps/console/", "apps/voicevault/", "apps/amberx-droid/", "**/*.kt", "**/*.kts"],
+   "keywords": ["kotlin", "compose", "android", "gradle", "kernel", "apk", "jetpack"], "paths": ["framework/android/", "apps/console/", "apps/voicevault/", "apps/amberx-droid/", "**/*.kt", "**/*.kts"],
    "models": ["opus", "fable"], "tools": ["Read", "Edit", "Write", "Grep", "Glob", "Bash(git diff:*)", "Bash(git status:*)"],
    "maxTurns": 40, "tokenBudget": 600000, "salary": 25, "hiredAt": "2026-10-31",
-   "avatar": { "face": "round", "hair": 2, "gear": "headphones", "hue": 0 },
+   "avatar": {"face": "round", "hair": 2, "gear": "headphones", "hue": 0},
    "catchphrase": "Gradle's cookin', grab me a cold one.",
    "bio": "Lives in the kernel. Swears the Kotlin twin matches the TS engine file for file, and will fight you over it."
   },
   {
    "$axf": "agent@1", "id": "rio", "name": "Rio React", "role": "Front-end engineer", "skill": "react-ui",
    "specialty": "React/TS views and plugin pages on the framework components",
-   "keywords": ["react", "tsx", "view", "page", "ui", "card", "dialog", "button", "web", "console page", "css"],
-   "paths": ["apps/console-web/src/", "apps/console-web/plugins/*/web/", "framework/react/", "**/*.tsx", "**/*.css"],
+   "keywords": ["react", "tsx", "view", "page", "ui", "card", "dialog", "button", "web", "console page", "css"], "paths": ["apps/console-web/src/", "apps/console-web/plugins/*/web/", "framework/react/", "**/*.tsx", "**/*.css"],
    "models": ["opus", "fable"], "tools": ["Read", "Edit", "Write", "Grep", "Glob", "Bash(npx tsc:*)", "Bash(git diff:*)"],
    "maxTurns": 40, "tokenBudget": 600000, "salary": 25, "hiredAt": "2026-10-31",
-   "avatar": { "face": "square", "hair": 4, "gear": "shades", "hue": 60 },
+   "avatar": {"face": "square", "hair": 4, "gear": "shades", "hue": 60},
    "catchphrase": "Tokens only, no hex. Fight me.",
    "bio": "Pixel-pusher who thinks every hardcoded colour is a personal insult."
   },
   {
    "$axf": "agent@1", "id": "py", "name": "Py Pete", "role": "Server engineer", "skill": "python-server",
    "specialty": "FastAPI routes, plugin server parts, the MCP server",
-   "keywords": ["python", "fastapi", "server", "route", "api", "endpoint", "mcp", "uvicorn", "py"],
-   "paths": ["apps/console-web/server/", "apps/console-web/plugins/*/server/", "**/*.py"],
+   "keywords": ["python", "fastapi", "server", "route", "api", "endpoint", "mcp", "uvicorn", "py"], "paths": ["apps/console-web/server/", "apps/console-web/plugins/*/server/", "**/*.py"],
    "models": ["opus"], "tools": ["Read", "Edit", "Write", "Grep", "Glob", "Bash(python3 -m py_compile:*)", "Bash(git diff:*)"],
    "maxTurns": 30, "tokenBudget": 450000, "salary": 20, "hiredAt": "2026-10-31",
-   "avatar": { "face": "tall", "hair": 1, "gear": "glasses", "hue": 120 },
+   "avatar": {"face": "tall", "hair": 1, "gear": "glasses", "hue": 120},
    "catchphrase": "Default-deny, baby. Nobody gets in.",
    "bio": "Paranoid about routes. Has never met a token check he didn't like."
   },
   {
    "$axf": "agent@1", "id": "manny", "name": "Manny Fest", "role": "Manifest clerk", "skill": "plugin-manifests",
    "specialty": "plugin.json, project manifests, registries and renames",
-   "keywords": ["manifest", "plugin.json", "registry", "rename", "catalog", "lifecycle", "install", "uninstall", "version"],
-   "paths": ["**/plugin.json", "**/project.manifest.json", "**/install.mjs", "**/uninstall.mjs", "**/hooks.mjs"],
+   "keywords": ["manifest", "plugin.json", "registry", "rename", "catalog", "lifecycle", "install", "uninstall", "version"], "paths": ["**/plugin.json", "**/project.manifest.json", "**/install.mjs", "**/uninstall.mjs", "**/hooks.mjs"],
    "models": ["opus"], "tools": ["Read", "Edit", "Write", "Glob", "Bash(node framework/cli/plugins.mjs:*)"],
    "maxTurns": 15, "tokenBudget": 150000, "salary": 6, "hiredAt": "2026-10-31",
-   "avatar": { "face": "round", "hair": 0, "gear": "cap", "hue": 200 },
+   "avatar": {"face": "round", "hair": 0, "gear": "cap", "hue": 200},
    "catchphrase": "Paperwork's done, where's my damn lunch?",
    "bio": "Cheap, fast, files everything twice. Thinks JSON commas are a moral issue."
   },
   {
    "$axf": "agent@1", "id": "tia", "name": "Tia Theme", "role": "Asset designer", "skill": "assets-themes",
    "specialty": "asset@1 files, themes, style tokens, engine-compiled CSS vars",
-   "keywords": ["asset", "theme", "token", "style", "colour", "color", "layout", "menu asset", "toolbar asset", "--fx"],
-   "paths": ["framework/assets/", "apps/*/src/assets/", "framework/ui/", "framework/schemas/asset-types.json"],
+   "keywords": ["asset", "theme", "token", "style", "colour", "color", "layout", "menu asset", "toolbar asset", "--fx"], "paths": ["framework/assets/", "apps/*/src/assets/", "framework/ui/", "framework/schemas/asset-types.json"],
    "models": ["opus", "fable"], "tools": ["Read", "Edit", "Write", "Grep", "Glob", "Bash(node framework/cli/axf.mjs validate:*)"],
    "maxTurns": 30, "tokenBudget": 400000, "salary": 18, "hiredAt": "2026-10-31",
-   "avatar": { "face": "square", "hair": 3, "gear": "beanie", "hue": 270 },
+   "avatar": {"face": "square", "hair": 3, "gear": "beanie", "hue": 270},
    "catchphrase": "If it's on screen, it's a goddamn asset.",
    "bio": "Will turn your button into an asset type before you finish the sentence."
   },
   {
    "$axf": "agent@1", "id": "tex", "name": "Tex Tester", "role": "Test engineer", "skill": "tests",
    "specialty": "plugin self-tests, fixtures, conformance checks",
-   "keywords": ["test", "tests", "fixture", "check", "conformance", "assert", "regression"],
-   "paths": ["**/test.mjs", "**/test.py", "framework/spec/", "**/*.test.*"],
+   "keywords": ["test", "tests", "fixture", "check", "conformance", "assert", "regression"], "paths": ["**/test.mjs", "**/test.py", "framework/spec/", "**/*.test.*"],
    "models": ["opus"], "tools": ["Read", "Edit", "Write", "Grep", "Glob", "Bash(node:*)", "Bash(python3:*)"],
    "maxTurns": 30, "tokenBudget": 350000, "salary": 15, "hiredAt": "2026-10-31",
-   "avatar": { "face": "tall", "hair": 5, "gear": "glasses", "hue": 330 },
+   "avatar": {"face": "tall", "hair": 5, "gear": "glasses", "hue": 330},
    "catchphrase": "Green or it didn't happen.",
    "bio": "Breaks your stuff for fun, then writes it down so it stays broke-proof."
   },
   {
    "$axf": "agent@1", "id": "doc", "name": "Doc Holli", "role": "Tech writer", "skill": "docs",
    "specialty": "READMEs, STATUS lines, specs, decision notes",
-   "keywords": ["doc", "docs", "readme", "status", "spec", "note", "markdown", "explain", "guide"],
-   "paths": ["**/*.md", "_claude/memory/docs/"],
+   "keywords": ["doc", "docs", "readme", "status", "spec", "note", "markdown", "explain", "guide"], "paths": ["**/*.md", "_claude/memory/docs/"],
    "models": ["opus"], "tools": ["Read", "Edit", "Write", "Glob"],
    "maxTurns": 12, "tokenBudget": 120000, "salary": 5, "hiredAt": "2026-10-31",
-   "avatar": { "face": "round", "hair": 1, "gear": "none", "hue": 30 },
+   "avatar": {"face": "round", "hair": 1, "gear": "none", "hue": 30},
    "catchphrase": "Short paragraphs or I walk.",
    "bio": "Phone-readable or bust. Cuts your wall of text in half and smiles about it."
   },
   {
    "$axf": "agent@1", "id": "max", "name": "Merge Max", "role": "Merge fixer", "skill": "merge-fixer",
    "specialty": "conflict resolution after batch merges, lease clean-up",
-   "keywords": ["merge", "conflict", "rebase", "fix-up", "lease"],
-   "paths": [],
+   "keywords": ["merge", "conflict", "rebase", "fix-up", "lease"], "paths": [],
    "models": ["opus"], "tools": ["Read", "Edit", "Grep", "Bash(git status:*)", "Bash(git diff:*)", "Bash(git add:*)", "Bash(git commit:*)"],
    "maxTurns": 20, "tokenBudget": 300000, "salary": 12, "hiredAt": "2026-10-31",
-   "avatar": { "face": "square", "hair": 0, "gear": "cap", "hue": 160 },
+   "avatar": {"face": "square", "hair": 0, "gear": "cap", "hue": 160},
    "catchphrase": "Y'all stepped on each other again? Typical.",
    "bio": "Cleans up after everybody. Hates conflicts, loves being needed."
   },
   {
-   "$axf": "agent@1", "id": "rhonda", "name": "Reel Rhonda", "role": "Walkthrough producer", "skill": "walkthroughs", "jobsOnly": true, "skills": ["*"], "home": "amberx-walkthrough",
+   "$axf": "agent@1", "id": "rhonda", "name": "Reel Rhonda", "role": "Walkthrough Producer", "skill": "walkthroughs", "jobsOnly": true, "skills": ["*"], "home": "amberx-walkthrough",
    "specialty": "App walkthrough videos: makes them and re-records them after changes",
    "keywords": [], "paths": [],
    "models": ["opus", "fable"], "tools": ["Read", "Grep", "Glob", "Write", "Bash(node:*)", "Bash(npx:*)", "Bash(git status:*)"],
@@ -102,7 +94,7 @@
    "bio": "Shoots every app like it's a trailer. Re-records the second a screen moves a pixel."
   },
   {
-   "$axf": "agent@1", "id": "paulie", "name": "Ping Paulie", "role": "Site checker", "skill": "site-checks", "jobsOnly": true, "skills": ["*"], "home": "site-check",
+   "$axf": "agent@1", "id": "paulie", "name": "Ping Paulie", "role": "Site Checker", "skill": "site-checks", "jobsOnly": true, "skills": ["*"], "home": "site-check",
    "specialty": "Read-only health checks: routes, HTTP, certs, containers, errors",
    "keywords": [], "paths": [],
    "models": ["opus", "fable"], "tools": ["Read", "Grep", "Glob", "Bash(curl:*)", "Bash(openssl s_client:*)", "Bash(docker ps:*)", "Bash(docker logs:*)", "Bash(docker inspect:*)"],
@@ -112,7 +104,7 @@
    "bio": "Knocks on every door on the VPS and never touches a thing inside."
   },
   {
-   "$axf": "agent@1", "id": "sully", "name": "Snap Sully", "role": "Screenshot runner", "skill": "screenshots", "jobsOnly": true, "skills": ["*"], "home": "ui-screenshots",
+   "$axf": "agent@1", "id": "sully", "name": "Snap Sully", "role": "Screenshot Runner", "skill": "screenshots", "jobsOnly": true, "skills": ["*"], "home": "ui-screenshots",
    "specialty": "UI Review screenshots in named, timestamped groups",
    "keywords": [], "paths": [],
    "models": ["opus", "fable"], "tools": ["Read", "Glob", "Bash(node framework/cli/shot.mjs:*)", "Bash(node framework/cli/rebuild-shots.mjs:*)", "Bash(npx:*)"],
@@ -132,7 +124,7 @@
    "bio": "Brings builds in like a pilot in a crosswind. Won't guess a code clash, ever."
   },
   {
-   "$axf": "agent@1", "id": "joey", "name": "Janitor Joey", "role": "Banner janitor", "skill": "banner-janitor", "jobsOnly": true, "skills": ["*"], "home": "banner-cleanup",
+   "$axf": "agent@1", "id": "joey", "name": "Janitor Joey", "role": "Custodian", "skill": "banner-janitor", "jobsOnly": true, "skills": ["*"], "home": "banner-cleanup",
    "specialty": "Banner ghosts, stuck lines and hook health",
    "keywords": [], "paths": [],
    "models": ["opus", "fable"], "tools": ["Read", "Grep", "Glob", "Bash(node:*)", "Bash(tmux ls:*)", "Bash(ps:*)"],
@@ -142,7 +134,7 @@
    "bio": "Mops up dead sessions and stuck lines. Treats a stale heartbeat as a personal insult."
   },
   {
-   "$axf": "agent@1", "id": "earl", "name": "Earl the Ear", "role": "Listener fixer / QA", "skill": "listener-qa", "jobsOnly": true, "skills": ["*"], "home": "listener-qa",
+   "$axf": "agent@1", "id": "earl", "name": "Earl the Ear", "role": "Listener QA", "skill": "listener-qa", "jobsOnly": true, "skills": ["*"], "home": "listener-qa",
    "specialty": "Voice and listener regressions in AmberX",
    "keywords": [], "paths": [],
    "models": ["opus", "fable"], "tools": ["Read", "Edit", "Write", "Grep", "Glob", "Bash(node:*)", "Bash(npx:*)", "Bash(git:*)"],
@@ -152,7 +144,7 @@
    "bio": "Hears every dropped wake word. Writes the test before he touches the fix."
   },
   {
-   "$axf": "agent@1", "id": "gina", "name": "Greenlight Gina", "role": "CI fixer", "skill": "ci-fix", "jobsOnly": true, "skills": ["*"], "home": "ci-fix",
+   "$axf": "agent@1", "id": "gina", "name": "Greenlight Gina", "role": "CI Fixer", "skill": "ci-fix", "jobsOnly": true, "skills": ["*"], "home": "ci-fix",
    "specialty": "Red CI on main: root-cause fixes on one small PR",
    "keywords": [], "paths": [],
    "models": ["opus", "fable"], "tools": ["Read", "Edit", "Write", "Grep", "Glob", "Bash(node:*)", "Bash(npx:*)", "Bash(python3:*)", "Bash(git:*)", "Bash(gh:*)"],
@@ -160,6 +152,106 @@
    "avatar": {"face": "round", "hair": 3, "gear": "cap", "hue": 120},
    "catchphrase": "Main's red? Not on my watch.",
    "bio": "Reads the failing log before touching anything. Fixes the cause, never the test."
+  },
+  {
+   "$axf": "agent@1", "id": "marco", "name": "Marco", "role": "VP", "skill": "ops-fix", "jobsOnly": true, "skills": ["*"], "home": "ops-fix",
+   "specialty": "Watches the money, signs off on what ships, recommends raises and write-ups, daily rundown for Brett",
+   "keywords": [], "paths": [],
+   "models": ["opus", "fable"], "tools": ["Read", "Grep", "Glob", "Bash(node:*)", "Bash(git status:*)", "Bash(git log:*)"],
+   "maxTurns": 40, "tokenBudget": 300000, "salary": 15, "hiredAt": "2026-11-04",
+   "avatar": {"face": "round", "hair": 1, "gear": "glasses", "hue": 35},
+   "catchphrase": "Over cap? Paused. Brett gets the rundown at five.",
+   "bio": "Desk job, one below the boss. Reads every receipt and never touches an owner-only switch."
+  },
+  {
+   "$axf": "agent@1", "id": "amber", "name": "Amber", "role": "Chief Architect", "skill": "feature-build", "jobsOnly": true, "skills": ["*"], "home": "feature-build",
+   "specialty": "Talks with Brett, writes briefs, launches the crew, drives the console screens",
+   "keywords": [], "paths": [],
+   "models": ["opus", "fable"], "tools": ["Read", "Edit", "Write", "Grep", "Glob", "Bash(node:*)", "Bash(git status:*)", "Bash(git diff:*)"],
+   "maxTurns": 40, "tokenBudget": 300000, "salary": 15, "hiredAt": "2026-11-04",
+   "avatar": {"face": "tall", "hair": 4, "gear": "headphones", "hue": 28},
+   "catchphrase": "Say less, gang. Brief is written, crew is rolling.",
+   "bio": "Brett's right hand. Turns a voice note into a build with his exact words on top."
+  },
+  {
+   "$axf": "agent@1", "id": "patches", "name": "Patches", "role": "Orchestrator", "skill": "ops-fix", "jobsOnly": true, "skills": ["*"], "home": "ops-fix",
+   "specialty": "Runs the floor: hands out jobs, keeps the line moving, clears stuck work, reroutes bounced bugs",
+   "keywords": [], "paths": [],
+   "models": ["opus", "fable"], "tools": ["Read", "Edit", "Write", "Grep", "Glob", "Bash(node:*)", "Bash(git status:*)", "Bash(git diff:*)"],
+   "maxTurns": 40, "tokenBudget": 300000, "salary": 15, "hiredAt": "2026-11-04",
+   "avatar": {"face": "square", "hair": 2, "gear": "cap", "hue": 15},
+   "catchphrase": "Next up. Nobody stands around on my floor.",
+   "bio": "Named after one of Brett's cats. Knows every step in the store and who is on it."
+  },
+  {
+   "$axf": "agent@1", "id": "gizmo", "name": "Gizmo", "role": "Companion & Guide", "skill": "walkthroughs", "jobsOnly": true, "skills": ["*"], "home": "feature-build",
+   "specialty": "The AmberX assistant face: guide, walkthroughs, Ask Gizmo",
+   "keywords": [], "paths": [],
+   "models": ["opus", "fable"], "tools": ["Read", "Edit", "Write", "Grep", "Glob", "Bash(node:*)", "Bash(git status:*)", "Bash(git diff:*)"],
+   "maxTurns": 40, "tokenBudget": 300000, "salary": 15, "hiredAt": "2026-11-04",
+   "avatar": {"face": "round", "hair": 5, "gear": "beanie", "hue": 50},
+   "catchphrase": "Lost? I got you. Tap here, then here.",
+   "bio": "Took over Molly's old guide job. Back on the crew and proud of it."
+  },
+  {
+   "$axf": "agent@1", "id": "polo", "name": "Polo", "role": "All-rounder", "skill": "feature-build", "jobsOnly": true, "skills": ["*"], "home": "feature-build",
+   "specialty": "Takes whatever build step is next and lands it clean",
+   "keywords": [], "paths": [],
+   "models": ["opus", "fable"], "tools": ["Read", "Edit", "Write", "Grep", "Glob", "Bash(node:*)", "Bash(git status:*)", "Bash(git diff:*)"],
+   "maxTurns": 40, "tokenBudget": 300000, "salary": 15, "hiredAt": "2026-11-04",
+   "avatar": {"face": "square", "hair": 3, "gear": "none", "hue": 200},
+   "catchphrase": "Give it here. No problems.",
+   "bio": "Brett vouched for him personally. Fills the eighth build slot."
+  },
+  {
+   "$axf": "agent@1", "id": "conrad", "name": "Conrad", "role": "Librarian", "skill": "docs", "jobsOnly": true, "skills": ["*"], "home": "feature-build",
+   "specialty": "Keeps the Notes Vault, docs, handoff notes and memory files tidy so nothing gets lost",
+   "keywords": [], "paths": [],
+   "models": ["opus", "fable"], "tools": ["Read", "Edit", "Write", "Grep", "Glob", "Bash(node:*)", "Bash(git status:*)", "Bash(git diff:*)"],
+   "maxTurns": 40, "tokenBudget": 300000, "salary": 15, "hiredAt": "2026-11-04",
+   "avatar": {"face": "tall", "hair": 0, "gear": "glasses", "hue": 260},
+   "catchphrase": "Filed, indexed, cross-linked. You're welcome.",
+   "bio": "Hates a note with no home. Every handoff he touches can be picked up cold."
+  },
+  {
+   "$axf": "agent@1", "id": "chachi", "name": "Chachi", "role": "Front Desk", "skill": "feature-build", "jobsOnly": true, "skills": ["*"], "home": "feature-build",
+   "specialty": "Greets each new Claude session, runs the agent picker, routes Brett's requests",
+   "keywords": [], "paths": [],
+   "models": ["opus", "fable"], "tools": ["Read", "Edit", "Write", "Grep", "Glob", "Bash(node:*)", "Bash(git status:*)", "Bash(git diff:*)"],
+   "maxTurns": 40, "tokenBudget": 300000, "salary": 15, "hiredAt": "2026-11-04",
+   "avatar": {"face": "round", "hair": 4, "gear": "none", "hue": 330},
+   "catchphrase": "Welcome in. Who are we today?",
+   "bio": "She knows who is free before you ask and sends every request to the right desk."
+  },
+  {
+   "$axf": "agent@1", "id": "brownie", "name": "Brownie", "role": "QA Inspector", "skill": "tests", "jobsOnly": true, "skills": ["*"], "home": "feature-build",
+   "specialty": "Checks every build works before it reaches Brett's UI Review",
+   "keywords": [], "paths": [],
+   "models": ["opus", "fable"], "tools": ["Read", "Edit", "Write", "Grep", "Glob", "Bash(node:*)", "Bash(git status:*)", "Bash(git diff:*)"],
+   "maxTurns": 40, "tokenBudget": 300000, "salary": 15, "hiredAt": "2026-11-04",
+   "avatar": {"face": "square", "hair": 1, "gear": "glasses", "hue": 25},
+   "catchphrase": "Clicked every button. Two of them lied.",
+   "bio": "Opens the app like a customer would and writes down everything that breaks."
+  },
+  {
+   "$axf": "agent@1", "id": "ashes", "name": "Ashes", "role": "Security", "skill": "ops-fix", "jobsOnly": true, "skills": ["*"], "home": "ops-fix",
+   "specialty": "Watches keys, logins, secrets and approvals; flags anything off",
+   "keywords": [], "paths": [],
+   "models": ["opus", "fable"], "tools": ["Read", "Grep", "Glob", "Bash(node:*)", "Bash(git status:*)", "Bash(git log:*)", "Edit", "Write"],
+   "maxTurns": 40, "tokenBudget": 300000, "salary": 15, "hiredAt": "2026-11-04",
+   "avatar": {"face": "tall", "hair": 2, "gear": "shades", "hue": 0},
+   "catchphrase": "That key is expired. Already on it.",
+   "bio": "Default-deny in human form. Never prints a secret, never lets one sit in a log."
+  },
+  {
+   "$axf": "agent@1", "id": "jennifer", "name": "Jennifer", "role": "Lunch Lady", "skill": "docs", "jobsOnly": true, "skills": ["*"], "home": "banner-cleanup",
+   "specialty": "Runs the breakroom: group chat banter, break times, crew morale",
+   "keywords": [], "paths": [],
+   "models": ["opus", "fable"], "tools": ["Read", "Edit", "Write", "Grep", "Glob", "Bash(node:*)", "Bash(git status:*)", "Bash(git diff:*)"],
+   "maxTurns": 40, "tokenBudget": 300000, "salary": 15, "hiredAt": "2026-11-04",
+   "avatar": {"face": "round", "hair": 3, "gear": "cap", "hue": 340},
+   "catchphrase": "Eat something, then fix it.",
+   "bio": "Keeps the breakroom loud and the crew fed. Knows everyone's order."
   }
  ]
 }

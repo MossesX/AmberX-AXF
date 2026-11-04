@@ -155,7 +155,7 @@ def agent_card(agent_id: str, d: dict[str, Any], roster: list[dict[str, Any]]) -
     p = d["personas"].get(a["id"], {})
     name = a.get("name") or a["id"]
     return {"id": a["id"], "name": name, "role": a.get("role", ""), "avatar": a.get("avatar"), "catchphrase": a.get("catchphrase", ""),
-            "persona": p.get("persona", ""), "voice": p.get("voice", ""),
+            "persona": p.get("persona", "") or a.get("personaLine", ""), "voice": p.get("voice", ""),
             "intro": f"I'm {name}{', ' + a['role'] if a.get('role') else ''}, on this session for Brett." if a["id"] else "",
             "env": {"AXF_AGENT": a["id"]} if a["id"] else {}}
 

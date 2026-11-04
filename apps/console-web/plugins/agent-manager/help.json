@@ -403,6 +403,20 @@
         "text": "Builds a new tool. Part of Agent manager.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "edit-profile",
+        "title": "Edit profile",
+        "text": "Edits profile. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "assistant-setup-agents",
+        "title": "Assistant setup (Agents)",
+        "text": "Shows “Assistant setup (Agents)”. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
       }
     ],
     "intros": []

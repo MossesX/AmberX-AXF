@@ -562,6 +562,10 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
 
     _register_claude_settings_tools(mcp)
 
+    # ------------------------------------------------------------------ crew profiles (Agent swarm, axf.crew@1)
+
+    _register_crew_tools(mcp)
+
     # ------------------------------------------------------------------ session mirror (Terminal → sessions nav)
 
     if notes is not None:
@@ -660,6 +664,70 @@ def _register_claude_settings_tools(mcp: MCPServer) -> None:
         if not pairs:
             raise ToolError("invalid: send values as {key: value}")
         return await go("set", *pairs, "--by", by or "mcp")
+
+
+# ---------------------------------------------------------------------- crew profiles (crew-profile@1)
+
+def _crew_call(op: str, member: str = "", patch: dict[str, Any] | None = None, sort: str = "working") -> dict[str, Any]:
+    """The one roster through the Agent swarm's axf.crew@1 when the console runs; in stdio mode its CLI (no Agent
+    manager assistants there, only the last ones the console saw). Never an owner: pay, tools, safety and job title
+    are refused here."""
+    try:
+        import plugin_services  # the console's registry (absent in stdio mode)
+    except ImportError:
+        plugin_services = None  # type: ignore[assignment]
+    svc = plugin_services.get("axf.crew@1") if plugin_services is not None else None
+    try:
+        if svc is not None and hasattr(svc, "profiles"):
+            if op == "list":
+                return {"ok": True, "members": svc.profiles(sort)}
+            if op == "get":
+                return {"ok": True, "member": svc.profile(member)}
+            return {"ok": True, "member": svc.update(member, patch or {}, owner=False)}
+    except Exception as e:  # noqa: BLE001
+        msg = str(e)
+        return {"ok": False, "code": msg.split(":", 1)[0] if ":" in msg else "unexpected", "message": msg}
+    cli = Path(__file__).resolve().parents[1] / "plugins" / "agent-swarm" / "swarm.mjs"  # axf-plugin:agent-swarm
+    if not cli.exists():
+        return {"ok": False, "code": "unavailable", "message": "the Agent swarm plugin is not installed"}
+    args = ["crew-list", "--sort", sort] if op == "list" else ["crew-get", member] if op == "get" else ["crew-update", member, json.dumps(patch or {})]
+    env = {k: v for k, v in os.environ.items() if k != "AXF_CREW_OWNER"}
+    p = subprocess.run(["node", str(cli), *args, "--json"], cwd=cli.parents[3], capture_output=True, text=True, timeout=60, env=env)
+    lines = p.stdout.strip().splitlines()
+    try:
+        return json.loads(lines[-1]) if lines else {"ok": False, "code": "unexpected", "message": p.stderr.strip()[-400:] or "no output"}
+    except json.JSONDecodeError:
+        return {"ok": False, "code": "unexpected", "message": (p.stderr or p.stdout).strip()[-400:]}
+
+
+def _register_crew_tools(mcp: MCPServer) -> None:
+    async def go(*a: Any) -> dict[str, Any]:
+        r = await anyio.to_thread.run_sync(lambda: _crew_call(*a))
+        if not r.get("ok"):
+            raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message') or r.get('error', 'failed')}")
+        r.pop("ok", None)
+        return r
+
+    @mcp.tool(annotations=READ)
+    async def crew_list(sort: Literal["working", "name", "title"] = "working") -> dict[str, Any]:
+        """The one roster: every employee is an agent with a job title (Boss, VP, Chief Architect, Orchestrator,
+        Librarian, Front Desk, QA Inspector, Security, Lander, Assistant …). Each member carries persona, role and
+        duties, tagged skills, tools allow list, model, memory, safety limits, hourly pay, stats (jobs, cost, strikes,
+        write-ups), avatar and reports-to. Working members first."""
+        return await go("list", "", None, sort)
+
+    @mcp.tool(annotations=READ)
+    async def crew_get(member: str) -> dict[str, Any]:
+        """One crew member's full profile by id or name, plus `personaLine` (how they talk, for group chat and
+        sessions working as them)."""
+        return await go("get", member)
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def crew_update(member: str, patch: dict[str, Any]) -> dict[str, Any]:
+        """Change profile sections of one member: persona {voice, tone, slang 0-5, catchphrases, groupChat}, duties,
+        skills [{tag, level 1-5}], model (opus | fable), memory {scope, notes}, reportsTo, pronouns. Pay, tools,
+        safety and job title are owner-only: refused here, Brett changes them in the console."""
+        return await go("update", member, patch)
 
 
 # ---------------------------------------------------------------------- control@1 tools (framework/spec/CONTROL.md)

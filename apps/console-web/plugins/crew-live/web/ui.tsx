@@ -15,6 +15,7 @@ import {
   KIND_TONE, STATUS_LABEL, STATUS_TONE, directoryOf, elapsed, filterRuns, highlight, isSnapshot, sortRuns, stepLine, tokensText, usd,
   type CrewAgent, type FileChange, type Hunk, type Run, type RunStatus, type Snapshot, type Sort,
 } from './core';
+import { MemberList } from './members';
 
 export const FOLDER = 'crew-live';
 export const VIEW = 'crew';
@@ -261,6 +262,8 @@ export function CrewView() {
   const [hidden, setHidden] = useState<string[]>(() => consoleApi.readLocal('crew-hidden', []));
   const [expanded, setExpanded] = useState<string[]>(() => consoleApi.readLocal('crew-expanded', []));
   const [groupsShut, setGroupsShut] = useState<string[]>(() => consoleApi.readLocal('crew-groups-shut', ['finished', 'off']));
+  const [mode, setMode] = useState<'cards' | 'table'>(() => consoleApi.readLocal('crew-mode', 'cards'));
+  useEffect(() => { consoleApi.writeLocal('crew-mode', mode); }, [mode]);
   useEffect(() => { consoleApi.writeLocal('crew-q', q); consoleApi.writeLocal('crew-status', only); }, [q, only]);
   useEffect(() => { consoleApi.writeLocal('crew-sort', sort); consoleApi.writeLocal('crew-hidden', hidden); }, [sort, hidden]);
   useEffect(() => { consoleApi.writeLocal('crew-expanded', expanded); consoleApi.writeLocal('crew-groups-shut', groupsShut); }, [expanded, groupsShut]);
@@ -269,7 +272,7 @@ export function CrewView() {
     const on = (e: Event) => {
       const want = String((e as CustomEvent).detail ?? '');
       const r = lastSnap?.runs.find((x) => x.id === want || x.name === want || (x.agent.id === want && x.status !== 'idle')) ?? lastSnap?.runs.find((x) => x.agent.id === want);
-      if (r) { setExpanded((xs) => (xs.includes(r.id) ? xs : [...xs, r.id])); setOnly(''); setQ(''); }
+      if (r) { setMode('table'); setExpanded((xs) => (xs.includes(r.id) ? xs : [...xs, r.id])); setOnly(''); setQ(''); }
       else rt.toast(`${want} isn't working on anything right now.`, 'info', 'Crew');
     };
     window.addEventListener(FOCUS_EVENT, on);
@@ -315,6 +318,9 @@ export function CrewView() {
         <span className={`axp-crew__live is-${live}`}><span className={toneClass(live === 'live' ? 'success' : live === 'down' ? 'danger' : 'muted')} /> {live === 'live' ? 'Live' : live === 'down' ? 'Reconnecting' : 'Connecting'}</span>
       </div>
       {snap?.source && !snap.source.headless ? <p className="fx-small fx-muted">The Terminal plugin is off: runs are read from their logs only and can't be stopped from here.</p> : null}
+      <Segmented size="sm" label="Show" value={mode} onChange={setMode} options={[{ value: 'cards', label: 'Crew cards' }, { value: 'table', label: 'Table' }]} />
+      {mode === 'cards' ? <MemberList members={snap?.members ?? []} runs={snap?.runs ?? []} now={now} /> : null}
+      {mode === 'table' ? <>
       <div className="axp-crew__tools-row">
         <TextField label="Search" value={q} onChange={setQ} placeholder="Agent, build, step, file…" className="axp-crew__search" />
         <Segmented size="sm" label="Status" value={only} onChange={setOnly} options={STATUS_OPTS} />
@@ -348,6 +354,7 @@ export function CrewView() {
           </ul>
         )}
       </section>
+      </> : null}
       <IconButton icon="refresh" label="Refresh now" className="axp-crew__refresh" onClick={() => void pluginFetch(FOLDER, 'agents').then((r) => r.json()).then((j) => { if (isSnapshot(j)) publish(j); })} />
     </div>
   );

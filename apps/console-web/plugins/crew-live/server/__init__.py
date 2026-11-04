@@ -26,7 +26,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 
 import plugin_services
@@ -36,6 +36,8 @@ from . import crew
 router = APIRouter()
 HEADLESS = "axf.headless@1"
 ROSTER = "axf.swarm-roster@1"
+CREW = "axf.crew@1"  # crew-profile@1: the one roster with every profile section (the Agent swarm)
+MEMBERS_TTL = 30.0
 SNAPSHOT_TTL = 2.0
 LIVE_EVERY = 2.0
 STORE = crew.ROOT / "_claude" / "builds" / "store.json"
@@ -43,6 +45,24 @@ BUILDS_ROOT = os.environ.get("AXF_BUILDS_ROOT", "/root/axf-builds")
 
 _lock = threading.Lock()
 _cache: dict[str, Any] = {"at": 0.0, "value": None, "sig": ""}
+_members: dict[str, Any] = {"at": 0.0, "value": []}
+
+# the card fields the Crew window draws (the full profile is one GET members/{id} away)
+CARD_KEYS = ("id", "name", "kind", "jobTitle", "pronouns", "reportsTo", "avatar", "catchphrase", "hiredAt", "status", "statusLabel", "running", "stats", "pay", "role", "model")
+
+
+def _members_now(force: bool = False) -> list[dict[str, Any]]:
+    """Every crew member's card (axf.crew@1 profiles), read at most every MEMBERS_TTL seconds; [] without it."""
+    now = time.time()
+    if not force and _members["value"] and now - _members["at"] < MEMBERS_TTL:
+        return _members["value"]
+    svc = plugin_services.get(CREW)
+    try:
+        ms = [{k: m.get(k) for k in CARD_KEYS} for m in (svc.profiles() if svc is not None and hasattr(svc, "profiles") else [])]
+    except Exception:  # noqa: BLE001 — a broken roster never breaks the Crew
+        ms = _members["value"]
+    _members.update(at=now, value=ms)
+    return ms
 
 
 def _roster() -> list[dict[str, Any]]:
@@ -84,6 +104,7 @@ def snapshot(force: bool = False) -> dict[str, Any]:
         sessions, meters, source = _sessions(now)
         roster = _roster()
         value = crew.snapshot(sessions, meters, crew.store_builds(STORE), roster, now)
+        value["members"] = _members_now()
         value["source"] = {**source, "roster": bool(roster)}
         body = json.dumps({k: v for k, v in value.items() if k != "now"}, sort_keys=True, default=str)
         _cache.update(at=now, value=value, sig=hashlib.sha1(body.encode()).hexdigest())
@@ -152,6 +173,50 @@ def stop(run: str) -> dict[str, Any]:
         raise HTTPException(400, str(e)) from None
     snapshot(force=True)
     return {"ok": True, "run": r["id"], **(out if isinstance(out, dict) else {})}
+
+
+def _crew_svc() -> Any:
+    svc = plugin_services.get(CREW)
+    if svc is None or not hasattr(svc, "profiles"):
+        raise HTTPException(409, "the Agent swarm (axf.crew@1) is off, so there are no crew profiles")
+    return svc
+
+
+@router.get("/members")
+def members() -> dict[str, Any]:
+    """The whole roster: every employee's full profile (persona, role, skills, tools, model, memory, safety, pay, stats,
+    avatar, reports to), working members first."""
+    return {"$axf": "crew-roster@1", "members": _crew_svc().profiles()}
+
+
+@router.get("/members/{member}")
+def member(member: str) -> dict[str, Any]:
+    """One member's full profile and the line their persona speaks in."""
+    try:
+        return {"member": _crew_svc().profile(member)}
+    except LookupError as e:
+        raise HTTPException(404, str(e)) from None
+
+
+@router.patch("/members/{member}")
+async def member_update(member: str, request: Request) -> dict[str, Any]:
+    """Change profile sections. Pay, tools, safety and job title only from Brett's signed-in console session."""
+    try:
+        patch = await request.json()
+    except ValueError:
+        raise HTTPException(400, "not JSON") from None
+    if not isinstance(patch, dict):
+        raise HTTPException(400, "send the sections as an object")
+    c = plugin_services.get("control@1")
+    owner = bool(c is not None and hasattr(c, "owner") and c.owner(request))
+    try:
+        out = await asyncio.to_thread(_crew_svc().update, member, patch, owner)
+    except ValueError as e:
+        msg = str(e)
+        raise HTTPException(403 if msg.startswith("owner_only") else 404 if msg.startswith("not_found") else 400, msg) from None
+    _members_now(force=True)
+    snapshot(force=True)
+    return {"ok": True, "member": out}
 
 
 @router.get("/live")

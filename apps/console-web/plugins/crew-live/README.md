@@ -59,3 +59,13 @@ Terminal tab, group chat, assign a job, stop. The plugin fills the framework's a
 ## Lifecycle
 
 Stores nothing (`.axf-console/plugins/crew-live` stays empty). `install.mjs` / `uninstall.mjs` per plugin-lifecycle@1.
+
+## Crew cards (Nov 4 2026)
+
+The Crew window opens on **Crew cards**: one collapsible container per roster member (crew-profile@1 from `axf.crew@1`).
+Collapsed = avatar + name + status dot + job title on one line; open = a Crew card (job title, doing now, live timer,
+cost, files, pay, reports to, write-ups), the ID card (framework `AgentCard`, agent-card@1) and the Profile (a tab per
+section, editable; pay, tools, safety and job title save only from Brett's own session). Working members are always on
+top (longest-running first), then queued, idle and off; the list reorders live with a short slide and holds still
+while Brett touches or scrolls it. Expand all / Collapse all, open state per member on this device, default: working
+open (Settings → Plugins → Crew → Crew cards, also sort). Table shows the old run grid. Action `crew.profile:<id>`.

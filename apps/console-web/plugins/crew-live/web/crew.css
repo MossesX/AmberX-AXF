@@ -76,3 +76,20 @@
 .axp-crew__offItem { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); }
 
 :where([data-fx-tiny], [data-fx-small]) .axp-crew__live { margin-inline-start: 0; }
+
+/* crew members (crew-profile@1): one collapsible container each, working on top */
+.axp-crew__members { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axp-crew__memberList { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axp-crew__member { border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); min-width: 0; }
+.axp-crew__member.is-working { border-color: var(--fx-success); }
+.axp-crew__memberHead { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); width: 100%; min-width: 0; padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-sm); background: none; border: 0; color: inherit; font: inherit; text-align: start; cursor: pointer; }
+.axp-crew__memberHead .axp-crew__role { flex: 1 1 auto; min-width: 0; }
+.axp-crew__memberTime { flex: none; }
+.axp-crew__memberBody { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: 0 var(--fx-dens-gap-sm) var(--fx-dens-gap-sm); min-width: 0; }
+.axp-crew__card { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-space) * 20), 1fr)); gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); margin: 0; }
+.axp-crew__card > div { display: flex; flex-direction: column; min-width: 0; }
+.axp-crew__card dt { font-size: var(--fx-type-root-sm); color: var(--fx-muted); }
+.axp-crew__card dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.axp-crew__cardNow, .axp-crew__writeup { display: block; }
+.axp-crew__profile, .axp-crew__profileBody, .axp-crew__settings { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axp-crew__profile .fx-seg { flex-wrap: wrap; }

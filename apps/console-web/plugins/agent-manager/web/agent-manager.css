@@ -100,3 +100,10 @@
 :where([data-fx-small]) .axp-agent-manager .axp-agent-manager__tabs { display: none } :where([data-fx-small]) .axp-agent-manager .axp-agent-manager__tabpick { display: block }
 .axp-agent-manager__cmdhead { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0 }
 .axp-agent-manager__item > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100% }
+
+/* Roster tab (crew-profile@1) — layout only, theme tokens */
+.axp-agent-manager__roster { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axp-agent-manager__member { border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
+.axp-agent-manager__member.is-working { border-color: var(--fx-success); }
+.axp-agent-manager__memberHead { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); width: 100%; padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-sm); background: none; border: 0; color: inherit; font: inherit; text-align: start; cursor: pointer; }
+.axp-agent-manager__memberBody { padding: 0 var(--fx-dens-gap-sm) var(--fx-dens-gap-sm); }
