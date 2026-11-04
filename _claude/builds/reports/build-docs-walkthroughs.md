@@ -67,3 +67,14 @@ re-run with tweaks, the video player and the docs PR.
 - **Fallback scripts are thin** without AI: one scene per screen plus the built steps. Deep mode fills them.
 - **Video in a plan** opens the job on Docs & videos (the MP4 needs the console token, so it isn't embedded in the plan).
 - Android: none (on hold).
+
+## Screenshots
+
+Filed in UI Review → Screenshots, group `build-docs-walkthroughs - Nov 4 10:10 PM` (not for approval).
+
+| Desktop | Phone |
+| --- | --- |
+| ![Docs & videos](build-docs-walkthroughs/shots/docs-videos-desktop.png) | ![Docs & videos](build-docs-walkthroughs/shots/docs-videos-phone.png) |
+| ![Create walkthrough video](build-docs-walkthroughs/shots/video-dialog-desktop.png) | ![Create walkthrough video](build-docs-walkthroughs/shots/video-dialog-phone.png) |
+| ![Walkthrough script](build-docs-walkthroughs/shots/script-desktop.png) | ![Walkthrough script](build-docs-walkthroughs/shots/script-phone.png) |
+| ![Create documentation](build-docs-walkthroughs/shots/docs-dialog-desktop.png) | ![Create documentation](build-docs-walkthroughs/shots/docs-dialog-phone.png) |
