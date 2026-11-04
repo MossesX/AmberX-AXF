@@ -137,9 +137,10 @@ the baked `src/axf` copies (console-web re-baked; the other apps' swarm-rules / 
 
 ## Not done / gaps
 
-- **Screenshots / UI Review:** not captured in this run (the console needs a Playwright harness and a Breakroom
-  with a second session; the VPS was under load). Submit with `rebuild-shots.mjs … --submit screen` on the merged
-  console (non-blocking per the brief).
+- **Screenshots:** `_claude/builds/reports/handoff-2/shots/after/` (Sessions panel, join dialog, Send to helper, Add
+  widgets, settings; desktop + phone) from the built console with a mocked API (two sessions linked, one helper
+  working, one offer open, one account waiting for approval), submitted to UI Review (group `handoff-2 - Nov 4 …`,
+  non-blocking per the brief).
 - **Live push into other screens:** the plugin's own screens, badges and widget patch at once; the console's other
   per-screen pollers (urgent-console-perf's shared cache) were not replaced — `GET /events` is the one stream to
   subscribe them to.
