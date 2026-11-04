@@ -1,0 +1,64 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "maintenance-help",
+  "name": "Maintenance help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Maintenance plugin (help@1).",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:maintenance",
+    "entries": [
+      {
+        "target": "view:maintenance",
+        "title": "Maintenance",
+        "text": "How full the VPS is (disk, memory, swap, load), what takes the most space, and clean-up jobs you preview first and then approve on axHub.",
+        "kind": "screen"
+      },
+      {
+        "target": "check-now",
+        "title": "Check now",
+        "text": "Checks server health again straight away: alert levels, swap and the nightly run. The host part re-measures everything every 10 minutes."
+      },
+      {
+        "target": "preview",
+        "title": "Preview",
+        "text": "Shows exactly what the ticked jobs would remove and how much space that frees, plus what is kept and why. Nothing is removed."
+      },
+      {
+        "target": "send-for-approval",
+        "title": "Send for approval",
+        "text": "Sends the previewed clean-up to axHub as one held call. Nothing is removed until you approve it there; the VPS checks every item again before removing it."
+      },
+      {
+        "target": "clean-up-every-night",
+        "title": "Clean up every night",
+        "text": "Each night at the set hour, sends the safe clean-up to axHub. It still waits for your approval there. Off by default."
+      },
+      {
+        "target": "maintenance",
+        "title": "Maintenance settings",
+        "text": "Nightly auto-clean (off by default, safe jobs only, still approved on axHub), the disk and swap alert levels, and how old things must be before a clean-up takes them."
+      }
+    ],
+    "intros": [
+      {
+        "screen": "maintenance",
+        "title": "Maintenance",
+        "steps": [
+          {
+            "say": "The top shows how full the server is. Amber or red means it's time to clean up.",
+            "target": ""
+          },
+          {
+            "say": "Tick the jobs you want, tap Preview to see what goes, then Send for approval and approve it on axHub.",
+            "target": "preview"
+          }
+        ]
+      }
+    ]
+  }
+}
