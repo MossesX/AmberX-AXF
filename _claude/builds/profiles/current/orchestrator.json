@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T16:40:12.324Z",
+ "updatedAt": "2026-11-04T16:40:32.556Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10556,16 +10556,21 @@
    "title": "Tab groups, toolbars, banners and nav menus are assets with an asset settings interface, right-click to settings",
    "category": "Framework",
    "detail": "Build tab-group-assets (Fable): tab-group@1 extended; every chrome type (tab-group, toolbar, banner, nav-menu, app-menu, context-menu) gets a shared default settings-interface asset plus a per-app custom copy (the shared default selected by default); one shared chrome context menu (Settings / Change / Move); every hard-coded tab row migrated onto the framework TabGroup; rule + CI check with a ratchet; control@1 commands for voice.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/tab-group-assets",
    "pr": "#327",
    "createdAt": "2026-11-04T15:29:38.375Z",
-   "updatedAt": "2026-11-04T16:24:51.977Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-04T16:40:15.440Z",
+   "builtAt": "2026-11-04T16:40:10.739Z",
+   "notes": [
+    {
+     "text": "Built: PR #327 open, all checks + 4 app typechecks green, 9 shots in UI Review → Screenshots group 'tab-group-assets - Nov 4 11:38 AM'. Report _claude/builds/reports/tab-group-assets.md. After merge: redeploy console, AmberX, axHub web.",
+     "at": "2026-11-04T16:40:15.440Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -10684,8 +10689,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T16:40:10.739Z",
      "note": "",
      "uid": "st-mw29vtlc0calga"
     }

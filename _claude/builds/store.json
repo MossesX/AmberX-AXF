@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 836,
- "updatedAt": "2026-11-04T16:40:12.324Z",
+ "rev": 837,
+ "updatedAt": "2026-11-04T16:40:32.556Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -80344,16 +80344,21 @@
    "title": "Tab groups, toolbars, banners and nav menus are assets with an asset settings interface, right-click to settings",
    "category": "Framework",
    "detail": "Build tab-group-assets (Fable): tab-group@1 extended; every chrome type (tab-group, toolbar, banner, nav-menu, app-menu, context-menu) gets a shared default settings-interface asset plus a per-app custom copy (the shared default selected by default); one shared chrome context menu (Settings / Change / Move); every hard-coded tab row migrated onto the framework TabGroup; rule + CI check with a ratchet; control@1 commands for voice.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/tab-group-assets",
    "pr": "#327",
    "createdAt": "2026-11-04T15:29:38.375Z",
-   "updatedAt": "2026-11-04T16:24:51.977Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-04T16:40:15.440Z",
+   "builtAt": "2026-11-04T16:40:10.739Z",
+   "notes": [
+    {
+     "text": "Built: PR #327 open, all checks + 4 app typechecks green, 9 shots in UI Review → Screenshots group 'tab-group-assets - Nov 4 11:38 AM'. Report _claude/builds/reports/tab-group-assets.md. After merge: redeploy console, AmberX, axHub web.",
+     "at": "2026-11-04T16:40:15.440Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -80494,12 +80499,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T16:40:10.739Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T15:29:38.376Z",
-     "updatedAt": "2026-11-04T15:29:38.376Z"
+     "updatedAt": "2026-11-04T16:40:10.835Z"
     }
    ],
    "profiles": [
@@ -80510,7 +80515,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
