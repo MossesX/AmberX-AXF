@@ -662,8 +662,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:57 UTC · `agent-swarm-fable-rebuild` branch claude/agent-swarm-fable-rebuild, PR #247, merged, note (breakroom) · reconciler
-- 2026-11-03 13:57 UTC · `stack-walkthrough` merged, note (refactor) · reconciler
 - 2026-11-03 13:57 UTC · `molly-opus` merged, note (big-dog) · reconciler
 - 2026-11-03 13:57 UTC · `xlayout` s12 done, → built, branch claude/xlayout-opus, PR #252, note (big-dog) · reconciler
 - 2026-11-03 13:57 UTC · `walkthrough-random-look` PR #240, merged, note (refactor) · reconciler
@@ -1062,6 +1060,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:04 UTC · `urgent-land-lazy-loader` note (current) · foreign-write
 - 2026-11-04 14:05 UTC · `crew-profiles` added (6 steps) (current) · orchestrator
 - 2026-11-04 14:05 UTC · `crew-profiles` → running (current) · orchestrator
+- 2026-11-04 14:09 UTC · `crew-profiles` s1 done (current) · orchestrator
+- 2026-11-04 14:09 UTC · `crew-profiles` s2 done (current) · orchestrator
 
 ## Token passes (log)
 
