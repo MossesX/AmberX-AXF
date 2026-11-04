@@ -25,6 +25,20 @@
         "text": "Shows “Brief ( characters)”.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "ui-review",
+        "title": "UI Review",
+        "text": "Shows “UI Review”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "the-build",
+        "title": "The build",
+        "text": "Shows “The build”.",
+        "kind": "button",
+        "draft": true
       }
     ],
     "intros": []
