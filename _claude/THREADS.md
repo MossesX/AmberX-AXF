@@ -683,12 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 12:44 UTC · `git-status-board` → pending, note (current) · reconciler
-- 2026-11-04 12:44 UTC · `urgent-main-ci-green` → complete, note (current) · reconciler
-- 2026-11-04 12:44 UTC · `terminal-tabs-left` → pending, note (current) · reconciler
-- 2026-11-04 12:44 UTC · `gizmo-companion` → pending, note (current) · reconciler
-- 2026-11-04 12:44 UTC · `browser-automation` → pending, note (current) · reconciler
-- 2026-11-04 12:44 UTC · `profile-switcher-widget` → pending, note (current) · reconciler
 - 2026-11-04 12:44 UTC · `app-style-override` → pending, note (current) · reconciler
 - 2026-11-04 12:44 UTC · `orch-step-click` note (refactor) · foreign-write
 - 2026-11-04 12:44 UTC · `molly-opus` → complete, note (big-dog) · foreign-write
@@ -1083,6 +1077,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:50 UTC · `tab-group-assets` s1 done (current) · foreign-write
 - 2026-11-04 15:50 UTC · `jump-menu-asset` s1 done (current) · foreign-write
 - 2026-11-04 15:50 UTC · `urgent-land-gizmo-chat` s4 done, note (current) · foreign-write
+- 2026-11-04 15:50 UTC · `molly-console-commands` note (current) · foreign-write
+- 2026-11-04 15:50 UTC · `urgent-land-gizmo-chat` → complete, note (current) · foreign-write
+- 2026-11-04 15:50 UTC · `app-voice-commands` s2 done, s3 done, s4 done, s5 done, note (current) · foreign-write
+- 2026-11-04 15:50 UTC · `apps-control-surface` s2 done, s3 done, s4 done, s5 done, → complete, note (current) · foreign-write
+- 2026-11-04 15:50 UTC · `tab-group-assets` added (6 steps) (current) · foreign-write
+- 2026-11-04 15:50 UTC · `jump-menu-asset` added (5 steps) (current) · foreign-write
 
 ## Token passes (log)
 
