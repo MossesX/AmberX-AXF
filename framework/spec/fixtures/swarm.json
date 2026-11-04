@@ -379,6 +379,10 @@
    "name": "Rio React",
    "role": "Front-end engineer",
    "skill": "react-ui",
+   "skills": [
+    "react-ui"
+   ],
+   "home": "",
    "jobsOnly": false,
    "specialty": "React views on the framework controls",
    "keywords": [
@@ -418,6 +422,8 @@
    "name": "",
    "role": "",
    "skill": "",
+   "skills": [],
+   "home": "",
    "jobsOnly": false,
    "specialty": "",
    "keywords": [],
@@ -472,6 +478,10 @@
      "name": "Rio React",
      "role": "Front-end engineer",
      "skill": "react-ui",
+     "skills": [
+      "react-ui"
+     ],
+     "home": "",
      "jobsOnly": false,
      "specialty": "React views on the framework controls",
      "keywords": [
@@ -511,6 +521,10 @@
      "name": "doc",
      "role": "",
      "skill": "docs",
+     "skills": [
+      "docs"
+     ],
+     "home": "",
      "jobsOnly": false,
      "specialty": "",
      "keywords": [],
@@ -740,6 +754,10 @@
      "name": "paulie",
      "role": "",
      "skill": "site-checks",
+     "skills": [
+      "site-checks"
+     ],
+     "home": "",
      "jobsOnly": true,
      "specialty": "",
      "keywords": [],
