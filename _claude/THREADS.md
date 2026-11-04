@@ -1037,6 +1037,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 12:47 UTC · `hotfix-build-manager` → built, branch claude/hotfix-build-manager, PR #309 (current) · builds-live
 - 2026-11-04 12:47 UTC · `hotfix-build-manager` s2 done, s3 done (current) · foreign-write
 - 2026-11-04 12:47 UTC · `hotfix-build-manager` s4 done, → complete (current) · foreign-write
+- 2026-11-04 12:44 UTC · `requests-ledger` added (5 steps) (current) · orchestrator
+- 2026-11-04 12:53 UTC · `hotfix-build-manager` s1 done, s2 done, s3 done, s4 done, → complete (current) · foreign-write
 
 ## Token passes (log)
 
