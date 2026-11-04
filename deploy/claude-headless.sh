@@ -43,11 +43,18 @@
 # waiter starts it by itself when a slot frees (cancelled from the console = it never starts). Inside tmux the run binds
 # its slot, marks it finished when Claude exits (finished sessions don't count) and closes after closeFinishedAfterSec
 # (the log stays). Heavy steps go through `agent-slots.mjs heavy -- <cmd>` (the brief says so). AXF_SLOTS=off skips it.
+# Every session has a named agent (Brett, Nov 3 2026: "no anonymous sessions"; the job crew are all-rounders): before
+# anything starts, the run is booked on AXF_AGENT (refused when that agent can't take it), else on the agent the job
+# router picks (framework/cli/agent-job.mjs book: home job first, then least busy; never nobody), as job type
+# AXF_AGENT_JOB (default feature-build). The tmux session is axf-<slug>--<agent> (a prefix lookup of axf-<slug> still
+# finds it), the log's first line is `# agent <id> · <name>`, and the run's usage, cost and report are booked on the
+# agent's card when the sweep closes it. A run the job router launched itself (AXF_AGENT_BOOKED) is not booked twice.
+# Without the agent swarm plugin the run starts unbooked with a warning. AXF_AGENT_BOOK=off skips it (tests).
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export PATH="$HOME/.local/bin:$PATH"   # vps.run / cron shells don't load the profile; Claude Code installs here
 
-name="" brief="" log=".axf-headless.log" inner="" envfile="" mcp="" slot="" queued="" priority="${AXF_PRIORITY:-}" agent="${AXF_AGENT:-}"
+name="" brief="" log=".axf-headless.log" inner="" envfile="" mcp="" slot="" queued="" priority="${AXF_PRIORITY:-}" agent="${AXF_AGENT_NAME:-${AXF_AGENT:-}}" agent_line=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --name) name="$2"; shift 2 ;;
@@ -122,7 +129,8 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   if [[ -n "$slot" ]] && slots_on; then
     node "$SLOTS" bind "$slot" --pid "$$" --session "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")" >/dev/null 2>&1 || true
   fi
-  printf '\033[2m# headless Claude Code · %s · %s\033[0m\n\n' "$(pwd)" "$(date '+%Y-%m-%d %H:%M')"
+  [[ -n "${AXF_AGENT:-}" ]] && agent_line="# agent ${AXF_AGENT} · ${AXF_AGENT_NAME:-${AXF_AGENT}}"  # axf-plugin:agent-swarm
+  printf '\033[2m# headless Claude Code · %s · %s%s\033[0m\n\n' "$(pwd)" "$(date '+%Y-%m-%d %H:%M')" "${AXF_AGENT:+ · agent ${AXF_AGENT_NAME:-$AXF_AGENT}}"
   # Activity banner hooks (Oct 31 2026): add whatever event is missing from this user's ~/.claude/settings.json (an old
   # install without PostToolUse left every push/pull/merge/delete/build line open as a ghost). Never blocks the run.
   act="$HERE/../apps/console-web/plugins/activity/activity.mjs"  # axf-plugin:activity
@@ -140,9 +148,9 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     if command -v node >/dev/null; then
       ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"; meter=()
       hdir_ready && meter=(--meter "$HDIR/$ses.meter.json" --chain "$HDIR/$ses.chain.json" --session "$ses" --name "$name" --agent "$agent" --model "$model")
-      claude -p "$@" --output-format stream-json --verbose "$prompt" 2>&1 | tee "$raw" | node "$HERE/claude-stream.mjs" "${meter[@]}" | tee "$log"
+      claude -p "$@" --output-format stream-json --verbose "$prompt" 2>&1 | tee "$raw" | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; node "$HERE/claude-stream.mjs" "${meter[@]}"; } | tee "$log"
     else
-      claude -p "$@" "$prompt" 2>&1 | tee "$log"
+      claude -p "$@" "$prompt" 2>&1 | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; cat; } | tee "$log"
     fi
     st=${PIPESTATUS[0]}
     (( switches < max_switches )) || break
@@ -180,6 +188,21 @@ session="axf-${slug:-run}"
 # axHub 109: the build's name, sent as X-Axhub-Session (letters, digits, . _ - only; at most 48 here, 60 on the hub).
 export AXF_SESSION="${AXF_SESSION:-${slug:-run}}"
 [[ "$AXF_SESSION" =~ ^[A-Za-z0-9][A-Za-z0-9._:-]{0,59}$ ]] || AXF_SESSION="${slug:-run}"
+AGENT_JOB="$HERE/../framework/cli/agent-job.mjs"  # axf-plugin:agent-swarm
+if [[ -z "$queued" && -z "${AXF_AGENT_BOOKED:-}" && "${AXF_AGENT_BOOK:-on}" != off ]] && command -v node >/dev/null && [[ -f "$AGENT_JOB" ]]; then  # axf-plugin:agent-swarm
+  agent_id="" agent_name="" agent_run=""  # axf-plugin:agent-swarm
+  booked="$(node "$AGENT_JOB" book --name "$slug" ${AXF_AGENT:+--agent "$AXF_AGENT"} --job "${AXF_AGENT_JOB:-feature-build}" --cwd "$(pwd)" --log "$log" ${AXF_MODEL:+--model "$AXF_MODEL"} --sh 2>&1)"  # axf-plugin:agent-swarm
+  line="$(grep -E '^agent_id=[a-z0-9-]+ agent_name="[A-Za-z0-9 '"'"'._-]*" agent_run=[A-Za-z0-9._-]+$' <<<"$booked" | tail -1)"  # axf-plugin:agent-swarm
+  if [[ -n "$line" ]]; then eval "$line"  # axf-plugin:agent-swarm
+  elif grep -q 'no console plugin provides agent-jobs@1' <<<"$booked"; then echo "claude-headless: agent swarm not installed; starting unbooked" >&2  # axf-plugin:agent-swarm
+  else echo "claude-headless: not started, no agent booked: ${booked##*$'\n'}" >&2; exit 3; fi  # axf-plugin:agent-swarm
+  if [[ -n "$agent_id" ]]; then  # axf-plugin:agent-swarm
+    export AXF_AGENT="$agent_id" AXF_AGENT_NAME="$agent_name" AXF_AGENT_BOOKED="$agent_run"  # axf-plugin:agent-swarm
+    agent="$agent_name"  # axf-plugin:agent-swarm
+    echo "booked on $agent_name ($agent_id)"  # axf-plugin:agent-swarm
+  fi  # axf-plugin:agent-swarm
+fi  # axf-plugin:agent-swarm
+[[ -n "${AXF_AGENT:-}" && "$slug" != "${AXF_AGENT}-"* ]] && session="axf-${slug}--${AXF_AGENT}"  # axf-plugin:agent-swarm
 if [[ -n "$queued" ]]; then   # the background waiter: hold until the queue hands this run a slot
   slots_on || exit 0
   node "$SLOTS" wait "$queued" --pid "$$" || { echo "claude-headless: $queued left the queue (cancelled); not starting"; exit 0; }
@@ -204,7 +227,7 @@ if ! command -v tmux >/dev/null; then
 fi
 tmux has-session -t "=$session" 2>/dev/null && session="$session-$(date +%H%M%S)"
 envs=()   # tmux starts the command in its server's environment: pass what the run needs explicitly
-for v in PATH HOME AXF_SURFACE AXF_MODEL AXF_AGENT AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE; do
+for v in PATH HOME AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE; do
   [[ -n "${!v:-}" ]] && envs+=(-e "$v=${!v}")
 done
 # Secrets go through a private file, not tmux's command line: git auth (GIT_CONFIG_COUNT/KEY_n/VALUE_n, which tmux
