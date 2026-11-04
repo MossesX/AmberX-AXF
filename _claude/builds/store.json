@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 922,
- "updatedAt": "2026-11-04T19:57:01.970Z",
+ "rev": 923,
+ "updatedAt": "2026-11-04T19:57:21.318Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -82879,15 +82879,15 @@
    "title": "Every build ships a basic Markdown readme",
    "category": "Rules",
    "detail": "Rule in RULES.md, CLAUDE.md and every brief (orchestrator, Build manager, claude-headless.sh, BRIEF-TEMPLATE.md); CI check-docs-readme.mjs fails a PR adding a plugin/app/module folder without docs/README.md.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/readme-rule-every-build",
-   "pr": "",
+   "pr": "#337",
    "createdAt": "2026-11-04T19:55:55.715Z",
-   "updatedAt": "2026-11-04T19:56:05.660Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T19:56:49.367Z",
+   "builtAt": "2026-11-04T19:56:47.922Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -82963,12 +82963,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T19:56:47.921Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T19:55:55.716Z",
-     "updatedAt": "2026-11-04T19:55:55.716Z"
+     "updatedAt": "2026-11-04T19:56:48.024Z"
     }
    ],
    "profiles": [
@@ -82979,7 +82979,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
