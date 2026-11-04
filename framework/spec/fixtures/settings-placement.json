@@ -1,0 +1,1360 @@
+{
+ "$axf": "fixture@1",
+ "engine": "settings-placement@1",
+ "note": "Generated from framework/core/engines/settingsplacement.ts (Nov 3 2026). The web engine replays it in framework/spec/check-settings-placement.mts; the Kotlin twin is a deferred gap (PORTING.md).",
+ "placements": [
+  "inside",
+  "dialog",
+  "window",
+  "main"
+ ],
+ "modes": [
+  "pane",
+  "dropdown",
+  "tab",
+  "split",
+  "inline"
+ ],
+ "picks": {
+  "main": {
+   "placement": "main"
+  },
+  "dialog": {
+   "placement": "dialog",
+   "looks": {
+    "dialog": {
+     "position": "top",
+     "animation": "fade"
+    }
+   }
+  },
+  "window": {
+   "placement": "window"
+  },
+  "paneLeft": {
+   "placement": "inside",
+   "mode": "pane",
+   "looks": {
+    "inside:pane": {
+     "edge": "left",
+     "animation": "slide",
+     "speed": "slow"
+    }
+   }
+  },
+  "split": {
+   "placement": "inside",
+   "mode": "split"
+  },
+  "dropdown": {
+   "placement": "inside",
+   "mode": "dropdown",
+   "looks": {
+    "inside:dropdown": {
+     "animation": "scale"
+    }
+   }
+  },
+  "tab": {
+   "placement": "inside",
+   "mode": "tab"
+  },
+  "inline": {
+   "placement": "inside",
+   "mode": "inline"
+  },
+  "bad": {
+   "placement": "sideways",
+   "mode": "teleport",
+   "looks": {
+    "inside:pane": {
+     "edge": "diagonal",
+     "size": "huge",
+     "dim": "yes"
+    }
+   }
+  }
+ },
+ "hosts": {
+  "none": null,
+  "all": {
+   "modes": [
+    "pane",
+    "dropdown",
+    "tab",
+    "split",
+    "inline"
+   ],
+   "compact": false
+  },
+  "allCompact": {
+   "modes": [
+    "pane",
+    "dropdown",
+    "tab",
+    "split",
+    "inline"
+   ],
+   "compact": true
+  },
+  "paneOnly": {
+   "modes": [
+    "pane"
+   ],
+   "compact": false
+  }
+ },
+ "resolve": [
+  {
+   "pick": "main",
+   "host": "none",
+   "hostable": false,
+   "reducedMotion": false,
+   "route": {
+    "via": "main"
+   }
+  },
+  {
+   "pick": "main",
+   "host": "all",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "main"
+   }
+  },
+  {
+   "pick": "main",
+   "host": "all",
+   "hostable": true,
+   "reducedMotion": true,
+   "route": {
+    "via": "main"
+   }
+  },
+  {
+   "pick": "main",
+   "host": "allCompact",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "main"
+   }
+  },
+  {
+   "pick": "main",
+   "host": "paneOnly",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "main"
+   }
+  },
+  {
+   "pick": "dialog",
+   "host": "none",
+   "hostable": false,
+   "reducedMotion": false,
+   "route": {
+    "via": "dialog",
+    "look": {
+     "animation": "fade",
+     "speed": "normal",
+     "easing": "decelerate",
+     "edge": "top",
+     "size": "medium",
+     "position": "top",
+     "dim": true,
+     "blur": false,
+     "radius": "lg",
+     "shadow": "lg"
+    }
+   }
+  },
+  {
+   "pick": "dialog",
+   "host": "all",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "dialog",
+    "look": {
+     "animation": "fade",
+     "speed": "normal",
+     "easing": "decelerate",
+     "edge": "top",
+     "size": "medium",
+     "position": "top",
+     "dim": true,
+     "blur": false,
+     "radius": "lg",
+     "shadow": "lg"
+    }
+   }
+  },
+  {
+   "pick": "dialog",
+   "host": "all",
+   "hostable": true,
+   "reducedMotion": true,
+   "route": {
+    "via": "dialog",
+    "look": {
+     "animation": "none",
+     "speed": "instant",
+     "easing": "decelerate",
+     "edge": "top",
+     "size": "medium",
+     "position": "top",
+     "dim": true,
+     "blur": false,
+     "radius": "lg",
+     "shadow": "lg"
+    }
+   }
+  },
+  {
+   "pick": "dialog",
+   "host": "allCompact",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "dialog",
+    "look": {
+     "animation": "fade",
+     "speed": "normal",
+     "easing": "decelerate",
+     "edge": "top",
+     "size": "medium",
+     "position": "top",
+     "dim": true,
+     "blur": false,
+     "radius": "lg",
+     "shadow": "lg"
+    }
+   }
+  },
+  {
+   "pick": "dialog",
+   "host": "paneOnly",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "dialog",
+    "look": {
+     "animation": "fade",
+     "speed": "normal",
+     "easing": "decelerate",
+     "edge": "top",
+     "size": "medium",
+     "position": "top",
+     "dim": true,
+     "blur": false,
+     "radius": "lg",
+     "shadow": "lg"
+    }
+   }
+  },
+  {
+   "pick": "window",
+   "host": "none",
+   "hostable": false,
+   "reducedMotion": false,
+   "route": {
+    "via": "window",
+    "look": {
+     "animation": "none",
+     "speed": "normal",
+     "easing": "theme",
+     "edge": "top",
+     "size": "medium",
+     "position": "center",
+     "dim": false,
+     "blur": false,
+     "radius": "md",
+     "shadow": "md"
+    }
+   }
+  },
+  {
+   "pick": "window",
+   "host": "all",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "window",
+    "look": {
+     "animation": "none",
+     "speed": "normal",
+     "easing": "theme",
+     "edge": "top",
+     "size": "medium",
+     "position": "center",
+     "dim": false,
+     "blur": false,
+     "radius": "md",
+     "shadow": "md"
+    }
+   }
+  },
+  {
+   "pick": "window",
+   "host": "all",
+   "hostable": true,
+   "reducedMotion": true,
+   "route": {
+    "via": "window",
+    "look": {
+     "animation": "none",
+     "speed": "instant",
+     "easing": "theme",
+     "edge": "top",
+     "size": "medium",
+     "position": "center",
+     "dim": false,
+     "blur": false,
+     "radius": "md",
+     "shadow": "md"
+    }
+   }
+  },
+  {
+   "pick": "window",
+   "host": "allCompact",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "window",
+    "look": {
+     "animation": "none",
+     "speed": "normal",
+     "easing": "theme",
+     "edge": "top",
+     "size": "medium",
+     "position": "center",
+     "dim": false,
+     "blur": false,
+     "radius": "md",
+     "shadow": "md"
+    }
+   }
+  },
+  {
+   "pick": "window",
+   "host": "paneOnly",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "window",
+    "look": {
+     "animation": "none",
+     "speed": "normal",
+     "easing": "theme",
+     "edge": "top",
+     "size": "medium",
+     "position": "center",
+     "dim": false,
+     "blur": false,
+     "radius": "md",
+     "shadow": "md"
+    }
+   }
+  },
+  {
+   "pick": "paneLeft",
+   "host": "none",
+   "hostable": false,
+   "reducedMotion": false,
+   "route": {
+    "via": "page-pane",
+    "look": {
+     "animation": "slide",
+     "speed": "normal",
+     "easing": "theme",
+     "edge": "left",
+     "size": "medium",
+     "position": "center",
+     "dim": true,
+     "blur": false,
+     "radius": "none",
+     "shadow": "lg"
+    },
+    "fallback": "no-host"
+   }
+  },
+  {
+   "pick": "paneLeft",
+   "host": "all",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "host",
+    "mode": "pane",
+    "look": {
+     "animation": "slide",
+     "speed": "slow",
+     "easing": "theme",
+     "edge": "left",
+     "size": "medium",
+     "position": "center",
+     "dim": true,
+     "blur": false,
+     "radius": "none",
+     "shadow": "md"
+    }
+   }
+  },
+  {
+   "pick": "paneLeft",
+   "host": "all",
+   "hostable": true,
+   "reducedMotion": true,
+   "route": {
+    "via": "host",
+    "mode": "pane",
+    "look": {
+     "animation": "none",
+     "speed": "instant",
+     "easing": "theme",
+     "edge": "left",
+     "size": "medium",
+     "position": "center",
+     "dim": true,
+     "blur": false,
+     "radius": "none",
+     "shadow": "md"
+    }
+   }
+  },
+  {
+   "pick": "paneLeft",
+   "host": "allCompact",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "host",
+    "mode": "pane",
+    "look": {
+     "animation": "slide",
+     "speed": "slow",
+     "easing": "theme",
+     "edge": "left",
+     "size": "medium",
+     "position": "center",
+     "dim": true,
+     "blur": false,
+     "radius": "none",
+     "shadow": "md"
+    }
+   }
+  },
+  {
+   "pick": "paneLeft",
+   "host": "paneOnly",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "host",
+    "mode": "pane",
+    "look": {
+     "animation": "slide",
+     "speed": "slow",
+     "easing": "theme",
+     "edge": "left",
+     "size": "medium",
+     "position": "center",
+     "dim": true,
+     "blur": false,
+     "radius": "none",
+     "shadow": "md"
+    }
+   }
+  },
+  {
+   "pick": "split",
+   "host": "none",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "page-pane",
+    "look": {
+     "animation": "slide",
+     "speed": "normal",
+     "easing": "theme",
+     "edge": "right",
+     "size": "medium",
+     "position": "center",
+     "dim": true,
+     "blur": false,
+     "radius": "none",
+     "shadow": "lg"
+    },
+    "fallback": "not-open"
+   }
+  },
+  {
+   "pick": "split",
+   "host": "all",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "host",
+    "mode": "split",
+    "look": {
+     "animation": "push",
+     "speed": "normal",
+     "easing": "theme",
+     "edge": "right",
+     "size": "medium",
+     "position": "center",
+     "dim": false,
+     "blur": false,
+     "radius": "none",
+     "shadow": "none"
+    }
+   }
+  },
+  {
+   "pick": "split",
+   "host": "all",
+   "hostable": true,
+   "reducedMotion": true,
+   "route": {
+    "via": "host",
+    "mode": "split",
+    "look": {
+     "animation": "none",
+     "speed": "instant",
+     "easing": "theme",
+     "edge": "right",
+     "size": "medium",
+     "position": "center",
+     "dim": false,
+     "blur": false,
+     "radius": "none",
+     "shadow": "none"
+    }
+   }
+  },
+  {
+   "pick": "split",
+   "host": "allCompact",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "host",
+    "mode": "pane",
+    "look": {
+     "animation": "slide",
+     "speed": "normal",
+     "easing": "theme",
+     "edge": "left",
+     "size": "medium",
+     "position": "center",
+     "dim": true,
+     "blur": false,
+     "radius": "none",
+     "shadow": "md"
+    },
+    "fallback": "compact"
+   }
+  },
+  {
+   "pick": "split",
+   "host": "paneOnly",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "host",
+    "mode": "pane",
+    "look": {
+     "animation": "slide",
+     "speed": "normal",
+     "easing": "theme",
+     "edge": "left",
+     "size": "medium",
+     "position": "center",
+     "dim": true,
+     "blur": false,
+     "radius": "none",
+     "shadow": "md"
+    },
+    "fallback": "unsupported"
+   }
+  },
+  {
+   "pick": "dropdown",
+   "host": "none",
+   "hostable": false,
+   "reducedMotion": false,
+   "route": {
+    "via": "page-pane",
+    "look": {
+     "animation": "slide",
+     "speed": "normal",
+     "easing": "theme",
+     "edge": "right",
+     "size": "medium",
+     "position": "center",
+     "dim": true,
+     "blur": false,
+     "radius": "none",
+     "shadow": "lg"
+    },
+    "fallback": "no-host"
+   }
+  },
+  {
+   "pick": "dropdown",
+   "host": "all",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "host",
+    "mode": "dropdown",
+    "look": {
+     "animation": "scale",
+     "speed": "fast",
+     "easing": "decelerate",
+     "edge": "top",
+     "size": "half",
+     "position": "right",
+     "dim": false,
+     "blur": false,
+     "radius": "md",
+     "shadow": "lg"
+    }
+   }
+  },
+  {
+   "pick": "dropdown",
+   "host": "all",
+   "hostable": true,
+   "reducedMotion": true,
+   "route": {
+    "via": "host",
+    "mode": "dropdown",
+    "look": {
+     "animation": "none",
+     "speed": "instant",
+     "easing": "decelerate",
+     "edge": "top",
+     "size": "half",
+     "position": "right",
+     "dim": false,
+     "blur": false,
+     "radius": "md",
+     "shadow": "lg"
+    }
+   }
+  },
+  {
+   "pick": "dropdown",
+   "host": "allCompact",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "host",
+    "mode": "pane",
+    "look": {
+     "animation": "slide",
+     "speed": "normal",
+     "easing": "theme",
+     "edge": "left",
+     "size": "medium",
+     "position": "center",
+     "dim": true,
+     "blur": false,
+     "radius": "none",
+     "shadow": "md"
+    },
+    "fallback": "compact"
+   }
+  },
+  {
+   "pick": "dropdown",
+   "host": "paneOnly",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "host",
+    "mode": "pane",
+    "look": {
+     "animation": "slide",
+     "speed": "normal",
+     "easing": "theme",
+     "edge": "left",
+     "size": "medium",
+     "position": "center",
+     "dim": true,
+     "blur": false,
+     "radius": "none",
+     "shadow": "md"
+    },
+    "fallback": "unsupported"
+   }
+  },
+  {
+   "pick": "tab",
+   "host": "none",
+   "hostable": false,
+   "reducedMotion": false,
+   "route": {
+    "via": "page-pane",
+    "look": {
+     "animation": "slide",
+     "speed": "normal",
+     "easing": "theme",
+     "edge": "right",
+     "size": "medium",
+     "position": "center",
+     "dim": true,
+     "blur": false,
+     "radius": "none",
+     "shadow": "lg"
+    },
+    "fallback": "no-host"
+   }
+  },
+  {
+   "pick": "tab",
+   "host": "all",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "host",
+    "mode": "tab",
+    "look": {
+     "animation": "fade",
+     "speed": "fast",
+     "easing": "theme",
+     "edge": "top",
+     "size": "full",
+     "position": "center",
+     "dim": false,
+     "blur": false,
+     "radius": "none",
+     "shadow": "none"
+    }
+   }
+  },
+  {
+   "pick": "tab",
+   "host": "all",
+   "hostable": true,
+   "reducedMotion": true,
+   "route": {
+    "via": "host",
+    "mode": "tab",
+    "look": {
+     "animation": "none",
+     "speed": "instant",
+     "easing": "theme",
+     "edge": "top",
+     "size": "full",
+     "position": "center",
+     "dim": false,
+     "blur": false,
+     "radius": "none",
+     "shadow": "none"
+    }
+   }
+  },
+  {
+   "pick": "tab",
+   "host": "allCompact",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "host",
+    "mode": "tab",
+    "look": {
+     "animation": "fade",
+     "speed": "fast",
+     "easing": "theme",
+     "edge": "top",
+     "size": "full",
+     "position": "center",
+     "dim": false,
+     "blur": false,
+     "radius": "none",
+     "shadow": "none"
+    }
+   }
+  },
+  {
+   "pick": "tab",
+   "host": "paneOnly",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "host",
+    "mode": "pane",
+    "look": {
+     "animation": "slide",
+     "speed": "normal",
+     "easing": "theme",
+     "edge": "left",
+     "size": "medium",
+     "position": "center",
+     "dim": true,
+     "blur": false,
+     "radius": "none",
+     "shadow": "md"
+    },
+    "fallback": "unsupported"
+   }
+  },
+  {
+   "pick": "inline",
+   "host": "none",
+   "hostable": false,
+   "reducedMotion": false,
+   "route": {
+    "via": "page-pane",
+    "look": {
+     "animation": "slide",
+     "speed": "normal",
+     "easing": "theme",
+     "edge": "right",
+     "size": "medium",
+     "position": "center",
+     "dim": true,
+     "blur": false,
+     "radius": "none",
+     "shadow": "lg"
+    },
+    "fallback": "no-host"
+   }
+  },
+  {
+   "pick": "inline",
+   "host": "all",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "host",
+    "mode": "inline",
+    "look": {
+     "animation": "drop",
+     "speed": "fast",
+     "easing": "theme",
+     "edge": "top",
+     "size": "half",
+     "position": "center",
+     "dim": false,
+     "blur": false,
+     "radius": "sm",
+     "shadow": "none"
+    }
+   }
+  },
+  {
+   "pick": "inline",
+   "host": "all",
+   "hostable": true,
+   "reducedMotion": true,
+   "route": {
+    "via": "host",
+    "mode": "inline",
+    "look": {
+     "animation": "none",
+     "speed": "instant",
+     "easing": "theme",
+     "edge": "top",
+     "size": "half",
+     "position": "center",
+     "dim": false,
+     "blur": false,
+     "radius": "sm",
+     "shadow": "none"
+    }
+   }
+  },
+  {
+   "pick": "inline",
+   "host": "allCompact",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "host",
+    "mode": "inline",
+    "look": {
+     "animation": "drop",
+     "speed": "fast",
+     "easing": "theme",
+     "edge": "top",
+     "size": "half",
+     "position": "center",
+     "dim": false,
+     "blur": false,
+     "radius": "sm",
+     "shadow": "none"
+    }
+   }
+  },
+  {
+   "pick": "inline",
+   "host": "paneOnly",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "host",
+    "mode": "pane",
+    "look": {
+     "animation": "slide",
+     "speed": "normal",
+     "easing": "theme",
+     "edge": "left",
+     "size": "medium",
+     "position": "center",
+     "dim": true,
+     "blur": false,
+     "radius": "none",
+     "shadow": "md"
+    },
+    "fallback": "unsupported"
+   }
+  },
+  {
+   "pick": "bad",
+   "host": "none",
+   "hostable": false,
+   "reducedMotion": false,
+   "route": {
+    "via": "main"
+   }
+  },
+  {
+   "pick": "bad",
+   "host": "all",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "main"
+   }
+  },
+  {
+   "pick": "bad",
+   "host": "all",
+   "hostable": true,
+   "reducedMotion": true,
+   "route": {
+    "via": "main"
+   }
+  },
+  {
+   "pick": "bad",
+   "host": "allCompact",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "main"
+   }
+  },
+  {
+   "pick": "bad",
+   "host": "paneOnly",
+   "hostable": true,
+   "reducedMotion": false,
+   "route": {
+    "via": "main"
+   }
+  }
+ ],
+ "normalize": [
+  {
+   "input": null,
+   "pick": {
+    "placement": "main",
+    "mode": "pane",
+    "looks": {}
+   }
+  },
+  {
+   "input": "",
+   "pick": {
+    "placement": "main",
+    "mode": "pane",
+    "looks": {}
+   }
+  },
+  {
+   "input": "dialog",
+   "pick": {
+    "$axf": "settings-placement@1",
+    "placement": "dialog",
+    "mode": "pane",
+    "looks": {}
+   }
+  },
+  {
+   "input": "{\"placement\":\"inside\",\"mode\":\"split\"}",
+   "pick": {
+    "$axf": "settings-placement@1",
+    "placement": "inside",
+    "mode": "split",
+    "looks": {}
+   }
+  },
+  {
+   "input": "not json",
+   "pick": {
+    "placement": "main",
+    "mode": "pane",
+    "looks": {}
+   }
+  },
+  {
+   "input": {
+    "placement": "sideways",
+    "mode": "teleport",
+    "looks": {
+     "inside:pane": {
+      "edge": "diagonal",
+      "size": "huge",
+      "dim": "yes"
+     }
+    }
+   },
+   "pick": {
+    "$axf": "settings-placement@1",
+    "placement": "main",
+    "mode": "pane",
+    "looks": {
+     "inside:pane": {
+      "animation": "slide",
+      "speed": "normal",
+      "easing": "theme",
+      "edge": "left",
+      "size": "medium",
+      "position": "center",
+      "dim": true,
+      "blur": false,
+      "radius": "none",
+      "shadow": "md"
+     }
+    }
+   }
+  },
+  {
+   "input": {
+    "placement": "inside",
+    "mode": "pane",
+    "looks": {
+     "inside:pane": {
+      "edge": "left",
+      "animation": "slide",
+      "speed": "slow"
+     }
+    }
+   },
+   "pick": {
+    "$axf": "settings-placement@1",
+    "placement": "inside",
+    "mode": "pane",
+    "looks": {
+     "inside:pane": {
+      "animation": "slide",
+      "speed": "slow",
+      "easing": "theme",
+      "edge": "left",
+      "size": "medium",
+      "position": "center",
+      "dim": true,
+      "blur": false,
+      "radius": "none",
+      "shadow": "md"
+     }
+    }
+   }
+  }
+ ],
+ "effective": [
+  {
+   "own": null,
+   "appDefault": null,
+   "legacy": null,
+   "declared": null,
+   "pick": {
+    "placement": "main",
+    "mode": "pane",
+    "looks": {}
+   }
+  },
+  {
+   "own": null,
+   "appDefault": null,
+   "legacy": "dialog",
+   "declared": null,
+   "pick": {
+    "placement": "dialog",
+    "mode": "pane",
+    "looks": {}
+   }
+  },
+  {
+   "own": null,
+   "appDefault": null,
+   "legacy": "window",
+   "declared": {
+    "placement": "inside",
+    "mode": "pane",
+    "looks": {
+     "inside:pane": {
+      "edge": "left",
+      "animation": "slide",
+      "speed": "slow"
+     }
+    }
+   },
+   "pick": {
+    "$axf": "settings-placement@1",
+    "placement": "inside",
+    "mode": "pane",
+    "looks": {
+     "inside:pane": {
+      "animation": "slide",
+      "speed": "slow",
+      "easing": "theme",
+      "edge": "left",
+      "size": "medium",
+      "position": "center",
+      "dim": true,
+      "blur": false,
+      "radius": "none",
+      "shadow": "md"
+     }
+    }
+   }
+  },
+  {
+   "own": null,
+   "appDefault": "{\"placement\":\"window\"}",
+   "legacy": null,
+   "declared": {
+    "placement": "inside",
+    "mode": "pane",
+    "looks": {
+     "inside:pane": {
+      "edge": "left",
+      "animation": "slide",
+      "speed": "slow"
+     }
+    }
+   },
+   "pick": {
+    "$axf": "settings-placement@1",
+    "placement": "window",
+    "mode": "pane",
+    "looks": {}
+   }
+  },
+  {
+   "own": "{\"placement\":\"main\"}",
+   "appDefault": "{\"placement\":\"window\"}",
+   "legacy": "dialog",
+   "declared": {
+    "placement": "inside",
+    "mode": "pane",
+    "looks": {
+     "inside:pane": {
+      "edge": "left",
+      "animation": "slide",
+      "speed": "slow"
+     }
+    }
+   },
+   "pick": {
+    "$axf": "settings-placement@1",
+    "placement": "main",
+    "mode": "pane",
+    "looks": {}
+   }
+  }
+ ],
+ "hostModes": [
+  {
+   "input": true,
+   "modes": [
+    "pane",
+    "dropdown",
+    "tab",
+    "split",
+    "inline"
+   ]
+  },
+  {
+   "input": false,
+   "modes": []
+  },
+  {
+   "input": null,
+   "modes": []
+  },
+  {
+   "input": [
+    "split"
+   ],
+   "modes": [
+    "pane",
+    "split"
+   ]
+  },
+  {
+   "input": [
+    "pane",
+    "tab",
+    "bogus"
+   ],
+   "modes": [
+    "pane",
+    "tab"
+   ]
+  },
+  {
+   "input": {
+    "modes": [
+     "inline"
+    ]
+   },
+   "modes": [
+    "pane",
+    "inline"
+   ]
+  }
+ ],
+ "looks": [
+  {
+   "key": "inside:pane",
+   "look": {
+    "animation": "slide",
+    "speed": "normal",
+    "easing": "theme",
+    "edge": "left",
+    "size": "medium",
+    "position": "center",
+    "dim": true,
+    "blur": false,
+    "radius": "none",
+    "shadow": "md"
+   },
+   "style": {
+    "vars": {
+     "--axf-sp-dur": "calc(var(--fx-motion) * 1.6)",
+     "--axf-sp-ease": "var(--fx-ease)",
+     "--axf-sp-size": "40%",
+     "--axf-sp-radius": "0",
+     "--axf-sp-shadow": "var(--fx-shadow-md)",
+     "--axf-sp-blur": "0"
+    },
+    "attrs": {
+     "data-axf-sp-anim": "slide",
+     "data-axf-sp-edge": "left",
+     "data-axf-sp-pos": "center",
+     "data-axf-sp-dim": "on"
+    }
+   }
+  },
+  {
+   "key": "dialog",
+   "look": {
+    "animation": "scale",
+    "speed": "normal",
+    "easing": "decelerate",
+    "edge": "top",
+    "size": "medium",
+    "position": "center",
+    "dim": true,
+    "blur": false,
+    "radius": "lg",
+    "shadow": "lg"
+   },
+   "style": {
+    "vars": {
+     "--axf-sp-dur": "calc(var(--fx-motion) * 1.6)",
+     "--axf-sp-ease": "ease-out",
+     "--axf-sp-size": "40%",
+     "--axf-sp-radius": "var(--fx-radius-lg)",
+     "--axf-sp-shadow": "var(--fx-shadow-lg)",
+     "--axf-sp-blur": "0"
+    },
+    "attrs": {
+     "data-axf-sp-anim": "scale",
+     "data-axf-sp-edge": "top",
+     "data-axf-sp-pos": "center",
+     "data-axf-sp-dim": "on"
+    }
+   }
+  },
+  {
+   "key": "fallback",
+   "look": {
+    "animation": "slide",
+    "speed": "normal",
+    "easing": "theme",
+    "edge": "right",
+    "size": "medium",
+    "position": "center",
+    "dim": true,
+    "blur": false,
+    "radius": "none",
+    "shadow": "lg"
+   },
+   "style": {
+    "vars": {
+     "--axf-sp-dur": "calc(var(--fx-motion) * 1.6)",
+     "--axf-sp-ease": "var(--fx-ease)",
+     "--axf-sp-size": "40%",
+     "--axf-sp-radius": "0",
+     "--axf-sp-shadow": "var(--fx-shadow-lg)",
+     "--axf-sp-blur": "0"
+    },
+    "attrs": {
+     "data-axf-sp-anim": "slide",
+     "data-axf-sp-edge": "right",
+     "data-axf-sp-pos": "center",
+     "data-axf-sp-dim": "on"
+    }
+   }
+  }
+ ],
+ "describe": [
+  {
+   "pick": "main",
+   "text": "Main settings page"
+  },
+  {
+   "pick": "dialog",
+   "text": "Pop-up dialog"
+  },
+  {
+   "pick": "window",
+   "text": "Floating window"
+  },
+  {
+   "pick": "paneLeft",
+   "text": "Inside the plugin · slide-out pane, left"
+  },
+  {
+   "pick": "split",
+   "text": "Inside the plugin · split view"
+  },
+  {
+   "pick": "dropdown",
+   "text": "Inside the plugin · drop-down panel"
+  },
+  {
+   "pick": "tab",
+   "text": "Inside the plugin · new tab in the plugin"
+  },
+  {
+   "pick": "inline",
+   "text": "Inside the plugin · inline section"
+  },
+  {
+   "pick": "bad",
+   "text": "Main settings page"
+  }
+ ]
+}

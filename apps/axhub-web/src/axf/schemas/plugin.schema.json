@@ -228,6 +228,23 @@
       "pattern": "^(view|dialog):[a-z0-9][a-z0-9._-]{0,63}$",
       "description": "which of its UIs moves with opens (default: its first page, else its first dialog)"
     },
+    "settingsHost": {
+      "description": "settings-placement@1: where the plugin's settings can open inside it. true = every in-plugin mode (pane, dropdown, tab, split, inline); a list = those (pane is always one). The plugin wraps its UI in <SettingsHost owner=...> (framework/react/settingsHost.tsx). Absent = it can't hold them: 'inside' opens a slide-out pane over the page. Pop-up dialog, floating window and the main Settings page work for every plugin.",
+      "oneOf": [
+        { "type": "boolean" },
+        { "type": "array", "items": { "enum": ["pane", "dropdown", "tab", "split", "inline"] }, "uniqueItems": true }
+      ]
+    },
+    "settingsPlacement": {
+      "type": "object",
+      "description": "settings-placement@1: where its settings open until someone picks (setting axf.settingsPlacement.<id> wins; then the app default). { placement: inside|dialog|window|main, mode: pane|dropdown|tab|split|inline, looks: { '<inside:mode>|dialog|window': { animation, speed, easing, edge, size, position, dim, blur, radius, shadow } } }",
+      "properties": {
+        "placement": { "enum": ["inside", "dialog", "window", "main"] },
+        "mode": { "enum": ["pane", "dropdown", "tab", "split", "inline"] },
+        "looks": { "type": "object" }
+      },
+      "required": ["placement"]
+    },
     "help": {
       "type": "string",
       "description": "The plugin's help pack (help@1 data: { entries, intros }), a file in the plugin folder; default help.json. Loaded into Help mode while the plugin runs; counted by framework/cli/help-coverage.mjs."

@@ -110,6 +110,29 @@ fill in `builtWith` before they install.
 
 **Plugins menu** (right-click → Plugins): Install… browses every archive location (axHub is permanent and needs its token; add folders, https servers or other consoles with their credentials, kept on the console server only) and installs through `plugin-catalog.mjs install-package`; Settings… is one browser over every plugin's settings tab. <!-- axf-plugin:plugins-menu -->
 
+## Where its settings open (settings-placement@1, plugin@1 `settingsHost`, `settingsPlacement`; Nov 3 2026)
+
+A plugin's gear, its right-click **Settings** and every `settings.open:<its tab>` open its settings where Brett picked:
+**inside the plugin** (slide-out pane from any edge, drop-down panel, a tab in the plugin, split view, inline section),
+a **pop-up dialog**, a **floating window** or the **main Settings page**; they always stay in Settings too. Each
+placement has its own look (animation slide / fade / scale / drop / push / none, speed, easing, edge, size, dim, blur,
+corners, shadow; theme tokens only, off under reduced motion). The picker is the top row of the plugin's own settings
+tab, its right-click **Settings placement…** and Settings → Plugins → **Settings placement** (every plugin + the default
+for new ones). The framework does all of it (`framework/core/engines/settingsplacement.ts`,
+`framework/react/settingsHost.tsx`): a plugin only adds, if it wants its settings *inside* it,
+
+```tsx
+import { SettingsHost } from '@console/axf/react';
+<SettingsHost owner="<plugin id>" label="<its name>">{/* the plugin's body */}</SettingsHost>
+```
+
+and `"settingsHost": true` (or the modes it fits: `["pane", "tab"]`) in plugin.json; optional `"settingsPlacement": {
+"placement": "inside", "mode": "pane", "looks": { "inside:pane": { "edge": "left" } } }` is where they open until
+someone picks. Without a host, "inside" slides out as a pane over the page; a mode the plugin can't fit (or a split /
+drop-down on a phone) slides out as a pane over the plugin. CI: `npx -y tsx framework/spec/check-settings-placement.mts`
+(every plugin with settings opens as a pane, a dialog and the main page; a declared host renders `<SettingsHost>`).
+The `settings-placement` plugin keeps the picks on the console server (`axf settings-placement list | get | set`). <!-- axf-plugin:settings-placement -->
+
 ## Lifecycle (plugin-lifecycle@1) — every new plugin follows this
 
 Brett's rule (Oct 18 2026): a plugin must be removable **completely**, with no stale code, so a newer build (e.g. a

@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "settings-placement-help",
+  "name": "Settings placement help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Settings placement plugin (help@1).",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:settings-placement",
+    "entries": [
+      {
+        "target": "settings-placement",
+        "title": "Settings placement",
+        "text": "Where each plugin's settings open when you tap its gear or its Settings item: inside the plugin, a pop-up dialog, a floating window or the main Settings page. They always stay in Settings too."
+      },
+      {
+        "target": "sync-now",
+        "title": "Sync now",
+        "text": "Fetches the picks saved on the console server now, so a change made in another browser or by Claude shows here at once."
+      }
+    ],
+    "intros": []
+  }
+}

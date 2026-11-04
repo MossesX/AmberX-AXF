@@ -20,6 +20,7 @@ import { normalizeDockLayout } from './engines/dock';
 import { CHROME_CONTRACT, emptyChrome, type ChromeBundle, type ChromeNavItem, type ChromeToolbarItem } from './engines/chrome';
 /** The embed@1 functions whose chrome a host may take over and draw merged (chrome@1). */
 const CHROME_TAKES: readonly string[] = ['app-menu', 'nav-menu', 'context-menu', 'toolbar', 'widgets'];
+import type { InsideMode } from './engines/settingsplacement';
 import { normalizePlacement, placementKey, placementRoute, PLACEMENT_TAB_GROUP, type Placement, type UiRef } from './engines/placement';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
 import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
@@ -195,6 +196,10 @@ export interface InstalledLibrary {
   builtWith?: { model: string; builtAt?: string };
   /** Where its primary UI opens by default (engines/placement.ts); the setting `axf.placement.<id>` wins. */
   opens?: Placement;
+  /** In-plugin settings placements it can host (settings-placement@1, plugin@1 `settingsHost`); absent = none, its settings open over the page. */
+  settingsHost?: InsideMode[];
+  /** Where its settings open until someone picks (plugin@1 `settingsPlacement`, a settings-placement@1 pick). */
+  settingsPlacement?: unknown;
 }
 
 /** A nav section a library or plugin contributes; items point at views it registers. */

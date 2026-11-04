@@ -1526,6 +1526,114 @@
         "target": "apply-layout",
         "title": "Apply layout",
         "text": "Lays the open tabs out on the layout you picked, spread evenly over its panes. The pane limit holds: a layout with more panes uses only its first ones."
+      },
+      {
+        "target": "where-these-settings-open",
+        "title": "Where these settings open",
+        "text": "Opens this plugin's settings placement picker: choose whether its settings open inside it, in a pop-up dialog, a floating window or the main Settings page, and how they look and move.",
+        "kind": "button"
+      },
+      {
+        "target": "open-in-the-main-settings-page",
+        "title": "Open in the main Settings page",
+        "text": "Closes this panel and opens the same settings on the main Settings page.",
+        "kind": "button"
+      },
+      {
+        "target": "open-my-settings-in",
+        "title": "Open my settings in",
+        "text": "Where this plugin's settings open when you tap its gear or its Settings item: inside the plugin, a pop-up dialog, a floating window or the main Settings page. They always stay in Settings too.",
+        "kind": "field"
+      },
+      {
+        "target": "how-inside-it",
+        "title": "How, inside it",
+        "text": "How the settings open inside the plugin: a pane sliding out of an edge, a drop-down panel, a tab, a split view or a section above its content. If the plugin can't fit that, they slide out as a pane.",
+        "kind": "field"
+      },
+      {
+        "target": "try-it",
+        "title": "Try it",
+        "text": "Opens this plugin's settings the way you picked, so you can see it.",
+        "kind": "button"
+      },
+      {
+        "target": "reset-look",
+        "title": "Reset look",
+        "text": "Puts this placement's look and animation back to how it starts.",
+        "kind": "button"
+      },
+      {
+        "target": "animation",
+        "title": "Animation",
+        "text": "How the settings appear: slide, fade, scale, drop, push the plugin aside, or no animation. Turned off when your device asks for reduced motion.",
+        "kind": "field"
+      },
+      {
+        "target": "speed",
+        "title": "Speed",
+        "text": "How fast the animation runs, as a multiple of the theme's motion speed.",
+        "kind": "field"
+      },
+      {
+        "target": "easing",
+        "title": "Easing",
+        "text": "The animation's curve: the theme's own, standard, slowing down, speeding up, even, or a springy overshoot.",
+        "kind": "field"
+      },
+      {
+        "target": "size",
+        "title": "Size",
+        "text": "How much of the plugin (or the page) the settings take: narrow, medium, wide, half or all of it.",
+        "kind": "field"
+      },
+      {
+        "target": "position",
+        "title": "Position",
+        "text": "Where the pop-up dialog or drop-down sits.",
+        "kind": "field"
+      },
+      {
+        "target": "corners",
+        "title": "Corners",
+        "text": "How round the settings panel's corners are, from the theme's radius sizes.",
+        "kind": "field"
+      },
+      {
+        "target": "shadow",
+        "title": "Shadow",
+        "text": "How strong the settings panel's shadow is, from the theme's shadow sizes.",
+        "kind": "field"
+      },
+      {
+        "target": "dim-behind-it",
+        "title": "Dim behind it",
+        "text": "Darkens what's behind the settings while they're open; tap the dark part to close them.",
+        "kind": "toggle"
+      },
+      {
+        "target": "blur-behind-it",
+        "title": "Blur behind it",
+        "text": "Blurs what's behind the settings while they're open, with the theme's blur.",
+        "kind": "toggle"
+      },
+      {
+        "target": "play-again",
+        "title": "Play again",
+        "text": "Replays the preview of the animation.",
+        "kind": "button"
+      },
+      {
+        "target": "settings-placement",
+        "title": "Settings placement",
+        "text": "Where each plugin's settings open, with the default for plugins nobody picked for.",
+        "kind": "tab"
+      },
+      {
+        "target": "view:axf.settings.placement",
+        "title": "Settings placement",
+        "text": "Settings → Plugins → Settings placement: every plugin with settings, where they open, and the default for new plugins.",
+        "kind": "screen"
       }
     ],
     "intros": [

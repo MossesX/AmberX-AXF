@@ -47,3 +47,4 @@ export { WaitingForHub } from './components/Waiting';
 export { WatchLiveLink, WatchLiveWindow, watchLiveSrc, type WatchLivePreview } from './components/WatchLive';
 export { installTapConfirm, toolbarOf, toolbarElementId, tipTextOf, type TapConfirmHost } from './tapConfirm';
 export { RefText, REFS_SETTING, addRefSource, refSourcesChanged, refIndexOf, openRef, refLink, type RefTextProps, type RefHow } from './components/RefText';
+export { SettingsHost, SettingsPageSurfaces, SettingsPlacementPicker, closeSettingsSurface, findSettingsHost, openSettingsSurface, routeSettings, setSettingsSurfaceContent, settingsPickOf, settingsSurfaceOpen, useSettingsPick, type SettingsHostProps, type SettingsSurface } from './settingsHost';
