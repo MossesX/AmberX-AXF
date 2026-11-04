@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 604,
- "updatedAt": "2026-11-04T02:30:38.454Z",
+ "rev": 605,
+ "updatedAt": "2026-11-04T02:35:17.556Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -67719,7 +67719,7 @@
      "note": "",
      "rev": 4,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T02:11:46.055Z"
+     "updatedAt": "2026-11-04T02:35:03.484Z"
     },
     {
      "id": "s4",
@@ -68066,7 +68066,7 @@
    "branch": "claude/profile-switcher-widget",
    "pr": "#300",
    "createdAt": "2026-11-04T00:40:48.340Z",
-   "updatedAt": "2026-11-04T02:14:30.962Z",
+   "updatedAt": "2026-11-04T02:35:08.371Z",
    "builtAt": "",
    "notes": [
     {
@@ -68222,10 +68222,27 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "voice",
+    "planId": "",
+    "createdAt": "2026-11-04T00:40:48.340Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw1e4to606peb2": "2026-11-04T00:40:48.341Z",
+     "st-mw1e4to6078k75": "2026-11-04T00:40:48.341Z",
+     "st-mw1e4to608xvxc": "2026-11-04T00:40:48.341Z",
+     "st-mw1e4to609qwnz": "2026-11-04T00:40:48.341Z",
+     "st-mw1e4to60axzr8": "2026-11-04T00:40:48.341Z",
+     "st-mw1fwaya01kz74": "2026-11-04T01:30:10.670Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-04T00:40:48.341Z",
    "rearranged": false,
