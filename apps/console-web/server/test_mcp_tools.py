@@ -86,4 +86,31 @@ with tempfile.TemporaryDirectory() as tmp:
     ok("false" in json.dumps(asyncio.run(server.call_tool("claude_settings_get", {"key": "noWait.enabled"})), default=str).lower(), "No wait stays off")
     del os.environ["AXF_CLAUDE_SETTINGS_FILE"], os.environ["AXF_CLAUDE_SETTINGS_DATA"]
 
+# Follow Amber (Nov 3 2026): opening and moving only navigate, so they are read-only (axHub runs them at once, no
+# veto); console_action can change data and stays a write; console_show / console_follow call follow-amber@1.
+csent: list[dict] = []
+cserver = mcp_server.build_server(lambda op, **a: {}, console=lambda c: csent.append(c) or {"ok": True})
+ctools = {t.name: t for t in asyncio.run(cserver.list_tools())}
+for name in (*mcp_server.CONSOLE_TOOLS, *mcp_server.FOLLOW_TOOLS):
+    ok(name in ctools, f"{name} exists")
+for name in ("console_open", "console_dialog", "console_settings", "console_back", "console_where", "console_list", "console_clients", "console_show", "console_follow"):
+    a = ctools[name].annotations
+    ok(a.read_only_hint is True and a.destructive_hint is not True, f"{name} only navigates or reads: read-only, so it never waits on a veto")
+ok(ctools["console_action"].annotations.read_only_hint is not True, "console_action can change data: it stays a write")
+calls: list[tuple[str, dict]] = []
+real_follow = mcp_server.follow_call
+mcp_server.follow_call = lambda op, args: calls.append((op, args)) or ({"ok": True, "on": True, "by": "Brett", "at": "", "clients": 1} if op == "state" else {"ok": True, "shown": True, "message": "opened Plan Studio"})
+r = asyncio.run(cserver.call_tool("console_show", {"target": "plan studio", "highlight": "h1", "say": "here's the plan"}))
+ok(calls[-1] == ("show", {"target": "plan studio", "highlight": "h1", "say": "here's the plan", "to": "recent"}), "console_show → follow-amber show with target, highlight, say")
+asyncio.run(cserver.call_tool("console_follow", {}))
+ok(calls[-1][0] == "state", "console_follow → follow-amber state")
+mcp_server.follow_call = lambda op, args: {"ok": False, "code": "not_implemented", "message": "off"}
+try:
+    asyncio.run(cserver.call_tool("console_show", {"target": "x"}))
+    ok(False, "a failed show raises")
+except Exception as e:  # noqa: BLE001
+    ok("not_implemented" in str(e), "a failed show raises with its wire code")
+mcp_server.follow_call = real_follow
+ok("console_show" in mcp_server.INSTRUCTIONS and "console_follow" in mcp_server.INSTRUCTIONS, "the server instructions tell Amber to call console_show")
+
 print(f"✓ console MCP tools — {checks} checks, {len(tools)} tools, {len(READ_TOOLS)} read-only")
