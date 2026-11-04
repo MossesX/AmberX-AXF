@@ -26,6 +26,9 @@ Every app now says in its project manifest whether it is for the framework's own
 - "delete …" anywhere → "… Yes or no?" first.
 - "what can I say in expenses?" → the list.
 
+## CI
+PR #323 is green on head 745369512 (Build engine sweep, Web Dev Console + Python API, AmberX shell, Gradle kernel tests). Three CI-only fixes along the way: the console page needed the design-language page head; the Kotlin appearance test compares the shared slot types as a prefix and keeps `help`, so `voice-command` sits before `help` in the type order; CI builds the console with a `ci-example` copy of the plugin template, which the voice check now skips (template id). The console and Molly are re-baked in the commits because their Docker images build from the committed `src/axf`. Merge waits on the UI Review gate.
+
 ## Checks
 | Check | Result |
 |---|---|
