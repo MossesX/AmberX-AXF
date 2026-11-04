@@ -41,6 +41,27 @@
         "target": "show-a-note-for-each-command",
         "title": "Show a note for each command",
         "text": "Shows a short note each time a command moves this console, saying who asked and what opened."
+      },
+      {
+        "target": "wake-the-console-through-amberx-when-its-closed",
+        "title": "Wake the console through AmberX when it's closed",
+        "text": "Turns “Wake the console through AmberX when it's closed” on or off. It takes effect straight away and is remembered. Part of Console commands.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "how-long-a-command-waits-for-a-console",
+        "title": "How long a command waits for a console",
+        "text": "Where you set “How long a command waits for a console”. Change it and the app uses the new value. Part of Console commands.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "browser-amberx-opens",
+        "title": "Browser AmberX opens",
+        "text": "Where you set “Browser AmberX opens”. Change it and the app uses the new value. Part of Console commands.",
+        "kind": "field",
+        "draft": true
       }
     ]
   }
