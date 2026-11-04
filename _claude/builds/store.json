@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 874,
- "updatedAt": "2026-11-04T18:25:19.183Z",
+ "rev": 875,
+ "updatedAt": "2026-11-04T18:25:44.618Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -83288,7 +83288,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T18:24:34.029Z",
-   "updatedAt": "2026-11-04T18:25:17.165Z",
+   "updatedAt": "2026-11-04T18:25:20.976Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -83307,6 +83307,27 @@
      {
       "said": "This is a plugin too.",
       "at": "2026-11-04T16:20:00Z",
+      "source": "voice",
+      "by": "build-todo-sync (Snap Sully)",
+      "verbatim": true
+     },
+     {
+      "said": "From now on, put every build in Plan Studio. Every new plugin or app or whatever goes to Plan Studio. Plan Studio is updated whenever you want edits made to it. Every build will be able to attach a list to it of planned things to do, and you can check off the fixes as they happen. You can add things to fix and all that, and track everything in the planner.",
+      "at": "2026-11-04T16:40:00Z",
+      "source": "voice",
+      "by": "build-todo-sync (Snap Sully)",
+      "verbatim": true
+     },
+     {
+      "said": "And that needs an API so it can be voice controlled.",
+      "at": "2026-11-04T16:45:00Z",
+      "source": "voice",
+      "by": "build-todo-sync (Snap Sully)",
+      "verbatim": true
+     },
+     {
+      "said": "And the planner will also have links to documentation that's under development.",
+      "at": "2026-11-04T16:50:00Z",
       "source": "voice",
       "by": "build-todo-sync (Snap Sully)",
       "verbatim": true
@@ -83477,7 +83498,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
