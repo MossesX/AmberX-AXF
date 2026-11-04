@@ -421,6 +421,9 @@ export const CARD_SUGGESTIONS = [
   { id: 'build-progress', title: 'Build progress', icon: 'chart', candidates: [
     { plugin: 'builds-page', command: 'progress', path: 'progress', view: 'meter', fields: { value: 'done', max: 'total', label: 'Steps done' }, refresh: 'live' },
   ] },
+  { id: 'build-profiles', title: 'Build profiles', icon: 'layers', candidates: [
+    { plugin: 'profile-switcher', command: 'profiles-list', view: 'panel', refresh: 'live' },
+  ] },
   { id: 'cost-today', title: 'Agent spend today', icon: 'zap', unit: 'USD', candidates: [
     { plugin: 'agent-swarm', command: 'state', path: 'state.spend.*.today.usd', reduce: 'sum', view: 'number', refresh: 'every', every: 300 },
     { plugin: 'ai-assistant', command: 'usage', path: 'today.usd', view: 'number', refresh: 'every', every: 300 },

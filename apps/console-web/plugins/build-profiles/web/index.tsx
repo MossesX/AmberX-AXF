@@ -139,9 +139,9 @@ function ProfileRow({ p, state }: { p: Profile; state: State }) {
   );
 }
 
-function NewProfile({ state }: { state: State }) {
+function NewProfile({ state, startOpen = false }: { state: State; startOpen?: boolean }) {
   const rt = useRuntime();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(startOpen);
   const [name, setName] = useState('');
   const [desc, setDesc] = useState('');
   const [from, setFrom] = useState('');
@@ -174,7 +174,7 @@ function NewProfile({ state }: { state: State }) {
   );
 }
 
-function Picker() {
+function Picker({ create = false }: { create?: boolean }) {
   const s = useProfiles();
   useEffect(() => { void loadProfiles(); }, []);
   if (!s.data) return <div className="axp-build-profiles">{s.error ? <Note tone="warning">{s.error}</Note> : <LoadingSkeleton />}</div>;
@@ -185,7 +185,7 @@ function Picker() {
       </p>
       {s.error && <Note tone="warning">{s.error}</Note>}
       <ul className="axp-build-profiles__list">{s.data.profiles.map((p) => <ProfileRow key={p.id} p={p} state={s.data!} />)}</ul>
-      <NewProfile state={s.data} />
+      <NewProfile state={s.data} startOpen={create} />
     </div>
   );
 }
@@ -218,11 +218,12 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     runtime = rt;
     rt.actions.register('build-profiles.open', () => rt.openDialog(DIALOG), { label: 'Build profiles' });
+    rt.actions.register('build-profiles.new', () => rt.openDialog(DIALOG, { create: true }), { label: 'New build profile' });
     paint(rt);
     void loadProfiles();
   },
   dialogs: {
-    [DIALOG]: { title: 'Build profiles', icon: 'layers', render: () => <Picker /> },
+    [DIALOG]: { title: 'Build profiles', icon: 'layers', render: (props) => <Picker create={props.create === true} /> },
   },
   contextMenu: [
     { id: 'build-profiles.default', target: 'default', order: 92, items: [{ id: 'build-profiles', label: 'Build profile…', icon: 'layers', action: 'build-profiles.open' }] },

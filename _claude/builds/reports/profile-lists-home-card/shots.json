@@ -1,0 +1,4 @@
+[
+  { "name": "home-build-profiles-card", "steps": [ {"wait": 30000}, {"eval": "document.querySelector('.axp-profile-card')?.scrollIntoView({block:'start'})"}, {"wait": 800} ], "viewports": ["phone", "desktop"] },
+  { "name": "card-tap-opens-builds", "steps": [ {"wait": 30000}, {"click": ".axp-profile-card__pick >> text=Current"}, {"wait": 3500} ], "viewports": ["phone"] }
+]

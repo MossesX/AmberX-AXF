@@ -137,6 +137,9 @@ t('suggestions come from what exists (off plugins and other apps\' plugins give 
   assert.ok(!ids.includes('suggested-notes-recent'));
   assert.ok(!C.cardSources(REGISTRY).some((s) => s.plugin === 'voicevault' || s.command === 'data-file' || s.command === 'ops'));
   assert.deepEqual(C.suggestCards({ plugins: [] }), []);
+  const withProfiles = C.suggestCards({ plugins: [...REGISTRY.plugins, { folder: 'profile-switcher', app: 'console-web', name: 'Profile switcher', enabled: true, commands: [{ id: 'profiles-list', kind: 'read', title: 'List build profiles' }] }] });
+  const bp = withProfiles.find((s) => s.id === 'suggested-build-profiles');
+  assert.ok(bp && bp.card.view === 'panel' && bp.card.source.plugin === 'profile-switcher' && bp.card.refresh.kind === 'live', 'the Build profiles card is suggested when the Profile switcher is on');
 });
 t('zero tokens: no language model in the card engine or the code that draws cards', () => {
   const files = ['framework/core/engines/card-rules.mjs', 'framework/react/components/DataCard.tsx', 'apps/console-web/src/views/HomeCards.tsx'];
