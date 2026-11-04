@@ -1031,6 +1031,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 12:47 UTC · `app-style-override` note (current) · foreign-write
 - 2026-11-04 12:47 UTC · `hotfix-build-manager` s1 done (current) · foreign-write
 - 2026-11-04 12:47 UTC · `urgent-land-lazy-loader` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 12:47 UTC · `hotfix-build-manager` s2 done (current) · orchestrator
+- 2026-11-04 12:47 UTC · `hotfix-build-manager` s3 done (current) · orchestrator
+- 2026-11-04 12:47 UTC · `hotfix-build-manager` s4 done, → complete (current) · orchestrator
+- 2026-11-04 12:47 UTC · `hotfix-build-manager` → built, branch claude/hotfix-build-manager, PR #309 (current) · builds-live
 
 ## Token passes (log)
 

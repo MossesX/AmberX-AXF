@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 666,
- "updatedAt": "2026-11-04T12:47:54.285Z",
+ "rev": 667,
+ "updatedAt": "2026-11-04T12:48:07.846Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -72348,15 +72348,15 @@
    "title": "Hotfix: Build manager rows open, step actions work, running count is real",
    "category": "",
    "detail": "URGENT. Build rows do not open; step actions (tick, open, context menu) dead; banner says 21 going when only land-round-2 runs. Fix regressions, reconcile stale running statuses against live processes, add a zero-token reconciler rule so it cannot drift.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "hotfix-build-manager",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/hotfix-build-manager",
+   "pr": "#309",
    "createdAt": "2026-11-04T12:18:43.490Z",
-   "updatedAt": "2026-11-04T12:46:26.307Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T12:47:56.932Z",
+   "builtAt": "2026-11-04T12:47:56.382Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -72389,11 +72389,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-04T12:46:26.307Z",
+     "doneAt": "2026-11-04T12:47:53.779Z",
      "note": "",
-     "rev": 4,
+     "rev": 5,
      "createdAt": "2026-11-04T12:18:43.491Z",
-     "updatedAt": "2026-11-04T12:47:53.381Z"
+     "updatedAt": "2026-11-04T12:47:53.828Z"
     },
     {
      "id": "s2",
@@ -72410,12 +72410,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T12:47:54.565Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T12:18:43.491Z",
-     "updatedAt": "2026-11-04T12:19:16.931Z"
+     "updatedAt": "2026-11-04T12:47:54.612Z"
     },
     {
      "id": "s3",
@@ -72432,12 +72432,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T12:47:55.501Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T12:18:43.491Z",
-     "updatedAt": "2026-11-04T12:19:16.931Z"
+     "updatedAt": "2026-11-04T12:47:55.547Z"
     },
     {
      "id": "s4",
@@ -72454,12 +72454,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T12:47:56.382Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T12:18:43.491Z",
-     "updatedAt": "2026-11-04T12:19:16.931Z"
+     "updatedAt": "2026-11-04T12:47:56.438Z"
     }
    ],
    "profiles": [
@@ -72470,7 +72470,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
