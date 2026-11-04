@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 607,
- "updatedAt": "2026-11-04T02:47:00.160Z",
+ "rev": 608,
+ "updatedAt": "2026-11-04T02:49:33.439Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -69619,8 +69619,8 @@
    "pendingId": "",
    "branch": "claude/app-style-override",
    "pr": "",
-   "createdAt": "2026-11-04T01:51:14.558Z",
-   "updatedAt": "2026-11-04T01:52:23.544Z",
+   "createdAt": "2026-11-04T01:44:48.256Z",
+   "updatedAt": "2026-11-04T02:47:09.560Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -69628,7 +69628,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mw1gnesg078c6w",
+     "uid": "st-mw1gf3s50cqyek",
      "title": "",
      "text": "s1 axHub = style source: axHub's active color-theme + style-theme is the default for every app (console, Molly, axHub web, AmberX, demo, Gizmo later, framework app template); inheriting apps follow it live",
      "model": "Opus",
@@ -69645,12 +69645,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-04T01:51:14.758Z",
-     "updatedAt": "2026-11-04T01:51:14.758Z"
+     "createdAt": "2026-11-04T01:44:48.332Z",
+     "updatedAt": "2026-11-04T01:44:48.332Z"
     },
     {
      "id": "s2",
-     "uid": "st-mw1gnesg08l0k2",
+     "uid": "st-mw1gf3s50d9e7u",
      "title": "",
      "text": "s2 Settings > Appearance in each app: Override axHub design / Override axHub colors switches, Inherited from axHub note with theme name, Overriding axHub with axHub value beside, auto-on when editing, Reset to axHub",
      "model": "Opus",
@@ -69667,12 +69667,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-04T01:51:14.758Z",
-     "updatedAt": "2026-11-04T01:51:14.758Z"
+     "createdAt": "2026-11-04T01:44:48.332Z",
+     "updatedAt": "2026-11-04T01:44:48.332Z"
     },
     {
      "id": "s3",
-     "uid": "st-mw1gnesg09tscq",
+     "uid": "st-mw1gf3s50ev7ob",
      "title": "",
      "text": "s3 Shared inherit/override library in the framework (reuse molly-nav-submenus if it made one)",
      "model": "Opus",
@@ -69685,16 +69685,16 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T02:46:41.562Z",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T01:51:14.758Z",
-     "updatedAt": "2026-11-04T01:51:14.758Z"
+     "rev": 2,
+     "createdAt": "2026-11-04T01:44:48.332Z",
+     "updatedAt": "2026-11-04T02:46:42.956Z"
     },
     {
      "id": "s4",
-     "uid": "st-mw1gnesg0aky0e",
+     "uid": "st-mw1gf3s50fsmyk",
      "title": "",
      "text": "s4 Banner tokens: per-banner-type colour tokens (info, success, warning, error, build, merge, ai, neutral) in color-theme with values in every starter theme",
      "model": "Opus",
@@ -69707,16 +69707,16 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T02:47:09.560Z",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T01:51:14.758Z",
-     "updatedAt": "2026-11-04T01:51:14.758Z"
+     "rev": 2,
+     "createdAt": "2026-11-04T01:44:48.332Z",
+     "updatedAt": "2026-11-04T02:47:11.052Z"
     },
     {
      "id": "s5",
-     "uid": "st-mw1gnesg0bko49",
+     "uid": "st-mw1gf3s50gpv8z",
      "title": "",
      "text": "s5 Addendum 1: Reload from axHub (button + hook@1 action, keep or reset overrides) and Save to axHub (design / colours / both, confirm lists apps, owner-only, versioned, Restore previous axHub style)",
      "model": "Opus",
@@ -69733,12 +69733,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-04T01:51:14.758Z",
-     "updatedAt": "2026-11-04T01:51:14.758Z"
+     "createdAt": "2026-11-04T01:44:48.332Z",
+     "updatedAt": "2026-11-04T01:44:48.332Z"
     },
     {
      "id": "s6",
-     "uid": "st-mw1gnesg0cr0vl",
+     "uid": "st-mw1gf3s50hs10s",
      "title": "",
      "text": "s6 REST + MCP + CLI (app_style_get, app_style_override, app_style_reload, app_style_save_to_axhub), tests, screenshots, UI Review, report, THREADS, PR",
      "model": "Opus",
@@ -69755,8 +69755,8 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-04T01:51:14.758Z",
-     "updatedAt": "2026-11-04T01:51:14.758Z"
+     "createdAt": "2026-11-04T01:44:48.332Z",
+     "updatedAt": "2026-11-04T01:44:48.332Z"
     }
    ],
    "profiles": [
@@ -69767,12 +69767,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-04T01:51:14.758Z",
+   "defaultAt": "2026-11-04T01:44:48.332Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

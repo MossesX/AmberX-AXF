@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T02:47:00.160Z",
+ "updatedAt": "2026-11-04T02:49:33.439Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -5902,8 +5902,8 @@
    "pendingId": "",
    "branch": "claude/app-style-override",
    "pr": "",
-   "createdAt": "2026-11-04T01:51:14.558Z",
-   "updatedAt": "2026-11-04T01:52:23.544Z",
+   "createdAt": "2026-11-04T01:44:48.256Z",
+   "updatedAt": "2026-11-04T02:47:09.560Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -5925,7 +5925,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1gnesg078c6w"
+     "uid": "st-mw1gf3s50cqyek"
     },
     {
      "id": "s2",
@@ -5943,7 +5943,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1gnesg08l0k2"
+     "uid": "st-mw1gf3s50d9e7u"
     },
     {
      "id": "s3",
@@ -5958,10 +5958,10 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T02:46:41.562Z",
      "note": "",
-     "uid": "st-mw1gnesg09tscq"
+     "uid": "st-mw1gf3s50ev7ob"
     },
     {
      "id": "s4",
@@ -5976,10 +5976,10 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T02:47:09.560Z",
      "note": "",
-     "uid": "st-mw1gnesg0aky0e"
+     "uid": "st-mw1gf3s50fsmyk"
     },
     {
      "id": "s5",
@@ -5997,7 +5997,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1gnesg0bko49"
+     "uid": "st-mw1gf3s50gpv8z"
     },
     {
      "id": "s6",
@@ -6015,7 +6015,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1gnesg0cr0vl"
+     "uid": "st-mw1gf3s50hs10s"
     }
    ]
   }
