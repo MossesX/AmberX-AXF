@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T18:10:36.567Z",
+ "updatedAt": "2026-11-04T00:15:03.944Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1997,15 +1997,15 @@
    "title": "Builds: one dataset, one page with selectable views (Plan, Tracker, Queue, Pending, Orchestrator)",
    "category": "Console UI",
    "detail": "Brett, Oct 27 2026: Plans, Tracker, Build queue, Pending builds and the Build orchestrator are separate files (plan.json, tracker.json, build-queue.json, pending.json, _claude/builds/orchestrator.json) that drift (pending complete never marks the plan built; 91 of 100 pending items unlinked). Merge into one dataset; one Builds page with the views selectable from a toolbar and everywhere else that fits (app menu, context menu, shortcuts, banners, deep links). Every view, Orchestrator included, defaults to the Pending builds look: a table with expandable rows; better nested info in every list. Folds in pending-grid-view. tracker.json stays a generated export for the Android console and /tracker. Web only (Android hold).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
    "branch": "claude/builds-one-page-done",
-   "pr": "#134",
+   "pr": "#269",
    "createdAt": "2026-10-27T19:11:22.011Z",
-   "updatedAt": "2026-11-03T18:02:48.952Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T18:22:41.268Z",
+   "builtAt": "2026-11-03T18:22:40.093Z",
    "notes": [
     {
      "text": "Oct 27 18:15 Brett: folded in 'date + time on every entry, newest (last updated) first in every grid regardless of filter' as two Opus steps before tests (asked for Refactor profile; folded here since this build owns the one dataset).",
@@ -2030,6 +2030,10 @@
     {
      "text": "Reconciler: PR #134; PR #134 names s1, s2, s3, s4 done",
      "at": "2026-11-03T17:56:10.354Z"
+    },
+    {
+     "text": "Nov 3 2026: all steps done on claude/builds-one-page-done, PR #269 (UI Review r-20261103-abd35505). Built by Snap Sully (builds-one-page-done, Urgent). Stale claude/builds-one-page-finish ported and superseded; PRs #134 and #130 superseded. Report _claude/builds/reports/builds-one-page-done.md",
+     "at": "2026-11-03T18:22:41.268Z"
     }
    ],
    "approvals": [
@@ -2314,42 +2318,6 @@
      "uid": "st-n8ym5e"
     },
     {
-     "id": "s17-16",
-     "text": "Old screens become thin redirects to their Builds view (pending, build queue, build-orchestrator, plan, tracker); every nav/menu/context way in kept",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T18:02:48.952Z",
-     "note": "",
-     "uid": "st-mw0zlof60117cu"
-    },
-    {
-     "id": "s16-15",
-     "text": "Old screens become thin redirects to their Builds view (pending, build queue, build-orchestrator, plan, tracker); every nav/menu/context way in kept",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw0zlwfb0171rx"
-    },
-    {
      "id": "s16",
      "text": "Old screens become thin redirects to their Builds view (pending, build queue, build-orchestrator, plan, tracker); every nav/menu/context way in kept",
      "model": "Opus",
@@ -2380,8 +2348,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:22:40.092Z",
      "note": "",
      "uid": "st-re4dux"
     }

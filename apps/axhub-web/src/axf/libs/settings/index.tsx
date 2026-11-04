@@ -23,6 +23,8 @@ import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS
 export const SETTINGS_LIBRARY_ID = 'ai.amberx.axf.settings';
 const VIEW = 'settings';
 const TAB_KEY = 'axf.settings.lastTab';
+/** One settings tab in a pop-up dialog (a plugin whose "Opens in" is dialog; settings.open:<tab>). */
+const TAB_DIALOG = 'axf.settings.tab';
 
 /** Standard tabs, in order. Ids are stable: libraries target them by id. */
 export const SETTINGS_TABS = {
@@ -626,6 +628,23 @@ export function TabContent({ id, all = false }: { id: string; all?: boolean }) {
   return plugin ? <div className="fx-plugin-scope" data-axf-plugin={plugin}><TabBody id={id} all={all} /></div> : <TabBody id={id} all={all} />;
 }
 
+/** A settings tab on its own, in a dialog: its name, the level toolbar and its panels and groups. */
+function TabDialog({ id }: { id: string }) {
+  const rt = useRuntime();
+  const tab = rt.settings.getTab(id);
+  const ui = useSettingsUi();
+  const level = useSettingsLevel(ui);
+  const bar = useLevelBarOn();
+  if (!tab) return <p className="fx-muted">No settings tab "{id}".</p>;
+  return (
+    <div className="fx-stack axf-settings axf-settings--dialog" data-axf-settings-tab={id}>
+      <p className="fx-eyebrow"><Icon name={tab.icon} /> {tab.label}</p>
+      {ui.levels && bar && <SettingsLevelBar level={level} />}
+      <TabContent id={id} />
+    </div>
+  );
+}
+
 function TabBody({ id, all = false }: { id: string; all?: boolean }) {
   const rt = useRuntime();
   useSettingsRevision(rt);
@@ -858,6 +877,11 @@ export const library: AxfWebLibrary = {
       { id: 'axf-settings-levels-remove', label: 'Remove', icon: 'minus', action: LEVEL_EDITOR_ACTIONS.remove },
     ] });
     rt.actions.register('settings.open', ([tab]) => {
+      // A plugin's own tab follows the plugin's "Opens in" pick (window-resize-fix, Nov 3 2026, Brett: "I selected
+      // dialog for the terminal settings in its settings, but it doesn't open"): dialog = that tab in a pop-up dialog
+      // over whatever is open; anything else = the main settings page, as before.
+      const owner = tab ? rt.settings.getTab(tab)?.module : undefined;
+      if (tab && owner && rt.placementOf(owner) === 'dialog') { rt.openDialog(TAB_DIALOG, { tab }); return; }
       rt.navigate(VIEW);
       if (tab) {
         rt.settings.set(TAB_KEY, tab);
@@ -871,6 +895,7 @@ export const library: AxfWebLibrary = {
     [BANNERS_VIEW]: { title: 'Banners', icon: 'bell', render: () => <div className="fx-stack fx-stack--lg axf-settings"><header className="fx-pagehead"><div><p className="fx-eyebrow">Settings</p><h1>Banners</h1></div></header><BannerSettingsPanel /></div> },
   },
   dialogs: {
+    [TAB_DIALOG]: { title: 'Settings', icon: 'settings', searchable: false, render: (p: Record<string, unknown>) => <TabDialog id={String(p.tab ?? '')} /> },
     [LEVEL_EDITOR_DIALOG]: { title: 'Settings levels', icon: 'sliders', searchable: true, render: () => <LevelEditor /> },
   },
   settingsTabs: Object.values(SETTINGS_TABS),
