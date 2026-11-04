@@ -132,7 +132,7 @@ def normalize(raw: Any, now: str | None = None) -> tuple[dict[str, Any] | None, 
     e["repos"] = out_repos[: LIMITS["repos"]]
     e["model"] = redact(raw.get("model"), LIMITS["model"])
     who = raw.get("who") if _is_obj(raw.get("who")) else {}
-    e["who"] = {k: redact(who[k], LIMITS["who"]) for k in ("session", "where", "user", "host") if who.get(k) is not None and str(who[k]).strip()}
+    e["who"] = {k: redact(who[k], LIMITS["who"]) for k in ("session", "where", "user", "host", "agent") if who.get(k) is not None and str(who[k]).strip()}
 
     steps = raw.get("steps")
     steps = [] if steps is None else steps

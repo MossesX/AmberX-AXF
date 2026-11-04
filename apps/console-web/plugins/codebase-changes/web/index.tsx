@@ -8,7 +8,8 @@
  *  - Banner on every console load while any entry isn't closed (order 4.7: after Activity 4 and Build manager 4.5):
  *    count + newest titles; the drop-down lists each with kind, state, time, steps and result, ✕ per entry (closed on
  *    every device) and Close all; tap an entry to open it in the log.
- *  - Builds → Codebase changes: the permanent log with filters, steps timeline, result, tests, links, pagination.
+ *  - Builds → Codebase changes: the permanent log with filters, pagination and, per entry, a chat log (build-chat@1:
+ *    Brett's words, Amber's brief, the agent's steps, commits, PR and result) or the classic steps + result layout.
  *  - Hooks: action codebase-changes.open[:<id>], search provider (every entry seen), default context menu link.
  *  - Settings → Plugins → Codebase changes: banner on/off, where the log lives, the hook install command.
  */
@@ -51,6 +52,7 @@ export const plugin: AxfWebLibrary = {
     id: 'codebase-changes.prefs', label: 'Codebase changes', icon: 'branch', tab: 'codebase-changes', order: 10,
     settings: [
       { key: KEYS.banner, label: 'Banner on every load', kind: 'toggle', default: true, description: 'Show the Codebase changes banner while any entry isn’t closed. Off hides it in this browser only; entries stay open everywhere else.' },
+      { key: KEYS.chat, label: 'Show entries as a chat log', kind: 'toggle', default: true, description: 'An expanded entry reads like the Chat viewer: what Brett said, the brief, then each step as the agent works. Off = the classic facts and steps layout (also switchable on each entry).' },
     ],
   }],
   settingsPanels: [

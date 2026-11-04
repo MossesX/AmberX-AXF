@@ -108,6 +108,7 @@ export const plugin: AxfWebLibrary = {
     id: 'build-manager.prefs', label: 'Build manager', icon: 'play', tab: 'build-manager', order: 10,
     settings: [
       { key: KEYS.banner, label: 'Banner while a build runs', kind: 'toggle', default: true, description: 'A compact banner at the top while something from the build list is in progress or just finished.' },
+      { key: KEYS.chat, label: 'Show builds as a chat log', kind: 'toggle', default: true, description: 'An expanded build reads like the Chat viewer: what Brett said, the brief, then its steps. Off = the classic layout (also switchable on each build; tick steps there).' },
       { key: KEYS.sort, label: 'Default sort', kind: 'choice', default: 'order', options: SORTS.map((k) => ({ value: k, label: SORT_LABEL[k] })) },
       { key: KEYS.sources, label: 'Sources', kind: 'multi_choice', default: [...SOURCES], options: SOURCES.map((k) => ({ value: k, label: SOURCE_LABEL[k] })), description: 'Which lists the Build manager reads.' },
     ],

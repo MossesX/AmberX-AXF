@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Button, Chip, Container, Icon, IconButton, Note, Segmented, SelectField, Switch, TextField } from '@console/axf/react';
+import { Button, ChatBubble, ChatLog, Chip, Container, Icon, IconButton, Note, Segmented, SelectField, Switch, TextField } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridSort } from '@console/axf/libs/datagrid';
 import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -245,25 +245,25 @@ function SessionView({ id, seq, onBack }: { id: string; seq?: number; onBack: ()
       </div>
       {old && <Note tone="warning" icon="clock">An older version ({old.length} messages). Pick the current one to go back.</Note>}
       {audioOpen && <AudioPanel d={d} reload={load} />}
-      <div className="axp-chat-viewer-chat" role="log" aria-label={`Transcript of ${s.title}`}>
+      <ChatLog label={`Transcript of ${s.title}`}>
         {visible.map((l) => (l.kind === 'msg'
           ? <Bubble key={l.seq} seq={l.seq} m={l.m} flash={flash === l.seq} />
           : showTools ? <Tools key={l.seq} items={l.items} flash={flash} /> : null))}
         {!visible.length && <EmptyState icon="list" compact>This session has no messages yet.</EmptyState>}
-      </div>
+      </ChatLog>
       {all.length > visible.length && <Button icon="chevron-down" onClick={() => setLimit(limit + PAGE)}>Show more ({msgs.length - limit} left)</Button>}
     </div>
   );
 }
 
+/** One message: the framework's chat bubble (one chat renderer, shared with Codebase changes and the Build manager). */
 function Bubble({ seq, m, flash }: { seq: number; m: Message; flash: boolean }) {
+  const brett = m.role === 'user';
   return (
-    <div id={`axp-cv-m-${seq}`} className={`axp-chat-viewer-msg is-${m.role === 'user' ? 'brett' : 'amber'}${flash ? ' is-active' : ''}`}>
-      <div className="axp-chat-viewer-bubble">
-        <span className="axp-chat-viewer-who">{core.WHO[m.role]}{m.kind === 'speech' && <Icon name="mic" size={11} />}{m.at && <time dateTime={m.at}>{core.fmtWhen(m.at)}</time>}</span>
-        <div className="axp-chat-viewer-text">{m.text}</div>
-      </div>
-    </div>
+    <ChatBubble id={`axp-cv-m-${seq}`} role={brett ? 'brett' : 'amber'} who={core.WHO[m.role]} avatar={brett ? 'user' : 'sparkles'} active={flash}
+      at={m.at || undefined} atLabel={m.at ? core.fmtWhen(m.at) : undefined} tags={m.kind === 'speech' ? <Icon name="mic" size={11} /> : undefined}>
+      <div className="fx-chat__text">{m.text}</div>
+    </ChatBubble>
   );
 }
 

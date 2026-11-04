@@ -35,10 +35,13 @@ export const LINGER_MS = 4_000;
 
 /* ---------------- settings (Settings → Plugins → Build manager) ---------------- */
 
-export const KEYS = { banner: 'build-manager.banner', sort: 'build-manager.sort', sources: 'build-manager.sources' } as const;
+export const KEYS = { banner: 'build-manager.banner', sort: 'build-manager.sort', sources: 'build-manager.sources', chat: 'build-manager.chatLog' } as const;
 let rt: AxfRuntime | null = null;
 const setting = (k: string, d: SettingValue): SettingValue => { try { return rt?.settings.get(k) ?? d; } catch { return d; } };
 export const bannerOn = () => setting(KEYS.banner, true) !== false;
+/** An expanded build shows as a chat log (build-chat@1, Brett Nov 4 2026); off = the classic origin + facts + steps. */
+export const chatOn = () => setting(KEYS.chat, true) !== false;
+export const setChat = (on: boolean) => { try { rt?.settings.set(KEYS.chat, on); } catch { /* read-only settings */ } };
 export const defaultSort = (): SortKey => { const s = setting(KEYS.sort, 'order'); return s === 'left' || s === 'model' ? s : 'order'; };
 export const enabledSources = (): Source[] => { const v = setting(KEYS.sources, [...SOURCES]); return Array.isArray(v) ? (v.filter((x) => (SOURCES as string[]).includes(x)) as Source[]) : [...SOURCES]; };
 

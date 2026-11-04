@@ -29,6 +29,18 @@
         "title": "Clear search and filters",
         "text": "Shows everything again.",
         "kind": "button"
+      },
+      {
+        "target": "show-entries-as-a-chat-log",
+        "title": "Show entries as a chat log",
+        "text": "An expanded entry reads like the Chat viewer: what Brett said, Amber's brief, then each step, commit, PR and result. Off shows the classic facts and steps.",
+        "kind": "field"
+      },
+      {
+        "target": "pull-request",
+        "title": "Pull request",
+        "text": "Opens this change's pull request on GitHub.",
+        "kind": "link"
       }
     ],
     "intros": []

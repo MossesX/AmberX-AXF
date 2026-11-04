@@ -22,18 +22,10 @@
 .axp-chat-viewer-hit:hover { background: var(--fx-surface2); }
 .axp-chat-viewer-hit__head { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0; }
 .axp-chat-viewer-hit__snip { color: var(--fx-muted); overflow-wrap: anywhere; font-size: var(--fx-type-root-sm); }
-/* one session */
+/* one session (the bubbles are the framework's .fx-chat, framework/ui/axf.css) */
 .axp-chat-viewer-head { min-width: 0; flex: 1 1 16em; }
 .axp-chat-viewer-h { overflow-wrap: anywhere; }
-.axp-chat-viewer-chat { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0; }
-.axp-chat-viewer-msg { display: flex; }
-.axp-chat-viewer-msg.is-brett { justify-content: flex-end; }
-.axp-chat-viewer-bubble { max-width: min(92%, 46em); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); border-radius: var(--fx-radius-lg); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); color: var(--fx-text); min-width: 0; }
-.axp-chat-viewer-msg.is-brett .axp-chat-viewer-bubble { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)); border-color: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent); }
-.axp-chat-viewer-msg.is-active .axp-chat-viewer-bubble, .axp-chat-viewer-tool.is-active { outline: var(--fx-border-w) solid var(--fx-focus); outline-offset: var(--fx-dens-gap-2xs); }
-.axp-chat-viewer-who { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); font-weight: 600; font-size: var(--fx-type-root-sm); margin-bottom: var(--fx-dens-gap-2xs); }
-.axp-chat-viewer-who time { font-weight: 400; color: var(--fx-muted); }
-.axp-chat-viewer-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+.axp-chat-viewer-tool.is-active { outline: var(--fx-border-w) solid var(--fx-focus); outline-offset: var(--fx-dens-gap-2xs); }
 .axp-chat-viewer-tools { align-self: stretch; border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-md); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); color: var(--fx-muted); font-size: var(--fx-type-root-sm); min-width: 0; }
 .axp-chat-viewer-tools > summary { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .axp-chat-viewer-tool { margin-top: var(--fx-dens-gap-sm); color: var(--fx-text); }

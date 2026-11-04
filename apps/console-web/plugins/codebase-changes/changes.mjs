@@ -370,9 +370,9 @@ async function openFromPrompt(b, ev, sid, now, kind, prompt, doing = 'Starting')
     const u = await usageFrom(ev.transcript_path, now);
     const model = process.env.AXF_MODEL || process.env.ANTHROPIC_MODEL || process.env.CLAUDE_MODEL || (await usageFrom(ev.transcript_path, 0))?.model || u?.model || '';
     ({ entry: e } = await save(b, {
-      id, createdAt: now, updatedAt: now, kind, title: titleFrom(prompt), asked: redact(String(prompt ?? '').replace(/\s+/g, ' '), 4000),
+      id, createdAt: now, updatedAt: now, kind, title: titleFrom(prompt), asked: redact(String(prompt ?? '').replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n'), 4000, true), // keeps its lines: the chat log renders it as Markdown
       repos: repo ? [repo] : [], model: redact(model, 40),
-      who: { session: sid.slice(0, 12), where: detectWhere(), user: process.env.USER || '', host: hostname() }, steps: [], result: null, closed: null,
+      who: { session: sid.slice(0, 12), where: detectWhere(), user: process.env.USER || '', host: hostname(), ...(process.env.AXF_AGENT ? { agent: redact(process.env.AXF_AGENT, 80) } : {}) }, steps: [], result: null, closed: null,
       status: 'running', surface: detectSurface(), startedAt: now, lastSeenAt: now, doing: redact(doing, 160),
       ...(git ? { resume: git } : {}),
       ...(process.env.AXF_PARENT_CHANGE && ID_RE.test(process.env.AXF_PARENT_CHANGE) ? { parent: process.env.AXF_PARENT_CHANGE } : {}),

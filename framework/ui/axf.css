@@ -1677,6 +1677,36 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 .axf-origin__addenda > li { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
 .axf-origin-sub { display: block; font-size: var(--fx-type-scale-xs); color: var(--fx-muted); font-style: italic; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 
+/* Chat log (framework/react/components/ChatLog.tsx, harvested Nov 4 2026 from the Chat viewer): one renderer for the
+   Chat viewer's transcripts and builds told as a conversation (build-chat@1). Brett's bubbles on the right, Amber and
+   agents on the left, status lines centred; newest at the bottom. Phone first: bubbles take most of the width. */
+.fx-chat { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0; }
+.fx-chat__msg { display: flex; align-items: flex-start; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.fx-chat__msg.is-brett { flex-direction: row-reverse; }
+.fx-chat__avatar { flex: none; display: inline-flex; }
+.fx-chat__face { display: inline-flex; align-items: center; justify-content: center; width: calc(var(--fx-row-h) * 0.66); height: calc(var(--fx-row-h) * 0.66); border-radius: 999px; background: var(--fx-surface2); color: var(--fx-muted); border: var(--fx-border-w) solid var(--fx-border); }
+.fx-chat__msg.is-brett .fx-chat__face { background: var(--fx-accent-soft); color: var(--fx-accent); }
+.fx-chat__msg.is-amber .fx-chat__face { color: var(--fx-accent); }
+.fx-chat__bubble { max-width: min(92%, 46em); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); border-radius: var(--fx-radius-lg); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); color: var(--fx-text); min-width: 0; }
+.fx-chat__msg.is-brett .fx-chat__bubble { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)); border-color: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent); }
+.fx-chat__msg.is-active .fx-chat__bubble { outline: var(--fx-border-w) solid var(--fx-focus); outline-offset: var(--fx-dens-gap-2xs); }
+.fx-chat__msg.is-step.is-failed .fx-chat__bubble { border-color: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-muted) * 100%), transparent); }
+.fx-chat__msg.is-step.is-queued .fx-chat__bubble { opacity: var(--fx-opacity-muted); border-style: dashed; }
+.fx-chat__who { display: flex; align-items: center; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); font-weight: 600; font-size: var(--fx-type-root-sm); margin-bottom: var(--fx-dens-gap-2xs); }
+.fx-chat__who time { font-weight: 400; color: var(--fx-muted); }
+.fx-chat__who .fx-chip { font-weight: 400; }
+.fx-chat__body { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); min-width: 0; }
+.fx-chat__text { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.fx-chat__meta { color: var(--fx-muted); font-size: var(--fx-type-root-sm); overflow-wrap: anywhere; }
+.fx-chat__list { margin: 0; padding-left: var(--fx-dens-gap-xl); font-size: var(--fx-type-root-sm); overflow-wrap: anywhere; }
+.fx-chat__acts { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); }
+.fx-chat__acts:empty { display: none; }
+.fx-chat__brief { min-width: 0; overflow-wrap: anywhere; }
+.fx-chat__brief.is-clamped { max-height: calc(var(--fx-row-h) * 4); overflow: hidden; mask-image: linear-gradient(to bottom, var(--fx-text) 60%, transparent); }
+.fx-chat__rules { list-style: none; margin: 0; padding: var(--fx-dens-gap-sm); display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); background: var(--fx-surface2); border-radius: var(--fx-radius-md); color: var(--fx-muted); }
+.fx-chat__system { align-self: center; display: inline-flex; align-items: center; flex-wrap: wrap; justify-content: center; gap: var(--fx-dens-gap-xs); max-width: 100%; padding: var(--fx-dens-gap-2xs) var(--fx-dens-gap-md); border-radius: 999px; background: var(--fx-surface2); color: var(--fx-muted); font-size: var(--fx-type-root-sm); }
+.fx-chat__system time { opacity: var(--fx-opacity-muted); }
+
 /* ---------------------------------------------------------------- data cards (card@1, react/components/DataCard.tsx)
    One card engine draws any data; every value here is a token, so a theme or scale swap restyles every card. */
 .fx-dcard { min-width: 0 }

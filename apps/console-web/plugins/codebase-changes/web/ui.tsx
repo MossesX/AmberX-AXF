@@ -1,9 +1,9 @@
 /* Codebase changes — the banner, the log browser and the settings summary. Theme tokens only (codebase-changes.css). */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Button, Icon, IconButton, RefText, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { BuildChatLog, Button, Icon, IconButton, RefText, Segmented, useAxfState, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { MoreMenu } from './MoreMenu';
 import {
-  CHANGED, KIND_ICON, NO_FILTERS, STATE_ICON, STATE_LABEL, VIEW, abandonEntry, ago, api, bannerOn, closeAll, closeEntry, isActive, NO_WORD_MS, quietMs, startedMs, stuckWhy, kindLabel, linkHref, loadEntry, loadOpen, loadResume,
+  CHANGED, KIND_ICON, NO_FILTERS, STATE_ICON, STATE_LABEL, VIEW, abandonEntry, ago, api, bannerOn, chatOn, plainTitle, setChat, closeAll, closeEntry, isActive, NO_WORD_MS, quietMs, startedMs, stuckWhy, kindLabel, linkHref, loadEntry, loadOpen, loadResume,
   loadPage, reopenEntry, takeFocus, took, useStore, when, type Entry, type Filters, type Page, type Step, type Summary,
 } from './store';
 
@@ -74,7 +74,7 @@ export function ChangesBanner() {
             {failed > 0 && <span className="axp-codebase-changes__meta is-danger">{failed} failed</span>}
             <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
           </span>
-          <span className="axp-codebase-changes-banner__lead">{s.open.slice(0, 2).map((e) => e.title).join(' · ')}{n > 2 ? ` +${n - 2} more` : ''}</span>
+          <span className="axp-codebase-changes-banner__lead">{s.open.slice(0, 2).map((e) => plainTitle(e.title)).join(' · ')}{n > 2 ? ` +${n - 2} more` : ''}</span>
         </button>
       </div>
       {open && (
@@ -85,7 +85,7 @@ export function ChangesBanner() {
                 <button type="button" data-fx-row className="axp-codebase-changes-banner__entry" aria-expanded={shown === e.id} onClick={() => setShown(shown === e.id ? null : e.id)} title={shown === e.id ? 'Hide the details' : 'Show the details'}>
                   <span className="axp-codebase-changes-banner__line">
                     <KindBadge kind={e.kind} />
-                    <span className="axp-codebase-changes-banner__title"><RefText text={e.title} /></span>
+                    <span className="axp-codebase-changes-banner__title"><RefText text={plainTitle(e.title)} /></span>
                     <Icon name={shown === e.id ? 'chevron-up' : 'chevron-down'} size={14} />
                   </span>
                   <span className="axp-codebase-changes-banner__line">
@@ -164,8 +164,50 @@ function ResumeDetails({ e }: { e: Entry }) {
   );
 }
 
+/** The entry's facts as one compact row of chips (chat log view). */
+function EntryChips({ e }: { e: Entry }) {
+  const pr = e.resume?.pr || e.result?.links?.pr || '';
+  const prHref = pr ? linkHref(pr, e.repos) : '';
+  const where = [e.who.where, e.who.host].filter(Boolean).join(' · ');
+  return (
+    <div className="axp-codebase-changes__chips" aria-label="About this entry">
+      <span className="fx-chip" title={`Opened ${when(e.createdAt)}`}><Icon name="clock" size={11} />{when(e.createdAt)}</span>
+      <span className="fx-chip" title={`Updated ${when(e.updatedAt)}`}><Icon name="refresh" size={11} />{ago(e.updatedAt)}</span>
+      {e.repos[0] && <span className="fx-chip" title="Repo"><Icon name="code" size={11} />{e.repos.join(', ')}</span>}
+      {(e.resume?.branch || e.result?.branch) && <span className="fx-chip" title="Branch"><Icon name="branch" size={11} />{e.resume?.branch || e.result?.branch}</span>}
+      {e.model && <span className="fx-chip" title="Model"><Icon name="zap" size={11} />{e.model}</span>}
+      {where && <span className="fx-chip" title={`Where${e.who.user ? ` · ${e.who.user}` : ''}${e.who.session ? ` · session ${e.who.session}` : ''}`}><Icon name="monitor" size={11} />{where}</span>}
+      {pr && (prHref ? <a className="fx-chip" href={prHref} target="_blank" rel="noopener noreferrer" title="Pull request"><Icon name="external" size={11} />{pr.replace(/^https:\/\/github\.com\/[^/]+\/[^/]+\/pull\//, 'PR #')}</a> : <span className="fx-chip">{pr}</span>)}
+      <span className="fx-chip" title={e.closed ? `Closed ${when(e.closed.at)} by ${e.closed.by}` : 'Showing in the banner'}><Icon name={e.closed ? 'x' : 'bell'} size={11} />{e.closed ? 'closed' : 'in banner'}</span>
+      <span className="fx-chip" title="Id"><code>{e.id}</code></span>
+    </div>
+  );
+}
+
+/** The entry as a chat log: Brett's words, Amber's brief, then the agent's steps, commits, PR and result. */
+function EntryChat({ e }: { e: Entry }) {
+  const r = e.result;
+  return (
+    <>
+      <BuildChatLog label={`What happened in ${e.title}`} agent={e.who.agent} repo={e.repos[0]}
+        input={{
+          brief: e.asked, createdAt: e.createdAt, startedAt: e.startedAt, steps: e.steps,
+          result: r ? { ...r, at: e.updatedAt } : null, pr: e.resume?.pr || r?.links?.pr || '', closed: e.closed,
+        }} />
+      {r?.links && Object.keys(r.links).length > 0 && (
+        <div className="axp-codebase-changes__line">
+          {Object.entries(r.links).map(([name, v]) => { const href = linkHref(v, e.repos); return href ? <a key={name} className="fx-btn fx-btn--neutral fx-btn--sm axp-codebase-changes__act" href={href} target="_blank" rel="noopener noreferrer"><Icon name="external" size={11} />{name}</a> : <span key={name} className="axp-codebase-changes__meta">{name}: {v}</span>; })}
+        </div>
+      )}
+      {e.resume && Object.keys(e.resume).length > 0 && <details className="axp-codebase-changes__carry"><summary className="fx-small">To carry on</summary><ResumeDetails e={e} /></details>}
+    </>
+  );
+}
+
 function EntryDetail({ id, onChanged }: { id: string; onChanged: () => void }) {
   const rt = useRuntime();
+  useAxfState();
+  const chat = chatOn();
   const [e, setE] = useState<Entry | null>(null);
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
@@ -177,6 +219,12 @@ function EntryDetail({ id, onChanged }: { id: string; onChanged: () => void }) {
   const act = async (fn: () => Promise<void>) => { setBusy(true); try { await fn(); load(); onChanged(); } catch (x) { rt.toast((x as Error).message, 'warning'); } finally { setBusy(false); } };
   return (
     <div className="axp-codebase-changes__detail">
+      <div className="axp-codebase-changes__viewbar">
+        {chat ? <EntryChips e={e} /> : <span className="fx-grow" />}
+        <Segmented label="Show this entry as" size="sm" value={chat ? 'chat' : 'classic'} onChange={(v) => setChat(v === 'chat')}
+          options={[{ value: 'chat', label: 'Chat log', title: 'Like the Chat viewer: what Brett said, the brief, then each step' }, { value: 'classic', label: 'Classic view', title: 'The facts, steps and result as lists' }]} />
+      </div>
+      {chat ? <EntryChat e={e} /> : <>
       {e.asked && <blockquote className="axp-codebase-changes__asked">{e.asked}</blockquote>}
       <dl className="axp-codebase-changes__facts">
         <dt>Opened</dt><dd>{when(e.createdAt)}</dd>
@@ -213,6 +261,7 @@ function EntryDetail({ id, onChanged }: { id: string; onChanged: () => void }) {
           )}
         </div>
       )}
+      </>}
       <div className="axp-codebase-changes__line">
         {e.closed
           ? <Button size="sm" tone="neutral" icon="undo" disabled={busy} onClick={() => void act(() => reopenEntry(e.id))}>Show in the banner again</Button>
@@ -235,7 +284,7 @@ function Row({ s, open, onToggle, onChanged }: { s: Summary; open: boolean; onTo
         {/* title line + one meta line; the result summary is in the detail (compact pages, Oct 30 2026) */}
         <span className="axp-codebase-changes__line axp-codebase-changes__line--title" title={s.result?.summary || undefined}>
           <KindBadge kind={s.kind} />
-          <span className="axp-codebase-changes__title"><RefText text={s.title} /></span>
+          <span className="axp-codebase-changes__title"><RefText text={plainTitle(s.title)} /></span>
           <StateBadge state={s.state} />
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={14} />
         </span>

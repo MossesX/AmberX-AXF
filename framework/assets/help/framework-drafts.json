@@ -95,6 +95,13 @@
         "text": "Where you set “Accent”. Change it and the app uses the new value.",
         "kind": "field",
         "draft": true
+      },
+      {
+        "target": "session-rules",
+        "title": "Session rules",
+        "text": "Shows the session rules every launch adds to a brief (watch live, agent cap, model switches), hidden by default.",
+        "kind": "button",
+        "draft": true
       }
     ],
     "intros": []

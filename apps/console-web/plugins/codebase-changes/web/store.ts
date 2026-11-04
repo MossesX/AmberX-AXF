@@ -10,7 +10,7 @@ export const FOLDER = 'codebase-changes';
 export const ID = 'ai.amberx.axf.console.codebase-changes';
 export const VERSION = '0.1.0';
 export const VIEW = 'codebase-changes';
-export const KEYS = { banner: 'codebase-changes.banner' } as const;
+export const KEYS = { banner: 'codebase-changes.banner', chat: 'codebase-changes.chatLog' } as const;
 const POLL_MS = 15_000;
 
 export const api = pluginApi(FOLDER, 'The Codebase changes plugin');
@@ -19,7 +19,7 @@ export type StepState = 'queued' | 'running' | 'done' | 'failed' | 'skipped';
 export type EntryState = 'running' | 'done' | 'failed' | 'partial' | 'cancelled';
 export interface Step { text: string; state: StepState; startedAt?: string; finishedAt?: string; note?: string }
 export interface Result { state: Exclude<EntryState, 'running'>; summary: string; branch?: string; commits?: { sha: string; message?: string }[]; filesChanged?: number; tests?: Record<string, { before?: string; after?: string; state?: 'pass' | 'fail' | 'skip' }>; links?: Record<string, string> }
-export interface Entry { id: string; createdAt: string; updatedAt: string; kind: string; title: string; asked: string; repos: string[]; model: string; who: { session?: string; where?: string; user?: string; host?: string }; state: EntryState; steps: Step[]; result: Result | null; closed: { at: string; by: string } | null; resume?: Resume }
+export interface Entry { id: string; createdAt: string; updatedAt: string; kind: string; title: string; asked: string; repos: string[]; model: string; who: { session?: string; where?: string; user?: string; host?: string; agent?: string }; state: EntryState; steps: Step[]; result: Result | null; closed: { at: string; by: string } | null; resume?: Resume; startedAt?: string; branch?: string; buildRef?: { kind: string; id: string } }
 /** What another machine or Claude account needs to carry the work on (change-log@1 `resume`). */
 export interface Resume { repo?: string; folder?: string; branch?: string; base?: string; head?: string; pushed?: boolean; dirty?: number; pr?: string; plan?: string; next?: string; notes?: string; files?: string[]; tests?: string[]; read?: string[]; at?: string }
 export interface Summary { id: string; createdAt: string; updatedAt: string; kind: string; title: string; asked: string; state: EntryState; repos: string[]; model: string; where: string; steps: { total: number; done: number; failed: number; running: string }; result: { state: string; summary: string } | null; closed: string | null; status?: string; startedAt?: string; lastSeenAt?: string }
@@ -30,6 +30,8 @@ export const KIND_LABEL: Record<string, string> = { build: 'Build', edit: 'Edit'
 export const KIND_ICON: Record<string, string> = { build: 'plus', edit: 'edit', remove: 'trash', fix: 'zap', other: 'code' };
 export const STATE_LABEL: Record<string, string> = { running: 'In progress', done: 'Done', failed: 'Failed', partial: 'Partly done', cancelled: 'Cancelled', queued: 'Queued', skipped: 'Skipped' };
 export const STATE_ICON: Record<string, string> = { running: 'refresh', done: 'check-circle', failed: 'x-circle', partial: 'alert', cancelled: 'minus', queued: 'clock', skipped: 'minus' };
+/** A title without Markdown marks: older entries kept the prompt's first line as it was ("# Build: x **Name:** …"). */
+export const plainTitle = (t: string) => t.replace(/^\s*#{1,6}\s+/, '').replace(/\*\*|__|`/g, '').trim() || t;
 export const kindLabel = (k: string) => KIND_LABEL[k] ?? k.charAt(0).toUpperCase() + k.slice(1);
 
 /* ---------------- settings ---------------- */
@@ -37,6 +39,9 @@ export const kindLabel = (k: string) => KIND_LABEL[k] ?? k.charAt(0).toUpperCase
 let rt: AxfRuntime | null = null;
 const setting = (k: string, d: SettingValue): SettingValue => { try { return rt?.settings.get(k) ?? d; } catch { return d; } };
 export const bannerOn = () => setting(KEYS.banner, true) !== false;
+/** An expanded entry shows as a chat log (Brett, Nov 4 2026); off = the classic facts + steps layout. */
+export const chatOn = () => setting(KEYS.chat, true) !== false;
+export const setChat = (on: boolean) => { try { rt?.settings.set(KEYS.chat, on); } catch { /* read-only settings */ } };
 
 /* ---------------- store ---------------- */
 

@@ -2,9 +2,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { WatchLiveFor } from '@console/watchLive';
-import { BuildOrigin, Button, Icon, IconButton, RefText, Slot, Switch, originSubtitle, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { BuildChatLog, BuildOrigin, Button, Icon, IconButton, RefText, Segmented, Slot, Switch, originSubtitle, useAxfState, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { addedByLabel, addedByOf, filterRows, GONE_LABEL, goneRows, MODELS, ORIGIN_LABEL, ORIGINS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type GoneKind, type LiveEntry, type Origin, type Row, type SortKey, type Source } from './merge.mjs';
-import { abandonBuild, bannerOn, defaultSort, isStuckLive, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, helpers, takeOff, tickStep, useStore, onStore, usd, verifyBuild, type StartPlan, type Store } from './store';
+import { abandonBuild, bannerOn, chatOn, setChat, defaultSort, isStuckLive, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, helpers, takeOff, tickStep, useStore, onStore, usd, verifyBuild, type StartPlan, type Store } from './store';
 import { builtRows, builtTotals, filterBuilt, filterSessions, ITEM_STATUS_LABEL, liveFromChanges, matches, money, PERIOD_LABEL, PERIODS, sessionsFromChanges, type ChangeLive, type Period, type SessionItem, type SessionRow } from './history.mjs';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort, RowHookButtons, registerRowRefTarget } from '@console/axf/libs/datagrid';
 
@@ -636,6 +636,8 @@ function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; o
   const [starting, setStarting] = useState(false);
   useEffect(() => onStartRequest((k) => { if (k === row.key) setStarting(true); }), [row.key]);
   const job = s.jobs[row.key];
+  useAxfState();
+  const chat = chatOn();
   const go = () => rt.navigate(row.source === 'pending' ? 'pending' : row.source === 'queue' ? 'build' : 'plan');
   return (
     <li id={`axp-bm-${row.key.replace(/[^a-z0-9-]/gi, '-')}`} className={`axp-build-manager__row${open ? ' is-open' : ''}${row.building ? ' is-building' : ''}`}
@@ -670,8 +672,15 @@ function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; o
       {starting && <StartPanel row={row} onClose={() => setStarting(false)} />}
       {open && (
         <div className="axp-build-manager__body">
+          <div className="axp-build-manager__viewbar">
+            <Segmented label="Show this build as" size="sm" value={chat ? 'chat' : 'classic'} onChange={(v) => setChat(v === 'chat')}
+              options={[{ value: 'chat', label: 'Chat log', title: 'Like the Chat viewer: what Brett said, the brief, then each step' }, { value: 'classic', label: 'Classic view', title: 'What Brett said, the facts and the steps as lists (tick steps here)' }]} />
+          </div>
+          {chat ? <BuildChatLog label={`What happened in ${row.title}`}
+            input={{ origin: row.brett, brief: (row.brett as { brief?: string } | undefined)?.brief || row.detail, steps: row.steps }} /> : <>
           <BuildOrigin origin={row.brett} showEmpty={row.source === 'pending'} />
           {row.detail && <p className="axp-build-manager__detail">{row.detail.length > 400 ? `${row.detail.slice(0, 400)}…` : row.detail}</p>}
+          </>}
           <dl className="axp-build-manager__facts">
             <dt>Id</dt><dd><code>{row.id}</code></dd>
             <dt>Estimate</dt><dd>{row.total != null ? `${fmt(row.total)}${row.costTotal != null ? ` · ~${usd(row.costTotal)} on ${row.model}` : ''}${row.steps.length && row.steps.every((x) => x.estimate != null) ? ' (its steps added up)' : ''}` : 'none yet'}</dd>
@@ -679,7 +688,7 @@ function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; o
             {row.planId ? <><dt>Plan</dt><dd><code>{row.planId}</code></dd></> : null}
             {row.effort ? <><dt>Effort</dt><dd>{row.effort}</dd></> : null}
           </dl>
-          <StepsList row={row} canTick={canTick} />
+          {!chat && <StepsList row={row} canTick={canTick} />}
           {row.features?.length ? <p className="fx-small fx-muted axp-build-manager__none">Plan features in this step: {row.features.filter((f) => f.status !== 'built').length} to build of {row.features.length}.</p> : null}
           <div className="axp-build-manager__actions">
             <Button size="sm" tone="neutral" icon="arrow-right" onClick={go}>Open in {row.source === 'pending' ? 'Pending builds' : row.source === 'queue' ? 'Build queue' : 'Plan'}</Button>
