@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 880,
- "updatedAt": "2026-11-04T18:33:44.344Z",
+ "rev": 881,
+ "updatedAt": "2026-11-04T18:37:56.329Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -83288,7 +83288,7 @@
    "branch": "claude/brett-todo-sync",
    "pr": "#333",
    "createdAt": "2026-11-04T18:24:34.029Z",
-   "updatedAt": "2026-11-04T18:33:43.023Z",
+   "updatedAt": "2026-11-04T18:37:55.134Z",
    "builtAt": "",
    "notes": [
     {
@@ -83465,12 +83465,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T18:37:55.134Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T18:24:34.031Z",
-     "updatedAt": "2026-11-04T18:24:34.031Z"
+     "updatedAt": "2026-11-04T18:37:55.195Z"
     },
     {
      "id": "s7",
@@ -83503,7 +83503,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
