@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T21:58:49.355Z",
+ "updatedAt": "2026-11-04T22:00:48.970Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4137,16 +4137,21 @@
    "title": "Three layouts per screen",
    "category": "Framework",
    "detail": "plugin@1 screens: every NEW plugin screen declares 3 layout variants with a default; shared hidden-by-default layout-switcher toolbar (one asset, per-plugin copy via inherit); scaffold (templates, axf new-plugin); CI check with grandfather baseline; UI Review layout choices helper; docs + rule. Existing plugins are not retrofitted.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/three-layouts-per-screen",
    "pr": "",
    "createdAt": "2026-11-04T21:31:37.965Z",
-   "updatedAt": "2026-11-04T21:31:38.957Z",
+   "updatedAt": "2026-11-04T22:00:46.386Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-04T22:00:46.386Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 991,
- "updatedAt": "2026-11-04T21:58:49.355Z",
+ "rev": 992,
+ "updatedAt": "2026-11-04T22:00:48.970Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -84404,16 +84404,21 @@
    "title": "Three layouts per screen",
    "category": "Framework",
    "detail": "plugin@1 screens: every NEW plugin screen declares 3 layout variants with a default; shared hidden-by-default layout-switcher toolbar (one asset, per-plugin copy via inherit); scaffold (templates, axf new-plugin); CI check with grandfather baseline; UI Review layout choices helper; docs + rule. Existing plugins are not retrofitted.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/three-layouts-per-screen",
    "pr": "",
    "createdAt": "2026-11-04T21:31:37.965Z",
-   "updatedAt": "2026-11-04T21:31:38.957Z",
+   "updatedAt": "2026-11-04T22:00:46.386Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-04T22:00:46.386Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -84563,7 +84568,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
