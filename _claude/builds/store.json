@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 565,
- "updatedAt": "2026-11-04T00:11:08.753Z",
+ "rev": 566,
+ "updatedAt": "2026-11-04T00:13:14.644Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -66793,12 +66793,16 @@
    "branch": "claude/gizmo-companion",
    "pr": "#296",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-03T23:36:42.140Z",
+   "updatedAt": "2026-11-03T23:57:12.826Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Assigned: Gizmo (headless Opus session, worktree /root/axf-builds/gizmo-companion, branch claude/gizmo-companion)",
      "at": "2026-11-03T22:18:55.429Z"
+    },
+    {
+     "text": "s10 (s4b) half done: tool calls show as collapsible cards; Follow Amber / console_show hooks not built. s2d: brains are the console AI assistant as agent Gizmo through AmberX's server (no new server code needed).",
+     "at": "2026-11-03T23:32:45.729Z"
     },
     {
      "text": "Reconciler: branch claude/gizmo-companion (no PR yet)",
@@ -67135,12 +67139,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:46:13.434Z",
      "note": "",
-     "rev": 3,
+     "rev": 4,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T23:41:00.724Z"
+     "updatedAt": "2026-11-03T23:46:16.218Z"
     },
     {
      "id": "s16",
@@ -67201,12 +67205,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:48:25.923Z",
      "note": "",
-     "rev": 3,
+     "rev": 4,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T23:41:00.724Z"
+     "updatedAt": "2026-11-03T23:48:32.834Z"
     },
     {
      "id": "s19",
@@ -67239,7 +67243,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {

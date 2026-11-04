@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T00:11:08.753Z",
+ "updatedAt": "2026-11-04T00:13:14.644Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3736,12 +3736,16 @@
    "branch": "claude/gizmo-companion",
    "pr": "#296",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-03T23:36:42.140Z",
+   "updatedAt": "2026-11-03T23:57:12.826Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Assigned: Gizmo (headless Opus session, worktree /root/axf-builds/gizmo-companion, branch claude/gizmo-companion)",
      "at": "2026-11-03T22:18:55.429Z"
+    },
+    {
+     "text": "s10 (s4b) half done: tool calls show as collapsible cards; Follow Amber / console_show hooks not built. s2d: brains are the console AI assistant as agent Gizmo through AmberX's server (no new server code needed).",
+     "at": "2026-11-03T23:32:45.729Z"
     },
     {
      "text": "Reconciler: branch claude/gizmo-companion (no PR yet)",
@@ -4020,8 +4024,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:46:13.434Z",
      "note": "",
      "uid": "st-mw1927q50yrq9q"
     },
@@ -4074,8 +4078,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:48:25.923Z",
      "note": "",
      "uid": "st-mw1927q511lo8v"
     },
