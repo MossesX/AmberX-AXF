@@ -683,7 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:04 UTC · `urgent-land-lazy-loader` s3 done (current) · orchestrator
 - 2026-11-04 14:04 UTC · `urgent-land-lazy-loader` note (current) · orchestrator
 - 2026-11-04 14:04 UTC · `land-round-2` → running (current) · builds-live
 - 2026-11-04 14:04 UTC · `urgent-land-lazy-loader` s3 done, note (current) · builds-live
@@ -1083,6 +1082,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 17:17 UTC · `settings-placement-everywhere` s6 done (current) · orchestrator
 - 2026-11-04 17:17 UTC · `settings-placement-everywhere` s6 done, note (current) · orchestrator
 - 2026-11-04 17:18 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, → built (current) · orchestrator
+- 2026-11-04 17:18 UTC · `settings-placement-everywhere` s19-18 done, s20-19 done, s21-20 done, s22-21 done, s23-22 done, s24-23 done, → complete, note (current) · foreign-write
 
 ## Token passes (log)
 
