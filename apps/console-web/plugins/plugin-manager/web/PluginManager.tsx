@@ -6,7 +6,7 @@
  * graph) is the framework's plugin inventory engine, shared with the Python server and the Kotlin kernel.
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Button, Chip, Icon, IconButton, Segmented as FxSegmented, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, IconButton, Segmented as FxSegmented, TabGroup, useRuntime } from '@console/axf/react';
 import { hasSettings, hasUi, openSettings, openUi, setEnabled } from './actions';
 import { ConflictList, DetailPane, HealthChip, Monogram } from './Detail';
 import { HEALTH_LABEL, HEALTH_RANK, loadLogs, useInventory, type Inventory, type PluginRow } from './model';
@@ -395,11 +395,7 @@ function Catalog(p: LayoutProps) {
           </div>
         </section>
       )}
-      <div className="axp-plugin-manager-cat__pills" role="tablist">
-        {FILTERS.map((f) => (
-          <button key={f} type="button" role="tab" aria-selected={p.prefs.filter === f} className={`fx-chip axp-plugin-manager-pill ${p.prefs.filter === f ? 'is-on' : ''}`} onClick={() => p.set('filter', f)}>{FILTER_LABEL[f]}</button>
-        ))}
-      </div>
+      <TabGroup id="plugin-manager.categories" label="Plugin categories" className="axp-plugin-manager-cat__pills" value={p.prefs.filter} onChange={(f) => p.set('filter', f)} tabs={FILTERS.map((f) => ({ value: f, label: FILTER_LABEL[f] }))} />
       <Offline inv={p.inv} />
       {p.prefs.view === 'grid'
         ? SHELVES.map((s) => {

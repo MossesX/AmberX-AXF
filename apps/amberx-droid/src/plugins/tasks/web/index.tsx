@@ -9,6 +9,7 @@ import type { AxfRuntime } from '../../../axf/core';
 import {
   Button, Checkbox, Chip, Container, Icon, IconButton, Note, Segmented, SelectField, TextField, useRuntime, type AxfWebLibrary,
 } from '../../../axf/react';
+import { TabGroup } from '../../../axf/react';
 import { DataGrid, type GridColumn, type GridSort } from '../../../axf/libs/datagrid';
 import {
   allTags, flatTree, moveItems, pathOf, removeItems, updateItem, PRIORITY_LABEL, SYS,
@@ -318,13 +319,7 @@ function TasksView() {
       {snap.status === 'signed-out' && <Note tone="warning">Sign in to axHub to see your tasks on every device.</Note>}
       {snap.status === 'offline' && snap.error && <Note tone="warning">axHub can't be reached ({snap.error}). Changes are kept here and sent when it's back.</Note>}
 
-      <div className="fx-tabs" role="tablist">
-        {TABS.map((t) => (
-          <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} className={`fx-tab${tab === t.id ? ' is-active' : ''}`} onClick={() => pick(t.id)}>
-            {t.label}{counts[t.id] ? <span className="fx-muted"> {counts[t.id]}</span> : null}
-          </button>
-        ))}
-      </div>
+      <TabGroup id="tasks.tabs" label="Tasks" value={tab} onChange={pick} tabs={TABS.map((t) => ({ value: t.id, label: t.label, badge: counts[t.id] || undefined }))} />
 
       <Container title="Add a task" icon="plus">
         <QuickAddForm defaultList={f.list} />

@@ -2,7 +2,7 @@
   "$axf": "change-log@1",
   "id": "chg-20261104-5d61647dc1",
   "createdAt": "2026-11-04T14:13:32.250Z",
-  "updatedAt": "2026-11-04T14:27:20.895Z",
+  "updatedAt": "2026-11-04T15:24:39.128Z",
   "kind": "build",
   "title": "# Build: urgent-land-gizmo-chat (Current profile) - land PR #296 NOW ## What Brett said (voice, Nov…",
   "asked": "# Build: urgent-land-gizmo-chat (Current profile) - land PR #296 NOW ## What Brett said (voice, Nov 4 2026) \"Is the Claude chat feature built yet?\" -> built (PR #296, gizmo-companion basic chat), green, conflicts with main. \"So put another agent on to do it now.\" Book to a free named agent (Gizmo if his card exists - it's his chat - else Reel Rhonda). Register id `urgent-land-gizmo-chat` in the `current` profile + banner entry + What Brett said block. ## Do 1. Update `claude/gizmo-companion` (PR #296) from current main; resolve conflicts keeping every feature from both sides (main got #288 console-in-Molly, #294 Molly banners, last night's batch). 2. Make sure step 1 of gizmo-companion is complete and working: basic chat with Gizmo in AmberX (type, streamed answer from a Claude Code session on the VPS through axHub, history kept), Windows-Terminal-style window look, shared claude-session library with the console Terminal still working on it. If anything is half-done, finish it; queue the remaining steps (gizmo-voice first) per /root/axf-builds/gizmo-companion/.brief.md addenda. 3. Type-check, tests, CI green -> merge -> redeploy AmberX web (and console if the shared lib changed it). Confirm Gizmo's chat loads and answers one message. 4. Lenny (land-round-2) is told to skip #296. If he's mid-merge on main, wait and re-update. - Heavy steps through agent-slots; never leave tsc/vite/playwright running. No screenshot passes beyond one phone shot filed to UI Review (non-blocking). Report `_claude/builds/reports/urgent-land-gizmo-chat.md`. Commits clean and professional. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Opus) is fine. An UPGRADE (e.g. Opus → Fable) needs Brett's approval: when you reach one, run `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>`, ask once, and stop. Never approve a model switch upgrade yourself (no `act approve` on an upgrade), never relaunch on a higher model.",
@@ -50,7 +50,7 @@
   },
   "surface": "headless",
   "startedAt": "2026-11-04T14:13:32.250Z",
-  "lastSeenAt": "2026-11-04T14:27:20.895Z",
+  "lastSeenAt": "2026-11-04T15:24:39.128Z",
   "estimate": {
     "minutes": 120,
     "costUsd": 16.8
@@ -62,7 +62,7 @@
     "framework/libs",
     "apps/console-web"
   ],
-  "doing": "CI on PR #296",
+  "doing": "Running: Check PR CI via GraphQL",
   "progress": 0.5,
   "resume": {
     "repo": "MossesX/AmberX-AXF",

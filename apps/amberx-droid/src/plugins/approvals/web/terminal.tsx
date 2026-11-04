@@ -8,7 +8,7 @@
  * the framework's tabs (`fx-tabs`/`fx-tab`), terminal rows (`fx-terminal__*`), Button and Chip; layout CSS only.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Icon, Note } from '../../../axf/react';
+import { Button, Chip, Note, TabGroup } from '../../../axf/react';
 import { formatCountdown, VETO_ACTION_LABELS, VETO_WARNING_SECONDS, type VetoAction } from '../../../axf/libs/hub/veto';
 import { checkVeto, closeTrack, isFinal, startVeto, type Track, type TrackState } from './store';
 import { actOn, useVeto } from './deny';
@@ -89,22 +89,8 @@ export function TerminalView() {
       {s.status === 'unreachable' && <Note tone="warning">Can't reach axHub right now.</Note>}
       {!tracks.length ? <p className="fx-muted">No held commands yet. When one starts its timer, a tab opens here.</p> : (
         <>
-          <div className="fx-tabs axp-veto-tabs" role="tablist" aria-label="Held commands">
-            {tracks.map((t) => (
-              <button key={t.call.id} type="button" role="tab" aria-selected={current?.call.id === t.call.id} className="fx-tab" onClick={() => setActive(t.call.id)}>
-                <Icon name={t.state === 'held' ? 'clock' : t.state === 'ran' ? 'check-circle' : t.state === 'failed' ? 'x-circle' : 'terminal'} size={14} />
-                <span className="axp-veto-tabname">{t.call.title}</span>
-                <span className="fx-small fx-muted">{label(t)}</span>
-                {isFinal(t.state) && (
-                  <span role="button" tabIndex={0} className="fx-tab__close" aria-label={`Close ${t.call.title}`}
-                    onClick={(e) => { e.stopPropagation(); closeTrack(t.call.id); }}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); closeTrack(t.call.id); } }}>
-                    <Icon name="x" size={12} />
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
+          <TabGroup id="approvals.held" label="Held commands" className="axp-veto-tabs" value={current?.call.id ?? ''} onChange={setActive} onClose={closeTrack}
+            tabs={tracks.map((t) => ({ value: t.call.id, label: t.call.title, icon: t.state === 'held' ? 'clock' : t.state === 'ran' ? 'check-circle' : t.state === 'failed' ? 'x-circle' : 'terminal', badge: label(t), closable: isFinal(t.state) }))} />
           {current && <TrackView t={current} />}
         </>
       )}
