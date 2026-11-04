@@ -1,0 +1,424 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/nav-style.schema.json",
+  "title": "AmberX AXF Navigation style asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "nav-style"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "colors": {
+          "type": "object",
+          "properties": {
+            "background": {
+              "enum": [
+                "theme",
+                "bg",
+                "surface",
+                "surface2",
+                "surface3",
+                "text",
+                "muted",
+                "border",
+                "accent",
+                "accentText",
+                "accentSoft",
+                "danger",
+                "success",
+                "warning",
+                "info",
+                "focus"
+              ],
+              "default": "theme"
+            },
+            "text": {
+              "enum": [
+                "theme",
+                "bg",
+                "surface",
+                "surface2",
+                "surface3",
+                "text",
+                "muted",
+                "border",
+                "accent",
+                "accentText",
+                "accentSoft",
+                "danger",
+                "success",
+                "warning",
+                "info",
+                "focus"
+              ],
+              "default": "theme"
+            },
+            "hover": {
+              "enum": [
+                "theme",
+                "bg",
+                "surface",
+                "surface2",
+                "surface3",
+                "text",
+                "muted",
+                "border",
+                "accent",
+                "accentText",
+                "accentSoft",
+                "danger",
+                "success",
+                "warning",
+                "info",
+                "focus"
+              ],
+              "default": "theme"
+            },
+            "active": {
+              "enum": [
+                "theme",
+                "bg",
+                "surface",
+                "surface2",
+                "surface3",
+                "text",
+                "muted",
+                "border",
+                "accent",
+                "accentText",
+                "accentSoft",
+                "danger",
+                "success",
+                "warning",
+                "info",
+                "focus"
+              ],
+              "default": "theme"
+            },
+            "activeText": {
+              "enum": [
+                "theme",
+                "bg",
+                "surface",
+                "surface2",
+                "surface3",
+                "text",
+                "muted",
+                "border",
+                "accent",
+                "accentText",
+                "accentSoft",
+                "danger",
+                "success",
+                "warning",
+                "info",
+                "focus"
+              ],
+              "default": "theme"
+            },
+            "submenu": {
+              "enum": [
+                "theme",
+                "bg",
+                "surface",
+                "surface2",
+                "surface3",
+                "text",
+                "muted",
+                "border",
+                "accent",
+                "accentText",
+                "accentSoft",
+                "danger",
+                "success",
+                "warning",
+                "info",
+                "focus"
+              ],
+              "default": "theme"
+            },
+            "accent": {
+              "enum": [
+                "theme",
+                "bg",
+                "surface",
+                "surface2",
+                "surface3",
+                "text",
+                "muted",
+                "border",
+                "accent",
+                "accentText",
+                "accentSoft",
+                "danger",
+                "success",
+                "warning",
+                "info",
+                "focus"
+              ],
+              "default": "theme"
+            }
+          }
+        },
+        "font": {
+          "type": "object",
+          "properties": {
+            "family": {
+              "enum": [
+                "theme",
+                "body",
+                "display",
+                "mono"
+              ],
+              "default": "theme"
+            },
+            "size": {
+              "enum": [
+                "theme",
+                "2xs",
+                "xs",
+                "sm",
+                "md",
+                "lg"
+              ],
+              "default": "theme"
+            },
+            "weight": {
+              "enum": [
+                "theme",
+                "400",
+                "500",
+                "600",
+                "700",
+                "800"
+              ],
+              "default": "theme"
+            }
+          }
+        },
+        "icons": {
+          "type": "object",
+          "properties": {
+            "show": {
+              "type": "boolean",
+              "default": true
+            },
+            "size": {
+              "enum": [
+                "sm",
+                "md",
+                "lg"
+              ],
+              "default": "md"
+            }
+          }
+        },
+        "layout": {
+          "type": "object",
+          "properties": {
+            "density": {
+              "enum": [
+                "theme",
+                "compact",
+                "regular",
+                "roomy"
+              ],
+              "default": "theme"
+            },
+            "indent": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 6,
+              "default": 3
+            }
+          }
+        },
+        "width": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 480,
+              "default": 0
+            },
+            "min": {
+              "type": "number",
+              "minimum": 48,
+              "maximum": 320,
+              "default": 160
+            },
+            "max": {
+              "type": "number",
+              "minimum": 160,
+              "maximum": 640,
+              "default": 420
+            },
+            "resizable": {
+              "type": "boolean",
+              "default": false
+            },
+            "collapsible": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        },
+        "animation": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "enum": [
+                "slide",
+                "accordion",
+                "fade",
+                "push",
+                "none"
+              ],
+              "default": "slide"
+            },
+            "durationMs": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1200,
+              "default": 220
+            },
+            "easing": {
+              "enum": [
+                "theme",
+                "standard",
+                "emphasized",
+                "linear",
+                "spring",
+                "bounce"
+              ],
+              "default": "standard"
+            },
+            "staggerMs": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 150,
+              "default": 24
+            },
+            "chevron": {
+              "enum": [
+                "rotate",
+                "flip",
+                "none"
+              ],
+              "default": "rotate"
+            },
+            "reduced": {
+              "enum": [
+                "system",
+                "always",
+                "never"
+              ],
+              "default": "system"
+            }
+          }
+        },
+        "behavior": {
+          "type": "object",
+          "properties": {
+            "single": {
+              "type": "boolean",
+              "default": true
+            },
+            "openOn": {
+              "enum": [
+                "tap",
+                "hover"
+              ],
+              "default": "tap"
+            },
+            "autoCollapse": {
+              "type": "boolean",
+              "default": true
+            },
+            "remember": {
+              "type": "boolean",
+              "default": true
+            },
+            "followActive": {
+              "type": "boolean",
+              "default": true
+            },
+            "swipe": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        },
+        "items": {
+          "type": "object",
+          "properties": {
+            "order": {
+              "type": "string",
+              "default": ""
+            },
+            "hidden": {
+              "type": "string",
+              "default": ""
+            },
+            "pinned": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        },
+        "accents": {
+          "type": "object",
+          "additionalProperties": {
+            "enum": [
+              "theme",
+              "bg",
+              "surface",
+              "surface2",
+              "surface3",
+              "text",
+              "muted",
+              "border",
+              "accent",
+              "accentText",
+              "accentSoft",
+              "danger",
+              "success",
+              "warning",
+              "info",
+              "focus"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
