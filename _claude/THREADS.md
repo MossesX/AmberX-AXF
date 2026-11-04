@@ -669,9 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:29 UTC · `md-studio` s4 done (urgent) · orchestrator
-- 2026-11-03 18:29 UTC · `md-studio` s5 done (urgent) · orchestrator
-- 2026-11-03 18:29 UTC · `md-studio` s6 done (urgent) · orchestrator
 - 2026-11-03 18:29 UTC · `md-studio` s7 done (urgent) · orchestrator
 - 2026-11-03 18:29 UTC · `md-studio` s8 done (urgent) · orchestrator
 - 2026-11-03 18:29 UTC · `md-studio` s9 done (urgent) · orchestrator
@@ -1069,6 +1066,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:48 UTC · `merge-queue` s4 done, s5 done (current) · foreign-write
 - 2026-11-04 15:00 UTC · `browser-automation` → pending, note (current) · reconciler
 - 2026-11-04 15:00 UTC · `apps-control-surface` added (5 steps) (current) · orchestrator
+- 2026-11-04 15:01 UTC · `apps-control-surface` → running (current) · orchestrator
+- 2026-11-04 15:01 UTC · `apps-control-surface` note (current) · orchestrator
+- 2026-11-04 15:01 UTC · `apps-control-surface` branch claude/apps-control-surface (current) · builds-live
 
 ## Token passes (log)
 
