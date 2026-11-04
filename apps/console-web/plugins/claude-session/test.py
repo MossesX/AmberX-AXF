@@ -199,9 +199,11 @@ ok(rows["joey"]["working"] and rows["rio"]["todayUsd"] == 1.5, "picker: Joey wor
 # ---- commands: REST + MCP + CLI from the one declaration
 import subprocess  # noqa: E402
 
-out = subprocess.run(["node", str(REPO / "apps/console-web/plugins/plugin-commands/commands.mjs"), "tools", "--json"], capture_output=True, text=True, cwd=REPO).stdout
-for t in ("claude_session_start", "claude_session_agent", "claude_session_answer", "claude_session_book", "claude_session_assign"):
-    ok(f'"{t}"' in out, f"MCP tool {t}")
+CMDS = REPO / "apps/console-web/plugins" / "plugin-commands" / "commands.mjs"  # the control@1 plugins domain, when installed
+if CMDS.exists():
+    out = subprocess.run(["node", str(CMDS), "tools", "--json"], capture_output=True, text=True, cwd=REPO).stdout
+    for t in ("claude_session_start", "claude_session_agent", "claude_session_answer", "claude_session_book", "claude_session_assign"):
+        ok(f'"{t}"' in out, f"MCP tool {t}")
 
 print(f"claude-session plugin: {n - failed}/{n} passed")
 sys.exit(1 if failed else 0)
