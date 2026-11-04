@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 635,
- "updatedAt": "2026-11-04T10:54:39.278Z",
+ "rev": 636,
+ "updatedAt": "2026-11-04T10:55:45.548Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -71866,15 +71866,15 @@
    "title": "Terminal: new sessions stop stealing focus",
    "category": "",
    "detail": "New Terminal setting \"When a new session starts\": Do nothing / Add tab quietly (default; badge on the Terminal toolbar icon) / Bring Terminal to front. Headless launches no longer raise or switch the Terminal; explicit opens still do. REST + MCP + CLI.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "terminal-no-focus",
    "branch": "claude/terminal-no-focus",
    "pr": "",
    "createdAt": "2026-11-04T10:48:28.927Z",
-   "updatedAt": "2026-11-04T10:54:05.469Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T10:55:44.452Z",
+   "builtAt": "2026-11-04T10:55:44.452Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -71950,12 +71950,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T10:55:44.452Z",
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T10:48:28.928Z",
-     "updatedAt": "2026-11-04T10:54:38.554Z"
+     "updatedAt": "2026-11-04T10:55:44.489Z"
     }
    ],
    "profiles": [
@@ -71966,7 +71966,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
