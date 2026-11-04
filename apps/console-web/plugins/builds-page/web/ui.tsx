@@ -34,20 +34,37 @@ const subs = new Set<() => void>();
 const set = (p: Partial<typeof st>) => { st = { ...st, ...p }; subs.forEach((f) => f()); };
 export const useBuilds = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => st);
 let wantProfile = '';
+// Every read and write takes a ticket. A poll answer is dropped when a write started after the poll did (or is still
+// in flight): the 5 s poll used to land after a tick with the state from before it, so the tick flipped back.
+let ticket = 0;
+let lastWrite = 0;
+let writing = 0;
 export async function reload(profile = wantProfile) {
   wantProfile = profile;
-  try { const r = await api.call<StateV>(`state${profile ? `?profile=${encodeURIComponent(profile)}` : ''}`); if (!r.ok) throw new Error(r.error); set({ state: r, error: '' }); }
-  catch (e) { set({ error: (e as Error).message }); }
+  const mine = ++ticket;
+  try {
+    const r = await api.call<StateV>(`state${profile ? `?profile=${encodeURIComponent(profile)}` : ''}`);
+    if (!r.ok) throw new Error(r.error);
+    if (writing || lastWrite > mine) return;
+    set({ state: r, error: '' });
+  } catch (e) { if (!writing && lastWrite <= mine) set({ error: (e as Error).message }); }
 }
 async function send(path: string, body: Record<string, unknown>, toast?: (m: string, k?: 'danger' | 'success' | 'info') => void): Promise<boolean> {
+  lastWrite = ++ticket; writing++;
   set({ busy: true });
   try {
     const r = await api.post<StateV>(path, { profile: st.state?.profile, ...body });
-    if (!r.ok) { toast?.(r.error ?? 'Change refused', 'danger'); return false; }
+    if (!r.ok) { toast?.(r.error ?? 'Change refused', 'danger'); void reload(); return false; }
+    lastWrite = ++ticket;
     set({ state: r, error: '' });
     return true;
   } catch (e) { toast?.((e as Error).message, 'danger'); return false; }
-  finally { set({ busy: false }); }
+  finally { writing--; set({ busy: false }); }
+}
+/** Show a step tick at once (the server answer replaces it; a refusal reloads the real state). */
+function tickNow(build: string, uid: string, done: boolean) {
+  const s = st.state; if (!s) return;
+  set({ state: { ...s, builds: s.builds.map((b) => (b.id !== build ? b : { ...b, steps: b.steps.map((x) => (x.uid === uid ? { ...x, done } : x)) })) } });
 }
 
 const STATUS_TONE: Record<string, 'accent' | 'success' | 'warning' | 'danger' | undefined> = { running: 'accent', built: 'success', complete: 'success', waiting: 'warning', blocked: 'warning', failed: 'danger' };
@@ -267,6 +284,7 @@ function Bar({ p, label }: { p: Progress; label: string }) {
 function BuildsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
   const rt = useRuntime();
   const [expanded, setExpanded] = useState<string[]>([]);
+  const toggleOpen = (id: string) => setExpanded((x) => (x.includes(id) ? x.filter((y) => y !== id) : [...x, id]));
   const rename = (b: BuildV) => (title: string) => send('ops', { ops: [{ op: 'rename-build', id: b.id, title }] }, rt.toast);
   const columns: GridColumn<BuildV>[] = [
     { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-space) * 30), 4fr)', fixed: true, sortable: true, sortValue: (b) => b.title.toLowerCase(),
@@ -279,7 +297,8 @@ function BuildsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
   const groups: GridGroup<BuildV>[] = [{ id: 'all', title: `${builds.length} build(s)`, rows: builds, groups: [], fixed: true, progress: state.progress.pct }];
   return (
     <DataGrid<BuildV> id="builds.builds" label="Builds" groups={groups} columns={columns} rowId={(b) => b.id} rowLabel={(b) => b.title} hidden={[]}
-      expanded={expanded} onToggleExpand={(id) => setExpanded(expanded.includes(id) ? expanded.filter((x) => x !== id) : [...expanded, id])}
+      // a tap anywhere on the row opens it: the expand chevron sits past the right edge on a phone
+      expanded={expanded} onToggleExpand={toggleOpen} onRowClick={(b, e) => { if (e.detail <= 1) toggleOpen(b.id); }}
       rowTone={(b) => (b.status === 'complete' || b.status === 'built' ? 'success' : b.status === 'running' ? 'accent' : b.status === 'failed' ? 'danger' : ['blocked', 'waiting'].includes(b.status) ? 'warning' : 'muted')}
       rowRef={(b) => ({ kind: 'build', id: b.id })}
       onMove={(item, target, pos) => {
@@ -299,7 +318,7 @@ function StepTick({ s, toast }: { s: StepV; toast: (m: string, k?: 'danger' | 's
   return (
     <span className="axp-builds__tick" onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
       <Checkbox label="" title={s.done ? `Mark ${s.id} not done` : `Mark ${s.id} done`} checked={s.done}
-        onChange={(done) => void send('ops', { ops: [{ op: 'step-done', build: s.build, uid: s.uid, done }] }, toast)} />
+        onChange={(done) => { tickNow(s.build, s.uid, done); void send('ops', { ops: [{ op: 'step-done', build: s.build, uid: s.uid, done }] }, toast); }} />
     </span>
   );
 }
@@ -347,6 +366,8 @@ function StepsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
   const click = (s: StepV, e: RMouseEvent) => {
     if (e.shiftKey && anchor) { const a = all.findIndex((x) => x.uid === anchor); const b = all.findIndex((x) => x.uid === s.uid); const [i, j] = a < b ? [a, b] : [b, a]; setSel([...new Set([...sel, ...all.slice(i, j + 1).map((x) => x.uid)])]); return; }
     if (e.ctrlKey || e.metaKey || isPhone() || selectMode !== 'off') toggle(s.uid); else setSel(sel.length === 1 && sel[0] === s.uid ? [] : [s.uid]);
+    // on a phone the tap also opens the step: its expand chevron sits past the right edge of the screen
+    if (isPhone() && !e.ctrlKey && !e.metaKey) setExpanded((x) => (x.includes(s.uid) ? x.filter((u) => u !== s.uid) : [...x, s.uid]));
     setAnchor(s.uid);
   };
   const selCol: GridColumn<StepV>[] = selectMode === 'off' ? [] : [{ id: 'sel', label: '', width: 'calc(var(--fx-space) * 5)', fixed: true,
