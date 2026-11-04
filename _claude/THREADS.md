@@ -583,8 +583,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 21:11 UTC · `banner-ref-links` s1 done (current) · foreign-write
-- 2026-11-03 21:11 UTC · `molly-console-commands` added (14 steps) (current) · foreign-write
 - 2026-11-03 21:11 UTC · `git-status-board` added (6 steps) (current) · foreign-write
 - 2026-11-03 21:12 UTC · `urgent-main-ci-green` added (5 steps) (current) · orchestrator
 - 2026-11-03 21:12 UTC · `urgent-main-ci-green` added (5 steps) (current) · foreign-write
@@ -983,3 +981,5 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 02:59 UTC · `profile-switcher-widget` note (current) · foreign-write
 - 2026-11-04 03:12 UTC · `main-area-tabs` PR #301, note (current) · reconciler
 - 2026-11-04 03:12 UTC · `app-style-override` PR #302, note (current) · reconciler
+- 2026-11-04 03:19 UTC · `main-area-tabs` note (current) · foreign-write
+- 2026-11-04 03:19 UTC · `app-style-override` note (current) · foreign-write
