@@ -1,0 +1,108 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-63ec330c-efe2-4685-8ff8-996395c55ace",
+ "source": "claude-code",
+ "sessionId": "63ec330c-efe2-4685-8ff8-996395c55ace",
+ "project": "other",
+ "title": "# Build: ui-review-predicted (Urgent profile) Brett, Nov 3 2026 (voice): UI Review must show PREDICTED pictures - what …",
+ "startedAt": "2026-11-03T19:52:39.511Z",
+ "endedAt": "2026-11-03T21:59:18.381Z",
+ "minutes": 127,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/ui-review-predicted",
+  "repo": "",
+  "branch": "claude/ui-review-predicted"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-03T19:52:55.188Z",
+   "kind": "prompt",
+   "text": "# Build: ui-review-predicted (Urgent profile) Brett, Nov 3 2026 (voice): UI Review must show PREDICTED pictures - what a build will probably look like - BEFORE it's built, so he can approve the look before an agent spends money. Assigned agent: **Snap Sully** (book on his card; he's also on ui-review-shots - run after it or build on its storage fix; if the all-rounder router is on main and he's busy, whoever is free - record who). Register in Urgent (id `ui-review-predicted`) + banner entry. Mark the predicted-shots part of pending item `batch-manager` as moved here (pending_change note). ## …",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 406,
+    "output": 144862,
+    "cacheRead": 47492147,
+    "cacheWrite": 345821,
+    "thinking": 33586
+   },
+   "costUsd": 14.1261,
+   "costEstimated": false,
+   "seconds": 7583,
+   "tools": {
+    "Bash": 187,
+    "Read": 21,
+    "Write": 8
+   },
+   "commands": 187,
+   "files": [
+    "/root/axf-builds/ui-review-predicted/framework/core/ui-predict.mjs",
+    "/root/axf-builds/ui-review-predicted/apps/console-web/plugins/ui-review/web/mockup.tsx",
+    "/root/axf-builds/ui-review-predicted/framework/core/ui-predict.d.mts",
+    "/root/axf-builds/ui-review-predicted/apps/console-web/plugins/ui-review/web/look-settings.tsx",
+    "/root/axf-builds/ui-review-predicted/apps/console-web/plugins/ui-review/server/predicted.py",
+    "/root/axf-builds/ui-review-predicted/framework/cli/ui-predict.mjs",
+    "/root/axf-builds/ui-review-predicted/framework/spec/check-ui-predict.mjs",
+    "/root/axf-builds/ui-review-predicted/_claude/builds/reports/ui-review-predicted.md"
+   ],
+   "changeIds": [
+    "chg-20261103-c96619cfe9"
+   ],
+   "features": [
+    "orchestrator:ui-review-predicted",
+    "queue:ui-review-shots"
+   ],
+   "output": "Yo boss, predicted looks are built, kid. PR **#285** is open, all 6 steps are ticked, and the store on main says `built`. **What you get:** - **The picture comes first.** When a build that touches UI is launched, UI Review gets a mockup of each screen it'll touch. It's drawn with the real framework…"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/ui-review-predicted/framework/core/ui-predict.mjs",
+  "/root/axf-builds/ui-review-predicted/apps/console-web/plugins/ui-review/web/mockup.tsx",
+  "/root/axf-builds/ui-review-predicted/framework/core/ui-predict.d.mts",
+  "/root/axf-builds/ui-review-predicted/apps/console-web/plugins/ui-review/web/look-settings.tsx",
+  "/root/axf-builds/ui-review-predicted/apps/console-web/plugins/ui-review/server/predicted.py",
+  "/root/axf-builds/ui-review-predicted/framework/cli/ui-predict.mjs",
+  "/root/axf-builds/ui-review-predicted/framework/spec/check-ui-predict.mjs",
+  "/root/axf-builds/ui-review-predicted/_claude/builds/reports/ui-review-predicted.md"
+ ],
+ "changeIds": [
+  "chg-20261103-c96619cfe9"
+ ],
+ "features": [
+  "orchestrator:ui-review-predicted",
+  "queue:ui-review-shots"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 406,
+  "output": 144862,
+  "cacheRead": 47492147,
+  "cacheWrite": 345821,
+  "thinking": 33586,
+  "costUsd": 14.1261,
+  "costEstimated": false,
+  "toolCalls": 216,
+  "commands": 187,
+  "filesTouched": 8,
+  "reportedUsd": 15.1639
+ },
+ "ingestedAt": "2026-11-03T21:59:18.993Z"
+}

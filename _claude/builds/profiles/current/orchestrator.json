@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T12:06:13.714Z",
+ "updatedAt": "2026-11-04T12:16:11.569Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3738,14 +3738,15 @@
    "title": "Molly: install the banners",
    "category": "Molly",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-banners",
    "pr": "#294",
+   "mergedAt": "2026-11-04T12:16:09.076Z",
    "createdAt": "2026-11-03T22:04:42.483Z",
-   "updatedAt": "2026-11-04T00:11:38.338Z",
+   "updatedAt": "2026-11-04T12:16:10.311Z",
    "builtAt": "2026-11-04T00:10:45.823Z",
    "approvals": [],
    "upgradeRequests": [],
@@ -6479,6 +6480,12 @@
    "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Assigned: Reel Rhonda (no Polo card on the roster). Session headless, worktree /root/axf-builds/expenses-port.",
+     "at": "2026-11-04T11:11:28.331Z"
+    }
+   ],
    "id": "expenses-port",
    "title": "Expenses port: bring Expenses into AmberX-AXF as its own app",
    "category": "Apps",
@@ -6492,12 +6499,6 @@
    "createdAt": "2026-11-04T11:09:10.279Z",
    "updatedAt": "2026-11-04T11:35:37.941Z",
    "builtAt": "2026-11-04T11:35:37.941Z",
-   "notes": [
-    {
-     "text": "Assigned: Reel Rhonda (no Polo card on the roster). Session headless, worktree /root/axf-builds/expenses-port.",
-     "at": "2026-11-04T11:11:28.331Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -6621,7 +6622,8 @@
      "note": "Report _claude/builds/reports/expenses-port.md, THREADS, shots in UI Review Screenshots, PR #307",
      "uid": "st-mw20kuv40crqm9"
     }
-   ]
+   ],
+   "rev": 0
   }
  ]
 }
