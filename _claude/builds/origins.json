@@ -491,7 +491,43 @@
    "brief": "",
    "verbatim": true,
    "from": "",
-   "addenda": []
+   "addenda": [
+    {
+     "said": "And you can drag steps from one build to another build. If multiple builds are open in different tabs or different windows, you can drag steps from one to the other.",
+     "at": "",
+     "source": "voice",
+     "by": "earl",
+     "verbatim": true
+    },
+    {
+     "said": "This build optimizer needs to be done without AI. It can use AI if AI is connected, but it shouldn't have to have AI.",
+     "at": "",
+     "source": "voice",
+     "by": "earl",
+     "verbatim": true
+    },
+    {
+     "said": "Well, if the AI is on it, it does a much better job. It does a thorough investigation, it does thorough syncing.",
+     "at": "",
+     "source": "voice",
+     "by": "earl",
+     "verbatim": true
+    },
+    {
+     "said": "And you get a notification if AI isn't active. You get a notification either way if you want it. Enable it or turn it off.",
+     "at": "",
+     "source": "voice",
+     "by": "earl",
+     "verbatim": true
+    },
+    {
+     "said": "The optimizer needs a bunch of settings and filters to control how it works.",
+     "at": "",
+     "source": "voice",
+     "by": "earl",
+     "verbatim": true
+    }
+   ]
   },
   "build-orchestrator": {
    "said": "everything from today and the refactor goes into the Refactor profile).",
