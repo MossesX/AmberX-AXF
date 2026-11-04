@@ -43,3 +43,7 @@ show the crew card and the ID card and collapse to avatar + name; once working, 
   swapping her guide duties to Gizmo in molly-guide / AmberX is the follow-up named in shared memory.
 - Group chat lines (bugs-board handoffs) can read `personaLine` from `axf.crew@1`; bugs-board isn't on main, not wired here.
 - Hourly pay is recorded on the profile; the weekly token budget (`salary`) is unchanged.
+- **Screenshots**: `rebuild-shots.mjs` ran (shots config `_claude/builds/reports/crew-profiles/shots.json`, phone + laptop)
+  but the sandbox console stops at "Waiting for axHub" (no hub from a worktree), so nothing was filed to UI Review.
+  After the merge + console redeploy: run that shots file against the live console (Snap Sully `ui-screenshots` job,
+  group `crew-profiles - <date>`) and submit as kind `screen`.
