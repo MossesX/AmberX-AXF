@@ -669,16 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 17:53 UTC · `builds-one-page` s6 done (refactor) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page` s12 done (refactor) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page` s14 done (refactor) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page` note (refactor) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page` branch claude/builds-one-page-done (refactor) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page-done` s2 done (urgent) · snap-sully
-- 2026-11-03 17:56 UTC · `builds-one-page` PR #134, note (refactor) · reconciler
-- 2026-11-03 17:56 UTC · `builds-one-page` note (refactor) · foreign-write
-- 2026-11-03 17:56 UTC · `menu-scroll` added (6 steps) (urgent) · orchestrator
-- 2026-11-03 17:59 UTC · `builds-one-page` note (refactor) · foreign-write
 - 2026-11-03 18:01 UTC · `auto-land` added (8 steps) (urgent) · orchestrator
 - 2026-11-03 18:01 UTC · `auto-land` note (urgent) · orchestrator
 - 2026-11-03 18:02 UTC · `builds-one-page-done` s3 done (urgent) · snap-sully
@@ -1069,6 +1059,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:30 UTC · `urgent-land-lazy-loader` note (current) · foreign-write
 - 2026-11-04 14:30 UTC · `urgent-land-lazy-loader` note (current) · orchestrator
 - 2026-11-04 14:30 UTC · `urgent-land-lazy-loader` note (current) · builds-live
+- 2026-11-04 14:31 UTC · `plugin-lazy-load` → complete, note (current) · foreign-write
+- 2026-11-04 14:31 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 14:31 UTC · `land-round-2` note (current) · foreign-write
+- 2026-11-04 14:31 UTC · `urgent-land-lazy-loader` s4 done, → complete, note (current) · foreign-write
+- 2026-11-04 14:31 UTC · `crew-profiles` s4 done, s5 done, s6 done, → complete, note (current) · foreign-write
+- 2026-11-04 14:31 UTC · `urgent-land-gizmo-chat` s1 done, s2 done, s3 done (current) · foreign-write
+- 2026-11-04 14:31 UTC · `profile-lists-home-card` s2 done, s3 done, note (current) · foreign-write
+- 2026-11-04 14:31 UTC · `gizmo-voice` added (24 steps) (current) · foreign-write
+- 2026-11-04 14:31 UTC · `gizmo-terminal` added (32 steps) (current) · foreign-write
+- 2026-11-04 14:31 UTC · `console-wake-finish` PR #317 (current) · builds-live
 
 ## Token passes (log)
 
