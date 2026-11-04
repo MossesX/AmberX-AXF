@@ -338,7 +338,8 @@
         "open": "navigate"
       },
       "console.dialogs": {
-        "open": "navigate"
+        "open": "navigate",
+        "close": "navigate"
       },
       "console.settings": {
         "open": "navigate"

@@ -25,5 +25,11 @@
     "sonnet": "Sonnet 5.5",
     "opus": "Opus 5.5",
     "fable": "Fable 5.1"
+  },
+  "switches": {
+    "since": "2026-11-03",
+    "rule": "A build may switch to a lower model on its own (recorded, no approval). Switching to a higher model needs Brett's explicit approval: his own signed-in console click or an axHub approval (confirm, never a veto countdown). A session, agent, headless build or the orchestrator never approves an upgrade; a session that reaches one stops and asks.",
+    "upgrade": "approval",
+    "downgrade": "record"
   }
 }

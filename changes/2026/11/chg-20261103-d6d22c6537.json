@@ -2,7 +2,7 @@
   "$axf": "change-log@1",
   "id": "chg-20261103-d6d22c6537",
   "createdAt": "2026-11-03T21:09:40.599Z",
-  "updatedAt": "2026-11-03T21:47:47.132Z",
+  "updatedAt": "2026-11-03T21:42:22.137Z",
   "kind": "build",
   "title": "# Build: git-status-board (Current profile) - replaces pending item `batch-manager` ## Brett said (…",
   "asked": "# Build: git-status-board (Current profile) - replaces pending item `batch-manager` ## Brett said (verbatim, Nov 3 2026, voice) \"Where do I view items at git status? Like, what is it? The push one's ready for push, one's ready for this, what the ones in CI, what needs to be pulled, merged. Where do I see all that? Is there a plugin to view all that status?\" \"Yup. Like, I want to be able to view everything in grids with expandable rows and all that shit.\" Assigned agent: whoever is free (router if on main; else **Snap Sully**; record who). Register in the `current` profile (id `git-status-board`) + banner entry. Mark pending item `batch-manager` as replaced by this build (pending_change note); read its full detail and sub-prompts first and keep every feature that still applies (batch grid + badges, PR sub-grid + Fix, dense phone pass, PR browser rows with plain-English lead line, Merge/Hold, left click review, right-click menu). The predicted-screenshot part moved to `ui-review-predicted`; link to it instead of rebuilding it. ## Build: one console plugin 'Git status' (grids everywhere, framework grid: collapsible rows, sort/search/filter, sub-grids, dense, phone first, live) - **Tabs / sections as grids:** Needs push (local commits not on origin, per worktree/build incl. /root/axf-builds/* and /opt/axf), Needs pull (behind origin/main, how many commits), In CI (running/queued/failed checks per branch/PR, failing step + error lines), Ready to merge (green + not held), Held (UI Review waiting / changes / rejected, conflicts, dependency PR, claude-sync hold - plain-English reason), Merged today, Deployed (which apps redeployed with which commit, from container start times / image revisions), Stale (way behind main / no activity, with Land or Kill). - **Repos:** AmberX-AXF + axHub (+ any repo with an open PR from MossesX). Build-Pilot is archived; ignore. - **Row (collapsed):** PR # + one plain-English line of what it does (from the build's origin/brief/report summary and PR title, NO LLM), branch, agent avatar (crew-live if on main), status badge, CI dot, ahead/behind, age, cost. - **Expanded row:** every check with error lines, commits, files changed (expand a file for its diff), linked build + steps, UI Review item (open it), batch it's in, what's blocking + what clears it, actions: Merge (via the push banner's batch merge), Add to batch, Hold, Update from main, Re-run CI, Fix (sends an ops-fix job to a free agent), Close, Land/Kill for stale. - **Batch grid:** push batches with live badges, PR sub-grid per batch, merge order. - Data: GitHub through axHub (axf.github@1 hub route), git on the VPS via the existing VPS host/Terminal connection, builds store, ui-review@1 holds, container info. Live updates via the existing live feed; no polling storms. Zero tokens (test fails on any LLM import). - Context-menu hooks everywhere a PR/branch/build appears: 'Show in Git status'. Commands declared once -> REST + MCP + CLI (list by section, PR detail, merge, hold, update, rerun) so Amber can read and act by voice. - Tests, phone + desktop screenshots, UI Review item, report `_claude/builds/reports/git-status-board.md`, THREADS, PR, steps through the store. Commits clean and professional. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Opus) is fine. An UPGRADE (e.g. Opus → Fable) needs Brett's approval: when you reach one, run `node apps/console-web/plugins/b…",
@@ -27,7 +27,7 @@
   },
   "surface": "headless",
   "startedAt": "2026-11-03T21:09:40.599Z",
-  "lastSeenAt": "2026-11-03T21:47:47.132Z",
+  "lastSeenAt": "2026-11-03T21:42:22.137Z",
   "estimate": {
     "minutes": 180,
     "costUsd": 25.2
@@ -37,7 +37,7 @@
   "areas": [
     "apps/console-web/plugins/git-status"
   ],
-  "doing": "Reading after/git-status-ready-desktop.png",
+  "doing": "Running: Retry screenshots with longer nav timeout",
   "resume": {
     "repo": "MossesX/AmberX-AXF",
     "folder": "/root/axf-builds/git-status-board",

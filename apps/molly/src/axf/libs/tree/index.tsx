@@ -126,13 +126,13 @@ export function TreeSearch({ query, onQuery, chips, inputRef, children }: { quer
   return (
     <>
       {(config.search || children) && (
-        <div className="axf-tree-tools">
+        <div className="axf-tree-tools" role="toolbar" aria-label="Tree search">
           {config.search && <div className="fx-search axf-tree-search"><Icon name="search" size={14} /><input ref={inputRef} className="fx-input" placeholder={config.search.placeholder} value={query} onChange={(e) => onQuery(e.target.value)} aria-label={config.search.placeholder} /></div>}
           {children}
         </div>
       )}
       {config.chips && chips && chips.length > 0 && (
-        <div className="axf-tree-tools">
+        <div className="axf-tree-tools" role="toolbar" aria-label="Tree filters">
           {chips.map((c) => <button key={c.id} type="button" className={`fx-chip ${c.on ? 'is-on' : ''}`} aria-pressed={c.on} onClick={c.onToggle}>{c.label}</button>)}
         </div>
       )}

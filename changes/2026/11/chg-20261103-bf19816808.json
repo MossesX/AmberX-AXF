@@ -2,7 +2,7 @@
   "$axf": "change-log@1",
   "id": "chg-20261103-bf19816808",
   "createdAt": "2026-11-03T21:19:39.773Z",
-  "updatedAt": "2026-11-03T21:52:03.545Z",
+  "updatedAt": "2026-11-03T21:45:49.334Z",
   "kind": "build",
   "title": "# Build: whats-new-open-fix (Current profile) - bug fix ## Brett said (verbatim, Nov 3 2026, voice)…",
   "asked": "# Build: whats-new-open-fix (Current profile) - bug fix ## Brett said (verbatim, Nov 3 2026, voice) \"I see the What's new banner and I'm clicking it. But I'm not seeing anything.\" Assigned agent: whoever is free (router if on main; else **Janitor Joey**; record who). Register in the `current` profile (id `whats-new-open-fix`) + banner entry. Fix right away, tell after. ## Bug On the live console (phone, also inside Molly), tapping the What's New banner item does nothing visible. Opening it by MCP (`console_dialog whats-shipped.panel`) works. Find why the tap doesn't open the `whats-shipped.panel` dialog: missing/handler-less click on the banner chip, a tap swallowed by the banner's own expand logic, the dialog opening behind a window/overlay (check the z-layer change in #278), pointer events blocked on touch, or the Molly frame. ## Fix - Tapping the What's New banner item opens the What's New panel (Live / Merged / Ready to merge) every time, phone + desktop, standalone and inside Molly; long-press/right-click = its context menu. Check every other banner item for the same dead-tap problem and fix them too. - Test (tap opens dialog; dialog is on top), screenshots, report `_claude/builds/reports/whats-new-open-fix.md`, THREADS, PR, steps through the store. Merge when CI is green (bug fix). Commits clean and professional. ## Addendum 1 (Brett, Nov 3 2026, voice) Brett said (verbatim): \"What the fuck? I have this banner open. I can't close it.\" - The What's New panel (opened via console_dialog) had no way to close on his phone. Every dialog must close by: a visible X, tapping outside, Android back / Escape, and swipe down on phone. Check all framework dialogs. Also add a `close` action to control@1 console.dialogs (and `console_dialog` close) so Amber can close what she opened. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Opus) is fine. An UPGRADE (e.g. Opus → Fable) needs Brett's approval: when you reach one, run `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>`, ask once, and stop. Never approve a model switch upgrade yourself (no `act approve` on an upgrade), never relaunch on a higher model.",
@@ -34,7 +34,7 @@
   },
   "surface": "headless",
   "startedAt": "2026-11-03T21:19:39.773Z",
-  "lastSeenAt": "2026-11-03T21:52:03.545Z",
+  "lastSeenAt": "2026-11-03T21:45:49.334Z",
   "estimate": {
     "minutes": 115,
     "costUsd": 16.1
@@ -50,7 +50,7 @@
     "apps/console-web/plugins/console-commands",
     "apps/console-web/server"
   ],
-  "doing": "Running: Inspect why row hidden",
+  "doing": "Running: Wait for API then seed seen point",
   "progress": 1,
   "resume": {
     "repo": "MossesX/AmberX-AXF",

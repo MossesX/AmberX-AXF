@@ -182,7 +182,7 @@ export function Plan() {
         {api.PLAN_STATUSES.map((s) => counts[s] ? <button key={s} data-fx-row className={`pl-bar__seg is-${s} ${f.statuses.has(s) ? 'is-on' : ''}`} style={{ flexGrow: counts[s] }} title={`${s}: ${counts[s]} (${Math.round((counts[s]! / total) * 100)}%)`} onClick={() => toggleStatus(s)}><span>{s} {counts[s]}</span></button> : null)}
       </div>
 
-      <div className="pl-tools">
+      <div className="pl-tools" role="toolbar" aria-label="Plan filters">
         <div className="fx-search" style={{ flex: '1 1 220px', minWidth: 0 }}><Icon name="search" /><input id="plan-q" placeholder="Search features, capabilities, tags…" value={f.q} onChange={(e) => setF({ ...f, q: e.target.value })} /></div>
         <select id="plan-kind" className="fx-input" value={f.kind} onChange={(e) => setF({ ...f, kind: e.target.value })}><option value="">All kinds</option><option value="epic">Epics</option><option value="feature">Features</option><option value="task">Tasks</option></select>
         <select id="plan-area" className="fx-input" value={f.area} onChange={(e) => setF({ ...f, area: e.target.value })}><option value="">All areas</option>{areas.map((x) => <option key={x}>{x}</option>)}</select>

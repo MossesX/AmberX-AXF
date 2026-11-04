@@ -23,7 +23,8 @@
       "open": "navigate"
     },
     "console.dialogs": {
-      "open": "navigate"
+      "open": "navigate",
+      "close": "navigate"
     },
     "console.settings": {
       "open": "navigate"
@@ -1565,12 +1566,14 @@
         "client": "string"
       },
       "acts": {
-        "open": {}
+        "open": {},
+        "close": {}
       },
       "actEffect": {
-        "open": "navigate"
+        "open": "navigate",
+        "close": "navigate"
       },
-      "doc": "Every dialog the open console registers (by id, title or search words); act open shows it (input.arg = its optional argument). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
+      "doc": "Every dialog the open console registers (by id, title or search words); act open shows it (input.arg = its optional argument), act close shuts it (path \"current\" = whichever dialog is open). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
     },
     "console.settings": {
       "domain": "console",
@@ -3704,7 +3707,7 @@
         "paths": "host"
       },
       "console.dialogs": {
-        "description": "Every dialog the open console registers (by id, title or search words); act open shows it (input.arg = its optional argument). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
+        "description": "Every dialog the open console registers (by id, title or search words); act open shows it (input.arg = its optional argument), act close shuts it (path \"current\" = whichever dialog is open). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
         "ops": [
           "list",
           "get",
@@ -3722,7 +3725,8 @@
           }
         },
         "acts": {
-          "open": {}
+          "open": {},
+          "close": {}
         },
         "paths": "host"
       },

@@ -46,7 +46,8 @@
     "density",
     "sizing",
     "agent-card",
-    "job-type"
+    "job-type",
+    "card"
   ],
   "parsed": {
     "full": {

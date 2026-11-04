@@ -144,7 +144,7 @@ function Studio(p: LayoutProps) {
         </div>
       </aside>
       <main className="axp-plugin-manager-studio__main">
-        <div className="axp-plugin-manager-studio__bar">
+        <div className="axp-plugin-manager-studio__bar" role="toolbar" aria-label="Plugin list">
           <Search q={p.q} setQ={p.setQ} />
           <ViewPicker p={p} />
           <SortSelect value={p.prefs.sort} onChange={(v) => p.set('sort', v)} />

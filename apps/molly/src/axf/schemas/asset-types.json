@@ -1559,6 +1559,62 @@
         "outputs": "{ report: path template, uiReviewGroup: name template with {{when}}, uiReviewApp }"
       }
     },
+    "card": {
+      "label": "Card",
+      "group": "Widgets",
+      "icon": "chart",
+      "shared": false,
+      "description": "A Home card (card@1, rules core/engines/card-rules.mjs): a data binding, not a design. It names the read it draws (any plugin read command from the plugin-commands@1 registry, served by control@1 as REST, MCP and CLI, or a read the host app provides), its args, a path into the result, an optional filter (where) and reduction, the view (auto or number, list, meter, chart, feed, table, status, plus views a host registers in the open registry), the refresh (live from the console's live feed, every N seconds, or by hand), title, icon and size. Not themed itself: every colour and size comes from the active theme through the view's tokens. Users make cards on Home (Add card, drag a read onto Home, Suggested cards) with no code and no tokens; an app's own starter cards ship as assets.",
+      "required": [
+        "source"
+      ],
+      "enums": {
+        "size": [
+          "s",
+          "m",
+          "l",
+          "wide"
+        ],
+        "chart": [
+          "line",
+          "bar",
+          "spark"
+        ],
+        "reduce": [
+          "none",
+          "count",
+          "sum",
+          "avg",
+          "min",
+          "max",
+          "first",
+          "last"
+        ]
+      },
+      "nested": {
+        "source": [
+          "kind"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "title": "shown on the card (up to 60)",
+        "icon": "icon name",
+        "args": "the read command's input",
+        "path": "dotted path into the result; * maps over a list or object",
+        "where": "{ field: value } keeps matching items",
+        "reduce": "fold a list: count, sum, avg, min, max, first, last",
+        "fields": "{ role: field } for the view",
+        "refresh": "{ kind: live | every | manual, every: seconds, channels: [live-feed channels] }",
+        "limit": "items shown (1-200)",
+        "unit": "after a number (USD, ms)",
+        "view": "auto (picked from the data's shape) or a registered view: number, list, meter, chart, feed, table, status, panel (the host's own renderer for a host read), plus views a host registers"
+      }
+    },
     "help": {
       "label": "Help",
       "group": "System",

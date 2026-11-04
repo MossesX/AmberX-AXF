@@ -122,6 +122,9 @@ export function decideLocal(ids, decision, { comment = '', by = 'brett' } = {}) 
   return { changed: r.changed, missing: r.missing.filter((x) => !r.changed.includes(x)) };
 }
 
+/** A linked git worktree has a .git file (not a folder) at its root. */
+const isWorktree = () => { try { return statSync(join(ROOT, '.git')).isFile(); } catch { return false; } };
+
 /* -------------------------------------------------------------- console API (--console) */
 async function consoleCall(path, body) {
   const url = process.env.AXF_CONSOLE_URL, tok = process.env.AXF_TOKEN;
@@ -160,6 +163,10 @@ export async function main(argv = process.argv.slice(2)) {
   if (cmd === 'submit') {
     const files = shotFiles(flags); const fields = fieldsOf(flags);
     if (!core.isKind(fields.kind)) throw new Error(`--kind must be lowercase letters, digits and dashes (sections: ${kinds().map((k) => k.id).join(', ')})`);
+    if (!remote && !process.env.AXF_UI_REVIEW_DIR && isWorktree()) {
+      console.error('warning: this checkout is a git worktree, so the item and its pictures stay in it (gone when the worktree is deleted) '
+        + 'and Brett never sees them. Use --console (AXF_CONSOLE_URL + AXF_TOKEN): the pictures are uploaded to the console at submit time.');
+    }
     const item = remote
       ? (await consoleCall('submit', { ...fields, files: files.map((f) => ({ name: basename(f), device: core.deviceOf(basename(f)), data: readFileSync(f).toString('base64') })) })).item
       : submitLocal(fields, files);

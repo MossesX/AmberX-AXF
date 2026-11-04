@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "plan-summary",
+  "name": "Plan summary",
+  "version": "1.0.0",
+  "description": "The plan's progress (the Plan page's summary panel).",
+  "author": "AmberX AXF",
+  "tags": [
+    "home",
+    "starter"
+  ],
+  "data": {
+    "title": "Plan",
+    "icon": "list",
+    "source": {
+      "kind": "console",
+      "id": "plan.summary"
+    },
+    "view": "panel",
+    "refresh": {
+      "kind": "live"
+    },
+    "size": "m"
+  }
+}

@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { AccountView, AppShell, AssetStudio, installLibraries, useRuntime, type ViewMap } from './axf/react';
 import { library as settingsLibrary } from './axf/libs/settings';
+import { toolbarsLibrary } from './axf/libs/toolbars';
 import { library as dndLibrary } from './axf/libs/dnd';
 import { library as treeLibrary } from './axf/libs/tree';
 import { library as dataGridLibrary } from './axf/libs/datagrid';
@@ -25,7 +26,7 @@ const views: ViewMap = {
  * Libraries this app ships: the settings interface, the six harvested from this studio (each reads its configured parts
  * from axf.manifest.json → libraries.<key>) and the studio's own (its settings sub-tab under Settings → Plugins).
  */
-const libraries = [settingsLibrary, dndLibrary, treeLibrary, dataGridLibrary, workspaceLibrary, recorderLibrary, docstoreLibrary, studioLibrary];
+const libraries = [settingsLibrary, toolbarsLibrary, dndLibrary, treeLibrary, dataGridLibrary, workspaceLibrary, recorderLibrary, docstoreLibrary, studioLibrary];
 
 export function App() {
   const rt = useRuntime();

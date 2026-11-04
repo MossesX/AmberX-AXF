@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { AccountView, AppShell, AssetStudio, installLibraries, useRuntime, type ViewMap } from './axf/react';
 import { library as settingsLibrary } from './axf/libs/settings';
+import { toolbarsLibrary } from './axf/libs/toolbars';
 import { dialogs } from './dialogs';
 import { api, type Me } from './api';
 import { Home } from './views/Home';
@@ -20,7 +21,7 @@ function viewsFor(me: Me | null, reload: () => void): ViewMap {
 }
 
 /** Every app built by the build engine ships the settings interface (lib-settings). Add more libraries here. */
-const libraries = [settingsLibrary];
+const libraries = [settingsLibrary, toolbarsLibrary];
 
 export function App() {
   const rt = useRuntime();

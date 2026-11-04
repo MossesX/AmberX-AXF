@@ -120,6 +120,43 @@ their build).
   groups on the next read (so the Breakroom check pictures become `Breakroom check - 2026-10-31 20:20`), one group per
   prefix and day; the Breakroom item migration does the same right after moving them. Idempotent.
 
+## Predicted looks (`ui-prediction@1`, Nov 3 2026)
+
+Brett: UI Review must show what a build will probably look like **before** it is built, so he approves the look before
+an agent spends money. Core `framework/core/ui-predict.mjs` (pure; checks `framework/spec/check-ui-predict.mjs`), CLI
+`framework/cli/ui-predict.mjs`, server `server/predicted.py`, page `web/mockup.tsx`.
+
+- **Mockup** (`ui-mockup@1`): from the build's title, detail and steps (+ the files its worktree or branch touched so
+  far) the core picks the screens it touches (an open registry + the console plugins its files sit in) and one block
+  per UI step: settings rows (quoted labels), toolbar, badges, action buttons (`Approve look / Ask changes / Reject`
+  runs), list with demo rows, card, dialog. Plumbing steps (tests, report, CLI, backfill…) draw nothing. Made by rules:
+  no model, **$0**, recorded on the item (`prediction.cost`). The page `?ui-mockup=<spec>` (view `ui-mockup`) draws one
+  screen with the framework's own controls in the console's chrome under the current theme.
+- **Capture**: `ui-predict.mjs predict <build>` runs `rebuild-shots.mjs` (no new capture system) under the agent cap:
+  `before-<screen>-<phone|desktop>.png` (the screen now, reached with the console's search, from the checkout the
+  capture runs in = main) and `predicted-<screen>-….png` (the mockup). The spec hash is cached
+  (`<data>/predictions/<build>.json`): same look = no new pictures.
+- **Item**: one review item per build, group `Predicted looks - <Mon D>`, status shown as *Predicted - approve the
+  look*, badge **Predicted**; `prediction` = `{ $axf: ui-prediction@1, build, state: predicted|real, hash, screens,
+  cost, look: {status, by, at, comment}, refreshes, addenda }` (optional field of ui-review-item@1, both validators).
+  **Approve look / Ask changes / Reject look** are the normal decisions; on a predicted item they decide the look too.
+  An Ask changes comment becomes an addendum: the server runs `ui-predict.mjs addendum` (a note on the orchestrator
+  build) and the launcher adds it to the brief. A predicted item carries no branch / PR and never holds a merge.
+- **Gate** (Settings → Plugins → UI Review → *Predicted looks*: **Wait for my look approval before UI builds start**,
+  default off, kept in `<data>/settings.json` so the host reads it): `deploy/claude-headless.sh` asks
+  `ui-predict.mjs gate` before a start. A UI build with no prediction gets one made in the background. Setting on +
+  look not approved = the launch queues (`.axf-look-wait.log`) and starts by itself once he approves; changes asked =
+  starts with the addendum; rejected = held (exit 3, never started, setting on or off). `AXF_LOOK_GATE=off` skips it.
+- **While running / at the end**: the launcher runs `ui-predict.mjs follow` next to the session: every 5 min it
+  re-predicts (only when the spec changed, e.g. the diff grew; `prediction.refreshes`), and when the session ends it
+  captures the real screens from the worktree and posts them (`predict/real`): badge **Real**, the item waits for the
+  real OK (now with branch / PR), the look decision stays, and the detail's switch shows *Real*, *Now (main)*,
+  *Predicted* and *Predicted vs real*.
+- **Commands** (declared once in `plugin.json` → REST `/api/plugins/ui-review/…` + control@1 MCP / CLI):
+  `GET predicted[?build=]`, `POST predict`, `POST predict/real`, `POST approve-look {build|ids, decision, comment}`,
+  `GET|PUT settings`. CLI: `ui-predict.mjs predict | real | list | approve | settings | gate | wait | follow |
+  addendum | addenda | which | backfill | spec`.
+
 ## State for other plugins (`ui-review@1`)
 
 `plugin_services.get("ui-review@1")` → `state(branch, pr)`, `holds(branch, pr)`, `items(branch, pr)`, `submit(fields,

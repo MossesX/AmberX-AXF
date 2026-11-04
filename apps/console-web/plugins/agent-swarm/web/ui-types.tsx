@@ -8,8 +8,8 @@ export const FOLDER = 'agent-swarm';
 export const api = pluginApi(FOLDER, 'Agent swarm', { unavailable: 'The agent swarm is switched off or its server part is not running.' });
 
 export type Usage = { input: number; output: number; cacheRead: number; cacheWrite: number };
-export type Agent = { id: string; name: string; role: string; skill: string; jobsOnly?: boolean; specialty: string; models: string[]; tools: string[]; maxTurns: number; tokenBudget: number; salary: number; hiredAt: string; avatar: { face: string; hair: number; gear: string; hue: number }; catchphrase: string; bio: string };
-export type Run = { jobId: string; buildId: string; stepId: string; agent: string; model: string; startedAt: string; endedAt: string; status: string; reason: string; usage: Usage | null; reportedCost: number | null; turns: number; budget: { tokens: number; maxTurns: number }; report: { summary: string } | null };
+export type Agent = { id: string; name: string; role: string; skill: string; skills?: string[]; home?: string; jobsOnly?: boolean; specialty: string; models: string[]; tools: string[]; maxTurns: number; tokenBudget: number; salary: number; hiredAt: string; avatar: { face: string; hair: number; gear: string; hue: number }; catchphrase: string; bio: string };
+export type Run = { jobId: string; buildId: string; stepId: string; agent: string; model: string; startedAt: string; endedAt: string; status: string; reason: string; usage: Usage | null; reportedCost: number | null; turns: number; budget: { tokens: number; maxTurns: number }; report: { summary: string } | null; jobType?: string; build?: string; source?: string };
 export type Slot = { runs: number; tokens: number; usd: number; done: number; failed: number };
 export type Meter = { total: Slot; byAgent: Record<string, Slot>; byJob: Record<string, Slot>; byBuild: Record<string, Slot>; byModel: Record<string, Slot> };
 export type Spend = { all: { usd: number; tokens: number; runs: number }; week: { usd: number; tokens: number; runs: number }; today: { usd: number; tokens: number; runs: number }; avgPerJob: number; jobs: number };

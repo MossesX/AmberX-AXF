@@ -43,22 +43,28 @@ jobs:
       - run: node framework/spec/check-profiles.mjs                 # every build profile folder is registered in framework/plan/profiles.json
       - run: node framework/spec/check-feature-matrix.mjs           # feature-matrix@1: contract + Apply engine replay fixtures/feature-matrix.json
       - run: node framework/spec/check-builds-store.mjs             # builds@1: migration loses nothing, projections round-trip, reorder, rename, divide, harvest, Restore default, Apply/Discard
+      - run: node framework/spec/check-build-origin.mjs            # build-origin@1: Brett's verbatim words on every build, never lost on merge, brief capture, backfill
       - run: node framework/spec/check-builds-live.mjs              # builds-live: store writes reach main (status-only commits, rebase-retry, never forced), parallel writers, newer-wins merge driver, heal, reconciler matching
       - run: node framework/spec/check-agent-slots.mjs              # agent-slots@1: cap, queue order, priority, auto-start, finished sessions closed, memory guard, hot reload, heavy lock, claude-headless.sh end to end
       - run: node framework/spec/check-model-policy.mjs             # model-policy@1: Opus or Fable only, never Sonnet; job types, roster, plan picker and the builds store read one registry
+      - run: node framework/spec/check-card.mjs                     # card@1 + home-layout@1: binding, view pick, live refresh, layout, suggestions, drops, zero tokens, fixture
       - run: node framework/cli/builds-store.mjs verify            # every build, step, note and status of the read-only old files is in the store
       - run: node framework/cli/pending.mjs --check-steps            # warns (not fails) about open builds over 30 min without small steps
       - run: node framework/cli/build-queue.mjs --check-steps        # same for the build queue (read-only)
       - run: node framework/spec/check-github.mjs                    # lib-github: fixtures/github.json + Node client guards (= axf_server.github)
       - run: node framework/spec/check-github-app.mjs                # github-app@1 broker: manifest, callback exchange, file modes, JWT, token cache, git/gh helpers, user refresh, health
       - run: node framework/spec/check-ui-review.mjs                 # ui-review-item@1: fixtures, schema snapshots, migration, every UI Review submitter names + times its items
+      - run: node framework/spec/check-ui-predict.mjs                # ui-prediction@1 / ui-mockup@1: predicted looks before a build runs, look gate, CLI offline
       - run: node framework/spec/check-session.mjs                   # session@1 (Chat viewer): fixtures, redaction, chain hash, schema snapshots
+      - run: node framework/spec/check-refs.mjs                      # ref@1: mentions in banner text → links (fixtures/refs.json: names, kind words, explicit touches, PRs, files, peek)
       - run: node framework/cli/help-coverage.mjs --check            # Help mode: every control in the framework chrome, the console + plugins and axHub web has help; fails if coverage drops below framework/spec/help-coverage.json
       - run: node framework/cli/axf.mjs libraries
       - name: Asset conformance — every web CSS/TSX and Kotlin UI (handwritten or generated) takes its look from asset tokens; file:line + token to use
         run: node framework/cli/check-theme.mjs
       - name: Asset conformance — every web button is a framework control (apps, plugins, libraries, templates)
         run: node framework/cli/check-controls.mjs
+      - name: Toolbars — every toolbar is a framework toolbar (role="toolbar" + settings id; tap-to-confirm off in code only with a recorded reason)
+        run: node framework/cli/check-toolbars.mjs
       - name: Asset conformance — the checker and the adopter agree (scale-adopt self-test)
         run: node framework/spec/check-conform.mjs
       - name: Plugin pages follow the design language (page heads with eyebrow + title + one sentence, no spinners; DESIGN-LANGUAGE §12)
@@ -71,8 +77,14 @@ jobs:
         run: node apps/console-web/plugins/token-control/test.mjs  # axf-plugin:token-control
       - name: Console commands plugin (control@1 console domain — CLI words, runner gate + resolve + deliver, confirm, send to a console)  # axf-plugin:console-commands
         run: node apps/console-web/plugins/console-commands/test.mjs  # axf-plugin:console-commands
+      - name: Reference links plugin (ref@1 runner — builds store + plugin targets, find, explicit touches, ambiguous, missing, resolve, CLI)  # axf-plugin:ref-links
+        run: node apps/console-web/plugins/ref-links/test.mjs  # axf-plugin:ref-links
       - name: Plugin commands plugin (control@1 plugins domain — runner gate, reads, dispatch, confirm, CLI)  # axf-plugin:plugin-commands
         run: node apps/console-web/plugins/plugin-commands/test.mjs  # axf-plugin:plugin-commands
+      - name: Claude plugin (claude-settings@1 — open registry, owner-only rules, No wait ↔ pass decisions)  # axf-plugin:claude-settings
+        run: node apps/console-web/plugins/claude-settings/test.mjs  # axf-plugin:claude-settings
+      - name: Auto-land (push banner) — zero tokens (no model client in the merge pipeline), landing rules, rounds on fake builds  # axf-plugin:push-banner
+        run: node apps/console-web/plugins/push-banner/land/land.test.mjs  # axf-plugin:push-banner
       - name: Deploy helpers (framework/deploy) — bash -n, shellcheck, self-test; installers that source them
         run: |
           set -e
@@ -153,6 +165,8 @@ jobs:
             (cd framework && npm install --no-audit --no-fund --silent)
             npx -y tsx framework/spec/check-alerts.mts
             npx -y tsx framework/spec/check-widgets.mts
+            npx -y tsx framework/spec/check-tapconfirm.mts            # toolbar tap-to-confirm: touch arms then runs, mouse/pen/keyboard click once, re-arm, window, per-toolbar settings
+            npx -y tsx framework/spec/check-menu-fit.mts               # menu-fit@1: menus flip / shift to stay on screen and scroll only when taller than the room
             npx -y tsx framework/spec/check-windows.mts                # window engine: 8 resize handles, maximize / restore, frames, snapping (windows.json)
             npx -y tsx framework/spec/check-dock.mts                   # dock engine (dock@1): pane tree, drop zones, pane limit, splitters, snapshots, dock-layout@1 presets (dock.json)
             npx -y tsx framework/spec/check-xlayout.mts                # xlayout@1 (Molly as one app): apps, merge modes, IDE block, toolbar slots, guest URLs (xlayout.json)
@@ -169,6 +183,7 @@ jobs:
             npx -y tsx framework/spec/check-agent-card.mts             # agent-card@1: registry, fixture replay, validators agree, four starters, schema
             npx -y tsx framework/spec/check-job-type.mts               # job-type@1: registry, fixture replay, validators agree, starter job types, schema
             npx -y tsx framework/spec/check-headless-tabs.mts          # headless tabs: live cost meter + context chain (deploy/claude-meter.mjs), terminal pure helpers
+            npx -y tsx framework/spec/check-terminal-nav.mts           # terminal sessions nav: search / filter / sort, mirror vs jump in, chat link guard
             npx -y tsx framework/spec/check-swarm.mts                  # agent swarm contracts (agent@1 … swarm-run@1): fixture replay, field-naming validators, model policy, schema snapshots, shipped roster, plugin uses the framework's
             npx -y tsx framework/spec/check-help.mts                   # help@1 + Help mode: registry, fixture replay (auto ids, index, intros, coverage, ratchet), validators agree, every shipped pack, runtime switch
             npx -y tsx framework/spec/check-help-mode.mts              # Help mode in the DOM (jsdom): switch, hover / long-press / badge tooltips, dismiss, No help yet, What is this?, intro once per screen
@@ -221,6 +236,7 @@ jobs:
             python apps/console-web/server/test_build_profiles.py
             python apps/console-web/server/test_previews.py          # Watch live: registry, signed keys, /preview proxy auth (HTTP + HMR WebSocket)
             python apps/console-web/plugins/console-commands/server/test_console_commands.py  # console commands: consoles announce + stream, resolve, deliver + ack, per-user mailbox, confirm  # axf-plugin:console-commands
+            python apps/console-web/plugins/ref-links/server/test_ref_links.py  # reference links: targets (catalog, agents, UI Review), find, resolve, open → refs.<how> through console-commands@1  # axf-plugin:ref-links
             python apps/console-web/server/test_mcp_tools.py         # console MCP: read tools read-only, deletes destructive, veto pass tools
             python apps/console-web/plugins/plugin-commands/server/test_plugin_commands.py  # plugin commands: /api/control/<plugin>/<command>, deletes confirm, actions to the console, MCP tools follow the plugins  # axf-plugin:plugin-commands
             python apps/amberx-droid/server/test_server.py           # AmberX server: wall, admin-only AI config, write-only keys, fallback, intent checks, caps, SPA paths

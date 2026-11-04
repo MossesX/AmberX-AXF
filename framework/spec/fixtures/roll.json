@@ -47,6 +47,7 @@
     "sizing": true,
     "agent-card": false,
     "job-type": false,
+    "card": false,
     "help": false,
     "uac-policy": false
   },

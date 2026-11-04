@@ -2,7 +2,7 @@
   "$axf": "change-log@1",
   "id": "chg-20261103-c96619cfe9",
   "createdAt": "2026-11-03T19:52:55.311Z",
-  "updatedAt": "2026-11-03T21:49:06.993Z",
+  "updatedAt": "2026-11-03T21:38:41.525Z",
   "kind": "build",
   "title": "# Build: ui-review-predicted (Urgent profile) Brett, Nov 3 2026 (voice): UI Review must show PREDIC…",
   "asked": "# Build: ui-review-predicted (Urgent profile) Brett, Nov 3 2026 (voice): UI Review must show PREDICTED pictures - what a build will probably look like - BEFORE it's built, so he can approve the look before an agent spends money. Assigned agent: **Snap Sully** (book on his card; he's also on ui-review-shots - run after it or build on its storage fix; if the all-rounder router is on main and he's busy, whoever is free - record who). Register in Urgent (id `ui-review-predicted`) + banner entry. Mark the predicted-shots part of pending item `batch-manager` as moved here (pending_change note). ## Build - s1 Predicted mockups: when a build is launched (or added to the orchestrator/pending list), generate a mockup per screen it will touch from the brief + step list (+ diff so far while running): render real framework components with the current theme/assets and demo data in a headless browser (reuse rebuild-shots / ui-screenshots capture tooling; do NOT build a new capture system). Phone + desktop. If an LLM is needed to turn the brief into a mockup spec, do it ONCE per build at launch with the cheapest capable model and cache it; record the cost on the item. - s2 UI Review item created at launch with status 'Predicted - approve the look', badge 'Predicted', before = current real screen (from main), after = predicted mockup. Brett can Approve look / Ask changes (comment goes to the build as an addendum before it starts or at the next step) / Reject (build is held, not started). - s3 Setting (Claude settings / UI Review settings): 'Wait for my look approval before UI builds start' (default OFF; when ON, UI-touching builds queue until the predicted look is approved). - s4 While running, the predicted shot refreshes as the diff grows; when the build finishes, the real after-shot replaces it live (badge 'Real'), with a toggle to compare predicted vs real. - s5 Backfill: create predicted items now for every queued/running build that touches UI (toolbar-tap-confirm, crew-live, follow-amber, claude-settings, agent-pick, home-cards-live, smart-menus). - s6 Commands declared once -> REST + MCP + CLI (predict, list predicted, approve look). Tests, screenshots, report `_claude/builds/reports/ui-review-predicted.md`, THREADS, PR, steps through the store. Commits clean and professional. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Opus) is fine. An UPGRADE (e.g. Opus → Fable) needs Brett's approval: when you reach one, run `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>`, ask once, and stop. Never approve a model switch upgrade yourself (no `act approve` on an upgrade), never relaunch on a higher model.",
@@ -63,7 +63,7 @@
   },
   "surface": "headless",
   "startedAt": "2026-11-03T19:52:55.311Z",
-  "lastSeenAt": "2026-11-03T21:49:06.993Z",
+  "lastSeenAt": "2026-11-03T21:38:41.525Z",
   "estimate": {
     "minutes": 155,
     "costUsd": 21.7
@@ -75,7 +75,7 @@
     "framework/cli",
     "framework/core"
   ],
-  "doing": "Running: Confirm molly failure pre-exists; see main-ci build",
+  "doing": "Running: Wait for backfill to complete",
   "progress": 0.833,
   "resume": {
     "repo": "MossesX/AmberX-AXF",
