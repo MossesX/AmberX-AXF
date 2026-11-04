@@ -12,7 +12,23 @@ from typing import Any
 
 FOLDER_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 MODES = ("start", "open", "off")
-CORE = {"plugin-manager": "open", "console-commands": "start", "console-terminal": "open", "systems-check": "start"}
+PLUGINS_DIR = Path(__file__).resolve().parents[2]
+
+
+def _core_plugins() -> dict[str, str]:
+    """Core plugins declare themselves (`lazy.core` in their own plugin.json): never named here (plugin-lifecycle@1)."""
+    out: dict[str, str] = {}
+    for f in sorted(PLUGINS_DIR.glob("*/plugin.json")):
+        try:
+            mode = (json.loads(f.read_text()).get("lazy") or {}).get("core")
+        except (OSError, ValueError, AttributeError):
+            continue
+        if mode in ("start", "open"):
+            out[f.parent.name] = mode
+    return out
+
+
+CORE = _core_plugins()
 DEFAULTS: dict[str, Any] = {
     "$axf": "plugin-lazy@1",
     "preloadCount": 5,

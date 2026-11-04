@@ -84,7 +84,8 @@ t('every plugin that paints the banner is a known banner (loads first on a first
     .some((x) => /setBadge|attachToBanner|banners:\s*\[/.test(readFileSync(`${dir}/${f}/web/${x}`, 'utf8'))));
   assert.deepEqual(painting.filter((f) => !KNOWN_BANNERS.includes(f)), [], 'add these to KNOWN_BANNERS in src/lazyEngine.ts');
   assert.deepEqual(KNOWN_BANNERS.filter((f) => !all.includes(f)), [], 'KNOWN_BANNERS names a plugin that no longer exists');
-  for (const f of CORE_PLUGINS ? Object.keys(CORE_PLUGINS) : []) assert.ok(all.includes(f), `core plugin ${f} exists`);
+  const declared = Object.fromEntries(all.map((f) => [f, JSON.parse(readFileSync(`${dir}/${f}/plugin.json`, 'utf8')).lazy?.core]).filter(([, m]) => m));
+  assert.deepEqual(declared, CORE_PLUGINS, 'CORE_PLUGINS in src/lazyEngine.ts = the plugins whose plugin.json declares lazy.core (what the server reads)');
 });
 
 t('dev: each plugin entry is its own HMR boundary; hashes cover every plugin with a web part', async () => undefined);

@@ -1,6 +1,7 @@
 {
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.plugin-manager",
+  "lazy": { "core": "open" },
   "name": "Plugin Manager",
   "version": "0.2.0",
   "kind": "module",
@@ -42,7 +43,7 @@
       "CLAUDE.md", "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md",
       "_claude/memory/decisions.md",
-      "_claude/memory/docs/rebuilds/plugin-manager.md"
+      "_claude/memory/docs/rebuilds/plugin-manager.md", "apps/console-web/src/pluginLoader.tsx", "_claude/THREADS.md"
     ]
   },
   "opens": "main"

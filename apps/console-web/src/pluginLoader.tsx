@@ -465,14 +465,14 @@ class PluginLoader {
     this.reportTimer = setTimeout(() => {
       this.reportTimer = null;
       const body = { at: new Date().toISOString(), startup: this.startup, bootMs: this.readyAt && this.bootedAt ? Math.round(this.readyAt - this.bootedAt) : null, plugins: this.rows(this.enabledNow) };
-      void fetch('/api/plugins/plugin-manager/lazy/report', { method: 'POST', headers: authHeaders(consoleTokens, { headers: { 'content-type': 'application/json' } }), body: JSON.stringify(body), keepalive: true }).catch(() => undefined);
+      void fetch('/api/plugins/plugin-manager/lazy/report', { method: 'POST', headers: authHeaders(consoleTokens, { headers: { 'content-type': 'application/json' } }), body: JSON.stringify(body), keepalive: true }).catch(() => undefined); // axf-plugin:plugin-manager
     }, 5000);
   }
 
   /** Fetch the stored config from the plugin-manager server part (it may be off or removed: the cached one stays). */
   async pullConfig(): Promise<void> {
     try {
-      const r = await fetch('/api/plugins/plugin-manager/lazy', { headers: authHeaders(consoleTokens, {}), cache: 'no-store' });
+      const r = await fetch('/api/plugins/plugin-manager/lazy', { headers: authHeaders(consoleTokens, {}), cache: 'no-store' }); // axf-plugin:plugin-manager
       if (!r.ok || !(r.headers.get('content-type') ?? '').includes('json')) return;
       const j = (await r.json()) as { config?: unknown };
       if (j.config && JSON.stringify(normalizeLazyConfig(j.config)) !== JSON.stringify(this.config)) this.setConfig(j.config);
