@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T19:03:36.791Z",
+ "updatedAt": "2026-11-04T19:03:54.847Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -11286,9 +11286,14 @@
    "branch": "claude/model-thinking-audit",
    "pr": "#334",
    "createdAt": "2026-11-04T17:53:07.338Z",
-   "updatedAt": "2026-11-04T19:03:35.128Z",
+   "updatedAt": "2026-11-04T19:03:36.919Z",
    "builtAt": "2026-11-04T19:03:35.128Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "PR #334 open for the merge queue (auto-land off). UI Review shots submitted (group model-thinking-audit - Nov 4). Report _claude/builds/reports/model-thinking-audit.md; audit written to the store and the 8 Plan Studio plans; fable-review-nov3 consumes the list.",
+     "at": "2026-11-04T19:03:36.919Z"
+    }
+   ],
    "approvals": [
     {
      "phase": 1,

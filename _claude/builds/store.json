@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 894,
- "updatedAt": "2026-11-04T19:03:36.791Z",
+ "rev": 895,
+ "updatedAt": "2026-11-04T19:03:54.847Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -81679,9 +81679,14 @@
    "branch": "claude/model-thinking-audit",
    "pr": "#334",
    "createdAt": "2026-11-04T17:53:07.338Z",
-   "updatedAt": "2026-11-04T19:03:35.128Z",
+   "updatedAt": "2026-11-04T19:03:36.919Z",
    "builtAt": "2026-11-04T19:03:35.128Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "PR #334 open for the merge queue (auto-land off). UI Review shots submitted (group model-thinking-audit - Nov 4). Report _claude/builds/reports/model-thinking-audit.md; audit written to the store and the 8 Plan Studio plans; fable-review-nov3 consumes the list.",
+     "at": "2026-11-04T19:03:36.919Z"
+    }
+   ],
    "approvals": [
     {
      "phase": 1,
@@ -81985,7 +81990,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
