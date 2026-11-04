@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T14:39:28.981Z",
+ "updatedAt": "2026-11-04T14:39:38.609Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10120,7 +10120,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw282d4o0141y6"
+     "uid": "st-mw2825kf016ny9"
     },
     {
      "id": "s2",
@@ -10138,7 +10138,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw282d4o021u23"
+     "uid": "st-mw2825kf02iopf"
     },
     {
      "id": "s3",
@@ -10156,7 +10156,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw282d4o033kx9"
+     "uid": "st-mw2825kf0379ou"
     },
     {
      "id": "s4",
@@ -10174,7 +10174,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw282d4o04x3dr"
+     "uid": "st-mw2825kf04c2uw"
     },
     {
      "id": "s5-4",
@@ -10192,7 +10192,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw28257i052fjy"
+     "uid": "st-mw282d4o0141y6"
     },
     {
      "id": "s6-5",
@@ -10210,7 +10210,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw28257i06hqqh"
+     "uid": "st-mw282d4o021u23"
     },
     {
      "id": "s7-6",
@@ -10228,10 +10228,82 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw28257i07912k"
+     "uid": "st-mw282d4o033kx9"
     },
     {
      "id": "s8-7",
+     "text": "Bulk CLI/MCP (land-all, merge batch): resolveFilter + profiles argument; tests, shots, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw282d4o04x3dr"
+    },
+    {
+     "id": "s9-8",
+     "text": "Orchestrator view: all-profiles projection + filter + Profile column; bulk actions on visible builds",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw28257i052fjy"
+    },
+    {
+     "id": "s10-9",
+     "text": "Pending, Queue and Plan tables: filter, Profile column, Filtered note",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw28257i06hqqh"
+    },
+    {
+     "id": "s11-10",
+     "text": "Tracker, Git status board, Crew: filter adoption",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw28257i07912k"
+    },
+    {
+     "id": "s12-11",
      "text": "Bulk CLI/MCP (land-all, merge batch): resolveFilter + profiles argument; tests, shots, PR",
      "model": "Opus",
      "why": "",

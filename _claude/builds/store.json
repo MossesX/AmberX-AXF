@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 748,
- "updatedAt": "2026-11-04T14:39:28.981Z",
+ "rev": 749,
+ "updatedAt": "2026-11-04T14:39:38.609Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -74073,7 +74073,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T14:16:24.132Z",
-     "updatedAt": "2026-11-04T14:38:44.693Z"
+     "updatedAt": "2026-11-04T14:38:50.492Z"
     }
    ],
    "profiles": [
@@ -76861,6 +76861,94 @@
    "steps": [
     {
      "id": "s1",
+     "uid": "st-mw2825kf016ny9",
+     "title": "",
+     "text": "Orchestrator view: all-profiles projection + filter + Profile column; bulk actions on visible builds",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T14:38:34.134Z",
+     "updatedAt": "2026-11-04T14:38:34.541Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw2825kf02iopf",
+     "title": "",
+     "text": "Pending, Queue and Plan tables: filter, Profile column, Filtered note",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T14:38:34.134Z",
+     "updatedAt": "2026-11-04T14:38:34.541Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw2825kf0379ou",
+     "title": "",
+     "text": "Tracker, Git status board, Crew: filter adoption",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T14:38:34.134Z",
+     "updatedAt": "2026-11-04T14:38:34.541Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw2825kf04c2uw",
+     "title": "",
+     "text": "Bulk CLI/MCP (land-all, merge batch): resolveFilter + profiles argument; tests, shots, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T14:38:34.134Z",
+     "updatedAt": "2026-11-04T14:38:34.541Z"
+    },
+    {
+     "id": "s5-4",
      "uid": "st-mw282d4o0141y6",
      "title": "",
      "text": "Orchestrator view: all-profiles projection + filter + Profile column; bulk actions on visible builds",
@@ -76882,7 +76970,7 @@
      "updatedAt": "2026-11-04T14:38:44.414Z"
     },
     {
-     "id": "s2",
+     "id": "s6-5",
      "uid": "st-mw282d4o021u23",
      "title": "",
      "text": "Pending, Queue and Plan tables: filter, Profile column, Filtered note",
@@ -76904,7 +76992,7 @@
      "updatedAt": "2026-11-04T14:38:44.414Z"
     },
     {
-     "id": "s3",
+     "id": "s7-6",
      "uid": "st-mw282d4o033kx9",
      "title": "",
      "text": "Tracker, Git status board, Crew: filter adoption",
@@ -76926,7 +77014,7 @@
      "updatedAt": "2026-11-04T14:38:44.414Z"
     },
     {
-     "id": "s4",
+     "id": "s8-7",
      "uid": "st-mw282d4o04x3dr",
      "title": "",
      "text": "Bulk CLI/MCP (land-all, merge batch): resolveFilter + profiles argument; tests, shots, PR",
@@ -76948,7 +77036,7 @@
      "updatedAt": "2026-11-04T14:38:44.414Z"
     },
     {
-     "id": "s5-4",
+     "id": "s9-8",
      "uid": "st-mw28257i052fjy",
      "title": "",
      "text": "Orchestrator view: all-profiles projection + filter + Profile column; bulk actions on visible builds",
@@ -76970,7 +77058,7 @@
      "updatedAt": "2026-11-04T14:38:34.134Z"
     },
     {
-     "id": "s6-5",
+     "id": "s10-9",
      "uid": "st-mw28257i06hqqh",
      "title": "",
      "text": "Pending, Queue and Plan tables: filter, Profile column, Filtered note",
@@ -76992,7 +77080,7 @@
      "updatedAt": "2026-11-04T14:38:34.134Z"
     },
     {
-     "id": "s7-6",
+     "id": "s11-10",
      "uid": "st-mw28257i07912k",
      "title": "",
      "text": "Tracker, Git status board, Crew: filter adoption",
@@ -77014,7 +77102,7 @@
      "updatedAt": "2026-11-04T14:38:34.134Z"
     },
     {
-     "id": "s8-7",
+     "id": "s12-11",
      "uid": "st-mw28257i08md0a",
      "title": "",
      "text": "Bulk CLI/MCP (land-all, merge batch): resolveFilter + profiles argument; tests, shots, PR",
