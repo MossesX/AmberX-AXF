@@ -61,6 +61,18 @@
         "target": "browser-amberx-opens",
         "title": "Browser AmberX opens",
         "text": "Which browser AmberX uses when it wakes the console: Chrome, or the phone's default browser."
+      },
+      {
+        "target": "wake-the-app-through-amberx-when-its-closed",
+        "title": "Wake the app through AmberX when it's closed",
+        "text": "On: a command that finds no open copy of the app it is for (the console, AmberX, axHub web, Molly…) waits on the console server, and after a few seconds AmberX on your phone opens that app's own address so the command runs there. Off: the command waits until you open the app yourself. Only the console's owner changes it.",
+        "kind": "toggle"
+      },
+      {
+        "target": "how-long-a-command-waits-for-the-app",
+        "title": "How long a command waits for the app",
+        "text": "How long a command waits for an open copy of its app before it is dropped (30 seconds to 15 minutes). A dropped command never runs late. Only the console's owner changes it.",
+        "kind": "field"
       }
     ]
   }
