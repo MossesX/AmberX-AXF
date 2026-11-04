@@ -302,6 +302,26 @@ export function profileProgress(store, profile) {
   return { builds: list.length, complete, total, done, pct: total ? Math.round((done / total) * 100) : 0, active };
 }
 
+/**
+ * What the console's overview, build queue and plan reads show next to the plan (auto-land s5, Nov 3 2026: the console
+ * said 0 while builds ran, because it counted only plan features and plan-epic queue steps, and the Angel / Urgent
+ * profiles have orchestrator builds but no plan epics). Every profile's builds from the one store, the active
+ * profile's builds with work left, and every running build.
+ */
+export function storeSummary(store, profile) {
+  const live = (store?.builds ?? []).filter((b) => !b.deleted);
+  const byStatus = {}; for (const b of live) byStatus[b.status] = (byStatus[b.status] ?? 0) + 1;
+  const profiles = [...new Set(live.flatMap((b) => b.profiles ?? []))].sort();
+  const row = (b) => { const p = buildProgress(b); return { id: b.id, title: b.title, status: b.status, profiles: b.profiles ?? [], stepsDone: p.done, steps: p.total, branch: b.branch || '', pr: b.pr || '' }; };
+  const left = buildsOf({ builds: live }, profile).filter((b) => !['complete', 'archived'].includes(b.status));
+  return {
+    profile, total: live.length, byStatus,
+    byProfile: Object.fromEntries(profiles.map((id) => [id, profileProgress({ builds: live }, id)])),
+    running: live.filter((b) => b.status === 'running').map(row).slice(0, 60),
+    active: left.map(row).slice(0, 100), activeCount: left.length,
+  };
+}
+
 // ------------------------------------------------------------------ orchestrator@1 projection
 
 const orchStep = (s) => { const o = {}; for (const k of ORCH_STEP_KEYS) o[k] = s[k]; o.uid = s.uid; if (s.title) o.title = s.title; return o; };

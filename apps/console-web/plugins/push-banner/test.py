@@ -667,4 +667,53 @@ fr.state = boom
 check(mod.PUSHES.ui_hold("MossesX/AmberX-AXF", 18, "feat/a") == "unknown", "UI Review broken: held, never merged blind")
 plugin_services.withdraw("fake-ui-review")
 check(mod.PUSHES.ui_hold("MossesX/AmberX-AXF", 18, "feat/a") == "", "no UI Review plugin: nothing held")
+
+# ---------------------------------------------------------------- auto-land (Nov 3 2026)
+check(mod.ci_state([{"status": "completed", "conclusion": "skipped", "name": "CodeRabbit"}]) == "none", "a skipped CodeRabbit run alone is no CI result")
+check(mod.ci_state([{"status": "completed", "conclusion": "skipped"}, {"status": "completed", "conclusion": "success"}]) == "success", "skipped runs are ignored next to real ones")
+check(mod.ci_state([{"status": "completed", "conclusion": "neutral"}, {"status": "completed", "conclusion": "failure"}]) == "failure", "a failure still counts")
+
+
+class CmpGh:
+    """compare(head...main): the commits on main the head lacks, with their files."""
+    def __init__(self, n, msgs, files): self.n, self.msgs, self.files = n, msgs, files
+    def get(self, path):  # main...<head> = _behind's count, <head>...main = what main has that the head lacks
+        if path.split("/compare/")[1].startswith("main..."):
+            return {"behind_by": self.n}
+        return {"commits": [{"commit": {"message": m}} for m in self.msgs], "files": [{"filename": f} for f in self.files]}
+
+
+live = ["Builds live: x note (urgent) [skip ci]"] * 3
+check(mod.PUSHES._code_behind(CmpGh(3, live, ["_claude/builds/store.json", "_claude/THREADS.md"]), "MossesX/AmberX-AXF", "main", "abc123") == 0,
+      "behind only by status-only [skip ci] commits under _claude/ = up to date")
+check(mod.PUSHES._code_behind(CmpGh(3, live, ["_claude/builds/store.json", "framework/core/x.ts"]), "MossesX/AmberX-AXF", "main", "abc123") == 3,
+      "a code file among them = behind")
+check(mod.PUSHES._code_behind(CmpGh(2, ["Fix it", live[0]], ["_claude/THREADS.md"]), "MossesX/AmberX-AXF", "main", "abc123") == 2,
+      "a commit without [skip ci] = behind")
+check(mod.PUSHES._code_behind(CmpGh(0, [], []), "MossesX/AmberX-AXF", "main", "abc123") == 0, "not behind = 0")
+
+cfg0 = mod.PUSHES.config()
+check(cfg0["autoLand"] is True and cfg0["landWaitUi"] is True, "auto-land and Wait for UI Review are on by default")
+r = c.put("/p/config", json={"landWaitUi": False})
+check(r.status_code == 200 and r.json()["landWaitUi"] is False and r.json()["autoLand"] is True, "Wait for UI Review can be switched off")
+check(c.put("/p/config", json={"autoLand": "yes"}).status_code == 400, "autoLand is true or false")
+c.put("/p/config", json={"landWaitUi": True})
+
+ddir = Path(os.environ["AXF_PUSH_BANNER_DIR"])
+(ddir / "land.json").write_text(json.dumps({"$axf": "auto-land@1", "at": "2026-11-03T18:00:00Z", "order": [18], "managed": [18],
+                                            "items": [{"id": "feat-a", "pr": 18, "state": "blocked", "reason": {"kind": "ui", "text": "feat-a: its screenshots are waiting in UI Review."}}]}))
+r = c.get("/p/land")
+check(r.status_code == 200 and r.json()["items"][0]["id"] == "feat-a" and r.json()["order"] == [18], "GET /land: what the host runner wrote")
+check(c.get("/p/land/blocked").json()["items"][0]["state"] == "blocked", "GET /land/blocked: the blocked ones")
+r = c.post("/p/land/hold", json={"build": "feat-a", "why": "Brett wants to look"})
+check(r.status_code == 200 and r.json()["holds"]["feat-a"]["why"] == "Brett wants to look", "POST /land/hold runs land.mjs and records the hold")
+r = c.post("/p/land/release", json={"build": "feat-a"})
+check(r.status_code == 200 and "feat-a" not in r.json()["holds"], "POST /land/release lets it land again")
+r = c.post("/p/land/now", json={"build": "feat-a"})
+check(r.status_code == 200 and r.json()["now"][0] == "feat-a", "POST /land/now puts it first")
+check(c.post("/p/land/hold", json={"build": "../x"}).status_code == 400, "a bad build id is refused")
+mod.PUSHES._forget()
+st = mod.PUSHES.branches(force=True)
+p18 = next((x for x in st["repos"][0]["pulls"] if x["number"] == 18), None)
+check(p18 is not None and p18.get("land", {}).get("kind") == "ui" and "UI Review" in p18["land"]["why"], "the banner shows auto-land's reason on the PR")
 print(f"push-banner: {ok} checks passed")
