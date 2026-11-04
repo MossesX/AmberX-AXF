@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 | Requests ledger (Current `requests-ledger`, Opus, agent Snap Sully; Brett Nov 4 voice: "I need a way to see all the little things I've asked for … I need a hook to access every piece of information about that particular request."): request@1 in Build Breaker → Requests (default tab): every ask (builds, addenda, plans, bugs, follow-ups, crew) live from the store, briefs, plans, memory, THREADS and old asks; verbatim words, status, place in line, agent, PR, cost, history, hooks; banner badge; Home card suggestion; REST + MCP (requests_list, request_get, request_update, request_link) + CLI; launcher capture | review (5/5 steps; PR open, auto-merge on green CI; UI Review r-20261104-fd8c44c2 non-blocking) | `claude/requests-ledger` | [#310](https://github.com/MossesX/AmberX-AXF/pull/310) | Report `_claude/builds/reports/requests-ledger.md`. Console redeploys on merge | 2026-11-04 |
+| Terminal stops stealing focus (Current `terminal-no-focus`, Opus, agent Janitor Joey; Brett Nov 4 voice: "I don't want the terminal to come to the front on every session."): new Terminal setting *When a new session starts* (Add tab quietly = default, background tab + count on the Terminal toolbar icon, never pops or switches; Do nothing; Bring Terminal to front), REST/MCP/CLI `new-session` | review (PR open, merges on green CI) | `claude/terminal-no-focus` | [#305](https://github.com/MossesX/AmberX-AXF/pull/305) | Report `_claude/builds/reports/terminal-no-focus.md`. Brett: none needed | 2026-11-04 |
 | Build manager hotfix (Current `hotfix-build-manager`, urgent, Opus; agent Ping Paulie; Brett Nov 4 voice: "It says 21 things are going." "When I click them, they don't open up, and the steps in the build menu don't work."): Builds page rows open on tap, step ticks no longer flipped back by stale polls, orchestrator steps open on tap, changes banner counts only live sessions, reconciler pauses builds no live process runs (store cleaned: 7 → complete, 9 → paused) | PR open, auto-merge when CI is green; then redeploy the console | `claude/hotfix-build-manager` | (see live log) | Report `_claude/builds/reports/hotfix-build-manager.md` | 2026-11-04 |
 | UI Review shows its pictures again (Urgent `ui-review-shots`, Opus, agent Snap Sully; Brett Nov 3 voice: "items but NO pictures"): files were all on disk and served 200; two console pollers (agent-slots, token-control pass) re-subscribed on every render and fired ~45 status calls/s, starving the picture fetches; on phones a today-made selector (`:where(:not([data-fx-narrow]))`, always true) squeezed the preview to zero width. Fixed both + layout-adopt codemod, shot timeout/retry, "Shot missing" + Re-capture, health@1 `ui-review-shots`, `review.mjs` worktree warning | review (all 5 steps done; PR open, UI Review waiting) | `claude/ui-review-shots` | [#277](https://github.com/MossesX/AmberX-AXF/pull/277) | Report `_claude/builds/reports/ui-review-shots.md`. Console redeploy (on merge) stops the storm. Brett: approve UI Review r-20261103-17ef4a40 | 2026-11-03 |
 | Land everything finished (Current `lenny-land-all`, freeze plan step two, Opus; agent Landin' Lenny; Brett Nov 3 voice: "Number two." "Give me Lenny."): 19 PRs landed (#270 first, then #268 #265 #277 #271 #273 #280 #274 #279 #285 #272 #276, and batch #303 = #275 #282 #283 #286 #287 #290 #292), #267 closed (superseded by #284), #251/#254 set to draft for Brett, older #207-#236 listed for him. Held with reasons: #266 #288 (racy console-wake test), #269 (AmberX build: @console/api), #289 (placement system vs #278), #281 (menu engines vs #268, Fable work), #291 (WIP, paused by Brett). Console was down ~12 min: stacked update installers; flock added | done | `claude/lenny-land-all` | (report PR) | Report `_claude/builds/reports/lenny-land-all.md`. Next: the held PRs' authors fix them; Brett decides #289 placement and reviews #251/#254 | 2026-11-04 |
@@ -662,32 +663,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 17:17 UTC · landed `claude/model-upgrade-approval` (PR#253) on main at 03d1d75f · land-everything
-- 2026-11-03 17:19 UTC · landed `claude/one-look-default-2` (PR#244) on main at 4ff2cc50 · land-everything
-- 2026-11-03 17:26 UTC · landed `claude/theme-veto-pass` (PR#262) on main at 16620d72 · land-everything
-- 2026-11-03 17:26 UTC · landed `claude/pass-all` (PR#264) on main at 16620d72 · land-everything
-- 2026-11-03 17:35 UTC · landed `claude/plugin-commands-auto` (PR#263) on main at cdd568c2 · land-everything
-- 2026-11-03 17:42 UTC · landed `claude/axhub-veto-pass-web` (PR#261) on main at bc344492 · land-everything
-- 2026-11-03 17:42 UTC · landed axHub `claude/kill-patches-pilot` (#32) at d3cf462 and `claude/axhub-veto-pass` (#33/#34) at 6334d34, deployed · land-everything
-- 2026-11-03 13:53 UTC · `orch-live-sync` s1 done (urgent) · orchestrator
-- 2026-11-03 13:54 UTC · `xlayout` s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done (big-dog) · builds-live
-- 2026-11-03 14:45 UTC · `headless-tabs` s1–s7 done (urgent) · PR #259 · UI Review r-20261103-3sp5x01
-- 2026-11-03 13:55 UTC · `orch-live-sync` s2 done (urgent) · orchestrator
-- 2026-11-03 13:55 UTC · `orch-live-sync` s3 done (urgent) · orchestrator
-- 2026-11-03 13:55 UTC · `orch-live-sync` s4 done (urgent) · orchestrator
-- 2026-11-03 13:56 UTC · `urgent-builds` → archived, merged, note (urgent) · orch-live-sync
-- 2026-11-03 13:56 UTC · `orch-step-click` note (refactor) · orch-live-sync
-- 2026-11-03 13:56 UTC · `dock-engine` s1 done, s2 done, s3 done, s4 done, → built, branch claude/molly-fable, PR #245, note (urgent) · orch-live-sync
-- 2026-11-03 13:56 UTC · `theme-editor` s1 done, s2 done, s3 done, s4 done, s5 done, → built, branch claude/theme-editor, PR #243, note (urgent) · orch-live-sync
-- 2026-11-03 13:56 UTC · `token-control` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, → built, branch claude/token-control-opus, PR #250, note (urgent) · orch-live-sync
-- 2026-11-03 13:57 UTC · `enterprise-branding` merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `apply-all-levels` branch claude/apply-all-levels, PR #115, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-empty-shell` branch claude/amberx-empty-shell, PR #118, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `fresh-look` branch claude/fresh-look-done, PR #120, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `design-packages-10` branch claude/design-packages-10, PR #124, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `build-orchestrator` branch claude/build-orchestrator, PR #122, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `build-profiles` branch claude/build-profiles, PR #127, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-appearance-lock` branch claude/amberx-appearance-lock, PR #126, merged, note (main-framework, refactor) · reconciler
 - 2026-11-03 13:57 UTC · `amberx-handsfree` merged, note (refactor) · reconciler
 - 2026-11-03 13:57 UTC · `amberx-notes` merged, note (refactor) · reconciler
 - 2026-11-03 13:57 UTC · `fix-interface-scope-settings` merged, note (refactor) · reconciler
@@ -1062,6 +1037,32 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 13:31 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · bugs-board
 - 2026-11-04 13:33 UTC · `land-round-2` s2 done (current) · foreign-write
 - 2026-11-04 13:33 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · foreign-write
+- 2026-11-04 13:33 UTC · `follow-amber-switch` added (5 steps) (current) · orchestrator
+- 2026-11-04 13:25 UTC · `requests-ledger` s5 done, → complete (current) · foreign-write
+- 2026-11-04 13:25 UTC · `bugs-board` s1 done, note (current) · foreign-write
+- 2026-11-04 13:28 UTC · `hotfix-build-manager` note (current) · foreign-write
+- 2026-11-04 13:28 UTC · `bugs-board` s1 done (current) · foreign-write
+- 2026-11-04 13:37 UTC · `land-round-2` s2 done, s3 done (current) · foreign-write
+- 2026-11-04 13:37 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · foreign-write
+- 2026-11-04 13:37 UTC · `follow-amber-switch` added (5 steps) (current) · foreign-write
+- 2026-11-04 13:26 UTC · `bugs-board` s1 done (current) · foreign-write
+- 2026-11-04 13:27 UTC · `hotfix-build-manager` s1 undone, → running (current) · builds-page
+- 2026-11-04 13:27 UTC · `hotfix-build-manager` s1 done, → complete (current) · builds-page
+- 2026-11-04 13:48 UTC · `bugs-board` PR #311 (current) · builds-live
+- 2026-11-04 13:48 UTC · `bugs-board` s7 done, → built (current) · orchestrator
+- 2026-11-04 13:48 UTC · `bugs-board` note (current) · orchestrator
+- 2026-11-04 13:49 UTC · `bugs-board` s7 done, → complete, note (current) · foreign-write
+- 2026-11-04 13:50 UTC · `bugs-board` s7 done, → complete, note (current) · foreign-write
+- 2026-11-04 13:50 UTC · `follow-amber-switch` s1 done, → running (current) · orchestrator
+- 2026-11-04 13:50 UTC · `follow-amber-switch` s2 done (current) · orchestrator
+- 2026-11-04 13:50 UTC · `follow-amber-switch` s3 done (current) · orchestrator
+- 2026-11-04 13:50 UTC · `follow-amber-switch` s4 done (current) · orchestrator
+- 2026-11-04 13:52 UTC · `land-round-2` note (current) · orchestrator
+- 2026-11-04 13:52 UTC · `land-round-2` → blocked (current) · orchestrator
+- 2026-11-04 13:53 UTC · `land-round-2` note (current) · foreign-write
+- 2026-11-04 13:53 UTC · `follow-amber-switch` PR #312 (current) · builds-live
+- 2026-11-04 13:53 UTC · `follow-amber-switch` s5 done, → built (current) · orchestrator
+- 2026-11-04 13:53 UTC · `follow-amber-switch` s5 done, → complete (current) · foreign-write
 
 ## Token passes (log)
 

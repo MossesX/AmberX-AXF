@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T13:33:10.746Z",
+ "updatedAt": "2026-11-04T13:53:40.487Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6231,20 +6231,24 @@
     {
      "text": "#288 merged (b14674b5) with #266 inside; #266 closed as superseded. The lost GitHub push event (PR outage) needed a fresh push. The shared GitHub token ran out of its 5000/h budget twice (other pollers).",
      "at": "2026-11-04T12:06:01.519Z"
+    },
+    {
+     "text": "Stopped at the $15 per-build cap (~$42 in tokens). Landed #288 (+#266), #294, #295; closed #266 #297. #296 pushed (CI unread: GitHub budget out); #298 #281 #291 #293 #289 #269 resolved on local branches land/<pr> (#281 now conflicts with #295 in runtime.ts); #300 needs a rework on #269. Blocker: the shared GitHub token empties its 5000/h budget in ~25 min. Report _claude/builds/reports/land-round-2.md",
+     "at": "2026-11-04T13:52:34.961Z"
     }
    ],
    "id": "land-round-2",
    "title": "Land round 2: catch up and land the rest, Molly first",
    "category": "Landing",
    "detail": "Agent: Landin' Lenny. One PR at a time: update from main, resolve conflicts keeping both sides, CI green, merge. Order: #288 (+#266) → #294 #295 → #296 → #298 → #281 #291 #293 → #289 #269 → #300. Don't merge WIP #299 #301 #302; close #297 if orphan dup. Redeploy console + Molly after #288, all apps at the end.",
-   "status": "running",
+   "status": "blocked",
    "hidden": false,
    "source": "console",
    "pendingId": "land-round-2",
    "branch": "claude/land-round-2",
    "pr": "",
    "createdAt": "2026-11-04T10:43:58.630Z",
-   "updatedAt": "2026-11-04T13:31:14.733Z",
+   "updatedAt": "2026-11-04T13:52:35.878Z",
    "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
@@ -7008,21 +7012,25 @@
     {
      "text": "requests-ledger (PR pending) reads bug@1 records into Brett's requests list from _claude/builds/bugs.json, _claude/builds/bugs/, <hub data>/bugs-board/ or .axf-console/plugins/bugs-board/ (a {bugs:[...]} doc, one bug per JSON file, or bugs.jsonl). Store bugs in one of those and they show up with no extra work; fields read: id, title, said/quote, status, createdAt, build, pr, app.",
      "at": "2026-11-04T13:18:39.525Z"
+    },
+    {
+     "text": "Agent Reel Rhonda. PR #311: plugin bugs-board (bugs@1 live to main, board, handoffs, auto-optimize, REST/MCP/CLI), 8 bugs seeded + 1 found. UI Review r-20261104-c4d7… (non-blocking). Gap: Ask AI button.",
+     "at": "2026-11-04T13:48:41.840Z"
     }
    ],
    "id": "bugs-board",
    "title": "Bugs board: confirmed bugs list plugin",
    "category": "",
    "detail": "Console plugin: bug@1 records in the builds store, drag-and-drop board grouped by build with live state (running step, slot queue position, PR), move bugs between builds (brief addendum + step), auto-optimize switch, crew group-chat handoffs (accept/bounce, auto-reroute). REST + MCP + CLI.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/bugs-board",
-   "pr": "",
+   "pr": "#311",
    "createdAt": "2026-11-04T13:07:57.249Z",
-   "updatedAt": "2026-11-04T13:31:20.643Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T13:48:41.840Z",
+   "builtAt": "2026-11-04T13:48:40.158Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -7159,13 +7167,164 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T13:48:40.158Z",
      "note": "",
      "uid": "st-mw24tm2j0ekf9s"
     }
    ],
    "rev": 0
+  },
+  {
+   "id": "follow-amber-switch",
+   "title": "Follow Amber in the Claude badge: tap toggles, two-tone + animated, 15+ badge looks, brand icons",
+   "category": "",
+   "detail": "Follow Amber goes into the existing Claude badge (no new widget): tap toggles the shared Follow Amber switch, old tap moves to the badge's context menu. On = two-tone with an animation (10+ styles, speed, intensity, reduced motion = static). 15+ badge looks as badge assets plus brand-icon looks and an icon picker over every brand-package icon. REST + MCP + CLI (badge_styles_list, badge_style_set, badge_animation_set). console_show guidance covers casual mentions; Claude setting followAmber.casual.",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/follow-amber-switch",
+   "pr": "#312",
+   "createdAt": "2026-11-04T13:33:57.300Z",
+   "updatedAt": "2026-11-04T13:53:13.136Z",
+   "builtAt": "2026-11-04T13:53:13.136Z",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Make a widget that can go in the banner that is a switch which makes it automatically go to you when you mention something. You don't have to be asked to go to it. If you just mention something casually, it will go to that screen.",
+    "at": "2026-11-04T00:00:00Z",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": [
+     {
+      "said": "Is there already an Amber status widget? ... You know how it shows green now? If Follow Amber's on, do a faded... make it two-tone.",
+      "at": "2026-11-04T00:00:00Z",
+      "source": "voice",
+      "by": "",
+      "verbatim": true
+     },
+     {
+      "said": "The Claude badge, and some type of animation on the colors.",
+      "at": "2026-11-04T00:00:00Z",
+      "source": "voice",
+      "by": "",
+      "verbatim": true
+     },
+     {
+      "said": "Give me a bunch of options for that animation. Also give me like 15 different badge options to choose from.",
+      "at": "2026-11-04T00:00:00Z",
+      "source": "voice",
+      "by": "",
+      "verbatim": true
+     },
+     {
+      "said": "Add some of the icons from the branding packages options.",
+      "at": "2026-11-04T00:00:00Z",
+      "source": "voice",
+      "by": "",
+      "verbatim": true
+     }
+    ]
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Claude badge: tap toggles Follow Amber (shared followAmber.enabled), old actions in its context menu, two-tone when on, pulse + last opened",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T13:50:19.692Z",
+     "note": "",
+     "uid": "st-mw25r1tg060td6"
+    },
+    {
+     "id": "s2",
+     "text": "Badge looks (15+ badge assets incl. brand-icon looks) and 12 animations (CSS only, reduced motion = static) in the framework badge renderer",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T13:50:20.766Z",
+     "note": "",
+     "uid": "st-mw25r1tg074rxl"
+    },
+    {
+     "id": "s3",
+     "text": "Claude badge settings: look picker, animation picker per state with live previews, speed/intensity/colours, brand icon picker",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T13:50:22.091Z",
+     "note": "",
+     "uid": "st-mw25r1tg08ldgr"
+    },
+    {
+     "id": "s4",
+     "text": "REST + MCP + CLI: badge_styles_list, badge_style_set, badge_animation_set; console_show casual-mention guidance; followAmber.casual setting",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T13:50:23.162Z",
+     "note": "",
+     "uid": "st-mw25r1tg0981tq"
+    },
+    {
+     "id": "s5",
+     "text": "Checks, type-check, phone screenshot to UI Review, report, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T13:53:13.136Z",
+     "note": "",
+     "uid": "st-mw25r1tg0a27qi"
+    }
+   ]
   }
  ]
 }

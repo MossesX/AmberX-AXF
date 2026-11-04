@@ -40,12 +40,17 @@ DEFAULTS: dict[str, Any] = {"$axf": "terminal-settings@1", "idleMinutes": 60, "m
                             "persistTabs": True, "splitDefault": "side", "chainSpeed": "normal", "showChain": True, "sessionsNav": True,
                             # text size per pane (terminal-drag-chain-tree, Nov 3 2026): phone text 0 = Auto (the theme's
                             # small text token), context chain as a % of the theme's text
-                            "fontSizePhone": 0, "chainTextSize": 100}
+                            "fontSizePhone": 0, "chainTextSize": 100,
+                            # terminal-no-focus (Nov 4 2026): what a new headless session does to the Terminal. nothing = no
+                            # tab by itself (the sessions nav still lists it), quiet = a tab in the background + a count on
+                            # the Terminal toolbar icon, front = open it and bring the window to the front (the old way)
+                            "newSession": "quiet"}
 
 CHOICES: dict[str, tuple[str, ...]] = {"scheme": ("app", "campbell", "one-half-dark", "one-half-light", "solarized-dark", "tango-dark", "vintage"),
                                       "cursorStyle": ("bar", "block", "underline"), "bell": ("none", "visual", "sound"),
                                       "startup": ("claude", "console", "picker", "none"), "newTab": ("picker", "same"), "tabWidth": ("equal", "compact", "title"),
-                                      "splitDefault": ("side", "stacked", "none"), "chainSpeed": ("slow", "normal", "fast", "instant")}
+                                      "splitDefault": ("side", "stacked", "none"), "chainSpeed": ("slow", "normal", "fast", "instant"),
+                                      "newSession": ("nothing", "quiet", "front")}
 PROFILE_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
 CONN_ID = re.compile(r"^(console|vps|axhub|container:[A-Za-z0-9_.-]{1,128})$")
 

@@ -733,6 +733,47 @@
    "from": "detail",
    "addenda": []
   },
+  "follow-amber-switch": {
+   "said": "Make a widget that can go in the banner that is a switch which makes it automatically go to you when you mention something. You don't have to be asked to go to it. If you just mention something casually, it will go to that screen.",
+   "at": "2026-11-04T00:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": [
+    {
+     "said": "Is there already an Amber status widget? ... You know how it shows green now? If Follow Amber's on, do a faded... make it two-tone.",
+     "at": "2026-11-04T00:00:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    },
+    {
+     "said": "The Claude badge, and some type of animation on the colors.",
+     "at": "2026-11-04T00:00:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    },
+    {
+     "said": "Give me a bunch of options for that animation. Also give me like 15 different badge options to choose from.",
+     "at": "2026-11-04T00:00:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    },
+    {
+     "said": "Add some of the icons from the branding packages options.",
+     "at": "2026-11-04T00:00:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    }
+   ]
+  },
   "fresh-look": {
    "said": "rebuild the default style theme (the UI looked bad) and save the new look as a full appearance package named fresh. New fresh style theme, fresh-light/fresh-dark colour themes, fresh-day-night switch, made the default in the framework and every web app; fresh package per app.",
    "at": "2026-10-26",
