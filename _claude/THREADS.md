@@ -683,8 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 10:55 UTC · `terminal-no-focus` s3 done, → complete (current) · orchestrator
-- 2026-11-04 10:55 UTC · `terminal-no-focus` → built, PR #305 (current) · builds-live
 - 2026-11-04 11:01 UTC · `terminal-no-focus` added (3 steps) (current) · foreign-write
 - 2026-11-04 11:08 UTC · `terminal-no-focus` note (current) · orchestrator
 - 2026-11-04 11:08 UTC · `terminal-no-focus` note (current) · foreign-write
@@ -1083,6 +1081,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:24 UTC · `urgent-land-gizmo-chat` merged (current) · builds-live
 - 2026-11-04 15:25 UTC · `gizmo-companion` note (current) · foreign-write
 - 2026-11-04 15:25 UTC · `urgent-land-gizmo-chat` note (current) · foreign-write
+- 2026-11-04 15:24 UTC · `gizmo-companion` merged (current) · builds-live
+- 2026-11-04 15:24 UTC · `gizmo-companion` → running, note (current) · orchestrator
 
 ## Token passes (log)
 
