@@ -18,7 +18,7 @@ s12), and rebuild only what it flags. Opus-built steps are marked (Opus, Fable r
 - s3 and s4 need Fable; this account has no Fable credits right now. Nothing past s2 was changed.
 
 ## Steps after the foundation (Opus)
-- [ ] s5 SQLite DB + migrations (features, edits tables)
+- [x] s5 SQLite DB + migrations (Opus, Fable redo): plugin `apps/console-web/plugins/shipped-features`, `ledger/db.mjs` (node:sqlite, WAL) + `ledger/migrations/001_init.sql`, `002_edits.sql`; features merge on write, feature_history keeps every earlier version, edits table drives editCount / beingEdited. Check: `node apps/console-web/plugins/shipped-features/test.mjs`
 - [ ] s6 importers (AmberX-AXF + axHub, back to first commit) + AI feature split into data/features-seed.json
 - [ ] s7 deploy-log writers in every deploy script
 - [ ] s8 3-level grid with View by
