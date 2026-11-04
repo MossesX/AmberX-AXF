@@ -7,7 +7,8 @@ import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
-import { AGENT_CARD_SAMPLE, agentCardErrors, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
+import { AGENT_CARD_SAMPLE, agentCardErrors, avatarColors, avatarModel, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
+import { AVATAR_FACES, AVATAR_GEAR } from '../core/engines/swarm-rules.mjs';
 import { buildHelpIndex, helpCoverage, helpErrors, helpTarget, introToShow, introToWalkthrough, markSeen, normalizeHelpPack, ratchetErrors, resolveHelp, slugLabel } from '../core/engines/help-rules.mjs';
 import { DEFAULT_LAYOUT, LAYOUT_FIELDS, compileLayout, layoutBreakpointAttr, layoutErrors, layoutTokenVars, layoutTokens, layoutVars, layoutViewportAttrs, layoutViewports, normalizeLayout } from '../core/engines/layout';
 import { CONTROL_TARGET_IDS, canonicalControl, controlConfirmToken, controlConfirmValid, controlErrors, controlGate, controlHash, controlPaths, controlRegistry, controlResult, controlFailure, normalizeControl } from '../core/engines/control-rules.mjs';
@@ -93,6 +94,14 @@ write('agent-card.json', {
   },
   employeeIds: Object.fromEntries(['kat', 'rio', 'boss', 'Doc-Dee'].map((id) => [id, employeeId(id)])),
   bars: { 'AX-0042': barcodeBars('AX-0042'), '': barcodeBars('') },
+  // the avatar from the card rules (agent avatar, Nov 2026): the sample, junk, one per face, one per gear, the hue bands
+  avatar: {
+    sample: avatarModel(AGENT_CARD_SAMPLE.avatar),
+    junk: avatarModel('nope'),
+    faces: Object.fromEntries(AVATAR_FACES.map((k) => [k, avatarModel({ face: k }).parts.find((p) => p.id === 'face')])),
+    gear: Object.fromEntries(AVATAR_GEAR.map((k) => [k, avatarModel({ gear: k }).parts.filter((p) => p.id.startsWith('gear'))])),
+    hues: Object.fromEntries([0, 45, 90, 180, 270, 359].map((h) => [String(h), avatarColors({ hue: h, hair: 0 })])),
+  },
   errors: {
     ok: agentCardErrors('agent-card', { design: 'license', front: ['name'], labels: { name: 'Who' } }),
     'bad-enums': agentCardErrors('agent-card', { design: 'poster', finish: 'chrome', code: 'nfc' }),

@@ -576,6 +576,352 @@
       1
     ]
   },
+  "avatar": {
+    "sample": {
+      "box": 64,
+      "face": "round",
+      "hair": 2,
+      "gear": "headphones",
+      "hue": 0,
+      "tokens": {
+        "hair": "--fx-brand-1",
+        "shirt": "--fx-success"
+      },
+      "parts": [
+        {
+          "id": "bg",
+          "tag": "circle",
+          "attrs": {
+            "cx": 32,
+            "cy": 32,
+            "r": 32
+          },
+          "paint": "bg"
+        },
+        {
+          "id": "shirt",
+          "tag": "path",
+          "attrs": {
+            "d": "M8 64 Q10 46 32 46 Q54 46 56 64 Z"
+          },
+          "paint": "shirt"
+        },
+        {
+          "id": "face",
+          "tag": "circle",
+          "attrs": {
+            "cx": 32,
+            "cy": 30,
+            "r": 16
+          },
+          "paint": "skin"
+        },
+        {
+          "id": "hair",
+          "tag": "path",
+          "attrs": {
+            "d": "M14 24 Q16 6 32 6 Q48 6 50 24 L46 16 L40 22 L34 14 L28 22 L22 14 L18 22 Z"
+          },
+          "paint": "hair"
+        },
+        {
+          "id": "eye-l",
+          "tag": "circle",
+          "attrs": {
+            "cx": 26,
+            "cy": 30,
+            "r": 2
+          },
+          "paint": "ink"
+        },
+        {
+          "id": "eye-r",
+          "tag": "circle",
+          "attrs": {
+            "cx": 38,
+            "cy": 30,
+            "r": 2
+          },
+          "paint": "ink"
+        },
+        {
+          "id": "mouth",
+          "tag": "path",
+          "attrs": {
+            "d": "M26 38 Q32 42 38 38"
+          },
+          "paint": "line"
+        },
+        {
+          "id": "gear-band",
+          "tag": "path",
+          "attrs": {
+            "d": "M14 30 Q14 8 32 8 Q50 8 50 30"
+          },
+          "paint": "line-thick"
+        },
+        {
+          "id": "gear-l",
+          "tag": "rect",
+          "attrs": {
+            "x": 10,
+            "y": 26,
+            "width": 7,
+            "height": 11,
+            "rx": 3
+          },
+          "paint": "ink"
+        },
+        {
+          "id": "gear-r",
+          "tag": "rect",
+          "attrs": {
+            "x": 47,
+            "y": 26,
+            "width": 7,
+            "height": 11,
+            "rx": 3
+          },
+          "paint": "ink"
+        }
+      ]
+    },
+    "junk": {
+      "box": 64,
+      "face": "round",
+      "hair": 0,
+      "gear": "none",
+      "hue": 0,
+      "tokens": {
+        "hair": "--fx-brand-1",
+        "shirt": "--fx-accent"
+      },
+      "parts": [
+        {
+          "id": "bg",
+          "tag": "circle",
+          "attrs": {
+            "cx": 32,
+            "cy": 32,
+            "r": 32
+          },
+          "paint": "bg"
+        },
+        {
+          "id": "shirt",
+          "tag": "path",
+          "attrs": {
+            "d": "M8 64 Q10 46 32 46 Q54 46 56 64 Z"
+          },
+          "paint": "shirt"
+        },
+        {
+          "id": "face",
+          "tag": "circle",
+          "attrs": {
+            "cx": 32,
+            "cy": 30,
+            "r": 16
+          },
+          "paint": "skin"
+        },
+        {
+          "id": "hair",
+          "tag": "path",
+          "attrs": {
+            "d": "M14 22 Q32 4 50 22 L50 18 Q32 0 14 18 Z"
+          },
+          "paint": "hair"
+        },
+        {
+          "id": "eye-l",
+          "tag": "circle",
+          "attrs": {
+            "cx": 26,
+            "cy": 30,
+            "r": 2
+          },
+          "paint": "ink"
+        },
+        {
+          "id": "eye-r",
+          "tag": "circle",
+          "attrs": {
+            "cx": 38,
+            "cy": 30,
+            "r": 2
+          },
+          "paint": "ink"
+        },
+        {
+          "id": "mouth",
+          "tag": "path",
+          "attrs": {
+            "d": "M26 38 Q32 42 38 38"
+          },
+          "paint": "line"
+        }
+      ]
+    },
+    "faces": {
+      "round": {
+        "id": "face",
+        "tag": "circle",
+        "attrs": {
+          "cx": 32,
+          "cy": 30,
+          "r": 16
+        },
+        "paint": "skin"
+      },
+      "square": {
+        "id": "face",
+        "tag": "rect",
+        "attrs": {
+          "x": 16,
+          "y": 14,
+          "width": 32,
+          "height": 32,
+          "rx": 7
+        },
+        "paint": "skin"
+      },
+      "tall": {
+        "id": "face",
+        "tag": "ellipse",
+        "attrs": {
+          "cx": 32,
+          "cy": 30,
+          "rx": 14,
+          "ry": 18
+        },
+        "paint": "skin"
+      }
+    },
+    "gear": {
+      "none": [],
+      "glasses": [
+        {
+          "id": "gear-l",
+          "tag": "circle",
+          "attrs": {
+            "cx": 26,
+            "cy": 30,
+            "r": 5
+          },
+          "paint": "line"
+        },
+        {
+          "id": "gear-r",
+          "tag": "circle",
+          "attrs": {
+            "cx": 38,
+            "cy": 30,
+            "r": 5
+          },
+          "paint": "line"
+        },
+        {
+          "id": "gear-bridge",
+          "tag": "path",
+          "attrs": {
+            "d": "M31 30 L33 30"
+          },
+          "paint": "line"
+        }
+      ],
+      "shades": [
+        {
+          "id": "gear",
+          "tag": "path",
+          "attrs": {
+            "d": "M19 27 H45 V31 Q45 35 40 35 H36 Q33 35 32 31 Q31 35 28 35 H24 Q19 35 19 31 Z"
+          },
+          "paint": "ink"
+        }
+      ],
+      "cap": [
+        {
+          "id": "gear",
+          "tag": "path",
+          "attrs": {
+            "d": "M14 20 Q32 2 50 20 L58 22 L14 22 Z"
+          },
+          "paint": "shirt"
+        }
+      ],
+      "beanie": [
+        {
+          "id": "gear",
+          "tag": "path",
+          "attrs": {
+            "d": "M14 22 Q14 4 32 4 Q50 4 50 22 Z"
+          },
+          "paint": "shirt"
+        }
+      ],
+      "headphones": [
+        {
+          "id": "gear-band",
+          "tag": "path",
+          "attrs": {
+            "d": "M14 30 Q14 8 32 8 Q50 8 50 30"
+          },
+          "paint": "line-thick"
+        },
+        {
+          "id": "gear-l",
+          "tag": "rect",
+          "attrs": {
+            "x": 10,
+            "y": 26,
+            "width": 7,
+            "height": 11,
+            "rx": 3
+          },
+          "paint": "ink"
+        },
+        {
+          "id": "gear-r",
+          "tag": "rect",
+          "attrs": {
+            "x": 47,
+            "y": 26,
+            "width": 7,
+            "height": 11,
+            "rx": 3
+          },
+          "paint": "ink"
+        }
+      ]
+    },
+    "hues": {
+      "0": {
+        "hair": "--fx-brand-1",
+        "shirt": "--fx-accent"
+      },
+      "45": {
+        "hair": "--fx-brand-2",
+        "shirt": "--fx-info"
+      },
+      "90": {
+        "hair": "--fx-brand-3",
+        "shirt": "--fx-success"
+      },
+      "180": {
+        "hair": "--fx-info",
+        "shirt": "--fx-danger"
+      },
+      "270": {
+        "hair": "--fx-warning",
+        "shirt": "--fx-brand-2"
+      },
+      "359": {
+        "hair": "--fx-danger",
+        "shirt": "--fx-brand-3"
+      }
+    }
+  },
   "errors": {
     "ok": [],
     "bad-enums": [
