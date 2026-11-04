@@ -569,11 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 20:00 UTC · `home-cards-live` s4 done (urgent) · orchestrator
-- 2026-11-03 20:00 UTC · `home-cards-live` s5 done (urgent) · orchestrator
-- 2026-11-03 20:01 UTC · `window-resize-fix` s2 done (current) · foreign-write
-- 2026-11-03 20:02 UTC · `profile-manager` s1 done, → running (current) · orchestrator
-- 2026-11-03 20:04 UTC · `profile-manager` s2 done (current) · orchestrator
 - 2026-11-03 20:06 UTC · `window-resize-fix` s2 done (current) · foreign-write
 - 2026-11-03 20:06 UTC · `terminal-sessions-nav` added (24 steps) (current) · foreign-write
 - 2026-11-03 20:06 UTC · `profile-manager` added (6 steps) (current) · foreign-write
@@ -969,3 +964,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 00:11 UTC · `plugin-lazy-load` → running (current) · orchestrator
 - 2026-11-04 00:31 UTC · `browser-automation` added (16 steps) (current) · orchestrator
 - 2026-11-04 00:32 UTC · `browser-automation` → running (current) · orchestrator
+- 2026-11-04 00:35 UTC · `terminal-drag-chain-tree` s6 done, → complete, note (current) · foreign-write
+- 2026-11-04 00:35 UTC · `molly-nav-submenus` s1 done, s2 done, s3 done, s4 done, s5 done, → complete, note (current) · foreign-write
+- 2026-11-04 00:35 UTC · `molly-banners` s5 done, → complete, note (current) · foreign-write
+- 2026-11-04 00:35 UTC · `gizmo-companion` s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s14 done, s15 done, s18 done, note (current) · foreign-write
+- 2026-11-04 00:35 UTC · `browser-automation` added (16 steps) (current) · foreign-write
