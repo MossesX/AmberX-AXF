@@ -683,7 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 12:46 UTC · `urgent-main-ci-green` → complete, note (current) · foreign-write
 - 2026-11-04 12:46 UTC · `terminal-tabs-left` note (current) · foreign-write
 - 2026-11-04 12:46 UTC · `gizmo-companion` note (current) · foreign-write
 - 2026-11-04 12:46 UTC · `browser-automation` note (current) · foreign-write
@@ -1083,6 +1082,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:58 UTC · `jump-menu-asset` branch claude/jump-menu-asset, PR #326 (current) · builds-live
 - 2026-11-04 16:03 UTC · `settings-placement-everywhere` added (6 steps) (current) · orchestrator
 - 2026-11-04 16:04 UTC · `settings-placement-everywhere` added (6 steps) (current) · foreign-write
+- 2026-11-04 16:03 UTC · `settings-placement-everywhere` added (6 steps) (current) · foreign-write
 
 ## Token passes (log)
 

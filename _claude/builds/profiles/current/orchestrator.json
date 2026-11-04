@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T16:04:18.823Z",
+ "updatedAt": "2026-11-04T16:08:20.757Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10855,7 +10855,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2b3k7t07o0yo"
+     "uid": "st-mw2b3pun013cd1"
     },
     {
      "id": "s2",
@@ -10873,7 +10873,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2b3k7t08omes"
+     "uid": "st-mw2b3pun02fdfk"
     },
     {
      "id": "s3",
@@ -10891,7 +10891,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2b3k7t09ctqi"
+     "uid": "st-mw2b3pun03wk3y"
     },
     {
      "id": "s4",
@@ -10909,7 +10909,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2b3k7t0axa2n"
+     "uid": "st-mw2b3pun04395r"
     },
     {
      "id": "s5",
@@ -10927,10 +10927,118 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2b3k7t0b1iyp"
+     "uid": "st-mw2b3pun05u5h1"
     },
     {
      "id": "s6",
+     "text": "s6 Rule in RULES.md + PORTING.md, checks green, UI Review shots (non-blocking), report _claude/builds/reports/settings-placement-everywhere.md, THREADS, PR, auto-land, redeploy",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2b3pun06dw75"
+    },
+    {
+     "id": "s7-6",
+     "text": "s1 Land PR #289: merge main into plugin-settings-placement, resolve (framework index/css, Terminal host, baked copies re-baked), CI green, auto-merge",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2b3k7t07o0yo"
+    },
+    {
+     "id": "s8-7",
+     "text": "s2 Fable review of settings-placement@1 + v2 contract: placements dialog / side panel L|R / bottom sheet / inside / full page / floating window; scopes screen -> owner -> interface opensIn -> app default; opensIn on the settings asset (asset-types, validators); fixture + check regenerated",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2b3k7t08omes"
+    },
+    {
+     "id": "s9-8",
+     "text": "s3 Settings library + React: 'Pops up in' row at the top of every settings interface, whole-interface surfaces (app.settings routed), exit animations, a settings host for every screen (AppShell), Settings > Settings placement listing every screen + app default, context menu 'Settings opens in...' on screens, nav items and settings buttons",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2b3k7t09ctqi"
+    },
+    {
+     "id": "s10-9",
+     "text": "s4 Console control target console.placement (list/get/set/reset; REST + MCP + CLI) delivered to the live console; Molly's app default = dialog; console, Molly, AmberX web, axHub web re-baked and type-checked",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2b3k7t0axa2n"
+    },
+    {
+     "id": "s11-10",
+     "text": "s5 Expenses (vendored @axf/core): per-module 'Settings opens in' (dialog / side panel / bottom sheet / inside / full page / floating window) + app default, context-menu row, persisted in kv",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2b3k7t0b1iyp"
+    },
+    {
+     "id": "s12-11",
      "text": "s6 Rule in RULES.md + PORTING.md, checks green, UI Review shots (non-blocking), report _claude/builds/reports/settings-placement-everywhere.md, THREADS, PR, auto-land, redeploy",
      "model": "Opus",
      "why": "",
