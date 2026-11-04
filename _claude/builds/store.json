@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 796,
- "updatedAt": "2026-11-04T15:43:25.402Z",
+ "rev": 797,
+ "updatedAt": "2026-11-04T15:43:37.946Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -79423,10 +79423,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/app-voice-commands",
+   "pr": "#323",
    "createdAt": "2026-11-04T14:43:48.090Z",
-   "updatedAt": "2026-11-04T15:43:11.935Z",
+   "updatedAt": "2026-11-04T15:43:28.346Z",
    "builtAt": "",
    "notes": [
     {
@@ -79611,7 +79611,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
