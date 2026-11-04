@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type R
 import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem } from '../../core';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
+import { NavTree } from './NavTree';
 import { BrandMark, brandHostProps, useBrandPlace } from './Brand';
 import { AppMenuDropdown } from './AppMenu';
 import { HelpModeButton } from './Help';
@@ -243,10 +244,24 @@ export function mergeNavSections<S extends { label?: string | null; items: NavIt
   for (const s of sections) {
     const key = s.label ? s.label.trim().toLowerCase() : '';
     const hit = key ? byLabel.get(key) : undefined;
-    if (hit) { hit.items = [...hit.items, ...s.items.filter((it) => !hit.items.some((x) => x.view === it.view))]; continue; }
+    if (hit) { hit.items = withChildren(hit.items, s.items); continue; }
     const copy = { ...s, items: [...s.items] };
     out.push(copy);
     if (key) byLabel.set(key, copy);
+  }
+  return out;
+}
+
+/**
+ * Items joined by view: a new view is added; one already there keeps its own fields and takes the newcomer's children
+ * (NavItem.items), so a plugin can hang a sub menu on an item the nav-menu asset already has (Molly's apps).
+ */
+function withChildren(have: NavItem[], add: NavItem[]): NavItem[] {
+  const out = [...have];
+  for (const it of add) {
+    const i = out.findIndex((x) => x.view === it.view);
+    if (i === -1) { out.push(it); continue; }
+    if (it.items?.length) { const cur = out[i]!; out[i] = { ...cur, items: [...(cur.items ?? []), ...it.items.filter((c) => !(cur.items ?? []).some((x) => x.id === c.id))] }; }
   }
   return out;
 }
@@ -269,6 +284,9 @@ export function NavMenu({ views }: { views: ViewMap }) {
   const layout = useAsset('layout');
   const state = useAxfState();
   const orient = layout.data.nav === 'top' ? 'horizontal' : 'vertical';
+  // a nav-menu that opts in to nav-style@1 draws sub menus (NavTree); every other nav is drawn as it always was
+  const navStyle = rt.navStyleData();
+  if (navStyle) return <NavTree sections={mergeNavSections([...nav.data.sections, ...rt.navExtras])} views={views} style={navStyle} orient={orient} header={nav.data.header} />;
 
   return (
     <nav className={`fx-nav fx-nav--${nav.data.style}`} data-orient={orient} aria-label="Main">
