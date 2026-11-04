@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T15:37:58.016Z",
+ "updatedAt": "2026-11-04T15:38:11.470Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -12290,19 +12290,23 @@
    "title": "Apps control surface: every app on the API, MCP and CLI (AmberX, Molly, axHub web, template), apps_list, Follow Amber app:",
    "category": "Framework",
    "detail": "Finishes molly-console-commands s6-s7 (#288 addendum, never built): the console's control surface (open/show/action/dialog/settings, list of screens/dialogs/settings/actions/nav/clients) becomes a framework contract every app implements through one broker on the console server and a framework library (framework/libs/control-surface); apps_list; AmberX (web + Android shell) screens openable via MCP/API/CLI so Amber can open his to-dos; Molly, axHub web and the app template ship it; console_show takes app:. Agent: Ping Paulie.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/apps-control-surface",
    "pr": "#322",
    "createdAt": "2026-11-04T15:00:59.141Z",
-   "updatedAt": "2026-11-04T15:37:56.951Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T15:37:59.010Z",
+   "builtAt": "2026-11-04T15:37:57.962Z",
    "notes": [
     {
      "text": "Assigned: Ping Paulie. Headless worktree /root/axf-builds/apps-control-surface, branch claude/apps-control-surface, session on Fable (s1 Fable, the Opus steps run in the same session, no upgrade phase).",
      "at": "2026-11-04T15:01:01.143Z"
+    },
+    {
+     "text": "PR #322 open (CI pending, auto-merge when green). Report _claude/builds/reports/apps-control-surface.md. UI Review waiting for the console settings page + Remote control sub-tab (no browser in this session).",
+     "at": "2026-11-04T15:37:59.010Z"
     }
    ],
    "approvals": [
@@ -12414,8 +12418,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T15:37:57.962Z",
      "note": "",
      "uid": "st-mw28uz060adk91"
     }
