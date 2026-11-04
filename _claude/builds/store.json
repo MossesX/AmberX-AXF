@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 718,
- "updatedAt": "2026-11-04T14:17:12.754Z",
+ "rev": 719,
+ "updatedAt": "2026-11-04T14:17:22.679Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -73616,11 +73616,11 @@
    "status": "running",
    "hidden": false,
    "source": "console",
-   "pendingId": "console-wake-finish",
+   "pendingId": "",
    "branch": "claude/console-wake-finish",
    "pr": "",
    "createdAt": "2026-11-04T14:15:32.628Z",
-   "updatedAt": "2026-11-04T14:16:59.408Z",
+   "updatedAt": "2026-11-04T14:17:00.852Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -73640,7 +73640,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mw27aeqw05ycbw",
+     "uid": "st-mw278j9m06ty2l",
      "title": "",
      "text": "Audit #266/#288/#308: what is on main, close superseded",
      "model": "Opus",
@@ -73656,13 +73656,13 @@
      "done": true,
      "doneAt": "2026-11-04T14:16:59.408Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T14:15:32.630Z",
-     "updatedAt": "2026-11-04T14:17:00.167Z"
+     "updatedAt": "2026-11-04T14:16:59.464Z"
     },
     {
      "id": "s2",
-     "uid": "st-mw27aeqw06i24s",
+     "uid": "st-mw278j9m07lngq",
      "title": "",
      "text": "axHub claude/amberx-open-url (#35): land + redeploy",
      "model": "Opus",
@@ -73680,11 +73680,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T14:15:32.630Z",
-     "updatedAt": "2026-11-04T14:17:00.167Z"
+     "updatedAt": "2026-11-04T14:15:32.630Z"
     },
     {
      "id": "s3",
-     "uid": "st-mw27aeqw072yf7",
+     "uid": "st-mw278j9m08wdbh",
      "title": "",
      "text": "AmberX app handles open_url (APK if needed)",
      "model": "Opus",
@@ -73697,16 +73697,16 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T14:17:00.852Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T14:15:32.630Z",
-     "updatedAt": "2026-11-04T14:17:00.167Z"
+     "updatedAt": "2026-11-04T14:17:00.948Z"
     },
     {
      "id": "s4",
-     "uid": "st-mw27aeqw087fak",
+     "uid": "st-mw278j9m09mj4y",
      "title": "",
      "text": "console_show: no foreground answer in 4 s -> wake via AmberX, deliver on wake + tests",
      "model": "Opus",
@@ -73724,11 +73724,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T14:15:32.630Z",
-     "updatedAt": "2026-11-04T14:17:00.167Z"
+     "updatedAt": "2026-11-04T14:15:32.630Z"
     },
     {
      "id": "s5",
-     "uid": "st-mw27aeqw090twh",
+     "uid": "st-mw278j9m0a7u3i",
      "title": "",
      "text": "PR, report, deploy console",
      "model": "Opus",
@@ -73746,7 +73746,7 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T14:15:32.630Z",
-     "updatedAt": "2026-11-04T14:17:00.167Z"
+     "updatedAt": "2026-11-04T14:15:32.630Z"
     }
    ],
    "profiles": [
@@ -73757,28 +73757,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-04T14:15:32.628Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mw27aeqw05ycbw": "2026-11-04T14:15:32.630Z",
-     "st-mw27aeqw06i24s": "2026-11-04T14:15:32.630Z",
-     "st-mw27aeqw072yf7": "2026-11-04T14:15:32.630Z",
-     "st-mw27aeqw087fak": "2026-11-04T14:15:32.630Z",
-     "st-mw27aeqw090twh": "2026-11-04T14:15:32.630Z"
-    }
-   },
+   "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-04T14:17:00.167Z",
+   "defaultAt": "2026-11-04T14:15:32.630Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
