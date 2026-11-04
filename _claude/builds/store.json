@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 588,
- "updatedAt": "2026-11-04T01:28:05.374Z",
+ "rev": 589,
+ "updatedAt": "2026-11-04T01:30:47.646Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -53468,14 +53468,15 @@
    "title": "Auto-land finished builds (zero-token merge pipeline)",
    "category": "",
    "detail": "Relaunch of stopped auto-land as auto-land-2 (Brett, Nov 3 2026, voice). Agent: Earl the Ear. Plain-script merge pipeline reusing the push banner batch merge; AI only for real conflicts / red CI needing code.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/auto-land-2",
    "pr": "#270",
+   "mergedAt": "2026-11-04T00:53:37Z",
    "createdAt": "2026-11-03T18:01:41.577Z",
-   "updatedAt": "2026-11-03T18:37:10.577Z",
+   "updatedAt": "2026-11-04T01:24:29.253Z",
    "builtAt": "2026-11-03T18:37:09.577Z",
    "notes": [
     {
@@ -53493,6 +53494,10 @@
     {
      "text": "All 8 steps done. PR #270 (claude/auto-land-2), UI Review r-20261103-6537ada7 waiting. Related: #267 main CI fix, MossesX/axHub#36 claude-sync hold. Report _claude/builds/reports/auto-land.md. Goes live on merge (cron axf-auto-land).",
      "at": "2026-11-03T18:37:10.577Z"
+    },
+    {
+     "text": "Reconciler: PR #270 merged",
+     "at": "2026-11-04T01:24:29.253Z"
     }
    ],
    "approvals": [],
@@ -53683,7 +53688,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -67298,7 +67303,7 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/plugin-lazy-load",
-   "pr": "",
+   "pr": "#298",
    "createdAt": "2026-11-03T22:55:16.843Z",
    "updatedAt": "2026-11-04T01:24:29.253Z",
    "builtAt": "",

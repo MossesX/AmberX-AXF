@@ -578,9 +578,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 20:26 UTC · `follow-amber` s7 done, → complete (urgent) · orchestrator
-- 2026-11-03 20:26 UTC · `follow-amber` → built, PR #280 (urgent) · orchestrator
-- 2026-11-03 20:26 UTC · `follow-amber` note (urgent) · orchestrator
 - 2026-11-03 20:30 UTC · `plugin-settings-placement` added (6 steps) (current) · orchestrator
 - 2026-11-03 20:30 UTC · `build-prompt-origin` s4 done (current) · orchestrator
 - 2026-11-03 20:31 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
@@ -978,3 +975,6 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 01:25 UTC · `gizmo-companion` s19 done (current) · foreign-write
 - 2026-11-04 01:25 UTC · `plugin-lazy-load` note (current) · foreign-write
 - 2026-11-04 01:25 UTC · `profile-switcher-widget` s1 done (current) · foreign-write
+- 2026-11-04 01:24 UTC · `profile-switcher-widget` s1 done (current) · foreign-write
+- 2026-11-04 01:24 UTC · `auto-land` → complete, merged, note (urgent) · reconciler
+- 2026-11-04 01:24 UTC · `plugin-lazy-load` PR #298, note (current) · reconciler
