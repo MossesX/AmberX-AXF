@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 690,
- "updatedAt": "2026-11-04T13:37:18.966Z",
+ "rev": 691,
+ "updatedAt": "2026-11-04T13:48:40.264Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -72811,9 +72811,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/bugs-board",
-   "pr": "",
+   "pr": "#311",
    "createdAt": "2026-11-04T13:07:57.249Z",
-   "updatedAt": "2026-11-04T13:31:20.643Z",
+   "updatedAt": "2026-11-04T13:48:38.412Z",
    "builtAt": "",
    "notes": [
     {
@@ -72999,7 +72999,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {

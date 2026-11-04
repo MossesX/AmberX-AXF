@@ -661,7 +661,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:55 UTC · `orch-live-sync` s3 done (urgent) · orchestrator
 - 2026-11-03 13:55 UTC · `orch-live-sync` s4 done (urgent) · orchestrator
 - 2026-11-03 13:56 UTC · `urgent-builds` → archived, merged, note (urgent) · orch-live-sync
 - 2026-11-03 13:56 UTC · `orch-step-click` note (refactor) · orch-live-sync
@@ -1061,6 +1060,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 13:26 UTC · `bugs-board` s1 done (current) · foreign-write
 - 2026-11-04 13:27 UTC · `hotfix-build-manager` s1 undone, → running (current) · builds-page
 - 2026-11-04 13:27 UTC · `hotfix-build-manager` s1 done, → complete (current) · builds-page
+- 2026-11-04 13:48 UTC · `bugs-board` PR #311 (current) · builds-live
 
 ## Token passes (log)
 
