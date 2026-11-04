@@ -137,3 +137,48 @@ export function plan(builds, prs, branches = [], { now = new Date().toISOString(
   const list = [...changes.values()].filter((c) => Object.keys(c.set).length || c.steps.length);
   return { changes: list, suggestions, orphans: { prs: orphanPrs, branches: orphanBranches } };
 }
+
+/**
+ * Running means something is running it (Brett, Nov 4 2026: the banner said 21 going while one build ran). A `running`
+ * build whose id no live process names (`alive`: agent-slots holders, axf-<id> tmux sessions, build-log entries with a
+ * fresh heartbeat) and that nobody touched in `graceMin` minutes is settled: PR merged -> complete; every step done ->
+ * built (PR open) or complete; else -> pending, i.e. paused with its worktree kept (a tick or a relaunch makes it
+ * running again). `alive` null = processes can't be seen from here, so nothing is touched. Zero tokens.
+ */
+export function idlePlan(builds, alive, { now = new Date().toISOString(), graceMin = 20, skip = [] } = {}) {
+  if (!alive) return [];
+  const t = Date.parse(now);
+  const out = [];
+  for (const b of builds) {
+    // plan epics take their status from the plan (builds-store-core syncs it), so they are left to it
+    if (b.deleted || b.status !== 'running' || skip.includes(b.id) || b.kind === 'epic' || str(b.planRef)) continue;
+    const change = (status, why) => out.push({ id: b.id, set: { status }, steps: [], stepNotes: {}, why: [why] });
+    if (str(b.mergedAt)) { change('complete', `PR ${prNumber(b.pr) ? prRef(prNumber(b.pr)) : b.pr} merged: complete`); continue; }
+    if (alive.has(b.id)) continue;
+    const touched = Date.parse(str(b.updatedAt));
+    if (Number.isFinite(touched) && t - touched < graceMin * 60000) continue;
+    const steps = (b.steps ?? []).filter((x) => !x.skip);
+    if (steps.length && steps.every((x) => x.done)) change(str(b.pr) ? 'built' : 'complete', 'no live process and every step done');
+    else change('pending', 'paused: no live session or process runs it (worktree kept); was running');
+  }
+  return out;
+}
+
+/**
+ * Build ids a live process works on. `sessions` = tmux session names (`axf-<id>--<agent>`, `axf-<id>`), `slots` =
+ * agent-slots running entries ({ name }), `changes` = build-log entries ({ state, lastSeenAt, buildRef, branch }).
+ */
+export function aliveIds({ sessions = [], slots = [], changes = [], now = new Date().toISOString(), heartbeatMin = 15 } = {}) {
+  const ids = new Set();
+  for (const n of sessions) { const id = str(n).replace(/^axf-/, '').split('--')[0]; if (id) ids.add(id); }
+  for (const r of slots) if (str(r?.name)) ids.add(r.name);
+  const t = Date.parse(now);
+  for (const e of changes) {
+    if (!e || (e.status ?? e.state) !== 'running' || e.result) continue;
+    const seen = Date.parse(str(e.lastSeenAt) || str(e.updatedAt));
+    if (!Number.isFinite(seen) || t - seen > heartbeatMin * 60000) continue;
+    if (str(e.buildRef?.id)) ids.add(e.buildRef.id);
+    if (str(e.branch)) ids.add(tail(e.branch));
+  }
+  return ids;
+}
