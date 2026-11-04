@@ -264,6 +264,41 @@ check(h["ready"] is False and h["items"] == [] and h["why"], "ssh failure: not r
 c.put("/p/settings", json={"showHeadless": False})
 check(c.get("/p/headless").json()["on"] is False and c.get("/p/settings").json()["showHeadless"] is False, "switched off in Settings: nothing opens")
 c.put("/p/settings", json={"showHeadless": True})
+
+# systems check item "Terminal reaches the VPS host" (Nov 3 2026, build terminal-vps-host)
+H = sys.modules["axf_console_plugins.terminal_test.health"]
+S.RUNNER = fake_run
+check(H.probe()["status"] == "ok" and "2 headless sessions" in H.probe()["summary"], "health: ok with the number of headless sessions")
+S.RUNNER = lambda argv, **kw: R("", 255)
+check(H.probe()["status"] == "error" and "can't reach" in H.probe()["summary"], "health: red when ssh fails, says why")
+routes = Path(tempfile.mkdtemp()) / "route"
+routes.write_text("Iface\tDestination\tGateway\tFlags\neth0\t00000000\t010110AC\t0003\neth0\t000110AC\t00000000\t0001\n")
+os.environ.pop("AXF_VPS_HOST", None)
+check(mod.store.default_host(str(routes), in_docker=True) == "172.16.1.1" and mod.store.default_host(str(routes), in_docker=False) == "",
+      "default host: the Docker gateway inside a container, nothing outside")
+c.put("/p/settings", json={"vps": {"host": ""}})
+check(H.probe()["status"] == "error" and "(no host)" in H.probe()["summary"] and "isn't set up" in H.probe()["summary"], "health: red when the host is missing")
+os.environ["AXF_VPS_HOST"] = "10.0.0.9"
+sent = []
+fx = H.autofix(lambda cmd: sent.append(cmd) or {"state": "started", "message": "veto call sent"})
+check(fx["state"] == "started" and c.get("/p/settings").json()["vps"]["host"] == "10.0.0.9", "auto fix fills in the host, then sends the key as a veto call")
+check(len(sent) == 1 and k["publicKey"] in sent[0] and 'from="172.16.0.0/12"' in sent[0] and "grep -qF" in sent[0] and "PRIVATE" not in sent[0],
+      "the veto call adds only the public key, once, from Docker networks")
+check(H.autofix(None)["state"] == "failed", "no VPS route: auto fix says what to do")
+S.RUNNER = fake_run
+check(H.autofix(lambda cmd: sent.append(cmd))["state"] == "done" and len(sent) == 1, "auto fix: nothing sent when the host already lets the key in")
+os.environ.pop("AXF_VPS_HOST", None)
+class FakeHealth:
+    def __init__(self): self.specs = []
+    def register(self, spec, owner=""): self.specs.append((spec, owner))
+fh = FakeHealth()
+plugin_services.provide("axf.health@1", fh, "fake-systems-check")
+H._done = False
+check(H.ensure() and fh.specs[0][0]["id"] == "terminal-vps-host" and callable(fh.specs[0][0]["autoFix"]["run"]) and fh.specs[0][1] == "console-terminal",
+      "registers its check with an Auto fix on axf.health@1")
+plugin_services.withdraw("fake-systems-check")
+c.put("/p/settings", json={"vps": {"host": "127.0.0.1", "port": 1, "user": "root"}})
+S._headless_cache.update(at=0.0, value=None)
 S.RUNNER = __import__("subprocess").run
 
 # Claude Code tab with a fake CLI
@@ -340,9 +375,13 @@ log = c.get("/p/log").json()["items"]
 check(any(e["op"] == "open" and e["kind"] == "container" and e["protected"] for e in log) and any(e["op"] == "close" and e["reason"] == "idle" for e in log),
       "session log: who, where, when, why it closed")
 check(all("leak" not in json.dumps(e) for e in log), "the log never holds typed input")
+c.post("/p/sessions", json={"kind": "console"})  # one open for sure: earlier ones may have closed on their own by now
 before = len(c.get("/p/sessions").json()["items"])
 cx.set_context(current_token=lambda: "u" * 32)
-time.sleep(6)
+for _ in range(30):  # the reaper looks every 5 s; a busy machine can be a tick late
+    time.sleep(0.5)
+    if not c.get("/p/sessions").json()["items"]:
+        break
 check(before > 0 and not c.get("/p/sessions").json()["items"], "a console token reset closes every terminal")
 # Approved VPS commands open here once they've run (axf.hub-runs@1 from the agent manager)
 r = c.get("/p/hub-runs").json()
