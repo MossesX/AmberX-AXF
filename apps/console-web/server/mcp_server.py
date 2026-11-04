@@ -866,8 +866,12 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         return await go({"op": "act", "target": "console.screens", "path": screen, "action": "open", "input": inp(to)})
 
     @mcp.tool(annotations=NAVIGATE)
-    async def console_dialog(dialog: str, arg: str = "", to: Delivery = "recent") -> dict[str, Any]:
-        """Open a dialog in the open console by id, title or words (`arg` = the dialog's optional argument)."""
+    async def console_dialog(dialog: str = "", arg: str = "", action: Literal["open", "close"] = "open", to: Delivery = "recent") -> dict[str, Any]:
+        """Open a dialog in the open console by id, title or words (`arg` = the dialog's optional argument), or close
+        one: action="close" shuts the dialog that is open (dialog="" or "current"), or only that dialog when it is the one open.
+        Close what you opened once Brett has seen it."""
+        if action == "close":
+            return await go({"op": "act", "target": "console.dialogs", "path": dialog or "current", "action": "close", "input": inp(to)})
         return await go({"op": "act", "target": "console.dialogs", "path": dialog, "action": "open", "input": inp(to, arg=arg)})
 
     @mcp.tool(annotations=NAVIGATE)

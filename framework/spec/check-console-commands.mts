@@ -115,6 +115,18 @@ const r7 = runConsoleCommand({ op: 'act', target: 'console.nav', path: 'here', a
 ok(r7.ok && r7.deliver!.message.op === 'back', 'back');
 const r8 = runConsoleCommand({ op: 'list', target: 'console.clients' }, ctx);
 ok(r8.ok && r8.data.total === 2 && !('catalog' in (r8.data.items as object[])[0]!), 'clients without catalogs');
+// dialogs: act close (Amber closes what she opened)
+const dialogAct = (path: string, action = 'close') => runConsoleCommand({ op: 'act', target: 'console.dialogs', path, action }, ctx);
+ok(gated({ op: 'act', target: 'console.dialogs', path: 'current', action: 'close' }, ['control.console.navigate']).ok, 'closing a dialog passes the gate with navigate alone');
+const c1 = dialogAct('current');
+ok(c1.ok && c1.deliver!.message.op === 'close' && c1.deliver!.message.kind === 'dialog' && !c1.deliver!.message.target, 'close "current" → whichever dialog is open');
+eq(consoleMessageErrors(c1.ok ? c1.deliver!.message : null), [], 'the close message is valid');
+const c2 = dialogAct('asset json');
+ok(c2.ok && c2.deliver!.message.op === 'close' && c2.deliver!.message.target === 'asset-json', 'close a named dialog → only that one');
+const c3 = dialogAct('spreadsheet');
+ok(!c3.ok && c3.code === 'not_found', 'close an unknown dialog → not_found');
+const c4 = dialogAct('asset json', 'open');
+ok(c4.ok && c4.deliver!.message.op === 'open' && c4.deliver!.message.target === 'asset-json', 'open still opens');
 const r9 = runConsoleCommand(open, { ...ctx, clients: [] });
 ok(!r9.ok && r9.code === 'not_found' && r9.message.includes('no console is open'), 'no console → says so');
 // actions: policy

@@ -220,6 +220,9 @@ export function consoleMessageErrors(m) {
 
 /* ================================================================== the console domain of control@1 */
 
+/** Paths that mean "whichever dialog is open" for act close on console.dialogs. */
+export const ANY_DIALOG = new Set(['current', 'any', 'open', 'dialog']);
+
 const fail = (code, message, extra = {}) => ({ ok: false, code, message, ...extra });
 const noConsole = () => fail(CONTROL_WIRE.NOT_FOUND, 'no console is open for you right now: open the Dev Console (https://console.amberxai.com) in a browser, then try again');
 
@@ -249,6 +252,14 @@ export function runConsoleCommand(c, ctx = {}) {
     return send({ op: c.action });
   }
   const kind = CONSOLE_KINDS[c.target];
+  // act close on dialogs: shut the open one ("current" / "any" / "open" = whichever it is; a dialog's id or name = only that one)
+  if (c.target === 'console.dialogs' && c.op === 'act' && c.action === 'close') {
+    const p = str(c.path, 200).trim().toLowerCase();
+    if (!p || ANY_DIALOG.has(p)) return send({ op: 'close', kind });
+    const d = consoleResolve(catalog, kind, c.path);
+    if (!d.item) return fail(d.ambiguous ? CONTROL_WIRE.VALIDATION : CONTROL_WIRE.NOT_FOUND, d.ambiguous ? `"${c.path}" matches several: ${d.candidates.map((i) => `${i.label} (${i.id})`).join(', ')}; send the id` : `the console has no dialog "${c.path}" (send "current" to close whichever is open)`, { candidates: d.candidates ?? [] });
+    return send({ op: 'close', kind, target: d.item.id, label: d.item.label }, { item: d.item });
+  }
   if (c.op === 'list') {
     const items = consoleSearch(catalog, kind, str(select.q, 200), limit);
     return { ok: true, data: { items, total: catalog.filter((i) => i.kind === kind).length, client: targets[0].id } };

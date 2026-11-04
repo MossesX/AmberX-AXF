@@ -114,6 +114,19 @@ function TabChip({ tab, group, active, onActivate }: { tab: TabSpec; group: TabG
 /* floating windows host                                               */
 /* ------------------------------------------------------------------ */
 
+/** The fixed chrome along the top of the page: the app banner, the frame's menu bar and its banner strip. */
+const TOP_CHROME = '.fx-banner[role="banner"], .fx-frame > .fx-frame__menubar, .fx-frame-banners';
+
+/** Where that chrome ends (px from the top); only pieces that start in the top half count, and at most half the screen. */
+export function chromeBottom(viewportHeight: number): number {
+  let bottom = 0;
+  for (const el of document.querySelectorAll(TOP_CHROME)) {
+    const r = el.getBoundingClientRect();
+    if (r.height > 0 && r.top < viewportHeight / 2) bottom = Math.max(bottom, r.bottom);
+  }
+  return Math.min(bottom, viewportHeight / 2);
+}
+
 /** Mount once in the shell: renders every floating window, the drag ghost, minimized corners and floating mini toolbars. */
 export function FloatingWindowsHost() {
   const rt = useRuntime();
@@ -122,7 +135,9 @@ export function FloatingWindowsHost() {
   useEffect(() => {
     const report = () => { wm.viewport = { width: window.innerWidth, height: window.innerHeight }; };
     report(); window.addEventListener('resize', report);
-    return () => window.removeEventListener('resize', report);
+    // new windows open below the top chrome (banner, menu bar, banner strip), so they never sit over what is tapped there
+    wm.chromeTop = () => chromeBottom(window.innerHeight);
+    return () => { window.removeEventListener('resize', report); wm.chromeTop = () => 0; };
   }, [wm]);
   // one host per interface scope: each draws the windows opened in its scope ('' = the app itself)
   const scope = useScopeId();
