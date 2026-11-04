@@ -1040,6 +1040,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 12:44 UTC · `requests-ledger` added (5 steps) (current) · orchestrator
 - 2026-11-04 12:53 UTC · `hotfix-build-manager` s1 done, s2 done, s3 done, s4 done, → complete (current) · foreign-write
 - 2026-11-04 12:54 UTC · `requests-ledger` → running (current) · orchestrator
+- 2026-11-04 12:54 UTC · `requests-ledger` s1 done (current) · orchestrator
+- 2026-11-04 12:54 UTC · `requests-ledger` s2 done (current) · orchestrator
 
 ## Token passes (log)
 
