@@ -684,7 +684,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:21 UTC · `gizmo-terminal` added (4 steps) (current) · orchestrator
 - 2026-11-04 14:21 UTC · `land-round-2` note (current) · foreign-write
 - 2026-11-04 14:21 UTC · `urgent-land-gizmo-chat` s1 done, s2 done (current) · foreign-write
 - 2026-11-04 14:21 UTC · `gizmo-voice` added (3 steps) (current) · foreign-write
@@ -1084,6 +1083,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 19:24 UTC · `amberx-live-audio` s4 done (angel) · orchestrator
 - 2026-11-04 19:26 UTC · `handoff-2` s3 done, s4 done, s5 done (current) · foreign-write
 - 2026-11-04 19:26 UTC · `amberx-live-audio` s5 done (angel) · orchestrator
+- 2026-11-04 19:27 UTC · `amberx-live-audio` s6 done, → complete (angel) · orchestrator
 
 ## Token passes (log)
 

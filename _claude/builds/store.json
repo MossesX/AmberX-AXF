@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 904,
- "updatedAt": "2026-11-04T19:26:28.573Z",
+ "rev": 905,
+ "updatedAt": "2026-11-04T19:27:34.714Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -82493,15 +82493,15 @@
    "title": "AmberX live audio",
    "category": "App (AmberX)",
    "detail": "AmberX streams both tracks (device output = Claude's TTS, mic = Brett) live to the console's Live sessions Watch live player in short frames on one session clock, while a watcher is connected or recording is on; still writes chunks for the archive. 'You're being watched' notice wired to stream state. New APK via CI + banner item. Android work is an approved exception to the Android hold (Brett asked).",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T19:08:27.526Z",
-   "updatedAt": "2026-11-04T19:26:10.153Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T19:27:33.720Z",
+   "builtAt": "2026-11-04T19:27:33.720Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -82643,12 +82643,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T19:27:33.720Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T19:08:27.528Z",
-     "updatedAt": "2026-11-04T19:08:27.528Z"
+     "updatedAt": "2026-11-04T19:27:33.766Z"
     }
    ],
    "profiles": [
@@ -82659,7 +82659,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
