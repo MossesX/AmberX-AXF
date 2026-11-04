@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 955,
- "updatedAt": "2026-11-04T21:01:40.498Z",
+ "rev": 956,
+ "updatedAt": "2026-11-04T21:01:59.602Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -83225,7 +83225,7 @@
    "branch": "claude/molly-banner-match-r2",
    "pr": "#341",
    "createdAt": "2026-11-04T17:18:47.970Z",
-   "updatedAt": "2026-11-04T21:01:37.945Z",
+   "updatedAt": "2026-11-04T21:01:39.745Z",
    "builtAt": "",
    "notes": [
     {
@@ -83239,6 +83239,10 @@
     {
      "text": "Reconciler: branch claude/molly-banner-match (no PR yet)",
      "at": "2026-11-04T20:43:52.913Z"
+    },
+    {
+     "text": "PR #341 (claude/molly-banner-match-r2), in the merge queue. Addendum fixed first: one approval pop-up in Molly (banner strip page view no longer pops up), no refused frame; takes over #325. Report _claude/builds/reports/molly-banner-match.md",
+     "at": "2026-11-04T21:01:39.745Z"
     }
    ],
    "approvals": [],
@@ -83375,7 +83379,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {

@@ -698,7 +698,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 15:00 UTC · `browser-automation` → pending, note (current) · reconciler
 - 2026-11-04 15:00 UTC · `apps-control-surface` added (5 steps) (current) · orchestrator
 - 2026-11-04 15:01 UTC · `apps-control-surface` → running (current) · orchestrator
 - 2026-11-04 15:01 UTC · `apps-control-surface` note (current) · orchestrator
@@ -1098,6 +1097,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 21:01 UTC · `molly-banner-match` s3 done (current) · orchestrator
 - 2026-11-04 21:01 UTC · `molly-banner-match` s4 done (current) · orchestrator
 - 2026-11-04 21:01 UTC · `molly-banner-match` s5 done (current) · orchestrator
+- 2026-11-04 21:01 UTC · `molly-banner-match` note (current) · orchestrator
 
 ## Token passes (log)
 
