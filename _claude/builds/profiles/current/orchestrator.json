@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T14:38:28.038Z",
+ "updatedAt": "2026-11-04T14:39:07.031Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4828,14 +4828,14 @@
    "title": "Profile switcher widget (filter builds by profile, All profiles, attach to any toolbar or banner)",
    "category": "Builds",
    "detail": "What Brett said (verbatim, Nov 3 2026, voice): \"I need a plugin that makes a widget that can be attached to a toolbar or a banner or whatever, that lets you select their build package. Also, select something that combines all build profiles.\" Addendum 1: \"So basically it's like a filter. They're all shown everywhere, but only one of them is rendered. Basically make it a filter. Always just show everything in every build profile, but it just effectively filters to hide them.\" Addendum 2: \"That said, it's gonna act upon what's visible.\" Profiles are a view filter (multi-select, All = no filter) shared by every builds table; bulk actions act only on what is visible; the active profile stays the target for new builds. Assigned agent: Ping Paulie (no Polo card).",
-   "status": "running",
+   "status": "archived",
    "hidden": false,
    "source": "voice",
    "pendingId": "",
    "branch": "claude/profile-switcher-widget",
    "pr": "#300",
    "createdAt": "2026-11-04T00:40:48.340Z",
-   "updatedAt": "2026-11-04T14:17:33.299Z",
+   "updatedAt": "2026-11-04T14:38:40.137Z",
    "builtAt": "",
    "notes": [
     {
@@ -4853,6 +4853,10 @@
     {
      "text": "Carried on as profile-lists-home-card (same work plus the Build profiles Home card); its PR replaces #300.",
      "at": "2026-11-04T14:17:33.299Z"
+    },
+    {
+     "text": "Folded into profile-lists-home-card (PR #318, replaces #300, closed). Its open step s6 moved to build profile-filter-tables.",
+     "at": "2026-11-04T14:38:37.008Z"
     }
    ],
    "approvals": [],
@@ -7758,15 +7762,15 @@
    "title": "Build profiles Home card + finish the profile switcher widget",
    "category": "Builds",
    "detail": "Continues profile-switcher-widget (PR #300, never merged). Profiles stay a view filter (profile-filter@1, Addendum 1 of this build). Finish the switcher widget on current main and add a Build profiles card@1 on Home: every profile with running / queued / pending / built counts, the active one highlighted; tap = filter to that profile and open Builds; + New profile and Manage links. On Home by default and in Suggested cards.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/profile-lists-home-card",
    "pr": "#318",
    "createdAt": "2026-11-04T14:16:24.131Z",
-   "updatedAt": "2026-11-04T14:38:07.517Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T14:38:43.338Z",
+   "builtAt": "2026-11-04T14:38:43.338Z",
    "notes": [
     {
      "text": "Assigned: Ping Paulie (no Polo card in the agent roster). Brett's Addendum 1: keep profiles as filters. Folds in profile-switcher-widget (PR #300), which this build's PR replaces.",
@@ -7855,8 +7859,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T14:38:43.338Z",
      "note": "",
      "uid": "st-mw279mym083mbh"
     }
@@ -10079,6 +10083,98 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw27twuz0cvvnl"
+    }
+   ]
+  },
+  {
+   "id": "profile-filter-tables",
+   "title": "Profile filter in the remaining builds tables",
+   "category": "Builds",
+   "detail": "Follow-up of profile-switcher-widget s6 / profile-lists-home-card: adopt profile-filter@1 (useProfileFilter / resolveFilter) in the Orchestrator view (needs an all-profiles projection), Pending, Queue, Plan, Tracker, Git status board and Crew; bulk CLI/MCP commands (land-all, merge batch) take the saved filter by default with a profiles argument.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-04T14:38:34.128Z",
+   "updatedAt": "2026-11-04T14:38:34.128Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Orchestrator view: all-profiles projection + filter + Profile column; bulk actions on visible builds",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw28257i052fjy"
+    },
+    {
+     "id": "s2",
+     "text": "Pending, Queue and Plan tables: filter, Profile column, Filtered note",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw28257i06hqqh"
+    },
+    {
+     "id": "s3",
+     "text": "Tracker, Git status board, Crew: filter adoption",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw28257i07912k"
+    },
+    {
+     "id": "s4",
+     "text": "Bulk CLI/MCP (land-all, merge batch): resolveFilter + profiles argument; tests, shots, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw28257i08md0a"
     }
    ]
   }

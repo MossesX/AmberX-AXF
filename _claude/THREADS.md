@@ -669,10 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:07 UTC · `menu-scroll` s2 done (urgent) · orchestrator
-- 2026-11-03 18:07 UTC · `menu-scroll` s3 done (urgent) · orchestrator
-- 2026-11-03 18:07 UTC · `menu-scroll` s4 done (urgent) · orchestrator
-- 2026-11-03 18:07 UTC · `land-everything` branch claude/land-everything, merged (urgent) · builds-live
 - 2026-11-03 18:09 UTC · `land-everything` note (urgent) · orchestrator
 - 2026-11-03 18:10 UTC · `builds-one-page` s7 done, s8 done, s9 done, s10 done, s11 done, s15 done, s30 done, s30 done, note (refactor) · foreign-write
 - 2026-11-03 18:10 UTC · `md-studio` s1 done (urgent) · orchestrator
@@ -1069,6 +1065,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:38 UTC · `toolbar-tap-confirm` → running, note (urgent) · orchestrator
 - 2026-11-04 14:38 UTC · `browser-automation` → running, note (current) · orchestrator
 - 2026-11-04 14:38 UTC · `browser-automation` note (current) · foreign-write
+- 2026-11-04 14:38 UTC · `profile-filter-tables` added (4 steps) (current) · orchestrator
+- 2026-11-04 14:38 UTC · `profile-switcher-widget` note (current) · orchestrator
+- 2026-11-04 14:38 UTC · `profile-switcher-widget` → archived (current) · orchestrator
+- 2026-11-04 14:38 UTC · `profile-lists-home-card` s4 done, → built (current) · orchestrator
 
 ## Token passes (log)
 
