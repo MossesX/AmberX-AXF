@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 911,
- "updatedAt": "2026-11-04T19:36:26.680Z",
+ "rev": 912,
+ "updatedAt": "2026-11-04T19:44:44.742Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -82208,7 +82208,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T18:45:40.326Z",
-   "updatedAt": "2026-11-04T19:25:26.545Z",
+   "updatedAt": "2026-11-04T19:44:32.721Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -82351,12 +82351,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T19:44:28.935Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T18:45:40.327Z",
-     "updatedAt": "2026-11-04T18:45:40.327Z"
+     "updatedAt": "2026-11-04T19:44:29.040Z"
     },
     {
      "id": "s7",
@@ -82373,12 +82373,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T19:44:30.066Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T18:45:40.327Z",
-     "updatedAt": "2026-11-04T18:45:40.327Z"
+     "updatedAt": "2026-11-04T19:44:30.122Z"
     },
     {
      "id": "s8",
@@ -82395,12 +82395,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T19:44:31.559Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T18:45:40.327Z",
-     "updatedAt": "2026-11-04T18:45:40.327Z"
+     "updatedAt": "2026-11-04T19:44:31.640Z"
     },
     {
      "id": "s9",
@@ -82417,12 +82417,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T19:44:32.721Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T18:45:40.327Z",
-     "updatedAt": "2026-11-04T18:45:40.327Z"
+     "updatedAt": "2026-11-04T19:44:32.780Z"
     },
     {
      "id": "s10",
@@ -82477,7 +82477,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
