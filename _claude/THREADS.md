@@ -662,7 +662,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 17:17 UTC · landed `claude/model-upgrade-approval` (PR#253) on main at 03d1d75f · land-everything
 - 2026-11-03 17:19 UTC · landed `claude/one-look-default-2` (PR#244) on main at 4ff2cc50 · land-everything
 - 2026-11-03 17:26 UTC · landed `claude/theme-veto-pass` (PR#262) on main at 16620d72 · land-everything
 - 2026-11-03 17:26 UTC · landed `claude/pass-all` (PR#264) on main at 16620d72 · land-everything
@@ -1062,6 +1061,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 13:31 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · bugs-board
 - 2026-11-04 13:33 UTC · `land-round-2` s2 done (current) · foreign-write
 - 2026-11-04 13:33 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · foreign-write
+- 2026-11-04 13:33 UTC · `follow-amber-switch` added (5 steps) (current) · orchestrator
 
 ## Token passes (log)
 
