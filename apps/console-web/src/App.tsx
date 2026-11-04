@@ -17,7 +17,7 @@ import { BuildManager } from './views/BuildManager';
 import { Pending } from './views/Pending';
 import { Standards } from './views/Standards';
 import type { AxfWebLibrary } from './axf/react/library';
-import { bundledPlugins, enabledPlugins, fetchPluginStatus, hostEnabledPlugins, pluginReport, PLUGINS_CHANGED, serverPartsToSwitchOn, type BundledPlugin, type PluginStatus } from './plugins';
+import { bundledPlugins, enabledFolders, enabledPlugins, fetchPluginStatus, hostEnabledPlugins, pluginReport, PLUGINS_CHANGED, serverPartsToSwitchOn, type BundledPlugin, type PluginStatus } from './plugins';
 import { post } from './api';
 import { library as settingsLibrary } from './axf/libs/settings';
 import { toolbarsLibrary } from './axf/libs/toolbars';
@@ -31,6 +31,7 @@ import { consoleSettings } from './consoleSettings';
 import { accountLibrary, useBindAccount } from './account';
 import { hubAppearanceLibrary, useHubAppearance } from './hubAppearance';
 import { menuLibrary } from './menuLibrary';
+import { countingUses, loader, useLoaderVersion } from './pluginLoader';
 
 /** Developer alerts (framework library), stored and pushed by the console server. */
 const alertsLibrary = createAlertsLibrary({ transport: consoleAlertsTransport, crashWhere: 'console', serviceWorkerUrl: '/alerts-sw.js' });
@@ -85,7 +86,7 @@ function underPlugins(p: BundledPlugin): AxfWebLibrary {
   };
   // Plugin theme override (Brett, Oct 28 2026): every plugin UI root carries data-axf-plugin and its settings tab gets an
   // Appearance panel (framework/libs/plugintheme), so no plugin needs code of its own.
-  const themed = (l: AxfWebLibrary) => withPluginTheme(l, { id: m.id, name: m.name });
+  const themed = (l: AxfWebLibrary) => withPluginTheme(countingUses(p.folder, l), { id: m.id, name: m.name });
   if (!lib.settingsTabs?.length) return themed(out);
   return themed({ ...out, settingsTabs: lib.settingsTabs.map((t) => ({ ...t, parent: 'plugins' })) });
 }
@@ -96,6 +97,16 @@ function usePlugins() {
   const [status, setStatus] = useState<PluginStatus[] | null>(null);
   const [loaded, setLoaded] = useState(false);
   const reload = useCallback(async () => { setStatus(await fetchPluginStatus()); setLoaded(true); }, []);
+  // Lazy loader (src/pluginLoader.tsx): banner chunks already started (src/plugins.ts, the last visit's enabled list);
+  // the stored config comes from the plugin-manager server part, and every load / eviction re-installs the plugins.
+  const lazy = useLoaderVersion();
+  useEffect(() => {
+    void loader.pullConfig();
+    void loader.loadChunkInfo();
+    const onVisible = () => { if (document.visibilityState === 'visible') void loader.pullConfig(); };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, []);
   useEffect(() => {
     void reload();
     const onChange = () => void reload();
@@ -120,12 +131,22 @@ function usePlugins() {
     folders.forEach((f) => tried.current.add(f));
     void Promise.all(folders.map((f) => post(`plugins/${f}/enabled`, { enabled: true }).catch(() => null))).then(() => reload());
   }, [managed, status, hostIds, reload]);
+  useEffect(() => {
+    if (!loaded && !managed) return;
+    const on = managed ? (hostIds ?? []).map((id) => bundledPlugins.find((p) => p.manifest.id === id)?.folder).filter((f): f is string => !!f) : enabledFolders(status);
+    loader.enabledNow = new Set(on);
+    loader.boot(on);
+  }, [loaded, managed, status, hostIds]);
   const contributed = useMemo(() => {
     // The settings library and the console's own settings always run; plugins once the backend (or the host) has answered.
-    const enabled = managed ? hostEnabledPlugins(hostIds) : loaded ? enabledPlugins(status) : [];
+    // A plugin switched off in the lazy loader keeps only commands that say so.
+    const all = managed ? hostEnabledPlugins(hostIds) : loaded ? enabledPlugins(status) : [];
+    const enabled = all.filter((p) => loader.config.modes[p.folder] !== 'off');
+    const off = all.filter((p) => !enabled.includes(p)).map((p) => loader.disabledLibrary(p.folder, p.manifest.name)).filter((l): l is AxfWebLibrary => !!l);
     for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.removeContextItems(p.manifest.id); rt.removeAppMenuItems(p.manifest.id); rt.settings.removeModule(p.manifest.id); rt.detachAll(p.manifest.id); rt.removePlacement(p.manifest.id); }
-    return installLibraries(rt, [settingsLibrary, toolbarsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ashesLibrary, hubStatusLibrary, dataGridLibrary, pluginThemeLibrary, ...enabled.map(underPlugins)]);
-  }, [rt, status, loaded, managed, hostIds]);
+    return installLibraries(rt, [settingsLibrary, toolbarsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ashesLibrary, hubStatusLibrary, dataGridLibrary, pluginThemeLibrary, ...enabled.map(underPlugins), ...off]);
+  }, [rt, status, loaded, managed, hostIds, lazy]);
+  useEffect(() => { loader.markInstalled(); }, [contributed]);
   return { contributed };
 }
 
