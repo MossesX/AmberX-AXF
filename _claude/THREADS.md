@@ -683,7 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 12:47 UTC · `orch-step-click` note (refactor) · foreign-write
 - 2026-11-04 12:47 UTC · `molly-opus` → complete, note (big-dog) · foreign-write
 - 2026-11-04 12:47 UTC · `walkthrough-random-look` → complete, note (refactor) · foreign-write
 - 2026-11-04 12:47 UTC · `profile-manager` note (current) · foreign-write
@@ -1083,6 +1082,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 16:15 UTC · `settings-placement-everywhere` added (12 steps) (current) · foreign-write
 - 2026-11-04 16:15 UTC · `molly-multi-instance-tabs` added (4 steps) (current) · foreign-write
 - 2026-11-04 16:15 UTC · `app-voice-commands` note (current) · orchestrator
+- 2026-11-04 16:16 UTC · `app-voice-commands` note (current) · foreign-write
 
 ## Token passes (log)
 
