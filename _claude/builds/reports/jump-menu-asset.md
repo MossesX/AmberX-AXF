@@ -128,8 +128,8 @@ Not mine, pre-existing on main: `tracker.mjs --check` exits 1 (390 items without
 ## Screenshots (UI Review)
 
 Captured with `rebuild-shots.mjs` (`_claude/builds/reports/jump-menu-asset/shots.json`, console API + Vite + Playwright,
-`AXF_APPEARANCE_HUB=off`) and submitted to UI Review as `jump-menu-asset - Nov 4` (non-blocking for this build, per the
-brief). Files under `_claude/builds/reports/jump-menu-asset/shots/after/`:
+`AXF_APPEARANCE_HUB=off`) and submitted to UI Review as `jump-menu-asset - Nov 4`, item **r-20261104-2135a0d7** (14 pictures; non-blocking for this
+build, per the brief). Files under `_claude/builds/reports/jump-menu-asset/shots/after/`:
 
 - `plan-editor-classic-chips` — the default: the same chip row Plan Studio had, now the asset.
 - `plan-editor-left-rail` — `menu.plan-studio.plan.asset = left-rail`.
@@ -137,7 +137,13 @@ brief). Files under `_claude/builds/reports/jump-menu-asset/shots/after/`:
 - `plan-editor-floating-pill` — the floating pill, scrolled to Steps.
 - `plan-editor-context-menu` — right-click: Jump menu settings / Change jump menu / Move.
 - `jump-menu-settings-dialog` — the settings dialog (level bar, scope, preset, preview, fields).
-- `assets-screen-jump-menu` — the Assets screen, Navigation group (desktop).
+- `assets-screen-jump-menu` — the Assets screen, the Jump menu group with the six starters, classic-chips active (desktop).
+- `plan-studio-view` — the Plan Studio screen before opening a plan (desktop, a bearing shot).
+
+What the first capture taught: the console's manifest had no `jump-menu` default, so the runtime took the first asset
+alphabetically (bottom-tabs: it worked, stuck to the bottom and wrapped on the phone, but it wasn't the default Brett
+sees). Every app manifest now names `classic-chips`. And the scroll-spy's reading line moved a quarter of the viewport
+down (`JUMP_SPY_BAND`), so a heading sitting just under a sticky bar after a jump counts as reached.
 
 ## Deferred / notes
 
