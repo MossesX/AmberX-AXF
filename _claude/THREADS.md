@@ -662,12 +662,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 16:41 UTC · `whats-new-banner` merged (urgent) · builds-live
-- 2026-11-03 16:41 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 16:41 UTC · `land-everything` s5 done (urgent) · orchestrator
-- 2026-11-03 16:48 UTC · `dock-engine` → complete, merged (urgent) · builds-live
-- 2026-11-03 16:48 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 16:48 UTC · `xlayout` → complete, merged (big-dog) · builds-live
 - 2026-11-03 16:48 UTC · `land-everything` s6 done (urgent) · orchestrator
 - 2026-11-03 17:03 UTC · `token-control` → complete, merged (urgent) · builds-live
 - 2026-11-03 17:03 UTC · `land-everything` note (urgent) · orchestrator
@@ -1062,6 +1056,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:21 UTC · `urgent-land-gizmo-chat` added (4 steps) (current) · foreign-write
 - 2026-11-04 14:21 UTC · `console-wake-finish` added (5 steps) (current) · foreign-write
 - 2026-11-04 14:21 UTC · `profile-lists-home-card` added (4 steps) (current) · foreign-write
+- 2026-11-04 14:21 UTC · `urgent-land-gizmo-chat` s1 done, → running (current) · orchestrator
+- 2026-11-04 14:21 UTC · `urgent-land-gizmo-chat` s2 done (current) · orchestrator
+- 2026-11-04 14:21 UTC · `urgent-land-gizmo-chat` branch claude/gizmo-companion, PR #296 (current) · builds-live
+- 2026-11-04 14:21 UTC · `land-round-2` note (current) · orchestrator
+- 2026-11-04 14:21 UTC · `gizmo-voice` added (3 steps) (current) · orchestrator
+- 2026-11-04 14:21 UTC · `gizmo-terminal` added (4 steps) (current) · orchestrator
 
 ## Token passes (log)
 
