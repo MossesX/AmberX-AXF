@@ -2000,7 +2000,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     make: [[tabs[0], 2, undefined], [tabs[0], 3, 'Builds'], [tabs[1], 3, undefined], [tabs[2], 5, undefined], [tabs[1], 1, undefined]].map(([t, n, title]) => ({ from: t, n, title: title ?? null, tab: instanceTab(t as never, n as number, title as string | undefined) })),
   };
   // drag-to-tab (Nov 4 2026): a nav item's tab, and the copy a drop opens (itself, its next instance, or none past the cap)
-  const navTabs = [{ view: 'builds', label: 'Builds', icon: 'hammer' }, { view: 'plugin:ui-review/shots', label: 'Screenshots' }].map((it) => ({ item: it, tab: navItemTab(it) }));
+  const navTabs = [{ view: 'builds', label: 'Builds', icon: 'hammer' }, { view: 'plugin:notes/browser', label: 'Notes' }].map((it) => ({ item: it, tab: navItemTab(it) }));
   const fBase = { id: 'app:console', title: 'Console', kind: 'app', payload: 'console', icon: 'terminal' };
   const fOpen = [fBase, { ...fBase, id: 'app:console.2', title: 'Console 2', instance: 2 }, { id: 'app:axhub', title: 'axHub', kind: 'app', payload: 'axhub' }];
   const fresh = {

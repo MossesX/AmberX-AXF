@@ -14,8 +14,8 @@
  */
 import { useEffect, useMemo, useState } from 'react';
 import type { AxfRuntime } from '../../../src/axf/core';
-import type { TabSpec } from '../../../src/axf/core/engines/windows';
-import { instanceOf, instanceTab, instancesOf, nextInstance, paneGroups } from '../../../src/axf/core/engines/windows';
+import type { NavDragItem, TabSpec } from '../../../src/axf/core/engines/windows';
+import { instanceOf, instanceTab, instancesOf, navItemTab, nextInstance, paneGroups } from '../../../src/axf/core/engines/windows';
 import { normalizeDockLayout, type DockLayoutData } from '../../../src/axf/core/engines/dock';
 import { PLACED_VIEW_TAB } from '../../../src/axf/core/engines/placement';
 import { canAddInstance, dockRulesOf, idePresets, instanceKey, instanceLabel, newTabChoices, type NewTabChoice, type OpenTarget } from '../../../src/axf/core/engines/xlayout';
@@ -34,6 +34,22 @@ export const NEW_TAB_DIALOG = 'xlayout.newtab';
 export const RESET_DIALOG = 'xlayout.reset';
 const tabId = (app: string) => `molly-app:${app}`;
 const tabOf = (app: string): TabSpec => { const a = mollyApp(app); return { id: tabId(app), title: a?.label ?? app, kind: APP_TAB, payload: app, icon: a?.icon ?? 'box', closable: true }; };
+/**
+ * drag-to-tab: what a Molly nav item opens as when dragged into a pane, a strip or out to a window. An app (or one of
+ * its pages) = that app's tab (its own frame; a further copy when it is already open); any other Molly view = the
+ * framework's placed-view tab.
+ */
+export function navTabOf(item: NavDragItem): TabSpec | null {
+  const a = appOfView(item.view);
+  return a ? tabOf(a.id) : navItemTab(item);
+}
+/** With IDE mode off the app on screen fills the main area outside every window: a drop of it opens its next copy. */
+export function mainAreaTabs(rt: AxfRuntime): TabSpec[] {
+  if (effectiveXLayout(rt).ide.on) return [];
+  const a = appOfView(rt.getState().view);
+  return a ? [tabOf(a.id)] : [];
+}
+
 /** The frame key of an app tab (`console`, `console#2`). */
 export const frameKeyOf = (t: Pick<TabSpec, 'payload' | 'instance'>) => instanceKey(t.payload ?? '', instanceOf(t));
 

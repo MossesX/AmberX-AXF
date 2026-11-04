@@ -1719,9 +1719,9 @@ export class AxfRuntime {
     this.set({ dialog: null });
   }
 
-  toast(message: string, kind: Toast['kind'] = 'info', title?: string) {
+  toast(message: string, kind: Toast['kind'] = 'info', title?: string, opts: { action?: Toast['action'] } = {}) {
     const popup = this.asset('popup').data;
-    const t: Toast = { id: ++this.toastSeq, kind, title, message, scope: this.uiScope };
+    const t: Toast = { id: ++this.toastSeq, kind, title, message, scope: this.uiScope, ...(opts.action ? { action: opts.action } : {}) };
     const toasts = [...this.state.toasts, t].slice(-popup.maxVisible);
     this.set({ toasts });
     // the behaviour theme's toast time wins when it sets one (0 = the pop-up asset's); 0 on the asset = stay until closed
@@ -2489,6 +2489,8 @@ export class AxfRuntime {
     a.register('windows.moveTabTo', ([t, side = 'right']) => { if (t && !wm.moveTabTo(t, (['left', 'right', 'top', 'bottom'].includes(side) ? side : 'right') as import('./engines/dock').DockSide)) this.toast('It is already alone in its pane.', 'info', 'Move to pane'); }, { label: 'Move tab to a new pane', params: true });
     a.register('windows.floatTab', ([t]) => t && wm.floatTab(t), { label: 'Pop tab out to a window', params: true });
     a.register('windows.undoLayout', ([g]) => { const w = g ? (wm.state.windows.some((x) => x.id === g) ? g : wm.state.groups[g]?.windowId ?? wm.mainWindowId) : wm.mainWindowId; if (!wm.undoLayout(w)) this.toast('Nothing to undo.', 'info', 'Layout'); }, { label: 'Undo layout change', params: true });
+    // drag-to-tab (Nov 4 2026): undo the last drop (a tab a drop opened closes again; a move puts the layout back)
+    a.register('windows.undoDrop', () => { if (!wm.undoDrop()) this.toast('Nothing to undo.', 'info', 'Drop'); }, { label: 'Undo the last drop', searchable: false });
     a.register('windows.resetDock', ([w = '']) => wm.resetDock(w && wm.state.windows.some((x) => x.id === w) ? w : wm.mainWindowId), { label: 'Reset the dock (close every pane)', params: true, searchable: false });
     a.register('windows.openFloating', ([kind = 'placeholder', title = 'Window', payload = '']) => wm.openFloating([{ id: `tab-${Date.now()}`, title, kind, payload }], title), { label: 'Open floating window', searchable: false });
     a.register('terminal.open', ([channel = '']) => wm.openFloating([{ id: `terminal-${Date.now()}`, title: 'Output', kind: 'terminal', payload: channel, icon: 'terminal' }], 'Output terminal', 'floating', 520, 320), { label: 'Open output terminal' });
@@ -2501,7 +2503,9 @@ export class AxfRuntime {
       if (Object.keys(this.hostArrangement(host)).length) items.push({ id: `widgets-reset-${host}`, label: 'Put widgets back', icon: 'undo', action: `widgets.reset:${host}` });
       return items;
     });
-    this.contextExtras.set('tab-group', () => wm.groupMenu());
+    // Window tab groups (payload = a group id) get the windowing menu; every other tab row (a TabGroup component,
+    // payload = its settings id) gets only the shared chrome block (react/components/ChromeContext.tsx).
+    this.contextExtras.set('tab-group', (_t, payload) => (payload && wm.state.groups[payload] ? wm.groupMenu() : []));
     this.contextExtras.set('tab', (_t, payload) => wm.tabMenu(payload));
     this.contextExtras.set('window-title', () => wm.windowMenu());
   }

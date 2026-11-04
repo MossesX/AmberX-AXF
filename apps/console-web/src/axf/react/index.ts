@@ -33,6 +33,7 @@ export { AssetPreview } from './studio/AssetPreview';
 export { builtinDialogs } from './studio/builtinDialogs';
 export { FloatingWindowsHost, DockArea, PaneView, TabGroupView, WindowToolbar, WindowResizeHandles, WindowGrip, useTabPress, TabRenderersProvider, useWindowManager, useWindowState, useWindowSpec, useWindowFrame, windowDialogs, type TabRenderer, type TabRenderers, type WindowFrameHooks, type TabPressHandlers } from './windows/WindowHost';
 export { DockHost, DockPaneView, DockDropOverlay, DockPresetThumb, DockLayoutDialog, dockLayoutDialog } from './windows/DockHost';
+export { useDragToTab, dragToTabDown, dragToTabClick, toastDrop, type DragToTabSource } from './windows/dragToTab';
 export { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
 export { installLibraries, orderLibraries, type AxfWebLibrary, type BannerDef, type SlotDef } from './library';
 export { FRAME_BANNERS_SLOT, FrameBanners, Slot, SlotsProvider, useSlotFilled } from './components/Slots';

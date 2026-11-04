@@ -4,6 +4,7 @@ import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem } from '..
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { NavTree } from './NavTree';
+import { dragToTabClick, dragToTabDown } from '../windows/dragToTab';
 import { BrandMark, brandHostProps, useBrandPlace } from './Brand';
 import { AppMenuDropdown } from './AppMenu';
 import { HelpModeButton } from './Help';
@@ -311,6 +312,9 @@ export function NavMenu({ views }: { views: ViewMap }) {
                   data-axf-view-link={it.view}
                   data-fx-ctx-target="nav-item"
                   data-fx-ctx-payload={it.view}
+                  data-fx-tab-source={locked ? undefined : it.view}
+                  onPointerDown={locked ? undefined : (e) => dragToTabDown(rt, e, { view: it.view, label: it.label, icon: it.icon })}
+                  onClickCapture={dragToTabClick}
                   onClick={() => rt.navigate(it.view)}
                 >
                   <Icon name={locked ? 'lock' : it.icon} size={17} />

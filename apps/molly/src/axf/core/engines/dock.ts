@@ -263,11 +263,18 @@ export function headerIndexAt(px: number, tabRights: readonly number[], tabLefts
 }
 
 /**
- * What a point over the host means for a dragged tab: inside the outer `edgeBand` of the host = split the whole tree on
- * that side; else the topmost pane under the point and its zone (header → the index from `tabRights`); null = nothing.
+ * What a point over the host means for a dragged tab: a pane's header band = that strip at the index from `tabRights`
+ * (it wins over the edge band); inside the outer `edgeBand` of the host = split the whole tree on that side; else the
+ * topmost pane under the point and its zone; null = nothing.
  */
 export function dockDropAt(host: Rect, boxes: readonly GroupBox[], px: number, py: number, rules: DockRules = DEFAULT_DOCK_RULES, tabRights?: (groupId: string) => readonly number[] | undefined): DockDrop | null {
   if (px < host.x || px > host.x + host.width || py < host.y || py > host.y + host.height) return null;
+  // a pane's tab strip wins over the host's edge band (drag-to-tab, Nov 4 2026): the strip of a pane along the top or
+  // left edge lies inside the band, and a tab let go on a strip goes into that strip, at that place
+  for (let i = boxes.length - 1; i >= 0; i--) {
+    const b = boxes[i]!;
+    if (dockZoneAt(b, px, py, rules) === 'header') return { target: 'group', groupId: b.groupId, zone: 'header', index: headerIndexAt(px, tabRights?.(b.groupId) ?? []) };
+  }
   const e = rules.edgeBand;
   if (e > 0 && boxes.length > 0) {
     const dl = px - host.x, dr = host.x + host.width - px, dt = py - host.y, db = host.y + host.height - py;
@@ -305,7 +312,7 @@ export function dockDropRect(drop: DockDrop, host: Rect, box: GroupBox | null, r
 }
 
 /** The preview a host draws while a tab drag is over it. */
-export interface DockDropPreview { windowId: string; drop: DockDrop; rect: Rect; /** the drop would exceed the pane limit, so it joins as a tab */ limited: boolean }
+export interface DockDropPreview { windowId: string; drop: DockDrop; rect: Rect; /** the drop would exceed the pane limit, so it joins as a tab */ limited: boolean; /** the dock is empty: the tab becomes its first pane */ fill?: boolean }
 
 /* ---------- applying a drop ---------- */
 
@@ -360,6 +367,24 @@ export function applyDockDrop(state: DockState, tabId: string, drop: DockDrop, n
     tree = drop.target === 'group' ? splitPane(tree ?? { kind: 'leaf', groupId: drop.groupId }, drop.groupId, drop.zone, newGroupId, rules.splitRatio, rules.minWeight) : splitRoot(tree, drop.zone, newGroupId, rules.rootRatio, rules.minWeight);
   }
   return { tree, groups };
+}
+
+/** The id of the stand-in group a new tab is dropped from (never in a tree, never kept). */
+export const FRESH_GROUP = '__fresh';
+
+/**
+ * Drop a tab that isn't open anywhere yet (drag-to-tab, Nov 4 2026: a nav item dragged into a dock) with the same
+ * zones and the same rules as `applyDockDrop`: header = at the index, centre = at the end, a side = a new pane
+ * `newGroupId` (joins as a tab past the pane limit). The tab stands in a group of its own that is not in the tree, so
+ * nothing else moves. Unchanged when the target is gone or a tab with that id is already open.
+ */
+export function applyDockDropNew(state: DockState, tab: TabSpec, drop: DockDrop, newGroupId: string, windowId: string, rules: DockRules = DEFAULT_DOCK_RULES): DockState {
+  if (findGroupWithTab(state.groups, tab.id)) return state;
+  const staged: DockState = { tree: state.tree, groups: { ...state.groups, [FRESH_GROUP]: { id: FRESH_GROUP, tabs: [tab], active: 0, windowId } } };
+  const after = applyDockDrop(staged, tab.id, drop, newGroupId, windowId, rules);
+  if (after === staged) return state;
+  const groups = { ...after.groups }; delete groups[FRESH_GROUP];
+  return { tree: after.tree, groups };
 }
 
 /**

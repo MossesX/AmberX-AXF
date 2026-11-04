@@ -2311,14 +2311,16 @@
         "px": 400,
         "py": 8,
         "drop": {
-          "target": "root",
-          "zone": "top"
+          "target": "group",
+          "groupId": "b",
+          "zone": "header",
+          "index": 3
         },
         "rect": {
-          "x": 0,
+          "x": 240,
           "y": 0,
-          "width": 800,
-          "height": 180
+          "width": 560,
+          "height": 32
         }
       },
       {
@@ -2339,14 +2341,16 @@
         "px": 120,
         "py": 10,
         "drop": {
-          "target": "root",
-          "zone": "top"
+          "target": "group",
+          "groupId": "a",
+          "zone": "header",
+          "index": 1
         },
         "rect": {
           "x": 0,
           "y": 0,
-          "width": 800,
-          "height": 180
+          "width": 240,
+          "height": 32
         }
       },
       {
@@ -2428,28 +2432,32 @@
         "px": 330,
         "py": 10,
         "drop": {
-          "target": "root",
-          "zone": "top"
+          "target": "group",
+          "groupId": "b",
+          "zone": "header",
+          "index": 2
         },
         "rect": {
-          "x": 0,
+          "x": 240,
           "y": 0,
-          "width": 800,
-          "height": 180
+          "width": 560,
+          "height": 32
         }
       },
       {
         "px": 500,
         "py": 10,
         "drop": {
-          "target": "root",
-          "zone": "top"
+          "target": "group",
+          "groupId": "b",
+          "zone": "header",
+          "index": 3
         },
         "rect": {
-          "x": 0,
+          "x": 240,
           "y": 0,
-          "width": 800,
-          "height": 180
+          "width": 560,
+          "height": 32
         }
       },
       {

@@ -666,6 +666,8 @@ export interface Toast {
   message: string;
   /** the interface scope it was raised in ('' / absent = the app itself; react/components/InterfaceScope.tsx) */
   scope?: string;
+  /** one button on it (drag-to-tab: Undo after a drop): `action` is a runtime action spec, run on tap, then the toast goes */
+  action?: { label: string; action: string };
 }
 
 export interface AxfState {

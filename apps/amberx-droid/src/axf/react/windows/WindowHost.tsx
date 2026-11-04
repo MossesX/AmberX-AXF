@@ -6,6 +6,7 @@ import { useScopeId } from '../components/InterfaceScope';
 import type { Pane, TabGroup, TabSpec, WindowManager, WindowSettings, WindowSpec, WindowState, Corner, DragPreview, ResizeEdge, WindowFrame } from '../../core/engines/windows';
 import { effectiveToolbar, forcesToolbar, isFloating, isMaximized, paneGroups, rectOf, resizeCursor, tabPressIntent, windowFrame, CORNERS, RESIZE_EDGES, TAB_HOLD_MS, type TabPressIntent } from '../../core/engines/windows';
 import { DockDropOverlay, DockHost, DockPaneView, dockLayoutDialog } from './DockHost';
+import { toastDrop } from './dragToTab';
 
 /* ------------------------------------------------------------------ */
 /* registry of tab renderers + locals                                  */
@@ -74,6 +75,8 @@ export function TabGroupView({ group }: { group: TabGroup }) {
       <div className="fx-tabgroup__bar" onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); rt.openContext(e.clientX, e.clientY, 'tab-group', group.id); }}>
         {brand?.svg && <span className="fx-tabgroup__brand"><BrandMark slot="tab-group" height={16} /></span>}
         {group.tabs.map((t, i) => <TabChip key={t.id} tab={t} group={group} active={i === group.active} onActivate={() => wm.activate(group.id, i)} />)}
+        {/* molly-multi-instance-tabs: "+" at the end of every tab group, when the host says what it opens (wm.newTab) */}
+        {wm.newTab && <button type="button" className="fx-iconbtn fx-tab__add" title="New tab" aria-label="New tab" onClick={() => wm.openNewTab(group.id)}><Icon name="plus" /></button>}
         <span className="fx-tabgroup__spacer" />
         <button className="fx-iconbtn" title="Undock to floating window" onClick={() => wm.undock(group.id)}><Icon name="external" /></button>
         <button className="fx-iconbtn" title="Split vertical" onClick={() => wm.split(group.id, 'vertical')}><Icon name="layout" /></button>
@@ -85,30 +88,61 @@ export function TabGroupView({ group }: { group: TabGroup }) {
   );
 }
 
+/**
+ * One tab in a group's bar. Mouse / pen: a press then a 6 px move drags it (dock@1 zones, or out to a floating window);
+ * right-click = its menu (new / duplicate / rename / close / close others / move to pane / pop out); double-click =
+ * rename. Touch (molly-multi-instance-tabs: "Phone: long-press then drag"): a hold (`TAB_HOLD_MS`, with a short buzz)
+ * arms it, then a move drags it; a hold released without moving opens its menu; a move before the hold is left to the
+ * bar (it scrolls). Every drop that changes the layout can be undone (the tab bar's menu, or the host's Undo).
+ */
 function TabChip({ tab, group, active, onActivate }: { tab: TabSpec; group: TabGroup; active: boolean; onActivate: () => void }) {
-  const wm = useWindowManager();
-  const press = useRef<{ x: number; y: number; timer?: number; dragging: boolean } | null>(null);
+  const rt = useRuntime();
+  const wm = rt.windows;
+  const [armed, setArmed] = useState(false);
+  const press = useRef<{ x: number; y: number; timer?: number; dragging: boolean; touch: boolean; held: boolean } | null>(null);
+  const menu = (x: number, y: number) => rt.openContext(x, y, 'tab', tab.id);
   const onPointerDown = (e: React.PointerEvent) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
     onActivate();
-    press.current = { x: e.clientX, y: e.clientY, dragging: false };
-    const start = () => { if (!press.current) return; press.current.dragging = true; wm.dragStart(tab.id, group.id, press.current.x, press.current.y); };
-    press.current.timer = window.setTimeout(start, 180);
+    const touch = e.pointerType !== 'mouse';
+    press.current = { x: e.clientX, y: e.clientY, dragging: false, touch, held: false };
+    const start = () => { if (!press.current || press.current.dragging) return; press.current.dragging = true; setArmed(false); wm.dragStart(tab.id, group.id, press.current.x, press.current.y); };
+    // mouse / pen: a short press starts the drag; touch: only a hold arms it (a quick move scrolls the bar)
+    press.current.timer = window.setTimeout(() => { if (!press.current) return; if (touch) { press.current.held = true; setArmed(true); navigator.vibrate?.(8); } else start(); }, touch ? TAB_HOLD_MS : 180);
+    const swallowMenu = (ev: Event) => { ev.preventDefault(); ev.stopPropagation(); }; // Android fires contextmenu mid-press
+    if (touch) window.addEventListener('contextmenu', swallowMenu, true);
     const move = (ev: PointerEvent) => {
-      if (!press.current) return;
-      if (!press.current.dragging && Math.hypot(ev.clientX - press.current.x, ev.clientY - press.current.y) > 6) { window.clearTimeout(press.current.timer); start(); }
-      if (press.current.dragging) wm.dragMove(ev.clientX, ev.clientY);
+      const p = press.current; if (!p) return;
+      const far = Math.hypot(ev.clientX - p.x, ev.clientY - p.y) > TAB_SLOP;
+      if (!p.dragging && far) {
+        if (p.touch && !p.held) { window.clearTimeout(p.timer); press.current = null; done(); return; } // a scroll, not a drag
+        window.clearTimeout(p.timer); start();
+      }
+      if (p.dragging) { ev.preventDefault(); wm.dragMove(ev.clientX, ev.clientY); }
     };
-    const up = () => { window.clearTimeout(press.current?.timer); if (press.current?.dragging) wm.dragEnd(); press.current = null; window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); };
-    window.addEventListener('pointermove', move); window.addEventListener('pointerup', up);
+    const done = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); window.setTimeout(() => window.removeEventListener('contextmenu', swallowMenu, true), 0); setArmed(false); };
+    const up = (ev: PointerEvent) => {
+      const p = press.current; window.clearTimeout(p?.timer); press.current = null;
+      if (p?.dragging) { if (wm.dragEnd()) toastDrop(rt, `${tab.title} moved.`); }
+      else if (p?.touch && p.held) menu(ev.clientX, ev.clientY); // long-press released in place: the tab's menu
+      done();
+    };
+    const cancel = () => { const p = press.current; window.clearTimeout(p?.timer); press.current = null; if (p?.dragging) wm.dragCancel(); done(); };
+    window.addEventListener('pointermove', move, { passive: false }); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel);
   };
   return (
-    <div className={`fx-tab ${active ? 'is-active' : ''}`} onPointerDown={onPointerDown} title={tab.title}>
+    <div className={`fx-tab ${active ? 'is-active' : ''} ${armed ? 'is-armed' : ''}`.trim()} onPointerDown={onPointerDown} title={tab.title} role="tab" aria-selected={active}
+      data-fx-ctx-target="tab" data-fx-ctx-payload={tab.id} data-fx-instance={tab.instance ?? undefined}
+      onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); menu(e.clientX, e.clientY); }}
+      onDoubleClick={(e) => { e.preventDefault(); rt.openDialog('rename-tab', { arg: tab.id }); }}>
       {tab.icon && <Icon name={tab.icon} />}
       <span className="fx-tab__label">{tab.title}</span>
       {tab.closable !== false && <button className="fx-tab__close" onPointerDown={(e) => e.stopPropagation()} onClick={() => wm.closeTab(tab.id)} aria-label="Close tab"><Icon name="x" /></button>}
     </div>
   );
 }
+/** How far a press may travel before it is a drag (px, root units); the engine's `TAB_SLOP_PX`. */
+const TAB_SLOP = 6;
 
 /* ------------------------------------------------------------------ */
 /* floating windows host                                               */
@@ -139,6 +173,13 @@ export function FloatingWindowsHost() {
     wm.chromeTop = () => chromeBottom(window.innerHeight);
     return () => { window.removeEventListener('resize', report); wm.chromeTop = () => 0; };
   }, [wm]);
+  // drag-to-tab: while a tab (or a nav item) is dragged, every place it can land shows it (axf.css `[data-fx-tab-drag]`)
+  const dragging = !!s.drag;
+  useEffect(() => {
+    if (!dragging) return;
+    document.documentElement.setAttribute('data-fx-tab-drag', '');
+    return () => document.documentElement.removeAttribute('data-fx-tab-drag');
+  }, [dragging]);
   // one host per interface scope: each draws the windows opened in its scope ('' = the app itself)
   const scope = useScopeId();
   const own = (w: WindowSpec) => (w.scope ?? '') === scope;
@@ -149,7 +190,7 @@ export function FloatingWindowsHost() {
       {s.windows.filter((w) => w.minimized === 'floating-toolbar' && own(w)).map((w) => <FloatingMiniToolbar key={w.id} w={w} />)}
       {s.preview && <SnapPreview preview={s.preview} />}
       {s.dockPreview && <DockDropOverlay preview={s.dockPreview} />}
-      {s.drag && <div className="fx-dragghost" style={{ left: s.drag.x + 8, top: s.drag.y + 8 }}>{Object.values(s.groups).flatMap((g) => g.tabs).find((t) => t.id === s.drag!.tabId)?.title ?? 'tab'}</div>}
+      {s.drag && <div className={`fx-dragghost ${s.drag.fresh ? 'fx-dragghost--new' : ''}`.trim()} style={{ left: s.drag.x + 8, top: s.drag.y + 8 }}>{s.drag.fresh ? <><Icon name="plus" size={12} />{s.drag.fresh.title}</> : Object.values(s.groups).flatMap((g) => g.tabs).find((t) => t.id === s.drag!.tabId)?.title ?? 'tab'}</div>}
     </>
   );
 }
@@ -446,9 +487,25 @@ export function WindowSettingsDialog({ windowId, close }: { windowId: string; cl
   );
 }
 
+/** Rename a tab (molly-multi-instance-tabs): the name sticks (a dock snapshot keeps titles) until the tab closes. */
+export function RenameTabDialog({ tabId, close }: { tabId: string; close: () => void }) {
+  const wm = useWindowManager();
+  const tab = wm.tabOf(tabId);
+  const [name, setName] = useState(tab?.title ?? '');
+  if (!tab) return <p className="fx-muted">That tab is gone.</p>;
+  const save = () => { const t = name.trim(); if (t) wm.renameTab(tabId, t); close(); };
+  return (
+    <form className="fx-form" onSubmit={(e) => { e.preventDefault(); save(); }}>
+      <label>Name <input className="fx-input" value={name} onChange={(e) => setName(e.target.value)} autoFocus maxLength={200} aria-label="Tab name" /></label>
+      <div className="fx-form__actions"><button type="button" className="fx-btn" onClick={close}>Cancel</button><button type="submit" className="fx-btn fx-btn--primary" disabled={!name.trim()}>Rename</button></div>
+    </form>
+  );
+}
+
 /** Register these with the shell's dialogs: `{ ...windowDialogs }`. */
 export const windowDialogs = {
   ...dockLayoutDialog,
+  'rename-tab': { title: 'Rename tab', icon: 'edit', searchable: false, render: (p: Record<string, unknown>, close: () => void) => <RenameTabDialog tabId={String(p.arg ?? '')} close={close} /> },
   'split-grid': { title: 'Custom grid', icon: 'grid', searchable: false, render: (p: Record<string, unknown>, close: () => void) => <SplitGridDialog groupId={String(p.arg ?? '')} close={close} /> },
   'window-settings': { title: 'Window settings', icon: 'settings', searchable: false, render: (p: Record<string, unknown>, close: () => void) => <WindowSettingsDialog windowId={String(p.arg ?? '')} close={close} /> },
 };

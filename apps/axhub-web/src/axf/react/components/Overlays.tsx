@@ -2,10 +2,12 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
+import { Button } from './Controls';
 import { BrandMark, BrandWatermark, brandHostProps } from './Brand';
 import { useScopeId } from './InterfaceScope';
 import { MenuList, MenuScroll } from './MenuList';
 import { useMenuFit } from './menuFit';
+import { PLACED_DIALOG_TAB } from '../../core/engines/placement';
 
 export interface DialogDef {
   title: string;
@@ -51,15 +53,45 @@ export function DialogHost({ dialogs }: { dialogs: DialogMap }) {
   // Swipe down on the title bar (touch) closes it: the dialog follows the finger, and past a quarter of its height it goes.
   const [pull, setPull] = useState(0);
   const swipe = useRef<{ id: number; y: number } | null>(null);
+  // Drag the title bar out (molly-multi-instance-tabs addendum: "any screen or any UI whatsoever can be dragged"): with a
+  // mouse or pen a drag past the behaviour theme's threshold, on touch a long press (its `longPressMs`) then a move, pops
+  // the dialog out into a floating window (a placed-dialog tab) under the pointer; right-click the title for the same.
+  const [armed, setArmed] = useState(false);
+  const drag = useRef<{ id: number; x: number; y: number; touch: boolean; held: boolean; timer?: number } | null>(null);
+  const popOut = (x?: number, y?: number) => {
+    const open = state.dialog; const d1 = open ? dialogs[open.id] : undefined;
+    if (!open || !d1) return;
+    rt.placedProps.set(open.id, open.props ?? {});
+    const tab = { id: `placed-${open.id}-${Date.now().toString(36)}`, title: d1.title, kind: PLACED_DIALOG_TAB, payload: open.id, ...(d1.icon ? { icon: d1.icon } : {}) };
+    const w = panelRef.current?.offsetWidth ?? 640, h = panelRef.current?.offsetHeight ?? 520;
+    rt.closeDialog();
+    rt.windows.openFloating([tab], d1.title, 'floating', Math.max(320, Math.round(w)), Math.max(240, Math.round(h)), x !== undefined ? Math.max(0, Math.round(x - w / 2)) : undefined, y !== undefined ? Math.max(0, Math.round(y - 16)) : undefined);
+  };
+  const popOutRef = useRef(popOut); popOutRef.current = popOut;
+  useEffect(() => {
+    rt.contextExtras.set('dialog-head', () => [{ id: 'popout', label: 'Pop out to window', icon: 'external', action: 'dialog.popOut' }]);
+    const off = rt.actions.register('dialog.popOut', () => popOutRef.current(), { label: 'Pop the open dialog out to a window', searchable: false });
+    return () => { rt.contextExtras.delete('dialog-head'); off(); };
+  }, [rt]);
   const onHeadDown = (e: ReactPointerEvent<HTMLElement>) => {
-    if (e.pointerType !== 'touch' || (e.target as Element).closest('button')) return;
-    swipe.current = { id: e.pointerId, y: e.clientY };
+    if ((e.target as Element).closest('button') || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    const touch = e.pointerType !== 'mouse';
+    if (e.pointerType === 'touch') swipe.current = { id: e.pointerId, y: e.clientY };
+    drag.current = { id: e.pointerId, x: e.clientX, y: e.clientY, touch, held: false };
+    if (touch) drag.current.timer = window.setTimeout(() => { if (drag.current?.id === e.pointerId) { drag.current.held = true; setArmed(true); navigator.vibrate?.(8); } }, rt.behavior().interaction.longPressMs);
     e.currentTarget.setPointerCapture?.(e.pointerId);
   };
   const onHeadMove = (e: ReactPointerEvent<HTMLElement>) => {
+    const d0 = drag.current;
+    if (d0?.id === e.pointerId) {
+      const far = Math.hypot(e.clientX - d0.x, e.clientY - d0.y) > rt.behavior().interaction.dragThreshold;
+      if (far && (!d0.touch || d0.held)) { window.clearTimeout(d0.timer); drag.current = null; swipe.current = null; setArmed(false); setPull(0); popOut(e.clientX, e.clientY); return; }
+      if (far && d0.touch) { window.clearTimeout(d0.timer); drag.current = null; } // moved before the hold: a swipe, not a drag
+    }
     if (swipe.current?.id === e.pointerId) setPull(Math.max(0, e.clientY - swipe.current.y));
   };
   const onHeadUp = (e: ReactPointerEvent<HTMLElement>) => {
+    if (drag.current?.id === e.pointerId) { window.clearTimeout(drag.current.timer); drag.current = null; setArmed(false); }
     if (swipe.current?.id !== e.pointerId) return;
     const h = panelRef.current?.offsetHeight ?? 400;
     const go = e.type === 'pointerup' && Math.max(0, e.clientY - swipe.current.y) > Math.max(rt.behavior().interaction.dragThreshold * 4, h / 4);
@@ -82,10 +114,14 @@ export function DialogHost({ dialogs }: { dialogs: DialogMap }) {
   return (
     <div className="fx-backdrop" onPointerDown={(e) => d.closeOnBackdrop && rt.behavior().windows.closeOnBackdrop && e.target === e.currentTarget && close()}>
       <div className={`fx-dialog ${brandHost.className}`.trim()} role="dialog" aria-modal="true" aria-label={def.title} tabIndex={-1} ref={panelRef} data-fx-brand-mode={brandHost['data-fx-brand-mode']} style={pull ? { transform: `translateY(${pull}px)` } : undefined}>
-        <header className="fx-dialog__head" onPointerDown={onHeadDown} onPointerMove={onHeadMove} onPointerUp={onHeadUp} onPointerCancel={onHeadUp}>
+        <header className={`fx-dialog__head ${armed ? 'is-armed' : ''}`.trim()} onPointerDown={onHeadDown} onPointerMove={onHeadMove} onPointerUp={onHeadUp} onPointerCancel={onHeadUp}
+          onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); rt.openContext(e.clientX, e.clientY, 'dialog-head', state.dialog?.id); }} data-fx-ctx-target="dialog-head" data-fx-ctx-payload={state.dialog.id} title="Drag to pop out into a window">
           {brand?.svg && <BrandMark slot="dialog" height={16} className="fx-dialog__brand" />}
           {def.icon && <Icon name={def.icon} size={18} />}
           <h2>{def.title}</h2>
+          <button type="button" className="fx-iconbtn" onClick={() => popOut()} aria-label="Pop out to window" title="Pop out to window">
+            <Icon name="external" size={16} />
+          </button>
           <button type="button" className="fx-iconbtn" onClick={close} aria-label="Close dialog">
             <Icon name="x" size={16} />
           </button>
@@ -114,6 +150,7 @@ export function ToastHost() {
             {t.title && <strong>{t.title}</strong>}
             <span>{t.message}</span>
           </div>
+          {t.action && <Button size="sm" onClick={() => { rt.dispatch(t.action!.action); rt.dismissToast(t.id); }}>{t.action.label}</Button>}
           <button type="button" className="fx-iconbtn" onClick={() => rt.dismissToast(t.id)} aria-label="Dismiss">
             <Icon name="x" size={14} />
           </button>

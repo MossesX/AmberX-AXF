@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
+import { Button } from './Controls';
 import { BrandMark, BrandWatermark, brandHostProps } from './Brand';
 import { useScopeId } from './InterfaceScope';
 import { MenuList, MenuScroll } from './MenuList';
@@ -149,6 +150,7 @@ export function ToastHost() {
             {t.title && <strong>{t.title}</strong>}
             <span>{t.message}</span>
           </div>
+          {t.action && <Button size="sm" onClick={() => { rt.dispatch(t.action!.action); rt.dismissToast(t.id); }}>{t.action.label}</Button>}
           <button type="button" className="fx-iconbtn" onClick={() => rt.dismissToast(t.id)} aria-label="Dismiss">
             <Icon name="x" size={14} />
           </button>

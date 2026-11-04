@@ -262,14 +262,14 @@
       },
       {
         "item": {
-          "view": "plugin:ui-review/shots",
-          "label": "Screenshots"
+          "view": "plugin:notes/browser",
+          "label": "Notes"
         },
         "tab": {
-          "id": "axf-placed-view:plugin:ui-review-shots",
-          "title": "Screenshots",
+          "id": "axf-placed-view:plugin:notes-browser",
+          "title": "Notes",
           "kind": "axf-placed-view",
-          "payload": "plugin:ui-review/shots",
+          "payload": "plugin:notes/browser",
           "icon": null,
           "closable": true
         }

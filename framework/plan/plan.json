@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-31T09:11:54.366Z",
+ "generatedAt": "2026-11-04T20:59:44.440Z",
  "statuses": [
   "built",
   "partial",
@@ -11452,7 +11452,7 @@
    "group": "UI library — every customization token",
    "kind": "task",
    "parent": "ui.windows",
-   "status": "placeholder",
+   "status": "partial",
    "priority": "P3",
    "wave": 2,
    "effort": "",
@@ -16550,8 +16550,8 @@
      "text": "Imported from the feature catalog (suggestion)"
     }
    ],
-   "model": "sonnet",
-   "modelReason": "Content or simple self-contained UI with a clear spec: Sonnet 5.5 is enough"
+   "model": "opus",
+   "modelReason": "Content or simple self-contained UI with a clear spec: Opus 5.5 (the policy never picks Sonnet)"
   },
   {
    "id": "cx.demos.launch",
@@ -16900,8 +16900,8 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "model": "sonnet",
-   "modelReason": "Content or simple self-contained UI with a clear spec: Sonnet 5.5 is enough"
+   "model": "opus",
+   "modelReason": "Content or simple self-contained UI with a clear spec: Opus 5.5 (the policy never picks Sonnet)"
   },
   {
    "id": "cx.assets.editor",
@@ -18950,8 +18950,8 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "model": "sonnet",
-   "modelReason": "Content or simple self-contained UI with a clear spec: Sonnet 5.5 is enough"
+   "model": "opus",
+   "modelReason": "Content or simple self-contained UI with a clear spec: Opus 5.5 (the policy never picks Sonnet)"
   },
   {
    "id": "m.buildlogic",
@@ -19204,8 +19204,8 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "model": "sonnet",
-   "modelReason": "Content or simple self-contained UI with a clear spec: Sonnet 5.5 is enough"
+   "model": "opus",
+   "modelReason": "Content or simple self-contained UI with a clear spec: Opus 5.5 (the policy never picks Sonnet)"
   },
   {
    "id": "x.styles",
@@ -19251,8 +19251,8 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "model": "sonnet",
-   "modelReason": "Content or simple self-contained UI with a clear spec: Sonnet 5.5 is enough"
+   "model": "opus",
+   "modelReason": "Content or simple self-contained UI with a clear spec: Opus 5.5 (the policy never picks Sonnet)"
   },
   {
    "id": "x.layouts",
@@ -19620,8 +19620,8 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "model": "sonnet",
-   "modelReason": "Content or simple self-contained UI with a clear spec: Sonnet 5.5 is enough"
+   "model": "opus",
+   "modelReason": "Content or simple self-contained UI with a clear spec: Opus 5.5 (the policy never picks Sonnet)"
   },
   {
    "id": "x.a11ymode",
@@ -20318,8 +20318,8 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "model": "sonnet",
-   "modelReason": "Content or simple self-contained UI with a clear spec: Sonnet 5.5 is enough"
+   "model": "opus",
+   "modelReason": "Content or simple self-contained UI with a clear spec: Opus 5.5 (the policy never picks Sonnet)"
   },
   {
    "id": "c.draw",

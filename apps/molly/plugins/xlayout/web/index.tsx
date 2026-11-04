@@ -10,7 +10,7 @@ import { declaredToolbars, barKey, runToolbarItem, TOOLBAR_CTX, WithToolbars } f
 
 /** Apps Molly opens hidden at start because they take remote commands (the Dev Console's console-commands). */
 const WARM_APPS = ['console'];
-import { APP_TAB, AppMain, AppTab, enterIde, keepIde, LAYOUT_DIALOG, LayoutPicker, NEW_TAB_DIALOG, NewTabPicker, openApp, openInstance, RESET_DIALOG, ResetLayoutDialog, resetLayout, undoLayout } from './workspace';
+import { APP_TAB, AppMain, AppTab, enterIde, keepIde, mainAreaTabs, navTabOf, LAYOUT_DIALOG, LayoutPicker, NEW_TAB_DIALOG, NewTabPicker, openApp, openInstance, RESET_DIALOG, ResetLayoutDialog, resetLayout, undoLayout } from './workspace';
 import helpPack from '../help.json';
 import './xlayout.css';
 
@@ -168,6 +168,11 @@ export const plugin: AxfWebLibrary = {
     on('xlayout.layout', () => rt.openDialog(LAYOUT_DIALOG), { label: 'Pane layout…' });
     // molly-multi-instance-tabs: the "+" on every tab group, another copy of an app, reset (confirmed, undoable), undo
     rt.windows.newTab = (group) => rt.openDialog(NEW_TAB_DIALOG, { arg: group });
+    // drag-to-tab: a nav item dragged into a pane / strip / out to a window opens that app (its next copy when open)
+    rt.windows.navTab = navTabOf;
+    rt.windows.extraOpen = () => mainAreaTabs(rt);
+    rt.windows.maxInstances = effectiveXLayout(rt).ide.maxInstances;
+    rt.settings.onChange(K.maxInstances, () => { rt.windows.maxInstances = effectiveXLayout(rt).ide.maxInstances; });
     on('xlayout.newtab', (args, ctx) => { const g = args[0] || ctx.payload || ''; const gid = rt.windows.state.groups[g] ? g : rt.windows.groupOf(g) ?? Object.keys(rt.windows.state.groups)[0] ?? ''; if (!effectiveXLayout(rt).ide.on) rt.toast('Turn IDE mode on first (View → IDE mode): tabs live in its panes.', 'info', 'New tab'); else rt.openDialog(NEW_TAB_DIALOG, { arg: gid }); }, { label: 'New tab…' });
     on('xlayout.instance', (args, ctx) => { const app = appOfView(args.join(':') || ctx.payload || rt.getState().view)?.id; if (!app) { rt.toast('Open an app first.', 'info', 'New tab'); return; } if (!effectiveXLayout(rt).ide.on) { rt.settings.set(K.ideOn, true); enterIde(rt); } if (openInstance(rt, app)) keepIde(rt); }, { label: 'Open another copy of this app' });
     on('xlayout.reset', (args) => { if (args[0] === 'now') resetLayout(rt); else rt.openDialog(RESET_DIALOG); }, { label: 'Reset layout…' });

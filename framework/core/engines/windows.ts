@@ -601,10 +601,12 @@ export class WindowManager {
   navTab: ((item: NavDragItem) => TabSpec | null) | null = null;
   /** Copies of one thing a drop may open (0 = no cap); a host sets it (Molly: the xlayout's `maxInstances`). */
   maxInstances = 0;
+  /** Tabs on screen outside every window (Molly's app in its main area with IDE mode off), so a drop opens the next copy. */
+  extraOpen: (() => TabSpec[]) | null = null;
   /** The tab a drag of `item` would open now (its next copy when it is already open), or null. */
   tabForNav(item: NavDragItem): TabSpec | null {
     const base = this.navTab ? this.navTab(item) : navItemTab(item);
-    return base ? freshTab(base, this.allTabs(), this.maxInstances) : null;
+    return base ? freshTab(base, [...this.allTabs(), ...(this.extraOpen?.() ?? [])], this.maxInstances) : null;
   }
   /** One step of a tab drag: the ghost follows, and the dock preview says where the tab would land (null = nowhere). */
   dragMove(x: number, y: number) { this.set((s) => (s.drag ? { ...s, drag: { ...s.drag, x, y }, dockPreview: this.dockPreviewAt(s, s.drag.tabId, x, y) } : s)); }

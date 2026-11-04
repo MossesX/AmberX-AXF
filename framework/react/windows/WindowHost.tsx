@@ -6,6 +6,7 @@ import { useScopeId } from '../components/InterfaceScope';
 import type { Pane, TabGroup, TabSpec, WindowManager, WindowSettings, WindowSpec, WindowState, Corner, DragPreview, ResizeEdge, WindowFrame } from '../../core/engines/windows';
 import { effectiveToolbar, forcesToolbar, isFloating, isMaximized, paneGroups, rectOf, resizeCursor, tabPressIntent, windowFrame, CORNERS, RESIZE_EDGES, TAB_HOLD_MS, type TabPressIntent } from '../../core/engines/windows';
 import { DockDropOverlay, DockHost, DockPaneView, dockLayoutDialog } from './DockHost';
+import { toastDrop } from './dragToTab';
 
 /* ------------------------------------------------------------------ */
 /* registry of tab renderers + locals                                  */
@@ -122,7 +123,7 @@ function TabChip({ tab, group, active, onActivate }: { tab: TabSpec; group: TabG
     const done = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); window.setTimeout(() => window.removeEventListener('contextmenu', swallowMenu, true), 0); setArmed(false); };
     const up = (ev: PointerEvent) => {
       const p = press.current; window.clearTimeout(p?.timer); press.current = null;
-      if (p?.dragging) { if (wm.dragEnd()) rt.toast('Undo: right-click the tab bar → Undo layout change.', 'info', 'Moved'); }
+      if (p?.dragging) { if (wm.dragEnd()) toastDrop(rt, `${tab.title} moved.`); }
       else if (p?.touch && p.held) menu(ev.clientX, ev.clientY); // long-press released in place: the tab's menu
       done();
     };
@@ -172,6 +173,13 @@ export function FloatingWindowsHost() {
     wm.chromeTop = () => chromeBottom(window.innerHeight);
     return () => { window.removeEventListener('resize', report); wm.chromeTop = () => 0; };
   }, [wm]);
+  // drag-to-tab: while a tab (or a nav item) is dragged, every place it can land shows it (axf.css `[data-fx-tab-drag]`)
+  const dragging = !!s.drag;
+  useEffect(() => {
+    if (!dragging) return;
+    document.documentElement.setAttribute('data-fx-tab-drag', '');
+    return () => document.documentElement.removeAttribute('data-fx-tab-drag');
+  }, [dragging]);
   // one host per interface scope: each draws the windows opened in its scope ('' = the app itself)
   const scope = useScopeId();
   const own = (w: WindowSpec) => (w.scope ?? '') === scope;
@@ -182,7 +190,7 @@ export function FloatingWindowsHost() {
       {s.windows.filter((w) => w.minimized === 'floating-toolbar' && own(w)).map((w) => <FloatingMiniToolbar key={w.id} w={w} />)}
       {s.preview && <SnapPreview preview={s.preview} />}
       {s.dockPreview && <DockDropOverlay preview={s.dockPreview} />}
-      {s.drag && <div className="fx-dragghost" style={{ left: s.drag.x + 8, top: s.drag.y + 8 }}>{Object.values(s.groups).flatMap((g) => g.tabs).find((t) => t.id === s.drag!.tabId)?.title ?? 'tab'}</div>}
+      {s.drag && <div className={`fx-dragghost ${s.drag.fresh ? 'fx-dragghost--new' : ''}`.trim()} style={{ left: s.drag.x + 8, top: s.drag.y + 8 }}>{s.drag.fresh ? <><Icon name="plus" size={12} />{s.drag.fresh.title}</> : Object.values(s.groups).flatMap((g) => g.tabs).find((t) => t.id === s.drag!.tabId)?.title ?? 'tab'}</div>}
     </>
   );
 }

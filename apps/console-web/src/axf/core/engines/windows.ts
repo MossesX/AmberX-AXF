@@ -6,7 +6,8 @@
  * (stacked or lined-up title bars) or to a floating toolbar at the cursor. Dock@1 (engines/dock.ts, Nov 3 2026) adds
  * drop zones, the pane limit, splitter resize, snapshots and layout presets on the same tree.
  */
-import { DEFAULT_DOCK_RULES, DOCK_CONTRACT, applyDockDrop, applyPreset as applyDockPreset, dockDropAt, dockDropRect, dropIsLimited, normalizeDockRules, pushHistory, removePane, resizeSplit as resizeSplitTree, restoreDock, serializeDock, splitPane, splitRoot, type DockDrop, type DockDropPreview, type DockLayoutData, type DockRules, type DockSide, type DockSnapshot, type DockState, type GroupBox, type PanePath } from './dock';
+import { DEFAULT_DOCK_RULES, DOCK_CONTRACT, applyDockDrop, applyDockDropNew, applyPreset as applyDockPreset, dockDropAt, dockDropRect, dropIsLimited, normalizeDockRules, pushHistory, removePane, resizeSplit as resizeSplitTree, restoreDock, serializeDock, splitPane, splitRoot, type DockDrop, type DockDropPreview, type DockLayoutData, type DockRules, type DockSide, type DockSnapshot, type DockState, type GroupBox, type PanePath } from './dock';
+import { PLACED_VIEW_TAB } from './placement';
 
 export type WindowType = 'main' | 'dock' | 'tool' | 'dialog' | 'panel' | 'floating' | 'element';
 export type MinimizeMode = 'stacked' | 'lined';
@@ -379,7 +380,34 @@ export function paneRemove(p: Pane, groupId: string): Pane | null {
 
 export interface TabGroup { id: string; tabs: TabSpec[]; active: number; windowId: string }
 export const activeTab = (g: TabGroup) => g.tabs[g.active];
-export interface TabDrag { tabId: string; fromGroup: string; x: number; y: number }
+/**
+ * A tab drag in progress. `fresh` = a tab that isn't open yet (drag-to-tab: a nav item or screen link dragged into a
+ * dock); its `fromGroup` is ''. Without it the tab is an open one moving (`fromGroup` = where it was).
+ */
+export interface TabDrag { tabId: string; fromGroup: string; x: number; y: number; fresh?: TabSpec }
+
+/**
+ * What a nav item opens as when it is dragged into a dock (drag-to-tab, Nov 4 2026, Brett: "grab something from the
+ * navigation menu … drag it over to another area and drop it as a new tab"). A screen of the app is a placed-view tab
+ * (`axf-placed-view`, payload = the view id, drawn by every AppShell); a host (Molly's apps) may say otherwise through
+ * `WindowManager.navTab`.
+ */
+export interface NavDragItem { view: string; label: string; icon?: string | null }
+export const navItemTab = (it: NavDragItem): TabSpec => ({ id: `axf-placed-view:${it.view.replace(/[^A-Za-z0-9._:-]+/g, '-')}`, title: it.label, kind: PLACED_VIEW_TAB, payload: it.view, icon: it.icon ?? null, closable: true });
+/**
+ * The tab a drop opens: `base` itself when nothing of its kind + payload is open, else its next free instance (a
+ * second copy, `Console 2`; molly-multi-instance-tabs). Null past `max` copies (0 = no cap) or `INSTANCE_MAX`.
+ */
+export function freshTab(base: TabSpec, open: readonly TabSpec[], max = 0): TabSpec | null {
+  const copies = instancesOf(open, base.kind, base.payload);
+  if (!copies.length && !open.some((t) => t.id === base.id)) return { ...base };
+  const n = nextInstance(open, base.kind, base.payload);
+  if ((max > 0 && n > max) || n > INSTANCE_MAX) return null;
+  const t = instanceTab(base, n);
+  return open.some((x) => x.id === t.id) ? null : t;
+}
+/** What the last drop did, so one Undo puts it back: a new tab opened (`fresh`, closed again) or a layout change (`window`). */
+export type LastDrop = { kind: 'fresh'; tabId: string } | { kind: 'layout'; windowId: string };
 export interface WindowState { windows: WindowSpec[]; groups: Record<string, TabGroup>; layouts: Record<string, Pane>; focused: string | null; drag: TabDrag | null; /** the snap / split preview of a window drag in progress (s18) */ preview?: DragPreview | null; /** where the dragged tab would land (dock@1 drop zones: header, centre, pane edge, host edge) */ dockPreview?: DockDropPreview | null }
 
 /** `checked` = check-mark binding, same forms as MenuItem.checked (`setting:<key>` | `counter:<name>` | `slot:<type>` | `hidden:<type>`). */
@@ -560,6 +588,26 @@ export class WindowManager {
     return false;
   }
   dragStart(tabId: string, fromGroup: string, x: number, y: number) { this.set((s) => ({ ...s, drag: { tabId, fromGroup, x, y }, dockPreview: null })); }
+  /**
+   * Start dragging a tab that isn't open yet (drag-to-tab: a nav item, a screen link). The tab is opened only on the
+   * drop (`dragEnd`): a pane's tab strip at the place it was let go, a pane's edge = a new pane, outside every dock = a
+   * floating window. Pass what `freshTab` gives, so a thing already open comes in as its next copy.
+   */
+  dragNew(tab: TabSpec, x: number, y: number) { this.set((s) => ({ ...s, drag: { tabId: tab.id, fromGroup: '', x, y, fresh: tab }, dockPreview: null })); }
+  /**
+   * What a nav item opens as when dragged (the host's say; default `navItemTab`): Molly turns its apps into app tabs.
+   * Return null when the item can't be a tab.
+   */
+  navTab: ((item: NavDragItem) => TabSpec | null) | null = null;
+  /** Copies of one thing a drop may open (0 = no cap); a host sets it (Molly: the xlayout's `maxInstances`). */
+  maxInstances = 0;
+  /** Tabs on screen outside every window (Molly's app in its main area with IDE mode off), so a drop opens the next copy. */
+  extraOpen: (() => TabSpec[]) | null = null;
+  /** The tab a drag of `item` would open now (its next copy when it is already open), or null. */
+  tabForNav(item: NavDragItem): TabSpec | null {
+    const base = this.navTab ? this.navTab(item) : navItemTab(item);
+    return base ? freshTab(base, [...this.allTabs(), ...(this.extraOpen?.() ?? [])], this.maxInstances) : null;
+  }
   /** One step of a tab drag: the ghost follows, and the dock preview says where the tab would land (null = nowhere). */
   dragMove(x: number, y: number) { this.set((s) => (s.drag ? { ...s, drag: { ...s.drag, x, y }, dockPreview: this.dockPreviewAt(s, s.drag.tabId, x, y) } : s)); }
   /** The ghost follows without a dock preview (the host shows its own drop mark, e.g. a place in a tab strip). */
@@ -587,7 +635,8 @@ export class WindowManager {
   dragEnd(): boolean {
     const d = this._state.drag, p = this._state.dockPreview ?? null; if (!d) return false;
     this.set((s) => ({ ...s, drag: null, dockPreview: null }));
-    if (p) { this.checkpoint(p.windowId); return this.dropTab(d.tabId, p.windowId, p.drop); }
+    if (d.fresh) return this.dropNew(d.fresh, p, d.x, d.y);
+    if (p) { this.checkpoint(p.windowId); this.lastDrop = { kind: 'layout', windowId: p.windowId }; return this.dropTab(d.tabId, p.windowId, p.drop); }
     const from = this._state.groups[d.fromGroup];
     if (from) this.checkpoint(from.windowId);
     if (this.dropAt(d.tabId, d.x, d.y)) return true;
@@ -595,7 +644,47 @@ export class WindowManager {
     // a single tab in a floating window let go outside every dock: it already is its own window, leave it be
     const w = this._state.windows.find((x) => x.id === from.windowId);
     if (w && isFloating(w) && from.tabs.length === 1) return false;
-    return this.floatTab(d.tabId, d.x, d.y) !== null;
+    if (this.floatTab(d.tabId, d.x, d.y) === null) return false;
+    this.lastDrop = { kind: 'layout', windowId: from.windowId };
+    return true;
+  }
+
+  /** What the last drop did (null = nothing to undo); `undoDrop` puts it back. */
+  lastDrop: LastDrop | null = null;
+  /**
+   * Open a new tab where a drag of it was let go: a dock zone (`at`) = that pane's strip / a new pane / a new group in
+   * an empty dock; nowhere, while `dockRules.floatOut` is on = a floating window under the pointer. False = nothing opened.
+   */
+  dropNew(tab: TabSpec, at: DockDropPreview | null, x: number, y: number): boolean {
+    if (this.tabOf(tab.id)) return false;
+    if (at) {
+      const gid = this.nextId('group');
+      let changed = false;
+      this.set((s) => {
+        const before = this.dockState(at.windowId, s);
+        const after = applyDockDropNew(before, tab, at.drop, gid, at.windowId, this.dockRules);
+        if (after === before) return s;
+        changed = true;
+        const layouts = { ...s.layouts }; if (after.tree) layouts[at.windowId] = after.tree; else delete layouts[at.windowId];
+        return { ...s, groups: after.groups, layouts, focused: at.windowId };
+      });
+      if (changed) this.lastDrop = { kind: 'fresh', tabId: tab.id };
+      return changed;
+    }
+    if (!this.dockRules.floatOut) return false;
+    const width = 640, height = 480;
+    this.openFloating([tab], tab.title, 'floating', width, height, Math.max(0, Math.round(x - width / 2)), Math.max(0, Math.round(y - 16)));
+    this.lastDrop = { kind: 'fresh', tabId: tab.id };
+    return true;
+  }
+  /** Undo the last drop: a tab it opened closes again (its floating window with it), a move puts the layout back. */
+  undoDrop(): boolean {
+    const l = this.lastDrop; this.lastDrop = null;
+    if (!l) return false;
+    if (l.kind === 'layout') return this.undoLayout(l.windowId);
+    if (!this.tabOf(l.tabId)) return false;
+    this.closeTab(l.tabId);
+    return true;
   }
 
   /* ---------- dock@1: drop zones, pane limit, splitters, snapshots, presets (dock-engine s1) ---------- */
@@ -630,6 +719,8 @@ export class WindowManager {
   private dockPreviewAt(s: WindowState, tabId: string, x: number, y: number, except?: string): DockDropPreview | null {
     for (const wid of this.hostsAt(s, x, y, except)) {
       const host = this.hostBounds.get(wid)!; const boxes = this.boxesOf(s, wid);
+      // an empty dock (no panes yet): the whole host takes the tab as its first pane
+      if (!s.layouts[wid]) return { windowId: wid, drop: { target: 'root', zone: 'left' }, rect: { ...host }, limited: false, fill: true };
       const drop = dockDropAt(host, boxes, x, y, this.dockRules, (gid) => this.tabEdges.get(gid));
       if (!drop) continue;
       const box = drop.target === 'group' ? boxes.find((b) => b.groupId === drop.groupId) ?? null : null;
