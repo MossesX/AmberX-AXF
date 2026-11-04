@@ -10,7 +10,7 @@
  *   summarize(text)                → { title, summary, tags } or null; never throws
  *   ask(question, notes)           → answer text or null; never throws
  *   prompt(text, notes?)           → answer text or null (AI snippets); never throws
- *   molly(task, ctx?)              → Molly's reply or null (developer commands, app questions); never throws
+ *   molly(task, ctx?)              → Gizmo's reply or null (developer commands, app questions); never throws
  *   aiEnabled() / setAiEnabled()   → the app-level AI switch (aiReady() is false while it's off)
  *
  * Server routes (JSON, same origin): GET /api/ai/status · POST /api/ai/parse · POST /api/ai/summarize · POST /api/ai/ask ·
@@ -104,8 +104,8 @@ export async function prompt(text: string, notes: { title: string; text: string;
   return r && typeof r.answer === 'string' ? r.answer : null;
 }
 
-/** Molly (the console's AmberX agent on axHub): a developer task or an app question. Anything she runs on the VPS asks
- * Brett on axHub first; this returns her spoken answer, and `walkthrough` when she opened one in the console. */
+/** Gizmo (the console's AmberX agent on axHub): a developer task or an app question. Anything he runs on the VPS asks
+ * Brett on axHub first; this returns his spoken answer, and `walkthrough` when he opened one in the console. */
 export interface MollyReply { answer: string; walkthrough?: string; approvals?: string[] }
 export async function molly(task: string, context: { page?: string; app?: string } = {}): Promise<MollyReply | null> {
   if (!task.trim()) return null;

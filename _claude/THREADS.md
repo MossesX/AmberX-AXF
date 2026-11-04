@@ -38,6 +38,8 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | UI Review shows its pictures again (Urgent `ui-review-shots`, Opus, agent Snap Sully; Brett Nov 3 voice: "items but NO pictures"): files were all on disk and served 200; two console pollers (agent-slots, token-control pass) re-subscribed on every render and fired ~45 status calls/s, starving the picture fetches; on phones a today-made selector (`:where(:not([data-fx-narrow]))`, always true) squeezed the preview to zero width. Fixed both + layout-adopt codemod, shot timeout/retry, "Shot missing" + Re-capture, health@1 `ui-review-shots`, `review.mjs` worktree warning | review (all 5 steps done; PR open, UI Review waiting) | `claude/ui-review-shots` | [#277](https://github.com/MossesX/AmberX-AXF/pull/277) | Report `_claude/builds/reports/ui-review-shots.md`. Console redeploy (on merge) stops the storm. Brett: approve UI Review r-20261103-17ef4a40 | 2026-11-03 |
 | Land everything finished (Current `lenny-land-all`, freeze plan step two, Opus; agent Landin' Lenny; Brett Nov 3 voice: "Number two." "Give me Lenny."): 19 PRs landed (#270 first, then #268 #265 #277 #271 #273 #280 #274 #279 #285 #272 #276, and batch #303 = #275 #282 #283 #286 #287 #290 #292), #267 closed (superseded by #284), #251/#254 set to draft for Brett, older #207-#236 listed for him. Held with reasons: #266 #288 (racy console-wake test), #269 (AmberX build: @console/api), #289 (placement system vs #278), #281 (menu engines vs #268, Fable work), #291 (WIP, paused by Brett). Console was down ~12 min: stacked update installers; flock added | done | `claude/lenny-land-all` | (report PR) | Report `_claude/builds/reports/lenny-land-all.md`. Next: the held PRs' authors fix them; Brett decides #289 placement and reviews #251/#254 | 2026-11-04 |
 |---|---|---|---|---|---|
+| Gizmo companion (Current `gizmo-companion`, Opus; agent Gizmo, new card, replaces agent Molly; Brett Nov 3 voice: "a full all-out Claude companion … put the plug-in in AmberX"): shared lib `framework/libs/claude-session` (Terminal re-exports it), AmberX plugin `companion` (full-screen chat on assistant@1 via AmberX's server to the console AI assistant as agent Gizmo, talk mode, settings), Molly → Gizmo texts | review (12/19 steps; PR open, UI Review r-20261104-4db7efaa waiting; s4a, s5, s6a, s7b, s8, s10 left) | `claude/gizmo-companion` | [#296](https://github.com/MossesX/AmberX-AXF/pull/296) | Report `_claude/builds/reports/gizmo-companion.md`. Next build: crew link (s5), connectors list + Follow Amber (s4), projects + memory (s6a), overlay bubble (s7b, APK), REST/MCP/CLI (s8) | 2026-11-03 |
+| Expenses port (Current `expenses-port`, Opus, agent Reel Rhonda; Brett Nov 4 voice: "I want to port expenses to AmberX … It should stay its own app in the same repo … the one that has the most entries"): MossesX/Expense (25 commits, live, 524 entries) imported with history into `apps/expenses` (MossesX/Expenses = empty stub); manifest + Molly frame/nav; LIVE from AXF via `apps/expenses/deploy/install.sh` (same `amberx-studio-data` volume, 524 → 524 entries, old image `amberx-expenses:pre-axf`, `--rollback`); `/api/expenses/v1` + CLI + 7 console MCP tools | PR open (all steps done) | `claude/expenses-port` | (see live log) | Follow-up: re-theme onto AXF engines (923 findings on a shrink-only baseline). Report `_claude/builds/reports/expenses-port.md` | 2026-11-04 |
 | Plugin lazy loader (Current `plugin-lazy-load`, Opus; agent Janitor Joey, no Polo card; Brett Nov 3 voice: "The console gets slower as more plugins are installed" + "banners need to be the very first thing to load"): one chunk per plugin, stand-ins from cached shapes so menus / routes / commands exist at startup, banners first, Lazy loader settings in Plugin Manager (preload count, pins, order, idle, LRU cache, offline cache, per-plugin Start/Open/Off, live table) + REST/MCP/CLI `/lazy` | landing (`urgent-land-lazy-loader`) | `claude/plugin-lazy-load` | #298 | main merged in, banners seeded, tsc + vite + 87 checks pass; startup 4.46 → 2.07 MB; waiting on CI → merge → console auto-update. UI Review shots still owed | 2026-11-04 |
 | Molly console commands (Current `molly-console-commands`, urgent, Opus; agent Ping Paulie; Brett Nov 3 voice: "I mean Molly. I'm in control through Molly." + addendum "Add all the apps to the API and the MCP and the CLI"): commands reach the Console inside Molly (embed@1 `show`/`shown`, `recent` = client in front, ack wait 10 s, Molly keeps the Console frame warm) | running (s1–s5 fix done; s6–s7 addendum open) | `claude/molly-console-commands` (stacked on `claude/console-wake`) | — | Report `_claude/builds/reports/molly-console-commands.md`; UI Review; addendum s6 s7 | 2026-11-03 |
 | Agent pick (Urgent `agent-pick`, Opus, booked on Snap Sully; Brett Nov 3 voice): every Claude session works as the agent Brett assigns — plugin `claude-session` (`claude_session_start` / `_agent` / `_book`, picker pop-up + axHub approval, Assign to Claude, settings), swarm `axf.crew@1` | PR open, UI review waiting (all steps done) | `claude/agent-pick` | (see live log) | Report `_claude/builds/reports/agent-pick.md`. Auto-merge after CI + UI Review | 2026-11-03 |
@@ -184,6 +186,18 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 
 ## To carry on
+
+### Gizmo companion (`gizmo-companion`, Current, Opus) — branch `claude/gizmo-companion`
+- **Asked (Brett, Nov 3 2026, voice):** a full Claude companion in AmberX as a plugin, as complete as the Claude app (chat, voice, connectors, crew, projects + memory, every setting, overlay bubble, commands for other plugins); harvest AmberX's assistant + the Terminal's session code into a shared lib; brains on the VPS via axHub, no keys in the APK; Gizmo replaces agent Molly.
+- **On the branch:** s1 lib `claude-session` + Terminal migration; s2 chat (plugin `apps/amberx-droid/src/plugins/companion`); s3 talk mode; s6b model + budget; s7a settings; s9 Gizmo agent (agent-manager add-on `gizmo`, roster card) + Molly → Gizmo texts.
+- **Left:** s9 (s4a) connector list + approvals UI, s10 (s4b) Follow Amber / `console_show` hooks, s11–s12 (s5) crew link buttons, s13 (s6a) projects + memory on axHub, s16 (s7b) overlay bubble (native, APK), s17 (s8) REST/MCP/CLI + tools from other plugins; developer voice commands still reach agent Molly via `/api/ai/molly`.
+- **Read first:** the report `_claude/builds/reports/gizmo-companion.md`, `apps/amberx-droid/src/plugins/companion/web/Chat.tsx`, `framework/libs/claude-session/core.ts`.
+- **Checks:** `npx -y tsx framework/spec/check-claude-session.mts`, `npx -y tsx apps/amberx-droid/test.mjs`, `cd apps/amberx-droid && npx tsc --noEmit`, `node framework/cli/check-theme.mjs`, `node framework/cli/check-controls.mjs`.
+- **First message:** "Carry on build gizmo-companion (Current profile) from the store: next open step, branch claude/gizmo-companion."
+### expenses-port (PR open)
+- Asked: port MossesX/Expense into AmberX-AXF as its own app (`apps/expenses`), on the framework, deployed from AXF on the same data, API/MCP/CLI. Model Opus. Branch `claude/expenses-port`.
+- Done: all six steps; live on `expenses-axf` since Nov 4 11:2x UTC. Waits on: CI green → auto-merge. After merge the cron (`/etc/cron.d/amberx-expenses`) deploys from main by itself.
+- If anything is wrong: `sudo bash /opt/expenses-axf/apps/expenses/deploy/install.sh --rollback` (before merge: the worktree copy). Read `_claude/builds/reports/expenses-port.md`.
 
 ### Plugin lazy loader (`plugin-lazy-load`, Current, Opus) — branch `claude/plugin-lazy-load`
 - **Asked (Brett, Nov 3 2026, voice):** "The console gets slower as more plugins are installed." "Anytime I hot render … it reloads all the plugins." "Put in the plugin manager plugin all the ways to configure the lazy loader…" Addendum: "banners need to be the very first thing to load." Full brief: orchestrator build `plugin-lazy-load`.
@@ -669,46 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 05:50 UTC · `lenny-land-all` → complete, merged, note (current) · reconciler
-- 2026-11-04 10:44 UTC · `land-round-2` added (9 steps) (current) · foreign-write
-- 2026-11-04 10:48 UTC · `terminal-no-focus` added (3 steps) (current) · foreign-write
-- 2026-11-04 10:48 UTC · `terminal-no-focus` added (3 steps) (current) · janitor-joey
-- 2026-11-04 10:53 UTC · `terminal-no-focus` s1 done, → running (current) · orchestrator
-- 2026-11-04 10:53 UTC · `terminal-no-focus` s2 done (current) · orchestrator
-- 2026-11-04 10:53 UTC · `terminal-no-focus` s1 done, s2 done (current) · foreign-write
-- 2026-11-04 10:54 UTC · `terminal-no-focus` s2 done (current) · foreign-write
-- 2026-11-04 10:55 UTC · `terminal-no-focus` s3 done, → complete (current) · orchestrator
-- 2026-11-04 10:55 UTC · `terminal-no-focus` → built, PR #305 (current) · builds-live
-- 2026-11-04 11:01 UTC · `terminal-no-focus` added (3 steps) (current) · foreign-write
-- 2026-11-04 11:08 UTC · `terminal-no-focus` note (current) · orchestrator
-- 2026-11-04 11:08 UTC · `terminal-no-focus` note (current) · foreign-write
-- 2026-11-04 11:09 UTC · `expenses-port` added (6 steps) (current) · orchestrator
-- 2026-11-04 11:11 UTC · `expenses-port` note (current) · orchestrator
-- 2026-11-04 11:12 UTC · `expenses-port` s1 done, → running (current) · orchestrator
-- 2026-11-04 11:12 UTC · `expenses-port` s2 done (current) · orchestrator
-- 2026-11-04 11:15 UTC · `expenses-port` s3 done (current) · orchestrator
-- 2026-11-04 10:43 UTC · `land-round-2` added (9 steps) (current) · orchestrator
-- 2026-11-04 10:43 UTC · `land-round-2` → running (current) · orchestrator
-- 2026-11-04 11:19 UTC · `terminal-no-focus` note (current) · foreign-write
-- 2026-11-04 11:19 UTC · `expenses-port` added (6 steps) (current) · foreign-write
-- 2026-11-04 11:19 UTC · `land-round-2` note (current) · orchestrator
-- 2026-11-04 11:25 UTC · `land-round-2` note (current) · foreign-write
-- 2026-11-04 11:25 UTC · `expenses-port` s4 done (current) · orchestrator
-- 2026-11-04 11:33 UTC · `expenses-port` s5 done (current) · orchestrator
-- 2026-11-04 11:35 UTC · `expenses-port` PR #307 (current) · builds-live
-- 2026-11-04 11:35 UTC · `expenses-port` s6 done, → built (current) · orchestrator
-- 2026-11-04 12:05 UTC · `molly-console-commands` merged (current) · builds-live
-- 2026-11-04 12:05 UTC · `console-wake` → complete, PR #288, merged (urgent) · builds-live
-- 2026-11-04 12:06 UTC · `land-round-2` s1 done, → running (current) · orchestrator
-- 2026-11-04 12:06 UTC · `land-round-2` note (current) · orchestrator
-- 2026-11-04 12:16 UTC · `molly-banners` → complete, merged (current) · builds-live
-- 2026-11-04 12:19 UTC · `hotfix-build-manager` added (4 steps) (current) · foreign-write
-- 2026-11-04 12:24 UTC · `hotfix-build-manager` added (4 steps) (current) · foreign-write
-- 2026-11-04 12:28 UTC · `hotfix-build-manager` s1 done, → running (current) · builds-page
-- 2026-11-04 12:28 UTC · `hotfix-build-manager` s1 done (current) · foreign-write
-- 2026-11-04 12:29 UTC · `hotfix-build-manager` s1 undone (current) · builds-page
-- 2026-11-04 12:30 UTC · `urgent-land-lazy-loader` added (4 steps) (current) · builds-live
-- 2026-11-04 12:34 UTC · `hotfix-build-manager` s1 undone (current) · foreign-write
 - 2026-11-04 12:34 UTC · `urgent-land-lazy-loader` added (4 steps) (current) · foreign-write
 - 2026-11-04 12:36 UTC · `urgent-land-lazy-loader` added (4 steps) (current) · foreign-write
 - 2026-11-04 12:29 UTC · `hotfix-build-manager` s1 undone (current) · foreign-write
@@ -1069,6 +1043,46 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:11 UTC · `console-wake-finish` s5 done, → complete, note (current) · foreign-write
 - 2026-11-04 15:11 UTC · `merge-queue` s6 done, → complete (current) · foreign-write
 - 2026-11-04 15:11 UTC · `app-voice-commands` s1 done, note (current) · foreign-write
+- 2026-11-04 15:11 UTC · `apps-control-surface` s1 done (current) · orchestrator
+- 2026-11-04 15:11 UTC · `apps-control-surface` s1 done (current) · foreign-write
+- 2026-11-04 15:20 UTC · `expenses-port` → complete, merged, note (current) · reconciler
+- 2026-11-04 15:05 UTC · `urgent-land-gizmo-chat` note (current) · orchestrator
+- 2026-11-04 15:24 UTC · `expenses-port` note (current) · foreign-write
+- 2026-11-04 15:24 UTC · `urgent-land-gizmo-chat` merged (current) · builds-live
+- 2026-11-04 15:25 UTC · `gizmo-companion` note (current) · foreign-write
+- 2026-11-04 15:25 UTC · `urgent-land-gizmo-chat` note (current) · foreign-write
+- 2026-11-04 15:24 UTC · `gizmo-companion` merged (current) · builds-live
+- 2026-11-04 15:24 UTC · `gizmo-companion` → running, note (current) · orchestrator
+- 2026-11-04 15:25 UTC · `gizmo-companion` merged, note (current) · reconciler
+- 2026-11-04 15:25 UTC · `urgent-land-gizmo-chat` merged, note (current) · reconciler
+- 2026-11-04 15:29 UTC · `urgent-land-gizmo-chat` → complete, note (current) · foreign-write
+- 2026-11-04 15:29 UTC · `tab-group-assets` added (6 steps) (current) · orchestrator
+- 2026-11-04 15:29 UTC · `tab-group-assets` → running (current) · orchestrator
+- 2026-11-04 15:29 UTC · `gizmo-companion` note (current) · foreign-write
+- 2026-11-04 15:29 UTC · `tab-group-assets` added (6 steps) (current) · foreign-write
+- 2026-11-04 15:28 UTC · `urgent-land-gizmo-chat` → complete, note (current) · reconciler
+- 2026-11-04 15:28 UTC · `urgent-land-gizmo-chat` → complete, note (current) · reconciler
+- 2026-11-04 15:29 UTC · `jump-menu-asset` added (5 steps) (current) · orchestrator
+- 2026-11-04 15:32 UTC · `gizmo-companion` note (current) · foreign-write
+- 2026-11-04 15:32 UTC · `expenses-port` note (current) · foreign-write
+- 2026-11-04 15:32 UTC · `urgent-land-gizmo-chat` → complete, note (current) · foreign-write
+- 2026-11-04 15:32 UTC · `apps-control-surface` s1 done (current) · foreign-write
+- 2026-11-04 15:32 UTC · `tab-group-assets` added (6 steps) (current) · foreign-write
+- 2026-11-04 15:32 UTC · `jump-menu-asset` added (5 steps) (current) · foreign-write
+- 2026-11-04 15:32 UTC · `app-voice-commands` s2 done (current) · orchestrator
+- 2026-11-04 15:32 UTC · `app-voice-commands` note (current) · orchestrator
+- 2026-11-04 15:32 UTC · `app-voice-commands` s3 done (current) · orchestrator
+- 2026-11-04 15:33 UTC · `gizmo-companion` note (current) · foreign-write
+- 2026-11-04 15:33 UTC · `expenses-port` note (current) · foreign-write
+- 2026-11-04 15:33 UTC · `urgent-land-gizmo-chat` → complete, note (current) · foreign-write
+- 2026-11-04 15:33 UTC · `app-voice-commands` s2 done, s3 done, s4 done, note (current) · foreign-write
+- 2026-11-04 15:33 UTC · `tab-group-assets` added (6 steps) (current) · foreign-write
+- 2026-11-04 15:33 UTC · `jump-menu-asset` added (10 steps) (current) · foreign-write
+- 2026-11-04 15:32 UTC · `app-voice-commands` s4 done (current) · orchestrator
+- 2026-11-04 15:33 UTC · `apps-control-surface` s2 done (current) · orchestrator
+- 2026-11-04 15:33 UTC · `apps-control-surface` s3 done (current) · orchestrator
+- 2026-11-04 15:33 UTC · `apps-control-surface` s4 done (current) · orchestrator
+- 2026-11-04 15:33 UTC · `molly-console-commands` note (current) · orchestrator
 
 ## Token passes (log)
 

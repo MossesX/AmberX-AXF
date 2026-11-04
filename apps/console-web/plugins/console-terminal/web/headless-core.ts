@@ -1,8 +1,14 @@
 /*
  * Headless tabs — the pure parts (no React, no network), shared by the terminal's web files and its self-test
- * (framework/spec/check-headless-tabs.mts): tab tmux names, the live meter's display helpers, which headless sessions
- * get a tab, and the context chain's reveal pacing.
+ * (framework/spec/check-headless-tabs.mts): tab tmux names and which headless sessions get a tab. The live meter's
+ * display helpers and the context chain's reveal pacing moved to the framework's claude-session library (Nov 3 2026,
+ * build gizmo-companion) so AmberX's companion reads the same copy; they are re-exported here unchanged.
  */
+export {
+  PACE, advance, modelName, money, statusOf, steps,
+  type ChainItem, type ChainNode, type ChainReason, type ChainRule, type Meter, type MeterStatus, type Speed,
+} from '../../../src/axf/libs/claude-session/core';
+import { advance, steps, type ChainItem, type ChainNode, type Speed } from '../../../src/axf/libs/claude-session/core';
 
 /** The bits of a tab's Open these helpers read. */
 export interface OpenLike { kind: string; attach?: string; via?: string }
@@ -43,69 +49,6 @@ export function planNew(mode: NewSessionMode, fresh: Headless[], hasWindow: bool
   if (mode === 'nothing') return { open: [], wait: [], raise: false };
   if (mode === 'front') return { open: fresh, wait: [], raise: true };
   return hasWindow ? { open: fresh, wait: [], raise: false } : { open: [], wait: fresh, raise: false };
-}
-
-export type MeterStatus = 'starting' | 'working' | 'waiting' | 'done' | 'failed';
-export interface Meter {
-  session: string; name: string; agent: string; model: string; modelKey: string; status: MeterStatus; toolRunning: boolean; ended: boolean;
-  costUsd: number; costEstimated: boolean; priced: boolean; tokens: { input: number; output: number; cacheRead: number; cacheWrite: number };
-  turns: number; tools: number; runs: number; lastEventAt: string; startedAt: string; chainCount: number; chainVersion: number;
-}
-
-const WAIT_AFTER_MS = 60_000;
-/** working → waiting when nothing came for a minute and no tool is running (Claude Code is quiet). Pure. */
-export function statusOf(m: Pick<Meter, 'status' | 'toolRunning' | 'lastEventAt'> | null | undefined, now = Date.now()): MeterStatus | null {
-  if (!m) return null;
-  if (m.status === 'working' && !m.toolRunning && now - Date.parse(m.lastEventAt) > WAIT_AFTER_MS) return 'waiting';
-  return m.status;
-}
-/** 'claude-opus-5-5' → 'Opus 5.5', 'opus' → 'Opus', '' → ''. Pure. */
-export function modelName(id: string): string {
-  const m = /(fable|opus|sonnet|haiku)[-_ ]?(\d+)?(?:[-_.](\d+))?/i.exec(id || '');
-  if (!m) return id || '';
-  const fam = m[1]!.charAt(0).toUpperCase() + m[1]!.slice(1).toLowerCase();
-  return m[2] ? `${fam} ${m[2]}${m[3] ? `.${m[3]}` : ''}` : fam;
-}
-/** $0.00 under $10, $12.3 under $100, $123 above. Pure. */
-export function money(v: number | null | undefined): string {
-  if (typeof v !== 'number' || !Number.isFinite(v)) return '';
-  return v < 10 ? `$${v.toFixed(2)}` : v < 100 ? `$${v.toFixed(1)}` : `$${Math.round(v)}`;
-}
-
-
-export interface ChainRule { kind: 'heading' | 'item'; level: number; text: string }
-/** Why a file is in the chain (claude-meter.mjs): Claude Code loaded it, an @import, a mention the session followed, … */
-export type ChainReason = 'session-start' | 'import' | 'reference' | 'session-start rule' | 'read' | 'nested memory';
-export interface ChainItem { i: number; path: string; rel: string; via: string; reason?: ChainReason | string; depth: number; parent: string; parentI?: number; why?: string; at: string; rules: ChainRule[] }
-/** A chain item with the items it pulled in. */
-export interface ChainNode extends ChainItem { children: ChainNode[] }
-export type Speed = 'slow' | 'normal' | 'fast' | 'instant';
-
-/** Characters per second and the pause after each rule, per speed. */
-export const PACE: Record<Speed, { cps: number; pauseMs: number }> = {
-  slow: { cps: 18, pauseMs: 900 }, normal: { cps: 45, pauseMs: 450 }, fast: { cps: 140, pauseMs: 120 }, instant: { cps: Infinity, pauseMs: 0 },
-};
-
-/** The reveal order: each file (rule -1 = its header), then each of its rules. Pure. */
-export function steps(items: ChainItem[]): { item: number; rule: number; len: number }[] {
-  const out: { item: number; rule: number; len: number }[] = [];
-  items.forEach((it, k) => { out.push({ item: k, rule: -1, len: 0 }); it.rules.forEach((r, j) => out.push({ item: k, rule: j, len: r.text.length })); });
-  return out;
-}
-
-/** Advance a reveal cursor by `ms` of time. Returns the new {step, chars, wait}. Pure, so the pacing is testable. */
-export function advance(cur: { step: number; chars: number; wait: number }, seq: { len: number; rule: number }[], ms: number, speed: Speed): { step: number; chars: number; wait: number } {
-  const pace = PACE[speed];
-  let { step, chars, wait } = cur;
-  let left = ms;
-  while (left > 0 && step < seq.length) {
-    if (wait > 0) { const w = Math.min(wait, left); wait -= w; left -= w; if (wait > 0) break; step++; chars = 0; continue; }
-    const s = seq[step]!;
-    if (s.rule === -1) { wait = pace.pauseMs; if (!wait) { step++; chars = 0; } continue; }
-    if (!Number.isFinite(pace.cps)) { chars = s.len; } else { const n = Math.floor((left * pace.cps) / 1000); if (n <= 0) break; const take = Math.min(n, s.len - chars); chars += take; left -= (take * 1000) / pace.cps; }
-    if (chars >= s.len) { wait = pace.pauseMs; if (!wait) { step++; chars = 0; } }
-  }
-  return { step, chars, wait };
 }
 
 
