@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 989,
- "updatedAt": "2026-11-04T21:56:56.829Z",
+ "rev": 990,
+ "updatedAt": "2026-11-04T21:58:22.605Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -85057,6 +85057,116 @@
    "steps": [
     {
      "id": "s1",
+     "uid": "st-mw2nogx5013aol",
+     "title": "",
+     "text": "Timeline core: turn a change entry (+ build origin) into chat messages (brett/amber/agent/system), split session-rules boilerplate out of the brief; unit tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T21:53:46.272Z",
+     "updatedAt": "2026-11-04T21:55:49.901Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw2nogx502u98t",
+     "title": "",
+     "text": "Shared ChatLog component built on the Chat viewer's message components (export them), Markdown brief collapsed with Show full brief, Session rules toggle",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T21:53:46.272Z",
+     "updatedAt": "2026-11-04T21:55:49.901Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw2nogx5031q15",
+     "title": "",
+     "text": "Codebase changes expanded entry: chip header + chat log, Classic view toggle (saved setting)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T21:53:46.272Z",
+     "updatedAt": "2026-11-04T21:55:49.901Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw2nogx504m261",
+     "title": "",
+     "text": "Build manager row expansion uses the same component",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T21:53:46.272Z",
+     "updatedAt": "2026-11-04T21:55:49.901Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mw2nogx505be0l",
+     "title": "",
+     "text": "Type-check, tests, README, phone + desktop shots to UI Review Screenshots, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T21:53:46.272Z",
+     "updatedAt": "2026-11-04T21:55:49.901Z"
+    },
+    {
+     "id": "s6-5",
      "uid": "st-mw2npekj01q6p6",
      "title": "",
      "text": "Timeline core: turn a change entry (+ build origin) into chat messages (brett/amber/agent/system), split session-rules boilerplate out of the brief; unit tests",
@@ -85078,7 +85188,7 @@
      "updatedAt": "2026-11-04T21:56:33.615Z"
     },
     {
-     "id": "s2",
+     "id": "s7-6",
      "uid": "st-mw2npekj02p9o2",
      "title": "",
      "text": "Shared ChatLog component built on the Chat viewer's message components (export them), Markdown brief collapsed with Show full brief, Session rules toggle",
@@ -85100,7 +85210,7 @@
      "updatedAt": "2026-11-04T21:56:33.615Z"
     },
     {
-     "id": "s3",
+     "id": "s8-7",
      "uid": "st-mw2npekj03ycqb",
      "title": "",
      "text": "Codebase changes expanded entry: chip header + chat log, Classic view toggle (saved setting)",
@@ -85122,7 +85232,7 @@
      "updatedAt": "2026-11-04T21:56:33.615Z"
     },
     {
-     "id": "s4",
+     "id": "s9-8",
      "uid": "st-mw2npekj04387e",
      "title": "",
      "text": "Build manager row expansion uses the same component",
@@ -85144,7 +85254,7 @@
      "updatedAt": "2026-11-04T21:56:33.615Z"
     },
     {
-     "id": "s5",
+     "id": "s10-9",
      "uid": "st-mw2npekj05cona",
      "title": "",
      "text": "Type-check, tests, README, phone + desktop shots to UI Review Screenshots, PR",
@@ -85166,7 +85276,7 @@
      "updatedAt": "2026-11-04T21:56:33.615Z"
     },
     {
-     "id": "s6-5",
+     "id": "s11-10",
      "uid": "st-mw2nntre01o4vd",
      "title": "",
      "text": "Timeline core: turn a change entry (+ build origin) into chat messages (brett/amber/agent/system), split session-rules boilerplate out of the brief; unit tests",
@@ -85188,7 +85298,7 @@
      "updatedAt": "2026-11-04T21:55:19.990Z"
     },
     {
-     "id": "s7-6",
+     "id": "s12-11",
      "uid": "st-mw2nntre02uy4i",
      "title": "",
      "text": "Shared ChatLog component built on the Chat viewer's message components (export them), Markdown brief collapsed with Show full brief, Session rules toggle",
@@ -85210,7 +85320,7 @@
      "updatedAt": "2026-11-04T21:55:19.990Z"
     },
     {
-     "id": "s8-7",
+     "id": "s13-12",
      "uid": "st-mw2nntre03jk7h",
      "title": "",
      "text": "Codebase changes expanded entry: chip header + chat log, Classic view toggle (saved setting)",
@@ -85232,7 +85342,7 @@
      "updatedAt": "2026-11-04T21:55:19.990Z"
     },
     {
-     "id": "s9-8",
+     "id": "s14-13",
      "uid": "st-mw2nntre041ymd",
      "title": "",
      "text": "Build manager row expansion uses the same component",
@@ -85254,7 +85364,7 @@
      "updatedAt": "2026-11-04T21:55:19.990Z"
     },
     {
-     "id": "s10-9",
+     "id": "s15-14",
      "uid": "st-mw2nntre05ujwy",
      "title": "",
      "text": "Type-check, tests, README, phone + desktop shots to UI Review Screenshots, PR",
