@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 637,
- "updatedAt": "2026-11-04T10:56:10.448Z",
+ "rev": 638,
+ "updatedAt": "2026-11-04T11:09:11.556Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -71873,9 +71873,14 @@
    "branch": "claude/terminal-no-focus",
    "pr": "#305",
    "createdAt": "2026-11-04T10:48:28.927Z",
-   "updatedAt": "2026-11-04T10:55:45.083Z",
+   "updatedAt": "2026-11-04T11:08:44.817Z",
    "builtAt": "2026-11-04T10:55:44.452Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Agent Janitor Joey. PR #305: setting newSession (quiet default), REST/MCP/CLI new-session, toolbar badge. CI fixes: help coverage, menu-reach, re-baked stale framework-drafts.json (pre-existing on main). UI Review r-20261104-22549d23 (non-blocking).",
+     "at": "2026-11-04T11:08:44.817Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -71966,7 +71971,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
