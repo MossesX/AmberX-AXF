@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T13:12:26.577Z",
+ "updatedAt": "2026-11-04T13:12:39.886Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -7014,7 +7014,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw24tm2j08dr72"
+     "uid": "st-mw24zfdl016nij"
     },
     {
      "id": "s2",
@@ -7032,7 +7032,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw24tm2j09ev2h"
+     "uid": "st-mw24zfdm02nlev"
     },
     {
      "id": "s3",
@@ -7050,7 +7050,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw24tm2j0asxn3"
+     "uid": "st-mw24zfdm03zekj"
     },
     {
      "id": "s4",
@@ -7068,7 +7068,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw24tm2j0bhwgr"
+     "uid": "st-mw24zfdm046jmp"
     },
     {
      "id": "s5",
@@ -7086,7 +7086,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw24tm2j0cmkpe"
+     "uid": "st-mw24zfdm05a8wz"
     },
     {
      "id": "s6",
@@ -7104,10 +7104,136 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw24tm2j0drzmg"
+     "uid": "st-mw24zfdm06lxvy"
     },
     {
      "id": "s7",
+     "text": "Tests, screenshots, report, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw24zfdm070xtk"
+    },
+    {
+     "id": "s8-7",
+     "text": "Bugs plugin: bug@1 store + REST/MCP/CLI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw24tm2j08dr72"
+    },
+    {
+     "id": "s9-8",
+     "text": "Board UI: grouped list, drag reorder + drag onto builds, live build chips, context menu, filters, banner count",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw24tm2j09ev2h"
+    },
+    {
+     "id": "s10-9",
+     "text": "Move = brief addendum + build step (+ tmux nudge); merged PR marks bugs fixed",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw24tm2j0asxn3"
+    },
+    {
+     "id": "s11-10",
+     "text": "Auto-optimize switch: zero-token matcher, preview, apply/undo",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw24tm2j0bhwgr"
+    },
+    {
+     "id": "s12-11",
+     "text": "Seed today's 8 confirmed bugs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw24tm2j0cmkpe"
+    },
+    {
+     "id": "s13-12",
+     "text": "Addendum 1: group-chat handoffs (accept/bounce, auto-reroute)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw24tm2j0drzmg"
+    },
+    {
+     "id": "s14-13",
      "text": "Tests, screenshots, report, PR",
      "model": "Opus",
      "why": "",
