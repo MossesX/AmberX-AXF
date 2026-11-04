@@ -669,13 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:22 UTC · `builds-one-page-done` s5 done, → built (urgent) · snap-sully
-- 2026-11-03 18:22 UTC · `builds-one-page-done` note (urgent) · snap-sully
-- 2026-11-03 18:23 UTC · `builds-one-page` s13 done, → complete, note (refactor) · foreign-write
-- 2026-11-03 18:23 UTC · `toolbar-tap-confirm` added (21 steps) (urgent) · orchestrator
-- 2026-11-03 18:24 UTC · `toolbar-tap-confirm` branch claude/toolbar-tap-confirm (urgent) · orchestrator
-- 2026-11-03 18:24 UTC · `toolbar-tap-confirm` note (urgent) · orchestrator
-- 2026-11-03 18:25 UTC · `builds-one-page` s16-15 done, s13 done, → complete, note (refactor) · foreign-write
 - 2026-11-03 18:25 UTC · `auto-land` s2 done (urgent) · orchestrator
 - 2026-11-03 18:25 UTC · `auto-land` s3 done (urgent) · orchestrator
 - 2026-11-03 18:28 UTC · `auto-land` s4 done (urgent) · orchestrator
@@ -1069,6 +1062,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:43 UTC · `app-voice-commands` → running (current) · orchestrator
 - 2026-11-04 14:43 UTC · `app-voice-commands` added (6 steps) (current) · foreign-write
 - 2026-11-04 14:43 UTC · `app-voice-commands` note (current) · foreign-write
+- 2026-11-04 14:48 UTC · `browser-automation` note (current) · foreign-write
+- 2026-11-04 14:48 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 14:48 UTC · `profile-lists-home-card` s4 done, → complete (current) · foreign-write
+- 2026-11-04 14:48 UTC · `profile-filter-tables` added (12 steps) (current) · foreign-write
+- 2026-11-04 14:48 UTC · `fable-no-approval` added (3 steps) (current) · foreign-write
+- 2026-11-04 14:48 UTC · `fable-review-nov3` added (7 steps) (current) · foreign-write
+- 2026-11-04 14:48 UTC · `app-voice-commands` added (6 steps) (current) · foreign-write
 
 ## Token passes (log)
 
