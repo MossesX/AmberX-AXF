@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 814,
- "updatedAt": "2026-11-04T15:58:56.744Z",
+ "rev": 815,
+ "updatedAt": "2026-11-04T15:59:33.195Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -80407,7 +80407,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T15:29:38.376Z",
-     "updatedAt": "2026-11-04T15:57:15.399Z"
+     "updatedAt": "2026-11-04T15:58:16.692Z"
     },
     {
      "id": "s3",
@@ -80543,10 +80543,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/jump-menu-asset",
+   "pr": "#326",
    "createdAt": "2026-11-04T15:29:59.385Z",
-   "updatedAt": "2026-11-04T15:57:09.977Z",
+   "updatedAt": "2026-11-04T15:58:17.903Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -80683,7 +80683,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
