@@ -142,7 +142,12 @@ def github_ci_main(token: str, repo: str, f: Fetch = fetch) -> Probe:
         runs = json.loads(body).get("workflow_runs") or []
     except ValueError:
         return p("unknown", "GitHub's Actions answer was cut short.")
-    return ci_main_from_runs(runs)
+
+    def jobs(run_id: Any) -> list[dict[str, Any]]:
+        c, _, b = f(f"{GH}/repos/{repo}/actions/runs/{run_id}/jobs?per_page=100",
+                    {"authorization": f"Bearer {token}", "accept": "application/vnd.github+json"}, max_bytes=400_000)
+        return (json.loads(b).get("jobs") or []) if c == 200 else []
+    return ci_main_from_runs(runs, jobs)
 
 
 def github_ci_main_via(gh: Any, repo: str) -> Probe:
@@ -153,22 +158,40 @@ def github_ci_main_via(gh: Any, repo: str) -> Probe:
         if e.status == 0:
             return p("error", f"Couldn't read CI on main: {str(e)[:120]}", unreachable=True)
         return p("unknown", f"GitHub answered {e.status} for the Actions runs (see the GitHub token check).")
-    r = ci_main_from_runs(runs)
+    r = ci_main_from_runs(runs, lambda run_id: gh.run_jobs(repo, run_id, per_page=100))
     if getattr(gh, "last_route", "") == "axhub":
         r["details"] = [*r.get("details", []), "Read through axHub (github@1)."]
     return r
 
 
-def ci_main_from_runs(runs: list[dict[str, Any]]) -> Probe:
+CI_BAD = ("failure", "timed_out", "startup_failure")
+
+
+def failing_jobs(jobs_of: Callable[[Any], list[dict[str, Any]]] | None, run: dict[str, Any]) -> list[str]:
+    """Names of a run's failed jobs (empty when they can't be read: the run itself still counts)."""
+    if jobs_of is None or run.get("id") is None:
+        return []
+    try:
+        return [str(j.get("name")) for j in jobs_of(run["id"]) if isinstance(j, dict) and j.get("conclusion") in CI_BAD][:12]
+    except Exception:  # noqa: BLE001 - a jobs read that fails never hides the red run
+        return []
+
+
+def ci_main_from_runs(runs: list[dict[str, Any]], jobs_of: Callable[[Any], list[dict[str, Any]]] | None = None) -> Probe:
+    """Newest completed run per workflow; any failed = red, naming the failing jobs (`jobs`) for the Auto fix's brief."""
     latest: dict[str, dict[str, Any]] = {}
     for r in runs:
         latest.setdefault(str(r.get("path") or r.get("name")), r)
-    bad = [r for r in latest.values() if r.get("conclusion") in ("failure", "timed_out", "startup_failure")]
+    bad = [r for r in latest.values() if r.get("conclusion") in CI_BAD]
     if bad:
         r = bad[0]
-        return p("error", f"{len(bad)} workflow{'s' if len(bad) != 1 else ''} failing on main: {', '.join(str(x.get('name')) for x in bad)}.",
-                 details=[f"{x.get('name')}: {x.get('conclusion')} at {str(x.get('head_sha') or '')[:7]} ({x.get('html_url')})" for x in bad],
-                 link=str(r.get("html_url") or ""))
+        jobs = {id(x): failing_jobs(jobs_of, x) for x in bad}
+        names = [j for x in bad for j in jobs[id(x)]]
+        what = f": {', '.join(names)}" if names else f": {', '.join(str(x.get('name')) for x in bad)}"
+        return p("error", f"{len(bad)} workflow{'s' if len(bad) != 1 else ''} failing on main{what}.",
+                 details=[f"{x.get('name')}: {x.get('conclusion')} at {str(x.get('head_sha') or '')[:7]} ({x.get('html_url')})"
+                          + (f" · failing jobs: {', '.join(jobs[id(x)])}" if jobs[id(x)] else "") for x in bad],
+                 link=str(r.get("html_url") or ""), jobs=names, sha=str(r.get("head_sha") or ""))
     return p("ok", f"The last run of each of {len(latest)} workflow{'s' if len(latest) != 1 else ''} on main passed.")
 
 

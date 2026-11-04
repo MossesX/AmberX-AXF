@@ -16,6 +16,7 @@ import calendar
 import json
 import os
 import re
+import subprocess
 import time
 from pathlib import Path
 from typing import Any, Callable
@@ -233,7 +234,11 @@ def register_builtins(reg: Registry, *, root: Path, repo: str, hub_jobs: Callabl
                   "when": lambda: bool(tok()) or (github_svc is not None and github_svc.hub.configured()),
                   "run": lambda: probes.github_ci_main_via(gh_ci, repo) if gh_ci is not None else probes.github_ci_main(tok(), repo),
                   "links": [{"label": "Actions on main", "url": f"https://github.com/{repo}/actions?query=branch%3Amain"}],
-                  "instructions": ["Open the failing run, fix it on a branch, merge the fix."]}, OWNER)
+                  "instructions": ["Auto fix hands the failing run to the agent who owns the ci-fix job (agent-job.mjs ci-fix): "
+                                   "it fixes each failure at the root on a branch and opens a small PR that auto-merges.",
+                                   "By hand: open the failing run, fix it on a branch, merge the fix."]}, OWNER)
+    reg.add_autofix("ci-main", {"label": "Queue a CI fix for a free agent",
+                                "run": lambda: queue_ci_fix(reg.checks()["ci-main"]["run"]())}, OWNER)
 
     def stuck() -> dict[str, Any]:
         svc = plugin_services.get("axf.changes@1")
@@ -326,6 +331,38 @@ def fix_builds_stuck() -> str:
             svc.abandon(str(e["id"]), by="systems-check")
             n += 1
     return f"marked {n} stuck build{'s' if n != 1 else ''} stalled"
+
+
+_ci_fix_queued: dict[str, str] = {}  # main commit → the job run queued for it, so one red commit gets one fix job
+
+
+def _agent_job(*args: str) -> dict[str, Any]:
+    """framework/cli/agent-job.mjs: the router picks the agent who owns the job type (on duty, under budget)."""
+    proc = subprocess.run(["node", str(cx.ROOT / "framework" / "cli" / "agent-job.mjs"), *args, "--json"], cwd=cx.ROOT,
+                          capture_output=True, text=True, timeout=120)
+    out = proc.stdout.strip().splitlines()
+    try:
+        return json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-300:] or "no output"}
+    except json.JSONDecodeError:
+        return {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-300:]}
+
+
+def queue_ci_fix(ci: dict[str, Any], run: Callable[..., dict[str, Any]] | None = None) -> dict[str, Any]:
+    """Auto fix for ci-main: hand the failing run (its link, failing jobs and commit) to the ci-fix job's owner."""
+    if ci.get("status") != "error":
+        return {"state": "done", "message": "CI on main is not red any more."}
+    sha = str(ci.get("sha") or "")
+    if sha and sha in _ci_fix_queued:
+        return {"state": "started", "message": f"a CI fix is already queued for {sha[:7]} ({_ci_fix_queued[sha]})"}
+    jobs = ", ".join(ci.get("jobs") or []) or "every failing job of that run"
+    r = (run or _agent_job)("ci-fix", "--input", f"run={ci.get('link') or ''}", "--input", f"jobs={jobs}"[:2000], "--input", f"sha={sha}")
+    if not r.get("ok"):
+        return {"state": "failed", "message": f"couldn't queue the CI fix: {str(r.get('error') or r.get('why') or 'no agent free')[:200]}"}
+    rid = str(r.get("runId") or "")
+    if sha:
+        _ci_fix_queued[sha] = rid
+    return {"state": "started", "jobId": rid, "link": str(ci.get("link") or ""),
+            "message": f"queued for {r.get('agent') or 'an agent'} ({rid}): {jobs}"}
 
 
 def _quick(e: dict[str, Any], now: float) -> bool:
