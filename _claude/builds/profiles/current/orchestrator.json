@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T01:45:18.241Z",
+ "updatedAt": "2026-11-04T01:46:59.655Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4779,10 +4779,28 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1gdizs01mlwb"
+     "uid": "st-mw1g75cz01rkbl"
     },
     {
      "id": "s7-6",
+     "text": "Adopt the profile filter in the remaining builds tables: Orchestrator view (needs an all-profiles projection), Pending, Queue, Plan, Tracker, Git status board, Crew, Home cards; existing bulk CLI/MCP commands (land-all, merge batch) take resolveFilter + profiles arg",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1gdizs01mlwb"
+    },
+    {
+     "id": "s8-7",
      "text": "Adopt the profile filter in the remaining builds tables: Orchestrator view (needs an all-profiles projection), Pending, Queue, Plan, Tracker, Git status board, Crew, Home cards; existing bulk CLI/MCP commands (land-all, merge batch) take resolveFilter + profiles arg",
      "model": "Opus",
      "why": "",

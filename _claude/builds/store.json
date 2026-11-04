@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 593,
- "updatedAt": "2026-11-04T01:45:18.241Z",
+ "rev": 594,
+ "updatedAt": "2026-11-04T01:46:59.655Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -68148,6 +68148,28 @@
     },
     {
      "id": "s11",
+     "uid": "st-mw1g75cz01rkbl",
+     "title": "",
+     "text": "Adopt the profile filter in the remaining builds tables: Orchestrator view (needs an all-profiles projection), Pending, Queue, Plan, Tracker, Git status board, Crew, Home cards; existing bulk CLI/MCP commands (land-all, merge batch) take resolveFilter + profiles arg",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T01:38:36.950Z",
+     "updatedAt": "2026-11-04T01:38:38.435Z"
+    },
+    {
+     "id": "s7-6",
      "uid": "st-mw1gdizs01mlwb",
      "title": "",
      "text": "Adopt the profile filter in the remaining builds tables: Orchestrator view (needs an all-profiles projection), Pending, Queue, Plan, Tracker, Git status board, Crew, Home cards; existing bulk CLI/MCP commands (land-all, merge batch) take resolveFilter + profiles arg",
@@ -68169,7 +68191,7 @@
      "updatedAt": "2026-11-04T01:43:36.040Z"
     },
     {
-     "id": "s7-6",
+     "id": "s8-7",
      "uid": "st-mw1g9jpk01cth4",
      "title": "",
      "text": "Adopt the profile filter in the remaining builds tables: Orchestrator view (needs an all-profiles projection), Pending, Queue, Plan, Tracker, Git status board, Crew, Home cards; existing bulk CLI/MCP commands (land-all, merge batch) take resolveFilter + profiles arg",
