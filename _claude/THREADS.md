@@ -898,6 +898,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 05:27 UTC · `banner-ref-links` note (current) · foreign-write
 - 2026-11-04 05:27 UTC · `whats-new-open-fix` note (current) · foreign-write
 - 2026-11-04 05:27 UTC · `terminal-drag-chain-tree` note (current) · foreign-write
+- 2026-11-04 05:27 UTC · `lenny-land-all` s6 done (current) · orchestrator
+- 2026-11-04 05:27 UTC · `lenny-land-all` s7 done, → complete (current) · orchestrator
+- 2026-11-04 05:27 UTC · `lenny-land-all` → built, branch claude/lenny-land-all, PR #304 (current) · builds-live
 
 ## Token passes (log)
 
