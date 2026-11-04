@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 640,
- "updatedAt": "2026-11-04T11:12:22.099Z",
+ "rev": 641,
+ "updatedAt": "2026-11-04T11:12:52.141Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -72083,14 +72083,14 @@
    "title": "Expenses port: bring Expenses into AmberX-AXF as its own app",
    "category": "Apps",
    "detail": "Port MossesX/Expense (live amberx-expenses) into apps/expenses with history; framework bake, axHub look, Molly frame; deploy from AXF on the same /data volume with rollback; API/MCP/CLI; report.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/expenses-port",
    "pr": "",
    "createdAt": "2026-11-04T11:09:10.279Z",
-   "updatedAt": "2026-11-04T11:11:28.331Z",
+   "updatedAt": "2026-11-04T11:12:51.322Z",
    "builtAt": "",
    "notes": [
     {
@@ -72128,12 +72128,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-04T11:12:51.322Z",
+     "note": "MossesX/Expense = the real app (25 commits, 336 files, live amberx-expenses, Brett ledger 524 entries). MossesX/Expenses = README + CLAUDE.md only, 4 commits, nothing to port.",
+     "rev": 2,
      "createdAt": "2026-11-04T11:09:10.280Z",
-     "updatedAt": "2026-11-04T11:09:10.280Z"
+     "updatedAt": "2026-11-04T11:12:51.356Z"
     },
     {
      "id": "s2",
@@ -72254,7 +72254,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
