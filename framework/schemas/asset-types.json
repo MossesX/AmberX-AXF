@@ -1629,6 +1629,41 @@
       },
       "optional": true
     },
+    "voice-command": {
+      "label": "Voice commands",
+      "group": "Commands",
+      "icon": "mic",
+      "shared": false,
+      "description": "An app's voice commands (voice-command@1, rules core/engines/voice-command-rules.mjs): for every command the app exposes through its API, MCP tools, CLI or web actions, the phrases a person may say ({slot} placeholders), the slots (text, number, money, date, choice, id, yesno), the confirm rule (reads and navigation never ask, writes ask only for missing slots, destructive always asks; a command may ask more, never less), how it runs on each transport and what to answer. Generated from the app's command surface by framework/cli/voice-commands.mjs for every app whose project manifest says framework.forFramework; authored commands survive regeneration. Molly matches and runs them. Not drawn: it carries no colours or sizes.",
+      "required": [
+        "app",
+        "commands"
+      ],
+      "enums": {
+        "source": [
+          "generated",
+          "authored",
+          "mixed"
+        ]
+      },
+      "nested": {},
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "forFramework": "copied from the project manifest: is this app for the framework's own development?",
+        "source": "generated (from the surface), authored (by hand) or mixed",
+        "generatedFrom": "the transports the generator read: api, mcp, cli, action",
+        "wake": "names a phrase may start with (\"expenses, add …\") or end with (\"… in expenses\"); default the app name",
+        "commands[].confirm": "never | missing | always, at or above the effect's floor",
+        "commands[].slots": "{ name: { type, required?, options?, say?, default? } }",
+        "commands[].say": "the answer sentence; {slot} and {result} are filled",
+        "commands[].help": "one line for \"what can I say\"",
+        "commands[].source": "generated | authored (authored ones are kept when the file is regenerated)"
+      }
+    },
     "uac-policy": {
       "label": "User account control",
       "group": "System",

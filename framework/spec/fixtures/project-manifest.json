@@ -40,7 +40,9 @@
     ],
     "ok": true,
     "errors": [],
-    "warnings": []
+    "warnings": [
+      "for-framework-noted"
+    ]
   },
   "valid-no-file-access": {
     "manifest": {
@@ -78,7 +80,9 @@
     },
     "ok": true,
     "errors": [],
-    "warnings": []
+    "warnings": [
+      "for-framework-noted"
+    ]
   },
   "not-an-object": {
     "manifest": [
@@ -143,7 +147,9 @@
     "errors": [
       "name-format"
     ],
-    "warnings": []
+    "warnings": [
+      "for-framework-noted"
+    ]
   },
   "reserved-name": {
     "manifest": {
@@ -183,7 +189,9 @@
     "errors": [
       "name-reserved"
     ],
-    "warnings": []
+    "warnings": [
+      "for-framework-noted"
+    ]
   },
   "no-repo": {
     "manifest": {
@@ -218,7 +226,9 @@
       "repo-name",
       "repo-exists"
     ],
-    "warnings": []
+    "warnings": [
+      "for-framework-noted"
+    ]
   },
   "repo-without-exists": {
     "manifest": {
@@ -255,7 +265,9 @@
     "errors": [
       "repo-exists"
     ],
-    "warnings": []
+    "warnings": [
+      "for-framework-noted"
+    ]
   },
   "future-repo-no-location": {
     "manifest": {
@@ -290,7 +302,8 @@
     "ok": true,
     "errors": [],
     "warnings": [
-      "location-when-no-repo"
+      "location-when-no-repo",
+      "for-framework-noted"
     ]
   },
   "bad-vocab": {
@@ -383,7 +396,9 @@
     "errors": [
       "data-paths"
     ],
-    "warnings": []
+    "warnings": [
+      "for-framework-noted"
+    ]
   },
   "missing-data-files": {
     "manifest": {
@@ -424,7 +439,8 @@
     "errors": [],
     "warnings": [
       "data-paths-exist",
-      "app-manifest-exists"
+      "app-manifest-exists",
+      "for-framework-noted"
     ]
   },
   "warnings-only": {
@@ -474,6 +490,7 @@
       "repo-url",
       "version",
       "created",
+      "for-framework-noted",
       "unknown-keys"
     ]
   },
@@ -515,7 +532,9 @@
     "errors": [
       "display-name"
     ],
-    "warnings": []
+    "warnings": [
+      "for-framework-noted"
+    ]
   },
   "name-trailing-newline": {
     "manifest": {
@@ -555,7 +574,9 @@
     "errors": [
       "name-format"
     ],
-    "warnings": []
+    "warnings": [
+      "for-framework-noted"
+    ]
   },
   "pattern-input-too-long": {
     "manifest": {
@@ -595,7 +616,8 @@
     "ok": true,
     "errors": [],
     "warnings": [
-      "repo-url"
+      "repo-url",
+      "for-framework-noted"
     ]
   }
 }

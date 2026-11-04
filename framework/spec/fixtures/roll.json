@@ -49,6 +49,7 @@
     "job-type": false,
     "card": false,
     "help": false,
+    "voice-command": false,
     "uac-policy": false
   },
   "cases": {

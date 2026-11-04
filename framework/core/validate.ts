@@ -11,6 +11,7 @@ import { layoutErrors } from './engines/layout-rules.mjs';
 import { helpErrors } from './engines/help-rules.mjs';
 import { agentCardErrors } from './engines/agent-card-rules.mjs';
 import { jobTypeErrors } from './engines/job-type-rules.mjs';
+import { voiceCommandErrors } from './engines/voice-command-rules.mjs';
 import { cardErrors } from './engines/card-rules.mjs';
 import { behaviorErrors } from './engines/behavior';
 import { dockLayoutErrors } from './engines/dock';
@@ -125,6 +126,8 @@ export function validateAsset(raw: unknown): ValidationResult {
   errors.push(...agentCardErrors(raw.type, data));
   // job-type@1: ONE validator shared with the build engine (core/engines/job-type-rules.mjs)
   errors.push(...jobTypeErrors(raw.type, data));
+  // voice-command@1: ONE validator shared with the build engine (core/engines/voice-command-rules.mjs)
+  errors.push(...voiceCommandErrors(raw.type, data));
   // card@1: ONE validator shared with the build engine (core/engines/card-rules.mjs)
   errors.push(...cardErrors(raw.type, data));
   errors.push(...(brandAssetErrors(raw.type, data) ?? []));

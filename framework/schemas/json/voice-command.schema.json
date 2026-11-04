@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/voice-command.schema.json",
+  "title": "AmberX AXF Voice commands asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "voice-command"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "app",
+        "commands"
+      ],
+      "properties": {
+        "app": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{0,62}$",
+          "description": "the app (its project manifest name)"
+        },
+        "commands": {
+          "type": "array",
+          "maxItems": 600,
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "title",
+              "effect",
+              "run",
+              "phrases"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_.-]{0,63}$"
+              },
+              "title": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "effect": {
+                "enum": [
+                  "read",
+                  "write",
+                  "destructive",
+                  "navigate"
+                ]
+              },
+              "confirm": {
+                "enum": [
+                  "never",
+                  "missing",
+                  "always"
+                ]
+              },
+              "run": {
+                "type": "object",
+                "properties": {
+                  "api": {
+                    "type": "string"
+                  },
+                  "mcp": {
+                    "type": "string"
+                  },
+                  "cli": {
+                    "type": "string"
+                  },
+                  "action": {
+                    "type": "string"
+                  }
+                },
+                "minProperties": 1
+              },
+              "slots": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "required": [
+                    "type"
+                  ],
+                  "properties": {
+                    "type": {
+                      "enum": [
+                        "text",
+                        "number",
+                        "money",
+                        "date",
+                        "choice",
+                        "id",
+                        "yesno"
+                      ]
+                    },
+                    "required": {
+                      "type": "boolean"
+                    },
+                    "options": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "maxItems": 40
+                    },
+                    "say": {
+                      "type": "string"
+                    },
+                    "default": {}
+                  }
+                },
+                "maxProperties": 12
+              },
+              "phrases": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 12,
+                "items": {
+                  "type": "string",
+                  "maxLength": 120
+                }
+              },
+              "say": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "help": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "source": {
+                "enum": [
+                  "generated",
+                  "authored"
+                ]
+              }
+            }
+          }
+        },
+        "forFramework": {
+          "type": "boolean",
+          "description": "copied from the project manifest: is this app for the framework's own development?"
+        },
+        "source": {
+          "enum": [
+            "generated",
+            "authored",
+            "mixed"
+          ]
+        },
+        "generatedFrom": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "api",
+              "mcp",
+              "cli",
+              "action"
+            ]
+          }
+        },
+        "wake": {
+          "type": "array",
+          "maxItems": 6,
+          "items": {
+            "type": "string"
+          },
+          "description": "names a phrase may start with (\"expenses, add …\") or end with (\"… in expenses\")"
+        }
+      }
+    }
+  }
+}
