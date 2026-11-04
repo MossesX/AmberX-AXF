@@ -569,7 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 20:12 UTC · `profile-manager` s1 done, s2 done (current) · foreign-write
 - 2026-11-03 20:12 UTC · `window-resize-fix` s3 done, → built (current) · orchestrator
 - 2026-11-03 20:12 UTC · `window-resize-fix` note (current) · orchestrator
 - 2026-11-03 20:12 UTC · `window-resize-fix` → complete (current) · orchestrator
@@ -969,3 +968,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 00:42 UTC · `profile-switcher-widget` note (current) · foreign-write
 - 2026-11-04 00:48 UTC · `plugin-lazy-load` s1 done, s2 done (current) · foreign-write
 - 2026-11-04 00:48 UTC · `profile-switcher-widget` added (5 steps) (current) · foreign-write
+- 2026-11-04 00:48 UTC · `browser-automation` s1 done (current) · orchestrator

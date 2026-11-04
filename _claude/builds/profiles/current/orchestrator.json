@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T00:49:26.936Z",
+ "updatedAt": "2026-11-04T00:50:30.844Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4339,7 +4339,7 @@
    "branch": "claude/browser-automation",
    "pr": "",
    "createdAt": "2026-11-04T00:31:47.837Z",
-   "updatedAt": "2026-11-04T00:32:29.268Z",
+   "updatedAt": "2026-11-04T00:48:26.942Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -4358,10 +4358,10 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T00:48:26.942Z",
      "note": "",
-     "uid": "st-mw1e404t01ffab"
+     "uid": "st-mw1dt95p0h99uo"
     },
     {
      "id": "s2",
@@ -4379,7 +4379,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1e404t0244i9"
+     "uid": "st-mw1dt95p0i53rr"
     },
     {
      "id": "s3",
@@ -4397,7 +4397,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1e404t03129w"
+     "uid": "st-mw1dt95p0j4y85"
     },
     {
      "id": "s4",
@@ -4415,7 +4415,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1e404t047eud"
+     "uid": "st-mw1dt95p0km41z"
     },
     {
      "id": "s5",
@@ -4433,7 +4433,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1e404t053gcp"
+     "uid": "st-mw1dt95p0lguxg"
     },
     {
      "id": "s6",
@@ -4451,7 +4451,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1e404t060rzy"
+     "uid": "st-mw1dt95p0m4vnl"
     },
     {
      "id": "s7",
@@ -4469,7 +4469,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1e404t07tx06"
+     "uid": "st-mw1dt95p0ngt38"
     },
     {
      "id": "s8",
@@ -4487,7 +4487,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1e404t08u51s"
+     "uid": "st-mw1dt95p0o6vsl"
     },
     {
      "id": "s9",
@@ -4505,7 +4505,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1e404t09izgw"
+     "uid": "st-mw1dt95p0pfmm1"
     },
     {
      "id": "s10",
@@ -4523,7 +4523,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1e404t0a2un0"
+     "uid": "st-mw1dt95p0qb5lk"
     },
     {
      "id": "s11",
@@ -4541,7 +4541,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1e404t0bvjcw"
+     "uid": "st-mw1dt95p0rfv8k"
     },
     {
      "id": "s12",
@@ -4559,7 +4559,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1e404t0cha33"
+     "uid": "st-mw1dt95p0sabgz"
     },
     {
      "id": "s13",
@@ -4577,7 +4577,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1e404t0dx965"
+     "uid": "st-mw1dt95p0ts27e"
     },
     {
      "id": "s14",
@@ -4595,7 +4595,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1e404t0eebsb"
+     "uid": "st-mw1dt95p0u5iu1"
     },
     {
      "id": "s15",
@@ -4613,298 +4613,10 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1e404t0framm"
-    },
-    {
-     "id": "s16",
-     "text": "Starter routines (log in, grab a product's price on toscrape test sites), tests, phone + desktop shots, UI Review, report (cost, Chromium memory), THREADS, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw1e404t0gcudl"
-    },
-    {
-     "id": "s17-16",
-     "text": "Browser host: Node Playwright service (sessions, tabs, persisted profile per workspace, navigate/back/forward/reload, device size, CDP screencast + input over websocket, downloads, screenshot, extract) + tests",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw1dt95p0h99uo"
-    },
-    {
-     "id": "s18-17",
-     "text": "Plugin server part: FastAPI routes proxying the host (REST), websocket relay, plugin.json, install/uninstall, health check in Systems check",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw1dt95p0i53rr"
-    },
-    {
-     "id": "s19-18",
-     "text": "Live view UI: URL bar, back/forward/reload, tabs, phone/desktop size, zoom, canvas with click/type/scroll forwarding (framework controls, tokens only)",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw1dt95p0j4y85"
-    },
-    {
-     "id": "s20-19",
-     "text": "CLI + MCP tools for driving (open, navigate, click, type, screenshot, extract, tabs) + container/service deploy for the host on the VPS",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw1dt95p0km41z"
-    },
-    {
-     "id": "s21-20",
-     "text": "routine@1 asset type contract: asset-types.json entry, validator, routine engine (step model, selectors, variables, loops/conditions, extract, vault refs), fixture, starter asset",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw1dt95p0lguxg"
-    },
-    {
-     "id": "s22-21",
-     "text": "Recorder: in-page capture of navigate/click/type/select/scroll/wait/upload into routine@1 steps with selector candidates (role/text/test-id, CSS fallback) + thumbnails; password masking",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw1dt95p0m4vnl"
-    },
-    {
-     "id": "s23-22",
-     "text": "Replay runner: run all, step-by-step, run from here, highlight current step in the live view, waits/retries/timeouts, vault refs resolved at run time",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw1dt95p0ngt38"
-    },
-    {
-     "id": "s24-23",
-     "text": "Routine editor UI: step list (type, target, value, wait, retries, timeout, screenshot), edit/reorder/disable/duplicate, variables",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw1dt95p0o6vsl"
-    },
-    {
-     "id": "s25-24",
-     "text": "Editor: loops/conditions (if exists, for each), Extract steps (text, attribute, table, list -> JSON/CSV)",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw1dt95p0pfmm1"
-    },
-    {
-     "id": "s26-25",
-     "text": "JavaScript editor per step + routine (highlight, run-in-page, console output) + selector picker from the live view",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw1dt95p0qb5lk"
-    },
-    {
-     "id": "s27-26",
-     "text": "Test run with per-step pass/fail and diff of results against the last run",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "25",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw1dt95p0rfv8k"
-    },
-    {
-     "id": "s28-27",
-     "text": "Scheduler engine: once / every N / daily / weekly / cron, America/New_York, enable/pause, run now, retries, max concurrent, time limits (framework work scheduler contract)",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw1dt95p0sabgz"
-    },
-    {
-     "id": "s29-28",
-     "text": "Scheduler UI + run history (logs, screenshots, extracted data) + notify on fail/result (banner/push)",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw1dt95p0ts27e"
-    },
-    {
-     "id": "s30-29",
-     "text": "Assistant panel docked beside the live view: chat drives the browser via tools and records each step as it goes, narrates; take over by hand and hand back",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw1dt95p0u5iu1"
-    },
-    {
-     "id": "s31-30",
-     "text": "Assistant edits/explains/fixes routines and creates schedules; MCP tools for record/routines/schedules so Amber and Gizmo can do it from their chats",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
      "uid": "st-mw1dt95p0vndfj"
     },
     {
-     "id": "s32-31",
+     "id": "s16",
      "text": "Starter routines (log in, grab a product's price on toscrape test sites), tests, phone + desktop shots, UI Review, report (cost, Chromium memory), THREADS, PR",
      "model": "Opus",
      "why": "",
