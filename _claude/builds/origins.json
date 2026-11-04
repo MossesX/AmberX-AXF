@@ -1880,6 +1880,18 @@
    "from": "detail",
    "addenda": []
   },
+  "urgent-console-perf": {
+   "said": "How come console is taking forever to load? I thought lazy loader was in. ... Can we dig into it? ... (after the diagnosis) Yes.",
+   "at": "2026-11-04T16:13:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "urgent-land-gizmo-chat": {
    "said": "Is the Claude chat feature built yet? ... So put another agent on to do it now.",
    "at": "2026-11-04T14:14:12.849Z",

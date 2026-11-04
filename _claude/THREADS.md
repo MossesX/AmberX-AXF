@@ -683,7 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 13:27 UTC · `hotfix-build-manager` s1 done, → complete (current) · builds-page
 - 2026-11-04 13:48 UTC · `bugs-board` PR #311 (current) · builds-live
 - 2026-11-04 13:48 UTC · `bugs-board` s7 done, → built (current) · orchestrator
 - 2026-11-04 13:48 UTC · `bugs-board` note (current) · orchestrator
@@ -1083,6 +1082,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 17:03 UTC · `tab-group-assets` note (current) · foreign-write
 - 2026-11-04 17:03 UTC · `settings-placement-everywhere` note (current) · foreign-write
 - 2026-11-04 17:03 UTC · `live-sessions-plugin` added (6 steps) (current) · foreign-write
+- 2026-11-04 17:04 UTC · `urgent-console-perf` added (5 steps) (urgent) · orchestrator
 
 ## Token passes (log)
 
