@@ -9,9 +9,10 @@
  * kept with the tab. Whenever the link is lost for good (server session gone, console restarted, page reloaded) the tab
  * opens a new link on the same name: the server replays the pane's scrollback and re-attaches, so nothing is lost.
  */
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { Button, Icon, useRuntime } from '@console/axf/react';
+import { autoTermSize, isPhone, onSizeMemory, resolveSize, setSizeMemory, sizeMemory, stepSize } from './textsize';
 import { SCHEMES, call, getSettings, loadXterm, lookOptions, onSettings, parseOpen, post, socketUrl, tabPrefs, tabSessions, themeFromTokens, type Open, type SessionInfo, type Settings, type TmuxSession, type XTerm } from './api';
 import { patchSession, setCtl, type Conn, type HostSession } from './hosts';
 
@@ -20,8 +21,8 @@ import { persistable, tmuxName } from './headless-core';
 /** Is this tmux session still there? (the link ended: re-attach, or the session itself ended) */
 async function tmuxAlive(name: string, where: string | null | undefined): Promise<boolean> {
   try {
-    const r = await call<{ vps: { items: TmuxSession[] }; console: TmuxSession[] }>('tmux');
-    return (where === 'console' ? r.console : r.vps.items).some((x) => x.name === name);
+    const r = await call<{ vps: { items: TmuxSession[] }; console: TmuxSession[]; mine?: TmuxSession[] }>('tmux');
+    return [...(where === 'console' ? r.console : r.vps.items), ...(r.mine ?? []).filter((x) => x.where === (where ?? 'vps'))].some((x) => x.name === name);
   } catch { return true; } // can't tell: try to attach (the server says if it ended)
 }
 
@@ -64,7 +65,19 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
   const prefs = tabPrefs.get(tab.id);
   const [mouse, setMouse] = useState(prefs?.mouse ?? false);
   const [mosh, setMosh] = useState(prefs?.mosh ?? false);
-  const [fontSize, setFontSize] = useState(14);
+  // text size (terminal-drag-chain-tree): this tab's own on this device, else its profile's, else the default for a
+  // phone or a desktop, else the theme's text tokens (textsize.ts)
+  const sizes = useSyncExternalStore(onSizeMemory, sizeMemory);
+  const [auto, setAuto] = useState(0);
+  const sizeAt = { tab: session.open?.attach || session.open?.tmux || session.id, profile: session.open?.profile };
+  const fontSize = resolveSize('term', { ...sizeAt, phone: isPhone(), auto, defaults: settings ?? {}, memory: sizes });
+  const fontSizeRef = useRef(fontSize); fontSizeRef.current = fontSize;
+  const zoom = (by: number | 'reset') => setSizeMemory(stepSize(sizeMemory(), 'term', by, fontSizeRef.current, sizeAt));
+  // the size needs the settings and the token size even before (or without) a live xterm
+  useEffect(() => {
+    setAuto(autoTermSize(host.current ?? document.body, isPhone()));
+    void getSettings().then((x) => { settingsRef.current = x; setSettings(x); }, () => undefined);
+  }, []);
   const [search, setSearch] = useState<string | null>(null);
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
   const [pending, setPending] = useState('');
@@ -72,6 +85,7 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
   const [ctrlOn, setCtrlOn] = useState(false);
 
   const send = (data: string) => {
+    if (openRef.current.readOnly) return; // a mirror: Jump in to type
     const ws = wsRef.current;
     if (ws && ws.readyState === WebSocket.OPEN) ws.send(new TextEncoder().encode(data));
     if (mosh && /^[\x20-\x7e]+$/.test(data)) setPending((p) => (p + data).slice(-80)); // predictive echo until the server answers
@@ -161,12 +175,13 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
     const cleanups: (() => void)[] = [];
     void (async () => {
       const s = await getSettings().catch(() => null);
-      if (s) { settingsRef.current = s; setSettings(s); setFontSize(s.fontSize); if (!prefs) { setMouse(s.mouseDefault); setMosh(s.moshDefault); } }
+      if (host.current) setAuto(autoTermSize(host.current, isPhone()));
+      if (s) { settingsRef.current = s; setSettings(s); if (!prefs) { setMouse(s.mouseDefault); setMosh(s.moshDefault); } }
       const L = await loadXterm().catch((e: Error) => { setErr(e.message); return null; });
       if (!L || disposed || !host.current) return;
       const el = host.current;
       const term = new L.Terminal({
-        ...lookOptions(s, el), fontSize: s?.fontSize ?? 14,
+        ...lookOptions(s, el), fontSize: s ? resolveSize('term', { ...sizeAt, phone: isPhone(), auto: autoTermSize(el, isPhone()), defaults: s, memory: sizeMemory() }) : fontSizeRef.current,
         allowProposedApi: true, macOptionIsMeta: true, rightClickSelectsWord: false, altClickMovesCursor: true,
       });
       const fit = new L.FitAddon();
@@ -187,7 +202,7 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
       const d5 = (term as unknown as { onBell(f: () => void): { dispose(): void } }).onBell(() => ring(el, settingsRef.current?.bell ?? 'visual'));
       cleanups.push(() => { d1.dispose(); d2.dispose(); d3.dispose(); d4.dispose(); d5.dispose(); });
       // every open terminal follows a settings save, live
-      cleanups.push(onSettings((ns) => { settingsRef.current = ns; setSettings(ns); const o = lookOptions(ns, el); for (const [k, v] of Object.entries(o)) term.options[k] = v; try { fit.fit(); } catch { /* hidden */ } }));
+      cleanups.push(onSettings((ns) => { settingsRef.current = ns; setSettings(ns); setAuto(autoTermSize(el, isPhone())); const o = lookOptions(ns, el); for (const [k, v] of Object.entries(o)) term.options[k] = v; try { fit.fit(); } catch { /* hidden */ } }));
       term.attachCustomKeyEventHandler((e) => {
         if (e.type !== 'keydown') return true;
         const k = e.key.toLowerCase();
@@ -266,13 +281,20 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
     <button type="button" role="menuitem" className="fx-menu__item" disabled={disabled} onClick={() => { setMenu(null); fn(); }}><Icon name={icon} size={13} /> {label}</button>
   );
 
+  /** Jump in: the read-only mirror becomes a writable link on the same tmux session (scrollback replayed). */
+  const jumpIn = () => {
+    const o: Open = { ...openRef.current, readOnly: false }; openRef.current = o; patchSession(session.id, { open: o });
+    const srv = tabSessions.get(tab.id); const ws = wsRef.current; wsRef.current = null; ws?.close();
+    if (srv) void call(`sessions/${srv}`, { method: 'DELETE' }).catch(() => undefined);
+    tabSessions.delete(tab.id); offset.current = 0; termRef.current?.reset(); alive.current = true; void start(o);
+  };
   const restart = () => { alive.current = true; tabSessions.delete(tab.id); offset.current = 0; termRef.current?.reset(); void start(openRef.current); };
   // the host's toolbar and tab strip act on this session through its control handle
   useEffect(() => {
     const t = () => termRef.current;
     setCtl(tab.id, {
       conn, info, mouse, mosh, fontSize,
-      setMouse, setMosh, zoom: (d) => setFontSize((f) => Math.max(8, Math.min(32, f + d))), search: () => setSearch(''),
+      setMouse, setMosh, zoom, search: () => setSearch(''),
       copy: () => { const x = t(); if (x?.hasSelection()) void navigator.clipboard?.writeText(x.getSelection()); },
       paste: (plain) => void pasteFromClipboard(plain), selectAll: () => t()?.selectAll(), clear: () => t()?.clear(), restart,
       focus: () => t()?.focus(), menu: (x, y) => setMenu({ x, y }),
@@ -306,6 +328,12 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
           <button type="button" className="fx-iconbtn" onClick={() => setSearch(null)}><Icon name="x" size={14} /></button>
         </form>
       )}
+      {open.readOnly && (
+        <div className={`${P}__mirror`} role="status">
+          <Icon name="eye" size={14} /><span className="fx-grow">Mirror, read-only: you see {open.attach ?? 'this session'} live; nothing you type reaches it.</span>
+          <Button tone="primary" icon="edit" onClick={jumpIn}>Jump in</Button>
+        </div>
+      )}
       {pasteAsk !== null && (
         <div className={`${P}__warn`} role="alertdialog">
           <span className="fx-grow">Paste {pasteAsk.split('\n').length} lines? Each line runs as you paste it.</span>
@@ -321,7 +349,7 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
           {conn === 'closed' && <Button tone="ghost" icon="refresh" onClick={restart}>Start again</Button>}
         </div>
       )}
-      <div className={`${P}__keys`} role="toolbar" aria-label="Extra keys">
+      <div className={`${P}__keys`} role="toolbar" aria-label="Extra keys" data-axf-tap-confirm="off" data-axf-tap-confirm-reason="soft keyboard keys: every tap types a key, a confirm tap would type nothing">
         {KEYS.map((k) => (
           <button key={k.label} type="button" className={`fx-chip ${P}__key ${k.mod && ctrlOn ? 'is-on' : ''}`} onClick={() => {
             if (k.mod) { ctrl.current = !ctrl.current; setCtrlOn(ctrl.current); } else if (k.seq) send(k.seq);
@@ -335,6 +363,8 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
         <>
           <div className={`${P}__scrim`} onClick={() => setMenu(null)} onContextMenu={(e) => { e.preventDefault(); setMenu(null); }} />
           <div className={`${P}__menu fx-popover`} role="menu" style={{ left: Math.min(menu.x, innerWidth - 220), top: Math.min(menu.y, innerHeight - 320) }}>
+            {menuItem('Terminal settings', 'settings', () => rt.dispatch('settings.open:terminal'))}
+            <div className="axp-wt__sepline" />
             {menuItem('Copy', 'copy', () => { if (term?.hasSelection()) void navigator.clipboard?.writeText(term.getSelection()); }, !term?.hasSelection())}
             {menuItem('Paste', 'paste', () => void pasteFromClipboard(false))}
             {menuItem('Paste as plain text', 'paste', () => void pasteFromClipboard(true))}

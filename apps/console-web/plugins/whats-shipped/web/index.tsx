@@ -17,7 +17,7 @@
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Checkbox, Chip, Icon, Segmented, SelectField, Switch, TextField } from '@console/axf/react';
+import { AgentAvatar, Button, Checkbox, Chip, Icon, Segmented, SelectField, Switch, TextField } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -122,6 +122,7 @@ function ItemRow({ it, isRead, fresh, open, onToggle }: { it: FeedItem; isRead: 
     <li className={`axp-whats-shipped__item${isRead ? '' : ' is-unread'}${fresh ? ' is-fresh' : ''}`}>
       <button type="button" data-fx-row className="axp-whats-shipped__head" aria-expanded={open} onClick={() => { onToggle(); if (!isRead && rt) setRead(rt, [it.id]); }}>
         <span className="axp-whats-shipped__dot" aria-hidden="true" />
+        {it.build ? <AgentAvatar inText={it.build.id} size="small" noMenu /> : null}
         <span className="axp-whats-shipped__title">{it.title}</span>
         <span className="fx-small fx-muted axp-whats-shipped__when">{ago(it.mergedAt)}</span>
       </button>
@@ -173,7 +174,7 @@ function Panel() {
   const pick = (g: GroupBy) => { setBy(g); rt?.settings.set(KEYS.group, g); };
   return (
     <div className="fx-stack axp-whats-shipped">
-      <div className="fx-row fx-row--wrap axp-whats-shipped__bar">
+      <div className="fx-row fx-row--wrap axp-whats-shipped__bar" role="toolbar" aria-label="What's shipped">
         <Segmented label="Group" value={by} onChange={pick} options={GROUPS.map((g) => ({ value: g, label: GROUP_LABEL[g], icon: GROUP_ICON[g] }))} />
         <TextField label="Search" value={q} onChange={setQ} placeholder="Search features, builds, apps" className="axp-whats-shipped__search" />
       </div>
@@ -251,6 +252,9 @@ export const plugin: AxfWebLibrary = {
   provides: ['banner.status.whats-shipped'],
   register(rt) {
     rt.actions.register('whats-shipped.open', () => rt.openDialog('whats-shipped.panel'), { label: "Show what's new" });
+    // the app-wide "open What's new" hook: anything else that says What's new (the systems check's strip) opens this
+    // panel through it without naming this plugin
+    rt.actions.register('whats-new.open', () => rt.openDialog('whats-shipped.panel'), { label: "Open the What's new panel", searchable: false });
     rt.actions.register('whats-shipped.read-all', () => setRead(rt, items().map((i) => i.id)), { label: "Mark everything in What's new read" });
     rt.actions.register('whats-shipped.check', () => void refresh(true), { label: "Check what's new now" });
     if (!runtime) for (const k of [KEYS.show, KEYS.ticker, KEYS.read]) rt.settings.onChange(k, () => { if (runtime) paint(runtime); });

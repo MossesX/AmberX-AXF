@@ -138,7 +138,7 @@ function RuleRow({ rule, ds, onChange, onRemove }: { rule: Rule; ds: DatasetInfo
         <SelectField label="Condition" value={rule.op} options={opOptions} onChange={(v) => onChange({ ...rule, op: v as Rule['op'] })} />
         {op.needs !== 0 && op.needs !== 'list' && <TextField label={op.needs === 2 ? 'From' : 'Value'} value={rule.value} onChange={(v) => onChange({ ...rule, value: v })} type={op.numeric ? 'text' : 'search'} placeholder={op.numeric ? 'number or date' : ''} />}
         {op.needs === 2 && <TextField label="To" value={rule.value2 ?? ''} onChange={(v) => onChange({ ...rule, value2: v })} placeholder="number or date" />}
-        <div className="axp-basic-filter__rule-tools">
+        <div className="axp-basic-filter__rule-tools" role="toolbar" aria-label="Rule actions">
           <Switch hideLabel label={rule.off ? 'Rule off' : 'Rule on'} checked={!rule.off} onChange={(on) => onChange({ ...rule, off: !on })} />
           <IconButton icon="trash" label="Remove rule" onClick={onRemove} />
         </div>

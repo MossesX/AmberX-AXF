@@ -1,4 +1,4 @@
-import { createElement, useState } from 'react';
+import { createElement, useEffect, useState } from 'react';
 import { Button, Chip, Slot } from '@console/axf/react';
 import * as consoleApi from '@console/api';
 import * as core from './swarm-core.mjs';
@@ -10,7 +10,8 @@ import { ModelChip, fmtTime, statusText, type Act, type Agent, type SwarmState }
  * Crew: one card per agent (avatar, name, role, specialty, status, hire date, spend, jobs, success rate, failures,
  * avg cost per job, favourite model, last seen, catchphrase, salary, spent, left, bonuses), its skills (every agent on the
  * job crew is an all-rounder since Nov 3 2026), home job and current job; a strip on top shows who's free and who's on
- * what. Tap a card for the profile: bio, skill, pay,
+ * what. Slot `swarm.agent.actions` ({agentId, name, where}) under each card and on the profile's bar takes other plugins'
+ * buttons (e.g. Assign to Claude). Tap a card for the profile: bio, skill, pay,
  * status history and a feed of the latest runs with their cost. Everything is inside the console; no outside
  * social accounts.
  */
@@ -34,6 +35,9 @@ export function Avatar({ a, size = 56 }: { a: Agent; size?: number }) {
   );
 }
 
+/** Window event the agent-swarm.profile action sends with an agent id: the Crew tab opens that profile. */
+export const PROFILE_EVENT = 'axf-swarm:profile';
+
 type JobRef = { id: string; name: string; home?: boolean };
 /** What an agent is on now: its running runs, named by build (headless builds) or job type. */
 const currentOf = (state: SwarmState, id: string) => state.runs.filter((r) => r.agent === id && r.status === 'running').map((r) => r.build || r.jobType || r.buildId || r.jobId);
@@ -45,6 +49,8 @@ const homeName = (a: Agent, jobs: JobRef[]) => jobs.find((j) => j.home)?.name ??
 export function CrewTab({ state, stats, act, jobsBy = {}, allSkills = [], onFeed }: { state: SwarmState; stats: Record<string, Stats>; act: Act; jobsBy?: Record<string, JobRef[]>; allSkills?: string[]; onFeed: (jobId: string) => void }) {
   const [open, setOpen] = useState<string>(() => consoleApi.readLocal('swarm-profile', ''));
   const pick = (id: string) => { setOpen(id); consoleApi.writeLocal('swarm-profile', id); };
+  // the agent-swarm.profile action (an avatar's right-click "Open employee card", anywhere in the console)
+  useEffect(() => { const on = (e: Event) => setOpen(String((e as CustomEvent).detail ?? '')); window.addEventListener(PROFILE_EVENT, on); return () => window.removeEventListener(PROFILE_EVENT, on); }, []);
   const a = state.roster.agents.find((x) => x.id === open);
   if (a) return <Profile a={a} state={state} st={stats[a.id]!} act={act} jobs={jobsBy[a.id] ?? []} allSkills={allSkills} onBack={() => pick('')} onFeed={onFeed} />;
   return (
@@ -122,6 +128,7 @@ function Card({ a, state, st, act, jobs, allSkills, onOpen }: { a: Agent; state:
         <p className="sw-card__quote">“{idn.catchphrase}”</p>
       </button>
       {BENCHED.includes(as.status) && <div className="sw-bar"><Button size="sm" icon="refresh" onClick={() => void act({ action: 'rehire', agent: a.id })}>Rehire</Button>{as.note && <span className="fx-muted">{as.note}</span>}</div>}
+      <Slot name="swarm.agent.actions" props={{ agentId: a.id, name: idn.name, where: 'card' }} />
     </article>
   );
 }
@@ -176,7 +183,7 @@ function Profile({ a, state, st, act, jobs, allSkills, onBack, onFeed }: { a: Ag
   const as = state.swarm.agents[a.id]!; const skill = state.skills[a.skill]; const idn = core.cardIdentity(a, as);
   return (
     <div className="fx-stack">
-      <div className="sw-bar"><Button icon="undo" onClick={onBack}>Crew</Button></div>
+      <div className="sw-bar"><Button icon="undo" onClick={onBack}>Crew</Button><Slot name="swarm.agent.actions" props={{ agentId: a.id, name: idn.name, where: 'profile' }} /></div>
       <div className="sw-card sw-card--profile">
         <div className="sw-card__head">
           <Avatar a={a} size={88} />

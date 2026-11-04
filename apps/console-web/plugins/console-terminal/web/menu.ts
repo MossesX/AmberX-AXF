@@ -6,6 +6,7 @@ export const appMenu: NonNullable<AxfWebLibrary['appMenu']> = [
     id: 'terminal', label: 'Terminal', icon: 'terminal',
     items: [
       { id: 'new', label: 'New terminal', icon: 'terminal', action: 'terminal.new' },
+      { id: 'sessions', label: 'Terminal sessions', icon: 'list', action: 'terminal.sessions' },
       { id: 'settings', label: 'Terminal settings', icon: 'settings', action: 'settings.open:terminal' },
     ],
   }] },

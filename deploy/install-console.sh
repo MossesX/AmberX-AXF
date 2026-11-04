@@ -212,7 +212,9 @@ fi
 axf_update_script /usr/local/bin/axf-console-update "$DIR" "$BRANCH" /var/log/axf-console-update.log \
   "GITHUB_TOKEN=\"$GITHUB_TOKEN\" DOMAIN=\"$DOMAIN\" NAME=\"$NAME\" DIR=\"$DIR\" PORT=\"$PORT\" bash \"$DIR/deploy/install-console.sh\"" \
   "$DIR/.axf-console/update-status.json" "$DIR/.axf-console/wall-waiting"
-axf_cron_file axf-console "*/5 * * * * root /usr/local/bin/axf-console-update"
+# One run at a time (Nov 4 2026): a rebuild can take longer than 5 minutes under load, and stacked runs each rebuilt
+# the image and restarted the console (five at once starved Docker and kept it down for about 12 minutes).
+axf_cron_file axf-console "*/5 * * * * root flock -n /run/axf-console-update.lock /usr/local/bin/axf-console-update"
 # Builds reconciler (orch-live-sync, Nov 3 2026): links open PRs and claude/* branches to their builds, records merges,
 # lists orphans for the systems check; its store writes go live to main as status-only commits (builds-live.mjs).
 axf_cron_file axf-builds-reconcile "*/10 * * * * root cd $DIR && node framework/cli/builds-reconcile.mjs --apply --brief >> /var/log/axf-builds-reconcile.log 2>&1"

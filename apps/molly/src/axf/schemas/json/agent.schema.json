@@ -28,6 +28,18 @@
       "type": "string",
       "maxLength": 40
     },
+    "skills": {
+      "type": "array",
+      "maxItems": 60,
+      "items": {
+        "type": "string",
+        "maxLength": 40
+      }
+    },
+    "home": {
+      "type": "string",
+      "maxLength": 40
+    },
     "jobsOnly": {
       "type": "boolean"
     },

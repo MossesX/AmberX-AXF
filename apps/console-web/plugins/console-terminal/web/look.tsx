@@ -12,11 +12,11 @@ import { blankProfile } from './profiles';
 export type Level = 'simple' | 'basic' | 'developer' | 'administrator';
 /** Every terminal setting's level (what the level toolbar shows at Simple, Basic, Developer; Administrator = all). */
 export const LEVELS: Record<string, Level> = {
-  scheme: 'simple', fontSize: 'simple', windowsLook: 'simple', toolbar: 'simple', startup: 'simple',
+  scheme: 'simple', fontSize: 'simple', fontSizePhone: 'simple', chainTextSize: 'basic', windowsLook: 'simple', toolbar: 'simple', startup: 'simple',
   fontFamily: 'basic', cursorStyle: 'basic', mica: 'basic', newTab: 'basic', tabWidth: 'basic', closeConfirm: 'basic', copyOnSelect: 'basic', pasteWarn: 'basic',
   'profile.name': 'basic', 'profile.model': 'basic', 'profile.connection': 'basic', 'profile.color': 'basic',
   lineHeight: 'developer', scrollback: 'developer', padding: 'developer', bell: 'developer', cursorBlink: 'developer', mouseDefault: 'developer', moshDefault: 'developer',
-  persistTabs: 'basic', splitDefault: 'basic', chainSpeed: 'simple', showChain: 'basic',
+  persistTabs: 'basic', splitDefault: 'basic', chainSpeed: 'simple', showChain: 'basic', sessionsNav: 'simple',
   'profile.permissionMode': 'developer', 'profile.flags': 'developer', 'profile.cwd': 'developer', 'profile.prompt': 'developer', 'profile.icon': 'developer',
 };
 
@@ -45,7 +45,9 @@ export function AppearancePanel() {
         <L k="fontFamily"><TextField label="Font" value={s.fontFamily} placeholder="Cascadia Mono, Consolas" onChange={(v) => save({ fontFamily: v }, 600)} hint="Empty = Cascadia Mono, then Consolas, then the theme’s monospace font" /></L>
         <L k="cursorStyle"><SelectField label="Cursor" value={s.cursorStyle} options={[{ value: 'bar', label: 'Bar ( ┃ )' }, { value: 'block', label: 'Block ( █ )' }, { value: 'underline', label: 'Underline ( ▁ )' }]} onChange={(v) => save({ cursorStyle: v as Settings['cursorStyle'] })} /></L>
       </div>
-      <L k="fontSize"><Slider label="Text size" value={s.fontSize} min={9} max={28} unit="pt" onChange={(v) => save({ fontSize: v }, 300)} /></L>
+      <L k="fontSize"><Slider label="Text size (computer; each tab keeps its own A− / A+ size, Ctrl+0 resets)" value={s.fontSize} min={9} max={28} unit="px" onChange={(v) => save({ fontSize: v }, 300)} /></L>
+      <L k="fontSizePhone"><Slider label={s.fontSizePhone ? 'Text size on a phone' : 'Text size on a phone: Auto (the theme’s small text)'} value={s.fontSizePhone ?? 0} min={0} max={28} unit={s.fontSizePhone ? 'px' : ' (Auto)'} onChange={(v) => save({ fontSizePhone: v > 0 && v < 7 ? 7 : v }, 300)} /></L>
+      <L k="chainTextSize"><Slider label="Context chain text size (share of the theme’s text)" value={s.chainTextSize ?? 100} min={60} max={200} step={10} unit="%" onChange={(v) => save({ chainTextSize: v }, 300)} /></L>
       <L k="lineHeight"><Slider label="Line height" value={Math.round(s.lineHeight * 100)} min={100} max={200} step={5} unit="%" onChange={(v) => save({ lineHeight: v / 100 }, 300)} /></L>
       <L k="padding"><Slider label="Padding" value={s.padding} min={0} max={4} onChange={(v) => save({ padding: v }, 300)} /></L>
       <L k="windowsLook"><Switch label="Windows look" hint="Windows Terminal tabs and shapes. Off = the app’s own tab bar." checked={s.windowsLook} onChange={(v) => save({ windowsLook: v })} /></L>
@@ -87,6 +89,7 @@ export function HeadlessPanel() {
   return (
     <div className="fx-stack axp-terminal-settings">
       <L k="persistTabs"><Switch label="Tabs live in tmux sessions (survive reloads, sleep and restarts; attach from Moshi)" checked={s.persistTabs} onChange={(v) => save({ persistTabs: v })} /></L>
+      <L k="sessionsNav"><Switch label="Sessions list on the left of every terminal window (My sessions, Agents, Connections)" checked={s.sessionsNav !== false} onChange={(v) => save({ sessionsNav: v })} /></L>
       <L k="showChain"><Switch label="Headless tabs show the context chain next to the session" checked={s.showChain} onChange={(v) => save({ showChain: v })} /></L>
       <div className="axp-terminal__cols">
         <L k="splitDefault"><SelectField label="Split for new headless tabs" value={s.splitDefault} options={[{ value: 'side', label: 'Side by side' }, { value: 'stacked', label: 'Stacked' }, { value: 'none', label: 'No split' }]} onChange={(v) => save({ splitDefault: v as Settings['splitDefault'] })} /></L>

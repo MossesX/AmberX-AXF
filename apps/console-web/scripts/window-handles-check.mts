@@ -46,12 +46,18 @@ for (const [id, label] of [[std, 'standard'], [bare, 'frameless']] as const) {
 }
 ok(!grips(big) && html.includes(`data-fx-window="${big}"`), 'a maximized window has no handles');
 
+// move grip (terminal-drag-chain-tree): a frameless window always has something to drag it by; a standard one has its title bar
+const win = (id: string) => html.match(new RegExp(`<div class="fx-window [^"]*"[^>]*data-fx-window="${id}">(.*?)<div class="fx-window__body"`))?.[1] ?? '';
+ok(win(bare).includes('fx-window__grip fx-window__grip--float'), 'a frameless window with no grip of its own gets the host grip');
+ok(!win(std).includes('fx-window__grip'), 'a standard window has no extra grip (its title bar drags)');
 // the stylesheet: handles take touch, straddle the border and get a finger-sized band on coarse pointers
 const css = readFileSync(new URL('../src/axf/ui/axf.css', import.meta.url), 'utf8');
 ok(/\.fx-window__edge \{[^}]*touch-action: none/.test(css), 'handles set touch-action: none');
 ok(/@media \(pointer: coarse\) \{ \.fx-window__edge \{ --fx-win-handle: var\(--fx-row-h\)/.test(css), 'touch band is a row height');
 ok(/\.fx-window__grips > \.fx-window__edge \{ pointer-events: auto/.test(css), 'grips layer passes pointers only to its handles');
 ok(/\.fx-window__grips > \.fx-window__edge--se::after/.test(css), 'every frame shows a corner grip');
+ok(/@media \(pointer: coarse\) \{ \.fx-window__grip \{ min-width: max\(var\(--fx-row-h\), calc\(var\(--fx-space\) \* 5\.5\)\)/.test(css), 'the move grip is a 44 px target on touch screens (tokens)');
+ok(/\.fx-window__grip \{[^}]*touch-action: none[^}]*position: sticky; left: 0/.test(css), 'the grip takes touch and stays put while a full tab strip scrolls');
 const backdrop = Number(css.match(/\.fx-backdrop \{[^}]*z-index: (\d+)/)?.[1]);
 ok(backdrop > 60, `dialog backdrop (${backdrop}) is above the window layer`);
 
@@ -65,4 +71,9 @@ rt.closeDialog();
 rt.settings.set('axf.placement.probe.plugin', 'main');
 rt.dispatch('settings.open:probe-tab');
 ok(!rt.getState().dialog && rt.getState().view === 'settings', 'placement main opens the settings page');
+// the "Opens in" choice says it also decides where the plugin's settings open, and names the plugin
+const { installLibraries } = await import('../src/axf/react/library');
+installLibraries(rt, [{ id: 'probe.term', label: 'Probe Terminal', opens: 'window', dialogs: { 'probe.term.open': { title: 'Open a tab', render: () => null } }, settingsTabs: [{ id: 'probe-term', label: 'Probe Terminal' }] } as never]);
+const desc = rt.settings.groupsIn('probe-term').find((g) => g.id === 'probe.term.placement')?.description ?? '';
+ok(/^Where Probe Terminal \(Open a tab\) opens, and where these settings open/.test(desc), `"Opens in" wording: ${desc.slice(0, 80)}`);
 console.log(`window-handles-check: ${checks} checks passed`);

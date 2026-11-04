@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T02:47:00.160Z",
+ "updatedAt": "2026-11-04T05:50:43.639Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14,14 +14,15 @@
    "title": "Terminal VPS host: headless tabs attach to build tmux sessions",
    "category": "Ops > Terminal",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/terminal-vps-host",
    "pr": "#274",
+   "mergedAt": "2026-11-04T03:59:20Z",
    "createdAt": "2026-11-03T19:31:10.365Z",
-   "updatedAt": "2026-11-03T19:40:53.260Z",
+   "updatedAt": "2026-11-04T04:03:16.252Z",
    "builtAt": "2026-11-03T19:40:51.453Z",
    "notes": [
     {
@@ -31,10 +32,26 @@
     {
      "text": "Reconciler: branch claude/terminal-vps-host (PR #274); PR #274",
      "at": "2026-11-03T19:40:47.953Z"
+    },
+    {
+     "text": "Reconciler: PR #274 merged",
+     "at": "2026-11-04T04:03:16.252Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: terminal-vps-host (Current profile) - URGENT ops fix\n\nBrett, Nov 3 2026: the console Terminal shows NO headless tabs. `console-terminal/headless` read returns `{ready:false, items:[], why:\"the VPS tab isn't set up (Settings -> Plugins -> Terminal -> VPS host)\"}`. So headless-tabs (PR #259, live) can't attach to any build's tmux session. Assigned agent: whoever is free (all-rounder router if on main; else book on **Ping Paulie**; record who). Register in the `current` profile (id `terminal-vps-host`) + banner entry. Fix right away, tell after.\n\n## Do\n- s1 Find how the Terminal plugin (apps/console-web/plugins/console-terminal or terminal) stores the VPS host connection and what it needs (host, user, port, SSH key/agent). Configure it for the axf-console container to reach the VPS host (same Hostinger VPS: host.docker.internal / docker gateway / the VPS address) as root with a dedicated key: generate an ed25519 key for the console, add its public key to /root/.ssh/authorized_keys (restricted is fine), store the private key in the console's secure store / a mounted secret (never in the repo, never echoed in logs).\n- s2 Make the setting persistent across container redeploys (Coolify env/secret or mounted volume) so Lenny's landings don't wipe it. If Coolify config is needed, document it and use the existing Coolify API path (COOLIFY_TOKEN) if available.\n- s3 Verify: `console-terminal/headless` returns ready:true and lists the running axf-* tmux sessions (toolbar-tap-confirm, crew-live, auto-land-2, ui-review-shots, follow-amber, claude-settings, ...); meters return cost; opening the Terminal auto-opens a tab per build with agent + model + live cost.\n- s4 Add a health@1 check: red when the Terminal VPS host isn't ready, with Auto fix. Systems check banner row.\n- s5 Report `_claude/builds/reports/terminal-vps-host.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -159,6 +176,26 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "\"Why can't I resize terminal? All floating windows need to be resizable. And also, I selected dialog for the terminal settings in its settings, but it doesn't open.\"\n\nAssigned agent: whoever is free (router if on main; else **Landin' Lenny**; record who). Register in the `current` profile (id `window-resize-fix`) + banner entry. Fix right away, tell after.",
+    "at": "2026-11-03",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: window-resize-fix (Current profile) - URGENT bug fix\n\n## Brett said (verbatim, Nov 3 2026, voice)\n\"Why can't I resize terminal? All floating windows need to be resizable. And also, I selected dialog for the terminal settings in its settings, but it doesn't open.\"\n\nAssigned agent: whoever is free (router if on main; else **Landin' Lenny**; record who). Register in the `current` profile (id `window-resize-fix`) + banner entry. Fix right away, tell after.\n\n## Bug 1: floating windows can't be resized (phone at least)\n- The window engine got resize from all 8 edges/corners in windows-terminal s6 (refactor-all s17-s23, report `_claude/memory/docs/rebuilds/windows-terminal-fable.md`). Brett can't resize the Terminal floating window now. Find why on the live console (console.amberxai.com, his phone + desktop): handles missing/too small for touch, pointer events not wired for touch (need pointer events + touch-action none on handles), a later change (one-look, xlayout/dock engine #245/#252, compact frame, Molly chrome) overriding the window host, or the Terminal opening in a non-window host.\n- Fix in the framework window host so EVERY floating window in every app is resizable: 8 edges + corners, big enough touch targets on phones (invisible hit area ~16-24 px, visible grip in the corner), min/max size from tokens, remembers size per window, double-tap title = maximize/restore. CI test: every floating window exposes resize handles.\n\n## Bug 2: Terminal settings placement 'dialog' does nothing\n- Terminal's own setting for where its settings open: Brett picked 'dialog' and tapping the gear no longer opens anything (before, it opened the main settings page). Fix so 'dialog' opens the Terminal settings in a pop-up dialog and the main-page option still works. Check every plugin that has this option for the same bug. Coordinate with the queued `plugin-settings-placement` build only via its contract; this is the quick fix for the existing option.\n\n## Done\nTests (resize via pointer + touch, dialog placement), phone + desktop before/after screenshots, UI Review item, report `_claude/builds/reports/window-resize-fix.md`, THREADS, PR, steps through the store. Commits clean and professional.\n## Addendum 1 (Brett, Nov 3 2026, voice): \"Run that right here, right now, and merge it, deploy it.\"\nBrett's explicit order for THIS build only: when tests pass, merge the PR into main yourself right away (do NOT wait for UI Review; still submit the UI Review item for the record, marked 'merged on Brett's order'), then make sure the console (axf-console), axHub web, AmberX web and Molly redeploy with it (CI deploy on main / Coolify redeploy), and confirm the live console has the fix. Keep it small and fast: fix the two bugs, no extras.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": [
+     {
+      "said": "Brett's explicit order for THIS build only: when tests pass, merge the PR into main yourself right away (do NOT wait for UI Review; still submit the UI Review item for the record, marked 'merged on Brett's order'), then make sure the console (axf-console), axHub web, AmberX web and Molly redeploy with it (CI deploy on main / Coolify redeploy), and confirm the live console has the fix. Keep it small and fast: fix the two bugs, no extras.",
+      "at": "2026-11-03",
+      "source": "",
+      "by": "",
+      "verbatim": true
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -221,23 +258,40 @@
    "title": "Terminal: sessions navigation rail",
    "category": "Console > Terminal",
    "detail": "Brett, Nov 3 2026 (voice): a collapsible left nav rail in the existing Terminal plugin listing live sessions (My sessions: tmux/Claude Code + claude.ai chat/voice mirrored from axHub activity; Agents: headless builds; Connections), mirror read-only + Jump in, console_session_note MCP tool. Builds on terminal-vps-host (PR #274). Agent: Earl the Ear (router not on main).",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/terminal-sessions-nav",
    "pr": "#286",
+   "mergedAt": "2026-11-04T04:52:23Z",
    "createdAt": "2026-11-03T19:58:59.822Z",
-   "updatedAt": "2026-11-03T21:45:32.326Z",
+   "updatedAt": "2026-11-04T05:11:56.662Z",
    "builtAt": "2026-11-03T21:45:30.056Z",
    "notes": [
     {
      "text": "Agent: Earl the Ear. PR #286 (on #274). UI Review r-20261103-107a9e61 waiting. Report _claude/builds/reports/terminal-sessions-nav.md",
      "at": "2026-11-03T21:45:32.326Z"
+    },
+    {
+     "text": "Reconciler: PR #286 merged",
+     "at": "2026-11-04T05:11:56.662Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "give the Terminal a collapsible navigation menu on the left listing live sessions, including each session he is personally doing with Claude, so he can mirror it and jump in. Assigned agent: whoever is free (router if on main; else **Earl the Ear**; record who). Register in `current` (id `terminal-sessions-nav`) + banner entry. Runs after / builds on `terminal-vps-host` (the Terminal's VPS host must be set up; if that isn't on main yet, wait for it or include its fix).",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: terminal-sessions-nav (Current profile)\n\nBrett, Nov 3 2026 (voice): give the Terminal a collapsible navigation menu on the left listing live sessions, including each session he is personally doing with Claude, so he can mirror it and jump in. Assigned agent: whoever is free (router if on main; else **Earl the Ear**; record who). Register in `current` (id `terminal-sessions-nav`) + banner entry. Runs after / builds on `terminal-vps-host` (the Terminal's VPS host must be set up; if that isn't on main yet, wait for it or include its fix).\n\n## Build INTO the existing Terminal plugin (Windows Terminal + headless-tabs). No second terminal.\n- s1 **Left nav rail:** collapsible (icon-only collapsed, full when open, swipe/hamburger on phone), framework nav component + tokens, remembers state. Sections: **My sessions** (Brett's own), **Agents** (headless builds, with agent avatar/name, model, live cost, status dot - reuse headless meters), **Connections** (VPS, containers, axHub...). Tap = open/focus that tab; right-click = context menu (open, split, open in Moshi, stop with confirm, session info).\n- s2 **My sessions:** (a) Claude Code sessions he runs (tmux / claude-headless / phone via Moshi, Session check-in archive) - live mirror of the tmux pane, read-only by default, **Jump in** = attach writable and type into it. (b) Claude.ai chat/voice sessions (Amber): claude.ai has no live API for the transcript, so mirror what reaches axHub: every axHub call the session makes (tool, args summary, result, approvals) as a live activity feed per session (group by axHub session/correlation + client), with the session's agent (agent-pick) and cost if known; 'Jump in' = open that chat in claude.ai (deep link if the session reports its URL) and keep the feed beside it. Add MCP tool `console_session_note` (allow) so a Claude session can post what it's saying/doing as short lines into its own mirror feed, and add a rule: 'Chat/voice sessions post a short line to console_session_note when they act.' Zero tokens on the console side.\n- s3 Session list is live (websocket), shows started time + running timer, sort/search/filter, collapsible groups; ended sessions move to a 'Recent' group (link to Session browser).\n- s4 Commands declared once -> REST + MCP + CLI (list sessions, mirror, jump in, stop). Tests, phone + desktop screenshots, UI Review item, report `_claude/builds/reports/terminal-sessions-nav.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -330,6 +384,18 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "a plugin to manage build profiles: view, browse, create, edit, delete, everything. Assigned agent: **Landin' Lenny** (book on his card; if busy and the all-rounder router is on main, whoever is free - record who). Register in the **current** profile (id `profile-manager`) + banner entry. (Profile `current` was just created; if it's missing, create it: `node framework/cli/profiles.mjs create \"Current\" --id current --select`.)",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: profile-manager (Current profile)\n\nBrett, Nov 3 2026 (voice): a plugin to manage build profiles: view, browse, create, edit, delete, everything. Assigned agent: **Landin' Lenny** (book on his card; if busy and the all-rounder router is on main, whoever is free - record who). Register in the **current** profile (id `profile-manager`) + banner entry. (Profile `current` was just created; if it's missing, create it: `node framework/cli/profiles.mjs create \"Current\" --id current --select`.)\n\n## Build on what exists - don't duplicate\nThe console already has the **Build profiles** plugin (`build-profiles`: dialog + settings tab, banner chip, switch/create/rename/remove) over `framework/cli/profiles.mjs` (build-profiles@1) and the builds store. Grow THAT plugin into a full manager page (rename the plugin title to 'Build profiles' manager if needed; keep its id, data and every existing feature).\n\n## Features\n- **Browse:** framework grid of every profile (collapsible rows): name, id, active star, description, counts (builds running / pending / complete / archived, pending items, queue steps), cost spent + cost left, last activity, created; sort/search/filter. Expand a row: its builds (with agent avatars once crew-live lands), pending list, queue, plan summary, files (`profiles.mjs where`).\n- **View** a profile page: all its builds and steps, timeline, totals, links to Builds page views filtered to it.\n- **Create** (name, id, description, copy from another profile, catalog on/off, make active), **Edit** (name, description, catalog, colour/icon for the banner chip), **Switch** (one tap; banner chip + context menu), **Duplicate**, **Merge** two profiles, **Move builds** between profiles (multi-select, drag rows onto a profile), **Archive / hide**, **Delete** = take off the list (data kept, restorable) with confirm; a separate 'Delete data too' that is owner-only and irreversible-confirm. Base profile and active profile can't be deleted.\n- **Cleanup helper:** flag archived builds that are actually complete (reconciler) - e.g. angel, big-dog, breakroom, refactor - with a one-tap fix.\n- Context-menu hooks everywhere: 'Build profiles...' and 'Move to profile' on any build row.\n- Commands declared once -> REST + MCP + CLI (list, get, create, update, select, duplicate, merge, move-builds, archive, remove, restore) so Amber can manage profiles by voice (reads ALLOW policy, changes veto, data delete confirm).\n- Tests, phone + desktop screenshots, UI Review item, report `_claude/builds/reports/profile-manager.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -457,18 +523,36 @@
    "title": "Show what Brett said (verbatim prompt) on every build",
    "category": "Builds",
    "detail": "Brett, Nov 3 2026 (voice), verbatim: \"All the build entries, like wherever it shows a build in the build manager, pending, all that, I need it to show the prompt, what I said, the verbatim prompt that kicked it off, that initiated it.\" Every build entry (Build manager, Pending, Queue, Orchestrator, Steps, Builds page) shows the verbatim prompt that started it, its brief and later addenda.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "code",
    "pendingId": "",
    "branch": "claude/build-prompt-origin",
    "pr": "#282",
+   "mergedAt": "2026-11-04T04:52:23Z",
    "createdAt": "2026-11-03T20:23:37.380Z",
-   "updatedAt": "2026-11-03T20:53:25.027Z",
+   "updatedAt": "2026-11-04T05:11:56.662Z",
    "builtAt": "2026-11-03T20:53:24.237Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #282 merged",
+     "at": "2026-11-04T05:11:56.662Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "All the build entries, like wherever it shows a build in the build manager, pending, all that, I need it to show the prompt, what I said, the verbatim prompt that kicked it off, that initiated it.",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "Janitor Joey (headless build-prompt-origin)",
+    "brief": "# Build: build-prompt-origin (Current profile)\n\nBrett, Nov 3 2026 (voice), verbatim: \"All the build entries, like wherever it shows a build in the build manager, pending, all that, I need it to show the prompt, what I said, the verbatim prompt that kicked it off, that initiated it.\"\nAssigned agent: whoever is free (router if on main; else **Janitor Joey**; record who). Register in `current` (id `build-prompt-origin`) + banner entry.\n\n## Build\n- s1 Data: every build / pending item / orchestrator build / queue epic in the builds store gets an `origin` record: {said: Brett's verbatim words (as transcribed, unedited), at, source: voice|chat|console|code, session/conversation id or link if known, by: which Claude session/agent launched it, brief: the full brief file text, addenda: [{said, at}] for later changes}. Schema + migration in the builds store (orch-live-sync rules), never lost on merge.\n- s2 Capture: `vps.build_start` / claude-headless.sh / orchestrator add / pending_change add / Plan Studio 'turn into a build' accept an `origin.said` field; the brief template gets a required '## Brett said (verbatim)' block that the launcher parses into origin.said. Addendum appends ('## Addendum N (Brett ...)') are parsed into addenda. Rule in shared RULES.md + CLAUDE.md: 'Every build launch includes Brett's exact words verbatim in origin.said / the Brett said block; paraphrase goes in the brief, never in place of his words.'\n- s3 UI: everywhere a build shows (Build manager, Builds page all views, Pending, Queue, Orchestrator, Steps, Build Breaker, What's New banner items, Crew rows, UI Review items, Session browser, PR rows): a 'What Brett said' quote block at the top of the expanded row (speech-bubble style, timestamp, source icon, link to the session), then the brief collapsible below, then addenda in order. Collapsed rows show the first line of what he said as the subtitle. Search covers it.\n- s4 Backfill: for every existing build, fill origin from what exists: the brief file's verbatim quotes (lines quoted after 'Brett ... (voice):'), pending item `detail` text ('Brett, Oct 30 2026 (voice): ...'), THREADS, reports. Mark backfilled ones 'from the brief, may be paraphrased' when it's not clearly verbatim.\n- s5 Commands declared once -> REST + MCP + CLI (get origin, add addendum). Zero tokens. Tests, screenshots, UI Review item, report `_claude/builds/reports/build-prompt-origin.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -708,19 +792,24 @@
    "title": "Banner reference links: tap a mention to open what it refers to",
    "category": "Framework",
    "detail": "Brett (Nov 3 2026, voice): in banner entries (in progress, merged, live, build/status banners, Codebase changes), text that mentions a real thing (screen, settings page, plugin, dialog, toolbar, build, PR, agent, file) becomes a hook: tap = peek card, double-tap = open + highlight, long-press = context menu. ref@1 resolver from the console registries, explicit 'touches:' refs win. Applied in the generic banner item renderer; banner-pack (#251), banner-editor (#254), banners-one untouched. Agent: Ping Paulie (headless worktree session, not on main). Branch claude/banner-ref-links.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/banner-ref-links",
    "pr": "#287",
+   "mergedAt": "2026-11-04T04:52:23Z",
    "createdAt": "2026-11-03T20:47:37.192Z",
-   "updatedAt": "2026-11-03T21:45:25.479Z",
+   "updatedAt": "2026-11-04T05:11:56.662Z",
    "builtAt": "2026-11-03T21:45:20.552Z",
    "notes": [
     {
      "text": "Built by Ping Paulie (headless worktree). PR #287, UI Review r-20261103-1ad2ede3 waiting. Gaps: swarm roster agents not targets (no capability), no touches field on builds yet (text only), UI Review has no per-item deep link. Fable review suggested for the ref@1 contract.",
      "at": "2026-11-03T21:45:25.479Z"
+    },
+    {
+     "text": "Reconciler: PR #287 merged",
+     "at": "2026-11-04T05:11:56.662Z"
     }
    ],
    "approvals": [],
@@ -3112,14 +3201,15 @@
    "title": "Bug fix: tapping the What's new banner item opens nothing; dialogs cannot be closed on phone",
    "category": "",
    "detail": "Brett (Nov 3 2026, voice): \"I see the What's new banner and I'm clicking it. But I'm not seeing anything.\" Addendum: \"I have this banner open. I can't close it.\" Tap opens the panel every time (phone/desktop, standalone/Molly); every dialog closes by X, outside tap, back/Escape, swipe down; control@1 console.dialogs close. Agent: Janitor Joey.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/whats-new-open-fix",
    "pr": "#290",
+   "mergedAt": "2026-11-04T04:52:23Z",
    "createdAt": "2026-11-03T21:23:34.422Z",
-   "updatedAt": "2026-11-03T22:17:02.033Z",
+   "updatedAt": "2026-11-04T05:11:56.662Z",
    "builtAt": "2026-11-03T22:16:59.240Z",
    "notes": [
     {
@@ -3129,6 +3219,10 @@
     {
      "text": "PR #290 open; UI Review r-20261103-049edfb2 waiting (holds the auto-merge until Brett approves). Report _claude/builds/reports/whats-new-open-fix.md",
      "at": "2026-11-03T22:17:02.033Z"
+    },
+    {
+     "text": "Reconciler: PR #290 merged",
+     "at": "2026-11-04T05:11:56.662Z"
     }
    ],
    "approvals": [],
@@ -3231,14 +3325,15 @@
    "title": "Terminal: drag handle + hold-drag tabs, context chain as a tree, settings context menu, per-pane text size",
    "category": "Terminal",
    "detail": "Brett (Nov 3 2026, voice): no spot to drag the Terminal window (all tabs); context chain must show chained MD files as an indented tree; context menu on the Terminal opens its settings (addendum 1); text size per pane, smaller phone default (addendum 2). Agent: Landin Lenny (headless worktree session). Builds on window-resize-fix #278.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/terminal-drag-chain-tree",
    "pr": "#292",
+   "mergedAt": "2026-11-04T04:52:23Z",
    "createdAt": "2026-11-03T21:50:21.572Z",
-   "updatedAt": "2026-11-03T23:58:50.341Z",
+   "updatedAt": "2026-11-04T05:11:56.662Z",
    "builtAt": "2026-11-03T23:55:24.932Z",
    "notes": [
     {
@@ -3252,6 +3347,10 @@
     {
      "text": "All 6 steps done, PR #292 open. UI Review r-20261103-axtev01 (desktop shot; phone shots blocked by VPS load ~100, Snap Sully job queued). Tests: check-headless-tabs 30->58, window-handles-check 30->35, check-windows 383=383, console-terminal tree checks pass (its token-reset check fails on main too). Agent: Landin' Lenny.",
      "at": "2026-11-03T23:53:57.137Z"
+    },
+    {
+     "text": "Reconciler: PR #292 merged",
+     "at": "2026-11-04T05:11:56.662Z"
     }
    ],
    "approvals": [],
@@ -4191,19 +4290,32 @@
    "title": "Land everything finished (freeze plan step two)",
    "category": "Landing",
    "detail": "What Brett said (voice, Nov 3 2026): CI fix is done (PR #284 merged 22:42 UTC, main green). \"Number two.\" Plan step two = merge everything finished. \"Give me Lenny.\"\nAgent: Landin' Lenny. Land #270 first, then #265-#292 oldest first and #279; close #267 (superseded by #284); leave #251/#254 for Brett; list older PRs #207-#236 for him; redeploy all apps.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/lenny-land-all",
+   "pr": "#304",
+   "mergedAt": "2026-11-04T05:40:41Z",
    "createdAt": "2026-11-03T23:03:01.354Z",
-   "updatedAt": "2026-11-04T00:56:46.854Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T05:50:41.843Z",
+   "builtAt": "2026-11-04T05:27:40.234Z",
    "notes": [
     {
      "text": "#270 auto-land merged (3caf0ee0) after two landing fixes (THREADS plugin references; UI Review read through the push banner's ui-review@1 route). #267 closed as superseded by #284. #251/#254 set to draft so auto-merge leaves them for Brett.",
      "at": "2026-11-04T00:56:46.854Z"
+    },
+    {
+     "text": "Landed so far: #270 #268 #265 #277 #271 #273 #280 #274 #279 #285 #272 #276 (main green at 363485d7). Batch PR #303 carries #275 #282 #283 #286 #287 #290 #292 (one CI run). Held: #266 #288 (racy console-wake test), #269 (AmberX build: @console/api), #289 (placement system vs #278), #281 (menu engines vs #268), #291 (WIP, paused by Brett).",
+     "at": "2026-11-04T04:27:00.341Z"
+    },
+    {
+     "text": "Batch #303 merged (7ce95f6b): #275 #282 #283 #286 #287 #290 #292 all show merged. 19 PRs landed in total. Console was down ~12 min (04:27-04:39 UTC): stacked console installers (no lock on its update cron) starved Docker; duplicates cancelled, flock added live and in deploy/install-console.sh.",
+     "at": "2026-11-04T04:52:59.342Z"
+    },
+    {
+     "text": "Reconciler: PR #304 merged",
+     "at": "2026-11-04T05:50:41.843Z"
     }
    ],
    "approvals": [],
@@ -4240,8 +4352,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T04:26:55.942Z",
      "note": "",
      "uid": "st-mw1an31y09ppg8"
     },
@@ -4258,8 +4370,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T04:52:55.364Z",
      "note": "",
      "uid": "st-mw1an31y0ants3"
     },
@@ -4276,8 +4388,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T04:52:57.155Z",
      "note": "",
      "uid": "st-mw1an31y0bn4qk"
     },
@@ -4312,8 +4424,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T05:27:37.066Z",
      "note": "",
      "uid": "st-mw1an31y0dvaoi"
     },
@@ -4330,8 +4442,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T05:27:40.234Z",
      "note": "",
      "uid": "st-mw1an31y0eizui"
     }
@@ -4415,7 +4527,7 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-04T02:10:56.963Z",
-     "note": "PR #299 (claude/browser-automation)",
+     "note": "",
      "uid": "st-mw1dt95p0j4y85"
     },
     {
@@ -4772,6 +4884,24 @@
      "uid": "st-mw1e4to60axzr8"
     },
     {
+     "id": "s11",
+     "text": "Adopt the profile filter in the remaining builds tables: Orchestrator view (needs an all-profiles projection), Pending, Queue, Plan, Tracker, Git status board, Crew, Home cards; existing bulk CLI/MCP commands (land-all, merge batch) take resolveFilter + profiles arg",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1llogp01zpcn"
+    },
+    {
      "id": "s6",
      "text": "Adopt the profile filter in the remaining builds tables: Orchestrator view (needs an all-profiles projection), Pending, Queue, Plan, Tracker, Git status board, Crew, Home cards; existing bulk CLI/MCP commands (land-all, merge batch) take resolveFilter + profiles arg",
      "model": "Opus",
@@ -4801,11 +4931,16 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/main-area-tabs",
-   "pr": "",
+   "pr": "#301",
    "createdAt": "2026-11-04T01:34:59.457Z",
-   "updatedAt": "2026-11-04T01:34:59.457Z",
+   "updatedAt": "2026-11-04T03:12:51.746Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #301",
+     "at": "2026-11-04T03:12:51.746Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -5901,11 +6036,16 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/app-style-override",
-   "pr": "",
-   "createdAt": "2026-11-04T01:51:14.558Z",
-   "updatedAt": "2026-11-04T01:52:23.544Z",
+   "pr": "#302",
+   "createdAt": "2026-11-04T01:44:48.256Z",
+   "updatedAt": "2026-11-04T03:12:51.746Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #302",
+     "at": "2026-11-04T03:12:51.746Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -5925,7 +6065,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1gnesg078c6w"
+     "uid": "st-mw1gf3s50cqyek"
     },
     {
      "id": "s2",
@@ -5943,7 +6083,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1gnesg08l0k2"
+     "uid": "st-mw1gf3s50d9e7u"
     },
     {
      "id": "s3",
@@ -5958,10 +6098,10 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T02:46:41.562Z",
      "note": "",
-     "uid": "st-mw1gnesg09tscq"
+     "uid": "st-mw1gf3s50ev7ob"
     },
     {
      "id": "s4",
@@ -5976,10 +6116,10 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T02:47:09.560Z",
      "note": "",
-     "uid": "st-mw1gnesg0aky0e"
+     "uid": "st-mw1gf3s50fsmyk"
     },
     {
      "id": "s5",
@@ -5997,7 +6137,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1gnesg0bko49"
+     "uid": "st-mw1gf3s50gpv8z"
     },
     {
      "id": "s6",
@@ -6015,7 +6155,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1gnesg0cr0vl"
+     "uid": "st-mw1gf3s50hs10s"
     }
    ]
   }

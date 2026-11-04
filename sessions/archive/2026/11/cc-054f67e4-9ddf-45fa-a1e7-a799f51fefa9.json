@@ -1,0 +1,109 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-054f67e4-9ddf-45fa-a1e7-a799f51fefa9",
+ "source": "claude-code",
+ "sessionId": "054f67e4-9ddf-45fa-a1e7-a799f51fefa9",
+ "project": "other",
+ "title": "# Build: crew-live (Urgent profile) Brett, Nov 3 2026 (voice). Assigned agent: **Ping Paulie** (book on his card; AXF_A…",
+ "startedAt": "2026-11-03T18:10:21.715Z",
+ "endedAt": "2026-11-03T19:02:24.672Z",
+ "minutes": 52,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/crew-live",
+  "repo": "",
+  "branch": "claude/crew-live"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-03T18:10:57.681Z",
+   "kind": "prompt",
+   "text": "# Build: crew-live (Urgent profile) Brett, Nov 3 2026 (voice). Assigned agent: **Ping Paulie** (book on his card; AXF_AGENT=ping-paulie if supported). Register in Urgent (id `crew-live`) + banner entry. ## What Brett wants A console plugin 'Crew' that lists every agent (employee) currently working - if all six are working, six rows - with exactly what each is doing, live. Same look and behaviour as the other build grids (framework grid: collapsible rows, sort/search/filter, dense, phone first). ## Reuse first (find and build on these, don't duplicate) - Session browser plugin (`session-histor…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 396,
+    "output": 145062,
+    "cacheRead": 41187412,
+    "cacheWrite": 333952,
+    "thinking": 25814
+   },
+   "costUsd": 12.8095,
+   "costEstimated": false,
+   "seconds": 3086,
+   "tools": {
+    "Bash": 185,
+    "Write": 9,
+    "Edit": 3,
+    "Read": 10
+   },
+   "commands": 185,
+   "files": [
+    "/root/axf-builds/crew-live/apps/console-web/plugins/crew/server/crew.py",
+    "/root/axf-builds/crew-live/apps/console-web/plugins/crew/server/__init__.py",
+    "/root/axf-builds/crew-live/framework/core/agent-directory.ts",
+    "/root/axf-builds/crew-live/framework/react/components/AgentAvatar.tsx",
+    "/root/axf-builds/crew-live/apps/console-web/plugins/crew/web/core.ts",
+    "/root/axf-builds/crew-live/apps/console-web/plugins/crew/web/ui.tsx",
+    "/root/axf-builds/crew-live/apps/console-web/plugins/crew/web/crew.css",
+    "/root/axf-builds/crew-live/apps/console-web/plugins/crew/test.py",
+    "/root/axf-builds/crew-live/_claude/builds/reports/crew-live.md"
+   ],
+   "changeIds": [
+    "chg-20261103-664692bca1"
+   ],
+   "features": [
+    "queue:crew-live"
+   ],
+   "output": "Crew's built, boss. PR #273 is open and waiting on you in UI Review (`r-20261103-b35b9201`). **What you get:** Builds → **Crew**. There's one row per agent working right now: their face, a status dot (working / waiting on approval / stuck / idle), \"s5 of 7: …\" in plain words, the model, a timer for…"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/crew-live/apps/console-web/plugins/crew/server/crew.py",
+  "/root/axf-builds/crew-live/apps/console-web/plugins/crew/server/__init__.py",
+  "/root/axf-builds/crew-live/framework/core/agent-directory.ts",
+  "/root/axf-builds/crew-live/framework/react/components/AgentAvatar.tsx",
+  "/root/axf-builds/crew-live/apps/console-web/plugins/crew/web/core.ts",
+  "/root/axf-builds/crew-live/apps/console-web/plugins/crew/web/ui.tsx",
+  "/root/axf-builds/crew-live/apps/console-web/plugins/crew/web/crew.css",
+  "/root/axf-builds/crew-live/apps/console-web/plugins/crew/test.py",
+  "/root/axf-builds/crew-live/_claude/builds/reports/crew-live.md"
+ ],
+ "changeIds": [
+  "chg-20261103-664692bca1"
+ ],
+ "features": [
+  "queue:crew-live"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 396,
+  "output": 145062,
+  "cacheRead": 41187412,
+  "cacheWrite": 333952,
+  "thinking": 25814,
+  "costUsd": 12.8095,
+  "costEstimated": false,
+  "toolCalls": 207,
+  "commands": 185,
+  "filesTouched": 9,
+  "reportedUsd": 13.8119
+ },
+ "ingestedAt": "2026-11-03T19:02:25.198Z"
+}

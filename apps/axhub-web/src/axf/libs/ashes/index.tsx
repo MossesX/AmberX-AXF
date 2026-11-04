@@ -533,7 +533,7 @@ function Inspector() {
 
   return (
     <div className="axf-ashes-insp" data-ashes>
-      <div className="axf-ashes-insp__bar">
+      <div className="axf-ashes-insp__bar" role="toolbar" aria-label="Inspector">
         <Button size="sm" tone={s.picking ? 'primary' : 'neutral'} icon="search" onClick={() => { setState({ picking: !s.picking }); if (rt.settings.get(KEY.on) !== true) rt.settings.set(KEY.on, true); }}>{s.picking ? 'Picking…' : 'Pick'}</Button>
         <IconButton icon="arrow-left" label="Previous sibling" onClick={() => walk('prev')} />
         <IconButton icon="chevron-up" label="Parent" onClick={() => walk('up')} />

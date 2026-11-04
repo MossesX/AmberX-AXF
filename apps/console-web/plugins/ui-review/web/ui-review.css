@@ -159,3 +159,17 @@
 :where([data-fx-scheme]:not([data-fx-narrow])) .axp-ui-review__gallery { grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-font-size) * 14), 1fr)); }
 :where([data-fx-scheme]:not([data-fx-narrow])) .axp-ui-review__cols { grid-auto-columns: minmax(calc(var(--fx-font-size) * 18), 1fr); }
 :where([data-fx-scheme]:not([data-fx-narrow])) .axp-ui-review__thumbs { grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-font-size) * 10), 1fr)); }
+
+/* Predicted looks (ui-prediction@1): the badge, the predicted / real / before switch, and the mockup page itself. */
+.axp-ui-review__predict { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) / 2); }
+.axp-ui-review__cost { font-variant-numeric: tabular-nums; }
+.axp-ui-mock { padding-bottom: calc(var(--fx-space) * 4); }
+.axp-ui-mock__rows { gap: var(--fx-dens-gap-lg); }
+.axp-ui-mock__grow { flex: 1 1 auto; }
+.axp-ui-mock__toolbar { display: flex; align-items: center; gap: calc(var(--fx-space) / 2); overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; padding: var(--fx-dens-gap-lg); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); }
+.axp-ui-mock__toolbar > * { flex: none; scroll-snap-align: start; }
+.axp-ui-mock__chips, .axp-ui-mock__acts { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) / 2); }
+.axp-ui-mock__table { width: 100%; border-collapse: collapse; }
+.axp-ui-mock__table th, .axp-ui-mock__table td { text-align: left; padding: var(--fx-dens-gap-lg) calc(var(--fx-space) / 2); border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-ui-mock__dialog { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); max-width: calc(var(--fx-font-size) * 30); padding: var(--fx-dens-gap-xl); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg); background: var(--fx-surface); box-shadow: var(--fx-shadow-lg); }
+.axp-ui-mock__dhead { display: flex; align-items: center; gap: calc(var(--fx-space) / 2); }

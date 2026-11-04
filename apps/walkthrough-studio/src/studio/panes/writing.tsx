@@ -30,7 +30,7 @@ export function ScriptPane() {
   const tgt = p.targetSec || project.settings.pieceTargetSec;
   return (
     <div className="ws-pane">
-      <div className="ws-pane__tools">
+      <div className="ws-pane__tools" data-axf-not-toolbar="piece title and status, not actions">
         <div className="ws-col ws-grow">
           <strong className="ws-ellipsis">{p.title}</strong>
           <span className="fx-small fx-muted ws-ellipsis">{pathOf(project.root, p.id).map((s) => s.title).join(' › ')}</span>

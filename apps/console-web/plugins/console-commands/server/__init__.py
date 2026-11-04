@@ -27,7 +27,7 @@ Mounted twice: /api/plugins/console-commands/… (the plugin mount; the console 
   GET  clients · GET recent · GET queue                           the caller's open consoles · the last commands · what waits
   GET  settings · POST settings {wake, ttlS, browser}              queue + wake settings (the owner changes them)
   POST ""                                                          a whole control@1 command of the console domain
-  POST open {screen} · dialog {id, arg?} · settings {tab, anchor?} · action {id, args?, confirm?} · back · home · close   (each takes `to`)
+  POST open {screen} · dialog {id, arg?} (close: {"action": "close", id?}) · settings {tab, anchor?} · action {id, args?, confirm?} · back · home · close   (each takes `to`)
   GET  where · GET list?kind=screens|dialogs|settings|actions&q=…&limit=…
 
 Capability console-commands@1: plugin_services.get("console-commands@1").run(command, grants=[…], by="…", audience="owner").
@@ -667,7 +667,9 @@ async def open_screen(request: Request) -> JSONResponse:
 @router.post("/dialog")
 async def open_dialog(request: Request) -> JSONResponse:
     b = await _body(request)
-    return await go(request, {"op": "act", "target": "console.dialogs", "path": b.get("id") or b.get("path") or b.get("q"), "action": "open", **_to(b, arg=b.get("arg")), **_audit(b)})
+    action = "close" if b.get("action") == "close" or b.get("close") is True else "open"
+    path = b.get("id") or b.get("path") or b.get("q") or ("current" if action == "close" else None)
+    return await go(request, {"op": "act", "target": "console.dialogs", "path": path, "action": action, **_to(b, arg=b.get("arg")), **_audit(b)})
 
 
 @router.post("/settings")

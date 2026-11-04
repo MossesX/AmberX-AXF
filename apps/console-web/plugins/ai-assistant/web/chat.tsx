@@ -442,7 +442,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
               <div className="axp-ai-assistant__avatar"><Icon name={activeAgent?.icon || 'sparkles'} size={14} /></div>
               <div className="axp-ai-assistant__bubble">
                 {live.agent && <span className="fx-small fx-muted">{live.agent}</span>}
-                {live.tools.length > 0 && <div className="axp-ai-assistant__tools">{live.tools.map((t) => <ToolChip key={t.id} name={t.name} input={t.input} ok={t.ok} preview={t.preview} running={!t.done} />)}</div>}
+                {live.tools.length > 0 && <div className="axp-ai-assistant__tools" data-axf-not-toolbar="tool-call results of a reply, not actions">{live.tools.map((t) => <ToolChip key={t.id} name={t.name} input={t.input} ok={t.ok} preview={t.preview} running={!t.done} />)}</div>}
                 {live.thinking && <details className="axp-ai-assistant__thinking"><summary>Thinking…</summary><p>{live.thinking}</p></details>}
                 {live.text ? <Markdown text={live.text} /> : <p className="fx-muted fx-small axp-ai-assistant__pulse">{live.status}</p>}
                 {live.text && <span className="fx-small fx-muted axp-ai-assistant__pulse">{live.status.startsWith('Thinking') ? '' : live.status}</span>}
@@ -513,7 +513,7 @@ function MessageView({ m, name, isLast, busy, showUsage, onCopy, onEdit, onRegen
       <div className="axp-ai-assistant__bubble">
         {ai && meta.agentName && <span className="fx-small fx-muted">{meta.agentName}</span>}
         {ai && meta.interrupted && <Chip tone="warning">interrupted</Chip>}
-        {tools.length > 0 && <div className="axp-ai-assistant__tools">{tools.map((t) => <ToolChip key={t.id} name={t.name} input={t.input} ok={t.ok} preview={t.preview} />)}</div>}
+        {tools.length > 0 && <div className="axp-ai-assistant__tools" data-axf-not-toolbar="tool-call results of a reply, not actions">{tools.map((t) => <ToolChip key={t.id} name={t.name} input={t.input} ok={t.ok} preview={t.preview} />)}</div>}
         {ai && meta.thinking && <details className="axp-ai-assistant__thinking"><summary>Reasoning</summary><p>{meta.thinking}</p></details>}
         {m.images?.length ? <div className="axp-ai-assistant__imgs">{m.images.map((im, i) => <img key={i} alt={im.name || 'attachment'} src={`data:${im.media_type};base64,${im.data}`} />)}</div> : null}
         {ai ? <Markdown text={m.content || (meta.stopped ? '(stopped)' : '')} /> : <p className="axp-ai-assistant__plain">{m.content}</p>}

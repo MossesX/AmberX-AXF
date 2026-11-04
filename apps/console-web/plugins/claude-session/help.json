@@ -1,0 +1,132 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "claude-session-help",
+  "name": "claude-session help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:claude-session (Claude agent picker).",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:claude-session",
+    "entries": [
+      {
+        "target": "action:claude.pick",
+        "title": "Choose Claude's agent\u2026",
+        "text": "Opens the agent picker: pick which crew agent every new Claude session works as.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "claude-sessions",
+        "title": "Claude sessions",
+        "text": "Settings for Claude sessions: the agent every session works as, and whether you are asked each time a session starts.",
+        "kind": "tab"
+      },
+      {
+        "target": "today-hours-h-pay-rating",
+        "title": "Agent row",
+        "text": "Tap an agent's row to see every stat: jobs done, success and failures, average cost and time, recent runs, write-ups, raises and persona.",
+        "kind": "button"
+      },
+      {
+        "target": "persona",
+        "title": "Persona",
+        "text": "How a Claude session talks while it works as this agent. Every session assigned to the agent follows it.",
+        "kind": "field"
+      },
+      {
+        "target": "voice",
+        "title": "Voice",
+        "text": "Voice notes for this agent (tone, accent, pace). Voice Amber uses them when it works as the agent.",
+        "kind": "field"
+      },
+      {
+        "target": "save-persona",
+        "title": "Save persona",
+        "text": "Saves this agent's persona and voice notes. Sessions pick them up the next time they ask who they are.",
+        "kind": "button"
+      },
+      {
+        "target": "card",
+        "title": "Card",
+        "text": "Opens this agent's employee card in the Breakroom.",
+        "kind": "button"
+      },
+      {
+        "target": "history",
+        "title": "History",
+        "text": "Shows this agent's past runs and status history.",
+        "kind": "button"
+      },
+      {
+        "target": "session-browser",
+        "title": "Session browser",
+        "text": "Opens this agent's sessions in the Session browser.",
+        "kind": "button"
+      },
+      {
+        "target": "terminal",
+        "title": "Terminal",
+        "text": "Opens a Terminal tab for this agent's current run.",
+        "kind": "button"
+      },
+      {
+        "target": "group-chat",
+        "title": "Group chat",
+        "text": "Opens the crew's group chat.",
+        "kind": "button"
+      },
+      {
+        "target": "find-an-agent",
+        "title": "Find an agent",
+        "text": "Filters the list by name, role or current job.",
+        "kind": "field"
+      },
+      {
+        "target": "pick",
+        "title": "Pick",
+        "text": "Picks this agent. From a session's pop-up it answers that session; otherwise it becomes Claude's default agent.",
+        "kind": "button"
+      },
+      {
+        "target": "claude-agent",
+        "title": "Claude agent",
+        "text": "The agent every new Claude session works as until you pick another, and the one kept when you don't answer.",
+        "kind": "field"
+      },
+      {
+        "target": "ask-me-every-session",
+        "title": "Ask me every session",
+        "text": "On: each new voice, chat or Claude Code session pops the agent picker here and sends an approval to your phone. Off: sessions just use the Claude agent.",
+        "kind": "toggle"
+      },
+      {
+        "target": "ask-for-headless-too",
+        "title": "Ask for headless too",
+        "text": "Off: headless builds keep the agent their brief names, with no prompt. On: they ask like any other session.",
+        "kind": "toggle"
+      },
+      {
+        "target": "choose-claudes-agent",
+        "title": "Choose Claude's agent\u2026",
+        "text": "Opens the agent picker.",
+        "kind": "button"
+      },
+      {
+        "target": "assign-to-claude",
+        "title": "Assign to Claude",
+        "text": "Makes this agent the one every new Claude session works as.",
+        "kind": "button"
+      },
+      {
+        "target": "claudes-agent",
+        "title": "Claude's agent",
+        "text": "This agent is already Claude's agent.",
+        "kind": "button"
+      }
+    ],
+    "intros": []
+  }
+}

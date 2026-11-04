@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { Button, Switch } from '@console/axf/react';
+import { AgentAvatar, Button, Switch } from '@console/axf/react';
 import * as core from './swarm-core.mjs';
 import * as watch from './chat-watch.mjs';
-import { Avatar } from './cards';
 import { KEYS, useSetting } from './chat-settings';
 import { fmtTime, type Act, type Agent, type ChatMsg, type SwarmState } from './ui-types';
 
@@ -21,7 +20,7 @@ export function Bubble({ m, agents, ceiling, flag }: { m: ChatMsg; agents: Map<s
   const who = a?.name ?? (m.from === 'boss' ? 'Boss' : m.from === 'brett' ? 'Brett' : m.from);
   return (
     <li className={`sw-msg is-${m.kind} ${m.from === 'brett' ? 'is-mine' : ''} ${flag ? `is-flag is-${flag.tone}` : ''}`} style={ceiling ? ({ '--sw-vibe': core.vibeShade(m.vibe, ceiling) } as CSSProperties) : undefined} title={m.vibe != null ? `vibe ${m.vibe}${m.toned ? ' · toned down' : ''}` : undefined}>
-      {a ? <Avatar a={a} size={32} /> : <span className={`sw-msg__badge is-${m.from}`} aria-hidden="true">{who.slice(0, 1)}</span>}
+      {a ? <AgentAvatar info={{ id: a.id, name: a.name, role: a.role, avatar: a.avatar }} size="large" /> : <span className={`sw-msg__badge is-${m.from}`} aria-hidden="true">{who.slice(0, 1)}</span>}
       <div className="sw-msg__body">
         <div className="sw-msg__head"><b>{who}</b><span className="fx-muted">{fmtTime(m.at)}{m.kind !== 'banter' && m.kind !== 'brett' ? ` · ${m.kind}` : ''}{flag ? ` · ${flag.tone === 'negative' ? 'negative' : 'mentions'}: ${flag.matched.join(', ')}` : ''}</span></div>
         <p>{flag ? flag.text : m.text}</p>

@@ -58,7 +58,5 @@
 .axf-ashes-stats ul { list-style: none; margin: 0; padding: 0 }
 .axf-ashes-stats li { display: flex; justify-content: space-between; gap: var(--fx-dens-gap-xl); font-size: var(--fx-type-root-sm) }
 
-@media (max-width: 640px) {
-  .axf-ashes-insp__body { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 2fr) minmax(0, 3fr) }
-  .axf-ashes-insp__left { border-right: 0; padding-right: 0; border-bottom: var(--fx-border-w) solid var(--fx-border) }
-}
+:where([data-fx-small]) .axf-ashes-insp__body { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 2fr) minmax(0, 3fr) }
+:where([data-fx-small]) .axf-ashes-insp__left { border-right: 0; padding-right: 0; border-bottom: var(--fx-border-w) solid var(--fx-border) }

@@ -7,7 +7,7 @@
  * and sends the message to them.
  *
  *   node console.mjs run      one command on stdin ({command, grants?, by?, clients}) → the answer as JSON (`deliver` = what to send)
- *   node console.mjs open <screen> | dialog <id> | settings <tab> [--anchor a] | action <id> [args…] [--confirm t]
+ *   node console.mjs open <screen> | dialog <id> | dialog close [id] | settings <tab> [--anchor a] | action <id> [args…] [--confirm t]
  *                    | back | home | close | where | list [screens|dialogs|settings|actions|clients] [words] | clients
  *        → sent to the console (AXF_CONSOLE_URL, default https://console.amberxai.com; AXF_TOKEN), which runs it
  *   --to recent|all|<client id>   which open console (default: the one used last)
@@ -73,7 +73,7 @@ function flags(argv) {
 }
 
 const LIST_KINDS = { screens: 'console.screens', screen: 'console.screens', dialogs: 'console.dialogs', dialog: 'console.dialogs', settings: 'console.settings', actions: 'console.actions', action: 'console.actions', clients: 'console.clients', consoles: 'console.clients' };
-export const USAGE = 'usage: axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | close | where | list [screens|dialogs|settings|actions|clients] [words] | clients   [--to recent|all|<client>]';
+export const USAGE = 'usage: axf console open <screen> | dialog <id> | dialog close [id] | settings <tab> | action <id> [args…] | back | home | close | where | list [screens|dialogs|settings|actions|clients] [words] | clients   [--to recent|all|<client>]';
 
 /** `axf console …` words → a control@1 console command, or { error }. */
 export function commandFromArgv(argv) {
@@ -85,7 +85,7 @@ export function commandFromArgv(argv) {
   let cmd = null;
   switch (verb) {
     case 'open': case 'screen': case 'go': cmd = act('console.screens', 'open', words); break;
-    case 'dialog': cmd = act('console.dialogs', 'open', words); break;
+    case 'dialog': cmd = rest[0] === 'close' ? act('console.dialogs', 'close', rest.slice(1).join(' ').trim() || 'current') : act('console.dialogs', 'open', words); break;
     case 'settings': case 'setting': cmd = act('console.settings', 'open', words); break;
     case 'action': case 'run': {
       const [id, ...args] = rest;
