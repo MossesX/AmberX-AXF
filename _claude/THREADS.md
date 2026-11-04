@@ -578,9 +578,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 20:37 UTC · `plugin-settings-placement` added (18 steps) (current) · foreign-write
-- 2026-11-03 20:37 UTC · `smart-menus` s6 done (urgent) · orchestrator
-- 2026-11-03 20:38 UTC · `build-prompt-origin` s4 done (current) · foreign-write
 - 2026-11-03 20:38 UTC · `plugin-settings-placement` added (36 steps) (current) · foreign-write
 - 2026-11-03 20:43 UTC · `smart-menus` PR #281 (urgent) · builds-live
 - 2026-11-03 20:43 UTC · `smart-menus` s7 done, → built (urgent) · orchestrator
@@ -978,3 +975,6 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 01:23 UTC · `profile-switcher-widget` added (5 steps) (current) · foreign-write
 - 2026-11-04 01:29 UTC · `plugin-lazy-load` note (current) · foreign-write
 - 2026-11-04 01:35 UTC · `main-area-tabs` added (5 steps) (current) · orchestrator
+- 2026-11-04 01:43 UTC · `main-area-tabs` added (5 steps) (current) · foreign-write
+- 2026-11-04 01:43 UTC · `menu-scroll` → complete, merged, note (urgent) · reconciler
+- 2026-11-04 01:43 UTC · `browser-automation` s3 done, PR #299, note (current) · reconciler
