@@ -1,0 +1,88 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-427f609a-2a3b-479f-ab4a-8a5b1dba0b4f",
+ "source": "claude-code",
+ "sessionId": "427f609a-2a3b-479f-ab4a-8a5b1dba0b4f",
+ "project": "other",
+ "title": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each …",
+ "startedAt": "2026-11-03T21:17:39.046Z",
+ "endedAt": "2026-11-03T21:17:50.835Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/tmp/axf-slots-jVvXzL/two",
+  "repo": "",
+  "branch": ""
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-03T21:17:41.842Z",
+   "kind": "prompt",
+   "text": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /root/axf-builds/urgent-main-ci-green/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Opus) is fine. An UPGRADE (e.g. Opus → Fable) needs Brett's approval: when you reach one, run `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>`, ask once, and stop. Never approve a model switch upgrade yourself (no `act approve` on a…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 4,
+    "output": 287,
+    "cacheRead": 37739,
+    "cacheWrite": 15288,
+    "thinking": 52
+   },
+   "costUsd": 0.0897,
+   "costEstimated": false,
+   "seconds": 8,
+   "tools": {
+    "Bash": 1
+   },
+   "commands": 1,
+   "files": [],
+   "changeIds": [
+    "chg-20261103-63c266ce79"
+   ],
+   "features": [
+    "pending:urgent-main-ci-green",
+    "queue:urgent-main-ci-green"
+   ],
+   "output": "Hi! What would you like to work on? (I tried to close the build-manager entry `chg-20261103-63c266ce79` that opened automatically for this message as \"no change\", but that command needs your approval. You can approve it, or I'll update the entry once we start real work.)"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261103-63c266ce79"
+ ],
+ "features": [
+  "pending:urgent-main-ci-green",
+  "queue:urgent-main-ci-green"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 4,
+  "output": 287,
+  "cacheRead": 37739,
+  "cacheWrite": 15288,
+  "thinking": 52,
+  "costUsd": 0.0897,
+  "costEstimated": false,
+  "toolCalls": 1,
+  "commands": 1,
+  "filesTouched": 0,
+  "reportedUsd": 0.1356
+ },
+ "ingestedAt": "2026-11-03T21:17:51.937Z"
+}

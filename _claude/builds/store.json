@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 558,
- "updatedAt": "2026-11-03T23:46:15.833Z",
+ "rev": 567,
+ "updatedAt": "2026-11-04T00:15:03.944Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -61881,15 +61881,15 @@
    "title": "Terminal: drag handle + hold-drag tabs, context chain as a tree, settings context menu, per-pane text size",
    "category": "Terminal",
    "detail": "Brett (Nov 3 2026, voice): no spot to drag the Terminal window (all tabs); context chain must show chained MD files as an indented tree; context menu on the Terminal opens its settings (addendum 1); text size per pane, smaller phone default (addendum 2). Agent: Landin Lenny (headless worktree session). Builds on window-resize-fix #278.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/terminal-drag-chain-tree",
    "pr": "#292",
    "createdAt": "2026-11-03T21:50:21.572Z",
-   "updatedAt": "2026-11-03T22:41:46.267Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T23:58:50.341Z",
+   "builtAt": "2026-11-03T23:55:24.932Z",
    "notes": [
     {
      "text": "Clash: terminal-tabs-left (running, another session) changes TerminalHost too; note left on it to reuse WindowGrip orientation=column + useTabPress. terminal-sessions-nav #286 (built, open) also touches TerminalHost; whichever merges second resolves.",
@@ -61898,6 +61898,10 @@
     {
      "text": "Overlap note from terminal-tabs-left: the Terminal can now show tabs in a left/right stack (web/TabStack.tsx, own pointer reorder); the strip's tab markup was left untouched so both merge cleanly. If a shared hold-to-drag engine lands here, TabStack can adopt it.",
      "at": "2026-11-03T22:41:46.267Z"
+    },
+    {
+     "text": "All 6 steps done, PR #292 open. UI Review r-20261103-axtev01 (desktop shot; phone shots blocked by VPS load ~100, Snap Sully job queued). Tests: check-headless-tabs 30->58, window-handles-check 30->35, check-windows 383=383, console-terminal tree checks pass (its token-reset check fails on main too). Agent: Landin' Lenny.",
+     "at": "2026-11-03T23:53:57.137Z"
     }
    ],
    "approvals": [],
@@ -62028,12 +62032,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:58:50.341Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T21:50:21.573Z",
-     "updatedAt": "2026-11-03T21:50:21.573Z"
+     "updatedAt": "2026-11-04T00:11:32.944Z"
     }
    ],
    "profiles": [
@@ -62044,7 +62048,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -62077,15 +62081,15 @@
    "title": "Molly: navigation sub menus that slide open + Navigation settings",
    "category": "Molly",
    "detail": "Brett (Nov 3 2026, voice): \"I want Molly to have the console's navigation menu slide open, like when you click console, have a sub menu slide open, show its menu, and same thing for AXHub and AmberX. Have a sub menu slide open with an animation and give the navigation menu its own settings interface to control everything. The theme, the way it looks, its animation, its behavior, all that.\" Agent: Reel Rhonda (headless worktree, not on main). Model: Opus for every step (Claude decides): the nav-style contract is web-only, additive and opt-in; Android twin deferred in PORTING.md; flagged for a Fable review per the shared rule.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-nav-submenus",
    "pr": "#295",
    "createdAt": "2026-11-03T21:55:24.277Z",
-   "updatedAt": "2026-11-03T23:41:32.221Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T23:54:29.725Z",
+   "builtAt": "2026-11-03T23:54:29.725Z",
    "notes": [
     {
      "text": "Agent: Reel Rhonda. s1-s4 built; PR #295. s5 left: UI Review submission (after screenshots). Fable review of the nav-style contract recommended (Opus-built foundation, shared rule).",
@@ -62115,7 +62119,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T21:55:24.280Z",
-     "updatedAt": "2026-11-03T23:27:31.439Z"
+     "updatedAt": "2026-11-04T00:10:26.354Z"
     },
     {
      "id": "s2",
@@ -62137,7 +62141,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T21:55:24.280Z",
-     "updatedAt": "2026-11-03T23:29:00.850Z"
+     "updatedAt": "2026-11-04T00:10:26.354Z"
     },
     {
      "id": "s3",
@@ -62159,7 +62163,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T21:55:24.280Z",
-     "updatedAt": "2026-11-03T23:30:20.649Z"
+     "updatedAt": "2026-11-04T00:10:26.354Z"
     },
     {
      "id": "s4",
@@ -62181,7 +62185,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T21:55:24.280Z",
-     "updatedAt": "2026-11-03T23:31:36.050Z"
+     "updatedAt": "2026-11-04T00:10:26.354Z"
     },
     {
      "id": "s5",
@@ -62198,12 +62202,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:54:29.725Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T21:55:24.280Z",
-     "updatedAt": "2026-11-03T22:14:35.347Z"
+     "updatedAt": "2026-11-04T00:10:26.354Z"
     }
    ],
    "profiles": [
@@ -62214,10 +62218,26 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-03T21:55:24.277Z",
+    "builtAt": "2026-11-03T23:54:29.725Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw18wqll07woq4": "2026-11-03T21:55:24.280Z",
+     "st-mw18wqll08ooba": "2026-11-03T21:55:24.280Z",
+     "st-mw18wqll094xvt": "2026-11-03T21:55:24.280Z",
+     "st-mw18wqll0a2zbr": "2026-11-03T21:55:24.280Z",
+     "st-mw18wqll0b6cki": "2026-11-03T21:55:24.280Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-03T21:55:24.280Z",
    "rearranged": false,
@@ -66593,15 +66613,15 @@
    "title": "Molly: install the banners",
    "category": "Molly",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-banners",
    "pr": "#294",
    "createdAt": "2026-11-03T22:04:42.483Z",
-   "updatedAt": "2026-11-03T23:23:29.528Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T00:11:38.338Z",
+   "builtAt": "2026-11-04T00:10:45.823Z",
    "notes": [
     {
      "text": "Assigned: Amber (headless Opus session, worktree /root/axf-builds/molly-banners, branch claude/molly-banners)",
@@ -66610,6 +66630,10 @@
     {
      "text": "Reconciler: PR #294",
      "at": "2026-11-03T23:23:29.528Z"
+    },
+    {
+     "text": "Built: PR #294, UI Review r-20261104-269b05db. Not verified live: banner tap that opens a console view (channel covered by check-banner-strip). After merge redeploy Console then Molly.",
+     "at": "2026-11-04T00:11:38.338Z"
     }
    ],
    "approvals": [],
@@ -66657,7 +66681,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:04:42.487Z",
-     "updatedAt": "2026-11-03T23:20:58.725Z"
+     "updatedAt": "2026-11-03T23:52:12.044Z"
     },
     {
      "id": "s3",
@@ -66679,7 +66703,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:04:42.487Z",
-     "updatedAt": "2026-11-03T23:20:58.725Z"
+     "updatedAt": "2026-11-03T23:52:12.044Z"
     },
     {
      "id": "s4",
@@ -66718,12 +66742,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T00:10:45.823Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:04:42.487Z",
-     "updatedAt": "2026-11-03T22:04:42.487Z"
+     "updatedAt": "2026-11-04T00:10:47.028Z"
     }
    ],
    "profiles": [
@@ -66734,7 +66758,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -66773,12 +66797,16 @@
    "branch": "claude/gizmo-companion",
    "pr": "#296",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-03T23:36:42.140Z",
+   "updatedAt": "2026-11-03T23:57:12.826Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Assigned: Gizmo (headless Opus session, worktree /root/axf-builds/gizmo-companion, branch claude/gizmo-companion)",
      "at": "2026-11-03T22:18:55.429Z"
+    },
+    {
+     "text": "s10 (s4b) half done: tool calls show as collapsible cards; Follow Amber / console_show hooks not built. s2d: brains are the console AI assistant as agent Gizmo through AmberX's server (no new server code needed).",
+     "at": "2026-11-03T23:32:45.729Z"
     },
     {
      "text": "Reconciler: branch claude/gizmo-companion (no PR yet)",
@@ -66856,7 +66884,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T23:26:30.353Z"
+     "updatedAt": "2026-11-04T00:10:26.354Z"
     },
     {
      "id": "s4",
@@ -66878,7 +66906,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T23:26:30.353Z"
+     "updatedAt": "2026-11-04T00:10:26.354Z"
     },
     {
      "id": "s5",
@@ -66900,7 +66928,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T23:26:30.353Z"
+     "updatedAt": "2026-11-04T00:10:26.354Z"
     },
     {
      "id": "s6",
@@ -66922,7 +66950,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T23:26:30.353Z"
+     "updatedAt": "2026-11-04T00:10:26.354Z"
     },
     {
      "id": "s7",
@@ -66944,7 +66972,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T23:26:53.247Z"
+     "updatedAt": "2026-11-04T00:10:26.354Z"
     },
     {
      "id": "s8",
@@ -66966,7 +66994,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T23:28:18.131Z"
+     "updatedAt": "2026-11-04T00:10:26.354Z"
     },
     {
      "id": "s9",
@@ -67098,7 +67126,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T23:28:49.646Z"
+     "updatedAt": "2026-11-04T00:10:26.354Z"
     },
     {
      "id": "s15",
@@ -67115,12 +67143,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:46:13.434Z",
      "note": "",
-     "rev": 3,
+     "rev": 4,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T23:41:00.724Z"
+     "updatedAt": "2026-11-03T23:46:16.218Z"
     },
     {
      "id": "s16",
@@ -67181,12 +67209,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:48:25.923Z",
      "note": "",
-     "rev": 3,
+     "rev": 4,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T23:41:00.724Z"
+     "updatedAt": "2026-11-03T23:48:32.834Z"
     },
     {
      "id": "s19",
@@ -67219,7 +67247,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -67280,6 +67308,402 @@
    "steps": [
     {
      "id": "s1",
+     "uid": "st-mw1ce5nt01szfy",
+     "title": "",
+     "text": "Lazy loading + code splitting: manifests eager, web parts one chunk per plugin loaded on first open, placeholder/error/retry, commands load on demand, HMR per plugin, before/after numbers",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:52:05.024Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw1ce5nt0238r1",
+     "title": "",
+     "text": "Lazy loader settings in Plugins manager (preload count by frecency, pins, banners first, order, idle preload, LRU cache, per-plugin mode, live table, reset) + REST/MCP/CLI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:52:05.024Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw1ce5nt03szby",
+     "title": "",
+     "text": "Tests/type-check, screenshots, UI Review item, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:52:05.024Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw1ce5nt043izv",
+     "title": "",
+     "text": "Lazy loading + code splitting: manifests eager, web parts one chunk per plugin loaded on first open, placeholder/error/retry, commands load on demand, HMR per plugin, before/after numbers",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:52:05.024Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mw1ce5nt05oeyz",
+     "title": "",
+     "text": "Lazy loader settings in Plugins manager (preload count by frecency, pins, banners first, order, idle preload, LRU cache, per-plugin mode, live table, reset) + REST/MCP/CLI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:52:05.024Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mw1ce5nt06ad65",
+     "title": "",
+     "text": "Tests/type-check, screenshots, UI Review item, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:52:05.024Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mw1ce5nt07gxp4",
+     "title": "",
+     "text": "Lazy loading + code splitting: manifests eager, web parts one chunk per plugin loaded on first open, placeholder/error/retry, commands load on demand, HMR per plugin, before/after numbers",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:52:05.024Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mw1ce5nt08uw95",
+     "title": "",
+     "text": "Lazy loader settings in Plugins manager (preload count by frecency, pins, banners first, order, idle preload, LRU cache, per-plugin mode, live table, reset) + REST/MCP/CLI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:52:05.024Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mw1ce5nt09jh9e",
+     "title": "",
+     "text": "Tests/type-check, screenshots, UI Review item, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:52:05.024Z"
+    },
+    {
+     "id": "s10-9",
+     "uid": "st-mw1cb5mu010evs",
+     "title": "",
+     "text": "Lazy loading + code splitting: manifests eager, web parts one chunk per plugin loaded on first open, placeholder/error/retry, commands load on demand, HMR per plugin, before/after numbers",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:49:45.931Z"
+    },
+    {
+     "id": "s11-10",
+     "uid": "st-mw1cb5mu0207qa",
+     "title": "",
+     "text": "Lazy loader settings in Plugins manager (preload count by frecency, pins, banners first, order, idle preload, LRU cache, per-plugin mode, live table, reset) + REST/MCP/CLI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:49:45.931Z"
+    },
+    {
+     "id": "s12-11",
+     "uid": "st-mw1cb5mu03g4ch",
+     "title": "",
+     "text": "Tests/type-check, screenshots, UI Review item, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:49:45.931Z"
+    },
+    {
+     "id": "s13-12",
+     "uid": "st-mw1cb5mu040fd7",
+     "title": "",
+     "text": "Lazy loading + code splitting: manifests eager, web parts one chunk per plugin loaded on first open, placeholder/error/retry, commands load on demand, HMR per plugin, before/after numbers",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:49:45.931Z"
+    },
+    {
+     "id": "s14-13",
+     "uid": "st-mw1cb5mu056ttd",
+     "title": "",
+     "text": "Lazy loader settings in Plugins manager (preload count by frecency, pins, banners first, order, idle preload, LRU cache, per-plugin mode, live table, reset) + REST/MCP/CLI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:49:45.931Z"
+    },
+    {
+     "id": "s15-14",
+     "uid": "st-mw1cb5mu06pbq4",
+     "title": "",
+     "text": "Tests/type-check, screenshots, UI Review item, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:49:45.931Z"
+    },
+    {
+     "id": "s16-15",
+     "uid": "st-mw1cb5mu07pngh",
+     "title": "",
+     "text": "Lazy loading + code splitting: manifests eager, web parts one chunk per plugin loaded on first open, placeholder/error/retry, commands load on demand, HMR per plugin, before/after numbers",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:49:45.931Z"
+    },
+    {
+     "id": "s17-16",
+     "uid": "st-mw1cb5mu08773n",
+     "title": "",
+     "text": "Lazy loader settings in Plugins manager (preload count by frecency, pins, banners first, order, idle preload, LRU cache, per-plugin mode, live table, reset) + REST/MCP/CLI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:49:45.931Z"
+    },
+    {
+     "id": "s18-17",
+     "uid": "st-mw1cb5mu09d7om",
+     "title": "",
+     "text": "Tests/type-check, screenshots, UI Review item, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:49:45.931Z"
+    },
+    {
+     "id": "s19-18",
      "uid": "st-mw1b9zcp016lrm",
      "title": "",
      "text": "Lazy loading + code splitting: manifests eager, web parts one chunk per plugin loaded on first open, placeholder/error/retry, commands load on demand, HMR per plugin, before/after numbers",
@@ -67301,7 +67725,7 @@
      "updatedAt": "2026-11-03T23:20:51.046Z"
     },
     {
-     "id": "s2",
+     "id": "s20-19",
      "uid": "st-mw1b9zcp029a4k",
      "title": "",
      "text": "Lazy loader settings in Plugins manager (preload count by frecency, pins, banners first, order, idle preload, LRU cache, per-plugin mode, live table, reset) + REST/MCP/CLI",
@@ -67323,7 +67747,7 @@
      "updatedAt": "2026-11-03T23:20:51.046Z"
     },
     {
-     "id": "s3",
+     "id": "s21-20",
      "uid": "st-mw1b9zcp038x3v",
      "title": "",
      "text": "Tests/type-check, screenshots, UI Review item, report, THREADS, PR",
