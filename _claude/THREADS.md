@@ -684,9 +684,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:22 UTC · `land-round-2` note (current) · foreign-write
-- 2026-11-04 14:22 UTC · `crew-profiles` s5 done (current) · foreign-write
-- 2026-11-04 14:22 UTC · `urgent-land-gizmo-chat` s1 done, s2 done (current) · foreign-write
 - 2026-11-04 14:22 UTC · `gizmo-voice` added (6 steps) (current) · foreign-write
 - 2026-11-04 14:22 UTC · `gizmo-terminal` added (8 steps) (current) · foreign-write
 - 2026-11-04 14:22 UTC · `profile-lists-home-card` s3 done (current) · orchestrator
@@ -1084,6 +1081,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 19:28 UTC · `amberx-live-audio` note (angel) · orchestrator
 - 2026-11-04 19:31 UTC · `fable-packager` added (5 steps) (current) · foreign-write
 - 2026-11-04 19:31 UTC · `fable-packager` added (5 steps) (current) · orchestrator
+- 2026-11-04 19:35 UTC · `fable-packager` s1 done, → running (current) · orchestrator
+- 2026-11-04 19:36 UTC · `fable-packager` s2 done (current) · orchestrator
+- 2026-11-04 19:36 UTC · `fable-packager` branch claude/fable-packager (current) · builds-live
 
 ## Token passes (log)
 
