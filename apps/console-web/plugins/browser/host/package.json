@@ -1,0 +1,11 @@
+{
+  "name": "axf-browser-host",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Headless Chromium on the VPS for the console's Automated Browser plugin (HTTP + live-view websocket).",
+  "type": "module",
+  "main": "host.mjs",
+  "scripts": { "start": "node host.mjs", "test": "node --experimental-websocket test.mjs" },
+  "dependencies": { "playwright-core": "1.62.1" },
+  "engines": { "node": ">=20" }
+}
