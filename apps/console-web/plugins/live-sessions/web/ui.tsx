@@ -512,14 +512,18 @@ interface StorageReply {
 export function RecordingSettings() {
   const rt = useRuntime();
   const [s, setS] = useState<SettingsReply | null>(null);
+  const [draft, setDraft] = useState<Record<string, string>>({});
   const [err, setErr] = useState('');
   useEffect(() => { api<SettingsReply>('settings').then(setS, (e: Error) => setErr(e.message)); }, []);
   const save = (patch: Record<string, unknown>) => api<{ settings: SettingsReply['settings'] }>('settings', { method: 'PUT', body: JSON.stringify(patch) })
-    .then((j) => setS((x) => (x ? { ...x, settings: j.settings } : x)), (e: Error) => rt.toast(e.message, 'danger', 'Live sessions'));
+    .then((j) => { setS((x) => (x ? { ...x, settings: j.settings } : x)); setDraft({}); rt.toast('Recording settings saved.', 'success', 'Live sessions'); }, (e: Error) => rt.toast(e.message, 'danger', 'Live sessions'));
   if (err) return <Note tone="warning">{err}</Note>;
   if (!s) return <p className="fx-muted">Loading…</p>;
+  const nums = Object.fromEntries(Object.entries(draft).map(([k, v]) => [k, Number(v)]));
+  const bad = Object.values(nums).some((n) => !Number.isFinite(n) || n < 0);
+  // numbers save together with the button, never per keystroke (typing "90" must not save 9 days of retention on the way)
   const num = (k: string, label: string, hint: string) => (
-    <TextField label={label} hint={hint} value={String(s.settings[k] ?? '')} onChange={(v) => { const n = Number(v); if (Number.isFinite(n) && n >= 0) void save({ [k]: n }); }} />
+    <TextField label={label} hint={hint} value={draft[k] ?? String(s.settings[k] ?? '')} onChange={(v) => setDraft({ ...draft, [k]: v })} />
   );
   return (
     <div className="fx-stack">
@@ -529,6 +533,11 @@ export function RecordingSettings() {
       {num('capMb', 'Size cap (MB)', 'Alert at 80 % and 100 %. 0 = no cap.')}
       {num('keepRawHours', 'Keep raw audio after compaction (hours)', 'The silence-cut copy is verified first.')}
       {num('padMs', 'Speech padding (ms)', 'Kept before and after each stretch of speech.')}
+      <div className="axp-live__actions" role="toolbar" aria-label="Recording settings actions">
+        <Button size="sm" tone="primary" icon="check" disabled={!Object.keys(draft).length || bad} onClick={() => void save(nums)}>Save</Button>
+        {Object.keys(draft).length > 0 && <Button size="sm" tone="ghost" onClick={() => setDraft({})}>Cancel</Button>}
+        {bad && <span className="fx-small fx-muted">Numbers of 0 or more only.</span>}
+      </div>
       <p className="fx-small fx-muted">Used: {bytes(s.usedBytes)} ({s.cap.pct}% of the cap) · saved by cutting silence: {bytes(s.savedBytes)}</p>
       {!s.ffmpeg && <Note tone="warning">ffmpeg isn't in the console image yet, so compaction keeps WAV only and other audio waits. The image adds it on the next redeploy.</Note>}
       <Note>"You're being watched" can't be switched off: it always shows on a human session while anyone watches.</Note>

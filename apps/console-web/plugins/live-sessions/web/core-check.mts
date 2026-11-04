@@ -1,9 +1,8 @@
 /** Web core self-test: npx -y tsx apps/console-web/plugins/live-sessions/web/core-check.mts */
-import assert from 'node:assert/strict';
 import { NO_FILTERS, clock, dur, filterRows, nextSpeech, partAt, paintWidget, tokensAt, upTo, widgetAsset, type Row } from './core';
 
 let n = 0;
-const ok = (c: unknown, m: string) => { assert.ok(c, m); n++; };
+const ok = (c: unknown, m: string) => { if (!c) throw new Error(`check failed: ${m}`); n++; };
 const row = (p: Partial<Row>): Row => ({ id: 'x', kind: 'human', client: 'code', mode: 'text', account: 'main', primary: true, device: 'VPS', app: 'Claude Code', title: '', doing: '', build: '', step: '', progress: null, model: '', thinking: '', agent: { id: 'paulie', name: 'Ping Paulie', title: '', avatar: null, known: true }, startedAt: 0, lastAt: 0, costUsd: null, status: 'live', voice: { ok: false, why: '' }, recording: true, watchers: [], notice: { watched: false, recording: true, text: 'Recording', by: [] }, source: '', url: '', ...p });
 const rows = [row({ id: 'a' }), row({ id: 'b', kind: 'headless', agent: { id: 'sully', name: 'Snap Sully', title: '', avatar: null, known: true } }), row({ id: 'c', status: 'ended', account: 'helper-2' })];
 ok(filterRows(rows, NO_FILTERS).map((r) => r.id).join() === 'a,b', 'ended hidden');
