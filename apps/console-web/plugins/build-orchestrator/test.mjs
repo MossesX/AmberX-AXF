@@ -126,4 +126,8 @@ t('every brief carries the asset-conformance rule', () => {
   const b2 = c.normalizeState({ builds: [fmx.apply.after.build] }).builds[0];
   assert.ok(c.brief(b2).includes(c.ASSET_RULE));
 });
+t('every brief carries the readme rule', () => {
+  const b2 = c.normalizeState({ builds: [fmx.apply.after.build] }).builds[0];
+  assert.ok(c.brief(b2).includes(c.DOCS_RULE)); assert.match(c.DOCS_RULE, /docs\/README\.md/);
+});
 console.log(`build-orchestrator: ${n} checks passed`);

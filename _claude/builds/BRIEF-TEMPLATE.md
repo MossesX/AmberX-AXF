@@ -13,6 +13,12 @@ Source: voice · At: 2026-11-03T14:05:00Z · Session: <session or conversation i
 ## What to build
 Your paraphrase, the plan, the steps (s1 …), checks.
 
+## Docs (every build)
+Ship a basic Markdown readme in the same PR: `docs/README.md` inside the plugin / app / module folder this build adds
+or changes (or a section added to an existing one): what it does, how to use it (screens, settings, right-click
+actions, voice commands), commands (API / MCP / CLI) and troubleshooting. Plain Markdown, no docs engine.
+`node framework/cli/check-docs-readme.mjs` fails CI on a new folder without one.
+
 ## Addendum 1 (Brett, Nov 4 2026 (voice))
 > A later change he asked for, verbatim. Each one is its own block, numbered, oldest first. Also:
 > node framework/cli/build-origin.mjs addendum <build-id> --said "…" --source voice

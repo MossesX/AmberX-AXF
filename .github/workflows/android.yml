@@ -77,6 +77,7 @@ jobs:
       AXF_BUILD_PROFILE: main-framework   # the sweep checks the base profile's data whatever profile Brett has saved
     steps:
       - uses: actions/checkout@v4
+        with: { fetch-depth: 2 }   # check-docs-readme compares with the base (HEAD^1)
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
       - uses: actions/setup-python@v5
@@ -114,6 +115,8 @@ jobs:
         run: node framework/cli/check-controls.mjs
       - name: Toolbars — every toolbar is a framework toolbar (role="toolbar" + settings id; tap-to-confirm off in code only with a recorded reason)
         run: node framework/cli/check-toolbars.mjs
+      - name: Docs — a PR that adds a plugin / app / module folder ships its docs/README.md (existing folders grandfathered)
+        run: node framework/cli/check-docs-readme.mjs --self-test && node framework/cli/check-docs-readme.mjs
       - name: Asset conformance — the checker and the adopter agree (scale-adopt self-test)
         run: node framework/spec/check-conform.mjs
       - name: Plugin pages follow the design language (page heads with eyebrow + title + one sentence, no spinners; DESIGN-LANGUAGE §12)

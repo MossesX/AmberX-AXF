@@ -36,6 +36,9 @@ export const MODEL_GUIDE = {
  */
 export const ASSET_RULE = 'UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.';
 
+/** Every brief carries the readme rule (Brett, Nov 4 2026; rule "Every build ships a basic readme"). */
+export const DOCS_RULE = 'Docs: every build ships a basic Markdown readme for what it adds or changes, in the same PR: `docs/README.md` inside the plugin / app / module folder (or a section added to an existing one) covering what it does, how to use it (screens, settings, right-click actions, voice commands), commands (API / MCP / CLI) and troubleshooting. Plain Markdown, no docs engine. CI (`node framework/cli/check-docs-readme.mjs`) fails a PR that adds a plugin / app / module folder without one.';
+
 const now = () => new Date().toISOString();
 const str = (v, max = 4000) => (typeof v === 'string' ? v.slice(0, max) : '');
 /** A step still to do: not done and not skipped by the build's feature matrix. */
@@ -226,6 +229,7 @@ export function brief(build, rules = DEFAULT_RULES) {
     SWITCH_RULE,
     `Rules: ${rules.sameSession ? 'stay in this one session' : 'new session allowed'}; ${rules.subAgents ? 'sub-agents allowed' : 'no sub-agents'}; steps ≤ ${rules.maxStepMinutes} min; read only the files listed; stop at the end of this phase.`,
     `Look: ${ASSET_RULE}`,
+    DOCS_RULE,
     build.branch ? `Branch: ${build.branch}${build.pr ? ` · PR ${build.pr}` : ''}` : '',
     `Steps in this phase (${p.steps.filter(open).length} left, ~${formatMinutes(p.minutesLeft) || '?'}):`,
     ...p.steps.map((s, i) => `${s.group && s.group !== p.steps[i - 1]?.group ? `— ${s.group} —\n` : ''}${s.done ? '[x]' : s.skip ? '[skip]' : '[ ]'} ${s.id} ${s.estimate ? `(~${s.estimate}) ` : ''}${s.text}${s.session === 'new' ? ' [needs a new session]' : ''}${s.agent ? ' [sub-agent allowed]' : ''}`),
