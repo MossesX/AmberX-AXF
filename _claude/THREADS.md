@@ -669,15 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s6 done (urgent) · orchestrator
-- 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s7 done (urgent) · orchestrator
-- 2026-11-03 18:36 UTC · `crew-live` s6 done (urgent) · orchestrator
-- 2026-11-03 18:37 UTC · `auto-land` s8 done, → built (urgent) · orchestrator
-- 2026-11-03 18:37 UTC · `auto-land` note (urgent) · orchestrator
-- 2026-11-03 18:37 UTC · `toolbar-tap-confirm` s3 done (urgent) · orchestrator
-- 2026-11-03 18:51 UTC · `toolbar-tap-confirm` s1 done (urgent) · orchestrator
-- 2026-11-03 18:52 UTC · `toolbar-tap-confirm` PR #272 (urgent) · builds-live
-- 2026-11-03 18:52 UTC · `toolbar-tap-confirm` note (urgent) · orchestrator
 - 2026-11-03 18:54 UTC · `toolbar-tap-confirm` s8 done, note (urgent) · reconciler
 - 2026-11-04 04:52 UTC · `lenny-land-all` s3 done (current) · orchestrator
 - 2026-11-04 04:52 UTC · `lenny-land-all` s4 done (current) · orchestrator
@@ -1069,6 +1060,15 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:06 UTC · `urgent-land-gizmo-chat` note (current) · foreign-write
 - 2026-11-04 15:06 UTC · `console-wake-finish` s5 done, → complete (current) · foreign-write
 - 2026-11-04 15:06 UTC · `console-wake-finish` note (current) · foreign-write
+- 2026-11-04 15:06 UTC · `browser-automation` note (current) · foreign-write
+- 2026-11-04 15:06 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 15:06 UTC · `profile-lists-home-card` s4 done, → complete (current) · foreign-write
+- 2026-11-04 15:06 UTC · `merge-queue` added (6 steps) (current) · foreign-write
+- 2026-11-04 15:06 UTC · `profile-filter-tables` added (48 steps) (current) · foreign-write
+- 2026-11-04 15:06 UTC · `fable-no-approval` added (3 steps) (current) · foreign-write
+- 2026-11-04 15:06 UTC · `fable-review-nov3` added (7 steps) (current) · foreign-write
+- 2026-11-04 15:06 UTC · `app-voice-commands` added (6 steps) (current) · foreign-write
+- 2026-11-04 15:06 UTC · `apps-control-surface` added (5 steps) (current) · foreign-write
 
 ## Token passes (log)
 
