@@ -683,7 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 12:05 UTC · `molly-console-commands` merged (current) · builds-live
 - 2026-11-04 12:05 UTC · `console-wake` → complete, PR #288, merged (urgent) · builds-live
 - 2026-11-04 12:06 UTC · `land-round-2` s1 done, → running (current) · orchestrator
 - 2026-11-04 12:06 UTC · `land-round-2` note (current) · orchestrator
@@ -1083,6 +1082,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:32 UTC · `jump-menu-asset` added (5 steps) (current) · foreign-write
 - 2026-11-04 15:32 UTC · `app-voice-commands` s2 done (current) · orchestrator
 - 2026-11-04 15:32 UTC · `app-voice-commands` note (current) · orchestrator
+- 2026-11-04 15:32 UTC · `app-voice-commands` s3 done (current) · orchestrator
 
 ## Token passes (log)
 
