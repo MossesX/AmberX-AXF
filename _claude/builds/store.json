@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 811,
- "updatedAt": "2026-11-04T15:57:34.003Z",
+ "rev": 812,
+ "updatedAt": "2026-11-04T15:57:46.565Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -80347,7 +80347,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T15:29:38.375Z",
-   "updatedAt": "2026-11-04T15:49:04.018Z",
+   "updatedAt": "2026-11-04T15:57:14.092Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -80402,12 +80402,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T15:57:14.092Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T15:29:38.376Z",
-     "updatedAt": "2026-11-04T15:29:38.376Z"
+     "updatedAt": "2026-11-04T15:57:15.399Z"
     },
     {
      "id": "s3",
@@ -80506,10 +80506,27 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-04T15:29:38.375Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw29vtlc07r7ed": "2026-11-04T15:29:38.376Z",
+     "st-mw29vtlc088t0m": "2026-11-04T15:29:38.376Z",
+     "st-mw29vtlc09ldk1": "2026-11-04T15:29:38.376Z",
+     "st-mw29vtlc0aveih": "2026-11-04T15:29:38.376Z",
+     "st-mw29vtlc0bf3g7": "2026-11-04T15:29:38.376Z",
+     "st-mw29vtlc0calga": "2026-11-04T15:29:38.376Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-04T15:29:38.376Z",
    "rearranged": false,
