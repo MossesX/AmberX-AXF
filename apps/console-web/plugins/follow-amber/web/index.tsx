@@ -18,7 +18,8 @@
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Chip, Container, Icon, Note, flashWhenReady, useRuntime, type AxfWebLibrary } from '@console/axf/react';
+import { Button, Chip, Container, Icon, Note, useRuntime, type AxfWebLibrary } from '@console/axf/react';
+import { FLASH_DEFAULTS } from '@console/axf/core/engines/theme';
 import { followSse, sseJson } from '@console/axf/core/sse';
 import { HUB_DEFAULT, normalizeHub } from '@console/axf/libs/hub/hub';
 import { formatCountdown, vetoHost, VETO_WARNING_SECONDS } from '@console/axf/libs/hub/veto';
@@ -26,7 +27,7 @@ import { approvalsWatcher, countdownOf, type ApprovalItem } from '@console/axf/l
 import { approvalsHost } from '@console/axf/libs/approvals/react';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
-import { arrived, decide, highlightIsSelector, offers, parseFrame, pickNext, queueOf, routeOf, type FollowDecision } from './core';
+import { FLASH_COUNT, arrived, decide, flashLabel, flashMs, flashPrefs, flashStyle, highlightIsSelector, offers, parseFrame, pickBest, pickNext, queueOf, routeOf, type FlashPrefs, type FollowDecision } from './core';
 import { appMenu } from './menu';
 import './follow-amber.css';
 
@@ -146,21 +147,76 @@ async function checkFor(id = '') {
 
 /* ---------------- the client: follows the server's stream, draws nothing ---------------- */
 
-function findText(text: string): Element | null {
-  const want = text.trim().toLowerCase();
-  const root = document.querySelector('.fx-dialog') ?? document.querySelector('.fx-main') ?? document.body;
-  for (const el of root.querySelectorAll<HTMLElement>('h1, h2, h3, h4, button, a, label, [data-fx-row], li, td, th, span, strong, p')) {
-    if ((el.innerText || el.textContent || el.getAttribute('aria-label') || '').trim().toLowerCase() === want) return el;
-  }
-  return null;
+/* ---------------- the flash: the referenced item's background flashes (Brett, Nov 4 2026) ---------------- */
+
+const TEXT_SEL = 'h1, h2, h3, h4, h5, button, a, label, summary, [data-fx-row], [role="row"], [role="tab"], [role="treeitem"], li, td, th, dt, span, strong, p, code';
+
+/** The dialog or window on top (searched first), else the main view. */
+function onTop(): Element | null {
+  const dialogs = document.querySelectorAll('.fx-dialog');
+  return dialogs[dialogs.length - 1] ?? document.querySelector('.fx-window.is-focused') ?? null;
 }
 
-function highlight(h: string) {
-  if (!h) return;
-  flashWhenReady(() => {
-    if (highlightIsSelector(h)) { try { return document.querySelector(h); } catch { return findText(h); } }
-    return findText(h);
-  }, 4000);
+const isVisible = (el: Element) => {
+  const r = el.getBoundingClientRect();
+  return r.width > 0 && r.height > 0 && r.bottom > 0 && r.right > 0 && r.top < innerHeight && r.left < innerWidth;
+};
+
+/** The best element for a highlight: a CSS selector (first visible match), else the best text match on the page. */
+function findTarget(h: string): HTMLElement | null {
+  if (highlightIsSelector(h)) {
+    try {
+      const all = [...document.querySelectorAll<HTMLElement>(h)];
+      if (all.length) return all.find(isVisible) ?? all[0]!;
+    } catch { /* not a selector after all: try it as text */ }
+  }
+  const top = onTop();
+  const els = [...document.querySelectorAll<HTMLElement>(TEXT_SEL)].filter((el) => !el.closest('.fx-toast, [data-axf-search="off"]'));
+  const cands = els.map((el, order) => ({ text: el.innerText || el.textContent || el.getAttribute('aria-label') || '', onTop: !!top && top.contains(el), visible: isVisible(el), order }));
+  const i = pickBest(cands, h);
+  if (i < 0) return null;
+  // a row's cell or label flashes its whole row (card, list item), so the background reads as one piece
+  const el = els[i]!;
+  return el.closest<HTMLElement>('[data-fx-row], [role="row"], li, tr, .fx-card') ?? el;
+}
+
+/** No highlight: the opened dialog / window / settings tab / screen itself. */
+function openedTarget(kind: string): HTMLElement | null {
+  if (kind === 'dialog') { const d = document.querySelectorAll<HTMLElement>('.fx-dialog'); return d[d.length - 1] ?? null; }
+  if (kind === 'settings') return document.querySelector<HTMLElement>('.axf-settings__tab.is-active') ?? document.querySelector<HTMLElement>('.fx-main');
+  return document.querySelector<HTMLElement>('.fx-window.is-focused') ?? document.querySelector<HTMLElement>('.fx-main');
+}
+
+/** Scroll it into view and flash its background (framework/ui/axf.css `fx-attn-flash`). */
+function flashEl(el: HTMLElement, p: FlashPrefs) {
+  const reduce = matchMedia?.('(prefers-reduced-motion: reduce)').matches || document.documentElement.hasAttribute('data-reduced-motion');
+  el.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' });
+  const style = flashStyle(p);
+  el.classList.remove('fx-attn-flash');
+  void el.offsetWidth; // restart the animation
+  for (const [k, v] of Object.entries(style)) el.style.setProperty(k, v);
+  el.classList.add('fx-attn-flash');
+  setTimeout(() => { el.classList.remove('fx-attn-flash'); for (const k of Object.keys(style)) el.style.removeProperty(k); }, flashMs(p) + 100);
+}
+
+/** Wait for the item (views load asynchronously), flash it, and tell the server what flashed (Amber reads it). */
+function flashFor(m: { id?: string; kind: string; label?: string; target: string; highlight?: string }) {
+  const p = flashPrefs((k) => runtime?.settings.get(k), FLASH_DEFAULTS.flashA, FLASH_DEFAULTS.flashB);
+  const h = (m.highlight ?? '').trim();
+  const report = (label: string) => { if (m.id) void post('flashed', { id: m.id, client: clientId(), label }).catch(() => undefined); };
+  const started = Date.now();
+  const tick = () => {
+    const el = h ? findTarget(h) : openedTarget(m.kind);
+    if (el) {
+      if (p.on) flashEl(el, p);
+      report(p.on ? flashLabel(h ? (el.innerText || el.getAttribute('aria-label') || '') : m.label || m.target, h || m.target) : '');
+      return;
+    }
+    if (Date.now() - started < 4000) setTimeout(tick, 90);
+    else report('');
+  };
+  // a screen with no highlight: give the navigation a moment so the new screen flashes, not the old one
+  setTimeout(tick, h ? 30 : 350);
 }
 
 function clientId(): string {
@@ -187,7 +243,7 @@ function FollowClient() {
         if (m.type === 'state') { if (m.on !== st.on || !st.known) applyState(m.on, m.by ?? '', m.at ?? ''); return; }
         if (!st.on) return;
         if (m.type === 'show') {
-          highlight(m.highlight ?? '');
+          flashFor(m);
           rt.toast(m.say ? `Amber: ${m.say}` : `Amber opened ${m.label || m.target}`, 'info', 'Follow Amber');
           return;
         }
@@ -325,7 +381,7 @@ function FollowPanel() {
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Follow Amber',
-  version: '0.1.0',
+  version: '0.2.0',
   builtWith: { model: 'opus', builtAt: '2026-11-03' },
   appMenu,
   register(rt) {
@@ -353,6 +409,16 @@ export const plugin: AxfWebLibrary = {
     settings: [
       { key: KEY, label: 'Follow Amber', kind: 'toggle', default: false, scope: 'device', description: 'On: what Amber mentions opens here and approvals pop up. The same value for every console.' },
       { key: CHIP_KEY, label: 'Show the banner chip while following', kind: 'toggle', default: true, scope: 'device', description: 'A small "Following Amber" chip in the banner; tap it to turn Follow Amber off.' },
+    ],
+  }, {
+    id: 'follow-amber.flash', label: 'Flash what Amber opens', icon: 'zap', tab: FOLDER, order: 20,
+    description: 'When Amber opens something for you, the item she means flashes its background so you spot it.',
+    settings: [
+      { key: 'follow-amber.flash', label: 'Flash it', kind: 'toggle', default: true, scope: 'device', description: 'Off: it still opens and scrolls into view, without the flash.' },
+      { key: 'follow-amber.flash.colorA', label: 'First colour', kind: 'color', default: FLASH_DEFAULTS.flashA, scope: 'device', description: 'Left at the default, the colour theme\'s flash colour is used.' },
+      { key: 'follow-amber.flash.colorB', label: 'Second colour', kind: 'color', default: FLASH_DEFAULTS.flashB, scope: 'device', description: 'The flashes alternate between the two.' },
+      { key: 'follow-amber.flash.count', label: 'Flashes', kind: 'number', default: FLASH_COUNT.default, min: FLASH_COUNT.min, max: FLASH_COUNT.max, step: 1, scope: 'device' },
+      { key: 'follow-amber.flash.speed', label: 'Speed', kind: 'choice', default: 'normal', scope: 'device', options: [{ value: 'slow', label: 'Slow' }, { value: 'normal', label: 'Normal' }, { value: 'fast', label: 'Fast' }], description: 'Normal: five flashes take 2.5 seconds.' },
     ],
   }],
   settingsPanels: [

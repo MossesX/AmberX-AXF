@@ -165,7 +165,8 @@ export type ColorToken =
 
 export interface ColorThemeData {
   scheme: 'light' | 'dark';
-  tokens: Record<ColorToken, string>;
+  /** flashA / flashB / flashText (the attention flash) are optional: the theme engine falls back to yellow / orange / dark. */
+  tokens: Record<ColorToken, string> & Partial<Record<'flashA' | 'flashB' | 'flashText', string>>;
 }
 
 export interface StyleThemeData {

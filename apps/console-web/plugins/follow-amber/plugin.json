@@ -2,7 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.follow-amber",
   "name": "Follow Amber",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
@@ -49,7 +49,8 @@
       { "route": "POST /show", "id": "show", "title": "Show something in the console (opens + highlights it; nothing when Follow Amber is off)", "readOnly": true, "input": { "type": "object", "properties": { "target": { "type": "string", "description": "a screen, settings tab, dialog or navigation action by id, title or words; or kind:name (screen:, settings:, dialog:, action:, approval:)" }, "highlight": { "type": "string", "description": "CSS selector or exact visible text to highlight once it is open" }, "say": { "type": "string", "description": "what Amber is saying about it (shown as a note)" }, "to": { "type": "string", "description": "recent (default), all, or a console client id" } }, "required": ["target"], "additionalProperties": false } },
       { "route": "POST /approval", "id": "approval", "title": "Pop up a waiting axHub approval in the console now", "readOnly": true, "input": { "type": "object", "properties": { "id": { "type": "string", "description": "the axHub approval / job id (optional: every waiting one)" }, "say": { "type": "string" } }, "additionalProperties": false } },
       { "route": "GET /recent", "id": "recent", "title": "What was shown last", "readOnly": true },
-      { "route": "GET /stream", "skip": "the consoles' own event stream" }
+      { "route": "GET /stream", "skip": "the consoles' own event stream" },
+      { "route": "POST /flashed", "skip": "the consoles' own report of what they flashed for a show" }
     ]
   },
   "builtWith": {

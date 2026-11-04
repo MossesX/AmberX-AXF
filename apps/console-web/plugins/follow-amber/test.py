@@ -58,6 +58,7 @@ plugin_services.provide("console-commands@1", fake, folder="console-commands")
 spec = importlib.util.spec_from_file_location("follow_amber_server", HERE / "server" / "__init__.py")
 fa = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(fa)  # type: ignore[union-attr]
+fa.FLASH_WAIT_S = 0.05  # nobody reports a flash in most checks; the flash checks below wait for real
 
 app = FastAPI()
 ROLE: dict[str, object] = {"user": None}
@@ -131,6 +132,46 @@ r = c.post(f"{P}/show", json={"target": "builds", "to": "all"}).json()
 ok(fake.calls[-1][0]["input"] == {"to": "all"}, "to=all reaches every console")
 ok(c.post(f"{P}/show", json={}).json()["code"] == "invalid", "a target is needed")
 ok(c.post(f"{P}/show", json={"target": "x", "kind": "nuke"}).json()["code"] == "invalid", "unknown kinds refused")
+
+# ---------------------------------------------------------------- the flash: a console reports what it flashed
+import threading  # noqa: E402
+import time  # noqa: E402
+
+drain()
+r = c.post(f"{P}/show", json={"target": "builds", "highlight": "Follow Amber flash"}).json()
+ok(r["flashed"] is None and "flashed" not in r["message"], "no console reported: flashed is null")
+got = drain()
+ok(got and len(got[-1]["id"]) == 16, "every show frame carries an id the console reports against")
+ok(c.post(f"{P}/flashed", json={"id": got[-1]["id"], "label": "late"}).json()["taken"] is False, "a report after the show answered is dropped")
+
+fa.FLASH_WAIT_S = 3.0
+res: dict = {}
+t = threading.Thread(target=lambda: res.update(fa.show("builds", highlight="Follow Amber flash")))
+t.start()
+sid = ""
+for _ in range(200):
+    f = [x for x in drain() if x.get("type") == "show"]
+    if f:
+        sid = f[-1]["id"]
+        break
+    time.sleep(0.01)
+ok(sid, "the show frame reached the follow stream")
+ok(c.post(f"{P}/flashed", json={"id": sid, "client": "fa-test0001", "label": "Follow Amber flash · Feature"}).json()["taken"] is True, "the console's report is taken")
+ok(c.post(f"{P}/flashed", json={"id": sid, "label": "second"}).json()["taken"] is False, "the first report wins")
+t.join(5)
+ok(res.get("flashed") == "Follow Amber flash · Feature" and "flashed Follow Amber flash" in res["message"], "the show result says which item flashed")
+
+t = threading.Thread(target=lambda: res.update(fa.show("builds", highlight="nope")))
+t.start()
+for _ in range(200):
+    f = [x for x in drain() if x.get("type") == "show"]
+    if f:
+        c.post(f"{P}/flashed", json={"id": f[-1]["id"], "label": ""})
+        break
+    time.sleep(0.01)
+t.join(5)
+ok(res.get("flashed") == "" and "nothing flashed" in res["message"], "found nothing: flashed is '' and the message says so")
+fa.FLASH_WAIT_S = 0.05
 
 # ---------------------------------------------------------------- approvals: the pop-up frame
 drain()

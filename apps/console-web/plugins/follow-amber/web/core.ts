@@ -11,7 +11,7 @@ export const FOLLOW_FRAME = 'follow-amber@1';
 /** What the server sends down a follow stream. */
 export type FollowFrame =
   | { $axf: typeof FOLLOW_FRAME; type: 'state'; on: boolean; by?: string; at?: string }
-  | { $axf: typeof FOLLOW_FRAME; type: 'show'; kind: string; target: string; label?: string; highlight?: string; say?: string; by?: string }
+  | { $axf: typeof FOLLOW_FRAME; type: 'show'; id?: string; kind: string; target: string; label?: string; highlight?: string; say?: string; by?: string }
   | { $axf: typeof FOLLOW_FRAME; type: 'approval'; id?: string; say?: string; by?: string };
 
 const str = (v: unknown, cap = 300) => (typeof v === 'string' ? v.slice(0, cap) : '');
@@ -23,7 +23,7 @@ export function parseFrame(raw: unknown): FollowFrame | null {
   if (f.$axf !== FOLLOW_FRAME) return null;
   if (f.type === 'state' && typeof f.on === 'boolean') return { $axf: FOLLOW_FRAME, type: 'state', on: f.on, by: str(f.by, 80), at: str(f.at, 40) };
   if (f.type === 'show' && typeof f.target === 'string' && f.target) {
-    return { $axf: FOLLOW_FRAME, type: 'show', kind: str(f.kind, 20), target: str(f.target, 200), label: str(f.label, 200), highlight: str(f.highlight, 200), say: str(f.say), by: str(f.by, 80) };
+    return { $axf: FOLLOW_FRAME, type: 'show', id: str(f.id, 40), kind: str(f.kind, 20), target: str(f.target, 200), label: str(f.label, 200), highlight: str(f.highlight, 200), say: str(f.say), by: str(f.by, 80) };
   }
   if (f.type === 'approval') return { $axf: FOLLOW_FRAME, type: 'approval', id: str(f.id, 80), say: str(f.say), by: str(f.by, 80) };
   return null;
@@ -31,6 +31,79 @@ export function parseFrame(raw: unknown): FollowFrame | null {
 
 /** A highlight is a CSS selector when it looks like one (#id, .class, [attr], tag.class), else exact visible text. */
 export const highlightIsSelector = (h: string): boolean => /^[#.[]/.test(h.trim()) || /^[a-z][a-z0-9-]*[#.[:]/i.test(h.trim());
+
+/* ---------------------------------------------------------------- the flash (Brett, Nov 4 2026) */
+
+/** How the referenced item flashes: on/off, the two colours ('' = the colour theme's flash-a / flash-b), count, speed. */
+export interface FlashPrefs { on: boolean; colorA: string; colorB: string; count: number; speed: FlashSpeed }
+export type FlashSpeed = 'slow' | 'normal' | 'fast';
+/** One flash every N ms; 5 flashes at normal = 2.5 s. */
+export const FLASH_PERIOD_MS: Record<FlashSpeed, number> = { slow: 750, normal: 500, fast: 300 };
+export const FLASH_COUNT = { min: 1, max: 10, default: 5 } as const;
+
+const HEX = /^#[0-9a-f]{6}$/i;
+
+/** Settings values → prefs (anything missing or odd falls back to the default). A colour left at its default (`defA` /
+ *  `defB`, the engine's FLASH_DEFAULTS) means "follow the colour theme", so a theme swap still recolours the flash. */
+export function flashPrefs(get: (k: string) => unknown, defA = '', defB = ''): FlashPrefs {
+  const n = Number(get('follow-amber.flash.count'));
+  const sp = get('follow-amber.flash.speed');
+  const col = (v: unknown, def: string) => (typeof v === 'string' && HEX.test(v) && v.toLowerCase() !== def.toLowerCase() ? v : '');
+  return {
+    on: get('follow-amber.flash') !== false,
+    colorA: col(get('follow-amber.flash.colorA'), defA),
+    colorB: col(get('follow-amber.flash.colorB'), defB),
+    count: Number.isFinite(n) && n >= FLASH_COUNT.min ? Math.min(FLASH_COUNT.max, Math.round(n)) : FLASH_COUNT.default,
+    speed: sp === 'slow' || sp === 'fast' ? sp : 'normal',
+  };
+}
+
+/** The inline custom properties the `fx-attn-flash` class reads (framework/ui/axf.css). */
+export function flashStyle(p: FlashPrefs): Record<string, string> {
+  return {
+    '--axf-attn-count': String(p.count),
+    '--axf-attn-period': `${FLASH_PERIOD_MS[p.speed]}ms`,
+    ...(p.colorA ? { '--axf-attn-a': p.colorA } : {}),
+    ...(p.colorB ? { '--axf-attn-b': p.colorB } : {}),
+  };
+}
+
+/** How long the whole flash runs (the class comes off after it). */
+export const flashMs = (p: Pick<FlashPrefs, 'count' | 'speed'>): number => p.count * FLASH_PERIOD_MS[p.speed];
+
+/** A place on the page the highlight text could mean. */
+export interface FlashCandidate { text: string; /** inside the dialog / window on top */ onTop: boolean; /** on screen now */ visible: boolean; /** document order */ order: number }
+
+const norm = (s: string) => s.replace(/\s+/g, ' ').trim().toLowerCase();
+
+/** How well a candidate's text matches: 3 exact, 2 starts with, 1 contains, 0 not at all. */
+export function matchScore(text: string, want: string): number {
+  const t = norm(text), w = norm(want);
+  if (!w || !t) return 0;
+  if (t === w) return 3;
+  if (t.length <= w.length * 4 + 40) { if (t.startsWith(w)) return 2; if (t.includes(w)) return 1; }
+  return 0;
+}
+
+/**
+ * The best match when several items carry the highlight text: exact text first, then the one in the dialog / window on
+ * top, then the visible one, then the shortest text (the row itself, not its whole list), then document order.
+ * → its index in `cands`, or -1 when nothing matches.
+ */
+export function pickBest(cands: readonly FlashCandidate[], want: string): number {
+  let best = -1, key: number[] = [];
+  cands.forEach((c, i) => {
+    const s = matchScore(c.text, want);
+    if (!s) return;
+    const k = [s, c.onTop ? 1 : 0, c.visible ? 1 : 0, -c.text.length, -c.order];
+    const j = k.findIndex((v, x) => v !== key[x]);
+    if (best < 0 || (j >= 0 && k[j]! > key[j]!)) { best = i; key = k; }
+  });
+  return best;
+}
+
+/** A short label for what flashed (sent back so Amber knows it landed). */
+export const flashLabel = (text: string, fallback: string): string => { const t = text.replace(/\s+/g, ' ').trim(); return (t || fallback).slice(0, 80); };
 
 /* ---------------------------------------------------------------- the approvals queue */
 

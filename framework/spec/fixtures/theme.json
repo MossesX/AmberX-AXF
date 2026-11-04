@@ -15,7 +15,10 @@
     "--fx-warning": "#f5c451",
     "--fx-info": "#ff6b3d",
     "--fx-focus": "#f5a524",
-    "--fx-shadow": "rgba(0,0,0,0.5)"
+    "--fx-shadow": "rgba(0,0,0,0.5)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:arctic-daylight": {
     "--fx-bg": "#f2f5f8",
@@ -33,7 +36,10 @@
     "--fx-warning": "#b7791f",
     "--fx-info": "#0aa5c9",
     "--fx-focus": "#1f6feb",
-    "--fx-shadow": "rgba(20,40,70,0.12)"
+    "--fx-shadow": "rgba(20,40,70,0.12)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:aurora-night": {
     "--fx-bg": "#0e0c15",
@@ -51,7 +57,10 @@
     "--fx-warning": "#f1b041",
     "--fx-info": "#6caef9",
     "--fx-focus": "#50e2b1",
-    "--fx-shadow": "rgba(0,0,0,0.55)"
+    "--fx-shadow": "rgba(0,0,0,0.55)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:carbon-amber": {
     "--fx-bg": "#121110",
@@ -69,7 +78,10 @@
     "--fx-warning": "#f1b041",
     "--fx-info": "#6caef9",
     "--fx-focus": "#fbad37",
-    "--fx-shadow": "rgba(0,0,0,0.55)"
+    "--fx-shadow": "rgba(0,0,0,0.55)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:coral-studio": {
     "--fx-bg": "#f7f4f3",
@@ -87,7 +99,10 @@
     "--fx-warning": "#b2701a",
     "--fx-info": "#6a5acd",
     "--fx-focus": "#d9533a",
-    "--fx-shadow": "rgba(60,30,25,0.12)"
+    "--fx-shadow": "rgba(60,30,25,0.12)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:crimson-dusk": {
     "--fx-bg": "#130e0f",
@@ -105,7 +120,10 @@
     "--fx-warning": "#f1b041",
     "--fx-info": "#6caef9",
     "--fx-focus": "#f2697b",
-    "--fx-shadow": "rgba(0,0,0,0.55)"
+    "--fx-shadow": "rgba(0,0,0,0.55)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:deep-ocean": {
     "--fx-bg": "#0a1218",
@@ -123,7 +141,10 @@
     "--fx-warning": "#f1b041",
     "--fx-info": "#6caef9",
     "--fx-focus": "#43deef",
-    "--fx-shadow": "rgba(0,0,0,0.55)"
+    "--fx-shadow": "rgba(0,0,0,0.55)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:forest-night": {
     "--fx-bg": "#0d1411",
@@ -141,7 +162,10 @@
     "--fx-warning": "#f1b041",
     "--fx-info": "#6caef9",
     "--fx-focus": "#60d286",
-    "--fx-shadow": "rgba(0,0,0,0.55)"
+    "--fx-shadow": "rgba(0,0,0,0.55)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:fresh-dark": {
     "--fx-bg": "#0e0f12",
@@ -159,7 +183,10 @@
     "--fx-warning": "#fdb022",
     "--fx-info": "#53b1fd",
     "--fx-focus": "#8b93ff",
-    "--fx-shadow": "rgba(0,0,0,0.45)"
+    "--fx-shadow": "rgba(0,0,0,0.45)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:fresh-light": {
     "--fx-bg": "#f6f7f9",
@@ -177,7 +204,10 @@
     "--fx-warning": "#b54708",
     "--fx-info": "#0b6bcb",
     "--fx-focus": "#6366f1",
-    "--fx-shadow": "rgba(16,24,40,0.07)"
+    "--fx-shadow": "rgba(16,24,40,0.07)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:glacier": {
     "--fx-bg": "#f4f7f8",
@@ -195,7 +225,10 @@
     "--fx-warning": "#b87614",
     "--fx-info": "#1686b6",
     "--fx-focus": "#087e9b",
-    "--fx-shadow": "rgba(21,42,50,0.12)"
+    "--fx-shadow": "rgba(21,42,50,0.12)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:graphite-lime": {
     "--fx-bg": "#141516",
@@ -213,7 +246,10 @@
     "--fx-warning": "#f2c14e",
     "--fx-info": "#6cc4ff",
     "--fx-focus": "#b6e34b",
-    "--fx-shadow": "rgba(0,0,0,0.55)"
+    "--fx-shadow": "rgba(0,0,0,0.55)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:graphite-mint": {
     "--fx-bg": "#101112",
@@ -231,7 +267,10 @@
     "--fx-warning": "#f1b041",
     "--fx-info": "#6caef9",
     "--fx-focus": "#58dabc",
-    "--fx-shadow": "rgba(0,0,0,0.55)"
+    "--fx-shadow": "rgba(0,0,0,0.55)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:harbor": {
     "--fx-bg": "#f4f6f8",
@@ -249,7 +288,10 @@
     "--fx-warning": "#b87614",
     "--fx-info": "#1686b6",
     "--fx-focus": "#2670c5",
-    "--fx-shadow": "rgba(21,36,50,0.12)"
+    "--fx-shadow": "rgba(21,36,50,0.12)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:hub-night": {
     "--fx-bg": "#0f1012",
@@ -267,7 +309,10 @@
     "--fx-warning": "#f5c04a",
     "--fx-info": "#5aaefc",
     "--fx-focus": "#f5a524",
-    "--fx-shadow": "rgba(0,0,0,0.5)"
+    "--fx-shadow": "rgba(0,0,0,0.5)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:linen-slate": {
     "--fx-bg": "#f8f6f4",
@@ -285,7 +330,10 @@
     "--fx-warning": "#b87614",
     "--fx-info": "#1686b6",
     "--fx-focus": "#2779b4",
-    "--fx-shadow": "rgba(50,39,21,0.12)"
+    "--fx-shadow": "rgba(50,39,21,0.12)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:meadow": {
     "--fx-bg": "#f5f7f5",
@@ -303,7 +351,10 @@
     "--fx-warning": "#b87614",
     "--fx-info": "#1686b6",
     "--fx-focus": "#178250",
-    "--fx-shadow": "rgba(21,50,21,0.12)"
+    "--fx-shadow": "rgba(21,50,21,0.12)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:midnight-ink": {
     "--fx-bg": "#0b1220",
@@ -321,7 +372,10 @@
     "--fx-warning": "#f0b44c",
     "--fx-info": "#7aa7ff",
     "--fx-focus": "#38c3e8",
-    "--fx-shadow": "rgba(0,0,0,0.5)"
+    "--fx-shadow": "rgba(0,0,0,0.5)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:mono-paper": {
     "--fx-bg": "#f6f6f6",
@@ -339,7 +393,10 @@
     "--fx-warning": "#b87614",
     "--fx-info": "#1686b6",
     "--fx-focus": "#6c727f",
-    "--fx-shadow": "rgba(21,31,50,0.12)"
+    "--fx-shadow": "rgba(21,31,50,0.12)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:nebula": {
     "--fx-bg": "#0f0b16",
@@ -357,7 +414,10 @@
     "--fx-warning": "#f1b041",
     "--fx-info": "#6caef9",
     "--fx-focus": "#ed5ac1",
-    "--fx-shadow": "rgba(0,0,0,0.55)"
+    "--fx-shadow": "rgba(0,0,0,0.55)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:neon-tide": {
     "--fx-bg": "#0c0a18",
@@ -375,7 +435,10 @@
     "--fx-warning": "#ffd166",
     "--fx-info": "#b46bff",
     "--fx-focus": "#22d3ee",
-    "--fx-shadow": "rgba(0,0,0,0.55)"
+    "--fx-shadow": "rgba(0,0,0,0.55)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:obsidian": {
     "--fx-bg": "#0e0f14",
@@ -393,7 +456,10 @@
     "--fx-warning": "#f1b041",
     "--fx-info": "#6caef9",
     "--fx-focus": "#6c92f9",
-    "--fx-shadow": "rgba(0,0,0,0.55)"
+    "--fx-shadow": "rgba(0,0,0,0.55)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:orchid-mist": {
     "--fx-bg": "#f6f4f8",
@@ -411,7 +477,10 @@
     "--fx-warning": "#b87614",
     "--fx-info": "#1686b6",
     "--fx-focus": "#702dbe",
-    "--fx-shadow": "rgba(36,21,50,0.12)"
+    "--fx-shadow": "rgba(36,21,50,0.12)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:plum-noir": {
     "--fx-bg": "#120d14",
@@ -429,7 +498,10 @@
     "--fx-warning": "#f1b041",
     "--fx-info": "#6caef9",
     "--fx-focus": "#d56ce5",
-    "--fx-shadow": "rgba(0,0,0,0.55)"
+    "--fx-shadow": "rgba(0,0,0,0.55)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:porcelain": {
     "--fx-bg": "#f5f6f7",
@@ -447,7 +519,10 @@
     "--fx-warning": "#b87614",
     "--fx-info": "#1686b6",
     "--fx-focus": "#1452d7",
-    "--fx-shadow": "rgba(21,31,50,0.12)"
+    "--fx-shadow": "rgba(21,31,50,0.12)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:rosewood-light": {
     "--fx-bg": "#f7f5f5",
@@ -465,7 +540,10 @@
     "--fx-warning": "#b87614",
     "--fx-info": "#1686b6",
     "--fx-focus": "#c02a50",
-    "--fx-shadow": "rgba(50,21,26,0.12)"
+    "--fx-shadow": "rgba(50,21,26,0.12)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:saffron-day": {
     "--fx-bg": "#f9f7f3",
@@ -483,7 +561,10 @@
     "--fx-warning": "#b87614",
     "--fx-info": "#1686b6",
     "--fx-focus": "#b06107",
-    "--fx-shadow": "rgba(50,42,21,0.12)"
+    "--fx-shadow": "rgba(50,42,21,0.12)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:sage-paper": {
     "--fx-bg": "#f3f4ef",
@@ -501,7 +582,10 @@
     "--fx-warning": "#b0731c",
     "--fx-info": "#2a86a8",
     "--fx-focus": "#2f7d5b",
-    "--fx-shadow": "rgba(30,45,35,0.12)"
+    "--fx-shadow": "rgba(30,45,35,0.12)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:sandstone": {
     "--fx-bg": "#f8f6f4",
@@ -519,7 +603,10 @@
     "--fx-warning": "#b87614",
     "--fx-info": "#1686b6",
     "--fx-focus": "#c54c20",
-    "--fx-shadow": "rgba(50,36,21,0.12)"
+    "--fx-shadow": "rgba(50,36,21,0.12)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "color-theme:slate-steel": {
     "--fx-bg": "#0f1012",
@@ -537,7 +624,10 @@
     "--fx-warning": "#f1b041",
     "--fx-info": "#6caef9",
     "--fx-focus": "#6aa1c8",
-    "--fx-shadow": "rgba(0,0,0,0.55)"
+    "--fx-shadow": "rgba(0,0,0,0.55)",
+    "--fx-flash-a": "#ffd60a",
+    "--fx-flash-b": "#ff8a00",
+    "--fx-flash-text": "#1a1205"
   },
   "style-theme:dense-grid": {
     "--fx-font": "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",

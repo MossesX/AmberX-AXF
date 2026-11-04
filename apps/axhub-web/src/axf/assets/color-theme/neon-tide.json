@@ -28,7 +28,10 @@
       "warning": "#ffd166",
       "info": "#b46bff",
       "focus": "#22d3ee",
-      "shadow": "rgba(0,0,0,0.55)"
+      "shadow": "rgba(0,0,0,0.55)",
+      "flashA": "#ffd60a",
+      "flashB": "#ff8a00",
+      "flashText": "#1a1205"
     }
   }
 }
