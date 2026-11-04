@@ -708,7 +708,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 15:47 UTC · `tab-group-assets` s1 done (current) · orchestrator
 - 2026-11-04 15:48 UTC · `jump-menu-asset` s1 done (current) · foreign-write
 - 2026-11-04 15:49 UTC · `tab-group-assets` s1 done (current) · foreign-write
 - 2026-11-04 15:50 UTC · `tab-group-assets` s1 done (current) · foreign-write
@@ -1108,6 +1107,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 22:39 UTC · `notes-views` s3 done (current) · claude:notes-views
 - 2026-11-04 22:39 UTC · `notes-views` s4 done (current) · claude:notes-views
 - 2026-11-04 22:39 UTC · `notes-views` note (current) · claude:notes-views
+- 2026-11-04 22:41 UTC · `notes-views` PR #349 (current) · builds-live
 
 ## Token passes (log)
 
