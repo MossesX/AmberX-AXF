@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T17:19:22.981Z",
+ "updatedAt": "2026-11-04T17:19:36.835Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -11110,16 +11110,21 @@
    "title": "Live sessions plugin: every Claude session live (human/headless), watch, voice, recording + playback",
    "category": "Plugins",
    "detail": "Agent: Ping Paulie. Plugin 'Live sessions' (apps/console-web/plugins/live-sessions, capability axf.claude-live@1): lists every Claude session (human + headless) with a Human/Headless badge and the agent running it, grid default; widget count; Watch live (text for all, voice for human only, owner-only, audited, 'you're being watched' notice); records every human session (redacted event log + AmberX audio), session browser + real-time playback; configurable storage targets (public repos blocked); post-session silence compaction. Replaces Plan Studio plan claude-sessions-list-molly-plugin-wpo6.",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/live-sessions-plugin",
+   "pr": "#331",
    "createdAt": "2026-11-04T16:46:03.374Z",
-   "updatedAt": "2026-11-04T17:19:21.361Z",
+   "updatedAt": "2026-11-04T17:19:23.689Z",
    "builtAt": "2026-11-04T17:19:21.361Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "PR #331 open. Gaps: live voice needs AmberX to stream segments (new APK); addendum 6 audio editor not started; phases 1+2 in one PR (addendum 7 read late).",
+     "at": "2026-11-04T17:19:23.689Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
