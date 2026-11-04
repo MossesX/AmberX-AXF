@@ -572,8 +572,10 @@
     "src/axf/core/sse.ts": "64f6a80f14560843",
     "src/axf/core/terminal.ts": "4c1f41ef61f20c0c",
     "src/axf/core/types.ts": "23b12e97035ff1f5",
+    "src/axf/core/ui-predict.d.mts": "3ab3c1cbb95d6018",
+    "src/axf/core/ui-predict.mjs": "8b0678d4e8491410",
     "src/axf/core/ui-review-schema.d.mts": "530f5d249d8ba406",
-    "src/axf/core/ui-review-schema.mjs": "934e9a501681463e",
+    "src/axf/core/ui-review-schema.mjs": "50cf3e00129b6926",
     "src/axf/core/validate.ts": "6aa57903dd47855e",
     "src/axf/core/watch-live.ts": "c13b3ab5468fd58d",
     "src/axf/libs/README.md": "b11eade27490043d",
@@ -766,7 +768,7 @@
     "src/axf/schemas/json/uac-policy.schema.json": "e864a2b107fc2d25",
     "src/axf/schemas/json/ui-kit.schema.json": "bc69839068b3ac97",
     "src/axf/schemas/json/ui-review-group.schema.json": "ab511f7844ebc3d6",
-    "src/axf/schemas/json/ui-review-item.schema.json": "bc6987b3adbf3a79",
+    "src/axf/schemas/json/ui-review-item.schema.json": "5228d10518a8baff",
     "src/axf/schemas/json/widget.schema.json": "01761e24be132e2d",
     "src/axf/schemas/json/window.schema.json": "e0f64392890b6c02",
     "src/axf/schemas/json/xlayout.schema.json": "67b86230f1c8d9a6",
@@ -777,7 +779,7 @@
     "src/axf/schemas/session.json": "88c52ff903d48dbf",
     "src/axf/schemas/shared-assets.json": "7d6a5bb4f0b2a9c3",
     "src/axf/schemas/swarm.json": "72c7999aebb9e8c2",
-    "src/axf/schemas/ui-review.json": "6cbca899c45dd994",
-    "src/axf/ui/axf.css": "faa3be9cf1ce7ba1"
+    "src/axf/schemas/ui-review.json": "292b3b2d3482fbad",
+    "src/axf/ui/axf.css": "ffaa2ced32bc659b"
   }
 }

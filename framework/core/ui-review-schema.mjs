@@ -38,7 +38,7 @@ export const REGISTRY = {
   /** Required only on review items (kind review). */
   reviewRequired: ['status'],
   groupRequired: ['$axf', 'id', 'name', 'createdAt', 'source'],
-  itemOptional: ['note', 'pr', 'branch', 'build', 'section', 'comment', 'history', 'updatedAt', 'pairId'],
+  itemOptional: ['note', 'pr', 'branch', 'build', 'section', 'comment', 'history', 'updatedAt', 'pairId', 'prediction'],
   groupOptional: ['submittedBy', 'app', 'note', 'build', 'session', 'updatedAt'],
 };
 
@@ -159,6 +159,11 @@ export function validateItem(it) {
   if (it.build !== undefined && it.build !== null && !isObj(it.build)) errors.push(badErr('build', 'must be { id, step? }'));
   if (it.updatedAt !== undefined && it.updatedAt !== '' && !isTimestamp(it.updatedAt)) errors.push(badErr('updatedAt', `"${it.updatedAt}" is not an ISO timestamp`));
   for (const f of ['note', 'branch', 'comment', 'pairId']) if (it[f] !== undefined && it[f] !== null && typeof it[f] !== 'string') errors.push(badErr(f, 'must be text'));
+  // a predicted look (ui-prediction@1, framework/core/ui-predict.mjs): review items only, an object naming its build
+  if (it.prediction !== undefined && it.prediction !== null) {
+    if (!isObj(it.prediction) || it.prediction.$axf !== 'ui-prediction@1' || blank(it.prediction.build)) errors.push(badErr('prediction', 'must be a ui-prediction@1 object { $axf, build, state, look, … }'));
+    else if (it.kind !== 'review') errors.push(badErr('prediction', 'is only for review items'));
+  }
   return { ok: !errors.length, errors };
 }
 
@@ -371,6 +376,7 @@ export function jsonSchemas() {
       status: { enum: R.statuses }, note: { type: 'string' }, pr: { type: 'integer', minimum: 1 }, branch: { type: 'string' },
       build: { type: 'object', properties: { id: { type: 'string' }, step: { type: 'string' } } }, section: { type: 'string', pattern: R.sectionPattern },
       comment: { type: 'string' }, history: { type: 'array' }, pairId: { type: 'string' },
+      prediction: { type: 'object', required: ['$axf', 'build', 'state'], properties: { $axf: { const: 'ui-prediction@1' }, build: { type: 'string', minLength: 1 }, state: { enum: ['predicted', 'real'] } } },
     },
     allOf: [{ if: { properties: { kind: { const: 'review' } } }, then: { required: R.reviewRequired } }, { if: { properties: { kind: { const: 'screenshot' } } }, then: { not: { required: ['status'] } } }],
   };

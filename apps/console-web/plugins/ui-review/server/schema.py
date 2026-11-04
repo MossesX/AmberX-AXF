@@ -225,6 +225,12 @@ def validate_item(it: Any) -> dict:
     for f in ("note", "branch", "comment", "pairId"):
         if it.get(f) is not None and not isinstance(it.get(f), str):
             errors.append(_bad(f, "must be text"))
+    p = it.get("prediction")  # a predicted look (ui-prediction@1, framework/core/ui-predict.mjs)
+    if p is not None:
+        if not isinstance(p, dict) or p.get("$axf") != "ui-prediction@1" or not str(p.get("build") or "").strip():
+            errors.append(_bad("prediction", "must be a ui-prediction@1 object { $axf, build, state, look, … }"))
+        elif it.get("kind") != "review":
+            errors.append(_bad("prediction", "is only for review items"))
     return {"ok": not errors, "errors": errors}
 
 
