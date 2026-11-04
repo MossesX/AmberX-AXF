@@ -683,8 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 12:44 UTC · `app-style-override` → pending, note (current) · reconciler
-- 2026-11-04 12:44 UTC · `orch-step-click` note (refactor) · foreign-write
 - 2026-11-04 12:44 UTC · `molly-opus` → complete, note (big-dog) · foreign-write
 - 2026-11-04 12:44 UTC · `walkthrough-random-look` → complete, note (refactor) · foreign-write
 - 2026-11-04 12:44 UTC · `profile-manager` note (current) · foreign-write
@@ -1083,6 +1081,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:50 UTC · `apps-control-surface` s2 done, s3 done, s4 done, s5 done, → complete, note (current) · foreign-write
 - 2026-11-04 15:50 UTC · `tab-group-assets` added (6 steps) (current) · foreign-write
 - 2026-11-04 15:50 UTC · `jump-menu-asset` added (5 steps) (current) · foreign-write
+- 2026-11-04 15:50 UTC · `urgent-land-gizmo-chat` s4 done (current) · orchestrator
+- 2026-11-04 15:50 UTC · `urgent-land-gizmo-chat` note (current) · orchestrator
 
 ## Token passes (log)
 
