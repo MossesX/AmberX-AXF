@@ -698,8 +698,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 15:00 UTC · `apps-control-surface` added (5 steps) (current) · orchestrator
-- 2026-11-04 15:01 UTC · `apps-control-surface` → running (current) · orchestrator
 - 2026-11-04 15:01 UTC · `apps-control-surface` note (current) · orchestrator
 - 2026-11-04 15:01 UTC · `apps-control-surface` branch claude/apps-control-surface (current) · builds-live
 - 2026-11-04 15:01 UTC · `apps-control-surface` added (5 steps) (current) · foreign-write
@@ -1098,6 +1096,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 21:01 UTC · `molly-banner-match` s4 done (current) · orchestrator
 - 2026-11-04 21:01 UTC · `molly-banner-match` s5 done (current) · orchestrator
 - 2026-11-04 21:01 UTC · `molly-banner-match` note (current) · orchestrator
+- 2026-11-04 21:05 UTC · `molly-banner-match` s1 done, s4 done, s5 done, note (current) · foreign-write
+- 2026-11-04 21:05 UTC · `drag-to-tab` s1 done, s2 done (angel, current) · foreign-write
 
 ## Token passes (log)
 
