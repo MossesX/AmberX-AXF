@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 866,
- "updatedAt": "2026-11-04T18:09:39.751Z",
+ "rev": 867,
+ "updatedAt": "2026-11-04T18:09:53.563Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -81674,7 +81674,7 @@
    "branch": "claude/model-thinking-audit",
    "pr": "",
    "createdAt": "2026-11-04T17:53:07.338Z",
-   "updatedAt": "2026-11-04T18:09:37.906Z",
+   "updatedAt": "2026-11-04T18:09:41.637Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -81751,12 +81751,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T18:09:39.819Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T17:53:07.344Z",
-     "updatedAt": "2026-11-04T17:53:07.344Z"
+     "updatedAt": "2026-11-04T18:09:39.957Z"
     },
     {
      "id": "s3",
@@ -81776,12 +81776,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T18:09:41.637Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T17:53:07.344Z",
-     "updatedAt": "2026-11-04T17:53:07.344Z"
+     "updatedAt": "2026-11-04T18:09:41.692Z"
     },
     {
      "id": "s4",
@@ -81920,7 +81920,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
