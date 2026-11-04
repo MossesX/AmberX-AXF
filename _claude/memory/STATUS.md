@@ -220,3 +220,10 @@ Brett's hand-saved notes (handoffs, session logs, plans, install notes, saved co
 
 ## Claude plugin: Claude settings (Nov 3 2026, claude-settings, Opus; branch `claude/claude-settings`) <!-- axf-plugin:claude-settings -->
 Console plugin **Claude** (`apps/console-web/plugins/claude-settings`, claude-settings@1). One settings document on axHub (`/projects/_shared/_data/claude/settings.json`) every Claude session reads at start and before acting: MCP `claude_settings_get` (read-only) / `claude_settings_set` (non-owner only), REST `/api/plugins/claude-settings/settings`, CLI `claude-settings.mjs get|set`, plugin commands (auto). Groups: No wait (owner-only; Brett's click → standing all-scope veto pass via control@1 `owner_pass`, off revokes, 1 h / 4 h / until off with renewal, night auto-off, banner chip), Follow Amber (shared key `followAmber.enabled`), Builds, Verification, Talking, Notifications, Memory. Open registry (`registry.json`, `registry.d/`, hub `claude/registry.json`). Tests: `test.mjs` (46), `test.py` (21, real pass store), `test_mcp_tools.py` (+6). Report `_claude/builds/reports/claude-settings.md`. <!-- axf-plugin:claude-settings -->
+## Menus stay on screen and scroll (Nov 3 2026, menu-scroll, Opus; branch `claude/menu-scroll`)
+menu-fit@1: `framework/core/engines/menufit.ts` (pure `fitMenu` / `menuBox`; checks `spec/check-menu-fit.mts`, in CI) and
+`framework/react/components/menuFit.ts` (visual viewport + safe areas + `--fx-layout-phone-edge`; `useMenuFit`,
+`installMenuFit` for self-placed plugin ⋯ menus, `focusMenuItem`). App menu drop-downs, submenus (placed in the parent
+menu box, `.fx-menu__li` static), context menus and plugin ⋯ menus flip / shift to stay on screen and only then scroll,
+with `data-fx-more` fade + chevron hints and contained overscroll. Re-baked console, axHub web, AmberX, Molly. Android
+twin deferred (PORTING.md). Report `_claude/builds/reports/menu-scroll.md`.

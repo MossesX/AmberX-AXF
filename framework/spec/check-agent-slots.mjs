@@ -164,7 +164,7 @@ if (hasTmux) {
   writeFileSync(join(bin, 'claude'), '#!/bin/sh\nwhile [ ! -f "$PWD/go" ]; do sleep 0.2; done\necho \'{"type":"result","result":"done"}\'\n');
   chmodSync(join(bin, 'claude'), 0o755);
   const runIn = (name) => { const d = join(tmp, name); mkdirSync(d); writeFileSync(join(d, 'brief.md'), 'hi'); return d; };
-  const env = { ...process.env, PATH: `${bin}:${process.env.PATH}`, AXF_WATCH_LIVE: 'off', HOME: process.env.HOME };
+  const env = { ...process.env, PATH: `${bin}:${process.env.PATH}`, AXF_WATCH_LIVE: 'off', AXF_SWARM_DIR: join(tmp, 'swarm'), HOME: process.env.HOME }; // every run is booked on an agent: keep it off the live crew
   const sh = (cwd, name) => spawnSync('bash', [join(ROOT, 'deploy/claude-headless.sh'), '--name', name, '--brief', 'brief.md', '--log', 'run.log', '--'], { cwd, env, encoding: 'utf8', timeout: 30_000 });
   const d1 = runIn('one'); const d2 = runIn('two');
   const tag = `slotstest-${process.pid}`;
