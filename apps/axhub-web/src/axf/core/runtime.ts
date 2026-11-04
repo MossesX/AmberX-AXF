@@ -267,6 +267,9 @@ export class AxfRuntime {
   readonly manifest: AxfManifest;
   /** The host app this one is embedded in (embed@1), or null when it runs on its own. Fixed for the page's life. */
   readonly embedded: Embed | null;
+  /** embed@1 `shown`: whether the host says this app's frame is on screen (null = it hasn't said; standalone = null). */
+  hostShown: boolean | null = null;
+  private readonly frontSubs = new Set<() => void>();
   readonly loadErrors: { id: string; errors: string[] }[] = [];
   private state: AxfState;
   private listeners = new Set<() => void>();
@@ -1820,6 +1823,24 @@ export class AxfRuntime {
     return false;
   }
 
+  /**
+   * Is this app in front of the person: the page is visible and, inside a host, the host shows this app's frame (a host
+   * that never said counts as showing it). Remote commands go to the client in front (console-commands, Nov 3 2026).
+   */
+  inFront(): boolean {
+    const d = (globalThis as unknown as { document?: { visibilityState?: string } }).document;
+    if (d?.visibilityState && d.visibilityState !== 'visible') return false;
+    return !this.embedded || this.hostShown !== false;
+  }
+
+  /** Told when inFront() may have changed (the host showed or hid this frame). → unsubscribe. */
+  onFront(f: () => void): () => void { this.frontSubs.add(f); return () => { this.frontSubs.delete(f); }; }
+
+  /** Inside a host: ask it to bring this app's frame to the front (embed@1 `show`). False standalone or with no host. */
+  bringToFront(reason?: string): boolean {
+    return this.postToHost(reason ? { $axf: EMBED_MESSAGE, type: 'show', reason } : { $axf: EMBED_MESSAGE, type: 'show' });
+  }
+
   /** A taken hook was used: ask the host (open its settings on this app's tab, and the tab the action named). */
   private askHost(spec: string): boolean {
     const fn = embedTakenBy(this.embedded, spec) ?? embedTakenView(this.embedded, spec.startsWith('nav:') ? spec.slice(4) : spec);
@@ -1848,6 +1869,10 @@ export class AxfRuntime {
       if (m?.type === 'run') this.runSharedMenuItem(m.id);
       if (m?.type === 'plugins-enabled' && this.hostTakes('plugins')) this.receiveHostPlugins(m.plugins);
       if (m?.type === 'plugins-request' && this.reportedPlugins) this.reportPluginsToHost(this.reportedPlugins);
+      if (m?.type === 'shown' && m.on !== this.hostShown) {
+        this.hostShown = m.on;
+        for (const f of this.frontSubs) try { f(); } catch { /* a listener's own problem */ }
+      }
     };
     // the app itself in a tab shares its menu (and, chrome@1, its navigation / context menus / toolbar / widgets when the
     // host takes them); a page the host shows alone (its settings page) doesn't

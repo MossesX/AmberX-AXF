@@ -41,6 +41,9 @@ export class ChromeHost {
   private pushedBadges = new Set<string>();
   private unified: UnifiedChrome = mergeChrome(null, []);
   private off: (() => void)[] = [];
+  /** per frame: what we last told it about being on screen (embed@1 `shown`), and the watcher of its data-on */
+  private shownOf = new Map<string, boolean>();
+  private watchers = new Map<string, MutationObserver>();
   rev = 0;
 
   constructor(private rt: AxfRuntime, private layout: () => XLayoutData) {}
@@ -68,6 +71,8 @@ export class ChromeHost {
     this.rt.removeContextItems(MERGED);
     for (const id of this.pushedNav) this.rt.removeNavSection(id);
     for (const b of this.pushedBadges) this.rt.setBadge(b, 0);
+    for (const w of this.watchers.values()) w.disconnect();
+    this.watchers.clear(); this.shownOf.clear();
     this.pushedNav.clear(); this.pushedBadges.clear(); this.bundles.clear(); this.frames.clear();
     this.unified = mergeChrome(null, []); this.changed();
   }
@@ -85,7 +90,26 @@ export class ChromeHost {
     if (!el) { if (!this.frames.get(app)?.isConnected) this.frames.delete(app); return; }
     if (this.frames.get(app) === el) return;
     this.frames.set(app, el);
-    el.addEventListener('load', () => this.post(app, { $axf: EMBED_MESSAGE, type: 'chrome-request' }));
+    el.addEventListener('load', () => { this.shownOf.delete(app); this.post(app, { $axf: EMBED_MESSAGE, type: 'chrome-request' }); this.tellShown(app); });
+    // FrameDeck marks a frame on screen with data-on; each change goes to the app (embed@1 `shown`), so a remote command
+    // for "the app Brett is looking at" picks the frame that is actually in front
+    this.watchers.get(app)?.disconnect();
+    const w = new MutationObserver(() => this.tellShown(app));
+    w.observe(el, { attributes: true, attributeFilter: ['data-on'] });
+    this.watchers.set(app, w);
+  }
+
+  private tellShown(app: string): void {
+    const on = this.onScreen(app);
+    if (this.shownOf.get(app) === on) return;
+    if (this.post(app, { $axf: EMBED_MESSAGE, type: 'shown', on })) this.shownOf.set(app, on);
+  }
+
+  /** An app asked to be brought to the front (embed@1 `show`: a remote command is about to change what it shows). */
+  show(app: string): void {
+    if (this.onScreen(app)) return;
+    const page = this.activeOf.get(app);
+    this.rt.navigate(page && this.navViews[`${app}/${page}`] ? `${app}/${page}` : app);
   }
 
   subscribe(f: Listener): () => void { this.listeners.add(f); return () => { this.listeners.delete(f); }; }
@@ -133,6 +157,8 @@ export class ChromeHost {
       this.rt.openContext(r.left + m.x, r.top + m.y, this.hasCtx(app.id, m.target) ? ctxTarget(app.id, m.target) : ctxTarget(app.id, 'default'), m.payload);
     } else if (m.type === 'notify') {
       this.rt.toast(m.body ?? m.title, m.level === 'error' ? 'danger' : m.level ?? 'info', m.body ? m.title : app.label);
+    } else if (m.type === 'show') {
+      this.show(app.id);
     } else if (m.type === 'open-settings') {
       this.rt.dispatch(m.tab ? `settings.open:${m.tab}` : 'settings.open');
     }

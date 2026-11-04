@@ -63,10 +63,19 @@ goes there. `console.screens`, `console.dialogs` and `console.settings` (tabs an
 `path` = the id, the title or words to search for; `console.actions` takes `act run` (input `args`); `console.nav` (path `here`)
 takes `get` (where the console is) and `act back | home | close`; `console.clients` lists the consoles open for the caller. Every
 list and resolve runs against the catalog the open consoles report (their search index: views, settings tabs, dialogs, actions),
-so plugins' screens are found too. Every act takes `input.to`: `recent` (default, the console used last), `all`, or a client id.
+so plugins' screens are found too. Every act takes `input.to`: `recent` (default, the console Brett is looking at: a client in front wins, then the one used last), `all`, or a client id.
+A console inside a host says so (Nov 3 2026, build `molly-console-commands`): `app: molly/console-web`, `host: molly`, and `front` (its page is visible
+and the host shows its frame, embed@1 `shown`); before it runs a command while hidden it asks the host to bring it forward (embed@1 `show`), and
+Molly with xLayout opens the Console frame hidden at start (`warm`), so a command while Molly is open always lands in Molly.
 Delivery and resolution: `core/engines/console-commands.mjs`; the console server's `console-commands` plugin keeps one mailbox
 per signed-in user (the console token and hub admins share the owner's) and streams to each open console, which runs the command
 through its own runtime (`rt.search.focus`, `rt.dispatch`) and acks what it opened.
+A command never fails just because no console is connected (build console-wake, Nov 3 2026): the engine flags that failure
+`noConsole: true`, and the server queues an `act` for `recent`/`all` (per user, TTL 2 min by default) and delivers it once to the first
+console that says hello (checked first against that user's last catalog, so a wrong name still answers `not_found` at once). The call
+waits up to 60 s. After 3 s with no console, the owner's AmberX phone is asked through axHub (`amberx.open_url`, amberxai.com only)
+to open `…/?axf-cmd=<id>`. Every sent answer carries `delivery.how`: `live` · `after reconnect` · `woke via AmberX` · `queued`
+(`queued: true`, still waiting when the call returned). A command for one named client that isn't there still answers `not_found`.
 
 **Follow Amber** (build follow-amber, Nov 3 2026, Brett): one switch for the owner's consoles. While it is on, a Claude session
 calls MCP `console_show` {target, highlight?, say?} every time it mentions something in the console; the Follow Amber plugin

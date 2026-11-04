@@ -24,6 +24,10 @@ Big Dog profile, Opus; a Fable version comes later as its own build).
 - **Toolbar designer** (`plugins/toolbar-designer`, capability `axf.toolbar-designer@1`): picks what each toolbar holds
   from every app and screen and where each item opens (main area, floating window, pane); from its settings tab, View
   → Toolbar designer and right-click on any toolbar. <!-- axf-plugin:toolbar-designer -->
+- **Banners** (`plugins/banners`): Molly's one banner region. The Dev Console draws its own live banners and banner chips
+  in a strip (its banner-strip page, `framework/react/bannerStrip.ts`) in Molly's `app.frame.banners` slot; a dialog or
+  menu it opens covers Molly's window, a view it opens opens in the console's frame. Settings → Plugins → Banners
+  (show the strip, show / hide each banner). <!-- axf-plugin:banners -->
 
 ```bash
 npm install && npm run dev      # :5173
