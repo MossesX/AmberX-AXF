@@ -38,6 +38,7 @@
       "_claude/memory/STATUS.md",
       "_claude/rules/RULES.md",
       "_claude/THREADS.md",
+      "deploy/claude-headless.sh",
       "install_steps.md"
     ]
   },

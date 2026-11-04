@@ -345,6 +345,53 @@ check(mod.cf.run_migration(old_dir, apply=True)["changed"] == 0, "the migration 
 
 # ---- intake auth through the real console (token required; plugin routes mounted by main.py)
 import subprocess  # noqa: E402
+# ---- pictures outlive the build worktree (ui-review-shots, Nov 3 2026) ----
+import shutil  # noqa: E402
+wt = Path(tempfile.mkdtemp(prefix="fake-worktree-"))
+(wt / ".git").write_text("gitdir: /nowhere\n")
+png_bytes = (HERE / "packs" / first).read_bytes()
+(wt / "shots").mkdir()
+(wt / "shots" / "home-phone.png").write_bytes(png_bytes)
+body = {"kind": "screen", "name": "Worktree shot", "app": "console-web", "screen": "home", "source": "headless", "submittedBy": "build:claude/fake",
+        "files": [{"name": "home-phone.png", "data": base64.b64encode((wt / "shots" / "home-phone.png").read_bytes()).decode()}]}
+r = c.post("/p/submit", json=body)
+check(r.status_code == 200, f"submit from a fake worktree ({r.status_code} {r.text[:200]})")
+wid = r.json()["item"]["id"] if r.status_code == 200 else ""
+wsrc = (r.json()["item"]["files"]["after"] or [{}])[0].get("src", "") if r.status_code == 200 else ""
+shutil.rmtree(wt)
+check(not wt.exists(), "the fake worktree is deleted")
+g = c.get("/p/shot", params={"path": wsrc})
+check(g.status_code == 200 and g.content == png_bytes, f"its picture still loads after the worktree is gone ({g.status_code})")
+check(wsrc.startswith(f"items/{wid}/") and "fake-worktree" not in wsrc, f"the stored src points into the shared store, never the worktree ({wsrc})")
+a = c.get("/p/audit").json()
+check(a["ok"] and wid not in a["items"], f"audit: the new item's pictures are fine ({a.get('items')})")
+check(mod.health_probe()["status"] in ("ok", "warn"), "health: ok while every picture is on disk")
+# a picture that's gone turns the check red and names the item
+(mod.data_dir() / "shots" / wid / wsrc.split("/")[-1]).unlink()
+a = c.get("/p/audit").json()
+check(wid in a["items"] and a["broken"][0]["src"] == wsrc, f"audit names the item whose picture is gone ({a})")
+h = mod.health_probe()
+check(h["status"] == "error" and "Worktree shot" in h["summary"], f"health: red and names it ({h})")
+check(c.get("/p/shot", params={"path": wsrc}).status_code == 404, "the gone picture answers 404 (the UI shows 'Shot missing')")
+# a truncated / non-image file counts as broken too
+(mod.data_dir() / "shots" / wid / wsrc.split("/")[-1]).write_bytes(b"not a png")
+check(wid in c.get("/p/audit").json()["items"], "audit: a file that isn't an image is broken")
+(mod.data_dir() / "shots" / wid / wsrc.split("/")[-1]).write_bytes(png_bytes)
+check(c.get("/p/audit").json()["items"] == [] or wid not in c.get("/p/audit").json()["items"], "audit: fine again once the picture is back")
+# a browser that couldn't load a picture reports it: amber, with the path
+check(c.post("/p/shot-failed", json={"src": "../etc/passwd"}).status_code == 400, "shot-failed refuses a bad path")
+check(c.post("/p/shot-failed", json={"src": wsrc, "reason": "timeout"}).json()["ok"], "shot-failed records a browser failure")
+h = mod.health_probe()
+check(h["status"] == "warn" and any(wsrc in d for d in h.get("details", [])), f"health: amber when a browser couldn't load a picture on disk ({h})")
+mod._load_fails.clear()
+check(c.post("/p/recapture", json={"id": "r-nope"}).status_code == 404, "recapture: unknown item = 404")
+check(c.get("/p/shot", params={"path": "items/x/../../secret.png"}).status_code in (400, 404), "shot route refuses path tricks")
+
+# ---- the status pollers can't storm (stable subscribe + one request at a time) ----
+for rel in ("agent-slots/web/index.tsx", "token-control/web/pass.tsx"):
+    src_ = (HERE.parent / rel).read_text()
+    check("useSyncExternalStore(subscribe, snapshot)" in src_ and "inFlight" in src_, f"{rel}: module-level subscribe + in-flight guard")
+
 auth_script = r"""
 import os, sys, tempfile, base64
 from pathlib import Path
