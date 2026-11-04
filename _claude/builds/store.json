@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 642,
- "updatedAt": "2026-11-04T11:13:21.224Z",
+ "rev": 643,
+ "updatedAt": "2026-11-04T11:15:33.268Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -72090,7 +72090,7 @@
    "branch": "claude/expenses-port",
    "pr": "",
    "createdAt": "2026-11-04T11:09:10.279Z",
-   "updatedAt": "2026-11-04T11:12:52.050Z",
+   "updatedAt": "2026-11-04T11:15:32.401Z",
    "builtAt": "",
    "notes": [
     {
@@ -72172,12 +72172,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-04T11:15:32.401Z",
+     "note": "Manifest, Molly frame + nav/app-menu/toolbar/xlayout, docs. UI kept on vendored @axf/core look under a shrink-only conform baseline (923 findings); re-theming onto AXF engines = follow-up.",
+     "rev": 2,
      "createdAt": "2026-11-04T11:09:10.280Z",
-     "updatedAt": "2026-11-04T11:09:10.280Z"
+     "updatedAt": "2026-11-04T11:15:32.443Z"
     },
     {
      "id": "s4",
@@ -72254,7 +72254,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
