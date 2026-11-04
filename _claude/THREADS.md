@@ -589,17 +589,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 21:02 UTC · `build-prompt-origin` s3 done, s5 done, → complete (current) · foreign-write
-- 2026-11-03 21:02 UTC · `plugin-settings-placement` s3 done, s4 done, s5 done (current) · foreign-write
-- 2026-11-03 21:02 UTC · `banner-ref-links` s1 done (current) · foreign-write
-- 2026-11-03 21:05 UTC · `window-resize-fix` s3 done, → complete, note (current) · foreign-write
-- 2026-11-03 21:05 UTC · `terminal-sessions-nav` s1 done, s2 done, s3 done (current) · foreign-write
-- 2026-11-03 21:05 UTC · `profile-manager` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
-- 2026-11-03 21:05 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
-- 2026-11-03 21:05 UTC · `plugin-settings-placement` added (6 steps) (current) · foreign-write
-- 2026-11-03 21:05 UTC · `banner-ref-links` added (5 steps) (current) · foreign-write
-- 2026-11-03 21:05 UTC · `home-cards-live` branch claude/home-cards-live (urgent) · builds-live
-- 2026-11-03 21:03 UTC · `home-cards-live` PR #283, note (urgent) · reconciler
 - 2026-11-03 21:05 UTC · `molly-console-commands` added (7 steps) (current) · orchestrator
 - 2026-11-03 21:08 UTC · `molly-console-commands` added (7 steps) (current) · foreign-write
 - 2026-11-03 21:10 UTC · `git-status-board` added (6 steps) (current) · foreign-write
@@ -989,3 +978,14 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 02:04 UTC · `app-style-override` added (6 steps) (current) · foreign-write
 - 2026-11-04 02:05 UTC · `app-style-override` added (6 steps) (current) · foreign-write
 - 2026-11-04 02:26 UTC · `ui-review-shots` → complete, merged, note (urgent) · reconciler
+- 2026-11-04 02:35 UTC · `crew-retrain` note (breakroom) · foreign-write
+- 2026-11-04 02:35 UTC · `browser-automation` note (current) · foreign-write
+- 2026-11-04 02:35 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 02:35 UTC · `profile-switcher-widget` PR #300 (current) · builds-live
+- 2026-11-04 01:51 UTC · `app-style-override` added (6 steps) (current) · orchestrator
+- 2026-11-04 01:52 UTC · `app-style-override` → running (current) · orchestrator
+- 2026-11-04 02:46 UTC · `crew-retrain` note (breakroom) · foreign-write
+- 2026-11-04 02:46 UTC · `browser-automation` note (current) · foreign-write
+- 2026-11-04 02:46 UTC · `profile-switcher-widget` s2 done, s3 done, s4 done, note (current) · foreign-write
+- 2026-11-04 02:46 UTC · `app-style-override` s3 done (current) · orchestrator
+- 2026-11-04 02:47 UTC · `app-style-override` s4 done (current) · orchestrator
