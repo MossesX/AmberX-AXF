@@ -32,6 +32,7 @@ import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageDa
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
+import { navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
 import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
 import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, resolveInterface, scopeAttrs, scopeSheet, scopeVarsCss, type InterfaceData, type ResolvedInterface } from './engines/interface';
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceChange, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
@@ -53,6 +54,7 @@ import {
   type MenuActResult,
   type MenuItem,
   type MenuItemButton,
+  type NavItem,
   type Toast,
 } from './types';
 import { assetTypeSpecs, attachable, type ValidationResult } from './validate';
@@ -91,6 +93,10 @@ export const ROLL_ASSET_KEY = (type: string, id: string) => `axf.roll.asset.${ty
 export const HIDE_KEY = (type: string) => `axf.hide.${type}`;
 /** Per-device fold state of a `collapsible` toolbar (same key on Android). */
 export const TOOLBAR_COLLAPSED_KEY = 'axf.toolbar.collapsed';
+/** Per-device state of a nav that opts in to nav-style@1: collapsed to its icons, the width it was dragged to, the open sub menus (JSON id list). */
+export const NAV_COLLAPSED_KEY = 'axf.nav.collapsed';
+export const NAV_WIDTH_KEY = 'axf.nav.width';
+export const NAV_OPEN_KEY = 'axf.nav.open';
 /** Where a person put the widgets of one host (banner, toolbar, …): JSON of a HostArrangement (core/engines/widgets.ts). */
 export const ARRANGE_KEY = (host: string) => `axf.widgets.arrange.${host}`;
 /** Spacing choice (Settings → Appearance → Spacing): tight | compact | regular; absent = tight (engines/spacing.ts). */
@@ -310,6 +316,12 @@ export class AxfRuntime {
     const out: Record<string, string> = {};
     for (const w of this.viewportLists) if (w.list.matches) out[w.attr] = '1';
     return out;
+  }
+
+  /** A string that changes whenever a settings value compileStyles reads changes: the control@1 token overrides and the nav's collapsed / width state (a render dependency for the provider). */
+  styleSettingsKey(): string {
+    const keys = [...Object.values(CONTROL_TOKEN_SLOTS).map((s) => s.key), NAV_COLLAPSED_KEY, NAV_WIDTH_KEY];
+    return JSON.stringify(keys.map((k) => this.settings.get(k) ?? null));
   }
 
   /** A string that changes whenever a viewport attribute changes (a render dependency for the provider). */
@@ -601,6 +613,17 @@ export class AxfRuntime {
   }
 
   /* ---------------- contributed navigation ---------------- */
+
+  /**
+   * The nav-style in force (nav-style@1, normalized, with the control@1 `tokens.nav` overrides written in), or null when
+   * the nav doesn't opt in (nav-menu `navStyle` is not true) or the app ships no nav-style asset.
+   */
+  navStyleData(): NavStyleData | null {
+    if (this.assetOrNull('nav-menu')?.data.navStyle !== true) return null;
+    const a = this.assetOrNull('nav-style' as AssetType);
+    if (!a) return null;
+    return normalizeNavStyle(this.withTokenOverrides('tokens.nav', 'nav-style' as AssetType, a.data));
+  }
 
   /** Nav sections libraries and plugins added, in the order they were added. */
   get navExtras(): NavExtraSection[] {
@@ -1970,7 +1993,17 @@ export class AxfRuntime {
     if (this.hostTakes('app-menu')) { const m = await this.buildSharedMenus(opts); bundle.menus = m.menus; for (const [k, v] of m.run) run.set(k, v); }
     if (this.hostTakes('nav-menu')) {
       const nav = this.assetOrNull('nav-menu')?.data;
-      for (const sec of nav?.sections ?? []) {
+      // the asset's sections and the ones plugins contribute (their pages), one level: children follow their parent
+      const flat = (its: readonly NavItem[]): NavItem[] => its.flatMap((it) => [...(it.view ? [it] : []), ...flat(it.items ?? [])]);
+      const seen = new Set<string>();
+      const sections: { label?: string; items: NavItem[] }[] = [];
+      for (const sec of [...(nav?.sections ?? []), ...this.navExtras]) {
+        const items = flat(sec.items).filter((it) => !seen.has(it.view) && !!seen.add(it.view));
+        const key = sec.label?.trim().toLowerCase();
+        const same = key ? sections.find((x) => x.label?.trim().toLowerCase() === key) : undefined;
+        if (same) same.items.push(...items); else sections.push({ ...(sec.label ? { label: sec.label } : {}), items });
+      }
+      for (const sec of sections) {
         const items: ChromeNavItem[] = [];
         for (const it of sec.items) {
           const gate = this.gate(it.requires);
@@ -2097,6 +2130,10 @@ export class AxfRuntime {
     const reducedMotion = this.prefersReducedMotion();
     const behavior = this.assetOrNull('behavior-theme' as AssetType)?.data;
     parts.push(behaviorStyle(behavior, reducedMotion));
+    // nav-style@1 last (core/engines/navstyle.ts): only for a nav that opts in (nav-menu `navStyle: true`); it may set
+    // the nav width (resized or collapsed to icons), so it wins over the layout's
+    const navStyle = this.navStyleData();
+    if (navStyle) parts.push(navStyleOutput(navStyle, { reducedMotion, collapsed: this.settings.get(NAV_COLLAPSED_KEY) === true, width: Number(this.settings.get(NAV_WIDTH_KEY)) || null }));
     // the window manager follows the behaviour theme's `windows` group (stack / snap / minimize) from the same compile
     this.windows.setPlacement(normalizeBehavior(behavior).windows);
     const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme, ...this.viewportAttrs() };

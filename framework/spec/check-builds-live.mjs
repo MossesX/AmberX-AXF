@@ -146,6 +146,23 @@ async function main() {
   check(merge.mergeJournalText('{"at":"2"}\n{"at":"1"}\n', '{"at":"1"}\n{"at":"3"}\n') === '{"at":"2"}\n{"at":"1"}\n{"at":"3"}\n', 'journal union: the first file as it is, then each new line once');
   check(merge.liveStatus({ status: 'running', pr: '#5', steps: [{ done: true }] }) === 'built' && merge.liveStatus({ status: 'running', pr: '#5', mergedAt: 'x', steps: [{ done: true }] }) === 'complete' && merge.liveStatus({ status: 'running', steps: [{ done: true }] }) === 'complete', 'liveStatus: built until merged, complete without a PR');
   check(merge.liveStatus({ status: 'archived', pr: '#5', steps: [{ done: true }] }) === 'archived' && merge.liveStatus({ status: 'complete', steps: [{ done: false }] }) === 'complete', 'liveStatus keeps archived and built-without-ticks');
+  check(merge.liveStatus({ status: 'pending', steps: [{ done: true }, { done: false }] }) === 'pending' && merge.liveStatus({ status: 'running', steps: [{ done: true }, { done: false }] }) === 'running', 'liveStatus: a paused (pending) build with ticks stays pending');
+  check(merge.liveStatus({ status: 'complete', pr: '#5', mergedAt: 'x', steps: [{ done: true }, { done: false }] }) === 'complete', 'liveStatus: merged = complete even with steps unticked');
+
+  // 8b. running = a live process runs it (hotfix-build-manager, Nov 4 2026)
+  {
+    const now = '2026-11-04T12:00:00.000Z'; const old = '2026-11-04T10:00:00.000Z';
+    const b = (id, extra = {}) => ({ id, status: 'running', updatedAt: old, pr: '', steps: [{ id: 's1', done: true }, { id: 's2', done: false }], ...extra });
+    const alive = rc.aliveIds({ sessions: ['axf-live-one--earl'], slots: [{ name: 'slot-one' }], now,
+      changes: [{ state: 'running', lastSeenAt: '2026-11-04T11:55:00.000Z', buildRef: { kind: 'queue', id: 'hb-one' } }, { state: 'running', lastSeenAt: old, buildRef: { id: 'quiet-one' } }, { state: 'running', lastSeenAt: '2026-11-04T11:58:00.000Z', branch: 'claude/branch-one' }] });
+    check(['live-one', 'slot-one', 'hb-one', 'branch-one'].every((x) => alive.has(x)) && !alive.has('quiet-one'), 'aliveIds: tmux sessions, agent slots, fresh build-log heartbeats (a quiet one is not alive)');
+    const builds = [b('live-one'), b('slot-one'), b('stale'), b('fresh', { updatedAt: '2026-11-04T11:50:00.000Z' }), b('merged', { pr: '#9', mergedAt: old }),
+      b('all-done', { pr: '#7', steps: [{ id: 's1', done: true }] }), b('epic', { kind: 'epic', planRef: 'x.epic' }), b('ticked'), { ...b('waits'), status: 'pending' }];
+    const plan = rc.idlePlan(builds, alive, { now, skip: ['ticked'] });
+    const to = Object.fromEntries(plan.map((c) => [c.id, c.set.status]));
+    check(JSON.stringify(to) === JSON.stringify({ stale: 'pending', merged: 'complete', 'all-done': 'built' }), `idlePlan: stale → pending (paused), merged → complete, all done → built; live, fresh, epics, ticked and pending untouched (${JSON.stringify(to)})`);
+    check(rc.idlePlan(builds, null, { now }).length === 0, 'idlePlan: processes unseen (no tmux) = nothing touched');
+  }
 
   // 9. reconciler matching
   const B1 = { id: 'theme-editor', branch: '', pr: '', status: 'pending', steps: [1, 2, 3, 4, 5].map((n) => ({ id: `s${n}`, done: false })) };
