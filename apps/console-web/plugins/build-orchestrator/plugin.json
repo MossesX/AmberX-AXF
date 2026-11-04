@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.build-orchestrator",
   "name": "Build orchestrator",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus. Consecutive same-model steps form a phase; a phase that switches model waits for Brett's approval. Token rules on every build: one session, no sub-agents unless a step allows it, briefs carry only the current phase. Page = tab group (Builds, Approvals, Rules); the Builds tab looks and behaves like Pending builds, with more options (per-step model, phases, approve switch, next-phase brief, hide, archive, import from Pending, move/edit/remove steps). Tracker is a repo file, _claude/builds/orchestrator.json, so any session or account continues the build (orchestrator.mjs next | brief | act).",
+  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus. Consecutive same-model steps form a phase; a phase that switches model waits for Brett's approval. Token rules on every build: one session, no sub-agents unless a step allows it, briefs carry only the current phase. Page = tab group (Builds, Approvals, Rules); the Builds tab looks and behaves like Pending builds, with more options (per-step model, phases, approve switch, next-phase brief, hide, archive, import from Pending, move/edit/remove steps). Tracker is a repo file, _claude/builds/orchestrator.json, so any session or account continues the build (orchestrator.mjs next | brief | act). Package builds window (build-package@1): tick waiting steps (Fable by default) from any build, combine them into one package build, then send it to a helper or queue it here; the order is re-analyzed after every send.",
   "targets": [
     "axf-console"
   ],
@@ -36,7 +36,9 @@
       "_claude/THREADS.md",
       "_claude/builds/README.md",
       "_claude/rules/RULES.md",
-      "_claude/shared/rules/RULES.md", "deploy/claude-headless.sh", "framework/spec/check-builds-live.mjs"
+      "_claude/shared/rules/RULES.md",
+      "deploy/claude-headless.sh",
+      "framework/spec/check-builds-live.mjs"
     ]
   },
   "commands": {
@@ -153,6 +155,146 @@
           ]
         },
         "output": "{ id, origin }"
+      },
+      {
+        "id": "package-candidates",
+        "route": "GET /package/candidates",
+        "title": "Steps waiting to be packaged",
+        "readOnly": true,
+        "description": "Every waiting step of every build (pending, running, waiting; not the step a build is on now) plus ready Plan Studio plans, grouped by source build, with model, thinking, areas, estimate, filters, helpers and the caller's role (build-package@1). Secondary sessions get nothing.",
+        "output": "{ candidates, skipped, facets, helpers, role, canSend }"
+      },
+      {
+        "id": "package",
+        "route": "POST /package",
+        "title": "Package steps into one build",
+        "description": "Combine the ticked steps (order = priority; steps of one build keep their order) into one build package, linked to its sources (they show 'packaged into'). Then add it to this orchestrator at `position` (0 = top) or send it to a helper (dest helper, to, now = top of its list). Re-analyzes the order and posts to the Breakroom Sessions channel. Owner-only on the primary; raising Opus steps to Fable needs Brett's click.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "order": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "ticked step keys (<build>/<step uid>), priority order"
+            },
+            "confirmed": {
+              "type": "boolean",
+              "description": "true once the ticked list was shown and confirmed"
+            },
+            "name": {
+              "type": "string"
+            },
+            "model": {
+              "type": "string",
+              "enum": [
+                "keep",
+                "Fable",
+                "Opus"
+              ]
+            },
+            "thinking": {
+              "type": "string",
+              "enum": [
+                "low",
+                "medium",
+                "high",
+                "max"
+              ]
+            },
+            "position": {
+              "type": [
+                "integer",
+                "string",
+                "null"
+              ],
+              "description": "queue position (0 = top), or 'end'"
+            },
+            "dest": {
+              "type": "string",
+              "enum": [
+                "mine",
+                "helper"
+              ]
+            },
+            "to": {
+              "type": "string",
+              "description": "helper session id (empty = any helper)"
+            },
+            "now": {
+              "type": "boolean",
+              "description": "do it now: top priority on that helper"
+            },
+            "said": {
+              "type": "string",
+              "description": "Brett's exact words, if he asked for this package"
+            }
+          },
+          "required": [
+            "order",
+            "confirmed"
+          ]
+        },
+        "output": "{ build, log, reanalysis, send, posted }"
+      },
+      {
+        "id": "package-send",
+        "route": "POST /package/{build_id}/send",
+        "title": "Send a package to a helper",
+        "description": "Offer an existing package to a helper session through Session sync (`to`, `now`), then re-analyze the order.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build_id": {
+              "type": "string"
+            },
+            "to": {
+              "type": "string"
+            },
+            "now": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "build_id"
+          ]
+        },
+        "output": "{ send, replan, posted }"
+      },
+      {
+        "id": "package-unpackage",
+        "route": "POST /package/{build_id}/unpackage",
+        "title": "Unpackage",
+        "description": "A package with nothing done goes back to its builds: its steps return to them and the package build is removed.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "build_id"
+          ]
+        },
+        "output": "{ log, reanalysis }",
+        "confirm": true
+      },
+      {
+        "id": "package-reanalyze",
+        "route": "POST /package/reanalyze",
+        "title": "Re-analyze the build order",
+        "description": "Re-check the queue order against every package (a package after the steps it needs, before the steps that need it; running and pinned builds never move). apply: false previews.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "apply": {
+              "type": "boolean"
+            }
+          }
+        },
+        "output": "{ order, moves, conflicts }"
       }
     ]
   },

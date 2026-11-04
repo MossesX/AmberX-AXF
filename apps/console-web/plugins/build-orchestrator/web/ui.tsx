@@ -7,6 +7,7 @@ import * as core from './orchestrator-core.mjs';
 import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import pricing from '@console/axf/schemas/model-pricing.json';
 import { DataGrid, RowHookButtons, registerRowRefTarget, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
+import { PackageButton } from './packager';
 import './orchestrator.css';
 
 /*
@@ -17,11 +18,13 @@ import './orchestrator.css';
  */
 
 export const FOLDER = 'build-orchestrator';
+export const RELOAD_EVENT = 'axf-orchestrator-reload';
+export const reloadOrchestrator = () => window.dispatchEvent(new Event(RELOAD_EVENT));
 // grid-hook@1: a build card's right-click finds the row hooks for orchestrator builds
 registerRowRefTarget('axf-orchestrator-build', (id) => (id ? { kind: 'orchestrator', id } : null));
 const api = pluginApi(FOLDER, 'Build orchestrator', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
-type Step = { id: string; text: string; model: 'Fable' | 'Opus'; why: string; phase: string; group: string; estimate: string; files: string[]; checks: string[]; session: 'same' | 'new'; agent: boolean; done: boolean; doneAt: string; note: string };
-type Build = { id: string; title: string; category: string; detail: string; status: string; hidden: boolean; source: string; pendingId: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt: string; notes: { text: string; at: string }[]; approvals: { phase: number; from: string; to: string; at: string; by?: string; via?: string; kind?: string; selfApproved?: boolean }[]; upgradeRequests?: { id: string; phase: number; from: string; to: string; at: string; by: string; state: string }[]; origin?: unknown; steps: Step[] };
+type Step = { id: string; text: string; model: 'Fable' | 'Opus'; why: string; phase: string; group: string; estimate: string; files: string[]; checks: string[]; session: 'same' | 'new'; agent: boolean; done: boolean; doneAt: string; note: string; packagedInto?: string; origin?: { build: string; step: string; how: string } };
+type Build = { id: string; title: string; category: string; detail: string; status: string; hidden: boolean; source: string; pendingId: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt: string; notes: { text: string; at: string }[]; approvals: { phase: number; from: string; to: string; at: string; by?: string; via?: string; kind?: string; selfApproved?: boolean }[]; upgradeRequests?: { id: string; phase: number; from: string; to: string; at: string; by: string; state: string }[]; origin?: unknown; package?: { sources: string[]; thinking: string; dest: string; sent: { to: string; now: boolean; at: string } | null }; steps: Step[] };
 type Rules = { sameSession: boolean; subAgents: boolean; approveModelSwitch: boolean; maxStepMinutes: number };
 type State = { updatedAt: string; rules: Rules; builds: Build[] };
 type Res = { ok: boolean; error?: string; state?: State; log?: string[]; brief?: string };
@@ -46,6 +49,8 @@ export function OrchestratorPage() {
     catch (e) { setError((e as Error).message); setState((s) => s ?? (core.emptyState() as State)); }
   };
   useEffect(() => { void load(); }, []);
+  // the Package builds window and package buttons change the store outside act(): reload when they say so
+  useEffect(() => { const on = () => void load(); window.addEventListener(RELOAD_EVENT, on); return () => window.removeEventListener(RELOAD_EVENT, on); }, []);
 
   const act: Act = async (change) => {
     setBusy(true);
@@ -69,7 +74,7 @@ export function OrchestratorPage() {
           <h1>Build orchestrator</h1>
           <p className="fx-muted" title="One session, no sub-agents unless a step says so. Tracker: _claude/builds/orchestrator.json">Every build in small Fable / Opus steps; a model upgrade waits for your approval, a downgrade goes on by itself.</p>
         </div>
-        <div className="fx-row fx-row--wrap"><Button icon="refresh" disabled={busy} onClick={() => load().then(() => log('reloaded', 'ok'))}>Reload</Button><Slot name="builds.toolbar" props={{ page: 'build-orchestrator' }} /></div>
+        <div className="fx-row fx-row--wrap"><Button icon="refresh" disabled={busy} onClick={() => load().then(() => log('reloaded', 'ok'))}>Reload</Button><PackageButton /><Slot name="builds.toolbar" props={{ page: 'build-orchestrator' }} /></div>
       </header>
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
       <div className="fx-tabs" role="tablist" aria-label="Build orchestrator">
@@ -199,6 +204,8 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
           <Button tone="primary" icon="check" disabled={busy} onClick={() => act({ action: 'approve', id: b.id, phase: n.phase!.index })}>Approve upgrade to {n.phase.model}</Button>
         </div>
       )}
+      {b.package && <PackageNote b={b} busy={busy} />}
+      {!n.step && !n.done && (n.waitingOn ?? []).length > 0 && <p className="fx-small oc-packaged"><Icon name="package" size={13} /> Its open steps are packaged into {n.waitingOn!.join(', ')}: they tick here when the package does them.</p>}
       {!n.needsApproval && n.step && !core.isFinished(b.status) && <p className="fx-small fx-muted">Next: <b>{n.step.id}</b> on <span className={`oc-model is-${n.step.model.toLowerCase()}`}>{n.step.model}</span> — {n.step.text}</p>}
       {mode === 'edit' ? (
         <div className="fx-stack">
@@ -265,9 +272,9 @@ function StepRow({ b, s, locked, busy, act, last }: { b: Build; s: Step & { inde
   const other = s.model === 'Fable' ? 'Opus' : 'Fable';
   return (
     <div className={`pd-entry is-mono ${s.done ? 'is-done' : ''}`}>
-      <input type="checkbox" className="pd-tick" checked={s.done} disabled={busy || core.isFinished(b.status) || (locked && !s.done)} onChange={(ev) => void act({ action: 'step', id: b.id, step: s.id, done: ev.target.checked })} aria-label={`Step ${s.id} done`} title={locked ? 'Approve the model switch first' : s.done && s.doneAt ? `Done ${fmtTime(s.doneAt)}` : 'Mark this step done'} />
+      <input type="checkbox" className="pd-tick" checked={s.done} disabled={busy || core.isFinished(b.status) || (locked && !s.done) || (!!s.packagedInto && !s.done)} onChange={(ev) => void act({ action: 'step', id: b.id, step: s.id, done: ev.target.checked })} aria-label={`Step ${s.id} done`} title={locked ? 'Approve the model switch first' : s.done && s.doneAt ? `Done ${fmtTime(s.doneAt)}` : 'Mark this step done'} />
       <time>{s.id}{s.estimate && <span className="pd-est"> · ~{s.estimate}</span>}</time>
-      <p>{s.text}{s.why && <span className="fx-muted"> — {s.why}</span>}{s.session === 'new' && <span className="oc-flag"> new session</span>}{s.agent && <span className="oc-flag"> sub-agent ok</span>}</p>
+      <p>{s.text}{s.why && <span className="fx-muted"> — {s.why}</span>}{s.packagedInto && <span className="oc-flag oc-packaged" title="A package build does this step; ticking it there ticks it here"> packaged into {s.packagedInto}</span>}{s.origin?.how === 'package' && <span className="oc-flag fx-mono"> from {s.origin.build}</span>}{s.session === 'new' && <span className="oc-flag"> new session</span>}{s.agent && <span className="oc-flag"> sub-agent ok</span>}</p>
       <span className="oc-steptools">
         <button data-fx-row className={`oc-model is-${s.model.toLowerCase()}`} disabled={busy || s.done} title={`Switch this step to ${other}`} onClick={() => act({ action: 'edit-step', id: b.id, step: s.id, stepData: { model: other } })}>{s.model}</button>
         <button className="fx-iconbtn" disabled={busy || s.index === 0} title="Move up" onClick={() => act({ action: 'move-step', id: b.id, step: s.id, dir: 'up' })}><Icon name="chevron-up" size={13} /></button>
@@ -525,6 +532,30 @@ function StepGrid({ b, rules, busy, act, hidden, setHidden }: { b: Build; rules:
             <p className="fx-muted">{s.phase ? `Phase ${s.phase} · ` : ''}{s.session === 'new' ? 'Starts a new session' : 'Same session'} · {s.agent ? 'sub-agent allowed' : 'no sub-agents'}</p>
           </div>
         )} />
+    </div>
+  );
+}
+
+/** A package build (build-package@1): where its steps came from, where it went, send to a helper, unpackage. */
+function PackageNote({ b, busy }: { b: Build; busy: boolean }) {
+  const rt = useRuntime();
+  const [working, setWorking] = useState(false);
+  const pk = b.package!;
+  const send = async () => {
+    setWorking(true);
+    try { const r = await api.post<{ send: { sent: boolean; why?: string; to?: string } }>(`package/${encodeURIComponent(b.id)}/send`, { now: true }); rt.toast(r.send.sent ? `Sent to ${r.send.to}` : r.send.why ?? 'Not sent', r.send.sent ? 'success' : 'warning'); reloadOrchestrator(); }
+    catch (e) { rt.toast((e as Error).message, 'danger'); } finally { setWorking(false); }
+  };
+  const undo = async () => {
+    setWorking(true);
+    try { await api.post(`package/${encodeURIComponent(b.id)}/unpackage`, {}); rt.toast(`${b.id}: steps back in their builds`, 'success'); reloadOrchestrator(); }
+    catch (e) { rt.toast((e as Error).message, 'danger'); } finally { setWorking(false); }
+  };
+  return (
+    <div className="pl-note oc-gate"><Icon name="package" size={14} />
+      Package of {b.steps.length} steps from {pk.sources.join(', ')} · thinking {pk.thinking}{pk.sent ? ` · sent to ${pk.sent.to}${pk.sent.now ? ' (now)' : ''}` : ''}
+      {!pk.sent && !core.isFinished(b.status) && <Button size="sm" icon="rocket" disabled={busy || working} onClick={send}>Send to helper now</Button>}
+      {!b.steps.some((s) => s.done) && <Button size="sm" icon="undo" disabled={busy || working} onClick={undo}>Unpackage</Button>}
     </div>
   );
 }

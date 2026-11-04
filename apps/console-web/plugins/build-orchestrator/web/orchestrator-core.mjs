@@ -76,6 +76,8 @@ function normStep(s, i) {
     done: o.done === true,
     doneAt: o.done === true ? str(o.doneAt, 40) : '',
     note: str(o.note, 1000),
+    ...(str(o.packagedInto) ? { packagedInto: str(o.packagedInto, 80) } : {}), // build-package@1: a package build does this step now
+    ...(o.origin && typeof o.origin === 'object' && str(o.origin.build) ? { origin: { build: str(o.origin.build, 80), step: str(o.origin.step, 60), how: str(o.origin.how, 20) } } : {}),
   };
 }
 
@@ -103,6 +105,7 @@ function normBuild(b) {
     approvals: (Array.isArray(o.approvals) ? o.approvals : []).map(normApproval),
     upgradeRequests: (Array.isArray(o.upgradeRequests) ? o.upgradeRequests : []).map(normRequest).filter((r) => r.id),
     ...(normOrigin(o.origin) ? { origin: normOrigin(o.origin) } : {}), // build-origin@1: what Brett said
+    ...(o.package && typeof o.package === 'object' ? { package: o.package } : {}), // build-package@1: steps packaged from other builds
     steps,
   };
 }
@@ -150,12 +153,22 @@ export function categories(builds) {
   return [...c.entries()].sort((a, b) => a[0].localeCompare(b[0])).map(([name, count]) => ({ name, count }));
 }
 
-/** What happens next: the first phase with work left, its next step, and whether a switch approval is needed. */
+/** Steps of this build that a package build does now (build-package@1), with the package ids. */
+export const packagedSteps = (build) => build.steps.filter((s) => open(s) && s.packagedInto);
+/**
+ * What happens next: the first phase with work left for this build's own session, its next step, and whether a switch
+ * approval is needed. Steps packaged into another build are that package's work: skipped here; when only they are left,
+ * `waitingOn` names the packages.
+ */
 export function nextUp(build, rules = DEFAULT_RULES) {
   const ps = phases(build);
-  const phase = ps.find((p) => !p.done) ?? null;
-  if (!phase) return { phase: null, step: null, needsApproval: false, done: build.steps.length > 0 };
-  const step = phase.steps.find(open) ?? null;
+  const mine = (s) => open(s) && !s.packagedInto;
+  const phase = ps.find((p) => p.steps.some(mine)) ?? null;
+  if (!phase) {
+    const waitingOn = [...new Set(packagedSteps(build).map((s) => s.packagedInto))];
+    return { phase: null, step: null, needsApproval: false, done: build.steps.length > 0 && !waitingOn.length, waitingOn };
+  }
+  const step = phase.steps.find(mine) ?? null;
   // An upgrade always waits for Brett (the approveModelSwitch rule can't turn that off); a downgrade never waits.
   const needsApproval = phase.upgrade && !phase.approved;
   return { phase, step, needsApproval, done: false };
@@ -215,6 +228,7 @@ export function sortBuilds(list, sort = 'status', dir = 'asc', rules) {
 export function brief(build, rules = DEFAULT_RULES) {
   const n = nextUp(build, rules);
   if (n.done) return `Build "${build.title}" (${build.id}) is complete.`;
+  if (!n.phase) return `Build "${build.title}" (${build.id}) has nothing left for its own session: its open steps are packaged into ${n.waitingOn.join(', ')} (build-package@1). Wait for that package, or work on it instead.`;
   const p = n.phase;
   const files = [...new Set(p.steps.filter(open).flatMap((s) => s.files))];
   const checks = [...new Set(p.steps.filter(open).flatMap((s) => s.checks))];
@@ -228,7 +242,7 @@ export function brief(build, rules = DEFAULT_RULES) {
     `Look: ${ASSET_RULE}`,
     build.branch ? `Branch: ${build.branch}${build.pr ? ` · PR ${build.pr}` : ''}` : '',
     `Steps in this phase (${p.steps.filter(open).length} left, ~${formatMinutes(p.minutesLeft) || '?'}):`,
-    ...p.steps.map((s, i) => `${s.group && s.group !== p.steps[i - 1]?.group ? `— ${s.group} —\n` : ''}${s.done ? '[x]' : s.skip ? '[skip]' : '[ ]'} ${s.id} ${s.estimate ? `(~${s.estimate}) ` : ''}${s.text}${s.session === 'new' ? ' [needs a new session]' : ''}${s.agent ? ' [sub-agent allowed]' : ''}`),
+    ...p.steps.map((s, i) => `${s.group && s.group !== p.steps[i - 1]?.group ? `— ${s.group} —\n` : ''}${s.done ? '[x]' : s.skip ? '[skip]' : s.packagedInto ? `[in ${s.packagedInto}]` : '[ ]'} ${s.id} ${s.estimate ? `(~${s.estimate}) ` : ''}${s.text}${s.session === 'new' ? ' [needs a new session]' : ''}${s.agent ? ' [sub-agent allowed]' : ''}`),
     files.length ? `Read first: ${files.join(', ')}` : '',
     checks.length ? `Checks: ${checks.join(' · ')}` : '',
     `Tick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${build.id} <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link ${build.id} --branch <b> --pr <n>.`,
@@ -280,7 +294,8 @@ export function apply(state, change) {
     case 'archive': { b = find(); b.status = 'archived'; log.push(`archived ${b.id}`); break; }
     case 'hide': case 'unhide': { b = find(); b.hidden = c.action === 'hide'; log.push(`${c.action} ${b.id}`); break; }
     case 'note': { b = find(); if (!str(c.text).trim()) throw new Error('empty note'); b.notes.push({ text: str(c.text, 2000), at: now() }); log.push(`note on ${b.id}`); break; }
-    case 'step': { b = find(); const st = stepOf(b); const ps = phases(b); const ph = ps.find((p) => p.steps.some((x) => x.id === st.id));
+    case 'step': { b = find(); const st = stepOf(b); const ps = phases(b);
+      if (st.packagedInto && !st.done) throw new Error(`${b.id} ${st.id} is packaged into ${st.packagedInto}: tick it there (it ticks here too)`); const ph = ps.find((p) => p.steps.some((x) => x.id === st.id));
       if (c.done !== false && ph && !ph.approved) throw new Error(`${upgradeLine(b.id, ph)}: a model upgrade needs Brett's approval first (orchestrator.mjs request-upgrade ${b.id} ${ph.index})`);
       if (c.done !== false && ph && ph.gate && ph.kind === 'downgrade' && !b.approvals.some((a) => a.phase === ph.index && a.to === ph.model)) { b.approvals.push(normApproval({ phase: ph.index, from: ph.from, to: ph.model, at: now(), by: 'auto', kind: 'downgrade' })); log.push(`${b.id}: downgrade ${ph.from} → ${ph.model} recorded (phase ${ph.index + 1})`); }
       st.done = c.done !== false; st.doneAt = st.done ? now() : ''; if (typeof c.note === 'string') st.note = str(c.note, 1000); log.push(`${b.id} ${st.id} ${st.done ? 'done' : 'not done'}`); break; }

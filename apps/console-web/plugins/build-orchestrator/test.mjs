@@ -126,4 +126,102 @@ t('every brief carries the asset-conformance rule', () => {
   const b2 = c.normalizeState({ builds: [fmx.apply.after.build] }).builds[0];
   assert.ok(c.brief(b2).includes(c.ASSET_RULE));
 });
+
+// ---- build-package@1 (Brett, Nov 4 2026): package waiting steps into one build, send to a helper or queue it
+{
+  const P = await import('./web/packager-core.mjs');
+  const S = await import('../../../../framework/plan/builds-store-core.mjs');
+  const st = (id, model, extra = {}) => ({ id, uid: `u-${id}`, text: `${id} work`, model, estimate: '20 min', files: ['framework/core/x.mjs'], ...extra });
+  const mk = (id, status, steps, extra = {}) => S.normBuild({ id, title: id.toUpperCase(), status, steps, profiles: ['p'], ...extra });
+  let store = S.normalizeStore({ builds: [
+    mk('alpha', 'running', [st('s1', 'Opus', { done: true, doneAt: 'x' }), st('s2', 'Opus'), st('s3', 'Fable'), st('s4', 'Fable'), st('s5', 'Opus')], { order: { p: 0 } }),
+    mk('beta', 'pending', [st('s1', 'Fable'), st('s2', 'Fable')], { order: { p: 1 } }),
+    mk('gamma', 'complete', [st('s1', 'Fable', { done: true, doneAt: 'x' })], { order: { p: 2 } }),
+    mk('empty', 'pending', [], { order: { p: 3 } }),
+  ] });
+  const plans = [{ id: 'pl', title: 'Plan', status: 'ready', steps: [{ id: 'a', text: 'plan step', model: 'Fable', minutes: 15 }] }, { id: 'pl2', title: 'Parked', status: 'parked', steps: [{ id: 'a', text: 'x', model: 'Fable' }] }];
+  const L = () => P.candidates(store.builds, { plans });
+  t('packager: every waiting step, not the one a running build is on, not done / finished builds; ready plans only', () => {
+    const { candidates, skipped } = L();
+    assert.deepEqual(candidates.map((x) => x.key), ['alpha/u-s3', 'alpha/u-s4', 'alpha/u-s5', 'beta/u-s1', 'beta/u-s2', 'plan:pl/a']);
+    assert.deepEqual(skipped.inProgress, ['alpha/u-s2']); assert.deepEqual(skipped.noSteps, ['empty']);
+    assert.deepEqual(candidates[0].areas, ['kernel']);
+  });
+  t('packager: default filter is Fable, and the audit recommendation counts', () => {
+    assert.deepEqual(P.filterCandidates(L().candidates).map((x) => x.key), ['alpha/u-s3', 'alpha/u-s4', 'beta/u-s1', 'beta/u-s2', 'plan:pl/a']);
+    const rec = P.candidates([{ id: 'd', status: 'pending', profiles: ['p'], steps: [st('s1', 'Opus', { recommendedModel: 'Fable' })] }]).candidates; // model-advice@1 field (raw record)
+    assert.equal(P.filterCandidates(rec).length, 1);
+  });
+  t('packager: select all / none / group toggle / invert; the preset only pre-ticks', () => {
+    const keys = L().candidates.map((x) => x.key);
+    let sel = P.select([], 'all', keys); assert.equal(sel.length, 6);
+    sel = P.select(sel, 'none', keys.slice(0, 2)); assert.equal(sel.length, 4);
+    sel = P.select(sel, 'invert', keys); assert.deepEqual(sel, keys.slice(0, 2));
+    sel = P.select(sel, 'toggle', ['alpha/u-s3', 'alpha/u-s4']); assert.deepEqual(sel, []);
+    assert.deepEqual(P.presetKeys(L().candidates), ['alpha/u-s3', 'alpha/u-s4', 'beta/u-s1', 'beta/u-s2', 'plan:pl/a']);
+  });
+  t('packager: drag order kept, but steps of one build keep their own order', () => {
+    const r = P.keepDeps(['beta/u-s2', 'alpha/u-s4', 'beta/u-s1', 'alpha/u-s3'], L().candidates);
+    assert.deepEqual(r.order, ['beta/u-s1', 'alpha/u-s3', 'beta/u-s2', 'alpha/u-s4']);
+    assert.deepEqual(P.move(['a', 'b', 'c'], 'c', 0), ['c', 'a', 'b']);
+  });
+  t('packager: dependencies warn (incl. the step being built now) and bring along adds the selectable ones', () => {
+    const d = P.dependencies(L().candidates, ['alpha/u-s4', 'beta/u-s2']);
+    const a = d.find((x) => x.key === 'alpha/u-s4');
+    assert.deepEqual(a.needs.map((x) => [x.key, x.selectable, x.inProgress]), [['alpha/u-s2', false, true], ['alpha/u-s3', true, false]]);
+    assert.deepEqual(P.bringAlong(['alpha/u-s4', 'beta/u-s2'], d), ['alpha/u-s3', 'alpha/u-s4', 'beta/u-s1', 'beta/u-s2']);
+  });
+  t('packager: makePackage = ordered steps linked to their sources; raising Opus → Fable is listed as an upgrade', () => {
+    const p = P.makePackage(L().candidates, ['beta/u-s1', 'alpha/u-s5'], { name: 'Night shift', model: 'Fable', taken: ['pkg-night-shift'] });
+    assert.equal(p.build.id, 'pkg-night-shift-2'); assert.deepEqual(p.upgrades, ['alpha/u-s5']);
+    assert.deepEqual(p.build.steps.map((x) => x.origin), [{ build: 'beta', step: 'u-s1', how: 'package' }, { build: 'alpha', step: 'u-s5', how: 'package' }]);
+    assert.throws(() => P.makePackage(L().candidates, ['alpha/u-s2']), /no longer waiting/);
+    assert.match(P.confirmLines(L().candidates, ['beta/u-s2', 'beta/u-s1'])[0], /^1\. \[Fable\] s1 work/);
+  });
+  t('packager: addPackage refuses an upgrade without Brett, writes the package at the top and marks the sources', () => {
+    const up = P.makePackage(L().candidates, ['alpha/u-s5'], { model: 'Fable' });
+    assert.throws(() => S.addPackage(store, 'p', up), /only Brett/);
+    const pkg = P.makePackage(L().candidates, ['alpha/u-s3', 'alpha/u-s4', 'beta/u-s1'], { name: 'Fable now' });
+    const r = S.addPackage(store, 'p', pkg, { position: 0 });
+    store = r.store;
+    assert.deepEqual(S.buildsOf(store, 'p').map((b) => b.id), ['pkg-fable-now', 'alpha', 'beta', 'gamma', 'empty']);
+    const alpha = store.builds.find((b) => b.id === 'alpha');
+    assert.deepEqual(alpha.steps.map((x) => x.packagedInto ?? ''), ['', '', 'pkg-fable-now', 'pkg-fable-now', '']);
+    assert.ok(!L().candidates.some((x) => x.key === 'alpha/u-s3'), 'packaged steps are no longer waiting');
+    assert.throws(() => S.addPackage(store, 'p', pkg), /already/);
+  });
+  t('packager: the source build skips packaged steps (next, brief) and refuses ticking them there', () => {
+    const o = c.normalizeState(S.projectOrchestrator(store, 'p'));
+    const alpha = o.builds.find((b) => b.id === 'alpha');
+    assert.equal(alpha.steps[2].packagedInto, 'pkg-fable-now');
+    assert.equal(c.nextUp(alpha).step.id, 's2');
+    assert.match(c.brief({ ...alpha, steps: alpha.steps.map((x) => (x.id === 's2' || x.id === 's5' ? { ...x, done: true } : x)) }), /packaged into pkg-fable-now/);
+    assert.throws(() => c.apply(o, { action: 'step', id: 'alpha', step: 's3' }), /tick it there/);
+  });
+  t('packager: ticking a package step ticks its source (syncPackaged), and an emptied package lets its steps go', () => {
+    const pk = store.builds.find((b) => b.id === 'pkg-fable-now'); pk.steps[0].done = true; pk.steps[0].doneAt = 'now';
+    S.syncPackaged(store);
+    assert.equal(store.builds.find((b) => b.id === 'alpha').steps[2].done, true);
+    assert.throws(() => S.removePackage(store, 'pkg-fable-now'), /archive it instead/);
+    pk.steps[0].done = false; S.syncPackaged(store); assert.equal(store.builds.find((b) => b.id === 'alpha').steps[2].done, false);
+    const r = S.removePackage(store, 'pkg-fable-now');
+    assert.deepEqual(r.store.builds.find((b) => b.id === 'alpha').steps.map((x) => x.packagedInto ?? ''), ['', '', '', '', '']);
+  });
+  t('packager: re-analyze puts a package after what it needs and before what needs it; running builds never move', () => {
+    const e = P.packageEdges(store.builds);
+    assert.ok(e.some((x) => x.before === 'alpha' && x.after === 'pkg-fable-now')); // alpha s2 first
+    assert.ok(e.some((x) => x.before === 'pkg-fable-now' && x.after === 'alpha')); // alpha s5 after
+    const ids = S.buildsOf(store, 'p').map((b) => b.id);
+    const r = P.reanalyze(store.builds, ids);
+    assert.equal(r.conflicts.length, 1); assert.deepEqual(r.order, ids); // steps on both sides: side by side, no move
+    const b2 = store.builds.map((b) => (b.id === 'beta' ? { ...b, status: 'pending' } : b));
+    // a package of beta's s2 only: beta s1 must come first → the package moves after beta
+    const s2 = S.addPackage(S.normalizeStore({ builds: b2.filter((b) => b.id !== 'pkg-fable-now').map((b) => (b.id === 'alpha' ? { ...b, steps: b.steps.map((x) => ({ ...x, packagedInto: undefined })) } : b.id === 'beta' ? { ...b, steps: b.steps.map((x) => ({ ...x, packagedInto: undefined })) } : b)) }), 'p',
+      P.makePackage(P.candidates(b2.map((b) => (b.id === 'beta' ? { ...b, steps: b.steps.map((x) => ({ ...x, packagedInto: undefined })) } : b))).candidates, ['beta/u-s2'], { name: 'late' }), { position: 0 }).store;
+    const r2 = P.reanalyze(s2.builds, S.buildsOf(s2, 'p').map((b) => b.id));
+    assert.deepEqual(r2.moves.map((m) => m.id), ['pkg-late']); assert.ok(r2.order.indexOf('pkg-late') > r2.order.indexOf('beta'));
+    const r3 = P.reanalyze(s2.builds.map((b) => (b.id === 'pkg-late' ? { ...b, status: 'running' } : b)), S.buildsOf(s2, 'p').map((b) => b.id));
+    assert.deepEqual(r3.moves.map((m) => m.id), ['beta'], 'a running package stays; its prerequisite moves before it');
+  });
+}
 console.log(`build-orchestrator: ${n} checks passed`);

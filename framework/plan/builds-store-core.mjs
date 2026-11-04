@@ -62,8 +62,8 @@ const stepModel = (m) => (m === 'Fable' ? 'Fable' : 'Opus');
 const clone = (o) => JSON.parse(JSON.stringify(o));
 const nowIso = () => new Date().toISOString();
 export const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
-const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
-const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note'];
+const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps', 'package'];
+const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note', 'packagedInto'];
 
 // ------------------------------------------------------------------ records
 
@@ -96,6 +96,7 @@ export function normStep(s, i = 0, ctx = {}) {
     skip: o.skip === true,
     done: o.done === true,
     doneAt: o.done === true ? str(o.doneAt, 40) : '',
+    ...(str(o.packagedInto) ? { packagedInto: str(o.packagedInto, 80) } : {}), // build-package@1: the package build doing this step now
     note: str(o.note, 1000),
     ...(str(o.fm).trim() ? { fm: str(o.fm, 80).trim() } : {}),
     rev: Number.isInteger(o.rev) && o.rev > 0 ? o.rev : 1,
@@ -140,6 +141,7 @@ export function normBuild(b, ctx = {}) {
     order,
     kind: o.kind === 'epic' ? 'epic' : 'build',
     planRef: str(o.planRef, 80),
+    ...(o.package && typeof o.package === 'object' ? { package: clone(o.package) } : {}), // build-package@1: this build is a package of steps from others
     rev: Number.isInteger(o.rev) && o.rev > 0 ? o.rev : 1,
     deleted: o.deleted === true,
     deletedAt: o.deleted === true ? str(o.deletedAt, 40) : '',
@@ -328,9 +330,100 @@ export function storeSummary(store, profile) {
   };
 }
 
+// ------------------------------------------------------------------ build-package@1 (packages of steps from other builds)
+
+/**
+ * Keep packages and their sources in step: a package step (`origin.how === 'package'`) mirrors its done state onto the
+ * source step it came from, and a source step whose package is gone (deleted, archived, or no longer holding it)
+ * comes back to its own build. Runs on every store write (builds-store.mjs withStore), so any writer's tick counts.
+ * Returns the store (changed in place) and what it did.
+ */
+export function syncPackaged(store, { now = nowIso() } = {}) {
+  const log = [];
+  const byId = new Map(store.builds.map((b) => [b.id, b]));
+  const held = new Map(); // `${source}/${uid}` → { pkg, step }
+  for (const p of store.builds) {
+    if (!p.package || p.deleted || p.status === 'archived') continue;
+    for (const st of p.steps) if (st.origin?.how === 'package') held.set(`${st.origin.build}/${st.origin.step}`, { pkg: p, step: st });
+  }
+  for (const b of store.builds) {
+    for (const s of b.steps) {
+      if (!s.packagedInto) continue;
+      const h = held.get(`${b.id}/${s.uid}`) ?? held.get(`${b.id}/${s.id}`);
+      if (!h || h.pkg.id !== s.packagedInto) { // the package let it go: the step is its own build's again
+        if (!s.done) { const was = s.packagedInto; delete s.packagedInto; s.updatedAt = now; log.push(`${b.id} ${s.id} back from ${byId.has(was) ? was : 'a removed package'}`); }
+        continue;
+      }
+      if (h.step.done !== s.done) { s.done = h.step.done; s.doneAt = s.done ? (h.step.doneAt || now) : ''; s.updatedAt = now; log.push(`${b.id} ${s.id} ${s.done ? 'done' : 'not done'} (in ${h.pkg.id})`); }
+    }
+  }
+  return { store, log };
+}
+
+/**
+ * Write a package (packager-core makePackage) into the store in one go: the package build (in `profile`, at
+ * `position`: 0 = top of the queue, null = the end), and `packagedInto` on every source step. Refuses a step that is
+ * no longer waiting, and a model upgrade without Brett (`approver`). Plan steps (`plan:<id>`) have no store record:
+ * the caller links the plan. Returns { store, build, log }.
+ */
+export function addPackage(store, profile, pkg, { position = 0, now = nowIso(), approver = null } = {}) {
+  const s = clone(store);
+  const { build, marks = [], upgrades = [] } = pkg ?? {};
+  if (!build?.id || !Array.isArray(build.steps) || !build.steps.length) throw new Error('a package needs steps');
+  if (s.builds.some((b) => b.id === build.id && !b.deleted)) throw new Error(`"${build.id}" is already a build`);
+  if (upgrades.length && !(approver?.by && ['console', 'axhub'].includes(approver?.via))) throw new Error(`raising ${upgrades.length} step(s) to Fable is a model upgrade: only Brett can approve it (his console click or an axHub approval). Keep each step's model, or ask him.`);
+  const log = [];
+  for (const m of marks) {
+    if (m.kind === 'plan-step') continue;
+    const b = s.builds.find((x) => x.id === m.build && !x.deleted);
+    const st = b?.steps.find((x) => (m.uid && x.uid === m.uid) || (!m.uid && x.id === m.step));
+    if (!st) throw new Error(`${m.build} ${m.step} is gone`);
+    if (st.done || st.skip) throw new Error(`${m.build} ${m.step} is already done or skipped`);
+    if (st.packagedInto) throw new Error(`${m.build} ${m.step} is already packaged into ${st.packagedInto}`);
+    if (st.assignedTo || st.withHelper) throw new Error(`${m.build} ${m.step} is with a helper`);
+    st.packagedInto = build.id; st.updatedAt = now;
+    if (!build.steps.some((x) => x.origin?.build === b.id && (x.origin.step === st.uid || x.origin.step === st.id))) throw new Error(`package step for ${m.build} ${m.step} is missing`);
+  }
+  const { said, ...rest } = build;
+  const origin = said ? { said, at: now, source: 'console', by: build.package?.by || 'console' } : rest.origin;
+  const rec = normBuild({ ...rest, ...(origin ? { origin } : {}), profiles: [profile], order: { [profile]: 0 }, createdAt: now, updatedAt: now }, { now });
+  rec.steps = build.steps.map((x, k) => ({ ...normStep({ ...x, uid: newUid() }, k, { now }), origin: { build: str(x.origin?.build, 80), step: str(x.origin?.step, 60), how: 'package' } }));
+  rec.defaultSteps = rec.steps.map((x) => ({ ...x })); rec.defaultAt = now;
+  const list = buildsOf(s, profile);
+  const at = Number.isInteger(position) ? Math.max(0, Math.min(list.length, position)) : list.length;
+  list.splice(at, 0, rec);
+  s.builds.push(rec);
+  list.forEach((b, i) => { b.order[profile] = i; });
+  s.updatedAt = now;
+  log.push(`package ${rec.id}: ${rec.steps.length} step(s) from ${new Set(rec.steps.map((x) => x.origin.build)).size} build(s), ${profile} position ${at + 1}`);
+  return { store: s, build: rec, log };
+}
+
+/** Undo a package that has nothing done yet: its steps go back to their builds and the package build is removed. */
+export function removePackage(store, id, { now = nowIso() } = {}) {
+  const s = clone(store);
+  const p = s.builds.find((b) => b.id === id && !b.deleted);
+  if (!p?.package) throw new Error(`"${id}" is not a package`);
+  if (p.steps.some((x) => x.done)) throw new Error(`${id} has finished steps; archive it instead`);
+  p.deleted = true; p.deletedAt = now; p.updatedAt = now;
+  const { log } = syncPackaged(s, { now });
+  return { store: s, log: [`unpackaged ${id}`, ...log] };
+}
+
+/** Put builds of one profile in a new order (ids first, in that order; the rest keep theirs after them). */
+export function reorderProfile(store, profile, ids, { now = nowIso() } = {}) {
+  const s = clone(store);
+  const list = buildsOf(s, profile);
+  const pos = new Map(ids.map((id, i) => [id, i]));
+  list.sort((a, b) => (pos.get(a.id) ?? 1e6 + list.indexOf(a)) - (pos.get(b.id) ?? 1e6 + list.indexOf(b)));
+  list.forEach((b, i) => { b.order[profile] = i; });
+  s.updatedAt = now;
+  return s;
+}
+
 // ------------------------------------------------------------------ orchestrator@1 projection
 
-const orchStep = (s) => { const o = {}; for (const k of ORCH_STEP_KEYS) o[k] = s[k]; o.uid = s.uid; if (s.title) o.title = s.title; return o; };
+const orchStep = (s) => { const o = {}; for (const k of ORCH_STEP_KEYS) if (s[k] !== undefined) o[k] = s[k]; o.uid = s.uid; if (s.title) o.title = s.title; if (s.origin) o.origin = clone(s.origin); return o; };
 const orchBuild = (b) => { const o = {}; for (const k of ORCH_BUILD_KEYS) if (b[k] !== undefined) o[k] = k === 'steps' ? b.steps.map(orchStep) : clone(b[k]); return o; };
 
 export function projectOrchestrator(store, profile) {
