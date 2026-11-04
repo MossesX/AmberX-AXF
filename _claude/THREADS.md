@@ -669,7 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:02 UTC · `builds-one-page` s10 done (refactor) · snap-sully
 - 2026-11-03 18:02 UTC · `builds-one-page` s11 done (refactor) · snap-sully
 - 2026-11-03 18:02 UTC · `builds-one-page` s15 done (refactor) · snap-sully
 - 2026-11-03 18:02 UTC · `builds-one-page` s16 done (refactor) · snap-sully
@@ -1069,6 +1068,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:31 UTC · `console-wake-finish` s4 done (current) · orchestrator
 - 2026-11-04 14:32 UTC · `merge-queue` added (6 steps) (current) · orchestrator
 - 2026-11-04 14:32 UTC · `merge-queue` → running (current) · orchestrator
+- 2026-11-04 14:38 UTC · `profile-lists-home-card` PR #318 (current) · builds-live
 
 ## Token passes (log)
 

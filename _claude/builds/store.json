@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 743,
- "updatedAt": "2026-11-04T14:32:32.898Z",
+ "rev": 744,
+ "updatedAt": "2026-11-04T14:38:08.600Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -73837,9 +73837,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/profile-lists-home-card",
-   "pr": "",
+   "pr": "#318",
    "createdAt": "2026-11-04T14:16:24.131Z",
-   "updatedAt": "2026-11-04T14:22:37.310Z",
+   "updatedAt": "2026-11-04T14:38:07.517Z",
    "builtAt": "",
    "notes": [
     {
@@ -73959,7 +73959,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
