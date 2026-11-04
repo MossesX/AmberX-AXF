@@ -669,7 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 17:45 UTC · `console-wake` s5 done (urgent) · orchestrator
 - 2026-11-03 17:45 UTC · `console-wake` s6 done, → complete (urgent) · orchestrator
 - 2026-11-03 17:45 UTC · `console-wake` note (urgent) · orchestrator
 - 2026-11-03 17:45 UTC · `console-wake` → built, branch claude/console-wake, PR #266 (urgent) · builds-live
@@ -1069,6 +1068,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:24 UTC · `plugin-lazy-load` merged (current) · builds-live
 - 2026-11-04 14:24 UTC · `urgent-land-lazy-loader` s4 done, → complete (current) · orchestrator
 - 2026-11-04 14:24 UTC · `plugin-lazy-load` note (current) · orchestrator
+- 2026-11-04 14:27 UTC · `urgent-land-gizmo-chat` s3 done (current) · orchestrator
 
 ## Token passes (log)
 
