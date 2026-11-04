@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T12:06:13.714Z",
+ "updatedAt": "2026-11-04T12:16:11.569Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3710,14 +3710,15 @@
    "title": "Molly: install the banners",
    "category": "Molly",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-banners",
    "pr": "#294",
+   "mergedAt": "2026-11-04T12:16:09.076Z",
    "createdAt": "2026-11-03T22:04:42.483Z",
-   "updatedAt": "2026-11-04T00:11:38.338Z",
+   "updatedAt": "2026-11-04T12:16:10.311Z",
    "builtAt": "2026-11-04T00:10:45.823Z",
    "notes": [
     {

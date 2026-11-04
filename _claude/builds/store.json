@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 651,
- "updatedAt": "2026-11-04T12:06:13.714Z",
+ "rev": 652,
+ "updatedAt": "2026-11-04T12:16:11.569Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -68405,14 +68405,15 @@
    "title": "Molly: install the banners",
    "category": "Molly",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-banners",
    "pr": "#294",
+   "mergedAt": "2026-11-04T12:16:09.076Z",
    "createdAt": "2026-11-03T22:04:42.483Z",
-   "updatedAt": "2026-11-04T00:11:38.338Z",
+   "updatedAt": "2026-11-04T12:16:10.311Z",
    "builtAt": "2026-11-04T00:10:45.823Z",
    "notes": [
     {
@@ -68550,7 +68551,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
