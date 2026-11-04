@@ -1060,18 +1060,6 @@
    "from": "brief",
    "addenda": []
   },
-  "land-merge-queue-first": {
-   "said": "You gotta stop merging these one at a time or they're gonna have to run checks again. That's what happened last time. ... Land the queue first. Stop everything. Stop merging these things one at a time so they don't step on each other's toes. Save the compute.",
-   "at": "2026-11-04T17:00:00Z",
-   "source": "voice",
-   "session": "",
-   "link": "",
-   "by": "Landin' Lenny",
-   "brief": "",
-   "verbatim": true,
-   "from": "",
-   "addenda": []
-  },
   "land-round-2": {
    "said": "After lenny-land-all, every remaining PR conflicts with main. Brett agreed: one agent catches them up and lands them, Molly first (commands must reach the console inside Molly).",
    "at": "2026-11-04T10:43:58.630Z",
