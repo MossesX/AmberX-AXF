@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 622,
- "updatedAt": "2026-11-04T04:42:43.755Z",
+ "rev": 628,
+ "updatedAt": "2026-11-04T05:28:46.737Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -567,7 +567,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -1328,7 +1328,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -1825,7 +1825,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -3156,7 +3156,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -4825,7 +4825,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -5338,7 +5338,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -7828,7 +7828,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -8180,7 +8180,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -8707,7 +8707,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -9681,7 +9681,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -10195,7 +10195,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -11148,7 +11148,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -11465,7 +11465,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -11876,7 +11876,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -12282,7 +12282,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -12500,7 +12500,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -14036,7 +14036,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -14805,7 +14805,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -15218,7 +15218,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -15419,7 +15419,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -15716,7 +15716,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -16579,7 +16579,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -16789,7 +16789,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -17087,7 +17087,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -21708,7 +21708,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -21987,7 +21987,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -22276,7 +22276,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -22472,7 +22472,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -22841,7 +22841,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -22963,7 +22963,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -23182,7 +23182,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -23382,7 +23382,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -29718,7 +29718,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -29960,7 +29960,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -30149,7 +30149,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -30327,7 +30327,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -30743,7 +30743,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -30862,7 +30862,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -31045,7 +31045,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -31154,7 +31154,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -31259,7 +31259,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -31408,7 +31408,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -31559,7 +31559,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -31948,7 +31948,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -32219,7 +32219,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -32491,7 +32491,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -32579,7 +32579,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -32684,7 +32684,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -32920,7 +32920,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -33245,7 +33245,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -33332,7 +33332,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -33569,7 +33569,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -33744,7 +33744,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -33875,7 +33875,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -35992,7 +35992,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -36225,7 +36225,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -36328,7 +36328,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -36778,7 +36778,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -37071,7 +37071,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -37228,7 +37228,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -37378,7 +37378,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -37538,7 +37538,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -38101,7 +38101,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -38332,7 +38332,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -38454,7 +38454,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -38643,7 +38643,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -38830,7 +38830,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -39038,7 +39038,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -39300,7 +39300,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -39473,7 +39473,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -39659,7 +39659,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -39830,7 +39830,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -39950,7 +39950,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -40183,7 +40183,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -40526,7 +40526,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -40742,7 +40742,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -40944,7 +40944,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -41131,7 +41131,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -41318,7 +41318,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -41673,7 +41673,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -41969,7 +41969,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -42324,7 +42324,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -42576,7 +42576,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -43118,7 +43118,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -43452,7 +43452,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -44787,7 +44787,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -45120,7 +45120,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -45256,7 +45256,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -45974,7 +45974,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -46249,7 +46249,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -47581,7 +47581,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -47768,7 +47768,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -47950,7 +47950,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -48115,7 +48115,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -48340,7 +48340,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -48589,7 +48589,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -48768,7 +48768,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -48988,7 +48988,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -49682,7 +49682,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -49803,7 +49803,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -50079,7 +50079,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -50272,7 +50272,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -50608,7 +50608,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -50731,7 +50731,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -51242,7 +51242,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -51412,7 +51412,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -51780,7 +51780,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -52015,7 +52015,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -52385,7 +52385,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -52621,7 +52621,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -52804,7 +52804,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -53044,7 +53044,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -53254,7 +53254,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -53420,7 +53420,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -53652,7 +53652,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -53840,7 +53840,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -54027,7 +54027,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -54237,7 +54237,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -54403,7 +54403,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -54591,7 +54591,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -54756,7 +54756,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -54948,7 +54948,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -55196,7 +55196,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -55410,7 +55410,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -55948,7 +55948,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -55964,14 +55964,15 @@
    "title": "Claude plugin: Claude settings on axHub (No wait, builds, talking, notifications), read by every session",
    "category": "Claude",
    "detail": "Brett, Nov 3 2026 (voice): a Claude plugin with a whole bunch of settings for Claude, kept on axHub, that every Claude session checks and acts on. No wait (owner-only) = a standing all-scope veto pass created on Brett's signed-in click, revoked when switched off; Include irreversible (owner-only); builds, verification, talking, notifications, memory groups; open registry. MCP claude_settings_get (read) / claude_settings_set (non-owner settings only). Agent: Janitor Joey.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/claude-settings",
    "pr": "#275",
+   "mergedAt": "2026-11-04T04:52:23Z",
    "createdAt": "2026-11-03T19:02:12.964Z",
-   "updatedAt": "2026-11-03T19:50:31.855Z",
+   "updatedAt": "2026-11-04T05:11:56.662Z",
    "builtAt": "2026-11-03T19:50:31.855Z",
    "notes": [
     {
@@ -55989,6 +55990,10 @@
     {
      "text": "All 7 steps done: PR #275, UI Review r-20261103-5bd8390c waiting. Report _claude/builds/reports/claude-settings.md. Follow-ups: follow-amber reads followAmber.enabled; launcher enforces budget caps/max parallel.",
      "at": "2026-11-03T19:50:26.832Z"
+    },
+    {
+     "text": "Reconciler: PR #275 merged",
+     "at": "2026-11-04T05:11:56.662Z"
     }
    ],
    "approvals": [],
@@ -56169,7 +56174,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -56391,7 +56396,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -56649,7 +56654,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -56831,7 +56836,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -57005,7 +57010,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -57159,7 +57164,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -57189,14 +57194,15 @@
    "title": "Home cards draw live data: one card engine (card@1 binding), Add card, drag to Home, suggested cards",
    "category": "Console",
    "detail": "Brett, Nov 3 2026 (voice): \"I shouldn't need to build cards. I should draw dynamic data.\" One card engine draws any plugin read command (control@1 / plugin-commands-auto) as number, list, meter, chart, feed, table or status, live or every N s. Add card on Home (plugin -> read command -> live preview -> smart view -> fields -> Save), drag any hook onto Home, layout (reorder, size, show/hide, context menu) saved per user on axHub, Suggested cards. Zero code, zero agents, zero tokens. Replaces pending item home-cards. Agent: Ping Paulie.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/home-cards-live",
    "pr": "#283",
+   "mergedAt": "2026-11-04T04:52:23Z",
    "createdAt": "2026-11-03T19:43:04.673Z",
-   "updatedAt": "2026-11-03T21:17:55.434Z",
+   "updatedAt": "2026-11-04T05:11:56.662Z",
    "builtAt": "2026-11-03T21:17:53.520Z",
    "notes": [
     {
@@ -57218,6 +57224,10 @@
     {
      "text": "Reconciler: branch claude/home-cards-live (no PR yet)",
      "at": "2026-11-03T20:54:49.605Z"
+    },
+    {
+     "text": "Reconciler: PR #283 merged",
+     "at": "2026-11-04T05:11:56.662Z"
     }
    ],
    "approvals": [],
@@ -57376,7 +57386,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -57615,7 +57625,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -57815,7 +57825,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -57831,19 +57841,24 @@
    "title": "Terminal: sessions navigation rail",
    "category": "Console > Terminal",
    "detail": "Brett, Nov 3 2026 (voice): a collapsible left nav rail in the existing Terminal plugin listing live sessions (My sessions: tmux/Claude Code + claude.ai chat/voice mirrored from axHub activity; Agents: headless builds; Connections), mirror read-only + Jump in, console_session_note MCP tool. Builds on terminal-vps-host (PR #274). Agent: Earl the Ear (router not on main).",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/terminal-sessions-nav",
    "pr": "#286",
+   "mergedAt": "2026-11-04T04:52:23Z",
    "createdAt": "2026-11-03T19:58:59.822Z",
-   "updatedAt": "2026-11-03T21:45:32.326Z",
+   "updatedAt": "2026-11-04T05:11:56.662Z",
    "builtAt": "2026-11-03T21:45:30.056Z",
    "notes": [
     {
      "text": "Agent: Earl the Ear. PR #286 (on #274). UI Review r-20261103-107a9e61 waiting. Report _claude/builds/reports/terminal-sessions-nav.md",
      "at": "2026-11-03T21:45:32.326Z"
+    },
+    {
+     "text": "Reconciler: PR #286 merged",
+     "at": "2026-11-04T05:11:56.662Z"
     }
    ],
    "approvals": [],
@@ -57958,7 +57973,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -58151,7 +58166,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -58167,16 +58182,22 @@
    "title": "Show what Brett said (verbatim prompt) on every build",
    "category": "Builds",
    "detail": "Brett, Nov 3 2026 (voice), verbatim: \"All the build entries, like wherever it shows a build in the build manager, pending, all that, I need it to show the prompt, what I said, the verbatim prompt that kicked it off, that initiated it.\" Every build entry (Build manager, Pending, Queue, Orchestrator, Steps, Builds page) shows the verbatim prompt that started it, its brief and later addenda.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "code",
    "pendingId": "",
    "branch": "claude/build-prompt-origin",
    "pr": "#282",
+   "mergedAt": "2026-11-04T04:52:23Z",
    "createdAt": "2026-11-03T20:23:37.380Z",
-   "updatedAt": "2026-11-03T20:53:25.027Z",
+   "updatedAt": "2026-11-04T05:11:56.662Z",
    "builtAt": "2026-11-03T20:53:24.237Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #282 merged",
+     "at": "2026-11-04T05:11:56.662Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -58311,7 +58332,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -60310,19 +60331,24 @@
    "title": "Banner reference links: tap a mention to open what it refers to",
    "category": "Framework",
    "detail": "Brett (Nov 3 2026, voice): in banner entries (in progress, merged, live, build/status banners, Codebase changes), text that mentions a real thing (screen, settings page, plugin, dialog, toolbar, build, PR, agent, file) becomes a hook: tap = peek card, double-tap = open + highlight, long-press = context menu. ref@1 resolver from the console registries, explicit 'touches:' refs win. Applied in the generic banner item renderer; banner-pack (#251), banner-editor (#254), banners-one untouched. Agent: Ping Paulie (headless worktree session, not on main). Branch claude/banner-ref-links.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/banner-ref-links",
    "pr": "#287",
+   "mergedAt": "2026-11-04T04:52:23Z",
    "createdAt": "2026-11-03T20:47:37.192Z",
-   "updatedAt": "2026-11-03T21:45:25.479Z",
+   "updatedAt": "2026-11-04T05:11:56.662Z",
    "builtAt": "2026-11-03T21:45:20.552Z",
    "notes": [
     {
      "text": "Built by Ping Paulie (headless worktree). PR #287, UI Review r-20261103-1ad2ede3 waiting. Gaps: swarm roster agents not targets (no capability), no touches field on builds yet (text only), UI Review has no per-item deep link. Fable review suggested for the ref@1 contract.",
      "at": "2026-11-03T21:45:25.479Z"
+    },
+    {
+     "text": "Reconciler: PR #287 merged",
+     "at": "2026-11-04T05:11:56.662Z"
     }
    ],
    "approvals": [],
@@ -60447,7 +60473,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -63478,14 +63504,15 @@
    "title": "Bug fix: tapping the What's new banner item opens nothing; dialogs cannot be closed on phone",
    "category": "",
    "detail": "Brett (Nov 3 2026, voice): \"I see the What's new banner and I'm clicking it. But I'm not seeing anything.\" Addendum: \"I have this banner open. I can't close it.\" Tap opens the panel every time (phone/desktop, standalone/Molly); every dialog closes by X, outside tap, back/Escape, swipe down; control@1 console.dialogs close. Agent: Janitor Joey.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/whats-new-open-fix",
    "pr": "#290",
+   "mergedAt": "2026-11-04T04:52:23Z",
    "createdAt": "2026-11-03T21:23:34.422Z",
-   "updatedAt": "2026-11-03T22:17:02.033Z",
+   "updatedAt": "2026-11-04T05:11:56.662Z",
    "builtAt": "2026-11-03T22:16:59.240Z",
    "notes": [
     {
@@ -63495,6 +63522,10 @@
     {
      "text": "PR #290 open; UI Review r-20261103-049edfb2 waiting (holds the auto-merge until Brett approves). Report _claude/builds/reports/whats-new-open-fix.md",
      "at": "2026-11-03T22:17:02.033Z"
+    },
+    {
+     "text": "Reconciler: PR #290 merged",
+     "at": "2026-11-04T05:11:56.662Z"
     }
    ],
    "approvals": [],
@@ -63619,7 +63650,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -63635,14 +63666,15 @@
    "title": "Terminal: drag handle + hold-drag tabs, context chain as a tree, settings context menu, per-pane text size",
    "category": "Terminal",
    "detail": "Brett (Nov 3 2026, voice): no spot to drag the Terminal window (all tabs); context chain must show chained MD files as an indented tree; context menu on the Terminal opens its settings (addendum 1); text size per pane, smaller phone default (addendum 2). Agent: Landin Lenny (headless worktree session). Builds on window-resize-fix #278.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/terminal-drag-chain-tree",
    "pr": "#292",
+   "mergedAt": "2026-11-04T04:52:23Z",
    "createdAt": "2026-11-03T21:50:21.572Z",
-   "updatedAt": "2026-11-03T23:58:50.341Z",
+   "updatedAt": "2026-11-04T05:11:56.662Z",
    "builtAt": "2026-11-03T23:55:24.932Z",
    "notes": [
     {
@@ -63656,6 +63688,10 @@
     {
      "text": "All 6 steps done, PR #292 open. UI Review r-20261103-axtev01 (desktop shot; phone shots blocked by VPS load ~100, Snap Sully job queued). Tests: check-headless-tabs 30->58, window-handles-check 30->35, check-windows 383=383, console-terminal tree checks pass (its token-reset check fails on main too). Agent: Landin' Lenny.",
      "at": "2026-11-03T23:53:57.137Z"
+    },
+    {
+     "text": "Reconciler: PR #292 merged",
+     "at": "2026-11-04T05:11:56.662Z"
     }
    ],
    "approvals": [],
@@ -63802,7 +63838,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -69170,15 +69206,15 @@
    "title": "Land everything finished (freeze plan step two)",
    "category": "Landing",
    "detail": "What Brett said (voice, Nov 3 2026): CI fix is done (PR #284 merged 22:42 UTC, main green). \"Number two.\" Plan step two = merge everything finished. \"Give me Lenny.\"\nAgent: Landin' Lenny. Land #270 first, then #265-#292 oldest first and #279; close #267 (superseded by #284); leave #251/#254 for Brett; list older PRs #207-#236 for him; redeploy all apps.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/lenny-land-all",
+   "pr": "#304",
    "createdAt": "2026-11-03T23:03:01.354Z",
-   "updatedAt": "2026-11-04T04:27:00.341Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T05:27:42.641Z",
+   "builtAt": "2026-11-04T05:27:40.234Z",
    "notes": [
     {
      "text": "#270 auto-land merged (3caf0ee0) after two landing fixes (THREADS plugin references; UI Review read through the push banner's ui-review@1 route). #267 closed as superseded by #284. #251/#254 set to draft so auto-merge leaves them for Brett.",
@@ -69187,6 +69223,10 @@
     {
      "text": "Landed so far: #270 #268 #265 #277 #271 #273 #280 #274 #279 #285 #272 #276 (main green at 363485d7). Batch PR #303 carries #275 #282 #283 #286 #287 #290 #292 (one CI run). Held: #266 #288 (racy console-wake test), #269 (AmberX build: @console/api), #289 (placement system vs #278), #281 (menu engines vs #268), #291 (WIP, paused by Brett).",
      "at": "2026-11-04T04:27:00.341Z"
+    },
+    {
+     "text": "Batch #303 merged (7ce95f6b): #275 #282 #283 #286 #287 #290 #292 all show merged. 19 PRs landed in total. Console was down ~12 min (04:27-04:39 UTC): stacked console installers (no lock on its update cron) starved Docker; duplicates cancelled, flock added live and in deploy/install-console.sh.",
+     "at": "2026-11-04T04:52:59.342Z"
     }
    ],
    "approvals": [],
@@ -69251,12 +69291,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T04:52:55.364Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T23:03:01.355Z",
-     "updatedAt": "2026-11-03T23:03:01.355Z"
+     "updatedAt": "2026-11-04T04:52:55.455Z"
     },
     {
      "id": "s4",
@@ -69273,12 +69313,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T04:52:57.155Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T23:03:01.355Z",
-     "updatedAt": "2026-11-03T23:03:01.355Z"
+     "updatedAt": "2026-11-04T04:52:57.337Z"
     },
     {
      "id": "s5",
@@ -69317,12 +69357,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T05:27:37.066Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T23:03:01.355Z",
-     "updatedAt": "2026-11-03T23:03:01.355Z"
+     "updatedAt": "2026-11-04T05:27:37.265Z"
     },
     {
      "id": "s7",
@@ -69339,12 +69379,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T05:27:40.234Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T23:03:01.355Z",
-     "updatedAt": "2026-11-03T23:03:01.355Z"
+     "updatedAt": "2026-11-04T05:27:40.358Z"
     }
    ],
    "profiles": [
@@ -69355,7 +69395,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

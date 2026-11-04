@@ -1,0 +1,32 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "framework-drafts",
+  "name": "Framework help (drafts)",
+  "version": "0.1.0",
+  "description": "Help mode entries for framework. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "framework",
+    "entries": [
+      {
+        "target": "session",
+        "title": "Session",
+        "text": "Opens Session.",
+        "kind": "link",
+        "draft": true
+      },
+      {
+        "target": "brief-characters",
+        "title": "Brief ( characters)",
+        "text": "Shows “Brief ( characters)”.",
+        "kind": "button",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

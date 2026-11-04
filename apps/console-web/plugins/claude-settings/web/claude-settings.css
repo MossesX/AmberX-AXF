@@ -1,0 +1,11 @@
+/* Claude plugin (claude-settings): layout only; controls come from the framework (Switch, SelectField, TextField, fx-chip). */
+.axp-cs-group__desc { margin: 0; color: var(--fx-muted); }
+.axp-cs-row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); padding: var(--fx-dens-gap-sm) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-cs-row:last-child { border-bottom: 0; }
+.axp-cs-row__control { flex: 1 1 18em; min-width: 0; }
+.axp-cs-row__badge { flex: 0 0 auto; }
+.axp-cs-row__edit { display: flex; align-items: flex-end; gap: var(--fx-dens-gap-md); flex-wrap: wrap; }
+.axp-cs-row__edit > :first-child { flex: 1 1 14em; }
+.axp-cs-row__when { color: var(--fx-muted); }
+.axp-cs-row > .fx-note { flex: 1 1 100%; }
+.axp-cs-banner { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); flex-wrap: nowrap; white-space: nowrap; }

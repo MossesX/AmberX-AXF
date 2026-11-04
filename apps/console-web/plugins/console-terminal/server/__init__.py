@@ -16,6 +16,13 @@ interactive CLI session). Sessions live on the server (sessions.py) so Mosh mode
   POST sessions/{id}/mosh {on}       DELETE sessions/{id} (detaches a persistent tab)   POST sessions/{id}/kill
   WS   sessions/{id}/ws?ticket=…&have=<offset>
   GET/PUT settings      POST ssh/keygen {replace?}
+Sessions nav (left rail, Nov 3 2026; nav.py):
+  GET  nav                             My sessions (Brett's tmux + claude.ai feeds), Agents (headless), Connections, Recent
+  GET  nav/feed?id=&since=             one chat session's mirror feed (notes + console MCP calls)
+  POST nav/note {session, text, …}     a line into a session's own feed (= MCP console_session_note)
+  POST nav/stop {name, where}          end a tmux session for good (asks for a confirm first)
+  WS   nav/ws?ticket=…                 the nav model, pushed when it changes
+  POST sessions {…, attach, readOnly}  a read-only mirror of any tmux session (tmux attach -r); Jump in = readOnly off
 """
 from __future__ import annotations
 
@@ -31,10 +38,11 @@ from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 
 import plugin_services
 
-from . import health, sessions, store
+from . import health, nav, sessions, store
 
 router = APIRouter()
 health.ensure()
+plugin_services.provide("axf.session-feed@1", nav.SessionFeed(), "console-terminal")
 
 
 def _err(e: Exception) -> HTTPException:
@@ -141,8 +149,11 @@ def kill_session(sid: str) -> dict[str, Any]:
 @router.get("/tmux")
 def tmux_list() -> dict[str, Any]:
     v = sessions.vps_tmux()
-    return {"vps": v, "console": sessions.console_tmux(), "attach": {x["name"]: sessions.attach_commands(x["name"], x["where"])
-                                                                        for x in [*v["items"], *sessions.console_tmux()]}}
+    local = sessions.console_tmux(mine=True)
+    own = [x for x in local if x["kind"] != "mine"]
+    # mine = Brett's other tmux sessions (VPS + console), which the sessions nav mirrors; the ∨ menu lists the rest
+    return {"vps": v, "console": own, "mine": [*v.get("mine", []), *[x for x in local if x["kind"] == "mine"]],
+            "attach": {x["name"]: sessions.attach_commands(x["name"], x["where"]) for x in [*v["items"], *v.get("mine", []), *local]}}
 
 
 @router.post("/tmux/kill")
@@ -274,6 +285,88 @@ def keygen(body: dict[str, Any]) -> dict[str, Any]:
 @router.get("/log")
 def session_log(limit: int = 200) -> dict[str, Any]:
     return {"items": store.read_log(max(1, min(limit, 2000)))}
+
+
+# ---------------------------------------------------------------- sessions nav (left rail)
+
+@router.get("/nav")
+def nav_list() -> dict[str, Any]:
+    """Every session the rail lists: My sessions, Agents, Connections, Recent (terminal-nav@1)."""
+    health.ensure()
+    return nav.model(connections)
+
+
+@router.get("/nav/feed")
+def nav_feed(id: str, since: int = 0) -> dict[str, Any]:
+    """One chat session's mirror feed: its console_session_note lines and the console MCP tools it called."""
+    try:
+        return nav.feed(id, max(0, since))
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+
+
+@router.post("/nav/note")
+def nav_note(body: dict[str, Any]) -> dict[str, Any]:
+    """Post one short line into a session's own mirror feed (what MCP console_session_note does)."""
+    try:
+        return nav.note(str(body.get("session") or ""), str(body.get("text") or ""), source=str(body.get("source") or "claude-ai-text"),
+                        agent=str(body.get("agent") or ""), url=str(body.get("url") or ""), title=str(body.get("title") or ""),
+                        model=str(body.get("model") or ""), cost_usd=body.get("costUsd") if isinstance(body.get("costUsd"), (int, float)) else None)
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+
+
+@router.post("/nav/stop")
+def nav_stop(body: dict[str, Any]) -> dict[str, Any]:
+    """Stop a session for good: its tmux session ends, for every device attached to it."""
+    try:
+        return sessions.kill_tmux(str(body.get("name") or ""), str(body.get("where") or "vps"))
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+
+
+@router.websocket("/nav/ws")
+async def nav_ws(ws: WebSocket) -> None:
+    """The nav model, live: sent on connect, then whenever it changes (checked every 3 s, at once on a new feed line)."""
+    await ws.accept()
+    loop = asyncio.get_running_loop()
+    poke = asyncio.Event()
+    stop = nav.on_change(lambda: loop.call_soon_threadsafe(poke.set))
+    last = ""
+
+    async def push() -> None:
+        nonlocal last
+        m = await loop.run_in_executor(None, nav_list)
+        body = json.dumps({k: v for k, v in m.items() if k != "now"}, sort_keys=True, default=str)
+        if body != last:
+            last = body
+            await ws.send_text(json.dumps({"type": "nav", "model": m}, default=str))
+
+    async def ticker() -> None:
+        while True:
+            try:
+                await push()
+            except Exception:  # noqa: BLE001 — VPS unreachable this round: try again
+                pass
+            poke.clear()
+            try:
+                await asyncio.wait_for(poke.wait(), timeout=3.0)
+            except asyncio.TimeoutError:
+                pass
+
+    task = asyncio.create_task(ticker())
+    try:
+        while True:
+            msg = await ws.receive()
+            if msg.get("type") == "websocket.disconnect":
+                break
+            if msg.get("text") == "\x00ping":
+                await ws.send_text(json.dumps({"type": "pong"}))
+    except (WebSocketDisconnect, RuntimeError, OSError):
+        pass
+    finally:
+        task.cancel()
+        stop()
 
 
 class HeadlessService:

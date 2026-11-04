@@ -683,6 +683,90 @@
         "text": "Shows “AshesUI”.",
         "kind": "menu-item",
         "draft": true
+      },
+      {
+        "target": "add-card",
+        "title": "Add card",
+        "text": "Adds card.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "suggested-cards",
+        "title": "Suggested cards",
+        "text": "Shows “Suggested cards”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "show-all",
+        "title": "Show all",
+        "text": "Shows all.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "hide-all",
+        "title": "Hide all",
+        "text": "Hides all.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "plugin",
+        "title": "Plugin",
+        "text": "Where you set “Plugin”. Change it and the app uses the new value.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "path-into-the-result",
+        "title": "Path into the result",
+        "text": "Where you set “Path into the result”. Change it and the app uses the new value.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "fold-a-list",
+        "title": "Fold a list",
+        "text": "Where you set “Fold a list”. Change it and the app uses the new value.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "line",
+        "title": "Line",
+        "text": "Shows the “Line” part of this screen.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "bars",
+        "title": "Bars",
+        "text": "Shows the “Bars” part of this screen.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "spark",
+        "title": "Spark",
+        "text": "Shows the “Spark” part of this screen.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "size",
+        "title": "Size",
+        "text": "Where you set “Size”. Change it and the app uses the new value.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "add-all",
+        "title": "Add all",
+        "text": "Adds all.",
+        "kind": "button",
+        "draft": true
       }
     ],
     "intros": []

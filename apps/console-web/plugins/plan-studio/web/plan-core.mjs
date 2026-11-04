@@ -657,7 +657,7 @@ export function fromMarkdown(md, opts = {}) {
 /* ------------------------------------------------------------------ Turn into a build (orchestrator@1) */
 
 /** The orchestrator `add` change for a plan (steps in dependency order, each with its model and estimate). */
-export function toBuild(plan, { profile, id } = {}) {
+export function toBuild(plan, { profile, id, said = '', by = '' } = {}) {
   const steps = orderSteps(plan.steps.filter((s) => !s.done));
   if (!steps.length) throw new Error('the plan has no steps left to build: add steps first');
   const buildId = slug(id || plan.id, 60);
@@ -670,6 +670,8 @@ export function toBuild(plan, { profile, id } = {}) {
   ].filter(Boolean).join('\n');
   return {
     action: 'add', id: buildId, title: plan.title, category: pathParts(plan.category)[0] || 'Plans', detail, source: 'plan-studio', planId: plan.id, profile: profile || plan.profile || '',
+    // what Brett said (build-origin@1): his words when he turned it into a build, else the plan's own origin
+    ...(str(said, 8000).trim() || plan.origin?.said ? { origin: { ...(plan.origin ?? {}), said: str(said, 8000).trim() || plan.origin.said, source: plan.origin?.source || 'console', at: plan.origin?.at || nowIso(), by: by || plan.origin?.by || 'plan-studio' } } : {}),
     steps: steps.map((s) => ({ text: s.text, model: s.model, estimate: `${s.minutes || 20} min`, phase: s.phase || '', planStep: s.id })),
   };
 }

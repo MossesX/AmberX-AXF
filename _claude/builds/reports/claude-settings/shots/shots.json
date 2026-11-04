@@ -1,0 +1,5 @@
+[
+ { "name": "claude-settings-tab", "settle": 5000, "steps": [ { "press": "Escape", "wait": 400 }, { "click": ".fx-menubar__btn >> text='Builds'", "wait": 900 }, { "click": "[data-axf-menu-item=claude-settings-open]", "wait": 3500 } ] },
+ { "name": "claude-owner-only-refused", "settle": 5000, "steps": [ { "press": "Escape", "wait": 400 }, { "click": ".fx-menubar__btn >> text='Builds'", "wait": 900 }, { "click": "[data-axf-menu-item=claude-settings-open]", "wait": 3500 }, { "click": "[data-key='noWait.enabled'] [role=switch]", "wait": 50000 } ] },
+ { "name": "claude-builds-talking", "settle": 5000, "steps": [ { "press": "Escape", "wait": 400 }, { "click": ".fx-menubar__btn >> text='Builds'", "wait": 900 }, { "click": "[data-axf-menu-item=claude-settings-open]", "wait": 3500 }, { "eval": "document.querySelector(\"[data-key='builds.defaultModel']\")?.scrollIntoView({block:'start'})", "wait": 800 } ] }
+]

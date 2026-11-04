@@ -7,6 +7,8 @@ Cross-platform app framework where every UI piece (theme, layout, menu, toolbar,
 @_claude/shared/rules/RULES.md
 @_claude/rules/RULES.md
 
+**Claude settings (Brett, Nov 3 2026):** at session start and before acting, read Claude settings (`claude_settings_get`, or `node apps/console-web/plugins/claude-settings/claude-settings.mjs get`) and follow them. Owner-only ones (No wait, Include irreversible, launch without asking, default model, UI Review gate, raising caps) change only with Brett's own click in the console. <!-- axf-plugin:claude-settings -->
+
 **Fix it yourself (Brett, Oct 30 2026):** when something is broken and the tools at hand can fix it (a dead key, a stuck or crashed build, a failed launch, CI red, a restarting container, missing config), fix it straight away as a veto call with a plain reason, then tell him what was fixed. Never ask whether to fix it; ask only when it needs his hands (a new token on github.com, paying, a device) or a real choice, and then put it in a banner item with the exact steps.
 
 **Threads and builds (read on every load):** `_claude/THREADS.md` lists every thread, its state, branch, PR and queued items. Read it first, pick up from it, and update + commit it whenever a thread starts, changes, opens or merges a PR, or queues an item. All build work lives in the repo (branches, PRs, this log), never only in chat.
@@ -67,6 +69,7 @@ node framework/spec/check-project-fixtures.mjs      # JS validator vs reference 
 node framework/spec/check-build-steps.mjs           # small-steps rule: pending + build-queue cores (40 checks)
 node framework/spec/check-builds-store.mjs          # builds@1 store: migration loses nothing, projections, reorder, rename, harvest, apply/discard
 node framework/cli/builds-store.mjs [verify|history <id>|restore <id> <rev>]   # the one builds store
+node framework/cli/build-origin.mjs get <id> | addendum <id> --said "…" | missing   # what Brett said that started a build
 node framework/cli/rebake.mjs [status|apply <app>]  # apps whose baked src/axf is behind the framework; re-bake one
 node framework/cli/watch-live.mjs targets|list      # Watch live: apps this checkout touches / live previews (axf focus <app> [route] [selector])
 node framework/cli/pending.mjs --steps | --check-steps        # pending builds with their steps; what still needs splitting
@@ -110,6 +113,7 @@ Deploy: pushing to `main` runs `deploy.yml`, which builds `apps/demo` and force-
 - **React/TS port:** the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.
 - `axf init` **bakes** `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.
 - **One builds store (Oct 31 2026):** every build of every profile is one record in `_claude/builds/store.json` (builds@1, owned by the orchestrator; profiles are a field, Pending a status, the queue an order). Every write is versioned (`_claude/builds/journal/`); the old orchestrator/pending/build-queue files are read-only exports. `node framework/cli/builds-store.mjs verify | history <id> | restore <id> <rev>`.
+- **Every build shows what Brett said (Nov 3 2026):** each build record carries `origin` (build-origin@1, `framework/core/build-origin.mjs`): his verbatim words (`said`), when, where (voice/chat/console/code), session/link, who launched it, the brief and later addenda. Every launch puts his exact words in the brief's `## Brett said (verbatim)` block (or `said` on orchestrator add / `pending_change` / Plan Studio); a paraphrase never replaces them. Merges never lose it (store + `_claude/builds/origins.json` sidecar). `node framework/cli/build-origin.mjs get|set|addendum|capture|backfill|missing|block`.
 - **Builds go live to main (Nov 3 2026):** every store write (step, status, note, branch, PR) is pushed to main at once as a status-only `[skip ci]` commit (`framework/cli/builds-live.mjs`, newer-wins merge per build and step), with a line in THREADS.md's Live build log; code still goes through PRs. Sessions start with `builds-live.mjs sync` + `builds-reconcile.mjs --apply` (SessionStart hook) and never trust an export alone. `built` = all steps done, PR not merged; `complete` once merged. Details: `_claude/builds/README.md` → Live on main.
 - Feature status lives in `framework/catalog/status.json`. Build order and completion live in `framework/plan/build-queue.json`, which the MCP tools `build_next` and `build_step` drive. Update both, then run `tracker.mjs`, whenever something lands.
 - **Claude works as an assigned agent (Nov 3 2026):** every Claude session calls `claude_session_start` first and works as the agent Brett assigns (name, persona / voice, `AXF_AGENT`), booking its work on that agent's card with `claude_session_book`; Brett picks in the console pop-up or approves the default on axHub (`apps/console-web/plugins/claude-session`). <!-- axf-plugin:claude-session -->
