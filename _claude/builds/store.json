@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 801,
- "updatedAt": "2026-11-04T15:48:56.377Z",
+ "rev": 802,
+ "updatedAt": "2026-11-04T15:49:26.130Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -79816,7 +79816,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T15:29:38.375Z",
-   "updatedAt": "2026-11-04T15:48:29.147Z",
+   "updatedAt": "2026-11-04T15:49:04.018Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -79850,11 +79850,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-04T15:48:29.147Z",
+     "doneAt": "2026-11-04T15:49:04.018Z",
      "note": "",
-     "rev": 3,
+     "rev": 2,
      "createdAt": "2026-11-04T15:29:38.376Z",
-     "updatedAt": "2026-11-04T15:48:29.560Z"
+     "updatedAt": "2026-11-04T15:49:23.339Z"
     },
     {
      "id": "s2",
@@ -79978,7 +79978,24 @@
    "rev": 4,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-04T15:29:38.375Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw29vtlc07r7ed": "2026-11-04T15:29:38.376Z",
+     "st-mw29vtlc088t0m": "2026-11-04T15:29:38.376Z",
+     "st-mw29vtlc09ldk1": "2026-11-04T15:29:38.376Z",
+     "st-mw29vtlc0aveih": "2026-11-04T15:29:38.376Z",
+     "st-mw29vtlc0bf3g7": "2026-11-04T15:29:38.376Z",
+     "st-mw29vtlc0calga": "2026-11-04T15:29:38.376Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-04T15:29:38.376Z",
    "rearranged": false,
