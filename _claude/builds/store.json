@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 998,
- "updatedAt": "2026-11-04T22:05:28.668Z",
+ "rev": 999,
+ "updatedAt": "2026-11-04T22:07:09.729Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -84178,15 +84178,15 @@
    "title": "Build docs and walkthroughs",
    "category": "Plugin",
    "detail": "Right-click any built step or build (Build manager, Builds, Plan Studio, Codebase changes, Git board) > Create documentation / Create walkthrough video. Docs: Markdown from brief/addenda, report, diff/PR, screens + commands, as a PR through the merge queue, linked in the plan's Docs section. Video: dialog (length, focus notes, viewport, theme, narration/TTS + captions, speed, intro/outro), click-path script approved first, real headless browser recording (walkthrough recorder: Playwright + Piper + ffmpeg) to MP4 attached to the plan. Heavy slot, progress + cancel, VPS data volume. AI deep mode with template fallback. Molly voice commands (forFramework).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/build-docs-walkthroughs",
    "pr": "#346",
    "createdAt": "2026-11-04T21:30:06.088Z",
-   "updatedAt": "2026-11-04T22:04:15.594Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T22:07:07.958Z",
+   "builtAt": "2026-11-04T22:07:07.958Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -84372,12 +84372,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T22:07:07.958Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T21:30:06.118Z",
-     "updatedAt": "2026-11-04T21:30:06.118Z"
+     "updatedAt": "2026-11-04T22:07:08.040Z"
     }
    ],
    "profiles": [
@@ -84388,7 +84388,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
