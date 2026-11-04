@@ -1,15 +1,18 @@
 {
   "widgetTypes": [
     "clock",
-    "counter",
-    "status",
-    "badge",
-    "avatar",
-    "progress",
     "search-bar",
+    "action-button",
+    "logo",
     "label",
+    "status",
+    "counter",
+    "progress",
+    "avatar",
     "link",
-    "theme-switch"
+    "theme-switch",
+    "spacer",
+    "divider"
   ],
   "attachableTypes": [
     "clock",
@@ -288,6 +291,7 @@
     "clock:digital-24h",
     "counter:alerts",
     "counter:approvals",
+    "counter:shipped",
     "divider:rule",
     "label:environment",
     "label:version",
@@ -301,6 +305,7 @@
     "spacer:push",
     "status:ai",
     "status:online",
+    "status:shipped",
     "theme-switch:amberx-day-night",
     "theme-switch:day-night",
     "theme-switch:fresh-day-night"
@@ -541,10 +546,11 @@
   "kinds": {
     "tones": [
       "neutral",
-      "accent",
       "success",
       "warning",
-      "danger"
+      "danger",
+      "accent",
+      "muted"
     ],
     "tone": {
       "7": {
