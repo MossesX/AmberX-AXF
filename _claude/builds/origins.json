@@ -853,6 +853,18 @@
    "from": "brief",
    "addenda": []
   },
+  "land-round-2": {
+   "said": "After lenny-land-all, every remaining PR conflicts with main. Brett agreed: one agent catches them up and lands them, Molly first (commands must reach the console inside Molly).",
+   "at": "2026-11-04T10:43:58.630Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Landin' Lenny",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "layout-repeating-slots": {
    "said": "Many-slots with style (tabs/cards/grid/stacked) + fallback slot; pages declare data sets. Web + Android + fixtures.",
    "at": "2026-10-30",
