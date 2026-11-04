@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T14:27:49.402Z",
+ "updatedAt": "2026-11-04T14:27:59.744Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -7342,16 +7342,21 @@
    "title": "Every employee gets a full agent profile (one roster, job titles, crew + ID cards)",
    "category": "Breakroom > Crew",
    "detail": "One roster: every crew member is an Agent manager agent with a job title (Assistant for the former Agent manager agents). Profile sections persona, role, skills, tools, model, memory, safety, pay, stats, avatar, reports to. Roster adds Marco, Amber, Patches, Gizmo, Polo, Conrad, Chachi, Brownie, Ashes, Jennifer; Molly removed. Crew window rows: collapsible crew card + ID card, working on top. REST + MCP + CLI crew_list/crew_get/crew_update.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "code",
    "pendingId": "",
    "branch": "claude/crew-profiles",
    "pr": "#315",
    "createdAt": "2026-11-04T14:05:31.170Z",
-   "updatedAt": "2026-11-04T14:21:06.045Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-04T14:27:49.859Z",
+   "builtAt": "2026-11-04T14:27:48.768Z",
+   "notes": [
+    {
+     "text": "PR #315 open; UI Review shots pending live console (sandbox can't reach axHub)",
+     "at": "2026-11-04T14:27:49.859Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -7492,8 +7497,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T14:27:48.768Z",
      "note": "",
      "uid": "st-mw26vn4g0c3hcf"
     }

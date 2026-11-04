@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 736,
- "updatedAt": "2026-11-04T14:27:49.402Z",
+ "rev": 737,
+ "updatedAt": "2026-11-04T14:27:59.744Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -73270,16 +73270,21 @@
    "title": "Every employee gets a full agent profile (one roster, job titles, crew + ID cards)",
    "category": "Breakroom > Crew",
    "detail": "One roster: every crew member is an Agent manager agent with a job title (Assistant for the former Agent manager agents). Profile sections persona, role, skills, tools, model, memory, safety, pay, stats, avatar, reports to. Roster adds Marco, Amber, Patches, Gizmo, Polo, Conrad, Chachi, Brownie, Ashes, Jennifer; Molly removed. Crew window rows: collapsible crew card + ID card, working on top. REST + MCP + CLI crew_list/crew_get/crew_update.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "code",
    "pendingId": "",
    "branch": "claude/crew-profiles",
    "pr": "#315",
    "createdAt": "2026-11-04T14:05:31.170Z",
-   "updatedAt": "2026-11-04T14:21:06.045Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-04T14:27:49.859Z",
+   "builtAt": "2026-11-04T14:27:48.768Z",
+   "notes": [
+    {
+     "text": "PR #315 open; UI Review shots pending live console (sandbox can't reach axHub)",
+     "at": "2026-11-04T14:27:49.859Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -73442,12 +73447,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T14:27:48.768Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T14:05:31.171Z",
-     "updatedAt": "2026-11-04T14:05:31.171Z"
+     "updatedAt": "2026-11-04T14:27:48.853Z"
     }
    ],
    "profiles": [
@@ -73458,7 +73463,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
