@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T22:04:29.625Z",
+ "updatedAt": "2026-11-04T22:04:51.623Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -12728,7 +12728,7 @@
   {
    "id": "changes-chat-log",
    "title": "Changes as chat log: Codebase changes entries render as a conversation timeline",
-   "category": "",
+   "category": "Console > Builds",
    "detail": "Expanded Codebase changes entry renders like the Chat viewer: Brett bubbles (verbatim said + addenda), Amber bubble (brief as Markdown, collapsed, session-rules boilerplate hidden), agent bubbles per step/commit/PR, system lines for status; metadata chip row; Classic view toggle; shared component reused in Build manager row expansion.",
    "status": "pending",
    "hidden": false,
@@ -12771,7 +12771,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2nogx5013aol"
+     "uid": "st-mw2nlthg06ptfh"
     },
     {
      "id": "s2",
@@ -12789,7 +12789,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2nogx502u98t"
+     "uid": "st-mw2nlthg07r09v"
     },
     {
      "id": "s3",
@@ -12807,7 +12807,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2nogx5031q15"
+     "uid": "st-mw2nlthg08a1yr"
     },
     {
      "id": "s4",
@@ -12825,7 +12825,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2nogx504m261"
+     "uid": "st-mw2nlthg0968y7"
     },
     {
      "id": "s5",
@@ -12843,7 +12843,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2nogx505be0l"
+     "uid": "st-mw2nlthg0act8j"
     },
     {
      "id": "s6-5",
@@ -12861,7 +12861,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2npekj01q6p6"
+     "uid": "st-mw2nogx5013aol"
     },
     {
      "id": "s7-6",
@@ -12879,7 +12879,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2npekj02p9o2"
+     "uid": "st-mw2nogx502u98t"
     },
     {
      "id": "s8-7",
@@ -12897,7 +12897,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2npekj03ycqb"
+     "uid": "st-mw2nogx5031q15"
     },
     {
      "id": "s9-8",
@@ -12915,7 +12915,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2npekj04387e"
+     "uid": "st-mw2nogx504m261"
     },
     {
      "id": "s10-9",
@@ -12933,7 +12933,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2npekj05cona"
+     "uid": "st-mw2nogx505be0l"
     },
     {
      "id": "s11-10",
@@ -12951,7 +12951,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2nntre01o4vd"
+     "uid": "st-mw2npekj01q6p6"
     },
     {
      "id": "s12-11",
@@ -12969,7 +12969,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2nntre02uy4i"
+     "uid": "st-mw2npekj02p9o2"
     },
     {
      "id": "s13-12",
@@ -12987,7 +12987,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2nntre03jk7h"
+     "uid": "st-mw2npekj03ycqb"
     },
     {
      "id": "s14-13",
@@ -13005,10 +13005,100 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2nntre041ymd"
+     "uid": "st-mw2npekj04387e"
     },
     {
      "id": "s15-14",
+     "text": "Type-check, tests, README, phone + desktop shots to UI Review Screenshots, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2npekj05cona"
+    },
+    {
+     "id": "s16-15",
+     "text": "Timeline core: turn a change entry (+ build origin) into chat messages (brett/amber/agent/system), split session-rules boilerplate out of the brief; unit tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2nntre01o4vd"
+    },
+    {
+     "id": "s17-16",
+     "text": "Shared ChatLog component built on the Chat viewer's message components (export them), Markdown brief collapsed with Show full brief, Session rules toggle",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2nntre02uy4i"
+    },
+    {
+     "id": "s18-17",
+     "text": "Codebase changes expanded entry: chip header + chat log, Classic view toggle (saved setting)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2nntre03jk7h"
+    },
+    {
+     "id": "s19-18",
+     "text": "Build manager row expansion uses the same component",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2nntre041ymd"
+    },
+    {
+     "id": "s20-19",
      "text": "Type-check, tests, README, phone + desktop shots to UI Review Screenshots, PR",
      "model": "Opus",
      "why": "",
@@ -13073,7 +13163,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2ny6h301hcip"
+     "uid": "st-mw2nzss201qkv6"
     },
     {
      "id": "s2",
@@ -13091,7 +13181,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2ny6h30276kl"
+     "uid": "st-mw2nzss202n6nr"
     },
     {
      "id": "s3",
@@ -13109,7 +13199,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2ny6h303lrwg"
+     "uid": "st-mw2nzss203kk62"
     },
     {
      "id": "s4",
@@ -13127,10 +13217,190 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2ny6h304c8mi"
+     "uid": "st-mw2nzss204wzgm"
     },
     {
      "id": "s5",
+     "text": "Switcher everywhere (toolbar, View menu, right-click, commands), settings, docs, shots, report, PR to queue",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2nzss20516u7"
+    },
+    {
+     "id": "s6",
+     "text": "Shared collapsible-section renderer (framework/react FoldSections + parser, tests)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2nzss206k2ot"
+    },
+    {
+     "id": "s7",
+     "text": "Notes server: AmberX notes source through control@1 + view settings",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2nzss207iyio"
+    },
+    {
+     "id": "s8",
+     "text": "Classic view: fold sections, expand/collapse all, fold memory, search hits",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2nzss2083xfh"
+    },
+    {
+     "id": "s9",
+     "text": "Grid view: DataGrid rows, sort/filter/hide, expandable rows, actions, phone cards",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2nzss209y9pq"
+    },
+    {
+     "id": "s10",
+     "text": "Switcher everywhere (toolbar, View menu, right-click, commands), settings, docs, shots, report, PR to queue",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2nzss20a320q"
+    },
+    {
+     "id": "s11-10",
+     "text": "Shared collapsible-section renderer (framework/react FoldSections + parser, tests)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2ny6h301hcip"
+    },
+    {
+     "id": "s12-11",
+     "text": "Notes server: AmberX notes source through control@1 + view settings",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2ny6h30276kl"
+    },
+    {
+     "id": "s13-12",
+     "text": "Classic view: fold sections, expand/collapse all, fold memory, search hits",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2ny6h303lrwg"
+    },
+    {
+     "id": "s14-13",
+     "text": "Grid view: DataGrid rows, sort/filter/hide, expandable rows, actions, phone cards",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2ny6h304c8mi"
+    },
+    {
+     "id": "s15-14",
      "text": "Switcher everywhere (toolbar, View menu, right-click, commands), settings, docs, shots, report, PR to queue",
      "model": "Opus",
      "why": "",

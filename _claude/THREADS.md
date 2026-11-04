@@ -698,8 +698,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 15:32 UTC · `gizmo-companion` note (current) · foreign-write
-- 2026-11-04 15:32 UTC · `expenses-port` note (current) · foreign-write
 - 2026-11-04 15:32 UTC · `urgent-land-gizmo-chat` → complete, note (current) · foreign-write
 - 2026-11-04 15:32 UTC · `apps-control-surface` s1 done (current) · foreign-write
 - 2026-11-04 15:32 UTC · `tab-group-assets` added (6 steps) (current) · foreign-write
@@ -1098,6 +1096,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 22:03 UTC · `build-docs-walkthroughs` s6 done (angel) · orchestrator
 - 2026-11-04 22:03 UTC · `build-docs-walkthroughs` s7 done (angel) · orchestrator
 - 2026-11-04 22:04 UTC · `build-docs-walkthroughs` branch claude/build-docs-walkthroughs, PR #346 (angel) · builds-live
+- 2026-11-04 21:53 UTC · `changes-chat-log` added (5 steps) (current) · orchestrator
+- 2026-11-04 22:04 UTC · `notes-views` added (10 steps) (current) · foreign-write
 
 ## Token passes (log)
 
