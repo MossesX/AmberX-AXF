@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 947,
- "updatedAt": "2026-11-04T20:45:27.531Z",
+ "rev": 948,
+ "updatedAt": "2026-11-04T20:45:55.028Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -83222,15 +83222,19 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/molly-banner-match",
    "pr": "",
    "createdAt": "2026-11-04T17:18:47.970Z",
-   "updatedAt": "2026-11-04T20:41:55.871Z",
+   "updatedAt": "2026-11-04T20:43:52.913Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: branch claude/molly-banner-match (no PR yet)",
      "at": "2026-11-04T20:41:55.871Z"
+    },
+    {
+     "text": "Reconciler: branch claude/molly-banner-match (no PR yet)",
+     "at": "2026-11-04T20:43:52.913Z"
     }
    ],
    "approvals": [],
@@ -83367,7 +83371,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -83397,12 +83401,12 @@
   {
    "id": "drag-to-tab",
    "title": "Drag to tab",
-   "category": "",
+   "category": "Feature",
    "detail": "Drag a nav item (any app's nav menu) or a tab onto any tab group / pane edge / empty space: opens it as a new tab there, splits a pane (dock@1), or floats it. Touch: long-press then drag. Undo after every drop. Builds on molly-multi-instance-tabs (#328) and tab-group-assets (#327).",
    "status": "pending",
    "hidden": false,
    "source": "console",
-   "pendingId": "drag-to-tab",
+   "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T20:44:51.127Z",
@@ -83426,7 +83430,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mw2l5wm101cpgb",
+     "uid": "st-mw2l4y4p0625v2",
      "title": "",
      "text": "Base: branch on #328 + #327 merged; read windows@1 / dock@1 / TabGroup drag code",
      "model": "Opus",
@@ -83444,11 +83448,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T20:44:39.946Z",
-     "updatedAt": "2026-11-04T20:45:24.606Z"
+     "updatedAt": "2026-11-04T20:44:39.946Z"
     },
     {
      "id": "s2",
-     "uid": "st-mw2l5wm1022ig7",
+     "uid": "st-mw2l4y4p07i6tt",
      "title": "",
      "text": "Engine: drag payload (nav item / tab) + drop resolution (strip index, pane edge split, float) in dock@1 with fixture cases",
      "model": "Opus",
@@ -83466,11 +83470,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T20:44:39.946Z",
-     "updatedAt": "2026-11-04T20:45:24.606Z"
+     "updatedAt": "2026-11-04T20:44:39.946Z"
     },
     {
      "id": "s3",
-     "uid": "st-mw2l5wm103hb5h",
+     "uid": "st-mw2l4y4p08fmjz",
      "title": "",
      "text": "React: shared draggable nav items + drop highlights on tab strips and pane edges; float on drop outside",
      "model": "Opus",
@@ -83488,11 +83492,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T20:44:39.946Z",
-     "updatedAt": "2026-11-04T20:45:24.606Z"
+     "updatedAt": "2026-11-04T20:44:39.946Z"
     },
     {
      "id": "s4",
-     "uid": "st-mw2l5wm1041r67",
+     "uid": "st-mw2l4y4p09ywm1",
      "title": "",
      "text": "Touch long-press drag, undo toast after every drop; wire Molly, console and the shared nav",
      "model": "Opus",
@@ -83510,11 +83514,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T20:44:39.946Z",
-     "updatedAt": "2026-11-04T20:45:24.606Z"
+     "updatedAt": "2026-11-04T20:44:39.946Z"
     },
     {
      "id": "s5",
-     "uid": "st-mw2l5wm1058pxe",
+     "uid": "st-mw2l4y4q0afzff",
      "title": "",
      "text": "Tests, README, UI Review shots, report, PR through the merge queue",
      "model": "Opus",
@@ -83532,39 +83536,25 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T20:44:39.946Z",
-     "updatedAt": "2026-11-04T20:45:24.606Z"
+     "updatedAt": "2026-11-04T20:44:39.946Z"
     }
    ],
    "profiles": [
+    "angel",
     "current"
    ],
    "order": {
+    "angel": 22,
     "current": 53
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-04T20:44:51.127Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mw2l5wm101cpgb": "2026-11-04T20:44:39.946Z",
-     "st-mw2l5wm1022ig7": "2026-11-04T20:44:39.946Z",
-     "st-mw2l5wm103hb5h": "2026-11-04T20:44:39.946Z",
-     "st-mw2l5wm1041r67": "2026-11-04T20:44:39.946Z",
-     "st-mw2l5wm1058pxe": "2026-11-04T20:44:39.946Z"
-    }
-   },
+   "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-04T20:45:24.606Z",
+   "defaultAt": "2026-11-04T20:44:39.946Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

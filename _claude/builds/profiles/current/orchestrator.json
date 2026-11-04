@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T20:45:27.531Z",
+ "updatedAt": "2026-11-04T20:45:55.028Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -11297,15 +11297,19 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/molly-banner-match",
    "pr": "",
    "createdAt": "2026-11-04T17:18:47.970Z",
-   "updatedAt": "2026-11-04T20:41:55.871Z",
+   "updatedAt": "2026-11-04T20:43:52.913Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: branch claude/molly-banner-match (no PR yet)",
      "at": "2026-11-04T20:41:55.871Z"
+    },
+    {
+     "text": "Reconciler: branch claude/molly-banner-match (no PR yet)",
+     "at": "2026-11-04T20:43:52.913Z"
     }
    ],
    "approvals": [],
@@ -12356,12 +12360,12 @@
   {
    "id": "drag-to-tab",
    "title": "Drag to tab",
-   "category": "",
+   "category": "Feature",
    "detail": "Drag a nav item (any app's nav menu) or a tab onto any tab group / pane edge / empty space: opens it as a new tab there, splits a pane (dock@1), or floats it. Touch: long-press then drag. Undo after every drop. Builds on molly-multi-instance-tabs (#328) and tab-group-assets (#327).",
    "status": "pending",
    "hidden": false,
    "source": "console",
-   "pendingId": "drag-to-tab",
+   "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T20:44:51.127Z",
@@ -12399,7 +12403,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2l5wm101cpgb"
+     "uid": "st-mw2l4y4p0625v2"
     },
     {
      "id": "s2",
@@ -12417,7 +12421,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2l5wm1022ig7"
+     "uid": "st-mw2l4y4p07i6tt"
     },
     {
      "id": "s3",
@@ -12435,7 +12439,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2l5wm103hb5h"
+     "uid": "st-mw2l4y4p08fmjz"
     },
     {
      "id": "s4",
@@ -12453,7 +12457,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2l5wm1041r67"
+     "uid": "st-mw2l4y4p09ywm1"
     },
     {
      "id": "s5",
@@ -12471,7 +12475,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2l5wm1058pxe"
+     "uid": "st-mw2l4y4q0afzff"
     }
    ]
   }
