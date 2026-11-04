@@ -912,6 +912,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 10:54 UTC · `terminal-no-focus` s2 done (current) · foreign-write
 - 2026-11-04 10:55 UTC · `terminal-no-focus` s3 done, → complete (current) · orchestrator
 - 2026-11-04 10:55 UTC · `terminal-no-focus` → built, PR #305 (current) · builds-live
+- 2026-11-04 11:01 UTC · `terminal-no-focus` added (3 steps) (current) · foreign-write
 
 ## Token passes (log)
 
