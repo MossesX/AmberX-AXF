@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // rebuild-shots — screenshots of the web Dev Console for rebuild logs (rebuild-log rule, Oct 20 2026).
 //
-//   node framework/cli/rebuild-shots.mjs --repo <checkout> --out <dir> --shots <shots.json> [--label before|after] [--web-port N] [--env K=V …] [--nav-timeout ms]
+//   node framework/cli/rebuild-shots.mjs --repo <checkout> --out <dir> --shots <shots.json> [--label before|after] [--web-port N] [--env K=V …] [--nav-timeout ms] [--start-timeout ms]
 //
 // --web-port pins Vite's port (an app that must be on a known origin, e.g. allow-listed on a local axHub); --env adds
 // variables for the API and Vite (AXF_APPEARANCE_HUB=http://127.0.0.1:18080 points the console at a local hub). A shot
@@ -58,8 +58,9 @@ process.on('exit', stop); process.on('SIGINT', () => { stop(); process.exit(130)
 
 const api = run('python3', ['-m', 'uvicorn', 'main:app', '--host', '127.0.0.1', '--port', String(apiPort)], join(web, 'server'));
 const vite = run('npx', ['vite', '--host', '127.0.0.1', '--port', String(webPort), '--strictPort'], web);
-try { await waitFor(`http://127.0.0.1:${apiPort}/api/health`); } catch (e) { console.error(api.log()); throw e; }
-try { await waitFor(`http://127.0.0.1:${webPort}/`); } catch (e) { console.error(vite.log()); throw e; }
+const startMs = Number(args['start-timeout']) || 90000; // a loaded VPS can need minutes to import the console
+try { await waitFor(`http://127.0.0.1:${apiPort}/api/health`, startMs); } catch (e) { console.error(api.log()); throw e; }
+try { await waitFor(`http://127.0.0.1:${webPort}/`, startMs); } catch (e) { console.error(vite.log()); throw e; }
 
 const browser = await playwright.chromium.launch();
 const saved = [];
