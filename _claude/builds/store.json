@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 957,
- "updatedAt": "2026-11-04T21:05:15.683Z",
+ "rev": 958,
+ "updatedAt": "2026-11-04T21:05:34.284Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -83587,14 +83587,14 @@
    "title": "Build optimizer: repack waiting steps into fewer builds (Basic + Deep), confirm dialog, drag steps between builds",
    "category": "Feature",
    "detail": "Optimize builds (Build manager toolbar, right-click, voice/MCP orchestrator.optimize, owner-only on the primary). Deterministic planner (Basic, zero tokens) shared with fable-packager's build-package@1 core; Deep (AI) mode when an AI connection is there. Confirm dialog with the new package of builds, every step, reasoning, rename/drag/untick, Apply/Cancel; apply = one transaction (new package builds, emptied builds archived, one undo). Drag steps between builds anywhere. Settings + presets + filters, notifications, schedule.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T20:46:33.439Z",
-   "updatedAt": "2026-11-04T20:46:53.855Z",
+   "updatedAt": "2026-11-04T21:05:24.448Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -83663,12 +83663,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:05:13.825Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T20:46:33.441Z",
-     "updatedAt": "2026-11-04T20:46:33.441Z"
+     "updatedAt": "2026-11-04T21:05:13.969Z"
     },
     {
      "id": "s2",
@@ -83685,12 +83685,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:05:15.558Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T20:46:33.441Z",
-     "updatedAt": "2026-11-04T20:46:33.441Z"
+     "updatedAt": "2026-11-04T21:05:15.620Z"
     },
     {
      "id": "s3",
@@ -83707,12 +83707,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:05:17.095Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T20:46:33.441Z",
-     "updatedAt": "2026-11-04T20:46:33.441Z"
+     "updatedAt": "2026-11-04T21:05:17.197Z"
     },
     {
      "id": "s4",
@@ -83729,12 +83729,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:05:18.486Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T20:46:33.441Z",
-     "updatedAt": "2026-11-04T20:46:33.441Z"
+     "updatedAt": "2026-11-04T21:05:18.548Z"
     },
     {
      "id": "s5",
@@ -83751,12 +83751,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:05:19.855Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T20:46:33.441Z",
-     "updatedAt": "2026-11-04T20:46:33.441Z"
+     "updatedAt": "2026-11-04T21:05:19.941Z"
     },
     {
      "id": "s6",
@@ -83773,12 +83773,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:05:21.460Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T20:46:33.441Z",
-     "updatedAt": "2026-11-04T20:46:33.441Z"
+     "updatedAt": "2026-11-04T21:05:21.556Z"
     },
     {
      "id": "s7",
@@ -83795,12 +83795,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:05:23.023Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T20:46:33.441Z",
-     "updatedAt": "2026-11-04T20:46:33.441Z"
+     "updatedAt": "2026-11-04T21:05:23.090Z"
     },
     {
      "id": "s8",
@@ -83817,12 +83817,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:05:24.448Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T20:46:33.441Z",
-     "updatedAt": "2026-11-04T20:46:33.441Z"
+     "updatedAt": "2026-11-04T21:05:24.527Z"
     },
     {
      "id": "s9",
@@ -83855,7 +83855,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

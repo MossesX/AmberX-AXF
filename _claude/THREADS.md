@@ -698,14 +698,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 15:01 UTC · `apps-control-surface` note (current) · orchestrator
-- 2026-11-04 15:01 UTC · `apps-control-surface` branch claude/apps-control-surface (current) · builds-live
-- 2026-11-04 15:01 UTC · `apps-control-surface` added (5 steps) (current) · foreign-write
-- 2026-11-04 15:05 UTC · `plugin-lazy-load` → complete, note (current) · foreign-write
-- 2026-11-04 15:05 UTC · `browser-automation` note (current) · foreign-write
-- 2026-11-04 15:05 UTC · `profile-switcher-widget` note (current) · foreign-write
-- 2026-11-04 15:05 UTC · `urgent-land-lazy-loader` note (current) · foreign-write
-- 2026-11-04 15:05 UTC · `crew-profiles` s6 done, → complete, note (current) · foreign-write
 - 2026-11-04 15:05 UTC · `urgent-land-gizmo-chat` s3 done (current) · foreign-write
 - 2026-11-04 15:05 UTC · `console-wake-finish` s2 done, s4 done (current) · foreign-write
 - 2026-11-04 15:05 UTC · `profile-lists-home-card` s4 done, → complete (current) · foreign-write
@@ -1098,6 +1090,14 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 21:01 UTC · `molly-banner-match` note (current) · orchestrator
 - 2026-11-04 21:05 UTC · `molly-banner-match` s1 done, s4 done, s5 done, note (current) · foreign-write
 - 2026-11-04 21:05 UTC · `drag-to-tab` s1 done, s2 done (angel, current) · foreign-write
+- 2026-11-04 21:05 UTC · `build-optimizer` s1 done, → running (current) · orchestrator
+- 2026-11-04 21:05 UTC · `build-optimizer` s2 done (current) · orchestrator
+- 2026-11-04 21:05 UTC · `build-optimizer` s3 done (current) · orchestrator
+- 2026-11-04 21:05 UTC · `build-optimizer` s4 done (current) · orchestrator
+- 2026-11-04 21:05 UTC · `build-optimizer` s5 done (current) · orchestrator
+- 2026-11-04 21:05 UTC · `build-optimizer` s6 done (current) · orchestrator
+- 2026-11-04 21:05 UTC · `build-optimizer` s7 done (current) · orchestrator
+- 2026-11-04 21:05 UTC · `build-optimizer` s8 done (current) · orchestrator
 
 ## Token passes (log)
 
