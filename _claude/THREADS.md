@@ -708,115 +708,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:38 UTC · `batch-manager` note (angel) · orchestrator
-- 2026-11-04 14:38 UTC · `grid-sort-filter` note (angel) · orchestrator
-- 2026-11-04 14:38 UTC · `grid-sort-filter` note (angel) · orchestrator
-- 2026-11-04 14:38 UTC · `grid-sort-filter` note (angel) · orchestrator
-- 2026-11-04 14:38 UTC · `plugin-cleanup` note (angel) · orchestrator
-- 2026-11-04 14:38 UTC · `transcription-engine` note (angel) · orchestrator
-- 2026-11-04 14:38 UTC · `toolbar-tap-confirm` → running, note (urgent) · orchestrator
-- 2026-11-04 14:38 UTC · `browser-automation` → running, note (current) · orchestrator
-- 2026-11-04 14:38 UTC · `browser-automation` note (current) · foreign-write
-- 2026-11-04 14:38 UTC · `profile-filter-tables` added (4 steps) (current) · orchestrator
-- 2026-11-04 14:38 UTC · `profile-switcher-widget` note (current) · orchestrator
-- 2026-11-04 14:38 UTC · `profile-switcher-widget` → archived (current) · orchestrator
-- 2026-11-04 14:38 UTC · `profile-lists-home-card` s4 done, → built (current) · orchestrator
-- 2026-11-04 14:38 UTC · `profile-switcher-widget` note (current) · foreign-write
-- 2026-11-04 14:38 UTC · `profile-lists-home-card` s4 done, → complete (current) · foreign-write
-- 2026-11-04 14:38 UTC · `profile-filter-tables` added (4 steps) (current) · foreign-write
-- 2026-11-04 14:39 UTC · `fable-no-approval` added (3 steps) (current) · fable-no-approval
-- 2026-11-04 14:39 UTC · `fable-review-nov3` added (7 steps) (current) · fable-no-approval
-- 2026-11-04 14:39 UTC · `fable-no-approval` s1 done, → running (current) · orchestrator
-- 2026-11-04 14:39 UTC · `fable-no-approval` s2 done (current) · orchestrator
-- 2026-11-04 14:39 UTC · `fable-no-approval` s2 done (current) · foreign-write
-- 2026-11-04 14:40 UTC · `toolbar-tap-confirm` → complete, note (urgent) · reconciler
-- 2026-11-04 14:43 UTC · `fable-no-approval` branch claude/fable-no-approval, PR #319 (current) · builds-live
-- 2026-11-04 14:43 UTC · `fable-no-approval` s3 done, → built (current) · orchestrator
-- 2026-11-04 14:43 UTC · `fable-no-approval` s3 done, → complete (current) · foreign-write
-- 2026-11-04 14:43 UTC · `app-voice-commands` added (6 steps) (current) · orchestrator
-- 2026-11-04 14:43 UTC · `app-voice-commands` note (current) · orchestrator
-- 2026-11-04 14:43 UTC · `app-voice-commands` → running (current) · orchestrator
-- 2026-11-04 14:43 UTC · `app-voice-commands` added (6 steps) (current) · foreign-write
-- 2026-11-04 14:43 UTC · `app-voice-commands` note (current) · foreign-write
-- 2026-11-04 14:48 UTC · `browser-automation` note (current) · foreign-write
-- 2026-11-04 14:48 UTC · `profile-switcher-widget` note (current) · foreign-write
-- 2026-11-04 14:48 UTC · `profile-lists-home-card` s4 done, → complete (current) · foreign-write
-- 2026-11-04 14:48 UTC · `profile-filter-tables` added (12 steps) (current) · foreign-write
-- 2026-11-04 14:48 UTC · `fable-no-approval` added (3 steps) (current) · foreign-write
-- 2026-11-04 14:48 UTC · `fable-review-nov3` added (7 steps) (current) · foreign-write
-- 2026-11-04 14:48 UTC · `app-voice-commands` added (6 steps) (current) · foreign-write
-- 2026-11-04 14:48 UTC · `merge-queue` s1 done (current) · orchestrator
-- 2026-11-04 14:48 UTC · `merge-queue` s2 done (current) · orchestrator
-- 2026-11-04 14:48 UTC · `merge-queue` s3 done (current) · orchestrator
-- 2026-11-04 14:48 UTC · `merge-queue` s4 done (current) · orchestrator
-- 2026-11-04 14:48 UTC · `merge-queue` s5 done (current) · orchestrator
-- 2026-11-04 14:48 UTC · `merge-queue` s1 done, s2 done, s3 done (current) · foreign-write
-- 2026-11-04 14:48 UTC · `merge-queue` s4 done, s5 done (current) · foreign-write
-- 2026-11-04 15:00 UTC · `browser-automation` → pending, note (current) · reconciler
-- 2026-11-04 15:00 UTC · `apps-control-surface` added (5 steps) (current) · orchestrator
-- 2026-11-04 15:01 UTC · `apps-control-surface` → running (current) · orchestrator
-- 2026-11-04 15:01 UTC · `apps-control-surface` note (current) · orchestrator
-- 2026-11-04 15:01 UTC · `apps-control-surface` branch claude/apps-control-surface (current) · builds-live
-- 2026-11-04 15:01 UTC · `apps-control-surface` added (5 steps) (current) · foreign-write
-- 2026-11-04 15:05 UTC · `plugin-lazy-load` → complete, note (current) · foreign-write
-- 2026-11-04 15:05 UTC · `browser-automation` note (current) · foreign-write
-- 2026-11-04 15:05 UTC · `profile-switcher-widget` note (current) · foreign-write
-- 2026-11-04 15:05 UTC · `urgent-land-lazy-loader` note (current) · foreign-write
-- 2026-11-04 15:05 UTC · `crew-profiles` s6 done, → complete, note (current) · foreign-write
-- 2026-11-04 15:05 UTC · `urgent-land-gizmo-chat` s3 done (current) · foreign-write
-- 2026-11-04 15:05 UTC · `console-wake-finish` s2 done, s4 done (current) · foreign-write
-- 2026-11-04 15:05 UTC · `profile-lists-home-card` s4 done, → complete (current) · foreign-write
-- 2026-11-04 15:05 UTC · `merge-queue` added (6 steps) (current) · foreign-write
-- 2026-11-04 15:05 UTC · `profile-filter-tables` added (24 steps) (current) · foreign-write
-- 2026-11-04 15:05 UTC · `fable-no-approval` added (3 steps) (current) · foreign-write
-- 2026-11-04 15:05 UTC · `fable-review-nov3` added (7 steps) (current) · foreign-write
-- 2026-11-04 15:05 UTC · `app-voice-commands` added (6 steps) (current) · foreign-write
-- 2026-11-04 15:05 UTC · `apps-control-surface` added (5 steps) (current) · foreign-write
-- 2026-11-04 15:06 UTC · `urgent-land-gizmo-chat` note (current) · foreign-write
-- 2026-11-04 15:06 UTC · `console-wake-finish` s5 done, → complete (current) · foreign-write
-- 2026-11-04 15:06 UTC · `console-wake-finish` note (current) · foreign-write
-- 2026-11-04 15:06 UTC · `browser-automation` note (current) · foreign-write
-- 2026-11-04 15:06 UTC · `profile-switcher-widget` note (current) · foreign-write
-- 2026-11-04 15:06 UTC · `profile-lists-home-card` s4 done, → complete (current) · foreign-write
-- 2026-11-04 15:06 UTC · `merge-queue` added (6 steps) (current) · foreign-write
-- 2026-11-04 15:06 UTC · `profile-filter-tables` added (48 steps) (current) · foreign-write
-- 2026-11-04 15:06 UTC · `fable-no-approval` added (3 steps) (current) · foreign-write
-- 2026-11-04 15:06 UTC · `fable-review-nov3` added (7 steps) (current) · foreign-write
-- 2026-11-04 15:06 UTC · `app-voice-commands` added (6 steps) (current) · foreign-write
-- 2026-11-04 15:06 UTC · `apps-control-surface` added (5 steps) (current) · foreign-write
-- 2026-11-04 15:06 UTC · `console-wake-finish` s5 done, → built (current) · orchestrator
-- 2026-11-04 15:06 UTC · `console-wake-finish` note (current) · orchestrator
-- 2026-11-04 15:08 UTC · `urgent-land-gizmo-chat` note (current) · foreign-write
-- 2026-11-04 15:08 UTC · `console-wake-finish` s5 done, → complete, note (current) · foreign-write
-- 2026-11-04 15:08 UTC · `apps-control-surface` added (5 steps) (current) · foreign-write
-- 2026-11-04 15:08 UTC · `merge-queue` PR #320 (current) · builds-live
-- 2026-11-04 15:08 UTC · `merge-queue` s6 done, → complete (current) · foreign-write
-- 2026-11-04 15:08 UTC · `merge-queue` s6 done, → built (current) · orchestrator
-- 2026-11-04 15:09 UTC · `urgent-land-gizmo-chat` note (current) · foreign-write
-- 2026-11-04 15:09 UTC · `console-wake-finish` s5 done, → complete, note (current) · foreign-write
-- 2026-11-04 15:09 UTC · `merge-queue` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, → complete (current) · foreign-write
-- 2026-11-04 15:09 UTC · `apps-control-surface` added (5 steps) (current) · foreign-write
-- 2026-11-04 15:09 UTC · `app-voice-commands` s1 done, note (current) · foreign-write
-- 2026-11-04 15:09 UTC · `app-voice-commands` s1 done (current) · orchestrator
-- 2026-11-04 15:09 UTC · `app-voice-commands` note (current) · orchestrator
-- 2026-11-04 15:11 UTC · `urgent-land-gizmo-chat` note (current) · foreign-write
-- 2026-11-04 15:11 UTC · `console-wake-finish` s5 done, → complete, note (current) · foreign-write
-- 2026-11-04 15:11 UTC · `merge-queue` s6 done, → complete (current) · foreign-write
-- 2026-11-04 15:11 UTC · `app-voice-commands` s1 done, note (current) · foreign-write
-- 2026-11-04 15:11 UTC · `apps-control-surface` s1 done (current) · orchestrator
-- 2026-11-04 15:11 UTC · `apps-control-surface` s1 done (current) · foreign-write
-- 2026-11-04 15:20 UTC · `expenses-port` → complete, merged, note (current) · reconciler
-- 2026-11-04 15:05 UTC · `urgent-land-gizmo-chat` note (current) · orchestrator
-- 2026-11-04 15:24 UTC · `expenses-port` note (current) · foreign-write
-- 2026-11-04 15:24 UTC · `urgent-land-gizmo-chat` merged (current) · builds-live
-- 2026-11-04 15:25 UTC · `gizmo-companion` note (current) · foreign-write
-- 2026-11-04 15:25 UTC · `urgent-land-gizmo-chat` note (current) · foreign-write
-- 2026-11-04 15:24 UTC · `gizmo-companion` merged (current) · builds-live
-- 2026-11-04 15:24 UTC · `gizmo-companion` → running, note (current) · orchestrator
-- 2026-11-04 15:25 UTC · `gizmo-companion` merged, note (current) · reconciler
-- 2026-11-04 15:25 UTC · `urgent-land-gizmo-chat` merged, note (current) · reconciler
-- 2026-11-04 15:29 UTC · `urgent-land-gizmo-chat` → complete, note (current) · foreign-write
-- 2026-11-04 15:29 UTC · `tab-group-assets` added (6 steps) (current) · orchestrator
 - 2026-11-04 15:29 UTC · `tab-group-assets` → running (current) · orchestrator
 - 2026-11-04 15:29 UTC · `gizmo-companion` note (current) · foreign-write
 - 2026-11-04 15:29 UTC · `tab-group-assets` added (6 steps) (current) · foreign-write
@@ -1108,6 +999,115 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 19:59 UTC · `handoff-2` s11 done, → built (current) · orchestrator
 - 2026-11-04 19:59 UTC · `handoff-2` note (current) · orchestrator
 - 2026-11-04 20:19 UTC · `land-merge-queue-first` → complete, note (urgent) · reconciler
+- 2026-11-04 20:25 UTC · `app-voice-commands` note (current) · orchestrator
+- 2026-11-04 20:29 UTC · `app-voice-commands` note (current) · foreign-write
+- 2026-11-04 20:17 UTC · `land-merge-queue-first` → complete, note (urgent) · reconciler
+- 2026-11-04 20:35 UTC · `app-voice-commands` note (current) · foreign-write
+- 2026-11-04 20:35 UTC · `grid-column-hiding` s12-11 done, → complete (current) · foreign-write
+- 2026-11-04 20:35 UTC · `settings-placement-everywhere` note (current) · orchestrator
+- 2026-11-04 20:40 UTC · `urgent-console-perf` merged, note (urgent) · reconciler
+- 2026-11-04 20:41 UTC · `molly-banner-match` added (5 steps) (current) · builds-live
+- 2026-11-04 20:42 UTC · `molly-banner-match` note (current) · foreign-write
+- 2026-11-04 20:42 UTC · `urgent-console-perf` s5 done, → complete (urgent) · orchestrator
+- 2026-11-04 20:45 UTC · `drag-to-tab` added (5 steps) (current) · foreign-write
+- 2026-11-04 20:43 UTC · `molly-banner-match` branch claude/molly-banner-match, note (current) · reconciler
+- 2026-11-04 20:44 UTC · `drag-to-tab` added (5 steps) (angel) · orchestrator
+- 2026-11-04 20:44 UTC · `drag-to-tab` removed (angel) · orchestrator
+- 2026-11-04 20:44 UTC · `molly-banner-match` branch claude/molly-banner-match, note (current) · reconciler
+- 2026-11-04 20:46 UTC · `build-optimizer` added (9 steps) (current) · orchestrator
+- 2026-11-04 20:50 UTC · `plugin-settings-placement` note (current) · foreign-write
+- 2026-11-04 20:50 UTC · `land-round-2` note (current) · foreign-write
+- 2026-11-04 20:50 UTC · `merge-queue` note (current) · foreign-write
+- 2026-11-04 20:50 UTC · `fable-review-nov3` note (current) · foreign-write
+- 2026-11-04 20:50 UTC · `app-voice-commands` s6 done, → complete, note (current) · foreign-write
+- 2026-11-04 20:50 UTC · `tab-group-assets` note (current) · foreign-write
+- 2026-11-04 20:50 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, → complete, note (current) · foreign-write
+- 2026-11-04 20:50 UTC · `live-sessions-plugin` added (6 steps) (current) · foreign-write
+- 2026-11-04 20:50 UTC · `molly-banner-match` added (5 steps) (current) · foreign-write
+- 2026-11-04 20:50 UTC · `model-thinking-audit` added (8 steps) (current) · foreign-write
+- 2026-11-04 20:50 UTC · `build-todo-sync` added (7 steps) (current) · foreign-write
+- 2026-11-04 20:50 UTC · `handoff-2` added (11 steps) (current) · foreign-write
+- 2026-11-04 20:50 UTC · `fable-packager` added (5 steps) (current) · foreign-write
+- 2026-11-04 20:50 UTC · `grid-column-hiding` added (6 steps) (current) · foreign-write
+- 2026-11-04 20:50 UTC · `drag-to-tab` added (5 steps) (current) · foreign-write
+- 2026-11-04 20:50 UTC · `build-optimizer` added (9 steps) (current) · foreign-write
+- 2026-11-04 20:50 UTC · `drag-to-tab` s1 done, → running (current) · orchestrator
+- 2026-11-04 20:53 UTC · `drag-to-tab` s2 done (current) · orchestrator
+- 2026-11-04 20:41 UTC · `molly-banner-match` branch claude/molly-banner-match, note (current) · reconciler
+- 2026-11-04 21:00 UTC · `molly-banner-match` note (current) · foreign-write
+- 2026-11-04 21:00 UTC · `drag-to-tab` added (5 steps) (current) · foreign-write
+- 2026-11-04 21:00 UTC · `build-optimizer` added (9 steps) (current) · foreign-write
+- 2026-11-04 21:01 UTC · `molly-banner-match` branch claude/molly-banner-match-r2, PR #341 (current) · builds-live
+- 2026-11-04 21:01 UTC · `molly-banner-match` s1 done, → running (current) · orchestrator
+- 2026-11-04 21:01 UTC · `molly-banner-match` s2 done (current) · orchestrator
+- 2026-11-04 21:01 UTC · `molly-banner-match` s3 done (current) · orchestrator
+- 2026-11-04 21:01 UTC · `molly-banner-match` s4 done (current) · orchestrator
+- 2026-11-04 21:01 UTC · `molly-banner-match` s5 done (current) · orchestrator
+- 2026-11-04 21:01 UTC · `molly-banner-match` note (current) · orchestrator
+- 2026-11-04 21:05 UTC · `molly-banner-match` s1 done, s4 done, s5 done, note (current) · foreign-write
+- 2026-11-04 21:05 UTC · `drag-to-tab` s1 done, s2 done (angel, current) · foreign-write
+- 2026-11-04 21:05 UTC · `build-optimizer` s1 done, → running (current) · orchestrator
+- 2026-11-04 21:05 UTC · `build-optimizer` s2 done (current) · orchestrator
+- 2026-11-04 21:05 UTC · `build-optimizer` s3 done (current) · orchestrator
+- 2026-11-04 21:05 UTC · `build-optimizer` s4 done (current) · orchestrator
+- 2026-11-04 21:05 UTC · `build-optimizer` s5 done (current) · orchestrator
+- 2026-11-04 21:05 UTC · `build-optimizer` s6 done (current) · orchestrator
+- 2026-11-04 21:05 UTC · `build-optimizer` s7 done (current) · orchestrator
+- 2026-11-04 21:05 UTC · `build-optimizer` s8 done (current) · orchestrator
+- 2026-11-04 21:04 UTC · `ui-review-alarm` added (10 steps) (angel) · claude
+- 2026-11-04 21:04 UTC · `ui-review-alarm` branch claude/ui-review-alarm (angel) · builds-live
+- 2026-11-04 21:08 UTC · `build-optimizer` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done (current) · foreign-write
+- 2026-11-04 21:12 UTC · `ui-review-alarm` s1 done, → running (angel) · claude
+- 2026-11-04 21:12 UTC · `ui-review-alarm` s2 done (angel) · claude
+- 2026-11-04 21:12 UTC · `ui-review-alarm` s3 done (angel) · claude
+- 2026-11-04 21:14 UTC · `merge-queue` note (current) · foreign-write
+- 2026-11-04 21:14 UTC · `app-voice-commands` note (current) · foreign-write
+- 2026-11-04 21:14 UTC · `settings-placement-everywhere` note (current) · foreign-write
+- 2026-11-04 21:14 UTC · `handoff-2` s10 done, s11 done, → complete, note (current) · foreign-write
+- 2026-11-04 21:14 UTC · `fable-packager` s5 done, → complete (current) · foreign-write
+- 2026-11-04 21:14 UTC · `molly-banner-match` added (5 steps) (current) · foreign-write
+- 2026-11-04 21:14 UTC · `grid-column-hiding` added (6 steps) (current) · foreign-write
+- 2026-11-04 21:14 UTC · `drag-to-tab` added (5 steps) (current) · foreign-write
+- 2026-11-04 21:14 UTC · `build-optimizer` added (9 steps) (current) · foreign-write
+- 2026-11-04 21:14 UTC · `build-optimizer` branch claude/build-optimizer, PR #342 (current) · builds-live
+- 2026-11-04 21:14 UTC · `build-optimizer` s9 done, → built (current) · orchestrator
+- 2026-11-04 21:17 UTC · `build-optimizer` s9 done, → complete (current) · foreign-write
+- 2026-11-04 21:17 UTC · `ui-review-alarm` s4 done (angel) · claude
+- 2026-11-04 21:17 UTC · `ui-review-alarm` s5 done (angel) · claude
+- 2026-11-04 21:26 UTC · `ui-review-alarm` PR #343 (angel) · builds-live
+- 2026-11-04 21:26 UTC · `ui-review-alarm` s10 done (angel) · claude
+- 2026-11-04 21:26 UTC · `ui-review-alarm` note (angel) · claude
+- 2026-11-04 21:26 UTC · `build-optimizer` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, → complete (current) · foreign-write
+- 2026-11-04 21:26 UTC · `drag-to-tab` s3 done (current) · orchestrator
+- 2026-11-04 21:26 UTC · `drag-to-tab` s4 done (current) · orchestrator
+- 2026-11-04 21:26 UTC · `drag-to-tab` s5 done, → complete (current) · orchestrator
+- 2026-11-04 21:26 UTC · `drag-to-tab` → built, branch claude/drag-to-tab, PR #344 (current) · builds-live
+- 2026-11-04 21:26 UTC · `drag-to-tab` s3 done, s4 done, s5 done, → complete (current) · foreign-write
+- 2026-11-04 21:28 UTC · `molly-banner-match` note (current) · foreign-write
+- 2026-11-04 21:27 UTC · `molly-banner-match` → pending, note (current) · reconciler
+- 2026-11-04 21:30 UTC · `build-docs-walkthroughs` added (8 steps) (angel) · orchestrator
+- 2026-11-04 21:30 UTC · `build-docs-walkthroughs` → running (angel) · orchestrator
+- 2026-11-04 21:31 UTC · `molly-banner-match` note (current) · foreign-write
+- 2026-11-04 21:31 UTC · `drag-to-tab` s3 done, s4 done, s5 done, → complete (current) · foreign-write
+- 2026-11-04 21:31 UTC · `three-layouts-per-screen` added (5 steps) (angel) · orchestrator
+- 2026-11-04 21:31 UTC · `three-layouts-per-screen` → running (angel) · orchestrator
+- 2026-11-04 21:38 UTC · `build-docs-walkthroughs` s1 done (angel) · orchestrator
+- 2026-11-04 21:38 UTC · `build-docs-walkthroughs` s2 done (angel) · orchestrator
+- 2026-11-04 21:28 UTC · `molly-banner-match` → pending, note (current) · reconciler
+- 2026-11-04 21:40 UTC · `molly-banner-match` → pending, note (current) · builds-live
+- 2026-11-04 21:41 UTC · `follow-amber-flash` added (4 steps) (angel) · orchestrator
+- 2026-11-04 21:42 UTC · `follow-amber-flash` s1 done, → running (angel) · orchestrator
+- 2026-11-04 21:42 UTC · `follow-amber-flash` s2 done (angel) · orchestrator
+- 2026-11-04 21:42 UTC · `follow-amber-flash` s3 done (angel) · orchestrator
+- 2026-11-04 21:44 UTC · `build-docs-walkthroughs` s3 done (angel) · orchestrator
+- 2026-11-04 21:45 UTC · `shipped-features-r2` added (10 steps) (angel) · gina (headless)
+- 2026-11-04 21:45 UTC · `shipped-features-r2` → running (angel) · gina (headless)
+- 2026-11-04 21:47 UTC · `ui-review-alarm` → pending, note (angel) · reconciler
+- 2026-11-04 21:51 UTC · `follow-amber-flash` s4 done, → built, branch claude/follow-amber-flash, PR #345 (angel) · builds-live
+- 2026-11-04 21:55 UTC · `changes-chat-log` added (5 steps) (current) · foreign-write
+- 2026-11-04 21:56 UTC · `changes-chat-log` added (5 steps) (current) · foreign-write
+- 2026-11-04 21:56 UTC · `build-docs-walkthroughs` s4 done (angel) · orchestrator
+- 2026-11-04 21:56 UTC · `build-docs-walkthroughs` s5 done (angel) · orchestrator
 
 ## Token passes (log)
 

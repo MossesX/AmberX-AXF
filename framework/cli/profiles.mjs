@@ -27,7 +27,7 @@ import { cpSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync 
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  BASE_PROFILE, PROFILED, PROFILES_REL, PROFILE_ID, REPO_ROOT, activeProfile, baseDataPath, emptyProfileFile,
+  BASE_PROFILE, PROFILED, PROFILES_REL, TRACKER_REL, PROFILE_ID, REPO_ROOT, activeProfile, baseDataPath, emptyProfileFile,
   orchestratorPath, persistRoot, profileRel, readProfiles,
 } from './persist.mjs';
 
@@ -53,7 +53,7 @@ function saveRegistry(reg) {
 export function profileFiles(id) {
   const root = persistRoot() ?? REPO_ROOT;
   const files = Object.fromEntries(PROFILED.map((rel) => [rel, id === BASE_PROFILE ? baseDataPath(rel) : join(root, profileRel(id, rel))]));
-  return { ...files, orchestrator: orchestratorPath(id) };
+  return { ...files, [TRACKER_REL]: baseDataPath(TRACKER_REL), orchestrator: orchestratorPath(id) };
 }
 
 /** Start a profile's files: copies of `from`, or empty ones. Never overwrites a file that is already there. */
@@ -147,7 +147,7 @@ export function state() {
           plan: count(f['framework/plan/plan.json'], (j) => (j.features ?? []).length),
           queue: count(f['framework/plan/build-queue.json'], (j) => (j.order ?? []).length),
           orchestrator: count(f.orchestrator, (j) => (j.builds ?? []).filter((b) => !['built', 'complete', 'archived'].includes(b.status)).length),
-          tracked: count(f['tracker.json'], (j) => (j.items ?? []).length),
+          tracked: count(f[TRACKER_REL], (j) => (j.items ?? []).length), // the one framework tracker
         },
         files: Object.fromEntries(Object.entries(f).map(([k, v]) => [k, rel(v)])),
       };

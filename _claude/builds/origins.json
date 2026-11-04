@@ -469,6 +469,18 @@
    "from": "",
    "addenda": []
   },
+  "build-docs-walkthroughs": {
+   "said": "For everything that's already been built, every step that's already been built, I need to be able to right-click a step or a build and say: create documentation for this. Create a video for this build, which will then record a live video of a browser walkthrough, and I'll be able to select how long I want it to be and different things, and I'll also be able to input special stuff that I want covered.",
+   "at": "2026-11-04T00:00:00.000Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "build-manager-history": {
    "said": "every session on every machine reports builds to axHub (change-log@1 with build stats: ref, model, estimate, actual tokens/cost, status, heartbeat, surface, host, areas); Build manager shows them live, adds a Built history (cost + time by model/week), a search bar, and a context-menu Start build now (dependency closure, overlap guard, axHub vps.run headless Claude Code, verification). Backfill of everything already built. Branch feat/build-manager-history.",
    "at": "2026-10-21",
@@ -480,6 +492,54 @@
    "verbatim": false,
    "from": "detail",
    "addenda": []
+  },
+  "build-optimizer": {
+   "said": "In Build manager, add a button to optimize builds, which will take all the steps and sort them all into a smaller amount of builds, just moving all the steps over and combining builds. Yeah. And optimize, it will create a new package of builds, and it will list them all in a dialog to confirm. It will list the build with all of its steps.",
+   "at": "2026-11-04T20:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "headless",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": [
+    {
+     "said": "And you can drag steps from one build to another build. If multiple builds are open in different tabs or different windows, you can drag steps from one to the other.",
+     "at": "",
+     "source": "voice",
+     "by": "earl",
+     "verbatim": true
+    },
+    {
+     "said": "This build optimizer needs to be done without AI. It can use AI if AI is connected, but it shouldn't have to have AI.",
+     "at": "",
+     "source": "voice",
+     "by": "earl",
+     "verbatim": true
+    },
+    {
+     "said": "Well, if the AI is on it, it does a much better job. It does a thorough investigation, it does thorough syncing.",
+     "at": "",
+     "source": "voice",
+     "by": "earl",
+     "verbatim": true
+    },
+    {
+     "said": "And you get a notification if AI isn't active. You get a notification either way if you want it. Enable it or turn it off.",
+     "at": "",
+     "source": "voice",
+     "by": "earl",
+     "verbatim": true
+    },
+    {
+     "said": "The optimizer needs a bunch of settings and filters to control how it works.",
+     "at": "",
+     "source": "voice",
+     "by": "earl",
+     "verbatim": true
+    }
+   ]
   },
   "build-orchestrator": {
    "said": "everything from today and the refactor goes into the Refactor profile).",
@@ -580,6 +640,18 @@
    "brief": "# Build: builds-one-page-done (Urgent profile)\n\nBrett, Nov 3 2026 (voice): finish the Builds one-page build. Assigned agent: **Snap Sully** (book on his agent-swarm card; set AXF_AGENT=snap-sully if the launcher supports it, else record in report + store note).\n\n## Context\n- Orchestrator build `builds-one-page` shows archived 4/15 (s1-s4 done, s5-s15 pending) in the store.\n- Branch `claude/builds-one-page-finish` (1 commit, 'Builds page: one page, six views (Pending, Queue, Plan, Tracker, Orchestrator, Steps) over the one store') is ~320 commits behind main and never landed. Related: `claude/builds-one-page`, `claude/queue-builds-one-page-trim`, hub file `instructions/builds-one-page-foldin.md`.\n- Main has moved a lot since: orch-live-sync (live store writes on main, reconciler), whats-new-banner, headless-tabs, plugin-commands-auto, kill-patches-pilot (Patches + Build Pilot are gone; Console runs standalone).\n\n## Do\n- s0 Register in Urgent (id `builds-one-page-done`), banner entry.\n- s1 Verify first: read the store steps for `builds-one-page`, then check every related branch/commit/PR for which of s5-s15 are really done (commit tag format `<parent> sNN [<build-id>]` counts). Mark truly-done steps done in the store with branch/pr.\n- s2 Bring the finish branch's work onto current main (fresh branch from main, port the changes, resolve against everything that landed; don't resurrect anything for Patches/Build Pilot).\n- s3 Build every remaining step to spec; the Builds page = ONE page, views over the ONE live store; every view's commands exposed through control@1 (REST + MCP + CLI per standing rule).\n- s4 Tests, report `_claude/builds/reports/builds-one-page-done.md`, THREADS, PR, mark `builds-one-page` complete (un-archive) and close out the stale `builds-one-page-finish` branch in the report. Commits clean and professional.",
    "verbatim": false,
    "from": "brief",
+   "addenda": []
+  },
+  "changes-chat-log": {
+   "said": "This needs to be displayed like the chat log.",
+   "at": "2026-11-04T21:53:46.271Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "chat-viewer": {
@@ -760,6 +832,18 @@
    "from": "detail",
    "addenda": []
   },
+  "drag-to-tab": {
+   "said": "I want to be able to drag [items] to their containers and drop them as new tabs. Like grab something from the navigation menu, or from one tab, drag it over to another area and drop it as a new tab.",
+   "at": "2026-11-04T00:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "element-inspector": {
    "said": "Left click only. Press-drag: panel follows, live updates to element under pointer. Release closes. Double click pins; pinned panel drags and resizes. Current fields + size.",
    "at": "2026-10-30",
@@ -890,6 +974,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "follow-amber-flash": {
+   "said": "When you open something, every time I ask you to open a screen for me, whatever item I'm referencing, flash the background a certain color. Five times.\n\n(Asked which color:) Yellow and orange.",
+   "at": "2026-11-04T00:00:00Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "follow-amber-switch": {
@@ -1294,6 +1390,18 @@
    "brief": "# Model UPGRADES need Brett's approval; downgrades don't (Urgent, Opus)\n\nReplaces the stopped build model-switch-approval (folder /root/axf-builds/model-switch-approval, ignore any work there).\n\nBrett Nov 3 2026 (voice), angry: a headless build (agent-swarm-fable-rebuild, PR #247) approved its own Opus -> Fable phase switch in the orchestrator (`orchestrator.mjs act approve`) because its brief said \"do every step\". Brett: \"It cannot be switching the model without my approval. That's not even a veto. That's an approval.\" Then: \"You can downgrade, but you can't upgrade.\"\n\nNew project rule (add to _claude/rules/RULES.md and the decisions log, dated Nov 3 2026): a build may switch to a LOWER model on its own (downgrade, e.g. Fable -> Opus): allowed, no approval, just recorded. Switching to a HIGHER model (upgrade, e.g. Opus -> Fable) needs Brett's explicit APPROVAL (confirm policy), never a veto countdown and never self-approved by a session, agent, headless build or the orchestrator. Ranking: Fable is above Opus (Brett's call). Put the ranking in model-policy (one ordered list, config not code) so future models slot in. A session that reaches an upgrade stops there and asks.\n\nEnforce it:\n1. orchestrator approve/phase logic (orchestrator-core.mjs apply + CLI + console server): a downgrade phase passes by itself (record it); an upgrade phase refuses unless approved by Brett: his own signed-in console click or an axHub approval he approves. Detect non-human sources with the same signals used for 'who asked' on approvals (X-Axhub-Source, AXF headless env, agent env). Record who approved and when.\n2. vps.build_start / claude-headless.sh / agent job router: launching or relaunching a build on a higher model than its orchestrator step's model is an upgrade too: refuse or hold for approval the same way.\n3. Briefs (orchestrator `brief`, headless guidance, agent jobs): say plainly upgrades need Brett and the session stops and asks; downgrades are fine. Remove any wording that lets a session approve an upgrade.\n4. Request path: an axHub approval (confirm policy, not veto) titled with the build, the phase and from -> to model; approving it records the approval in the orchestrator.\n5. Audit: list every upgrade approved so far by a non-human source (the store's journal), report in the PR; mark agent-swarm-fable-rebuild's s7 Opus -> Fable as self-approved (not Brett's). Note: xlayout-opus and token-control-opus were Fable -> Opus (downgrades), fine under the new rule.\n6. Tests for refusal, downgrade pass-through and the approval path; THREADS row (profile urgent); PR (push banner merges it).\n\nRules: one session, no sub-agents, stay on Opus. Don't approve any phase yourself while doing this.",
    "verbatim": false,
    "from": "brief",
+   "addenda": []
+  },
+  "molly-banner-match": {
+   "said": "Make Molly's top banner asset the same as console. And when console's open in Molly, don't display its own banner.",
+   "at": "2026-11-04T15:25:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "headless",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "molly-multi-instance-tabs": {
@@ -1762,6 +1870,61 @@
    "from": "detail",
    "addenda": []
   },
+  "shipped-features-r2": {
+   "said": "Where's the list of features that can be sorted, and when they went live? ... I need a list of individual features, and you can view the features or you can view the builds that made the features. The builds will have an expanding row to show all its information along with the features. Tap in the expanded row. And there will also be another table that uses the features themselves as the root.",
+   "at": "2026-11-04T12:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Greenlight Gina (headless, Fable)",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": [
+    {
+     "said": "Create a database, create a grid that lists all the features going back for days and days, all the way back: all the features that were built and what PR they belong to. If you're sorted by PR, you select the PR, it opens an expanded row which shows all the features, which open another expanded row which shows all the information about it, including the prompt that I wrote that spawned it. And make it so the initial row you can view by PR, view by plugin, view by app, view by feature type.",
+     "at": "2026-11-04T13:00:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    },
+    {
+     "said": "If the repo was first day, it was way before the third.",
+     "at": "2026-11-04T14:00:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    },
+    {
+     "said": "Just AmberX and axHub, not any of those other repos.",
+     "at": "2026-11-04T15:00:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    },
+    {
+     "said": "As soon as a prompt goes through that plans on building the features, they go into that list, and have it sortable so you can hide completed ones and pending ones.",
+     "at": "2026-11-04T16:00:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    },
+    {
+     "said": "Anytime a feature in that list is getting changed or altered, it will appear as an edit. It will update that list and show edits to that feature.",
+     "at": "2026-11-04T17:00:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    },
+    {
+     "said": "I want you to work on the Fable part right now. ... Take the whole task from him. I'm gonna shut him down. Then you take the whole task. Start it right now.",
+     "at": "2026-11-04T21:30:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    }
+   ]
+  },
   "smart-menus": {
    "said": "I need a dynamic context menu that draws itself depending on where it is and what it's doing. Most common / most likely things at the top. It learns and remembers, predicts what I'm most likely gonna want, keeps that at the top.",
    "at": "2026-11-03",
@@ -1892,6 +2055,33 @@
    "from": "detail",
    "addenda": []
   },
+  "three-layouts-per-screen": {
+   "said": "From now on, all plugin screens get three layouts, and come with a toolbar to select which one, with the toolbar hidden by default. Not old ones, only new ones.",
+   "at": "2026-11-04T00:00:00.000Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": [
+    {
+     "said": "So UI Review will only allow you to select from the three layouts it is going to generate.",
+     "at": "2026-11-04T00:00:00.000Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    },
+    {
+     "said": "Yep.",
+     "at": "2026-11-04T00:00:00.000Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    }
+   ]
+  },
   "token-control": {
    "said": "new plugin, powerful API and MCP and CLI server/client that can change every single token (theme, style, layout); every layout parameter is a token. Connect MCP, API and CLI to Claude and axHub. API and MCP control every aspect of AmberX tasks, to-dos and notes, and the console's planner (Brett: both Plan Studio and the Build orchestrator). Extensive interactive documentation. Folds in the dead VPS build amberx-full-mcp-api (do not relaunch it separately). Overlaps the blocked interactive docs engine (docs-engine/plan.md): reuse it if it lands first.",
    "at": "2026-11-02",
@@ -1982,6 +2172,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "ui-review-alarm": {
+   "said": "From now on, open UI Review, but if they don't get approved in 30 minutes, set an alarm off on my phone, a loud-ass alarm. That gives me five more minutes before it gets approved. … After 30 minutes, if it's not been reviewed, it needs to do a loud alarm five minutes before it's gonna be run. And if the alarm is unanswered, then don't run it. No, then run it. Make it a switch. Either or.",
+   "at": "2026-11-04T21:04:36.261Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "ui-review-predicted": {
