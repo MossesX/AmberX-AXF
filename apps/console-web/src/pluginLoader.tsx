@@ -156,10 +156,19 @@ class PluginLoader {
   /* --- store for React --- */
   subscribe = (f: () => void) => { this.listeners.add(f); return () => { this.listeners.delete(f); }; };
   version = () => this.ver;
+  /** While > 0 a startup group is loading: changes collect and the shell re-installs once the group is in. */
+  private hold = 0;
+  private held = false;
   private bump() {
+    if (this.hold > 0) { this.held = true; return; }
     if (this.bumpQueued) return;
     this.bumpQueued = true;
     queueMicrotask(() => { this.bumpQueued = false; this.ver++; for (const f of [...this.listeners]) f(); });
+  }
+
+  private release() {
+    this.hold = Math.max(0, this.hold - 1);
+    if (this.hold === 0 && this.held) { this.held = false; this.bump(); }
   }
 
   /* --- what the shell installs --- */
@@ -290,14 +299,14 @@ class PluginLoader {
   private install(folder: string) {
     this.installed.add(folder);
     this.lastSeen(folder);
-    this.evict();
+    this.evict(folder);
     this.bump();
   }
 
   private lastSeen(folder: string) { this.recent.set(folder, Date.now()); }
 
-  private evict() {
-    const keep = new Set<string>([...this.onScreen.keys(), ...[...this.reasons.entries()].filter(([, r]) => r !== 'used' && r !== 'learn').map(([f]) => f)]);
+  private evict(installing?: string) {
+    const keep = new Set<string>([...(installing ? [installing] : []), ...this.onScreen.keys(), ...this.waiters.keys(), ...[...this.reasons.entries()].filter(([, r]) => r !== 'used' && r !== 'learn').map(([f]) => f)]);
     for (const f of this.installed) if (this.shapes[f]?.banner || this.eagerWhy.has(f) || !this.freshShape(f)) keep.add(f);
     const out = evictions({ installed: [...this.installed], cfg: this.config, lastUsed: Object.fromEntries(this.recent), keep });
     for (const f of out) this.installed.delete(f);
@@ -336,8 +345,13 @@ class PluginLoader {
     const list = startupList({ enabled, cfg: this.config, banners: enabled.filter((f) => this.isBanner(f)), stats: this.stats, now: Date.now(), unknown: this.unknown(enabled) });
     const banners = list.filter((x) => x.reason === 'banner');
     const rest = list.filter((x) => x.reason !== 'banner');
-    const first = Promise.allSettled(banners.map((x) => this.request(x.folder, x.reason)));
-    void first.then(() => Promise.allSettled(rest.map((x) => this.request(x.folder, x.reason)))).then(() => {
+    // Each group lands as one change: re-installing every library per plugin that arrives would block the page for
+    // minutes on a first visit (every plugin loads once to learn its shape).
+    const group = (items: typeof list) => {
+      this.hold++;
+      return Promise.allSettled(items.map((x) => this.request(x.folder, x.reason))).finally(() => this.release());
+    };
+    void group(banners).then(() => group(rest)).then(() => {
       if (!this.readyAt) this.readyAt = performance.now();
       this.bump();
       idle(() => {
@@ -509,7 +523,9 @@ export function useLoaderVersion(): number {
 
 function LazyCall({ folder, path, args }: { folder: string; path: string[]; args: unknown[] }): ReactNode {
   useLoaderVersion();
-  useEffect(() => { void loader.request(folder); }, [folder]);
+  // A stand-in on screen counts as shown, so loading it can't evict another plugin that is on screen too (which would
+  // then load and evict this one again, round and round).
+  useEffect(() => { loader.mounted(folder, true); void loader.request(folder); return () => loader.mounted(folder, false); }, [folder]);
   const err = loader.problem(folder);
   if (err) {
     return (
