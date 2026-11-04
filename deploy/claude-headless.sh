@@ -122,6 +122,12 @@ if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$OR
   origin_line="$(node "$ORIGIN_CLI" capture --brief "$brief" --name "$name" --by "${agent:-$name}" 2>&1 | tail -2)" || true
   [[ -n "$origin_line" ]] && echo "claude-headless: $origin_line" >&2
 fi
+# Requests ledger (request@1): the launch goes into the request's history ("Launched by <agent>"), so Brett's list of
+# everything he asked for shows it at once. Plain script, no model; never stops the run.
+REQUESTS_CLI="$HERE/../apps/console-web/plugins/build-breaker/requests.mjs"  # axf-plugin:build-breaker
+if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$REQUESTS_CLI" ]] && [[ "${AXF_REQUESTS:-on}" != off ]]; then
+  node "$REQUESTS_CLI" capture --build "$name" --by "${agent:-headless}" >/dev/null 2>&1 || true
+fi
 LOOK="$HERE/../framework/cli/ui-predict.mjs"
 look_on() { [[ "${AXF_LOOK_GATE:-on}" != off ]] && command -v node >/dev/null && [[ -f "$LOOK" ]]; }
 # Predicted looks (ui-prediction@1, Brett Nov 3 2026): a build that changes UI gets its predicted look in UI Review at

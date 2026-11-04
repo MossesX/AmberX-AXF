@@ -433,6 +433,9 @@ export const CARD_SUGGESTIONS = [
     { plugin: 'approvals-banner', command: 'pending', path: 'items', view: 'list', fields: { title: 'title', subtitle: 'service', badge: 'state' }, refresh: 'live' },
     { plugin: 'approvals', command: 'pending', path: 'items', view: 'list', fields: { title: 'title', subtitle: 'service', badge: 'state' }, refresh: 'live' },
   ] },
+  { id: 'requests-open', title: 'What you asked for', icon: 'list', candidates: [
+    { plugin: 'build-breaker', command: 'requests-summary', path: 'items', view: 'list', fields: { title: 'title', subtitle: 'status', badge: 'queue' }, refresh: 'every', every: 60 },
+  ] },
   { id: 'ui-review-waiting', title: 'UI Review waiting', icon: 'eye', candidates: [
     { plugin: 'ui-review', command: 'items', path: 'items', where: { status: 'waiting' }, view: 'list', fields: { title: 'name', subtitle: 'app', badge: 'status' }, refresh: 'live' },
   ] },
