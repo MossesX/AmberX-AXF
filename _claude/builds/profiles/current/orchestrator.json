@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T13:19:39.250Z",
+ "updatedAt": "2026-11-04T13:29:13.081Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6664,19 +6664,25 @@
    "rev": 0
   },
   {
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #309 merged",
+     "at": "2026-11-04T13:28:24.500Z"
+    }
+   ],
    "id": "hotfix-build-manager",
    "title": "Hotfix: Build manager rows open, step actions work, running count is real",
    "category": "",
    "detail": "URGENT. Build rows do not open; step actions (tick, open, context menu) dead; banner says 21 going when only land-round-2 runs. Fix regressions, reconcile stale running statuses against live processes, add a zero-token reconciler rule so it cannot drift.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "hotfix-build-manager",
    "branch": "claude/hotfix-build-manager",
    "pr": "#309",
+   "mergedAt": "2026-11-04T13:20:57Z",
    "createdAt": "2026-11-04T12:18:43.490Z",
-   "updatedAt": "2026-11-04T12:47:56.932Z",
+   "updatedAt": "2026-11-04T13:28:24.500Z",
    "builtAt": "2026-11-04T12:47:56.382Z",
    "approvals": [],
    "upgradeRequests": [],
@@ -6707,7 +6713,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-04T12:47:53.779Z",
+     "doneAt": "2026-11-04T13:28:12.810Z",
      "note": "",
      "uid": "st-mw2330s90131ge"
     },
@@ -6997,6 +7003,12 @@
    "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "requests-ledger (PR pending) reads bug@1 records into Brett's requests list from _claude/builds/bugs.json, _claude/builds/bugs/, <hub data>/bugs-board/ or .axf-console/plugins/bugs-board/ (a {bugs:[...]} doc, one bug per JSON file, or bugs.jsonl). Store bugs in one of those and they show up with no extra work; fields read: id, title, said/quote, status, createdAt, build, pr, app.",
+     "at": "2026-11-04T13:18:39.525Z"
+    }
+   ],
    "id": "bugs-board",
    "title": "Bugs board: confirmed bugs list plugin",
    "category": "",
@@ -7010,12 +7022,6 @@
    "createdAt": "2026-11-04T13:07:57.249Z",
    "updatedAt": "2026-11-04T13:18:39.525Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "requests-ledger (PR pending) reads bug@1 records into Brett's requests list from _claude/builds/bugs.json, _claude/builds/bugs/, <hub data>/bugs-board/ or .axf-console/plugins/bugs-board/ (a {bugs:[...]} doc, one bug per JSON file, or bugs.jsonl). Store bugs in one of those and they show up with no extra work; fields read: id, title, said/quote, status, createdAt, build, pr, app.",
-     "at": "2026-11-04T13:18:39.525Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -7283,7 +7289,8 @@
      "note": "",
      "uid": "st-mw24tm2j0ekf9s"
     }
-   ]
+   ],
+   "rev": 0
   }
  ]
 }
