@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T01:46:59.655Z",
+ "updatedAt": "2026-11-04T01:50:41.461Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4853,7 +4853,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1gdizs022vpa"
+     "uid": "st-mw1genw7010qfw"
     },
     {
      "id": "s2",
@@ -4871,7 +4871,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1gdizt03zq3k"
+     "uid": "st-mw1genw702okbc"
     },
     {
      "id": "s3",
@@ -4889,7 +4889,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1gdizt04vo1l"
+     "uid": "st-mw1genw703ocpo"
     },
     {
      "id": "s4",
@@ -4907,7 +4907,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1gdizt050cws"
+     "uid": "st-mw1genw7049q6a"
     },
     {
      "id": "s5",
@@ -4925,7 +4925,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1gdizt06kdt7"
+     "uid": "st-mw1genw705uelh"
     },
     {
      "id": "s6-5",
@@ -4943,7 +4943,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1g2jcf0607ap"
+     "uid": "st-mw1gdizs022vpa"
     },
     {
      "id": "s7-6",
@@ -4961,7 +4961,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1g2jcf07jv6r"
+     "uid": "st-mw1gdizt03zq3k"
     },
     {
      "id": "s8-7",
@@ -4979,7 +4979,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1g2jcf082lcu"
+     "uid": "st-mw1gdizt04vo1l"
     },
     {
      "id": "s9-8",
@@ -4997,7 +4997,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1g2jcf09qps3"
+     "uid": "st-mw1gdizt050cws"
     },
     {
      "id": "s10-9",
@@ -5015,7 +5015,225 @@
      "done": false,
      "doneAt": "",
      "note": "",
+     "uid": "st-mw1gdizt06kdt7"
+    },
+    {
+     "id": "s11-10",
+     "text": "Main area becomes a tab group on the dock engine: every screen/plugin opens as a tab (icon, title, close, dirty dot); tabs persist across reloads; reopen closed tab; overflow scroll + list menu; middle-click / close others / close to the right",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1g2jcf0607ap"
+    },
+    {
+     "id": "s12-11",
+     "text": "Tab position top / bottom / left stack / right stack (setting + right-click on the strip)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1g2jcf07jv6r"
+    },
+    {
+     "id": "s13-12",
+     "text": "Float and dock: drag a tab out to float (shared window layer, resize grips), drag a window title onto the strip to dock (drop indicator), Float / Dock in tab + window menus, split by dropping a tab on an edge (folds in plugin-floatable)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1g2jcf082lcu"
+    },
+    {
+     "id": "s14-13",
+     "text": "Tab context menu (Settings, Float, Split, Pin, Duplicate, Close) + strip menu -> Tab group settings (position, size, icons, close buttons, max tabs, open as tab vs replace, restore on start, animation); in main Settings; REST + MCP + CLI (tabs_list, tab_open, tab_close, tab_float, tab_dock)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1g2jcf09qps3"
+    },
+    {
+     "id": "s15-14",
+     "text": "Phone: compact strip, swipe between tabs, long-press to drag; tests + type-check, phone + desktop screenshots, UI Review item, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
      "uid": "st-mw1g2jcf0a5sj5"
+    }
+   ]
+  },
+  {
+   "id": "app-style-override",
+   "title": "App style override: axHub is the style source, per-app Override design / colors, reload + save to axHub",
+   "category": "Appearance",
+   "detail": "What Brett said (Nov 3 2026, voice): \"Put a button in each app's settings to override axHub's style, in design and colors.\" Addendum 1: \"And the hook will reload axHub, and you can also save design back to axHub.\" Context: axHub defines the default look for every app; apps inherit it live; manual edits override per setting with an 'Overriding axHub' note (same rule as molly-nav-submenus Addendum 6 and gizmo-companion's appearance add-on). Agent: Ping Paulie (no Polo card). Model: Opus for every step (Claude decides); additive web-only contract, Android twin deferred in PORTING.md; Fable review recommended per the shared rule.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/app-style-override",
+   "pr": "",
+   "createdAt": "2026-11-04T01:44:48.256Z",
+   "updatedAt": "2026-11-04T01:45:30.745Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "s1 axHub = style source: axHub's active color-theme + style-theme is the default for every app (console, Molly, axHub web, AmberX, demo, Gizmo later, framework app template); inheriting apps follow it live",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1gf3s50cqyek"
+    },
+    {
+     "id": "s2",
+     "text": "s2 Settings > Appearance in each app: Override axHub design / Override axHub colors switches, Inherited from axHub note with theme name, Overriding axHub with axHub value beside, auto-on when editing, Reset to axHub",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1gf3s50d9e7u"
+    },
+    {
+     "id": "s3",
+     "text": "s3 Shared inherit/override library in the framework (reuse molly-nav-submenus if it made one)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1gf3s50ev7ob"
+    },
+    {
+     "id": "s4",
+     "text": "s4 Banner tokens: per-banner-type colour tokens (info, success, warning, error, build, merge, ai, neutral) in color-theme with values in every starter theme",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1gf3s50fsmyk"
+    },
+    {
+     "id": "s5",
+     "text": "s5 Addendum 1: Reload from axHub (button + hook@1 action, keep or reset overrides) and Save to axHub (design / colours / both, confirm lists apps, owner-only, versioned, Restore previous axHub style)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1gf3s50gpv8z"
+    },
+    {
+     "id": "s6",
+     "text": "s6 REST + MCP + CLI (app_style_get, app_style_override, app_style_reload, app_style_save_to_axhub), tests, screenshots, UI Review, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1gf3s50hs10s"
     }
    ]
   }
