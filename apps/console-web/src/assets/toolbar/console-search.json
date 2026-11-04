@@ -81,7 +81,8 @@
             "id": "terminal",
             "icon": "terminal",
             "label": "Output terminal",
-            "action": "terminal.open"
+            "action": "terminal.toolbar",
+            "badge": "terminal.sessions.new"
           },
           {
             "id": "settings",

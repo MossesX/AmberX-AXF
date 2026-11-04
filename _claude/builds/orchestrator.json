@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T12:36:49.841Z",
+ "updatedAt": "2026-11-04T14:12:29.358Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10,19 +10,6 @@
  },
  "builds": [
   {
-   "id": "design-package",
-   "title": "AmberX Design Package asset type (style + colour + layout + behaviour) + Behaviour theme asset type; replaces Appearance package",
-   "category": "Design & branding",
-   "detail": "Brett, Oct 27 2026: new asset type 'AmberX Design Package' wrapping a style theme, colour theme, layout theme and behaviour theme; new asset type 'behavior-theme' holding everything: motion (animations, speed, easing, reduced motion), interaction (hover/click/focus feedback, long-press time, double-tap), windows & dialogs (open/close, snap, stacking, drawers, pop-ups) and feedback (toasts, sounds, vibration, confirm-before-delete). Settings -> Appearance gets a Design Package picker to apply one; everything else in Appearance goes in one collapsible container below it. The Design Package REPLACES the appearance-package type (Brett's pick): migrate the existing packages (framework + console amberx, each app's fresh) and the axf.appearance.package setting. Web first; Android twin recorded in PORTING.md (Android on hold). Orchestrator order: all Fable steps first, then Opus (one switch).",
-   "status": "archived",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "design-package",
-   "branch": "fable/design-package",
-   "pr": "",
-   "createdAt": "2026-10-27T16:36:55.356Z",
-   "updatedAt": "2026-10-27T16:56:46.252Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Asked again Oct 27 2026 12:35 in the orchestrator chat. Overlaps to decide before starting: settings-asset-fable, appearance-asset-tokens-fable, apply-all-levels-fable, asset-templates.",
@@ -49,6 +36,19 @@
      "at": "2026-10-27T19:30:00.000Z"
     }
    ],
+   "id": "design-package",
+   "title": "AmberX Design Package asset type (style + colour + layout + behaviour) + Behaviour theme asset type; replaces Appearance package",
+   "category": "Design & branding",
+   "detail": "Brett, Oct 27 2026: new asset type 'AmberX Design Package' wrapping a style theme, colour theme, layout theme and behaviour theme; new asset type 'behavior-theme' holding everything: motion (animations, speed, easing, reduced motion), interaction (hover/click/focus feedback, long-press time, double-tap), windows & dialogs (open/close, snap, stacking, drawers, pop-ups) and feedback (toasts, sounds, vibration, confirm-before-delete). Settings -> Appearance gets a Design Package picker to apply one; everything else in Appearance goes in one collapsible container below it. The Design Package REPLACES the appearance-package type (Brett's pick): migrate the existing packages (framework + console amberx, each app's fresh) and the axf.appearance.package setting. Web first; Android twin recorded in PORTING.md (Android on hold). Orchestrator order: all Fable steps first, then Opus (one switch).",
+   "status": "archived",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "design-package",
+   "branch": "fable/design-package",
+   "pr": "",
+   "createdAt": "2026-10-27T16:36:55.356Z",
+   "updatedAt": "2026-10-27T16:56:46.252Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -244,9 +244,20 @@
      "note": "",
      "uid": "st-1ghumgo"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
+     "at": "2026-10-28T19:31:15.654Z"
+    },
+    {
+     "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
+     "at": "2026-10-27T19:30:00.000Z"
+    }
+   ],
    "id": "arch-foundation",
    "title": "Hardened architecture foundation: layout/theme/plugin contracts, Pydantic migrator + namespacing, plugin boundary + lifecycle broker, docs",
    "category": "Architecture",
@@ -260,16 +271,6 @@
    "createdAt": "2026-10-27T16:36:55.356Z",
    "updatedAt": "2026-10-28T19:31:15.654Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
-     "at": "2026-10-28T19:31:15.654Z"
-    },
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
-     "at": "2026-10-27T19:30:00.000Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -513,9 +514,20 @@
      "note": "",
      "uid": "st-hkx7ct"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+     "at": "2026-10-27T22:41:47.258Z"
+    },
+    {
+     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
+     "at": "2026-10-28T19:31:15.654Z"
+    }
+   ],
    "id": "pending-grid-view",
    "title": "Pending builds: grid view with sortable columns, expandable rows, toolbar and double-click multi-select",
    "category": "Console UI",
@@ -529,16 +541,6 @@
    "createdAt": "2026-10-27T16:36:55.356Z",
    "updatedAt": "2026-10-28T19:31:15.654Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
-     "at": "2026-10-27T22:41:47.258Z"
-    },
-    {
-     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
-     "at": "2026-10-28T19:31:15.654Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -666,23 +668,10 @@
      "note": "",
      "uid": "st-af0i13"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "enterprise-branding",
-   "title": "Enterprise design + hot-swappable branding: branding engine, design packages, behaviour themes, 700+ generated brand assets, AmberX app + GizmoX console refactor",
-   "category": "Design & branding",
-   "detail": "Brett, Oct 27 2026: only refactor the console, the AmberX app (amberx.amberxai.com), the plugins currently installed and switched on in Plugin switches, and every banner plugin to enterprise quality. New asset types: branding package (extendable template of UI brand assets), icon pack, logo mark, animated logo, behaviour theme, AmberX design package. Branding engine, fully hot-swappable. Assets: 10 light + 10 dark themes, 10 layout, 10 style themes, 10 context menus, 25 dynamically driven toolbars with docs, 25 style packages, 25 nav menus + behaviour, 25 design packages, 250 logos, 250 animated logos, 100 icon packs, branding packages; console plugin to browse them. Branded banners, toolbars, windows, containers, tab groups, dialogs, floating windows. Includes and replaces orchestrator build design-package. Web only; Android twins deferred (hold).",
-   "status": "complete",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "",
-   "branch": "claude/refactor-all",
-   "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
-   "mergedAt": "2026-10-29T03:49:47Z",
-   "createdAt": "2026-10-27T16:56:46.231Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "2026-10-30T18:10:39.641Z",
    "notes": [
     {
      "text": "Merged in design-package (its 9 steps are s2-s5, s29 and parts of s38). One model switch: Fable s1-s12, then Opus s13-s40.",
@@ -745,6 +734,20 @@
      "at": "2026-11-03T13:57:06.541Z"
     }
    ],
+   "id": "enterprise-branding",
+   "title": "Enterprise design + hot-swappable branding: branding engine, design packages, behaviour themes, 700+ generated brand assets, AmberX app + GizmoX console refactor",
+   "category": "Design & branding",
+   "detail": "Brett, Oct 27 2026: only refactor the console, the AmberX app (amberx.amberxai.com), the plugins currently installed and switched on in Plugin switches, and every banner plugin to enterprise quality. New asset types: branding package (extendable template of UI brand assets), icon pack, logo mark, animated logo, behaviour theme, AmberX design package. Branding engine, fully hot-swappable. Assets: 10 light + 10 dark themes, 10 layout, 10 style themes, 10 context menus, 25 dynamically driven toolbars with docs, 25 style packages, 25 nav menus + behaviour, 25 design packages, 250 logos, 250 animated logos, 100 icon packs, branding packages; console plugin to browse them. Branded banners, toolbars, windows, containers, tab groups, dialogs, floating windows. Includes and replaces orchestrator build design-package. Web only; Android twins deferred (hold).",
+   "status": "complete",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "",
+   "branch": "claude/refactor-all",
+   "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
+   "mergedAt": "2026-10-29T03:49:47Z",
+   "createdAt": "2026-10-27T16:56:46.231Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "2026-10-30T18:10:39.641Z",
    "approvals": [
     {
      "phase": 1,
@@ -1615,22 +1618,10 @@
      "note": "",
      "uid": "st-160ai5a"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "interface-roller",
-   "title": "Three complete interfaces in GizmoX tabs + an interface roller for every app",
-   "category": "Design & branding",
-   "detail": "Brett, Oct 27 2026 13:10: \"Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc.\" Needs enterprise-branding phase 1 (design package, behaviour, branding, logo and icon-pack types + generators) first. Web only; Android deferred.",
-   "status": "archived",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "",
-   "branch": "fable/interface-roller",
-   "pr": "",
-   "createdAt": "2026-10-27T17:11:59.344Z",
-   "updatedAt": "2026-10-28T19:31:15.654Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Runs after enterprise-branding phase 1 (s1-s12), whose asset types and generators it uses. One switch: Fable s1-s5, then Opus s6-s15.",
@@ -1657,6 +1648,19 @@
      "at": "2026-10-27T19:30:00.000Z"
     }
    ],
+   "id": "interface-roller",
+   "title": "Three complete interfaces in GizmoX tabs + an interface roller for every app",
+   "category": "Design & branding",
+   "detail": "Brett, Oct 27 2026 13:10: \"Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc.\" Needs enterprise-branding phase 1 (design package, behaviour, branding, logo and icon-pack types + generators) first. Web only; Android deferred.",
+   "status": "archived",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "",
+   "branch": "fable/interface-roller",
+   "pr": "",
+   "createdAt": "2026-10-27T17:11:59.344Z",
+   "updatedAt": "2026-10-28T19:31:15.654Z",
+   "builtAt": "",
    "approvals": [
     {
      "phase": 1,
@@ -1949,9 +1953,20 @@
      "note": "",
      "uid": "st-gwe9ez"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+     "at": "2026-10-27T22:41:47.258Z"
+    },
+    {
+     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
+     "at": "2026-10-28T19:31:15.654Z"
+    }
+   ],
    "id": "style-package-fable",
    "title": "Style packages — Fable rebuild of style-package@1",
    "category": "Design & branding",
@@ -1965,16 +1980,6 @@
    "createdAt": "2026-10-27T21:47:04.141Z",
    "updatedAt": "2026-10-28T19:31:15.654Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
-     "at": "2026-10-27T22:41:47.258Z"
-    },
-    {
-     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
-     "at": "2026-10-28T19:31:15.654Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -2062,9 +2067,16 @@
      "note": "",
      "uid": "st-12x3lda"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Overlaps settings-asset (new `settings` asset type, branch claude/project-thread-55oakl); build with settings-asset-fable.",
+     "at": "2026-10-23T18:22:53.000Z"
+    }
+   ],
    "id": "named-asset-rule",
    "title": "Every UI element is a named asset",
    "category": "",
@@ -2078,12 +2090,6 @@
    "createdAt": "2026-10-18T04:05:00.000Z",
    "updatedAt": "2026-10-23T18:22:53.000Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Overlaps settings-asset (new `settings` asset type, branch claude/project-thread-55oakl); build with settings-asset-fable.",
-     "at": "2026-10-23T18:22:53.000Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -2357,9 +2363,11 @@
      "note": "",
      "uid": "st-dot4el"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "asset-designer",
    "title": "Asset Designer plugin (no-code)",
    "category": "",
@@ -2373,7 +2381,6 @@
    "createdAt": "2026-10-18T04:10:00.000Z",
    "updatedAt": "2026-10-23T11:41:00.284Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -2665,9 +2672,11 @@
      "note": "",
      "uid": "st-udc9j0"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "asset-browser",
    "title": "Asset Browser plugin",
    "category": "",
@@ -2681,7 +2690,6 @@
    "createdAt": "2026-10-18T04:10:00.000Z",
    "updatedAt": "2026-10-21T04:46:12.593Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -2865,9 +2873,20 @@
      "note": "",
      "uid": "st-injl8c"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Opus console plugin `plugin-manager` built Oct 18 2026. Remove with its uninstall.mjs --all before installing the Fable build.",
+     "at": "2026-10-18T20:45:00.000Z"
+    },
+    {
+     "text": "Fable rebuild done Oct 20 2026 on branch fable/plugin-manager. Differences report: _claude/memory/docs/rebuilds/plugin-manager.md",
+     "at": "2026-10-21T02:23:02.695Z"
+    }
+   ],
    "id": "plugin-manager",
    "title": "Plugin manager + settings tabs for every app (Fable rebuild)",
    "category": "",
@@ -2881,21 +2900,22 @@
    "createdAt": "2026-10-18T04:10:00.000Z",
    "updatedAt": "2026-10-21T02:23:02.695Z",
    "builtAt": "2026-10-21T02:23:02.695Z",
-   "notes": [
-    {
-     "text": "Opus console plugin `plugin-manager` built Oct 18 2026. Remove with its uninstall.mjs --all before installing the Fable build.",
-     "at": "2026-10-18T20:45:00.000Z"
-    },
-    {
-     "text": "Fable rebuild done Oct 20 2026 on branch fable/plugin-manager. Differences report: _claude/memory/docs/rebuilds/plugin-manager.md",
-     "at": "2026-10-21T02:23:02.695Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Overlaps settings-asset (new `settings` asset type, branch claude/project-thread-55oakl); build with settings-asset-fable.",
+     "at": "2026-10-23T18:22:53.000Z"
+    },
+    {
+     "text": "Nov 3 2026: Build Pilot is retired; s13 only covers the console's asset designer now.",
+     "at": "2026-11-03T14:24:43.493Z"
+    }
+   ],
    "id": "asset-templates",
    "title": "Asset templates: 10+ per type + defaults",
    "category": "",
@@ -2909,16 +2929,6 @@
    "createdAt": "2026-10-18T04:10:00.000Z",
    "updatedAt": "2026-11-03T14:24:43.493Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Overlaps settings-asset (new `settings` asset type, branch claude/project-thread-55oakl); build with settings-asset-fable.",
-     "at": "2026-10-23T18:22:53.000Z"
-    },
-    {
-     "text": "Nov 3 2026: Build Pilot is retired; s13 only covers the console's asset designer now.",
-     "at": "2026-11-03T14:24:43.493Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -3174,9 +3184,11 @@
      "note": "",
      "uid": "st-d3yark"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "pending-list-manager",
    "title": "Pending build list manager (console)",
    "category": "",
@@ -3190,12 +3202,18 @@
    "createdAt": "2026-10-18T04:10:00.000Z",
    "updatedAt": "2026-10-18T04:21:56.128Z",
    "builtAt": "2026-10-18T04:21:56.128Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Fable rebuild done Oct 20 2026 on branch fable/lib-mcp",
+     "at": "2026-10-21T02:19:21.624Z"
+    }
+   ],
    "id": "lib-mcp",
    "title": "lib-mcp: MCP client library for every AXF app",
    "category": "",
@@ -3209,17 +3227,13 @@
    "createdAt": "2026-10-18T04:30:05.551Z",
    "updatedAt": "2026-10-21T02:19:21.624Z",
    "builtAt": "2026-10-21T02:19:21.615Z",
-   "notes": [
-    {
-     "text": "Fable rebuild done Oct 20 2026 on branch fable/lib-mcp",
-     "at": "2026-10-21T02:19:21.624Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "claude-pick-api-key",
    "title": "claude-pick.sh: choose plan or API key at launch",
    "category": "",
@@ -3233,12 +3247,13 @@
    "createdAt": "2026-10-18T06:06:35.214Z",
    "updatedAt": "2026-10-18T06:07:53.368Z",
    "builtAt": "2026-10-18T06:07:53.368Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "app-port-engine",
    "title": "Port engine: bring a non-AXF app onto AmberX AXF (bake or rebuild)",
    "category": "",
@@ -3252,7 +3267,6 @@
    "createdAt": "2026-10-18T16:13:56.087Z",
    "updatedAt": "2026-10-23T11:41:00.284Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -3556,9 +3570,16 @@
      "note": "",
      "uid": "st-1cf0z1c"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Oct 18 2026: the project-creation half is built as the console plugin project-wizard (Opus): repo/folder/new AXF app → GitHub/VPS/local homes → manifest, _claude/, Claude.ai project kit, all on claude-project. lib-clone still covers the cross-port library and cloning an install WITH its data; reuse wizard.mjs for the homes and kit.",
+     "at": "2026-10-18T17:20:23.926Z"
+    }
+   ],
    "id": "lib-clone",
    "title": "lib-clone: any AXF app clones its own install with current data",
    "category": "",
@@ -3572,12 +3593,6 @@
    "createdAt": "2026-10-18T16:13:56.090Z",
    "updatedAt": "2026-10-21T04:46:12.594Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Oct 18 2026: the project-creation half is built as the console plugin project-wizard (Opus): repo/folder/new AXF app → GitHub/VPS/local homes → manifest, _claude/, Claude.ai project kit, all on claude-project. lib-clone still covers the cross-port library and cloning an install WITH its data; reuse wizard.mjs for the homes and kit.",
-     "at": "2026-10-18T17:20:23.926Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -3809,22 +3824,10 @@
      "note": "",
      "uid": "st-9djchr"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "ai-assistant-plugin",
-   "title": "AI Assistant plugin (Fable rebuild)",
-   "category": "",
-   "detail": "Cross-app plugin porting the xGallery assistant with providers (Anthropic, Claude Code subscription, OpenAI, Grok, Gemini, Mistral, Groq, DeepSeek, OpenRouter, Together, Fireworks, Perplexity, Cohere, Cerebras, Azure OpenAI, Ollama, LM Studio, custom OpenAI-compatible), setup wizard in its settings tab, settings dialog from the chat dialog, far more features than xGallery. Integrates with the Agent Manager when both installed (pick the active agent). The Opus version is in apps/console-web/plugins/ai-assistant (web console only): remove it first with its uninstall script (uninstall.mjs --all --publish), then build this one following plugin-lifecycle@1, and port to Android + other ports.",
-   "status": "complete",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "ai-assistant-plugin",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-10-18T17:20:00.000Z",
-   "updatedAt": "2026-10-20T22:30:00.000Z",
-   "builtAt": "2026-10-20T22:30:00.000Z",
    "notes": [
     {
      "text": "Opus version built Oct 18 2026 (web console only). Remove with the ai-assistant plugin's uninstall script (uninstall.mjs --all) before installing this one.",
@@ -3839,6 +3842,19 @@
      "at": "2026-10-20T22:30:00.000Z"
     }
    ],
+   "id": "ai-assistant-plugin",
+   "title": "AI Assistant plugin (Fable rebuild)",
+   "category": "",
+   "detail": "Cross-app plugin porting the xGallery assistant with providers (Anthropic, Claude Code subscription, OpenAI, Grok, Gemini, Mistral, Groq, DeepSeek, OpenRouter, Together, Fireworks, Perplexity, Cohere, Cerebras, Azure OpenAI, Ollama, LM Studio, custom OpenAI-compatible), setup wizard in its settings tab, settings dialog from the chat dialog, far more features than xGallery. Integrates with the Agent Manager when both installed (pick the active agent). The Opus version is in apps/console-web/plugins/ai-assistant (web console only): remove it first with its uninstall script (uninstall.mjs --all --publish), then build this one following plugin-lifecycle@1, and port to Android + other ports.",
+   "status": "complete",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "ai-assistant-plugin",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-10-18T17:20:00.000Z",
+   "updatedAt": "2026-10-20T22:30:00.000Z",
+   "builtAt": "2026-10-20T22:30:00.000Z",
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -3860,22 +3876,10 @@
      "note": "",
      "uid": "st-amzvbz"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "agent-manager-plugin",
-   "title": "AI Agent Manager plugin (Fable rebuild)",
-   "category": "",
-   "detail": "Create/edit/manage/orchestrate agents with skills, personas, lingo, tools and per-agent persistent memory. Wizards: new agent, new skill, new tool, all-in-one agent builder, auto-training (Firecrawl, MCP tools, other sources). Add-on agents install as bundles; 3 add-ons: React/TS/Python coder, AmberX AXF framework expert, AI capabilities expert. The Opus version is in apps/console-web/plugins/agent-manager (web console only): remove it first with its uninstall script, then build this one following plugin-lifecycle@1, and port to Android + other ports.",
-   "status": "complete",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "agent-manager-plugin",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-10-18T17:20:00.000Z",
-   "updatedAt": "2026-10-20T23:59:00.000Z",
-   "builtAt": "2026-10-20T23:59:00.000Z",
    "notes": [
     {
      "text": "Opus version built Oct 18 2026 (web console only). Remove with the agent-manager plugin's uninstall script (uninstall.mjs --all) before installing this one.",
@@ -3890,11 +3894,31 @@
      "at": "2026-10-20T23:59:00.000Z"
     }
    ],
+   "id": "agent-manager-plugin",
+   "title": "AI Agent Manager plugin (Fable rebuild)",
+   "category": "",
+   "detail": "Create/edit/manage/orchestrate agents with skills, personas, lingo, tools and per-agent persistent memory. Wizards: new agent, new skill, new tool, all-in-one agent builder, auto-training (Firecrawl, MCP tools, other sources). Add-on agents install as bundles; 3 add-ons: React/TS/Python coder, AmberX AXF framework expert, AI capabilities expert. The Opus version is in apps/console-web/plugins/agent-manager (web console only): remove it first with its uninstall script, then build this one following plugin-lifecycle@1, and port to Android + other ports.",
+   "status": "complete",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "agent-manager-plugin",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-10-18T17:20:00.000Z",
+   "updatedAt": "2026-10-20T23:59:00.000Z",
+   "builtAt": "2026-10-20T23:59:00.000Z",
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Oct 22 2026: patches-plugins (Opus) adds Patches-owned plugin lists per hosted app and an auto install of missing plugins; check for overlap when this is designed.",
+     "at": "2026-10-22T18:37:50.877Z"
+    }
+   ],
    "id": "plugin-conflicts",
    "title": "Plugin conflict alarm + tracked AI patches + installed add-ons list",
    "category": "",
@@ -3908,12 +3932,6 @@
    "createdAt": "2026-10-18T20:15:46.216Z",
    "updatedAt": "2026-10-22T18:37:50.877Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Oct 22 2026: patches-plugins (Opus) adds Patches-owned plugin lists per hosted app and an auto install of missing plugins; check for overlap when this is designed.",
-     "at": "2026-10-22T18:37:50.877Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -4163,9 +4181,20 @@
      "note": "",
      "uid": "st-1eq5735"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Oct 18 2026: clock is now a widget (widget-assets); the banner also takes search-bar and its placement moved to the shared widget host engine.",
+     "at": "2026-10-19T00:18:04.038Z"
+    },
+    {
+     "text": "Fable rebuild done Oct 20 2026 on branch fable/banner-widgets",
+     "at": "2026-10-20T22:30:00.000Z"
+    }
+   ],
    "id": "banner-assets",
    "title": "Banner, badge and clock asset types (Fable rebuild)",
    "category": "",
@@ -4179,21 +4208,18 @@
    "createdAt": "2026-10-18T22:30:06.842Z",
    "updatedAt": "2026-10-20T22:30:00.000Z",
    "builtAt": "2026-10-20T22:30:00.000Z",
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "rev": 0
+  },
+  {
    "notes": [
-    {
-     "text": "Oct 18 2026: clock is now a widget (widget-assets); the banner also takes search-bar and its placement moved to the shared widget host engine.",
-     "at": "2026-10-19T00:18:04.038Z"
-    },
     {
      "text": "Fable rebuild done Oct 20 2026 on branch fable/banner-widgets",
      "at": "2026-10-20T22:30:00.000Z"
     }
    ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "steps": []
-  },
-  {
    "id": "widget-assets",
    "title": "Widget asset category + search bar (Fable rebuild)",
    "category": "",
@@ -4207,17 +4233,18 @@
    "createdAt": "2026-10-19T00:18:03.979Z",
    "updatedAt": "2026-10-20T22:30:00.000Z",
    "builtAt": "2026-10-20T22:30:00.000Z",
-   "notes": [
-    {
-     "text": "Fable rebuild done Oct 20 2026 on branch fable/banner-widgets",
-     "at": "2026-10-20T22:30:00.000Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:20.226Z"
+    }
+   ],
    "id": "build-pilot-contract",
    "title": "Build Pilot plugin contract (Fable rebuild)",
    "category": "",
@@ -4231,12 +4258,6 @@
    "createdAt": "2026-10-19T11:40:14.809Z",
    "updatedAt": "2026-11-03T14:24:20.944Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
-     "at": "2026-11-03T14:24:20.226Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -4402,9 +4423,20 @@
      "note": "",
      "uid": "st-nn3avk"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Fable rebuild done Oct 20 2026 (Build-Pilot main 2dfb08e): assistant + agent manager in Build Pilot, local assembler backend, manual mode. Tests 157 → 282. Agents move to axHub later: axhub-agent-host.",
+     "at": "2026-10-21T03:35:03.528Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:21.829Z"
+    }
+   ],
    "id": "build-pilot-agents",
    "title": "Build Pilot: AI assistant + agent manager + assembling agent (Fable)",
    "category": "",
@@ -4418,21 +4450,18 @@
    "createdAt": "2026-10-19T12:02:10.988Z",
    "updatedAt": "2026-11-03T14:24:22.675Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Fable rebuild done Oct 20 2026 (Build-Pilot main 2dfb08e): assistant + agent manager in Build Pilot, local assembler backend, manual mode. Tests 157 → 282. Agents move to axHub later: axhub-agent-host.",
-     "at": "2026-10-21T03:35:03.528Z"
-    },
-    {
-     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
-     "at": "2026-11-03T14:24:21.829Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Nov 3 2026: s12 (Build Pilot backend) skipped, Build Pilot is retired.",
+     "at": "2026-11-03T14:24:42.740Z"
+    }
+   ],
    "id": "axhub-agent-host",
    "title": "Agents + assistant sessions hosted on axHub (one host for every app)",
    "category": "",
@@ -4446,12 +4475,6 @@
    "createdAt": "2026-10-21T03:33:11.548Z",
    "updatedAt": "2026-11-03T14:24:42.740Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Nov 3 2026: s12 (Build Pilot backend) skipped, Build Pilot is retired.",
-     "at": "2026-11-03T14:24:42.740Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -4827,9 +4850,20 @@
      "note": "",
      "uid": "st-1cgtx7e"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "ON HOLD (Brett, Oct 21 2026): don't build the console or Build Pilot Android apps any more — Brett will finish them himself later. Never start this item (or any step of it) unless he says so.",
+     "at": "2026-10-21T10:20:04.159Z"
+    },
+    {
+     "text": "Nov 3 2026: Build Pilot is retired; the Pilot tab is dropped, only the axHub tab remains in scope.",
+     "at": "2026-11-03T14:24:41.067Z"
+    }
+   ],
    "id": "console-android-app-tabs",
    "title": "Console Android app: Pilot + axHub tabs (web views, everything in the app)",
    "category": "",
@@ -4843,16 +4877,6 @@
    "createdAt": "2026-10-21T03:58:03.794Z",
    "updatedAt": "2026-11-03T14:24:41.067Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "ON HOLD (Brett, Oct 21 2026): don't build the console or Build Pilot Android apps any more — Brett will finish them himself later. Never start this item (or any step of it) unless he says so.",
-     "at": "2026-10-21T10:20:04.159Z"
-    },
-    {
-     "text": "Nov 3 2026: Build Pilot is retired; the Pilot tab is dropped, only the axHub tab remains in scope.",
-     "at": "2026-11-03T14:24:41.067Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -5210,9 +5234,20 @@
      "note": "",
      "uid": "st-1i8nspm"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "ON HOLD (Brett, Oct 21 2026): don't build the console or Build Pilot Android apps any more — Brett will finish them himself later. Never start this item (or any step of it) unless he says so.",
+     "at": "2026-10-21T10:20:04.160Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:23.528Z"
+    }
+   ],
    "id": "console-android-native-tabs",
    "title": "Console Android app: native Pilot + axHub tabs (no web content)",
    "category": "",
@@ -5226,16 +5261,6 @@
    "createdAt": "2026-10-21T03:58:03.806Z",
    "updatedAt": "2026-11-03T14:24:24.258Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "ON HOLD (Brett, Oct 21 2026): don't build the console or Build Pilot Android apps any more — Brett will finish them himself later. Never start this item (or any step of it) unless he says so.",
-     "at": "2026-10-21T10:20:04.160Z"
-    },
-    {
-     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
-     "at": "2026-11-03T14:24:23.528Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -5953,22 +5978,10 @@
      "note": "",
      "uid": "st-41qqp2"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "patches-wrapper",
-   "title": "Patches: Android wrapper app (Console + Pilot + axHub tabs) + embed@1",
-   "category": "",
-   "detail": "Brett, Oct 21 2026 (voice): take the Console / Pilot / axHub tab group out of the Dev Console so Console, Build Pilot and axHub are each their own app again, and make a new app, Patches, that is just one banner + a tab group showing the three apps in tabs; when an app runs inside Patches its own banner is hidden and Patches shows the one banner. Android first (Android hold lifted for Patches, Oct 21; web Patches later). Design Brett chose: native Android shell, web tabs — the Dev Console (console.amberxai.com), Build Pilot (pilot.amberxai.com) and axHub each load in an origin-locked WebView kept alive across tab switches; Build Pilot has no Android app yet, so its tab is the web app. The framework gains embed@1 (cross-port): a host marks the pages it embeds and the embedded app hides the chrome the host shows (its banner by default) over the user's own choice, which stays saved for standalone runs. Model: Fable (changes how GUIs work across apps). Built on Opus-free Fable session Oct 21 2026 in branch fable/patches-wrapper.",
-   "status": "archived",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "patches-wrapper",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-10-21T16:26:16.023Z",
-   "updatedAt": "2026-11-03T14:24:25.869Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Hub copy of this list (axhub.memory_* project amberx-axf, data area) held only 10 items on Oct 21 2026 while the repo snapshot held 20 — check `claude-sync status` on the VPS before trusting either; this item was added to the repo snapshot by the Fable build session.",
@@ -5983,6 +5996,19 @@
      "at": "2026-11-03T14:24:25.126Z"
     }
    ],
+   "id": "patches-wrapper",
+   "title": "Patches: Android wrapper app (Console + Pilot + axHub tabs) + embed@1",
+   "category": "",
+   "detail": "Brett, Oct 21 2026 (voice): take the Console / Pilot / axHub tab group out of the Dev Console so Console, Build Pilot and axHub are each their own app again, and make a new app, Patches, that is just one banner + a tab group showing the three apps in tabs; when an app runs inside Patches its own banner is hidden and Patches shows the one banner. Android first (Android hold lifted for Patches, Oct 21; web Patches later). Design Brett chose: native Android shell, web tabs — the Dev Console (console.amberxai.com), Build Pilot (pilot.amberxai.com) and axHub each load in an origin-locked WebView kept alive across tab switches; Build Pilot has no Android app yet, so its tab is the web app. The framework gains embed@1 (cross-port): a host marks the pages it embeds and the embedded app hides the chrome the host shows (its banner by default) over the user's own choice, which stays saved for standalone runs. Model: Fable (changes how GUIs work across apps). Built on Opus-free Fable session Oct 21 2026 in branch fable/patches-wrapper.",
+   "status": "archived",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "patches-wrapper",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-10-21T16:26:16.023Z",
+   "updatedAt": "2026-11-03T14:24:25.869Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -6160,9 +6186,16 @@
      "note": "",
      "uid": "st-x3x2j8"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "All 15 steps done: Build manager 0.2.0 (Live, Built, search, Start build now) is built and merged (see CLAUDE.md Status). Marked complete while fixing the estimates (Oct 23 2026).",
+     "at": "2026-10-23T11:41:00.284Z"
+    }
+   ],
    "id": "build-manager-history",
    "title": "Build manager: global live tracking, Built history, search, Start build now",
    "category": "",
@@ -6176,12 +6209,6 @@
    "createdAt": "2026-10-21T16:02:06.336Z",
    "updatedAt": "2026-10-23T11:41:00.284Z",
    "builtAt": "2026-10-23T11:41:00.284Z",
-   "notes": [
-    {
-     "text": "All 15 steps done: Build manager 0.2.0 (Live, Built, search, Start build now) is built and merged (see CLAUDE.md Status). Marked complete while fixing the estimates (Oct 23 2026).",
-     "at": "2026-10-23T11:41:00.284Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -6467,22 +6494,10 @@
      "note": "",
      "uid": "st-mflclr"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "axhub-web-hub-rules",
-   "title": "Harvest the AXHub web app’s hub rules into lib-hub (one contract for web + Android)",
-   "category": "",
-   "detail": "The AXHub web app (apps/axhub-web, built on Opus Oct 21 2026) reads axHub from the browser: the approvals feed through lib-hub, and the app catalog (/apps.json, hub decision #90) through its own module src/hub/feed.ts — interpretApps, the rebuilt-download-link rule, caps and the size/time/expiry wording, with 52 self-test checks. Those rules belong in lib-hub next to the approvals feed so the Android AXHub app’s Apps tab and any future app share one contract, pinned by one fixture on both ports.\n\nFable because it adds a section to a cross-port contract (spec/fixtures/hub-approvals.json) with a Kotlin twin. Related: axhub-theme-freeze (appearance@1 carrying theme bodies) touches the same apps; patches-web-settings-notify must follow the hub appearance the same way the web app does.",
-   "status": "pending",
-   "hidden": false,
-   "source": "session",
-   "pendingId": "axhub-web-hub-rules",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-10-22T01:57:53.687Z",
-   "updatedAt": "2026-10-23T11:41:00.284Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Opus build Oct 21 2026: apps/axhub-web (approvals, apps, hub status, planned areas), hub-side cross-site reads for /apps.json (axHub decision #90). Report: _claude/memory/docs/axhub-web.md. Android is on hold, so the Kotlin twin waits for the hold to lift — record it in spec/PORTING.md meanwhile.",
@@ -6497,6 +6512,19 @@
      "at": "2026-10-23T04:11:01.776Z"
     }
    ],
+   "id": "axhub-web-hub-rules",
+   "title": "Harvest the AXHub web app’s hub rules into lib-hub (one contract for web + Android)",
+   "category": "",
+   "detail": "The AXHub web app (apps/axhub-web, built on Opus Oct 21 2026) reads axHub from the browser: the approvals feed through lib-hub, and the app catalog (/apps.json, hub decision #90) through its own module src/hub/feed.ts — interpretApps, the rebuilt-download-link rule, caps and the size/time/expiry wording, with 52 self-test checks. Those rules belong in lib-hub next to the approvals feed so the Android AXHub app’s Apps tab and any future app share one contract, pinned by one fixture on both ports.\n\nFable because it adds a section to a cross-port contract (spec/fixtures/hub-approvals.json) with a Kotlin twin. Related: axhub-theme-freeze (appearance@1 carrying theme bodies) touches the same apps; patches-web-settings-notify must follow the hub appearance the same way the web app does.",
+   "status": "pending",
+   "hidden": false,
+   "source": "session",
+   "pendingId": "axhub-web-hub-rules",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-10-22T01:57:53.687Z",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -6590,9 +6618,20 @@
      "note": "",
      "uid": "st-sbsebd"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built Oct 22 2026 on Opus, branch claude/project-thread-eew3jm. Not screenshot-verified (the apps wait for axHub in the build sandbox).",
+     "at": "2026-10-22T18:47:18.545Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:26.534Z"
+    }
+   ],
    "id": "patches-plugins",
    "title": "Patches manages the plugins of the apps it hosts (Opus)",
    "category": "",
@@ -6606,16 +6645,6 @@
    "createdAt": "2026-10-22T18:37:44.249Z",
    "updatedAt": "2026-11-03T14:24:27.083Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Built Oct 22 2026 on Opus, branch claude/project-thread-eew3jm. Not screenshot-verified (the apps wait for axHub in the build sandbox).",
-     "at": "2026-10-22T18:47:18.545Z"
-    },
-    {
-     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
-     "at": "2026-11-03T14:24:26.534Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -6739,22 +6768,10 @@
      "note": "",
      "uid": "st-6lenr7"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "patches-plugins-fable",
-   "title": "Patches manages hosted apps' plugins (Fable rebuild)",
-   "category": "",
-   "detail": "Fable rebuild of the Opus build `patches-plugins` (Brett, Oct 22 2026: Fable was suggested, Opus chosen, so a Fable rebuild is parked). Revisit the embed@1 `plugins` take as a cross-port contract: the lock mode for taken hooks, the `plugins` / `plugins-enabled` messages, where plugins really run inside a host, and the Kotlin twin once the Android hold lifts. Start by reading the Opus build's report and replacing it in place.",
-   "status": "archived",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "patches-plugins-fable",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-10-22T18:37:44.308Z",
-   "updatedAt": "2026-11-03T14:24:28.286Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Oct 23 2026 (patches-settings-banner-hide): inside a host, settings are no longer greyed out; the Settings → Plugins overview is dropped instead and plugin sub-tabs render normally. Keep that when reworking the lock mode.",
@@ -6769,6 +6786,19 @@
      "at": "2026-11-03T14:24:27.688Z"
     }
    ],
+   "id": "patches-plugins-fable",
+   "title": "Patches manages hosted apps' plugins (Fable rebuild)",
+   "category": "",
+   "detail": "Fable rebuild of the Opus build `patches-plugins` (Brett, Oct 22 2026: Fable was suggested, Opus chosen, so a Fable rebuild is parked). Revisit the embed@1 `plugins` take as a cross-port contract: the lock mode for taken hooks, the `plugins` / `plugins-enabled` messages, where plugins really run inside a host, and the Kotlin twin once the Android hold lifts. Start by reading the Opus build's report and replacing it in place.",
+   "status": "archived",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "patches-plugins-fable",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-10-22T18:37:44.308Z",
+   "updatedAt": "2026-11-03T14:24:28.286Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -6892,9 +6922,16 @@
      "note": "",
      "uid": "st-1yt6mbq"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on Opus, branch ccr-6621bec6-i0xrz6 (draft PR). Web only; Kotlin twins deferred in PORTING.md.",
+     "at": "2026-10-22T23:25:53.960Z"
+    }
+   ],
    "id": "todo-manager-tabs",
    "title": "Todo manager plugin (from xGallery) + tabable plugins + Patches plugin tabs",
    "category": "",
@@ -6908,12 +6945,6 @@
    "createdAt": "2026-10-22T23:08:37.968Z",
    "updatedAt": "2026-10-22T23:25:54.201Z",
    "builtAt": "2026-10-22T23:25:53.915Z",
-   "notes": [
-    {
-     "text": "Built on Opus, branch ccr-6621bec6-i0xrz6 (draft PR). Web only; Kotlin twins deferred in PORTING.md.",
-     "at": "2026-10-22T23:25:53.960Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -7025,9 +7056,16 @@
      "note": "",
      "uid": "st-1qu4ln5"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Fixed on branch ccr-6621bec6-i0xrz6 (PR #32): _save writes under the host lock, forget unlinks under it; race test in assistant_host/test.py (58).",
+     "at": "2026-10-23T00:08:41.756Z"
+    }
+   ],
    "id": "session-close-race",
    "title": "Fix: a closed assistant session log can be written back (save/close race)",
    "category": "",
@@ -7041,17 +7079,18 @@
    "createdAt": "2026-10-23T00:07:55.175Z",
    "updatedAt": "2026-10-23T00:08:41.756Z",
    "builtAt": "2026-10-23T00:08:41.711Z",
-   "notes": [
-    {
-     "text": "Fixed on branch ccr-6621bec6-i0xrz6 (PR #32): _save writes under the host lock, forget unlinks under it; race test in assistant_host/test.py (58).",
-     "at": "2026-10-23T00:08:41.756Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
+     "at": ""
+    }
+   ],
    "id": "syscheck-autofix-jobs",
    "title": "Fix systems check Auto fix (VPS fixes over 25 s marked failed; Fix all skipped VPS Auto fix)",
    "category": "",
@@ -7065,17 +7104,18 @@
    "createdAt": "2026-10-22T20:20:34.515Z",
    "updatedAt": "2026-10-22T20:20:34.515Z",
    "builtAt": "2026-10-22T20:20:34.515Z",
-   "notes": [
-    {
-     "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
-     "at": ""
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on branch ccr-60c22f01-swyyzn, PR #29 (commit 2a52f09)",
+     "at": "2026-10-22T20:44:42.519Z"
+    }
+   ],
    "id": "syscheck-claude-on-fail",
    "title": "Systems check: launch headless Claude Code on the VPS when a fix fails, shown in the building banner",
    "category": "",
@@ -7089,12 +7129,6 @@
    "createdAt": "2026-10-22T20:34:25.869Z",
    "updatedAt": "2026-10-22T20:44:42.519Z",
    "builtAt": "2026-10-22T20:44:42.448Z",
-   "notes": [
-    {
-     "text": "Built on branch ccr-60c22f01-swyyzn, PR #29 (commit 2a52f09)",
-     "at": "2026-10-22T20:44:42.519Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -7152,9 +7186,16 @@
      "note": "",
      "uid": "st-1xhg67b"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
+     "at": "2026-10-22T21:07:43.754Z"
+    }
+   ],
    "id": "push-banner-pull-all",
    "title": "Push banner: Pull all button on the Needs main pulled in group",
    "category": "",
@@ -7168,17 +7209,18 @@
    "createdAt": "2026-10-22T21:06:39.317Z",
    "updatedAt": "2026-10-22T21:07:43.754Z",
    "builtAt": "2026-10-22T21:07:43.682Z",
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "rev": 0
+  },
+  {
    "notes": [
     {
      "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
-     "at": "2026-10-22T21:07:43.754Z"
+     "at": "2026-10-22T22:37:36.833Z"
     }
    ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "steps": []
-  },
-  {
    "id": "push-banner-claude-fix",
    "title": "Push banner: hand conflicted pulls and failed merges to headless Claude Code on the VPS (setting)",
    "category": "",
@@ -7192,12 +7234,6 @@
    "createdAt": "2026-10-22T22:31:30.552Z",
    "updatedAt": "2026-10-22T22:37:36.833Z",
    "builtAt": "2026-10-22T22:37:36.773Z",
-   "notes": [
-    {
-     "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
-     "at": "2026-10-22T22:37:36.833Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -7237,9 +7273,16 @@
      "note": "",
      "uid": "st-1o9dut6"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
+     "at": "2026-10-22T22:55:27.752Z"
+    }
+   ],
    "id": "autofix-through-mosses",
    "title": "Route every Auto fix through Mosses: axhub_call tool for Mosses; systems check + push banner send vps.run through him",
    "category": "",
@@ -7253,12 +7296,6 @@
    "createdAt": "2026-10-22T22:49:40.096Z",
    "updatedAt": "2026-10-22T22:55:27.752Z",
    "builtAt": "2026-10-22T22:55:27.670Z",
-   "notes": [
-    {
-     "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
-     "at": "2026-10-22T22:55:27.752Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -7334,9 +7371,16 @@
      "note": "",
      "uid": "st-1lbv5f"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
+     "at": "2026-10-23T00:09:00.474Z"
+    }
+   ],
    "id": "vps-run-terminal-output",
    "title": "Approved VPS/shell commands: open the terminal plugin with the command and its output once it has run",
    "category": "",
@@ -7350,12 +7394,6 @@
    "createdAt": "2026-10-23T00:04:16.316Z",
    "updatedAt": "2026-10-23T11:41:00.284Z",
    "builtAt": "2026-10-23T00:09:00.415Z",
-   "notes": [
-    {
-     "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
-     "at": "2026-10-23T00:09:00.474Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -7395,9 +7433,16 @@
      "note": "",
      "uid": "st-1k68k5q"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on branch ccr-60c22f01-swyyzn (PR #29).",
+     "at": "2026-10-23T04:06:51.531Z"
+    }
+   ],
    "id": "push-banner-branches-that-can-merge-cleanly",
    "title": "Push banner: branches that can merge cleanly",
    "category": "",
@@ -7411,17 +7456,13 @@
    "createdAt": "2026-10-23T04:06:48.309Z",
    "updatedAt": "2026-10-23T04:06:51.531Z",
    "builtAt": "2026-10-23T04:06:51.471Z",
-   "notes": [
-    {
-     "text": "Built on branch ccr-60c22f01-swyyzn (PR #29).",
-     "at": "2026-10-23T04:06:51.531Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "ai-keys",
    "title": "AI keys plugin: several Anthropic keys, pick the active one for the assistant",
    "category": "",
@@ -7435,12 +7476,13 @@
    "createdAt": "2026-10-23T00:40:17.479Z",
    "updatedAt": "2026-10-23T00:40:17.479Z",
    "builtAt": "2026-10-23T00:40:17.479Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "syscheck-live-keys-credits",
    "title": "Systems check: keys + tokens live on every load, Claude credits check with auto-switch",
    "category": "",
@@ -7454,12 +7496,13 @@
    "createdAt": "2026-10-23T00:49:33.693Z",
    "updatedAt": "2026-10-23T00:51:52.239Z",
    "builtAt": "2026-10-23T00:51:52.239Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "credits-switch-ai-keys",
    "title": "Credits check switches among AI keys saved keys and opens the AI keys dialog",
    "category": "",
@@ -7473,12 +7516,18 @@
    "createdAt": "2026-10-23T01:13:32.733Z",
    "updatedAt": "2026-10-23T01:13:32.733Z",
    "builtAt": "2026-10-23T01:13:32.733Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/framework-walkthrough-video-builder-qocfr1 (draft PR). Fable rebuild parked as walkthrough-studio-fable.",
+     "at": "2026-10-22T22:32:32.272Z"
+    }
+   ],
    "id": "walkthrough-studio",
    "title": "Walkthrough Studio: narrated framework walkthrough video assembly suite",
    "category": "",
@@ -7492,12 +7541,6 @@
    "createdAt": "2026-10-22T22:00:29.631Z",
    "updatedAt": "2026-10-22T22:32:40.585Z",
    "builtAt": "2026-10-22T22:32:32.202Z",
-   "notes": [
-    {
-     "text": "Built on Opus, branch claude/framework-walkthrough-video-builder-qocfr1 (draft PR). Fable rebuild parked as walkthrough-studio-fable.",
-     "at": "2026-10-22T22:32:32.272Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -7645,9 +7688,16 @@
      "note": "",
      "uid": "st-1j0idsv"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Oct 22 2026: Opus harvested the studio into lib-dnd, lib-workspace, lib-datagrid, lib-tree, lib-recorder, lib-docstore + library@1 parts (pending walkthrough-harvest). This Fable rebuild now covers reviewing those libraries and the parts contract (Fable suggested, Opus chosen), plus the Kotlin twins once the Android hold lifts.",
+     "at": "2026-10-22T22:57:58.594Z"
+    }
+   ],
    "id": "walkthrough-studio-fable",
    "title": "Walkthrough Studio: workspace engine (panes, layouts, dockable + floating toolbars) as a framework contract (Fable rebuild)",
    "category": "",
@@ -7661,12 +7711,6 @@
    "createdAt": "2026-10-22T22:32:28.215Z",
    "updatedAt": "2026-10-22T22:57:58.594Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Oct 22 2026: Opus harvested the studio into lib-dnd, lib-workspace, lib-datagrid, lib-tree, lib-recorder, lib-docstore + library@1 parts (pending walkthrough-harvest). This Fable rebuild now covers reviewing those libraries and the parts contract (Fable suggested, Opus chosen), plus the Kotlin twins once the Android hold lifts.",
-     "at": "2026-10-22T22:57:58.594Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -7790,9 +7834,16 @@
      "note": "",
      "uid": "st-zbpkuy"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on Opus: AXF branch claude/framework-walkthrough-video-builder-qocfr1 (PR #31) + Build-Pilot branch claude/framework-walkthrough-video-builder-qocfr1. Fable review parked in walkthrough-studio-fable.",
+     "at": "2026-10-22T23:20:51.984Z"
+    }
+   ],
    "id": "walkthrough-harvest",
    "title": "Harvest Walkthrough Studio into framework libraries with configurable features (dnd, workspace, datagrid, tree, recorder, docstore) + Build Pilot feature config",
    "category": "",
@@ -7806,12 +7857,6 @@
    "createdAt": "2026-10-22T22:57:58.529Z",
    "updatedAt": "2026-10-22T23:20:51.984Z",
    "builtAt": "2026-10-22T23:20:51.501Z",
-   "notes": [
-    {
-     "text": "Built on Opus: AXF branch claude/framework-walkthrough-video-builder-qocfr1 (PR #31) + Build-Pilot branch claude/framework-walkthrough-video-builder-qocfr1. Fable review parked in walkthrough-studio-fable.",
-     "at": "2026-10-22T23:20:51.984Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -7959,9 +8004,16 @@
      "note": "",
      "uid": "st-zlkzp8"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Live at https://axhub.amberxai.com/ since Oct 23 2026 (CLAUDE.md Status: AXHub web app). Marked complete while fixing the estimates.",
+     "at": "2026-10-23T11:41:00.284Z"
+    }
+   ],
    "id": "axhub-web-app-live-at-axhub-amberxai-com-banner-",
    "title": "axHub web app live at axhub.amberxai.com (banner, toolbar, nav)",
    "category": "",
@@ -7975,17 +8027,13 @@
    "createdAt": "2026-10-23T02:09:40.159Z",
    "updatedAt": "2026-10-23T11:41:00.284Z",
    "builtAt": "2026-10-23T11:41:00.284Z",
-   "notes": [
-    {
-     "text": "Live at https://axhub.amberxai.com/ since Oct 23 2026 (CLAUDE.md Status: AXHub web app). Marked complete while fixing the estimates.",
-     "at": "2026-10-23T11:41:00.284Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "axhub-web-rebuild",
    "title": "Rebuild axHub web on the current framework so the hub look matches the other Patches apps",
    "category": "",
@@ -7999,12 +8047,13 @@
    "createdAt": "2026-10-23T05:32:20.790Z",
    "updatedAt": "2026-10-23T05:33:18.970Z",
    "builtAt": "2026-10-23T05:33:18.963Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "syscheck-rebake",
    "title": "Systems check: one entry per app whose baked framework is out of date, Auto fix re-bakes it",
    "category": "",
@@ -8018,7 +8067,6 @@
    "createdAt": "2026-10-23T05:37:28.383Z",
    "updatedAt": "2026-10-23T05:40:04.677Z",
    "builtAt": "2026-10-23T05:40:04.677Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -8076,9 +8124,11 @@
      "note": "",
      "uid": "st-1h5mfna"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "walkthrough-studio-deploy",
    "title": "Deploy Walkthrough Studio at walkthrough.amberxai.com behind the axHub wall",
    "category": "",
@@ -8092,7 +8142,6 @@
    "createdAt": "2026-10-23T05:43:56.671Z",
    "updatedAt": "2026-10-23T05:43:56.671Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -8150,9 +8199,16 @@
      "note": "",
      "uid": "st-1og55xn"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on Opus: PR #41 (branch claude/project-thread-l3b0qo).",
+     "at": "2026-10-23T12:30:55.337Z"
+    }
+   ],
    "id": "hubstore-voice-notes",
    "title": "lib-hubstore (settings + app data on axHub, pick tables) + Voice notes console plugin (settings only)",
    "category": "",
@@ -8166,12 +8222,6 @@
    "createdAt": "2026-10-23T12:18:42.098Z",
    "updatedAt": "2026-10-23T12:30:55.345Z",
    "builtAt": "2026-10-23T12:30:55.345Z",
-   "notes": [
-    {
-     "text": "Built on Opus: PR #41 (branch claude/project-thread-l3b0qo).",
-     "at": "2026-10-23T12:30:55.337Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -8259,9 +8309,16 @@
      "note": "",
      "uid": "st-1exkimr"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Oct 24 2026: lib-hubsync (framework/libs/hubsync) builds on lib-hubstore; Voice Vault carries a Kotlin twin in app code (sync/HubSync.kt). Fold both into the cross-port contract.",
+     "at": "2026-10-24T15:07:33.295Z"
+    }
+   ],
    "id": "hubstore-fable",
    "title": "lib-hubstore as a cross-port contract (Fable rebuild)",
    "category": "",
@@ -8275,12 +8332,6 @@
    "createdAt": "2026-10-23T12:30:10.672Z",
    "updatedAt": "2026-10-24T15:07:33.295Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Oct 24 2026: lib-hubsync (framework/libs/hubsync) builds on lib-hubstore; Voice Vault carries a Kotlin twin in app code (sync/HubSync.kt). Fold both into the cross-port contract.",
-     "at": "2026-10-24T15:07:33.295Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -8374,22 +8425,10 @@
      "note": "",
      "uid": "st-dci859"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "patches-settings-banner-hide",
-   "title": "Patches settings tab group (every app + plugin tab) + banner hide / hide all / hide-for-N-minutes",
-   "category": "",
-   "detail": "Brett, Oct 23 2026. (1) Apps inside Patches: no greyed-out settings; their settings UI is a tab of Patches settings (a tab for Patches and every app / plugin tab with a settings UI); the settings hook opens Patches settings on that tab; Patches context menu gets a Settings submenu, one entry per tab. (2) plugin@1 `banner` field; every banner has Hide (keeps logging), indented Hide all banners (tooltip lists them), synced everywhere, last change wins; a timer checkbox + 2-digit minutes field: a hide lasts N minutes, then the banner shows again.",
-   "status": "archived",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "patches-settings-banner-hide",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-10-23T12:52:32.715Z",
-   "updatedAt": "2026-11-03T14:24:29.747Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Built on Opus, branch claude/project-thread-t9zktq (draft PR).",
@@ -8404,6 +8443,19 @@
      "at": "2026-11-03T14:24:29.010Z"
     }
    ],
+   "id": "patches-settings-banner-hide",
+   "title": "Patches settings tab group (every app + plugin tab) + banner hide / hide all / hide-for-N-minutes",
+   "category": "",
+   "detail": "Brett, Oct 23 2026. (1) Apps inside Patches: no greyed-out settings; their settings UI is a tab of Patches settings (a tab for Patches and every app / plugin tab with a settings UI); the settings hook opens Patches settings on that tab; Patches context menu gets a Settings submenu, one entry per tab. (2) plugin@1 `banner` field; every banner has Hide (keeps logging), indented Hide all banners (tooltip lists them), synced everywhere, last change wins; a timer checkbox + 2-digit minutes field: a hide lasts N minutes, then the banner shows again.",
+   "status": "archived",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "patches-settings-banner-hide",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-10-23T12:52:32.715Z",
+   "updatedAt": "2026-11-03T14:24:29.747Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -8545,22 +8597,10 @@
      "note": "",
      "uid": "st-cwa5c8"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "patches-settings-banner-hide-fable",
-   "title": "Patches settings tab group + banner hide switches (Fable rebuild)",
-   "category": "",
-   "detail": "Fable rebuild of the Opus build `patches-settings-banner-hide` (Brett, Oct 23 2026: Fable suggested, Opus chosen). Revisit the embed@1 settings take (tab group, settings hook focus), the banner hide state as a cross-port contract (Kotlin twin when the Android hold lifts). Start by reading the Opus build report (branch claude/project-thread-t9zktq) and replacing it in place.",
-   "status": "archived",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "patches-settings-banner-hide-fable",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-10-23T12:52:32.722Z",
-   "updatedAt": "2026-11-03T14:24:31.034Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Include hot render: Kotlin AxfRuntime re-composes on every settings change (one bump per change, unchanged saves ignored); web side built on Opus in PR #42.",
@@ -8579,6 +8619,19 @@
      "at": "2026-11-03T14:24:30.381Z"
     }
    ],
+   "id": "patches-settings-banner-hide-fable",
+   "title": "Patches settings tab group + banner hide switches (Fable rebuild)",
+   "category": "",
+   "detail": "Fable rebuild of the Opus build `patches-settings-banner-hide` (Brett, Oct 23 2026: Fable suggested, Opus chosen). Revisit the embed@1 settings take (tab group, settings hook focus), the banner hide state as a cross-port contract (Kotlin twin when the Android hold lifts). Start by reading the Opus build report (branch claude/project-thread-t9zktq) and replacing it in place.",
+   "status": "archived",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "patches-settings-banner-hide-fable",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-10-23T12:52:32.722Z",
+   "updatedAt": "2026-11-03T14:24:31.034Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -8684,9 +8737,16 @@
      "note": "",
      "uid": "st-tzh0lh"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on Opus: PR #43, branch claude/project-thread-24jq9j",
+     "at": "2026-10-23T14:55:49.072Z"
+    }
+   ],
    "id": "plugin-model-badges-update",
    "title": "Plugin model badges, open-in setting, build-engine default rules + Plugin Update plugin",
    "category": "",
@@ -8700,12 +8760,6 @@
    "createdAt": "2026-10-23T14:29:44.678Z",
    "updatedAt": "2026-10-23T14:55:49.072Z",
    "builtAt": "2026-10-23T14:55:49.000Z",
-   "notes": [
-    {
-     "text": "Built on Opus: PR #43, branch claude/project-thread-24jq9j",
-     "at": "2026-10-23T14:55:49.072Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -8901,9 +8955,16 @@
      "note": "",
      "uid": "st-g94ixp"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on Opus: PR #43, branch claude/project-thread-24jq9j",
+     "at": "2026-10-23T15:09:52.146Z"
+    }
+   ],
    "id": "plugins-menu",
    "title": "Plugins context menu + settings browser + plugin installer with archives",
    "category": "",
@@ -8917,12 +8978,6 @@
    "createdAt": "2026-10-23T14:57:50.296Z",
    "updatedAt": "2026-10-23T15:09:52.146Z",
    "builtAt": "2026-10-23T15:09:52.083Z",
-   "notes": [
-    {
-     "text": "Built on Opus: PR #43, branch claude/project-thread-24jq9j",
-     "at": "2026-10-23T15:09:52.146Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -9052,9 +9107,11 @@
      "note": "",
      "uid": "st-16bwzu8"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "ashes-ui",
    "title": "AshesUI: live UI inspector for any app (hover tooltip + inspector window)",
    "category": "",
@@ -9068,7 +9125,6 @@
    "createdAt": "2026-10-23T15:12:02.179Z",
    "updatedAt": "2026-10-23T15:25:41.808Z",
    "builtAt": "2026-10-23T15:25:41.808Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -9180,9 +9236,16 @@
      "note": "",
      "uid": "st-17nw9yx"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on branch claude/project-thread-32ym2e (Opus, Oct 23 2026).",
+     "at": "2026-10-23T11:45:08.570Z"
+    }
+   ],
    "id": "build-list-estimates-usd",
    "title": "Build lists: fix the time estimates and show costs in dollars",
    "category": "",
@@ -9196,17 +9259,13 @@
    "createdAt": "2026-10-23T11:45:08.570Z",
    "updatedAt": "2026-10-23T11:45:08.570Z",
    "builtAt": "2026-10-23T11:45:08.570Z",
-   "notes": [
-    {
-     "text": "Built on branch claude/project-thread-32ym2e (Opus, Oct 23 2026).",
-     "at": "2026-10-23T11:45:08.570Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "banner-group",
    "title": "Banner group window (one wrapper, floating, draggable, resizable)",
    "category": "",
@@ -9220,12 +9279,13 @@
    "createdAt": "2026-10-23T17:46:25.430Z",
    "updatedAt": "2026-10-23T17:46:25.430Z",
    "builtAt": "2026-10-23T17:46:25.430Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "banner-group-fable",
    "title": "Banner group window: Fable rebuild",
    "category": "",
@@ -9239,7 +9299,6 @@
    "createdAt": "2026-10-23T17:46:25.439Z",
    "updatedAt": "2026-10-23T17:46:25.439Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -9297,9 +9356,16 @@
      "note": "",
      "uid": "st-rc9xjp"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built Oct 23 2026 on Opus: branch claude/project-thread-j1ri9d, PR #30. Nav + toolbar kept (Brett). Report _claude/memory/docs/rebuilds/axhub-web-console-look.md.",
+     "at": "2026-10-23T04:23:17.154Z"
+    }
+   ],
    "id": "axhub-web-console-look",
    "title": "axHub web app: Dev Console / Patches look and layout + web harvest into lib-hub",
    "category": "",
@@ -9313,12 +9379,6 @@
    "createdAt": "2026-10-23T04:10:49.533Z",
    "updatedAt": "2026-10-23T04:23:17.214Z",
    "builtAt": "2026-10-23T04:23:17.214Z",
-   "notes": [
-    {
-     "text": "Built Oct 23 2026 on Opus: branch claude/project-thread-j1ri9d, PR #30. Nav + toolbar kept (Brett). Report _claude/memory/docs/rebuilds/axhub-web-console-look.md.",
-     "at": "2026-10-23T04:23:17.154Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -9442,9 +9502,16 @@
      "note": "",
      "uid": "st-15jygnl"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Merged in PR #50 (45d7631). CI green: android.yml run 336, latest main run 343 ships voicevault-debug.apk + app-apks.",
+     "at": "2026-10-24T11:08:03.369Z"
+    }
+   ],
    "id": "voicevault-voice-notes",
    "title": "Voice notes listener in Voice Vault (start/stop triggers, list of lists, questions, saved to axHub)",
    "category": "",
@@ -9458,12 +9525,6 @@
    "createdAt": "2026-10-23T15:47:07.297Z",
    "updatedAt": "2026-10-24T11:08:03.374Z",
    "builtAt": "2026-10-24T11:08:03.374Z",
-   "notes": [
-    {
-     "text": "Merged in PR #50 (45d7631). CI green: android.yml run 336, latest main run 343 ships voicevault-debug.apk + app-apks.",
-     "at": "2026-10-24T11:08:03.369Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -9587,9 +9648,11 @@
      "note": "",
      "uid": "st-jm4171"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "banner-working-icon",
    "title": "Banner working icon animation (all banners)",
    "category": "",
@@ -9603,12 +9666,13 @@
    "createdAt": "2026-10-23T17:50:04.908Z",
    "updatedAt": "2026-10-23T17:50:04.908Z",
    "builtAt": "2026-10-23T17:50:04.908Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "banner-working-icon-fable",
    "title": "Fable rebuild: banner working icon animation",
    "category": "",
@@ -9622,7 +9686,6 @@
    "createdAt": "2026-10-23T17:50:04.987Z",
    "updatedAt": "2026-10-23T17:50:04.987Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -9662,9 +9725,16 @@
      "note": "",
      "uid": "st-rgvui9"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/project-thread-55oakl.",
+     "at": "2026-10-23T18:22:53.000Z"
+    }
+   ],
    "id": "settings-asset",
    "title": "Settings interface as an asset type (settings-ui@1)",
    "category": "",
@@ -9678,12 +9748,6 @@
    "createdAt": "2026-10-23T18:22:53.000Z",
    "updatedAt": "2026-10-23T18:22:53.000Z",
    "builtAt": "2026-10-23T18:22:53.000Z",
-   "notes": [
-    {
-     "text": "Built on Opus, branch claude/project-thread-55oakl.",
-     "at": "2026-10-23T18:22:53.000Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -9753,9 +9817,20 @@
      "note": "",
      "uid": "st-k5t78w"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Oct 25 2026: shared-settings-interface (Opus) adds framework asset settings/console as the default for every web app with settings, a dedicated Appearance → Settings interface picker, and ships the same settings assets in every app. The Fable rebuild should keep those ids.",
+     "at": "2026-10-25T20:12:14.980Z"
+    },
+    {
+     "text": "Nov 3 2026: Patches is retired; s4 has no Patches settings tab group to feed.",
+     "at": "2026-11-03T14:24:44.230Z"
+    }
+   ],
    "id": "settings-asset-fable",
    "title": "Settings interface asset type (Fable rebuild)",
    "category": "",
@@ -9769,16 +9844,6 @@
    "createdAt": "2026-10-23T18:22:53.000Z",
    "updatedAt": "2026-11-03T14:24:44.230Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Oct 25 2026: shared-settings-interface (Opus) adds framework asset settings/console as the default for every web app with settings, a dedicated Appearance → Settings interface picker, and ships the same settings assets in every app. The Fable rebuild should keep those ids.",
-     "at": "2026-10-25T20:12:14.980Z"
-    },
-    {
-     "text": "Nov 3 2026: Patches is retired; s4 has no Patches settings tab group to feed.",
-     "at": "2026-11-03T14:24:44.230Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -9872,9 +9937,16 @@
      "note": "",
      "uid": "st-1wqnyut"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/project-thread-u0oyjm (draft PR). hubstore-fable should fold lib-hubsync in.",
+     "at": "2026-10-24T15:07:33.283Z"
+    }
+   ],
    "id": "hubsync",
    "title": "axHub sync: plugin + library so every app and device shares look, settings and data (Voice Vault installed)",
    "category": "",
@@ -9888,17 +9960,18 @@
    "createdAt": "2026-10-24T15:07:33.262Z",
    "updatedAt": "2026-10-24T15:07:33.289Z",
    "builtAt": "2026-10-24T15:07:33.289Z",
-   "notes": [
-    {
-     "text": "Built on Opus, branch claude/project-thread-u0oyjm (draft PR). hubstore-fable should fold lib-hubsync in.",
-     "at": "2026-10-24T15:07:33.283Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/project-thread-1nc43b (PR to follow).",
+     "at": "2026-10-24T12:46:13.201Z"
+    }
+   ],
    "id": "hub-status-badge",
    "title": "axHub status badge: red until settings come live from axHub, green only while they do (any app)",
    "category": "",
@@ -9912,12 +9985,6 @@
    "createdAt": "2026-10-24T12:40:52.292Z",
    "updatedAt": "2026-10-24T12:46:13.418Z",
    "builtAt": "2026-10-24T12:46:13.128Z",
-   "notes": [
-    {
-     "text": "Built on Opus, branch claude/project-thread-1nc43b (PR to follow).",
-     "at": "2026-10-24T12:46:13.201Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -9975,9 +10042,16 @@
      "note": "",
      "uid": "st-2059qi"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on branch claude/project-thread-g27t3y (draft PR).",
+     "at": "2026-10-24T16:25:29.460Z"
+    }
+   ],
    "id": "appearance-asset-tokens",
    "title": "Tab group asset + per-asset appearance tokens (apply to all, 100 icon sets)",
    "category": "",
@@ -9991,12 +10065,6 @@
    "createdAt": "2026-10-24T16:25:12.359Z",
    "updatedAt": "2026-10-24T16:25:12.359Z",
    "builtAt": "2026-10-24T16:25:29.459Z",
-   "notes": [
-    {
-     "text": "Built on branch claude/project-thread-g27t3y (draft PR).",
-     "at": "2026-10-24T16:25:29.460Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -10072,9 +10140,11 @@
      "note": "",
      "uid": "st-f13fk2"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "appearance-asset-tokens-fable",
    "title": "Tab group asset + per-asset appearance tokens (Fable rebuild)",
    "category": "",
@@ -10088,7 +10158,6 @@
    "createdAt": "2026-10-24T16:25:12.368Z",
    "updatedAt": "2026-10-24T16:25:12.368Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -10182,9 +10251,20 @@
      "note": "",
      "uid": "st-1uy01ap"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/project-thread-2ijgui",
+     "at": "2026-10-24T23:31:30.313Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:31.660Z"
+    }
+   ],
    "id": "patches-app-plugins-grid",
    "title": "Patches: plugin grid per app tab with Apply (real install/uninstall)",
    "category": "",
@@ -10198,16 +10278,6 @@
    "createdAt": "2026-10-24T23:27:02.390Z",
    "updatedAt": "2026-11-03T14:24:32.234Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Built on Opus, branch claude/project-thread-2ijgui",
-     "at": "2026-10-24T23:31:30.313Z"
-    },
-    {
-     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
-     "at": "2026-11-03T14:24:31.660Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -10247,9 +10317,16 @@
      "note": "",
      "uid": "st-fs5qqa"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:32.915Z"
+    }
+   ],
    "id": "patches-app-plugins-pilot-axhub",
    "title": "Patches Plugins per app: Pilot + axHub columns editable",
    "category": "",
@@ -10263,12 +10340,6 @@
    "createdAt": "2026-10-25T09:48:50.977Z",
    "updatedAt": "2026-11-03T14:24:33.536Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
-     "at": "2026-11-03T14:24:32.915Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -10326,9 +10397,16 @@
      "note": "",
      "uid": "st-1v7h29"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:34.282Z"
+    }
+   ],
    "id": "patches-banners-console-only",
    "title": "Banners only in the Console; Patches column in Plugins per app; banner plugin names",
    "category": "",
@@ -10342,17 +10420,13 @@
    "createdAt": "2026-10-25T10:28:58.310Z",
    "updatedAt": "2026-11-03T14:24:35.071Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
-     "at": "2026-11-03T14:24:34.282Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "codebase-changes-resume",
    "title": "Codebase changes: resume details (carry on from another Claude account) + log the first edit",
    "category": "",
@@ -10366,12 +10440,13 @@
    "createdAt": "2026-10-25T10:46:22.879Z",
    "updatedAt": "2026-10-25T14:47:07.826Z",
    "builtAt": "2026-10-25T14:47:07.826Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "vinny-offline-commands",
    "title": "Vinny runs mapped VPS + GitHub commands on triggers, no Claude needed; Auto fix tries Vinny → Mosses → Claude",
    "category": "",
@@ -10385,7 +10460,6 @@
    "createdAt": "2026-10-24T17:53:56.154Z",
    "updatedAt": "2026-10-25T14:46:42.221Z",
    "builtAt": "2026-10-25T14:46:42.221Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -10497,9 +10571,11 @@
      "note": "",
      "uid": "st-1qy6g2f"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "vinny-app-tokens",
    "title": "Vinny: app token command (where, never the value)",
    "category": "",
@@ -10513,12 +10589,18 @@
    "createdAt": "2026-10-25T10:22:26.878Z",
    "updatedAt": "2026-10-25T10:22:26.878Z",
    "builtAt": "2026-10-25T10:22:26.878Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on Opus in PR #65 (branch claude/project-thread-tpor29).",
+     "at": "2026-10-25T10:39:16.195Z"
+    }
+   ],
    "id": "handoff-session-button",
    "title": "Claude handoff: Handoff Session button",
    "category": "",
@@ -10532,17 +10614,13 @@
    "createdAt": "2026-10-25T10:39:16.114Z",
    "updatedAt": "2026-10-25T10:39:16.195Z",
    "builtAt": "2026-10-25T10:39:16.155Z",
-   "notes": [
-    {
-     "text": "Built on Opus in PR #65 (branch claude/project-thread-tpor29).",
-     "at": "2026-10-25T10:39:16.195Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "handoff-session-threads",
    "title": "Claude handoff: Handoff Session prompt recreates the open threads",
    "category": "",
@@ -10556,12 +10634,13 @@
    "createdAt": "2026-10-25T14:46:55.696Z",
    "updatedAt": "2026-10-25T14:46:55.696Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "changes-grid",
    "title": "Changes & features grid plugin",
    "category": "",
@@ -10575,12 +10654,18 @@
    "createdAt": "2026-10-25T16:38:09.847Z",
    "updatedAt": "2026-10-25T16:38:09.847Z",
    "builtAt": "2026-10-25T16:38:09.847Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/project-thread-a21f46 (draft PR). Android shell = exception to the Android hold (Brett, Oct 25 2026).",
+     "at": "2026-10-25T16:17:42.692Z"
+    }
+   ],
    "id": "amberx-droid",
    "title": "AmberX: voice + background monitoring Android app (replaces AXHub app)",
    "category": "",
@@ -10594,12 +10679,6 @@
    "createdAt": "2026-10-25T16:17:42.679Z",
    "updatedAt": "2026-10-25T16:17:42.692Z",
    "builtAt": "2026-10-25T16:17:42.679Z",
-   "notes": [
-    {
-     "text": "Built on Opus, branch claude/project-thread-a21f46 (draft PR). Android shell = exception to the Android hold (Brett, Oct 25 2026).",
-     "at": "2026-10-25T16:17:42.692Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -10711,9 +10790,11 @@
      "note": "",
      "uid": "st-1w1q1do"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "context-menu-designer",
    "title": "Context menu designer plugin: menus, chunks (own or inherited styles), floating live preview",
    "category": "",
@@ -10727,7 +10808,6 @@
    "createdAt": "2026-10-25T16:44:19.565Z",
    "updatedAt": "2026-10-25T16:44:19.565Z",
    "builtAt": "2026-10-25T16:44:19.565Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -10785,9 +10865,16 @@
      "note": "",
      "uid": "st-3scxgv"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on branch claude/project-thread-lmyb8k (PR to follow).",
+     "at": "2026-10-25T20:14:56.174Z"
+    }
+   ],
    "id": "shared-settings-interface",
    "title": "One settings interface for every app (settings/console asset + Appearance picker, synced through axHub)",
    "category": "",
@@ -10801,12 +10888,6 @@
    "createdAt": "2026-10-25T20:12:14.972Z",
    "updatedAt": "2026-10-25T20:14:56.178Z",
    "builtAt": "2026-10-25T20:14:56.178Z",
-   "notes": [
-    {
-     "text": "Built on branch claude/project-thread-lmyb8k (PR to follow).",
-     "at": "2026-10-25T20:14:56.174Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -10882,9 +10963,11 @@
      "note": "",
      "uid": "st-1py4b0z"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "android-framework-update",
    "title": "Update the Android framework: every deferred Android twin (PORTING.md)",
    "category": "",
@@ -10898,7 +10981,6 @@
    "createdAt": "2026-10-25T20:26:24.616Z",
    "updatedAt": "2026-10-25T20:26:24.629Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -11190,9 +11272,16 @@
      "note": "",
      "uid": "st-1a54z6i"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on branch claude/project-thread-lmyb8k (PR #90).",
+     "at": "2026-10-25T20:28:38.573Z"
+    }
+   ],
    "id": "activity-hold-continue",
    "title": "Activity banner: on-hold item with Continue for the Android framework update",
    "category": "",
@@ -11206,17 +11295,13 @@
    "createdAt": "2026-10-25T20:28:38.567Z",
    "updatedAt": "2026-10-25T20:28:38.573Z",
    "builtAt": "2026-10-25T20:28:38.567Z",
-   "notes": [
-    {
-     "text": "Built on branch claude/project-thread-lmyb8k (PR #90).",
-     "at": "2026-10-25T20:28:38.573Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "banner-details-reveal",
    "title": "Banner items: tapping opens their details in view again",
    "category": "",
@@ -11230,12 +11315,18 @@
    "createdAt": "2026-10-25T19:51:25.195Z",
    "updatedAt": "2026-10-25T19:51:25.195Z",
    "builtAt": "2026-10-25T19:51:25.195Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on branch claude/project-thread-l3b0qo (PR #51).",
+     "at": "2026-10-24T11:26:29.018Z"
+    }
+   ],
    "id": "voice-notes-tab",
    "title": "Voice notes: tabbable page that fetches saved notes",
    "category": "",
@@ -11249,12 +11340,6 @@
    "createdAt": "2026-10-24T11:22:35.523Z",
    "updatedAt": "2026-10-24T11:26:29.022Z",
    "builtAt": "2026-10-24T11:26:29.022Z",
-   "notes": [
-    {
-     "text": "Built on branch claude/project-thread-l3b0qo (PR #51).",
-     "at": "2026-10-24T11:26:29.018Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -11312,9 +11397,16 @@
      "note": "",
      "uid": "st-1xjy0ng"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on branch claude/project-thread-l3b0qo (PR #51).",
+     "at": "2026-10-25T19:47:51.720Z"
+    }
+   ],
    "id": "voicevault-mic-actions",
    "title": "Voice Vault: microphone off switch, per-trigger switches, custom voice actions",
    "category": "",
@@ -11328,12 +11420,6 @@
    "createdAt": "2026-10-25T19:00:48.146Z",
    "updatedAt": "2026-10-25T19:47:51.720Z",
    "builtAt": "2026-10-25T19:47:51.720Z",
-   "notes": [
-    {
-     "text": "Built on branch claude/project-thread-l3b0qo (PR #51).",
-     "at": "2026-10-25T19:47:51.720Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -11391,9 +11477,16 @@
      "note": "",
      "uid": "st-1oy95zm"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on Opus, PR #92 (branch claude/project-thread-c4xw4s).",
+     "at": "2026-10-25T20:59:28.929Z"
+    }
+   ],
    "id": "widget-arrange",
    "title": "Drag and snap banner and toolbar widgets (no overlaps)",
    "category": "",
@@ -11407,12 +11500,6 @@
    "createdAt": "2026-10-25T20:59:28.893Z",
    "updatedAt": "2026-10-25T20:59:28.929Z",
    "builtAt": "2026-10-25T20:59:28.920Z",
-   "notes": [
-    {
-     "text": "Built on Opus, PR #92 (branch claude/project-thread-c4xw4s).",
-     "at": "2026-10-25T20:59:28.929Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -11506,9 +11593,11 @@
      "note": "",
      "uid": "st-ciytkn"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "widget-arrange-fable",
    "title": "Drag and snap widgets (Fable rebuild, with Kotlin twin)",
    "category": "",
@@ -11522,7 +11611,6 @@
    "createdAt": "2026-10-25T20:59:28.940Z",
    "updatedAt": "2026-10-25T20:59:28.940Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -11598,9 +11686,16 @@
      "note": "",
      "uid": "st-1clsmes"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/project-thread-24jq9j.",
+     "at": "2026-10-25T19:43:10.936Z"
+    }
+   ],
    "id": "build-manager-sessions",
    "title": "Build manager: Sessions grid (every session, expandable to what it was asked to build)",
    "category": "",
@@ -11614,12 +11709,6 @@
    "createdAt": "2026-10-25T19:03:13.866Z",
    "updatedAt": "2026-10-25T19:43:11.171Z",
    "builtAt": "2026-10-25T19:43:10.874Z",
-   "notes": [
-    {
-     "text": "Built on Opus, branch claude/project-thread-24jq9j.",
-     "at": "2026-10-25T19:43:10.936Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -11695,9 +11784,16 @@
      "note": "",
      "uid": "st-cuula6"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built (Opus): AmberX-AXF PR #100 (claude/project-thread-139zmj) + axHub PR #8 (claude/axhub-console-pages). Merge AXF first, then axHub + Coolify redeploy.",
+     "at": "2026-10-26T02:14:34.638Z"
+    }
+   ],
    "id": "axhub-pages-console-style",
    "title": "Move axHub to console-style pages",
    "category": "",
@@ -11711,12 +11807,6 @@
    "createdAt": "2026-10-26T01:41:38.088Z",
    "updatedAt": "2026-10-26T02:14:38.680Z",
    "builtAt": "2026-10-26T02:14:35.189Z",
-   "notes": [
-    {
-     "text": "Built (Opus): AmberX-AXF PR #100 (claude/project-thread-139zmj) + axHub PR #8 (claude/axhub-console-pages). Merge AXF first, then axHub + Coolify redeploy.",
-     "at": "2026-10-26T02:14:34.638Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -11900,9 +11990,11 @@
      "note": "",
      "uid": "st-mu47q4"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "rebake-console",
    "title": "Re-bake the console (systems check row)",
    "category": "",
@@ -11916,12 +12008,18 @@
    "createdAt": "2026-10-26T22:35:28.810Z",
    "updatedAt": "2026-10-26T22:35:28.810Z",
    "builtAt": "2026-10-26T22:35:28.810Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built Oct 26 2026 on Opus: axHub branch claude/axhub-oauth, PR MossesX/axHub#9 (not merged). 394 tests. Then redeploy on Coolify and connect claude.ai with the client id + secret.",
+     "at": "2026-10-26T12:56:04.974Z"
+    }
+   ],
    "id": "axhub-oauth",
    "title": "axHub: OAuth 2.1 sign-in on /mcp so claude.ai custom connectors connect",
    "category": "",
@@ -11935,12 +12033,6 @@
    "createdAt": "2026-10-26T12:46:58.923Z",
    "updatedAt": "2026-10-26T12:56:04.974Z",
    "builtAt": "2026-10-26T12:56:04.974Z",
-   "notes": [
-    {
-     "text": "Built Oct 26 2026 on Opus: axHub branch claude/axhub-oauth, PR MossesX/axHub#9 (not merged). 394 tests. Then redeploy on Coolify and connect claude.ai with the client id + secret.",
-     "at": "2026-10-26T12:56:04.974Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -12034,9 +12126,16 @@
      "note": "",
      "uid": "st-xwarb2"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built Oct 26 2026 on Opus: axHub branch claude/approval-reasons (on top of #9), AXF branch claude/approval-reasons (on top of #102).",
+     "at": "2026-10-26T13:28:08.552Z"
+    }
+   ],
    "id": "approval-reasons-go-pass",
    "title": "Approvals say what they're for + Go pass for sessions that can't reach axHub",
    "category": "",
@@ -12050,12 +12149,6 @@
    "createdAt": "2026-10-26T13:28:08.552Z",
    "updatedAt": "2026-10-26T13:28:08.552Z",
    "builtAt": "2026-10-26T13:28:08.552Z",
-   "notes": [
-    {
-     "text": "Built Oct 26 2026 on Opus: axHub branch claude/approval-reasons (on top of #9), AXF branch claude/approval-reasons (on top of #102).",
-     "at": "2026-10-26T13:28:08.552Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -12149,9 +12242,16 @@
      "note": "",
      "uid": "st-axyvyi"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on branch claude/no-login-questions-terminal-launches (PR to follow)",
+     "at": ""
+    }
+   ],
    "id": "no-login-questions-headless-terminal",
    "title": "No questions at login + headless Claude Code sessions shown in the console Terminal",
    "category": "",
@@ -12165,12 +12265,6 @@
    "createdAt": "2026-10-26T14:39:17.269Z",
    "updatedAt": "2026-10-26T14:39:17.269Z",
    "builtAt": "2026-10-26T14:39:17.269Z",
-   "notes": [
-    {
-     "text": "Built on branch claude/no-login-questions-terminal-launches (PR to follow)",
-     "at": ""
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -12246,9 +12340,11 @@
      "note": "",
      "uid": "st-16401le"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "axhub-oauth-config-soft",
    "title": "axHub: a bad OAuth setting never stops the hub (decision #100)",
    "category": "",
@@ -12262,12 +12358,13 @@
    "createdAt": "2026-10-26T23:13:52.182Z",
    "updatedAt": "2026-10-26T23:13:52.182Z",
    "builtAt": "2026-10-26T23:13:52.182Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "banner-one-line",
    "title": "Banner text on one line: every banner title and entry, full text on hover",
    "category": "",
@@ -12281,12 +12378,13 @@
    "createdAt": "2026-10-26T23:31:24.422Z",
    "updatedAt": "2026-10-26T23:31:24.422Z",
    "builtAt": "2026-10-26T23:31:24.422Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "banner-one-line-fable",
    "title": "Banner text on one line (Fable rebuild)",
    "category": "",
@@ -12300,7 +12398,6 @@
    "createdAt": "2026-10-26T23:31:24.530Z",
    "updatedAt": "2026-10-26T23:31:24.530Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -12340,9 +12437,11 @@
      "note": "",
      "uid": "st-cxmgy3"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "amberx-router-clash",
    "title": "Fix amberx.amberxai.com 404: Traefik router name clash",
    "category": "",
@@ -12356,12 +12455,13 @@
    "createdAt": "2026-10-26T23:45:55.448Z",
    "updatedAt": "2026-10-26T23:45:55.448Z",
    "builtAt": "2026-10-26T23:45:55.448Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "banner-apply-all-keys",
    "title": "Banner settings Apply to all pane + keys re-checked while the console is open",
    "category": "",
@@ -12375,12 +12475,13 @@
    "createdAt": "2026-10-26T22:28:29.520Z",
    "updatedAt": "2026-10-26T22:28:29.520Z",
    "builtAt": "2026-10-26T22:28:29.520Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "banner-apply-all-fable",
    "title": "Banner settings Apply to all (Fable rebuild)",
    "category": "",
@@ -12394,7 +12495,6 @@
    "createdAt": "2026-10-26T22:28:29.624Z",
    "updatedAt": "2026-10-26T22:28:29.624Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -12434,23 +12534,10 @@
      "note": "",
      "uid": "st-73o828"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "apply-all-levels",
-   "title": "Banner look Apply to all (Simple/Basic/Pro/Advanced), settings levels, Sliders section",
-   "category": "",
-   "detail": "Undid #107 Apply to all pane. New look@1 engine (core/engines/looktokens.ts): look, design, behaviour and tone tokens by level and category; only changed tokens stored, CSS over the inherited theme, Compact down to no space. Banner settings: collapsible Apply to all with Simple/Basic/Pro/Advanced, collapsible categories, Reset. settings-ui@1 levels; settings/console 1.3.0 tags its items; Settings → Sliders (Simple, collapsible, Reset) applied app-wide. Branch claude/apply-all-levels.",
-   "status": "complete",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "apply-all-levels",
-   "branch": "claude/apply-all-levels",
-   "pr": "#115",
-   "mergedAt": "2026-10-27T03:33:15Z",
-   "createdAt": "2026-10-27T03:19:49.625Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "2026-10-27T03:19:49.625Z",
    "notes": [
     {
      "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
@@ -12465,6 +12552,20 @@
      "at": "2026-11-03T13:57:06.541Z"
     }
    ],
+   "id": "apply-all-levels",
+   "title": "Banner look Apply to all (Simple/Basic/Pro/Advanced), settings levels, Sliders section",
+   "category": "",
+   "detail": "Undid #107 Apply to all pane. New look@1 engine (core/engines/looktokens.ts): look, design, behaviour and tone tokens by level and category; only changed tokens stored, CSS over the inherited theme, Compact down to no space. Banner settings: collapsible Apply to all with Simple/Basic/Pro/Advanced, collapsible categories, Reset. settings-ui@1 levels; settings/console 1.3.0 tags its items; Settings → Sliders (Simple, collapsible, Reset) applied app-wide. Branch claude/apply-all-levels.",
+   "status": "complete",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "apply-all-levels",
+   "branch": "claude/apply-all-levels",
+   "pr": "#115",
+   "mergedAt": "2026-10-27T03:33:15Z",
+   "createdAt": "2026-10-27T03:19:49.625Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "2026-10-27T03:19:49.625Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -12552,22 +12653,10 @@
      "note": "",
      "uid": "st-lqiap7"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "apply-all-levels-fable",
-   "title": "Look tokens + settings levels (Fable rebuild)",
-   "category": "Design & branding",
-   "detail": "Fable recommended, Opus chosen. Replace the Opus build (branch claude/apply-all-levels): look@1 as a cross-port contract with a fixture both ports replay, the Kotlin twin when Android work resumes, and a review of every token mapping (compact at 0, inherited theme layering, banner fallbacks).",
-   "status": "archived",
-   "hidden": false,
-   "source": "pending",
-   "pendingId": "apply-all-levels-fable",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-10-27T23:01:35.774Z",
-   "updatedAt": "2026-10-28T19:31:15.654Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Moved into Refactor (Brett, Oct 27 2026 18:57: everything unfinished since 6am goes in the orchestrator).",
@@ -12582,6 +12671,19 @@
      "at": "2026-10-28T19:31:15.654Z"
     }
    ],
+   "id": "apply-all-levels-fable",
+   "title": "Look tokens + settings levels (Fable rebuild)",
+   "category": "Design & branding",
+   "detail": "Fable recommended, Opus chosen. Replace the Opus build (branch claude/apply-all-levels): look@1 as a cross-port contract with a fixture both ports replay, the Kotlin twin when Android work resumes, and a review of every token mapping (compact at 0, inherited theme layering, banner fallbacks).",
+   "status": "archived",
+   "hidden": false,
+   "source": "pending",
+   "pendingId": "apply-all-levels-fable",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-10-27T23:01:35.774Z",
+   "updatedAt": "2026-10-28T19:31:15.654Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -12669,23 +12771,10 @@
      "note": "",
      "uid": "st-bo1bqe"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "amberx-empty-shell",
-   "title": "AmberX as an empty shell for building and testing plugins",
-   "category": "",
-   "detail": "apps/amberx-droid: keep banner, toolbar, nav menu, app menu, a basic context menu, settings interface, theme/layout/style assets, voice plugin, Approvals page + alerts, the whole monitor plugin and native WatchService; remove Hub, Apps, Manage pages and trim the chrome assets; README plugin how-to.",
-   "status": "complete",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "amberx-empty-shell",
-   "branch": "claude/amberx-empty-shell",
-   "pr": "#118",
-   "mergedAt": "2026-10-27T03:54:31Z",
-   "createdAt": "2026-10-27T03:48:42.596Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "2026-10-27T03:48:42.596Z",
    "notes": [
     {
      "text": "Built Oct 26 2026 on Opus (claude.ai): branch claude/amberx-empty-shell, PR #118. test.mjs 157, tsc, vite build, axf validate 83 assets.",
@@ -12704,6 +12793,20 @@
      "at": "2026-11-03T13:57:06.541Z"
     }
    ],
+   "id": "amberx-empty-shell",
+   "title": "AmberX as an empty shell for building and testing plugins",
+   "category": "",
+   "detail": "apps/amberx-droid: keep banner, toolbar, nav menu, app menu, a basic context menu, settings interface, theme/layout/style assets, voice plugin, Approvals page + alerts, the whole monitor plugin and native WatchService; remove Hub, Apps, Manage pages and trim the chrome assets; README plugin how-to.",
+   "status": "complete",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "amberx-empty-shell",
+   "branch": "claude/amberx-empty-shell",
+   "pr": "#118",
+   "mergedAt": "2026-10-27T03:54:31Z",
+   "createdAt": "2026-10-27T03:48:42.596Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "2026-10-27T03:48:42.596Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -12791,23 +12894,10 @@
      "note": "",
      "uid": "st-18jao3v"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "fresh-look",
-   "title": "Fresh look: new default style theme + fresh appearance package",
-   "category": "",
-   "detail": "Brett, Oct 26 2026: rebuild the default style theme (the UI looked bad) and save the new look as a full appearance package named fresh. New fresh style theme, fresh-light/fresh-dark colour themes, fresh-day-night switch, made the default in the framework and every web app; fresh package per app.",
-   "status": "complete",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "fresh-look",
-   "branch": "claude/fresh-look-done",
-   "pr": "#120",
-   "mergedAt": "2026-10-27T22:25:38Z",
-   "createdAt": "2026-10-27T04:05:32.031Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "2026-10-27T04:05:32.031Z",
    "notes": [
     {
      "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
@@ -12822,6 +12912,20 @@
      "at": "2026-11-03T13:57:06.541Z"
     }
    ],
+   "id": "fresh-look",
+   "title": "Fresh look: new default style theme + fresh appearance package",
+   "category": "",
+   "detail": "Brett, Oct 26 2026: rebuild the default style theme (the UI looked bad) and save the new look as a full appearance package named fresh. New fresh style theme, fresh-light/fresh-dark colour themes, fresh-day-night switch, made the default in the framework and every web app; fresh package per app.",
+   "status": "complete",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "fresh-look",
+   "branch": "claude/fresh-look-done",
+   "pr": "#120",
+   "mergedAt": "2026-10-27T22:25:38Z",
+   "createdAt": "2026-10-27T04:05:32.031Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "2026-10-27T04:05:32.031Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -12836,22 +12940,10 @@
     "from": "detail",
     "addenda": []
    },
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
-   "id": "design-package-fable",
-   "title": "AmberX Design Package + Behaviour theme: Fable rebuild",
-   "category": "",
-   "detail": "Fable rebuild of the Opus build on rebuild/design-package-opus (Fable suggested, Opus chosen). Starts by reading _claude/memory/docs/rebuilds/design-package.md and replacing the Opus build in place: same type names (design-package, behavior-theme), data format and setting keys unless the report says why. Wire the stored-only behaviour fields (windows.stack/minimize/snap, feedback.busyCursor) into the window manager, review the Settings → Appearance picker + Everything else container, screenshots before/after, differences report.",
-   "status": "pending",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "design-package-fable",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-10-27T17:16:22.917Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Merged into enterprise-branding (Oct 27 2026); build it there.",
@@ -12866,6 +12958,19 @@
      "at": "2026-10-27T19:30:00.000Z"
     }
    ],
+   "id": "design-package-fable",
+   "title": "AmberX Design Package + Behaviour theme: Fable rebuild",
+   "category": "",
+   "detail": "Fable rebuild of the Opus build on rebuild/design-package-opus (Fable suggested, Opus chosen). Starts by reading _claude/memory/docs/rebuilds/design-package.md and replacing the Opus build in place: same type names (design-package, behavior-theme), data format and setting keys unless the report says why. Wire the stored-only behaviour fields (windows.stack/minimize/snap, feedback.busyCursor) into the window manager, review the Settings → Appearance picker + Everything else container, screenshots before/after, differences report.",
+   "status": "pending",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "design-package-fable",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-10-27T17:16:22.917Z",
+   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -13013,23 +13118,10 @@
      "note": "",
      "uid": "st-xrmv8m"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "design-packages-10",
-   "title": "10 more AmberX Design Packages",
-   "category": "",
-   "detail": "Brett, Oct 27 2026: make 10 more design packages from existing themes, framework + all 5 web apps. Themes-only packages (no extras); app copies keep the app own layout.",
-   "status": "complete",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "design-packages-10",
-   "branch": "claude/design-packages-10",
-   "pr": "#124",
-   "mergedAt": "2026-10-27T17:59:47Z",
-   "createdAt": "2026-10-27T17:25:19.327Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "2026-10-27T17:25:19.327Z",
    "notes": [
     {
      "text": "Built on branch claude/design-packages-10 (on top of PR #123).",
@@ -13048,6 +13140,20 @@
      "at": "2026-11-03T13:57:06.541Z"
     }
    ],
+   "id": "design-packages-10",
+   "title": "10 more AmberX Design Packages",
+   "category": "",
+   "detail": "Brett, Oct 27 2026: make 10 more design packages from existing themes, framework + all 5 web apps. Themes-only packages (no extras); app copies keep the app own layout.",
+   "status": "complete",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "design-packages-10",
+   "branch": "claude/design-packages-10",
+   "pr": "#124",
+   "mergedAt": "2026-10-27T17:59:47Z",
+   "createdAt": "2026-10-27T17:25:19.327Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "2026-10-27T17:25:19.327Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -13062,23 +13168,10 @@
     "from": "detail",
     "addenda": []
    },
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
-   "id": "build-orchestrator",
-   "title": "Build orchestrator plugin (Fable/Opus steps, approval at model switches, repo tracker)",
-   "category": "",
-   "detail": "Console plugin apps/console-web/plugins/build-orchestrator + tracker _claude/builds/orchestrator.json. Brett, Oct 27 2026.",
-   "status": "complete",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "build-orchestrator",
-   "branch": "claude/build-orchestrator",
-   "pr": "#122",
-   "mergedAt": "2026-10-27T18:17:28Z",
-   "createdAt": "2026-10-27T16:39:39.618Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "2026-10-27T16:39:39.618Z",
    "notes": [
     {
      "text": "Built on branch claude/build-orchestrator, PR #122.",
@@ -13097,6 +13190,20 @@
      "at": "2026-11-03T13:57:06.541Z"
     }
    ],
+   "id": "build-orchestrator",
+   "title": "Build orchestrator plugin (Fable/Opus steps, approval at model switches, repo tracker)",
+   "category": "",
+   "detail": "Console plugin apps/console-web/plugins/build-orchestrator + tracker _claude/builds/orchestrator.json. Brett, Oct 27 2026.",
+   "status": "complete",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "build-orchestrator",
+   "branch": "claude/build-orchestrator",
+   "pr": "#122",
+   "mergedAt": "2026-10-27T18:17:28Z",
+   "createdAt": "2026-10-27T16:39:39.618Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "2026-10-27T16:39:39.618Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -13111,23 +13218,10 @@
     "from": "notes",
     "addenda": []
    },
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
-   "id": "build-profiles",
-   "title": "Build profiles + Build profiles console plugin",
-   "category": "",
-   "detail": "Brett, Oct 27 2026: multiple build profiles (plans, build queue, pending builds, tracking, all work data) and a console plugin to select and save one; current one = Main framework, new one = Refactor.",
-   "status": "complete",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "build-profiles",
-   "branch": "claude/build-profiles",
-   "pr": "#127",
-   "mergedAt": "2026-10-27T22:12:19Z",
-   "createdAt": "2026-10-27T19:00:00.000Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "2026-10-27T19:30:00.000Z",
    "notes": [
     {
      "text": "Built on Opus, branch claude/build-profiles, PR #127.",
@@ -13146,6 +13240,20 @@
      "at": "2026-11-03T13:57:06.541Z"
     }
    ],
+   "id": "build-profiles",
+   "title": "Build profiles + Build profiles console plugin",
+   "category": "",
+   "detail": "Brett, Oct 27 2026: multiple build profiles (plans, build queue, pending builds, tracking, all work data) and a console plugin to select and save one; current one = Main framework, new one = Refactor.",
+   "status": "complete",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "build-profiles",
+   "branch": "claude/build-profiles",
+   "pr": "#127",
+   "mergedAt": "2026-10-27T22:12:19Z",
+   "createdAt": "2026-10-27T19:00:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "2026-10-27T19:30:00.000Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -13233,23 +13341,10 @@
      "note": "",
      "uid": "st-mzlex9"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "amberx-appearance-lock",
-   "title": "AmberX: fix the messed-up look, lock the look switch, Get the look from axHub switch",
-   "category": "",
-   "detail": "Brett, Oct 27 2026: AmberX looked broken (overlapping, wide-spaced text from the Sliders). Fix: Restore default appearance clears the Sliders (axf.look), line height never below 100%, letter spacing capped at 0.1em. New Settings → Appearance → Lock the look (greys out every look control, this device's tweaks set aside, axHub look still applies) and Get the look from axHub (developer apps; off = own saved look, no waiting). Web framework + the five web apps re-baked; Android twin deferred (PORTING.md).",
-   "status": "complete",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "amberx-appearance-lock",
-   "branch": "claude/amberx-appearance-lock",
-   "pr": "#126",
-   "mergedAt": "2026-10-27T19:22:41Z",
-   "createdAt": "2026-10-27T19:05:30.186Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "2026-10-27T19:23:01.118Z",
    "notes": [
     {
      "text": "Merged in PR #126 (branch claude/amberx-appearance-lock), Oct 27 2026.",
@@ -13268,6 +13363,20 @@
      "at": "2026-11-03T13:57:06.541Z"
     }
    ],
+   "id": "amberx-appearance-lock",
+   "title": "AmberX: fix the messed-up look, lock the look switch, Get the look from axHub switch",
+   "category": "",
+   "detail": "Brett, Oct 27 2026: AmberX looked broken (overlapping, wide-spaced text from the Sliders). Fix: Restore default appearance clears the Sliders (axf.look), line height never below 100%, letter spacing capped at 0.1em. New Settings → Appearance → Lock the look (greys out every look control, this device's tweaks set aside, axHub look still applies) and Get the look from axHub (developer apps; off = own saved look, no waiting). Web framework + the five web apps re-baked; Android twin deferred (PORTING.md).",
+   "status": "complete",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "amberx-appearance-lock",
+   "branch": "claude/amberx-appearance-lock",
+   "pr": "#126",
+   "mergedAt": "2026-10-27T19:22:41Z",
+   "createdAt": "2026-10-27T19:05:30.186Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "2026-10-27T19:23:01.118Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -13282,9 +13391,11 @@
     "from": "detail",
     "addenda": []
    },
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.assets",
    "title": "Asset system (asset@1, 13 core types, open registry)",
    "category": "Kernel & engines",
@@ -13298,12 +13409,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.engines",
    "title": "Engines: theme, layout, component styles, UAC, context menu, actions",
    "category": "Kernel & engines",
@@ -13317,12 +13429,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.kernel",
    "title": "Kernel (pure Kotlin + TypeScript core)",
    "category": "Kernel & engines",
@@ -13336,12 +13449,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.conformance",
    "title": "Porting spec + conformance fixtures",
    "category": "Kernel & engines",
@@ -13355,12 +13469,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.windows",
    "title": "Windowing engine: tab groups, floating windows, split, minimize",
    "category": "Kernel & engines",
@@ -13374,12 +13489,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.terminal",
    "title": "Output terminal",
    "category": "Kernel & engines",
@@ -13393,12 +13509,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.android.modules",
    "title": "Android framework modules",
    "category": "Android port",
@@ -13412,12 +13529,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.android.showcase",
    "title": "Android showcase app (apps/console)",
    "category": "Android port",
@@ -13431,12 +13549,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.web.core",
    "title": "Web port: core + React components",
    "category": "Web port",
@@ -13450,12 +13569,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.web.templates",
    "title": "Web templates: react-ts (Vite) and next-ts (Next.js 15)",
    "category": "Web port",
@@ -13469,12 +13589,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.engine.cli",
    "title": "Build engine CLI",
    "category": "Build engine",
@@ -13488,12 +13609,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.engine.install",
    "title": "Library installer + interactive wizard",
    "category": "Build engine",
@@ -13507,12 +13629,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.libs.browser",
    "title": "Library browser (installable)",
    "category": "Android port",
@@ -13526,12 +13649,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.librarytemplates",
    "title": "Library templates (build, port, compile new libraries)",
    "category": "Build engine",
@@ -13545,12 +13669,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.console.web",
    "title": "Web Dev Console (React/TS)",
    "category": "Dev Console",
@@ -13564,12 +13689,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.console.api",
    "title": "Console API (Python FastAPI)",
    "category": "Dev Console",
@@ -13583,12 +13709,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.console.plan",
    "title": "Planning section",
    "category": "Dev Console",
@@ -13602,12 +13729,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.console.panel",
    "title": "Server control panel",
    "category": "Dev Console",
@@ -13621,12 +13749,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.ci",
    "title": "CI: build, test, publish",
    "category": "Deploy & CI",
@@ -13640,12 +13769,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.deploy.site",
    "title": "Demo site deployment",
    "category": "Deploy & CI",
@@ -13659,12 +13789,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.web.demo",
    "title": "Web demo site",
    "category": "Web port",
@@ -13678,12 +13809,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.console.build",
    "title": "Build manager (build queue)",
    "category": "Dev Console",
@@ -13697,12 +13829,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "2026-10-17T16:21:12.015Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.console.mcp",
    "title": "MCP server (Model Context Protocol)",
    "category": "Dev Console",
@@ -13716,12 +13849,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "2026-10-17T16:21:12.015Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.modules",
    "title": "Module system: modules, extension points, services, placeholders",
    "category": "Kernel & engines",
@@ -13735,7 +13869,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -13883,9 +14016,11 @@
      "note": "",
      "uid": "st-ccvi5v"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.deploy.console",
    "title": "Console deployment (install-console.sh)",
    "category": "Deploy & CI",
@@ -13899,12 +14034,13 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.state",
    "title": "State, data cache, events, flags, config, migrations",
    "category": "Kernel & engines",
@@ -13918,7 +14054,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -14066,9 +14201,11 @@
      "note": "",
      "uid": "st-i41ob3"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.uikits",
    "title": "UI-kit switching + fallback",
    "category": "Kernel & engines",
@@ -14082,7 +14219,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -14212,9 +14348,11 @@
      "note": "",
      "uid": "st-1qcuspb"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.libs.core",
    "title": "Libraries: settings, logging, admin, accounts, profile, billing",
    "category": "Android port",
@@ -14228,7 +14366,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -14448,9 +14585,11 @@
      "note": "",
      "uid": "st-18pw1hb"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.engine.uiport",
    "title": "Import third-party UI libraries → AmberX kits",
    "category": "Build engine",
@@ -14464,7 +14603,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -14558,9 +14696,11 @@
      "note": "",
      "uid": "st-pg6f4d"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.engine.dev",
    "title": "Live reload (axf dev) + device hot reload",
    "category": "Build engine",
@@ -14574,7 +14714,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -14650,9 +14789,11 @@
      "note": "",
      "uid": "st-1jjli9"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.session",
    "title": "Session, principal, audit log",
    "category": "Kernel & engines",
@@ -14666,7 +14807,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -14796,9 +14936,11 @@
      "note": "",
      "uid": "st-19vwm36"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.python.port",
    "title": "Python / PyQt6 port",
    "category": "Python port",
@@ -14812,7 +14954,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -15122,9 +15263,11 @@
      "note": "",
      "uid": "st-gkisql"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.plugins",
    "title": "Plugin runtime (deliver features after install)",
    "category": "Kernel & engines",
@@ -15138,7 +15281,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -15322,9 +15464,11 @@
      "note": "",
      "uid": "st-2coqbf"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.work",
    "title": "Background work scheduler",
    "category": "Kernel & engines",
@@ -15338,7 +15482,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -15450,9 +15593,11 @@
      "note": "",
      "uid": "st-ej3hr3"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.showcase.packs",
    "title": "10 layouts, 10 light/dark theme pairs, 10 style packs",
    "category": "Showcase",
@@ -15466,7 +15611,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -15578,9 +15722,11 @@
      "note": "",
      "uid": "st-1swcakn"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.lib.media",
    "title": "Library: Media (video, audio, streaming, camera)",
    "category": "Showcase",
@@ -15594,7 +15740,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -15706,9 +15851,11 @@
      "note": "",
      "uid": "st-1gyuf1z"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.lib.location",
    "title": "Library: Location (GPS, maps, trails)",
    "category": "Showcase",
@@ -15722,7 +15869,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -15834,9 +15980,11 @@
      "note": "",
      "uid": "st-hn8438"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.lib.editor",
    "title": "Library: Editors (rich text, markdown, code)",
    "category": "Showcase",
@@ -15850,7 +15998,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -15962,9 +16109,11 @@
      "note": "",
      "uid": "st-55bqc2"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.lib.ai",
    "title": "Library: AI assistant (Claude, MCP)",
    "category": "Showcase",
@@ -15978,7 +16127,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -16090,9 +16238,11 @@
      "note": "",
      "uid": "st-1s2qnzj"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.lib.vps",
    "title": "Library: VPS & deploy",
    "category": "Showcase",
@@ -16106,7 +16256,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -16218,9 +16367,11 @@
      "note": "",
      "uid": "st-2xhd3i"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.lib.github",
    "title": "Library: GitHub",
    "category": "Showcase",
@@ -16234,7 +16385,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -16346,9 +16496,11 @@
      "note": "",
      "uid": "st-wr754g"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.lib.notifications",
    "title": "Library: Notifications & push",
    "category": "Showcase",
@@ -16362,7 +16514,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -16474,9 +16625,11 @@
      "note": "",
      "uid": "st-i7gyi7"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.lib.sensors",
    "title": "Library: Sensors & connectivity",
    "category": "Showcase",
@@ -16490,7 +16643,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -16602,9 +16754,11 @@
      "note": "",
      "uid": "st-1ibj9vy"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.lib.files",
    "title": "Library: Files & sync",
    "category": "Showcase",
@@ -16618,7 +16772,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -16730,9 +16883,11 @@
      "note": "",
      "uid": "st-1855a5a"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.lib.charts",
    "title": "Library: Charts & tables",
    "category": "Showcase",
@@ -16746,7 +16901,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -16858,9 +17012,11 @@
      "note": "",
      "uid": "st-r5i6d2"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.console.repo",
    "title": "Console in its own private repo",
    "category": "Dev Console",
@@ -16874,7 +17030,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -16968,9 +17123,11 @@
      "note": "",
      "uid": "st-1mbrcmx"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.lib.hub",
    "title": "lib-hub: axHub connector for every AXF app (first slice: approvals feed, hub address, locked web view)",
    "category": "Kernel & engines",
@@ -16984,7 +17141,6 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -17096,9 +17252,11 @@
      "note": "",
      "uid": "st-tw5cim"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "x.projects",
    "title": "Project manifests, Standards and the /projects tree",
    "category": "Build engine",
@@ -17112,12 +17270,18 @@
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-10-31T23:41:15.585Z",
    "builtAt": "2026-10-18T14:17:14.449Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Recovered from git history (framework/plan/pending.json at 5ebf7179); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
+     "at": "2026-10-31T23:41:15.585Z"
+    }
+   ],
    "id": "axhub-auto-approve-all",
    "title": "AXHub app: Approve everything except vps.run; waiting → approved notifications with alarm sound",
    "category": "",
@@ -17131,12 +17295,6 @@
    "createdAt": "2026-10-22T20:47:38.691Z",
    "updatedAt": "2026-10-22T20:47:38.691Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Recovered from git history (framework/plan/pending.json at 5ebf7179); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
-     "at": "2026-10-31T23:41:15.585Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -17176,9 +17334,20 @@
      "note": "",
      "uid": "st-va23tz"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Started Oct 27 2026 on Opus (claude.ai), branch claude/amberx-plugin-installer (AmberX-AXF + axHub).",
+     "at": "2026-10-27T18:30:39.442Z"
+    },
+    {
+     "text": "Recovered from git history (framework/plan/pending.json at 93814cf4); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
+     "at": "2026-10-31T23:41:15.585Z"
+    }
+   ],
    "id": "amberx-plugin-installer",
    "title": "AmberX installs plugins from axHub (no console)",
    "category": "",
@@ -17192,16 +17361,6 @@
    "createdAt": "2026-10-27T18:30:39.442Z",
    "updatedAt": "2026-10-27T18:30:39.442Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Started Oct 27 2026 on Opus (claude.ai), branch claude/amberx-plugin-installer (AmberX-AXF + axHub).",
-     "at": "2026-10-27T18:30:39.442Z"
-    },
-    {
-     "text": "Recovered from git history (framework/plan/pending.json at 93814cf4); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
-     "at": "2026-10-31T23:41:15.585Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -17295,9 +17454,16 @@
      "note": "",
      "uid": "st-i3r3wj"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Recovered from git history (framework/plan/pending.json at 783b599f); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
+     "at": "2026-10-31T23:41:15.585Z"
+    }
+   ],
    "id": "axhub-connections",
    "title": "axHub connections plugin + plugin-layout asset type + plugin-datasets@1; tmux, ntfy, Tailscale through axHub",
    "category": "",
@@ -17311,12 +17477,6 @@
    "createdAt": "2026-10-26T16:24:00.182Z",
    "updatedAt": "2026-10-26T16:24:00.182Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Recovered from git history (framework/plan/pending.json at 783b599f); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
-     "at": "2026-10-31T23:41:15.585Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -17518,9 +17678,16 @@
      "note": "",
      "uid": "st-1uez2nv"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Recovered from git history (framework/plan/pending.json at 783b599f); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
+     "at": "2026-10-31T23:41:15.585Z"
+    }
+   ],
    "id": "axhub-connections-fable",
    "title": "plugin-layout asset type + plugin-datasets@1 (Fable rebuild)",
    "category": "",
@@ -17534,12 +17701,6 @@
    "createdAt": "2026-10-26T16:24:00.195Z",
    "updatedAt": "2026-10-26T16:24:00.195Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Recovered from git history (framework/plan/pending.json at 783b599f); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
-     "at": "2026-10-31T23:41:15.585Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -17633,9 +17794,16 @@
      "note": "",
      "uid": "st-12xbedo"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Recovered from git history (framework/plan/pending.json at 0fce2192); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
+     "at": "2026-10-31T23:41:15.585Z"
+    }
+   ],
    "id": "appearance-hidden-per-app-fable",
    "title": "Fable rebuild: hidden bars per app in the appearance document",
    "category": "",
@@ -17649,12 +17817,6 @@
    "createdAt": "2026-10-25T22:58:28.715Z",
    "updatedAt": "2026-10-25T22:58:28.715Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Recovered from git history (framework/plan/pending.json at 0fce2192); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
-     "at": "2026-10-31T23:41:15.585Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -17730,22 +17892,10 @@
      "note": "",
      "uid": "st-1b9zlyh"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "patches-one-app",
-   "title": "Patches works as one app (suite mode): one banner, one menu, one search, one look",
-   "category": "",
-   "detail": "Brett (Oct 24 2026): make Patches and every app in its tabs (Console, Pilot, axHub, Todos) function like one professional app; new assets for all the apps; detailed + interactive docs. Supersedes the \"apps render whole\" rule.",
-   "status": "archived",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "patches-one-app",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-10-24T22:41:46.759Z",
-   "updatedAt": "2026-11-03T14:24:35.778Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Oct 25 2026: built on Opus, branch claude/project-thread-vcxt2b (AmberX-AXF). Docs _claude/memory/docs/patches-one-app.md + interactive guide artifact. Pilot joins on its next re-bake; Android twins deferred (PORTING.md), Fable rebuild parked as patches-one-app-fable.",
@@ -17760,6 +17910,19 @@
      "at": "2026-11-03T14:24:35.778Z"
     }
    ],
+   "id": "patches-one-app",
+   "title": "Patches works as one app (suite mode): one banner, one menu, one search, one look",
+   "category": "",
+   "detail": "Brett (Oct 24 2026): make Patches and every app in its tabs (Console, Pilot, axHub, Todos) function like one professional app; new assets for all the apps; detailed + interactive docs. Supersedes the \"apps render whole\" rule.",
+   "status": "archived",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "patches-one-app",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-10-24T22:41:46.759Z",
+   "updatedAt": "2026-11-03T14:24:35.778Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -18027,9 +18190,20 @@
      "note": "",
      "uid": "st-67go7s"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Recovered from git history (framework/plan/pending.json at b3d22af4); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
+     "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:36.456Z"
+    }
+   ],
    "id": "patches-one-app-fable",
    "title": "Fable rebuild: Patches suite mode on every port (Kotlin twins + Patches Android as a suite host)",
    "category": "",
@@ -18043,16 +18217,6 @@
    "createdAt": "2026-10-25T01:48:37.694Z",
    "updatedAt": "2026-11-03T14:24:36.456Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Recovered from git history (framework/plan/pending.json at b3d22af4); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
-     "at": "2026-10-31T23:41:15.585Z"
-    },
-    {
-     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
-     "at": "2026-11-03T14:24:36.456Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -18266,22 +18430,10 @@
      "note": "",
      "uid": "st-mk8tjx"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "pilot-remove-console-duplicates",
-   "title": "Build Pilot: uninstall the plugins the Console also has (AI assistant + agent manager)",
-   "category": "",
-   "detail": "Brett: uninstall from Pilot every plugin that is installed in the Console. The only duplicates were Pilot's own AI assistant and agent manager (Console plugins ai-assistant + agent-manager); Pilot's 7 designer plugins are not in the Console. Removed from Build-Pilot (web UI, /api/assistant + /api/agents, server modules, contract bake); assembly runs on the Console's agent manager (BP_AGENT=console). Kept: settings interface, Plugins page + catalog installs, metering, the pilot-assembler add-on.",
-   "status": "archived",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "pilot-remove-console-duplicates",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-10-25T01:46:49.283Z",
-   "updatedAt": "2026-11-03T14:24:37.109Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Built on Opus: MossesX/Build-Pilot PR #4 (branch claude/project-thread-abvc9m), docs + this entry in AmberX-AXF on the same branch name. Pilot server self-test 282 -> 198 (assistant/agent checks gone, console-backend checks added), contract tests 17/17, typecheck + build pass. Old assistant/agent data on the Pilot server is left in place, unused.",
@@ -18296,6 +18448,19 @@
      "at": "2026-11-03T14:24:37.109Z"
     }
    ],
+   "id": "pilot-remove-console-duplicates",
+   "title": "Build Pilot: uninstall the plugins the Console also has (AI assistant + agent manager)",
+   "category": "",
+   "detail": "Brett: uninstall from Pilot every plugin that is installed in the Console. The only duplicates were Pilot's own AI assistant and agent manager (Console plugins ai-assistant + agent-manager); Pilot's 7 designer plugins are not in the Console. Removed from Build-Pilot (web UI, /api/assistant + /api/agents, server modules, contract bake); assembly runs on the Console's agent manager (BP_AGENT=console). Kept: settings interface, Plugins page + catalog installs, metering, the pilot-assembler add-on.",
+   "status": "archived",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "pilot-remove-console-duplicates",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-10-25T01:46:49.283Z",
+   "updatedAt": "2026-11-03T14:24:37.109Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -18347,9 +18512,20 @@
      "note": "",
      "uid": "st-i8vem1"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/project-thread-4s5igq (includes PR #53 and #57).",
+     "at": ""
+    },
+    {
+     "text": "Recovered from git history (framework/plan/pending.json at 7bfd79a9); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
+     "at": "2026-10-31T23:41:15.585Z"
+    }
+   ],
    "id": "icon-picker-dialog",
    "title": "Icon picker dialog for the axHub and Claude connection status plugins: Static tab + 50 animated icons with Static switches",
    "category": "",
@@ -18363,16 +18539,6 @@
    "createdAt": "2026-10-24T16:40:53.711Z",
    "updatedAt": "2026-10-24T16:40:53.711Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Built on Opus, branch claude/project-thread-4s5igq (includes PR #53 and #57).",
-     "at": ""
-    },
-    {
-     "text": "Recovered from git history (framework/plan/pending.json at 7bfd79a9); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
-     "at": "2026-10-31T23:41:15.585Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -18430,9 +18596,20 @@
      "note": "",
      "uid": "st-lx3jy8"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built on Opus, PR #52 (branch claude/project-thread-8u1t0l, head de22a34): CI green, all three modules compile and their unit tests pass.",
+     "at": "2026-10-24T13:04:26.140Z"
+    },
+    {
+     "text": "Recovered from git history (framework/plan/pending.json at c7fcbb07); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
+     "at": "2026-10-31T23:41:15.585Z"
+    }
+   ],
    "id": "xselect-read-aloud",
    "title": "X Select: Read aloud in Android's text selection menu (plugin + lib-readaloud + lib-selection)",
    "category": "",
@@ -18446,16 +18623,6 @@
    "createdAt": "2026-10-24T12:35:31.891Z",
    "updatedAt": "2026-10-24T13:04:26.143Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Built on Opus, PR #52 (branch claude/project-thread-8u1t0l, head de22a34): CI green, all three modules compile and their unit tests pass.",
-     "at": "2026-10-24T13:04:26.140Z"
-    },
-    {
-     "text": "Recovered from git history (framework/plan/pending.json at c7fcbb07); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
-     "at": "2026-10-31T23:41:15.585Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -18567,9 +18734,16 @@
      "note": "",
      "uid": "st-wig1w6"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Recovered from git history (framework/plan/pending.json at 7fca09e1); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
+     "at": "2026-10-31T23:41:15.585Z"
+    }
+   ],
    "id": "assistant-cli-errors",
    "title": "Assistant: show the real Claude Code error instead of \"exited with code 1\"",
    "category": "",
@@ -18583,17 +18757,22 @@
    "createdAt": "2026-10-23T04:37:07.781Z",
    "updatedAt": "2026-10-23T04:37:08.119Z",
    "builtAt": "",
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "rev": 0
+  },
+  {
    "notes": [
     {
      "text": "Recovered from git history (framework/plan/pending.json at 7fca09e1); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:37.788Z"
     }
    ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "steps": []
-  },
-  {
    "id": "patches-app-tabs",
    "title": "Patches: any framework app can be a tab (lib-apps app directory feeds the tab group)",
    "category": "",
@@ -18607,21 +18786,18 @@
    "createdAt": "2026-10-23T04:37:07.881Z",
    "updatedAt": "2026-11-03T14:24:37.788Z",
    "builtAt": "",
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "rev": 0
+  },
+  {
    "notes": [
     {
      "text": "Recovered from git history (framework/plan/pending.json at 7fca09e1); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
-    },
-    {
-     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
-     "at": "2026-11-03T14:24:37.788Z"
     }
    ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "steps": []
-  },
-  {
    "id": "walkthrough-deploy",
    "title": "Deploy Walkthrough Studio at walkthrough.amberxai.com behind the axHub wall",
    "category": "",
@@ -18635,17 +18811,18 @@
    "createdAt": "2026-10-23T04:37:07.964Z",
    "updatedAt": "2026-10-23T04:41:21.178Z",
    "builtAt": "",
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "rev": 0
+  },
+  {
    "notes": [
     {
      "text": "Recovered from git history (framework/plan/pending.json at 7fca09e1); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
     }
    ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "steps": []
-  },
-  {
    "id": "key-manager",
    "title": "Key manager: named Claude subscription tokens + API keys, pick the active one from a dialog; drives the AI assistant and Claude Code on the VPS",
    "category": "",
@@ -18659,17 +18836,18 @@
    "createdAt": "2026-10-23T04:37:08.042Z",
    "updatedAt": "2026-10-23T04:37:08.042Z",
    "builtAt": "",
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "rev": 0
+  },
+  {
    "notes": [
     {
-     "text": "Recovered from git history (framework/plan/pending.json at 7fca09e1); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
+     "text": "Recovered from git history (framework/plan/pending.json at cf7b6424); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
     }
    ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "steps": []
-  },
-  {
    "id": "push-banner-merge-all",
    "title": "Push banner: Pending merges, Merge all (approved on axHub), Pull main into all",
    "category": "",
@@ -18683,12 +18861,6 @@
    "createdAt": "2026-10-22T20:06:34.553Z",
    "updatedAt": "2026-10-22T20:06:34.553Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Recovered from git history (framework/plan/pending.json at cf7b6424); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
-     "at": "2026-10-31T23:41:15.585Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -18758,9 +18930,20 @@
      "note": "",
      "uid": "st-18ky5wj"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Recovered from git history (framework/plan/pending.json at cf7b6424); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
+     "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:38.461Z"
+    }
+   ],
    "id": "patches-approval-tap",
    "title": "Patches: approval taps open the AXHub phone app",
    "category": "",
@@ -18774,6 +18957,12 @@
    "createdAt": "2026-10-22T20:09:10.620Z",
    "updatedAt": "2026-11-03T14:24:38.461Z",
    "builtAt": "",
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "rev": 0
+  },
+  {
    "notes": [
     {
      "text": "Recovered from git history (framework/plan/pending.json at cf7b6424); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
@@ -18781,14 +18970,9 @@
     },
     {
      "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
-     "at": "2026-11-03T14:24:38.461Z"
+     "at": "2026-11-03T14:24:39.159Z"
     }
    ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "steps": []
-  },
-  {
    "id": "banner-plugins-patches",
    "title": "Banner plugins run in Patches; console and Pilot draw none (Opus)",
    "category": "",
@@ -18802,16 +18986,6 @@
    "createdAt": "2026-10-22T20:26:47.722Z",
    "updatedAt": "2026-11-03T14:24:39.159Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Recovered from git history (framework/plan/pending.json at cf7b6424); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
-     "at": "2026-10-31T23:41:15.585Z"
-    },
-    {
-     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
-     "at": "2026-11-03T14:24:39.159Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -18935,9 +19109,20 @@
      "note": "",
      "uid": "st-10znr79"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Recovered from git history (framework/plan/pending.json at cf7b6424); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
+     "at": "2026-10-31T23:41:15.585Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
+     "at": "2026-11-03T14:24:39.837Z"
+    }
+   ],
    "id": "banner-plugins-patches-fable",
    "title": "Banner plugins run in Patches (Fable rebuild)",
    "category": "",
@@ -18951,16 +19136,6 @@
    "createdAt": "2026-10-22T20:26:47.860Z",
    "updatedAt": "2026-11-03T14:24:39.837Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Recovered from git history (framework/plan/pending.json at cf7b6424); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
-     "at": "2026-10-31T23:41:15.585Z"
-    },
-    {
-     "text": "Retired Nov 3 2026: Patches and Build Pilot are retired (Brett); see _claude/builds/reports/kill-patches-pilot.md.",
-     "at": "2026-11-03T14:24:39.837Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -19072,9 +19247,16 @@
      "note": "",
      "uid": "st-1w07wnk"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Recovered from git history (framework/plan/pending.json at d8d11087); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
+     "at": "2026-10-31T23:41:15.585Z"
+    }
+   ],
    "id": "build-descriptions-every-build-item-says-what-it",
    "title": "Build descriptions: every build item says what it does",
    "category": "",
@@ -19088,12 +19270,6 @@
    "createdAt": "2026-10-22T10:26:42.738Z",
    "updatedAt": "2026-10-22T10:27:01.442Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Recovered from git history (framework/plan/pending.json at d8d11087); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
-     "at": "2026-10-31T23:41:15.585Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -19349,9 +19525,16 @@
      "note": "",
      "uid": "st-b6yig6"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Recovered from git history (framework/plan/pending.json at 249f8464); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
+     "at": "2026-10-31T23:41:15.585Z"
+    }
+   ],
    "id": "container-access-plugin",
    "title": "Container access plugin (Fable rebuild)",
    "category": "",
@@ -19365,17 +19548,18 @@
    "createdAt": "2026-10-18T20:57:10.282Z",
    "updatedAt": "2026-10-18T20:59:50.230Z",
    "builtAt": "",
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "rev": 0
+  },
+  {
    "notes": [
     {
      "text": "Recovered from git history (framework/plan/pending.json at 249f8464); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
     }
    ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "steps": []
-  },
-  {
    "id": "snapshot-manager-plugin",
    "title": "Snapshot Manager plugin (Fable rebuild)",
    "category": "",
@@ -19389,30 +19573,12 @@
    "createdAt": "2026-10-18T20:57:10.355Z",
    "updatedAt": "2026-10-18T20:59:50.304Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Recovered from git history (framework/plan/pending.json at 249f8464); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
-     "at": "2026-10-31T23:41:15.585Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
-   "id": "systems-check-plugin",
-   "title": "Systems check + What's new plugin (Fable rebuild)",
-   "category": "",
-   "detail": "Systems check banner and dialog (grid, by service, guided setup, fix all), checks declared from the codebase without AI, What's new banner, AI switches (need the assistant + Mosses) that store an AI-written declarative check routine used when AI is off. Provides axf.syscheck@1. The Opus version is the web console plugin in the folder \"systems-check\" (built Oct 18 2026): run its uninstaller first (uninstall.mjs --all, then the lifecycle check with --after-uninstall), then build this one following plugin-lifecycle@1.",
-   "status": "archived",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "systems-check-plugin",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-10-18T20:57:10.427Z",
-   "updatedAt": "2026-10-19T00:30:25.265Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Oct 18 2026 additions to rebuild too: an AI badge on everything a model made (AI routine checks in the banner, drop-down and dialog; the What's new banner and summary) and a Test AI connection button in its settings (one tiny request through axf.llm@1 as Mosses).",
@@ -19431,11 +19597,31 @@
      "at": "2026-10-31T23:41:15.585Z"
     }
    ],
+   "id": "systems-check-plugin",
+   "title": "Systems check + What's new plugin (Fable rebuild)",
+   "category": "",
+   "detail": "Systems check banner and dialog (grid, by service, guided setup, fix all), checks declared from the codebase without AI, What's new banner, AI switches (need the assistant + Mosses) that store an AI-written declarative check routine used when AI is off. Provides axf.syscheck@1. The Opus version is the web console plugin in the folder \"systems-check\" (built Oct 18 2026): run its uninstaller first (uninstall.mjs --all, then the lifecycle check with --after-uninstall), then build this one following plugin-lifecycle@1.",
+   "status": "archived",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "systems-check-plugin",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-10-18T20:57:10.427Z",
+   "updatedAt": "2026-10-19T00:30:25.265Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Recovered from git history (framework/plan/pending.json at 249f8464); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
+     "at": "2026-10-31T23:41:15.585Z"
+    }
+   ],
    "id": "terminal-plugin",
    "title": "Terminal plugin (Fable rebuild)",
    "category": "",
@@ -19449,17 +19635,18 @@
    "createdAt": "2026-10-18T20:57:10.503Z",
    "updatedAt": "2026-10-18T20:59:50.445Z",
    "builtAt": "",
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "rev": 0
+  },
+  {
    "notes": [
     {
      "text": "Recovered from git history (framework/plan/pending.json at 249f8464); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
     }
    ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "steps": []
-  },
-  {
    "id": "feature-assist-plugin",
    "title": "Feature assistant plugin (Fable rebuild)",
    "category": "",
@@ -19473,17 +19660,22 @@
    "createdAt": "2026-10-18T20:57:10.572Z",
    "updatedAt": "2026-10-18T20:59:50.505Z",
    "builtAt": "",
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "rev": 0
+  },
+  {
    "notes": [
+    {
+     "text": "Rebuild must keep the Show/Hide switch on hideable (chrome) types in the token tree (rt.setSlotHidden = Appearance → Assets → Hidden; a hidden type greys out and never rolls). Added on Opus Oct 18 2026.",
+     "at": "2026-10-18T22:38:41.501Z"
+    },
     {
      "text": "Recovered from git history (framework/plan/pending.json at 249f8464); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
     }
    ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "steps": []
-  },
-  {
    "id": "theme-manager-plugin",
    "title": "Theme manager plugin (Fable rebuild)",
    "category": "",
@@ -19497,21 +19689,18 @@
    "createdAt": "2026-10-18T20:57:10.655Z",
    "updatedAt": "2026-10-18T22:38:41.501Z",
    "builtAt": "",
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "rev": 0
+  },
+  {
    "notes": [
-    {
-     "text": "Rebuild must keep the Show/Hide switch on hideable (chrome) types in the token tree (rt.setSlotHidden = Appearance → Assets → Hidden; a hidden type greys out and never rolls). Added on Opus Oct 18 2026.",
-     "at": "2026-10-18T22:38:41.501Z"
-    },
     {
      "text": "Recovered from git history (framework/plan/pending.json at 249f8464); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
     }
    ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "steps": []
-  },
-  {
    "id": "claude-badge-plugin",
    "title": "Claude badge plugin (Fable rebuild)",
    "category": "",
@@ -19525,17 +19714,18 @@
    "createdAt": "2026-10-18T22:30:06.923Z",
    "updatedAt": "2026-10-18T22:30:06.923Z",
    "builtAt": "",
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "rev": 0
+  },
+  {
    "notes": [
     {
      "text": "Recovered from git history (framework/plan/pending.json at 249f8464); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
      "at": "2026-10-31T23:41:15.585Z"
     }
    ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "steps": []
-  },
-  {
    "id": "plugin-switches",
    "title": "Plugin switches plugin (Fable rebuild)",
    "category": "",
@@ -19549,17 +19739,13 @@
    "createdAt": "2026-10-19T11:10:43.137Z",
    "updatedAt": "2026-10-19T11:10:43.137Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Recovered from git history (framework/plan/pending.json at 249f8464); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.",
-     "at": "2026-10-31T23:41:15.585Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "help-mode",
    "title": "Help mode: a switch that teaches Brett his own apps",
    "category": "Framework",
@@ -19573,7 +19759,6 @@
    "createdAt": "2026-11-01T07:51:58.115Z",
    "updatedAt": "2026-11-01T07:52:02.425Z",
    "builtAt": "2026-11-01T07:52:02.425Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -19715,7 +19900,8 @@
      "note": "",
      "uid": "st-mvxj7p3d0eyc8w"
     }
-   ]
+   ],
+   "rev": 0
   }
  ]
 }

@@ -81,9 +81,11 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
   const spacing = runtime.spacing();
   // The viewport cut-offs (layout tokens) stamp data-fx-tiny / -small / -narrow / -medium / -large on the root; a width change re-applies them.
   const viewport = runtime.viewportKey();
+  // Token overrides (control@1 axf.tokens.*) and the nav's per-device state (collapsed, dragged width) compile in too.
+  const styleKey = runtime.styleSettingsKey();
   useLayoutEffect(() => {
     runtime.applyTo(document.documentElement);
-  }, [runtime, state.active, hidden, spacing, viewport]);
+  }, [runtime, state.active, hidden, spacing, viewport, styleKey]);
 
   // Extra tokens per asset (Settings → Appearance → Assets; core/engines/customize.ts) as one sheet.
   const customSheet = runtime.customSheet();
