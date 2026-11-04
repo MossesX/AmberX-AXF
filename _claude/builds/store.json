@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 640,
- "updatedAt": "2026-11-04T11:12:22.099Z",
+ "rev": 643,
+ "updatedAt": "2026-11-04T11:15:33.268Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -72083,14 +72083,14 @@
    "title": "Expenses port: bring Expenses into AmberX-AXF as its own app",
    "category": "Apps",
    "detail": "Port MossesX/Expense (live amberx-expenses) into apps/expenses with history; framework bake, axHub look, Molly frame; deploy from AXF on the same /data volume with rollback; API/MCP/CLI; report.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/expenses-port",
    "pr": "",
    "createdAt": "2026-11-04T11:09:10.279Z",
-   "updatedAt": "2026-11-04T11:11:28.331Z",
+   "updatedAt": "2026-11-04T11:15:32.401Z",
    "builtAt": "",
    "notes": [
     {
@@ -72128,12 +72128,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-04T11:12:51.322Z",
+     "note": "MossesX/Expense = the real app (25 commits, 336 files, live amberx-expenses, Brett ledger 524 entries). MossesX/Expenses = README + CLAUDE.md only, 4 commits, nothing to port.",
+     "rev": 2,
      "createdAt": "2026-11-04T11:09:10.280Z",
-     "updatedAt": "2026-11-04T11:09:10.280Z"
+     "updatedAt": "2026-11-04T11:12:51.356Z"
     },
     {
      "id": "s2",
@@ -72150,12 +72150,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-04T11:12:52.050Z",
+     "note": "git subtree add --prefix=apps/expenses (585ed90f8), 25 upstream commits kept",
+     "rev": 2,
      "createdAt": "2026-11-04T11:09:10.280Z",
-     "updatedAt": "2026-11-04T11:09:10.280Z"
+     "updatedAt": "2026-11-04T11:12:52.103Z"
     },
     {
      "id": "s3",
@@ -72172,12 +72172,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-04T11:15:32.401Z",
+     "note": "Manifest, Molly frame + nav/app-menu/toolbar/xlayout, docs. UI kept on vendored @axf/core look under a shrink-only conform baseline (923 findings); re-theming onto AXF engines = follow-up.",
+     "rev": 2,
      "createdAt": "2026-11-04T11:09:10.280Z",
-     "updatedAt": "2026-11-04T11:09:10.280Z"
+     "updatedAt": "2026-11-04T11:15:32.443Z"
     },
     {
      "id": "s4",
@@ -72254,7 +72254,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -172,7 +172,7 @@ fi
 say "Live on $IMAGE:$REV; ledger $BEFORE → $AFTER (users entries hash)"
 printf '{"image":"%s","rev":"%s","before":"%s","after":"%s","at":"%s"}\n' "$IMAGE:$REV" "$REV" "$BEFORE" "$AFTER" "$(date -u +%FT%TZ)" > "$STATE/last-deploy.json"
 # keep the last three AXF builds, never the pre-axf rollback image
-docker images "$IMAGE" --format '{{.Tag}}' | grep -vE '^(latest|'"$REV"')$' | tail -n +3 | while read -r t; do docker rmi "$IMAGE:$t" >/dev/null 2>&1 || true; done
+docker images "$IMAGE" --format '{{.Tag}}' | grep -vE '^(latest|'"$REV"')$' | tail -n +3 | while read -r t; do docker rmi "$IMAGE:$t" >/dev/null 2>&1 || true; done || true
 
 # ---- 8. auto-update (from main, never from SRC) ----
 if [ "${INSTALL_CRON:-1}" = 1 ]; then
