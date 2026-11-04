@@ -4,6 +4,9 @@
  *
  *   axf init <dir> [--name "My App"] [--id my-app] [--template react-ts|next-ts|android-compose] [--targets web,desktop,android] [--boilerplate notes] [--libraries browser] [build options]
  *            project manifest: [--repo owner/name] [--repo-exists] [--visibility private] [--description "…"] [--kind app]
+ *                              [--for-framework true|false]  (is the app for the framework's own development? then its
+ *                              API / MCP / CLI commands get voice commands: framework/cli/voice-commands.mjs)
+ *   axf voice surface|generate|check|registry|help|say|bake …   voice commands per app (same as node framework/cli/voice-commands.mjs)
  *   axf project validate|init|list|rules|schema …   project manifests (same as node framework/cli/project.mjs)
  *   axf options [dir] [--framework] [build options]   show or change build options on an existing app
  *   axf claude-project [dir] [--where github,vps,device] [--port bake|rebuild|no] …   make any folder a Claude project
@@ -163,6 +166,9 @@ try {
           ...(flags.visibility ? { visibility: String(flags.visibility) } : {}),
           ...(flags.description ? { description: String(flags.description) } : {}),
           ...(flags.kind ? { kind: String(flags.kind) } : {}),
+          // --for-framework [true|false]: is this app for the framework's own development? (default: true inside the
+          // AmberX-AXF repo, false elsewhere). True = its API / MCP / CLI commands get voice commands (voice-command@1).
+          ...(flags['for-framework'] !== undefined ? { forFramework: !/^(false|off|no|0)$/i.test(String(flags['for-framework'])) } : {}),
         },
         libraries: flags.libraries ? String(flags.libraries).split(',').map((l) => ({ library: l.trim(), params: Object.fromEntries([].concat(flags.param ?? []).map((kv) => { const [k, ...v] = String(kv).split('='); return [k, v.join('=')]; })) })) : [],
         log: (m) => console.log(c.dim(m)),
@@ -178,6 +184,13 @@ try {
     case 'claude-project': {
       const { run } = await import('./claude-project.mjs');
       await run(process.argv.slice(3));
+      break;
+    }
+    case 'voice': {
+      // Delegates to framework/cli/voice-commands.mjs (surface, generate, check, registry, help, say, bake).
+      const { spawnSync } = await import('node:child_process');
+      const r = spawnSync(process.execPath, [join(FRAMEWORK_DIR, 'cli/voice-commands.mjs'), ...process.argv.slice(3)], { stdio: 'inherit' });
+      process.exitCode = r.status ?? 1;
       break;
     }
     case 'project': {

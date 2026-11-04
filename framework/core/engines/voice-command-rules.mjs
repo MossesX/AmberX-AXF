@@ -29,7 +29,7 @@ export const VOICE_SLOT_TYPES = ['text', 'number', 'money', 'date', 'choice', 'i
 /** Where a command runs: a REST route ("POST /api/x"), an MCP tool name, a CLI line, a web action id in the open app. */
 export const VOICE_TRANSPORTS = ['api', 'mcp', 'cli', 'action'];
 export const VOICE_SOURCES = ['generated', 'authored', 'mixed'];
-export const VOICE_LIMITS = { commands: 600, phrases: 12, slots: 12, phrase: 120, wake: 6, title: 120, say: 200, help: 200, options: 40 };
+export const VOICE_LIMITS = { commands: 1500, phrases: 12, slots: 12, phrase: 120, wake: 6, title: 120, say: 200, help: 200, options: 40 };
 /** Words that answer a confirm question. */
 export const VOICE_YES = ['yes', 'yeah', 'yep', 'yup', 'confirm', 'confirmed', 'do it', 'go ahead', 'ok', 'okay', 'sure', 'bet', 'say less'];
 export const VOICE_NO = ['no', 'nope', 'cancel', 'stop', 'never mind', 'nevermind', 'forget it', 'abort'];
@@ -394,7 +394,9 @@ export function generateCommand(entry, app = '') {
   const req = required.filter((n) => slots[n]);
   // two text slots in a row cannot be heard apart: keep the declared order, and offer the typed-first order too
   const typedFirst = [...req].sort((a, b) => (slots[a].type === 'text' ? 1 : 0) - (slots[b].type === 'text' ? 1 : 0));
-  const tails = uniq([req, typedFirst].map((o) => o.map((n) => `{${n}}`).join(' ')));
+  // two text slots in a row get the second one's name between them ("{path} value {value}")
+  const tailOf = (o) => o.map((n, i) => (i > 0 && slots[o[i - 1]].type === 'text' && slots[n].type === 'text' ? `${words(slots[n].say)[0] || n.toLowerCase()} {${n}}` : `{${n}}`)).join(' ');
+  const tails = uniq([req, typedFirst].map(tailOf));
   const base = words(title).filter((w) => !/[{}]/.test(w)).join(' ');
   const short = iw.join(' ');
   const noun = ['get', 'list', 'show'].includes(iw[0]) && iw.length > 1 ? iw.slice(1).join(' ') : '';

@@ -46,7 +46,7 @@
         },
         "commands": {
           "type": "array",
-          "maxItems": 600,
+          "maxItems": 1500,
           "items": {
             "type": "object",
             "required": [

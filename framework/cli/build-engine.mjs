@@ -12,6 +12,7 @@ import { navStyleErrors, navStyleSchemaProperties } from '../core/engines/navsty
 import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../core/engines/agent-card-rules.mjs';
 import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engines/job-type-rules.mjs';
 import { VOICE_COMMAND_TYPE, voiceCommandErrors, voiceCommandSchemaProperties } from '../core/engines/voice-command-rules.mjs';
+import { buildAsset as buildVoiceAsset, writeAsset as writeVoiceAsset } from './voice-commands.mjs';
 import { CARD_TYPE, cardErrors, cardSchemaProperties } from '../core/engines/card-rules.mjs';
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
 import { jsonSchemas as sessionJsonSchemas, REGISTRY as SESSION_REGISTRY } from '../core/session-schema.mjs';
@@ -594,7 +595,14 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
   // Project manifest (project-manifest@1): every template ships one; fill in this app's identity and repo.
   // The build engine never loads or compiles a project without a validated manifest.
   log(`• writing ${PROJECT_MANIFEST_FILE}`);
-  writeProjectManifest(dest, { name, appId, template, targets, project });
+  const projectManifest = writeProjectManifest(dest, { name, appId, template, targets, project });
+  // voice-command@1: an app for the framework's own development ships voice commands for every command it exposes,
+  // from day one (its web actions now; its API / MCP / CLI as it grows: framework/cli/voice-commands.mjs generate).
+  if (projectManifest.framework?.forFramework === true) {
+    log('• writing src/assets/voice-command (forFramework app: voice commands for its commands)');
+    const app = { folder: basename(dest), dir: dest, name: projectManifest.name, manifest: projectManifest, forFramework: true };
+    writeVoiceAsset(app, buildVoiceAsset(app).asset);
+  }
 
   // Pre-build configuration: libraries chosen in the console / boilerplate are installed with their parameters.
   const installed = [];
@@ -655,7 +663,10 @@ export function writeProjectManifest(dest, { name, appId, template, targets = []
   m.description = project.description ?? m.description ?? '';
   if (project.kind) m.kind = project.kind;
   m.platforms = project.platforms ?? (targets.length ? targets.filter((t) => ['web', 'android', 'desktop', 'server', 'python', 'ios', 'cli'].includes(t)) : m.platforms);
-  m.framework = { ...m.framework, relation: m.framework?.relation ?? 'built-on', version: FRAMEWORK_VERSION, template, appManifest: 'axf.manifest.json' };
+  // forFramework (Brett, Nov 4 2026): every app notes whether it is for the framework's own development. Given, else
+  // true for an app made inside the AmberX-AXF repo, false elsewhere. True = voice commands for its API / MCP / CLI.
+  const forFramework = typeof project.forFramework === 'boolean' ? project.forFramework : typeof m.framework?.forFramework === 'boolean' && !inside ? m.framework.forFramework : inside?.repo === 'MossesX/AmberX-AXF';
+  m.framework = { ...m.framework, relation: m.framework?.relation ?? 'built-on', version: FRAMEWORK_VERSION, template, appManifest: 'axf.manifest.json', forFramework };
   m.repo = { ...m.repo, host: m.repo?.host ?? 'github', owner, name: repoName, exists, visibility: project.visibility ?? m.repo?.visibility ?? 'private', ...(exists ? { url: `https://github.com/${owner}/${repoName}`, defaultBranch: 'main' } : {}) };
   if (!exists && m.repo.url) delete m.repo.url;
   m.location = inside ?? { repo: `${owner}/${repoName}`, path: '.' };

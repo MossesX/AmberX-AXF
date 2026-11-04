@@ -182,6 +182,7 @@ jobs:
             npx -y tsx framework/spec/check-console-commands.mts       # console commands (control@1 console domain): catalog, resolve by id/title/words, action policy, clients, runner, messages
             node framework/spec/check-plugin-commands.mjs               # plugin-commands@1: every plugin's commands and reads from routes, actions, data folder and plugin.json; projections; every plugin covered
             npx -y tsx framework/spec/check-agent-card.mts             # agent-card@1: registry, fixture replay, validators agree, four starters, schema
+            node framework/cli/voice-commands.mjs check                 # voice-command@1: every forFramework app's API / MCP / CLI commands and actions have voice phrases (src/assets/voice-command/<app>.json)
             npx -y tsx framework/spec/check-job-type.mts               # job-type@1: registry, fixture replay, validators agree, starter job types, schema
             npx -y tsx framework/spec/check-voice-command.mts          # voice-command@1: registry, fixture replay (generate, match, confirm, help, coverage, merge), validators agree, every voice-command asset, schema, forFramework rule
             npx -y tsx framework/spec/check-headless-tabs.mts          # headless tabs: live cost meter + context chain (deploy/claude-meter.mjs), terminal pure helpers
