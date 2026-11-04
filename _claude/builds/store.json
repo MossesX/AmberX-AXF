@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 915,
- "updatedAt": "2026-11-04T19:49:35.574Z",
+ "rev": 916,
+ "updatedAt": "2026-11-04T19:51:49.311Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -82690,9 +82690,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/fable-packager",
-   "pr": "",
+   "pr": "#336",
    "createdAt": "2026-11-04T19:31:11.060Z",
-   "updatedAt": "2026-11-04T19:45:34.437Z",
+   "updatedAt": "2026-11-04T19:51:48.344Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -82829,7 +82829,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
