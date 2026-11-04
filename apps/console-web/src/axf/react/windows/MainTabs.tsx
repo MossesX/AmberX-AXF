@@ -149,7 +149,7 @@ export function MainTabsArea({ views }: { views: ViewMap }) {
   const findTab = useCallback((tabId: string) => { for (const g of Object.values(wm.state.groups)) { const i = g.tabs.findIndex((t) => t.id === tabId); if (i >= 0) return { g, i, tab: g.tabs[i]! }; } return null; }, [wm]);
   const currentGroup = useCallback((): TabGroup | null => {
     const gs = mainGroups();
-    return gs.find((g) => g.id === current.current) ?? gs.find((g) => tabView(activeTab(g) ?? { kind: '' }) === rt.state.view) ?? gs[0] ?? null;
+    return gs.find((g) => g.id === current.current) ?? gs.find((g) => tabView(activeTab(g) ?? { kind: '' }) === rt.getState().view) ?? gs[0] ?? null;
   }, [mainGroups, rt]);
   /** a tab id, a screen id or a screen's title → the tab (main area first, then floating windows) */
   const resolveTab = useCallback((q: string) => {
@@ -264,7 +264,7 @@ export function MainTabsArea({ views }: { views: ViewMap }) {
   // the active tab of the group in use is the screen the app shows (nav highlight, page title, console "here")
   useEffect(() => wm.subscribe(() => {
     const g = currentGroup(); const v = g ? tabView(activeTab(g) ?? { kind: '' }) : null;
-    if (v && v !== rt.state.view && viewsRef.current[v]) rt.navigateHere(v);
+    if (v && v !== rt.getState().view && viewsRef.current[v]) rt.navigateHere(v);
     const a = g && activeTab(g); if (a) mru.current = touchOrder(mru.current, a.id);
   }), [wm, rt, currentGroup]);
   // save the session (debounced) whenever the dock or the pins change

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T00:37:56.640Z",
+ "updatedAt": "2026-11-04T01:46:59.655Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3740,7 +3740,7 @@
    "branch": "claude/gizmo-companion",
    "pr": "#296",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-03T23:57:12.826Z",
+   "updatedAt": "2026-11-04T01:15:50.561Z",
    "builtAt": "",
    "notes": [
     {
@@ -4100,8 +4100,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T01:15:50.561Z",
      "note": "",
      "uid": "st-mw1927q512l9n0"
     }
@@ -4117,11 +4117,16 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/plugin-lazy-load",
-   "pr": "",
+   "pr": "#298",
    "createdAt": "2026-11-03T22:55:16.843Z",
-   "updatedAt": "2026-11-04T00:11:12.645Z",
+   "updatedAt": "2026-11-04T01:24:29.253Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #298",
+     "at": "2026-11-04T01:24:29.253Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -4138,8 +4143,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T00:40:43.360Z",
      "note": "",
      "uid": "st-mw1ad3pr04dhfd"
     },
@@ -4156,8 +4161,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T00:41:46.533Z",
      "note": "",
      "uid": "st-mw1ad3pr055ffm"
     },
@@ -4193,9 +4198,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T23:03:01.354Z",
-   "updatedAt": "2026-11-03T23:04:15.928Z",
+   "updatedAt": "2026-11-04T00:56:46.854Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "#270 auto-land merged (3caf0ee0) after two landing fixes (THREADS plugin references; UI Review read through the push banner's ui-review@1 route). #267 closed as superseded by #284. #251/#254 set to draft so auto-merge leaves them for Brett.",
+     "at": "2026-11-04T00:56:46.854Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -4212,10 +4222,10 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T00:55:26.046Z",
      "note": "",
-     "uid": "st-mw1adfon08byz9"
+     "uid": "st-mw1an31y08kual"
     },
     {
      "id": "s2",
@@ -4233,7 +4243,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1adfon09n9wc"
+     "uid": "st-mw1an31y09ppg8"
     },
     {
      "id": "s3",
@@ -4251,7 +4261,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1adfon0acxc1"
+     "uid": "st-mw1an31y0ants3"
     },
     {
      "id": "s4",
@@ -4269,7 +4279,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1adfon0bjteu"
+     "uid": "st-mw1an31y0bn4qk"
     },
     {
      "id": "s5",
@@ -4284,10 +4294,10 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T00:56:03.656Z",
      "note": "",
-     "uid": "st-mw1adfon0cl6wg"
+     "uid": "st-mw1an31y0c6l63"
     },
     {
      "id": "s6",
@@ -4305,7 +4315,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1adfon0djrrf"
+     "uid": "st-mw1an31y0dvaoi"
     },
     {
      "id": "s7",
@@ -4323,7 +4333,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1adfon0el0oz"
+     "uid": "st-mw1an31y0eizui"
     }
    ]
   },
@@ -4337,11 +4347,16 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/browser-automation",
-   "pr": "",
+   "pr": "#299",
    "createdAt": "2026-11-04T00:31:47.837Z",
-   "updatedAt": "2026-11-04T00:32:29.268Z",
+   "updatedAt": "2026-11-04T01:43:43.665Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #299; PR #299 names s1, s2, s3 done",
+     "at": "2026-11-04T01:43:43.665Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -4358,8 +4373,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T00:48:26.942Z",
      "note": "",
      "uid": "st-mw1dt95p0h99uo"
     },
@@ -4376,8 +4391,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T00:57:39.733Z",
      "note": "",
      "uid": "st-mw1dt95p0i53rr"
     },
@@ -4394,9 +4409,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-04T01:43:43.665Z",
+     "note": "PR #299 (claude/browser-automation)",
      "uid": "st-mw1dt95p0j4y85"
     },
     {
@@ -4632,6 +4647,375 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw1dt95p0wc6al"
+    }
+   ]
+  },
+  {
+   "id": "profile-switcher-widget",
+   "title": "Profile switcher widget (filter builds by profile, All profiles, attach to any toolbar or banner)",
+   "category": "Builds",
+   "detail": "What Brett said (verbatim, Nov 3 2026, voice): \"I need a plugin that makes a widget that can be attached to a toolbar or a banner or whatever, that lets you select their build package. Also, select something that combines all build profiles.\" Addendum 1: \"So basically it's like a filter. They're all shown everywhere, but only one of them is rendered. Basically make it a filter. Always just show everything in every build profile, but it just effectively filters to hide them.\" Addendum 2: \"That said, it's gonna act upon what's visible.\" Profiles are a view filter (multi-select, All = no filter) shared by every builds table; bulk actions act only on what is visible; the active profile stays the target for new builds. Assigned agent: Ping Paulie (no Polo card).",
+   "status": "running",
+   "hidden": false,
+   "source": "voice",
+   "pendingId": "",
+   "branch": "claude/profile-switcher-widget",
+   "pr": "",
+   "createdAt": "2026-11-04T00:40:48.340Z",
+   "updatedAt": "2026-11-04T01:30:10.669Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Assigned: Ping Paulie (headless Opus session, worktree /root/axf-builds/profile-switcher-widget, branch claude/profile-switcher-widget)",
+     "at": "2026-11-04T00:41:54.056Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Profile switcher widget (console plugin profile-switcher): chip with active profile, colour dot, counts; dropdown lists every profile with counts; tap to switch; Manage profiles link",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T01:19:41.454Z",
+     "note": "",
+     "uid": "st-mw1e4to606peb2"
+    },
+    {
+     "id": "s2",
+     "text": "Filter model: one shared profile view filter (multi-select, All = no filter) used by every builds table, Profile column, 'Filtered: X - N hidden' note with Show all; new builds still go to the active profile",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1e4to6078k75"
+    },
+    {
+     "id": "s3",
+     "text": "Attach anywhere: hook@1 widget droppable on drop-target@1 hosts (toolbars, banners); context menu Add to toolbar / Add to banner; default on console top toolbar",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1e4to608xvxc"
+    },
+    {
+     "id": "s4",
+     "text": "Widget settings (counts, compact/full, hidden profiles, order) + REST/MCP/CLI profiles_list, profile_select, profile_current, profile_filter; bulk actions act on the visible filter",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1e4to609qwnz"
+    },
+    {
+     "id": "s5",
+     "text": "Tests/type-check, phone + desktop screenshots, UI Review item, report _claude/builds/reports/profile-switcher-widget.md, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1e4to60axzr8"
+    },
+    {
+     "id": "s11",
+     "text": "Adopt the profile filter in the remaining builds tables: Orchestrator view (needs an all-profiles projection), Pending, Queue, Plan, Tracker, Git status board, Crew, Home cards; existing bulk CLI/MCP commands (land-all, merge batch) take resolveFilter + profiles arg",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1g75cz01rkbl"
+    },
+    {
+     "id": "s7-6",
+     "text": "Adopt the profile filter in the remaining builds tables: Orchestrator view (needs an all-profiles projection), Pending, Queue, Plan, Tracker, Git status board, Crew, Home cards; existing bulk CLI/MCP commands (land-all, merge batch) take resolveFilter + profiles arg",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1gdizs01mlwb"
+    },
+    {
+     "id": "s8-7",
+     "text": "Adopt the profile filter in the remaining builds tables: Orchestrator view (needs an all-profiles projection), Pending, Queue, Plan, Tracker, Git status board, Crew, Home cards; existing bulk CLI/MCP commands (land-all, merge batch) take resolveFilter + profiles arg",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1g9jpk01cth4"
+    }
+   ]
+  },
+  {
+   "id": "main-area-tabs",
+   "title": "Main area tab group (tabs, positions, float and dock, split)",
+   "category": "Console > Shell",
+   "detail": "What Brett said (Nov 3 2026, voice, verbatim): \"Which build loads the windows in a tab group in the main area?\" -> none yet -> \"Build that now.\" Earlier (follow-ups.md): main-area tab group - persistent tabs, right-click for settings, position top/left/right/bottom, drag out to float, drop back to dock, built on the dock engine #245. Folds in 'detach anything in the main area' (pending plugin-floatable). Booked to Snap Sully (no Polo card).",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/main-area-tabs",
+   "pr": "",
+   "createdAt": "2026-11-04T01:34:59.457Z",
+   "updatedAt": "2026-11-04T01:34:59.457Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Main area becomes a tab group on the dock engine: every screen/plugin opens as a tab (icon, title, close, dirty dot); tabs persist across reloads; reopen closed tab; overflow scroll + list menu; middle-click / close others / close to the right",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1gdizs022vpa"
+    },
+    {
+     "id": "s2",
+     "text": "Tab position top / bottom / left stack / right stack (setting + right-click on the strip)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1gdizt03zq3k"
+    },
+    {
+     "id": "s3",
+     "text": "Float and dock: drag a tab out to float (shared window layer, resize grips), drag a window title onto the strip to dock (drop indicator), Float / Dock in tab + window menus, split by dropping a tab on an edge (folds in plugin-floatable)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1gdizt04vo1l"
+    },
+    {
+     "id": "s4",
+     "text": "Tab context menu (Settings, Float, Split, Pin, Duplicate, Close) + strip menu -> Tab group settings (position, size, icons, close buttons, max tabs, open as tab vs replace, restore on start, animation); in main Settings; REST + MCP + CLI (tabs_list, tab_open, tab_close, tab_float, tab_dock)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1gdizt050cws"
+    },
+    {
+     "id": "s5",
+     "text": "Phone: compact strip, swipe between tabs, long-press to drag; tests + type-check, phone + desktop screenshots, UI Review item, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1gdizt06kdt7"
+    },
+    {
+     "id": "s6-5",
+     "text": "Main area becomes a tab group on the dock engine: every screen/plugin opens as a tab (icon, title, close, dirty dot); tabs persist across reloads; reopen closed tab; overflow scroll + list menu; middle-click / close others / close to the right",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1g2jcf0607ap"
+    },
+    {
+     "id": "s7-6",
+     "text": "Tab position top / bottom / left stack / right stack (setting + right-click on the strip)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1g2jcf07jv6r"
+    },
+    {
+     "id": "s8-7",
+     "text": "Float and dock: drag a tab out to float (shared window layer, resize grips), drag a window title onto the strip to dock (drop indicator), Float / Dock in tab + window menus, split by dropping a tab on an edge (folds in plugin-floatable)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1g2jcf082lcu"
+    },
+    {
+     "id": "s9-8",
+     "text": "Tab context menu (Settings, Float, Split, Pin, Duplicate, Close) + strip menu -> Tab group settings (position, size, icons, close buttons, max tabs, open as tab vs replace, restore on start, animation); in main Settings; REST + MCP + CLI (tabs_list, tab_open, tab_close, tab_float, tab_dock)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1g2jcf09qps3"
+    },
+    {
+     "id": "s10-9",
+     "text": "Phone: compact strip, swipe between tabs, long-press to drag; tests + type-check, phone + desktop screenshots, UI Review item, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1g2jcf0a5sj5"
     }
    ]
   }

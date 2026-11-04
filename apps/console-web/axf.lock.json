@@ -689,7 +689,7 @@
     "src/axf/react/studio/OutputTerminal.tsx": "1ac995fb7275d62c",
     "src/axf/react/studio/builtinDialogs.tsx": "5d35a316a9d81b93",
     "src/axf/react/windows/DockHost.tsx": "c825caee65540e46",
-    "src/axf/react/windows/MainTabs.tsx": "156beed9716e96ee",
+    "src/axf/react/windows/MainTabs.tsx": "f893e37734a2ff90",
     "src/axf/react/windows/WindowHost.tsx": "15c1a9f373136270",
     "src/axf/react/windows/strips.ts": "1c29a01197b9258b",
     "src/axf/schemas/ai-providers.json": "2e1e445fb70ba223",
