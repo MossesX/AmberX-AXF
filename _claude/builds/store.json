@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 830,
- "updatedAt": "2026-11-04T16:33:45.594Z",
+ "rev": 831,
+ "updatedAt": "2026-11-04T16:33:59.430Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -81293,7 +81293,7 @@
    "branch": "claude/molly-multi-instance-tabs",
    "pr": "",
    "createdAt": "2026-11-04T16:09:41.799Z",
-   "updatedAt": "2026-11-04T16:33:43.343Z",
+   "updatedAt": "2026-11-04T16:33:44.606Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -81370,12 +81370,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T16:33:44.606Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T16:09:41.805Z",
-     "updatedAt": "2026-11-04T16:09:41.805Z"
+     "updatedAt": "2026-11-04T16:33:44.671Z"
     },
     {
      "id": "s4",
@@ -81408,7 +81408,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
