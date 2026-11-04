@@ -18,6 +18,7 @@ import { MODEL_POLICY } from '../core/model-policy.mjs';
 import { SWARM, jsonSchemas as swarmJsonSchemas } from '../core/engines/swarm-rules.mjs';
 import { REGISTRY as LEDGER_REGISTRY, jsonSchemas as ledgerJsonSchemas } from '../core/feature-ledger.mjs';
 import { REGISTRY as DEPLOY_LOG_REGISTRY, jsonSchemas as deployLogJsonSchemas } from '../core/deploy-log.mjs';
+import { REGISTRY as BUILD_HOOK_REGISTRY, jsonSchemas as buildHookJsonSchemas } from '../core/build-hook.mjs';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
@@ -841,6 +842,9 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   for (const [n, schema] of Object.entries({ ...ledgerJsonSchemas(), ...deployLogJsonSchemas() })) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const lreg = join(FRAMEWORK_DIR, 'schemas/feature-ledger.json'); writeFileSync(lreg, JSON.stringify(LEDGER_REGISTRY, null, 2) + '\n'); written.push(lreg);
   const dreg = join(FRAMEWORK_DIR, 'schemas/deploy-log.json'); writeFileSync(dreg, JSON.stringify(DEPLOY_LOG_REGISTRY, null, 2) + '\n'); written.push(dreg);
+  // build-hook@1: the one event every build creator fires (builds store writes → listeners)
+  for (const [n, schema] of Object.entries(buildHookJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const hreg = join(FRAMEWORK_DIR, 'schemas/build-hook.json'); writeFileSync(hreg, JSON.stringify(BUILD_HOOK_REGISTRY, null, 2) + '\n'); written.push(hreg);
   return written;
 }
 

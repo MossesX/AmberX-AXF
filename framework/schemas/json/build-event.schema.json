@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/build-event.schema.json",
+  "title": "build-event@1 (build-hook@1 record)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "event",
+    "build",
+    "at"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "build-event@1"
+    },
+    "id": {
+      "type": "string"
+    },
+    "event": {
+      "enum": [
+        "created",
+        "steps-added",
+        "step-done",
+        "status",
+        "pr-opened",
+        "pr-merged",
+        "addendum",
+        "cancelled",
+        "restored"
+      ]
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "by": {
+      "type": "string"
+    },
+    "build": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "profile": {
+          "type": "string"
+        },
+        "profiles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "title": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "running",
+            "waiting",
+            "blocked",
+            "failed",
+            "built",
+            "complete",
+            "archived"
+          ]
+        },
+        "branch": {
+          "type": "string"
+        },
+        "pr": {
+          "type": "integer"
+        },
+        "mergedAt": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "rev": {
+          "type": "integer"
+        },
+        "repo": {
+          "enum": [
+            "amberx-axf",
+            "axhub"
+          ]
+        }
+      }
+    },
+    "from": {
+      "type": "string"
+    },
+    "to": {
+      "type": "string"
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "uid": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "model": {
+            "enum": [
+              "Opus",
+              "Fable"
+            ]
+          },
+          "done": {
+            "type": "boolean"
+          },
+          "doneAt": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "prompt": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "said": {
+          "type": "string"
+        },
+        "at": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "session": {
+          "type": "string"
+        },
+        "link": {
+          "type": "string"
+        },
+        "verbatim": {
+          "type": "boolean"
+        },
+        "index": {
+          "type": "integer"
+        }
+      }
+    }
+  }
+}
