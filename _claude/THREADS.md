@@ -577,11 +577,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 20:12 UTC · `window-resize-fix` s3 done, → built (current) · orchestrator
-- 2026-11-03 20:12 UTC · `window-resize-fix` note (current) · orchestrator
-- 2026-11-03 20:12 UTC · `window-resize-fix` → complete (current) · orchestrator
-- 2026-11-03 20:13 UTC · `window-resize-fix` s3 done, → complete, note (current) · foreign-write
-- 2026-11-03 20:13 UTC · `profile-manager` s1 done, s2 done (current) · foreign-write
 - 2026-11-03 20:13 UTC · `smart-menus` s4 done (urgent) · orchestrator
 - 2026-11-03 20:13 UTC · `smart-menus` s5 done (urgent) · orchestrator
 - 2026-11-03 20:14 UTC · `window-resize-fix` s3 done, → complete, note (current) · foreign-write
@@ -977,3 +972,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 00:48 UTC · `plugin-lazy-load` s1 done, s2 done (current) · foreign-write
 - 2026-11-04 00:48 UTC · `profile-switcher-widget` added (5 steps) (current) · foreign-write
 - 2026-11-04 00:48 UTC · `browser-automation` s1 done (current) · orchestrator
+- 2026-11-04 00:45 UTC · `plugin-lazy-load` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 00:45 UTC · `profile-switcher-widget` added (5 steps) (current) · foreign-write
+- 2026-11-04 00:46 UTC · `plugin-lazy-load` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 00:46 UTC · `profile-switcher-widget` added (5 steps) (current) · foreign-write
+- 2026-11-04 00:51 UTC · `browser-automation` s1 done (current) · foreign-write
