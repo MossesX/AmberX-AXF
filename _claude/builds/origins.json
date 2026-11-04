@@ -289,6 +289,18 @@
    "from": "detail",
    "addenda": []
   },
+  "apps-control-surface": {
+   "said": "Nov 3: \"Put EVERY app on the API, MCP and CLI\" (Molly, axHub web, AmberX, and every future app via the framework template; plus an apps_list read). Nov 4, after Amber couldn't open AmberX's notes/to-dos for him because the console has no AmberX screen and AmberX has no control surface: \"All right, move that to next in queue.\"",
+   "at": "2026-11-04T15:00:00.000Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "arch-foundation": {
    "said": "5 deliverables — TS data contracts (layout & component tree, theme engine, plugin manifest), Pydantic v2 validator/migrator + ingestion namespacing, React error boundary + pub/sub lifecycle broker, project spec, developer docs (new plugin, harvesting, live sync). Built ON the existing contracts (asset@1, plugin@1, appearance@1), not beside them. Web + Python; Android twins deferred.",
    "at": "2026-10-27",
