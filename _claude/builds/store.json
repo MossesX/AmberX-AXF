@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 650,
- "updatedAt": "2026-11-04T12:05:59.574Z",
+ "rev": 651,
+ "updatedAt": "2026-11-04T12:06:13.714Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -53856,14 +53856,15 @@
    "title": "Console wake: console commands always reach a console (queue + deliver on reconnect, wake via AmberX when closed)",
    "category": "Urgent",
    "detail": "Brett Nov 3 2026 (voice): console commands fail with not_found when the tab is not connected (approval inside the console dropped client cc-cq7hakm3a02p for 2 s at 17:18:49 UTC; redeploys; tab sleep; browser closed). Rule: no matter what, a console command must reach a console; if the browser is closed, open it. Agent: Ping Paulie.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/console-wake",
-   "pr": "#266",
+   "pr": "#288",
+   "mergedAt": "2026-11-04T12:05:58.906Z",
    "createdAt": "2026-11-03T17:22:15.174Z",
-   "updatedAt": "2026-11-03T17:45:07.866Z",
+   "updatedAt": "2026-11-04T12:05:59.141Z",
    "builtAt": "2026-11-03T17:45:06.485Z",
    "notes": [
     {
@@ -54027,7 +54028,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -71599,19 +71600,23 @@
    "title": "Land round 2: catch up and land the rest, Molly first",
    "category": "Landing",
    "detail": "Agent: Landin' Lenny. One PR at a time: update from main, resolve conflicts keeping both sides, CI green, merge. Order: #288 (+#266) → #294 #295 → #296 → #298 → #281 #291 #293 → #289 #269 → #300. Don't merge WIP #299 #301 #302; close #297 if orphan dup. Redeploy console + Molly after #288, all apps at the end.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "land-round-2",
    "branch": "claude/land-round-2",
    "pr": "",
    "createdAt": "2026-11-04T10:43:58.630Z",
-   "updatedAt": "2026-11-04T11:19:51.154Z",
+   "updatedAt": "2026-11-04T12:06:01.519Z",
    "builtAt": "",
    "notes": [
     {
      "text": "#288 green on its head (test race fixed: polling waits; #266's wake help folded in), main merged, store pinned, pushed 59d8a6cb. GitHub Pull Requests partial outage since ~11:05 UTC: the PR still shows the old head, so it can't merge yet. #297 closed (superseded by #284, orphan). #294 #295 #296 #298 #281 #291 #293 #289 #269 merged with main locally and conflicts resolved, waiting their turn.",
      "at": "2026-11-04T11:19:51.154Z"
+    },
+    {
+     "text": "#288 merged (b14674b5) with #266 inside; #266 closed as superseded. The lost GitHub push event (PR outage) needed a fresh push. The shared GitHub token ran out of its 5000/h budget twice (other pollers).",
+     "at": "2026-11-04T12:06:01.519Z"
     }
    ],
    "approvals": [],
@@ -71644,12 +71649,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T12:06:00.045Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T10:43:58.631Z",
-     "updatedAt": "2026-11-04T10:44:06.959Z"
+     "updatedAt": "2026-11-04T12:06:00.098Z"
     },
     {
      "id": "s2",
@@ -71836,7 +71841,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
