@@ -16,7 +16,7 @@ export const LEVELS: Record<string, Level> = {
   fontFamily: 'basic', cursorStyle: 'basic', mica: 'basic', newTab: 'basic', tabWidth: 'basic', closeConfirm: 'basic', copyOnSelect: 'basic', pasteWarn: 'basic',
   'profile.name': 'basic', 'profile.model': 'basic', 'profile.connection': 'basic', 'profile.color': 'basic',
   lineHeight: 'developer', scrollback: 'developer', padding: 'developer', bell: 'developer', cursorBlink: 'developer', mouseDefault: 'developer', moshDefault: 'developer',
-  persistTabs: 'basic', splitDefault: 'basic', chainSpeed: 'simple', showChain: 'basic', sessionsNav: 'simple',
+  persistTabs: 'basic', splitDefault: 'basic', chainSpeed: 'simple', showChain: 'basic', sessionsNav: 'simple', newSession: 'simple',
   'profile.permissionMode': 'developer', 'profile.flags': 'developer', 'profile.cwd': 'developer', 'profile.prompt': 'developer', 'profile.icon': 'developer',
 };
 
@@ -83,11 +83,18 @@ export function BehaviourPanel() {
 }
 
 /** Headless tabs (Nov 3 2026): persistent tabs, the split and the context chain's pace. */
+const NEW_SESSION = [
+  { value: 'quiet', label: 'Add tab quietly (count on the Terminal icon)' },
+  { value: 'nothing', label: 'Do nothing (the sessions list still shows it)' },
+  { value: 'front', label: 'Bring Terminal to front' },
+];
+
 export function HeadlessPanel() {
   const { s, msg, save } = useLive();
   if (!s) return <p className="fx-muted">{msg || 'Loading…'}</p>;
   return (
     <div className="fx-stack axp-terminal-settings">
+      <L k="newSession"><SelectField label="When a new session starts" value={s.newSession ?? 'quiet'} options={NEW_SESSION} onChange={(v) => save({ newSession: v as Settings['newSession'] })} /></L>
       <L k="persistTabs"><Switch label="Tabs live in tmux sessions (survive reloads, sleep and restarts; attach from Moshi)" checked={s.persistTabs} onChange={(v) => save({ persistTabs: v })} /></L>
       <L k="sessionsNav"><Switch label="Sessions list on the left of every terminal window (My sessions, Agents, Connections)" checked={s.sessionsNav !== false} onChange={(v) => save({ sessionsNav: v })} /></L>
       <L k="showChain"><Switch label="Headless tabs show the context chain next to the session" checked={s.showChain} onChange={(v) => save({ showChain: v })} /></L>

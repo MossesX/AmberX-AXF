@@ -514,7 +514,7 @@ function StepGrid({ b, rules, busy, act, hidden, setHidden }: { b: Build; rules:
         rowTone={(s) => (s.done ? 'success' : s.locked ? 'warning' : s.next ? 'accent' : 'muted')}
         hidden={hidden} onToggleColumn={(c, show) => setHidden((h) => toggleIn(h, c, show))} onShowAll={() => setHidden(() => [])}
         sort={sort} onSort={(c) => setSort((x) => nextSort(x, c))}
-        expanded={open} onToggleExpand={(id) => setOpen((o) => toggleIn(o, id))}
+        expanded={open} onToggleExpand={(id) => setOpen((o) => toggleIn(o, id))} onRowClick={(s) => setOpen((o) => toggleIn(o, s.id))}
         renderDetail={(s) => (
           <div className="oc-stepdetail fx-small">
             <p><strong>{s.id}</strong> · {s.text}</p>

@@ -1,6 +1,7 @@
 {
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.terminal",
+  "lazy": { "core": "open" },
   "name": "Terminal",
   "version": "0.5.0",
   "kind": "module",
@@ -166,6 +167,34 @@
           },
           "required": [
             "args"
+          ]
+        }
+      },
+      {
+        "route": "GET /new-session",
+        "id": "new-session-get",
+        "title": "When a new session starts (Terminal)",
+        "description": "What the Terminal does when a headless Claude session starts: nothing (no tab by itself), quiet (a tab in the background and a count on the Terminal toolbar icon; the default) or front (open it and bring the Terminal window to the front)."
+      },
+      {
+        "route": "PUT /new-session",
+        "id": "new-session-set",
+        "title": "Set what the Terminal does when a new session starts",
+        "description": "nothing | quiet (default: background tab + toolbar count, never pops the window) | front (bring the Terminal to the front).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "newSession": {
+              "type": "string",
+              "enum": [
+                "nothing",
+                "quiet",
+                "front"
+              ]
+            }
+          },
+          "required": [
+            "newSession"
           ]
         }
       },

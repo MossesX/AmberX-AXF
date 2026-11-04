@@ -18,16 +18,17 @@
  * .axf-console/builds-reconcile.json in the checkout). GitHub: framework/cli/github.mjs (GitHub App token first).
  */
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
-import { plan } from '../plan/builds-reconcile-core.mjs';
+import { aliveIds, idlePlan, plan } from '../plan/builds-reconcile-core.mjs';
 import { REPO_ROOT, persistRoot } from './persist.mjs';
 import { loadStore, withStore } from './builds-store.mjs';
 import { liveStatus, syncAll, install } from './builds-live.mjs';
 import { createGitHub, parseRepo } from './github.mjs';
+import { loadState as slotState, tmuxSessions } from './agent-slots.mjs';
 
 export const reportFile = () => {
   const hub = persistRoot();
@@ -75,6 +76,29 @@ export async function gather({ gh = createGitHub({ userAgent: 'axf-builds-reconc
   return out;
 }
 
+/** Build-log entries of this month and the last (the hub's changes folder), for their heartbeats. */
+function recentChanges(now = new Date()) {
+  const hub = persistRoot(); if (!hub) return [];
+  const out = [];
+  for (const d of [now, new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1))]) {
+    const dir = join(hub, 'changes', String(d.getUTCFullYear()), String(d.getUTCMonth() + 1).padStart(2, '0'));
+    if (!existsSync(dir)) continue;
+    for (const f of readdirSync(dir)) if (f.endsWith('.json')) { try { out.push(JSON.parse(readFileSync(join(dir, f), 'utf8'))); } catch { /* skip a broken entry */ } }
+  }
+  return out;
+}
+
+/**
+ * Which builds a live process works on here: agent-slots holders, axf-* tmux sessions, fresh build-log heartbeats.
+ * null when tmux can't be asked (a container, a laptop): the idle rule then leaves every status alone.
+ */
+export function liveBuilds({ now = new Date() } = {}) {
+  if (process.env.AXF_RECONCILE_IDLE === 'off') return null;
+  const tmux = tmuxSessions(); if (!tmux) return null;
+  const slots = slotState().running.filter((r) => r.state === 'running' || r.state === 'starting');
+  return aliveIds({ sessions: [...tmux.keys()], slots, changes: recentChanges(now), now: now.toISOString() });
+}
+
 /** Apply a plan in one store write (live to main). Returns the changes the store saw. */
 export function applyPlan(p, by = 'reconciler') {
   if (!p.changes.length) return { changes: [] };
@@ -90,6 +114,7 @@ export function applyPlan(p, by = 'reconciler') {
       b.updatedAt = now;
       merge.settleStatus(b, now);
       if (c.steps.length && b.status === 'pending') b.status = 'running';
+      if ((b.status === 'complete' || b.status === 'built') && !b.builtAt) b.builtAt = now;
     }
     return s;
   }, { by, action: 'reconcile', note: p.changes.map((c) => c.id).join(', ') });
@@ -105,12 +130,20 @@ export async function reconcile({ apply = false, gh, repo } = {}) {
   let gathered; let error = '';
   try { gathered = await gather({ gh, repo }); } catch (e) { error = String(e.message ?? e).slice(0, 300); gathered = { prs: [], branches: [] }; }
   const p = error ? { changes: [], suggestions: [], orphans: { prs: [], branches: [] } } : plan(builds, gathered.prs, gathered.branches, { now: at });
+  // running = a live process runs it (zero tokens: tmux, agent slots and build-log heartbeats on this host)
+  const alive = liveBuilds();
+  const idle = idlePlan(builds, alive, { now: at, skip: p.changes.filter((c) => c.steps.length).map((c) => c.id) });
+  for (const c of idle) {
+    const same = p.changes.find((x) => x.id === c.id);
+    if (same) { Object.assign(same.set, c.set); same.why.push(...c.why); } else p.changes.push(c);
+  }
   const applied = apply && p.changes.length ? applyPlan(p) : { changes: [] };
   const profiles = [...new Set(builds.flatMap((b) => b.profiles))];
   const report = {
     $axf: 'builds-reconcile@1', at, repo: repo ?? repoName(), apply, error, pulled: pulled.ok ? (pulled.taken ?? []) : { error: pulled.error },
     profiles, prs: gathered.prs.length, branches: gathered.branches.length,
     changes: p.changes, suggestions: p.suggestions, orphans: p.orphans, live: liveStatus(), written: applied.changes.length,
+    running: alive ? builds.filter((b) => b.status === 'running' && alive.has(b.id)).map((b) => b.id) : null,
   };
   if (apply) { try { mkdirSync(dirname(reportFile()), { recursive: true }); writeFileSync(reportFile(), `${JSON.stringify(report, null, 1)}\n`); } catch { /* report only */ } }
   return report;

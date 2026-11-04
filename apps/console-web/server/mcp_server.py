@@ -735,11 +735,11 @@ def _register_crew_tools(mcp: MCPServer) -> None:
 CONTROL_TARGETS = ("tokens.theme", "tokens.style", "tokens.layout", "tokens.typography", "tokens.density", "tokens.sizing", "tokens.look",
                    "tokens.custom", "tokens.slots", "amberx.items", "amberx.lists", "planner.plans", "planner.builds",
                    "console.screens", "console.dialogs", "console.settings", "console.actions", "console.nav", "console.clients", "pass.scopes",
-                   "plugins.commands", "plugins.reads")
+                   "plugins.commands", "plugins.reads", "tokens.nav")
 ControlTarget = Literal["tokens.theme", "tokens.style", "tokens.layout", "tokens.typography", "tokens.density", "tokens.sizing", "tokens.look",
                         "tokens.custom", "tokens.slots", "amberx.items", "amberx.lists", "planner.plans", "planner.builds",
                         "console.screens", "console.dialogs", "console.settings", "console.actions", "console.nav", "console.clients", "pass.scopes",
-                        "plugins.commands", "plugins.reads"]
+                        "plugins.commands", "plugins.reads", "tokens.nav"]
 PassScope = Literal["all", "theme", "style", "layout", "tokens"]
 # all = everything (the default since build pass-all); tokens = theme, style and layout together
 PASS_SCOPE_IDS = {"all": "all", "theme": "tokens.theme", "style": "tokens.style", "layout": "tokens.layout", "tokens": "tokens.*"}
