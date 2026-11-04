@@ -1014,6 +1014,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 12:46 UTC · `profile-switcher-widget` note (current) · foreign-write
 - 2026-11-04 12:46 UTC · `app-style-override` note (current) · foreign-write
 - 2026-11-04 12:46 UTC · `urgent-land-lazy-loader` added (4 steps) (current) · foreign-write
+- 2026-11-04 12:46 UTC · `orch-step-click` note (refactor) · foreign-write
+- 2026-11-04 12:46 UTC · `molly-opus` → complete, note (big-dog) · foreign-write
+- 2026-11-04 12:46 UTC · `walkthrough-random-look` → complete, note (refactor) · foreign-write
 
 ## Token passes (log)
 
