@@ -683,7 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 12:47 UTC · `hotfix-build-manager` s4 done, → complete (current) · orchestrator
 - 2026-11-04 12:47 UTC · `hotfix-build-manager` → built, branch claude/hotfix-build-manager, PR #309 (current) · builds-live
 - 2026-11-04 12:47 UTC · `hotfix-build-manager` s2 done, s3 done (current) · foreign-write
 - 2026-11-04 12:47 UTC · `hotfix-build-manager` s4 done, → complete (current) · foreign-write
@@ -1083,6 +1082,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 16:24 UTC · `tab-group-assets` branch claude/tab-group-assets, PR #327 (current) · builds-live
 - 2026-11-04 16:25 UTC · `molly-multi-instance-tabs` s1 done (current) · foreign-write
 - 2026-11-04 16:24 UTC · `molly-multi-instance-tabs` s1 done (current) · orchestrator
+- 2026-11-04 16:33 UTC · `molly-multi-instance-tabs` s2 done (current) · orchestrator
 
 ## Token passes (log)
 
