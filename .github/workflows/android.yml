@@ -487,7 +487,9 @@ jobs:
           name: amberx-debug.apk
           path: apps/amberx-droid/android/app/build/outputs/apk/debug/
       - name: App catalog bundle (every app's APK + apps.json, read by the Dev Console into the hub's app catalog)
-        run: node framework/cli/app-bundle.mjs collect dist/app-apks --build "${{ github.run_number }}" --commit "${{ github.sha }}" --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        # the AmberX shell's APK comes from its own job; when CI scope skipped that job (nothing it builds changed), the
+        # bundle is made without it rather than failing main (Nov 4 2026)
+        run: node framework/cli/app-bundle.mjs collect dist/app-apks --build "${{ github.run_number }}" --commit "${{ github.sha }}" --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" ${{ needs.amberx.result != 'success' && '--skip apps/amberx-droid' || '' }}
       - name: Report compiler errors to the "CI build errors" issue (readable without artifact downloads)
         if: failure()
         env: { GH_TOKEN: '${{ github.token }}' }
