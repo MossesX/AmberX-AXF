@@ -28,7 +28,9 @@
     "SETTINGS"
   ],
   "enabledByDefault": true,
-  "commands": { "$axf": "plugin-commands@1", "auto": true },
+  "commands": { "$axf": "plugin-commands@1", "auto": true, "items": [
+    { "route": "POST /lazy/report", "skip": "the open console sends its live lazy-loader table here; GET /lazy reads it" }
+  ] },
   "builtWith": { "model": "fable", "builtAt": "2026-10-20", "rebuildOf": "opus build of Oct 18 2026 (pending item plugin-manager)" },
   "banner": false,
   "tabable": false,
