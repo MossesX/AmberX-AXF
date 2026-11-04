@@ -669,7 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:16 UTC · `menu-scroll` note (urgent) · orchestrator
 - 2026-11-03 18:16 UTC · `menu-scroll` → built, PR #268 (urgent) · builds-live
 - 2026-11-03 18:20 UTC · `auto-land` s1 done, → running (urgent) · orchestrator
 - 2026-11-03 18:22 UTC · `builds-one-page-done` PR #269 (urgent) · builds-live
@@ -1069,6 +1068,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:39 UTC · `fable-no-approval` s2 done (current) · orchestrator
 - 2026-11-04 14:39 UTC · `fable-no-approval` s2 done (current) · foreign-write
 - 2026-11-04 14:40 UTC · `toolbar-tap-confirm` → complete, note (urgent) · reconciler
+- 2026-11-04 14:43 UTC · `fable-no-approval` branch claude/fable-no-approval, PR #319 (current) · builds-live
 
 ## Token passes (log)
 
