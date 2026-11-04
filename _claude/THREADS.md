@@ -569,8 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 20:06 UTC · `terminal-sessions-nav` added (24 steps) (current) · foreign-write
-- 2026-11-03 20:06 UTC · `profile-manager` added (6 steps) (current) · foreign-write
 - 2026-11-03 20:00 UTC · `window-resize-fix` branch claude/window-resize-fix, note (current) · reconciler
 - 2026-11-03 20:10 UTC · `window-resize-fix` PR #278, merged, note (current) · reconciler
 - 2026-11-03 19:59 UTC · `window-resize-fix` s2 done (current) · orchestrator
@@ -969,3 +967,5 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 00:35 UTC · `gizmo-companion` s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s14 done, s15 done, s18 done, note (current) · foreign-write
 - 2026-11-04 00:35 UTC · `browser-automation` added (16 steps) (current) · foreign-write
 - 2026-11-04 00:40 UTC · `browser-automation` added (16 steps) (current) · foreign-write
+- 2026-11-04 00:40 UTC · `profile-switcher-widget` added (5 steps) (current) · orchestrator
+- 2026-11-04 00:41 UTC · `profile-switcher-widget` note (current) · orchestrator
