@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T13:53:13.090Z",
+ "updatedAt": "2026-11-04T13:53:24.691Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -7151,15 +7151,15 @@
    "title": "Follow Amber in the Claude badge: tap toggles, two-tone + animated, 15+ badge looks, brand icons",
    "category": "",
    "detail": "Follow Amber goes into the existing Claude badge (no new widget): tap toggles the shared Follow Amber switch, old tap moves to the badge's context menu. On = two-tone with an animation (10+ styles, speed, intensity, reduced motion = static). 15+ badge looks as badge assets plus brand-icon looks and an icon picker over every brand-package icon. REST + MCP + CLI (badge_styles_list, badge_style_set, badge_animation_set). console_show guidance covers casual mentions; Claude setting followAmber.casual.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/follow-amber-switch",
    "pr": "#312",
    "createdAt": "2026-11-04T13:33:57.300Z",
-   "updatedAt": "2026-11-04T13:53:11.874Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T13:53:13.136Z",
+   "builtAt": "2026-11-04T13:53:13.136Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -7290,8 +7290,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T13:53:13.136Z",
      "note": "",
      "uid": "st-mw25r1tg0a27qi"
     }

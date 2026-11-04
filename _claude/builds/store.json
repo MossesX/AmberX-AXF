@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 698,
- "updatedAt": "2026-11-04T13:53:13.090Z",
+ "rev": 699,
+ "updatedAt": "2026-11-04T13:53:24.691Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -73041,15 +73041,15 @@
    "title": "Follow Amber in the Claude badge: tap toggles, two-tone + animated, 15+ badge looks, brand icons",
    "category": "",
    "detail": "Follow Amber goes into the existing Claude badge (no new widget): tap toggles the shared Follow Amber switch, old tap moves to the badge's context menu. On = two-tone with an animation (10+ styles, speed, intensity, reduced motion = static). 15+ badge looks as badge assets plus brand-icon looks and an icon picker over every brand-package icon. REST + MCP + CLI (badge_styles_list, badge_style_set, badge_animation_set). console_show guidance covers casual mentions; Claude setting followAmber.casual.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/follow-amber-switch",
    "pr": "#312",
    "createdAt": "2026-11-04T13:33:57.300Z",
-   "updatedAt": "2026-11-04T13:53:11.874Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T13:53:13.136Z",
+   "builtAt": "2026-11-04T13:53:13.136Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -73198,12 +73198,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T13:53:13.136Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T13:33:57.303Z",
-     "updatedAt": "2026-11-04T13:33:57.303Z"
+     "updatedAt": "2026-11-04T13:53:13.208Z"
     }
    ],
    "profiles": [
@@ -73214,7 +73214,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
