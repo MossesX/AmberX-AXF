@@ -3,7 +3,8 @@
  * tools (with test), training jobs, workflows (with runs), memory browser, add-ons and run history.
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react';
-import { Button, Chip, Icon, useEditorSync, useRuntime } from '@console/axf/react';
+import { AgentAvatar, Button, Chip, Icon, useEditorSync, useRuntime } from '@console/axf/react';
+import * as consoleApi from '@console/api';
 import { MoreMenu } from './more';
 import { AgentForm, Field, LingoForm, OriginChip, PersonaForm, SkillForm, Text, ToolForm, TrainingForm, WorkflowForm } from './forms';
 import { useData, WIZARDS } from './wizards';
@@ -13,9 +14,9 @@ import {
   type Addon, type Agent, type Cache, type Coll, type MemItem, type MemScope, type MemStats, type Run, type Status, type Training, type Validation, type Workflow,
 } from './api';
 
-type Tab = 'agents' | 'skills' | 'personas' | 'tools' | 'training' | 'workflows' | 'memory' | 'addons' | 'runs';
+type Tab = 'roster' | 'agents' | 'skills' | 'personas' | 'tools' | 'training' | 'workflows' | 'memory' | 'addons' | 'runs';
 const TABS: { id: Tab; label: string; icon: string }[] = [
-  { id: 'agents', label: 'Agents', icon: 'user' }, { id: 'skills', label: 'Skills', icon: 'star' }, { id: 'personas', label: 'Personas & lingo', icon: 'palette' },
+  { id: 'roster', label: 'Roster', icon: 'grid' }, { id: 'agents', label: 'Agents', icon: 'user' }, { id: 'skills', label: 'Skills', icon: 'star' }, { id: 'personas', label: 'Personas & lingo', icon: 'palette' },
   { id: 'tools', label: 'Tools', icon: 'zap' }, { id: 'training', label: 'Training', icon: 'download' }, { id: 'workflows', label: 'Workflows', icon: 'branch' },
   { id: 'memory', label: 'Memory', icon: 'layers' }, { id: 'addons', label: 'Add-ons', icon: 'package' }, { id: 'runs', label: 'Runs', icon: 'clock' },
 ];
@@ -61,6 +62,7 @@ export function AgentManagerView() {
       </div>
       {!cache ? <LoadingSkeleton /> : (
         <>
+          {tab === 'roster' && <RosterTab onAgent={() => setTab('agents')} />}
           {tab === 'agents' && <AgentsTab cache={cache} status={status} wizard={wizard} />}
           {tab === 'skills' && <CollTab coll="skills" cache={cache} status={status} wizardKind="skill" render={(v, set) => <SkillForm v={v} set={set} tools={cache.tools} />} />}
           {tab === 'personas' && <div className="fx-stack fx-stack--lg"><CollTab coll="personas" cache={cache} status={status} render={(v, set) => <PersonaForm v={v} set={set} />} /><CollTab coll="lingo" cache={cache} status={status} render={(v, set) => <LingoForm v={v} set={set} />} /></div>}
@@ -659,3 +661,54 @@ function RunsTab({ cache }: { cache: Cache }) {
 }
 
 export const WIZARD_LIST = WIZARDS;
+
+/* ---------------------------------------------------------------- roster (crew-profile@1) */
+
+type Member = { id: string; name: string; kind: string; jobTitle: string; status: string; avatar: { face: string; hair: number; gear: string; hue: number } | null; pronouns?: string; reportsTo?: string; model?: string;
+  duties?: string[]; skills?: { tag: string; level: number }[]; pay?: { hourly: number | null }; persona?: { voice?: string }; assistant?: { agentManager: string } | null; stats?: { jobs: number; strikes: number } };
+const ROSTER_OPEN = 'agent-manager-roster-open';
+
+/** Everyone on one roster (Brett, Nov 4 2026: "they're all agents and employees … they just have different job titles"):
+ * collapsed = avatar + name + job title, open = the profile summary; working members first. Edit opens the Crew profile. */
+function RosterTab({ onAgent }: { onAgent: () => void }) {
+  const rt = useRuntime();
+  const [ms, setMs] = useState<Member[] | null>(null);
+  const [why, setWhy] = useState('');
+  const [open, setOpen] = useState<Record<string, boolean>>(() => consoleApi.readLocal(ROSTER_OPEN, {}));
+  useEffect(() => { consoleApi.writeLocal(ROSTER_OPEN, open); }, [open]);
+  useEffect(() => { void call('roster').then((r) => { const j = r as { members?: Member[]; why?: string }; setMs(j.members ?? []); setWhy(j.why ?? ''); }, (e: Error) => { setMs([]); setWhy(e.message); }); }, []);
+  if (!ms) return <LoadingSkeleton rows={4} />;
+  const isOpen = (m: Member) => (m.id in open ? open[m.id]! : m.status === 'working');
+  return (
+    <div className="fx-stack">
+      <div className="fx-row" role="toolbar" aria-label="Roster">
+        <Button size="sm" icon="chevron-down" onClick={() => setOpen(Object.fromEntries(ms.map((m) => [m.id, true])))}>Expand all</Button>
+        <Button size="sm" icon="chevron-right" onClick={() => setOpen(Object.fromEntries(ms.map((m) => [m.id, false])))}>Collapse all</Button>
+        <span className="fx-small fx-muted">{ms.length} on the roster{why ? ` · ${why}` : ''}</span>
+      </div>
+      <ul className="axp-agent-manager__roster">
+        {ms.map((m) => (
+          <li key={m.id} className={`axp-agent-manager__member${m.status === 'working' ? ' is-working' : ''}`}>
+            <button type="button" data-fx-row className="axp-agent-manager__memberHead" aria-expanded={isOpen(m)} onClick={() => setOpen((o) => ({ ...o, [m.id]: !isOpen(m) }))}>
+              <Icon name={isOpen(m) ? 'chevron-down' : 'chevron-right'} size={12} />
+              <AgentAvatar info={{ id: m.id, name: m.name, role: m.jobTitle, avatar: m.avatar }} agent={m.id} size="small" />
+              <b>{m.name}</b> <span className="fx-small fx-muted">{m.jobTitle}{m.status === 'working' ? ' · working' : ''}</span>
+            </button>
+            {isOpen(m) ? (
+              <div className="fx-stack axp-agent-manager__memberBody">
+                {m.persona?.voice ? <p className="fx-small">{m.persona.voice}</p> : null}
+                {m.duties?.length ? <ul className="fx-small">{m.duties.map((d, i) => <li key={i}>{d}</li>)}</ul> : null}
+                {m.skills?.length ? <div className="fx-row">{m.skills.map((s) => <Chip key={s.tag}>{s.tag} · {s.level}</Chip>)}</div> : null}
+                <p className="fx-small fx-muted">{[m.model && `Model ${m.model}`, m.pay?.hourly != null && `$${m.pay.hourly.toFixed(2)}/h`, m.reportsTo && `reports to ${m.reportsTo}`, m.stats && `${m.stats.jobs} jobs · ${m.stats.strikes} strikes`].filter(Boolean).join(' · ')}</p>
+                <div className="fx-row">
+                  {rt.actions.get('crew.profile') ? <Button size="sm" icon="edit" onClick={() => rt.actions.dispatch(`crew.profile:${m.id}`, { runtime: rt })}>Edit profile</Button> : null}
+                  {m.assistant ? <Button size="sm" icon="user" onClick={onAgent}>Assistant setup (Agents)</Button> : null}
+                </div>
+              </div>
+            ) : null}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}

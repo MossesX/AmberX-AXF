@@ -22,7 +22,29 @@ export interface Snapshot {
   buildAgents?: Record<string, string>;
   totals: { working: number; runs: number; costRunningUsd: number; costTodayUsd: number; runsToday?: number };
   source?: { headless: boolean; ready: boolean; why: string; roster: boolean };
+  /** crew-profile@1 cards: the one roster (owner, crew, assistants), from the Agent swarm's axf.crew@1 */
+  members?: Member[];
 }
+export type MemberStatus = 'owner' | 'working' | 'queued' | 'idle' | 'off';
+export interface Member {
+  id: string; name: string; kind: 'owner' | 'crew' | 'assistant' | 'system'; jobTitle: string; pronouns?: string; reportsTo?: string;
+  avatar: Face | null; catchphrase?: string; hiredAt?: string; status: MemberStatus; statusLabel?: string; model?: string;
+  running?: { jobId: string; buildId: string; startedAt: string; summary: string }[];
+  role?: { title: string; specialty: string; duties: string[]; bio: string };
+  pay?: { hourly: number | null };
+  stats?: { jobs: number; failed: number; costUsd: number; costToday: number; strikes: number; writeups: { date: string; lines: string[] }[] };
+}
+/** The full profile (GET members/{id}). */
+export interface Profile extends Member {
+  persona: { voice: string; tone: string; slang: number; catchphrases: string[]; groupChat: string };
+  duties: string[]; skills: { tag: string; level: number }[]; tools: { allow: string[] }; model: string;
+  memory: { scope: string; notes: string }; safety: { limits: string[]; dangerousTools: boolean };
+  assistant?: { agentManager: string } | null; personaLine?: string;
+}
+export type MemberSort = 'working' | 'name' | 'title';
+export type ExpandDefault = 'working' | 'all' | 'none';
+/** Sections only Brett changes (his signed-in console click). */
+export const OWNER_ONLY = ['pay', 'tools', 'safety', 'jobTitle'] as const;
 export interface FileChange { path: string; kind: 'created' | 'modified' | 'deleted' | 'renamed'; from?: string; added?: number; removed?: number; untracked?: boolean; changedAt: string | null }
 export interface DiffLine { t: 'add' | 'del' | 'ctx'; o?: number; n?: number; text: string }
 export interface Hunk { header: string; context: string; lines: DiffLine[]; added: number; removed: number }
@@ -109,4 +131,39 @@ export function highlight(line: string): Tok[] {
   if (at < line.length) out.push({ k: 'txt', v: line.slice(at) });
   // merge neighbouring plain text
   return out.reduce<Tok[]>((acc, t) => { const last = acc[acc.length - 1]; if (last && last.k === 'txt' && t.k === 'txt') last.v += t.v; else acc.push({ ...t }); return acc; }, []);
+}
+
+// ---------------------------------------------------------------- members (crew-profile@1)
+
+/** A member's live status: working when a run of theirs is on the clock, else what the roster says. */
+export function memberStatus(m: Member, runs: Run[]): MemberStatus {
+  if (m.kind === 'owner') return 'owner';
+  const r = runs.find((x) => x.agent.id === m.id && x.status !== 'idle');
+  if (r) return 'working';
+  return m.status === 'working' ? 'working' : m.status;
+}
+/** When the member's current job started (their live run, else the roster's running job); null when not working. */
+export function workingSince(m: Member, runs: Run[]): number | null {
+  const ts2 = [...runs.filter((x) => x.agent.id === m.id && x.status !== 'idle').map((x) => ts(x.startedAt)), ...(m.running ?? []).map((x) => ts(x.startedAt))].filter((x): x is number => x !== null);
+  return ts2.length ? Math.min(...ts2) : null;
+}
+const RANK: Record<MemberStatus, number> = { owner: -1, working: 0, queued: 1, idle: 2, off: 3 };
+/** Working on top (longest-running first), then queued / assigned, then idle, then off; the boss stays first. */
+export function sortMembers(ms: Member[], runs: Run[], sort: MemberSort = 'working'): Member[] {
+  const name = (m: Member) => m.name.toLowerCase();
+  return [...ms].sort((a, b) => {
+    if (sort === 'name') return name(a).localeCompare(name(b));
+    if (sort === 'title') return a.jobTitle.localeCompare(b.jobTitle) || name(a).localeCompare(name(b));
+    return RANK[memberStatus(a, runs)] - RANK[memberStatus(b, runs)] || (workingSince(a, runs) ?? Infinity) - (workingSince(b, runs) ?? Infinity) || name(a).localeCompare(name(b));
+  });
+}
+/** Whether a member's container is open: their own remembered choice, else the default (working members open). */
+export function isOpen(m: Member, runs: Run[], remembered: Record<string, boolean>, def: ExpandDefault = 'working'): boolean {
+  if (m.id in remembered) return remembered[m.id]!;
+  return def === 'all' ? true : def === 'none' ? false : memberStatus(m, runs) === 'working';
+}
+/** "tag:level, tag:level" ⇄ skills, for the profile's one-line skills field. */
+export const skillsText = (xs: { tag: string; level: number }[]) => xs.map((s) => `${s.tag}:${s.level}`).join(', ');
+export function parseSkills(t: string): { tag: string; level: number }[] {
+  return t.split(',').map((x) => x.trim()).filter(Boolean).map((x) => { const [tag = '', lv] = x.split(':'); const n = Number(lv); return { tag: tag.trim().toLowerCase(), level: Number.isFinite(n) && n >= 1 && n <= 5 ? Math.round(n) : 3 }; }).filter((s) => s.tag);
 }

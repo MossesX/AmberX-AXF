@@ -13,6 +13,7 @@ pay, spend, hours and stats; book(entry) = book a Claude session on an agent's c
 from __future__ import annotations
 
 import json
+import os
 import re
 import subprocess
 from pathlib import Path
@@ -30,8 +31,9 @@ MAX_BODY = 64 * 1024
 ID = re.compile(r"^[A-Za-z0-9._-]{1,80}$")
 
 
-def _run(*args: str, cli: Path = CLI) -> dict[str, Any]:
-    proc = subprocess.run(["node", str(cli), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=90)
+def _run(*args: str, cli: Path = CLI, env: dict[str, str] | None = None) -> dict[str, Any]:
+    proc = subprocess.run(["node", str(cli), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=90,
+                          env={**os.environ, **env} if env else None)
     out = proc.stdout.strip().splitlines()
     try:
         return json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
@@ -54,8 +56,94 @@ class CrewService:
             raise ValueError(r.get("error") or "booking failed")
         return r.get("run") or {}
 
+    # ---- crew-profile@1: the one roster (every employee is an agent with a job title; crew-profiles.mjs)
 
-plugin_services.provide("axf.crew@1", CrewService(), CLI.parent.name)
+    def profiles(self, sort: str = "working") -> list[dict[str, Any]]:
+        r = _run("crew-list", "--sort", sort if sort in ("working", "name", "title") else "working", "--assistants", json.dumps(_assistants()))
+        if not r.get("ok"):
+            raise RuntimeError(r.get("error") or "crew read failed")
+        return r.get("members") or []
+
+    def profile(self, member: str) -> dict[str, Any]:
+        r = _run("crew-get", member, "--assistants", json.dumps(_assistants()))
+        if not r.get("ok"):
+            raise LookupError(r.get("error") or "not found")
+        return {**r["member"], "personaLine": r.get("personaLine", "")}
+
+    def update(self, member: str, patch: dict[str, Any], owner: bool = False) -> dict[str, Any]:
+        """Owner-only sections (pay, tools, safety, job title) need `owner` = Brett's signed-in console session; the
+        MCP tool and other plugins never pass it."""
+        args = ["crew-update", member, json.dumps(patch), "--assistants", json.dumps(_assistants())]
+        r = _run(*args, "--owner", env={"AXF_CREW_OWNER": "1"}) if owner else _run(*args, env={"AXF_CREW_OWNER": ""})
+        if not r.get("ok"):
+            raise ValueError(r.get("error") or "update failed")
+        return r.get("member") or {}
+
+
+def _assistants() -> list[dict[str, Any]]:
+    """The Agent manager's agents (axf.agents@1): on the roster with job title Assistant. Only a link, never a copy of
+    their persona / skills / tools, which stay in the Agent manager."""
+    svc = plugin_services.get("axf.agents@1")
+    try:
+        return [{k: a.get(k) for k in ("id", "name", "description", "origin", "dangerous")} for a in (svc.list_agents() if svc else [])][:60]
+    except Exception:  # noqa: BLE001 — a broken Agent manager never breaks the roster
+        return []
+
+
+CREW = CrewService()
+plugin_services.provide("axf.crew@1", CREW, CLI.parent.name)
+
+
+def _owner(request: Request) -> bool:
+    c = plugin_services.get("control@1")
+    try:
+        return bool(c is not None and hasattr(c, "owner") and c.owner(request))
+    except Exception:  # noqa: BLE001
+        return False
+
+
+def _err(e: Exception) -> HTTPException:
+    msg = str(e)
+    code = 403 if msg.startswith("owner_only") else 404 if msg.startswith("not_found") else 400
+    return HTTPException(code, msg)
+
+
+@router.get("/crew")
+def crew_list(sort: str = "working") -> dict[str, Any]:
+    """The one roster: every member (owner, crew, assistants) with every profile section, working on top."""
+    try:
+        return {"ok": True, "$axf": "crew-roster@1", "members": CREW.profiles(sort)}
+    except Exception as e:  # noqa: BLE001
+        raise _err(e)
+
+
+@router.get("/crew/{member}")
+def crew_get(member: str) -> dict[str, Any]:
+    if not ID.match(member):
+        raise HTTPException(400, "bad member id")
+    try:
+        return {"ok": True, "member": CREW.profile(member)}
+    except Exception as e:  # noqa: BLE001
+        raise _err(e)
+
+
+@router.patch("/crew/{member}")
+async def crew_update(member: str, request: Request) -> dict[str, Any]:
+    """Change profile sections ({persona: {...}, skills: [...], ...}). Pay, tools, safety and job title only from
+    Brett's signed-in console session (403 owner_only otherwise)."""
+    if not ID.match(member):
+        raise HTTPException(400, "bad member id")
+    body = await request.body()
+    if len(body) > MAX_BODY:
+        raise HTTPException(413, "too large")
+    try:
+        patch = json.loads(body or b"{}")
+    except json.JSONDecodeError:
+        raise HTTPException(400, "not JSON")
+    try:
+        return {"ok": True, "member": CREW.update(member, patch, owner=_owner(request))}
+    except Exception as e:  # noqa: BLE001
+        raise _err(e)
 
 
 @router.get("/state")

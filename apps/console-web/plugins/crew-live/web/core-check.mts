@@ -1,5 +1,5 @@
 /** Self-test of web/core.ts: npx -y tsx apps/console-web/plugins/crew-live/web/core-check.mts (prints JSON last). */
-import { directoryOf, elapsed, filterRuns, highlight, isSnapshot, sortRuns, stepLine, tokensText, usd, type Run, type Snapshot } from './core';
+import { directoryOf, elapsed, filterRuns, highlight, isOpen, isSnapshot, parseSkills, sortMembers, sortRuns, stepLine, tokensText, usd, type Member, type Run, type Snapshot } from './core';
 
 const out: [string, boolean][] = [];
 const check = (name: string, ok: boolean) => out.push([name, ok]);
@@ -40,5 +40,16 @@ check('highlight: css colour hash is not a comment', !highlight('color: #fff;').
 
 const failed = out.filter(([, ok]) => !ok).map(([n]) => n);
 for (const [n, ok] of out) console.log(`${ok ? '✓' : '✗'} ${n}`);
+// crew members: working on top (longest-running first), boss first, idle last; open by default only when working
+{
+  const mem = (id: string, over: Partial<Member> = {}): Member => ({ id, name: id, kind: 'crew', jobTitle: 'All-rounder', avatar: null, status: 'idle', ...over });
+  const ms = [mem('zed'), mem('amy'), mem('brett', { kind: 'owner', status: 'owner' }), mem('paulie'), mem('lenny', { running: [{ jobId: 'j', buildId: 'b', startedAt: '2026-11-03T17:00:00Z', summary: '' }] })];
+  const runs = [run({})]; // paulie working since 18:00, lenny since 17:00 → lenny first
+  check('members: boss, then working longest first, then idle by name', sortMembers(ms, runs).map((m) => m.id).join() === 'brett,lenny,paulie,amy,zed');
+  check('members: sort by name', sortMembers(ms, runs, 'name')[0]!.id === 'amy');
+  check('members: working open by default, idle closed, remembered wins', isOpen(ms[3]!, runs, {}) && !isOpen(ms[0]!, runs, {}) && isOpen(ms[0]!, runs, { zed: true }));
+  check('members: skills text parses tag:level', JSON.stringify(parseSkills('CI:4, ui, x:9')) === JSON.stringify([{ tag: 'ci', level: 4 }, { tag: 'ui', level: 3 }, { tag: 'x', level: 3 }]));
+}
+
 console.log(JSON.stringify({ total: out.length, failed }));
 (globalThis as { process?: { exit(c: number): void } }).process?.exit(failed.length ? 1 : 0);

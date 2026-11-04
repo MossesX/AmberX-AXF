@@ -14,7 +14,7 @@ const skills = Object.fromEntries(readdirSync(here('./agents/skills/')).filter((
 // s1 roster + skills
 t('roster and skills are valid', () => assert.deepEqual(c.checkRoster(roster, skills), []));
 t('the eight build skills and the nine job-crew skills exist', () => assert.deepEqual(Object.keys(skills).sort(), ['assets-themes', 'banner-janitor', 'ci-fix', 'docs', 'feature-build', 'kotlin-compose', 'landing', 'listener-qa', 'merge-fixer', 'ops-fix', 'plugin-manifests', 'python-server', 'react-ui', 'screenshots', 'site-checks', 'tests', 'walkthroughs']));
-t('the job crew are all-rounders: every skill, a home job, nobody let go', () => { const crew = roster.agents.filter((a) => a.jobsOnly); assert.deepEqual(crew.map((a) => a.id).sort(), ['earl', 'gina', 'joey', 'lenny', 'paulie', 'rhonda', 'sully']); for (const a of crew) { assert.ok(a.skills.includes('*'), a.id); assert.ok(a.home, a.id); assert.ok(a.models.includes('fable'), a.id); } });
+t('the job crew are all-rounders: every skill, a home job, nobody let go', () => { const crew = roster.agents.filter((a) => a.jobsOnly); assert.deepEqual(crew.map((a) => a.id).sort(), ['amber', 'ashes', 'brownie', 'chachi', 'conrad', 'earl', 'gina', 'gizmo', 'jennifer', 'joey', 'lenny', 'marco', 'patches', 'paulie', 'polo', 'rhonda', 'sully']); for (const a of crew) { assert.ok(a.skills.includes('*'), a.id); assert.ok(a.home, a.id); assert.ok(a.models.includes('fable'), a.id); } });
 t('job crew never gets build steps', () => { const p = c.planJobs([{ id: 'b', steps: [{ id: 's1', text: 'take screenshots of the site check page and land it', files: [] }] }], roster); assert.ok(p.jobs.every((j) => !roster.agents.find((a) => a.id === j.agent).jobsOnly)); });
 t('every skill is under one page', () => { for (const s of Object.values(skills)) assert.ok(s.lines <= c.SKILL_MAX_LINES && s.chars <= c.SKILL_MAX_CHARS, s.id); });
 t('models sort cheapest first, blocked ones coerced up (model policy: never Sonnet or Haiku)', () => { assert.deepEqual(c.normAgent({ id: 'x', models: ['opus', 'haiku', 'nope'] }).models, ['opus']); assert.deepEqual(c.normAgent({ id: 'y', models: ['fable', 'sonnet'] }).models, ['opus', 'fable']); assert.deepEqual(c.normAgent({ id: 'z' }).models, ['opus']); });
@@ -483,7 +483,8 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
   const allOff = (st0, except = []) => crew.filter((a) => !except.includes(a.id)).reduce((st, a) => c.applyChange(st, { action: 'status', agent: a.id, status: 'off-duty', note: 'nap' }, roster, at).state, st0);
   t('job types: nine, all valid, every crew member can take each, the home agent listed first', () => {
     assert.equal(types.length, 9); for (const jt of types) { assert.deepEqual(jt.errors, [], jt.id); const o = jc.owners(jt, roster, c.normState({}, roster)); assert.equal(o.length, crew.length, jt.id); assert.ok(o.every((a) => a.jobsOnly), jt.id); }
-    for (const a of crew) assert.equal(jc.owners(types.find((x) => x.id === a.home), roster, c.normState({}, roster))[0].id, a.id, a.home);
+    // homes can be shared (several all-rounders prefer feature builds): whoever comes first has that home
+    for (const a of crew) { const o = jc.owners(types.find((x) => x.id === a.home), roster, c.normState({}, roster)); assert.equal(o[0].home, a.home, a.home); assert.ok(o.slice(0, crew.filter((x) => x.home === a.home).length).some((x) => x.id === a.id), `${a.id} first among ${a.home}`); }
     assert.ok(['feature-build', 'ops-fix'].every((id) => types.some((x) => x.id === id)));
     assert.equal(jc.jobsOf(types, crew[0]).length, 9); assert.equal(jc.jobsOf(types, crew[0])[0].home, true);
     assert.ok(!jc.canTake(site, roster.agents.find((a) => a.id === 'rio')), 'build agents keep their own skill');
@@ -645,6 +646,26 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
     const m = spawnSync(process.execPath, [new URL('./swarm.mjs', import.meta.url).pathname, 'mentions', '--negative', '--json'], { env: { ...process.env, AXF_SWARM_DIR: d }, encoding: 'utf8' });
     assert.equal(JSON.parse(m.stdout).count, 1);
   });
+}
+
+// crew-profile@1: one roster, every employee an agent with a job title (crew-profiles.mjs)
+{
+  const cp = await import('./crew-profiles.mjs');
+  const seed = JSON.parse(readFileSync(here('./agents/profiles.json'), 'utf8'));
+  const crewRows = [{ id: 'lenny', name: "Landin' Lenny", running: [{ jobId: 'j', buildId: 'b', startedAt: '2026-11-04T10:00:00Z' }], stats: { done: 4, failed: 1 }, strikes: 2, spend: { all: 3, today: 1 } }];
+  const ms = cp.buildRoster({ roster, crew: crewRows, seed, assistants: [{ id: 'coder', name: 'Coder' }, { id: 'molly', name: 'Molly' }, { id: 'rio', name: 'Rio dup' }], writeups: cp.parseWriteups("## Write-up: Landin' Lenny - Nov 3 2026\n- Offense: loitering\n## Other\n- x") });
+  const by = (id) => ms.find((m) => m.id === id);
+  t('crew: the boss first, not on payroll', () => { assert.equal(ms[0].id, 'brett'); assert.equal(ms[0].jobTitle, 'Boss'); assert.equal(ms[0].pay.hourly, null); });
+  t('crew: the whole roster with job titles', () => { for (const [id, title] of [['marco', 'VP'], ['amber', 'Chief Architect'], ['patches', 'Orchestrator'], ['gizmo', 'Companion & Guide'], ['conrad', 'Librarian'], ['chachi', 'Front Desk'], ['brownie', 'QA Inspector'], ['ashes', 'Security'], ['jennifer', 'Lunch Lady'], ['lenny', 'Lander'], ['polo', 'All-rounder']]) assert.equal(by(id)?.jobTitle, title, id); });
+  t('crew: pay $7.50/h minimum, Gizmo $8.00/h', () => { assert.equal(by('gizmo').pay.hourly, 8); for (const m of ms.filter((x) => x.kind !== 'owner')) assert.ok(m.pay.hourly >= 7.5, m.id); });
+  t('crew: Molly is not an agent; Agent manager agents are Assistants, linked not copied', () => { assert.ok(!by('molly')); assert.equal(by('coder').jobTitle, 'Assistant'); assert.equal(by('coder').assistant.agentManager, 'coder'); assert.equal(by('asst-rio').assistant.agentManager, 'rio'); });
+  t('crew: every member has every section', () => { for (const m of ms) for (const k of ['persona', 'role', 'skills', 'tools', 'model', 'memory', 'safety', 'pay', 'stats', 'avatar', 'reportsTo']) assert.ok(k in m, `${m.id}.${k}`); });
+  t('crew: stats carry strikes and write-ups', () => { assert.equal(by('lenny').stats.strikes, 2); assert.equal(by('lenny').stats.writeups.length, 1); assert.equal(by('lenny').status, 'working'); });
+  t('crew: working on top, boss above all', () => { const s = cp.sortMembers(ms); assert.equal(s[0].id, 'brett'); assert.equal(s[1].id, 'lenny'); });
+  t('crew: owner-only sections refused without Brett', () => { assert.throws(() => cp.applyUpdate({}, { pay: { hourly: 9 } }), /owner_only/); assert.throws(() => cp.applyUpdate({}, { tools: { allow: [] } }), /owner_only/); assert.throws(() => cp.applyUpdate({}, { jobTitle: 'x' }), /owner_only/); assert.equal(cp.applyUpdate({}, { pay: { hourly: 9 } }, { owner: true }).pay.hourly, 9); });
+  t('crew: never Sonnet, never under minimum pay', () => { assert.throws(() => cp.applyUpdate({}, { model: 'sonnet' }), /opus or fable/); assert.throws(() => cp.applyUpdate({}, { pay: { hourly: 5 } }, { owner: true }), /at least/); });
+  t('crew: persona edits merge field by field', () => { const e = cp.applyUpdate({ persona: { voice: 'v', tone: 't' } }, { persona: { tone: 'x' } }); assert.equal(e.persona.voice, 'v'); assert.equal(e.persona.tone, 'x'); });
+  t('crew: persona line for group chat and sessions', () => assert.match(cp.personaLine(by('amber')), /Amber \(Chief Architect\).*Never "kid"/));
 }
 
 console.log(`agent-swarm: ${n} checks passed`);

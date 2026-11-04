@@ -13,6 +13,10 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { pluginFetch } from '@console/plugins';
 import { useEffect } from 'react';
 import { CrewView, FOCUS_EVENT, FOLDER, VIEW, publish } from './ui';
+import { EXPAND_KEY, EXPAND_OPTS, PROFILE_EVENT, SORT_KEY, SORT_OPTS } from './members';
+import { Segmented } from '@console/axf/react';
+import * as consoleApi from '@console/api';
+import { useState } from 'react';
 import { appMenu } from './menu';
 import { isSnapshot, type Run } from './core';
 import './crew.css';
@@ -48,6 +52,18 @@ function DirectoryFeed() {
   return null;
 }
 
+/** Sort and which containers start open (this device; the Crew view's own controls change the same values). */
+function OrderSettings() {
+  const [sort, setSort] = useState(() => consoleApi.readLocal(SORT_KEY, 'working'));
+  const [def, setDef] = useState(() => consoleApi.readLocal(EXPAND_KEY, 'working'));
+  return (
+    <div className="axp-crew__settings">
+      <Segmented size="sm" label="Sort crew members" value={sort} onChange={(v) => { setSort(v); consoleApi.writeLocal(SORT_KEY, v); }} options={SORT_OPTS} />
+      <Segmented size="sm" label="Open by default" value={def} onChange={(v) => { setDef(v); consoleApi.writeLocal(EXPAND_KEY, v); }} options={EXPAND_OPTS} />
+    </div>
+  );
+}
+
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Crew',
@@ -56,6 +72,10 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     rt.actions.register('crew.open', () => rt.navigate(VIEW), { label: 'Open the Crew (who is working)' });
     rt.actions.register('crew.agent', ([agent = '']) => { if (agent) focus(rt, agent); }, { label: 'Show an agent\'s current task in the Crew', params: true, searchable: false });
+    rt.actions.register('crew.profile', ([member = '']) => {
+      rt.navigate(VIEW);
+      setTimeout(() => window.dispatchEvent(new CustomEvent(PROFILE_EVENT, { detail: member })), 50);
+    }, { label: 'Open a crew member\'s profile', params: true, searchable: false });
     rt.actions.register('crew.history', ([agent = '']) => { if (agent) run(rt, `agent-swarm.profile:${agent}`); }, { label: 'An agent\'s history and past runs', params: true, searchable: false });
     rt.actions.register('crew.terminal', ([agent = '']) => void runOf(agent).then((r) => {
       if (r && r.status !== 'idle') run(rt, `terminal.attach:${r.session}:${encodeURIComponent(r.agent.name)}`);
@@ -80,6 +100,7 @@ export const plugin: AxfWebLibrary = {
   contextMenu: [{
     id: 'crew.agent', target: 'agent', order: 10, items: [
       { id: 'crew.card', label: 'Open employee card', icon: 'user', action: 'agent-swarm.profile:{payload}' },
+      { id: 'crew.profile', label: 'Edit profile', icon: 'edit', action: 'crew.profile:{payload}' },
       { id: 'crew.task', label: 'Their current task', icon: 'play', action: 'crew.agent:{payload}' },
       { id: 'crew.history', label: 'Their history / past runs', icon: 'clock', action: 'crew.history:{payload}' },
       { id: 'crew.session', label: 'Open in Session browser', icon: 'list', action: 'crew.session:{payload}' },
@@ -90,5 +111,5 @@ export const plugin: AxfWebLibrary = {
     ],
   }],
   settingsTabs: [{ id: 'crew-live', label: 'Crew', icon: 'user', parent: 'plugins', order: 46, description: 'Who is working right now, live.' }],
-  settingsPanels: [{ id: 'crew.lifecycle', tab: 'crew-live', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+  settingsPanels: [{ id: 'crew.order', tab: 'crew-live', title: 'Crew cards', icon: 'user', order: 10, render: () => <OrderSettings /> }, { id: 'crew.lifecycle', tab: 'crew-live', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

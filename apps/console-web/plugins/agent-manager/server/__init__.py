@@ -187,6 +187,25 @@ _offer_molly()
 training.start_scheduler(lambda: plugin_services.get("axf.agents@1") is not None)
 
 
+# ---------------------------------------------------------------- roster (crew-profile@1, Brett Nov 4 2026)
+
+@router.get("/roster")
+def roster() -> dict[str, Any]:
+    """The one roster: every employee is an agent with a job title, and this plugin's agents are on it as Assistants.
+    Read through the Agent swarm's capability axf.crew@1 (never its folder); without it, only this plugin's agents."""
+    svc = plugin_services.get("axf.crew@1")
+    if svc is not None and hasattr(svc, "profiles"):
+        try:
+            return {"ok": True, "source": "axf.crew@1", "members": svc.profiles()}
+        except Exception as e:  # noqa: BLE001 — fall back to the local list
+            why = str(e)[:200]
+    else:
+        why = "the Agent swarm (axf.crew@1) is off"
+    own = [{"id": a["id"], "name": a.get("name", a["id"]), "kind": "assistant", "jobTitle": "Assistant", "status": "idle", "avatar": None,
+            "assistant": {"agentManager": a["id"]}} for a in store.items("agents").values() if a.get("id") != "molly"]
+    return {"ok": True, "source": "local", "why": why, "members": own}
+
+
 # ---------------------------------------------------------------- status + settings + contract
 
 @router.get("/status")

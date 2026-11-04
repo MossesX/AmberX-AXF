@@ -24,6 +24,21 @@ page in `agents/skills/` (`agent-skill@1`):
 Amber's persona (`agents/persona.md`, five lines) is in the shared prefix: reports and chat talk like Amber; code,
 comments and commits stay clean. No jokes about anyone's identity.
 
+## Crew profiles (crew-profile@1, Nov 4 2026)
+
+Agents and employees are one thing with different job titles. `crew-profiles.mjs` builds **the one roster** from the
+roster (`agents/roster.json`), the swarm state (status, spend, runs, strikes), the profile seed (`agents/profiles.json`)
+plus edits in the data folder (`profiles.json`, per section), the Agent manager's agents (capability `axf.agents@1`:
+job title **Assistant**, linked, never copied) and write-ups (`_claude/shared/memory/write-ups.md`). Sections: persona,
+role and duties, tagged skills, tools allow list, model (Opus / Fable), memory, safety, hourly pay ($7.50/h minimum),
+stats, avatar, reports to. Brett is the Boss (owner, not on payroll); Molly (the app) and Vinnie (axHub's bot) are not
+crew. Pay, tools, safety and job title change only from Brett's signed-in console session (control@1 `owner`).
+
+- CLI: `node apps/console-web/plugins/agent-swarm/swarm.mjs crew-list [--sort working|name|title] | crew-get <id> | crew-update <id> '<json>'`
+- REST: `GET /api/plugins/agent-swarm/crew`, `GET|PATCH /crew/{id}`; the Crew plugin proxies `members[/{id}]` for its window
+- MCP: `crew_list`, `crew_get`, `crew_update` (never owner-only sections)
+- Capability `axf.crew@1`: `profiles()`, `profile(id)`, `update(id, patch, owner)`; `crew()` rows now carry `jobTitle` and `personaLine` (the agent picker and `claude_session_persona` use them)
+
 ## ID cards (agent-card@1)
 
 Every agent has an ID card drawn by the framework's `AgentCard` from an `agent-card@1` asset (rules

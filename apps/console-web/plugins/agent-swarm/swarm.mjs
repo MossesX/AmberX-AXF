@@ -32,6 +32,7 @@ import { fileURLToPath } from 'node:url';
 import * as core from './web/swarm-core.mjs';
 import { orchestratorPath, persistRoot } from '../../../../framework/cli/persist.mjs';
 import * as watch from './web/chat-watch.mjs';
+import * as crewProfiles from './crew-profiles.mjs';
 import { spawnSync } from 'node:child_process';
 import { runJob, worktreeFor } from './runner.mjs';
 import { withSlot } from '../../../../framework/cli/agent-slots.mjs';
@@ -184,6 +185,28 @@ export function book(entry) {
   return rec;
 }
 
+export const profilesFile = () => join(dataDir(), 'profiles.json');
+const flag = (args, name) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : ''; };
+/** Agent manager assistants as the server passes them (axf.agents@1 list_agents), or the last ones it saw. */
+function assistantsArg(args) {
+  const raw = flag(args, '--assistants');
+  if (raw) { const a = JSON.parse(raw); writeJson(join(dataDir(), 'assistants.json'), { $axf: 'crew-assistants@1', at: new Date().toISOString(), agents: a }); return a; }
+  return readJson(join(dataDir(), 'assistants.json'), { agents: [] }).agents ?? [];
+}
+/** crew() rows with their job title and persona line (the agent picker and claude_session_persona read them). */
+export function withProfiles(rows) {
+  const by = new Map(crewRoster({ assistants: [] }).map((m) => [m.id, m]));
+  return rows.map((r) => { const m = by.get(r.id); return m ? { ...r, jobTitle: m.jobTitle, role: m.jobTitle || r.role, personaLine: crewProfiles.personaLine(m), pronouns: m.pronouns } : r; });
+}
+/** The one roster (crew-profile@1): every member with every profile section (crew-profiles.mjs). */
+export function crewRoster({ assistants = [] } = {}) {
+  const writeupsFile = join(ROOT, '_claude/shared/memory/write-ups.md');
+  return crewProfiles.buildRoster({
+    roster: loadRoster(), crew: crew(), seed: readJson(join(HERE, 'agents/profiles.json'), {}), edits: readJson(profilesFile(), {}).members ?? {},
+    assistants, writeups: crewProfiles.parseWriteups(existsSync(writeupsFile) ? readFileSync(writeupsFile, 'utf8') : ''),
+  });
+}
+
 /** The crew in one compact read (the Claude agent picker): who, status, pay, spend, stats, raises, latest runs. */
 export function crew() {
   const s = state(); const at = new Date().toISOString(); const day = core.dayStart(at); const week = core.weekStart(at);
@@ -194,7 +217,7 @@ export function crew() {
     const st = core.agentStats(s.runs.filter((r) => r.status !== 'running'), a.id, s.prices, 8); const timed = mine.filter((r) => r.endedAt);
     return {
       id: a.id, name: core.cardIdentity(a, as).name, role: a.role, specialty: a.specialty, avatar: a.avatar, catchphrase: a.catchphrase, bio: a.bio, jobsOnly: a.jobsOnly,
-      status: as.status, statusLabel: core.statusLabel(as), works: core.STATUSES[as.status]?.works !== false,
+      status: as.status, statusLabel: core.statusLabel(as), strikes: as.failStreak ?? 0, works: core.STATUSES[as.status]?.works !== false,
       running: mine.filter((r) => r.status === 'running').map((r) => ({ jobId: r.jobId, buildId: r.buildId, startedAt: r.startedAt, summary: r.report?.summary ?? '' })),
       pay: s.pay[a.id], spend: { today: s.spend[a.id]?.today.usd ?? 0, week: s.spend[a.id]?.week.usd ?? 0, all: s.spend[a.id]?.all.usd ?? 0, avgPerJob: s.spend[a.id]?.avgPerJob ?? 0 },
       minutes: { today: Math.round(mine.filter((r) => (r.endedAt || at) >= day).reduce((t, r) => t + mins(r), 0)), week: Math.round(mine.filter((r) => (r.endedAt || at) >= week).reduce((t, r) => t + mins(r), 0)), avgPerJob: timed.length ? Math.round(timed.reduce((t, r) => t + mins(r), 0) / timed.length) : 0 },
@@ -370,7 +393,24 @@ export async function main(argv) {
     return out({ ok: true, roster: r, skills: sk, problems }, [...r.agents.map((a) => `${a.id.padEnd(6)} ${a.name.padEnd(12)} ${a.skill.padEnd(17)} ${a.models.join('/')}`), ...problems.map((p) => `! ${p}`)].join('\n'));
   }
   if (cmd === 'state') return out({ ok: true, state: state() }, JSON.stringify(state(), null, 1));
-  if (cmd === 'crew') { const c = crew(); return out({ ok: true, crew: c }, c.map((a) => `${a.id.padEnd(8)} ${a.name.padEnd(16)} ${a.statusLabel.padEnd(12)} today ${core.fmtUsd(a.spend.today)} · ${a.stats.done} done`).join('\n')); }
+  if (cmd === 'crew') { const c = withProfiles(crew()); return out({ ok: true, crew: c }, c.map((a) => `${a.id.padEnd(8)} ${a.name.padEnd(16)} ${a.statusLabel.padEnd(12)} today ${core.fmtUsd(a.spend.today)} · ${a.stats.done} done`).join('\n')); }
+  if (cmd === 'crew-list' || cmd === 'crew-get') {
+    const ms = crewRoster({ assistants: assistantsArg(args) });
+    if (cmd === 'crew-list') { const sorted = crewProfiles.sortMembers(ms, flag(args, '--sort') || 'working'); return out({ ok: true, $axf: 'crew-roster@1', members: sorted }, sorted.map((m) => `${m.id.padEnd(9)} ${m.name.padEnd(16)} ${m.jobTitle.padEnd(20)} ${m.status.padEnd(8)} ${m.pay.hourly == null ? '—' : `$${m.pay.hourly.toFixed(2)}/h`}`).join('\n')); }
+    const m = ms.find((x) => x.id === rest[0] || x.name.toLowerCase() === String(rest[0] ?? '').toLowerCase());
+    if (!m) throw new Error(`not_found: no crew member "${rest[0]}"`);
+    return out({ ok: true, member: m, personaLine: crewProfiles.personaLine(m) }, JSON.stringify(m, null, 1));
+  }
+  if (cmd === 'crew-update') {
+    const [id, patch] = rest; const owner = args.includes('--owner') && process.env.AXF_CREW_OWNER === '1' && !['CLAUDECODE', 'AXF_SESSION', 'AXF_AGENT', 'AXF_SURFACE'].some((k) => process.env[k]); // only the console server, for Brett's own click
+    const ms = crewRoster({ assistants: assistantsArg(args) }); const m = ms.find((x) => x.id === id);
+    if (!m) throw new Error(`not_found: no crew member "${id}"`);
+    const edits = readJson(profilesFile(), { members: {} }); edits.members ??= {};
+    edits.members[id] = crewProfiles.applyUpdate(edits.members[id], JSON.parse(patch ?? '{}'), { owner, kind: m.kind });
+    writeJson(profilesFile(), { $axf: 'crew-profile-edits@1', updatedAt: new Date().toISOString(), members: edits.members });
+    const after = crewRoster({ assistants: assistantsArg(args) }).find((x) => x.id === id);
+    return out({ ok: true, member: after }, `${after.name} updated`);
+  }
   if (cmd === 'book') { const r = book(JSON.parse(rest[0] ?? '{}')); return out({ ok: true, run: r }, `${r.jobId} on ${r.agent}: ${r.status}${r.reportedCost != null ? ` · ${core.fmtUsd(r.reportedCost)}` : ''}`); }
   if (cmd === 'cost') {
     const m = state().meter; const row = (k, v) => `${k.padEnd(28)} ${String(v.runs).padStart(4)} runs ${core.fmtTokens(v.tokens).padStart(7)} tok ${core.fmtUsd(v.usd).padStart(8)}`;
