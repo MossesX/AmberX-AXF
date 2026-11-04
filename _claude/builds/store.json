@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 777,
- "updatedAt": "2026-11-04T15:21:25.826Z",
+ "rev": 778,
+ "updatedAt": "2026-11-04T15:24:57.863Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -73684,8 +73684,9 @@
    "pendingId": "urgent-land-gizmo-chat",
    "branch": "claude/gizmo-companion",
    "pr": "#296",
+   "mergedAt": "2026-11-04T15:24:48Z",
    "createdAt": "2026-11-04T14:14:12.849Z",
-   "updatedAt": "2026-11-04T15:05:56.718Z",
+   "updatedAt": "2026-11-04T15:24:56.902Z",
    "builtAt": "",
    "notes": [
     {
@@ -73805,7 +73806,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
