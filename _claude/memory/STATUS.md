@@ -232,3 +232,5 @@ menu-fit@1: `framework/core/engines/menufit.ts` (pure `fitMenu` / `menuBox`; che
 menu box, `.fx-menu__li` static), context menus and plugin ⋯ menus flip / shift to stay on screen and only then scroll,
 with `data-fx-more` fade + chevron hints and contained overscroll. Re-baked console, axHub web, AmberX, Molly. Android
 twin deferred (PORTING.md). Report `_claude/builds/reports/menu-scroll.md`.
+
+- **Nov 4 2026 · model-thinking-audit (Fable):** model-advice@1: every build, step and plan carries a recommended model + thinking level + why (and a keep / Fable review / redo verdict with cost for built work); chips + check / triangle + why-panel on every console screen; Settings → Builds switch + per-screen override; filters; `model-advice.mjs audit|plans|queue|report`; `claude --effort` from the build's thinking level. Report `_claude/builds/reports/model-thinking-audit.md`.

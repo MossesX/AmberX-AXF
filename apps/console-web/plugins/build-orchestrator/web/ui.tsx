@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AdviceFilterBar, AgentAvatar, BuildOrigin, Button, Icon, ModelChips, Segmented, Slot, buildView, matchesFilter, originSubtitle, stepView, useAdviceFilter, useRuntime } from '@console/axf/react';
+import { AdviceFilterBar, AgentAvatar, BuildOrigin, Button, Icon, ModelChips, Segmented, Slot, WhyPanel, buildView, matchesFilter, originSubtitle, stepView, useAdviceFilter, useRuntime, useWhyRows } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import { WatchLiveFor } from '@console/watchLive';
@@ -267,19 +267,23 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
 
 function StepRow({ b, s, locked, busy, act, last }: { b: Build; s: Step & { index: number }; locked: boolean; busy: boolean; act: Act; last: number }) {
   const other = s.model === 'Fable' ? 'Opus' : 'Fable';
+  const [why, setWhy] = useState(false); // model-advice@1: right-click the icon → why, under the step
   return (
+    <>
     <div className={`pd-entry is-mono ${s.done ? 'is-done' : ''}`}>
       <input type="checkbox" className="pd-tick" checked={s.done} disabled={busy || core.isFinished(b.status) || (locked && !s.done)} onChange={(ev) => void act({ action: 'step', id: b.id, step: s.id, done: ev.target.checked })} aria-label={`Step ${s.id} done`} title={locked ? 'Approve the model switch first' : s.done && s.doneAt ? `Done ${fmtTime(s.doneAt)}` : 'Mark this step done'} />
       <time>{s.id}{s.estimate && <span className="pd-est"> · ~{s.estimate}</span>}</time>
       <p>{s.text}{s.why && <span className="fx-muted"> — {s.why}</span>}{s.session === 'new' && <span className="oc-flag"> new session</span>}{s.agent && <span className="oc-flag"> sub-agent ok</span>}</p>
       <span className="oc-steptools">
-        <ModelChips screen="orchestrator" view={stepView(s)} build={b.id} step={s.id} onAct={act} compact title={`${b.title} ${s.id}`} />
+        <ModelChips screen="orchestrator" view={stepView(s)} build={b.id} step={s.id} onAct={act} compact title={`${b.title} ${s.id}`} host="row" whyOpen={why} onWhy={() => setWhy((w) => !w)} />
         <button data-fx-row className={`oc-model is-${s.model.toLowerCase()}`} disabled={busy || s.done} title={`Switch this step to ${other}`} onClick={() => act({ action: 'edit-step', id: b.id, step: s.id, stepData: { model: other } })}>{s.model}</button>
         <button className="fx-iconbtn" disabled={busy || s.index === 0} title="Move up" onClick={() => act({ action: 'move-step', id: b.id, step: s.id, dir: 'up' })}><Icon name="chevron-up" size={13} /></button>
         <button className="fx-iconbtn" disabled={busy || s.index === last} title="Move down" onClick={() => act({ action: 'move-step', id: b.id, step: s.id, dir: 'down' })}><Icon name="chevron-down" size={13} /></button>
         <button className="fx-iconbtn" disabled={busy} title="Remove step" onClick={() => act({ action: 'remove-step', id: b.id, step: s.id })}><Icon name="x" size={13} /></button>
       </span>
     </div>
+    {why && <WhyPanel view={stepView(s)} build={b.id} step={s.id} onAct={act} title={`${b.title} ${s.id}`} onClose={() => setWhy(false)} />}
+    </>
   );
 }
 
@@ -420,6 +424,7 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
   const [stepHidden, setStepHidden] = useState<string[]>(() => consoleApi.readLocal<string[]>('orch-step-hidden', ['doneAt']));
   const [open, setOpen] = useState<string[]>([]);
   const [collapsed, setCollapsed] = useState<string[]>([]);
+  const why = useWhyRows(); // model-advice@1: right-click the icon → the row expands with why instead of its details
   useEffect(() => { consoleApi.writeLocal('orch-grid-sort', sort); consoleApi.writeLocal('orch-grid-hidden', hidden); consoleApi.writeLocal('orch-step-hidden', stepHidden); }, [sort, hidden, stepHidden]);
   const fig = useMemo(() => new Map(builds.map((b) => [b.id, figures(b)])), [builds]);
   const groups: GridGroup<Build>[] = useMemo(() => {
@@ -437,8 +442,8 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
     { id: 'status', label: 'Status', width: 'calc(var(--fx-font-size) * 7.5)', sortable: true, sortValue: (b) => core.STATUSES.indexOf(b.status),
       render: (b) => <span className={`pd-badge oc-badge is-${b.status}`}>{(core.STATUS_LABEL as Record<string, string>)[b.status]}</span> },
     // model-advice@1: model · thinking chips and the check / triangle (right-click the icon: why, Apply, Dismiss; Brett only)
-    { id: 'advice', label: 'Model · thinking', width: 'calc(var(--fx-font-size) * 13)', sortable: true, sortValue: (b) => { const v = buildView(b); return `${v.reviewStatus === 'look' ? 0 : 1}${v.model}`; },
-      render: (b) => <span onClick={(e) => e.stopPropagation()}><ModelChips screen="orchestrator" view={buildView(b)} build={b.id} onAct={act} title={b.title} /></span> },
+    { id: 'advice', label: 'Model · thinking', width: 'calc(var(--fx-font-size) * 19)', sortable: true, sortValue: (b) => { const v = buildView(b); return `${v.reviewStatus === 'look' ? 0 : 1}${v.model}`; },
+      render: (b) => <span onClick={(e) => e.stopPropagation()}><ModelChips screen="orchestrator" view={buildView(b)} build={b.id} onAct={act} title={b.title} host="row" whyOpen={why.isOpen(b.id)} onWhy={() => { why.toggle(b.id); setOpen((o) => (o.includes(b.id) ? o : [...o, b.id])); }} /></span> },
     { id: 'next', label: 'Next', width: 'calc(var(--fx-font-size) * 6)', sortable: true, sortValue: (b) => core.nextUp(b, rules).step?.model ?? 'zz',
       render: (b) => { const n = core.nextUp(b, rules); return n.done ? <span className="fx-muted">—</span> : n.needsApproval ? <span className="oc-flag" title="The next phase upgrades the model: only you can approve it">your OK → {n.phase?.model}</span> : n.step ? <span className={`oc-model is-${n.step.model.toLowerCase()}`}>{n.step.model} {n.step.id}</span> : <span className="fx-muted">—</span>; } },
     { id: 'steps', label: 'Steps', width: 'calc(var(--fx-font-size) * 3.5)', align: 'end', sortable: true, sortValue: (b) => core.progress(b).total,
@@ -466,13 +471,13 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
           expanded={open} onToggleExpand={(id) => setOpen((o) => toggleIn(o, id))} onRowClick={(b) => setOpen((o) => toggleIn(o, b.id))}
           onToggleGroup={(id) => setCollapsed((c) => toggleIn(c, id))}
           rowCtx={(b) => ({ target: 'axf-orchestrator-build', payload: b.id })} rowRef={(b) => ({ kind: 'orchestrator', id: b.id })}
-          renderDetail={(b) => (
+          renderDetail={(b) => (why.isOpen(b.id) ? <WhyPanel view={buildView(b)} build={b.id} onAct={act} title={b.title} onClose={() => why.close(b.id)} /> : (
             <div className="oc-detail">
               <BuildOrigin origin={b.origin} showEmpty />
               <StepGrid b={b} rules={rules} busy={busy} act={act} hidden={stepHidden} setHidden={setStepHidden} />
               <BuildCard b={b} rules={rules} busy={busy} act={act} embedded />
             </div>
-          )} />
+          ))} />
       </div>
     </>
   );
@@ -482,6 +487,7 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
 function StepGrid({ b, rules, busy, act, hidden, setHidden }: { b: Build; rules: Rules; busy: boolean; act: Act; hidden: string[]; setHidden: (f: (h: string[]) => string[]) => void }) {
   const [sort, setSort] = useState<GridSort>(null);
   const [open, setOpen] = useState<string[]>([]);
+  const why = useWhyRows(); // model-advice@1: right-click a step's icon → its row expands with why
   const next = core.nextUp(b, rules).step?.id;
   const last = b.steps.length - 1;
   const groups: GridGroup<GStep>[] = core.phases(b).map((ph) => {
@@ -499,8 +505,8 @@ function StepGrid({ b, rules, busy, act, hidden, setHidden }: { b: Build; rules:
     { id: 'id', label: '#', width: 'calc(var(--fx-font-size) * 3.5)', sortable: true, sortValue: (s) => s.index, render: (s) => <span className="fx-small fx-mono">{s.id}{s.next && <span className="oc-flag"> next</span>}</span> },
     { id: 'text', label: 'Step', width: 'minmax(calc(var(--fx-font-size) * 14), calc(var(--fx-font-size) * 22))', fixed: true, sortable: true, sortValue: (s) => s.text.toLowerCase(),
       render: (s) => <span className="oc-cell-title" title={s.why ? `${s.text} — ${s.why}` : s.text}><span className={s.done ? 'oc-done' : ''}>{s.text}</span>{(s.why || s.session === 'new' || s.agent) && <span className="fx-small fx-muted">{s.why}{s.session === 'new' ? ' · new session' : ''}{s.agent ? ' · sub-agent ok' : ''}</span>}</span> },
-    { id: 'model', label: 'Model · thinking', width: 'calc(var(--fx-font-size) * 13)', sortable: true, sortValue: (s) => `${stepView(s).reviewStatus === 'look' ? 0 : 1}${s.model}`,
-      render: (s) => { const other = s.model === 'Fable' ? 'Opus' : 'Fable'; return <span className="oc-steptools" onClick={(e) => e.stopPropagation()}><ModelChips screen="orchestrator" view={stepView(s)} build={b.id} step={s.id} onAct={act} title={`${b.title} ${s.id}`} /><button data-fx-row className={`oc-model is-${s.model.toLowerCase()}`} disabled={busy || s.done} title={`Switch this step to ${other}`} onClick={(e) => { e.stopPropagation(); void act({ action: 'edit-step', id: b.id, step: s.id, stepData: { model: other } }); }} aria-label={`Switch this step to ${other}`}><Icon name="shuffle" size={12} /></button></span>; } },
+    { id: 'model', label: 'Model · thinking', width: 'calc(var(--fx-font-size) * 19)', sortable: true, sortValue: (s) => `${stepView(s).reviewStatus === 'look' ? 0 : 1}${s.model}`,
+      render: (s) => { const other = s.model === 'Fable' ? 'Opus' : 'Fable'; return <span className="oc-steptools" onClick={(e) => e.stopPropagation()}><ModelChips screen="orchestrator" view={stepView(s)} build={b.id} step={s.id} onAct={act} title={`${b.title} ${s.id}`} host="row" whyOpen={why.isOpen(s.id)} onWhy={() => { why.toggle(s.id); setOpen((o) => (o.includes(s.id) ? o : [...o, s.id])); }} /><button data-fx-row className={`oc-model is-${s.model.toLowerCase()}`} disabled={busy || s.done} title={`Switch this step to ${other}`} onClick={(e) => { e.stopPropagation(); void act({ action: 'edit-step', id: b.id, step: s.id, stepData: { model: other } }); }} aria-label={`Switch this step to ${other}`}><Icon name="shuffle" size={12} /></button></span>; } },
     { id: 'group', label: 'Group', width: 'calc(var(--fx-font-size) * 9)', sortable: true, sortValue: (s) => s.group, render: (s) => <span className="fx-small">{s.group || <span className="fx-muted">—</span>}</span> },
     { id: 'est', label: 'Time', width: 'calc(var(--fx-font-size) * 4)', align: 'end', sortable: true, sortValue: (s) => core.estimateMinutes(s.estimate) ?? -1, render: (s) => <span className="fx-small">{s.estimate || '—'}</span> },
     { id: 'cost', label: 'Cost', width: 'calc(var(--fx-font-size) * 4)', align: 'end', sortable: true, sortValue: (s) => usdFor(s.model, core.estimateMinutes(s.estimate) ?? 0), render: (s) => <span className="fx-small">{money(usdFor(s.model, core.estimateMinutes(s.estimate) ?? 0))}</span> },
@@ -523,7 +529,7 @@ function StepGrid({ b, rules, busy, act, hidden, setHidden }: { b: Build; rules:
         hidden={hidden} onToggleColumn={(c, show) => setHidden((h) => toggleIn(h, c, show))} onShowAll={() => setHidden(() => [])}
         sort={sort} onSort={(c) => setSort((x) => nextSort(x, c))}
         expanded={open} onToggleExpand={(id) => setOpen((o) => toggleIn(o, id))} onRowClick={(s) => setOpen((o) => toggleIn(o, s.id))}
-        renderDetail={(s) => (
+        renderDetail={(s) => (why.isOpen(s.id) ? <WhyPanel view={stepView(s)} build={b.id} step={s.id} onAct={act} title={`${b.title} ${s.id}`} onClose={() => why.close(s.id)} /> :
           <div className="oc-stepdetail fx-small">
             <p><strong>{s.id}</strong> · {s.text}</p>
             {s.why && <p><strong>Why this model:</strong> {s.why}</p>}

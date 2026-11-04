@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent as RKeyboardEvent, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { AdviceFilterBar, AgentAvatar, BuildOrigin, Button, Checkbox, Chip, Icon, IconButton, Meter, ModelChips, Segmented, SelectField, Slot, Switch, matchesFilter, originSubtitle, useAdviceFilter, useRuntime, type AdviceView } from '@console/axf/react';
+import { AdviceFilterBar, AgentAvatar, BuildOrigin, Button, Checkbox, Chip, Icon, IconButton, Meter, ModelChips, Segmented, SelectField, Slot, Switch, WhyPanel, matchesFilter, originSubtitle, useAdviceFilter, useRuntime, useWhyRows, type AdviceView } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridGroup } from '@console/axf/libs/datagrid';
 import { pluginApi } from '@console/plugins';
 import './builds.css';
@@ -289,13 +289,15 @@ function BuildsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
   const rt = useRuntime();
   const [expanded, setExpanded] = useState<string[]>([]);
   const toggleOpen = (id: string) => setExpanded((x) => (x.includes(id) ? x.filter((y) => y !== id) : [...x, id]));
+  const why = useWhyRows(); // model-advice@1: right-click the icon → the row expands with why instead of its details
   const rename = (b: BuildV) => (title: string) => send('ops', { ops: [{ op: 'rename-build', id: b.id, title }] }, rt.toast);
   const columns: GridColumn<BuildV>[] = [
     { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-space) * 30), 4fr)', fixed: true, sortable: true, sortValue: (b) => b.title.toLowerCase(),
       render: (b) => <span className="axp-builds__cell-title"><AgentAvatar inText={`${b.id}\n${b.detail}`} size="small" /><InlineName label="Build name" value={b.title} onSave={rename(b)} /><span className="fx-small fx-muted fx-mono">{b.id}{b.profiles.length > 1 ? ` · also in ${b.profiles.filter((p) => p !== state.profile).join(', ')}` : ''}</span>{originSubtitle(b.origin) && <span className="axf-origin-sub" title={originSubtitle(b.origin, 600)}>“{originSubtitle(b.origin)}”</span>}</span> },
     { id: 'status', label: 'Status', width: 'calc(var(--fx-space) * 14)', sortable: true, sortValue: (b) => b.status, render: (b) => <StatusChip b={b} /> },
     // model-advice@1: model · thinking chips and the check / triangle (right-click the icon: why, Apply, Dismiss)
-    { id: 'advice', label: 'Model · thinking', width: 'calc(var(--fx-space) * 22)', sortable: true, sortValue: (b) => `${b.advice?.reviewStatus === 'look' ? 0 : 1}${b.advice?.model ?? ''}`, render: (b) => <span onClick={(e) => e.stopPropagation()}><ModelChips screen="builds" view={b.advice} build={b.id} title={b.title} /></span> },
+    { id: 'advice', label: 'Model · thinking', width: 'calc(var(--fx-space) * 36)', sortable: true, sortValue: (b) => `${b.advice?.reviewStatus === 'look' ? 0 : 1}${b.advice?.model ?? ''}`,
+      render: (b) => <span onClick={(e) => e.stopPropagation()}><ModelChips screen="builds" view={b.advice} build={b.id} title={b.title} host="row" whyOpen={why.isOpen(b.id)} onWhy={() => { why.toggle(b.id); if (!expanded.includes(b.id)) toggleOpen(b.id); }} /></span> },
     { id: 'progress', label: 'Progress', width: 'calc(var(--fx-space) * 22)', sortable: true, sortValue: (b) => b.progress.pct, render: (b) => <Bar p={b.progress} label={`${b.title}: ${b.progress.done} of ${b.progress.total} steps`} /> },
     { id: 'steps', label: 'Steps', width: 'calc(var(--fx-space) * 9)', align: 'end', sortable: true, sortValue: (b) => b.progress.total, render: (b) => <span className="fx-small">{b.progress.done}/{b.progress.total}</span> },
     { id: 'left', label: 'Left', width: 'calc(var(--fx-space) * 10)', align: 'end', sortable: true, sortValue: (b) => b.minutesLeft, render: (b) => <span className="fx-small">{fmtMin(b.minutesLeft)}</span> },
@@ -314,7 +316,7 @@ function BuildsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
         ids.splice(at, 0, item.id);
         void send('ops', { ops: [{ op: 'reorder-builds', ids }] }, rt.toast);
       }}
-      renderDetail={(b) => <BuildDetail b={b} />}
+      renderDetail={(b) => (why.isOpen(b.id) && b.advice ? <WhyPanel view={b.advice} build={b.id} title={b.title} onClose={() => why.close(b.id)} /> : <BuildDetail b={b} />)}
       empty={<p className="fx-muted">No builds here.</p>} />
   );
 }
@@ -362,6 +364,7 @@ function StepsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
   const [dialog, setDialog] = useState<null | { kind: 'harvest' } | { kind: 'divide'; step: StepV } | { kind: 'restore'; id: string | null }>(null);
   const selectMode = (rt.settings.get(KEYS.select) as string) || 'off';
   const press = useRef<number | undefined>(undefined);
+  const why = useWhyRows(); // model-advice@1: right-click a step's icon → the row expands with why
   useEffect(() => { rt.settings.set(KEYS.scope, scope); }, [scope]); // eslint-disable-line react-hooks/exhaustive-deps
   const shown = scope ? state.builds.filter((b) => b.id === scope) : builds;
   const all = useMemo(() => shown.flatMap((b) => b.steps), [shown]);
@@ -391,7 +394,8 @@ function StepsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
     { id: 'profile', label: 'Profile', width: 'calc(var(--fx-space) * 12)', render: () => <span className="fx-small fx-mono">{state.profile}</span> },
     { id: 'kind', label: 'Kind', width: 'calc(var(--fx-space) * 10)', sortable: true, sortValue: (s) => s.kind, render: (s) => <Chip tone={s.kind === 'fix' ? 'warning' : s.kind === 'removal' ? 'danger' : s.kind === 'creation' ? 'success' : undefined}>{s.kind}</Chip> },
     { id: 'target', label: 'Target', width: 'minmax(calc(var(--fx-space) * 12), 2fr)', render: (s) => <span className="fx-small fx-mono">{s.target}</span> },
-    { id: 'model', label: 'Model · thinking', width: 'calc(var(--fx-space) * 20)', sortable: true, sortValue: (s) => `${s.advice?.reviewStatus === 'look' ? 0 : 1}${s.model}`, render: (s) => (s.advice ? <span onClick={(e) => e.stopPropagation()}><ModelChips screen="builds" view={s.advice} build={s.build} step={s.id} title={`${s.buildTitle} ${s.id}`} /></span> : <Chip tone={s.model === 'Fable' ? 'accent' : undefined}>{s.model}</Chip>) },
+    { id: 'model', label: 'Model · thinking', width: 'calc(var(--fx-space) * 36)', sortable: true, sortValue: (s) => `${s.advice?.reviewStatus === 'look' ? 0 : 1}${s.model}`,
+      render: (s) => (s.advice ? <span onClick={(e) => e.stopPropagation()}><ModelChips screen="builds" view={s.advice} build={s.build} step={s.id} title={`${s.buildTitle} ${s.id}`} host="row" whyOpen={why.isOpen(s.uid)} onWhy={() => { why.toggle(s.uid); if (!expanded.includes(s.uid)) setExpanded([...expanded, s.uid]); }} /></span> : <Chip tone={s.model === 'Fable' ? 'accent' : undefined}>{s.model}</Chip>) },
     { id: 'estimate', label: 'Time', width: 'calc(var(--fx-space) * 8)', align: 'end', render: (s) => <span className="fx-small">{s.estimate}</span> },
     { id: 'progress', label: 'Progress', width: 'calc(var(--fx-space) * 16)', render: (s) => <Bar p={{ total: 1, done: s.done ? 1 : 0, pct: s.done ? 100 : 0, active: s.next && state.builds.find((b) => b.id === s.build)?.status === 'running' }} label={`${s.id} ${s.done ? 'done' : 'to do'}`} /> },
   ];
@@ -429,7 +433,7 @@ function StepsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
           const uids = b.steps.map((s) => s.uid).filter((u) => u !== a.uid); uids.splice(uids.indexOf(t.uid) + (pos === 'after' ? 1 : 0), 0, a.uid);
           void draft({ op: 'reorder-steps', build: b.id, uids }).then((ok) => ok && rt.toast(`Changing the order refactors “${b.title}” when you Apply.`, 'info'));
         }}
-        renderDetail={(s) => <StepDetail s={s} />}
+        renderDetail={(s) => (why.isOpen(s.uid) && s.advice ? <WhyPanel view={s.advice} build={s.build} step={s.id} title={`${s.buildTitle} ${s.id}`} onClose={() => why.close(s.uid)} /> : <StepDetail s={s} />)}
         empty={<p className="fx-muted">No steps here.</p>} />
       {dialog?.kind === 'harvest' && <HarvestDialog picked={picked} onClose={() => { setDialog(null); setSel([]); }} />}
       {dialog?.kind === 'divide' && <DivideDialog step={dialog.step} onClose={() => setDialog(null)} />}

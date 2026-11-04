@@ -1,6 +1,6 @@
 # Model & thinking audit (model-thinking-audit)
 
-Generated 2026-11-04T18:20:28.331Z by `node framework/cli/model-advice.mjs report` (engine: `framework/core/model-advice.mjs`, model-advice@1). Brett, Nov 4 2026: "Go through my list of things that can be done and see what should be redone with Fable and put that next to it, and put the level of thinking that it should be on."
+Generated 2026-11-04T19:02:18.587Z by `node framework/cli/model-advice.mjs report` (engine: `framework/core/model-advice.mjs`, model-advice@1). Brett, Nov 4 2026: "Go through my list of things that can be done and see what should be redone with Fable and put that next to it, and put the level of thinking that it should be on."
 
 Rule of thumb: foundation or contract work = **Fable, high or max**. Plugins and screens = **Opus, medium**. Wording, small fixes and landing PRs = **Opus, low**. Gnarly debugging or architecture inside a plugin = **Opus, high**. ✅ = all set (on its recommendation, or Brett OK'd it as is) · ⚠️ = needs a look (the recommendation differs, or built work to review / redo). Recommendations only: nothing changed model; Apply and Dismiss are Brett's (console: the icon's why-panel; CLI: `model-advice.mjs apply|dismiss`).
 
@@ -8,16 +8,16 @@ Rule of thumb: foundation or contract work = **Fable, high or max**. Plugins and
 
 | | Count |
 |---|---|
-| Builds in the store (all profiles, not archived) | 276 |
+| Builds in the store (all profiles, not archived) | 278 |
 | … built work: keep | 133 |
 | … built work: Fable review | 55 |
 | … built work: redo on Fable | 9 |
-| … open work that should move to Fable | 23 |
-| … open work on Fable that is Opus work | 5 |
-| … needs a look (⚠️) | 105 |
-| Steps needing a look | 777 |
-| Plan Studio plans | 8 (⚠️ 1) |
-| Queued / running headless builds | 15 (⚠️ 10) |
+| … open work that should move to Fable | 22 |
+| … open work on Fable that is Opus work | 7 |
+| … needs a look (⚠️) | 110 |
+| Steps needing a look | 790 |
+| Plan Studio plans | 10 (⚠️ 2) |
+| Queued / running headless builds | 17 (⚠️ 11) |
 | Archived builds (listed at the end) | 57 |
 
 ## Top 5: redo on Fable
@@ -31,6 +31,15 @@ Curated picks (`_claude/builds/model-advice.json` → `picks`), with the engine'
 | 3 | `requests-ledger` Requests ledger: every single thing Brett asked for, in one… | #310 | request@1 is a cross-port schema still awaiting merge (#310): redo the schema on Fable before apps start writing it. | ~$18.15 / 30 min |
 | 4 | `settings-asset` Settings interface as an asset type (settings-ui@1) |  | settings-ui@1 asset type + engine built on Opus (Oct 23); the redo is already parked as settings-asset-fable (5 Fable steps): run it. | ~$24.75 / 60 min |
 | 5 | `appearance-asset-tokens` Tab group asset + per-asset appearance tokens (apply to all… |  | Appearance asset tokens + engine built on Opus (Oct 24); the redo is already parked as appearance-asset-tokens-fable (5 Fable steps): run it. | ~$24.75 / 60 min |
+
+## What this audit built, and what is left
+
+- **Engine** `framework/core/model-advice.mjs` (model-advice@1): classifier, build verdicts with cost, review status (the check / the triangle), filters, why-panel lines; fixture `framework/spec/fixtures/model-advice.json`, check `framework/spec/check-model-advice.mjs` (CI). Kotlin twin: deferred (Android on hold, `framework/spec/PORTING.md`).
+- **Store** (builds@1): `thinking`, `recommendedModel`, `recommendedThinking`, `modelWhy`, `verdict`, `adviceCost`, `reviewOk` on every build and step; every projection and read (orchestrator, Pending, queue, Builds page, control@1 `planner.builds`, `pending_list`, `build_queue`, crew) carries `model`, `thinking`, `recommendedModel`, `recommendedThinking`, `reviewStatus`. Sidecar `_claude/builds/advice.json` (healed on read, folded on write, merged by the live publish) so older code can't drop it.
+- **Orchestrator actions:** `advise`, `set-thinking`; `apply-advice`, `dismiss-advice`, `apply-advice-all` are Brett's only (same approver gate as a model upgrade). Plan Studio plans carry the same fields (`model-advice.mjs plans --write`).
+- **Launcher:** a step's thinking level becomes `claude --effort` (`AXF_THINKING`; `deploy/claude-headless.sh`, build_start / `launchCommand`). Briefs already name the level in their title line; the launcher now honours it.
+- **Console:** one component (`framework/react/components/ModelAdvice.tsx`): model + thinking chips, green check / yellow triangle, right-click or long-press → the row expands with why + Apply / Dismiss; shown on Build manager, Builds (Builds + Steps views), Pending builds, Build queue, Build orchestrator (grid, list, step grid), Plan Studio, Crew (rows + steps), Home (build summary card), Codebase changes. Settings → Builds → Show model & thinking (global; mirrored to the Claude setting `builds.showModelThinking`) + a per-screen override; filters (model, thinking, check / triangle, Needs a look, Fable candidates) shared by every list; voice: `model-advice.show`, `model-advice.filter`, `model-advice.screen`.
+- **Follow-ups:** Requests ledger (#310) and Git board (#291) are not on main yet: when they land, give their rows `<ModelChips screen="requests" | "git">` (the settings overrides already exist). Molly and axHub web show no build lists of their own (Molly embeds the console). The `fable-review-nov3` build consumes this list: `plugin-settings-placement` (its s2) is already covered by `settings-placement-everywhere` s2 on Fable. `apps/walkthrough-studio/_claude/shared/rules/RULES.md` is a synced rules copy that the plugin-lifecycle check flags as stale references (pre-existing, not from this build). `npx -y tsx framework/spec/gen-fixtures.mts` on main also rewrites `agent-card.json` / `widgets.json` (pre-existing drift, left alone).
 
 ## Built work: keep, Fable review or redo on Fable (197)
 
@@ -236,12 +245,14 @@ Every finished build in the store (every profile), newest first within ⚠️ / 
 | ✅ | `pending-list-manager` Pending build list manager (console) | complete | Opus · medium | Opus · medium | Keep | plugin, screen, server or wiring: Opus, medium thinking. built on the right model |  |
 | ✅ | `plugin-manager` Plugin manager + settings tabs for every app (Fable rebuild) | complete | Fable · high | Fable · max | Keep | kernel / cross-port contract: cross-port, kernel, engine; Brett's rule is Fable for foundation work, max thinking. built on the right model |  |
 
-## Open work: queued, pending, running, built-awaiting-merge (79)
+## Open work: queued, pending, running, built-awaiting-merge (81)
 
 Now = the model and thinking its next step runs on. Recommended = what the audit says. Cost = the Fable extra over Opus for the open steps that should move.
 
 | | Build | Status | Now | Recommended | Why | Cost |
 |---|---|---|---|---|---|---|
+| ⚠️ | `handoff-2` Session sync: two Claude sessions side by side (replaces THREADS/hand… | running | Fable · high | Opus · medium | 2 of 11 step(s) are foundation work (registry, schemas, handoff@1, engine, engines). 9 step(s) are plugin, screen, server or wiring / landing, docs, wording or… |  |
+| ⚠️ | `build-todo-sync` Build to-do sync plugin: build names + categories, live to-do checkli… | running #333 | Fable · high | Opus · medium | 4 of 7 step(s) are foundation work (contract, fixture, build-todo-sync@1, builds@1, migration). 3 step(s) are plugin, screen, server or wiring work for Opus |  |
 | ⚠️ | `model-thinking-audit` Model & thinking audit: recommended model + thinking level on every b… 📌 | running | Opus · medium | Fable · high | Judging which work is foundation is itself a Fable call (contract s1-s3 on Fable, high thinking); the console and report steps are Opus work a Fable session fi… |  |
 | ⚠️ | `x.lib.hub` lib-hub: axHub connector for every AXF app (first slice: approvals fe… | running | Opus · medium | Fable · max | 6 of 6 step(s) are foundation work (wire codes, kernel, engines, contract, fixture) | ~$83.7 / 180 min |
 | ⚠️ | `x.lib.files` Library: Files & sync | running | Opus · medium | Fable · high | 2 of 6 step(s) are foundation work (contract). 4 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus | ~$16.35 / 60 min |
@@ -254,11 +265,14 @@ Now = the model and thinking its next step runs on. Recommended = what the audit
 | ⚠️ | `x.state` State, data cache, events, flags, config, migrations | running | Fable · high | Fable · max | 8 of 8 step(s) are foundation work (kernel, fixture, fixtures, engines, migrations) |  |
 | ⚠️ | `x.modules` Module system: modules, extension points, services, placeholders | running | Fable · high | Fable · max | 8 of 8 step(s) are foundation work (kernel, registry, engines, fixture, fixtures) |  |
 | ⚠️ | `land-round-2` Land round 2: catch up and land the rest, Molly first | blocked #313 | Opus · medium | Opus · low | 9 step(s) are landing, docs, wording or a small fix work for Opus |  |
-| ⚠️ | `urgent-console-perf` Console loads slowly: node process per read, /api/build-queue 500 | pending #330 | Opus · medium | Opus · high | 5 step(s) are gnarly debugging / plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus |  |
+| ⚠️ | `urgent-console-perf` Console loads slowly: node process per read, /api/build-queue 500 | pending #330 | Opus · medium | Opus · low | 5 step(s) are gnarly debugging / plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus |  |
 | ⚠️ | `main-area-tabs` Main area tab group (tabs, positions, float and dock, split) | pending #301 | Opus · medium | Fable · high | 12 of 60 step(s) are foundation work (engine). 48 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus | ~$98.1 / 360 min |
 | ⚠️ | `browser-automation` Automated Browser plugin (drive, record, edit, schedule) | pending #299 | Opus · medium | Fable · high | 3 of 16 step(s) are foundation work (asset type, contract, asset-types, validator…, routine@1). 13 step(s) are plugin, screen, server or wiring / gnarly debugg… | ~$16.35 / 60 min |
 | ⚠️ | `gizmo-companion` Gizmo: full Claude companion plugin in AmberX | pending #296 | Opus · medium | Opus · high | 19 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix / gnarly debugging work for Opus |  |
-| ⚠️ | `profile-manager` Build profiles manager (browse, view, create, edit, switch, duplicate… | pending | Opus · medium | Fable · high | 1 of 6 step(s) are foundation work (framework/plan/). 5 step(s) are architecture or heavy refactor inside an app or plugin / plugin, screen, server or wiring /… |  |
+| ⚠️ | `terminal-tabs-left` Terminal: tab position setting (top, left / right stack, bottom) | pending #293 | Opus · medium | Opus · low | 5 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus |  |
+| ⚠️ | `git-status-board` Git status board (grids for push / pull / CI / merge / held / deploye… | pending #291 | Opus · medium | Opus · low | 6 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus |  |
+| ⚠️ | `profile-manager` Build profiles manager (browse, view, create, edit, switch, duplicate… | pending | Opus · medium | Opus · low | 1 of 6 step(s) are foundation work (framework/plan/). 5 step(s) are architecture or heavy refactor inside an app or plugin / plugin, screen, server or wiring /… |  |
+| ⚠️ | `orch-step-click` Fix: can't click steps in the Build orchestrator | pending | Opus · medium | Opus · low | 3 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus |  |
 | ⚠️ | `x.console.repo` Console in its own private repo | pending | Opus · medium | Fable · high | 1 of 5 step(s) are foundation work (schemas). 4 step(s) are plugin, screen, server or wiring work for Opus | ~$8.18 / 30 min |
 | ⚠️ | `x.lib.charts` Library: Charts & tables | pending | Opus · medium | Fable · high | 2 of 6 step(s) are foundation work (contract, fixture). 4 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus | ~$16.35 / 60 min |
 | ⚠️ | `x.lib.sensors` Library: Sensors & connectivity | pending | Opus · medium | Fable · high | 2 of 6 step(s) are foundation work (contract). 4 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus | ~$16.35 / 60 min |
@@ -291,9 +305,6 @@ Now = the model and thinking its next step runs on. Recommended = what the audit
 | ✅ | `gizmo-terminal` Gizmo terminal panel: the console Terminal inside the companion window | pending | Opus · medium | Opus · medium | 4 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus |  |
 | ✅ | `gizmo-voice` Gizmo voice: talk mode that works with the screen off | pending | Opus · medium | Opus · medium | 3 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus |  |
 | ✅ | `app-style-override` App style override: axHub is the style source, per-app Override desig… | pending #302 | Opus · medium | Opus · medium | 6 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus |  |
-| ✅ | `terminal-tabs-left` Terminal: tab position setting (top, left / right stack, bottom) | pending #293 | Opus · medium | Opus · medium | 5 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus |  |
-| ✅ | `git-status-board` Git status board (grids for push / pull / CI / merge / held / deploye… | pending #291 | Opus · medium | Opus · medium | 6 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus |  |
-| ✅ | `orch-step-click` Fix: can't click steps in the Build orchestrator | pending | Opus · medium | Opus · medium | 3 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus |  |
 | ✅ | `github-app` GitHub App for the whole stack: one-click setup, tokens that never die | pending | Opus · medium | Opus · medium | 5 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus |  |
 | ✅ | `x.showcase.packs` 10 layouts, 10 light/dark theme pairs, 10 style packs | pending | Opus · medium | Opus · medium | 6 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus |  |
 | ✅ | `x.python.port` Python / PyQt6 port | pending | Fable · high | Fable · high | 13 of 17 step(s) are foundation work (engines, fixture, fixtures, engine, validator). 4 step(s) are plugin, screen, server or wiring / landing, docs, wording o… |  |
@@ -328,6 +339,19 @@ Every step whose model or thinking differs from its recommendation (the same ⚠
 
 | Build | Step | Done | Now | Recommended | Why |
 |---|---|---|---|---|---|
+| `handoff-2` | s3 Plugin session-sync server: session channel, claims, role gate (secon… |  | Fable · high | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
+| `handoff-2` | s4 Plugin CLI sync.mjs + /sync slash command + Claude hook (messages at … |  | Fable · high | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
+| `handoff-2` | s5 Breakroom chat extension: session kinds + channel, post() on axf.crew… |  | Fable · high | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
+| `handoff-2` | s6 Web: Sessions panel, join dialog, settings tab, Home card read, banne… |  | Fable · high | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
+| `handoff-2` | s7 Web: helper status widget, window title bars as widget hosts, Add wid… |  | Fable · high | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
+| `handoff-2` | s8 Web: shared multi-select list (Ctrl checkboxes, long-press), Send to … |  | Fable · high | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
+| `handoff-2` | s9 Orchestrator integration: assignedTo/touches on builds, offers, take … |  | Fable · high | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
+| `handoff-2` | s10 Delete the old handoff system (THREADS.md, handoff notes, claude-hand… |  | Fable · high | Opus · low | landing, docs, wording or a small fix (threads.md, threads): routine, Opus on low thinking |
+| `handoff-2` | s11 Tests, screenshots (UI Review, non-blocking), report, PR |  | Fable · high | Opus · low | landing, docs, wording or a small fix (tests): routine, Opus on low thinking |
+| `build-todo-sync` | s2 builds@1 fields displayName / category / area / nameReview / fixes + … | ✓ | Fable · high | Fable · max | schema migration / store contract: builds@1, migration, control@1; Brett's rule is Fable for foundation work, max think… |
+| `build-todo-sync` | s4 Plugin web: Build to-do lists page, Name this build dialog with auto-… | ✓ | Fable · high | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
+| `build-todo-sync` | s5 Plan Studio plan per build (plans@1): verbatim ask, steps, Planned & … | ✓ | Fable · high | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
+| `build-todo-sync` | s7 After merge: backfill names + categories (builds-store.mjs backfill-n… |  | Fable · high | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
 | `model-thinking-audit` | s1 model-advice@1 engine (framework/core/model-advice.mjs): thinking lev… | ✓ | Fable · high | Fable · max | kernel / cross-port contract: cross-port, engine, fixture, contract…; Brett's rule is Fable for foundation work, max th… |
 | `model-thinking-audit` | s2 builds@1: thinking, recommendedModel, recommendedThinking, modelWhy, … | ✓ | Fable · high | Fable · max | schema migration / store contract: builds@1, migration, one builds store, schema…; Brett's rule is Fable for foundation… |
 | `model-thinking-audit` | s8 Docs (builds README, BUILDS.md, STATUS, decisions, PORTING gap), THRE… |  | Opus · medium | Opus · low | landing, docs, wording or a small fix (docs, readme, landing): routine, Opus on low thinking |
@@ -435,10 +459,14 @@ Every step whose model or thinking differs from its recommendation (the same ⚠
 | `gizmo-companion` | s13 s6a Projects with instructions + files; memory read/write on axHub (A… |  | Opus · medium | Opus · high | gnarly debugging (memory): Opus is enough, but it needs high thinking |
 | `gizmo-companion` | s15 s7a Companion settings screen: model, voice, persona field, notificat… | ✓ | Opus · medium | Opus · high | gnarly debugging (memory): Opus is enough, but it needs high thinking |
 | `gizmo-companion` | s19 s10 Tests/type-check, phone screenshots, UI Review item, report _clau… | ✓ | Opus · medium | Opus · low | landing, docs, wording or a small fix (tests): routine, Opus on low thinking |
+| `terminal-tabs-left` | s4 Typecheck, tests, phone + desktop screenshots, UI Review item |  | Opus · medium | Opus · low | landing, docs, wording or a small fix (screenshots, ui review): routine, Opus on low thinking |
+| `terminal-tabs-left` | s5 Report, THREADS, PR, link the build |  | Opus · medium | Opus · low | landing, docs, wording or a small fix (report): routine, Opus on low thinking |
+| `git-status-board` | s6 Tests (zero LLM imports, classifier), lifecycle install/uninstall, he… |  | Opus · medium | Opus · low | landing, docs, wording or a small fix (tests): routine, Opus on low thinking |
 | `profile-manager` | s1 profiles.mjs: stats per profile (builds by status, pending, queue, co… | ✓ | Opus · medium | Fable · high | foundation (schema, asset type, engine, contract): framework/plan/; Brett's rule is Fable for foundation work, high thi… |
 | `profile-manager` | s2 build-profiles server router: commands declared once (list, get, crea… | ✓ | Opus · medium | Opus · high | architecture or heavy refactor inside an app or plugin (router): Opus is enough, but it needs high thinking |
 | `profile-manager` | s5 Cleanup helper (archived builds that are really complete) with one-ta… | ✓ | Opus · medium | Opus · low | landing, docs, wording or a small fix (cleanup): routine, Opus on low thinking |
 | `profile-manager` | s6 Phone + desktop screenshots, UI Review item, report _claude/builds/re… |  | Opus · medium | Opus · low | landing, docs, wording or a small fix (screenshots, ui review, report, threads): routine, Opus on low thinking |
+| `orch-step-click` | s3 UI Review shots, PR |  | Opus · medium | Opus · low | landing, docs, wording or a small fix (ui review): routine, Opus on low thinking |
 | `x.console.repo` | s2 Framework packaging: `framework/cli/axf.mjs pack-framework <tag>` pro… |  | Opus · medium | Fable · high | foundation (schema, asset type, engine, contract): schemas; Brett's rule is Fable for foundation work, high thinking |
 | `x.lib.charts` | s1 Scaffold: `axf new-library charts --template feature-screens --ports … |  | Opus · medium | Fable · high | foundation (schema, asset type, engine, contract): contract; Brett's rule is Fable for foundation work, high thinking |
 | `x.lib.charts` | s2 Contract: chart spec (`line\|bar\|pie\|area`, series, axes) + table s… |  | Opus · medium | Fable · high | foundation (schema, asset type, engine, contract): contract, fixture; Brett's rule is Fable for foundation work, high t… |
@@ -830,10 +858,6 @@ Every step whose model or thinking differs from its recommendation (the same ⚠
 | `gizmo-terminal` | s4 Tests, type-check, phone shot, report |  | Opus · medium | Opus · low | landing, docs, wording or a small fix (tests): routine, Opus on low thinking |
 | `gizmo-voice` | s3 APK build via CI, phone test of hands-free + interrupt, report |  | Opus · medium | Opus · low | landing, docs, wording or a small fix (report): routine, Opus on low thinking |
 | `app-style-override` | s6 s6 REST + MCP + CLI (app_style_get, app_style_override, app_style_rel… |  | Opus · medium | Opus · low | landing, docs, wording or a small fix (screenshots, ui review, report, threads): routine, Opus on low thinking |
-| `terminal-tabs-left` | s4 Typecheck, tests, phone + desktop screenshots, UI Review item |  | Opus · medium | Opus · low | landing, docs, wording or a small fix (screenshots, ui review): routine, Opus on low thinking |
-| `terminal-tabs-left` | s5 Report, THREADS, PR, link the build |  | Opus · medium | Opus · low | landing, docs, wording or a small fix (report): routine, Opus on low thinking |
-| `git-status-board` | s6 Tests (zero LLM imports, classifier), lifecycle install/uninstall, he… |  | Opus · medium | Opus · low | landing, docs, wording or a small fix (tests): routine, Opus on low thinking |
-| `orch-step-click` | s3 UI Review shots, PR |  | Opus · medium | Opus · low | landing, docs, wording or a small fix (ui review): routine, Opus on low thinking |
 | `github-app` | s5 Tests, screenshots, install_steps, report, push |  | Opus · medium | Opus · low | landing, docs, wording or a small fix (tests): routine, Opus on low thinking |
 | `x.showcase.packs` | s4 Deploy + status: demo deploy green on `axf.amberxai.com`, Android APK… |  | Opus · medium | Opus · low | landing, docs, wording or a small fix (deploy): routine, Opus on low thinking |
 | `x.showcase.packs` | s6 Docs: README "Showcase packs", screenshots in `_claude/memory/docs/sh… |  | Opus · medium | Opus · low | landing, docs, wording or a small fix (docs): routine, Opus on low thinking |
@@ -1106,42 +1130,46 @@ Every step whose model or thinking differs from its recommendation (the same ⚠
 | `syscheck-rebake` | s3 Tests, docs, PR | ✓ | Opus · medium | Opus · low | landing, docs, wording or a small fix (tests): routine, Opus on low thinking |
 | `syscheck-claude-on-fail` | s3 Tests, docs, push |  | Opus · medium | Opus · low | landing, docs, wording or a small fix (tests): routine, Opus on low thinking |
 
-## Plan Studio plans (8)
+## Plan Studio plans (10)
 
 plan@1 files carry the same fields (`recommendedModel`, `recommendedThinking`, `modelWhy`); Plan Studio shows the chips.
 
 | | Plan | Status | Now | Recommended | Why |
 |---|---|---|---|---|---|
 | ✅ | `amberx-selling-it` AmberX — Selling It: Product + Installer Plan | parked | Opus · medium | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
-| ⚠️ | `build-names-live-to-do-checklists-build-manager-yxjz` Build names + live to-do checklists (Build manager ↔ to-do manager sy… | draft | Opus · medium | Opus · high | architecture or heavy refactor inside an app or plugin (planner): Opus is enough, but it needs high thinking |
+| ⚠️ | `build-names-live-to-do-checklists-build-manager-yxjz` Build names + live to-do checklists (Build manager ↔ to-do manager sy… | building | Opus · medium | Opus · high | architecture or heavy refactor inside an app or plugin (planner): Opus is enough, but it needs high thinking |
 | ✅ | `build-optimizer-617i` Build optimizer | building | Opus · medium | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
 | ✅ | `claude-sessions-list-molly-plugin-wpo6` Claude sessions list (Molly plugin) | dropped | Opus · medium | Opus · high | architecture or heavy refactor inside an app or plugin (planner): Opus is enough, but it needs high thinking. built on the right model |
 | ✅ | `clipx` ClipX: clipboard manager app | parked | Fable · high | Fable · high | 3 of 16 step(s) are foundation work (contracts, schema, validators, clip@1, fixture). 13 step(s) are  work for Opus |
+| ⚠️ | `docs-engine-qzp8` Docs engine | draft | Opus · medium | Fable · high | foundation (schema, asset type, engine, contract): engine, contract, schemas, asset type…; Brett's rule is Fable for foundation work, high … |
 | ✅ | `docs-studio` Docs Studio | parked | Fable · high | Fable · high | 4 of 15 step(s) are foundation work (engine, engines, assistant@1). 11 step(s) are  work for Opus |
 | ✅ | `hands-off-claude-chat-export-session-archive-b22z` Hands-off Claude chat export → Session Archive | idea | Opus · medium | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
+| ✅ | `investor-video-about-2-min-4l92` Investor video (about 2 min) | idea | Opus · medium | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
 | ✅ | `session-archive-if7h` Session Archive | ready | Opus · medium | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
 
-## Queued and running headless builds (15)
+## Queued and running headless builds (17)
 
 From the agent-slots queue and each run's brief (its title line states the model and thinking it was launched with). Now = what the brief says (else the store build); Recommended = the engine on the brief.
 
 | | Run | State | Agent | Brief says | Now | Recommended | Why |
 |---|---|---|---|---|---|---|---|
 | ⚠️ | `land-merge-queue-first` | running | gina | URGENT, Opus medium; landing job for Landin' Lenny | Opus · medium | Opus · high | gnarly debugging (crash, perf, stale): Opus is enough, but it needs high thinking |
-| ⚠️ | `brett-todo-sync` | running | earl | Build to-do sync plugin | Opus · medium | Fable · max | schema migration / store contract: migration, schema, contract, build-todo-sync@1; Brett's rule is Fable for foundation… |
 | ⚠️ | `urgent-console-perf-r2` (urgent-console-perf) | running | rhonda | console speed fix | Opus · medium | Opus · high | gnarly debugging (perf, 502s): Opus is enough, but it needs high thinking |
 | ⚠️ | `model-thinking-audit` | running | rhonda | FABLE: judging which work is foundation is itself a Fable c… | Fable · medium | Fable · max | kernel / cross-port contract: kernel, asset types, schemas, contracts…; Brett's rule is Fable for foundation work, max … |
-| ⚠️ | `handoff-2` | waiting #1 |  | FABLE, high thinking: replaces the cross-session coordinati… | Fable · high | Fable · max | kernel / cross-port contract: kernel; Brett's rule is Fable for foundation work, max thinking |
-| ✅ | `fable-packager` | waiting #2 |  | Opus, medium-high thinking; orchestrator plugin feature, bu… | Opus · medium | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
-| ⚠️ | `readme-rule-every-build` | waiting #3 |  | Opus, low thinking; tiny rules change | Opus · low | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
-| ⚠️ | `grid-column-hiding` | waiting #4 |  | Opus, medium thinking | Opus · medium | Opus · high | architecture or heavy refactor inside an app or plugin (unify): Opus is enough, but it needs high thinking |
-| ⚠️ | `settings-placement-r2` (settings-placement-everywhere) | waiting #5 |  |  | Opus · medium | Fable · high | foundation (schema, asset type, engine, contract): contract, settings-placement@1, settings-interface@1; Brett's rule i… |
-| ✅ | `app-voice-commands-r2` (app-voice-commands) | waiting #6 |  |  | Opus · medium | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
-| ⚠️ | `molly-banner-match-r2` | waiting #7 |  |  | Opus · medium | Opus · high | gnarly debugging (crash, stale, regression): Opus is enough, but it needs high thinking |
-| ✅ | `lenny-land-build` | waiting #8 |  |  | Opus · medium | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
+| ⚠️ | `handoff-2` | running | gina | FABLE, high thinking: replaces the cross-session coordinati… | Fable · high | Fable · max | kernel / cross-port contract: kernel; Brett's rule is Fable for foundation work, max thinking |
+| ✅ | `lenny-land-build` | waiting #1 |  |  | Opus · medium | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
+| ⚠️ | `amberx-live-audio` | waiting #2 |  | Opus, high thinking | Opus · high | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
+| ✅ | `fable-packager` | waiting #3 |  | Opus, medium-high thinking; orchestrator plugin feature, bu… | Opus · medium | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
+| ⚠️ | `readme-rule-every-build` | waiting #4 |  | Opus, low thinking; tiny rules change | Opus · low | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
+| ⚠️ | `grid-column-hiding` | waiting #5 |  | Opus, medium thinking | Opus · medium | Opus · high | architecture or heavy refactor inside an app or plugin (unify): Opus is enough, but it needs high thinking |
+| ⚠️ | `settings-placement-r2` (settings-placement-everywhere) | waiting #6 |  |  | Opus · medium | Fable · high | foundation (schema, asset type, engine, contract): contract, settings-placement@1, settings-interface@1; Brett's rule i… |
+| ✅ | `app-voice-commands-r2` (app-voice-commands) | waiting #7 |  |  | Opus · medium | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
+| ⚠️ | `molly-banner-match-r2` | waiting #8 |  |  | Opus · medium | Opus · high | gnarly debugging (crash, stale, regression): Opus is enough, but it needs high thinking |
 | ✅ | `drag-to-tab` | waiting #9 |  | Opus, medium thinking | Opus · medium | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
 | ⚠️ | `build-optimizer` | waiting #10 |  | Opus, high thinking | Opus · high | Fable · high | foundation (schema, asset type, engine, contract): contract, engine; Brett's rule is Fable for foundation work, high th… |
 | ✅ | `ui-review-alarm` | waiting #11 |  | Opus, medium thinking | Opus · medium | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
+| ✅ | `three-layouts-per-screen` | waiting #12 |  | FABLE, high thinking: plugin contract + scaffold = foundati… | Fable · high | Fable · high | foundation (schema, asset type, engine, contract): contract, schema, validator, plugin@1; Brett's rule is Fable for fou… |
+| ⚠️ | `build-docs-walkthroughs` | waiting #13 |  | Opus, high thinking | Opus · high | Opus · medium | plugin, screen, server or wiring: Opus, medium thinking |
 
 <details><summary>Archived builds (57)</summary>
 

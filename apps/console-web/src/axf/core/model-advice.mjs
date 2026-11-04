@@ -173,9 +173,12 @@ export function adviseBuild(build, { price = PRICE_PER_MIN, stepAdvice = null } 
   const base = steps.length ? null : classify(str(build?.detail), { category: build?.category, title: build?.title });
   const fable = advised.filter((x) => x.a.recommendedModel === 'Fable');
   const kinds = [...new Set(advised.map((x) => x.a.adviceKind))];
-  const topThinking = advised.reduce((m, x) => (thinkingRank(x.a.recommendedThinking) > thinkingRank(m) ? x.a.recommendedThinking : m), base?.thinking ?? 'low');
-  const recommendedModel = base ? base.model : fable.length ? 'Fable' : 'Opus';
-  const recommendedThinking = base ? base.thinking : advised.length ? topThinking : 'medium';
+  // an unfinished build is judged on what is still to do: a foundation step already done can't change model any more
+  const finishedNow = FINISHED.includes(build?.status) && (steps.some((s) => s.done) || !steps.length);
+  const openAdvised = finishedNow ? advised : advised.filter((x) => open(x.step));
+  const judged = openAdvised.length ? openAdvised : advised;
+  const recommendedModel = base ? base.model : judged.some((x) => x.a.recommendedModel === 'Fable') ? 'Fable' : 'Opus';
+  const recommendedThinking = base ? base.thinking : judged.length ? judged.reduce((m, x) => (thinkingRank(x.a.recommendedThinking) > thinkingRank(m) ? x.a.recommendedThinking : m), 'low') : 'medium';
   const adviceKind = base ? base.kind : kinds.includes('kernel') ? 'kernel' : kinds.includes('migration') ? 'migration' : fable.length ? 'foundation' : kinds.includes('architecture') ? 'architecture' : kinds.includes('debug') ? 'debug' : kinds.length === 1 && kinds[0] === 'landing' ? 'landing' : 'plugin';
   const finished = FINISHED.includes(build?.status) && (steps.some((s) => s.done) || !steps.length);
   let verdict = ''; let cost;

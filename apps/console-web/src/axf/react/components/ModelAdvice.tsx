@@ -183,8 +183,9 @@ export function ModelChips({ view, screen, build, step, onAct, host = 'inline', 
   return (
     <>
       <span className={`fx-advice${compact ? ' fx-advice--compact' : ''}`} data-axf-advice={view.reviewStatus}>
-        <ModelChip model={view.model} recommended={view.recommendedModel} compact={compact} />
-        {!compact && <ThinkingChip thinking={view.thinking} recommended={view.recommendedThinking} model={view.model} />}
+        {/* built work judged "keep" shows what it ran on, without an arrow: there is nothing to move */}
+        <ModelChip model={view.model} recommended={view.verdict === 'keep' ? undefined : view.recommendedModel} compact={compact} />
+        {!compact && <ThinkingChip thinking={view.thinking} recommended={view.verdict === 'keep' ? undefined : view.recommendedThinking} model={view.model} />}
         {build && <ReviewIcon view={view} onWhy={toggle} open={isOpen} />}
       </span>
       {host === 'inline' && open && build && <WhyPanel view={view} build={build} step={step} onAct={onAct} onClose={() => setOpen(false)} title={title} />}

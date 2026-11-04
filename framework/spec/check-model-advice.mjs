@@ -13,7 +13,7 @@ import * as A from '../core/model-advice.mjs';
 import * as S from '../plan/builds-store-core.mjs';
 import * as M from '../plan/builds-merge-core.mjs';
 import * as IO from '../cli/builds-store.mjs';
-import * as O from '../../apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs';
+import * as O from '../../apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs'; // axf-plugin:build-orchestrator
 import { CONTROL_TARGETS } from '../core/engines/control-rules.mjs';
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
