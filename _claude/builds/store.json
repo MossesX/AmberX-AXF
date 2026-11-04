@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 995,
- "updatedAt": "2026-11-04T22:04:09.520Z",
+ "rev": 996,
+ "updatedAt": "2026-11-04T22:04:29.625Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -84182,10 +84182,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/build-docs-walkthroughs",
+   "pr": "#346",
    "createdAt": "2026-11-04T21:30:06.088Z",
-   "updatedAt": "2026-11-04T22:03:55.564Z",
+   "updatedAt": "2026-11-04T22:04:15.594Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -84388,7 +84388,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
