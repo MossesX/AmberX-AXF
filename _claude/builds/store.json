@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 608,
- "updatedAt": "2026-11-04T02:49:33.439Z",
+ "rev": 610,
+ "updatedAt": "2026-11-04T03:13:05.927Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -68260,11 +68260,16 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/main-area-tabs",
-   "pr": "",
+   "pr": "#301",
    "createdAt": "2026-11-04T01:34:59.457Z",
-   "updatedAt": "2026-11-04T01:34:59.457Z",
+   "updatedAt": "2026-11-04T03:12:51.746Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #301",
+     "at": "2026-11-04T03:12:51.746Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -69597,7 +69602,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -69618,11 +69623,16 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/app-style-override",
-   "pr": "",
+   "pr": "#302",
    "createdAt": "2026-11-04T01:44:48.256Z",
-   "updatedAt": "2026-11-04T02:47:09.560Z",
+   "updatedAt": "2026-11-04T03:12:51.746Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #302",
+     "at": "2026-11-04T03:12:51.746Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -69767,7 +69777,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
