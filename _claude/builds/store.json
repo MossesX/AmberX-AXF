@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 711,
- "updatedAt": "2026-11-04T14:12:18.592Z",
+ "rev": 712,
+ "updatedAt": "2026-11-04T14:12:29.358Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -71668,7 +71668,7 @@
    "title": "Land round 2: catch up and land the rest, Molly first",
    "category": "Landing",
    "detail": "Agent: Landin' Lenny. One PR at a time: update from main, resolve conflicts keeping both sides, CI green, merge. Order: #288 (+#266) → #294 #295 → #296 → #298 → #281 #291 #293 → #289 #269 → #300. Don't merge WIP #299 #301 #302; close #297 if orphan dup. Redeploy console + Molly after #288, all apps at the end.",
-   "status": "running",
+   "status": "blocked",
    "hidden": false,
    "source": "console",
    "pendingId": "land-round-2",
@@ -71921,7 +71921,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
