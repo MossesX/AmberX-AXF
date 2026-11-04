@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T12:30:23.968Z",
+ "updatedAt": "2026-11-04T12:36:49.841Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10,6 +10,19 @@
  },
  "builds": [
   {
+   "id": "design-package",
+   "title": "AmberX Design Package asset type (style + colour + layout + behaviour) + Behaviour theme asset type; replaces Appearance package",
+   "category": "Design & branding",
+   "detail": "Brett, Oct 27 2026: new asset type 'AmberX Design Package' wrapping a style theme, colour theme, layout theme and behaviour theme; new asset type 'behavior-theme' holding everything: motion (animations, speed, easing, reduced motion), interaction (hover/click/focus feedback, long-press time, double-tap), windows & dialogs (open/close, snap, stacking, drawers, pop-ups) and feedback (toasts, sounds, vibration, confirm-before-delete). Settings -> Appearance gets a Design Package picker to apply one; everything else in Appearance goes in one collapsible container below it. The Design Package REPLACES the appearance-package type (Brett's pick): migrate the existing packages (framework + console amberx, each app's fresh) and the axf.appearance.package setting. Web first; Android twin recorded in PORTING.md (Android on hold). Orchestrator order: all Fable steps first, then Opus (one switch).",
+   "status": "archived",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "design-package",
+   "branch": "fable/design-package",
+   "pr": "",
+   "createdAt": "2026-10-27T16:36:55.356Z",
+   "updatedAt": "2026-10-27T16:56:46.252Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Asked again Oct 27 2026 12:35 in the orchestrator chat. Overlaps to decide before starting: settings-asset-fable, appearance-asset-tokens-fable, apply-all-levels-fable, asset-templates.",
@@ -36,19 +49,6 @@
      "at": "2026-10-27T19:30:00.000Z"
     }
    ],
-   "id": "design-package",
-   "title": "AmberX Design Package asset type (style + colour + layout + behaviour) + Behaviour theme asset type; replaces Appearance package",
-   "category": "Design & branding",
-   "detail": "Brett, Oct 27 2026: new asset type 'AmberX Design Package' wrapping a style theme, colour theme, layout theme and behaviour theme; new asset type 'behavior-theme' holding everything: motion (animations, speed, easing, reduced motion), interaction (hover/click/focus feedback, long-press time, double-tap), windows & dialogs (open/close, snap, stacking, drawers, pop-ups) and feedback (toasts, sounds, vibration, confirm-before-delete). Settings -> Appearance gets a Design Package picker to apply one; everything else in Appearance goes in one collapsible container below it. The Design Package REPLACES the appearance-package type (Brett's pick): migrate the existing packages (framework + console amberx, each app's fresh) and the axf.appearance.package setting. Web first; Android twin recorded in PORTING.md (Android on hold). Orchestrator order: all Fable steps first, then Opus (one switch).",
-   "status": "archived",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "design-package",
-   "branch": "fable/design-package",
-   "pr": "",
-   "createdAt": "2026-10-27T16:36:55.356Z",
-   "updatedAt": "2026-10-27T16:56:46.252Z",
-   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -244,20 +244,9 @@
      "note": "",
      "uid": "st-1ghumgo"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
-     "at": "2026-10-28T19:31:15.654Z"
-    },
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
-     "at": "2026-10-27T19:30:00.000Z"
-    }
-   ],
    "id": "arch-foundation",
    "title": "Hardened architecture foundation: layout/theme/plugin contracts, Pydantic migrator + namespacing, plugin boundary + lifecycle broker, docs",
    "category": "Architecture",
@@ -271,6 +260,16 @@
    "createdAt": "2026-10-27T16:36:55.356Z",
    "updatedAt": "2026-10-28T19:31:15.654Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
+     "at": "2026-10-28T19:31:15.654Z"
+    },
+    {
+     "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
+     "at": "2026-10-27T19:30:00.000Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -514,10 +513,23 @@
      "note": "",
      "uid": "st-hkx7ct"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
+   "id": "enterprise-branding",
+   "title": "Enterprise design + hot-swappable branding: branding engine, design packages, behaviour themes, 700+ generated brand assets, AmberX app + GizmoX console refactor",
+   "category": "Design & branding",
+   "detail": "Brett, Oct 27 2026: only refactor the console, the AmberX app (amberx.amberxai.com), the plugins currently installed and switched on in Plugin switches, and every banner plugin to enterprise quality. New asset types: branding package (extendable template of UI brand assets), icon pack, logo mark, animated logo, behaviour theme, AmberX design package. Branding engine, fully hot-swappable. Assets: 10 light + 10 dark themes, 10 layout, 10 style themes, 10 context menus, 25 dynamically driven toolbars with docs, 25 style packages, 25 nav menus + behaviour, 25 design packages, 250 logos, 250 animated logos, 100 icon packs, branding packages; console plugin to browse them. Branded banners, toolbars, windows, containers, tab groups, dialogs, floating windows. Includes and replaces orchestrator build design-package. Web only; Android twins deferred (hold).",
+   "status": "complete",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "",
+   "branch": "claude/refactor-all",
+   "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
+   "mergedAt": "2026-10-29T03:49:47Z",
+   "createdAt": "2026-10-27T16:56:46.231Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "2026-10-30T18:10:39.641Z",
    "notes": [
     {
      "text": "Merged in design-package (its 9 steps are s2-s5, s29 and parts of s38). One model switch: Fable s1-s12, then Opus s13-s40.",
@@ -580,20 +592,6 @@
      "at": "2026-11-03T13:57:06.541Z"
     }
    ],
-   "id": "enterprise-branding",
-   "title": "Enterprise design + hot-swappable branding: branding engine, design packages, behaviour themes, 700+ generated brand assets, AmberX app + GizmoX console refactor",
-   "category": "Design & branding",
-   "detail": "Brett, Oct 27 2026: only refactor the console, the AmberX app (amberx.amberxai.com), the plugins currently installed and switched on in Plugin switches, and every banner plugin to enterprise quality. New asset types: branding package (extendable template of UI brand assets), icon pack, logo mark, animated logo, behaviour theme, AmberX design package. Branding engine, fully hot-swappable. Assets: 10 light + 10 dark themes, 10 layout, 10 style themes, 10 context menus, 25 dynamically driven toolbars with docs, 25 style packages, 25 nav menus + behaviour, 25 design packages, 250 logos, 250 animated logos, 100 icon packs, branding packages; console plugin to browse them. Branded banners, toolbars, windows, containers, tab groups, dialogs, floating windows. Includes and replaces orchestrator build design-package. Web only; Android twins deferred (hold).",
-   "status": "complete",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "",
-   "branch": "claude/refactor-all",
-   "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
-   "mergedAt": "2026-10-29T03:49:47Z",
-   "createdAt": "2026-10-27T16:56:46.231Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "2026-10-30T18:10:39.641Z",
    "approvals": [
     {
      "phase": 1,
@@ -1464,10 +1462,22 @@
      "note": "",
      "uid": "st-160ai5a"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
+   "id": "interface-roller",
+   "title": "Three complete interfaces in GizmoX tabs + an interface roller for every app",
+   "category": "Design & branding",
+   "detail": "Brett, Oct 27 2026 13:10: \"Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc.\" Needs enterprise-branding phase 1 (design package, behaviour, branding, logo and icon-pack types + generators) first. Web only; Android deferred.",
+   "status": "archived",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "",
+   "branch": "fable/interface-roller",
+   "pr": "",
+   "createdAt": "2026-10-27T17:11:59.344Z",
+   "updatedAt": "2026-10-28T19:31:15.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Runs after enterprise-branding phase 1 (s1-s12), whose asset types and generators it uses. One switch: Fable s1-s5, then Opus s6-s15.",
@@ -1494,19 +1504,6 @@
      "at": "2026-10-27T19:30:00.000Z"
     }
    ],
-   "id": "interface-roller",
-   "title": "Three complete interfaces in GizmoX tabs + an interface roller for every app",
-   "category": "Design & branding",
-   "detail": "Brett, Oct 27 2026 13:10: \"Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc.\" Needs enterprise-branding phase 1 (design package, behaviour, branding, logo and icon-pack types + generators) first. Web only; Android deferred.",
-   "status": "archived",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "",
-   "branch": "fable/interface-roller",
-   "pr": "",
-   "createdAt": "2026-10-27T17:11:59.344Z",
-   "updatedAt": "2026-10-28T19:31:15.654Z",
-   "builtAt": "",
    "approvals": [
     {
      "phase": 1,
@@ -1799,20 +1796,9 @@
      "note": "",
      "uid": "st-gwe9ez"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
-     "at": "2026-10-27T22:41:47.258Z"
-    },
-    {
-     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
-     "at": "2026-10-28T19:31:15.654Z"
-    }
-   ],
    "id": "pending-grid-view",
    "title": "Pending builds: grid view with sortable columns, expandable rows, toolbar and double-click multi-select",
    "category": "Console UI",
@@ -1826,6 +1812,16 @@
    "createdAt": "2026-10-27T16:36:55.356Z",
    "updatedAt": "2026-10-28T19:31:15.654Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+     "at": "2026-10-27T22:41:47.258Z"
+    },
+    {
+     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
+     "at": "2026-10-28T19:31:15.654Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -1953,20 +1949,9 @@
      "note": "",
      "uid": "st-af0i13"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
-     "at": "2026-10-27T22:41:47.258Z"
-    },
-    {
-     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
-     "at": "2026-10-28T19:31:15.654Z"
-    }
-   ],
    "id": "style-package-fable",
    "title": "Style packages — Fable rebuild of style-package@1",
    "category": "Design & branding",
@@ -1980,6 +1965,16 @@
    "createdAt": "2026-10-27T21:47:04.141Z",
    "updatedAt": "2026-10-28T19:31:15.654Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+     "at": "2026-10-27T22:41:47.258Z"
+    },
+    {
+     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
+     "at": "2026-10-28T19:31:15.654Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -2067,10 +2062,22 @@
      "note": "",
      "uid": "st-12x3lda"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
+   "id": "builds-one-page",
+   "title": "Builds: one dataset, one page with selectable views (Plan, Tracker, Queue, Pending, Orchestrator)",
+   "category": "Console UI",
+   "detail": "Brett, Oct 27 2026: Plans, Tracker, Build queue, Pending builds and the Build orchestrator are separate files (plan.json, tracker.json, build-queue.json, pending.json, _claude/builds/orchestrator.json) that drift (pending complete never marks the plan built; 91 of 100 pending items unlinked). Merge into one dataset; one Builds page with the views selectable from a toolbar and everywhere else that fits (app menu, context menu, shortcuts, banners, deep links). Every view, Orchestrator included, defaults to the Pending builds look: a table with expandable rows; better nested info in every list. Folds in pending-grid-view. tracker.json stays a generated export for the Android console and /tracker. Web only (Android hold).",
+   "status": "built",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "",
+   "branch": "claude/builds-one-page-done",
+   "pr": "#269",
+   "createdAt": "2026-10-27T19:11:22.011Z",
+   "updatedAt": "2026-11-03T18:22:41.268Z",
+   "builtAt": "2026-11-03T18:22:40.093Z",
    "notes": [
     {
      "text": "Oct 27 18:15 Brett: folded in 'date + time on every entry, newest (last updated) first in every grid regardless of filter' as two Opus steps before tests (asked for Refactor profile; folded here since this build owns the one dataset).",
@@ -2101,19 +2108,6 @@
      "at": "2026-11-03T18:22:41.268Z"
     }
    ],
-   "id": "builds-one-page",
-   "title": "Builds: one dataset, one page with selectable views (Plan, Tracker, Queue, Pending, Orchestrator)",
-   "category": "Console UI",
-   "detail": "Brett, Oct 27 2026: Plans, Tracker, Build queue, Pending builds and the Build orchestrator are separate files (plan.json, tracker.json, build-queue.json, pending.json, _claude/builds/orchestrator.json) that drift (pending complete never marks the plan built; 91 of 100 pending items unlinked). Merge into one dataset; one Builds page with the views selectable from a toolbar and everywhere else that fits (app menu, context menu, shortcuts, banners, deep links). Every view, Orchestrator included, defaults to the Pending builds look: a table with expandable rows; better nested info in every list. Folds in pending-grid-view. tracker.json stays a generated export for the Android console and /tracker. Web only (Android hold).",
-   "status": "built",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "",
-   "branch": "claude/builds-one-page-done",
-   "pr": "#269",
-   "createdAt": "2026-10-27T19:11:22.011Z",
-   "updatedAt": "2026-11-03T18:22:41.268Z",
-   "builtAt": "2026-11-03T18:22:40.093Z",
    "approvals": [
     {
      "phase": 1,
@@ -2443,20 +2437,9 @@
      "note": "",
      "uid": "st-re4dux"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Moved into Refactor (Brett, Oct 27 2026 18:57: everything unfinished since 6am goes in the orchestrator). Queued in PR #130.",
-     "at": "2026-10-27T23:01:35.765Z"
-    },
-    {
-     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
-     "at": "2026-10-28T19:31:15.654Z"
-    }
-   ],
    "id": "trim-asset",
    "title": "New asset type: trim (a layout + a colour theme in one asset)",
    "category": "Assets",
@@ -2470,6 +2453,16 @@
    "createdAt": "2026-10-27T19:11:22.026Z",
    "updatedAt": "2026-10-28T19:31:15.654Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "Moved into Refactor (Brett, Oct 27 2026 18:57: everything unfinished since 6am goes in the orchestrator). Queued in PR #130.",
+     "at": "2026-10-27T23:01:35.765Z"
+    },
+    {
+     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
+     "at": "2026-10-28T19:31:15.654Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -2560,10 +2553,22 @@
      "note": "",
      "uid": "st-vx3epu"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
+   "id": "apply-all-levels-fable",
+   "title": "Look tokens + settings levels (Fable rebuild)",
+   "category": "Design & branding",
+   "detail": "Fable recommended, Opus chosen. Replace the Opus build (branch claude/apply-all-levels): look@1 as a cross-port contract with a fixture both ports replay, the Kotlin twin when Android work resumes, and a review of every token mapping (compact at 0, inherited theme layering, banner fallbacks).",
+   "status": "archived",
+   "hidden": false,
+   "source": "pending",
+   "pendingId": "apply-all-levels-fable",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-10-27T23:01:35.774Z",
+   "updatedAt": "2026-10-28T19:31:15.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Moved into Refactor (Brett, Oct 27 2026 18:57: everything unfinished since 6am goes in the orchestrator).",
@@ -2578,19 +2583,6 @@
      "at": "2026-10-28T19:31:15.654Z"
     }
    ],
-   "id": "apply-all-levels-fable",
-   "title": "Look tokens + settings levels (Fable rebuild)",
-   "category": "Design & branding",
-   "detail": "Fable recommended, Opus chosen. Replace the Opus build (branch claude/apply-all-levels): look@1 as a cross-port contract with a fixture both ports replay, the Kotlin twin when Android work resumes, and a review of every token mapping (compact at 0, inherited theme layering, banner fallbacks).",
-   "status": "archived",
-   "hidden": false,
-   "source": "pending",
-   "pendingId": "apply-all-levels-fable",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-10-27T23:01:35.774Z",
-   "updatedAt": "2026-10-28T19:31:15.654Z",
-   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -2678,10 +2670,22 @@
      "note": "",
      "uid": "st-bo1bqe"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
+   "id": "tools-plugin",
+   "title": "Tools plugin: the Tools section as its own plugin, with a Tools tab in Patches web",
+   "category": "Console plugins",
+   "detail": "Brett, Oct 22 2026: the Tools section is a plugin of its own, and Claude handoff depends on it.\n\n- New plugin `tools` (plugin@1 + lifecycle): it owns the Tools nav section and the top-level `tools` application menu that tool plugins add to; it provides a capability service (e.g. `axf.tools@1`) that tool plugins require.\n- Claude handoff (and any later tool plugin) declares it as a dependency (`requires`) and adds its entries through it instead of creating the section itself.\n- For Patches: the Tools plugin adds a **Tools** tab to Patches web's app tab group (next to Console / Pilot / axHub). Patches itself runs the Tools page; it is not the console page in a frame.\n- Patches web only for now (Android later).",
+   "status": "archived",
+   "hidden": false,
+   "source": "pending",
+   "pendingId": "tools-plugin",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-10-27T23:01:35.786Z",
+   "updatedAt": "2026-11-03T14:24:40.470Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Moved into Refactor (Brett, Oct 27 2026 18:57: everything unfinished since 6am goes in the orchestrator).",
@@ -2708,19 +2712,6 @@
      "at": "2026-11-03T14:24:40.470Z"
     }
    ],
-   "id": "tools-plugin",
-   "title": "Tools plugin: the Tools section as its own plugin, with a Tools tab in Patches web",
-   "category": "Console plugins",
-   "detail": "Brett, Oct 22 2026: the Tools section is a plugin of its own, and Claude handoff depends on it.\n\n- New plugin `tools` (plugin@1 + lifecycle): it owns the Tools nav section and the top-level `tools` application menu that tool plugins add to; it provides a capability service (e.g. `axf.tools@1`) that tool plugins require.\n- Claude handoff (and any later tool plugin) declares it as a dependency (`requires`) and adds its entries through it instead of creating the section itself.\n- For Patches: the Tools plugin adds a **Tools** tab to Patches web's app tab group (next to Console / Pilot / axHub). Patches itself runs the Tools page; it is not the console page in a frame.\n- Patches web only for now (Android later).",
-   "status": "archived",
-   "hidden": false,
-   "source": "pending",
-   "pendingId": "tools-plugin",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-10-27T23:01:35.786Z",
-   "updatedAt": "2026-11-03T14:24:40.470Z",
-   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -2808,24 +2799,9 @@
      "note": "",
      "uid": "st-uuh8d2"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
-     "at": "2026-10-28T19:31:15.654Z"
-    },
-    {
-     "text": "Merged in PR #141 (claude/amberx-handsfree)",
-     "at": "2026-10-28T19:08:50.203Z"
-    },
-    {
-     "text": "Reconciler: PR #141 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    }
-   ],
    "id": "amberx-handsfree",
    "title": "AmberX: hands-free listening on screen + in background, ActiveX-style detection overlay (level graph, dB, quick settings)",
    "category": "AI & voice",
@@ -2840,6 +2816,20 @@
    "createdAt": "2026-10-27T23:42:02.902Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T19:08:50.137Z",
+   "notes": [
+    {
+     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
+     "at": "2026-10-28T19:31:15.654Z"
+    },
+    {
+     "text": "Merged in PR #141 (claude/amberx-handsfree)",
+     "at": "2026-10-28T19:08:50.203Z"
+    },
+    {
+     "text": "Reconciler: PR #141 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -2927,20 +2917,9 @@
      "note": "",
      "uid": "st-1te2z4h"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Built and merged in PR #144; live on amberx.amberxai.com (new FastAPI server) Oct 28 02:34 UTC.",
-     "at": "2026-10-28T02:35:00.000Z"
-    },
-    {
-     "text": "Reconciler: PR #144 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    }
-   ],
    "id": "amberx-notes",
    "title": "AmberX voice notes, lists, tasks + AI router",
    "category": "AmberX app",
@@ -2955,6 +2934,16 @@
    "createdAt": "2026-10-28T00:32:03.143Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T02:35:09.837Z",
+   "notes": [
+    {
+     "text": "Built and merged in PR #144; live on amberx.amberxai.com (new FastAPI server) Oct 28 02:34 UTC.",
+     "at": "2026-10-28T02:35:00.000Z"
+    },
+    {
+     "text": "Reconciler: PR #144 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -3240,20 +3229,9 @@
      "note": "",
      "uid": "st-t2w4ri"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Merged PR #146 (5cc390d), branch fix/interface-scope-settings",
-     "at": "2026-10-28T04:36:58.577Z"
-    },
-    {
-     "text": "Reconciler: PR #146 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    }
-   ],
    "id": "fix-interface-scope-settings",
    "title": "Fix: switches and tab buttons dead inside interface tabs",
    "category": "Fix",
@@ -3268,6 +3246,16 @@
    "createdAt": "2026-10-28T03:03:09.005Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T04:36:58.472Z",
+   "notes": [
+    {
+     "text": "Merged PR #146 (5cc390d), branch fix/interface-scope-settings",
+     "at": "2026-10-28T04:36:58.577Z"
+    },
+    {
+     "text": "Reconciler: PR #146 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -3301,11 +3289,9 @@
      "note": "",
      "uid": "st-1nji859"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [],
    "id": "amberx-voice-fix",
    "title": "AmberX voice monitor: hears better, no constant tone, live text, no swear filter",
    "category": "AmberX app",
@@ -3319,6 +3305,7 @@
    "createdAt": "2026-10-28T04:39:11.299Z",
    "updatedAt": "2026-10-28T04:45:09.500Z",
    "builtAt": "2026-10-28T04:45:09.447Z",
+   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -3424,20 +3411,9 @@
      "note": "",
      "uid": "st-xulx9r"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Merged PR #148 (1359f5f), branch fix/hubsync-own-look-source",
-     "at": "2026-10-28T05:19:54.279Z"
-    },
-    {
-     "text": "Reconciler: PR #148 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    }
-   ],
    "id": "fix-hubsync-look-source",
    "title": "Fix: console look not saved to axHub (Hub sync replaced the console own hub source)",
    "category": "Fix",
@@ -3452,6 +3428,16 @@
    "createdAt": "2026-10-28T05:10:31.665Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T05:19:54.195Z",
+   "notes": [
+    {
+     "text": "Merged PR #148 (1359f5f), branch fix/hubsync-own-look-source",
+     "at": "2026-10-28T05:19:54.279Z"
+    },
+    {
+     "text": "Reconciler: PR #148 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -3485,20 +3471,9 @@
      "note": "",
      "uid": "st-1uydgp9"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Merged PR #149, branch fix/banner-snap",
-     "at": "2026-10-28T09:55:08.019Z"
-    },
-    {
-     "text": "Reconciler: PR #149 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    }
-   ],
    "id": "fix-banner-snap",
    "title": "Fix: console banner items overlap on phones; attached widgets snap, never overlap",
    "category": "Fix",
@@ -3513,6 +3488,16 @@
    "createdAt": "2026-10-28T05:01:49.680Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T09:55:07.941Z",
+   "notes": [
+    {
+     "text": "Merged PR #149, branch fix/banner-snap",
+     "at": "2026-10-28T09:55:08.019Z"
+    },
+    {
+     "text": "Reconciler: PR #149 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -3546,20 +3531,9 @@
      "note": "",
      "uid": "st-cb6fdc"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Merged in PR #151 (claude/banner-fix-fallback)",
-     "at": "2026-10-28T10:11:22.506Z"
-    },
-    {
-     "text": "Reconciler: PR #152; PR #152 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    }
-   ],
    "id": "banner-fix-fallback",
    "title": "Systems check: when a Fix fails, a dialog with the Claude connection badge + account, approve Mosses to launch headless Claude Code; no connection = error, fix, VPS command and Vinny Auto fix",
    "category": "Console",
@@ -3574,6 +3548,16 @@
    "createdAt": "2026-10-28T09:55:19.427Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T10:11:22.405Z",
+   "notes": [
+    {
+     "text": "Merged in PR #151 (claude/banner-fix-fallback)",
+     "at": "2026-10-28T10:11:22.506Z"
+    },
+    {
+     "text": "Reconciler: PR #152; PR #152 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -3643,20 +3627,9 @@
      "note": "",
      "uid": "st-oqwo72"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Merged PR #154, branch claude/amberx-push",
-     "at": "2026-10-28T14:52:00.673Z"
-    },
-    {
-     "text": "Reconciler: PR #154 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    }
-   ],
    "id": "amberx-push",
    "title": "All axHub push notifications come from the AmberX Android app",
    "category": "AmberX app",
@@ -3671,6 +3644,16 @@
    "createdAt": "2026-10-28T14:39:25.869Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T14:52:00.612Z",
+   "notes": [
+    {
+     "text": "Merged PR #154, branch claude/amberx-push",
+     "at": "2026-10-28T14:52:00.673Z"
+    },
+    {
+     "text": "Reconciler: PR #154 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -3740,16 +3723,9 @@
      "note": "",
      "uid": "st-16nmgpt"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Reconciler: PR #153 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    }
-   ],
    "id": "amberx-voice-center",
    "title": "AmberX voice command center + Molly (notes, tasks, developer, AI snippets; chains, wizards, walkthroughs)",
    "category": "AmberX app",
@@ -3764,6 +3740,12 @@
    "createdAt": "2026-10-28T13:59:55.535Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T15:29:37.365Z",
+   "notes": [
+    {
+     "text": "Reconciler: PR #153 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -4031,20 +4013,9 @@
      "note": "",
      "uid": "st-rdyv57"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Overlap: feature-matrix s6 adds a builds-grid hook registry; make grid-attach@1 the same registry (or forward-compatible).",
-     "at": "2026-10-28T18:55:16.016Z"
-    },
-    {
-     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
-     "at": "2026-10-28T19:31:15.654Z"
-    }
-   ],
    "id": "share-search",
    "title": "Share Search: programmable grid toolbar plugin (search/filter bar + 5 buttons + advanced search), attach to grids",
    "category": "Plugins",
@@ -4058,6 +4029,16 @@
    "createdAt": "2026-10-28T15:23:39.639Z",
    "updatedAt": "2026-10-28T19:31:15.654Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "Overlap: feature-matrix s6 adds a builds-grid hook registry; make grid-attach@1 the same registry (or forward-compatible).",
+     "at": "2026-10-28T18:55:16.016Z"
+    },
+    {
+     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
+     "at": "2026-10-28T19:31:15.654Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -4217,16 +4198,9 @@
      "note": "",
      "uid": "st-nvoodv"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
-     "at": "2026-10-28T19:31:15.654Z"
-    }
-   ],
    "id": "axhub-github-write",
    "title": "axHub GitHub service: file, branch and commit write tools (each needs approval)",
    "category": "axHub",
@@ -4240,6 +4214,12 @@
    "createdAt": "2026-10-28T15:25:39.356Z",
    "updatedAt": "2026-10-28T19:31:15.654Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
+     "at": "2026-10-28T19:31:15.654Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -4297,10 +4277,22 @@
      "note": "",
      "uid": "st-gv9w9p"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
+   "id": "approval-costs",
+   "title": "Approval history with costs: every approval recorded with details + cost, browsable in Console + axHub",
+   "category": "axHub",
+   "detail": "Brett Oct 28 2026 (claude.ai): 'Add cost of approval every time something is approved and display costs, as well as all details and history of past approvals browsing. Can you alert when needing approval without stopping and restarting.' Context: he asked whether sending an approval and waiting costs tokens. Answer given: waiting is free, but each retry check re-reads the conversation (mostly cached). The 15 s x10 then 1 min rule costs about 10-15 checks per 5 minutes. HELD: queued, not started. Picks (cards): profile Refactor, held; history in the Console AND on axHub's approvals page.\n\nScope:\n1) Cost per approval: every approval records the session's token/cost spent while it waited (number of checks, tokens in/out, cached vs not, USD from framework/schemas/model-pricing.json), plus the time it waited and who/what asked (session, surface, machine, build ref, reason title/description, exact call, result).\n2) History browser: every past approval with all details and its cost; filter/sort/search, totals per day/build/session. Console = History view in the approvals-banner plugin (framework DataGrid, expanding rows). axHub = same list on its approvals page. Approve stays on the first screen.\n3) Alert without stopping/restarting: a hub-side wait (axhub tool, e.g. approvals.wait / long-poll on the confirmation id, up to ~10 min per call) so a session makes ONE call that returns the moment Brett approves. No retry loop and no session restart. The AmberX app push (already shipped, amberx-push) fires when the approval is created. Then update the shared retry rule (15 s x10, then 1 min) to 'one wait call, re-issued only if it times out' — Brett to confirm that rule change at build time.\nWork spans MossesX/axHub (wait tool, cost fields, approvals page history) and AXF (approvals-banner History view, cost capture via codebase-changes hooks / session transcript).",
+   "status": "archived",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-10-28T15:30:11.241Z",
+   "updatedAt": "2026-10-28T19:31:15.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Brett Oct 28 13:27: look into axHub waking a stopped session. Found: Claude Code routine API trigger (POST /v1/claude_code/routines/{id}/fire, per-routine bearer token made only in the web UI). A send_later task is bound to the session (persistent_session_id), so firing it wakes the same chat. This session could not make it recurring (safety check), so Brett does that one-time in the web UI.",
@@ -4315,19 +4307,6 @@
      "at": "2026-10-28T19:31:15.654Z"
     }
    ],
-   "id": "approval-costs",
-   "title": "Approval history with costs: every approval recorded with details + cost, browsable in Console + axHub",
-   "category": "axHub",
-   "detail": "Brett Oct 28 2026 (claude.ai): 'Add cost of approval every time something is approved and display costs, as well as all details and history of past approvals browsing. Can you alert when needing approval without stopping and restarting.' Context: he asked whether sending an approval and waiting costs tokens. Answer given: waiting is free, but each retry check re-reads the conversation (mostly cached). The 15 s x10 then 1 min rule costs about 10-15 checks per 5 minutes. HELD: queued, not started. Picks (cards): profile Refactor, held; history in the Console AND on axHub's approvals page.\n\nScope:\n1) Cost per approval: every approval records the session's token/cost spent while it waited (number of checks, tokens in/out, cached vs not, USD from framework/schemas/model-pricing.json), plus the time it waited and who/what asked (session, surface, machine, build ref, reason title/description, exact call, result).\n2) History browser: every past approval with all details and its cost; filter/sort/search, totals per day/build/session. Console = History view in the approvals-banner plugin (framework DataGrid, expanding rows). axHub = same list on its approvals page. Approve stays on the first screen.\n3) Alert without stopping/restarting: a hub-side wait (axhub tool, e.g. approvals.wait / long-poll on the confirmation id, up to ~10 min per call) so a session makes ONE call that returns the moment Brett approves. No retry loop and no session restart. The AmberX app push (already shipped, amberx-push) fires when the approval is created. Then update the shared retry rule (15 s x10, then 1 min) to 'one wait call, re-issued only if it times out' — Brett to confirm that rule change at build time.\nWork spans MossesX/axHub (wait tool, cost fields, approvals page history) and AXF (approvals-banner History view, cost capture via codebase-changes hooks / session transcript).",
-   "status": "archived",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-10-28T15:30:11.241Z",
-   "updatedAt": "2026-10-28T19:31:15.654Z",
-   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -4415,20 +4394,9 @@
      "note": "",
      "uid": "st-kgkoay"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Merged PR #156, branch claude/amberx-assistant-agents",
-     "at": "2026-10-28T15:54:37.605Z"
-    },
-    {
-     "text": "Reconciler: PR #156 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    }
-   ],
    "id": "amberx-assistant-agents",
    "title": "AmberX: install the AI assistant + agent manager plugins",
    "category": "AmberX app",
@@ -4443,6 +4411,16 @@
    "createdAt": "2026-10-28T15:41:17.167Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T15:54:37.523Z",
+   "notes": [
+    {
+     "text": "Merged PR #156, branch claude/amberx-assistant-agents",
+     "at": "2026-10-28T15:54:37.605Z"
+    },
+    {
+     "text": "Reconciler: PR #156 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -4476,20 +4454,9 @@
      "note": "",
      "uid": "st-xl9cam"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Merged PR #157, branch claude/amberx-claude-tokens",
-     "at": "2026-10-28T17:04:41.549Z"
-    },
-    {
-     "text": "Reconciler: PR #157 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    }
-   ],
    "id": "amberx-claude-tokens",
    "title": "AmberX AI connection: fix Save key + several Claude tokens with Test and a primary",
    "category": "AmberX app",
@@ -4504,6 +4471,16 @@
    "createdAt": "2026-10-28T16:55:24.086Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-28T17:04:41.490Z",
+   "notes": [
+    {
+     "text": "Merged PR #157, branch claude/amberx-claude-tokens",
+     "at": "2026-10-28T17:04:41.549Z"
+    },
+    {
+     "text": "Reconciler: PR #157 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -4537,20 +4514,9 @@
      "note": "",
      "uid": "st-h9rf2m"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "PR #155 open, CI green on 2c185a79; merge approval sent to Brett through axHub (push-banner merge-pr.sh).",
-     "at": "2026-10-28T15:43:56.298Z"
-    },
-    {
-     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
-     "at": "2026-10-28T19:31:15.654Z"
-    }
-   ],
    "id": "basic-filter",
    "title": "Basic filter plugin: search + filter dialog attachable to any dataset, with a configurable toolbar",
    "category": "Console plugins",
@@ -4564,6 +4530,16 @@
    "createdAt": "2026-10-28T15:16:53.872Z",
    "updatedAt": "2026-10-28T19:31:15.654Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "PR #155 open, CI green on 2c185a79; merge approval sent to Brett through axHub (push-banner merge-pr.sh).",
+     "at": "2026-10-28T15:43:56.298Z"
+    },
+    {
+     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
+     "at": "2026-10-28T19:31:15.654Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -4705,16 +4681,9 @@
      "note": "",
      "uid": "st-l191gq"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
-     "at": "2026-10-28T19:31:15.654Z"
-    }
-   ],
    "id": "windows-terminal",
    "title": "Windows-style Terminal (Claude Code tabs, connections, profiles) + window snap/resize + settings levels toolbar & level editor",
    "category": "Plugins",
@@ -4728,6 +4697,12 @@
    "createdAt": "2026-10-28T16:51:24.871Z",
    "updatedAt": "2026-10-28T19:31:15.654Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
+     "at": "2026-10-28T19:31:15.654Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -4959,20 +4934,9 @@
      "note": "",
      "uid": "st-1t17cqt"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Held: postponed by Brett; start only when he says.",
-     "at": "2026-10-28T16:55:27.197Z"
-    },
-    {
-     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
-     "at": "2026-10-28T19:31:15.654Z"
-    }
-   ],
    "id": "postponed-gestures",
    "title": "Postponed gestures (held list): drag a window from anywhere",
    "category": "Gestures",
@@ -4986,6 +4950,16 @@
    "createdAt": "2026-10-28T16:55:27.142Z",
    "updatedAt": "2026-10-28T19:31:15.654Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "Held: postponed by Brett; start only when he says.",
+     "at": "2026-10-28T16:55:27.197Z"
+    },
+    {
+     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
+     "at": "2026-10-28T19:31:15.654Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -5019,16 +4993,9 @@
      "note": "",
      "uid": "st-18gc8as"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
-     "at": "2026-10-28T19:31:15.654Z"
-    }
-   ],
    "id": "feature-matrix",
    "title": "Feature Matrix plugin: a skip/keep feature matrix for every build, one dataset, hooks in every builds grid, Apply updates status everywhere",
    "category": "Plugins",
@@ -5042,6 +5009,12 @@
    "createdAt": "2026-10-28T18:55:15.833Z",
    "updatedAt": "2026-10-28T19:31:15.654Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
+     "at": "2026-10-28T19:31:15.654Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -5201,20 +5174,9 @@
      "note": "",
      "uid": "st-1pbd8nt"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Brett Oct 28 14:11-14:17: at zero without a Block, urgent alarm (red banner + loud AmberX ring), 1 more minute, then run. All hub-side, zero session tokens; alarm settings in the AmberX app. Build after hub-runs-approved.",
-     "at": "2026-10-28T18:56:29.768Z"
-    },
-    {
-     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
-     "at": "2026-10-28T19:31:15.654Z"
-    }
-   ],
    "id": "veto-window",
    "title": "Run unless blocked: 2-min countdown → urgent alarm (red banner + loud AmberX ring) → 1-min grace → runs; Block anytime; zero session tokens",
    "category": "axHub",
@@ -5228,6 +5190,16 @@
    "createdAt": "2026-10-28T18:56:29.579Z",
    "updatedAt": "2026-10-28T19:31:15.654Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "Brett Oct 28 14:11-14:17: at zero without a Block, urgent alarm (red banner + loud AmberX ring), 1 more minute, then run. All hub-side, zero session tokens; alarm settings in the AmberX app. Build after hub-runs-approved.",
+     "at": "2026-10-28T18:56:29.768Z"
+    },
+    {
+     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
+     "at": "2026-10-28T19:31:15.654Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -5333,20 +5305,9 @@
      "note": "",
      "uid": "st-1ycyigj"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Oct 28 15:05 Brett: \"Build it all\". Order: hub-runs-approved → veto-window → approval-costs → axhub-github-write → share-search (Fable s1-s2 need a Fable session). Started on Opus in claude.ai session_01XfLJCQwPcAjqfBaHYyA1FE.",
-     "at": "2026-10-28T19:07:11.131Z"
-    },
-    {
-     "text": "Built: axHub PR #14 (branch claude/hub-runs-approved), 414 tests pass. Shared rule \"send approvals once, never poll\" added (AXF + axHub copies), effective once #14 is deployed. Waiting on Brett: merge approval → Coolify auto-deploy.",
-     "at": "2026-10-28T19:13:47.224Z"
-    }
-   ],
    "id": "hub-runs-approved",
    "title": "axHub runs approved calls itself: hold the call, run on Approve, drop on Reject; sessions send once and never wait",
    "category": "axHub",
@@ -5360,6 +5321,16 @@
    "createdAt": "2026-10-28T18:56:29.828Z",
    "updatedAt": "2026-10-28T19:13:47.224Z",
    "builtAt": "2026-10-28T19:13:47.224Z",
+   "notes": [
+    {
+     "text": "Oct 28 15:05 Brett: \"Build it all\". Order: hub-runs-approved → veto-window → approval-costs → axhub-github-write → share-search (Fable s1-s2 need a Fable session). Started on Opus in claude.ai session_01XfLJCQwPcAjqfBaHYyA1FE.",
+     "at": "2026-10-28T19:07:11.131Z"
+    },
+    {
+     "text": "Built: axHub PR #14 (branch claude/hub-runs-approved), 414 tests pass. Shared rule \"send approvals once, never poll\" added (AXF + axHub copies), effective once #14 is deployed. Waiting on Brett: merge approval → Coolify auto-deploy.",
+     "at": "2026-10-28T19:13:47.224Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -5429,10 +5400,23 @@
      "note": "",
      "uid": "st-ackkit"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
+   "id": "refactor-all",
+   "title": "Refactor: everything left to build, one build (Oct 28 2026)",
+   "category": "Refactor",
+   "detail": "Brett, Oct 28 2026 15:26: \"Stop everything from every session right now except the documentation. Put everything left to build into 1 single build in a new session. Send the build to orchestrator and create the matrix then end all other sessions.\"\n\nOne build holding every unfinished step in the Refactor profile (17 source builds, now archived with a note pointing here). Run it in ONE new session; one Fable phase, then one Opus phase (one model switch).\n\nRules for this build:\n- The feature matrix (_claude/builds/profiles/refactor/matrices.json, matrix \"refactor-all\") is the scope. Kept items are the steps below; skipped items stay in the matrix and are not built. Ticking a skipped item = add it as a step (feature-matrix Apply, once built).\n- Carry on from the existing branches and PRs; don't redo finished steps. Open PRs: basic-filter #155 (CI green, merge approval sent), windows-terminal #158, amberx-handsfree #141, enterprise-branding PR #128 + interface-roller PR #129 (stacked; Opus work on opus/enterprise-branding).\n- Enterprise-branding's refactor runs first in the Opus phase, so every plugin built after it lands on the refactored console. Every UI in this build is held to framework/spec/DESIGN-LANGUAGE.md, not just the §13 scope.\n- Patches stays paused; skip Patches in every re-bake. Android only in apps/amberx-droid.\n- Kept: 30 h 50 min (11 h 45 min Fable). Skipped by default: 10 h 25 min.\n\nSource branches: amberx-handsfree: claude/amberx-handsfree https://github.com/MossesX/AmberX-AXF/pull/141; apply-all-levels-fable: -; approval-costs: -; arch-foundation: fable/arch-foundation; axhub-github-write: -; basic-filter: claude/basic-filter #155; enterprise-branding: fable/enterprise-branding; feature-matrix: -; interface-roller: fable/interface-roller; pending-grid-view: claude/pending-grid-view; postponed-gestures: -; share-search: -; style-package-fable: fable/style-package; tools-plugin: -; trim-asset: claude/trim-asset; veto-window: -; windows-terminal: claude/windows-terminal #158\n\nMatrix page (Brett ticks keep/skip on his phone): https://claude.ai/artifact/GJ4gkXZUkjZVXkdKDT1zGS — artifact db doc matrix/refactor-all. Before each step, read it (db_get) and follow its keep/skip; if applyRequestedAt is newer than the last step, re-sync matrices.json and add/skip steps to match.",
+   "status": "complete",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "refactor-all",
+   "branch": "claude/refactor-all",
+   "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
+   "mergedAt": "2026-10-29T03:49:47Z",
+   "createdAt": "2026-10-28T19:31:15.654Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "2026-10-29T07:38:54.593Z",
    "notes": [
     {
      "text": "Made from every unfinished Refactor build on Brett's stop order (15:26 EDT). Matrix: matrices.json → refactor-all.",
@@ -5475,20 +5459,6 @@
      "at": "2026-11-03T13:57:06.541Z"
     }
    ],
-   "id": "refactor-all",
-   "title": "Refactor: everything left to build, one build (Oct 28 2026)",
-   "category": "Refactor",
-   "detail": "Brett, Oct 28 2026 15:26: \"Stop everything from every session right now except the documentation. Put everything left to build into 1 single build in a new session. Send the build to orchestrator and create the matrix then end all other sessions.\"\n\nOne build holding every unfinished step in the Refactor profile (17 source builds, now archived with a note pointing here). Run it in ONE new session; one Fable phase, then one Opus phase (one model switch).\n\nRules for this build:\n- The feature matrix (_claude/builds/profiles/refactor/matrices.json, matrix \"refactor-all\") is the scope. Kept items are the steps below; skipped items stay in the matrix and are not built. Ticking a skipped item = add it as a step (feature-matrix Apply, once built).\n- Carry on from the existing branches and PRs; don't redo finished steps. Open PRs: basic-filter #155 (CI green, merge approval sent), windows-terminal #158, amberx-handsfree #141, enterprise-branding PR #128 + interface-roller PR #129 (stacked; Opus work on opus/enterprise-branding).\n- Enterprise-branding's refactor runs first in the Opus phase, so every plugin built after it lands on the refactored console. Every UI in this build is held to framework/spec/DESIGN-LANGUAGE.md, not just the §13 scope.\n- Patches stays paused; skip Patches in every re-bake. Android only in apps/amberx-droid.\n- Kept: 30 h 50 min (11 h 45 min Fable). Skipped by default: 10 h 25 min.\n\nSource branches: amberx-handsfree: claude/amberx-handsfree https://github.com/MossesX/AmberX-AXF/pull/141; apply-all-levels-fable: -; approval-costs: -; arch-foundation: fable/arch-foundation; axhub-github-write: -; basic-filter: claude/basic-filter #155; enterprise-branding: fable/enterprise-branding; feature-matrix: -; interface-roller: fable/interface-roller; pending-grid-view: claude/pending-grid-view; postponed-gestures: -; share-search: -; style-package-fable: fable/style-package; tools-plugin: -; trim-asset: claude/trim-asset; veto-window: -; windows-terminal: claude/windows-terminal #158\n\nMatrix page (Brett ticks keep/skip on his phone): https://claude.ai/artifact/GJ4gkXZUkjZVXkdKDT1zGS — artifact db doc matrix/refactor-all. Before each step, read it (db_get) and follow its keep/skip; if applyRequestedAt is newer than the last step, re-sync matrices.json and add/skip steps to match.",
-   "status": "complete",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "refactor-all",
-   "branch": "claude/refactor-all",
-   "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
-   "mergedAt": "2026-10-29T03:49:47Z",
-   "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "2026-10-29T07:38:54.593Z",
    "approvals": [
     {
      "phase": 1,
@@ -7148,16 +7118,9 @@
      "note": "Opus sub-agent, branch refactor-all/amberx-voice-wake (ea5dfa9b 43bbc832 afb00d37); Java compiled first in CI",
      "uid": "st-159kwqr"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Reconciler: PR #164 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    }
-   ],
    "id": "mosses-build-tools",
    "title": "Mosses builds in the AI assistant: Edit/Write/Bash in the /axf git checkout + push/PR tools (token stays in the host)",
    "category": "assistant",
@@ -7172,6 +7135,12 @@
    "createdAt": "2026-10-29T03:53:16.640Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-29T03:53:16.932Z",
+   "notes": [
+    {
+     "text": "Reconciler: PR #164 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -7241,16 +7210,9 @@
      "note": "",
      "uid": "st-1narkg0"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Reconciler: PR #167; PR #167 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    }
-   ],
    "id": "assistant-no-subagents",
    "title": "No sub-agents in the AI assistant (Task/Agent denied) + fix build mode crash (env scrub flag)",
    "category": "assistant",
@@ -7265,6 +7227,12 @@
    "createdAt": "2026-10-29T05:57:18.585Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-29T05:57:18.706Z",
+   "notes": [
+    {
+     "text": "Reconciler: PR #167; PR #167 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -7298,20 +7266,9 @@
      "note": "",
      "uid": "st-1cv6z94"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "PR #170 (fix/design-package-shared-look). s1-s3 done; s4 waits on CI + merge approval.",
-     "at": "2026-10-29T18:11:24.851Z"
-    },
-    {
-     "text": "Merged PR #170 (fix/design-package-shared-look), Oct 29 2026.",
-     "at": "2026-10-29T18:57:38.776Z"
-    }
-   ],
    "id": "shared-look-fix",
    "title": "Fix: design packages do nothing + developer apps look different",
    "category": "Appearance",
@@ -7325,6 +7282,16 @@
    "createdAt": "2026-10-29T18:04:38.474Z",
    "updatedAt": "2026-10-29T18:57:38.776Z",
    "builtAt": "2026-10-29T18:57:38.704Z",
+   "notes": [
+    {
+     "text": "PR #170 (fix/design-package-shared-look). s1-s3 done; s4 waits on CI + merge approval.",
+     "at": "2026-10-29T18:11:24.851Z"
+    },
+    {
+     "text": "Merged PR #170 (fix/design-package-shared-look), Oct 29 2026.",
+     "at": "2026-10-29T18:57:38.776Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -7400,10 +7367,23 @@
      "note": "",
      "uid": "st-1sx8qw4"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
+   "id": "veto-everywhere",
+   "title": "Veto everywhere: every axHub call that needs Brett runs after the 3-minute countdown unless denied",
+   "category": "axHub",
+   "detail": "Brett Oct 30 2026 (voice): it's not an approval system anymore, it's a veto system; send the notice, keep building, don't wait or check; finish the veto system wherever it needs to be and delete anything pending that conflicts. axHub decision #103: hub option confirmAs / AXHUB_CONFIRM_AS (default veto). Shared rules rewritten. Pending item axhub-auto-approve-all removed (main-framework). veto-window + approval-costs were already archived.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/veto-everywhere + claude/veto-complete (AXF + axHub)",
+   "pr": "#176",
+   "mergedAt": "2026-10-31T07:26:37Z",
+   "createdAt": "2026-10-30T13:20:06.580Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "2026-11-01T02:31:12.147Z",
    "notes": [
     {
      "text": "PRs for axHub + AXF claude/veto-everywhere and feat/agent-voice sent as a veto call (vps.run, job be895ba4). Merging the axHub PR is Brett's (push banner Merge, or tell the session to send it); then the hub redeploys and GitHub writes go veto.",
@@ -7422,20 +7402,6 @@
      "at": "2026-11-03T13:57:06.541Z"
     }
    ],
-   "id": "veto-everywhere",
-   "title": "Veto everywhere: every axHub call that needs Brett runs after the 3-minute countdown unless denied",
-   "category": "axHub",
-   "detail": "Brett Oct 30 2026 (voice): it's not an approval system anymore, it's a veto system; send the notice, keep building, don't wait or check; finish the veto system wherever it needs to be and delete anything pending that conflicts. axHub decision #103: hub option confirmAs / AXHUB_CONFIRM_AS (default veto). Shared rules rewritten. Pending item axhub-auto-approve-all removed (main-framework). veto-window + approval-costs were already archived.",
-   "status": "complete",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/veto-everywhere + claude/veto-complete (AXF + axHub)",
-   "pr": "#176",
-   "mergedAt": "2026-10-31T07:26:37Z",
-   "createdAt": "2026-10-30T13:20:06.580Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "2026-11-01T02:31:12.147Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -7613,24 +7579,9 @@
      "note": "",
      "uid": "st-1ar2jv2"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "s1-s8 done on feat/agent-voice; PR create held on axHub (approval 45ca37d6). s9 left: CI + merge approval.",
-     "at": "2026-10-30T12:06:01.970Z"
-    },
-    {
-     "text": "s9 closed by Leftovers: it was 'waiting' only on the PR approval (45ca37d6) + merge; feat/agent-voice is fully on main, so nothing waits on Brett. plugin-lifecycle check clean, test.py 37/37, test.mts 22/22.",
-     "at": "2026-11-01T02:31:46.572Z"
-    },
-    {
-     "text": "Reconciler: PR #177; PR #177 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    }
-   ],
    "id": "agent-voice",
    "title": "Agent voice plugin: agents speak + per-agent narrator console, live status light, Assistant mic",
    "category": "Voice",
@@ -7645,6 +7596,20 @@
    "createdAt": "2026-10-30T11:36:24.622Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:31:46.110Z",
+   "notes": [
+    {
+     "text": "s1-s8 done on feat/agent-voice; PR create held on axHub (approval 45ca37d6). s9 left: CI + merge approval.",
+     "at": "2026-10-30T12:06:01.970Z"
+    },
+    {
+     "text": "s9 closed by Leftovers: it was 'waiting' only on the PR approval (45ca37d6) + merge; feat/agent-voice is fully on main, so nothing waits on Brett. plugin-lifecycle check clean, test.py 37/37, test.mts 22/22.",
+     "at": "2026-11-01T02:31:46.572Z"
+    },
+    {
+     "text": "Reconciler: PR #177; PR #177 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -7822,20 +7787,9 @@
      "note": "",
      "uid": "st-tq3y47"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Built on branch claude/pr-only-merge (push banner 0.5.0); PR opened through the push banner (veto call). test.py 132 checks.",
-     "at": "2026-10-30T18:04:28.290Z"
-    },
-    {
-     "text": "Reconciler: PR #183; PR #183 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    }
-   ],
    "id": "pr-only-merge",
    "title": "Every change through a PR, pulled up to date with main before it merges (push banner 0.5.0)",
    "category": "git",
@@ -7850,6 +7804,16 @@
    "createdAt": "2026-10-30T17:55:48.511Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-30T18:04:28.210Z",
+   "notes": [
+    {
+     "text": "Built on branch claude/pr-only-merge (push banner 0.5.0); PR opened through the push banner (veto call). test.py 132 checks.",
+     "at": "2026-10-30T18:04:28.290Z"
+    },
+    {
+     "text": "Reconciler: PR #183; PR #183 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -7919,24 +7883,9 @@
      "note": "",
      "uid": "st-1q96nor"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
-     "at": "2026-10-27T19:30:00.000Z"
-    },
-    {
-     "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
-     "at": "2026-10-28T00:47:31.318Z"
-    },
-    {
-     "text": "Reconciler: branch claude/apply-all-levels (PR #115); PR #115; PR #115 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    }
-   ],
    "id": "apply-all-levels",
    "title": "Banner look Apply to all (Simple/Basic/Pro/Advanced), settings levels, Sliders section",
    "category": "",
@@ -7951,6 +7900,20 @@
    "createdAt": "2026-10-27T03:19:49.625Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T03:19:49.625Z",
+   "notes": [
+    {
+     "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
+     "at": "2026-10-27T19:30:00.000Z"
+    },
+    {
+     "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
+     "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/apply-all-levels (PR #115); PR #115; PR #115 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -8038,10 +8001,23 @@
      "note": "",
      "uid": "st-lqiap7"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
+   "id": "amberx-empty-shell",
+   "title": "AmberX as an empty shell for building and testing plugins",
+   "category": "",
+   "detail": "apps/amberx-droid: keep banner, toolbar, nav menu, app menu, a basic context menu, settings interface, theme/layout/style assets, voice plugin, Approvals page + alerts, the whole monitor plugin and native WatchService; remove Hub, Apps, Manage pages and trim the chrome assets; README plugin how-to.",
+   "status": "complete",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "amberx-empty-shell",
+   "branch": "claude/amberx-empty-shell",
+   "pr": "#118",
+   "mergedAt": "2026-10-27T03:54:31Z",
+   "createdAt": "2026-10-27T03:48:42.596Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "2026-10-27T03:48:42.596Z",
    "notes": [
     {
      "text": "Built Oct 26 2026 on Opus (claude.ai): branch claude/amberx-empty-shell, PR #118. test.mjs 157, tsc, vite build, axf validate 83 assets.",
@@ -8060,20 +8036,6 @@
      "at": "2026-11-03T13:57:06.541Z"
     }
    ],
-   "id": "amberx-empty-shell",
-   "title": "AmberX as an empty shell for building and testing plugins",
-   "category": "",
-   "detail": "apps/amberx-droid: keep banner, toolbar, nav menu, app menu, a basic context menu, settings interface, theme/layout/style assets, voice plugin, Approvals page + alerts, the whole monitor plugin and native WatchService; remove Hub, Apps, Manage pages and trim the chrome assets; README plugin how-to.",
-   "status": "complete",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "amberx-empty-shell",
-   "branch": "claude/amberx-empty-shell",
-   "pr": "#118",
-   "mergedAt": "2026-10-27T03:54:31Z",
-   "createdAt": "2026-10-27T03:48:42.596Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "2026-10-27T03:48:42.596Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -8161,24 +8123,9 @@
      "note": "",
      "uid": "st-18jao3v"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
-     "at": "2026-10-27T19:30:00.000Z"
-    },
-    {
-     "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
-     "at": "2026-10-28T00:47:31.318Z"
-    },
-    {
-     "text": "Reconciler: branch claude/fresh-look-done (PR #120); PR #120; PR #120 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    }
-   ],
    "id": "fresh-look",
    "title": "Fresh look: new default style theme + fresh appearance package",
    "category": "",
@@ -8193,6 +8140,20 @@
    "createdAt": "2026-10-27T04:05:32.031Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T04:05:32.031Z",
+   "notes": [
+    {
+     "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
+     "at": "2026-10-27T19:30:00.000Z"
+    },
+    {
+     "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
+     "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/fresh-look-done (PR #120); PR #120; PR #120 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -8207,10 +8168,23 @@
     "from": "detail",
     "addenda": []
    },
-   "steps": [],
-   "rev": 0
+   "steps": []
   },
   {
+   "id": "design-packages-10",
+   "title": "10 more AmberX Design Packages",
+   "category": "",
+   "detail": "Brett, Oct 27 2026: make 10 more design packages from existing themes, framework + all 5 web apps. Themes-only packages (no extras); app copies keep the app own layout.",
+   "status": "complete",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "design-packages-10",
+   "branch": "claude/design-packages-10",
+   "pr": "#124",
+   "mergedAt": "2026-10-27T17:59:47Z",
+   "createdAt": "2026-10-27T17:25:19.327Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "2026-10-27T17:25:19.327Z",
    "notes": [
     {
      "text": "Built on branch claude/design-packages-10 (on top of PR #123).",
@@ -8229,20 +8203,6 @@
      "at": "2026-11-03T13:57:06.541Z"
     }
    ],
-   "id": "design-packages-10",
-   "title": "10 more AmberX Design Packages",
-   "category": "",
-   "detail": "Brett, Oct 27 2026: make 10 more design packages from existing themes, framework + all 5 web apps. Themes-only packages (no extras); app copies keep the app own layout.",
-   "status": "complete",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "design-packages-10",
-   "branch": "claude/design-packages-10",
-   "pr": "#124",
-   "mergedAt": "2026-10-27T17:59:47Z",
-   "createdAt": "2026-10-27T17:25:19.327Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "2026-10-27T17:25:19.327Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -8257,10 +8217,23 @@
     "from": "detail",
     "addenda": []
    },
-   "steps": [],
-   "rev": 0
+   "steps": []
   },
   {
+   "id": "build-orchestrator",
+   "title": "Build orchestrator plugin (Fable/Opus steps, approval at model switches, repo tracker)",
+   "category": "",
+   "detail": "Console plugin apps/console-web/plugins/build-orchestrator + tracker _claude/builds/orchestrator.json. Brett, Oct 27 2026.",
+   "status": "complete",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "build-orchestrator",
+   "branch": "claude/build-orchestrator",
+   "pr": "#122",
+   "mergedAt": "2026-10-27T18:17:28Z",
+   "createdAt": "2026-10-27T16:39:39.618Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "2026-10-27T16:39:39.618Z",
    "notes": [
     {
      "text": "Built on branch claude/build-orchestrator, PR #122.",
@@ -8279,20 +8252,6 @@
      "at": "2026-11-03T13:57:06.541Z"
     }
    ],
-   "id": "build-orchestrator",
-   "title": "Build orchestrator plugin (Fable/Opus steps, approval at model switches, repo tracker)",
-   "category": "",
-   "detail": "Console plugin apps/console-web/plugins/build-orchestrator + tracker _claude/builds/orchestrator.json. Brett, Oct 27 2026.",
-   "status": "complete",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "build-orchestrator",
-   "branch": "claude/build-orchestrator",
-   "pr": "#122",
-   "mergedAt": "2026-10-27T18:17:28Z",
-   "createdAt": "2026-10-27T16:39:39.618Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "2026-10-27T16:39:39.618Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -8307,10 +8266,23 @@
     "from": "notes",
     "addenda": []
    },
-   "steps": [],
-   "rev": 0
+   "steps": []
   },
   {
+   "id": "build-profiles",
+   "title": "Build profiles + Build profiles console plugin",
+   "category": "",
+   "detail": "Brett, Oct 27 2026: multiple build profiles (plans, build queue, pending builds, tracking, all work data) and a console plugin to select and save one; current one = Main framework, new one = Refactor.",
+   "status": "complete",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "build-profiles",
+   "branch": "claude/build-profiles",
+   "pr": "#127",
+   "mergedAt": "2026-10-27T22:12:19Z",
+   "createdAt": "2026-10-27T19:00:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "2026-10-27T19:30:00.000Z",
    "notes": [
     {
      "text": "Built on Opus, branch claude/build-profiles, PR #127.",
@@ -8329,20 +8301,6 @@
      "at": "2026-11-03T13:57:06.541Z"
     }
    ],
-   "id": "build-profiles",
-   "title": "Build profiles + Build profiles console plugin",
-   "category": "",
-   "detail": "Brett, Oct 27 2026: multiple build profiles (plans, build queue, pending builds, tracking, all work data) and a console plugin to select and save one; current one = Main framework, new one = Refactor.",
-   "status": "complete",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "build-profiles",
-   "branch": "claude/build-profiles",
-   "pr": "#127",
-   "mergedAt": "2026-10-27T22:12:19Z",
-   "createdAt": "2026-10-27T19:00:00.000Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "2026-10-27T19:30:00.000Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -8430,10 +8388,23 @@
      "note": "",
      "uid": "st-mzlex9"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
+   "id": "amberx-appearance-lock",
+   "title": "AmberX: fix the messed-up look, lock the look switch, Get the look from axHub switch",
+   "category": "",
+   "detail": "Brett, Oct 27 2026: AmberX looked broken (overlapping, wide-spaced text from the Sliders). Fix: Restore default appearance clears the Sliders (axf.look), line height never below 100%, letter spacing capped at 0.1em. New Settings → Appearance → Lock the look (greys out every look control, this device's tweaks set aside, axHub look still applies) and Get the look from axHub (developer apps; off = own saved look, no waiting). Web framework + the five web apps re-baked; Android twin deferred (PORTING.md).",
+   "status": "complete",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "amberx-appearance-lock",
+   "branch": "claude/amberx-appearance-lock",
+   "pr": "#126",
+   "mergedAt": "2026-10-27T19:22:41Z",
+   "createdAt": "2026-10-27T19:05:30.186Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "builtAt": "2026-10-27T19:23:01.118Z",
    "notes": [
     {
      "text": "Merged in PR #126 (branch claude/amberx-appearance-lock), Oct 27 2026.",
@@ -8452,20 +8423,6 @@
      "at": "2026-11-03T13:57:06.541Z"
     }
    ],
-   "id": "amberx-appearance-lock",
-   "title": "AmberX: fix the messed-up look, lock the look switch, Get the look from axHub switch",
-   "category": "",
-   "detail": "Brett, Oct 27 2026: AmberX looked broken (overlapping, wide-spaced text from the Sliders). Fix: Restore default appearance clears the Sliders (axf.look), line height never below 100%, letter spacing capped at 0.1em. New Settings → Appearance → Lock the look (greys out every look control, this device's tweaks set aside, axHub look still applies) and Get the look from axHub (developer apps; off = own saved look, no waiting). Web framework + the five web apps re-baked; Android twin deferred (PORTING.md).",
-   "status": "complete",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "amberx-appearance-lock",
-   "branch": "claude/amberx-appearance-lock",
-   "pr": "#126",
-   "mergedAt": "2026-10-27T19:22:41Z",
-   "createdAt": "2026-10-27T19:05:30.186Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
-   "builtAt": "2026-10-27T19:23:01.118Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -8480,20 +8437,9 @@
     "from": "detail",
     "addenda": []
    },
-   "steps": [],
-   "rev": 0
+   "steps": []
   },
   {
-   "notes": [
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
-     "at": "2026-10-27T22:41:47.258Z"
-    },
-    {
-     "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
-     "at": "2026-10-28T00:47:31.318Z"
-    }
-   ],
    "id": "amberx-web-host",
    "title": "AmberX web app at amberx.amberxai.com + sign-in inside the Android app",
    "category": "",
@@ -8507,6 +8453,16 @@
    "createdAt": "2026-10-26T01:05:34.314Z",
    "updatedAt": "2026-10-27T19:25:27.054Z",
    "builtAt": "2026-10-27T19:25:27.054Z",
+   "notes": [
+    {
+     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+     "at": "2026-10-27T22:41:47.258Z"
+    },
+    {
+     "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
+     "at": "2026-10-28T00:47:31.318Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -8576,24 +8532,9 @@
      "note": "",
      "uid": "st-5v61hs"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Built on Opus, branch claude/orch-pending-sync, PR #143; s3 ticks when merged.",
-     "at": "2026-10-28T01:11:04.754Z"
-    },
-    {
-     "text": "s3 closed by Leftovers (claude/leftovers): the bridge was retired by urgent-builds (one store), so the rule now describes the store; CI test = check-builds-store.mjs + builds-store verify (already in android.yml); README already updated. No PR: pushed to main per Brett's leftovers brief.",
-     "at": "2026-11-01T02:28:35.357Z"
-    },
-    {
-     "text": "Reconciler: PR #143; PR #143 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    }
-   ],
    "id": "orch-pending-sync",
    "title": "Orchestrator ↔ Pending builds auto-sync (Build manager follows)",
    "category": "Builds",
@@ -8608,6 +8549,20 @@
    "createdAt": "2026-10-28T01:07:25.673Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-01T02:28:34.899Z",
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/orch-pending-sync, PR #143; s3 ticks when merged.",
+     "at": "2026-10-28T01:11:04.754Z"
+    },
+    {
+     "text": "s3 closed by Leftovers (claude/leftovers): the bridge was retired by urgent-builds (one store), so the rule now describes the store; CI test = check-builds-store.mjs + builds-store verify (already in android.yml); README already updated. No PR: pushed to main per Brett's leftovers brief.",
+     "at": "2026-11-01T02:28:35.357Z"
+    },
+    {
+     "text": "Reconciler: PR #143; PR #143 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -8682,16 +8637,9 @@
      "note": "",
      "uid": "st-ekx7gd"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Pushed to main 520c90ca (Nov 1 2026). Left: link in approval-expand expanded rows once that build lands.",
-     "at": "2026-11-01T01:40:06.584Z"
-    }
-   ],
    "id": "watch-live",
    "title": "Watch live: hot-rendered preview of the screen a session is changing",
    "category": "Builds > Watch live",
@@ -8705,6 +8653,12 @@
    "createdAt": "2026-11-01T00:35:23.969Z",
    "updatedAt": "2026-11-01T01:40:06.584Z",
    "builtAt": "2026-11-01T01:40:06.071Z",
+   "notes": [
+    {
+     "text": "Pushed to main 520c90ca (Nov 1 2026). Left: link in approval-expand expanded rows once that build lands.",
+     "at": "2026-11-01T01:40:06.584Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -8828,16 +8782,9 @@
      "note": "",
      "uid": "st-mvx3n4fa06huva"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Done Nov 1: branch claude/amberx-walkthrough pushed to main; 9:12 video live at AmberX → Walkthrough; report _claude/builds/reports/amberx-walkthrough.md",
-     "at": "2026-11-01T08:43:51.307Z"
-    }
-   ],
    "id": "amberx-walkthrough",
    "title": "AmberX app walkthrough video (narrated, chapters, player in the app, one-command re-record)",
    "category": "",
@@ -8851,6 +8798,12 @@
    "createdAt": "2026-11-01T06:47:21.596Z",
    "updatedAt": "2026-11-01T08:43:51.654Z",
    "builtAt": "2026-11-01T08:43:51.654Z",
+   "notes": [
+    {
+     "text": "Done Nov 1: branch claude/amberx-walkthrough pushed to main; 9:12 video live at AmberX → Walkthrough; report _claude/builds/reports/amberx-walkthrough.md",
+     "at": "2026-11-01T08:43:51.307Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -8992,16 +8945,9 @@
      "note": "",
      "uid": "st-mvxgz2hi07r0cp"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Built on claude/chat-viewer, pushed to main. Report _claude/builds/reports/chat-viewer.md",
-     "at": "2026-11-01T07:36:47.807Z"
-    }
-   ],
    "id": "chat-viewer",
    "title": "Chat viewer: every session stored, synced, searchable, exportable as 2-voice audio",
    "category": "",
@@ -9015,6 +8961,12 @@
    "createdAt": "2026-11-01T06:50:37.079Z",
    "updatedAt": "2026-11-01T07:36:47.807Z",
    "builtAt": "2026-11-01T07:36:47.161Z",
+   "notes": [
+    {
+     "text": "Built on claude/chat-viewer, pushed to main. Report _claude/builds/reports/chat-viewer.md",
+     "at": "2026-11-01T07:36:47.807Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -9174,11 +9126,9 @@
      "note": "",
      "uid": "st-mvxi42qo088yyg"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [],
    "id": "github-app",
    "title": "GitHub App for the whole stack: one-click setup, tokens that never die",
    "category": "",
@@ -9192,6 +9142,7 @@
    "createdAt": "2026-11-01T07:17:49.320Z",
    "updatedAt": "2026-11-01T07:17:49.320Z",
    "builtAt": "",
+   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -9297,16 +9248,9 @@
      "note": "",
      "uid": "st-mvxi42qp0d9vqz"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Reconciler: PR #229 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    }
-   ],
    "id": "stack-walkthrough",
    "title": "Whole-stack walkthrough plugin (AmberX, editable voice, video download)",
    "category": "AmberX",
@@ -9321,6 +9265,12 @@
    "createdAt": "2026-11-01T22:38:15.391Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-02T05:32:27.282Z",
+   "notes": [
+    {
+     "text": "Reconciler: PR #229 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -9860,16 +9810,9 @@
      "note": "",
      "uid": "st-mvyevgxe1eg5fj"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Estimates added (orch-live-sync s6): the small-steps check needs one on every step.",
-     "at": "2026-11-03T13:56:31.369Z"
-    }
-   ],
    "id": "orch-step-click",
    "title": "Fix: can't click steps in the Build orchestrator",
    "category": "Console",
@@ -9883,6 +9826,12 @@
    "createdAt": "2026-11-01T23:09:37.031Z",
    "updatedAt": "2026-11-03T13:56:31.369Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "Estimates added (orch-live-sync s6): the small-steps check needs one on every step.",
+     "at": "2026-11-03T13:56:31.369Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -9952,16 +9901,9 @@
      "note": "",
      "uid": "st-mvyfzsuq06fyyb"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Reconciler: PR #240; PR #240 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    }
-   ],
    "id": "walkthrough-random-look",
    "title": "Walkthrough: random design package for stack chapters 5-10 (recording-only look)",
    "category": "",
@@ -9976,6 +9918,12 @@
    "createdAt": "2026-11-02T19:41:22.804Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "Reconciler: PR #240; PR #240 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -10027,8 +9975,7 @@
      "note": "",
      "uid": "st-mvznzuvs047lx2"
     }
-   ],
-   "rev": 0
+   ]
   }
  ]
 }
