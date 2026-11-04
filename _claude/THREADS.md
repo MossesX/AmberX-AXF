@@ -684,7 +684,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:11 UTC · `crew-profiles` added (6 steps) (current) · foreign-write
 - 2026-11-04 14:11 UTC · `land-round-2` note (current) · orchestrator
 - 2026-11-04 14:12 UTC · `land-round-2` note (current) · foreign-write
 - 2026-11-04 14:15 UTC · `urgent-land-gizmo-chat` added (4 steps) (current) · foreign-write
@@ -1084,6 +1083,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 17:53 UTC · `model-thinking-audit` branch claude/model-thinking-audit (current) · builds-live
 - 2026-11-04 17:55 UTC · `live-sessions-plugin` note (current) · foreign-write
 - 2026-11-04 17:55 UTC · `model-thinking-audit` added (8 steps) (current) · foreign-write
+- 2026-11-04 18:09 UTC · `model-thinking-audit` s1 done (current) · orchestrator
 
 ## Token passes (log)
 
