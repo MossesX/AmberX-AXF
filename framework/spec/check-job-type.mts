@@ -41,10 +41,13 @@ const cases: Record<string, [string, unknown]> = {
   'shadowed-input': ['job-type', { ...good, inputs: [{ id: 'date' }, { id: 'x' }, { id: 'x' }] }],
   'blocked-model': ['job-type', { ...good, model: 'sonnet' }],
   'other-type': ['button', { specialty: 'Nope' }],
+  'skills-only': ['job-type', { ...good, specialty: undefined, skills: ['site-checks', 'screenshots'] }],
+  'bad-skills': ['job-type', { ...good, skills: ['Site Checks'] }],
+  'no-skill-at-all': ['job-type', { ...good, specialty: undefined }],
 };
 const computed = {
   defaults: normalizeJobType(null),
-  normalized: { good: normalizeJobType(good), junk: normalizeJobType({ specialty: 'X', model: 'gpt', budget: { tokens: 1.5 }, trigger: { kind: 'schedule', every: 'often' }, extra: true }), blocked: normalizeJobType({ ...good, model: 'sonnet' }) },
+  normalized: { good: normalizeJobType(good), junk: normalizeJobType({ specialty: 'X', model: 'gpt', budget: { tokens: 1.5 }, trigger: { kind: 'schedule', every: 'often' }, extra: true }), blocked: normalizeJobType({ ...good, model: 'sonnet' }), skills: normalizeJobType({ ...good, specialty: undefined, skills: ['site-checks', 'screenshots', 'site-checks'] }) },
   errors: Object.fromEntries(Object.entries(cases).map(([k, [t, d]]) => [k, jobTypeErrors(t, d)])),
   inputs: { filled: jobInputs(normalizeJobType(good), { who: 'Brett', bogus: 'x' }), missing: jobInputs(normalizeJobType(good), {}) },
   time: timeWords(AT),
@@ -67,6 +70,12 @@ ok(fx.errors['undeclared-placeholder'].some((e: string) => e.includes('{{thing}}
 ok(fx.errors['bad-outputs'].length === 2, 'path escape + group without a timestamp');
 eq(fx.errors['other-type'], [], 'other types are not checked');
 ok(fx.errors['blocked-model'].length === 1 && /never Sonnet/.test(fx.errors['blocked-model'][0]), 'a Sonnet job type is refused by name (model policy: Opus or Fable only)');
+eq(fx.errors['skills-only'], [], 'a job type may name its skills instead of a specialty');
+ok(fx.errors['bad-skills'].length === 1 && /data\.skills/.test(fx.errors['bad-skills'][0]), 'bad skill ids named');
+ok(fx.errors['no-skill-at-all'].some((e: string) => e.includes('data.specialty')), 'a job type with no skill at all is refused');
+eq(fx.normalized.skills.skills, ['site-checks', 'screenshots'], 'skills deduped, order kept');
+eq(fx.normalized.skills.specialty, 'site-checks', 'the home specialty defaults to the first skill');
+eq(fx.normalized.good.skills, ['site-checks'], 'an older file needs its specialty only');
 eq(fx.normalized.blocked.model, 'opus', 'a stored Sonnet job runs as Opus (coerced up, never down)');
 eq(fx.defaults.model, 'opus', 'the default model is the policy default');
 ok(JOB_ENUMS.model.every((m) => ['opus', 'fable'].includes(m)) && !JOB_ENUMS.model.includes('sonnet'), 'the model enum is the policy\'s allowed list');
@@ -97,10 +106,11 @@ for (const a of starters) {
   for (const p of placeholders(d.brief)) ok(declared.has(p) || ['date', 'when', 'stamp', 'agent', 'agentName', 'jobType', 'jobName', 'runId', 'report', 'group'].includes(p), `${a.id}: {{${p}}} declared`);
   if (d.readOnly) ok(!d.tools.some((t) => /^(Edit|Write)$/.test(t)), `${a.id}: read-only job gets no edit tools`);
 }
-eq(new Set(starters.map((a) => a.data.specialty)).size, starters.length, 'one specialty per starter');
+eq(new Set(starters.map((a) => a.data.specialty)).size, starters.length, 'one home specialty per starter');
+for (const a of starters) ok(normalizeJobType(a.data).skills.includes(normalizeJobType(a.data).specialty), `${a.id}: needs its home skill`);
 
 /* ---- schema ---- */
 const schema = read('framework/schemas/json/job-type.schema.json');
-for (const k of ['specialty', 'model', 'budget', 'trigger', 'brief', 'inputs', 'outputs']) ok(schema.properties.data.properties[k], `schema has ${k}`);
+for (const k of ['specialty', 'skills', 'model', 'budget', 'trigger', 'brief', 'inputs', 'outputs']) ok(schema.properties.data.properties[k], `schema has ${k}`);
 
 console.log(`job-type: ${n} checks passed`);

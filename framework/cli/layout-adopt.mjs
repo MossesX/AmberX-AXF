@@ -13,7 +13,10 @@
  *   @media (min-width: 761px) { .d { … } }
  * into
  *   :where([data-fx-small]) .a, :where([data-fx-small]) .b { … } :where([data-fx-small]) .c { … }
- *   :where(:not([data-fx-narrow])) .d { … }
+ *   :where([data-fx-scheme]:not([data-fx-narrow])) .d { … }
+ *
+ * A negated attribute is anchored on the themed root (it always carries data-fx-scheme): a bare
+ * `:where(:not([data-fx-narrow]))` matches any ancestor without it (<html>, <body>), so it would hold on a phone too.
  *
  * `:where()` adds no specificity, so the cascade is the one the media query had. A px lands on the smallest cut-off at
  * or above it (720 → narrow, 900 → medium, 1500 → large); above the largest cut-off there is no attribute, so the block
@@ -99,7 +102,7 @@ export function adoptLayoutSource(src, layout = null) {
     if (why) { left.push({ line, px, kind, why }); MEDIA.lastIndex = close < 0 ? src.length : close + 1; continue; }
     const rules = rulesOf(inner);
     if (!rules || rules.some((r) => r.text !== undefined)) { left.push({ line, px, kind, why: 'declarations the tool can\'t split into rules' }); MEDIA.lastIndex = close + 1; continue; }
-    const prefix = bp.negate ? `:where(:not([${bp.attr}])) ` : `:where([${bp.attr}]) `;
+    const prefix = bp.negate ? `:where([data-fx-scheme]:not([${bp.attr}])) ` : `:where([${bp.attr}]) `;
     const indent = (src.slice(0, start).match(/(^|\n)([ \t]*)$/) ?? ['', '', ''])[2];
     const oneLine = !inner.includes('\n');
     const pieces = rules.map((r) => {

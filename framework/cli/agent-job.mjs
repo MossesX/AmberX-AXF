@@ -1,15 +1,18 @@
 #!/usr/bin/env node
 /**
- * agent-job: hand a recurring job (job-type@1, framework/assets/job-type/) to the hired agent who owns it, instead of
- * spinning up an anonymous one-off build (Brett, Nov 1 2026).
+ * agent-job: hand a job (job-type@1, framework/assets/job-type/) to a hired agent instead of spinning up an anonymous
+ * one-off build (Brett, Nov 1 2026). Every agent on the job crew is an all-rounder (Nov 3 2026): any agent holding the
+ * skills a job type needs can take it, and every headless session is booked on a named agent before it starts.
  *
- *   node framework/cli/agent-job.mjs <job-type> [--input k=v]… [--dry-run] [--json]
- *        picks the owning agent, checks it is on duty and under budget, writes the brief from the job type's template
+ *   node framework/cli/agent-job.mjs <job-type> [--input k=v]… [--agent <id>] [--dry-run] [--json]
+ *        picks a free agent who can take it (home job first, then least busy) or the one --agent names, writes the brief from the job type's template
  *        (the agent gets only that brief and its own short notes), launches it through deploy/claude-headless.sh with
  *        the session named <agent>-<job>, and records the run on the agent (history, stats, cost)
  *   node framework/cli/agent-job.mjs list | due [--run] | event <name> [--run] | sweep | hire <job-type>
+ *   node framework/cli/agent-job.mjs book --name <slug> [--agent <id>] [--job <type>] [--sh]   (deploy/claude-headless.sh)
+ *   node framework/cli/agent-job.mjs assign <build-name> [--agent <id>]   attach a running or finished build to an agent
  *
- * Nobody owns the job type: exit 3 with "UNASSIGNED" (the Breakroom offers a one-tap hire).
+ * Nobody can take the job type: exit 3 with "UNASSIGNED" (the Breakroom offers a one-tap hire).
  * The handler is found by capability (a console plugin providing service:agent-jobs@1 with jobs.mjs), never by folder.
  */
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
