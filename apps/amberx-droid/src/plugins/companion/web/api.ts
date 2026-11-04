@@ -1,7 +1,7 @@
 /**
  * Companion — where Gizmo's brains are. Chats are assistant@1 (framework/core/assistant.ts) on the Dev Console's AI
  * assistant, which runs on the VPS (Claude Code sessions on the Claude plan, live sessions that survive a dropped phone
- * connection). This page reaches it only through AmberX's own server (`/api/console/plugins/ai-assistant/…`, behind the
+ * connection). This page reaches it only through AmberX's own server (its console plugin proxy for FOLDER below, behind the
  * axHub wall), which adds the console token: no key or token is ever in the page or the APK.
  */
 import { HttpAssistantClient, type Conversation, type ConversationSummary } from '../../../axf/core';

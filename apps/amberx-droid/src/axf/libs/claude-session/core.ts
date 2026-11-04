@@ -2,7 +2,7 @@
  * claude-session — the pure parts of a Claude session that more than one app shows (no React, no network).
  *
  * Harvested (Nov 3 2026, build gizmo-companion) from the console Terminal's headless tabs
- * (apps/console-web/plugins/console-terminal/web/headless-core.ts: the live meter, model names, money, the context
+ * (the Terminal plugin's headless-core.ts: the live meter, model names, money, the context
  * chain's reveal pacing) and AmberX's assistant (conversation list, spoken replies, interrupt words, the assistant's
  * name), so the Terminal and AmberX's companion (Gizmo) read one copy. The Terminal re-exports these unchanged.
  *
