@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T20:01:13.883Z",
+ "updatedAt": "2026-11-04T20:04:46.112Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -12120,7 +12120,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2jjhva0776jy"
+     "uid": "st-mw2jpl220176sr"
     },
     {
      "id": "s2",
@@ -12138,7 +12138,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2jjhva08cqb8"
+     "uid": "st-mw2jpl2202vlxi"
     },
     {
      "id": "s3",
@@ -12156,7 +12156,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2jjhva09efjo"
+     "uid": "st-mw2jpl2203j2cn"
     },
     {
      "id": "s4",
@@ -12174,7 +12174,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2jjhva0a7lbo"
+     "uid": "st-mw2jpl2204t0r2"
     },
     {
      "id": "s5",
@@ -12192,10 +12192,118 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2jjhva0beil6"
+     "uid": "st-mw2jpl22058lpc"
     },
     {
      "id": "s6",
+     "text": "Readme, re-bake apps, tests, shots, report, PR via merge queue",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2jpl2206562v"
+    },
+    {
+     "id": "s7-6",
+     "text": "lib-datagrid: built-in column state (saved per grid/device), header menu Hide / checklist / Show all / Reset, fixed + default-hidden columns, pure columns core + test",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2jjhva0776jy"
+    },
+    {
+     "id": "s8-7",
+     "text": "Voice/console control: axf.grid.columns action (grid + column by name), console catalog keywords",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2jjhva08cqb8"
+    },
+    {
+     "id": "s9-8",
+     "text": "Move every existing DataGrid onto the saved state (console, axHub web, AmberX, Walkthrough Studio)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2jjhva09efjo"
+    },
+    {
+     "id": "s10-9",
+     "text": "Convert raw tables to DataGrid (console Build manager, Plan, Codebase changes first)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2jjhva0a7lbo"
+    },
+    {
+     "id": "s11-10",
+     "text": "CI ratchet check-grids.mjs (raw <table> count may only shrink) + workflow",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2jjhva0beil6"
+    },
+    {
+     "id": "s12-11",
      "text": "Readme, re-bake apps, tests, shots, report, PR via merge queue",
      "model": "Opus",
      "why": "",
