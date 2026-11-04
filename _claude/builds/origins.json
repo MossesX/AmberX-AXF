@@ -642,6 +642,18 @@
    "from": "brief",
    "addenda": []
   },
+  "changes-chat-log": {
+   "said": "This needs to be displayed like the chat log.",
+   "at": "2026-11-04T21:53:46.271Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "chat-viewer": {
    "said": "",
    "at": "",
