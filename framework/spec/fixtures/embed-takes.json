@@ -3694,6 +3694,80 @@
       }
     }
   ],
+  "frontMessages": [
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "show"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "show"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "show",
+        "reason": " Amber: opening Plan Studio\n"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "show",
+        "reason": "Amber: opening Plan Studio"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "show",
+        "reason": 7
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "show"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "shown",
+        "on": true
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "shown",
+        "on": true
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "shown",
+        "on": false
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "shown",
+        "on": false
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "shown",
+        "on": "yes"
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "shown"
+      },
+      "message": null
+    }
+  ],
   "settingsTab": [
     {
       "action": "settings.open:appearance",

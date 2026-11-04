@@ -8,7 +8,9 @@ import { mollyApp, type MollyApp } from './apps';
  *   - `frameUrl`: the address an app's frame opens (a host plugin adds the embed@1 marker);
  *   - `onFrame`: told when an app's frame mounts (its window, for messages) and unmounts;
  *   - `main`: what an app's view shows (default: the app's frame slot);
- *   - `views`: extra views (an app's own pages as Molly views, `<app>/<item id>`).
+ *   - `views`: extra views (an app's own pages as Molly views, `<app>/<item id>`);
+ *   - `warm`: apps whose frame opens (hidden) as soon as Molly starts, e.g. the Console, so a remote command always has a
+ *     console inside Molly to go to instead of waking a separate tab.
  * One owner per hook: the last plugin to set one wins, and clears only its own.
  */
 export interface MollyHostHooks {
@@ -16,9 +18,10 @@ export interface MollyHostHooks {
   onFrame: ((app: string, frame: HTMLIFrameElement | null) => void) | null;
   main: ((app: string) => ReactNode) | null;
   views: ViewMap;
+  warm: string[] | null;
 }
 
-const hooks: MollyHostHooks = { frameUrl: null, onFrame: null, main: null, views: {} };
+const hooks: MollyHostHooks = { frameUrl: null, onFrame: null, main: null, views: {}, warm: null };
 const owners = new Map<keyof MollyHostHooks, string>();
 const listeners = new Set<() => void>();
 let rev = 0;

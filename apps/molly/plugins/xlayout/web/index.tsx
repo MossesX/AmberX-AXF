@@ -7,6 +7,9 @@ import { appOfView, mollyService, provideMollyService, setMollyHook } from '../.
 import { ChromeHost, RUN_ACTION } from './host';
 import { effectiveXLayout, FOLDER, K, PLUGIN_ID, saveSlotItems, SLOTS } from './model';
 import { declaredToolbars, barKey, runToolbarItem, TOOLBAR_CTX, WithToolbars } from './toolbars';
+
+/** Apps Molly opens hidden at start because they take remote commands (the Dev Console's console-commands). */
+const WARM_APPS = ['console'];
 import { APP_TAB, AppMain, AppTab, enterIde, keepIde, LAYOUT_DIALOG, LayoutPicker, openApp } from './workspace';
 import helpPack from '../help.json';
 import './xlayout.css';
@@ -147,6 +150,9 @@ export const plugin: AxfWebLibrary = {
     setMollyHook(PLUGIN_ID, 'frameUrl', (a, start) => h.frameUrl(a, start));
     setMollyHook(PLUGIN_ID, 'onFrame', (app, el) => h.frame(app, el));
     setMollyHook(PLUGIN_ID, 'main', (app) => <Main app={app} />);
+    // the apps that take remote commands (console-commands) open hidden at once, so "Amber, open Plan Studio" finds a
+    // console inside Molly and Molly brings it to the front (embed@1 `show`)
+    setMollyHook(PLUGIN_ID, 'warm', WARM_APPS);
     // each app's pages become Molly views (`<app>/<item>`), so the one navigation can hold them
     const views = () => setMollyHook(PLUGIN_ID, 'views', Object.fromEntries(Object.entries(h.navViews).map(([id, v]) => [id, { title: v.title, icon: v.icon, render: () => <Main app={id.split('/')[0]!} /> }])));
     let lastViews = '';

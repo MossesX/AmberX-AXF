@@ -1,0 +1,9 @@
+/* Molly's Banners plugin: layout only. The strip draws the console's banners with the console's own tokens. */
+
+/* the strip is the whole banner region: no second padding around the console's */
+.fx-frame-banners:has(.axp-banners-strip) { padding: 0; }
+.axp-banners-strip { position: relative; max-height: 45vh; }
+.axp-banners-strip__frame { display: block; width: 100%; max-height: 45vh; border: 0; background: transparent; color-scheme: normal; }
+/* while a dialog or menu the strip opened is up, it covers Molly's whole window (its banners stay where they were) */
+.axp-banners-strip__frame[data-cover='true'] { position: fixed; inset: 0; width: 100vw; height: 100vh; max-height: none; z-index: 900; }
+.axp-banners-code { margin: 0; white-space: pre-wrap; font-family: var(--fx-font-mono); font-size: var(--fx-type-root-xs); }
