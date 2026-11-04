@@ -42,6 +42,7 @@ export const ASSET_TYPES = [
   'settings',
   'dock-layout',
   'xlayout',
+  'nav-style',
   'behavior-theme',
   'design-package',
   'style-package',
@@ -61,7 +62,7 @@ export const ASSET_TYPES = [
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'behavior-theme', 'design-package', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'nav-style', 'behavior-theme', 'design-package', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -339,6 +340,12 @@ export interface NavItem {
   view: string;
   badge?: string;
   requires?: string;
+  /**
+   * Children: the item opens a sub menu that slides open (nested levels allowed). `view` may be '' for a pure group;
+   * a group with a view opens its page too. Only navs whose nav-menu asset sets `navStyle: true` draw them as sub
+   * menus; any other nav shows the item as it always did.
+   */
+  items?: NavItem[];
 }
 
 export interface NavMenuData {
@@ -349,6 +356,8 @@ export interface NavMenuData {
   indicator?: 'auto' | 'bar' | 'fill' | 'none';
   /** default true */
   showIcons?: boolean;
+  /** Opt in to nav-style@1 (core/engines/navstyle.ts): sub menus that slide open, styled and timed by the nav-style asset in force. Default false. */
+  navStyle?: boolean;
 }
 
 export interface ContextMenuData {
@@ -584,6 +593,7 @@ export interface AssetDataMap {
   settings: SettingsData;
   'dock-layout': import('./engines/dock').DockLayoutData;
   xlayout: import('./engines/xlayout').XLayoutData;
+  'nav-style': import('./engines/navstyle-rules.mjs').NavStyleData;
   'behavior-theme': BehaviorThemeData;
   'design-package': DesignPackageData;
   'style-package': import('./engines/stylepackage').StylePackageData;
@@ -606,7 +616,7 @@ export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
 /** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'behavior-theme' | 'design-package' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'card' | 'help';
+export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'nav-style' | 'behavior-theme' | 'design-package' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'card' | 'help';
 
 export interface AxfManifest {
   $axf: 'manifest@1';

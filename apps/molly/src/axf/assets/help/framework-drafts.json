@@ -39,6 +39,62 @@
         "text": "Shows “The build”.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "console",
+        "title": "Console",
+        "text": "Shows “Console”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "axhub",
+        "title": "axHub",
+        "text": "Shows “axHub”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "replay-the-animation",
+        "title": "Replay the animation",
+        "text": "Replays the animation.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "preset",
+        "title": "Preset",
+        "text": "Where you set “Preset”. Change it and the app uses the new value.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "reset-open-menus-and-width",
+        "title": "Reset open menus and width",
+        "text": "Resets open menus and width. Your own changes go.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "pinned",
+        "title": "Pinned",
+        "text": "Turns “Pinned” on or off. It takes effect straight away and is remembered.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "shown",
+        "title": "Shown",
+        "text": "Turns “Shown” on or off. It takes effect straight away and is remembered.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "accent",
+        "title": "Accent",
+        "text": "Where you set “Accent”. Change it and the app uses the new value.",
+        "kind": "field",
+        "draft": true
       }
     ],
     "intros": []

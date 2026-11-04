@@ -33,6 +33,7 @@
     "settings": false,
     "dock-layout": false,
     "xlayout": false,
+    "nav-style": true,
     "behavior-theme": true,
     "design-package": false,
     "style-package": false,
@@ -385,6 +386,14 @@
           "amberx-accent",
           "amberx-branded",
           "amberx-thin"
+        ],
+        "nav-style": [
+          "accordion",
+          "glide",
+          "push",
+          "soft-fade",
+          "standard",
+          "still"
         ],
         "behavior-theme": [
           "alert",
@@ -779,6 +788,14 @@
           "amberx-accent",
           "amberx-branded",
           "amberx-thin"
+        ],
+        "nav-style": [
+          "accordion",
+          "glide",
+          "push",
+          "soft-fade",
+          "standard",
+          "still"
         ],
         "behavior-theme": [
           "alert",
@@ -1180,6 +1197,14 @@
           "amberx-branded",
           "amberx-thin"
         ],
+        "nav-style": [
+          "accordion",
+          "glide",
+          "push",
+          "soft-fade",
+          "standard",
+          "still"
+        ],
         "behavior-theme": [
           "alert",
           "amber",
@@ -1574,6 +1599,14 @@
           "amberx-branded",
           "amberx-thin"
         ],
+        "nav-style": [
+          "accordion",
+          "glide",
+          "push",
+          "soft-fade",
+          "standard",
+          "still"
+        ],
         "behavior-theme": [
           "alert",
           "amber",
@@ -1939,6 +1972,14 @@
           "amberx-accent",
           "amberx-branded",
           "amberx-thin"
+        ],
+        "nav-style": [
+          "accordion",
+          "glide",
+          "push",
+          "soft-fade",
+          "standard",
+          "still"
         ],
         "behavior-theme": [
           "alert",
@@ -2333,6 +2374,14 @@
           "amberx-accent",
           "amberx-branded",
           "amberx-thin"
+        ],
+        "nav-style": [
+          "accordion",
+          "glide",
+          "push",
+          "soft-fade",
+          "standard",
+          "still"
         ],
         "behavior-theme": [
           "alert",
