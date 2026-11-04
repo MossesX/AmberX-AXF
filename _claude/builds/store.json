@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 913,
- "updatedAt": "2026-11-04T19:45:33.867Z",
+ "rev": 914,
+ "updatedAt": "2026-11-04T19:45:51.391Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -82687,7 +82687,7 @@
    "branch": "claude/fable-packager",
    "pr": "",
    "createdAt": "2026-11-04T19:31:11.060Z",
-   "updatedAt": "2026-11-04T19:36:05.872Z",
+   "updatedAt": "2026-11-04T19:45:34.437Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -82764,12 +82764,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T19:45:33.192Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T19:31:11.061Z",
-     "updatedAt": "2026-11-04T19:31:11.061Z"
+     "updatedAt": "2026-11-04T19:45:33.303Z"
     },
     {
      "id": "s4",
@@ -82786,12 +82786,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T19:45:34.437Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T19:31:11.061Z",
-     "updatedAt": "2026-11-04T19:31:11.061Z"
+     "updatedAt": "2026-11-04T19:45:34.488Z"
     },
     {
      "id": "s5",
@@ -82824,7 +82824,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
