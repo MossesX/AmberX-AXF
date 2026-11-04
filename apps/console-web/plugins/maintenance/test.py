@@ -332,6 +332,90 @@ st = c.get(f"{B}/status").json()
 ok(not st["hostPart"] and "host part" in (st["note"] or ""), "no host part: says so, basics still shown")
 ok(c.post(f"{B}/run", json={"jobs": ["docker"]}).status_code == 409, "no host part: nothing to approve")
 
+# ---------------------------------------------------------------- clean up build profiles (server side)
+import subprocess  # noqa: E402
+
+r = subprocess.run(["node", str(HERE / "engine" / "profiles.test.mjs")], capture_output=True, text=True, timeout=300)
+ok(r.returncode == 0, f"profile engine checks: {(r.stdout or r.stderr).strip()[-400:]}")
+
+PCD = TMP / "pc"
+store = {"$axf": "builds@1", "rev": 0, "updatedAt": "", "migratedAt": "", "rules": {}, "meta": {"queue": {}, "pending": {}}, "drafts": {},
+         "builds": [{"id": "ticked", "title": "Ticked build", "status": "pending", "profiles": ["main-framework"], "steps": [{"id": "s1", "title": "a", "done": True}]},
+                    {"id": "open-one", "title": "Open build", "status": "pending", "profiles": ["main-framework"], "steps": [{"id": "s1", "title": "a"}]},
+                    {"id": "busy", "title": "Busy build", "status": "running", "profiles": ["main-framework"]}]}
+(PCD / "data" / "framework" / "plan").mkdir(parents=True)
+(PCD / "data" / "framework" / "plan" / "profiles.json").write_text(json.dumps({"active": "main-framework", "profiles": [{"id": "main-framework"}]}))
+(PCD / "store.json").write_text(json.dumps(store))
+os.environ.update(AXF_DATA_DIR=str(PCD / "data"), AXF_BUILDS_STORE=str(PCD / "store.json"), AXF_BUILDS_LIVE="0", AXF_BUILDS_EXPORT="0",
+                  AXF_MAINT_NO_REPLAN="1", AXF_BUILD_PROFILE="")
+alerts.clear()
+pv = c.post(f"{B}/profiles/preview", json={"mode": "basic"})
+ok(pv.status_code == 200 and pv.json()["mode"] == "basic", f"profile preview runs in Basic ({pv.text[:300]})")
+pv = pv.json()
+its = {i["key"]: i for p in pv["profiles"] for i in p["items"]}
+ok(its["build:ticked"]["verdict"] == "done" and its["build:busy"].get("locked"), "preview: done build found, running build locked")
+ok(alerts and "Basic" in alerts[-1]["body"] and alerts[-1]["key"] == "maintenance:profiles", "the notification says which mode ran")
+ok(c.get(f"{B}/profiles/preview/{pv['run']}").json()["run"] == pv["run"], "a saved preview reads back")
+ok(c.post(f"{B}/profiles/preview", json={"mode": "deep"}).status_code == 409, "Deep without an AI model is refused (Basic is offered)")
+
+
+class FakeLlm:
+    def __init__(self, answer):
+        self.answer, self.calls = answer, 0
+
+    def complete(self, messages, system=None, params=None, **kw):
+        self.calls += 1
+        return {"text": json.dumps(self.answer)}
+
+
+EV = {"ref": "main", "commits": [{"sha": "abc1234", "subject": "Add open build"}], "reports": ["_claude/builds/reports/x.md"], "built": []}
+import importlib  # noqa: E402
+PC = importlib.import_module(srv.__name__ + ".profiles")
+base_plan = {"profiles": [{"id": "main-framework", "base": True, "items": [
+    {"key": "build:a", "kind": "build", "id": "a", "title": "A", "status": "pending", "verdict": "keep", "about": {"detail": ""}},
+    {"key": "build:b", "kind": "build", "id": "b", "title": "B", "status": "pending", "verdict": "keep", "about": {"detail": ""}},
+    {"key": "build:c", "kind": "build", "id": "c", "title": "C", "status": "pending", "verdict": "keep", "about": {"detail": ""}},
+    {"key": "build:d", "kind": "build", "id": "d", "title": "D", "status": "running", "verdict": "keep", "locked": True, "about": {"detail": ""}}]}]}
+fake = FakeLlm({"verdicts": [{"key": "build:a", "verdict": "done", "reason": "shipped", "proof": "commit:abc1234"},
+                             {"key": "build:b", "verdict": "done", "reason": "made up", "proof": "commit:fffffff"},
+                             {"key": "build:c", "verdict": "duplicate", "reason": "same as a", "proof": "build:a"},
+                             {"key": "build:d", "verdict": "done", "reason": "no", "proof": "commit:abc1234"}]})
+dp = PC.deep_review(json.loads(json.dumps(base_plan)), fake, ev=EV, repo="https://github.com/o/r")
+di = {i["key"]: i for i in dp["profiles"][0]["items"]}
+ok(dp["mode"] == "deep" and di["build:a"]["verdict"] == "done" and di["build:a"]["by"] == "ai" and di["build:a"]["proof"]["url"].endswith("/commit/abc1234"), "Deep: an AI verdict with real proof is taken")
+ok(di["build:b"]["verdict"] == "keep", "Deep: an AI verdict pointing at a commit that isn't there stays keep")
+ok(di["build:c"]["verdict"] == "merge" and di["build:c"]["into"] == "a", "Deep: a duplicate of an open build becomes a merge")
+ok(di["build:d"]["verdict"] == "keep", "Deep: running builds are never re-judged")
+ok(dp["totals"]["done"] == 1 and dp["totals"]["merge"] == 1, "Deep: totals recounted")
+
+import plugin_services  # noqa: E402
+plugin_services.provide("axf.llm@1", FakeLlm({"verdicts": []}), "llm-provider")
+alerts.clear()
+dpv = c.post(f"{B}/profiles/preview", json={})
+ok(dpv.status_code == 200 and dpv.json()["mode"] == "deep" and "Deep" in alerts[-1]["body"], f"auto picks Deep when an AI model is there ({dpv.text[:200]})")
+ok(all("about" not in i for p in dpv.json()["profiles"] for i in p["items"]), "build details sent to the AI are not kept in the preview")
+
+ap = c.post(f"{B}/profiles/apply", json={"run": pv["run"], "skip": []})
+ok(ap.status_code == 200 and any(e["id"] == "ticked" for e in ap.json()["applied"]), f"apply cleans up ({ap.text[:200]})")
+ok(json.loads((PCD / "store.json").read_text())["builds"][0]["status"] == "complete", "the store has it complete")
+ok(c.post(f"{B}/profiles/apply", json={"run": pv["run"]}).status_code == 409, "a preview applies once")
+ok(c.post(f"{B}/profiles/apply", json={"run": "../etc"}).status_code == 409, "bad run ids are refused")
+ud = c.post(f"{B}/profiles/undo", json={"run": pv["run"]})
+ok(ud.status_code == 200 and "ticked" in ud.json()["undo"]["restored"], "undo puts it back")
+ok(c.post(f"{B}/profiles/undo", json={"run": pv["run"]}).status_code == 409, "one undo per run")
+rl = c.get(f"{B}/profiles/runs").json()
+ok(rl["ai"] is True and any(r["run"] == pv["run"] and r["state"] == "undone" for r in rl["runs"]), "runs list")
+
+lt = time.localtime()
+M.write_json(DATA / "settings.json", {**srv.settings(), "profileSchedule": "daily", "profileHour": lt.tm_hour, "profileMode": "basic"})
+srv._set_state(lastProfilePreview=None)
+tk = srv.tick()
+ok((tk.get("profilePreview") or {}).get("mode") == "basic", f"the scheduled preview runs at its hour ({tk.get('profilePreview')})")
+ok("profilePreview" not in srv.tick(), "… once a day")
+ok(PC.due({"profileSchedule": "weekly", "profileHour": lt.tm_hour, "profileWeekday": (lt.tm_wday + 1) % 7}, None, time.time()) is False, "weekly waits for its day")
+ok(PC.due({"profileSchedule": "off", "profileHour": lt.tm_hour}, None, time.time()) is False, "off by default")
+ok(M.normalize_settings({"profileMode": "magic", "profileSchedule": "hourly"})["profileMode"] == "auto", "unknown profile settings fall back")
+
 # plugin.json commands name only routes that exist
 pj = json.loads((HERE / "plugin.json").read_text())
 routes = {f"{m} {r.path}" for r in srv.router.routes if hasattr(r, "methods") for m in r.methods}

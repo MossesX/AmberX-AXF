@@ -3,7 +3,7 @@
   "type": "help",
   "id": "maintenance-help",
   "name": "Maintenance help",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Help mode entries for the Maintenance plugin (help@1).",
   "author": "Brett",
   "tags": [
@@ -42,6 +42,31 @@
         "target": "maintenance",
         "title": "Maintenance settings",
         "text": "Nightly auto-clean (off by default, safe jobs only, still approved on axHub), the disk and swap alert levels, and how old things must be before a clean-up takes them."
+      },
+      {
+        "target": "clean-up-build-profiles",
+        "title": "Clean up build profiles",
+        "text": "Checks every build profile and shows a preview: each open build, copied tracker and plan with a verdict (keep, done already, not needed, duplicate, merge), a one-line reason and proof. Nothing changes until you apply it."
+      },
+      {
+        "target": "basic-only",
+        "title": "Basic only",
+        "text": "Runs the build profile check without AI: exact matches only (merged PRs and branches, ticked steps, the catalog, retired apps, same titles)."
+      },
+      {
+        "target": "apply",
+        "title": "Apply",
+        "text": "Applies the ticked items: done → complete with the date and proof, not needed and duplicates → archived (never deleted), merges folded into the older build. Running builds are never touched. Undo is on the run."
+      },
+      {
+        "target": "undo",
+        "title": "Undo",
+        "text": "Puts one build profile clean-up back as it was. Each run can be undone once; a build changed since the run is left as it is and listed."
+      },
+      {
+        "target": "open",
+        "title": "Open",
+        "text": "Opens a saved build profile clean-up preview so you can untick items and apply it."
       }
     ],
     "intros": [

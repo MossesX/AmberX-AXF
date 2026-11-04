@@ -64,12 +64,21 @@ DEFAULTS: dict[str, Any] = {
     "worktreeIdleHours": 24,  # a build worktree must be idle this long
     "createdHours": 1,        # a container stuck in "Created" for this long
     "buildCacheHours": 24,    # Docker build cache unused for this long
+    # Clean up build profiles (profile clean-up, engine/profiles.mjs)
+    "profileMode": "auto",    # auto = Deep (AI) when an AI model is available, else Basic; basic = never use AI
+    "profileSchedule": "off", # off | daily | weekly: a scheduled preview (Brett is notified; nothing is applied)
+    "profileHour": 4,         # local hour for the scheduled preview
+    "profileWeekday": 0,      # 0 = Monday … 6 = Sunday (weekly)
 }
+
+PROFILE_MODES = ("auto", "basic")
+PROFILE_SCHEDULES = ("off", "daily", "weekly")
 
 LIMITS: dict[str, tuple[float, float]] = {
     "diskWarnPct": (50, 99), "diskHighPct": (50, 99), "diskCriticalPct": (50, 99), "swapFullPct": (50, 100),
     "swapMinutes": (1, 1440), "nightlyHour": (0, 23), "logDays": (1, 365), "journalDays": (1, 365), "tmpDays": (1, 365),
     "worktreeIdleHours": (1, 24 * 90), "createdHours": (1, 24 * 30), "buildCacheHours": (1, 24 * 90),
+    "profileHour": (0, 23), "profileWeekday": (0, 6),
 }
 
 
@@ -83,6 +92,10 @@ def normalize_settings(raw: Any) -> dict[str, Any]:
             continue
         if k == "nightly":
             out[k] = bool(v)
+        elif k == "profileMode":
+            out[k] = v if v in PROFILE_MODES else DEFAULTS[k]
+        elif k == "profileSchedule":
+            out[k] = v if v in PROFILE_SCHEDULES else DEFAULTS[k]
         elif k == "nightlyJobs":
             if isinstance(v, list):
                 out[k] = [j for j in dict.fromkeys(str(x) for x in v) if j in JOBS and JOBS[j]["safe"]]

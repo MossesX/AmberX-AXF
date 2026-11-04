@@ -11,9 +11,11 @@ ONE held ``vps.run`` call; Brett approves it on axHub (or his phone), axHub runs
 re-checks every item before removing it. Nothing here deletes anything.
 
 Routes: GET status · GET summary · GET snapshot · GET jobs · POST preview · POST run · GET runs · GET/PUT settings ·
-POST check. Registers the systems check row ``maintenance-server-health`` ("Server health", with Auto fix = the safe
+POST check · Clean up build profiles: POST profiles/preview · GET profiles/preview/{run} · POST profiles/apply ·
+POST profiles/undo · GET profiles/runs (server/profiles.py over engine/profiles.mjs). Registers the systems check row ``maintenance-server-health`` ("Server health", with Auto fix = the safe
 clean-up) on axf.health@1, raises console alerts (phone push from error up) at the disk levels and when swap stays
-nearly full, and sends the nightly safe clean-up when that setting is on (off by default).
+nearly full, and sends the nightly safe clean-up when that setting is on (off by default). The scheduled profile
+clean-up (off by default) only makes a preview and notifies; applying it is always Brett's tap.
 """
 from __future__ import annotations
 
@@ -33,6 +35,7 @@ import console_context as cx
 import plugin_services
 
 from . import hub
+from . import profiles as pc
 
 PLUGIN_DIR = Path(__file__).resolve().parents[1]
 FOLDER = PLUGIN_DIR.name
@@ -286,9 +289,19 @@ def tick(now: float | None = None) -> dict[str, Any]:
             except HTTPException as e:
                 nightly = {"error": e.detail}
                 cx.log("maintenance", f"nightly clean-up not sent: {e.detail}", "warn")
+    scheduled = None
+    if pc.due(s, st.get("lastProfilePreview"), now):
+        _set_state(lastProfilePreview=today)
+        try:
+            p = pc.preview(data_dir(), mode=s["profileMode"], by="schedule")
+            scheduled = {"run": p.get("run"), "mode": p.get("mode")}
+        except pc.ProfileError as e:
+            scheduled = {"error": str(e)}
+            cx.log("maintenance", f"scheduled profile clean-up preview failed: {e}", "warn")
     _set_state(swapHighSince=since, swapAlert=swap_alert, diskLevel=lvl, lastTick=maint.now_iso(now))
     ensure_health()
-    return {"disk": lvl, "swapFull": swap_alert, **({"nightly": nightly} if nightly else {})}
+    return {"disk": lvl, "swapFull": swap_alert, **({"nightly": nightly} if nightly else {}),
+            **({"profilePreview": scheduled} if scheduled else {})}
 
 
 def health_probe() -> dict[str, Any]:
@@ -459,6 +472,51 @@ async def put_settings(request: Request) -> dict[str, Any]:
 @router.post("/check")
 def post_check() -> dict[str, Any]:
     return tick()
+
+
+# ------------------------------------------------------------------ clean up build profiles
+
+def _pc(fn: Any, *a: Any, **kw: Any) -> Any:
+    try:
+        return fn(*a, **kw)
+    except pc.ProfileError as e:
+        raise HTTPException(409, str(e)) from None
+
+
+@router.post("/profiles/preview")
+async def post_profiles_preview(request: Request) -> dict[str, Any]:
+    """Audit every build profile and save the preview. mode: auto (default: the setting) | basic | deep."""
+    b = await _body(request)
+    mode = str(b.get("mode") or settings()["profileMode"])
+    if mode not in ("auto", "basic", "deep"):
+        raise HTTPException(400, "mode: auto, basic or deep")
+    return _pc(pc.preview, data_dir(), mode=mode, by=str(b.get("by") or "console")[:40])
+
+
+@router.get("/profiles/preview/{run}")
+def get_profiles_preview(run: str) -> dict[str, Any]:
+    return _pc(pc.read_plan, data_dir(), run)
+
+
+@router.post("/profiles/apply")
+async def post_profiles_apply(request: Request) -> dict[str, Any]:
+    """Apply a preview. skip: the keys Brett unticked. Running builds and builds changed since are never touched."""
+    b = await _body(request)
+    skip = b.get("skip") or []
+    if not isinstance(skip, list) or not all(isinstance(k, str) for k in skip):
+        raise HTTPException(400, "skip: a list of item keys from the preview")
+    return _pc(pc.apply, data_dir(), str(b.get("run") or ""), skip, by=str(b.get("by") or "console")[:40])
+
+
+@router.post("/profiles/undo")
+async def post_profiles_undo(request: Request) -> dict[str, Any]:
+    b = await _body(request)
+    return _pc(pc.undo, data_dir(), str(b.get("run") or ""), by=str(b.get("by") or "console")[:40])
+
+
+@router.get("/profiles/runs")
+def get_profiles_runs() -> dict[str, Any]:
+    return {"runs": _pc(pc.runs, data_dir()), "ai": pc.llm() is not None, "mode": settings()["profileMode"]}
 
 
 if os.environ.get("AXF_MAINT_NO_MONITOR") != "1":

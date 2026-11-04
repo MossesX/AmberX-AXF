@@ -13,3 +13,5 @@
 .axp-maintenance__jobhead { display: flex; align-items: center; gap: var(--fx-dens-gap-md); flex-wrap: wrap; }
 .axp-maintenance__jobhead > :first-child { flex: 1 1 14em; }
 .axp-maintenance__preview { margin-top: var(--fx-dens-gap-sm); }
+.axp-maintenance__pc details { border-bottom: var(--fx-border-w) solid var(--fx-border); padding: var(--fx-dens-gap-sm) 0; }
+.axp-maintenance__pcname { flex: 0 1 18em; min-width: 0; overflow-wrap: anywhere; }
