@@ -1,5 +1,5 @@
 /** Overlay engines: dialogs, toasts/popups, and the context menu. */
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { BrandMark, BrandWatermark, brandHostProps } from './Brand';
@@ -32,6 +32,42 @@ export function DialogHost({ dialogs }: { dialogs: DialogMap }) {
     if (def) panelRef.current?.focus();
   }, [def]);
 
+  // Android back (and the browser's back) closes the dialog: one history entry while any dialog is open here. Keyed on
+  // open / shut, not the id, so going from one dialog straight to another keeps the one entry.
+  const isOpen = !!def;
+  useEffect(() => {
+    if (!isOpen) return;
+    history.pushState({ axfDialog: true }, '');
+    let popped = false;
+    const onPop = () => { popped = true; rt.closeDialog(); };
+    addEventListener('popstate', onPop);
+    return () => {
+      removeEventListener('popstate', onPop);
+      // shut some other way (X, outside tap, Escape, swipe, a console command): drop the entry it pushed
+      if (!popped && (history.state as { axfDialog?: boolean } | null)?.axfDialog) history.back();
+    };
+  }, [isOpen, rt]);
+
+  // Swipe down on the title bar (touch) closes it: the dialog follows the finger, and past a quarter of its height it goes.
+  const [pull, setPull] = useState(0);
+  const swipe = useRef<{ id: number; y: number } | null>(null);
+  const onHeadDown = (e: ReactPointerEvent<HTMLElement>) => {
+    if (e.pointerType !== 'touch' || (e.target as Element).closest('button')) return;
+    swipe.current = { id: e.pointerId, y: e.clientY };
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+  };
+  const onHeadMove = (e: ReactPointerEvent<HTMLElement>) => {
+    if (swipe.current?.id === e.pointerId) setPull(Math.max(0, e.clientY - swipe.current.y));
+  };
+  const onHeadUp = (e: ReactPointerEvent<HTMLElement>) => {
+    if (swipe.current?.id !== e.pointerId) return;
+    const h = panelRef.current?.offsetHeight ?? 400;
+    const go = e.type === 'pointerup' && Math.max(0, e.clientY - swipe.current.y) > Math.max(rt.behavior().interaction.dragThreshold * 4, h / 4);
+    swipe.current = null;
+    setPull(0);
+    if (go) rt.closeDialog();
+  };
+
   if (!state.dialog || !mine) return null;
   if (!def) {
     queueMicrotask(() => {
@@ -45,8 +81,8 @@ export function DialogHost({ dialogs }: { dialogs: DialogMap }) {
   const brandHost = brandHostProps(brand);
   return (
     <div className="fx-backdrop" onPointerDown={(e) => d.closeOnBackdrop && rt.behavior().windows.closeOnBackdrop && e.target === e.currentTarget && close()}>
-      <div className={`fx-dialog ${brandHost.className}`.trim()} role="dialog" aria-modal="true" aria-label={def.title} tabIndex={-1} ref={panelRef} data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
-        <header className="fx-dialog__head">
+      <div className={`fx-dialog ${brandHost.className}`.trim()} role="dialog" aria-modal="true" aria-label={def.title} tabIndex={-1} ref={panelRef} data-fx-brand-mode={brandHost['data-fx-brand-mode']} style={pull ? { transform: `translateY(${pull}px)` } : undefined}>
+        <header className="fx-dialog__head" onPointerDown={onHeadDown} onPointerMove={onHeadMove} onPointerUp={onHeadUp} onPointerCancel={onHeadUp}>
           {brand?.svg && <BrandMark slot="dialog" height={16} className="fx-dialog__brand" />}
           {def.icon && <Icon name={def.icon} size={18} />}
           <h2>{def.title}</h2>

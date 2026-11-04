@@ -68,6 +68,11 @@ export const loadBoilerplates = async (): Promise<Boilerplate[]> => { const x = 
 export interface PlannedPlugin { id: string; name: string; target: string; description?: string; plan?: string; pending?: string; model?: string }
 export const loadPluginIndex = async () => (await getJson<{ items: PlannedPlugin[] }>('plugin-index', 'plugin-index.json')).items ?? [];
 export const loadModules = async () => (await getJson<{ modules: ModuleInfo[] }>('modules', 'modules.json')).modules ?? [];
+/** What Brett said that started a build (build-origin@1), or null when it isn't recorded / the build is unknown. */
+export async function loadBuildOrigin(id: string): Promise<unknown> {
+  if (STATIC || !id) return null;
+  try { const r = await fetch(`/api/builds/${encodeURIComponent(id)}/origin`, { cache: 'no-store' }); if (!r.ok) return null; const j = (await r.json()) as { origin?: unknown }; return j.origin ?? null; } catch { return null; }
+}
 
 /* ---------------- local state (checked features, project, records) ---------------- */
 

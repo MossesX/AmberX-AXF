@@ -28,6 +28,8 @@ export interface ActionMeta {
    * `installLibraries` while the library registers), or unset (the app's own code). Pickers group actions by it.
    */
   module?: string;
+  /** What running it does, for remote callers (control@1 console domain): `navigate` needs only the navigate grant. */
+  effect?: 'navigate' | 'read' | 'write' | 'destructive';
 }
 
 /** The `module` of actions the framework itself registers. */

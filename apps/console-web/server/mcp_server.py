@@ -25,6 +25,8 @@ from pathlib import Path
 from typing import Any, Callable, Literal
 
 import anyio
+import contextvars
+import time
 from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 from mcp.types import ToolAnnotations
@@ -41,6 +43,7 @@ WRITE = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHin
 INSTRUCTIONS = """AmberX AXF framework — plan, build queue, libraries and projects.
 Every Claude session calls `claude_session_start` first (when the Claude sessions plugin is on) and works as the crew agent
 it answers; `claude_session_agent` says when Brett picks another, `claude_session_book` books the work on that agent's card.
+At session start and before acting, read Claude settings (`claude_settings_get`) and follow them.
 Start with `overview`, then `build_next` to see what to build next and which model should build it.
 Before starting any build, check `pending_list`: builds parked until their model (usually Fable) is available.
 Builds over 30 minutes are split into steps of 30 minutes or less: `pending_steps` / `build_queue` list them, and you tick
@@ -52,6 +55,10 @@ ask (orchestrator.mjs request-upgrade); never approve one yourself.
 When you finish building a step, call `build_step` with action "complete": the epic and its linked features are
 marked built in the feature tracker, and steps that depended on it are re-checked for rework.
 After reordering with `build_reorder`, call `build_reprocess` (apply=false to preview, then apply=true).
+Chat and voice sessions (claude.ai, Amber): whenever you act, post one short line of what you are saying or doing with
+`console_session_note` (same `session` name every time, your claude.ai link as `url` when you know it). Brett watches it
+live in the Terminal's sessions nav and jumps in from there.
+
 Follow Amber: check `console_follow`; while it is on, call `console_show` every time you mention something in Brett's
 console (a screen, settings tab, dialog, build, plugin, UI Review item), and his approvals pop up in the console."""
 
@@ -113,13 +120,23 @@ def _step(s: dict[str, Any], features: bool = True, steps: bool = True) -> dict[
     return out
 
 
+# Who is calling /mcp right now (the console's endpoint sets it from the request's X-Axhub-Session / client headers), so
+# each tool call lands in that session's mirror feed in the Terminal's sessions nav.
+CALLER: contextvars.ContextVar[str] = contextvars.ContextVar("axf_mcp_caller", default="")
+
+
 def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] | None = None, control: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
-                 console: Callable[[dict[str, Any]], dict[str, Any]] | None = None) -> MCPServer:
+                 console: Callable[[dict[str, Any]], dict[str, Any]] | None = None, notes: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
+                 on_call: Callable[[str, str, dict[str, Any], bool, str, int], None] | None = None) -> MCPServer:
     """Create the MCP server. `call(op, **args)` runs one engine op and returns its result dict; `control(command)` runs
     one control@1 command (framework/spec/CONTROL.md) and returns its answer (None = no control tools); `console(command)`
-    runs one command of the console domain in the caller's open console (None = no console_* tools)."""
+    runs one command of the console domain in the caller's open console (None = no console_* tools); `notes(line)` posts
+    a line into a session's mirror feed (None = no console_session_note); `on_call(caller, tool, args, ok, error, ms)`
+    is told about every tool call (the sessions nav's feed; never fails a call)."""
     mcp = MCPServer(name="amberx-axf", title="GizmoX AI Studio", version="0.2.0", instructions=INSTRUCTIONS,
                     website_url="https://console.amberxai.com")
+    if on_call is not None:
+        _watch_calls(mcp, on_call)
 
     async def run(op: str, **args: Any) -> dict[str, Any]:
         r = await anyio.to_thread.run_sync(lambda: call(op, **args))
@@ -353,12 +370,14 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
     async def pending_change(action: Literal["add", "update", "status", "note", "sub", "step", "remove"], id: str = "", title: str = "",
                              detail: str | None = None, model: Literal["", "Fable", "Opus", "Sonnet"] = "",
                              status: Literal["", "pending", "unsafe", "complete", "failed", "broken"] = "", text: str = "", plan_id: str = "",
-                             estimate: str | None = None, sub_estimates: list[str] | None = None, index: int | None = None, done: bool | None = None) -> dict[str, Any]:
+                             estimate: str | None = None, sub_estimates: list[str] | None = None, index: int | None = None, done: bool | None = None,
+                             said: str = "") -> dict[str, Any]:
         """Change the pending build list. add needs title (model defaults to Fable); status marks unsafe/complete/failed/broken (unsafe = parked, needs design or review before anyone builds it)
         (complete stamps the built date); note and sub (sub prompt) need text; remove deletes the item. estimate = build time ("45 min", "2 h", "1.5 d") on the item
         (add/update) or on a sub prompt (sub); sub_estimates (update) sets one per existing sub prompt in order ("" clears).
         Sub prompts are the item's steps (rule: a build over 30 minutes is split into steps of 30 minutes or less, each with its own estimate):
-        step with index (0-based) ticks one off (done=true/false) and may reword it (text) or re-estimate it (estimate, "" clears)."""
+        step with index (0-based) ticks one off (done=true/false) and may reword it (text) or re-estimate it (estimate, "" clears).
+        said (add): Brett's exact words that asked for this build, verbatim and unedited (build-origin@1); a paraphrase goes in detail, never here."""
         change: dict[str, Any] = {"action": action, "source": "mcp"}
         if sub_estimates is not None:
             change["subEstimates"] = [str(x) for x in sub_estimates]
@@ -369,6 +388,8 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
             change["estimate"] = estimate
         if detail is not None:
             change["detail"] = detail
+        if said.strip() and action == "add":
+            change["said"] = said
         if index is not None:
             change["index"] = index
         if done is not None:
@@ -537,6 +558,15 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
     if console is not None:
         _register_console_tools(mcp, console)
 
+    # ------------------------------------------------------------------ Claude settings (Claude plugin, claude-settings@1)
+
+    _register_claude_settings_tools(mcp)
+
+    # ------------------------------------------------------------------ session mirror (Terminal → sessions nav)
+
+    if notes is not None:
+        _register_session_tools(mcp, notes)
+
     # ------------------------------------------------------------------ resources + prompt
 
     @mcp.resource("axf://build-queue", name="build-queue", title="Build queue", mime_type="application/json",
@@ -581,6 +611,55 @@ def upgrade_via_axhub(build: str, phase: int, request: str = "") -> dict[str, An
         return json.loads(lines[-1]) if lines else {"ok": False, "error": p.stderr.strip()[-600:] or "no output"}
     except json.JSONDecodeError:
         return {"ok": False, "error": (p.stderr or p.stdout).strip()[-600:]}
+
+
+# ---------------------------------------------------------------------- Claude settings (claude-settings@1)
+
+CLAUDE_SETTINGS_CLI = Path(__file__).resolve().parents[1] / "plugins" / "claude-settings" / "claude-settings.mjs"
+
+
+def _claude_settings(*args: str) -> dict[str, Any]:
+    """One claude-settings.mjs command (the same core the console and the CLI use). Never an owner: no MCP call can
+    change an owner-only setting, whoever makes it."""
+    if not CLAUDE_SETTINGS_CLI.exists():
+        return {"ok": False, "code": "unavailable", "message": "the Claude plugin (claude-settings) is not installed"}
+    try:
+        p = subprocess.run(["node", str(CLAUDE_SETTINGS_CLI), *args, "--json"], cwd=CLAUDE_SETTINGS_CLI.parents[4], capture_output=True, text=True, timeout=30)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        return {"ok": False, "code": "unavailable", "message": str(e)[:200]}
+    lines = p.stdout.strip().splitlines()
+    try:
+        return json.loads(lines[-1]) if lines else {"ok": False, "code": "unexpected", "message": p.stderr.strip()[-400:] or "no output"}
+    except json.JSONDecodeError:
+        return {"ok": False, "code": "unexpected", "message": (p.stderr or p.stdout).strip()[-400:]}
+
+
+def _register_claude_settings_tools(mcp: MCPServer) -> None:
+    async def go(*args: str) -> dict[str, Any]:
+        r = await anyio.to_thread.run_sync(lambda: _claude_settings(*args))
+        if not r.get("ok"):
+            raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
+        r.pop("ok", None)
+        return r
+
+    @mcp.tool(annotations=READ)
+    async def claude_settings_get(key: str = "") -> dict[str, Any]:
+        """Claude settings (kept on axHub, shared by every Claude session): read them at session start and before
+        acting, and follow them. Every setting comes with its value, default, who may change it and a plain
+        description: No wait (held calls run at once), Follow Amber, builds (default model, launch without asking,
+        max parallel, budget caps), verification, talking (persona, tone, swearing, length, costs), notifications,
+        memory. `key` = one setting only."""
+        return await go("get", key) if key else await go("get")
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def claude_settings_set(values: dict[str, Any], by: str = "") -> dict[str, Any]:
+        """Change Claude settings that are not owner-only ({key: value}). Owner-only settings (No wait, Include
+        irreversible, launch without asking, default model, UI Review gate, raising a budget cap or max parallel) are
+        refused here: only Brett changes them, with his own click in the console (Settings → Plugins → Claude)."""
+        pairs = [f"{k}={v if isinstance(v, str) else json.dumps(v)}" for k, v in (values or {}).items()]
+        if not pairs:
+            raise ToolError("invalid: send values as {key: value}")
+        return await go("set", *pairs, "--by", by or "mcp")
 
 
 # ---------------------------------------------------------------------- control@1 tools (framework/spec/CONTROL.md)
@@ -787,8 +866,12 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         return await go({"op": "act", "target": "console.screens", "path": screen, "action": "open", "input": inp(to)})
 
     @mcp.tool(annotations=NAVIGATE)
-    async def console_dialog(dialog: str, arg: str = "", to: Delivery = "recent") -> dict[str, Any]:
-        """Open a dialog in the open console by id, title or words (`arg` = the dialog's optional argument)."""
+    async def console_dialog(dialog: str = "", arg: str = "", action: Literal["open", "close"] = "open", to: Delivery = "recent") -> dict[str, Any]:
+        """Open a dialog in the open console by id, title or words (`arg` = the dialog's optional argument), or close
+        one: action="close" shuts the dialog that is open (dialog="" or "current"), or only that dialog when it is the one open.
+        Close what you opened once Brett has seen it."""
+        if action == "close":
+            return await go({"op": "act", "target": "console.dialogs", "path": dialog or "current", "action": "close", "input": inp(to)})
         return await go({"op": "act", "target": "console.dialogs", "path": dialog, "action": "open", "input": inp(to, arg=arg)})
 
     @mcp.tool(annotations=NAVIGATE)
@@ -879,6 +962,80 @@ def follow_call(op: str, args: dict[str, Any]) -> dict[str, Any]:
         return {"ok": False, "code": "unexpected", "message": f"{e.code} from {base}"}
     except (OSError, ValueError) as e:
         return {"ok": False, "code": "unexpected", "message": f"could not reach {base}: {str(e)[:200]}"}
+
+
+def _watch_calls(mcp: MCPServer, on_call: Callable[[str, str, dict[str, Any], bool, str, int], None]) -> None:
+    """Tell `on_call` about every tool call (who, which tool, its arguments, ok or the error, how long). Wraps the tool
+    manager, so it sees exactly what MCPServer.call_tool runs; a failing listener never fails the call."""
+    tm = mcp._tool_manager  # noqa: SLF001
+    inner = tm.call_tool
+
+    async def call_tool(name: str, arguments: dict[str, Any], *a: Any, **kw: Any) -> Any:
+        t0, ok, err = time.monotonic(), True, ""
+        try:
+            return await inner(name, arguments, *a, **kw)
+        except Exception as e:
+            ok, err = False, str(e)[:200]
+            raise
+        finally:
+            try:
+                on_call(CALLER.get(), name, dict(arguments or {}), ok, err, int((time.monotonic() - t0) * 1000))
+            except Exception:  # noqa: BLE001
+                pass
+
+    tm.call_tool = call_tool  # type: ignore[method-assign]
+
+
+def _register_session_tools(mcp: MCPServer, notes: Callable[[dict[str, Any]], dict[str, Any]]) -> None:
+    """console_session_note: a Claude session (claude.ai chat or voice, Claude Code) posts what it is saying or doing as
+    one short line into its own mirror feed, which Brett watches in the Terminal's sessions nav (My sessions)."""
+
+    @mcp.tool(annotations=WRITE)
+    async def console_session_note(text: str, session: str, source: Literal["claude-ai-text", "claude-ai-voice", "claude-code", "agent", "other"] = "claude-ai-text",
+                                   agent: str = "", url: str = "", title: str = "", model: str = "") -> dict[str, Any]:
+        """Post one short line (what you are saying or doing right now) into your own session's live mirror in Brett's
+        Dev Console (Terminal → sessions nav → My sessions). `session` = your chat's name, the same every time (e.g. the
+        thread name); `url` = this chat's https://claude.ai/chat/… link when you know it (Jump in opens it); `agent` = the
+        agent you speak as (agent-pick). Call it when you act: before an axHub call, a build, or a long answer. Free: no
+        tokens are spent on the console's side."""
+        line = {k: v for k, v in {"text": text, "session": session, "source": source, "agent": agent, "url": url, "title": title, "model": model}.items() if v}
+        r = await anyio.to_thread.run_sync(lambda: notes(line))
+        if not r.get("ok"):
+            raise ToolError(str(r.get("error") or "could not post the note"))
+        return r
+
+
+def session_note_runner() -> Callable[[dict[str, Any]], dict[str, Any]]:
+    """console_session_note through capability axf.session-feed@1 (the Terminal plugin) when the console runs. A local
+    stdio clone has no session feed: the tool says so (chat sessions reach the console's /mcp through axHub)."""
+
+    def run(line: dict[str, Any]) -> dict[str, Any]:
+        try:
+            import plugin_services  # the console's registry (absent in stdio mode)
+        except ImportError:
+            return {"ok": False, "error": "no session feed here: console_session_note works on the console's /mcp (through axHub), not a local stdio clone"}
+        svc = plugin_services.get("axf.session-feed@1")
+        if svc is None:
+            return {"ok": False, "error": "no plugin provides axf.session-feed@1 (the Terminal plugin is off or not installed)"}
+        try:
+            text, session = line.pop("text"), line.pop("session")
+            return svc.note(session, text, **line)
+        except (KeyError, ValueError) as e:
+            return {"ok": False, "error": str(e)}
+
+    return run
+
+
+def feed_recorder() -> Callable[[str, str, dict[str, Any], bool, str, int], None]:
+    """Every console MCP tool call into its caller's mirror feed (axf.session-feed@1), when the Terminal plugin is on."""
+
+    def rec(caller: str, tool: str, args: dict[str, Any], ok: bool, err: str, ms: int) -> None:
+        import plugin_services
+        svc = plugin_services.get("axf.session-feed@1")
+        if svc is not None:
+            svc.record_call(caller, tool, args, ok, err, ms)
+
+    return rec
 
 
 def console_runner(root: Path) -> Callable[[dict[str, Any]], dict[str, Any]]:
@@ -974,4 +1131,4 @@ if __name__ == "__main__":
     root = Path(os.environ.get("AXF_ROOT", Path(__file__).resolve().parents[3])).resolve()
     if not (root / "framework" / "cli" / "engine-rpc.mjs").exists():
         sys.exit(f"AXF_ROOT {root} is not an AmberX AXF checkout")
-    build_server(_local_call(root), control=control_runner(root), console=console_runner(root)).run()
+    build_server(_local_call(root), control=control_runner(root), console=console_runner(root), notes=session_note_runner()).run()

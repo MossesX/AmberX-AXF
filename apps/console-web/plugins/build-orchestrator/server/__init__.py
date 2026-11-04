@@ -97,6 +97,77 @@ async def act(request: Request) -> dict[str, Any]:
     return _run("act", json.dumps(change), approver=brett_click(request))
 
 
+# ---- what Brett said (build-origin@1): framework/cli/build-origin.mjs, zero tokens
+
+ORIGIN_CLI = ROOT / "framework" / "cli" / "build-origin.mjs"
+SAID_MAX = 8000
+
+
+def _origin(*args: str) -> dict[str, Any]:
+    proc = subprocess.run(["node", str(ORIGIN_CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=60)
+    out = proc.stdout.strip().splitlines()
+    try:
+        res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+    if not res.get("ok"):
+        raise HTTPException(404 if "no build" in str(res.get("error", "")) else 400, str(res.get("error", "failed")))
+    return res
+
+
+def _said_args(body: dict[str, Any], who: str) -> list[str]:
+    said = body.get("said")
+    if not isinstance(said, str) or not said.strip():
+        raise HTTPException(400, "said is required: Brett's exact words, unedited")
+    if len(said) > SAID_MAX:
+        raise HTTPException(413, "said is too long")
+    args = ["--said", said, "--by", str(body.get("by") or who or "console")[:120]]
+    for k in ("source", "at", "session", "link"):
+        v = body.get(k)
+        if isinstance(v, str) and v.strip():
+            args += [f"--{k}", v.strip()[:500]]
+    return args
+
+
+async def _json_body(request: Request) -> dict[str, Any]:
+    raw = await request.body()
+    if len(raw) > MAX_BODY:
+        raise HTTPException(413, "too large")
+    try:
+        body = json.loads(raw or b"{}")
+    except json.JSONDecodeError:
+        raise HTTPException(400, "not JSON")
+    if not isinstance(body, dict):
+        raise HTTPException(400, "a JSON object is needed")
+    return body
+
+
+@router.get("/origin/{build_id}")
+def origin_get(build_id: str) -> dict[str, Any]:
+    """What Brett said that started a build: his verbatim words, when, where, who launched it, the brief, addenda."""
+    if len(build_id) > 80:
+        raise HTTPException(400, "id too long")
+    return _origin("get", build_id)
+
+
+@router.post("/origin/{build_id}")
+async def origin_set(build_id: str, request: Request) -> dict[str, Any]:
+    """Record what Brett said (verbatim) on a build that has no words yet; his words are never replaced."""
+    if len(build_id) > 80:
+        raise HTTPException(400, "id too long")
+    body = await _json_body(request)
+    return _origin("set", build_id, *_said_args(body, brett_click(request)))
+
+
+@router.post("/origin/{build_id}/addendum")
+async def origin_addendum(build_id: str, request: Request) -> dict[str, Any]:
+    """Add a later change Brett asked for (verbatim) to a build's origin."""
+    if len(build_id) > 80:
+        raise HTTPException(400, "id too long")
+    body = await _json_body(request)
+    return _origin("addendum", build_id, *_said_args(body, brett_click(request)))
+
+
 # ---- systems check: live sync + reconciler (axf.health@1)
 
 def _report_file() -> Path:

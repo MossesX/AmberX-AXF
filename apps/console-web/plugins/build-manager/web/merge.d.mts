@@ -10,6 +10,8 @@ export interface Row extends Timing {
   key: string; id: string; source: Source; title: string; detail: string; model: Model; status: string; statusLabel: string; order: number;
   /** Who added it: a person's prompt or a tool; addedBy = the pending item's `source` key (addedByKey), or 'build-queue' / 'plan-feature'. */
   origin: Origin; addedBy: string;
+  /** build-origin@1: what Brett said that started it (his verbatim words, when, where, the brief, addenda). */
+  brett?: unknown;
   steps: Step[]; planId?: string; queuePosition?: number; effort?: string; features?: { id: string; title: string; status: string }[];
   building: boolean; startedAt: number; fable: boolean; aliases: string[];
   /** Set when the list thinks it's already built or removed (the Clean up button). */

@@ -3,9 +3,11 @@
  * updated / removed), with a plain-English summary by Mosses when "Use AI for What's new" is on (saved, so it stays when
  * AI is off). The seen point lives on the server and is shared by every viewer; only an admin (console token or hub
  * admin) gets "Got it", which clears it for everyone. Everyone else sees the banner until an admin clears it.
+ * Tapping the row opens the app's What's new panel (the `whats-new.open` action, when a plugin provides it); the
+ * chevron folds this banner's own details open and shut. Without the panel the row folds them, as before.
  */
 import { useEffect, useSyncExternalStore } from 'react';
-import { Button, Icon, Markdown, useBannerLaunchOpen, BannerIcon } from '@console/axf/react';
+import { Button, Icon, Markdown, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import * as api from '@console/api';
 import { SourceBadge } from './SystemCheck';
 
@@ -55,13 +57,18 @@ function pluginChanges(d: Resp, seen: Seen) {
   return { added, updated, removed };
 }
 
+/** The app-wide "open What's new" action (registered by whichever plugin draws the What's new panel). */
+const PANEL_ACTION = 'whats-new.open';
+
 export function WhatsNewBanner() {
+  const rt = useRuntime();
   const s = useWN();
   const [open, setOpen] = useBannerLaunchOpen(); // launches expanded unless its Banner settings say minimized
   useEffect(() => { if (!open) return; const k = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); }; addEventListener('keydown', k); return () => removeEventListener('keydown', k); }, [open]);
   const d = s.data;
   const seen = s.seen;
   if (!d || !seen || s.dismissed || !d.banner || !d.head) return null;
+  const panel = !!rt.actions.get(PANEL_ACTION);
   const pc = pluginChanges(d, seen);
   const nCommits = d.head === seen.sha ? 0 : d.commits.length;
   const nPlugins = pc.added.length + pc.updated.length + pc.removed.length;
@@ -76,14 +83,15 @@ export function WhatsNewBanner() {
     <div className="axp-systems-check-banner axp-systems-check-new" role="status">
       <div className="axp-systems-check-banner__row">
         <BannerIcon icon="sparkles" size={20} />
-        <button type="button" data-fx-row className="axp-systems-check-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <button type="button" data-fx-row className="axp-systems-check-banner__text" {...(panel ? { title: 'Open What’s new' } : { 'aria-expanded': open })} onClick={() => (panel ? rt.dispatch(PANEL_ACTION) : setOpen(!open))}>
           <span className="axp-systems-check-banner__title">What’s new</span>
           {d.summary?.text
             ? <SourceBadge ai title={`Made by AI: summary written by ${d.summary.agent ?? 'Mosses'}${d.summary.cached && !d.aiOn ? ' (saved earlier)' : ''}`} />
             : <SourceBadge ai={false} title="Not AI: straight from the commit history and plugin versions" />}
           <span className="axp-systems-check-banner__sum">{bits} since an admin last cleared it ({since}){d.known ? '' : ' (recent changes shown)'}</span>
-          <Icon name={open ? 'chevron-up' : 'chevron-down'} size={14} />
+          {!panel && <Icon name={open ? 'chevron-up' : 'chevron-down'} size={14} />}
         </button>
+        {panel && <button type="button" className="fx-iconbtn" aria-expanded={open} aria-label={open ? 'Hide the details' : 'Show the details here'} title={open ? 'Hide the details' : 'Show the details here'} onClick={() => setOpen(!open)}><Icon name={open ? 'chevron-up' : 'chevron-down'} size={14} /></button>}
         {d.canClear && <Button tone="primary" icon="check" onClick={() => void markSeen()} title="Clears it for everyone">Got it</Button>}
       </div>
       {open && (

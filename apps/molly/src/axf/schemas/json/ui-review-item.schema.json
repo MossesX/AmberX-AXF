@@ -218,6 +218,29 @@
     },
     "pairId": {
       "type": "string"
+    },
+    "prediction": {
+      "type": "object",
+      "required": [
+        "$axf",
+        "build",
+        "state"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "ui-prediction@1"
+        },
+        "build": {
+          "type": "string",
+          "minLength": 1
+        },
+        "state": {
+          "enum": [
+            "predicted",
+            "real"
+          ]
+        }
+      }
     }
   },
   "allOf": [

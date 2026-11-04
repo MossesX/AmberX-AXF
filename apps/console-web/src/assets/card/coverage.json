@@ -1,0 +1,31 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "coverage",
+  "name": "Coverage",
+  "version": "1.0.0",
+  "description": "Built features out of all, per tracker tab.",
+  "author": "AmberX AXF",
+  "tags": [
+    "home",
+    "starter"
+  ],
+  "data": {
+    "title": "Coverage",
+    "icon": "chart",
+    "source": {
+      "kind": "console",
+      "id": "tracker.coverage"
+    },
+    "view": "meter",
+    "fields": {
+      "label": "label",
+      "value": "built",
+      "max": "total"
+    },
+    "refresh": {
+      "kind": "live"
+    },
+    "size": "m"
+  }
+}

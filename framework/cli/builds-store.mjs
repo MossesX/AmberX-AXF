@@ -29,6 +29,7 @@ import { execFileSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
+import { mergeOrigin } from '../core/build-origin.mjs';
 import { enqueueLive, flushLiveSoon } from './builds-live.mjs';
 import { BASE_PROFILE, REPO_ROOT, activeProfile, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
 
@@ -52,6 +53,30 @@ function lock(f) {
 }
 
 export function storeExists() { return existsSync(storeFile()); }
+
+// ------------------------------------------------------------------ origins sidecar (build-origin@1)
+/*
+ * What Brett said that started each build lives on the build record (`origin`) AND in this sidecar, keyed by build id.
+ * Sessions still running code from before build-origin@1 rewrite the store without the field; they never touch this
+ * file, so every read heals the records from it and every write folds the records back into it. Nothing is lost.
+ */
+export const ORIGINS_REL = '_claude/builds/origins.json';
+export const originsFile = () => (process.env.AXF_BUILDS_STORE ? storeFile().replace(/\.json$/, '') + '.origins.json' : join(dirname(storeFile()), 'origins.json'));
+export function readOrigins() { try { const j = JSON.parse(readFileSync(originsFile(), 'utf8')); return j?.origins && typeof j.origins === 'object' ? j.origins : {}; } catch { return {}; } }
+export const originsText = (origins) => `${JSON.stringify({ $axf: 'build-origins@1', origins: Object.fromEntries(Object.keys(origins).sort().map((k) => [k, origins[k]])) }, null, 1)}\n`;
+/** Records ← sidecar (in place). */
+function healOrigins(store, side = readOrigins()) {
+  for (const b of store.builds) { const og = mergeOrigin(b.origin, side[b.id]); if (og) b.origin = og; }
+  return store;
+}
+/** Sidecar ← records (written only when something new came in). */
+function foldOrigins(store) {
+  const side = readOrigins(); let changed = false;
+  for (const b of store.builds) if (b.origin) { const og = mergeOrigin(b.origin, side[b.id]); if (JSON.stringify(og) !== JSON.stringify(side[b.id] ?? null)) { side[b.id] = og; changed = true; } }
+  if (changed) { const f = originsFile(); const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, originsText(side)); renameSync(tmp, f); }
+  return changed;
+}
+export const mergeOriginsText = (a, b) => { const pa = (() => { try { return JSON.parse(a || '{}').origins ?? {}; } catch { return {}; } })(); const pb = (() => { try { return JSON.parse(b || '{}').origins ?? {}; } catch { return {}; } })(); const out = { ...pa }; for (const [k, v] of Object.entries(pb)) out[k] = mergeOrigin(out[k], v); return originsText(out); };
 function readStore() {
   const f = storeFile();
   if (!existsSync(f) && scratchDir() && !process.env.AXF_BUILDS_STORE && existsSync(join(REPO_ROOT, STORE_REL))) { mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, readFileSync(join(REPO_ROOT, STORE_REL))); }
@@ -60,7 +85,7 @@ function readStore() {
     // first use on this checkout: migrate from the older files (the dry run is `migrate --dry`)
     return migrateNow({ by: 'auto-migrate' }).store;
   }
-  return core.normalizeStore(JSON.parse(readFileSync(f, 'utf8')));
+  return healOrigins(core.normalizeStore(JSON.parse(readFileSync(f, 'utf8'))));
 }
 /** The store. If an old file was written directly since the last export, that write is taken into the store first. */
 export function loadStore() {
@@ -171,7 +196,9 @@ function journal(entry) {
 export function adoptStore(next, { journals = {} } = {}) {
   const f = storeFile(); const unlock = lock(f);
   try {
+    healOrigins(next);
     const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, storeText(next)); renameSync(tmp, f);
+    foldOrigins(next);
     const d = journalDir(); mkdirSync(d, { recursive: true });
     for (const [m, text] of Object.entries(journals)) writeFileSync(join(d, `${m}.jsonl`), text);
     if (exportsOn()) exportAll(next);
@@ -190,6 +217,7 @@ export function saveStore(before, after, { by = 'cli', action = 'write', note = 
   after.rev = (before.rev ?? 0) + 1; after.updatedAt = now;
   const f = storeFile(); mkdirSync(dirname(f), { recursive: true });
   const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, storeText(after)); renameSync(tmp, f);
+  foldOrigins(after);
   journal({ rev: after.rev, at: now, by, action, note, builds: changes.map((c) => ({ id: c.id, op: c.op, rev: c.after?.rev, before: core.compactBuild(c.before), after: core.compactBuild(c.after) })), ...(draftChanged ? { drafts: after.drafts } : {}), ...(metaChanged ? { meta: after.meta, rules: after.rules } : {}) });
   return { store: after, changes, rev: after.rev };
 }
