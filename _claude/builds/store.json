@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 681,
- "updatedAt": "2026-11-04T13:24:36.656Z",
+ "rev": 682,
+ "updatedAt": "2026-11-04T13:29:13.081Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -72348,16 +72348,22 @@
    "title": "Hotfix: Build manager rows open, step actions work, running count is real",
    "category": "",
    "detail": "URGENT. Build rows do not open; step actions (tick, open, context menu) dead; banner says 21 going when only land-round-2 runs. Fix regressions, reconcile stale running statuses against live processes, add a zero-token reconciler rule so it cannot drift.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "hotfix-build-manager",
    "branch": "claude/hotfix-build-manager",
    "pr": "#309",
+   "mergedAt": "2026-11-04T13:20:57Z",
    "createdAt": "2026-11-04T12:18:43.490Z",
-   "updatedAt": "2026-11-04T12:47:56.932Z",
+   "updatedAt": "2026-11-04T13:28:24.500Z",
    "builtAt": "2026-11-04T12:47:56.382Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #309 merged",
+     "at": "2026-11-04T13:28:24.500Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -72389,11 +72395,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-04T12:47:53.779Z",
+     "doneAt": "2026-11-04T13:28:12.810Z",
      "note": "",
-     "rev": 4,
+     "rev": 6,
      "createdAt": "2026-11-04T12:18:43.491Z",
-     "updatedAt": "2026-11-04T12:53:22.147Z"
+     "updatedAt": "2026-11-04T13:28:12.851Z"
     },
     {
      "id": "s2",
@@ -72470,7 +72476,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -72480,7 +72486,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-04T12:18:43.490Z",
-    "builtAt": "",
+    "builtAt": "2026-11-04T13:27:27.368Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mw2330s90131ge": "2026-11-04T12:18:43.491Z",
