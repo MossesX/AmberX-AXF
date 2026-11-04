@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T14:29:09.442Z",
+ "updatedAt": "2026-11-04T14:30:48.349Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6804,12 +6804,16 @@
    "pr": "#298",
    "mergedAt": "2026-11-04T14:24:10Z",
    "createdAt": "2026-11-04T12:29:55.129Z",
-   "updatedAt": "2026-11-04T14:24:36.644Z",
+   "updatedAt": "2026-11-04T14:30:42.190Z",
    "builtAt": "2026-11-04T14:24:36.644Z",
    "notes": [
     {
      "text": "Merged main into #298, seeded 20 banner plugins, fixed a first-visit hang (per-plugin re-install of all libraries; CI theme-swap timeout) and plugin-lifecycle refs. Startup 4.46 -> 2.07 MB. CI dispatched on c97d1967e.",
      "at": "2026-11-04T14:04:16.930Z"
+    },
+    {
+     "text": "Merged #298 f15709c32 14:24 UTC; console redeployed 14:28, renders. Close-out docs PR #316.",
+     "at": "2026-11-04T14:30:42.190Z"
     }
    ],
    "approvals": [],
