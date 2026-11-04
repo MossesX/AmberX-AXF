@@ -92,6 +92,7 @@ jobs:
       - run: node framework/spec/check-profiles.mjs                 # every build profile folder is registered in framework/plan/profiles.json
       - run: node framework/spec/check-feature-matrix.mjs           # feature-matrix@1: contract + Apply engine replay fixtures/feature-matrix.json
       - run: node framework/spec/check-builds-store.mjs             # builds@1: migration loses nothing, projections round-trip, reorder, rename, divide, harvest, Restore default, Apply/Discard
+      - run: node framework/spec/check-builds-store-lock.mjs        # a store read never fails on the lock (GET /api/build-queue 500, urgent-console-perf)
       - run: node framework/spec/check-build-origin.mjs            # build-origin@1: Brett's verbatim words on every build, never lost on merge, brief capture, backfill
       - run: node framework/spec/check-builds-live.mjs              # builds-live: store writes reach main (status-only commits, rebase-retry, never forced), parallel writers, newer-wins merge driver, heal, reconciler matching
       - run: node framework/spec/check-agent-slots.mjs              # agent-slots@1: cap, queue order, priority, auto-start, finished sessions closed, memory guard, hot reload, heavy lock, claude-headless.sh end to end
@@ -216,6 +217,7 @@ jobs:
           node scripts/theme-swap.mjs
           npx tsx scripts/interface-scope-check.mts     # two <InterfaceScope>s read their own interfaces, the app keeps its own
           npx tsx scripts/window-handles-check.mts      # every floating window has its 8 resize handles, windows stay under dialogs, settings 'Opens in' dialog
+          npx tsx scripts/fetch-share-check.mts         # one shared /api GET per source, hidden tab quiet, 5xx exponential backoff
       - name: Alerts + MCP client + axf_server — engines match their fixtures (TS, Python), conflict detection, console alert server, web push encryption
         run: |
           set -o pipefail
@@ -295,6 +297,7 @@ jobs:
             python apps/console-web/server/test_plugin_catalog.py
             python apps/console-web/server/test_app_catalog.py
             python apps/console-web/server/test_build_profiles.py
+            python apps/console-web/server/test_readcache.py         # shared read cache (single-flight, stale-while-revalidate, file-change) + node spawn cap
             python apps/console-web/server/test_previews.py          # Watch live: registry, signed keys, /preview proxy auth (HTTP + HMR WebSocket)
             python apps/console-web/plugins/console-commands/server/test_console_commands.py  # console commands: consoles announce + stream, resolve, deliver + ack, per-user mailbox, confirm  # axf-plugin:console-commands
             python apps/console-web/plugins/ref-links/server/test_ref_links.py  # reference links: targets (catalog, agents, UI Review), find, resolve, open → refs.<how> through console-commands@1  # axf-plugin:ref-links
