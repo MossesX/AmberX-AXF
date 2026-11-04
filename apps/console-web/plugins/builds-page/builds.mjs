@@ -41,7 +41,21 @@ function buildView(b, profile) {
 }
 const estimateMin = (e) => { const m = /^\s*~?\s*(\d+(?:\.\d+)?)\s*(m|min|mins|minutes?|h|hr|hrs|hours?|d|days?)?\s*$/i.exec(String(e ?? '')); if (!m) return null; const n = Number(m[1]); const u = (m[2] || 'min').toLowerCase(); return Math.round(u.startsWith('h') ? n * 60 : u.startsWith('d') ? n * 480 : n); };
 
-export function state(profileArg) {
+/**
+ * Every profile's builds (profile-filter@1: a view loads them all and filters what it draws). The working profile's
+ * come first in its order (with its draft preview), then the rest by their first profile in registry order.
+ */
+function everyBuild(view, profile, reg) {
+  const ids = reg.profiles.map((p) => p.id);
+  const own = core.buildsOf(view, profile);
+  const seen = new Set(own.map((b) => b.id));
+  const rank = (b) => { const i = ids.indexOf(b.profiles[0]); return i < 0 ? ids.length : i; };
+  const rest = view.builds.filter((b) => !b.deleted && !seen.has(b.id))
+    .sort((a, b) => rank(a) - rank(b) || (a.order[a.profiles[0]] ?? 0) - (b.order[b.profiles[0]] ?? 0) || (a.createdAt < b.createdAt ? -1 : 1));
+  return [...own.map((b) => buildView(b, profile)), ...rest.map((b) => buildView(b, b.profiles[0] ?? profile))];
+}
+
+export function state(profileArg, { all = false } = {}) {
   const profile = pickProfile(profileArg);
   const s = loadStore();
   const d = core.draftOf(s, profile);
@@ -52,7 +66,8 @@ export function state(profileArg) {
     ok: true, rev: s.rev, profile, active: activeProfile().id,
     profiles: reg.profiles.map((p) => ({ id: p.id, name: shown?.profileName?.id === p.id ? shown.profileName.name : p.name, base: !!p.base, progress: core.profileProgress(s, p.id), builds: core.buildsOf(s, p.id).length })),
     progress: core.profileProgress(view, profile),
-    builds: core.buildsOf(view, profile).map((b) => buildView(b, profile)),
+    builds: all ? everyBuild(view, profile, reg) : core.buildsOf(view, profile).map((b) => buildView(b, profile)),
+    all,
     draft: { ops: d.ops, count: d.ops.length, updatedAt: d.updatedAt, by: d.by, log: shown?.log ?? [] },
   };
 }
@@ -62,25 +77,26 @@ function main(argv) {
   const out = (o, text) => console.log(json ? JSON.stringify(o) : text ?? JSON.stringify(o, null, 1));
   const [cmd = 'state', arg] = args;
   const body = arg?.startsWith('{') ? JSON.parse(arg) : {};
-  if (cmd === 'state') { const r = state(arg && !arg.startsWith('{') ? arg : body.profile); return out(r, `${r.profile}: ${r.progress.pct}% · ${r.builds.length} builds · draft ${r.draft.count}`); }
+  const opt = { all: body.all === true || arg === 'all' || args.includes('--all') };
+  if (cmd === 'state') { const r = state(arg && !arg.startsWith('{') ? arg : body.profile, opt); return out(r, `${r.profile}: ${r.progress.pct}% · ${r.builds.length} builds · draft ${r.draft.count}`); }
   if (cmd === 'progress') { const p = pickProfile(arg); const s = loadStore(); const builds = core.buildsOf(s, p).map((b) => ({ id: b.id, ...core.buildProgress(b) })); return out({ ok: true, profile: p, progress: core.profileProgress(s, p), active: builds.filter((b) => b.active).map((b) => b.id) }); }
   if (cmd === 'ops') {
     const p = pickProfile(body.profile); let log = [];
     withStore((s) => { const r = core.applyNow(s, p, body.ops ?? [], { by: ACTOR }); log = r.log; return r.store; }, { by: ACTOR, action: 'builds:ops', note: (body.ops ?? []).map((o) => o.op).join(',') });
-    return out({ ...state(p), log });
+    return out({ ...state(p, opt), log });
   }
   if (cmd === 'draft') {
     const p = pickProfile(body.profile);
     withStore((s) => core.addDraftOp(s, p, body.op, { by: ACTOR }), { by: ACTOR, action: 'draft', note: body.op?.op ?? '' });
-    return out(state(p));
+    return out(state(p, opt));
   }
   if (cmd === 'apply') {
     const p = pickProfile(arg?.startsWith('{') ? body.profile : arg);
-    const done = (r) => out({ ...state(p), log: r.log ?? [] });
+    const done = (r) => out({ ...state(p, opt), log: r.log ?? [] });
     const r = applyDraftNow(p, ACTOR);
     return r && typeof r.then === 'function' ? r.then(done) : done(r);
   }
-  if (cmd === 'discard') { const p = pickProfile(arg?.startsWith('{') ? body.profile : arg); withStore((s) => core.discardDraft(s, p), { by: ACTOR, action: 'discard' }); return out(state(p)); }
+  if (cmd === 'discard') { const p = pickProfile(arg?.startsWith('{') ? body.profile : arg); withStore((s) => core.discardDraft(s, p), { by: ACTOR, action: 'discard' }); return out(state(p, opt)); }
   if (cmd === 'propose') {
     const p = pickProfile(body.profile); const s = loadStore();
     const all = core.buildsOf(s, p).flatMap((b) => b.steps);

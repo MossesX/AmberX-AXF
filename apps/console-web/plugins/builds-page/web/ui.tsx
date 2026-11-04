@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { Button, Checkbox, Chip, Icon, IconButton, Meter, Segmented, SelectField, Slot, Switch, useRuntime } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridGroup } from '@console/axf/libs/datagrid';
 import { pluginApi } from '@console/plugins';
+import { ProfileChips, ProfileFilterNote, useProfileFilter } from '@console/profileFilter';
 import './builds.css';
 
 /*
@@ -25,7 +26,7 @@ export type StepV = { uid: string; id: string; title: string; text: string; mode
 export type BuildV = { id: string; title: string; category: string; detail: string; status: string; kind: string; planRef: string; branch: string; pr: string; profiles: string[]; order: number; rev: number; createdAt: string; updatedAt: string; builtAt: string; hidden: boolean; rearranged: boolean; hasDefault: boolean; notes: { text: string; at: string }[]; pendingStatus: string; progress: Progress; minutesLeft: number; steps: StepV[] };
 type ProfileV = { id: string; name: string; base: boolean; builds: number; progress: Progress & { builds: number; complete: number } };
 export type Op = Record<string, unknown> & { op: string };
-type StateV = { ok: boolean; error?: string; rev: number; profile: string; active: string; profiles: ProfileV[]; progress: Progress & { builds: number; complete: number }; builds: BuildV[]; draft: { ops: Op[]; count: number; updatedAt: string; log: string[] }; log?: string[] };
+type StateV = { ok: boolean; error?: string; rev: number; profile: string; all?: boolean; active: string; profiles: ProfileV[]; progress: Progress & { builds: number; complete: number }; builds: BuildV[]; draft: { ops: Op[]; count: number; updatedAt: string; log: string[] }; log?: string[] };
 
 /* ---------------- one shared store (page, banner) ---------------- */
 
@@ -36,13 +37,14 @@ export const useBuilds = () => useSyncExternalStore((f) => { subs.add(f); return
 let wantProfile = '';
 export async function reload(profile = wantProfile) {
   wantProfile = profile;
-  try { const r = await api.call<StateV>(`state${profile ? `?profile=${encodeURIComponent(profile)}` : ''}`); if (!r.ok) throw new Error(r.error); set({ state: r, error: '' }); }
+  // every profile's builds, always (profile-filter@1); `profile` is the one ops, order and drafts apply to
+  try { const r = await api.call<StateV>(`state?all=true${profile ? `&profile=${encodeURIComponent(profile)}` : ''}`); if (!r.ok) throw new Error(r.error); set({ state: r, error: '' }); }
   catch (e) { set({ error: (e as Error).message }); }
 }
 async function send(path: string, body: Record<string, unknown>, toast?: (m: string, k?: 'danger' | 'success' | 'info') => void): Promise<boolean> {
   set({ busy: true });
   try {
-    const r = await api.post<StateV>(path, { profile: st.state?.profile, ...body });
+    const r = await api.post<StateV>(path, { profile: st.state?.profile, all: true, ...body });
     if (!r.ok) { toast?.(r.error ?? 'Change refused', 'danger'); return false; }
     set({ state: r, error: '' });
     return true;
@@ -204,9 +206,13 @@ export function BuildsPage() {
   useEffect(() => { rt.settings.set(KEYS.view, view); }, [view]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { rt.settings.set(KEYS.filter, filter); }, [filter]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => rt.actions.register('builds.view', ([v]) => { if (v === 'steps' || v === 'builds') setView(v); }, { label: 'Builds page view', params: true }), []); // eslint-disable-line react-hooks/exhaustive-deps
+  // the shared profile filter: one profile picked = ops, order and drafts work on it; otherwise on the active profile
+  const pf = useProfileFilter();
+  const single = !pf.all && pf.filter.ids.length === 1 ? pf.filter.ids[0]! : '';
+  useEffect(() => { if (s.state && single !== wantProfile) void reload(single); }, [single, !!s.state]); // eslint-disable-line react-hooks/exhaustive-deps
   // live: poll while the page is visible, and again on focus
   useEffect(() => {
-    void reload((rt.settings.get(KEYS.profile) as string) || '');
+    void reload(single);
     const tick = () => { if (document.visibilityState === 'visible') void reload(); };
     const t = window.setInterval(tick, 5000);
     addEventListener('focus', tick); document.addEventListener('visibilitychange', tick);
@@ -215,29 +221,48 @@ export function BuildsPage() {
   const state = s.state;
   if (!state) return <div className="fx-page axp-builds"><p className="fx-muted">{s.error || 'Loading the builds store…'}</p></div>;
   const prof = state.profiles.find((p) => p.id === state.profile);
-  const builds = state.builds.filter(keep(filter));
+  // what is drawn: the profile filter first (hidden builds are never touched), then the status filter
+  const { shown: inView, hidden } = pf.apply(state.builds);
+  const builds = inView.filter(keep(filter));
+  const progress = viewProgress(inView);
+  const title = single ? prof?.name ?? state.profile : pf.label;
   return (
     <div className="fx-page axp-builds">
       <header className="fx-pagehead axp-builds__head">
         <div>
           <p className="fx-eyebrow">Builds · one store for every profile · rev {state.rev}</p>
-          <h1 className="axp-builds__title"><InlineName label="Profile name" value={prof?.name ?? state.profile} onSave={(name) => send('rename-profile', { id: state.profile, name }, rt.toast)} /><span className="fx-small fx-muted fx-mono">{state.profile}</span><span className="axp-builds__pct" data-active={state.progress.active || undefined} aria-label={`Profile ${state.progress.pct}% built`}>{state.progress.pct}%</span></h1>
-          <p className="fx-muted axp-builds__sub">{state.progress.complete}/{state.progress.builds} builds complete · {state.progress.done}/{state.progress.total} steps{state.profile !== state.active ? ` · the console's active profile is ${state.active}` : ''}</p>
+          <h1 className="axp-builds__title">{single ? <InlineName label="Profile name" value={title} onSave={(name) => send('rename-profile', { id: state.profile, name }, rt.toast)} /> : <span>{title}</span>}{single && <span className="fx-small fx-muted fx-mono">{state.profile}</span>}<span className="axp-builds__pct" data-active={progress.active || undefined} aria-label={`${title} ${progress.pct}% built`}>{progress.pct}%</span></h1>
+          <p className="fx-muted axp-builds__sub">{progress.complete}/{progress.builds} builds complete · {progress.done}/{progress.total} steps · new builds go to {state.profiles.find((p) => p.id === state.active)?.name ?? state.active}</p>
         </div>
       </header>
-      <Meter value={state.progress.pct} active={state.progress.active} done={state.progress.pct === 100} label={`${prof?.name ?? state.profile}: ${state.progress.done} of ${state.progress.total} steps`} />
+      <Meter value={progress.pct} active={progress.active} done={progress.pct === 100} label={`${title}: ${progress.done} of ${progress.total} steps`} />
       <div className="axp-builds__bar">
-        <SelectField label="Profile" value={state.profile} options={state.profiles.map((p) => ({ value: p.id, label: `${p.name} — ${p.progress.pct}%` }))} onChange={(v) => { rt.settings.set(KEYS.profile, v); void reload(v); }} className="axp-builds__pick" />
+        <SelectField label="Profiles" value={single || (pf.all ? '' : '*')} empty="All profiles" options={[...(!pf.all && !single ? [{ value: '*', label: pf.label }] : []), ...state.profiles.map((p) => ({ value: p.id, label: `${p.name} — ${p.builds} builds` }))]} onChange={(v) => { if (v === '*') return; if (v) pf.only(v); else pf.showAll(); }} className="axp-builds__pick" />
         <Segmented label="View" value={view} onChange={setView} options={[{ value: 'builds', label: 'Builds', icon: 'list' }, { value: 'steps', label: 'Steps', icon: 'layers' }]} />
-        <Segmented label="Show" size="sm" value={filter} onChange={setFilter} options={FILTERS.map((f) => ({ ...f, label: `${f.label} ${state.builds.filter(keep(f.value)).length}` }))} />
+        <Segmented label="Show" size="sm" value={filter} onChange={setFilter} options={FILTERS.map((f) => ({ ...f, label: `${f.label} ${inView.filter(keep(f.value)).length}` }))} />
       </div>
+      <ProfileFilterNote hidden={hidden} />
       <DraftBar state={state} />
       {/* other plugins' panels above the list (e.g. agent-slots: the queue of headless runs waiting for a slot) */}
       <Slot name="builds.top" props={{ profile: state.profile }} />
       {s.error && <p className="fx-small" role="alert"><Icon name="alert" size={14} /> {s.error}</p>}
-      {view === 'builds' ? <BuildsView state={state} builds={builds} /> : <StepsView state={state} builds={builds} />}
+      {view === 'builds' ? <BuildsView state={state} builds={builds} single={single} /> : <StepsView state={state} builds={builds} single={single} hidden={hidden} />}
     </div>
   );
+}
+
+/** Progress over the builds in view (the profile filter's), the same sums as the store's profileProgress. */
+function viewProgress(list: BuildV[]): Progress & { builds: number; complete: number } {
+  let total = 0; let done = 0; let active = false; let complete = 0; let builds = 0;
+  for (const b of list) {
+    if (b.status === 'archived') continue;
+    builds += 1;
+    const fin = b.status === 'complete' || b.status === 'built';
+    if (b.progress.total) { total += b.progress.total; done += b.progress.done; } else { total += 1; done += fin ? 1 : 0; }
+    if (b.progress.active) active = true;
+    if (fin) complete += 1;
+  }
+  return { total, done, pct: total ? Math.round((done / total) * 100) : 0, active, builds, complete };
 }
 
 /** Unsaved changes of the Steps view: count, what they do, Apply / Discard. */
@@ -264,19 +289,20 @@ function Bar({ p, label }: { p: Progress; label: string }) {
   return <span className="axp-builds__bar-cell"><Meter small value={p.pct} active={p.active} done={p.pct === 100} label={label} /><span className="fx-small axp-builds__num" data-active={p.active || undefined}>{p.pct}%</span></span>;
 }
 
-function BuildsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
+function BuildsView({ state, builds, single }: { state: StateV; builds: BuildV[]; single: string }) {
   const rt = useRuntime();
   const [expanded, setExpanded] = useState<string[]>([]);
   const rename = (b: BuildV) => (title: string) => send('ops', { ops: [{ op: 'rename-build', id: b.id, title }] }, rt.toast);
   const columns: GridColumn<BuildV>[] = [
     { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-space) * 30), 4fr)', fixed: true, sortable: true, sortValue: (b) => b.title.toLowerCase(),
       render: (b) => <span className="axp-builds__cell-title"><InlineName label="Build name" value={b.title} onSave={rename(b)} /><span className="fx-small fx-muted fx-mono">{b.id}{b.profiles.length > 1 ? ` · also in ${b.profiles.filter((p) => p !== state.profile).join(', ')}` : ''}</span></span> },
+    { id: 'profile', label: 'Profile', width: 'calc(var(--fx-space) * 16)', sortable: true, sortValue: (b) => b.profiles.join(','), render: (b) => <ProfileChips ids={b.profiles} /> },
     { id: 'status', label: 'Status', width: 'calc(var(--fx-space) * 14)', sortable: true, sortValue: (b) => b.status, render: (b) => <StatusChip b={b} /> },
     { id: 'progress', label: 'Progress', width: 'calc(var(--fx-space) * 22)', sortable: true, sortValue: (b) => b.progress.pct, render: (b) => <Bar p={b.progress} label={`${b.title}: ${b.progress.done} of ${b.progress.total} steps`} /> },
     { id: 'steps', label: 'Steps', width: 'calc(var(--fx-space) * 9)', align: 'end', sortable: true, sortValue: (b) => b.progress.total, render: (b) => <span className="fx-small">{b.progress.done}/{b.progress.total}</span> },
     { id: 'left', label: 'Left', width: 'calc(var(--fx-space) * 10)', align: 'end', sortable: true, sortValue: (b) => b.minutesLeft, render: (b) => <span className="fx-small">{fmtMin(b.minutesLeft)}</span> },
   ];
-  const groups: GridGroup<BuildV>[] = [{ id: 'all', title: `${builds.length} build(s)`, rows: builds, groups: [], fixed: true, progress: state.progress.pct }];
+  const groups: GridGroup<BuildV>[] = [{ id: 'all', title: `${builds.length} build(s)`, rows: builds, groups: [], fixed: true, progress: viewProgress(builds).pct }];
   return (
     <DataGrid<BuildV> id="builds.builds" label="Builds" groups={groups} columns={columns} rowId={(b) => b.id} rowLabel={(b) => b.title} hidden={[]}
       expanded={expanded} onToggleExpand={(id) => setExpanded(expanded.includes(id) ? expanded.filter((x) => x !== id) : [...expanded, id])}
@@ -284,7 +310,9 @@ function BuildsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
       rowRef={(b) => ({ kind: 'build', id: b.id })}
       onMove={(item, target, pos) => {
         if (item.kind !== 'row' || target.kind !== 'row' || item.id === target.id) return;
-        const ids = state.builds.map((b) => b.id).filter((id) => id !== item.id);
+        // order is kept per profile: reordering needs exactly one profile in view
+        if (!single) { rt.toast('Show one profile to reorder its builds (order is kept per profile).', 'info'); return; }
+        const ids = state.builds.filter((b) => b.profiles.includes(single)).map((b) => b.id).filter((id) => id !== item.id);
         const at = ids.indexOf(target.id) + (pos === 'after' ? 1 : 0);
         ids.splice(at, 0, item.id);
         void send('ops', { ops: [{ op: 'reorder-builds', ids }] }, rt.toast);
@@ -326,8 +354,9 @@ function BuildDetail({ b }: { b: BuildV }) {
 
 /* ---------------- Steps view ---------------- */
 
-function StepsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
+function StepsView({ state, builds, single, hidden }: { state: StateV; builds: BuildV[]; single: string; hidden: number }) {
   const rt = useRuntime();
+  const pf = useProfileFilter();
   const [scope, setScope] = useState<string>(() => (rt.settings.get(KEYS.scope) as string) || '');
   const [sel, setSel] = useState<string[]>([]);
   const [anchor, setAnchor] = useState<string | null>(null);
@@ -337,7 +366,7 @@ function StepsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
   const selectMode = (rt.settings.get(KEYS.select) as string) || 'off';
   const press = useRef<number | undefined>(undefined);
   useEffect(() => { rt.settings.set(KEYS.scope, scope); }, [scope]); // eslint-disable-line react-hooks/exhaustive-deps
-  const shown = scope ? state.builds.filter((b) => b.id === scope) : builds;
+  const shown = scope ? builds.filter((b) => b.id === scope) : builds;
   const all = useMemo(() => shown.flatMap((b) => b.steps), [shown]);
   useEffect(() => { setSel((x) => x.filter((u) => all.some((s) => s.uid === u))); }, [all]);
   const picked = all.filter((s) => sel.includes(s.uid));
@@ -350,6 +379,7 @@ function StepsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
   };
   const selCol: GridColumn<StepV>[] = selectMode === 'off' ? [] : [{ id: 'sel', label: '', width: 'calc(var(--fx-space) * 5)', fixed: true,
     render: (s) => <span onClick={(e) => e.stopPropagation()}>{selectMode === 'switches' ? <Switch label="Select" hideLabel checked={sel.includes(s.uid)} onChange={() => toggle(s.uid)} /> : <Checkbox label="" title="Select" checked={sel.includes(s.uid)} onChange={() => toggle(s.uid)} />}</span> }];
+  const profilesOf = (id: string) => state.builds.find((b) => b.id === id)?.profiles ?? [];
   const columns: GridColumn<StepV>[] = [
     ...selCol,
     { id: 'done', label: 'Done', width: 'calc(var(--fx-space) * 6)', fixed: true, render: (s) => <StepTick s={s} toast={rt.toast} /> },
@@ -360,7 +390,7 @@ function StepsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
           <span className="fx-small fx-muted fx-mono">{s.id}{s.origin ? ` · ${s.origin.how} from ${s.origin.build}` : ''}</span>
         </span>) },
     { id: 'build', label: 'Source build', width: 'minmax(calc(var(--fx-space) * 16), 2fr)', sortable: true, sortValue: (s) => s.buildTitle, render: (s) => <span className="fx-small">{s.buildTitle}</span> },
-    { id: 'profile', label: 'Profile', width: 'calc(var(--fx-space) * 12)', render: () => <span className="fx-small fx-mono">{state.profile}</span> },
+    { id: 'profile', label: 'Profile', width: 'calc(var(--fx-space) * 14)', sortable: true, sortValue: (s) => profilesOf(s.build).join(','), render: (s) => <ProfileChips ids={profilesOf(s.build)} /> },
     { id: 'kind', label: 'Kind', width: 'calc(var(--fx-space) * 10)', sortable: true, sortValue: (s) => s.kind, render: (s) => <Chip tone={s.kind === 'fix' ? 'warning' : s.kind === 'removal' ? 'danger' : s.kind === 'creation' ? 'success' : undefined}>{s.kind}</Chip> },
     { id: 'target', label: 'Target', width: 'minmax(calc(var(--fx-space) * 12), 2fr)', render: (s) => <span className="fx-small fx-mono">{s.target}</span> },
     { id: 'model', label: 'Model', width: 'calc(var(--fx-space) * 9)', sortable: true, sortValue: (s) => s.model, render: (s) => <Chip tone={s.model === 'Fable' ? 'accent' : undefined}>{s.model}</Chip> },
@@ -374,10 +404,10 @@ function StepsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
   return (
     <div className="axp-builds__steps-view">
       <div className="axp-builds__bar">
-        <SelectField label="Scope" value={scope} empty="Every build in the profile" options={state.builds.map((b) => ({ value: b.id, label: b.title }))} onChange={(v) => { setScope(v); setSel([]); }} className="axp-builds__pick" />
+        <SelectField label="Scope" value={scope} empty={pf.all ? 'Every build' : `Every build in ${pf.label}`} options={builds.map((b) => ({ value: b.id, label: b.title }))} onChange={(v) => { setScope(v); setSel([]); }} className="axp-builds__pick" />
         <span className="fx-small fx-muted">{sel.length ? `${sel.length} selected` : isPhone() ? 'Long-press or tap to select' : 'Ctrl+click to select more, Shift+click for a range'}</span>
         <span className="axp-builds__grow" />
-        <Button size="sm" icon="check-circle" disabled={!all.length} onClick={() => setSel(sel.length === all.length ? [] : all.map((s) => s.uid))}>{sel.length === all.length && all.length ? 'Select none' : 'Select all'}</Button>
+        <Button size="sm" icon="check-circle" disabled={!all.length} onClick={() => setSel(sel.length === all.length ? [] : all.map((s) => s.uid))}>{sel.length === all.length && all.length ? 'Select none' : pf.bulk('Select all', all.length)}</Button>
         <Button size="sm" icon="layout" disabled={!one} title="Divide the selected step further" onClick={() => one && setDialog({ kind: 'divide', step: one })}>Divide</Button>
         <Button size="sm" icon="cut" disabled={!picked.length} title="Take the selected steps into a new build (or split them into N)" onClick={() => setDialog({ kind: 'harvest' })}>Harvest</Button>
         {scopedBuild && <span className="axp-builds__inline"><Icon name="edit" size={12} /><InlineName label="Build name" value={scopedBuild.title} onSave={(title) => draft({ op: 'rename-build', id: scopedBuild.id, title })} /></span>}
@@ -390,7 +420,8 @@ function StepsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
         rowRef={(s) => ({ kind: 'build-step', id: s.uid })}
         onMove={(item, target, pos) => {
           if (item.kind === 'group' && target.kind === 'group') {
-            const ids = state.builds.map((b) => b.id).filter((id) => id !== item.id); ids.splice(ids.indexOf(target.id) + (pos === 'after' ? 1 : 0), 0, item.id);
+            if (!single) { rt.toast('Show one profile to reorder its builds (order is kept per profile).', 'info'); return; }
+            const ids = state.builds.filter((b) => b.profiles.includes(single)).map((b) => b.id).filter((id) => id !== item.id); ids.splice(ids.indexOf(target.id) + (pos === 'after' ? 1 : 0), 0, item.id);
             void draft({ op: 'reorder-builds', ids }); return;
           }
           if (item.kind !== 'row' || target.kind !== 'row' || item.id === target.id) return;
@@ -407,7 +438,7 @@ function StepsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
       {dialog?.kind === 'divide' && <DivideDialog step={dialog.step} onClose={() => setDialog(null)} />}
       {dialog?.kind === 'restore' && (
         <ConfirmDialog title="Restore default" yes="Restore default" onClose={() => setDialog(null)}
-          text={dialog.id ? `Put “${state.builds.find((b) => b.id === dialog.id)?.title}” back to the breakdown the orchestrator first made? This undoes its reordering, divisions and harvests (done ticks are kept). It goes into the draft; nothing changes until Apply.` : `Put all ${rearranged.length} rearranged build(s) in this view back to their default breakdown? It goes into the draft; nothing changes until Apply.`}
+          text={dialog.id ? `Put “${state.builds.find((b) => b.id === dialog.id)?.title}” back to the breakdown the orchestrator first made? This undoes its reordering, divisions and harvests (done ticks are kept). It goes into the draft; nothing changes until Apply.` : `Put all ${rearranged.length} rearranged build(s) in this view back to their default breakdown?${hidden ? ` Only builds the profile filter shows (${pf.label}); ${hidden} hidden build(s) stay untouched.` : ''} It goes into the draft; nothing changes until Apply.`}
           onYes={() => { const ids = dialog.id ? [dialog.id] : rearranged.map((b) => b.id); void (async () => { for (const id of ids) await draft({ op: 'restore-default', id }); })(); }} />
       )}
     </div>

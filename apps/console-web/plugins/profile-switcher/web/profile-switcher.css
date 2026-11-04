@@ -1,0 +1,6 @@
+/* Profile switcher. Theme tokens only, axp-profile-switcher prefix; controls are framework components (layout only here). */
+.axp-profile-switcher__p { margin: 0 }
+.axp-profile-switcher__list { list-style: none; margin: 0; padding: 0; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
+.axp-profile-switcher__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg) }
+.axp-profile-switcher__row + .axp-profile-switcher__row { border-top: var(--fx-border-w) solid var(--fx-border) }
+.axp-profile-switcher__name { display: inline-flex; flex: 1 1 calc(var(--fx-space) * 24); align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0 }
