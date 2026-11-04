@@ -120,3 +120,37 @@ async def jobs_hire(request: Request) -> dict[str, Any]:
     """One-tap hire for a job type nobody owns."""
     data = await _body(request)
     return _run("hire", data["jobType"], cli=JOBS)
+
+
+class RosterService:
+    """Capability `axf.swarm-roster@1`: the crew (roster + hired agents with their custom names, avatars, status, pay and
+    today's spend), for plugins that show agents (the Crew, avatars everywhere). One `swarm.mjs state` read, kept 30 s."""
+    version = 1
+    TTL = 30.0
+
+    def __init__(self) -> None:
+        self._at = 0.0
+        self._value: list[dict[str, Any]] = []
+
+    def agents(self) -> list[dict[str, Any]]:
+        import time
+        if self._value and time.time() - self._at < self.TTL:
+            return self._value
+        st = (_run("state").get("state") or {})
+        sw = (st.get("swarm") or {}).get("agents") or {}
+        spend, pay = st.get("spend") or {}, st.get("pay") or {}
+        out = []
+        for a in (st.get("roster") or {}).get("agents") or []:
+            s = sw.get(a.get("id")) or {}
+            custom = ((s.get("custom") or {}).get("name") or "").strip()
+            out.append({"id": a.get("id"), "name": custom or a.get("name"), "role": a.get("role"), "avatar": a.get("avatar"),
+                        "salary": a.get("salary"), "status": s.get("status") or "", "catchphrase": a.get("catchphrase") or "",
+                        "spentToday": ((spend.get(a.get("id")) or {}).get("today") or {}).get("usd") or 0,
+                        "payLeft": (pay.get(a.get("id")) or {}).get("left")})
+        self._value, self._at = out, time.time()
+        return out
+
+
+from plugin_services import provide as _provide  # noqa: E402
+
+_provide("axf.swarm-roster@1", RosterService(), "agent-swarm")

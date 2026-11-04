@@ -9,7 +9,7 @@ import { AppearancePanel, BehaviourPanel, HeadlessPanel, ProfilesPanel } from '.
 import { ClaudePanel, GeneralPanel, MoshiPanel, SessionsPanel, VpsPanel } from './panels';
 import { TerminalHost } from './TerminalHost';
 import { RunOutputTab, watchHubRuns } from './RunOutputTab';
-import { watchHeadless } from './headless';
+import { openHeadless, watchHeadless } from './headless';
 import './terminal.css';
 import { appMenu } from './menu';
 
@@ -48,6 +48,8 @@ export const plugin: AxfWebLibrary = {
       }
       return openFromContext(rt);
     }, () => openFromContext(rt)), { label: 'Open a terminal' });
+    // a headless run's own tab (the Crew, avatars' right-click "Open Terminal tab"): terminal.attach:<axf-… session>[:<title>]
+    rt.actions.register('terminal.attach', ([name = '', title = '']) => { if (/^axf-[A-Za-z0-9._-]{1,64}$/.test(name)) openHeadless(rt, { name, createdAt: 0, agent: decodeURIComponent(title) }); }, { label: 'Open a headless run in a Terminal tab', params: true, searchable: false });
     rt.actions.register('terminal.claude', () => rt.openDialog('terminal.connect', { hostId: '', mode: 'claude' }), { label: 'New Claude Code tab (pick a connection)' });
     watchHubRuns(rt); // approved VPS / shell commands open here once they've run (setting showHubRuns)
     watchHeadless(rt); // headless Claude Code sessions on the VPS open here, window to the front (setting showHeadless)
