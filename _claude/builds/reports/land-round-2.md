@@ -29,7 +29,7 @@ are behind them.
 
 | PR | State | What was resolved |
 |---|---|---|
-| #296 Gizmo companion | pushed (e8fb3287), CI not read (API budget out) | headless-core helpers moved to the claude-session lib also carry main's chain-tree types (`ChainReason`, `ChainNode`, `parentI`, `why`) and keep main's `chainTree` / `revealTick`; roster keeps Greenlight Gina and Gizmo; swarm test counts the companion skill; CI runs both new checks |
+| #296 Gizmo companion | pushed (e8fb3287); CI: sweep red on one finding, `apps/amberx-droid/src/plugins/companion/web/Chat.tsx:45` `axp-companion__tools` needs `role="toolbar"` + `aria-label` (check-toolbars); the other jobs green | headless-core helpers moved to the claude-session lib also carry main's chain-tree types (`ChainReason`, `ChainNode`, `parentI`, `why`) and keep main's `chainTree` / `revealTick`; roster keeps Greenlight Gina and Gizmo; swarm test counts the companion skill; CI runs both new checks |
 | #298 Console lazy loader | local, clean; auto-land pushed its own main merge meanwhile | `App.tsx` installs main's toolbars library next to the lazy loader's disabled-plugin stubs; `.axf-queue.log` (now tracked on main) |
 | #281 Smart menus | local, clean against main as of 13:00; **now conflicts with #295 in `framework/core/runtime.ts`** | menu components merged with main's menu-fit@1 (`MenuScroll`, `useMenuFit` in the split `ContextMenuBox`, smart-menu look vars), staggered row animations follow the scroll wrapper, fixtures keep main's agent-card / widgets |
 | #291 Git status board | local, clean | its job type renamed `pr-fix` (main added an `ops-fix` with another meaning); push-banner keeps both `merge_hold` and main's `wait_ui`; swarm test allows the merge fixer on `pr-fix` |
@@ -56,7 +56,7 @@ Not touched as asked: #299, #301, #302 (WIP).
 ## Next
 
 1. Fix the GitHub budget drain (above).
-2. #296: read its CI on e8fb3287 and merge (or let auto-merge take it).
+2. #296: add `role="toolbar"` + `aria-label` to the companion's tools row (Chat.tsx:45), push, CI, merge.
 3. #298 #281 (re-resolve `runtime.ts` against #295) #291 #293 #289 #269: `git checkout land/<pr>`, merge main, push to
    the PR branch, CI, merge. Then #300 reworked on top of #269.
 4. Redeploy all apps at the end.
