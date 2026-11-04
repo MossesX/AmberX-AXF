@@ -5,7 +5,7 @@
 import {
   SNIPPETS, TOOLS, VIEWS, WIZARDS, codeBlock, findAll, findNext, heading, idFromLoose, insertBlock, linePrefix, link, offsetOfLine,
   outline, replaceAll, table, toggleCheck, tokens, viewOf, wizardId, wrap, type Sel,
-} from './web/model';
+} from './web/model.ts';
 
 declare const process: { exit(code: number): never };
 let fails = 0;
