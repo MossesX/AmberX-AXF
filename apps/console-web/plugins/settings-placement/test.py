@@ -38,10 +38,11 @@ def ok(cond: bool, what: str) -> None:
     n += 1
 
 
-TERM = "ai.amberx.axf.console.terminal"
+# this plugin's own id (a folder resolves to its plugin id); no other plugin is named here (plugin-lifecycle check)
+TERM = "ai.amberx.axf.console.settings-placement"
 r = c.get("/placements").json()
 ok(r["count"] == 0 and r["rev"] == 0, "empty store")
-r = c.put("/placements/console-terminal", json={"placement": "inside", "mode": "pane", "looks": {"inside:pane": {"edge": "left", "animation": "slide", "dim": True}}})
+r = c.put("/placements/settings-placement", json={"placement": "inside", "mode": "pane", "looks": {"inside:pane": {"edge": "left", "animation": "slide", "dim": True}}})
 ok(r.status_code == 200 and r.json()["owner"] == TERM, "folder resolves to the plugin id")
 g = c.get(f"/placements/{TERM}").json()
 ok(g["pick"]["placement"] == "inside" and g["pick"]["looks"]["inside:pane"]["edge"] == "left" and g["source"] == "own", "get by id")

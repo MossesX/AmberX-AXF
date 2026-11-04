@@ -35,7 +35,7 @@
   "commands": { "$axf": "plugin-commands@1", "auto": true, "items": [
     { "route": "GET /placements", "id": "list", "title": "Where every plugin's settings open", "readOnly": true },
     { "route": "GET /placements/{owner}", "id": "get", "title": "Where one plugin's settings open", "readOnly": true,
-      "input": { "type": "object", "properties": { "owner": { "type": "string", "description": "plugin id (ai.amberx.axf.console.terminal) or folder (console-terminal)" } }, "required": ["owner"] } },
+      "input": { "type": "object", "properties": { "owner": { "type": "string", "description": "plugin id (ai.amberx.axf.console.<plugin>) or its folder name" } }, "required": ["owner"] } },
     { "route": "PUT /placements/{owner}", "id": "set", "title": "Set where one plugin's settings open",
       "input": { "type": "object", "properties": {
         "owner": { "type": "string", "description": "plugin id or folder" },
