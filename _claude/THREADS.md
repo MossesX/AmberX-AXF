@@ -708,27 +708,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:29 UTC · `plugin-lazy-load` → complete, note (current) · foreign-write
-- 2026-11-04 14:30 UTC · `urgent-land-lazy-loader` note (current) · foreign-write
-- 2026-11-04 14:30 UTC · `urgent-land-lazy-loader` note (current) · orchestrator
-- 2026-11-04 14:30 UTC · `urgent-land-lazy-loader` note (current) · builds-live
-- 2026-11-04 14:31 UTC · `plugin-lazy-load` → complete, note (current) · foreign-write
-- 2026-11-04 14:31 UTC · `profile-switcher-widget` note (current) · foreign-write
-- 2026-11-04 14:31 UTC · `land-round-2` note (current) · foreign-write
-- 2026-11-04 14:31 UTC · `urgent-land-lazy-loader` s4 done, → complete, note (current) · foreign-write
-- 2026-11-04 14:31 UTC · `crew-profiles` s4 done, s5 done, s6 done, → complete, note (current) · foreign-write
-- 2026-11-04 14:31 UTC · `urgent-land-gizmo-chat` s1 done, s2 done, s3 done (current) · foreign-write
-- 2026-11-04 14:31 UTC · `profile-lists-home-card` s2 done, s3 done, note (current) · foreign-write
-- 2026-11-04 14:31 UTC · `gizmo-voice` added (24 steps) (current) · foreign-write
-- 2026-11-04 14:31 UTC · `gizmo-terminal` added (32 steps) (current) · foreign-write
-- 2026-11-04 14:31 UTC · `console-wake-finish` PR #317 (current) · builds-live
-- 2026-11-04 14:28 UTC · `plugin-lazy-load` → complete, note (current) · reconciler
-- 2026-11-04 14:31 UTC · `urgent-land-lazy-loader` note (current) · foreign-write
-- 2026-11-04 14:31 UTC · `console-wake-finish` s2 done (current) · orchestrator
-- 2026-11-04 14:31 UTC · `console-wake-finish` s4 done (current) · orchestrator
-- 2026-11-04 14:32 UTC · `merge-queue` added (6 steps) (current) · orchestrator
-- 2026-11-04 14:32 UTC · `merge-queue` → running (current) · orchestrator
-- 2026-11-04 14:38 UTC · `profile-lists-home-card` PR #318 (current) · builds-live
 - 2026-11-04 14:38 UTC · `batch-manager` note (angel) · orchestrator
 - 2026-11-04 14:38 UTC · `grid-sort-filter` note (angel) · orchestrator
 - 2026-11-04 14:38 UTC · `grid-sort-filter` note (angel) · orchestrator
@@ -1108,6 +1087,27 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 20:05 UTC · `handoff-2` note (current) · foreign-write
 - 2026-11-04 20:05 UTC · `grid-column-hiding` s1 done, → running (current) · orchestrator
 - 2026-11-04 20:05 UTC · `grid-column-hiding` s2 done (current) · orchestrator
+- 2026-11-04 20:10 UTC · `grid-column-hiding` s9-8 done (current) · orchestrator
+- 2026-11-04 20:10 UTC · `grid-column-hiding` s10-9 done (current) · orchestrator
+- 2026-11-04 20:10 UTC · `grid-column-hiding` s11-10 done (current) · orchestrator
+- 2026-11-04 20:11 UTC · `merge-queue` note (current) · foreign-write
+- 2026-11-04 20:11 UTC · `fable-review-nov3` note (current) · foreign-write
+- 2026-11-04 20:11 UTC · `model-thinking-audit` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, → complete, note (current) · foreign-write
+- 2026-11-04 20:11 UTC · `build-todo-sync` added (7 steps) (current) · foreign-write
+- 2026-11-04 20:11 UTC · `handoff-2` added (11 steps) (current) · foreign-write
+- 2026-11-04 20:11 UTC · `fable-packager` added (5 steps) (current) · foreign-write
+- 2026-11-04 20:11 UTC · `grid-column-hiding` added (6 steps) (current) · foreign-write
+- 2026-11-04 20:11 UTC · `land-merge-queue-first` s2 done (urgent) · orchestrator
+- 2026-11-04 20:11 UTC · `land-merge-queue-first` s4 done (urgent) · orchestrator
+- 2026-11-04 20:11 UTC · `land-merge-queue-first` s5 done (urgent) · orchestrator
+- 2026-11-04 20:11 UTC · `land-merge-queue-first` branch claude/land-batch-1, PR #339 (urgent) · builds-live
+- 2026-11-04 20:18 UTC · `grid-column-hiding` branch claude/grid-column-hiding, PR #340 (current) · builds-live
+- 2026-11-04 20:18 UTC · `grid-column-hiding` s12-11 done, → built (current) · orchestrator
+- 2026-11-04 20:18 UTC · `grid-column-hiding` s12-11 done, → built (current) · foreign-write
+- 2026-11-04 20:20 UTC · `land-merge-queue-first` → complete, note (urgent) · reconciler
+- 2026-11-04 19:59 UTC · `handoff-2` s11 done, → built (current) · orchestrator
+- 2026-11-04 19:59 UTC · `handoff-2` note (current) · orchestrator
+- 2026-11-04 20:19 UTC · `land-merge-queue-first` → complete, note (urgent) · reconciler
 
 ## Token passes (log)
 
