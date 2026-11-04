@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T20:41:13.963Z",
+ "updatedAt": "2026-11-04T20:42:41.842Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -11300,9 +11300,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T17:18:47.970Z",
-   "updatedAt": "2026-11-04T17:18:47.971Z",
+   "updatedAt": "2026-11-04T20:41:55.871Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: branch claude/molly-banner-match (no PR yet)",
+     "at": "2026-11-04T20:41:55.871Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {

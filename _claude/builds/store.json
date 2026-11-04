@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 944,
- "updatedAt": "2026-11-04T20:41:13.963Z",
+ "rev": 945,
+ "updatedAt": "2026-11-04T20:42:41.842Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -81980,11 +81980,11 @@
     "current"
    ],
    "order": {
-    "current": 47
+    "current": 48
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -82226,11 +82226,11 @@
     "current"
    ],
    "order": {
-    "current": 48
+    "current": 49
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -82531,11 +82531,11 @@
     "current"
    ],
    "order": {
-    "current": 49
+    "current": 50
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -82900,11 +82900,11 @@
     "current"
    ],
    "order": {
-    "current": 50
+    "current": 51
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -83198,11 +83198,11 @@
     "current"
    ],
    "order": {
-    "current": 51
+    "current": 52
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -83225,9 +83225,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T17:18:47.970Z",
-   "updatedAt": "2026-11-04T17:18:47.971Z",
+   "updatedAt": "2026-11-04T20:41:55.871Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: branch claude/molly-banner-match (no PR yet)",
+     "at": "2026-11-04T20:41:55.871Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -83362,10 +83367,26 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-04T17:18:47.970Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw2ds7aa06x4ec": "2026-11-04T17:18:47.971Z",
+     "st-mw2ds7aa07zaov": "2026-11-04T17:18:47.971Z",
+     "st-mw2ds7aa08ec4q": "2026-11-04T17:18:47.971Z",
+     "st-mw2ds7aa09z4wg": "2026-11-04T17:18:47.971Z",
+     "st-mw2ds7aa0aagni": "2026-11-04T17:18:47.971Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-04T17:18:47.971Z",
    "rearranged": false,
