@@ -1003,6 +1003,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 12:44 UTC · `browser-automation` note (current) · foreign-write
 - 2026-11-04 12:44 UTC · `profile-switcher-widget` note (current) · foreign-write
 - 2026-11-04 12:44 UTC · `app-style-override` note (current) · foreign-write
+- 2026-11-04 12:46 UTC · `hotfix-build-manager` s1 done (current) · builds-page
 
 ## Token passes (log)
 
