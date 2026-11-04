@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 984,
- "updatedAt": "2026-11-04T21:46:09.324Z",
+ "rev": 985,
+ "updatedAt": "2026-11-04T21:50:51.873Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -83899,19 +83899,23 @@
    "title": "UI Review alarm",
    "category": "Feature",
    "detail": "Open UI Review on new items; alarm at 30 min unreviewed; 5 min grace then auto-approve or hold (switch). Addenda: sort/group by PR + ids on rows + deep links; default newest-first; live previews in active theme; per-item Color/Style/Layout preview pickers; Layout Apply adds a follow-up step; layout list = the screen's 3 generated layouts.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-review-alarm",
    "pr": "#343",
    "createdAt": "2026-11-04T21:04:36.261Z",
-   "updatedAt": "2026-11-04T21:26:14.913Z",
+   "updatedAt": "2026-11-04T21:47:15.384Z",
    "builtAt": "",
    "notes": [
     {
      "text": "PR #343 (s1-s5 + s10): alarm timer, settings, REST/MCP/CLI, open-on-new, sort/group by PR, ids, deep links. Open: s6-s8 live previews + Color/Style/Layout pickers + Layout Apply (layout list waits on three-layouts-per-screen); s9 AmberX full-screen alarm NEEDS A NEW APK. Report _claude/builds/reports/ui-review-alarm.md",
      "at": "2026-11-04T21:26:14.913Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-04T21:47:15.384Z"
     }
    ],
    "approvals": [],
@@ -84158,7 +84162,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
