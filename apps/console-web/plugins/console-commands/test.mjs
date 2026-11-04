@@ -26,6 +26,14 @@ t('CLI words', () => {
   assert.deepEqual(commandFromArgv(['list', 'actions', 'theme']).command, { op: 'list', target: 'console.actions', select: { q: 'theme' } });
   assert.deepEqual(commandFromArgv(['list', 'plan']).command, { op: 'list', target: 'console.screens', select: { q: 'plan' } });
   assert.deepEqual(commandFromArgv(['clients']).command, { op: 'list', target: 'console.clients' });
+  // where settings open (settings-placement@1, Nov 4 2026)
+  assert.deepEqual(commandFromArgv(['placement']).command, { op: 'list', target: 'console.placement' });
+  assert.deepEqual(commandFromArgv(['placement', 'home']).command, { op: 'get', target: 'console.placement', path: 'home' });
+  assert.deepEqual(commandFromArgv(['placement', 'home', '--in', 'dialog']).command, { op: 'set', target: 'console.placement', path: 'home', value: 'dialog' });
+  assert.deepEqual(commandFromArgv(['placement', 'plan', 'studio', 'side', 'panel', 'left']).command, { op: 'set', target: 'console.placement', path: 'plan studio', value: 'side panel left' });
+  assert.deepEqual(commandFromArgv(['placement', 'home', '--in', 'default']).command, { op: 'reset', target: 'console.placement', path: 'home' });
+  assert.deepEqual(commandFromArgv(['list', 'placement', 'home']).command, { op: 'list', target: 'console.placement', select: { q: 'home' } });
+  assert.ok(commandFromArgv(['placement', 'home', '--in', 'sideways']).error, 'an unknown placement word is refused');
   assert.ok(commandFromArgv(['open']).error, 'open without a screen is a usage error');
   assert.ok(commandFromArgv(['explode']).error, 'unknown verb');
 });
@@ -34,8 +42,27 @@ const NOW = Date.now();
 const clients = [{ id: 'tab-1', lastUsed: NOW, lastSeen: NOW, here: { screen: 'home' }, catalog: { items: [
   { kind: 'screen', id: 'plan-studio', label: 'Plan Studio' }, { kind: 'screen', id: 'home', label: 'Home' },
   { kind: 'action', id: 'assets.reset', label: 'Reset to defaults' }, { kind: 'action', id: 'terminal.open', label: 'Open output terminal' },
+  { kind: 'placement', id: 'app', label: 'App default', detail: 'Full page', value: 'page' },
+  { kind: 'placement', id: 'screen:home', label: 'Home', detail: 'Full page (app default)', value: 'default', keywords: ['home', 'screen'] },
+  { kind: 'placement', id: 'plugin:x.terminal', label: 'Terminal', detail: 'Inside the screen · slide-out pane, left', value: 'inside' },
   { kind: 'bogus', id: 'x' },
 ] } }];
+
+t('runner: where settings open', () => {
+  const set = runConsole({ op: 'set', target: 'console.placement', path: 'home', value: 'side panel left' }, { clients, by: 'claude' });
+  assert.ok(set.ok && set.deliver.message.op === 'place' && set.deliver.message.target === 'screen:home' && set.deliver.message.value === 'panel-left', JSON.stringify(set));
+  assert.equal(runConsole({ op: 'set', target: 'console.placement', path: 'home', value: 'side panel left' }, { clients, grants: ['control.console.navigate'] }).code, 'denied', 'a set needs control.console.write');
+  assert.equal(runConsole({ op: 'set', target: 'console.placement', path: 'home', value: 'sideways' }, { clients }).code, 'validation', 'an unknown placement word');
+  assert.equal(runConsole({ op: 'set', target: 'console.placement', path: 'nowhere-at-all', value: 'dialog' }, { clients }).code, 'not_found', 'an unknown screen');
+  const reset = runConsole({ op: 'reset', target: 'console.placement', path: 'home' }, { clients });
+  assert.ok(reset.ok && reset.deliver.message.value === 'default', 'reset = back to the app default');
+  const app = runConsole({ op: 'set', target: 'console.placement', path: 'app', value: 'in a dialog' }, { clients });
+  assert.ok(app.ok && app.deliver.message.target === 'app' && app.deliver.message.value === 'dialog', 'the app default');
+  const inside = runConsole({ op: 'set', target: 'console.placement', path: 'terminal', value: 'inside as a split view' }, { clients });
+  assert.ok(inside.ok && inside.deliver.message.target === 'plugin:x.terminal' && inside.deliver.message.value === 'inside:split', 'a plugin, with the inside mode');
+  assert.equal(runConsole({ op: 'list', target: 'console.placement' }, { clients }).items.length, 3, 'list: every screen, plugin and the app default');
+  assert.equal(runConsole({ op: 'get', target: 'console.placement', path: 'home' }, { clients }).item.value, 'default', 'get shows the choice in force');
+});
 
 t('runner: gate, resolve, deliver', () => {
   const r = runConsole({ op: 'act', target: 'console.screens', path: 'plan studio', action: 'open' }, { clients, by: 'claude' });

@@ -1791,6 +1791,44 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 @keyframes axf-sp-from-top { from { transform: translateY(-100%); } }
 @keyframes axf-sp-from-bottom { from { transform: translateY(100%); } }
 @media (prefers-reduced-motion: reduce) { .axf-sp, .axf-sp-scrim, .axf-sphost__content { animation: none !important; transition: none !important; } }
+/* every screen is a host (AppShell): the host scrolls instead of .fx-main, so a pane covers the visible main area */
+.fx-main:has(> .axf-sphost--screen) { overflow: hidden; }
+.axf-sphost--screen { height: 100%; }
+.axf-sphost--screen > .axf-sphost__content { overflow: auto; display: block; }
+.axf-sphost--screen > .axf-sphost__content > .fx-main__inner { flex: none; min-height: 100%; box-sizing: border-box; }
+.axf-sphost--screen > .axf-sp--inline { margin: var(--fx-dens-gap-md) var(--fx-dens-pad-page) 0; }
+:where([data-fx-narrow]) .axf-sphost--screen > .axf-sp--inline { margin: var(--fx-dens-gap-sm) var(--fx-layout-phone-main-pad-x) 0; }
+/* side panel and bottom sheet over the page (settings-placement@1, Nov 4 2026) */
+.axf-sp-layer > .axf-sp--panel { max-width: calc(100% - var(--fx-space) * 6); }
+.axf-sp-layer > .axf-sp--sheet { border-radius: var(--axf-sp-radius) var(--axf-sp-radius) 0 0; max-height: calc(100% - var(--fx-space) * 6); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.axf-sp-layer > .axf-sp--sheet > .axf-sp__head::before { content: ''; position: absolute; top: var(--fx-dens-gap-xs); left: 50%; translate: -50% 0; width: calc(var(--fx-space) * 4); height: calc(var(--fx-border-w) * 3); border-radius: 999px; background: var(--fx-border); }
+.axf-sp-layer > .axf-sp--sheet > .axf-sp__head { position: relative; padding-top: var(--fx-dens-gap-md); }
+.axf-sp-layer[data-axf-sp-dim='off'][data-axf-sp-via='panel'] > .axf-sp-scrim, .axf-sp-layer[data-axf-sp-dim='off'][data-axf-sp-via='sheet'] > .axf-sp-scrim { display: none; }
+/* closing: the same way out (react/settingsHost.tsx keeps the surface for one animation, then drops it) */
+.axf-sp.is-closing { pointer-events: none; }
+.axf-sp-scrim.is-closing { animation-name: axf-sp-fade-out; }
+[data-axf-sp-anim='fade'] > .axf-sp.is-closing, [data-axf-sp-anim='fade'] > * > .axf-sp.is-closing { animation-name: axf-sp-fade-out; }
+[data-axf-sp-anim='scale'] > .axf-sp.is-closing { animation-name: axf-sp-scale-out; }
+[data-axf-sp-anim='drop'] > .axf-sp.is-closing { animation-name: axf-sp-drop-out; }
+[data-axf-sp-anim='slide'][data-axf-sp-edge='left'] > .axf-sp.is-closing, [data-axf-sp-anim='push'][data-axf-sp-edge='left'] > .axf-sp.is-closing { animation-name: axf-sp-to-left; }
+[data-axf-sp-anim='slide'][data-axf-sp-edge='right'] > .axf-sp.is-closing, [data-axf-sp-anim='push'][data-axf-sp-edge='right'] > .axf-sp.is-closing { animation-name: axf-sp-to-right; }
+[data-axf-sp-anim='slide'][data-axf-sp-edge='top'] > .axf-sp.is-closing, [data-axf-sp-anim='push'][data-axf-sp-edge='top'] > .axf-sp.is-closing { animation-name: axf-sp-to-top; }
+[data-axf-sp-anim='slide'][data-axf-sp-edge='bottom'] > .axf-sp.is-closing, [data-axf-sp-anim='push'][data-axf-sp-edge='bottom'] > .axf-sp.is-closing { animation-name: axf-sp-to-bottom; }
+@keyframes axf-sp-fade-out { to { opacity: 0; } }
+@keyframes axf-sp-scale-out { to { opacity: 0; scale: 0.92; } }
+@keyframes axf-sp-drop-out { to { opacity: 0; transform: scaleY(0.6); } }
+@keyframes axf-sp-to-left { to { transform: translateX(-100%); } }
+@keyframes axf-sp-to-right { to { transform: translateX(100%); } }
+@keyframes axf-sp-to-top { to { transform: translateY(-100%); } }
+@keyframes axf-sp-to-bottom { to { transform: translateY(100%); } }
+/* the "Pops up in" row at the top of every settings interface */
+.axf-sp-row { align-items: center; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); }
+.axf-sp-row__label { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); font-weight: 600; font-size: var(--fx-type-root-sm); }
+.axf-sp-row__select { min-width: calc(var(--fx-row-h) * 5); }
+.axf-sp-row__hint { font-size: var(--fx-type-root-sm); }
+.axf-settings__screens { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
+.axf-settings__screens > li { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axf-settings__screens > li:last-child { border-bottom: 0; }
 /* the picker and its live preview */
 .axf-sp-picker__look { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); }
 .axf-sp-picker__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-row-h) * 4.5), 1fr)); gap: var(--fx-dens-gap-md); }

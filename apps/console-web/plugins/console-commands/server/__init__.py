@@ -687,6 +687,19 @@ async def run_action(request: Request) -> JSONResponse:
     return await go(request, cmd)
 
 
+@router.post("/placement")
+async def placement(request: Request) -> JSONResponse:
+    """Where settings open (settings-placement@1): { screen|path: "screen:<view>" | "plugin:<id>" | "app" (default), placement|value: a placement word, or "default" to reset }. No value = read it."""
+    b = await _body(request)
+    path = b.get("screen") or b.get("path") or b.get("q") or "app"
+    value = b.get("placement") or b.get("value") or ""
+    if not value:
+        return await go(request, {"op": "get", "target": "console.placement", "path": path})
+    if str(value).strip().lower() in ("default", "app default", "use the app default", "reset"):
+        return await go(request, {"op": "reset", "target": "console.placement", "path": path, **_to(b), **_audit(b)})
+    return await go(request, {"op": "set", "target": "console.placement", "path": path, "value": value, **_to(b), **_audit(b)})
+
+
 @router.post("/back")
 @router.post("/home")
 @router.post("/close")
@@ -702,7 +715,7 @@ async def where(request: Request) -> JSONResponse:
 
 @router.get("/list")
 async def list_(request: Request, kind: str = "screens", q: str = "", limit: int = 50, client: str = "") -> JSONResponse:
-    target = {"screens": "console.screens", "dialogs": "console.dialogs", "settings": "console.settings", "actions": "console.actions", "clients": "console.clients"}.get(kind, f"console.{kind}")
+    target = {"screens": "console.screens", "dialogs": "console.dialogs", "settings": "console.settings", "actions": "console.actions", "clients": "console.clients", "placement": "console.placement", "placements": "console.placement"}.get(kind, f"console.{kind}")
     select: dict[str, Any] = {k: v for k, v in {"q": q, "client": client}.items() if v}
     if target != "console.clients" or limit != 50:
         select["limit"] = max(1, min(limit, 500))

@@ -18,6 +18,7 @@ import { Note } from './components/Forms';
 import { HelpLayer } from './components/Help';
 import { embedHostLabel, embedPageView } from '../core/engines/embed';
 import { placedParts } from './placement';
+import { SettingsHost, screenOwner } from './settingsHost';
 
 export interface ViewDef {
   title: string;
@@ -145,17 +146,21 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
           <NavMenu views={views} />
         </div>
       )}
-      <main className="fx-region fx-main" style={{ gridArea: 'main' }} data-fx-ctx-target="canvas">
+      <main className="fx-region fx-main" style={{ gridArea: 'main' }} data-fx-ctx-target="canvas" data-fx-ctx-payload={state.view}>
+        {/* settings-placement@1 (Brett, Nov 4 2026: "select in every screen where its settings pops up"): every screen is a
+            settings host, so its settings can open inside it (inline, pane, drop-down, tab, split); the host scrolls. */}
+        <SettingsHost owner={screenOwner(state.view)} className="axf-sphost--screen" label={view?.title ?? 'Back'}>
         {keptNow.map((id) => (
           <div key={`kept:${id}`} className="fx-main__inner fx-main__inner--kept" hidden={id !== state.view} data-axf-view={id}>
             {views[id]?.render()}
           </div>
         ))}
         {!keep.includes(state.view) && (
-          <div className="fx-main__inner" key={state.view}>
+          <div className="fx-main__inner" key={state.view} data-axf-view={state.view}>
             {view?.render()}
           </div>
         )}
+        </SettingsHost>
       </main>
       {layout.inspector !== 'none' && rt.inspectorShown() && (
         <aside className="fx-region fx-region--inspector" style={{ gridArea: 'inspector' }} data-side={layout.inspector}>

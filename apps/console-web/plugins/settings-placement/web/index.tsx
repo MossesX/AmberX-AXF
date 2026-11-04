@@ -16,7 +16,7 @@ const FOLDER = 'settings-placement';
 const ID = 'ai.amberx.axf.console.settings-placement';
 const api = pluginApi(FOLDER, 'The Settings placement plugin');
 type Pick = SP.SettingsPlacementPick;
-interface Store { rev: number; updatedAt: string; default: Pick | null; owners: Record<string, Pick> }
+interface Store { rev: number; updatedAt: string; default: Pick | null; owners: Record<string, Pick>; screens?: Record<string, Pick> }
 
 /** What the server and this browser last agreed on, per settings key (so a pull never echoes back as a push). */
 const synced = new Map<string, string>();
@@ -26,16 +26,21 @@ const statusListeners = new Set<() => void>();
 const setStatus = (s: typeof status) => { status = s; statusListeners.forEach((f) => f()); };
 
 const keyOf = (owner: string | null) => (owner ? SP.settingsPlacementKey(owner) : SP.SETTINGS_PLACEMENT_DEFAULT_KEY);
-const enc = (x: unknown) => (x == null || x === '' ? '' : SP.encodePick(SP.normalizePick(x)));
+const screenKey = (view: string) => SP.screenPlacementKey(view);
+const enc = (x: unknown) => (SP.hasPlacement(x) ? SP.encodePick(SP.normalizePick(x)) : '');
 const ownersOf = (rt: AxfRuntime) => rt.libraries.filter((l) => (l.ui?.settingsTabs.length ?? 0) > 0).map((l) => l.id);
+/** Every screen this console has (its search index lists the views, plugins' too). */
+const screensOf = (rt: AxfRuntime) => rt.search.entries().filter((e) => e.kind === 'view').map((e) => String((e.focus as { view?: unknown }).view ?? e.id.replace(/^view:/, '')));
+/** Every key this plugin keeps in sync: the app default, every plugin's pick, every screen's pick. */
+const keysOf = (rt: AxfRuntime) => [keyOf(null), ...ownersOf(rt).map(keyOf), ...screensOf(rt).map(screenKey)];
 
 async function pull(rt: AxfRuntime) {
   try {
     const s = await api.call<Store>('placements');
     const first = rev < 0;
     if (s.rev !== rev) {
-      const remote = new Map<string, string>([[keyOf(null), enc(s.default)], ...Object.entries(s.owners).map(([o, p]) => [keyOf(o), enc(p)] as [string, string])]);
-      for (const key of new Set([...remote.keys(), ...ownersOf(rt).map(keyOf)])) {
+      const remote = new Map<string, string>([[keyOf(null), enc(s.default)], ...Object.entries(s.owners).map(([o, p]) => [keyOf(o), enc(p)] as [string, string]), ...Object.entries(s.screens ?? {}).map(([v, p]) => [screenKey(v), enc(p)] as [string, string])]);
+      for (const key of new Set([...remote.keys(), ...keysOf(rt)])) {
         const r = remote.get(key) ?? '';
         const local = enc(rt.settings.get(key));
         if (r) { synced.set(key, r); if (local !== r) rt.settings.set(key, r); }
@@ -51,10 +56,11 @@ async function pull(rt: AxfRuntime) {
 
 async function push(key: string, value: string) {
   synced.set(key, value);
-  const owner = key === SP.SETTINGS_PLACEMENT_DEFAULT_KEY ? null : key.slice(SP.settingsPlacementKey('').length);
+  const screen = SP.screenOfKey(key);
+  const owner = key === SP.SETTINGS_PLACEMENT_DEFAULT_KEY || screen ? null : key.slice(SP.settingsPlacementKey('').length);
   const body = value ? JSON.parse(value) : { placement: 'default' };
   try {
-    const r = await api.put<{ rev: number }>(owner ? `placements/${encodeURIComponent(owner)}` : 'default', body);
+    const r = await api.put<{ rev: number }>(screen ? `screens/${encodeURIComponent(screen)}` : owner ? `placements/${encodeURIComponent(owner)}` : 'default', body);
     rev = r.rev;
     setStatus({ at: Date.now(), rev });
   } catch (e) { synced.delete(key); setStatus({ at: Date.now(), rev, error: (e as Error).message }); }
@@ -63,7 +69,7 @@ async function push(key: string, value: string) {
 /** Push every pick that changed here since the last sync. */
 function pushChanged(rt: AxfRuntime) {
   if (rev < 0) return; // not pulled yet: the first pull decides
-  for (const key of [keyOf(null), ...ownersOf(rt).map(keyOf)]) {
+  for (const key of keysOf(rt)) {
     const v = enc(rt.settings.get(key));
     if ((synced.get(key) ?? '') !== v) void push(key, v);
   }
@@ -77,7 +83,7 @@ function SyncPanel() {
     <div className="fx-stack">
       {status.error
         ? <Note tone="warning">Not synced with the console server: {status.error} Picks still work in this browser.</Note>
-        : <p className="fx-muted">{status.at ? `Synced with the console server (revision ${status.rev}, ${new Date(status.at).toLocaleTimeString()}). Claude, the API and the CLI see the same picks: axf settings-placement list.` : 'Syncing with the console server…'}</p>}
+        : <p className="fx-muted">{status.at ? `Synced with the console server (revision ${status.rev}, ${new Date(status.at).toLocaleTimeString()}). Claude, the API and the CLI see the same picks: axf settings-placement list, axf console placement.` : 'Syncing with the console server…'}</p>}
       <div className="fx-row fx-row--wrap"><Button icon="refresh" size="sm" onClick={() => void pull(rt)}>Sync now</Button></div>
     </div>
   );

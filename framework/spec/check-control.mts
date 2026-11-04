@@ -30,7 +30,7 @@ const spec = read('framework/schemas/asset-types.json');
 eq([...CONTROL_OPS], ['list', 'get', 'set', 'reset', 'add', 'remove', 'act'], 'seven ops');
 eq(CONTROL_EFFECT.remove, 'destructive', 'remove is destructive');
 eq(CONTROL_EFFECT.act, 'write', 'act writes');
-ok(CONTROL_TARGET_IDS.length === 23, `23 targets (${CONTROL_TARGET_IDS.length})`);
+ok(CONTROL_TARGET_IDS.length === 24, `24 targets (${CONTROL_TARGET_IDS.length})`);
 eq(CONTROL_TARGET_IDS.slice(0, 13), ['tokens.theme', 'tokens.style', 'tokens.layout', 'tokens.typography', 'tokens.density', 'tokens.sizing', 'tokens.look', 'tokens.custom', 'tokens.slots', 'amberx.items', 'amberx.lists', 'planner.plans', 'planner.builds'], 'targets are append-only');
 for (const [id, t] of Object.entries(CONTROL_TARGETS)) {
   ok(/^(tokens|amberx|planner|console|pass|plugins)\.[a-z]+$/.test(id) && id.startsWith(`${t.domain}.`), `${id} is <domain>.<kind>`);
@@ -38,7 +38,9 @@ for (const [id, t] of Object.entries(CONTROL_TARGETS)) {
   ok(t.doc.length > 30, `${id} documented`);
   if (t.paths === 'entity') { ok(t.fields && Object.keys(t.fields).length > 3, `${id} has fields`); ok(t.ops.includes('remove') && t.ops.includes('act'), `${id} is a full entity target`); }
   else ok(!t.ops.includes('remove') && !t.ops.includes('add'), `${id}: tokens, console and plugin targets are never added or removed`);
-  if (t.domain === 'console') ok(!t.ops.includes('set') && !t.ops.includes('reset'), `${id}: the console is opened and run, never set`);
+  // console.placement (settings-placement@1, Nov 4 2026) is the one console target with a value: where settings open per screen
+  if (t.domain === 'console' && id !== 'console.placement') ok(!t.ops.includes('set') && !t.ops.includes('reset'), `${id}: the console is opened and run, never set`);
+  if (id === 'console.placement') ok(t.ops.includes('set') && t.ops.includes('reset') && !t.ops.includes('act') && t.value === 'host', 'console.placement: set / reset a placement word, no acts');
   for (const [verb, eff] of Object.entries(t.actEffect ?? {})) ok(verb in (t.acts ?? {}) && ['navigate', 'read', 'write', 'destructive'].includes(eff), `${id} act ${verb} effect ${eff}`);
 }
 eq(Object.keys(CONTROL_PERMISSIONS).length, 19, 'six domains × read / write / delete, plus console navigate');

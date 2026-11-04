@@ -1634,6 +1634,30 @@
         "title": "Settings placement",
         "text": "Settings → Plugins → Settings placement: every plugin with settings, where they open, and the default for new plugins.",
         "kind": "screen"
+      },
+      {
+        "target": "open-on-the-full-settings-page",
+        "title": "Open on the full settings page",
+        "text": "Closes this panel and shows the same settings on the full Settings page.",
+        "kind": "button"
+      },
+      {
+        "target": "whole-app",
+        "title": "Whole app",
+        "text": "Make the 'Pops up in' pick the app default, for every screen that has no pick of its own.",
+        "kind": "button"
+      },
+      {
+        "target": "pops-up-in",
+        "title": "Pops up in",
+        "text": "Where these settings open: a pop-up dialog, a side panel (left or right), a bottom sheet, inside the screen, the full page or a floating window. 'Use the app default' follows the app-wide pick.",
+        "kind": "field"
+      },
+      {
+        "target": "this-screen",
+        "title": "This screen",
+        "text": "Make the 'Pops up in' pick count for the screen these settings were opened from only.",
+        "kind": "button"
       }
     ],
     "intros": [

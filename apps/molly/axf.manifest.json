@@ -62,6 +62,7 @@
   "hidden": [
     "toolbar"
   ],
+  "settingsPlacement": "dialog",
   "options": {
     "wrap-groups": false
   },

@@ -1111,7 +1111,8 @@
         "levels": "true = the level toolbar (Simple / Basic / Developer / Administrator) is on and every tab, group, panel and setting shows from its level up; Administrator shows all",
         "defaultLevel": "level of anything levelOf doesn't name (simple | basic | developer | administrator; older pro = administrator, advanced = developer)",
         "levelOf": "tab, group, panel or setting id → its level",
-        "visible": "per-level visible sets over the rank rule: { <level>: { show: [ids], hide: [ids] } } (never administrator)"
+        "visible": "per-level visible sets over the rank rule: { <level>: { show: [ids], hide: [ids] } } (never administrator)",
+        "opensIn": "where this settings interface pops up (settings-placement@1, Brett Nov 4 2026): a placement word (dialog | panel-left | panel-right | sheet | inside | page | window) or a pick object { placement: dialog|panel|sheet|inside|page|window, side?: left|right, mode?: pane|dropdown|tab|split|inline, looks?: { <placement or inside:mode>: { animation, speed, easing, edge, size, position, dim, blur, radius, shadow } } }. A screen's own override beats it; the app default is below it. Shown as the 'Pops up in' row at the top of every settings interface. Absent = the interface says nothing."
       },
       "required": [
         "layout",

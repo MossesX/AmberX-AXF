@@ -634,6 +634,12 @@ export interface AxfManifest {
    * ordinary app with its own local settings. Templates read it and attach the hub appearance source.
    */
   developer?: { hub: string };
+  /**
+   * Where this app's settings open until someone picks (settings-placement@1, Brett Nov 4 2026: "Set the settings
+   * interface for Molly to open in a dialog"): a placement word (dialog | panel-left | panel-right | sheet | inside |
+   * page | window) or a pick object. The saved app default (`axf.settingsPlacement.default`) wins over it.
+   */
+  settingsPlacement?: string | Record<string, unknown>;
   structure?: { path: string; purpose: string }[];
 }
 

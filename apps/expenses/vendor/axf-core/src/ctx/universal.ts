@@ -128,6 +128,16 @@ export const UNIVERSAL_ITEMS: readonly MenuItem[] = [
     order: 50
   },
   {
+    // settings-placement@1 (Brett, Nov 4 2026: "select in every screen where its settings pops up"): the same gate as
+    // the row above; opens the settings surface, whose first row is "Pops up in" (dialog, side panel, bottom sheet,
+    // inside the screen, full page, floating window, or the app default).
+    id: "module-settings-placement",
+    label: "Settings opens in…",
+    command: "module.settings.placement",
+    when: "module.settings.here",
+    order: 55
+  },
+  {
     // The sixth row (0.0.21, owner: *"a settings dialog opened by right
     // clicking the toolbar and selecting settings"*).
     //

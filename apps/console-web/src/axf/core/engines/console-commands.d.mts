@@ -1,13 +1,13 @@
 // Types for console-commands.mjs (the console domain of control@1: open screens, dialogs, settings tabs, run actions).
 import type { ControlCommand, ControlWireCode } from './control-rules.mjs';
 
-export type ConsoleItemKind = 'screen' | 'dialog' | 'settings' | 'action';
+export type ConsoleItemKind = 'screen' | 'dialog' | 'settings' | 'action' | 'placement';
 export type ConsoleActionEffect = 'navigate' | 'read' | 'write' | 'destructive';
-export interface ConsoleItem { kind: ConsoleItemKind; id: string; label: string; detail?: string; icon?: string; keywords?: string[]; requires?: string; effect?: ConsoleActionEffect; params?: boolean; parent?: string; module?: string }
+export interface ConsoleItem { kind: ConsoleItemKind; id: string; label: string; detail?: string; icon?: string; keywords?: string[]; requires?: string; effect?: ConsoleActionEffect; params?: boolean; parent?: string; module?: string; /** placement items: the choice in force now */ value?: string }
 export interface ConsoleHere { screen?: string; screenLabel?: string; dialog?: string; settings?: string }
 export interface ConsoleCatalog { $axf: 'console-catalog@1'; app: string; items: ConsoleItem[]; here: ConsoleHere }
 export interface ConsoleClient { id: string; app?: string; title?: string; device?: string; user?: string; lastUsed?: number; lastSeen?: number; here?: ConsoleHere; catalog?: ConsoleCatalog }
-export interface ConsoleMessage { $axf: 'console-command@1'; id: string; op: 'open' | 'run' | 'back' | 'home' | 'close'; kind?: ConsoleItemKind; target?: string; label?: string; spec?: string; anchor?: string; arg?: string; by: string; at: string; /** set by the console server on a queued command: `queued` (held until a console connected) or `woke` (AmberX opened the console for it) */ delivery?: 'queued' | 'woke' }
+export interface ConsoleMessage { $axf: 'console-command@1'; id: string; op: 'open' | 'run' | 'back' | 'home' | 'close' | 'place'; kind?: ConsoleItemKind; target?: string; label?: string; spec?: string; anchor?: string; arg?: string; /** place: the placement choice (dialog | panel-left | panel-right | sheet | inside[:mode] | page | window | default) */ value?: string; by: string; at: string; /** set by the console server on a queued command: `queued` (held until a console connected) or `woke` (AmberX opened the console for it) */ delivery?: 'queued' | 'woke' }
 export type ConsoleRun =
   | { ok: true; data: Record<string, unknown>; deliver?: { to: string[]; message: ConsoleMessage } }
   | { ok: false; code: ControlWireCode; message: string; [k: string]: unknown };
@@ -28,7 +28,7 @@ export function normalizeHere(raw: unknown): ConsoleHere;
 export function consoleCatalogFrom(
   entries: readonly { kind: string; label: string; detail?: string; icon?: string; keywords?: string[]; requires?: string; parent?: string; focus: unknown }[],
   actions?: readonly { id: string; meta: { label?: string; requires?: string; stub?: boolean; params?: boolean; module?: string; effect?: string } }[],
-  extra?: { app?: string; here?: ConsoleHere },
+  extra?: { app?: string; here?: ConsoleHere; /** items the client builds itself (the placement of every screen, plugin and the app default) */ items?: Partial<ConsoleItem>[] },
 ): ConsoleCatalog;
 export function consoleSearch(items: readonly ConsoleItem[], kind: ConsoleItemKind | null, q?: string, limit?: number): ConsoleItem[];
 export function consoleResolve(items: readonly ConsoleItem[], kind: ConsoleItemKind, path: string): { item?: ConsoleItem; args?: string[]; candidates?: ConsoleItem[]; ambiguous?: boolean };

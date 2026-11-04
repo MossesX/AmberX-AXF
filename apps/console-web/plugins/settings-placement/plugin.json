@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.settings-placement",
   "name": "Settings placement",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Where each plugin's settings open (settings-placement@1): inside the plugin (slide-out pane, drop-down, tab, split view, inline section), a pop-up dialog, a floating window or the main Settings page, with a look and animation per placement. The framework draws them and the picker (every plugin's settings top row, its right-click Settings placement…, Settings → Plugins → Settings placement); this plugin keeps the picks on the console server, so they follow you between browsers and Claude, the API and the CLI can read and change them.",
+  "description": "Where settings open (settings-placement@1): a pop-up dialog, a side panel (left or right), a bottom sheet, inside the screen (an inline section, a slide-out pane, a drop-down, a tab or a split view), the full settings page or a floating window, with a look and animation per placement; per screen, per plugin and an app default. The framework draws them and the pickers (the 'Pops up in' row at the top of every settings interface, right-click a screen \u2192 Settings opens in, Settings \u2192 Settings placement); this plugin keeps the picks on the console server, so they follow you between browsers and Claude, the API and the CLI can read and change them.",
   "targets": [
     "axf-console"
   ],
@@ -32,22 +32,221 @@
       "apps/console-web/plugins/README.md"
     ]
   },
-  "commands": { "$axf": "plugin-commands@1", "auto": true, "items": [
-    { "route": "GET /placements", "id": "list", "title": "Where every plugin's settings open", "readOnly": true },
-    { "route": "GET /placements/{owner}", "id": "get", "title": "Where one plugin's settings open", "readOnly": true,
-      "input": { "type": "object", "properties": { "owner": { "type": "string", "description": "plugin id (ai.amberx.axf.console.<plugin>) or its folder name" } }, "required": ["owner"] } },
-    { "route": "PUT /placements/{owner}", "id": "set", "title": "Set where one plugin's settings open",
-      "input": { "type": "object", "properties": {
-        "owner": { "type": "string", "description": "plugin id or folder" },
-        "placement": { "enum": ["inside", "dialog", "window", "main", "default"], "description": "default = forget this plugin's pick" },
-        "mode": { "enum": ["pane", "dropdown", "tab", "split", "inline"] },
-        "looks": { "type": "object", "description": "per placement: { 'inside:pane': { animation, speed, easing, edge, size, position, dim, blur, radius, shadow } }" } },
-        "required": ["owner", "placement"] } },
-    { "route": "PUT /default", "id": "set-default", "title": "Set where settings open for plugins nobody picked for",
-      "input": { "type": "object", "properties": { "placement": { "enum": ["inside", "dialog", "window", "main", "default"] }, "mode": { "enum": ["pane", "dropdown", "tab", "split", "inline"] }, "looks": { "type": "object" } }, "required": ["placement"] } },
-    { "route": "GET /choices", "id": "choices", "title": "Every placement, mode, animation and look value", "readOnly": true }
-  ] },
-  "builtWith": { "model": "opus", "builtAt": "2026-11-03" },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "route": "GET /placements",
+        "id": "list",
+        "title": "Where every plugin's and screen's settings open",
+        "readOnly": true
+      },
+      {
+        "route": "GET /placements/{owner}",
+        "id": "get",
+        "title": "Where one plugin's settings open",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "owner": {
+              "type": "string",
+              "description": "plugin id (ai.amberx.axf.console.<plugin>) or its folder name"
+            }
+          },
+          "required": [
+            "owner"
+          ]
+        }
+      },
+      {
+        "route": "PUT /placements/{owner}",
+        "id": "set",
+        "title": "Set where one plugin's settings open",
+        "input": {
+          "type": "object",
+          "properties": {
+            "owner": {
+              "type": "string",
+              "description": "plugin id or folder"
+            },
+            "placement": {
+              "enum": [
+                "dialog",
+                "panel",
+                "panel-left",
+                "panel-right",
+                "sheet",
+                "inside",
+                "page",
+                "window",
+                "default"
+              ],
+              "description": "default = forget this pick; panel-left / panel-right set the side"
+            },
+            "side": {
+              "enum": [
+                "left",
+                "right"
+              ]
+            },
+            "mode": {
+              "enum": [
+                "pane",
+                "dropdown",
+                "tab",
+                "split",
+                "inline"
+              ],
+              "description": "inside: how"
+            },
+            "looks": {
+              "type": "object",
+              "description": "per placement: { 'panel': {...}, 'sheet': {...}, 'dialog': {...}, 'window': {...}, 'inside:pane': { animation, speed, easing, edge, size, position, dim, blur, radius, shadow } }"
+            }
+          },
+          "required": [
+            "owner",
+            "placement"
+          ]
+        }
+      },
+      {
+        "route": "GET /screens",
+        "id": "screens",
+        "title": "Where each screen's settings open",
+        "readOnly": true
+      },
+      {
+        "route": "GET /screens/{view}",
+        "id": "get-screen",
+        "title": "Where one screen's settings open",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "view": {
+              "type": "string",
+              "description": "the screen's view id (home, plan-studio, \u2026)"
+            }
+          },
+          "required": [
+            "view"
+          ]
+        }
+      },
+      {
+        "route": "PUT /screens/{view}",
+        "id": "set-screen",
+        "title": "Set where one screen's settings open",
+        "input": {
+          "type": "object",
+          "properties": {
+            "view": {
+              "type": "string",
+              "description": "the screen's view id"
+            },
+            "placement": {
+              "enum": [
+                "dialog",
+                "panel",
+                "panel-left",
+                "panel-right",
+                "sheet",
+                "inside",
+                "page",
+                "window",
+                "default"
+              ],
+              "description": "default = forget this pick; panel-left / panel-right set the side"
+            },
+            "side": {
+              "enum": [
+                "left",
+                "right"
+              ]
+            },
+            "mode": {
+              "enum": [
+                "pane",
+                "dropdown",
+                "tab",
+                "split",
+                "inline"
+              ],
+              "description": "inside: how"
+            },
+            "looks": {
+              "type": "object",
+              "description": "per placement: { 'panel': {...}, 'sheet': {...}, 'dialog': {...}, 'window': {...}, 'inside:pane': { animation, speed, easing, edge, size, position, dim, blur, radius, shadow } }"
+            }
+          },
+          "required": [
+            "view",
+            "placement"
+          ]
+        }
+      },
+      {
+        "route": "PUT /default",
+        "id": "set-default",
+        "title": "Set the app default: where settings open for screens and plugins nobody picked for",
+        "input": {
+          "type": "object",
+          "properties": {
+            "placement": {
+              "enum": [
+                "dialog",
+                "panel",
+                "panel-left",
+                "panel-right",
+                "sheet",
+                "inside",
+                "page",
+                "window",
+                "default"
+              ],
+              "description": "default = forget this pick; panel-left / panel-right set the side"
+            },
+            "side": {
+              "enum": [
+                "left",
+                "right"
+              ]
+            },
+            "mode": {
+              "enum": [
+                "pane",
+                "dropdown",
+                "tab",
+                "split",
+                "inline"
+              ],
+              "description": "inside: how"
+            },
+            "looks": {
+              "type": "object",
+              "description": "per placement: { 'panel': {...}, 'sheet': {...}, 'dialog': {...}, 'window': {...}, 'inside:pane': { animation, speed, easing, edge, size, position, dim, blur, radius, shadow } }"
+            }
+          },
+          "required": [
+            "placement"
+          ]
+        }
+      },
+      {
+        "route": "GET /choices",
+        "id": "choices",
+        "title": "Every placement, side, mode, animation and look value",
+        "readOnly": true
+      }
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-03"
+  },
   "help": "help.json",
   "opens": false
 }
