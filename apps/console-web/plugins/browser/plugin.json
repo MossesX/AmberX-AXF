@@ -1,0 +1,248 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.browser",
+  "name": "Automated Browser",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "A real Chromium running on the VPS that the console drives: a live view you click, type and scroll into from the phone or the desktop (URL bar, back / forward / reload, tabs, phone / tablet / desktop size, zoom), one persistent profile per workspace so logins stick, downloads, screenshots with password fields masked, and every command on REST, MCP and the CLI. Recording, the routine editor, the scheduler and the assistant panel are built on top of it.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:browser",
+    "settings-tab:browser"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [
+    "axf.health@1"
+  ],
+  "banner": false,
+  "tabable": true,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/browser",
+    "env": [
+      "AXF_BROWSER_URL",
+      "AXF_BROWSER_TOKEN"
+    ],
+    "mentions": [
+      "_claude/THREADS.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "route": "GET /status",
+        "id": "status",
+        "title": "Browser host status",
+        "readOnly": true
+      },
+      {
+        "route": "POST /open",
+        "id": "open",
+        "title": "Open the VPS browser for a workspace",
+        "input": {
+          "type": "object",
+          "properties": {
+            "workspace": {
+              "type": "string"
+            },
+            "device": {
+              "type": "string",
+              "enum": [
+                "desktop",
+                "phone",
+                "tablet"
+              ]
+            },
+            "url": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "route": "POST /close",
+        "id": "close",
+        "title": "Close a workspace's browser (its profile is kept)"
+      },
+      {
+        "route": "POST /navigate",
+        "id": "navigate",
+        "title": "Go to an address in the VPS browser",
+        "input": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string"
+            },
+            "workspace": {
+              "type": "string"
+            },
+            "tab": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      },
+      {
+        "route": "POST /click",
+        "id": "click",
+        "title": "Click an element (selector) or a point (x, y)",
+        "input": {
+          "type": "object",
+          "properties": {
+            "selector": {
+              "type": "string"
+            },
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            },
+            "workspace": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "route": "POST /type",
+        "id": "type",
+        "title": "Type text (into a selector, else the focused element)",
+        "input": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string"
+            },
+            "selector": {
+              "type": "string"
+            },
+            "workspace": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "text"
+          ]
+        }
+      },
+      {
+        "route": "POST /fill",
+        "id": "fill",
+        "title": "Fill a field",
+        "input": {
+          "type": "object",
+          "properties": {
+            "selector": {
+              "type": "string"
+            },
+            "value": {
+              "type": "string"
+            },
+            "workspace": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "selector",
+            "value"
+          ]
+        }
+      },
+      {
+        "route": "POST /extract",
+        "id": "extract",
+        "title": "Read text, an attribute, a list or a table from the page",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "selector": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "text",
+                "attr",
+                "html",
+                "value",
+                "table",
+                "count"
+              ]
+            },
+            "attr": {
+              "type": "string"
+            },
+            "all": {
+              "type": "boolean"
+            },
+            "workspace": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "selector"
+          ]
+        }
+      },
+      {
+        "route": "POST /screenshot",
+        "id": "screenshot",
+        "title": "Screenshot the page (base64 PNG, passwords masked)",
+        "readOnly": true
+      },
+      {
+        "route": "POST /run",
+        "id": "run",
+        "title": "Run any browser host command by name",
+        "input": {
+          "type": "object",
+          "properties": {
+            "cmd": {
+              "type": "string"
+            },
+            "args": {
+              "type": "object"
+            },
+            "workspace": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "cmd"
+          ]
+        }
+      },
+      {
+        "route": "GET /screenshot.png",
+        "skip": "binary image; the screenshot command returns the same picture as base64"
+      },
+      {
+        "route": "GET /download",
+        "skip": "file download stream; downloads lists the files"
+      }
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-04",
+    "branch": "claude/browser-automation"
+  },
+  "help": "help.json",
+  "opens": "main"
+}
