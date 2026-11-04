@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T21:14:46.668Z",
+ "updatedAt": "2026-11-04T21:17:24.810Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -12495,7 +12495,7 @@
    "status": "built",
    "hidden": false,
    "source": "console",
-   "pendingId": "build-optimizer",
+   "pendingId": "",
    "branch": "claude/build-optimizer",
    "pr": "#342",
    "createdAt": "2026-11-04T20:46:33.439Z",
@@ -12569,7 +12569,7 @@
      "done": true,
      "doneAt": "2026-11-04T21:05:13.825Z",
      "note": "",
-     "uid": "st-mw2m78jz0hpciw"
+     "uid": "st-mw2l7e2v0abfgr"
     },
     {
      "id": "s2",
@@ -12587,7 +12587,7 @@
      "done": true,
      "doneAt": "2026-11-04T21:05:15.558Z",
      "note": "",
-     "uid": "st-mw2m78jz0io7bo"
+     "uid": "st-mw2l7e2v0br73h"
     },
     {
      "id": "s3",
@@ -12605,7 +12605,7 @@
      "done": true,
      "doneAt": "2026-11-04T21:05:17.095Z",
      "note": "",
-     "uid": "st-mw2m78jz0j46pb"
+     "uid": "st-mw2l7e2v0c4tvh"
     },
     {
      "id": "s4",
@@ -12623,7 +12623,7 @@
      "done": true,
      "doneAt": "2026-11-04T21:05:18.486Z",
      "note": "",
-     "uid": "st-mw2m78jz0ke5nn"
+     "uid": "st-mw2l7e2v0dj2xz"
     },
     {
      "id": "s5",
@@ -12641,7 +12641,7 @@
      "done": true,
      "doneAt": "2026-11-04T21:05:19.855Z",
      "note": "",
-     "uid": "st-mw2m78jz0legt1"
+     "uid": "st-mw2l7e2v0e9ofg"
     },
     {
      "id": "s6",
@@ -12659,7 +12659,7 @@
      "done": true,
      "doneAt": "2026-11-04T21:05:21.460Z",
      "note": "",
-     "uid": "st-mw2m78jz0mhldw"
+     "uid": "st-mw2l7e2v0fa4cs"
     },
     {
      "id": "s7",
@@ -12677,7 +12677,7 @@
      "done": true,
      "doneAt": "2026-11-04T21:05:23.023Z",
      "note": "",
-     "uid": "st-mw2m78jz0ncejw"
+     "uid": "st-mw2l7e2v0gth32"
     },
     {
      "id": "s8",
@@ -12695,7 +12695,7 @@
      "done": true,
      "doneAt": "2026-11-04T21:05:24.448Z",
      "note": "",
-     "uid": "st-mw2m78jz0ox5r9"
+     "uid": "st-mw2l7e2v0h3ihd"
     },
     {
      "id": "s9",
@@ -12713,7 +12713,7 @@
      "done": true,
      "doneAt": "2026-11-04T21:14:27.954Z",
      "note": "",
-     "uid": "st-mw2m78jz0pm1ti"
+     "uid": "st-mw2l7e2v0ij9t2"
     }
    ]
   }

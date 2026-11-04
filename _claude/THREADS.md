@@ -698,7 +698,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 15:06 UTC · `fable-no-approval` added (3 steps) (current) · foreign-write
 - 2026-11-04 15:06 UTC · `fable-review-nov3` added (7 steps) (current) · foreign-write
 - 2026-11-04 15:06 UTC · `app-voice-commands` added (6 steps) (current) · foreign-write
 - 2026-11-04 15:06 UTC · `apps-control-surface` added (5 steps) (current) · foreign-write
@@ -1098,6 +1097,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 21:14 UTC · `build-optimizer` added (9 steps) (current) · foreign-write
 - 2026-11-04 21:14 UTC · `build-optimizer` branch claude/build-optimizer, PR #342 (current) · builds-live
 - 2026-11-04 21:14 UTC · `build-optimizer` s9 done, → built (current) · orchestrator
+- 2026-11-04 21:17 UTC · `build-optimizer` s9 done, → complete (current) · foreign-write
 
 ## Token passes (log)
 

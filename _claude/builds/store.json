@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 963,
- "updatedAt": "2026-11-04T21:14:46.668Z",
+ "rev": 964,
+ "updatedAt": "2026-11-04T21:17:24.810Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -83590,7 +83590,7 @@
    "status": "built",
    "hidden": false,
    "source": "console",
-   "pendingId": "build-optimizer",
+   "pendingId": "",
    "branch": "claude/build-optimizer",
    "pr": "#342",
    "createdAt": "2026-11-04T20:46:33.439Z",
@@ -83650,7 +83650,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mw2m78jz0hpciw",
+     "uid": "st-mw2l7e2v0abfgr",
      "title": "",
      "text": "Optimizer core (optimizer-core.mjs on packager-core): scope + filters, clusters by dependency chain / area claims / category / app / profile, Fable-Opus split, packing under caps (fewest / balanced / fastest), pack order, naming template, estimates, duplicate/already-built flags",
      "model": "Opus",
@@ -83666,13 +83666,13 @@
      "done": true,
      "doneAt": "2026-11-04T21:05:13.825Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T20:46:33.441Z",
-     "updatedAt": "2026-11-04T21:14:26.401Z"
+     "updatedAt": "2026-11-04T21:08:37.766Z"
     },
     {
      "id": "s2",
-     "uid": "st-mw2m78jz0io7bo",
+     "uid": "st-mw2l7e2v0br73h",
      "title": "",
      "text": "Store ops: applyOptimize (packages + archive emptied builds + run record), undoOptimize (one undo), moveSteps (drag a step between builds, validated, undoable); tests",
      "model": "Opus",
@@ -83688,13 +83688,13 @@
      "done": true,
      "doneAt": "2026-11-04T21:05:15.558Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T20:46:33.441Z",
-     "updatedAt": "2026-11-04T21:14:26.401Z"
+     "updatedAt": "2026-11-04T21:08:37.766Z"
     },
     {
      "id": "s3",
-     "uid": "st-mw2m78jz0j46pb",
+     "uid": "st-mw2l7e2v0c4tvh",
      "title": "",
      "text": "CLI optimizer.mjs: plan / apply / undo / move / settings / presets; settings@1 + named presets; notifications (alerts + banner chip + AmberX) per the Optimizer notifications setting",
      "model": "Opus",
@@ -83710,13 +83710,13 @@
      "done": true,
      "doneAt": "2026-11-04T21:05:17.095Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T20:46:33.441Z",
-     "updatedAt": "2026-11-04T21:14:26.401Z"
+     "updatedAt": "2026-11-04T21:08:37.766Z"
     },
     {
      "id": "s4",
-     "uid": "st-mw2m78jz0ke5nn",
+     "uid": "st-mw2l7e2v0dj2xz",
      "title": "",
      "text": "Deep mode: evidence (briefs, addenda, grep of step files, merged PRs, reports, completed builds), AI review through axf.llm@1 with token estimate + budget cap + agent booking, validated suggestions, silent fallback to Basic",
      "model": "Opus",
@@ -83732,13 +83732,13 @@
      "done": true,
      "doneAt": "2026-11-04T21:05:18.486Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T20:46:33.441Z",
-     "updatedAt": "2026-11-04T21:14:26.401Z"
+     "updatedAt": "2026-11-04T21:08:37.766Z"
     },
     {
      "id": "s5",
-     "uid": "st-mw2m78jz0legt1",
+     "uid": "st-mw2l7e2v0e9ofg",
      "title": "",
      "text": "Server routes + MCP/console control orchestrator.optimize (settings + filters by voice), schedule (manual / after a new build / nightly), owner-only on the primary",
      "model": "Opus",
@@ -83754,13 +83754,13 @@
      "done": true,
      "doneAt": "2026-11-04T21:05:19.855Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T20:46:33.441Z",
-     "updatedAt": "2026-11-04T21:14:26.401Z"
+     "updatedAt": "2026-11-04T21:08:37.766Z"
     },
     {
      "id": "s6",
-     "uid": "st-mw2m78jz0mhldw",
+     "uid": "st-mw2l7e2v0fa4cs",
      "title": "",
      "text": "Web: Optimize builds button (toolbar + right-click + voice) and confirm dialog (packs with every step and its source, reasoning, rename, drag between packs, untick, summary, mode + notifications line, Apply / Cancel, Undo)",
      "model": "Opus",
@@ -83776,13 +83776,13 @@
      "done": true,
      "doneAt": "2026-11-04T21:05:21.460Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T20:46:33.441Z",
-     "updatedAt": "2026-11-04T21:14:26.401Z"
+     "updatedAt": "2026-11-04T21:08:37.766Z"
     },
     {
      "id": "s7",
-     "uid": "st-mw2m78jz0ncejw",
+     "uid": "st-mw2l7e2v0gth32",
      "title": "",
      "text": "Web: drag steps between builds anywhere (step lists in any view, tab or window, multi-select, drop position = order, warnings with move prerequisites too?, undo)",
      "model": "Opus",
@@ -83798,13 +83798,13 @@
      "done": true,
      "doneAt": "2026-11-04T21:05:23.023Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T20:46:33.441Z",
-     "updatedAt": "2026-11-04T21:14:26.401Z"
+     "updatedAt": "2026-11-04T21:08:37.766Z"
     },
     {
      "id": "s8",
-     "uid": "st-mw2m78jz0ox5r9",
+     "uid": "st-mw2l7e2v0h3ihd",
      "title": "",
      "text": "Settings page (settings-interface@1 sub-tab) with presets and filters",
      "model": "Opus",
@@ -83820,13 +83820,13 @@
      "done": true,
      "doneAt": "2026-11-04T21:05:24.448Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T20:46:33.441Z",
-     "updatedAt": "2026-11-04T21:14:26.401Z"
+     "updatedAt": "2026-11-04T21:08:37.766Z"
     },
     {
      "id": "s9",
-     "uid": "st-mw2m78jz0pm1ti",
+     "uid": "st-mw2l7e2v0ij9t2",
      "title": "",
      "text": "Tests (dependency + claim cases), README, UI Review shots (non-blocking), report, PR through the merge queue",
      "model": "Opus",
@@ -83844,7 +83844,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T20:46:33.441Z",
-     "updatedAt": "2026-11-04T21:14:28.027Z"
+     "updatedAt": "2026-11-04T21:17:23.188Z"
     }
    ],
    "profiles": [
@@ -83855,32 +83855,32 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
     "model": "Opus",
-    "status": "pending",
+    "status": "complete",
     "estimate": "",
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-04T20:46:33.439Z",
-    "builtAt": "",
+    "builtAt": "2026-11-04T21:14:27.954Z",
     "prefixSteps": true,
     "stepAt": {
-     "st-mw2m78jz0hpciw": "2026-11-04T20:46:33.441Z",
-     "st-mw2m78jz0io7bo": "2026-11-04T20:46:33.441Z",
-     "st-mw2m78jz0j46pb": "2026-11-04T20:46:33.441Z",
-     "st-mw2m78jz0ke5nn": "2026-11-04T20:46:33.441Z",
-     "st-mw2m78jz0legt1": "2026-11-04T20:46:33.441Z",
-     "st-mw2m78jz0mhldw": "2026-11-04T20:46:33.441Z",
-     "st-mw2m78jz0ncejw": "2026-11-04T20:46:33.441Z",
-     "st-mw2m78jz0ox5r9": "2026-11-04T20:46:33.441Z",
-     "st-mw2m78jz0pm1ti": "2026-11-04T20:46:33.441Z"
+     "st-mw2l7e2v0abfgr": "2026-11-04T20:46:33.441Z",
+     "st-mw2l7e2v0br73h": "2026-11-04T20:46:33.441Z",
+     "st-mw2l7e2v0c4tvh": "2026-11-04T20:46:33.441Z",
+     "st-mw2l7e2v0dj2xz": "2026-11-04T20:46:33.441Z",
+     "st-mw2l7e2v0e9ofg": "2026-11-04T20:46:33.441Z",
+     "st-mw2l7e2v0fa4cs": "2026-11-04T20:46:33.441Z",
+     "st-mw2l7e2v0gth32": "2026-11-04T20:46:33.441Z",
+     "st-mw2l7e2v0h3ihd": "2026-11-04T20:46:33.441Z",
+     "st-mw2l7e2v0ij9t2": "2026-11-04T20:46:33.441Z"
     }
    },
    "queue": null,
-   "defaultAt": "2026-11-04T21:14:26.401Z",
+   "defaultAt": "2026-11-04T20:46:33.441Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
