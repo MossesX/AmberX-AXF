@@ -7,7 +7,7 @@
  */
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedPageView, embedSkipReason as skipReason, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
+import { EMBED_INSTANCE_QUERY, EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedInstance, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedPageView, embedSkipReason as skipReason, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
 import { hiddenSlots } from '../core/engines/hide';
 import { AxfRuntime, HIDE_KEY } from '../core/runtime';
 import { readdirSync } from 'node:fs';
@@ -103,6 +103,15 @@ for (const c of t.pluginMessages) eq(parseEmbedMessage(c.input), c.message, `plu
 for (const c of t.viewPages) { eq(embedPage(c.input), c.page, `view page ${c.input}`); eq(embedPageView(embedPage(c.input)), c.view, `page view ${c.input}`); }
 for (const c of t.viewUrls) eq(embedUrlFull(c.url, c.host, c.opts), c.out, `view url ${c.url}`);
 for (const c of t.viewDetect) eq(embedFromQueryFull(c.search), c.embed, `view detect ${c.search}`);
+// A further copy of an app the host opened (`axf-embed-instance`, molly-multi-instance-tabs, Nov 4 2026).
+const ok = (c: unknown, what: string) => { assert.ok(c, what); checks++; };
+eq(EMBED_INSTANCE_QUERY, 'axf-embed-instance', 'instance query key');
+for (const c of t.instances.labels) eq(embedInstance(c.raw), c.label, `instance label ${JSON.stringify(c.raw)}`);
+for (const c of t.instances.urls) eq(embedUrlFull(c.url, c.host, c.opts), c.out, `instance url ${c.url}`);
+for (const c of t.instances.queries) { eq(embedFromQueryFull(c.search), c.embed, `instance query ${c.search}`); eq(detectEmbedFull(c.search, t.userAgents[0].input), c.detect, `instance detect ${c.search}`); }
+ok(t.instances.urls[0].out.includes('axf-embed-instance=Console+2') && !t.instances.urls[1].out.includes('axf-embed-instance') && !t.instances.urls[2].out.includes('axf-embed-instance'), 'the instance rides the query; null / blank = none, an old one is replaced');
+ok(t.instances.queries[0].embed?.instance === 'Console 2' && t.instances.queries[1].embed?.instance === 'Console 3' && t.instances.queries[1].embed?.takes?.includes('settings') && !('instance' in (t.instances.queries[2].embed ?? {})) && t.instances.queries[3].embed === null, 'read back: with takes, blank = absent, no host = no embed');
+ok(embedInstance('x'.repeat(100))!.length === 80, 'instance labels stop at 80');
 for (const c of t.pluginTabs) eq(parseEmbedMessage(c.input), c.message, 'plugin tabs');
 eq(skipReason({ host: 'host', hidden: ['banner'], page: 'view:todos' }, ['embedded']), null, 'a view page never skips');
 for (const c of t.settingsTab) eq(settingsTabOf(c.action) ?? null, c.tab, `settingsTab ${c.action}`);

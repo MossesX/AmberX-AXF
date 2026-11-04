@@ -2480,6 +2480,16 @@ export class AxfRuntime {
       const target = w && wm.state.windows.some((x) => x.id === w) ? w : wm.mainWindowId;
       if (!wm.applyPreset(normalizeDockLayout(asset.data), target)) this.toast('Open some tabs first: a layout spreads the open tabs over its panes.', 'info', asset.name);
     }, { label: 'Apply a pane layout', params: true });
+    // molly-multi-instance-tabs (Nov 4 2026): a tab's own menu (new / duplicate / close / close others / move / pop out), undo + reset of a dock
+    a.register('windows.newTab', ([g]) => { const gid = g ? (wm.state.groups[g] ? g : wm.groupOf(g)) : null; if (!gid || !wm.openNewTab(gid)) this.toast('Nothing to open here yet.', 'info', 'New tab'); }, { label: 'New tab…', params: true });
+    a.register('windows.duplicateTab', ([t]) => { if (t && !wm.duplicateTab(t)) this.toast('That tab can’t be copied again (it’s gone, or the copy limit is reached).', 'info', 'Duplicate'); }, { label: 'Duplicate tab', params: true });
+    a.register('windows.closeTab', ([t]) => t && wm.closeTab(t), { label: 'Close tab', params: true });
+    a.register('windows.closeOthers', ([t]) => t && wm.closeOthers(t), { label: 'Close other tabs', params: true });
+    a.register('windows.moveTab', ([t, g]) => { if (t && g && wm.state.groups[g]) { const from = wm.groupOf(t); if (from) wm.checkpoint(wm.state.groups[from]!.windowId); wm.moveTab(t, g); } }, { label: 'Move tab to a pane', params: true });
+    a.register('windows.moveTabTo', ([t, side = 'right']) => { if (t && !wm.moveTabTo(t, (['left', 'right', 'top', 'bottom'].includes(side) ? side : 'right') as import('./engines/dock').DockSide)) this.toast('It is already alone in its pane.', 'info', 'Move to pane'); }, { label: 'Move tab to a new pane', params: true });
+    a.register('windows.floatTab', ([t]) => t && wm.floatTab(t), { label: 'Pop tab out to a window', params: true });
+    a.register('windows.undoLayout', ([g]) => { const w = g ? (wm.state.windows.some((x) => x.id === g) ? g : wm.state.groups[g]?.windowId ?? wm.mainWindowId) : wm.mainWindowId; if (!wm.undoLayout(w)) this.toast('Nothing to undo.', 'info', 'Layout'); }, { label: 'Undo layout change', params: true });
+    a.register('windows.resetDock', ([w = '']) => wm.resetDock(w && wm.state.windows.some((x) => x.id === w) ? w : wm.mainWindowId), { label: 'Reset the dock (close every pane)', params: true, searchable: false });
     a.register('windows.openFloating', ([kind = 'placeholder', title = 'Window', payload = '']) => wm.openFloating([{ id: `tab-${Date.now()}`, title, kind, payload }], title), { label: 'Open floating window', searchable: false });
     a.register('terminal.open', ([channel = '']) => wm.openFloating([{ id: `terminal-${Date.now()}`, title: 'Output', kind: 'terminal', payload: channel, icon: 'terminal' }], 'Output terminal', 'floating', 520, 320), { label: 'Open output terminal' });
     a.register('terminal.dialog', ([channel = '']) => this.openDialog('terminal', { channel }), { label: 'Output terminal (dialog)' });
@@ -2492,6 +2502,7 @@ export class AxfRuntime {
       return items;
     });
     this.contextExtras.set('tab-group', () => wm.groupMenu());
+    this.contextExtras.set('tab', (_t, payload) => wm.tabMenu(payload));
     this.contextExtras.set('window-title', () => wm.windowMenu());
   }
 }

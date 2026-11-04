@@ -3859,6 +3859,134 @@
       }
     }
   ],
+  "instances": {
+    "labels": [
+      {
+        "raw": "Console 2",
+        "label": "Console 2"
+      },
+      {
+        "raw": "  Console\t2  ",
+        "label": "Console 2"
+      },
+      {
+        "raw": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "label": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      {
+        "raw": "",
+        "label": null
+      },
+      {
+        "raw": null,
+        "label": null
+      },
+      {
+        "raw": "a\u0000b",
+        "label": "a b"
+      }
+    ],
+    "urls": [
+      {
+        "url": "https://console.amberxai.com/",
+        "host": "molly",
+        "opts": {
+          "takes": [
+            "settings"
+          ],
+          "instance": "Console 2"
+        },
+        "out": "https://console.amberxai.com/?axf-embed=molly&axf-embed-take=settings&axf-embed-instance=Console+2"
+      },
+      {
+        "url": "https://console.amberxai.com/?axf-embed-instance=old#a",
+        "host": "molly",
+        "opts": {
+          "instance": null
+        },
+        "out": "https://console.amberxai.com/?axf-embed=molly#a"
+      },
+      {
+        "url": "https://console.amberxai.com/",
+        "host": "molly",
+        "opts": {
+          "instance": "   "
+        },
+        "out": "https://console.amberxai.com/?axf-embed=molly"
+      }
+    ],
+    "queries": [
+      {
+        "search": "?axf-embed=molly&axf-embed-instance=Console%202",
+        "embed": {
+          "host": "molly",
+          "hidden": [
+            "banner"
+          ],
+          "instance": "Console 2"
+        },
+        "detect": {
+          "host": "molly",
+          "hidden": [
+            "banner"
+          ],
+          "instance": "Console 2"
+        }
+      },
+      {
+        "search": "?axf-embed=molly&axf-embed-take=settings&axf-embed-instance=Console+3",
+        "embed": {
+          "host": "molly",
+          "hidden": [
+            "banner"
+          ],
+          "takes": [
+            "settings"
+          ],
+          "instance": "Console 3"
+        },
+        "detect": {
+          "host": "molly",
+          "hidden": [
+            "banner"
+          ],
+          "takes": [
+            "settings"
+          ],
+          "instance": "Console 3"
+        }
+      },
+      {
+        "search": "?axf-embed=molly&axf-embed-instance=",
+        "embed": {
+          "host": "molly",
+          "hidden": [
+            "banner"
+          ]
+        },
+        "detect": {
+          "host": "molly",
+          "hidden": [
+            "banner"
+          ]
+        }
+      },
+      {
+        "search": "?axf-embed-instance=Console%202",
+        "embed": null,
+        "detect": {
+          "host": "host",
+          "hidden": [
+            "banner"
+          ],
+          "takes": [
+            "settings",
+            "notifications"
+          ]
+        }
+      }
+    ]
+  },
   "pluginTabs": [
     {
       "input": {

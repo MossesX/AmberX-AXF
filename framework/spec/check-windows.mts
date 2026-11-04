@@ -180,4 +180,24 @@ for (const r of f.resizes) eq(resizeRect(r.start, r.edge as ResizeEdge, r.dx, r.
   ws.snapRules = { ...DEFAULT_SNAP_RULES }; ws.placement = { stack: 'cascade', snap: true, snapGrid: 10, minimize: 'cursor' }; ws.setFloat('a', { x: 123, y: 456 }); ws.settleFloat('a'); eq([ws.float('a').x, ws.float('a').y], [120, 460], 'pane grid from the behaviour theme');
 }
 
+// ---- multiple instances of one thing (molly-multi-instance-tabs, Nov 4 2026): replay the fixture ----
+{
+  const { INSTANCE_MAX, baseTabId, baseTitle, instanceOf, instanceTab, instanceTabId, instanceTitle, instancesOf, nextInstance } = await import('../core/engines/windows');
+  const i = f.instances;
+  eq(INSTANCE_MAX, i.max, 'instance max');
+  for (const c of i.of) eq(instanceOf(c.tab), c.instance, `instanceOf ${JSON.stringify(c.tab)}`);
+  for (const c of i.ids) eq(instanceTabId(c.base, c.n), c.id, `instanceTabId ${c.n}`);
+  for (const c of i.baseIds) eq(baseTabId({ id: c.id, instance: c.instance ?? undefined }), c.base, `baseTabId ${c.id}`);
+  for (const c of i.titles) eq(instanceTitle(c.base, c.n), c.title, `instanceTitle ${c.n}`);
+  for (const c of i.baseTitles) eq(baseTitle({ title: c.title, instance: c.instance ?? undefined }), c.base, `baseTitle ${c.title}`);
+  const tabs = i.baseIds.map((c: { id: string; instance: number | null }) => ({ id: c.id, title: '', kind: c.id.startsWith('molly-app') ? 'molly-app' : 'other', payload: c.id.includes('axhub') ? 'axhub' : 'console', instance: c.instance ?? undefined }));
+  eq(instancesOf(tabs, 'molly-app', 'console').map((t) => t.id), i.copies, 'instancesOf: the copies, lowest first');
+  for (const c of i.next) eq(nextInstance(tabs, c.kind, c.payload), c.next, `nextInstance ${c.kind} ${c.payload}`);
+  for (const c of i.make) eq(instanceTab(c.from, c.n, c.title ?? undefined), c.tab, `instanceTab ${c.n} ${c.title ?? ''}`);
+  ok(i.next.find((c: { payload: string }) => c.payload === 'console').next === 3, 'console: 1, 2 and 4 open → 3 is next (a gap is reused)');
+  ok(i.next.find((c: { payload: string }) => c.payload === 'amberx').next === 1, 'nothing open → 1');
+  ok(i.next.find((c: { kind: string }) => c.kind === 'other').next === 2, 'another kind with the same payload counts on its own');
+  ok(i.make[1].tab.title === 'Builds' && i.make[1].tab.instance === 3 && i.make[4].tab.instance === undefined && i.make[4].tab.id === 'molly-app:console', 'a copy takes the name given; copy 1 of a copy is the plain tab again');
+}
+
 console.log(`check-windows: ${checks} checks passed`);

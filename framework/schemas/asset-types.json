@@ -1161,7 +1161,7 @@
       "label": "xLayout",
       "group": "System",
       "icon": "layout",
-      "description": "Molly as one app (xlayout@1, engine core/engines/xlayout.ts): the host-side layout that frames several apps (AmberX, axHub web, the Dev Console) and makes them look like one — which apps, how each kind of chrome is handled (host = only the host's, merged = one bar merged from every app's with the guests hiding theirs and sending them as data, guest = each app keeps its own), the IDE switch (pane limit, dock-layout@1 preset in force, presets offered, an optional inline preset tree) and up to three plugin toolbar slots (visible, location, items opening in the main area, a floating window or a pane). Host-only: standalone apps never load one (not shared). The chrome merge is chrome@1 (core/engines/chrome.ts), the pane tree dock@1.",
+      "description": "Molly as one app (xlayout@1, engine core/engines/xlayout.ts): the host-side layout that frames several apps (AmberX, axHub web, the Dev Console) and makes them look like one — which apps, how each kind of chrome is handled (host = only the host's, merged = one bar merged from every app's with the guests hiding theirs and sending them as data, guest = each app keeps its own), the IDE switch (pane limit, dock-layout@1 preset in force, presets offered, an optional inline preset tree, maxInstances = how many copies of one app may be open as tabs at once) and up to three plugin toolbar slots (visible, location, items opening in the main area, a floating window or a pane). Host-only: standalone apps never load one (not shared). The chrome merge is chrome@1 (core/engines/chrome.ts), the pane tree dock@1.",
       "required": [
         "apps"
       ],
