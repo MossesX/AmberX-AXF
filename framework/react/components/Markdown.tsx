@@ -71,6 +71,7 @@ function blocks(src: string): ReactNode[] {
       i += 2;
       const rows: string[][] = [];
       while (i < lines.length && /^\s*\|.*\|\s*$/.test(at(i))) rows.push(row(at(i++)));
+      // axf-grid-exempt: a Markdown table is the writer's content, not a grid
       out.push(
         <div key={key++} className="fx-md__tablewrap"><table className="fx-table"><thead><tr>{head.map((c, j) => <th key={j}>{inline(c)}</th>)}</tr></thead>
           <tbody>{rows.map((r, ri) => <tr key={ri}>{r.map((c, j) => <td key={j}>{inline(c)}</td>)}</tr>)}</tbody></table></div>,
