@@ -521,7 +521,7 @@ function LazyCall({ folder, path, args }: { folder: string; path: string[]; args
 }
 
 /** Counts a use while a plugin's page, dialog, tab or settings panel is on screen (frecency + never evicted while shown). */
-function Used({ folder, children }: { folder: string; children: ReactNode }) {
+function Used({ folder, children }: { folder: string; children?: ReactNode }) {
   useEffect(() => { loader.used(folder); loader.mounted(folder, true); return () => loader.mounted(folder, false); }, [folder]);
   return <>{children}</>;
 }
