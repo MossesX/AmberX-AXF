@@ -419,10 +419,24 @@ t('CLI answers --json errors as JSON', () => {
   const r = spawnSync(process.execPath, [new URL('./swarm.mjs', import.meta.url).pathname, 'nope', '--json'], { encoding: 'utf8' });
   assert.equal(r.status, 1); assert.deepEqual(JSON.parse(r.stdout), { ok: false, error: 'unknown command nope' });
 });
+t('book: a Claude session on an agent card grows, then closes once (agent-pick)', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'swarm-book-'));
+  const run = (...a) => JSON.parse(spawnSync(process.execPath, [new URL('./swarm.mjs', import.meta.url).pathname, ...a, '--json'], { encoding: 'utf8', env: { ...process.env, AXF_SWARM_DIR: dir, AXF_SWARM_CHATS_DIR: 'off' } }).stdout);
+  let r = run('book', JSON.stringify({ session: 's1', agent: 'Snap Sully', usd: 0.5, commits: ['abc1234'] }));
+  assert.equal(run('crew').crew.find((x) => x.id === 'sully').stats.failed, 0, 'an open session is not a failure');
+  assert.equal(r.run.agent, 'sully'); assert.equal(r.run.status, 'running'); assert.equal(r.run.kind, 'job'); assert.equal(r.run.jobType, 'agent-session');
+  r = run('book', JSON.stringify({ session: 's1', agent: 'sully', usd: 1, commits: ['def5678'], final: true }));
+  assert.equal(r.run.status, 'done'); assert.match(r.run.report.summary, /commits: abc1234, def5678/);
+  assert.equal(run('book', JSON.stringify({ session: 's1', agent: 'rio' })).ok, false, 'a session stays on its agent');
+  assert.equal(run('book', JSON.stringify({ session: 's2', agent: 'nobody' })).ok, false);
+  const crew = run('crew').crew; const s = crew.find((a) => a.id === 'sully');
+  assert.equal(s.spend.today, 1); assert.equal(s.stats.done, 1); assert.ok(Array.isArray(s.writeups) && Array.isArray(s.raises));
+  const chat = run('chat', '50').messages.filter((m) => m.from === 'sully'); assert.equal(chat.length, 1, 'one report in the chat, at the close');
+});
 t('manifest: lifecycle, builtWith, page and settings tab', () => {
   const m = JSON.parse(readFileSync(here('./plugin.json'), 'utf8'));
   assert.equal(m.lifecycle.dataDir, '.axf-console/plugins/agent-swarm'); assert.ok(m.builtWith.model && m.builtWith.builtAt);
-  assert.deepEqual(m.provides, ['view:agent-swarm', 'settings-tab:agent-swarm', 'service:agent-jobs@1', 'service:axf.swarm-roster@1']); assert.equal(m.tabable.view, 'agent-swarm');
+  assert.deepEqual(m.provides, ['view:agent-swarm', 'settings-tab:agent-swarm', 'service:agent-jobs@1', 'service:axf.crew@1', 'service:axf.swarm-roster@1']); assert.equal(m.tabable.view, 'agent-swarm');
 });
 
 // batch merge end to end on a scratch repo

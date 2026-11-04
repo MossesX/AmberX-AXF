@@ -1,0 +1,56 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.claude-session",
+  "name": "Claude sessions",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Every Claude session (voice and chat Amber, Claude Code, headless builds) works as a crew agent Brett assigns (agent-pick@1). A session calls claude_session_start first; with 'Ask me every session' on (the default), the console pops the agent picker (every agent with avatar, status, current job, today's cost, hours, pay, rating; tap a row for every stat and links to the card, history, Session browser, Terminal and group chat) and axHub gets one held approval as the fallback (pushed to the phone through the AmberX app). Until Brett picks, the session is the default agent. claude_session_agent tells a session who it is (persona / voice notes, avatar, intro); claude_session_book puts its cost, time and commits on the agent's card. 'Assign to Claude' on every crew card and in the agent right-click menu; Settings → Plugins → Claude sessions: Claude agent, Ask me every session, Ask for headless too. No model calls.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "settings-tab:claude-session",
+    "dialog:claude.picker"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [
+    "service:axf.crew@1",
+    "service:axf.agent-slots@1"
+  ],
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/claude-session",
+    "env": [
+      "AXF_CLAUDE_DIR"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "_claude/shared/rules/RULES.md",
+      "_claude/memory/STATUS.md",
+      "_claude/THREADS.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "id": "agent", "route": "GET /agent", "readOnly": true, "title": "Who this Claude session is", "description": "Who this Claude session is: its agent (id, name, avatar, persona / voice notes, how to introduce itself, AXF_AGENT), and whether Brett's pick is still pending (asking). Pass input.session (from claude_session_start); none = the default agent." },
+      { "id": "start", "route": "POST /session-start", "title": "Start a Claude session as an agent", "description": "Every Claude session calls this first: input {client: voice|chat|code|headless, summary, agent? (a headless brief's named agent), session? (its own id)}. Answers the agent to work as now (the default until Brett picks): id, name, avatar, persona / voice notes, intro, env AXF_AGENT. With Ask me every session on, Brett gets the agent picker (console pop-up + axHub approval); check claude_session_agent for his answer and switch when it changes." },
+      { "id": "answer", "route": "POST /answer", "title": "Brett's pick for a session", "description": "Brett's pick for a Claude session: input {session, agent, ticket}. Only his own click in the console or the axHub approval carrying the ask's ticket counts; a session calling it is refused." }
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-03"
+  },
+  "help": "help.json",
+  "opens": "dialog"
+}

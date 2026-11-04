@@ -1,0 +1,34 @@
+/* Claude sessions plugin (agent picker): layout only; every control is a framework control. Colours, sizes, transparency are tokens. */
+.axp-claude-session { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0; }
+.axp-claude-session__ask { margin: 0; padding: var(--fx-dens-gap-lg); border-radius: var(--fx-radius-md); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-claude-session__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
+.axp-claude-session__row { border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); }
+.axp-claude-session__row.is-current { border-color: var(--fx-accent); }
+.axp-claude-session__row.is-off { opacity: var(--fx-opacity-muted); }
+.axp-claude-session__line { display: flex; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md); }
+.axp-claude-session__open { all: unset; box-sizing: border-box; flex: 1 1 auto; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); cursor: pointer; color: var(--fx-text); }
+.axp-claude-session__open:focus-visible { outline: var(--fx-border-w) solid var(--fx-focus); border-radius: var(--fx-radius-sm); }
+.axp-claude-session__who { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); flex: 1 1 12em; min-width: 0; overflow-wrap: anywhere; }
+.axp-claude-session__chips { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); }
+.axp-claude-session__job { color: var(--fx-muted); }
+.axp-claude-session__nums { display: grid; grid-template-columns: repeat(4, auto); gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-lg); margin: 0; font-size: var(--fx-type-root-sm); }
+.axp-claude-session__nums dt, .axp-claude-session__grid dt { color: var(--fx-muted); }
+.axp-claude-session__nums dd, .axp-claude-session__grid dd { margin: 0; font-variant-numeric: tabular-nums; }
+.axp-claude-session__details { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: 0 var(--fx-dens-gap-md) var(--fx-dens-gap-md); border-top: var(--fx-border-w) solid var(--fx-border); }
+.axp-claude-session__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-font-size) * 10), 1fr)); gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg); margin: var(--fx-dens-gap-md) 0 0; font-size: var(--fx-type-root-sm); }
+.axp-claude-session__h { margin: 0 0 var(--fx-dens-gap-xs); font-size: var(--fx-type-root-sm); font-weight: 600; }
+.axp-claude-session__feed { margin: 0; padding-left: var(--fx-dens-gap-2xl); display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); font-size: var(--fx-type-root-sm); }
+.axp-claude-session__quote { margin: 0; font-style: italic; }
+.axp-claude-session__bar { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); }
+.axp-claude-session__persona { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
+.axp-claude-session__stars { color: var(--fx-warning); white-space: nowrap; }
+.axp-claude-session__warn { color: var(--fx-warning); }
+.axp-claude-session__av { flex: none; border-radius: 50%; }
+.axp-claude-session__av-bg { fill: var(--fx-accent-soft); }
+.axp-claude-session__av-skin { fill: var(--fx-surface3); stroke: var(--fx-text); stroke-width: 1.2; }
+.axp-claude-session__av-ink { fill: var(--fx-text); }
+.axp-claude-session__av-line { fill: none; stroke: var(--fx-text); stroke-width: 1.6; stroke-linecap: round; }
+.axp-claude-session__av-thick { stroke-width: 3; }
+.axp-claude-session__initials { flex: none; display: inline-flex; align-items: center; justify-content: center; width: calc(var(--fx-font-size) * 2.5); height: calc(var(--fx-font-size) * 2.5); border-radius: 50%; background: var(--fx-accent-soft); color: var(--fx-text); font-weight: 600; }
+:where([data-fx-tiny], [data-fx-small], [data-fx-narrow]) .axp-claude-session__nums { grid-template-columns: repeat(2, auto); }
+:where([data-fx-tiny], [data-fx-small], [data-fx-narrow]) .axp-claude-session__line { align-items: flex-start; }

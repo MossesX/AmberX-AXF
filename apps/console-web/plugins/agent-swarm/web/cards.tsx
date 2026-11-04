@@ -10,7 +10,8 @@ import { ModelChip, fmtTime, statusText, type Act, type Agent, type SwarmState }
  * Crew: one card per agent (avatar, name, role, specialty, status, hire date, spend, jobs, success rate, failures,
  * avg cost per job, favourite model, last seen, catchphrase, salary, spent, left, bonuses), its skills (every agent on the
  * job crew is an all-rounder since Nov 3 2026), home job and current job; a strip on top shows who's free and who's on
- * what. Tap a card for the profile: bio, skill, pay,
+ * what. Slot `swarm.agent.actions` ({agentId, name, where}) under each card and on the profile's bar takes other plugins'
+ * buttons (e.g. Assign to Claude). Tap a card for the profile: bio, skill, pay,
  * status history and a feed of the latest runs with their cost. Everything is inside the console; no outside
  * social accounts.
  */
@@ -127,6 +128,7 @@ function Card({ a, state, st, act, jobs, allSkills, onOpen }: { a: Agent; state:
         <p className="sw-card__quote">“{idn.catchphrase}”</p>
       </button>
       {BENCHED.includes(as.status) && <div className="sw-bar"><Button size="sm" icon="refresh" onClick={() => void act({ action: 'rehire', agent: a.id })}>Rehire</Button>{as.note && <span className="fx-muted">{as.note}</span>}</div>}
+      <Slot name="swarm.agent.actions" props={{ agentId: a.id, name: idn.name, where: 'card' }} />
     </article>
   );
 }
@@ -181,7 +183,7 @@ function Profile({ a, state, st, act, jobs, allSkills, onBack, onFeed }: { a: Ag
   const as = state.swarm.agents[a.id]!; const skill = state.skills[a.skill]; const idn = core.cardIdentity(a, as);
   return (
     <div className="fx-stack">
-      <div className="sw-bar"><Button icon="undo" onClick={onBack}>Crew</Button></div>
+      <div className="sw-bar"><Button icon="undo" onClick={onBack}>Crew</Button><Slot name="swarm.agent.actions" props={{ agentId: a.id, name: idn.name, where: 'profile' }} /></div>
       <div className="sw-card sw-card--profile">
         <div className="sw-card__head">
           <Avatar a={a} size={88} />

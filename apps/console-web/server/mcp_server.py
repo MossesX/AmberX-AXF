@@ -39,6 +39,8 @@ READ = ToolAnnotations(readOnlyHint=True, destructiveHint=False, openWorldHint=F
 WRITE = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=False, openWorldHint=False)
 
 INSTRUCTIONS = """AmberX AXF framework — plan, build queue, libraries and projects.
+Every Claude session calls `claude_session_start` first (when the Claude sessions plugin is on) and works as the crew agent
+it answers; `claude_session_agent` says when Brett picks another, `claude_session_book` books the work on that agent's card.
 Start with `overview`, then `build_next` to see what to build next and which model should build it.
 Before starting any build, check `pending_list`: builds parked until their model (usually Fable) is available.
 Builds over 30 minutes are split into steps of 30 minutes or less: `pending_steps` / `build_queue` list them, and you tick

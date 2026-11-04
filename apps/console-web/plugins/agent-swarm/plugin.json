@@ -14,6 +14,7 @@
     "view:agent-swarm",
     "settings-tab:agent-swarm",
     "service:agent-jobs@1",
+    "service:axf.crew@1",
     "service:axf.swarm-roster@1"
   ],
   "optional": [],

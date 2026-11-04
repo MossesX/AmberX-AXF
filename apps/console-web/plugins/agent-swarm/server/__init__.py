@@ -6,6 +6,9 @@ Build-step runs (claude -p) are started from the CLI, never from here: a page re
 exception is Breakroom → Jobs → Run: an explicit POST that routes one job-type run to its owning agent (jobs.mjs), so a
 GET never spends anything.
 Never exposed on the console MCP.
+
+Capability axf.crew@1 (for other plugins, e.g. the Claude plugin's agent picker): crew() = every agent with status,
+pay, spend, hours and stats; book(entry) = book a Claude session on an agent's card (swarm.mjs book).
 """
 from __future__ import annotations
 
@@ -16,6 +19,8 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
+
+import plugin_services
 
 router = APIRouter()
 CLI = Path(__file__).resolve().parent.parent / "swarm.mjs"
@@ -32,6 +37,25 @@ def _run(*args: str, cli: Path = CLI) -> dict[str, Any]:
         return json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
     except json.JSONDecodeError:
         return {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+
+
+class CrewService:
+    """Capability `axf.crew@1`: the crew for the Claude agent picker, and session booking on an agent's card."""
+
+    def crew(self) -> list[dict[str, Any]]:
+        r = _run("crew")
+        if not r.get("ok"):
+            raise RuntimeError(r.get("error") or "crew read failed")
+        return r.get("crew") or []
+
+    def book(self, entry: dict[str, Any]) -> dict[str, Any]:
+        r = _run("book", json.dumps(entry))
+        if not r.get("ok"):
+            raise ValueError(r.get("error") or "booking failed")
+        return r.get("run") or {}
+
+
+plugin_services.provide("axf.crew@1", CrewService(), CLI.parent.name)
 
 
 @router.get("/state")
