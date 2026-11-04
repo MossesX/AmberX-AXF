@@ -260,3 +260,5 @@
 .pd-count { flex-direction: row; align-items: baseline; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl) }
 .pd-count b { font-size: var(--fx-type-root-lg) }
 .pd-count span { font-size: var(--fx-type-root-2xs); letter-spacing: 0.03em }
+/* "New version, reload" (src/pluginLoader.tsx NewVersionNotice): a plugin chunk couldn't load twice after a redeploy */
+.axf-new-version { position: fixed; left: 50%; bottom: var(--fx-dens-gap-2xl); transform: translateX(-50%); z-index: 300; display: flex; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md); max-width: calc(100vw - var(--fx-dens-gap-2xl) * 2); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); box-shadow: var(--fx-shadow-md) }

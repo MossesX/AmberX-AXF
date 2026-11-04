@@ -11,7 +11,8 @@
  * Two message lines:
  *   strip ⇄ host   window.postMessage, envelope `$axf: 'banner-strip@1'` (below): the strip's size and whether something
  *                  it opened (dialog, menu, popover) needs the whole window; a view it was asked to open; its banner list
- *                  (for per-banner show / hide in the host); the host's answers.
+ *                  (for per-banner show / hide in the host); the host's answers; whether the strip draws the app's
+ *                  whole banner bar, so the host's top banner is the app's banner asset (`bar`).
  *   strip → app    BroadcastChannel `axf.banner-strip` (same origin, so the host never sees it): a banner item that opens
  *                  one of the app's views opens it in the app's own frame, the way it does on its own.
  * Nothing here runs standalone; data only, the actions stay inside the app.
@@ -29,8 +30,10 @@ export const BANNER_STRIP_LIMITS = { banners: 60, id: 80, label: 80, icon: 40, v
 export interface BannerStripEntry { id: string; label: string; icon?: string; /** hidden inside a host (its Banner settings switch) */ hidden: boolean }
 
 export type BannerStripMessage =
-  /** strip → host: how tall the strip is; `overlay` = something it opened needs the whole window until it closes */
-  | { $axf: typeof BANNER_STRIP_MESSAGE; type: 'size'; height: number; overlay: boolean }
+  /** strip → host: how tall the strip is; `overlay` = something it opened needs the whole window until it closes; `bar` =
+   * the strip draws the app's whole banner bar (its banner asset, logo and attached widgets) at its top, so the host can
+   * leave its own banner out (absent = the older widgets-only strip) */
+  | { $axf: typeof BANNER_STRIP_MESSAGE; type: 'size'; height: number; overlay: boolean; bar?: boolean }
   /** strip → host: a banner item opened one of the app's views; bring the app's frame on screen */
   | { $axf: typeof BANNER_STRIP_MESSAGE; type: 'open'; view: string }
   /** strip → host: every banner the app has, and which are hidden inside a host */
@@ -40,7 +43,10 @@ export type BannerStripMessage =
   /** host → strip: show or hide one banner inside the host (writes the banner's own "Hide it inside a host app") */
   | { $axf: typeof BANNER_STRIP_MESSAGE; type: 'set-hidden'; id: string; hidden: boolean }
   /** host → strip: send the banner list again */
-  | { $axf: typeof BANNER_STRIP_MESSAGE; type: 'banners-request' };
+  | { $axf: typeof BANNER_STRIP_MESSAGE; type: 'banners-request' }
+  /** host → strip: draw the app's whole banner bar (its banner asset in force) as the host's top banner, or only the
+   * widgets its plugins attach (Brett, Nov 4 2026: "Make Molly's top banner asset the same as console") */
+  | { $axf: typeof BANNER_STRIP_MESSAGE; type: 'bar'; on: boolean };
 
 /** strip → the app's own frame (BroadcastChannel): open a view; the app answers `ack` so the strip stops resending. */
 export type BannerStripChannelMessage =
@@ -59,7 +65,7 @@ export function parseBannerStripMessage(raw: unknown): BannerStripMessage | null
   if (!isObj(raw) || raw.$axf !== BANNER_STRIP_MESSAGE) return null;
   const $axf = BANNER_STRIP_MESSAGE;
   switch (raw.type) {
-    case 'size': { const height = px(raw.height); return height === null ? null : { $axf, type: 'size', height, overlay: raw.overlay === true }; }
+    case 'size': { const height = px(raw.height); return height === null ? null : { $axf, type: 'size', height, overlay: raw.overlay === true, ...(raw.bar === true ? { bar: true } : {}) }; }
     case 'open': return typeof raw.view === 'string' && VIEW.test(raw.view) ? { $axf, type: 'open', view: raw.view } : null;
     case 'banners': {
       if (!Array.isArray(raw.banners)) return null;
@@ -76,6 +82,7 @@ export function parseBannerStripMessage(raw: unknown): BannerStripMessage | null
     case 'inset': { const top = px(raw.top), left = px(raw.left), width = px(raw.width); return top === null || left === null || width === null ? null : { $axf, type: 'inset', top, left, width }; }
     case 'set-hidden': return typeof raw.id === 'string' && ID.test(raw.id) ? { $axf, type: 'set-hidden', id: raw.id, hidden: raw.hidden === true } : null;
     case 'banners-request': return { $axf, type: 'banners-request' };
+    case 'bar': return { $axf, type: 'bar', on: raw.on === true };
     default: return null;
   }
 }
