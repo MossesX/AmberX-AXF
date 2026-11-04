@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 719,
- "updatedAt": "2026-11-04T14:17:22.679Z",
+ "rev": 720,
+ "updatedAt": "2026-11-04T14:17:31.713Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -73263,7 +73263,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T14:05:31.170Z",
-   "updatedAt": "2026-11-04T14:11:44.304Z",
+   "updatedAt": "2026-11-04T14:17:01.241Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -73384,12 +73384,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T14:17:01.241Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T14:05:31.171Z",
-     "updatedAt": "2026-11-04T14:05:31.171Z"
+     "updatedAt": "2026-11-04T14:17:30.282Z"
     },
     {
      "id": "s5",
@@ -73444,10 +73444,27 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "code",
+    "planId": "",
+    "createdAt": "2026-11-04T14:05:31.170Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw26vn4g07zb0z": "2026-11-04T14:05:31.171Z",
+     "st-mw26vn4g08hxnm": "2026-11-04T14:05:31.171Z",
+     "st-mw26vn4g09ffpf": "2026-11-04T14:05:31.171Z",
+     "st-mw26vn4g0acafv": "2026-11-04T14:05:31.171Z",
+     "st-mw26vn4g0ba5vs": "2026-11-04T14:05:31.171Z",
+     "st-mw26vn4g0c3hcf": "2026-11-04T14:05:31.171Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-04T14:05:31.171Z",
    "rearranged": false,
