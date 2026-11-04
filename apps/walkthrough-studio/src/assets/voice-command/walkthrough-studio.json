@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "voice-command",
+  "id": "walkthrough-studio",
+  "name": "Walkthrough Studio voice commands",
+  "version": "1",
+  "description": "What you can say to Walkthrough Studio: generated from its API, MCP tools, CLI and actions by framework/cli/voice-commands.mjs; commands marked authored are hand-tuned and kept.",
+  "data": {
+    "app": "walkthrough-studio",
+    "forFramework": true,
+    "source": "generated",
+    "generatedFrom": [
+      "action"
+    ],
+    "wake": [
+      "walkthrough studio",
+      "walkthroughs",
+      "walkthrough-studio"
+    ],
+    "commands": [
+      {"id":"help.about","title":"About","effect":"write","run":{"action":"help.about"},"phrases":["about","help about"]},
+      {"id":"file.new","title":"New project","effect":"write","run":{"action":"file.new"},"phrases":["new project","new file"]},
+      {"id":"file.save","title":"Save","effect":"write","run":{"action":"file.save"},"phrases":["save","save file"]},
+      {"id":"edit.undo","title":"Undo","effect":"write","run":{"action":"edit.undo"},"phrases":["undo","edit undo"]},
+      {"id":"edit.redo","title":"Redo","effect":"write","run":{"action":"edit.redo"},"phrases":["redo","edit redo"]}
+    ]
+  }
+}

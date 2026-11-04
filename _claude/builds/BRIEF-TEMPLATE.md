@@ -12,6 +12,9 @@ Source: voice · At: 2026-11-03T14:05:00Z · Session: <session or conversation i
 
 ## What to build
 Your paraphrase, the plan, the steps (s1 …), checks.
+When the build adds or ports an app: say whether it is for the framework's own development (`framework.forFramework`
+in its project.manifest.json; apps in this repo default to true). A forFramework app's API / MCP / CLI commands get
+voice commands: `node framework/cli/voice-commands.mjs generate <app> --write`, then `… check` (CI runs it too).
 
 ## Addendum 1 (Brett, Nov 4 2026 (voice))
 > A later change he asked for, verbatim. Each one is its own block, numbered, oldest first. Also:

@@ -1,0 +1,147 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.voice-commands",
+  "name": "Voice commands",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Every app's voice commands (voice-command@1): what you can say to the Dev Console, AmberX, axHub web, Molly, Expenses and every forFramework app, generated from their API, MCP tools, CLI and actions by framework/cli/voice-commands.mjs. Say or type a command here (the page, or the mic), or from Molly: Molly sends what you said to the console frame and this plugin matches it, asks when a slot is missing or the command deletes something, runs it (plugin commands and reads through plugin-commands@1, control@1 tools, console actions through console-commands@1, any other MCP tool of this console) and answers. 'What can I say in Expenses?' lists them. REST /api/plugins/voice-commands (registry, help, match, run, recent), MCP voice_commands_run / voice_commands_match / voice_commands_help / voice_commands_registry, CLI axf voice-commands <command> and axf voice say.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:voice-commands",
+    "settings-tab:voice-commands",
+    "service:voice-commands@1",
+    "action:voice-commands.open",
+    "action:voice-commands.listen"
+  ],
+  "optional": [
+    "service:plugin-commands@1",
+    "service:control@1",
+    "service:console-commands@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "banner": false,
+  "tabable": true,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/voice-commands",
+    "env": [
+      "AXF_VOICE_COMMANDS_DATA_DIR",
+      "AXF_VOICE_COMMANDS_CACHE"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "_claude/rules/RULES.md",
+      "_claude/THREADS.md",
+      "apps/molly/README.md",
+      "framework/spec/PORTING.md",
+      "apps/console-web/plugins/README.md",
+      ".github/workflows/android.yml"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "route": "GET /registry",
+        "id": "registry",
+        "title": "Every app's voice commands (voice-registry@1)",
+        "readOnly": true
+      },
+      {
+        "route": "GET /help",
+        "id": "help",
+        "title": "What can I say (in one app, or every app)",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "app": {
+              "type": "string",
+              "description": "an app (project manifest name or folder); empty = every app"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /match",
+        "id": "match",
+        "title": "What an utterance would run (nothing runs)",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string"
+            },
+            "app": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "text"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /run",
+        "id": "run",
+        "title": "Say a command: match it, ask when something is missing or it deletes, run it, answer",
+        "input": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string",
+              "description": "what was said"
+            },
+            "app": {
+              "type": "string",
+              "description": "only this app's commands"
+            },
+            "pending": {
+              "type": "string",
+              "description": "the id of a question this answers"
+            },
+            "answer": {
+              "type": "string",
+              "description": "the answer: yes / no, or the missing value"
+            },
+            "confirm": {
+              "type": "boolean",
+              "description": "true = already confirmed, run it"
+            },
+            "by": {
+              "type": "string"
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "GET /recent",
+        "id": "recent",
+        "title": "The last voice commands run",
+        "readOnly": true
+      }
+    ]
+  },
+  "builtWith": {
+    "model": "fable",
+    "builtAt": "2026-11-04",
+    "branch": "claude/app-voice-commands"
+  },
+  "help": "help.json",
+  "opens": "main"
+}

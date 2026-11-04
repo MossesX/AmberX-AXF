@@ -241,7 +241,9 @@ jobs:
             npx -y tsx framework/spec/check-console-commands.mts       # console commands (control@1 console domain): catalog, resolve by id/title/words, action policy, clients, runner, messages
             node framework/spec/check-plugin-commands.mjs               # plugin-commands@1: every plugin's commands and reads from routes, actions, data folder and plugin.json; projections; every plugin covered
             npx -y tsx framework/spec/check-agent-card.mts             # agent-card@1: registry, fixture replay, validators agree, four starters, schema
+            node framework/cli/voice-commands.mjs check                 # voice-command@1: every forFramework app's API / MCP / CLI commands and actions have voice phrases (src/assets/voice-command/<app>.json)
             npx -y tsx framework/spec/check-job-type.mts               # job-type@1: registry, fixture replay, validators agree, starter job types, schema
+            npx -y tsx framework/spec/check-voice-command.mts          # voice-command@1: registry, fixture replay (generate, match, confirm, help, coverage, merge), validators agree, every voice-command asset, schema, forFramework rule
             npx -y tsx framework/spec/check-headless-tabs.mts          # headless tabs: live cost meter + context chain (deploy/claude-meter.mjs), terminal pure helpers
             npx -y tsx framework/spec/check-claude-session.mts         # claude-session lib: Terminal reads it, companion helpers (Gizmo)
             npx -y tsx framework/spec/check-terminal-nav.mts           # terminal sessions nav: search / filter / sort, mirror vs jump in, chat link guard
@@ -300,6 +302,7 @@ jobs:
             python apps/console-web/plugins/ref-links/server/test_ref_links.py  # reference links: targets (catalog, agents, UI Review), find, resolve, open → refs.<how> through console-commands@1  # axf-plugin:ref-links
             python apps/console-web/server/test_mcp_tools.py         # console MCP: read tools read-only, deletes destructive, veto pass tools
             python apps/console-web/plugins/plugin-commands/server/test_plugin_commands.py  # plugin commands: /api/control/<plugin>/<command>, deletes confirm, actions to the console, MCP tools follow the plugins  # axf-plugin:plugin-commands
+            python apps/console-web/plugins/voice-commands/test.py  # voice commands: registry + help from the rules, match, ask-then-run (missing slot, destructive yes/no), runs via plugin-commands@1 / control@1 / console-commands@1, audit  # axf-plugin:voice-commands
             python apps/amberx-droid/server/test_server.py           # AmberX server: wall, admin-only AI config, write-only keys, fallback, intent checks, caps, SPA paths
           } 2>&1 | tee /tmp/web-tests.log
       - name: Report web/Python test failures to the "CI build errors" issue

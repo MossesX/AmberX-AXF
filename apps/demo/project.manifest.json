@@ -15,7 +15,8 @@
     "relation": "built-on",
     "version": "0.2.0",
     "template": "react-ts",
-    "appManifest": "axf.manifest.json"
+    "appManifest": "axf.manifest.json",
+    "forFramework": false
   },
   "repo": {
     "host": "github",

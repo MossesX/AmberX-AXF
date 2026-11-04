@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "molly-voice-control-help",
+  "name": "Voice help",
+  "version": "0.1.0",
+  "description": "Help mode entries for Molly's Voice plugin (help@1).",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:voice-control",
+    "entries": [
+      { "target": "molly-voice", "title": "Say a command", "text": "Talk to every app from here: say or type what you want (add 12.50 dunkin food, list expenses, open builds), and Molly runs it through the Dev Console's voice commands and answers." },
+      { "target": "molly-voice-send", "title": "Say it", "text": "Sends what you typed. Reads and opening screens run at once; a change asks only for what is missing; deleting always asks first." },
+      { "target": "molly-voice-mic", "title": "Speak", "text": "Listens through the microphone where the browser can. Tap again to stop." },
+      { "target": "molly-voice-yes", "title": "Yes", "text": "Confirms the command Molly asked about and runs it." },
+      { "target": "molly-voice-no", "title": "No", "text": "Cancels it; nothing runs." },
+      { "target": "molly-voice-apps", "title": "What can I say", "text": "Lists the phrases one app understands." },
+      { "target": "molly-voice-open", "title": "Say a command…", "text": "Opens the voice dialog." }
+    ]
+  }
+}

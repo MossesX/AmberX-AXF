@@ -1,0 +1,14 @@
+/* Voice commands (console plugin): layout only; every colour, size and radius comes from the theme tokens. */
+.axp-voice { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); }
+.axp-voice__say { display: flex; gap: var(--fx-dens-gap-md); align-items: flex-end; flex-wrap: wrap; }
+.axp-voice__say .fx-field { flex: 1 1 calc(var(--fx-row-h) * 8); min-width: 0; }
+.axp-voice__answer { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); }
+.axp-voice__question { display: flex; gap: var(--fx-dens-gap-md); align-items: center; flex-wrap: wrap; }
+.axp-voice__apps { display: flex; gap: var(--fx-dens-gap-md); flex-wrap: wrap; }
+.axp-voice__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axp-voice__row { display: flex; gap: var(--fx-dens-gap-md); align-items: baseline; flex-wrap: wrap; padding: var(--fx-dens-gap-xs) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-voice__row:last-child { border-bottom: 0; }
+.axp-voice__example { font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm); }
+.axp-voice__muted { color: var(--fx-muted); font-size: var(--fx-type-root-sm); }
+.axp-voice__result { font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm); white-space: pre-wrap; max-height: calc(var(--fx-row-h) * 10); overflow: auto; margin: 0; }
+.axp-voice__listening { color: var(--fx-accent); }

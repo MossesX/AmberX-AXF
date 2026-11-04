@@ -102,6 +102,10 @@ start_watch_live() {   # $1 = session name; prints the watcher pid (empty when o
 
 GATE="$HERE/../framework/cli/model-gate.mjs"
 UPGRADE_NOTE="Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Opus) is fine. An UPGRADE (e.g. Opus → Fable) needs Brett's approval: when you reach one, run \`node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>\`, ask once, and stop. Never approve a model switch upgrade yourself (no \`act approve\` on an upgrade), never relaunch on a higher model."  # axf-plugin:build-orchestrator
+# Voice commands for every app (voice-command@1, Brett, Nov 4 2026): every brief says that a new or ported app notes
+# framework.forFramework in its project manifest and that a forFramework app's commands get voice phrases (CI checks).
+VOICE_NOTE="Voice commands (Brett, Nov 4 2026): when this build adds, ports or changes an app, its project.manifest.json must say framework.forFramework (true = for the framework's own development; apps in this repo default to true). A forFramework app's every API / MCP / CLI command and web action needs voice phrases: run \`node framework/cli/voice-commands.mjs generate <app> --write\` after adding or changing commands and \`node framework/cli/voice-commands.mjs check\` before the PR (CI fails on a command without phrases). Hand-tune phrases by marking a command \`\"source\": \"authored\"\` in src/assets/voice-command/<app>.json."
+
 # Upgrades need Brett (framework/cli/model-gate.mjs): a build may not start on a higher model than its orchestrator step,
 # nor start a phase that upgrades the model before Brett approved it. Checked once, before the slot (the queue waiter
 # and the tmux inner run were checked when they were asked for). AXF_BUILD_ID names the build when the name doesn't.
@@ -164,7 +168,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   prompt="$(cat "$brief")"
   [[ -n "$wl" ]] && prompt="$prompt"$'\n\n'"$WATCH_NOTE"
   [[ -n "$slot" ]] && slots_on && prompt="$prompt"$'\n\n'"$HEAVY_NOTE"
-  prompt="$prompt"$'\n\n'"${UPGRADE_NOTE:-}"
+  prompt="$prompt"$'\n\n'"${UPGRADE_NOTE:-}"$'\n\n'"${VOICE_NOTE:-}"
   if look_on; then   # look changes Brett asked for on the predicted look ride along; the look refreshes as the diff grows
     look_add="$(node "$LOOK" addenda --name "$name" --brief "$brief" 2>/dev/null)"
     [[ -n "$look_add" ]] && prompt="$prompt"$'\n\n'"$look_add"

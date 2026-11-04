@@ -15,7 +15,8 @@
   ],
   "framework": {
     "relation": "core",
-    "version": "0.2.0"
+    "version": "0.2.0",
+    "forFramework": true
   },
   "repo": {
     "host": "github",

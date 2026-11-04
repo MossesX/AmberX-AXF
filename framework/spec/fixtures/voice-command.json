@@ -1,0 +1,497 @@
+{
+  "$fixture": "voice-command@1",
+  "now": "2026-11-04T15:00:00.000Z",
+  "surface": {
+    "app": "expenses",
+    "forFramework": true,
+    "commands": [
+      {
+        "id": "expenses_add",
+        "title": "Add an expense",
+        "run": {
+          "api": "POST /api/expenses/v1/entries",
+          "mcp": "expenses_add",
+          "cli": "expenses add"
+        },
+        "input": {
+          "properties": {
+            "merchant": {
+              "type": "string",
+              "description": "Who was paid"
+            },
+            "amount": {
+              "type": "number",
+              "description": "Amount in dollars"
+            },
+            "date": {
+              "type": "string",
+              "format": "date"
+            },
+            "category": {
+              "type": "string",
+              "enum": [
+                "food",
+                "gas",
+                "personal",
+                "other"
+              ]
+            },
+            "account": {
+              "type": "string"
+            },
+            "note": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "merchant",
+            "amount"
+          ]
+        }
+      },
+      {
+        "id": "expenses_list",
+        "title": "List expenses",
+        "run": {
+          "api": "GET /api/expenses/v1/entries",
+          "mcp": "expenses_list"
+        },
+        "input": {
+          "properties": {
+            "date_from": {
+              "type": "string"
+            },
+            "category": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "id": "expenses_totals_get",
+        "run": {
+          "mcp": "expenses_totals_get"
+        },
+        "input": {
+          "properties": {
+            "by": {
+              "type": "string",
+              "enum": [
+                "category",
+                "account",
+                "month"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": "entries_delete",
+        "title": "Delete an entry",
+        "run": {
+          "api": "DELETE /api/expenses/v1/entries/{id}"
+        },
+        "input": {
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
+      },
+      {
+        "id": "open_reports",
+        "title": "Open reports",
+        "run": {
+          "action": "expenses.reports"
+        }
+      }
+    ]
+  },
+  "generated": {
+    "app": "expenses",
+    "forFramework": true,
+    "source": "generated",
+    "generatedFrom": [
+      "api",
+      "mcp",
+      "cli",
+      "action"
+    ],
+    "wake": [
+      "expenses"
+    ],
+    "commands": [
+      {
+        "id": "expenses_add",
+        "title": "Add an expense",
+        "effect": "write",
+        "confirm": "missing",
+        "run": {
+          "api": "POST /api/expenses/v1/entries",
+          "mcp": "expenses_add",
+          "cli": "expenses add"
+        },
+        "slots": {
+          "merchant": {
+            "type": "text",
+            "required": true,
+            "say": "who was paid"
+          },
+          "amount": {
+            "type": "money",
+            "required": true,
+            "say": "amount in dollars"
+          },
+          "date": {
+            "type": "date",
+            "required": false,
+            "say": "date"
+          },
+          "category": {
+            "type": "choice",
+            "required": false,
+            "options": [
+              "food",
+              "gas",
+              "personal",
+              "other"
+            ],
+            "say": "category"
+          },
+          "account": {
+            "type": "text",
+            "required": false,
+            "say": "account"
+          },
+          "note": {
+            "type": "text",
+            "required": false,
+            "say": "note"
+          }
+        },
+        "phrases": [
+          "add an expense {merchant} {amount}",
+          "add an expense {amount} {merchant}",
+          "add {merchant} {amount}",
+          "add {amount} {merchant}",
+          "add an expense"
+        ],
+        "say": "Add an expense: done.",
+        "help": "",
+        "source": "generated"
+      },
+      {
+        "id": "expenses_list",
+        "title": "List expenses",
+        "effect": "read",
+        "confirm": "never",
+        "run": {
+          "api": "GET /api/expenses/v1/entries",
+          "mcp": "expenses_list"
+        },
+        "slots": {
+          "date_from": {
+            "type": "date",
+            "required": false,
+            "say": "date from"
+          },
+          "category": {
+            "type": "text",
+            "required": false,
+            "say": "category"
+          }
+        },
+        "phrases": [
+          "list expenses",
+          "list"
+        ],
+        "say": "{title}: {result}",
+        "help": "",
+        "source": "generated"
+      },
+      {
+        "id": "expenses_totals_get",
+        "title": "Get Totals",
+        "effect": "read",
+        "confirm": "never",
+        "run": {
+          "mcp": "expenses_totals_get"
+        },
+        "slots": {
+          "by": {
+            "type": "choice",
+            "required": false,
+            "options": [
+              "category",
+              "account",
+              "month"
+            ],
+            "say": "by"
+          }
+        },
+        "phrases": [
+          "get totals",
+          "totals"
+        ],
+        "say": "{title}: {result}",
+        "help": "",
+        "source": "generated"
+      },
+      {
+        "id": "entries_delete",
+        "title": "Delete an entry",
+        "effect": "destructive",
+        "confirm": "always",
+        "run": {
+          "api": "DELETE /api/expenses/v1/entries/{id}"
+        },
+        "slots": {
+          "id": {
+            "type": "id",
+            "required": true,
+            "say": "id"
+          }
+        },
+        "phrases": [
+          "delete an entry {id}",
+          "delete entries {id}",
+          "delete an entry"
+        ],
+        "say": "Delete an entry: done.",
+        "help": "",
+        "source": "generated"
+      },
+      {
+        "id": "open_reports",
+        "title": "Open reports",
+        "effect": "navigate",
+        "confirm": "never",
+        "run": {
+          "action": "expenses.reports"
+        },
+        "slots": {},
+        "phrases": [
+          "open reports"
+        ],
+        "say": "Open reports: done.",
+        "help": "",
+        "source": "generated"
+      }
+    ]
+  },
+  "errors": {
+    "ok": [],
+    "not-an-object": [
+      "data must be an object"
+    ],
+    "bad-core": [
+      "data.app is the app (its project manifest name: lowercase letters, digits and dashes)",
+      "data.source must be one of generated, authored, mixed",
+      "data.wake must be up to 6 lowercase names a phrase may start with",
+      "data.commands must be a list of commands"
+    ],
+    "bad-command": [
+      "data.commands[0].id must be a command id (lowercase letters, digits, _ . -)",
+      "data.commands[0].title is what the command is called (up to 120 characters)",
+      "data.commands[0].effect must be one of read, write, destructive, navigate",
+      "data.commands[0].run must name at least one transport (api, mcp, cli, action) and how the command runs there",
+      "data.commands[0].phrases must list at least one phrase to say (with {slot} placeholders)"
+    ],
+    "confirm-below-floor": [
+      "data.commands[0].confirm \"never\" is below the floor for a destructive command (\"always\")"
+    ],
+    "undeclared-slot": [
+      "data.commands[0].phrases[0] uses {amount}, which is not a declared slot",
+      "data.commands[0].say uses {thing}, which is neither a slot nor {result}"
+    ],
+    "two-text-slots": [
+      "data.commands[0].phrases[0]: a text slot {a} cannot be followed straight by another text slot {b} (put a word between them)"
+    ],
+    "slots-only-phrase": [
+      "data.commands[0].phrases[0] needs at least one word (not only slots)"
+    ],
+    "duplicate-id": [
+      "data.commands[1].id \"a\" is declared twice"
+    ],
+    "other-type": []
+  },
+  "utterances": {
+    "add an expense dunkin 4.25": {
+      "id": "expenses_add",
+      "slots": {
+        "merchant": "dunkin",
+        "amount": 4.25
+      },
+      "missing": [],
+      "confirm": false,
+      "question": ""
+    },
+    "expenses add dunkin donuts $12.50 category food date yesterday": {
+      "id": "expenses_add",
+      "slots": {
+        "merchant": "dunkin donuts",
+        "amount": 12.5,
+        "category": "food",
+        "date": "2026-11-03"
+      },
+      "missing": [],
+      "confirm": false,
+      "question": ""
+    },
+    "add an expense of 5 dollars": {
+      "id": "expenses_add",
+      "slots": {
+        "amount": 5
+      },
+      "missing": [
+        "merchant"
+      ],
+      "confirm": true,
+      "question": "What is who was paid?"
+    },
+    "add an expense": {
+      "id": "expenses_add",
+      "slots": {},
+      "missing": [
+        "merchant",
+        "amount"
+      ],
+      "confirm": true,
+      "question": "What is who was paid?"
+    },
+    "get totals by month": {
+      "id": "expenses_totals_get",
+      "slots": {
+        "by": "month"
+      },
+      "missing": [],
+      "confirm": false,
+      "question": ""
+    },
+    "totals": {
+      "id": "expenses_totals_get",
+      "slots": {},
+      "missing": [],
+      "confirm": false,
+      "question": ""
+    },
+    "add 12 dollars and 50 cents dunkin food": {
+      "id": "expenses_add",
+      "slots": {
+        "amount": 12.5,
+        "merchant": "dunkin",
+        "category": "food"
+      },
+      "missing": [],
+      "confirm": false,
+      "question": ""
+    },
+    "add an expense 3 bucks starbucks nov 3": {
+      "id": "expenses_add",
+      "slots": {
+        "amount": 3,
+        "merchant": "starbucks",
+        "date": "2026-11-03"
+      },
+      "missing": [],
+      "confirm": false,
+      "question": ""
+    },
+    "delete an entry abc123": {
+      "id": "entries_delete",
+      "slots": {
+        "id": "abc123"
+      },
+      "missing": [],
+      "confirm": true,
+      "question": "Delete an entry (id: abc123). Yes or no?"
+    },
+    "open reports please": {
+      "id": "open_reports",
+      "slots": {},
+      "missing": [],
+      "confirm": false,
+      "question": ""
+    },
+    "what time is it": null,
+    "list expenses in expenses": {
+      "id": "expenses_list",
+      "slots": {},
+      "missing": [],
+      "confirm": false,
+      "question": ""
+    },
+    "please list the expenses for food": null
+  },
+  "help": [
+    {
+      "app": "expenses",
+      "header": "In Expenses you can say:",
+      "commands": [
+        {
+          "id": "expenses_totals_get",
+          "line": "\"get totals\" — Get Totals"
+        },
+        {
+          "id": "expenses_list",
+          "line": "\"list expenses\" — List expenses"
+        },
+        {
+          "id": "expenses_add",
+          "line": "\"add an expense <who was paid> 12.50\" — Add an expense (asks only for what is missing)"
+        },
+        {
+          "id": "entries_delete",
+          "line": "\"delete an entry abc123\" — Delete an entry (asks first)"
+        },
+        {
+          "id": "open_reports",
+          "line": "\"open reports\" — Open reports"
+        }
+      ]
+    }
+  ],
+  "coverage": {
+    "total": 5,
+    "covered": 5,
+    "missing": [],
+    "extra": [],
+    "ok": true
+  },
+  "merged": [
+    [
+      "expenses_add",
+      "authored",
+      "spent {amount} at {merchant}"
+    ],
+    [
+      "expenses_list",
+      "generated",
+      "list expenses"
+    ],
+    [
+      "expenses_totals_get",
+      "generated",
+      "get totals"
+    ],
+    [
+      "entries_delete",
+      "generated",
+      "delete an entry {id}"
+    ],
+    [
+      "open_reports",
+      "generated",
+      "open reports"
+    ],
+    [
+      "expenses_export",
+      "generated",
+      "export"
+    ]
+  ]
+}

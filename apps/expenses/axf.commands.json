@@ -1,0 +1,103 @@
+{
+  "$axf": "commands@1",
+  "description": "Expenses' command surface for voice commands (voice-command@1, framework/cli/voice-commands.mjs): the ledger API (/api/expenses/v1, src/server/expensesApi.ts), the console's MCP tools expenses_* (apps/console-web/server/mcp_server.py) and the CLI scripts/expenses-cli.mjs, one entry per command with the same parameters as the MCP tool. Regenerate the voice asset after changing it: node framework/cli/voice-commands.mjs generate expenses --write",
+  "wake": ["expenses", "expense", "expense tracker", "ledger"],
+  "commands": [
+    {
+      "id": "expenses_add",
+      "title": "Add an expense",
+      "description": "Add an entry to the ledger: who was paid and the amount in dollars; date (today when left out), category, account (payment method), note; income for money in.",
+      "effect": "write",
+      "run": { "mcp": "expenses_add", "api": "POST /api/expenses/v1/entries", "cli": "expenses add --merchant <merchant> --amount <amount>" },
+      "input": {
+        "properties": {
+          "merchant": { "type": "string", "description": "the merchant (who was paid)" },
+          "amount": { "type": "number", "description": "the amount in dollars" },
+          "date": { "type": "string", "format": "date", "description": "the date", "default": "today" },
+          "category": { "type": "string", "enum": ["fuel", "groceries", "dining", "transfers", "personal", "clothing", "software", "utilities", "transport", "hardware", "health", "pending", "income", "other"], "description": "the category" },
+          "account": { "type": "string", "description": "the account (payment method)" },
+          "note": { "type": "string", "description": "a note" },
+          "income": { "type": "boolean", "description": "money in" }
+        },
+        "required": ["merchant", "amount"]
+      }
+    },
+    {
+      "id": "expenses_edit",
+      "title": "Edit an expense",
+      "description": "Change fields of one entry (only the ones given): amount in dollars, merchant, date, category, account, note. The API never deletes; deleting stays in the app.",
+      "effect": "write",
+      "run": { "mcp": "expenses_edit", "api": "PATCH /api/expenses/v1/entries/{entry_id}", "cli": "expenses edit <id> [--amount] [--merchant] …" },
+      "input": {
+        "properties": {
+          "entry_id": { "type": "string", "description": "the entry id" },
+          "amount": { "type": "number", "description": "the amount in dollars" },
+          "merchant": { "type": "string", "description": "the merchant" },
+          "date": { "type": "string", "format": "date", "description": "the date" },
+          "category": { "type": "string", "enum": ["fuel", "groceries", "dining", "transfers", "personal", "clothing", "software", "utilities", "transport", "hardware", "health", "pending", "income", "other"], "description": "the category" },
+          "account": { "type": "string", "description": "the account" },
+          "note": { "type": "string", "description": "a note" }
+        },
+        "required": ["entry_id"]
+      }
+    },
+    {
+      "id": "expenses_list",
+      "title": "List expenses",
+      "description": "Entries, newest first, with filters: dates, category, account, kind (expense or income), a text search, a limit.",
+      "effect": "read",
+      "run": { "mcp": "expenses_list", "api": "GET /api/expenses/v1/entries", "cli": "expenses list [--from] [--to] [--category] [--account] [--q] [--limit]" },
+      "input": {
+        "properties": {
+          "date_from": { "type": "string", "format": "date", "description": "from date" },
+          "date_to": { "type": "string", "format": "date", "description": "to date" },
+          "category": { "type": "string", "enum": ["fuel", "groceries", "dining", "transfers", "personal", "clothing", "software", "utilities", "transport", "hardware", "health", "pending", "income", "other"], "description": "the category" },
+          "account": { "type": "string", "description": "the account" },
+          "kind": { "type": "string", "enum": ["expense", "income"], "description": "the kind" },
+          "q": { "type": "string", "description": "words to search for" },
+          "limit": { "type": "integer", "description": "how many" }
+        }
+      }
+    },
+    {
+      "id": "expenses_get",
+      "title": "Show an expense",
+      "description": "One entry by id.",
+      "effect": "read",
+      "run": { "mcp": "expenses_get", "api": "GET /api/expenses/v1/entries/{entry_id}", "cli": "expenses get <id>" },
+      "input": { "properties": { "entry_id": { "type": "string", "description": "the entry id" } }, "required": ["entry_id"] }
+    },
+    {
+      "id": "expenses_accounts_list",
+      "title": "List accounts",
+      "description": "Accounts (payment methods) with entry counts, spent and income, and the last date.",
+      "effect": "read",
+      "run": { "mcp": "expenses_accounts_list", "api": "GET /api/expenses/v1/accounts", "cli": "expenses accounts [--from] [--to]" },
+      "input": { "properties": { "date_from": { "type": "string", "format": "date", "description": "from date" }, "date_to": { "type": "string", "format": "date", "description": "to date" } } }
+    },
+    {
+      "id": "expenses_totals_get",
+      "title": "Totals",
+      "description": "Totals: count, spent, income, net; by category, account, month or merchant breaks it down.",
+      "effect": "read",
+      "run": { "mcp": "expenses_totals_get", "api": "GET /api/expenses/v1/totals", "cli": "expenses totals [--by category|account|month|merchant] [--from] [--to]" },
+      "input": {
+        "properties": {
+          "by": { "type": "string", "enum": ["category", "account", "month", "merchant"], "description": "broken down by" },
+          "date_from": { "type": "string", "format": "date", "description": "from date" },
+          "date_to": { "type": "string", "format": "date", "description": "to date" },
+          "category": { "type": "string", "enum": ["fuel", "groceries", "dining", "transfers", "personal", "clothing", "software", "utilities", "transport", "hardware", "health", "pending", "income", "other"], "description": "the category" },
+          "account": { "type": "string", "description": "the account" }
+        }
+      }
+    },
+    {
+      "id": "expenses_export_get",
+      "title": "Export expenses",
+      "description": "Export entries as CSV or JSON.",
+      "effect": "read",
+      "run": { "mcp": "expenses_export_get", "api": "GET /api/expenses/v1/export", "cli": "expenses export [--format csv|json] [--from] [--to]" },
+      "input": { "properties": { "fmt": { "type": "string", "enum": ["csv", "json"], "description": "the format" }, "date_from": { "type": "string", "format": "date", "description": "from date" }, "date_to": { "type": "string", "format": "date", "description": "to date" } } }
+    }
+  ]
+}

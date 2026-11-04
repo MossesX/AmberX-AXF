@@ -30,6 +30,8 @@ Big Dog profile, Opus; a Fable version comes later as its own build).
   menu it opens covers Molly's window, a view it opens opens in the console's frame. Settings → Plugins → Banners
   (show the strip, show / hide each banner). <!-- axf-plugin:banners -->
 
+- **Voice control** (`plugins/voice-control`, capability `axf.voice@1`): control every app by voice from Molly. Tap the mic (toolbar, Molly menu) or type: "add 12.50 dunkin food", "list expenses", "open builds", "what can I say in Expenses?". Molly sends it to the Console frame, whose Voice commands plugin matches it against every app's voice commands (voice-command@1), asks when a slot is missing or the command deletes, runs it and answers (spoken back). A listener inside a framed app can hand Molly what it heard (voice-bridge@1 `utterance`). Settings → Plugins → Voice control. <!-- axf-plugin:voice-control -->
+
 ```bash
 npm install && npm run dev      # :5173
 docker build -t molly . && docker run -p 7490:8080 molly

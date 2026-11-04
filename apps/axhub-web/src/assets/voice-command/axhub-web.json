@@ -1,0 +1,32 @@
+{
+  "$axf": "asset@1",
+  "type": "voice-command",
+  "id": "axhub-web",
+  "name": "AXHub voice commands",
+  "version": "1",
+  "description": "What you can say to AXHub: generated from its API, MCP tools, CLI and actions by framework/cli/voice-commands.mjs; commands marked authored are hand-tuned and kept.",
+  "data": {
+    "app": "axhub-web",
+    "forFramework": true,
+    "source": "generated",
+    "generatedFrom": [
+      "action"
+    ],
+    "wake": [
+      "axhub",
+      "ax hub",
+      "hub",
+      "axhub-web"
+    ],
+    "commands": [
+      {"id":"hub.open","title":"Open a hub page","effect":"navigate","run":{"action":"hub.open"},"phrases":["open a hub page","open hub"]},
+      {"id":"hub.review","title":"Review the request","effect":"write","run":{"action":"hub.review"},"phrases":["review the request","hub review"]},
+      {"id":"axhub.signout","title":"Sign out of axHub","effect":"write","run":{"action":"axhub.signout"},"phrases":["sign out of axhub","axhub signout"]},
+      {"id":"axhub.check","title":"Check the hub now","effect":"write","run":{"action":"axhub.check"},"phrases":["check the hub now","check axhub"]},
+      {"id":"axhub.search","title":"Search everything","effect":"write","run":{"action":"axhub.search"},"phrases":["search everything","search axhub"]},
+      {"id":"help.about","title":"About","effect":"write","run":{"action":"help.about"},"phrases":["about","help about"]},
+      {"id":"view.shortcuts","title":"Keyboard shortcuts","effect":"write","run":{"action":"view.shortcuts"},"phrases":["keyboard shortcuts","view shortcuts"]},
+      {"id":"dev.console","title":"Developer console","effect":"write","run":{"action":"dev.console"},"phrases":["developer console","dev console"]}
+    ]
+  }
+}

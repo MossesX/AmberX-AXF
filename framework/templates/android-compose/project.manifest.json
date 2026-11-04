@@ -7,7 +7,7 @@
   "status": "active",
   "version": "0.1.0",
   "platforms": ["android"],
-  "framework": { "relation": "built-on", "version": "{{FRAMEWORK_VERSION}}", "template": "android-compose", "appManifest": "axf.manifest.json" },
+  "framework": { "relation": "built-on", "version": "{{FRAMEWORK_VERSION}}", "template": "android-compose", "appManifest": "axf.manifest.json", "forFramework": false },
   "repo": { "host": "github", "owner": "MossesX", "name": "{{APP_ID}}", "exists": false, "visibility": "private" },
   "location": { "repo": "MossesX/{{APP_ID}}", "path": "." },
   "data": { "shared": [] },

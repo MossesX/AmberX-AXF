@@ -48,6 +48,7 @@
     "agent-card": false,
     "job-type": false,
     "card": false,
+    "voice-command": false,
     "help": false,
     "uac-policy": false
   },

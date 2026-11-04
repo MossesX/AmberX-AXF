@@ -96,7 +96,8 @@ export interface ProjectManifest {
   status?: string;
   version?: string;
   platforms?: string[];
-  framework: { relation: string; version?: string; template?: string; appManifest?: string };
+  /** `forFramework`: is this app for the framework's own development? Then its API / MCP / CLI commands get voice commands (voice-command@1). */
+  framework: { relation: string; version?: string; template?: string; appManifest?: string; forFramework?: boolean };
   repo: { host?: string; owner: string; name: string; exists: boolean; visibility?: string; defaultBranch?: string; url?: string };
   location?: { repo?: string; path?: string };
   deploy?: Record<string, unknown>;
