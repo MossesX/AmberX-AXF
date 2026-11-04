@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T19:51:49.311Z",
+ "updatedAt": "2026-11-04T19:52:08.097Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -11947,15 +11947,15 @@
    "title": "Package builds: combine waiting (Fable) steps into one build package, send to a helper or queue it",
    "category": "Framework > Sessions",
    "detail": "Package builds window in the Build orchestrator: every waiting step individually (grouped by source build), default filter model = Fable, checkboxes per step, select all / none / group / invert, drag to order, cross-dependency warnings with bring-along, combine into one package build linked to its sources (packaged into X), then Send to helper (session-sync offer, do it now) or add to my orchestrator at a position; preset All Fable work. One transaction + live push, Sessions chat post, re-analyze order after every send, owner-only on the primary. Depends on handoff-2 (built on its contracts).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/fable-packager",
    "pr": "#336",
    "createdAt": "2026-11-04T19:31:11.060Z",
-   "updatedAt": "2026-11-04T19:51:48.344Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T19:51:49.355Z",
+   "builtAt": "2026-11-04T19:51:49.355Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -12057,8 +12057,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T19:51:49.355Z",
      "note": "",
      "uid": "st-mw2iig7o0a9mxv"
     }
