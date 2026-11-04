@@ -95,9 +95,7 @@ Per-app custom settings interfaces (addendum 2): console (`axf-console`), Molly,
 | `node framework/cli/check-chrome-assets.mjs` | ✓ 400 files, 25 left over in 18 files (baseline) |
 | `node framework/cli/check-theme.mjs` / `check-controls.mjs` / `check-toolbars.mjs` | ✓ |
 | `node framework/cli/axf.mjs validate --framework` + the four apps | ✓ |
-| `npx tsc --noEmit` in apps/console-web, amberx-droid, axhub-web, molly (re-baked) | see the PR (filled in below) |
-
-TYPECHECK_RESULTS
+| `npx tsc --noEmit` in apps/console-web, amberx-droid, axhub-web, molly (re-baked with `rebake.mjs apply`) | ✓ 0 errors in each (Molly checked with the console's TypeScript: its node_modules is not installed in this sandbox) |
 
 ## Known gaps
 - Expenses runs its own vendored `@axf/core` line (not asset@1 files): its six custom settings interfaces ship as files under `apps/expenses/src/assets/settings/` for its port; nothing in Expenses reads them yet.
