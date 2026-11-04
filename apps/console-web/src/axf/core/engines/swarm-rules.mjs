@@ -47,9 +47,11 @@ export const STATUSES = {
 /** Statuses Brett sets from the dropdown; Suspended and Quit come from Suspend and rage-quit. */
 export const PICKABLE = ['on-duty', 'off-duty', 'injured', 'medical-leave', 'probation', 'fired', 'custom'];
 
-export const CHAT_KINDS = ['assign', 'lease', 'report', 'handoff', 'merge', 'status', 'discipline', 'pay', 'banter', 'brett'];
+export const CHAT_KINDS = ['assign', 'lease', 'report', 'handoff', 'merge', 'status', 'discipline', 'pay', 'banter', 'brett', 'session', 'handover', 'claim'];
+/** Channels: the room (''), and `sessions` = the Session sync plugin's channel (session-link@1, spec/HANDOFF.md): what two Claude sessions and the orchestrator say to each other. */
+export const CHAT_CHANNELS = ['', 'sessions'];
 /** Work kinds are built from orchestrator messages and agent reports: no tokens. */
-export const WORK_KINDS = ['assign', 'lease', 'report', 'handoff', 'merge', 'status', 'discipline', 'pay', 'brett'];
+export const WORK_KINDS = ['assign', 'lease', 'report', 'handoff', 'merge', 'status', 'discipline', 'pay', 'brett', 'session', 'handover', 'claim'];
 export const BOSS = { id: 'boss', name: 'Boss' };
 export const BRETT = 'brett';
 
@@ -115,7 +117,7 @@ export const SWARM = {
     limits: { note: 300, until: 40, customName: 40, salary: 100000, topups: 100, pay: 100, bonuses: 200, history: 200, notices: 200, banterSpend: 500, hired: 50, hiredSkills: 50, designs: 50, identity: 200, photo: 600 },
   },
   chat: {
-    kinds: CHAT_KINDS, workKinds: WORK_KINDS, boss: BOSS, brett: BRETT, max: 2000, textMax: 1000,
+    kinds: CHAT_KINDS, workKinds: WORK_KINDS, channels: CHAT_CHANNELS, boss: BOSS, brett: BRETT, max: 2000, textMax: 1000,
     sliders: SLIDERS, vibe: VIBE, presets: PRESETS, defaultPreset: DEFAULT_PRESET, vibeColors: VIBE_COLORS,
     banterBudget: { default: 0.5, max: 1000 }, savedPresets: 30,
   },
@@ -319,7 +321,7 @@ export function normChat(c) {
 }
 
 /** One chat message. Unknown kinds read as banter (the cheap kind); `vibe` and `toned` are set by the vibe filter. */
-export const normMessage = (m, i = 0) => ({ id: str(m?.id, 40) || `m${i}`, at: str(m?.at, 40), from: str(m?.from, 40), kind: CHAT_KINDS.includes(m?.kind) ? m.kind : 'banter', text: str(m?.text, C.textMax), jobId: str(m?.jobId, 120), vibe: Number.isFinite(m?.vibe) ? m.vibe : null, toned: m?.toned === true });
+export const normMessage = (m, i = 0) => ({ id: str(m?.id, 40) || `m${i}`, at: str(m?.at, 40), from: str(m?.from, 40), kind: CHAT_KINDS.includes(m?.kind) ? m.kind : 'banter', text: str(m?.text, C.textMax), jobId: str(m?.jobId, 120), vibe: Number.isFinite(m?.vibe) ? m.vibe : null, toned: m?.toned === true, ...(CHAT_CHANNELS.includes(m?.channel) && m.channel ? { channel: m.channel } : {}) });
 
 const sliderVals = (v, d) => ({ vibe: Math.round(num(v?.vibe, d.vibe, VIBE.min, VIBE.max)), chattiness: slider(v?.chattiness, d.chattiness), cussing: slider(v?.cussing, d.cussing), drama: slider(v?.drama, d.drama) });
 
@@ -634,7 +636,7 @@ export function jsonSchemas() {
       identity: { type: 'object', propertyNames: { enum: IDENTITY_FIELDS }, additionalProperties: { type: 'string' } }, card: { anyOf: [{ type: 'string', pattern: SWARM.cardIdPattern }, { const: '' }] },
     },
   };
-  const message = { type: 'object', required: ['from', 'kind', 'text'], properties: { id: { type: 'string' }, at: { type: 'string' }, from: { type: 'string' }, kind: { enum: CHAT_KINDS }, text: { type: 'string', maxLength: C.textMax }, jobId: { type: 'string' }, vibe: { anyOf: [rng([VIBE.min, VIBE.max]), { type: 'null' }] }, toned: { type: 'boolean' } } };
+  const message = { type: 'object', required: ['from', 'kind', 'text'], properties: { id: { type: 'string' }, at: { type: 'string' }, from: { type: 'string' }, kind: { enum: CHAT_KINDS }, text: { type: 'string', maxLength: C.textMax }, jobId: { type: 'string' }, vibe: { anyOf: [rng([VIBE.min, VIBE.max]), { type: 'null' }] }, toned: { type: 'boolean' }, channel: { enum: CHAT_CHANNELS.filter(Boolean) } } };
   const state = {
     ...head('swarm-state', TAGS.state, 'swarm runtime state', 'Statuses, pay, history, chat, chat settings, ID cards and Breakroom hires.'),
     type: 'object', required: ['agents'],

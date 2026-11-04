@@ -12,36 +12,295 @@
   "data": {
     "scope": "plugin:session-sync",
     "entries": [
-      { "target": "view:session-sync", "title": "Sessions", "text": "Every Claude session on this project: who is primary, who helps, what each one is doing, the areas they hold, open offers and assigned work, and the Breakroom's Sessions channel to read along and post in.", "kind": "screen" },
-      { "target": "dialog:session-sync.join", "title": "Join: what's going on", "text": "Shown the first time a console loads under a new session or account: what the other session is working on (progress, model), what's done today, what needs attention, and the work the orchestrator offers you. Tick what you want to jump into and add it to your list.", "kind": "dialog" },
-      { "target": "dialog:session-sync.send", "title": "Send to helper", "text": "Hands the selected build or steps to a helper session: the whole build, or just these steps as a new build linked to the parent. The helper accepts, rejects or holds it; the orchestrator reacts and posts in the Sessions channel.", "kind": "dialog" },
-      { "target": "dialog:session-sync.widgets", "title": "Add widgets", "text": "Picks any attachable widget (helper status, clock, counters, status lights, avatars, links…) and puts it on this window's title bar, the banner or the toolbar. Right-click a widget to move or remove it.", "kind": "dialog" },
-      { "target": "sync-session", "title": "Sync session", "text": "Writes _claude/sync/<project>.md and .json (who is on, claims, running and queued work, offers, PRs, what needs attention) and publishes it to main, so a session on any account reads it and jumps in with /sync." },
-      { "target": "request-work", "title": "Request work", "text": "Asks the orchestrator for work: say how much time you have, which areas and which model. It offers whole queued jobs or steps split out of builds in progress, with one line of why." },
-      { "target": "accept", "title": "Accept", "text": "Takes the offer: the work and its area claims move to your list, every store updates at once and the channel says 'taken by you'." },
-      { "target": "reject", "title": "Reject", "text": "Declines the offer with a reason. The orchestrator takes it back to the primary's queue and says why in the channel." },
-      { "target": "hold", "title": "Put on hold", "text": "Keeps the work but pauses it, with a reason and optionally when you'll be back. The orchestrator waits until then." },
-      { "target": "release", "title": "Release", "text": "Gives the work back. The orchestrator offers it to another helper if one is on, else returns it to the primary's queue." },
-      { "target": "take-back", "title": "Take back", "text": "Pulls work back from a helper: queued work any time; work in progress only after you confirm (the helper is told and stops; its work in progress stays on its branch). Undoable." },
-      { "target": "replan", "title": "Re-plan", "text": "Re-orders the whole picture on both sides (dependencies, claims, priorities, model fit, slot capacity). Preview shows the moves and why without changing anything; a running step is never moved and your pins stay." },
-      { "target": "approve-account", "title": "Approve account", "text": "Lets a new account's sessions claim areas and take work. Only Brett's own click (or the axHub approval on his phone) does this." },
-      { "target": "end-pairing", "title": "End pairing", "text": "Ends this session on the link: releases its claims, gives its assignments back, posts a closing line and refreshes the sync file." },
-      { "target": "session-sync", "title": "Session sync settings", "text": "Enforce claims (off = builds run unrestricted, with a visible warning), claim and heartbeat timing, lunch and offline thresholds, the agent-cap split between sessions, what Send to helper asks, and whether disconnected helpers hide in the widget." },
-      { "target": "banner:session-sync", "title": "Sessions chip", "text": "Who is connected: the helper status icon per session (dim = not connected, solid = idle, animated = working, coffee = lunch) and, on a helper's console, 'Managed by orchestrator' instead of a build profile. Tap to open the Sessions panel.", "kind": "banner" },
-      { "target": "helper-widget", "title": "Helper status", "text": "One icon per helper session: dim when not connected, solid when idle, animated while working (the tooltip names its step), a coffee cup on lunch (paused, out of usage, or quiet for a while, with why and when it's back). Tap opens the Sessions panel; right-click: settings, remove, move." },
-      { "target": "send-to-helper", "title": "Send to helper", "text": "Right-click any build: hands the whole build to a helper. Right-click a step: send it as a new build, or with its current build. Ctrl+click or long-press selects several." },
-      { "target": "sessions-filter", "title": "Channel filter", "text": "All lines, only handovers (offers, accepts, take-backs, re-plans), only blockers (blocked, rejected, on hold, claimed by), or only lines about your own steps." },
-      { "target": "managed-by-orchestrator", "title": "Managed by orchestrator", "text": "A helper session has no build profile of its own: its lists show only what the primary's orchestrator assigned or offered to it. The tooltip names the primary session." }
+      {
+        "target": "view:session-sync",
+        "title": "Sessions",
+        "text": "Every Claude session on this project: who is primary, who helps, what each one is doing, the areas they hold, open offers and assigned work, and the Breakroom's Sessions channel to read along and post in.",
+        "kind": "screen"
+      },
+      {
+        "target": "dialog:session-sync.join",
+        "title": "Join: what's going on",
+        "text": "Shown the first time a console loads under a new session or account: what the other session is working on (progress, model), what's done today, what needs attention, and the work the orchestrator offers you. Tick what you want to jump into and add it to your list.",
+        "kind": "screen"
+      },
+      {
+        "target": "dialog:session-sync.send",
+        "title": "Send to helper",
+        "text": "Hands the selected build or steps to a helper session: the whole build, or just these steps as a new build linked to the parent. The helper accepts, rejects or holds it; the orchestrator reacts and posts in the Sessions channel.",
+        "kind": "screen"
+      },
+      {
+        "target": "dialog:session-sync.widgets",
+        "title": "Add widgets",
+        "text": "Picks any attachable widget (helper status, clock, counters, status lights, avatars, links\u2026) and puts it on this window's title bar, the banner or the toolbar. Right-click a widget to move or remove it.",
+        "kind": "screen"
+      },
+      {
+        "target": "sync-session",
+        "title": "Sync session",
+        "text": "Writes _claude/sync/<project>.md and .json (who is on, claims, running and queued work, offers, PRs, what needs attention) and publishes it to main, so a session on any account reads it and jumps in with /sync."
+      },
+      {
+        "target": "request-work",
+        "title": "Request work",
+        "text": "Asks the orchestrator for work: say how much time you have, which areas and which model. It offers whole queued jobs or steps split out of builds in progress, with one line of why."
+      },
+      {
+        "target": "accept",
+        "title": "Accept",
+        "text": "Takes the offer: the work and its area claims move to your list, every store updates at once and the channel says 'taken by you'."
+      },
+      {
+        "target": "reject",
+        "title": "Reject",
+        "text": "Declines the offer with a reason. The orchestrator takes it back to the primary's queue and says why in the channel."
+      },
+      {
+        "target": "hold",
+        "title": "Put on hold",
+        "text": "Keeps the work but pauses it, with a reason and optionally when you'll be back. The orchestrator waits until then."
+      },
+      {
+        "target": "release",
+        "title": "Release",
+        "text": "Gives the work back. The orchestrator offers it to another helper if one is on, else returns it to the primary's queue."
+      },
+      {
+        "target": "take-back",
+        "title": "Take back",
+        "text": "Pulls work back from a helper: queued work any time; work in progress only after you confirm (the helper is told and stops; its work in progress stays on its branch). Undoable."
+      },
+      {
+        "target": "replan",
+        "title": "Re-plan",
+        "text": "Re-orders the whole picture on both sides (dependencies, claims, priorities, model fit, slot capacity). Preview shows the moves and why without changing anything; a running step is never moved and your pins stay."
+      },
+      {
+        "target": "approve-account",
+        "title": "Approve account",
+        "text": "Lets a new account's sessions claim areas and take work. Only Brett's own click (or the axHub approval on his phone) does this."
+      },
+      {
+        "target": "end-pairing",
+        "title": "End pairing",
+        "text": "Ends this session on the link: releases its claims, gives its assignments back, posts a closing line and refreshes the sync file."
+      },
+      {
+        "target": "session-sync",
+        "title": "Session sync settings",
+        "text": "Enforce claims (off = builds run unrestricted, with a visible warning), claim and heartbeat timing, lunch and offline thresholds, the agent-cap split between sessions, what Send to helper asks, and whether disconnected helpers hide in the widget."
+      },
+      {
+        "target": "banner:session-sync",
+        "title": "Sessions chip",
+        "text": "Who is connected: the helper status icon per session (dim = not connected, solid = idle, animated = working, coffee = lunch) and, on a helper's console, 'Managed by orchestrator' instead of a build profile. Tap to open the Sessions panel.",
+        "kind": "banner"
+      },
+      {
+        "target": "helper-widget",
+        "title": "Helper status",
+        "text": "One icon per helper session: dim when not connected, solid when idle, animated while working (the tooltip names its step), a coffee cup on lunch (paused, out of usage, or quiet for a while, with why and when it's back). Tap opens the Sessions panel; right-click: settings, remove, move."
+      },
+      {
+        "target": "send-to-helper",
+        "title": "Send to helper",
+        "text": "Right-click any build: hands the whole build to a helper. Right-click a step: send it as a new build, or with its current build. Ctrl+click or long-press selects several."
+      },
+      {
+        "target": "sessions-filter",
+        "title": "Channel filter",
+        "text": "All lines, only handovers (offers, accepts, take-backs, re-plans), only blockers (blocked, rejected, on hold, claimed by), or only lines about your own steps."
+      },
+      {
+        "target": "managed-by-orchestrator",
+        "title": "Managed by orchestrator",
+        "text": "A helper session has no build profile of its own: its lists show only what the primary's orchestrator assigned or offered to it. The tooltip names the primary session."
+      },
+      {
+        "target": "action:session-sync.open",
+        "title": "Sessions",
+        "text": "Opens the Sessions panel: who is on, claims, offers and assigned work, and the Sessions channel.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:dialog:session-sync.join",
+        "title": "What's going on?",
+        "text": "Opens the join dialog: what the other session is working on, what's done, what needs attention, and the work offered to you.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "whats-going-on",
+        "title": "What's going on?",
+        "text": "Opens the join dialog with the other session's progress, today's results, what needs attention and the work offered to you.",
+        "kind": "button"
+      },
+      {
+        "target": "make-primary",
+        "title": "Make primary",
+        "text": "Makes this session the primary one that owns the orchestrator. Only Brett's own click does this.",
+        "kind": "button"
+      },
+      {
+        "target": "message",
+        "title": "Message",
+        "text": "Sends one line to this session in the Breakroom's Sessions channel.",
+        "kind": "button"
+      },
+      {
+        "target": "area",
+        "title": "Area",
+        "text": "The named area to claim (terminal, banner, kernel, plugins, builds, spec, console): a lease on every path under it.",
+        "kind": "field"
+      },
+      {
+        "target": "paths-globs-comma-separated",
+        "title": "Paths",
+        "text": "Path globs to claim, comma separated, for example apps/console-web/plugins/foo/**.",
+        "kind": "field"
+      },
+      {
+        "target": "claim",
+        "title": "Claim",
+        "text": "Takes the lease. If another live session holds an overlapping area or path, it says who and until when instead.",
+        "kind": "button"
+      },
+      {
+        "target": "report",
+        "title": "Report",
+        "text": "Opens the build's report in _claude/builds/reports.",
+        "kind": "button"
+      },
+      {
+        "target": "open-the-sessions-panel",
+        "title": "Open the Sessions panel",
+        "text": "Closes the dialog and opens the Sessions panel.",
+        "kind": "button"
+      },
+      {
+        "target": "helper",
+        "title": "Helper",
+        "text": "Which helper session receives the work. Only connected helpers are listed.",
+        "kind": "field"
+      },
+      {
+        "target": "why-one-line-posted-in-the-channel",
+        "title": "Why",
+        "text": "One line the orchestrator posts in the Sessions channel with the offer.",
+        "kind": "field"
+      },
+      {
+        "target": "remember-this-choice-dont-ask-again",
+        "title": "Remember this choice",
+        "text": "Uses the picked option every time without asking. Change it in Settings \u2192 Plugins \u2192 Session sync.",
+        "kind": "toggle"
+      },
+      {
+        "target": "put-it-on",
+        "title": "Put it on",
+        "text": "Where the widget goes: the banner, the toolbar or one open window's title bar.",
+        "kind": "field"
+      },
+      {
+        "target": "enforce-claims",
+        "title": "Enforce claims",
+        "text": "On: a session must hold a claim before editing, committing or building there while another session is live. Off: builds run unrestricted, with a visible warning. Brett's click only.",
+        "kind": "toggle"
+      },
+      {
+        "target": "claim-lease-s",
+        "title": "Claim lease",
+        "text": "How long a claim lasts without a heartbeat before it expires, in seconds.",
+        "kind": "field"
+      },
+      {
+        "target": "heartbeat-s",
+        "title": "Heartbeat",
+        "text": "How often a session reports in and renews its claims, in seconds.",
+        "kind": "field"
+      },
+      {
+        "target": "idle-after-s",
+        "title": "Idle after",
+        "text": "Seconds without a heartbeat before a session shows as idle.",
+        "kind": "field"
+      },
+      {
+        "target": "lunch-after-s",
+        "title": "Lunch after",
+        "text": "Seconds without a heartbeat before a session shows as on lunch.",
+        "kind": "field"
+      },
+      {
+        "target": "offline-after-s",
+        "title": "Offline after",
+        "text": "Seconds without a heartbeat before a session shows as offline (its helper icon dims).",
+        "kind": "field"
+      },
+      {
+        "target": "new-accounts-need-bretts-approval",
+        "title": "New accounts need Brett's approval",
+        "text": "On: the first join from a new account waits for Brett's console click or the axHub approval before it may claim or take work.",
+        "kind": "toggle"
+      },
+      {
+        "target": "sessions-chip-in-the-banner",
+        "title": "Sessions chip",
+        "text": "Shows the Sessions chip (how many sessions are on) in the banner; tap it to open the panel.",
+        "kind": "toggle"
+      },
+      {
+        "target": "helper-status-widgets-on",
+        "title": "Helper status widgets on",
+        "text": "Where every helper's status icon shows by default: the banner, the toolbar, both, or only where you added one with Add widgets.",
+        "kind": "field"
+      },
+      {
+        "target": "hide-disconnected-helpers",
+        "title": "Hide disconnected helpers",
+        "text": "Hides the dim icon of a helper that is offline instead of showing it greyed out.",
+        "kind": "toggle"
+      },
+      {
+        "target": "add-widgets",
+        "title": "Add widgets\u2026",
+        "text": "Opens the widget picker: put any attachable widget on the banner, the toolbar or a window's title bar.",
+        "kind": "button"
+      },
+      {
+        "target": "when-steps-are-selected",
+        "title": "When steps are selected",
+        "text": "What Send to helper does with selected steps: ask each time, always send the whole build, or always send just the steps as a new build.",
+        "kind": "field"
+      },
+      {
+        "target": "check-every-store-agrees-with-the-link",
+        "title": "Check every store agrees",
+        "text": "Runs the consistency check: the builds store, exports and claims must match the session link for every handed-over build and step, and fixes drift.",
+        "kind": "button"
+      }
     ],
     "intros": [
       {
         "screen": "session-sync",
         "title": "Sessions",
         "steps": [
-          { "say": "Everyone on this project right now: the primary owns the orchestrator, helpers take what it offers.", "target": "" },
-          { "say": "Sync session writes the file a new session reads to jump in (/sync).", "target": "sync-session" },
-          { "say": "Claims are leases on areas and paths; nobody edits outside theirs while another session is live.", "target": "" },
-          { "say": "The Sessions channel is the Breakroom's group chat: read along, post, filter.", "target": "sessions-filter" }
+          {
+            "say": "Everyone on this project right now: the primary owns the orchestrator, helpers take what it offers.",
+            "target": ""
+          },
+          {
+            "say": "Sync session writes the file a new session reads to jump in (/sync).",
+            "target": "sync-session"
+          },
+          {
+            "say": "Claims are leases on areas and paths; nobody edits outside theirs while another session is live.",
+            "target": ""
+          },
+          {
+            "say": "The Sessions channel is the Breakroom's group chat: read along, post, filter.",
+            "target": "sessions-filter"
+          }
         ]
       }
     ]

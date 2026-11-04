@@ -155,6 +155,19 @@ export function placeHost(host: string, data: Record<string, unknown> | null | u
   return placeOnHost(own, data || !requireHost ? extra : [], has, h.types, h.sides, arrange);
 }
 
+/** A window's title bar as a widget host (`window:<id>`, widgets only, at its end): registered on first use, so any
+ * widget (helper status, clock, counters…) can be attached to any window through "Add widgets…" (spec/HANDOFF.md § 7). */
+export const WINDOW_HOST_PREFIX = 'window:';
+export const windowHost = (windowId: string) => `${WINDOW_HOST_PREFIX}${windowId}`;
+export function ensureWindowHost(windowId: string): HostSpec {
+  const host = windowHost(windowId);
+  const have = hostSpec(host);
+  if (have) return have;
+  registerHost({ host, field: 'widgets', types: [...WIDGET_TYPES], sides: ['end'] });
+  return hostSpec(host)!;
+}
+export const isWindowHost = (host: string) => host.startsWith(WINDOW_HOST_PREFIX);
+
 /** The toolbar as a widget host: widgets only, at its start or end. */
 export function placeToolbarWidgets(tb: { widgets?: HostAttachment[] } | null | undefined, extra: HostAttachment[], has: (type: string, id: string) => boolean, arrange?: HostArrangement | null) {
   return placeHost('toolbar', tb as Record<string, unknown> | null, extra, has, true, arrange) as Record<'start' | 'end', PlacedAttachment[]>;

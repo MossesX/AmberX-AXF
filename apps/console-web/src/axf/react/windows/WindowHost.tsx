@@ -6,6 +6,8 @@ import { useScopeId } from '../components/InterfaceScope';
 import type { Pane, TabGroup, TabSpec, WindowManager, WindowSettings, WindowSpec, WindowState, Corner, DragPreview, ResizeEdge, WindowFrame } from '../../core/engines/windows';
 import { effectiveToolbar, forcesToolbar, isFloating, isMaximized, paneGroups, rectOf, resizeCursor, tabPressIntent, windowFrame, CORNERS, RESIZE_EDGES, TAB_HOLD_MS, type TabPressIntent } from '../../core/engines/windows';
 import { DockDropOverlay, DockHost, DockPaneView, dockLayoutDialog } from './DockHost';
+import { WidgetView } from '../components/Widgets';
+import { ensureWindowHost, placeHost, windowHost } from '../../core/engines/widgets';
 
 /* ------------------------------------------------------------------ */
 /* registry of tab renderers + locals                                  */
@@ -236,6 +238,18 @@ export interface TabPressHandlers {
  * onHold (the browser's own long-press context menu is held back so it doesn't open as well). Docked (no frame), a
  * drag that would move the window does nothing. The click that follows a drag is swallowed.
  */
+/** Widgets attached to this window's title bar (host `window:<id>`, widget host engine): Add widgets… puts them here. */
+function TitleWidgets({ id }: { id: string }) {
+  const rt = useRuntime();
+  useSyncExternalStore(rt.subscribe, rt.getState, rt.getState);
+  const host = windowHost(id);
+  ensureWindowHost(id);
+  const placed = placeHost(host, null, rt.hostAttachments(host), (t, i) => rt.registry.has(t as never, i), false, rt.hostArrangement(host));
+  const list = placed.end ?? [];
+  if (!list.length) return null;
+  return <span className="fx-window__widgets" data-fx-host={host} onPointerDown={(e) => e.stopPropagation()}>{list.map((a) => <span key={a.key} className="fx-window__widget" data-axf-host-item={a.key} data-axf-origin={a.origin}><WidgetView type={a.type} id={a.id} host={host} /></span>)}</span>;
+}
+
 export function useTabPress() {
   const f = useContext(FrameCtx);
   return (e: React.PointerEvent, h: TabPressHandlers = {}) => {
@@ -351,6 +365,7 @@ function FloatingWindow({ w }: { w: WindowSpec }) {
               {brand?.svg && <BrandMark slot={brandSlot} height={14} className="fx-window__brand" />}
               <span className="fx-window__name">{w.title}</span>
               <span className="fx-window__badge">{w.type}</span>
+              <TitleWidgets id={w.id} />
               {w.toolbarsAllowed && !forcesToolbar(w) && <label className="fx-window__switch" onPointerDown={(e) => e.stopPropagation()}><input type="checkbox" checked={w.toolbarEnabled} onChange={(e) => wm.setToolbar(w.id, e.target.checked)} /> toolbar</label>}
               {wm.canMinimize && <button className="fx-iconbtn" title="Minimize to corner" onPointerDown={(e) => e.stopPropagation()} onClick={() => wm.minimizeToNextCorner(w.id)}><Icon name="minimize" /></button>}
               <button className="fx-iconbtn" title={maximized ? 'Restore' : 'Maximize'} onPointerDown={(e) => e.stopPropagation()} onClick={() => wm.toggleMaximize(w.id)}><Icon name={maximized ? 'restore' : 'maximize'} /></button>

@@ -81,7 +81,7 @@ async def who(request: Request, call_next):
 
 
 app.include_router(mod.router, prefix="/api/plugins/session-sync")
-app.include_router(swarm.router, prefix="/api/plugins/agent-swarm")
+app.include_router(swarm.router, prefix=f"/api/plugins/{swarm.CLI.parent.name}")  # the crew plugin, by its own folder
 c = TestClient(app)
 P = "/api/plugins/session-sync"
 A = {"x-axf-session": "s-brett", "x-axf-account": "brett", "x-axf-agent": "rio", "x-axf-client": "code"}
