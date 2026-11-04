@@ -578,7 +578,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 20:26 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
 - 2026-11-03 20:26 UTC · `terminal-vps-host` added (5 steps) (current) · foreign-write
 - 2026-11-03 20:26 UTC · `window-resize-fix` added (3 steps) (current) · foreign-write
 - 2026-11-03 20:26 UTC · `terminal-sessions-nav` added (4 steps) (current) · foreign-write
@@ -978,3 +977,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 01:15 UTC · `browser-automation` added (16 steps) (current) · foreign-write
 - 2026-11-04 01:15 UTC · `profile-switcher-widget` added (5 steps) (current) · foreign-write
 - 2026-11-04 01:15 UTC · `gizmo-companion` s19 done (current) · orchestrator
+- 2026-11-04 01:19 UTC · `gizmo-companion` s19 done (current) · foreign-write
