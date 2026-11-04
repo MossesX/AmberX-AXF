@@ -884,6 +884,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 18:52 UTC · `toolbar-tap-confirm` note (urgent) · orchestrator
 - 2026-11-03 18:54 UTC · `toolbar-tap-confirm` s8 done, note (urgent) · reconciler
 - 2026-11-04 04:52 UTC · `lenny-land-all` s3 done (current) · orchestrator
+- 2026-11-04 04:52 UTC · `lenny-land-all` s4 done (current) · orchestrator
+- 2026-11-04 04:52 UTC · `lenny-land-all` note (current) · orchestrator
 
 ## Token passes (log)
 
