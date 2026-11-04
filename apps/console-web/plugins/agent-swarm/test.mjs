@@ -436,7 +436,7 @@ t('book: a Claude session on an agent card grows, then closes once (agent-pick)'
 t('manifest: lifecycle, builtWith, page and settings tab', () => {
   const m = JSON.parse(readFileSync(here('./plugin.json'), 'utf8'));
   assert.equal(m.lifecycle.dataDir, '.axf-console/plugins/agent-swarm'); assert.ok(m.builtWith.model && m.builtWith.builtAt);
-  assert.deepEqual(m.provides, ['view:agent-swarm', 'settings-tab:agent-swarm', 'service:agent-jobs@1', 'service:axf.crew@1']); assert.equal(m.tabable.view, 'agent-swarm');
+  assert.deepEqual(m.provides, ['view:agent-swarm', 'settings-tab:agent-swarm', 'service:agent-jobs@1', 'service:axf.crew@1', 'service:axf.swarm-roster@1']); assert.equal(m.tabable.view, 'agent-swarm');
 });
 
 // batch merge end to end on a scratch repo
