@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Container, Note, SelectField, TextField } from '@console/axf/react';
+import { Button, Note, SelectField, TextField } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, get, put, type Config, type Device, type Status } from './api';
