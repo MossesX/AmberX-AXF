@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 647,
- "updatedAt": "2026-11-04T11:33:08.623Z",
+ "rev": 648,
+ "updatedAt": "2026-11-04T11:35:38.274Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -72093,9 +72093,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/expenses-port",
-   "pr": "",
+   "pr": "#307",
    "createdAt": "2026-11-04T11:09:10.279Z",
-   "updatedAt": "2026-11-04T11:33:07.772Z",
+   "updatedAt": "2026-11-04T11:35:37.283Z",
    "builtAt": "",
    "notes": [
     {
@@ -72259,7 +72259,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
