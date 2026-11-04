@@ -32,6 +32,7 @@ import { ASSET_TYPES } from '../core/types';
 import { ASSET_ORIGIN, CHECKED_KINDS, DEFAULT_MENU, MENU_DEFAULT_ORDER, MENU_ITEM_FIELDS, MENU_MAX_DEPTH, PROVIDER_MAX, appMenuSearchEntries, buildAppMenu, chromeToggleItems, chromeToggleTypes, compileAppMenu, compileProviderItems, mergeAppMenu, parseChecked, resolveChecked, titleFromId, truthy, validateMenuItems, type AppMenuContribution, type AppMenuEnv } from '../core/engines/appmenu';
 import { LIBRARY_PARAM_TYPES, PARAM_TRUE_WORDS, paramBool, paramDefaultText, paramDefaults, paramError, paramToJson, type LibraryParam } from '../core/library';
 import { validateAsset } from '../core/validate';
+import * as cs from '../core/engines/chrome-settings-rules.mjs';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
 import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES, HUB_FIELD_CAPS, HUB_MESSAGES, HUB_PATHS, HUB_SEEN_CAP, accountUrl, apkDownloadName, approvalUrl, approvalsUrl, appsUrl, csrfFromPage, feedUrl, hubOrigin, interpretFeed, isHub, loginUrl, logoutUrl, normalizeHub, seenPlan, unreachableFeed } from '../libs/hub/hub';
 import { APPS_FEED_MAX_BYTES, APPS_FEED_PATH, APPS_MAX, VERSIONS_MAX, appsFeedUrl, interpretApps } from '../libs/hub/apps';
@@ -646,6 +647,48 @@ write('spacing.json', {
     exists: [...exists].sort(),
     toolbar: Object.fromEntries(Object.entries(cases).map(([k, c]) => [k, { toolbar: c.toolbar, extra: c.extra, placed: placeToolbarWidgets(c.toolbar as never, c.extra as never, has) }])),
     kinds,
+  });
+}
+// chrome-settings@1 (Nov 4 2026): registry, ids, inherit@1 chain, picks, instance overrides, custom copies
+{
+  const defaults = Object.fromEntries(load('settings').filter((a) => (a.data as { for?: string }).for).map((a) => [a.id, a]));
+  const custom = cs.customCopy(defaults['chrome-tab-group']!, { id: 'axf-console', name: 'Dev Console' });
+  const edited = { ...custom, id: 'chrome-tab-group-edited', data: { ...custom.data, layout: 'tabs-side', tabs: [], hide: ['interface'], levelOf: { look: 'basic' } } };
+  const get = (id: string) => ({ ...defaults, [custom.id]: custom, [edited.id]: edited, loop1: { id: 'loop1', data: { for: 'toolbar', extends: 'loop2' } }, loop2: { id: 'loop2', data: { for: 'toolbar', extends: 'loop1', header: 'none' } } } as Record<string, unknown>)[id] ?? null;
+  write('chrome-settings.json', {
+    contract: cs.CHROME_SETTINGS_CONTRACT,
+    types: cs.CHROME_TYPES, labels: cs.CHROME_LABELS, many: cs.CHROME_MANY, targets: cs.CHROME_TARGETS, moves: cs.CHROME_MOVES, tabs: cs.CHROME_SETTINGS_TABS, fields: cs.CHROME_FIELDS,
+    ids: Object.fromEntries(cs.CHROME_TYPES.map((t) => [t, { default: cs.chromeSettingsDefaultId(t), custom: cs.chromeSettingsCustomId(t, 'axf-console'), typeOfDefault: cs.chromeTypeOfSettingsId(cs.chromeSettingsDefaultId(t)), typeOfCustom: cs.chromeTypeOfSettingsId(cs.chromeSettingsCustomId(t, 'axf-console')) }])),
+    keys: { pick: cs.CHROME_SETTINGS_PICK_KEY('tab-group'), patch: cs.CHROME_SETTINGS_PATCH_KEY('tab-group'), instance: cs.CHROME_INSTANCE_KEY('tab-group', 'ui-review.sections'), instanceAsset: cs.CHROME_INSTANCE_ASSET_KEY('tab-group', 'ui-review.sections'), last: cs.TAB_GROUP_LAST_KEY('ui-review.sections'), fold: cs.TAB_GROUP_FOLD_KEY('ui-review.sections') },
+    slugs: { 'Dev Console': cs.appSlug('Dev Console'), 'axf-console': cs.appSlug('axf-console'), '': cs.appSlug(''), '  Weird__Name!!': cs.appSlug('  Weird__Name!!') },
+    targetTypes: Object.fromEntries(['tab-group', 'toolbar', 'banner', 'axf-banner', 'nav', 'nav-item', 'app-menu', 'menubar', 'canvas', 'default', ''].map((t) => [t || '(empty)', cs.chromeTypeOfTarget(t)])),
+    customCopy: custom,
+    chain: { custom: cs.resolveSettingsChain(get, custom.id), edited: cs.resolveSettingsChain(get, edited.id), default: cs.resolveSettingsChain(get, 'chrome-tab-group'), loop: cs.resolveSettingsChain(get, 'loop1'), missing: cs.resolveSettingsChain(get, 'nope') },
+    picks: {
+      unset: cs.chromeSettingsPick(undefined, 'tab-group', ['chrome-tab-group', custom.id]),
+      custom: cs.chromeSettingsPick(custom.id, 'tab-group', ['chrome-tab-group', custom.id]),
+      gone: cs.chromeSettingsPick('chrome-tab-group-old', 'tab-group', ['chrome-tab-group', custom.id]),
+      wrongType: cs.chromeSettingsPick('chrome-toolbar', 'tab-group', ['chrome-tab-group', 'chrome-toolbar']),
+      noDefault: cs.chromeSettingsPick(undefined, 'tab-group', [custom.id]),
+    },
+    choices: cs.chromeSettingsChoices('tab-group', [edited, defaults['chrome-toolbar']!, custom, defaults['chrome-tab-group']!]),
+    overrides: {
+      clean: cs.normalizeInstanceOverride('tab-group', { style: 'pills', position: 'left', badges: false, bogus: 1, density: 'huge', sticky: 'yes' }),
+      number: cs.normalizeInstanceOverride('banner', { height: 999.6, surface: 'raised' }),
+      empty: cs.normalizeInstanceOverride('toolbar', null),
+      unknownType: cs.normalizeInstanceOverride('clock', { format: '12h' }),
+      data: cs.chromeInstanceData('tab-group', { style: 'underline', align: 'start' }, { style: 'pills', bogus: true }),
+      value: [cs.chromeFieldValue('tab-group', { style: 'underline' }, { style: 'pills' }, 'style'), cs.chromeFieldValue('tab-group', { style: 'underline' }, {}, 'style'), cs.chromeFieldValue('tab-group', {}, {}, 'style')],
+    },
+    errors: {
+      ok: cs.chromeSettingsErrors(custom),
+      badFor: cs.chromeSettingsErrors({ id: 'chrome-x', data: { for: 'clock' } }),
+      self: cs.chromeSettingsErrors({ id: 'chrome-toolbar-a', data: { for: 'toolbar', extends: 'chrome-toolbar-a' } }),
+      badName: cs.chromeSettingsErrors({ id: 'my-settings', data: { for: 'toolbar' } }),
+      notAsset: cs.chromeSettingsErrors(null),
+    },
+    plan: cs.chromeSettingsPlan('molly'),
+    missing: cs.chromeSettingsMissing('molly', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-toolbar']),
   });
 }
 write('components.json', {

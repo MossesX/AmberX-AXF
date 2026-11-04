@@ -1,0 +1,842 @@
+{
+  "contract": "chrome-settings@1",
+  "types": [
+    "tab-group",
+    "toolbar",
+    "banner",
+    "nav-menu",
+    "app-menu",
+    "context-menu"
+  ],
+  "labels": {
+    "tab-group": "Tab group",
+    "toolbar": "Toolbar",
+    "banner": "Banner",
+    "nav-menu": "Navigation menu",
+    "app-menu": "Application menu",
+    "context-menu": "Context menu"
+  },
+  "many": {
+    "tab-group": true,
+    "toolbar": false,
+    "banner": false,
+    "nav-menu": false,
+    "app-menu": false,
+    "context-menu": false
+  },
+  "targets": {
+    "tab-group": [
+      "tab-group"
+    ],
+    "toolbar": [
+      "toolbar"
+    ],
+    "banner": [
+      "banner",
+      "axf-banner"
+    ],
+    "nav-menu": [
+      "nav",
+      "nav-item"
+    ],
+    "app-menu": [
+      "app-menu",
+      "menubar"
+    ],
+    "context-menu": []
+  },
+  "moves": {
+    "tab-group": {
+      "positions": [
+        "top",
+        "bottom",
+        "left",
+        "right"
+      ],
+      "via": "instance",
+      "field": "position"
+    },
+    "toolbar": {
+      "positions": [
+        "top",
+        "bottom"
+      ],
+      "via": "layout",
+      "field": "toolbarPosition"
+    },
+    "nav-menu": {
+      "positions": [
+        "left",
+        "right",
+        "top"
+      ],
+      "via": "layout",
+      "field": "nav"
+    },
+    "banner": {
+      "positions": [],
+      "via": "none",
+      "field": ""
+    },
+    "app-menu": {
+      "positions": [],
+      "via": "none",
+      "field": ""
+    },
+    "context-menu": {
+      "positions": [],
+      "via": "none",
+      "field": ""
+    }
+  },
+  "tabs": [
+    {
+      "id": "look",
+      "label": "Look",
+      "icon": "palette",
+      "order": 10
+    },
+    {
+      "id": "behaviour",
+      "label": "Behaviour",
+      "icon": "sliders",
+      "order": 20
+    },
+    {
+      "id": "asset",
+      "label": "Asset",
+      "icon": "layers",
+      "order": 30
+    },
+    {
+      "id": "interface",
+      "label": "Interface",
+      "icon": "settings",
+      "order": 40
+    }
+  ],
+  "fields": {
+    "tab-group": [
+      {
+        "key": "style",
+        "label": "Tab style",
+        "kind": "choice",
+        "options": [
+          "underline",
+          "pills",
+          "boxed",
+          "segmented",
+          "plain",
+          "chips"
+        ],
+        "group": "look",
+        "level": "simple"
+      },
+      {
+        "key": "position",
+        "label": "Position",
+        "kind": "choice",
+        "options": [
+          "top",
+          "bottom",
+          "left",
+          "right"
+        ],
+        "group": "look",
+        "level": "simple"
+      },
+      {
+        "key": "display",
+        "label": "Show",
+        "kind": "choice",
+        "options": [
+          "both",
+          "text",
+          "icons"
+        ],
+        "labels": {
+          "both": "Icons + text",
+          "text": "Text",
+          "icons": "Icons"
+        },
+        "group": "look",
+        "level": "simple"
+      },
+      {
+        "key": "density",
+        "label": "Size",
+        "kind": "choice",
+        "options": [
+          "compact",
+          "regular",
+          "roomy"
+        ],
+        "group": "look",
+        "level": "basic"
+      },
+      {
+        "key": "align",
+        "label": "Align",
+        "kind": "choice",
+        "options": [
+          "start",
+          "center",
+          "end",
+          "stretch"
+        ],
+        "group": "look",
+        "level": "basic"
+      },
+      {
+        "key": "divider",
+        "label": "Rule under the row",
+        "kind": "toggle",
+        "group": "look",
+        "level": "basic"
+      },
+      {
+        "key": "badges",
+        "label": "Count badges",
+        "kind": "toggle",
+        "group": "look",
+        "level": "basic"
+      },
+      {
+        "key": "overflow",
+        "label": "When tabs do not fit",
+        "kind": "choice",
+        "options": [
+          "scroll",
+          "wrap",
+          "more",
+          "dropdown"
+        ],
+        "labels": {
+          "scroll": "Scroll",
+          "wrap": "Wrap",
+          "more": "More menu",
+          "dropdown": "Dropdown"
+        },
+        "group": "behaviour",
+        "level": "basic"
+      },
+      {
+        "key": "sticky",
+        "label": "Sticky",
+        "kind": "toggle",
+        "group": "behaviour",
+        "level": "basic"
+      },
+      {
+        "key": "collapsible",
+        "label": "Collapsible",
+        "kind": "toggle",
+        "group": "behaviour",
+        "level": "basic"
+      },
+      {
+        "key": "rememberLast",
+        "label": "Remember last tab",
+        "kind": "toggle",
+        "group": "behaviour",
+        "level": "basic"
+      },
+      {
+        "key": "closable",
+        "label": "Closable (where the host allows)",
+        "kind": "toggle",
+        "group": "behaviour",
+        "level": "developer"
+      },
+      {
+        "key": "reorderable",
+        "label": "Reorderable (where the host allows)",
+        "kind": "toggle",
+        "group": "behaviour",
+        "level": "developer"
+      }
+    ],
+    "toolbar": [
+      {
+        "key": "variant",
+        "label": "Buttons",
+        "kind": "choice",
+        "options": [
+          "icons",
+          "icons-labels",
+          "labels"
+        ],
+        "labels": {
+          "icons": "Icons",
+          "icons-labels": "Icons + labels",
+          "labels": "Labels"
+        },
+        "group": "look",
+        "level": "simple"
+      },
+      {
+        "key": "align",
+        "label": "Align",
+        "kind": "choice",
+        "options": [
+          "start",
+          "center",
+          "spread"
+        ],
+        "group": "look",
+        "level": "basic"
+      },
+      {
+        "key": "density",
+        "label": "Size",
+        "kind": "choice",
+        "options": [
+          "compact",
+          "regular",
+          "roomy"
+        ],
+        "group": "look",
+        "level": "basic"
+      },
+      {
+        "key": "surface",
+        "label": "Surface",
+        "kind": "choice",
+        "options": [
+          "flat",
+          "raised",
+          "glass"
+        ],
+        "group": "look",
+        "level": "basic"
+      },
+      {
+        "key": "divider",
+        "label": "Rule between groups",
+        "kind": "toggle",
+        "group": "look",
+        "level": "basic"
+      },
+      {
+        "key": "showSearch",
+        "label": "Search box",
+        "kind": "toggle",
+        "group": "behaviour",
+        "level": "basic"
+      },
+      {
+        "key": "collapsible",
+        "label": "Collapsible",
+        "kind": "toggle",
+        "group": "behaviour",
+        "level": "basic"
+      }
+    ],
+    "banner": [
+      {
+        "key": "surface",
+        "label": "Surface",
+        "kind": "choice",
+        "options": [
+          "flat",
+          "raised",
+          "accent"
+        ],
+        "group": "look",
+        "level": "simple"
+      },
+      {
+        "key": "height",
+        "label": "Height",
+        "kind": "number",
+        "min": 16,
+        "max": 48,
+        "group": "look",
+        "level": "basic"
+      },
+      {
+        "key": "divider",
+        "label": "Rule under the banner",
+        "kind": "toggle",
+        "group": "look",
+        "level": "basic"
+      }
+    ],
+    "nav-menu": [
+      {
+        "key": "style",
+        "label": "Style",
+        "kind": "choice",
+        "options": [
+          "list",
+          "pills",
+          "rail"
+        ],
+        "group": "look",
+        "level": "simple"
+      },
+      {
+        "key": "density",
+        "label": "Size",
+        "kind": "choice",
+        "options": [
+          "compact",
+          "regular",
+          "roomy"
+        ],
+        "group": "look",
+        "level": "basic"
+      },
+      {
+        "key": "indicator",
+        "label": "Active mark",
+        "kind": "choice",
+        "options": [
+          "auto",
+          "bar",
+          "fill",
+          "none"
+        ],
+        "group": "look",
+        "level": "basic"
+      },
+      {
+        "key": "showIcons",
+        "label": "Icons",
+        "kind": "toggle",
+        "group": "look",
+        "level": "basic"
+      },
+      {
+        "key": "navStyle",
+        "label": "Sub menus (nav-style)",
+        "kind": "toggle",
+        "group": "behaviour",
+        "level": "developer"
+      }
+    ],
+    "app-menu": [
+      {
+        "key": "density",
+        "label": "Size",
+        "kind": "choice",
+        "options": [
+          "compact",
+          "regular",
+          "roomy"
+        ],
+        "group": "look",
+        "level": "simple"
+      },
+      {
+        "key": "surface",
+        "label": "Surface",
+        "kind": "choice",
+        "options": [
+          "flat",
+          "raised",
+          "glass"
+        ],
+        "group": "look",
+        "level": "basic"
+      }
+    ],
+    "context-menu": [
+      {
+        "key": "variant",
+        "label": "Style",
+        "kind": "choice",
+        "options": [
+          "compact",
+          "roomy",
+          "glass"
+        ],
+        "group": "look",
+        "level": "simple"
+      },
+      {
+        "key": "showIcons",
+        "label": "Icons",
+        "kind": "toggle",
+        "group": "look",
+        "level": "basic"
+      },
+      {
+        "key": "showShortcuts",
+        "label": "Shortcuts",
+        "kind": "toggle",
+        "group": "look",
+        "level": "basic"
+      }
+    ]
+  },
+  "ids": {
+    "tab-group": {
+      "default": "chrome-tab-group",
+      "custom": "chrome-tab-group-axf-console",
+      "typeOfDefault": "tab-group",
+      "typeOfCustom": "tab-group"
+    },
+    "toolbar": {
+      "default": "chrome-toolbar",
+      "custom": "chrome-toolbar-axf-console",
+      "typeOfDefault": "toolbar",
+      "typeOfCustom": "toolbar"
+    },
+    "banner": {
+      "default": "chrome-banner",
+      "custom": "chrome-banner-axf-console",
+      "typeOfDefault": "banner",
+      "typeOfCustom": "banner"
+    },
+    "nav-menu": {
+      "default": "chrome-nav-menu",
+      "custom": "chrome-nav-menu-axf-console",
+      "typeOfDefault": "nav-menu",
+      "typeOfCustom": "nav-menu"
+    },
+    "app-menu": {
+      "default": "chrome-app-menu",
+      "custom": "chrome-app-menu-axf-console",
+      "typeOfDefault": "app-menu",
+      "typeOfCustom": "app-menu"
+    },
+    "context-menu": {
+      "default": "chrome-context-menu",
+      "custom": "chrome-context-menu-axf-console",
+      "typeOfDefault": "context-menu",
+      "typeOfCustom": "context-menu"
+    }
+  },
+  "keys": {
+    "pick": "axf.chrome.settings.tab-group",
+    "patch": "axf.chrome.settings.custom.tab-group",
+    "instance": "axf.chrome.tab-group.ui-review.sections",
+    "instanceAsset": "axf.chrome.tab-group.ui-review.sections.asset",
+    "last": "axf.tabs.ui-review.sections.last",
+    "fold": "axf.tabs.ui-review.sections.folded"
+  },
+  "slugs": {
+    "Dev Console": "dev-console",
+    "axf-console": "axf-console",
+    "": "app",
+    "  Weird__Name!!": "weird-name"
+  },
+  "targetTypes": {
+    "tab-group": "tab-group",
+    "toolbar": "toolbar",
+    "banner": "banner",
+    "axf-banner": "banner",
+    "nav": "nav-menu",
+    "nav-item": "nav-menu",
+    "app-menu": "app-menu",
+    "menubar": "app-menu",
+    "canvas": null,
+    "default": null,
+    "(empty)": null
+  },
+  "customCopy": {
+    "$axf": "asset@1",
+    "type": "settings",
+    "id": "chrome-tab-group-axf-console",
+    "name": "Tab group settings (Dev Console)",
+    "version": "1.0.0",
+    "description": "Dev Console's own copy of the shared tab group settings interface (chrome-tab-group). It follows the default until it is edited; the default stays selected until you pick this one (chrome-settings@1).",
+    "author": "AmberX AXF",
+    "tags": [
+      "custom",
+      "chrome-settings",
+      "axf-console"
+    ],
+    "data": {
+      "for": "tab-group",
+      "layout": "tabs-top",
+      "header": "compact",
+      "search": false,
+      "descriptions": true,
+      "tabs": [
+        {
+          "id": "look",
+          "label": "Look",
+          "icon": "palette",
+          "order": 10
+        },
+        {
+          "id": "behaviour",
+          "label": "Behaviour",
+          "icon": "sliders",
+          "order": 20
+        },
+        {
+          "id": "asset",
+          "label": "Asset",
+          "icon": "layers",
+          "order": 30
+        },
+        {
+          "id": "interface",
+          "label": "Interface",
+          "icon": "settings",
+          "order": 40
+        }
+      ],
+      "hide": [],
+      "groups": [],
+      "levels": true,
+      "defaultLevel": "basic",
+      "levelOf": {
+        "look": "simple",
+        "behaviour": "basic",
+        "asset": "basic",
+        "interface": "developer"
+      },
+      "extends": "chrome-tab-group"
+    }
+  },
+  "chain": {
+    "custom": {
+      "for": "tab-group",
+      "layout": "tabs-top",
+      "header": "compact",
+      "search": false,
+      "descriptions": true,
+      "tabs": [
+        {
+          "id": "look",
+          "label": "Look",
+          "icon": "palette",
+          "order": 10
+        },
+        {
+          "id": "behaviour",
+          "label": "Behaviour",
+          "icon": "sliders",
+          "order": 20
+        },
+        {
+          "id": "asset",
+          "label": "Asset",
+          "icon": "layers",
+          "order": 30
+        },
+        {
+          "id": "interface",
+          "label": "Interface",
+          "icon": "settings",
+          "order": 40
+        }
+      ],
+      "hide": [],
+      "groups": [],
+      "levels": true,
+      "defaultLevel": "basic",
+      "levelOf": {
+        "look": "simple",
+        "behaviour": "basic",
+        "asset": "basic",
+        "interface": "developer"
+      }
+    },
+    "edited": {
+      "for": "tab-group",
+      "layout": "tabs-side",
+      "header": "compact",
+      "search": false,
+      "descriptions": true,
+      "tabs": [
+        {
+          "id": "look",
+          "label": "Look",
+          "icon": "palette",
+          "order": 10
+        },
+        {
+          "id": "behaviour",
+          "label": "Behaviour",
+          "icon": "sliders",
+          "order": 20
+        },
+        {
+          "id": "asset",
+          "label": "Asset",
+          "icon": "layers",
+          "order": 30
+        },
+        {
+          "id": "interface",
+          "label": "Interface",
+          "icon": "settings",
+          "order": 40
+        }
+      ],
+      "hide": [
+        "interface"
+      ],
+      "groups": [],
+      "levels": true,
+      "defaultLevel": "basic",
+      "levelOf": {
+        "look": "basic",
+        "behaviour": "basic",
+        "asset": "basic",
+        "interface": "developer"
+      }
+    },
+    "default": {
+      "for": "tab-group",
+      "layout": "tabs-top",
+      "header": "compact",
+      "search": false,
+      "descriptions": true,
+      "tabs": [
+        {
+          "id": "look",
+          "label": "Look",
+          "icon": "palette",
+          "order": 10
+        },
+        {
+          "id": "behaviour",
+          "label": "Behaviour",
+          "icon": "sliders",
+          "order": 20
+        },
+        {
+          "id": "asset",
+          "label": "Asset",
+          "icon": "layers",
+          "order": 30
+        },
+        {
+          "id": "interface",
+          "label": "Interface",
+          "icon": "settings",
+          "order": 40
+        }
+      ],
+      "hide": [],
+      "groups": [],
+      "levels": true,
+      "defaultLevel": "basic",
+      "levelOf": {
+        "look": "simple",
+        "behaviour": "basic",
+        "asset": "basic",
+        "interface": "developer"
+      }
+    },
+    "loop": {
+      "for": "toolbar",
+      "header": "none"
+    },
+    "missing": null
+  },
+  "picks": {
+    "unset": "chrome-tab-group",
+    "custom": "chrome-tab-group-axf-console",
+    "gone": "chrome-tab-group",
+    "wrongType": "chrome-tab-group",
+    "noDefault": null
+  },
+  "choices": [
+    {
+      "id": "chrome-tab-group",
+      "name": "Tab group settings (default)",
+      "custom": false,
+      "extends": ""
+    },
+    {
+      "id": "chrome-tab-group-axf-console",
+      "name": "Tab group settings (Dev Console)",
+      "custom": true,
+      "extends": "chrome-tab-group"
+    },
+    {
+      "id": "chrome-tab-group-edited",
+      "name": "Tab group settings (Dev Console)",
+      "custom": true,
+      "extends": "chrome-tab-group"
+    }
+  ],
+  "overrides": {
+    "clean": {
+      "style": "pills",
+      "position": "left",
+      "badges": false
+    },
+    "number": {
+      "surface": "raised",
+      "height": 48
+    },
+    "empty": {},
+    "unknownType": {},
+    "data": {
+      "style": "pills",
+      "align": "start"
+    },
+    "value": [
+      "pills",
+      "underline",
+      null
+    ]
+  },
+  "errors": {
+    "ok": [],
+    "badFor": [
+      "data.for: not a chrome type (tab-group, toolbar, banner, nav-menu, app-menu, context-menu)",
+      "id: a settings interface for clock is named chrome-clock[-<app>]"
+    ],
+    "self": [
+      "data.extends: an asset cannot extend itself"
+    ],
+    "badName": [
+      "id: a settings interface for toolbar is named chrome-toolbar[-<app>]"
+    ],
+    "notAsset": [
+      "not an asset"
+    ]
+  },
+  "plan": [
+    {
+      "type": "tab-group",
+      "defaultId": "chrome-tab-group",
+      "customId": "chrome-tab-group-molly"
+    },
+    {
+      "type": "toolbar",
+      "defaultId": "chrome-toolbar",
+      "customId": "chrome-toolbar-molly"
+    },
+    {
+      "type": "banner",
+      "defaultId": "chrome-banner",
+      "customId": "chrome-banner-molly"
+    },
+    {
+      "type": "nav-menu",
+      "defaultId": "chrome-nav-menu",
+      "customId": "chrome-nav-menu-molly"
+    },
+    {
+      "type": "app-menu",
+      "defaultId": "chrome-app-menu",
+      "customId": "chrome-app-menu-molly"
+    },
+    {
+      "type": "context-menu",
+      "defaultId": "chrome-context-menu",
+      "customId": "chrome-context-menu-molly"
+    }
+  ],
+  "missing": [
+    "chrome-toolbar-molly",
+    "chrome-banner",
+    "chrome-banner-molly",
+    "chrome-nav-menu",
+    "chrome-nav-menu-molly",
+    "chrome-app-menu",
+    "chrome-app-menu-molly",
+    "chrome-context-menu",
+    "chrome-context-menu-molly"
+  ]
+}
