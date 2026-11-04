@@ -57,8 +57,9 @@ try {
 }
 
 const base = JSON.parse(readFileSync(join(ROOT, 'framework/spec/conform-baseline.json'), 'utf8'));
-const stray = Object.keys(base.files ?? {}).filter((f) => !(f.endsWith('.kt') && !/^framework\/(templates|library-templates|boilerplates)\//.test(f)));
-ok(!stray.length, `baseline only holds frozen code (Android Kotlin)${stray.length ? `: ${stray.join(', ')}` : ''}`);
+// frozen code = Android Kotlin (on hold) and the imported Expense app (apps/expenses, build expenses-port)
+const stray = Object.keys(base.files ?? {}).filter((f) => !(f.endsWith('.kt') && !/^framework\/(templates|library-templates|boilerplates)\//.test(f)) && !f.startsWith('apps/expenses/'));
+ok(!stray.length, `baseline only holds frozen code (Android Kotlin, apps/expenses)${stray.length ? `: ${stray.join(', ')}` : ''}`);
 
 console.log(bad ? `✗ ${bad} of ${n} conformance self-checks failed` : `✓ conformance self-test — ${n} checks`);
 process.exit(bad ? 1 : 0);

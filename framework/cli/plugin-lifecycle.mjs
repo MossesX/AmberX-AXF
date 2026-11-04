@@ -24,7 +24,7 @@
  * So uninstall --all leaves nothing behind: no code, no data, no state, no doc lines. `check --after-uninstall` proves it.
  */
 import { chmodSync, cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
-import { dirname, join, relative, resolve } from 'node:path';
+import { basename, dirname, join, relative, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -114,6 +114,18 @@ function* walk(dir) {
   }
 }
 
+const APPS_DIR = join(ROOT, 'apps');
+const CONSOLE_APP_DIR = dirname(PLUGINS_DIR);
+
+/**
+ * Inside another app's tree (apps/<app>/, not the host app's) a bare `plugins/<folder>` is that app's own plugin
+ * system: Expenses, AmberX, axHub web and Molly each have one, and their folder names may repeat the console's. Only
+ * the host app's own path (`console-web/plugins/<folder>`), the plugin id or the marker names this plugin from there.
+ */
+export function namesHostPlugin(line, folder, id = '') {
+  return line.includes(`${basename(CONSOLE_APP_DIR)}/plugins/${folder}`) || line.includes(`axf-plugin:${folder}`) || (!!id && line.includes(id));
+}
+
 /** Every line outside the plugin's folder that names it. Marker lines in listed mention files are "managed", the rest "stale". */
 export function scanReferences(p) {
   const id = p.manifest?.id;
@@ -130,9 +142,14 @@ export function scanReferences(p) {
     // code is held to "never by folder name".
     // Generated bundles (*.gen.mjs) copy an app's own code, so its folder names there are data, not plugin references.
     const inOtherPlugin = file.startsWith(PLUGINS_DIR + '/') && !/^test[._]/.test(file.split('/').pop()) && !/\.gen\.m?js$/.test(file);
+    // Another app's own plugin tree (apps/<app>/src/plugins/<folder>, or `./plugins/<folder>/…` imported from inside
+    // that app, e.g. Expenses' own plugin-manager) is that app's code, not a reference to a console plugin that happens
+    // to share the name: only a path that reaches the console's plugins folder counts there.
+    const inOtherApp = file.startsWith(APPS_DIR + '/') && !file.startsWith(CONSOLE_APP_DIR + '/');
     const lines = readFileSync(file, 'utf8').split('\n');
     lines.forEach((line, i) => {
-      const hit = needles.some((n) => line.includes(n)) || (inOtherPlugin && quoted.some((q) => line.includes(q)));
+      let hit = needles.some((n) => line.includes(n)) || (inOtherPlugin && quoted.some((q) => line.includes(q)));
+      if (hit && inOtherApp && !namesHostPlugin(line, p.folder, id)) hit = false;
       if (!hit) return;
       const managed = line.includes(`axf-plugin:${p.folder}`) && mentions.has(file);
       hits.push({ file: relative(ROOT, file), line: i + 1, text: line.trim().slice(0, 200), managed });
