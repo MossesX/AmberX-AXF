@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 700,
- "updatedAt": "2026-11-04T13:53:40.487Z",
+ "rev": 701,
+ "updatedAt": "2026-11-04T14:03:48.110Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -71956,12 +71956,16 @@
    "branch": "claude/terminal-no-focus",
    "pr": "#305",
    "createdAt": "2026-11-04T10:48:28.927Z",
-   "updatedAt": "2026-11-04T11:08:44.817Z",
+   "updatedAt": "2026-11-04T14:03:43.987Z",
    "builtAt": "2026-11-04T10:55:44.452Z",
    "notes": [
     {
      "text": "Agent Janitor Joey. PR #305: setting newSession (quiet default), REST/MCP/CLI new-session, toolbar badge. CI fixes: help coverage, menu-reach, re-baked stale framework-drafts.json (pre-existing on main). UI Review r-20261104-22549d23 (non-blocking).",
      "at": "2026-11-04T11:08:44.817Z"
+    },
+    {
+     "text": "Reconciler: PR #305 merged",
+     "at": "2026-11-04T14:03:43.987Z"
     }
    ],
    "approvals": [],
@@ -72054,7 +72058,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -72064,12 +72068,12 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-04T10:48:28.927Z",
-    "builtAt": "",
+    "builtAt": "2026-11-04T10:55:44.452Z",
     "prefixSteps": true,
     "stepAt": {
-     "st-mw1zuf0z01n20r": "2026-11-04T10:48:28.928Z",
-     "st-mw1zuf0z02rx81": "2026-11-04T10:48:28.928Z",
-     "st-mw1zuf0z03q0fp": "2026-11-04T10:48:28.928Z"
+     "st-mw1zu90g04a7fx": "2026-11-04T10:48:28.928Z",
+     "st-mw1zu90g05qn57": "2026-11-04T10:48:28.928Z",
+     "st-mw1zu90g069oa8": "2026-11-04T10:48:28.928Z"
     }
    },
    "queue": null,
