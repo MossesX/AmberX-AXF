@@ -7,19 +7,34 @@
   "apiLevel": 1,
   "author": "Brett",
   "description": "Molly's one banner region: the Dev Console's live banners (systems check, What's new, keys, builds, approvals, branches not on main, activity, codebase changes, Claude handoff, pass) and its banner chips (alerts bell, Claude badge), drawn by the console itself in a strip at the top of Molly. Taps work as in the console; the apps Molly frames hide their own banner. Settings → Plugins → Banners shows or hides each banner here.",
-  "targets": ["molly"],
-  "provides": ["slot:app.frame.banners", "settings-tab:molly-banners"],
+  "targets": [
+    "molly"
+  ],
+  "provides": [
+    "slot:app.frame.banners",
+    "settings-tab:molly-banners"
+  ],
   "scopes": [],
   "enabledByDefault": true,
-  "optional": ["axf.xlayout@1"],
-  "banner": true,
+  "optional": [
+    "axf.xlayout@1"
+  ],
+  "banner": false,
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/molly-banners",
     "env": [],
-    "mentions": ["_claude/memory/STATUS.md", "apps/molly/README.md"]
+    "mentions": [
+      "_claude/memory/STATUS.md",
+      "apps/molly/README.md"
+    ]
   },
-  "builtWith": { "model": "opus", "builtAt": "2026-11-03", "branch": "claude/molly-banners" },
-  "help": "help.json"
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-03",
+    "branch": "claude/molly-banners"
+  },
+  "help": "help.json",
+  "opens": false
 }
