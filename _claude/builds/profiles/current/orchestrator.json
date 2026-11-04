@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T14:21:29.519Z",
+ "updatedAt": "2026-11-04T14:21:45.756Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -7874,7 +7874,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw27fvdy04gvxi"
+     "uid": "st-mw27ghct01ei8o"
     },
     {
      "id": "s2",
@@ -7892,10 +7892,64 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw27fvdy05y98i"
+     "uid": "st-mw27ghct02vpt4"
     },
     {
      "id": "s3",
+     "text": "APK build via CI, phone test of hands-free + interrupt, report",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw27ghct03bx3o"
+    },
+    {
+     "id": "s4-3",
+     "text": "Foreground service keeps talk mode + speech running with the screen off / app backgrounded (AmberX native)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw27fvdy04gvxi"
+    },
+    {
+     "id": "s5-4",
+     "text": "Wire companion talk.ts to the service; transcript shown in the chat; stop from the notification",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw27fvdy05y98i"
+    },
+    {
+     "id": "s6-5",
      "text": "APK build via CI, phone test of hands-free + interrupt, report",
      "model": "Opus",
      "why": "",
@@ -7960,7 +8014,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw27fx9805xzl7"
+     "uid": "st-mw27ghct04zycw"
     },
     {
      "id": "s2",
@@ -7978,7 +8032,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw27fx98060oej"
+     "uid": "st-mw27ghct05a5y9"
     },
     {
      "id": "s3",
@@ -7996,10 +8050,82 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw27fx98074x35"
+     "uid": "st-mw27ghct061yzk"
     },
     {
      "id": "s4",
+     "text": "Tests, type-check, phone shot, report",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw27ghct07j8qs"
+    },
+    {
+     "id": "s5-4",
+     "text": "Harvest Terminal host + session into framework/libs/claude-session (console keeps working on it)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw27fx9805xzl7"
+    },
+    {
+     "id": "s6-5",
+     "text": "Terminal panel in the companion window: show/hide, dock top/bottom/left/right, size",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw27fx98060oej"
+    },
+    {
+     "id": "s7-6",
+     "text": "Panel settings (behaviour, text size, tooltip mode) in Settings > Plugins > Gizmo",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw27fx98074x35"
+    },
+    {
+     "id": "s8-7",
      "text": "Tests, type-check, phone shot, report",
      "model": "Opus",
      "why": "",

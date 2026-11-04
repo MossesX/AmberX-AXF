@@ -662,10 +662,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 16:48 UTC · `land-everything` s6 done (urgent) · orchestrator
-- 2026-11-03 17:03 UTC · `token-control` → complete, merged (urgent) · builds-live
-- 2026-11-03 17:03 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 17:03 UTC · `console-commands` PR #249, merged (urgent) · builds-live
 - 2026-11-03 17:03 UTC · `land-everything` s7 done (urgent) · orchestrator
 - 2026-11-03 17:09 UTC · `theme-editor` → complete, merged (urgent) · builds-live
 - 2026-11-03 17:09 UTC · `land-everything` note (urgent) · orchestrator
@@ -1062,6 +1058,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:21 UTC · `land-round-2` note (current) · orchestrator
 - 2026-11-04 14:21 UTC · `gizmo-voice` added (3 steps) (current) · orchestrator
 - 2026-11-04 14:21 UTC · `gizmo-terminal` added (4 steps) (current) · orchestrator
+- 2026-11-04 14:21 UTC · `land-round-2` note (current) · foreign-write
+- 2026-11-04 14:21 UTC · `urgent-land-gizmo-chat` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 14:21 UTC · `gizmo-voice` added (3 steps) (current) · foreign-write
+- 2026-11-04 14:21 UTC · `gizmo-terminal` added (4 steps) (current) · foreign-write
 
 ## Token passes (log)
 
