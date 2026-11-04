@@ -577,6 +577,18 @@
    "from": "detail",
    "addenda": []
   },
+  "console-wake-finish": {
+   "said": "Why isn't Follow Amber working? … [Amber offered to bump console wake up the line] Yes.",
+   "at": "2026-11-04T12:30:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "context-menu-editor": {
    "said": "Hold C + click: shows which menu fires there and its file. Drag an element into the map to save it; saves the action/destination, not the element. Pinned top: Build profiles submenu, Settings, user picks.",
    "at": "2026-10-30",
