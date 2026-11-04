@@ -227,6 +227,27 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-widget-avatar__initials { display: inline-flex; align-items: center; justify-content: center; font-weight: 700; background: var(--fx-accent); color: var(--fx-accent-text); }
 .fx-widget-avatar.is-circle img, .fx-widget-avatar.is-circle .fx-widget-avatar__initials { border-radius: 999px; }
 .fx-widget-avatar.is-rounded img, .fx-widget-avatar.is-rounded .fx-widget-avatar__initials { border-radius: var(--fx-radius-sm); }
+/* AgentAvatar (react/components/AgentAvatar.tsx): an agent's drawn face or initials; size + shape from the agent-avatar asset */
+.fx-agent-avatar { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); flex: none; min-width: 0; vertical-align: middle; }
+.fx-agent-avatar__face, .fx-agent-avatar__initials { flex: none; display: block; box-sizing: border-box; }
+.fx-agent-avatar.is-circle .fx-agent-avatar__face, .fx-agent-avatar.is-circle .fx-agent-avatar__initials { border-radius: 999px; }
+.fx-agent-avatar.is-rounded .fx-agent-avatar__face, .fx-agent-avatar.is-rounded .fx-agent-avatar__initials { border-radius: var(--fx-radius-sm); }
+.fx-agent-avatar__bg { fill: var(--fx-accent-soft); }
+.fx-agent-avatar__skin { fill: var(--fx-surface3); stroke: var(--fx-text); stroke-width: var(--fx-border-w); }
+.fx-agent-avatar__ink { fill: var(--fx-text); }
+.fx-agent-avatar__line { fill: none; stroke: var(--fx-text); stroke-width: calc(var(--fx-border-w) * 1.5); stroke-linecap: round; }
+.fx-agent-avatar__thick { stroke-width: calc(var(--fx-border-w) * 3); }
+.fx-agent-avatar__initials { display: inline-flex; align-items: center; justify-content: center; font-weight: 700; color: var(--fx-text); border: var(--fx-border-w) solid var(--fx-border); }
+.fx-agent-avatar__initials.is-accent { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-accent); }
+.fx-agent-avatar__initials.is-brand-1 { background: color-mix(in srgb, var(--fx-brand-1) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-brand-1); }
+.fx-agent-avatar__initials.is-brand-2 { background: color-mix(in srgb, var(--fx-brand-2) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-brand-2); }
+.fx-agent-avatar__initials.is-brand-3 { background: color-mix(in srgb, var(--fx-brand-3) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-brand-3); }
+.fx-agent-avatar__initials.is-success { background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-success); }
+.fx-agent-avatar__initials.is-warning { background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-warning); }
+.fx-agent-avatar__initials.is-info { background: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-info); }
+.fx-agent-avatar__initials.is-danger { background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-danger); }
+.fx-agent-avatar__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fx-agent-avatar.is-unknown .fx-agent-avatar__name { color: var(--fx-muted); }
 .fx-widget-link { text-decoration: none; color: var(--fx-accent); }
 .fx-widget-link:hover { text-decoration: underline; }
 .fx-widget-theme { background: none; border: var(--fx-border-w) solid var(--fx-border); border-radius: 999px; padding: 0 var(--fx-dens-gap-lg); height: calc(var(--fx-row-h) * 0.7); cursor: pointer; }
@@ -536,6 +557,29 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 }
 .fx-search-flash { animation: fx-search-flash 1.8s ease; border-radius: var(--fx-radius-sm); }
 [data-reduced-motion] .fx-search-flash { animation: none !important; outline: 3px solid var(--fx-accent); outline-offset: 2px; }
+
+/* ---------------- reference links (ref@1, RefText): a mention of a real thing in banner / build text ---------------- */
+.fx-ref {
+  cursor: pointer; border-radius: var(--fx-radius-sm); text-decoration: underline dotted;
+  text-decoration-thickness: var(--fx-border-w); text-underline-offset: calc(var(--fx-border-w) * 3);
+  text-decoration-color: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent);
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation; -webkit-touch-callout: none;
+}
+.fx-ref:hover, .fx-ref:focus-visible { color: var(--fx-accent); text-decoration-color: var(--fx-accent); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); outline: none; }
+.fx-ref.is-missing { text-decoration-style: dashed; text-decoration-color: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-muted) * 100%), transparent); }
+.fx-ref-peek {
+  position: fixed; z-index: 85; display: grid; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-xl);
+  min-width: calc(var(--fx-font-size) * 14); max-width: min(calc(var(--fx-font-size) * 24), calc(100vw - var(--fx-dens-gap-xl) * 2));
+  font-size: var(--fx-type-scale-md); color: var(--fx-text); white-space: normal; text-align: left; animation: fx-pop 120ms ease both;
+}
+.fx-ref-peek__head { display: flex; align-items: center; gap: var(--fx-dens-gap-md); color: var(--fx-muted); }
+.fx-ref-peek__kind { font-size: var(--fx-type-scale-2xs); text-transform: uppercase; letter-spacing: 0.06em; }
+.fx-ref-peek__label { font-weight: 600; overflow-wrap: anywhere; }
+.fx-ref-peek__detail { font-size: var(--fx-type-scale-xs); color: var(--fx-muted); overflow-wrap: anywhere; }
+.fx-ref-peek__state { font-size: var(--fx-type-scale-xs); color: var(--fx-warning); }
+.fx-ref-peek__also { display: grid; gap: var(--fx-dens-gap-sm); justify-items: start; }
+.fx-ref-peek__actions { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); }
+[data-reduced-motion] .fx-ref-peek { animation: none; }
 
 /* ---------------- nav menu (nav-menu asset) ---------------- */
 
@@ -1514,6 +1558,33 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 }
 :where([data-fx-small]) .fx-help-panel { left: var(--fx-dens-gap-lg); right: var(--fx-dens-gap-lg); bottom: var(--fx-dens-gap-lg); width: auto; }
 :where([data-fx-small]) .fx-help-intro { bottom: var(--fx-dens-gap-lg); }
+
+/* What Brett said (build-origin@1, framework/react/components/BuildOrigin.tsx): his words first on every expanded build,
+   as a speech bubble; the brief collapsed below; addenda in order. Tokens only. */
+.axf-origin { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-lg) 0; min-width: 0; }
+.axf-origin__label { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); font-size: var(--fx-type-scale-xs); font-weight: 600; color: var(--fx-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.axf-origin__said { margin: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axf-origin__bubble {
+  position: relative; margin: 0; padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl); border-radius: var(--fx-radius-lg); border-top-left-radius: var(--fx-radius-sm);
+  background: var(--fx-accent-soft); color: var(--fx-text); border: var(--fx-border-w) solid color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent);
+  font-size: var(--fx-type-scale-md); line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.axf-origin__bubble::before { content: '\201C'; color: var(--fx-accent); font-weight: 700; margin-right: var(--fx-dens-gap-xs); }
+.axf-origin__bubble::after { content: '\201D'; color: var(--fx-accent); font-weight: 700; margin-left: var(--fx-dens-gap-xs); }
+.axf-origin__meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); font-size: var(--fx-type-scale-xs); color: var(--fx-muted); }
+.axf-origin__link { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); color: var(--fx-accent); text-decoration: none; }
+.axf-origin__link:hover { text-decoration: underline; }
+.axf-origin__by, .axf-origin__none { font-size: var(--fx-type-scale-xs); color: var(--fx-muted); }
+.axf-origin--empty { flex-direction: row; align-items: center; gap: var(--fx-dens-gap-md); }
+.axf-origin__brief { display: flex; flex-direction: column; align-items: flex-start; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axf-origin__brief-text {
+  margin: 0; width: 100%; box-sizing: border-box; max-height: calc(var(--fx-row-h) * 12); overflow: auto; padding: var(--fx-dens-gap-lg);
+  border-radius: var(--fx-radius-md); background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border);
+  font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-xs); color: var(--fx-text); white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.axf-origin__addenda { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); }
+.axf-origin__addenda > li { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axf-origin-sub { display: block; font-size: var(--fx-type-scale-xs); color: var(--fx-muted); font-style: italic; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 
 /* ---------------------------------------------------------------- data cards (card@1, react/components/DataCard.tsx)
    One card engine draws any data; every value here is a token, so a theme or scale swap restyles every card. */
