@@ -194,6 +194,11 @@
           "mcp": "expenses_list"
         },
         "slots": {
+          "date_from": {
+            "type": "date",
+            "required": false,
+            "say": "date from"
+          },
           "category": {
             "type": "text",
             "required": false,

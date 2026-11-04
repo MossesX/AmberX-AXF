@@ -49,12 +49,12 @@ const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 
 
 const SLUG = /^[a-z0-9][a-z0-9-]{0,62}$/;
 const COMMAND_ID = /^[a-z][a-z0-9_.-]{0,63}$/;
-const SLOT_NAME = /^[a-z][a-zA-Z0-9]{0,29}$/;
-const PLACEHOLDER = /\{([a-zA-Z][a-zA-Z0-9]*)\}/g;
+const SLOT_NAME = /^[a-z][a-zA-Z0-9_]{0,29}$/;
+const PLACEHOLDER = /\{([a-zA-Z][a-zA-Z0-9_]*)\}/g;
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 const str = (v, max = 200) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 const uniq = (a) => [...new Set(a)];
-const words = (s) => str(s, 4000).toLowerCase().replace(/[^a-z0-9$#.:/\-{}\s]/g, ' ').replace(/(\d)\.(?!\d)/g, '$1 ').split(/\s+/).filter(Boolean);
+const words = (s) => str(s, 4000).toLowerCase().replace(/[^a-z0-9$#_.:/\-{}\s]/g, ' ').replace(/(\d)\.(?!\d)/g, '$1 ').split(/\s+/).filter(Boolean);
 const titleCase = (s) => s.replace(/(^|\s)([a-z])/g, (m, a, b) => a + b.toUpperCase());
 
 /** The `{slot}` names a phrase or answer uses. */
@@ -64,9 +64,9 @@ export function phraseSlots(text) { return uniq([...str(text, 4000).matchAll(PLA
 export function tokenizePhrase(phrase) {
   const out = [];
   for (const w of words(phrase)) {
-    const m = /^\{([a-zA-Z][a-zA-Z0-9]*)\}$/.exec(w);
+    const m = /^\{([a-zA-Z][a-zA-Z0-9_]*)\}$/.exec(w);
     if (m) out.push({ kind: 'slot', name: m[1] });
-    else if (w.includes('{')) for (const part of w.split(/(\{[a-zA-Z][a-zA-Z0-9]*\})/).filter(Boolean)) out.push(/^\{/.test(part) ? { kind: 'slot', name: part.slice(1, -1) } : { kind: 'word', text: part });
+    else if (w.includes('{')) for (const part of w.split(/(\{[a-zA-Z][a-zA-Z0-9_]*\})/).filter(Boolean)) out.push(/^\{/.test(part) ? { kind: 'slot', name: part.slice(1, -1) } : { kind: 'word', text: part });
     else out.push({ kind: 'word', text: w });
   }
   return out;
@@ -83,7 +83,7 @@ export function confirmRule(command) {
 
 function slotErrors(name, s, at) {
   const e = [];
-  if (!SLOT_NAME.test(name)) e.push(`${at}: slot "${name}" must be a camelCase name (letters and digits)`);
+  if (!SLOT_NAME.test(name)) e.push(`${at}: slot "${name}" must be a name of letters, digits and underscores, starting with a letter`);
   if (!isObj(s)) return [`${at}.${name} must be { type, required?, options?, say?, default? }`];
   if (!VOICE_SLOT_TYPES.includes(s.type)) e.push(`${at}.${name}.type must be one of ${VOICE_SLOT_TYPES.join(', ')}`);
   if (s.required !== undefined && typeof s.required !== 'boolean') e.push(`${at}.${name}.required must be true or false`);
@@ -201,15 +201,16 @@ export function parseSlotValue(slot, ws, now = '2026-01-01T00:00:00.000Z') {
 
 /* ================================================================== matching */
 
-/** One phrase against the utterance words. Returns { slots, literals, leftover } or null. */
-export function matchPhrase(tokens, ws, slots, now) {
+/** One phrase against the utterance words. Returns { slots, literals, leftover } or null. `accept(leftover, got)` may refuse an ending (a tail that does not parse), so a text slot tries a longer capture. */
+export function matchPhrase(tokens, ws, slots, now, accept = null) {
   const got = {};
   const go = (ti, wi, literals) => {
-    if (ti === tokens.length) return { slots: { ...got }, literals, leftover: ws.slice(wi) };
+    if (ti === tokens.length) { const left = ws.slice(wi); if (accept && !accept(left, got)) return null; return { slots: { ...got }, literals, leftover: left }; }
     const tok = tokens[ti];
     if (tok.kind === 'word') {
       if (ws[wi] === tok.text) return go(ti + 1, wi + 1, literals + 1);
       if (wi < ws.length && VOICE_FILLERS.includes(ws[wi]) && !tokens.slice(ti).some((t) => t.kind === 'word' && t.text === ws[wi])) return go(ti, wi + 1, literals);
+      if (VOICE_FILLERS.includes(tok.text)) return go(ti + 1, wi, literals); // "show an expense" also hears "show expense"
       return null;
     }
     const slot = slots[tok.name] ?? { type: 'text' };
@@ -235,13 +236,15 @@ export function matchPhrase(tokens, ws, slots, now) {
   return go(0, 0, 0);
 }
 
+const sayWord = (slot) => words(slot?.say ?? '').find((w) => !VOICE_FILLERS.includes(w)) ?? '';
+
 /** Trailing "<slot name> <value>" pairs for slots the phrase did not carry ("… category food date yesterday"). */
 function takeTail(ws, command, got, now) {
   const slots = command.slots ?? {};
   let i = 0;
   while (i < ws.length) {
     if (VOICE_FILLERS.includes(ws[i])) { i++; continue; }
-    let name = Object.keys(slots).find((n) => n.toLowerCase() === ws[i] || words(slots[n].say ?? '')[0] === ws[i]);
+    let name = Object.keys(slots).find((n) => n.toLowerCase() === ws[i] || n.toLowerCase().replace(/_/g, ' ').split(' ')[0] === ws[i] || sayWord(slots[n]) === ws[i]);
     if (!name) {
       // a bare value ("… 5 dollars", "… yesterday", "… food") goes to the first empty typed slot that reads it; text never
       const open = Object.keys(slots).filter((n) => got[n] === undefined && slots[n].type !== 'text');
@@ -251,7 +254,7 @@ function takeTail(ws, command, got, now) {
       got[fit] = v.value; i += v.used; continue;
     }
     const slot = slots[name];
-    if (slot.type === 'text') { const stop = ws.slice(i + 1).findIndex((w) => Object.keys(slots).some((n) => n.toLowerCase() === w || words(slots[n].say ?? '')[0] === w)); const chunk = stop < 0 ? ws.slice(i + 1) : ws.slice(i + 1, i + 1 + stop); if (!chunk.length) return false; got[name] = chunk.join(' '); i += 1 + chunk.length; continue; }
+    if (slot.type === 'text') { const stop = ws.slice(i + 1).findIndex((w) => Object.keys(slots).some((n) => n.toLowerCase() === w || sayWord(slots[n]) === w)); const chunk = stop < 0 ? ws.slice(i + 1) : ws.slice(i + 1, i + 1 + stop); if (!chunk.length) return false; got[name] = chunk.join(' '); i += 1 + chunk.length; continue; }
     const v = parseSlotValue(slot, ws.slice(i + 1), now);
     if (!v) return false;
     got[name] = v.value; i += 1 + v.used;
@@ -283,10 +286,10 @@ export function matchUtterance(assetsOrOne, text, { now = '2026-01-01T00:00:00.0
   for (const a of assets) {
     if (only && a.app !== only) continue;
     for (const c of a.commands) for (const p of c.phrases) {
-      const m = matchPhrase(tokenizePhrase(p), w.ws, c.slots, now);
+      const tails = new Map();
+      const m = matchPhrase(tokenizePhrase(p), w.ws, c.slots, now, (left, g) => { if (!left.length) return true; const t = { ...g }; if (!takeTail(left, c, t, now)) return false; tails.set(left.join(' '), t); return true; });
       if (!m) continue;
-      const got = { ...m.slots };
-      if (m.leftover.length && !takeTail(m.leftover, c, got, now)) continue;
+      const got = m.leftover.length ? { ...(tails.get(m.leftover.join(' ')) ?? m.slots) } : { ...m.slots };
       const score = m.literals * 10 + Object.keys(got).length * 3 - (w.ws.length - m.literals - Object.keys(got).length) + (c.source === 'authored' ? 1 : 0);
       if (!best || score > best.score) best = { app: a.app, command: c, slots: got, score, phrase: p };
     }
@@ -395,7 +398,7 @@ export function generateCommand(entry, app = '') {
   // two text slots in a row cannot be heard apart: keep the declared order, and offer the typed-first order too
   const typedFirst = [...req].sort((a, b) => (slots[a].type === 'text' ? 1 : 0) - (slots[b].type === 'text' ? 1 : 0));
   // two text slots in a row get the second one's name between them ("{path} value {value}")
-  const tailOf = (o) => o.map((n, i) => (i > 0 && slots[o[i - 1]].type === 'text' && slots[n].type === 'text' ? `${words(slots[n].say)[0] || n.toLowerCase()} {${n}}` : `{${n}}`)).join(' ');
+  const tailOf = (o) => o.map((n, i) => (i > 0 && slots[o[i - 1]].type === 'text' && slots[n].type === 'text' ? `${sayWord(slots[n]) || n.toLowerCase().split('_')[0]} {${n}}` : `{${n}}`)).join(' ');
   const tails = uniq([req, typedFirst].map(tailOf));
   const base = words(title).filter((w) => !/[{}]/.test(w)).join(' ');
   const short = iw.join(' ');

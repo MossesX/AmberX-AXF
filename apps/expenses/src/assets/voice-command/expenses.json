@@ -1,0 +1,33 @@
+{
+  "$axf": "asset@1",
+  "type": "voice-command",
+  "id": "expenses",
+  "name": "Expenses voice commands",
+  "version": "1",
+  "description": "What you can say to Expenses: generated from its API, MCP tools, CLI and actions by framework/cli/voice-commands.mjs; commands marked authored are hand-tuned and kept.",
+  "data": {
+    "app": "expenses",
+    "forFramework": true,
+    "source": "generated",
+    "generatedFrom": [
+      "api",
+      "mcp",
+      "cli"
+    ],
+    "wake": [
+      "expenses",
+      "expense",
+      "expense tracker",
+      "ledger"
+    ],
+    "commands": [
+      {"id":"expenses_add","title":"Add an expense","effect":"write","run":{"api":"POST /api/expenses/v1/entries","mcp":"expenses_add","cli":"expenses add --merchant <merchant> --amount <amount>"},"slots":{"merchant":{"type":"text","required":true,"say":"the merchant"},"amount":{"type":"money","required":true,"say":"the amount in dollars"},"date":{"type":"date","say":"the date","default":"today"},"category":{"type":"choice","options":["fuel","groceries","dining","transfers","personal","clothing","software","utilities","transport","hardware","health","pending","income","other"],"say":"the category"},"account":{"type":"text","say":"the account"},"note":{"type":"text","say":"a note"},"income":{"type":"yesno","say":"money in"}},"phrases":["add an expense {merchant} {amount}","add an expense {amount} {merchant}","add {merchant} {amount}","add {amount} {merchant}","add an expense"],"help":"Add an entry to the ledger: who was paid and the amount in dollars; date (today when left out), category, account (payment method), note; income for money in."},
+      {"id":"expenses_edit","title":"Edit an expense","effect":"write","run":{"api":"PATCH /api/expenses/v1/entries/{entry_id}","mcp":"expenses_edit","cli":"expenses edit <id> [--amount] [--merchant] …"},"slots":{"entry_id":{"type":"id","required":true,"say":"the entry id"},"amount":{"type":"money","say":"the amount in dollars"},"merchant":{"type":"text","say":"the merchant"},"date":{"type":"date","say":"the date"},"category":{"type":"choice","options":["fuel","groceries","dining","transfers","personal","clothing","software","utilities","transport","hardware","health","pending","income","other"],"say":"the category"},"account":{"type":"text","say":"the account"},"note":{"type":"text","say":"a note"}},"phrases":["edit an expense {entry_id}","edit {entry_id}","edit an expense"],"help":"Change fields of one entry (only the ones given): amount in dollars, merchant, date, category, account, note. The API never deletes; deleting stays in the app."},
+      {"id":"expenses_list","title":"List expenses","effect":"read","run":{"api":"GET /api/expenses/v1/entries","mcp":"expenses_list","cli":"expenses list [--from] [--to] [--category] [--account] [--q] [--limit]"},"slots":{"date_from":{"type":"date","say":"from date"},"date_to":{"type":"date","say":"to date"},"category":{"type":"choice","options":["fuel","groceries","dining","transfers","personal","clothing","software","utilities","transport","hardware","health","pending","income","other"],"say":"the category"},"account":{"type":"text","say":"the account"},"kind":{"type":"choice","options":["expense","income"],"say":"the kind"},"q":{"type":"text","say":"words to search for"},"limit":{"type":"number","say":"how many"}},"phrases":["list expenses","list"],"help":"Entries, newest first, with filters: dates, category, account, kind (expense or income), a text search, a limit."},
+      {"id":"expenses_get","title":"Show an expense","effect":"read","run":{"api":"GET /api/expenses/v1/entries/{entry_id}","mcp":"expenses_get","cli":"expenses get <id>"},"slots":{"entry_id":{"type":"id","required":true,"say":"the entry id"}},"phrases":["show an expense {entry_id}","get {entry_id}","show an expense"],"help":"One entry by id."},
+      {"id":"expenses_accounts_list","title":"List accounts","effect":"read","run":{"api":"GET /api/expenses/v1/accounts","mcp":"expenses_accounts_list","cli":"expenses accounts [--from] [--to]"},"slots":{"date_from":{"type":"date","say":"from date"},"date_to":{"type":"date","say":"to date"}},"phrases":["list accounts","accounts"],"help":"Accounts (payment methods) with entry counts, spent and income, and the last date."},
+      {"id":"expenses_totals_get","title":"Totals","effect":"read","run":{"api":"GET /api/expenses/v1/totals","mcp":"expenses_totals_get","cli":"expenses totals [--by category|account|month|merchant] [--from] [--to]"},"slots":{"by":{"type":"choice","options":["category","account","month","merchant"],"say":"broken down by"},"date_from":{"type":"date","say":"from date"},"date_to":{"type":"date","say":"to date"},"category":{"type":"choice","options":["fuel","groceries","dining","transfers","personal","clothing","software","utilities","transport","hardware","health","pending","income","other"],"say":"the category"},"account":{"type":"text","say":"the account"}},"phrases":["totals","get totals"],"help":"Totals: count, spent, income, net; by category, account, month or merchant breaks it down."},
+      {"id":"expenses_export_get","title":"Export expenses","effect":"read","run":{"api":"GET /api/expenses/v1/export","mcp":"expenses_export_get","cli":"expenses export [--format csv|json] [--from] [--to]"},"slots":{"fmt":{"type":"choice","options":["csv","json"],"say":"the format"},"date_from":{"type":"date","say":"from date"},"date_to":{"type":"date","say":"to date"}},"phrases":["export expenses","export get"],"help":"Export entries as CSV or JSON."}
+    ]
+  }
+}

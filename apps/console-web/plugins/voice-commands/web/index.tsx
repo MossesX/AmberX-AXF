@@ -201,7 +201,8 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('voice-commands.listen', () => rt.openDialog('voice-commands.say', {}), { label: 'Say a command…' });
     installBridge(rt);
   },
-  views: { 'voice-commands': { title: 'Voice commands', icon: 'mic', render: () => <VoicePage /> } },
+  views: { [FOLDER]: { title: 'Voice commands', icon: 'mic', keywords: ['voice', 'say', 'speak', 'mic', 'commands', 'molly'], render: () => <VoicePage /> } },
+  nav: { label: 'Plugins', items: [{ id: FOLDER, label: 'Voice commands', icon: 'mic', view: FOLDER }] },
   dialogs: { 'voice-commands.say': { title: 'Say a command', icon: 'mic', render: () => <SayBox /> } },
   settingsTabs: [{ id: FOLDER, label: 'Voice commands', icon: 'mic', order: 93, parent: 'plugins', description: 'Mic, spoken answers, hosts allowed to talk to this console' }],
   settings: [{

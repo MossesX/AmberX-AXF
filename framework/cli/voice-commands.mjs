@@ -81,7 +81,9 @@ function* sourceFiles(dir, depth = 0) {
 /** Web actions an app registers in its own sources (not its baked src/axf, not its plugins: those come through the plugin registry). */
 export function appActions(app) {
   const out = []; const seen = new Set();
-  for (const f of sourceFiles(join(app.dir, 'src'))) {
+  // an app with its own plugin folder that is not a plugin home (Molly): its plugins' web actions are the app's too
+  const roots = [join(app.dir, 'src'), ...(PLUGIN_HOMES.some((h) => h.app === app.folder) ? [] : [join(app.dir, 'plugins')].filter((d) => existsSync(d)).flatMap((d) => readdirSync(d).filter((n) => !n.startsWith('_') && !n.startsWith('.')).map((n) => join(d, n, 'web'))))];
+  for (const f of roots.flatMap((r) => [...sourceFiles(r)])) {
     const text = readFileSync(f, 'utf8');
     const rel = relative(app.dir, f);
     for (const a of scanWebActions(text, rel)) if (!seen.has(a.id)) { seen.add(a.id); out.push(a); }
@@ -142,13 +144,37 @@ export function buildAsset(app) {
   const existing = readAsset(app);
   const data = existing?.data ? mergeVoiceCommands(existing.data, generated) : generated;
   const asset = { $axf: 'asset@1', type: VOICE_COMMAND_TYPE, id: existing?.id ?? app.name, name: existing?.name ?? `${app.manifest.displayName || app.name} voice commands`, version: existing?.version ?? '1', description: existing?.description ?? `What you can say to ${app.manifest.displayName || app.name}: generated from its API, MCP tools, CLI and actions by framework/cli/voice-commands.mjs; commands marked authored are hand-tuned and kept.`, data };
-  return { asset, surface, changed: JSON.stringify(existing) !== JSON.stringify(asset) };
+  return { asset, surface, changed: JSON.stringify(existing) !== JSON.stringify(compactAsset(asset)) };
+}
+
+/** The asset as written: defaults left out (normalizeVoiceCommands puts them back), one command per line, so a big app's file stays readable and small. */
+export function compactAsset(asset) {
+  const d = normalizeVoiceCommands(asset.data);
+  const floor = { read: 'never', navigate: 'never', write: 'missing', destructive: 'always' };
+  const commands = d.commands.map((c) => {
+    const o = { id: c.id, title: c.title, effect: c.effect };
+    if (c.confirm !== floor[c.effect]) o.confirm = c.confirm;
+    o.run = c.run;
+    const slots = {};
+    for (const [n, s] of Object.entries(c.slots)) { const t = { type: s.type }; if (s.required) t.required = true; if (s.options) t.options = s.options; if (s.say && s.say !== n) t.say = s.say; if (s.default !== undefined) t.default = s.default; slots[n] = t; }
+    if (Object.keys(slots).length) o.slots = slots;
+    o.phrases = c.phrases;
+    if (c.say && c.say !== (c.effect === 'read' ? '{title}: {result}' : `${c.title}: done.`)) o.say = c.say;
+    if (c.help) o.help = c.help;
+    if (c.source === 'authored') o.source = 'authored';
+    return o;
+  });
+  const data = { app: d.app, ...(d.forFramework ? { forFramework: true } : {}), source: d.source, ...(d.generatedFrom.length ? { generatedFrom: d.generatedFrom } : {}), wake: d.wake, commands };
+  return { ...asset, data };
 }
 
 export function writeAsset(app, asset) {
   const file = assetPath(app);
   mkdirSync(dirname(file), { recursive: true });
-  writeFileSync(file, JSON.stringify(asset, null, 2) + '\n');
+  const a = compactAsset(asset);
+  const head = JSON.stringify({ ...a, data: { ...a.data, commands: '@@' } }, null, 2);
+  const body = a.data.commands.map((c) => '      ' + JSON.stringify(c)).join(',\n');
+  writeFileSync(file, head.replace('"commands": "@@"', `"commands": [\n${body}\n    ]`) + '\n');
   return file;
 }
 

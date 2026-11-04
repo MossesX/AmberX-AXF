@@ -11,7 +11,8 @@
     "server"
   ],
   "framework": {
-    "relation": "for"
+    "relation": "for",
+    "forFramework": true
   },
   "repo": {
     "host": "github",

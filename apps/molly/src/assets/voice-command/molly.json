@@ -1,0 +1,38 @@
+{
+  "$axf": "asset@1",
+  "type": "voice-command",
+  "id": "molly",
+  "name": "Molly voice commands",
+  "version": "1",
+  "description": "What you can say to Molly: generated from its API, MCP tools, CLI and actions by framework/cli/voice-commands.mjs; commands marked authored are hand-tuned and kept.",
+  "data": {
+    "app": "molly",
+    "forFramework": true,
+    "source": "generated",
+    "generatedFrom": [
+      "action"
+    ],
+    "wake": [
+      "molly"
+    ],
+    "commands": [
+      {"id":"molly.reload","title":"Reload this app","effect":"write","run":{"action":"molly.reload"},"phrases":["reload this app","reload"]},
+      {"id":"molly.own-tab","title":"Open this app on its own","effect":"write","run":{"action":"molly.own-tab"},"phrases":["open this app on its own","own tab"]},
+      {"id":"molly-banners.toggle","title":"Banners on / off","effect":"navigate","run":{"action":"molly-banners.toggle"},"phrases":["banners on / off","toggle banners"]},
+      {"id":"navigation.settings","title":"Navigation settings…","effect":"navigate","run":{"action":"navigation.settings"},"phrases":["navigation settings"]},
+      {"id":"navigation.dialog","title":"Navigation settings (dialog)…","effect":"write","run":{"action":"navigation.dialog"},"phrases":["navigation settings dialog","navigation dialog"]},
+      {"id":"navigation.collapse","title":"Collapse navigation to icons","effect":"write","run":{"action":"navigation.collapse"},"phrases":["collapse navigation to icons","navigation collapse"]},
+      {"id":"navigation.reset","title":"Reset navigation settings","effect":"destructive","run":{"action":"navigation.reset"},"phrases":["reset navigation settings","reset navigation"]},
+      {"id":"navigation.get","title":"Read the navigation settings","effect":"write","run":{"action":"navigation.get"},"phrases":["read the navigation settings","get navigation","navigation"]},
+      {"id":"navigation.set","title":"Change one navigation setting (path:value)","effect":"write","run":{"action":"navigation.set"},"phrases":["change one navigation setting path:value","set navigation"]},
+      {"id":"navigation.preset","title":"Pick a navigation preset","effect":"write","run":{"action":"navigation.preset"},"phrases":["pick a navigation preset","navigation preset"]},
+      {"id":"navigation.open","title":"Open a navigation item","effect":"navigate","run":{"action":"navigation.open"},"phrases":["open a navigation item","open navigation"]},
+      {"id":"toolbar-designer.open","title":"Toolbar designer…","effect":"navigate","run":{"action":"toolbar-designer.open"},"phrases":["toolbar designer","open toolbar designer"]},
+      {"id":"molly.voice","title":"Say a command (voice)","effect":"write","run":{"action":"molly.voice"},"phrases":["say a command voice","voice"]},
+      {"id":"xlayout.ide","title":"IDE mode on / off","effect":"write","run":{"action":"xlayout.ide"},"phrases":["ide mode on / off","xlayout ide"]},
+      {"id":"xlayout.layout","title":"Pane layout…","effect":"write","run":{"action":"xlayout.layout"},"phrases":["pane layout","xlayout layout"]},
+      {"id":"xlayout.open","title":"Open an app in the main area, a floating window or a pane","effect":"navigate","run":{"action":"xlayout.open"},"phrases":["open an app in the main area a floating window or a pane","open xlayout"]},
+      {"id":"xlayout.customize","title":"Customize toolbar…","effect":"write","run":{"action":"xlayout.customize"},"phrases":["customize toolbar","xlayout customize"]}
+    ]
+  }
+}
