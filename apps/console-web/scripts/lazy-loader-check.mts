@@ -6,8 +6,9 @@
  */
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { CORE_PLUGINS, evictions, idlePicks, LAZY_DEFAULTS, modeOf, normalizeLazyConfig, startupList, touch, decayed, HALF_LIFE_MS, type UsageStat } from '../src/lazyEngine.ts';
+import { CORE_PLUGINS, evictions, KNOWN_BANNERS, idlePicks, LAZY_DEFAULTS, modeOf, normalizeLazyConfig, startupList, touch, decayed, HALF_LIFE_MS, type UsageStat } from '../src/lazyEngine.ts';
 
 let n = 0;
 const t = (name: string, f: () => void) => { f(); n++; console.log(`ok ${n} ${name}`); };
@@ -74,6 +75,16 @@ t('server part normalizes exactly like the web', () => {
   const code = `import importlib.util,json,sys\ns=importlib.util.spec_from_file_location('lz',${JSON.stringify(py)});m=importlib.util.module_from_spec(s);s.loader.exec_module(m)\nprint(json.dumps([m.normalize(c) for c in json.loads(sys.stdin.read())]))`;
   const out = JSON.parse(execFileSync('python3', ['-c', code], { input: JSON.stringify(cases.map((c) => c ?? null)) }).toString());
   assert.deepEqual(out, cases.map((c) => normalizeLazyConfig(c)));
+});
+
+t('every plugin that paints the banner is a known banner (loads first on a first visit), and every known one exists', () => {
+  const dir = fileURLToPath(new URL('../plugins', import.meta.url));
+  const all = readdirSync(dir).filter((f) => !f.startsWith('_') && existsSync(`${dir}/${f}/web/index.tsx`));
+  const painting = all.filter((f) => readdirSync(`${dir}/${f}/web`).filter((x) => /\.tsx?$/.test(x))
+    .some((x) => /setBadge|attachToBanner|banners:\s*\[/.test(readFileSync(`${dir}/${f}/web/${x}`, 'utf8'))));
+  assert.deepEqual(painting.filter((f) => !KNOWN_BANNERS.includes(f)), [], 'add these to KNOWN_BANNERS in src/lazyEngine.ts');
+  assert.deepEqual(KNOWN_BANNERS.filter((f) => !all.includes(f)), [], 'KNOWN_BANNERS names a plugin that no longer exists');
+  for (const f of CORE_PLUGINS ? Object.keys(CORE_PLUGINS) : []) assert.ok(all.includes(f), `core plugin ${f} exists`);
 });
 
 t('dev: each plugin entry is its own HMR boundary; hashes cover every plugin with a web part', async () => undefined);

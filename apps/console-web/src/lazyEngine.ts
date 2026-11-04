@@ -46,6 +46,17 @@ export const CORE_PLUGINS: Record<string, Exclude<LazyMode, 'off'>> = {
   'systems-check': 'start',
 };
 
+/**
+ * Plugins that paint the banner (declared `banners`, or `register` calling `setBadge` / `attachToBanner`). The loader
+ * learns this from each plugin's first load; this seed makes banners load first on a first visit too, before any
+ * shape is known. `scripts/lazy-loader-check.mts` fails when a plugin paints the banner and is missing here.
+ */
+export const KNOWN_BANNERS: readonly string[] = [
+  'activity', 'agent-voice', 'ai-assistant', 'approvals-banner', 'build-manager', 'build-profiles', 'builds-page',
+  'claude-badge', 'claude-handoff', 'claude-settings', 'codebase-changes', 'follow-amber', 'plan-studio', 'plugins-menu',
+  'push-banner', 'systems-check', 'token-control', 'alerts-bell', 'main-build-status', 'whats-shipped',
+];
+
 const clampInt = (v: unknown, lo: number, hi: number, d: number) => {
   const n = typeof v === 'number' ? v : typeof v === 'string' && v.trim() ? Number(v) : NaN;
   return Number.isFinite(n) ? Math.min(hi, Math.max(lo, Math.round(n))) : d;

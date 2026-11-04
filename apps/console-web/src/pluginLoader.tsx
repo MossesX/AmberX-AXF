@@ -24,7 +24,7 @@ import type { AxfWebLibrary } from './axf/react/library';
 import { Button, Note } from './axf/react';
 import { authHeaders } from './axf/libs/apiclient';
 import { consoleTokens } from './api';
-import { CORE_PLUGINS, evictions, idlePicks, LAZY_DEFAULTS, modeOf, normalizeLazyConfig, startupList, touch, type LazyConfig, type LazyMode, type StartReason, type UsageStat } from './lazyEngine';
+import { CORE_PLUGINS, evictions, KNOWN_BANNERS, idlePicks, LAZY_DEFAULTS, modeOf, normalizeLazyConfig, startupList, touch, type LazyConfig, type LazyMode, type StartReason, type UsageStat } from './lazyEngine';
 
 type WebModule = { plugin?: AxfWebLibrary };
 
@@ -188,7 +188,7 @@ class PluginLoader {
   }
 
   isInstalled(folder: string) { return this.installed.has(folder); }
-  isBanner(folder: string) { return !!this.shapes[folder]?.banner; }
+  isBanner(folder: string) { return KNOWN_BANNERS.includes(folder) || !!this.shapes[folder]?.banner; }
   problem(folder: string) { return this.errors.get(folder); }
   private freshShape(folder: string): PluginShape | undefined {
     const s = this.shapes[folder];
