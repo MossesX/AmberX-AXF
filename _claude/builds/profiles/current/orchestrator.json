@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T01:16:15.557Z",
+ "updatedAt": "2026-11-04T01:19:21.148Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3740,7 +3740,7 @@
    "branch": "claude/gizmo-companion",
    "pr": "#296",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-03T23:57:12.826Z",
+   "updatedAt": "2026-11-04T01:15:50.561Z",
    "builtAt": "",
    "notes": [
     {
@@ -4100,8 +4100,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T01:15:50.561Z",
      "note": "",
      "uid": "st-mw1927q512l9n0"
     }
