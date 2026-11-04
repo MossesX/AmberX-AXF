@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 710,
- "updatedAt": "2026-11-04T14:12:05.722Z",
+ "rev": 711,
+ "updatedAt": "2026-11-04T14:12:18.592Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -71668,14 +71668,14 @@
    "title": "Land round 2: catch up and land the rest, Molly first",
    "category": "Landing",
    "detail": "Agent: Landin' Lenny. One PR at a time: update from main, resolve conflicts keeping both sides, CI green, merge. Order: #288 (+#266) → #294 #295 → #296 → #298 → #281 #291 #293 → #289 #269 → #300. Don't merge WIP #299 #301 #302; close #297 if orphan dup. Redeploy console + Molly after #288, all apps at the end.",
-   "status": "blocked",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "land-round-2",
    "branch": "claude/land-round-2",
    "pr": "#313",
    "createdAt": "2026-11-04T10:43:58.630Z",
-   "updatedAt": "2026-11-04T14:10:24.329Z",
+   "updatedAt": "2026-11-04T14:11:55.786Z",
    "builtAt": "",
    "notes": [
     {
@@ -71693,6 +71693,10 @@
     {
      "text": "Reconciler: PR #313",
      "at": "2026-11-04T14:10:24.329Z"
+    },
+    {
+     "text": "GitHub budget burner found: auto-land (land/land.mjs, cron */3) spends ~430-830 API calls per run (measured after the 14:05 reset), ~20 runs/h = the whole 5000/h. Fix land.mjs before the next landing.",
+     "at": "2026-11-04T14:11:55.785Z"
     }
    ],
    "approvals": [],
