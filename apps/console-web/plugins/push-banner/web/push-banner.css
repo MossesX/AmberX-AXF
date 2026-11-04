@@ -89,3 +89,4 @@ a.axp-push-banner__name:hover { text-decoration: underline }
 .axp-mq__state.is-kicked { color: var(--fx-danger) }
 .axp-mq__row.is-passed { border-color: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-muted) * 100%), transparent) }
 .axp-mq__chip { flex: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); cursor: pointer }
+.axp-mq__why { display: block; white-space: normal; overflow-wrap: anywhere }
