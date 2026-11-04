@@ -1574,6 +1574,18 @@
    "from": "detail",
    "addenda": []
   },
+  "settings-placement-everywhere": {
+   "said": "\"Set the settings interface for Molly to open in a dialog.\" ... \"I should be able to select in every screen where its settings pops up.\" Addendum 1: \"Every settings interface should have a setting to declare where it pops up.\"",
+   "at": "2026-11-04T00:00:00.000Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "share-search": {
    "said": "make a plugin with a toolbar of programmable actions for filtering, sorting and searching grids. Toolbar name: Share Search. HELD: Brett said 'send to orchestrator and hold off on build' — don't start until he says.",
    "at": "2026-10-28",
