@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 978,
- "updatedAt": "2026-11-04T21:38:44.736Z",
+ "rev": 979,
+ "updatedAt": "2026-11-04T21:40:38.678Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -83218,14 +83218,14 @@
    "title": "Molly's banner = the console's banner asset; embedded apps hide their own",
    "category": "Molly",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-banner-match-r2",
    "pr": "#341",
    "createdAt": "2026-11-04T17:18:47.970Z",
-   "updatedAt": "2026-11-04T21:27:23.826Z",
+   "updatedAt": "2026-11-04T21:28:28.569Z",
    "builtAt": "",
    "notes": [
     {
@@ -83247,6 +83247,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-04T21:27:23.826Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-04T21:28:28.569Z"
     }
    ],
    "approvals": [],
@@ -83383,7 +83387,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
