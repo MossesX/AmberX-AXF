@@ -44,6 +44,7 @@ INSTRUCTIONS = """AmberX AXF framework — plan, build queue, libraries and proj
 Every Claude session calls `claude_session_start` first (when the Claude sessions plugin is on) and works as the crew agent
 it answers; `claude_session_agent` says when Brett picks another, `claude_session_book` books the work on that agent's card.
 At session start and before acting, read Claude settings (`claude_settings_get`) and follow them.
+When Brett asks where something he asked for is, look it up with `request_get` (his words, status, place in line, PR).
 Start with `overview`, then `build_next` to see what to build next and which model should build it.
 Before starting any build, check `pending_list`: builds parked until their model (usually Fable) is available.
 Builds over 30 minutes are split into steps of 30 minutes or less: `pending_steps` / `build_queue` list them, and you tick
@@ -562,6 +563,10 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
 
     _register_claude_settings_tools(mcp)
 
+    # ------------------------------------------------------------------ requests ledger (Build Breaker plugin, request@1)
+
+    _register_requests_tools(mcp)
+
     # ------------------------------------------------------------------ session mirror (Terminal → sessions nav)
 
     if notes is not None:
@@ -660,6 +665,83 @@ def _register_claude_settings_tools(mcp: MCPServer) -> None:
         if not pairs:
             raise ToolError("invalid: send values as {key: value}")
         return await go("set", *pairs, "--by", by or "mcp")
+
+
+# ---------------------------------------------------------------------- requests ledger (request@1, Build Breaker plugin)
+
+REQUESTS_CLI = Path(__file__).resolve().parents[1] / "plugins" / "build-breaker" / "requests.mjs"  # axf-plugin:build-breaker
+REQUEST_TOOLS = ("requests_list", "request_get", "request_update", "request_link")
+
+
+def _requests(*args: str) -> dict[str, Any]:
+    """One requests.mjs command (the same CLI the console page and the REST routes use)."""
+    if not REQUESTS_CLI.exists():
+        return {"ok": False, "error": "the Build Breaker plugin (requests ledger) is not installed"}
+    try:
+        p = subprocess.run(["node", str(REQUESTS_CLI), *args, "--json"], cwd=REQUESTS_CLI.parents[4], capture_output=True, text=True, timeout=60)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        return {"ok": False, "error": str(e)[:200]}
+    lines = p.stdout.strip().splitlines()
+    try:
+        return json.loads(lines[-1]) if lines else {"ok": False, "error": p.stderr.strip()[-400:] or "no output"}
+    except json.JSONDecodeError:
+        return {"ok": False, "error": (p.stderr or p.stdout).strip()[-400:]}
+
+
+def _slim(r: dict[str, Any]) -> dict[str, Any]:
+    keys = ("id", "kind", "title", "status", "said", "at", "source", "agent", "pr", "queue", "slot", "steps", "costUsd", "profile", "supersededBy", "parent", "updatedAt")
+    return {k: r[k] for k in keys if r.get(k) not in (None, "", [])}
+
+
+def _register_requests_tools(mcp: MCPServer) -> None:
+    async def go(*args: str) -> dict[str, Any]:
+        r = await anyio.to_thread.run_sync(lambda: _requests(*args))
+        if not r.get("ok"):
+            raise ToolError(f"invalid: {r.get('error', 'failed')}")
+        r.pop("ok", None)
+        return r
+
+    @mcp.tool(annotations=READ)
+    async def requests_list(open_only: bool = True, status: str = "", kind: str = "", q: str = "", limit: int = 30, sort: str = "updated") -> dict[str, Any]:
+        """Every single thing Brett asked for (request@1): builds, addenda, plans, bugs, follow-ups, settings and crew
+        changes, each with his exact words, status (idea, planned, queued, running, paused, built = awaiting merge,
+        merged, live, dropped, superseded), place in line, agent, PR and cost. Filters: status / kind (comma lists),
+        q = words; sort newest | updated | queue | status | cost."""
+        args = ["list", "--limit", str(max(1, min(limit, 300))), "--sort", sort or "updated"]
+        if open_only:
+            args.append("--open")
+        for flag, v in (("--status", status), ("--kind", kind), ("--q", q)):
+            if v:
+                args += [flag, v]
+        r = await go(*args)
+        return {"count": r.get("count", 0), "requests": [_slim(x) for x in r.get("requests", [])]}
+
+    @mcp.tool(annotations=READ)
+    async def request_get(id_or_words: str) -> dict[str, Any]:
+        """One request with everything known about it: his verbatim words, when and where he said it, where it lives
+        now (build + next step, plan, bug, memory file), status, queue position, running slot, agent, PR, cost so far,
+        history and family (parent, addenda, what superseded it). Takes a request id, a build id or a few words: use it
+        to answer "where's that thing I asked for"."""
+        return await go("get", *id_or_words.split())
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def request_update(id: str, status: str = "", title: str = "", agent: str = "", superseded_by: str = "", note: str = "", by: str = "") -> dict[str, Any]:  # noqa: A002
+        """Change a request in the ledger: status (dropped / live / superseded stick; live progress of a build always
+        wins otherwise), title, agent, superseded_by (the request that replaced it, e.g. his reversal), or add a note."""
+        args = ["update", id]
+        for flag, v in (("--status", status), ("--title", title), ("--agent", agent), ("--superseded-by", superseded_by), ("--note", note)):
+            if v:
+                args += [flag, v]
+        return await go(*args, "--by", by or "mcp")
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def request_link(id: str, kind: str, ref: str, label: str = "", by: str = "") -> dict[str, Any]:  # noqa: A002
+        """Link a request to where it lives now: kind build | step | bug | plan | follow-up | memory | thread | pr and
+        its ref (a build id, "build#s3", a bug id, a plan id, a file)."""
+        args = ["link", id, kind, ref, "--by", by or "mcp"]
+        if label:
+            args += ["--label", label]
+        return await go(*args)
 
 
 # ---------------------------------------------------------------------- control@1 tools (framework/spec/CONTROL.md)

@@ -5,10 +5,13 @@ import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import { registerRowRefTarget, rowHooks, useDataset, useDatasetsRevision } from '@console/axf/libs/datagrid';
 import * as bb from './bb-core.mjs';
 import type { Ask, Doc, Section } from './bb-core.mjs';
+import { LedgerView, useRequests } from './ledger';
 import './build-breaker.css';
 
 /*
- * Build Breaker page (build-asks@1): everything Brett asked for, one line per ask. Tabs All · Apps · Plugins · Timeline;
+ * Build Breaker page: everything Brett asked for. The Requests tab (the default) is the requests ledger (request@1,
+ * ledger.tsx): every single ask, live, one line each, opening into his words and everything linked to it. The other
+ * tabs are the older build-asks@1 list, one line per ask: Asks · Apps · Plugins · Timeline;
  * a collapsible container of per-app grids and one of per-plugin grids (All shows each ask once: plugin asks sit under
  * Plugins), and a flat timeline. A row opens to the plain description, his own words, sources, branch / PR links and
  * the row hooks of the build it stands for (grid-hook@1: the feature matrix, when that plugin is on).
@@ -20,7 +23,7 @@ export const ASK_TARGET = 'axp-build-breaker-ask';
 export const KEYS = { tab: 'build-breaker.tab', sort: 'build-breaker.sort', range: 'build-breaker.range' } as const;
 const api = pluginApi(FOLDER, 'Build Breaker', { unavailable: 'Build Breaker is switched off or its server part is not running.' });
 
-type Tab = 'all' | 'apps' | 'plugins' | 'timeline';
+type Tab = 'requests' | 'all' | 'apps' | 'plugins' | 'timeline';
 type Res = { ok: boolean; error?: string; doc?: Doc; files?: { seed: string; mirror: string; mirrorFound: boolean } };
 
 /** Asks by id, for the right-click → row hooks lookup (the grids draw rows that aren't a DataGrid). */
@@ -46,7 +49,8 @@ export function OpenBreakerButton() {
 export function BuildBreakerPage() {
   const rt = useRuntime();
   const [res, setRes] = useState<Res | null>(null);
-  const [tab, setTab] = useState<Tab>(() => setting(rt, KEYS.tab, 'all') as Tab);
+  const [tab, setTab] = useState<Tab>(() => setting(rt, KEYS.tab, 'requests') as Tab);
+  const ledger = useRequests();
   const [q, setQ] = useState('');
   const [statuses, setStatuses] = useState<string[]>([]);
   const [model, setModel] = useState('any');
@@ -61,7 +65,7 @@ export function BuildBreakerPage() {
     try { const r = await api.call<Res>('asks'); if (!r.ok || !r.doc) throw new Error(r.error || 'no data'); setRes(r); }
     catch (e) { setRes({ ok: false, error: (e as Error).message }); }
   };
-  useEffect(() => { void load(); }, []);
+  useEffect(() => { if (tab !== 'requests' && !res) void load(); }, [tab]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const doc = res?.doc;
   const all = useMemo(() => doc?.asks ?? [], [doc]);
@@ -80,8 +84,18 @@ export function BuildBreakerPage() {
   const tAll = useMemo(() => bb.totals(all), [all]);
   const filtering = !!(q || statuses.length || model !== 'any' || range !== 'all' || attached !== all);
 
-  if (!res) return <div className="fx-stack axp-build-breaker"><Head /><LoadingSkeleton rows={8} label="Loading every ask" /></div>;
-  if (!doc) return <div className="fx-stack axp-build-breaker"><Head /><EmptyState icon="alert" action={{ label: 'Try again', icon: 'refresh', onClick: () => { setRes(null); void load(); } }}>{res.error || 'The asks could not be read.'}</EmptyState></div>;
+  const tabBar = (n: Partial<Record<Tab, number>>) => (
+    <div className="fx-tabs axp-build-breaker__tabs" role="tablist" aria-label="View">
+      {TAB_DEFS.map((x) => (
+        <button key={x.id} type="button" role="tab" aria-selected={tab === x.id} className={`fx-tab${tab === x.id ? ' is-active' : ''}`} onClick={() => setTab(x.id)}>
+          <Icon name={x.icon} size={12} />{x.label}{n[x.id] != null ? <span className="axp-build-breaker__n">{n[x.id]}</span> : null}
+        </button>
+      ))}
+    </div>
+  );
+  if (tab === 'requests') return <div className="fx-stack axp-build-breaker"><Head />{tabBar({ requests: ledger.res?.summary?.open })}<LedgerView /></div>;
+  if (!res) return <div className="fx-stack axp-build-breaker"><Head />{tabBar({})}<LoadingSkeleton rows={8} label="Loading every ask" /></div>;
+  if (!doc) return <div className="fx-stack axp-build-breaker"><Head />{tabBar({})}<EmptyState icon="alert" action={{ label: 'Try again', icon: 'refresh', onClick: () => { setRes(null); void load(); } }}>{res.error || 'The asks could not be read.'}</EmptyState></div>;
 
   const apps = bb.sections(doc, tab === 'all' ? shown.filter((a) => !a.plugin) : shown, 'app');
   const plugins = bb.sections(doc, shown, 'plugin');
@@ -95,23 +109,13 @@ export function BuildBreakerPage() {
   const statusList = bb.STATUSES.filter((s) => (tAll.statuses[s.id] ?? 0) > 0 || statuses.includes(s.id));
   const models = bb.MODELS.filter((m) => tAll.models[m]);
   const rowProps = { openRows, toggleRow, group };
-  const TABS: { id: Tab; label: string; icon: string; n: number }[] = [
-    { id: 'all', label: 'All', icon: 'list', n: shown.length }, { id: 'apps', label: 'Apps', icon: 'grid', n: apps.length },
-    { id: 'plugins', label: 'Plugins', icon: 'package', n: plugins.length }, { id: 'timeline', label: 'Timeline', icon: 'clock', n: shown.length },
-  ];
 
   return (
     <div className="fx-stack axp-build-breaker">
       <Head doc={doc} />
       <TotalsStrip t={t} filtered={filtering} of={all.length} />
       <div className="axp-build-breaker__bar">
-        <div className="fx-tabs axp-build-breaker__tabs" role="tablist" aria-label="View">
-          {TABS.map((x) => (
-            <button key={x.id} type="button" role="tab" aria-selected={tab === x.id} className={`fx-tab${tab === x.id ? ' is-active' : ''}`} onClick={() => setTab(x.id)}>
-              <Icon name={x.icon} size={12} />{x.label}<span className="axp-build-breaker__n">{x.n}</span>
-            </button>
-          ))}
-        </div>
+        {tabBar({ requests: ledger.res?.summary?.open, all: shown.length, apps: apps.length, plugins: plugins.length, timeline: shown.length })}
         <div className="axp-build-breaker__tools" role="toolbar" aria-label="Filter and sort">
           <label className="fx-search axp-build-breaker__search">
             <Icon name="search" size={13} />
@@ -169,6 +173,11 @@ export function BuildBreakerPage() {
   );
 }
 
+const TAB_DEFS: { id: Tab; label: string; icon: string }[] = [
+  { id: 'requests', label: 'Requests', icon: 'mic' }, { id: 'all', label: 'Asks', icon: 'list' }, { id: 'apps', label: 'Apps', icon: 'grid' },
+  { id: 'plugins', label: 'Plugins', icon: 'package' }, { id: 'timeline', label: 'Timeline', icon: 'clock' },
+];
+
 function Head({ doc }: { doc?: Doc }) {
   const d = doc?.generatedAt ? new Date(doc.generatedAt) : null;
   return (
@@ -176,7 +185,7 @@ function Head({ doc }: { doc?: Doc }) {
       <div>
         <p className="fx-eyebrow">Builds{d && !Number.isNaN(d.getTime()) ? ` · gathered ${fmtDay(d)}` : ''}</p>
         <h1>Build Breaker</h1>
-        <p className="fx-muted axp-build-breaker__lede" title="Everything you've asked for, in plain English: what it is, when you asked, where it stands and what it cost.">Everything you've asked for, one line each.</p>
+        <p className="fx-muted axp-build-breaker__lede" title="Every single thing you've asked for: your exact words, where it is in line, its status, its agent, PR and cost.">Everything you've asked for, one line each. Tap one for all of it.</p>
       </div>
     </header>
   );

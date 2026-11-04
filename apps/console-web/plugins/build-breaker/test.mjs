@@ -4,10 +4,11 @@
 // something that exists.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { copyFileSync, mkdtempSync, readFileSync, readdirSync, existsSync } from 'node:fs';
+import { copyFileSync, mkdtempSync, readFileSync, readdirSync, existsSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import * as bb from './web/bb-core.mjs';
+import * as rq from './web/requests-core.mjs';
 
 let n = 0; const t = (name, fn) => { try { fn(); n += 1; } catch (e) { console.error(`FAIL ${name}`); throw e; } };
 const here = new URL('.', import.meta.url).pathname;
@@ -22,7 +23,7 @@ t('plugin@1 manifest, lifecycle, model, menus', () => {
   const man = JSON.parse(readFileSync(join(here, 'plugin.json'), 'utf8'));
   assert.equal(man.id, 'ai.amberx.axf.console.build-breaker');
   assert.equal(man.lifecycle.$axf, 'plugin-lifecycle@1'); assert.equal(man.lifecycle.dataDir, '.axf-console/plugins/build-breaker');
-  assert.deepEqual(man.builtWith, { model: 'opus', builtAt: '2026-10-29' });
+  assert.deepEqual(man.builtWith, { model: 'opus', builtAt: '2026-11-04' });
   assert.equal(man.tabable.view, 'build-breaker');
   for (const f of ['install.mjs', 'uninstall.mjs', 'hooks.mjs', 'asks.mjs']) assert.ok(existsSync(join(here, f)), f);
   const web = readFileSync(join(here, 'web/index.tsx'), 'utf8');
@@ -140,6 +141,109 @@ t('asks.mjs add | set-status | list | check on scratch copies; the repo seed is 
   const bad = (() => { try { execFileSync('node', [join(here, 'asks.mjs'), 'add', '--title', 'x', '--app', 'nope', '--json'], { env, encoding: 'utf8', stdio: 'pipe' }); return null; } catch (e) { return JSON.parse(String(e.stdout).trim()); } })();
   assert.equal(bad?.ok, false); assert.match(bad.error, /unknown app/);
   assert.equal(readFileSync(SEED, 'utf8'), seedText);
+});
+
+// ---- the requests ledger (request@1): every source, dedupe, reversals, queue, history, CLI
+const RQ_NOW = '2026-11-04T12:00:00.000Z';
+const store = [
+  { id: 'alpha', title: 'Alpha build', status: 'running', profiles: ['current'], order: { current: 2 }, createdAt: '2026-11-03T10:00:00Z', branch: 'claude/alpha', pr: '#301', // theme-ok: a PR number, not a colour
+    origin: { said: 'Build me the alpha thing with every bell and whistle', source: 'voice', at: '2026-11-03T10:00:00Z', addenda: [{ said: 'Also make it blue please, wicked blue', at: '2026-11-03T11:00:00Z', source: 'voice' }] },
+    notes: [{ text: 'Assigned: Ping Paulie', at: '2026-11-03T10:01:00Z' }], steps: [{ id: 's1', text: 'Do one', model: 'Opus', done: true, doneAt: '2026-11-03T12:00:00Z' }, { id: 's2', text: 'Do two', model: 'Opus' }] },
+  { id: 'beta', title: 'Beta build', status: 'pending', profiles: ['current'], order: { current: 1 }, createdAt: '2026-11-03T09:00:00Z', origin: { said: '' }, steps: [] },
+  { id: 'gamma', title: 'Gamma build', status: 'complete', profiles: ['current'], order: { current: 3 }, createdAt: '2026-11-02T09:00:00Z', mergedAt: '2026-11-02T20:00:00Z', origin: { said: 'Gamma please' }, steps: [] },
+];
+const brief = '# Build: beta (Current profile) - the beta\n\n## What Brett said (verbatim, Nov 4 2026, voice)\n"I want beta lists, separate ones, not filters."\n\n## ADDENDUM 1 (Brett, voice) - OVERRIDES the above\nBrett: "Actually, no, never mind. Leave it as filters."\n';
+const memo = '## Nov 3 2026 - queued after the feature freeze\n- **Detach settings** (Brett, voice: "I want to be able to detach settings interfaces."): pop out.\n- **Main tabs** (Brett, voice: "Give the main viewing area a tab group."): tabs.\n\n## Name it Patches (Brett, Nov 3 2026, voice)\nBrett said (verbatim): "From now on, AXHub is going to be referenced by patches."\n\n## Update 2 (Brett, Nov 3 2026, voice) - SUPERSEDES the section above\n- axHub stays **axHub**. ("I ain\'t gonna risk breaking it.")\n';
+const src = {
+  builds: store, roster: [{ id: 'paulie', name: 'Ping Paulie' }],
+  slots: { running: [{ name: 'alpha', session: 'axf-alpha--paulie', startedAt: '2026-11-04T11:00:00Z' }], queue: [{ name: 'beta', state: 'waiting', position: 1 }] },
+  costs: [{ buildRef: { kind: 'orchestrator', id: 'alpha' }, actual: { costUsd: 4.5 } }, { buildRef: { kind: 'orchestrator', id: 'alpha' }, estimate: { costUsd: 2 } }],
+  briefs: [{ folder: 'beta', text: brief }], plans: [{ id: 'clipx', title: 'ClipX', status: 'parked', createdAt: '2026-10-30T18:00:00Z' }],
+  bugs: [{ id: 'bug-1', title: 'Rows do not open', said: 'The rows do not open when I tap them', status: 'open', createdAt: '2026-11-04T08:00:00Z' }],
+  memory: [{ file: 'follow-ups.md', text: memo, kind: 'follow-up' }],
+  threads: rq.parseThreads('| Thread | State |\n| Gamma (Current `gamma`, Opus; Brett Nov 2 voice: "Gamma please"): done | done |\n| Watch it (Current `watch-it`; Brett Nov 3 voice: "Let me watch it live"): x | working |'),
+  asks: [{ id: 'old-one', title: 'Old ask', quote: 'An old thing I asked for long ago', askedAt: '2026-10-20T10:00:00Z', status: 'built', sources: ['chat:x'] }, { id: 'alpha-ask', title: 'Alpha', quote: '', askedAt: '2026-11-03T10:00:00Z', status: 'in-progress', sources: ['orchestrator:alpha'] }],
+};
+const reqs = rq.assemble(src, rq.emptyLedger(), RQ_NOW);
+const R = (id) => reqs.find((r) => r.id === id);
+t('request@1: builds, addenda, briefs, plans, bugs, memory, threads and old asks all become requests', () => {
+  for (const id of ['build:alpha', 'build:alpha:addendum-1', 'build:beta', 'build:beta:brief-addendum-1', 'build:gamma', 'plan:clipx', 'bug:bug-1', 'ask:old-one', 'thread:watch-it']) assert.ok(R(id), id);
+  for (const r of reqs) { assert.equal(r.$axf, 'request@1'); assert.ok(rq.KIND_IDS.includes(r.kind), r.id); assert.ok(rq.STATUSES.some((s) => s.id === r.status), `${r.id} ${r.status}`); }
+  assert.ok(!R('ask:alpha-ask'), 'an old ask naming a build joins that build');
+  assert.ok(R('build:alpha').where.some((w) => w.kind === 'ask' && w.id === 'alpha-ask'));
+  assert.equal(reqs.filter((r) => r.kind === 'follow-up' && r.id.startsWith('memory:follow-ups:')).length, 4);
+});
+t('verbatim words, where it lives, queue, slot, agent, PR, cost, steps', () => {
+  const a = R('build:alpha');
+  assert.equal(a.said, 'Build me the alpha thing with every bell and whistle'); assert.equal(a.verbatim, true); assert.equal(a.source, 'voice');
+  assert.equal(a.status, 'running'); assert.deepEqual(a.queue, { list: 'current', position: 2, of: 2 }); assert.equal(a.slot.state, 'running');
+  assert.equal(a.agent, 'Ping Paulie'); assert.equal(a.agentId, 'paulie'); assert.equal(a.pr, '#301'); assert.equal(a.costUsd, 6.5); assert.equal(a.costEstimated, true); // theme-ok: a PR number, not a colour
+  assert.deepEqual([a.steps.done, a.steps.total, a.steps.next], [1, 2, 's2']);
+  assert.ok(a.where.some((w) => w.kind === 'step' && w.id === 'alpha#s2'));
+  const ad = R('build:alpha:addendum-1'); assert.equal(ad.kind, 'addendum'); assert.equal(ad.parent, 'build:alpha'); assert.equal(ad.said, 'Also make it blue please, wicked blue');
+  const b = R('build:beta'); assert.equal(b.said, 'I want beta lists, separate ones, not filters.', 'brief words fill a build without them');
+  assert.equal(b.queue.position, 1); assert.equal(b.slot.state, 'waiting');
+  assert.equal(R('build:gamma').status, 'merged'); assert.equal(R('build:gamma').queue, null);
+  assert.equal(R('plan:clipx').status, 'idea'); assert.equal(R('bug:bug-1').status, 'queued'); assert.equal(R('ask:old-one').status, 'merged');
+});
+t('reversals: "never mind" reverses the ask; SUPERSEDES marks the earlier memory ask superseded', () => {
+  assert.equal(R('build:beta').reversedBy, 'build:beta:brief-addendum-1');
+  const sup = reqs.find((r) => r.id.startsWith('memory:follow-ups:name-it-patches'));
+  assert.equal(sup.status, 'superseded'); assert.ok(sup.supersededBy.startsWith('memory:follow-ups:axhub-stays'));
+  assert.ok(R(sup.supersededBy).supersedes.includes(sup.id));
+  const p = rq.parseBrief('# Build: x\n\n## Addendum 1 (Brett, voice) - overrides s2\n"Use Opus for s2"\n', 'x');
+  assert.equal(p.addenda[0].reverses, false); assert.equal(p.addenda[0].overrides, true);
+});
+t('dedupe: the same words in two places are one request', () => {
+  const dup = rq.assemble({ ...src, memory: [{ file: 'f.md', text: '## Ask (Brett, Nov 3 2026, voice)\nBrett said (verbatim): "Build me the alpha thing with every bell and whistle"\n', kind: 'follow-up' }] }, rq.emptyLedger(), RQ_NOW);
+  assert.equal(dup.filter((r) => rq.sameText(r.said) === rq.sameText('Build me the alpha thing with every bell and whistle')).length, 1);
+  assert.ok(dup.find((r) => r.id === 'build:alpha').where.some((w) => w.kind === 'memory'));
+});
+t('ledger: captured requests, sticky drops, links, notes; live progress beats a stale manual status', () => {
+  const { id, record } = rq.captureRecord({ said: 'Turn the banner purple', kind: 'setting', source: 'voice', by: 'Amber' }, RQ_NOW);
+  let L = rq.patchLedger(rq.emptyLedger(), id, record, { by: 'Amber', now: RQ_NOW });
+  L = rq.patchLedger(L, 'build:gamma', { status: 'live' }, { now: RQ_NOW });
+  L = rq.patchLedger(L, 'build:alpha', { status: 'queued', link: { kind: 'bug', id: 'bug-1' }, note: 'watch the colours' }, { now: RQ_NOW });
+  const out = rq.assemble(src, L, RQ_NOW);
+  const c = out.find((r) => r.id === id); assert.equal(c.kind, 'setting'); assert.equal(c.said, 'Turn the banner purple'); assert.equal(c.capturedBy, 'Amber'); assert.equal(c.status, 'queued');
+  assert.equal(out.find((r) => r.id === 'build:gamma').status, 'live');
+  const a = out.find((r) => r.id === 'build:alpha'); assert.equal(a.status, 'running'); assert.ok(a.where.some((w) => w.kind === 'bug')); assert.equal(a.notes[0].text, 'watch the colours');
+  assert.throws(() => rq.captureRecord({}), /words/);
+});
+t('history: status and place-in-line changes are recorded once', () => {
+  let { ledger } = rq.recordChanges(reqs, rq.emptyLedger(), RQ_NOW);
+  const moved = rq.assemble({ ...src, builds: store.map((b) => (b.id === 'beta' ? { ...b, status: 'built' } : b)) }, ledger, RQ_NOW);
+  const r2 = rq.recordChanges(moved, ledger, '2026-11-04T13:00:00Z');
+  assert.ok(r2.changed.includes('build:beta'));
+  assert.ok(r2.ledger.records['build:beta'].history.some((h) => /Queued → Built/.test(h.text)));
+  assert.deepEqual(rq.recordChanges(moved, r2.ledger, '2026-11-04T14:00:00Z').changed, []);
+});
+t('filters, sort, group, summary, fingerprint', () => {
+  assert.ok(rq.filterRequests(reqs, { open: true }).every(rq.isOpen));
+  assert.deepEqual(rq.filterRequests(reqs, { kinds: ['bug'] }).map((r) => r.id), ['bug:bug-1']);
+  assert.equal(rq.filterRequests(reqs, { q: 'wicked blue' })[0].id, 'build:alpha:addendum-1');
+  assert.equal(rq.sortRequests(reqs.filter((r) => r.queue && r.kind === 'build'), 'queue')[0].id, 'build:alpha', 'running first');
+  assert.ok(rq.groupRequests(reqs, 'build').some((g) => g.id === 'alpha' && g.items.length >= 2));
+  const s = rq.summarize(reqs); assert.equal(s.total, reqs.length); assert.ok(s.open > 0 && s.running >= 1);
+  assert.notEqual(rq.fingerprint(reqs), rq.fingerprint(reqs.map((r) => (r.id === 'build:beta' ? { ...r, status: 'built' } : r))));
+  assert.equal(rq.age('2026-11-04T11:00:00Z', Date.parse(RQ_NOW)), '1h');
+});
+t('requests.mjs list | get | add | update | link | capture | summary on scratch files', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'rq-'));
+  writeFileSync(join(dir, 'store.json'), JSON.stringify({ builds: Object.fromEntries(store.map((b) => [b.id, b])) }));
+  const env = { ...process.env, AXF_REQUESTS_STORE: join(dir, 'store.json'), AXF_REQUESTS_LEDGER: join(dir, 'ledger.json'), AXF_REQUESTS_NO_HUB: '1', AXF_REQUESTS_BUILDS_DIR: '', AXF_REQUESTS_CHANGES: '', AXF_REQUESTS_BUGS: '', AXF_REQUESTS_THREADS: '', AXF_REQUESTS_MEMORY: '', AXF_REQUESTS_PLANS: '', AXF_REQUESTS_SLOTS: '', AXF_REQUESTS_ASKS: '' };
+  const cli = (...a) => JSON.parse(execFileSync('node', [join(here, 'requests.mjs'), ...a, '--json'], { env, encoding: 'utf8' }).trim().split('\n').pop());
+  assert.equal(cli('list').count, 4);
+  assert.equal(cli('get', 'bell', 'whistle').request.id, 'build:alpha');
+  const add = cli('add', '--said', 'Hire a new crew member called Polo', '--kind', 'crew', '--by', 'Amber', '--source', 'voice');
+  assert.equal(add.request.kind, 'crew');
+  cli('update', add.request.id, '--status', 'dropped', '--note', 'changed my mind');
+  cli('link', 'beta', 'pr', '#999'); // theme-ok: a PR number, not a colour
+  cli('capture', '--build', 'beta', '--by', 'paulie');
+  const got = cli('get', add.request.id).request; assert.equal(got.status, 'dropped'); assert.equal(got.notes[0].text, 'changed my mind');
+  const beta = cli('get', 'beta').request; assert.ok(beta.where.some((w) => w.kind === 'pr' && w.id === '#999')); assert.ok(beta.history.some((h) => /Launched by paulie/.test(h.text))); // theme-ok: a PR number, not a colour
+  const sum = cli('summary'); assert.equal(sum.total, 5); assert.ok(sum.items.length >= 1);
+  assert.equal(cli('sync').summary.total, 5);
 });
 
 // ---- the Build context submenu only lists things that exist

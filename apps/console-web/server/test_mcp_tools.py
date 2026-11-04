@@ -86,6 +86,30 @@ with tempfile.TemporaryDirectory() as tmp:
     ok("false" in json.dumps(asyncio.run(server.call_tool("claude_settings_get", {"key": "noWait.enabled"})), default=str).lower(), "No wait stays off")
     del os.environ["AXF_CLAUDE_SETTINGS_FILE"], os.environ["AXF_CLAUDE_SETTINGS_DATA"]
 
+# requests ledger (build requests-ledger): reads run without a veto; update / link write; get answers "where's that thing"
+for name in mcp_server.REQUEST_TOOLS:
+    ok(name in tools, f"{name} exists")
+ok(tools["requests_list"].annotations.read_only_hint is True and tools["request_get"].annotations.read_only_hint is True, "requests_list / request_get read")
+ok(tools["request_update"].annotations.read_only_hint is not True and tools["request_link"].annotations.read_only_hint is not True, "request_update / request_link write")
+with tempfile.TemporaryDirectory() as tmp:
+    store = {"builds": {"demo-build": {"id": "demo-build", "title": "Demo build", "status": "pending", "profiles": ["current"], "order": {"current": 1}, "createdAt": "2026-11-04T10:00:00Z",
+                                       "origin": {"said": "Make me a demo build that shows everything", "source": "voice", "at": "2026-11-04T10:00:00Z", "addenda": []}, "steps": [{"id": "s1", "text": "Do it", "model": "Opus"}]}}}
+    Path(tmp, "store.json").write_text(json.dumps(store))
+    env = {"AXF_REQUESTS_STORE": f"{tmp}/store.json", "AXF_REQUESTS_LEDGER": f"{tmp}/ledger.json", "AXF_REQUESTS_NO_HUB": "1"}
+    env.update({k: "" for k in ("AXF_REQUESTS_BUILDS_DIR", "AXF_REQUESTS_CHANGES", "AXF_REQUESTS_BUGS", "AXF_REQUESTS_THREADS", "AXF_REQUESTS_MEMORY", "AXF_REQUESTS_PLANS", "AXF_REQUESTS_SLOTS", "AXF_REQUESTS_ASKS")})
+    os.environ.update(env)
+    text = json.dumps(asyncio.run(server.call_tool("requests_list", {})), default=str)
+    ok("build:demo-build" in text and "queued" in text, "requests_list lists the build, queued")
+    text = json.dumps(asyncio.run(server.call_tool("request_get", {"id_or_words": "demo build everything"})), default=str)
+    ok("Make me a demo build" in text and re.search(r'position\\*"?:\s*1', text) is not None, "request_get finds it by words: his words + place in line")
+    asyncio.run(server.call_tool("request_link", {"id": "demo-build", "kind": "bug", "ref": "bug-7"}))
+    asyncio.run(server.call_tool("request_update", {"id": "build:demo-build", "status": "dropped", "note": "not needed"}))
+    text = json.dumps(asyncio.run(server.call_tool("request_get", {"id_or_words": "demo-build"})), default=str)
+    ok("dropped" in text and "bug-7" in text and "not needed" in text, "update + link stick in the ledger")
+    for k in env:
+        del os.environ[k]
+ok("request_get" in mcp_server.INSTRUCTIONS, "the server instructions point sessions at request_get")
+
 # sessions nav (terminal-sessions-nav): console_session_note posts into the caller's mirror feed; every call is recorded
 notes: list[dict] = []
 calls: list[tuple] = []

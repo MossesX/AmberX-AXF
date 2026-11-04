@@ -89,3 +89,14 @@
 .axp-build-breaker__bar { gap: var(--fx-dens-gap-sm); }
 .axp-build-breaker__tools { gap: var(--fx-dens-gap-sm); }
 :where([data-fx-small]) .axp-build-breaker .axp-build-breaker__search { flex-basis: 100%; }
+
+/* Requests ledger (request@1): one line = kind icon + title · status · place in line · agent · age; tap opens the full row */
+.axp-build-breaker__ledger { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0; }
+.axp-build-breaker__rqrow { grid-template-columns: minmax(0, 1fr) auto calc(var(--fx-font-size) * 2.4) auto calc(var(--fx-font-size) * 2.4); }
+@container axp-bb (min-width: 560px) { .axp-build-breaker__rqrow { grid-template-columns: minmax(0, 1fr) auto calc(var(--fx-font-size) * 2.6) calc(var(--fx-font-size) * 1.8) calc(var(--fx-font-size) * 3); } }
+@container axp-bb (min-width: 820px) { .axp-build-breaker__rqrow { grid-template-columns: minmax(0, 1fr) calc(var(--fx-font-size) * 12) calc(var(--fx-font-size) * 3) calc(var(--fx-font-size) * 2) calc(var(--fx-font-size) * 3.2); } }
+.axp-build-breaker__qpos { font-variant-numeric: tabular-nums; color: var(--fx-muted); font-size: var(--axp-bb-xs); text-align: end; white-space: nowrap; }
+.axp-build-breaker__agent { display: inline-flex; justify-content: center; min-width: 0; }
+.axp-build-breaker__req.is-changed { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); transition: background var(--fx-motion); }
+.axp-build-breaker__history { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); font-size: var(--axp-bb-xs); }
+.axp-build-breaker__req .axp-build-breaker__quote p { white-space: pre-wrap; }
