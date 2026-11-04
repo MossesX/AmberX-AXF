@@ -87,3 +87,10 @@ Live sessions). They aren't `<table>`s, so nothing counts them. Spotting them ne
 
 - Saved per app per device (browser storage). There's no per-user key on a shared browser.
 - Two grids with the same id on one screen (swarm plan waves) share one saved choice. That's intended.
+
+## Screenshots
+
+None. The console bundle built (`vite build`, 20 s), but under the headless harness (static server, `/api/me` and the
+axHub look mocked) it stayed on a blank page, so there were no desktop/phone shots to send to UI Review. That's
+non-blocking for this build. Take them from the live console after redeploy: right-click a header in Builds →
+Changes & features.
