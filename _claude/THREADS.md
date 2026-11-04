@@ -684,7 +684,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:17 UTC · `console-wake-finish` added (5 steps) (current) · foreign-write
 - 2026-11-04 14:17 UTC · `profile-lists-home-card` added (4 steps) (current) · foreign-write
 - 2026-11-04 14:16 UTC · `console-wake-finish` s1 done, → running (current) · orchestrator
 - 2026-11-04 14:17 UTC · `console-wake-finish` s3 done (current) · orchestrator
@@ -1084,6 +1083,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 18:33 UTC · `build-todo-sync` branch claude/brett-todo-sync, PR #333 (current) · builds-live
 - 2026-11-04 18:37 UTC · `build-todo-sync` s6 done (current) · build-todo-sync (Snap Sully)
 - 2026-11-04 18:37 UTC · `build-todo-sync` note (current) · build-todo-sync (Snap Sully)
+- 2026-11-04 18:37 UTC · `build-todo-sync` s6 done, note (current) · foreign-write
 
 ## Token passes (log)
 
