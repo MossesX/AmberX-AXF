@@ -684,7 +684,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:21 UTC · `gizmo-terminal` added (4 steps) (current) · foreign-write
 - 2026-11-04 14:21 UTC · `crew-profiles` PR #315 (current) · builds-live
 - 2026-11-04 14:22 UTC · `land-round-2` note (current) · foreign-write
 - 2026-11-04 14:22 UTC · `crew-profiles` s5 done (current) · foreign-write
@@ -1084,6 +1083,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 19:27 UTC · `amberx-live-audio` → built (angel) · orchestrator
 - 2026-11-04 19:28 UTC · `amberx-live-audio` branch claude/amberx-live-audio, PR #335 (angel) · builds-live
 - 2026-11-04 19:28 UTC · `amberx-live-audio` note (angel) · orchestrator
+- 2026-11-04 19:31 UTC · `fable-packager` added (5 steps) (current) · foreign-write
 
 ## Token passes (log)
 

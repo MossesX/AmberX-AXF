@@ -808,6 +808,18 @@
    "from": "",
    "addenda": []
   },
+  "fable-packager": {
+   "said": "From the orchestrator, package Fable, or make a build package. You select all the things that are waiting to be built with Fable: you open up a dialog or a window to list them all, then you select them and combine them into a build, and then you either send the build to a helper or add it to your own orchestrator as its own build. So you can easily create just-Fable builds alone, prioritize them, and send them to another helper to be done immediately.",
+   "at": "2026-11-04T16:31:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "fable-review-nov3": {
    "said": "I don't want the approvals. Just put everything that needs to be on Fable on Fable. No more approvals. If it needs Fable, set it to be Fable. And what about yesterday? Was anything that needed to be Fable done with Opus?",
    "at": "2026-11-04T00:00:00Z",
