@@ -49,6 +49,9 @@ import axf_framework  # noqa: E402,F401  (framework/python on sys.path: axf_serv
 import wall  # noqa: E402  (server/wall.py: who is calling behind axHub's sign-in wall, on axf_server.wall)
 from axf_server import github, storage  # noqa: E402
 from axf_server.console_client import TokenFile  # noqa: E402
+import readcache  # noqa: E402  (server/readcache.py: one shared cache per read source + a cap on node spawns)
+
+readcache.install_spawn_guard()
 
 HERE = Path(__file__).resolve().parent
 ROOT = Path(os.environ.get("AXF_ROOT", HERE.parent.parent.parent)).resolve()
@@ -167,8 +170,53 @@ _load_state()
 # ---------------------------------------------------------------- engine bridge
 
 
+def _data_watch() -> tuple[Path, ...]:
+    """Files and folders whose change makes the engine's read ops stale (repo + hub copies of the shared data)."""
+    hub = os.environ.get("AXF_DATA_DIR") or ""
+    roots = [ROOT]
+    if hub and hub != "off":
+        roots.append(Path(hub))
+    elif not hub:
+        projects = Path(os.environ.get("AXHUB_PROJECTS_DIR") or "/projects") / "amberx-axf" / "_data"
+        if projects.is_dir():
+            roots.append(projects)
+    out: list[Path] = [ROOT / "_claude" / "builds" / "store.json", ROOT / "_claude" / "builds"]
+    for r in roots:
+        out += [r / "framework" / "plan", r / "framework" / "plan" / "profiles.json", r / "framework" / "catalog", r / "builds"]
+    return tuple(out)
+
+
+DATA_WATCH = _data_watch()
+# Read-only engine ops served from the shared cache: (seconds fresh, watch the data files?). Everything else is a
+# write and drops the cache after it runs.
+READ_OPS: dict[str, tuple[float, bool]] = {
+    "catalog": (10, True), "tracker": (10, True), "libraries": (30, True), "plan": (5, True), "pending": (5, True),
+    "build-queue": (5, True), "projects": (30, True), "project-rules": (30, True),
+    "boilerplates": (60, False), "boilerplate-items": (60, False), "modules": (60, False), "templates": (60, False),
+    "app-defaults": (60, False), "build-options": (60, False), "framework-assets": (60, False), "ported-kits": (60, False),
+    "library-templates": (60, False),
+}
+
+
+def engine_read(op: str, channel: str = "engine", **args: Any) -> dict[str, Any]:
+    """A read-only engine op through the shared cache: every client and card shares one node run per source."""
+    ttl, watch = READ_OPS[op]
+    key = f"engine:{op}:{json.dumps(args, sort_keys=True)}"
+    return readcache.cached(key, lambda: engine(op, channel, **args), ttl=ttl, watch=DATA_WATCH if watch else ())
+
+
 def engine(op: str, channel: str = "engine", **args: Any) -> dict[str, Any]:
     """Run one build-engine op through framework/cli/engine-rpc.mjs and mirror its log onto the terminal."""
+    if op not in READ_OPS:
+        readcache.invalidate("engine:")
+        try:
+            return _engine(op, channel, **args)
+        finally:
+            readcache.invalidate("engine:")
+    return _engine(op, channel, **args)
+
+
+def _engine(op: str, channel: str = "engine", **args: Any) -> dict[str, Any]:
     if not RPC.exists():
         raise HTTPException(500, f"build engine not found at {RPC} (set AXF_ROOT)")
     proc = subprocess.run(["node", str(RPC), op, json.dumps(args)], cwd=ROOT, capture_output=True, text=True, timeout=600)
@@ -254,29 +302,35 @@ def health(request: Request) -> dict[str, Any]:
     return {"ok": True, "axf": "console-api@1", "root": str(ROOT), "engine": RPC.exists(), "project": _state["project"]}
 
 
+@app.get("/api/perf", dependencies=[Depends(auth)])
+def perf() -> dict[str, Any]:
+    """Shared read cache + node spawn counters (server/readcache.py): how many reads were served without a process."""
+    return readcache.stats()
+
+
 @app.get("/api/catalog")
 def catalog() -> Any:
-    return engine("catalog")
+    return engine_read("catalog")
 
 
 @app.get("/api/tracker")
 def tracker() -> Any:
-    return engine("tracker")
+    return engine_read("tracker")
 
 
 @app.get("/api/libraries")
 def libraries() -> Any:
-    return engine("libraries")
+    return engine_read("libraries")
 
 
 @app.get("/api/boilerplates")
 def boilerplates() -> Any:
-    return engine("boilerplates")
+    return engine_read("boilerplates")
 
 
 @app.get("/api/boilerplates/items")
 def boilerplate_items() -> Any:
-    return engine("boilerplate-items")
+    return engine_read("boilerplate-items")
 
 
 BP_SHOT_TYPES = {".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp"}
@@ -317,24 +371,24 @@ def plugin_index() -> Any:
 
 @app.get("/api/modules")
 def modules() -> Any:
-    return engine("modules")
+    return engine_read("modules")
 
 
 @app.get("/api/templates")
 def templates() -> Any:
-    return engine("templates")
+    return engine_read("templates")
 
 
 @app.get("/api/app-defaults")
 def app_defaults() -> Any:
     """framework/app-defaults.json (app-defaults@1) + what the chrome can do (hideable types, widget hosts, enums): for designers."""
-    return engine("app-defaults")
+    return engine_read("app-defaults")
 
 
 @app.get("/api/build-options")
 def build_options() -> Any:
     """The build options registry (--switches): what `init` accepts as `options`."""
-    return engine("build-options")
+    return engine_read("build-options")
 
 
 @app.get("/api/framework-assets")
@@ -342,22 +396,22 @@ def framework_assets(template: str | None = None) -> Any:
     """Assets a new app can start from, per type (plus the template's extra assets): what `init` accepts as `slots`."""
     if template is not None and not _re.fullmatch(r"[a-z0-9-]{1,40}", template):
         raise HTTPException(400, "bad template id")
-    return engine("framework-assets", template=template) if template else engine("framework-assets")
+    return engine_read("framework-assets", template=template) if template else engine_read("framework-assets")
 
 
 @app.get("/api/ported-kits")
 def ported_kits() -> Any:
-    return engine("ported-kits")
+    return engine_read("ported-kits")
 
 
 @app.get("/api/library-templates")
 def library_templates() -> Any:
-    return engine("library-templates")
+    return engine_read("library-templates")
 
 
 @app.get("/api/plan")
 def plan() -> Any:
-    return engine("plan")
+    return engine_read("plan")
 
 
 @app.post("/api/plan/feature", dependencies=[Depends(auth)])
@@ -386,7 +440,7 @@ def plan_rebuild() -> Any:
 @app.get("/api/pending")
 def pending() -> Any:
     """The pending build list (framework/plan/pending.json, pending@1): builds parked until their model is available."""
-    return engine("pending")
+    return engine_read("pending")
 
 
 @app.get("/api/builds/{build_id}/origin")
@@ -418,13 +472,13 @@ async def pending_act(request: Request) -> Any:
 @app.get("/api/standards/projects")
 def standards_projects() -> Any:
     """Every project in the repo (project.manifest.json, project-manifest@1) with its validation result."""
-    return ok_or_500(engine("projects", "standards"))
+    return ok_or_500(engine_read("projects", "standards"))
 
 
 @app.get("/api/standards/rules")
 def standards_rules() -> Any:
     """The project-manifest rules in force (framework/schemas/project-rules.json, shared copy) and the framework's own."""
-    return ok_or_500(engine("project-rules", "standards"))
+    return ok_or_500(engine_read("project-rules", "standards"))
 
 
 @app.post("/api/standards/rules", dependencies=[Depends(auth)])
@@ -444,7 +498,7 @@ async def standards_validate(request: Request) -> Any:
 
 @app.get("/api/build-queue")
 def build_queue() -> Any:
-    return ok_or_500(engine("build-queue", "build"))
+    return ok_or_500(engine_read("build-queue", "build"))
 
 
 async def _body(request: Request) -> dict[str, Any]:
