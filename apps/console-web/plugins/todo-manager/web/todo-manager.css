@@ -56,8 +56,6 @@ button.axp-todo__entrymain:focus-visible { outline: calc(var(--fx-border-w) * 2)
 .axp-todo__checks .is-done { text-decoration: line-through; color: var(--fx-muted) }
 
 .axp-todo__gridwrap { overflow-x: auto; max-width: 100% }
-.axp-todo__grid { width: 100% }
-.axp-todo__grid tr.is-done td { color: var(--fx-muted) }
 button.axp-todo__cellbtn { all: unset; cursor: pointer; color: var(--fx-text) }
 button.axp-todo__cellbtn:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus) }
 

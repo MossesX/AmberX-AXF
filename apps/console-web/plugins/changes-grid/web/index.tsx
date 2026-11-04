@@ -5,13 +5,13 @@
  * plan, from the console's own route). Rows are titled with the thread / request name and its date and time; a row
  * expands to its details (a change's whole entry is fetched on first expand). Filter, search, sort. Stores nothing.
  */
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button, Chip, IconButton, ModelBadge, Segmented } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import * as api from '@console/api';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
-import { RowHookButtons } from '@console/axf/libs/datagrid';
+import { DataGrid, type GridColumn } from '@console/axf/libs/datagrid';
 import { buildRows, counts, formatWhen, statusTone, type ChangeSummary, type FeatureLike, type Row, type Show, type Sort } from './core';
 import { appMenu } from './menu';
 import './changes-grid.css';
@@ -87,6 +87,15 @@ function FeatureDetail({ f, row }: { f: Data['features'][number]; row: Row }) {
   );
 }
 
+const typeOf = (r: Row) => (r.source === 'change' ? `change · ${r.kind}` : r.kind);
+const columns: GridColumn<Row>[] = [
+  { id: 'name', label: 'Name', fixed: true, width: 'minmax(calc(var(--fx-space) * 24), 3fr)', render: (r) => <span className="axp-changes-grid__name"><strong>{r.title}</strong><span className="fx-small fx-muted axp-changes-grid__meta">{formatWhen(r.at)} · {typeOf(r)}{r.model ? ` · ${r.model}` : ''}</span></span> },
+  { id: 'at', label: 'Date and time', width: 'calc(var(--fx-space) * 18)', sortValue: (r) => r.at, render: (r) => <span className="fx-small" style={{ whiteSpace: 'nowrap' }}>{formatWhen(r.at)}</span> },
+  { id: 'type', label: 'Type', width: 'calc(var(--fx-space) * 16)', sortValue: typeOf, render: (r) => <Chip>{typeOf(r)}</Chip> },
+  { id: 'status', label: 'Status', width: 'calc(var(--fx-space) * 12)', sortValue: (r) => r.status, render: (r) => <Chip tone={statusTone(r.status)}>{r.status}</Chip> },
+  { id: 'model', label: 'Model', width: 'calc(var(--fx-space) * 12)', sortValue: (r) => r.model ?? '', render: (r) => (r.model ? <ModelBadge model={r.model} /> : <span className="fx-muted fx-small">—</span>) },
+];
+
 function GridView() {
   const [data, setData] = useState<Data | null>(null);
   const [show, setShow] = useState<Show>('all');
@@ -99,6 +108,7 @@ function GridView() {
   const rows = useMemo(() => (data ? buildRows(data.changes, data.features, { show, q, sort }) : []), [data, show, q, sort]);
   const byFeature = useMemo(() => new Map((data?.features ?? []).map((f) => [f.id, f])), [data]);
   const n = useMemo(() => counts(rows), [rows]);
+  const narrow = useMemo(() => (globalThis.matchMedia?.('(max-width: 640px)').matches ? ['at', 'type', 'model'] : []), []);
   const toggle = (k: string) => setOpen((s) => { const x = new Set(s); if (x.has(k)) x.delete(k); else x.add(k); return x; });
 
   return (
@@ -122,35 +132,12 @@ function GridView() {
       {data && !data.changesOk ? <p className="fx-small fx-muted">The changes log isn’t available (Codebase changes plugin off or its log unreachable); showing features only.</p> : null}
       {!data ? <p className="fx-empty">Loading…</p> : !rows.length ? <p className="fx-empty">Nothing matches.</p> : null}
       {rows.length ? (
-        <div className="fx-tablewrap axp-changes-grid__table"><table className="fx-table">
-          <thead><tr><th aria-label="Expand" /><th>Name</th><th className="axp-changes-grid__wide">Date and time</th><th className="axp-changes-grid__wide">Type</th><th>Status</th><th className="axp-changes-grid__wide">Model</th><th className="axp-changes-grid__wide" aria-label="Row actions" /></tr></thead>
-          <tbody>
-            {rows.slice(0, limit).map((r) => {
-              const isOpen = open.has(r.key);
-              const f = r.source === 'feature' ? byFeature.get(r.refId) : undefined;
-              const type = r.source === 'change' ? `change · ${r.kind}` : r.kind;
-              return (
-                <Fragment key={r.key}>
-                  <tr data-fx-row onClick={() => toggle(r.key)} aria-expanded={isOpen} data-fx-ctx-target={r.source === 'change' ? 'axf-change-entry' : 'axf-plan-feature'} data-fx-ctx-payload={r.refId}>
-                    <td><IconButton icon={isOpen ? 'chevron-down' : 'chevron-right'} label={isOpen ? 'Collapse' : 'Expand'} onClick={(e) => { e.stopPropagation(); toggle(r.key); }} /></td>
-                    <td className="axp-changes-grid__name"><strong>{r.title}</strong><span className="fx-small fx-muted axp-changes-grid__meta">{formatWhen(r.at)} · {type}{r.model ? ` · ${r.model}` : ''}</span></td>
-                    <td className="fx-small axp-changes-grid__wide" style={{ whiteSpace: 'nowrap' }}>{formatWhen(r.at)}</td>
-                    <td className="axp-changes-grid__wide"><Chip>{type}</Chip></td>
-                    <td><Chip tone={statusTone(r.status)}>{r.status}</Chip></td>
-                    <td className="axp-changes-grid__wide">{r.model ? <ModelBadge model={r.model} /> : <span className="fx-muted fx-small">—</span>}</td>
-                    <td className="axp-changes-grid__wide"><RowHookButtons rowRef={{ kind: r.source === 'change' ? 'change' : 'plan', id: r.refId }} /></td>
-                  </tr>
-                  {isOpen ? (
-                    <tr><td className="axp-changes-grid__wide" /><td colSpan={6} className="axp-changes-grid__detail">
-                      {r.source === 'change' ? <ChangeDetail row={r} /> : f ? <FeatureDetail f={f} row={r} /> : null}
-                      <div className="axp-changes-grid__phonehooks"><RowHookButtons rowRef={{ kind: r.source === 'change' ? 'change' : 'plan', id: r.refId }} /></div>
-                    </td></tr>
-                  ) : null}
-                </Fragment>
-              );
-            })}
-          </tbody>
-        </table></div>
+        <DataGrid<Row> id="changes-grid" label="Changes & features" compact rows={rows.slice(0, limit)} columns={columns} hidden={narrow}
+          rowId={(r) => r.key} rowLabel={(r) => r.title} rowTone={(r) => statusTone(r.status) ?? 'muted'}
+          rowCtx={(r) => ({ target: r.source === 'change' ? 'axf-change-entry' : 'axf-plan-feature', payload: r.refId })}
+          rowRef={(r) => ({ kind: r.source === 'change' ? 'change' : 'plan', id: r.refId })}
+          expanded={[...open]} onToggleExpand={toggle} onRowClick={(r) => toggle(r.key)}
+          renderDetail={(r) => { const f = r.source === 'feature' ? byFeature.get(r.refId) : undefined; return r.source === 'change' ? <ChangeDetail row={r} /> : f ? <FeatureDetail f={f} row={r} /> : null; }} />
       ) : null}
       {rows.length > limit ? <Button size="sm" onClick={() => setLimit((l) => l + 200)}>Show more ({rows.length - limit} left)</Button> : null}
     </div>

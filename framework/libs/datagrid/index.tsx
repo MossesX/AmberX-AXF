@@ -56,7 +56,10 @@ export type GridSort = { col: string; dir: 1 | -1 } | null;
 export interface DataGridProps<R> {
   id: string;
   label?: string;
-  groups: GridGroup<R>[];
+  /** rows grouped under category headers… */
+  groups?: GridGroup<R>[];
+  /** …or one flat list, no group header (a plain table) */
+  rows?: R[];
   columns: GridColumn<R>[];
   rowId: (r: R) => string;
   rowLabel?: (r: R) => string;
@@ -117,8 +120,11 @@ const flatRows = <R,>(gs: GridGroup<R>[]): R[] => gs.flatMap((g) => [...g.rows, 
 
 type Line<R> = { kind: 'group'; g: GridGroup<R>; depth: number } | { kind: 'row'; r: R; depth: number };
 
-export function DataGrid<R>(p: DataGridProps<R>) {
+export function DataGrid<R>(props: DataGridProps<R>) {
   const rt = useRuntime();
+  const flat = !!props.rows;
+  const groups = useMemo<GridGroup<R>[]>(() => (props.rows ? [{ id: '', title: '', rows: props.rows, groups: [], fixed: true }] : props.groups ?? []), [props.rows, props.groups]);
+  const p = { ...props, groups };
   const zone = p.zone ?? `axf-grid:${p.id}`;
   const drag = config.drag && p.onMove ? config.drag : false;
   const vis = useGridColumns(p.id, p.columns, p.hidden, p.onToggleColumn ? p : null);
@@ -162,8 +168,8 @@ export function DataGrid<R>(p: DataGridProps<R>) {
 
   const lines: Line<R>[] = [];
   const walk = (g: GridGroup<R>, depth: number) => {
-    if (config.groups) lines.push({ kind: 'group', g, depth });
-    if (g.collapsed && config.groups) return;
+    if (config.groups && !flat) lines.push({ kind: 'group', g, depth });
+    if (g.collapsed && config.groups && !flat) return;
     let rows = dsId ? applyDataset(dsId, g.rows) : g.rows;
     const s = config.sort ? p.sort : null;
     const col = s ? p.columns.find((c) => c.id === s.col) : undefined;

@@ -190,17 +190,14 @@ function JobsTab({ state }: { state: SwarmState }) {
       {plan && plan.waves.map((w, i) => (
         <div key={i}>
           <p className="sw-wave">Wave {i + 1}{i > 0 ? ' · waits for overlapping jobs' : ' · starts at once'}</p>
-          <div className="sw-scroll"><table className="sw-table">
-            <thead><tr><th>Step</th><th>Agent</th><th>Model</th><th className="is-num">Budget</th><th>Leases</th></tr></thead>
-            <tbody>{w.map((id) => { const j = plan.jobs.find((x) => x.id === id)!; return (
-              <tr key={id}>
-                <td title={j.text}><b>{j.stepId}</b> {j.text.length > 90 ? `${j.text.slice(0, 87)}…` : j.text}</td>
-                <td>{agents.get(j.agent)?.name ?? j.agent}</td>
-                <td><ModelChip m={j.model} /></td>
-                <td className="is-num">{core.fmtTokens(j.budget.tokens)} · {j.budget.maxTurns} turns · {core.fmtUsd(core.budgetUsd(j, state.prices))}</td>
-                <td className="sw-leases fx-mono">{j.leases.join(', ') || 'whole repo (no files named)'}{j.shared.length ? ` · Boss writes: ${j.shared.join(', ')}` : ''}</td>
-              </tr>); })}</tbody>
-          </table></div>
+          <DataGrid<Job> id="swarm-plan" label={`Wave ${i + 1}`} compact dataset={false} rows={w.map((id) => plan.jobs.find((x) => x.id === id)!)} rowId={(j) => j.id} rowLabel={(j) => j.stepId}
+            columns={[
+              { id: 'step', label: 'Step', fixed: true, width: 'minmax(calc(var(--fx-space) * 24), 3fr)', render: (j) => <span title={j.text}><b>{j.stepId}</b> {j.text.length > 90 ? `${j.text.slice(0, 87)}…` : j.text}</span> },
+              { id: 'agent', label: 'Agent', width: 'calc(var(--fx-space) * 14)', render: (j) => agents.get(j.agent)?.name ?? j.agent },
+              { id: 'model', label: 'Model', width: 'calc(var(--fx-space) * 10)', render: (j) => <ModelChip m={j.model} /> },
+              { id: 'budget', label: 'Budget', align: 'end', width: 'calc(var(--fx-space) * 22)', render: (j) => `${core.fmtTokens(j.budget.tokens)} · ${j.budget.maxTurns} turns · ${core.fmtUsd(core.budgetUsd(j, state.prices))}` },
+              { id: 'leases', label: 'Leases', width: 'minmax(calc(var(--fx-space) * 16), 2fr)', render: (j) => <span className="sw-leases fx-mono">{j.leases.join(', ') || 'whole repo (no files named)'}{j.shared.length ? ` · Boss writes: ${j.shared.join(', ')}` : ''}</span> },
+            ] satisfies GridColumn<Job>[]} />
         </div>
       ))}
     </div>

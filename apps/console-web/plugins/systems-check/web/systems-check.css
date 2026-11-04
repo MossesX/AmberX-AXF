@@ -20,7 +20,6 @@
 .axp-systems-check__progress > span { display: block; height: 100%; background: var(--fx-accent); transition: width .3s ease }
 .axp-systems-check__tabs { display: flex; gap: var(--fx-dens-gap-md); flex-wrap: wrap; border-bottom: var(--fx-border-w) solid var(--fx-border) }
 .axp-systems-check__grid { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); overflow-x: auto }
-.axp-systems-check-table td { vertical-align: top }
 .axp-systems-check-row { cursor: pointer } .axp-systems-check-row:hover { background: var(--fx-surface2) } .axp-systems-check-row.is-open { background: var(--fx-accent-soft) }
 .axp-systems-check-exp > td { background: var(--fx-surface2); padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl) }
 .axp-systems-check-body { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0; overflow-wrap: anywhere }
@@ -115,7 +114,6 @@ span.axp-systems-check-banner__text { display: block; text-overflow: ellipsis }
 .axp-systems-check { gap: var(--fx-dens-gap-lg) }
 .axp-systems-check__grid { gap: var(--fx-dens-gap-md) }
 .axp-systems-check__counts { gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-xl) }
-.axp-systems-check-table td { padding-top: var(--fx-dens-gap-sm); padding-bottom: var(--fx-dens-gap-sm) }
 .axp-systems-check-exp > td { padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl) }
 :where([data-fx-narrow]) span.axp-systems-check-sumline { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: calc(100vw - var(--fx-space) * 16) }
 :where([data-fx-narrow]) .axp-systems-check-row.is-open span.axp-systems-check-sumline { white-space: normal }
