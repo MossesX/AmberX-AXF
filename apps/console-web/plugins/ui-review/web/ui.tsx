@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { AgentAvatar, Button, Checkbox, Icon, IconButton, Segmented, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
+import { OriginFor } from '@console/buildOrigin';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as core from './review-core.mjs';
 import * as cf from './conform.mjs';
@@ -121,6 +122,7 @@ export function Detail({ it }: { it: Item }) {
           <dt>Status</dt><dd>{p && p.state === 'predicted' && it.status === 'waiting' ? <span className="fx-chip fx-chip--warning axp-ui-review__status"><Icon name="eye" size={12} />{LOOK_LABEL.waiting}</span> : <StatusChip status={it.status} />}</dd>
           {p?.addenda?.length ? <><dt>Asked</dt><dd>{p.addenda.map((a, k) => <q key={k} className="fx-small">{a.text}</q>)}</dd></> : null}
         </dl>
+        {it.build && <OriginFor build={it.build} />}
         {it.notes && <p className="axp-ui-review__notes">{it.notes}</p>}
         <textarea className="fx-input axp-ui-review__comment" rows={2} value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Your comment (what to change, why)…" aria-label="Your comment" />
         <div className="axp-ui-review__acts">

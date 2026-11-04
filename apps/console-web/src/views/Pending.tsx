@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Icon, Slot, useRuntime } from '../axf/react';
+import { BuildOrigin, Button, Icon, Slot, useRuntime } from '../axf/react';
 import * as api from '../api';
 import * as core from '../axf/plan/pending-core.mjs';
 import pricing from '../axf/schemas/model-pricing.json';
@@ -149,6 +149,7 @@ function PendingRow({ it, busy, act }: { it: PendingItem; busy: boolean; act: (c
         <h2 className="pd-card__title">{it.title}<span className="fx-muted fx-small fx-mono"> {it.id}</span></h2>
         <button className={`fx-chip ${STATUS_TONE[it.status]}`} aria-expanded={statusOpen} aria-label={`Status: ${core.STATUS_LABEL[it.status]}. Change`} onClick={() => setStatusOpen((o) => !o)}>{core.STATUS_LABEL[it.status]}</button>
       </div>
+      <BuildOrigin origin={it.origin} showEmpty />
       <Slot name="pending.item" props={{ item: it }} />
       {statusOpen && (
         <div className="fx-row fx-row--wrap">
@@ -216,8 +217,9 @@ function Thread({ label, list, model, mono, onTick, busy }: { label: string; lis
   );
 }
 
-function AddForm({ busy, onAdd }: { busy: boolean; onAdd: (c: { title: string; detail: string; model: PendingModel; status: PendingStatus; estimate?: string }) => Promise<boolean> }) {
+function AddForm({ busy, onAdd }: { busy: boolean; onAdd: (c: { title: string; detail: string; model: PendingModel; status: PendingStatus; estimate?: string; said?: string }) => Promise<boolean> }) {
   const [title, setTitle] = useState('');
+  const [said, setSaid] = useState('');
   const [estimate, setEstimate] = useState('');
   const [detail, setDetail] = useState('');
   const [model, setModel] = useState<PendingModel>('Fable');
@@ -225,8 +227,9 @@ function AddForm({ busy, onAdd }: { busy: boolean; onAdd: (c: { title: string; d
   return (
     <details className="pd-add">
       <summary>Add a build</summary>
-      <form className="fx-stack" onSubmit={async (e) => { e.preventDefault(); if (title.trim() && (await onAdd({ title, detail, model, status, estimate }))) { setTitle(''); setDetail(''); setEstimate(''); } }}>
+      <form className="fx-stack" onSubmit={async (e) => { e.preventDefault(); if (title.trim() && (await onAdd({ title, detail, model, status, estimate, ...(said.trim() ? { said, source: 'console' } : {}) }))) { setTitle(''); setDetail(''); setEstimate(''); setSaid(''); } }}>
         <label className="pd-field">Title<input className="fx-input" required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="What to build" /></label>
+        <label className="pd-field">What Brett said (his exact words, unedited)<textarea className="fx-input" rows={2} value={said} onChange={(e) => setSaid(e.target.value)} placeholder="Paste or type his words as he said them" /></label>
         <label className="pd-field">Details<textarea className="fx-input" rows={3} value={detail} onChange={(e) => setDetail(e.target.value)} placeholder="Scope, files touched, acceptance notes" /></label>
         <div className="pd-two">
           <label className="pd-field">Waiting on model<select className="fx-input" value={model} onChange={(e) => setModel(e.target.value as PendingModel)}>{core.MODELS.map((m) => <option key={m}>{m}</option>)}</select></label>

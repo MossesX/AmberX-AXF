@@ -114,6 +114,14 @@ if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$GA
   fi
 fi
 
+# What Brett said (build-origin@1, Nov 3 2026): the brief's "## Brett said (verbatim)" block (and any "## Addendum N"
+# blocks) go onto the build's record in the builds store as origin.said / addenda, with the brief and who launched it,
+# so every view of the build shows his exact words. Once, before the slot (like the gate). Never stops the run.
+ORIGIN_CLI="$HERE/../framework/cli/build-origin.mjs"
+if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$ORIGIN_CLI" ]] && [[ "${AXF_ORIGIN:-on}" != off ]]; then
+  origin_line="$(node "$ORIGIN_CLI" capture --brief "$brief" --name "$name" --by "${agent:-$name}" 2>&1 | tail -2)" || true
+  [[ -n "$origin_line" ]] && echo "claude-headless: $origin_line" >&2
+fi
 LOOK="$HERE/../framework/cli/ui-predict.mjs"
 look_on() { [[ "${AXF_LOOK_GATE:-on}" != off ]] && command -v node >/dev/null && [[ -f "$LOOK" ]]; }
 # Predicted looks (ui-prediction@1, Brett Nov 3 2026): a build that changes UI gets its predicted look in UI Review at

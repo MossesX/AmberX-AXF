@@ -1517,3 +1517,30 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 }
 :where([data-fx-small]) .fx-help-panel { left: var(--fx-dens-gap-lg); right: var(--fx-dens-gap-lg); bottom: var(--fx-dens-gap-lg); width: auto; }
 :where([data-fx-small]) .fx-help-intro { bottom: var(--fx-dens-gap-lg); }
+
+/* What Brett said (build-origin@1, framework/react/components/BuildOrigin.tsx): his words first on every expanded build,
+   as a speech bubble; the brief collapsed below; addenda in order. Tokens only. */
+.axf-origin { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-lg) 0; min-width: 0; }
+.axf-origin__label { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); font-size: var(--fx-type-scale-xs); font-weight: 600; color: var(--fx-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.axf-origin__said { margin: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axf-origin__bubble {
+  position: relative; margin: 0; padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl); border-radius: var(--fx-radius-lg); border-top-left-radius: var(--fx-radius-sm);
+  background: var(--fx-accent-soft); color: var(--fx-text); border: var(--fx-border-w) solid color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent);
+  font-size: var(--fx-type-scale-md); line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.axf-origin__bubble::before { content: '\201C'; color: var(--fx-accent); font-weight: 700; margin-right: var(--fx-dens-gap-xs); }
+.axf-origin__bubble::after { content: '\201D'; color: var(--fx-accent); font-weight: 700; margin-left: var(--fx-dens-gap-xs); }
+.axf-origin__meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); font-size: var(--fx-type-scale-xs); color: var(--fx-muted); }
+.axf-origin__link { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); color: var(--fx-accent); text-decoration: none; }
+.axf-origin__link:hover { text-decoration: underline; }
+.axf-origin__by, .axf-origin__none { font-size: var(--fx-type-scale-xs); color: var(--fx-muted); }
+.axf-origin--empty { flex-direction: row; align-items: center; gap: var(--fx-dens-gap-md); }
+.axf-origin__brief { display: flex; flex-direction: column; align-items: flex-start; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axf-origin__brief-text {
+  margin: 0; width: 100%; box-sizing: border-box; max-height: calc(var(--fx-row-h) * 12); overflow: auto; padding: var(--fx-dens-gap-lg);
+  border-radius: var(--fx-radius-md); background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border);
+  font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-xs); color: var(--fx-text); white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.axf-origin__addenda { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); }
+.axf-origin__addenda > li { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axf-origin-sub { display: block; font-size: var(--fx-type-scale-xs); color: var(--fx-muted); font-style: italic; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
