@@ -1,4 +1,4 @@
-import { createElement, useState } from 'react';
+import { createElement, useEffect, useState } from 'react';
 import { Button, Chip, Slot } from '@console/axf/react';
 import * as consoleApi from '@console/api';
 import * as core from './swarm-core.mjs';
@@ -8,7 +8,9 @@ import { ModelChip, fmtTime, statusText, type Act, type Agent, type SwarmState }
 
 /*
  * Crew: one card per agent (avatar, name, role, specialty, status, hire date, spend, jobs, success rate, failures,
- * avg cost per job, favourite model, last seen, catchphrase, salary, spent, left, bonuses). Tap a card for the profile: bio, skill, pay,
+ * avg cost per job, favourite model, last seen, catchphrase, salary, spent, left, bonuses), its skills (every agent on the
+ * job crew is an all-rounder since Nov 3 2026), home job and current job; a strip on top shows who's free and who's on
+ * what. Tap a card for the profile: bio, skill, pay,
  * status history and a feed of the latest runs with their cost. Everything is inside the console; no outside
  * social accounts.
  */
@@ -32,16 +34,60 @@ export function Avatar({ a, size = 56 }: { a: Agent; size?: number }) {
   );
 }
 
-type JobRef = { id: string; name: string };
-export function CrewTab({ state, stats, act, jobsBy = {}, onFeed }: { state: SwarmState; stats: Record<string, Stats>; act: Act; jobsBy?: Record<string, JobRef[]>; onFeed: (jobId: string) => void }) {
+/** Window event the agent-swarm.profile action sends with an agent id: the Crew tab opens that profile. */
+export const PROFILE_EVENT = 'axf-swarm:profile';
+
+type JobRef = { id: string; name: string; home?: boolean };
+/** What an agent is on now: its running runs, named by build (headless builds) or job type. */
+const currentOf = (state: SwarmState, id: string) => state.runs.filter((r) => r.agent === id && r.status === 'running').map((r) => r.build || r.jobType || r.buildId || r.jobId);
+/** The skills an agent works: every skill the job types need for an all-rounder ("*"), else its own list. */
+const skillsOf = (a: Agent, all: string[]) => ((a.skills ?? []).includes('*') ? all : [...new Set([a.skill, ...(a.skills ?? [])])]);
+const skillName = (state: SwarmState, id: string) => state.skills[id]?.title ?? id;
+const homeName = (a: Agent, jobs: JobRef[]) => jobs.find((j) => j.home)?.name ?? a.home ?? '';
+
+export function CrewTab({ state, stats, act, jobsBy = {}, allSkills = [], onFeed }: { state: SwarmState; stats: Record<string, Stats>; act: Act; jobsBy?: Record<string, JobRef[]>; allSkills?: string[]; onFeed: (jobId: string) => void }) {
   const [open, setOpen] = useState<string>(() => consoleApi.readLocal('swarm-profile', ''));
   const pick = (id: string) => { setOpen(id); consoleApi.writeLocal('swarm-profile', id); };
+  // the agent-swarm.profile action (an avatar's right-click "Open employee card", anywhere in the console)
+  useEffect(() => { const on = (e: Event) => setOpen(String((e as CustomEvent).detail ?? '')); window.addEventListener(PROFILE_EVENT, on); return () => window.removeEventListener(PROFILE_EVENT, on); }, []);
   const a = state.roster.agents.find((x) => x.id === open);
-  if (a) return <Profile a={a} state={state} st={stats[a.id]!} act={act} jobs={jobsBy[a.id] ?? []} onBack={() => pick('')} onFeed={onFeed} />;
+  if (a) return <Profile a={a} state={state} st={stats[a.id]!} act={act} jobs={jobsBy[a.id] ?? []} allSkills={allSkills} onBack={() => pick('')} onFeed={onFeed} />;
   return (
-    <div className="sw-cards" role="list">
-      {state.roster.agents.map((x) => <Card key={x.id} a={x} state={state} st={stats[x.id]!} act={act} jobs={jobsBy[x.id] ?? []} onOpen={() => pick(x.id)} />)}
+    <div className="fx-stack">
+      <WhosFree state={state} onOpen={pick} />
+      <div className="sw-cards" role="list">
+        {state.roster.agents.map((x) => <Card key={x.id} a={x} state={state} st={stats[x.id]!} act={act} jobs={jobsBy[x.id] ?? []} allSkills={allSkills} onOpen={() => pick(x.id)} />)}
+      </div>
     </div>
+  );
+}
+
+/** The job crew at a glance: who is free for the next job, and who is on what. */
+function WhosFree({ state, onOpen }: { state: SwarmState; onOpen: (id: string) => void }) {
+  const crew = state.roster.agents.filter((x) => x.jobsOnly);
+  if (!crew.length) return null;
+  const works = (id: string) => state.statuses[state.swarm.agents[id]?.status ?? '']?.works !== false && !state.pay[id]?.broke;
+  const free = crew.filter((x) => works(x.id) && !currentOf(state, x.id).length);
+  const busy = crew.filter((x) => currentOf(state, x.id).length);
+  const out = crew.filter((x) => !works(x.id) && !currentOf(state, x.id).length);
+  return (
+    <section className="sw-roster" aria-label="Who's free">
+      <div className="sw-bar"><b>Free</b>{free.length ? free.map((x) => <Button key={x.id} size="sm" tone="quiet" onClick={() => onOpen(x.id)}>{x.name}</Button>) : <span className="fx-muted">nobody: the next job waits for the least busy</span>}</div>
+      {busy.length > 0 && <div className="sw-bar"><b>On a job</b>{busy.map((x) => <Button key={x.id} size="sm" tone="quiet" onClick={() => onOpen(x.id)}>{x.name} · {currentOf(state, x.id).join(', ')}</Button>)}</div>}
+      {out.length > 0 && <div className="sw-bar"><b>Off</b>{out.map((x) => <Chip key={x.id}>{x.name} · {state.pay[x.id]?.broke ? 'broke' : statusText(state.swarm.agents[x.id]!, state.statuses)}</Chip>)}</div>}
+    </section>
+  );
+}
+
+/** Skills, home job and current job: the lines every card and profile shows. */
+function WorkLines({ a, state, jobs, allSkills }: { a: Agent; state: SwarmState; jobs: JobRef[]; allSkills: string[] }) {
+  const sk = skillsOf(a, allSkills); const now = currentOf(state, a.id); const home = homeName(a, jobs);
+  return (
+    <>
+      <p className="sw-card__jobs"><span className="fx-muted">Now</span> {now.length ? now.join(', ') : 'free'}</p>
+      {home && <p className="sw-card__jobs"><span className="fx-muted">Home job</span> {home}</p>}
+      {sk.length > 0 && <p className="sw-card__jobs"><span className="fx-muted">{(a.skills ?? []).includes('*') ? `All-rounder · ${sk.length} skills` : 'Skills'}</span> {sk.map((k) => skillName(state, k)).join(' · ')}</p>}
+    </>
   );
 }
 
@@ -51,7 +97,7 @@ const onDutyIds = (state: SwarmState) => state.roster.agents.filter((x) => state
 function DeskSlot({ id, state }: { id: string; state: SwarmState }) {
   return <Slot name="swarm.agent.status" props={{ agentId: id, status: state.swarm.agents[id]?.status ?? '', onDuty: onDutyIds(state) }} />;
 }
-function Card({ a, state, st, act, jobs, onOpen }: { a: Agent; state: SwarmState; st: Stats; act: Act; jobs: JobRef[]; onOpen: () => void }) {
+function Card({ a, state, st, act, jobs, allSkills, onOpen }: { a: Agent; state: SwarmState; st: Stats; act: Act; jobs: JobRef[]; allSkills: string[]; onOpen: () => void }) {
   const as = state.swarm.agents[a.id]!; const sp = state.spend[a.id]; const pay = state.pay[a.id]; const idn = core.cardIdentity(a, as);
   return (
     <article role="listitem" className={`sw-card ${as.status === 'fired' ? 'sw-gone' : ''}`}>
@@ -61,7 +107,7 @@ function Card({ a, state, st, act, jobs, onOpen }: { a: Agent; state: SwarmState
           <div className="sw-card__who"><b>{idn.name}</b><span className="fx-muted">{idn.role}</span><Chip tone={TONE[state.statuses[as.status]?.tone ?? '']}>{statusText(as, state.statuses)}</Chip><DeskSlot id={a.id} state={state} /></div>
         </div>
         <p className="sw-card__line">{idn.specialty}</p>
-        {jobs.length > 0 && <p className="sw-card__jobs"><span className="fx-muted">Jobs</span> {jobs.map((j) => j.name).join(' · ')}</p>}
+        <WorkLines a={a} state={state} jobs={jobs} allSkills={allSkills} />
         <dl className="sw-card__stats">
           <div><dt>Hired</dt><dd>{fmtDay(idn.hiredAt)}</dd></div>
           <div><dt>Salary</dt><dd>{core.fmtUsd(pay?.salary ?? a.salary)}/wk</dd></div>
@@ -131,7 +177,7 @@ function Discipline({ a, state, act }: { a: Agent; state: SwarmState; act: Act }
   );
 }
 
-function Profile({ a, state, st, act, jobs, onBack, onFeed }: { a: Agent; state: SwarmState; st: Stats; act: Act; jobs: JobRef[]; onBack: () => void; onFeed: (jobId: string) => void }) {
+function Profile({ a, state, st, act, jobs, allSkills, onBack, onFeed }: { a: Agent; state: SwarmState; st: Stats; act: Act; jobs: JobRef[]; allSkills: string[]; onBack: () => void; onFeed: (jobId: string) => void }) {
   const as = state.swarm.agents[a.id]!; const skill = state.skills[a.skill]; const idn = core.cardIdentity(a, as);
   return (
     <div className="fx-stack">
@@ -143,11 +189,12 @@ function Profile({ a, state, st, act, jobs, onBack, onFeed }: { a: Agent; state:
         </div>
         <p>{a.bio}</p>
         <p className="sw-card__quote">“{idn.catchphrase}”</p>
-        {jobs.length > 0 && <p className="sw-card__jobs"><span className="fx-muted">Owns</span> {jobs.map((j) => j.name).join(' · ')}</p>}
+        <WorkLines a={a} state={state} jobs={jobs} allSkills={allSkills} />
+        {jobs.length > 0 && <p className="sw-card__jobs"><span className="fx-muted">Can take</span> {jobs.map((j) => j.name).join(' · ')}</p>}
         <p className="fx-muted">Models {a.models.map((m) => core.MODEL_LABEL[m] ?? m).join(' · ')} · up to {a.maxTurns} turns · tools {a.tools.join(', ')}</p>
       </div>
       <section className="fx-stack">
-        <h3 className="sw-wave">Skill: {skill?.title ?? a.skill}</h3>
+        <h3 className="sw-wave">Home skill: {skill?.title ?? a.skill}</h3>
         <pre className="sw-skill">{skill?.body ?? 'No skill file.'}</pre>
       </section>
       <CardSection state={state} a={a} st={st} act={act} photo={<Avatar a={a} size={120} />} />

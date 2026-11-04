@@ -9,7 +9,7 @@ import { AppearancePanel, BehaviourPanel, HeadlessPanel, ProfilesPanel } from '.
 import { ClaudePanel, GeneralPanel, MoshiPanel, SessionsPanel, VpsPanel } from './panels';
 import { TerminalHost } from './TerminalHost';
 import { RunOutputTab, watchHubRuns } from './RunOutputTab';
-import { watchHeadless } from './headless';
+import { openHeadless, watchHeadless } from './headless';
 import { openByName } from './nav';
 import './terminal.css';
 import { appMenu } from './menu';
@@ -50,6 +50,8 @@ export const plugin: AxfWebLibrary = {
       }
       return openFromContext(rt);
     }, () => openFromContext(rt)), { label: 'Open a terminal' });
+    // a headless run's own tab (the Crew, avatars' right-click "Open Terminal tab"): terminal.attach:<axf-… session>[:<title>]
+    rt.actions.register('terminal.attach', ([name = '', title = '']) => { if (/^axf-[A-Za-z0-9._-]{1,64}$/.test(name)) openHeadless(rt, { name, createdAt: 0, agent: decodeURIComponent(title) }); }, { label: 'Open a headless run in a Terminal tab', params: true, searchable: false });
     rt.actions.register('terminal.claude', () => rt.openDialog('terminal.connect', { hostId: '', mode: 'claude' }), { label: 'New Claude Code tab (pick a connection)' });
     // sessions nav (Nov 3 2026): mirror a session read-only, or jump in (writable; a chat opens claude.ai); args [name, where]
     rt.actions.register('terminal.mirror', ([name, where]) => void openByName(rt, String(name ?? ''), String(where ?? ''), false), { label: 'Mirror a session (read-only)', params: true });

@@ -367,3 +367,24 @@ async def nav_ws(ws: WebSocket) -> None:
     finally:
         task.cancel()
         stop()
+
+
+class HeadlessService:
+    """Capability `axf.headless@1`: the headless Claude Code runs on the VPS (tmux axf-…), their live meters
+    (headless-meter@1) and ending one, for other plugins (the Crew) that must not reach into this folder."""
+    version = 1
+
+    def sessions(self) -> dict[str, Any]:
+        return sessions.headless_sessions()
+
+    def meters(self, names: list[str]) -> dict[str, Any]:
+        return sessions.meters(list(names))
+
+    def kill(self, name: str) -> dict[str, Any]:
+        for s in list(sessions.MANAGER.sessions.values()):
+            if s.tmux == name and s.where == "vps":
+                sessions.MANAGER.close(s.id, "killed")
+        return sessions.kill_tmux(name, "vps")
+
+
+plugin_services.provide("axf.headless@1", HeadlessService(), "console-terminal")

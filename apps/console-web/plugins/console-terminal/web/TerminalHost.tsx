@@ -20,7 +20,7 @@
  */
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { Icon, useRuntime, useWindowFrame, useWindowManager } from '@console/axf/react';
+import { AgentAvatar, Icon, useRuntime, useWindowFrame, useWindowManager } from '@console/axf/react';
 import type { TabSpec } from '@console/axf/core';
 import { call, getSettings, post, type ClaudeProfile, onSettings, parseOpen, tabSessions, type Open, type Settings, type Target, type TmuxSession } from './api';
 import { applyProfile, useProfiles } from './profiles';
@@ -164,6 +164,7 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
               onDrop={(e) => { e.preventDefault(); if (dragFrom.current !== null) move(tab.id, dragFrom.current, i); dragFrom.current = null; }}
               onDragEnd={() => { dragFrom.current = null; }}>
               {st ? <span className={`${P}__state is-${st}`} role="img" aria-label={st} /> : <Icon name={iconFor(s.open)} size={14} />}
+              {hl ? <AgentAvatar agent={hl} size="small" noMenu /> : null}
               {renaming?.id === s.id ? (
                 <form onSubmit={(e) => { e.preventDefault(); patchSession(s.id, { title: renaming.text.trim() || s.title, renamed: true }); setRenaming(null); }}>
                   <input className={`fx-input ${P}__rename`} autoFocus value={renaming.text} onChange={(e) => setRenaming({ id: s.id, text: e.target.value })} onBlur={() => { patchSession(s.id, { title: renaming.text.trim() || s.title, renamed: true }); setRenaming(null); }} onKeyDown={(e) => { if (e.key === 'Escape') setRenaming(null); }} aria-label="Tab name" />

@@ -152,9 +152,12 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
 
     @mcp.tool(annotations=READ)
     async def overview() -> dict[str, Any]:
-        """Framework status at a glance: plan counts by status, build queue progress, next step, rework, models."""
+        """Framework status at a glance: plan counts by status, build queue progress, next step, rework, models, and every
+        build in the builds store (all profiles: counts by status and profile, the running ones)."""
         fs = await features()
-        q = (await run("build-queue"))["view"]
+        qr = await run("build-queue")
+        q = qr["view"]
+        b = qr.get("builds") or {}
         by = lambda key, items: {k: sum(1 for x in items if x.get(key) == k) for k in sorted({str(x.get(key)) for x in items})}  # noqa: E731
         nxt = next((s for s in q["steps"] if s["id"] == q["next"]), None)
         return {
@@ -162,6 +165,8 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
             "buildQueue": {"steps": len(q["steps"]), "byState": q["counts"], "remainingByModel": q["byModel"], "violations": q["violations"], "rework": q["rework"], "needsReprocess": q["dirty"] or q["violations"] > 0},
             "next": _step(nxt) if nxt else None,
             "models": MODELS,
+            "builds": {"profile": b.get("profile"), "total": b.get("total", 0), "byStatus": b.get("byStatus", {}), "activeInProfile": b.get("activeCount", 0),
+                       "byProfile": b.get("byProfile", {}), "running": b.get("running", [])},
         }
 
     @mcp.tool(annotations=READ)
@@ -235,12 +240,15 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
     async def build_queue(include_done: bool = False) -> dict[str, Any]:
         """The build queue in build order: each step's state, suggested model (and why), dependencies, linked features,
         violations (runs before an unfinished dependency) and rework flags."""
-        v = (await run("build-queue"))["view"]
+        qr = await run("build-queue")
+        v, b = qr["view"], qr.get("builds") or {}
         steps = [s for s in v["steps"] if include_done or s["state"] not in ("done",)]
         return {"next": v["next"], "counts": v["counts"], "remainingByModel": v["byModel"], "minutesLeftByModel": v.get("minutesLeftByModel", {}),
                 "costLeftByModelUsd": {m: _usd(m, n) for m, n in v.get("minutesLeftByModel", {}).items()},
                 "unsplit": v.get("unsplit", []), "needsReprocess": v["dirty"] or v["violations"] > 0,
-                "steps": [_step(s, features=False, steps=False) | {"features": len(s["features"]), "steps": len(s.get("steps") or [])} for s in steps]}
+                "steps": [_step(s, features=False, steps=False) | {"features": len(s["features"]), "steps": len(s.get("steps") or [])} for s in steps],
+                # the active profile's orchestrator builds with work left (a profile without plan epics has no queue steps)
+                "builds": {"profile": b.get("profile"), "total": b.get("total", 0), "active": b.get("active", []), "running": b.get("running", [])}}
 
     @mcp.tool(annotations=READ)
     async def build_next() -> dict[str, Any]:

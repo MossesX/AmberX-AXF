@@ -20,6 +20,7 @@
     "context-menu:*",
     "dialog:terminal.connect",
     "dialog:terminal.connection",
+    "service:axf.headless@1",
     "service:axf.session-feed@1",
     "settings-tab:terminal",
     "tab:terminal",

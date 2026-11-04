@@ -27,19 +27,28 @@ const subs = new Set<() => void>();
 const emit = (p: Partial<typeof st>) => { st = { ...st, ...p }; subs.forEach((f) => f()); };
 let timer: ReturnType<typeof setInterval> | null = null;
 
-export async function loadPasses() {
+let inFlight = false;
+let again = false;
+export async function loadPasses(): Promise<void> {
+  if (inFlight) { again = true; return; } // one request at a time; a call made meanwhile (after a grant) runs once after it
+  inFlight = true;
   try {
     const r = await pluginFetch(FOLDER, 'pass/status');
     const j = (await r.json()) as Status;
     emit(j.ok ? { status: j, error: '', at: Date.now() } : { error: j.message ?? `HTTP ${r.status}` });
-  } catch (e) { emit({ error: (e as Error).message }); }
+  } catch (e) { emit({ error: (e as Error).message }); } finally { inFlight = false; }
+  if (again) { again = false; await loadPasses(); }
 }
+/* Module-level on purpose: an inline subscribe is a new function every render, so React re-subscribes after every
+   emit; with one consumer that stopped the timer and loaded again at once (a request storm). */
+function subscribe(f: () => void) {
+  subs.add(f);
+  if (!timer) { void loadPasses(); timer = setInterval(() => { if (document.visibilityState === 'visible') void loadPasses(); }, POLL_MS); }
+  return () => { subs.delete(f); if (!subs.size && timer) { clearInterval(timer); timer = null; } };
+}
+const snapshot = () => st;
 export function usePasses() {
-  return useSyncExternalStore((f) => {
-    subs.add(f);
-    if (!timer) { void loadPasses(); timer = setInterval(() => { if (document.visibilityState === 'visible') void loadPasses(); }, POLL_MS); }
-    return () => { subs.delete(f); if (!subs.size && timer) { clearInterval(timer); timer = null; } };
-  }, () => st);
+  return useSyncExternalStore(subscribe, snapshot);
 }
 function useNow(on: boolean) {
   const [now, setNow] = useState(Date.now());
