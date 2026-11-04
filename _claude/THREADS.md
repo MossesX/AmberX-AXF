@@ -886,6 +886,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 04:52 UTC · `lenny-land-all` s3 done (current) · orchestrator
 - 2026-11-04 04:52 UTC · `lenny-land-all` s4 done (current) · orchestrator
 - 2026-11-04 04:52 UTC · `lenny-land-all` note (current) · orchestrator
+- 2026-11-04 05:11 UTC · `claude-settings` → complete, merged, note (urgent) · reconciler
+- 2026-11-04 05:11 UTC · `home-cards-live` → complete, merged, note (urgent) · reconciler
+- 2026-11-04 05:11 UTC · `terminal-sessions-nav` → complete, merged, note (current) · reconciler
+- 2026-11-04 05:11 UTC · `build-prompt-origin` → complete, merged, note (current) · reconciler
+- 2026-11-04 05:11 UTC · `banner-ref-links` → complete, merged, note (current) · reconciler
+- 2026-11-04 05:11 UTC · `whats-new-open-fix` → complete, merged, note (current) · reconciler
+- 2026-11-04 05:11 UTC · `terminal-drag-chain-tree` → complete, merged, note (current) · reconciler
 
 ## Token passes (log)
 
