@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 893,
- "updatedAt": "2026-11-04T19:03:10.759Z",
+ "rev": 894,
+ "updatedAt": "2026-11-04T19:03:36.791Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -81672,15 +81672,15 @@
    "title": "Model & thinking audit: recommended model + thinking level on every build, step and plan",
    "category": "Builds > Model policy",
    "detail": "Go through everything that can be built (queued, pending, Plan Studio, and work built on Opus in the last two weeks) and put next to each item the model it should be on (Fable / Opus), the thinking level (low / medium / high / max) and why; built items get a verdict (keep / Fable review / redo on Fable) with a cost. Shown as chips and a check / triangle icon everywhere a build or step appears, with a right-click why-panel, Apply (owner-only) and Dismiss, an on/off switch (Settings > Builds) with per-screen override, filters (model, thinking, status, Needs a look, Fable candidates), the same fields on every API/MCP/CLI read, and thinking wired to the launcher's --effort. Recommendations only: no build changes model by itself. Report _claude/builds/reports/model-thinking-audit.md.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/model-thinking-audit",
    "pr": "#334",
    "createdAt": "2026-11-04T17:53:07.338Z",
-   "updatedAt": "2026-11-04T19:03:09.391Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T19:03:35.128Z",
+   "builtAt": "2026-11-04T19:03:35.128Z",
    "notes": [],
    "approvals": [
     {
@@ -81964,17 +81964,17 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T19:03:35.128Z",
      "note": "",
      "recommendedModel": "Opus",
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (docs, readme, landing): routine, Opus on low thinking",
      "adviceKind": "landing",
      "adviceAt": "2026-11-04T18:55:12.566Z",
-     "rev": 4,
+     "rev": 5,
      "createdAt": "2026-11-04T17:53:07.344Z",
-     "updatedAt": "2026-11-04T18:55:12.567Z"
+     "updatedAt": "2026-11-04T19:03:35.247Z"
     }
    ],
    "profiles": [
@@ -81985,7 +81985,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
