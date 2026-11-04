@@ -578,8 +578,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 20:44 UTC · `smart-menus` s7 done, → built (urgent) · foreign-write
-- 2026-11-03 20:47 UTC · `plugin-settings-placement` s1 done (current) · foreign-write
 - 2026-11-03 20:47 UTC · `build-prompt-origin` s4 done (current) · foreign-write
 - 2026-11-03 20:47 UTC · `plugin-settings-placement` s2 done (current) · foreign-write
 - 2026-11-03 20:47 UTC · `banner-ref-links` added (5 steps) (current) · foreign-write
@@ -978,3 +976,5 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 01:44 UTC · `app-style-override` added (6 steps) (current) · orchestrator
 - 2026-11-04 01:45 UTC · `app-style-override` → running (current) · orchestrator
 - 2026-11-04 01:48 UTC · `browser-automation` s3 done, note (current) · foreign-write
+- 2026-11-04 01:59 UTC · `browser-automation` s3 done, note (current) · foreign-write
+- 2026-11-04 01:59 UTC · `main-area-tabs` added (10 steps) (current) · foreign-write
