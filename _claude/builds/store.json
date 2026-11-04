@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 953,
- "updatedAt": "2026-11-04T20:53:31.594Z",
+ "rev": 954,
+ "updatedAt": "2026-11-04T21:01:18.638Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -83222,10 +83222,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/molly-banner-match",
-   "pr": "",
+   "branch": "claude/molly-banner-match-r2",
+   "pr": "#341",
    "createdAt": "2026-11-04T17:18:47.970Z",
-   "updatedAt": "2026-11-04T20:44:25.053Z",
+   "updatedAt": "2026-11-04T21:01:17.273Z",
    "builtAt": "",
    "notes": [
     {
@@ -83375,7 +83375,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
