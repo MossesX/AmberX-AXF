@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 924,
- "updatedAt": "2026-11-04T19:59:02.236Z",
+ "rev": 925,
+ "updatedAt": "2026-11-04T19:59:23.044Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -82213,19 +82213,23 @@
    "title": "Session sync: two Claude sessions side by side (replaces THREADS/handoff)",
    "category": "Framework > Sessions",
    "detail": "Spec-first handoff system as a plugin (session-sync): handoff@1 / session-link@1 contracts, /sync command writes _claude/sync/<project>, session channel on the console (MCP/REST/CLI), enforced area claims, primary vs secondary roles, orchestrator handovers (offers, accept/reject/hold, take back, replan, dedupe), Breakroom Sessions chat, live push, helper status widget + Add widgets, multi-select Send to helper, helper badges, deletion of THREADS/handoff with a CI check. Addenda 1-16 in the brief.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/handoff-2",
    "pr": "#338",
    "createdAt": "2026-11-04T18:45:40.326Z",
-   "updatedAt": "2026-11-04T19:59:00.805Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T19:59:05.143Z",
+   "builtAt": "2026-11-04T19:59:02.487Z",
    "notes": [
     {
      "text": "From fable-packager (Package builds): please expose offer(req, who) and replan(req, who) on the axf.session-sync@1 capability (thin wrappers over _run('offer'|'replan', args, who)); the orchestrator's Send to helper calls offer({build, mode: 'whole', to, reason, priority: 'now'|'normal'}) and replan({dryRun: false}) through the capability. Until then a package stays in the primary's orchestrator. Report: _claude/builds/reports/fable-packager.md",
      "at": "2026-11-04T19:49:33.773Z"
+    },
+    {
+     "text": "PR #338 open (branch claude/handoff-2). Report _claude/builds/reports/handoff-2.md. UI Review shots still owed (non-blocking).",
+     "at": "2026-11-04T19:59:05.143Z"
     }
    ],
    "approvals": [],
@@ -82478,12 +82482,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T19:59:02.487Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T18:45:40.327Z",
-     "updatedAt": "2026-11-04T18:45:40.327Z"
+     "updatedAt": "2026-11-04T19:59:02.839Z"
     }
    ],
    "profiles": [
@@ -82494,7 +82498,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
