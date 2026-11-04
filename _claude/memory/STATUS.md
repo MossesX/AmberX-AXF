@@ -220,3 +220,10 @@ Brett's hand-saved notes (handoffs, session logs, plans, install notes, saved co
 
 ## MD Studio (Nov 3 2026, md-studio, Opus) <!-- axf-plugin:md-studio -->
 Console plugin `md-studio` (Plugins → MD Studio): every .md file by scope (Project per manifest, Claude = the hub's `_claude` files of every project with axHub memory semantics, Repo, Notes through `axf.notes@1`), opened as dock@1 tabs (split, float, drop on any header or pane edge), preview / split / edit with a Markdown toolbar, find & replace, autosave, conflict-safe saves (if_version) and version history with restore; reference branches + click-to-split; four views (Browse, Read, Write, IDE with outline + references docked); snippets; Claude-file wizards; context view (tokens per referenced part, "what Claude loads" = @imports only). Commands auto-generated (REST, MCP, `axf md-studio …`): list-files, read-file, save-file, context-chain, open-file, edit-file, open-context… Deep links `?md=` / `?md-context=`. Report: `_claude/builds/reports/md-studio.md`.
+## Menus stay on screen and scroll (Nov 3 2026, menu-scroll, Opus; branch `claude/menu-scroll`)
+menu-fit@1: `framework/core/engines/menufit.ts` (pure `fitMenu` / `menuBox`; checks `spec/check-menu-fit.mts`, in CI) and
+`framework/react/components/menuFit.ts` (visual viewport + safe areas + `--fx-layout-phone-edge`; `useMenuFit`,
+`installMenuFit` for self-placed plugin ⋯ menus, `focusMenuItem`). App menu drop-downs, submenus (placed in the parent
+menu box, `.fx-menu__li` static), context menus and plugin ⋯ menus flip / shift to stay on screen and only then scroll,
+with `data-fx-more` fade + chevron hints and contained overscroll. Re-baked console, axHub web, AmberX, Molly. Android
+twin deferred (PORTING.md). Report `_claude/builds/reports/menu-scroll.md`.
