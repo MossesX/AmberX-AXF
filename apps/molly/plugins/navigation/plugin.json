@@ -36,5 +36,5 @@
   },
   "builtWith": { "model": "opus", "builtAt": "2026-11-03", "branch": "claude/molly-nav-submenus" },
   "help": "help.json",
-  "opens": false
+  "opens": "dialog"
 }
