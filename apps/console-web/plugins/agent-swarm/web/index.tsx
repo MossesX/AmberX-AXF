@@ -25,6 +25,8 @@ export const plugin: AxfWebLibrary = {
       rt.navigate('agent-swarm');
       setTimeout(() => window.dispatchEvent(new CustomEvent(PROFILE_EVENT, { detail: id })), 0);
     }, { label: 'Open an agent\'s employee card', params: true, searchable: false });
+    // the Breakroom (group chat, Jobs) from other plugins: agent-swarm.open
+    rt.actions.register('agent-swarm.open', () => rt.navigate('agent-swarm'), { label: 'Open the Breakroom', searchable: false });
     rt.actions.register(COLOR_BY_VIBE_ACTION, () => rt.settings.set(KEYS.colorByVibe, !rt.settings.get(KEYS.colorByVibe)), { label: 'Color chat messages by vibe' });
   },
   views: { 'agent-swarm': { title: 'Agent swarm', icon: 'user', keywords: ['swarm', 'agents', 'jobs', 'leases', 'cost', 'tokens', 'headless'], render: () => <SwarmPage /> } },

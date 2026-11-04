@@ -65,8 +65,8 @@ export const plugin: AxfWebLibrary = {
       if (r?.sessionId && rt.actions.get('session-history.open')) run(rt, `session-history.open:${r.sessionId}`);
       else rt.toast(r ? 'The Session browser isn\'t installed.' : `${agent} has no run on record.`, 'info', 'Crew');
     }), { label: 'Open an agent\'s run in the Session browser', params: true, searchable: false });
-    rt.actions.register('crew.chat', () => { rt.navigate('agent-swarm'); }, { label: 'Open the group chat', searchable: false });
-    rt.actions.register('crew.assign', () => { rt.navigate('agent-swarm'); }, { label: 'Assign a job (Breakroom → Jobs)', searchable: false });
+    rt.actions.register('crew.chat', () => { run(rt, 'agent-swarm.open'); }, { label: 'Open the group chat', searchable: false });
+    rt.actions.register('crew.assign', () => { run(rt, 'agent-swarm.open'); }, { label: 'Assign a job (Breakroom → Jobs)', searchable: false });
     rt.actions.register('crew.stop', ([agent = '']) => void runOf(agent).then(async (r) => {
       if (!r || r.status === 'idle') { rt.toast(`${agent} has nothing running.`, 'info', 'Crew'); return; }
       if (!globalThis.confirm?.(`Stop ${r.agent.name}? The run ${r.name} ends now; work already committed stays.`)) return;
@@ -75,7 +75,7 @@ export const plugin: AxfWebLibrary = {
     }), { label: 'Stop an agent\'s current job', params: true, searchable: false });
   },
   views: { [VIEW]: { title: 'Crew', icon: 'user', keywords: ['crew', 'agents', 'employees', 'working', 'live', 'cost', 'who', 'diff', 'headless'], render: () => <CrewView /> } },
-  nav: { label: 'Builds', items: [{ id: VIEW, label: 'Crew', icon: 'user', view: VIEW }] },
+  nav: { label: 'Builds', items: [{ id: 'crew', label: 'Crew', icon: 'user', view: 'crew' }] }, // literal ids: scripts/menu-reach.mts reads this line
   slots: { 'app.frame.cover': [{ id: 'crew.directory', order: 99, render: () => <DirectoryFeed /> }] },
   contextMenu: [{
     id: 'crew.agent', target: 'agent', order: 10, items: [
