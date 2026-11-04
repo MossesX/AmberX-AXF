@@ -698,7 +698,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 15:24 UTC · `urgent-land-gizmo-chat` merged (current) · builds-live
 - 2026-11-04 15:25 UTC · `gizmo-companion` note (current) · foreign-write
 - 2026-11-04 15:25 UTC · `urgent-land-gizmo-chat` note (current) · foreign-write
 - 2026-11-04 15:24 UTC · `gizmo-companion` merged (current) · builds-live
@@ -1098,6 +1097,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 21:42 UTC · `follow-amber-flash` s1 done, → running (angel) · orchestrator
 - 2026-11-04 21:42 UTC · `follow-amber-flash` s2 done (angel) · orchestrator
 - 2026-11-04 21:42 UTC · `follow-amber-flash` s3 done (angel) · orchestrator
+- 2026-11-04 21:44 UTC · `build-docs-walkthroughs` s3 done (angel) · orchestrator
 
 ## Token passes (log)
 
