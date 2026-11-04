@@ -1401,6 +1401,18 @@
    "from": "detail",
    "addenda": []
   },
+  "terminal-no-focus": {
+   "said": "I don't want the terminal to come to the front on every session.",
+   "at": "2026-11-04T00:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "terminal-sessions-nav": {
    "said": "give the Terminal a collapsible navigation menu on the left listing live sessions, including each session he is personally doing with Claude, so he can mirror it and jump in. Assigned agent: whoever is free (router if on main; else **Earl the Ear**; record who). Register in `current` (id `terminal-sessions-nav`) + banner entry. Runs after / builds on `terminal-vps-host` (the Terminal's VPS host must be set up; if that isn't on main yet, wait for it or include its fix).",
    "at": "2026-11-03",
