@@ -23,7 +23,8 @@ const TOKEN = process.env.AXF_TOKEN || '';
 const API = `${URL_BASE}/api/plugins/live-sessions`;
 const STATE_DIR = join(process.env.XDG_STATE_HOME || join(homedir(), '.local', 'state'), 'axf-live');
 const KEEP_TYPES = new Set(['user', 'assistant', 'system', 'summary']);
-const MAX_BATCH = 400_000;
+const MAX_BATCH = 4_000_000; // bytes of transcript read per hook (request blobs are skipped, so the post stays small)
+const MAX_POST = 1_200_000; // characters of kept lines per post (the console takes 2 MB)
 
 const account = () => process.env.AXF_ACCOUNT || (process.env.CLAUDE_CONFIG_DIR ? basename(process.env.CLAUDE_CONFIG_DIR).replace(/^\./, '') : 'main');
 const headless = (h) => process.env.AXF_SURFACE === 'headless' || /^sdk/.test(String(h?.entrypoint || process.env.CLAUDE_CODE_ENTRYPOINT || ''));
@@ -54,15 +55,21 @@ export function newLines(path, offset) {
   const cut = buf.lastIndexOf(10);
   if (cut < 0) return { lines: [], offset };
   const lines = [];
-  let entry = '';
-  for (const raw of buf.subarray(0, cut).toString('utf8').split('\n')) {
+  let entry = '', at = 0, sent = 0;
+  for (let nl = buf.indexOf(10); nl !== -1 && nl <= cut; nl = buf.indexOf(10, at)) {
+    const raw = buf.subarray(at, nl).toString('utf8');
     try {
       const o = JSON.parse(raw);
       if (o.entrypoint) entry = o.entrypoint;
-      if (KEEP_TYPES.has(o.type) && !o.isSidechain) lines.push(raw);
-    } catch { /* half a line or not JSON */ }
+      if (KEEP_TYPES.has(o.type) && !o.isSidechain && raw.length <= MAX_POST) { // a giant single line (a huge tool result) is left out
+        if (sent && sent + raw.length > MAX_POST) break; // the rest goes with the next hook
+        lines.push(raw);
+        sent += raw.length;
+      }
+    } catch { /* not JSON */ }
+    at = nl + 1;
   }
-  return { lines, offset: offset + cut + 1, entrypoint: entry };
+  return { lines, offset: offset + at, entrypoint: entry };
 }
 
 async function hook() {
