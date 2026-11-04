@@ -505,6 +505,47 @@
    "from": "",
    "addenda": []
   },
+  "build-todo-sync": {
+   "said": "",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": false,
+   "from": "",
+   "addenda": [
+    {
+     "said": "This is a plugin too.",
+     "at": "2026-11-04T16:20:00Z",
+     "source": "voice",
+     "by": "build-todo-sync (Snap Sully)",
+     "verbatim": true
+    },
+    {
+     "said": "From now on, put every build in Plan Studio. Every new plugin or app or whatever goes to Plan Studio. Plan Studio is updated whenever you want edits made to it. Every build will be able to attach a list to it of planned things to do, and you can check off the fixes as they happen. You can add things to fix and all that, and track everything in the planner.",
+     "at": "2026-11-04T16:40:00Z",
+     "source": "voice",
+     "by": "build-todo-sync (Snap Sully)",
+     "verbatim": true
+    },
+    {
+     "said": "And that needs an API so it can be voice controlled.",
+     "at": "2026-11-04T16:45:00Z",
+     "source": "voice",
+     "by": "build-todo-sync (Snap Sully)",
+     "verbatim": true
+    },
+    {
+     "said": "And the planner will also have links to documentation that's under development.",
+     "at": "2026-11-04T16:50:00Z",
+     "source": "voice",
+     "by": "build-todo-sync (Snap Sully)",
+     "verbatim": true
+    }
+   ]
+  },
   "builds-one-page": {
    "said": "Plans, Tracker, Build queue, Pending builds and the Build orchestrator are separate files (plan.json, tracker.json, build-queue.json, pending.json, _claude/builds/orchestrator.json) that drift (pending complete never marks the plan built; 91 of 100 pending items unlinked). Merge into one dataset; one Builds page with the views selectable from a toolbar and everywhere else that fits (app menu, context menu, shortcuts, banners, deep links). Every view, Orchestrator included, defaults to the Pending builds look: a table with expandable rows; better nested info in every list. Folds in pending-grid-view. tracker.json stays a generated export for the Android console and /tracker. Web only (Android hold).",
    "at": "2026-10-27",

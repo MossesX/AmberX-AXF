@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 873,
- "updatedAt": "2026-11-04T18:24:50.016Z",
+ "rev": 874,
+ "updatedAt": "2026-11-04T18:25:19.183Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -83288,11 +83288,31 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T18:24:34.029Z",
-   "updatedAt": "2026-11-04T18:24:34.030Z",
+   "updatedAt": "2026-11-04T18:25:17.165Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "",
+    "addenda": [
+     {
+      "said": "This is a plugin too.",
+      "at": "2026-11-04T16:20:00Z",
+      "source": "voice",
+      "by": "build-todo-sync (Snap Sully)",
+      "verbatim": true
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -83457,7 +83477,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
