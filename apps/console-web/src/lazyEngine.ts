@@ -54,7 +54,7 @@ export const CORE_PLUGINS: Record<string, Exclude<LazyMode, 'off'>> = {
 export const KNOWN_BANNERS: readonly string[] = [
   'activity', 'agent-voice', 'ai-assistant', 'approvals-banner', 'build-manager', 'build-profiles', 'builds-page',
   'claude-badge', 'claude-handoff', 'claude-settings', 'codebase-changes', 'follow-amber', 'plan-studio', 'plugins-menu',
-  'push-banner', 'systems-check', 'token-control', 'alerts-bell', 'main-build-status', 'whats-shipped',
+  'push-banner', 'systems-check', 'token-control', 'alerts-bell', 'main-build-status', 'whats-shipped', 'console-terminal',
 ];
 
 const clampInt = (v: unknown, lo: number, hi: number, d: number) => {
