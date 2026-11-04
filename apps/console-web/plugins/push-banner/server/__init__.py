@@ -53,7 +53,7 @@ one round every 3 minutes (settings autoMerge + autoPr, both on by default):
   3. branch protection on main (require a PR, branches up to date, the CI checks every PR runs) is set where the token
      may and never loosened; where it can't, the systems check shows why with an Auto fix that tries again.
 
-Auto-land (Nov 3 2026, Brett: "zero tokens for merging"; settings autoLand + landWaitUi, both on): land/land.mjs runs
+Auto-land (Nov 3 2026, Brett: "zero tokens for merging"; settings autoLand (off since Nov 4 2026: the merge queue merges) + landWaitUi (on)): land/land.mjs runs
 on the VPS host and lands every finished build with plain scripts (worktree cleaned, main merged in with the builds files
 newer-wins, PR opened, CI started), and writes land.json. Auto-merge reads it: finished builds' PRs go first in its
 dependency order, their main pull-ins are left to the host (GitHub's update would conflict on the builds store), and
@@ -205,8 +205,9 @@ class Pushes:
                 "autoMerge": raw.get("autoMerge") is not False,
                 # Every branch gets a PR (Oct 30 2026, Brett: "I want everything to need a PR"): on unless switched off.
                 "autoPr": raw.get("autoPr") is not False,
-                # Auto-land (Nov 3 2026, Brett: "zero tokens for merging"): land/land.mjs lands finished builds; on unless off.
-                "autoLand": raw.get("autoLand") is not False,
+                # Auto-land (Nov 3 2026, Brett: "zero tokens for merging"): land/land.mjs lands finished builds. Off unless
+                # switched on (Nov 4 2026, Brett: "Stop merging these things one at a time"): only the merge queue merges.
+                "autoLand": raw.get("autoLand") is True,
                 # UI Review stays the gate: a held PR waits and merges by itself once Brett approves. On unless off.
                 "landWaitUi": raw.get("landWaitUi") is not False,
                 # Merge queue (Nov 4 2026, Brett: "We're paying to do these CI checks twice."): each ready PR is tested

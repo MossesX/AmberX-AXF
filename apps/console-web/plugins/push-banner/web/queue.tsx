@@ -102,7 +102,7 @@ export function MergeQueueView({ compact = false }: { compact?: boolean }) {
             <li key={w.pr} className="axp-push-banner__item is-ci-failure">
               <span className="axp-push-banner__entry">
                 <span className="axp-push-banner__line"><AgentAvatar agent={w.agent || null} size="small" /><a className="axp-push-banner__name" href={w.url} target="_blank" rel="noreferrer">#{w.pr} {w.title}</a></span>
-                <span className="axp-push-banner__sub axp-mq__why">{w.why.replace(/^kicked out: /, '')}</span>
+                <span className="axp-push-banner__sub axp-mq__why">{(w.why || '').replace(/^kicked out: /, '')}</span>
               </span>
               <div className="axp-push-banner__acts" role="toolbar" aria-label={`Kicked out #${w.pr}`}><Button size="sm" tone="neutral" icon="plus" disabled={q.busy === w.pr} title="Put it back in the queue as it is" onClick={() => void command('add', { pr: w.pr }, `#${w.pr} is back in the queue.`)}>Add back</Button></div>
             </li>))}
@@ -116,7 +116,7 @@ export function MergeQueueView({ compact = false }: { compact?: boolean }) {
             <li key={w.pr} className="axp-push-banner__item">
               <span className="axp-push-banner__entry">
                 <span className="axp-push-banner__line"><AgentAvatar agent={w.agent || null} size="small" /><a className="axp-push-banner__name" href={w.url} target="_blank" rel="noreferrer">#{w.pr} {w.title}</a></span>
-                <span className="axp-push-banner__sub axp-mq__why">{w.why.replace(/^kicked out: /, '')}</span>
+                <span className="axp-push-banner__sub axp-mq__why">{(w.why || '').replace(/^kicked out: /, '')}</span>
               </span>
               {/by hand/.test(w.why || '') && <div className="axp-push-banner__acts" role="toolbar" aria-label={`Not queued #${w.pr}`}><Button size="sm" tone="neutral" icon="plus" disabled={q.busy === w.pr} onClick={() => void command('add', { pr: w.pr }, `#${w.pr} is back in the queue.`)}>Add to queue</Button></div>}
             </li>))}

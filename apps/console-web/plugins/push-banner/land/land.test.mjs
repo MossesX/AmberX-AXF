@@ -164,7 +164,7 @@ const api = async (method, path, body) => { calls.api.push({ method, path, body 
 const s = { repo, slug: 'MossesX/AmberX-AXF', dataDir: join(tmp, 'data'), archive: join(tmp, 'archive'), console: 'off', api: '', workflow: 'android.yml', projects, remote: 'origin', base: 'main' };
 mkdirSync(s.dataDir, { recursive: true });
 // these rounds check auto-land's own main merging; with the merge queue on, main is combined in on queue branches instead (merge-queue.test.mjs)
-writeFileSync(join(s.dataDir, 'config.json'), JSON.stringify({ mergeQueue: false }));
+writeFileSync(join(s.dataDir, 'config.json'), JSON.stringify({ mergeQueue: false, autoLand: true }));
 control(s, 'hold', 'held', { why: 'Brett wants to look first' });
 const git = makeGit(repo);
 const st = await round({ s, git, gh, api, agentJob: (job) => { calls.jobs.push(job); return { job: job.type, exit: 0 }; } });
@@ -212,6 +212,9 @@ writeFileSync(join(s.dataDir, 'config.json'), JSON.stringify({ autoLand: false }
 const n = calls.gh.length;
 const off = await round({ s, git, gh, api });
 check(off.on === false && calls.gh.length === n, 'Auto-land finished builds off = the runner does nothing');
+writeFileSync(join(s.dataDir, 'config.json'), JSON.stringify({}));
+const dflt = await round({ s, git, gh, api });
+check(dflt.on === false && calls.gh.length === n, 'Auto-land is off by default (Nov 4 2026: only the merge queue merges)');
 
 rmSync(tmp, { recursive: true, force: true });
 console.log(`auto-land: ${ok} checks passed${bad ? `, ${bad} FAILED` : ''}`);

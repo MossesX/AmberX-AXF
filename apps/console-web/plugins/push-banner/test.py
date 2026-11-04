@@ -704,9 +704,9 @@ check(mod.PUSHES._code_behind(CmpGh(2, ["Fix it", live[0]], ["_claude/THREADS.md
 check(mod.PUSHES._code_behind(CmpGh(0, [], []), "MossesX/AmberX-AXF", "main", "abc123") == 0, "not behind = 0")
 
 cfg0 = mod.PUSHES.config()
-check(cfg0["autoLand"] is True and cfg0["landWaitUi"] is True, "auto-land and Wait for UI Review are on by default")
+check(cfg0["autoLand"] is False and cfg0["landWaitUi"] is True, "auto-land is off by default (the merge queue merges), Wait for UI Review on")
 r = c.put("/p/config", json={"landWaitUi": False})
-check(r.status_code == 200 and r.json()["landWaitUi"] is False and r.json()["autoLand"] is True, "Wait for UI Review can be switched off")
+check(r.status_code == 200 and r.json()["landWaitUi"] is False and r.json()["autoLand"] is False, "Wait for UI Review can be switched off")
 check(c.put("/p/config", json={"autoLand": "yes"}).status_code == 400, "autoLand is true or false")
 c.put("/p/config", json={"landWaitUi": True})
 

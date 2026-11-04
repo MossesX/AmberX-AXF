@@ -25,7 +25,8 @@
  *   4. the reason it waits (land-core.mjs blockReason) written to land.json; a new reason is pushed to Brett once
  *      (console alert, key land:<build>), and resolved when it lands.
  *
- * Settings (push banner config.json, Settings → Plugins → Push banner → Auto-land): autoLand (on), landWaitUi (on).
+ * Settings (push banner config.json, Settings → Plugins → Push banner → Auto-land): autoLand (off since Nov 4 2026:
+ * only the merge queue merges; Brett: "Stop merging these things one at a time"), landWaitUi (on).
  * Environment: AXF_LAND_REPO (checkout to run git in; default this file's repo), AXF_PUSH_BANNER_DIR (data folder;
  * default <AXF_CONSOLE_ROOT or /opt/axf>/.axf-console/plugins/push-banner), AXF_LAND_REPO_SLUG (MossesX/AmberX-AXF),
  * AXF_LAND_CONSOLE (docker container of the console, axf-console; "off" = no console calls), AXF_LAND_ARCHIVE
@@ -70,18 +71,42 @@ export function makeGit(cwd) {
   };
 }
 
-/** GitHub REST with the token broker's token (never printed, never logged). */
+/** GitHub REST with the token broker's token (never printed, never logged).
+ *  Save compute (Brett, Nov 4 2026: "Save the compute"): every GET is cached with its ETag in the push banner's data
+ *  folder (gh-cache.json) and sent again as a conditional request; GitHub answers an unchanged resource with 304, which
+ *  doesn't count against the shared 5000/h limit. Reads stop when fewer than GH_RESERVE calls are left, so the console
+ *  and the reconciler keep theirs. `gh.calls` / `gh.cached` count this run's billed and free requests. */
+const GH_RESERVE = 300, GH_CACHE_MAX = 2000;
 export function makeGitHub(s, token = () => brokerToken(s)) {
-  let tok = null;
-  return async (method, path, body) => {
+  let tok = null, cache = null, dirty = false, remaining = Infinity;
+  const file = join(s.dataDir, 'gh-cache.json');
+  const save = () => {
+    if (!dirty) return;
+    const keys = Object.keys(cache);
+    if (keys.length > GH_CACHE_MAX) for (const k of keys.sort((a, b) => cache[a].at - cache[b].at).slice(0, keys.length - GH_CACHE_MAX)) delete cache[k];
+    try { writeJson(file, cache); dirty = false; } catch { /* cache is an optimisation only */ }
+  };
+  const gh = async (method, path, body) => {
     tok ??= token() || '';
     if (!tok) throw new Error('no GitHub token (framework/cli/github-token.mjs token)');
-    const r = await fetch(`${s.api}${path}`, { method, redirect: 'error', headers: { Authorization: `Bearer ${tok}`, Accept: 'application/vnd.github+json', 'User-Agent': 'axf-auto-land', ...(body ? { 'Content-Type': 'application/json' } : {}) }, body: body ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(20000) });
+    const get = method === 'GET';
+    cache ??= readJson(file, {}) || {};
+    const hit = get ? cache[path] : null;
+    if (get && remaining < GH_RESERVE) { if (hit) { gh.cached++; return hit.data; } const e = new Error(`GitHub calls held back (${remaining} left, reserve ${GH_RESERVE})`); e.status = 429; throw e; }
+    const r = await fetch(`${s.api}${path}`, { method, redirect: 'error', headers: { Authorization: `Bearer ${tok}`, Accept: 'application/vnd.github+json', 'User-Agent': 'axf-auto-land', ...(hit?.etag ? { 'If-None-Match': hit.etag } : {}), ...(body ? { 'Content-Type': 'application/json' } : {}) }, body: body ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(20000) });
+    const left = Number(r.headers.get('x-ratelimit-remaining'));
+    if (Number.isFinite(left) && r.headers.has('x-ratelimit-remaining')) remaining = left;
+    if (r.status === 304 && hit) { gh.cached++; hit.at = Date.now(); dirty = true; return hit.data; }
+    gh.calls++;
     const text = await r.text();
     const data = text ? (() => { try { return JSON.parse(text); } catch { return text; } })() : null;
     if (!r.ok) { const e = new Error(`GitHub ${r.status}: ${String(data?.message || text).slice(0, 200)}`); e.status = r.status; throw e; }
+    const etag = r.headers.get('etag');
+    if (get && etag) { cache[path] = { etag, data, at: Date.now() }; dirty = true; }
     return data;
   };
+  gh.calls = 0; gh.cached = 0; gh.save = save; gh.left = () => remaining;
+  return gh;
 }
 
 function brokerToken(s) {
@@ -108,7 +133,7 @@ export const readState = (s) => readJson(stateFile(s), { $axf: core.LAND_FRAME, 
 export const readControl = (s) => readJson(controlFile(s), { $axf: core.CONTROL_FRAME, holds: {}, now: [], after: {} });
 export function readConfig(s) {
   const c = readJson(join(s.dataDir, 'config.json'), {}) || {};
-  return { autoLand: c.autoLand !== false, landWaitUi: c.landWaitUi !== false };
+  return { autoLand: c.autoLand === true, landWaitUi: c.landWaitUi !== false };
 }
 export function control(s, cmd, build, opts = {}) {
   const d = core.applyControl(readControl(s), cmd, build, opts);
@@ -380,12 +405,15 @@ export async function main(argv) {
   const print = (o, text) => console.log(json ? JSON.stringify(o) : text);
   const known = core.LAND_COMMANDS.find((c) => c.cli === cmd);
   if (cmd === 'run') {
-    const st = await round({ s, dry, only: opt('only'), log: (m) => !json && console.error(m) });
+    const gh = makeGitHub(s); // one client per run: one ETag cache, one count
+    const st = await round({ s, gh, dry, only: opt('only'), log: (m) => !json && console.error(m) });
     // the merge queue takes its turn in the same round (same cron, same lock): it merges what auto-land made ready
     if (!opt('only')) {
-      try { const git = makeGit(s.repo); const mq = await queueRound({ s, git, gh: makeGitHub(s), api: makeConsole(s), dry, fetched: true, log: (m) => !json && console.error(m) }); st.queue = { on: mq.on, items: (mq.items || []).length, kicked: (mq.kicked || []).length }; }
+      try { const git = makeGit(s.repo); const mq = await queueRound({ s, git, gh, api: makeConsole(s), dry, fetched: true, log: (m) => !json && console.error(m) }); st.queue = { on: mq.on, items: (mq.items || []).length, kicked: (mq.kicked || []).length }; }
       catch (e) { if (!json) console.error(`merge queue: ${e.message}`); }
     }
+    gh.save(); st.github = { calls: gh.calls, cached: gh.cached, left: Number.isFinite(gh.left()) ? gh.left() : null };
+    if (!json) console.error(`github: ${gh.calls} billed call(s), ${gh.cached} answered from cache (304)`);
     return print(st, st.on === false ? 'auto-land is off (Settings → Plugins → Push banner → Auto-land)' : st.items.map(line).join('\n') || 'no finished builds to land');
   }
   if (cmd === 'queue') return queueMain(argv.slice(argv.indexOf('queue') + 1));

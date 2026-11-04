@@ -22,7 +22,7 @@
  *   5. queue branches no longer in the stack are deleted (a merged one is kept a while, so main's CI can see it
  *      already ran), and the repo variable AXF_MERGE_QUEUE follows the setting (on = PRs run the light checks).
  */
-import { mkdtempSync, readFileSync, renameSync, rmSync, writeFileSync, mkdirSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, renameSync, rmSync, writeFileSync, mkdirSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
@@ -179,6 +179,9 @@ export async function queueRound({ s, git, gh, api, dry = false, now = () => new
   }
   const d = q.decide(stack, Object.fromEntries(stack.map((e) => [e.pr, e.ci])));
   const merged = [...(prev.merged || [])].slice(-20);
+  // one deploy per stack: the console updater (deploy/install-console.sh) waits while this file is fresh
+  const holdDeploy = join(s.dataDir, 'queue-merging');
+  if (!dry && (d.merge || []).length) writeFileSync(holdDeploy, `${at}\n`);
   let newExpect = mainMoved ? mainSha : expect;
   for (const n of d.merge) {
     const e = stack.find((x) => x.pr === n);
@@ -192,6 +195,11 @@ export async function queueRound({ s, git, gh, api, dry = false, now = () => new
     if (!r.same) { log(`queue: main after #${n} differs in code from what was tested; the rest is rebuilt`); stack = []; break; }
     stack = stack.filter((x) => x.pr !== n);
   }
+  // part of the stack merged and the rest is still running: keep the deploy waiting for it (the 15-minute staleness in
+  // the updater bounds this); otherwise the stack is in, or nothing landed, and the update may run
+  const holding = (d.merge || []).length || existsSync(holdDeploy);
+  if (!dry && holding && stack.some((x) => x.ci !== 'failure' && x.ci !== 'success')) writeFileSync(holdDeploy, `${at}\n`);
+  else if (!dry) rmSync(holdDeploy, { force: true });
   const kicked = [...(prev.kicked || [])].slice(-20);
   if (d.kick && stack.some((x) => x.pr === d.kick)) {
     const i = stack.findIndex((x) => x.pr === d.kick); const e = stack[i];
@@ -299,7 +307,9 @@ export async function main(argv) {
   const print = (o, text) => console.log(json ? JSON.stringify(o) : text);
   if (cmd === 'run') {
     const git = makeGit(s.repo);
-    const st = await queueRound({ s, git, gh: makeGitHub(s), api: makeConsole(s), dry, log: (m) => !json && console.error(m) });
+    const gh = makeGitHub(s);
+    const st = await queueRound({ s, git, gh, api: makeConsole(s), dry, log: (m) => !json && console.error(m) });
+    gh.save(); if (!json) console.error(`github: ${gh.calls} billed call(s), ${gh.cached} answered from cache (304)`);
     return print(st, st.on === false ? 'the merge queue is off (Settings → Plugins → Push banner)' : (st.items || []).map(lineOf).join('\n') || 'the merge queue is empty');
   }
   if (cmd === 'list') {
