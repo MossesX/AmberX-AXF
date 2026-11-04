@@ -38,9 +38,13 @@ class FakeConsole:
     def __init__(self) -> None:
         self.calls: list[tuple[dict, list[str], str]] = []
 
-    def run(self, command: dict, grants: list[str] | None = None, by: str = "", audience: str = "owner") -> dict:
+    def run(self, command: dict, grants: list[str] | None = None, by: str = "", audience: str = "owner", wake_hidden: bool = False) -> dict:
         self.calls.append((command, list(grants or []), by))
+        self.wake_hidden = wake_hidden
         target, path = command.get("target"), str(command.get("path"))
+        if path == "asleep":  # the console tab is asleep in the background: Console commands queues it and wakes it
+            return {"ok": True, "item": {"label": "Builds"}, "queued": True, "delivered": [{"client": "cc-abc123", "ok": False, "pending": True}],
+                    "delivery": {"how": "waking", "id": "cq-1"}, "message": "no console is in front (the tab is asleep in the background): AmberX was asked to open the console"}
         if "control.console.write" not in (grants or []) and target == "console.actions" and path == "builds.delete":
             return {"ok": False, "code": "denied", "message": "act console.actions needs control.console.write"}
         known = {"console.screens": {"plan studio": "Plan Studio", "builds": "Builds"}, "console.settings": {"follow amber": "Follow Amber"}, "console.actions": {"builds.open": "Open builds"}}
@@ -155,6 +159,10 @@ ROLE["user"] = None
 svc = plugin_services.get("follow-amber@1")
 ok(svc is not None and svc.state()["on"] is True and svc.state()["clients"] == 1, "follow-amber@1 state")
 ok(svc.show("plan studio")["shown"] is True, "follow-amber@1 show")
+ok(fake.wake_hidden is True, "a show asks Console commands to wake a console that is asleep in the background")
+r = svc.show("asleep", kind="screen")
+ok(r["ok"] and r["shown"] is False and r.get("queued") and r["delivery"]["how"] == "waking", f"asleep: queued, waking ({r})")
+ok(r["message"].startswith("Builds: ") and "AmberX" in r["message"], f"asleep: the answer says it is waking the console, not 'opened' ({r['message']})")
 c.post(f"{P}/state", json={"on": False})
 n = len(fake.calls)
 ok(svc.show("plan studio")["shown"] is False and len(fake.calls) == n, "switched off again: nothing opens")

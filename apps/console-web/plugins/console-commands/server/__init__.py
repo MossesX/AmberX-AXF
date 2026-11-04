@@ -16,6 +16,12 @@ hello; the call waits up to a minute for it. When nothing connects within a few 
 asked through axHub (`amberx.open_url`) to open the console with `?axf-cmd=<id>`. The answer's `delivery.how` says
 how it got there: `live`, `after reconnect`, `woke via AmberX`, or `queued` (still waiting when the call returned).
 
+A console that is open but asleep (console-wake-finish, Nov 4 2026: Brett's phone tab in the background while he is on
+a voice call) still looks connected. With `wake_hidden` (Follow Amber's shows) a command that no console in front
+answers within FRONT_WAIT_S is queued for the next console in front, AmberX is asked at once, and the call answers
+`delivery.how: "waking"`; it runs when a console comes to the front (hello or seen with `front`), under the message
+id the sleeping tab already got, so that tab runs it once.
+
 Mounted twice: /api/plugins/console-commands/… (the plugin mount; the console client uses it) and /api/console/…
 (the contract path, main.py's CAPABILITY_MOUNTS; console token or a hub admin).
 
@@ -66,6 +72,7 @@ OWNER = "owner"
 DELIVERY_WAIT_S = 60.0  # how long a call waits for a queued (or reconnecting) command to reach a console
 WAKE_AFTER_S = 3.0      # no console connected this long after queuing → ask AmberX to open one
 WAKE_AGAIN_S = 45.0     # one wake per this long per user (Chrome takes a moment to open)
+FRONT_WAIT_S = 4.0      # Follow Amber: no console in front answered this long → it is asleep in the background, wake it
 CONSOLE_URL = (os.environ.get("AXF_CONSOLE_PUBLIC_URL") or "https://console.amberxai.com").rstrip("/")
 DATA_DIR = Path(os.environ.get("AXF_CONSOLE_COMMANDS_DATA_DIR") or ROOT / ".axf-console" / "plugins" / FOLDER)
 DEFAULTS: dict[str, Any] = {"wake": True, "ttlS": 120, "browser": "chrome"}
@@ -79,6 +86,7 @@ _queue: list[dict[str, Any]] = []            # commands that found no console: {
 _catalogs: dict[str, dict[str, Any]] = {}    # the last catalog each audience's console sent (checks a queued command early)
 _draining: set[str] = set()
 _woke_at: dict[str, float] = {}
+_late: dict[str, dict[str, Any]] = {}       # message id sent to a sleeping console → its wake queue entry (a late ack from the front ends it)
 
 
 # ---------------------------------------------------------------------- who is asking
@@ -179,9 +187,10 @@ def _push(c: dict[str, Any], message: dict[str, Any]) -> bool:
     return True
 
 
-def deliver(to: list[str], message: dict[str, Any], audience: str, wait: float = ACK_WAIT_S) -> list[dict[str, Any]]:
+def deliver(to: list[str], message: dict[str, Any], audience: str, wait: float = ACK_WAIT_S, strict: bool = False) -> list[dict[str, Any]]:
     """Send a console-command@1 to these consoles (the caller's only) and wait for their acks: a few seconds when the
-    stream is open, up to DELIVERY_WAIT_S when it is reconnecting (the message goes down as soon as it is back)."""
+    stream is open, up to DELIVERY_WAIT_S when it is reconnecting (the message goes down as soon as it is back);
+    `strict` = never longer than `wait` (Follow Amber wakes a console that doesn't answer instead)."""
     mid = str(message.get("id") or "")
     ev = threading.Event()
     with _lock:
@@ -189,12 +198,15 @@ def deliver(to: list[str], message: dict[str, Any], audience: str, wait: float =
         _acks[mid] = {"event": ev, "want": {c["id"] for c in targets}, "results": {}}
         live = [_push(c, message) for c in targets]
     if targets:
-        ev.wait(wait if all(live) else max(wait, DELIVERY_WAIT_S))
+        ev.wait(wait if all(live) or strict else max(wait, DELIVERY_WAIT_S))
     with _lock:
         a = _acks.pop(mid, {"results": {}})
     out = []
     for c, was_live in zip(targets, live):
         r = a["results"].get(c["id"])
+        if r:
+            with _lock:
+                r = {**r, "front": bool(_clients.get(c["id"], {}).get("front", True))}
         if r and not was_live:
             r = {**r, "afterReconnect": True}
         out.append(r if r else {"client": c["id"], "ok": False, "pending": True, "message": "sent; the console didn't answer yet (it runs it when the tab wakes)"})
@@ -281,8 +293,8 @@ def _hub_wake(url: str, browser: str) -> dict[str, Any]:
 WAKER: Callable[[str, str], dict[str, Any]] = _hub_wake  # tests swap in a fake phone
 
 
-def _wake_later(entry: dict[str, Any]) -> None:
-    """WAKE_AFTER_S after queuing: still no console → open one on the owner's phone (once per WAKE_AGAIN_S)."""
+def _wake_later(entry: dict[str, Any], delay: float | None = None) -> None:
+    """WAKE_AFTER_S (or `delay`) after queuing: still no console → open one on the owner's phone (once per WAKE_AGAIN_S)."""
     def go() -> None:
         with _lock:
             if entry["state"] != "queued":
@@ -307,7 +319,7 @@ def _wake_later(entry: dict[str, Any]) -> None:
             with _lock:
                 _woke_at.pop(audience, None)
 
-    t = threading.Timer(WAKE_AFTER_S, go)
+    t = threading.Timer(WAKE_AFTER_S if delay is None else delay, go)
     t.daemon = True
     t.start()
 
@@ -328,13 +340,21 @@ def _expire() -> None:
         _queue[:] = [e for e in _queue if e["state"] in ("queued", "delivering") or now - e["at"] < 600][-200:]
 
 
-def _enqueue(command: dict[str, Any], grants: list[str], by: str, audience: str) -> dict[str, Any]:
+def _enqueue(command: dict[str, Any], grants: list[str], by: str, audience: str, sent: str = "") -> dict[str, Any]:
+    """Queue a command for the next console. `sent` = the id of a message a sleeping (background) console already got:
+    the entry then waits for a console in front, AmberX is asked at once, and the console that wakes runs it under that
+    same id (so a tab that also gets the original message runs it once)."""
     ttl = float(settings()["ttlS"])
     e = {"id": f"cq-{int(_now() * 1000):x}-{os.urandom(3).hex()}", "audience": audience, "command": command, "grants": grants, "by": by,
-         "at": _now(), "expires": _now() + ttl, "state": "queued", "event": threading.Event(), "result": None, "wake": None, "picked": False}
+         "at": _now(), "expires": _now() + ttl, "state": "queued", "event": threading.Event(), "result": None, "wake": None, "picked": False,
+         "front": bool(sent), "sent": sent}
     with _lock:
         _queue.append(e)
-    _wake_later(e)
+        if sent:
+            _late[sent] = e
+            for k in [k for k, x in _late.items() if x["state"] != "queued"]:
+                del _late[k]
+    _wake_later(e, 0.0 if sent else None)
     return e
 
 
@@ -347,7 +367,9 @@ def queued_for(audience: str) -> list[dict[str, Any]]:
 
 
 def _how(e: dict[str, Any]) -> str:
-    return "woke via AmberX" if e["picked"] or (e["wake"] or {}).get("sent") else "after reconnect"
+    if e["picked"] or (e["wake"] or {}).get("sent"):
+        return "woke via AmberX"
+    return "when the console came to the front" if e.get("front") else "after reconnect"
 
 
 def drain(audience: str, pick: str = "") -> None:
@@ -363,8 +385,10 @@ def drain(audience: str, pick: str = "") -> None:
                     e["picked"] = True
     try:
         while True:
+            # a command that already reached a sleeping console waits for one in front (Brett has to see it)
+            front = any(c.get("front", True) for c in ready_clients(audience))
             with _lock:
-                e = next((x for x in _queue if x["audience"] == audience and x["state"] == "queued"), None)
+                e = next((x for x in _queue if x["audience"] == audience and x["state"] == "queued" and (front or not x.get("front"))), None)
                 if e is None:
                     return
                 e["state"] = "delivering"  # nobody else takes it: delivered once, even if two consoles say hello
@@ -377,7 +401,7 @@ def drain(audience: str, pick: str = "") -> None:
                         e["event"].set()
                 return
             if r.get("ok") and isinstance(d, dict):
-                message = {**(d.get("message") or {}), "delivery": "woke" if _how(e) == "woke via AmberX" else "queued"}
+                message = {**(d.get("message") or {}), "delivery": "woke" if _how(e) == "woke via AmberX" else "queued", **({"id": e["sent"]} if e.get("sent") else {})}
                 r["sent"] = message
                 r["delivered"] = deliver([str(x) for x in d.get("to") or []], message, audience, wait=10.0)
             r["delivery"] = {"how": _how(e), "id": e["id"], "queuedFor": round(_now() - e["at"], 1), **({"wake": e["wake"]} if e["wake"] else {})}
@@ -424,9 +448,13 @@ def _queueable(command: dict[str, Any], r: dict[str, Any]) -> bool:
     return not r.get("ok") and bool(r.get("noConsole")) and command.get("op") == "act" and to in ("recent", "all")
 
 
-def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", audience: str = OWNER, wait: float | None = None) -> dict[str, Any]:
+def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", audience: str = OWNER, wait: float | None = None,
+        wake_hidden: bool = False) -> dict[str, Any]:
     """One console command for a caller → the control@1 answer, with `delivered` (the consoles' acks) and `delivery`
-    (how it got there) on a sent command. No console connected: queued, and the call waits up to `wait` seconds."""
+    (how it got there) on a sent command. No console connected: queued, and the call waits up to `wait` seconds.
+    `wake_hidden` (Follow Amber): a console that is open but not in front (a phone tab asleep in the background) counts
+    as none: when no console in front answers within FRONT_WAIT_S the command is queued for one, AmberX is asked to open
+    the console, and it runs the moment a console comes to the front."""
     command = {k: v for k, v in (command or {}).items() if v not in (None, "")}
     grants = grants if grants is not None else ["*"]
     by = by or str(command.get("by") or "")
@@ -436,9 +464,27 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
     d = r.pop("deliver", None)
     if r.get("ok") and isinstance(d, dict):
         r["sent"] = d.get("message")
-        r["delivered"] = deliver([str(x) for x in d.get("to") or []], d.get("message") or {}, audience)
+        wake = wake_hidden and _queueable(command, {"noConsole": True})
+        r["delivered"] = deliver([str(x) for x in d.get("to") or []], d.get("message") or {}, audience, wait=FRONT_WAIT_S if wake else ACK_WAIT_S, strict=wake)
         r["delivery"] = {"how": "after reconnect" if r["delivered"] and all(x.get("afterReconnect") for x in r["delivered"] if x.get("ok")) and any(x.get("ok") for x in r["delivered"]) else "live"}
+        if wake and not any(x.get("ok") and x.get("front") for x in r["delivered"]):
+            r = _wake_hidden(command, grants, by, audience, r)
     _log(command, r, by, audience)
+    return r
+
+
+def _wake_hidden(command: dict[str, Any], grants: list[str], by: str, audience: str, r: dict[str, Any]) -> dict[str, Any]:
+    """No console in front took it (asleep in the background, or only hidden tabs): queue it for the next console in
+    front and wake one through AmberX now. The call answers at once; the command runs when a console comes forward."""
+    e = _enqueue(command, grants, by, audience, sent=str((r.get("sent") or {}).get("id") or ""))
+    if ready_clients(audience) and any(c.get("front", True) for c in ready_clients(audience)):
+        _drain_soon(audience)  # a console came forward meanwhile
+    st = settings()
+    waking = audience == OWNER and st["wake"]
+    r = {**r, "queued": True, "delivery": {"how": "waking" if waking else "queued", "id": e["id"], "expiresAt": _iso(e["expires"])},
+         "message": "no console is in front (the tab is asleep in the background): " + (
+             "AmberX was asked to open the console on Brett's phone, and it shows there as soon as the console wakes" if waking else
+             "it shows as soon as Brett brings the console to the front (waking through AmberX is off)") + f" (until {_iso(e['expires'])})"}
     return r
 
 
@@ -542,6 +588,9 @@ async def seen(request: Request) -> dict[str, Any]:
         _front_of(c, b)
         if b.get("used"):
             c["lastUsed"] = _now()
+        forward = c.get("front", True) and _ready(c) and any(e["audience"] == audience and e["state"] == "queued" for e in _queue)
+    if forward:
+        _drain_soon(audience)  # a console woke (came to the front): what waited for one runs now
     return {"ok": True}
 
 
@@ -612,6 +661,13 @@ async def ack(request: Request) -> dict[str, Any]:
             a["results"][cid] = {"client": cid, "ok": bool(b.get("ok")), "message": str(b.get("message") or "")[:300], "here": b.get("here") if isinstance(b.get("here"), dict) else {}}
             if set(a["results"]) >= a["want"]:
                 a["event"].set()
+        e = _late.get(mid)
+        if e is not None and e["audience"] == audience and e["state"] == "queued" and b.get("ok") and c.get("front", True):
+            # the sleeping console woke and ran the message it already had: nothing left to deliver
+            e["state"], e["result"] = "delivered", {"ok": True, "delivered": [{"client": cid, "ok": True, "message": str(b.get("message") or "")[:300]}],
+                                                    "delivery": {"how": "when the console came to the front", "id": e["id"], "queuedFor": round(_now() - e["at"], 1)}}
+            e["event"].set()
+            del _late[mid]
     return {"ok": True}
 
 
@@ -715,8 +771,8 @@ class ConsoleCommands:
 
     router = router
 
-    def run(self, command: dict[str, Any], grants: list[str] | None = None, by: str = "", audience: str = OWNER) -> dict[str, Any]:
-        return run(command, grants, by, audience)
+    def run(self, command: dict[str, Any], grants: list[str] | None = None, by: str = "", audience: str = OWNER, wake_hidden: bool = False) -> dict[str, Any]:
+        return run(command, grants, by, audience, wake_hidden=wake_hidden)
 
     def run_for(self, request: Request, command: dict[str, Any]) -> dict[str, Any]:
         return run_for(request, command)

@@ -15,7 +15,10 @@ about opens on his screen right away, and axHub's held / confirm calls pop up in
 Showing only ever navigates. A show runs through the Console commands plugin (capability console-commands@1) with the
 single grant `control.console.navigate`, so its runner refuses anything that would change data; screens, settings
 tabs and dialogs open, navigation-only actions run, nothing else. When no console is open, Console commands' own
-delivery applies (queue + wake through AmberX where that is installed).
+delivery applies (queue + wake through AmberX where that is installed). A console that is open but asleep in the
+background (Brett on a voice call in the Claude app) counts as none: when no console in front answers within 4 s the
+show is queued, AmberX opens the console, and it shows the moment a console comes to the front (console-wake-finish,
+Nov 4 2026); the answer then says `queued` + `delivery.how: "waking"` instead of `shown`.
 
 Approvals are decided in the browser, never here: the console's pop-up reads the hub's feed and decides with Brett's
 own signed-in hub session (lib-approvals / veto@1). This server holds no hub session and can't approve anything.
@@ -139,8 +142,12 @@ def _open(kind: str, name: str, to: str, by: str) -> dict[str, Any]:
     cmd: dict[str, Any] = {"op": "act", "target": TARGET_OF[kind], "path": name, "action": action, "by": by, "reason": "Follow Amber: show what Amber is talking about"}
     if to and to != "recent":
         cmd["input"] = {"to": to}
-    # navigate only: the runner refuses anything that would change data
-    return svc.run(cmd, NAVIGATE, by)
+    # navigate only: the runner refuses anything that would change data. A console that is open but asleep in the
+    # background counts as none: it is woken through AmberX and shows it when it comes to the front (console-wake-finish)
+    try:
+        return svc.run(cmd, NAVIGATE, by, wake_hidden=True)
+    except TypeError:  # an older Console commands plugin without wake_hidden
+        return svc.run(cmd, NAVIGATE, by)
 
 
 def show(target: str, kind: str = "", highlight: str = "", say: str = "", to: str = "recent", by: str = "amber") -> dict[str, Any]:
@@ -174,8 +181,11 @@ def show(target: str, kind: str = "", highlight: str = "", say: str = "", to: st
             item = r.get("item") or {}
             label = item.get("label") or name
             n = broadcast({"type": "show", "kind": k, "target": name, "label": label, "highlight": highlight, "say": say, "by": by})
-            r = {"ok": True, "shown": True, **base, "kind": k, "label": label, "consoles": n, "delivered": r.get("delivered") or [], **({"delivery": r["delivery"]} if r.get("delivery") else {}),
-                 "message": f"opened {label}" + (f" and highlighted {highlight}" if highlight else "")}
+            # queued = no console in front (none open, or asleep in the background): it shows when one wakes
+            queued = bool(r.get("queued"))
+            r = {"ok": True, "shown": not queued, **base, "kind": k, "label": label, "consoles": n, "delivered": r.get("delivered") or [], **({"delivery": r["delivery"]} if r.get("delivery") else {}),
+                 **({"queued": True} if queued else {}),
+                 "message": f"{label}: {r.get('message') or 'waiting for the console'}" if queued else f"opened {label}" + (f" and highlighted {highlight}" if highlight else "")}
     with _lock:
         _recent.appendleft({"at": _now_iso(), "by": by, "kind": r.get("kind", k), "target": name, "ok": bool(r.get("ok")), "shown": bool(r.get("shown")), "message": _text(r.get("message"))})
     return r

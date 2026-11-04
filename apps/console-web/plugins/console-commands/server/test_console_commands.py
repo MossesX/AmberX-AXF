@@ -303,6 +303,64 @@ wait_for(lambda: stream_open("late-0001"))
 j = client.post("/api/console/open", json={"screen": "plan studio"}).json()
 ok(j["ok"] and again and again[-1]["target"] == "plan-studio", f"re-hello after a restart, then commands go through ({j.get('delivery')})")
 
+# Follow Amber with the console asleep in the background (console-wake-finish, Nov 4 2026): the phone tab is connected
+# but not in front and never answers; within FRONT_WAIT_S the command is queued for a console in front and AmberX is
+# asked at once; a hidden console saying hello doesn't take it; it runs (once) when a console comes to the front
+cc.FRONT_WAIT_S = 0.4
+cc.WAKE_AGAIN_S = 0
+eq(client.post("/api/console/settings", json={"wake": True, "ttlS": 120}).json()["settings"]["wake"], True, "waking back on")
+with cc._lock:
+    for x in [k for k in cc._clients if k != "late-0001"]:
+        cc._clients.pop(x, None)
+    cc._queue.clear()
+client.post("/api/console/seen", json={"client": "late-0001", "front": False})
+asleep = len(again)
+with cc._lock:  # a frozen tab: its stream is open but nothing it gets is run
+    frozen_q = cc._clients["late-0001"]["queue"]
+    cc._clients["late-0001"]["queue"] = None
+    cc._clients["late-0001"]["loop"] = None
+woke_before = len(WOKEN)
+t0 = time.time()
+r = cc.run({"op": "act", "target": "console.screens", "path": "build orchestrator", "action": "open", "by": "amber"}, ["control.console.navigate"], "amber", cc.OWNER, wake_hidden=True)
+ok(time.time() - t0 < 3, f"the call answers soon after FRONT_WAIT_S, not after the full delivery wait ({time.time() - t0:.1f}s)")
+ok(r["ok"] and r.get("queued") and r["delivery"]["how"] == "waking", f"answered: waking the console ({r.get('delivery')})")
+ok("asleep in the background" in r["message"] and "AmberX was asked" in r["message"], f"the answer says why ({r['message']})")
+wait_for(lambda: len(WOKEN) > woke_before)
+eq(len(WOKEN), woke_before + 1, "AmberX asked once, at once")
+ok(WOKEN[-1][0].startswith(f"{cc.CONSOLE_URL}/?axf-cmd=cq-"), f"the wake URL names the queued command ({WOKEN[-1][0]})")
+pending = client.get("/api/console/queue").json()["items"]
+ok(any(x["state"] == "queued" and x["path"] == "build orchestrator" for x in pending), "it waits in the queue")
+# the sleeping tab's heartbeat hello (still hidden) doesn't take it
+client.post("/api/console/hello", json={"client": "late-0001", "front": False, "catalog": {**CATALOG, "items": CATALOG["items"][:-1]}})
+time.sleep(0.4)
+ok(any(x["state"] == "queued" for x in client.get("/api/console/queue").json()["items"]), "a hidden console saying hello doesn't take it")
+# Brett opens the console: the tab comes to the front and runs it, under the id it was first sent with
+with cc._lock:
+    cc._clients["late-0001"]["queue"] = frozen_q
+    cc._clients["late-0001"]["loop"] = cc._clients["late-0001"].get("loop") or None
+client.post("/api/console/bye", json={"client": "late-0001"})
+woken: list[dict] = []
+client.post("/api/console/hello", json={"client": "wake-front1", "front": True, "catalog": CATALOG, "used": True})
+fake_console("wake-front1", answers=woken)
+wait_for(lambda: stream_open("wake-front1"))
+client.post("/api/console/seen", json={"client": "wake-front1", "front": True, "used": True})
+wait_for(lambda: len(woken) >= 1)
+time.sleep(0.4)
+eq([m["target"] for m in woken], ["build-orchestrator"], "the console in front ran it, once")
+eq(woken[0]["id"], r["sent"]["id"], "under the id the sleeping tab got, so a tab holding both runs it once")
+eq(next(x for x in client.get("/api/console/queue").json()["items"] if x["path"] == "build orchestrator")["state"], "delivered", "the queue shows it delivered")
+eq(len(again), asleep, "the frozen tab ran nothing while asleep")
+# a console in front that answers: no wake at all
+woke_before = len(WOKEN)
+r = cc.run({"op": "act", "target": "console.screens", "path": "home", "action": "open"}, ["control.console.navigate"], "amber", cc.OWNER, wake_hidden=True)
+ok(r["ok"] and not r.get("queued") and r["delivery"]["how"] == "live", f"a console in front gets it live ({r.get('delivery')})")
+time.sleep(0.3)
+eq(len(WOKEN), woke_before, "nobody woken when a console in front answered")
+client.post("/api/console/bye", json={"client": "wake-front1"})
+cc.FRONT_WAIT_S = 4.0
+fake_console("late-0001", answers=again)
+wait_for(lambda: stream_open("late-0001"))
+
 # the console inside Molly (molly-console-commands, Nov 3 2026): it says where it runs and whether Molly shows it; a
 # command for "the console Brett is using" goes to the one in front, even when another was touched last
 molly: list[dict] = []
