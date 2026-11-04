@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 907,
- "updatedAt": "2026-11-04T19:28:09.496Z",
+ "rev": 908,
+ "updatedAt": "2026-11-04T19:28:33.323Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -82500,9 +82500,14 @@
    "branch": "claude/amberx-live-audio",
    "pr": "#335",
    "createdAt": "2026-11-04T19:08:27.526Z",
-   "updatedAt": "2026-11-04T19:28:07.311Z",
+   "updatedAt": "2026-11-04T19:28:32.043Z",
    "builtAt": "2026-11-04T19:27:33.720Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "PR #335 open (builds on #331, land it first). Banner item install-amberx-0.2.0 raised. Not tested on a real phone; manual steps in _claude/builds/reports/amberx-live-audio.md",
+     "at": "2026-11-04T19:28:32.043Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -82659,7 +82664,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
