@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 641,
- "updatedAt": "2026-11-04T11:12:52.141Z",
+ "rev": 642,
+ "updatedAt": "2026-11-04T11:13:21.224Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -72090,7 +72090,7 @@
    "branch": "claude/expenses-port",
    "pr": "",
    "createdAt": "2026-11-04T11:09:10.279Z",
-   "updatedAt": "2026-11-04T11:12:51.322Z",
+   "updatedAt": "2026-11-04T11:12:52.050Z",
    "builtAt": "",
    "notes": [
     {
@@ -72150,12 +72150,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-04T11:12:52.050Z",
+     "note": "git subtree add --prefix=apps/expenses (585ed90f8), 25 upstream commits kept",
+     "rev": 2,
      "createdAt": "2026-11-04T11:09:10.280Z",
-     "updatedAt": "2026-11-04T11:09:10.280Z"
+     "updatedAt": "2026-11-04T11:12:52.103Z"
     },
     {
      "id": "s3",
@@ -72254,7 +72254,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
