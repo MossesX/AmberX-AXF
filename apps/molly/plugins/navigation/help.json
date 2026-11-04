@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "navigation-help",
+  "name": "Navigation help",
+  "version": "0.1.0",
+  "description": "Help mode entries for Molly's Navigation plugin (help@1).",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:navigation",
+    "entries": [
+      { "target": "nav", "title": "Navigation", "text": "Tap an app to open it and slide open its own pages under it. Right-click the navigation for Navigation settings." },
+      { "target": "nav-item", "title": "Navigation item", "text": "Opens this page. An item with an arrow opens a sub menu; tap it again on its own page to close it." },
+      { "target": "action:navigation.settings", "title": "Navigation settings", "text": "Colours, fonts, icons, density, width, the sub-menu animation, behaviour and the order of the apps. Changes show at once and apply in every app that uses sub menus." },
+      { "target": "action:navigation.collapse", "title": "Collapse to icons", "text": "Folds the navigation to its icons, or opens it again." },
+      { "target": "action:navigation.reset", "title": "Reset navigation", "text": "Drops every change and goes back to the preset." }
+    ],
+    "intros": []
+  }
+}

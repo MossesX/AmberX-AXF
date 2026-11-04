@@ -15,6 +15,7 @@ import { cardErrors } from './engines/card-rules.mjs';
 import { behaviorErrors } from './engines/behavior';
 import { dockLayoutErrors } from './engines/dock';
 import { xlayoutErrors } from './engines/xlayout';
+import { navStyleErrors } from './engines/navstyle-rules.mjs';
 
 export interface ValidationResult {
   ok: boolean;
@@ -114,6 +115,8 @@ export function validateAsset(raw: unknown): ValidationResult {
   if (raw.type === 'dock-layout') errors.push(...dockLayoutErrors(data));
   // xlayout@1 (core/engines/xlayout.ts): apps, merge modes, IDE block, three toolbar slots
   if (raw.type === 'xlayout') errors.push(...xlayoutErrors(data));
+  // nav-style@1: ONE validator shared with control@1 and the build engine (core/engines/navstyle-rules.mjs)
+  if (raw.type === 'nav-style') errors.push(...navStyleErrors(data));
   // typography@1 / density@1 / sizing@1: ONE validator shared with the build engine (core/engines/scale-rules.mjs)
   errors.push(...scaleErrors(raw.type, data));
   // help@1: ONE validator shared with the build engine (core/engines/help-rules.mjs)

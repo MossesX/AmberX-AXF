@@ -6,8 +6,8 @@
  "project": "other",
  "title": "# Build: land-round-2 (Current profile) - catch up and land the rest, Molly first Book to **Landin' Lenny**. Register i…",
  "startedAt": "2026-11-04T10:43:25.662Z",
- "endedAt": "2026-11-04T12:35:46.983Z",
- "minutes": 112,
+ "endedAt": "2026-11-04T12:16:52.140Z",
+ "minutes": 93,
  "system": {
   "host": "srv1837178",
   "container": "",
@@ -20,7 +20,7 @@
   "os": "linux 6.8.0-147-generic",
   "cwd": "/root/axf-builds/land-round-2",
   "repo": "",
-  "branch": "land/296"
+  "branch": "land/295"
  },
  "user": "Brett (root)",
  "models": [
@@ -209,15 +209,15 @@
    "text": "<task-notification> <task-id>bz6vm0elb</task-id> <tool-use-id>toolu_01Gf6R8m4fGHsLavcKJPVFLs</tool-use-id> <output-file>/tmp/claude-0/-root-axf-builds-land-round-2/62479a11-a518-4489-b763-1cc1815b698c/tasks/bz6vm0elb.output</output-file> <status>completed</status> <summary>Background command \"Wait for 294 CI\" completed (exit code 0)</summary> </task-notification>",
    "model": "claude-opus-5-5",
    "tokens": {
-    "input": 20,
-    "output": 3860,
-    "cacheRead": 2579513,
-    "cacheWrite": 5507,
+    "input": 18,
+    "output": 3850,
+    "cacheRead": 2290486,
+    "cacheWrite": 4945,
     "thinking": 583
    },
-   "costUsd": 0.6209,
+   "costUsd": 0.5601,
    "costEstimated": false,
-   "seconds": 68,
+   "seconds": 67,
    "tools": {
     "Bash": 10
    },
@@ -228,92 +228,7 @@
     "pending:land-round-2",
     "plan:land-round-2"
    ],
-   "output": "#295's CI is running."
-  },
-  {
-   "i": 8,
-   "at": "2026-11-04T12:23:30.106Z",
-   "kind": "task-notification",
-   "text": "<task-notification> <task-id>bcit30nk1</task-id> <tool-use-id>toolu_01Vbo5addxr8meqPytnA1RBU</tool-use-id> <output-file>/tmp/claude-0/-root-axf-builds-land-round-2/62479a11-a518-4489-b763-1cc1815b698c/tasks/bcit30nk1.output</output-file> <status>completed</status> <summary>Background command \"Wait for 295 CI\" completed (exit code 0)</summary> </task-notification>",
-   "model": "claude-opus-5-5",
-   "tokens": {
-    "input": 50,
-    "output": 7734,
-    "cacheRead": 7156894,
-    "cacheWrite": 16662,
-    "thinking": 1416
-   },
-   "costUsd": 1.6696,
-   "costEstimated": false,
-   "seconds": 173,
-   "tools": {
-    "Bash": 24
-   },
-   "commands": 24,
-   "files": [],
-   "changeIds": [],
-   "features": [
-    "pending:land-round-2",
-    "plan:land-round-2"
-   ],
-   "output": "Local CI running on #296; real CI running on #295."
-  },
-  {
-   "i": 9,
-   "at": "2026-11-04T12:26:58.195Z",
-   "kind": "task-notification",
-   "text": "<task-notification> <task-id>bsp2j7rjy</task-id> <tool-use-id>toolu_01WBUrsUXEhaNTjSmZErXhWm</tool-use-id> <output-file>/tmp/claude-0/-root-axf-builds-land-round-2/62479a11-a518-4489-b763-1cc1815b698c/tasks/bsp2j7rjy.output</output-file> <status>failed</status> <summary>Background command \"Wait for 295 CI\" failed with exit code 1</summary> </task-notification>",
-   "model": "claude-opus-5-5",
-   "tokens": {
-    "input": 18,
-    "output": 2631,
-    "cacheRead": 2469026,
-    "cacheWrite": 5235,
-    "thinking": 1090
-   },
-   "costUsd": 0.5726,
-   "costEstimated": false,
-   "seconds": 95,
-   "tools": {
-    "Bash": 7
-   },
-   "commands": 7,
-   "files": [],
-   "changeIds": [],
-   "features": [
-    "pending:land-round-2",
-    "plan:land-round-2"
-   ],
-   "output": "Local CI on #296 is running; the GitHub budget resets at 13:05 UTC."
-  },
-  {
-   "i": 10,
-   "at": "2026-11-04T12:35:24.265Z",
-   "kind": "task-notification",
-   "text": "<task-notification> <task-id>b8ldptjx1</task-id> <tool-use-id>toolu_01D3poKQvFH517jfE9u7134W</tool-use-id> <output-file>/tmp/claude-0/-root-axf-builds-land-round-2/62479a11-a518-4489-b763-1cc1815b698c/tasks/b8ldptjx1.output</output-file> <status>completed</status> <summary>Background command \"Run local CI on 296\" completed (exit code 0)</summary> </task-notification>",
-   "model": "claude-opus-5-5",
-   "tokens": {
-    "input": 10,
-    "output": 1636,
-    "cacheRead": 1569539,
-    "cacheWrite": 4478,
-    "thinking": 416
-   },
-   "costUsd": 0.3691,
-   "costEstimated": false,
-   "seconds": 23,
-   "tools": {
-    "Bash": 4,
-    "TaskStop": 1
-   },
-   "commands": 4,
-   "files": [],
-   "changeIds": [],
-   "features": [
-    "pending:land-round-2",
-    "plan:land-round-2"
-   ],
-   "output": "Baseline (main) and #296 local runs are both going; I'll diff them when done."
+   "output": "Molly typechecks and fixtures are stable. Waiting on #295's CI."
   }
  ],
  "files": [],
@@ -330,17 +245,17 @@
  "notes": [],
  "totals": {
   "prompts": 1,
-  "turns": 10,
-  "input": 554,
-  "output": 92586,
-  "cacheRead": 55640941,
-  "cacheWrite": 303068,
-  "thinking": 19171,
-  "costUsd": 14.4979,
+  "turns": 7,
+  "input": 474,
+  "output": 80575,
+  "cacheRead": 44156455,
+  "cacheWrite": 276131,
+  "thinking": 16249,
+  "costUsd": 11.8258,
   "costEstimated": false,
-  "toolCalls": 267,
-  "commands": 261,
+  "toolCalls": 231,
+  "commands": 226,
   "filesTouched": 0
  },
- "ingestedAt": "2026-11-04T12:35:47.592Z"
+ "ingestedAt": "2026-11-04T12:16:53.374Z"
 }

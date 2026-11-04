@@ -1,0 +1,329 @@
+{
+ "$axf": "bugs@1",
+ "rev": 8,
+ "updatedAt": "2026-11-04T13:30:41.965Z",
+ "settings": {
+  "autoOptimize": false,
+  "maxPerBuild": 3,
+  "minScore": 2,
+  "askAi": false,
+  "chat": true,
+  "tone": "street",
+  "whenBounced": "reroute",
+  "bouncesBeforeAsk": 3,
+  "scope": "profile",
+  "freshDays": 21
+ },
+ "settingsAt": "",
+ "bugs": [
+  {
+   "$axf": "bug@1",
+   "id": "b-build-rows-dead",
+   "title": "Build rows don't open and step actions are dead",
+   "details": "",
+   "status": "in-build",
+   "severity": "urgent",
+   "app": "console-web",
+   "area": "build-manager",
+   "tags": [
+    "build-manager",
+    "builds"
+   ],
+   "files": [],
+   "reportedBy": "brett",
+   "reportedAt": "2026-11-04T00:00:00Z",
+   "said": "Build rows don't open, step actions dead.",
+   "build": "hotfix-build-manager",
+   "profile": "current",
+   "fixedPr": "",
+   "order": 0,
+   "needsBrett": false,
+   "candidates": [],
+   "bounces": 0,
+   "history": [
+    {
+     "at": "2026-11-04T13:30:41.965Z",
+     "by": "brett",
+     "what": "added"
+    },
+    {
+     "at": "2026-11-04T13:30:41.965Z",
+     "by": "brett",
+     "what": "moved to hotfix-build-manager"
+    }
+   ],
+   "createdAt": "2026-11-04T13:30:41.965Z",
+   "updatedAt": "2026-11-04T13:30:41.965Z",
+   "deleted": false
+  },
+  {
+   "$axf": "bug@1",
+   "id": "b-running-count-stale",
+   "title": "Running count is wrong and statuses go stale",
+   "details": "",
+   "status": "in-build",
+   "severity": "high",
+   "app": "console-web",
+   "area": "build-manager",
+   "tags": [
+    "build-manager",
+    "status"
+   ],
+   "files": [],
+   "reportedBy": "brett",
+   "reportedAt": "2026-11-04T00:00:00Z",
+   "said": "Running count wrong, stale statuses.",
+   "build": "hotfix-build-manager",
+   "profile": "current",
+   "fixedPr": "",
+   "order": 1,
+   "needsBrett": false,
+   "candidates": [],
+   "bounces": 0,
+   "history": [
+    {
+     "at": "2026-11-04T13:30:41.965Z",
+     "by": "brett",
+     "what": "added"
+    },
+    {
+     "at": "2026-11-04T13:30:41.965Z",
+     "by": "brett",
+     "what": "moved to hotfix-build-manager"
+    }
+   ],
+   "createdAt": "2026-11-04T13:30:41.965Z",
+   "updatedAt": "2026-11-04T13:30:41.965Z",
+   "deleted": false
+  },
+  {
+   "$axf": "bug@1",
+   "id": "b-terminal-jumps-front",
+   "title": "Terminal jumps to the front on new sessions; tooltips and tap-to-confirm",
+   "details": "",
+   "status": "in-build",
+   "severity": "high",
+   "app": "console-web",
+   "area": "console-terminal",
+   "tags": [
+    "terminal",
+    "tap-confirm"
+   ],
+   "files": [],
+   "reportedBy": "brett",
+   "reportedAt": "2026-11-04T00:00:00Z",
+   "said": "I don't want the terminal to come to the front on every session.",
+   "build": "terminal-no-focus",
+   "profile": "current",
+   "fixedPr": "",
+   "order": 2,
+   "needsBrett": false,
+   "candidates": [],
+   "bounces": 0,
+   "history": [
+    {
+     "at": "2026-11-04T13:30:41.965Z",
+     "by": "brett",
+     "what": "added"
+    },
+    {
+     "at": "2026-11-04T13:30:41.965Z",
+     "by": "brett",
+     "what": "moved to terminal-no-focus"
+    }
+   ],
+   "createdAt": "2026-11-04T13:30:41.965Z",
+   "updatedAt": "2026-11-04T13:30:41.965Z",
+   "deleted": false
+  },
+  {
+   "$axf": "bug@1",
+   "id": "b-molly-console-commands",
+   "title": "Console embedded in Molly doesn't receive commands",
+   "details": "",
+   "status": "in-build",
+   "severity": "high",
+   "app": "molly",
+   "area": "console-commands",
+   "tags": [
+    "molly",
+    "embed",
+    "commands"
+   ],
+   "files": [],
+   "reportedBy": "brett",
+   "reportedAt": "2026-11-04T00:00:00Z",
+   "said": "",
+   "build": "land-round-2",
+   "profile": "current",
+   "fixedPr": "",
+   "order": 3,
+   "needsBrett": false,
+   "candidates": [],
+   "bounces": 0,
+   "history": [
+    {
+     "at": "2026-11-04T13:30:41.965Z",
+     "by": "brett",
+     "what": "added"
+    },
+    {
+     "at": "2026-11-04T13:30:41.965Z",
+     "by": "brett",
+     "what": "moved to land-round-2"
+    }
+   ],
+   "createdAt": "2026-11-04T13:30:41.965Z",
+   "updatedAt": "2026-11-04T13:30:41.965Z",
+   "deleted": false
+  },
+  {
+   "$axf": "bug@1",
+   "id": "b-window-size-memory",
+   "title": "Windows don't remember their size on reopen",
+   "details": "",
+   "status": "confirmed",
+   "severity": "normal",
+   "app": "console-web",
+   "area": "windows",
+   "tags": [
+    "windows",
+    "resize"
+   ],
+   "files": [],
+   "reportedBy": "brett",
+   "reportedAt": "2026-11-04T00:00:00Z",
+   "said": "",
+   "build": "",
+   "profile": "current",
+   "fixedPr": "",
+   "order": 4,
+   "needsBrett": false,
+   "candidates": [],
+   "bounces": 0,
+   "history": [
+    {
+     "at": "2026-11-04T13:30:41.965Z",
+     "by": "brett",
+     "what": "added"
+    }
+   ],
+   "createdAt": "2026-11-04T13:30:41.965Z",
+   "updatedAt": "2026-11-04T13:30:41.965Z",
+   "deleted": false
+  },
+  {
+   "$axf": "bug@1",
+   "id": "b-terminal-opens-in-wording",
+   "title": "Terminal 'Opens in' description wording is wrong ('Where Open a tab opens')",
+   "details": "",
+   "status": "confirmed",
+   "severity": "low",
+   "app": "console-web",
+   "area": "console-terminal",
+   "tags": [
+    "terminal",
+    "settings",
+    "wording"
+   ],
+   "files": [],
+   "reportedBy": "brett",
+   "reportedAt": "2026-11-04T00:00:00Z",
+   "said": "",
+   "build": "",
+   "profile": "current",
+   "fixedPr": "",
+   "order": 5,
+   "needsBrett": false,
+   "candidates": [],
+   "bounces": 0,
+   "history": [
+    {
+     "at": "2026-11-04T13:30:41.965Z",
+     "by": "brett",
+     "what": "added"
+    }
+   ],
+   "createdAt": "2026-11-04T13:30:41.965Z",
+   "updatedAt": "2026-11-04T13:30:41.965Z",
+   "deleted": false
+  },
+  {
+   "$axf": "bug@1",
+   "id": "b-banners-one-colour",
+   "title": "Banners all turn one colour on some themes",
+   "details": "",
+   "status": "in-build",
+   "severity": "normal",
+   "app": "console-web",
+   "area": "banner tokens",
+   "tags": [
+    "banners",
+    "theme",
+    "tokens"
+   ],
+   "files": [],
+   "reportedBy": "brett",
+   "reportedAt": "2026-11-04T00:00:00Z",
+   "said": "",
+   "build": "app-style-override",
+   "profile": "current",
+   "fixedPr": "",
+   "order": 6,
+   "needsBrett": false,
+   "candidates": [],
+   "bounces": 0,
+   "history": [
+    {
+     "at": "2026-11-04T13:30:41.965Z",
+     "by": "brett",
+     "what": "added"
+    },
+    {
+     "at": "2026-11-04T13:30:41.965Z",
+     "by": "brett",
+     "what": "moved to app-style-override"
+    }
+   ],
+   "createdAt": "2026-11-04T13:30:41.965Z",
+   "updatedAt": "2026-11-04T13:30:41.965Z",
+   "deleted": false
+  },
+  {
+   "$axf": "bug@1",
+   "id": "b-github-rate-limit",
+   "title": "GitHub token rate-limited (shared PAT)",
+   "details": "Needs Brett to finish the GitHub App user authorization (Settings → Plugins → GitHub) so calls stop sharing the PAT.",
+   "status": "confirmed",
+   "severity": "high",
+   "app": "console-web",
+   "area": "github-app",
+   "tags": [
+    "github",
+    "token"
+   ],
+   "files": [],
+   "reportedBy": "brett",
+   "reportedAt": "2026-11-04T00:00:00Z",
+   "said": "",
+   "build": "",
+   "profile": "current",
+   "fixedPr": "",
+   "order": 7,
+   "needsBrett": false,
+   "candidates": [],
+   "bounces": 0,
+   "history": [
+    {
+     "at": "2026-11-04T13:30:41.965Z",
+     "by": "brett",
+     "what": "added"
+    }
+   ],
+   "createdAt": "2026-11-04T13:30:41.965Z",
+   "updatedAt": "2026-11-04T13:30:41.965Z",
+   "deleted": false
+  }
+ ],
+ "undo": []
+}
