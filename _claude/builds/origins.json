@@ -760,6 +760,18 @@
    "from": "detail",
    "addenda": []
   },
+  "drag-to-tab": {
+   "said": "I want to be able to drag [items] to their containers and drop them as new tabs. Like grab something from the navigation menu, or from one tab, drag it over to another area and drop it as a new tab.",
+   "at": "2026-11-04T00:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "element-inspector": {
    "said": "Left click only. Press-drag: panel follows, live updates to element under pointer. Release closes. Double click pins; pinned panel drags and resizes. Current fields + size.",
    "at": "2026-10-30",
