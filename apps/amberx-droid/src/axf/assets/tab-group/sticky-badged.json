@@ -1,0 +1,25 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "sticky-badged",
+  "name": "Sticky with badges",
+  "version": "1.0.0",
+  "description": "Boxed tabs that stay at the top while the panel scrolls, fold to the active tab, close and reorder where the host allows, and show counts.",
+  "author": "AmberX AXF",
+  "tags": ["sticky", "boxed", "closable", "reorderable", "badges"],
+  "data": {
+    "style": "boxed",
+    "align": "start",
+    "position": "top",
+    "density": "regular",
+    "overflow": "scroll",
+    "display": "both",
+    "divider": true,
+    "sticky": true,
+    "collapsible": true,
+    "closable": true,
+    "reorderable": true,
+    "badges": true,
+    "rememberLast": true
+  }
+}

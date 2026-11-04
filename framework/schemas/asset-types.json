@@ -402,8 +402,8 @@
         "divider": "boolean, default true — the rule under the row",
         "sticky": "boolean, default false — the row stays at the top of its scrolling panel",
         "collapsible": "boolean, default false — a fold button leaves only the active tab (per device)",
-        "closable": "boolean, default false — tabs get a close button where the host allows closing",
-        "reorderable": "boolean, default false — tabs can be dragged into another order where the host allows it",
+        "closable": "boolean, default true — tabs get a close button where the host allows closing (false hides it)",
+        "reorderable": "boolean, default true — tabs can be dragged into another order where the host allows it (false turns it off)",
         "badges": "boolean, default true — count badges on tabs",
         "rememberLast": "boolean, default false — the row reopens on the tab it was on last time (per device)"
       },

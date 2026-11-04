@@ -42,6 +42,7 @@ import {
   setAllBannersHidden, setBannerHidden, setBannerTimer, showAllBanners, anyBannerHide, type BannerHideState,
 } from '../../core/engines/bannerhide';
 import { Icon } from './Icon';
+import { TabGroup } from './TabGroup';
 import { LookEditor, LookLevelSwitch } from './LookEditor';
 import { LOOK_LEVELS, lookChanged, lookCss, lookPrefs, normalizeLook, type LookLevel, type LookValues } from '../../core/engines/looktokens';
 import { useAxfState, useRuntime } from '../AxfProvider';
@@ -482,13 +483,7 @@ export function BannerSettingsPanel({ initial }: { initial?: string }) {
   return (
     <div className="fx-banner-settings">
       <ApplyToAllLook />
-      <div className="fx-banner-settings__tabs" role="tablist" aria-label="Banners">
-        {list.map((x) => (
-          <button key={x.id} type="button" role="tab" aria-selected={x.id === tab} className={`fx-banner-settings__tab${x.id === tab ? ' is-on' : ''}`} onClick={() => setTab(x.id)}>
-            <Icon name={x.icon ?? 'bell'} size={14} />{bannerLabel(x)}
-          </button>
-        ))}
-      </div>
+      <TabGroup id="banner-settings.banners" label="Banners" className="fx-banner-settings__tabs" value={tab} onChange={setTab} tabs={list.map((x) => ({ value: x.id, label: bannerLabel(x), icon: x.icon ?? 'bell' }))} />
       {b && (
         <div className="fx-stack">
           <Section title="Hide">

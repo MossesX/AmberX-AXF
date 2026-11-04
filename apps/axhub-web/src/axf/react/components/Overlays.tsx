@@ -136,9 +136,16 @@ export function ContextMenuHost() {
     const open = (target: Element | null, x: number, y: number) => {
       // one host per interface scope: only the host of the scope the pointer is in opens the menu
       if ((target?.closest('[data-fx-scope]')?.getAttribute('data-fx-scope') ?? '') !== scope) return;
-      const el = target?.closest('[data-fx-ctx-target]');
-      const name = el?.getAttribute('data-fx-ctx-target') ?? 'default';
-      rt.openContext(x, y, name, el?.getAttribute('data-fx-ctx-payload') ?? undefined);
+      // chrome-settings@1 (Nov 4 2026): a toolbar, a tab row or a nav that names no target is still one, so every
+      // toolbar / tab group / navigation menu gets Settings / Change / Move without an attribute of its own
+      const el = target?.closest('[data-fx-ctx-target], [role="toolbar"], [role="tablist"], nav');
+      const own = el?.getAttribute('data-fx-ctx-target');
+      const name = own ?? (el?.getAttribute('role') === 'toolbar' ? 'toolbar' : el?.getAttribute('role') === 'tablist' ? 'tab-group' : el?.tagName === 'NAV' && el.getAttribute('data-axf-not-nav') === null ? 'nav' : 'default');
+      if (own) { rt.openContext(x, y, name, el?.getAttribute('data-fx-ctx-payload') ?? undefined); return; }
+      // an implicit target's instance id: its settings id, else its accessible name as a slug
+      const label = name === 'toolbar' ? el?.getAttribute('data-axf-toolbar') ?? el?.getAttribute('data-axf-toolbar-asset') ?? el?.getAttribute('aria-label') : name === 'tab-group' ? el?.getAttribute('data-axf-tab-group') ?? el?.getAttribute('aria-label') : name === 'nav' ? el?.getAttribute('data-axf-nav') ?? el?.getAttribute('aria-label') : null;
+      const slug = label ? label.toLowerCase().replace(/[^a-z0-9._:/-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 120) : '';
+      rt.openContext(x, y, name, slug || undefined);
     };
     const onCtx = (e: MouseEvent) => {
       // A touch long-press also fires the browser's own contextmenu: the long-press timer handles it, once.

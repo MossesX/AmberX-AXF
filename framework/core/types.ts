@@ -495,9 +495,9 @@ export interface TabGroupData {
   sticky?: boolean;
   /** a fold button hides every tab but the active one (per device) */
   collapsible?: boolean;
-  /** tabs show a close button where the host allows closing */
+  /** tabs show a close button where the host allows closing (default true; false hides it) */
   closable?: boolean;
-  /** tabs can be dragged into another order where the host allows it */
+  /** tabs can be dragged into another order where the host allows it (default true; false turns it off) */
   reorderable?: boolean;
   /** count badges on tabs (default true) */
   badges?: boolean;

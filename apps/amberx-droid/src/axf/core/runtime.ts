@@ -2491,7 +2491,9 @@ export class AxfRuntime {
       if (Object.keys(this.hostArrangement(host)).length) items.push({ id: `widgets-reset-${host}`, label: 'Put widgets back', icon: 'undo', action: `widgets.reset:${host}` });
       return items;
     });
-    this.contextExtras.set('tab-group', () => wm.groupMenu());
+    // Window tab groups (payload = a group id) get the windowing menu; every other tab row (a TabGroup component,
+    // payload = its settings id) gets only the shared chrome block (react/components/ChromeContext.tsx).
+    this.contextExtras.set('tab-group', (_t, payload) => (payload && wm.state.groups[payload] ? wm.groupMenu() : []));
     this.contextExtras.set('window-title', () => wm.windowMenu());
   }
 }

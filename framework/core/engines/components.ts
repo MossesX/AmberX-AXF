@@ -153,7 +153,8 @@ export function contextMenuStyle(c: ContextMenuData): StyleOutput {
 
 /* ---------- tab-group: every tab row (page tabs + window tab bars) ---------- */
 
-export const TAB_GROUP_DEFAULT: Required<TabGroupData> = { style: 'underline', align: 'start', position: 'top', density: 'regular', overflow: 'scroll', display: 'both', showIcons: true, divider: true, sticky: false, collapsible: false, closable: false, reorderable: false, badges: true, rememberLast: false };
+// closable / reorderable default on: they only show where the host passes onClose / onReorder, so an asset turns them off
+export const TAB_GROUP_DEFAULT: Required<TabGroupData> = { style: 'underline', align: 'start', position: 'top', density: 'regular', overflow: 'scroll', display: 'both', showIcons: true, divider: true, sticky: false, collapsible: false, closable: true, reorderable: true, badges: true, rememberLast: false };
 export const TAB_GROUP_STYLES = ['underline', 'pills', 'boxed', 'segmented', 'plain', 'chips'] as const;
 export const TAB_GROUP_POSITIONS = ['top', 'bottom', 'left', 'right'] as const;
 export const TAB_GROUP_OVERFLOWS = ['scroll', 'wrap', 'more', 'dropdown'] as const;

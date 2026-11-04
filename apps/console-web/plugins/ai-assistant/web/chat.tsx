@@ -5,7 +5,7 @@
  * cards. Used full-page (view "ai-assistant") and inside the chat dialog ("ai-assistant.chat").
  */
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ClipboardEvent, type DragEvent, type KeyboardEvent } from 'react';
-import { Button, Chip, Icon, Markdown, Slot, useAxfState, useRuntime, useSlotFilled } from '@console/axf/react';
+import { Button, Chip, Icon, Markdown, Slot, TabGroup, useAxfState, useRuntime, useSlotFilled } from '@console/axf/react';
 import { ChangeBatchCard, readEventStream, type Batch } from '@console/changeBatch';
 import { pluginFetch } from '@console/plugins';
 import { ApprovalsBadge } from '@console/axf/libs/approvals/react';
@@ -340,10 +340,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
             <button type="button" className="fx-iconbtn" aria-label="Hide conversations" onClick={() => setShowList(false)}><Icon name="x" size={14} /></button>
           </div>
           <input className="fx-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search conversations" aria-label="Search conversations" />
-          <div className="fx-tabs axp-ai-assistant__tabs" role="tablist">
-            <button type="button" role="tab" className={`fx-tab axp-ai-assistant__tab${!archived ? ' is-active' : ''}`} aria-selected={!archived} onClick={() => setArchived(false)}>Chats</button>
-            <button type="button" role="tab" className={`fx-tab axp-ai-assistant__tab${archived ? ' is-active' : ''}`} aria-selected={archived} onClick={() => setArchived(true)}>Archived</button>
-          </div>
+          <TabGroup id="ai-assistant.chats" label="Conversations" className="axp-ai-assistant__tabs" value={archived ? 'archived' : 'chats'} onChange={(v) => setArchived(v === 'archived')} tabs={[{ value: 'chats', label: 'Chats' }, { value: 'archived', label: 'Archived' }]} />
           {tags.length > 0 && (
             <select className="fx-input" value={tag} onChange={(e) => setTag(e.target.value)} aria-label="Filter by tag"><option value="">All tags</option>{tags.map((t) => <option key={t} value={t}>#{t}</option>)}</select>
           )}

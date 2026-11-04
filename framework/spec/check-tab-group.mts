@@ -54,7 +54,7 @@ for (const f of files) {
   for (const [k, v] of Object.entries(a.data)) if (k !== 'showIcons') eq((n as Record<string, unknown>)[k], v, `${f}: ${k} kept as written`);
 }
 ok(ids.has(defaults['tab-group']), 'the default tab-group ships');
-for (const id of ['chips', 'icon-rail', 'side-dock', 'more-menu', 'dropdown-compact', 'sticky-badged']) ok(ids.has(id), `Nov 4 starter ${id} ships`);
+for (const id of ['chips', 'icon-rail', 'side-dock', 'side-rail', 'more-menu', 'dropdown-compact', 'sticky-badged']) ok(ids.has(id), `Nov 4 starter ${id} ships`);
 ok(files.length >= 36, `at least 36 starters (${files.length})`);
 
 /* ---- fixture replay ---- */
