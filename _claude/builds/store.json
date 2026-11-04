@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 614,
- "updatedAt": "2026-11-04T04:03:33.244Z",
+ "rev": 615,
+ "updatedAt": "2026-11-04T04:09:59.744Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -67271,7 +67271,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-04T01:25:34.264Z"
+     "updatedAt": "2026-11-04T04:09:54.937Z"
     }
    ],
    "profiles": [
@@ -67731,10 +67731,10 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-04T02:10:56.963Z",
-     "note": "PR #299 (claude/browser-automation)",
-     "rev": 4,
+     "note": "",
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T02:46:28.846Z"
+     "updatedAt": "2026-11-04T04:09:54.937Z"
     },
     {
      "id": "s4",
@@ -68116,7 +68116,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T00:40:48.341Z",
-     "updatedAt": "2026-11-04T01:25:34.264Z"
+     "updatedAt": "2026-11-04T04:09:54.937Z"
     },
     {
      "id": "s2",
@@ -68138,7 +68138,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T00:40:48.341Z",
-     "updatedAt": "2026-11-04T02:46:28.846Z"
+     "updatedAt": "2026-11-04T04:09:54.937Z"
     },
     {
      "id": "s3",
@@ -68160,7 +68160,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T00:40:48.341Z",
-     "updatedAt": "2026-11-04T02:46:28.846Z"
+     "updatedAt": "2026-11-04T04:09:54.937Z"
     },
     {
      "id": "s4",
@@ -68182,7 +68182,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T00:40:48.341Z",
-     "updatedAt": "2026-11-04T02:46:28.846Z"
+     "updatedAt": "2026-11-04T04:09:54.937Z"
     },
     {
      "id": "s5",
@@ -68205,6 +68205,28 @@
      "rev": 1,
      "createdAt": "2026-11-04T00:40:48.341Z",
      "updatedAt": "2026-11-04T00:40:48.341Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mw1llogp01zpcn",
+     "title": "",
+     "text": "Adopt the profile filter in the remaining builds tables: Orchestrator view (needs an all-profiles projection), Pending, Queue, Plan, Tracker, Git status board, Crew, Home cards; existing bulk CLI/MCP commands (land-all, merge batch) take resolveFilter + profiles arg",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T04:09:54.351Z",
+     "updatedAt": "2026-11-04T04:09:54.457Z"
     },
     {
      "id": "s6",
