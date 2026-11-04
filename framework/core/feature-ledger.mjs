@@ -281,6 +281,8 @@ export const rejection = (errors) => errors.map((e) => e.message).join('; ');
 const earliest = (a, b) => (!a ? b : !b ? a : a < b ? a : b);
 const latest = (a, b) => (!a ? b : !b ? a : a > b ? a : b);
 const mergeLive = (a, b) => { const out = { ...a }; for (const [t, x] of Object.entries(b)) { const y = out[t]; if (!y) out[t] = x; else if (y.guessed && !x.guessed) out[t] = x; else if (y.guessed === x.guessed && x.at < y.at) out[t] = x; } return out; };
+/** A build ref with no profile is the same build as one with a profile and the same id: fold it in (the profiled one's fields win). */
+const foldProfiles = (refs) => { const known = new Set(refs.filter((r) => r.profile).map((r) => r.id)); return refs.filter((r) => r.profile || !known.has(r.id)); };
 const unionBy = (a, b, key) => { const m = new Map(); for (const x of [...a, ...b]) { const k = key(x); const prev = m.get(k); m.set(k, prev ? { ...prev, ...Object.fromEntries(Object.entries(x).filter(([, v]) => v !== '' && v !== 'added')) } : x); } return [...m.values()]; };
 /**
  * Two copies of one feature → one. `a` is the newer copy (wins text ties); dates: earliest planned, exact beats
@@ -297,7 +299,7 @@ export function mergeFeature(a, b) {
   out.liveAt = mergeLive(x.liveAt, y.liveAt); out.firstLiveAt = firstLive(out.liveAt);
   out.lastChangedAt = latest(x.lastChangedAt, y.lastChangedAt); out.lastEditAt = latest(x.lastEditAt, y.lastEditAt);
   out.status = laterStatus(x.status, y.status); out.stalled = x.stalled || y.stalled; out.beingEdited = x.beingEdited || y.beingEdited;
-  out.builds = unionBy(x.builds, y.builds, (r) => `${r.profile}:${r.id}`); out.prs = unionBy(x.prs, y.prs, (r) => `${r.repo}#${r.number}`); out.prompts = unionBy(x.prompts, y.prompts, (r) => r.id);
+  out.builds = foldProfiles(unionBy(x.builds, y.builds, (r) => `${r.profile}:${r.id}`)); out.prs = unionBy(x.prs, y.prs, (r) => `${r.repo}#${r.number}`); out.prompts = unionBy(x.prompts, y.prompts, (r) => r.id);
   out.commits = uniq([...x.commits, ...y.commits]); out.files = uniq([...x.files, ...y.files]); out.tags = uniq([...x.tags, ...y.tags]); out.edits = uniq([...x.edits, ...y.edits]);
   out.editCount = Math.max(out.edits.length, x.editCount, y.editCount); out.links = { ...y.links, ...x.links };
   out.confidence = x.confidence === 'exact' || y.confidence === 'exact' ? 'exact' : 'guessed'; out.source = x.source === 'live' || y.source === 'live' ? 'live' : x.source;

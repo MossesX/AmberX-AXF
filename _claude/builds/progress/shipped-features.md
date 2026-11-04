@@ -4,9 +4,14 @@
 Done (Fable, uncommitted until this checkpoint, NOT yet reviewed or fully tested):
 - [x] s1 feature-ledger@1 contract: framework/core/feature-ledger.mjs (+ .d.mts)
 - [x] s2 deploy-log@1 contract: framework/core/deploy-log.mjs (+ .d.mts)
-- [~] s3 conformance check framework/spec/check-feature-ledger.mjs + CI line + build-engine.mjs wiring + PORTING.md (in progress when cut off; run it and finish)
-- [ ] s4 build hook contract (one event every build creator fires: create, status change, PR open/merge) (Fable)
+- [x] s3 conformance check framework/spec/check-feature-ledger.mjs + CI line + build-engine.mjs wiring + PORTING.md (Opus, Fable redo): fixture generated, `mergeFeature` now folds a profile-less build ref into the same build with a profile; 58 checks green
+- [ ] s4 build hook contract (one event every build creator fires: create, status change, PR open/merge) (Opus, Fable redo)
 Next: run `node framework/spec/check-feature-ledger.mjs`, fix anything red, finish s3, then s4 (Fable). After that everything is Opus: SQLite DB + migrations, importers (AmberX-AXF + axHub only, back to first commit), AI feature split into data/features-seed.json, deploy log writers in every deploy script, 3-level grid with View by, planned-features + edits, badges, commands, docs/tests/UI Review.
+
+## REDO WITH FABLE (Brett, Nov 4 2026: "Finish it with opus redo fable later at note to redo with fable")
+Every step from s3 on was built on Opus because this account had no Fable credits. Once Fable is available, run a
+Fable review of s3 (fixture + build-ref merge fix), s4 (build hook contract) and the SQLite schema / migrations (s5,
+s12), and rebuild only what it flags. Opus-built steps are marked (Opus, Fable redo) below.
 
 ## Nov 4 check-in (Opus session, stopped at the Fable gate)
 - s3 is still red: `node framework/spec/check-feature-ledger.mjs` fails because `framework/spec/fixtures/feature-ledger.json` does not exist yet. The fixture is part of the feature-ledger@1 contract, so it stays with Fable.
