@@ -36,6 +36,8 @@
       "name": 60,
       "role": 80,
       "skill": 40,
+      "skills": 60,
+      "home": 40,
       "specialty": 200,
       "keywords": 40,
       "keyword": 40,

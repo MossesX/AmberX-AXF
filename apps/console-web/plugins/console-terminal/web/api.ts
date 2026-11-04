@@ -10,7 +10,7 @@ import './vendor/xterm.css';
 export const FOLDER = 'console-terminal';
 export const ID = 'ai.amberx.axf.console.terminal';
 
-export type Kind = 'console' | 'container' | 'vps' | 'claude';
+export type Kind = 'console' | 'container' | 'vps' | 'claude' | 'feed';
 export type Via = 'console' | 'vps' | 'container' | 'axhub';
 /** What a tab opens. Claude Code tabs carry `via` (+ `container`) for their connection and their profile's options. */
 export interface Open {
@@ -18,15 +18,19 @@ export interface Open {
   /** The persistent tmux session (axt-…) this tab lives in: picked once, kept with the tab, re-attached after any drop. */
   tmux?: string;
   via?: Via; profile?: string; model?: string; permissionMode?: string; flags?: string[]; prompt?: string;
+  /** Sessions nav (Nov 3 2026): a read-only mirror of the tmux session in `attach` (Jump in turns it off). */
+  readOnly?: boolean;
+  /** kind 'feed': a claude.ai chat / voice session's mirror feed (chat:<session>), shown instead of a terminal. */
+  feed?: string; url?: string;
 }
 /** A place a tab can connect to (GET connections). */
 export interface Connection { id: string; via: Via; container?: string; label: string; detail: string; icon: string; badge?: string | null; ready: boolean; claude: boolean; shell?: boolean; why: string; group?: string }
 export interface AttachCmd { mosh: string; ssh: string; tmux: string }
-export interface SessionInfo { id: string; kind: Kind; title: string; target: string; cwd: string; mosh: boolean; badge: string | null; protected: boolean; createdAt: number; attached: number; closed: boolean; tmux?: string | null; where?: 'vps' | 'console' | null; attachCmd?: AttachCmd | null }
+export interface SessionInfo { id: string; kind: Kind; title: string; target: string; cwd: string; mosh: boolean; badge: string | null; protected: boolean; createdAt: number; attached: number; closed: boolean; tmux?: string | null; where?: 'vps' | 'console' | null; attachCmd?: AttachCmd | null; readOnly?: boolean }
 /** A persistent tmux session the terminal knows (GET tmux). */
 export interface TmuxSession { name: string; createdAt: number; attached: number; kind: 'headless' | 'tab' | string; agent: string; model: string; cwd: string; where: 'vps' | 'console' }
 export interface Settings {
-  idleMinutes: number; moshKeepMinutes: number; fontSize: number; copyOnSelect: boolean; pasteWarn: boolean; mouseDefault: boolean; moshDefault: boolean; showHubRuns: boolean; showHeadless: boolean; user: string;
+  idleMinutes: number; moshKeepMinutes: number; fontSize: number; fontSizePhone: number; chainTextSize: number; copyOnSelect: boolean; pasteWarn: boolean; mouseDefault: boolean; moshDefault: boolean; showHubRuns: boolean; showHeadless: boolean; user: string;
   vps: { host: string; port: number; user: string }; sshKey: boolean; claudeToken: boolean; publicKey?: string;
   // Windows-style terminal (Oct 28 2026)
   windowsLook: boolean; mica: boolean; toolbar: boolean; scheme: string; fontFamily: string; lineHeight: number; cursorStyle: 'bar' | 'block' | 'underline';
@@ -35,6 +39,8 @@ export interface Settings {
   claudeProfiles: ClaudeProfile[]; defaultClaudeProfile: string;
   // headless tabs (Nov 3 2026)
   persistTabs: boolean; splitDefault: 'side' | 'stacked' | 'none'; chainSpeed: 'slow' | 'normal' | 'fast' | 'instant'; showChain: boolean;
+  // sessions nav (Nov 3 2026)
+  sessionsNav: boolean;
 }
 /** A Claude Code profile: how a Claude Code tab starts (Oct 28 2026). */
 export interface ClaudeProfile { id: string; name: string; model: string; permissionMode: string; flags: string[]; cwd: string; prompt: string; icon: string; color: string; connection: string }

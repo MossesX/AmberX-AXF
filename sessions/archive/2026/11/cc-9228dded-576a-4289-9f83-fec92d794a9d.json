@@ -1,0 +1,98 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-9228dded-576a-4289-9f83-fec92d794a9d",
+ "source": "claude-code",
+ "sessionId": "9228dded-576a-4289-9f83-fec92d794a9d",
+ "project": "other",
+ "title": "# Build: builds-one-page-done (Urgent profile) Brett, Nov 3 2026 (voice): finish the Builds one-page build. Assigned ag…",
+ "startedAt": "2026-11-03T17:51:39.003Z",
+ "endedAt": "2026-11-03T18:23:25.440Z",
+ "minutes": 32,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/builds-one-page-done",
+  "repo": "",
+  "branch": "claude/builds-one-page-done"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-03T17:52:05.546Z",
+   "kind": "prompt",
+   "text": "# Build: builds-one-page-done (Urgent profile) Brett, Nov 3 2026 (voice): finish the Builds one-page build. Assigned agent: **Snap Sully** (book on his agent-swarm card; set AXF_AGENT=snap-sully if the launcher supports it, else record in report + store note). ## Context - Orchestrator build `builds-one-page` shows archived 4/15 (s1-s4 done, s5-s15 pending) in the store. - Branch `claude/builds-one-page-finish` (1 commit, 'Builds page: one page, six views (Pending, Queue, Plan, Tracker, Orchestrator, Steps) over the one store') is ~320 commits behind main and never landed. Related: `claude/bu…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 236,
+    "output": 55425,
+    "cacheRead": 17389096,
+    "cacheWrite": 201640,
+    "thinking": 9917
+   },
+   "costUsd": 5.5958,
+   "costEstimated": false,
+   "seconds": 1879,
+   "tools": {
+    "Bash": 113,
+    "Read": 6,
+    "Write": 1
+   },
+   "commands": 113,
+   "files": [
+    "/root/axf-builds/builds-one-page-done/_claude/builds/reports/builds-one-page-done.md"
+   ],
+   "changeIds": [
+    "chg-20261103-1fd829429a"
+   ],
+   "features": [
+    "orch:builds-one-page-done",
+    "pending:builds-one-page",
+    "breakroom:agent-swarm",
+    "orchestrator:builds-one-page"
+   ],
+   "output": "Done, boss. The Builds one-page build is wrapped. **PR #269** is open and mergeable. It sits waiting on your UI Review approval (`r-20261103-abd35505`), then it auto-merges once CI goes green. **What was actually done already:** s5, s6, s12 and s14 had landed weeks ago with the one builds store (`2…"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/builds-one-page-done/_claude/builds/reports/builds-one-page-done.md"
+ ],
+ "changeIds": [
+  "chg-20261103-1fd829429a"
+ ],
+ "features": [
+  "orch:builds-one-page-done",
+  "pending:builds-one-page",
+  "breakroom:agent-swarm",
+  "orchestrator:builds-one-page"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 236,
+  "output": 55425,
+  "cacheRead": 17389096,
+  "cacheWrite": 201640,
+  "thinking": 9917,
+  "costUsd": 5.5958,
+  "costEstimated": false,
+  "toolCalls": 120,
+  "commands": 113,
+  "filesTouched": 1,
+  "reportedUsd": 6.2004
+ },
+ "ingestedAt": "2026-11-03T18:23:25.721Z"
+}

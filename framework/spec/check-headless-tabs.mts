@@ -11,8 +11,10 @@ import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 // @ts-expect-error — plain .mjs, no types
-import { createMeter, importsOf, memoryChain, rulesOf } from '../../deploy/claude-meter.mjs';
-import { advance, modelName, money, persistable, statusOf, steps, tmuxName, toOpen, type ChainItem } from '../../apps/console-web/plugins/console-terminal/web/headless-core.ts';
+import { createMeter, importsOf, memoryChain, mentionsOf, rulesOf, startRule } from '../../deploy/claude-meter.mjs';
+import { reorderIndex, tabPressIntent, TAB_HOLD_MS } from '../core/engines/windows.ts';
+import { pinchSteps, resolveSize, stepSize } from '../../apps/console-web/plugins/console-terminal/web/textsize.ts';
+import { advance, chainTree, modelName, money, persistable, replay, revealTick, shownOf, statusOf, steps, tmuxName, toOpen, treeOrder, REVEAL0, type ChainItem } from '../../apps/console-web/plugins/console-terminal/web/headless-core.ts';
 
 const REPO = fileURLToPath(new URL('../..', import.meta.url));
 let ok = 0;
@@ -113,4 +115,65 @@ c = advance(c, seq, 10_000, 'normal');
 check(c.step === seq.length, 'and finish');
 check(advance({ step: 0, chars: 0, wait: 0 }, seq, 1, 'instant').step === seq.length, 'All = everything at once');
 check(advance({ step: 1, chars: 0, wait: 0 }, seq, 1000, 'slow').chars < advance({ step: 1, chars: 0, wait: 0 }, seq, 1000, 'fast').chars || advance({ step: 1, chars: 0, wait: 0 }, seq, 1000, 'fast').step > 1, 'slow is slower than fast');
+
+// ---- the chain as a tree (terminal-drag-chain-tree, Nov 3 2026): parents from @imports, mentions and start rules
+console.log('context chain tree');
+check(mentionsOf('Read `_claude/THREADS.md` first; see [spec](docs/a.md), framework/cli/x.mjs and https://e.com/b.md').map((x: { path: string }) => x.path).join() === '_claude/THREADS.md,docs/a.md,framework/cli/x.mjs',
+  'mentions: code spans, links and bare paths; never URLs');
+check(startRule('Read `_claude/THREADS.md` first') && startRule('on every load, read it') && !startRule('see the report for details'), 'a "read it first / on load" line is a session-start rule');
+const tp = join(root, 'tree'); for (const d of [join(tp, '_claude', 'rules'), join(tp, '_claude', 'shared', 'rules'), join(tp, '_claude', 'memory'), join(tp, 'src')]) mkdirSync(d, { recursive: true });
+writeFileSync(join(tp, 'CLAUDE.md'), '# Project\n@_claude/rules/RULES.md\n- Read `_claude/THREADS.md` first, on every load.\n- Decisions live in `_claude/memory/decisions.md`.\n- Specs: `memory/spec.md`.\n');
+writeFileSync(join(tp, '_claude', 'rules', 'RULES.md'), '# Rules\n@../shared/rules/RULES.md\n- r1\n');
+writeFileSync(join(tp, '_claude', 'shared', 'rules', 'RULES.md'), '# Shared\n- s1\n- s2\n');
+writeFileSync(join(tp, '_claude', 'THREADS.md'), '# Threads\n- see src/app.ts\n');
+writeFileSync(join(tp, '_claude', 'memory', 'decisions.md'), '# Decisions\n- d1\n'); writeFileSync(join(tp, '_claude', 'memory', 'spec.md'), '# Spec\n');
+writeFileSync(join(tp, 'src', 'app.ts'), 'x'); writeFileSync(join(tp, 'src', 'lone.ts'), 'y');
+const home2 = join(root, 'home2'); mkdirSync(home2, { recursive: true });
+const tm = createMeter({ session: 'axf-t', model: 'opus', cwd: tp, home: home2, pricing, now: () => t });
+const readEv = (id: string, f: string) => ({ type: 'assistant', message: { id, content: [{ type: 'tool_use', id: `t-${id}`, name: 'Read', input: { file_path: join(tp, f) } }] } });
+for (const [id, f] of [['a', '_claude/THREADS.md'], ['b', '_claude/memory/decisions.md'], ['c', 'src/app.ts'], ['d', 'src/lone.ts'], ['e', '_claude/memory/spec.md']] as const) tm.add(readEv(id, f));
+const ti: ChainItem[] = tm.chain().items;
+const by = (r: string) => ti.find((x) => x.rel === r)!;
+check(by('CLAUDE.md').reason === 'session-start' && by('_claude/rules/RULES.md').reason === 'import' && by('_claude/rules/RULES.md').parentI === by('CLAUDE.md').i
+  && by('_claude/shared/rules/RULES.md').parentI === by('_claude/rules/RULES.md').i, 'session-start file, @imports nested two levels under the file that imports them');
+check(by('_claude/THREADS.md').reason === 'session-start rule' && by('_claude/THREADS.md').parentI === by('CLAUDE.md').i && /first/.test(by('_claude/THREADS.md').why ?? ''), 'a Read the CLAUDE.md says to do first: under it, as a session-start rule, with the line why');
+check(by('_claude/memory/decisions.md').reason === 'reference' && by('_claude/memory/decisions.md').parentI === by('CLAUDE.md').i, 'a Read a loaded file mentions: a reference under it');
+check(by('src/app.ts').parentI === by('_claude/THREADS.md').i && by('src/app.ts').depth === 2, 'chains keep going: a file THREADS.md mentions sits under THREADS.md');
+check(by('src/lone.ts').reason === 'read' && by('src/lone.ts').parentI === -1, 'a Read nothing mentions is a root');
+check(by('_claude/memory/spec.md').parentI === by('CLAUDE.md').i && by('_claude/memory/spec.md').reason === 'reference', 'a partial mention (memory/spec.md) still finds its file');
+const tr = chainTree(ti);
+check(tr.map((n) => n.rel).join() === 'CLAUDE.md,src/lone.ts' && tr[0]!.children.map((n) => n.rel).join() === '_claude/rules/RULES.md,_claude/THREADS.md,_claude/memory/decisions.md,_claude/memory/spec.md', 'chainTree nests every file under the file that pulled it in, load order kept');
+check(treeOrder(tr).map((k) => ti[k]!.rel).join(' > ') === 'CLAUDE.md > _claude/rules/RULES.md > _claude/shared/rules/RULES.md > _claude/THREADS.md > src/app.ts > _claude/memory/decisions.md > _claude/memory/spec.md > src/lone.ts', 'the reveal walks the tree depth-first');
+check(treeOrder(tr, new Set([by('CLAUDE.md').i])).length === 2, 'a folded file hides (and holds back) its children');
+const legacy = [{ i: 0, path: '/a', rel: 'a', via: 'project memory', depth: 0, parent: '', at: '', rules: [] }, { i: 1, path: '/b', rel: 'b', via: 'import', depth: 1, parent: '', at: '', rules: [] }, { i: 2, path: '/c', rel: 'c', via: 'import', depth: 2, parent: 'nope', at: '', rules: [] }];
+check(chainTree(legacy)[0]!.children[0]!.children[0]!.rel === 'c', 'older chain files (depth only) still nest');
+let rv = REVEAL0; const ord = treeOrder(tr);
+rv = revealTick(rv, ti, ord, 1, 'normal');
+check(rv.cur?.item === by('CLAUDE.md').i && shownOf(rv, rv.cur.item, ti).rules === 0, 'reveal starts at the root file');
+for (let k = 0; k < 400; k++) rv = revealTick(rv, ti, ord, 200, 'fast');
+check(!rv.cur && ord.every((k) => rv.done.includes(k)), 'and walks every file');
+rv = replay(rv, by('_claude/shared/rules/RULES.md').i);
+check(rv.cur?.item === by('_claude/shared/rules/RULES.md').i && shownOf(rv, rv.cur.item, ti).rules === 0 && shownOf(rv, by('CLAUDE.md').i, ti).rules === by('CLAUDE.md').rules.length, 'picking a file replays its content from the start; the others stay shown');
+check(revealTick(REVEAL0, ti, ord, 1, 'instant').done.length === ord.length, 'All = the whole tree at once');
+
+// ---- drag the window by a tab (framework windows engine) and text size per pane (terminal-drag-chain-tree)
+console.log('window grip gestures + text size');
+check(tabPressIntent({ dx: 1, dy: 1, heldMs: 100, released: true }) === 'tap' && tabPressIntent({ dx: 0, dy: 0, heldMs: 100 }) === 'pending', 'a quick tap is a tap (the tab switches)');
+check(tabPressIntent({ dx: 40, dy: 3, heldMs: 120 }) === 'reorder', 'a horizontal drag before the hold reorders');
+check(tabPressIntent({ dx: 0, dy: 0, heldMs: TAB_HOLD_MS }) === 'armed' && tabPressIntent({ dx: 30, dy: 2, heldMs: TAB_HOLD_MS + 10 }) === 'window', 'press and hold, then move = drag the window, whichever way');
+check(tabPressIntent({ dx: 2, dy: 30, heldMs: 50 }) === 'window', 'a vertical pull drags the window too');
+check(tabPressIntent({ dx: 1, dy: 0, heldMs: TAB_HOLD_MS + 50, released: true }) === 'hold', 'a hold released without moving = long-press (the menu on a phone)');
+const rects = [{ left: 0, right: 100 }, { left: 100, right: 200 }, { left: 200, right: 300 }];
+check(reorderIndex(rects, 0, 260) === 2 && reorderIndex(rects, 2, 20) === 0 && reorderIndex(rects, 1, 140) === 1 && reorderIndex(rects, 0, 160) === 1, 'reorder lands where the pointer passes a tab\'s middle');
+const memo0 = { tabs: {}, profiles: {} };
+check(resolveSize('term', { phone: false, auto: 13, defaults: { fontSize: 14 }, memory: memo0 }) === 14 && resolveSize('term', { phone: true, auto: 11, defaults: { fontSize: 14, fontSizePhone: 0 }, memory: memo0 }) === 11,
+  'default: the computer size; on a phone Auto = the theme token size (smaller)');
+const memo1 = stepSize(memo0, 'term', -1, 14, { tab: 'axf-a', profile: 'default' });
+check(resolveSize('term', { tab: 'axf-a', phone: false, auto: 13, defaults: { fontSize: 14 }, memory: memo1 }) === 13 && resolveSize('term', { tab: 'axf-b', profile: 'default', phone: false, auto: 13, defaults: { fontSize: 14 }, memory: memo1 }) === 13
+  && resolveSize('term', { tab: 'axf-c', phone: false, auto: 13, defaults: { fontSize: 14 }, memory: memo1 }) === 14, 'A− is remembered for the tab and its profile, other tabs keep the default');
+const memo2 = stepSize(memo1, 'term', 'reset', 13, { tab: 'axf-a', profile: 'default' });
+check(resolveSize('term', { tab: 'axf-a', phone: false, auto: 13, defaults: { fontSize: 14 }, memory: memo2 }) === 14 && !Object.keys(memo2.tabs).length, 'reset goes back to the default');
+check(resolveSize('chain', { tab: 'x', phone: false, auto: 0, defaults: { chainTextSize: 100 }, memory: stepSize(memo0, 'chain', 1, 100, { tab: 'x' }) }) === 110, 'the chain pane has its own size (10 % steps)');
+check(resolveSize('term', { tab: 't', phone: false, auto: 0, defaults: {}, memory: stepSize(memo0, 'term', -1, 7, { tab: 't' }) }) === 7, 'sizes stay inside their limits');
+check(pinchSteps(100, 100) === 0 && pinchSteps(100, 140) === 2 && pinchSteps(100, 70) === -2, 'pinch: every 15 % apart is one step');
 console.log(`all ${ok} checks passed`);

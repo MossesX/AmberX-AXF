@@ -86,7 +86,7 @@ export function repoSources(root) {
   add(join(root, 'CLAUDE.md'), 'instructions');
   add(join(root, 'project.manifest.json'), 'manifest');
   add(join(root, '.mcp.json'), 'mcp');
-  add(join(root, '.claude/settings.json'), 'claude-settings');
+  add(join(root, '.claude/settings.json'), 'claude-code-settings');
   for (const p of walk(join(root, '.claude/commands'))) add(p, 'command');
   for (const p of walk(join(root, '.claude/skills'))) add(p, 'skill');
   for (const p of walk(join(root, '.claude/agents'))) add(p, 'agent');
@@ -416,7 +416,7 @@ ${order('memory')}
 ${order('spec')}
 6. Project manifests (no project is loaded or compiled without a valid one):
 ${order('manifest')}
-7. Claude Code project config: ${repo.filter((s) => ['claude-settings', 'command', 'skill', 'agent', 'mcp'].includes(s.role)).map((s) => `\`${s.path}\``).join(', ') || '(none)'}
+7. Claude Code project config: ${repo.filter((s) => ['claude-code-settings', 'command', 'skill', 'agent', 'mcp'].includes(s.role)).map((s) => `\`${s.path}\``).join(', ') || '(none)'}
 
 Full index with hashes: [FILES.md](FILES.md).
 

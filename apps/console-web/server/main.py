@@ -5,6 +5,7 @@ FastAPI service that fronts the framework's build engine (framework/cli, Node) f
   GET  /api/health | catalog | tracker | libraries | boilerplates | boilerplates/items | modules | templates | ported-kits | project | terminal
   POST /api/status | project | boilerplates/save | init | validate | new-asset | new-module | new-demo | install | import-ui
   GET  /api/events        server-sent events: every engine log line as it happens (the console's output terminal follows it)
+  GET|PUT /api/home/layout  the caller's Home cards layout (home-layout@1), kept on axHub (/projects/<project>/_data/home-cards/<user>.json)
   /                        the built console (apps/console-web/dist) when present
 
 Run locally:  cd apps/console-web/server && pip install -r requirements.txt && uvicorn main:app --port 7090 --reload
@@ -388,6 +389,22 @@ def pending() -> Any:
     return engine("pending")
 
 
+@app.get("/api/builds/{build_id}/origin")
+def build_origin(build_id: str) -> Any:
+    """What Brett said that started a build (build-origin@1, framework/cli/build-origin.mjs): any view that names a build reads it here."""
+    if len(build_id) > 80 or not build_id.replace("-", "").replace(".", "").replace("_", "").replace(":", "").replace("/", "").isalnum():
+        raise HTTPException(400, "not a build id")
+    proc = subprocess.run(["node", str(ROOT / "framework" / "cli" / "build-origin.mjs"), "get", build_id, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=30)
+    out = proc.stdout.strip().splitlines()
+    try:
+        res = json.loads(out[-1]) if out else {"ok": False, "error": "no output"}
+    except json.JSONDecodeError:
+        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-400:]}
+    if not res.get("ok"):
+        raise HTTPException(404, str(res.get("error", "no build")))
+    return res
+
+
 @app.post("/api/pending", dependencies=[Depends(auth)])
 async def pending_act(request: Request) -> Any:
     """One change: {action: add|update|status|note|sub|remove, ...} — see framework/plan/pending-core.mjs."""
@@ -542,6 +559,59 @@ def plan_media_file(name: str) -> FileResponse:
     if not str(f).startswith(str(media)) or not f.is_file():
         raise HTTPException(404, "not found")
     return FileResponse(f)
+
+
+# Home cards (card@1 + home-layout@1, framework/core/engines/card-rules.mjs): each signed-in user's Home layout (their
+# cards, order, sizes, hidden ones, dismissed suggestions) kept on axHub at /projects/<project>/_data/home-cards/<user>.json
+# where /projects is mounted (the repo's .axf-console/home-cards/ otherwise). The console token and hub admins are the
+# owner. The engine normalises the layout on both sides; the server only keeps it.
+HOME_LAYOUT_MAX = 256 * 1024
+
+
+def _home_dir() -> tuple[Path, str]:
+    root = _persist_root()
+    return ((root / "home-cards"), "hub") if root else ((ROOT / ".axf-console" / "home-cards"), "local")
+
+
+def _home_user(request: Request) -> str:
+    u = getattr(request.state, "axf_user", None)
+    if u is None or getattr(u, "admin", False) or u is wall.TOKEN_CALLER:
+        return "owner"
+    name = "".join(ch if ch.isalnum() or ch in "-_." else "-" for ch in str(getattr(u, "name", "") or "")).strip("-.")[:64]
+    return f"user-{name}" if name else "owner"
+
+
+@app.get("/api/home/layout", dependencies=[Depends(auth)])
+def home_layout_get(request: Request) -> dict[str, Any]:
+    d, where = _home_dir()
+    user = _home_user(request)
+    f = d / f"{user}.json"
+    try:
+        layout = json.loads(f.read_text()) if f.is_file() else None
+    except (OSError, ValueError):
+        layout = None
+    return {"layout": layout if isinstance(layout, dict) else None, "user": user, "where": where}
+
+
+@app.put("/api/home/layout", dependencies=[Depends(auth)])
+async def home_layout_put(request: Request) -> dict[str, Any]:
+    raw = await request.body()
+    if len(raw) > HOME_LAYOUT_MAX:
+        raise HTTPException(413, "the Home layout is too big")
+    try:
+        body = json.loads(raw or b"{}")
+    except ValueError:
+        raise HTTPException(400, "not JSON")
+    layout = body.get("layout") if isinstance(body, dict) else None
+    if not isinstance(layout, dict) or layout.get("$axf") != "home-layout@1":
+        raise HTTPException(400, "layout must be a home-layout@1 object")
+    d, where = _home_dir()
+    user = _home_user(request)
+    d.mkdir(parents=True, exist_ok=True)
+    tmp = d / f".{user}.json.tmp"
+    tmp.write_text(json.dumps({**layout, "savedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}, indent=1))
+    tmp.replace(d / f"{user}.json")
+    return {"ok": True, "user": user, "where": where}
 
 
 @app.get("/api/project")
@@ -880,8 +950,9 @@ from mcp_server import build_server  # noqa: E402
 
 from mcp_server import control_runner  # noqa: E402
 from mcp_server import console_runner  # noqa: E402
+from mcp_server import CALLER as _MCP_CALLER, feed_recorder, session_note_runner  # noqa: E402
 _mcp = build_server(lambda op, **a: engine(op, "mcp", **a), terminal=lambda since: [l for l in _state["terminal"] if l["at"] > since],
-                    control=control_runner(ROOT), console=console_runner(ROOT))
+                    control=control_runner(ROOT), console=console_runner(ROOT), notes=session_note_runner(), on_call=feed_recorder())
 # Stateless JSON responses: works behind Traefik/Coolify and across container restarts. Host checks are off because
 # the endpoint is reached through a proxy under the console's own domain; the bearer token is the gate.
 _mcp_http = _mcp.streamable_http_app(streamable_http_path="/mcp", stateless_http=True, json_response=True,
@@ -899,6 +970,10 @@ class _McpEndpoint:
             if sent != f"Bearer {tok}":
                 await JSONResponse({"error": "unauthorized — send Authorization: Bearer <AXF_TOKEN>"}, status_code=401, headers={"www-authenticate": "Bearer"})(scope, receive, send)
                 return
+        # who is calling: each tool call goes into that session's mirror feed (Terminal → sessions nav)
+        h = dict(scope.get("headers") or []) if scope["type"] == "http" else {}
+        who = (h.get(b"x-axhub-session") or h.get(b"x-axf-session") or b"").decode(errors="replace")[:80]
+        _MCP_CALLER.set(who or ("axHub" if b"axhub" in h.get(b"user-agent", b"").lower() else "MCP client"))
         await _mcp_http(scope, receive, send)
 
 

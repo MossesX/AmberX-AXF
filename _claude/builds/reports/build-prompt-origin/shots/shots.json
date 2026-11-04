@@ -1,0 +1,5 @@
+[
+ { "name": "pending-what-brett-said", "settle": 5000, "steps": [ { "press": "Escape", "wait": 400 }, { "search": "Pending builds" }, { "wait": 8000 }, { "eval": "document.querySelector('.axf-origin[data-axf-origin=verbatim]')?.closest('.pd-card')?.scrollIntoView({block:'start'})", "wait": 1200 } ] },
+ { "name": "orchestrator-what-brett-said", "settle": 5000, "steps": [ { "press": "Escape", "wait": 400 }, { "search": "Build orchestrator" }, { "wait": 8000 }, { "eval": "[...document.querySelectorAll('[data-fx-row], .fx-grid__row, [role=row]')].find((r) => /Show what Brett said/.test(r.textContent || ''))?.click()", "wait": 2500 }, { "eval": "document.querySelector('.oc-detail .axf-origin')?.scrollIntoView({block:'center'})", "wait": 1200 } ] },
+ { "name": "build-manager-what-brett-said", "settle": 5000, "steps": [ { "press": "Escape", "wait": 400 }, { "search": "Build manager" }, { "wait": 8000 }, { "eval": "document.querySelector('.axp-build-manager__head')?.click()", "wait": 2000 }, { "eval": "document.querySelector('.axp-build-manager__body .axf-origin, .axf-origin-sub')?.scrollIntoView({block:'center'})", "wait": 1200 } ] }
+]

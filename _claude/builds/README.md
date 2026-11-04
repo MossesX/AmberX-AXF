@@ -30,6 +30,21 @@ node framework/cli/builds-store.mjs restore <id> <rev>  # put it back as it was 
 The Builds page (console and AmberX: Builds → Builds) shows it: Builds and Steps views, rename, drag to reorder,
 divide, harvest / split into N, Restore default, a draft until Apply, live progress bars. <!-- axf-plugin:builds-page -->
 
+## What Brett said (build-origin@1, since Nov 3 2026)
+
+Every build record may carry `origin` (`framework/core/build-origin.mjs`): `said` (Brett's words, verbatim), `at`,
+`source` (voice / chat / console / code), `session`, `link`, `by` (who launched it), `brief` (the full brief text),
+`verbatim` (false = backfilled from older text, "may be paraphrased"), `from` (brief / detail / notes when backfilled)
+and `addenda` [{said, at, source, by}]. Briefs carry it in a `## Brett said (verbatim)` block (template:
+`BRIEF-TEMPLATE.md`); `deploy/claude-headless.sh` records it through `framework/cli/build-origin.mjs capture`.
+His words are never replaced: a different verbatim quote is refused (add an addendum); backfilled words give way to
+real ones. Every merge unions it (`mergeOrigin`: store writes, the live publish, the git merge driver), and
+`origins.json` next to the store keeps a copy keyed by build id that older code never touches, so a write from a
+session on code from before build-origin@1 can't drop it: the next read heals the records. Commands:
+`build-origin.mjs get <id> | set <id> --said … | addendum <id> --said … | missing | backfill [--apply] | block`, and
+the build-orchestrator plugin's `GET /origin/{id}`, `POST /origin/{id}`, `POST /origin/{id}/addendum` (REST, MCP and
+`axf build-orchestrator …` through plugin-commands@1). <!-- axf-plugin:build-orchestrator -->
+
 ## Live on main (since Nov 3 2026)
 
 Brett: "every completed step, no matter how small, must reach the orchestrator and appear on main immediately".

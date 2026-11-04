@@ -1,0 +1,32 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "recent-installs",
+  "name": "Recent installs & imports",
+  "version": "1.0.0",
+  "description": "The last libraries installed and UI imported.",
+  "author": "AmberX AXF",
+  "tags": [
+    "home",
+    "starter"
+  ],
+  "data": {
+    "title": "Recent installs & imports",
+    "icon": "download",
+    "source": {
+      "kind": "console",
+      "id": "console.ports"
+    },
+    "view": "list",
+    "fields": {
+      "title": "name",
+      "subtitle": "detail",
+      "badge": "status"
+    },
+    "refresh": {
+      "kind": "live"
+    },
+    "size": "m",
+    "limit": 8
+  }
+}

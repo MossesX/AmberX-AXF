@@ -1,6 +1,6 @@
 /** Push banner UI: the banner (open pull requests + branches not on main, grouped by what's ready) and the settings panel. Theme tokens only. */
 import { useEffect, useState, type ReactNode } from 'react';
-import { Button, Icon, Switch, useAxfState, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { Button, Icon, RefText, Switch, useAxfState, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { ago, bannerOn, doneKeys, doneRows, failedKeys, failedRows, fixWithClaude, jobOf, REPAIR_ALL, removeFailed, repair, repairAll, load, loadDetail, mergePr, needsPull, openPr, PULL_ALL, pullAll, pullMain, pullRows, removeDone, rows, saveClaude, setHidden, useStore, api, type Done, type Failed, type PullRow, type Row } from './store';
 
 const CI_WORD: Record<string, string> = { success: 'CI passed', failure: 'CI failed', running: 'CI running', none: 'no CI yet', unknown: 'CI unknown' };
@@ -103,7 +103,7 @@ function Expander({ open, onToggle, chip, title, label }: { open: boolean; onTog
   return (
     <button type="button" data-fx-row className="axp-push-banner__line axp-push-banner__expand" aria-expanded={open} title={open ? 'Hide the details' : 'Show the details'} aria-label={`${label}: ${open ? 'hide' : 'show'} details`} onClick={onToggle}>
       <span className="axp-push-banner__chip">{chip}</span>
-      <span className="axp-push-banner__name is-title">{title}</span>
+      <span className="axp-push-banner__name is-title"><RefText text={title} /></span>
       <Icon name={open ? 'chevron-up' : 'chevron-down'} size={14} />
     </button>
   );
@@ -116,7 +116,9 @@ function PullItem({ p }: { p: PullRow }) {
   const [open, setOpen] = useState(false);
   const busy = s.busy === p.key;
   const behind = pullBehind(p);
-  const why = p.ready ? 'Ready to merge' : p.mergeState === 'dirty' ? 'Has conflicts' : behind ? `Behind ${p.base}` : p.draft ? 'Draft' : p.ci !== 'success' ? (CI_WORD[p.ci] ?? 'CI unknown') : p.mergeable === false ? 'Has conflicts' : 'GitHub is still checking it';
+  // a finished build's PR: auto-land's own reason (UI waiting, CI red, conflict, dependency) in plain words
+  const landWhy = !p.ready && p.land?.why ? p.land.why.replace(`${p.land.build}: `, '') : '';
+  const why = p.ready ? 'Ready to merge' : landWhy ? landWhy : p.mergeState === 'dirty' ? 'Has conflicts' : behind ? `Behind ${p.base}` : p.draft ? 'Draft' : p.ci !== 'success' ? (CI_WORD[p.ci] ?? 'CI unknown') : p.mergeable === false ? 'Has conflicts' : 'GitHub is still checking it';
   return (
     <li className={`axp-push-banner__item is-ci-${p.ci}${p.ready ? ' is-ready' : ''}`}>
       <div className="axp-push-banner__entry">
@@ -156,7 +158,7 @@ function BranchItem({ r }: { r: Row }) {
           {r.ahead == null ? <span className="is-danger">couldn’t compare{r.error ? `: ${r.error}` : ''}</span> : <span>{r.ahead} ahead{r.behind ? ` · ${r.behind} behind` : ''}</span>}
           {r.date && <span>{ago(r.date)}</span>}
         </span>
-        {r.subject && <span className="axp-push-banner__sub">{r.subject}</span>}
+        {r.subject && <span className="axp-push-banner__sub"><RefText text={r.subject} /></span>}
         <Note k={r.key} />
         {open && <Details k={r.key} repo={r.repo} branch={r.name} url={r.url ?? ''} lines={[`${r.name} → ${r.base} · no pull request yet`]} />}
       </div>
@@ -187,7 +189,7 @@ function CleanItem({ r }: { r: Row }) {
           <span>{r.ahead} ahead · no conflicts · no PR yet</span>
           {r.date && <span>{ago(r.date)}</span>}
         </span>
-        {r.subject && <span className="axp-push-banner__sub">{r.subject}</span>}
+        {r.subject && <span className="axp-push-banner__sub"><RefText text={r.subject} /></span>}
         <Note k={r.key} />
         {open && <Details k={r.key} repo={r.repo} branch={r.name} url={r.url ?? ''} lines={[`${r.name} → ${r.base} · not behind ${r.base} · it reaches ${r.base} only through a pull request (auto-merge opens one)`]} />}
       </div>
@@ -208,8 +210,8 @@ function DoneItem({ d, sha }: { d: Done; sha?: string }) {
       <div className="axp-push-banner__entry">
         <span className="axp-push-banner__line">
           <span className="axp-push-banner__chip" title={d.repo}>{short(d.repo)}</span>
-          {d.url ? <a className="axp-push-banner__name is-title" href={d.url} target="_blank" rel="noopener noreferrer" title="Open on GitHub">{d.number ? `#${d.number} ` : ''}{d.title || d.branch}</a>
-            : <span className="axp-push-banner__name is-title">{d.title || d.branch}</span>}
+          {d.url ? <a className="axp-push-banner__name is-title" href={d.url} target="_blank" rel="noopener noreferrer" title="Open on GitHub">{d.number ? `#${d.number} ` : ''}<RefText text={d.title || d.branch || ''} /></a>
+            : <span className="axp-push-banner__name is-title"><RefText text={d.title || d.branch || ''} /></span>}
         </span>
         <span className="axp-push-banner__line axp-push-banner__meta">
           <span className="axp-push-banner__pill is-ready"><Icon name="check-circle" size={11} />{merged ? 'Merged' : `Pulled ${d.base || 'main'} in`}</span>
@@ -416,6 +418,7 @@ export function PushSettings() {
       )}
       <div className="fx-row"><Button icon="refresh" onClick={() => void load(true)}>{s.loading ? 'Checking…' : 'Check now'}</Button></div>
       <AutoMergeSettings />
+      <AutoLandSettings />
       <ClaudeSettings />
     </div>
   );
@@ -446,6 +449,47 @@ function AutoMergeSettings() {
       <div className="fx-row"><Button size="sm" icon="play" onClick={() => { setErr(''); api.post('auto-merge', {}).then(read, (e: Error) => setErr(e.message)); }}>Run a round now</Button></div>
       {st.last.length > 0 && <ul className="axp-push-banner__list">{st.last.slice(0, 8).map((x, i) => <li key={`${x.pr ?? x.branch}-${i}`} className="axp-push-banner__item"><span className="fx-small">{x.pr ?? x.branch}: {said(x)}</span></li>)}</ul>}
       {prot.length > 0 && <ul className="axp-push-banner__list">{prot.map(([repo, p]) => <li key={repo} className="axp-push-banner__item"><span className={`fx-small${p.state === 'protected' ? '' : ' axp-push-banner__note is-danger'}`}>{repo} {p.base}: {p.state === 'protected' ? `protected (PR, up to date${p.checks?.length ? `, ${p.checks.join(', ')}` : ''})` : `not protected: ${p.error ?? ''} (systems check → Auto fix)`}</span></li>)}</ul>}
+      {err && <p className="fx-small axp-push-banner__note is-danger">{err}</p>}
+    </div>
+  );
+}
+
+type LandItem = { id: string; title: string; branch: string; pr: number | null; state: string; since?: string; reason: { kind: string; text: string } | null };
+type LandState = { on: boolean; waitUi: boolean; at?: string; items: LandItem[]; holds: Record<string, { why: string }> };
+
+/** Auto-land (Nov 3 2026, Brett: "zero tokens for merging"): finished builds land by plain scripts on the VPS; only a
+ * code conflict or red CI goes to an agent. The two switches and every finished build with what it waits on. */
+function AutoLandSettings() {
+  const [st, setSt] = useState<LandState | null>(null);
+  const [err, setErr] = useState('');
+  const read = () => api.call<LandState>('land').then(setSt, (e: Error) => setErr(e.message));
+  useEffect(() => { void read(); }, []);
+  if (!st) return err ? <p className="fx-small axp-push-banner__note is-danger">{err}</p> : null;
+  const set = (patch: { autoLand?: boolean; landWaitUi?: boolean }) => { setErr(''); api.put('config', patch).then(read, (e: Error) => setErr(e.message)); };
+  const act = (cmd: 'now' | 'hold' | 'release', build: string) => { setErr(''); api.post(`land/${cmd}`, { build }).then(read, (e: Error) => setErr(e.message)); };
+  return (
+    <div className="fx-stack">
+      <h4 className="axp-push-banner__group-title">Auto-land finished builds</h4>
+      <Switch label="Auto-land finished builds" checked={st.on} onChange={(v) => set({ autoLand: v })}
+        hint="Every 3 min a plain script on the VPS takes every build whose steps are all done: commits the synced files it left, merges main in (builds files newer-wins, logs kept from both sides), opens its PR and starts CI. Auto-merge then merges them in dependency order. No model, no tokens: only a code conflict or red CI goes to a free agent." />
+      <Switch label="Wait for UI Review" checked={st.waitUi} disabled={!st.on} onChange={(v) => set({ landWaitUi: v })}
+        hint="On: a PR whose screenshots are waiting, have changes asked or are rejected in UI Review waits, and merges by itself the moment you approve them. Off: UI Review doesn't hold merges." />
+      {st.items.length > 0 ? (
+        <ul className="axp-push-banner__list">
+          {st.items.map((x) => (
+            <li key={x.id} className="axp-push-banner__item">
+              <span className="axp-push-banner__entry">
+                <span className="axp-push-banner__line"><span className="axp-push-banner__chip">{st.holds[x.id] ? 'held' : x.state}</span><span className="axp-push-banner__name">{x.id}{x.pr ? ` #${x.pr}` : ''}</span></span>
+                <span className="fx-small fx-muted">{x.reason ? x.reason.text.replace(`${x.id}: `, '') : 'Ready: merges at the next auto-merge round.'}</span>
+              </span>
+              <div className="axp-push-banner__acts">
+                <Button size="sm" icon="play" onClick={() => act('now', x.id)}>Land now</Button>
+                {st.holds[x.id] ? <Button size="sm" icon="check" onClick={() => act('release', x.id)}>Release</Button> : <Button size="sm" icon="pause" onClick={() => act('hold', x.id)}>Hold</Button>}
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : <p className="fx-small fx-muted">{st.at ? 'No finished builds waiting to land.' : 'The VPS runner hasn’t reported yet (cron every 3 min, deploy/install-console.sh).'}</p>}
       {err && <p className="fx-small axp-push-banner__note is-danger">{err}</p>}
     </div>
   );

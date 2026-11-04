@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent as RKeyboardEvent, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { Button, Checkbox, Chip, Icon, IconButton, Meter, Segmented, SelectField, Slot, Switch, useRuntime } from '@console/axf/react';
+import { AgentAvatar, BuildOrigin, Button, Checkbox, Chip, Icon, IconButton, Meter, Segmented, SelectField, Slot, Switch, originSubtitle, useRuntime } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridGroup } from '@console/axf/libs/datagrid';
 import { pluginApi } from '@console/plugins';
 import './builds.css';
@@ -21,8 +21,8 @@ export const KEYS = { banner: 'builds.banner', select: 'builds.select', view: 'b
 export const api = pluginApi(FOLDER, 'Builds', { unavailable: 'The Builds page is switched off or its server part is not running.' });
 
 export type Progress = { total: number; done: number; pct: number; active: boolean; status?: string };
-export type StepV = { uid: string; id: string; title: string; text: string; model: 'Fable' | 'Opus'; why: string; phase: string; group: string; estimate: string; files: string[]; checks: string[]; done: boolean; doneAt: string; skip: boolean; note: string; rev: number; origin?: { build: string; step: string; how: string }; index: number; build: string; buildTitle: string; kind: string; target: string; next: boolean };
-export type BuildV = { id: string; title: string; category: string; detail: string; status: string; kind: string; planRef: string; branch: string; pr: string; profiles: string[]; order: number; rev: number; createdAt: string; updatedAt: string; builtAt: string; hidden: boolean; rearranged: boolean; hasDefault: boolean; notes: { text: string; at: string }[]; pendingStatus: string; progress: Progress; minutesLeft: number; steps: StepV[] };
+export type StepV = { uid: string; id: string; title: string; text: string; model: 'Fable' | 'Opus'; why: string; phase: string; group: string; estimate: string; files: string[]; checks: string[]; done: boolean; doneAt: string; skip: boolean; note: string; rev: number; origin?: { build: string; step: string; how: string }; index: number; build: string; buildTitle: string; buildSaid?: string; kind: string; target: string; next: boolean };
+export type BuildV = { id: string; title: string; category: string; detail: string; status: string; kind: string; planRef: string; branch: string; pr: string; profiles: string[]; order: number; rev: number; createdAt: string; updatedAt: string; builtAt: string; hidden: boolean; rearranged: boolean; hasDefault: boolean; notes: { text: string; at: string }[]; pendingStatus: string; progress: Progress; minutesLeft: number; steps: StepV[]; origin?: unknown };
 type ProfileV = { id: string; name: string; base: boolean; builds: number; progress: Progress & { builds: number; complete: number } };
 export type Op = Record<string, unknown> & { op: string };
 type StateV = { ok: boolean; error?: string; rev: number; profile: string; active: string; profiles: ProfileV[]; progress: Progress & { builds: number; complete: number }; builds: BuildV[]; draft: { ops: Op[]; count: number; updatedAt: string; log: string[] }; log?: string[] };
@@ -226,7 +226,7 @@ export function BuildsPage() {
         </div>
       </header>
       <Meter value={state.progress.pct} active={state.progress.active} done={state.progress.pct === 100} label={`${prof?.name ?? state.profile}: ${state.progress.done} of ${state.progress.total} steps`} />
-      <div className="axp-builds__bar">
+      <div className="axp-builds__bar" role="toolbar" aria-label="Builds view">
         <SelectField label="Profile" value={state.profile} options={state.profiles.map((p) => ({ value: p.id, label: `${p.name} — ${p.progress.pct}%` }))} onChange={(v) => { rt.settings.set(KEYS.profile, v); void reload(v); }} className="axp-builds__pick" />
         <Segmented label="View" value={view} onChange={setView} options={[{ value: 'builds', label: 'Builds', icon: 'list' }, { value: 'steps', label: 'Steps', icon: 'layers' }]} />
         <Segmented label="Show" size="sm" value={filter} onChange={setFilter} options={FILTERS.map((f) => ({ ...f, label: `${f.label} ${state.builds.filter(keep(f.value)).length}` }))} />
@@ -270,7 +270,7 @@ function BuildsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
   const rename = (b: BuildV) => (title: string) => send('ops', { ops: [{ op: 'rename-build', id: b.id, title }] }, rt.toast);
   const columns: GridColumn<BuildV>[] = [
     { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-space) * 30), 4fr)', fixed: true, sortable: true, sortValue: (b) => b.title.toLowerCase(),
-      render: (b) => <span className="axp-builds__cell-title"><InlineName label="Build name" value={b.title} onSave={rename(b)} /><span className="fx-small fx-muted fx-mono">{b.id}{b.profiles.length > 1 ? ` · also in ${b.profiles.filter((p) => p !== state.profile).join(', ')}` : ''}</span></span> },
+      render: (b) => <span className="axp-builds__cell-title"><AgentAvatar inText={`${b.id}\n${b.detail}`} size="small" /><InlineName label="Build name" value={b.title} onSave={rename(b)} /><span className="fx-small fx-muted fx-mono">{b.id}{b.profiles.length > 1 ? ` · also in ${b.profiles.filter((p) => p !== state.profile).join(', ')}` : ''}</span>{originSubtitle(b.origin) && <span className="axf-origin-sub" title={originSubtitle(b.origin, 600)}>“{originSubtitle(b.origin)}”</span>}</span> },
     { id: 'status', label: 'Status', width: 'calc(var(--fx-space) * 14)', sortable: true, sortValue: (b) => b.status, render: (b) => <StatusChip b={b} /> },
     { id: 'progress', label: 'Progress', width: 'calc(var(--fx-space) * 22)', sortable: true, sortValue: (b) => b.progress.pct, render: (b) => <Bar p={b.progress} label={`${b.title}: ${b.progress.done} of ${b.progress.total} steps`} /> },
     { id: 'steps', label: 'Steps', width: 'calc(var(--fx-space) * 9)', align: 'end', sortable: true, sortValue: (b) => b.progress.total, render: (b) => <span className="fx-small">{b.progress.done}/{b.progress.total}</span> },
@@ -308,6 +308,7 @@ function BuildDetail({ b }: { b: BuildV }) {
   const rt = useRuntime();
   return (
     <div className="axp-builds__detail">
+      <BuildOrigin origin={b.origin} showEmpty />
       {b.detail && <p className="axp-builds__text">{b.detail}</p>}
       <p className="fx-small fx-muted">{b.kind === 'epic' ? `Plan epic ${b.planRef} · ` : ''}{b.branch ? `branch ${b.branch} · ` : ''}{b.pr ? `PR ${b.pr} · ` : ''}rev {b.rev}{b.rearranged ? ' · rearranged (Restore default in the Steps view)' : ''}</p>
       <ol className="axp-builds__steps">
@@ -373,7 +374,7 @@ function StepsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
   const rearranged = shown.filter((b) => b.rearranged && b.hasDefault);
   return (
     <div className="axp-builds__steps-view">
-      <div className="axp-builds__bar">
+      <div className="axp-builds__bar" role="toolbar" aria-label="Steps selection">
         <SelectField label="Scope" value={scope} empty="Every build in the profile" options={state.builds.map((b) => ({ value: b.id, label: b.title }))} onChange={(v) => { setScope(v); setSel([]); }} className="axp-builds__pick" />
         <span className="fx-small fx-muted">{sel.length ? `${sel.length} selected` : isPhone() ? 'Long-press or tap to select' : 'Ctrl+click to select more, Shift+click for a range'}</span>
         <span className="axp-builds__grow" />
@@ -417,6 +418,7 @@ function StepsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
 function StepDetail({ s }: { s: StepV }) {
   return (
     <div className="axp-builds__detail">
+      {s.buildSaid && <p className="axf-origin-sub" title={`What Brett said for ${s.buildTitle}`}>Brett: “{s.buildSaid}”</p>}
       <p className="axp-builds__text">{s.text}</p>
       {s.kind === 'fix' && <p className="fx-small"><strong>Fix:</strong> {s.why || 'where it broke, where it came from and what raised the alarm are not recorded on this step yet'}{s.note ? ` · ${s.note}` : ''}</p>}
       {s.kind !== 'fix' && s.why && <p className="fx-small"><strong>Why:</strong> {s.why}</p>}

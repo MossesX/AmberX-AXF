@@ -1,0 +1,114 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.md-studio",
+  "name": "MD Studio",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "A Markdown browser and editor for every .md file Brett works with, on the dock engine. A column lists the files in collapsible categories by scope (Project, Claude, Repo, Notes Vault) with an edit switch per file and its reference chain as branches; files open as dock tabs that float, split, resize and drop on any tab header or into a split. Preview, edit or split with live preview, a Markdown toolbar, find and replace, autosave, conflict-safe saves and version history with restore. Four views (Browse, Read, Write, IDE), snippets to drag in, wizards for Claude md files, and a context view with token counts per referenced part.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:md-studio",
+    "settings-tab:md-studio"
+  ],
+  "dependsOn": [],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [
+    "service:axf.notes@1"
+  ],
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/md-studio",
+    "env": [
+      "AXF_ROOT",
+      "AXHUB_PROJECTS_DIR",
+      "AXF_MD_STUDIO_DATA_DIR"
+    ],
+    "mentions": [
+      "_claude/THREADS.md",
+      "_claude/memory/STATUS.md"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "route": "GET /files",
+        "id": "list-files",
+        "title": "List Markdown files",
+        "description": "Every .md file by scope (Project, Claude, Repo, Notes) and category. q filters by name or path; content=true also searches inside the files."
+      },
+      {
+        "route": "GET /file",
+        "id": "read-file",
+        "title": "Read a Markdown file",
+        "description": "One file by id (repo:<path>, hub:<project>/<path>, notes:<folder>/<name>.md): its text, version, token count and references."
+      },
+      {
+        "route": "PUT /file",
+        "id": "save-file",
+        "title": "Save a Markdown file",
+        "description": "Write a file: {id, content, if_version}. if_version \"\" creates only; the version from read-file saves only if nobody changed it since. The replaced text is kept in the version history."
+      },
+      {
+        "route": "GET /history",
+        "id": "file-history",
+        "title": "Version history of a file"
+      },
+      {
+        "route": "GET /version",
+        "id": "file-version",
+        "title": "Read a kept version of a file"
+      },
+      {
+        "route": "POST /restore",
+        "id": "restore-version",
+        "title": "Restore a kept version",
+        "confirm": true
+      },
+      {
+        "route": "GET /chain",
+        "id": "context-chain",
+        "title": "Context chain with token counts",
+        "description": "A file and everything it references (imports, links, paths) as a tree, with about how many tokens each part costs and the total."
+      },
+      {
+        "route": "GET /refs",
+        "id": "file-refs",
+        "title": "References of a file"
+      },
+      {
+        "action": "md-studio.open",
+        "id": "open-file",
+        "title": "Open a file in MD Studio",
+        "description": "Opens a Markdown file as a tab in the open console (args: an id or a path such as CLAUDE.md, notes/plans/x.md)."
+      },
+      {
+        "action": "md-studio.edit",
+        "id": "edit-file",
+        "title": "Open a file to edit in MD Studio"
+      },
+      {
+        "action": "md-studio.context",
+        "id": "open-context",
+        "title": "Open the context view of a file in MD Studio"
+      }
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-03",
+    "branch": "claude/md-studio"
+  },
+  "help": "help.json",
+  "opens": "main"
+}

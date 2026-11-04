@@ -3,17 +3,17 @@
 .axp-todo { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); min-width: 0 }
 .axp-todo__body { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--fx-dens-gap-xl); min-width: 0 }
 .axp-todo__main { min-width: 0 }
-:where(:not([data-fx-narrow])) .axp-todo__body { grid-template-columns: minmax(11rem, 15rem) minmax(0, 1fr) }
+:where([data-fx-scheme]:not([data-fx-narrow])) .axp-todo__body { grid-template-columns: minmax(11rem, 15rem) minmax(0, 1fr) }
 
 /* lists column (a drop-down on phones) */
 .axp-todo__lists { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0 }
 .axp-todo__tree, .axp-todo__tree ul { list-style: none; margin: 0; padding: 0; display: none; flex-direction: column; gap: var(--fx-dens-gap-2xs) }
 .axp-todo__tree ul { display: flex }
 .axp-todo__addlist { display: none; flex-direction: column; align-items: stretch; gap: var(--fx-dens-gap-md) }
-:where(:not([data-fx-narrow])) .axp-todo__listpick { display: none }
-:where(:not([data-fx-narrow])) .axp-todo__tree { display: flex }
-:where(:not([data-fx-narrow])) .axp-todo__addlist { display: flex }
-:where(:not([data-fx-narrow])) .axp-todo__addlist > .fx-btn { align-self: flex-start }
+:where([data-fx-scheme]:not([data-fx-narrow])) .axp-todo__listpick { display: none }
+:where([data-fx-scheme]:not([data-fx-narrow])) .axp-todo__tree { display: flex }
+:where([data-fx-scheme]:not([data-fx-narrow])) .axp-todo__addlist { display: flex }
+:where([data-fx-scheme]:not([data-fx-narrow])) .axp-todo__addlist > .fx-btn { align-self: flex-start }
 button.axp-todo__listrow { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: var(--fx-dens-gap-md); width: 100%; min-height: var(--fx-row-h); padding: 0 var(--fx-dens-gap-md); padding-left: calc(var(--fx-space) * (0.5 + var(--axp-todo-depth, 0))); border-radius: var(--fx-radius-sm); cursor: pointer; color: var(--fx-text) }
 button.axp-todo__listrow:hover { background: var(--fx-surface2) }
 button.axp-todo__listrow.is-on { background: var(--fx-accent-soft); color: var(--fx-accent) }

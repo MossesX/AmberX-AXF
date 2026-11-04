@@ -43,7 +43,11 @@ export function money(v: number | null | undefined): string {
 /* ---------------------------------------------------------------- the context chain (CLAUDE.md, rules, memory) */
 
 export interface ChainRule { kind: 'heading' | 'item'; level: number; text: string }
-export interface ChainItem { i: number; path: string; rel: string; via: string; depth: number; parent: string; at: string; rules: ChainRule[] }
+/** Why a file is in the chain (claude-meter.mjs): Claude Code loaded it, an @import, a mention the session followed, … */
+export type ChainReason = 'session-start' | 'import' | 'reference' | 'session-start rule' | 'read' | 'nested memory';
+export interface ChainItem { i: number; path: string; rel: string; via: string; reason?: ChainReason | string; depth: number; parent: string; parentI?: number; why?: string; at: string; rules: ChainRule[] }
+/** A chain item with the items it pulled in. */
+export interface ChainNode extends ChainItem { children: ChainNode[] }
 export type Speed = 'slow' | 'normal' | 'fast' | 'instant';
 
 /** Characters per second and the pause after each rule, per speed. */

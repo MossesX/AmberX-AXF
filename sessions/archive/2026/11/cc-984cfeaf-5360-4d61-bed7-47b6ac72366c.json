@@ -1,0 +1,111 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-984cfeaf-5360-4d61-bed7-47b6ac72366c",
+ "source": "claude-code",
+ "sessionId": "984cfeaf-5360-4d61-bed7-47b6ac72366c",
+ "project": "amberx-axf",
+ "title": "# Build: console-wake (Urgent profile) Brett, Nov 3 2026 (voice). GO given. Assigned agent: **Ping Paulie** (book this …",
+ "startedAt": "2026-11-03T17:21:12.316Z",
+ "endedAt": "2026-11-03T17:45:37.540Z",
+ "minutes": 24,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/console-wake",
+  "repo": "",
+  "branch": "claude/console-wake"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-03T17:21:31.680Z",
+   "kind": "prompt",
+   "text": "# Build: console-wake (Urgent profile) Brett, Nov 3 2026 (voice). GO given. Assigned agent: **Ping Paulie** (book this run on his agent-swarm card: stats, cost, chat; set AXF_AGENT=ping-paulie or the equivalent if crew-retrain's launcher support is on main, otherwise record it in the report and the builds store note). ## Problem Voice control of the Dev Console works through axHub -> axf-console MCP (console_open / console_action / console_dialog / console_settings, console-commands on main). But commands fail with `not_found: no console is open for you right now` whenever the browser tab isn…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 260,
+    "output": 80664,
+    "cacheRead": 21356438,
+    "cacheWrite": 225154,
+    "thinking": 16262
+   },
+   "costUsd": 7.0111,
+   "costEstimated": false,
+   "seconds": 1446,
+   "tools": {
+    "Bash": 120,
+    "Read": 6,
+    "Edit": 3,
+    "Write": 4
+   },
+   "commands": 120,
+   "files": [
+    "/root/axf-builds/console-wake/framework/core/engines/console-commands.mjs",
+    "/root/axf-builds/console-wake/apps/console-web/plugins/console-commands/server/wake.py",
+    "/root/axf-builds/console-wake/apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OpenUrlRules.java",
+    "/root/axf-builds/console-wake/apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/OpenUrlRulesTest.java",
+    "/root/axf-builds/console-wake/apps/amberx-droid/android/app/src/main/AndroidManifest.xml",
+    "/root/axf-builds/console-wake/framework/spec/CONTROL.md",
+    "/root/axf-builds/console-wake/_claude/builds/reports/console-wake.md"
+   ],
+   "changeIds": [
+    "chg-20261103-4119d89552"
+   ],
+   "features": [
+    "orch:console-wake",
+    "breakroom:agent-swarm",
+    "orch:console-commands",
+    "queue:crew-retrain"
+   ],
+   "output": "Done, boss. Console commands don't get dropped anymore when no console is connected. PRs are open: **AmberX-AXF #266** and **axHub #35**. I tested it end to end on the server and in a real browser on the box, but not on your phone yet. The wake path needs a new APK. **What broke:** every time React…"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/console-wake/framework/core/engines/console-commands.mjs",
+  "/root/axf-builds/console-wake/apps/console-web/plugins/console-commands/server/wake.py",
+  "/root/axf-builds/console-wake/apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OpenUrlRules.java",
+  "/root/axf-builds/console-wake/apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/OpenUrlRulesTest.java",
+  "/root/axf-builds/console-wake/apps/amberx-droid/android/app/src/main/AndroidManifest.xml",
+  "/root/axf-builds/console-wake/framework/spec/CONTROL.md",
+  "/root/axf-builds/console-wake/_claude/builds/reports/console-wake.md"
+ ],
+ "changeIds": [
+  "chg-20261103-4119d89552"
+ ],
+ "features": [
+  "orch:console-wake",
+  "breakroom:agent-swarm",
+  "orch:console-commands",
+  "queue:crew-retrain"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 260,
+  "output": 80664,
+  "cacheRead": 21356438,
+  "cacheWrite": 225154,
+  "thinking": 16262,
+  "costUsd": 7.0111,
+  "costEstimated": false,
+  "toolCalls": 133,
+  "commands": 120,
+  "filesTouched": 7,
+  "reportedUsd": 7.6868
+ },
+ "ingestedAt": "2026-11-03T17:45:37.761Z"
+}

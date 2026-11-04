@@ -21,6 +21,7 @@
  *              SPLIT_LIMIT_MINUTES is split into sub prompts of SPLIT_LIMIT_MINUTES or less, each with its own estimate,
  *              ticked off one by one (`done`, `doneAt`). `splitCheck` / `needsSplit` flag a big build without such steps.
  */
+import { normOrigin } from '../core/build-origin.mjs';
 
 export const STATUSES = ['pending', 'unsafe', 'broken', 'failed', 'complete'];
 export const STATUS_LABEL = { pending: 'Pending', unsafe: 'Unsafe', complete: 'Complete', failed: 'Failed', broken: 'Broken' };
@@ -165,7 +166,13 @@ export function normalize(raw, now = new Date().toISOString()) {
     ...(raw?.planId ? { planId: str(raw.planId) } : {}),
     ...(str(raw?.estimate).trim() ? { estimate: str(raw.estimate).trim() } : {}),
     source: str(raw?.source) || 'console',
+    ...originOf(raw),
   };
+}
+/** build-origin@1 on an item: `origin`, or the `said` shortcut (Brett's verbatim words) on an add. */
+function originOf(raw) {
+  const o = normOrigin(raw?.said !== undefined ? { ...(raw?.origin ?? {}), said: raw.said, at: raw?.origin?.at || raw?.saidAt || '' } : raw?.origin);
+  return o ? { origin: o } : {};
 }
 
 export function normalizeState(raw, now) {
@@ -181,7 +188,7 @@ const touch = (state, items, now) => ({ ...state, items, updatedAt: now });
 
 /**
  * Apply one change. Actions:
- *   add     { title, detail?, model?, status?, planId?, source?, id? }
+ *   add     { title, detail?, model?, status?, planId?, source?, id?, origin? | said? }   said = Brett's verbatim words (build-origin@1)
  *   update  { id, title?, detail?, model?, status?, planId?, estimate?, subEstimates?, subPrompts? (replaces the step list) }
  *   status  { id, status }
  *   note    { id, text, estimate? }   sub { id, text, estimate? }   remove { id }

@@ -71,7 +71,7 @@ export function BrowserPane() {
   const recording = rec.recording;
   return (
     <div className="ws-pane">
-      <div className="ws-pane__tools ws-browser__bar">
+      <div className="ws-pane__tools ws-browser__bar" role="toolbar" aria-label="Browser">
         <IconButton icon="arrow-left" label="Back" disabled={!hist.length} onClick={() => { const h = [...hist]; const prev = h.pop(); if (prev) { setHist(h); setShown(prev); setUrl(prev); } }} />
         <IconButton icon="refresh" label="Reload" onClick={() => { const s = shown; setShown('about:blank'); setTimeout(() => setShown(s), 30); }} />
         <form className="ws-grow fx-row" onSubmit={(e) => { e.preventDefault(); go(url); }}>
@@ -80,7 +80,7 @@ export function BrowserPane() {
         {piece?.url && piece.url !== shown && <Button size="sm" tone="quiet" icon="file" onClick={() => go(piece.url)}>Piece page</Button>}
         <IconButton icon="external" label="Open in a new tab" onClick={() => window.open(shown, '_blank', 'noopener,noreferrer')} />
       </div>
-      <div className="ws-pane__tools">
+      <div className="ws-pane__tools" role="toolbar" aria-label="Recorder">
         <Button size="sm" tone={recording ? 'danger' : 'primary'} icon={recording ? 'pause' : 'play'} onClick={() => controllers.recorder?.toggle()}>{recording ? `Stop · ${recording.events}` : 'Record'}</Button>
         <IconButton icon="star" label="Drop a marker" disabled={!recording} onClick={() => rec.mark()} />
         {recorderConfig().captureLayer && recorderConfig().sameSite && <Segmented size="sm" label="Mode" value={mode} onChange={setMode} options={[{ value: 'interact', label: 'Interact', icon: 'monitor', title: 'Use the page; records its events when it is from this site' }, { value: 'capture', label: 'Capture layer', icon: 'layers', title: 'Records every move and click anywhere; the page does not get them' }]} />}
@@ -146,7 +146,7 @@ export function EventsPane() {
   const list = rec.events.filter((e) => type === 'all' || e.type === type);
   return (
     <div className="ws-pane">
-      <div className="ws-pane__tools"><strong className="ws-ellipsis ws-grow">{rec.name}</strong>
+      <div className="ws-pane__tools" role="toolbar" aria-label="Recording"><strong className="ws-ellipsis ws-grow">{rec.name}</strong>
         <select className="fx-input" value={type} onChange={(e) => setType(e.target.value)} aria-label="Event type">{['all', 'move', 'click', 'key', 'scroll', 'nav', 'mark'].map((t) => <option key={t}>{t}</option>)}</select>
       </div>
       <svg className="ws-pathmap" viewBox="0 0 100 60" preserveAspectRatio="none" role="img" aria-label="Cursor path">
@@ -234,7 +234,7 @@ export function FilesPane() {
   };
   return (
     <div className="ws-pane">
-      <div className="ws-pane__tools"><Button size="sm" icon="folder" onClick={() => void pickFolder()}>Open a folder on this device</Button></div>
+      <div className="ws-pane__tools" role="toolbar" aria-label="Files"><Button size="sm" icon="folder" onClick={() => void pickFolder()}>Open a folder on this device</Button></div>
       <div className="ws-files">
         <ul className="ws-tree ws-files__tree">{render(tree, '', 0)}{device && render(device, '', 0)}</ul>
         <div className="ws-files__view">

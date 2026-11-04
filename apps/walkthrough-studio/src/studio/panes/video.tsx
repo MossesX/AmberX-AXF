@@ -69,7 +69,7 @@ export function PreviewPane() {
   const jump = (s: Segment) => { setT(s.start + 0.01); spoken.current = ''; hush(); };
   return (
     <div className="ws-pane">
-      <div className="ws-pane__tools">
+      <div className="ws-pane__tools" role="toolbar" aria-label="Player">
         <Button size="sm" tone="primary" icon={run ? 'pause' : 'play'} onClick={() => { if (run) hush(); setRun(!run); }}>{run ? 'Pause' : 'Play'}</Button>
         <IconButton icon="chevron-left" label="Previous segment" onClick={() => idx > 0 && jump(c.segments[idx - 1]!)} />
         <IconButton icon="chevron-right" label="Next segment" onClick={() => idx < c.segments.length - 1 && jump(c.segments[idx + 1]!)} />
@@ -117,7 +117,7 @@ export function TimelinePane() {
   if (!c) return <p className="fx-muted ws-pad">Compiling…</p>;
   return (
     <div className="ws-pane">
-      <div className="ws-pane__tools">
+      <div className="ws-pane__tools" role="toolbar" aria-label="Compile">
         <Button size="sm" tone="primary" icon="package" onClick={() => rt.dispatch('ws.compile')}>Recompile</Button>
         <span className="fx-small">{fmtDur(c.durationSec)}{c.targetSec ? ` of ${fmtDur(c.targetSec)}` : ' · no length limit'} · {c.segments.length} segments · {c.reused} reused · {c.rebuilt} rebuilt · {c.skipped.length} left out</span>
         <span className="fx-grow" />
@@ -154,7 +154,7 @@ export function CaptionsPane() {
   const lines = c.segments.flatMap((s) => s.lines.map((l) => ({ ...l, seg: s.title }))).filter((l) => !q || l.text.toLowerCase().includes(q.toLowerCase()));
   return (
     <div className="ws-pane">
-      <div className="ws-pane__tools"><input className="fx-input ws-grow" placeholder="Find in captions" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Find in captions" /><span className="fx-small fx-muted">{lines.length} lines</span></div>
+      <div className="ws-pane__tools" role="toolbar" aria-label="Find in captions"><input className="fx-input ws-grow" placeholder="Find in captions" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Find in captions" /><span className="fx-small fx-muted">{lines.length} lines</span></div>
       <div className="ws-pane__scroll"><table className="fx-table ws-table"><tbody>{lines.map((l, i) => <tr key={i}><td className="fx-mono fx-small">{fmtDur(l.start)}</td><td>{l.text}</td><td className="fx-small fx-muted ws-ellipsis">{l.seg}</td></tr>)}</tbody></table></div>
     </div>
   );

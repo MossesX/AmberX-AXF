@@ -64,6 +64,15 @@ for (const r of f.resizes) eq(resizeRect(r.start, r.edge as ResizeEdge, r.dx, r.
   const w = () => wm.state.windows.find((x) => x.id === id)!;
   eq(windowFrame(w()), 'frameless', 'openFloating frame option'); eq(limitsOf(w()), { minWidth: 320, minHeight: 200 }, 'openFloating min size');
   eq(pick(w()), { x: 100, y: 80, width: 500, height: 300, maximized: false, restore: null }, 'opened where asked');
+  // top chrome (banner, menu bar, banner strip): new windows open below it, shrunk to fit, never under their minimum
+  const wc = new WindowManager();
+  wc.viewport = { width: 1000, height: 700 };
+  wc.chromeTop = () => 240;
+  const below = (h: number, y?: number, minHeight?: number) => { const cid = wc.openFloating([{ id: `c${h}-${y}-${minHeight}`, title: 'C', kind: 'placeholder' }], 'C', 'floating', 300, h, 10, y, minHeight ? { minHeight } : {}); return wc.state.windows.find((x) => x.id === cid)!; };
+  eq([below(300, 80).y, below(300, 80).height], [240, 300], 'opens below the chrome');
+  eq([below(600).y, below(600).height], [240, 460], 'shrunk to fit under the chrome');
+  eq(below(600, 300, 500).height, 500, 'never under its minimum height');
+  eq(below(200, 400).y, 400, 'already below the chrome: where asked');
   // resize from each handle with a start rect, fixed edge kept, own floor honoured
   const start = { x: 100, y: 80, width: 500, height: 300 };
   wm.resizeFrom(id, 'w', start, 400, 0); eq(pick(w()), { x: 280, y: 80, width: 320, height: 300, maximized: false, restore: null }, 'west resize to own floor');

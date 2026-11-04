@@ -1,0 +1,491 @@
+{
+ "$axf": "fixture@1",
+ "about": "card@1 + home-layout@1 golden outputs (framework/spec/check-card.mjs --write)",
+ "models": {
+  "count of a list": {
+   "ok": true,
+   "view": "number",
+   "shape": "number",
+   "size": "m",
+   "value": "2",
+   "raw": 2,
+   "unit": "",
+   "label": ""
+  },
+  "auto: single number": {
+   "ok": true,
+   "view": "number",
+   "shape": "number",
+   "size": "m",
+   "value": "63",
+   "raw": 63,
+   "unit": "",
+   "label": ""
+  },
+  "auto: record of numbers → table (has a boolean)": {
+   "ok": true,
+   "view": "table",
+   "shape": "record",
+   "size": "m",
+   "columns": [
+    "key",
+    "value"
+   ],
+   "rows": [
+    [
+     "builds",
+     "2"
+    ],
+    [
+     "complete",
+     "1"
+    ],
+    [
+     "total",
+     "8"
+    ],
+    [
+     "done",
+     "5"
+    ],
+    [
+     "pct",
+     "63"
+    ],
+    [
+     "active",
+     "false"
+    ]
+   ]
+  },
+  "meter from one record": {
+   "ok": true,
+   "view": "meter",
+   "shape": "record",
+   "size": "m",
+   "rows": [
+    {
+     "label": "Steps done",
+     "value": 5,
+     "max": 8,
+     "pct": 63,
+     "text": "5/8"
+    }
+   ]
+  },
+  "where + list": {
+   "ok": true,
+   "view": "list",
+   "shape": "rows",
+   "size": "m",
+   "items": [
+    {
+     "title": "Home",
+     "subtitle": "console-web",
+     "badge": "waiting",
+     "at": "",
+     "tone": "warning"
+    },
+    {
+     "title": "Bell",
+     "subtitle": "console-web",
+     "badge": "waiting",
+     "at": "",
+     "tone": "warning"
+    }
+   ],
+   "more": 0
+  },
+  "auto: rows with a time → feed, newest first": {
+   "ok": true,
+   "view": "feed",
+   "shape": "rows",
+   "size": "m",
+   "items": [
+    {
+     "title": "Bell",
+     "subtitle": "",
+     "badge": "",
+     "at": "2026-11-03T12:00:00Z",
+     "tone": ""
+    },
+    {
+     "title": "Home",
+     "subtitle": "",
+     "badge": "",
+     "at": "2026-11-03T10:00:00Z",
+     "tone": ""
+    },
+    {
+     "title": "Menu",
+     "subtitle": "",
+     "badge": "",
+     "at": "2026-11-02T10:00:00Z",
+     "tone": ""
+    }
+   ],
+   "more": 0
+  },
+  "wildcard path + sum": {
+   "ok": true,
+   "view": "number",
+   "shape": "number",
+   "size": "m",
+   "value": "3.75",
+   "raw": 3.75,
+   "unit": "USD",
+   "label": ""
+  },
+  "auto: time series → chart": {
+   "ok": true,
+   "view": "chart",
+   "shape": "series",
+   "size": "m",
+   "kind": "line",
+   "points": [
+    {
+     "x": "2026-11-01",
+     "y": 3,
+     "h": 60
+    },
+    {
+     "x": "2026-11-02",
+     "y": 5,
+     "h": 100
+    },
+    {
+     "x": "2026-11-03",
+     "y": 4,
+     "h": 80
+    }
+   ],
+   "min": 0,
+   "max": 5,
+   "last": "4"
+  },
+  "bar chart": {
+   "ok": true,
+   "view": "chart",
+   "shape": "series",
+   "size": "m",
+   "kind": "bar",
+   "points": [
+    {
+     "x": "2026-11-01",
+     "y": 3,
+     "h": 60
+    },
+    {
+     "x": "2026-11-02",
+     "y": 5,
+     "h": 100
+    },
+    {
+     "x": "2026-11-03",
+     "y": 4,
+     "h": 80
+    }
+   ],
+   "min": 0,
+   "max": 5,
+   "last": "4"
+  },
+  "auto: status word": {
+   "ok": true,
+   "view": "status",
+   "shape": "status",
+   "size": "m",
+   "state": "failed",
+   "tone": "danger",
+   "label": ""
+  },
+  "auto: status object": {
+   "ok": true,
+   "view": "status",
+   "shape": "status",
+   "size": "m",
+   "state": "ok",
+   "tone": "success",
+   "label": "All green"
+  },
+  "table of a record": {
+   "ok": true,
+   "view": "table",
+   "shape": "record",
+   "size": "m",
+   "columns": [
+    "key",
+    "value"
+   ],
+   "rows": [
+    [
+     "Open project",
+     "apps/demo"
+    ],
+    [
+     "Libraries",
+     "12"
+    ]
+   ]
+  },
+  "missing path": {
+   "ok": false,
+   "view": "auto",
+   "message": "Nothing at nope.here in the result."
+  },
+  "empty list": {
+   "ok": true,
+   "view": "number",
+   "shape": "empty",
+   "size": "m",
+   "empty": true
+  },
+  "coverage meter (starter)": {
+   "ok": true,
+   "view": "meter",
+   "shape": "rows",
+   "size": "m",
+   "rows": [
+    {
+     "label": "Kernel",
+     "value": 3,
+     "max": 10,
+     "pct": 30,
+     "text": "3/10"
+    },
+    {
+     "label": "Console",
+     "value": 9,
+     "max": 9,
+     "pct": 100,
+     "text": "9/9"
+    }
+   ]
+  }
+ },
+ "shapes": {
+  "n": {
+   "shape": "number",
+   "view": "number"
+  },
+  "s": {
+   "shape": "status",
+   "view": "status"
+  },
+  "t": {
+   "shape": "text",
+   "view": "number"
+  },
+  "series": {
+   "shape": "series",
+   "view": "chart"
+  },
+  "rows": {
+   "shape": "rows",
+   "view": "list"
+  },
+  "rec": {
+   "shape": "record",
+   "view": "meter"
+  },
+  "empty": {
+   "shape": "empty",
+   "view": "number"
+  },
+  "obj": {
+   "shape": "status",
+   "view": "status"
+  }
+ },
+ "sources": [
+  {
+   "plugin": "agent-swarm",
+   "name": "Agent swarm",
+   "command": "state",
+   "title": "State",
+   "description": "",
+   "params": [],
+   "generic": false
+  },
+  {
+   "plugin": "builds-page",
+   "name": "Builds",
+   "command": "progress",
+   "title": "Progress",
+   "description": "",
+   "params": [],
+   "generic": false
+  },
+  {
+   "plugin": "builds-page",
+   "name": "Builds",
+   "command": "info",
+   "title": "Plugin info",
+   "description": "",
+   "params": [],
+   "generic": true
+  },
+  {
+   "plugin": "ui-review",
+   "name": "UI Review",
+   "command": "items",
+   "title": "Items",
+   "description": "",
+   "params": [],
+   "generic": false
+  }
+ ],
+ "suggestions": [
+  {
+   "id": "suggested-builds-running",
+   "source": {
+    "kind": "command",
+    "plugin": "builds-page",
+    "command": "progress"
+   },
+   "view": "number",
+   "refresh": "live"
+  },
+  {
+   "id": "suggested-build-progress",
+   "source": {
+    "kind": "command",
+    "plugin": "builds-page",
+    "command": "progress"
+   },
+   "view": "meter",
+   "refresh": "live"
+  },
+  {
+   "id": "suggested-cost-today",
+   "source": {
+    "kind": "command",
+    "plugin": "agent-swarm",
+    "command": "state"
+   },
+   "view": "number",
+   "refresh": "every"
+  },
+  {
+   "id": "suggested-agents-working",
+   "source": {
+    "kind": "command",
+    "plugin": "agent-swarm",
+    "command": "state"
+   },
+   "view": "number",
+   "refresh": "live"
+  },
+  {
+   "id": "suggested-ui-review-waiting",
+   "source": {
+    "kind": "command",
+    "plugin": "ui-review",
+    "command": "items"
+   },
+   "view": "list",
+   "refresh": "live"
+  }
+ ],
+ "layout": [
+  {
+   "op": "add",
+   "order": [
+    "coverage",
+    "project",
+    "running"
+   ],
+   "hidden": [],
+   "sizes": {}
+  },
+  {
+   "op": "move",
+   "order": [
+    "running",
+    "coverage",
+    "project"
+   ],
+   "hidden": [],
+   "sizes": {}
+  },
+  {
+   "op": "size",
+   "order": [
+    "running",
+    "coverage",
+    "project"
+   ],
+   "hidden": [],
+   "sizes": {
+    "running": "wide"
+   }
+  },
+  {
+   "op": "hide",
+   "order": [
+    "running",
+    "coverage",
+    "project"
+   ],
+   "hidden": [
+    "project"
+   ],
+   "sizes": {
+    "running": "wide"
+   }
+  },
+  {
+   "op": "hideAll",
+   "order": [
+    "running",
+    "coverage",
+    "project"
+   ],
+   "hidden": [
+    "running",
+    "coverage",
+    "project"
+   ],
+   "sizes": {
+    "running": "wide"
+   }
+  },
+  {
+   "op": "showAll",
+   "order": [
+    "running",
+    "coverage",
+    "project"
+   ],
+   "hidden": [],
+   "sizes": {
+    "running": "wide"
+   }
+  },
+  {
+   "op": "remove",
+   "order": [
+    "running",
+    "coverage",
+    "project"
+   ],
+   "hidden": [
+    "coverage"
+   ],
+   "sizes": {
+    "running": "wide"
+   }
+  },
+  {
+   "op": "remove",
+   "order": [
+    "coverage",
+    "project"
+   ],
+   "hidden": [
+    "coverage"
+   ],
+   "sizes": {}
+  }
+ ]
+}

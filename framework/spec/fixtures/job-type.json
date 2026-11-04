@@ -247,10 +247,112 @@
    {
     "specialty": "Nope"
    }
+  ],
+  "skills-only": [
+   "job-type",
+   {
+    "model": "opus",
+    "budget": {
+     "tokens": 100000,
+     "maxTurns": 10
+    },
+    "trigger": {
+     "kind": "schedule",
+     "every": "6h"
+    },
+    "inputs": [
+     {
+      "id": "sites",
+      "label": "Sites",
+      "default": "a.example b.example"
+     },
+     {
+      "id": "who",
+      "label": "Who",
+      "required": true
+     }
+    ],
+    "brief": "Check {{sites}} for {{who}} on {{date}}.",
+    "outputs": {
+     "report": "r/{{jobType}}/{{stamp}}.md",
+     "uiReviewGroup": "Checks - {{when}}"
+    },
+    "skills": [
+     "site-checks",
+     "screenshots"
+    ]
+   }
+  ],
+  "bad-skills": [
+   "job-type",
+   {
+    "specialty": "site-checks",
+    "model": "opus",
+    "budget": {
+     "tokens": 100000,
+     "maxTurns": 10
+    },
+    "trigger": {
+     "kind": "schedule",
+     "every": "6h"
+    },
+    "inputs": [
+     {
+      "id": "sites",
+      "label": "Sites",
+      "default": "a.example b.example"
+     },
+     {
+      "id": "who",
+      "label": "Who",
+      "required": true
+     }
+    ],
+    "brief": "Check {{sites}} for {{who}} on {{date}}.",
+    "outputs": {
+     "report": "r/{{jobType}}/{{stamp}}.md",
+     "uiReviewGroup": "Checks - {{when}}"
+    },
+    "skills": [
+     "Site Checks"
+    ]
+   }
+  ],
+  "no-skill-at-all": [
+   "job-type",
+   {
+    "model": "opus",
+    "budget": {
+     "tokens": 100000,
+     "maxTurns": 10
+    },
+    "trigger": {
+     "kind": "schedule",
+     "every": "6h"
+    },
+    "inputs": [
+     {
+      "id": "sites",
+      "label": "Sites",
+      "default": "a.example b.example"
+     },
+     {
+      "id": "who",
+      "label": "Who",
+      "required": true
+     }
+    ],
+    "brief": "Check {{sites}} for {{who}} on {{date}}.",
+    "outputs": {
+     "report": "r/{{jobType}}/{{stamp}}.md",
+     "uiReviewGroup": "Checks - {{when}}"
+    }
+   }
   ]
  },
  "defaults": {
   "specialty": "",
+  "skills": [],
   "model": "opus",
   "budget": {
    "tokens": 200000,
@@ -277,6 +379,9 @@
  "normalized": {
   "good": {
    "specialty": "site-checks",
+   "skills": [
+    "site-checks"
+   ],
    "model": "opus",
    "budget": {
     "tokens": 100000,
@@ -317,6 +422,7 @@
   },
   "junk": {
    "specialty": "",
+   "skills": [],
    "model": "opus",
    "budget": {
     "tokens": 200000,
@@ -342,6 +448,53 @@
   },
   "blocked": {
    "specialty": "site-checks",
+   "skills": [
+    "site-checks"
+   ],
+   "model": "opus",
+   "budget": {
+    "tokens": 100000,
+    "maxTurns": 10,
+    "usd": 0
+   },
+   "trigger": {
+    "kind": "schedule",
+    "every": "6h",
+    "at": "",
+    "event": ""
+   },
+   "readOnly": false,
+   "tools": [],
+   "inputs": [
+    {
+     "id": "sites",
+     "label": "Sites",
+     "required": false,
+     "default": "a.example b.example",
+     "about": ""
+    },
+    {
+     "id": "who",
+     "label": "Who",
+     "required": true,
+     "default": "",
+     "about": ""
+    }
+   ],
+   "brief": "Check {{sites}} for {{who}} on {{date}}.",
+   "command": "",
+   "outputs": {
+    "report": "r/{{jobType}}/{{stamp}}.md",
+    "uiReviewGroup": "Checks - {{when}}",
+    "uiReviewApp": ""
+   }
+  },
+  "skills": {
+   "specialty": "site-checks",
+   "skills": [
+    "site-checks",
+    "screenshots"
+   ],
    "model": "opus",
    "budget": {
     "tokens": 100000,
@@ -387,7 +540,7 @@
    "data must be an object"
   ],
   "bad-core": [
-   "data.specialty is the owning agent skill id (lowercase letters, digits and dashes)",
+   "data.specialty is the home agent skill id (lowercase letters, digits and dashes); a job type names it or data.skills",
    "data.model \"gpt\" is not a Claude model the policy knows (haiku, sonnet, opus, fable)",
    "data.budget.tokens must be a whole number from 1000 to 10000000",
    "data.trigger.kind must be one of on-demand, schedule, event",
@@ -415,7 +568,14 @@
   "blocked-model": [
    "data.model \"sonnet\" is not allowed: Opus 5.5 or Fable 5.1 only, never Sonnet 5.5 (Brett, 2026-11-01); it runs as opus"
   ],
-  "other-type": []
+  "other-type": [],
+  "skills-only": [],
+  "bad-skills": [
+   "data.skills must be a list of up to 12 agent skill ids (lowercase letters, digits and dashes)"
+  ],
+  "no-skill-at-all": [
+   "data.specialty is the home agent skill id (lowercase letters, digits and dashes); a job type names it or data.skills"
+  ]
  },
  "inputs": {
   "filled": {

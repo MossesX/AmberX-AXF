@@ -88,7 +88,7 @@ export function LookDialog() {
         </ul>
       </aside>
       <section className="axp-claude-handoff-look__main">
-        <div className="axp-claude-handoff-look__bar">
+        <div className="axp-claude-handoff-look__bar" role="toolbar" aria-label="Look roller">
           {!look.doc.treeOpen && <Button tone="ghost" icon="list" size="sm" onClick={() => setTreeOpen(true)}>Tokens</Button>}
           <Button tone="primary" icon="shuffle" onClick={doRoll}>Roll</Button>
           <Button icon="undo" size="sm" disabled={!look.undo} onClick={undoLast}>Undo</Button>

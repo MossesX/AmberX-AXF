@@ -31,14 +31,131 @@
     "dataDir": ".axf-console/plugins/build-orchestrator",
     "env": [],
     "mentions": [
-      "CLAUDE.md", "_claude/memory/STATUS.md",
+      "CLAUDE.md",
+      "_claude/memory/STATUS.md",
       "_claude/THREADS.md",
       "_claude/builds/README.md",
       "_claude/rules/RULES.md",
-      "_claude/shared/rules/RULES.md"
+      "_claude/shared/rules/RULES.md", "deploy/claude-headless.sh", "framework/spec/check-builds-live.mjs"
     ]
   },
-  "commands": { "$axf": "plugin-commands@1", "auto": true },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "id": "origin",
+        "route": "GET /origin/{build_id}",
+        "title": "What Brett said",
+        "description": "The verbatim words Brett used to start a build (build-origin@1): when, where, who launched it, the brief and later addenda.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "build_id"
+          ]
+        },
+        "output": "{ id, title, origin, subtitle }"
+      },
+      {
+        "id": "origin-set",
+        "route": "POST /origin/{build_id}",
+        "title": "Record what Brett said",
+        "description": "Record Brett's verbatim words on a build that has none (backfilled ones give way); his words are never replaced: use origin-addendum for a later change.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build_id": {
+              "type": "string"
+            },
+            "said": {
+              "type": "string",
+              "description": "Brett's exact words, verbatim and unedited (never a paraphrase)"
+            },
+            "source": {
+              "type": "string",
+              "enum": [
+                "voice",
+                "chat",
+                "console",
+                "code"
+              ]
+            },
+            "at": {
+              "type": "string",
+              "description": "when he said it (ISO)"
+            },
+            "session": {
+              "type": "string"
+            },
+            "link": {
+              "type": "string"
+            },
+            "by": {
+              "type": "string",
+              "description": "who is recording it"
+            }
+          },
+          "required": [
+            "build_id",
+            "said"
+          ]
+        },
+        "output": "{ id, origin }"
+      },
+      {
+        "id": "origin-addendum",
+        "route": "POST /origin/{build_id}/addendum",
+        "title": "Add what Brett said later",
+        "description": "Append a later change Brett asked for (verbatim) to a build's origin.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build_id": {
+              "type": "string"
+            },
+            "said": {
+              "type": "string",
+              "description": "Brett's exact words, verbatim and unedited (never a paraphrase)"
+            },
+            "source": {
+              "type": "string",
+              "enum": [
+                "voice",
+                "chat",
+                "console",
+                "code"
+              ]
+            },
+            "at": {
+              "type": "string",
+              "description": "when he said it (ISO)"
+            },
+            "session": {
+              "type": "string"
+            },
+            "link": {
+              "type": "string"
+            },
+            "by": {
+              "type": "string",
+              "description": "who is recording it"
+            }
+          },
+          "required": [
+            "build_id",
+            "said"
+          ]
+        },
+        "output": "{ id, origin }"
+      }
+    ]
+  },
   "builtWith": {
     "model": "opus",
     "builtAt": "2026-10-27"
