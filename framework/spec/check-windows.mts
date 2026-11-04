@@ -8,7 +8,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { DEFAULT_SNAP_RULES, RESIZE_EDGES, RESIZE_HANDLE, RESIZE_HANDLE_TOUCH, SNAP_ZONES, WINDOW_MIN, WindowManager, armSplit, dragRestore, hitResizeEdge, isMaximized, limitsOf, maximizeWindow, maximizedRect, rectsOverlap, resizeCursor, resizeRect, resolveOverlap, restoreWindow, snapRect, snapZoneAt, snapZoneRect, splitDrop, toggleMaximized, topmostAt, windowFrame, type ResizeEdge, type SnapZone, type SplitArm, type WindowSpec } from '../core/engines/windows';
+import { DEFAULT_SNAP_RULES, RESIZE_EDGES, RESIZE_HANDLE, RESIZE_HANDLE_TOUCH, SNAP_ZONES, WINDOW_MIN, WindowManager, armSplit, freshTab, navItemTab, dragRestore, hitResizeEdge, isMaximized, limitsOf, maximizeWindow, maximizedRect, rectsOverlap, resizeCursor, resizeRect, resolveOverlap, restoreWindow, snapRect, snapZoneAt, snapZoneRect, splitDrop, toggleMaximized, topmostAt, windowFrame, type ResizeEdge, type SnapZone, type SplitArm, type WindowSpec } from '../core/engines/windows';
 
 const root = new URL('../', import.meta.url).pathname;
 const f = JSON.parse(readFileSync(join(root, 'spec/fixtures/windows.json'), 'utf8'));
@@ -198,6 +198,15 @@ for (const r of f.resizes) eq(resizeRect(r.start, r.edge as ResizeEdge, r.dx, r.
   ok(i.next.find((c: { payload: string }) => c.payload === 'amberx').next === 1, 'nothing open → 1');
   ok(i.next.find((c: { kind: string }) => c.kind === 'other').next === 2, 'another kind with the same payload counts on its own');
   ok(i.make[1].tab.title === 'Builds' && i.make[1].tab.instance === 3 && i.make[4].tab.instance === undefined && i.make[4].tab.id === 'molly-app:console', 'a copy takes the name given; copy 1 of a copy is the plain tab again');
+}
+
+// ---- drag-to-tab (Nov 4 2026): a nav item's tab, and which copy a drop opens ----
+{
+  const fr = f.fresh;
+  for (const c of fr.navTabs) eq(navItemTab(c.item), c.tab, `nav tab ${c.item.view}`);
+  const byId = new Map(fr.openTabs.map((t: { id: string }) => [t.id, t]));
+  for (const c of fr.cases) eq(freshTab(c.base, c.open.map((id: string) => byId.get(id)), c.max), c.out, `fresh ${c.name}`);
+  ok(fr.cases.find((c: { name: string }) => c.name === 'at the cap').out === null, 'at the cap: no copy');
 }
 
 console.log(`check-windows: ${checks} checks passed`);

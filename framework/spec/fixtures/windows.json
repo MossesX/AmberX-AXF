@@ -243,6 +243,191 @@
       }
     ]
   },
+  "fresh": {
+    "navTabs": [
+      {
+        "item": {
+          "view": "builds",
+          "label": "Builds",
+          "icon": "hammer"
+        },
+        "tab": {
+          "id": "axf-placed-view:builds",
+          "title": "Builds",
+          "kind": "axf-placed-view",
+          "payload": "builds",
+          "icon": "hammer",
+          "closable": true
+        }
+      },
+      {
+        "item": {
+          "view": "plugin:ui-review/shots",
+          "label": "Screenshots"
+        },
+        "tab": {
+          "id": "axf-placed-view:plugin:ui-review-shots",
+          "title": "Screenshots",
+          "kind": "axf-placed-view",
+          "payload": "plugin:ui-review/shots",
+          "icon": null,
+          "closable": true
+        }
+      }
+    ],
+    "cases": [
+      {
+        "name": "nothing open",
+        "base": {
+          "id": "app:console",
+          "title": "Console",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal"
+        },
+        "open": [],
+        "max": 0,
+        "out": {
+          "id": "app:console",
+          "title": "Console",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal"
+        }
+      },
+      {
+        "name": "one open",
+        "base": {
+          "id": "app:console",
+          "title": "Console",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal"
+        },
+        "open": [
+          "app:console"
+        ],
+        "max": 0,
+        "out": {
+          "id": "app:console.2",
+          "title": "Console 2",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal",
+          "instance": 2
+        }
+      },
+      {
+        "name": "two open",
+        "base": {
+          "id": "app:console",
+          "title": "Console",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal"
+        },
+        "open": [
+          "app:console",
+          "app:console.2",
+          "app:axhub"
+        ],
+        "max": 0,
+        "out": {
+          "id": "app:console.3",
+          "title": "Console 3",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal",
+          "instance": 3
+        }
+      },
+      {
+        "name": "at the cap",
+        "base": {
+          "id": "app:console",
+          "title": "Console",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal"
+        },
+        "open": [
+          "app:console",
+          "app:console.2",
+          "app:axhub"
+        ],
+        "max": 2,
+        "out": null
+      },
+      {
+        "name": "under the cap",
+        "base": {
+          "id": "app:console",
+          "title": "Console",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal"
+        },
+        "open": [
+          "app:console",
+          "app:console.2",
+          "app:axhub"
+        ],
+        "max": 3,
+        "out": {
+          "id": "app:console.3",
+          "title": "Console 3",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal",
+          "instance": 3
+        }
+      },
+      {
+        "name": "other payload open",
+        "base": {
+          "id": "app:console",
+          "title": "Console",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal"
+        },
+        "open": [
+          "app:axhub"
+        ],
+        "max": 0,
+        "out": {
+          "id": "app:console",
+          "title": "Console",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal"
+        }
+      }
+    ],
+    "openTabs": [
+      {
+        "id": "app:console",
+        "title": "Console",
+        "kind": "app",
+        "payload": "console",
+        "icon": "terminal"
+      },
+      {
+        "id": "app:console.2",
+        "title": "Console 2",
+        "kind": "app",
+        "payload": "console",
+        "icon": "terminal",
+        "instance": 2
+      },
+      {
+        "id": "app:axhub",
+        "title": "axHub",
+        "kind": "app",
+        "payload": "axhub"
+      }
+    ]
+  },
   "edges": [
     "n",
     "s",

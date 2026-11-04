@@ -8,7 +8,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { DEFAULT_DOCK_RULES, DOCK_CONTRACT, DOCK_HISTORY_MAX, DOCK_LAYOUT_MAX_PANES, DOCK_SIDES, DOCK_ZONES, applyDockDrop, pushHistory, applyPreset, clampWeights, countPanes, dockDropAt, dockDropRect, dockLayoutErrors, dockZoneAt, dropIsLimited, enforcePaneLimit, headerIndexAt, normalizeDockLayout, normalizeDockRules, normalizeTree, paneAt, parseTab, parseTree, pathOf, presetRects, presetSvg, presetTree, removePane, resizeSplit, restoreDock, serializeDock, splitPane, splitRoot, type DockDrop, type DockState, type GroupBox, type PanePath } from '../core/engines/dock';
+import { DEFAULT_DOCK_RULES, DOCK_CONTRACT, DOCK_HISTORY_MAX, DOCK_LAYOUT_MAX_PANES, DOCK_SIDES, DOCK_ZONES, applyDockDrop, applyDockDropNew, pushHistory, applyPreset, clampWeights, countPanes, dockDropAt, dockDropRect, dockLayoutErrors, dockZoneAt, dropIsLimited, enforcePaneLimit, headerIndexAt, normalizeDockLayout, normalizeDockRules, normalizeTree, paneAt, parseTab, parseTree, pathOf, presetRects, presetSvg, presetTree, removePane, resizeSplit, restoreDock, serializeDock, splitPane, splitRoot, type DockDrop, type DockState, type GroupBox, type PanePath } from '../core/engines/dock';
 import { WindowManager, paneGroups, type Pane, type TabGroup } from '../core/engines/windows';
 import { validateAsset } from '../core/validate';
 import { ASSET_TYPES, OPTIONAL_TYPES } from '../core/types';
@@ -58,6 +58,14 @@ for (const c of f.headerIndex) eq(headerIndexAt(c.px, c.rights), c.index, `heade
   const state: DockState = { tree: st.tree, groups: Object.fromEntries(Object.entries(st.groups as Record<string, string[]>).map(([k, tabs]) => [k, { id: k, tabs: tabs.map((t) => ({ id: t, title: t.toUpperCase(), kind: 'doc', payload: `p/${t}` })), active: 0, windowId: k === 'x' ? 'win-1' : 'main' }])) };
   const out = enforcePaneLimit(state, normalizeDockRules({ paneLimit: f.limit.paneLimit }));
   eq(out.tree, f.limit.out.tree, 'limit tree'); eq(Object.fromEntries(Object.entries(out.groups).map(([k, g]) => [k, g.tabs.map((t) => t.id)])), f.limit.out.groups, 'limit groups');
+}
+// ---- drag-to-tab: a tab that isn't open yet dropped with the same zones ----
+for (const c of f.fresh.cases) {
+  const st = stateOf(c.state);
+  const out = applyDockDropNew(st, f.fresh.tab, c.drop as DockDrop, 'new', 'main', normalizeDockRules({ ...DEFAULT_DOCK_RULES, ...(c.rules ?? {}) }));
+  eq(out === st, c.unchanged, `fresh unchanged ${c.name}`);
+  eq(out.tree, c.tree, `fresh tree ${c.name}`); eq(groupsOf(out.groups), c.groups, `fresh groups ${c.name}`);
+  ok(!('__fresh' in out.groups), `fresh: no stand-in group left (${c.name})`);
 }
 eq(serializeDock(stateOf(f.apply.state)), f.snapshot, 'snapshot');
 for (const c of f.restore) {
@@ -127,6 +135,49 @@ for (const c of f.parseTree) eq(parseTree(c.raw, (g) => ['a', 'b', 'c'].includes
     if (countPanes(t) <= 64) eq(back?.tree, t, `snapshot round trip #${i}`);
     else eq(countPanes(back?.tree), 64, `snapshot restore enforces the limit #${i}`);
   }
+}
+
+// ---- drag-to-tab: a nav item dragged into a dock opens there as a new tab (WindowManager) ----
+{
+  const wm = new WindowManager();
+  wm.viewport = { width: 1000, height: 700 };
+  // an empty dock takes the drop as its first pane
+  wm.hostBounds.set('main', { x: 0, y: 0, width: 800, height: 600 });
+  const home = wm.tabForNav({ view: 'home', label: 'Home', icon: 'home' })!;
+  eq(home.kind, 'axf-placed-view', 'a nav item is a placed-view tab by default'); eq(home.payload, 'home', 'payload = the view');
+  wm.dragNew(home, 900, 300); wm.dragMove(400, 300);
+  ok(wm.state.dockPreview?.fill === true, 'empty dock: the whole host lights up');
+  ok(wm.dragEnd(), 'dropped into the empty dock'); eq(wm.paneCount(), 1, 'its first pane');
+  const a = paneGroups(wm.state.layouts.main!)[0]!;
+  wm.groupBounds.set(a, [0, 0, 800, 600]); wm.groupHeaders.set(a, 32); wm.tabEdges.set(a, [60]);
+  // the same item again comes in as its second copy, at the place in the strip it was let go
+  const again = wm.tabForNav({ view: 'home', label: 'Home' })!;
+  eq([again.instance, again.title], [2, 'Home 2'], 'already open: the next copy');
+  wm.dragNew(again, 900, 300); wm.dragMove(20, 20);
+  eq(wm.state.dockPreview?.drop, { target: 'group', groupId: a, zone: 'header', index: 0 }, 'over the strip: at that place');
+  ok(wm.dragEnd(), 'dropped in the strip'); eq(wm.state.groups[a]!.tabs.map((t) => t.id), [again.id, home.id], 'inserted before the first tab');
+  eq(wm.lastDrop, { kind: 'fresh', tabId: again.id }, 'remembered for undo');
+  ok(wm.undoDrop(), 'undo'); eq(wm.state.groups[a]!.tabs.map((t) => t.id), [home.id], 'the new tab closed again'); ok(!wm.undoDrop(), 'nothing more to undo');
+  // a pane edge = a new pane
+  const builds = wm.tabForNav({ view: 'builds', label: 'Builds' })!;
+  wm.dragNew(builds, 900, 300); wm.dragMove(780, 300);
+  eq(wm.state.dockPreview?.drop, { target: 'group', groupId: a, zone: 'right' }, 'pane edge');
+  ok(wm.dragEnd(), 'split'); eq(wm.paneCount(), 2, 'two panes'); ok(wm.undoDrop(), 'undo the split'); eq(wm.paneCount(), 1, 'one pane again');
+  // outside every dock = a floating window under the pointer; undo closes it
+  const plan = wm.tabForNav({ view: 'plan', label: 'Plan' })!;
+  wm.dragNew(plan, 900, 300); wm.dragMove(950, 650); eq(wm.state.dockPreview ?? null, null, 'outside: no zone');
+  ok(wm.dragEnd(), 'floats'); eq(wm.state.windows.length, 2, 'a floating window'); eq(wm.groupOf(plan.id) && wm.state.groups[wm.groupOf(plan.id)!]!.windowId !== 'main', true, 'in that window');
+  ok(wm.undoDrop(), 'undo'); eq(wm.state.windows.length, 1, 'the window closed');
+  wm.setDockRules({ floatOut: false }); wm.dragNew(plan, 900, 300); wm.dragMove(950, 650); ok(!wm.dragEnd(), 'floatOut off: nothing opens'); wm.setDockRules({ floatOut: true });
+  // a cancelled drag opens nothing; the host's own say (navTab) and the copy cap
+  wm.dragNew(plan, 900, 300); wm.dragMove(400, 300); wm.dragCancel(); ok(!wm.tabOf(plan.id), 'cancelled: nothing opened');
+  wm.navTab = (it) => (it.view === 'nope' ? null : { id: `app:${it.view}`, title: it.label, kind: 'app', payload: it.view });
+  eq(wm.tabForNav({ view: 'nope', label: 'Nope' }), null, 'the host says no');
+  wm.maxInstances = 1; wm.addTab(a, { id: 'app:console', title: 'Console', kind: 'app', payload: 'console' });
+  eq(wm.tabForNav({ view: 'console', label: 'Console' }), null, 'past the copy cap: nothing');
+  // an open tab moved by drag is undone the same way
+  wm.dragStart('app:console', a, 30, 20); wm.dragMove(780, 300); ok(wm.dragEnd(), 'tab moved to a new pane');
+  eq(wm.lastDrop?.kind, 'layout', 'a move is a layout undo'); ok(wm.undoDrop(), 'undo the move'); eq(wm.paneCount(), 1, 'back in one pane');
 }
 
 // ---- WindowManager API ----

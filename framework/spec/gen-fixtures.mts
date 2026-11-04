@@ -38,8 +38,8 @@ import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES,
 import { APPS_FEED_MAX_BYTES, APPS_FEED_PATH, APPS_MAX, VERSIONS_MAX, appsFeedUrl, interpretApps } from '../libs/hub/apps';
 import { libraryCards, paramDefaultText, paramError, paramToJson, parseBoilerplate, parseBoilerplateIndex, parseCatalog, parseLibrariesIndex, parseLibrary, parseStatusMap, parseTracker } from '../core/catalog';
 import { CONDITION_KINDS, DEFAULT_BACKOFF_FACTOR, DELAY_KINDS, FALLBACK_OUTCOME, JOB_EFFECTS, JOB_EVENT_TYPES, JOB_PHASES, STOP_REASONS, WORK_CONTRACT, WORK_PLACEHOLDERS, WORK_POLL_CAPABILITY, clampInterval, delayFor, initialJobState, replayJob, shouldRestart, unmetConditions, validateJobSpec, workKinds, type DelayRule, type JobEvent, type JobSpec } from '../core/engines/work';
-import { DEFAULT_SNAP_RULES, INSTANCE_MAX, RESIZE_EDGES, RESIZE_HANDLE, RESIZE_HANDLE_TOUCH, SNAP_ZONES, WINDOW_MIN, armSplit, baseTabId, baseTitle, instanceOf, instanceTab, instanceTabId, instanceTitle, instancesOf, nextInstance, dragRestore, hitResizeEdge, maximizeWindow, maximizedRect, resizeCursor, resizeRect, resolveOverlap, restoreWindow, snapRect, snapZoneAt, snapZoneRect, splitDrop, toggleMaximized, topmostAt, type Rect, type ResizeEdge, type SplitArm, type WindowSpec } from '../core/engines/windows';
-import { DEFAULT_DOCK_RULES, DOCK_CONTRACT, DOCK_HISTORY_MAX, DOCK_LAYOUT_MAX_PANES, DOCK_SIDES, DOCK_ZONES, applyDockDrop, pushHistory, applyPreset, clampWeights, countPanes, dockDropAt, dockDropRect, dockLayoutErrors, dockZoneAt, dropIsLimited, enforcePaneLimit, headerIndexAt, normalizeDockLayout, normalizeDockRules, normalizeTree, paneAt, parseTab, parseTree, pathOf, presetRects, presetSvg, presetTree, removePane, resizeSplit, restoreDock, serializeDock, splitPane, splitRoot, type DockDrop, type DockState, type GroupBox } from '../core/engines/dock';
+import { DEFAULT_SNAP_RULES, INSTANCE_MAX, freshTab, navItemTab, RESIZE_EDGES, RESIZE_HANDLE, RESIZE_HANDLE_TOUCH, SNAP_ZONES, WINDOW_MIN, armSplit, baseTabId, baseTitle, instanceOf, instanceTab, instanceTabId, instanceTitle, instancesOf, nextInstance, dragRestore, hitResizeEdge, maximizeWindow, maximizedRect, resizeCursor, resizeRect, resolveOverlap, restoreWindow, snapRect, snapZoneAt, snapZoneRect, splitDrop, toggleMaximized, topmostAt, type Rect, type ResizeEdge, type SplitArm, type WindowSpec } from '../core/engines/windows';
+import { DEFAULT_DOCK_RULES, DOCK_CONTRACT, DOCK_HISTORY_MAX, DOCK_LAYOUT_MAX_PANES, DOCK_SIDES, DOCK_ZONES, applyDockDrop, applyDockDropNew, pushHistory, applyPreset, clampWeights, countPanes, dockDropAt, dockDropRect, dockLayoutErrors, dockZoneAt, dropIsLimited, enforcePaneLimit, headerIndexAt, normalizeDockLayout, normalizeDockRules, normalizeTree, paneAt, parseTab, parseTree, pathOf, presetRects, presetSvg, presetTree, removePane, resizeSplit, restoreDock, serializeDock, splitPane, splitRoot, type DockDrop, type DockState, type GroupBox } from '../core/engines/dock';
 import type { Pane, TabGroup } from '../core/engines/windows';
 import { NAV_STYLE_FIELDS, NAV_STYLE_FRAME, navArrange, navFollow, navPathTo, navStyleErrors, navStyleOutput, navToggle, normalizeNavStyle } from '../core/engines/navstyle';
 import { navFieldErrors } from '../core/engines/navstyle-rules.mjs';
@@ -1750,6 +1750,23 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     parseTab: [{ id: 't', kind: 'doc' }, { id: 't', title: 'T', kind: 'doc', payload: 'p', icon: 'file', closable: false }, { id: 'bad id!', kind: 'doc' }, { id: 't', kind: 'bad kind!' }, { id: 't', kind: 'doc', icon: 'Bad Icon', closable: true }, 'x', null, { id: 't', kind: 'doc', payload: 7 }, { id: 't.2', kind: 'doc', payload: 'p', instance: 2 }, { id: 't', kind: 'doc', instance: 1 }, { id: 't', kind: 'doc', instance: 2.5 }, { id: 't', kind: 'doc', instance: '3' }, { id: 't', kind: 'doc', instance: 1000 }].map((raw) => ({ raw, tab: parseTab(raw) })),
     // multi-instance tabs (molly-multi-instance-tabs): a snapshot keeps which copy each tab is, and restores it
     instances: (() => { const st: DockState = { tree: leaf('g'), groups: { g: { id: 'g', tabs: [{ id: 'c', title: 'Console', kind: 'app', payload: 'console' }, { id: 'c.2', title: 'Console 2', kind: 'app', payload: 'console', instance: 2 }, { id: 'c.3', title: 'Builds', kind: 'app', payload: 'console', instance: 3 }], active: 1, windowId: 'main' } } }; const snap = serializeDock(st); const r = restoreDock(snap, 'main'); return { snapshot: snap, restored: r ? { tree: r.tree, groups: Object.fromEntries(Object.entries(r.groups).map(([k, g]) => [k, { tabs: g.tabs, active: g.active, windowId: g.windowId }])) } : null }; })(),
+    // drag-to-tab (Nov 4 2026): a tab that isn't open yet dropped with the same zones (nav item → strip, pane edge, root edge, empty dock)
+    fresh: (() => {
+      const tab = { id: 'n1', title: 'New', kind: 'doc', payload: 'p/n1' };
+      const cases: [string, DockState, DockDrop, Partial<typeof R>?][] = [
+        ['header at 1', state, { target: 'group', groupId: 'a', zone: 'header', index: 1 }],
+        ['header past the end', state, { target: 'group', groupId: 'c', zone: 'header', index: 9 }],
+        ['centre', state, { target: 'group', groupId: 'b', zone: 'centre' }],
+        ['pane edge right', state, { target: 'group', groupId: 'b', zone: 'right' }],
+        ['root edge top', state, { target: 'root', zone: 'top' }],
+        ['pane limit joins as a tab', state, { target: 'group', groupId: 'c', zone: 'bottom' }, { paneLimit: 3 }],
+        ['empty dock', { tree: null, groups: {} }, { target: 'root', zone: 'left' }],
+        ['target gone', state, { target: 'group', groupId: 'zzz', zone: 'centre' }],
+        ['already open', { tree: leaf('a'), groups: { a: { id: 'a', tabs: [tab], active: 0, windowId: 'main' } } }, { target: 'group', groupId: 'a', zone: 'centre' }],
+      ];
+      const plain = (st: DockState) => ({ tree: st.tree, groups: Object.fromEntries(Object.entries(st.groups).map(([k, g]) => [k, { tabs: g.tabs.map((t) => t.id), active: g.active, windowId: g.windowId }])) });
+      return { tab, cases: cases.map(([name, st, d, o]) => { const out = applyDockDropNew(st, tab, d, 'new', 'main', normalizeDockRules({ ...R, ...(o ?? {}) })); return { name, state: plain(st), drop: d, rules: o ?? null, unchanged: out === st, ...plain(out) }; }) };
+    })(),
     // undo history (dock@1): the dock before each change, equal snapshots not repeated, the oldest dropped past the cap
     history: (() => { const a = serializeDock(state); const b = serializeDock({ tree: leaf('a'), groups: { a: state.groups.a! } }); const h1 = pushHistory([], a); const h2 = pushHistory(h1, a); const h3 = pushHistory(h2, b); const many = Array.from({ length: DOCK_HISTORY_MAX + 3 }, (_, i) => serializeDock({ tree: leaf('a'), groups: { a: { ...state.groups.a!, active: i % 2 } } })).reduce((h, s) => pushHistory(h, s), [] as ReturnType<typeof pushHistory>); return { max: DOCK_HISTORY_MAX, a, b, afterA: h1.length, afterAAgain: h2.length, afterB: h3.length, last: h3[h3.length - 1], capped: many.length, small: pushHistory([a, b], a, 2).map((x) => x.groups) }; })(),
     parseTree: [rawRestore.tree, { kind: 'leaf', groupId: 'a' }, { kind: 'leaf', groupId: 'nope' }, { kind: 'grid', rows: 2, cols: 2, cells: [{ kind: 'leaf', groupId: 'a' }, { kind: 'leaf', groupId: 'b' }, { kind: 'leaf', groupId: 'c' }, { kind: 'leaf', groupId: 'nope' }] }, { kind: 'grid', rows: 1, cols: 3, cells: [{ kind: 'leaf', groupId: 'a' }, { kind: 'leaf', groupId: 'b' }, { kind: 'leaf', groupId: 'c' }] }, { kind: 'what' }, []].map((raw) => ({ raw, tree: parseTree(raw, (g) => ['a', 'b', 'c'].includes(g)) })),
@@ -1982,9 +1999,20 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     next: [['molly-app', 'console'], ['molly-app', 'axhub'], ['molly-app', 'amberx'], ['other', 'console']].map(([k, p]) => ({ kind: k, payload: p, next: nextInstance(tabs, k!, p) })),
     make: [[tabs[0], 2, undefined], [tabs[0], 3, 'Builds'], [tabs[1], 3, undefined], [tabs[2], 5, undefined], [tabs[1], 1, undefined]].map(([t, n, title]) => ({ from: t, n, title: title ?? null, tab: instanceTab(t as never, n as number, title as string | undefined) })),
   };
+  // drag-to-tab (Nov 4 2026): a nav item's tab, and the copy a drop opens (itself, its next instance, or none past the cap)
+  const navTabs = [{ view: 'builds', label: 'Builds', icon: 'hammer' }, { view: 'plugin:ui-review/shots', label: 'Screenshots' }].map((it) => ({ item: it, tab: navItemTab(it) }));
+  const fBase = { id: 'app:console', title: 'Console', kind: 'app', payload: 'console', icon: 'terminal' };
+  const fOpen = [fBase, { ...fBase, id: 'app:console.2', title: 'Console 2', instance: 2 }, { id: 'app:axhub', title: 'axHub', kind: 'app', payload: 'axhub' }];
+  const fresh = {
+    navTabs,
+    cases: ([['nothing open', [], 0], ['one open', [fBase], 0], ['two open', fOpen, 0], ['at the cap', fOpen, 2], ['under the cap', fOpen, 3], ['other payload open', [fOpen[2]], 0]] as [string, typeof fOpen, number][])
+      .map(([name, open, max]) => ({ name, base: fBase, open: open.map((t) => t.id), max, out: freshTab(fBase, open, max) })),
+    openTabs: fOpen,
+  };
   write('windows.json', {
     contract: 'windows@1',
     instances,
+    fresh,
     edges: RESIZE_EDGES, handle: RESIZE_HANDLE, handleTouch: RESIZE_HANDLE_TOUCH, min: WINDOW_MIN,
     cursors: Object.fromEntries(RESIZE_EDGES.map((e) => [e, resizeCursor(e)])),
     frames: ['standard', 'frameless'], frameDefault: 'standard',
