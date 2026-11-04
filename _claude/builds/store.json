@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 597,
- "updatedAt": "2026-11-04T01:59:31.137Z",
+ "rev": 598,
+ "updatedAt": "2026-11-04T02:02:19.172Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -68025,7 +68025,7 @@
    "branch": "claude/profile-switcher-widget",
    "pr": "",
    "createdAt": "2026-11-04T00:40:48.340Z",
-   "updatedAt": "2026-11-04T01:30:10.669Z",
+   "updatedAt": "2026-11-04T02:00:01.884Z",
    "builtAt": "",
    "notes": [
     {
@@ -68073,12 +68073,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T01:59:14.532Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:40:48.341Z",
-     "updatedAt": "2026-11-04T00:40:48.341Z"
+     "updatedAt": "2026-11-04T01:59:16.230Z"
     },
     {
      "id": "s3",
@@ -68095,12 +68095,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T01:59:41.131Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:40:48.341Z",
-     "updatedAt": "2026-11-04T00:40:48.341Z"
+     "updatedAt": "2026-11-04T01:59:42.844Z"
     },
     {
      "id": "s4",
@@ -68117,12 +68117,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T02:00:01.884Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:40:48.341Z",
-     "updatedAt": "2026-11-04T00:40:48.341Z"
+     "updatedAt": "2026-11-04T02:00:05.258Z"
     },
     {
      "id": "s5",
@@ -68167,72 +68167,6 @@
      "rev": 1,
      "createdAt": "2026-11-04T01:30:10.670Z",
      "updatedAt": "2026-11-04T01:30:12.466Z"
-    },
-    {
-     "id": "s11",
-     "uid": "st-mw1g75cz01rkbl",
-     "title": "",
-     "text": "Adopt the profile filter in the remaining builds tables: Orchestrator view (needs an all-profiles projection), Pending, Queue, Plan, Tracker, Git status board, Crew, Home cards; existing bulk CLI/MCP commands (land-all, merge batch) take resolveFilter + profiles arg",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T01:38:36.950Z",
-     "updatedAt": "2026-11-04T01:38:38.435Z"
-    },
-    {
-     "id": "s7-6",
-     "uid": "st-mw1gdizs01mlwb",
-     "title": "",
-     "text": "Adopt the profile filter in the remaining builds tables: Orchestrator view (needs an all-profiles projection), Pending, Queue, Plan, Tracker, Git status board, Crew, Home cards; existing bulk CLI/MCP commands (land-all, merge batch) take resolveFilter + profiles arg",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T01:43:34.836Z",
-     "updatedAt": "2026-11-04T01:43:36.040Z"
-    },
-    {
-     "id": "s8-7",
-     "uid": "st-mw1g9jpk01cth4",
-     "title": "",
-     "text": "Adopt the profile filter in the remaining builds tables: Orchestrator view (needs an all-profiles projection), Pending, Queue, Plan, Tracker, Git status board, Crew, Home cards; existing bulk CLI/MCP commands (land-all, merge batch) take resolveFilter + profiles arg",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T01:40:29.937Z",
-     "updatedAt": "2026-11-04T01:40:30.344Z"
     }
    ],
    "profiles": [
@@ -68243,27 +68177,10 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "voice",
-    "planId": "",
-    "createdAt": "2026-11-04T00:40:48.340Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mw1e4to606peb2": "2026-11-04T00:40:48.341Z",
-     "st-mw1e4to6078k75": "2026-11-04T00:40:48.341Z",
-     "st-mw1e4to608xvxc": "2026-11-04T00:40:48.341Z",
-     "st-mw1e4to609qwnz": "2026-11-04T00:40:48.341Z",
-     "st-mw1e4to60axzr8": "2026-11-04T00:40:48.341Z",
-     "st-mw1g9jpk01cth4": "2026-11-04T01:30:10.670Z"
-    }
-   },
+   "pending": null,
    "queue": null,
    "defaultAt": "2026-11-04T00:40:48.341Z",
    "rearranged": false,
