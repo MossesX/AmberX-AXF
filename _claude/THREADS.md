@@ -661,14 +661,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 16:07 UTC · landed `claude/notes-vault` (PR#256) on main at 5a6311a3 · land-everything
-- 2026-11-03 16:14 UTC · landed `claude/agent-chats-hub` (PR#248) on main at c985c38d · land-everything
-- 2026-11-03 16:24 UTC · landed `claude/kill-patches-pilot` (PR#258) on main at e697c302 · land-everything
-- 2026-11-03 16:30 UTC · landed `claude/headless-tabs` (PR#259) on main at a8186b83 · land-everything
-- 2026-11-03 16:41 UTC · landed `claude/whats-new-banner` (PR#260) on main at 6ff111a1 · land-everything
-- 2026-11-03 16:48 UTC · landed `claude/molly-fable` (PR#245) on main at bffc2601 · land-everything
-- 2026-11-03 16:48 UTC · landed `claude/xlayout-opus` (PR#252) on main at bffc2601 · land-everything
-- 2026-11-03 17:03 UTC · landed `claude/token-control-opus` (PR#250) on main at 0a85ab65 · land-everything
 - 2026-11-03 17:04 UTC · landed `claude/console-commands` (PR#249) on main at 0a85ab65 · land-everything
 - 2026-11-03 17:09 UTC · landed `claude/theme-editor` (PR#243) on main at 6f20dd54 · land-everything
 - 2026-11-03 17:17 UTC · landed `claude/model-upgrade-approval` (PR#253) on main at 03d1d75f · land-everything
@@ -1059,6 +1051,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 13:30 UTC · `molly-nav-submenus` → complete, merged (current) · builds-live
 - 2026-11-04 13:30 UTC · `land-round-2` s3 done (current) · orchestrator
 - 2026-11-04 13:31 UTC · `land-round-2` s2 done (current) · orchestrator
+- 2026-11-04 13:24 UTC · `bugs-board` s1 done, → running (current) · orchestrator
+- 2026-11-04 13:30 UTC · `hotfix-build-manager` note (current) · foreign-write
+- 2026-11-04 13:30 UTC · `bugs-board` s1 done, s2 done (current) · orchestrator
+- 2026-11-04 13:30 UTC · `bugs-board` s1 done, s2 done, s3 done (current) · orchestrator
+- 2026-11-04 13:30 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done (current) · orchestrator
+- 2026-11-04 13:30 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done, s6 done (current) · orchestrator
+- 2026-11-04 13:30 UTC · `land-round-2` s3 done (current) · foreign-write
+- 2026-11-04 13:30 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · orchestrator
+- 2026-11-04 13:31 UTC · `land-round-2` s2 done (current) · foreign-write
+- 2026-11-04 13:31 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · bugs-board
 
 ## Token passes (log)
 
