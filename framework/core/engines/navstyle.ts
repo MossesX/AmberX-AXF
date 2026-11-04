@@ -23,8 +23,8 @@ const kebab = (s: string) => s.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
 export const navColorVar = (token: string) => `var(--fx-${kebab(token)})`;
 /** Item padding (block) per density, in multiples of the space unit. */
 const DENSITY_PY: Record<string, number> = { compact: 0.5, regular: 0.875, roomy: 1.25 };
-/** The width of a nav collapsed to its icons, in multiples of the space unit. */
-export const NAV_COLLAPSED_SPACE = 7;
+/** The width of a nav collapsed to its icons, in multiples of the font size (an icon plus its padding at any density). */
+export const NAV_COLLAPSED_EM = 3.8;
 const COLOR_SLOTS = ['background', 'text', 'hover', 'active', 'activeText', 'submenu', 'accent'] as const;
 
 export interface NavStyleState {
@@ -68,7 +68,7 @@ export function navStyleOutput(raw: unknown, state: NavStyleState = {}): StyleOu
   vars['--fx-navs-dur'] = off ? '0ms' : s.animation.durationMs ? `${s.animation.durationMs}ms` : 'var(--fx-motion)';
   vars['--fx-navs-ease'] = s.animation.easing === 'theme' ? 'var(--fx-ease)' : MOTION_EASE[s.animation.easing] ?? MOTION_EASE.standard!;
   vars['--fx-navs-stagger'] = off ? '0ms' : `${s.animation.staggerMs}ms`;
-  if (state.collapsed && s.width.collapsible) vars['--fx-layout-nav-width'] = `calc(var(--fx-space) * ${NAV_COLLAPSED_SPACE})`;
+  if (state.collapsed && s.width.collapsible) vars['--fx-layout-nav-width'] = `calc(var(--fx-font-size) * ${NAV_COLLAPSED_EM})`;
   else { const w = navWidth(s, state); if (w) vars['--fx-layout-nav-width'] = `${w}px`; }
   return {
     vars,

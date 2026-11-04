@@ -579,11 +579,11 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 [data-fx-navs-set~='weight'] .fx-navs .fx-nav__item { font-weight: var(--fx-navs-weight); }
 [data-fx-navs-icons='off'] .fx-navs .fx-nav:not(.fx-nav--rail) .fx-nav__item > .fx-icon:first-child { display: none; }
 /* collapsed to icons: labels, chevrons, badges and sub menus fold away (a tap on a group opens the nav again) */
-[data-fx-navs-collapsed='on'] .fx-navs .fx-nav__text, [data-fx-navs-collapsed='on'] .fx-navs .fx-nav__label, [data-fx-navs-collapsed='on'] .fx-navs .fx-nav__header,
-[data-fx-navs-collapsed='on'] .fx-navs .fx-nav__chev, [data-fx-navs-collapsed='on'] .fx-navs .fx-nav__badge, [data-fx-navs-collapsed='on'] .fx-navs .fx-nav__sub { display: none; }
-[data-fx-navs-collapsed='on'] .fx-navs .fx-nav { padding-inline: var(--fx-dens-gap-md); align-items: stretch; }
-[data-fx-navs-collapsed='on'] .fx-navs .fx-nav__item { justify-content: center; padding-inline: 0; }
-[data-fx-navs-collapsed='on'] .fx-navs .fx-nav__head { justify-content: center; }
+[data-fx-navs-collapsed='on'] .fx-region--nav .fx-navs .fx-nav__text, [data-fx-navs-collapsed='on'] .fx-region--nav .fx-navs .fx-nav__label, [data-fx-navs-collapsed='on'] .fx-region--nav .fx-navs .fx-nav__header,
+[data-fx-navs-collapsed='on'] .fx-region--nav .fx-navs .fx-nav__chev, [data-fx-navs-collapsed='on'] .fx-region--nav .fx-navs .fx-nav__badge, [data-fx-navs-collapsed='on'] .fx-region--nav .fx-navs .fx-nav__sub { display: none; }
+[data-fx-navs-collapsed='on'] .fx-region--nav .fx-navs .fx-nav { padding-inline: var(--fx-dens-gap-md); align-items: stretch; }
+[data-fx-navs-collapsed='on'] .fx-region--nav .fx-navs .fx-nav__item { justify-content: center; padding-inline: 0; }
+[data-fx-navs-collapsed='on'] .fx-region--nav .fx-navs .fx-nav__head { justify-content: center; }
 /* the resize edge */
 .fx-nav__resize { position: absolute; top: 0; bottom: 0; right: calc(var(--fx-space) * -0.5); width: var(--fx-space); cursor: col-resize; z-index: 2; }
 .fx-region--nav[data-side='right'] .fx-nav__resize { right: auto; left: calc(var(--fx-space) * -0.5); }

@@ -536,7 +536,7 @@
     "src/axf/core/engines/mcp.ts": "b5534a64b2063b25",
     "src/axf/core/engines/navstyle-rules.d.mts": "7f913862097838db",
     "src/axf/core/engines/navstyle-rules.mjs": "8a82e374ab0bfc92",
-    "src/axf/core/engines/navstyle.ts": "edf791d84dcb7f90",
+    "src/axf/core/engines/navstyle.ts": "41ad4907f866909a",
     "src/axf/core/engines/placement.ts": "b284bf2b62773677",
     "src/axf/core/engines/plugin-commands.d.mts": "eda6d23854d35b44",
     "src/axf/core/engines/plugin-commands.mjs": "05e856c87b0a9c43",
@@ -678,7 +678,7 @@
     "src/axf/react/components/Meters.tsx": "d29240f84a96cdc8",
     "src/axf/react/components/ModelBadge.tsx": "c47fb07ddd5584b2",
     "src/axf/react/components/NavStyleSettings.tsx": "6cbea671687deefc",
-    "src/axf/react/components/NavTree.tsx": "2036063d072d77d9",
+    "src/axf/react/components/NavTree.tsx": "bf098ea24450f777",
     "src/axf/react/components/Overlays.tsx": "3a00147bb43fc1f4",
     "src/axf/react/components/Repeat.tsx": "671cf668238880e7",
     "src/axf/react/components/Search.tsx": "dbb8df7fbb7ee827",
@@ -788,6 +788,6 @@
     "src/axf/schemas/shared-assets.json": "7d6a5bb4f0b2a9c3",
     "src/axf/schemas/swarm.json": "72c7999aebb9e8c2",
     "src/axf/schemas/ui-review.json": "6cbca899c45dd994",
-    "src/axf/ui/axf.css": "c3ce704d062d6343"
+    "src/axf/ui/axf.css": "b95b131aa8895a85"
   }
 }

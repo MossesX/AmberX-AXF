@@ -1377,7 +1377,7 @@
         "--fx-navs-dur": "220ms",
         "--fx-navs-ease": "cubic-bezier(0.2, 0, 0, 1)",
         "--fx-navs-stagger": "24ms",
-        "--fx-layout-nav-width": "calc(var(--fx-space) * 7)"
+        "--fx-layout-nav-width": "calc(var(--fx-font-size) * 3.8)"
       },
       "attrs": {
         "data-fx-navs": "on",

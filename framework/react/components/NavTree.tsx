@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
 import type { NavItem } from '../../core';
 import { NAV_OPEN_KEY, NAV_COLLAPSED_KEY, NAV_WIDTH_KEY } from '../../core/runtime';
-import { navAccent, navArrange, navContains, navFollow, navToggle, parseNavOpen, type NavStyleData } from '../../core/engines/navstyle';
+import { navAccent, navArrange, navContains, navFollow, navPathTo, navToggle, parseNavOpen, type NavStyleData } from '../../core/engines/navstyle';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import type { ViewMap } from '../AppShell';
 import { Icon } from './Icon';
@@ -63,10 +63,17 @@ export function NavTree({ sections, views, style, orient, header }: { sections: 
   }, [rt, style.behavior.remember]);
   const openRef = useRef(open); openRef.current = open;
   // the page moved: its branch opens (followActive), the others close (autoCollapse)
+  // Only when the page changes or its branch first shows up (an app's nav arrives): a re-render must never reopen
+  // what the user just closed.
+  const followed = useRef('');
+  const branchKey = navPathTo(tree, view).join('/');
   useEffect(() => {
+    const key = `${view}|${branchKey}`;
+    if (followed.current === key) return;
+    followed.current = key;
     const next = navFollow(tree, openRef.current, view, style);
     if (next.join('|') !== openRef.current.join('|')) setOpen(next);
-  }, [view, tree, style, setOpen]);
+  }, [view, branchKey, tree, style, setOpen]);
 
   const toggle = (id: string, want?: boolean) => setOpen(navToggle(tree, openRef.current, id, style.behavior.single, want));
   const hover = style.behavior.openOn === 'hover' && !narrow;

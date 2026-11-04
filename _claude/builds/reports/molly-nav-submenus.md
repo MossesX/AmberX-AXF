@@ -76,3 +76,12 @@ its behavior, all that."
   work gets a Fable review.
 
 UI Review: item r-20261103-80599690, group "molly-nav-submenus - Nov 3 11:45 PM" (waiting). Shots: `_claude/builds/reports/molly-nav-submenus/shots/`.
+
+## Follow-up fixes (Nov 4 2026, after the final build ran under the heavy-slot lock)
+- Follow-the-active-page ran on every render, so whatever you closed sprang back open (the sheet's Close, and single
+  mode inside a group). It now runs only when the page changes or its branch first appears.
+- Collapsed width is `font size × 3.8` (it was `space × 7`, 24 px under Hub Night). The collapse rules only touch the
+  real nav, not the settings preview. The sheet header shows the app name.
+- Verified in the browser on the final build: collapse is on and about 49 px wide, presets swap (push), swipe down
+  closes and swipe up opens the phone sheet, the sheet's Close works, and tapping Studio in the sheet opens it and
+  closes Build. tsc and vite build pass.
