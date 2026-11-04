@@ -77,3 +77,11 @@ export function generateVoiceCommands(surface: VoiceSurface): VoiceCommandData;
 export function mergeVoiceCommands(existing: unknown, generated: unknown): VoiceCommandData;
 export function voiceCoverage(asset: unknown, surface: Partial<VoiceSurface> | undefined): { total: number; covered: number; missing: string[]; extra: string[]; ok: boolean };
 export function voiceCommandSchemaProperties(): Record<string, unknown>;
+export const VOICE_BRIDGE_FRAME: 'voice-bridge@1';
+export const VOICE_BRIDGE_TYPES: readonly string[];
+export type VoiceBridgeType = 'say' | 'answer' | 'help' | 'ping' | 'pong' | 'utterance' | 'result';
+export interface VoiceBridgeMessage { $axf: 'voice-bridge@1'; type: VoiceBridgeType; id: string; text: string; app: string; [k: string]: unknown }
+export function voiceBridgeMessage(type: VoiceBridgeType, fields?: Record<string, unknown>): VoiceBridgeMessage;
+export function parseVoiceBridge(data: unknown): VoiceBridgeMessage | null;
+export function helpQuestion(text: string): string | null;
+export function fillSlot(command: unknown, slots: Record<string, unknown> | undefined, name: string, text: string, now?: string): { ok: boolean; slots: Record<string, unknown>; missing: string[]; confirm: boolean; question: string };

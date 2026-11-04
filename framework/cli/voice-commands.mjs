@@ -10,6 +10,7 @@
  *   node framework/cli/voice-commands.mjs registry [--json]               every app's voice commands (Molly, the console)
  *   node framework/cli/voice-commands.mjs help [app]                      "what can I say in <app>?"
  *   node framework/cli/voice-commands.mjs say "<text>" [--app <app>]      what an utterance would run (no run)
+ *   node framework/cli/voice-commands.mjs fill '<json>'                    {command, slots, name, text} → the slot filled (an answer to a question)
  *   node framework/cli/voice-commands.mjs bake <app-dir>                  copy every asset into <app-dir>/src/axf/assets/voice-command (Molly)
  *
  * <app> is a folder under apps/ (console-web, molly, expenses, …) or its project manifest name. The surface of an app:
@@ -30,7 +31,7 @@ import { fileURLToPath } from 'node:url';
 import { PLUGIN_HOMES, readPlugins } from './plugin-commands.mjs';
 import { actionEffect, commandToolName, pluginCommandRegistry, scanWebActions } from '../core/engines/plugin-commands.mjs';
 import { controlTools } from '../core/engines/control-rules.mjs';
-import { generateVoiceCommands, mergeVoiceCommands, normalizeVoiceCommands, matchUtterance, voiceCommandErrors, voiceCoverage, whatCanISay, VOICE_COMMAND_TYPE } from '../core/engines/voice-command-rules.mjs';
+import { fillSlot, generateVoiceCommands, mergeVoiceCommands, normalizeVoiceCommands, matchUtterance, voiceCommandErrors, voiceCoverage, whatCanISay, VOICE_COMMAND_TYPE } from '../core/engines/voice-command-rules.mjs';
 
 export const ROOT = resolve(process.env.AXF_ROOT || join(dirname(fileURLToPath(import.meta.url)), '../..'));
 export const COMMANDS_FILE = 'axf.commands.json';
@@ -222,7 +223,12 @@ function main(argv) {
   if (cmd === 'say') {
     const r = registry();
     const m = matchUtterance(r.apps, rest.join(' '), { now: new Date().toISOString(), app: flag('app') ? need(flag('app')).name : '' });
-    return out(m ? { app: m.app, command: m.command.id, run: m.command.run, slots: m.slots, missing: m.missing, confirm: m.confirm, question: m.question } : null, m ? `${m.app} → ${m.command.id} ${JSON.stringify(m.slots)}${m.missing.length ? ` · missing: ${m.missing.join(', ')}` : ''}${m.confirm ? ` · asks: ${m.question}` : ' · runs at once'}\n  ${Object.entries(m.command.run).map(([k, v]) => `${k}: ${v}`).join(' · ')}` : 'Nothing matches.');
+    return out(m ? { app: m.app, command: m.command, slots: m.slots, missing: m.missing, confirm: m.confirm, question: m.question, phrase: m.phrase } : null, m ? `${m.app} → ${m.command.id} ${JSON.stringify(m.slots)}${m.missing.length ? ` · missing: ${m.missing.join(', ')}` : ''}${m.confirm ? ` · asks: ${m.question}` : ' · runs at once'}\n  ${Object.entries(m.command.run).map(([k, v]) => `${k}: ${v}`).join(' · ')}` : 'Nothing matches.');
+  }
+  if (cmd === 'fill') {
+    const q = JSON.parse(rest[0] ?? '{}');
+    const r = fillSlot(q.command, q.slots, String(q.name ?? ''), String(q.text ?? ''), new Date().toISOString());
+    return out(r, `${r.ok ? 'filled' : 'not filled'} ${q.name}: ${JSON.stringify(r.slots)}${r.missing.length ? ` · missing: ${r.missing.join(', ')}` : ''}${r.question ? ` · ${r.question}` : ''}`);
   }
   if (cmd === 'bake') {
     const dest = resolve(rest[0] ?? '.');

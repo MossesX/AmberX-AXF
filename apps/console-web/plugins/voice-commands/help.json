@@ -1,0 +1,37 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "voice-commands-help",
+  "name": "Voice commands help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Voice commands plugin (help@1).",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:voice-commands",
+    "entries": [
+      { "target": "voice-page", "title": "Voice commands", "text": "Everything you can say to the apps: the Dev Console, AmberX, axHub web, Molly, Expenses and every app built for the framework. Say or type a command at the top; the lists below show the phrases per app." },
+      { "target": "voice-send", "title": "Say it", "text": "Runs what you typed as a voice command: reads and navigation run at once, a write asks only for what is missing, anything that deletes asks first." },
+      { "target": "voice-mic", "title": "Speak", "text": "Listens through the microphone (where the browser can) and runs what it heard. Tap again to stop listening." },
+      { "target": "voice-yes", "title": "Yes", "text": "Confirms the command the question is about and runs it." },
+      { "target": "voice-no", "title": "No", "text": "Cancels the command; nothing runs." },
+      { "target": "voice-apps", "title": "Apps", "text": "Pick an app to see only its phrases and to send commands to it alone, or Every app to let the phrase decide." },
+      { "target": "every-app", "title": "Every app", "text": "Shows every app's phrases and lets what you say pick the app (start with the app's name, like \"expenses, add 5 food\", to aim it).", "kind": "button" },
+      { "target": "voice-recent", "title": "Last commands", "text": "The last voice commands that ran through this console: what was said, which app and command it became, who said it and whether it ran." },
+      { "target": "microphone-button", "title": "Microphone button", "text": "Shows the Speak button wherever the browser can listen. Off: type the commands.", "kind": "field" },
+      { "target": "speak-the-answers", "title": "Speak the answers", "text": "Reads answers and questions aloud with the browser's voice. Off: answers only show on screen.", "kind": "field" },
+      { "target": "language", "title": "Language", "text": "The language the microphone listens in and answers are spoken in, as a BCP 47 tag such as en-US.", "kind": "field" },
+      { "target": "hosts-allowed-to-talk-to-this-console", "title": "Hosts allowed to talk to this console", "text": "Pages that may frame this console and send voice commands through it, by origin, comma-separated. Molly is there by default; anything else is ignored.", "kind": "field" },
+      { "target": "voice-commands", "title": "Voice commands", "text": "The Voice commands settings: microphone, spoken answers, language, the hosts that may talk to this console, a box to try a command and the last commands run.", "kind": "tab" },
+      { "target": "view:voice-commands", "title": "Voice commands", "text": "Opens the Voice commands screen: say or type a command to any app, and read what each app understands.", "kind": "screen" },
+      { "target": "view:voice-commands.say", "title": "Say a command", "text": "A small dialog to say or type one command without leaving the screen you are on.", "kind": "screen" },
+      { "target": "action:voice-commands.listen", "title": "Say a command…", "text": "Opens the Say a command dialog.", "kind": "menu-item" }
+    ],
+    "intros": [
+      { "screen": "voice-commands", "title": "Talk to your apps", "steps": [
+        { "say": "Type or speak a command here. Try: what can I say in expenses?", "target": "voice-send", "do": "focus" },
+        { "say": "Every app lists its phrases below; pick one app to narrow it down.", "target": "voice-apps", "do": "flash" }
+      ] }
+    ]
+  }
+}

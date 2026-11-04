@@ -1,0 +1,40 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.molly.voice-control",
+  "name": "Voice control",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Control every app by voice from Molly (voice-command@1): tap the mic (or type), say \"add 12.50 dunkin food\", \"list expenses\", \"open builds\" or \"what can I say in Expenses?\"; Molly sends it to the Dev Console frame, whose Voice commands plugin matches it against every app's voice commands, asks when something is missing or the command deletes, runs it and answers (spoken back when the browser can). A listener inside a framed app (AmberX, Gizmo) hands what it heard to Molly with a voice-bridge@1 message; a text box is always there when there is no microphone. Settings → Plugins → Voice.",
+  "targets": [
+    "molly"
+  ],
+  "provides": [
+    "dialog:molly.voice",
+    "action:molly.voice",
+    "settings-tab:molly-voice-control",
+    "service:axf.voice@1"
+  ],
+  "scopes": [],
+  "enabledByDefault": true,
+  "optional": [],
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/molly-voice-control",
+    "env": [],
+    "mentions": [
+      "apps/molly/README.md",
+      "_claude/rules/RULES.md"
+    ]
+  },
+  "builtWith": {
+    "model": "fable",
+    "builtAt": "2026-11-04",
+    "branch": "claude/app-voice-commands"
+  },
+  "help": "help.json",
+  "opens": "dialog"
+}

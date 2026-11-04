@@ -1,0 +1,10 @@
+/* Voice (Molly plugin): layout only; colours, sizes and radii come from the theme tokens. */
+.molly-voice { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0; }
+.molly-voice__say { display: flex; gap: var(--fx-dens-gap-md); align-items: flex-end; flex-wrap: wrap; }
+.molly-voice__say .fx-field { flex: 1 1 calc(var(--fx-row-h) * 8); min-width: 0; }
+.molly-voice__question { display: flex; gap: var(--fx-dens-gap-md); align-items: center; flex-wrap: wrap; }
+.molly-voice__log { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); max-height: calc(var(--fx-row-h) * 10); overflow: auto; }
+.molly-voice__you { color: var(--fx-muted); }
+.molly-voice__answer { white-space: pre-wrap; }
+.molly-voice__apps { display: flex; gap: var(--fx-dens-gap-md); flex-wrap: wrap; }
+.molly-voice__listening { color: var(--fx-accent); }

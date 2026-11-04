@@ -54,7 +54,7 @@ const PLACEHOLDER = /\{([a-zA-Z][a-zA-Z0-9]*)\}/g;
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 const str = (v, max = 200) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 const uniq = (a) => [...new Set(a)];
-const words = (s) => str(s, 4000).toLowerCase().replace(/[^a-z0-9$.:/\-{}\s]/g, ' ').replace(/(\d)\.(?!\d)/g, '$1 ').split(/\s+/).filter(Boolean);
+const words = (s) => str(s, 4000).toLowerCase().replace(/[^a-z0-9$#.:/\-{}\s]/g, ' ').replace(/(\d)\.(?!\d)/g, '$1 ').split(/\s+/).filter(Boolean);
 const titleCase = (s) => s.replace(/(^|\s)([a-z])/g, (m, a, b) => a + b.toUpperCase());
 
 /** The `{slot}` names a phrase or answer uses. */
@@ -458,4 +458,45 @@ export function voiceCommandSchemaProperties() {
       say: { type: 'string', maxLength: VOICE_LIMITS.say }, help: { type: 'string', maxLength: VOICE_LIMITS.help }, source: { enum: ['generated', 'authored'] },
     } } },
   };
+}
+
+/* ================================================================== the bridge between a host (Molly) and an app's console frame */
+
+/** Messages between Molly (or any host / listener) and the console's voice-commands plugin, over postMessage. */
+export const VOICE_BRIDGE_FRAME = 'voice-bridge@1';
+/** say: run what was said · answer: reply to a confirm / missing-slot question · help: what can I say · ping/pong: is the bridge there · utterance: a listener heard something (the host decides) · result: the answer to any of them. */
+export const VOICE_BRIDGE_TYPES = ['say', 'answer', 'help', 'ping', 'pong', 'utterance', 'result'];
+export function voiceBridgeMessage(type, fields = {}) { return { $axf: VOICE_BRIDGE_FRAME, type, id: fields.id ?? `v-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`, ...fields }; }
+/** The message, or null when it is not one of ours. */
+export function parseVoiceBridge(data) {
+  if (!isObj(data) || data.$axf !== VOICE_BRIDGE_FRAME || !VOICE_BRIDGE_TYPES.includes(data.type)) return null;
+  return { ...data, id: str(data.id, 80), text: str(data.text, 2000), app: str(data.app, 63) };
+}
+/** "what can I say (in <app>)?" asked in words: the app named, '' for every app, null when it is not that question. */
+export function helpQuestion(text) {
+  const m = /^(?:hey\s+)?(?:molly[,\s]+)?(?:what|which)\s+(?:can|could|do)\s+i\s+(?:say|ask|tell)(?:\s+(?:in|to|for|about)\s+([a-z][a-z0-9 -]{0,30}?))?\s*\??$/i.exec(str(text, 300).trim());
+  return m ? (m[1] ?? '').trim().toLowerCase() : null;
+}
+
+/**
+ * An answer to "What is <slot>?": the value parsed for that slot (typed slots through parseSlotValue, text as said,
+ * fillers trimmed), then what is still missing and whether the command must still be confirmed. Pure.
+ */
+export function fillSlot(command, slots, name, text, now = '2026-01-01T00:00:00.000Z') {
+  const c = normalizeVoiceCommands({ app: 'x', commands: [command] }).commands[0];
+  const got = { ...(isObj(slots) ? slots : {}) };
+  const slot = c.slots[name];
+  let ws = words(text);
+  while (ws.length && VOICE_FILLERS.includes(ws[0])) ws = ws.slice(1);
+  let value;
+  if (slot && slot.type !== 'text') { const v = parseSlotValue(slot, ws, now); if (v) value = v.value; }
+  else if (ws.length) value = ws.join(' ');
+  const ok = value !== undefined;
+  if (ok) got[name] = value;
+  const missing = Object.entries(c.slots).filter(([n, s]) => s.required && got[n] === undefined).map(([n]) => n);
+  const rule = confirmRule(c);
+  const confirm = rule === 'always' || (rule === 'missing' && missing.length > 0);
+  const question = !ok ? `I did not get ${slot?.say || name}. ${slot?.type === 'money' ? 'How much, in dollars?' : slot?.type === 'date' ? 'Which day (today, yesterday, a date)?' : slot?.type === 'choice' ? `One of: ${(slot.options ?? []).join(', ')}.` : `What is ${slot?.say || name}?`}`
+    : missing.length ? `What is ${c.slots[missing[0]].say || missing[0]}?` : rule === 'always' ? `${c.title} (${Object.entries(got).map(([k, v]) => `${k}: ${v}`).join(', ')}). Yes or no?` : '';
+  return { ok, slots: got, missing: ok ? missing : [name, ...missing.filter((m) => m !== name)], confirm: !ok || confirm, question };
 }
