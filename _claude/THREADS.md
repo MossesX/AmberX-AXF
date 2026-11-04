@@ -683,8 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 12:44 UTC · `element-inspector` → pending, note (angel) · reconciler
-- 2026-11-04 12:44 UTC · `layout-repeating-slots` → complete, note (angel) · reconciler
 - 2026-11-04 12:44 UTC · `orch-step-click` → pending, note (refactor) · reconciler
 - 2026-11-04 12:44 UTC · `molly-opus` → complete, note (big-dog) · reconciler
 - 2026-11-04 12:44 UTC · `walkthrough-random-look` → complete, note (refactor) · reconciler
@@ -1083,6 +1081,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:47 UTC · `molly-console-commands` note (current) · foreign-write
 - 2026-11-04 15:47 UTC · `app-voice-commands` s2 done, s3 done, s4 done, s5 done, note (current) · foreign-write
 - 2026-11-04 15:47 UTC · `apps-control-surface` s2 done, s3 done, s4 done, s5 done, → complete, note (current) · foreign-write
+- 2026-11-04 15:47 UTC · `app-voice-commands` s5 done, note (current) · foreign-write
+- 2026-11-04 15:47 UTC · `apps-control-surface` note (current) · foreign-write
 
 ## Token passes (log)
 
