@@ -683,9 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 12:18 UTC · `hotfix-build-manager` added (4 steps) (current) · orchestrator
-- 2026-11-04 12:18 UTC · `hotfix-build-manager` → running (current) · orchestrator
-- 2026-11-04 12:41 UTC · `urgent-land-lazy-loader` added (4 steps) (current) · foreign-write
 - 2026-11-04 12:44 UTC · `element-inspector` → pending, note (angel) · reconciler
 - 2026-11-04 12:44 UTC · `layout-repeating-slots` → complete, note (angel) · reconciler
 - 2026-11-04 12:44 UTC · `orch-step-click` → pending, note (refactor) · reconciler
@@ -1083,6 +1080,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:43 UTC · `app-voice-commands` s5 done (current) · orchestrator
 - 2026-11-04 15:43 UTC · `app-voice-commands` note (current) · orchestrator
 - 2026-11-04 15:43 UTC · `app-voice-commands` branch claude/app-voice-commands, PR #323 (current) · builds-live
+- 2026-11-04 15:47 UTC · `molly-console-commands` note (current) · foreign-write
+- 2026-11-04 15:47 UTC · `app-voice-commands` s2 done, s3 done, s4 done, s5 done, note (current) · foreign-write
+- 2026-11-04 15:47 UTC · `apps-control-surface` s2 done, s3 done, s4 done, s5 done, → complete, note (current) · foreign-write
 
 ## Token passes (log)
 
