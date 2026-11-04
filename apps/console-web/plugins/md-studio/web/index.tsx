@@ -92,7 +92,7 @@ export const plugin: AxfWebLibrary = {
     'md-outline': () => <OutlinePane />,
     'md-refs': () => <RefsPane />,
   },
-  nav: { label: 'Plugins', items: [{ id: VIEW_ID, label: 'MD Studio', icon: 'file', view: VIEW_ID }] },
+  nav: { label: 'Plugins', items: [{ id: 'md-studio', label: 'MD Studio', icon: 'file', view: 'md-studio' }] }, // literal ids: scripts/menu-reach.mts reads this line
   contextMenu: [{
     id: 'md-studio.file', target: 'md-studio-file', items: [
       { id: 'md-studio.ctx.open', label: 'Open', icon: 'file', action: 'md-studio.open' },
