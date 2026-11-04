@@ -6,6 +6,7 @@ import react from '@vitejs/plugin-react';
 import { viteSingleFile } from 'vite-plugin-singlefile';
 import { axfProjectGuard } from './src/axf/core/project';
 import { alertsServiceWorker } from './src/axf/libs/alerts/vite-plugin.mjs';
+import { pluginChunks } from './scripts/plugin-chunks.mjs';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 
@@ -17,6 +18,8 @@ export default defineConfig(({ mode }) => ({
     react(),
     // the alerts library's web push service worker, served and built as /alerts-sw.js
     alertsServiceWorker(),
+    // plugin lazy loader: content hashes, one chunk per plugin (axf-plugin-chunks.json), per-plugin HMR (src/pluginLoader.tsx)
+    pluginChunks({ pluginsDir: join(root, 'plugins') }),
     ...(mode === 'single' ? [viteSingleFile()] : []),
   ],
   // Console plugins (./plugins) import the console's framework and helpers as `@console/...`.

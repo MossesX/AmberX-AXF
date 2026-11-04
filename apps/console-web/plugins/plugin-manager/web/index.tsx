@@ -18,6 +18,7 @@ import { PluginManager } from './PluginManager';
 import { KEYS, LAYOUTS, VIEWS } from './prefs';
 import { FOLDER } from './model';
 import { appMenu } from './menu';
+import { LazyLoaderPanel } from './LazyLoader';
 
 const ID = 'ai.amberx.axf.console.plugin-manager';
 
@@ -79,6 +80,8 @@ export const plugin: AxfWebLibrary = {
   }],
   settingsPanels: [
     { id: 'plugin-manager.open', tab: 'plugin-manager', title: 'Plugin Manager', icon: 'package', order: 5, render: () => <OpenPanel /> },
+    // the console's plugin lazy loader (src/pluginLoader.tsx): what loads at startup, idle, cache, per plugin, live table
+    { id: 'plugin-manager.lazy', tab: 'plugin-manager', title: 'Lazy loader', icon: 'zap', order: 20, render: () => <LazyLoaderPanel /> },
     { id: 'plugin-manager.lifecycle', tab: 'plugin-manager', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

@@ -39,6 +39,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | UI Review shows its pictures again (Urgent `ui-review-shots`, Opus, agent Snap Sully; Brett Nov 3 voice: "items but NO pictures"): files were all on disk and served 200; two console pollers (agent-slots, token-control pass) re-subscribed on every render and fired ~45 status calls/s, starving the picture fetches; on phones a today-made selector (`:where(:not([data-fx-narrow]))`, always true) squeezed the preview to zero width. Fixed both + layout-adopt codemod, shot timeout/retry, "Shot missing" + Re-capture, health@1 `ui-review-shots`, `review.mjs` worktree warning | review (all 5 steps done; PR open, UI Review waiting) | `claude/ui-review-shots` | [#277](https://github.com/MossesX/AmberX-AXF/pull/277) | Report `_claude/builds/reports/ui-review-shots.md`. Console redeploy (on merge) stops the storm. Brett: approve UI Review r-20261103-17ef4a40 | 2026-11-03 |
 | Land everything finished (Current `lenny-land-all`, freeze plan step two, Opus; agent Landin' Lenny; Brett Nov 3 voice: "Number two." "Give me Lenny."): 19 PRs landed (#270 first, then #268 #265 #277 #271 #273 #280 #274 #279 #285 #272 #276, and batch #303 = #275 #282 #283 #286 #287 #290 #292), #267 closed (superseded by #284), #251/#254 set to draft for Brett, older #207-#236 listed for him. Held with reasons: #266 #288 (racy console-wake test), #269 (AmberX build: @console/api), #289 (placement system vs #278), #281 (menu engines vs #268, Fable work), #291 (WIP, paused by Brett). Console was down ~12 min: stacked update installers; flock added | done | `claude/lenny-land-all` | (report PR) | Report `_claude/builds/reports/lenny-land-all.md`. Next: the held PRs' authors fix them; Brett decides #289 placement and reviews #251/#254 | 2026-11-04 |
 |---|---|---|---|---|---|
+| Plugin lazy loader (Current `plugin-lazy-load`, Opus; agent Janitor Joey, no Polo card; Brett Nov 3 voice: "The console gets slower as more plugins are installed" + "banners need to be the very first thing to load"): one chunk per plugin, stand-ins from cached shapes so menus / routes / commands exist at startup, banners first, Lazy loader settings in Plugin Manager (preload count, pins, order, idle, LRU cache, offline cache, per-plugin Start/Open/Off, live table) + REST/MCP/CLI `/lazy` | landing (`urgent-land-lazy-loader`) | `claude/plugin-lazy-load` | #298 | main merged in, banners seeded, tsc + vite + 87 checks pass; startup 4.46 → 2.07 MB; waiting on CI → merge → console auto-update. UI Review shots still owed | 2026-11-04 |
 | Molly console commands (Current `molly-console-commands`, urgent, Opus; agent Ping Paulie; Brett Nov 3 voice: "I mean Molly. I'm in control through Molly." + addendum "Add all the apps to the API and the MCP and the CLI"): commands reach the Console inside Molly (embed@1 `show`/`shown`, `recent` = client in front, ack wait 10 s, Molly keeps the Console frame warm) | running (s1–s5 fix done; s6–s7 addendum open) | `claude/molly-console-commands` (stacked on `claude/console-wake`) | — | Report `_claude/builds/reports/molly-console-commands.md`; UI Review; addendum s6 s7 | 2026-11-03 |
 | Agent pick (Urgent `agent-pick`, Opus, booked on Snap Sully; Brett Nov 3 voice): every Claude session works as the agent Brett assigns — plugin `claude-session` (`claude_session_start` / `_agent` / `_book`, picker pop-up + axHub approval, Assign to Claude, settings), swarm `axf.crew@1` | PR open, UI review waiting (all steps done) | `claude/agent-pick` | (see live log) | Report `_claude/builds/reports/agent-pick.md`. Auto-merge after CI + UI Review | 2026-11-03 |
 | Toolbars plugin: tap-to-confirm on touch (Urgent `toolbar-tap-confirm`, 21 steps; Brett Nov 3 voice + Addendum 1; agent Landin' Lenny, Opus): every toolbar in every app arms on the first finger tap (tip + countdown, 3 s default) and runs on the second; mouse/pen/keyboard single click; framework `core/engines/tapconfirm.ts` + `react/tapConfirm.ts` via AxfProvider; `lib-toolbars` (Settings → Plugins → Toolbars, All toolbars) in every app + templates; 37 toolbars adopted; `check-toolbars.mjs` + `check-tapconfirm.mts` in CI; rules added | part 1 PR open (s1–s7 done); s8–s12 Opus next; s13–s14 Fable (needs Brett's upgrade approval) | `claude/toolbar-tap-confirm` | [#272](https://github.com/MossesX/AmberX-AXF/pull/272) | Report `_claude/builds/reports/toolbar-tap-confirm.md`. UI Review r-20261103-6815df1d waiting. Next: s8 per-toolbar settings + context hooks | 2026-11-03 |
@@ -192,6 +193,12 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 - Checks: `node framework/spec/check-profile-filter.mjs`; `node framework/spec/check-card.mjs`; `node apps/console-web/plugins/profile-switcher/test.mjs`; `cd apps/console-web && npx tsc --noEmit`.
 - First message: "Carry on profile-lists-home-card on branch claude/profile-lists-home-card: check the PR's CI, then the follow-up step."
 
+### Plugin lazy loader (`plugin-lazy-load`, Current, Opus) — branch `claude/plugin-lazy-load`
+- **Asked (Brett, Nov 3 2026, voice):** "The console gets slower as more plugins are installed." "Anytime I hot render … it reloads all the plugins." "Put in the plugin manager plugin all the ways to configure the lazy loader…" Addendum: "banners need to be the very first thing to load." Full brief: orchestrator build `plugin-lazy-load`.
+- **On the branch:** `apps/console-web/src/pluginLoader.tsx` (loader, stand-ins from cached shapes, LazyCall placeholder + retry, use counting), `src/lazyEngine.ts` (pure: defaults, frecency, startup order, idle, LRU), `src/plugins.ts` (library getter), `src/App.tsx` (boot, re-install on loads), `scripts/plugin-chunks.mjs` (Vite: content hashes, `axf-plugin-chunks.json`, per-plugin HMR boundary), plugin-manager `server/lazy.py` + `/lazy` routes + `web/LazyLoader.tsx`, alerts SW `/assets` cache-first from `axf-plugin-chunks`, server immutable `/assets`.
+- **Left:** (Nov 4, `urgent-land-lazy-loader`) numbers done, PR #298 updated to main and pushed; CI → merge → console auto-update. Still owed: live browser check, screenshots + UI Review for the Lazy loader tab.
+- **Checks:** `npx -y tsx apps/console-web/scripts/lazy-loader-check.mts`, `python3 apps/console-web/plugins/plugin-manager/test.py`, `python3 apps/console-web/plugins/plugin-manager/server/test_lazy.py`, console `tsc --noEmit`, `check-theme`, `check-controls`, `help-coverage`. <!-- axf-plugin:plugin-manager -->
+- **First message to carry on:** "Carry on build plugin-lazy-load on branch claude/plugin-lazy-load from THREADS.md 'To carry on'." <!-- axf-plugin:plugin-manager -->
 ### Molly banners (`molly-banners`, Current, Opus) — branch `claude/molly-banners`, PR #294
 - Asked: "Install the banners in Molly." One banner region in Molly fed live by the console's banner plugins; taps act as in the console; same settings; per-banner show/hide in Molly; don't touch banner-pack #251 / banner-editor #254 / banners-one.
 - Done: framework banner strip (`framework/react/bannerStrip.ts`, `components/BannerStrip.tsx`, AppShell page `view:axf-banners`), Molly plugin `apps/molly/plugins/banners`, re-bakes, `framework/spec/check-banner-strip.mts` (CI). Report `_claude/builds/reports/molly-banners.md`.
@@ -670,69 +677,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 15:32 UTC · `land-everything` added (11 steps) (urgent) · orchestrator
-- 2026-11-03 15:32 UTC · `land-everything` → running (urgent) · orchestrator
-- 2026-11-03 15:58 UTC · `crew-retrain` added (8 steps) (breakroom) · orchestrator
-- 2026-11-03 15:58 UTC · `crew-retrain` → running (breakroom) · orchestrator
-- 2026-11-03 15:58 UTC · `crew-retrain` s1 done (breakroom) · orchestrator
-- 2026-11-03 16:05 UTC · `crew-retrain` s2 done (breakroom) · orchestrator
-- 2026-11-03 16:05 UTC · `crew-retrain` s3 done (breakroom) · orchestrator
-- 2026-11-03 16:05 UTC · `crew-retrain` s4 done (breakroom) · orchestrator
-- 2026-11-03 16:07 UTC · `notes-vault` PR #256, merged (urgent) · builds-live
-- 2026-11-03 16:07 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 16:07 UTC · `land-everything` s1 done (urgent) · orchestrator
-- 2026-11-03 16:07 UTC · `crew-retrain` s5 done (breakroom) · orchestrator
-- 2026-11-03 16:12 UTC · `crew-retrain` s6 done (breakroom) · orchestrator
-- 2026-11-03 16:14 UTC · `tools-plugin` note (refactor) · foreign-write
-- 2026-11-03 16:14 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 16:14 UTC · `land-everything` s2 done (urgent) · orchestrator
-- 2026-11-03 16:22 UTC · `tools-plugin` note (refactor) · foreign-write
-- 2026-11-03 16:22 UTC · `crew-retrain` branch claude/crew-retrain, PR #265 (breakroom) · builds-live
-- 2026-11-03 16:23 UTC · `crew-retrain` s7 done (breakroom) · orchestrator
-- 2026-11-03 16:23 UTC · `crew-retrain` s8 done, → built (breakroom) · orchestrator
-- 2026-11-03 16:23 UTC · `crew-retrain` note (breakroom) · orchestrator
-- 2026-11-03 16:23 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 16:23 UTC · `kill-patches-pilot` PR #258, merged (urgent) · builds-live
-- 2026-11-03 16:23 UTC · `kill-patches-pilot` → complete (urgent) · orchestrator
-- 2026-11-03 16:24 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 16:24 UTC · `land-everything` s3 done (urgent) · orchestrator
-- 2026-11-03 16:24 UTC · `kill-patches-pilot` → running, note (urgent) · orchestrator
-- 2026-11-03 16:24 UTC · `kill-patches-pilot` → complete (urgent) · orchestrator
-- 2026-11-03 16:29 UTC · `headless-tabs` PR #259, merged (urgent) · builds-live
-- 2026-11-03 16:29 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 16:29 UTC · `land-everything` s4 done (urgent) · orchestrator
-- 2026-11-03 16:41 UTC · `whats-new-banner` merged (urgent) · builds-live
-- 2026-11-03 16:41 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 16:41 UTC · `land-everything` s5 done (urgent) · orchestrator
-- 2026-11-03 16:48 UTC · `dock-engine` → complete, merged (urgent) · builds-live
-- 2026-11-03 16:48 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 16:48 UTC · `xlayout` → complete, merged (big-dog) · builds-live
-- 2026-11-03 16:48 UTC · `land-everything` s6 done (urgent) · orchestrator
-- 2026-11-03 17:03 UTC · `token-control` → complete, merged (urgent) · builds-live
-- 2026-11-03 17:03 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 17:03 UTC · `console-commands` PR #249, merged (urgent) · builds-live
-- 2026-11-03 17:03 UTC · `land-everything` s7 done (urgent) · orchestrator
-- 2026-11-03 17:09 UTC · `theme-editor` → complete, merged (urgent) · builds-live
-- 2026-11-03 17:09 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 17:16 UTC · `model-upgrade-approval` PR #253, merged (urgent) · builds-live
-- 2026-11-03 17:17 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 17:17 UTC · `land-everything` s8 done (urgent) · orchestrator
-- 2026-11-03 17:17 UTC · `land-everything` note (urgent) · foreign-write
-- 2026-11-03 17:19 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 17:22 UTC · `console-wake` added (6 steps) (urgent) · orchestrator
-- 2026-11-03 17:22 UTC · `console-wake` → running (urgent) · orchestrator
-- 2026-11-03 17:22 UTC · `console-wake` s1 done (urgent) · orchestrator
-- 2026-11-03 17:25 UTC · `theme-veto-pass` PR #262, merged (urgent) · builds-live
-- 2026-11-03 17:25 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 17:26 UTC · `pass-all` PR #264, merged (urgent) · builds-live
-- 2026-11-03 17:26 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 17:31 UTC · `console-wake` s2 done (urgent) · orchestrator
-- 2026-11-03 17:34 UTC · `plugin-commands-auto` PR #263, merged (urgent) · builds-live
-- 2026-11-03 17:35 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 17:35 UTC · `land-everything` s9 done (urgent) · orchestrator
-- 2026-11-03 17:42 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 17:45 UTC · `console-wake` s3 done (urgent) · orchestrator
-- 2026-11-03 17:45 UTC · `console-wake` s4 done (urgent) · orchestrator
 - 2026-11-03 17:45 UTC · `console-wake` s5 done (urgent) · orchestrator
 - 2026-11-03 17:45 UTC · `console-wake` s6 done, → complete (urgent) · orchestrator
 - 2026-11-03 17:45 UTC · `console-wake` note (urgent) · orchestrator
@@ -1070,6 +1014,69 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:11 UTC · `crew-profiles` added (6 steps) (current) · foreign-write
 - 2026-11-04 14:11 UTC · `land-round-2` note (current) · orchestrator
 - 2026-11-04 14:12 UTC · `land-round-2` note (current) · foreign-write
+- 2026-11-04 14:15 UTC · `urgent-land-gizmo-chat` added (4 steps) (current) · foreign-write
+- 2026-11-04 14:15 UTC · `console-wake-finish` added (5 steps) (current) · foreign-write
+- 2026-11-04 14:16 UTC · `console-wake-finish` added (5 steps) (current) · foreign-write
+- 2026-11-04 14:16 UTC · `profile-lists-home-card` added (4 steps) (current) · orchestrator
+- 2026-11-04 14:16 UTC · `profile-lists-home-card` s1 done, → running (current) · orchestrator
+- 2026-11-04 14:15 UTC · `console-wake-finish` added (5 steps) (current) · orchestrator
+- 2026-11-04 14:16 UTC · `profile-lists-home-card` added (4 steps) (current) · foreign-write
+- 2026-11-04 14:17 UTC · `land-round-2` note (current) · foreign-write
+- 2026-11-04 14:17 UTC · `urgent-land-gizmo-chat` added (4 steps) (current) · foreign-write
+- 2026-11-04 14:17 UTC · `console-wake-finish` added (5 steps) (current) · foreign-write
+- 2026-11-04 14:17 UTC · `profile-lists-home-card` added (4 steps) (current) · foreign-write
+- 2026-11-04 14:16 UTC · `console-wake-finish` s1 done, → running (current) · orchestrator
+- 2026-11-04 14:17 UTC · `console-wake-finish` s3 done (current) · orchestrator
+- 2026-11-04 14:17 UTC · `crew-profiles` s4 done (current) · foreign-write
+- 2026-11-04 14:17 UTC · `console-wake-finish` s1 done (current) · foreign-write
+- 2026-11-04 14:17 UTC · `crew-profiles` s4 done (current) · orchestrator
+- 2026-11-04 14:17 UTC · `profile-lists-home-card` note (current) · orchestrator
+- 2026-11-04 14:17 UTC · `profile-switcher-widget` → running, note (current) · orchestrator
+- 2026-11-04 14:17 UTC · `console-wake-finish` s3 done (current) · foreign-write
+- 2026-11-04 14:18 UTC · `profile-lists-home-card` s2 done (current) · orchestrator
+- 2026-11-04 14:19 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 14:19 UTC · `profile-lists-home-card` s2 done, note (current) · foreign-write
+- 2026-11-04 14:19 UTC · `crew-profiles` s5 done (current) · orchestrator
+- 2026-11-04 14:20 UTC · `crew-profiles` branch claude/crew-profiles (current) · builds-live
+- 2026-11-04 14:14 UTC · `urgent-land-gizmo-chat` added (4 steps) (current) · orchestrator
+- 2026-11-04 14:14 UTC · `urgent-land-gizmo-chat` → running (current) · orchestrator
+- 2026-11-04 14:21 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 14:21 UTC · `crew-profiles` s4 done, s5 done (current) · foreign-write
+- 2026-11-04 14:21 UTC · `urgent-land-gizmo-chat` added (4 steps) (current) · foreign-write
+- 2026-11-04 14:21 UTC · `console-wake-finish` added (5 steps) (current) · foreign-write
+- 2026-11-04 14:21 UTC · `profile-lists-home-card` added (4 steps) (current) · foreign-write
+- 2026-11-04 14:21 UTC · `urgent-land-gizmo-chat` s1 done, → running (current) · orchestrator
+- 2026-11-04 14:21 UTC · `urgent-land-gizmo-chat` s2 done (current) · orchestrator
+- 2026-11-04 14:21 UTC · `urgent-land-gizmo-chat` branch claude/gizmo-companion, PR #296 (current) · builds-live
+- 2026-11-04 14:21 UTC · `land-round-2` note (current) · orchestrator
+- 2026-11-04 14:21 UTC · `gizmo-voice` added (3 steps) (current) · orchestrator
+- 2026-11-04 14:21 UTC · `gizmo-terminal` added (4 steps) (current) · orchestrator
+- 2026-11-04 14:21 UTC · `land-round-2` note (current) · foreign-write
+- 2026-11-04 14:21 UTC · `urgent-land-gizmo-chat` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 14:21 UTC · `gizmo-voice` added (3 steps) (current) · foreign-write
+- 2026-11-04 14:21 UTC · `gizmo-terminal` added (4 steps) (current) · foreign-write
+- 2026-11-04 14:21 UTC · `crew-profiles` PR #315 (current) · builds-live
+- 2026-11-04 14:22 UTC · `land-round-2` note (current) · foreign-write
+- 2026-11-04 14:22 UTC · `crew-profiles` s5 done (current) · foreign-write
+- 2026-11-04 14:22 UTC · `urgent-land-gizmo-chat` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 14:22 UTC · `gizmo-voice` added (6 steps) (current) · foreign-write
+- 2026-11-04 14:22 UTC · `gizmo-terminal` added (8 steps) (current) · foreign-write
+- 2026-11-04 14:22 UTC · `profile-lists-home-card` s3 done (current) · orchestrator
+- 2026-11-04 14:23 UTC · `profile-lists-home-card` s3 done (current) · foreign-write
+- 2026-11-04 14:24 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 14:24 UTC · `land-round-2` note (current) · foreign-write
+- 2026-11-04 14:24 UTC · `crew-profiles` s4 done, s5 done (current) · foreign-write
+- 2026-11-04 14:24 UTC · `urgent-land-gizmo-chat` added (4 steps) (current) · foreign-write
+- 2026-11-04 14:24 UTC · `console-wake-finish` added (5 steps) (current) · foreign-write
+- 2026-11-04 14:24 UTC · `profile-lists-home-card` added (4 steps) (current) · foreign-write
+- 2026-11-04 14:24 UTC · `gizmo-voice` added (12 steps) (current) · foreign-write
+- 2026-11-04 14:24 UTC · `gizmo-terminal` added (16 steps) (current) · foreign-write
+- 2026-11-04 14:24 UTC · `urgent-land-lazy-loader` merged (current) · builds-live
+- 2026-11-04 14:24 UTC · `plugin-lazy-load` merged, note (current) · builds-live
+- 2026-11-04 14:24 UTC · `urgent-land-lazy-loader` s4 done, → complete, merged (current) · builds-live
+- 2026-11-04 14:24 UTC · `plugin-lazy-load` merged (current) · builds-live
+- 2026-11-04 14:24 UTC · `urgent-land-lazy-loader` s4 done, → complete (current) · orchestrator
+- 2026-11-04 14:24 UTC · `plugin-lazy-load` note (current) · orchestrator
 
 ## Token passes (log)
 
