@@ -2,11 +2,11 @@
 # Start (or update) the Automated Browser host: builds the axf-browser image from host/ and runs it on the console's
 # Docker network, never published on a host port. Profiles and downloads live in the axf-browser-data volume. The
 # bearer token is generated once into the console's plugin data folder (0600), where the plugin's server reads it.
-#   sh apps/console-web/plugins/browser/deploy.sh        (on the VPS; AXF_HOST_DIR defaults to /opt/axf)
+#   sh apps/console-web/plugins/auto-browser/deploy.sh        (on the VPS; AXF_HOST_DIR defaults to /opt/axf)
 set -eu
 ROOT="${AXF_HOST_DIR:-/opt/axf}"
-HERE="$ROOT/apps/console-web/plugins/browser"
-DATA="$ROOT/.axf-console/plugins/browser"
+HERE="${AXF_BROWSER_SRC:-$ROOT/apps/console-web/plugins/auto-browser}"   # where host/ is (a build checkout before merge)
+DATA="$ROOT/.axf-console/plugins/auto-browser"
 NET="${AXF_BROWSER_NETWORK:-coolify}"
 NAME="${AXF_BROWSER_CONTAINER:-axf-browser}"
 MEM="${AXF_BROWSER_MEMORY:-2g}"

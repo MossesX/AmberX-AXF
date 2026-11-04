@@ -1,5 +1,5 @@
 # Browser host for the console's Automated Browser plugin: headless Chromium + a small HTTP/websocket API on :7095.
-# Built from this folder:  docker build -t axf-browser apps/console-web/plugins/browser/host
+# Built from this folder:  docker build -t axf-browser apps/console-web/plugins/auto-browser/host
 # Run on the console's network, never published:  see ../deploy.sh
 FROM mcr.microsoft.com/playwright:v1.62.1-noble
 WORKDIR /app

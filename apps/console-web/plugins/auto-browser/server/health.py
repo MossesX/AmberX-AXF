@@ -11,13 +11,13 @@ from typing import Any
 import plugin_services
 
 CAPABILITY = "axf.health@1"
-OWNER = "browser"
+OWNER = "auto-browser"
 _done = False
 
 
 def deploy_command() -> str:
     host = os.environ.get("AXF_HOST_DIR") or "/opt/axf"
-    return f'sh "{host}/apps/console-web/plugins/browser/deploy.sh"'
+    return f'sh "{host}/apps/console-web/plugins/auto-browser/deploy.sh"'
 
 
 def check(client: Any) -> dict[str, Any]:

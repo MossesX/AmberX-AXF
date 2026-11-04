@@ -7,7 +7,7 @@ to a local page, fill / click / extract, screenshot JSON + PNG, tabs, device, th
 first command, and the live view relayed through the plugin's websocket (frames out, input + command results back).
 The live part is skipped when playwright-core can't be found (set AXF_PLAYWRIGHT=<path to playwright-core/index.mjs>).
 
-    python3 apps/console-web/plugins/browser/test.py
+    python3 apps/console-web/plugins/auto-browser/test.py
 """
 from __future__ import annotations
 
@@ -40,9 +40,9 @@ from fastapi import FastAPI  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
 
 app = FastAPI()
-app.include_router(mod.router, prefix="/api/plugins/browser")
+app.include_router(mod.router, prefix="/api/plugins/auto-browser")
 client = TestClient(app)
-P = "/api/plugins/browser"
+P = "/api/plugins/auto-browser"
 
 passed = failed = 0
 

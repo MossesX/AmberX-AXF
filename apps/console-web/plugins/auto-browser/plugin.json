@@ -1,6 +1,6 @@
 {
   "$axf": "plugin@1",
-  "id": "ai.amberx.axf.console.browser",
+  "id": "ai.amberx.axf.console.auto-browser",
   "name": "Automated Browser",
   "version": "0.1.0",
   "kind": "module",
@@ -11,8 +11,8 @@
     "axf-console"
   ],
   "provides": [
-    "view:browser",
-    "settings-tab:browser"
+    "view:auto-browser",
+    "settings-tab:auto-browser"
   ],
   "scopes": [
     "ROUTES"
@@ -25,7 +25,7 @@
   "tabable": true,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
-    "dataDir": ".axf-console/plugins/browser",
+    "dataDir": ".axf-console/plugins/auto-browser",
     "env": [
       "AXF_BROWSER_URL",
       "AXF_BROWSER_TOKEN"

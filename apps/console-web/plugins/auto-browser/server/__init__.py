@@ -1,4 +1,4 @@
-"""Automated Browser server part. Mounted at /api/plugins/browser/ (console token on every method; the live view's
+"""Automated Browser server part. Mounted at /api/plugins/auto-browser/ (console token on every method; the live view's
 websocket uses a one-time ticket from POST /api/ws-ticket).
 
 The browser itself runs in the browser host (host/host.mjs, container `axf-browser` on the console's network); this
@@ -36,7 +36,7 @@ import console_context as cx
 from . import health
 from .host_client import HostClient, HostError
 
-FOLDER = "browser"
+FOLDER = "auto-browser"
 
 
 def data_dir() -> Path:

@@ -1,16 +1,16 @@
 {
   "$axf": "asset@1",
   "type": "help",
-  "id": "browser-help",
+  "id": "auto-browser-help",
   "name": "Automated Browser help",
   "version": "0.1.0",
   "description": "Help mode entries for the Automated Browser plugin (help@1).",
   "author": "Brett",
   "tags": ["help"],
   "data": {
-    "scope": "plugin:browser",
+    "scope": "plugin:auto-browser",
     "entries": [
-      { "target": "view:browser", "title": "Automated Browser", "text": "A real Chrome running on the VPS. What you see is a live picture of it: tap, type and scroll right on it and the VPS browser does it. Logins stay saved per workspace.", "kind": "screen" },
+      { "target": "view:auto-browser", "title": "Automated Browser", "text": "A real Chrome running on the VPS. What you see is a live picture of it: tap, type and scroll right on it and the VPS browser does it. Logins stay saved per workspace.", "kind": "screen" },
       { "target": "address", "title": "Address bar", "text": "Type a web address (or words to search) and press Enter. Private and internal addresses are blocked so the browser can't reach services on the VPS." },
       { "target": "back", "title": "Back", "text": "Goes back one page in the current tab." },
       { "target": "forward", "title": "Forward", "text": "Goes forward one page in the current tab." },
@@ -23,7 +23,7 @@
       { "target": "downloads", "title": "Downloads", "text": "Files the VPS browser downloaded. Tap one to save it to this device." }
     ],
     "intros": [
-      { "target": "view:browser", "steps": [
+      { "target": "view:auto-browser", "steps": [
         { "title": "A browser on the VPS", "text": "This is a live picture of Chrome running on the VPS. Everything you tap, type and scroll goes to it." },
         { "title": "Workspaces", "text": "Each workspace keeps its own cookies and logins, so a routine that logs in stays logged in." },
         { "title": "Claude can drive it too", "text": "Every button here is also a command Claude, Amber and Gizmo can use over MCP and the CLI." }

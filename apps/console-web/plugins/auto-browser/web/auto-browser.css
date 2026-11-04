@@ -1,0 +1,22 @@
+/* Automated Browser: layout only (controls are framework components); theme tokens only. */
+.axp-auto-browser__live { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0 }
+.axp-auto-browser__bar { display: flex; align-items: end; gap: var(--fx-dens-gap-sm); min-width: 0 }
+.axp-auto-browser__address { flex: 1; min-width: 0 }
+.axp-auto-browser__tabs { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); overflow-x: auto; scroll-snap-type: x proximity; min-width: 0 }
+.axp-auto-browser__tab { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-2xs); max-width: calc(var(--fx-space) * 24); scroll-snap-align: start; flex: none }
+.axp-auto-browser__tabtitle { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0 }
+.axp-auto-browser__tools, .axp-auto-browser__acts, .axp-auto-browser__downloads { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) }
+.axp-auto-browser__kbd { display: flex; flex-wrap: wrap; align-items: end; gap: var(--fx-dens-gap-sm) }
+.axp-auto-browser__kbd > :first-child { flex: 1; min-width: calc(var(--fx-space) * 16) }
+.axp-auto-browser__conn.is-live { border-color: var(--fx-success) }
+.axp-auto-browser__conn.is-down { border-color: var(--fx-danger) }
+.axp-auto-browser__screen { overflow: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); max-height: 78vh }
+.axp-auto-browser__canvas { display: block; margin-inline: auto; touch-action: none; outline: none; cursor: default; width: 100% }
+.axp-auto-browser__canvas:focus-visible { box-shadow: 0 0 0 var(--fx-border-w) var(--fx-accent) }
+[data-device="phone"] .axp-auto-browser__screen.is-zoom-fit .axp-auto-browser__canvas { width: auto; height: 74vh; max-width: 100% }
+[data-device="tablet"] .axp-auto-browser__screen.is-zoom-fit .axp-auto-browser__canvas { width: auto; height: 74vh; max-width: 100% }
+.axp-auto-browser__screen.is-zoom-50 .axp-auto-browser__canvas { width: 50% }
+.axp-auto-browser__screen.is-zoom-75 .axp-auto-browser__canvas { width: 75% }
+.axp-auto-browser__screen.is-zoom-100 .axp-auto-browser__canvas { width: auto }
+.axp-auto-browser__screen.is-zoom-150 .axp-auto-browser__canvas { width: 150%; max-width: none }
+:where([data-fx-narrow]) .axp-auto-browser__screen { max-height: none }
