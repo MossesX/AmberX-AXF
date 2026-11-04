@@ -70,8 +70,12 @@ t('filters + search', () => {
   assert.deepEqual(core.filterItems(items, { pr: 9 }).map((x) => x.id), ['w1']);
 });
 
-t('sort: waiting first (newest within), newest, title, app', () => {
-  assert.deepEqual(core.sortItems(items).map((x) => x.id), ['w2', 'w1', 'c1', 'a1']);
+t('sort: time added newest first (default), waiting first, title, app, pinned waiting', () => {
+  assert.deepEqual(core.sortItems(items).map((x) => x.id), ['w2', 'a1', 'w1', 'c1'], 'default = added, newest first');
+  assert.deepEqual(core.sortItems(items, 'waiting').map((x) => x.id), ['w2', 'w1', 'c1', 'a1']);
+  assert.deepEqual(core.sortItems(items, 'oldest').map((x) => x.id), ['c1', 'w1', 'a1', 'w2']);
+  assert.deepEqual(core.sortItems(items, 'newest', { pinWaiting: true }).map((x) => x.id), ['w2', 'w1', 'a1', 'c1'], 'waiting pinned above the rest');
+  assert.deepEqual(core.sortItems([{ ...items[0], updatedAt: '2030-01-01T00:00:00Z' }, items[3]], 'newest').map((x) => x.id), ['w2', 'w1'], 'added = submittedAt, not the last update');
   assert.deepEqual(core.sortItems(items, 'newest').map((x) => x.id), ['w2', 'a1', 'w1', 'c1']);
   assert.deepEqual(core.sortItems(items, 'title').map((x) => x.id), ['a1', 'c1', 'w1', 'w2']);
   assert.equal(core.sortItems(items, 'app').at(-1).id, 'w2', 'no app sorts last');
@@ -88,6 +92,25 @@ t('counts, groups (sub-grids), tree', () => {
   assert.deepEqual(core.groupItems(items, 'build').map((g) => g.label), ['claude/x', 'No build']);
   const tr = core.tree(items, kinds);
   assert.equal(tr.length, 4); assert.equal(tr[1].apps[0].label, 'Console'); assert.equal(tr[1].apps[0].items[0].id, 'w1');
+});
+
+t('By PR / By date groups, ids in search, deep links, ago, shortId', () => {
+  const more = [...items, mk({ id: 'r-20261104-abc12', title: 'Voice', kind: 'screen', pr: 323, build: 'app-voice-commands', submittedAt: '2026-11-04T09:00:00Z' }),
+    mk({ id: 'p2', title: 'Voice 2', kind: 'dialog', pr: 323, build: 'app-voice-commands', submittedAt: '2026-11-04T10:00:00Z' })];
+  const g = core.groupItems(core.sortItems(more), 'pr');
+  assert.deepEqual(g.map((x) => x.label), ['PR #323 · app-voice-commands', 'PR #9 · x', 'No PR'], 'newest PR first, no PR last');
+  assert.deepEqual(g[0].items.map((x) => x.id), ['p2', 'r-20261104-abc12'], 'newest first inside the group');
+  assert.deepEqual(core.groupItems(more, 'pr', [], { desc: false }).map((x) => x.id), ['9', '323', ''], 'ascending flips the groups');
+  assert.deepEqual(core.groupItems(core.sortItems(more), 'date').map((x) => x.id), ['2026-11-04', '2026-10-30', '2026-10-29', '2026-10-28']);
+  assert.deepEqual(core.filterItems(more, { q: 'abc12' }).map((x) => x.id), ['r-20261104-abc12'], 'search by item id');
+  assert.deepEqual(core.filterItems(more, { q: '323' }).map((x) => x.id), ['r-20261104-abc12', 'p2'], 'search by bare PR number');
+  assert.deepEqual(core.filterItems(more, { q: 'app-voice' }).length, 2, 'search by build');
+  assert.deepEqual(core.deepLink('?item=r-20261104-abc12'), { item: 'r-20261104-abc12', pr: null });
+  assert.deepEqual(core.deepLink('ui-review?pr=%23323'), { item: '', pr: 323 });
+  assert.deepEqual(core.deepLink('?item=../x&pr=abc'), { item: '', pr: null }, 'malformed links ignored');
+  assert.equal(core.ago('2026-11-04T09:58:00Z', Date.parse('2026-11-04T10:00:00Z')), '2 min ago');
+  assert.equal(core.ago('2026-11-01T10:00:00Z', Date.parse('2026-11-04T10:00:00Z')), '3 d ago');
+  assert.equal(core.shortId('r-20261104-abc12'), 'abc12');
 });
 
 t('selection helpers', () => {

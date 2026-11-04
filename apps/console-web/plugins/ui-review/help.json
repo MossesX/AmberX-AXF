@@ -71,6 +71,126 @@
         "title": "More",
         "text": "Part of the predicted mockup: stands in for the screen's More menu. It does nothing here.",
         "kind": "button"
+      },
+      {
+        "target": "ring-my-phone-when-ui-review-waits-too-long",
+        "title": "Ring my phone when UI Review waits too long",
+        "text": "When an item sits unreviewed for the review window, your phone rings a loud alarm and the banner shows it. Off = items just wait.",
+        "kind": "toggle"
+      },
+      {
+        "target": "when-the-alarm-isnt-answered",
+        "title": "When the alarm isn't answered",
+        "text": "What happens when the alarm rings and nobody taps it within the grace: Auto-approve (run it) or Don't run it (leave it waiting). Auto-approvals are logged and can be undone.",
+        "kind": "field"
+      },
+      {
+        "target": "review-window",
+        "title": "Review window",
+        "text": "How long an item can wait unreviewed before the alarm rings (default 30 min).",
+        "kind": "slider"
+      },
+      {
+        "target": "grace-after-the-alarm",
+        "title": "Grace after the alarm",
+        "text": "How long after the alarm the switch acts (default 5 min). Tapping the alarm stops the countdown.",
+        "kind": "slider"
+      },
+      {
+        "target": "applies-to",
+        "title": "Applies to",
+        "text": "Every item, or only items with a PR or branch (the ones holding a merge).",
+        "kind": "field"
+      },
+      {
+        "target": "open-ui-review-on-each-new-item",
+        "title": "Open UI Review on each new item",
+        "text": "A new item opens UI Review on it (with Follow Amber on) and sends your phone a notice.",
+        "kind": "toggle"
+      },
+      {
+        "target": "alarm-sound",
+        "title": "Alarm sound",
+        "text": "Where you set “Alarm sound”. Change it and the app uses the new value. Part of UI Review.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "alarm-volume",
+        "title": "Alarm volume",
+        "text": "Slide to set “Alarm volume”: left is less, right is more. Part of UI Review.",
+        "kind": "slider",
+        "draft": true
+      },
+      {
+        "target": "vibrate",
+        "title": "Vibrate",
+        "text": "Turns “Vibrate” on or off. It takes effect straight away and is remembered. Part of UI Review.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "keep-ringing-until-i-tap-it",
+        "title": "Keep ringing until I tap it",
+        "text": "Turns “Keep ringing until I tap it” on or off. It takes effect straight away and is remembered. Part of UI Review.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "quiet-hours",
+        "title": "Quiet hours",
+        "text": "Turns “Quiet hours” on or off. It takes effect straight away and is remembered. Part of UI Review.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "from",
+        "title": "From",
+        "text": "Where you set “From”. Change it and the app uses the new value. Part of UI Review.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "during-quiet-hours",
+        "title": "During quiet hours",
+        "text": "Where you set “During quiet hours”. Change it and the app uses the new value. Part of UI Review.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "save-time-zone",
+        "title": "Save time zone",
+        "text": "Saves time zone. Nothing is kept until you tap it. Part of UI Review.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "pin-waiting-items-on-top",
+        "title": "Pin waiting items on top",
+        "text": "Where you set “Pin waiting items on top”. Change it and the app uses the new value. Part of UI Review.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "stop-the-alarm-im-on-it",
+        "title": "Stop the alarm (I'm on it)",
+        "text": "Stops the alarm (I'm on it). Part of UI Review.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "undo-auto-approval",
+        "title": "Undo auto-approval",
+        "text": "Undos auto-approval. Part of UI Review.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "pr-only",
+        "title": "PR # only",
+        "text": "Shows “PR # only”. Part of UI Review.",
+        "kind": "button",
+        "draft": true
       }
     ],
     "intros": []

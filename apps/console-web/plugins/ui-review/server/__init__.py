@@ -12,6 +12,10 @@ Every UI a build makes is submitted here for Brett's approval (review-item@1), o
   GET  state?branch=&pr=      ui-review@1: the strictest status of that branch's / PR's items, holds = don't merge yet
   …    settings, predicted, predict, predict/real, approve-look
                               predicted looks (ui-prediction@1, predicted.py): a build's mockup waits here before it runs
+  …    alarm, alarm/settings, alarm/answer, alarm/undo, alarm/tick
+                              the review alarm (ui-review-alarm@1, alarm.py): unreviewed for 30 min → loud alarm on the
+                              phone → 5 min later auto-approve or leave waiting (Brett's switch)
+                              predicted looks (ui-prediction@1, predicted.py): a build's mockup waits here before it runs
   …    shots/*                Screenshots tab (ui-screenshot@1, screenshots.py): ad-hoc pictures that never enter this
                               queue; shots/promote sends one in ("Send to review"), shots/migrate moves "Breakroom check:" items out
 
@@ -44,6 +48,7 @@ from . import schema as S
 from .screenshots import Store as ShotStore, resolve_group, router_for as shots_router
 from . import screenshots as shots_mod
 from . import predicted as predicted_mod
+from . import alarm as alarm_mod
 
 router = APIRouter()
 FOLDER = "ui-review"
@@ -277,7 +282,27 @@ def submit(fields: dict, shots: list[tuple[str, str, bytes]] | None = None) -> d
             (folder / fn).write_bytes(raw)
         doc["items"].append(item)
         _save_items(doc)
+    for f in after_submit:
+        try:
+            f(stored)
+        except Exception:  # noqa: BLE001 — opening UI Review / notifying never refuses an item
+            pass
     return stored
+
+
+after_submit: list = []  # hooks run with each new item (alarm.py: open UI Review on it, tell the phone)
+
+
+def note_history(iid: str, line: dict, by: str) -> bool:
+    """Add a history line to an item without changing its status (the alarm's 'left waiting')."""
+    with _lock:
+        doc = _items_doc()
+        for i, it in enumerate(doc["items"]):
+            if isinstance(it, dict) and it.get("id") == iid:
+                doc["items"][i] = {**it, "history": [*(it.get("history") or []), {"at": _now(), "by": by, "status": it.get("status", "waiting"), **line}][-200:]}
+                _save_items(doc)
+                return True
+    return False
 
 
 def decide_many(ids: list[str], decision: str, comment: str = "", by: str = "brett") -> dict:
@@ -375,6 +400,11 @@ plugin_services.provide("ui-review@1", UiReviewService(), FOLDER)
 router.include_router(shots_router(shots, promote_shot, migrate_shots))
 import sys as _sys  # noqa: E402
 router.include_router(predicted_mod.router_for(_sys.modules[__name__]))
+alarm_router = alarm_mod.router_for(_sys.modules[__name__])
+router.include_router(alarm_router)
+after_submit.append(alarm_router.on_submit)
+if not os.environ.get("AXF_UI_REVIEW_NO_TICKER"):
+    alarm_router.start()
 
 # ---------------------------------------------------------------- health@1: every open item's pictures load
 

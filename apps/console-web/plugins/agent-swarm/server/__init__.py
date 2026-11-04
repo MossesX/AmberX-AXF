@@ -8,7 +8,8 @@ GET never spends anything.
 Never exposed on the console MCP.
 
 Capability axf.crew@1 (for other plugins, e.g. the Claude plugin's agent picker): crew() = every agent with status,
-pay, spend, hours and stats; book(entry) = book a Claude session on an agent's card (swarm.mjs book).
+pay, spend, hours and stats; book(entry) = book a Claude session on an agent's card (swarm.mjs book); say(text) = a
+plugin's notice in the group chat, posted by Boss (e.g. UI Review's auto-approvals; dropped while the chat is off).
 """
 from __future__ import annotations
 
@@ -53,6 +54,11 @@ class CrewService:
         if not r.get("ok"):
             raise ValueError(r.get("error") or "booking failed")
         return r.get("run") or {}
+
+    def say(self, text: str) -> None:
+        r = _run("act", json.dumps({"action": "notice", "text": str(text)[:1000]}))
+        if not r.get("ok"):
+            raise ValueError(r.get("error") or "chat post failed")
 
 
 plugin_services.provide("axf.crew@1", CrewService(), CLI.parent.name)

@@ -12,9 +12,10 @@ import { FOLDER, GROUP_BYS, ID, KEYS, MOCKUP_VIEW, PACKS_VIEW, SHOT_PARAM, SHOTS
 import { MOCKUP_PARAM } from '../../../../../framework/core/ui-predict.mjs';
 import { MockupPage } from './mockup';
 import { LookApprovalPanel } from './look-settings';
+import { AlarmPanel } from './alarm-settings';
 import { UiReviewPage } from './ui';
 
-const KEYWORDS = ['ui review', 'review', 'approve', 'approval', 'screenshots', 'shots', 'design', 'ui', 'reject', 'changes', 'waiting'];
+const KEYWORDS = ['alarm', 'auto-approve', 'pr', 'ui review', 'review', 'approve', 'approval', 'screenshots', 'shots', 'design', 'ui', 'reject', 'changes', 'waiting'];
 
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
@@ -42,13 +43,15 @@ export const plugin: AxfWebLibrary = {
     id: 'ui-review.prefs', label: 'UI Review', icon: 'eye', tab: FOLDER, order: 10,
     settings: [
       { key: KEYS.view, label: 'View', kind: 'choice', default: 'grid', options: VIEWS.map((v) => ({ value: v.id, label: v.label })) },
-      { key: KEYS.sort, label: 'Order', kind: 'choice', default: 'waiting', options: core.SORTS.map((s) => ({ value: s.id, label: s.label })) },
+      { key: KEYS.sort, label: 'Order', kind: 'choice', default: core.DEFAULT_SORT, options: core.SORTS.map((s) => ({ value: s.id, label: s.label })) },
       { key: KEYS.tab, label: 'Opens on', kind: 'choice', default: 'review', options: [{ value: 'review', label: 'Review (waiting for approval)' }, { value: 'shots', label: 'Screenshots' }] },
       { key: KEYS.shotGroup, label: 'Screenshots group by', kind: 'choice', default: 'app', options: SHOT_GROUPS.map((g) => ({ value: g.id, label: g.label })) },
       { key: KEYS.groupBy, label: 'Sub-grids group by', kind: 'choice', default: 'kind', options: GROUP_BYS.map((g) => ({ value: g.id, label: g.label })) },
+      { key: KEYS.pinWaiting, label: 'Pin waiting items on top', kind: 'toggle', default: true, description: 'Waiting items stay above approved and older ones, in the chosen order.' },
       { key: KEYS.thumbs, label: 'Show the screens list', kind: 'toggle', default: true, description: 'The list of screens beside (on a phone: above) the preview.' },
     ],
   }],
-  settingsPanels: [{ id: 'ui-review.look', tab: FOLDER, title: 'Predicted looks', icon: 'eye', order: 20, render: () => <LookApprovalPanel /> },
+  settingsPanels: [{ id: 'ui-review.alarm', tab: FOLDER, title: 'Review alarm', icon: 'bell', order: 15, render: () => <AlarmPanel /> },
+    { id: 'ui-review.look', tab: FOLDER, title: 'Predicted looks', icon: 'eye', order: 20, render: () => <LookApprovalPanel /> },
     { id: 'ui-review.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

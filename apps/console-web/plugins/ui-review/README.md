@@ -157,6 +157,49 @@ an agent spends money. Core `framework/core/ui-predict.mjs` (pure; checks `frame
   `GET|PUT settings`. CLI: `ui-predict.mjs predict | real | list | approve | settings | gate | wait | follow |
   addendum | addenda | which | backfill | spec`.
 
+## Review alarm (`ui-review-alarm@1`, Nov 4 2026)
+
+Brett: *"After 30 minutes, if it's not been reviewed, it needs to do a loud alarm five minutes before it's gonna be
+run. … Make it a switch. Either or."*
+
+```
+new item ──► UI Review opens on it (Follow Amber) + phone notice
+   │ 30 min unreviewed (window)
+   ▼
+ALARM: critical alert (banner + phone), meta.native = the phone's alarm config ──► tapped = answered: paused until decided
+   │ 5 min unanswered (grace)
+   ▼
+switch "When the alarm isn't answered":  approve = auto-approve (default)  |  hold = leave it waiting
+```
+
+- **Timer**: `server/alarm.py`, pure `step` / `tick` (epoch seconds, fake-clock tests in `test.py`) plus a ticker
+  thread every 30 s. The clock starts at the later of the item's `submittedAt` and when the alarm was first on
+  (`since`), so items already waiting when it shipped don't ring at once. Re-opening an item restarts its clock.
+- **Auto-approval** is a normal decision by `ui-review-alarm` with the comment *auto-approved after alarm went
+  unanswered* (item history), a Breakroom chat notice (capability `axf.crew@1` `say`), and **Undo** on the item
+  (`POST alarm/undo` re-opens it). "Don't run it" adds a history line and leaves the item waiting.
+- **Settings** (Settings → Plugins → UI Review → Review alarm; `alarm-settings.json` in the data folder): on/off,
+  switch, window (30), grace (5), scope (every item / only items blocking a merge), open on new, sound, volume,
+  vibrate, repeat, quiet hours (from / to / time zone; *silent* = follow the switch without ringing, *hold* = wait
+  for quiet hours to end).
+- **API / MCP / CLI** (plugin-commands@1, `forFramework`): `GET alarm`, `GET|PUT alarm/settings`,
+  `POST alarm/answer|undo|tick`. Molly: "don't auto-approve UI reviews" = `PUT alarm/settings {unanswered: "hold"}`.
+  CLI: `review.mjs alarm [status] | alarm set unanswered=hold | alarm answer|undo <id>` (talks to the console).
+- **Phone**: the alarm is a `critical` console alert with `meta.alarm` and `meta.native` (VetoAlarm config:
+  tone, volume, vibration, repeat, `throughSilent`, `fullScreen`). AmberX shows it as a critical notice today; the
+  **full-screen alarm through silent mode needs a new AmberX APK** (build step s9).
+
+## The list: sort, group, ids, deep links (Nov 4 2026)
+
+- Default order = **time added, newest first**; the arrow next to the order flips it. *Pin waiting items on top*
+  (setting, on by default).
+- **Sort and group** switch: Flat list · By PR (`PR <n> · <build>` heads, newest PR first) · By date · By build ·
+  By type. Category tabs still filter. Remembered.
+- Every row and card shows its **PR** (linked), the **added** time (relative, exact on hover), its **item id**
+  (short, click to copy) and its alarm state. Search matches the id, PR number and build name.
+- Deep links: `ui-review?item=<id>` opens and highlights that item (and answers a ringing alarm);
+  `?pr=<n>` shows only that PR's items.
+
 ## State for other plugins (`ui-review@1`)
 
 `plugin_services.get("ui-review@1")` → `state(branch, pr)`, `holds(branch, pr)`, `items(branch, pr)`, `submit(fields,

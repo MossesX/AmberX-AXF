@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState, type MouseEvent } from 'react';
 import { AgentAvatar, Button, Checkbox, Icon, IconButton, Segmented, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { OriginFor } from '@console/buildOrigin';
@@ -8,7 +8,7 @@ import * as cf from './conform.mjs';
 import * as P from '../../../../../framework/core/ui-predict.mjs';
 import type { Prediction } from '../../../../../framework/core/ui-predict.mjs';
 import type { Decision, Item, Kind } from './review-core.mjs';
-import { FOLDER, GROUP_BYS, KEYS, VIEWS, type GroupBy, type ViewId } from './keys';
+import { FOLDER, GROUP_BYS, KEYS, LIST_BYS, VIEWS, type GroupBy, type ListBy, type ViewId } from './keys';
 import { ShotBrowser } from './shots';
 import { ScreenshotsTab } from './screenshots';
 import { CompareView, GalleryView, GridView, GroupsView, TreeView } from './views';
@@ -22,6 +22,9 @@ import './ui-review.css';
 
 const api = pluginApi(FOLDER, 'UI Review', { unavailable: 'The UI Review plugin is switched off or its server part is not running.' });
 const REPO = 'MossesX/AmberX-AXF';
+/** GET alarm (ui-review-alarm@1): per item when the alarm rings / the switch acts, and its phase. */
+export interface AlarmItem { phase: 'none' | 'alarm' | 'answered' | 'approved' | 'held' | 'done'; alarmAt: string | null; actAt: string | null; answeredAt?: string; actedAt?: string; action?: string }
+interface AlarmView { settings: { enabled: boolean; unanswered: 'approve' | 'hold'; windowMin: number; graceMin: number }; now: string; items: Record<string, AlarmItem> }
 type Loaded = { items: Item[]; overlay: Record<string, Partial<Item>>; packs: { packs?: unknown[] }; picks: { picked: string[] }; kinds: { base: Partial<Kind>[]; extra: Partial<Kind>[] } };
 const setting = <T,>(rt: ReturnType<typeof useRuntime>, k: string, d: T): T => { try { return (rt.settings.get(k) as T) ?? d; } catch { return d; } };
 const save = (rt: ReturnType<typeof useRuntime>, k: string, v: unknown) => { try { rt.settings.set(k, v as Parameters<typeof rt.settings.set>[1]); } catch { /* not saved */ } };
@@ -30,6 +33,7 @@ const save = (rt: ReturnType<typeof useRuntime>, k: string, v: unknown) => { try
 export interface Review {
   kinds: Kind[]; sel: string[]; setSel: (s: string[]) => void; open: string[]; toggleOpen: (id: string) => void;
   decide: (ids: string[], d: Decision, comment?: string) => Promise<void>; picked: string[]; togglePick: (packId: string) => void; device: string;
+  alarm: AlarmView | null; answer: (id: string) => Promise<void>; undoAuto: (id: string) => Promise<void>; focus: string;
 }
 const Ctx = createContext<Review | null>(null);
 export const useReview = () => useContext(Ctx)!;
@@ -70,9 +74,42 @@ export function Meta({ it, kind = true }: { it: Item; kind?: boolean }) {
     <span className="axp-ui-review__meta fx-small fx-muted">
       <PredictBadge it={it} />{predictionOf(it) ? ' ' : null}
       {it.build ? <><AgentAvatar inText={`${it.build}\n${it.branch.replace(/^[^/]*\//, '')}`} size="small" /> </> : null}
-      {[kind && (k?.label ?? it.kind), it.app, it.build, it.pr ? `#${it.pr}` : '', `${it.shots.length} shot${it.shots.length === 1 ? '' : 's'}`].filter(Boolean).join(' · ')}
+      {it.pr ? <><PrLink it={it} /> · </> : null}
+      {[kind && (k?.label ?? it.kind), it.app, it.build, `${it.shots.length} shot${it.shots.length === 1 ? '' : 's'}`].filter(Boolean).join(' · ')}
+      {' · '}<Added it={it} /> <IdChip id={it.id} /> <AlarmBadge it={it} />
     </span>
   );
+}
+
+/** The item's id, short and copyable (Brett finds items by id and PR). */
+export function IdChip({ id }: { id: string }) {
+  const rt = useRuntime();
+  const copy = (e: MouseEvent) => { e.stopPropagation(); void navigator.clipboard?.writeText(id).then(() => rt.toast(`Copied ${id}`, 'success'), () => rt.toast(id, 'info')); };
+  return <span role="button" tabIndex={0} className="fx-chip fx-mono fx-small axp-ui-review__id" title={`${id} (click to copy)`} onClick={copy} onKeyDown={(e) => { if (e.key === 'Enter') copy(e as unknown as MouseEvent); }}>{core.shortId(id)}</span>;
+}
+/** The PR as a link (opens GitHub, never toggles the row). */
+export function PrLink({ it }: { it: Item }) {
+  if (!it.pr) return null;
+  const repo = typeof it.repo === 'string' && /^[\w.-]+\/[\w.-]+$/.test(it.repo) ? it.repo : REPO;
+  return <a className="fx-link axp-ui-review__pr" href={`https://github.com/${repo}/pull/${it.pr}`} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>#{it.pr}</a>;
+}
+/** When it was added: relative, the exact time on hover. */
+export function Added({ it }: { it: Item }) {
+  const at = core.addedAt(it);
+  return at ? <time className="fx-small fx-muted axp-ui-review__added" dateTime={at} title={new Date(at).toLocaleString()}>{core.ago(at)}</time> : null;
+}
+const mins = (at: string | null, now: number) => (at ? Math.max(0, Math.ceil((Date.parse(at) - now) / 60000)) : 0);
+/** The review alarm on a row: counting down, ringing, answered, auto-approved, held. */
+export function AlarmBadge({ it }: { it: Item }) {
+  const r = useReview(); const a = r.alarm?.items[it.id]; const s = r.alarm?.settings;
+  if (!a || !s) return null;
+  const now = Date.now();
+  if (a.phase === 'alarm') return <span className="fx-chip fx-chip--danger axp-ui-review__status" title="The alarm is ringing: open the item to pause it"><Icon name="bell" size={12} />Ringing · {s.unanswered === 'approve' ? 'auto-approves' : 'held'} in {mins(a.actAt, now)} min</span>;
+  if (a.phase === 'answered') return <span className="fx-chip axp-ui-review__status" title="You answered the alarm: it waits for your decision"><Icon name="bell" size={12} />Answered</span>;
+  if (a.phase === 'approved') return <span className="fx-chip fx-chip--warning axp-ui-review__status" title="Auto-approved after the alarm went unanswered"><Icon name="clock" size={12} />Auto-approved</span>;
+  if (a.phase === 'held') return <span className="fx-chip fx-chip--warning axp-ui-review__status" title="The alarm went unanswered: left waiting"><Icon name="clock" size={12} />Alarm unanswered</span>;
+  if (it.status === 'waiting' && a.alarmAt) return <span className="fx-chip axp-ui-review__status" title={`Alarm at ${new Date(a.alarmAt).toLocaleTimeString()}`}><Icon name="clock" size={12} />Alarm in {mins(a.alarmAt, now)} min</span>;
+  return null;
 }
 
 const when = (s: string) => { const d = new Date(s); return Number.isNaN(d.getTime()) ? s : d.toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
@@ -131,6 +168,8 @@ export function Detail({ it }: { it: Item }) {
           <Button size="sm" icon="edit" onClick={() => void r.decide([it.id], 'changes', comment)}>Ask changes</Button>
           <Button size="sm" tone="danger" icon="x" onClick={() => void r.decide([it.id], 'reject', comment)}>Reject{lookWord}</Button>
           {it.status !== 'waiting' && <Button size="sm" tone="ghost" icon="undo" onClick={() => void r.decide([it.id], 'reopen', comment)}>Reopen</Button>}
+          {r.alarm?.items[it.id]?.phase === 'alarm' && <Button size="sm" tone="ghost" icon="bell" onClick={() => void r.answer(it.id)}>Stop the alarm (I'm on it)</Button>}
+          {r.alarm?.items[it.id]?.phase === 'approved' && it.status === 'approved' && <Button size="sm" tone="ghost" icon="undo" onClick={() => void r.undoAuto(it.id)}>Undo auto-approval</Button>}
         </div>
         {it.history.length > 0 && (
           <details className="axp-ui-review__history">
@@ -169,7 +208,11 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
   const [error, setError] = useState('');
   const [kind, setKindRaw] = useState<string>(() => section ?? setting(rt, KEYS.section, ''));
   const [view, setViewRaw] = useState<ViewId>(() => setting(rt, KEYS.view, 'grid') as ViewId);
-  const [sort, setSortRaw] = useState<string>(() => setting(rt, KEYS.sort, 'waiting'));
+  const [sort, setSortRaw] = useState<string>(() => setting(rt, KEYS.sort, core.DEFAULT_SORT));
+  const [pinWaiting] = useState<boolean>(() => setting(rt, KEYS.pinWaiting, true));
+  const [alarm, setAlarm] = useState<AlarmView | null>(null);
+  const [link] = useState(() => core.deepLink(`${globalThis.location?.search ?? ''}${(globalThis.location?.hash ?? '').includes('?') ? `&${(globalThis.location?.hash ?? '').split('?')[1]}` : ''}`));
+  const [prOnly, setPrOnly] = useState<number | null>(link.pr);
   const [groupBy, setGroupByRaw] = useState<GroupBy>(() => setting(rt, KEYS.groupBy, 'kind') as GroupBy);
   const [status, setStatusRaw] = useState<string>(() => setting(rt, KEYS.status, ''));
   const [device, setDeviceRaw] = useState<string>(() => setting(rt, KEYS.device, ''));
@@ -188,14 +231,22 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
     try { setData(await api.call<Loaded>('items')); setError(''); }
     catch (e) { setError((e as Error).message); setData((d) => d ?? { items: [], overlay: {}, packs: { packs: [] }, picks: { picked: [] }, kinds: { base: [], extra: [] } }); }
   };
-  useEffect(() => { void load(); }, []);
+  const loadAlarm = async () => { try { setAlarm(await api.call<AlarmView>('alarm')); } catch { setAlarm(null); } };
+  useEffect(() => { void load(); void loadAlarm(); const t = setInterval(() => void loadAlarm(), 30000); return () => clearInterval(t); }, []);
+  // a deep link (?item= from the alarm or Amber): open and highlight it; tapping the alarm = answering it
+  useEffect(() => {
+    if (!link.item || !data) return;
+    setOpen((o) => (o.includes(link.item) ? o : [...o, link.item]));
+    setTimeout(() => globalThis.document?.getElementById(`ui-review-item-${link.item}`)?.scrollIntoView({ block: 'center' }), 50);
+  }, [link.item, !!data]);
+  useEffect(() => { if (link.item && alarm?.items[link.item]?.phase === 'alarm') void answer(link.item); }, [link.item, alarm?.items[link.item]?.phase]);
 
   // served as ui-review-item@1; the views work on the queue's shape (conform.mjs converts)
   const all = useMemo(() => (data ? [...data.items.map((x) => core.normItem(cf.storedToReview(x)).item), ...core.packItems(data.packs, data.overlay)] : []), [data]);
   const kinds = useMemo(() => (data ? core.mergeKinds(data.kinds.base, data.kinds.extra, all) : []), [data, all]);
   const counts = useMemo(() => core.counts(all), [all]);
   const appList = useMemo(() => core.apps(all), [all]);
-  const rows = useMemo(() => core.sortItems(core.filterItems(all, { kind, status, app, q }), sort), [all, kind, status, app, q, sort]);
+  const rows = useMemo(() => core.sortItems(core.filterItems(all, { kind, status, app, q, pr: prOnly }), sort, { pinWaiting }), [all, kind, status, app, q, sort, prOnly, pinWaiting]);
   const picked = data?.picks.picked ?? [];
 
   const decide = async (ids: string[], d: Decision, comment = '') => {
@@ -215,8 +266,19 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
     try { await api.put('picks', { picked: r.picked }); rt.terminal.log('ui-review', `design-pack picks: ${r.picked.join(', ') || 'none'}`, 'ok'); }
     catch (e) { rt.toast((e as Error).message, 'danger'); }
   };
+  const answer = async (id: string) => {
+    try { await api.post('alarm/answer', { id }); rt.terminal.log('ui-review', `alarm answered: ${id}`, 'ok'); await loadAlarm(); }
+    catch (e) { rt.toast((e as Error).message, 'danger'); }
+  };
+  const undoAuto = async (id: string) => {
+    try { await api.post('alarm/undo', { id }); rt.toast('Auto-approval undone: back to waiting', 'success'); await load(); await loadAlarm(); }
+    catch (e) { rt.toast((e as Error).message, 'danger'); }
+  };
   const toggleOpen = (id: string) => setOpen((o) => (o.includes(id) ? o.filter((x) => x !== id) : [...o, id]));
-  const ctx: Review = { kinds, sel, setSel, open, toggleOpen, decide, picked, togglePick, device };
+  const ctx: Review = { kinds, sel, setSel, open, toggleOpen, decide, picked, togglePick, device, alarm, answer, undoAuto, focus: link.item };
+  const listBy: ListBy = view === 'groups' && LIST_BYS.some((x) => x.id === groupBy) ? (groupBy as ListBy) : '';
+  const setListBy = (v: ListBy) => { if (!v) setView('grid'); else { setView('groups'); setGroupBy(v as GroupBy); } };
+  const desc = sort !== 'oldest';
 
   if (!data) return <LoadingSkeleton rows={6} label="Loading UI Review" />;
   const c = counts[''] ?? { total: 0, waiting: 0 };
@@ -258,7 +320,7 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
         </nav>
 
         <div className="axp-ui-review__bar" role="toolbar" aria-label="Filter and view">
-          <input className="fx-input axp-ui-review__search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search: title, app, branch, #PR…" aria-label="Search" />
+          <input className="fx-input axp-ui-review__search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search: title, app, build, #PR, item id…" aria-label="Search" />
           <select className="fx-input axp-ui-review__sel" value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Status">
             <option value="">Every status</option><option value="open">Not approved</option>
             {core.STATUSES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
@@ -267,9 +329,12 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
           <select className="fx-input axp-ui-review__sel" value={device} onChange={(e) => setDevice(e.target.value)} aria-label="Screens"><option value="">Phone + desktop</option><option value="phone">Phone shots</option><option value="desktop">Desktop shots</option></select>
           <select className="fx-input axp-ui-review__sel" value={sort} onChange={(e) => setSort(e.target.value)} aria-label="Order">{core.SORTS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}</select>
           <select className="fx-input axp-ui-review__sel axp-ui-review__viewsel" value={view} onChange={(e) => setView(e.target.value as ViewId)} aria-label="View">{VIEWS.map((v) => <option key={v.id} value={v.id}>{v.label} view</option>)}</select>
-          {view === 'groups' && <select className="fx-input axp-ui-review__sel" value={groupBy} onChange={(e) => setGroupBy(e.target.value as GroupBy)} aria-label="Group by">{GROUP_BYS.map((g) => <option key={g.id} value={g.id}>By {g.label.toLowerCase()}</option>)}</select>}
+          <IconButton icon={desc ? 'chevron-down' : 'chevron-up'} label={desc ? 'Newest first (tap for oldest first)' : 'Oldest first (tap for newest first)'} onClick={() => setSort(desc ? 'oldest' : 'newest')} />
+          {view === 'groups' && <select className="fx-input axp-ui-review__sel" value={groupBy} onChange={(e) => setGroupBy(e.target.value as GroupBy)} aria-label="Group by">{GROUP_BYS.map((g) => <option key={g.id} value={g.id}>{g.id === 'pr' ? 'By PR' : `By ${g.label.toLowerCase()}`}</option>)}</select>}
         </div>
 
+        <Segmented<ListBy> label="Sort and group" value={listBy} onChange={setListBy} className="axp-ui-review__listby" options={LIST_BYS.map((b) => ({ value: b.id, label: b.label }))} />
+        {prOnly && <div className="axp-ui-review__countline"><button type="button" className="fx-chip fx-chip--accent" onClick={() => setPrOnly(null)}>PR #{prOnly} only <Icon name="x" size={12} /></button></div>}
         <div className="axp-ui-review__countline fx-small fx-muted">
           <Checkbox label={`${rows.length} shown${sel.length ? ` · ${sel.length} selected` : ''}`} checked={allState === 'all' && rows.length > 0} indeterminate={allState === 'some'} onChange={(on) => setSel(core.setGroup(sel, visibleIds, on))} disabled={!rows.length} />
         </div>
@@ -277,7 +342,7 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
         {rows.length === 0 ? (
           <EmptyState icon="eye">{all.length ? 'Nothing matches. Clear the search or pick another section.' : 'Nothing to review yet. Builds submit their screenshots with review.mjs.'}</EmptyState>
         ) : view === 'tree' ? <TreeView items={rows} />
-          : view === 'groups' ? <GroupsView items={rows} by={groupBy} />
+          : view === 'groups' ? <GroupsView items={rows} by={groupBy} desc={desc} />
           : view === 'gallery' ? <GalleryView items={rows} />
           : view === 'compare' ? <CompareView items={rows} />
           : <GridView items={rows} />}

@@ -18,6 +18,7 @@ import json
 import os
 import sys
 import tempfile
+import time
 import types
 from pathlib import Path
 
@@ -26,6 +27,7 @@ REPO = HERE.parents[3]
 TMP = Path(tempfile.mkdtemp(prefix="axf-ui-review-test-"))
 os.environ["AXF_UI_REVIEW_DIR"] = str(TMP / "ui-review")
 os.environ["AXF_UI_REVIEW_OLD_DIR"] = str(TMP / "design-packs")
+os.environ["AXF_UI_REVIEW_NO_TICKER"] = "1"  # the alarm ticker runs on a fake clock below
 # the old Design packs data folder, with Brett's picks: migrated on import
 (TMP / "design-packs").mkdir()
 (TMP / "design-packs" / "picks.json").write_text(json.dumps({"picked": ["graphite-pro", "amber-noir"], "at": "2026-10-29T20:00:00Z"}))
@@ -460,6 +462,81 @@ check(c.post("/p/predict", json={"build": "../x", "prediction": PRED, "files": P
 c.put("/p/settings", json={"waitForLook": False})
 check(c.get("/p/predicted?build=other").json()["verdict"]["go"], "setting off = every build goes")
 check(stored_ok(), "stores conform after the predicted flow")
+
+# ---------------------------------------------------------------- the review alarm (ui-review-alarm@1), fake clock
+A = mod.alarm_mod
+S0 = A.norm_settings({})
+check(S0["windowMin"] == 30 and S0["graceMin"] == 5 and S0["unanswered"] == "approve" and S0["enabled"], "alarm defaults: 30 min, 5 min grace, auto-approve, on")
+check(A.norm_settings({"windowMin": 0, "graceMin": 999, "unanswered": "nope"})["windowMin"] == 1 and A.norm_settings({"graceMin": 999})["graceMin"] == 240 and A.norm_settings({"unanswered": "nope"})["unanswered"] == "approve", "settings clamped, bad choices fall back")
+check(A.settings_errors({"unanswered": "x", "windowMin": "5", "quietStart": "25:00", "zzz": 1}) and not A.settings_errors({"unanswered": "hold", "windowMin": 10}), "bad settings named, good ones pass")
+T0 = A.parse_at("2026-11-04T12:00:00Z")
+ITEM = {"id": "r-x", "title": "X", "status": "waiting", "submittedAt": "2026-11-04T12:00:00Z"}
+st, ev = A.step(ITEM, None, S0, T0 + 29 * 60, T0 - 3600)
+check(ev is None and not st.get("alarmAt"), "29 min: nothing yet")
+st, ev = A.step(ITEM, st, S0, T0 + 30 * 60, T0 - 3600)
+check(ev == "alarm" and st["alarmAt"], "30 min unreviewed: the alarm rings")
+st2, ev = A.step(ITEM, st, S0, T0 + 34 * 60, T0 - 3600)
+check(ev is None, "inside the 5 min grace: nothing")
+st3, ev = A.step(ITEM, st2, S0, T0 + 35 * 60, T0 - 3600)
+check(ev == "approve" and st3["action"] == "approve" and A.phase(st3) == "approved", "grace over, unanswered: auto-approve (default switch)")
+sh, ev = A.step(ITEM, st2, {**S0, "unanswered": "hold"}, T0 + 35 * 60, T0 - 3600)
+check(ev == "hold" and A.phase(sh) == "held" and A.step(ITEM, sh, {**S0, "unanswered": "hold"}, T0 + 99 * 60, T0)[1] is None, "switch = don't run it: held, never approved later")
+sa = A.answer({"items": {"r-x": st2}}, "r-x", T0 + 32 * 60)["items"]["r-x"]
+check(A.step(ITEM, sa, S0, T0 + 99 * 60, T0 - 3600)[1] is None and A.phase(sa) == "answered", "answered alarm: countdown paused until Brett decides")
+sd, ev = A.step({**ITEM, "status": "approved"}, st2, S0, T0 + 33 * 60, T0 - 3600)
+check(ev == "stop" and A.phase(sd) == "done", "decided by hand while ringing: the alarm stops")
+check(A.step(ITEM, None, S0, T0 + 31 * 60, T0 + 10 * 60)[1] is None and A.step(ITEM, None, S0, T0 + 40 * 60, T0 + 10 * 60)[1] == "alarm", "clock starts at the later of submittedAt and since (old items don't ring at once)")
+su = A.undo({"items": {"r-x": st3}}, "r-x", T0 + 40 * 60)["items"]["r-x"]
+check(A.step(ITEM, su, S0, T0 + 60 * 60, T0)[1] is None and A.step(ITEM, su, S0, T0 + 70 * 60, T0)[1] == "alarm", "undo restarts the clock from the undo")
+check(A.step(ITEM, None, {**S0, "enabled": False}, T0 + 99 * 60, T0)[1] is None, "alarm off: nothing")
+check(A.step({**ITEM, "pr": None, "branch": ""}, None, {**S0, "scope": "blocking"}, T0 + 99 * 60, T0)[1] is None and A.step({**ITEM, "pr": 12}, None, {**S0, "scope": "blocking"}, T0 + 99 * 60, T0)[1] == "alarm", "scope blocking: only items with a PR / branch")
+QS = {**S0, "quietHours": True, "quietStart": "22:00", "quietEnd": "07:00", "timeZone": "UTC"}
+night = A.parse_at("2026-11-04T23:00:00Z")
+check(A.in_quiet(QS, night) and A.in_quiet(QS, A.parse_at("2026-11-05T06:59:00Z")) and not A.in_quiet(QS, A.parse_at("2026-11-05T07:00:00Z")), "quiet hours wrap over midnight")
+NI = {**ITEM, "submittedAt": "2026-11-04T22:00:00Z"}
+sq, ev = A.step(NI, None, {**QS, "quietMode": "silent"}, night, 0)
+check(ev == "alarm-silent" and A.step(NI, sq, {**QS, "quietMode": "silent"}, night + 5 * 60, 0)[1] == "approve", "quiet + silent: no ring, still follows the switch")
+check(A.step(NI, None, {**QS, "quietMode": "hold"}, night, 0)[1] is None and A.step(NI, None, {**QS, "quietMode": "hold"}, A.parse_at("2026-11-05T07:01:00Z"), 0)[1] == "alarm", "quiet + hold: waits for quiet hours to end, then rings")
+stt, evs = A.tick([ITEM, {**ITEM, "id": "pack:p"}, {**ITEM, "id": "r-y", "status": "approved"}], {"since": A.iso(T0 - 3600), "items": {"gone": {"alarmAt": "x"}}}, S0, T0 + 30 * 60)
+check([e for e, _ in evs] == ["alarm"] and "gone" not in stt["items"] and stt["since"], "tick: one alarm, packs skipped, removed items forgotten, since set")
+d = A.due_at(ITEM, None, S0, T0 - 3600)
+check(d["alarmAt"] == T0 + 1800 and d["actAt"] == T0 + 2100, "due_at: alarm at 30 min, act at 35")
+
+# routes on a fake clock
+NOW = [time.time()]
+ar = A.router_for(mod, clock=lambda: NOW[0])
+aapp = FastAPI(); aapp.include_router(ar, prefix="/a"); ac = TestClient(aapp)
+raised: list = []
+cx.raise_alert = lambda a: raised.append(a) or {}
+shown: list = []
+plugin_services.provide("follow-amber@1", types.SimpleNamespace(show=lambda *a, **k: shown.append((a, k)) or {}), "follow-amber")
+said: list = []
+plugin_services.provide("axf.crew@1", types.SimpleNamespace(say=lambda t: said.append(t)), "agent-swarm")
+check(ac.put("/a/alarm/settings", json={"unanswered": "maybe"}).status_code == 400, "PUT alarm/settings refuses a bad switch value")
+check(ac.put("/a/alarm/settings", json={"windowMin": 30, "graceMin": 5, "unanswered": "approve"}).json()["unanswered"] == "approve", "PUT alarm/settings saves")
+since = ac.get("/a/alarm").json()["since"]
+mod.after_submit.clear(); mod.after_submit.append(ar.on_submit)
+new = mod.submit({"kind": "screen", "title": "Alarm demo", "app": "console-web", "screen": "/ui-review", "source": "headless", "submittedBy": {"type": "build", "id": "ui-review-alarm"}, "pr": 77, "group": "Alarm test"}, [("alarm-phone.png", "phone", base64.b64decode(b64))])
+check(any(k.get("highlight") == new["id"] for _, k in shown) and any(a["key"] == f"ui-review-new:{new['id']}" for a in raised), "a new item opens UI Review on it (Follow Amber) and notifies the phone")
+NOW[0] = A.parse_at(since) + 31 * 60
+ac.post("/a/alarm/tick")
+ring = [a for a in raised if a["source"] == "ui-review" and a["severity"] == "critical"]
+check(ring and new["id"] in ring[-1]["meta"]["items"] and ring[-1]["meta"]["native"]["throughSilent"] and ring[-1]["link"].startswith("ui-review?item="), "31 min: critical alarm alert with the phone's alarm config and a deep link")
+check(ac.get("/a/alarm").json()["items"][new["id"]]["phase"] == "alarm", "GET alarm shows the item ringing")
+NOW[0] += 6 * 60
+ac.post("/a/alarm/tick")
+it = next(x for x in mod._submitted(mod._items_doc()) if x["id"] == new["id"])
+check(it["status"] == "approved" and it["history"][-1]["by"] == "ui-review-alarm" and A.AUTO_COMMENT in it["history"][-1].get("comment", ""), "grace over: auto-approved, logged on the item")
+check(said and "auto-approved after alarm went unanswered" in said[-1], "auto-approval posted in the Breakroom chat")
+check(ac.post("/a/alarm/undo", json={"id": new["id"]}).status_code == 200 and next(x for x in mod._submitted(mod._items_doc()) if x["id"] == new["id"])["status"] == "waiting", "undo re-opens the item")
+NOW[0] += 31 * 60
+ac.post("/a/alarm/tick")
+check(ac.post("/a/alarm/answer", json={"id": new["id"]}).json()["phase"] == "answered", "answer pauses it")
+NOW[0] += 60 * 60
+ac.post("/a/alarm/tick")
+check(next(x for x in mod._submitted(mod._items_doc()) if x["id"] == new["id"])["status"] == "waiting", "answered: never auto-approved")
+check(ac.post("/a/alarm/answer", json={"id": "nope"}).status_code == 404, "answer: unknown item refused")
+check(stored_ok(), "stores conform after the alarm flow")
 
 print(f"ui-review: {ok} checks ok" + (f", {len(fails)} failed" if fails else ""))
 sys.exit(1 if fails else 0)

@@ -17,7 +17,7 @@ function Row({ it, kind = true }: { it: Item; kind?: boolean }) {
   const r = useReview(); const isOpen = r.open.includes(it.id);
   const first = (r.device ? it.shots.find((s) => s.device === r.device) : null) ?? it.shots[0];
   return (
-    <div role="listitem" className={`axp-ui-review__item ${isOpen ? 'is-open' : ''} ${r.sel.includes(it.id) ? 'is-sel' : ''}`}>
+    <div role="listitem" id={`ui-review-item-${it.id}`} className={`axp-ui-review__item ${isOpen ? 'is-open' : ''} ${r.sel.includes(it.id) ? 'is-sel' : ''} ${r.focus === it.id ? 'is-focus' : ''}`}>
       <div className="axp-ui-review__row">
         <Pick id={it.id} label={it.title} />
         <button type="button" data-fx-row className="axp-ui-review__hit" aria-expanded={isOpen} onClick={() => r.toggleOpen(it.id)}>
@@ -41,9 +41,9 @@ export function GridView({ items }: { items: Item[] }) {
 }
 
 /** Grid with sub-grids: rows grouped by kind / app / status / build, each group its own collapsible grid. */
-export function GroupsView({ items, by }: { items: Item[]; by: GroupBy }) {
+export function GroupsView({ items, by, desc = true }: { items: Item[]; by: GroupBy; desc?: boolean }) {
   const r = useReview();
-  const groups = core.groupItems(items, by, r.kinds);
+  const groups = core.groupItems(items, by, r.kinds, { desc });
   const [closed, setClosed] = useState<string[]>([]);
   return (
     <div className="fx-stack axp-ui-review__groups">
