@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 566,
- "updatedAt": "2026-11-04T00:13:14.644Z",
+ "rev": 567,
+ "updatedAt": "2026-11-04T00:15:03.944Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -62037,7 +62037,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T21:50:21.573Z",
-     "updatedAt": "2026-11-03T23:58:51.642Z"
+     "updatedAt": "2026-11-04T00:11:32.944Z"
     }
    ],
    "profiles": [
@@ -66613,15 +66613,15 @@
    "title": "Molly: install the banners",
    "category": "Molly",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-banners",
    "pr": "#294",
    "createdAt": "2026-11-03T22:04:42.483Z",
-   "updatedAt": "2026-11-03T23:23:29.528Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T00:11:38.338Z",
+   "builtAt": "2026-11-04T00:10:45.823Z",
    "notes": [
     {
      "text": "Assigned: Amber (headless Opus session, worktree /root/axf-builds/molly-banners, branch claude/molly-banners)",
@@ -66630,6 +66630,10 @@
     {
      "text": "Reconciler: PR #294",
      "at": "2026-11-03T23:23:29.528Z"
+    },
+    {
+     "text": "Built: PR #294, UI Review r-20261104-269b05db. Not verified live: banner tap that opens a console view (channel covered by check-banner-strip). After merge redeploy Console then Molly.",
+     "at": "2026-11-04T00:11:38.338Z"
     }
    ],
    "approvals": [],
@@ -66738,12 +66742,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T00:10:45.823Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:04:42.487Z",
-     "updatedAt": "2026-11-03T22:04:42.487Z"
+     "updatedAt": "2026-11-04T00:10:47.028Z"
     }
    ],
    "profiles": [
@@ -66754,7 +66758,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {

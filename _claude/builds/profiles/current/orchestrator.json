@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T00:13:14.644Z",
+ "updatedAt": "2026-11-04T00:15:03.944Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3610,15 +3610,15 @@
    "title": "Molly: install the banners",
    "category": "Molly",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-banners",
    "pr": "#294",
    "createdAt": "2026-11-03T22:04:42.483Z",
-   "updatedAt": "2026-11-03T23:23:29.528Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T00:11:38.338Z",
+   "builtAt": "2026-11-04T00:10:45.823Z",
    "notes": [
     {
      "text": "Assigned: Amber (headless Opus session, worktree /root/axf-builds/molly-banners, branch claude/molly-banners)",
@@ -3627,6 +3627,10 @@
     {
      "text": "Reconciler: PR #294",
      "at": "2026-11-03T23:23:29.528Z"
+    },
+    {
+     "text": "Built: PR #294, UI Review r-20261104-269b05db. Not verified live: banner tap that opens a console view (channel covered by check-banner-strip). After merge redeploy Console then Molly.",
+     "at": "2026-11-04T00:11:38.338Z"
     }
    ],
    "approvals": [],
@@ -3717,8 +3721,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T00:10:45.823Z",
      "note": "",
      "uid": "st-mw18k16w0anlxv"
     }

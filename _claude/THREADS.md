@@ -569,9 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 19:59 UTC · `smart-menus` s1 done (urgent) · orchestrator
-- 2026-11-03 19:59 UTC · `smart-menus` s2 done (urgent) · orchestrator
-- 2026-11-03 19:59 UTC · `smart-menus` s3 done (urgent) · orchestrator
 - 2026-11-03 20:00 UTC · `window-resize-fix` s1 done (current) · foreign-write
 - 2026-11-03 20:00 UTC · `terminal-sessions-nav` added (8 steps) (current) · foreign-write
 - 2026-11-03 20:00 UTC · `profile-manager` added (6 steps) (current) · foreign-write
@@ -969,3 +966,6 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 23:50 UTC · `gizmo-companion` branch claude/gizmo-companion (current) · builds-live
 - 2026-11-03 23:57 UTC · `terminal-drag-chain-tree` → complete, note (current) · foreign-write
 - 2026-11-03 23:57 UTC · `gizmo-companion` PR #296 (current) · builds-live
+- 2026-11-04 00:10 UTC · `molly-banners` s5 done, → built (current) · orchestrator
+- 2026-11-04 00:11 UTC · `terminal-drag-chain-tree` s6 done (current) · foreign-write
+- 2026-11-04 00:11 UTC · `molly-banners` note (current) · orchestrator
