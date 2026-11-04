@@ -30,7 +30,7 @@ export interface SessionInfo { id: string; kind: Kind; title: string; target: st
 /** A persistent tmux session the terminal knows (GET tmux). */
 export interface TmuxSession { name: string; createdAt: number; attached: number; kind: 'headless' | 'tab' | string; agent: string; model: string; cwd: string; where: 'vps' | 'console' }
 export interface Settings {
-  idleMinutes: number; moshKeepMinutes: number; fontSize: number; fontSizePhone: number; chainTextSize: number; copyOnSelect: boolean; pasteWarn: boolean; mouseDefault: boolean; moshDefault: boolean; showHubRuns: boolean; showHeadless: boolean; user: string;
+  idleMinutes: number; moshKeepMinutes: number; fontSize: number; fontSizePhone: number; chainTextSize: number; copyOnSelect: boolean; pasteWarn: boolean; mouseDefault: boolean; moshDefault: boolean; showHubRuns: boolean; showHeadless: boolean; newSession: 'nothing' | 'quiet' | 'front'; user: string;
   vps: { host: string; port: number; user: string }; sshKey: boolean; claudeToken: boolean; publicKey?: string;
   // Windows-style terminal (Oct 28 2026)
   windowsLook: boolean; mica: boolean; toolbar: boolean; scheme: string; fontFamily: string; lineHeight: number; cursorStyle: 'bar' | 'block' | 'underline';
