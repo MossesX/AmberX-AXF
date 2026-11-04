@@ -17,6 +17,7 @@
     "context-menu:*",
     "dialog:terminal.connect",
     "dialog:terminal.connection",
+    "service:axf.headless@1",
     "settings-tab:terminal",
     "tab:terminal",
     "tab:terminal-host"

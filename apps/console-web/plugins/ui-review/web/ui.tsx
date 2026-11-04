@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { Button, Checkbox, Icon, IconButton, Segmented, useRuntime } from '@console/axf/react';
+import { AgentAvatar, Button, Checkbox, Icon, IconButton, Segmented, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { OriginFor } from '@console/buildOrigin';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -54,6 +54,7 @@ export function Meta({ it, kind = true }: { it: Item; kind?: boolean }) {
   const k = r.kinds.find((x) => x.id === it.kind);
   return (
     <span className="axp-ui-review__meta fx-small fx-muted">
+      {it.build ? <><AgentAvatar inText={`${it.build}\n${it.branch.replace(/^[^/]*\//, '')}`} size="small" /> </> : null}
       {[kind && (k?.label ?? it.kind), it.app, it.build, it.pr ? `#${it.pr}` : '', `${it.shots.length} shot${it.shots.length === 1 ? '' : 's'}`].filter(Boolean).join(' · ')}
     </span>
   );

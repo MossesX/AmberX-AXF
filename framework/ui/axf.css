@@ -227,6 +227,27 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-widget-avatar__initials { display: inline-flex; align-items: center; justify-content: center; font-weight: 700; background: var(--fx-accent); color: var(--fx-accent-text); }
 .fx-widget-avatar.is-circle img, .fx-widget-avatar.is-circle .fx-widget-avatar__initials { border-radius: 999px; }
 .fx-widget-avatar.is-rounded img, .fx-widget-avatar.is-rounded .fx-widget-avatar__initials { border-radius: var(--fx-radius-sm); }
+/* AgentAvatar (react/components/AgentAvatar.tsx): an agent's drawn face or initials; size + shape from the agent-avatar asset */
+.fx-agent-avatar { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); flex: none; min-width: 0; vertical-align: middle; }
+.fx-agent-avatar__face, .fx-agent-avatar__initials { flex: none; display: block; box-sizing: border-box; }
+.fx-agent-avatar.is-circle .fx-agent-avatar__face, .fx-agent-avatar.is-circle .fx-agent-avatar__initials { border-radius: 999px; }
+.fx-agent-avatar.is-rounded .fx-agent-avatar__face, .fx-agent-avatar.is-rounded .fx-agent-avatar__initials { border-radius: var(--fx-radius-sm); }
+.fx-agent-avatar__bg { fill: var(--fx-accent-soft); }
+.fx-agent-avatar__skin { fill: var(--fx-surface3); stroke: var(--fx-text); stroke-width: var(--fx-border-w); }
+.fx-agent-avatar__ink { fill: var(--fx-text); }
+.fx-agent-avatar__line { fill: none; stroke: var(--fx-text); stroke-width: calc(var(--fx-border-w) * 1.5); stroke-linecap: round; }
+.fx-agent-avatar__thick { stroke-width: calc(var(--fx-border-w) * 3); }
+.fx-agent-avatar__initials { display: inline-flex; align-items: center; justify-content: center; font-weight: 700; color: var(--fx-text); border: var(--fx-border-w) solid var(--fx-border); }
+.fx-agent-avatar__initials.is-accent { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-accent); }
+.fx-agent-avatar__initials.is-brand-1 { background: color-mix(in srgb, var(--fx-brand-1) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-brand-1); }
+.fx-agent-avatar__initials.is-brand-2 { background: color-mix(in srgb, var(--fx-brand-2) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-brand-2); }
+.fx-agent-avatar__initials.is-brand-3 { background: color-mix(in srgb, var(--fx-brand-3) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-brand-3); }
+.fx-agent-avatar__initials.is-success { background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-success); }
+.fx-agent-avatar__initials.is-warning { background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-warning); }
+.fx-agent-avatar__initials.is-info { background: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-info); }
+.fx-agent-avatar__initials.is-danger { background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-danger); }
+.fx-agent-avatar__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fx-agent-avatar.is-unknown .fx-agent-avatar__name { color: var(--fx-muted); }
 .fx-widget-link { text-decoration: none; color: var(--fx-accent); }
 .fx-widget-link:hover { text-decoration: underline; }
 .fx-widget-theme { background: none; border: var(--fx-border-w) solid var(--fx-border); border-radius: 999px; padding: 0 var(--fx-dens-gap-lg); height: calc(var(--fx-row-h) * 0.7); cursor: pointer; }

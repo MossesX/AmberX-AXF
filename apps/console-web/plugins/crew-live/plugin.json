@@ -1,0 +1,57 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.crew-live",
+  "name": "Crew",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Every agent working right now, live: avatar, status (working / waiting on approval / stuck / idle), build and step in plain English, model, a timer since the job and the step started, live cost and tokens, files touched and the PR. A row opens to what the agent is doing this second (from its tool calls), the step list, every file it created, changed or deleted with the live diff against the build's base, its recent tool calls with their cost, links to its Terminal tab and session, and Stop. Idle crew sit in Off the clock; a totals bar shows who is working and what it costs. Zero tokens: plain code reading the headless logs, the builds store and git.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:crew",
+    "settings-tab:crew-live",
+    "action:crew.open",
+    "action:crew.agent",
+    "context-menu:agent"
+  ],
+  "optional": [
+    "service:axf.headless@1",
+    "service:axf.swarm-roster@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "route": "GET /agents", "id": "agents", "title": "Working agents", "description": "Every agent working right now (and runs that finished in the last two hours): who, status, build and step, model, time, cost, tokens, files, PR, what they are doing this second; idle crew; totals.", "readOnly": true },
+      { "route": "GET /agents/{run}", "id": "agent", "title": "Agent detail", "description": "One run (tmux session axf-… or an agent id) in full: what it is doing now, steps done / now / next, recent tool calls with their cost.", "readOnly": true },
+      { "route": "GET /agents/{run}/files", "id": "files", "title": "Files touched", "description": "Files the run's build created, modified or deleted against its base (git in its worktree).", "readOnly": true },
+      { "route": "GET /agents/{run}/diff", "id": "diff", "title": "File diff", "description": "One file's change against the build's base as a unified diff with hunks.", "readOnly": true },
+      { "route": "POST /agents/{run}/stop", "id": "stop", "title": "Stop an agent", "description": "End the run: its headless tmux session on the VPS is killed. Work already committed stays.", "destructive": true, "confirm": true },
+      { "route": "GET /live", "skip": "server-sent events stream of the snapshot, not a command" }
+    ]
+  },
+  "builtWith": { "model": "opus", "builtAt": "2026-11-03" },
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/crew-live",
+    "env": [
+      "AXF_BUILDS_ROOT",
+      "AXF_CREW_PATHS"
+    ],
+    "mentions": [
+      "CLAUDE.md", "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "help": "help.json",
+  "opens": "main"
+}
