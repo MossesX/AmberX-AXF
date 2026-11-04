@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 import tempfile
 import time
@@ -16,6 +17,7 @@ ROOT = HERE.parents[1]  # apps/console-web
 sys.path.insert(0, str(ROOT / "server"))
 sys.path.insert(0, str(HERE.parent))
 
+os.environ["AXF_OPTIMIZER_SCHEDULE"] = "off"  # no schedule thread in the test
 srv = import_module("build-orchestrator.server")
 n = 0
 
@@ -102,4 +104,57 @@ try:
     check(line.startswith('Package pkg-x "Night" sent to s-2 (do it now): 1 step(s).') and "1. [Fable] do it (alpha)" in line, "the Sessions channel line lists the package and its contents")
 finally:
     srv.plugin_services.get = real_get
+
+# ---- build optimizer (build-optimize@1): Deep mode with a fake AI, every fallback to Basic, notifications
+with tempfile.TemporaryDirectory() as d:
+    step = lambda b, i, text, f: {"id": f"s{i}", "uid": f"{b}-s{i}", "text": text, "model": "Opus", "estimate": "20 min", "files": [f]}  # noqa: E731
+    builds = [{"id": b, "title": b, "status": "pending", "profiles": ["p"], "order": {"p": i}, "createdAt": "2026-11-01T00:00:00Z", "steps": [step(b, 1, f"{b} grid work", "apps/console-web/plugins/changes-grid/web/a.tsx")]} for i, b in enumerate(["alpha", "beta"])]
+    Path(d, "store.json").write_text(json.dumps({"$axf": "builds@1", "rev": 1, "builds": builds}))
+    os.environ.update(AXF_BUILDS_STORE=str(Path(d, "store.json")), AXF_OPTIMIZER_FILE=str(Path(d, "opt.json")), AXF_BUILDS_LIVE="0")
+    alerts: list[dict] = []
+    srv.cx.raise_alert = lambda a: alerts.append(a)  # type: ignore[attr-defined]
+
+    class FakeLlm:
+        def __init__(self, text: str = "", fail: bool = False) -> None:
+            self.text, self.fail, self.calls = text, fail, 0
+        def profiles(self): return [{"id": "fake"}]
+        def complete(self, messages, system=None, profile=None, model=None, tools=None, params=None):
+            self.calls += 1
+            if self.fail:
+                raise RuntimeError("provider down")
+            return {"text": self.text, "usage": {"input_tokens": 100, "output_tokens": 50}}
+
+    real = srv.plugin_services.get
+    try:
+        srv.plugin_services.get = lambda name: None  # no AI connection at all
+        r = srv.run_optimizer({"mode": "auto"})
+        check(r["plan"]["mode"] == "basic" and r["plan"]["run"]["fellBack"] and r["notified"] and "AI wasn't available" in alerts[-1]["title"], "Auto with no AI runs Basic and says so (default notification)")
+        check(len(r["plan"]["packs"]) == 1 and len(r["plan"]["packs"][0]["keys"]) == 2, "Basic packs both builds' grid steps into one build")
+        key = r["plan"]["packs"][0]["keys"][0]
+        ok = FakeLlm("Here you go:\n```json\n" + json.dumps({"packs": [{"id": "pack-1", "name": "Grid polish", "why": "same grid"}], "drops": [{"key": key, "kind": "duplicate", "why": "same as beta"}]}) + "\n```")
+        srv.plugin_services.get = lambda name: ok if name == srv.LLM_CAP else None
+        n_alerts = len(alerts)
+        r = srv.run_optimizer({})
+        check(r["plan"]["mode"] == "deep" and r["plan"]["packs"][0]["ai"]["name"] == "Grid polish" and r["plan"]["flags"][key]["ai"], "Deep mode (default with AI) lays the checked AI answer over the plan")
+        check(not r["notified"] and len(alerts) == n_alerts, "a Deep run doesn't notify with 'only when AI isn't available'")
+        est = srv.run_optimizer({"estimateOnly": True})
+        check(est["estimate"] > 0 and est["mode"] == "deep", "Deep mode shows its token estimate before it runs")
+        bad = FakeLlm(fail=True)
+        srv.plugin_services.get = lambda name: bad if name == srv.LLM_CAP else None
+        r = srv.run_optimizer({})
+        check(r["plan"]["mode"] == "basic" and "provider down" in r["plan"]["run"]["why"], "an AI error falls back to Basic silently (the plan still comes)")
+        junk = FakeLlm("not json at all")
+        srv.plugin_services.get = lambda name: junk if name == srv.LLM_CAP else None
+        check(srv.run_optimizer({})["plan"]["mode"] == "basic", "an answer that doesn't parse falls back to Basic")
+        srv.plugin_services.get = lambda name: ok if name == srv.LLM_CAP else None
+        calls = ok.calls
+        r = srv.run_optimizer({"settings": {"tokenBudget": 10}})
+        check(r["plan"]["mode"] == "basic" and "budget" in r["plan"]["run"]["why"] and ok.calls == calls, "over the token budget = Basic, and the AI is never called")
+        r = srv.run_optimizer({"mode": "basic", "settings": {"notify": "every"}})
+        check(r["notified"] and alerts[-1]["title"].endswith("Ran in Basic mode"), "'Every run' notifies a chosen Basic run too")
+        from datetime import datetime as _dt
+        check(srv.schedule_due({"settings": {"schedule": "nightly"}, "scheduled": {}}, "", _dt(2026, 11, 4, 3)) and not srv.schedule_due({"settings": {"schedule": "nightly"}, "scheduled": {"at": "2026-11-04T02:10:00"}}, "", _dt(2026, 11, 4, 3)), "nightly schedule runs once a night")
+        check(srv.schedule_due({"settings": {"schedule": "after-new"}, "scheduled": {"at": "2026-11-01"}}, "2026-11-02T00:00:00Z", _dt.now()) and not srv.schedule_due({"settings": {"schedule": "manual"}}, "2099", _dt.now()), "after-new runs after a new build; manual never")
+    finally:
+        srv.plugin_services.get = real
 print(f"build-orchestrator: {n} checks passed")

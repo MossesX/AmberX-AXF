@@ -26,6 +26,7 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
 
+import console_context as cx
 import plugin_services
 
 router = APIRouter()
@@ -332,6 +333,266 @@ def _link_plan(mark: dict[str, Any], pkg_id: str) -> None:
         cap.save(plan, by="build-orchestrator", force=True)
     except Exception:  # noqa: BLE001 — the package is made; the plan link is best effort
         pass
+
+
+# ---- build optimizer (build-optimize@1, web/optimizer-core.mjs on the packager core): repack waiting steps
+#
+# Brett, Nov 4 2026: Optimize builds repacks every waiting step into the fewest builds and lists the new package of builds
+# in a dialog to confirm; Apply moves the steps over in one store write with one undo; steps can be dragged between
+# builds anywhere. Basic mode is plain code (optimizer.mjs, zero tokens) and always works; Deep mode (the default when
+# an AI connection is there) reads the evidence the CLI gathers and asks axf.llm@1 for a review, which the CLI checks
+# before anything shows. Any AI failure, timeout or a run over the token budget silently falls back to Basic, and the
+# notification (Optimizer notifications setting) says which mode ran. Owner-only on the primary, like packages.
+
+OPTIMIZER = CLI.parent / "optimizer.mjs"
+LLM_CAP = "axf.llm@1"
+AI_TIMEOUT = 150  # seconds for the Deep review before Basic is used
+OPT_ALERT = "build-optimizer"
+
+
+def _opt(*args: str) -> dict[str, Any]:
+    env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}
+    plans = _plans_file()
+    if plans:
+        env["AXF_PACKAGER_PLANS"] = plans
+    proc = subprocess.run(["node", str(OPTIMIZER), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=120, env=env)
+    out = proc.stdout.strip().splitlines()
+    try:
+        return json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        return {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+
+
+def _must(res: dict[str, Any], what: str) -> dict[str, Any]:
+    if not res.get("ok"):
+        raise HTTPException(400, str(res.get("error") or f"{what} failed"))
+    return res
+
+
+def ai_ready() -> dict[str, Any]:
+    """Is an AI connection there for Deep mode? (axf.llm@1 with at least one provider profile.)"""
+    llm = plugin_services.get(LLM_CAP)
+    if llm is None or not hasattr(llm, "complete"):
+        return {"ok": False, "why": "no AI connection (the AI assistant plugin is off or missing)"}
+    try:
+        profs = llm.profiles() if hasattr(llm, "profiles") else [1]
+    except Exception:  # noqa: BLE001
+        profs = []
+    return {"ok": bool(profs), "why": "" if profs else "no AI provider is set up (Settings → Plugins → AI assistant)"}
+
+
+def _llm_call(system: str, prompt: str, model: str, thinking: str) -> dict[str, Any]:
+    """The Deep review, with a hard timeout (a thread: the provider call itself may block)."""
+    import concurrent.futures  # noqa: PLC0415
+    llm = plugin_services.get(LLM_CAP)
+    params = {"thinking": thinking, "max_tokens": 8000}
+    ex = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+    try:
+        fut = ex.submit(lambda: llm.complete([{"role": "user", "content": prompt}], system=system, model=None, params={**params, "modelFamily": model.lower()}))
+        return fut.result(timeout=AI_TIMEOUT)
+    finally:
+        ex.shutdown(wait=False, cancel_futures=True)
+
+
+def notify(plan: dict[str, Any], *, fell_back: bool, why: str, setting: str, scheduled: bool = False) -> bool:
+    """Console alert + banner (bell) + the phone, per the Optimizer notifications setting (addendum 4)."""
+    if setting == "off" or (setting == "no-ai" and not fell_back):
+        return False
+    mode = plan.get("mode")
+    head = "Ran in Deep mode (AI)" if mode == "deep" else f"Ran in Basic mode, AI wasn't available{f' ({why})' if why else ''}" if fell_back else "Ran in Basic mode"
+    line = (plan.get("summary") or {}).get("line", "")
+    title = f"Build optimizer: {head}"[:160]
+    body = f"{line}.{' Scheduled run: nothing changes until you confirm it in Build manager → Optimize builds.' if scheduled else ''}"
+    alert = {"source": OPT_ALERT, "key": f"{OPT_ALERT}:last", "severity": "warning" if fell_back else "info", "title": title, "body": body[:1500], "link": "/#/build-manager"}
+    try:
+        cx.raise_alert(alert)
+    except Exception:  # noqa: BLE001 — no alert hub (tests): the dialog still shows the line
+        return False
+    try:  # the phone (AmberX: web push / ntfy) whatever the bell's severity rules, since Brett asked for it here
+        import sys  # noqa: PLC0415
+        hub = getattr(sys.modules.get("main"), "ALERTS", None)  # the console core, when this runs inside it (never imported here)
+        chans = [c for c in ("webpush", "ntfy") if hub and (hub.config().get("rules", {}).get("channels", {}).get(c) or {}).get("min", "off") != "off"]
+        if hub and chans:
+            hub._outbox.put_nowait(({**alert, "id": alert["key"], "count": 1, "at": int(time.time())}, chans))
+    except Exception:  # noqa: BLE001
+        pass
+    return True
+
+
+def _book(agent: str, usage: dict[str, Any], plan: dict[str, Any]) -> bool:
+    """Book a Deep run's tokens on its agent's card (axf.crew@1 when it books; else one line in the Sessions channel)."""
+    crew = plugin_services.get(CREW_CAP)
+    tokens = int((usage or {}).get("input_tokens", 0) or 0) + int((usage or {}).get("output_tokens", 0) or 0)
+    try:
+        if crew is not None and hasattr(crew, "book"):
+            crew.book({"agent": agent, "job": "build-optimizer", "tokens": tokens, "note": (plan.get("summary") or {}).get("line", "")})
+            return True
+    except Exception:  # noqa: BLE001
+        pass
+    return post_chat(f"Build optimizer (Deep mode) booked to {agent}: {tokens} tokens. {(plan.get('summary') or {}).get('line', '')}")
+
+
+def run_optimizer(body: dict[str, Any], *, scheduled: bool = False) -> dict[str, Any]:
+    """One optimizer run: Deep when asked (or Auto with AI there) and within budget, else Basic. Never applies anything."""
+    req = {k: body.get(k) for k in ("settings", "filter", "preset") if body.get(k) is not None}
+    cfg = _must(_opt("settings"), "settings")["config"]
+    settings = {**cfg["settings"], **(req.get("settings") or {})}
+    want = str(body.get("mode") or settings.get("mode") or "auto")
+    ai = ai_ready()
+    deep = want == "deep" or (want == "auto" and ai["ok"])
+    fell_back, why, usage, tokens = False, "", {}, 0
+    if want in ("deep", "auto") and not ai["ok"]:  # Deep was wanted (or would be the default): Basic ran because AI isn't there
+        fell_back, why, deep = True, ai["why"], False
+    if deep:
+        ev = _opt("evidence", json.dumps(req))
+        if not ev.get("ok"):
+            fell_back, why, deep = True, "could not gather the evidence", False
+        else:
+            tokens = int(ev.get("estimate") or 0)
+            budget = int(settings.get("tokenBudget") or 0)
+            if body.get("estimateOnly"):
+                return {"ok": True, "estimate": tokens, "budget": budget, "ai": ai, "mode": "deep"}
+            if budget and tokens > budget:
+                fell_back, why, deep = True, f"~{tokens} tokens, over the {budget}-token budget", False
+            else:
+                try:
+                    ans = _llm_call(ev["system"], ev["prompt"], str(settings.get("aiModel") or "Opus"), str(settings.get("aiThinking") or "high"))
+                    usage = ans.get("usage") or {}
+                    ref = _opt("refine", json.dumps({"plan": ev["plan"], "ai": ans.get("text", "")}))
+                    if not ref.get("ok"):
+                        raise ValueError(str(ref.get("error") or "the answer did not check out"))
+                    res = {"ok": True, "plan": ref["plan"], "items": ref["items"]}
+                except Exception as e:  # noqa: BLE001 — AI unavailable, slow or wrong: Basic, silently
+                    fell_back, why, deep = True, ("timed out" if type(e).__name__ == "TimeoutError" else f"{type(e).__name__}: {str(e)[:120]}"), False
+    if not deep:
+        res = _must(_opt("plan", json.dumps(req)), "plan")
+    plan = res["plan"]
+    plan["run"] = {"wanted": want, "fellBack": fell_back, "why": why, "estimate": tokens, "usage": usage, "agent": settings.get("agent", ""), "scheduled": scheduled}
+    if deep and usage:
+        plan["run"]["booked"] = _book(str(settings.get("agent") or "Patches"), usage, plan)
+    notified = notify(plan, fell_back=fell_back, why=why, setting=str(settings.get("notify") or "no-ai"), scheduled=scheduled)
+    _opt("settings", json.dumps({"last": {"at": plan.get("at"), "mode": plan.get("mode"), "fellBack": fell_back, "why": why, "line": (plan.get("summary") or {}).get("line", ""), "scheduled": scheduled}}))
+    return {"ok": True, "plan": plan, "items": res.get("items") or [], "facets": res.get("facets") or {}, "ai": ai, "notified": notified}
+
+
+@router.get("/optimize/state")
+def optimize_state(request: Request) -> dict[str, Any]:
+    """Settings, presets, the saved filter, the last run, the runs that can be undone, and whether Deep mode can run."""
+    role = package_role(request)
+    cfg = _must(_opt("settings"), "settings")
+    runs = _opt("runs")
+    return {"ok": True, "role": role, "config": cfg["config"], "runs": runs.get("runs") or [], "ai": ai_ready()}
+
+
+@router.post("/optimize/plan")
+async def optimize_plan(request: Request) -> dict[str, Any]:
+    """Make the plan to confirm (Deep or Basic; nothing changes). `estimateOnly` = Deep mode's token estimate first."""
+    _owner_only(request)
+    body = await _json_body(request)
+    from starlette.concurrency import run_in_threadpool  # noqa: PLC0415
+    return await run_in_threadpool(run_optimizer, body)
+
+
+@router.post("/optimize/apply")
+async def optimize_apply(request: Request) -> dict[str, Any]:
+    """Apply the confirmed plan in one transaction: new builds, steps moved over, emptied builds archived; one undo."""
+    _owner_only(request)
+    body = await _json_body(request)
+    if body.get("confirmed") is not True:
+        raise HTTPException(400, "confirm the plan first (confirmed: true): nothing is applied without Brett seeing it")
+    packs = body.get("packs")
+    if not isinstance(packs, list) or not packs or len(packs) > 200:
+        raise HTTPException(400, "packs = the builds to make, each { name, category, keys }")
+    req = {k: body.get(k) for k in ("packs", "emptied", "mode", "settings", "filter") if body.get(k) is not None}
+    res = _must(_opt("apply", json.dumps(req)), "apply")
+    for m in res.get("plans") or []:
+        _link_plan({"build": f"plan:{m.get('plan')}", "step": m.get("step")}, str(m.get("into") or ""))
+    res["posted"] = post_chat(f"Build optimizer: {(res.get('log') or [''])[-1]}. Undo in Build manager → Optimize builds.")
+    return res
+
+
+@router.post("/optimize/undo")
+async def optimize_undo(request: Request) -> dict[str, Any]:
+    """Undo the last optimizer run or step move (or `run`): the new builds go, every changed build comes back."""
+    _owner_only(request)
+    body = await _json_body(request)
+    run = str(body.get("run") or "")[:60]
+    return _must(_opt("undo", *([run] if run else [])), "undo")
+
+
+@router.post("/optimize/move")
+async def optimize_move(request: Request) -> dict[str, Any]:
+    """Drag steps between builds: `keys` (<build>/<uid>) into build `to` at `index`. Running steps never move; one undo."""
+    _owner_only(request)
+    body = await _json_body(request)
+    keys = body.get("keys")
+    if not isinstance(keys, list) or not keys or len(keys) > 100 or not all(isinstance(k, str) and len(k) < 200 for k in keys):
+        raise HTTPException(400, "keys = the steps to move (<build>/<step uid>)")
+    to = str(body.get("to") or "")
+    if not to or len(to) > 80:
+        raise HTTPException(400, "to = the build to move them into")
+    idx = body.get("index")
+    return _must(_opt("move", json.dumps({"keys": keys, "to": to, "index": idx if isinstance(idx, int) else None})), "move")
+
+
+@router.post("/optimize/settings")
+async def optimize_settings(request: Request) -> dict[str, Any]:
+    """Change the optimizer's settings or saved filter (locked ones stay on), or save / delete a named preset."""
+    _owner_only(request)
+    body = await _json_body(request)
+    if body.get("preset"):
+        op = "delete" if body.get("op") == "delete" else "save"
+        return _must(_opt("preset", op, str(body["preset"])[:60]), "preset")
+    patch = {k: body.get(k) for k in ("settings", "filter") if isinstance(body.get(k), dict)}
+    return _must(_opt("settings", json.dumps(patch)), "settings")
+
+
+# the schedule (manual / after every new build / nightly): a scheduled run only makes the plan and notifies;
+# nothing is applied without Brett's confirm (locked on)
+
+SCHEDULE_EVERY = 600
+
+
+def schedule_due(cfg: dict[str, Any], store_newest: str, now: datetime) -> bool:
+    sched = (cfg.get("settings") or {}).get("schedule", "manual")
+    last = (cfg.get("scheduled") or {}).get("at", "")
+    if sched == "nightly":
+        return now.hour >= 2 and last[:10] != now.strftime("%Y-%m-%d")
+    if sched == "after-new":
+        return bool(store_newest) and store_newest > (last or "")
+    return False
+
+
+def _newest_build() -> str:
+    try:
+        st = json.loads((ROOT / "_claude" / "builds" / "store.json").read_text())
+        return max((b.get("createdAt", "") for b in st.get("builds", []) if not b.get("deleted") and b.get("source") != "optimize"), default="")
+    except Exception:  # noqa: BLE001
+        return ""
+
+
+def schedule_tick(now: datetime | None = None) -> bool:
+    now = now or datetime.now()
+    cfg = (_opt("settings").get("config")) or {}
+    if not schedule_due(cfg, _newest_build(), now):
+        return False
+    r = run_optimizer({"mode": "basic" if not ai_ready()["ok"] else None}, scheduled=True)
+    _opt("settings", json.dumps({"scheduled": {"at": now.isoformat(timespec="seconds"), "line": (r.get("plan", {}).get("summary") or {}).get("line", "")}}))
+    return True
+
+
+def _schedule_loop() -> None:
+    while True:
+        time.sleep(SCHEDULE_EVERY)
+        try:
+            schedule_tick()
+        except Exception:  # noqa: BLE001 — the schedule never takes the console down
+            pass
+
+
+if os.environ.get("AXF_OPTIMIZER_SCHEDULE", "on") != "off":
+    import threading  # noqa: PLC0415
+    threading.Thread(target=_schedule_loop, name="build-optimizer-schedule", daemon=True).start()
 
 
 # ---- what Brett said (build-origin@1): framework/cli/build-origin.mjs, zero tokens

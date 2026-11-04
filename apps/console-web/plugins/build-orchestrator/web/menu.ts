@@ -2,5 +2,5 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 
 export const appMenu: NonNullable<AxfWebLibrary['appMenu']> = [
-  { id: 'build-orchestrator.menu', menu: 'builds', menuLabel: 'Builds', menuOrder: 20, order: 15, items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', action: 'nav:build-orchestrator' }, { id: 'build-orchestrator.package', label: 'Package builds…', icon: 'package', action: 'build-orchestrator.package' }] },
+  { id: 'build-orchestrator.menu', menu: 'builds', menuLabel: 'Builds', menuOrder: 20, order: 15, items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', action: 'nav:build-orchestrator' }, { id: 'build-orchestrator.package', label: 'Package builds…', icon: 'package', action: 'build-orchestrator.package' }, { id: 'build-orchestrator.optimize', label: 'Optimize builds…', icon: 'zap', action: 'build-orchestrator.optimize' }] },
 ];

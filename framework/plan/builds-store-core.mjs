@@ -62,7 +62,7 @@ const stepModel = (m) => (m === 'Fable' ? 'Fable' : 'Opus');
 const clone = (o) => JSON.parse(JSON.stringify(o));
 const nowIso = () => new Date().toISOString();
 export const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
-const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps', 'package'];
+const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps', 'package', 'optimized'];
 const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note', 'packagedInto'];
 
 // ------------------------------------------------------------------ records
@@ -142,6 +142,7 @@ export function normBuild(b, ctx = {}) {
     kind: o.kind === 'epic' ? 'epic' : 'build',
     planRef: str(o.planRef, 80),
     ...(o.package && typeof o.package === 'object' ? { package: clone(o.package) } : {}), // build-package@1: this build is a package of steps from others
+    ...(o.optimized && typeof o.optimized === 'object' ? { optimized: clone(o.optimized) } : {}), // build-optimize@1: made by the optimizer from other builds' steps
     rev: Number.isInteger(o.rev) && o.rev > 0 ? o.rev : 1,
     deleted: o.deleted === true,
     deletedAt: o.deleted === true ? str(o.deletedAt, 40) : '',
@@ -167,7 +168,7 @@ export function normalizeStore(s) {
     rev: Number.isInteger(o.rev) ? o.rev : 0,
     migratedAt: str(o.migratedAt, 40),
     rules: o.rules && typeof o.rules === 'object' ? clone(o.rules) : {},
-    meta: { queue: clone(o.meta?.queue ?? {}), pending: clone(o.meta?.pending ?? {}) },
+    meta: { queue: clone(o.meta?.queue ?? {}), pending: clone(o.meta?.pending ?? {}), ...(Array.isArray(o.meta?.optimize) ? { optimize: clone(o.meta.optimize) } : {}) },
     drafts: o.drafts && typeof o.drafts === 'object' ? clone(o.drafts) : {},
     builds: (Array.isArray(o.builds) ? o.builds : []).map((b) => normBuild(b)),
   };
@@ -408,6 +409,181 @@ export function removePackage(store, id, { now = nowIso() } = {}) {
   p.deleted = true; p.deletedAt = now; p.updatedAt = now;
   const { log } = syncPackaged(s, { now });
   return { store: s, log: [`unpackaged ${id}`, ...log] };
+}
+
+// ------------------------------------------------------------------ build-optimize@1: repack steps, move steps, one undo
+
+const OPT_KEEP = 12; // runs kept for undo (each holds the pre-images of the builds it changed)
+const openStep = (x) => !x.done && !x.skip;
+/** The step a running build is on right now: never moved (packager-core's rule, same here). */
+const currentOf = (b) => (b.status === 'running' ? b.steps.find((x) => openStep(x) && !x.packagedInto && !x.assignedTo && !x.withHelper) ?? null : null);
+function stepOfKey(s, key) {
+  const [build, uid] = [key.slice(0, key.lastIndexOf('/')), key.slice(key.lastIndexOf('/') + 1)];
+  const b = s.builds.find((x) => x.id === build && !x.deleted);
+  return { b, st: b?.steps.find((x) => x.uid === uid || x.id === uid) ?? null, build, uid };
+}
+function movable(b, st, key) {
+  if (!b || !st) throw new Error(`${key} is gone`);
+  if (st.done || st.skip) throw new Error(`${b.id} ${st.id} is already done or skipped`);
+  if (st.packagedInto) throw new Error(`${b.id} ${st.id} is packaged into ${st.packagedInto}`);
+  if (st.assignedTo || st.withHelper) throw new Error(`${b.id} ${st.id} is with a helper`);
+  if (currentOf(b) === st) throw new Error(`${b.id} ${st.id} is being built right now: running steps never move`);
+  if (['built', 'complete', 'archived'].includes(b.status)) throw new Error(`${b.id} is ${b.status}`);
+}
+function pushRun(s, run) { s.meta.optimize = [...(s.meta.optimize ?? []), run].slice(-OPT_KEEP); }
+function freeId(s, base) { let id = slug(base).slice(0, 70); const b0 = id; let n = 2; while (s.builds.some((x) => x.id === id)) id = `${b0}-${n++}`; return id; }
+
+/**
+ * Apply an optimizer plan (web/optimizer-core.mjs applyRequest) in one write: one new build per pack with the steps
+ * moved over (uid kept, origin = where it came from), the emptied builds archived (or deleted), a note on every source,
+ * and a run record holding the pre-images, so undoOptimize puts everything back. Plan steps (`plan:<id>/…`) are copied
+ * in and returned in `plans` for the caller to link. `items` = the optimizer's scoped candidates, rebuilt under the lock.
+ * Returns { store, created, emptied, plans, run, log }.
+ */
+export function applyOptimize(store, req, { items = [], now = nowIso(), by = 'optimizer', runId = '', mode = 'basic', profile = BASE_PROFILE } = {}) {
+  const s = clone(store);
+  const byKey = new Map(items.map((c) => [c.key, c]));
+  const packs = (req?.packs ?? []).filter((p) => Array.isArray(p.keys) && p.keys.length);
+  if (!packs.length) throw new Error('nothing to apply: every build was unticked');
+  const all = packs.flatMap((p) => p.keys); const dup = all.find((k, i) => all.indexOf(k) !== i);
+  if (dup) throw new Error(`${dup} is in two builds`);
+  const gone = all.filter((k) => !byKey.has(k));
+  if (gone.length) throw new Error(`no longer waiting (started, built or moved meanwhile): ${gone.join(', ')}. Run the optimizer again.`);
+  const run = { id: runId || `opt-${now.replace(/[^0-9]/g, '').slice(0, 14)}`, kind: 'optimize', at: now, by: str(by, 120), mode, created: [], before: [], undone: '' };
+  const sources = new Map(); // id → pre-image
+  const plans = []; const log = []; const made = [];
+  packs.forEach((p, pi) => {
+    const first = byKey.get(p.keys[0]);
+    const profiles = first.profiles.length ? first.profiles : [profile];
+    const steps = p.keys.map((k, i) => {
+      const c = byKey.get(k);
+      if (c.kind === 'plan-step') { plans.push({ key: k, plan: c.build.slice(5), step: c.step }); return normStep({ id: `s${i + 1}`, text: c.fullText || c.text, model: c.model, estimate: c.estimate, phase: c.phase, origin: { build: c.build, step: c.step, how: 'optimized' } }, i, { now }); }
+      const { b, st } = stepOfKey(s, k);
+      movable(b, st, k);
+      if (!sources.has(b.id)) sources.set(b.id, clone(b));
+      return { ...st, id: `s${i + 1}`, origin: { build: b.id, step: st.uid, how: 'optimized' }, updatedAt: now };
+    });
+    const srcIds = [...new Set(p.keys.map((k) => byKey.get(k).build))];
+    const said = srcIds.map((id) => s.builds.find((x) => x.id === id)?.origin?.said ? `[${id}] ${s.builds.find((x) => x.id === id).origin.said}` : '').filter(Boolean).join('\n\n');
+    const id = freeId(s, p.name || `optimized-${pi + 1}`);
+    const rec = normBuild({ id, title: str(p.name, 300).trim() || `Optimized pack ${pi + 1}`, category: str(p.category, 60), status: 'pending', source: 'optimize', profiles, order: {}, createdAt: now, updatedAt: now,
+      detail: [`Made by the build optimizer (build-optimize@1, ${mode} mode, run ${run.id}): ${steps.length} step(s) moved here from ${srcIds.join(', ')}.`, ...(p.why ? [`Why: ${str(p.why, 400)}`] : [])].join('\n'),
+      notes: [{ text: `Optimizer: steps moved here from ${srcIds.join(', ')}.`, at: now }],
+      ...(said ? { origin: { said, at: now, source: 'console', by: str(by, 120), from: `optimize:${run.id}` } } : {}),
+      optimized: { $axf: 'build-optimize@1', run: run.id, mode, sources: srcIds, at: now, by: str(by, 120), thinking: str(p.thinking, 10), after: [], why: str(p.why, 400) } }, { now });
+    rec.steps = steps.map((x, i) => ({ ...normStep(x, i, { now }), uid: x.uid || newUid(), origin: x.origin }));
+    rec.defaultSteps = rec.steps.map((x) => ({ ...x })); rec.defaultAt = now;
+    s.builds.push(rec); made.push({ rec, pack: p });
+    for (const x of plans) if (!x.into) x.into = rec.id;
+    // take the moved steps out of their sources
+    for (const k of p.keys) {
+      const c = byKey.get(k); if (c.kind === 'plan-step') continue;
+      const { b, st } = stepOfKey(s, k);
+      b.steps = b.steps.filter((x) => x !== st);
+      b.removedSteps.push({ step: { ...st }, at: now, why: `moved into ${rec.id} by the optimizer`, by: str(by, 80) });
+      b.rearranged = true; b.updatedAt = now; b.rev += 1;
+    }
+    log.push(`${rec.id}: ${rec.steps.length} step(s) from ${srcIds.join(', ')}`);
+  });
+  // pack order ("runs after") with the real ids; each new build goes where its first source was in each profile
+  const idOf = new Map(made.map((m) => [m.pack.id, m.rec.id]));
+  for (const m of made) m.rec.optimized.after = (m.pack.after ?? []).map((a) => idOf.get(typeof a === 'string' ? a : a?.id)).filter(Boolean);
+  const emptied = [];
+  for (const [id, pre] of sources) {
+    const b = s.builds.find((x) => x.id === id);
+    const into = made.filter((m) => m.rec.optimized.sources.includes(id)).map((m) => m.rec.id);
+    b.notes.push({ text: `Optimizer moved ${pre.steps.length - b.steps.length} step(s) into ${into.join(', ')} (run ${run.id}).`, at: now });
+    if (!b.steps.some(openStep)) {
+      emptied.push(id);
+      if (req.emptied === 'delete') { b.deleted = true; b.deletedAt = now; } else { b.status = 'archived'; }
+    }
+    run.before.push(pre);
+  }
+  for (const p of new Set(made.flatMap((m) => m.rec.profiles))) {
+    const list = buildsOf(s, p).filter((b) => !made.some((m) => m.rec === b));
+    const mine = made.filter((m) => m.rec.profiles.includes(p)).map((m) => m.rec);
+    const at = Math.min(...mine.flatMap((r) => r.optimized.sources.map((id) => list.findIndex((b) => b.id === id)).filter((i) => i >= 0)), list.length);
+    list.splice(Number.isFinite(at) ? at : list.length, 0, ...mine);
+    list.forEach((b, i) => { b.order[p] = i; });
+  }
+  run.created = made.map((m) => m.rec.id); run.emptied = emptied; run.plans = plans;
+  pushRun(s, run);
+  s.updatedAt = now;
+  log.push(`${sources.size} build(s) became ${made.length}${emptied.length ? `; ${emptied.length} emptied (${req.emptied === 'delete' ? 'deleted' : 'archived'})` : ''}`);
+  return { store: s, created: run.created, emptied, plans, run: { id: run.id, at: run.at }, log };
+}
+
+/**
+ * Move steps between builds (drag and drop anywhere, build-optimize@1 `move`): `keys` (`<build>/<uid>`, multi-select)
+ * into build `to` at `index` (drop position = order). Running steps never move; a model upgrade never happens (a
+ * step keeps its model). An emptied source with nothing done is archived. One write, one undo (a run record).
+ */
+export function moveSteps(store, keys, to, { index = null, now = nowIso(), by = 'console', runId = '' } = {}) {
+  const s = clone(store);
+  const ks = (Array.isArray(keys) ? keys : []).map((k) => str(k, 200)).filter(Boolean);
+  if (!ks.length) throw new Error('pick the steps to move');
+  const t = s.builds.find((x) => x.id === to && !x.deleted);
+  if (!t) throw new Error(`no build "${to}"`);
+  if (['built', 'complete', 'archived'].includes(t.status)) throw new Error(`${t.id} is ${t.status}: steps can only go into a build still to do`);
+  const run = { id: runId || `mv-${now.replace(/[^0-9]/g, '').slice(0, 14)}-${Math.random().toString(36).slice(2, 5)}`, kind: 'move', at: now, by: str(by, 120), created: [], before: [clone(t)], undone: '' };
+  const picked = ks.map((k) => { const r = stepOfKey(s, k); movable(r.b, r.st, k); return r; });
+  for (const r of picked) if (r.b !== t && !run.before.some((x) => x.id === r.b.id)) run.before.push(clone(r.b));
+  // take them out first (same build = a reorder), then put them in at the drop position
+  const moving = picked.map((r) => r.st);
+  for (const r of picked) r.b.steps = r.b.steps.filter((x) => x !== r.st);
+  const at = Number.isInteger(index) ? Math.max(0, Math.min(t.steps.length, index)) : t.steps.length;
+  t.steps.splice(at, 0, ...moving.map((st) => { const from = picked.find((r) => r.st === st).b; return from === t ? st : { ...st, origin: { build: from.id, step: st.uid, how: 'moved' }, updatedAt: now }; }));
+  for (const x of t.steps) if (picked.some((r) => r.st.uid === x.uid && r.b !== t)) x.id = stepIdIn({ steps: t.steps.filter((y) => y !== x) }, x.id);
+  t.rearranged = true; t.updatedAt = now; t.rev += 1;
+  const archived = [];
+  for (const src of new Set(picked.map((r) => r.b))) {
+    if (src === t) continue;
+    const n = picked.filter((r) => r.b === src).length;
+    src.removedSteps.push(...picked.filter((r) => r.b === src).map((r) => ({ step: { ...r.st }, at: now, why: `moved into ${t.id}`, by: str(by, 80) })));
+    src.notes.push({ text: `${n} step(s) moved into ${t.id}.`, at: now });
+    src.rearranged = true; src.updatedAt = now; src.rev += 1;
+    if (!src.steps.length) { src.status = 'archived'; archived.push(src.id); }
+  }
+  t.notes.push({ text: `${picked.filter((r) => r.b !== t).length} step(s) moved in from ${[...new Set(picked.filter((r) => r.b !== t).map((r) => r.b.id))].join(', ') || 'itself (reordered)'}.`, at: now });
+  run.archived = archived;
+  pushRun(s, run);
+  s.updatedAt = now;
+  return { store: s, run: { id: run.id, at: run.at }, archived, log: [`moved ${picked.length} step(s) into ${t.id} at ${at + 1}${archived.length ? `; ${archived.join(', ')} emptied (archived)` : ''}`] };
+}
+
+/** The runs that can still be undone (newest first). */
+export function optimizeRuns(store) { return [...(store.meta?.optimize ?? [])].reverse().map((r) => ({ id: r.id, kind: r.kind, at: r.at, by: r.by, mode: r.mode ?? '', created: r.created ?? [], emptied: r.emptied ?? r.archived ?? [], sources: (r.before ?? []).map((b) => b.id), undone: r.undone ?? '' })); }
+
+/**
+ * Undo one optimizer run or step move: the builds it made go away (their steps back where they came from) and every
+ * build it changed is put back as it was. Refused when work has happened since (a moved step done, a build changed
+ * after the run), so nothing is lost. Returns { store, log }.
+ */
+export function undoOptimize(store, runId, { now = nowIso(), by = 'console' } = {}) {
+  const s = clone(store);
+  const runs = s.meta.optimize ?? [];
+  const run = runId ? runs.find((r) => r.id === runId) : [...runs].reverse().find((r) => !r.undone);
+  if (!run) throw new Error(runId ? `no optimizer run "${runId}"` : 'nothing to undo');
+  if (run.undone) throw new Error(`${run.id} was already undone`);
+  const made = s.builds.filter((b) => run.created.includes(b.id) && !b.deleted);
+  const busy = made.find((b) => b.steps.some((x) => x.done) || b.status !== 'pending');
+  if (busy) throw new Error(`${busy.id} has started (${busy.status}${busy.steps.some((x) => x.done) ? ', steps done' : ''}): undo would lose work; move its steps back by hand`);
+  for (const pre of run.before ?? []) {
+    const cur = s.builds.find((b) => b.id === pre.id);
+    const later = cur && cur.updatedAt > run.at && (cur.notes ?? []).some((n) => n.at > run.at && !/optimizer|moved/i.test(n.text));
+    if (later || (cur && cur.steps.some((x) => x.done && !(pre.steps ?? []).some((y) => y.uid === x.uid && y.done)))) throw new Error(`${pre.id} changed after ${run.id}: undo would lose that; move the steps back by hand`);
+  }
+  for (const b of made) { b.removedSteps.push(...b.steps.map((st) => ({ step: { ...st }, at: now, why: `optimizer run ${run.id} undone`, by: str(by, 80) }))); b.steps = []; b.deleted = true; b.deletedAt = now; b.updatedAt = now; }
+  for (const pre of run.before ?? []) {
+    const i = s.builds.findIndex((b) => b.id === pre.id);
+    const back = normBuild({ ...clone(pre), rev: (s.builds[i]?.rev ?? pre.rev) + 1, updatedAt: now, notes: [...(pre.notes ?? []), { text: `Optimizer run ${run.id} undone: steps back.`, at: now }] });
+    // keep its place in every profile as it is now (the run moved new builds in around it)
+    if (i >= 0) { back.order = { ...pre.order, ...s.builds[i].order }; s.builds[i] = back; } else s.builds.push(back);
+  }
+  for (const p of new Set((run.before ?? []).flatMap((b) => b.profiles ?? []))) buildsOf(s, p).forEach((b, i) => { b.order[p] = i; });
+  run.undone = now;
+  s.updatedAt = now;
+  return { store: s, log: [`undid ${run.id}: ${made.length} build(s) removed, ${(run.before ?? []).length} put back`], run: { id: run.id, plans: run.plans ?? [] } };
 }
 
 /** Put builds of one profile in a new order (ids first, in that order; the rest keep theirs after them). */

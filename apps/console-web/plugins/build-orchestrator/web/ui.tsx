@@ -8,6 +8,7 @@ import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import pricing from '@console/axf/schemas/model-pricing.json';
 import { DataGrid, RowHookButtons, registerRowRefTarget, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import { PackageButton } from './packager';
+import { accepts, dragStart, dropSteps, readDrop, togglePick, usePicked } from './step-drag';
 import './orchestrator.css';
 
 /*
@@ -23,7 +24,7 @@ export const reloadOrchestrator = () => window.dispatchEvent(new Event(RELOAD_EV
 // grid-hook@1: a build card's right-click finds the row hooks for orchestrator builds
 registerRowRefTarget('axf-orchestrator-build', (id) => (id ? { kind: 'orchestrator', id } : null));
 const api = pluginApi(FOLDER, 'Build orchestrator', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
-type Step = { id: string; text: string; model: 'Fable' | 'Opus'; why: string; phase: string; group: string; estimate: string; files: string[]; checks: string[]; session: 'same' | 'new'; agent: boolean; done: boolean; doneAt: string; note: string; packagedInto?: string; origin?: { build: string; step: string; how: string } };
+type Step = { id: string; uid?: string; text: string; model: 'Fable' | 'Opus'; why: string; phase: string; group: string; estimate: string; files: string[]; checks: string[]; session: 'same' | 'new'; agent: boolean; done: boolean; doneAt: string; note: string; packagedInto?: string; origin?: { build: string; step: string; how: string } };
 type Build = { id: string; title: string; category: string; detail: string; status: string; hidden: boolean; source: string; pendingId: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt: string; notes: { text: string; at: string }[]; approvals: { phase: number; from: string; to: string; at: string; by?: string; via?: string; kind?: string; selfApproved?: boolean }[]; upgradeRequests?: { id: string; phase: number; from: string; to: string; at: string; by: string; state: string }[]; origin?: unknown; package?: { sources: string[]; thinking: string; dest: string; sent: { to: string; now: boolean; at: string } | null }; steps: Step[] };
 type Rules = { sameSession: boolean; subAgents: boolean; approveModelSwitch: boolean; maxStepMinutes: number };
 type State = { updatedAt: string; rules: Rules; builds: Build[] };
@@ -226,6 +227,11 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
           ))}
         </div>
       ))}
+      {!embedded && !core.isFinished(b.status) && b.status !== 'archived' && (
+        <div className="oc-dropend" onDragOver={(e) => { if (accepts(e)) e.preventDefault(); }} onDrop={(e) => { e.preventDefault(); void dropSteps(rt, readDrop(e), b.id, null); }}>
+          <Icon name="layers" size={12} /> Drop steps from any build here (drag a step by its grip; shift-click grips to pick several)
+        </div>
+      )}
       {b.notes.length > 0 && (
         <div className="pd-thread"><h3>Notes</h3>{b.notes.map((e, i) => <div key={i} className="pd-entry"><time dateTime={e.at}>{fmtDate(e.at)}</time><p>{e.text}</p></div>)}</div>
       )}
@@ -269,9 +275,16 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
 }
 
 function StepRow({ b, s, locked, busy, act, last }: { b: Build; s: Step & { index: number }; locked: boolean; busy: boolean; act: Act; last: number }) {
+  const rt = useRuntime();
   const other = s.model === 'Fable' ? 'Opus' : 'Fable';
+  // build-optimize@1: drag a step to any build's steps list (this window, another tab or window); drop = that position
+  const key = `${b.id}/${s.uid || s.id}`;
+  const picked = usePicked();
+  const canDrag = !s.done && !s.packagedInto && !core.isFinished(b.status) && b.status !== 'archived';
   return (
-    <div className={`pd-entry is-mono ${s.done ? 'is-done' : ''}`}>
+    <div className={`pd-entry is-mono ${s.done ? 'is-done' : ''}${picked.has(key) ? ' is-picked' : ''}`} draggable={canDrag} onDragStart={(e) => dragStart(e, key)}
+      onDragOver={(e) => { if (accepts(e)) e.preventDefault(); }} onDrop={(e) => { if (!accepts(e)) return; e.preventDefault(); e.stopPropagation(); void dropSteps(rt, readDrop(e), b.id, s.index); }}>
+      {canDrag && <button type="button" className="fx-iconbtn oc-grip" aria-pressed={picked.has(key)} title="Drag to another build · shift- or ctrl-click to pick several" onClick={(e) => { if (e.shiftKey || e.ctrlKey || e.metaKey || picked.size) togglePick(key); }}><Icon name="grip" size={12} /></button>}
       <input type="checkbox" className="pd-tick" checked={s.done} disabled={busy || core.isFinished(b.status) || (locked && !s.done) || (!!s.packagedInto && !s.done)} onChange={(ev) => void act({ action: 'step', id: b.id, step: s.id, done: ev.target.checked })} aria-label={`Step ${s.id} done`} title={locked ? 'Approve the model switch first' : s.done && s.doneAt ? `Done ${fmtTime(s.doneAt)}` : 'Mark this step done'} />
       <time>{s.id}{s.estimate && <span className="pd-est"> · ~{s.estimate}</span>}</time>
       <p>{s.text}{s.why && <span className="fx-muted"> — {s.why}</span>}{s.packagedInto && <span className="oc-flag oc-packaged" title="A package build does this step; ticking it there ticks it here"> packaged into {s.packagedInto}</span>}{s.origin?.how === 'package' && <span className="oc-flag fx-mono"> from {s.origin.build}</span>}{s.session === 'new' && <span className="oc-flag"> new session</span>}{s.agent && <span className="oc-flag"> sub-agent ok</span>}</p>

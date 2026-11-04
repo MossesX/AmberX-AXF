@@ -161,6 +161,276 @@
         "title": "Unpackage",
         "text": "Puts this package's steps back in their own builds and removes the package. Only while none of its steps are done.",
         "kind": "button"
+      },
+      {
+        "target": "action:build-orchestrator.optimize",
+        "title": "Optimize builds…",
+        "text": "Repacks every waiting step into the fewest builds. You see the new builds and every step before anything changes.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "build-optimizer",
+        "title": "Build optimizer",
+        "text": "How Optimize builds works: mode, packing caps, grouping rules, safety, presets, schedule and notifications.",
+        "kind": "tab"
+      },
+      {
+        "target": "optimizer-notifications",
+        "title": "Optimizer notifications",
+        "text": "When the optimizer tells you which mode ran: only when AI wasn't available, every run, or never.",
+        "kind": "field"
+      },
+      {
+        "target": "filters",
+        "title": "Filters",
+        "text": "Shows the filters that pick which waiting steps the optimizer may repack.",
+        "kind": "button"
+      },
+      {
+        "target": "fable-candidates",
+        "title": "Fable candidates",
+        "text": "Only steps on Fable, or steps the audit says should be on Fable.",
+        "kind": "button"
+      },
+      {
+        "target": "undo-last",
+        "title": "Undo last",
+        "text": "Undoes the last optimizer run or step move: its new builds go and every build it changed comes back.",
+        "kind": "button"
+      },
+      {
+        "target": "older-than-days",
+        "title": "Older than (days)",
+        "text": "Only builds at least this many days old.",
+        "kind": "slider"
+      },
+      {
+        "target": "newer-than-days-any",
+        "title": "Newer than (days)",
+        "text": "Only builds at most this many days old. 0 means any age.",
+        "kind": "slider"
+      },
+      {
+        "target": "run-deep",
+        "title": "Run Deep",
+        "text": "Runs Deep mode: the AI reads the briefs, steps and code, then repacks. Its tokens are booked to the agent shown.",
+        "kind": "button"
+      },
+      {
+        "target": "use-basic",
+        "title": "Use Basic",
+        "text": "Runs the plain-code optimizer instead: no AI, no tokens.",
+        "kind": "button"
+      },
+      {
+        "target": "use-it",
+        "title": "Use it",
+        "text": "Takes the AI's suggested name for this build.",
+        "kind": "button"
+      },
+      {
+        "target": "drag-to-another-build-click-to-pick-several",
+        "title": "Drag step",
+        "text": "Drag this step to another build in the plan. Click to pick several and drag them together.",
+        "kind": "button"
+      },
+      {
+        "target": "apply-make-build",
+        "title": "Apply",
+        "text": "Makes the new builds, moves the steps over and archives the emptied builds, all at once. One undo puts it back.",
+        "kind": "button"
+      },
+      {
+        "target": "optimize-builds",
+        "title": "Optimize builds…",
+        "text": "Opens the optimizer: it repacks waiting steps into fewer builds and shows you the result to confirm.",
+        "kind": "button"
+      },
+      {
+        "target": "deep-mode-model",
+        "title": "Deep mode model",
+        "text": "The model Deep mode asks for its review.",
+        "kind": "field"
+      },
+      {
+        "target": "deep-mode-thinking",
+        "title": "Deep mode thinking",
+        "text": "How hard Deep mode thinks.",
+        "kind": "field"
+      },
+      {
+        "target": "token-budget-per-run-no-cap",
+        "title": "Token budget per run",
+        "text": "A Deep run over this many tokens runs as Basic instead. 0 means no cap.",
+        "kind": "field"
+      },
+      {
+        "target": "book-deep-runs-to-agent",
+        "title": "Book Deep runs to agent",
+        "text": "The crew agent whose card gets the Deep run's tokens.",
+        "kind": "field"
+      },
+      {
+        "target": "max-steps-per-build",
+        "title": "Max steps per build",
+        "text": "The most steps a combined build may hold.",
+        "kind": "slider"
+      },
+      {
+        "target": "max-hours-per-build",
+        "title": "Max hours per build",
+        "text": "The most estimated work a combined build may hold.",
+        "kind": "slider"
+      },
+      {
+        "target": "max-builds-in-the-result-no-cap",
+        "title": "Max builds in the result",
+        "text": "Warns when the plan needs more builds than this. 0 means no cap.",
+        "kind": "slider"
+      },
+      {
+        "target": "fewest-builds",
+        "title": "Fewest builds",
+        "text": "Packs as much as fits into each build.",
+        "kind": "tab"
+      },
+      {
+        "target": "balanced-across-slots",
+        "title": "Balanced across slots",
+        "text": "Spreads the work evenly over the builds that can run at once.",
+        "kind": "tab"
+      },
+      {
+        "target": "fastest-finish",
+        "title": "Fastest finish",
+        "text": "Only combines related work, so unrelated builds can run side by side.",
+        "kind": "tab"
+      },
+      {
+        "target": "slots-builds-running-at-once",
+        "title": "Slots",
+        "text": "How many builds run at once, for Balanced.",
+        "kind": "slider"
+      },
+      {
+        "target": "overhead-saved-per-build-fewer-min",
+        "title": "Overhead per build",
+        "text": "Minutes each build costs on top of its steps (start, PR, CI, screenshots). Used for the time saved.",
+        "kind": "slider"
+      },
+      {
+        "target": "weight",
+        "title": "Weight",
+        "text": "How strongly this rule pulls steps into the same build.",
+        "kind": "slider"
+      },
+      {
+        "target": "never-touch-running-builds-current-step",
+        "title": "Never touch running steps",
+        "text": "The step a build is working on never moves. Always on.",
+        "kind": "toggle"
+      },
+      {
+        "target": "respect-pins",
+        "title": "Respect pins",
+        "text": "Pinned builds are never repacked.",
+        "kind": "toggle"
+      },
+      {
+        "target": "pull-unstarted-steps-out-of-running-builds",
+        "title": "Pull from running builds",
+        "text": "Lets the optimizer move a running build's steps that haven't started. Off keeps running builds whole.",
+        "kind": "toggle"
+      },
+      {
+        "target": "always-confirm-before-applying",
+        "title": "Always confirm",
+        "text": "Nothing is applied until you confirm it. Always on.",
+        "kind": "toggle"
+      },
+      {
+        "target": "pinned-builds-ids-comma-separated",
+        "title": "Pinned builds",
+        "text": "Build ids the optimizer leaves alone, separated by commas.",
+        "kind": "field"
+      },
+      {
+        "target": "flag-only",
+        "title": "Flag only",
+        "text": "Steps that look already built or duplicated get a flag; they stay ticked.",
+        "kind": "tab"
+      },
+      {
+        "target": "untick-in-the-dialog",
+        "title": "Untick in the dialog",
+        "text": "Steps that look already built or duplicated start unticked, so they stay where they are unless you tick them.",
+        "kind": "tab"
+      },
+      {
+        "target": "most-common",
+        "title": "Most common",
+        "text": "A combined build takes the category most of its steps have.",
+        "kind": "tab"
+      },
+      {
+        "target": "first-step",
+        "title": "First step's",
+        "text": "A combined build takes its first step's category.",
+        "kind": "tab"
+      },
+      {
+        "target": "fixed",
+        "title": "Fixed",
+        "text": "Every combined build gets the category below.",
+        "kind": "tab"
+      },
+      {
+        "target": "fixed-category",
+        "title": "Fixed category",
+        "text": "The category every combined build gets.",
+        "kind": "field"
+      },
+      {
+        "target": "manual-only",
+        "title": "Manual only",
+        "text": "The optimizer only runs when you ask.",
+        "kind": "tab"
+      },
+      {
+        "target": "after-every-new-build",
+        "title": "After every new build",
+        "text": "Makes a plan after a build is added and tells you. Nothing changes until you confirm.",
+        "kind": "tab"
+      },
+      {
+        "target": "nightly",
+        "title": "Nightly",
+        "text": "Makes a plan once a night and tells you. Nothing changes until you confirm.",
+        "kind": "tab"
+      },
+      {
+        "target": "save-these-settings-as",
+        "title": "Save these settings as",
+        "text": "Name for a preset that keeps these settings and the saved filter.",
+        "kind": "field"
+      },
+      {
+        "target": "move-prerequisites-too",
+        "title": "Move prerequisites too",
+        "text": "Moves the steps this one needs along with it, in order.",
+        "kind": "button"
+      },
+      {
+        "target": "move-only",
+        "title": "Move only",
+        "text": "Moves just the dragged steps. The steps they need stay behind.",
+        "kind": "button"
+      },
+      {
+        "target": "drag-to-another-build-shift-or-ctrl-click-to-pick-several",
+        "title": "Drag step",
+        "text": "Drag this step onto any build's step list, here or in another tab or window. Shift- or ctrl-click to pick several.",
+        "kind": "button"
       }
     ],
     "intros": []

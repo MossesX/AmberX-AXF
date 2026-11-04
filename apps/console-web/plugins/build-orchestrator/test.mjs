@@ -224,4 +224,114 @@ t('every brief carries the asset-conformance rule', () => {
     assert.deepEqual(r3.moves.map((m) => m.id), ['beta'], 'a running package stays; its prerequisite moves before it');
   });
 }
+
+// ---- build optimizer (build-optimize@1): plain-code planner, store apply / undo / move, AI answers checked by code
+{
+  const O = await import('./web/optimizer-core.mjs');
+  const S = await import('../../../../framework/plan/builds-store-core.mjs');
+  const st = (id, text, model = 'Opus', extra = {}) => ({ id, uid: `${extra.b ?? 'x'}-${id}`, text, model, estimate: '20 min', ...extra });
+  const mk = (id, steps, extra = {}) => ({ id, title: id, category: extra.category ?? 'Console', status: extra.status ?? 'pending', profiles: ['p'], order: { p: extra.order ?? 0 }, createdAt: '2026-11-01T00:00:00Z', origin: { said: `do ${id}` }, ...extra, steps: steps.map((x) => ({ ...x, uid: `${id}-${x.id}` })) });
+  const builds = () => S.normalizeStore({ builds: [
+    mk('a', [st('s1', 'Grid sorting in the datagrid', 'Opus', { files: ['apps/console-web/plugins/changes-grid/web/x.tsx'] }), st('s2', 'Grid column picker', 'Opus', { files: ['apps/console-web/plugins/changes-grid/web/y.tsx'] })], { order: 0 }),
+    mk('b', [st('s1', 'Grid export to csv', 'Opus', { files: ['apps/console-web/plugins/changes-grid/web/z.tsx'] })], { order: 1 }),
+    mk('c', [st('s1', 'Kernel contract for widgets', 'Fable', { files: ['framework/core/engines/w.ts'] })], { order: 2 }),
+    mk('d', [st('s1', 'Engine fixture for widgets', 'Fable', { files: ['framework/core/engines/v.ts'] })], { order: 3 }),
+    mk('run', [st('s1', 'Being built now', 'Opus'), st('s2', 'Waiting after it', 'Opus', { files: ['apps/console-web/plugins/changes-grid/web/w.tsx'] })], { order: 4, status: 'running' }),
+    mk('pin', [st('s1', 'Pinned work on the grid', 'Opus', { files: ['apps/console-web/plugins/changes-grid/web/q.tsx'] })], { order: 5, pinned: true }),
+    mk('done', [{ ...st('s1', 'Grid export to csv file', 'Opus'), done: true }], { order: 6, status: 'complete', pr: '#1' }),
+  ] });
+  const store0 = builds(); store0.builds.find((b) => b.id === 'pin').pinned = true; // normBuild drops unknown keys: pins come from settings too
+  const settings = { pins: ['pin'] };
+  t('optimizer scope: never the step a running build is on, never pinned builds, filters narrow it', () => {
+    const sc = O.scope(store0.builds, { settings });
+    const keys = sc.items.map((c) => c.key);
+    assert.ok(!keys.includes('run/run-s1') && sc.inProgress.includes('run/run-s1'), 'running step left alone');
+    assert.ok(keys.includes('run/run-s2'), 'an unstarted step of a running build may move');
+    assert.ok(!keys.some((k) => k.startsWith('pin/')), 'pinned build left alone');
+    assert.ok(!O.scope(store0.builds, { settings: { ...settings, safety: { pullFromRunning: false } } }).items.some((c) => c.build === 'run'));
+    assert.deepEqual([...new Set(O.scope(store0.builds, { settings, filter: { models: ['Fable'] } }).items.map((c) => c.build))].sort(), ['c', 'd']);
+    assert.ok(O.scope(store0.builds, { settings, filter: { exclude: ['a'] } }).items.every((c) => c.build !== 'a'));
+  });
+  t('optimizer plan (Basic): same area goes together, Fable and Opus apart, fewer builds, zero AI', () => {
+    const sc = O.scope(store0.builds, { settings });
+    const pl = O.plan(sc.items, { settings, builds: store0.builds });
+    assert.equal(pl.mode, 'basic');
+    const grid = pl.packs.find((p) => p.keys.includes('a/a-s1'));
+    assert.ok(grid.keys.includes('b/b-s1') && grid.keys.includes('run/run-s2'), 'claims on changes-grid packed together');
+    const kern = pl.packs.find((p) => p.keys.includes('c/c-s1'));
+    assert.ok(kern.keys.includes('d/d-s1') && kern.model === 'Fable' && kern !== grid, 'Fable work apart, kernel claims together');
+    assert.deepEqual(grid.keys.slice(0, 2), ['a/a-s1', 'a/a-s2'], 'a build keeps its step order');
+    assert.equal(pl.summary.packs, 2); assert.ok(pl.summary.emptied.includes('a') && pl.summary.emptied.includes('b') && !pl.summary.emptied.includes('run'));
+    assert.ok(pl.flags['b/b-s1']?.kind === 'built', 'looks already built is flagged');
+    assert.deepEqual(O.plan(sc.items, { settings, builds: store0.builds }).packs.map((p) => p.keys), pl.packs.map((p) => p.keys), 'deterministic');
+  });
+  t('optimizer caps: never more steps than the cap, and a build is never split just to fit', () => {
+    const sc = O.scope(store0.builds, { settings });
+    const pl = O.plan(sc.items, { settings: { ...settings, maxSteps: 2 }, builds: store0.builds });
+    assert.ok(pl.packs.every((p) => p.keys.length <= 2 || p.sources.length === 1));
+    assert.ok(!pl.packs.some((p) => p.keys.includes('a/a-s1')) || pl.packs.find((p) => p.keys.includes('a/a-s1')).keys.includes('a/a-s2'));
+  });
+  t('optimizer deps: a step dropped before what it needs keeps its order; missing prerequisites are named', () => {
+    const sc = O.scope(store0.builds, { settings }); let pl = O.plan(sc.items, { settings, builds: store0.builds });
+    const grid = pl.packs.find((p) => p.keys.includes('a/a-s1'));
+    pl = O.moveKeys(pl, ['a/a-s2'], grid.id, 0, { items: sc.items, settings: pl.settings });
+    const g2 = pl.packs.find((p) => p.id === grid.id).keys;
+    assert.ok(g2.indexOf('a/a-s1') < g2.indexOf('a/a-s2'), 'a drop before what it needs is put back after it (dependencies hold)');
+    const pl2 = O.moveKeys(pl, ['a/a-s2'], '+', null, { items: sc.items, settings: pl.settings });
+    assert.ok(pl2.packs.some((p) => p.keys.length === 1 && p.keys[0] === 'a/a-s2'));
+    assert.deepEqual(O.missingPrereqs(pl2, ['a/a-s2'], pl2.packs.at(-1).id, sc.items), ['a/a-s1']);
+    const o = O.orderPacks(pl2.packs, new Map(sc.items.map((c) => [c.key, c])));
+    const ids = o.packs.map((p) => p.id); const solo = pl2.packs.at(-1).id;
+    assert.ok(ids.indexOf(solo) > ids.indexOf(grid.id), 'the pack needing a-s1 runs after the pack holding it');
+  });
+  t('optimizer apply: steps move over (uid kept, linked back), emptied builds archived, one undo puts it all back', () => {
+    const sc = O.scope(store0.builds, { settings }); const pl = O.plan(sc.items, { settings, builds: store0.builds });
+    const r = S.applyOptimize(store0, O.applyRequest(pl), { items: sc.items, runId: 'opt-test', now: '2026-11-04T10:00:00.000Z', profile: 'p' });
+    assert.equal(r.created.length, 2); assert.ok(r.emptied.includes('a') && r.emptied.includes('b'));
+    const nb = r.store.builds.find((b) => b.id === r.created[0]);
+    assert.ok(nb.steps.every((x) => x.origin.how === 'optimized') && nb.optimized.run === 'opt-test' && nb.origin.said.includes('[a] do a'));
+    assert.equal(r.store.builds.find((b) => b.id === 'a').status, 'archived');
+    const run = r.store.builds.find((b) => b.id === 'run'); assert.equal(run.status, 'running'); assert.deepEqual(run.steps.map((x) => x.id), ['s1'], 'running build keeps its current step');
+    assert.equal(S.validateStore(r.store).ok, true, JSON.stringify(S.validateStore(r.store).errors.slice(0, 3)));
+    assert.throws(() => S.applyOptimize(r.store, O.applyRequest(pl), { items: sc.items }), /no longer waiting|gone/);
+    const u = S.undoOptimize(r.store, 'opt-test', { now: '2026-11-04T10:05:00.000Z' });
+    const live = (s) => s.builds.filter((b) => !b.deleted).map((b) => `${b.id}:${b.status}:${b.steps.map((x) => x.uid).join(',')}`).sort();
+    assert.deepEqual(live(u.store), live(store0)); assert.equal(S.validateStore(u.store).ok, true);
+    assert.throws(() => S.undoOptimize(u.store, 'opt-test'), /already undone/);
+  });
+  t('optimizer undo is refused once work has started in a new build', () => {
+    const sc = O.scope(store0.builds, { settings }); const pl = O.plan(sc.items, { settings, builds: store0.builds });
+    const r = S.applyOptimize(store0, O.applyRequest(pl), { items: sc.items, runId: 'opt-2' });
+    r.store.builds.find((b) => b.id === r.created[0]).steps[0].done = true;
+    assert.throws(() => S.undoOptimize(r.store, 'opt-2'), /has started/);
+  });
+  t('move steps between builds: drop position = order, running steps refused, one undo', () => {
+    const m = S.moveSteps(store0, ['b/b-s1'], 'a', { index: 1, runId: 'mv-1', now: '2026-11-04T11:00:00.000Z' });
+    assert.deepEqual(m.store.builds.find((b) => b.id === 'a').steps.map((x) => x.uid), ['a-s1', 'b-s1', 'a-s2']);
+    assert.deepEqual(m.archived, ['b']); assert.equal(m.store.builds.find((b) => b.id === 'a').steps[1].origin.build, 'b');
+    assert.throws(() => S.moveSteps(store0, ['run/run-s1'], 'a'), /being built right now/);
+    assert.throws(() => S.moveSteps(store0, ['a/a-s1'], 'done'), /complete/);
+    const u = S.undoOptimize(m.store, 'mv-1', { now: '2026-11-04T11:01:00.000Z' });
+    assert.deepEqual(u.store.builds.find((b) => b.id === 'a').steps.map((x) => x.uid), ['a-s1', 'a-s2']); assert.equal(u.store.builds.find((b) => b.id === 'b').status, 'pending');
+  });
+  t('Deep mode answers are checked by code: unknown keys and running steps are rejected, names and drops shown', () => {
+    const sc = O.scope(store0.builds, { settings }); const pl = O.plan(sc.items, { settings, builds: store0.builds });
+    const ai = { packs: [{ id: pl.packs[0].id, name: 'Grid polish', why: 'all on the changes grid' }], moves: [{ key: 'run/run-s1', to: pl.packs[0].id }, { key: 'nope/x', to: 'pack-1' }],
+      drops: [{ key: 'b/b-s1', kind: 'built', ref: 'done s1', why: 'csv export shipped in #1' }], notes: [{ key: 'a/a-s1', why: 'contract work', model: 'Fable' }], deps: [{ key: 'd/d-s1', needs: 'c/c-s1', why: 'fixture needs the contract' }] };
+    const d = O.applyAi(pl, ai, sc.items, { builds: store0.builds });
+    assert.equal(d.mode, 'deep'); assert.equal(d.packs[0].ai.name, 'Grid polish');
+    assert.equal(d.rejected.length, 2); assert.equal(d.flags['b/b-s1'].ai, true);
+    assert.equal(d.notes['a/a-s1'].upgrade, true, 'an upgrade is only a suggestion');
+    assert.ok(d.packs.flatMap((p) => p.keys).every((k) => k !== 'run/run-s1'));
+    assert.equal(d.reasons['d/d-s1'].kind, 'dependency');
+  });
+  t('optimizer settings: locked safety stays on, presets lay over, notifications per setting', () => {
+    const n = O.normSettings({ safety: { neverTouchRunning: false, requireConfirm: false }, maxSteps: 999, mode: 'nope' });
+    assert.equal(n.safety.neverTouchRunning, true); assert.equal(n.safety.requireConfirm, true); assert.equal(n.maxSteps, 40); assert.equal(n.mode, 'auto');
+    assert.equal(O.withPreset({}, O.PRESETS.safe).safety.pullFromRunning, false);
+    assert.equal(O.shouldNotify('no-ai', { fellBack: true }), true); assert.equal(O.shouldNotify('no-ai', { fellBack: false }), false);
+    assert.equal(O.shouldNotify('every', { fellBack: false }), true); assert.equal(O.shouldNotify('off', { fellBack: true }), false);
+    assert.match(O.notice({ mode: 'basic', summary: { line: '3 builds become 1' } }, { fellBack: true }), /^Ran in Basic mode, AI wasn't available: 3 builds become 1/);
+  });
+}
 console.log(`build-orchestrator: ${n} checks passed`);
