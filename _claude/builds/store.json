@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 945,
- "updatedAt": "2026-11-04T20:42:41.842Z",
+ "rev": 946,
+ "updatedAt": "2026-11-04T20:43:00.869Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -81339,7 +81339,7 @@
    "title": "Console loads slowly: node process per read, /api/build-queue 500",
    "category": "Urgent",
    "detail": "Host load 45, swap full, axf-console 135% CPU with 23 node processes: every screen/Home-card read spawned node per request per client; GET /api/build-queue 500 on every call. Fix the 500, one shared server cache per source with single-flight + spawn cap, client backoff/hidden-tab/shared reads, reconcile throttle, measure before/after, PR + redeploy.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -81347,8 +81347,8 @@
    "pr": "#330",
    "mergedAt": "2026-11-04T20:36:28Z",
    "createdAt": "2026-11-04T17:04:18.426Z",
-   "updatedAt": "2026-11-04T20:40:41.548Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T20:42:52.547Z",
+   "builtAt": "2026-11-04T20:42:52.547Z",
    "notes": [
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
@@ -81477,12 +81477,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T20:42:52.547Z",
      "note": "",
-     "rev": 4,
+     "rev": 5,
      "createdAt": "2026-11-04T17:04:18.427Z",
-     "updatedAt": "2026-11-04T18:55:12.567Z"
+     "updatedAt": "2026-11-04T20:42:52.630Z"
     }
    ],
    "profiles": [
@@ -81493,7 +81493,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -698,7 +698,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:38 UTC · `profile-filter-tables` added (4 steps) (current) · orchestrator
 - 2026-11-04 14:38 UTC · `profile-switcher-widget` note (current) · orchestrator
 - 2026-11-04 14:38 UTC · `profile-switcher-widget` → archived (current) · orchestrator
 - 2026-11-04 14:38 UTC · `profile-lists-home-card` s4 done, → built (current) · orchestrator
@@ -1098,6 +1097,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 20:40 UTC · `urgent-console-perf` merged, note (urgent) · reconciler
 - 2026-11-04 20:41 UTC · `molly-banner-match` added (5 steps) (current) · builds-live
 - 2026-11-04 20:42 UTC · `molly-banner-match` note (current) · foreign-write
+- 2026-11-04 20:42 UTC · `urgent-console-perf` s5 done, → complete (urgent) · orchestrator
 
 ## Token passes (log)
 
