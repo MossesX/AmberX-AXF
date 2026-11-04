@@ -662,7 +662,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:57 UTC · `md-studio` branch claude/md-studio-theme-editor-plan, PR #242, merged, note (urgent) · reconciler
 - 2026-11-03 13:57 UTC · `orch-live-sync` s5 done (urgent) · orchestrator
 - 2026-11-03 13:57 UTC · `orch-live-sync` s6 done (urgent) · orchestrator
 - 2026-11-03 14:01 UTC · `orch-live-sync` PR #255 (urgent) · builds-live
@@ -1062,6 +1061,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:10 UTC · `crew-profiles` s1 done, s2 done (current) · foreign-write
 - 2026-11-04 14:10 UTC · `land-round-2` PR #313, note (current) · reconciler
 - 2026-11-04 14:10 UTC · `terminal-no-focus` note (current) · reconciler
+- 2026-11-04 14:11 UTC · `land-round-2` note (current) · foreign-write
 
 ## Token passes (log)
 
