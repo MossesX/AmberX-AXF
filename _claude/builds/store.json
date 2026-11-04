@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 703,
- "updatedAt": "2026-11-04T14:04:27.865Z",
+ "rev": 704,
+ "updatedAt": "2026-11-04T14:04:40.120Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -72523,9 +72523,14 @@
    "branch": "claude/plugin-lazy-load",
    "pr": "#298",
    "createdAt": "2026-11-04T12:29:55.129Z",
-   "updatedAt": "2026-11-04T14:04:15.625Z",
+   "updatedAt": "2026-11-04T14:04:16.930Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged main into #298, seeded 20 banner plugins, fixed a first-visit hang (per-plugin re-install of all libraries; CI theme-swap timeout) and plugin-lifecycle refs. Startup 4.46 -> 2.07 MB. CI dispatched on c97d1967e.",
+     "at": "2026-11-04T14:04:16.930Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -72638,25 +72643,10 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-04T12:29:55.129Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mw23gp6505x0u7": "2026-11-04T12:29:55.130Z",
-     "st-mw23gp6506ftt8": "2026-11-04T12:29:55.130Z",
-     "st-mw23gp6507ymi1": "2026-11-04T12:29:55.130Z",
-     "st-mw23gp6508tldc": "2026-11-04T12:29:55.130Z"
-    }
-   },
+   "pending": null,
    "queue": null,
    "defaultAt": "2026-11-04T12:29:55.130Z",
    "rearranged": false,

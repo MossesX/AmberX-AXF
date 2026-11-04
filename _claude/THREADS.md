@@ -662,8 +662,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:57 UTC · `element-inspector` s1 done, s2 done, s4 done, → running, PR #192, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `layout-repeating-slots` s2 done, → running, PR #191, merged, note (angel) · reconciler
 - 2026-11-03 13:57 UTC · `session-history` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, → built, PR #195, note (angel) · reconciler
 - 2026-11-03 13:57 UTC · `audio-output-recorder` PR #194, merged, note (angel) · reconciler
 - 2026-11-03 13:57 UTC · `live-key-checks` PR #182, merged, note (angel) · reconciler
@@ -1062,6 +1060,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:04 UTC · `bugs-board` added (7 steps) (current) · foreign-write
 - 2026-11-04 14:04 UTC · `follow-amber-switch` added (5 steps) (current) · foreign-write
 - 2026-11-04 14:04 UTC · `urgent-land-lazy-loader` s3 done (current) · foreign-write
+- 2026-11-04 14:04 UTC · `urgent-land-lazy-loader` s3 done (current) · orchestrator
+- 2026-11-04 14:04 UTC · `urgent-land-lazy-loader` note (current) · orchestrator
 
 ## Token passes (log)
 
