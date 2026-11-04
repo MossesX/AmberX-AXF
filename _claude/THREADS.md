@@ -908,6 +908,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 10:48 UTC · `terminal-no-focus` added (3 steps) (current) · janitor-joey
 - 2026-11-04 10:53 UTC · `terminal-no-focus` s1 done, → running (current) · orchestrator
 - 2026-11-04 10:53 UTC · `terminal-no-focus` s2 done (current) · orchestrator
+- 2026-11-04 10:53 UTC · `terminal-no-focus` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 10:54 UTC · `terminal-no-focus` s2 done (current) · foreign-write
 
 ## Token passes (log)
 
