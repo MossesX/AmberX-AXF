@@ -661,7 +661,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:57 UTC · `fresh-look` branch claude/fresh-look-done, PR #120, merged, note (main-framework, refactor) · reconciler
 - 2026-11-03 13:57 UTC · `design-packages-10` branch claude/design-packages-10, PR #124, merged, note (main-framework, refactor) · reconciler
 - 2026-11-03 13:57 UTC · `build-orchestrator` branch claude/build-orchestrator, PR #122, merged, note (main-framework, refactor) · reconciler
 - 2026-11-03 13:57 UTC · `build-profiles` branch claude/build-profiles, PR #127, merged, note (main-framework, refactor) · reconciler
@@ -1061,6 +1060,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 13:50 UTC · `follow-amber-switch` s3 done (current) · orchestrator
 - 2026-11-04 13:50 UTC · `follow-amber-switch` s4 done (current) · orchestrator
 - 2026-11-04 13:52 UTC · `land-round-2` note (current) · orchestrator
+- 2026-11-04 13:52 UTC · `land-round-2` → blocked (current) · orchestrator
 
 ## Token passes (log)
 
