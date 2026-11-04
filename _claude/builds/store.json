@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 791,
- "updatedAt": "2026-11-04T15:33:42.925Z",
+ "rev": 792,
+ "updatedAt": "2026-11-04T15:37:58.016Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -79628,9 +79628,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/apps-control-surface",
-   "pr": "",
+   "pr": "#322",
    "createdAt": "2026-11-04T15:00:59.141Z",
-   "updatedAt": "2026-11-04T15:33:07.686Z",
+   "updatedAt": "2026-11-04T15:37:56.951Z",
    "builtAt": "",
    "notes": [
     {
@@ -79781,7 +79781,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
