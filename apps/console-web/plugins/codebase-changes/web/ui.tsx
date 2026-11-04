@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, Icon, IconButton, RefText, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { MoreMenu } from './MoreMenu';
 import {
-  CHANGED, KIND_ICON, NO_FILTERS, STATE_ICON, STATE_LABEL, VIEW, abandonEntry, ago, api, bannerOn, closeAll, closeEntry, isActive, quietMs, startedMs, stuckWhy, kindLabel, linkHref, loadEntry, loadOpen, loadResume,
+  CHANGED, KIND_ICON, NO_FILTERS, STATE_ICON, STATE_LABEL, VIEW, abandonEntry, ago, api, bannerOn, closeAll, closeEntry, isActive, NO_WORD_MS, quietMs, startedMs, stuckWhy, kindLabel, linkHref, loadEntry, loadOpen, loadResume,
   loadPage, reopenEntry, takeFocus, took, useStore, when, type Entry, type Filters, type Page, type Step, type Summary,
 } from './store';
 
@@ -56,7 +56,10 @@ export function ChangesBanner() {
   const [shown, setShown] = useState<string | null>(null);
   if (!bannerOn() || !s.open.length) return null;
   const n = s.openTotal;
-  const running = s.open.filter((e) => e.state === 'running').length;
+  // "in progress" counts only sessions heard from in the last 10 minutes; the quiet ones are counted apart (Brett,
+  // Nov 4 2026: the banner said 21 going while one build was running)
+  const running = s.open.filter((e) => e.state === 'running' && quietMs(e, now) <= NO_WORD_MS).length;
+  const quiet = s.open.filter((e) => e.state === 'running' && quietMs(e, now) > NO_WORD_MS).length;
   const failed = s.open.filter((e) => e.state === 'failed').length;
   const go = (id: string) => rt.dispatch(`codebase-changes.open:${encodeURIComponent(id)}`);
   return (
@@ -67,6 +70,7 @@ export function ChangesBanner() {
           <span className="axp-codebase-changes-banner__top">
             <strong>{n} codebase change{n === 1 ? '' : 's'}</strong>
             {running > 0 && <span className="axp-codebase-changes__meta">{running} in progress</span>}
+            {quiet > 0 && <span className="axp-codebase-changes__meta" title="Still marked running, but no word from their session for over 10 minutes">{quiet} no word</span>}
             {failed > 0 && <span className="axp-codebase-changes__meta is-danger">{failed} failed</span>}
             <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
           </span>
