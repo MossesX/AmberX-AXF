@@ -1,0 +1,9 @@
+[
+  { "name": "builds", "steps": [{ "search": "Builds" }, { "wait": 6000 }], "viewports": ["phone", "desktop"] },
+  { "name": "pending", "steps": [{ "search": "Pending builds" }, { "wait": 6000 }], "viewports": ["phone", "desktop"] },
+  { "name": "orchestrator", "steps": [{ "search": "Build orchestrator" }, { "wait": 6000 }, { "click": ".axf-grid-row button[aria-label=\"Expand row\"] >> nth=0" }, { "wait": 800 }], "viewports": ["phone", "desktop"] },
+  { "name": "queue", "steps": [{ "search": "Builds" }, { "wait": 6000 }, { "press": "2" }, { "wait": 1200 }], "viewports": ["phone", "desktop"] },
+  { "name": "plan", "steps": [{ "search": "Builds" }, { "wait": 6000 }, { "press": "3" }, { "wait": 1200 }, { "click": ".axf-grid-row button[aria-label=\"Expand row\"] >> nth=0" }, { "wait": 800 }], "viewports": ["phone", "desktop"] },
+  { "name": "tracker", "steps": [{ "search": "Builds" }, { "wait": 6000 }, { "press": "4" }, { "wait": 1200 }], "viewports": ["phone", "desktop"] },
+  { "name": "steps", "steps": [{ "search": "Builds" }, { "wait": 6000 }, { "press": "6" }, { "wait": 1200 }], "viewports": ["phone", "desktop"] }
+]

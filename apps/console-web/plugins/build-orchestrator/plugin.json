@@ -12,6 +12,7 @@
   ],
   "provides": [
     "view:build-orchestrator",
+    "view:orchestrator-editor",
     "settings-tab:build-orchestrator",
     "service:orchestrator@1"
   ],

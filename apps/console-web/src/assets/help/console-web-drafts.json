@@ -683,6 +683,12 @@
         "text": "Shows “AshesUI”.",
         "kind": "menu-item",
         "draft": true
+      },
+      {
+        "target": "view:plan-editor",
+        "title": "Plan editor",
+        "text": "Opens the Plan editor: plan features with acceptance criteria, previews and media. The Builds page's Plan view shows the same builds.",
+        "kind": "screen"
       }
     ],
     "intros": []

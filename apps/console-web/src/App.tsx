@@ -41,13 +41,27 @@ const ashesLibrary = createAshesLibrary({
   ),
 });
 
+/**
+ * The old builds screens are views of the one Builds page now (builds-page plugin, Nov 1 2026): their ids stay (nav
+ * assets, menus, links, search keep working) and open the matching view. With that plugin off they show the old page.
+ */
+function BuildsRedirect({ view, fallback }: { view: string; fallback: () => JSX.Element }) {
+  const rt = useRuntime();
+  const can = !!rt.actions.get('builds.open');
+  useEffect(() => { if (can) rt.dispatch(`builds.open:${view}`); }, [rt, can, view]);
+  return can ? null : fallback();
+}
+
 /** Views the shell can show. The console-nav asset references these ids. */
 const views: ViewMap = {
   home: { title: 'Home', icon: 'home', render: () => <Home /> },
-  tracker: { title: 'Tracker', icon: 'check-circle', render: () => <Tracker /> },
-  plan: { title: 'Plan', icon: 'layers', render: () => <Plan /> },
-  build: { title: 'Build queue', icon: 'play', render: () => <BuildManager /> },
-  pending: { title: 'Pending builds', icon: 'clock', render: () => <Pending /> },
+  tracker: { title: 'Tracker', icon: 'check-circle', render: () => <BuildsRedirect view="tracker" fallback={() => <Tracker />} /> },
+  plan: { title: 'Plan', icon: 'layers', render: () => <BuildsRedirect view="plan" fallback={() => <Plan />} /> },
+  build: { title: 'Build queue', icon: 'play', render: () => <BuildsRedirect view="queue" fallback={() => <BuildManager />} /> },
+  pending: { title: 'Pending builds', icon: 'clock', render: () => <BuildsRedirect view="pending" fallback={() => <Pending />} /> },
+  // the full editors behind the Plan and Tracker views (plan features with media; catalog status.json)
+  'plan-editor': { title: 'Plan editor', icon: 'edit', render: () => <Plan /> },
+  'feature-tracker': { title: 'Feature tracker', icon: 'check-circle', render: () => <Tracker /> },
   // Standards: rules every project must meet (first: project manifests).
   'standards-projects': { title: 'Projects', icon: 'folder', render: () => <Standards tab="projects" /> },
   'standards-rules': { title: 'Manifest rules', icon: 'shield', render: () => <Standards tab="rules" /> },

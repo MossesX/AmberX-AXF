@@ -3,7 +3,8 @@
 The console adds the console-token check (every method) and the 404 while disabled. Every read and change goes
 through the plugin's CLI (builds.mjs --json) on the one builds store (builds@1, framework/cli/builds-store.mjs), so the
 page, the CLI, the orchestrator and other sessions share one set of records. Every write is versioned (journal).
-AmberX reaches these routes through its console forward (hub admins only). Never exposed on the console MCP.
+AmberX reaches these routes through its console forward (hub admins only). The console's control@1 plugins domain
+lists every route as a command (REST /api/control/builds-page/…, MCP, `axf builds-page …`); see plugin.json commands.
 """
 from __future__ import annotations
 
@@ -102,3 +103,66 @@ async def rename_profile(request: Request) -> dict[str, Any]:
     if not isinstance(data.get("id"), str) or not PROFILE.match(data["id"]):
         raise HTTPException(400, "bad profile id")
     return _run("rename-profile", json.dumps(data))
+
+
+# ---- every view and the page's immediate commands, by name (control@1 plugins domain: REST, MCP, CLI)
+
+VIEWS = ("pending", "queue", "plan", "tracker", "orchestrator", "steps")
+FILTERS = ("open", "complete", "archived", "hidden", "all")
+BUILD_ID = re.compile(r"^[a-z0-9][a-z0-9._-]{0,99}$")
+
+
+@router.get("/view/{name}")
+def view(name: str, profile: str | None = None, filter: str = "open", q: str = "", build: str = "") -> dict[str, Any]:
+    if name not in VIEWS:
+        raise HTTPException(404, f"no view {name} (one of {', '.join(VIEWS)})")
+    if filter not in FILTERS:
+        raise HTTPException(400, f"unknown filter {filter}")
+    if build and not BUILD_ID.match(build):
+        raise HTTPException(400, "bad build id")
+    opts = {"filter": filter, "q": q[:200], "build": build, **({"profile": profile} if profile else {})}
+    _profile(profile)
+    return _run("view", name, json.dumps(opts))
+
+
+async def _named(request: Request, cmd: str) -> dict[str, Any]:
+    data = await _json(request)
+    return _run(cmd, json.dumps(data))
+
+
+@router.post("/tick")
+async def tick(request: Request) -> dict[str, Any]:
+    return await _named(request, "tick")
+
+
+@router.post("/status")
+async def set_status(request: Request) -> dict[str, Any]:
+    return await _named(request, "status")
+
+
+@router.post("/hide")
+async def hide(request: Request) -> dict[str, Any]:
+    return await _named(request, "hide")
+
+
+@router.post("/unhide")
+async def unhide(request: Request) -> dict[str, Any]:
+    return await _named(request, "unhide")
+
+
+@router.post("/archive")
+async def archive(request: Request) -> dict[str, Any]:
+    return await _named(request, "archive")
+
+
+@router.post("/note")
+async def note(request: Request) -> dict[str, Any]:
+    return await _named(request, "note")
+
+
+@router.delete("/build/{build_id}")
+def delete_build(build_id: str, profile: str | None = None) -> dict[str, Any]:
+    if not BUILD_ID.match(build_id):
+        raise HTTPException(400, "bad build id")
+    _profile(profile)
+    return _run("delete", json.dumps({"ids": [build_id], **({"profile": profile} if profile else {})}))

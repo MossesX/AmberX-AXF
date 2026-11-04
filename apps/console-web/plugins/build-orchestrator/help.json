@@ -53,6 +53,12 @@
         "title": "Approve upgrade",
         "text": "Approves the waiting model upgrade request for this phase. Only Brett's own click counts; it is recorded with his name.",
         "kind": "button"
+      },
+      {
+        "target": "view:orchestrator-editor",
+        "title": "Orchestrator editor",
+        "text": "Opens the Orchestrator editor: add builds, edit and move steps, set the rules. The Builds page's Orchestrator view shows the same builds.",
+        "kind": "nav"
       }
     ],
     "intros": []

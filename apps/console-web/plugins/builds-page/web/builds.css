@@ -46,3 +46,29 @@
 .axp-builds__proposal-steps { margin: 0; padding-left: var(--fx-dens-gap-4xl) }
 :where([data-fx-small]) .axp-builds__pick { flex: 1 1 100% } :where([data-fx-small]) .axp-builds__steps li { grid-template-columns: auto calc(var(--fx-space) * 10) auto 1fr } :where([data-fx-small]) .axp-builds__steps li > .fx-chip { display: none }
 .axp-builds__tick { display: inline-flex; align-items: center; min-width: calc(var(--fx-space) * 5); min-height: calc(var(--fx-space) * 5) }
+/* view toolbar: one line; scrolls sideways (with snap) when it doesn't fit, never wraps or overlaps */
+.axp-builds__views { display: flex; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none }
+.axp-builds__views > * { flex: 0 0 auto; scroll-snap-align: start }
+.axp-builds__find { flex: 1 1 calc(var(--fx-font-size) * 12); min-width: 0 }
+.axp-builds__tools { align-items: center; gap: var(--fx-dens-gap-sm) }
+.axp-builds__table { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+/* one-line rows: name, then the summary in what room is left */
+.axp-builds__cell-one { display: flex; align-items: center; min-width: 0; width: 100%; gap: var(--fx-dens-gap-md); white-space: nowrap }
+.axp-builds__cell-one > .axp-builds__name { flex: 0 1 auto; min-width: 0 }
+/* grid rows size to their content (max-content): bound the title so a long name ellipsizes instead of pushing the
+   other columns off the row */
+.axp-builds__cell-one { max-width: calc(var(--fx-font-size) * 36) }
+:where([data-fx-small]) .axp-builds__cell-one { max-width: calc(var(--fx-font-size) * 15) }
+.axp-builds__ellipsis { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-builds__rel { position: relative; display: inline-flex }
+.axp-builds__popover { position: absolute; top: 100%; left: 0; z-index: 5; min-width: calc(var(--fx-font-size) * 11) }
+/* multi-select switched on: the top row shows its hover look three times */
+.axp-builds__flash { animation: axp-builds-flash calc(var(--fx-motion) * 2) var(--fx-ease) 3 }
+@keyframes axp-builds-flash { 50% { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-hover) * 100%), transparent) } }
+@media (prefers-reduced-motion: reduce) { .axp-builds__flash { animation: none } }
+.axp-builds__nest { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding-left: var(--fx-dens-gap-lg); border-left: var(--fx-border-w) solid var(--fx-border) }
+.axp-builds__checks { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs) }
+.axp-builds__phases { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg) }
+.axp-builds__phase { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm) }
+.axp-builds__phase-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+:where([data-fx-small]) .axp-builds__find { flex-basis: 100% } :where([data-fx-small]) .axp-builds__wide { display: none }

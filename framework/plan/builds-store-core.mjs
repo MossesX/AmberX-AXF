@@ -733,12 +733,26 @@ export function verifyNothingLost(sources, store) {
  * A rename with an empty title is refused. Ids never change.
  */
 export const DRAFT_OPS = ['reorder-steps', 'reorder-builds', 'rename-build', 'rename-step', 'rename-profile', 'divide-step', 'harvest', 'restore-default'];
-/** Ops applied at once only, never drafted: { op: 'step-done', build, uid, done } ticks a step (or takes the tick off). */
-export const NOW_OPS = ['step-done'];
+/**
+ * Ops the Builds page applies at once, never through a draft (the old Pending / orchestrator page actions):
+ *   { op: 'step-done', build, uid, done }   tick or untick one step (the build's status follows); 'tick-step' is the same op
+ *   { op: 'set-status', ids: [...], status } · { op: 'hide'|'unhide'|'archive'|'delete', ids: [...] } · { op: 'note', id, text }
+ * Delete is soft (deleted: true, journalled): `builds-store.mjs restore <id> <rev>` brings it back.
+ * Model-switch approvals are not an op here: they go through the orchestrator (orchestrator-core `approve`), which lets a
+ * downgrade pass and holds an upgrade for Brett (framework/core/model-switch.mjs).
+ */
+export const NOW_OPS = ['step-done', 'tick-step', 'set-status', 'hide', 'unhide', 'archive', 'delete', 'note'];
+const BULK_OPS = ['set-status', 'hide', 'unhide', 'archive', 'delete'];
 
 export function validateOp(op, { now = false } = {}) {
-  if (!op || !(DRAFT_OPS.includes(op.op) || (now && NOW_OPS.includes(op.op)))) throw new Error(`unknown ${now ? '' : 'draft '}op ${op?.op}`);
-  if (op.op === 'step-done' && (!str(op.build) || !str(op.uid))) throw new Error('tick a step by its build and uid');
+  if (now && op && NOW_OPS.includes(op.op)) {
+    if (BULK_OPS.includes(op.op) && (!Array.isArray(op.ids) || !op.ids.length)) throw new Error('select the builds first');
+    if (op.op === 'set-status' && !STATUSES.includes(op.status)) throw new Error(`unknown status ${op.status}`);
+    if (op.op === 'note' && !str(op.text).trim()) throw new Error('empty note');
+    if ((op.op === 'step-done' || op.op === 'tick-step') && (!str(op.build) || !str(op.uid))) throw new Error('tick a step by its build and uid');
+    return op;
+  }
+  if (!op || !DRAFT_OPS.includes(op.op)) throw new Error(`unknown ${now ? '' : 'draft '}op ${op?.op}`);
   if (op.op === 'rename-build' && !str(op.title).trim()) throw new Error('a build needs a name');
   if (op.op === 'rename-step' && !str(op.title).trim()) throw new Error('a step needs a name');
   if (op.op === 'rename-profile' && !str(op.name).trim()) throw new Error('a profile needs a name');
@@ -798,15 +812,21 @@ function applyOps(s, profile, ops, { now = nowIso(), by = 'console', dry = false
   let profileName = null;
   const get = (id) => { const b = s.builds.find((x) => x.id === id && !x.deleted); if (!b) throw new Error(`no build "${id}"`); return b; };
   const touched = new Set();
+  const stamped = new Set(); // changed, but the status stays as set
   for (const op of ops) {
     validateOp(op, { now: direct });
     switch (op.op) {
-      case 'step-done': {
+      case 'step-done': case 'tick-step': {
         const b = get(op.build); const st = b.steps.find((x) => x.uid === op.uid); if (!st) throw new Error(`no step ${op.uid} in ${b.id}`);
         st.done = op.done !== false; st.doneAt = st.done ? now : ''; st.updatedAt = now; touched.add(b.id);
         if (b.status !== 'complete' && b.steps.every((x) => x.skip || x.done)) b.builtAt = now; // the status itself follows below, like every op
         log.push(`${b.id} ${st.id} ${st.done ? 'done' : 'not done'}`); break;
       }
+      case 'set-status': for (const id of op.ids) { const b = get(id); b.status = op.status; b.builtAt = ['built', 'complete'].includes(op.status) ? (b.builtAt || now) : ''; stamped.add(b.id); log.push(`${b.id} → ${op.status}`); } break;
+      case 'hide': case 'unhide': for (const id of op.ids) { const b = get(id); b.hidden = op.op === 'hide'; stamped.add(b.id); log.push(`${op.op} ${b.id}`); } break;
+      case 'archive': for (const id of op.ids) { const b = get(id); b.status = 'archived'; b.builtAt = ''; stamped.add(b.id); log.push(`archived ${b.id}`); } break;
+      case 'delete': for (const id of op.ids) { const b = get(id); b.deleted = true; b.deletedAt = now; stamped.add(b.id); log.push(`deleted ${b.id} (restore from the journal)`); } break;
+      case 'note': { const b = get(op.id); b.notes.push({ text: str(op.text, 2000).trim(), at: now }); stamped.add(b.id); log.push(`note on ${b.id}`); break; }
       case 'reorder-steps': {
         const b = get(op.build);
         const by_ = new Map(b.steps.map((x) => [x.uid, x]));
@@ -881,6 +901,7 @@ function applyOps(s, profile, ops, { now = nowIso(), by = 'console', dry = false
       default: throw new Error(`unknown op ${op.op}`);
     }
   }
+  for (const id of stamped) { const b = s.builds.find((x) => x.id === id); if (b && !dry) b.updatedAt = now; }
   for (const id of touched) { const b = s.builds.find((x) => x.id === id); if (!b) continue; if (!dry) b.updatedAt = now; if (b.status !== 'archived' && b.status !== 'blocked' && b.status !== 'failed' && b.steps.length) { const d = b.steps.filter((x) => !x.skip); b.status = d.length && d.every((x) => x.done) ? 'complete' : d.some((x) => x.done) ? 'running' : b.status === 'complete' ? 'running' : b.status; } }
   renumber(s, profile);
   return { store: s, log, profileName };
