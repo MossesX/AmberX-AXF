@@ -52,11 +52,13 @@ export function host(id: string, seed?: HostSession[]): HostState {
 export const hostIds = () => [...hosts.keys()];
 export const hostOf = (sid: string) => [...hosts.entries()].find(([, h]) => h.sessions.some((s) => s.id === sid))?.[0] ?? null;
 
-export function addSession(hostId: string, s: HostSession, at?: number) {
+/** Add a session to a host; `background` keeps the current tab in front (a quiet headless tab). */
+export function addSession(hostId: string, s: HostSession, at?: number, background = false) {
   const h = host(hostId);
   const i = at ?? h.sessions.length;
   h.sessions = [...h.sessions.slice(0, i), s, ...h.sessions.slice(i)];
-  h.active = s.id; emit();
+  if (!background || !h.active) h.active = s.id;
+  emit();
 }
 /** Take a session out of its host (closing or moving it). Returns it. */
 export function removeSession(sid: string): HostSession | null {

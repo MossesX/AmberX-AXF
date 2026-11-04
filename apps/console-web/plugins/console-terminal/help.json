@@ -457,6 +457,12 @@
         "text": "Slide to set “Context chain text size (share of the theme’s text)”: left is less, right is more. Part of Terminal.",
         "kind": "slider",
         "draft": true
+      },
+      {
+        "target": "when-a-new-session-starts",
+        "title": "When a new session starts",
+        "text": "What the Terminal does when a headless Claude session starts. Add tab quietly (default) adds its tab in the background of an open Terminal window and shows a count on the Terminal toolbar icon, without bringing the window up. Do nothing adds no tab (the sessions list still shows it). Bring Terminal to front opens it and brings the window up.",
+        "kind": "field"
       }
     ],
     "intros": []

@@ -28,6 +28,29 @@ export function toOpen(items: Headless[], shown: Set<string>, closedSet: Set<str
   return items.filter((h) => HEADLESS_NAME.test(h.name) && !shown.has(h.name) && !closedSet.has(h.name)).sort((a, b) => a.createdAt - b.createdAt);
 }
 
+/**
+ * 'When a new session starts' (terminal-no-focus, Nov 4 2026, Brett: "I don't want the terminal to come to the front on
+ * every session."): nothing = no tab by itself; quiet (default) = a background tab in an open terminal window, never a
+ * new window, never a tab switch, plus a count on the Terminal toolbar icon; front = open it and raise the window.
+ */
+export type NewSessionMode = 'nothing' | 'quiet' | 'front';
+export const NEW_SESSION_MODES: NewSessionMode[] = ['nothing', 'quiet', 'front'];
+/** The toolbar badge (runtime counter) the Terminal icon shows: new headless sessions Brett hasn't looked at. */
+export const NEW_SESSIONS_BADGE = 'terminal.sessions.new';
+export const newSessionMode = (v: unknown): NewSessionMode => (NEW_SESSION_MODES.includes(v as NewSessionMode) ? (v as NewSessionMode) : 'quiet');
+
+/**
+ * What the watcher does with the sessions toOpen() picked. Pure.
+ *  open  — add a tab now (`raise` = bring the window to the front and switch to it)
+ *  wait  — quiet with no terminal window open: no window pops; they count on the badge and get a background tab once
+ *          Brett opens the Terminal himself
+ */
+export function planNew(mode: NewSessionMode, fresh: Headless[], hasWindow: boolean): { open: Headless[]; wait: Headless[]; raise: boolean } {
+  if (mode === 'nothing') return { open: [], wait: [], raise: false };
+  if (mode === 'front') return { open: fresh, wait: [], raise: true };
+  return hasWindow ? { open: fresh, wait: [], raise: false } : { open: [], wait: fresh, raise: false };
+}
+
 
 /**
  * The chain as a tree (terminal-drag-chain-tree, Nov 3 2026, Brett: "every file that is chained, it needs to open
