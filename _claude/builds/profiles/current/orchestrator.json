@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T15:11:06.794Z",
+ "updatedAt": "2026-11-04T15:29:59.786Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3863,8 +3863,9 @@
    "pendingId": "",
    "branch": "claude/gizmo-companion",
    "pr": "#296",
+   "mergedAt": "2026-11-04T15:24:48Z",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-04T12:44:12.117Z",
+   "updatedAt": "2026-11-04T15:25:05.014Z",
    "builtAt": "",
    "notes": [
     {
@@ -3886,6 +3887,14 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-04T12:44:12.117Z"
+    },
+    {
+     "text": "Step 1 (basic chat + window look) landed in PR #296 (merged 471e66fe) by urgent-land-gizmo-chat. Remaining steps continue as gizmo-voice, then gizmo-terminal.",
+     "at": "2026-11-04T15:24:59.452Z"
+    },
+    {
+     "text": "Reconciler: PR #296 merged",
+     "at": "2026-11-04T15:25:05.014Z"
     }
    ],
    "approvals": [],
@@ -6564,19 +6573,24 @@
    "title": "Expenses port: bring Expenses into AmberX-AXF as its own app",
    "category": "Apps",
    "detail": "Port MossesX/Expense (live amberx-expenses) into apps/expenses with history; framework bake, axHub look, Molly frame; deploy from AXF on the same /data volume with rollback; API/MCP/CLI; report.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/expenses-port",
    "pr": "#307",
+   "mergedAt": "2026-11-04T15:14:30Z",
    "createdAt": "2026-11-04T11:09:10.279Z",
-   "updatedAt": "2026-11-04T11:35:37.941Z",
+   "updatedAt": "2026-11-04T15:20:34.063Z",
    "builtAt": "2026-11-04T11:35:37.941Z",
    "notes": [
     {
      "text": "Assigned: Reel Rhonda (no Polo card on the roster). Session headless, worktree /root/axf-builds/expenses-port.",
      "at": "2026-11-04T11:11:28.331Z"
+    },
+    {
+     "text": "Reconciler: PR #307 merged",
+     "at": "2026-11-04T15:20:21.992Z"
     }
    ],
    "approvals": [],
@@ -7540,19 +7554,28 @@
    "title": "Urgent: land PR #296 (Gizmo basic chat)",
    "category": "",
    "detail": "Booked to agent Reel Rhonda (no Gizmo card in the roster). Update claude/gizmo-companion from main, resolve conflicts keeping both sides, verify step 1 (basic chat), CI green, merge, redeploy AmberX web.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "urgent-land-gizmo-chat",
    "branch": "claude/gizmo-companion",
    "pr": "#296",
+   "mergedAt": "2026-11-04T15:24:48Z",
    "createdAt": "2026-11-04T14:14:12.849Z",
-   "updatedAt": "2026-11-04T15:05:56.718Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T15:28:12.822Z",
+   "builtAt": "2026-11-04T15:28:12.822Z",
    "notes": [
     {
      "text": "CI green on efe58a9d7 (all 4 jobs). Waiting for push-banner auto-merge (GitHub REST token rate-limited until 15:05 UTC; GitHub App not set up).",
      "at": "2026-11-04T15:05:56.718Z"
+    },
+    {
+     "text": "Reconciler: PR #296 merged",
+     "at": "2026-11-04T15:25:05.014Z"
+    },
+    {
+     "text": "Reconciler: PR #296 merged: complete",
+     "at": "2026-11-04T15:28:12.822Z"
     }
    ],
    "approvals": [],
@@ -7620,7 +7643,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-04T14:27:20.536Z",
+     "doneAt": "2026-11-04T15:24:58.362Z",
      "note": "",
      "uid": "st-mw27fkdv03ji6x"
     },
@@ -12253,7 +12276,7 @@
    "branch": "claude/apps-control-surface",
    "pr": "",
    "createdAt": "2026-11-04T15:00:59.141Z",
-   "updatedAt": "2026-11-04T15:01:02.403Z",
+   "updatedAt": "2026-11-04T15:11:05.987Z",
    "builtAt": "",
    "notes": [
     {
@@ -12289,8 +12312,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T15:11:05.987Z",
      "note": "",
      "uid": "st-mw28uz06066k9f"
     },
@@ -12365,6 +12388,146 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw28uz060adk91"
+    }
+   ]
+  },
+  {
+   "id": "tab-group-assets",
+   "title": "Tab groups, toolbars, banners and nav menus are assets with an asset settings interface, right-click to settings",
+   "category": "Framework",
+   "detail": "Build tab-group-assets (Fable): tab-group@1 extended; every chrome type (tab-group, toolbar, banner, nav-menu, app-menu, context-menu) gets a shared default settings-interface asset plus a per-app custom copy (the shared default selected by default); one shared chrome context menu (Settings / Change / Move); every hard-coded tab row migrated onto the framework TabGroup; rule + CI check with a ratchet; control@1 commands for voice.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-04T15:29:38.375Z",
+   "updatedAt": "2026-11-04T15:29:40.367Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Looking at UI Review's row (Design packs, Whole apps, Screens and pages, Settings interfaces, Dialogs, Menus), which switches the list = a tab group: \"If it's a tab group, why can't I get to the tab group settings by right-clicking on it?\" ... \"Needs to be. Yeah, all tab groups are supposed to be assets. With a settings interface, that's also an asset.\"\n\nAddendum 1 (voice, Nov 4): \"Right now, I want to make sure that navigation menus, toolbars, banners, are all asset types, and they all have a settings interface, which is an asset, and we can get to their settings by right-clicking all of them.\"\n\nAddendum 2 (voice, Nov 4): \"Every asset type that has the settings interface, there's going to be a default settings interface for all, used by default. And then there will be another one that will make a customized one for every app. And by default, the custom one will be selected.\"\n\nAddendum 3 (voice, Nov 4, correction): \"No, actually, by default, it uses the default one.\"",
+    "at": "2026-11-04T12:00:00.000Z",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "Brett",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "s1 tab-group@1 contract: schema (position left/right, display, overflow more-menu/dropdown, size, sticky, collapsible, closable, reorderable, badges, rememberLast), types, engine tokens + data attrs, fixtures, PORTING.md, 6 new starter assets",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw29vtlc07r7ed"
+    },
+    {
+     "id": "s2",
+     "text": "s2 chrome-settings@1: one shared default settings-interface asset per chrome type (tab-group, toolbar, banner, nav-menu, app-menu, context-menu), per-app custom copies inheriting from the default (shared default selected by default), engine + fixture + check, build engine init + back-fill",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw29vtlc088t0m"
+    },
+    {
+     "id": "s3",
+     "text": "s3 Shared chrome context menu + settings host: right-click / long-press any tab group, toolbar, banner or nav menu -> Settings / Change (asset picker) / Move; framework TabGroup component on the tab-group asset",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw29vtlc09ldk1"
+    },
+    {
+     "id": "s4",
+     "text": "s4 Migrate every hard-coded tab row in the console (UI Review first), Molly, AmberX web and axHub web onto TabGroup",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw29vtlc0aveih"
+    },
+    {
+     "id": "s5",
+     "text": "s5 Rule in RULES.md + PORTING.md, CI check check-chrome-assets.mjs (tab rows, toolbars, banners, nav menus) with a ratchet baseline, control@1 commands so Amber can change a tab group's settings by voice, tests",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw29vtlc0bf3g7"
+    },
+    {
+     "id": "s6",
+     "text": "s6 Type-check + checks, UI Review shots (non-blocking), audit table report in _claude/builds/reports/tab-group-assets.md, THREADS, PR, land",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw29vtlc0calga"
     }
    ]
   }
