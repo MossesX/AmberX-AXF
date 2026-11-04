@@ -4,6 +4,8 @@ import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as core from './review-core.mjs';
 import * as cf from './conform.mjs';
+import * as P from '../../../../../framework/core/ui-predict.mjs';
+import type { Prediction } from '../../../../../framework/core/ui-predict.mjs';
 import type { Decision, Item, Kind } from './review-core.mjs';
 import { FOLDER, GROUP_BYS, KEYS, VIEWS, type GroupBy, type ViewId } from './keys';
 import { ShotBrowser } from './shots';
@@ -47,12 +49,25 @@ export function GroupPick({ ids, label }: { ids: string[]; label: string }) {
   return <span className="axp-ui-review__check" onClick={(e) => e.stopPropagation()}><Checkbox label={<span className="axp-ui-review__sr">Select all in {label}</span>} checked={st === 'all'} indeterminate={st === 'some'} onChange={(on) => r.setSel(core.setGroup(r.sel, ids, on))} /></span>;
 }
 
+const predictionOf = (it: Item) => (it.prediction && typeof it.prediction === 'object' ? (it.prediction as Prediction) : null);
+const LOOK_LABEL: Record<string, string> = { waiting: 'Predicted - approve the look', approved: 'Look approved', changes: 'Look changes asked', rejected: 'Look rejected' };
+
+/** Predicted (the after-shots are a mockup) or Real (the build's own screens), on every row and card. */
+export function PredictBadge({ it }: { it: Item }) {
+  const p = predictionOf(it);
+  if (!p) return null;
+  return p.state === 'real'
+    ? <span className="fx-chip fx-chip--success axp-ui-review__status" title={LOOK_LABEL[p.look?.status ?? 'waiting']}><Icon name="check" size={12} />Real</span>
+    : <span className="fx-chip fx-chip--warning axp-ui-review__status" title={LOOK_LABEL[p.look?.status ?? 'waiting']}><Icon name="eye" size={12} />Predicted</span>;
+}
+
 /** One line of meta: kind · app · build · PR · shots. */
 export function Meta({ it, kind = true }: { it: Item; kind?: boolean }) {
   const r = useReview();
   const k = r.kinds.find((x) => x.id === it.kind);
   return (
     <span className="axp-ui-review__meta fx-small fx-muted">
+      <PredictBadge it={it} />{predictionOf(it) ? ' ' : null}
       {it.build ? <><AgentAvatar inText={`${it.build}\n${it.branch.replace(/^[^/]*\//, '')}`} size="small" /> </> : null}
       {[kind && (k?.label ?? it.kind), it.app, it.build, it.pr ? `#${it.pr}` : '', `${it.shots.length} shot${it.shots.length === 1 ? '' : 's'}`].filter(Boolean).join(' · ')}
     </span>
@@ -66,29 +81,53 @@ export function Detail({ it }: { it: Item }) {
   const r = useReview();
   const [comment, setComment] = useState(it.comment ?? '');
   useEffect(() => setComment(it.comment ?? ''), [it.id, it.comment]);
-  const shots = r.device ? it.shots.filter((s) => s.device === r.device) : it.shots;
+  const p = predictionOf(it);
+  // a predicted item: show predicted (or real, once built), the current screen before it, or predicted vs real
+  const [show, setShow] = useState<'after' | 'before' | 'predicted' | 'compare'>('after');
+  const roles = new Set(it.shots.map((s) => P.roleOf(s.src)));
+  const role = (s: { src: string }) => P.roleOf(s.src);
+  const byShow = !p ? it.shots
+    : show === 'before' ? it.shots.filter((s) => role(s) === 'before')
+    : show === 'predicted' ? it.shots.filter((s) => role(s) === 'predicted')
+    : show === 'compare' ? it.shots.filter((s) => role(s) !== 'before')
+    : it.shots.filter((s) => role(s) === (p.state === 'real' ? 'real' : 'predicted'));
+  const shown = byShow.length ? byShow : it.shots;
+  const shots = r.device ? shown.filter((s) => s.device === r.device) : shown;
+  const lookWord = p && p.state === 'predicted' ? ' look' : '';
   const repo = typeof it.repo === 'string' && /^[\w.-]+\/[\w.-]+$/.test(it.repo) ? it.repo : REPO;
   const packId = it.pack?.id;
   const on = !!packId && r.picked.includes(packId);
   return (
     <div className="axp-ui-review__detail">
-      <ShotBrowser shots={shots.length ? shots : it.shots} title={it.title} />
+      <ShotBrowser shots={shots.length ? shots : shown} title={it.title} />
       <div className="axp-ui-review__facts">
+        {p && (
+          <div className="axp-ui-review__predict" role="group" aria-label="Predicted look">
+            <PredictBadge it={it} />
+            <Segmented<typeof show> label="Which pictures" value={show} onChange={setShow} options={[
+              { value: 'after', label: p.state === 'real' ? 'Real' : 'Predicted' },
+              ...(roles.has('before') ? [{ value: 'before' as const, label: 'Now (main)' }] : []),
+              ...(p.state === 'real' && roles.has('predicted') ? [{ value: 'predicted' as const, label: 'Predicted' }, { value: 'compare' as const, label: 'Predicted vs real' }] : []),
+            ]} />
+            <span className="fx-small fx-muted axp-ui-review__cost">{LOOK_LABEL[p.look?.status ?? 'waiting']} · mockup ${(p.cost?.usd ?? 0).toFixed(2)} ({p.cost?.model ?? 'rules'}){p.refreshes ? ` · refreshed ${p.refreshes}×` : ''}</span>
+          </div>
+        )}
         <dl className="axp-ui-review__dl">
           {it.app && <><dt>App</dt><dd>{it.app}</dd></>}
           {it.build && <><dt>Build</dt><dd>{it.build}</dd></>}
           {it.branch && <><dt>Branch</dt><dd className="fx-mono">{it.branch}</dd></>}
           {it.pr && <><dt>PR</dt><dd><a className="fx-link" href={`https://github.com/${repo}/pull/${it.pr}`} target="_blank" rel="noreferrer">#{it.pr}</a></dd></>}
           {it.pack && <><dt>Look</dt><dd><span className="axp-ui-review__sw" aria-hidden="true">{it.pack.swatches.map((c, i) => <i key={i} style={{ background: c }} />)}</span> {it.pack.scheme === 'dark' ? 'Dark' : 'Light'} · {it.pack.font}px · {it.pack.radius}px</dd></>}
-          <dt>Status</dt><dd><StatusChip status={it.status} /></dd>
+          <dt>Status</dt><dd>{p && p.state === 'predicted' && it.status === 'waiting' ? <span className="fx-chip fx-chip--warning axp-ui-review__status"><Icon name="eye" size={12} />{LOOK_LABEL.waiting}</span> : <StatusChip status={it.status} />}</dd>
+          {p?.addenda?.length ? <><dt>Asked</dt><dd>{p.addenda.map((a, k) => <q key={k} className="fx-small">{a.text}</q>)}</dd></> : null}
         </dl>
         {it.notes && <p className="axp-ui-review__notes">{it.notes}</p>}
         <textarea className="fx-input axp-ui-review__comment" rows={2} value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Your comment (what to change, why)…" aria-label="Your comment" />
         <div className="axp-ui-review__acts">
           {packId && <Button size="sm" tone={on ? 'primary' : 'neutral'} icon={on ? 'check' : 'plus'} onClick={() => r.togglePick(packId)} aria-pressed={on}>{on ? 'Picked' : 'Pick'}</Button>}
-          <Button size="sm" tone="primary" icon="check" onClick={() => void r.decide([it.id], 'approve', comment)} disabled={it.status === 'approved' && comment === it.comment}>Approve</Button>
+          <Button size="sm" tone="primary" icon="check" onClick={() => void r.decide([it.id], 'approve', comment)} disabled={it.status === 'approved' && comment === it.comment}>Approve{lookWord}</Button>
           <Button size="sm" icon="edit" onClick={() => void r.decide([it.id], 'changes', comment)}>Ask changes</Button>
-          <Button size="sm" tone="danger" icon="x" onClick={() => void r.decide([it.id], 'reject', comment)}>Reject</Button>
+          <Button size="sm" tone="danger" icon="x" onClick={() => void r.decide([it.id], 'reject', comment)}>Reject{lookWord}</Button>
           {it.status !== 'waiting' && <Button size="sm" tone="ghost" icon="undo" onClick={() => void r.decide([it.id], 'reopen', comment)}>Reopen</Button>}
         </div>
         {it.history.length > 0 && (

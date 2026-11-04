@@ -8,7 +8,10 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import * as core from './review-core.mjs';
 import { GROUPS as SHOT_GROUPS } from './shots-core.mjs';
 import { appMenu } from './menu';
-import { FOLDER, GROUP_BYS, ID, KEYS, PACKS_VIEW, SHOT_PARAM, SHOTS_VIEW, VIEW, VIEWS } from './keys';
+import { FOLDER, GROUP_BYS, ID, KEYS, MOCKUP_VIEW, PACKS_VIEW, SHOT_PARAM, SHOTS_VIEW, VIEW, VIEWS } from './keys';
+import { MOCKUP_PARAM } from '../../../../../framework/core/ui-predict.mjs';
+import { MockupPage } from './mockup';
+import { LookApprovalPanel } from './look-settings';
 import { UiReviewPage } from './ui';
 
 const KEYWORDS = ['ui review', 'review', 'approve', 'approval', 'screenshots', 'shots', 'design', 'ui', 'reject', 'changes', 'waiting'];
@@ -24,10 +27,13 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('ui-review.screenshots', () => rt.navigate(SHOTS_VIEW), { label: 'Open Screenshots' });
     // a copied screenshot link (?ui-shot=<id>) lands on the Screenshots tab, which opens that picture
     if (new URLSearchParams(globalThis.location?.search ?? '').get(SHOT_PARAM)) setTimeout(() => rt.navigate(SHOTS_VIEW), 0);
+    // a build's predicted look (?ui-mockup=<spec>, ui-predict.mjs) opens the mockup page
+    if (new URLSearchParams(globalThis.location?.search ?? '').get(MOCKUP_PARAM)) setTimeout(() => rt.navigate(MOCKUP_VIEW), 0);
   },
   views: {
     [VIEW]: { title: 'UI Review', icon: 'eye', keywords: KEYWORDS, render: () => <UiReviewPage /> },
     [SHOTS_VIEW]: { title: 'Screenshots', icon: 'monitor', keywords: ['screenshots', 'shots', 'captures', 'before after', 'check', 'upload', 'pictures'], render: () => <UiReviewPage tab="shots" /> },
+    [MOCKUP_VIEW]: { title: 'Predicted look', icon: 'eye', keywords: ['predicted', 'mockup', 'look', 'preview'], render: () => <MockupPage /> },
     [PACKS_VIEW]: { title: 'Design packs', icon: 'palette', keywords: ['design', 'packs', 'look', 'theme', 'refactor', 'pick'], render: () => <UiReviewPage section={core.DESIGN_KIND} /> },
   },
   nav: { label: 'Plugins', items: [{ id: 'ui-review', label: 'UI Review', icon: 'eye', view: 'ui-review' }, { id: 'design-packs', label: 'Design packs', icon: 'palette', view: 'design-packs' }, { id: 'ui-screenshots', label: 'Screenshots', icon: 'monitor', view: 'ui-screenshots' }] },
@@ -43,5 +49,6 @@ export const plugin: AxfWebLibrary = {
       { key: KEYS.thumbs, label: 'Show the screens list', kind: 'toggle', default: true, description: 'The list of screens beside (on a phone: above) the preview.' },
     ],
   }],
-  settingsPanels: [{ id: 'ui-review.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+  settingsPanels: [{ id: 'ui-review.look', tab: FOLDER, title: 'Predicted looks', icon: 'eye', order: 20, render: () => <LookApprovalPanel /> },
+    { id: 'ui-review.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };
