@@ -944,6 +944,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 11:33 UTC · `expenses-port` s5 done (current) · orchestrator
 - 2026-11-04 11:35 UTC · `expenses-port` PR #307 (current) · builds-live
 - 2026-11-04 11:35 UTC · `expenses-port` s6 done, → built (current) · orchestrator
+- 2026-11-04 12:05 UTC · `molly-console-commands` merged (current) · builds-live
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 649,
- "updatedAt": "2026-11-04T11:35:49.864Z",
+ "rev": 650,
+ "updatedAt": "2026-11-04T12:05:59.574Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -60495,8 +60495,9 @@
    "pendingId": "",
    "branch": "claude/molly-console-commands",
    "pr": "#288",
+   "mergedAt": "2026-11-04T12:05:57.348Z",
    "createdAt": "2026-11-03T21:05:30.629Z",
-   "updatedAt": "2026-11-03T21:48:58.463Z",
+   "updatedAt": "2026-11-04T12:05:58.643Z",
    "builtAt": "",
    "notes": [
     {
@@ -62980,7 +62981,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
