@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 581,
- "updatedAt": "2026-11-04T01:03:42.642Z",
+ "rev": 590,
+ "updatedAt": "2026-11-04T01:33:10.840Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -53468,14 +53468,15 @@
    "title": "Auto-land finished builds (zero-token merge pipeline)",
    "category": "",
    "detail": "Relaunch of stopped auto-land as auto-land-2 (Brett, Nov 3 2026, voice). Agent: Earl the Ear. Plain-script merge pipeline reusing the push banner batch merge; AI only for real conflicts / red CI needing code.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/auto-land-2",
    "pr": "#270",
+   "mergedAt": "2026-11-04T00:53:37Z",
    "createdAt": "2026-11-03T18:01:41.577Z",
-   "updatedAt": "2026-11-03T18:37:10.577Z",
+   "updatedAt": "2026-11-04T01:24:29.253Z",
    "builtAt": "2026-11-03T18:37:09.577Z",
    "notes": [
     {
@@ -53493,6 +53494,10 @@
     {
      "text": "All 8 steps done. PR #270 (claude/auto-land-2), UI Review r-20261103-6537ada7 waiting. Related: #267 main CI fix, MossesX/axHub#36 claude-sync hold. Report _claude/builds/reports/auto-land.md. Goes live on merge (cron axf-auto-land).",
      "at": "2026-11-03T18:37:10.577Z"
+    },
+    {
+     "text": "Reconciler: PR #270 merged",
+     "at": "2026-11-04T01:24:29.253Z"
     }
    ],
    "approvals": [],
@@ -53683,7 +53688,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -66747,7 +66752,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:04:42.487Z",
-     "updatedAt": "2026-11-04T00:55:05.748Z"
+     "updatedAt": "2026-11-04T01:15:19.859Z"
     }
    ],
    "profiles": [
@@ -66797,7 +66802,7 @@
    "branch": "claude/gizmo-companion",
    "pr": "#296",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-03T23:57:12.826Z",
+   "updatedAt": "2026-11-04T01:15:50.561Z",
    "builtAt": "",
    "notes": [
     {
@@ -67231,12 +67236,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T01:15:50.561Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T22:18:50.824Z"
+     "updatedAt": "2026-11-04T01:25:34.264Z"
     }
    ],
    "profiles": [
@@ -67247,7 +67252,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -67298,11 +67303,16 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/plugin-lazy-load",
-   "pr": "",
+   "pr": "#298",
    "createdAt": "2026-11-03T22:55:16.843Z",
-   "updatedAt": "2026-11-04T00:41:46.533Z",
+   "updatedAt": "2026-11-04T01:24:29.253Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #298",
+     "at": "2026-11-04T01:24:29.253Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -67326,7 +67336,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:55:16.846Z",
-     "updatedAt": "2026-11-04T00:55:05.748Z"
+     "updatedAt": "2026-11-04T01:23:31.166Z"
     },
     {
      "id": "s2",
@@ -67348,7 +67358,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:55:16.846Z",
-     "updatedAt": "2026-11-04T00:55:05.748Z"
+     "updatedAt": "2026-11-04T01:23:31.166Z"
     },
     {
      "id": "s3",
@@ -67381,10 +67391,24 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-03T22:55:16.843Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw1ad3pr04dhfd": "2026-11-03T22:55:16.846Z",
+     "st-mw1ad3pr055ffm": "2026-11-03T22:55:16.846Z",
+     "st-mw1ad3pr06m09a": "2026-11-03T22:55:16.846Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-03T22:55:16.846Z",
    "rearranged": false,
@@ -67627,7 +67651,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:48:27.729Z"
+     "updatedAt": "2026-11-04T01:23:31.166Z"
     },
     {
      "id": "s2",
@@ -67649,7 +67673,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:57:41.130Z"
+     "updatedAt": "2026-11-04T01:23:31.166Z"
     },
     {
      "id": "s3",
@@ -67669,9 +67693,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s4",
@@ -67691,9 +67715,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s5",
@@ -67713,9 +67737,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s6",
@@ -67735,9 +67759,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s7",
@@ -67757,9 +67781,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s8",
@@ -67779,9 +67803,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s9",
@@ -67801,9 +67825,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s10",
@@ -67823,9 +67847,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s11",
@@ -67845,9 +67869,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s12",
@@ -67867,9 +67891,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s13",
@@ -67889,9 +67913,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s14",
@@ -67911,9 +67935,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s15",
@@ -67933,9 +67957,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s16",
@@ -67955,9 +67979,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     }
    ],
    "profiles": [
@@ -67984,14 +68008,14 @@
    "title": "Profile switcher widget (filter builds by profile, All profiles, attach to any toolbar or banner)",
    "category": "Builds",
    "detail": "What Brett said (verbatim, Nov 3 2026, voice): \"I need a plugin that makes a widget that can be attached to a toolbar or a banner or whatever, that lets you select their build package. Also, select something that combines all build profiles.\" Addendum 1: \"So basically it's like a filter. They're all shown everywhere, but only one of them is rendered. Basically make it a filter. Always just show everything in every build profile, but it just effectively filters to hide them.\" Addendum 2: \"That said, it's gonna act upon what's visible.\" Profiles are a view filter (multi-select, All = no filter) shared by every builds table; bulk actions act only on what is visible; the active profile stays the target for new builds. Assigned agent: Ping Paulie (no Polo card).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "voice",
    "pendingId": "",
    "branch": "claude/profile-switcher-widget",
    "pr": "",
    "createdAt": "2026-11-04T00:40:48.340Z",
-   "updatedAt": "2026-11-04T00:41:54.056Z",
+   "updatedAt": "2026-11-04T01:19:41.454Z",
    "builtAt": "",
    "notes": [
     {
@@ -68017,12 +68041,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T01:19:41.454Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:40:48.341Z",
-     "updatedAt": "2026-11-04T00:40:48.341Z"
+     "updatedAt": "2026-11-04T01:25:34.264Z"
     },
     {
      "id": "s2",
@@ -68121,7 +68145,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

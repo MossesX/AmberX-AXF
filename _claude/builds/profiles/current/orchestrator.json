@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T01:03:42.642Z",
+ "updatedAt": "2026-11-04T01:33:10.840Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3740,7 +3740,7 @@
    "branch": "claude/gizmo-companion",
    "pr": "#296",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-03T23:57:12.826Z",
+   "updatedAt": "2026-11-04T01:15:50.561Z",
    "builtAt": "",
    "notes": [
     {
@@ -4100,8 +4100,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T01:15:50.561Z",
      "note": "",
      "uid": "st-mw1927q512l9n0"
     }
@@ -4117,11 +4117,16 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/plugin-lazy-load",
-   "pr": "",
+   "pr": "#298",
    "createdAt": "2026-11-03T22:55:16.843Z",
-   "updatedAt": "2026-11-04T00:41:46.533Z",
+   "updatedAt": "2026-11-04T01:24:29.253Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #298",
+     "at": "2026-11-04T01:24:29.253Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -4645,14 +4650,14 @@
    "title": "Profile switcher widget (filter builds by profile, All profiles, attach to any toolbar or banner)",
    "category": "Builds",
    "detail": "What Brett said (verbatim, Nov 3 2026, voice): \"I need a plugin that makes a widget that can be attached to a toolbar or a banner or whatever, that lets you select their build package. Also, select something that combines all build profiles.\" Addendum 1: \"So basically it's like a filter. They're all shown everywhere, but only one of them is rendered. Basically make it a filter. Always just show everything in every build profile, but it just effectively filters to hide them.\" Addendum 2: \"That said, it's gonna act upon what's visible.\" Profiles are a view filter (multi-select, All = no filter) shared by every builds table; bulk actions act only on what is visible; the active profile stays the target for new builds. Assigned agent: Ping Paulie (no Polo card).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "voice",
    "pendingId": "",
    "branch": "claude/profile-switcher-widget",
    "pr": "",
    "createdAt": "2026-11-04T00:40:48.340Z",
-   "updatedAt": "2026-11-04T00:41:54.056Z",
+   "updatedAt": "2026-11-04T01:19:41.454Z",
    "builtAt": "",
    "notes": [
     {
@@ -4676,8 +4681,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T01:19:41.454Z",
      "note": "",
      "uid": "st-mw1e4to606peb2"
     },
