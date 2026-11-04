@@ -91,6 +91,8 @@ export const library: AxfWebLibrary = {
   builtWith: { model: 'opus', builtAt: '2026-11-03' },
   provides: ['amberx.companion'],
   tabs: { [WINDOW_KIND]: () => <CompanionView /> },
+  // design-ok: no page head — a chat window (Windows Terminal look): its title bar carries the chat title and controls
+
   views: { companion: { title: COMPANION.name, icon: 'sparkles', keywords: ['gizmo', 'companion', 'chat', 'claude', 'assistant', 'talk', 'ask', 'sidekick'], render: () => <CompanionView /> } },
   nav: { label: 'Gizmo', items: [{ id: 'companion', label: COMPANION.name, icon: 'sparkles', view: 'companion' }] },
   appMenu: [{
