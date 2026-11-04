@@ -959,6 +959,93 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 12:16 UTC · `molly-banners` → complete, merged (current) · builds-live
 - 2026-11-04 12:19 UTC · `hotfix-build-manager` added (4 steps) (current) · foreign-write
 - 2026-11-04 12:24 UTC · `hotfix-build-manager` added (4 steps) (current) · foreign-write
+- 2026-11-04 12:28 UTC · `hotfix-build-manager` s1 done, → running (current) · builds-page
+- 2026-11-04 12:28 UTC · `hotfix-build-manager` s1 done (current) · foreign-write
+- 2026-11-04 12:29 UTC · `hotfix-build-manager` s1 undone (current) · builds-page
+- 2026-11-04 12:30 UTC · `urgent-land-lazy-loader` added (4 steps) (current) · builds-live
+- 2026-11-04 12:34 UTC · `hotfix-build-manager` s1 undone (current) · foreign-write
+- 2026-11-04 12:34 UTC · `urgent-land-lazy-loader` added (4 steps) (current) · foreign-write
+- 2026-11-04 12:36 UTC · `urgent-land-lazy-loader` added (4 steps) (current) · foreign-write
+- 2026-11-04 12:29 UTC · `hotfix-build-manager` s1 undone (current) · foreign-write
+- 2026-11-04 12:29 UTC · `urgent-land-lazy-loader` added (4 steps) (current) · orchestrator
+- 2026-11-04 12:29 UTC · `urgent-land-lazy-loader` → running (current) · orchestrator
+- 2026-11-04 12:36 UTC · `urgent-land-lazy-loader` s1 done (current) · orchestrator
+- 2026-11-04 12:36 UTC · `urgent-land-lazy-loader` s2 done (current) · orchestrator
+- 2026-11-04 12:36 UTC · `urgent-land-lazy-loader` PR #298 (current) · builds-live
+- 2026-11-04 12:36 UTC · `urgent-land-lazy-loader` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 12:18 UTC · `hotfix-build-manager` added (4 steps) (current) · orchestrator
+- 2026-11-04 12:18 UTC · `hotfix-build-manager` → running (current) · orchestrator
+- 2026-11-04 12:41 UTC · `urgent-land-lazy-loader` added (4 steps) (current) · foreign-write
+- 2026-11-04 12:44 UTC · `element-inspector` → pending, note (angel) · reconciler
+- 2026-11-04 12:44 UTC · `layout-repeating-slots` → complete, note (angel) · reconciler
+- 2026-11-04 12:44 UTC · `orch-step-click` → pending, note (refactor) · reconciler
+- 2026-11-04 12:44 UTC · `molly-opus` → complete, note (big-dog) · reconciler
+- 2026-11-04 12:44 UTC · `walkthrough-random-look` → complete, note (refactor) · reconciler
+- 2026-11-04 12:44 UTC · `kill-patches-pilot` → complete, note (urgent) · reconciler
+- 2026-11-04 12:44 UTC · `toolbar-tap-confirm` → complete, note (urgent) · reconciler
+- 2026-11-04 12:44 UTC · `profile-manager` → pending, note (current) · reconciler
+- 2026-11-04 12:44 UTC · `molly-console-commands` → complete, note (current) · reconciler
+- 2026-11-04 12:44 UTC · `git-status-board` → pending, note (current) · reconciler
+- 2026-11-04 12:44 UTC · `urgent-main-ci-green` → complete, note (current) · reconciler
+- 2026-11-04 12:44 UTC · `terminal-tabs-left` → pending, note (current) · reconciler
+- 2026-11-04 12:44 UTC · `gizmo-companion` → pending, note (current) · reconciler
+- 2026-11-04 12:44 UTC · `browser-automation` → pending, note (current) · reconciler
+- 2026-11-04 12:44 UTC · `profile-switcher-widget` → pending, note (current) · reconciler
+- 2026-11-04 12:44 UTC · `app-style-override` → pending, note (current) · reconciler
+- 2026-11-04 12:44 UTC · `orch-step-click` note (refactor) · foreign-write
+- 2026-11-04 12:44 UTC · `molly-opus` → complete, note (big-dog) · foreign-write
+- 2026-11-04 12:44 UTC · `walkthrough-random-look` → complete, note (refactor) · foreign-write
+- 2026-11-04 12:44 UTC · `profile-manager` note (current) · foreign-write
+- 2026-11-04 12:44 UTC · `molly-console-commands` → complete, note (current) · foreign-write
+- 2026-11-04 12:44 UTC · `git-status-board` note (current) · foreign-write
+- 2026-11-04 12:44 UTC · `urgent-main-ci-green` → complete, note (current) · foreign-write
+- 2026-11-04 12:44 UTC · `terminal-tabs-left` note (current) · foreign-write
+- 2026-11-04 12:44 UTC · `gizmo-companion` note (current) · foreign-write
+- 2026-11-04 12:44 UTC · `browser-automation` note (current) · foreign-write
+- 2026-11-04 12:44 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 12:44 UTC · `app-style-override` note (current) · foreign-write
+- 2026-11-04 12:46 UTC · `hotfix-build-manager` s1 done (current) · builds-page
+- 2026-11-04 12:46 UTC · `profile-manager` note (current) · foreign-write
+- 2026-11-04 12:46 UTC · `molly-console-commands` → complete, note (current) · foreign-write
+- 2026-11-04 12:46 UTC · `git-status-board` note (current) · foreign-write
+- 2026-11-04 12:46 UTC · `urgent-main-ci-green` → complete, note (current) · foreign-write
+- 2026-11-04 12:46 UTC · `terminal-tabs-left` note (current) · foreign-write
+- 2026-11-04 12:46 UTC · `gizmo-companion` note (current) · foreign-write
+- 2026-11-04 12:46 UTC · `browser-automation` note (current) · foreign-write
+- 2026-11-04 12:46 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 12:46 UTC · `app-style-override` note (current) · foreign-write
+- 2026-11-04 12:46 UTC · `urgent-land-lazy-loader` added (4 steps) (current) · foreign-write
+- 2026-11-04 12:46 UTC · `orch-step-click` note (refactor) · foreign-write
+- 2026-11-04 12:46 UTC · `molly-opus` → complete, note (big-dog) · foreign-write
+- 2026-11-04 12:46 UTC · `walkthrough-random-look` → complete, note (refactor) · foreign-write
+- 2026-11-04 12:47 UTC · `orch-step-click` note (refactor) · foreign-write
+- 2026-11-04 12:47 UTC · `molly-opus` → complete, note (big-dog) · foreign-write
+- 2026-11-04 12:47 UTC · `walkthrough-random-look` → complete, note (refactor) · foreign-write
+- 2026-11-04 12:47 UTC · `profile-manager` note (current) · foreign-write
+- 2026-11-04 12:47 UTC · `molly-console-commands` → complete, note (current) · foreign-write
+- 2026-11-04 12:47 UTC · `git-status-board` note (current) · foreign-write
+- 2026-11-04 12:47 UTC · `urgent-main-ci-green` → complete, note (current) · foreign-write
+- 2026-11-04 12:47 UTC · `terminal-tabs-left` note (current) · foreign-write
+- 2026-11-04 12:47 UTC · `gizmo-companion` note (current) · foreign-write
+- 2026-11-04 12:47 UTC · `browser-automation` note (current) · foreign-write
+- 2026-11-04 12:47 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 12:47 UTC · `app-style-override` note (current) · foreign-write
+- 2026-11-04 12:47 UTC · `hotfix-build-manager` s1 done (current) · foreign-write
+- 2026-11-04 12:47 UTC · `urgent-land-lazy-loader` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 12:47 UTC · `hotfix-build-manager` s2 done (current) · orchestrator
+- 2026-11-04 12:47 UTC · `hotfix-build-manager` s3 done (current) · orchestrator
+- 2026-11-04 12:47 UTC · `hotfix-build-manager` s4 done, → complete (current) · orchestrator
+- 2026-11-04 12:47 UTC · `hotfix-build-manager` → built, branch claude/hotfix-build-manager, PR #309 (current) · builds-live
+- 2026-11-04 12:47 UTC · `hotfix-build-manager` s2 done, s3 done (current) · foreign-write
+- 2026-11-04 12:47 UTC · `hotfix-build-manager` s4 done, → complete (current) · foreign-write
+- 2026-11-04 12:44 UTC · `requests-ledger` added (5 steps) (current) · orchestrator
+- 2026-11-04 12:53 UTC · `hotfix-build-manager` s1 done, s2 done, s3 done, s4 done, → complete (current) · foreign-write
+- 2026-11-04 12:54 UTC · `requests-ledger` → running (current) · orchestrator
+- 2026-11-04 12:54 UTC · `requests-ledger` s1 done (current) · orchestrator
+- 2026-11-04 12:54 UTC · `requests-ledger` s2 done (current) · orchestrator
+- 2026-11-04 12:55 UTC · `requests-ledger` added (5 steps) (current) · foreign-write
+- 2026-11-04 13:04 UTC · `requests-ledger` s3 done (current) · orchestrator
+- 2026-11-04 13:04 UTC · `requests-ledger` s4 done (current) · orchestrator
 
 ## Token passes (log)
 
