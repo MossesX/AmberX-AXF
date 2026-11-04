@@ -669,10 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 17:45 UTC · `console-wake` s6 done, → complete (urgent) · orchestrator
-- 2026-11-03 17:45 UTC · `console-wake` note (urgent) · orchestrator
-- 2026-11-03 17:45 UTC · `console-wake` → built, branch claude/console-wake, PR #266 (urgent) · builds-live
-- 2026-11-03 17:53 UTC · `builds-one-page-done` added (5 steps) (urgent) · snap-sully
 - 2026-11-03 17:53 UTC · `builds-one-page-done` s1 done, → running (urgent) · snap-sully
 - 2026-11-03 17:53 UTC · `builds-one-page` → running (refactor) · snap-sully
 - 2026-11-03 17:54 UTC · `builds-one-page` s5 done, s6 done, s12 done, s14 done, note (refactor) · foreign-write
@@ -1069,6 +1065,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:24 UTC · `urgent-land-lazy-loader` s4 done, → complete (current) · orchestrator
 - 2026-11-04 14:24 UTC · `plugin-lazy-load` note (current) · orchestrator
 - 2026-11-04 14:27 UTC · `urgent-land-gizmo-chat` s3 done (current) · orchestrator
+- 2026-11-04 14:27 UTC · `plugin-lazy-load` note (current) · foreign-write
+- 2026-11-04 14:27 UTC · `urgent-land-lazy-loader` s4 done, → complete (current) · foreign-write
+- 2026-11-04 14:27 UTC · `urgent-land-gizmo-chat` s3 done (current) · foreign-write
+- 2026-11-04 14:27 UTC · `profile-lists-home-card` s3 done (current) · foreign-write
 
 ## Token passes (log)
 
