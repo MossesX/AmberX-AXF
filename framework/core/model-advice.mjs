@@ -337,6 +337,52 @@ export function reviewOkFor(view, { at, by, via = '', how = 'dismiss', note = ''
   return normReviewOk({ at, by, via, how, model: view?.model, thinking: view?.thinking, recommendedModel: view?.recommendedModel, recommendedThinking: view?.recommendedThinking, verdict: view?.verdict, note });
 }
 
+// ------------------------------------------------------------------ merging and the sidecar (never lost on a merge or an old-code write)
+
+const REC_GROUP = ['recommendedModel', 'recommendedThinking', 'modelWhy', 'adviceKind', 'adviceAt', 'advicePinned', 'verdict', 'adviceCost'];
+/**
+ * Two copies of one record's advice → one: the recommendation group from the copy with the newer `adviceAt` (a pinned
+ * one beats an unpinned one of the same age), `reviewOk` from the newer `reviewOk.at`, `thinking` from whichever has it
+ * (a's when both). A copy without any advice never blanks the other's. Returns the merged advice fields only.
+ */
+export function mergeAdvice(a, b) {
+  const x = adviceRecord(a ?? {}, { build: true }); const y = adviceRecord(b ?? {}, { build: true });
+  const out = {};
+  const ax = str(x.adviceAt); const ay = str(y.adviceAt);
+  const xHas = REC_GROUP.some((k) => k in x); const yHas = REC_GROUP.some((k) => k in y);
+  const from = !yHas ? x : !xHas ? y : ax > ay ? x : ay > ax ? y : x.advicePinned && !y.advicePinned ? x : y.advicePinned && !x.advicePinned ? y : x;
+  for (const k of REC_GROUP) if (k in from) out[k] = from[k];
+  const ok = !y.reviewOk ? x.reviewOk : !x.reviewOk ? y.reviewOk : str(x.reviewOk.at) >= str(y.reviewOk.at) ? x.reviewOk : y.reviewOk;
+  if (ok) out.reviewOk = ok;
+  if (x.thinking || y.thinking) out.thinking = x.thinking || y.thinking;
+  return out;
+}
+/** The sidecar entry of one build: its advice fields and each step's, keyed by step uid (empty object when it has none). */
+export function sidecarOf(build) {
+  const entry = adviceRecord(build, { build: true });
+  const steps = {};
+  for (const s of Array.isArray(build?.steps) ? build.steps : []) { const a = adviceRecord(s); if (Object.keys(a).length && s.uid) steps[s.uid] = a; }
+  if (Object.keys(steps).length) entry.steps = steps;
+  return entry;
+}
+/** Two sidecar entries → one (mergeAdvice on the build and on every step). */
+export function mergeSidecarEntry(a, b) {
+  const out = mergeAdvice(a, b);
+  const steps = {}; const sa = a?.steps ?? {}; const sb = b?.steps ?? {};
+  for (const uid of new Set([...Object.keys(sa), ...Object.keys(sb)])) { const m = mergeAdvice(sa[uid], sb[uid]); if (Object.keys(m).length) steps[uid] = m; }
+  if (Object.keys(steps).length) out.steps = steps;
+  return out;
+}
+/** Record ← sidecar entry (in place): the merged advice on the build and on each step it still has. Returns true when something changed. */
+export function healAdvice(build, entry) {
+  if (!build || !entry) return false;
+  const before = JSON.stringify(sidecarOf(build));
+  const { steps: es, ...eb } = entry;
+  Object.assign(build, mergeAdvice(build, eb));
+  for (const s of Array.isArray(build.steps) ? build.steps : []) if (s.uid && es?.[s.uid]) Object.assign(s, mergeAdvice(s, es[s.uid]));
+  return JSON.stringify(sidecarOf(build)) !== before;
+}
+
 /** Every field a reader adds to a build or step record (the API / MCP / CLI contract of model-advice@1). */
 export const VIEW_FIELDS = ['model', 'thinking', 'recommendedModel', 'recommendedThinking', 'modelWhy', 'reviewStatus'];
 export const BUILD_VIEW_FIELDS = [...VIEW_FIELDS, 'verdict', 'adviceCost', 'adviceKind', 'stepsToLook'];

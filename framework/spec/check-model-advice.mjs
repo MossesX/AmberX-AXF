@@ -5,11 +5,14 @@
 //   node framework/spec/check-model-advice.mjs --write    # rewrite the fixture from the engine (after a deliberate change)
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as A from '../core/model-advice.mjs';
 import * as S from '../plan/builds-store-core.mjs';
+import * as M from '../plan/builds-merge-core.mjs';
+import * as IO from '../cli/builds-store.mjs';
 import * as O from '../../apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs';
 import { CONTROL_TARGETS } from '../core/engines/control-rules.mjs';
 
@@ -173,6 +176,37 @@ t('launcher: a thinking level becomes claude --effort (AXF_THINKING or the build
   assert.match(sh, /AXF_THINKING/); assert.match(sh, /--effort/);
   const out = execFileSync('bash', ['-c', `source <(sed -n '/^# ---- thinking/,/^# ---- end thinking/p' deploy/claude-headless.sh); effort_args low; echo "|"; AXF_THINKING=max effort_args; echo "|"; AXF_THINKING=lots effort_args; echo "|"; effort_args --model opus --effort high`], { cwd: ROOT, encoding: 'utf8' });
   assert.deepEqual(out.split('|').map((x) => x.trim()), ['--effort low', '--effort max', '', '']);
+});
+
+// ------------------------------------------------------------------ never lost: merge rules and the sidecar
+t('mergeAdvice: newer recommendation wins, a copy without advice never blanks it, pinned beats unpinned of the same age, newest OK wins', () => {
+  const old = { recommendedModel: 'Fable', recommendedThinking: 'high', modelWhy: 'old', adviceAt: '2026-11-04T10:00:00Z', reviewOk: { at: '2026-11-04T11:00:00Z', by: 'brett', model: 'Opus', recommendedModel: 'Fable' } };
+  const fresh = { recommendedModel: 'Opus', recommendedThinking: 'low', modelWhy: 'new', adviceAt: '2026-11-04T12:00:00Z' };
+  assert.equal(A.mergeAdvice(old, fresh).modelWhy, 'new'); assert.equal(A.mergeAdvice(fresh, old).modelWhy, 'new');
+  assert.equal(A.mergeAdvice(old, fresh).reviewOk.by, 'brett', 'the OK survives a newer recommendation (and shows the triangle again by itself)');
+  assert.equal(A.mergeAdvice(old, {}).modelWhy, 'old'); assert.equal(A.mergeAdvice({}, old).modelWhy, 'old'); assert.deepEqual(A.mergeAdvice({}, {}), {});
+  assert.equal(A.mergeAdvice({ ...fresh, adviceAt: old.adviceAt, advicePinned: true }, old).modelWhy, 'new', 'pinned wins a tie');
+  assert.equal(A.mergeAdvice({ thinking: 'max' }, { thinking: 'low', ...old }).thinking, 'max');
+  const b1 = build({ steps: build().steps.map((s, i) => ({ ...s, ...(i === 0 ? { recommendedModel: 'Fable', adviceAt: '2026-11-04T10:00:00Z' } : {}) })), recommendedModel: 'Fable', adviceAt: '2026-11-04T10:00:00Z' });
+  const b2 = { ...build(), updatedAt: '2026-11-04T13:00:00Z', steps: build().steps.map((s) => ({ ...s, updatedAt: '2026-11-04T13:00:00Z' })) }; // an older-code session wrote it newer, without the fields
+  const m = M.mergeBuild(b1, b2);
+  assert.equal(m.recommendedModel, 'Fable', 'a newer copy from old code cannot drop the recommendation'); assert.equal(m.steps[0].recommendedModel, 'Fable');
+});
+t('sidecar: every read heals the records from _claude/builds/advice.json and every write folds them back', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'advice-')); const prev = { ...process.env };
+  process.env.AXF_BUILDS_STORE = join(dir, 'store.json'); process.env.AXF_BUILDS_EXPORT = '0'; process.env.AXF_BUILDS_LIVE = 'off';
+  try {
+    const open = build({ status: 'pending', steps: build().steps.map((s) => ({ ...s, done: false, doneAt: '' })) });
+    IO.withStore((s) => ({ ...s, builds: [open] }), { by: 'test' });
+    IO.withStore((s) => { const b = s.builds[0]; const adv = A.adviseBuild(b); Object.assign(b, A.adviceRecord({ ...adv, adviceAt: at }, { build: true })); for (const st of adv.steps) Object.assign(b.steps.find((x) => x.uid === st.uid), A.adviceRecord({ ...st, adviceAt: at })); b.steps[1].thinking = 'max'; return s; }, { by: 'test' });
+    const side = JSON.parse(readFileSync(IO.adviceFile(), 'utf8'));
+    assert.equal(side.$axf, 'model-advice-sidecar@1'); assert.equal(side.builds.demo.recommendedModel, 'Fable'); assert.equal(Object.keys(side.builds.demo.steps).length, 3);
+    // an older-code session rewrites the store without the fields
+    IO.withStore((s) => { for (const b of s.builds) { for (const k of A.BUILD_RECORD_FIELDS) delete b[k]; for (const st of b.steps) for (const k of A.STEP_RECORD_FIELDS) delete st[k]; b.updatedAt = '2026-11-04T18:00:00.000Z'; } return s; }, { by: 'old-code' });
+    const healed = IO.loadStore().builds[0];
+    assert.equal(healed.recommendedModel, 'Fable'); assert.equal(healed.steps[0].recommendedModel, 'Fable'); assert.equal(healed.steps[1].thinking, 'max', 'the thinking level someone set comes back too');
+    assert.equal(IO.mergeAdviceText(readFileSync(IO.adviceFile(), 'utf8'), ''), readFileSync(IO.adviceFile(), 'utf8'), 'merging the sidecar with nothing changes nothing');
+  } finally { process.env = prev; }
 });
 
 console.log(`model-advice: ${n} checks passed`);

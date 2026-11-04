@@ -30,6 +30,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
+import { healAdvice, mergeSidecarEntry, sidecarOf } from '../core/model-advice.mjs';
 import { enqueueLive, flushLiveSoon } from './builds-live.mjs';
 import { BASE_PROFILE, REPO_ROOT, activeProfile, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
 
@@ -77,6 +78,28 @@ function foldOrigins(store) {
   return changed;
 }
 export const mergeOriginsText = (a, b) => { const pa = (() => { try { return JSON.parse(a || '{}').origins ?? {}; } catch { return {}; } })(); const pb = (() => { try { return JSON.parse(b || '{}').origins ?? {}; } catch { return {}; } })(); const out = { ...pa }; for (const [k, v] of Object.entries(pb)) out[k] = mergeOrigin(out[k], v); return originsText(out); };
+
+// ------------------------------------------------------------------ advice sidecar (model-advice@1, Nov 4 2026)
+/*
+ * The recommended model + thinking, Brett's OK and the thinking level of every build and step live on the records AND
+ * in this sidecar (keyed by build id, steps by uid), for the same reason as origins: a session on older code rewrites
+ * the store without the fields; every read heals the records from the sidecar and every write folds them back.
+ */
+export const ADVICE_REL = '_claude/builds/advice.json';
+export const adviceFile = () => (process.env.AXF_BUILDS_STORE ? storeFile().replace(/\.json$/, '') + '.advice.json' : join(dirname(storeFile()), 'advice.json'));
+export function readAdvice() { try { const j = JSON.parse(readFileSync(adviceFile(), 'utf8')); return j?.builds && typeof j.builds === 'object' ? j.builds : {}; } catch { return {}; } }
+export const adviceText = (builds) => `${JSON.stringify({ $axf: 'model-advice-sidecar@1', builds: Object.fromEntries(Object.keys(builds).sort().map((k) => [k, builds[k]])) }, null, 1)}\n`;
+function healAdviceAll(store, side = readAdvice()) {
+  for (const b of store.builds) if (side[b.id]) healAdvice(b, side[b.id]);
+  return store;
+}
+function foldAdvice(store) {
+  const side = readAdvice(); let changed = false;
+  for (const b of store.builds) { const mine = sidecarOf(b); if (!Object.keys(mine).length) continue; const m = mergeSidecarEntry(side[b.id], mine); if (JSON.stringify(m) !== JSON.stringify(side[b.id] ?? null)) { side[b.id] = m; changed = true; } }
+  if (changed) { const f = adviceFile(); const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, adviceText(side)); renameSync(tmp, f); }
+  return changed;
+}
+export const mergeAdviceText = (a, b) => { const p = (t) => { try { return JSON.parse(t || '{}').builds ?? {}; } catch { return {}; } }; const pa = p(a); const pb = p(b); const out = { ...pa }; for (const [k, v] of Object.entries(pb)) out[k] = mergeSidecarEntry(out[k], v); return adviceText(out); };
 function readStore() {
   const f = storeFile();
   if (!existsSync(f) && scratchDir() && !process.env.AXF_BUILDS_STORE && existsSync(join(REPO_ROOT, STORE_REL))) { mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, readFileSync(join(REPO_ROOT, STORE_REL))); }
@@ -85,7 +108,7 @@ function readStore() {
     // first use on this checkout: migrate from the older files (the dry run is `migrate --dry`)
     return migrateNow({ by: 'auto-migrate' }).store;
   }
-  return healOrigins(core.normalizeStore(JSON.parse(readFileSync(f, 'utf8'))));
+  return healAdviceAll(healOrigins(core.normalizeStore(JSON.parse(readFileSync(f, 'utf8')))));
 }
 /** The store. If an old file was written directly since the last export, that write is taken into the store first. */
 export function loadStore() {
@@ -196,9 +219,9 @@ function journal(entry) {
 export function adoptStore(next, { journals = {} } = {}) {
   const f = storeFile(); const unlock = lock(f);
   try {
-    healOrigins(next);
+    healOrigins(next); healAdviceAll(next);
     const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, storeText(next)); renameSync(tmp, f);
-    foldOrigins(next);
+    foldOrigins(next); foldAdvice(next);
     const d = journalDir(); mkdirSync(d, { recursive: true });
     for (const [m, text] of Object.entries(journals)) writeFileSync(join(d, `${m}.jsonl`), text);
     if (exportsOn()) exportAll(next);
@@ -217,7 +240,7 @@ export function saveStore(before, after, { by = 'cli', action = 'write', note = 
   after.rev = (before.rev ?? 0) + 1; after.updatedAt = now;
   const f = storeFile(); mkdirSync(dirname(f), { recursive: true });
   const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, storeText(after)); renameSync(tmp, f);
-  foldOrigins(after);
+  foldOrigins(after); foldAdvice(after);
   journal({ rev: after.rev, at: now, by, action, note, builds: changes.map((c) => ({ id: c.id, op: c.op, rev: c.after?.rev, before: core.compactBuild(c.before), after: core.compactBuild(c.after) })), ...(draftChanged ? { drafts: after.drafts } : {}), ...(metaChanged ? { meta: after.meta, rules: after.rules } : {}) });
   return { store: after, changes, rev: after.rev };
 }
