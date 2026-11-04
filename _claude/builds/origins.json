@@ -1858,6 +1858,61 @@
    "from": "detail",
    "addenda": []
   },
+  "shipped-features-r2": {
+   "said": "Where's the list of features that can be sorted, and when they went live? ... I need a list of individual features, and you can view the features or you can view the builds that made the features. The builds will have an expanding row to show all its information along with the features. Tap in the expanded row. And there will also be another table that uses the features themselves as the root.",
+   "at": "2026-11-04T12:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Greenlight Gina (headless, Fable)",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": [
+    {
+     "said": "Create a database, create a grid that lists all the features going back for days and days, all the way back: all the features that were built and what PR they belong to. If you're sorted by PR, you select the PR, it opens an expanded row which shows all the features, which open another expanded row which shows all the information about it, including the prompt that I wrote that spawned it. And make it so the initial row you can view by PR, view by plugin, view by app, view by feature type.",
+     "at": "2026-11-04T13:00:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    },
+    {
+     "said": "If the repo was first day, it was way before the third.",
+     "at": "2026-11-04T14:00:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    },
+    {
+     "said": "Just AmberX and axHub, not any of those other repos.",
+     "at": "2026-11-04T15:00:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    },
+    {
+     "said": "As soon as a prompt goes through that plans on building the features, they go into that list, and have it sortable so you can hide completed ones and pending ones.",
+     "at": "2026-11-04T16:00:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    },
+    {
+     "said": "Anytime a feature in that list is getting changed or altered, it will appear as an edit. It will update that list and show edits to that feature.",
+     "at": "2026-11-04T17:00:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    },
+    {
+     "said": "I want you to work on the Fable part right now. ... Take the whole task from him. I'm gonna shut him down. Then you take the whole task. Start it right now.",
+     "at": "2026-11-04T21:30:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    }
+   ]
+  },
   "smart-menus": {
    "said": "I need a dynamic context menu that draws itself depending on where it is and what it's doing. Most common / most likely things at the top. It learns and remembers, predicts what I'm most likely gonna want, keeps that at the top.",
    "at": "2026-11-03",
