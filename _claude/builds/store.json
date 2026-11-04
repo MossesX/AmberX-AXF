@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 809,
- "updatedAt": "2026-11-04T15:52:15.209Z",
+ "rev": 810,
+ "updatedAt": "2026-11-04T15:57:09.987Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -73824,7 +73824,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T14:14:12.850Z",
-     "updatedAt": "2026-11-04T15:50:46.765Z"
+     "updatedAt": "2026-11-04T15:57:08.737Z"
     }
    ],
    "profiles": [
@@ -74235,7 +74235,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T14:21:14.918Z",
-     "updatedAt": "2026-11-04T15:51:36.195Z"
+     "updatedAt": "2026-11-04T15:57:08.737Z"
     },
     {
      "id": "s2",
@@ -74257,7 +74257,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T14:21:14.918Z",
-     "updatedAt": "2026-11-04T15:51:36.195Z"
+     "updatedAt": "2026-11-04T15:57:08.737Z"
     },
     {
      "id": "s3",
@@ -74279,7 +74279,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T14:21:14.918Z",
-     "updatedAt": "2026-11-04T15:51:36.195Z"
+     "updatedAt": "2026-11-04T15:57:08.737Z"
     }
    ],
    "profiles": [
@@ -75567,7 +75567,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T14:21:17.382Z",
-     "updatedAt": "2026-11-04T15:51:39.675Z"
+     "updatedAt": "2026-11-04T15:57:08.737Z"
     },
     {
      "id": "s2",
@@ -75589,7 +75589,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T14:21:17.382Z",
-     "updatedAt": "2026-11-04T15:51:39.675Z"
+     "updatedAt": "2026-11-04T15:57:08.737Z"
     },
     {
      "id": "s3",
@@ -75611,7 +75611,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T14:21:17.382Z",
-     "updatedAt": "2026-11-04T15:51:39.675Z"
+     "updatedAt": "2026-11-04T15:57:08.737Z"
     },
     {
      "id": "s4",
@@ -75633,7 +75633,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T14:21:17.382Z",
-     "updatedAt": "2026-11-04T15:51:39.675Z"
+     "updatedAt": "2026-11-04T15:57:08.737Z"
     }
    ],
    "profiles": [
@@ -80109,7 +80109,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T14:43:48.095Z",
-     "updatedAt": "2026-11-04T15:50:25.415Z"
+     "updatedAt": "2026-11-04T15:57:08.737Z"
     },
     {
      "id": "s6",
@@ -80385,7 +80385,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T15:29:38.376Z",
-     "updatedAt": "2026-11-04T15:50:19.992Z"
+     "updatedAt": "2026-11-04T15:57:08.737Z"
     },
     {
      "id": "s2",
@@ -80522,14 +80522,14 @@
    "title": "Jump menu asset type (jump-menu@1): in-page section index with its own settings, location, display and right-click Settings / Change / Move; Plan Studio first consumer",
    "category": "Framework",
    "detail": "New shared optional asset type jump-menu@1 (rules + engine + fixture + schema + 5 starters + defaults.json), per-page settings as control@1 token overrides (tokens.jump), scroll-spy, right-click / long-press Settings / Change jump menu / Move like toolbars and banners, Plan Studio plan view replaces its hard-coded chip row, Assets screen picker, voice controls. Replaces the cancelled plan-studio-section-nav.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T15:29:59.385Z",
-   "updatedAt": "2026-11-04T15:47:53.756Z",
+   "updatedAt": "2026-11-04T15:57:06.659Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -80549,7 +80549,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mw29w9v70cz5z4",
+     "uid": "st-mw2a07an07iqbs",
      "title": "",
      "text": "Contract: jump-menu@1 rules (jumpmenu-rules.mjs registry: location, display, density, sticky, collapsible, spy, smooth, overflow), engine (jumpmenu.ts: normalize, output tokens, scroll-spy), types, validators (TS + build engine), asset-types.json, JSON schema, 5 starters, defaults.json, fixture + check-jumpmenu.mts, PORTING row",
      "model": "Fable",
@@ -80567,11 +80567,11 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T15:29:59.387Z",
-     "updatedAt": "2026-11-04T15:47:53.846Z"
+     "updatedAt": "2026-11-04T15:57:08.737Z"
     },
     {
      "id": "s2",
-     "uid": "st-mw29w9v70dwpp9",
+     "uid": "st-mw2a07an08d73h",
      "title": "",
      "text": "control@1 tokens.jump (control-rules, control-tokens, control.json snapshot, fixture, check-control, MCP target list, token-control UI), runtime jumpMenuData() with overrides",
      "model": "Fable",
@@ -80584,16 +80584,16 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T15:57:06.659Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T15:29:59.387Z",
-     "updatedAt": "2026-11-04T15:29:59.387Z"
+     "updatedAt": "2026-11-04T15:57:08.737Z"
     },
     {
      "id": "s3",
-     "uid": "st-mw29w9v70ehlez",
+     "uid": "st-mw2a07an09d84f",
      "title": "",
      "text": "React JumpMenu component + settings dialog (location, display, density, sticky, collapsible, spy, smooth, overflow, preset picker), context menu Settings / Change jump menu / Move, CSS tokens only, AssetPreview case",
      "model": "Fable",
@@ -80611,11 +80611,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T15:29:59.387Z",
-     "updatedAt": "2026-11-04T15:29:59.387Z"
+     "updatedAt": "2026-11-04T15:33:02.751Z"
     },
     {
      "id": "s4",
-     "uid": "st-mw29w9v70ffnc8",
+     "uid": "st-mw2a07an0al9tl",
      "title": "",
      "text": "Plan Studio plan view uses the JumpMenu asset instead of its hard-coded chip row; help entries; list other candidate pages",
      "model": "Fable",
@@ -80633,11 +80633,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T15:29:59.387Z",
-     "updatedAt": "2026-11-04T15:29:59.387Z"
+     "updatedAt": "2026-11-04T15:33:02.751Z"
     },
     {
      "id": "s5",
-     "uid": "st-mw29w9v70g38uh",
+     "uid": "st-mw2a07an0b84gh",
      "title": "",
      "text": "Checks green (validate, fixtures, theme/controls/toolbars checks, typecheck, console build), UI Review shots, report, PR, THREADS",
      "model": "Fable",
@@ -80655,7 +80655,7 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-04T15:29:59.387Z",
-     "updatedAt": "2026-11-04T15:29:59.387Z"
+     "updatedAt": "2026-11-04T15:33:02.751Z"
     }
    ],
    "profiles": [
@@ -80669,11 +80669,433 @@
    "rev": 2,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-04T15:29:59.385Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw2a07an07iqbs": "2026-11-04T15:29:59.387Z",
+     "st-mw2a07an08d73h": "2026-11-04T15:29:59.387Z",
+     "st-mw2a07an09d84f": "2026-11-04T15:29:59.387Z",
+     "st-mw2a07an0al9tl": "2026-11-04T15:29:59.387Z",
+     "st-mw2a07an0b84gh": "2026-11-04T15:29:59.387Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-04T15:29:59.387Z",
    "rearranged": false,
-   "removedSteps": [],
+   "removedSteps": [
+    {
+     "step": {
+      "id": "s6",
+      "uid": "st-mw2a07an0ccpi9",
+      "title": "",
+      "text": "Contract: jump-menu@1 rules (jumpmenu-rules.mjs registry: location, display, density, sticky, collapsible, spy, smooth, overflow), engine (jumpmenu.ts: normalize, output tokens, scroll-spy), types, validators (TS + build engine), asset-types.json, JSON schema, 5 starters, defaults.json, fixture + check-jumpmenu.mts, PORTING row",
+      "model": "Fable",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "30 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-04T15:29:59.387Z",
+      "updatedAt": "2026-11-04T15:33:02.751Z"
+     },
+     "at": "2026-11-04T15:57:08.496Z",
+     "why": "removed on the Pending list",
+     "by": "pending"
+    },
+    {
+     "step": {
+      "id": "s7",
+      "uid": "st-mw2a07an0dujq6",
+      "title": "",
+      "text": "control@1 tokens.jump (control-rules, control-tokens, control.json snapshot, fixture, check-control, MCP target list, token-control UI), runtime jumpMenuData() with overrides",
+      "model": "Fable",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "25 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-04T15:29:59.387Z",
+      "updatedAt": "2026-11-04T15:33:02.751Z"
+     },
+     "at": "2026-11-04T15:57:08.496Z",
+     "why": "removed on the Pending list",
+     "by": "pending"
+    },
+    {
+     "step": {
+      "id": "s8",
+      "uid": "st-mw2a07an0e71p0",
+      "title": "",
+      "text": "React JumpMenu component + settings dialog (location, display, density, sticky, collapsible, spy, smooth, overflow, preset picker), context menu Settings / Change jump menu / Move, CSS tokens only, AssetPreview case",
+      "model": "Fable",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "30 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-04T15:29:59.387Z",
+      "updatedAt": "2026-11-04T15:33:02.751Z"
+     },
+     "at": "2026-11-04T15:57:08.496Z",
+     "why": "removed on the Pending list",
+     "by": "pending"
+    },
+    {
+     "step": {
+      "id": "s9",
+      "uid": "st-mw2a07an0f31od",
+      "title": "",
+      "text": "Plan Studio plan view uses the JumpMenu asset instead of its hard-coded chip row; help entries; list other candidate pages",
+      "model": "Fable",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "20 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-04T15:29:59.387Z",
+      "updatedAt": "2026-11-04T15:33:02.751Z"
+     },
+     "at": "2026-11-04T15:57:08.496Z",
+     "why": "removed on the Pending list",
+     "by": "pending"
+    },
+    {
+     "step": {
+      "id": "s10",
+      "uid": "st-mw2a07an0gmo34",
+      "title": "",
+      "text": "Checks green (validate, fixtures, theme/controls/toolbars checks, typecheck, console build), UI Review shots, report, PR, THREADS",
+      "model": "Fable",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "30 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-04T15:29:59.387Z",
+      "updatedAt": "2026-11-04T15:33:02.751Z"
+     },
+     "at": "2026-11-04T15:57:08.496Z",
+     "why": "removed on the Pending list",
+     "by": "pending"
+    },
+    {
+     "step": {
+      "id": "s11-10",
+      "uid": "st-mw29zd0607t3e3",
+      "title": "",
+      "text": "Contract: jump-menu@1 rules (jumpmenu-rules.mjs registry: location, display, density, sticky, collapsible, spy, smooth, overflow), engine (jumpmenu.ts: normalize, output tokens, scroll-spy), types, validators (TS + build engine), asset-types.json, JSON schema, 5 starters, defaults.json, fixture + check-jumpmenu.mts, PORTING row",
+      "model": "Fable",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "30 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-04T15:29:59.387Z",
+      "updatedAt": "2026-11-04T15:32:23.522Z"
+     },
+     "at": "2026-11-04T15:57:08.496Z",
+     "why": "removed on the Pending list",
+     "by": "pending"
+    },
+    {
+     "step": {
+      "id": "s12-11",
+      "uid": "st-mw29zd0608ody8",
+      "title": "",
+      "text": "control@1 tokens.jump (control-rules, control-tokens, control.json snapshot, fixture, check-control, MCP target list, token-control UI), runtime jumpMenuData() with overrides",
+      "model": "Fable",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "25 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-04T15:29:59.387Z",
+      "updatedAt": "2026-11-04T15:32:23.522Z"
+     },
+     "at": "2026-11-04T15:57:08.496Z",
+     "why": "removed on the Pending list",
+     "by": "pending"
+    },
+    {
+     "step": {
+      "id": "s13-12",
+      "uid": "st-mw29zd06093of0",
+      "title": "",
+      "text": "React JumpMenu component + settings dialog (location, display, density, sticky, collapsible, spy, smooth, overflow, preset picker), context menu Settings / Change jump menu / Move, CSS tokens only, AssetPreview case",
+      "model": "Fable",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "30 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-04T15:29:59.387Z",
+      "updatedAt": "2026-11-04T15:32:23.522Z"
+     },
+     "at": "2026-11-04T15:57:08.496Z",
+     "why": "removed on the Pending list",
+     "by": "pending"
+    },
+    {
+     "step": {
+      "id": "s14-13",
+      "uid": "st-mw29zd060axjwc",
+      "title": "",
+      "text": "Plan Studio plan view uses the JumpMenu asset instead of its hard-coded chip row; help entries; list other candidate pages",
+      "model": "Fable",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "20 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-04T15:29:59.387Z",
+      "updatedAt": "2026-11-04T15:32:23.522Z"
+     },
+     "at": "2026-11-04T15:57:08.496Z",
+     "why": "removed on the Pending list",
+     "by": "pending"
+    },
+    {
+     "step": {
+      "id": "s15-14",
+      "uid": "st-mw29zd060b00jc",
+      "title": "",
+      "text": "Checks green (validate, fixtures, theme/controls/toolbars checks, typecheck, console build), UI Review shots, report, PR, THREADS",
+      "model": "Fable",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "30 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-04T15:29:59.387Z",
+      "updatedAt": "2026-11-04T15:32:23.522Z"
+     },
+     "at": "2026-11-04T15:57:08.496Z",
+     "why": "removed on the Pending list",
+     "by": "pending"
+    },
+    {
+     "step": {
+      "id": "s6-5",
+      "uid": "st-mw29w9v70cz5z4",
+      "title": "",
+      "text": "Contract: jump-menu@1 rules (jumpmenu-rules.mjs registry: location, display, density, sticky, collapsible, spy, smooth, overflow), engine (jumpmenu.ts: normalize, output tokens, scroll-spy), types, validators (TS + build engine), asset-types.json, JSON schema, 5 starters, defaults.json, fixture + check-jumpmenu.mts, PORTING row",
+      "model": "Fable",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "30 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-04T15:29:59.387Z",
+      "updatedAt": "2026-11-04T15:29:59.387Z"
+     },
+     "at": "2026-11-04T15:57:08.496Z",
+     "why": "removed on the Pending list",
+     "by": "pending"
+    },
+    {
+     "step": {
+      "id": "s7-6",
+      "uid": "st-mw29w9v70dwpp9",
+      "title": "",
+      "text": "control@1 tokens.jump (control-rules, control-tokens, control.json snapshot, fixture, check-control, MCP target list, token-control UI), runtime jumpMenuData() with overrides",
+      "model": "Fable",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "25 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-04T15:29:59.387Z",
+      "updatedAt": "2026-11-04T15:29:59.387Z"
+     },
+     "at": "2026-11-04T15:57:08.496Z",
+     "why": "removed on the Pending list",
+     "by": "pending"
+    },
+    {
+     "step": {
+      "id": "s8-7",
+      "uid": "st-mw29w9v70ehlez",
+      "title": "",
+      "text": "React JumpMenu component + settings dialog (location, display, density, sticky, collapsible, spy, smooth, overflow, preset picker), context menu Settings / Change jump menu / Move, CSS tokens only, AssetPreview case",
+      "model": "Fable",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "30 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-04T15:29:59.387Z",
+      "updatedAt": "2026-11-04T15:29:59.387Z"
+     },
+     "at": "2026-11-04T15:57:08.496Z",
+     "why": "removed on the Pending list",
+     "by": "pending"
+    },
+    {
+     "step": {
+      "id": "s9-8",
+      "uid": "st-mw29w9v70ffnc8",
+      "title": "",
+      "text": "Plan Studio plan view uses the JumpMenu asset instead of its hard-coded chip row; help entries; list other candidate pages",
+      "model": "Fable",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "20 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-04T15:29:59.387Z",
+      "updatedAt": "2026-11-04T15:29:59.387Z"
+     },
+     "at": "2026-11-04T15:57:08.496Z",
+     "why": "removed on the Pending list",
+     "by": "pending"
+    },
+    {
+     "step": {
+      "id": "s10-9",
+      "uid": "st-mw29w9v70g38uh",
+      "title": "",
+      "text": "Checks green (validate, fixtures, theme/controls/toolbars checks, typecheck, console build), UI Review shots, report, PR, THREADS",
+      "model": "Fable",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "30 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-04T15:29:59.387Z",
+      "updatedAt": "2026-11-04T15:29:59.387Z"
+     },
+     "at": "2026-11-04T15:57:08.496Z",
+     "why": "removed on the Pending list",
+     "by": "pending"
+    }
+   ],
    "legacy": [],
    "copies": []
   }
