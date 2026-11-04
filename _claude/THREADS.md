@@ -684,88 +684,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 12:47 UTC · `hotfix-build-manager` s4 done, → complete (current) · orchestrator
-- 2026-11-04 12:47 UTC · `hotfix-build-manager` → built, branch claude/hotfix-build-manager, PR #309 (current) · builds-live
-- 2026-11-04 12:47 UTC · `hotfix-build-manager` s2 done, s3 done (current) · foreign-write
-- 2026-11-04 12:47 UTC · `hotfix-build-manager` s4 done, → complete (current) · foreign-write
-- 2026-11-04 12:44 UTC · `requests-ledger` added (5 steps) (current) · orchestrator
-- 2026-11-04 12:53 UTC · `hotfix-build-manager` s1 done, s2 done, s3 done, s4 done, → complete (current) · foreign-write
-- 2026-11-04 12:54 UTC · `requests-ledger` → running (current) · orchestrator
-- 2026-11-04 12:54 UTC · `requests-ledger` s1 done (current) · orchestrator
-- 2026-11-04 12:54 UTC · `requests-ledger` s2 done (current) · orchestrator
-- 2026-11-04 12:55 UTC · `requests-ledger` added (5 steps) (current) · foreign-write
-- 2026-11-04 13:04 UTC · `requests-ledger` s3 done (current) · orchestrator
-- 2026-11-04 13:04 UTC · `requests-ledger` s4 done (current) · orchestrator
-- 2026-11-04 13:07 UTC · `bugs-board` added (7 steps) (current) · orchestrator
-- 2026-11-04 13:12 UTC · `bugs-board` added (7 steps) (current) · foreign-write
-- 2026-11-04 13:15 UTC · `bugs-board` added (14 steps) (current) · foreign-write
-- 2026-11-04 13:18 UTC · `bugs-board` note (current) · orchestrator
-- 2026-11-04 13:19 UTC · `requests-ledger` s5 done, → complete (current) · orchestrator
-- 2026-11-04 13:19 UTC · `requests-ledger` → built, branch claude/requests-ledger, PR #310 (current) · builds-live
-- 2026-11-04 13:24 UTC · `requests-ledger` s5 done, → complete (current) · foreign-write
-- 2026-11-04 13:24 UTC · `bugs-board` note (current) · foreign-write
-- 2026-11-04 13:28 UTC · `hotfix-build-manager` → complete, merged, note (current) · reconciler
-- 2026-11-04 13:30 UTC · `molly-nav-submenus` → complete, merged (current) · builds-live
-- 2026-11-04 13:30 UTC · `land-round-2` s3 done (current) · orchestrator
-- 2026-11-04 13:31 UTC · `land-round-2` s2 done (current) · orchestrator
-- 2026-11-04 13:24 UTC · `bugs-board` s1 done, → running (current) · orchestrator
-- 2026-11-04 13:30 UTC · `hotfix-build-manager` note (current) · foreign-write
-- 2026-11-04 13:30 UTC · `bugs-board` s1 done, s2 done (current) · orchestrator
-- 2026-11-04 13:30 UTC · `bugs-board` s1 done, s2 done, s3 done (current) · orchestrator
-- 2026-11-04 13:30 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done (current) · orchestrator
-- 2026-11-04 13:30 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done, s6 done (current) · orchestrator
-- 2026-11-04 13:30 UTC · `land-round-2` s3 done (current) · foreign-write
-- 2026-11-04 13:30 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · orchestrator
-- 2026-11-04 13:31 UTC · `land-round-2` s2 done (current) · foreign-write
-- 2026-11-04 13:31 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · bugs-board
-- 2026-11-04 13:33 UTC · `land-round-2` s2 done (current) · foreign-write
-- 2026-11-04 13:33 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · foreign-write
-- 2026-11-04 13:33 UTC · `follow-amber-switch` added (5 steps) (current) · orchestrator
-- 2026-11-04 13:25 UTC · `requests-ledger` s5 done, → complete (current) · foreign-write
-- 2026-11-04 13:25 UTC · `bugs-board` s1 done, note (current) · foreign-write
-- 2026-11-04 13:28 UTC · `hotfix-build-manager` note (current) · foreign-write
-- 2026-11-04 13:28 UTC · `bugs-board` s1 done (current) · foreign-write
-- 2026-11-04 13:37 UTC · `land-round-2` s2 done, s3 done (current) · foreign-write
-- 2026-11-04 13:37 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · foreign-write
-- 2026-11-04 13:37 UTC · `follow-amber-switch` added (5 steps) (current) · foreign-write
-- 2026-11-04 13:26 UTC · `bugs-board` s1 done (current) · foreign-write
-- 2026-11-04 13:27 UTC · `hotfix-build-manager` s1 undone, → running (current) · builds-page
-- 2026-11-04 13:27 UTC · `hotfix-build-manager` s1 done, → complete (current) · builds-page
-- 2026-11-04 13:48 UTC · `bugs-board` PR #311 (current) · builds-live
-- 2026-11-04 13:48 UTC · `bugs-board` s7 done, → built (current) · orchestrator
-- 2026-11-04 13:48 UTC · `bugs-board` note (current) · orchestrator
-- 2026-11-04 13:49 UTC · `bugs-board` s7 done, → complete, note (current) · foreign-write
-- 2026-11-04 13:50 UTC · `bugs-board` s7 done, → complete, note (current) · foreign-write
-- 2026-11-04 13:50 UTC · `follow-amber-switch` s1 done, → running (current) · orchestrator
-- 2026-11-04 13:50 UTC · `follow-amber-switch` s2 done (current) · orchestrator
-- 2026-11-04 13:50 UTC · `follow-amber-switch` s3 done (current) · orchestrator
-- 2026-11-04 13:50 UTC · `follow-amber-switch` s4 done (current) · orchestrator
-- 2026-11-04 13:52 UTC · `land-round-2` note (current) · orchestrator
-- 2026-11-04 13:52 UTC · `land-round-2` → blocked (current) · orchestrator
-- 2026-11-04 13:53 UTC · `land-round-2` note (current) · foreign-write
-- 2026-11-04 13:53 UTC · `follow-amber-switch` PR #312 (current) · builds-live
-- 2026-11-04 13:53 UTC · `follow-amber-switch` s5 done, → built (current) · orchestrator
-- 2026-11-04 13:53 UTC · `follow-amber-switch` s5 done, → complete (current) · foreign-write
-- 2026-11-04 14:03 UTC · `terminal-no-focus` note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `orch-step-click` note (refactor) · foreign-write
-- 2026-11-04 14:04 UTC · `molly-opus` → complete, note (big-dog) · foreign-write
-- 2026-11-04 14:04 UTC · `walkthrough-random-look` → complete, note (refactor) · foreign-write
-- 2026-11-04 14:04 UTC · `profile-manager` note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `molly-console-commands` → complete, note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `git-status-board` note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `urgent-main-ci-green` → complete, note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `terminal-tabs-left` note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `gizmo-companion` note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `browser-automation` note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `profile-switcher-widget` note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `app-style-override` note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `land-round-2` s2 done, s3 done, note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `terminal-no-focus` note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `hotfix-build-manager` s1 done, s2 done, s3 done, s4 done, → complete, note (current) · foreign-write
-- 2026-11-04 14:04 UTC · `requests-ledger` added (5 steps) (current) · foreign-write
-- 2026-11-04 14:04 UTC · `bugs-board` added (7 steps) (current) · foreign-write
-- 2026-11-04 14:04 UTC · `follow-amber-switch` added (5 steps) (current) · foreign-write
-- 2026-11-04 14:04 UTC · `urgent-land-lazy-loader` s3 done (current) · foreign-write
 - 2026-11-04 14:04 UTC · `urgent-land-lazy-loader` s3 done (current) · orchestrator
 - 2026-11-04 14:04 UTC · `urgent-land-lazy-loader` note (current) · orchestrator
 - 2026-11-04 14:04 UTC · `land-round-2` → running (current) · builds-live
@@ -1084,6 +1002,88 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 16:24 UTC · `tab-group-assets` branch claude/tab-group-assets, PR #327 (current) · builds-live
 - 2026-11-04 16:25 UTC · `molly-multi-instance-tabs` s1 done (current) · foreign-write
 - 2026-11-04 16:24 UTC · `molly-multi-instance-tabs` s1 done (current) · orchestrator
+- 2026-11-04 16:33 UTC · `molly-multi-instance-tabs` s2 done (current) · orchestrator
+- 2026-11-04 16:33 UTC · `molly-multi-instance-tabs` s3 done (current) · orchestrator
+- 2026-11-04 16:35 UTC · `app-voice-commands` note (current) · foreign-write
+- 2026-11-04 16:35 UTC · `tab-group-assets` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-04 16:35 UTC · `settings-placement-everywhere` added (24 steps) (current) · foreign-write
+- 2026-11-04 16:35 UTC · `molly-multi-instance-tabs` added (4 steps) (current) · foreign-write
+- 2026-11-04 16:35 UTC · `jump-menu-asset` s5 done, → built (current) · orchestrator
+- 2026-11-04 16:35 UTC · `jump-menu-asset` note (current) · orchestrator
+- 2026-11-04 16:38 UTC · `jump-menu-asset` s5 done, → complete, note (current) · foreign-write
+- 2026-11-04 16:38 UTC · `molly-multi-instance-tabs` PR #328 (current) · builds-live
+- 2026-11-04 16:38 UTC · `molly-multi-instance-tabs` s4 done, → built (current) · orchestrator
+- 2026-11-04 16:40 UTC · `jump-menu-asset` s5 done, → complete, note (current) · foreign-write
+- 2026-11-04 16:40 UTC · `molly-multi-instance-tabs` s1 done, s2 done, s3 done, s4 done, → complete (current) · foreign-write
+- 2026-11-04 16:40 UTC · `tab-group-assets` s6 done, → built, note (current) · builds-live
+- 2026-11-04 16:40 UTC · `jump-menu-asset` → complete (current) · builds-live
+- 2026-11-04 16:40 UTC · `molly-multi-instance-tabs` → complete (current) · builds-live
+- 2026-11-04 16:40 UTC · `tab-group-assets` s6 done, → built (current) · orchestrator
+- 2026-11-04 16:40 UTC · `tab-group-assets` note (current) · orchestrator
+- 2026-11-04 16:09 UTC · `molly-multi-instance-tabs` added (4 steps) (current) · foreign-write
+- 2026-11-04 16:42 UTC · `app-voice-commands` note (current) · foreign-write
+- 2026-11-04 16:42 UTC · `tab-group-assets` s3 done, s4 done, s5 done, s6 done, → complete, note (current) · foreign-write
+- 2026-11-04 16:42 UTC · `jump-menu-asset` s5 done, → complete, note (current) · foreign-write
+- 2026-11-04 16:42 UTC · `settings-placement-everywhere` note (current) · foreign-write
+- 2026-11-04 16:42 UTC · `molly-multi-instance-tabs` s1 done, s2 done, s3 done, s4 done, → complete (current) · foreign-write
+- 2026-11-04 16:46 UTC · `live-sessions-plugin` added (6 steps) (current) · orchestrator
+- 2026-11-04 16:44 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-04 16:47 UTC · `tab-group-assets` note (current) · foreign-write
+- 2026-11-04 16:47 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-04 16:50 UTC · `tab-group-assets` note (current) · foreign-write
+- 2026-11-04 16:50 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-04 16:50 UTC · `live-sessions-plugin` s1 done (current) · foreign-write
+- 2026-11-04 16:57 UTC · `plugin-settings-placement` note (current) · foreign-write
+- 2026-11-04 16:57 UTC · `tab-group-assets` note (current) · foreign-write
+- 2026-11-04 16:57 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-04 16:57 UTC · `live-sessions-plugin` s1 done, s2 done, s3 done (current) · foreign-write
+- 2026-11-04 17:00 UTC · `settings-placement-everywhere` PR #329, note (current) · reconciler
+- 2026-11-04 16:47 UTC · `live-sessions-plugin` s1 done, → running (current) · orchestrator
+- 2026-11-04 16:50 UTC · `live-sessions-plugin` s2 done (current) · orchestrator
+- 2026-11-04 16:56 UTC · `plugin-settings-placement` note (current) · foreign-write
+- 2026-11-04 16:56 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-04 16:56 UTC · `live-sessions-plugin` s3 done (current) · orchestrator
+- 2026-11-04 17:03 UTC · `live-sessions-plugin` s4 done (current) · orchestrator
+- 2026-11-04 17:03 UTC · `plugin-settings-placement` note (current) · foreign-write
+- 2026-11-04 17:03 UTC · `tab-group-assets` note (current) · foreign-write
+- 2026-11-04 17:03 UTC · `settings-placement-everywhere` note (current) · foreign-write
+- 2026-11-04 17:03 UTC · `live-sessions-plugin` added (6 steps) (current) · foreign-write
+- 2026-11-04 17:04 UTC · `urgent-console-perf` added (5 steps) (urgent) · orchestrator
+- 2026-11-04 17:04 UTC · `urgent-console-perf` s1 done, → running (urgent) · orchestrator
+- 2026-11-04 17:04 UTC · `urgent-console-perf` s2 done (urgent) · orchestrator
+- 2026-11-04 17:04 UTC · `urgent-console-perf` s3 done (urgent) · orchestrator
+- 2026-11-04 17:04 UTC · `urgent-console-perf` s4 done (urgent) · orchestrator
+- 2026-11-04 17:06 UTC · `urgent-console-perf` PR #330 (urgent) · builds-live
+- 2026-11-04 17:07 UTC · `plugin-settings-placement` note (current) · foreign-write
+- 2026-11-04 17:07 UTC · `tab-group-assets` s3 done, s4 done, s5 done, s6 done, → complete, note (current) · foreign-write
+- 2026-11-04 17:07 UTC · `jump-menu-asset` s5 done, → complete, note (current) · foreign-write
+- 2026-11-04 17:07 UTC · `settings-placement-everywhere` note (current) · foreign-write
+- 2026-11-04 17:07 UTC · `molly-multi-instance-tabs` s1 done, s2 done, s3 done, s4 done, → complete (current) · foreign-write
+- 2026-11-04 17:07 UTC · `live-sessions-plugin` added (6 steps) (current) · foreign-write
+- 2026-11-04 17:07 UTC · `app-voice-commands` note (current) · foreign-write
+- 2026-11-04 17:07 UTC · `app-voice-commands` note (current) · orchestrator
+- 2026-11-04 17:07 UTC · `live-sessions-plugin` s5 done (current) · orchestrator
+- 2026-11-04 17:16 UTC · `live-sessions-plugin` s5 done (current) · foreign-write
+- 2026-11-04 17:16 UTC · `app-voice-commands` s6 done, → built (current) · orchestrator
+- 2026-11-04 17:16 UTC · `app-voice-commands` note (current) · orchestrator
+- 2026-11-04 16:42 UTC · `settings-placement-everywhere` s1 done, → running (current) · orchestrator
+- 2026-11-04 16:42 UTC · `settings-placement-everywhere` s1 done, s2 done (current) · orchestrator
+- 2026-11-04 16:43 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done (current) · orchestrator
+- 2026-11-04 16:43 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done (current) · orchestrator
+- 2026-11-04 16:43 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · orchestrator
+- 2026-11-04 16:47 UTC · `live-sessions-plugin` added (6 steps) (current) · foreign-write
+- 2026-11-04 16:47 UTC · `tab-group-assets` note (current) · orchestrator
+- 2026-11-04 16:47 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · orchestrator
+- 2026-11-04 16:55 UTC · `live-sessions-plugin` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 16:55 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done, PR #329 (current) · builds-live
+- 2026-11-04 16:55 UTC · `plugin-settings-placement` branch claude/settings-placement-everywhere, PR #329 (current) · builds-live
+- 2026-11-04 16:55 UTC · `plugin-settings-placement` note (current) · orchestrator
+- 2026-11-04 17:17 UTC · `app-voice-commands` s6 done, → complete, note (current) · foreign-write
+- 2026-11-04 17:17 UTC · `settings-placement-everywhere` note (current) · foreign-write
+- 2026-11-04 17:17 UTC · `live-sessions-plugin` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-04 17:17 UTC · `settings-placement-everywhere` s6 done (current) · orchestrator
+- 2026-11-04 17:17 UTC · `settings-placement-everywhere` s6 done, note (current) · orchestrator
+- 2026-11-04 17:18 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, → built (current) · orchestrator
 
 ## Token passes (log)
 
