@@ -1,0 +1,100 @@
+[
+ {
+  "name": "md-studio-browse",
+  "steps": [
+   {
+    "eval": "AXF.navigate('md-studio')",
+    "wait": 5000
+   },
+   {
+    "eval": "document.querySelector('.axp-md-studio__drawer')?.setAttribute('open','')",
+    "wait": 300
+   },
+   {
+    "eval": "AXF.dispatch('md-studio.open:repo:CLAUDE.md')",
+    "wait": 7000
+   }
+  ]
+ },
+ {
+  "name": "md-studio-write",
+  "steps": [
+   {
+    "eval": "AXF.navigate('md-studio')",
+    "wait": 5000
+   },
+   {
+    "eval": "AXF.dispatch('md-studio.view:write')",
+    "wait": 7000
+   },
+   {
+    "eval": "AXF.dispatch('md-studio.edit:repo:README.md')",
+    "wait": 7000
+   }
+  ]
+ },
+ {
+  "name": "md-studio-ide",
+  "steps": [
+   {
+    "eval": "AXF.navigate('md-studio')",
+    "wait": 5000
+   },
+   {
+    "eval": "AXF.dispatch('md-studio.view:ide')",
+    "wait": 7000
+   },
+   {
+    "eval": "AXF.dispatch('md-studio.edit:repo:_claude/rules/RULES.md')",
+    "wait": 7000
+   },
+   {
+    "eval": "AXF.dispatch('md-studio.open-right:repo:CLAUDE.md')",
+    "wait": 7000
+   }
+  ]
+ },
+ {
+  "name": "md-studio-context",
+  "steps": [
+   {
+    "eval": "AXF.navigate('md-studio')",
+    "wait": 5000
+   },
+   {
+    "eval": "AXF.dispatch('md-studio.context:repo:CLAUDE.md')",
+    "wait": 7000
+   }
+  ]
+ },
+ {
+  "name": "md-studio-wizards",
+  "steps": [
+   {
+    "eval": "AXF.navigate('md-studio')",
+    "wait": 5000
+   },
+   {
+    "eval": "document.querySelector('.axp-md-studio__drawer')?.setAttribute('open','')",
+    "wait": 300
+   },
+   {
+    "eval": "[...document.querySelectorAll('.fx-seg__opt')].find((b) => b.textContent.trim() === 'Wizards')?.click()",
+    "wait": 600
+   },
+   {
+    "eval": "[...document.querySelectorAll('.fx-nav__item')].find((b) => b.textContent.includes('Rules file'))?.click()",
+    "wait": 800
+   }
+  ]
+ },
+ {
+  "name": "md-studio-settings",
+  "steps": [
+   {
+    "eval": "AXF.dispatch('settings.open:md-studio')",
+    "wait": 4000
+   }
+  ]
+ }
+]
