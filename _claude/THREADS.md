@@ -683,9 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 12:28 UTC · `hotfix-build-manager` s1 done (current) · foreign-write
-- 2026-11-04 12:29 UTC · `hotfix-build-manager` s1 undone (current) · builds-page
-- 2026-11-04 12:30 UTC · `urgent-land-lazy-loader` added (4 steps) (current) · builds-live
 - 2026-11-04 12:34 UTC · `hotfix-build-manager` s1 undone (current) · foreign-write
 - 2026-11-04 12:34 UTC · `urgent-land-lazy-loader` added (4 steps) (current) · foreign-write
 - 2026-11-04 12:36 UTC · `urgent-land-lazy-loader` added (4 steps) (current) · foreign-write
@@ -1083,6 +1080,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:33 UTC · `tab-group-assets` added (6 steps) (current) · foreign-write
 - 2026-11-04 15:33 UTC · `jump-menu-asset` added (10 steps) (current) · foreign-write
 - 2026-11-04 15:32 UTC · `app-voice-commands` s4 done (current) · orchestrator
+- 2026-11-04 15:33 UTC · `apps-control-surface` s2 done (current) · orchestrator
+- 2026-11-04 15:33 UTC · `apps-control-surface` s3 done (current) · orchestrator
+- 2026-11-04 15:33 UTC · `apps-control-surface` s4 done (current) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 789,
- "updatedAt": "2026-11-04T15:33:18.046Z",
+ "rev": 790,
+ "updatedAt": "2026-11-04T15:33:29.485Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -79626,7 +79626,7 @@
    "branch": "claude/apps-control-surface",
    "pr": "",
    "createdAt": "2026-11-04T15:00:59.141Z",
-   "updatedAt": "2026-11-04T15:11:05.987Z",
+   "updatedAt": "2026-11-04T15:33:07.686Z",
    "builtAt": "",
    "notes": [
     {
@@ -79634,7 +79634,16 @@
      "at": "2026-11-04T15:01:01.143Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-04T15:33:04.185Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Nov 3: \"Put EVERY app on the API, MCP and CLI\" (Molly, axHub web, AmberX, and every future app via the framework template; plus an apps_list read). Nov 4, after Amber couldn't open AmberX's notes/to-dos for him because the console has no AmberX screen and AmberX has no control surface: \"All right, move that to next in queue.\"",
@@ -79686,12 +79695,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T15:33:04.185Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T15:00:59.142Z",
-     "updatedAt": "2026-11-04T15:00:59.142Z"
+     "updatedAt": "2026-11-04T15:33:04.333Z"
     },
     {
      "id": "s3",
@@ -79708,12 +79717,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T15:33:06.227Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T15:00:59.142Z",
-     "updatedAt": "2026-11-04T15:00:59.142Z"
+     "updatedAt": "2026-11-04T15:33:06.320Z"
     },
     {
      "id": "s4",
@@ -79730,12 +79739,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T15:33:07.686Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T15:00:59.142Z",
-     "updatedAt": "2026-11-04T15:00:59.142Z"
+     "updatedAt": "2026-11-04T15:33:07.750Z"
     },
     {
      "id": "s5",
@@ -79768,7 +79777,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

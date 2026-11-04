@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T15:33:18.046Z",
+ "updatedAt": "2026-11-04T15:33:29.485Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -12293,7 +12293,7 @@
    "branch": "claude/apps-control-surface",
    "pr": "",
    "createdAt": "2026-11-04T15:00:59.141Z",
-   "updatedAt": "2026-11-04T15:11:05.987Z",
+   "updatedAt": "2026-11-04T15:33:07.686Z",
    "builtAt": "",
    "notes": [
     {
@@ -12301,7 +12301,16 @@
      "at": "2026-11-04T15:01:01.143Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-04T15:33:04.185Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Nov 3: \"Put EVERY app on the API, MCP and CLI\" (Molly, axHub web, AmberX, and every future app via the framework template; plus an apps_list read). Nov 4, after Amber couldn't open AmberX's notes/to-dos for him because the console has no AmberX screen and AmberX has no control surface: \"All right, move that to next in queue.\"",
@@ -12347,8 +12356,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T15:33:04.185Z",
      "note": "",
      "uid": "st-mw28uz0607nfxe"
     },
@@ -12365,8 +12374,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T15:33:06.227Z",
      "note": "",
      "uid": "st-mw28uz06080uy6"
     },
@@ -12383,8 +12392,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T15:33:07.686Z",
      "note": "",
      "uid": "st-mw28uz0609mx5j"
     },
