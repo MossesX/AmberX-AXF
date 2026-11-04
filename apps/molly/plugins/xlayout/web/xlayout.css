@@ -22,8 +22,13 @@
 .axp-xlayout-ide > .fx-dock { flex: 1 1 auto; min-height: 0; }
 .fx-tabgroup .molly-slot[data-fill='self'] { flex: 1 1 auto; align-self: stretch; }
 
-/* while a tab or a splitter is dragged, the frames let the pointer through to the dock's drop zones */
-body:has(.fx-dragghost) .molly-frame, body:has(.fx-splitter.is-active) .molly-frame { pointer-events: none; }
+/* while a tab, a splitter or a floating window is dragged, the frames let the pointer through to the dock's drop zones */
+body:has(.fx-dragghost) .molly-frame, body:has(.fx-splitter.is-active) .molly-frame, body:has(.fx-dock-drop) .molly-frame, body:has(.fx-snap-preview) .molly-frame { pointer-events: none; }
+
+/* the new-tab picker (the + at the end of a tab bar) */
+.axp-xlayout-picker section { display: grid; gap: var(--fx-dens-gap-md); }
+.axp-xlayout-h { margin: 0; font-size: var(--fx-type-root-sm); color: var(--fx-muted); text-transform: uppercase; letter-spacing: var(--fx-type-headings-tracking); }
+.axp-xlayout-choice { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); width: 100%; text-align: start; }
 
 /* settings */
 .axp-xlayout-slot { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto; gap: var(--fx-dens-gap-xl); align-items: end; }

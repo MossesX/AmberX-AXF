@@ -2,10 +2,12 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
+import { Button } from './Controls';
 import { BrandMark, BrandWatermark, brandHostProps } from './Brand';
 import { useScopeId } from './InterfaceScope';
 import { MenuList, MenuScroll } from './MenuList';
 import { useMenuFit } from './menuFit';
+import { PLACED_DIALOG_TAB } from '../../core/engines/placement';
 
 export interface DialogDef {
   title: string;
@@ -51,15 +53,45 @@ export function DialogHost({ dialogs }: { dialogs: DialogMap }) {
   // Swipe down on the title bar (touch) closes it: the dialog follows the finger, and past a quarter of its height it goes.
   const [pull, setPull] = useState(0);
   const swipe = useRef<{ id: number; y: number } | null>(null);
+  // Drag the title bar out (molly-multi-instance-tabs addendum: "any screen or any UI whatsoever can be dragged"): with a
+  // mouse or pen a drag past the behaviour theme's threshold, on touch a long press (its `longPressMs`) then a move, pops
+  // the dialog out into a floating window (a placed-dialog tab) under the pointer; right-click the title for the same.
+  const [armed, setArmed] = useState(false);
+  const drag = useRef<{ id: number; x: number; y: number; touch: boolean; held: boolean; timer?: number } | null>(null);
+  const popOut = (x?: number, y?: number) => {
+    const open = state.dialog; const d1 = open ? dialogs[open.id] : undefined;
+    if (!open || !d1) return;
+    rt.placedProps.set(open.id, open.props ?? {});
+    const tab = { id: `placed-${open.id}-${Date.now().toString(36)}`, title: d1.title, kind: PLACED_DIALOG_TAB, payload: open.id, ...(d1.icon ? { icon: d1.icon } : {}) };
+    const w = panelRef.current?.offsetWidth ?? 640, h = panelRef.current?.offsetHeight ?? 520;
+    rt.closeDialog();
+    rt.windows.openFloating([tab], d1.title, 'floating', Math.max(320, Math.round(w)), Math.max(240, Math.round(h)), x !== undefined ? Math.max(0, Math.round(x - w / 2)) : undefined, y !== undefined ? Math.max(0, Math.round(y - 16)) : undefined);
+  };
+  const popOutRef = useRef(popOut); popOutRef.current = popOut;
+  useEffect(() => {
+    rt.contextExtras.set('dialog-head', () => [{ id: 'popout', label: 'Pop out to window', icon: 'external', action: 'dialog.popOut' }]);
+    const off = rt.actions.register('dialog.popOut', () => popOutRef.current(), { label: 'Pop the open dialog out to a window', searchable: false });
+    return () => { rt.contextExtras.delete('dialog-head'); off(); };
+  }, [rt]);
   const onHeadDown = (e: ReactPointerEvent<HTMLElement>) => {
-    if (e.pointerType !== 'touch' || (e.target as Element).closest('button')) return;
-    swipe.current = { id: e.pointerId, y: e.clientY };
+    if ((e.target as Element).closest('button') || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    const touch = e.pointerType !== 'mouse';
+    if (e.pointerType === 'touch') swipe.current = { id: e.pointerId, y: e.clientY };
+    drag.current = { id: e.pointerId, x: e.clientX, y: e.clientY, touch, held: false };
+    if (touch) drag.current.timer = window.setTimeout(() => { if (drag.current?.id === e.pointerId) { drag.current.held = true; setArmed(true); navigator.vibrate?.(8); } }, rt.behavior().interaction.longPressMs);
     e.currentTarget.setPointerCapture?.(e.pointerId);
   };
   const onHeadMove = (e: ReactPointerEvent<HTMLElement>) => {
+    const d0 = drag.current;
+    if (d0?.id === e.pointerId) {
+      const far = Math.hypot(e.clientX - d0.x, e.clientY - d0.y) > rt.behavior().interaction.dragThreshold;
+      if (far && (!d0.touch || d0.held)) { window.clearTimeout(d0.timer); drag.current = null; swipe.current = null; setArmed(false); setPull(0); popOut(e.clientX, e.clientY); return; }
+      if (far && d0.touch) { window.clearTimeout(d0.timer); drag.current = null; } // moved before the hold: a swipe, not a drag
+    }
     if (swipe.current?.id === e.pointerId) setPull(Math.max(0, e.clientY - swipe.current.y));
   };
   const onHeadUp = (e: ReactPointerEvent<HTMLElement>) => {
+    if (drag.current?.id === e.pointerId) { window.clearTimeout(drag.current.timer); drag.current = null; setArmed(false); }
     if (swipe.current?.id !== e.pointerId) return;
     const h = panelRef.current?.offsetHeight ?? 400;
     const go = e.type === 'pointerup' && Math.max(0, e.clientY - swipe.current.y) > Math.max(rt.behavior().interaction.dragThreshold * 4, h / 4);
@@ -82,10 +114,14 @@ export function DialogHost({ dialogs }: { dialogs: DialogMap }) {
   return (
     <div className="fx-backdrop" onPointerDown={(e) => d.closeOnBackdrop && rt.behavior().windows.closeOnBackdrop && e.target === e.currentTarget && close()}>
       <div className={`fx-dialog ${brandHost.className}`.trim()} role="dialog" aria-modal="true" aria-label={def.title} tabIndex={-1} ref={panelRef} data-fx-brand-mode={brandHost['data-fx-brand-mode']} style={pull ? { transform: `translateY(${pull}px)` } : undefined}>
-        <header className="fx-dialog__head" onPointerDown={onHeadDown} onPointerMove={onHeadMove} onPointerUp={onHeadUp} onPointerCancel={onHeadUp}>
+        <header className={`fx-dialog__head ${armed ? 'is-armed' : ''}`.trim()} onPointerDown={onHeadDown} onPointerMove={onHeadMove} onPointerUp={onHeadUp} onPointerCancel={onHeadUp}
+          onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); rt.openContext(e.clientX, e.clientY, 'dialog-head', state.dialog?.id); }} data-fx-ctx-target="dialog-head" data-fx-ctx-payload={state.dialog.id} title="Drag to pop out into a window">
           {brand?.svg && <BrandMark slot="dialog" height={16} className="fx-dialog__brand" />}
           {def.icon && <Icon name={def.icon} size={18} />}
           <h2>{def.title}</h2>
+          <button type="button" className="fx-iconbtn" onClick={() => popOut()} aria-label="Pop out to window" title="Pop out to window">
+            <Icon name="external" size={16} />
+          </button>
           <button type="button" className="fx-iconbtn" onClick={close} aria-label="Close dialog">
             <Icon name="x" size={16} />
           </button>
@@ -114,6 +150,7 @@ export function ToastHost() {
             {t.title && <strong>{t.title}</strong>}
             <span>{t.message}</span>
           </div>
+          {t.action && <Button size="sm" onClick={() => { rt.dispatch(t.action!.action); rt.dismissToast(t.id); }}>{t.action.label}</Button>}
           <button type="button" className="fx-iconbtn" onClick={() => rt.dismissToast(t.id)} aria-label="Dismiss">
             <Icon name="x" size={14} />
           </button>
@@ -136,13 +173,21 @@ export function ContextMenuHost() {
     const open = (target: Element | null, x: number, y: number) => {
       // one host per interface scope: only the host of the scope the pointer is in opens the menu
       if ((target?.closest('[data-fx-scope]')?.getAttribute('data-fx-scope') ?? '') !== scope) return;
-      const el = target?.closest('[data-fx-ctx-target]');
-      const name = el?.getAttribute('data-fx-ctx-target') ?? 'default';
-      rt.openContext(x, y, name, el?.getAttribute('data-fx-ctx-payload') ?? undefined);
+      // chrome-settings@1 (Nov 4 2026): a toolbar, a tab row or a nav that names no target is still one, so every
+      // toolbar / tab group / navigation menu gets Settings / Change / Move without an attribute of its own
+      const el = target?.closest('[data-fx-ctx-target], [role="toolbar"], [role="tablist"], nav');
+      const own = el?.getAttribute('data-fx-ctx-target');
+      const name = own ?? (el?.getAttribute('role') === 'toolbar' ? 'toolbar' : el?.getAttribute('role') === 'tablist' ? 'tab-group' : el?.tagName === 'NAV' && el.getAttribute('data-axf-not-nav') === null ? 'nav' : 'default');
+      if (own) { rt.openContext(x, y, name, el?.getAttribute('data-fx-ctx-payload') ?? undefined); return; }
+      // an implicit target's instance id: its settings id, else its accessible name as a slug
+      const label = name === 'toolbar' ? el?.getAttribute('data-axf-toolbar') ?? el?.getAttribute('data-axf-toolbar-asset') ?? el?.getAttribute('aria-label') : name === 'tab-group' ? el?.getAttribute('data-axf-tab-group') ?? el?.getAttribute('aria-label') : name === 'nav' ? el?.getAttribute('data-axf-nav') ?? el?.getAttribute('aria-label') : null;
+      const slug = label ? label.toLowerCase().replace(/[^a-z0-9._:/-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 120) : '';
+      rt.openContext(x, y, name, slug || undefined);
     };
     const onCtx = (e: MouseEvent) => {
       // A touch long-press also fires the browser's own contextmenu: the long-press timer handles it, once.
       if (start) { e.preventDefault(); return; }
+      if (srcHold) { srcHold = false; e.preventDefault(); return; }
       const t = e.target as Element;
       // A banner (outside the shell, in a box that otherwise ignores the menu) is always a target: Banner settings.
       const banner = !!t.closest('[data-fx-ctx-target="axf-banner"], [data-fx-ctx-target="banner"]') && !t.closest('input, textarea, .fx-ctx');
@@ -156,7 +201,12 @@ export function ContextMenuHost() {
     // Long-press for touch devices
     let timer: ReturnType<typeof setTimeout> | undefined;
     let start: { x: number; y: number } | null = null;
+    let srcHold = false;
     const onDown = (e: PointerEvent) => {
+      // a drag-to-tab source runs its own hold (then drag, or its menu when let go in place: react/windows/dragToTab.ts),
+      // and the browser's contextmenu that hold fires is not this one's either
+      srcHold = e.pointerType === 'touch' && !!(e.target as Element | null)?.closest?.('[data-fx-tab-source]');
+      if (srcHold) return;
       if (e.pointerType !== 'touch' || (rt.slotHidden('context-menu') && !rt.hostTakes('context-menu'))) return;
       const t = e.target as Element;
       const banner = !!t.closest('[data-fx-ctx-target="axf-banner"], [data-fx-ctx-target="banner"]') && !t.closest('input, textarea, .fx-ctx');
@@ -202,11 +252,15 @@ export function ContextMenuHost() {
   const own = cm.contributions === false && !!(cm.targets[ctx.target] ?? (!ctx.target || ctx.target === 'default' ? cm.targets.default : undefined));
   const contributed = own ? [] : rt.contributedContext(ctx.target);
   const extra = own ? [] : [...(rt.contextExtras.get(ctx.target)?.(ctx.target, ctx.payload) ?? []), ...contributed];
-  const everywhere = own ? [] : [...rt.contextExtras.entries()].filter(([k]) => k === '*' || k.startsWith('*:')).flatMap(([, f]) => f(ctx.target, ctx.payload));
-  const base = cm.targets[ctx.target] ?? (extra.length ? [] : cm.targets.default ?? []);
+  // chrome-settings@1: the shared Settings / Change / Move block of a tab group, toolbar, banner, nav or menu bar is
+  // that element's own menu (right after the kind's items), never a tail item under the whole default menu
+  const chrome = own ? [] : rt.contextExtras.get('*:chrome')?.(ctx.target, ctx.payload) ?? [];
+  const everywhere = own ? [] : [...rt.contextExtras.entries()].filter(([k]) => (k === '*' || k.startsWith('*:')) && k !== '*:chrome').flatMap(([, f]) => f(ctx.target, ctx.payload));
+  const base = cm.targets[ctx.target] ?? (extra.length || chrome.length ? [] : cm.targets.default ?? []);
   // An element naming a target the asset doesn't know still gets the default menu's contributions (e.g. a plugin link).
-  const fallback = !own && !cm.targets[ctx.target] && !extra.length ? rt.contributedContext('default') : [];
-  const more = [...extra, ...fallback] as unknown as typeof base;
+  const fallback = !own && !cm.targets[ctx.target] && !extra.length && !chrome.length ? rt.contributedContext('default') : [];
+  const chromeSep = extra.length && chrome.length ? [{ id: 'chrome-sep', separator: true }] : [];
+  const more = [...extra, ...chromeSep, ...chrome, ...fallback] as unknown as typeof base;
   const sep = base.length && more.length && !base[base.length - 1]?.separator ? [{ id: 'x-sep', separator: true } as unknown as (typeof base)[number]] : [];
   const tail = everywhere.length ? [{ id: 'ctx-everywhere-sep', separator: true }, ...everywhere] : [];
   const items = [...base, ...sep, ...more, ...(tail as unknown as typeof base)];

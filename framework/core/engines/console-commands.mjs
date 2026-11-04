@@ -200,11 +200,16 @@ export function consolePickClients(clients, to = 'recent', now = Date.now()) {
   const sorted = [...live].sort((a, b) => front(b) - front(a) || (Number(b.lastUsed) || 0) - (Number(a.lastUsed) || 0));
   if (to === 'all') return sorted;
   if (!to || to === 'recent') return sorted.slice(0, 1);
-  return sorted.filter((c) => c.id === to);
+  const byId = sorted.filter((c) => c.id === to);
+  if (byId.length) return byId;
+  // a copy of the console inside a host by the name the host gave it ("Console 2"; molly-multi-instance-tabs): exact first, then the plain words
+  const want = foldWords(to);
+  const byInstance = want ? sorted.filter((c) => c.instance && foldWords(c.instance) === want) : [];
+  return byInstance.length ? byInstance : [];
 }
 
-/** A client as `console.clients list` shows it (no catalog). */
-export const consoleClientSummary = (c) => ({ id: c.id, app: c.app ?? 'console-web', ...(c.host ? { host: c.host } : {}), front: c.front !== false, title: c.title ?? '', device: c.device ?? '', user: c.user ?? '', lastUsed: c.lastUsed ? new Date(Number(c.lastUsed)).toISOString() : '', here: normalizeHere(c.here), items: c.catalog?.items?.length ?? 0 });
+/** A client as `console.clients list` shows it (no catalog). `instance` = the name its host gave this copy (`Console 2`). */
+export const consoleClientSummary = (c) => ({ id: c.id, app: c.app ?? 'console-web', ...(c.host ? { host: c.host } : {}), ...(c.instance ? { instance: String(c.instance).slice(0, 80) } : {}), front: c.front !== false, title: c.title ?? '', device: c.device ?? '', user: c.user ?? '', lastUsed: c.lastUsed ? new Date(Number(c.lastUsed)).toISOString() : '', here: normalizeHere(c.here), items: c.catalog?.items?.length ?? 0 });
 
 /** The message an open console receives. */
 export function consoleMessage(fields, { id, by = '', now = Date.now() } = {}) {

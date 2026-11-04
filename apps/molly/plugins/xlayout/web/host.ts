@@ -14,7 +14,7 @@ import type { MenuItem, NavItem } from '../../../src/axf/core/types';
 import type { MenuEntry } from '../../../src/axf/core/engines/windows';
 import { mergeChrome, routePick, parseChromeBundle, type ChromeBundle, type UnifiedChrome, type UnifiedMenuItem } from '../../../src/axf/core/engines/chrome';
 import { EMBED_MESSAGE, parseEmbedMessage, type EmbedMessage } from '../../../src/axf/core/engines/embed';
-import { guestUrl, type XLayoutData } from '../../../src/axf/core/engines/xlayout';
+import { guestUrl, instanceLabel, parseInstanceKey, type XLayoutData } from '../../../src/axf/core/engines/xlayout';
 import { MOLLY_APPS, type MollyApp } from '../../../src/molly/apps';
 import { appOfView } from '../../../src/molly/host';
 import { PLUGIN_ID } from './model';
@@ -32,7 +32,9 @@ const badgeName = (nsid: string) => `xlayout.${nsid.replace(/[^a-z0-9]+/gi, '-')
 type Listener = () => void;
 
 export class ChromeHost {
+  /** every open frame by instance key (`console`, `console#2`…; molly-multi-instance-tabs: each copy is its own frame + session) */
   private frames = new Map<string, HTMLIFrameElement>();
+  /** one chrome bundle per app (the copies of an app send the same chrome; the last to send wins) */
   private bundles = new Map<string, ChromeBundle>();
   /** the item each app last said is active, and the one we last asked it to open (so neither side echoes the other) */
   private activeOf = new Map<string, string>();
@@ -77,32 +79,43 @@ export class ChromeHost {
     this.unified = mergeChrome(null, []); this.changed();
   }
 
-  /** The address an app's frame opens: its own, with the embed@1 marker xLayout's merge rules ask for. */
-  frameUrl(app: MollyApp, start: string): string {
+  /**
+   * The address a frame opens: the app's own, with the embed@1 marker xLayout's merge rules ask for; a further copy
+   * (`instance` ≥ 2) also carries `axf-embed-instance=<label>` ("Console 2"), so it announces itself as its own console
+   * client under that name and Amber can target it.
+   */
+  frameUrl(app: MollyApp, start: string, instance = 1): string {
     const l = this.layout();
     const x = l.apps.find((a) => a.id === app.id) ?? { id: app.id, label: app.label, url: app.url };
     const route = start.startsWith(app.url) ? start.slice(app.url.length).replace(/^\/?#?\/?/, '') : '';
-    return guestUrl(l, { ...x, url: app.url }, 'molly', route);
+    return guestUrl(l, { ...x, url: app.url }, 'molly', route, instance);
   }
+  /** What a copy of an app is called ("Console 2"). */
+  label(key: string): string { const p = parseInstanceKey(key); const a = p ? MOLLY_APPS.find((x) => x.id === p.app) : undefined; return a && p ? instanceLabel(a.label, p.instance) : key; }
 
-  /** A frame mounted (or went away): remember its window; ask for its chrome once it has loaded. */
-  frame(app: string, el: HTMLIFrameElement | null): void {
-    if (!el) { if (!this.frames.get(app)?.isConnected) this.frames.delete(app); return; }
-    if (this.frames.get(app) === el) return;
-    this.frames.set(app, el);
-    el.addEventListener('load', () => { this.shownOf.delete(app); this.post(app, { $axf: EMBED_MESSAGE, type: 'chrome-request' }); this.tellShown(app); });
+  /** A frame mounted (or went away): remember its window; ask for its chrome once it has loaded. `key` = the instance key. */
+  frame(key: string, el: HTMLIFrameElement | null): void {
+    if (!el) { if (!this.frames.get(key)?.isConnected) this.frames.delete(key); return; }
+    if (this.frames.get(key) === el) return;
+    this.frames.set(key, el);
+    el.addEventListener('load', () => { this.shownOf.delete(key); this.postKey(key, { $axf: EMBED_MESSAGE, type: 'chrome-request' }); this.tellShown(key); });
     // FrameDeck marks a frame on screen with data-on; each change goes to the app (embed@1 `shown`), so a remote command
     // for "the app Brett is looking at" picks the frame that is actually in front
-    this.watchers.get(app)?.disconnect();
-    const w = new MutationObserver(() => this.tellShown(app));
+    this.watchers.get(key)?.disconnect();
+    const w = new MutationObserver(() => this.tellShown(key));
     w.observe(el, { attributes: true, attributeFilter: ['data-on'] });
-    this.watchers.set(app, w);
+    this.watchers.set(key, w);
   }
 
-  private tellShown(app: string): void {
-    const on = this.onScreen(app);
-    if (this.shownOf.get(app) === on) return;
-    if (this.post(app, { $axf: EMBED_MESSAGE, type: 'shown', on })) this.shownOf.set(app, on);
+  private tellShown(key: string): void {
+    const on = this.frames.get(key)?.dataset.on === 'true';
+    if (this.shownOf.get(key) === on) return;
+    if (this.postKey(key, { $axf: EMBED_MESSAGE, type: 'shown', on })) this.shownOf.set(key, on);
+  }
+
+  /** The frames of one app, the ones on screen first (then the first copy). */
+  private keysOf(app: string): string[] {
+    return [...this.frames.keys()].filter((k) => parseInstanceKey(k)?.app === app).sort((a, b) => Number(this.frames.get(b)?.dataset.on === 'true') - Number(this.frames.get(a)?.dataset.on === 'true') || (parseInstanceKey(a)?.instance ?? 1) - (parseInstanceKey(b)?.instance ?? 1));
   }
 
   /** An app asked to be brought to the front (embed@1 `show`: a remote command is about to change what it shows). */
@@ -122,27 +135,34 @@ export class ChromeHost {
   /** Apps that have sent their chrome. */
   connected(): string[] { return [...this.bundles.keys()]; }
 
-  private appOfSource(e: MessageEvent): MollyApp | null {
-    for (const [id, f] of this.frames) {
+  private appOfSource(e: MessageEvent): { app: MollyApp; key: string } | null {
+    for (const [key, f] of this.frames) {
       if (f.contentWindow && e.source === f.contentWindow) {
-        const app = MOLLY_APPS.find((a) => a.id === id) ?? null;
+        const app = MOLLY_APPS.find((a) => a.id === parseInstanceKey(key)?.app) ?? null;
         // the frame's own origin only (a page it navigated to elsewhere can't speak for it)
-        if (app && new URL(app.url).origin === e.origin) return app;
+        if (app && new URL(app.url).origin === e.origin) return { app, key };
         return null;
       }
     }
     return null;
   }
 
-  private post(app: string, msg: EmbedMessage): boolean {
-    const f = this.frames.get(app); const a = MOLLY_APPS.find((x) => x.id === app);
+  /** Send to one frame by instance key. */
+  private postKey(key: string, msg: EmbedMessage): boolean {
+    const f = this.frames.get(key); const a = MOLLY_APPS.find((x) => x.id === parseInstanceKey(key)?.app);
     if (!f?.contentWindow || !a) return false;
     f.contentWindow.postMessage(msg, new URL(a.url).origin);
     return true;
   }
+  /** Send to an app: the copy on screen (else its first copy). */
+  private post(app: string, msg: EmbedMessage): boolean {
+    const key = this.keysOf(app)[0];
+    return key ? this.postKey(key, msg) : false;
+  }
 
   private receive(e: MessageEvent): void {
-    const app = this.appOfSource(e); if (!app) return;
+    const src = this.appOfSource(e); if (!src) return;
+    const { app, key } = src;
     const m = parseEmbedMessage(e.data); if (!m) return;
     if (m.type === 'chrome') {
       // the bundle names the app by its own id; here it is the id Molly knows it by
@@ -152,7 +172,7 @@ export class ChromeHost {
       if (b.active) this.follow(app.id, b.active);
       this.apply();
     } else if (m.type === 'context') {
-      const f = this.frames.get(app.id); if (!f) return;
+      const f = this.frames.get(key); if (!f) return;
       const r = f.getBoundingClientRect();
       this.rt.openContext(r.left + m.x, r.top + m.y, this.hasCtx(app.id, m.target) ? ctxTarget(app.id, m.target) : ctxTarget(app.id, 'default'), m.payload);
     } else if (m.type === 'notify') {
@@ -183,8 +203,8 @@ export class ChromeHost {
     return this.post(app, { $axf: EMBED_MESSAGE, type: 'run', id });
   }
 
-  /** Is the app's frame showing (a pane in IDE mode, or the view on screen)? */
-  onScreen(app: string): boolean { return this.frames.get(app)?.dataset.on === 'true'; }
+  /** Is any frame of the app showing (a pane in IDE mode, or the view on screen)? */
+  onScreen(app: string): boolean { return this.keysOf(app).some((k) => this.frames.get(k)?.dataset.on === 'true'); }
 
   /** Fold every bundle and put the result into Molly's menus, navigation, context menu and badges. */
   private apply(): void {

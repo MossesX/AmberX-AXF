@@ -5,6 +5,7 @@ import { navAccent, navArrange, navContains, navFollow, navPathTo, navToggle, pa
 import { useAxfState, useRuntime } from '../AxfProvider';
 import type { ViewMap } from '../AppShell';
 import { Icon } from './Icon';
+import { dragToTabClick, dragToTabDown } from '../windows/dragToTab';
 
 /**
  * The navigation with sub menus (nav-style@1, core/engines/navstyle.ts): what NavMenu draws when its nav-menu asset
@@ -103,6 +104,8 @@ export function NavTree({ sections, views, style, orient, header }: { sections: 
     const locked = rt.gate(it.requires) === 'disable' || !!hostLock;
     const accent = depth === 0 ? navAccent(style, it.id) : null;
     const rowStyle = { '--navs-i': i, ...(accent ? { '--navs-accent': accent } : {}) } as CSSProperties;
+    // drag-to-tab: any row with a page of its own can be dragged into a tab strip, a pane edge or out to a window
+    const dragSrc = it.view && views[it.view] && !locked ? { view: it.view, label: it.label, icon: it.icon } : null;
     const row = (
       <button
         key={it.id}
@@ -115,6 +118,9 @@ export function NavTree({ sections, views, style, orient, header }: { sections: 
         data-axf-view-link={it.view || undefined}
         data-fx-ctx-target="nav-item"
         data-fx-ctx-payload={it.view || it.id}
+        data-fx-tab-source={dragSrc ? it.view : undefined}
+        onPointerDown={dragSrc ? (e) => dragToTabDown(rt, e, dragSrc) : undefined}
+        onClickCapture={dragToTabClick}
         data-depth={depth}
         data-accent={accent ? 'on' : undefined}
         style={rowStyle}
@@ -156,6 +162,7 @@ export function NavTree({ sections, views, style, orient, header }: { sections: 
     const start = { x: e.clientX, y: e.clientY };
     const up = (ev: PointerEvent) => {
       window.removeEventListener('pointerup', up);
+      if ((e.target as Element | null)?.closest?.('[data-fx-dragged]')) return; // a row dragged to a tab, not a swipe
       const dy = ev.clientY - start.y;
       if (Math.abs(dy) < 36 || Math.abs(dy) < Math.abs(ev.clientX - start.x)) return;
       const cur = openRef.current;
@@ -185,7 +192,7 @@ export function NavTree({ sections, views, style, orient, header }: { sections: 
 
   return (
     <div className="fx-navs" data-orient={orient}>
-      <nav ref={navRef} className={`fx-nav fx-nav--${rt.asset('nav-menu').data.style}`} data-orient={orient} aria-label="Main" data-fx-ctx-target="nav" onPointerDown={onDown}>
+      <nav ref={navRef} className={`fx-nav fx-nav--${rt.asset('nav-menu').data.style}`} data-orient={orient} aria-label="Main" data-axf-nav="app" data-fx-ctx-target="nav" data-fx-ctx-payload="app" onPointerDown={onDown}>
         {(header || (style.width.collapsible && !narrow)) && orient === 'vertical' && (
           <div className="fx-nav__head">
             {header && <div className="fx-nav__header">{header}</div>}

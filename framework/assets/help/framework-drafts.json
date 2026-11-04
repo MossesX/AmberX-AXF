@@ -95,6 +95,102 @@
         "text": "Where you set “Accent”. Change it and the app uses the new value.",
         "kind": "field",
         "draft": true
+      },
+      {
+        "target": "reset-custom-to-default",
+        "title": "Reset custom to default",
+        "text": "Throws away this app's own copy of the settings interface and goes back to the shared default one.",
+        "kind": "button"
+      },
+      {
+        "target": "tabs-on-top",
+        "title": "Tabs on top",
+        "text": "Lays the settings interface out with its tabs in a row along the top.",
+        "kind": "tab"
+      },
+      {
+        "target": "tabs-at-the-side",
+        "title": "Tabs at the side",
+        "text": "Lays the settings interface out with its tabs in a column down the side.",
+        "kind": "tab"
+      },
+      {
+        "target": "list",
+        "title": "List",
+        "text": "Shows every setting in one long list, no tabs.",
+        "kind": "tab"
+      },
+      {
+        "target": "full",
+        "title": "Full",
+        "text": "The settings interface's header shows in full: title, description and actions.",
+        "kind": "tab"
+      },
+      {
+        "target": "compact",
+        "title": "Compact",
+        "text": "The settings interface's header shrinks to one short line.",
+        "kind": "tab"
+      },
+      {
+        "target": "none",
+        "title": "None",
+        "text": "The settings interface shows no header at all.",
+        "kind": "tab"
+      },
+      {
+        "target": "search-field",
+        "title": "Search field",
+        "text": "Adds a search box at the top of this settings interface.",
+        "kind": "toggle"
+      },
+      {
+        "target": "descriptions",
+        "title": "Descriptions",
+        "text": "Shows the one-line description under each setting.",
+        "kind": "toggle"
+      },
+      {
+        "target": "hidden-ids-comma-separated-a-tab-group-or-field-key",
+        "title": "Hidden ids (comma-separated: a tab, group or field key)",
+        "text": "Ids to leave out of this settings interface, separated by commas: a tab, a group or one setting's key.",
+        "kind": "field"
+      },
+      {
+        "target": "banner-settings-look-behaviour-apply-to-all",
+        "title": "Banner settings (look, behaviour, Apply to all)",
+        "text": "Opens the Banners settings: this banner's look and behaviour, and Apply to all.",
+        "kind": "button"
+      },
+      {
+        "target": "find-a-setting",
+        "title": "Find a setting",
+        "text": "Type part of a setting's name to jump straight to it.",
+        "kind": "field"
+      },
+      {
+        "target": "pop-out-to-window",
+        "title": "Pop out to window",
+        "text": "Moves this dialog into a floating window you can move, resize and dock.",
+        "kind": "button"
+      },
+      {
+        "target": "more",
+        "title": "More",
+        "text": "The tabs that don't fit in the row: pick one from this list.",
+        "kind": "button"
+      },
+      {
+        "target": "new-tab",
+        "title": "New tab",
+        "text": "Opens something new as a tab in this pane. Pick an app, a page, or another copy of this tab.",
+        "kind": "button"
+      },
+      {
+        "target": "undo",
+        "title": "Undo",
+        "text": "Puts back what the last drop did: a tab it opened closes again, a tab it moved goes back.",
+        "kind": "menu-item"
       }
     ],
     "intros": []

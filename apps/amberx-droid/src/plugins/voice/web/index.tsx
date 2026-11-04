@@ -9,7 +9,7 @@
  */
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { AxfRuntime } from '../../../axf/core';
-import { Button, Container, Icon, IconButton, Note, SelectField, Switch, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
+import { Button, Container, Icon, IconButton, Note, SelectField, Switch, TabGroup, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
 import { DataGrid, type GridColumn, type GridGroup } from '../../../axf/libs/datagrid';
 import './voice.css';
 import { isNative, native, type VoiceStatus } from '../../../native';
@@ -658,13 +658,7 @@ function VoiceCommandsView() {
         </div>
         <Button icon="mic" onClick={() => void listenOnce(rt)}>Speak</Button>
       </header>
-      <div className="fx-tabs" role="tablist">
-        {GROUPS.map((g) => (
-          <button key={g.id} type="button" role="tab" className={`fx-tab${tab === g.id ? ' is-active' : ''}`} aria-selected={tab === g.id} onClick={() => setTab(g.id)}>
-            {g.label} <span className="fx-muted">{all.filter((c) => c.group === g.id).length || ''}</span>
-          </button>
-        ))}
-      </div>
+      <TabGroup id="voice.groups" label="Voice command groups" value={tab} onChange={setTab} tabs={GROUPS.map((g) => ({ value: g.id, label: g.label, badge: all.filter((c) => c.group === g.id).length || undefined }))} />
       <TryBox rt={rt} commands={all.filter((c) => c.on)} value={trying} onChange={setTrying} />
       {tab === 'notes' && <Examples items={NOTE_EXAMPLES} onTry={setTrying} />}
       {tab === 'tasks' && <Examples items={TASK_EXAMPLES} onTry={setTrying} />}

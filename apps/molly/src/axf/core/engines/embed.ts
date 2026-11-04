@@ -30,6 +30,8 @@ export interface Embed {
   takes?: string[];
   /** the one page the host shows on its own (`settings`); absent = the whole app. All chrome is hidden on it. */
   page?: string;
+  /** a further copy of the app the host opened (`Console 2`): what this copy calls itself, e.g. as its own console client; absent = the first / only copy */
+  instance?: string;
 }
 
 export const EMBED_QUERY = 'axf-embed';
@@ -228,8 +230,8 @@ export function embedPage(raw: unknown): string | null {
   return TAKES.get(id)?.page ? id : null;
 }
 
-/** Put takes + page on an embed: only when set (an embed without them keeps its old shape), page's own function never taken. */
-function withExtras(e: Embed, takes: string[], page: string | null): Embed {
+/** Put takes + page (+ instance) on an embed: only when set (an embed without them keeps its old shape), page's own function never taken. */
+function withExtras(e: Embed, takes: string[], page: string | null, instance: string | null = null): Embed {
   const t = page ? takes.filter((x) => x !== page) : takes;
   // a taken function may hide chrome too (app-menu: the host's menu carries the app's); spec order, like embedHidden
   const extra = new Set(t.flatMap((fn) => TAKES.get(fn)?.hides ?? []));
@@ -237,15 +239,26 @@ function withExtras(e: Embed, takes: string[], page: string | null): Embed {
   const out: Embed = { host: e.host, hidden };
   if (t.length) out.takes = t;
   if (page) out.page = page;
+  if (instance) out.instance = instance;
   return out;
 }
 
-/** The full marker in a query string: host, hidden chrome, functions taken, page. */
+/** The query key naming a further copy of the app (`&axf-embed-instance=Console%202`; molly-multi-instance-tabs). Query only: a copy is one frame. */
+export const EMBED_INSTANCE_QUERY = 'axf-embed-instance';
+const INSTANCE_MAX_LEN = 80;
+/** An instance label as written (`Console 2`): trimmed, control characters out, ≤ 80 chars; null for nothing. */
+export function embedInstance(raw: string | null | undefined): string | null {
+  if (typeof raw !== 'string') return null;
+  const s = raw.replace(/[\u0000-\u001f\u007f]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, INSTANCE_MAX_LEN);
+  return s || null;
+}
+
+/** The full marker in a query string: host, hidden chrome, functions taken, page, instance. */
 export function embedFromQueryFull(search: string | null | undefined): Embed | null {
   const base = embedFromQuery(search);
   if (!base) return null;
   const params = new URLSearchParams(search!.startsWith('?') ? search!.slice(1) : search!);
-  return withExtras(base, embedTakes(params.get(EMBED_TAKE_QUERY)), embedPage(params.get(EMBED_PAGE_QUERY)));
+  return withExtras(base, embedTakes(params.get(EMBED_TAKE_QUERY)), embedPage(params.get(EMBED_PAGE_QUERY)), embedInstance(params.get(EMBED_INSTANCE_QUERY)));
 }
 
 /** The full marker in a user agent: host, hidden chrome and the functions taken (`AXF-Embed-Take/…`). */
@@ -267,7 +280,7 @@ export function detectEmbedFull(search: string | null | undefined, userAgent: st
   if (!q) return u;
   if (q.takes || !u?.takes || u.host !== q.host) return q;
   const params = new URLSearchParams(search!.startsWith('?') ? search!.slice(1) : search!);
-  return withExtras(q, u.takes, embedPage(params.get(EMBED_PAGE_QUERY)));
+  return withExtras(q, u.takes, embedPage(params.get(EMBED_PAGE_QUERY)), embedInstance(params.get(EMBED_INSTANCE_QUERY)));
 }
 
 /** Does the host take this function over? */
@@ -328,8 +341,8 @@ export function userAgentSuffixFull(host: string, hidden: readonly string[] = DE
   return t.length ? `${base} ${EMBED_TAKE_UA_TOKEN}/${t.join('+')}` : base;
 }
 
-/** Host side: a page URL with the full marker (host, hidden, takes, page); old `axf-embed*` params replaced. */
-export function embedUrlFull(url: string, host: string, opts: { hidden?: readonly string[]; takes?: readonly string[]; page?: string | null } = {}): string {
+/** Host side: a page URL with the full marker (host, hidden, takes, page, instance); old `axf-embed*` params replaced. */
+export function embedUrlFull(url: string, host: string, opts: { hidden?: readonly string[]; takes?: readonly string[]; page?: string | null; instance?: string | null } = {}): string {
   const base = embedUrl(url, host, opts.hidden ?? DEFAULT_HIDDEN);
   const hashAt = base.indexOf('#');
   const hash = hashAt >= 0 ? base.slice(hashAt) : '';
@@ -338,10 +351,13 @@ export function embedUrlFull(url: string, host: string, opts: { hidden?: readonl
   const params = new URLSearchParams(noHash.slice(qAt + 1));
   params.delete(EMBED_TAKE_QUERY);
   params.delete(EMBED_PAGE_QUERY);
+  params.delete(EMBED_INSTANCE_QUERY);
   const page = embedPage(opts.page ?? null);
   const takes = embedTakes(opts.takes ?? []).filter((t) => t !== page);
   if (takes.length) params.set(EMBED_TAKE_QUERY, takes.join(','));
   if (page) params.set(EMBED_PAGE_QUERY, page);
+  const instance = embedInstance(opts.instance ?? null);
+  if (instance) params.set(EMBED_INSTANCE_QUERY, instance);
   return `${noHash.slice(0, qAt)}?${params.toString().replace(/%2C/gi, ',')}${hash}`;
 }
 

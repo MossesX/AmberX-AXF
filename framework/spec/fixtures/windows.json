@@ -1,5 +1,433 @@
 {
   "contract": "windows@1",
+  "instances": {
+    "max": 999,
+    "of": [
+      {
+        "tab": {},
+        "instance": 1
+      },
+      {
+        "tab": {
+          "instance": 1
+        },
+        "instance": 1
+      },
+      {
+        "tab": {
+          "instance": 2
+        },
+        "instance": 2
+      },
+      {
+        "tab": {
+          "instance": 0
+        },
+        "instance": 1
+      },
+      {
+        "tab": {
+          "instance": 2.5
+        },
+        "instance": 1
+      },
+      {
+        "tab": {
+          "instance": 1000
+        },
+        "instance": 1
+      }
+    ],
+    "ids": [
+      {
+        "base": "molly-app:console",
+        "n": 1,
+        "id": "molly-app:console"
+      },
+      {
+        "base": "molly-app:console",
+        "n": 2,
+        "id": "molly-app:console.2"
+      },
+      {
+        "base": "molly-app:console",
+        "n": 12,
+        "id": "molly-app:console.12"
+      }
+    ],
+    "baseIds": [
+      {
+        "id": "molly-app:console",
+        "instance": null,
+        "base": "molly-app:console"
+      },
+      {
+        "id": "molly-app:console.2",
+        "instance": 2,
+        "base": "molly-app:console"
+      },
+      {
+        "id": "molly-app:console.4",
+        "instance": 4,
+        "base": "molly-app:console"
+      },
+      {
+        "id": "molly-app:axhub",
+        "instance": null,
+        "base": "molly-app:axhub"
+      },
+      {
+        "id": "x",
+        "instance": null,
+        "base": "x"
+      }
+    ],
+    "titles": [
+      {
+        "base": "Console",
+        "n": 1,
+        "title": "Console"
+      },
+      {
+        "base": "Console",
+        "n": 2,
+        "title": "Console 2"
+      },
+      {
+        "base": "Console",
+        "n": 10,
+        "title": "Console 10"
+      }
+    ],
+    "baseTitles": [
+      {
+        "title": "Console",
+        "instance": null,
+        "base": "Console"
+      },
+      {
+        "title": "Console 2",
+        "instance": 2,
+        "base": "Console"
+      },
+      {
+        "title": "Builds",
+        "instance": 4,
+        "base": "Builds"
+      },
+      {
+        "title": "axHub",
+        "instance": null,
+        "base": "axHub"
+      },
+      {
+        "title": "X",
+        "instance": null,
+        "base": "X"
+      }
+    ],
+    "copies": [
+      "molly-app:console",
+      "molly-app:console.2",
+      "molly-app:console.4"
+    ],
+    "next": [
+      {
+        "kind": "molly-app",
+        "payload": "console",
+        "next": 3
+      },
+      {
+        "kind": "molly-app",
+        "payload": "axhub",
+        "next": 2
+      },
+      {
+        "kind": "molly-app",
+        "payload": "amberx",
+        "next": 1
+      },
+      {
+        "kind": "other",
+        "payload": "console",
+        "next": 2
+      }
+    ],
+    "make": [
+      {
+        "from": {
+          "id": "molly-app:console",
+          "title": "Console",
+          "kind": "molly-app",
+          "payload": "console"
+        },
+        "n": 2,
+        "title": null,
+        "tab": {
+          "id": "molly-app:console.2",
+          "title": "Console 2",
+          "kind": "molly-app",
+          "payload": "console",
+          "instance": 2
+        }
+      },
+      {
+        "from": {
+          "id": "molly-app:console",
+          "title": "Console",
+          "kind": "molly-app",
+          "payload": "console"
+        },
+        "n": 3,
+        "title": "Builds",
+        "tab": {
+          "id": "molly-app:console.3",
+          "title": "Builds",
+          "kind": "molly-app",
+          "payload": "console",
+          "instance": 3
+        }
+      },
+      {
+        "from": {
+          "id": "molly-app:console.2",
+          "title": "Console 2",
+          "kind": "molly-app",
+          "payload": "console",
+          "instance": 2
+        },
+        "n": 3,
+        "title": null,
+        "tab": {
+          "id": "molly-app:console.3",
+          "title": "Console 3",
+          "kind": "molly-app",
+          "payload": "console",
+          "instance": 3
+        }
+      },
+      {
+        "from": {
+          "id": "molly-app:console.4",
+          "title": "Builds",
+          "kind": "molly-app",
+          "payload": "console",
+          "instance": 4
+        },
+        "n": 5,
+        "title": null,
+        "tab": {
+          "id": "molly-app:console.5",
+          "title": "Builds 5",
+          "kind": "molly-app",
+          "payload": "console",
+          "instance": 5
+        }
+      },
+      {
+        "from": {
+          "id": "molly-app:console.2",
+          "title": "Console 2",
+          "kind": "molly-app",
+          "payload": "console",
+          "instance": 2
+        },
+        "n": 1,
+        "title": null,
+        "tab": {
+          "id": "molly-app:console",
+          "title": "Console",
+          "kind": "molly-app",
+          "payload": "console"
+        }
+      }
+    ]
+  },
+  "fresh": {
+    "navTabs": [
+      {
+        "item": {
+          "view": "builds",
+          "label": "Builds",
+          "icon": "hammer"
+        },
+        "tab": {
+          "id": "axf-placed-view:builds",
+          "title": "Builds",
+          "kind": "axf-placed-view",
+          "payload": "builds",
+          "icon": "hammer",
+          "closable": true
+        }
+      },
+      {
+        "item": {
+          "view": "plugin:notes/browser",
+          "label": "Notes"
+        },
+        "tab": {
+          "id": "axf-placed-view:plugin:notes-browser",
+          "title": "Notes",
+          "kind": "axf-placed-view",
+          "payload": "plugin:notes/browser",
+          "icon": null,
+          "closable": true
+        }
+      }
+    ],
+    "cases": [
+      {
+        "name": "nothing open",
+        "base": {
+          "id": "app:console",
+          "title": "Console",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal"
+        },
+        "open": [],
+        "max": 0,
+        "out": {
+          "id": "app:console",
+          "title": "Console",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal"
+        }
+      },
+      {
+        "name": "one open",
+        "base": {
+          "id": "app:console",
+          "title": "Console",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal"
+        },
+        "open": [
+          "app:console"
+        ],
+        "max": 0,
+        "out": {
+          "id": "app:console.2",
+          "title": "Console 2",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal",
+          "instance": 2
+        }
+      },
+      {
+        "name": "two open",
+        "base": {
+          "id": "app:console",
+          "title": "Console",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal"
+        },
+        "open": [
+          "app:console",
+          "app:console.2",
+          "app:axhub"
+        ],
+        "max": 0,
+        "out": {
+          "id": "app:console.3",
+          "title": "Console 3",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal",
+          "instance": 3
+        }
+      },
+      {
+        "name": "at the cap",
+        "base": {
+          "id": "app:console",
+          "title": "Console",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal"
+        },
+        "open": [
+          "app:console",
+          "app:console.2",
+          "app:axhub"
+        ],
+        "max": 2,
+        "out": null
+      },
+      {
+        "name": "under the cap",
+        "base": {
+          "id": "app:console",
+          "title": "Console",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal"
+        },
+        "open": [
+          "app:console",
+          "app:console.2",
+          "app:axhub"
+        ],
+        "max": 3,
+        "out": {
+          "id": "app:console.3",
+          "title": "Console 3",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal",
+          "instance": 3
+        }
+      },
+      {
+        "name": "other payload open",
+        "base": {
+          "id": "app:console",
+          "title": "Console",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal"
+        },
+        "open": [
+          "app:axhub"
+        ],
+        "max": 0,
+        "out": {
+          "id": "app:console",
+          "title": "Console",
+          "kind": "app",
+          "payload": "console",
+          "icon": "terminal"
+        }
+      }
+    ],
+    "openTabs": [
+      {
+        "id": "app:console",
+        "title": "Console",
+        "kind": "app",
+        "payload": "console",
+        "icon": "terminal"
+      },
+      {
+        "id": "app:console.2",
+        "title": "Console 2",
+        "kind": "app",
+        "payload": "console",
+        "icon": "terminal",
+        "instance": 2
+      },
+      {
+        "id": "app:axhub",
+        "title": "axHub",
+        "kind": "app",
+        "payload": "axhub"
+      }
+    ]
+  },
   "edges": [
     "n",
     "s",

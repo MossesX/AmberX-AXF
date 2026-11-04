@@ -113,7 +113,7 @@ def _now() -> float:
 
 def _public(c: dict[str, Any]) -> dict[str, Any]:
     """A client as the runner sees it (ms times, no queue)."""
-    return {"id": c["id"], "app": c.get("app", "console-web"), **({"host": c["host"]} if c.get("host") else {}), "front": c.get("front", True),
+    return {"id": c["id"], "app": c.get("app", "console-web"), **({"host": c["host"]} if c.get("host") else {}), **({"instance": c["instance"]} if c.get("instance") else {}), "front": c.get("front", True),
             "title": c.get("title", ""), "device": c.get("device", ""), "user": c.get("user", ""),
             "lastUsed": int(c.get("lastUsed", 0) * 1000), "lastSeen": int(c.get("lastSeen", 0) * 1000), "here": c.get("here") or {}, "catalog": c.get("catalog") or {"items": []}}
 
@@ -141,6 +141,9 @@ def _front_of(c: dict[str, Any], b: dict[str, Any]) -> None:
         c["front"] = b["front"]
     if isinstance(b.get("host"), str):
         c["host"] = b["host"] if HOST_RE.match(b["host"]) else ""
+    # a further copy of the console inside its host, by the name the host gave it ("Console 2"; molly-multi-instance-tabs)
+    if isinstance(b.get("instance"), str):
+        c["instance"] = " ".join(b["instance"].split())[:80]
 
 
 def _prune() -> None:

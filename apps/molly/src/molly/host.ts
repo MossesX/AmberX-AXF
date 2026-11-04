@@ -14,8 +14,10 @@ import { mollyApp, type MollyApp } from './apps';
  * One owner per hook: the last plugin to set one wins, and clears only its own.
  */
 export interface MollyHostHooks {
-  frameUrl: ((app: MollyApp, start: string) => string) | null;
-  onFrame: ((app: string, frame: HTMLIFrameElement | null) => void) | null;
+  /** the address a frame opens; `instance` ≥ 2 = a further copy of the app (molly-multi-instance-tabs) */
+  frameUrl: ((app: MollyApp, start: string, instance: number) => string) | null;
+  /** told when a frame mounts / unmounts; `key` = the instance key (`console`, `console#2`) */
+  onFrame: ((key: string, frame: HTMLIFrameElement | null) => void) | null;
   main: ((app: string) => ReactNode) | null;
   views: ViewMap;
   warm: string[] | null;

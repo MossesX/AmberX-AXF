@@ -7,17 +7,18 @@ import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
-import { AGENT_CARD_SAMPLE, agentCardErrors, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
+import { AGENT_CARD_SAMPLE, agentCardErrors, avatarColors, avatarModel, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
+import { AVATAR_FACES, AVATAR_GEAR } from '../core/engines/swarm-rules.mjs';
 import { buildHelpIndex, helpCoverage, helpErrors, helpTarget, introToShow, introToWalkthrough, markSeen, normalizeHelpPack, ratchetErrors, resolveHelp, slugLabel } from '../core/engines/help-rules.mjs';
 import { DEFAULT_LAYOUT, LAYOUT_FIELDS, compileLayout, layoutBreakpointAttr, layoutErrors, layoutTokenVars, layoutTokens, layoutVars, layoutViewportAttrs, layoutViewports, normalizeLayout } from '../core/engines/layout';
 import { CONTROL_TARGET_IDS, canonicalControl, controlConfirmToken, controlConfirmValid, controlErrors, controlGate, controlHash, controlPaths, controlRegistry, controlResult, controlFailure, normalizeControl } from '../core/engines/control-rules.mjs';
 import { compileRepeats, declaredDataSets, missingDataSets, repeatVars, REPEAT_DEFAULT_COLUMNS, REPEAT_DEFAULT_STYLE, REPEAT_MAX_COLUMNS, REPEAT_STYLES } from '../core/engines/repeat';
-import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from '../core/engines/components';
+import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, normalizeTabGroup, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from '../core/engines/components';
 import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/engines/uac';
 import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
 import { defaultHidden, hiddenSlots, hideableTypes } from '../core/engines/hide';
-import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedPageView, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
+import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedInstance, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedPageView, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
 import { appearanceRetryMs, appearanceSlotTypes, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
 import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
@@ -32,17 +33,18 @@ import { ASSET_TYPES } from '../core/types';
 import { ASSET_ORIGIN, CHECKED_KINDS, DEFAULT_MENU, MENU_DEFAULT_ORDER, MENU_ITEM_FIELDS, MENU_MAX_DEPTH, PROVIDER_MAX, appMenuSearchEntries, buildAppMenu, chromeToggleItems, chromeToggleTypes, compileAppMenu, compileProviderItems, mergeAppMenu, parseChecked, resolveChecked, titleFromId, truthy, validateMenuItems, type AppMenuContribution, type AppMenuEnv } from '../core/engines/appmenu';
 import { LIBRARY_PARAM_TYPES, PARAM_TRUE_WORDS, paramBool, paramDefaultText, paramDefaults, paramError, paramToJson, type LibraryParam } from '../core/library';
 import { validateAsset } from '../core/validate';
+import * as cs from '../core/engines/chrome-settings-rules.mjs';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
 import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES, HUB_FIELD_CAPS, HUB_MESSAGES, HUB_PATHS, HUB_SEEN_CAP, accountUrl, apkDownloadName, approvalUrl, approvalsUrl, appsUrl, csrfFromPage, feedUrl, hubOrigin, interpretFeed, isHub, loginUrl, logoutUrl, normalizeHub, seenPlan, unreachableFeed } from '../libs/hub/hub';
 import { APPS_FEED_MAX_BYTES, APPS_FEED_PATH, APPS_MAX, VERSIONS_MAX, appsFeedUrl, interpretApps } from '../libs/hub/apps';
 import { libraryCards, paramDefaultText, paramError, paramToJson, parseBoilerplate, parseBoilerplateIndex, parseCatalog, parseLibrariesIndex, parseLibrary, parseStatusMap, parseTracker } from '../core/catalog';
 import { CONDITION_KINDS, DEFAULT_BACKOFF_FACTOR, DELAY_KINDS, FALLBACK_OUTCOME, JOB_EFFECTS, JOB_EVENT_TYPES, JOB_PHASES, STOP_REASONS, WORK_CONTRACT, WORK_PLACEHOLDERS, WORK_POLL_CAPABILITY, clampInterval, delayFor, initialJobState, replayJob, shouldRestart, unmetConditions, validateJobSpec, workKinds, type DelayRule, type JobEvent, type JobSpec } from '../core/engines/work';
-import { DEFAULT_SNAP_RULES, RESIZE_EDGES, RESIZE_HANDLE, RESIZE_HANDLE_TOUCH, SNAP_ZONES, WINDOW_MIN, armSplit, dragRestore, hitResizeEdge, maximizeWindow, maximizedRect, resizeCursor, resizeRect, resolveOverlap, restoreWindow, snapRect, snapZoneAt, snapZoneRect, splitDrop, toggleMaximized, topmostAt, type Rect, type ResizeEdge, type SplitArm, type WindowSpec } from '../core/engines/windows';
-import { DEFAULT_DOCK_RULES, DOCK_CONTRACT, DOCK_LAYOUT_MAX_PANES, DOCK_SIDES, DOCK_ZONES, applyDockDrop, applyPreset, clampWeights, countPanes, dockDropAt, dockDropRect, dockLayoutErrors, dockZoneAt, dropIsLimited, enforcePaneLimit, headerIndexAt, normalizeDockLayout, normalizeDockRules, normalizeTree, paneAt, parseTab, parseTree, pathOf, presetRects, presetSvg, presetTree, removePane, resizeSplit, restoreDock, serializeDock, splitPane, splitRoot, type DockDrop, type DockState, type GroupBox } from '../core/engines/dock';
+import { DEFAULT_SNAP_RULES, INSTANCE_MAX, freshTab, navItemTab, RESIZE_EDGES, RESIZE_HANDLE, RESIZE_HANDLE_TOUCH, SNAP_ZONES, WINDOW_MIN, armSplit, baseTabId, baseTitle, instanceOf, instanceTab, instanceTabId, instanceTitle, instancesOf, nextInstance, dragRestore, hitResizeEdge, maximizeWindow, maximizedRect, resizeCursor, resizeRect, resolveOverlap, restoreWindow, snapRect, snapZoneAt, snapZoneRect, splitDrop, toggleMaximized, topmostAt, type Rect, type ResizeEdge, type SplitArm, type WindowSpec } from '../core/engines/windows';
+import { DEFAULT_DOCK_RULES, DOCK_CONTRACT, DOCK_HISTORY_MAX, DOCK_LAYOUT_MAX_PANES, DOCK_SIDES, DOCK_ZONES, applyDockDrop, applyDockDropNew, pushHistory, applyPreset, clampWeights, countPanes, dockDropAt, dockDropRect, dockLayoutErrors, dockZoneAt, dropIsLimited, enforcePaneLimit, headerIndexAt, normalizeDockLayout, normalizeDockRules, normalizeTree, paneAt, parseTab, parseTree, pathOf, presetRects, presetSvg, presetTree, removePane, resizeSplit, restoreDock, serializeDock, splitPane, splitRoot, type DockDrop, type DockState, type GroupBox } from '../core/engines/dock';
 import type { Pane, TabGroup } from '../core/engines/windows';
 import { NAV_STYLE_FIELDS, NAV_STYLE_FRAME, navArrange, navFollow, navPathTo, navStyleErrors, navStyleOutput, navToggle, normalizeNavStyle } from '../core/engines/navstyle';
 import { navFieldErrors } from '../core/engines/navstyle-rules.mjs';
-import { CHROME_KINDS, DEFAULT_MERGE, DEFAULT_PRESETS, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, dockRulesOf, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId as xNsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
+import { CHROME_KINDS, DEFAULT_MAX_INSTANCES, DEFAULT_MERGE, DEFAULT_PRESETS, MAX_INSTANCES_LIMIT, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, canAddInstance, dockRulesOf, instanceKey, instanceLabel, newTabChoices, parseInstanceKey, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId as xNsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
 import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES as CHROME_WIDGET_TONES, WIDGET_TYPES as CHROME_WIDGET_TYPES, activeNav, chromePicks, emptyChrome, mergeChrome, parseChromeBundle, routePick, type ChromeBundle } from '../core/engines/chrome';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
@@ -92,6 +94,14 @@ write('agent-card.json', {
   },
   employeeIds: Object.fromEntries(['kat', 'rio', 'boss', 'Doc-Dee'].map((id) => [id, employeeId(id)])),
   bars: { 'AX-0042': barcodeBars('AX-0042'), '': barcodeBars('') },
+  // the avatar from the card rules (agent avatar, Nov 2026): the sample, junk, one per face, one per gear, the hue bands
+  avatar: {
+    sample: avatarModel(AGENT_CARD_SAMPLE.avatar),
+    junk: avatarModel('nope'),
+    faces: Object.fromEntries(AVATAR_FACES.map((k) => [k, avatarModel({ face: k }).parts.find((p) => p.id === 'face')])),
+    gear: Object.fromEntries(AVATAR_GEAR.map((k) => [k, avatarModel({ gear: k }).parts.filter((p) => p.id.startsWith('gear'))])),
+    hues: Object.fromEntries([0, 45, 90, 180, 270, 359].map((h) => [String(h), avatarColors({ hue: h, hair: 0 })])),
+  },
   errors: {
     ok: agentCardErrors('agent-card', { design: 'license', front: ['name'], labels: { name: 'Who' } }),
     'bad-enums': agentCardErrors('agent-card', { design: 'poster', finish: 'chrome', code: 'nfc' }),
@@ -502,6 +512,12 @@ write('hide.json', {
     viewPages: ['view:todos', ' view:todos ', 'view:', 'view:bad id', 'view:a/b', `view:${'x'.repeat(70)}`, 'View:Alerts'].map((p) => ({ input: p, page: embedPage(p), view: embedPageView(embedPage(p)) })),
     viewUrls: [['https://console.amberxai.com/', { takes: ['settings', 'banners', 'plugins'], page: 'view:todos' }]].map(([u, o]) => ({ url: u, host: 'host', opts: o, out: embedUrlFull(u as string, 'host', o as never) })),
     viewDetect: ['?axf-embed=host&axf-embed-take=settings,plugins&axf-embed-page=view:todos'].map((q) => ({ search: q, embed: embedFromQueryFull(q) })),
+    // a further copy of an app the host opened (`axf-embed-instance=Console 2`; molly-multi-instance-tabs, Nov 4 2026)
+    instances: {
+      labels: ['Console 2', '  Console\t2  ', 'x'.repeat(100), '', null, 'a\u0000b'].map((raw) => ({ raw, label: embedInstance(raw) })),
+      urls: [['https://console.amberxai.com/', { takes: ['settings'], instance: 'Console 2' }], ['https://console.amberxai.com/?axf-embed-instance=old#a', { instance: null }], ['https://console.amberxai.com/', { instance: '   ' }]].map(([u, o]) => ({ url: u, host: 'molly', opts: o, out: embedUrlFull(u as string, 'molly', o as never) })),
+      queries: ['?axf-embed=molly&axf-embed-instance=Console%202', '?axf-embed=molly&axf-embed-take=settings&axf-embed-instance=Console+3', '?axf-embed=molly&axf-embed-instance=', '?axf-embed-instance=Console%202'].map((q) => ({ search: q, embed: embedFromQueryFull(q), detect: detectEmbedFull(q, agents[0]) })),
+    },
     pluginTabs: [
       { $axf: 'embed@1', type: 'plugins', plugins: [
         { id: 'ai.amberx.axf.example.alpha', name: 'Todos', on: true, tab: { view: 'todos', label: ' Todos\n', icon: 'list' } },
@@ -648,6 +664,48 @@ write('spacing.json', {
     kinds,
   });
 }
+// chrome-settings@1 (Nov 4 2026): registry, ids, inherit@1 chain, picks, instance overrides, custom copies
+{
+  const defaults = Object.fromEntries(load('settings').filter((a) => (a.data as { for?: string }).for).map((a) => [a.id, a]));
+  const custom = cs.customCopy(defaults['chrome-tab-group']!, { id: 'axf-console', name: 'Dev Console' });
+  const edited = { ...custom, id: 'chrome-tab-group-edited', data: { ...custom.data, layout: 'tabs-side', tabs: [], hide: ['interface'], levelOf: { look: 'basic' } } };
+  const get = (id: string) => ({ ...defaults, [custom.id]: custom, [edited.id]: edited, loop1: { id: 'loop1', data: { for: 'toolbar', extends: 'loop2' } }, loop2: { id: 'loop2', data: { for: 'toolbar', extends: 'loop1', header: 'none' } } } as Record<string, unknown>)[id] ?? null;
+  write('chrome-settings.json', {
+    contract: cs.CHROME_SETTINGS_CONTRACT,
+    types: cs.CHROME_TYPES, labels: cs.CHROME_LABELS, many: cs.CHROME_MANY, targets: cs.CHROME_TARGETS, moves: cs.CHROME_MOVES, tabs: cs.CHROME_SETTINGS_TABS, fields: cs.CHROME_FIELDS,
+    ids: Object.fromEntries(cs.CHROME_TYPES.map((t) => [t, { default: cs.chromeSettingsDefaultId(t), custom: cs.chromeSettingsCustomId(t, 'axf-console'), typeOfDefault: cs.chromeTypeOfSettingsId(cs.chromeSettingsDefaultId(t)), typeOfCustom: cs.chromeTypeOfSettingsId(cs.chromeSettingsCustomId(t, 'axf-console')) }])),
+    keys: { pick: cs.CHROME_SETTINGS_PICK_KEY('tab-group'), patch: cs.CHROME_SETTINGS_PATCH_KEY('tab-group'), instance: cs.CHROME_INSTANCE_KEY('tab-group', 'ui-review.sections'), instanceAsset: cs.CHROME_INSTANCE_ASSET_KEY('tab-group', 'ui-review.sections'), last: cs.TAB_GROUP_LAST_KEY('ui-review.sections'), fold: cs.TAB_GROUP_FOLD_KEY('ui-review.sections') },
+    slugs: { 'Dev Console': cs.appSlug('Dev Console'), 'axf-console': cs.appSlug('axf-console'), '': cs.appSlug(''), '  Weird__Name!!': cs.appSlug('  Weird__Name!!') },
+    targetTypes: Object.fromEntries(['tab-group', 'toolbar', 'banner', 'axf-banner', 'nav', 'nav-item', 'app-menu', 'menubar', 'canvas', 'default', ''].map((t) => [t || '(empty)', cs.chromeTypeOfTarget(t)])),
+    customCopy: custom,
+    chain: { custom: cs.resolveSettingsChain(get, custom.id), edited: cs.resolveSettingsChain(get, edited.id), default: cs.resolveSettingsChain(get, 'chrome-tab-group'), loop: cs.resolveSettingsChain(get, 'loop1'), missing: cs.resolveSettingsChain(get, 'nope') },
+    picks: {
+      unset: cs.chromeSettingsPick(undefined, 'tab-group', ['chrome-tab-group', custom.id]),
+      custom: cs.chromeSettingsPick(custom.id, 'tab-group', ['chrome-tab-group', custom.id]),
+      gone: cs.chromeSettingsPick('chrome-tab-group-old', 'tab-group', ['chrome-tab-group', custom.id]),
+      wrongType: cs.chromeSettingsPick('chrome-toolbar', 'tab-group', ['chrome-tab-group', 'chrome-toolbar']),
+      noDefault: cs.chromeSettingsPick(undefined, 'tab-group', [custom.id]),
+    },
+    choices: cs.chromeSettingsChoices('tab-group', [edited, defaults['chrome-toolbar']!, custom, defaults['chrome-tab-group']!]),
+    overrides: {
+      clean: cs.normalizeInstanceOverride('tab-group', { style: 'pills', position: 'left', badges: false, bogus: 1, density: 'huge', sticky: 'yes' }),
+      number: cs.normalizeInstanceOverride('banner', { height: 999.6, surface: 'raised' }),
+      empty: cs.normalizeInstanceOverride('toolbar', null),
+      unknownType: cs.normalizeInstanceOverride('clock', { format: '12h' }),
+      data: cs.chromeInstanceData('tab-group', { style: 'underline', align: 'start' }, { style: 'pills', bogus: true }),
+      value: [cs.chromeFieldValue('tab-group', { style: 'underline' }, { style: 'pills' }, 'style'), cs.chromeFieldValue('tab-group', { style: 'underline' }, {}, 'style'), cs.chromeFieldValue('tab-group', {}, {}, 'style')],
+    },
+    errors: {
+      ok: cs.chromeSettingsErrors(custom),
+      badFor: cs.chromeSettingsErrors({ id: 'chrome-x', data: { for: 'clock' } }),
+      self: cs.chromeSettingsErrors({ id: 'chrome-toolbar-a', data: { for: 'toolbar', extends: 'chrome-toolbar-a' } }),
+      badName: cs.chromeSettingsErrors({ id: 'my-settings', data: { for: 'toolbar' } }),
+      notAsset: cs.chromeSettingsErrors(null),
+    },
+    plan: cs.chromeSettingsPlan('molly'),
+    missing: cs.chromeSettingsMissing('molly', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-toolbar']),
+  });
+}
 write('components.json', {
   button: Object.fromEntries(load('button').map((a) => [a.id, buttonStyle(a.data)])),
   slider: Object.fromEntries(load('slider').map((a) => [a.id, sliderStyle(a.data)])),
@@ -658,6 +716,17 @@ write('components.json', {
   toolbar: Object.fromEntries(load('toolbar').map((a) => [a.id, toolbarStyle(a.data)])),
   'nav-menu': Object.fromEntries(load('nav-menu').map((a) => [a.id, navMenuStyle(a.data)])),
   'app-menu': Object.fromEntries(load('app-menu').map((a) => [a.id, appMenuStyle(a.data)])),
+  // tab-group@1 (Nov 4 2026): every starter's compiled output + normalized data, and the edge cases a port must match
+  'tab-group': Object.fromEntries(load('tab-group').map((a) => [a.id, { normalized: normalizeTabGroup(a.data), ...tabGroupStyle(a.data) }])),
+  'tab-group-cases': {
+    missing: { normalized: normalizeTabGroup(null), ...tabGroupStyle(null) },
+    hidden: tabGroupStyle({ style: 'pills', align: 'start' }, true),
+    'legacy-show-icons-false': normalizeTabGroup({ style: 'underline', align: 'start', showIcons: false }),
+    'display-wins-over-show-icons': normalizeTabGroup({ style: 'underline', align: 'start', showIcons: false, display: 'icons' }),
+    'unknown-values-fall-back': normalizeTabGroup({ style: 'x' as never, align: 'y' as never, position: 'z' as never, overflow: 'q' as never, display: 'w' as never, density: 'v' as never }),
+    'left-rail': tabGroupStyle({ style: 'pills', align: 'start', position: 'left', display: 'icons', sticky: true, badges: false }),
+    'every-flag-on': normalizeTabGroup({ style: 'boxed', align: 'stretch', sticky: true, collapsible: true, closable: true, reorderable: true, badges: true, rememberLast: true, overflow: 'more', position: 'bottom' }),
+  },
   // style fields set explicitly (the starter assets mostly use defaults)
   'chrome-cases': {
     'toolbar-compact-glass': toolbarStyle({ variant: 'labels', align: 'start', groups: [], showSearch: false, density: 'compact', surface: 'glass', divider: false }),
@@ -1687,7 +1756,28 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     limit: { state: { tree: limitState.tree, groups: Object.fromEntries(Object.entries(limitState.groups).map(([k, g]) => [k, g.tabs.map((t) => t.id)])) }, paneLimit: 2, out: { tree: limited.tree, groups: Object.fromEntries(Object.entries(limited.groups).map(([k, g]) => [k, g.tabs.map((t) => t.id)])) } },
     snapshot: snap,
     restore: Object.entries(restoreCases).map(([name, raw]) => { const r = restoreDock(raw, 'main', normalizeDockRules(name === 'over the limit' ? { paneLimit: 2 } : null)); return { name, raw, out: r ? { tree: r.tree, groups: Object.fromEntries(Object.entries(r.groups).map(([k, g]) => [k, { tabs: g.tabs, active: g.active, windowId: g.windowId }])) } : null }; }),
-    parseTab: [{ id: 't', kind: 'doc' }, { id: 't', title: 'T', kind: 'doc', payload: 'p', icon: 'file', closable: false }, { id: 'bad id!', kind: 'doc' }, { id: 't', kind: 'bad kind!' }, { id: 't', kind: 'doc', icon: 'Bad Icon', closable: true }, 'x', null, { id: 't', kind: 'doc', payload: 7 }].map((raw) => ({ raw, tab: parseTab(raw) })),
+    parseTab: [{ id: 't', kind: 'doc' }, { id: 't', title: 'T', kind: 'doc', payload: 'p', icon: 'file', closable: false }, { id: 'bad id!', kind: 'doc' }, { id: 't', kind: 'bad kind!' }, { id: 't', kind: 'doc', icon: 'Bad Icon', closable: true }, 'x', null, { id: 't', kind: 'doc', payload: 7 }, { id: 't.2', kind: 'doc', payload: 'p', instance: 2 }, { id: 't', kind: 'doc', instance: 1 }, { id: 't', kind: 'doc', instance: 2.5 }, { id: 't', kind: 'doc', instance: '3' }, { id: 't', kind: 'doc', instance: 1000 }].map((raw) => ({ raw, tab: parseTab(raw) })),
+    // multi-instance tabs (molly-multi-instance-tabs): a snapshot keeps which copy each tab is, and restores it
+    instances: (() => { const st: DockState = { tree: leaf('g'), groups: { g: { id: 'g', tabs: [{ id: 'c', title: 'Console', kind: 'app', payload: 'console' }, { id: 'c.2', title: 'Console 2', kind: 'app', payload: 'console', instance: 2 }, { id: 'c.3', title: 'Builds', kind: 'app', payload: 'console', instance: 3 }], active: 1, windowId: 'main' } } }; const snap = serializeDock(st); const r = restoreDock(snap, 'main'); return { snapshot: snap, restored: r ? { tree: r.tree, groups: Object.fromEntries(Object.entries(r.groups).map(([k, g]) => [k, { tabs: g.tabs, active: g.active, windowId: g.windowId }])) } : null }; })(),
+    // drag-to-tab (Nov 4 2026): a tab that isn't open yet dropped with the same zones (nav item → strip, pane edge, root edge, empty dock)
+    fresh: (() => {
+      const tab = { id: 'n1', title: 'New', kind: 'doc', payload: 'p/n1' };
+      const cases: [string, DockState, DockDrop, Partial<typeof R>?][] = [
+        ['header at 1', state, { target: 'group', groupId: 'a', zone: 'header', index: 1 }],
+        ['header past the end', state, { target: 'group', groupId: 'c', zone: 'header', index: 9 }],
+        ['centre', state, { target: 'group', groupId: 'b', zone: 'centre' }],
+        ['pane edge right', state, { target: 'group', groupId: 'b', zone: 'right' }],
+        ['root edge top', state, { target: 'root', zone: 'top' }],
+        ['pane limit joins as a tab', state, { target: 'group', groupId: 'c', zone: 'bottom' }, { paneLimit: 3 }],
+        ['empty dock', { tree: null, groups: {} }, { target: 'root', zone: 'left' }],
+        ['target gone', state, { target: 'group', groupId: 'zzz', zone: 'centre' }],
+        ['already open', { tree: leaf('a'), groups: { a: { id: 'a', tabs: [tab], active: 0, windowId: 'main' } } }, { target: 'group', groupId: 'a', zone: 'centre' }],
+      ];
+      const plain = (st: DockState) => ({ tree: st.tree, groups: Object.fromEntries(Object.entries(st.groups).map(([k, g]) => [k, { tabs: g.tabs.map((t) => t.id), active: g.active, windowId: g.windowId }])) });
+      return { tab, cases: cases.map(([name, st, d, o]) => { const out = applyDockDropNew(st, tab, d, 'new', 'main', normalizeDockRules({ ...R, ...(o ?? {}) })); return { name, state: plain(st), drop: d, rules: o ?? null, unchanged: out === st, ...plain(out) }; }) };
+    })(),
+    // undo history (dock@1): the dock before each change, equal snapshots not repeated, the oldest dropped past the cap
+    history: (() => { const a = serializeDock(state); const b = serializeDock({ tree: leaf('a'), groups: { a: state.groups.a! } }); const h1 = pushHistory([], a); const h2 = pushHistory(h1, a); const h3 = pushHistory(h2, b); const many = Array.from({ length: DOCK_HISTORY_MAX + 3 }, (_, i) => serializeDock({ tree: leaf('a'), groups: { a: { ...state.groups.a!, active: i % 2 } } })).reduce((h, s) => pushHistory(h, s), [] as ReturnType<typeof pushHistory>); return { max: DOCK_HISTORY_MAX, a, b, afterA: h1.length, afterAAgain: h2.length, afterB: h3.length, last: h3[h3.length - 1], capped: many.length, small: pushHistory([a, b], a, 2).map((x) => x.groups) }; })(),
     parseTree: [rawRestore.tree, { kind: 'leaf', groupId: 'a' }, { kind: 'leaf', groupId: 'nope' }, { kind: 'grid', rows: 2, cols: 2, cells: [{ kind: 'leaf', groupId: 'a' }, { kind: 'leaf', groupId: 'b' }, { kind: 'leaf', groupId: 'c' }, { kind: 'leaf', groupId: 'nope' }] }, { kind: 'grid', rows: 1, cols: 3, cells: [{ kind: 'leaf', groupId: 'a' }, { kind: 'leaf', groupId: 'b' }, { kind: 'leaf', groupId: 'c' }] }, { kind: 'what' }, []].map((raw) => ({ raw, tree: parseTree(raw, (g) => ['a', 'b', 'c'].includes(g)) })),
     presets: {
       starters: Object.fromEntries(presets.map((a) => { const d = normalizeDockLayout(a.data); return [a.id, { normalized: d, errors: dockLayoutErrors(a.data), tree: presetTree(d, ['g1', 'g2', 'g3', 'g4']), rects: presetRects(d), svg: presetSvg(d) }]; })),
@@ -1716,7 +1806,12 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     'inline tree + custom presets': { apps: [{ id: 'a', label: 'A', url: 'https://a.example/' }], ide: { on: true, paneLimit: 3, presets: ['two-rows', 'ide', 'two-rows', 'Bad'], tree: { kind: 'split', vertical: true, children: [{ kind: 'leaf', pane: 1 }, { kind: 'leaf', pane: 2 }], weights: [3, 1] } } },
     'ide preset falls back to the list': { apps: [], ide: { presets: ['two-columns', 'grid-2x2'] } },
     'toolbar items namespaced + repeats dropped': { apps: [{ id: 'a', label: 'A', url: 'https://a.example' }], toolbars: [{ slot: 2, visible: true, location: 'left', items: [{ id: 'one', label: 'One', action: 'a:nav:home', app: 'a', open: 'pane' }, { id: 'two', label: 'Two', action: 'nav:home', app: 'A', open: 'floating', icon: 'home' }, { id: 'one', label: 'Again', action: 'x' }, { id: 'three', label: 'Three', action: 'host.thing' }] }] },
+    'max instances clamped': { apps: [], ide: { maxInstances: 99 } },
+    'max instances floor': { apps: [], ide: { maxInstances: 0.4 } },
+    'max instances junk': { apps: [], ide: { maxInstances: 'many' } },
   };
+  badData['bad max instances'] = { apps: [], ide: { maxInstances: 13 } };
+  badData['max instances not whole'] = { apps: [], ide: { maxInstances: 2.5 } };
   const molly = normalizeXLayout(starters[0]!.data);
   const mergeCases: Record<string, Partial<Record<(typeof CHROME_KINDS)[number], (typeof MERGE_MODES)[number]>>> = {
     default: {}, 'everything guest': Object.fromEntries(CHROME_KINDS.map((k) => [k, 'guest'])), 'everything host': Object.fromEntries(CHROME_KINDS.map((k) => [k, 'host'])),
@@ -1733,6 +1828,19 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     merge: Object.entries(mergeCases).map(([name, m]) => { const d = normalizeXLayout({ apps: starters[0]!.data.apps, merge: m }); return { name, merge: d.merge, hidden: guestHidden(d), takes: guestTakes(d), url: guestUrl(d, d.apps[0]!), urlRoute: guestUrl(d, d.apps[2]!, 'molly', '#/build'), userAgent: guestUserAgent(d) }; }),
     toolbars: { all: visibleToolbars(molly), top: visibleToolbars(molly, 'top'), bottom: visibleToolbars(molly, 'bottom'), everyOn: visibleToolbars({ toolbars: molly.toolbars.map((t) => ({ ...t, visible: true })) }).map((t) => t.slot) },
     presets: { offered: idePresets(molly, ['ide', 'single', 'two-columns', 'other']), none: idePresets(molly, []), rules: dockRulesOf(molly), rulesClamped: dockRulesOf(normalizeXLayout({ apps: [], ide: { paneLimit: 99 } })) },
+    // multiple instances of one app (molly-multi-instance-tabs, Nov 4 2026)
+    instances: {
+      default: DEFAULT_MAX_INSTANCES, limit: MAX_INSTANCES_LIMIT,
+      labels: [['Console', 1], ['Console', 2], ['axHub', 3]].map(([l, n]) => ({ label: l, n, out: instanceLabel(l as string, n as number) })),
+      keys: [['console', 1], ['console', 2], ['axhub', 12]].map(([a, n]) => ({ app: a, n, key: instanceKey(a as string, n as number) })),
+      parse: ['console', 'console#2', 'axhub#12', 'console#0', 'Console#2', 'console#', '#2', 'bad id!', '', 'console#1000'].map((k) => ({ key: k, out: parseInstanceKey(k) })),
+      canAdd: [0, 1, 3, 4, 5].map((n) => ({ open: n, ok: canAddInstance(molly, n) })),
+      guestUrls: [1, 2, 3].map((n) => ({ instance: n, url: guestUrl(molly, molly.apps[2]!, 'molly', '', n) })),
+      choices: [
+        { name: 'nothing open', data: molly, open: {}, views: [], hasCurrent: false },
+        { name: 'console at the cap, two views, a repeat and junk', data: molly, open: { console: 4, axhub: 1 }, views: [{ id: 'home', label: 'Molly', icon: 'home' }, { id: 'toolbar-designer', label: 'Toolbar designer', icon: 'Bad Icon!' }, { id: 'console', label: 'repeat of an app' }, { id: '', label: 'no id' }], hasCurrent: true },
+      ].map((c) => ({ ...c, data: undefined, out: newTabChoices(c.data, c.open, c.views, c.hasCurrent) })),
+    },
   });
 }
 // Navigation style (nav-style@1, build molly-nav-submenus, Nov 3 2026; core/engines/navstyle.ts + navstyle-rules.mjs): the
@@ -1887,8 +1995,33 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   let arm: SplitArm | null = null; const armSteps: { target: string | null; now: number; arm: SplitArm }[] = [];
   for (const [target, now] of [['a', 0], ['a', 200], ['a', 449], ['a', 450], ['b', 500], ['b', 949], ['b', 950], [null, 1000], ['b', 1100], ['b', 1549], ['b', 1550]] as [string | null, number][]) { arm = armSplit(arm, target, now); armSteps.push({ target, now, arm }); }
   const armZero = armSplit(null, 'a', 0, 0);
+  // multiple instances of one thing (molly-multi-instance-tabs, Nov 4 2026): ids, titles, the next free copy
+  const tabs = [{ id: 'molly-app:console', title: 'Console', kind: 'molly-app', payload: 'console' }, { id: 'molly-app:console.2', title: 'Console 2', kind: 'molly-app', payload: 'console', instance: 2 }, { id: 'molly-app:console.4', title: 'Builds', kind: 'molly-app', payload: 'console', instance: 4 }, { id: 'molly-app:axhub', title: 'axHub', kind: 'molly-app', payload: 'axhub' }, { id: 'x', title: 'X', kind: 'other', payload: 'console' }];
+  const instances = {
+    max: INSTANCE_MAX,
+    of: [{ }, { instance: 1 }, { instance: 2 }, { instance: 0 }, { instance: 2.5 }, { instance: 1000 }].map((t) => ({ tab: t, instance: instanceOf(t) })),
+    ids: [['molly-app:console', 1], ['molly-app:console', 2], ['molly-app:console', 12]].map(([b, n]) => ({ base: b, n, id: instanceTabId(b as string, n as number) })),
+    baseIds: tabs.map((t) => ({ id: t.id, instance: t.instance ?? null, base: baseTabId(t) })),
+    titles: [['Console', 1], ['Console', 2], ['Console', 10]].map(([b, n]) => ({ base: b, n, title: instanceTitle(b as string, n as number) })),
+    baseTitles: tabs.map((t) => ({ title: t.title, instance: t.instance ?? null, base: baseTitle(t) })),
+    copies: instancesOf(tabs, 'molly-app', 'console').map((t) => t.id),
+    next: [['molly-app', 'console'], ['molly-app', 'axhub'], ['molly-app', 'amberx'], ['other', 'console']].map(([k, p]) => ({ kind: k, payload: p, next: nextInstance(tabs, k!, p) })),
+    make: [[tabs[0], 2, undefined], [tabs[0], 3, 'Builds'], [tabs[1], 3, undefined], [tabs[2], 5, undefined], [tabs[1], 1, undefined]].map(([t, n, title]) => ({ from: t, n, title: title ?? null, tab: instanceTab(t as never, n as number, title as string | undefined) })),
+  };
+  // drag-to-tab (Nov 4 2026): a nav item's tab, and the copy a drop opens (itself, its next instance, or none past the cap)
+  const navTabs = [{ view: 'builds', label: 'Builds', icon: 'hammer' }, { view: 'plugin:notes/browser', label: 'Notes' }].map((it) => ({ item: it, tab: navItemTab(it) }));
+  const fBase = { id: 'app:console', title: 'Console', kind: 'app', payload: 'console', icon: 'terminal' };
+  const fOpen = [fBase, { ...fBase, id: 'app:console.2', title: 'Console 2', instance: 2 }, { id: 'app:axhub', title: 'axHub', kind: 'app', payload: 'axhub' }];
+  const fresh = {
+    navTabs,
+    cases: ([['nothing open', [], 0], ['one open', [fBase], 0], ['two open', fOpen, 0], ['at the cap', fOpen, 2], ['under the cap', fOpen, 3], ['other payload open', [fOpen[2]], 0]] as [string, typeof fOpen, number][])
+      .map(([name, open, max]) => ({ name, base: fBase, open: open.map((t) => t.id), max, out: freshTab(fBase, open, max) })),
+    openTabs: fOpen,
+  };
   write('windows.json', {
     contract: 'windows@1',
+    instances,
+    fresh,
     edges: RESIZE_EDGES, handle: RESIZE_HANDLE, handleTouch: RESIZE_HANDLE_TOUCH, min: WINDOW_MIN,
     cursors: Object.fromEntries(RESIZE_EDGES.map((e) => [e, resizeCursor(e)])),
     frames: ['standard', 'frameless'], frameDefault: 'standard',

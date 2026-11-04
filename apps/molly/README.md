@@ -21,7 +21,14 @@ Big Dog profile, Opus; a Fable version comes later as its own build).
   application menu, navigation, context menu and toolbar and send them as data; Molly shows one menu bar (a menu per
   app), one navigation (a section per app), one context menu (a right-click inside an app opens it too) and their
   toolbars. IDE mode puts the apps in draggable, resizable, dockable panes (ten preset layouts with a preview, pane
-  limit); three toolbars (show / hide, edge). Settings → Plugins → xLayout. <!-- axf-plugin:xlayout -->
+  limit); three toolbars (show / hide, edge). Settings → Plugins → xLayout. **Tabs** (molly-multi-instance-tabs, Nov 4
+  2026): the **+** at the end of every tab bar opens the new-tab picker (an app, another copy of an app up to *Copies of
+  one app* in xLayout settings, any Molly screen, Duplicate this tab); each copy is its own tab, frame and session
+  (`Console 2` also answers Amber by that name); right-click or long-press a tab for New tab / Duplicate / Rename / Close
+  / Close others / Move to pane / Pop out to window; **Reset layout** (View menu, the right-click of any pane or tab,
+  xLayout settings, console action `xlayout.reset`) asks first and can be undone (*Undo layout change*), like every
+  drop. Any tab, floating window or dialog can be dragged by its tab or title into a pane, out to a window, or back
+  (phone: long-press, then drag). <!-- axf-plugin:xlayout -->
 - **Toolbar designer** (`plugins/toolbar-designer`, capability `axf.toolbar-designer@1`): picks what each toolbar holds
   from every app and screen and where each item opens (main area, floating window, pane); from its settings tab, View
   → Toolbar designer and right-click on any toolbar. <!-- axf-plugin:toolbar-designer -->

@@ -1,7 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { useAxfState } from '../axf/react';
-import { deepLink, MOLLY_APPS } from './apps';
+import { instanceKey, parseInstanceKey } from '../axf/core/engines/xlayout';
+import { deepLink, mollyApp } from './apps';
 import { appOfView, mollyHooks, mollyHooksRev, onMollyHooks } from './host';
 
 /**
@@ -10,6 +11,12 @@ import { appOfView, mollyHooks, mollyHooksRev, onMollyHooks } from './host';
  * or a pane renders). A slot in a view covers the main region around it; a slot in a pane (`fill="self"`) covers just
  * itself, so several apps can be on screen at once. An app whose slot is gone or hidden only hides its frame, so
  * switching apps never loses their state.
+ *
+ * Several copies of one app (molly-multi-instance-tabs, Nov 4 2026: "Need to be able to add a tab so I can have
+ * multiple instances"): a slot and its frame are keyed by an instance key (`console` = the first copy, `console#2` the
+ * second…, `instanceKey` in the xlayout engine). Each copy is its own iframe with its own session; a copy past the
+ * first gets `axf-embed-instance=<label>` in its address (through the host plugin's `frameUrl`), so a console copy
+ * announces itself as "Console 2".
  */
 
 type Rect = { top: number; left: number; width: number; height: number };
@@ -19,14 +26,14 @@ const slotListeners = new Set<() => void>();
 const slots = new Map<string, Slot>();
 const notify = () => slotListeners.forEach((f) => f());
 
-/** Reload / reopen requests from the menus and toolbar (actions.ts). */
+/** Reload / reopen requests from the menus and toolbar (actions.ts); `id` = an instance key (`console`, `console#2`). */
 const reloads = new Map<string, number>();
 export function reloadFrame(id: string) {
   reloads.set(id, (reloads.get(id) ?? 0) + 1);
   notify();
 }
 
-/** The box a view (or a pane, `fill="self"`) gives its app's frame. */
+/** The box a view (or a pane, `fill="self"`) gives its app's frame; `id` = the instance key. */
 export function AppSlot({ id, fill = 'main' }: { id: string; fill?: 'main' | 'self' }) {
   const ref = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
@@ -39,12 +46,12 @@ export function AppSlot({ id, fill = 'main' }: { id: string; fill?: 'main' | 'se
       notify();
     };
   }, [id, fill]);
-  return <div ref={ref} className="molly-slot" data-app={id} data-fill={fill} />;
+  return <div ref={ref} className="molly-slot" data-app={parseInstanceKey(id)?.app ?? id} data-instance={id} data-fill={fill} />;
 }
 
 const same = (a: Rect | undefined, b: Rect) => !!a && a.top === b.top && a.left === b.left && a.width === b.width && a.height === b.height;
 
-/** Where each app's frame goes right now: every slot that is on screen (a hidden or zero-size slot has none). */
+/** Where each frame goes right now (by instance key): every slot that is on screen (a hidden or zero-size slot has none). */
 function useSlotRects(): Map<string, Rect> {
   const [rects, setRects] = useState<Map<string, Rect>>(new Map());
   const [tick, bump] = useState(0);
@@ -82,7 +89,7 @@ function useSlotRects(): Map<string, Rect> {
   return rects;
 }
 
-/** Every opened app's frame; mounted once, next to the shell. */
+/** Every opened frame (one per instance key); mounted once, next to the shell. */
 export function FrameDeck() {
   const view = useAxfState().view;
   const active = appOfView(view)?.id ?? null;
@@ -98,24 +105,27 @@ export function FrameDeck() {
   });
   const [opened, setOpened] = useState<string[]>(() => (active ? [active] : []));
   useEffect(() => {
-    const want = [...new Set([...(active ? [active] : []), ...rects.keys(), ...(warm ?? [])])].filter((id) => !opened.includes(id) && MOLLY_APPS.some((a) => a.id === id));
+    const want = [...new Set([...(active ? [active] : []), ...rects.keys(), ...(warm ?? [])])].filter((id) => !opened.includes(id) && mollyApp(parseInstanceKey(id)?.app));
     if (want.length) setOpened((o) => [...o, ...want]);
   }, [active, rects, opened, warm]);
 
   return createPortal(
     <div className="molly-deck">
-      {MOLLY_APPS.filter((a) => opened.includes(a.id)).map((a) => {
-        const rect = rects.get(a.id);
-        const start = srcs.get(a.id) ?? a.url;
+      {opened.map((key) => {
+        const p = parseInstanceKey(key); const a = p ? mollyApp(p.app) : undefined;
+        if (!p || !a) return null;
+        const rect = rects.get(key);
+        const start = (p.instance === 1 ? srcs.get(a.id) : undefined) ?? a.url;
         return (
           <iframe
-            key={`${a.id}:${reloads.get(a.id) ?? 0}`}
-            ref={(el) => onFrame?.(a.id, el)}
-            title={a.label}
+            key={`${key}:${reloads.get(key) ?? 0}`}
+            ref={(el) => onFrame?.(key, el)}
+            title={p.instance > 1 ? `${a.label} ${p.instance}` : a.label}
             className="molly-frame"
             data-app={a.id}
+            data-instance={key}
             data-on={rect ? 'true' : 'false'}
-            src={frameUrl ? frameUrl(a, start) : start}
+            src={frameUrl ? frameUrl(a, start, p.instance) : start}
             allow="clipboard-read; clipboard-write; microphone; fullscreen; autoplay"
             style={rect ? { top: rect.top, left: rect.left, width: rect.width, height: rect.height } : undefined}
           />
@@ -124,4 +134,9 @@ export function FrameDeck() {
     </div>,
     document.body,
   );
+}
+
+/** The instance keys of an app's open frames, lowest first (`console`, `console#2`…). */
+export function openInstanceKeys(app: string): string[] {
+  return [...slots.keys()].map((k) => parseInstanceKey(k)).filter((p): p is { app: string; instance: number } => !!p && p.app === app).sort((a, b) => a.instance - b.instance).map((p) => instanceKey(p.app, p.instance));
 }

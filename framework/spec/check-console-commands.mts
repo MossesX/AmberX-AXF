@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 import { controlGate } from '../core/engines/control-rules.mjs';
 import {
   CONSOLE_CLIENT_STALE_MS, CONSOLE_TOOLS, consoleActionConfirm, consoleActionEffect, consoleActionNeeds, consoleCatalogFrom, consoleMessage, consoleMessageErrors,
-  consolePickClients, consoleResolve, consoleSearch, normalizeConsoleCatalog, runConsoleCommand,
+  consoleClientSummary, consolePickClients, consoleResolve, consoleSearch, normalizeConsoleCatalog, runConsoleCommand,
 } from '../core/engines/console-commands.mjs';
 
 let n = 0;
@@ -91,6 +91,16 @@ eq(consolePickClients(clients, 'recent', NOW).map((c) => c.id), ['phone'], 'rece
 eq(consolePickClients(clients, 'all', NOW).map((c) => c.id), ['phone', 'desk'], 'all live ones');
 eq(consolePickClients(clients, 'desk', NOW).map((c) => c.id), ['desk'], 'one by id');
 eq(consolePickClients(clients, 'old', NOW).length, 0, 'a stale id is gone');
+// a copy of the console inside Molly by the name Molly gave it (molly-multi-instance-tabs, Nov 4 2026)
+{
+  const copies = [...clients, { id: 'molly-2', app: 'molly/console-web', host: 'molly', instance: 'Console 2', lastUsed: NOW - 5000, lastSeen: NOW - 1000, here: { screen: 'builds' } }, { id: 'molly-3', app: 'molly/console-web', host: 'molly', instance: 'Console 3', lastUsed: NOW - 3000, lastSeen: NOW - 1000 }];
+  eq(consolePickClients(copies, 'Console 2', NOW).map((c) => c.id), ['molly-2'], 'picked by its instance name');
+  eq(consolePickClients(copies, 'console 3', NOW).map((c) => c.id), ['molly-3'], 'case and punctuation folded');
+  eq(consolePickClients(copies, 'Console 9', NOW).length, 0, 'no such copy');
+  eq(consolePickClients(copies, 'molly-2', NOW).map((c) => c.id), ['molly-2'], 'an id still wins');
+  eq(consoleClientSummary(copies[copies.length - 2]).instance, 'Console 2', 'the summary names the copy');
+  ok(!('instance' in consoleClientSummary(clients[0])), 'a plain console has no instance');
+}
 
 /* ---- runner (after the gate) ---- */
 const salt = 'check';

@@ -21,6 +21,7 @@ import { spawnSync } from 'node:child_process';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
 import { enforceDefaults } from './build-defaults.mjs';
 import { PROJECT_MANIFEST_FILE, checkProject, requireProject } from './project.mjs';
+import { writeCopies as writeChromeSettingsCopies } from './chrome-settings.mjs';
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -556,6 +557,15 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
   // start from the registry defaults even when the framework's own starter assets differ.
   const buildOptions = resolveOptions(options);
   applyOptions(join(dest, tpl.assetsDir), buildOptions, log);
+
+  // chrome-settings@1 (Brett, Nov 4 2026): every app gets its own copy of each shared chrome settings interface
+  // (tab-group, toolbar, banner, nav-menu, app-menu, context-menu), following the default until edited.
+  {
+    const appId = id ?? (String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'app');
+    const copies = writeChromeSettingsCopies(join(dest, tpl.assetsDir, 'settings'), { id: appId, name });
+    log(`• writing ${copies.written.length} chrome settings interface(s) for ${appId}`);
+    if (copies.bad.length) throw new Error(`chrome settings copies: ${copies.bad.join('; ')}`);
+  }
 
   log('• writing axf.manifest.json');
   const manifest = {

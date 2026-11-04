@@ -3,6 +3,15 @@
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => event.waitUntil(self.clients.claim()));
 
+// Offline chunk cache: an app may keep hashed build files (/assets/…) in Cache Storage `axf-plugin-chunks` (the console's
+// plugin lazy loader does); those are answered from it, every other request is left to the browser as before.
+self.addEventListener('fetch', (event) => {
+  const req = event.request;
+  const url = new URL(req.url);
+  if (req.method !== 'GET' || url.origin !== self.location.origin || !url.pathname.startsWith('/assets/')) return;
+  event.respondWith(caches.open('axf-plugin-chunks').then((c) => c.match(req)).then((hit) => hit || fetch(req)).catch(() => fetch(req)));
+});
+
 self.addEventListener('push', (event) => {
   let d = {};
   try { d = event.data ? event.data.json() : {}; } catch { d = { title: 'Alert', body: event.data ? event.data.text() : '' }; }

@@ -99,7 +99,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "maxInstances": 4
         },
         "toolbars": [
           {
@@ -193,7 +194,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "maxInstances": 4
         },
         "toolbars": [
           {
@@ -248,7 +250,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "maxInstances": 4
         },
         "toolbars": [
           {
@@ -303,7 +306,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "maxInstances": 4
         },
         "toolbars": [
           {
@@ -360,7 +364,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "maxInstances": 4
         },
         "toolbars": [
           {
@@ -440,7 +445,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "maxInstances": 4
         },
         "toolbars": [
           {
@@ -549,7 +555,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "maxInstances": 4
         },
         "toolbars": [
           {
@@ -607,7 +614,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "maxInstances": 4
         },
         "toolbars": [
           {
@@ -665,7 +673,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "maxInstances": 4
         },
         "toolbars": [
           {
@@ -723,7 +732,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "maxInstances": 4
         },
         "toolbars": [
           {
@@ -922,7 +932,8 @@
             "p-7",
             "p-8",
             "p-9"
-          ]
+          ],
+          "maxInstances": 4
         },
         "toolbars": [
           {
@@ -1097,7 +1108,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "maxInstances": 4
         },
         "toolbars": [
           {
@@ -1219,6 +1231,7 @@
             "two-rows",
             "ide"
           ],
+          "maxInstances": 4,
           "tree": {
             "kind": "split",
             "vertical": true,
@@ -1291,7 +1304,8 @@
           "presets": [
             "two-columns",
             "grid-2x2"
-          ]
+          ],
+          "maxInstances": 4
         },
         "toolbars": [
           {
@@ -1394,7 +1408,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "maxInstances": 4
         },
         "toolbars": [
           {
@@ -1432,6 +1447,189 @@
                 "open": "main"
               }
             ]
+          },
+          {
+            "slot": 3,
+            "visible": false,
+            "location": "right",
+            "label": "Toolbar 3",
+            "items": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "max instances clamped",
+      "raw": {
+        "apps": [],
+        "ide": {
+          "maxInstances": 99
+        }
+      },
+      "out": {
+        "apps": [],
+        "merge": {
+          "banner": "host",
+          "app-menu": "merged",
+          "nav-menu": "merged",
+          "context-menu": "merged",
+          "toolbar": "merged",
+          "widgets": "merged"
+        },
+        "ide": {
+          "on": false,
+          "paneLimit": 6,
+          "preset": "ide",
+          "presets": [
+            "single",
+            "two-columns",
+            "two-rows",
+            "main-side",
+            "side-main",
+            "main-bottom",
+            "three-columns",
+            "top-two-below",
+            "grid-2x2",
+            "ide"
+          ],
+          "maxInstances": 12
+        },
+        "toolbars": [
+          {
+            "slot": 1,
+            "visible": true,
+            "location": "top",
+            "label": "Toolbar 1",
+            "items": []
+          },
+          {
+            "slot": 2,
+            "visible": false,
+            "location": "bottom",
+            "label": "Toolbar 2",
+            "items": []
+          },
+          {
+            "slot": 3,
+            "visible": false,
+            "location": "right",
+            "label": "Toolbar 3",
+            "items": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "max instances floor",
+      "raw": {
+        "apps": [],
+        "ide": {
+          "maxInstances": 0.4
+        }
+      },
+      "out": {
+        "apps": [],
+        "merge": {
+          "banner": "host",
+          "app-menu": "merged",
+          "nav-menu": "merged",
+          "context-menu": "merged",
+          "toolbar": "merged",
+          "widgets": "merged"
+        },
+        "ide": {
+          "on": false,
+          "paneLimit": 6,
+          "preset": "ide",
+          "presets": [
+            "single",
+            "two-columns",
+            "two-rows",
+            "main-side",
+            "side-main",
+            "main-bottom",
+            "three-columns",
+            "top-two-below",
+            "grid-2x2",
+            "ide"
+          ],
+          "maxInstances": 1
+        },
+        "toolbars": [
+          {
+            "slot": 1,
+            "visible": true,
+            "location": "top",
+            "label": "Toolbar 1",
+            "items": []
+          },
+          {
+            "slot": 2,
+            "visible": false,
+            "location": "bottom",
+            "label": "Toolbar 2",
+            "items": []
+          },
+          {
+            "slot": 3,
+            "visible": false,
+            "location": "right",
+            "label": "Toolbar 3",
+            "items": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "max instances junk",
+      "raw": {
+        "apps": [],
+        "ide": {
+          "maxInstances": "many"
+        }
+      },
+      "out": {
+        "apps": [],
+        "merge": {
+          "banner": "host",
+          "app-menu": "merged",
+          "nav-menu": "merged",
+          "context-menu": "merged",
+          "toolbar": "merged",
+          "widgets": "merged"
+        },
+        "ide": {
+          "on": false,
+          "paneLimit": 6,
+          "preset": "ide",
+          "presets": [
+            "single",
+            "two-columns",
+            "two-rows",
+            "main-side",
+            "side-main",
+            "main-bottom",
+            "three-columns",
+            "top-two-below",
+            "grid-2x2",
+            "ide"
+          ],
+          "maxInstances": 4
+        },
+        "toolbars": [
+          {
+            "slot": 1,
+            "visible": true,
+            "location": "top",
+            "label": "Toolbar 1",
+            "items": []
+          },
+          {
+            "slot": 2,
+            "visible": false,
+            "location": "bottom",
+            "label": "Toolbar 2",
+            "items": []
           },
           {
             "slot": 3,
@@ -1694,6 +1892,30 @@
       "errors": [
         "data.apps has 13 apps; at most 12",
         "data.ide.presets has 11; at most 10"
+      ]
+    },
+    {
+      "name": "bad max instances",
+      "raw": {
+        "apps": [],
+        "ide": {
+          "maxInstances": 13
+        }
+      },
+      "errors": [
+        "data.ide.maxInstances must be a whole number 1..12"
+      ]
+    },
+    {
+      "name": "max instances not whole",
+      "raw": {
+        "apps": [],
+        "ide": {
+          "maxInstances": 2.5
+        }
+      },
+      "errors": [
+        "data.ide.maxInstances must be a whole number 1..12"
       ]
     }
   ],
@@ -2106,7 +2328,9 @@
       "edgeBand": 16,
       "centreFraction": 0.5,
       "splitRatio": 0.5,
-      "rootRatio": 0.3
+      "rootRatio": 0.3,
+      "floatOut": true,
+      "windowDocks": true
     },
     "rulesClamped": {
       "paneLimit": 64,
@@ -2115,7 +2339,240 @@
       "edgeBand": 16,
       "centreFraction": 0.5,
       "splitRatio": 0.5,
-      "rootRatio": 0.3
+      "rootRatio": 0.3,
+      "floatOut": true,
+      "windowDocks": true
     }
+  },
+  "instances": {
+    "default": 4,
+    "limit": 12,
+    "labels": [
+      {
+        "label": "Console",
+        "n": 1,
+        "out": "Console"
+      },
+      {
+        "label": "Console",
+        "n": 2,
+        "out": "Console 2"
+      },
+      {
+        "label": "axHub",
+        "n": 3,
+        "out": "axHub 3"
+      }
+    ],
+    "keys": [
+      {
+        "app": "console",
+        "n": 1,
+        "key": "console"
+      },
+      {
+        "app": "console",
+        "n": 2,
+        "key": "console#2"
+      },
+      {
+        "app": "axhub",
+        "n": 12,
+        "key": "axhub#12"
+      }
+    ],
+    "parse": [
+      {
+        "key": "console",
+        "out": {
+          "app": "console",
+          "instance": 1
+        }
+      },
+      {
+        "key": "console#2",
+        "out": {
+          "app": "console",
+          "instance": 2
+        }
+      },
+      {
+        "key": "axhub#12",
+        "out": {
+          "app": "axhub",
+          "instance": 12
+        }
+      },
+      {
+        "key": "console#0",
+        "out": null
+      },
+      {
+        "key": "Console#2",
+        "out": null
+      },
+      {
+        "key": "console#",
+        "out": null
+      },
+      {
+        "key": "#2",
+        "out": null
+      },
+      {
+        "key": "bad id!",
+        "out": null
+      },
+      {
+        "key": "",
+        "out": null
+      },
+      {
+        "key": "console#1000",
+        "out": null
+      }
+    ],
+    "canAdd": [
+      {
+        "open": 0,
+        "ok": true
+      },
+      {
+        "open": 1,
+        "ok": true
+      },
+      {
+        "open": 3,
+        "ok": true
+      },
+      {
+        "open": 4,
+        "ok": false
+      },
+      {
+        "open": 5,
+        "ok": false
+      }
+    ],
+    "guestUrls": [
+      {
+        "instance": 1,
+        "url": "https://console.amberxai.com?axf-embed=molly&axf-embed-hide=app-menu,toolbar,nav-menu,context-menu,banner&axf-embed-take=app-menu,nav-menu,context-menu,toolbar,widgets"
+      },
+      {
+        "instance": 2,
+        "url": "https://console.amberxai.com?axf-embed=molly&axf-embed-hide=app-menu,toolbar,nav-menu,context-menu,banner&axf-embed-take=app-menu,nav-menu,context-menu,toolbar,widgets&axf-embed-instance=Console+2"
+      },
+      {
+        "instance": 3,
+        "url": "https://console.amberxai.com?axf-embed=molly&axf-embed-hide=app-menu,toolbar,nav-menu,context-menu,banner&axf-embed-take=app-menu,nav-menu,context-menu,toolbar,widgets&axf-embed-instance=Console+3"
+      }
+    ],
+    "choices": [
+      {
+        "name": "nothing open",
+        "open": {},
+        "views": [],
+        "hasCurrent": false,
+        "out": [
+          {
+            "kind": "app",
+            "id": "amberx",
+            "label": "AmberX",
+            "icon": "sparkles",
+            "open": 0,
+            "allowed": true
+          },
+          {
+            "kind": "app",
+            "id": "axhub",
+            "label": "axHub",
+            "icon": "shield",
+            "open": 0,
+            "allowed": true
+          },
+          {
+            "kind": "app",
+            "id": "console",
+            "label": "Console",
+            "icon": "terminal",
+            "open": 0,
+            "allowed": true
+          }
+        ]
+      },
+      {
+        "name": "console at the cap, two views, a repeat and junk",
+        "open": {
+          "console": 4,
+          "axhub": 1
+        },
+        "views": [
+          {
+            "id": "home",
+            "label": "Molly",
+            "icon": "home"
+          },
+          {
+            "id": "toolbar-designer",
+            "label": "Toolbar designer",
+            "icon": "Bad Icon!"
+          },
+          {
+            "id": "console",
+            "label": "repeat of an app"
+          },
+          {
+            "id": "",
+            "label": "no id"
+          }
+        ],
+        "hasCurrent": true,
+        "out": [
+          {
+            "kind": "app",
+            "id": "amberx",
+            "label": "AmberX",
+            "icon": "sparkles",
+            "open": 0,
+            "allowed": true
+          },
+          {
+            "kind": "app",
+            "id": "axhub",
+            "label": "axHub",
+            "icon": "shield",
+            "open": 1,
+            "allowed": true
+          },
+          {
+            "kind": "app",
+            "id": "console",
+            "label": "Console",
+            "icon": "terminal",
+            "open": 4,
+            "allowed": false
+          },
+          {
+            "kind": "view",
+            "id": "home",
+            "label": "Molly",
+            "icon": "home"
+          },
+          {
+            "kind": "view",
+            "id": "toolbar-designer",
+            "label": "Toolbar designer",
+            "icon": "box"
+          },
+          {
+            "kind": "duplicate",
+            "id": "duplicate",
+            "label": "Duplicate this tab",
+            "icon": "copy"
+          }
+        ]
+      }
+    ]
   }
 }

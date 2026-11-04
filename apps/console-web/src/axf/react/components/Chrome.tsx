@@ -4,6 +4,7 @@ import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem } from '..
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { NavTree } from './NavTree';
+import { dragToTabClick, dragToTabDown } from '../windows/dragToTab';
 import { BrandMark, brandHostProps, useBrandPlace } from './Brand';
 import { AppMenuDropdown } from './AppMenu';
 import { HelpModeButton } from './Help';
@@ -47,7 +48,7 @@ export function MenuBar() {
   };
 
   return (
-    <div className="fx-menubar" ref={ref} role="menubar" onKeyDown={onKey}>
+    <div className="fx-menubar" ref={ref} role="menubar" onKeyDown={onKey} data-fx-ctx-target="app-menu" data-fx-ctx-payload="app">
       <div className="fx-brand">
         {/* the app's own name (manifest): the branding package is one look shared by every app through axHub, so it gives the
             mark, not the name (Nov 1 2026: the console is GizmoX AI Studio, axHub web is AXHub, AmberX is AmberX) */}
@@ -131,7 +132,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
   };
 
   return (
-    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}${arrange.on ? ' is-arranging' : ''} ${brandHost.className}`.trim()} data-align={tb.data.align} role="toolbar" aria-label="Toolbar" data-axf-toolbar="app" data-fx-ctx-target="toolbar" data-axf-arrange-host="toolbar" data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
+    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}${arrange.on ? ' is-arranging' : ''} ${brandHost.className}`.trim()} data-align={tb.data.align} role="toolbar" aria-label="Toolbar" data-axf-toolbar="app" data-fx-ctx-target="toolbar" data-fx-ctx-payload="app" data-axf-arrange-host="toolbar" data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
       <ArrangeBar host="toolbar" label="toolbar" />
       {brand?.svg && <span className="fx-toolbar__brand"><BrandMark slot="toolbar" height={20} /></span>}
       {(arrange.on || widgets.start.length > 0) && <span className="fx-toolbar__widgets is-start" {...arrange.sideProps('start')}>{arrangedSide(arrange, 'start', widgets.start, drawWidget)}</span>}
@@ -289,7 +290,7 @@ export function NavMenu({ views }: { views: ViewMap }) {
   if (navStyle) return <NavTree sections={mergeNavSections([...nav.data.sections, ...rt.navExtras])} views={views} style={navStyle} orient={orient} header={nav.data.header} />;
 
   return (
-    <nav className={`fx-nav fx-nav--${nav.data.style}`} data-orient={orient} aria-label="Main">
+    <nav className={`fx-nav fx-nav--${nav.data.style}`} data-orient={orient} aria-label="Main" data-axf-nav="app" data-fx-ctx-target="nav" data-fx-ctx-payload="app">
       {nav.data.header && orient === 'vertical' && <div className="fx-nav__header">{nav.data.header}</div>}
       {mergeNavSections([...nav.data.sections, ...rt.navExtras]).map((sec, i) => {
         const items = sec.items.filter((it) => views[it.view] && rt.gate(it.requires) !== 'hide' && !rt.takenByHost({ view: it.view }));
@@ -311,6 +312,9 @@ export function NavMenu({ views }: { views: ViewMap }) {
                   data-axf-view-link={it.view}
                   data-fx-ctx-target="nav-item"
                   data-fx-ctx-payload={it.view}
+                  data-fx-tab-source={locked ? undefined : it.view}
+                  onPointerDown={locked ? undefined : (e) => dragToTabDown(rt, e, { view: it.view, label: it.label, icon: it.icon })}
+                  onClickCapture={dragToTabClick}
                   onClick={() => rt.navigate(it.view)}
                 >
                   <Icon name={locked ? 'lock' : it.icon} size={17} />

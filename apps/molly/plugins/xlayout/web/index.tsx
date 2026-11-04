@@ -10,7 +10,7 @@ import { declaredToolbars, barKey, runToolbarItem, TOOLBAR_CTX, WithToolbars } f
 
 /** Apps Molly opens hidden at start because they take remote commands (the Dev Console's console-commands). */
 const WARM_APPS = ['console'];
-import { APP_TAB, AppMain, AppTab, enterIde, keepIde, LAYOUT_DIALOG, LayoutPicker, openApp } from './workspace';
+import { APP_TAB, AppMain, AppTab, enterIde, keepIde, mainAreaTabs, navTabOf, LAYOUT_DIALOG, LayoutPicker, NEW_TAB_DIALOG, NewTabPicker, openApp, openInstance, RESET_DIALOG, ResetLayoutDialog, resetLayout, undoLayout } from './workspace';
 import helpPack from '../help.json';
 import './xlayout.css';
 
@@ -65,7 +65,7 @@ function useSetting(key: string) {
 
 function IdePanel() {
   const rt = useRuntime();
-  useSetting(K.ideOn); useSetting(K.preset); useSetting(K.paneLimit);
+  useSetting(K.ideOn); useSetting(K.preset); useSetting(K.paneLimit); useSetting(K.maxInstances);
   const l = effectiveXLayout(rt);
   const presets = rt.registry.list('dock-layout' as never) as unknown as { id: string; name: string }[];
   return (
@@ -73,7 +73,12 @@ function IdePanel() {
       <Switch label="IDE mode" hint="Apps open as tabs in panes you drag, resize and dock, instead of one app at a time." checked={l.ide.on} onChange={(on) => { rt.settings.set(K.ideOn, on); if (on) enterIde(rt); else keepIde(rt); }} />
       <SelectField label="Pane layout" hint="The layout IDE mode starts with. Pick one with a preview: Choose layout." value={l.ide.preset} options={l.ide.presets.filter((p) => presets.some((x) => x.id === p)).map((p) => ({ value: p, label: presets.find((x) => x.id === p)?.name ?? p }))} onChange={(v) => rt.settings.set(K.preset, v)} />
       <SelectField label="Pane limit" hint="The most panes at once; a tab dropped past it joins a pane as a tab." value={String(l.ide.paneLimit)} options={Array.from({ length: 12 }, (_, i) => ({ value: String(i + 1), label: String(i + 1) }))} onChange={(v) => { rt.settings.set(K.paneLimit, Number(v)); rt.windows.setDockRules({ paneLimit: Number(v) }); }} />
-      <div className="fx-form__actions"><Button icon="layout" onClick={() => rt.openDialog(LAYOUT_DIALOG)}>Choose layout…</Button></div>
+      <SelectField label="Copies of one app" hint="How many tabs of the same app may be open at once (Console, Console 2, …): the + at the end of a tab bar opens another." value={String(l.ide.maxInstances)} options={Array.from({ length: 12 }, (_, i) => ({ value: String(i + 1), label: String(i + 1) }))} onChange={(v) => rt.settings.set(K.maxInstances, Number(v))} />
+      <div className="fx-form__actions">
+        <Button icon="layout" onClick={() => rt.openDialog(LAYOUT_DIALOG)}>Choose layout…</Button>
+        <Button icon="refresh" onClick={() => rt.openDialog(RESET_DIALOG)}>Reset layout…</Button>
+        <Button icon="undo" tone="quiet" onClick={() => undoLayout(rt)}>Undo layout change</Button>
+      </div>
     </div>
   );
 }
@@ -139,7 +144,7 @@ export const plugin: AxfWebLibrary = {
   id: PLUGIN_ID,
   label: 'xLayout',
   version: '0.1.0',
-  provides: ['view:xlayout', 'dialog:xlayout.layout', 'settings-tab:xlayout'],
+  provides: ['view:xlayout', 'dialog:xlayout.layout', 'dialog:xlayout.newtab', 'dialog:xlayout.reset', 'settings-tab:xlayout'],
   builtWith: { model: 'opus', builtAt: '2026-11-03' },
   help: helpPack.data as AxfWebLibrary['help'],
   register(rt) {
@@ -161,6 +166,17 @@ export const plugin: AxfWebLibrary = {
     on(RUN_ACTION, (args) => { h.run(args.join(':')); }, { label: 'Run an app’s menu item' });
     on('xlayout.ide', () => { const now = !effectiveXLayout(rt).ide.on; rt.settings.set(K.ideOn, now); if (now) enterIde(rt); else keepIde(rt); rt.toast(now ? 'Apps open in panes now.' : 'One app at a time again.', 'info', now ? 'IDE mode on' : 'IDE mode off'); }, { label: 'IDE mode on / off' });
     on('xlayout.layout', () => rt.openDialog(LAYOUT_DIALOG), { label: 'Pane layout…' });
+    // molly-multi-instance-tabs: the "+" on every tab group, another copy of an app, reset (confirmed, undoable), undo
+    rt.windows.newTab = (group) => rt.openDialog(NEW_TAB_DIALOG, { arg: group });
+    // drag-to-tab: a nav item dragged into a pane / strip / out to a window opens that app (its next copy when open)
+    rt.windows.navTab = navTabOf;
+    rt.windows.extraOpen = () => mainAreaTabs(rt);
+    rt.windows.maxInstances = effectiveXLayout(rt).ide.maxInstances;
+    rt.settings.onChange(K.maxInstances, () => { rt.windows.maxInstances = effectiveXLayout(rt).ide.maxInstances; });
+    on('xlayout.newtab', (args, ctx) => { const g = args[0] || ctx.payload || ''; const gid = rt.windows.state.groups[g] ? g : rt.windows.groupOf(g) ?? Object.keys(rt.windows.state.groups)[0] ?? ''; if (!effectiveXLayout(rt).ide.on) rt.toast('Turn IDE mode on first (View → IDE mode): tabs live in its panes.', 'info', 'New tab'); else rt.openDialog(NEW_TAB_DIALOG, { arg: gid }); }, { label: 'New tab…' });
+    on('xlayout.instance', (args, ctx) => { const app = appOfView(args.join(':') || ctx.payload || rt.getState().view)?.id; if (!app) { rt.toast('Open an app first.', 'info', 'New tab'); return; } if (!effectiveXLayout(rt).ide.on) { rt.settings.set(K.ideOn, true); enterIde(rt); } if (openInstance(rt, app)) keepIde(rt); }, { label: 'Open another copy of this app' });
+    on('xlayout.reset', (args) => { if (args[0] === 'now') resetLayout(rt); else rt.openDialog(RESET_DIALOG); }, { label: 'Reset layout…' });
+    on('xlayout.undo', () => undoLayout(rt), { label: 'Undo layout change' });
     on('xlayout.open', (args, ctx) => {
       const [target = 'main', ...rest] = args;
       const app = appOfView(rest.join(':') || ctx.payload || rt.getState().view)?.id;
@@ -176,8 +192,12 @@ export const plugin: AxfWebLibrary = {
     } satisfies XLayoutService);
     rt.settings.onChange(K.paneLimit, () => rt.windows.setDockRules({ paneLimit: effectiveXLayout(rt).ide.paneLimit }));
   },
-  tabs: { [APP_TAB]: (t) => <AppTab app={t.payload ?? ''} /> },
-  dialogs: { [LAYOUT_DIALOG]: { title: 'Pane layout', icon: 'layout', render: (_p, close) => <LayoutPicker close={close} /> } },
+  tabs: { [APP_TAB]: (t) => <AppTab tab={t} /> },
+  dialogs: {
+    [LAYOUT_DIALOG]: { title: 'Pane layout', icon: 'layout', render: (_p, close) => <LayoutPicker close={close} /> },
+    [NEW_TAB_DIALOG]: { title: 'New tab', icon: 'plus', searchable: false, render: (p, close) => <NewTabPicker group={String(p.arg ?? '')} close={close} /> },
+    [RESET_DIALOG]: { title: 'Reset layout', icon: 'refresh', render: (_p, close) => <ResetLayoutDialog close={close} /> },
+  },
   // Settings → Plugins → xLayout (a sub-tab of Plugins, like every plugin's)
   settingsTabs: [{ id: 'xlayout', label: 'xLayout', icon: 'layout', order: 40, parent: 'plugins', description: 'Molly as one app: merged menus, IDE panes, toolbars.' }],
   settingsPanels: [
@@ -190,8 +210,13 @@ export const plugin: AxfWebLibrary = {
     { id: 'xlayout.view', menu: 'view', menuLabel: 'View', menuOrder: 30, order: 20, items: [
       { id: 'xlayout.ide', label: 'IDE mode', icon: 'layout', action: 'xlayout.ide', checked: 'setting:xlayout.ide.on' },
       { id: 'xlayout.layout', label: 'Pane layout…', icon: 'layout', action: 'xlayout.layout' },
+      { id: 'xlayout.newtab', label: 'New tab…', icon: 'plus', action: 'xlayout.newtab' },
+      { id: 'xlayout.instance', label: 'Another copy of this app', icon: 'copy', action: 'xlayout.instance' },
       { id: 'xlayout.open-pane', label: 'Open this app in a pane', icon: 'grid', action: 'xlayout.open:pane' },
       { id: 'xlayout.open-floating', label: 'Open this app in a floating window', icon: 'monitor', action: 'xlayout.open:floating' },
+      { id: 'xlayout.sep-layout', separator: true },
+      { id: 'xlayout.undo', label: 'Undo layout change', icon: 'undo', action: 'xlayout.undo' },
+      { id: 'xlayout.reset', label: 'Reset layout…', icon: 'refresh', action: 'xlayout.reset' },
       { id: 'xlayout.settings', label: 'xLayout settings…', icon: 'settings', action: 'settings.open:xlayout' },
     ] },
   ],
@@ -203,6 +228,24 @@ export const plugin: AxfWebLibrary = {
     { id: 'xlayout.nav', target: 'nav-item', items: [
       { id: 'xlayout.nav-pane', label: 'Open in a pane', icon: 'grid', action: 'xlayout.open:pane:{payload}' },
       { id: 'xlayout.nav-floating', label: 'Open in a floating window', icon: 'monitor', action: 'xlayout.open:floating:{payload}' },
+      { id: 'xlayout.nav-instance', label: 'Open another copy', icon: 'copy', action: 'xlayout.instance:{payload}' },
+    ] },
+    // Reset layout is findable from any pane, tab or the dock itself (Brett: "How do I reset the layout?")
+    { id: 'xlayout.tab-group', target: 'tab-group', items: [
+      { id: 'xlayout.tg-sep', separator: true },
+      { id: 'xlayout.tg-undo', label: 'Undo layout change', icon: 'undo', action: 'xlayout.undo' },
+      { id: 'xlayout.tg-reset', label: 'Reset layout…', icon: 'refresh', action: 'xlayout.reset' },
+    ] },
+    { id: 'xlayout.tab', target: 'tab', items: [
+      { id: 'xlayout.t-sep', separator: true },
+      { id: 'xlayout.t-undo', label: 'Undo layout change', icon: 'undo', action: 'xlayout.undo' },
+      { id: 'xlayout.t-reset', label: 'Reset layout…', icon: 'refresh', action: 'xlayout.reset' },
+    ] },
+    { id: 'xlayout.ide', target: 'xlayout-ide', items: [
+      { id: 'xlayout.ide-newtab', label: 'New tab…', icon: 'plus', action: 'xlayout.newtab' },
+      { id: 'xlayout.ide-layout', label: 'Pane layout…', icon: 'layout', action: 'xlayout.layout' },
+      { id: 'xlayout.ide-undo', label: 'Undo layout change', icon: 'undo', action: 'xlayout.undo' },
+      { id: 'xlayout.ide-reset', label: 'Reset layout…', icon: 'refresh', action: 'xlayout.reset' },
     ] },
   ],
 };

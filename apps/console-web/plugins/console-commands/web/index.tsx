@@ -138,7 +138,10 @@ function ConsoleCommandsClient() {
     // (`front`), so a command for "the console Brett is using" comes here only while he can see it.
     const host = rt.embedded?.host ?? '';
     const app = host ? `${host}/console-web` : 'console-web';
-    const where = () => ({ front: rt.inFront(), ...(host ? { host } : {}) });
+    // a further copy of this console the host opened ("Console 2", molly-multi-instance-tabs): it announces that name, so
+    // `console.clients` lists it as such and a command can be sent to it by that name
+    const instance = rt.embedded?.instance ?? '';
+    const where = () => ({ front: rt.inFront(), ...(host ? { host } : {}), ...(instance ? { instance } : {}) });
     const history: string[] = [rt.getState().view];
     let catalogKey = '';
     let pick = pickedCommand();

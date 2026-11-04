@@ -90,11 +90,19 @@ function Splitter({ vertical, path, index, windowId }: { vertical: boolean; path
 
 /** Where the dragged tab would land: the pane it joins, the header band, the half it would take, or the host's side. Tokens only. */
 export function DockDropOverlay({ preview }: { preview: DockDropPreview }) {
+  const wm = useWindowManager();
   const d = preview.drop;
-  const zone = d.zone;
-  const label = preview.limited ? 'Pane limit: joins as a tab' : zone === 'header' ? 'Add the tab here' : zone === 'centre' ? 'Join as a tab' : d.target === 'root' ? `New pane along the ${zone}` : `Split ${zone}`;
+  const zone = preview.fill ? 'fill' : d.zone;
+  const label = preview.fill ? 'Open here' : preview.limited ? 'Pane limit: joins as a tab' : zone === 'header' ? 'Add the tab here' : zone === 'centre' ? 'Join as a tab' : d.target === 'root' ? `New pane along the ${zone}` : `Split ${zone}`;
+  // drag-to-tab: a strip drop marks the exact place between two tabs (the tab edges the group reported)
+  let caret: number | null = null;
+  if (d.target === 'group' && d.zone === 'header') {
+    const edges = wm.tabEdges.get(d.groupId) ?? []; const box = wm.groupBounds.get(d.groupId);
+    caret = d.index > 0 ? edges[d.index - 1] ?? null : box ? box[0] : null;
+  }
   return (
     <div className={`fx-dock-drop fx-dock-drop--${zone} ${preview.limited ? 'is-limited' : ''}`.trim()} style={{ left: preview.rect.x, top: preview.rect.y, width: preview.rect.width, height: preview.rect.height }} aria-hidden>
+      {caret !== null && <span className="fx-dock-drop__caret" style={{ left: caret - preview.rect.x }} />}
       <span className="fx-dock-drop__label">{label}</span>
     </div>
   );

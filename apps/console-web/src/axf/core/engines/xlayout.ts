@@ -76,7 +76,11 @@ export interface XLayoutIde {
   presets: string[];
   /** a preset tree of its own (the Toolbar designer / layout editor saves one); wins over `preset` when present */
   tree?: PresetPane;
+  /** how many copies of one app may be open at once as tabs ("Console 2"…), 1..12; default 4 (molly-multi-instance-tabs) */
+  maxInstances: number;
 }
+export const DEFAULT_MAX_INSTANCES = 4;
+export const MAX_INSTANCES_LIMIT = 12;
 export interface XLayoutData {
   apps: XLayoutApp[];
   merge: Record<ChromeKind, MergeMode>;
@@ -121,7 +125,8 @@ export function parseIde(raw: unknown): XLayoutIde {
   for (const p of Array.isArray(o.presets) ? o.presets : DEFAULT_PRESETS) { const s = str(p, XLAYOUT_LIMITS.id); if (ASSET_ID.test(s) && !presets.includes(s) && presets.length < XLAYOUT_LIMITS.presets) presets.push(s); }
   const preset0 = str(o.preset, XLAYOUT_LIMITS.id);
   const preset = ASSET_ID.test(preset0) ? preset0 : (presets.includes('ide') ? 'ide' : presets[0] ?? 'single');
-  const out: XLayoutIde = { on: o.on === true, paneLimit: limit, preset, presets: presets.length ? presets : [...DEFAULT_PRESETS] };
+  const mi = typeof o.maxInstances === 'number' && Number.isFinite(o.maxInstances) ? Math.max(1, Math.min(MAX_INSTANCES_LIMIT, Math.floor(o.maxInstances))) : DEFAULT_MAX_INSTANCES;
+  const out: XLayoutIde = { on: o.on === true, paneLimit: limit, preset, presets: presets.length ? presets : [...DEFAULT_PRESETS], maxInstances: mi };
   const tree = parsePresetTree(o.tree);
   if (tree) { const leaves = countLeaves(tree); if (leaves >= 1 && leaves <= DOCK_LAYOUT_MAX_PANES) out.tree = tree; }
   return out;
@@ -206,6 +211,7 @@ export function xlayoutErrors(raw: unknown): string[] {
         else { ide.presets.forEach((p, i) => { if (!ASSET_ID.test(str(p, XLAYOUT_LIMITS.id))) errors.push(`data.ide.presets[${i}] must be a dock-layout asset id`); }); if (ide.presets.length > XLAYOUT_LIMITS.presets) errors.push(`data.ide.presets has ${ide.presets.length}; at most ${XLAYOUT_LIMITS.presets}`); }
       }
       if (ide.tree !== undefined && !parsePresetTree(ide.tree)) errors.push('data.ide.tree must be a preset tree (leaf { pane } or split { vertical, children, weights })');
+      if (ide.maxInstances !== undefined && (!Number.isInteger(ide.maxInstances) || (ide.maxInstances as number) < 1 || (ide.maxInstances as number) > MAX_INSTANCES_LIMIT)) errors.push(`data.ide.maxInstances must be a whole number 1..${MAX_INSTANCES_LIMIT}`);
     }
   }
   if (raw.toolbars !== undefined) {
@@ -269,10 +275,45 @@ export function guestTakes(data: Pick<XLayoutData, 'merge'>): string[] {
   return CHROME_KINDS.filter((k) => data.merge[k] === 'merged' && known.has(k));
 }
 
-/** A guest's frame address: its own URL with the full embed@1 marker (host `molly`, hidden chrome, functions taken). */
-export function guestUrl(data: Pick<XLayoutData, 'merge'>, app: XLayoutApp, host = 'molly', route = ''): string {
+/**
+ * A guest's frame address: its own URL with the full embed@1 marker (host `molly`, hidden chrome, functions taken).
+ * `instance` ≥ 2 = a further copy of the app (its frame carries `axf-embed-instance=<label>`, e.g. `Console 2`, so the
+ * copy announces itself as its own console client under that name and Amber can target it).
+ */
+export function guestUrl(data: Pick<XLayoutData, 'merge'>, app: XLayoutApp, host = 'molly', route = '', instance = 1): string {
   const url = route ? `${app.url}/#/${route.replace(/^#?\/?/, '')}` : app.url;
-  return embedUrlFull(url, host, { hidden: guestHidden(data), takes: guestTakes(data) });
+  return embedUrlFull(url, host, { hidden: guestHidden(data), takes: guestTakes(data), instance: instance >= 2 ? instanceLabel(app.label, instance) : null });
+}
+
+/* ---------- multiple instances of one app (molly-multi-instance-tabs, Nov 4 2026) ---------- */
+
+/** What copy `n` of an app is called (`Console` → `Console 2`; the first keeps the plain name). */
+export const instanceLabel = (label: string, n: number): string => (n >= 2 ? `${label} ${n}` : label);
+/** The key a host renders copy `n` of an app under (its frame / slot): `console` for the first, `console#2` after. */
+export const instanceKey = (app: string, n: number): string => (n >= 2 ? `${app}#${n}` : app);
+/** The app and copy behind a key (`console#2` → console, 2; `console` → console, 1); null for junk. */
+export function parseInstanceKey(key: string): { app: string; instance: number } | null {
+  const m = /^([a-z0-9][a-z0-9-]{0,31})(?:#([0-9]{1,3}))?$/.exec(String(key ?? ''));
+  if (!m) return null;
+  const n = m[2] ? Number(m[2]) : 1;
+  return n >= 1 ? { app: m[1]!, instance: n } : null;
+}
+/** May another copy of an app open, given how many are open now? */
+export const canAddInstance = (data: Pick<XLayoutData, 'ide'>, openNow: number): boolean => openNow < data.ide.maxInstances;
+
+/** One choice in the host's "+" (new tab) picker. */
+export interface NewTabChoice { kind: 'app' | 'view' | 'duplicate'; id: string; label: string; icon: string; /** copies open now (apps) */ open?: number; /** false = the cap is reached (apps) */ allowed?: boolean }
+/**
+ * What the "+" at the end of a tab group offers (molly-multi-instance-tabs: "AmberX / axHub / Console / any Molly plugin,
+ * plus Duplicate this tab"): every app of the xlayout (with how many copies are open and whether one more may), then
+ * `views` (the host's other screens: plugin views, pages), then `duplicate` when there is a current tab. Pure.
+ */
+export function newTabChoices(data: Pick<XLayoutData, 'apps' | 'ide'>, openInstances: Readonly<Record<string, number>>, views: readonly { id: string; label: string; icon?: string }[], hasCurrent = true): NewTabChoice[] {
+  const out: NewTabChoice[] = data.apps.map((a) => { const open = Math.max(0, Math.floor(openInstances[a.id] ?? 0)); return { kind: 'app', id: a.id, label: a.label, icon: a.icon ?? 'box', open, allowed: canAddInstance(data, open) }; });
+  const seen = new Set(out.map((c) => c.id));
+  for (const v of views) { const id = str(v.id, 160); if (!id || seen.has(id)) continue; seen.add(id); out.push({ kind: 'view', id, label: str(v.label, XLAYOUT_LIMITS.label) || id, icon: v.icon && ICON_ID.test(v.icon) ? v.icon : 'box' }); }
+  if (hasCurrent) out.push({ kind: 'duplicate', id: 'duplicate', label: 'Duplicate this tab', icon: 'copy' });
+  return out;
 }
 
 /** The user-agent suffix a native host's web views would carry for the same marker (Android: the Molly shell, later). */

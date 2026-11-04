@@ -7,7 +7,7 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { CHROME_KINDS, DEFAULT_MERGE, DEFAULT_PRESETS, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, dockRulesOf, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
+import { CHROME_KINDS, DEFAULT_MAX_INSTANCES, DEFAULT_MERGE, DEFAULT_PRESETS, MAX_INSTANCES_LIMIT, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, canAddInstance, dockRulesOf, instanceKey, instanceLabel, newTabChoices, parseInstanceKey, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
 import { embedTakeIds, embedFromQueryFull } from '../core/engines/embed';
 import { validateAsset } from '../core/validate';
 import { ASSET_TYPES, OPTIONAL_TYPES } from '../core/types';
@@ -78,5 +78,27 @@ for (const c of f.errors) {
 // an item's `open: pane` only applies while the IDE is on; standalone apps never get an xlayout (not shared, not baked)
 ok(openTargetFor({ open: 'pane' }, false) === 'floating' && openTargetFor({ open: 'pane' }, true) === 'pane', 'pane needs the IDE switch');
 for (const app of ['apps/console-web', 'apps/axhub-web', 'apps/amberx-droid', 'apps/molly']) ok(!existsSync(join(root, '..', app, 'src/axf/assets/xlayout')), `${app} does not bake xlayout (host-only)`);
+
+// ---- multiple instances of one app (molly-multi-instance-tabs, Nov 4 2026) ----
+{
+  const i = f.instances;
+  eq(DEFAULT_MAX_INSTANCES, i.default, 'default max instances'); eq(MAX_INSTANCES_LIMIT, i.limit, 'max instances limit');
+  const molly = normalizeXLayout(starters.find((a) => a.id === 'molly')!.data);
+  eq(molly.ide.maxInstances, DEFAULT_MAX_INSTANCES, 'the starter takes the default');
+  eq(normalizeXLayout({ apps: [], ide: { maxInstances: 99 } }).ide.maxInstances, MAX_INSTANCES_LIMIT, 'clamped'); eq(normalizeXLayout({ apps: [], ide: { maxInstances: 0.4 } }).ide.maxInstances, 1, 'floor'); eq(normalizeXLayout({ apps: [], ide: { maxInstances: 'many' } }).ide.maxInstances, DEFAULT_MAX_INSTANCES, 'junk = default');
+  ok(xlayoutErrors({ apps: [], ide: { maxInstances: 13 } }).some((e) => e.includes('maxInstances')), 'over the limit is an error'); ok(xlayoutErrors({ apps: [], ide: { maxInstances: 2.5 } }).some((e) => e.includes('maxInstances')), 'not whole is an error'); eq(xlayoutErrors({ apps: [], ide: { maxInstances: 12 } }), [], '12 is fine');
+  for (const c of i.labels) eq(instanceLabel(c.label, c.n), c.out, `instanceLabel ${c.n}`);
+  for (const c of i.keys) eq(instanceKey(c.app, c.n), c.key, `instanceKey ${c.n}`);
+  for (const c of i.parse) eq(parseInstanceKey(c.key), c.out, `parseInstanceKey ${c.key}`);
+  for (const c of i.canAdd) eq(canAddInstance(molly, c.open), c.ok, `canAddInstance ${c.open}`);
+  for (const c of i.guestUrls) eq(guestUrl(molly, molly.apps[2]!, 'molly', '', c.instance), c.url, `guestUrl instance ${c.instance}`);
+  ok(i.guestUrls[0].url.indexOf('axf-embed-instance') < 0 && i.guestUrls[1].url.includes('axf-embed-instance=Console+2'), 'the first copy has no instance; the second is "Console 2"');
+  ok(embedFromQueryFull(new URL(i.guestUrls[2].url).search)?.instance === 'Console 3', 'the guest reads its instance name back');
+  for (const c of i.choices) eq(newTabChoices(molly, c.open, c.views, c.hasCurrent), c.out, `newTabChoices ${c.name}`);
+  const full = i.choices[1].out;
+  ok(full.find((c: { id: string }) => c.id === 'console').allowed === false && full.find((c: { id: string }) => c.id === 'axhub').allowed === true, 'an app at the cap is offered but not allowed');
+  ok(full.filter((c: { kind: string }) => c.kind === 'view').length === 2 && full.find((c: { id: string }) => c.id === 'toolbar-designer').icon === 'box', 'views: repeats of an app and junk ids dropped, a bad icon falls back');
+  ok(full[full.length - 1].kind === 'duplicate' && i.choices[0].out.every((c: { kind: string }) => c.kind !== 'duplicate'), 'Duplicate this tab only with a current tab');
+}
 
 console.log(`check-xlayout: ok (${checks} checks)`);
