@@ -27,4 +27,7 @@ export function counts(builds: any[]): Record<string, number>;
 export function sortBuilds(list: any[], sort?: string, dir?: 'asc' | 'desc', rules?: any): any[];
 export const ASSET_RULE: string;
 export function brief(build: any, rules?: any): string;
+export interface UpgradePolicy { approvalRequired: boolean; source: string }
+export function setUpgradePolicy(p: Partial<UpgradePolicy> | null | undefined): UpgradePolicy;
+export function upgradePolicy(): UpgradePolicy;
 export function apply(state: any, change: any): { state: any; build?: any; log: string[] };

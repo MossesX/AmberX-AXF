@@ -102,6 +102,10 @@ start_watch_live() {   # $1 = session name; prints the watcher pid (empty when o
 
 GATE="$HERE/../framework/cli/model-gate.mjs"
 UPGRADE_NOTE="Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Opus) is fine. An UPGRADE (e.g. Opus → Fable) needs Brett's approval: when you reach one, run \`node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>\`, ask once, and stop. Never approve a model switch upgrade yourself (no \`act approve\` on an upgrade), never relaunch on a higher model."  # axf-plugin:build-orchestrator
+# The line for the policy in force (owner-only Claude setting "Fable upgrades need my approval", Brett, Nov 4 2026)
+if command -v node >/dev/null && [[ -f "$HERE/../framework/cli/upgrade-policy.mjs" ]]; then
+  rule="$(node "$HERE/../framework/cli/upgrade-policy.mjs" --rule 2>/dev/null)" && [[ -n "$rule" ]] && UPGRADE_NOTE="$rule"
+fi
 # Upgrades need Brett (framework/cli/model-gate.mjs): a build may not start on a higher model than its orchestrator step,
 # nor start a phase that upgrades the model before Brett approved it. Checked once, before the slot (the queue waiter
 # and the tmux inner run were checked when they were asked for). AXF_BUILD_ID names the build when the name doesn't.

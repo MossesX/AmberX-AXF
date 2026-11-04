@@ -53,6 +53,7 @@ CLI = HERE.parent / "orchestrator.mjs"
 with tempfile.TemporaryDirectory() as d:
     store = str(Path(d) / "store.json")
     clean = {k: v for k, v in os.environ.items() if k not in AGENT_ENV}
+    clean["AXF_FABLE_UPGRADE_APPROVAL"] = "1"  # these checks cover the approval rule (setting on)
     clean.update(AXF_BUILDS_STORE=store)
 
     def cli(*args: str, env: dict[str, str] | None = None) -> dict:
