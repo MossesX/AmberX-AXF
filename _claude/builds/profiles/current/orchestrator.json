@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T15:30:53.643Z",
+ "updatedAt": "2026-11-04T15:32:25.205Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -12581,7 +12581,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw29w9v70cz5z4"
+     "uid": "st-mw29zd0607t3e3"
     },
     {
      "id": "s2",
@@ -12599,7 +12599,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw29w9v70dwpp9"
+     "uid": "st-mw29zd0608ody8"
     },
     {
      "id": "s3",
@@ -12617,7 +12617,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw29w9v70ehlez"
+     "uid": "st-mw29zd06093of0"
     },
     {
      "id": "s4",
@@ -12635,10 +12635,100 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw29w9v70ffnc8"
+     "uid": "st-mw29zd060axjwc"
     },
     {
      "id": "s5",
+     "text": "Checks green (validate, fixtures, theme/controls/toolbars checks, typecheck, console build), UI Review shots, report, PR, THREADS",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw29zd060b00jc"
+    },
+    {
+     "id": "s6-5",
+     "text": "Contract: jump-menu@1 rules (jumpmenu-rules.mjs registry: location, display, density, sticky, collapsible, spy, smooth, overflow), engine (jumpmenu.ts: normalize, output tokens, scroll-spy), types, validators (TS + build engine), asset-types.json, JSON schema, 5 starters, defaults.json, fixture + check-jumpmenu.mts, PORTING row",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw29w9v70cz5z4"
+    },
+    {
+     "id": "s7-6",
+     "text": "control@1 tokens.jump (control-rules, control-tokens, control.json snapshot, fixture, check-control, MCP target list, token-control UI), runtime jumpMenuData() with overrides",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw29w9v70dwpp9"
+    },
+    {
+     "id": "s8-7",
+     "text": "React JumpMenu component + settings dialog (location, display, density, sticky, collapsible, spy, smooth, overflow, preset picker), context menu Settings / Change jump menu / Move, CSS tokens only, AssetPreview case",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw29w9v70ehlez"
+    },
+    {
+     "id": "s9-8",
+     "text": "Plan Studio plan view uses the JumpMenu asset instead of its hard-coded chip row; help entries; list other candidate pages",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw29w9v70ffnc8"
+    },
+    {
+     "id": "s10-9",
      "text": "Checks green (validate, fixtures, theme/controls/toolbars checks, typecheck, console build), UI Review shots, report, PR, THREADS",
      "model": "Fable",
      "why": "",

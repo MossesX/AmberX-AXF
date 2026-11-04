@@ -683,12 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 11:19 UTC · `terminal-no-focus` note (current) · foreign-write
-- 2026-11-04 11:19 UTC · `expenses-port` added (6 steps) (current) · foreign-write
-- 2026-11-04 11:19 UTC · `land-round-2` note (current) · orchestrator
-- 2026-11-04 11:25 UTC · `land-round-2` note (current) · foreign-write
-- 2026-11-04 11:25 UTC · `expenses-port` s4 done (current) · orchestrator
-- 2026-11-04 11:33 UTC · `expenses-port` s5 done (current) · orchestrator
 - 2026-11-04 11:35 UTC · `expenses-port` PR #307 (current) · builds-live
 - 2026-11-04 11:35 UTC · `expenses-port` s6 done, → built (current) · orchestrator
 - 2026-11-04 12:05 UTC · `molly-console-commands` merged (current) · builds-live
@@ -1083,6 +1077,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:28 UTC · `urgent-land-gizmo-chat` → complete, note (current) · reconciler
 - 2026-11-04 15:28 UTC · `urgent-land-gizmo-chat` → complete, note (current) · reconciler
 - 2026-11-04 15:29 UTC · `jump-menu-asset` added (5 steps) (current) · orchestrator
+- 2026-11-04 15:32 UTC · `gizmo-companion` note (current) · foreign-write
+- 2026-11-04 15:32 UTC · `expenses-port` note (current) · foreign-write
+- 2026-11-04 15:32 UTC · `urgent-land-gizmo-chat` → complete, note (current) · foreign-write
+- 2026-11-04 15:32 UTC · `apps-control-surface` s1 done (current) · foreign-write
+- 2026-11-04 15:32 UTC · `tab-group-assets` added (6 steps) (current) · foreign-write
+- 2026-11-04 15:32 UTC · `jump-menu-asset` added (5 steps) (current) · foreign-write
 
 ## Token passes (log)
 
