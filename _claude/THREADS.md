@@ -1004,6 +1004,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 12:44 UTC · `profile-switcher-widget` note (current) · foreign-write
 - 2026-11-04 12:44 UTC · `app-style-override` note (current) · foreign-write
 - 2026-11-04 12:46 UTC · `hotfix-build-manager` s1 done (current) · builds-page
+- 2026-11-04 12:46 UTC · `profile-manager` note (current) · foreign-write
+- 2026-11-04 12:46 UTC · `molly-console-commands` → complete, note (current) · foreign-write
+- 2026-11-04 12:46 UTC · `git-status-board` note (current) · foreign-write
+- 2026-11-04 12:46 UTC · `urgent-main-ci-green` → complete, note (current) · foreign-write
+- 2026-11-04 12:46 UTC · `terminal-tabs-left` note (current) · foreign-write
+- 2026-11-04 12:46 UTC · `gizmo-companion` note (current) · foreign-write
+- 2026-11-04 12:46 UTC · `browser-automation` note (current) · foreign-write
+- 2026-11-04 12:46 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 12:46 UTC · `app-style-override` note (current) · foreign-write
+- 2026-11-04 12:46 UTC · `urgent-land-lazy-loader` added (4 steps) (current) · foreign-write
 
 ## Token passes (log)
 
