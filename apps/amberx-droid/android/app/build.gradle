@@ -9,7 +9,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         // CI stamps the run number (AXF_BUILD_NUMBER) so every build installs over the last one.
         versionCode((System.getenv("AXF_BUILD_NUMBER") ?: "1") as Integer)
-        versionName "0.1.0"
+        versionName "0.2.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

@@ -240,6 +240,94 @@ function useVoiceQueue(sid: string, on: boolean) {
   return { audio, push, playing, setPlaying, muted, setMuted, volume, setVolume, live, behind: queue.current.length };
 }
 
+// WebCodecs (Chromium, Safari 17+); typed here because the console's TypeScript lib doesn't carry it yet
+interface PcmData { timestamp: number; numberOfFrames: number; sampleRate: number; copyTo(dest: Float32Array, o: { planeIndex: number; format: 'f32-planar' }): void; close(): void }
+interface OpusDecoder { configure(c: { codec: 'opus'; sampleRate: number; numberOfChannels: number }): void; decode(chunk: unknown): void; close(): void; state: string }
+interface WebCodecs {
+  AudioDecoder?: new (init: { output: (d: PcmData) => void; error: (e: Error) => void }) => OpusDecoder;
+  EncodedAudioChunk?: new (init: { type: 'key'; timestamp: number; data: Uint8Array }) => unknown;
+}
+const LEAD_S = 0.25; // jitter buffer: frames play this long after the first one arrives
+
+function b64bytes(s: string): Uint8Array {
+  const bin = atob(s);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+/**
+ * Live voice (live-audio@1): AmberX's Opus frames (mic + Claude, 20 ms each, on the session clock) decoded in the
+ * browser and scheduled on one AudioContext, a quarter second behind live. `flowing` = frames arrived in the last 3 s;
+ * while it is, the ~10 s segment lane is ignored (the same audio, later). No WebCodecs = segments only.
+ */
+function useLiveFrames(sid: string, watcher: string, on: boolean, playing: boolean, muted: boolean, volume: number) {
+  const flowing = useRef(false);
+  const [, redraw] = useState(0);
+  const gain = useRef<GainNode | null>(null);
+  const ctxRef = useRef<AudioContext | null>(null);
+  const resync = useRef<() => void>(() => undefined);
+  const wc = globalThis as unknown as WebCodecs;
+  const supported = !!wc.AudioDecoder && !!wc.EncodedAudioChunk;
+  useEffect(() => {
+    if (!on || !watcher || !supported) return;
+    const ctx = new AudioContext({ sampleRate: 48_000 });
+    const out = ctx.createGain();
+    out.connect(ctx.destination);
+    ctxRef.current = ctx; gain.current = out;
+    let base = -1; // AudioContext time of session t = 0
+    let lastAt = 0;
+    resync.current = () => { base = -1; };
+    const play = (d: PcmData) => {
+      try {
+        const ts = d.timestamp / 1e6;
+        if (base < 0) base = ctx.currentTime + LEAD_S - ts;
+        let at = base + ts;
+        if (at < ctx.currentTime - 1) { base = ctx.currentTime + LEAD_S - ts; at = base + ts; } // fell a second behind: catch up
+        if (at >= ctx.currentTime) {
+          const buf = ctx.createBuffer(1, d.numberOfFrames, d.sampleRate);
+          d.copyTo(buf.getChannelData(0), { planeIndex: 0, format: 'f32-planar' });
+          const src = ctx.createBufferSource();
+          src.buffer = buf; src.connect(out); src.start(at);
+        }
+      } finally { d.close(); }
+    };
+    const decoders: Record<string, OpusDecoder> = {};
+    const decoder = (track: string) => {
+      let d = decoders[track];
+      if (!d || d.state === 'closed') {
+        d = new wc.AudioDecoder!({ output: play, error: () => { delete decoders[track]; } });
+        d.configure({ codec: 'opus', sampleRate: 48_000, numberOfChannels: 1 });
+        decoders[track] = d;
+      }
+      return d;
+    };
+    const stop = followSse((signal) => pluginFetch(FOLDER, `sessions/${encodeURIComponent(sid)}/audio/live?watcher=${watcher}`, { signal }), (f) => {
+      if (f.event === 'skip') { base = -1; return; }
+      if (f.event !== 'frames') return;
+      const { frames } = sseJson(f) as { frames: { track: string; t: number; b64: string }[] };
+      for (const fr of frames) {
+        try { decoder(fr.track).decode(new wc.EncodedAudioChunk!({ type: 'key', timestamp: fr.t * 1000, data: b64bytes(fr.b64) })); } catch { /* one bad frame is a 20 ms gap */ }
+      }
+      lastAt = Date.now();
+      if (!flowing.current) { flowing.current = true; redraw((n) => n + 1); }
+    });
+    const tick = setInterval(() => { if (flowing.current && Date.now() - lastAt > 3000) { flowing.current = false; base = -1; redraw((n) => n + 1); } }, 1000);
+    return () => {
+      stop(); clearInterval(tick);
+      for (const d of Object.values(decoders)) { try { d.close(); } catch { /* closed */ } }
+      void ctx.close(); ctxRef.current = null; gain.current = null; flowing.current = false;
+    };
+  }, [sid, watcher, on, supported]);
+  useEffect(() => { if (gain.current) gain.current.gain.value = muted ? 0 : volume / 100; }, [muted, volume, watcher, on]);
+  useEffect(() => {
+    const ctx = ctxRef.current;
+    if (!ctx) return;
+    if (playing) { resync.current(); void ctx.resume(); } else void ctx.suspend();
+  }, [playing, watcher]);
+  return { flowing, live: () => resync.current() };
+}
+
 export function WatchPanel({ id, close }: { id: string; close: () => void }) {
   const row0 = last?.rows.find((r) => r.id === id) ?? null;
   const [row, setRow] = useState<Row | null>(row0);
@@ -247,8 +335,10 @@ export function WatchPanel({ id, close }: { id: string; close: () => void }) {
   const [err, setErr] = useState('');
   const [wid, setWid] = useState('');
   const [follow, setFollow] = useState(true);
-  const wantVoice = !!row0 && row0.kind === 'human' && row0.voice.ok;
+  // voice follows the row: when AmberX links its phone mid-watch, the watch restarts with voice
+  const wantVoice = !!(row ?? row0) && (row ?? row0)!.kind === 'human' && (row ?? row0)!.voice.ok;
   const voice = useVoiceQueue(id, wantVoice);
+  const frames = useLiveFrames(id, wid, wantVoice, voice.playing, voice.muted, voice.volume);
   const box = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -262,15 +352,16 @@ export function WatchPanel({ id, close }: { id: string; close: () => void }) {
           const d = sseJson(f) as never;
           if (f.event === 'event') setEvents((x) => [...x.slice(-1500), d]);
           else if (f.event === 'status') setRow(d);
-          else if (f.event === 'audio') voice.push((d as { file: string }).file);
+          else if (f.event === 'audio' && !frames.flowing.current) voice.push((d as { file: string }).file); // frames already played it
         });
       }, (e: Error) => setErr(e.message));
     return () => {
       alive = false; stop?.(); if (beat) clearInterval(beat);
       if (w) void pluginFetch(FOLDER, `sessions/${encodeURIComponent(id)}/watch/${w}`, { method: 'DELETE' });
+      setWid('');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, wantVoice]);
   useEffect(() => { if (follow && box.current) box.current.scrollTop = box.current.scrollHeight; }, [events, follow]);
 
   const popOut = () => {
@@ -295,7 +386,7 @@ export function WatchPanel({ id, close }: { id: string; close: () => void }) {
             <span className="axp-live__vol"><Slider label="Volume" value={voice.volume} onChange={voice.setVolume} unit="%" /></span>
           </>
         )}
-        <Button size="sm" icon="chevron-right" onClick={() => { setFollow(true); voice.live(); }}>Jump to live</Button>
+        <Button size="sm" icon="chevron-right" onClick={() => { setFollow(true); voice.live(); frames.live(); }}>Jump to live</Button>
         <Button size="sm" icon="external" onClick={popOut}>Pop out</Button>
         <span className="fx-small fx-muted">{wid ? 'Live' : 'Connecting…'}</span>
       </div>

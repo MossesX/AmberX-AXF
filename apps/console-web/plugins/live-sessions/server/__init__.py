@@ -15,6 +15,10 @@ Every Claude session going on (human and headless, every account), who is runnin
   GET  sessions/{id}/stream           server-sent events: `event` per message / tool call / result, `audio` per voice
                                       segment (voice watchers), `status`; ?watcher= is required
   GET  sessions/{id}/audio/{file}     one voice segment or compacted chunk (owner)
+  POST audio/link                     AmberX's device link (live-audio@1, long poll): which session to stream for, stream
+                                      now or not, who is watching (the phone's "You're being watched")
+  POST sessions/{id}/audio/frames     live Opus frames from AmberX (frames@1, both tracks, ~200 ms batches)
+  GET  sessions/{id}/audio/live       server-sent events: `frames` as they arrive (voice watchers), `skip` when behind
   GET  recordings                     past sessions (owner): search across transcripts, favourites
   GET  recordings/{id}                meta, timeline (markers, speech spans, context counts) and events
   GET  recordings/{id}/context?t=     what was in the context window at session time t
@@ -61,6 +65,7 @@ import console_context as cx
 import plugin_services
 
 from . import lines as ln
+from . import live_audio as la
 from . import recordings as rec
 from . import sessions as ss
 
@@ -75,6 +80,7 @@ DEFAULTS: dict[str, Any] = {"record": True, "keepRawHours": 24, "padMs": 200, "k
 _lock = threading.RLock()
 _cache: dict[str, Any] = {"at": 0.0, "rows": None, "sig": ""}
 WATCH = ss.Watchers()
+DEVICE = re.compile(r"^[A-Za-z0-9_-]{8,64}$")
 _subs: list[Callable[[dict[str, Any]], None]] = []
 
 
@@ -225,7 +231,7 @@ def _headless() -> list[dict[str, Any]]:
 def collect(force: bool = False) -> list[dict[str, Any]]:
     with _lock:
         now = time.time()
-        if not force and _cache["rows"] is not None and now - _cache["at"] < SNAPSHOT_TTL:
+        if not force and _cache["rows"] is not None and now - _cache["at"] < SNAPSHOT_TTL and _cache.get("links") == LIVE.links_version:
             return _cache["rows"]
         d = read_state()
         crew = roster()
@@ -237,9 +243,15 @@ def collect(force: bool = False) -> list[dict[str, Any]]:
             r["notice"] = ss.notice(r, r["watchers"])
             r["recording"] = r["recording"] and d["settings"]["record"]
             r["_cwd"] = cwd.get(r["id"], "")
+        for link in LIVE.live_links():  # an AmberX phone linked for live voice: its session can be heard
+            t = la.pick_target(rows, link)
+            if t:
+                t["voice"] = {"ok": True, "why": ""}
+                t["amberx"] = {"device": str(link.get("name") or link["device"])[:80], "recording": bool(link.get("recording")),
+                               "streaming": bool(link.get("streaming"))}
         sig = hashlib.sha1(json.dumps([{k: v for k, v in r.items() if k != "_cwd"} for r in rows], sort_keys=True, default=str).encode()).hexdigest()
         changed = sig != _cache["sig"]
-        _cache.update(at=now, rows=rows, sig=sig)
+        _cache.update(at=now, rows=rows, sig=sig, links=LIVE.links_version)
     if changed:
         snap = snapshot_of(rows)
         for f in list(_subs):
@@ -576,6 +588,100 @@ async def stream(sid: str, watcher: str, after: int = -1) -> StreamingResponse:
     return StreamingResponse(gen(), media_type="text/event-stream", headers={"cache-control": "no-store", "x-accel-buffering": "no"})
 
 
+# ---------------------------------------------------------------- live voice from AmberX (live-audio@1, frames@1)
+
+def _archive(sid: str, track: str, offset_ms: int, data: bytes) -> None:
+    """A finished ~10 s Ogg Opus segment of live frames → the recording (same raw folder as the segment lane)."""
+    if not read_state()["settings"]["record"]:
+        return
+    STORE().add_audio(sid, track, offset_ms, data, "ogg")
+
+
+LIVE = la.Live(archive=_archive)
+
+
+def _link_answer(device: str) -> dict[str, Any]:
+    link = LIVE.links.get(device) or {"device": device}
+    rows = collect()
+    return la.answer(link, la.pick_target(rows, link), bool(read_state()["settings"]["record"]), now_ms())
+
+
+@router.post("/audio/link")
+async def audio_link(request: Request) -> dict[str, Any]:
+    """AmberX's live link ({device, name, recording, mic, recSession, session?, streaming, stats, known, wait}): answers
+    at once when the answer differs from `known` (the signature the phone saw last), else after `wait` seconds (≤ 25).
+    The answer: the session to stream for, `stream` now or not, watchers + notice ("You're being watched"), serverNow."""
+    o = await body(request, 64_000)
+    device = str(o.get("device") or "")
+    if not DEVICE.match(device):
+        raise HTTPException(400, "device is 8-64 letters, digits, dashes or underscores")
+    LIVE.link(device, o)
+    known = str(o.get("known") or "")
+    try:
+        wait = min(max(float(o.get("wait") or 0), 0.0), la.LINK_WAIT_MAX_S)
+    except (TypeError, ValueError):
+        wait = 0.0
+    deadline = time.time() + wait
+    while True:
+        a = await asyncio.to_thread(_link_answer, device)
+        sig = la.signature(a)
+        if sig != known or time.time() >= deadline:
+            return {**a, "known": sig}
+        LIVE.link(device, {})  # still here (keeps the link fresh while it waits)
+        await asyncio.sleep(0.5)
+
+
+@router.post("/sessions/{sid}/audio/frames")
+async def add_frames(sid: str, request: Request, stream: str = "") -> dict[str, Any]:
+    """Live Opus frames from AmberX (frames@1 body). Retries are safe (seq per track per stream). Answers how many were
+    taken and how many voice watchers listen, so the phone can stop at once when nobody does and it isn't recording."""
+    r = find(sid)
+    if r["kind"] != "human":
+        raise HTTPException(400, "voice is only for human sessions")
+    try:
+        frames = la.decode(await request.body())
+    except ValueError as e:
+        raise HTTPException(400, str(e)) from None
+    start = int(r.get("startedAt") or now_ms())
+    if read_state()["settings"]["record"]:
+        start = int(await asyncio.to_thread(lambda: STORE().begin(sid, public(r))["startMs"]))
+    out = await asyncio.to_thread(LIVE.push, sid, start, frames, stream[:40])
+    listeners = sum(1 for w in WATCH.active(sid) if w["voice"])
+    return {"ok": True, **out, "listeners": listeners}
+
+
+# registered before audio/{file}, which would take "live" as a file name
+@router.get("/sessions/{sid}/audio/live")
+async def audio_live(sid: str, watcher: str, after: int = -1) -> StreamingResponse:
+    """Server-sent events for a voice watcher: `frames` ({frames: [{track, seq, t, b64}], cursor}) as soon as AmberX
+    sends them, `skip` when the watcher fell more than 3 s behind (it jumps to live), `end` when the watch does."""
+    r = find(sid)
+    w = WATCH.by.get(sid, {}).get(watcher)
+    if not w or not w.get("voice") or r["kind"] != "human":
+        raise HTTPException(403, "start a voice watch first (POST sessions/{id}/watch with voice)")
+
+    async def gen():
+        cur, idle = after, 0.0
+        yield "retry: 1000\n\n"
+        while sid in WATCH.by and watcher in WATCH.by[sid]:
+            frames, cur, skipped = LIVE.since(sid, cur)
+            if skipped:
+                yield f"event: skip\ndata: {json.dumps({'cursor': cur})}\n\n"
+            if frames:
+                idle = 0.0
+                data = [{"track": f["track"], "seq": f["seq"], "t": f["t"], "b64": base64.b64encode(f["data"]).decode()} for f in frames]
+                yield f"id: {cur}\nevent: frames\ndata: {json.dumps({'frames': data, 'cursor': cur})}\n\n"
+            else:
+                idle += 0.05
+                if idle >= 15:
+                    idle = 0.0
+                    WATCH.beat(sid, watcher)
+                    yield ": keepalive\n\n"
+            await asyncio.sleep(0.05)
+        yield "event: end\ndata: {}\n\n"
+    return StreamingResponse(gen(), media_type="text/event-stream", headers={"cache-control": "no-store", "x-accel-buffering": "no"})
+
+
 AUDIO_FILE = re.compile(r"^(mic|tts)-\d{10}\.(webm|opus|ogg|m4a|wav|mp3|aac)$")
 MIME = {"webm": "audio/webm", "opus": "audio/ogg", "ogg": "audio/ogg", "m4a": "audio/mp4", "wav": "audio/wav", "mp3": "audio/mpeg", "aac": "audio/aac"}
 
@@ -598,6 +704,7 @@ def audio_file(sid: str, file: str, request: Request) -> FileResponse:
 
 def finish(sid: str) -> None:
     """A human session ended: close its recording and queue the silence compaction (low priority, background)."""
+    LIVE.flush_idle(force=True)  # live frames still in an open segment go into the recording first
     st = STORE()
     m = st.end(sid)
     if m and m.get("audio", {}).get("raw") and not m["audio"].get("compacted"):
@@ -989,6 +1096,7 @@ def get_audit(request: Request, limit: int = 200) -> dict[str, Any]:
 
 def sweep() -> dict[str, Any]:
     out: dict[str, Any] = {"watchEnded": [], "finished": [], "purged": [], "expired": []}
+    out["liveSegments"] = LIVE.flush_idle()
     for sid, w in WATCH.sweep():
         audit("watch-stop", w["by"], session=sid, watcher=w["id"], why="no heartbeat")
         try:

@@ -351,6 +351,216 @@ ok("tmux:axf-build-x" in sw["watchEnded"] and sw["cap"]["level"] == "ok", "sweep
 c.post("/p/checkin", json={"id": "cc-desk-2", "ended": True})
 ok(mod.STORE().meta("cc-desk-2")["endMs"] > 0, "ended check-in closes the recording")
 
+# ---------------------------------------------------------------- live voice from AmberX (live-audio@1, frames@1)
+import struct  # noqa: E402
+
+la = mod.la
+PKT = bytes([31 << 3]) + b"\x01\x02\x03"  # CELT fullband 20 ms, one frame
+ok(la.opus_samples(PKT) == 960 and la.opus_samples(bytes([0 << 3])) == 480 and la.opus_samples(bytes([(3 << 3) | 1])) == 5760, "Opus TOC → samples")
+ok(la.opus_samples(bytes([(31 << 3) | 3, 3])) == 2880 and la.opus_samples(bytes([16 << 3])) == 120, "code 3 + CELT 2.5 ms")
+raw = la.encode([(0, 1, 1000, PKT), (1, 7, 1020, PKT + b"x")])
+dec = la.decode(raw)
+ok([(f["track"], f["seq"], f["atMs"], len(f["data"])) for f in dec] == [("mic", 1, 1000, 4), ("tts", 7, 1020, 5)], "frames@1 round trip")
+for bad, why in ((b"NOPE\x01", "magic"), (b"AXLA\x02", "version"), (raw[:-2], "truncated"), (b"AXLA\x01" + struct.pack(">BIqH", 2, 1, 1, 1) + b"x", "track")):
+    try:
+        la.decode(bad)
+        ok(False, f"frames@1 refuses {why}")
+    except ValueError:
+        ok(True, why)
+
+
+def ogg_pages(b: bytes) -> list[dict]:
+    pages, i = [], 0
+    while i < len(b):
+        ok(b[i:i + 4] == b"OggS", "page magic")
+        flags, granule, serial, seq, crc, nseg = struct.unpack_from("<BqIIIB", b, i + 5)
+        lace = b[i + 27:i + 27 + nseg]
+        size = 27 + nseg + sum(lace)
+        page = bytearray(b[i:i + size])
+        struct.pack_into("<I", page, 22, 0)
+        pages.append({"flags": flags, "granule": granule, "seq": seq, "crcOk": la._crc(bytes(page)) == crc, "packets": sum(1 for x in lace if x < 255)})
+        i += size
+    return pages
+
+
+og = la.ogg_opus([PKT] * 120)
+pg = ogg_pages(og)
+ok(len(pg) == 5 and pg[0]["flags"] == 2 and pg[-1]["flags"] == 4 and all(p["crcOk"] for p in pg), "Ogg pages: BOS, EOS, CRCs")
+ok(og[28:36] == b"OpusHead" and pg[-1]["granule"] == la.PRE_SKIP + 120 * 960 and sum(p["packets"] for p in pg[2:]) == 120, "OpusHead + granule = samples")
+ok([p["seq"] for p in pg] == list(range(5)), "page sequence")
+
+# rings: dedupe, ring trim, behind → skip to live, archive segments
+got: list = []
+t0 = 1_000_000
+CLK = [100.0]
+L = la.Live(archive=lambda sid, tr, off, data: got.append((sid, tr, off, len(data))), clock=lambda: CLK[0])
+fr = [{"track": "mic", "seq": i, "atMs": t0 + i * 20, "data": PKT} for i in range(50)]
+ok(L.push("s1", t0, fr, "run1")["took"] == 50 and L.push("s1", t0, fr, "run1")["took"] == 0 and L.sessions["s1"].dupes == 50, "a retried batch never plays twice")
+CLK[0] = 100.4
+f1, cur, sk = L.since("s1", -1)
+ok(not sk and len(f1) == 50 and f1[-1]["t"] == 49 * 20, "a new watcher starts with what arrived in the last 0.5 s")
+ok(L.since("s1", cur)[0] == [], "nothing new")
+for k in range(30):  # 6 s of tts arriving in 200 ms batches while this watcher reads nothing
+    CLK[0] = 101.0 + k * 0.2
+    L.push("s1", t0, [{"track": "tts", "seq": k * 10 + i, "atMs": t0 + 1000 + (k * 10 + i) * 20, "data": PKT} for i in range(10)], "run1")
+f2, cur2, sk2 = L.since("s1", cur)
+ok(sk2 and len(f2) == 30 and f2[0]["t"] == 1000 + 270 * 20, f"a watcher 3 s behind jumps to the last 0.5 s ({len(f2)})")
+L.push("s1", t0, [{"track": "tts", "seq": 300, "atMs": t0 + 900_000, "data": PKT}], "run1")
+f3, _, sk3 = L.since("s1", cur2)
+ok(not sk3 and len(f3) == 1, "a gap in the audio is not lag")
+ok(got == [("s1", "tts", 1000, len(la.ogg_opus([PKT] * 300)))], f"a gap closes the open segment into the archive at its offset {got}")
+ok(L.push("s1", t0, [{"track": "mic", "seq": 0, "atMs": t0 + 12_000, "data": PKT}], "run2")["took"] == 1 and ("s1", "mic", 0, len(la.ogg_opus([PKT] * 50))) in got, "a new stream id starts the sequence over (open segments closed)")
+L.push("s1", t0, [{"track": "mic", "seq": i, "atMs": t0 + 13_000 + i * 20, "data": PKT} for i in range(1, 2000)], "run2")
+ok(L.sessions["s1"].ring[-1]["t"] - L.sessions["s1"].ring[0]["t"] <= la.RING_MS, "ring keeps ~30 s")
+CLK[0] = 300.0
+ok(L.flush_idle() >= 1 and not L.sessions.get("s1") or not L.sessions["s1"].open, "quiet sessions: open segments written")
+
+seg: list = []
+L2 = la.Live(archive=lambda sid, tr, off, data: seg.append((tr, off, len(data))), clock=lambda: 1.0)
+L2.push("s2", 0, [{"track": "mic", "seq": i, "atMs": 5_000 + i * 20, "data": PKT} for i in range(600)], "r")
+ok(seg == [("mic", 5_000, len(la.ogg_opus([PKT] * 500)))] and len(L2.sessions["s2"].open["mic"]["packets"]) == 100, f"continuous audio is cut every 10 s {seg}")
+
+# which session a phone streams for
+rows_t = [{"id": "a", "kind": "human", "status": "live", "mode": "text", "device": "VPS", "title": "", "lastAt": 5, "watchers": []},
+          {"id": "b", "kind": "human", "status": "live", "mode": "voice", "device": "", "title": "Amber voice", "lastAt": 3, "watchers": []},
+          {"id": "c", "kind": "human", "status": "live", "mode": "voice", "device": "Galaxy S26", "title": "", "lastAt": 1, "watchers": []},
+          {"id": "d", "kind": "headless", "status": "live", "mode": "text", "device": "Galaxy S26", "lastAt": 9, "watchers": []}]
+ok(la.pick_target(rows_t, {"session": "a"})["id"] == "a", "explicit session first")
+ok(la.pick_target(rows_t, {"name": "Galaxy S26"})["id"] == "c", "then this device (headless never)")
+ok(la.pick_target(rows_t, {"recSession": "amber VOICE"})["id"] == "b", "then the recorder session name")
+ok(la.pick_target(rows_t, {})["id"] == "b", "else the newest live voice session")
+rows_t[2]["watchers"] = [{"by": "Brett", "voice": False}]
+ok(la.pick_target(rows_t, {})["id"] == "c", "the one watched voice session wins over newest")
+ok(la.pick_target([r for r in rows_t if r["mode"] == "text"], {}) is None, "nothing to stream for")
+an = la.answer({"recording": True}, rows_t[1], True, 5)
+ok(an["stream"] and an["session"]["id"] == "b" and an["serverNow"] == 5 and not la.answer({"recording": True}, rows_t[1], False, 5)["stream"], "recording on streams; recording setting off doesn't")
+ok(not la.answer({}, None, True, 5)["stream"] and "no live voice session" in la.answer({}, None, True, 5)["why"], "no target, no stream")
+
+# routes: link → voice watch → stream → frames → listen → leave
+DEV = "amberx-0123456789abcdef"
+ok(c.post("/p/audio/link", json={"device": "x"}).status_code == 400, "device id checked")
+lk = c.post("/p/audio/link", json={"device": DEV, "name": "Galaxy S26 Ultra", "recSession": "Amber voice", "recording": False}).json()
+ok(lk["session"]["id"] == "chat:amber-voice" and not lk["stream"] and lk["watchers"] == [] and lk["known"], f"link finds the voice session {lk}")
+row_v = next(x for x in c.get("/p/sessions").json()["rows"] if x["id"] == "chat:amber-voice")
+ok(row_v["voice"]["ok"] and row_v["amberx"]["device"] == "Galaxy S26 Ultra", "a linked phone makes the session audible")
+t_wait = time.time()
+same = c.post("/p/audio/link", json={"device": DEV, "known": lk["known"], "wait": 1}).json()
+ok(same["known"] == lk["known"] and time.time() - t_wait >= 0.9, "long poll waits while nothing changes")
+wv = c.post("/p/sessions/chat:amber-voice/watch", json={"voice": True}, headers=BR).json()
+ok(wv["ok"], f"voice watch now allowed {wv}")
+lk2 = c.post("/p/audio/link", json={"device": DEV, "known": lk["known"], "wait": 5}).json()
+ok(lk2["stream"] and lk2["watchers"] == ["Brett"] and lk2["voiceWatchers"] == 1 and lk2["notice"]["watched"] and "being watched" in lk2["notice"]["text"], "watcher wakes the phone: stream + You're being watched")
+start = mod.STORE().begin("chat:amber-voice", {"startedAt": int(time.time() * 1000) - 60_000})["startMs"]
+batch = la.encode([(0, i, start + 60_000 + i * 20, PKT) for i in range(10)] + [(1, i, start + 60_000 + i * 20, PKT) for i in range(10)])
+fa = c.post("/p/sessions/chat:amber-voice/audio/frames?stream=r1", content=batch).json()
+ok(fa["took"] == 20 and fa["listeners"] == 1, f"frames taken {fa}")
+ok(c.post("/p/sessions/chat:amber-voice/audio/frames?stream=r1", content=batch).json()["took"] == 0, "retry is a no-op")
+ok(c.post("/p/sessions/chat:amber-voice/audio/frames", content=b"junk").status_code == 400, "bad batch refused")
+ok(c.post("/p/sessions/tmux:axf-build-x/audio/frames", content=batch).status_code == 400, "no frames for headless")
+nope = c.get("/p/sessions/chat:amber-voice/audio/live?watcher=nope", headers=BR)
+ok(nope.status_code == 403 and "voice watch" in nope.json()["detail"], "listening needs a voice watch (and audio/live isn't taken for a file)")
+lv, _, _ = mod.LIVE.since("chat:amber-voice", -1)
+ok(lv and lv[-1]["t"] == 60_000 + 9 * 20 and {f["track"] for f in lv} == {"mic", "tts"}, "both tracks on the session clock")
+mod.LIVE.flush_idle(force=True)
+segs = [a for a in mod.STORE().raw_audio("chat:amber-voice") if a["file"].endswith(".ogg")]
+ok({a["track"] for a in segs} == {"mic", "tts"} and all(a["offsetMs"] == 60_000 for a in segs), f"archived as Ogg segments at their offset {segs}")
+ok(c.get(f"/p/sessions/chat:amber-voice/audio/{segs[0]['file']}", headers=BR).headers["content-type"] == "audio/ogg", "segments play through the audio route")
+c.delete(f"/p/sessions/chat:amber-voice/watch/{wv['watcher']}")
+lk3 = c.post("/p/audio/link", json={"device": DEV, "known": lk2["known"], "wait": 5}).json()
+ok(not lk3["stream"] and not lk3["notice"]["watched"], "last watcher leaves: stream stops, notice off")
+ok(c.post("/p/audio/link", json={"device": DEV, "recording": True}).json()["stream"], "recording on: it streams into the recording")
+mod.LIVE.links[DEV]["seen"] = 0
+ok(not next(x for x in mod.collect(force=True) if x["id"] == "chat:amber-voice")["voice"]["ok"], "a link gone quiet: voice needs AmberX again")
+
+# end to end in real time: a simulated AmberX (link + 20 ms frames in ~200 ms batches, both tracks) → the console over
+# HTTP (uvicorn) → a listener on audio/live. Measures how long a frame takes from the phone's send to the listener.
+if os.environ.get("AXF_LIVE_E2E", "on") != "off":
+    import socket  # noqa: E402
+    import threading as th  # noqa: E402
+
+    import httpx  # noqa: E402
+    import uvicorn  # noqa: E402
+
+    sk = socket.socket()
+    sk.bind(("127.0.0.1", 0))
+    port = sk.getsockname()[1]
+    sk.close()
+    srv = uvicorn.Server(uvicorn.Config(app, host="127.0.0.1", port=port, log_level="error"))
+    th.Thread(target=srv.run, daemon=True).start()
+    base = f"http://127.0.0.1:{port}/p"
+    for _ in range(100):
+        if srv.started:
+            break
+        time.sleep(0.05)
+    h = httpx.Client(timeout=30)
+    DEV2 = "amberx-e2e0123456789ab"
+    l0 = h.post(f"{base}/audio/link", json={"device": DEV2, "name": "Sim phone", "recSession": "Amber voice"}).json()
+    ok(l0["session"]["id"] == "chat:amber-voice" and not l0["stream"], "e2e: phone linked, idle")
+    woke: dict = {}
+
+    def phone_wait() -> None:  # the phone's long poll, woken by the watcher
+        t = time.time()
+        woke["a"] = h.post(f"{base}/audio/link", json={"device": DEV2, "known": l0["known"], "wait": 10}).json()
+        woke["s"] = time.time() - t
+
+    pw = th.Thread(target=phone_wait)
+    pw.start()
+    time.sleep(0.3)
+    wid = h.post(f"{base}/sessions/chat:amber-voice/watch", json={"voice": True}, headers=BR).json()["watcher"]
+    pw.join(5)
+    ok(woke.get("a", {}).get("stream") and woke["s"] < 2, f"e2e: the watcher wakes the phone in {woke.get('s', 0):.2f} s")
+    start_e2e = mod.STORE().meta("chat:amber-voice")["startMs"]
+    sent_at: dict = {}
+    heard: list = []
+
+    def listen() -> None:
+        try:
+            _listen()
+        except Exception as e:  # noqa: BLE001
+            heard.append(("error", repr(e), 0))
+
+    def _listen() -> None:
+        with httpx.Client(timeout=30).stream("GET", f"{base}/sessions/chat:amber-voice/audio/live?watcher={wid}") as r:
+            if r.status_code != 200:
+                heard.append(("error", f"{r.status_code} {r.read()[:200]!r}", 0))
+                return
+            ev = ""
+            for line in r.iter_lines():
+                if line.startswith("event: "):
+                    ev = line[7:]
+                elif line.startswith("data: ") and ev == "frames":
+                    now = time.time()
+                    for fr in json.loads(line[6:])["frames"]:
+                        heard.append((fr["track"], fr["seq"], now))
+                elif ev == "end":
+                    return
+                if len(heard) >= 2 * 100:
+                    return
+
+    lt = th.Thread(target=listen, daemon=True)
+    lt.start()
+    time.sleep(0.3)
+    seq0 = 1000
+    t_sim = time.time()
+    for b in range(10):  # 2 s of audio: 10 batches × 10 frames × 2 tracks
+        frames_b = [(tr, seq0 + b * 10 + i, int(time.time() * 1000), PKT) for i in range(10) for tr in (0, 1)]
+        for tr, sq, _, _ in frames_b:
+            sent_at[(("mic", "tts")[tr], sq)] = time.time()
+        frames_b = [(tr, sq, start_e2e + int((time.time() - t_sim) * 1000) + 70_000 + i * 20, p) for i, (tr, sq, _, p) in enumerate(frames_b)]
+        rr = h.post(f"{base}/sessions/chat:amber-voice/audio/frames?stream=e2e", content=la.encode(frames_b)).json()
+        ok(rr["took"] == 20 and rr["listeners"] == 1, "e2e: batch taken, one listener")
+        time.sleep(0.2)
+    lt.join(5)
+    ok(not [x for x in heard if x[0] == "error"], f"e2e: listener ok {[x for x in heard if x[0] == 'error'][:1]}")
+    lat = sorted(t - sent_at[(tr, sq)] for tr, sq, t in heard if (tr, sq) in sent_at)
+    ok(len(lat) == 200, f"e2e: every frame heard ({len(lat)}/200)")
+    p95 = lat[int(len(lat) * 0.95) - 1] if lat else 99
+    ok(p95 < 0.5, f"e2e: send → listener p95 {p95 * 1000:.0f} ms")
+    E2E = {"wakeS": round(woke["s"], 2), "p50ms": round(lat[len(lat) // 2] * 1000), "p95ms": round(p95 * 1000), "frames": len(lat)}
+    h.delete(f"{base}/sessions/chat:amber-voice/watch/{wid}")
+    srv.should_exit = True
+    print(f"live-sessions e2e: {E2E}")
+
 # zero tokens: nothing here can reach a model
 LLM = re.compile(r"anthropic|openai|axf\.llm@1|claude\s+-p\b(?! build)|messages\.create|/v1/messages", re.I)
 for f in HERE.rglob("*"):

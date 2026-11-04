@@ -44,6 +44,7 @@ signed in). Hub calls from the hosted page go straight from the WebView; only a 
 | `src/native.ts` | The one seam to the native side (`AmberxNative`), with a browser fallback |
 | `android/app/src/main/java/ai/amberx/droid` | `WatchService` (foreground service), `AmberxNativePlugin`, `HubWebActivity`, `HubRules` |
 | `src/views/Approvals.tsx`, `src/hub` | Approvals, the only page of its own (home; through lib-hub) |
+| `OutputRecordService`, `LiveStreamer`, `LiveRules` (android) | Audio Output Recorder (30-minute chunks to axHub) and, since 0.2.0, **live audio** (live-audio@1): while someone listens in the console's Live sessions → Watch live, or while recording, both tracks (mic + what the phone plays) also stream as 20 ms Opus frames to the console. Details: `apps/console-web/plugins/live-sessions/docs/README.md` → Live voice |
 | `src/plugins/walkthrough`, `walkthrough/` | The narrated walkthrough video: player (Home card, AmberX menu, Help) and its recorder (`walkthrough/rebuild.sh`, see `walkthrough/README.md`); video served at `/api/walkthrough/*` |
 | `src/plugins/<folder>` | Your plugins: drop one in and it joins the nav, menus, search and Settings → Plugins |
 | `src/axf/` | Baked framework: don't edit, re-bake |

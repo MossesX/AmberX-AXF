@@ -53,6 +53,7 @@ final class AxppLink {
     /** Starts the link once per process (safe to call often). */
     static synchronized void ensure(Context c) {
         app = c.getApplicationContext();
+        LiveStreamer.ensure(app); // the live-audio link runs wherever the AXPP link does
         if (thread != null && thread.isAlive()) return;
         thread = new Thread(AxppLink::loop, "amberx-axpp");
         thread.setDaemon(true);

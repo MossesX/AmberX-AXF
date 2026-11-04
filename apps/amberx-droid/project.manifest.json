@@ -5,7 +5,7 @@
   "description": "AmberX: empty shell for building and testing plugins: voice commands, approvals with alerts and background monitoring of axHub, nothing else built in",
   "kind": "app",
   "status": "active",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "platforms": [
     "web",
     "android"

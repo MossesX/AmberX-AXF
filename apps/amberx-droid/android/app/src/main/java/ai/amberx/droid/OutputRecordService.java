@@ -61,6 +61,10 @@ import org.json.JSONObject;
  * encoder runs straight through; at a chunk boundary the muxer is closed and a new one opened (every AAC frame is a
  * sync frame, so any frame can start a file). A chunk that was silent all through is dropped when "skip silent" is on.
  *
+ * Live (live-audio@1, Nov 4 2026): while someone listens in the console's Watch live, or while recording with the
+ * console's recording on, the same two tracks also go out live as 20 ms Opus frames ({@link LiveStreamer}); the
+ * readers hand it their mono PCM, nothing else in the recorder changes.
+ *
  * Sessions from axHub (decision #108, {@link AxppLink}): a start through `amberx.recorder_start` sets a session first
  * ({@link OutputRecordQueue#setSession}); while it is set the notification says "Recording: <session>", each kept part
  * is named {@code "<session> - <YYYY-MM-DD HH-mm> - partN"} ({@link RecorderControl#partName}) and goes to axHub with the
@@ -127,6 +131,8 @@ public class OutputRecordService extends Service {
     private volatile String endReason;
     private Thread pump;
     private final Runnable tick = this::tick;
+    /** playback as mono for the live stream (single-track pump only; the two-track readers have their own) */
+    private final short[] liveMono = new short[4096];
 
     static boolean isCurrent(File f) { File c = current; return c != null && c.equals(f); }
 
@@ -285,6 +291,7 @@ public class OutputRecordService extends Service {
             e.put("mic", micOn);
             if (micBusy != null) e.put("micBusy", micBusy);
             emit("recording", e);
+            LiveStreamer.recorderChanged(this, true);
             OutputRecordTile.refresh(this);
             main.post(tick);
             OutputRecordUploader.kick(this);
@@ -355,7 +362,7 @@ public class OutputRecordService extends Service {
             while (!stopping && !micStop && m != null) {
                 int n = m.read(buf, 0, buf.length);
                 if (n < 0) { if (!micStop && !stopping) micBusy(TwoTrack.BUSY_ERROR, "the mic stopped delivering (" + n + ")"); break; }
-                if (n > 0) micRing.write(buf, 0, n);
+                if (n > 0) { micRing.write(buf, 0, n); LiveStreamer.pcm(LiveRules.MIC, buf, n); }
                 long t = System.currentTimeMillis();
                 if (t - lastCheck >= 1000) {
                     lastCheck = t;
@@ -382,7 +389,7 @@ public class OutputRecordService extends Service {
                 int n = cap.read(pcm, 0, pcm.length);
                 if (n < 0) { if (!stopping && endReason == null) endReason = "Recording stopped: playback capture ended (" + n + ")."; stopping = true; break; }
                 int f = TwoTrack.toMono(pcm, n, 2, mono);
-                if (f > 0) playRing.write(mono, 0, f);
+                if (f > 0) { playRing.write(mono, 0, f); LiveStreamer.pcm(LiveRules.TTS, mono, f); }
             }
         } catch (RuntimeException e) {
             if (!stopping && endReason == null) endReason = "Recording stopped: " + e.getMessage();
@@ -452,6 +459,7 @@ public class OutputRecordService extends Service {
             while (true) {
                 if (!eosSent) {
                     int n = capture.read(pcm, 0, pcm.length);
+                    if (n > 0 && LiveStreamer.wanted()) LiveStreamer.pcm(LiveRules.TTS, liveMono, TwoTrack.toMono(pcm, n, 2, liveMono));
                     boolean end = stopping;
                     if (n > 0 || end) {
                         byte[] src = pcm;
@@ -700,6 +708,7 @@ public class OutputRecordService extends Service {
         JSObject e = new JSObject();
         if (endReason != null) e.put("reason", endReason);
         emit("stopped", e);
+        LiveStreamer.recorderChanged(this, false);
         OutputRecordQueue.clearSession(this);
         stopForeground(STOP_FOREGROUND_REMOVE);
         OutputRecordTile.refresh(this);
@@ -713,6 +722,7 @@ public class OutputRecordService extends Service {
         JSObject e = new JSObject();
         e.put("message", message);
         emit("error", e);
+        LiveStreamer.recorderChanged(this, false);
         OutputRecordQueue.clearSession(this);
         running = false;
         startedAtMs = 0;
