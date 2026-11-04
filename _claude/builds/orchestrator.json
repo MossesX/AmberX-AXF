@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T01:19:21.148Z",
+ "updatedAt": "2026-11-04T03:01:17.155Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -51,6 +51,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "new asset type 'AmberX Design Package' wrapping a style theme, colour theme, layout theme and behaviour theme; new asset type 'behavior-theme' holding everything: motion (animations, speed, easing, reduced motion), interaction (hover/click/focus feedback, long-press time, double-tap), windows & dialogs (open/close, snap, stacking, drawers, pop-ups) and feedback (toasts, sounds, vibration, confirm-before-delete). Settings -> Appearance gets a Design Package picker to apply one; everything else in Appearance goes in one collapsible container below it. The Design Package REPLACES the appearance-package type (Brett's pick): migrate the existing packages (framework + console amberx, each app's fresh) and the axf.appearance.package setting. Web first; Android twin recorded in PORTING.md (Android on hold). Orchestrator order: all Fable steps first, then Opus (one switch).",
+    "at": "2026-10-27",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -260,6 +272,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "5 deliverables — TS data contracts (layout & component tree, theme engine, plugin manifest), Pydantic v2 validator/migrator + ingestion namespacing, React error boundary + pub/sub lifecycle broker, project spec, developer docs (new plugin, harvesting, live sync). Built ON the existing contracts (asset@1, plugin@1, appearance@1), not beside them. Web + Python; Android twins deferred.",
+    "at": "2026-10-27",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -517,6 +541,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "everything from today and the refactor goes into the Refactor profile).",
+    "at": "2026-10-27",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "notes",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -718,6 +754,18 @@
     }
    ],
    "upgradeRequests": [],
+   "origin": {
+    "said": "only refactor the console, the AmberX app (amberx.amberxai.com), the plugins currently installed and switched on in Plugin switches, and every banner plugin to enterprise quality. New asset types: branding package (extendable template of UI brand assets), icon pack, logo mark, animated logo, behaviour theme, AmberX design package. Branding engine, fully hot-swappable. Assets: 10 light + 10 dark themes, 10 layout, 10 style themes, 10 context menus, 25 dynamically driven toolbars with docs, 25 style packages, 25 nav menus + behaviour, 25 design packages, 250 logos, 250 animated logos, 100 icon packs, branding packages; console plugin to browse them. Branded banners, toolbars, windows, containers, tab groups, dialogs, floating windows. Includes and replaces orchestrator build design-package. Web only; Android twins deferred (hold).",
+    "at": "2026-10-27",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -1618,6 +1666,18 @@
     }
    ],
    "upgradeRequests": [],
+   "origin": {
+    "said": "Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc.",
+    "at": "2026-10-27",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -1917,6 +1977,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "new type, Opus now + Fable later. Start by reviewing/replacing the Opus version: core/engines/stylepackage.ts, the swap/swapAll member expansion and style.package action in core/runtime.ts, both validators, asset-types.json style-package.members, the 25 starter sets from framework/cli/asset-library.mjs, spec/check-style-packages.mts. Web only; Android twin stays deferred (PORTING.md).",
+    "at": "2026-10-27",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -3183,6 +3255,18 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "ask each time between the two ways.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -3496,6 +3580,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "keep the xGallery wizard as is and make it a library for AXF.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -3820,6 +3916,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "AI patching and cascading uninstalls need design and review before anyone builds it):",
+    "at": "2026-10-18",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -4346,6 +4454,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "agents (Build Pilot's pilot-assembler, Mosses and every agent-definition@1 agent) and AI assistant live sessions should run on axHub, not inside each app. Build Pilot, the Dev Console and the phone apps become clients.",
+    "at": "2026-10-20",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -4735,6 +4855,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "the Android console app needs Pilot and axHub tabs like the web console's App tabs plugin. Option A: every tab runs inside the app — Build Pilot (pilot.amberxai.com) and axHub (axhub.amberxai.com, Apps page + approvals) in locked-down in-app web views; nothing ever opens the phone's browser. Fable (the Compose AppShell gains the shared page slots the web shell has). Broken into small builds (sub prompts) so it can be worked on a little at a time; each sub prompt stands alone and leaves the app building.",
+    "at": "2026-10-20",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -5106,6 +5238,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "option B — Build Pilot and the axHub admin pages running natively in the Android console app (Compose), no web views. This is the Android version of Build Pilot (roadmap) plus a native hub admin client, built as small Fable steps that each stand alone. Depends on the pending `axhub-agent-host` for sessions and on axHub's admin API (its step 4). Work on it a little at a time: every sub prompt ships something usable.",
+    "at": "2026-10-20",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -5841,6 +5985,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "take the Console / Pilot / axHub tab group out of the Dev Console so Console, Build Pilot and axHub are each their own app again, and make a new app, Patches, that is just one banner + a tab group showing the three apps in tabs; when an app runs inside Patches its own banner is hidden and Patches shows the one banner. Android first (Android hold lifted for Patches, Oct 21; web Patches later). Design Brett chose: native Android shell, web tabs — the Dev Console (console.amberxai.com), Build Pilot (pilot.amberxai.com) and axHub each load in an origin-locked WebView kept alive across tab switches; Build Pilot has no Android app yet, so its tab is the web app. The framework gains embed@1 (cross-port): a host marks the pages it embeds and the embedded app hides the chrome the host shows (its banner by default) over the user's own choice, which stays saved for standalone runs. Model: Fable (changes how GUIs work across apps). Built on Opus-free Fable session Oct 21 2026 in branch fable/patches-wrapper.",
+    "at": "2026-10-21",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -6028,6 +6184,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "every session on every machine reports builds to axHub (change-log@1 with build stats: ref, model, estimate, actual tokens/cost, status, heartbeat, surface, host, areas); Build manager shows them live, adds a Built history (cost + time by model/week), a search bar, and a context-menu Start build now (dependency closure, overlap guard, axHub vps.run headless Claude Code, verification). Backfill of everything already built. Branch feat/build-manager-history.",
+    "at": "2026-10-21",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -6450,6 +6618,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "when Patches loads developer apps in tabs, Patches owns all plugins. New embed@1 take `plugins`: inside such a host an app loads only the plugins Patches has installed and enabled for it (its own on/off switches don't apply), and its plugin hooks (Settings → Plugins, Plugin Manager, plugin switches, plugin menu entries) are greyed out with \"Plugins are managed in Patches\". The app reports the plugins it has (`plugins` message); Patches compares with its own list, tries to install the missing ones by itself, and shows a Systems check entry with Auto fix while any are missing. Web first (patches-web + console); Patches Android and Kotlin twin deferred.",
+    "at": "2026-10-22",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -6591,6 +6771,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "Fable was suggested, Opus chosen, so a Fable rebuild is parked). Revisit the embed@1 `plugins` take as a cross-port contract: the lock mode for taken hooks, the `plugins` / `plugins-enabled` messages, where plugins really run inside a host, and the Kotlin twin once the Android hold lifts. Start by reading the Opus build's report and replacing it in place.",
+    "at": "2026-10-22",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -7477,6 +7669,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "Fable was offered for new cross-app engines, Opus chosen). Lift the studio-local workspace (ui.ts: pane areas, layouts, floats; toolbars docked on any edge or floating, the command catalog + customizer; pointer DnD with the pop-up trash can) into framework/core + framework/react as an engine every app can use (asset types for workspace layouts and user toolbars?), with fixtures; then switch the studio onto it and remove its private copy. Android twin deferred (PORTING.md).",
+    "at": "2026-10-22",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -7970,6 +8174,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "one library, two classes (HubSettings, HubData); in Pilot pick settings only, all data or some tables. Voice notes plugin: settings interface for a voice-activated notes pusher (start/stop triggers, beep, lists with numbers, per-list questions on a number or recorded trigger, subcategories), all stored on axHub. Branch claude/project-thread-l3b0qo.",
+    "at": "2026-10-23",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -8190,6 +8406,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "no greyed-out settings; their settings UI is a tab of Patches settings (a tab for Patches and every app / plugin tab with a settings UI); the settings hook opens Patches settings on that tab; Patches context menu gets a Settings submenu, one entry per tab. (2) plugin@1 `banner` field; every banner has Hide (keeps logging), indented Hide all banners (tooltip lists them), synced everywhere, last change wins; a timer checkbox + 2-digit minutes field: a hide lasts N minutes, then the banner shows again.",
+    "at": "2026-10-23",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -8353,6 +8581,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "Fable suggested, Opus chosen). Revisit the embed@1 settings take (tab group, settings hook focus), the banner hide state as a cross-port contract (Kotlin twin when the Android hold lifts). Start by reading the Opus build report (branch claude/project-thread-t9zktq) and replacing it in place.",
+    "at": "2026-10-23",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -8468,6 +8708,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "plugin@1 records the model that built each plugin (all new + existing), shown as a badge wherever plugin info shows; field + setting for where a UI plugin opens (main area default, floating window, dialog, tab group); build engine applies default-config rules from a registry on every build; new Plugin Update plugin (installed list with model/built date/version, axHub catalog check + one-click update, Rebuild with another model with confirmed removal + install); never two installs of the same plugin, never one plugin built by two models.",
+    "at": "2026-10-23",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -9069,6 +9321,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "rebuild the axHub web app (served at axhub.amberxai.com since Oct 23) with the framework, look and layout matching the Dev Console and Patches, and harvest reusable libraries from it. Web only (Android on hold). Branch claude/project-thread-j1ri9d, PR #30. The Kotlin twin of the catalog rules stays with axhub-web-hub-rules (Fable).",
+    "at": "2026-10-22",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -9202,6 +9466,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "bake voice notes into the Voice Vault Android app. Voice Vault app code only (Android hold exception): background listener hears the start triggers from the console's Voice notes settings on axHub, beeps, records the note to the stop trigger, asks where to store it (list of lists, numbers, subcategories, question sets) and saves it to table notes in voice-notes on axHub via a hub session cookie (lib-hub sign-in). Kotlin hubstore twin stays deferred (framework). Branch claude/project-thread-l3b0qo.",
+    "at": "2026-10-23",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -9410,6 +9686,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "make the settings interface an asset type so several apps use the same settings interface with the same options. New optional asset type `settings`: layout tabs-top / tabs-side / list, header, search, descriptions, tab order + labels, hide (tab/group/panel/setting ids), data-only option groups the app gets while the asset is active. Engine core/engines/settingsui.ts, fixture settings-ui.json, web settings library reads it, starters standard (default) / side-tabs / developer-apps. Android twin deferred.",
+    "at": "2026-10-23",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -12179,6 +12467,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "refactoring and upgrading work from today's sessions).",
+    "at": "2026-10-27",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "notes",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -12284,6 +12584,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "everything unfinished since 6am goes in the orchestrator).",
+    "at": "2026-10-27",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "notes",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -12394,6 +12706,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "refactoring and upgrading work from today's sessions).",
+    "at": "2026-10-27",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "notes",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -12500,6 +12824,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "rebuild the default style theme (the UI looked bad) and save the new look as a full appearance package named fresh. New fresh style theme, fresh-light/fresh-dark colour themes, fresh-day-night switch, made the default in the framework and every web app; fresh package per app.",
+    "at": "2026-10-26",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": []
   },
   {
@@ -12714,6 +13050,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "make 10 more design packages from existing themes, framework + all 5 web apps. Themes-only packages (no extras); app copies keep the app own layout.",
+    "at": "2026-10-27",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": []
   },
   {
@@ -12751,6 +13099,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "everything from today and the refactor goes into the Refactor profile).",
+    "at": "2026-10-27",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "notes",
+    "addenda": []
+   },
    "steps": []
   },
   {
@@ -12788,6 +13148,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "multiple build profiles (plans, build queue, pending builds, tracking, all work data) and a console plugin to select and save one; current one = Main framework, new one = Refactor.",
+    "at": "2026-10-27",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -12898,6 +13270,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "AmberX looked broken (overlapping, wide-spaced text from the Sliders). Fix: Restore default appearance clears the Sliders (axf.look), line height never below 100%, letter spacing capped at 0.1em. New Settings → Appearance → Lock the look (greys out every look control, this device's tweaks set aside, axHub look still applies) and Get the look from axHub (developer apps; off = own saved look, no waiting). Web framework + the five web apps re-baked; Android twin deferred (PORTING.md).",
+    "at": "2026-10-27",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": []
   },
   {
@@ -17378,6 +17762,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "make Patches and every app in its tabs (Console, Pilot, axHub, Todos) function like one professional app; new assets for all the apps; detailed + interactive docs. Supersedes the \"apps render whole\" rule.",
+    "at": "2026-10-24",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -17659,6 +18055,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "Fable was suggested, Opus chosen; park it and build it only once Android work resumes. Starts by reviewing the Opus build and replacing what it redoes. Covers the deferred Kotlin twins (PORTING.md): scoped appearance@1 (shared look types at the top level, app--<appId>--<type> keys), embed@1 takes banner/search/links with their messages (ready takes, banner, search-catalog, focus-search, hotkey, open-url, apps, run w:/s:), and Patches Android as a suite host (banner mirror, one search, one menu, background load). Docs: _claude/memory/docs/patches-one-app.md.",
+    "at": "2026-10-24",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -17890,6 +18298,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "uninstall from Pilot every plugin that is installed in the Console. The only duplicates were Pilot's own AI assistant and agent manager (Console plugins ai-assistant + agent-manager); Pilot's 7 designer plugins are not in the Console. Removed from Build-Pilot (web UI, /api/assistant + /api/agents, server modules, contract bake); assembly runs on the Console's agent manager (BP_AGENT=console). Kept: settings interface, Plugins page + catalog installs, metering, the pilot-assembler add-on.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -18271,6 +18691,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "add pending merges to the push banner, a button to fix conflicts and merge all, and a button to fix conflicts and pull main into all. Every merge goes to axHub for approval (github.pulls/merge). Conflicts get a Copy fix brief for a Claude session (automatic Claude conflict fixing was refused by the session safety check).",
+    "at": "2026-10-22",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -18382,6 +18814,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "port all the banner plugins to Patches and install them; remove all banner plugins from console and pilot. Built on Opus on branch claude/project-thread-eew3jm (PR #28).",
+    "at": "2026-10-22",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -19132,6 +19576,18 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "? switch + F1 + Help menu + Settings + AmberX voice; help@1 packs; tooltips on every control (hover / long-press / phone ? badge), screen intros, What is this?; coverage CLI + CI ratchet; packs for the framework, the console + every plugin, axHub web. Branch claude/help-mode, pushed to main. Report _claude/builds/reports/help-mode.md",
+    "at": "2026-11-01",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
