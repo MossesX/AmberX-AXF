@@ -35,5 +35,5 @@
     "env": [],
     "mentions": ["apps/console-web/plugins/README.md", "_claude/memory/STATUS.md"]
   },
-  "opens": "main"
+  "opens": false
 }

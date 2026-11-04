@@ -9,5 +9,5 @@
 .axp-profile-card__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) }
 .axp-profile-card__pick { flex: 0 1 auto; min-width: 0 }
 .axp-profile-card__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
-.axp-profile-card__counts { display: inline-flex; flex: 1 1 auto; flex-wrap: wrap; gap: var(--fx-dens-gap-sm) }
+.axp-profile-card__counts { display: inline-flex; flex: 1 1 auto; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) }
 .axp-profile-card__foot { margin-top: var(--fx-dens-gap-md) }

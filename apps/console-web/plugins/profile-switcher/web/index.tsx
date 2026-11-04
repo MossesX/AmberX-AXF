@@ -165,7 +165,7 @@ function registerCard(rt: AxfRuntime) {
 
 function ProfileCounts({ c }: { c: Counts }) {
   const shown = COUNT_KINDS.filter((k) => c[k.key] > 0);
-  if (!shown.length) return <span className="fx-small fx-muted">nothing open</span>;
+  if (!shown.length) return <span className="axp-profile-card__counts fx-small fx-muted">nothing open</span>;
   return <span className="axp-profile-card__counts">{shown.map((k) => <Chip key={k.key} tone={k.tone}>{c[k.key]} {k.label}</Chip>)}</span>;
 }
 

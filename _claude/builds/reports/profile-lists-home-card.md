@@ -34,7 +34,9 @@ The switcher's `profiles-list` read (REST / MCP / CLI) now returns these for eve
 - **Manage:** opens the Build profiles dialog. **Show all** appears while a filter is on.
 - **Suggested cards** offers "Build profiles" whenever the Profile switcher is on (`card-rules` CARD_SUGGESTIONS). If the card is on Home but hidden, picking the suggestion shows it again instead of adding a copy.
 
-**4. Plugin card panels (generic).** `apps/console-web/src/cardPanels.tsx` lets any plugin draw its own read as a Home card (`registerCardPanel(folder, read, render)`). Until now only the console's own reads could be panels. If the plugin is off, Home draws the read's data with the engine's normal views, so nothing breaks. Home also picks up starter cards a plugin registers after Home has mounted.
+**4. Fix: the switcher's server part loads again.** On current main a plugin without a page or dialog must declare `"opens": false` (build-defaults `plugin.opens.none`). The switcher still said `"main"`, so its server part refused to load and every read answered Not Found. It now says `false`.
+
+**5. Plugin card panels (generic).** `apps/console-web/src/cardPanels.tsx` lets any plugin draw its own read as a Home card (`registerCardPanel(folder, read, render)`). Until now only the console's own reads could be panels. If the plugin is off, Home draws the read's data with the engine's normal views, so nothing breaks. Home also picks up starter cards a plugin registers after Home has mounted.
 
 ## Not done (left open as a follow-up)
 
@@ -46,6 +48,7 @@ Step s6 of profile-switcher-widget is still open: adopting the filter in the rem
 - The `profiles-list` counts gain `queued`, `pending`, `built` and `complete`. `open` and `running` are kept. For `open` the meaning is unchanged: it never counted built, complete or archived builds.
 - card-rules gains the `build-profiles` suggestion. It was rebaked into console-web, axhub-web, amberx-droid and molly, and their `axf.lock.json` hashes were updated, so `rebake.mjs status` shows no "edited" app.
 - New console module `cardPanels.tsx` and new action `build-profiles.new`.
+- The new lazy plugin loader (on main) treats the switcher as a banner plugin, because it calls `setBadge` in `register`. So it loads first at startup and is never evicted, and the Home card is registered before Home draws.
 
 ## Tests
 
@@ -63,4 +66,8 @@ Step s6 of profile-switcher-widget is still open: adopting the filter in the rem
 
 ## Screenshots
 
-`profile-lists-home-card/shots/after/`: `home-build-profiles-card` (phone + desktop) and `card-tap-opens-builds` (phone). Plan: `profile-lists-home-card/shots.json`. Filed to UI Review (non-blocking).
+`profile-lists-home-card/shots/after/`: `home-build-profiles-card` (phone + desktop) and `card-tap-opens-builds` (phone). Plan: `profile-lists-home-card/shots.json`. Filed to UI Review (non-blocking). The shots run with `--env AXF_APPEARANCE_HUB=off`. On the loaded VPS the console's hub-address read sometimes timed out, and the console then fell back to the "Waiting for axHub" screen; a retry fixed it.
+
+![phone](profile-lists-home-card/shots/after/home-build-profiles-card-phone.png)
+![tap opens Builds filtered](profile-lists-home-card/shots/after/card-tap-opens-builds-phone.png)
+![desktop](profile-lists-home-card/shots/after/home-build-profiles-card-desktop.png)
