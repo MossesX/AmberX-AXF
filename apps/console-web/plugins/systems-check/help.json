@@ -71,6 +71,13 @@
         "title": "Test the hub route",
         "text": "Checks the console can reach GitHub through axHub.",
         "kind": "button"
+      },
+      {
+        "target": "column:service",
+        "title": "Service",
+        "text": "The “Service” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
       }
     ],
     "intros": []

@@ -29,6 +29,27 @@
         "title": "Clear search and filters",
         "text": "Shows everything again.",
         "kind": "button"
+      },
+      {
+        "target": "column:test",
+        "title": "Test",
+        "text": "The “Test” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
+      },
+      {
+        "target": "column:before",
+        "title": "Before",
+        "text": "The “Before” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
+      },
+      {
+        "target": "column:after",
+        "title": "After",
+        "text": "The “After” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
       }
     ],
     "intros": []
