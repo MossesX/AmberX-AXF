@@ -1370,6 +1370,18 @@
    "from": "detail",
    "addenda": []
   },
+  "profile-lists-home-card": {
+   "said": "I want a card on the home screen for build profiles. ... And I don't want them to be all one list and filters anymore. I want it back to separate lists. [then] Actually, no, never mind. Leave it as filters.",
+   "at": "2026-11-04T14:16:24.131Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "profile-manager": {
    "said": "a plugin to manage build profiles: view, browse, create, edit, delete, everything. Assigned agent: **Landin' Lenny** (book on his card; if busy and the all-rounder router is on main, whoever is free - record who). Register in the **current** profile (id `profile-manager`) + banner entry. (Profile `current` was just created; if it's missing, create it: `node framework/cli/profiles.mjs create \"Current\" --id current --select`.)",
    "at": "2026-11-03",
