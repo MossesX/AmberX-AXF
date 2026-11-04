@@ -698,8 +698,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 15:29 UTC · `urgent-land-gizmo-chat` → complete, note (current) · foreign-write
-- 2026-11-04 15:29 UTC · `tab-group-assets` added (6 steps) (current) · orchestrator
 - 2026-11-04 15:29 UTC · `tab-group-assets` → running (current) · orchestrator
 - 2026-11-04 15:29 UTC · `gizmo-companion` note (current) · foreign-write
 - 2026-11-04 15:29 UTC · `tab-group-assets` added (6 steps) (current) · foreign-write
@@ -1098,6 +1096,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 21:51 UTC · `follow-amber-flash` s4 done, → built, branch claude/follow-amber-flash, PR #345 (angel) · builds-live
 - 2026-11-04 21:55 UTC · `changes-chat-log` added (5 steps) (current) · foreign-write
 - 2026-11-04 21:56 UTC · `changes-chat-log` added (5 steps) (current) · foreign-write
+- 2026-11-04 21:56 UTC · `build-docs-walkthroughs` s4 done (angel) · orchestrator
+- 2026-11-04 21:56 UTC · `build-docs-walkthroughs` s5 done (angel) · orchestrator
 
 ## Token passes (log)
 
