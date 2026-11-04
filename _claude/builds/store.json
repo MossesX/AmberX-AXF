@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 768,
- "updatedAt": "2026-11-04T15:08:14.834Z",
+ "rev": 769,
+ "updatedAt": "2026-11-04T15:08:36.389Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -76702,15 +76702,15 @@
    "title": "Merge queue: test once, never twice",
    "category": "Landing",
    "detail": "Stacked merge queue in auto-land (GitHub's native merge queue needs an org-owned repo; MossesX is a personal account). Each ready PR is tested once on top of main + every PR ahead of it on a queue/pr-<n> branch; green head merges with no retest; red is kicked out with a plain reason and the ones behind are rebuilt without it. CI path filters (framework/cli/ci-scope.mjs), light checks on PRs while the queue is on, main push skips jobs the queue already ran on the same code. Merge queue view + banner chip + REST/MCP/CLI (mergequeue_list/add/remove/move). UI Review gate kept.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/merge-queue",
    "pr": "#320",
    "createdAt": "2026-11-04T14:32:10.064Z",
-   "updatedAt": "2026-11-04T15:08:12.451Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T15:08:13.941Z",
+   "builtAt": "2026-11-04T15:08:13.941Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -76852,12 +76852,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T15:08:13.941Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T14:32:10.065Z",
-     "updatedAt": "2026-11-04T14:32:10.065Z"
+     "updatedAt": "2026-11-04T15:08:30.872Z"
     }
    ],
    "profiles": [
@@ -76868,10 +76868,27 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-04T14:32:10.064Z",
+    "builtAt": "2026-11-04T15:08:13.941Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw27twuz07b7yz": "2026-11-04T14:32:10.065Z",
+     "st-mw27twuz08ubd5": "2026-11-04T14:32:10.065Z",
+     "st-mw27twuz096shw": "2026-11-04T14:32:10.065Z",
+     "st-mw27twuz0a2njb": "2026-11-04T14:32:10.065Z",
+     "st-mw27twuz0bu7p2": "2026-11-04T14:32:10.065Z",
+     "st-mw27twuz0cvvnl": "2026-11-04T14:32:10.065Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-04T14:32:10.065Z",
    "rearranged": false,
