@@ -1,0 +1,44 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "build-todo-sync-help",
+  "name": "Build to-do sync help",
+  "version": "0.1.0",
+  "description": "Help mode entries (help@1) for the Build to-do sync plugin: the page, the name prompt and the settings.",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:build-todo-sync",
+    "entries": [
+      { "target": "view:build-todo-sync", "title": "Build to-do lists", "text": "Every build is a list in the AmberX to-do manager (Builds › category › name) whose items are the orchestrator's steps, ticked off live. This page shows the sync state, ticks waiting for your OK, builds still to name and every mirrored build.", "kind": "screen" },
+      { "target": "sync-now", "title": "Sync now", "text": "Re-checks every build against its to-do list right away and writes what differs. Store events do this by themselves; use it after a change you can't see yet." },
+      { "target": "dry-run", "title": "Dry run", "text": "Plans the sync and tells you how many items would change, without writing anything." },
+      { "target": "approve", "title": "Approve", "text": "You ticked (or unticked) this item in the to-do manager. Approve changes the step in the Build orchestrator the same way." },
+      { "target": "deny", "title": "Deny", "text": "Puts the to-do item back the way the step is. The step does not change." },
+      { "target": "confirm-name", "title": "Confirm name", "text": "Saves the short name and category of this build. The name is what you reference the build by everywhere: the to-do manager, the Build manager and chat." },
+      { "target": "open-the-prompt", "title": "Open the prompt", "text": "Opens the Name this build dialog for every build whose name or category is still a suggestion." },
+      { "target": "later", "title": "Later", "text": "Closes the prompt; the build keeps its suggested name until you confirm it, and the prompt won't reopen for it in this browser." },
+      { "target": "close", "title": "Close", "text": "Closes the dialog." },
+      { "target": "short-name", "title": "Short name", "text": "The name you reference the build by (48 characters at most). The suggestion comes from the build's title; change it to whatever you'd say out loud." },
+      { "target": "category", "title": "Category", "text": "One of Plugin, Plugin extension, Add-on, Framework, App, Feature or Module. The to-do list sits under this category; build lists group and filter by it." },
+      { "target": "sync-build-to-do-lists", "title": "Sync build to-do lists", "text": "On: the lists follow the builds. Off: builds keep running, the lists stop syncing and a note on the Builds list says since when." },
+      { "target": "prompt-me-to-name-a-new-build", "title": "Prompt me to name a new build", "text": "When a build appears without a confirmed name, the Name this build dialog opens once for it." },
+      { "target": "keep-finished-builds-in-done-for-days", "title": "Keep finished builds in Done for", "text": "How many days a completed build stays as a done list under Builds › Done before it leaves the to-do manager." },
+      { "target": "full-reconcile-every-minutes", "title": "Full reconcile every", "text": "Store events sync at once; this timer re-checks every list and item as a safety net and refreshes the sync note." },
+      { "target": "check-the-store-file-every-seconds", "title": "Check the store file every", "text": "How often the plugin looks at the builds store file for a change an event may have missed." },
+      { "target": "console-link-base", "title": "Console link base", "text": "The console address the to-do items link back to (https only). Empty = the default console." },
+      { "target": "save-timings", "title": "Save timings", "text": "Saves the day, minute and second settings above. The two switches save by themselves." },
+      { "target": "build-todo-sync", "title": "Build to-do sync settings", "text": "On/off, the name prompt, how long done builds stay, how often the plugin reconciles, and the console link base." },
+      { "target": "build-to-do-sync", "title": "Build to-do sync", "text": "The plugin's settings tab under Settings → Plugins: on/off, the name prompt, how long done builds stay in Done, how often it reconciles, the console link base, and Install & uninstall." },
+      { "target": "view:build-todo-sync.name", "title": "Name this build", "text": "Prompts you for a build's short name and category when a new build appears without a confirmed one. The name is how you reference the build in the to-do manager, the Build manager and chat; edit the suggestion or keep it.", "kind": "screen" },
+      { "target": "action:build-todo-sync.name", "title": "Name a build…", "text": "Opens the Name this build prompt for every build whose name or category is still a suggestion." }
+    ],
+    "intros": [
+      { "screen": "build-todo-sync", "title": "Build to-do lists", "steps": [
+        { "say": "This page is the bridge between the Build orchestrator and your to-do manager: one list per build, one item per step, ticked live.", "target": "" },
+        { "say": "Items you tick in the to-do manager wait here for your OK before the step changes.", "target": "approve" },
+        { "say": "New builds get a suggested name and category; confirm or change them here or in the prompt.", "target": "confirm-name" }
+      ] }
+    ]
+  }
+}

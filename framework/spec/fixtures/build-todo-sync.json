@@ -1,0 +1,483 @@
+{
+ "$axf": "build-todo-sync@1",
+ "description": "Golden outputs of framework/core/build-todo-sync.mjs: names, categories, items and the plan for a small store on an empty to-do manager. Regenerate with node framework/spec/check-build-todo-sync.mjs --update.",
+ "categories": [
+  "Plugin",
+  "Plugin extension",
+  "Add-on",
+  "Framework",
+  "App",
+  "Feature",
+  "Module"
+ ],
+ "maxName": 48,
+ "names": [
+  {
+   "title": "Build to-do sync plugin: names, categories, live checklists",
+   "displayName": "Build to-do sync plugin"
+  },
+  {
+   "title": "Urgent: land the merge queue (Lenny)",
+   "displayName": "Land the merge queue"
+  },
+  {
+   "title": "Voice commands for every app: land Expenses, voice-command@1 contract, forFramework apps generate voice commands for API/MCP/CLI, Molly runs them",
+   "displayName": "Voice commands for every app"
+  },
+  {
+   "title": "Todo manager plugin (from xGallery) + tabable plugins + Patches plugin tabs",
+   "displayName": "Todo manager plugin"
+  },
+  {
+   "title": "fix",
+   "displayName": "Fix"
+  },
+  {
+   "title": "A very long title without any separator that keeps going on and on past the limit of forty eight characters",
+   "displayName": "A very long title without any separator that…"
+  }
+ ],
+ "suggestedCategories": [
+  {
+   "build": {
+    "title": "Build to-do sync plugin"
+   },
+   "category": "Plugin"
+  },
+  {
+   "build": {
+    "title": "Follow Amber plugin extension: approvals pop-up"
+   },
+   "category": "Plugin extension"
+  },
+  {
+   "build": {
+    "title": "Breakroom add-on: jukebox"
+   },
+   "category": "Add-on"
+  },
+  {
+   "build": {
+    "title": "menu engine tokens",
+    "area": "Framework > Menus"
+   },
+   "category": "Framework"
+  },
+  {
+   "build": {
+    "title": "Expenses app grid fix"
+   },
+   "category": "App"
+  },
+  {
+   "build": {
+    "title": "lib-settings module for Android"
+   },
+   "category": "Module"
+  },
+  {
+   "build": {
+    "title": "Faster start-up"
+   },
+   "category": "Feature"
+  },
+  {
+   "build": {
+    "title": "Watch live targets",
+    "steps": [
+     {
+      "files": [
+       "apps/console-web/plugins/watch-live/web/index.tsx"
+      ]
+     }
+    ]
+   },
+   "category": "Plugin"
+  },
+  {
+   "build": {
+    "title": "Profile cards",
+    "steps": [
+     {
+      "files": [
+       "framework/core/engines/cards.ts"
+      ]
+     }
+    ]
+   },
+   "category": "Framework"
+  },
+  {
+   "build": {
+    "title": "Something",
+    "detail": "wire the route in the expenses app"
+   },
+   "category": "App"
+  }
+ ],
+ "items": [
+  {
+   "kind": "todo",
+   "title": "1. Contract build-todo-sync@1",
+   "text": "Model: Fable · Estimate: 20 min · Done: 2026-11-04T11:00:00.000Z\nBuild: todo-sync · step s1",
+   "status": "done",
+   "tags": [
+    "build",
+    "fable"
+   ],
+   "priority": 0,
+   "order": 0,
+   "url": "https://console.example/#build-orchestrator/todo-sync/u-s1"
+  },
+  {
+   "kind": "todo",
+   "title": "2. Store fields + migration",
+   "text": "Model: Fable · Estimate: 20 min\nBuild: todo-sync · step s2",
+   "status": "doing",
+   "tags": [
+    "build",
+    "fable"
+   ],
+   "priority": 0,
+   "order": 1,
+   "url": "https://console.example/#build-orchestrator/todo-sync/u-s2"
+  },
+  {
+   "kind": "todo",
+   "title": "3. Plugin server + sync engine",
+   "text": "Model: Opus · Estimate: 20 min\nBuild: todo-sync · step s3",
+   "status": "open",
+   "tags": [
+    "build",
+    "opus"
+   ],
+   "priority": 0,
+   "order": 2,
+   "url": "https://console.example/#build-orchestrator/todo-sync/u-s3"
+  },
+  {
+   "kind": "todo",
+   "title": "4. UI Review shots",
+   "text": "Model: Opus · Estimate: 20 min\nBuild: todo-sync · step s4",
+   "status": "open",
+   "tags": [
+    "build",
+    "opus",
+    "skipped"
+   ],
+   "priority": 0,
+   "order": 3,
+   "url": "https://console.example/#build-orchestrator/todo-sync/u-s4"
+  }
+ ],
+ "backfill": {
+  "ops": [
+   {
+    "target": "amberx.lists",
+    "op": "add",
+    "value": {
+     "name": "Builds",
+     "parent": null
+    },
+    "ref": "root",
+    "why": "the Builds list"
+   },
+   {
+    "target": "amberx.lists",
+    "op": "add",
+    "value": {
+     "name": "Framework",
+     "parent": "$ref:root"
+    },
+    "ref": "group:Framework",
+    "why": "the Framework list"
+   },
+   {
+    "target": "amberx.lists",
+    "op": "add",
+    "value": {
+     "name": "Plugin",
+     "parent": "$ref:root"
+    },
+    "ref": "group:Plugin",
+    "why": "the Plugin list"
+   },
+   {
+    "target": "amberx.lists",
+    "op": "add",
+    "value": {
+     "name": "Archive",
+     "parent": "$ref:root"
+    },
+    "ref": "group:Archive",
+    "why": "the Archive list"
+   },
+   {
+    "target": "amberx.lists",
+    "op": "add",
+    "value": {
+     "name": "Done",
+     "parent": "$ref:root"
+    },
+    "ref": "group:Done",
+    "why": "the Done list"
+   },
+   {
+    "target": "amberx.lists",
+    "op": "add",
+    "value": {
+     "name": "Build to-do sync",
+     "parent": "$ref:group:Plugin"
+    },
+    "ref": "build:todo-sync",
+    "why": "list for build todo-sync"
+   },
+   {
+    "target": "amberx.items",
+    "op": "add",
+    "value": {
+     "kind": "todo",
+     "title": "1. Contract build-todo-sync@1",
+     "text": "Model: Fable · Estimate: 20 min · Done: 2026-11-04T11:00:00.000Z\nBuild: todo-sync · step s1",
+     "status": "done",
+     "tags": [
+      "build",
+      "fable"
+     ],
+     "priority": 0,
+     "order": 0,
+     "url": "https://console.example/#build-orchestrator/todo-sync/u-s1",
+     "list": "$ref:build:todo-sync",
+     "source": "import",
+     "by": "build-todo-sync",
+     "device": "console"
+    },
+    "ref": "item:todo-sync/u-s1",
+    "why": "step s1 of todo-sync"
+   },
+   {
+    "target": "amberx.items",
+    "op": "add",
+    "value": {
+     "kind": "todo",
+     "title": "2. Store fields + migration",
+     "text": "Model: Fable · Estimate: 20 min\nBuild: todo-sync · step s2",
+     "status": "doing",
+     "tags": [
+      "build",
+      "fable"
+     ],
+     "priority": 0,
+     "order": 1,
+     "url": "https://console.example/#build-orchestrator/todo-sync/u-s2",
+     "list": "$ref:build:todo-sync",
+     "source": "import",
+     "by": "build-todo-sync",
+     "device": "console"
+    },
+    "ref": "item:todo-sync/u-s2",
+    "why": "step s2 of todo-sync"
+   },
+   {
+    "target": "amberx.items",
+    "op": "add",
+    "value": {
+     "kind": "todo",
+     "title": "3. Plugin server + sync engine",
+     "text": "Model: Opus · Estimate: 20 min\nBuild: todo-sync · step s3",
+     "status": "open",
+     "tags": [
+      "build",
+      "opus"
+     ],
+     "priority": 0,
+     "order": 2,
+     "url": "https://console.example/#build-orchestrator/todo-sync/u-s3",
+     "list": "$ref:build:todo-sync",
+     "source": "import",
+     "by": "build-todo-sync",
+     "device": "console"
+    },
+    "ref": "item:todo-sync/u-s3",
+    "why": "step s3 of todo-sync"
+   },
+   {
+    "target": "amberx.items",
+    "op": "add",
+    "value": {
+     "kind": "todo",
+     "title": "4. UI Review shots",
+     "text": "Model: Opus · Estimate: 20 min\nBuild: todo-sync · step s4",
+     "status": "open",
+     "tags": [
+      "build",
+      "opus",
+      "skipped"
+     ],
+     "priority": 0,
+     "order": 3,
+     "url": "https://console.example/#build-orchestrator/todo-sync/u-s4",
+     "list": "$ref:build:todo-sync",
+     "source": "import",
+     "by": "build-todo-sync",
+     "device": "console"
+    },
+    "ref": "item:todo-sync/u-s4",
+    "why": "step s4 of todo-sync"
+   },
+   {
+    "target": "amberx.lists",
+    "op": "add",
+    "value": {
+     "name": "Menu engine tokens for every port",
+     "parent": "$ref:group:Framework"
+    },
+    "ref": "build:menus-engine",
+    "why": "list for build menus-engine"
+   },
+   {
+    "target": "amberx.items",
+    "op": "add",
+    "value": {
+     "kind": "todo",
+     "title": "1. tokens",
+     "text": "Model: Opus · Estimate: 20 min\nBuild: menus-engine · step s1",
+     "status": "open",
+     "tags": [
+      "build",
+      "opus"
+     ],
+     "priority": 0,
+     "order": 0,
+     "url": "https://console.example/#build-orchestrator/menus-engine/menus-engine-s1",
+     "list": "$ref:build:menus-engine",
+     "source": "import",
+     "by": "build-todo-sync",
+     "device": "console"
+    },
+    "ref": "item:menus-engine/menus-engine-s1",
+    "why": "step s1 of menus-engine"
+   },
+   {
+    "target": "amberx.lists",
+    "op": "add",
+    "value": {
+     "name": "Molly voice",
+     "parent": "$ref:group:Done"
+    },
+    "ref": "build:fresh-done",
+    "why": "list for build fresh-done"
+   },
+   {
+    "target": "amberx.items",
+    "op": "add",
+    "value": {
+     "kind": "todo",
+     "title": "1. banners",
+     "text": "Model: Opus · Estimate: 20 min\nBuild: fresh-done · step s1",
+     "status": "done",
+     "tags": [
+      "build",
+      "opus"
+     ],
+     "priority": 0,
+     "order": 0,
+     "url": "https://console.example/#build-orchestrator/fresh-done/fresh-done-s1",
+     "list": "$ref:build:fresh-done",
+     "source": "import",
+     "by": "build-todo-sync",
+     "device": "console"
+    },
+    "ref": "item:fresh-done/fresh-done-s1",
+    "why": "step s1 of fresh-done"
+   },
+   {
+    "target": "amberx.lists",
+    "op": "add",
+    "value": {
+     "name": "Archived thing",
+     "parent": "$ref:group:Archive"
+    },
+    "ref": "build:gone",
+    "why": "list for build gone"
+   },
+   {
+    "target": "amberx.items",
+    "op": "add",
+    "value": {
+     "kind": "todo",
+     "title": "1. x",
+     "text": "Model: Opus · Estimate: 20 min\nBuild: gone · step s1",
+     "status": "open",
+     "tags": [
+      "build",
+      "opus"
+     ],
+     "priority": 0,
+     "order": 0,
+     "url": "https://console.example/#build-orchestrator/gone/gone-s1",
+     "list": "$ref:build:gone",
+     "source": "import",
+     "by": "build-todo-sync",
+     "device": "console"
+    },
+    "ref": "item:gone/gone-s1",
+    "why": "step s1 of gone"
+   },
+   {
+    "target": "amberx.items",
+    "op": "add",
+    "value": {
+     "kind": "note",
+     "title": "Synced by Build to-do sync",
+     "text": "Last sync 2026-11-04 18:00 UTC",
+     "pinned": true,
+     "tags": [
+      "build",
+      "sync"
+     ],
+     "list": "$ref:root",
+     "source": "import",
+     "by": "build-todo-sync",
+     "device": "console"
+    },
+    "ref": "item:status-note",
+    "why": "the sync note"
+   }
+  ],
+  "links": {
+   "$axf": "build-todo-sync@1",
+   "lists": {
+    "root": "$ref:root",
+    "group:Framework": "$ref:group:Framework",
+    "group:Plugin": "$ref:group:Plugin",
+    "group:Archive": "$ref:group:Archive",
+    "group:Done": "$ref:group:Done",
+    "build:todo-sync": "$ref:build:todo-sync",
+    "build:menus-engine": "$ref:build:menus-engine",
+    "build:fresh-done": "$ref:build:fresh-done",
+    "build:gone": "$ref:build:gone"
+   },
+   "items": {
+    "todo-sync/u-s1": "$ref:item:todo-sync/u-s1",
+    "todo-sync/u-s2": "$ref:item:todo-sync/u-s2",
+    "todo-sync/u-s3": "$ref:item:todo-sync/u-s3",
+    "todo-sync/u-s4": "$ref:item:todo-sync/u-s4",
+    "menus-engine/menus-engine-s1": "$ref:item:menus-engine/menus-engine-s1",
+    "fresh-done/fresh-done-s1": "$ref:item:fresh-done/fresh-done-s1",
+    "gone/gone-s1": "$ref:item:gone/gone-s1",
+    "status-note": "$ref:item:status-note"
+   },
+   "updatedAt": "2026-11-04T18:00:00.000Z"
+  },
+  "summary": {
+   "builds": 4,
+   "groups": 4,
+   "ops": 17,
+   "adds": 17,
+   "sets": 0,
+   "removes": 0,
+   "drift": 0
+  }
+ }
+}

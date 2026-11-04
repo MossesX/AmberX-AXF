@@ -11,6 +11,13 @@ export const SORT_LABEL: Record<string, string>;
 export const DEFAULT_RULES: { sameSession: boolean; subAgents: boolean; approveModelSwitch: boolean; maxStepMinutes: number };
 export const MODEL_GUIDE: Record<string, string>;
 export const UNCATEGORISED: string;
+// build-todo-sync@1: build names, categories and the Planned & fixes checklist (framework/core/build-todo-sync.mjs)
+export const CATEGORIES: Array<'Plugin' | 'Plugin extension' | 'Add-on' | 'Framework' | 'App' | 'Feature' | 'Module'>;
+export const FIX_KINDS: Array<'planned' | 'fix' | 'bug'>;
+export const MAX_NAME: number;
+export function normCategory(v: unknown): string;
+export function suggestCategory(b: { title?: string; detail?: string; area?: string; steps?: unknown[] }): { category: string; why: string; confidence: 'high' | 'medium' | 'low' };
+export function suggestDisplayName(title: unknown, opts?: { max?: number; id?: string }): string;
 export interface Group { label: string; steps: any[]; done: number; skipped: number; minutesLeft: number }
 export interface Phase { index: number; model: 'Fable' | 'Opus'; label: string; name: string; from: string; gate: boolean; kind: '' | 'upgrade' | 'downgrade' | 'same'; upgrade: boolean; approved: boolean; done: boolean; minutesLeft: number; steps: any[]; groups: Group[] }
 export function categories(builds: any[]): { name: string; count: number }[];

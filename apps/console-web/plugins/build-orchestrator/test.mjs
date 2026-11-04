@@ -74,10 +74,20 @@ t('labelled phases + groups + categories', () => {
   const st = [{ text: 'a', model: 'Fable', estimate: '10 min', phase: 'P1', group: 'G1' }, { text: 'b', model: 'Fable', estimate: '10 min', phase: 'P1', group: 'G2' }, { text: 'c', model: 'Fable', estimate: '10 min', phase: 'P2', group: 'G3' }, { text: 'd', model: 'Opus', estimate: '10 min', phase: 'P3' }];
   const x = c.apply(c.emptyState(), { action: 'add', title: 'L', category: 'Cat', steps: st }).state; const ps = c.phases(x.builds[0]);
   assert.deepEqual(ps.map((p) => p.name), ['P1', 'P2', 'P3']); assert.deepEqual(ps.map((p) => p.gate), [false, false, true]);
-  assert.deepEqual(ps[0].groups.map((g) => g.label), ['G1', 'G2']); assert.equal(x.builds[0].category, 'Cat');
-  const y = c.apply(x, { action: 'add', title: 'Other' }).state; assert.deepEqual(c.categories(y.builds).map((k) => k.name), ['Cat', c.UNCATEGORISED]);
+  // build-todo-sync@1: category is one of CATEGORIES (suggested until Brett confirms); old free text becomes the area
+  assert.deepEqual(ps[0].groups.map((g) => g.label), ['G1', 'G2']); assert.equal(x.builds[0].area, 'Cat'); assert.equal(x.builds[0].category, 'Feature'); assert.equal(x.builds[0].nameReview, true);
+  const y = c.apply(x, { action: 'add', title: 'Other plugin', displayName: 'Other', category: 'Plugin' }).state; assert.deepEqual(c.categories(y.builds).map((k) => k.name), ['Feature', 'Plugin']);
   assert.match(c.brief(x.builds[0]), /— G1 —/); assert.equal(c.sortBuilds(y.builds, 'title')[0].title, 'L');
-  const z = c.apply(y, { action: 'update', id: 'other', category: 'New' }).state; assert.equal(z.builds[1].category, 'New');
+  const z = c.apply(y, { action: 'update', id: 'other-plugin', category: 'New' }).state; assert.equal(z.builds[1].area, 'New'); assert.equal(z.builds[1].category, 'Plugin');
+});
+t('name: Brett names a build (or confirms the suggestion); bad categories refused', () => {
+  const x = c.apply(c.emptyState(), { action: 'add', title: 'Watch live plugin: focus', steps }).state;
+  assert.equal(x.builds[0].displayName, 'Watch live plugin'); assert.equal(x.builds[0].category, 'Plugin'); assert.equal(x.builds[0].nameReview, true);
+  const r = c.apply(x, { action: 'name', id: 'watch-live-plugin-focus', displayName: 'Watch live', category: 'plugin extension' });
+  assert.equal(r.state.builds[0].displayName, 'Watch live'); assert.equal(r.state.builds[0].category, 'Plugin extension'); assert.equal(r.state.builds[0].nameReview, false); assert.match(r.log[0], /named "Watch live"/);
+  const y = c.apply(x, { action: 'name', id: 'watch-live-plugin-focus' }).state; assert.equal(y.builds[0].nameReview, false, 'confirming the suggestion as is');
+  assert.throws(() => c.apply(x, { action: 'name', id: 'watch-live-plugin-focus', category: 'Console' }), /category must be one of/);
+  assert.throws(() => c.apply(x, { action: 'name', id: 'watch-live-plugin-focus', displayName: '  ' }), /short name/);
 });
 t('rename keeps the id; an empty name is refused', () => {
   let x = c.apply(c.emptyState(), { action: 'add', title: 'R', steps }).state;

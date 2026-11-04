@@ -45,6 +45,7 @@
 
 import { normApproval, normRequest } from '../core/model-switch.mjs';
 import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
+import { CATEGORIES, MAX_NAME, naming, normFixes } from '../core/build-todo-sync.mjs';
 
 export const SCHEMA = 'builds@1';
 export const MODELS = ['Fable', 'Opus'];
@@ -62,7 +63,7 @@ const stepModel = (m) => (m === 'Fable' ? 'Fable' : 'Opus');
 const clone = (o) => JSON.parse(JSON.stringify(o));
 const nowIso = () => new Date().toISOString();
 export const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
-const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
+const ORCH_BUILD_KEYS = ['id', 'title', 'displayName', 'category', 'area', 'nameReview', 'fixes', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
 const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note'];
 
 // ------------------------------------------------------------------ records
@@ -116,10 +117,17 @@ export function normBuild(b, ctx = {}) {
   const order = {};
   for (const p of profiles) order[p] = Number.isFinite(o.order?.[p]) ? o.order[p] : (Number.isFinite(ctx.order) ? ctx.order : 0);
   const origin = normOrigin(o.origin); // build-origin@1: what Brett said that started it (framework/core/build-origin.mjs)
+  const title = str(o.title, 300) || 'Untitled build';
+  // build-todo-sync@1: the short name Brett references, one of CATEGORIES, the old free-text area; suggested until he confirms
+  const named = naming({ ...o, id, title });
   return {
     id,
-    title: str(o.title, 300) || 'Untitled build',
-    category: str(o.category, 60),
+    title,
+    displayName: named.displayName,
+    category: named.category,
+    area: named.area,
+    nameReview: named.nameReview,
+    fixes: normFixes(o.fixes, at), // Planned & fixes checklist (build-todo-sync@1)
     detail: str(o.detail, 8000),
     status: STATUSES.includes(o.status) ? o.status : 'pending',
     hidden: o.hidden === true,
@@ -197,6 +205,8 @@ export function validateStore(store) {
     if (typeof b.id !== 'string' || !BUILD_ID.test(b.id)) err(`${at}.id`, 'is missing or not an id');
     else if (ids.has(b.id)) err(`${at}.id`, `"${b.id}" appears twice (one record per build)`); else ids.add(b.id);
     if (typeof b.title !== 'string' || !b.title.trim()) err(`${at}.title`, 'is missing');
+    if (typeof b.displayName !== 'string' || !b.displayName.trim() || b.displayName.length > MAX_NAME) err(`${at}.displayName`, `is missing or longer than ${MAX_NAME} (build-todo-sync@1: every build has a short name)`);
+    if (!CATEGORIES.includes(b.category)) err(`${at}.category`, `"${b.category}" is not one of ${CATEGORIES.join(', ')} (build-todo-sync@1; the old free text lives in area)`);
     if (!STATUSES.includes(b.status)) err(`${at}.status`, `"${b.status}" is not one of ${STATUSES.join(', ')}`);
     if (!Array.isArray(b.profiles) || !b.profiles.length || b.profiles.some((p) => typeof p !== 'string' || !p)) err(`${at}.profiles`, 'needs at least one profile id');
     else for (const p of b.profiles) if (!Number.isFinite(b.order?.[p])) err(`${at}.order.${p}`, 'is missing: a build has an order in every profile it belongs to');
@@ -444,6 +454,7 @@ export function buildFromItem(it, profile, { now = nowIso(), seed = '', order = 
   const prefixSteps = subs.some((p) => PREFIX.test(str(p.text)));
   const b = normBuild({
     id: it.id, title: it.title, detail: it.detail, status: orchStatusOfPending(it.status) ?? 'pending', source: it.source || 'pending', pendingId: it.id, origin: it.origin,
+    displayName: it.displayName, category: it.category, area: it.area, nameReview: it.nameReview,
     createdAt: it.createdAt || now, updatedAt: it.updatedAt || now, builtAt: done ? it.builtAt || now : '', notes: it.notes ?? [],
     profiles: [profile], order: { [profile]: order },
     steps: subs.map((p, k) => ({

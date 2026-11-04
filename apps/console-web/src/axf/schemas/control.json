@@ -1451,13 +1451,16 @@
       "paths": "entity",
       "fields": {
         "title": "string",
-        "category": "string",
+        "displayName": "string",
+        "category": "enum:Plugin,Plugin extension,Add-on,Framework,App,Feature,Module",
+        "area": "string",
         "detail": "string",
         "status": "enum:pending,running,waiting,blocked,failed,complete,archived",
         "hidden": "boolean",
         "branch": "string",
         "pr": "string",
-        "steps": "object[]"
+        "steps": "object[]",
+        "fixes": "object[]"
       },
       "select": {
         "profile": "string",
@@ -1512,7 +1515,29 @@
         },
         "archive": {},
         "hide": {},
-        "unhide": {}
+        "unhide": {},
+        "name": {
+          "displayName": "string",
+          "category": "enum:Plugin,Plugin extension,Add-on,Framework,App,Feature,Module",
+          "area": "string"
+        },
+        "fix-add": {
+          "text": "string",
+          "kind": "enum:planned,fix,bug",
+          "note": "string",
+          "link": "string"
+        },
+        "fix-set": {
+          "fix": "string",
+          "done": "boolean",
+          "text": "string",
+          "note": "string",
+          "link": "string",
+          "kind": "enum:planned,fix,bug"
+        },
+        "fix-remove": {
+          "fix": "string"
+        }
       },
       "stepFields": {
         "text": "string",
@@ -1527,7 +1552,7 @@
         "done": "boolean",
         "note": "string"
       },
-      "doc": "builds@1 records through the orchestrator (the one builds store; profiles are a field): every change is journalled, Pending / queue / Build manager are projections."
+      "doc": "builds@1 records through the orchestrator (the one builds store; profiles are a field): every change is journalled, Pending / queue / Build manager are projections. build-todo-sync@1: act name sets the short name / category Brett references a build by; fix-add / fix-set / fix-remove keep its Planned & fixes checklist (mirrored to its Plan Studio plan and its to-do list)."
     },
     "console.screens": {
       "domain": "console",
@@ -3525,7 +3550,7 @@
         "paths": "entity"
       },
       "planner.builds": {
-        "description": "builds@1 records through the orchestrator (the one builds store; profiles are a field): every change is journalled, Pending / queue / Build manager are projections.",
+        "description": "builds@1 records through the orchestrator (the one builds store; profiles are a field): every change is journalled, Pending / queue / Build manager are projections. build-todo-sync@1: act name sets the short name / category Brett references a build by; fix-add / fix-set / fix-remove keep its Planned & fixes checklist (mirrored to its Plan Studio plan and its to-do list).",
         "ops": [
           "list",
           "get",
@@ -3538,7 +3563,21 @@
           "title": {
             "type": "string"
           },
+          "displayName": {
+            "type": "string"
+          },
           "category": {
+            "enum": [
+              "Plugin",
+              "Plugin extension",
+              "Add-on",
+              "Framework",
+              "App",
+              "Feature",
+              "Module"
+            ]
+          },
+          "area": {
             "type": "string"
           },
           "detail": {
@@ -3565,6 +3604,12 @@
             "type": "string"
           },
           "steps": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "fixes": {
             "type": "array",
             "items": {
               "type": "object"
@@ -3679,7 +3724,73 @@
           },
           "archive": {},
           "hide": {},
-          "unhide": {}
+          "unhide": {},
+          "name": {
+            "displayName": {
+              "type": "string"
+            },
+            "category": {
+              "enum": [
+                "Plugin",
+                "Plugin extension",
+                "Add-on",
+                "Framework",
+                "App",
+                "Feature",
+                "Module"
+              ]
+            },
+            "area": {
+              "type": "string"
+            }
+          },
+          "fix-add": {
+            "text": {
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "planned",
+                "fix",
+                "bug"
+              ]
+            },
+            "note": {
+              "type": "string"
+            },
+            "link": {
+              "type": "string"
+            }
+          },
+          "fix-set": {
+            "fix": {
+              "type": "string"
+            },
+            "done": {
+              "type": "boolean"
+            },
+            "text": {
+              "type": "string"
+            },
+            "note": {
+              "type": "string"
+            },
+            "link": {
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "planned",
+                "fix",
+                "bug"
+              ]
+            }
+          },
+          "fix-remove": {
+            "fix": {
+              "type": "string"
+            }
+          }
         },
         "paths": "entity"
       },
