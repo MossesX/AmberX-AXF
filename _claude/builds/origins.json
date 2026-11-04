@@ -133,6 +133,18 @@
    "from": "detail",
    "addenda": []
   },
+  "amberx-live-audio": {
+   "said": "Amber: \"Live voice doesn't work yet, because AmberX only uploads audio in 30-minute chunks... Want me to queue the AmberX update so it streams audio live?\" Brett: \"Yeah.\"",
+   "at": "2026-11-04T00:00:00Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "amberx-notes": {
    "said": "voice-controlled notes in lists/sub-lists (Plugins root: one list per plugin, made automatically), sort/transcribe/rename/move, task manager + todo, AI parsing with Claude plan/API switch + any LLM through AmberX own server, integrated web component, voice command section from the codebase, tabs. Data shared on axHub with Voice notes/Voice Vault. Sub-agents allowed (Brett).",
    "at": "2026-10-27",
@@ -505,6 +517,47 @@
    "from": "",
    "addenda": []
   },
+  "build-todo-sync": {
+   "said": "For every build from now on, like this plugin build, prompt me for a name which will be used to reference it in the to-do manager. Then we're going to add a list in the to-do manager with all the steps that Orchestrator broke it into. And then it will check off each one in real time as the orchestrator processes each step. So the to-do list for every build has the same exact steps as items in the to-do list that the orchestrator broke the build down into. The builds into categories: plugins, plugin extensions, add-ons, framework, app, feature, module. Sync the build manager with the to-do manager and the real-time checklist. Put this in the planner.",
+   "at": "2026-11-04T16:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "build-todo-sync (Snap Sully)",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": [
+    {
+     "said": "This is a plugin too.",
+     "at": "2026-11-04T16:20:00Z",
+     "source": "voice",
+     "by": "build-todo-sync (Snap Sully)",
+     "verbatim": true
+    },
+    {
+     "said": "From now on, put every build in Plan Studio. Every new plugin or app or whatever goes to Plan Studio. Plan Studio is updated whenever you want edits made to it. Every build will be able to attach a list to it of planned things to do, and you can check off the fixes as they happen. You can add things to fix and all that, and track everything in the planner.",
+     "at": "2026-11-04T16:40:00Z",
+     "source": "voice",
+     "by": "build-todo-sync (Snap Sully)",
+     "verbatim": true
+    },
+    {
+     "said": "And that needs an API so it can be voice controlled.",
+     "at": "2026-11-04T16:45:00Z",
+     "source": "voice",
+     "by": "build-todo-sync (Snap Sully)",
+     "verbatim": true
+    },
+    {
+     "said": "And the planner will also have links to documentation that's under development.",
+     "at": "2026-11-04T16:50:00Z",
+     "source": "voice",
+     "by": "build-todo-sync (Snap Sully)",
+     "verbatim": true
+    }
+   ]
+  },
   "builds-one-page": {
    "said": "Plans, Tracker, Build queue, Pending builds and the Build orchestrator are separate files (plan.json, tracker.json, build-queue.json, pending.json, _claude/builds/orchestrator.json) that drift (pending complete never marks the plan built; 91 of 100 pending items unlinked). Merge into one dataset; one Builds page with the views selectable from a toolbar and everywhere else that fits (app menu, context menu, shortcuts, banners, deep links). Every view, Orchestrator included, defaults to the Pending builds look: a table with expandable rows; better nested info in every list. Folds in pending-grid-view. tracker.json stays a generated export for the Android console and /tracker. Web only (Android hold).",
    "at": "2026-10-27",
@@ -755,6 +808,18 @@
    "from": "",
    "addenda": []
   },
+  "fable-packager": {
+   "said": "From the orchestrator, package Fable, or make a build package. You select all the things that are waiting to be built with Fable: you open up a dialog or a window to list them all, then you select them and combine them into a build, and then you either send the build to a helper or add it to your own orchestrator as its own build. So you can easily create just-Fable builds alone, prioritize them, and send them to another helper to be done immediately.",
+   "at": "2026-11-04T16:31:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "fable-review-nov3": {
    "said": "I don't want the approvals. Just put everything that needs to be on Fable on Fable. No more approvals. If it needs Fable, set it to be Fable. And what about yesterday? Was anything that needed to be Fable done with Opus?",
    "at": "2026-11-04T00:00:00Z",
@@ -916,6 +981,18 @@
    "from": "",
    "addenda": []
   },
+  "grid-column-hiding": {
+   "said": "Every grid needs to be able to hide columns. If you right-click on the column, you can select which ones to hide. And every grid, framework wide.",
+   "at": "2026-11-04T19:59:59.405Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "grid-sort-filter": {
    "said": "Every grid that lists builds, tasks, asks or anything else is sortable, searchable and filterable, taking little screen. Basic filter attached by default. Tap header sorts, tap again reverses, long-press adds a second sort. One thin row: small search box + filter icon; on phones just a search icon. Filters hidden until used, then small clearable chips. Custom tables move onto the framework grid. Android parity. Per grid: right-click a grid or its header -> Filter -> off/on for this grid; 'All grids...' lists every grid in the app with the right-clicked one scrolled into view and highlighted, a switch per grid; a default switch decides whether new grids get the filter (on). Defaults are decided per grid by the build: on for data grids with many rows or columns (builds, asks, changes, plugins, PRs), off for small lists (settings, keys, short pickers); record the choice and reason per grid. On grids where it is off, hovering the header for a moment shows a tooltip 'Add the filter to this grid?' with Enable (long-press on phones). Framework grid (part of the app, not the filter plugin): every grid that has no date/time column gets an automatic 'Date and time' column (row created / last changed), hidden by default; grids that already show a date/time get nothing. Right-click the header -> Show/Hide 'Date and time'. Web + Android. UPDATE (Brett): build BOTH into the framework grid. Sort/search/filter live in the framework (not the Basic filter plugin); smart per-grid defaults, right-click on/off, All grids list and hover offer all framework features. Date and time column is ensured at first render: if a grid renders without one, the framework adds the hidden column then. New grids get everything automatically. CI check flags any table not built on the framework grid.",
    "at": "2026-10-30",
@@ -926,6 +1003,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "handoff-2": {
+   "said": "Is there a way to have two sessions working on the project at the same time without building stuff that's gonna conflict with the other one? ... Doesn't it already exist in the handoff? ... Let's scratch the whole handoff system as we know it and create one based on spec. Here's what I want to do. I want to press the button in the console. It'll say prepare handoff to share a second account. And then it will open the browser tab in Claude, or then it'll give me a cut and paste prompt that I'll prompt into the new session from the other account, and run it. And then they'll both be working side by side and being able to talk to each other.",
+   "at": "2026-11-04T00:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "headless-tabs": {
@@ -1167,6 +1256,33 @@
    "verbatim": true,
    "from": "",
    "addenda": []
+  },
+  "model-thinking-audit": {
+   "said": "Go through my list of things that can be done and see what should be redone with Fable and put that next to it, and put the level of thinking that it should be on.",
+   "at": "2026-11-04T15:50:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Reel Rhonda",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": [
+    {
+     "said": "I also want to see in the steps list the same thing, and anywhere a build or a step is shown I want a check mark if it's all set and doesn't need to be looked at, and like a yellow triangle if it's been changed and needs to be looked at. And if you right-click that icon, instead of expanding to its information, expand the row explaining why. And all that stuff about why you should change it.",
+     "at": "2026-11-04T15:52:00Z",
+     "source": "voice",
+     "by": "Brett",
+     "verbatim": true
+    },
+    {
+     "said": "Model. And thinking model. Not just the review, any query or anything that shows a build or a step or anything anywhere. But make it a filter. Make it so you can turn that feature on or off.",
+     "at": "2026-11-04T15:54:00Z",
+     "source": "voice",
+     "by": "Brett",
+     "verbatim": true
+    }
+   ]
   },
   "model-upgrade-approval": {
    "said": "a headless build (agent-swarm-fable-rebuild, PR #247) approved its own Opus -> Fable phase switch in the orchestrator (`orchestrator.mjs act approve`) because its brief said \"do every step\". Brett: \"It cannot be switching the model without my approval. That's not even a veto. That's an approval.\" Then: \"You can downgrade, but you can't upgrade.\"",
@@ -1536,6 +1652,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "readme-rule-every-build": {
+   "said": "We gotta structure the documentation engine later anyway, so leave that out. Just get basic documentation. In Markdown.\n\n(Asked whether every future build should include a basic Markdown readme:) Yeah.",
+   "at": "2026-11-04T00:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "refactor-all": {

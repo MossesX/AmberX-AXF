@@ -209,6 +209,10 @@ fi
 # Pull main every 5 minutes; re-run this installer when it changed, and also while the sign-in wall waits for the hub.
 # Progress goes to update-status.json for the console's Activity banner. The script is root-only (0700): it carries
 # GITHUB_TOKEN for the re-run.
+# One deploy per merge-queue stack (Brett, Nov 4 2026: "Save the compute"): while the queue is merging a stack it
+# keeps push-banner/queue-merging fresh; the update waits until the last PR of the stack is in (stale after 15 min).
+QUEUE_HOLD="$DIR/.axf-console/plugins/push-banner/queue-merging"  # axf-plugin:push-banner
+AXF_UPDATE_PRELUDE="[ -n \"\$(find \"$QUEUE_HOLD\" -mmin -15 2>/dev/null)\" ] && exit 0  # the merge queue is landing a stack: one deploy once it is all in" \
 axf_update_script /usr/local/bin/axf-console-update "$DIR" "$BRANCH" /var/log/axf-console-update.log \
   "GITHUB_TOKEN=\"$GITHUB_TOKEN\" DOMAIN=\"$DOMAIN\" NAME=\"$NAME\" DIR=\"$DIR\" PORT=\"$PORT\" bash \"$DIR/deploy/install-console.sh\"" \
   "$DIR/.axf-console/update-status.json" "$DIR/.axf-console/wall-waiting"

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T17:34:09.947Z",
+ "updatedAt": "2026-11-04T20:11:50.980Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3416,7 +3416,7 @@
   {
    "id": "auto-land",
    "title": "Auto-land finished builds (zero-token merge pipeline)",
-   "category": "",
+   "category": "Framework",
    "detail": "Relaunch of stopped auto-land as auto-land-2 (Brett, Nov 3 2026, voice). Agent: Earl the Ear. Plain-script merge pipeline reusing the push banner batch merge; AI only for real conflicts / red CI needing code.",
    "status": "complete",
    "hidden": false,
@@ -4805,7 +4805,7 @@
   {
    "id": "ui-review-shots",
    "title": "UI Review shows its pictures again",
-   "category": "",
+   "category": "Feature",
    "detail": "",
    "status": "complete",
    "hidden": false,
@@ -5593,18 +5593,32 @@
   {
    "id": "land-merge-queue-first",
    "title": "Land the merge queue first, then the waiting batch as one stack",
-   "category": "",
+   "category": "Feature",
    "detail": "",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/land-batch-1",
+   "pr": "#339",
+   "mergedAt": "2026-11-04T19:51:03Z",
    "createdAt": "2026-11-04T17:34:06.563Z",
-   "updatedAt": "2026-11-04T17:34:06.575Z",
+   "updatedAt": "2026-11-04T20:11:37.555Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #320 merged",
+     "at": "2026-11-04T19:52:46.552Z"
+    },
+    {
+     "text": "Reconciler: PR #320 merged: complete",
+     "at": "2026-11-04T19:57:50.892Z"
+    },
+    {
+     "text": "Reconciler: PR #320 merged: complete",
+     "at": "2026-11-04T20:01:11.298Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -5627,7 +5641,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "15 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -5651,8 +5665,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T20:11:31.385Z",
      "note": "",
      "uid": "st-mw2ebw5l08r9ph"
     },
@@ -5663,7 +5677,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "30 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -5687,8 +5701,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T20:11:34.220Z",
      "note": "",
      "uid": "st-mw2ebw5l0a34zp"
     },
@@ -5705,8 +5719,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T20:11:36.247Z",
      "note": "",
      "uid": "st-mw2ebw5l0bpllr"
     },
@@ -5717,7 +5731,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "15 min",
      "files": [],
      "checks": [],
      "session": "same",
