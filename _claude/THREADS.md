@@ -684,7 +684,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:15 UTC · `urgent-land-gizmo-chat` added (4 steps) (current) · foreign-write
 - 2026-11-04 14:15 UTC · `console-wake-finish` added (5 steps) (current) · foreign-write
 - 2026-11-04 14:16 UTC · `console-wake-finish` added (5 steps) (current) · foreign-write
 - 2026-11-04 14:16 UTC · `profile-lists-home-card` added (4 steps) (current) · orchestrator
@@ -1084,6 +1083,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 18:09 UTC · `model-thinking-audit` s1 done (current) · orchestrator
 - 2026-11-04 18:09 UTC · `model-thinking-audit` s2 done (current) · orchestrator
 - 2026-11-04 18:09 UTC · `model-thinking-audit` s3 done (current) · orchestrator
+- 2026-11-04 18:20 UTC · `model-thinking-audit` s4 done (current) · foreign-write
 
 ## Token passes (log)
 
