@@ -39,12 +39,6 @@
    "subAgents": false,
    "approveModelSwitch": true,
    "maxStepMinutes": 30
-  },
-  "current": {
-   "sameSession": true,
-   "subAgents": false,
-   "approveModelSwitch": true,
-   "maxStepMinutes": 30
   }
  },
  "meta": {
