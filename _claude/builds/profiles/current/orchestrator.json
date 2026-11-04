@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T20:35:21.629Z",
+ "updatedAt": "2026-11-04T20:35:36.421Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10871,7 +10871,7 @@
    "branch": "claude/settings-placement-everywhere",
    "pr": "#329",
    "createdAt": "2026-11-04T16:03:38.989Z",
-   "updatedAt": "2026-11-04T17:18:27.645Z",
+   "updatedAt": "2026-11-04T20:35:35.401Z",
    "builtAt": "2026-11-04T17:18:27.648Z",
    "notes": [
     {
@@ -10885,6 +10885,10 @@
     {
      "text": "Built by Greenlight Gina (headless worktree, Fable). PR #329 (supersedes #289, closed). UI Review shots submitted non-blocking. Report _claude/builds/reports/settings-placement-everywhere.md.",
      "at": "2026-11-04T17:17:18.238Z"
+    },
+    {
+     "text": "r2 (Gina, Fable): CI fixed on #329 (control@1 registry is append-only: console.placement moved last, CONTROL.md names it, fixtures + re-bakes), 5 synced data files taken from main so the queue sees no conflict, PR added to the merge queue. Waits on Brett's UI Review approval (r-20261104-da11afcc) before the queue takes it.",
+     "at": "2026-11-04T20:35:35.401Z"
     }
    ],
    "approvals": [
