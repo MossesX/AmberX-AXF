@@ -669,7 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:32 UTC · `crew-live` s3 done (urgent) · orchestrator
 - 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s4 done (urgent) · orchestrator
 - 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s5 done (urgent) · orchestrator
 - 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s6 done (urgent) · orchestrator
@@ -1069,6 +1068,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:05 UTC · `fable-review-nov3` added (7 steps) (current) · foreign-write
 - 2026-11-04 15:05 UTC · `app-voice-commands` added (6 steps) (current) · foreign-write
 - 2026-11-04 15:05 UTC · `apps-control-surface` added (5 steps) (current) · foreign-write
+- 2026-11-04 15:06 UTC · `urgent-land-gizmo-chat` note (current) · foreign-write
 
 ## Token passes (log)
 

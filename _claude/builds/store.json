@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 764,
- "updatedAt": "2026-11-04T15:05:57.482Z",
+ "rev": 765,
+ "updatedAt": "2026-11-04T15:06:13.999Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -73663,9 +73663,14 @@
    "branch": "claude/gizmo-companion",
    "pr": "#296",
    "createdAt": "2026-11-04T14:14:12.849Z",
-   "updatedAt": "2026-11-04T14:27:20.536Z",
+   "updatedAt": "2026-11-04T15:05:56.718Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "CI green on efe58a9d7 (all 4 jobs). Waiting for push-banner auto-merge (GitHub REST token rate-limited until 15:05 UTC; GitHub App not set up).",
+     "at": "2026-11-04T15:05:56.718Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -73778,7 +73783,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
