@@ -75,6 +75,15 @@ can be voice controlled." · "And the planner will also have links to documentat
 - The Build manager's rows do not yet show the fixes / docs chips (the orchestrator card does).
 - Molly voice phrases come from the plugin commands registry; no hand-written phrases were added.
 
+## Screenshots
+
+`_claude/builds/reports/build-todo-sync/shots/` — desktop + phone: the Build to-do lists page, the Name this build
+dialog, Settings → Plugins → Build to-do sync (mock data; built console served by vite preview). Submitted to UI Review
+(group `build-todo-sync - <date>`), non-blocking per the brief.
+
 ## Checks
 
-See the PR description for the exact runs.
+PR #333 lists the exact runs: contract check 22, builds-store 37, build-origin 21, builds-live 47, build-steps 44,
+control 368, plugin-commands 57, plugin `test.py` 66, `test.mts` 7, token-control 20, lifecycle / theme / controls /
+plugin pages / toolbars / help coverage / menu-reach clean, console `tsc` clean. The orchestrator plugin's repo-store
+split check fails on `land-merge-queue-first` (another build's steps without estimates; red on main before this PR).

@@ -124,7 +124,7 @@ function SyncPage() {
           <li key={n.id} className="axp-build-todo-sync__row">
             <div className="axp-build-todo-sync__grow">
               <div className="axp-build-todo-sync__ellipsis"><span className="axp-build-todo-sync__name">{n.title}</span> <span className="fx-mono fx-small fx-muted">{n.id}</span></div>
-              <NameForm row={n} compact />
+              <NameForm key={n.id} row={n} compact />
             </div>
           </li>
         ))}</ul> : <p className="fx-muted">Every open build has a confirmed name and category.</p>}
@@ -163,7 +163,7 @@ function NameDialog({ id }: { id: string }) {
     <div className="axp-build-todo-sync__dialog">
       <p>This name is how you reference the build in the to-do manager, the Build manager and chat. Edit the suggestion or keep it.</p>
       <p className="axp-build-todo-sync__ellipsis"><span className="axp-build-todo-sync__name">{first.title}</span> <span className="fx-mono fx-small fx-muted">{first.id}</span></p>
-      <NameForm row={first} onDone={() => { markPrompted(first.id); if (rows.length <= 1) rt.closeDialog(); }} />
+      <NameForm key={first.id} row={first} onDone={() => { markPrompted(first.id); if (rows.length <= 1) rt.closeDialog(); }} />
       <div className="axp-build-todo-sync__actions">
         <Button icon="clock" onClick={() => { markPrompted(first.id); rt.closeDialog(); }}>Later</Button>
         {rows.length > 1 && <span className="fx-muted fx-small">{rows.length - 1} more build(s) still to name.</span>}
