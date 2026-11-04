@@ -583,26 +583,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 20:53 UTC · `banner-ref-links` added (10 steps) (current) · foreign-write
-- 2026-11-03 20:53 UTC · `build-prompt-origin` s3 done (current) · orchestrator
-- 2026-11-03 20:53 UTC · `build-prompt-origin` s5 done, → complete (current) · orchestrator
-- 2026-11-03 20:53 UTC · `build-prompt-origin` → built, PR #282 (current) · builds-live
-- 2026-11-03 20:55 UTC · `build-prompt-origin` s3 done, s5 done, → complete (current) · foreign-write
-- 2026-11-03 20:55 UTC · `plugin-settings-placement` s3 done, → running (current) · orchestrator
-- 2026-11-03 20:55 UTC · `plugin-settings-placement` s4 done (current) · orchestrator
-- 2026-11-03 20:55 UTC · `plugin-settings-placement` s5 done (current) · orchestrator
-- 2026-11-03 20:56 UTC · `plugin-settings-placement` s3 done, s4 done, s5 done (current) · foreign-write
-- 2026-11-03 20:47 UTC · `plugin-settings-placement` s1 done, s2 done (current) · foreign-write
-- 2026-11-03 20:47 UTC · `banner-ref-links` added (5 steps) (current) · orchestrator
-- 2026-11-03 20:47 UTC · `banner-ref-links` → running (current) · orchestrator
-- 2026-11-03 20:56 UTC · `build-prompt-origin` s3 done, s5 done, → complete (current) · foreign-write
-- 2026-11-03 20:56 UTC · `banner-ref-links` s1 done (current) · orchestrator
-- 2026-11-03 20:57 UTC · `banner-ref-links` → running, branch claude/banner-ref-links (current) · foreign-write
-- 2026-11-03 21:00 UTC · `home-cards-live` branch claude/home-cards-live, note (urgent) · reconciler
-- 2026-11-03 21:02 UTC · `build-prompt-origin` s3 done, s5 done, → complete (current) · foreign-write
-- 2026-11-03 21:02 UTC · `plugin-settings-placement` s3 done, s4 done, s5 done (current) · foreign-write
-- 2026-11-03 21:02 UTC · `banner-ref-links` s1 done (current) · foreign-write
-- 2026-11-03 21:05 UTC · `window-resize-fix` s3 done, → complete, note (current) · foreign-write
 - 2026-11-03 21:05 UTC · `terminal-sessions-nav` s1 done, s2 done, s3 done (current) · foreign-write
 - 2026-11-03 21:05 UTC · `profile-manager` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
 - 2026-11-03 21:05 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
@@ -983,3 +963,23 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 02:10 UTC · `main-area-tabs` added (25 steps) (current) · foreign-write
 - 2026-11-04 02:10 UTC · `app-style-override` added (6 steps) (current) · foreign-write
 - 2026-11-04 02:11 UTC · `browser-automation` note (current) · orchestrator
+- 2026-11-04 02:14 UTC · `crew-retrain` → complete, merged, note (breakroom) · reconciler
+- 2026-11-04 02:14 UTC · `profile-switcher-widget` PR #300, note (current) · reconciler
+- 2026-11-04 01:19 UTC · `lenny-land-all` s1 done, s5 done, note (current) · foreign-write
+- 2026-11-04 01:19 UTC · `browser-automation` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 01:20 UTC · `gizmo-companion` s19 done (current) · foreign-write
+- 2026-11-04 01:20 UTC · `lenny-land-all` s1 done, s5 done, note (current) · foreign-write
+- 2026-11-04 01:20 UTC · `browser-automation` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 01:20 UTC · `profile-switcher-widget` s1 done (current) · foreign-write
+- 2026-11-04 01:26 UTC · `plugin-lazy-load` note (current) · foreign-write
+- 2026-11-04 01:49 UTC · `browser-automation` s3 done, note (current) · foreign-write
+- 2026-11-04 01:49 UTC · `main-area-tabs` added (10 steps) (current) · foreign-write
+- 2026-11-04 02:00 UTC · `profile-switcher-widget` s2 done (current) · foreign-write
+- 2026-11-04 02:00 UTC · `profile-switcher-widget` s2 done, s3 done, s4 done (current) · foreign-write
+- 2026-11-04 02:04 UTC · `app-style-override` added (6 steps) (current) · foreign-write
+- 2026-11-04 02:05 UTC · `app-style-override` added (6 steps) (current) · foreign-write
+- 2026-11-04 02:26 UTC · `ui-review-shots` → complete, merged, note (urgent) · reconciler
+- 2026-11-04 02:35 UTC · `crew-retrain` note (breakroom) · foreign-write
+- 2026-11-04 02:35 UTC · `browser-automation` note (current) · foreign-write
+- 2026-11-04 02:35 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 02:35 UTC · `profile-switcher-widget` PR #300 (current) · builds-live
