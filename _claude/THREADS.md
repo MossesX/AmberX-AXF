@@ -584,7 +584,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 21:11 UTC · `git-status-board` added (6 steps) (current) · foreign-write
 - 2026-11-03 21:12 UTC · `urgent-main-ci-green` added (5 steps) (current) · orchestrator
 - 2026-11-03 21:12 UTC · `urgent-main-ci-green` added (5 steps) (current) · foreign-write
 - 2026-11-03 21:12 UTC · `urgent-main-ci-green` s1 done, → running (current) · orchestrator
@@ -984,3 +983,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 03:12 UTC · `app-style-override` PR #302, note (current) · reconciler
 - 2026-11-04 03:19 UTC · `main-area-tabs` note (current) · foreign-write
 - 2026-11-04 03:19 UTC · `app-style-override` note (current) · foreign-write
+- 2026-11-04 03:33 UTC · `crew-live` → complete, merged, note (urgent) · reconciler
