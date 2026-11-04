@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 939,
- "updatedAt": "2026-11-04T20:25:05.442Z",
+ "rev": 940,
+ "updatedAt": "2026-11-04T20:25:22.615Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -79977,7 +79977,7 @@
    "branch": "claude/app-voice-commands",
    "pr": "#323",
    "createdAt": "2026-11-04T14:43:48.090Z",
-   "updatedAt": "2026-11-04T17:16:50.593Z",
+   "updatedAt": "2026-11-04T20:25:21.600Z",
    "builtAt": "2026-11-04T17:16:47.198Z",
    "notes": [
     {
@@ -80007,6 +80007,10 @@
     {
      "text": "All steps done. PR #323 CI green (head 745369512); auto-merge waits for Brett's UI Review approval (r-20261104-1b7bca5f Molly dialog, r-20261104-a4e5d893 console page). Report _claude/builds/reports/app-voice-commands.md.",
      "at": "2026-11-04T17:16:50.593Z"
+    },
+    {
+     "text": "Resumed after the merge queue landed (Fable, worktree app-voice-commands-r2): WIP commit dropped, main 554c75a78 merged (no code conflicts, builds files pinned to main), console voice asset regenerated for the push banner merge queue commands (904). Sweep, console tsc, voice-command spec (60) and plugin test (24) green locally. Head 3dd2d03db pushed to PR #323; CI running; #323 added to the merge queue, which holds it until Brett approves UI Review r-20261104-1b7bca5f and r-20261104-a4e5d893.",
+     "at": "2026-11-04T20:25:21.600Z"
     }
    ],
    "approvals": [
@@ -80174,7 +80178,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
