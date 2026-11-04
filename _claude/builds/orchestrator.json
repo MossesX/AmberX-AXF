@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T18:45:58.156Z",
+ "updatedAt": "2026-11-04T19:10:20.906Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -12,7 +12,7 @@
   {
    "id": "design-package",
    "title": "AmberX Design Package asset type (style + colour + layout + behaviour) + Behaviour theme asset type; replaces Appearance package",
-   "category": "Framework",
+   "category": "Design & branding",
    "detail": "Brett, Oct 27 2026: new asset type 'AmberX Design Package' wrapping a style theme, colour theme, layout theme and behaviour theme; new asset type 'behavior-theme' holding everything: motion (animations, speed, easing, reduced motion), interaction (hover/click/focus feedback, long-press time, double-tap), windows & dialogs (open/close, snap, stacking, drawers, pop-ups) and feedback (toasts, sounds, vibration, confirm-before-delete). Settings -> Appearance gets a Design Package picker to apply one; everything else in Appearance goes in one collapsible container below it. The Design Package REPLACES the appearance-package type (Brett's pick): migrate the existing packages (framework + console amberx, each app's fresh) and the axf.appearance.package setting. Web first; Android twin recorded in PORTING.md (Android on hold). Orchestrator order: all Fable steps first, then Opus (one switch).",
    "status": "archived",
    "hidden": false,
@@ -249,7 +249,7 @@
   {
    "id": "arch-foundation",
    "title": "Hardened architecture foundation: layout/theme/plugin contracts, Pydantic migrator + namespacing, plugin boundary + lifecycle broker, docs",
-   "category": "Plugin",
+   "category": "Architecture",
    "detail": "From Brett's attachment (Oct 27 2026): 5 deliverables — TS data contracts (layout & component tree, theme engine, plugin manifest), Pydantic v2 validator/migrator + ingestion namespacing, React error boundary + pub/sub lifecycle broker, project spec, developer docs (new plugin, harvesting, live sync). Built ON the existing contracts (asset@1, plugin@1, appearance@1), not beside them. Web + Python; Android twins deferred.",
    "status": "archived",
    "hidden": false,
@@ -518,7 +518,7 @@
   {
    "id": "pending-grid-view",
    "title": "Pending builds: grid view with sortable columns, expandable rows, toolbar and double-click multi-select",
-   "category": "Framework",
+   "category": "Console UI",
    "detail": "From Brett's attachment (Oct 27 2026). Grid next to Reload; columns 1-line summary, date added, total time estimate, cost estimate; rows expand to today's card; toolbar archive/delete/hide/unhide/open in (Build manager, Build queue, Plan); select hook with double-click multi-select. All Opus (console UI).",
    "status": "archived",
    "hidden": false,
@@ -671,7 +671,7 @@
   {
    "id": "enterprise-branding",
    "title": "Enterprise design + hot-swappable branding: branding engine, design packages, behaviour themes, 700+ generated brand assets, AmberX app + GizmoX console refactor",
-   "category": "App",
+   "category": "Design & branding",
    "detail": "Brett, Oct 27 2026: only refactor the console, the AmberX app (amberx.amberxai.com), the plugins currently installed and switched on in Plugin switches, and every banner plugin to enterprise quality. New asset types: branding package (extendable template of UI brand assets), icon pack, logo mark, animated logo, behaviour theme, AmberX design package. Branding engine, fully hot-swappable. Assets: 10 light + 10 dark themes, 10 layout, 10 style themes, 10 context menus, 25 dynamically driven toolbars with docs, 25 style packages, 25 nav menus + behaviour, 25 design packages, 250 logos, 250 animated logos, 100 icon packs, branding packages; console plugin to browse them. Branded banners, toolbars, windows, containers, tab groups, dialogs, floating windows. Includes and replaces orchestrator build design-package. Web only; Android twins deferred (hold).",
    "status": "complete",
    "hidden": false,
@@ -1620,7 +1620,7 @@
   {
    "id": "interface-roller",
    "title": "Three complete interfaces in GizmoX tabs + an interface roller for every app",
-   "category": "App",
+   "category": "Design & branding",
    "detail": "Brett, Oct 27 2026 13:10: \"Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc.\" Needs enterprise-branding phase 1 (design package, behaviour, branding, logo and icon-pack types + generators) first. Web only; Android deferred.",
    "status": "archived",
    "hidden": false,
@@ -1954,7 +1954,7 @@
   {
    "id": "style-package-fable",
    "title": "Style packages — Fable rebuild of style-package@1",
-   "category": "Module",
+   "category": "Design & branding",
    "detail": "Profile: main framework. Fable rebuild of the Opus build of style-package@1 (enterprise-branding s19–s20, branch opus/enterprise-branding). Brett, Oct 27 2026: new type, Opus now + Fable later. Start by reviewing/replacing the Opus version: core/engines/stylepackage.ts, the swap/swapAll member expansion and style.package action in core/runtime.ts, both validators, asset-types.json style-package.members, the 25 starter sets from framework/cli/asset-library.mjs, spec/check-style-packages.mts. Web only; Android twin stays deferred (PORTING.md).",
    "status": "archived",
    "hidden": false,
@@ -12557,7 +12557,7 @@
   {
    "id": "apply-all-levels-fable",
    "title": "Look tokens + settings levels (Fable rebuild)",
-   "category": "Framework",
+   "category": "Design & branding",
    "detail": "Fable recommended, Opus chosen. Replace the Opus build (branch claude/apply-all-levels): look@1 as a cross-port contract with a fixture both ports replay, the Kotlin twin when Android work resumes, and a review of every token mapping (compact at 0, inherited theme layering, banner fallbacks).",
    "status": "archived",
    "hidden": false,
@@ -13287,7 +13287,7 @@
   {
    "id": "x.assets",
    "title": "Asset system (asset@1, 13 core types, open registry)",
-   "category": "Framework",
+   "category": "Kernel & engines",
    "detail": "Every visual is a JSON asset (color theme, style theme, layout, menus, toolbar, nav, context menu, dialog, popup, button, slider, container, UAC policy). Ports read the same files; new types register at runtime.",
    "status": "complete",
    "hidden": false,
@@ -13306,7 +13306,7 @@
   {
    "id": "x.engines",
    "title": "Engines: theme, layout, component styles, UAC, context menu, actions",
-   "category": "Framework",
+   "category": "Kernel & engines",
    "detail": "Compile assets into tokens and behaviour: theme tokens (core + extended), layouts per window class, component styles, role-based access, context menus per target, action bus with interceptors.",
    "status": "complete",
    "hidden": false,
@@ -13325,7 +13325,7 @@
   {
    "id": "x.kernel",
    "title": "Kernel (pure Kotlin + TypeScript core)",
-   "category": "Framework",
+   "category": "Kernel & engines",
    "detail": "The framework core every app gets: asset registry, engines, runtime state, actions, module system. Pure Kotlin on Android (no Android imports, KMP-ready); framework/core on the web.",
    "status": "complete",
    "hidden": false,
@@ -13344,7 +13344,7 @@
   {
    "id": "x.conformance",
    "title": "Porting spec + conformance fixtures",
-   "category": "Framework",
+   "category": "Kernel & engines",
    "detail": "framework/spec: PORTING.md plus generated fixtures every port must reproduce exactly (theme vars, layouts, component styles, UAC). The Android kernel passes them.",
    "status": "complete",
    "hidden": false,
@@ -13363,7 +13363,7 @@
   {
    "id": "x.windows",
    "title": "Windowing engine: tab groups, floating windows, split, minimize",
-   "category": "Framework",
+   "category": "Kernel & engines",
    "detail": "Window schema (types, toolbar rules), tab groups that undock to floating windows, drag tabs between groups and windows, split vertical / horizontal / four-way / custom grid with even distribution (5 → 3+2), minimize to corner title bars (stacked or lined) or a floating toolbar at the cursor, window settings dialog, tree ↔ grid mode.",
    "status": "complete",
    "hidden": false,
@@ -13382,7 +13382,7 @@
   {
    "id": "x.terminal",
    "title": "Output terminal",
-   "category": "Framework",
+   "category": "Kernel & engines",
    "detail": "One append-only log every install, import, hot swap and kit fallback writes to; auto-scrolling pane as a floating window, dock tab or dialog; follows the console API live over SSE.",
    "status": "complete",
    "hidden": false,
@@ -13401,7 +13401,7 @@
   {
    "id": "x.android.modules",
    "title": "Android framework modules",
-   "category": "Module",
+   "category": "Android port",
    "detail": "axf-platform-android, axf-assets, axf-ui (Compose components, kits, element explorer, windows), axf-nav, axf-data, axf-network, axf-devtools, axf-testing. Published as ai.amberx.axf:<module>:0.2.0.",
    "status": "complete",
    "hidden": false,
@@ -13420,7 +13420,7 @@
   {
    "id": "x.android.showcase",
    "title": "Android showcase app (apps/console)",
-   "category": "App",
+   "category": "Android port",
    "detail": "The first Android app: the console views on the Android port (tracker, catalog, libraries, boilerplates, element explorer). Builds a ~20 MB debug APK in CI.",
    "status": "complete",
    "hidden": false,
@@ -13439,7 +13439,7 @@
   {
    "id": "x.web.core",
    "title": "Web port: core + React components",
-   "category": "Framework",
+   "category": "Web port",
    "detail": "framework/core + framework/react + framework/ui/axf.css: the original port, plain React 18 + TypeScript, no router.",
    "status": "complete",
    "hidden": false,
@@ -13458,7 +13458,7 @@
   {
    "id": "x.web.templates",
    "title": "Web templates: react-ts (Vite) and next-ts (Next.js 15)",
-   "category": "App",
+   "category": "Web port",
    "detail": "axf init creates either a Vite SPA or a Next.js App Router app (static export by default) with the framework baked in.",
    "status": "complete",
    "hidden": false,
@@ -13477,7 +13477,7 @@
   {
    "id": "x.engine.cli",
    "title": "Build engine CLI",
-   "category": "Framework",
+   "category": "Build engine",
    "detail": "axf init / validate / list / new-asset / schemas / templates / new-module / new-demo / modules / boilerplates / dev / serve.",
    "status": "complete",
    "hidden": false,
@@ -13496,7 +13496,7 @@
   {
    "id": "x.engine.install",
    "title": "Library installer + interactive wizard",
-   "category": "Module",
+   "category": "Build engine",
    "detail": "Libraries ship a library.json (params, manifest key, install steps); axf install asks for the parameters and writes manifest, gradle, App.kt and typed <Name>Setup.kt. Also runs at pre-build via --libraries / boilerplate libraries.",
    "status": "complete",
    "hidden": false,
@@ -13515,7 +13515,7 @@
   {
    "id": "x.libs.browser",
    "title": "Library browser (installable)",
-   "category": "Module",
+   "category": "Android port",
    "detail": "Floating tab-group browser as a library: two panes, multi-select, Compare → floating windows; binds to tab groups named in the app manifest; installed by a wizard.",
    "status": "complete",
    "hidden": false,
@@ -13534,7 +13534,7 @@
   {
    "id": "x.librarytemplates",
    "title": "Library templates (build, port, compile new libraries)",
-   "category": "Module",
+   "category": "Build engine",
    "detail": "Boilerplates for libraries: feature screens, service provider, data feature, device capability, integration, UI kit, background worker, blank — generating Android, web and Python ports, compiling each, and porting a library to another port from its library.json.",
    "status": "complete",
    "hidden": false,
@@ -13553,7 +13553,7 @@
   {
    "id": "x.console.web",
    "title": "Web Dev Console (React/TS)",
-   "category": "Module",
+   "category": "Dev Console",
    "detail": "apps/console-web: Home, Tracker, Catalog, Libraries (framework + UI), Boilerplates, Plan, Demos, Modules, Components, Assets, output terminal, floating windows.",
    "status": "complete",
    "hidden": false,
@@ -13572,7 +13572,7 @@
   {
    "id": "x.console.api",
    "title": "Console API (Python FastAPI)",
-   "category": "Framework",
+   "category": "Dev Console",
    "detail": "Runs the build engine for the console (init, install, import-ui, status edits, boilerplates, plan), streams the terminal over SSE, manages dev servers, serves the console and panel.",
    "status": "complete",
    "hidden": false,
@@ -13591,7 +13591,7 @@
   {
    "id": "x.console.plan",
    "title": "Planning section",
-   "category": "Framework",
+   "category": "Dev Console",
    "detail": "This view: every framework feature with capabilities, ports, dependencies, acceptance, screenshots, previews, warnings, recommendations and history; list and board views; auto warnings for blocked dependencies and port gaps.",
    "status": "complete",
    "hidden": false,
@@ -13610,7 +13610,7 @@
   {
    "id": "x.console.panel",
    "title": "Server control panel",
-   "category": "Feature",
+   "category": "Dev Console",
    "detail": "Dev servers start/stop with logs, CI downloads (APK, Maven, console dist), command catalog, live output and a terminal into the console container.",
    "status": "complete",
    "hidden": false,
@@ -13629,7 +13629,7 @@
   {
    "id": "x.ci",
    "title": "CI: build, test, publish",
-   "category": "Module",
+   "category": "Deploy & CI",
    "detail": "GitHub Actions: build-engine sweep, kernel tests, every Android module, showcase APK, Maven repo artifact + GitHub Packages, web console + Python API smoke, next-ts build; compile errors posted to an issue.",
    "status": "complete",
    "hidden": false,
@@ -13648,7 +13648,7 @@
   {
    "id": "x.deploy.site",
    "title": "Demo site deployment",
-   "category": "App",
+   "category": "Deploy & CI",
    "detail": "CI publishes apps/demo to the site branch; the VPS pulls it every 2 minutes behind Traefik.",
    "status": "complete",
    "hidden": false,
@@ -13667,7 +13667,7 @@
   {
    "id": "x.web.demo",
    "title": "Web demo site",
-   "category": "App",
+   "category": "Web port",
    "detail": "apps/demo, published by CI to the site branch and served from the VPS.",
    "status": "complete",
    "hidden": false,
@@ -13686,7 +13686,7 @@
   {
    "id": "x.console.build",
    "title": "Build manager (build queue)",
-   "category": "Feature",
+   "category": "Dev Console",
    "detail": "The plan's epics as an ordered build queue: drag to reorder, reprocess to restore dependency order, rework flags on built steps whose dependencies changed, a suggested model per step and per feature (Fable 5.1 / Opus 5.5 / Sonnet 5.5), and two-way status sync with the feature tracker on every console start.",
    "status": "complete",
    "hidden": false,
@@ -13705,7 +13705,7 @@
   {
    "id": "x.console.mcp",
    "title": "MCP server (Model Context Protocol)",
-   "category": "App",
+   "category": "Dev Console",
    "detail": "The console API as MCP tools for Claude: plan search/edit, build queue (next, reorder, reprocess, complete), catalog status, libraries, templates, app init/validate, terminal. Remote at console.amberxai.com/mcp (streamable HTTP, Bearer AXF_TOKEN) or local over stdio via .mcp.json.",
    "status": "complete",
    "hidden": false,
@@ -13724,7 +13724,7 @@
   {
    "id": "x.modules",
    "title": "Module system: modules, extension points, services, placeholders",
-   "category": "Module",
+   "category": "Kernel & engines",
    "detail": "Modules register screens, actions, settings, dialogs, services and UI kits through extension points, start in dependency order and can define their own extension points. Placeholders answer NotImplemented until a real module arrives.",
    "status": "running",
    "hidden": false,
@@ -13888,7 +13888,7 @@
   {
    "id": "x.deploy.console",
    "title": "Console deployment (install-console.sh)",
-   "category": "Feature",
+   "category": "Deploy & CI",
    "detail": "One command on the VPS builds the console + API + panel container behind Coolify Traefik with HTTPS at console.amberxai.com, prints AXF_TOKEN and auto-updates every 5 minutes.",
    "status": "running",
    "hidden": false,
@@ -13907,7 +13907,7 @@
   {
    "id": "x.state",
    "title": "State, data cache, events, flags, config, migrations",
-   "category": "Framework",
+   "category": "Kernel & engines",
    "detail": "AxfStore (reducer/middleware/undo), QueryClient (stale-while-revalidate), EventBus, layered FeatureFlags and Config, migrations ledger + semver.",
    "status": "running",
    "hidden": false,
@@ -14071,7 +14071,7 @@
   {
    "id": "x.uikits",
    "title": "UI-kit switching + fallback",
-   "category": "Framework",
+   "category": "Kernel & engines",
    "detail": "Every component is an abstract kind; the active ui-kit asset picks which library renders it. Kinds a kit lacks fall back to the default AmberX kit and are noted on the output terminal.",
    "status": "running",
    "hidden": false,
@@ -14217,7 +14217,7 @@
   {
    "id": "x.libs.core",
    "title": "Libraries: settings, logging, admin, accounts, profile, billing",
-   "category": "Plugin",
+   "category": "Android port",
    "detail": "The six libraries the console and apps build on. Settings and logging are complete; accounts and billing run on mock providers.",
    "status": "running",
    "hidden": false,
@@ -14453,7 +14453,7 @@
   {
    "id": "x.engine.uiport",
    "title": "Import third-party UI libraries → AmberX kits",
-   "category": "Framework",
+   "category": "Build engine",
    "detail": "axf import-ui clones (git/local) or records (maven/npm) a library, rewrites literals and Material/MUI roles to AXF tokens, saves kit-<id> + its ui-kit asset and applies it to the open project.",
    "status": "running",
    "hidden": false,
@@ -14563,7 +14563,7 @@
   {
    "id": "x.engine.dev",
    "title": "Live reload (axf dev) + device hot reload",
-   "category": "Framework",
+   "category": "Build engine",
    "detail": "axf dev watches assets and long-polls changes to devices; the Android HotReloader re-registers changed assets live.",
    "status": "running",
    "hidden": false,
@@ -14655,7 +14655,7 @@
   {
    "id": "x.session",
    "title": "Session, principal, audit log",
-   "category": "Framework",
+   "category": "Kernel & engines",
    "detail": "Session/Principal/SessionProvider contracts and an AuditLog service; accounts library uses a mock auth provider.",
    "status": "running",
    "hidden": false,
@@ -14801,7 +14801,7 @@
   {
    "id": "x.python.port",
    "title": "Python / PyQt6 port",
-   "category": "Module",
+   "category": "Python port",
    "detail": "Port the kernel engines to Python, pass the conformance fixtures, add a PyQt6 UI layer, a Qt Widgets kit and a pyqt6 app template.",
    "status": "pending",
    "hidden": false,
@@ -15127,7 +15127,7 @@
   {
    "id": "x.plugins",
    "title": "Plugin runtime (deliver features after install)",
-   "category": "Plugin",
+   "category": "Kernel & engines",
    "detail": "plugin@1 manifest, scopes, action macros and a PluginLoader contract exist; loading plugins at runtime is a placeholder.",
    "status": "pending",
    "hidden": false,
@@ -15327,7 +15327,7 @@
   {
    "id": "x.work",
    "title": "Background work scheduler",
-   "category": "Framework",
+   "category": "Kernel & engines",
    "detail": "WorkSpec / Worker / WorkRegistry contracts and a placeholder scheduler. Real implementation is WorkManager on Android.",
    "status": "pending",
    "hidden": false,
@@ -15455,7 +15455,7 @@
   {
    "id": "x.showcase.packs",
    "title": "10 layouts, 10 light/dark theme pairs, 10 style packs",
-   "category": "App",
+   "category": "Showcase",
    "detail": "The showcase asset packs the first app was originally scoped for.",
    "status": "pending",
    "hidden": false,
@@ -15583,7 +15583,7 @@
   {
    "id": "x.lib.media",
    "title": "Library: Media (video, audio, streaming, camera)",
-   "category": "Module",
+   "category": "Showcase",
    "detail": "Library lib-media with a demo app; covers dv.media, dv.stream, c.video, c.vpsstream.",
    "status": "pending",
    "hidden": false,
@@ -15711,7 +15711,7 @@
   {
    "id": "x.lib.location",
    "title": "Library: Location (GPS, maps, trails)",
-   "category": "Module",
+   "category": "Showcase",
    "detail": "Library lib-location with a demo app; covers dv.loc, dv.maps, c.gps.",
    "status": "pending",
    "hidden": false,
@@ -15839,7 +15839,7 @@
   {
    "id": "x.lib.editor",
    "title": "Library: Editors (rich text, markdown, code)",
-   "category": "Module",
+   "category": "Showcase",
    "detail": "Library lib-editor with a demo app; covers ui.editor, c.texteditor.",
    "status": "pending",
    "hidden": false,
@@ -15967,7 +15967,7 @@
   {
    "id": "x.lib.ai",
    "title": "Library: AI assistant (Claude, MCP)",
-   "category": "Module",
+   "category": "Showcase",
    "detail": "Library lib-ai with a demo app; covers w.ai, w.mcp, c.ai.",
    "status": "pending",
    "hidden": false,
@@ -16095,7 +16095,7 @@
   {
    "id": "x.lib.vps",
    "title": "Library: VPS & deploy",
-   "category": "Module",
+   "category": "Showcase",
    "detail": "Library lib-vps with a demo app; covers w.vps, w.coolify, c.deploy.",
    "status": "pending",
    "hidden": false,
@@ -16223,7 +16223,7 @@
   {
    "id": "x.lib.github",
    "title": "Library: GitHub",
-   "category": "Module",
+   "category": "Showcase",
    "detail": "Library lib-github with a demo app; covers w.github, cx.github.",
    "status": "pending",
    "hidden": false,
@@ -16351,7 +16351,7 @@
   {
    "id": "x.lib.notifications",
    "title": "Library: Notifications & push",
-   "category": "Module",
+   "category": "Showcase",
    "detail": "Library lib-notifications with a demo app; covers dv.notif, w.push.",
    "status": "running",
    "hidden": false,
@@ -16479,7 +16479,7 @@
   {
    "id": "x.lib.sensors",
    "title": "Library: Sensors & connectivity",
-   "category": "Module",
+   "category": "Showcase",
    "detail": "Library lib-sensors with a demo app; covers dv.sensors, dv.ble, dv.nfc.",
    "status": "pending",
    "hidden": false,
@@ -16607,7 +16607,7 @@
   {
    "id": "x.lib.files",
    "title": "Library: Files & sync",
-   "category": "Module",
+   "category": "Showcase",
    "detail": "Library lib-files with a demo app; covers d.files, d.sync.",
    "status": "running",
    "hidden": false,
@@ -16735,7 +16735,7 @@
   {
    "id": "x.lib.charts",
    "title": "Library: Charts & tables",
-   "category": "Module",
+   "category": "Showcase",
    "detail": "Library lib-charts with a demo app; covers ui.charts, ui.tables.",
    "status": "pending",
    "hidden": false,
@@ -16863,7 +16863,7 @@
   {
    "id": "x.console.repo",
    "title": "Console in its own private repo",
-   "category": "Module",
+   "category": "Dev Console",
    "detail": "Split apps/console-web into a private repo that depends on a tagged framework version.",
    "status": "pending",
    "hidden": false,
@@ -16973,7 +16973,7 @@
   {
    "id": "x.lib.hub",
    "title": "lib-hub: axHub connector for every AXF app (first slice: approvals feed, hub address, locked web view)",
-   "category": "Module",
+   "category": "Kernel & engines",
    "detail": "Framework library so any AXF app (web + Android) talks to axHub. First slice (Opus, Oct 20 2026 harvest) = only what the hub serves today: hub address rules, hub URLs, the approvals feed GET /auth/admin/approvals.json (axHub decision #85) read with the app's own hub session and mapped to ok / signed-out / not-admin / unreachable, seen ids, sign-out on the hub, an origin-locked web view and hub APK downloads (Android). The hub protocol contract (AXPP) stays parked for Fable (placeholder axf.hub.axpp).",
    "status": "running",
    "hidden": false,
@@ -17101,7 +17101,7 @@
   {
    "id": "x.projects",
    "title": "Project manifests, Standards and the /projects tree",
-   "category": "Framework",
+   "category": "Build engine",
    "detail": "Every project has a validated project.manifest.json (project-manifest@1); the build engine never loads or compiles a project without one. Rules live in the Dev Console under Standards. Claude files and shared data sync with the hub at /projects/<name>/{_claude,_data}.",
    "status": "complete",
    "hidden": false,

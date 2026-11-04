@@ -133,6 +133,18 @@
    "from": "detail",
    "addenda": []
   },
+  "amberx-live-audio": {
+   "said": "Amber: \"Live voice doesn't work yet, because AmberX only uploads audio in 30-minute chunks... Want me to queue the AmberX update so it streams audio live?\" Brett: \"Yeah.\"",
+   "at": "2026-11-04T00:00:00Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "amberx-notes": {
    "said": "voice-controlled notes in lists/sub-lists (Plugins root: one list per plugin, made automatically), sort/transcribe/rename/move, task manager + todo, AI parsing with Claude plan/API switch + any LLM through AmberX own server, integrated web component, voice command section from the codebase, tabs. Data shared on axHub with Voice notes/Voice Vault. Sub-agents allowed (Brett).",
    "at": "2026-10-27",
