@@ -44,3 +44,8 @@ hosts.ts,index.tsx,look.tsx,panels.tsx,api.ts}`, `src/assets/toolbar/console-sea
 - "Seen" is per browser page (in memory); a reload recounts sessions that got a quiet tab only if they no longer have
   one.
 - Hub-run output tabs (approved VPS commands, `showHubRuns`) are not sessions and keep their own behaviour.
+
+## Screenshot
+UI Review item `r-20261104-22549d23` (phone, non-blocking).
+
+![Headless tabs settings, phone](terminal-no-focus/shots/phone-headless-tabs.png)
