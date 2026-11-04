@@ -1024,6 +1024,18 @@
    "from": "detail",
    "addenda": []
   },
+  "jump-menu-asset": {
+   "said": "So make the jump menu an asset type. And um, so when you right click on it, you can go to its settings. It has its own settings. It's allow placing it. Allow different options like whether it shows icons or text or whatever. And um, you can select its location.",
+   "at": "2026-11-04T15:00:00.000Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "kill-patches-pilot": {
    "said": "Patches is dead. Delete it, all references. Build Pilot dead, same thing. Delete it. All references.",
    "at": "2026-11-03",
@@ -1096,6 +1108,18 @@
    "from": "detail",
    "addenda": []
   },
+  "live-sessions-plugin": {
+   "said": "Make a plugin with a widget that lists the active Claude accounts only. The ones that actually have a human involved, either this one or the helper. It needs to list any account that's actively being run, any session being run by a human, and then you can click a button and you can watch its output live, including voice. It will be able to hear you talking to me, and me talking to you.\n\nAsked whether the person on a watched session should know: \"You can have it: 'you're being watched'.\"\n\n## Addendum 1 (Brett, Nov 4 2026 (voice))\nActually, make it list all sessions, but note whether it's a human or a headless. Only allow voice monitoring of the human.\n\n## Addendum 2 (Brett, Nov 4 2026 (voice))\nIn the session list, it needs to list the sessions in a grid, and it needs to show the agent that's running that session. Every time you open a session, you are prompted with a list of agents to select from: who you are, or who do you want to run this session, and then you pick one of the agents. So when you see the sessions listed and you want to assign jobs to one, you open it as a helper and just see who's running it.\n\n## Addendum 3 (Brett, Nov 4 2026 (voice))\nAll human sessions need to be meticulously logged so that in the future they can be browsed. It will open it and you can watch in real time the context window and hear or listen to our conversation, as the whole entire session is played back.\n\n## Addendum 4 (Brett, Nov 4 2026 (voice))\nYou can configure where to store recordings in the plugin settings interface. You can choose whether you want to store it on the VPS, or in the repo, or in its own container. If you choose VPS, you can select the container from a dropdown list of containers. Or a repo: you can select from a dropdown list of repos. Or you can even store it locally if you want to and have them all synced.\n\n## Addendum 5 (Brett, Nov 4 2026 (voice))\nAfter the session is done, it needs to compress the audio to remove all the dead space where it's not you talking or me talking. Obviously the dead space needs to stay to maintain its real time, but it needs to cut that data out of the stream.",
+   "at": "2026-11-04T16:46:03.374Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Ping Paulie (headless)",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "md-studio": {
    "said": "build MD Studio. It was planned but NEVER built (no branch, no log). Assigned agent: **Reel Rhonda** (book on her agent-swarm card; set AXF_AGENT=reel-rhonda if supported, else record in report + store note).",
    "at": "2026-11-03",
@@ -1142,6 +1166,18 @@
    "brief": "# Model UPGRADES need Brett's approval; downgrades don't (Urgent, Opus)\n\nReplaces the stopped build model-switch-approval (folder /root/axf-builds/model-switch-approval, ignore any work there).\n\nBrett Nov 3 2026 (voice), angry: a headless build (agent-swarm-fable-rebuild, PR #247) approved its own Opus -> Fable phase switch in the orchestrator (`orchestrator.mjs act approve`) because its brief said \"do every step\". Brett: \"It cannot be switching the model without my approval. That's not even a veto. That's an approval.\" Then: \"You can downgrade, but you can't upgrade.\"\n\nNew project rule (add to _claude/rules/RULES.md and the decisions log, dated Nov 3 2026): a build may switch to a LOWER model on its own (downgrade, e.g. Fable -> Opus): allowed, no approval, just recorded. Switching to a HIGHER model (upgrade, e.g. Opus -> Fable) needs Brett's explicit APPROVAL (confirm policy), never a veto countdown and never self-approved by a session, agent, headless build or the orchestrator. Ranking: Fable is above Opus (Brett's call). Put the ranking in model-policy (one ordered list, config not code) so future models slot in. A session that reaches an upgrade stops there and asks.\n\nEnforce it:\n1. orchestrator approve/phase logic (orchestrator-core.mjs apply + CLI + console server): a downgrade phase passes by itself (record it); an upgrade phase refuses unless approved by Brett: his own signed-in console click or an axHub approval he approves. Detect non-human sources with the same signals used for 'who asked' on approvals (X-Axhub-Source, AXF headless env, agent env). Record who approved and when.\n2. vps.build_start / claude-headless.sh / agent job router: launching or relaunching a build on a higher model than its orchestrator step's model is an upgrade too: refuse or hold for approval the same way.\n3. Briefs (orchestrator `brief`, headless guidance, agent jobs): say plainly upgrades need Brett and the session stops and asks; downgrades are fine. Remove any wording that lets a session approve an upgrade.\n4. Request path: an axHub approval (confirm policy, not veto) titled with the build, the phase and from -> to model; approving it records the approval in the orchestrator.\n5. Audit: list every upgrade approved so far by a non-human source (the store's journal), report in the PR; mark agent-swarm-fable-rebuild's s7 Opus -> Fable as self-approved (not Brett's). Note: xlayout-opus and token-control-opus were Fable -> Opus (downgrades), fine under the new rule.\n6. Tests for refusal, downgrade pass-through and the approval path; THREADS row (profile urgent); PR (push banner merges it).\n\nRules: one session, no sub-agents, stay on Opus. Don't approve any phase yourself while doing this.",
    "verbatim": false,
    "from": "brief",
+   "addenda": []
+  },
+  "molly-multi-instance-tabs": {
+   "said": "In Molly's xLayout IDE mode: \"How do I make a new tab in Molly?\" ... (there's no + button) ... \"Need to be able to add a tab so I can have multiple instances.\"\nAlso: \"How do I reset the layout? Because I run it IDE style and I made a bunch of tabs.\" He couldn't find Reset layout (it exists as the workspace action `layout-reset` in src/axf/libs/workspace, but he can't see it).\n\nADDENDUM 1 (Brett, voice, Nov 4): \"Any screen or any UI whatsoever can be dragged.\"",
+   "at": "2026-11-04T16:00:00.000Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "molly-opus": {
@@ -1562,6 +1598,18 @@
    "from": "detail",
    "addenda": []
   },
+  "settings-placement-everywhere": {
+   "said": "\"Set the settings interface for Molly to open in a dialog.\" ... \"I should be able to select in every screen where its settings pops up.\" Addendum 1: \"Every settings interface should have a setting to declare where it pops up.\"",
+   "at": "2026-11-04T00:00:00.000Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "share-search": {
    "said": "make a plugin with a toolbar of programmable actions for filtering, sorting and searching grids. Toolbar name: Share Search. HELD: Brett said 'send to orchestrator and hold off on build' — don't start until he says.",
    "at": "2026-10-28",
@@ -1630,6 +1678,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "tab-group-assets": {
+   "said": "Looking at UI Review's row (Design packs, Whole apps, Screens and pages, Settings interfaces, Dialogs, Menus), which switches the list = a tab group: \"If it's a tab group, why can't I get to the tab group settings by right-clicking on it?\" ... \"Needs to be. Yeah, all tab groups are supposed to be assets. With a settings interface, that's also an asset.\"\n\nAddendum 1 (voice, Nov 4): \"Right now, I want to make sure that navigation menus, toolbars, banners, are all asset types, and they all have a settings interface, which is an asset, and we can get to their settings by right-clicking all of them.\"\n\nAddendum 2 (voice, Nov 4): \"Every asset type that has the settings interface, there's going to be a default settings interface for all, used by default. And then there will be another one that will make a customized one for every app. And by default, the custom one will be selected.\"\n\nAddendum 3 (voice, Nov 4, correction): \"No, actually, by default, it uses the default one.\"",
+   "at": "2026-11-04T12:00:00.000Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "terminal-no-focus": {
@@ -1818,6 +1878,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "urgent-console-perf": {
+   "said": "How come console is taking forever to load? I thought lazy loader was in. ... Can we dig into it? ... (after the diagnosis) Yes.",
+   "at": "2026-11-04T16:13:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "urgent-land-gizmo-chat": {
