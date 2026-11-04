@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 780,
- "updatedAt": "2026-11-04T15:25:28.199Z",
+ "rev": 781,
+ "updatedAt": "2026-11-04T15:29:39.112Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -73687,7 +73687,7 @@
    "title": "Urgent: land PR #296 (Gizmo basic chat)",
    "category": "",
    "detail": "Booked to agent Reel Rhonda (no Gizmo card in the roster). Update claude/gizmo-companion from main, resolve conflicts keeping both sides, verify step 1 (basic chat), CI green, merge, redeploy AmberX web.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "urgent-land-gizmo-chat",
@@ -73695,8 +73695,8 @@
    "pr": "#296",
    "mergedAt": "2026-11-04T15:24:48Z",
    "createdAt": "2026-11-04T14:14:12.849Z",
-   "updatedAt": "2026-11-04T15:25:05.014Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T15:28:12.822Z",
+   "builtAt": "2026-11-04T15:28:12.822Z",
    "notes": [
     {
      "text": "CI green on efe58a9d7 (all 4 jobs). Waiting for push-banner auto-merge (GitHub REST token rate-limited until 15:05 UTC; GitHub App not set up).",
@@ -73705,6 +73705,10 @@
     {
      "text": "Reconciler: PR #296 merged",
      "at": "2026-11-04T15:25:05.014Z"
+    },
+    {
+     "text": "Reconciler: PR #296 merged: complete",
+     "at": "2026-11-04T15:28:12.822Z"
     }
    ],
    "approvals": [],
@@ -73819,17 +73823,17 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
     "model": "Opus",
-    "status": "pending",
+    "status": "complete",
     "estimate": "",
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-04T14:14:12.849Z",
-    "builtAt": "",
+    "builtAt": "2026-11-04T15:28:12.822Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mw27fkdv01kiy7": "2026-11-04T14:14:12.850Z",

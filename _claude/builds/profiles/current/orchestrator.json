@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T15:25:28.199Z",
+ "updatedAt": "2026-11-04T15:29:39.112Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -7554,7 +7554,7 @@
    "title": "Urgent: land PR #296 (Gizmo basic chat)",
    "category": "",
    "detail": "Booked to agent Reel Rhonda (no Gizmo card in the roster). Update claude/gizmo-companion from main, resolve conflicts keeping both sides, verify step 1 (basic chat), CI green, merge, redeploy AmberX web.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "urgent-land-gizmo-chat",
@@ -7562,8 +7562,8 @@
    "pr": "#296",
    "mergedAt": "2026-11-04T15:24:48Z",
    "createdAt": "2026-11-04T14:14:12.849Z",
-   "updatedAt": "2026-11-04T15:25:05.014Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T15:28:12.822Z",
+   "builtAt": "2026-11-04T15:28:12.822Z",
    "notes": [
     {
      "text": "CI green on efe58a9d7 (all 4 jobs). Waiting for push-banner auto-merge (GitHub REST token rate-limited until 15:05 UTC; GitHub App not set up).",
@@ -7572,6 +7572,10 @@
     {
      "text": "Reconciler: PR #296 merged",
      "at": "2026-11-04T15:25:05.014Z"
+    },
+    {
+     "text": "Reconciler: PR #296 merged: complete",
+     "at": "2026-11-04T15:28:12.822Z"
     }
    ],
    "approvals": [],
