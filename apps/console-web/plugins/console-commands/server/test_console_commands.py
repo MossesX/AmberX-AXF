@@ -113,9 +113,25 @@ def fake_console(cid: str, user: str = "", answers: list[dict] | None = None, st
     return t
 
 
+def wait_for(cond, timeout: float = 15.0) -> bool:  # type: ignore[no-untyped-def]
+    """Poll instead of a fixed sleep: CI runners are slow and a fixed sleep made these checks racy."""
+    end = time.time() + timeout
+    while time.time() < end:
+        if cond():
+            return True
+        time.sleep(0.02)
+    return bool(cond())
+
+
+def stream_open(cid: str) -> bool:
+    with cc._lock:
+        c = cc._clients.get(cid)
+        return bool(c and c.get("queue") is not None and cc._ready(c))
+
+
 phone_got: list[dict] = []
 fake_console("phone-0001", answers=phone_got)
-time.sleep(0.3)
+wait_for(lambda: stream_open("phone-0001"))
 
 # ---- open a screen by words → the console used last gets it, and its ack is in the answer
 r = client.post("/api/console/open", json={"screen": "plan studio", "by": "claude"})
@@ -167,7 +183,7 @@ ok(j["ok"] and phone_got[-1]["spec"] == "assets.reset", "the same action with th
 # ---- another user: only their own console, only navigate
 sam_got: list[dict] = []
 fake_console("sam-00001", user="sam", answers=sam_got)
-time.sleep(0.3)
+wait_for(lambda: stream_open("sam-00001"))
 before = len(phone_got)
 j = client.post("/api/console/open", json={"screen": "home"}, headers={"x-user": "sam"}).json()
 ok(j["ok"] and [d["client"] for d in j["delivered"]] == ["sam-00001"], "a user's command reaches only their console")
@@ -210,7 +226,7 @@ eq(client.get("/api/console/queue").json()["items"], [], "nothing queued for it"
 res = {}
 t = threading.Thread(target=lambda: res.update(client.post("/api/console/action", json={"id": "terminal.open", "by": "Amber"}).json()))
 t.start()
-time.sleep(0.8)
+wait_for(lambda: len(WOKEN) >= 1)
 q = client.get("/api/console/queue").json()["items"]
 eq([x["state"] for x in q], ["queued"], "the command is queued, the call waits")
 eq(len(WOKEN), 1, "AmberX asked to open the console after a few seconds of nothing")
@@ -222,6 +238,7 @@ fake_console("woke-0001", answers=woke_got)
 t.join(15)
 ok(res.get("ok") and res["delivered"][0]["ok"], f"the waiting call answers with the console's ack ({res})")
 eq(res["delivery"]["how"], "woke via AmberX", "delivery says woke via AmberX")
+wait_for(lambda: len(woke_got) >= 1)
 time.sleep(0.5)
 eq([m["spec"] for m in woke_got], ["terminal.open"], "delivered exactly once, even with two hellos")
 eq(woke_got[0]["delivery"], "woke", "the message tells the console it was woken (its toast)")
@@ -234,7 +251,7 @@ cc.WAKE_AGAIN_S = 0
 res = {}
 t = threading.Thread(target=lambda: res.update(client.post("/api/console/open", json={"screen": "home"}).json()))
 t.start()
-time.sleep(0.1)
+wait_for(lambda: any(x["state"] == "queued" for x in client.get("/api/console/queue").json()["items"]))
 client.post("/api/console/hello", json={"client": "woke-0001", "catalog": CATALOG, "used": True})
 t.join(15)
 eq(res.get("delivery", {}).get("how"), "after reconnect", f"queued then delivered on reconnect ({res})")
@@ -260,7 +277,8 @@ with cc._lock:
 late: list[dict] = []
 client.post("/api/console/hello", json={"client": "late-0001", "catalog": CATALOG, "used": True})
 fake_console("late-0001", answers=late)
-time.sleep(0.8)
+wait_for(lambda: stream_open("late-0001"))
+time.sleep(0.5)
 eq(late, [], "an expired command is not delivered")
 ok(any(x["state"] == "expired" for x in client.get("/api/console/queue").json()["items"]), "the queue shows it expired")
 
@@ -281,7 +299,7 @@ with cc._lock:
     cc._clients.pop("late-0001", None)
 again: list[dict] = []
 fake_console("late-0001", answers=again)
-time.sleep(0.6)
+wait_for(lambda: stream_open("late-0001"))
 j = client.post("/api/console/open", json={"screen": "plan studio"}).json()
 ok(j["ok"] and again and again[-1]["target"] == "plan-studio", f"re-hello after a restart, then commands go through ({j.get('delivery')})")
 
@@ -291,7 +309,7 @@ molly: list[dict] = []
 client.post("/api/console/seen", json={"client": "late-0001", "front": True})
 client.post("/api/console/hello", json={"client": "molly-0001", "app": "molly/console-web", "host": "molly", "front": False, "catalog": CATALOG, "used": True})
 fake_console("molly-0001", answers=molly)
-time.sleep(0.4)
+wait_for(lambda: stream_open("molly-0001"))
 row = next(c for c in client.get("/api/console/clients").json()["items"] if c["id"] == "molly-0001")
 ok(row["app"] == "molly/console-web" and row["host"] == "molly" and row["front"] is False, f"Molly's console is listed as such ({row})")
 j = client.post("/api/console/open", json={"screen": "home"}).json()
