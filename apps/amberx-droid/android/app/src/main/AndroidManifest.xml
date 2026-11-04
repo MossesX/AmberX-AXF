@@ -141,5 +141,7 @@
         <intent>
             <action android:name="android.intent.action.TTS_SERVICE" />
         </intent>
+        <!-- console wake: open the Dev Console in Chrome when it is installed (OpenUrlRules.CHROME) -->
+        <package android:name="com.android.chrome" />
     </queries>
 </manifest>

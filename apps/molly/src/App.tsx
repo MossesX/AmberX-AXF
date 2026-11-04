@@ -1,5 +1,5 @@
 import { useMemo, useSyncExternalStore } from 'react';
-import { AccountView, AppShell, installLibraries, useRuntime, type ViewMap } from './axf/react';
+import { AccountView, AppShell, installLibraries, SlotsProvider, useRuntime, type ViewMap } from './axf/react';
 import type { AxfWebLibrary } from './axf/react/library';
 import { library as settingsLibrary } from './axf/libs/settings';
 import { toolbarsLibrary } from './axf/libs/toolbars';
@@ -39,7 +39,10 @@ export function App() {
   const extra = mollyHooks().views;
   return (
     <>
-      <AppShell views={{ ...contributed.views, ...extra, ...views }} dialogs={{ ...contributed.dialogs, ...dialogs }} tabs={contributed.tabs} />
+      {/* plugins' slot content (e.g. the Banners plugin's strip in app.frame.banners) */}
+      <SlotsProvider slots={contributed.slots}>
+        <AppShell views={{ ...contributed.views, ...extra, ...views }} dialogs={{ ...contributed.dialogs, ...dialogs }} tabs={contributed.tabs} />
+      </SlotsProvider>
       <FrameDeck />
     </>
   );
