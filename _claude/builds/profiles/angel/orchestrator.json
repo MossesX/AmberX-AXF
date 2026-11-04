@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T04:27:42.354Z",
+ "updatedAt": "2026-11-04T04:31:34.535Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -36,6 +36,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "Design a bunch more cards for the console home screen. If plugins with data or dynamic content don't have a card, design one for them from scratch (you decide what to display and how). Plugins can now carry cards that can be designed in the future SDK and attached to the plugin as assets. Console Home detects all card assets attached to plugins and shows or hides them, but always rendered. The card layout can show or hide all cards detected.",
+    "at": "2026-10-29",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -468,6 +480,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "the app takes up way too much space; Settings is a wall of buttons. Packs only reskin; fix how the screens are built. Agreed plan: settings as short lists you tap into (like phone settings), dropdowns instead of rows of buttons, tight spacing everywhere; start with Settings and show before/after screenshots. Profile: Angel. Layouts stay as they are (Brett: 'Nah' to new layouts). Web first; Android twin of the settings renderer recorded as deferred (Android hold).",
+    "at": "2026-10-30",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -599,6 +623,18 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "a field in plugin manifests that declares whether the plugin is floatable, like 'tabable'. Profile: Angel.",
+    "at": "2026-10-30",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -660,6 +696,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "after the compact Settings (PR #175) — 'Rest of the app too'. Same treatment everywhere: less wasted space, no walls of big buttons, no cards inside cards, tight spacing. Framework-wide (axf.css + console.css), so every app on the framework and every plugin follows; per-screen fixes after. Before/after screenshots of every main screen. Profile: Angel. Web; Android deferred.",
+    "at": "2026-10-30",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -770,6 +818,18 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "'More compact screens' after app-compact (PR #178). Per-screen: replace rows/walls of buttons and filter chips with one dropdown or a ⋯ menu, shorten page descriptions, tighten lists. Profile: Angel. Web only.",
+    "at": "2026-10-30",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -897,6 +957,18 @@
     }
    ],
    "upgradeRequests": [],
+   "origin": {
+    "said": "three broad asset types instead of one per piece — typography (text sizes, weights, line spacing), density (spacing, padding, row heights, gaps; compact vs roomy is one pick), component sizing (page heads, list rows, chips, count strips, tables). Each app gets one update to read them; after that every change comes live from axHub. Includes moving the Oct 30 compact frame (axf.css compact block, settings compact CSS, console count strips) and the MCP servers pages (framework/libs/mcp) onto them. Profile: Angel. Android twins deferred.",
+    "at": "",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -1020,6 +1092,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "Grid of push batches with live badges, Merge/Hold on rows, expandable PR sub-grid, failing check + Fix. Dense: small type, small badges, no clutter. Left click opens review, right click menu. PR BROWSER (Brett, Oct 31): a tab listing every open PR across AmberX-AXF, axHub and Build-Pilot. One dense line per PR with everything: number, title, branch, built by (agent/session), live checks badge, behind main, mergeable/conflict, in which batch, age, cost. Expand a row: every check with its error lines, files changed, commits, description, linked build/plan, and actions: Fix, Merge (via batch), Add to batch, Close. Sort/search/filter like every grid; live updates. ROW LEAD (Brett): every row starts with the PR number + a plain-English line of what it does (e.g. '#187 Audio Extract: pulls audio out of screen recordings, no mic'), written from the actual diff not just the title; badges follow on the same line. SCREENSHOTS (Brett): every PR gets BEFORE (main) and AFTER (PR branch) screenshots of the screens it touches, captured automatically by CI/headless browser (web) and emulator (Android); small before/after thumbnails on the row, side-by-side or slider compare in the expanded view, stored with the PR. SCREENSHOT CORRECTION (Brett): do NOT build a new capture system - REUSE the existing pre-build and post-build screenshots the framework already takes (find them first). BEFORE = the existing pre-build screenshot. AFTER: if the PR/build is not done yet, show a PREDICTED screenshot (rendered mockup of the expected result from the build spec + diff so far, clearly badged 'Predicted'); as soon as the build finishes, the real post-build screenshot replaces it automatically (badge 'Real'), live, no refresh. FEATURE SHOTS (Brett): the existing pre/post-build screenshots are NOT enough - they must show the ACTUAL FEATURE the PR built. Per PR, build a feature map from the diff (changed plugins, components, routes, menus, dialogs -> the screens and states that show them). Drive the existing capture tooling to navigate to each one, open it (expand the row, open the dialog/menu, switch the tab, put it in the right state with demo data), and shoot it: BEFORE on main, AFTER on the PR branch. Each shot cropped to the feature plus a full-screen version, web + Android. Brand-new UI has no before: show a 'New' card. Every feature shot shows Predicted (mockup from spec + diff) until the build is done, then the real shot replaces it live. Captions say which feature each shot is. Missed features (no shot) flagged on the row.",
+    "at": "2026-10-30",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -1189,6 +1273,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "Left click only. Press-drag: panel follows, live updates to element under pointer. Release closes. Double click pins; pinned panel drags and resizes. Current fields + size.",
+    "at": "2026-10-30",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -1281,6 +1377,18 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "Hold C + click: shows which menu fires there and its file. Drag an element into the map to save it; saves the action/destination, not the element. Pinned top: Build profiles submenu, Settings, user picks.",
+    "at": "2026-10-30",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -1397,6 +1505,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "Many-slots with style (tabs/cards/grid/stacked) + fallback slot; pages declare data sets. Web + Android + fixtures.",
+    "at": "2026-10-30",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -1489,6 +1609,18 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "Visible on collapsed rows, big targets, green/red, title truncates first. Console, AmberX, axHub. On claude/veto-complete (#179).",
+    "at": "2026-10-30",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -1550,6 +1682,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "a full-blown session browser for regular Claude sessions AND every headless agent run, monitoring in real time. Live grid, collapsible rows like every other grid: agent, build, job, model, status badge (running, done, failed, killed for budget), tokens, dollars, duration, started time; updates live. Expand a row: plain-English rundown of what it built and exactly what changed (item, what was wrong, before/after), taken from real commits and file changes. Tabs: Context (all text that flowed into its context and what it said back), Tools (every command and file edit), Conversation for regular sessions. Watch a running agent live and kill it. Links to PR/commit/file. Sort, search, filter. Built on Session check-in archive + Codebase changes log + the agent-swarm runner's JSON reports and stream logs. Prices everywhere: the row shows the run's exact total cost (from usage). Expanded 'what it did' shows a price next to every line (estimated: tokens of the turns that produced that change, labelled 'est.'). Context tab: cost per turn; Tools tab: cost per command. Totals at the bottom plus a per-model breakdown.",
+    "at": "2026-10-30",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -1696,6 +1840,18 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "Every grid that lists builds, tasks, asks or anything else is sortable, searchable and filterable, taking little screen. Basic filter attached by default. Tap header sorts, tap again reverses, long-press adds a second sort. One thin row: small search box + filter icon; on phones just a search icon. Filters hidden until used, then small clearable chips. Custom tables move onto the framework grid. Android parity. Per grid: right-click a grid or its header -> Filter -> off/on for this grid; 'All grids...' lists every grid in the app with the right-clicked one scrolled into view and highlighted, a switch per grid; a default switch decides whether new grids get the filter (on). Defaults are decided per grid by the build: on for data grids with many rows or columns (builds, asks, changes, plugins, PRs), off for small lists (settings, keys, short pickers); record the choice and reason per grid. On grids where it is off, hovering the header for a moment shows a tooltip 'Add the filter to this grid?' with Enable (long-press on phones). Framework grid (part of the app, not the filter plugin): every grid that has no date/time column gets an automatic 'Date and time' column (row created / last changed), hidden by default; grids that already show a date/time get nothing. Right-click the header -> Show/Hide 'Date and time'. Web + Android. UPDATE (Brett): build BOTH into the framework grid. Sort/search/filter live in the framework (not the Basic filter plugin); smart per-grid defaults, right-click on/off, All grids list and hover offer all framework features. Date and time column is ensured at first render: if a grid renders without one, the framework adds the hidden column then. New grids get everything automatically. CI check flags any table not built on the framework grid.",
+    "at": "2026-10-30",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -1932,6 +2088,18 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "First a merge map so no feature is lost, then: Build Breaker + Changes & features grid + Codebase changes banner -> one; Plugin switches + Plugin Update + Plugins menu -> Plugin Manager; Main build status -> Activity banner; retire Design packs after UI Review (#184); console Todo manager on the shared AmberX notes store; Voice notes vs Dictation; AmberX Voice control vs Voice command center. Uninstall scripts for removed plugins. Also retire the Basic filter plugin once grid-sort-filter moves filtering into the framework (migrate its saved filters).",
+    "at": "2026-10-30",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -2074,6 +2242,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "AmberX plugin that records all audio the phone outputs while it is on, saved to the server on axHub. One switch + quick-settings tile. Playback capture only, NEVER the microphone. Android 10+; system consent prompt each start and a notification while recording. Calls and opt-out apps (DRM) cannot be captured. 30-minute timestamped chunks, each uploaded to axHub; keep the local file until axHub confirms, queue and retry when offline, small local cap. Built on the capture engine from claude/audio-extract (PR #187).",
+    "at": "2026-10-30",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -2184,6 +2364,18 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "add an optional microphone to BOTH the Audio Extract screen recorder and the Output Recorder: a switch, off by default, never used as a fallback, visible indicator while on (this replaces the earlier no-mic rule for these two recorders only when the user turns it on). Add sophisticated filters you can run on any recording and re-save: noise reduction/cancellation, voice boost, EQ, loudness leveling, hum and hiss removal, silence trim; preview, presets, Save as new, original never overwritten. Runs after audio-output-recorder, on its branch.",
+    "at": "2026-10-30",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -2294,6 +2486,18 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "his own transcription engine, no paid API. ON DEMAND ONLY: nothing is transcribed automatically; a Transcribe button on any recording. DEFAULT: Whisper runs on the phone (whisper.cpp / on-device model in AmberX). SWITCH: send it to the self-hosted Whisper on axHub instead (own container, low priority, CPU cap) for bigger models or when not using the phone. Timestamps per line, tap a line to jump the audio, search all transcripts, export text/SRT, send to AmberX notes. Transcripts saved on axHub with the recording.",
+    "at": "2026-10-30",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -2418,6 +2622,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "the console's GITHUB_TOKEN went dead (401) and nothing told him. 'You need to make sure things like that go into one of the banners. I need to see that kind of shit.' Live checks (GitHub /user + scopes + expiry, axHub MCP, Anthropic/Claude, Hostinger, ntfy, OpenAI/ElevenLabs, AmberX push path, git push creds), red banner items with what broke / what it breaks / since when / Fix, amber a week before expiry, health@1 registry, stuck builds, veto denied/expired, CI on main, restarting containers, disk >85%, one push per new red item. Profile: Angel. Web/Python only.",
+    "at": "2026-10-30",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -2668,6 +2884,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "rename the Design packs console plugin to UI Review (folder ui-review) and make it one all-in-one UI approval plugin. Every UI a build makes is submitted there for his approval, separated by kind (open registry: Design packs, Whole apps / programs, Screens & pages, Settings interfaces, Dialogs & popups, Menus & toolbars, Banners & cards, Other). Items: title, kind, app, build/branch/PR, desktop + phone shots, notes, status (waiting / approved / changes asked / rejected), his comment, history. Views: tree, collapsible grid, grid with sub-grids, gallery, compare; multi-select + bulk decisions in every view. Builds submit through review.mjs, the plugin API and rebuild-shots --submit; capability ui-review@1. Design-pack picks (MAX 3) migrate. Profile: Angel. Web only.",
+    "at": "2026-10-30",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -2860,6 +3088,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "a planning studio to store and view all plans, entered by hand, categorized; every plugin and app listed with its features checked off as have or planned. + plain-English AI command box (Oct 30 ~14:20) + AmberX voice conversation mode (Oct 30 ~14:22). Profile Angel, Opus, one session. Branch claude/plans. Web/TS/Python only; AmberX is its Capacitor web shell (allowed exception). Don't touch push-banner, approvals/veto, design-packs/ui-review, enterprise-branding, agent-voice files.",
+    "at": "2026-10-30",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -3110,6 +3350,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "strip the audio out of his phone screen recordings into an audio file; extraction from a video file only, no live mic, no fallbacks. Then: add a Record screen mode (MediaProjection + playback capture, foreground service, chip, countdown) whose recordings go straight through the extractor. Profile: Angel. Opus, one session.",
+    "at": "2026-10-30",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
