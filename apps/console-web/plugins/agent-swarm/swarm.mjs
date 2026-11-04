@@ -179,7 +179,7 @@ export function chatAfterRun(rec, roster = loadRoster()) {
   withState((st) => {
     const at = rec.endedAt || new Date().toISOString();
     core.post(st, core.reportLines(rec, roster), at);
-    core.recordRun(st, rec, roster, at, priceTable());
+    core.recordRun(st, rec, roster, at, rec.source === 'launcher' || rec.source === 'assign' ? null : priceTable()); // a headless build has no job budget to beat: no bonus
     const moment = rec.status === 'done' ? 'done' : 'failed';
     for (const a of core.reactors(st, roster, rec.agent, core.reactCount(st, at), rec.jobId)) core.post(st, [{ from: a.id, kind: 'banter', text: core.banterLine(moment, `${rec.jobId}${a.id}`, { other: roster.agents.find((x) => x.id === rec.agent)?.name ?? rec.agent, job: rec.jobId }) }], at);
   });

@@ -14,7 +14,8 @@
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import type { CompiledMenuButton } from '../../core/engines/appmenu';
 import type { CompiledMenu, CompiledMenuItem } from '../../core/engines/appmenu';
-import { MenuSub } from './MenuList';
+import { MenuScroll, MenuSub } from './MenuList';
+import { focusMenuItem, useMenuFit } from './menuFit';
 import { useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { Button, Chip, Kbd } from './Controls';
@@ -190,12 +191,12 @@ export function AppMenuList({ items, depth, onDone, onEnter, autoFocus }: ListPr
   const onGone = useCallback((id: string) => setGone((g) => new Set(g).add(id)), []);
   const ref = useRef<HTMLUListElement>(null);
 
-  useEffect(() => { if (autoFocus) focusables(ref.current)[0]?.focus(); }, [autoFocus]);
+  useEffect(() => { if (autoFocus) focusMenuItem(focusables(ref.current)[0]); }, [autoFocus]);
 
   const onKey = (e: KeyboardEvent<HTMLUListElement>) => {
     const list = focusables(ref.current);
     const at = list.indexOf(document.activeElement as HTMLButtonElement);
-    const go = (i: number) => { list[(i + list.length) % list.length]?.focus(); };
+    const go = (i: number) => { focusMenuItem(list[(i + list.length) % list.length]); }; // scrolled into view in a long menu
     switch (e.key) {
       case 'ArrowDown': e.preventDefault(); e.stopPropagation(); go(at + 1); break;
       case 'ArrowUp': e.preventDefault(); e.stopPropagation(); go(at - 1); break;
@@ -287,19 +288,26 @@ export function AppMenuDropdown({ menu, onDone }: { menu: CompiledMenu; onDone: 
     else if (e.key === 'ArrowLeft' && stack.length) { e.preventDefault(); e.stopPropagation(); back(); }
   };
   const top = stack[stack.length - 1];
+  // Below its menubar button, flipped / shifted to stay on screen, scrolling inside when taller than the room (menu-fit@1).
+  // Phones keep the edge-to-edge width (axf.css) and get the vertical fit.
+  const ref = useRef<HTMLDivElement>(null);
+  const narrow = () => !!ref.current?.closest('[data-fx-narrow]') || phone;
+  useEffect(() => { ref.current?.querySelector<HTMLElement>(':scope > .fx-menu__scroll')?.scrollTo?.({ top: 0 }); }, [stack.length]); // a new panel starts at its top
+  useMenuFit(ref, 'below', () => (ref.current?.parentElement?.querySelector('[data-axf-menu-btn]') ?? ref.current?.parentElement)?.getBoundingClientRect(), { get stretch() { return narrow(); } }, [phone]);
   return (
-    <div className={`fx-dropdown fx-popover ${phone ? 'fx-dropdown--phone' : ''}`} onKeyDown={onKey} data-axf-menu={menu.id} data-axf-menu-origin={menu.origin}>
-      {phone && top ? (
-        <>
-          <button type="button" className="fx-menu__back" onClick={back} aria-label={`Back to ${stack.length > 1 ? stack[stack.length - 2]!.label : menu.label}`}>
-            <Icon name="chevron-left" size={14} />
-            <span className="fx-menu__label">{top.label}</span>
-          </button>
-          <SubmenuBody key={stack.map((s) => s.id).join('/')} item={top} depth={stack.length + 1} onDone={onDone} onEnter={enter} open autoFocus />
-        </>
-      ) : (
-        <AppMenuList items={menu.items} depth={1} onDone={onDone} onEnter={phone ? enter : undefined} autoFocus />
+    <div ref={ref} className={`fx-dropdown fx-popover ${phone ? 'fx-dropdown--phone' : ''}`} onKeyDown={onKey} data-axf-menu={menu.id} data-axf-menu-origin={menu.origin}>
+      {phone && top && (
+        // the Back row stays put above the scrolling list
+        <button type="button" className="fx-menu__back" onClick={back} aria-label={`Back to ${stack.length > 1 ? stack[stack.length - 2]!.label : menu.label}`}>
+          <Icon name="chevron-left" size={14} />
+          <span className="fx-menu__label">{top.label}</span>
+        </button>
       )}
+      <MenuScroll box={ref}>
+        {phone && top
+          ? <SubmenuBody key={stack.map((s) => s.id).join('/')} item={top} depth={stack.length + 1} onDone={onDone} onEnter={enter} open autoFocus />
+          : <AppMenuList items={menu.items} depth={1} onDone={onDone} onEnter={phone ? enter : undefined} autoFocus />}
+      </MenuScroll>
     </div>
   );
 }
