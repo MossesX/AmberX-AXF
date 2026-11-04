@@ -708,14 +708,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 15:33 UTC · `tab-group-assets` added (6 steps) (current) · foreign-write
-- 2026-11-04 15:33 UTC · `jump-menu-asset` added (10 steps) (current) · foreign-write
-- 2026-11-04 15:32 UTC · `app-voice-commands` s4 done (current) · orchestrator
-- 2026-11-04 15:33 UTC · `apps-control-surface` s2 done (current) · orchestrator
-- 2026-11-04 15:33 UTC · `apps-control-surface` s3 done (current) · orchestrator
-- 2026-11-04 15:33 UTC · `apps-control-surface` s4 done (current) · orchestrator
-- 2026-11-04 15:33 UTC · `molly-console-commands` note (current) · orchestrator
-- 2026-11-04 15:37 UTC · `apps-control-surface` PR #322 (current) · builds-live
 - 2026-11-04 15:37 UTC · `apps-control-surface` s5 done, → built (current) · orchestrator
 - 2026-11-04 15:37 UTC · `apps-control-surface` note (current) · orchestrator
 - 2026-11-04 15:42 UTC · `apps-control-surface` note (current) · orchestrator
@@ -1108,6 +1100,14 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 22:10 UTC · `changes-chat-log` s5 done, → complete, branch claude/changes-chat-log, PR #347 (current) · foreign-write
 - 2026-11-04 22:11 UTC · `shipped-features-r2` → pending, note (angel) · reconciler
 - 2026-11-04 22:17 UTC · `build-docs-walkthroughs` note (angel) · orchestrator
+- 2026-11-04 22:19 UTC · `app-voice-commands` note (current) · foreign-write
+- 2026-11-04 22:19 UTC · `settings-placement-everywhere` note (current) · foreign-write
+- 2026-11-04 22:19 UTC · `grid-column-hiding` s12-11 done, → complete (current) · foreign-write
+- 2026-11-04 22:19 UTC · `molly-banner-match` added (5 steps) (current) · foreign-write
+- 2026-11-04 22:19 UTC · `drag-to-tab` added (5 steps) (current) · foreign-write
+- 2026-11-04 22:19 UTC · `build-optimizer` added (9 steps) (current) · foreign-write
+- 2026-11-04 22:19 UTC · `changes-chat-log` added (5 steps) (current) · foreign-write
+- 2026-11-04 22:19 UTC · `notes-views` added (20 steps) (current) · foreign-write
 
 ## Token passes (log)
 
