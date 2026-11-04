@@ -10,7 +10,7 @@ the Claude handoff plugin). None of those exist any more; `node framework/spec/c
 one comes back. Only the two contracts below live in the framework (`framework/core/engines/handoff.mjs`, snapshot
 `framework/schemas/handoff.json`, fixture `framework/spec/fixtures/handoff.json`, check `framework/spec/check-handoff.mjs`);
 everything else — the console button, the Sessions panel, the join dialog, the helper widget, the `/sync` command,
-the CLI, the hook, the REST / MCP / CLI commands — is the **Session sync** plugin (`apps/console-web/plugins/session-sync`,
+the CLI, the hook, the REST / MCP / CLI commands — is the **Session sync** plugin (`apps/console-web/plugins/session-sync`, <!-- axf-plugin:session-sync -->
 `plugin@1`, `forFramework: true`), installable in any app and removable completely. Kotlin twin: deferred (PORTING.md).
 
 ## 1. Words
@@ -29,8 +29,8 @@ the CLI, the hook, the REST / MCP / CLI commands — is the **Session sync** plu
 
 ## 2. `handoff@1` — the sync file
 
-Written by `/sync <project>` (Claude Code command), `session-sync sync` (CLI), `POST /sync` (REST), MCP
-`session-sync_sync`, the console's **Sync session** button, or by voice ("sync AmberX"). Always committed and pushed
+Written by `/sync <project>` (Claude Code command), `session-sync sync` (CLI), `POST /sync` (REST), MCP <!-- axf-plugin:session-sync -->
+`session-sync_sync`, the console's **Sync session** button, or by voice ("sync AmberX"). Always committed and pushed <!-- axf-plugin:session-sync -->
 on its own status-only commit (`[skip ci]`, the one exception to "every change through a PR", like builds-live).
 
 ```json
@@ -40,7 +40,7 @@ on its own status-only commit (`[skip ci]`, the one exception to "every change t
   "writtenAt": "2026-11-04T19:00:00Z",
   "writtenBy": { "session": "s-1", "account": "brett", "agent": "rio", "client": "code" },
   "freshForSec": 1800,
-  "link": { "console": "https://console.amberxai.com", "channel": "sessions", "join": "session-sync_join" },
+  "link": { "console": "https://console.amberxai.com", "channel": "sessions", "join": "session-sync_join" }, <!-- axf-plugin:session-sync -->
   "primary": { "session": "s-1", "account": "brett", "agent": "rio", "since": "…" },
   "sessions": [ { "id": "s-1", "account": "brett", "agent": "rio", "role": "primary", "status": "working", "doing": { "build": "x", "step": "s3", "note": "…" }, "lastSeenAt": "…" } ],
   "claims": [ { "id": "c-1", "session": "s-1", "kind": "path", "paths": ["framework/core/**"], "build": "x", "expiresAt": "…" } ],
@@ -124,7 +124,7 @@ helper widget, the hook. Writers: the plugin's commands only. Fields:
 - Builds carry `touches` (areas / globs). The orchestrator never runs two builds with overlapping `touches` at once
   (replan, § 6), and a build offered to a helper takes its claims with it.
 - The Claude Code hook (`PreToolUse` on Edit / Write / MultiEdit / NotebookEdit) refuses an edit outside the session's
-  claims with the holder's name; `session-sync check-commit` (pre-commit and CI) fails a commit that touches files
+  claims with the holder's name; `session-sync check-commit` (pre-commit and CI) fails a commit that touches files <!-- axf-plugin:session-sync -->
   outside the committing session's claims. Disabled plugin = no enforcement, and every build runs with a visible
   warning (`enforce: false` → the banner chip and the hook say so).
 
@@ -169,7 +169,7 @@ tracker exports; the claims; the crew job card (booking on the helper's agent th
 ledger and Codebase changes (one audit line each through their capabilities when present); the model-thinking review
 state; the brief / notes in the worktree (`_claude/builds/briefs/<id>.md` addendum line); the git / PR linkage
 (`builds-live link`). Then it emits one `handover` event, so every open screen patches at once (§ 9). The consistency
-check (`session-sync consistency`, a Systems-check row with Auto fix, CI) verifies all those places agree for every
+check (`session-sync consistency`, a Systems-check row with Auto fix, CI) verifies all those places agree for every <!-- axf-plugin:session-sync -->
 handed-over build and step and fixes drift from the link (the link wins).
 
 ## 6. The orchestrator's smarts (pure, `handoff.mjs`)
@@ -241,7 +241,7 @@ their next step.
 - Disabling the plugin turns enforcement off cleanly: claims stop being required, builds run unrestricted, and the
   hook, the banner and the Build manager show a visible warning.
 
-## 11. Commands (plugin-commands@1; REST `/api/plugins/session-sync/…`, MCP `session-sync_<id>`, CLI `axf session-sync <id>`, voice through Molly)
+## 11. Commands (plugin-commands@1; REST `/api/plugins/session-sync/…`, MCP `session-sync_<id>`, CLI `axf session-sync <id>`, voice through Molly) <!-- axf-plugin:session-sync -->
 
 `sync`, `join`, `heartbeat`, `end`, `state` (read), `snapshot` (read: the join dialog's detail), `claim`, `release`,
 `claims` (read), `send`, `inbox` (read), `messages` (read), `request-work`, `offer`, `offers` (read), `respond`,

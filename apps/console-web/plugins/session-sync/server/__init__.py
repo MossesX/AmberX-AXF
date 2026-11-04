@@ -444,31 +444,100 @@ def _ask_approval(session: dict[str, Any], who: dict[str, Any]) -> dict[str, Any
         return {"error": str(exc)}
 
 
-for _op in ("heartbeat", "end", "claim", "release", "send", "inbox", "request-work", "offer", "respond", "step", "take-back", "undo", "replan", "claim-job", "approve-account", "make-primary"):
-    def _make(op: str):
-        async def route(request: Request) -> dict[str, Any]:
-            return await _write(request, op)
-        route.__name__ = op.replace("-", "_")
-        route.__doc__ = {
-            "heartbeat": "I'm alive: what I'm doing (build, step, note); renews my claims. `pause: {reason, until?}` = lunch break, `pause: null` = back.",
-            "end": "End this session: release its claims, give its work back, post a closing line.",
-            "claim": "Lease an area (`kind: area, area`) or paths (`kind: path, paths: [...]`) before editing; 409 names who holds it.",
-            "release": "Release one claim (`claim`) or all of mine.",
-            "send": "Post a line in the Breakroom's Sessions channel (`text`, optional kind / build / step / files).",
-            "inbox": "Unread channel lines, claim changes and offers for me; moves my cursor unless `peek`.",
-            "request-work": "Helper: ask the orchestrator for work (`minutes`, `areas`, `model`); it offers whole jobs or steps split out of running builds.",
-            "offer": "Primary: offer a build (`build`) or steps as a new build (`steps`) to a helper (`to`), with a reason.",
-            "respond": "Helper: answer an offer or my assignment (`id`, `response`: accept | reject | hold | release, `reason`, `backAt`). The orchestrator reacts.",
-            "step": "Helper: mark my assigned step (`assignment`, `step`, `state`: started | done | blocked, `reason`).",
-            "take-back": "Primary: take work back from a helper (`assignment` or `build`, optional `steps`; `confirm` when it is being worked on).",
-            "undo": "Primary: undo a handover event (`seq`).",
-            "replan": "Primary: re-plan the whole picture on both sides (`dryRun` previews; applied = store order changed, moves posted).",
-            "claim-job": "Register a job before work starts (`id` / `title`, `branch`): matches a queued build and takes it off the main queue, or registers new work with a warning.",
-            "approve-account": "Brett only: approve a new account's sessions (`account`).",
-            "make-primary": "Brett only: make a session the primary (`session`).",
-        }[op]
-        return route
-    router.add_api_route(f"/{_op}", _make(_op), methods=["POST"])
+@router.post("/heartbeat")
+async def heartbeat(request: Request) -> dict[str, Any]:
+    """I'm alive: what I'm doing (build, step, note); renews my claims. `pause: {reason, until?}` = lunch break, `pause: null` = back."""
+    return await _write(request, "heartbeat")
+
+
+@router.post("/end")
+async def end(request: Request) -> dict[str, Any]:
+    """End this session: release its claims, give its work back, post a closing line."""
+    return await _write(request, "end")
+
+
+@router.post("/claim")
+async def claim(request: Request) -> dict[str, Any]:
+    """Lease an area (`kind: area, area`) or paths (`kind: path, paths: [...]`) before editing; 409 names who holds it."""
+    return await _write(request, "claim")
+
+
+@router.post("/release")
+async def release(request: Request) -> dict[str, Any]:
+    """Release one claim (`claim`) or all of mine."""
+    return await _write(request, "release")
+
+
+@router.post("/send")
+async def send(request: Request) -> dict[str, Any]:
+    """Post a line in the Breakroom's Sessions channel (`text`, optional kind / build / step / files)."""
+    return await _write(request, "send")
+
+
+@router.post("/inbox")
+async def inbox(request: Request) -> dict[str, Any]:
+    """Unread channel lines, claim changes and offers for me; moves my cursor unless `peek`."""
+    return await _write(request, "inbox")
+
+
+@router.post("/request-work")
+async def request_work(request: Request) -> dict[str, Any]:
+    """Helper: ask the orchestrator for work (`minutes`, `areas`, `model`); it offers whole jobs or steps split out of running builds."""
+    return await _write(request, "request-work")
+
+
+@router.post("/offer")
+async def offer(request: Request) -> dict[str, Any]:
+    """Primary: offer a build (`build`) or steps as a new build (`steps`) to a helper (`to`), with a reason."""
+    return await _write(request, "offer")
+
+
+@router.post("/respond")
+async def respond(request: Request) -> dict[str, Any]:
+    """Helper: answer an offer or my assignment (`id`, `response`: accept | reject | hold | release, `reason`, `backAt`). The orchestrator reacts."""
+    return await _write(request, "respond")
+
+
+@router.post("/step")
+async def step(request: Request) -> dict[str, Any]:
+    """Helper: mark my assigned step (`assignment`, `step`, `state`: started | done | blocked, `reason`)."""
+    return await _write(request, "step")
+
+
+@router.post("/take-back")
+async def take_back(request: Request) -> dict[str, Any]:
+    """Primary: take work back from a helper (`assignment` or `build`, optional `steps`; `confirm` when it is being worked on)."""
+    return await _write(request, "take-back")
+
+
+@router.post("/undo")
+async def undo(request: Request) -> dict[str, Any]:
+    """Primary: undo a handover event (`seq`)."""
+    return await _write(request, "undo")
+
+
+@router.post("/replan")
+async def replan(request: Request) -> dict[str, Any]:
+    """Primary: re-plan the whole picture on both sides (`dryRun` previews; applied = store order changed, moves posted)."""
+    return await _write(request, "replan")
+
+
+@router.post("/claim-job")
+async def claim_job(request: Request) -> dict[str, Any]:
+    """Register a job before work starts (`id` / `title`, `branch`): matches a queued build and takes it off the main queue, or registers new work with a warning."""
+    return await _write(request, "claim-job")
+
+
+@router.post("/approve-account")
+async def approve_account(request: Request) -> dict[str, Any]:
+    """Brett only: approve a new account's sessions (`account`)."""
+    return await _write(request, "approve-account")
+
+
+@router.post("/make-primary")
+async def make_primary(request: Request) -> dict[str, Any]:
+    """Brett only: make a session the primary (`session`)."""
+    return await _write(request, "make-primary")
 
 
 @router.put("/settings")

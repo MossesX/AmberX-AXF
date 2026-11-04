@@ -77,12 +77,12 @@
       { "route": "POST /claim", "id": "claim", "title": "Claim an area or paths", "input": { "type": "object", "properties": { "kind": { "type": "string", "enum": ["area", "path"] }, "area": { "type": "string" }, "paths": { "type": "array", "items": { "type": "string" } }, "reason": { "type": "string" }, "build": { "type": "string" }, "step": { "type": "string" } } } },
       { "route": "POST /release", "id": "release", "title": "Release a claim" },
       { "route": "GET /state", "id": "status", "title": "Who is on and what they hold", "readOnly": true },
-      { "route": "POST /request-work", "id": "request_work", "title": "Ask the orchestrator for work (helper)", "input": { "type": "object", "properties": { "minutes": { "type": "number" }, "areas": { "type": "array", "items": { "type": "string" } }, "model": { "type": "string" } } } },
+      { "route": "POST /request-work", "id": "request-work", "title": "Ask the orchestrator for work (helper)", "input": { "type": "object", "properties": { "minutes": { "type": "number" }, "areas": { "type": "array", "items": { "type": "string" } }, "model": { "type": "string" } } } },
       { "route": "POST /respond", "id": "respond", "title": "Accept, reject, hold or release an offer / assignment", "input": { "type": "object", "properties": { "id": { "type": "string" }, "response": { "type": "string", "enum": ["accept", "reject", "hold", "release"] }, "reason": { "type": "string" }, "backAt": { "type": "string" } }, "required": ["id", "response"] } },
-      { "route": "POST /take-back", "id": "take_back", "title": "Take work back from a helper (primary)", "confirm": false },
+      { "route": "POST /take-back", "id": "take-back", "title": "Take work back from a helper (primary)", "confirm": false },
       { "route": "POST /replan", "id": "replan", "title": "Re-plan the whole picture (dry run available)", "input": { "type": "object", "properties": { "dryRun": { "type": "boolean" } } } },
-      { "route": "POST /approve-account", "id": "approve_account", "title": "Approve a new account (Brett only)" },
-      { "route": "POST /consistency", "id": "consistency_fix", "title": "Make every store agree with the link" }
+      { "route": "POST /approve-account", "id": "approve-account", "title": "Approve a new account (Brett only)" },
+      { "route": "POST /consistency", "id": "consistency-fix", "title": "Make every store agree with the link" }
     ]
   },
   "builtWith": { "model": "fable", "builtAt": "2026-11-04" },

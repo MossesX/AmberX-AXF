@@ -1062,7 +1062,7 @@
         "spec",
         "kernel",
         "framework/core/engines/handoff.mjs",
-        "apps/console-web/plugins/session-sync/server/**",
+        "apps/console-web/plugins/foo/server/**",
         "framework/spec/HANDOFF.md",
         "_claude/builds/reports/handoff-2/**"
        ],
