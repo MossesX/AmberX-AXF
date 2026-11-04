@@ -107,8 +107,12 @@ export const PROFILED = [
   'framework/plan/build-queue.json',
   'framework/plan/media/',
   'framework/catalog/status.json',
-  'tracker.json',
 ];
+/**
+ * The framework feature tracker is one file for every profile (generated from the catalog by tracker.mjs). Profiles
+ * reference it and never hold a copy of it (copies made by older versions are left alone here).
+ */
+export const TRACKER_REL = 'tracker.json';
 /** The orchestrator tracker is a repo file (synced by claude-sync, committed), profiled the same way. */
 export const ORCHESTRATOR_REL = '_claude/builds/orchestrator.json';
 export const PROFILE_ID = /^[a-z0-9][a-z0-9-]{0,39}$/;
@@ -149,7 +153,6 @@ export function emptyProfileFile(rel, now = new Date().toISOString()) {
     case 'framework/plan/plan.json': return { $axf: 'plan@1', generatedAt: now, statuses: ['built', 'partial', 'in-progress', 'placeholder', 'planned', 'blocked', 'dropped'], features: [] };
     case 'framework/plan/build-queue.json': return { $axf: 'build-queue@1', order: [], steps: {}, dirty: false, updatedAt: now, history: [] };
     case 'framework/catalog/status.json': return {};
-    case 'tracker.json': return { $axf: 'tracker@1', frameworkVersion: '', generatedAt: now, summary: {}, items: [] };
     default: return null;
   }
 }

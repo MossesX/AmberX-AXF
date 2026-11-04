@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T19:28:33.323Z",
+ "updatedAt": "2026-11-04T21:46:09.324Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -19714,6 +19714,92 @@
      "doneAt": "2026-11-01T07:52:01.479Z",
      "note": "",
      "uid": "st-mvxj7p3d0eyc8w"
+    }
+   ]
+  },
+  {
+   "id": "readme-rule-every-build",
+   "title": "Every build ships a basic Markdown readme",
+   "category": "Rules",
+   "detail": "Rule in RULES.md, CLAUDE.md and every brief (orchestrator, Build manager, claude-headless.sh, BRIEF-TEMPLATE.md); CI check-docs-readme.mjs fails a PR adding a plugin/app/module folder without docs/README.md.",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/readme-rule-every-build",
+   "pr": "#337",
+   "createdAt": "2026-11-04T19:55:55.715Z",
+   "updatedAt": "2026-11-04T19:56:49.367Z",
+   "builtAt": "2026-11-04T19:56:47.922Z",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "We gotta structure the documentation engine later anyway, so leave that out. Just get basic documentation. In Markdown.\n\n(Asked whether every future build should include a basic Markdown readme:) Yeah.",
+    "at": "2026-11-04T00:00:00Z",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Rule in RULES.md, CLAUDE.md, brief generators + template",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T19:56:00.056Z",
+     "note": "",
+     "uid": "st-mw2je9uu04mway"
+    },
+    {
+     "id": "s2",
+     "text": "CI check check-docs-readme.mjs + workflow step",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T19:56:05.659Z",
+     "note": "",
+     "uid": "st-mw2je9uu05mntj"
+    },
+    {
+     "id": "s3",
+     "text": "Report, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T19:56:47.921Z",
+     "note": "",
+     "uid": "st-mw2je9uu06ajys"
     }
    ]
   }
