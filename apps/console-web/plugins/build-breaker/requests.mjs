@@ -119,7 +119,7 @@ export async function gather() {
     p,
     src: {
       builds, slots, plans, asks, roster: loadRoster(), costs: walkJson(p.changes), briefs: loadBriefs(p.builds), bugs: loadBugs(p.bugs),
-      memory: p.memory.map((m) => ({ file: basename(m.path), text: readText(m.path), kind: m.kind })).filter((m) => m.text),
+      memory: p.memory.map((m) => ({ file: basename(m.path), text: readText(m.path), kind: m.kind, mtime: (() => { try { return statSync(m.path).mtime.toISOString(); } catch { return ''; } })() })).filter((m) => m.text),
       threads: rq.parseThreads(readText(p.threads)),
     },
   };

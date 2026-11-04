@@ -100,3 +100,5 @@
 .axp-build-breaker__req.is-changed { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); transition: background var(--fx-motion); }
 .axp-build-breaker__history { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); font-size: var(--axp-bb-xs); }
 .axp-build-breaker__req .axp-build-breaker__quote p { white-space: pre-wrap; }
+.axp-build-breaker__rqrow .axp-build-breaker__date { min-width: 0; }
+.axp-build-breaker__rqrow > * { min-width: 0; }

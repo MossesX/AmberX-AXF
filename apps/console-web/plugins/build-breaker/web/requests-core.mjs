@@ -91,7 +91,7 @@ export function normRequest(r, now = '') {
     where,
     status: normStatus(o.status),
     history: (Array.isArray(o.history) ? o.history : []).filter((h) => h && h.at).map((h) => ({ ...h, at: str(h.at, 40), text: str(h.text, 600) })),
-    updatedAt: iso(o.updatedAt) || iso(o.at) || now,
+    updatedAt: iso(o.updatedAt) || iso(o.at) || '',
   };
 }
 
@@ -213,7 +213,7 @@ const META_RE = /\((?:Brett,?\s*)?([^)]*)\)/;
 function metaOf(heading) {
   const m = String(heading).match(META_RE);
   const inner = m ? m[1] : '';
-  const date = inner.match(/([A-Z][a-z]{2}\s+\d{1,2}(?:,?\s*\d{4})?)/)?.[1] ?? '';
+  const date = `${inner} ${heading}`.match(/([A-Z][a-z]{2}\s+\d{1,2}(?:,?\s*\d{4})?)/)?.[1] ?? '';
   return { source: sourceOf(inner), date };
 }
 const dateIso = (s, year = 2026) => { if (!s) return ''; const t = Date.parse(/\d{4}/.test(s) ? s : `${s} ${year}`); return Number.isNaN(t) ? '' : new Date(t).toISOString(); };
@@ -445,7 +445,7 @@ export function assemble(src = {}, ledger = emptyLedger(), now = new Date().toIS
   }
   for (const p of src.plans ?? []) put(fromPlan(p));
   for (const g of src.bugs ?? []) put(fromBug(g));
-  for (const m of src.memory ?? []) for (const r of parseMemory(m.text, m.file, m.kind)) put(r);
+  for (const m of src.memory ?? []) for (const r of parseMemory(m.text, m.file, m.kind)) { if (m.mtime && !r.updatedAt) r.updatedAt = m.mtime; put(r); }
   // old asks list: joins its build when it names one, else its own row
   for (const a of src.asks ?? []) {
     const bid = askBuild(a);
