@@ -1,4 +1,4 @@
-/** AI snippets tab: ready-made prompts run through Molly / the AI. Trigger words: "ask", "molly", "ai", "snippet". */
+/** AI snippets tab: ready-made prompts run through Gizmo / the AI. Trigger words: "ask", "gizmo", "ai", "snippet". */
 import { ai, ask, category, confirm, op, say } from './build';
 
 const c = category('snippets', 'ai');
@@ -7,12 +7,12 @@ const A = (g: string, id: string, l: string, d: string, p: string[], prompt: str
 const { chain: C, wizard: W } = c;
 
 /* ---------------------------------------------------------------- ask */
-A('Ask', 'ask', 'Ask anything', 'A free question, answered out loud.', ['ask {text}', 'question {text}', 'hey molly {text}'], '{text}');
+A('Ask', 'ask', 'Ask anything', 'A free question, answered out loud.', ['ask {text}', 'question {text}', 'hey gizmo {text}', 'hey molly {text}'], '{text}');
 A('Ask', 'explain', 'Explain simply', 'Explains something like you\'re new to it.', ['explain {text} simply', 'eli5 {text}', 'explain like im five {text}'], 'Explain simply, in four sentences, for someone new to it: {text}');
 A('Ask', 'define', 'Define', 'One-sentence definition.', ['define {text}', 'what does {text} mean', 'meaning of {text}'], 'Define in one sentence: {text}');
 A('Ask', 'compare', 'Compare', 'Compares two things, pros and cons.', ['compare {text}', 'difference between {text}', 'which is better {text}'], 'Compare these, pros and cons, then a one-line verdict: {text}');
 A('Ask', 'how-to', 'How to', 'Short steps to do something.', ['how to {text}', 'steps to {text}', 'show me how to {text}'], 'Give me short numbered steps to: {text}');
-A('Ask', 'app-help', 'Help with this app', 'Molly answers a question about AmberX or the console.', ['how do i use {text}', 'help with {text}', 'where do i find {text}'], 'Answer from the AmberX and Dev Console codebase: {text}. If it needs tapping through, offer a walkthrough.');
+A('Ask', 'app-help', 'Help with this app', 'Gizmo answers a question about AmberX or the console.', ['how do i use {text}', 'help with {text}', 'where do i find {text}'], 'Answer from the AmberX and Dev Console codebase: {text}. If it needs tapping through, offer a walkthrough.');
 A('Ask', 'translate', 'Translate', 'Translates to the language you say.', ['translate {text}', 'how do you say {text}'], 'Translate as asked (say the result only): {text}');
 A('Ask', 'math', 'Work it out', 'Works out a sum or conversion.', ['calculate {text}', 'work out {text}', 'convert {text}'], 'Work this out, answer first, one line of working: {text}');
 A('Ask', 'fact-check', 'Fact check', 'Says whether a claim holds up, with how sure.', ['fact check {text}', 'is it true that {text}'], 'Fact check, with how confident you are and why: {text}');
