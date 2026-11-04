@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AgentAvatar, BuildOrigin, Button, Icon, Segmented, Slot, originSubtitle, useRuntime } from '@console/axf/react';
+import { AgentAvatar, BuildOrigin, Button, HelperBadge, Icon, Segmented, SelectBox, SelectionBar, Slot, originSubtitle, useMultiSelect, useRuntime, type MultiSelect } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import { WatchLiveFor } from '@console/watchLive';
@@ -161,6 +161,10 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
   const n = core.nextUp(b, rules);
   const split = core.splitCheck(b, rules);
   const ps = core.phases(b);
+  // multi-select steps (click / Ctrl+click / Shift+click / long-press; Ctrl shows checkboxes, a tick keeps them): Send to helper (handover action, registered by the Session sync plugin)
+  const stepIds = useMemo(() => b.steps.map((x) => x.id), [b.steps]);
+  const sel = useMultiSelect(stepIds);
+  const sendSteps = (ids: string[]) => { if (!rt.dispatch(`handover.send:${b.id}:${ids.join(',')}`)) rt.toast('Install the Session sync plugin to send steps to a helper.', 'warning'); };
   const open = (m: Mode) => { setMode(m); setText(''); setStepEst(''); setTitle(b.title); setDetail(b.detail); setBranch(b.branch); setCategory(b.category); };
   const save = async () => {
     if (mode === 'note' && text.trim()) { if (await act({ action: 'note', id: b.id, text })) setMode(null); }
@@ -174,7 +178,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
   return (
     <article className={`${embedded ? 'oc-embedded ' : ''}pd-card is-${core.isFinished(b.status) ? 'complete' : b.status === 'failed' ? 'failed' : b.status === 'blocked' ? 'broken' : 'pending'}`} role={embedded ? undefined : "listitem"} data-fx-ctx-target="axf-orchestrator-build" data-fx-ctx-payload={b.id}>
       <div className="pd-card__top">
-        <h2 className="pd-card__title">{embedded ? <span className="fx-small fx-muted">Build</span> : b.title}<span className="fx-muted fx-small fx-mono"> {b.id}</span>{b.hidden && <span className="fx-muted fx-small"> · hidden</span>}</h2>
+        <h2 className="pd-card__title">{embedded ? <span className="fx-small fx-muted">Build</span> : b.title}<HelperBadge build={b.id} className="oc-helper" /><span className="fx-muted fx-small fx-mono"> {b.id}</span>{b.hidden && <span className="fx-muted fx-small"> · hidden</span>}</h2>
         <button data-fx-row className={`pd-badge oc-badge is-${b.status}`} aria-expanded={statusOpen} aria-label={`Status: ${b.status}. Change`} onClick={() => setStatusOpen((o) => !o)}>{(core.STATUS_LABEL as Record<string, string>)[b.status]}</button>
       </div>
       {statusOpen && (
@@ -208,13 +212,14 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
           <label className="pd-field">Branch<input className="fx-input" value={branch} onChange={(e) => setBranch(e.target.value)} /></label>
         </div>
       ) : b.detail && <p className="pd-detail">{b.detail}</p>}
+      {!embedded && <SelectionBar sel={sel} label="Steps" actions={[{ id: 'send', label: 'Send to helper', icon: 'send', tone: 'primary', run: sendSteps }, { id: 'send-whole', label: 'Send the whole build', icon: 'package', run: () => sendSteps([]) }]} />}
       {!embedded && ps.map((ph) => (
         <div key={ph.index} className="pd-thread">
           <h3>{ph.name} · <span className={`oc-model is-${ph.model.toLowerCase()}`}>{ph.model}</span>{ph.gate && <span className="fx-muted fx-small"> · {switchNote(ph)}</span>}{ph.minutesLeft ? <span className="pd-est"> · {core.formatMinutes(ph.minutesLeft)} left</span> : null}</h3>
           {ph.groups.map((g, gi) => (
             <div key={gi} className="oc-group">
               {g.label && <h4 className="oc-group__head">{g.label}<span className="fx-muted fx-small"> · {g.done}/{g.steps.length}{g.minutesLeft ? ` · ${core.formatMinutes(g.minutesLeft)} left` : ''}</span></h4>}
-              {g.steps.map((s) => <StepRow key={s.id} b={b} s={s as Step & { index: number }} locked={!ph.approved} busy={busy} act={act} last={b.steps.length - 1} />)}
+              {g.steps.map((s) => <StepRow key={s.id} b={b} s={s as Step & { index: number }} locked={!ph.approved} busy={busy} act={act} last={b.steps.length - 1} sel={sel} />)}
             </div>
           ))}
         </div>
@@ -261,13 +266,14 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
   );
 }
 
-function StepRow({ b, s, locked, busy, act, last }: { b: Build; s: Step & { index: number }; locked: boolean; busy: boolean; act: Act; last: number }) {
+function StepRow({ b, s, locked, busy, act, last, sel }: { b: Build; s: Step & { index: number }; locked: boolean; busy: boolean; act: Act; last: number; sel?: MultiSelect }) {
   const other = s.model === 'Fable' ? 'Opus' : 'Fable';
   return (
-    <div className={`pd-entry is-mono ${s.done ? 'is-done' : ''}`}>
+    <div className={`pd-entry is-mono ${s.done ? 'is-done' : ''}`} data-fx-ctx-target="axf-step" data-fx-ctx-payload={`${b.id}.${s.id}`} {...(sel ? sel.rowProps(s.id) : {})}>
+      {sel && <SelectBox sel={sel} id={s.id} label={`Select ${s.id}`} />}
       <input type="checkbox" className="pd-tick" checked={s.done} disabled={busy || core.isFinished(b.status) || (locked && !s.done)} onChange={(ev) => void act({ action: 'step', id: b.id, step: s.id, done: ev.target.checked })} aria-label={`Step ${s.id} done`} title={locked ? 'Approve the model switch first' : s.done && s.doneAt ? `Done ${fmtTime(s.doneAt)}` : 'Mark this step done'} />
       <time>{s.id}{s.estimate && <span className="pd-est"> · ~{s.estimate}</span>}</time>
-      <p>{s.text}{s.why && <span className="fx-muted"> — {s.why}</span>}{s.session === 'new' && <span className="oc-flag"> new session</span>}{s.agent && <span className="oc-flag"> sub-agent ok</span>}</p>
+      <p>{s.text}{s.why && <span className="fx-muted"> — {s.why}</span>}{s.session === 'new' && <span className="oc-flag"> new session</span>}{s.agent && <span className="oc-flag"> sub-agent ok</span>} <HelperBadge build={b.id} step={s.id} /></p>
       <span className="oc-steptools">
         <button data-fx-row className={`oc-model is-${s.model.toLowerCase()}`} disabled={busy || s.done} title={`Switch this step to ${other}`} onClick={() => act({ action: 'edit-step', id: b.id, step: s.id, stepData: { model: other } })}>{s.model}</button>
         <button className="fx-iconbtn" disabled={busy || s.index === 0} title="Move up" onClick={() => act({ action: 'move-step', id: b.id, step: s.id, dir: 'up' })}><Icon name="chevron-up" size={13} /></button>

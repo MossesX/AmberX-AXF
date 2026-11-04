@@ -7,7 +7,7 @@
  */
 import { useEffect } from 'react';
 import { useRuntime, type AxfWebLibrary } from '@console/axf/react';
-import { Channel, JoinDialog, JoinWatcher, SendDialog, SessionsPage, SettingsPanel, WidgetsDialog } from './ui';
+import { JoinDialog, JoinWatcher, SendDialog, SessionsPage, SettingsPanel, WidgetsDialog } from './ui';
 import { DIALOG_JOIN, DIALOG_SEND, DIALOG_WIDGETS, FOLDER, ID, VIEW, actions, isSecondary, startLive } from './core';
 import { appMenu } from './menu';
 import './session-sync.css';
@@ -28,6 +28,9 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('session-sync.widgets', ([host = 'banner']) => rt.openDialog(DIALOG_WIDGETS, { host: host.startsWith('window:') || host === 'toolbar' ? host : host ? `window:${host}` : 'banner' }), { label: 'Add widgets…', params: true, searchable: true });
     rt.actions.register('session-sync.send', ([payload = '']) => { if (isSecondary()) { rt.toast("Secondary sessions can't send work; the orchestrator hands it to you.", 'warning', 'Session sync'); return; } const p = String(payload); const b = buildOf(p); const s = stepOf(p); rt.openDialog(DIALOG_SEND, { build: b, steps: s ? [s] : [] }); }, { label: 'Send to helper', params: true, searchable: false });
     rt.actions.register('session-sync.send-step', ([payload = '', how = 'new']) => { if (isSecondary()) return; const p = String(payload); const b = buildOf(p); const s = stepOf(p); if (!b) return; rt.openDialog(DIALOG_SEND, { build: b, steps: how === 'with' ? [] : s ? [s] : [], withCurrent: how === 'with' }); }, { label: 'Send step to helper', params: true, searchable: false });
+    // generic handover actions other lists dispatch without naming this plugin (`handover.send:<build>:<s1,s2>`)
+    rt.actions.register('handover.send', ([build = '', steps = '']) => { if (isSecondary()) { rt.toast("Secondary sessions can't send work; the orchestrator hands it to you.", 'warning', 'Session sync'); return; } rt.openDialog(DIALOG_SEND, { build: String(build), steps: String(steps).split(',').map((x) => x.trim()).filter(Boolean) }); }, { label: 'Send to helper (build, steps)', params: true, searchable: false });
+    rt.actions.register('handover.take-back', ([build = '']) => { if (!isSecondary()) { rt.navigate(VIEW); rt.toast(`Take ${String(build)} back from the Sessions panel.`, 'info', 'Session sync'); } }, { label: 'Take back from helper', params: true, searchable: false });
     rt.actions.register('session-sync.take-back', ([payload = '']) => { if (isSecondary()) return; rt.navigate(VIEW); rt.toast(`Take ${buildOf(String(payload))} back from the Sessions panel (Offers and assigned work).`, 'info', 'Session sync'); }, { label: "Remove from helper's queue / take back", params: true, searchable: false });
   },
   appMenu,

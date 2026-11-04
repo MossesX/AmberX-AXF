@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent as RKeyboardEvent, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { AgentAvatar, BuildOrigin, Button, Checkbox, Chip, Icon, IconButton, Meter, Segmented, SelectField, Slot, Switch, originSubtitle, useRuntime } from '@console/axf/react';
+import { AgentAvatar, BuildOrigin, Button, Checkbox, Chip, Icon, IconButton, Meter, Segmented, SelectField, Slot, Switch, originSubtitle, useRuntime, HelperBadge } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridGroup } from '@console/axf/libs/datagrid';
 import { pluginApi } from '@console/plugins';
 import './builds.css';
@@ -288,7 +288,7 @@ function BuildsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
   const rename = (b: BuildV) => (title: string) => send('ops', { ops: [{ op: 'rename-build', id: b.id, title }] }, rt.toast);
   const columns: GridColumn<BuildV>[] = [
     { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-space) * 30), 4fr)', fixed: true, sortable: true, sortValue: (b) => b.title.toLowerCase(),
-      render: (b) => <span className="axp-builds__cell-title"><AgentAvatar inText={`${b.id}\n${b.detail}`} size="small" /><InlineName label="Build name" value={b.title} onSave={rename(b)} /><span className="fx-small fx-muted fx-mono">{b.id}{b.profiles.length > 1 ? ` · also in ${b.profiles.filter((p) => p !== state.profile).join(', ')}` : ''}</span>{originSubtitle(b.origin) && <span className="axf-origin-sub" title={originSubtitle(b.origin, 600)}>“{originSubtitle(b.origin)}”</span>}</span> },
+      render: (b) => <span className="axp-builds__cell-title"><AgentAvatar inText={`${b.id}\n${b.detail}`} size="small" /><HelperBadge build={b.id} /><InlineName label="Build name" value={b.title} onSave={rename(b)} /><span className="fx-small fx-muted fx-mono">{b.id}{b.profiles.length > 1 ? ` · also in ${b.profiles.filter((p) => p !== state.profile).join(', ')}` : ''}</span>{originSubtitle(b.origin) && <span className="axf-origin-sub" title={originSubtitle(b.origin, 600)}>“{originSubtitle(b.origin)}”</span>}</span> },
     { id: 'status', label: 'Status', width: 'calc(var(--fx-space) * 14)', sortable: true, sortValue: (b) => b.status, render: (b) => <StatusChip b={b} /> },
     { id: 'progress', label: 'Progress', width: 'calc(var(--fx-space) * 22)', sortable: true, sortValue: (b) => b.progress.pct, render: (b) => <Bar p={b.progress} label={`${b.title}: ${b.progress.done} of ${b.progress.total} steps`} /> },
     { id: 'steps', label: 'Steps', width: 'calc(var(--fx-space) * 9)', align: 'end', sortable: true, sortValue: (b) => b.progress.total, render: (b) => <span className="fx-small">{b.progress.done}/{b.progress.total}</span> },
@@ -332,8 +332,8 @@ function BuildDetail({ b }: { b: BuildV }) {
       <p className="fx-small fx-muted">{b.kind === 'epic' ? `Plan epic ${b.planRef} · ` : ''}{b.branch ? `branch ${b.branch} · ` : ''}{b.pr ? `PR ${b.pr} · ` : ''}rev {b.rev}{b.rearranged ? ' · rearranged (Restore default in the Steps view)' : ''}</p>
       <ol className="axp-builds__steps">
         {b.steps.map((s) => (
-          <li key={s.uid} className={s.done ? 'is-done' : s.next ? 'is-next' : ''}>
-            <StepTick s={s} toast={rt.toast} />
+          <li key={s.uid} className={s.done ? 'is-done' : s.next ? 'is-next' : ''} data-fx-ctx-target="axf-step" data-fx-ctx-payload={`${b.id}.${s.id}`}>
+            <StepTick s={s} toast={rt.toast} /><HelperBadge build={b.id} step={s.id} />
             <Bar p={{ total: 1, done: s.done ? 1 : 0, pct: s.done ? 100 : 0, active: s.next && b.status === 'running' }} label={`${s.id}: ${s.done ? 'done' : s.next ? 'next' : 'to do'}`} />
             <span className="fx-mono fx-small">{s.id}</span> <Chip tone={s.model === 'Fable' ? 'accent' : undefined}>{s.model}</Chip> <span>{stepName(s)}</span>{s.estimate && <span className="fx-small fx-muted"> · ~{s.estimate}</span>}
           </li>
