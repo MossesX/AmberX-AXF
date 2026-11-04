@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 813,
- "updatedAt": "2026-11-04T15:57:59.973Z",
+ "rev": 814,
+ "updatedAt": "2026-11-04T15:58:56.744Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -80683,26 +80683,10 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Fable",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-04T15:29:59.385Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mw29w9v70cz5z4": "2026-11-04T15:29:59.387Z",
-     "st-mw29w9v70dwpp9": "2026-11-04T15:29:59.387Z",
-     "st-mw29w9v70ehlez": "2026-11-04T15:29:59.387Z",
-     "st-mw29w9v70ffnc8": "2026-11-04T15:29:59.387Z",
-     "st-mw29w9v70g38uh": "2026-11-04T15:29:59.387Z"
-    }
-   },
+   "pending": null,
    "queue": null,
    "defaultAt": "2026-11-04T15:29:59.387Z",
    "rearranged": false,

@@ -683,9 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 12:44 UTC · `browser-automation` note (current) · foreign-write
-- 2026-11-04 12:44 UTC · `profile-switcher-widget` note (current) · foreign-write
-- 2026-11-04 12:44 UTC · `app-style-override` note (current) · foreign-write
 - 2026-11-04 12:46 UTC · `hotfix-build-manager` s1 done (current) · builds-page
 - 2026-11-04 12:46 UTC · `profile-manager` note (current) · foreign-write
 - 2026-11-04 12:46 UTC · `molly-console-commands` → complete, note (current) · foreign-write
@@ -1083,6 +1080,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:57 UTC · `tab-group-assets` s2 done (current) · foreign-write
 - 2026-11-04 15:57 UTC · `tab-group-assets` s2 done (current) · orchestrator
 - 2026-11-04 15:57 UTC · `jump-menu-asset` s3 done, s4 done (current) · foreign-write
+- 2026-11-04 15:57 UTC · `jump-menu-asset` s2 done (current) · orchestrator
+- 2026-11-04 15:57 UTC · `jump-menu-asset` s3 done (current) · orchestrator
+- 2026-11-04 15:57 UTC · `jump-menu-asset` s4 done (current) · orchestrator
 
 ## Token passes (log)
 
