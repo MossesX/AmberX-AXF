@@ -16,6 +16,7 @@ interactive CLI session). Sessions live on the server (sessions.py) so Mosh mode
   POST sessions/{id}/mosh {on}       DELETE sessions/{id} (detaches a persistent tab)   POST sessions/{id}/kill
   WS   sessions/{id}/ws?ticket=…&have=<offset>
   GET/PUT settings      POST ssh/keygen {replace?}
+  GET/PUT new-session {newSession}     'When a new session starts': nothing | quiet (default) | front (terminal-no-focus)
 Sessions nav (left rail, Nov 3 2026; nav.py):
   GET  nav                             My sessions (Brett's tmux + claude.ai feeds), Agents (headless), Connections, Recent
   GET  nav/feed?id=&since=             one chat session's mirror feed (notes + console MCP calls)
@@ -254,11 +255,28 @@ def hub_runs(since: int = 0) -> dict[str, Any]:
 @router.get("/headless")
 def headless() -> dict[str, Any]:
     """Headless Claude Code sessions running on the VPS in tmux (deploy/claude-headless.sh, Oct 26 2026): the browser
-    opens each new one in a VPS tab attached to it and brings the terminal window to the front."""
+    gives each new one a VPS tab attached to it; `newSession` says how (terminal-no-focus, Nov 4 2026: quietly in the
+    background by default, never raising the window unless the setting is front)."""
     health.ensure()
-    on = bool(store.settings().get("showHeadless", True))
+    st = store.settings()
+    on = bool(st.get("showHeadless", True))
     out = sessions.headless_sessions() if on else {"ready": False, "items": [], "why": "switched off"}
-    return {**out, "on": on, "now": int(time.time() * 1000)}
+    return {**out, "on": on, "newSession": st.get("newSession", "quiet"), "now": int(time.time() * 1000)}
+
+
+@router.get("/new-session")
+def get_new_session() -> dict[str, Any]:
+    """'When a new session starts' (terminal-no-focus): nothing | quiet | front."""
+    return {"newSession": store.settings().get("newSession", "quiet"), "choices": list(store.CHOICES["newSession"])}
+
+
+@router.put("/new-session")
+def put_new_session(body: dict[str, Any]) -> dict[str, Any]:
+    try:
+        s = store.save_settings({"newSession": body.get("newSession", body.get("value"))})
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+    return {"newSession": s["newSession"], "choices": list(store.CHOICES["newSession"])}
 
 
 @router.get("/settings")

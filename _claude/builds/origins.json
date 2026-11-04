@@ -601,6 +601,18 @@
    "from": "detail",
    "addenda": []
   },
+  "crew-profiles": {
+   "said": "I want all the employees to have persona sections and skills and tools and all that, just like the agents and the agent manager.",
+   "at": "2026-11-04T14:05:31.170Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "crew-retrain": {
    "said": "every swarm agent can take every job type (skills, home job as preference only); new job types feature-build and ops-fix; router picks any free agent under budget; every headless launch is assigned to a named agent first and booked on its card; back-assign today's headless builds; Breakroom cards show skills, home job, current job. Booked on Landin' Lenny.",
    "at": "2026-11-03",

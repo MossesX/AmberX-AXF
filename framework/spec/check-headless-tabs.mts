@@ -14,7 +14,7 @@ import { fileURLToPath } from 'node:url';
 import { createMeter, importsOf, memoryChain, mentionsOf, rulesOf, startRule } from '../../deploy/claude-meter.mjs';
 import { reorderIndex, tabPressIntent, TAB_HOLD_MS } from '../core/engines/windows.ts';
 import { pinchSteps, resolveSize, stepSize } from '../../apps/console-web/plugins/console-terminal/web/textsize.ts';
-import { advance, chainTree, modelName, money, persistable, replay, revealTick, shownOf, statusOf, steps, tmuxName, toOpen, treeOrder, REVEAL0, type ChainItem } from '../../apps/console-web/plugins/console-terminal/web/headless-core.ts';
+import { advance, chainTree, modelName, money, persistable, replay, revealTick, shownOf, statusOf, steps, tmuxName, toOpen, treeOrder, REVEAL0, planNew, newSessionMode, type ChainItem } from '../../apps/console-web/plugins/console-terminal/web/headless-core.ts';
 
 const REPO = fileURLToPath(new URL('../..', import.meta.url));
 let ok = 0;
@@ -97,6 +97,17 @@ check(persistable({ kind: 'vps' }) && persistable({ kind: 'console' }) && persis
 check(tmuxName({ kind: 'claude', via: 'vps' }, 'abc123') === 'axt-claude-vps-abc123' && /^axt-[A-Za-z0-9._-]+$/.test(tmuxName({ kind: 'vps' })), 'tab tmux names are axt-…');
 const items = [{ name: 'axf-b', createdAt: 2 }, { name: 'axf-a', createdAt: 1 }, { name: 'axf-shown', createdAt: 0 }, { name: 'axf-closed', createdAt: 0 }, { name: 'axt-tab', createdAt: 0 }, { name: 'axf-;x', createdAt: 0 }];
 check(toOpen(items, new Set(['axf-shown']), new Set(['axf-closed'])).map((h) => h.name).join() === 'axf-a,axf-b', 'auto-open: running headless sessions no tab shows, unless closed by Brett, oldest first');
+// ---- no focus stealing (terminal-no-focus, Nov 4 2026): 'When a new session starts'
+const fresh = toOpen(items, new Set(), new Set());
+check(newSessionMode(undefined) === 'quiet' && newSessionMode('bogus') === 'quiet' && newSessionMode('front') === 'front', 'new session mode: quiet by default, unknown values fall back to quiet');
+const q = planNew('quiet', fresh, true);
+check(q.open.length === fresh.length && !q.raise && !q.wait.length, 'quiet + a terminal window open: background tabs, never raised');
+const qn = planNew('quiet', fresh, false);
+check(!qn.open.length && qn.wait.length === fresh.length && !qn.raise, 'quiet + no terminal window: no window pops, they only count on the badge');
+const nn = planNew('nothing', fresh, true);
+check(!nn.open.length && !nn.wait.length, 'do nothing: no tab, no count');
+const ff = planNew('front', fresh, false);
+check(ff.open.length === fresh.length && ff.raise, 'bring to front: the old open-and-raise');
 const now = Date.parse('2026-11-03T12:00:00Z');
 check(statusOf({ status: 'working', toolRunning: false, lastEventAt: '2026-11-03T11:58:00Z' }, now) === 'waiting'
   && statusOf({ status: 'working', toolRunning: true, lastEventAt: '2026-11-03T11:58:00Z' }, now) === 'working'

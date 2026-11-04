@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 692,
- "updatedAt": "2026-11-04T13:48:53.039Z",
+ "rev": 705,
+ "updatedAt": "2026-11-04T14:05:33.346Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -71668,14 +71668,14 @@
    "title": "Land round 2: catch up and land the rest, Molly first",
    "category": "Landing",
    "detail": "Agent: Landin' Lenny. One PR at a time: update from main, resolve conflicts keeping both sides, CI green, merge. Order: #288 (+#266) → #294 #295 → #296 → #298 → #281 #291 #293 → #289 #269 → #300. Don't merge WIP #299 #301 #302; close #297 if orphan dup. Redeploy console + Molly after #288, all apps at the end.",
-   "status": "running",
+   "status": "blocked",
    "hidden": false,
    "source": "console",
    "pendingId": "land-round-2",
    "branch": "claude/land-round-2",
    "pr": "",
    "createdAt": "2026-11-04T10:43:58.630Z",
-   "updatedAt": "2026-11-04T13:31:14.733Z",
+   "updatedAt": "2026-11-04T13:52:35.878Z",
    "builtAt": "",
    "notes": [
     {
@@ -71685,6 +71685,10 @@
     {
      "text": "#288 merged (b14674b5) with #266 inside; #266 closed as superseded. The lost GitHub push event (PR outage) needed a fresh push. The shared GitHub token ran out of its 5000/h budget twice (other pollers).",
      "at": "2026-11-04T12:06:01.519Z"
+    },
+    {
+     "text": "Stopped at the $15 per-build cap (~$42 in tokens). Landed #288 (+#266), #294, #295; closed #266 #297. #296 pushed (CI unread: GitHub budget out); #298 #281 #291 #293 #289 #269 resolved on local branches land/<pr> (#281 now conflicts with #295 in runtime.ts); #300 needs a rework on #269. Blocker: the shared GitHub token empties its 5000/h budget in ~25 min. Report _claude/builds/reports/land-round-2.md",
+     "at": "2026-11-04T13:52:34.961Z"
     }
    ],
    "approvals": [],
@@ -71744,7 +71748,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T10:43:58.631Z",
-     "updatedAt": "2026-11-04T13:37:15.754Z"
+     "updatedAt": "2026-11-04T14:04:14.695Z"
     },
     {
      "id": "s3",
@@ -71766,7 +71770,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T10:43:58.631Z",
-     "updatedAt": "2026-11-04T13:37:15.754Z"
+     "updatedAt": "2026-11-04T14:04:14.695Z"
     },
     {
      "id": "s4",
@@ -71909,7 +71913,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -71952,12 +71956,16 @@
    "branch": "claude/terminal-no-focus",
    "pr": "#305",
    "createdAt": "2026-11-04T10:48:28.927Z",
-   "updatedAt": "2026-11-04T11:08:44.817Z",
+   "updatedAt": "2026-11-04T14:03:43.987Z",
    "builtAt": "2026-11-04T10:55:44.452Z",
    "notes": [
     {
      "text": "Agent Janitor Joey. PR #305: setting newSession (quiet default), REST/MCP/CLI new-session, toolbar badge. CI fixes: help coverage, menu-reach, re-baked stale framework-drafts.json (pre-existing on main). UI Review r-20261104-22549d23 (non-blocking).",
      "at": "2026-11-04T11:08:44.817Z"
+    },
+    {
+     "text": "Reconciler: PR #305 merged",
+     "at": "2026-11-04T14:03:43.987Z"
     }
    ],
    "approvals": [],
@@ -72050,7 +72058,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -72060,12 +72068,12 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-04T10:48:28.927Z",
-    "builtAt": "",
+    "builtAt": "2026-11-04T10:55:44.452Z",
     "prefixSteps": true,
     "stepAt": {
-     "st-mw1zuf0z01n20r": "2026-11-04T10:48:28.928Z",
-     "st-mw1zuf0z02rx81": "2026-11-04T10:48:28.928Z",
-     "st-mw1zuf0z03q0fp": "2026-11-04T10:48:28.928Z"
+     "st-mw1zu90g04a7fx": "2026-11-04T10:48:28.928Z",
+     "st-mw1zu90g05qn57": "2026-11-04T10:48:28.928Z",
+     "st-mw1zu90g069oa8": "2026-11-04T10:48:28.928Z"
     }
    },
    "queue": null,
@@ -72398,9 +72406,9 @@
      "done": true,
      "doneAt": "2026-11-04T13:28:12.810Z",
      "note": "",
-     "rev": 5,
+     "rev": 4,
      "createdAt": "2026-11-04T12:18:43.491Z",
-     "updatedAt": "2026-11-04T13:30:27.752Z"
+     "updatedAt": "2026-11-04T14:04:14.695Z"
     },
     {
      "id": "s2",
@@ -72422,7 +72430,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T12:18:43.491Z",
-     "updatedAt": "2026-11-04T12:53:22.147Z"
+     "updatedAt": "2026-11-04T14:04:14.695Z"
     },
     {
      "id": "s3",
@@ -72444,7 +72452,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T12:18:43.491Z",
-     "updatedAt": "2026-11-04T12:53:22.147Z"
+     "updatedAt": "2026-11-04T14:04:14.695Z"
     },
     {
      "id": "s4",
@@ -72466,7 +72474,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T12:18:43.491Z",
-     "updatedAt": "2026-11-04T12:53:22.147Z"
+     "updatedAt": "2026-11-04T14:04:14.695Z"
     }
    ],
    "profiles": [
@@ -72515,9 +72523,14 @@
    "branch": "claude/plugin-lazy-load",
    "pr": "#298",
    "createdAt": "2026-11-04T12:29:55.129Z",
-   "updatedAt": "2026-11-04T12:36:33.404Z",
+   "updatedAt": "2026-11-04T14:04:16.930Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged main into #298, seeded 20 banner plugins, fixed a first-visit hang (per-plugin re-install of all libraries; CI theme-swap timeout) and plugin-lifecycle refs. Startup 4.46 -> 2.07 MB. CI dispatched on c97d1967e.",
+     "at": "2026-11-04T14:04:16.930Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -72592,12 +72605,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T14:04:15.625Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T12:29:55.130Z",
-     "updatedAt": "2026-11-04T12:29:55.130Z"
+     "updatedAt": "2026-11-04T14:04:17.375Z"
     },
     {
      "id": "s4",
@@ -72630,7 +72643,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -72992,7 +73005,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-04T13:07:57.250Z",
-     "updatedAt": "2026-11-04T13:48:40.309Z"
+     "updatedAt": "2026-11-04T13:50:19.192Z"
     }
    ],
    "profiles": [
@@ -73037,15 +73050,15 @@
    "title": "Follow Amber in the Claude badge: tap toggles, two-tone + animated, 15+ badge looks, brand icons",
    "category": "",
    "detail": "Follow Amber goes into the existing Claude badge (no new widget): tap toggles the shared Follow Amber switch, old tap moves to the badge's context menu. On = two-tone with an animation (10+ styles, speed, intensity, reduced motion = static). 15+ badge looks as badge assets plus brand-icon looks and an icon picker over every brand-package icon. REST + MCP + CLI (badge_styles_list, badge_style_set, badge_animation_set). console_show guidance covers casual mentions; Claude setting followAmber.casual.",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/follow-amber-switch",
-   "pr": "",
+   "pr": "#312",
    "createdAt": "2026-11-04T13:33:57.300Z",
-   "updatedAt": "2026-11-04T13:33:57.300Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T13:53:13.136Z",
+   "builtAt": "2026-11-04T13:53:13.136Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -73093,116 +73106,6 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mw25vaqn01b2pn",
-     "title": "",
-     "text": "Claude badge: tap toggles Follow Amber (shared followAmber.enabled), old actions in its context menu, two-tone when on, pulse + last opened",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T13:33:57.303Z",
-     "updatedAt": "2026-11-04T13:37:15.512Z"
-    },
-    {
-     "id": "s2",
-     "uid": "st-mw25vaqn02ppwl",
-     "title": "",
-     "text": "Badge looks (15+ badge assets incl. brand-icon looks) and 12 animations (CSS only, reduced motion = static) in the framework badge renderer",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T13:33:57.303Z",
-     "updatedAt": "2026-11-04T13:37:15.512Z"
-    },
-    {
-     "id": "s3",
-     "uid": "st-mw25vaqo030ow4",
-     "title": "",
-     "text": "Claude badge settings: look picker, animation picker per state with live previews, speed/intensity/colours, brand icon picker",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T13:33:57.303Z",
-     "updatedAt": "2026-11-04T13:37:15.512Z"
-    },
-    {
-     "id": "s4",
-     "uid": "st-mw25vaqo04gtin",
-     "title": "",
-     "text": "REST + MCP + CLI: badge_styles_list, badge_style_set, badge_animation_set; console_show casual-mention guidance; followAmber.casual setting",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "25 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T13:33:57.303Z",
-     "updatedAt": "2026-11-04T13:37:15.512Z"
-    },
-    {
-     "id": "s5",
-     "uid": "st-mw25vaqo056afs",
-     "title": "",
-     "text": "Checks, type-check, phone screenshot to UI Review, report, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T13:33:57.303Z",
-     "updatedAt": "2026-11-04T13:37:15.512Z"
-    },
-    {
-     "id": "s6-5",
      "uid": "st-mw25r1tg060td6",
      "title": "",
      "text": "Claude badge: tap toggles Follow Amber (shared followAmber.enabled), old actions in its context menu, two-tone when on, pulse + last opened",
@@ -73216,15 +73119,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T13:50:19.692Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T13:33:57.303Z",
-     "updatedAt": "2026-11-04T13:33:57.303Z"
+     "updatedAt": "2026-11-04T13:50:19.743Z"
     },
     {
-     "id": "s7-6",
+     "id": "s2",
      "uid": "st-mw25r1tg074rxl",
      "title": "",
      "text": "Badge looks (15+ badge assets incl. brand-icon looks) and 12 animations (CSS only, reduced motion = static) in the framework badge renderer",
@@ -73238,18 +73141,134 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T13:50:20.766Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T13:33:57.303Z",
-     "updatedAt": "2026-11-04T13:33:57.303Z"
+     "updatedAt": "2026-11-04T13:50:20.827Z"
     },
     {
-     "id": "s8-7",
+     "id": "s3",
      "uid": "st-mw25r1tg08ldgr",
      "title": "",
      "text": "Claude badge settings: look picker, animation picker per state with live previews, speed/intensity/colours, brand icon picker",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T13:50:22.091Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-04T13:33:57.303Z",
+     "updatedAt": "2026-11-04T13:50:22.141Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw25r1tg0981tq",
+     "title": "",
+     "text": "REST + MCP + CLI: badge_styles_list, badge_style_set, badge_animation_set; console_show casual-mention guidance; followAmber.casual setting",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T13:50:23.162Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-04T13:33:57.303Z",
+     "updatedAt": "2026-11-04T13:50:23.280Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mw25r1tg0a27qi",
+     "title": "",
+     "text": "Checks, type-check, phone screenshot to UI Review, report, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T13:53:13.136Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-04T13:33:57.303Z",
+     "updatedAt": "2026-11-04T13:53:32.829Z"
+    }
+   ],
+   "profiles": [
+    "current"
+   ],
+   "order": {
+    "current": 29
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 7,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-04T13:33:57.303Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "crew-profiles",
+   "title": "Every employee gets a full agent profile (one roster, job titles, crew + ID cards)",
+   "category": "",
+   "detail": "One roster: every crew member is an Agent manager agent with a job title (Assistant for the former Agent manager agents). Profile sections persona, role, skills, tools, model, memory, safety, pay, stats, avatar, reports to. Roster adds Marco, Amber, Patches, Gizmo, Polo, Conrad, Chachi, Brownie, Ashes, Jennifer; Molly removed. Crew window rows: collapsible crew card + ID card, working on top. REST + MCP + CLI crew_list/crew_get/crew_update.",
+   "status": "pending",
+   "hidden": false,
+   "source": "code",
+   "pendingId": "crew-profiles",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-04T14:05:31.170Z",
+   "updatedAt": "2026-11-04T14:05:31.170Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want all the employees to have persona sections and skills and tools and all that, just like the agents and the agent manager.",
+    "at": "2026-11-04T14:05:31.170Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw26vo11018772",
+     "title": "",
+     "text": "One profile model: crew-profile@1 roster store (persona, role, skills, tools, model, memory, safety, pay, stats, avatar, reportsTo, jobTitle); Agent manager agents linked as Assistants, no duplicate data",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -73264,19 +73283,19 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-04T13:33:57.303Z",
-     "updatedAt": "2026-11-04T13:33:57.303Z"
+     "createdAt": "2026-11-04T14:05:31.171Z",
+     "updatedAt": "2026-11-04T14:05:32.221Z"
     },
     {
-     "id": "s9-8",
-     "uid": "st-mw25r1tg0981tq",
+     "id": "s2",
+     "uid": "st-mw26vo1102tft3",
      "title": "",
-     "text": "REST + MCP + CLI: badge_styles_list, badge_style_set, badge_animation_set; console_show casual-mention guidance; followAmber.casual setting",
+     "text": "Roster: Brett (boss), Marco, Amber, Patches, Gizmo ($8), Polo, Conrad, Chachi, Brownie, Ashes, Jennifer + existing crew with titles; Molly removed from agent lists; stats kept; write-ups from shared memory",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "25 min",
+     "estimate": "30 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -73286,19 +73305,19 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-04T13:33:57.303Z",
-     "updatedAt": "2026-11-04T13:33:57.303Z"
+     "createdAt": "2026-11-04T14:05:31.171Z",
+     "updatedAt": "2026-11-04T14:05:32.221Z"
     },
     {
-     "id": "s10-9",
-     "uid": "st-mw25r1tg0a27qi",
+     "id": "s3",
+     "uid": "st-mw26vo1103hmdh",
      "title": "",
-     "text": "Checks, type-check, phone screenshot to UI Review, report, PR",
+     "text": "REST + MCP + CLI: crew_list, crew_get, crew_update (owner-only pay, tools, safety, job title)",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "20 min",
+     "estimate": "30 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -73308,24 +73327,107 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-04T13:33:57.303Z",
-     "updatedAt": "2026-11-04T13:33:57.303Z"
+     "createdAt": "2026-11-04T14:05:31.171Z",
+     "updatedAt": "2026-11-04T14:05:32.221Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw26vo1104pif1",
+     "title": "",
+     "text": "Crew window: collapsible rows (avatar + name collapsed; crew card + ID card expanded), expand/collapse all, remembered per member, working on top",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T14:05:31.171Z",
+     "updatedAt": "2026-11-04T14:05:32.221Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mw26vo11056dyt",
+     "title": "",
+     "text": "Agent manager roster tab: profile with a tab per section, editable; Agent swarm + picker read the same roster",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T14:05:31.171Z",
+     "updatedAt": "2026-11-04T14:05:32.221Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mw26vo1106rqdm",
+     "title": "",
+     "text": "Rule in RULES.md, tests + type-check, screenshots to UI Review, report, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T14:05:31.171Z",
+     "updatedAt": "2026-11-04T14:05:32.221Z"
     }
    ],
    "profiles": [
     "current"
    ],
    "order": {
-    "current": 29
+    "current": 30
    },
    "kind": "build",
    "planRef": "",
    "rev": 1,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "code",
+    "planId": "",
+    "createdAt": "2026-11-04T14:05:31.170Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw26vo11018772": "2026-11-04T14:05:31.171Z",
+     "st-mw26vo1102tft3": "2026-11-04T14:05:31.171Z",
+     "st-mw26vo1103hmdh": "2026-11-04T14:05:31.171Z",
+     "st-mw26vo1104pif1": "2026-11-04T14:05:31.171Z",
+     "st-mw26vo11056dyt": "2026-11-04T14:05:31.171Z",
+     "st-mw26vo1106rqdm": "2026-11-04T14:05:31.171Z"
+    }
+   },
    "queue": null,
-   "defaultAt": "2026-11-04T13:33:57.303Z",
+   "defaultAt": "2026-11-04T14:05:32.221Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

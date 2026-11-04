@@ -767,6 +767,13 @@
         "text": "Adds all.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "action:terminal.toolbar",
+        "title": "Output terminal",
+        "text": "Opens the Terminal. A count on the icon means new Claude sessions started in the background; tapping it opens the oldest one you haven't looked at.",
+        "kind": "menu-item",
+        "draft": true
       }
     ],
     "intros": []

@@ -265,6 +265,11 @@ check(h["ready"] is False and h["items"] == [] and h["why"], "ssh failure: not r
 c.put("/p/settings", json={"showHeadless": False})
 check(c.get("/p/headless").json()["on"] is False and c.get("/p/settings").json()["showHeadless"] is False, "switched off in Settings: nothing opens")
 c.put("/p/settings", json={"showHeadless": True})
+# 'When a new session starts' (terminal-no-focus, Nov 4 2026): quiet by default, REST/MCP/CLI route, validated
+check(c.get("/p/new-session").json()["newSession"] == "quiet" and c.get("/p/headless").json()["newSession"] == "quiet", "new sessions: quiet by default, and the headless answer carries it")
+check(c.put("/p/new-session", json={"newSession": "front"}).json()["newSession"] == "front" and c.get("/p/settings").json()["newSession"] == "front", "new-session PUT saves the setting")
+check(c.put("/p/new-session", json={"newSession": "loud"}).status_code == 400 and c.get("/p/new-session").json()["newSession"] == "front", "an unknown mode is refused, the old one stays")
+c.put("/p/settings", json={"newSession": "quiet"})
 
 # systems check item "Terminal reaches the VPS host" (Nov 3 2026, build terminal-vps-host)
 H = sys.modules["axf_console_plugins.terminal_test.health"]
