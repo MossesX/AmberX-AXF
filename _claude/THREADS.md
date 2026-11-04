@@ -669,15 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 17:22 UTC · `console-wake` added (6 steps) (urgent) · orchestrator
-- 2026-11-03 17:22 UTC · `console-wake` → running (urgent) · orchestrator
-- 2026-11-03 17:22 UTC · `console-wake` s1 done (urgent) · orchestrator
-- 2026-11-03 17:25 UTC · `theme-veto-pass` PR #262, merged (urgent) · builds-live
-- 2026-11-03 17:25 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 17:26 UTC · `pass-all` PR #264, merged (urgent) · builds-live
-- 2026-11-03 17:26 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 17:31 UTC · `console-wake` s2 done (urgent) · orchestrator
-- 2026-11-03 17:34 UTC · `plugin-commands-auto` PR #263, merged (urgent) · builds-live
 - 2026-11-03 17:35 UTC · `land-everything` note (urgent) · orchestrator
 - 2026-11-03 17:35 UTC · `land-everything` s9 done (urgent) · orchestrator
 - 2026-11-03 17:42 UTC · `land-everything` note (urgent) · orchestrator
@@ -1069,6 +1060,15 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:22 UTC · `gizmo-terminal` added (8 steps) (current) · foreign-write
 - 2026-11-04 14:22 UTC · `profile-lists-home-card` s3 done (current) · orchestrator
 - 2026-11-04 14:23 UTC · `profile-lists-home-card` s3 done (current) · foreign-write
+- 2026-11-04 14:24 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 14:24 UTC · `land-round-2` note (current) · foreign-write
+- 2026-11-04 14:24 UTC · `crew-profiles` s4 done, s5 done (current) · foreign-write
+- 2026-11-04 14:24 UTC · `urgent-land-gizmo-chat` added (4 steps) (current) · foreign-write
+- 2026-11-04 14:24 UTC · `console-wake-finish` added (5 steps) (current) · foreign-write
+- 2026-11-04 14:24 UTC · `profile-lists-home-card` added (4 steps) (current) · foreign-write
+- 2026-11-04 14:24 UTC · `gizmo-voice` added (12 steps) (current) · foreign-write
+- 2026-11-04 14:24 UTC · `gizmo-terminal` added (16 steps) (current) · foreign-write
+- 2026-11-04 14:24 UTC · `urgent-land-lazy-loader` merged (current) · builds-live
 
 ## Token passes (log)
 
