@@ -1,0 +1,26 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261103-1e14aeffa2",
+  "createdAt": "2026-11-03T23:05:02.084Z",
+  "updatedAt": "2026-11-03T23:05:02.084Z",
+  "kind": "edit",
+  "title": "Lenny: land everything finished (freeze plan step two)",
+  "asked": "",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": null,
+  "closed": null,
+  "state": "running",
+  "status": "running",
+  "surface": "headless",
+  "startedAt": "2026-11-03T23:05:02.084Z",
+  "lastSeenAt": "2026-11-03T23:05:02.084Z"
+}
