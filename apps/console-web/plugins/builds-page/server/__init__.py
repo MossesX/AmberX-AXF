@@ -15,14 +15,24 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
 
+import readcache  # server/readcache.py: every client and Home card shares one progress/state read per profile
+
 router = APIRouter()
 CLI = Path(__file__).resolve().parent.parent / "builds.mjs"
 ROOT = CLI.parents[3]
 MAX_BODY = 256 * 1024
 PROFILE = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
+# a builds store write (any writer: this page, the CLI, other sessions) shows up at once; otherwise reads are shared for 5 s
+WATCH = (ROOT / "_claude" / "builds" / "store.json", ROOT / "_claude" / "builds", ROOT / "framework" / "plan" / "profiles.json")
+
+
+def _read(*args: str) -> dict[str, Any]:
+    return readcache.cached("builds-page:" + " ".join(args), lambda: _run(*args), ttl=5, watch=WATCH)
 
 
 def _run(*args: str) -> dict[str, Any]:
+    if args and args[0] not in ("state", "progress"):
+        readcache.invalidate("builds-page:")
     proc = subprocess.run(["node", str(CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=60,
                           env={**__import__("os").environ, "AXF_ACTOR": "builds-page"})
     out = proc.stdout.strip().splitlines()
@@ -58,12 +68,12 @@ def _profile(p: str | None) -> list[str]:
 
 @router.get("/state")
 def state(profile: str | None = None) -> dict[str, Any]:
-    return _run("state", *_profile(profile))
+    return _read("state", *_profile(profile))
 
 
 @router.get("/progress")
 def progress(profile: str | None = None) -> dict[str, Any]:
-    return _run("progress", *_profile(profile))
+    return _read("progress", *_profile(profile))
 
 
 @router.post("/ops")

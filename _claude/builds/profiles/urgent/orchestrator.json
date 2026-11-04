@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T18:09:53.563Z",
+ "updatedAt": "2026-11-04T21:18:12.331Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3416,7 +3416,7 @@
   {
    "id": "auto-land",
    "title": "Auto-land finished builds (zero-token merge pipeline)",
-   "category": "",
+   "category": "Framework",
    "detail": "Relaunch of stopped auto-land as auto-land-2 (Brett, Nov 3 2026, voice). Agent: Earl the Ear. Plain-script merge pipeline reusing the push banner batch merge; AI only for real conflicts / red CI needing code.",
    "status": "complete",
    "hidden": false,
@@ -4805,7 +4805,7 @@
   {
    "id": "ui-review-shots",
    "title": "UI Review shows its pictures again",
-   "category": "",
+   "category": "Feature",
    "detail": "",
    "status": "complete",
    "hidden": false,
@@ -5468,19 +5468,24 @@
    "title": "Console loads slowly: node process per read, /api/build-queue 500",
    "category": "Urgent",
    "detail": "Host load 45, swap full, axf-console 135% CPU with 23 node processes: every screen/Home-card read spawned node per request per client; GET /api/build-queue 500 on every call. Fix the 500, one shared server cache per source with single-flight + spawn cap, client backoff/hidden-tab/shared reads, reconcile throttle, measure before/after, PR + redeploy.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/urgent-console-perf",
    "pr": "#330",
+   "mergedAt": "2026-11-04T20:36:28Z",
    "createdAt": "2026-11-04T17:04:18.426Z",
-   "updatedAt": "2026-11-04T17:26:36.432Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T20:42:52.547Z",
+   "builtAt": "2026-11-04T20:42:52.547Z",
    "notes": [
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-04T17:26:36.432Z"
+    },
+    {
+     "text": "Reconciler: PR #330 merged",
+     "at": "2026-11-04T20:40:41.548Z"
     }
    ],
    "approvals": [],
@@ -5583,8 +5588,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T20:42:52.547Z",
      "note": "",
      "uid": "st-mw2d9kbx0anew0"
     }
@@ -5593,18 +5598,44 @@
   {
    "id": "land-merge-queue-first",
    "title": "Land the merge queue first, then the waiting batch as one stack",
-   "category": "",
+   "category": "Feature",
    "detail": "",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/merge-queue",
-   "pr": "#320",
+   "branch": "claude/land-batch-1",
+   "pr": "#339",
+   "mergedAt": "2026-11-04T19:51:03Z",
    "createdAt": "2026-11-04T17:34:06.563Z",
-   "updatedAt": "2026-11-04T18:01:23.628Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-04T20:20:21.397Z",
+   "builtAt": "2026-11-04T20:20:21.397Z",
+   "notes": [
+    {
+     "text": "Reconciler: PR #320 merged",
+     "at": "2026-11-04T19:52:46.552Z"
+    },
+    {
+     "text": "Reconciler: PR #320 merged: complete",
+     "at": "2026-11-04T19:57:50.892Z"
+    },
+    {
+     "text": "Reconciler: PR #320 merged: complete",
+     "at": "2026-11-04T20:01:11.298Z"
+    },
+    {
+     "text": "Reconciler: PR #339 merged: complete",
+     "at": "2026-11-04T20:20:21.397Z"
+    },
+    {
+     "text": "Reconciler: PR #339 merged: complete",
+     "at": "2026-11-04T20:19:09.423Z"
+    },
+    {
+     "text": "Reconciler: PR #339 merged: complete",
+     "at": "2026-11-04T20:17:46.236Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -5645,14 +5676,14 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
+     "estimate": "",
      "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T20:11:31.385Z",
      "note": "",
      "uid": "st-mw2ebw5l08r9ph"
     },
@@ -5681,14 +5712,14 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "15 min",
+     "estimate": "",
      "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T20:11:34.220Z",
      "note": "",
      "uid": "st-mw2ebw5l0a34zp"
     },
@@ -5699,14 +5730,14 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
+     "estimate": "",
      "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T20:11:36.247Z",
      "note": "",
      "uid": "st-mw2ebw5l0bpllr"
     },

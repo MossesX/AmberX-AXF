@@ -1,6 +1,7 @@
 /** Push banner UI: the banner (open pull requests + branches not on main, grouped by what's ready) and the settings panel. Theme tokens only. */
 import { useEffect, useState, type ReactNode } from 'react';
 import { Button, Icon, RefText, Switch, useAxfState, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { MergeQueueChip, MergeQueueView } from './queue';
 import { ago, bannerOn, doneKeys, doneRows, failedKeys, failedRows, fixWithClaude, jobOf, REPAIR_ALL, removeFailed, repair, repairAll, load, loadDetail, mergePr, needsPull, openPr, PULL_ALL, pullAll, pullMain, pullRows, removeDone, rows, saveClaude, setHidden, useStore, api, type Done, type Failed, type PullRow, type Row } from './store';
 
 const CI_WORD: Record<string, string> = { success: 'CI passed', failure: 'CI failed', running: 'CI running', none: 'no CI yet', unknown: 'CI unknown' };
@@ -328,6 +329,7 @@ export function PushBanner() {
   const s = useStore();
   // Launches expanded like the other banners; "_" folds it to its summary line.
   const [open, setOpen] = useBannerLaunchOpen();
+  const [queueOpen, setQueueOpen] = useState(false);
   if (!bannerOn((k) => rt.settings.get(k))) return null;
   const finished = doneRows(s.answer);
   const fails = failedRows(s.answer).filter((f) => !doneKeys(s.answer).has(f.key));
@@ -364,9 +366,11 @@ export function PushBanner() {
           </span>
           <span className="axp-push-banner__lead">{[pulls.length ? plural(pulls.length, 'pull request', 'pull requests') : '', fails.length ? `${fails.length} pull${fails.length === 1 ? '' : 's'} failed` : '', behindCount ? `${behindCount} need main pulled in` : '', clean.length ? `${clean.length} need a PR` : '', allBare.length ? `${plural(allBare.length, 'branch', 'branches')} without a PR` : '', finished.length ? `${finished.length} done` : '', repos.join(' · ')].filter(Boolean).join(' · ')}</span>
         </button>
+        <MergeQueueChip open={queueOpen} onToggle={() => { setQueueOpen(!queueOpen); if (!open) setOpen(true); }} />
       </div>
       {open && (
         <div className="axp-push-banner__body">
+          {queueOpen && <section className="axp-push-banner__group" aria-label="Merge queue"><h4 className="axp-push-banner__group-title">Merge queue</h4><MergeQueueView compact /></section>}
           <Group title="Done" count={finished.length}>{finished.map((d) => <DoneItem key={d.key} d={d} sha={d.kind === 'pulled' ? headOf(d.key) : undefined} />)}</Group>
           <Group title="Pull failed" tone="warning" count={fails.length} action={<RepairAllButton list={fails} />}>{fails.map((f) => <FailedItem key={f.key} f={f} base={baseOf(f.key)} />)}</Group>
           <Group title="Ready to merge" count={ready.length}>{ready.map((p) => <PullItem key={p.key} p={p} />)}</Group>
@@ -425,7 +429,7 @@ export function PushSettings() {
 }
 
 type AutoLast = { pr?: string; branch?: string; merged?: boolean; opened?: number | null; pulled?: boolean; why?: string };
-type AutoState = { on: boolean; autoPr: boolean; everyS: number; last: AutoLast[]; protection: Record<string, { base: string; state: string; error?: string; checks?: string[] }> };
+type AutoState = { on: boolean; autoPr: boolean; mergeQueue?: boolean; everyS: number; last: AutoLast[]; protection: Record<string, { base: string; state: string; error?: string; checks?: string[] }> };
 
 /** Auto-merge (Oct 30 2026, Brett: "When stuff needs to merge automatic merge"; 0.5.0: "I want everything to need a PR
  * and to pull against main before it's merged"): every branch gets a PR, and ready PRs merge oldest first, one per round,
@@ -436,7 +440,7 @@ function AutoMergeSettings() {
   const read = () => api.call<AutoState>('auto-merge').then(setSt, (e: Error) => setErr(e.message));
   useEffect(() => { void read(); }, []);
   if (!st) return err ? <p className="fx-small axp-push-banner__note is-danger">{err}</p> : null;
-  const set = (patch: { autoMerge?: boolean; autoPr?: boolean }) => { setErr(''); api.put('config', patch).then(read, (e: Error) => setErr(e.message)); };
+  const set = (patch: { autoMerge?: boolean; autoPr?: boolean; mergeQueue?: boolean }) => { setErr(''); api.put('config', patch).then(read, (e: Error) => setErr(e.message)); };
   const said = (x: AutoLast) => x.branch ? (x.opened ? `PR #${x.opened}${x.why ? '' : ' open'}` : x.why || 'no PR') : x.merged ? 'merged' : x.why || 'not merged';
   const prot = Object.entries(st.protection ?? {});
   return (
@@ -446,6 +450,8 @@ function AutoMergeSettings() {
         hint={`Every ${Math.round(st.everyS / 60)} min the console takes the open PRs oldest first, one at a time per repo: one behind main gets main pulled in and waits for CI on its new head; it merges only when it is up to date with main, has no conflicts, isn't a draft and CI passed on its head commit (pinned). At most one merge per round, so the next PR is brought up to date with the new main first. Forks, hidden PRs and repos without CI never auto-merge. No Claude session, no tokens.`} />
       <Switch label="Open a pull request for every branch" checked={st.autoPr} disabled={!st.on} onChange={(v) => set({ autoPr: v })}
         hint="Each round, every branch ahead of main without an open PR gets one (never main, site, go-pass, gh-pages or hidden branches). Nothing reaches main without a PR." />
+      <Switch label="Merge queue: test each PR once" checked={st.mergeQueue !== false} onChange={(v) => set({ mergeQueue: v })}
+        hint="Ready PRs line up and each is tested once on top of main + every PR ahead of it (queue/pr-<n> branches); a green one merges with no retest, a red one is kicked out with the reason and the ones behind it are retested without it. While it is on, PRs run only the light checks and the console doesn't merge AmberX-AXF itself (the queue does). GitHub's own merge queue needs an organisation-owned repo, so this one is ours." />
       <div className="fx-row"><Button size="sm" icon="play" onClick={() => { setErr(''); api.post('auto-merge', {}).then(read, (e: Error) => setErr(e.message)); }}>Run a round now</Button></div>
       {st.last.length > 0 && <ul className="axp-push-banner__list">{st.last.slice(0, 8).map((x, i) => <li key={`${x.pr ?? x.branch}-${i}`} className="axp-push-banner__item"><span className="fx-small">{x.pr ?? x.branch}: {said(x)}</span></li>)}</ul>}
       {prot.length > 0 && <ul className="axp-push-banner__list">{prot.map(([repo, p]) => <li key={repo} className="axp-push-banner__item"><span className={`fx-small${p.state === 'protected' ? '' : ' axp-push-banner__note is-danger'}`}>{repo} {p.base}: {p.state === 'protected' ? `protected (PR, up to date${p.checks?.length ? `, ${p.checks.join(', ')}` : ''})` : `not protected: ${p.error ?? ''} (systems check → Auto fix)`}</span></li>)}</ul>}

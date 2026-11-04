@@ -23,8 +23,9 @@ PROFILED = (
     "framework/plan/build-queue.json",
     "framework/plan/media/",
     "framework/catalog/status.json",
-    "tracker.json",
 )
+# The framework feature tracker is shared by every profile; profiles reference it and never hold a copy.
+TRACKER_REL = "tracker.json"
 PROFILE_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
 
 

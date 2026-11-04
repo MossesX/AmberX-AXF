@@ -1,3 +1,4 @@
+import { installFetchShare } from './fetchShare';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createAxf, type AxfManifest } from './axf/core';
@@ -11,6 +12,9 @@ import './console.css';
 // Hot-swappable assets, in order (framework/cli/shared-assets.mjs): every shareable asset, baked from the framework at
 // src/axf/assets (every app ships them all, so the one look on axHub resolves everywhere); then this app's own (its
 // menus, toolbar, help, access policy); then the few shared ids this app tunes for itself (src/assets-overrides).
+// One shared read per source for every card, a quiet background tab and 5xx backoff (src/fetchShare.ts).
+installFetchShare();
+
 const sharedAssets = import.meta.glob('./axf/assets/**/*.json', { eager: true, import: 'default' });
 const ownAssets = import.meta.glob('./assets/**/*.json', { eager: true, import: 'default' });
 const overrideAssets = import.meta.glob('./assets-overrides/**/*.json', { eager: true, import: 'default' });
