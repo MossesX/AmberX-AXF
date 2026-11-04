@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T13:50:31.902Z",
+ "updatedAt": "2026-11-04T14:12:05.722Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6205,14 +6205,14 @@
    "title": "Land round 2: catch up and land the rest, Molly first",
    "category": "Landing",
    "detail": "Agent: Landin' Lenny. One PR at a time: update from main, resolve conflicts keeping both sides, CI green, merge. Order: #288 (+#266) → #294 #295 → #296 → #298 → #281 #291 #293 → #289 #269 → #300. Don't merge WIP #299 #301 #302; close #297 if orphan dup. Redeploy console + Molly after #288, all apps at the end.",
-   "status": "running",
+   "status": "blocked",
    "hidden": false,
    "source": "console",
    "pendingId": "land-round-2",
    "branch": "claude/land-round-2",
-   "pr": "",
+   "pr": "#313",
    "createdAt": "2026-11-04T10:43:58.630Z",
-   "updatedAt": "2026-11-04T13:31:14.733Z",
+   "updatedAt": "2026-11-04T14:10:24.329Z",
    "builtAt": "",
    "notes": [
     {
@@ -6222,6 +6222,14 @@
     {
      "text": "#288 merged (b14674b5) with #266 inside; #266 closed as superseded. The lost GitHub push event (PR outage) needed a fresh push. The shared GitHub token ran out of its 5000/h budget twice (other pollers).",
      "at": "2026-11-04T12:06:01.519Z"
+    },
+    {
+     "text": "Stopped at the $15 per-build cap (~$42 in tokens). Landed #288 (+#266), #294, #295; closed #266 #297. #296 pushed (CI unread: GitHub budget out); #298 #281 #291 #293 #289 #269 resolved on local branches land/<pr> (#281 now conflicts with #295 in runtime.ts); #300 needs a rework on #269. Blocker: the shared GitHub token empties its 5000/h budget in ~25 min. Report _claude/builds/reports/land-round-2.md",
+     "at": "2026-11-04T13:52:34.961Z"
+    },
+    {
+     "text": "Reconciler: PR #313",
+     "at": "2026-11-04T14:10:24.329Z"
     }
    ],
    "approvals": [],
@@ -6408,19 +6416,32 @@
    "title": "Terminal: new sessions stop stealing focus",
    "category": "",
    "detail": "New Terminal setting \"When a new session starts\": Do nothing / Add tab quietly (default; badge on the Terminal toolbar icon) / Bring Terminal to front. Headless launches no longer raise or switch the Terminal; explicit opens still do. REST + MCP + CLI.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "terminal-no-focus",
    "branch": "claude/terminal-no-focus",
    "pr": "#305",
+   "mergedAt": "2026-11-04T14:03:08Z",
    "createdAt": "2026-11-04T10:48:28.927Z",
-   "updatedAt": "2026-11-04T11:08:44.817Z",
+   "updatedAt": "2026-11-04T14:10:24.329Z",
    "builtAt": "2026-11-04T10:55:44.452Z",
    "notes": [
     {
      "text": "Agent Janitor Joey. PR #305: setting newSession (quiet default), REST/MCP/CLI new-session, toolbar badge. CI fixes: help coverage, menu-reach, re-baked stale framework-drafts.json (pre-existing on main). UI Review r-20261104-22549d23 (non-blocking).",
      "at": "2026-11-04T11:08:44.817Z"
+    },
+    {
+     "text": "Reconciler: PR #305 merged",
+     "at": "2026-11-04T14:03:43.987Z"
+    },
+    {
+     "text": "Reconciler: PR #305 merged",
+     "at": "2026-11-04T14:04:44.092Z"
+    },
+    {
+     "text": "Reconciler: PR #305 merged",
+     "at": "2026-11-04T14:10:24.329Z"
     }
    ],
    "approvals": [],
@@ -6761,9 +6782,14 @@
    "branch": "claude/plugin-lazy-load",
    "pr": "#298",
    "createdAt": "2026-11-04T12:29:55.129Z",
-   "updatedAt": "2026-11-04T12:36:33.404Z",
+   "updatedAt": "2026-11-04T14:04:16.930Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Merged main into #298, seeded 20 banner plugins, fixed a first-visit hang (per-plugin re-install of all libraries; CI theme-swap timeout) and plugin-lifecycle refs. Startup 4.46 -> 2.07 MB. CI dispatched on c97d1967e.",
+     "at": "2026-11-04T14:04:16.930Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -6828,8 +6854,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T14:04:15.625Z",
      "note": "",
      "uid": "st-mw23gp6507ymi1"
     },
@@ -7147,15 +7173,15 @@
    "title": "Follow Amber in the Claude badge: tap toggles, two-tone + animated, 15+ badge looks, brand icons",
    "category": "",
    "detail": "Follow Amber goes into the existing Claude badge (no new widget): tap toggles the shared Follow Amber switch, old tap moves to the badge's context menu. On = two-tone with an animation (10+ styles, speed, intensity, reduced motion = static). 15+ badge looks as badge assets plus brand-icon looks and an icon picker over every brand-package icon. REST + MCP + CLI (badge_styles_list, badge_style_set, badge_animation_set). console_show guidance covers casual mentions; Claude setting followAmber.casual.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/follow-amber-switch",
-   "pr": "",
+   "pr": "#312",
    "createdAt": "2026-11-04T13:33:57.300Z",
-   "updatedAt": "2026-11-04T13:50:23.162Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T13:53:13.136Z",
+   "builtAt": "2026-11-04T13:53:13.136Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -7286,10 +7312,172 @@
      "session": "same",
      "agent": false,
      "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T13:53:13.136Z",
+     "note": "",
+     "uid": "st-mw25r1tg0a27qi"
+    }
+   ]
+  },
+  {
+   "id": "crew-profiles",
+   "title": "Every employee gets a full agent profile (one roster, job titles, crew + ID cards)",
+   "category": "Breakroom > Crew",
+   "detail": "One roster: every crew member is an Agent manager agent with a job title (Assistant for the former Agent manager agents). Profile sections persona, role, skills, tools, model, memory, safety, pay, stats, avatar, reports to. Roster adds Marco, Amber, Patches, Gizmo, Polo, Conrad, Chachi, Brownie, Ashes, Jennifer; Molly removed. Crew window rows: collapsible crew card + ID card, working on top. REST + MCP + CLI crew_list/crew_get/crew_update.",
+   "status": "running",
+   "hidden": false,
+   "source": "code",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-04T14:05:31.170Z",
+   "updatedAt": "2026-11-04T14:11:44.304Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want all the employees to have persona sections and skills and tools and all that, just like the agents and the agent manager.",
+    "at": "2026-11-04T14:05:31.170Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": [
+     {
+      "said": "From now on they're all agents and employees, they're all the same thing. They just have different job titles. The ones that are technically agents now, they'll be assistants, and they'll be the ones who control the assistant.",
+      "at": "",
+      "source": "voice",
+      "by": "joey",
+      "verbatim": true
+     },
+     {
+      "said": "All these containers in the Crew window need the crew cards and the ID cards, and they have to be collapsible to just show the name and the avatar.",
+      "at": "",
+      "source": "voice",
+      "by": "joey",
+      "verbatim": true
+     },
+     {
+      "said": "Once working, stay at the top.",
+      "at": "",
+      "source": "voice",
+      "by": "joey",
+      "verbatim": true
+     }
+    ]
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "One profile model: crew-profile@1 roster store (persona, role, skills, tools, model, memory, safety, pay, stats, avatar, reportsTo, jobTitle); Agent manager agents linked as Assistants, no duplicate data",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T14:09:58.619Z",
+     "note": "",
+     "uid": "st-mw26vn4g07zb0z"
+    },
+    {
+     "id": "s2",
+     "text": "Roster: Brett (boss), Marco, Amber, Patches, Gizmo ($8), Polo, Conrad, Chachi, Brownie, Ashes, Jennifer + existing crew with titles; Molly removed from agent lists; stats kept; write-ups from shared memory",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T14:09:59.769Z",
+     "note": "",
+     "uid": "st-mw26vn4g08hxnm"
+    },
+    {
+     "id": "s3",
+     "text": "REST + MCP + CLI: crew_list, crew_get, crew_update (owner-only pay, tools, safety, job title)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T14:11:44.304Z",
+     "note": "",
+     "uid": "st-mw26vn4g09ffpf"
+    },
+    {
+     "id": "s4",
+     "text": "Crew window: collapsible rows (avatar + name collapsed; crew card + ID card expanded), expand/collapse all, remembered per member, working on top",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw25r1tg0a27qi"
+     "uid": "st-mw26vn4g0acafv"
+    },
+    {
+     "id": "s5",
+     "text": "Agent manager roster tab: profile with a tab per section, editable; Agent swarm + picker read the same roster",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw26vn4g0ba5vs"
+    },
+    {
+     "id": "s6",
+     "text": "Rule in RULES.md, tests + type-check, screenshots to UI Review, report, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw26vn4g0c3hcf"
     }
    ]
   }

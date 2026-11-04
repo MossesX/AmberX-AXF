@@ -41,7 +41,7 @@ export function GeneralPanel() {
         {num('moshKeepMinutes', 'Mosh mode keeps a dropped session (minutes)', 1, 1440)}
         <label className={`${P}__field`}><span>Container shell user (empty = Container access default, root)</span><input className="fx-input" value={v.user} onChange={(e) => setD({ ...d, user: e.target.value })} placeholder="0" /></label>
       </div>
-      {tick('showHeadless', 'Show headless Claude Code sessions here: whenever the console or axHub starts one on the VPS, it opens in a VPS tab attached to it and the terminal window comes to the front (needs the VPS host set up)')}
+      {tick('showHeadless', 'Show headless Claude Code sessions here: whenever the console or axHub starts one on the VPS, it gets a VPS tab attached to it (Headless tabs → When a new session starts; needs the VPS host set up)')}
       {tick('showHubRuns', 'Open approved VPS commands here: once a command you approved on axHub has run, its command and output open in a read-only tab')}
       <div className="fx-row fx-row--wrap"><Button tone="primary" icon="save" disabled={!Object.keys(d).length} onClick={() => void save(d).then(() => setD({}))}>Save</Button><span className="fx-small">{msg}</span></div>
       <p className="fx-small fx-muted">Shortcuts: Ctrl+Shift+C / Ctrl+Shift+V copy and paste; Ctrl+C copies when text is selected, otherwise interrupts; Ctrl+Shift+F searches. The console’s tokens and keys are kept out of every shell’s environment.</p>

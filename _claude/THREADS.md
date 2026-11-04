@@ -33,6 +33,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 ## Active
 
 | Thread | State | Branch | PR | Queued / next | Updated |
+| Terminal stops stealing focus (Current `terminal-no-focus`, Opus, agent Janitor Joey; Brett Nov 4 voice: "I don't want the terminal to come to the front on every session."): new Terminal setting *When a new session starts* (Add tab quietly = default, background tab + count on the Terminal toolbar icon, never pops or switches; Do nothing; Bring Terminal to front), REST/MCP/CLI `new-session` | review (PR open, merges on green CI) | `claude/terminal-no-focus` | [#305](https://github.com/MossesX/AmberX-AXF/pull/305) | Report `_claude/builds/reports/terminal-no-focus.md`. Brett: none needed | 2026-11-04 |
 | Build manager hotfix (Current `hotfix-build-manager`, urgent, Opus; agent Ping Paulie; Brett Nov 4 voice: "It says 21 things are going." "When I click them, they don't open up, and the steps in the build menu don't work."): Builds page rows open on tap, step ticks no longer flipped back by stale polls, orchestrator steps open on tap, changes banner counts only live sessions, reconciler pauses builds no live process runs (store cleaned: 7 → complete, 9 → paused) | PR open, auto-merge when CI is green; then redeploy the console | `claude/hotfix-build-manager` | (see live log) | Report `_claude/builds/reports/hotfix-build-manager.md` | 2026-11-04 |
 | UI Review shows its pictures again (Urgent `ui-review-shots`, Opus, agent Snap Sully; Brett Nov 3 voice: "items but NO pictures"): files were all on disk and served 200; two console pollers (agent-slots, token-control pass) re-subscribed on every render and fired ~45 status calls/s, starving the picture fetches; on phones a today-made selector (`:where(:not([data-fx-narrow]))`, always true) squeezed the preview to zero width. Fixed both + layout-adopt codemod, shot timeout/retry, "Shot missing" + Re-capture, health@1 `ui-review-shots`, `review.mjs` worktree warning | review (all 5 steps done; PR open, UI Review waiting) | `claude/ui-review-shots` | [#277](https://github.com/MossesX/AmberX-AXF/pull/277) | Report `_claude/builds/reports/ui-review-shots.md`. Console redeploy (on merge) stops the storm. Brett: approve UI Review r-20261103-17ef4a40 | 2026-11-03 |
 | Land round 2 (Current `land-round-2`, Opus; agent Landin' Lenny; Brett Nov 4 voice: catch up and land the rest, Molly first): landed #288 (with #266, closed as superseded), #294, #295; #297 closed (orphan duplicate of #284); console + Molly redeployed after #288. Stopped at the $15 per-build cap (~$42). #296 pushed (CI unread), #298 #281 #291 #293 #289 #269 resolved locally on `land/<pr>`, #300 needs a rework on top of #269 | stopped (budget cap) | `claude/land-round-2` | (report PR) | Report `_claude/builds/reports/land-round-2.md`. Fix first: the shared GitHub token empties its 5000/h budget in ~25 min. Then land the rest from the local `land/<pr>` branches | 2026-11-04 |
@@ -662,52 +663,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:57 UTC · `amberx-empty-shell` branch claude/amberx-empty-shell, PR #118, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `fresh-look` branch claude/fresh-look-done, PR #120, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `design-packages-10` branch claude/design-packages-10, PR #124, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `build-orchestrator` branch claude/build-orchestrator, PR #122, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `build-profiles` branch claude/build-profiles, PR #127, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-appearance-lock` branch claude/amberx-appearance-lock, PR #126, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-handsfree` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-notes` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `fix-interface-scope-settings` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `fix-hubsync-look-source` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `fix-banner-snap` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `banner-fix-fallback` PR #152, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-push` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-voice-center` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-assistant-agents` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-claude-tokens` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `refactor-all` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `mosses-build-tools` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `assistant-no-subagents` PR #167, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `veto-everywhere` PR #176, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `agent-voice` PR #177, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `pr-only-merge` PR #183, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `orch-pending-sync` PR #143, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `home-cards` branch angel/home-cards-queue, PR #171, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `settings-compact` PR #175, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `ui-all-assets` PR #181, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `element-inspector` s1 done, s2 done, s4 done, → running, PR #192, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `layout-repeating-slots` s2 done, → running, PR #191, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `session-history` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, → built, PR #195, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `audio-output-recorder` PR #194, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `live-key-checks` PR #182, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `ui-review` PR #184, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `plan-studio` PR #185, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `audio-extract` PR #187, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `agent-swarm` merged, note (breakroom) · reconciler
-- 2026-11-03 13:57 UTC · `agent-swarm-fable-rebuild` branch claude/agent-swarm-fable-rebuild, PR #247, merged, note (breakroom) · reconciler
-- 2026-11-03 13:57 UTC · `stack-walkthrough` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `molly-opus` merged, note (big-dog) · reconciler
-- 2026-11-03 13:57 UTC · `xlayout` s12 done, → built, branch claude/xlayout-opus, PR #252, note (big-dog) · reconciler
-- 2026-11-03 13:57 UTC · `walkthrough-random-look` PR #240, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `md-studio` branch claude/md-studio-theme-editor-plan, PR #242, merged, note (urgent) · reconciler
-- 2026-11-03 13:57 UTC · `orch-live-sync` s5 done (urgent) · orchestrator
-- 2026-11-03 13:57 UTC · `orch-live-sync` s6 done (urgent) · orchestrator
-- 2026-11-03 14:01 UTC · `orch-live-sync` PR #255 (urgent) · builds-live
-- 2026-11-03 14:01 UTC · `orch-live-sync` s7 done, → built (urgent) · orchestrator
-- 2026-11-03 14:45 UTC · `whats-new-banner` s1–s4 done, s5 tests/checks/shots done, PR opening (urgent) · claude/whats-new-banner
 - 2026-11-03 14:53 UTC · `whats-new-banner` s5 done, PR #260, UI Review r-20261103-8861306a waiting (urgent) · claude/whats-new-banner
 - 2026-11-03 15:20 UTC · `orch-live-sync` → complete, merged, note (urgent) · reconciler
 - 2026-11-03 15:32 UTC · `land-everything` added (11 steps) (urgent) · orchestrator
@@ -1062,6 +1017,52 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 13:50 UTC · `follow-amber-switch` s2 done (current) · orchestrator
 - 2026-11-04 13:50 UTC · `follow-amber-switch` s3 done (current) · orchestrator
 - 2026-11-04 13:50 UTC · `follow-amber-switch` s4 done (current) · orchestrator
+- 2026-11-04 13:52 UTC · `land-round-2` note (current) · orchestrator
+- 2026-11-04 13:52 UTC · `land-round-2` → blocked (current) · orchestrator
+- 2026-11-04 13:53 UTC · `land-round-2` note (current) · foreign-write
+- 2026-11-04 13:53 UTC · `follow-amber-switch` PR #312 (current) · builds-live
+- 2026-11-04 13:53 UTC · `follow-amber-switch` s5 done, → built (current) · orchestrator
+- 2026-11-04 13:53 UTC · `follow-amber-switch` s5 done, → complete (current) · foreign-write
+- 2026-11-04 14:03 UTC · `terminal-no-focus` note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `orch-step-click` note (refactor) · foreign-write
+- 2026-11-04 14:04 UTC · `molly-opus` → complete, note (big-dog) · foreign-write
+- 2026-11-04 14:04 UTC · `walkthrough-random-look` → complete, note (refactor) · foreign-write
+- 2026-11-04 14:04 UTC · `profile-manager` note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `molly-console-commands` → complete, note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `git-status-board` note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `urgent-main-ci-green` → complete, note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `terminal-tabs-left` note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `gizmo-companion` note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `browser-automation` note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `app-style-override` note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `land-round-2` s2 done, s3 done, note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `terminal-no-focus` note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `hotfix-build-manager` s1 done, s2 done, s3 done, s4 done, → complete, note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `requests-ledger` added (5 steps) (current) · foreign-write
+- 2026-11-04 14:04 UTC · `bugs-board` added (7 steps) (current) · foreign-write
+- 2026-11-04 14:04 UTC · `follow-amber-switch` added (5 steps) (current) · foreign-write
+- 2026-11-04 14:04 UTC · `urgent-land-lazy-loader` s3 done (current) · foreign-write
+- 2026-11-04 14:04 UTC · `urgent-land-lazy-loader` s3 done (current) · orchestrator
+- 2026-11-04 14:04 UTC · `urgent-land-lazy-loader` note (current) · orchestrator
+- 2026-11-04 14:04 UTC · `land-round-2` → running (current) · builds-live
+- 2026-11-04 14:04 UTC · `urgent-land-lazy-loader` s3 done, note (current) · builds-live
+- 2026-11-04 14:05 UTC · `crew-profiles` added (6 steps) (current) · foreign-write
+- 2026-11-04 14:04 UTC · `terminal-no-focus` → complete, merged, note (current) · reconciler
+- 2026-11-04 14:04 UTC · `urgent-land-lazy-loader` note (current) · foreign-write
+- 2026-11-04 14:05 UTC · `crew-profiles` added (6 steps) (current) · orchestrator
+- 2026-11-04 14:05 UTC · `crew-profiles` → running (current) · orchestrator
+- 2026-11-04 14:09 UTC · `crew-profiles` s1 done (current) · orchestrator
+- 2026-11-04 14:09 UTC · `crew-profiles` s2 done (current) · orchestrator
+- 2026-11-04 14:10 UTC · `crew-profiles` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 14:10 UTC · `land-round-2` PR #313, note (current) · reconciler
+- 2026-11-04 14:10 UTC · `terminal-no-focus` note (current) · reconciler
+- 2026-11-04 14:11 UTC · `land-round-2` note (current) · foreign-write
+- 2026-11-04 14:11 UTC · `crew-profiles` s3 done (current) · orchestrator
+- 2026-11-04 14:11 UTC · `terminal-no-focus` note (current) · foreign-write
+- 2026-11-04 14:11 UTC · `urgent-land-lazy-loader` s3 done, note (current) · foreign-write
+- 2026-11-04 14:11 UTC · `follow-amber-switch` s5 done, → complete (current) · foreign-write
+- 2026-11-04 14:11 UTC · `crew-profiles` added (6 steps) (current) · foreign-write
 
 ## Token passes (log)
 

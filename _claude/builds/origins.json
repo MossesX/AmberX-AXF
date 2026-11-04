@@ -601,6 +601,40 @@
    "from": "detail",
    "addenda": []
   },
+  "crew-profiles": {
+   "said": "I want all the employees to have persona sections and skills and tools and all that, just like the agents and the agent manager.",
+   "at": "2026-11-04T14:05:31.170Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": [
+    {
+     "said": "From now on they're all agents and employees, they're all the same thing. They just have different job titles. The ones that are technically agents now, they'll be assistants, and they'll be the ones who control the assistant.",
+     "at": "",
+     "source": "voice",
+     "by": "joey",
+     "verbatim": true
+    },
+    {
+     "said": "All these containers in the Crew window need the crew cards and the ID cards, and they have to be collapsible to just show the name and the avatar.",
+     "at": "",
+     "source": "voice",
+     "by": "joey",
+     "verbatim": true
+    },
+    {
+     "said": "Once working, stay at the top.",
+     "at": "",
+     "source": "voice",
+     "by": "joey",
+     "verbatim": true
+    }
+   ]
+  },
   "crew-retrain": {
    "said": "every swarm agent can take every job type (skills, home job as preference only); new job types feature-build and ops-fix; router picks any free agent under budget; every headless launch is assigned to a named agent first and booked on its card; back-assign today's headless builds; Breakroom cards show skills, home job, current job. Booked on Landin' Lenny.",
    "at": "2026-11-03",
