@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T14:39:48.307Z",
+ "updatedAt": "2026-11-04T14:40:27.877Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3784,7 +3784,7 @@
    "title": "Toolbars plugin: tap-to-confirm on touch, per-toolbar settings + editor, drag-and-drop hooks",
    "category": "Toolbars",
    "detail": "Brett, Nov 3 2026 (voice) + Addendum 1. Every existing and future toolbar: first tap on touch shows the tip and arms the button for 3 s (configurable), second tap within the window runs it; mouse/pen stays single click with hover tooltip; decided per interaction. All of it is one Toolbars plugin (plugin@1) owning every toolbar: global settings, per-toolbar settings (synced), context-menu hooks (Toolbar settings / Edit toolbar / All toolbars), Toolbar editor (save as asset), drag-and-drop hooks anywhere via hook@1 + drop-target@1 contracts with per-target configure dialogs, move/copy, undo. Banners: only the generic drop target, no banner-pack/banner-editor/banners-one changes. Agent: Landin' Lenny. Note: no Terminal 'Tooltip mode' exists on main or any branch (headless-tabs #259 has 7 steps, no s8), so it is built fresh in the framework.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -3792,8 +3792,8 @@
    "pr": "#272",
    "mergedAt": "2026-11-04T04:11:27Z",
    "createdAt": "2026-11-03T18:23:45.044Z",
-   "updatedAt": "2026-11-04T14:38:23.212Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T14:40:26.654Z",
+   "builtAt": "2026-11-04T14:40:26.654Z",
    "notes": [
     {
      "text": "Agent: Landin' Lenny (headless, Opus). Phase 1 (s1-s12) Opus; s13-s14 contracts pinned Fable need Brett's upgrade approval.",
@@ -3818,6 +3818,10 @@
     {
      "text": "Model switch: phase 2 (Contracts) Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
      "at": "2026-11-04T14:38:23.212Z"
+    },
+    {
+     "text": "Reconciler: PR #272 merged: complete",
+     "at": "2026-11-04T14:40:26.654Z"
     }
    ],
    "approvals": [
