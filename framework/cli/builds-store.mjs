@@ -243,6 +243,7 @@ export function withStore(fn, meta = {}) {
     // nothing new from outside, but the files still differ from the store (e.g. older): the export below rewrites them
     const r = fn(core.normalizeStore(JSON.parse(JSON.stringify(start))));
     const next = r && r.$axf ? r : r.store;
+    core.syncPackaged(next); // build-package@1: a package step's tick reaches its source build in the same write
     const saved = saveStore(start, next, meta);
     if (exportsOn()) exportAll(saved.store);
     return { ...(r && r.$axf ? {} : r), store: saved.store, changes: saved.changes, rev: saved.rev, foreign };

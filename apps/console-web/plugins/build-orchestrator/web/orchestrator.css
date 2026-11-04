@@ -29,3 +29,43 @@ button.oc-model { cursor: pointer }
 .oc-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
 .oc-bar__pick { width: auto; min-width: 0; flex: 0 1 auto; max-width: 100%; padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg); font-size: var(--fx-type-scale-sm) }
 :where([data-fx-small]) .oc-bar__pick { flex: 1 1 calc(var(--fx-font-size) * 9) }
+
+/* Package builds window (build-package@1): layout only; every control is a framework control */
+.oc-pack { min-width: 0 }
+.oc-pack__filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-font-size) * 10), 1fr)); gap: var(--fx-dens-gap-md); align-items: end }
+.oc-pack__list { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); max-height: 50vh; overflow-y: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); padding: var(--fx-dens-gap-md) }
+.oc-pack__group { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.oc-pack__ghead { display: flex; align-items: center; gap: var(--fx-dens-gap-md); flex-wrap: wrap }
+.oc-pack__ghead > .fx-iconbtn { margin-left: auto }
+.oc-pack__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); padding-left: var(--fx-dens-gap-xl) }
+.oc-pack__row > .fx-checkrow { flex: 1 1 calc(var(--fx-font-size) * 18); min-width: 0 }
+.oc-pack__meta { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) }
+.oc-pack__text { overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden }
+.oc-pack__order { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); margin: 0; padding-left: var(--fx-dens-gap-xl); max-height: 40vh; overflow-y: auto }
+.oc-pack__orow { display: flex; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); border-radius: var(--fx-radius-sm); cursor: grab }
+.oc-pack__orow > .oc-pack__text { flex: 1 1 auto; min-width: 0 }
+.oc-pack__orow.is-drag { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.oc-pack__deps, .oc-pack__confirm { display: flex; flex-direction: column; align-items: flex-start; gap: var(--fx-dens-gap-md) }
+.oc-pack__deps ul, .oc-pack__confirm ol { margin: 0 }
+.oc-pack__confirm ol { max-height: 40vh; overflow-y: auto; align-self: stretch }
+.oc-packaged { color: var(--fx-accent) }
+
+/* ---- build optimizer (build-optimize@1): Optimize builds dialog, drag steps between builds */
+.oc-opt__head, .oc-opt__frow { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); align-items: end; }
+.oc-opt__filters { display: grid; gap: var(--fx-dens-gap-sm); }
+.oc-opt__builds { display: grid; gap: var(--fx-dens-gap-xs); }
+.oc-opt__packs { display: grid; gap: var(--fx-dens-gap-md); }
+.oc-opt__pack { display: grid; gap: var(--fx-dens-gap-xs); }
+.oc-opt__phead { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); align-items: end; }
+.oc-opt__pmeta { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); align-items: center; }
+.oc-opt__steps { display: grid; gap: var(--fx-dens-gap-xs); margin: 0; padding-inline-start: var(--fx-dens-gap-md); }
+.oc-opt__step { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--fx-dens-gap-xs); align-items: start; cursor: grab; }
+.oc-opt__step > .oc-pack__meta, .oc-opt__step > .oc-opt__why { grid-column: 2; }
+.oc-opt__step.is-sel { outline: var(--fx-border-w) solid var(--fx-accent); border-radius: var(--fx-radius-sm); }
+.oc-opt__step.is-off { opacity: var(--fx-opacity-muted); }
+.oc-opt__why { margin: 0; }
+.oc-opt__flag { color: var(--fx-warning); }
+.oc-opt__new, .oc-dropend { border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-sm); padding: var(--fx-dens-gap-sm); color: var(--fx-muted); text-align: center; }
+.oc-opt__foot { position: sticky; bottom: 0; background: var(--fx-surface); padding-block: var(--fx-dens-gap-sm); }
+.pd-entry.is-picked { outline: var(--fx-border-w) solid var(--fx-accent); border-radius: var(--fx-radius-sm); }
+.oc-grip { cursor: grab; }

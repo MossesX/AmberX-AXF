@@ -2,18 +2,19 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.build-orchestrator",
   "name": "Build orchestrator",
-  "version": "0.1.1",
+  "version": "0.3.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus. Consecutive same-model steps form a phase; a phase that switches model waits for Brett's approval. Token rules on every build: one session, no sub-agents unless a step allows it, briefs carry only the current phase. Page = tab group (Builds, Approvals, Rules); the Builds tab looks and behaves like Pending builds, with more options (per-step model, phases, approve switch, next-phase brief, hide, archive, import from Pending, move/edit/remove steps). Tracker is a repo file, _claude/builds/orchestrator.json, so any session or account continues the build (orchestrator.mjs next | brief | act).",
+  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus. Consecutive same-model steps form a phase; a phase that switches model waits for Brett's approval. Token rules on every build: one session, no sub-agents unless a step allows it, briefs carry only the current phase. Page = tab group (Builds, Approvals, Rules); the Builds tab looks and behaves like Pending builds, with more options (per-step model, phases, approve switch, next-phase brief, hide, archive, import from Pending, move/edit/remove steps). Tracker is a repo file, _claude/builds/orchestrator.json, so any session or account continues the build (orchestrator.mjs next | brief | act). Package builds window (build-package@1): tick waiting steps (Fable by default) from any build, combine them into one package build, then send it to a helper or queue it here; the order is re-analyzed after every send. Build optimizer (build-optimize@1): Optimize builds repacks every waiting step into the fewest builds (Basic = plain code, zero tokens; Deep = an AI review when connected, falls back to Basic), lists the new package of builds to confirm, applies it in one transaction with one undo, and moves steps between builds by drag and drop anywhere.",
   "targets": [
     "axf-console"
   ],
   "provides": [
     "view:build-orchestrator",
     "settings-tab:build-orchestrator",
-    "service:orchestrator@1"
+    "service:orchestrator@1",
+    "settings-tab:build-optimizer"
   ],
   "scopes": [
     "ROUTES"
@@ -36,7 +37,9 @@
       "_claude/THREADS.md",
       "_claude/builds/README.md",
       "_claude/rules/RULES.md",
-      "_claude/shared/rules/RULES.md", "deploy/claude-headless.sh", "framework/spec/check-builds-live.mjs"
+      "_claude/shared/rules/RULES.md",
+      "deploy/claude-headless.sh",
+      "framework/spec/check-builds-live.mjs"
     ]
   },
   "commands": {
@@ -153,6 +156,467 @@
           ]
         },
         "output": "{ id, origin }"
+      },
+      {
+        "id": "package-candidates",
+        "route": "GET /package/candidates",
+        "title": "Steps waiting to be packaged",
+        "readOnly": true,
+        "description": "Every waiting step of every build (pending, running, waiting; not the step a build is on now) plus ready Plan Studio plans, grouped by source build, with model, thinking, areas, estimate, filters, helpers and the caller's role (build-package@1). Secondary sessions get nothing.",
+        "output": "{ candidates, skipped, facets, helpers, role, canSend }"
+      },
+      {
+        "id": "package",
+        "route": "POST /package",
+        "title": "Package steps into one build",
+        "description": "Combine the ticked steps (order = priority; steps of one build keep their order) into one build package, linked to its sources (they show 'packaged into'). Then add it to this orchestrator at `position` (0 = top) or send it to a helper (dest helper, to, now = top of its list). Re-analyzes the order and posts to the Breakroom Sessions channel. Owner-only on the primary; raising Opus steps to Fable needs Brett's click.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "order": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "ticked step keys (<build>/<step uid>), priority order"
+            },
+            "confirmed": {
+              "type": "boolean",
+              "description": "true once the ticked list was shown and confirmed"
+            },
+            "name": {
+              "type": "string"
+            },
+            "model": {
+              "type": "string",
+              "enum": [
+                "keep",
+                "Fable",
+                "Opus"
+              ]
+            },
+            "thinking": {
+              "type": "string",
+              "enum": [
+                "low",
+                "medium",
+                "high",
+                "max"
+              ]
+            },
+            "position": {
+              "type": [
+                "integer",
+                "string",
+                "null"
+              ],
+              "description": "queue position (0 = top), or 'end'"
+            },
+            "dest": {
+              "type": "string",
+              "enum": [
+                "mine",
+                "helper"
+              ]
+            },
+            "to": {
+              "type": "string",
+              "description": "helper session id (empty = any helper)"
+            },
+            "now": {
+              "type": "boolean",
+              "description": "do it now: top priority on that helper"
+            },
+            "said": {
+              "type": "string",
+              "description": "Brett's exact words, if he asked for this package"
+            }
+          },
+          "required": [
+            "order",
+            "confirmed"
+          ]
+        },
+        "output": "{ build, log, reanalysis, send, posted }"
+      },
+      {
+        "id": "package-send",
+        "route": "POST /package/{build_id}/send",
+        "title": "Send a package to a helper",
+        "description": "Offer an existing package to a helper session through Session sync (`to`, `now`), then re-analyze the order.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build_id": {
+              "type": "string"
+            },
+            "to": {
+              "type": "string"
+            },
+            "now": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "build_id"
+          ]
+        },
+        "output": "{ send, replan, posted }"
+      },
+      {
+        "id": "package-unpackage",
+        "route": "POST /package/{build_id}/unpackage",
+        "title": "Unpackage",
+        "description": "A package with nothing done goes back to its builds: its steps return to them and the package build is removed.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "build_id"
+          ]
+        },
+        "output": "{ log, reanalysis }",
+        "confirm": true
+      },
+      {
+        "id": "package-reanalyze",
+        "route": "POST /package/reanalyze",
+        "title": "Re-analyze the build order",
+        "description": "Re-check the queue order against every package (a package after the steps it needs, before the steps that need it; running and pinned builds never move). apply: false previews.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "apply": {
+              "type": "boolean"
+            }
+          }
+        },
+        "output": "{ order, moves, conflicts }"
+      },
+      {
+        "id": "optimize",
+        "route": "POST /optimize/plan",
+        "title": "Optimize builds",
+        "description": "Repack every waiting step (queued, pending, plan-ready, unstarted steps of running builds) into the fewest builds: Deep mode (AI review) when an AI connection is there, else Basic (plain code, zero tokens). Returns the proposed new package of builds with every step, reasoning, flags and a summary. Nothing changes until it is applied with optimize-apply after Brett confirms. Filters: e.g. models ['Fable'] + profiles ['main-framework'] for 'just the Fable work in Main framework'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "auto",
+                "deep",
+                "basic"
+              ]
+            },
+            "preset": {
+              "type": "string",
+              "description": "safe | aggressive | fable-only | a saved preset"
+            },
+            "settings": {
+              "type": "object",
+              "description": "settings for this run (mode, maxSteps, maxMinutes, maxBuilds, target fewest|balanced|fastest, rules, safety, drops, naming, notify)"
+            },
+            "filter": {
+              "type": "object",
+              "description": "which waiting steps are in scope",
+              "properties": {
+                "profiles": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "categories": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "models": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "thinking": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "agents": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "statuses": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "areas": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "include": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "exclude": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "fableCandidates": {
+                  "type": "boolean"
+                },
+                "minAgeDays": {
+                  "type": "integer"
+                },
+                "maxAgeDays": {
+                  "type": "integer"
+                },
+                "q": {
+                  "type": "string"
+                }
+              }
+            },
+            "estimateOnly": {
+              "type": "boolean",
+              "description": "Deep mode: only the token estimate"
+            }
+          }
+        },
+        "output": "{ plan: { packs, summary, flags, warnings, mode, run }, items, ai, notified }"
+      },
+      {
+        "id": "optimize-state",
+        "route": "GET /optimize/state",
+        "title": "Build optimizer settings and runs",
+        "readOnly": true,
+        "description": "The optimizer's settings, presets, saved filter, last run (which mode ran), the runs that can be undone, and whether Deep mode (AI) can run.",
+        "output": "{ config, runs, ai, role }"
+      },
+      {
+        "id": "optimize-apply",
+        "route": "POST /optimize/apply",
+        "title": "Apply an optimizer plan",
+        "description": "Apply the plan Brett confirmed: one new build per pack with the steps moved over (linked back to their old builds), emptied builds archived, every store, list and screen updated in one transaction plus live push. One undo (optimize-undo). Owner-only on the primary.",
+        "confirm": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "confirmed": {
+              "type": "boolean"
+            },
+            "packs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "keys": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "mode": {
+              "type": "string",
+              "enum": [
+                "basic",
+                "deep"
+              ]
+            },
+            "emptied": {
+              "type": "string",
+              "enum": [
+                "archive",
+                "delete"
+              ]
+            }
+          },
+          "required": [
+            "confirmed",
+            "packs"
+          ]
+        },
+        "output": "{ created, emptied, run, log }"
+      },
+      {
+        "id": "optimize-undo",
+        "route": "POST /optimize/undo",
+        "title": "Undo the optimizer",
+        "description": "Undo the last optimizer run or step move (or `run`): the builds it made go, every build it changed comes back. Refused when work has happened since.",
+        "confirm": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "run": {
+              "type": "string"
+            }
+          }
+        },
+        "output": "{ log }"
+      },
+      {
+        "id": "optimize-move",
+        "route": "POST /optimize/move",
+        "title": "Move steps between builds",
+        "description": "Move steps (keys <build>/<step uid>, several at once) into another build at a position. Running steps never move; a step keeps its model. One undo.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "keys": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "to": {
+              "type": "string"
+            },
+            "index": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "keys",
+            "to"
+          ]
+        },
+        "output": "{ log, run, archived }"
+      },
+      {
+        "id": "optimize-settings",
+        "route": "POST /optimize/settings",
+        "title": "Build optimizer settings",
+        "description": "Change the optimizer's settings or saved filter (never-touch-running and confirm stay locked on), or save / delete a named preset (preset + op).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "settings": {
+              "type": "object",
+              "description": "settings for this run (mode, maxSteps, maxMinutes, maxBuilds, target fewest|balanced|fastest, rules, safety, drops, naming, notify)"
+            },
+            "filter": {
+              "type": "object",
+              "description": "which waiting steps are in scope",
+              "properties": {
+                "profiles": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "categories": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "models": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "thinking": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "agents": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "statuses": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "areas": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "include": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "exclude": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "fableCandidates": {
+                  "type": "boolean"
+                },
+                "minAgeDays": {
+                  "type": "integer"
+                },
+                "maxAgeDays": {
+                  "type": "integer"
+                },
+                "q": {
+                  "type": "string"
+                }
+              }
+            },
+            "preset": {
+              "type": "string"
+            },
+            "op": {
+              "type": "string",
+              "enum": [
+                "save",
+                "delete"
+              ]
+            }
+          }
+        },
+        "output": "{ config }"
       }
     ]
   },
