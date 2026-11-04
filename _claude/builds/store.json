@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1012,
- "updatedAt": "2026-11-04T23:01:19.281Z",
+ "rev": 1013,
+ "updatedAt": "2026-11-04T23:10:23.812Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -84751,14 +84751,18 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/shipped-features-r2",
-   "pr": "",
+   "pr": "#350",
    "createdAt": "2026-11-04T21:45:16.217Z",
-   "updatedAt": "2026-11-04T22:11:00.452Z",
+   "updatedAt": "2026-11-04T23:10:22.519Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-04T22:11:00.452Z"
+    },
+    {
+     "text": "Reconciler: PR #350",
+     "at": "2026-11-04T23:10:22.519Z"
     }
    ],
    "approvals": [],
@@ -85048,7 +85052,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
