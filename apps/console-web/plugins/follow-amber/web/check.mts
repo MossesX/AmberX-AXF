@@ -8,7 +8,8 @@
  */
 import assert from 'node:assert/strict';
 import { fetchApprovals } from '@console/axf/libs/approvals';
-import { arrived, decide, highlightIsSelector, offers, parseFrame, pickNext, queueOf, routeOf } from './core.ts';
+import { arrived, decide, drawable, highlightIsSelector, offers, parseFrame, pickNext, queueOf, routeOf } from './core.ts';
+import { interpretApprovals } from '@console/axf/libs/approvals/core';
 
 let n = 0;
 const t = async (name: string, f: () => unknown) => { try { await f(); n++; } catch (e) { console.error(`✗ ${name}`); throw e; } };
@@ -93,21 +94,72 @@ await t('title, description and the exact call come from the hub', () => {
   assert.ok(offers(a1, true) && offers(a1, false), 'an approval offers Approve and Deny');
 });
 
-await t('routes: host first, then the hub origin, else the hub page in a frame', () => {
+await t('routes: host first, then the hub origin, else the hub page (opened; framed only where the hub allows it)', () => {
   const h = { kind: 'held' } as const, a = { kind: 'approval' } as const;
-  assert.equal(routeOf(h, { hub: HUB, origin: CONSOLE }), 'frame', 'the console on its own origin cannot sign: frame');
+  assert.equal(routeOf(h, { hub: HUB, origin: CONSOLE }), 'open', "the console can't sign and axHub refuses the frame here: open axHub's page");
+  assert.equal(routeOf(h, { hub: HUB, origin: CONSOLE, frame: true }), 'frame', 'framed only when the hub frames its page for this origin');
   assert.equal(routeOf(h, { hub: HUB, origin: HUB }), 'hub');
   assert.equal(routeOf(h, { hub: HUB, origin: CONSOLE, vetoAct: async () => ({ ok: true }) }), 'host', "AmberX's shell signs held calls");
-  assert.equal(routeOf(a, { hub: HUB, origin: CONSOLE, vetoAct: async () => ({ ok: true }) }), 'frame', 'a veto host does not decide approvals');
+  assert.equal(routeOf(a, { hub: HUB, origin: CONSOLE, vetoAct: async () => ({ ok: true }) }), 'open', 'a veto host does not decide approvals');
   assert.equal(routeOf(a, { hub: HUB, origin: CONSOLE, approvalDecide: async () => ({ ok: true, message: '' }) }), 'host');
 });
 
-await t('no signed path here: nothing is sent, the hub page takes the tap', async () => {
+await t('no signed path here: nothing is sent, axHub opens (never a refused frame: the sad face, Nov 4 2026)', async () => {
   const before = hub.log.length;
   const r = await decide(feed.items.find((i) => i.id === A1)!, true, { hub: HUB, origin: CONSOLE, fetch: hub.fetch });
-  assert.equal(r.frame, true);
+  assert.equal(r.open, true);
+  assert.notEqual(r.frame, true, 'no frame of axHub inside the pop-up');
   assert.equal(r.ok, false);
   assert.equal(hub.log.length, before, 'no request reached the hub');
+  const f = await decide(feed.items.find((i) => i.id === A1)!, true, { hub: HUB, origin: CONSOLE, fetch: hub.fetch, frame: true });
+  assert.equal(f.frame, true, 'where the hub allows the frame, it still frames');
+});
+
+await t('a host that only opens the page (opened) opens axHub, never a frame', async () => {
+  const r = await decide(feed.items.find((i) => i.id === A1)!, true, { hub: HUB, origin: CONSOLE, approvalDecide: async () => ({ ok: true, opened: true, message: '' }) });
+  assert.equal(r.open, true);
+  assert.notEqual(r.frame, true);
+});
+
+/* Regression (urgent-approval-popup-crash, Nov 4 2026): the held-call shapes vps.run, control_add and build_start send,
+   plus hostile ones (a reason object where a string belongs, missing lists), all draw: every drawn field is a string. */
+await t('real held-call payloads (vps.run, control_add, build_start) and broken fields draw without crashing', () => {
+  const now = Date.now();
+  const at = (s: number) => new Date(now + s * 1000).toISOString();
+  const veto = (left: number) => ({ runsAt: at(left), secondsLeft: left, countdownSeconds: 90, actions: ['deny', 'approve-now', 'shelve'] });
+  const ids = ['55555555-5555-4555-8555-555555555555', '66666666-6666-4666-8666-666666666666', '77777777-7777-4777-8777-777777777777', '88888888-8888-4888-8888-888888888888'];
+  const pending = [
+    { id: ids[0], tool: 'vps.run', status: 'held', summary: 'vps.run with arguments {"command":"uptime"}', args: { command: 'uptime' }, createdAt: at(-5), expiresAt: at(600), url: url(ids[0]!), jobId: 'job-u1',
+      reason: { title: 'Check the VPS uptime', description: 'Harmless read: prints uptime for the popup repro.' }, source: { kind: 'headless', who: 'urgent-approval-popup-crash', client: 'claude-code' }, veto: veto(85) },
+    { id: ids[1], tool: 'axf.control_add', status: 'held', summary: 'axf.control_add with arguments {"target":"tokens.theme","value":{"accent":"#f80"}}', args: { target: 'tokens.theme', value: { accent: '#f80' } }, createdAt: at(-4), expiresAt: at(600), url: url(ids[1]!), jobId: 'job-c1',
+      reason: { title: 'Add a theme control', description: 'Adds a control@1 target for the accent colour.' }, source: { kind: 'claude-ai', session: 'chat Amber' }, veto: veto(60) },
+    { id: ids[2], tool: 'axf.build_start', status: 'held', summary: 'axf.build_start with arguments {"id":"expenses-port","model":"opus"}', args: { id: 'expenses-port', model: 'opus' }, createdAt: at(-3), expiresAt: at(600), url: url(ids[2]!), jobId: 'job-b1',
+      title: { title: 'Start build expenses-port' }, reason: { title: { nested: true }, description: ['not', 'a', 'string'] }, veto: veto(30) },
+    { id: ids[3], tool: 'axf.build_start', summary: 'axf.build_start', createdAt: at(-2), expiresAt: at(600), url: url(ids[3]!), reason: 'Start it', actions: null, source: 'not an object' },
+  ];
+  const st = interpretApprovals(HUB, 200, JSON.stringify({ signedIn: true, admin: true, count: pending.length, pending }), now);
+  assert.equal(st.status, 'ok');
+  assert.equal(st.items.length, 4, 'every shape is read');
+  const q = queueOf(st.items);
+  for (const raw of q) {
+    const d = drawable(raw)!;
+    assert.ok(d, raw.id);
+    for (const k of ['title', 'description', 'summary', 'command', 'tool', 'url'] as const) assert.equal(typeof d[k], 'string', `${raw.tool} ${k}`);
+    assert.ok(d.title.length > 0, 'always a title');
+    assert.ok(d.decisions.length > 0, 'always a button to tap');
+    assert.ok(offers(d, false), 'Deny is always there');
+  }
+  assert.equal(drawable(q.find((i) => i.id === ids[0]))!.command, 'uptime');
+  assert.equal(drawable(q.find((i) => i.id === ids[1]))!.title, 'Add a theme control');
+  // shapes the lib never produces but a stale bundle or a hub change could: objects and junk where strings belong
+  const junk = drawable({ id: 'x1', kind: 'held', tool: { name: 'vps.run' }, title: { title: 'A title object' }, description: { a: 1 }, decisions: 'deny', veto: 'nope', source: { kind: 'x' } })!;
+  assert.equal(junk.title, 'A title object');
+  assert.equal(typeof junk.description, 'string');
+  assert.deepEqual(junk.decisions, ['deny']);
+  assert.equal(junk.veto, null);
+  assert.equal(junk.source, null);
+  assert.equal(drawable(null), null);
+  assert.equal(drawable({ tool: 'vps.run' }), null, 'no id: nothing to decide');
 });
 
 await t('approve round trip on an approval: CSRF from the session, the decide route, then it leaves the feed', async () => {

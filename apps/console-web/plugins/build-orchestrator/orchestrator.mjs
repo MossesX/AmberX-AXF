@@ -28,7 +28,10 @@ import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from '
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './web/orchestrator-core.mjs';
-import { approverFrom, upgradeLine } from '../../../../framework/core/model-switch.mjs';
+import { approverFrom, upgradeLine, upgradePolicy } from '../../../../framework/core/model-switch.mjs';
+import { loadUpgradePolicy } from '../../../../framework/cli/upgrade-policy.mjs';
+
+loadUpgradePolicy(); // Fable upgrades need my approval (owner-only Claude setting, default off; Brett, Nov 4 2026)
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
 import { storeFile, withStore, loadStore } from '../../../../framework/cli/builds-store.mjs';
 import { absorbOrchestrator, projectOrchestrator } from '../../../../framework/plan/builds-store-core.mjs';
@@ -90,7 +93,7 @@ async function main(argv) {
   const [cmd = 'list', ...rest] = args;
   const s = load();
   if (cmd === 'where') return out({ ok: true, file: trackerFile() }, trackerFile());
-  if (cmd === 'list' || cmd === 'state') return out({ ok: true, state: s }, s.builds.filter((b) => !b.hidden && b.status !== 'archived').map((b) => line(b, s.rules)).join('\n') || 'No builds.');
+  if (cmd === 'list' || cmd === 'state') return out({ ok: true, state: s, upgradePolicy: upgradePolicy() }, s.builds.filter((b) => !b.hidden && b.status !== 'archived').map((b) => line(b, s.rules)).join('\n') || 'No builds.');
   if (cmd === 'next') {
     const b = rest[0] ? s.builds.find((x) => x.id === rest[0]) : s.builds.find((x) => !x.hidden && !['built', 'complete', 'archived'].includes(x.status));
     if (!b) return out({ ok: true, next: null }, 'Nothing left to build.');
@@ -101,6 +104,7 @@ async function main(argv) {
   if (cmd === 'request-upgrade') {
     const [id, ph] = rest; const r = act({ action: 'request-upgrade', id, phase: Number(ph), by: process.env.AXF_SESSION || process.env.AXF_ACTOR || 'session' });
     const b = r.build; const p = core.phases(b)[Number(ph)]; const req = b.upgradeRequests.find((x) => x.phase === p.index && x.state !== 'denied');
+    if (!upgradePolicy().approvalRequired) return out({ ok: true, auto: true, log: r.log }, [...r.log, 'Fable upgrades need no approval right now: carry on with this phase on the higher model.'].join('\n'));
     const ask = upgradeAsk(b, p, req);
     return out({ ok: true, request: req, ask, log: r.log }, [...r.log,
       'Only Brett can approve a model upgrade. Ask him once, then stop this session (do no work on that phase):',

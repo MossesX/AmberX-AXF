@@ -2231,6 +2231,1442 @@
       }
     }
   },
+  "tab-group": {
+    "amber-signature": {
+      "normalized": {
+        "style": "pills",
+        "align": "start",
+        "position": "top",
+        "density": "regular",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": false,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.65)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1)"
+      },
+      "attrs": {
+        "data-fx-tabs": "pills",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "off",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "boardroom": {
+      "normalized": {
+        "style": "underline",
+        "align": "stretch",
+        "position": "top",
+        "density": "regular",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": true,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.65)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1)"
+      },
+      "attrs": {
+        "data-fx-tabs": "underline",
+        "data-fx-tabs-align": "stretch",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "boxed": {
+      "normalized": {
+        "style": "boxed",
+        "align": "start",
+        "position": "top",
+        "density": "regular",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": true,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.65)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1)"
+      },
+      "attrs": {
+        "data-fx-tabs": "boxed",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "calm-reader": {
+      "normalized": {
+        "style": "plain",
+        "align": "center",
+        "position": "top",
+        "density": "regular",
+        "overflow": "scroll",
+        "display": "text",
+        "showIcons": false,
+        "divider": false,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.65)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1)"
+      },
+      "attrs": {
+        "data-fx-tabs": "plain",
+        "data-fx-tabs-align": "center",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "text",
+        "data-fx-tabs-icons": "off",
+        "data-fx-tabs-divider": "off",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "chips": {
+      "normalized": {
+        "style": "chips",
+        "align": "start",
+        "position": "top",
+        "density": "compact",
+        "overflow": "wrap",
+        "display": "both",
+        "showIcons": true,
+        "divider": false,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": true
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.4)",
+        "--fx-tab-px": "calc(var(--fx-space) * 0.75)"
+      },
+      "attrs": {
+        "data-fx-tabs": "chips",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "wrap",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "off",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "command-deck": {
+      "normalized": {
+        "style": "boxed",
+        "align": "start",
+        "position": "top",
+        "density": "compact",
+        "overflow": "scroll",
+        "display": "text",
+        "showIcons": false,
+        "divider": true,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.4)",
+        "--fx-tab-px": "calc(var(--fx-space) * 0.75)"
+      },
+      "attrs": {
+        "data-fx-tabs": "boxed",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "text",
+        "data-fx-tabs-icons": "off",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "compact-admin": {
+      "normalized": {
+        "style": "segmented",
+        "align": "start",
+        "position": "top",
+        "density": "compact",
+        "overflow": "scroll",
+        "display": "text",
+        "showIcons": false,
+        "divider": true,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.4)",
+        "--fx-tab-px": "calc(var(--fx-space) * 0.75)"
+      },
+      "attrs": {
+        "data-fx-tabs": "segmented",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "text",
+        "data-fx-tabs-icons": "off",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "data-pro": {
+      "normalized": {
+        "style": "underline",
+        "align": "start",
+        "position": "top",
+        "density": "compact",
+        "overflow": "scroll",
+        "display": "text",
+        "showIcons": false,
+        "divider": true,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.4)",
+        "--fx-tab-px": "calc(var(--fx-space) * 0.75)"
+      },
+      "attrs": {
+        "data-fx-tabs": "underline",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "text",
+        "data-fx-tabs-icons": "off",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "dense-ops": {
+      "normalized": {
+        "style": "segmented",
+        "align": "start",
+        "position": "top",
+        "density": "compact",
+        "overflow": "scroll",
+        "display": "text",
+        "showIcons": false,
+        "divider": true,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.4)",
+        "--fx-tab-px": "calc(var(--fx-space) * 0.75)"
+      },
+      "attrs": {
+        "data-fx-tabs": "segmented",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "text",
+        "data-fx-tabs-icons": "off",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "dropdown-compact": {
+      "normalized": {
+        "style": "segmented",
+        "align": "start",
+        "position": "top",
+        "density": "compact",
+        "overflow": "dropdown",
+        "display": "both",
+        "showIcons": true,
+        "divider": false,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": true
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.4)",
+        "--fx-tab-px": "calc(var(--fx-space) * 0.75)"
+      },
+      "attrs": {
+        "data-fx-tabs": "segmented",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "dropdown",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "off",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "enterprise-crisp": {
+      "normalized": {
+        "style": "underline",
+        "align": "start",
+        "position": "top",
+        "density": "regular",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": true,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.65)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1)"
+      },
+      "attrs": {
+        "data-fx-tabs": "underline",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "executive-soft": {
+      "normalized": {
+        "style": "pills",
+        "align": "start",
+        "position": "top",
+        "density": "roomy",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": false,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.9)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1.4)"
+      },
+      "attrs": {
+        "data-fx-tabs": "pills",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "off",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "field-rugged": {
+      "normalized": {
+        "style": "boxed",
+        "align": "stretch",
+        "position": "top",
+        "density": "roomy",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": true,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.9)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1.4)"
+      },
+      "attrs": {
+        "data-fx-tabs": "boxed",
+        "data-fx-tabs-align": "stretch",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "frosted-dock": {
+      "normalized": {
+        "style": "pills",
+        "align": "start",
+        "position": "top",
+        "density": "regular",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": false,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.65)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1)"
+      },
+      "attrs": {
+        "data-fx-tabs": "pills",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "off",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "gizmo-console": {
+      "normalized": {
+        "style": "underline",
+        "align": "start",
+        "position": "top",
+        "density": "compact",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": true,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.4)",
+        "--fx-tab-px": "calc(var(--fx-space) * 0.75)"
+      },
+      "attrs": {
+        "data-fx-tabs": "underline",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "glass-air": {
+      "normalized": {
+        "style": "pills",
+        "align": "center",
+        "position": "top",
+        "density": "regular",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": false,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.65)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1)"
+      },
+      "attrs": {
+        "data-fx-tabs": "pills",
+        "data-fx-tabs-align": "center",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "off",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "gradient-pop": {
+      "normalized": {
+        "style": "pills",
+        "align": "center",
+        "position": "top",
+        "density": "regular",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": false,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.65)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1)"
+      },
+      "attrs": {
+        "data-fx-tabs": "pills",
+        "data-fx-tabs-align": "center",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "off",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "icon-rail": {
+      "normalized": {
+        "style": "pills",
+        "align": "start",
+        "position": "left",
+        "density": "compact",
+        "overflow": "scroll",
+        "display": "icons",
+        "showIcons": true,
+        "divider": true,
+        "sticky": true,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.4)",
+        "--fx-tab-px": "calc(var(--fx-space) * 0.75)"
+      },
+      "attrs": {
+        "data-fx-tabs": "pills",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "left",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "icons",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "on",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "kiosk-bold": {
+      "normalized": {
+        "style": "segmented",
+        "align": "stretch",
+        "position": "top",
+        "density": "roomy",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": false,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.9)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1.4)"
+      },
+      "attrs": {
+        "data-fx-tabs": "segmented",
+        "data-fx-tabs-align": "stretch",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "off",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "lounge": {
+      "normalized": {
+        "style": "pills",
+        "align": "center",
+        "position": "top",
+        "density": "roomy",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": false,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.9)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1.4)"
+      },
+      "attrs": {
+        "data-fx-tabs": "pills",
+        "data-fx-tabs-align": "center",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "off",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "material-flow": {
+      "normalized": {
+        "style": "underline",
+        "align": "stretch",
+        "position": "top",
+        "density": "regular",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": true,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.65)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1)"
+      },
+      "attrs": {
+        "data-fx-tabs": "underline",
+        "data-fx-tabs-align": "stretch",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "minimal-line": {
+      "normalized": {
+        "style": "underline",
+        "align": "start",
+        "position": "top",
+        "density": "regular",
+        "overflow": "scroll",
+        "display": "text",
+        "showIcons": false,
+        "divider": true,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.65)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1)"
+      },
+      "attrs": {
+        "data-fx-tabs": "underline",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "text",
+        "data-fx-tabs-icons": "off",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "more-menu": {
+      "normalized": {
+        "style": "underline",
+        "align": "start",
+        "position": "top",
+        "density": "regular",
+        "overflow": "more",
+        "display": "both",
+        "showIcons": true,
+        "divider": true,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.65)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1)"
+      },
+      "attrs": {
+        "data-fx-tabs": "underline",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "more",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "neon-edge": {
+      "normalized": {
+        "style": "boxed",
+        "align": "start",
+        "position": "top",
+        "density": "regular",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": true,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.65)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1)"
+      },
+      "attrs": {
+        "data-fx-tabs": "boxed",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "paper-cut": {
+      "normalized": {
+        "style": "plain",
+        "align": "start",
+        "position": "top",
+        "density": "regular",
+        "overflow": "scroll",
+        "display": "text",
+        "showIcons": false,
+        "divider": true,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.65)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1)"
+      },
+      "attrs": {
+        "data-fx-tabs": "plain",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "text",
+        "data-fx-tabs-icons": "off",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "pills": {
+      "normalized": {
+        "style": "pills",
+        "align": "start",
+        "position": "top",
+        "density": "regular",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": false,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.65)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1)"
+      },
+      "attrs": {
+        "data-fx-tabs": "pills",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "off",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "plain-centered": {
+      "normalized": {
+        "style": "plain",
+        "align": "center",
+        "position": "top",
+        "density": "roomy",
+        "overflow": "wrap",
+        "display": "text",
+        "showIcons": false,
+        "divider": false,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.9)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1.4)"
+      },
+      "attrs": {
+        "data-fx-tabs": "plain",
+        "data-fx-tabs-align": "center",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "wrap",
+        "data-fx-tabs-display": "text",
+        "data-fx-tabs-icons": "off",
+        "data-fx-tabs-divider": "off",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "segmented": {
+      "normalized": {
+        "style": "segmented",
+        "align": "stretch",
+        "position": "top",
+        "density": "compact",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": false,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.4)",
+        "--fx-tab-px": "calc(var(--fx-space) * 0.75)"
+      },
+      "attrs": {
+        "data-fx-tabs": "segmented",
+        "data-fx-tabs-align": "stretch",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "off",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "side-dock": {
+      "normalized": {
+        "style": "plain",
+        "align": "start",
+        "position": "right",
+        "density": "roomy",
+        "overflow": "scroll",
+        "display": "text",
+        "showIcons": false,
+        "divider": true,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": true
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.9)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1.4)"
+      },
+      "attrs": {
+        "data-fx-tabs": "plain",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "right",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "text",
+        "data-fx-tabs-icons": "off",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "side-rail": {
+      "normalized": {
+        "style": "pills",
+        "align": "start",
+        "position": "left",
+        "density": "regular",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": true,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.65)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1)"
+      },
+      "attrs": {
+        "data-fx-tabs": "pills",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "left",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "sticky-badged": {
+      "normalized": {
+        "style": "boxed",
+        "align": "start",
+        "position": "top",
+        "density": "regular",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": true,
+        "sticky": true,
+        "collapsible": true,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": true
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.65)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1)"
+      },
+      "attrs": {
+        "data-fx-tabs": "boxed",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "on",
+        "data-fx-tabs-collapsible": "on",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "studio-pro": {
+      "normalized": {
+        "style": "underline",
+        "align": "start",
+        "position": "top",
+        "density": "compact",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": true,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.4)",
+        "--fx-tab-px": "calc(var(--fx-space) * 0.75)"
+      },
+      "attrs": {
+        "data-fx-tabs": "underline",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "swiss-grid": {
+      "normalized": {
+        "style": "plain",
+        "align": "start",
+        "position": "top",
+        "density": "regular",
+        "overflow": "scroll",
+        "display": "text",
+        "showIcons": false,
+        "divider": true,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.65)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1)"
+      },
+      "attrs": {
+        "data-fx-tabs": "plain",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "text",
+        "data-fx-tabs-icons": "off",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "terminal": {
+      "normalized": {
+        "style": "boxed",
+        "align": "start",
+        "position": "top",
+        "density": "compact",
+        "overflow": "scroll",
+        "display": "text",
+        "showIcons": false,
+        "divider": true,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.4)",
+        "--fx-tab-px": "calc(var(--fx-space) * 0.75)"
+      },
+      "attrs": {
+        "data-fx-tabs": "boxed",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "text",
+        "data-fx-tabs-icons": "off",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "touch-friendly": {
+      "normalized": {
+        "style": "segmented",
+        "align": "stretch",
+        "position": "top",
+        "density": "roomy",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": false,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.9)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1.4)"
+      },
+      "attrs": {
+        "data-fx-tabs": "segmented",
+        "data-fx-tabs-align": "stretch",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "off",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "underline": {
+      "normalized": {
+        "style": "underline",
+        "align": "start",
+        "position": "top",
+        "density": "regular",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": true,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.65)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1)"
+      },
+      "attrs": {
+        "data-fx-tabs": "underline",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "warm-craft": {
+      "normalized": {
+        "style": "pills",
+        "align": "start",
+        "position": "top",
+        "density": "roomy",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": false,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.9)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1.4)"
+      },
+      "attrs": {
+        "data-fx-tabs": "pills",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "off",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    }
+  },
+  "tab-group-cases": {
+    "missing": {
+      "normalized": {
+        "style": "underline",
+        "align": "start",
+        "position": "top",
+        "density": "regular",
+        "overflow": "scroll",
+        "display": "both",
+        "showIcons": true,
+        "divider": true,
+        "sticky": false,
+        "collapsible": false,
+        "closable": true,
+        "reorderable": true,
+        "badges": true,
+        "rememberLast": false
+      },
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.65)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1)"
+      },
+      "attrs": {
+        "data-fx-tabs": "underline",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "hidden": {
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.65)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1)"
+      },
+      "attrs": {
+        "data-fx-tabs": "pills",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "top",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "both",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "off",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "on",
+        "data-fx-tabs-hidden": "on"
+      }
+    },
+    "legacy-show-icons-false": {
+      "style": "underline",
+      "align": "start",
+      "position": "top",
+      "density": "regular",
+      "overflow": "scroll",
+      "display": "text",
+      "showIcons": false,
+      "divider": true,
+      "sticky": false,
+      "collapsible": false,
+      "closable": true,
+      "reorderable": true,
+      "badges": true,
+      "rememberLast": false
+    },
+    "display-wins-over-show-icons": {
+      "style": "underline",
+      "align": "start",
+      "position": "top",
+      "density": "regular",
+      "overflow": "scroll",
+      "display": "icons",
+      "showIcons": true,
+      "divider": true,
+      "sticky": false,
+      "collapsible": false,
+      "closable": true,
+      "reorderable": true,
+      "badges": true,
+      "rememberLast": false
+    },
+    "unknown-values-fall-back": {
+      "style": "underline",
+      "align": "start",
+      "position": "top",
+      "density": "regular",
+      "overflow": "scroll",
+      "display": "both",
+      "showIcons": true,
+      "divider": true,
+      "sticky": false,
+      "collapsible": false,
+      "closable": true,
+      "reorderable": true,
+      "badges": true,
+      "rememberLast": false
+    },
+    "left-rail": {
+      "vars": {
+        "--fx-tab-py": "calc(var(--fx-space) * 0.65)",
+        "--fx-tab-px": "calc(var(--fx-space) * 1)"
+      },
+      "attrs": {
+        "data-fx-tabs": "pills",
+        "data-fx-tabs-align": "start",
+        "data-fx-tabs-position": "left",
+        "data-fx-tabs-overflow": "scroll",
+        "data-fx-tabs-display": "icons",
+        "data-fx-tabs-icons": "on",
+        "data-fx-tabs-divider": "on",
+        "data-fx-tabs-sticky": "on",
+        "data-fx-tabs-collapsible": "off",
+        "data-fx-tabs-badges": "off",
+        "data-fx-tabs-hidden": "off"
+      }
+    },
+    "every-flag-on": {
+      "style": "boxed",
+      "align": "stretch",
+      "position": "bottom",
+      "density": "regular",
+      "overflow": "more",
+      "display": "both",
+      "showIcons": true,
+      "divider": true,
+      "sticky": true,
+      "collapsible": true,
+      "closable": true,
+      "reorderable": true,
+      "badges": true,
+      "rememberLast": true
+    }
+  },
   "chrome-cases": {
     "toolbar-compact-glass": {
       "vars": {

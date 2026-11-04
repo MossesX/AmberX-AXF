@@ -7,7 +7,7 @@
  */
 import { useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { AxfRuntime } from '../../../axf/core';
-import { Button, Container, Icon, IconButton, Note, SelectField, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
+import { Button, Container, Icon, IconButton, Note, SelectField, TabGroup, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
 import { DataGrid, type GridColumn } from '../../../axf/libs/datagrid';
 import type { Item } from '../../notes/web/core';
 import { addItem, addList, flatTree, type Store } from '../../notes/web/core';
@@ -134,14 +134,7 @@ function WebView() {
         <Button tone="primary" icon="search" type="submit">Go</Button>
       </form>
       {w.tabs.length > 0 && (
-        <div className="axp-web-tabs" role="tablist">
-          {w.tabs.map((t) => (
-            <span key={t.id} className="axp-web-tab">
-              <button type="button" role="tab" className={`fx-tab ${t.id === active?.id ? 'is-active' : ''}`} aria-selected={t.id === active?.id} onClick={() => set({ active: t.id })}>{t.title}</button>
-              <IconButton icon="x" label={`Close ${t.title}`} onClick={() => close(t.id)} />
-            </span>
-          ))}
-        </div>
+        <TabGroup id="web.tabs" label="Web tabs" className="axp-web-tabs" value={active?.id ?? ''} onChange={(id) => set({ active: id })} onClose={close} tabs={w.tabs.map((t) => ({ value: t.id, label: t.title }))} />
       )}
       {active && <p className="fx-muted fx-mono fx-small axp-web-url">{active.url}</p>}
       {w.clip && <ClipCard tab={w.clip} />}

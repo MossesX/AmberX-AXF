@@ -71,7 +71,7 @@ class Fake(BaseHTTPRequestHandler):
         if p == "/user":
             return self._send(200, {"login": "MossesX"})
         if p == R + "/branches":
-            return self._send(200, [{"name": b} for b in STATE["branches"]])
+            return self._send(200, [{"name": b, **({"commit": {"sha": STATE["bsha"][b]}} if b in STATE.get("bsha", {}) else {})} for b in STATE["branches"]])
         if p == R + "/branches/main/protection":
             pr = STATE["protection"]
             return self._send(404, {"message": "Branch not protected"}) if pr is None else self._send(403, {"message": "Resource not accessible by personal access token"}) if pr == "forbidden" else self._send(200, pr)
@@ -92,7 +92,7 @@ class Fake(BaseHTTPRequestHandler):
         if p.startswith(R + "/compare/"):
             head = p.split("...", 1)[1]
             head = next((x["head"]["ref"] for x in STATE["pulls"] if x["head"]["sha"] == head), head)  # a PR's head commit = its branch
-            return self._send(200, {"ahead_by": STATE["ahead"].get(head, 0), "behind_by": STATE["behind"].get(head, 2), "commits": [{"sha": "x"}], "files": []})
+            return self._send(200, {"ahead_by": STATE["ahead"].get(head, 0), "behind_by": STATE["behind"].get(head, 2), "commits": [{"sha": "x"}], "files": [{"filename": f} for f in STATE.get("cmpfiles", {}).get(head, [])]})
         if p == R + "/commits":
             b = q["sha"][0]
             return self._send(200, [{"sha": f"{b}-head", "commit": {"message": f"Last on {b}\n\nbody", "committer": {"date": "2026-10-22T06:00:00Z" if b == "feat/b" else "2026-10-21T06:00:00Z"}}}])
@@ -727,4 +727,23 @@ mod.PUSHES._forget()
 st = mod.PUSHES.branches(force=True)
 p18 = next((x for x in st["repos"][0]["pulls"] if x["number"] == 18), None)
 check(p18 is not None and p18.get("land", {}).get("kind") == "ui" and "UI Review" in p18["land"]["why"], "the banner shows auto-land's reason on the PR")
+# Save compute (Nov 4 2026): a refresh re-asks GitHub only for branches whose commit changed
+STATE["bsha"] = {b: f"{b}-sha1" for b in STATE["branches"]}
+mod.PUSHES._mem = {"checks": {}, "branch": {}, "full": {}, "base": {}}
+cmp_n = lambda: sum(1 for s in SEEN if s["path"].startswith(R + "/compare/main..."))  # one per branch
+mod.PUSHES._forget(); mod.PUSHES.branches(force=True)
+n1 = cmp_n()
+mod.PUSHES._forget(); st1 = mod.PUSHES.branches(force=True)
+check(cmp_n() == n1, "same commits everywhere: the second refresh makes no compare call")
+STATE["bsha"]["main"] = "main-sha2"; STATE["ahead"]["main-sha2"] = 3; STATE["behind"]["main-sha2"] = 0
+mod.PUSHES._forget(); st2 = mod.PUSHES.branches(force=True)
+b1 = {b["name"]: b.get("behind") for b in st1["repos"][0]["branches"]}; b2 = {b["name"]: b.get("behind") for b in st2["repos"][0]["branches"]}
+check(cmp_n() == n1 and all(b2[k] == b1[k] + 3 for k in b1 if isinstance(b1[k], int)), "main moved only by status commits: no branch compared again, every branch 3 more behind")
+STATE["bsha"]["main"] = "main-sha3"; STATE["ahead"]["main-sha3"] = 1; STATE["behind"]["main-sha3"] = 0; STATE.setdefault("cmpfiles", {})["main-sha3"] = ["framework/core/x.ts"]
+mod.PUSHES._forget(); mod.PUSHES.branches(force=True)
+check(cmp_n() >= n1 + 4, "main moved in code: every branch is compared again")
+STATE["bsha"]["feat/a"] = "feat/a-sha2"
+n3 = cmp_n(); mod.PUSHES._forget(); mod.PUSHES.branches(force=True)
+check(cmp_n() == n3 + 1, "one branch got a commit: only it is compared again")
+del STATE["bsha"]
 print(f"push-banner: {ok} checks passed")

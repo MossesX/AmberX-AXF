@@ -18,6 +18,7 @@ import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, ASSE
 import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
+import { TabGroup } from '../../react/components/TabGroup';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
 
 export const SETTINGS_LIBRARY_ID = 'ai.amberx.axf.settings';
@@ -480,15 +481,13 @@ export function SettingsView() {
   const searching = searchOn && query.trim().length > 0;
   const cls = ['fx-stack', 'fx-stack--lg', 'axf-settings', `axf-settings--${ui.layout}`, ui.descriptions ? '' : 'axf-settings--nodesc'].filter(Boolean).join(' ');
 
+  // the settings tab bar is a tab group (tab-group@1): tabs-side lays it down the side (the side-rail starter) unless the row picked its own asset
   const tabBar = ui.layout === 'list' ? null : (
-    <nav className="axf-settings__tabs" role="tablist" aria-label="Settings sections" aria-orientation={ui.layout === 'tabs-side' ? 'vertical' : 'horizontal'}>
-      {tabs.map((t) => (
-        <Button key={t.id} role="tab" aria-selected={t.id === current?.id} tone={t.id === current?.id ? 'primary' : 'neutral'} icon={t.icon} onClick={() => { setQuery(''); choose(t.id); }}>{t.label}</Button>
-      ))}
-    </nav>
+    <TabGroup id="settings.tabs" label="Settings sections" className="axf-settings__tabs" value={current?.id ?? ''} onChange={(id) => { setQuery(''); choose(id); }} asset={ui.layout === 'tabs-side' ? 'side-rail' : undefined}
+      tabs={tabs.map((t) => ({ value: t.id, label: t.label, icon: t.icon }))} />
   );
   const navList = (
-    <nav className="axf-settings__navlist" aria-label="Settings sections">
+    <nav className="axf-settings__navlist" aria-label="Settings sections" data-axf-not-nav="the settings page's section list (settings-ui@1 layout list), not a navigation menu">
       {tabs.map((t) => <NavRow key={t.id} icon={t.icon} label={t.label} desc={t.description} active={wide && t.id === current?.id} onClick={() => { setQuery(''); choose(t.id); }} />)}
     </nav>
   );
@@ -502,22 +501,12 @@ export function SettingsView() {
         </div>
       )}
       {subs.length > 0 && !subList && (
-        <nav className="axf-settings__subtabs" role="tablist" aria-label={`${current.label} sections`}>
-          {!noOverview && (
-            <button type="button" role="tab" aria-selected={shown?.id === current.id} className={`fx-tab ${shown?.id === current.id ? 'is-active' : ''}`} onClick={() => choose(current.id)}>
-              <Icon name={current.icon} size={13} /> {current.id === 'plugins' ? 'All plugins' : 'Overview'}
-            </button>
-          )}
-          {subs.map((t) => (
-            <button key={t.id} type="button" role="tab" aria-selected={t.id === shown?.id} className={`fx-tab ${t.id === shown?.id ? 'is-active' : ''}`} onClick={() => choose(current.id, t.id)}>
-              <Icon name={t.icon} size={13} /> {t.label}
-            </button>
-          ))}
-        </nav>
+        <TabGroup id="settings.subtabs" label={`${current.label} sections`} className="axf-settings__subtabs" size="sm" value={shown?.id ?? current.id} onChange={(id) => (id === current.id ? choose(current.id) : choose(current.id, id))}
+          tabs={[...(noOverview ? [] : [{ value: current.id, label: current.id === 'plugins' ? 'All plugins' : 'Overview', icon: current.icon }]), ...subs.map((t) => ({ value: t.id, label: t.label, icon: t.icon }))]} />
       )}
       {shown?.description && <p className="fx-muted axf-settings__desc" style={{ margin: 0 }}>{shown.description}</p>}
       {subList && !inSub && (
-        <nav className="axf-settings__navlist axf-settings__navlist--subs" aria-label={`${current.label} sections`}>
+        <nav className="axf-settings__navlist axf-settings__navlist--subs" aria-label={`${current.label} sections`} data-axf-not-nav="the settings page's sub-section list, not a navigation menu">
           {subs.map((t) => <NavRow key={t.id} icon={t.icon} label={t.label} desc={t.description} onClick={() => choose(current.id, t.id)} />)}
         </nav>
       )}

@@ -8,7 +8,7 @@
  * (a multiple of --fx-space), measured once per resize from a probe element.
  */
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { BrandWatermark, Button, Icon, IconButton, useRuntime } from '@console/axf/react';
+import { BrandWatermark, Button, Icon, IconButton, TabGroup, useRuntime } from '@console/axf/react';
 import { loadConfig, loadType, saveConfig } from './api';
 import { DEFAULT_CONFIG, FACET_OF, TABS, facetValues, filterItems, gridWindow, tabOf, type Config, type LibAsset, type TabId } from './model';
 import { TileArt, type MarkIndex } from './tiles';
@@ -75,13 +75,7 @@ export function BrandLibrary({ renderPreview }: { renderPreview?: (p: PreviewPro
 
   return (
     <div className="axp-brand-library">
-      <div className="fx-tabs axp-brand-library__tabs" role="tablist" aria-label="Brand library">
-        {TABS.map((t) => (
-          <button key={t.id} type="button" role="tab" className={`fx-tab ${tab === t.id ? 'is-active' : ''}`} aria-selected={tab === t.id} onClick={() => pickTab(t.id)}>
-            <Icon name={t.icon} size={14} />{t.label}
-          </button>
-        ))}
-      </div>
+      <TabGroup id="brand-library.tabs" label="Brand library" className="axp-brand-library__tabs" value={tab} onChange={pickTab} tabs={TABS.map((t) => ({ value: t.id, label: t.label, icon: t.icon }))} />
 
       {/* one filter row: search, brand, facet and the count (compact pages, Oct 30 2026) */}
       <div className="axp-brand-library__filters" role="search">

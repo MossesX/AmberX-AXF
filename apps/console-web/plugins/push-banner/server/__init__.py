@@ -74,6 +74,7 @@ import json
 import os
 import re
 import subprocess
+import copy
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -113,6 +114,8 @@ UI_REVIEW_CAP = "ui-review@1"  # PRs whose UI is waiting, has changes asked or i
 UI_REVIEW_REPO = os.environ.get("AXF_GITHUB_REPO") or "MossesX/AmberX-AXF"  # the repo UI Review's PR numbers belong to
 NO_ROUTE = "the console can't reach GitHub: neither axHub (AXHUB_TOKEN) nor GITHUB_TOKEN is set on the console server"
 MAX_REPOS = 10
+MEM_MAX = 4000  # finished check-run answers kept per commit (cleared when full)
+CHECKS_KEEP_S = 15 * 60
 MAX_BRANCHES = 150  # per repo, newest first by GitHub's listing
 MAX_HIDDEN = 300
 MAX_PULLS = 60  # open PRs per repo
@@ -193,6 +196,13 @@ class Pushes:
         self.clock = clock
         self._lock = threading.Lock()
         self._cache: tuple[float, str, dict[str, Any]] | None = None
+        # Save compute (Brett, Nov 4 2026: "Save the compute"): one refresh used to cost a compare + head + checks call
+        # for every branch (150 in AmberX-AXF) every 2 minutes, the whole 5000/h on its own. A branch's answer is kept
+        # until its own commit changes; when main moved only by status commits under _claude/ (builds-live) it is
+        # reused with `behind` moved on by those commits (one compare per repo, not one per branch). Finished check
+        # runs never change, so they are kept per commit.
+        self._mem_lock = threading.Lock()
+        self._mem: dict[str, Any] = {"checks": {}, "branch": {}, "full": {}, "base": {}}
 
     # ---- config
     def config(self) -> dict[str, Any]:
@@ -277,6 +287,41 @@ class Pushes:
         data = gh.get(github.repo_path(repo, "commits", sha, "check-runs", query={"per_page": 100}))
         runs = data.get("check_runs", []) if isinstance(data, dict) else []
         return [r for r in runs if isinstance(r, dict)] if isinstance(runs, list) else []
+
+    def _checks_listed(self, gh: github.GitHubClient, repo: str, sha: str) -> list[dict[str, Any]]:
+        """_checks for the banner's listing: a finished result is kept for CHECKS_KEEP_S (a re-run shows up after
+        that). Merging never reads this: it always asks GitHub."""
+        key = f"{repo}@{sha}"
+        mem = self._mem
+        hit = mem["checks"].get(key)
+        if hit and time.time() - hit[0] < CHECKS_KEEP_S:
+            return hit[1]
+        out = self._checks(gh, repo, sha)
+        if ci_state(out) in ("success", "failure"):
+            with self._mem_lock:
+                if len(mem["checks"]) > MEM_MAX:
+                    mem["checks"].clear()
+                mem["checks"][key] = (time.time(), out)
+        return out
+
+    def _base_shift(self, gh: github.GitHubClient, repo: str, base_sha: str) -> tuple[str, int] | None:
+        """The base commit last refresh's branch answers were computed on, and how many commits main gained since, when
+        those commits only touch _claude/ (status data): the answers still hold, `behind` + that many. None = recompute."""
+        old = self._mem["base"].get(repo)
+        if not old or not base_sha:
+            return None
+        if old == base_sha:
+            return old, 0
+        try:
+            cmp = gh.get(f"{github.repo_path(repo, 'compare')}/{quote(old, safe='')}...{quote(base_sha, safe='')}?per_page=100")
+        except (github.GitHubError, ValueError):
+            return None
+        if not isinstance(cmp, dict) or cmp.get("behind_by") or not isinstance(cmp.get("ahead_by"), int):
+            return None
+        files = [str(f.get("filename") or "") for f in cmp.get("files") or [] if isinstance(f, dict)]
+        if len(files) >= 300 or not all(f.startswith("_claude/") for f in files):
+            return None
+        return old, cmp["ahead_by"]
 
     def _head(self, gh: github.GitHubClient, repo: str, branch: str) -> dict[str, Any]:
         """The newest commit on a branch (the commits list: no file diffs, unlike compare's)."""
@@ -381,8 +426,9 @@ class Pushes:
             info = gh.repo(repo)
             base = info.get("default_branch") if isinstance(info, dict) and valid_branch(info.get("default_branch")) else "main"
             out["base"] = base
-            names = [b.get("name") for b in gh.paginate(github.repo_path(repo, "branches", query={"per_page": 100}), max_pages=3, max_items=MAX_BRANCHES)
-                     if isinstance(b, dict)]
+            listed = [b for b in gh.paginate(github.repo_path(repo, "branches", query={"per_page": 100}), max_pages=3, max_items=MAX_BRANCHES)
+                      if isinstance(b, dict)]
+            names = [b.get("name") for b in listed]
             pulls = gh.paginate(github.repo_path(repo, "pulls", query={"state": "open", "per_page": 100}), max_pages=2, max_items=MAX_PULLS)
         except (github.GitHubError, ValueError) as e:
             out["error"] = _text(str(e))
@@ -394,8 +440,51 @@ class Pushes:
             if same and valid_branch(head.get("ref")) and ((p.get("base") or {}).get("ref") == base):
                 prs[head["ref"]] = p
         todo = [n for n in names if valid_branch(n) and n != base and n not in ALWAYS_HIDDEN]
+        sha_of = {b.get("name"): _text((b.get("commit") or {}).get("sha") if isinstance(b.get("commit"), dict) else "", 40) for b in listed}
+        base_sha = sha_of.get(base, "")
+        shift = self._base_shift(gh, repo, base_sha)
+        mem_branch: dict[str, Any] = self._mem["branch"]
 
         def one(name: str) -> dict[str, Any] | None:
+            key = f"{repo}:{name}"
+            hit = mem_branch.get(key)
+            if shift and hit and hit["sha"] and hit["sha"] == sha_of.get(name) and hit["base"] == shift[0]:
+                item = copy.deepcopy(hit["item"])
+                if item is None:
+                    return None
+                if isinstance(item.get("behind"), int):
+                    item["behind"] += shift[1]
+                item["hidden"] = is_hidden(hidden, f"{repo}:{name}", item.get("sha", ""))
+                p = prs.get(name)
+                if p:  # the PR's title / number / draft may have changed; its CI is per commit (cached when finished)
+                    sha = _text((p.get("head") or {}).get("sha"), 40)
+                    pr = {"number": p.get("number") if isinstance(p.get("number"), int) else None, "title": _text(p.get("title")),
+                          "url": _safe_url(p.get("html_url")), "draft": p.get("draft") is True, "ci": "none"}
+                    try:
+                        pr["ci"] = ci_state(self._checks_listed(gh, repo, sha)) if sha else "none"
+                    except (github.GitHubError, ValueError):
+                        pr["ci"] = "unknown"
+                    item["pr"] = pr
+                    item.pop("clean", None); item.pop("canMerge", None); item.pop("ci", None)
+                else:
+                    item["pr"] = None
+                    if item["behind"] == 0 and item["sha"]:
+                        try:
+                            item["ci"] = ci_state(self._checks_listed(gh, repo, item["sha"]))
+                        except (github.GitHubError, ValueError):
+                            item["ci"] = "unknown"
+                        item["clean"] = True
+                        item["canMerge"] = item["ci"] == "success"
+                    else:
+                        item.pop("clean", None); item.pop("canMerge", None); item.pop("ci", None)
+                return item
+            item = fresh(name)
+            if item is None or not item.get("error"):
+                with self._mem_lock:
+                    mem_branch[key] = {"sha": sha_of.get(name, ""), "base": base_sha, "item": copy.deepcopy(item)}
+            return item
+
+        def fresh(name: str) -> dict[str, Any] | None:
             try:
                 cmp = gh.get(compare_path(repo, base, name))
             except (github.GitHubError, ValueError) as e:
@@ -417,14 +506,14 @@ class Pushes:
                       "url": _safe_url(p.get("html_url")), "draft": p.get("draft") is True, "ci": "none"}
                 sha = _text((p.get("head") or {}).get("sha"), 40)
                 try:
-                    pr["ci"] = ci_state(self._checks(gh, repo, sha)) if sha else "none"
+                    pr["ci"] = ci_state(self._checks_listed(gh, repo, sha)) if sha else "none"
                 except (github.GitHubError, ValueError):
                     pr["ci"] = "unknown"
                 item["pr"] = pr
             elif item["behind"] == 0 and item["sha"]:
                 # No PR, nothing on the default branch it lacks: it merges cleanly (fast-forward). Its CI decides Merge.
                 try:
-                    item["ci"] = ci_state(self._checks(gh, repo, item["sha"]))
+                    item["ci"] = ci_state(self._checks_listed(gh, repo, item["sha"]))
                 except (github.GitHubError, ValueError):
                     item["ci"] = "unknown"
                 item["clean"] = True
@@ -433,6 +522,16 @@ class Pushes:
 
         with ThreadPoolExecutor(max_workers=8) as pool:
             got = [r for r in pool.map(one, todo) if r]
+        with self._mem_lock:
+            if base_sha:
+                self._mem["base"][repo] = base_sha
+                for k, v in list(mem_branch.items()):  # every kept answer now stands on the new base
+                    if k.startswith(f"{repo}:") and shift and v["base"] == shift[0] and v["sha"] == sha_of.get(k.split(":", 1)[1]):
+                        if v["item"] is not None and isinstance(v["item"].get("behind"), int):
+                            v["item"]["behind"] += shift[1]
+                        v["base"] = base_sha
+                    elif k.startswith(f"{repo}:") and v["base"] != base_sha:
+                        del mem_branch[k]
         got.sort(key=lambda b: b.get("date") or "", reverse=True)
         out["branches"] = got
         behind_of = {g["name"]: g.get("behind") for g in got}
@@ -452,11 +551,20 @@ class Pushes:
                 "hidden": is_hidden(hidden, f"{repo}:#{n}", sha), "sha": sha,
             }
             try:
-                item["ci"] = ci_state(self._checks(gh, repo, sha)) if sha else "none"
+                item["ci"] = ci_state(self._checks_listed(gh, repo, sha)) if sha else "none"
             except (github.GitHubError, ValueError):
                 item["ci"] = "unknown"
             try:
-                full = gh.get(github.repo_path(repo, "pulls", n))
+                fkey = f"{repo}#{n}"
+                fh = self._mem["full"].get(fkey)
+                if fh and fh["sha"] == sha and (fh["base"] == base_sha or (shift and fh["base"] == shift[0])) and isinstance(fh["data"].get("mergeable"), bool):
+                    full = fh["data"]
+                    fh["base"] = base_sha
+                else:
+                    full = gh.get(github.repo_path(repo, "pulls", n))
+                    if isinstance(full, dict):
+                        with self._mem_lock:
+                            self._mem["full"][fkey] = {"sha": sha, "base": base_sha, "data": {"mergeable": full.get("mergeable"), "mergeable_state": full.get("mergeable_state")}}
                 m = full.get("mergeable") if isinstance(full, dict) else None
                 item["mergeable"] = m if isinstance(m, bool) else None
                 st = full.get("mergeable_state") if isinstance(full, dict) else None

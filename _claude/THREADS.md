@@ -33,7 +33,10 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 ## Active
 
 | Thread | State | Branch | PR | Queued / next | Updated |
+| Tab groups, toolbars, banners and nav menus are assets with an asset settings interface (Current `tab-group-assets`, Fable; Brett Nov 4 voice: "all tab groups are supposed to be assets. With a settings interface, that's also an asset." + addenda: all four chrome kinds, one shared default settings interface per type + a custom copy per app, the default selected by default): tab-group@1 extended (position left/right, display, overflow more/dropdown, chips, sticky, collapsible, closable, reorderable, badges, rememberLast; 7 starters), chrome-settings@1 (`settings/chrome-<type>` + `chrome-<type>-<app>` with `extends`, `axf.chrome.settings.<type>`), framework `TabGroup`, shared chrome context menu (Settings… / Change… / Move) on every tab group, toolbar, banner, nav and menu bar, 40 hard-coded tab rows migrated (console, AmberX, framework), CI `check-chrome-assets.mjs` + ratchet, console actions `chrome.*` for voice | review (s1–s6 done: all checks + 4 app typechecks green, 9 shots in UI Review → Screenshots group "tab-group-assets - Nov 4 11:38 AM"; PR open, push banner lands it) | `claude/tab-group-assets` | [#327](https://github.com/MossesX/AmberX-AXF/pull/327) | Report `_claude/builds/reports/tab-group-assets.md`; after merge: redeploy console, AmberX, axHub web | 2026-11-04 |
 | Terminal stops stealing focus (Current `terminal-no-focus`, Opus, agent Janitor Joey; Brett Nov 4 voice: "I don't want the terminal to come to the front on every session."): new Terminal setting *When a new session starts* (Add tab quietly = default, background tab + count on the Terminal toolbar icon, never pops or switches; Do nothing; Bring Terminal to front), REST/MCP/CLI `new-session` | review (PR open, merges on green CI) | `claude/terminal-no-focus` | [#305](https://github.com/MossesX/AmberX-AXF/pull/305) | Report `_claude/builds/reports/terminal-no-focus.md`. Brett: none needed | 2026-11-04 |
+| Fable upgrades need no approval (Current `fable-no-approval`, Opus, agent Snap Sully; Brett Nov 4 voice: "I don't want the approvals. Just put everything that needs to be on Fable on Fable."): owner-only Claude setting *Fable upgrades need my approval* (`builds.fableUpgradeApproval`, off by default); orchestrator, launch gate, swarm and briefs follow it; 8 waiting upgrade phases (6 builds) switched; Fable review `fable-review-nov3` queued (7 Fable steps); rule in RULES.md. Report `_claude/builds/reports/fable-no-approval.md`. | built (CI red on an unrelated ai-assistant check, re-run) | `claude/fable-no-approval` | #319 | `fable-review-nov3` (Fable) queued; toolbar-tap-confirm s9–s21 need a follow-up build (PR #272 merged) | Nov 4 2026 |
+| Land the merge queue first (Urgent `land-merge-queue-first`, Opus, agent Landin' Lenny; Brett Nov 4 voice: "Land the queue first. Stop everything. Stop merging these things one at a time"): auto-land, auto-merge and auto-PR switched off (push banner config) and the auto-land cron left paused; #320 merge-queue updated from main once (+ ETag cache for GitHub reads, one deploy per stack, auto-land off by default, rules: only the queue merges), batch branch `claude/land-batch-1` = #327 + #325 + #319 + #330 on top of #320, checked locally | waiting | `claude/merge-queue`, `claude/land-batch-1` | #320 | Brett approves UI Review r-20261104-d7a77e5c → merge #320, redeploy, queue live, batch PR through the queue as one entry; #305 #323 #326 #328 wait on their UI Review | 2026-11-04 |
 | Build manager hotfix (Current `hotfix-build-manager`, urgent, Opus; agent Ping Paulie; Brett Nov 4 voice: "It says 21 things are going." "When I click them, they don't open up, and the steps in the build menu don't work."): Builds page rows open on tap, step ticks no longer flipped back by stale polls, orchestrator steps open on tap, changes banner counts only live sessions, reconciler pauses builds no live process runs (store cleaned: 7 → complete, 9 → paused) | PR open, auto-merge when CI is green; then redeploy the console | `claude/hotfix-build-manager` | (see live log) | Report `_claude/builds/reports/hotfix-build-manager.md` | 2026-11-04 |
 | UI Review shows its pictures again (Urgent `ui-review-shots`, Opus, agent Snap Sully; Brett Nov 3 voice: "items but NO pictures"): files were all on disk and served 200; two console pollers (agent-slots, token-control pass) re-subscribed on every render and fired ~45 status calls/s, starving the picture fetches; on phones a today-made selector (`:where(:not([data-fx-narrow]))`, always true) squeezed the preview to zero width. Fixed both + layout-adopt codemod, shot timeout/retry, "Shot missing" + Re-capture, health@1 `ui-review-shots`, `review.mjs` worktree warning | review (all 5 steps done; PR open, UI Review waiting) | `claude/ui-review-shots` | [#277](https://github.com/MossesX/AmberX-AXF/pull/277) | Report `_claude/builds/reports/ui-review-shots.md`. Console redeploy (on merge) stops the storm. Brett: approve UI Review r-20261103-17ef4a40 | 2026-11-03 |
 | Land round 2 (Current `land-round-2`, Opus; agent Landin' Lenny; Brett Nov 4 voice: catch up and land the rest, Molly first): landed #288 (with #266, closed as superseded), #294, #295; #297 closed (orphan duplicate of #284); console + Molly redeployed after #288. Stopped at the $15 per-build cap (~$42). #296 pushed (CI unread), #298 #281 #291 #293 #289 #269 resolved locally on `land/<pr>`, #300 needs a rework on top of #269 | stopped (budget cap) | `claude/land-round-2` | (report PR) | Report `_claude/builds/reports/land-round-2.md`. Fix first: the shared GitHub token empties its 5000/h budget in ~25 min. Then land the rest from the local `land/<pr>` branches | 2026-11-04 |
@@ -190,17 +193,24 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 ## To carry on
 
+### Merge queue (`merge-queue`, Current, Opus) — branch `claude/merge-queue`
+- **Asked:** Brett (voice, Nov 4 2026): stop paying for CI twice; stacked merge queue; "how am I going to access this merge queue?" Full brief in the build's origin (`node framework/cli/build-origin.mjs get merge-queue`).
+- **On the branch:** `push-banner/land/merge-queue-core.mjs`, `merge-queue.mjs`, `merge-queue.test.mjs`; `land.mjs` (queue round in every run, no main merge-in while the queue is on); push banner server (`/queue` routes, `mergeQueue` + `queueDepth`, auto-merge skips AmberX-AXF), web `queue.tsx` (view + chip), help, plugin.json 0.7.0; `framework/cli/ci-scope.mjs`, `framework/spec/check-ci-scope.mjs`, `.github/workflows/android.yml` (scope + light jobs, `queue/**`). Report `_claude/builds/reports/merge-queue.md`. <!-- axf-plugin:push-banner -->
+- **Left:** s6 (PR open, live dry run of `node apps/console-web/plugins/push-banner/land/merge-queue.mjs run --dry-run` once the shared GitHub token has calls again). Brett approves UI Review r-20261104-d7a77e5c. After merge + console redeploy: `node <console plugins>/push-banner/land/land.mjs queue list`, `tail /var/log/axf-auto-land.log`; the first queue round sets repo variable `AXF_MERGE_QUEUE=on`. <!-- axf-plugin:push-banner -->
+- **First message:** "Carry on merge-queue (Current): read its To carry on block and `_claude/builds/reports/merge-queue.md`, finish s6."
 ### Console slow to load (`urgent-console-perf`, Urgent, Opus) — branch `claude/urgent-console-perf`
 - **Asked (Brett, Nov 4 2026, voice):** "How come console is taking forever to load? I thought lazy loader was in." … "Can we dig into it?" … "Yes."
 - **Done:** s1–s4 (store lock + export fix, server read cache + spawn cap + tini, client fetchShare + getJson fallback, reconcile throttle). Report with before/after numbers: `_claude/builds/reports/urgent-console-perf.md`.
 - **Left:** s5 tail: PR CI green → auto-merge → `flock /run/axf-console-update.lock /usr/local/bin/axf-console-update` (or wait for the 5-min cron), then check `GET /api/perf`, `docker top axf-console` and the 500s are gone.
 - **Checks:** `node framework/spec/check-builds-store-lock.mjs`, `python apps/console-web/server/test_readcache.py`, `cd apps/console-web && npx tsx scripts/fetch-share-check.mts`.
 - **First message:** "Carry on urgent-console-perf from THREADS.md: land the PR and verify the live console numbers."
-### Merge queue (`merge-queue`, Current, Opus) — branch `claude/merge-queue`
-- **Asked:** Brett (voice, Nov 4 2026): stop paying for CI twice; stacked merge queue; "how am I going to access this merge queue?" Full brief in the build's origin (`node framework/cli/build-origin.mjs get merge-queue`).
-- **On the branch:** `push-banner/land/merge-queue-core.mjs`, `merge-queue.mjs`, `merge-queue.test.mjs`; `land.mjs` (queue round in every run, no main merge-in while the queue is on); push banner server (`/queue` routes, `mergeQueue` + `queueDepth`, auto-merge skips AmberX-AXF), web `queue.tsx` (view + chip), help, plugin.json 0.7.0; `framework/cli/ci-scope.mjs`, `framework/spec/check-ci-scope.mjs`, `.github/workflows/android.yml` (scope + light jobs, `queue/**`). Report `_claude/builds/reports/merge-queue.md`. <!-- axf-plugin:push-banner -->
-- **Left:** s6 (PR open, live dry run of `node apps/console-web/plugins/push-banner/land/merge-queue.mjs run --dry-run` once the shared GitHub token has calls again). Brett approves UI Review r-20261104-d7a77e5c. After merge + console redeploy: `node <console plugins>/push-banner/land/land.mjs queue list`, `tail /var/log/axf-auto-land.log`; the first queue round sets repo variable `AXF_MERGE_QUEUE=on`. <!-- axf-plugin:push-banner -->
-- **First message:** "Carry on merge-queue (Current): read its To carry on block and `_claude/builds/reports/merge-queue.md`, finish s6."
+### Land the merge queue first (`land-merge-queue-first`, Urgent, Opus, Landin' Lenny)
+- **Asked:** Brett (voice, Nov 4 2026): "Land the queue first. Stop everything. Stop merging these things one at a time so they don't step on each other's toes. Save the compute." Full brief: `node framework/cli/build-origin.mjs get land-merge-queue-first`.
+- **Done:** auto-land/auto-merge/auto-PR off in `/opt/axf/.axf-console/plugins/push-banner/config.json`; `/etc/cron.d/axf-auto-land` paused; Breakroom told. `claude/merge-queue` (#320) at `dd00afb2e`: main merged once, store pinned, ETag cache, deploy hold, light-check fix, rules. `claude/land-batch-1` at `e2cc054c4`: #327 #325 #319 #330 merged on #320, help + shared bakes fixed; engine sweep, tsc and touched plugin tests green locally. <!-- axf-plugin:push-banner -->
+- **Left:** (1) #320 CI green + Brett's UI Review approval → `PUT /pulls/320/merge` pinned to `dd00afb2e`; (2) before the redeploy, `land.mjs queue remove <n>` for every open PR outside the batch so the queue doesn't pick old ones; (3) console redeploys (re-enables the cron: with auto-land off it runs only the queue); (4) open the batch PR from `claude/land-batch-1` once `AXF_MERGE_QUEUE=on` (light checks only), `queue move <batch> 0`; (5) report `_claude/builds/reports/land-merge-queue-first.md`.
+- **Waits on:** Brett: approve UI Review r-20261104-d7a77e5c (merge queue view); also r-…22549d23 (#305), r-…1b7bca5f / a4e5d893 (#323), r-…2135a0d7 (#326), r-…180b51e6 (#328).
+- **First message:** "Carry on land-merge-queue-first (Urgent): read its To carry on block and finish the steps left."
+
 
 ### Gizmo companion (`gizmo-companion`, Current, Opus) — branch `claude/gizmo-companion`
 - **Asked (Brett, Nov 3 2026, voice):** a full Claude companion in AmberX as a plugin, as complete as the Claude app (chat, voice, connectors, crew, projects + memory, every setting, overlay bubble, commands for other plugins); harvest AmberX's assistant + the Terminal's session code into a shared lib; brains on the VPS via axHub, no keys in the APK; Gizmo replaces agent Molly.
@@ -698,68 +708,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 15:09 UTC · `app-voice-commands` s1 done, note (current) · foreign-write
-- 2026-11-04 15:09 UTC · `app-voice-commands` s1 done (current) · orchestrator
-- 2026-11-04 15:09 UTC · `app-voice-commands` note (current) · orchestrator
-- 2026-11-04 15:11 UTC · `urgent-land-gizmo-chat` note (current) · foreign-write
-- 2026-11-04 15:11 UTC · `console-wake-finish` s5 done, → complete, note (current) · foreign-write
-- 2026-11-04 15:11 UTC · `merge-queue` s6 done, → complete (current) · foreign-write
-- 2026-11-04 15:11 UTC · `app-voice-commands` s1 done, note (current) · foreign-write
-- 2026-11-04 15:11 UTC · `apps-control-surface` s1 done (current) · orchestrator
-- 2026-11-04 15:11 UTC · `apps-control-surface` s1 done (current) · foreign-write
-- 2026-11-04 15:20 UTC · `expenses-port` → complete, merged, note (current) · reconciler
-- 2026-11-04 15:05 UTC · `urgent-land-gizmo-chat` note (current) · orchestrator
-- 2026-11-04 15:24 UTC · `expenses-port` note (current) · foreign-write
-- 2026-11-04 15:24 UTC · `urgent-land-gizmo-chat` merged (current) · builds-live
-- 2026-11-04 15:25 UTC · `gizmo-companion` note (current) · foreign-write
-- 2026-11-04 15:25 UTC · `urgent-land-gizmo-chat` note (current) · foreign-write
-- 2026-11-04 15:24 UTC · `gizmo-companion` merged (current) · builds-live
-- 2026-11-04 15:24 UTC · `gizmo-companion` → running, note (current) · orchestrator
-- 2026-11-04 15:25 UTC · `gizmo-companion` merged, note (current) · reconciler
-- 2026-11-04 15:25 UTC · `urgent-land-gizmo-chat` merged, note (current) · reconciler
-- 2026-11-04 15:29 UTC · `urgent-land-gizmo-chat` → complete, note (current) · foreign-write
-- 2026-11-04 15:29 UTC · `tab-group-assets` added (6 steps) (current) · orchestrator
-- 2026-11-04 15:29 UTC · `tab-group-assets` → running (current) · orchestrator
-- 2026-11-04 15:29 UTC · `gizmo-companion` note (current) · foreign-write
-- 2026-11-04 15:29 UTC · `tab-group-assets` added (6 steps) (current) · foreign-write
-- 2026-11-04 15:28 UTC · `urgent-land-gizmo-chat` → complete, note (current) · reconciler
-- 2026-11-04 15:28 UTC · `urgent-land-gizmo-chat` → complete, note (current) · reconciler
-- 2026-11-04 15:29 UTC · `jump-menu-asset` added (5 steps) (current) · orchestrator
-- 2026-11-04 15:32 UTC · `gizmo-companion` note (current) · foreign-write
-- 2026-11-04 15:32 UTC · `expenses-port` note (current) · foreign-write
-- 2026-11-04 15:32 UTC · `urgent-land-gizmo-chat` → complete, note (current) · foreign-write
-- 2026-11-04 15:32 UTC · `apps-control-surface` s1 done (current) · foreign-write
-- 2026-11-04 15:32 UTC · `tab-group-assets` added (6 steps) (current) · foreign-write
-- 2026-11-04 15:32 UTC · `jump-menu-asset` added (5 steps) (current) · foreign-write
-- 2026-11-04 15:32 UTC · `app-voice-commands` s2 done (current) · orchestrator
-- 2026-11-04 15:32 UTC · `app-voice-commands` note (current) · orchestrator
-- 2026-11-04 15:32 UTC · `app-voice-commands` s3 done (current) · orchestrator
-- 2026-11-04 15:33 UTC · `gizmo-companion` note (current) · foreign-write
-- 2026-11-04 15:33 UTC · `expenses-port` note (current) · foreign-write
-- 2026-11-04 15:33 UTC · `urgent-land-gizmo-chat` → complete, note (current) · foreign-write
-- 2026-11-04 15:33 UTC · `app-voice-commands` s2 done, s3 done, s4 done, note (current) · foreign-write
-- 2026-11-04 15:33 UTC · `tab-group-assets` added (6 steps) (current) · foreign-write
-- 2026-11-04 15:33 UTC · `jump-menu-asset` added (10 steps) (current) · foreign-write
-- 2026-11-04 15:32 UTC · `app-voice-commands` s4 done (current) · orchestrator
-- 2026-11-04 15:33 UTC · `apps-control-surface` s2 done (current) · orchestrator
-- 2026-11-04 15:33 UTC · `apps-control-surface` s3 done (current) · orchestrator
-- 2026-11-04 15:33 UTC · `apps-control-surface` s4 done (current) · orchestrator
-- 2026-11-04 15:33 UTC · `molly-console-commands` note (current) · orchestrator
-- 2026-11-04 15:37 UTC · `apps-control-surface` PR #322 (current) · builds-live
-- 2026-11-04 15:37 UTC · `apps-control-surface` s5 done, → built (current) · orchestrator
-- 2026-11-04 15:37 UTC · `apps-control-surface` note (current) · orchestrator
-- 2026-11-04 15:42 UTC · `apps-control-surface` note (current) · orchestrator
-- 2026-11-04 15:43 UTC · `molly-console-commands` note (current) · foreign-write
-- 2026-11-04 15:43 UTC · `apps-control-surface` s2 done, s3 done, s4 done, s5 done, → complete, note (current) · foreign-write
-- 2026-11-04 15:43 UTC · `app-voice-commands` s5 done (current) · orchestrator
-- 2026-11-04 15:43 UTC · `app-voice-commands` note (current) · orchestrator
-- 2026-11-04 15:43 UTC · `app-voice-commands` branch claude/app-voice-commands, PR #323 (current) · builds-live
-- 2026-11-04 15:47 UTC · `molly-console-commands` note (current) · foreign-write
-- 2026-11-04 15:47 UTC · `app-voice-commands` s2 done, s3 done, s4 done, s5 done, note (current) · foreign-write
-- 2026-11-04 15:47 UTC · `apps-control-surface` s2 done, s3 done, s4 done, s5 done, → complete, note (current) · foreign-write
-- 2026-11-04 15:47 UTC · `app-voice-commands` s5 done, note (current) · foreign-write
-- 2026-11-04 15:47 UTC · `apps-control-surface` note (current) · foreign-write
-- 2026-11-04 15:47 UTC · `jump-menu-asset` s1 done, → running (current) · orchestrator
 - 2026-11-04 15:47 UTC · `tab-group-assets` s1 done (current) · orchestrator
 - 2026-11-04 15:48 UTC · `jump-menu-asset` s1 done (current) · foreign-write
 - 2026-11-04 15:49 UTC · `tab-group-assets` s1 done (current) · foreign-write
@@ -1098,6 +1046,68 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 21:27 UTC · `molly-banner-match` → pending, note (current) · reconciler
 - 2026-11-04 21:30 UTC · `build-docs-walkthroughs` added (8 steps) (angel) · orchestrator
 - 2026-11-04 21:30 UTC · `build-docs-walkthroughs` → running (angel) · orchestrator
+- 2026-11-04 21:31 UTC · `molly-banner-match` note (current) · foreign-write
+- 2026-11-04 21:31 UTC · `drag-to-tab` s3 done, s4 done, s5 done, → complete (current) · foreign-write
+- 2026-11-04 21:31 UTC · `three-layouts-per-screen` added (5 steps) (angel) · orchestrator
+- 2026-11-04 21:31 UTC · `three-layouts-per-screen` → running (angel) · orchestrator
+- 2026-11-04 21:38 UTC · `build-docs-walkthroughs` s1 done (angel) · orchestrator
+- 2026-11-04 21:38 UTC · `build-docs-walkthroughs` s2 done (angel) · orchestrator
+- 2026-11-04 21:28 UTC · `molly-banner-match` → pending, note (current) · reconciler
+- 2026-11-04 21:40 UTC · `molly-banner-match` → pending, note (current) · builds-live
+- 2026-11-04 21:41 UTC · `follow-amber-flash` added (4 steps) (angel) · orchestrator
+- 2026-11-04 21:42 UTC · `follow-amber-flash` s1 done, → running (angel) · orchestrator
+- 2026-11-04 21:42 UTC · `follow-amber-flash` s2 done (angel) · orchestrator
+- 2026-11-04 21:42 UTC · `follow-amber-flash` s3 done (angel) · orchestrator
+- 2026-11-04 21:44 UTC · `build-docs-walkthroughs` s3 done (angel) · orchestrator
+- 2026-11-04 21:45 UTC · `shipped-features-r2` added (10 steps) (angel) · gina (headless)
+- 2026-11-04 21:45 UTC · `shipped-features-r2` → running (angel) · gina (headless)
+- 2026-11-04 21:47 UTC · `ui-review-alarm` → pending, note (angel) · reconciler
+- 2026-11-04 21:51 UTC · `follow-amber-flash` s4 done, → built, branch claude/follow-amber-flash, PR #345 (angel) · builds-live
+- 2026-11-04 21:55 UTC · `changes-chat-log` added (5 steps) (current) · foreign-write
+- 2026-11-04 21:56 UTC · `changes-chat-log` added (5 steps) (current) · foreign-write
+- 2026-11-04 21:56 UTC · `build-docs-walkthroughs` s4 done (angel) · orchestrator
+- 2026-11-04 21:56 UTC · `build-docs-walkthroughs` s5 done (angel) · orchestrator
+- 2026-11-04 21:58 UTC · `notes-views` added (5 steps) (current) · claude:notes-views
+- 2026-11-04 22:00 UTC · `three-layouts-per-screen` → pending, note (angel) · reconciler
+- 2026-11-04 22:03 UTC · `notes-views` added (5 steps) (current) · foreign-write
+- 2026-11-04 22:03 UTC · `build-docs-walkthroughs` s6 done (angel) · orchestrator
+- 2026-11-04 22:03 UTC · `build-docs-walkthroughs` s7 done (angel) · orchestrator
+- 2026-11-04 22:04 UTC · `build-docs-walkthroughs` branch claude/build-docs-walkthroughs, PR #346 (angel) · builds-live
+- 2026-11-04 21:53 UTC · `changes-chat-log` added (5 steps) (current) · orchestrator
+- 2026-11-04 22:04 UTC · `notes-views` added (10 steps) (current) · foreign-write
+- 2026-11-04 22:04 UTC · `changes-chat-log` s1 done, → running (current) · orchestrator
+- 2026-11-04 22:04 UTC · `changes-chat-log` s2 done (current) · orchestrator
+- 2026-11-04 22:04 UTC · `changes-chat-log` s3 done (current) · orchestrator
+- 2026-11-04 22:04 UTC · `changes-chat-log` s4 done (current) · orchestrator
+- 2026-11-04 22:07 UTC · `build-docs-walkthroughs` s8 done, → built (angel) · orchestrator
+- 2026-11-04 22:07 UTC · `build-docs-walkthroughs` note (angel) · orchestrator
+- 2026-11-04 22:09 UTC · `changes-chat-log` branch claude/changes-chat-log, PR #347 (current) · builds-live
+- 2026-11-04 22:09 UTC · `changes-chat-log` s5 done, → built (current) · orchestrator
+- 2026-11-04 22:10 UTC · `changes-chat-log` s5 done, → complete, branch claude/changes-chat-log, PR #347 (current) · foreign-write
+- 2026-11-04 22:11 UTC · `shipped-features-r2` → pending, note (angel) · reconciler
+- 2026-11-04 22:17 UTC · `build-docs-walkthroughs` note (angel) · orchestrator
+- 2026-11-04 22:19 UTC · `app-voice-commands` note (current) · foreign-write
+- 2026-11-04 22:19 UTC · `settings-placement-everywhere` note (current) · foreign-write
+- 2026-11-04 22:19 UTC · `grid-column-hiding` s12-11 done, → complete (current) · foreign-write
+- 2026-11-04 22:19 UTC · `molly-banner-match` added (5 steps) (current) · foreign-write
+- 2026-11-04 22:19 UTC · `drag-to-tab` added (5 steps) (current) · foreign-write
+- 2026-11-04 22:19 UTC · `build-optimizer` added (9 steps) (current) · foreign-write
+- 2026-11-04 22:19 UTC · `changes-chat-log` added (5 steps) (current) · foreign-write
+- 2026-11-04 22:19 UTC · `notes-views` added (20 steps) (current) · foreign-write
+- 2026-11-04 22:19 UTC · `land-merge-queue-first` s3 done (urgent) · orchestrator
+- 2026-11-04 22:19 UTC · `land-merge-queue-first` s6 done (urgent) · orchestrator
+- 2026-11-04 22:19 UTC · `land-merge-queue-first` branch claude/ci-bundle-skipped-shell, PR #348 (urgent) · builds-live
+- 2026-11-04 22:20 UTC · `fable-no-approval` → complete, merged, note (current) · reconciler
+- 2026-11-04 22:20 UTC · `tab-group-assets` → complete, merged, note (current) · reconciler
+- 2026-11-04 22:20 UTC · `land-merge-queue-first` → complete, note (urgent) · reconciler
+- 2026-11-04 22:39 UTC · `fable-no-approval` note (current) · foreign-write
+- 2026-11-04 22:39 UTC · `tab-group-assets` note (current) · foreign-write
+- 2026-11-04 22:39 UTC · `changes-chat-log` s1 done, s2 done, s3 done, s4 done, s5 done, → complete (current) · foreign-write
+- 2026-11-04 22:39 UTC · `notes-views` s1 done, → running (current) · claude:notes-views
+- 2026-11-04 22:39 UTC · `notes-views` s2 done (current) · claude:notes-views
+- 2026-11-04 22:39 UTC · `notes-views` s3 done (current) · claude:notes-views
+- 2026-11-04 22:39 UTC · `notes-views` s4 done (current) · claude:notes-views
+- 2026-11-04 22:39 UTC · `notes-views` note (current) · claude:notes-views
 
 ## Token passes (log)
 
@@ -1691,3 +1701,11 @@ One line per veto pass grant, change made under it, revoke, undo and end (Token 
 - 2026-11-04 04:27 UTC · `lenny-land-all` note (current) · orchestrator
 - 2026-11-04 04:28 UTC · `lenny-land-all` note (current) · foreign-write
 - 2026-11-04 04:33 UTC · `agent-pick` → complete, merged, note (urgent) · reconciler
+
+### Tab groups, toolbars, banners and nav menus are assets (`tab-group-assets`, Current, Fable) — branch `claude/tab-group-assets`
+- Asked (Brett, Nov 4 2026, voice; verbatim in the build's origin): every tab group is a tab-group asset with a settings interface that is itself an asset, reachable by right-click; the same for navigation menus, toolbars and banners (addendum 1); one shared default settings interface per type plus a custom copy per app made automatically (addendum 2), with the shared default selected by default (addendum 3).
+- Done on the branch: s1 tab-group@1 contract (`core/engines/components.ts`, `schemas/asset-types.json`, `ui/axf.css`, 7 starters, fixture `components.json` → tab-group, `spec/check-tab-group.mts`); s2 chrome-settings@1 (`core/engines/chrome-settings-rules.mjs` + `.d.mts`, six `assets/settings/chrome-*.json`, per-app copies in `apps/{console-web,molly,axhub-web,amberx-droid,expenses}/src/assets/settings/`, `cli/chrome-settings.mjs backfill|check`, `axf init` hook, fixture + `spec/check-chrome-settings.mts`); s3 `react/components/TabGroup.tsx` + `ChromeContext.tsx` (dialogs `axf.chrome.settings` / `axf.chrome.pick`, actions `chrome.*`, context block via `contextExtras('*:chrome')`, implicit targets for any toolbar / tablist / nav in `Overlays.tsx`); s4 migrations (console plugins, AmberX plugins, framework libs); s5 rules (shared + project RULES.md, PORTING.md), CI lines in `.github/workflows/android.yml`, `cli/check-chrome-assets.mjs` + `spec/chrome-baseline.json` (25 leftovers in 18 app files).
+- Left: typecheck the four re-baked apps (`npx tsc --noEmit` in apps/console-web, amberx-droid, axhub-web, molly), fix what it finds, re-bake after the last framework edit (`node framework/cli/rebake.mjs apply apps/<app>`; `shared-assets.mjs bake`), screenshots → UI Review (non-blocking, group "tab-group-assets - Nov 4 <time>"), report `_claude/builds/reports/tab-group-assets.md` with the audit table, tick s3–s6, push, open the PR, let the push banner land it, redeploy the console / AmberX / axHub web.
+- Checks: `npx -y tsx framework/spec/check-tab-group.mts`, `check-chrome-settings.mts`, `check-customize.mts`, `check-settings-ui.mts`; `node framework/cli/chrome-settings.mjs check`, `check-chrome-assets.mjs`, `check-theme.mjs`, `check-controls.mjs`, `check-toolbars.mjs`, `axf.mjs validate --framework`.
+- Waits on: nothing from Brett (UI Review shots are non-blocking for this build).
+- First message to carry on: "Carry on tab-group-assets from the typecheck step on branch claude/tab-group-assets (see THREADS.md To carry on)."
