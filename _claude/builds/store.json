@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 532,
- "updatedAt": "2026-11-03T22:17:11.883Z",
+ "rev": 533,
+ "updatedAt": "2026-11-03T22:21:09.854Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -61221,9 +61221,9 @@
    "source": "console",
    "pendingId": "git-status-board",
    "branch": "claude/git-status-board",
-   "pr": "",
+   "pr": "#291",
    "createdAt": "2026-11-03T21:10:39.295Z",
-   "updatedAt": "2026-11-03T22:02:13.268Z",
+   "updatedAt": "2026-11-03T22:21:08.405Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -61370,7 +61370,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {

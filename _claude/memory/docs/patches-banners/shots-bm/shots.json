@@ -1,0 +1,16 @@
+[
+ {
+  "name": "codebase-changes",
+  "path": "/",
+  "steps": [
+   {
+    "eval": "(async()=>{const t=localStorage.getItem('axf-console:token');const h={authorization:'Bearer '+t,'content-type':'application/json'};const base='/api/plugins/'+['codebase','changes'].join('-')+'/entries';const iso=(m)=>new Date(Date.now()-m*60000).toISOString();for(const [id,title] of [['chg-20261021-5ee0000101','Banners live in Patches'],['chg-20261021-5ee0000102','Fix the CI build']])await fetch(base,{method:'POST',headers:h,body:JSON.stringify({id,title,kind:'edit',repos:['MossesX/AmberX-AXF'],model:'opus',who:{where:'cloud'},createdAt:iso(30),steps:[{text:'Step one',state:'done'},{text:'Step two',state:'running',startedAt:iso(5)}]})});dispatchEvent(new Event('focus'));})()",
+    "wait": 2500
+   },
+   {
+    "eval": "location.reload()",
+    "wait": 5000
+   }
+  ]
+ }
+]
