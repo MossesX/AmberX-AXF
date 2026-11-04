@@ -683,10 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 12:47 UTC · `hotfix-build-manager` s2 done, s3 done (current) · foreign-write
-- 2026-11-04 12:47 UTC · `hotfix-build-manager` s4 done, → complete (current) · foreign-write
-- 2026-11-04 12:44 UTC · `requests-ledger` added (5 steps) (current) · orchestrator
-- 2026-11-04 12:53 UTC · `hotfix-build-manager` s1 done, s2 done, s3 done, s4 done, → complete (current) · foreign-write
 - 2026-11-04 12:54 UTC · `requests-ledger` → running (current) · orchestrator
 - 2026-11-04 12:54 UTC · `requests-ledger` s1 done (current) · orchestrator
 - 2026-11-04 12:54 UTC · `requests-ledger` s2 done (current) · orchestrator
@@ -1083,6 +1079,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 16:24 UTC · `molly-multi-instance-tabs` s1 done (current) · orchestrator
 - 2026-11-04 16:33 UTC · `molly-multi-instance-tabs` s2 done (current) · orchestrator
 - 2026-11-04 16:33 UTC · `molly-multi-instance-tabs` s3 done (current) · orchestrator
+- 2026-11-04 16:35 UTC · `app-voice-commands` note (current) · foreign-write
+- 2026-11-04 16:35 UTC · `tab-group-assets` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-04 16:35 UTC · `settings-placement-everywhere` added (24 steps) (current) · foreign-write
+- 2026-11-04 16:35 UTC · `molly-multi-instance-tabs` added (4 steps) (current) · foreign-write
 
 ## Token passes (log)
 
