@@ -662,24 +662,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:57 UTC · `amberx-notes` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `fix-interface-scope-settings` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `fix-hubsync-look-source` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `fix-banner-snap` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `banner-fix-fallback` PR #152, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-push` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-voice-center` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-assistant-agents` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-claude-tokens` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `refactor-all` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `mosses-build-tools` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `assistant-no-subagents` PR #167, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `veto-everywhere` PR #176, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `agent-voice` PR #177, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `pr-only-merge` PR #183, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `orch-pending-sync` PR #143, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `home-cards` branch angel/home-cards-queue, PR #171, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `settings-compact` PR #175, merged, note (angel) · reconciler
 - 2026-11-03 13:57 UTC · `ui-all-assets` PR #181, merged, note (angel) · reconciler
 - 2026-11-03 13:57 UTC · `element-inspector` s1 done, s2 done, s4 done, → running, PR #192, note (angel) · reconciler
 - 2026-11-03 13:57 UTC · `layout-repeating-slots` s2 done, → running, PR #191, merged, note (angel) · reconciler
@@ -1062,6 +1044,24 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 13:53 UTC · `follow-amber-switch` s5 done, → built (current) · orchestrator
 - 2026-11-04 13:53 UTC · `follow-amber-switch` s5 done, → complete (current) · foreign-write
 - 2026-11-04 14:03 UTC · `terminal-no-focus` note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `orch-step-click` note (refactor) · foreign-write
+- 2026-11-04 14:04 UTC · `molly-opus` → complete, note (big-dog) · foreign-write
+- 2026-11-04 14:04 UTC · `walkthrough-random-look` → complete, note (refactor) · foreign-write
+- 2026-11-04 14:04 UTC · `profile-manager` note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `molly-console-commands` → complete, note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `git-status-board` note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `urgent-main-ci-green` → complete, note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `terminal-tabs-left` note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `gizmo-companion` note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `browser-automation` note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `app-style-override` note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `land-round-2` s2 done, s3 done, note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `terminal-no-focus` note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `hotfix-build-manager` s1 done, s2 done, s3 done, s4 done, → complete, note (current) · foreign-write
+- 2026-11-04 14:04 UTC · `requests-ledger` added (5 steps) (current) · foreign-write
+- 2026-11-04 14:04 UTC · `bugs-board` added (7 steps) (current) · foreign-write
+- 2026-11-04 14:04 UTC · `follow-amber-switch` added (5 steps) (current) · foreign-write
 
 ## Token passes (log)
 
