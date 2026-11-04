@@ -669,20 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:29 UTC · `md-studio` s8 done (urgent) · orchestrator
-- 2026-11-03 18:29 UTC · `md-studio` s9 done (urgent) · orchestrator
-- 2026-11-03 18:29 UTC · `md-studio` s11 done (urgent) · orchestrator
-- 2026-11-03 18:29 UTC · `md-studio` s12 done (urgent) · orchestrator
-- 2026-11-03 18:29 UTC · `md-studio` s13 done (urgent) · orchestrator
-- 2026-11-03 18:29 UTC · `md-studio` s14 done (urgent) · orchestrator
-- 2026-11-03 18:29 UTC · `toolbar-tap-confirm` s2 done, → running (urgent) · orchestrator
-- 2026-11-03 18:30 UTC · `auto-land` branch claude/auto-land-2, PR #270, note (urgent) · reconciler
-- 2026-11-03 18:30 UTC · `auto-land` s6 done (urgent) · orchestrator
-- 2026-11-03 18:30 UTC · `auto-land` s7 done (urgent) · orchestrator
-- 2026-11-03 18:31 UTC · `md-studio` branch claude/md-studio, PR #271 (urgent) · builds-live
-- 2026-11-03 18:31 UTC · `md-studio` s10 done, → complete (urgent) · orchestrator
-- 2026-11-03 18:31 UTC · `md-studio` note (urgent) · orchestrator
-- 2026-11-03 18:31 UTC · `md-studio` → built (urgent) · orchestrator
 - 2026-11-03 18:32 UTC · `crew-live` s3 done (urgent) · orchestrator
 - 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s4 done (urgent) · orchestrator
 - 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s5 done (urgent) · orchestrator
@@ -1069,6 +1055,20 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:01 UTC · `apps-control-surface` note (current) · orchestrator
 - 2026-11-04 15:01 UTC · `apps-control-surface` branch claude/apps-control-surface (current) · builds-live
 - 2026-11-04 15:01 UTC · `apps-control-surface` added (5 steps) (current) · foreign-write
+- 2026-11-04 15:05 UTC · `plugin-lazy-load` → complete, note (current) · foreign-write
+- 2026-11-04 15:05 UTC · `browser-automation` note (current) · foreign-write
+- 2026-11-04 15:05 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 15:05 UTC · `urgent-land-lazy-loader` note (current) · foreign-write
+- 2026-11-04 15:05 UTC · `crew-profiles` s6 done, → complete, note (current) · foreign-write
+- 2026-11-04 15:05 UTC · `urgent-land-gizmo-chat` s3 done (current) · foreign-write
+- 2026-11-04 15:05 UTC · `console-wake-finish` s2 done, s4 done (current) · foreign-write
+- 2026-11-04 15:05 UTC · `profile-lists-home-card` s4 done, → complete (current) · foreign-write
+- 2026-11-04 15:05 UTC · `merge-queue` added (6 steps) (current) · foreign-write
+- 2026-11-04 15:05 UTC · `profile-filter-tables` added (24 steps) (current) · foreign-write
+- 2026-11-04 15:05 UTC · `fable-no-approval` added (3 steps) (current) · foreign-write
+- 2026-11-04 15:05 UTC · `fable-review-nov3` added (7 steps) (current) · foreign-write
+- 2026-11-04 15:05 UTC · `app-voice-commands` added (6 steps) (current) · foreign-write
+- 2026-11-04 15:05 UTC · `apps-control-surface` added (5 steps) (current) · foreign-write
 
 ## Token passes (log)
 
