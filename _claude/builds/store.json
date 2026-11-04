@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 668,
- "updatedAt": "2026-11-04T12:48:20.914Z",
+ "rev": 669,
+ "updatedAt": "2026-11-04T12:48:33.942Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -72459,7 +72459,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T12:18:43.491Z",
-     "updatedAt": "2026-11-04T12:47:56.438Z"
+     "updatedAt": "2026-11-04T12:47:57.444Z"
     }
    ],
    "profiles": [
