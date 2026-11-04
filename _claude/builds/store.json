@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 691,
- "updatedAt": "2026-11-04T13:48:40.264Z",
+ "rev": 692,
+ "updatedAt": "2026-11-04T13:48:53.039Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -72806,19 +72806,23 @@
    "title": "Bugs board: confirmed bugs list plugin",
    "category": "",
    "detail": "Console plugin: bug@1 records in the builds store, drag-and-drop board grouped by build with live state (running step, slot queue position, PR), move bugs between builds (brief addendum + step), auto-optimize switch, crew group-chat handoffs (accept/bounce, auto-reroute). REST + MCP + CLI.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/bugs-board",
    "pr": "#311",
    "createdAt": "2026-11-04T13:07:57.249Z",
-   "updatedAt": "2026-11-04T13:48:38.412Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T13:48:41.840Z",
+   "builtAt": "2026-11-04T13:48:40.158Z",
    "notes": [
     {
      "text": "requests-ledger (PR pending) reads bug@1 records into Brett's requests list from _claude/builds/bugs.json, _claude/builds/bugs/, <hub data>/bugs-board/ or .axf-console/plugins/bugs-board/ (a {bugs:[...]} doc, one bug per JSON file, or bugs.jsonl). Store bugs in one of those and they show up with no extra work; fields read: id, title, said/quote, status, createdAt, build, pr, app.",
      "at": "2026-11-04T13:18:39.525Z"
+    },
+    {
+     "text": "Agent Reel Rhonda. PR #311: plugin bugs-board (bugs@1 live to main, board, handoffs, auto-optimize, REST/MCP/CLI), 8 bugs seeded + 1 found. UI Review r-20261104-c4d7… (non-blocking). Gap: Ask AI button.",
+     "at": "2026-11-04T13:48:41.840Z"
     }
    ],
    "approvals": [],
@@ -72983,12 +72987,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T13:48:40.158Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-04T13:07:57.250Z",
-     "updatedAt": "2026-11-04T13:31:20.643Z"
+     "updatedAt": "2026-11-04T13:48:40.309Z"
     }
    ],
    "profiles": [
@@ -72999,7 +73003,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {

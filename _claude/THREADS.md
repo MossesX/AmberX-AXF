@@ -661,8 +661,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:55 UTC · `orch-live-sync` s4 done (urgent) · orchestrator
-- 2026-11-03 13:56 UTC · `urgent-builds` → archived, merged, note (urgent) · orch-live-sync
 - 2026-11-03 13:56 UTC · `orch-step-click` note (refactor) · orch-live-sync
 - 2026-11-03 13:56 UTC · `dock-engine` s1 done, s2 done, s3 done, s4 done, → built, branch claude/molly-fable, PR #245, note (urgent) · orch-live-sync
 - 2026-11-03 13:56 UTC · `theme-editor` s1 done, s2 done, s3 done, s4 done, s5 done, → built, branch claude/theme-editor, PR #243, note (urgent) · orch-live-sync
@@ -1061,6 +1059,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 13:27 UTC · `hotfix-build-manager` s1 undone, → running (current) · builds-page
 - 2026-11-04 13:27 UTC · `hotfix-build-manager` s1 done, → complete (current) · builds-page
 - 2026-11-04 13:48 UTC · `bugs-board` PR #311 (current) · builds-live
+- 2026-11-04 13:48 UTC · `bugs-board` s7 done, → built (current) · orchestrator
+- 2026-11-04 13:48 UTC · `bugs-board` note (current) · orchestrator
 
 ## Token passes (log)
 
