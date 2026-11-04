@@ -20,6 +20,7 @@ import type { AxfWebLibrary } from './axf/react/library';
 import { bundledPlugins, enabledFolders, enabledPlugins, fetchPluginStatus, hostEnabledPlugins, pluginReport, PLUGINS_CHANGED, serverPartsToSwitchOn, type BundledPlugin, type PluginStatus } from './plugins';
 import { post } from './api';
 import { library as settingsLibrary } from './axf/libs/settings';
+import { toolbarsLibrary } from './axf/libs/toolbars';
 import { createAlertsLibrary } from './axf/libs/alerts';
 import { createAshesLibrary, ownersFrom } from './axf/libs/ashes';
 import { hubStatusLibrary } from './axf/libs/hubstatus';
@@ -143,7 +144,7 @@ function usePlugins() {
     const enabled = all.filter((p) => loader.config.modes[p.folder] !== 'off');
     const off = all.filter((p) => !enabled.includes(p)).map((p) => loader.disabledLibrary(p.folder, p.manifest.name)).filter((l): l is AxfWebLibrary => !!l);
     for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.removeContextItems(p.manifest.id); rt.removeAppMenuItems(p.manifest.id); rt.settings.removeModule(p.manifest.id); rt.detachAll(p.manifest.id); rt.removePlacement(p.manifest.id); }
-    return installLibraries(rt, [settingsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ashesLibrary, hubStatusLibrary, dataGridLibrary, pluginThemeLibrary, ...enabled.map(underPlugins), ...off]);
+    return installLibraries(rt, [settingsLibrary, toolbarsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ashesLibrary, hubStatusLibrary, dataGridLibrary, pluginThemeLibrary, ...enabled.map(underPlugins), ...off]);
   }, [rt, status, loaded, managed, hostIds, lazy]);
   useEffect(() => { loader.markInstalled(); }, [contributed]);
   return { contributed };

@@ -1,0 +1,100 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-a04c8251-3511-4062-ae0b-e039b0adab60",
+ "source": "claude-code",
+ "sessionId": "a04c8251-3511-4062-ae0b-e039b0adab60",
+ "project": "other",
+ "title": "# Build: menu-scroll (Urgent profile) Brett, Nov 3 2026 (voice): \"The application menus need to be scrollable when they…",
+ "startedAt": "2026-11-03T17:55:46.880Z",
+ "endedAt": "2026-11-03T18:17:31.077Z",
+ "minutes": 22,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/menu-scroll",
+  "repo": "",
+  "branch": "claude/menu-scroll"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-03T17:56:11.252Z",
+   "kind": "prompt",
+   "text": "# Build: menu-scroll (Urgent profile) Brett, Nov 3 2026 (voice): \"The application menus need to be scrollable when they reach beyond the screen.\" Assigned agent: **Janitor Joey** (book on his agent-swarm card; set AXF_AGENT=janitor-joey if supported, else record in report + store note). Register in Urgent (id `menu-scroll`) + banner entry. ## Fix (framework level, so every app and plugin gets it) - Application menu bar dropdowns, their submenus, and also context menus / overflow (⋯) menus: when a menu is taller than the space left in the viewport, cap its height to the available space (respec…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 210,
+    "output": 80980,
+    "cacheRead": 15665745,
+    "cacheWrite": 191304,
+    "thinking": 27646
+   },
+   "costUsd": 5.7102,
+   "costEstimated": false,
+   "seconds": 1279,
+   "tools": {
+    "Bash": 101,
+    "Write": 4,
+    "Read": 4
+   },
+   "commands": 101,
+   "files": [
+    "/root/axf-builds/menu-scroll/framework/core/engines/menufit.ts",
+    "/root/axf-builds/menu-scroll/framework/react/components/menuFit.ts",
+    "/root/axf-builds/menu-scroll/framework/spec/check-menu-fit.mts",
+    "/root/axf-builds/menu-scroll/_claude/builds/reports/menu-scroll.md"
+   ],
+   "changeIds": [
+    "chg-20261103-99a6c058db"
+   ],
+   "features": [
+    "orchestrator:menu-scroll",
+    "breakroom:agent-swarm"
+   ],
+   "output": "Menus are fixed, wicked pissah. PR #268 is open with all six steps done and pushed. It auto-merges once CI goes green and you clear the UI Review. **What broke:** long menus just ran off the bottom of the screen. With the old code the desktop Tools menu ran 215 px past the bottom, the context menu …"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/menu-scroll/framework/core/engines/menufit.ts",
+  "/root/axf-builds/menu-scroll/framework/react/components/menuFit.ts",
+  "/root/axf-builds/menu-scroll/framework/spec/check-menu-fit.mts",
+  "/root/axf-builds/menu-scroll/_claude/builds/reports/menu-scroll.md"
+ ],
+ "changeIds": [
+  "chg-20261103-99a6c058db"
+ ],
+ "features": [
+  "orchestrator:menu-scroll",
+  "breakroom:agent-swarm"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 210,
+  "output": 80980,
+  "cacheRead": 15665745,
+  "cacheWrite": 191304,
+  "thinking": 27646,
+  "costUsd": 5.7102,
+  "costEstimated": false,
+  "toolCalls": 109,
+  "commands": 101,
+  "filesTouched": 4,
+  "reportedUsd": 6.284
+ },
+ "ingestedAt": "2026-11-03T18:17:31.684Z"
+}

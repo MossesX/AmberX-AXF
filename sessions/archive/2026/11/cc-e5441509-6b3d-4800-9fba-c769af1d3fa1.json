@@ -1,0 +1,88 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-e5441509-6b3d-4800-9fba-c769af1d3fa1",
+ "source": "claude-code",
+ "sessionId": "e5441509-6b3d-4800-9fba-c769af1d3fa1",
+ "project": "other",
+ "title": "# Job: land-everything (Urgent profile) Brett, Nov 3 2026 (voice): \"Fuck the review, I review it. Just go. Get everythi…",
+ "startedAt": "2026-11-03T15:31:31.386Z",
+ "endedAt": "2026-11-03T18:09:59.275Z",
+ "minutes": 158,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/land-everything",
+  "repo": "",
+  "branch": "claude/land-everything"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-03T15:31:39.186Z",
+   "kind": "prompt",
+   "text": "# Job: land-everything (Urgent profile) Brett, Nov 3 2026 (voice): \"Fuck the review, I review it. Just go. Get everything live.\" He is away; land the finished work on main and get it deployed. He explicitly waived UI Review for these (EXCEPT banners, see below). ## First - Register in the Urgent profile via the orchestrator CLI (id `land-everything`) + banner entry. orch-live-sync is on main (live status writes, reconciler, claude-sync auto-resolve rules): use its tools for every store write and conflict. - Check the `land` job type (`node framework/cli/agent-job.mjs list`); if an agent owns …",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 594,
+    "output": 109310,
+    "cacheRead": 55279219,
+    "cacheWrite": 297069,
+    "thinking": 27039
+   },
+   "costUsd": 14.7293,
+   "costEstimated": false,
+   "seconds": 9499,
+   "tools": {
+    "Bash": 295,
+    "ToolSearch": 1,
+    "mcp__claude_ai_axHub__describe_service": 1
+   },
+   "commands": 295,
+   "files": [],
+   "changeIds": [
+    "chg-20261103-f879524576"
+   ],
+   "features": [
+    "orch:orch-live-sync"
+   ],
+   "output": "Boss, it's all live. Every branch on your list is on main and deployed. The banner ones are untouched like you said. **Landed on AmberX-AXF main (in your order):** 1. notes-vault (#256) 2. agent-chats-hub (#248), the Breakroom chat viewer 3. kill-patches-pilot (#258) 4. headless-tabs (#259) 5. what…"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261103-f879524576"
+ ],
+ "features": [
+  "orch:orch-live-sync"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 594,
+  "output": 109310,
+  "cacheRead": 55279219,
+  "cacheWrite": 297069,
+  "thinking": 27039,
+  "costUsd": 14.7293,
+  "costEstimated": false,
+  "toolCalls": 297,
+  "commands": 295,
+  "filesTouched": 0,
+  "reportedUsd": 15.621
+ },
+ "ingestedAt": "2026-11-03T18:09:59.885Z"
+}

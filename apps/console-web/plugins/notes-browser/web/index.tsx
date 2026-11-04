@@ -155,7 +155,7 @@ function NotesView() {
           {!open && <p className="fx-muted">Pick a note on the left.</p>}
           {open && (
             <>
-              <div className="axp-notes-browser__bar">
+              <div className="axp-notes-browser__bar" role="toolbar" aria-label="Note">
                 <div className="axp-notes-browser__label">
                   <strong>{open.title}</strong>
                   <span className="fx-small fx-muted axp-notes-browser__sub">{open.path} · {when(open.updatedAt)}{open.updatedBy ? ` · ${open.updatedBy}` : ''}</span>

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // rebuild-shots — screenshots of the web Dev Console for rebuild logs (rebuild-log rule, Oct 20 2026).
 //
-//   node framework/cli/rebuild-shots.mjs --repo <checkout> --out <dir> --shots <shots.json> [--label before|after] [--web-port N] [--env K=V …] [--nav-timeout ms]
+//   node framework/cli/rebuild-shots.mjs --repo <checkout> --out <dir> --shots <shots.json> [--label before|after] [--web-port N] [--env K=V …] [--nav-timeout ms] [--start-timeout ms]
 //
 // --web-port pins Vite's port (an app that must be on a known origin, e.g. allow-listed on a local axHub); --env adds
 // variables for the API and Vite (AXF_APPEARANCE_HUB=http://127.0.0.1:18080 points the console at a local hub). A shot
@@ -34,7 +34,7 @@ const args = Object.fromEntries(process.argv.slice(2).reduce((a, v, i, all) => (
 if (!args.repo || !args.out || !args.shots) { console.error('usage: rebuild-shots --repo <checkout> --out <dir> --shots <shots.json> [--label after]'); process.exit(2); }
 const repo = resolve(args.repo), web = join(repo, 'apps/console-web'), label = args.label || 'after';
 const shots = JSON.parse(readFileSync(args.shots, 'utf8'));
-const VIEWPORTS = { phone: { viewport: { width: 412, height: 915 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true }, desktop: { viewport: { width: 1366, height: 860 }, deviceScaleFactor: 1 } };
+const VIEWPORTS = { phone: { viewport: { width: 412, height: 915 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true }, desktop: { viewport: { width: 1366, height: 860 }, deviceScaleFactor: 1 }, laptop: { viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1 } };
 
 const freePort = () => new Promise((ok) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => ok(p)); }); });
 const waitFor = async (url, ms = 90000) => { const end = Date.now() + ms; while (Date.now() < end) { try { const r = await fetch(url); if (r.status < 500) return; } catch { /* not up */ } await new Promise((r) => setTimeout(r, 500)); } throw new Error(`timeout waiting for ${url}`); };
@@ -58,8 +58,9 @@ process.on('exit', stop); process.on('SIGINT', () => { stop(); process.exit(130)
 
 const api = run('python3', ['-m', 'uvicorn', 'main:app', '--host', '127.0.0.1', '--port', String(apiPort)], join(web, 'server'));
 const vite = run('npx', ['vite', '--host', '127.0.0.1', '--port', String(webPort), '--strictPort'], web);
-try { await waitFor(`http://127.0.0.1:${apiPort}/api/health`); } catch (e) { console.error(api.log()); throw e; }
-try { await waitFor(`http://127.0.0.1:${webPort}/`); } catch (e) { console.error(vite.log()); throw e; }
+const startMs = Number(args['start-timeout']) || 90000; // a busy VPS can need longer to start the API and Vite
+try { await waitFor(`http://127.0.0.1:${apiPort}/api/health`, startMs); } catch (e) { console.error(api.log()); throw e; }
+try { await waitFor(`http://127.0.0.1:${webPort}/`, startMs); } catch (e) { console.error(vite.log()); throw e; }
 
 const browser = await playwright.chromium.launch();
 const saved = [];

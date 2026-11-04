@@ -10,7 +10,8 @@
  * against that, so a new plugin's screen can be opened the moment it is installed.
  *
  *   catalog  { $axf: 'console-catalog@1', app, items: [{ kind, id, label, detail?, icon?, keywords?, requires?, effect?, params?, parent? }], here? }
- *   client   { id, app, title, device, user, lastUsed, here, catalog }   (one per open console tab, kept by the server)
+ *   client   { id, app, host?, front?, title, device, user, lastUsed, here, catalog }   (one per open console tab, kept by the server;
+ *            app `molly/console-web` + host `molly` inside Molly; front = visible and shown by its host)
  *   message  { $axf: 'console-command@1', id, op: open|run|back|home|close, kind?, target?, label?, spec?, anchor?, arg?, by, at }
  *
  * Kotlin twin deferred (Android on hold, spec/PORTING.md).
@@ -187,17 +188,23 @@ export function consoleActionNeeds(item) {
 
 /* ================================================================== clients + delivery */
 
-/** The consoles a command goes to: `recent` (the one used last), `all`, or a client id. Stale clients are left out. */
+/**
+ * The consoles a command goes to: `recent`, `all`, or a client id. Stale clients are left out. `recent` = the one Brett
+ * is looking at: a client in front (`front: true`: its page is visible and, inside a host such as Molly, the host shows
+ * its frame) wins over one that isn't, then the one used last (Nov 3 2026: a console hidden behind another app in Molly
+ * used to win because it was touched last).
+ */
 export function consolePickClients(clients, to = 'recent', now = Date.now()) {
   const live = (Array.isArray(clients) ? clients : []).filter((c) => c && c.id && now - (Number(c.lastSeen ?? c.lastUsed) || 0) <= CONSOLE_CLIENT_STALE_MS);
-  const sorted = [...live].sort((a, b) => (Number(b.lastUsed) || 0) - (Number(a.lastUsed) || 0));
+  const front = (c) => (c.front === false ? 0 : 1);
+  const sorted = [...live].sort((a, b) => front(b) - front(a) || (Number(b.lastUsed) || 0) - (Number(a.lastUsed) || 0));
   if (to === 'all') return sorted;
   if (!to || to === 'recent') return sorted.slice(0, 1);
   return sorted.filter((c) => c.id === to);
 }
 
 /** A client as `console.clients list` shows it (no catalog). */
-export const consoleClientSummary = (c) => ({ id: c.id, app: c.app ?? 'console-web', title: c.title ?? '', device: c.device ?? '', user: c.user ?? '', lastUsed: c.lastUsed ? new Date(Number(c.lastUsed)).toISOString() : '', here: normalizeHere(c.here), items: c.catalog?.items?.length ?? 0 });
+export const consoleClientSummary = (c) => ({ id: c.id, app: c.app ?? 'console-web', ...(c.host ? { host: c.host } : {}), front: c.front !== false, title: c.title ?? '', device: c.device ?? '', user: c.user ?? '', lastUsed: c.lastUsed ? new Date(Number(c.lastUsed)).toISOString() : '', here: normalizeHere(c.here), items: c.catalog?.items?.length ?? 0 });
 
 /** The message an open console receives. */
 export function consoleMessage(fields, { id, by = '', now = Date.now() } = {}) {
@@ -220,8 +227,13 @@ export function consoleMessageErrors(m) {
 
 /* ================================================================== the console domain of control@1 */
 
+/** Paths that mean "whichever dialog is open" for act close on console.dialogs. */
+export const ANY_DIALOG = new Set(['current', 'any', 'open', 'dialog']);
+
 const fail = (code, message, extra = {}) => ({ ok: false, code, message, ...extra });
-const noConsole = () => fail(CONTROL_WIRE.NOT_FOUND, 'no console is open for you right now: open the Dev Console (https://console.amberxai.com) in a browser, then try again');
+// `noConsole: true` tells the console server nothing is connected (rather than "no such screen"), so it can queue the
+// command and deliver it when a console connects (console-wake, Nov 3 2026).
+const noConsole = () => fail(CONTROL_WIRE.NOT_FOUND, 'no console is open for you right now: open the Dev Console (https://console.amberxai.com) in a browser, then try again', { noConsole: true });
 
 /**
  * Run an already-gated control@1 command of the console domain against what the open consoles reported.
@@ -249,6 +261,14 @@ export function runConsoleCommand(c, ctx = {}) {
     return send({ op: c.action });
   }
   const kind = CONSOLE_KINDS[c.target];
+  // act close on dialogs: shut the open one ("current" / "any" / "open" = whichever it is; a dialog's id or name = only that one)
+  if (c.target === 'console.dialogs' && c.op === 'act' && c.action === 'close') {
+    const p = str(c.path, 200).trim().toLowerCase();
+    if (!p || ANY_DIALOG.has(p)) return send({ op: 'close', kind });
+    const d = consoleResolve(catalog, kind, c.path);
+    if (!d.item) return fail(d.ambiguous ? CONTROL_WIRE.VALIDATION : CONTROL_WIRE.NOT_FOUND, d.ambiguous ? `"${c.path}" matches several: ${d.candidates.map((i) => `${i.label} (${i.id})`).join(', ')}; send the id` : `the console has no dialog "${c.path}" (send "current" to close whichever is open)`, { candidates: d.candidates ?? [] });
+    return send({ op: 'close', kind, target: d.item.id, label: d.item.label }, { item: d.item });
+  }
   if (c.op === 'list') {
     const items = consoleSearch(catalog, kind, str(select.q, 200), limit);
     return { ok: true, data: { items, total: catalog.filter((i) => i.kind === kind).length, client: targets[0].id } };

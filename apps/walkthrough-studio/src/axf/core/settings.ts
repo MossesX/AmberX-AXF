@@ -88,6 +88,7 @@ export class SettingsRegistry {
   private readonly secrets: Record<string, SettingValue> = {};
   private readonly listeners = new Set<Listener>();
   private readonly watchers = new Map<string, Set<(value: SettingValue) => void>>();
+  private readonly anyWatchers = new Set<(key: string, value: SettingValue) => void>();
   private rev = 0;
 
   constructor(private readonly storageKey: string) {
@@ -173,6 +174,7 @@ export class SettingsRegistry {
       writeValues(this.storageKey, this.values);
     }
     for (const w of this.watchers.get(key) ?? []) w(value);
+    for (const w of this.anyWatchers) w(key, value);
     this.changed();
   }
 
@@ -205,6 +207,7 @@ export class SettingsRegistry {
     delete this.secrets[key];
     writeValues(this.storageKey, this.values);
     for (const w of this.watchers.get(key) ?? []) w(this.get(key));
+    for (const w of this.anyWatchers) w(key, null);
     this.changed();
   }
 
@@ -214,6 +217,15 @@ export class SettingsRegistry {
     set.add(fn);
     this.watchers.set(key, set);
     return () => { set.delete(fn); };
+  }
+
+  /**
+   * Call `fn` with the key whenever any value is set or cleared here (`value` null = cleared). Not for re-reads of
+   * storage (`reload`): those came from somewhere else. Returns an unsubscribe function.
+   */
+  onAnyChange(fn: (key: string, value: SettingValue) => void): () => void {
+    this.anyWatchers.add(fn);
+    return () => { this.anyWatchers.delete(fn); };
   }
 
   /* ---- observable ---- */

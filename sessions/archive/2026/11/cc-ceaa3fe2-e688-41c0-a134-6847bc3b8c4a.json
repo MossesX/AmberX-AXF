@@ -1,0 +1,122 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-ceaa3fe2-e688-41c0-a134-6847bc3b8c4a",
+ "source": "claude-code",
+ "sessionId": "ceaa3fe2-e688-41c0-a134-6847bc3b8c4a",
+ "project": "other",
+ "title": "# Build: ui-review-shots (Urgent profile) Brett, Nov 3 2026 (voice): UI Review shows items but NO pictures. Assigned ag…",
+ "startedAt": "2026-11-03T18:54:10.530Z",
+ "endedAt": "2026-11-03T19:56:37.897Z",
+ "minutes": 62,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/ui-review-shots",
+  "repo": "",
+  "branch": "claude/ui-review-shots"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-03T18:54:24.389Z",
+   "kind": "prompt",
+   "text": "# Build: ui-review-shots (Urgent profile) Brett, Nov 3 2026 (voice): UI Review shows items but NO pictures. Assigned agent: **Snap Sully** (book on his card; AXF_AGENT=snap-sully if supported). Register in Urgent (id `ui-review-shots`) + banner entry. Fix it, then tell. ## Evidence - Headless builds on the VPS submit UI Review items from their worktrees (/root/axf-builds/<name>/), e.g. menu-scroll: item `r-20261103-2637fd91`, 11 shots, group 'menu-scroll - Nov 3 6:20 PM'. Others today: builds-one-page-done (#269), md-studio (#271), console-wake (#266), molly-fable `r-20261103-80e15b02`, xlayo…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 312,
+    "output": 69999,
+    "cacheRead": 23991662,
+    "cacheWrite": 223532,
+    "thinking": 15306
+   },
+   "costUsd": 7.3168,
+   "costEstimated": false,
+   "seconds": 3732,
+   "tools": {
+    "Bash": 129,
+    "Grep": 3,
+    "Read": 16,
+    "Edit": 13,
+    "Write": 1
+   },
+   "commands": 129,
+   "files": [
+    "/root/axf-builds/ui-review-shots/apps/console-web/plugins/agent-slots/web/index.tsx",
+    "/root/axf-builds/ui-review-shots/apps/console-web/plugins/token-control/web/pass.tsx",
+    "/root/axf-builds/ui-review-shots/apps/console-web/plugins/ui-review/server/__init__.py",
+    "/root/axf-builds/ui-review-shots/apps/console-web/plugins/ui-review/web/shots.tsx",
+    "/root/axf-builds/ui-review-shots/apps/console-web/plugins/ui-review/web/ui-review.css",
+    "/root/axf-builds/ui-review-shots/apps/console-web/plugins/ui-review/review.mjs",
+    "/root/axf-builds/ui-review-shots/apps/console-web/plugins/ui-review/test.py",
+    "/root/axf-builds/ui-review-shots/_claude/THREADS.md",
+    "/root/axf-builds/ui-review-shots/_claude/builds/reports/ui-review-shots.md"
+   ],
+   "changeIds": [
+    "chg-20261103-e114ef54f6"
+   ],
+   "features": [
+    "queue:ui-review-shots",
+    "pending:builds-one-page",
+    "orchestrator:builds-one-page",
+    "orch:builds-one-page-done",
+    "orch:console-wake",
+    "orchestrator:menu-scroll",
+    "queue:md-studio"
+   ],
+   "output": "Fixed, boss. PR #277 is open, and the fix reaches your console once it merges and the console redeploys. Until then the live console still shows blanks. **What broke.** No pictures were ever lost. Every file for all 33 waiting items is sitting in the shared store, and the server sent them fine. Two…"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/ui-review-shots/apps/console-web/plugins/agent-slots/web/index.tsx",
+  "/root/axf-builds/ui-review-shots/apps/console-web/plugins/token-control/web/pass.tsx",
+  "/root/axf-builds/ui-review-shots/apps/console-web/plugins/ui-review/server/__init__.py",
+  "/root/axf-builds/ui-review-shots/apps/console-web/plugins/ui-review/web/shots.tsx",
+  "/root/axf-builds/ui-review-shots/apps/console-web/plugins/ui-review/web/ui-review.css",
+  "/root/axf-builds/ui-review-shots/apps/console-web/plugins/ui-review/review.mjs",
+  "/root/axf-builds/ui-review-shots/apps/console-web/plugins/ui-review/test.py",
+  "/root/axf-builds/ui-review-shots/_claude/THREADS.md",
+  "/root/axf-builds/ui-review-shots/_claude/builds/reports/ui-review-shots.md"
+ ],
+ "changeIds": [
+  "chg-20261103-e114ef54f6"
+ ],
+ "features": [
+  "queue:ui-review-shots",
+  "pending:builds-one-page",
+  "orchestrator:builds-one-page",
+  "orch:builds-one-page-done",
+  "orch:console-wake",
+  "orchestrator:menu-scroll",
+  "queue:md-studio"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 312,
+  "output": 69999,
+  "cacheRead": 23991662,
+  "cacheWrite": 223532,
+  "thinking": 15306,
+  "costUsd": 7.3168,
+  "costEstimated": false,
+  "toolCalls": 162,
+  "commands": 129,
+  "filesTouched": 9,
+  "reportedUsd": 7.9878
+ },
+ "ingestedAt": "2026-11-03T19:56:38.943Z"
+}

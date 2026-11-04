@@ -118,6 +118,8 @@ function ChromeRescue() {
   if (!rt.slotHidden('app-menu') || !rt.slotHidden('nav-menu')) return null;
   // Inside a host that carries this menu in its own (embed@1 take `app-menu`) nothing is lost.
   if (rt.hostTakes('app-menu')) return null;
+  // A page a host shows on its own (the banner strip, settings) hides the menus on purpose: nothing to rescue.
+  if (rt.embedded?.page) return null;
   return (
     <Note tone="info" icon="menu">
       <span>The menu bar and the side navigation are both hidden. Press <strong>Ctrl K</strong> (⌘K) to search everything, or </span>

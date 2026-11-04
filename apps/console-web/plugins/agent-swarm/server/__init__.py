@@ -6,6 +6,9 @@ Build-step runs (claude -p) are started from the CLI, never from here: a page re
 exception is Breakroom → Jobs → Run: an explicit POST that routes one job-type run to its owning agent (jobs.mjs), so a
 GET never spends anything.
 Never exposed on the console MCP.
+
+Capability axf.crew@1 (for other plugins, e.g. the Claude plugin's agent picker): crew() = every agent with status,
+pay, spend, hours and stats; book(entry) = book a Claude session on an agent's card (swarm.mjs book).
 """
 from __future__ import annotations
 
@@ -16,6 +19,8 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
+
+import plugin_services
 
 router = APIRouter()
 CLI = Path(__file__).resolve().parent.parent / "swarm.mjs"
@@ -32,6 +37,25 @@ def _run(*args: str, cli: Path = CLI) -> dict[str, Any]:
         return json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
     except json.JSONDecodeError:
         return {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+
+
+class CrewService:
+    """Capability `axf.crew@1`: the crew for the Claude agent picker, and session booking on an agent's card."""
+
+    def crew(self) -> list[dict[str, Any]]:
+        r = _run("crew")
+        if not r.get("ok"):
+            raise RuntimeError(r.get("error") or "crew read failed")
+        return r.get("crew") or []
+
+    def book(self, entry: dict[str, Any]) -> dict[str, Any]:
+        r = _run("book", json.dumps(entry))
+        if not r.get("ok"):
+            raise ValueError(r.get("error") or "booking failed")
+        return r.get("run") or {}
+
+
+plugin_services.provide("axf.crew@1", CrewService(), CLI.parent.name)
 
 
 @router.get("/state")
@@ -120,3 +144,37 @@ async def jobs_hire(request: Request) -> dict[str, Any]:
     """One-tap hire for a job type nobody owns."""
     data = await _body(request)
     return _run("hire", data["jobType"], cli=JOBS)
+
+
+class RosterService:
+    """Capability `axf.swarm-roster@1`: the crew (roster + hired agents with their custom names, avatars, status, pay and
+    today's spend), for plugins that show agents (the Crew, avatars everywhere). One `swarm.mjs state` read, kept 30 s."""
+    version = 1
+    TTL = 30.0
+
+    def __init__(self) -> None:
+        self._at = 0.0
+        self._value: list[dict[str, Any]] = []
+
+    def agents(self) -> list[dict[str, Any]]:
+        import time
+        if self._value and time.time() - self._at < self.TTL:
+            return self._value
+        st = (_run("state").get("state") or {})
+        sw = (st.get("swarm") or {}).get("agents") or {}
+        spend, pay = st.get("spend") or {}, st.get("pay") or {}
+        out = []
+        for a in (st.get("roster") or {}).get("agents") or []:
+            s = sw.get(a.get("id")) or {}
+            custom = ((s.get("custom") or {}).get("name") or "").strip()
+            out.append({"id": a.get("id"), "name": custom or a.get("name"), "role": a.get("role"), "avatar": a.get("avatar"),
+                        "salary": a.get("salary"), "status": s.get("status") or "", "catchphrase": a.get("catchphrase") or "",
+                        "spentToday": ((spend.get(a.get("id")) or {}).get("today") or {}).get("usd") or 0,
+                        "payLeft": (pay.get(a.get("id")) or {}).get("left")})
+        self._value, self._at = out, time.time()
+        return out
+
+
+from plugin_services import provide as _provide  # noqa: E402
+
+_provide("axf.swarm-roster@1", RosterService(), "agent-swarm")

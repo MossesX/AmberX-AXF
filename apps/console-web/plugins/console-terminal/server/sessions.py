@@ -146,11 +146,12 @@ class TtyBackend:
 
 class Session:
     def __init__(self, kind: str, title: str, target: str, cwd: str, backend: Any, mosh: bool, badge: str | None = None, protected: bool = False,
-                 tmux: str | None = None, where: str | None = None):
+                 tmux: str | None = None, where: str | None = None, read_only: bool = False):
         self.id = "t" + secrets.token_hex(6)
         self.kind, self.title, self.target, self.cwd, self.backend = kind, title, target, cwd, backend
         self.mosh, self.badge, self.protected = mosh, badge, protected
         self.tmux, self.where = tmux, where  # the tmux session this attaches to, and where it lives (vps | console)
+        self.read_only = read_only  # a mirror (sessions nav): tmux attach -r, and typed input is dropped here as well
         self.close_reason = ""
         self.created = self.last = self.last_input = time.time()
         self.detached_at: float | None = time.time()
@@ -165,7 +166,8 @@ class Session:
     def info(self) -> dict[str, Any]:
         return {"id": self.id, "kind": self.kind, "title": self.title, "target": self.target, "cwd": self.cwd, "mosh": self.mosh, "badge": self.badge,
                 "protected": self.protected, "createdAt": int(self.created * 1000), "attached": len(self.listeners), "closed": self.closed,
-                "tmux": self.tmux, "where": self.where, "attachCmd": attach_commands(self.tmux, self.where) if self.tmux else None}
+                "tmux": self.tmux, "where": self.where, "attachCmd": attach_commands(self.tmux, self.where) if self.tmux else None,
+                "readOnly": self.read_only}
 
     def _pump(self) -> None:
         while not self.closed:
@@ -205,6 +207,8 @@ class Session:
                 self.detached_at = time.time()
 
     def write(self, data: bytes) -> None:
+        if self.read_only:  # a mirror never types into the session (Jump in opens a writable link instead)
+            return
         self.last = self.last_input = time.time()
         self.backend.write(data)
 
@@ -238,10 +242,19 @@ class Manager:
         badge = None
         tmux: str | None = None
         where: str | None = None
+        read_only = bool(req.get("readOnly"))
         tab_tmux = str(req.get("tmux") or "") if st.get("persistTabs", True) else ""
         if tab_tmux and not TAB_RE.match(tab_tmux):
             raise ValueError("tmux is the name of an axt-… session")
-        if kind == "console":
+        local_attach = str(req.get("attach") or "") if kind == "console" else ""
+        if local_attach:  # a tmux session in the console's own container (sessions nav → My sessions): mirror or jump in
+            if not ATTACH_RE.match(local_attach) or not shutil.which("tmux"):
+                raise ValueError("attach is the name of a tmux session in this container")
+            argv = ["sh", "-c", attach_script(local_attach, read_only)]
+            be = PtyBackend(argv, str(cx.ROOT), clean_env(), cols, rows)
+            tmux, where = local_attach, "console"
+            title, target = local_attach, "console"
+        elif kind == "console":
             d = Path(cwd) if cwd else cx.ROOT
             if d.is_file():
                 d = d.parent
@@ -275,12 +288,10 @@ class Manager:
             if not vps.get("host") or not key.exists():
                 raise ValueError("set up the VPS tab first (Settings → Plugins → Terminal → VPS host: host + a key)")
             attach = str(req.get("attach") or "")
-            if attach and not TMUX_RE.match(attach):
-                raise ValueError("attach is the name of an axf-… or axt-… tmux session")
-            if attach:  # a headless Claude Code session claude-headless.sh started (or a detached tab): watch it (and type into it) here
-                q = shlex.quote(attach)
-                remote = (f"tmux capture-pane -p -e -J -S -{REPLAY_LINES} -t ={q}: 2>/dev/null; tmux attach -t ={q} 2>/dev/null || "
-                          "{ echo 'That session has ended; its log is in its folder (.axf-*.log).'; exec \"${SHELL:-bash}\" -l; }")
+            if attach and not ATTACH_RE.match(attach):
+                raise ValueError("attach is the name of a tmux session (letters, digits, . _ -)")
+            if attach:  # a headless run claude-headless.sh started, a detached tab, or one of Brett's own sessions: watch it here
+                remote = attach_script(attach, read_only)
                 tmux, where = attach, "vps"
             elif tab_tmux:
                 remote = tmux_script(tab_tmux, "exec \"${SHELL:-bash}\" -l", cwd, cols, rows,
@@ -355,7 +366,7 @@ class Manager:
                 raise ValueError("via is console, vps, container or axhub")
         else:
             raise ValueError("kind is console, container, vps or claude")
-        s = Session(kind, title, target, cwd, be, mosh, badge, protected, tmux, where)
+        s = Session(kind, title, target, cwd, be, mosh, badge, protected, tmux, where, read_only=read_only and bool(tmux))
         with self.lock:
             full = len(self.sessions) >= MAX_SESSIONS  # checked again here: two opens can race past the first check
             if not full:
@@ -416,6 +427,8 @@ MANAGER = Manager()
 HEADLESS_RE = re.compile(r"^axf-[A-Za-z0-9._-]{1,64}$")
 TAB_RE = re.compile(r"^axt-[A-Za-z0-9._-]{1,64}$")
 TMUX_RE = re.compile(r"^ax[ft]-[A-Za-z0-9._-]{1,64}$")
+# any tmux session a tab may attach to (sessions nav, Nov 3 2026): the terminal's own (axf-/axt-) and Brett's own
+ATTACH_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 REPLAY_LINES = 3000
 MUX_DIR = os.environ.get("TMPDIR") or "/tmp"
 
@@ -439,6 +452,14 @@ def tmux_script(name: str, command: str, cwd: str, cols: int, rows: int, fallbac
             f"exec tmux attach -t ={q}")
 
 
+def attach_script(name: str, read_only: bool = False) -> str:
+    """Attach to an existing tmux session: its pane's last lines first (with colours), then `tmux attach` (`-r` = a
+    read-only mirror: keys are ignored, Jump in attaches again without it). When it has ended, say so and open a shell."""
+    q = shlex.quote(name)
+    return (f"tmux capture-pane -p -e -J -S -{REPLAY_LINES} -t ={q}: 2>/dev/null; tmux attach {'-r ' if read_only else ''}-t ={q} 2>/dev/null || "
+            "{ echo 'That session has ended; its log is in its folder (.axf-*.log).'; exec \"${SHELL:-bash}\" -l; }")
+
+
 def local_tmux(name: str) -> str | None:
     """The tab's tmux name when this console has tmux (Dockerfile installs it), else None (a plain pty, as before)."""
     return name if name and shutil.which("tmux") else None
@@ -447,7 +468,7 @@ def local_tmux(name: str) -> str | None:
 def attach_commands(name: str | None, where: str | None) -> dict[str, str] | None:
     """How to attach the same session from a phone (Moshi) or any ssh client. A console tab's tmux lives in the console's
     container, so the command goes through docker exec on the host."""
-    if not name or not TMUX_RE.match(name):
+    if not name or not ATTACH_RE.match(name):
         return None
     vps = store.settings()["vps"]
     host = vps.get("host") or "<vps-host>"
@@ -463,8 +484,8 @@ def attach_commands(name: str | None, where: str | None) -> dict[str, str] | Non
 
 def kill_tmux(name: str, where: str) -> dict[str, Any]:
     """End a tmux session for good (the tab's Kill session, after a confirm in the browser)."""
-    if not TMUX_RE.match(name or ""):
-        raise ValueError("not a terminal tmux session")
+    if not ATTACH_RE.match(name or ""):
+        raise ValueError("not a tmux session name")
     cmd = f"tmux kill-session -t ={shlex.quote(name)}"
     if where == "console":
         r = RUNNER(["sh", "-c", cmd], capture_output=True, text=True, timeout=10, env=clean_env(), stdin=subprocess.DEVNULL)
@@ -533,16 +554,17 @@ HEADLESS_DIR = "${AXF_HEADLESS_DIR:-/var/tmp/axf-headless}"  # on the VPS host (
 LS_FORMAT = "#{session_name}\t#{session_created}\t#{session_attached}\t#{@axf_kind}\t#{@axf_agent}\t#{@axf_model}\t#{@axf_cwd}"
 
 
-def parse_ls(text: str) -> list[dict[str, Any]]:
-    """`tmux ls -F LS_FORMAT` → the terminal's sessions (axf-… headless runs, axt-… tabs), oldest first. Pure."""
+def parse_ls(text: str, mine: bool = False) -> list[dict[str, Any]]:
+    """`tmux ls -F LS_FORMAT` → the terminal's sessions (axf-… headless runs, axt-… tabs), oldest first. With `mine`,
+    every other tmux session too (kind "mine": Brett's own, e.g. Claude Code he runs over Moshi). Pure."""
     items = []
     for ln in (text or "").splitlines():
         p = ln.split("\t")
-        if not p or not TMUX_RE.match(p[0]):
+        if not p or not (TMUX_RE.match(p[0]) or (mine and ATTACH_RE.match(p[0]))):
             continue
         p += [""] * (7 - len(p))
         created = int(p[1]) * 1000 if p[1].isdigit() else 0
-        kind = p[3] or ("headless" if p[0].startswith("axf-") else "tab")
+        kind = p[3] or ("headless" if p[0].startswith("axf-") else "tab" if p[0].startswith("axt-") else "mine")
         items.append({"name": p[0], "createdAt": created, "attached": int(p[2]) if p[2].isdigit() else 0, "kind": kind,
                       "agent": p[4] or (p[0][4:] if kind == "headless" else ""), "model": p[5], "cwd": p[6]})
     return sorted(items, key=lambda x: x["createdAt"])
@@ -572,7 +594,8 @@ def vps_tmux() -> dict[str, Any]:
     if _headless_cache["value"] is not None and now - _headless_cache["at"] < HEADLESS_TTL:
         return _headless_cache["value"]
     out, why = _vps_run(st, f"tmux ls -F {shlex.quote(LS_FORMAT)} 2>/dev/null || true")
-    value = {"ready": not why, "items": [{**x, "where": "vps"} for x in parse_ls(out)][:80], "why": why}
+    every = [{**x, "where": "vps"} for x in parse_ls(out, mine=True)]
+    value = {"ready": not why, "items": [x for x in every if x["kind"] != "mine"][:80], "mine": [x for x in every if x["kind"] == "mine"][:40], "why": why}
     _headless_cache.update(at=now, value=value)
     return value
 
@@ -584,15 +607,15 @@ def headless_sessions() -> dict[str, Any]:
     return {**v, "items": [x for x in v["items"] if x["name"].startswith("axf-")][:40]}
 
 
-def console_tmux() -> list[dict[str, Any]]:
-    """The console's own persistent tabs (axt-… in this container's tmux)."""
+def console_tmux(mine: bool = False) -> list[dict[str, Any]]:
+    """The console's own persistent tabs (axt-… in this container's tmux); with `mine`, its other tmux sessions too."""
     if not shutil.which("tmux"):
         return []
     try:
         r = RUNNER(["tmux", "ls", "-F", LS_FORMAT], capture_output=True, text=True, timeout=5, env=clean_env(), stdin=subprocess.DEVNULL)
     except (OSError, subprocess.TimeoutExpired):
         return []
-    return [{**x, "where": "console"} for x in parse_ls(r.stdout if r.returncode == 0 else "")]
+    return [{**x, "where": "console"} for x in parse_ls(r.stdout if r.returncode == 0 else "", mine=mine)]
 
 
 _meter_cache: dict[str, Any] = {"at": 0.0, "key": "", "value": None}
@@ -626,8 +649,37 @@ def meters(names: list[str]) -> dict[str, Any]:
     return value
 
 
+def chain_tree(items: list[Any]) -> list[dict[str, Any]]:
+    """The chain as a tree (terminal-drag-chain-tree, Nov 3 2026): each item under the item that pulled it in, its
+    children in `children`. Parent = `parentI` when it names an earlier item, else the earlier item whose `rel` is
+    `parent`, else (older chain files) the nearest earlier item one level up; else a root. Same rules as chainTree in
+    web/headless-core.ts."""
+    nodes: list[dict[str, Any]] = [{**it, "children": []} for it in items if isinstance(it, dict)]
+    roots: list[dict[str, Any]] = []
+    by_rel: dict[str, int] = {}
+    for k, n in enumerate(nodes):
+        up = -1
+        p_i = n.get("parentI")
+        depth = n.get("depth") if isinstance(n.get("depth"), int) else 0
+        if isinstance(p_i, int) and not isinstance(p_i, bool) and 0 <= p_i < k:
+            up = p_i
+        elif n.get("parent") and n.get("parent") in by_rel:
+            up = by_rel[n["parent"]]
+        elif depth > 0:
+            for j in range(k - 1, -1, -1):
+                if nodes[j].get("depth") == depth - 1:
+                    up = j
+                    break
+        (nodes[up]["children"] if up >= 0 else roots).append(n)
+        rel = n.get("rel")
+        if isinstance(rel, str) and rel not in by_rel:
+            by_rel[rel] = k
+    return roots
+
+
 def chain(name: str) -> dict[str, Any]:
-    """A headless session's context chain (context-chain@1): the files it took in, in order, with their rules."""
+    """A headless session's context chain (context-chain@1): the files it took in, in order, with their rules, plus
+    `tree` (the same items nested under the file that pulled each one in)."""
     if not HEADLESS_RE.match(name or ""):
         raise ValueError("not a headless session")
     st = store.settings()
@@ -643,4 +695,7 @@ def chain(name: str) -> dict[str, Any]:
         v = json.loads(out) if out.strip() else None
     except ValueError:
         v = None
-    return v if isinstance(v, dict) else {"$axf": "context-chain@1", "session": name, "version": 0, "items": []}
+    if not isinstance(v, dict):
+        v = {"$axf": "context-chain@1", "session": name, "version": 0, "items": []}
+    items = v.get("items") if isinstance(v.get("items"), list) else []
+    return {**v, "items": items, "tree": chain_tree(items)}

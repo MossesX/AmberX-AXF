@@ -9,6 +9,7 @@
  */
 import { JOB_TYPE, isDue, jobInputs, jobTypeErrors, nextRun, normalizeJobType, renderJobBrief, timeWords } from '../../../../framework/core/engines/job-type-rules.mjs';
 import * as chat from '../../../../framework/core/engines/swarm-chat.mjs';
+import { hasSkills } from '../../../../framework/core/engines/swarm-rules.mjs';
 import { MODEL_IDS, MODEL_TIERS, budgetUsd, canWork, fmtTokens, fmtUsd, normAgent, normRun, payOf, runCost, statusLabel } from './web/swarm-core.mjs';
 
 export const JOB_RUN_KIND = 'job';
@@ -22,9 +23,23 @@ export function jobTypes(assets) {
   })).sort((x, y) => x.name.localeCompare(y.name));
 }
 
-/** Agents whose specialty (skill) owns the job type, cheapest salary first. Fired agents never own anything. */
+/** Can this agent take this job type (holds every skill it needs)? */
+export const canTake = (jt, agent) => hasSkills(agent, jt.data.skills?.length ? jt.data.skills : [jt.data.specialty]);
+/** Agents whose home job this is (a preference only, never exclusive). */
+export const homeOf = (jt, roster) => roster.agents.filter((a) => a.home === jt.id || (!a.home && a.skill === jt.data.specialty));
+/** Runs an agent has going now (any kind): the router's "least busy". */
+export const busyOf = (runs, agentId) => (runs ?? []).filter((r) => r.agent === agentId && r.status === 'running').length;
+/** Runs an agent started in the 24 hours before `at`: the tie-break after "least busy", so work goes round the crew. */
+export const loadOf = (runs, agentId, at) => { const from = new Date(Date.parse(at) - 864e5).toISOString(); return (runs ?? []).filter((r) => r.agent === agentId && (r.startedAt || '') >= from).length; };
+
+/**
+ * Agents who can take the job type, home agents first, then cheapest. Fired agents take nothing (nobody is fired
+ * since the retrain, the check stays for old state files).
+ */
 export function owners(jt, roster, state) {
-  return roster.agents.filter((a) => a.skill === jt.data.specialty && state?.agents?.[a.id]?.status !== 'fired').sort((a, b) => a.salary - b.salary || a.id.localeCompare(b.id));
+  const home = new Set(homeOf(jt, roster).map((a) => a.id));
+  return roster.agents.filter((a) => canTake(jt, a) && state?.agents?.[a.id]?.status !== 'fired')
+    .sort((a, b) => (home.has(b.id) - home.has(a.id)) || a.salary - b.salary || a.id.localeCompare(b.id));
 }
 
 /** The model a run uses: the job's default when the agent may use it, else the cheapest the agent has at or above it. */
@@ -40,22 +55,45 @@ export function runCap(jt, model, table) {
 }
 
 /**
- * Pick the agent for one run: the first owner who is on duty (status allows it, not broke) and whose pay left this
- * week covers the run's cap. Returns { ok, agent, model, cap, why, unassigned, tried: [{ agent, why }] }.
+ * Pick the agent for one run among those who can take it: free = on duty (status allows it, not broke) and pay left
+ * this week covers the run's cap. Free agents are ranked home job first, then least busy (running runs), then
+ * cheapest (a day's runs break ties, so work goes round the crew). Nobody with the skills free: any free job agent (jobsOnly) takes it, so the job never goes to nobody
+ * while someone is free. `opts.force` (a launch that is starting anyway, deploy/claude-headless.sh) books the best
+ * agent even when nobody is free, saying why. `opts.agent` asks for one agent by id.
+ * Returns { ok, agent, model, cap, why, unassigned, forced, tried: [{ agent, why }] }.
  */
-export function route(jt, roster, state, runs, table, at) {
+export function route(jt, roster, state, runs, table, at, opts = {}) {
   if (jt.errors?.length) return { ok: false, unassigned: false, why: `job type ${jt.id} is invalid: ${jt.errors[0]}`, tried: [] };
+  if (opts.agent) {
+    const a = roster.agents.find((x) => x.id === opts.agent);
+    if (!a) return { ok: false, unassigned: false, why: `no agent "${opts.agent}" on the roster`, tried: [] };
+    if (state?.agents?.[a.id]?.status === 'fired') return { ok: false, unassigned: false, why: `${a.name} was let go`, tried: [] };
+    const model = jobModel(jt, a);
+    return { ok: true, unassigned: false, forced: false, agent: a, model, cap: runCap(jt, model, table), why: '', tried: [], notify: false };
+  }
   const own = owners(jt, roster, state);
-  if (!own.length) return { ok: false, unassigned: true, why: `nobody owns ${jt.name} (specialty "${jt.data.specialty}"): hire one`, tried: [] };
-  const tried = [];
-  for (const a of own) {
+  const crew = roster.agents.filter((a) => a.jobsOnly && !own.includes(a) && state?.agents?.[a.id]?.status !== 'fired');
+  if (!own.length && !crew.length) return { ok: false, unassigned: true, why: `nobody can take ${jt.name} (skills ${jt.data.skills.join(', ') || jt.data.specialty}): hire one`, tried: [] };
+  const home = new Set(homeOf(jt, roster).map((a) => a.id));
+  const tried = []; const free = [];
+  for (const [i, a] of [...own, ...crew].entries()) {
     const as = state.agents[a.id]; const pay = payOf(a, as, runs, table, at); const model = jobModel(jt, a); const cap = runCap(jt, model, table);
     const w = canWork(a, as, { estimate: 30 }, at, pay);
     if (!w.ok) { tried.push({ agent: a.id, why: w.why }); continue; }
     if (pay.left < cap) { tried.push({ agent: a.id, why: `${fmtUsd(pay.left)} left this week, the run may cost up to ${fmtUsd(cap)}` }); continue; }
-    return { ok: true, unassigned: false, agent: a, model, cap, why: '', tried, notify: w.notify };
+    free.push({ a, model, cap, notify: w.notify, skilled: i < own.length, busy: busyOf(runs, a.id), load: loadOf(runs, a.id, at) });
   }
-  return { ok: false, unassigned: false, why: tried.map((t) => `${t.agent}: ${t.why}`).join(' · '), tried };
+  const rank = (x, y) => (y.skilled - x.skilled) || (home.has(y.a.id) - home.has(x.a.id)) || x.busy - y.busy || x.load - y.load || x.a.salary - y.a.salary || x.a.id.localeCompare(y.a.id);
+  const pick = free.sort(rank)[0];
+  if (pick) return { ok: true, unassigned: false, forced: false, agent: pick.a, model: pick.model, cap: pick.cap, why: '', tried, notify: pick.notify };
+  const why = `${tried.slice(0, 2).map((t) => `${t.agent}: ${t.why}`).join(' · ')}${tried.length > 2 ? ` · ${tried.length - 2} more can't either` : ''}`;
+  if (opts.force) { // starting anyway: the least busy agent who can take it books it, and the card says it ran over
+    const a = [...own, ...crew].map((x) => ({ a: x, busy: busyOf(runs, x.id), load: loadOf(runs, x.id, at) }))
+      .sort((x, y) => (home.has(y.a.id) - home.has(x.a.id)) || x.busy - y.busy || x.load - y.load || x.a.salary - y.a.salary || x.a.id.localeCompare(y.a.id))[0].a;
+    const model = jobModel(jt, a);
+    return { ok: true, unassigned: false, forced: true, agent: a, model, cap: runCap(jt, model, table), why: `nobody free (${why}); booked on ${a.name} anyway`, tried, notify: true };
+  }
+  return { ok: false, unassigned: false, why, tried };
 }
 
 /** Slug for names: lowercase letters, digits, dashes. */
@@ -116,6 +154,19 @@ export function jobRunRecord(jt, agent, model, { runId, at, session, brief, cwd,
   });
 }
 
+/**
+ * How a booked headless build ended (a launch through deploy/claude-headless.sh or a back-assigned build: its brief
+ * is the build's own, so there is no swarm-report@1 block to read). A clean result = done; an error result = error;
+ * no result (stopped part way, cut off) = blocked, which books the usage without counting as the agent's failure.
+ */
+export function buildOutcome(tr) {
+  if (tr.final && !tr.isError) return { status: 'done', reason: '', report: null };
+  if (tr.final) return { status: 'error', reason: tr.subtype || 'error result', report: null };
+  return { status: 'blocked', reason: 'stopped before a result', report: null };
+}
+/** A run booked by the launcher or back-assigned (not launched by the job router with a job brief). */
+export const isBuildRun = (r) => r?.source === 'launcher' || r?.source === 'assign';
+
 /** Boss's line when a job goes out, and when nobody can take it (the chat contract's builders). */
 export const assignJobLine = (jt, agent, model, cap) => chat.assignJobLine(jt.name, agent.name, model, jt.data.budget.tokens, cap, jt.id);
 export const unassignedLine = (jt, why) => chat.unassignedLine(jt.name, why, jt.id);
@@ -129,7 +180,7 @@ export function hireFor(jt, roster, at) {
   let id = base; let i = 2;
   while (roster.agents.some((a) => a.id === id)) id = `${base}${i++}`;
   const agent = normAgent({
-    id, name: `${jt.name.split(' ')[0]} ${['Rookie', 'Temp', 'New Kid'][id.length % 3]}`, role: `${jt.name} agent`, skill: jt.data.specialty, jobsOnly: true,
+    id, name: `${jt.name.split(' ')[0]} ${['Rookie', 'Temp', 'New Kid'][id.length % 3]}`, role: `${jt.name} agent`, skill: jt.data.specialty, skills: jt.data.skills, home: jt.id, jobsOnly: true,
     specialty: jt.description || jt.name, models: [jt.data.model], tools: jt.data.tools.length ? jt.data.tools : ['Read', 'Grep', 'Glob'],
     maxTurns: jt.data.budget.maxTurns, tokenBudget: jt.data.budget.tokens, salary: 10, hiredAt: at.slice(0, 10),
     avatar: { face: ['round', 'square', 'tall'][id.length % 3], hair: id.length % 6, gear: 'cap', hue: (id.charCodeAt(0) * 37) % 360 },
@@ -152,7 +203,8 @@ export function jobsView(types, roster, state, runs, table, at) {
     return {
       id: jt.id, name: jt.name, description: jt.description, specialty: jt.data.specialty, model: jt.data.model, trigger: jt.data.trigger, readOnly: jt.data.readOnly,
       budget: jt.data.budget, inputs: jt.data.inputs, outputs: jt.data.outputs, errors: jt.errors,
-      owners: own.map((a) => ({ id: a.id, name: a.name, status: statusLabel(state.agents[a.id]) })),
+      skills: jt.data.skills, home: homeOf(jt, roster).map((a) => a.id),
+      owners: own.map((a) => ({ id: a.id, name: a.name, status: statusLabel(state.agents[a.id]), home: a.home === jt.id, busy: busyOf(runs, a.id) })),
       routed: r.ok ? r.agent.id : '', routeWhy: r.why, unassigned: r.unassigned,
       lastRun: last ? { at: last.startedAt, status: last.status, agent: last.agent, usd: runCost(last, table), runId: last.jobId } : null,
       next: nextRun(jt.data.trigger, last?.startedAt ?? '', at), due: isDue(jt.data.trigger, last?.startedAt ?? '', at),
@@ -161,8 +213,12 @@ export function jobsView(types, roster, state, runs, table, at) {
   });
 }
 
-/** The job types an agent owns (its card shows them). */
-export const jobsOf = (types, agent) => types.filter((jt) => jt.data.specialty === agent.skill).map((jt) => ({ id: jt.id, name: jt.name }));
+/** The job types an agent can take (its card shows them), its home job first. */
+export const jobsOf = (types, agent) => types.filter((jt) => canTake(jt, agent))
+  .sort((a, b) => ((b.id === agent.home) - (a.id === agent.home)) || a.name.localeCompare(b.name)).map((jt) => ({ id: jt.id, name: jt.name, home: jt.id === agent.home }));
+
+/** Every skill the job types need (an all-rounder's card lists them). */
+export const allSkills = (types) => [...new Set(types.flatMap((jt) => jt.data.skills))].sort();
 
 /** Check a run's inputs before launch; throws a plain message. Returns the filled values. */
 export function checkInputs(jt, given) {

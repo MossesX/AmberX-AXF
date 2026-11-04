@@ -5,7 +5,11 @@
 //   <session>.meter.json   headless-meter@1  agent, model, status, cost (USD), tokens, turns, chain length
 //   <session>.chain.json   context-chain@1   every file the session takes in, in order: the CLAUDE.md load chain Claude
 //                          Code uses (user memory, project memory from the outermost folder in, @imports, .claude/rules),
-//                          then each file it Reads; each Markdown file carries its rules (headings and list items)
+//                          then each file it Reads; each Markdown file carries its rules (headings and list items).
+//                          It is a tree (terminal-drag-chain-tree, Nov 3 2026): each item names the item that pulled it
+//                          in (`parentI`) and why (`reason`): session-start (Claude Code loads it), import (@path),
+//                          reference (a loaded file mentions its path and the session then Read it), session-start rule
+//                          (that mention says to read it first / on every load), read (nothing mentions it), nested memory
 // Cost = per assistant message (counted once per message id, last usage wins) × the model's price in
 // framework/schemas/model-pricing.json (no prices in code); a `result` event's total_cost_usd replaces the estimate for
 // that run, so the final value matches what Claude Code reports. Several runs (account switches) add up.
@@ -53,19 +57,42 @@ export function importsOf(text, file, home = homedir()) {
   return out;
 }
 
+/** Path-like mentions in a Markdown text (`code`, [links](x), bare a/b.md), each with the line it sits on. Pure. */
+export function mentionsOf(text) {
+  const out = [];
+  for (const line of String(text ?? '').split('\n')) {
+    const found = new Set();
+    for (const m of line.matchAll(/`([^`\s]+)`|\]\(([^)\s#]+)[^)]*\)|(?:^|[\s(@"'])((?:~\/|\.{1,2}\/|\/)?[A-Za-z0-9_.~-]+(?:\/[A-Za-z0-9_.~-]+)+\.[A-Za-z0-9]{1,8})(?=$|[\s),.;:!?"'])/g)) {
+      const raw = (m[1] ?? m[2] ?? m[3] ?? '').replace(/^@/, '');
+      if (!/[\/.]/.test(raw) || !/\.[A-Za-z0-9]{1,8}$/.test(raw) || /^[a-z]+:\/\//i.test(raw) || found.has(raw)) continue;
+      found.add(raw); out.push({ path: raw, line: clip(line).slice(0, 240) });
+    }
+  }
+  return out;
+}
+/** Does the line that mentions a file say to read it at the start (first, on load, every session…)? Pure. */
+export const startRule = (line) => /\b(on (every |each )?(load|start)|first|before (doing )?anything( else)?|every session|session ?start|at (the )?start)\b/i.test(String(line ?? ''));
+/** Absolute paths a mention may mean: against the file's folder, the session's folder, home (`~/`). Pure. */
+export function mentionTargets(mention, file, cwd, home = homedir()) {
+  const p = mention.path;
+  if (p.startsWith('~/')) return [join(home, p.slice(2))];
+  if (isAbsolute(p)) return [p];
+  return [...new Set([resolve(dirname(file), p), resolve(cwd, p)])];
+}
+
 const readText = (p) => { try { const st = statSync(p); if (!st.isFile() || st.size > MAX_FILE_BYTES) return null; return readFileSync(p, 'utf8'); } catch { return null; } };
 
 /**
  * The memory files Claude Code loads at start, in its order: the user's ~/.claude/CLAUDE.md, then each folder from the
  * outermost down to `cwd` (CLAUDE.md, .claude/CLAUDE.md, CLAUDE.local.md), then .claude/rules/*.md; each file followed
- * by its @imports (depth-first). `fsRead` is injectable for tests. Returns [{path, via, depth, parent}].
+ * by its @imports (depth-first). `fsRead` is injectable for tests. Returns [{path, via, depth, parent, reason}].
  */
 export function memoryChain(cwd, { home = homedir(), read = readText, list = listDir } = {}) {
   const out = []; const seen = new Set();
   const visit = (path, via, depth, parent) => {
     if (seen.has(path) || out.length >= MAX_ITEMS) return;
     const text = read(path); if (text == null) return;
-    seen.add(path); out.push({ path, via, depth, parent });
+    seen.add(path); out.push({ path, via, depth, parent, reason: parent ? 'import' : 'session-start' });
     if (depth >= IMPORT_DEPTH) return;
     for (const imp of importsOf(text, path, home)) visit(imp, 'import', depth + 1, path);
   };
@@ -92,23 +119,53 @@ export function createMeter({ session = '', name = '', agent = '', model = '', c
   };
   const items = Array.isArray(prevChain?.items) && prevChain.session === session ? prevChain.items.slice(0, MAX_ITEMS) : [];
   const have = new Set(items.map((i) => i.path));
+  const byPath = new Map(items.map((it) => [it.path, it]));
   const rel = (p) => { const r = relative(cwd, p); return r && !r.startsWith('..') ? r : p.startsWith(home) ? `~/${relative(home, p)}` : p; };
-  const push = (path, via, depth = 0, parent = '') => {
+  // what each Markdown item mentions: target path → the line (kept in memory only; rebuilt from disk after a resume)
+  const mentions = new Map();
+  const mentionsFor = (it) => {
+    if (!mentions.has(it.i)) {
+      const text = /\.(md|mdx|markdown)$/i.test(it.path) ? read(it.path) : null; const exact = new Map(); const raw = mentionsOf(text);
+      for (const x of raw) for (const t of mentionTargets(x, it.path, cwd, home)) if (!exact.has(t)) exact.set(t, x.line);
+      mentions.set(it.i, { exact, raw });
+    }
+    return mentions.get(it.i);
+  };
+  /** The latest loaded file that mentions `path` (its full path first, else a partial one such as memory/decisions.md), with the line, or null. */
+  const referrer = (path) => {
+    for (let k = items.length - 1; k >= 0; k--) { const it = items[k]; if (it.path === path) continue; const line = mentionsFor(it).exact.get(path); if (line != null) return { it, line }; }
+    for (let k = items.length - 1; k >= 0; k--) {
+      const it = items[k]; if (it.path === path) continue;
+      const hit = mentionsFor(it).raw.find((x) => x.path.includes('/') && path.endsWith(`/${x.path.replace(/^\.?\//, '')}`));
+      if (hit) return { it, line: hit.line };
+    }
+    return null;
+  };
+  const push = (path, via, depth = 0, parent = '', reason = via, why = '') => {
     if (have.has(path) || items.length >= MAX_ITEMS) return false;
     have.add(path);
     const md = /\.(md|mdx|markdown)$/i.test(path);
     const text = md ? read(path) : null;
-    items.push({ i: items.length, path, rel: rel(path), via, depth, parent: parent ? rel(parent) : '', at: new Date(now()).toISOString(), rules: text != null ? rulesOf(text) : [] });
+    const up = parent ? byPath.get(parent) : null;
+    const it = { i: items.length, path, rel: rel(path), via, reason, depth, parent: parent ? rel(parent) : '', parentI: up ? up.i : -1, ...(why ? { why } : {}), at: new Date(now()).toISOString(), rules: text != null ? rulesOf(text) : [] };
+    items.push(it); byPath.set(path, it);
     return true;
   };
+  /** A file the session Reads: under the latest loaded file that mentions it (reference / session-start rule), else on its own. */
+  const pushRead = (path) => {
+    if (have.has(path)) return false;
+    const r = referrer(path);
+    if (!r) return push(path, 'read', 0, '', 'read');
+    return push(path, 'read', Math.min((r.it.depth ?? 0) + 1, 24), r.it.path, startRule(r.line) ? 'session-start rule' : 'reference', r.line);
+  };
   let chainVersion = 0;
-  if (!items.length) { for (const m of memoryChain(cwd, { home, read, list })) push(m.path, m.via, m.depth, m.parent); chainVersion++; }
+  if (!items.length) { for (const m of memoryChain(cwd, { home, read, list })) push(m.path, m.via, m.depth, m.parent, m.reason); chainVersion++; }
 
   /** A file read inside a folder may bring in that folder's CLAUDE.md (Claude Code loads nested memory on demand). */
   const lazyMemory = (file) => {
     const root = resolve(cwd); let added = false;
     const dirs = []; for (let d = dirname(file); d.startsWith(root) && d !== root; d = dirname(d)) dirs.unshift(d);
-    for (const d of dirs) for (const f of ['CLAUDE.md', join('.claude', 'CLAUDE.md')]) { const p = join(d, f); if (!have.has(p) && read(p) != null) added = push(p, 'nested memory') || added; }
+    for (const d of dirs) for (const f of ['CLAUDE.md', join('.claude', 'CLAUDE.md')]) { const p = join(d, f); if (!have.has(p) && read(p) != null) added = push(p, 'nested memory', 0, '', 'nested memory') || added; }
     return added;
   };
 
@@ -126,7 +183,7 @@ export function createMeter({ session = '', name = '', agent = '', model = '', c
         st.tools++; if (b.id) st.pendingTools.add(b.id);
         const fp = b.input?.file_path ?? b.input?.notebook_path;
         if ((b.name === 'Read' || b.name === 'NotebookRead') && typeof fp === 'string' && isAbsolute(fp)) {
-          const a = lazyMemory(fp); const r = push(resolve(fp), 'read'); if (a || r) chainVersion++;
+          const a = lazyMemory(fp); const r = pushRead(resolve(fp)); if (a || r) chainVersion++;
         }
       }
       return;

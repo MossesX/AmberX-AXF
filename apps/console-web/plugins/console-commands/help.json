@@ -41,6 +41,21 @@
         "target": "show-a-note-for-each-command",
         "title": "Show a note for each command",
         "text": "Shows a short note each time a command moves this console, saying who asked and what opened."
+      },
+      {
+        "target": "wake-the-console-through-amberx-when-its-closed",
+        "title": "Wake the console through AmberX when it's closed",
+        "text": "On: a console command that finds no open console waits on the server, and after a few seconds AmberX on your phone opens the console so the command runs. Off: the command waits for you to open a console yourself."
+      },
+      {
+        "target": "how-long-a-command-waits-for-a-console",
+        "title": "How long a command waits for a console",
+        "text": "How long a waiting command stays in the queue. After this it is dropped, so a command never runs late."
+      },
+      {
+        "target": "browser-amberx-opens",
+        "title": "Browser AmberX opens",
+        "text": "Which browser AmberX uses when it wakes the console: Chrome, or the phone's default browser."
       }
     ]
   }

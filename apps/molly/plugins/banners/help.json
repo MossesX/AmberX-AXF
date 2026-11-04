@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "molly-banners-help",
+  "name": "Banners help",
+  "version": "0.1.0",
+  "description": "Help mode entries for Molly's Banners plugin (help@1).",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:banners",
+    "entries": [
+      { "target": "molly-banners-strip", "title": "Banners", "text": "The Dev Console's live banners, drawn by the console itself. Tap an item to act on it, as in the console; right-click a banner for its Banner settings." },
+      { "target": "molly-banners-show", "title": "Show the banners", "text": "Shows or hides the whole banner strip at the top of Molly." },
+      { "target": "molly-banners-each", "title": "Each banner", "text": "Shows or hides one banner inside Molly. The same switch is the banner's “Hide it inside a host app” in its Banner settings." }
+    ],
+    "intros": []
+  }
+}

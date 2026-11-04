@@ -65,14 +65,14 @@ export function GridPane() {
 
   return (
     <div className="ws-pane">
-      <div className="ws-pane__tools">
+      <div className="ws-pane__tools" data-axf-not-toolbar="totals line of the grid">
         <span className="fx-small"><strong>{tt.pieces}</strong> pieces · ~{fmtDur(tt.est)}{project.settings.targetSec ? ` of ${fmtDur(project.settings.targetSec)}` : ''} · recorded {fmtDur(tt.clip)}</span>
         <span className="ws-grow ws-headmeter"><Meter value={tt.progress} label={`${Math.round(tt.progress)}% built`} active done={tt.progress >= 100} /></span>
         {STATUSES.map((s) => <span key={s.id} className={`ws-count ws-tone--${s.tone}`} title={s.label}>{tt.byStatus[s.id]}</span>)}
         <IconButton icon="sliders" label="Choose columns" onClick={() => rt.dispatch('ws.grid.columns')} />
         <IconButton icon={g.compact ? 'list' : 'minimize'} label="Compact rows" onClick={() => rt.dispatch('ws.grid.compact')} />
       </div>
-      {g.sort && <div className="ws-pane__tools fx-small fx-muted"><Icon name="info" size={12} /> Sorted by {COLUMNS.find((c) => c.id === g.sort!.col)?.label} inside each section. <Button size="sm" tone="quiet" onClick={() => ui.patchGrid({ sort: null })}>Outline order</Button></div>}
+      {g.sort && <div className="ws-pane__tools fx-small fx-muted" data-axf-not-toolbar="sort note"><Icon name="info" size={12} /> Sorted by {COLUMNS.find((c) => c.id === g.sort!.col)?.label} inside each section. <Button size="sm" tone="quiet" onClick={() => ui.patchGrid({ sort: null })}>Outline order</Button></div>}
       <div className="ws-pane__scroll">
         <DataGrid<Piece>
           id="status" label="Status grid" groups={groups} columns={cols} rowId={(p) => p.id} rowLabel={(p) => p.title}

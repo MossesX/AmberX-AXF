@@ -1,0 +1,42 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "claude-settings-help",
+  "name": "claude-settings help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:claude-settings (the Claude plugin).",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:claude-settings",
+    "entries": [
+      {
+        "target": "action:claude-settings.open",
+        "title": "Claude settings",
+        "text": "Opens Settings \u2192 Plugins \u2192 Claude: the settings every Claude session reads on axHub before it acts.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "claude",
+        "title": "Claude",
+        "text": "Claude's own settings: No wait, Follow Amber, builds, verification, talking, notifications and memory. Owner-only ones change only with your own click.",
+        "kind": "tab"
+      },
+      {
+        "target": "view:claude-settings",
+        "title": "Claude",
+        "text": "Every Claude setting in one page. They live on axHub, so voice, chat, Claude Code and headless agents all read the same values. Settings marked Owner only change only with your own click here.",
+        "kind": "screen"
+      },
+      {
+        "target": "banner:claude-no-wait",
+        "title": "No wait",
+        "text": "Shows while No wait is on: Amber's held calls run at once instead of waiting on the 90 s veto. Turn off revokes the pass straight away.",
+        "kind": "banner"
+      }
+    ],
+    "intros": []
+  }
+}

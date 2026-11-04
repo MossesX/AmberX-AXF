@@ -46,7 +46,7 @@ export function ProjectsPane() {
   const list = projects.filter((p) => !q || p.name.toLowerCase().includes(q.toLowerCase()));
   return (
     <div className="ws-pane">
-      <div className="ws-pane__tools">
+      <div className="ws-pane__tools" role="toolbar" aria-label="Projects">
         <Button size="sm" tone="primary" icon="plus" onClick={() => rt.dispatch('ws.project.new')}>New</Button>
         <IconButton icon="copy" label="Duplicate" onClick={() => rt.dispatch('ws.project.duplicate')} />
         <IconButton icon="package" label="Compile" onClick={() => rt.dispatch('ws.project.compileOne')} />
@@ -54,7 +54,7 @@ export function ProjectsPane() {
         <IconButton icon="upload" label="Import" onClick={() => rt.dispatch('ws.project.import')} />
         <IconButton icon="trash" label="Delete" onClick={() => rt.dispatch('ws.project.delete')} />
       </div>
-      <div className="ws-pane__tools"><input className="fx-input ws-grow" placeholder="Find a project" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Find a project" /></div>
+      <div className="ws-pane__tools" role="toolbar" aria-label="Find a project"><input className="fx-input ws-grow" placeholder="Find a project" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Find a project" /></div>
       <div className="ws-pane__scroll">
         {list.map((p) => (
           <div key={p.id} className={`ws-row ws-project ${p.id === cur ? 'is-active' : ''}`} data-fx-row role="button" tabIndex={0}
@@ -110,7 +110,7 @@ export function IndexPane() {
         <IconButton icon="folder" label="Add section" onClick={() => rt.dispatch('ws.section.add')} />
         <IconButton icon="plus" label="Add piece" onClick={() => rt.dispatch('ws.piece.add')} />
       </TreeSearch>
-      <div className="ws-pane__tools">
+      <div className="ws-pane__tools" role="toolbar" aria-label="Index filters">
         <select className="fx-input ws-grow" value={f.kinds[0] ?? ''} onChange={(e) => ui.patchIndex({ kinds: e.target.value ? [e.target.value] : [] })} aria-label="Kind">
           <option value="">Every kind</option>
           {kinds.map((k) => <option key={k} value={k}>{kindInfo(k).label}</option>)}

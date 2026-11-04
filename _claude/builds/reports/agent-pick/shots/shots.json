@@ -1,0 +1,6 @@
+[
+ { "name": "claude-agent-picker", "steps": [ {"wait": 3000}, {"search": "Choose Claude's agent"}, {"wait": 25000} ], "viewports": ["phone", "desktop"] },
+ { "name": "claude-agent-picker-expanded", "steps": [ {"wait": 3000}, {"search": "Choose Claude's agent"}, {"wait": 25000}, {"click": "button[aria-label^='Snap Sully: show details']"}, {"wait": 1500} ], "viewports": ["phone", "desktop"] },
+ { "name": "claude-sessions-settings", "steps": [ {"wait": 3000}, {"search": "Claude sessions"}, {"wait": 25000} ], "viewports": ["phone", "desktop"] },
+ { "name": "breakroom-assign-to-claude", "steps": [ {"wait": 3000}, {"search": "Agent swarm"}, {"wait": 25000} ], "viewports": ["phone", "desktop"] }
+]

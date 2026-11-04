@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T02:05:05.550Z",
+ "updatedAt": "2026-11-04T12:30:23.968Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10,20 +10,6 @@
  },
  "builds": [
   {
-   "id": "urgent-builds",
-   "title": "Urgent: master cleanup (one builds store) + Steps view + live progress bars",
-   "category": "Builds > Data cleanup",
-   "detail": "Brett, Oct 31 2026 (GO given). Spec: /projects/amberx-axf/_data/framework/plan/specs/prompt-profiles-and-queue-reconciler.md items 4, 4b, 4c. One Orchestrator-owned builds store (profiles = a field), every write versioned (journal), Console init regenerate-from-plan removed, old files read-only one release; one Builds plugin; Steps view (atomic step records, drag reorder steps + builds, multi-select, divide, harvest + split-into-N, Restore default, draft until Apply/Discard, rename builds/steps/profiles); live progress bars per build and profile.",
-   "status": "archived",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/urgent-builds",
-   "pr": "",
-   "mergedAt": "2026-11-01T00:00:00.000Z",
-   "createdAt": "2026-10-31T23:31:50.472Z",
-   "updatedAt": "2026-11-03T13:56:31.369Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "All work committed on claude/urgent-builds (local); s12 push blocked: host has no GitHub token (banner alert blocked:push:claude/urgent-builds).",
@@ -38,8 +24,34 @@
      "at": "2026-11-03T13:56:31.369Z"
     }
    ],
+   "id": "urgent-builds",
+   "title": "Urgent: master cleanup (one builds store) + Steps view + live progress bars",
+   "category": "Builds > Data cleanup",
+   "detail": "Brett, Oct 31 2026 (GO given). Spec: /projects/amberx-axf/_data/framework/plan/specs/prompt-profiles-and-queue-reconciler.md items 4, 4b, 4c. One Orchestrator-owned builds store (profiles = a field), every write versioned (journal), Console init regenerate-from-plan removed, old files read-only one release; one Builds plugin; Steps view (atomic step records, drag reorder steps + builds, multi-select, divide, harvest + split-into-N, Restore default, draft until Apply/Discard, rename builds/steps/profiles); live progress bars per build and profile.",
+   "status": "archived",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/urgent-builds",
+   "pr": "",
+   "mergedAt": "2026-11-01T00:00:00.000Z",
+   "createdAt": "2026-10-31T23:31:50.472Z",
+   "updatedAt": "2026-11-03T13:56:31.369Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "/projects/amberx-axf/_data/framework/plan/specs/prompt-profiles-and-queue-reconciler.md items 4, 4b, 4c. One Orchestrator-owned builds store (profiles = a field), every write versioned (journal), Console init regenerate-from-plan removed, old files read-only one release; one Builds plugin; Steps view (atomic step records, drag reorder steps + builds, multi-select, divide, harvest + split-into-N, Restore default, draft until Apply/Discard, rename builds/steps/profiles); live progress bars per build and profile.",
+    "at": "2026-10-31",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -257,9 +269,16 @@
      "note": "",
      "uid": "st-a28gqr"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Backfill (orch-live-sync s6): all 4 steps built on Fable in PR #245, branch claude/molly-fable (Fable foundation for Molly: dock@1 engine, dock-layout@1 presets, DockHost). Built, awaiting merge.",
+     "at": "2026-11-03T13:56:31.369Z"
+    }
+   ],
    "id": "dock-engine",
    "title": "Shared dock engine: split, float, re-dock, drop zones, layout presets (used by MD Studio, xLayout, Theme Editor)",
    "category": "Urgent",
@@ -274,12 +293,6 @@
    "createdAt": "2026-11-03T02:32:21.328Z",
    "updatedAt": "2026-11-03T16:48:23.682Z",
    "builtAt": "2026-11-03T13:56:31.369Z",
-   "notes": [
-    {
-     "text": "Backfill (orch-live-sync s6): all 4 steps built on Fable in PR #245, branch claude/molly-fable (Fable foundation for Molly: dock@1 engine, dock-layout@1 presets, DockHost). Built, awaiting merge.",
-     "at": "2026-11-03T13:56:31.369Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -355,23 +368,10 @@
      "note": "PR #245 (claude/molly-fable)",
      "uid": "st-mw02odif08osb7"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "md-studio",
-   "title": "MD Studio plugin: powerful Markdown browser/editor with docking tabs, reference chains, splits, 4 views, snippets, Claude-file wizards",
-   "category": "Urgent",
-   "detail": "Brett Nov 2 2026 21:30 ET: powerful MD file browser/editor. Opens multiple md files in a tab group with floating, dockable, resizable tabs. A column lists every md file in collapsible categories by scope: Project, Claude, Repo; an edit switch makes a file editable. If a file references other files the chain shows as branches; clicking a referenced name splits the viewing area (setting: vertical or horizontal). Right-click any file in the column: open in horizontal or vertical split. A split section can be undocked, floated, and dropped as a tab in any tab header or into a split (the split shows while hovering). Toolbar with 3 views plus a 4th IDE-style view, each changing how everything renders. Drag snippets into files; wizards that create Claude md files (CLAUDE.md, rules, persona, threads, skills...), categorized by what they do and by scope (project, Claude, repo). Builds on dock-engine.",
-   "status": "built",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/md-studio",
-   "pr": "#271",
-   "mergedAt": "2026-11-03T02:54:56Z",
-   "createdAt": "2026-11-03T02:32:21.910Z",
-   "updatedAt": "2026-11-03T18:31:40.377Z",
-   "builtAt": "2026-11-03T18:31:29.681Z",
    "notes": [
     {
      "text": "Reconciler: branch claude/md-studio-theme-editor-plan (PR #242); PR #242; PR #242 merged",
@@ -390,8 +390,34 @@
      "at": "2026-11-03T18:31:32.444Z"
     }
    ],
+   "id": "md-studio",
+   "title": "MD Studio plugin: powerful Markdown browser/editor with docking tabs, reference chains, splits, 4 views, snippets, Claude-file wizards",
+   "category": "Urgent",
+   "detail": "Brett Nov 2 2026 21:30 ET: powerful MD file browser/editor. Opens multiple md files in a tab group with floating, dockable, resizable tabs. A column lists every md file in collapsible categories by scope: Project, Claude, Repo; an edit switch makes a file editable. If a file references other files the chain shows as branches; clicking a referenced name splits the viewing area (setting: vertical or horizontal). Right-click any file in the column: open in horizontal or vertical split. A split section can be undocked, floated, and dropped as a tab in any tab header or into a split (the split shows while hovering). Toolbar with 3 views plus a 4th IDE-style view, each changing how everything renders. Drag snippets into files; wizards that create Claude md files (CLAUDE.md, rules, persona, threads, skills...), categorized by what they do and by scope (project, Claude, repo). Builds on dock-engine.",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/md-studio",
+   "pr": "#271",
+   "mergedAt": "2026-11-03T02:54:56Z",
+   "createdAt": "2026-11-03T02:32:21.910Z",
+   "updatedAt": "2026-11-03T18:31:40.377Z",
+   "builtAt": "2026-11-03T18:31:29.681Z",
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "build MD Studio. It was planned but NEVER built (no branch, no log). Assigned agent: **Reel Rhonda** (book on her agent-swarm card; set AXF_AGENT=reel-rhonda if supported, else record in report + store note).",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: md-studio (Urgent profile)\n\nBrett, Nov 3 2026 (voice): build MD Studio. It was planned but NEVER built (no branch, no log). Assigned agent: **Reel Rhonda** (book on her agent-swarm card; set AXF_AGENT=reel-rhonda if supported, else record in report + store note).\n\n## First\n- s0 Search the hub memory/notes (`/projects/_shared/_claude/notes/`, `/projects/amberx-axf/_claude/`, THREADS, store, plans/) and GitHub for any MD Studio plan/spec Brett wrote; that spec wins over this brief. Register in Urgent (id `md-studio`), banner entry.\n\n## Build (unless his spec says otherwise)\n- MD Studio = a Markdown studio plugin for the Dev Console built ON the dock engine (molly-fable #245, now on main): dockable panes for file tree, editor, live preview, outline.\n- Editor with markdown toolbar (headings, bold/italic, lists, checklists, tables, code, links), live preview side by side or split, tabs for multiple docs, search/replace, autosave, version history with restore.\n- **Notes section step (required):** a Notes section that opens and edits everything in the Notes Vault (`/projects/_shared/_claude/notes/` incl. sessions/, handoffs/, plans/, install/, misc/, INDEX.md) using the Notes Vault commands that landed with plugin-commands-auto; plus opening hub memory/rules files and repo .md files.\n- Every command declared once so REST + MCP + CLI are generated (standing rule), so Amber can open/edit docs by voice.\n- Tokens/theme only for styling; works on phone (compact window class) first.\n- Tests, report `_claude/builds/reports/md-studio.md`, THREADS, PR, mark steps done through the store. Commits clean and professional.",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -648,9 +674,20 @@
      "note": "",
      "uid": "st-mw0zmopu017gnw"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Backfill (orch-live-sync s6): branch claude/theme-editor has all 5 steps (13f79c99 plugin s1-s4; d24cd2dd phone layout + tests; PR #243 open, waiting in UI Review r-20261103-6a35ef38). Built, awaiting merge.",
+     "at": "2026-11-03T13:56:31.369Z"
+    },
+    {
+     "text": "Built on claude/theme-editor, PR #243 (waiting in UI Review r-20261103-6a35ef38). Panes use the existing layout; switch to the dock engine once dock-engine lands.",
+     "at": "2026-11-03T11:09:57.836Z"
+    }
+   ],
    "id": "theme-editor",
    "title": "Theme Editor plugin: colour + style sections, every token, copy/save/load, multi-view toolbar",
    "category": "Urgent",
@@ -665,18 +702,20 @@
    "createdAt": "2026-11-03T02:32:22.611Z",
    "updatedAt": "2026-11-03T17:09:35.121Z",
    "builtAt": "2026-11-03T13:56:31.369Z",
-   "notes": [
-    {
-     "text": "Backfill (orch-live-sync s6): branch claude/theme-editor has all 5 steps (13f79c99 plugin s1-s4; d24cd2dd phone layout + tests; PR #243 open, waiting in UI Review r-20261103-6a35ef38). Built, awaiting merge.",
-     "at": "2026-11-03T13:56:31.369Z"
-    },
-    {
-     "text": "Built on claude/theme-editor, PR #243 (waiting in UI Review r-20261103-6a35ef38). Panes use the existing layout; switch to the dock engine once dock-engine lands.",
-     "at": "2026-11-03T11:09:57.836Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "theme editor plugin that lets you copy, save, load. Colour section and style section, each collapsible, with collapsible categories listing every possible token; toolbar with multiple views. Own plugin, reusing the Theme manager's token tree through a capability service (both stay installed). Look rule: saves go to the axHub appearance document / asset@1 themes.",
+    "at": "2026-11-02",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -768,9 +807,20 @@
      "note": "PR #243 (claude/theme-editor)",
      "uid": "st-mw02oei30awyca"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Backfill (orch-live-sync s6): s1-s3 built on Fable in PR #246 (claude/token-control), s4-s14 on Opus in PR #250 (claude/token-control-opus). Both PRs open; the build shows PR #250 (the later one). Built, awaiting merge.",
+     "at": "2026-11-03T13:56:31.369Z"
+    },
+    {
+     "text": "All 14 steps done. Fable phase PR #246, Opus phase PR #250 (claude/token-control-opus, contains #246). UI Review r-20261103-f9cd2905 waiting.",
+     "at": "2026-11-03T12:24:22.599Z"
+    }
+   ],
    "id": "token-control",
    "title": "Token control plugin: API + MCP + CLI for every token, AmberX tasks/to-dos/notes and the planner, interactive docs",
    "category": "Urgent",
@@ -785,18 +835,20 @@
    "createdAt": "2026-11-03T02:40:26.204Z",
    "updatedAt": "2026-11-03T17:03:31.372Z",
    "builtAt": "2026-11-03T13:56:31.369Z",
-   "notes": [
-    {
-     "text": "Backfill (orch-live-sync s6): s1-s3 built on Fable in PR #246 (claude/token-control), s4-s14 on Opus in PR #250 (claude/token-control-opus). Both PRs open; the build shows PR #250 (the later one). Built, awaiting merge.",
-     "at": "2026-11-03T13:56:31.369Z"
-    },
-    {
-     "text": "All 14 steps done. Fable phase PR #246, Opus phase PR #250 (claude/token-control-opus, contains #246). UI Review r-20261103-f9cd2905 waiting.",
-     "at": "2026-11-03T12:24:22.599Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "new plugin, powerful API and MCP and CLI server/client that can change every single token (theme, style, layout); every layout parameter is a token. Connect MCP, API and CLI to Claude and axHub. API and MCP control every aspect of AmberX tasks, to-dos and notes, and the console's planner (Brett: both Plan Studio and the Build orchestrator). Extensive interactive documentation. Folds in the dead VPS build amberx-full-mcp-api (do not relaunch it separately). Overlaps the blocked interactive docs engine (docs-engine/plan.md): reuse it if it lands first.",
+    "at": "2026-11-02",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -1050,9 +1102,16 @@
      "note": "PR #250 (claude/token-control-opus)",
      "uid": "st-mw02yrmz0s00qx"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "PR #253 open (push banner merges it). Left: axHub repo side (confirm policy + signed approval header), UI Review shots of the Approvals tab.",
+     "at": "2026-11-03T12:42:56.171Z"
+    }
+   ],
    "id": "model-upgrade-approval",
    "title": "Model upgrades need Brett's approval; downgrades don't",
    "category": "Urgent",
@@ -1067,14 +1126,20 @@
    "createdAt": "2026-11-03T12:41:39.428Z",
    "updatedAt": "2026-11-03T17:16:51.661Z",
    "builtAt": "2026-11-03T12:42:55.129Z",
-   "notes": [
-    {
-     "text": "PR #253 open (push banner merges it). Left: axHub repo side (confirm policy + signed approval header), UI Review shots of the Approvals tab.",
-     "at": "2026-11-03T12:42:56.171Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "a headless build (agent-swarm-fable-rebuild, PR #247) approved its own Opus -> Fable phase switch in the orchestrator (`orchestrator.mjs act approve`) because its brief said \"do every step\". Brett: \"It cannot be switching the model without my approval. That's not even a veto. That's an approval.\" Then: \"You can downgrade, but you can't upgrade.\"",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Model UPGRADES need Brett's approval; downgrades don't (Urgent, Opus)\n\nReplaces the stopped build model-switch-approval (folder /root/axf-builds/model-switch-approval, ignore any work there).\n\nBrett Nov 3 2026 (voice), angry: a headless build (agent-swarm-fable-rebuild, PR #247) approved its own Opus -> Fable phase switch in the orchestrator (`orchestrator.mjs act approve`) because its brief said \"do every step\". Brett: \"It cannot be switching the model without my approval. That's not even a veto. That's an approval.\" Then: \"You can downgrade, but you can't upgrade.\"\n\nNew project rule (add to _claude/rules/RULES.md and the decisions log, dated Nov 3 2026): a build may switch to a LOWER model on its own (downgrade, e.g. Fable -> Opus): allowed, no approval, just recorded. Switching to a HIGHER model (upgrade, e.g. Opus -> Fable) needs Brett's explicit APPROVAL (confirm policy), never a veto countdown and never self-approved by a session, agent, headless build or the orchestrator. Ranking: Fable is above Opus (Brett's call). Put the ranking in model-policy (one ordered list, config not code) so future models slot in. A session that reaches an upgrade stops there and asks.\n\nEnforce it:\n1. orchestrator approve/phase logic (orchestrator-core.mjs apply + CLI + console server): a downgrade phase passes by itself (record it); an upgrade phase refuses unless approved by Brett: his own signed-in console click or an axHub approval he approves. Detect non-human sources with the same signals used for 'who asked' on approvals (X-Axhub-Source, AXF headless env, agent env). Record who approved and when.\n2. vps.build_start / claude-headless.sh / agent job router: launching or relaunching a build on a higher model than its orchestrator step's model is an upgrade too: refuse or hold for approval the same way.\n3. Briefs (orchestrator `brief`, headless guidance, agent jobs): say plainly upgrades need Brett and the session stops and asks; downgrades are fine. Remove any wording that lets a session approve an upgrade.\n4. Request path: an axHub approval (confirm policy, not veto) titled with the build, the phase and from -> to model; approving it records the approval in the orchestrator.\n5. Audit: list every upgrade approved so far by a non-human source (the store's journal), report in the PR; mark agent-swarm-fable-rebuild's s7 Opus -> Fable as self-approved (not Brett's). Note: xlayout-opus and token-control-opus were Fable -> Opus (downgrades), fine under the new rule.\n6. Tests for refusal, downgrade pass-through and the approval path; THREADS row (profile urgent); PR (push banner merges it).\n\nRules: one session, no sub-agents, stay on Opus. Don't approve any phase yourself while doing this.",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -1184,9 +1249,16 @@
      "note": "",
      "uid": "st-mw0ofxx60clwya"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "All 7 steps done. PR #262 (base claude/token-control-opus, merge after #250). UI Review r-20261103-dbed7dea waiting. axHub side: build axhub-veto-pass.",
+     "at": "2026-11-03T15:46:08.447Z"
+    }
+   ],
    "id": "theme-veto-pass",
    "title": "Theme veto pass: timed no-veto window for token changes",
    "category": "Token control",
@@ -1201,14 +1273,20 @@
    "createdAt": "2026-11-03T15:18:04.896Z",
    "updatedAt": "2026-11-03T17:25:37.890Z",
    "builtAt": "2026-11-03T15:46:07.456Z",
-   "notes": [
-    {
-     "text": "All 7 steps done. PR #262 (base claude/token-control-opus, merge after #250). UI Review r-20261103-dbed7dea waiting. axHub side: build axhub-veto-pass.",
-     "at": "2026-11-03T15:46:08.447Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "a timed pass (\"allow theme changes for the next 30 minutes\") during which token set/reset runs without the axHub veto. Grant approved once by Brett; server-side expiry; deletes never covered; banner chip with countdown; audit + undo; read tools annotated read-only; contract with axHub build axhub-veto-pass. Based on PR #250 (merge after it).",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -1336,9 +1414,16 @@
      "note": "",
      "uid": "st-mw0u13sq0eu8ac"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "PR #263 open (merges after #250 and #249); UI Review r-20261103-3345d3d4 waiting; axHub admin: allow <plugin>_*, plugin_commands, plugin_read, plugin_run on axf-console",
+     "at": "2026-11-03T15:55:55.142Z"
+    }
+   ],
    "id": "plugin-commands-auto",
    "title": "Plugin commands, automatically: every plugin's commands and reads on REST, MCP and the CLI through control@1",
    "category": "Urgent",
@@ -1353,14 +1438,20 @@
    "createdAt": "2026-11-03T15:19:27.930Z",
    "updatedAt": "2026-11-03T17:34:52.755Z",
    "builtAt": "2026-11-03T15:55:54.169Z",
-   "notes": [
-    {
-     "text": "PR #263 open (merges after #250 and #249); UI Review r-20261103-3345d3d4 waiting; axHub admin: allow <plugin>_*, plugin_commands, plugin_read, plugin_run on axf-console",
-     "at": "2026-11-03T15:55:55.142Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "every plugin, existing and new, automatically exposes all of its commands and reads through control@1, so they appear in the REST API, the MCP server and the CLI with no per-plugin work; Brett drives the console by talking to Claude through axHub. Base claude/token-control-opus (#250) + claude/console-commands (#249) merged in; reuses the console-commands action catalog instead of a second registry. Merges after #250 and #249.",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -1470,9 +1561,16 @@
      "note": "",
      "uid": "st-mw0u2vv50cjo31"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "PR #249 open; UI Review r-20261103-39040777 waiting; axHub service axf-console + allow policy for console_* needs an axHub admin",
+     "at": "2026-11-03T12:55:34.985Z"
+    }
+   ],
    "id": "console-commands",
    "title": "Console commands over API, MCP and CLI: Amber loads screens, dialogs, settings and actions in Brett's open console",
    "category": "Urgent",
@@ -1487,14 +1585,20 @@
    "createdAt": "2026-11-03T12:54:17.595Z",
    "updatedAt": "2026-11-03T17:03:44.894Z",
    "builtAt": "2026-11-03T12:55:34.474Z",
-   "notes": [
-    {
-     "text": "PR #249 open; UI Review r-20261103-39040777 waiting; axHub service axf-console + allow policy for console_* needs an axHub admin",
-     "at": "2026-11-03T12:55:34.985Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "add console commands to the MCP, the API and the CLI so he can tell Amber (a Claude session) to load screens for him.",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Console commands over API, MCP and CLI (Urgent, Opus)\n\nBrett Nov 3 2026 07:16 ET (voice): add console commands to the MCP, the API and the CLI so he can tell Amber (a Claude session) to load screens for him.\n\nBased on claude/token-control (control@1 contract, PR #246). A sibling build `token-control-opus` (branch claude/token-control-opus) is building the token/AmberX/planner API, MCP and CLI right now: fetch it and build on its server/MCP/CLI layout if it exists, and merge origin/main + that branch before the PR. Don't duplicate its work.\n\nDo:\n1. control@1 `console` namespace: open a view/screen (by id, title or search), open a dialog, open a settings tab/sub-tab, run any registered action, go back, list available screens/actions (so Claude can find the right one).\n2. Live delivery: the open console in Brett's browser receives the command and navigates right away (reuse Watch live / `axf focus` channel if it fits; one target per signed-in user, all his open consoles or the most recent). Also Molly and AmberX web if the same runtime makes it cheap; say in the PR what's covered.\n3. REST API endpoints, MCP tools (registered through axHub so this voice/Claude session can call them), and CLI: `axf console open <screen>`, `axf console action <id>`, `axf console list`.\n4. Safety: navigation and opening only; running an action that changes data needs the same approval policy as the action itself.\n5. Tests, check-theme/check-controls, help pack, interactive docs entries, UI Review shots if anything visible changes.\n\nRules: one session, no sub-agents. Tokens only (--fx-*), framework controls, no var() fallbacks. Add a THREADS.md row (profile urgent) and update each step. Commit + push branch claude/console-commands often; open the PR at the end (push banner merges it). In the PR, say exactly which axHub tool names a Claude session calls to load a screen.",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -1640,9 +1744,16 @@
      "note": "",
      "uid": "st-mw0ow6xh0ggrea"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "All 5 steps done. Commits fast-forwarded onto claude/theme-veto-pass (PR #262). UI Review r-20261103-7cd5aa8b waiting. axHub side: build axhub-pass-all.",
+     "at": "2026-11-03T16:07:53.873Z"
+    }
+   ],
    "id": "pass-all",
    "title": "Pass all: timed pass covers every command by default",
    "category": "Token control",
@@ -1657,14 +1768,20 @@
    "createdAt": "2026-11-03T15:53:52.125Z",
    "updatedAt": "2026-11-03T17:26:07.052Z",
    "builtAt": "2026-11-03T16:07:53.371Z",
-   "notes": [
-    {
-     "text": "All 5 steps done. Commits fast-forwarded onto claude/theme-veto-pass (PR #262). UI Review r-20261103-7cd5aa8b waiting. axHub side: build axhub-pass-all.",
-     "at": "2026-11-03T16:07:53.873Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "It's 30 minutes to do whatever I tell you.",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -1756,9 +1873,16 @@
      "note": "",
      "uid": "st-mw0vb4lw0axukf"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Reconciler: PR #255 merged; PR #255 names s1, s2, s3, s4, s5, s6, s7 done",
+     "at": "2026-11-03T15:20:49.826Z"
+    }
+   ],
    "id": "orch-live-sync",
    "title": "Orchestrator live sync: every step reaches main at once",
    "category": "Urgent",
@@ -1773,14 +1897,42 @@
    "createdAt": "2026-11-03T13:39:29.176Z",
    "updatedAt": "2026-11-03T15:20:49.826Z",
    "builtAt": "2026-11-03T14:01:20.821Z",
-   "notes": [
-    {
-     "text": "Reconciler: PR #255 merged; PR #255 names s1, s2, s3, s4, s5, s6, s7 done",
-     "at": "2026-11-03T15:20:49.826Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "you fix it, I trust you",
+    "at": "2026-11-03",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: orch-live-sync (Urgent profile)\n\nRequested by Brett, Nov 3 2026 (voice). GO given. Build it now, start to finish.\n\n## Problem\nThe Build orchestrator on main is stale. `_claude/builds/profiles/*/orchestrator.json` is a read-only export of `_claude/builds/store.json`, regenerated after every store write. Sessions write the store on their own feature branch, so main never sees step progress until (if ever) the branch merges. Branch and PR fields are left blank. Result today: in the Urgent profile, dock-engine (done in open PR #245, branch claude/molly-fable) and token-control (done in open PRs #246 claude/token-control and #250 claude/token-control-opus) still show pending with 0 steps done, and theme-editor has an unmerged branch claude/theme-editor nobody linked. Banners and THREADS are wrong as a result.\n\nBrett's rule: every completed step, no matter how small, must reach the orchestrator and appear on main immediately. The orchestrator must be aware every step of the way so it can update the banners and the threads.\n\n## First (before code)\n1. Register this build in the Urgent profile through the orchestrator/store (id `orch-live-sync`, category Urgent, branch claude/orch-live-sync), with the steps below. Register the in-progress banner entry per the standing session rules.\n2. Check the pending build queue per the standing rules.\n\n## Steps\n- s1 Live status writes to main: a small module (e.g. framework/cli/builds-live.mjs or inside the store IO) so that every store write that changes build/step status (step done, build status, notes, branch, pr) is committed to main immediately as its own tiny status-only commit (store.json + journal + regenerated exports only), independent of whatever feature branch the session is on. Use a separate worktree or git plumbing on origin/main; fetch, apply, commit, push; on non-fast-forward, refetch and re-apply the journal entry (rebase-retry, bounded); never force-push. Code changes stay on the feature branch/PR as now. Avoid conflicts between parallel sessions (journal-append semantics, per-build records). When the feature branch later merges, resolve.py / union merge must not regress statuses (newer rev wins).\n- s2 Branch + PR auto-link: when a session creates/pushes a branch or opens a PR for a build, the build's `branch` and `pr` fields are set and written live (s1). Build status shows built-awaiting-merge when all steps are done but the PR is unmerged; complete when merged.\n- s3 Reconciler: on every session start and on a timer (VPS cron or the existing hub scheduler), scan open PRs and claude/* branches on GitHub, match them to builds (branch field, build id in branch name/PR title/body, step ids in commits), mark finished-but-unlisted work, fill missing branch/pr fields, and flag orphans in a report and a banner alert. Write results live (s1).\n- s4 Banners + THREADS follow the store: every live status change pushes the banner update and appends a THREADS.md entry (one line per change, union-merge friendly).\n- s5 Session-start rule: update the session rules / CLAUDE docs so no session trusts the main export alone; it runs the reconciler and reads the live store first.\n- s6 Backfill now using the new tools: Urgent profile -> dock-engine all steps done, branch claude/molly-fable, pr #245; token-control s1-s3 done (pr #246, branch claude/token-control), s4-s14 done (pr #250, branch claude/token-control-opus); urgent-builds is complete and merged (2a057cc4), hide/archive it from the active list; theme-editor: inspect branch claude/theme-editor, mark the steps it actually completed, link the branch, and if all 5 steps are done open a PR for it. Run the reconciler across all five profiles (angel, big-dog, breakroom, refactor, urgent) and report what it fixed.\n- s7 Tests (store write retry, parallel writes, merge no-regress, reconciler matching), full local CI block, report `_claude/builds/reports/orch-live-sync.md`, THREADS.md, open the PR.\n\nMark each step done through the store as you finish it (that write itself should go live once s1 exists). Code, comments and commits stay clean and professional.\n## ADDENDUM (Brett, Nov 3 2026 voice) — read before finishing\n- s8 Per-step branch + PR: every step record gets its own `branch` and `pr` fields (plus `merged`/`mergedAt`), set live when that step's work is pushed / PR'd / merged. A build can span several branches and PRs (e.g. token-control: s1-s3 in #246 claude/token-control, s4-s14 in #250 claude/token-control-opus). Build-level branch/pr stay as a summary (list). Reconciler (s3) matches per step. Migrate existing records with empty values; schema + projections + Steps view column.\n- s9 Keep live status commits cheap: status writes are plain scripts/git plumbing, zero model involvement beyond one CLI call per step; add paths-ignore for `_claude/builds/**` and THREADS.md to .github/workflows/deploy.yml (and any other workflow on push to main) so status-only commits never trigger CI/deploy; debounce/batch writes within a few seconds into one commit.\n\n## ADDENDUM 2 (Brett, Nov 3 2026 voice: \"you fix it, I trust you\")\n- s10 Resolve every claude-sync hold and stop them piling up. Brett delegated the pick to these rules; apply them yourself, don't ask:\n  - `_claude/builds/store.json` + journal: merge per record by `rev`/updatedAt, newest wins, never drop a record from either side. Orchestrator/pending/queue exports: regenerate from the merged store (never pick a side).\n  - THREADS.md, STATUS.md, decisions.md, LOG.md, sessions/*, handoff notes: union merge (keep every unique line/entry, dedupe identical ones, keep chronological order, decision numbers kept unique).\n  - rules/RULES.md, shared rules/RULES.md, preferences.md, persona.md: if one side is a strict superset take it; otherwise union-merge the rule bullets and list any genuine contradiction (same rule, different wording/meaning) in the report for Brett; keep the newer wording in place meanwhile.\n  - Anything else: newer content wins; the other side stays recoverable as a hub version (memory_history).\n  - Resolve the holds in /opt/axf and on the hub, then make claude-sync apply these rules automatically on every sync (so headless sessions never leave holds again); only real rule contradictions get held, and those raise a banner alert + THREADS line instead of sitting silently.\n  - Report what was resolved (file, rule used, side kept) in `_claude/builds/reports/orch-live-sync.md`.\n\n## ADDENDUM 3 (verified Nov 3 2026) - backfill fix\n- Refactor profile `windows-terminal` shows archived 5/12 but is COMPLETE 12/12 and in main: s1-s5 = Opus phase, Terminal plugin v0.3.0 (claude/windows-terminal, PR #158); s6-s12 = refactor-all s17-s23 [windows-terminal] (branches refactor-all/wt-window, wt-levels, windows-terminal-base, wt-s23b, all 0 ahead of main; report `_claude/memory/docs/rebuilds/windows-terminal-fable.md`). Mark all 12 steps done with branch/pr per step, status complete, un-archive. Teach the reconciler that commits tagged `<parent> sNN [<build-id>]` map to that build's steps (refactor-all used this for grouped builds) so similar cases are caught automatically; check the other archived Refactor builds (interface-roller 10/15, builds-one-page 4/15, basic-filter 6/7, etc.) the same way and fix any that are actually done.\n",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": [
+     {
+      "said": "- s8 Per-step branch + PR: every step record gets its own `branch` and `pr` fields (plus `merged`/`mergedAt`), set live when that step's work is pushed / PR'd / merged. A build can span several branches and PRs (e.g. token-control: s1-s3 in #246 claude/token-control, s4-s14 in #250 claude/token-control-opus). Build-level branch/pr stay as a summary (list). Reconciler (s3) matches per step. Migrate existing records with empty values; schema + projections + Steps view column.\n- s9 Keep live status commits cheap: status writes are plain scripts/git plumbing, zero model involvement beyond one CLI call per step; add paths-ignore for `_claude/builds/**` and THREADS.md to .github/workflows/deploy.yml (and any other workflow on push to main) so status-only commits never trigger CI/deploy; debounce/batch writes within a few seconds into one commit.",
+      "at": "2026-11-03",
+      "source": "",
+      "by": "",
+      "verbatim": true
+     },
+     {
+      "said": "- s10 Resolve every claude-sync hold and stop them piling up. Brett delegated the pick to these rules; apply them yourself, don't ask:\n  - `_claude/builds/store.json` + journal: merge per record by `rev`/updatedAt, newest wins, never drop a record from either side. Orchestrator/pending/queue exports: regenerate from the merged store (never pick a side).\n  - THREADS.md, STATUS.md, decisions.md, LOG.md, sessions/*, handoff notes: union merge (keep every unique line/entry, dedupe identical ones, keep chronological order, decision numbers kept unique).\n  - rules/RULES.md, shared rules/RULES.md, preferences.md, persona.md: if one side is a strict superset take it; otherwise union-merge the rule bullets and list any genuine contradiction (same rule, different wording/meaning) in the report for Brett; keep the newer wording in place meanwhile.\n  - Anything else: newer content wins; the other side stays recoverable as a hub version (memory_history).\n  - Resolve the holds in /opt/axf and on the hub, then make claude-sync apply these rules automatically on every sync (so headless sessions never leave holds again); only real rule contradictions get held, and those raise a banner alert + THREADS line instead of sitting silently.\n  - Report what was resolved (file, rule used, side kept) in `_claude/builds/reports/orch-live-sync.md`.",
+      "at": "2026-11-03",
+      "source": "",
+      "by": "",
+      "verbatim": true
+     },
+     {
+      "said": "- Refactor profile `windows-terminal` shows archived 5/12 but is COMPLETE 12/12 and in main: s1-s5 = Opus phase, Terminal plugin v0.3.0 (claude/windows-terminal, PR #158); s6-s12 = refactor-all s17-s23 [windows-terminal] (branches refactor-all/wt-window, wt-levels, windows-terminal-base, wt-s23b, all 0 ahead of main; report `_claude/memory/docs/rebuilds/windows-terminal-fable.md`). Mark all 12 steps done with branch/pr per step, status complete, un-archive. Teach the reconciler that commits tagged `<parent> sNN [<build-id>]` map to that build's steps (refactor-all used this for grouped builds) so similar cases are caught automatically; check the other archived Refactor builds (interface-roller 10/15, builds-one-page 4/15, basic-filter 6/7, etc.) the same way and fix any that are actually done.",
+      "at": "2026-11-03",
+      "source": "",
+      "by": "",
+      "verbatim": true
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -1911,9 +2063,16 @@
      "note": "",
      "uid": "st-mw0qib740en9dq"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "All 7 steps done on claude/headless-tabs, PR #259 open; UI Review r-20261103-3sp5x01 waiting for Brett. Report _claude/builds/reports/headless-tabs.md.",
+     "at": "2026-11-03T14:44:39.396Z"
+    }
+   ],
    "id": "headless-tabs",
    "title": "Headless tabs: persistent tmux-backed terminal tabs, auto-opened headless sessions with agent/model/live cost, split pane with the context chain",
    "category": "Console > Terminal",
@@ -1928,14 +2087,20 @@
    "createdAt": "2026-11-03T13:56:02.712Z",
    "updatedAt": "2026-11-03T16:29:46.540Z",
    "builtAt": "2026-11-03T14:44:38.397Z",
-   "notes": [
-    {
-     "text": "All 7 steps done on claude/headless-tabs, PR #259 open; UI Review r-20261103-3sp5x01 waiting for Brett. Report _claude/builds/reports/headless-tabs.md.",
-     "at": "2026-11-03T14:44:39.396Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: headless-tabs (Urgent profile)\n\nRequested by Brett, Nov 3 2026 (voice). GO given. Build it now.\n\n## First\n- Register in the Urgent profile through the orchestrator/store (id `headless-tabs`, branch claude/headless-tabs) with the steps below + in-progress banner entry, per standing rules. Check the pending queue.\n- Builds `orch-live-sync` and `notes-vault` are running in parallel and touch the builds store / claude-sync: never hand-edit store.json, go through the orchestrator CLI. If orch-live-sync's live status writes (framework/cli/builds-live.mjs) are on main by the time you finish a step, use them.\n\n## What Brett wants\n1. Every terminal tab in the console's terminal (the Windows Terminal plugin / terminal in the console) runs on a session that never dies, like Mosh/Moshi: it survives disconnects, reloads, phone sleep, and stays current. Browsers can't speak Mosh (UDP), so: every tab is backed by a persistent tmux session on the VPS, attached over the console's websocket/pty bridge with automatic reconnect + resume (scrollback replay on reattach, no lost output). The same tmux sessions must be attachable from Brett's Moshi phone app (document the one-line `mosh`/ssh + `tmux attach -t <name>` command in the help pack and show it in a tab menu item \"Open in Moshi\" that copies it). Closing a tab detaches, it doesn't kill (explicit \"Kill session\" with confirm).\n2. Every time a headless session starts (deploy/claude-headless.sh, `vps.build_start`, agent swarm jobs, orchestrator-launched builds), the console automatically opens a NEW tab attached to that build's tmux session (axf-<name>). Works for builds started while the console is closed too: on open, tabs for all running headless sessions appear.\n3. Tab title bar: the agent running it (agent/persona name from the session's env/brief/swarm roster, e.g. the swarm agent name, else the build name) + model + a real-time cost counter that climbs as it spends. Cost: run claude -p with `--output-format stream-json --verbose` (or tee it alongside the human log) and sum usage per message (input, output, cache read, cache write) x the model's price table (config file, not hard-coded in UI); final value reconciles to the result event's total_cost_usd. Expose cost via a small server route/websocket so the title updates live. Show status dot (working / waiting / done / failed).\n4. The tab splits into two panes; split direction vertical or horizontal (toggle in the tab menu + default in Settings, remembered per tab). Pane A = the live session. Pane B = the context chain: as the session reads CLAUDE.md and every file it pulls in (imports/@ references, .claude/rules, _claude/rules/RULES.md, shared rules, instructions, persona, memory, THREADS etc.), show the chain as a tree in the order it happens, and print the rules it picks up ONE AT A TIME, deliberately slower than real time (typewriter/reveal pacing, speed setting, skip-to-end button), so Brett can watch what the agent is learning. Source the chain from the session's actual reads (stream-json tool events for Read, plus the CLAUDE.md load order Claude Code uses); rules = the bullet/heading items of each file.\n5. Tokens only, follows the hub look, phone-friendly (on narrow screens the split stacks and becomes swipeable).\n\n## Steps\n- s1 Persistent tmux-backed tabs + reconnect/resume in the console terminal; Moshi attach command; detach vs kill.\n- s2 Headless launcher emits session-start events (claude-headless.sh + build_start path + swarm/orchestrator launches) with build name, agent, model, tmux session; console auto-opens tabs, and lists running ones on load.\n- s3 stream-json capture alongside the human log; cost meter service (price table config) + live route.\n- s4 Tab title: agent, model, live cost, status dot.\n- s5 Split pane with vertical/horizontal toggle + setting.\n- s6 Context chain pane: tree in read order + slow rule-by-rule reveal, speed setting, skip.\n- s7 Help pack, tests, check-theme/check-controls, lifecycle, UI Review shots, report `_claude/builds/reports/headless-tabs.md`, THREADS.md, PR.\nMark each step done through the store as you finish it. Android port: log as a deferred gap in PORTING.md (Android on hold). Code, comments and commits stay clean and professional.\n## ADDENDUM (Brett, Nov 3 2026) - where it goes\nEverything in this build goes INTO the console's existing built-in Terminal plugin (Terminal v0.3.0: frameless window, tab strip as title bar, connections, profiles, Windows keys; window engine resize/snap/maximize from refactor-all s17-s23, see `_claude/memory/docs/rebuilds/windows-terminal.md` and `windows-terminal-fable.md`). Extend that plugin; do NOT create a separate terminal plugin or a second terminal UI. Persistent tmux sessions become the Terminal's session backend / a connection type, auto-opened headless tabs are Terminal tabs, title/cost/status live in its tab strip, the split + context-chain pane are Terminal pane features. Bump the Terminal plugin version and keep every existing feature working.\n\n## ADDENDUM 2 (Brett, Nov 3 2026) - clarification, overrides any ambiguity above\nTarget = the Terminal PLUGIN produced by the Refactor build `windows-terminal` (the Windows-Terminal-style plugin, v0.3.0, in the console's plugins folder). NOT any terminal hardwired into the console core/shell. If the console core has its own built-in terminal, leave it untouched. All features of this build (persistent tmux/Moshi sessions, auto headless tabs, agent name + live cost + status in the tab strip, vertical/horizontal split, context-chain pane) live inside that plugin. If you already started any of it outside the plugin, move it into the plugin.\n\n## ADDENDUM 3 (Brett, Nov 3 2026) - Tooltip mode (add as step s8)\n- Terminal plugin Settings gets a switch **Tooltip mode** (off by default, saved in terminal-settings@1, carries data-axf-level, help text).\n- When on: the FIRST tap/click on any command-toolbar item does NOT run it; it shows a tooltip saying what the button does (reuse the existing help pack text for that control; every toolbar item must have one) and the button stays lit (highlighted/armed state via tokens) for 3 seconds with a subtle countdown. A SECOND tap on the same button within those 3 seconds runs it. After 3 s, or tapping elsewhere/another button, it disarms (tapping another button arms that one instead). Keyboard shortcuts are unaffected. Works on touch and mouse; the tooltip stays on screen on phones (not hover-only). Make the 3 s a setting (default 3).\n- Tests for arm/run/timeout/switch, UI Review shots of the armed state on phone + desktop.\n",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -2063,9 +2228,16 @@
      "note": "",
      "uid": "st-mw0r3ltf0eiufi"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "All 5 steps built on Opus; PR #260 (claude/whats-new-banner), UI Review r-20261103-8861306a waiting. Plugin folder whats-shipped (systems check owns whats-new).",
+     "at": "2026-11-03T14:53:34.449Z"
+    }
+   ],
    "id": "whats-new-banner",
    "title": "What's new banner",
    "category": "Banners",
@@ -2080,14 +2252,20 @@
    "createdAt": "2026-11-03T14:04:58.611Z",
    "updatedAt": "2026-11-03T16:41:30.871Z",
    "builtAt": "2026-11-03T14:53:33.448Z",
-   "notes": [
-    {
-     "text": "All 5 steps built on Opus; PR #260 (claude/whats-new-banner), UI Review r-20261103-8861306a waiting. Plugin folder whats-shipped (systems check owns whats-new).",
-     "at": "2026-11-03T14:53:34.449Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: whats-new-banner (Urgent profile)\n\nRequested by Brett, Nov 3 2026 (voice). GO given. Build it now.\n\n## First\n- Register in the Urgent profile through the orchestrator/store (id `whats-new-banner`, branch claude/whats-new-banner) with the steps below + in-progress banner entry, per standing rules. Check the pending queue.\n- Running in parallel: `orch-live-sync` (live store writes to main, reconciler, banners/THREADS follow the store, per-step branch/pr/merged fields), `notes-vault`, `headless-tabs`. Never hand-edit store.json; use the orchestrator CLI. Reuse orch-live-sync's events (framework/cli/builds-live.mjs, reconciler) if they are on main when you need them; otherwise read the store + GitHub merged PRs directly and leave a seam to switch over.\n\n## What Brett wants\nA **What's new** banner that shows new features that have been pushed out (merged to main and deployed), filterable/groupable **by date, by build, and by app** (all three).\n\n## Steps\n- s1 Feed: a `whats-new@1` feed built from what actually shipped: builds/steps whose code merged to main (store merged/mergedAt, merged PRs, build reports' Added/Changed sections, Codebase Changes plugin entries). Each item: title (plain-language feature, from the build report/PR, not commit-speak), build id, profile, apps affected (from changed paths: apps/console-web, axhub-web, amberx-droid, molly, plugins/<x> -> app/plugin names), date merged, deployed yes/no (deploy workflow run for that commit), links (PR, report). Server route + cached file; updates when the store/merges change (no model tokens).\n- s2 Banner: a `whats-new` banner asset/widget (banner-pack conventions, works in the banner editor and gallery): compact ticker of the newest shipped features with an unread count; tap opens a panel.\n- s3 Panel: list grouped by Date (Today / Yesterday / this week / older), By build, or By app (segmented switch, remembered); search; per-item details (what it does, where to find it, PR/report links); mark read / mark all read; 'new since last visit' highlighting.\n- s4 Settings: show/hide the banner, which apps to include, how far back, only deployed vs merged.\n- s5 Help pack, tests, check-theme/check-controls, lifecycle, UI Review shots (phone + desktop), report `_claude/builds/reports/whats-new-banner.md`, THREADS.md, PR. Mark each step done through the store as you finish it.\nTokens only, follows the hub look. Android: deferred gap in PORTING.md. Code, comments and commits stay clean and professional.\n## ADDENDUM (Brett, Nov 3 2026) - three states\nThe feed and panel show three sections/states, each still groupable by date, build and app:\n1. **Live** - merged to main AND deployed.\n2. **Merged** - on main, not deployed yet.\n3. **Ready to merge** - built and finished but not merged: open PRs for builds/steps marked done, plus finished headless builds whose branch is ahead of main with no PR (vps build_list 'finished, not landed'). For each item show what it's waiting on in plain words: UI Review approval (with the review group name and a button that opens it), CI red/pending, waiting on another PR first (merge order, e.g. #245 before #252), sync hold, or nothing (ready now). Link to the PR.\nBanner ticker shows counts per state (e.g. '3 live, 2 merged, 10 waiting'). Reuse the push banner's PR data if it already has it instead of fetching twice; don't duplicate its merge actions (link to it).\n\n## ADDENDUM 2 (Brett, Nov 3 2026) - Go-to hook\n- Tapping/clicking an item does NOT navigate; it only expands its details.\n- Every **Live** item carries its own hook: a small 'Go to it' button/icon on the item. Clicking the hook takes you to the feature itself: opens the right app/plugin/window/tab, scrolls to and briefly highlights the exact control or setting (e.g. Terminal > Settings > Tooltip mode), using axf:// deep links / the router + the element's control id / help id. Each feed item stores its target (deep link + control id) in whats-new@1, filled from the build report / changed controls; if a target can't be resolved, the hook opens the closest screen and says so.\n- Merged (not deployed) and Ready-to-merge items get no Go-to hook (feature isn't live); they keep their PR / UI Review links.\n- Tests for target resolution + highlight; shots of the hook and the highlight.\n",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -2179,9 +2357,11 @@
      "note": "",
      "uid": "st-mw0rf3bt0a8tis"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [],
    "id": "notes-vault",
    "title": "Notes vault: gather Brett's saved notes into /projects/_shared/_claude/notes, notes-browser plugin, MD Studio Notes scope",
    "category": "Urgent",
@@ -2196,9 +2376,20 @@
    "createdAt": "2026-11-03T14:09:24.568Z",
    "updatedAt": "2026-11-03T16:07:19.784Z",
    "builtAt": "2026-11-03T14:10:56.767Z",
-   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "gather the hand-saved notes scattered across the axHub projects tree into one shared place, add a quick notes browser plugin, and add a Notes scope to MD Studio.",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -2308,23 +2499,10 @@
      "note": "",
      "uid": "st-mw0rksji0cv0wp"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "kill-patches-pilot",
-   "title": "Retire Patches and Build Pilot (remove everywhere)",
-   "category": "Cleanup",
-   "detail": "Brett, Nov 3 2026 (voice): Patches is dead, Build Pilot is dead. Delete both and every reference: repo code, rules, docs, CI, store builds; VPS containers + Coolify apps (snapshotted to /root/archive/retired-2026-11-03/ first); axHub projects tree + axHub repo PR; archive (not delete) MossesX/Build-Pilot.",
-   "status": "running",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/kill-patches-pilot",
-   "pr": "#258",
-   "mergedAt": "2026-11-03T16:23:48.889Z",
-   "createdAt": "2026-11-03T14:10:11.184Z",
-   "updatedAt": "2026-11-03T16:24:26.329Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "s7 partial: axHub PR #32 open; /projects/patches* snapshotted not deleted (no axHub MCP here, needs veto call); MossesX/Build-Pilot archive needs Brett (token 403); DNS records remain.",
@@ -2339,8 +2517,34 @@
      "at": "2026-11-03T16:24:26.329Z"
     }
    ],
+   "id": "kill-patches-pilot",
+   "title": "Retire Patches and Build Pilot (remove everywhere)",
+   "category": "Cleanup",
+   "detail": "Brett, Nov 3 2026 (voice): Patches is dead, Build Pilot is dead. Delete both and every reference: repo code, rules, docs, CI, store builds; VPS containers + Coolify apps (snapshotted to /root/archive/retired-2026-11-03/ first); axHub projects tree + axHub repo PR; archive (not delete) MossesX/Build-Pilot.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/kill-patches-pilot",
+   "pr": "#258",
+   "mergedAt": "2026-11-03T16:23:48.889Z",
+   "createdAt": "2026-11-03T14:10:11.184Z",
+   "updatedAt": "2026-11-03T16:24:26.329Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "Patches is dead. Delete it, all references. Build Pilot dead, same thing. Delete it. All references.",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: kill-patches-pilot (Urgent profile)\n\nRequested by Brett, Nov 3 2026 (voice): \"Patches is dead. Delete it, all references. Build Pilot dead, same thing. Delete it. All references.\" GO given. Do it now.\n\n## First\n- Register in the Urgent profile via the orchestrator CLI (id `kill-patches-pilot`, branch claude/kill-patches-pilot) + banner entry. Never hand-edit store.json (orch-live-sync is running). Other parallel builds: notes-vault, headless-tabs, whats-new-banner, amberx-backup-fix.\n\n## Remove from this repo (AmberX-AXF), everything\n- Patches: apps/patches-web, the Patches Android app/module, any patches plugin/wrapper code, patches-specific assets, banners, boilerplates, catalog/tracker entries, CI workflow jobs and deploy steps, rebake targets, demo/walkthrough chapters or captions mentioning it, help packs, docs (_claude/memory/docs/patches-*, rebuilds/patches-*), tracker.json rows.\n- Build Pilot: any build-pilot app/plugin/tab/integration code, Dev Console or axHub hooks into it, catalog/docs/help/walkthrough references.\n- Rules/instructions: rewrite every rule that depends on Patches. In particular the hub-sync rule that \"Console and Pilot can only run inside Patches (never standalone)\" -> Console runs standalone; Pilot is gone. Update RULES.md (repo + shared), CLAUDE.md, THREADS.md (one closing line, don't rewrite history), STATUS, decisions.md (add a decision entry: Patches and Build Pilot retired Nov 3 2026; don't delete old decision text, mark superseded).\n- Orchestrator store: archive every build whose subject is Patches or Build Pilot (via CLI), note \"retired Nov 3 2026\". Pending queue too.\n- grep -ri 'patches\\|build.pilot\\|build-pilot\\|buildpilot' across the repo afterward; the only hits left may be historical log lines and the decision entry. Note: don't confuse with generic words like 'patch' / 'patching' / 'autopilot' / PilotX (separate app).\n- Everything must still build: tsc, vite builds of every remaining app, check-theme/check-controls, plugin lifecycle, CI block. Open the PR.\n\n## Remove from the VPS (live)\n- Before removing anything: snapshot each container's volumes/data + its Coolify app config to /root/archive/retired-2026-11-03/ (tar.gz), so it's recoverable.\n- Stop and remove the `patches-web` and `build-pilot` containers and their Coolify applications (Coolify API/UI so they don't come back on redeploy), Traefik routes/domains, any cron/systemd units, images.\n- axHub projects tree: remove /projects/patches, /projects/patches-web (and any build-pilot project) via the hub memory API so versions stay recoverable; remove them from shared/memory/projects.md.\n- axHub repo: references to Patches/Build Pilot (services, examples, docs, approvals) -> clone /root/axHub fresh on branch claude/kill-patches-pilot, remove them, open a PR there too.\n- GitHub repo MossesX/Build-Pilot: ARCHIVE it (read-only), do not delete; deleting a repo is irreversible and Brett can delete it in one click later. Say so in the report.\n\n## Report\n`_claude/builds/reports/kill-patches-pilot.md`: everything removed (paths, containers, apps, domains), where the archive is, PR links. Mark each step done through the store as you go. Commits clean and professional.",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -2486,30 +2690,44 @@
      "note": "",
      "uid": "st-mw0rlsih0gtf2c"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "console-wake",
-   "title": "Console wake: console commands always reach a console (queue + deliver on reconnect, wake via AmberX when closed)",
-   "category": "Urgent",
-   "detail": "Brett Nov 3 2026 (voice): console commands fail with not_found when the tab is not connected (approval inside the console dropped client cc-cq7hakm3a02p for 2 s at 17:18:49 UTC; redeploys; tab sleep; browser closed). Rule: no matter what, a console command must reach a console; if the browser is closed, open it. Agent: Ping Paulie.",
-   "status": "built",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/console-wake",
-   "pr": "#266",
-   "createdAt": "2026-11-03T17:22:15.174Z",
-   "updatedAt": "2026-11-03T17:45:07.866Z",
-   "builtAt": "2026-11-03T17:45:06.485Z",
    "notes": [
     {
      "text": "Agent Ping Paulie (AXF_AGENT launcher support not used: recorded here). PRs: AmberX-AXF #266 (claude/console-wake), axHub #35 (claude/amberx-open-url). UI Review r-20261103-177ac4f1 waiting. Report _claude/builds/reports/console-wake.md. Brett: install the new AmberX APK (checklist-one).",
      "at": "2026-11-03T17:45:07.408Z"
     }
    ],
+   "id": "console-wake",
+   "title": "Console wake: console commands always reach a console (queue + deliver on reconnect, wake via AmberX when closed)",
+   "category": "Urgent",
+   "detail": "Brett Nov 3 2026 (voice): console commands fail with not_found when the tab is not connected (approval inside the console dropped client cc-cq7hakm3a02p for 2 s at 17:18:49 UTC; redeploys; tab sleep; browser closed). Rule: no matter what, a console command must reach a console; if the browser is closed, open it. Agent: Ping Paulie.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/console-wake",
+   "pr": "#288",
+   "mergedAt": "2026-11-04T12:05:58.906Z",
+   "createdAt": "2026-11-03T17:22:15.174Z",
+   "updatedAt": "2026-11-04T12:05:59.141Z",
+   "builtAt": "2026-11-03T17:45:06.485Z",
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "console commands fail with not_found when the tab is not connected (approval inside the console dropped client cc-cq7hakm3a02p for 2 s at 17:18:49 UTC; redeploys; tab sleep; browser closed). Rule: no matter what, a console command must reach a console; if the browser is closed, open it. Agent: Ping Paulie.",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -2619,23 +2837,10 @@
      "note": "",
      "uid": "st-mw0ygshp0cuh19"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "land-everything",
-   "title": "Land everything: merge finished branches to main and deploy",
-   "category": "Urgent",
-   "detail": "Brett, Nov 3 2026 (voice): land the finished work on main and deploy; UI Review waived except banners (banner-pack, banner-editor, banners-one not landed).",
-   "status": "complete",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/land-everything",
-   "pr": "",
-   "mergedAt": "2026-11-03T18:07:44.501Z",
-   "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T18:09:05.304Z",
-   "builtAt": "2026-11-03T18:07:13.043Z",
    "notes": [
     {
      "text": "Landed claude/notes-vault (PR #256) on main at 5a6311a3",
@@ -2714,8 +2919,34 @@
      "at": "2026-11-03T18:09:05.304Z"
     }
    ],
+   "id": "land-everything",
+   "title": "Land everything: merge finished branches to main and deploy",
+   "category": "Urgent",
+   "detail": "Brett, Nov 3 2026 (voice): land the finished work on main and deploy; UI Review waived except banners (banner-pack, banner-editor, banners-one not landed).",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/land-everything",
+   "pr": "",
+   "mergedAt": "2026-11-03T18:07:44.501Z",
+   "createdAt": "2026-11-03T15:32:06.059Z",
+   "updatedAt": "2026-11-03T18:09:05.304Z",
+   "builtAt": "2026-11-03T18:07:13.043Z",
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "Fuck the review, I review it. Just go. Get everything live.",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Job: land-everything (Urgent profile)\n\nBrett, Nov 3 2026 (voice): \"Fuck the review, I review it. Just go. Get everything live.\" He is away; land the finished work on main and get it deployed. He explicitly waived UI Review for these (EXCEPT banners, see below).\n\n## First\n- Register in the Urgent profile via the orchestrator CLI (id `land-everything`) + banner entry. orch-live-sync is on main (live status writes, reconciler, claude-sync auto-resolve rules): use its tools for every store write and conflict.\n- Check the `land` job type (`node framework/cli/agent-job.mjs list`); if an agent owns landing, you are acting for it this once at Brett's request; book it there if the tooling allows.\n\n## How to land each one\nFor each branch below, in this order: fetch, merge origin/main into the branch in its worktree (/root/axf-builds/<name> where it exists, else a fresh worktree), resolve, run the repo's local CI block (tsc, vite builds of affected apps, check-theme, check-controls, plugin lifecycle, tests touched), push the branch, then fast-forward/merge to main and push main (never force). Close the PR as merged (or merge it via GitHub API) and update its build in the store (complete, per-step branch/pr/merged/mergedAt).\nConflict rules:\n- `_claude/builds/store.json`: merge per record (build, step) by rev/updatedAt, newest wins, never drop a record from either side; then regenerate all exports (`orchestrator.json`, profiles/*/orchestrator.json, pending, queue) from the merged store. Journal `_claude/builds/journal/*.jsonl`: union of lines, dedupe identical, keep chronological order.\n- THREADS.md, STATUS.md, decisions.md, LOG.md, notes/sessions/handoffs: union merge. Build reports: keep the branch's version (it's that build's own report) unless main's is newer for the same build.\n- Hub-synced copies (changes/*.json, _claude/shared/notes/**, apps/*/_claude/**): identical = fine; differing = newer wins.\n- REAL code conflicts: resolve them properly if the intent of both sides is clear (both features must keep working; run the tests). If you can't resolve one safely, skip that branch, leave it pushed, and record exactly why in the report; keep going with the rest.\n\n## Order\n1. claude/notes-vault (PR #256)\n2. claude/agent-chats-hub (PR #248) - Brett wants this one live ASAP (Breakroom group chat viewer)\n3. claude/kill-patches-pilot (AmberX PR; its axHub PR too, in /root/axHub or a fresh clone)\n4. claude/headless-tabs (PR #259)\n5. claude/whats-new-banner (PR #260)\n6. claude/molly-fable (PR #245, dock engine) then claude/xlayout-opus (PR #252)\n7. claude/token-control (PR #246) then claude/token-control-opus (PR #250) then claude/console-commands (PR #249)\n8. claude/theme-editor (PR #243), claude/one-look-default-2 (PR #244), claude/model-upgrade-approval (PR #253)\n9. When they finish (check `vps` builds / tmux axf-theme-veto-pass, axf-plugin-commands-auto): claude/theme-veto-pass (after #250) and claude/plugin-commands-auto (after #250, #249, #256); and the axHub repo branch claude/axhub-veto-pass. Wait for them if they're still running (poll every few minutes, up to 3 hours).\nDO NOT land: claude/banner-pack (#251), claude/banner-editor (#254), claude/banners-one (Brett wants to review banners himself). Leave them untouched.\n\n## After landing\n- Make sure deploys ran (deploy workflow / Coolify) and the console, axHub web, AmberX web and Molly are up and healthy (docker ps, HTTP 200 on their domains).\n- Register the console's MCP (`axf-console` and token-control's MCP) as axHub services if not already (`~/hub/bin/axhub services ...` per axHub examples/README.md), policy preset: reads allow, writes veto, deletes confirm (use the preset from axhub-veto-pass if landed).\n- Confirm status-only commits to main don't trigger full redeploys (paths-ignore from orch-live-sync s9); if they still do, fix the workflow.\n- Tick items on Brett's checklist only if they're his and now done: /projects/_shared/_claude/notes/checklist-one.md (via the hub memory API).\n- Report `_claude/builds/reports/land-everything.md`: each branch -> landed commit or skipped + why, deploy status, services registered. One THREADS line per landing. Commits clean and professional.",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -2915,9 +3146,16 @@
      "note": "",
      "uid": "st-mw0uj4uc0mytjc"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Agent Snap Sully (snap-sully). PR #269, UI Review r-20261103-abd35505 waiting. builds-one-page un-archived and built (complete once #269 merges).",
+     "at": "2026-11-03T18:22:44.636Z"
+    }
+   ],
    "id": "builds-one-page-done",
    "title": "Builds: finish the one Builds page (builds-one-page s5-s15) on current main",
    "category": "Console UI",
@@ -2931,14 +3169,20 @@
    "createdAt": "2026-11-03T17:53:08.980Z",
    "updatedAt": "2026-11-03T18:22:44.636Z",
    "builtAt": "2026-11-03T18:22:43.443Z",
-   "notes": [
-    {
-     "text": "Agent Snap Sully (snap-sully). PR #269, UI Review r-20261103-abd35505 waiting. builds-one-page un-archived and built (complete once #269 merges).",
-     "at": "2026-11-03T18:22:44.636Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "finish the Builds one-page build. Assigned agent: **Snap Sully** (book on his agent-swarm card; set AXF_AGENT=snap-sully if the launcher supports it, else record in report + store note).",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: builds-one-page-done (Urgent profile)\n\nBrett, Nov 3 2026 (voice): finish the Builds one-page build. Assigned agent: **Snap Sully** (book on his agent-swarm card; set AXF_AGENT=snap-sully if the launcher supports it, else record in report + store note).\n\n## Context\n- Orchestrator build `builds-one-page` shows archived 4/15 (s1-s4 done, s5-s15 pending) in the store.\n- Branch `claude/builds-one-page-finish` (1 commit, 'Builds page: one page, six views (Pending, Queue, Plan, Tracker, Orchestrator, Steps) over the one store') is ~320 commits behind main and never landed. Related: `claude/builds-one-page`, `claude/queue-builds-one-page-trim`, hub file `instructions/builds-one-page-foldin.md`.\n- Main has moved a lot since: orch-live-sync (live store writes on main, reconciler), whats-new-banner, headless-tabs, plugin-commands-auto, kill-patches-pilot (Patches + Build Pilot are gone; Console runs standalone).\n\n## Do\n- s0 Register in Urgent (id `builds-one-page-done`), banner entry.\n- s1 Verify first: read the store steps for `builds-one-page`, then check every related branch/commit/PR for which of s5-s15 are really done (commit tag format `<parent> sNN [<build-id>]` counts). Mark truly-done steps done in the store with branch/pr.\n- s2 Bring the finish branch's work onto current main (fresh branch from main, port the changes, resolve against everything that landed; don't resurrect anything for Patches/Build Pilot).\n- s3 Build every remaining step to spec; the Builds page = ONE page, views over the ONE live store; every view's commands exposed through control@1 (REST + MCP + CLI per standing rule).\n- s4 Tests, report `_claude/builds/reports/builds-one-page-done.md`, THREADS, PR, mark `builds-one-page` complete (un-archive) and close out the stale `builds-one-page-finish` branch in the report. Commits clean and professional.",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -3030,30 +3274,48 @@
      "note": "",
      "uid": "st-mw0zkivu0atp8d"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Built by Janitor Joey (Opus). PR #268, UI Review r-20261103-2637fd91. menu-fit@1 engine + menuFit.ts; checks 14/14, browser 7/16 -> 16/16. Report _claude/builds/reports/menu-scroll.md",
+     "at": "2026-11-03T18:16:09.646Z"
+    },
+    {
+     "text": "Reconciler: PR #268 merged",
+     "at": "2026-11-04T01:43:43.665Z"
+    }
+   ],
    "id": "menu-scroll",
    "title": "Scrollable menus that stay on screen",
    "category": "Framework > Menus",
    "detail": "Brett, Nov 3 2026 (voice): application menus need to be scrollable when they reach beyond the screen. Framework level: menubar dropdowns, submenus, context and overflow menus cap to the available viewport height (safe areas, banner, keyboard via visualViewport), scroll inside with fade hints, flip/shift before scrolling, submenus open left at the right edge. Tokens only. Agent: Janitor Joey.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/menu-scroll",
    "pr": "#268",
+   "mergedAt": "2026-11-04T01:22:37Z",
    "createdAt": "2026-11-03T17:56:44.297Z",
-   "updatedAt": "2026-11-03T18:16:10.379Z",
+   "updatedAt": "2026-11-04T01:43:43.665Z",
    "builtAt": "2026-11-03T18:16:08.260Z",
-   "notes": [
-    {
-     "text": "Built by Janitor Joey (Opus). PR #268, UI Review r-20261103-2637fd91. menu-fit@1 engine + menuFit.ts; checks 14/14, browser 7/16 -> 16/16. Report _claude/builds/reports/menu-scroll.md",
-     "at": "2026-11-03T18:16:09.646Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "The application menus need to be scrollable when they reach beyond the screen.",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: menu-scroll (Urgent profile)\n\nBrett, Nov 3 2026 (voice): \"The application menus need to be scrollable when they reach beyond the screen.\" Assigned agent: **Janitor Joey** (book on his agent-swarm card; set AXF_AGENT=janitor-joey if supported, else record in report + store note). Register in Urgent (id `menu-scroll`) + banner entry.\n\n## Fix (framework level, so every app and plugin gets it)\n- Application menu bar dropdowns, their submenus, and also context menus / overflow (⋯) menus: when a menu is taller than the space left in the viewport, cap its height to the available space (respect safe-area insets, the banner/toolbars, and the on-screen keyboard; use visualViewport on mobile) and make it scroll vertically inside.\n- Smooth touch scrolling on phones (overscroll contained so the page behind doesn't scroll), wheel + keyboard arrow navigation scrolls the highlighted item into view, subtle top/bottom fade or chevron hints when there's more.\n- Positioning: flip up / shift to stay on screen before falling back to scroll; submenus that would go off the right edge open to the left; on compact width they stay inside the screen.\n- Max height + hint style come from tokens/assets (menu asset or component-sizing), no hard-coded sizes (check-theme must pass).\n- Apply in the framework menu components (web reference + axf.css) so console, axHub web, AmberX (Capacitor) and every plugin inherit it; Compose twin recorded in PORTING.md unless trivial.\n- Tests (overflow cases: long menu at bottom of a short phone screen, nested submenu at the edge, keyboard open), before/after screenshots at 412 px and 1280 px, UI Review item, report `_claude/builds/reports/menu-scroll.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -3163,22 +3425,10 @@
      "note": "",
      "uid": "st-mw0zp51a0ccubx"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "auto-land",
-   "title": "Auto-land finished builds (zero-token merge pipeline)",
-   "category": "",
-   "detail": "Relaunch of stopped auto-land as auto-land-2 (Brett, Nov 3 2026, voice). Agent: Earl the Ear. Plain-script merge pipeline reusing the push banner batch merge; AI only for real conflicts / red CI needing code.",
-   "status": "built",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/auto-land-2",
-   "pr": "#270",
-   "createdAt": "2026-11-03T18:01:41.577Z",
-   "updatedAt": "2026-11-03T18:37:10.577Z",
-   "builtAt": "2026-11-03T18:37:09.577Z",
    "notes": [
     {
      "text": "Relaunched as auto-land-2 (worktree /root/axf-builds/auto-land-2, branch claude/auto-land-2) after the first auto-land run stopped. Brett's correction: zero tokens for merging.",
@@ -3195,10 +3445,40 @@
     {
      "text": "All 8 steps done. PR #270 (claude/auto-land-2), UI Review r-20261103-6537ada7 waiting. Related: #267 main CI fix, MossesX/axHub#36 claude-sync hold. Report _claude/builds/reports/auto-land.md. Goes live on merge (cron axf-auto-land).",
      "at": "2026-11-03T18:37:10.577Z"
+    },
+    {
+     "text": "Reconciler: PR #270 merged",
+     "at": "2026-11-04T01:24:29.253Z"
     }
    ],
+   "id": "auto-land",
+   "title": "Auto-land finished builds (zero-token merge pipeline)",
+   "category": "",
+   "detail": "Relaunch of stopped auto-land as auto-land-2 (Brett, Nov 3 2026, voice). Agent: Earl the Ear. Plain-script merge pipeline reusing the push banner batch merge; AI only for real conflicts / red CI needing code.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/auto-land-2",
+   "pr": "#270",
+   "mergedAt": "2026-11-04T00:53:37Z",
+   "createdAt": "2026-11-03T18:01:41.577Z",
+   "updatedAt": "2026-11-04T01:24:29.253Z",
+   "builtAt": "2026-11-03T18:37:09.577Z",
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "Earl the Ear. Plain-script merge pipeline reusing the push banner batch merge; AI only for real conflicts / red CI needing code.",
+    "at": "2026-11-03",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -3344,30 +3624,48 @@
      "note": "",
      "uid": "st-mw0zviev0gwt4z"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "All 7 steps done on claude/crew-live, PR #273; UI Review r-20261103-b35b9201 waiting. Report _claude/builds/reports/crew-live.md.",
+     "at": "2026-11-03T19:01:11.375Z"
+    },
+    {
+     "text": "Reconciler: PR #273 merged",
+     "at": "2026-11-04T03:33:20.153Z"
+    }
+   ],
    "id": "crew-live",
    "title": "Crew: live grid of every working agent (what each is doing, cost, files, diff) + agent avatars everywhere",
    "category": "Console > Agents",
    "detail": "Brett, Nov 3 2026 (voice). Assigned agent: Ping Paulie. Console plugin 'Crew' listing every agent currently working with exactly what each is doing, live: avatar, status, build + step, model, live timer, live cost, tokens, files touched, PR. Expanded: what I'm doing now (from stream events, no LLM), step list, files with live worktree diff, recent tool calls with cost, Terminal/Session browser links, stop. Off the clock section + totals. Shared AgentAvatar framework component + agent-avatar asset used across the console, agent context menu items. Zero tokens; commands as REST+MCP+CLI. Reuses headless meters (headless-tabs), headless events/stream logs, agent-swarm roster, builds store.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/crew-live",
    "pr": "#273",
+   "mergedAt": "2026-11-04T03:23:06Z",
    "createdAt": "2026-11-03T18:15:23.310Z",
-   "updatedAt": "2026-11-03T19:01:11.375Z",
+   "updatedAt": "2026-11-04T03:33:20.153Z",
    "builtAt": "2026-11-03T19:01:09.967Z",
-   "notes": [
-    {
-     "text": "All 7 steps done on claude/crew-live, PR #273; UI Review r-20261103-b35b9201 waiting. Report _claude/builds/reports/crew-live.md.",
-     "at": "2026-11-03T19:01:11.375Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "Ping Paulie. Console plugin 'Crew' listing every agent currently working with exactly what each is doing, live: avatar, status, build + step, model, live timer, live cost, tokens, files touched, PR. Expanded: what I'm doing now (from stream events, no LLM), step list, files with live worktree diff, recent tool calls with cost, Terminal/Session browser links, stop. Off the clock section + totals. Shared AgentAvatar framework component + agent-avatar asset used across the console, agent context menu items. Zero tokens; commands as REST+MCP+CLI. Reuses headless meters (headless-tabs), headless events/stream logs, agent-swarm roster, builds store.",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -3495,22 +3793,10 @@
      "note": "",
      "uid": "st-mw10d4gb0e7le4"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "toolbar-tap-confirm",
-   "title": "Toolbars plugin: tap-to-confirm on touch, per-toolbar settings + editor, drag-and-drop hooks",
-   "category": "Toolbars",
-   "detail": "Brett, Nov 3 2026 (voice) + Addendum 1. Every existing and future toolbar: first tap on touch shows the tip and arms the button for 3 s (configurable), second tap within the window runs it; mouse/pen stays single click with hover tooltip; decided per interaction. All of it is one Toolbars plugin (plugin@1) owning every toolbar: global settings, per-toolbar settings (synced), context-menu hooks (Toolbar settings / Edit toolbar / All toolbars), Toolbar editor (save as asset), drag-and-drop hooks anywhere via hook@1 + drop-target@1 contracts with per-target configure dialogs, move/copy, undo. Banners: only the generic drop target, no banner-pack/banner-editor/banners-one changes. Agent: Landin' Lenny. Note: no Terminal 'Tooltip mode' exists on main or any branch (headless-tabs #259 has 7 steps, no s8), so it is built fresh in the framework.",
-   "status": "running",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/toolbar-tap-confirm",
-   "pr": "#272",
-   "createdAt": "2026-11-03T18:23:45.044Z",
-   "updatedAt": "2026-11-03T18:54:23.691Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Agent: Landin' Lenny (headless, Opus). Phase 1 (s1-s12) Opus; s13-s14 contracts pinned Fable need Brett's upgrade approval.",
@@ -3523,10 +3809,48 @@
     {
      "text": "Reconciler: PR #272 names s8 done",
      "at": "2026-11-03T18:54:23.691Z"
+    },
+    {
+     "text": "Reconciler: PR #272 merged; PR #272 names s8 done",
+     "at": "2026-11-04T04:13:39.547Z"
     }
    ],
+   "id": "toolbar-tap-confirm",
+   "title": "Toolbars plugin: tap-to-confirm on touch, per-toolbar settings + editor, drag-and-drop hooks",
+   "category": "Toolbars",
+   "detail": "Brett, Nov 3 2026 (voice) + Addendum 1. Every existing and future toolbar: first tap on touch shows the tip and arms the button for 3 s (configurable), second tap within the window runs it; mouse/pen stays single click with hover tooltip; decided per interaction. All of it is one Toolbars plugin (plugin@1) owning every toolbar: global settings, per-toolbar settings (synced), context-menu hooks (Toolbar settings / Edit toolbar / All toolbars), Toolbar editor (save as asset), drag-and-drop hooks anywhere via hook@1 + drop-target@1 contracts with per-target configure dialogs, move/copy, undo. Banners: only the generic drop target, no banner-pack/banner-editor/banners-one changes. Agent: Landin' Lenny. Note: no Terminal 'Tooltip mode' exists on main or any branch (headless-tabs #259 has 7 steps, no s8), so it is built fresh in the framework.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/toolbar-tap-confirm",
+   "pr": "#272",
+   "mergedAt": "2026-11-04T04:11:27Z",
+   "createdAt": "2026-11-03T18:23:45.044Z",
+   "updatedAt": "2026-11-04T04:13:39.547Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "every EXISTING and FUTURE toolbar uses the Terminal's Tooltip mode (first tap shows what the button does and arms it lit for 3 s, second tap within 3 s runs it, duration configurable; built in headless-tabs PR #259, s8). The double tap is ONLY on phones / touch. On a computer it stays a normal single click (hover tooltip as usual) - 'it really works on a computer.' Assigned agent: **Landin' Lenny** (book on his card; AXF_AGENT=landin-lenny if supported). Register in Urgent (id `toolbar-tap-confirm`) + banner entry.",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: toolbar-tap-confirm (Urgent profile)\n\nBrett, Nov 3 2026 (voice): every EXISTING and FUTURE toolbar uses the Terminal's Tooltip mode (first tap shows what the button does and arms it lit for 3 s, second tap within 3 s runs it, duration configurable; built in headless-tabs PR #259, s8). The double tap is ONLY on phones / touch. On a computer it stays a normal single click (hover tooltip as usual) - 'it really works on a computer.' Assigned agent: **Landin' Lenny** (book on his card; AXF_AGENT=landin-lenny if supported). Register in Urgent (id `toolbar-tap-confirm`) + banner entry.\n\n## Steps\n- s1 Lift Tooltip mode out of the Terminal plugin into the framework toolbar component (web reference + axf.css; Compose twin in PORTING.md unless trivial) as one shared behaviour; the Terminal uses the framework version (no duplicate code left in the plugin).\n- s2 Device rule: double-tap confirm only when the input is touch (pointer: coarse / touch events / compact window class on a touch device). Mouse/trackpad/pen-hover = single click + hover tooltip. Decide per interaction (a touchscreen laptop: touch = double tap, mouse = single click).\n- s3 Adopt everywhere: every toolbar in the console, every plugin, axHub web, AmberX (Capacitor), Molly, walkthrough-studio, templates/boilerplates, so new apps get it by default. Inventory every toolbar first and list them in the report.\n- s4 Future-proof: the framework toolbar has it ON by default; a check (like check-controls) fails CI if any toolbar is built outside the framework toolbar or turns the behaviour off without an explicit, recorded reason. Add the rule to shared RULES.md + CLAUDE.md: 'Every toolbar uses tap-to-confirm on touch (framework toolbar); single click on desktop.'\n- s5 Settings > Appearance (or Interaction): on/off for touch, arm duration (default 3 s); per-toolbar override only via the setting, not code. Destructive buttons keep their own confirm on top.\n- s6 Tests (touch vs mouse paths, timeout, second tap on a different button re-arms instead of running), screenshots phone + desktop, UI Review item, report `_claude/builds/reports/toolbar-tap-confirm.md`, THREADS, PR, steps through the store. Commits clean and professional.\n## Addendum 1 (Brett, Nov 3 2026, voice, before start): make all of this ONE Toolbars plugin\nThe framework toolbar becomes a **Toolbars plugin** (plugin@1, lifecycle install/uninstall) that owns every toolbar in every app, existing and future. Everything below is part of it.\n\n### Settings\n- Plugin settings (Settings > Plugins > Toolbars): global on/off for the touch double-tap tip (default on, phone/touch only), arm duration, defaults for all toolbars (theme, colours, density, icon size, labels on/off, position).\n- **Every toolbar carries its OWN settings** (stored per toolbar id, synced via axHub like other settings): theming and colours (tokens/assets only: colour theme, style, background, button style, icon/label size, spacing, rounded/flat, opacity), layout (position, orientation, wrap vs scroll vs overflow menu, show/hide, auto-hide), behaviour (double-tap override for this toolbar, tooltips), and its button list.\n- **Context-menu hooks on every toolbar** (right-click / long-press): 'Toolbar settings' (that toolbar's own settings), 'Edit toolbar' (opens the Toolbar editor), 'All toolbars...' (Toolbars plugin page that lists and controls every toolbar in the app). Contributed as runtime context items, so every existing and future toolbar gets them; CI check fails any toolbar without them.\n\n### Toolbar editor\n- Opens from the toolbar context menu. Add / remove / reorder / group / separators, edit each button (label, icon, tooltip text, action/hook, colour, visibility by level/role, keyboard shortcut), reset to default, undo/redo, live preview, save as an asset so it's hot-swappable and shareable.\n\n### Drag and drop hooks anywhere\n- A **hook** = any actionable thing in the app (menu item, nav item, toolbar button, banner item, 'Go to it' hooks, plugin commands from control@1 / plugin-commands-auto, settings pages, screens). Reuse the control@1 command registry and the pending `context-menu-editor` idea (save the action/destination, not the element).\n- Drag any hook from anywhere and drop it on a **drop target**: any toolbar, the navigation menu, the banners, application menus, context menus, Home. Drag a button from one toolbar to another; nav menu -> toolbar and toolbar -> nav menu.\n- On drop: a **configure dialog that depends on where it's dropped** (toolbar = new button dialog; nav menu = nav item dialog; banner = banner item dialog; menu = menu item dialog), prefilled with default values from the hook (label, icon, action, tooltip), with all the options for that target. Confirm creates it; move vs copy choice (default: copy from menus, move between toolbars), undo.\n- Make it a framework contract: `drop-target@1` (what it accepts + which configure dialog) and `hook@1` (draggable action descriptor), open registries so any plugin/app can add targets and hooks without kernel changes. Phone: long-press to pick up, drag with edge auto-scroll, drop zones highlight.\n- **Banners:** only add the banner drop target through the generic contract. Do NOT merge or rewrite banner-pack (#251), banner-editor (#254) or banners-one work; Brett is reviewing those himself. Note any overlap in the report.\n- Rules: add to shared RULES.md + CLAUDE.md: 'Every toolbar is a Toolbars plugin toolbar: per-toolbar settings + editor via its context menu, tap-to-confirm on touch only, accepts dropped hooks.' Commands declared once -> REST + MCP + CLI.\n- Split into clear steps in the store; tests for drop targets/dialogs/move-copy/undo, phone + desktop screenshots, UI Review items.\n",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": [
+     {
+      "said": "The framework toolbar becomes a **Toolbars plugin** (plugin@1, lifecycle install/uninstall) that owns every toolbar in every app, existing and future. Everything below is part of it.\n\n### Settings\n- Plugin settings (Settings > Plugins > Toolbars): global on/off for the touch double-tap tip (default on, phone/touch only), arm duration, defaults for all toolbars (theme, colours, density, icon size, labels on/off, position).\n- **Every toolbar carries its OWN settings** (stored per toolbar id, synced via axHub like other settings): theming and colours (tokens/assets only: colour theme, style, background, button style, icon/label size, spacing, rounded/flat, opacity), layout (position, orientation, wrap vs scroll vs overflow menu, show/hide, auto-hide), behaviour (double-tap override for this toolbar, tooltips), and its button list.\n- **Context-menu hooks on every toolbar** (right-click / long-press): 'Toolbar settings' (that toolbar's own settings), 'Edit toolbar' (opens the Toolbar editor), 'All toolbars...' (Toolbars plugin page that lists and controls every toolbar in the app). Contributed as runtime context items, so every existing and future toolbar gets them; CI check fails any toolbar without them.\n\n### Toolbar editor\n- Opens from the toolbar context menu. Add / remove / reorder / group / separators, edit each button (label, icon, tooltip text, action/hook, colour, visibility by level/role, keyboard shortcut), reset to default, undo/redo, live preview, save as an asset so it's hot-swappable and shareable.\n\n### Drag and drop hooks anywhere\n- A **hook** = any actionable thing in the app (menu item, nav item, toolbar button, banner item, 'Go to it' hooks, plugin commands from control@1 / plugin-commands-auto, settings pages, screens). Reuse the control@1 command registry and the pending `context-menu-editor` idea (save the action/destination, not the element).\n- Drag any hook from anywhere and drop it on a **drop target**: any toolbar, the navigation menu, the banners, application menus, context menus, Home. Drag a button from one toolbar to another; nav menu -> toolbar and toolbar -> nav menu.\n- On drop: a **configure dialog that depends on where it's dropped** (toolbar = new button dialog; nav menu = nav item dialog; banner = banner item dialog; menu = menu item dialog), prefilled with default values from the hook (label, icon, action, tooltip), with all the options for that target. Confirm creates it; move vs copy choice (default: copy from menus, move between toolbars), undo.\n- Make it a framework contract: `drop-target@1` (what it accepts + which configure dialog) and `hook@1` (draggable action descriptor), open registries so any plugin/app can add targets and hooks without kernel changes. Phone: long-press to pick up, drag with edge auto-scroll, drop zones highlight.\n- **Banners:** only add the banner drop target through the generic contract. Do NOT merge or rewrite banner-pack (#251), banner-editor (#254) or banners-one work; Brett is reviewing those himself. Note any overlap in the report.\n- Rules: add to shared RULES.md + CLAUDE.md: 'Every toolbar is a Toolbars plugin toolbar: per-toolbar settings + editor via its context menu, tap-to-confirm on touch only, accepts dropped hooks.' Commands declared once -> REST + MCP + CLI.\n- Split into clear steps in the store; tests for drop targets/dialogs/move-copy/undo, phone + desktop screenshots, UI Review items.",
+      "at": "2026-11-03",
+      "source": "",
+      "by": "",
+      "verbatim": true
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -3906,22 +4230,10 @@
      "note": "",
      "uid": "st-mw10nvlk16md8o"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "claude-settings",
-   "title": "Claude plugin: Claude settings on axHub (No wait, builds, talking, notifications), read by every session",
-   "category": "Claude",
-   "detail": "Brett, Nov 3 2026 (voice): a Claude plugin with a whole bunch of settings for Claude, kept on axHub, that every Claude session checks and acts on. No wait (owner-only) = a standing all-scope veto pass created on Brett's signed-in click, revoked when switched off; Include irreversible (owner-only); builds, verification, talking, notifications, memory groups; open registry. MCP claude_settings_get (read) / claude_settings_set (non-owner settings only). Agent: Janitor Joey.",
-   "status": "built",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/claude-settings",
-   "pr": "#275",
-   "createdAt": "2026-11-03T19:02:12.964Z",
-   "updatedAt": "2026-11-03T19:50:31.855Z",
-   "builtAt": "2026-11-03T19:50:31.855Z",
    "notes": [
     {
      "text": "Agent: Janitor Joey (headless, Opus). All steps Opus (plugin work, no cross-port contract).",
@@ -3938,10 +4250,40 @@
     {
      "text": "All 7 steps done: PR #275, UI Review r-20261103-5bd8390c waiting. Report _claude/builds/reports/claude-settings.md. Follow-ups: follow-amber reads followAmber.enabled; launcher enforces budget caps/max parallel.",
      "at": "2026-11-03T19:50:26.832Z"
+    },
+    {
+     "text": "Reconciler: PR #275 merged",
+     "at": "2026-11-04T05:11:56.662Z"
     }
    ],
+   "id": "claude-settings",
+   "title": "Claude plugin: Claude settings on axHub (No wait, builds, talking, notifications), read by every session",
+   "category": "Claude",
+   "detail": "Brett, Nov 3 2026 (voice): a Claude plugin with a whole bunch of settings for Claude, kept on axHub, that every Claude session checks and acts on. No wait (owner-only) = a standing all-scope veto pass created on Brett's signed-in click, revoked when switched off; Include irreversible (owner-only); builds, verification, talking, notifications, memory groups; open registry. MCP claude_settings_get (read) / claude_settings_set (non-owner settings only). Agent: Janitor Joey.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/claude-settings",
+   "pr": "#275",
+   "mergedAt": "2026-11-04T04:52:23Z",
+   "createdAt": "2026-11-03T19:02:12.964Z",
+   "updatedAt": "2026-11-04T05:11:56.662Z",
+   "builtAt": "2026-11-03T19:50:31.855Z",
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "I need a plugin called Claude. Claude settings. A setting to enable your no-wait in that. A whole bunch of settings that are for Claude, that you check on axHub and then act accordingly.",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: claude-settings (Urgent profile)\n\nBrett, Nov 3 2026 (voice): \"I need a plugin called Claude. Claude settings. A setting to enable your no-wait in that. A whole bunch of settings that are for Claude, that you check on axHub and then act accordingly.\" Assigned agent: **Janitor Joey** (book on his card; AXF_AGENT=janitor-joey if supported). Register in Urgent (id `claude-settings`) + banner entry.\n\n## Plugin\nConsole plugin **Claude** (plugin@1, lifecycle install/uninstall, page + Settings > Plugins > Claude, context-menu hook 'Claude settings' everywhere). Settings are stored on axHub (shared `_data/claude/settings.json` or a hub settings namespace) so every Claude session (voice, chat, Claude Code, headless agents) reads the same values.\n\n## Settings (grouped, framework settings renderer with the level toolbar)\n- **No wait** (owner-only): when ON, Amber's held calls run immediately instead of the 90 s veto / approval. Implement as a standing axHub pass that the console creates on Brett's signed-in click (reuse pass-all / `axhub.pass_grant` machinery, scope all, `include_irreversible` false by default with its own separate switch 'Include irreversible' also owner-only). Options: duration (1 h / 4 h / until I turn it off), auto-off at night. Banner chip while on. Turning it off revokes the pass instantly.\n- **Follow Amber** (link to / share state with the follow-amber build's switch; don't duplicate it - read the same setting).\n- **Builds:** default model (Opus/Fable/split), launch builds without asking (on/off), max parallel builds, per-build budget cap and daily budget cap (stop + notify when hit), always assign a named agent (locked on), UI Review gate (on).\n- **Verification:** trust live store by default, verify only on conflict (current rule) vs always verify.\n- **Talking:** persona on/off, tone level, address terms, swearing level, response length (short/normal/detailed), say costs out loud, read build reports aloud vs summary.\n- **Notifications:** push on build done / blocked / approval waiting, quiet hours.\n- **Memory/notes:** save session notes to Notes Vault automatically, handoff note at end of session.\n- Open registry so new Claude settings can be added as data without code changes.\n\n## Claude reads them\n- MCP tools via axf-console (and axHub builtin if simpler): `claude_settings_get` (policy ALLOW, read-only) returning all values with plain descriptions; `claude_settings_set` for NON-owner settings only (veto policy). Owner-only settings (No wait, Include irreversible, approvals, budget caps raising) can ONLY be changed by Brett's signed-in console click - agents/sessions can never change them (test enforces).\n- Rule in shared RULES.md + CLAUDE.md (top): 'At session start and before acting, read Claude settings (claude_settings_get) and follow them.'\n- Commands declared once -> REST + MCP + CLI.\n\n## Done\nTests (owner-only enforcement, pass created/revoked by the switch, read tool), phone + desktop screenshots, UI Review item, report `_claude/builds/reports/claude-settings.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -4069,22 +4411,10 @@
      "note": "",
      "uid": "st-mw121cei0eodnv"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "follow-amber",
-   "title": "Follow Amber: the console opens what Amber talks about, and axHub approvals pop up in the console",
-   "category": "Console",
-   "detail": "Brett, Nov 3 2026 (voice). One switch in the Dev Console, Follow Amber. On: whenever Amber mentions a console screen, dialog, build, setting or plugin she calls console_show and the console opens it, focused and highlighted; every axHub held/confirm call for Brett pops up as an approval dialog in the console (title, description, collapsible call, countdown, one-tap Approve / Deny, queue). Off: nothing auto-opens. Navigation tools never wait on a veto. Agent: Reel Rhonda.",
-   "status": "built",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/follow-amber",
-   "pr": "#280",
-   "createdAt": "2026-11-03T19:02:35.761Z",
-   "updatedAt": "2026-11-03T20:26:42.655Z",
-   "builtAt": "2026-11-03T20:26:39.090Z",
    "notes": [
     {
      "text": "Agent: Reel Rhonda (headless, Opus). All steps Opus; no model switch.",
@@ -4097,10 +4427,40 @@
     {
      "text": "agent-pick (claude/agent-pick) pops the Claude agent picker through its own ask watcher (claude-session plugin polls GET /asks every 5 s, Brett's session only) plus a bell alert and a held axHub approval (axf.claude_session_answer). When follow-amber's pop-up stream lands, route those asks through it (dialog id claude.picker, props {ask}).",
      "at": "2026-11-03T19:21:00.653Z"
+    },
+    {
+     "text": "Reconciler: PR #280 merged",
+     "at": "2026-11-04T03:53:33.441Z"
     }
    ],
+   "id": "follow-amber",
+   "title": "Follow Amber: the console opens what Amber talks about, and axHub approvals pop up in the console",
+   "category": "Console",
+   "detail": "Brett, Nov 3 2026 (voice). One switch in the Dev Console, Follow Amber. On: whenever Amber mentions a console screen, dialog, build, setting or plugin she calls console_show and the console opens it, focused and highlighted; every axHub held/confirm call for Brett pops up as an approval dialog in the console (title, description, collapsible call, countdown, one-tap Approve / Deny, queue). Off: nothing auto-opens. Navigation tools never wait on a veto. Agent: Reel Rhonda.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/follow-amber",
+   "pr": "#280",
+   "mergedAt": "2026-11-04T03:44:30Z",
+   "createdAt": "2026-11-03T19:02:35.761Z",
+   "updatedAt": "2026-11-04T03:53:33.441Z",
+   "builtAt": "2026-11-03T20:26:39.090Z",
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "whenever Amber mentions a console screen, dialog, build, setting or plugin she calls console_show and the console opens it, focused and highlighted; every axHub held/confirm call for Brett pops up as an approval dialog in the console (title, description, collapsible call, countdown, one-tap Approve / Deny, queue). Off: nothing auto-opens. Navigation tools never wait on a veto. Agent: Reel Rhonda.",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "",
+    "verbatim": false,
+    "from": "detail",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -4228,30 +4588,48 @@
      "note": "",
      "uid": "st-mw121tzm0ehrwl"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "All 9 steps done on claude/agent-pick, PR #276; UI Review r-20261103-14fadefe waiting. Booked on Snap Sully. Report _claude/builds/reports/agent-pick.md.",
+     "at": "2026-11-03T19:55:40.767Z"
+    },
+    {
+     "text": "Reconciler: PR #276 merged",
+     "at": "2026-11-04T04:33:55.743Z"
+    }
+   ],
    "id": "agent-pick",
    "title": "Agent pick: every Claude session runs as the agent Brett assigns",
    "category": "Claude",
    "detail": "Brett, Nov 3 2026 (voice). Every Claude session (voice/chat Amber, Claude Code, headless) runs AS an agent Brett assigns. Agent manager 'Assign to Claude' + context menu; Claude settings 'Claude agent' default + 'Ask me every session' (default on); agent picker dialog (avatars, status, job, cost, hours, pay, rating; expand for all stats + hooks); MCP claude_session_start pops the picker as a console approval (+ axHub fallback + push), default agent until answered; work/cost/commits booked on the agent (AXF_AGENT), persona/voice field; claude_agent_get. Rule in RULES.md + CLAUDE.md. Zero tokens. Agent: Snap Sully.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/agent-pick",
    "pr": "#276",
+   "mergedAt": "2026-11-04T04:11:51Z",
    "createdAt": "2026-11-03T19:04:24.442Z",
-   "updatedAt": "2026-11-03T19:55:40.767Z",
+   "updatedAt": "2026-11-04T04:33:55.743Z",
    "builtAt": "2026-11-03T19:55:39.343Z",
-   "notes": [
-    {
-     "text": "All 9 steps done on claude/agent-pick, PR #276; UI Review r-20261103-14fadefe waiting. Booked on Snap Sully. Report _claude/builds/reports/agent-pick.md.",
-     "at": "2026-11-03T19:55:40.767Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: agent-pick (Urgent profile)\n\nBrett, Nov 3 2026 (voice). Assigned agent: **Snap Sully** (book on his card when this starts; if he is still busy and the all-rounder router from crew-retrain #265 is on main, the router may give it to whoever is free - record who in the report). Register in Urgent (id `agent-pick`) + banner entry.\n\n## What Brett wants\nEvery Claude session (voice/chat Amber, Claude Code, headless) runs AS an agent Brett assigns. Claude becomes whichever agent he picks.\n\n## Build on what exists (don't duplicate)\n- Console **Agent manager** plugin + **Agent swarm** page (agent cards: names, stats, pay $7.50/h, history, write-ups), AmberArt ID card art, crew-live (avatars, AgentAvatar component, agent context menu), follow-amber (console pop-up dialogs + axHub approval stream), claude-settings (Claude plugin, settings on axHub, `claude_settings_get`). Coordinate through their APIs; if one isn't on main yet, build against its contract and note it.\n\n## Steps\n- s1 **Assign hook:** in Agent manager, every agent row/card has 'Assign to Claude' (and the agent context menu gets it everywhere). Claude settings gets 'Claude agent' = default agent + 'Ask me every session' switch (default ON).\n- s2 **Agent picker dialog**, opened from the context menu anywhere ('Choose Claude's agent...') and automatically at session start: list of every agent with avatar, name, status (working/idle), current job, today's cost, hours, pay, rating; tap a row to expand ALL details and stats (jobs done, success/fail, average cost and time, recent runs, write-ups, raises) with hooks to their full card, history, Session browser runs, Terminal tabs, group chat. One tap picks.\n- s3 **Session-start approval:** when a Claude session starts it calls a new MCP tool `claude_session_start` {client: voice|chat|code|headless, summary}. With 'Ask me every session' ON, that pops the picker as a console approval dialog (via follow-amber's pop-up; also an axHub approval item as fallback, and a push to his phone). Until Brett answers, the session uses the default agent. The answer returns {agent id, name, persona/voice notes, avatar}. Headless builds keep their brief's named agent (no prompt) unless Brett turns on 'Ask for headless too'.\n- s4 **Claude acts as that agent:** the session's work, costs and commits are booked on that agent's card (AXF_AGENT), its avatar shows on everything it does, and it introduces itself by that agent's name. Agent cards get an optional persona/voice field (how they talk) that the session follows. `claude_agent_get` (allow) tells a session who it is.\n- s5 Rule in shared RULES.md + CLAUDE.md: 'Every Claude session calls claude_session_start first and works as the agent Brett assigns.' Commands declared once -> REST + MCP + CLI.\n- s6 Zero tokens for the picker/manager code (no LLM imports, test). Tests (ask on/off, default fallback, booking to the right card, picker approval round trip with a fake axHub), phone + desktop screenshots, UI Review item, report `_claude/builds/reports/agent-pick.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -4415,22 +4793,10 @@
      "note": "",
      "uid": "st-mw1245uq0i5so3"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "ui-review-shots",
-   "title": "UI Review shows its pictures again",
-   "category": "",
-   "detail": "",
-   "status": "built",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/ui-review-shots",
-   "pr": "#277",
-   "createdAt": "2026-11-03T19:09:04.730Z",
-   "updatedAt": "2026-11-03T19:56:34.846Z",
-   "builtAt": "2026-11-03T19:56:34.846Z",
    "notes": [
     {
      "text": "s1 cause: agent-slots + token-control pollers re-subscribe on every render (inline useSyncExternalStore subscribe), so each emit triggers another load: ~45 status calls/s from Brett's browser (35k in 30 min); shot fetches starve behind them. Files are all on disk and served 200.",
@@ -4447,10 +4813,40 @@
     {
      "text": "PR #277; UI Review r-20261103-17ef4a40 (group 'ui-review-shots - Nov 3 7:50 PM'); report _claude/builds/reports/ui-review-shots.md. Also fixed: phone zero-width preview (always-true :not([data-fx-narrow]) selector from layout-adopt).",
      "at": "2026-11-03T19:56:12.304Z"
+    },
+    {
+     "text": "Reconciler: PR #277 merged",
+     "at": "2026-11-04T02:26:33.241Z"
     }
    ],
+   "id": "ui-review-shots",
+   "title": "UI Review shows its pictures again",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/ui-review-shots",
+   "pr": "#277",
+   "mergedAt": "2026-11-04T02:12:59Z",
+   "createdAt": "2026-11-03T19:09:04.730Z",
+   "updatedAt": "2026-11-04T02:26:33.241Z",
+   "builtAt": "2026-11-03T19:56:34.846Z",
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "UI Review shows items but NO pictures. Assigned agent: **Snap Sully** (book on his card; AXF_AGENT=snap-sully if supported). Register in Urgent (id `ui-review-shots`) + banner entry. Fix it, then tell.",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: ui-review-shots (Urgent profile)\n\nBrett, Nov 3 2026 (voice): UI Review shows items but NO pictures. Assigned agent: **Snap Sully** (book on his card; AXF_AGENT=snap-sully if supported). Register in Urgent (id `ui-review-shots`) + banner entry. Fix it, then tell.\n\n## Evidence\n- Headless builds on the VPS submit UI Review items from their worktrees (/root/axf-builds/<name>/), e.g. menu-scroll: item `r-20261103-2637fd91`, 11 shots, group 'menu-scroll - Nov 3 6:20 PM'. Others today: builds-one-page-done (#269), md-studio (#271), console-wake (#266), molly-fable `r-20261103-80e15b02`, xlayout (3 items).\n- Brett opened UI Review in the live console (axf-console container, console.amberxai.com) and sees the items with no images.\n\n## Do\n- s1 Find the cause: where review.mjs / rebuild-shots --submit write the image files vs where the console's ui-review server reads/serves them (likely: images stay in the build worktree or a sandbox path the axf-console container can't see; or paths are relative to the worktree; or they're in axHub _data but the console serves a different root; or the image route 404s / auth).\n- s2 Fix so every shot is stored somewhere permanent and shared (axHub _data ui-review/ or a mounted volume the console reads), with stable URLs; images uploaded at submit time, never pointing into a worktree that gets deleted.\n- s3 Backfill: re-attach the existing shots for every waiting item today (copy from /root/axf-builds/*/ shots folders, reports' shots/, or re-capture with rebuild-shots if the files are gone). Every waiting item must show its pictures.\n- s4 health@1 check: red if any UI Review item has shots that fail to load. Item rows show a thumbnail; broken image shows 'shot missing' plus a Re-capture button, never a blank.\n- s5 Tests (submit from a fake worktree -> image visible in console after the worktree is deleted), report `_claude/builds/reports/ui-review-shots.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -4542,22 +4938,10 @@
      "note": "",
      "uid": "st-mw12a64y0afy36"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "home-cards-live",
-   "title": "Home cards draw live data: one card engine (card@1 binding), Add card, drag to Home, suggested cards",
-   "category": "Console",
-   "detail": "Brett, Nov 3 2026 (voice): \"I shouldn't need to build cards. I should draw dynamic data.\" One card engine draws any plugin read command (control@1 / plugin-commands-auto) as number, list, meter, chart, feed, table or status, live or every N s. Add card on Home (plugin -> read command -> live preview -> smart view -> fields -> Save), drag any hook onto Home, layout (reorder, size, show/hide, context menu) saved per user on axHub, Suggested cards. Zero code, zero agents, zero tokens. Replaces pending item home-cards. Agent: Ping Paulie.",
-   "status": "built",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/home-cards-live",
-   "pr": "#283",
-   "createdAt": "2026-11-03T19:43:04.673Z",
-   "updatedAt": "2026-11-03T21:17:55.434Z",
-   "builtAt": "2026-11-03T21:17:53.520Z",
    "notes": [
     {
      "text": "Agent: Ping Paulie (headless, Opus). All steps Opus; no model switch. Replaces pending home-cards (angel).",
@@ -4578,10 +4962,40 @@
     {
      "text": "Reconciler: branch claude/home-cards-live (no PR yet)",
      "at": "2026-11-03T20:54:49.605Z"
+    },
+    {
+     "text": "Reconciler: PR #283 merged",
+     "at": "2026-11-04T05:11:56.662Z"
     }
    ],
+   "id": "home-cards-live",
+   "title": "Home cards draw live data: one card engine (card@1 binding), Add card, drag to Home, suggested cards",
+   "category": "Console",
+   "detail": "Brett, Nov 3 2026 (voice): \"I shouldn't need to build cards. I should draw dynamic data.\" One card engine draws any plugin read command (control@1 / plugin-commands-auto) as number, list, meter, chart, feed, table or status, live or every N s. Add card on Home (plugin -> read command -> live preview -> smart view -> fields -> Save), drag any hook onto Home, layout (reorder, size, show/hide, context menu) saved per user on axHub, Suggested cards. Zero code, zero agents, zero tokens. Replaces pending item home-cards. Agent: Ping Paulie.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/home-cards-live",
+   "pr": "#283",
+   "mergedAt": "2026-11-04T04:52:23Z",
+   "createdAt": "2026-11-03T19:43:04.673Z",
+   "updatedAt": "2026-11-04T05:11:56.662Z",
+   "builtAt": "2026-11-03T21:17:53.520Z",
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "I shouldn't need to build cards. I should draw dynamic data.",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: home-cards-live (Urgent profile) - replaces pending item `home-cards`\n\nBrett, Nov 3 2026 (voice): \"I shouldn't need to build cards. I should draw dynamic data.\" Assigned agent: **Ping Paulie** (book on his card; if busy and the all-rounder router is on main, whoever is free - record who). Register in Urgent (id `home-cards-live`) + banner entry. Mark pending item `home-cards` replaced by this build (pending_change status, note) - do NOT hand-build a card per plugin.\n\n## What to build: one card engine that draws any data\n- s1 `card@1` asset = a data binding, not a design: {source: any control@1 / plugin-commands-auto read command (REST/MCP/CLI already generated for every plugin), args, path into the result, view: number | list | meter | chart (line/bar/spark) | feed | table | status, refresh: live (subscribe to the live feed when the source has one) or every N s, title, icon, size}. Open registry for views. Tokens/assets only.\n- s2 **Add card** on Home: pick any plugin -> any of its read commands -> preview the live result -> pick a view (smart default from the data shape: single number -> number, array -> list/table, time series -> chart, status field -> status) -> pick fields -> Save. Zero code, zero agents, zero tokens.\n- s3 **Drag any hook / data element onto Home** (use the `hook@1` / `drop-target@1` contract from the toolbar build if on main, else define Home as a drop target the same way and note it) -> configure dialog prefilled -> card.\n- s4 Home layout: drag to reorder, resize, show/hide, card context menu (Edit card, Change view, Size, Open plugin, Remove), Show all / Hide all, saved per user on axHub. The 5 existing Home cards become card@1 assets bound to their existing data.\n- s5 Starter set auto-offered (not hand-built): one-tap 'Suggested cards' from whatever read commands exist (builds running, today's cost, agents working, approvals waiting, UI Review waiting, notes recent).\n- s6 Zero-token test (no LLM imports in the card engine), tests for binding/live refresh/view picking, phone + desktop screenshots, UI Review item, report `_claude/builds/reports/home-cards-live.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -4691,22 +5105,10 @@
      "note": "",
      "uid": "st-mw13hw6h0c4lfl"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "smart-menus",
-   "title": "Smart menus: dynamic Suggested / Talking about / context / Pinned sections in every app and context menu (Menus plugin)",
-   "category": "Console",
-   "detail": "Brett, Nov 3 2026 (voice) + addenda 1-3. Framework-level dynamic SECTIONS on top of fixed menu items (static items never reorder): Pinned, Suggested (frecency + time-of-day + Markov, zero tokens), Talking about (console_context MCP topics), context section (when-conditions). App menu bar and context menus. All controlled by one Menus plugin (customization tokens, presets, reset learning). Agent: Earl the Ear.",
-   "status": "built",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/smart-menus",
-   "pr": "#281",
-   "createdAt": "2026-11-03T19:45:20.635Z",
-   "updatedAt": "2026-11-03T21:55:42.769Z",
-   "builtAt": "2026-11-03T20:43:38.552Z",
    "notes": [
     {
      "text": "Agent: Earl the Ear (headless, Opus). All steps Opus; no model switch.",
@@ -4721,8 +5123,55 @@
      "at": "2026-11-03T21:55:42.769Z"
     }
    ],
+   "id": "smart-menus",
+   "title": "Smart menus: dynamic Suggested / Talking about / context / Pinned sections in every app and context menu (Menus plugin)",
+   "category": "Console",
+   "detail": "Brett, Nov 3 2026 (voice) + addenda 1-3. Framework-level dynamic SECTIONS on top of fixed menu items (static items never reorder): Pinned, Suggested (frecency + time-of-day + Markov, zero tokens), Talking about (console_context MCP topics), context section (when-conditions). App menu bar and context menus. All controlled by one Menus plugin (customization tokens, presets, reset learning). Agent: Earl the Ear.",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/smart-menus",
+   "pr": "#281",
+   "createdAt": "2026-11-03T19:45:20.635Z",
+   "updatedAt": "2026-11-03T21:55:42.769Z",
+   "builtAt": "2026-11-03T20:43:38.552Z",
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "I need a dynamic context menu that draws itself depending on where it is and what it's doing. Most common / most likely things at the top. It learns and remembers, predicts what I'm most likely gonna want, keeps that at the top.",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: smart-menus (Urgent profile)\n\nBrett, Nov 3 2026 (voice): \"I need a dynamic context menu that draws itself depending on where it is and what it's doing. Most common / most likely things at the top. It learns and remembers, predicts what I'm most likely gonna want, keeps that at the top.\" Assigned agent: **Earl the Ear** (book on his card; if busy and the all-rounder router is on main, whoever is free - record who). Register in Urgent (id `smart-menus`) + banner entry.\n\n## Build (framework level: every context menu in every app, existing and future)\n- s1 **Context-aware drawing:** the context menu engine builds the menu at open time from: the target under the pointer (element kind, hook@1 / control@1 target, plugin, screen), its state (selected, running, failed, waiting on approval, has PR, etc.), the current screen, device (phone/desktop). Plugins contribute items with `when` conditions (state predicates) so irrelevant items never show; runtime context items stay the contribution path.\n- s2 **Learning ranking, zero tokens:** record every pick locally + synced to axHub per user: (context key = target kind + state + screen, item id, time). Rank with frecency (frequency x recency decay) per context, plus time-of-day and 'what I just did' sequence boosts (simple Markov next-action counts). Top section 'Suggested' = top 3-5 predicted items; the rest grouped below in stable order so muscle memory still works. Plain code, NO LLM calls (test fails if the engine imports an LLM client).\n- s3 Pinned items always first (from the pending `context-menu-editor` idea: user pins), then Suggested, then the rest; destructive items never auto-promoted to the top.\n- s4 Settings (Settings > Menus, and a 'Menu settings' hook in every context menu): learning on/off, number of suggestions, reset learning (per menu / all), show why it's suggested (tiny hint), privacy: data stays on his axHub.\n- s5 Works with menu-scroll (#268) placement and the toolbar build's hook@1/drop-target@1 if on main (don't edit their files). Commands declared once -> REST + MCP + CLI (get suggestions, reset, pin).\n- s6 Tests (ranking math, context keys, when-conditions, reset, destructive never top), phone + desktop screenshots, UI Review item, report `_claude/builds/reports/smart-menus.md`, THREADS, PR, steps through the store. Commits clean and professional.\n## Addendum 1 (Brett, Nov 3 2026, voice, before start): dynamic SECTIONS, not the whole menu\nDon't make the whole menu dynamic. Each context menu keeps its normal fixed items in their fixed order (muscle memory). Add dynamic SECTIONS on top of that:\n- A 'Suggested' section at the top (learned/predicted items, 3-5, per s2) - can be turned off.\n- A context section (items that only apply to this target/state, per s1 'when' conditions), clearly grouped.\n- Pinned items (user pins).\nThe rest of the menu is static and never reorders. A menu asset declares which dynamic sections it shows and where; the default is Suggested at top + context section, static items below.\n\n## Addendum 2 (Brett, Nov 3 2026, voice): application menus too + 'what we're talking about' goes to the top\n- The dynamic sections apply to the **application menu bar** too (every top-level menu: Builds, View, Tools, etc.), not just context menus. Permanent items stay fixed; each menu can declare dynamic sections.\n- New dynamic section **'Talking about'** at the top of every menu (app menus + context menus): items relevant to what Brett and Amber (Claude) are currently talking about. Example: open Builds in the app menu while we're discussing the toolbar build -> that build (open it, its PR, its UI Review, its agent, stop it) is at the top.\n- How it knows: add MCP tool `console_context` (policy ALLOW, navigation-only, no data change) on axf-console: {topics: [{kind: build|plugin|screen|pr|agent|setting|profile|note, id, label}], ttl_min?}. Amber calls it whenever the conversation moves to something (and console_show / follow-amber can feed it too). The console keeps a short rolling 'current topics' list per user (decays after ~30 min or when replaced), synced live to every open console client.\n- Each menu maps topics to its relevant actions via plugins' contributed items with `when` conditions + the control@1 command registry (e.g. a build topic -> Builds menu shows Open build / Open PR / Open UI Review / Agent / Stop). Plain code, zero tokens.\n- Settings > Menus: 'Talking about' section on/off, how long topics stay.\n- Rule in shared RULES.md + CLAUDE.md: 'When the conversation moves to something in the console, call console_context with it.'\n\n## Addendum 3 (Brett, Nov 3 2026, voice): all of it lives in ONE Menus plugin with tons of customization\n- Everything in this build (dynamic sections in app menus + context menus, Suggested, Talking about, context section, pins, learning) is controlled by a **Menus plugin** (plugin@1, lifecycle install/uninstall, page + Settings > Plugins > Menus + a 'Menu settings' hook in every menu's context menu). Removing the plugin falls back to plain static menus.\n- **Customization (tokens/assets only, saved per user on axHub, live preview, presets, reset, export/import as a menu-style asset):**\n  - Colours: menu background, text, hover/selected, section headers, separators, icons, per-section accent (Suggested / Talking about / Pinned / context), badge colours, shadow, border, blur/glass, opacity.\n  - Fonts: family, size, weight, letter spacing, section header style, icon size, density/row height, padding, corner radius, width min/max.\n  - Animations: open/close (fade, scale, slide, drop, none), duration + easing, submenu reveal, item stagger, hover effect, highlight pulse for 'Talking about' items, reduced-motion respected.\n  - Sections: order, on/off, max items each, labels, icons, collapse/expand, show 'why suggested' hint.\n  - Behaviour: learning on/off + reset, topic lifetime, open on hover vs click (desktop), long-press time (phone), keyboard shortcuts.\n  - Per-menu overrides (each app menu / context menu can have its own look and sections) from the hook in that menu.\n- Works with menu-scroll (#268) placement and the Toolbars plugin (toolbar-tap-confirm build) through framework APIs - don't edit their files; share the hook@1 / drop-target@1 contract if it's on main.\n- Commands declared once -> REST + MCP + CLI (get/set menu settings, presets, reset learning, topics).\n",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": [
+     {
+      "said": "Don't make the whole menu dynamic. Each context menu keeps its normal fixed items in their fixed order (muscle memory). Add dynamic SECTIONS on top of that:\n- A 'Suggested' section at the top (learned/predicted items, 3-5, per s2) - can be turned off.\n- A context section (items that only apply to this target/state, per s1 'when' conditions), clearly grouped.\n- Pinned items (user pins).\nThe rest of the menu is static and never reorders. A menu asset declares which dynamic sections it shows and where; the default is Suggested at top + context section, static items below.",
+      "at": "2026-11-03",
+      "source": "",
+      "by": "",
+      "verbatim": true
+     },
+     {
+      "said": "- The dynamic sections apply to the **application menu bar** too (every top-level menu: Builds, View, Tools, etc.), not just context menus. Permanent items stay fixed; each menu can declare dynamic sections.\n- New dynamic section **'Talking about'** at the top of every menu (app menus + context menus): items relevant to what Brett and Amber (Claude) are currently talking about. Example: open Builds in the app menu while we're discussing the toolbar build -> that build (open it, its PR, its UI Review, its agent, stop it) is at the top.\n- How it knows: add MCP tool `console_context` (policy ALLOW, navigation-only, no data change) on axf-console: {topics: [{kind: build|plugin|screen|pr|agent|setting|profile|note, id, label}], ttl_min?}. Amber calls it whenever the conversation moves to something (and console_show / follow-amber can feed it too). The console keeps a short rolling 'current topics' list per user (decays after ~30 min or when replaced), synced live to every open console client.\n- Each menu maps topics to its relevant actions via plugins' contributed items with `when` conditions + the control@1 command registry (e.g. a build topic -> Builds menu shows Open build / Open PR / Open UI Review / Agent / Stop). Plain code, zero tokens.\n- Settings > Menus: 'Talking about' section on/off, how long topics stay.\n- Rule in shared RULES.md + CLAUDE.md: 'When the conversation moves to something in the console, call console_context with it.'",
+      "at": "2026-11-03",
+      "source": "",
+      "by": "",
+      "verbatim": true
+     },
+     {
+      "said": "- Everything in this build (dynamic sections in app menus + context menus, Suggested, Talking about, context section, pins, learning) is controlled by a **Menus plugin** (plugin@1, lifecycle install/uninstall, page + Settings > Plugins > Menus + a 'Menu settings' hook in every menu's context menu). Removing the plugin falls back to plain static menus.\n- **Customization (tokens/assets only, saved per user on axHub, live preview, presets, reset, export/import as a menu-style asset):**\n  - Colours: menu background, text, hover/selected, section headers, separators, icons, per-section accent (Suggested / Talking about / Pinned / context), badge colours, shadow, border, blur/glass, opacity.\n  - Fonts: family, size, weight, letter spacing, section header style, icon size, density/row height, padding, corner radius, width min/max.\n  - Animations: open/close (fade, scale, slide, drop, none), duration + easing, submenu reveal, item stagger, hover effect, highlight pulse for 'Talking about' items, reduced-motion respected.\n  - Sections: order, on/off, max items each, labels, icons, collapse/expand, show 'why suggested' hint.\n  - Behaviour: learning on/off + reset, topic lifetime, open on hover vs click (desktop), long-press time (phone), keyboard shortcuts.\n  - Per-menu overrides (each app menu / context menu can have its own look and sections) from the hook in that menu.\n- Works with menu-scroll (#268) placement and the Toolbars plugin (toolbar-tap-confirm build) through framework APIs - don't edit their files; share the hook@1 / drop-target@1 contract if it's on main.\n- Commands declared once -> REST + MCP + CLI (get/set menu settings, presets, reset learning, topics).",
+      "at": "2026-11-03",
+      "source": "",
+      "by": "",
+      "verbatim": true
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -4850,22 +5299,10 @@
      "note": "",
      "uid": "st-mw13kt350eenav"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "ui-review-predicted",
-   "title": "UI Review shows predicted pictures before a build runs",
-   "category": "Console",
-   "detail": "Brett, Nov 3 2026 (voice): UI Review must show PREDICTED pictures - what a build will probably look like - BEFORE it's built, so he can approve the look before an agent spends money. Agent: Snap Sully (also on ui-review-shots; built on its storage fix). Predicted mockups are made from the brief + steps (+ diff while running) by rendering real framework components with the current theme in a headless browser (reusing rebuild-shots capture, no new capture system); item status 'Predicted - approve the look'; Approve look / Ask changes (addendum to the build) / Reject (build held); setting 'Wait for my look approval before UI builds start' (default off); refresh while running, real after-shot replaces it at the end (badge Real, compare toggle); backfill for queued/running UI builds; commands declared once -> REST + MCP + CLI. Moved here from pending batch-manager (its predicted-shots part).",
-   "status": "built",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/ui-review-predicted",
-   "pr": "#285",
-   "createdAt": "2026-11-03T19:54:18.485Z",
-   "updatedAt": "2026-11-03T21:58:23.579Z",
-   "builtAt": "2026-11-03T21:58:23.579Z",
    "notes": [
     {
      "text": "Agent: Snap Sully (sully), booked as a swarm-run@1 (source assign). Built on main after ui-review-shots s1-s3 (its storage finding: all shots live in the bind-mounted store, nothing to move).",
@@ -4878,10 +5315,40 @@
     {
      "text": "PR #285 open. Its CI red jobs (check-widgets widget types, molly xlayout opens:false, Gradle) are the same failures on main, being fixed by urgent-main-ci-green; nothing from this build. UI Review r-20261103-c9a82c5e waiting.",
      "at": "2026-11-03T21:49:21.858Z"
+    },
+    {
+     "text": "Reconciler: PR #285 merged",
+     "at": "2026-11-04T04:13:39.547Z"
     }
    ],
+   "id": "ui-review-predicted",
+   "title": "UI Review shows predicted pictures before a build runs",
+   "category": "Console",
+   "detail": "Brett, Nov 3 2026 (voice): UI Review must show PREDICTED pictures - what a build will probably look like - BEFORE it's built, so he can approve the look before an agent spends money. Agent: Snap Sully (also on ui-review-shots; built on its storage fix). Predicted mockups are made from the brief + steps (+ diff while running) by rendering real framework components with the current theme in a headless browser (reusing rebuild-shots capture, no new capture system); item status 'Predicted - approve the look'; Approve look / Ask changes (addendum to the build) / Reject (build held); setting 'Wait for my look approval before UI builds start' (default off); refresh while running, real after-shot replaces it at the end (badge Real, compare toggle); backfill for queued/running UI builds; commands declared once -> REST + MCP + CLI. Moved here from pending batch-manager (its predicted-shots part).",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/ui-review-predicted",
+   "pr": "#285",
+   "mergedAt": "2026-11-04T04:01:29Z",
+   "createdAt": "2026-11-03T19:54:18.485Z",
+   "updatedAt": "2026-11-04T04:13:39.547Z",
+   "builtAt": "2026-11-03T21:58:23.579Z",
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "UI Review must show PREDICTED pictures - what a build will probably look like - BEFORE it's built, so he can approve the look before an agent spends money. Assigned agent: **Snap Sully** (book on his card; he's also on ui-review-shots - run after it or build on its storage fix; if the all-rounder router is on main and he's busy, whoever is free - record who). Register in Urgent (id `ui-review-predicted`) + banner entry. Mark the predicted-shots part of pending item `batch-manager` as moved here (pending_change note).",
+    "at": "2026-11-03",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "backfill",
+    "brief": "# Build: ui-review-predicted (Urgent profile)\n\nBrett, Nov 3 2026 (voice): UI Review must show PREDICTED pictures - what a build will probably look like - BEFORE it's built, so he can approve the look before an agent spends money. Assigned agent: **Snap Sully** (book on his card; he's also on ui-review-shots - run after it or build on its storage fix; if the all-rounder router is on main and he's busy, whoever is free - record who). Register in Urgent (id `ui-review-predicted`) + banner entry. Mark the predicted-shots part of pending item `batch-manager` as moved here (pending_change note).\n\n## Build\n- s1 Predicted mockups: when a build is launched (or added to the orchestrator/pending list), generate a mockup per screen it will touch from the brief + step list (+ diff so far while running): render real framework components with the current theme/assets and demo data in a headless browser (reuse rebuild-shots / ui-screenshots capture tooling; do NOT build a new capture system). Phone + desktop. If an LLM is needed to turn the brief into a mockup spec, do it ONCE per build at launch with the cheapest capable model and cache it; record the cost on the item.\n- s2 UI Review item created at launch with status 'Predicted - approve the look', badge 'Predicted', before = current real screen (from main), after = predicted mockup. Brett can Approve look / Ask changes (comment goes to the build as an addendum before it starts or at the next step) / Reject (build is held, not started).\n- s3 Setting (Claude settings / UI Review settings): 'Wait for my look approval before UI builds start' (default OFF; when ON, UI-touching builds queue until the predicted look is approved).\n- s4 While running, the predicted shot refreshes as the diff grows; when the build finishes, the real after-shot replaces it live (badge 'Real'), with a toggle to compare predicted vs real.\n- s5 Backfill: create predicted items now for every queued/running build that touches UI (toolbar-tap-confirm, crew-live, follow-amber, claude-settings, agent-pick, home-cards-live, smart-menus).\n- s6 Commands declared once -> REST + MCP + CLI (predict, list predicted, approve look). Tests, screenshots, report `_claude/builds/reports/ui-review-predicted.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+    "verbatim": false,
+    "from": "brief",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -4991,7 +5458,8 @@
      "note": "",
      "uid": "st-mw13wc2w0cmw1i"
     }
-   ]
+   ],
+   "rev": 0
   }
  ]
 }

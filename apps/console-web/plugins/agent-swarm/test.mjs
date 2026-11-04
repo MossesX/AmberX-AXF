@@ -13,7 +13,8 @@ const skills = Object.fromEntries(readdirSync(here('./agents/skills/')).filter((
 
 // s1 roster + skills
 t('roster and skills are valid', () => assert.deepEqual(c.checkRoster(roster, skills), []));
-t('the eight build skills and the six job-crew skills exist', () => assert.deepEqual(Object.keys(skills).sort(), ['assets-themes', 'banner-janitor', 'docs', 'kotlin-compose', 'landing', 'listener-qa', 'merge-fixer', 'plugin-manifests', 'python-server', 'react-ui', 'screenshots', 'site-checks', 'tests', 'walkthroughs']));
+t('the eight build skills and the nine job-crew skills exist', () => assert.deepEqual(Object.keys(skills).sort(), ['assets-themes', 'banner-janitor', 'ci-fix', 'docs', 'feature-build', 'kotlin-compose', 'landing', 'listener-qa', 'merge-fixer', 'ops-fix', 'plugin-manifests', 'python-server', 'react-ui', 'screenshots', 'site-checks', 'tests', 'walkthroughs']));
+t('the job crew are all-rounders: every skill, a home job, nobody let go', () => { const crew = roster.agents.filter((a) => a.jobsOnly); assert.deepEqual(crew.map((a) => a.id).sort(), ['earl', 'gina', 'joey', 'lenny', 'paulie', 'rhonda', 'sully']); for (const a of crew) { assert.ok(a.skills.includes('*'), a.id); assert.ok(a.home, a.id); assert.ok(a.models.includes('fable'), a.id); } });
 t('job crew never gets build steps', () => { const p = c.planJobs([{ id: 'b', steps: [{ id: 's1', text: 'take screenshots of the site check page and land it', files: [] }] }], roster); assert.ok(p.jobs.every((j) => !roster.agents.find((a) => a.id === j.agent).jobsOnly)); });
 t('every skill is under one page', () => { for (const s of Object.values(skills)) assert.ok(s.lines <= c.SKILL_MAX_LINES && s.chars <= c.SKILL_MAX_CHARS, s.id); });
 t('models sort cheapest first, blocked ones coerced up (model policy: never Sonnet or Haiku)', () => { assert.deepEqual(c.normAgent({ id: 'x', models: ['opus', 'haiku', 'nope'] }).models, ['opus']); assert.deepEqual(c.normAgent({ id: 'y', models: ['fable', 'sonnet'] }).models, ['opus', 'fable']); assert.deepEqual(c.normAgent({ id: 'z' }).models, ['opus']); });
@@ -418,10 +419,24 @@ t('CLI answers --json errors as JSON', () => {
   const r = spawnSync(process.execPath, [new URL('./swarm.mjs', import.meta.url).pathname, 'nope', '--json'], { encoding: 'utf8' });
   assert.equal(r.status, 1); assert.deepEqual(JSON.parse(r.stdout), { ok: false, error: 'unknown command nope' });
 });
+t('book: a Claude session on an agent card grows, then closes once (agent-pick)', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'swarm-book-'));
+  const run = (...a) => JSON.parse(spawnSync(process.execPath, [new URL('./swarm.mjs', import.meta.url).pathname, ...a, '--json'], { encoding: 'utf8', env: { ...process.env, AXF_SWARM_DIR: dir, AXF_SWARM_CHATS_DIR: 'off' } }).stdout);
+  let r = run('book', JSON.stringify({ session: 's1', agent: 'Snap Sully', usd: 0.5, commits: ['abc1234'] }));
+  assert.equal(run('crew').crew.find((x) => x.id === 'sully').stats.failed, 0, 'an open session is not a failure');
+  assert.equal(r.run.agent, 'sully'); assert.equal(r.run.status, 'running'); assert.equal(r.run.kind, 'job'); assert.equal(r.run.jobType, 'agent-session');
+  r = run('book', JSON.stringify({ session: 's1', agent: 'sully', usd: 1, commits: ['def5678'], final: true }));
+  assert.equal(r.run.status, 'done'); assert.match(r.run.report.summary, /commits: abc1234, def5678/);
+  assert.equal(run('book', JSON.stringify({ session: 's1', agent: 'rio' })).ok, false, 'a session stays on its agent');
+  assert.equal(run('book', JSON.stringify({ session: 's2', agent: 'nobody' })).ok, false);
+  const crew = run('crew').crew; const s = crew.find((a) => a.id === 'sully');
+  assert.equal(s.spend.today, 1); assert.equal(s.stats.done, 1); assert.ok(Array.isArray(s.writeups) && Array.isArray(s.raises));
+  const chat = run('chat', '50').messages.filter((m) => m.from === 'sully'); assert.equal(chat.length, 1, 'one report in the chat, at the close');
+});
 t('manifest: lifecycle, builtWith, page and settings tab', () => {
   const m = JSON.parse(readFileSync(here('./plugin.json'), 'utf8'));
   assert.equal(m.lifecycle.dataDir, '.axf-console/plugins/agent-swarm'); assert.ok(m.builtWith.model && m.builtWith.builtAt);
-  assert.deepEqual(m.provides, ['view:agent-swarm', 'settings-tab:agent-swarm', 'service:agent-jobs@1']); assert.equal(m.tabable.view, 'agent-swarm');
+  assert.deepEqual(m.provides, ['view:agent-swarm', 'settings-tab:agent-swarm', 'service:agent-jobs@1', 'service:axf.crew@1', 'service:axf.swarm-roster@1']); assert.equal(m.tabable.view, 'agent-swarm');
 });
 
 // batch merge end to end on a scratch repo
@@ -464,8 +479,14 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
   const types = jc.jobTypes(readdirSync(typesDir).map((f) => JSON.parse(readFileSync(join(typesDir, f), 'utf8'))));
   const at = '2026-11-04T12:00:00.000Z'; const table = c.prices(JSON.parse(readFileSync(here('../../../../framework/schemas/model-pricing.json'), 'utf8')));
   const site = types.find((x) => x.id === 'site-check');
-  t('job types: six starters, all valid, each owned by one hired crew member', () => {
-    assert.equal(types.length, 6); for (const jt of types) { assert.deepEqual(jt.errors, [], jt.id); const o = jc.owners(jt, roster, c.normState({}, roster)); assert.equal(o.length, 1, jt.id); assert.ok(o[0].jobsOnly, jt.id); }
+  const crew = roster.agents.filter((a) => a.jobsOnly);
+  const allOff = (st0, except = []) => crew.filter((a) => !except.includes(a.id)).reduce((st, a) => c.applyChange(st, { action: 'status', agent: a.id, status: 'off-duty', note: 'nap' }, roster, at).state, st0);
+  t('job types: nine, all valid, every crew member can take each, the home agent listed first', () => {
+    assert.equal(types.length, 9); for (const jt of types) { assert.deepEqual(jt.errors, [], jt.id); const o = jc.owners(jt, roster, c.normState({}, roster)); assert.equal(o.length, crew.length, jt.id); assert.ok(o.every((a) => a.jobsOnly), jt.id); }
+    for (const a of crew) assert.equal(jc.owners(types.find((x) => x.id === a.home), roster, c.normState({}, roster))[0].id, a.id, a.home);
+    assert.ok(['feature-build', 'ops-fix'].every((id) => types.some((x) => x.id === id)));
+    assert.equal(jc.jobsOf(types, crew[0]).length, 9); assert.equal(jc.jobsOf(types, crew[0])[0].home, true);
+    assert.ok(!jc.canTake(site, roster.agents.find((a) => a.id === 'rio')), 'build agents keep their own skill');
   });
   t('job-type validation: a bad job type is named and never routed', () => {
     const bad = jc.jobTypes([{ type: 'job-type', id: 'bad', name: 'Bad', data: { specialty: 'site-checks', budget: { tokens: 5 }, trigger: { kind: 'cron' }, brief: 'x {{nope}}' } }])[0];
@@ -475,21 +496,45 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
     const r = jc.route(site, roster, c.normState({}, roster), [], table, at);
     assert.equal(r.ok, true); assert.equal(r.agent.id, 'paulie'); assert.equal(r.model, 'opus'); assert.equal(r.cap, 1);
   });
-  t('owner off duty = not routed, with the reason', () => {
+  t('home agent off duty = the next free all-rounder takes it; nobody on duty = not routed, with the reasons', () => {
     const st = c.applyChange(c.normState({}, roster), { action: 'status', agent: 'paulie', status: 'off-duty', note: 'nap' }, roster, at).state;
-    const r = jc.route(site, roster, st, [], table, at); assert.equal(r.ok, false); assert.equal(r.unassigned, false); assert.match(r.why, /paulie: Off duty/);
+    const r = jc.route(site, roster, st, [], table, at); assert.equal(r.ok, true); assert.notEqual(r.agent.id, 'paulie'); assert.ok(r.agent.jobsOnly);
+    const none = jc.route(site, roster, allOff(c.normState({}, roster)), [], table, at); assert.equal(none.ok, false); assert.equal(none.unassigned, false); assert.match(none.why, /paulie: Off duty/);
   });
-  t('budget check: an owner whose pay left this week is under the run cap is not routed', () => {
-    const st = c.applyChange(c.normState({}, roster), { action: 'salary', agent: 'paulie', usd: 0.5 }, roster, at).state;
+  t('router: home job first, then least busy, then fewest runs today (round the crew), never nobody while someone is free', () => {
+    const st = c.normState({}, roster); const running = (agent, i = 0) => ({ kind: 'job', jobId: `r${agent}${i}`, agent, status: 'running', startedAt: at });
+    assert.equal(jc.route(site, roster, st, [running('paulie')], table, at).agent.id, 'paulie', 'home wins even when busy');
+    const fb = types.find((x) => x.id === 'ops-fix');
+    const first = jc.route(fb, roster, st, [], table, at).agent.id;
+    const second = jc.route(fb, roster, st, [running(first)], table, at).agent.id; assert.notEqual(second, first, 'busy agent skipped');
+    const done = (agent) => ({ kind: 'job', jobId: `d${agent}`, agent, status: 'done', startedAt: at });
+    assert.notEqual(jc.route(fb, roster, st, [done(first)], table, at).agent.id, first, 'a day\'s runs spread the work');
+    const one = allOff(st, ['earl']); assert.equal(jc.route(site, roster, one, [], table, at).agent.id, 'earl', 'the one free agent gets it');
+  });
+  t('router: --agent picks that agent; force books someone when nobody is free and says why', () => {
+    const st = c.normState({}, roster); const fb = types.find((x) => x.id === 'feature-build');
+    assert.equal(jc.route(fb, roster, st, [], table, at, { agent: 'lenny' }).agent.id, 'lenny');
+    assert.match(jc.route(fb, roster, st, [], table, at, { agent: 'zed' }).why, /no agent "zed"/);
+    const off = allOff(st); const f = jc.route(fb, roster, off, [], table, at, { force: true }); assert.equal(f.ok, true); assert.equal(f.forced, true); assert.match(f.why, /nobody free/);
+  });
+  t('a headless build ends done on a clean result, blocked (no strike) when stopped part way', () => {
+    assert.equal(jc.buildOutcome({ final: true, isError: false }).status, 'done'); assert.equal(jc.buildOutcome({ final: true, isError: true, subtype: 'error_max_turns' }).reason, 'error_max_turns');
+    assert.equal(jc.buildOutcome({ final: false }).status, 'blocked'); assert.ok(jc.isBuildRun({ source: 'assign' })); assert.ok(!jc.isBuildRun({}));
+  });
+  t('budget check: an agent whose pay left this week is under the run cap is not routed', () => {
+    const st = crew.reduce((x, a) => c.applyChange(x, { action: 'salary', agent: a.id, usd: 0.5 }, roster, at).state, c.normState({}, roster));
     const r = jc.route(site, roster, st, [], table, at); assert.equal(r.ok, false); assert.match(r.why, /\$0\.50 left this week, the run may cost up to \$1\.00/);
-    const broke = c.applyChange(c.normState({}, roster), { action: 'salary', agent: 'paulie', usd: 0 }, roster, at).state;
+    assert.equal(jc.route(site, roster, c.applyChange(c.normState({}, roster), { action: 'salary', agent: 'paulie', usd: 0.5 }, roster, at).state, [], table, at).ok, true, 'someone else under budget takes it');
+    const broke = crew.reduce((x, a) => c.applyChange(x, { action: 'salary', agent: a.id, usd: 0 }, roster, at).state, c.normState({}, roster));
     assert.match(jc.route(site, roster, broke, [], table, at).why, /broke/);
   });
   const orphan = jc.jobTypes([{ type: 'job-type', id: 'cert-renew', name: 'Cert renewals', description: 'Renew certificates.', data: { specialty: 'certs', budget: { tokens: 50000 }, trigger: { kind: 'on-demand' }, brief: 'Renew {{date}}' } }])[0];
-  t('unassigned job: nobody owns it → unassigned, and a one-tap hire owns it after', () => {
-    const r = jc.route(orphan, roster, c.normState({}, roster), [], table, at); assert.equal(r.unassigned, true); assert.match(r.why, /nobody owns Cert renewals/);
-    const h = jc.hireFor(orphan, roster, at); assert.equal(h.agent.skill, 'certs'); assert.ok(h.agent.jobsOnly); assert.ok(!roster.agents.some((a) => a.id === h.agent.id));
-    const r2 = { ...roster, agents: [...roster.agents, h.agent] }; const ok2 = jc.route(orphan, r2, c.normState({}, r2), [], table, at); assert.equal(ok2.ok, true); assert.equal(ok2.agent.id, h.agent.id);
+  t('a new job type: the all-rounders take it; with no crew it is unassigned, and a one-tap hire owns it after', () => {
+    assert.equal(jc.route(orphan, roster, c.normState({}, roster), [], table, at).ok, true, 'all-rounders take job types added later');
+    const builders = { ...roster, agents: roster.agents.filter((a) => !a.jobsOnly) };
+    const r = jc.route(orphan, builders, c.normState({}, builders), [], table, at); assert.equal(r.unassigned, true); assert.match(r.why, /nobody can take Cert renewals/);
+    const h = jc.hireFor(orphan, builders, at); assert.equal(h.agent.skill, 'certs'); assert.equal(h.agent.home, 'cert-renew'); assert.ok(h.agent.jobsOnly); assert.ok(!roster.agents.some((a) => a.id === h.agent.id));
+    const r2 = { ...builders, agents: [...builders.agents, h.agent] }; const ok2 = jc.route(orphan, r2, c.normState({}, r2), [], table, at); assert.equal(ok2.ok, true); assert.equal(ok2.agent.id, h.agent.id);
     assert.deepEqual(c.checkRoster(r2, { ...skills, certs: { ...h.skill, schema: 'agent-skill@1' } }), []);
   });
   t('brief = the job brief + the agent\'s own notes only; read-only gets no edit tools', () => {
@@ -541,13 +586,36 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
     const r2 = jobs.run('banner-cleanup', { at: '2026-11-04T13:00:00.000Z' }); assert.equal(r2.ok, true);
     assert.ok(jobs.sweep({ alive: (x) => x.jobId !== r2.run.jobId }).includes(r2.run.jobId)); assert.equal(sw.loadRuns().find((x) => x.jobId === r2.run.jobId).status, 'error');
   });
-  t('one-tap hire is kept in the swarm state and joins the roster', () => {
+  t('a job type added later needs no hire: the crew take it', () => {
     const d2 = join(dd, 'types2'); mkdirSync(d2); writeFileSync(join(d2, 'cert-renew.json'), JSON.stringify({ $axf: 'asset@1', type: 'job-type', id: 'cert-renew', name: 'Cert renewals', version: '1.0.0', data: { specialty: 'certs', budget: { tokens: 50000 }, trigger: { kind: 'on-demand' }, brief: 'Renew {{date}}' } }));
     process.env.AXF_JOB_TYPES_DIR = d2;
-    assert.equal(jobs.list()[0].unassigned, true); const h = jobs.hire('cert-renew');
-    assert.ok(sw.loadRoster().agents.some((a) => a.id === h.agent.id)); assert.ok(sw.loadSkills().certs); assert.equal(jobs.list()[0].unassigned, false);
+    assert.equal(jobs.list()[0].unassigned, false, 'the all-rounders take a job type added later');
     assert.throws(() => jobs.hire('cert-renew'), /already has an owner/);
     process.env.AXF_JOB_TYPES_DIR = typesDir;
+  });
+}
+
+// every headless session is booked on a named agent (deploy/claude-headless.sh → jobs.mjs book; back-assign → assign)
+{
+  const jobs = await import('./jobs.mjs'); const sw = await import('./swarm.mjs');
+  const root = mkdtempSync(join(tmpdir(), 'builds-')); process.env.AXF_BUILDS_ROOT = root;
+  const b = join(root, 'demo-fix'); mkdirSync(b);
+  writeFileSync(join(b, '.axhub-build.json'), JSON.stringify({ name: 'demo-fix', repo: 'AmberX-AXF', base: 'main', model: 'opus', startedAt: 1793713010 }));
+  writeFileSync(join(b, 'demo-fix.log'), 'x\n');
+  writeFileSync(join(b, 'demo-fix.jsonl'), `${JSON.stringify({ type: 'result', subtype: 'success', num_turns: 9, total_cost_usd: 3.5, usage: { input_tokens: 900, output_tokens: 100 }, result: 'Built it.' })}\n`);
+  const a = jobs.assign('demo-fix');
+  t('assign: a finished build is booked on a crew agent, closed done with its cost, no bonus, no strike', () => {
+    assert.ok(a.agent.jobsOnly); assert.equal(a.closed, true);
+    const r = sw.loadRuns().find((x) => x.jobId === a.run.jobId); assert.equal(r.status, 'done'); assert.equal(r.reportedCost, 3.5); assert.equal(r.build, 'demo-fix'); assert.equal(r.source, 'assign'); assert.equal(r.jobType, 'feature-build');
+    assert.equal(r.startedAt, new Date(1793713010 * 1000).toISOString());
+    assert.equal(sw.loadState().agents[a.agent.id].bonuses.filter((x) => x.jobId === r.jobId).length, 0);
+    assert.equal(jobs.assign('demo-fix').existing, true, 'assigning twice books once');
+  });
+  t('book: a launch is booked on the agent asked for, else the router\'s pick; unknown agents are refused', () => {
+    const l = jobs.book({ name: 'next-build', agent: 'lenny', cwd: b, log: 'next.log' }); assert.equal(l.agent.id, 'lenny'); assert.equal(l.run.status, 'running'); assert.equal(l.run.source, 'launcher');
+    const p = jobs.book({ name: 'other-build', cwd: b }); assert.ok(p.agent.jobsOnly); assert.notEqual(p.agent.id, 'lenny', 'least busy');
+    assert.throws(() => jobs.book({ name: 'x', agent: 'zed' }), /no agent "zed"/);
+    assert.ok(sw.loadState().messages.some((m) => m.kind === 'assign' && /next-build/.test(m.text)));
   });
 }
 
