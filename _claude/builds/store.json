@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1001,
- "updatedAt": "2026-11-04T22:09:40.944Z",
+ "rev": 1002,
+ "updatedAt": "2026-11-04T22:10:10.204Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -85040,15 +85040,15 @@
    "title": "Changes as chat log: Codebase changes entries render as a conversation timeline",
    "category": "Console > Builds",
    "detail": "Expanded Codebase changes entry renders like the Chat viewer: Brett bubbles (verbatim said + addenda), Amber bubble (brief as Markdown, collapsed, session-rules boilerplate hidden), agent bubbles per step/commit/PR, system lines for status; metadata chip row; Classic view toggle; shared component reused in Build manager row expansion.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/changes-chat-log",
    "pr": "#347",
    "createdAt": "2026-11-04T21:53:46.271Z",
-   "updatedAt": "2026-11-04T22:09:39.686Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T22:09:41.397Z",
+   "builtAt": "2026-11-04T22:09:41.397Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -85168,12 +85168,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T22:09:41.397Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T21:53:46.272Z",
-     "updatedAt": "2026-11-04T21:53:46.272Z"
+     "updatedAt": "2026-11-04T22:09:41.490Z"
     }
    ],
    "profiles": [
@@ -85184,7 +85184,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

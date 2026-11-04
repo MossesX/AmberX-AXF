@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T22:09:40.944Z",
+ "updatedAt": "2026-11-04T22:10:10.204Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -12730,15 +12730,15 @@
    "title": "Changes as chat log: Codebase changes entries render as a conversation timeline",
    "category": "Console > Builds",
    "detail": "Expanded Codebase changes entry renders like the Chat viewer: Brett bubbles (verbatim said + addenda), Amber bubble (brief as Markdown, collapsed, session-rules boilerplate hidden), agent bubbles per step/commit/PR, system lines for status; metadata chip row; Classic view toggle; shared component reused in Build manager row expansion.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/changes-chat-log",
    "pr": "#347",
    "createdAt": "2026-11-04T21:53:46.271Z",
-   "updatedAt": "2026-11-04T22:09:39.686Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T22:09:41.397Z",
+   "builtAt": "2026-11-04T22:09:41.397Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -12840,8 +12840,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T22:09:41.397Z",
      "note": "",
      "uid": "st-mw2nlthg0act8j"
     }
