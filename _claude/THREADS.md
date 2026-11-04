@@ -698,22 +698,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:39 UTC · `fable-no-approval` added (3 steps) (current) · fable-no-approval
-- 2026-11-04 14:39 UTC · `fable-review-nov3` added (7 steps) (current) · fable-no-approval
-- 2026-11-04 14:39 UTC · `fable-no-approval` s1 done, → running (current) · orchestrator
-- 2026-11-04 14:39 UTC · `fable-no-approval` s2 done (current) · orchestrator
-- 2026-11-04 14:39 UTC · `fable-no-approval` s2 done (current) · foreign-write
-- 2026-11-04 14:40 UTC · `toolbar-tap-confirm` → complete, note (urgent) · reconciler
-- 2026-11-04 14:43 UTC · `fable-no-approval` branch claude/fable-no-approval, PR #319 (current) · builds-live
-- 2026-11-04 14:43 UTC · `fable-no-approval` s3 done, → built (current) · orchestrator
-- 2026-11-04 14:43 UTC · `fable-no-approval` s3 done, → complete (current) · foreign-write
-- 2026-11-04 14:43 UTC · `app-voice-commands` added (6 steps) (current) · orchestrator
-- 2026-11-04 14:43 UTC · `app-voice-commands` note (current) · orchestrator
-- 2026-11-04 14:43 UTC · `app-voice-commands` → running (current) · orchestrator
-- 2026-11-04 14:43 UTC · `app-voice-commands` added (6 steps) (current) · foreign-write
-- 2026-11-04 14:43 UTC · `app-voice-commands` note (current) · foreign-write
-- 2026-11-04 14:48 UTC · `browser-automation` note (current) · foreign-write
-- 2026-11-04 14:48 UTC · `profile-switcher-widget` note (current) · foreign-write
 - 2026-11-04 14:48 UTC · `profile-lists-home-card` s4 done, → complete (current) · foreign-write
 - 2026-11-04 14:48 UTC · `profile-filter-tables` added (12 steps) (current) · foreign-write
 - 2026-11-04 14:48 UTC · `fable-no-approval` added (3 steps) (current) · foreign-write
@@ -1098,6 +1082,22 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 20:44 UTC · `drag-to-tab` removed (angel) · orchestrator
 - 2026-11-04 20:44 UTC · `molly-banner-match` branch claude/molly-banner-match, note (current) · reconciler
 - 2026-11-04 20:46 UTC · `build-optimizer` added (9 steps) (current) · orchestrator
+- 2026-11-04 20:50 UTC · `plugin-settings-placement` note (current) · foreign-write
+- 2026-11-04 20:50 UTC · `land-round-2` note (current) · foreign-write
+- 2026-11-04 20:50 UTC · `merge-queue` note (current) · foreign-write
+- 2026-11-04 20:50 UTC · `fable-review-nov3` note (current) · foreign-write
+- 2026-11-04 20:50 UTC · `app-voice-commands` s6 done, → complete, note (current) · foreign-write
+- 2026-11-04 20:50 UTC · `tab-group-assets` note (current) · foreign-write
+- 2026-11-04 20:50 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, → complete, note (current) · foreign-write
+- 2026-11-04 20:50 UTC · `live-sessions-plugin` added (6 steps) (current) · foreign-write
+- 2026-11-04 20:50 UTC · `molly-banner-match` added (5 steps) (current) · foreign-write
+- 2026-11-04 20:50 UTC · `model-thinking-audit` added (8 steps) (current) · foreign-write
+- 2026-11-04 20:50 UTC · `build-todo-sync` added (7 steps) (current) · foreign-write
+- 2026-11-04 20:50 UTC · `handoff-2` added (11 steps) (current) · foreign-write
+- 2026-11-04 20:50 UTC · `fable-packager` added (5 steps) (current) · foreign-write
+- 2026-11-04 20:50 UTC · `grid-column-hiding` added (6 steps) (current) · foreign-write
+- 2026-11-04 20:50 UTC · `drag-to-tab` added (5 steps) (current) · foreign-write
+- 2026-11-04 20:50 UTC · `build-optimizer` added (9 steps) (current) · foreign-write
 
 ## Token passes (log)
 
