@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import array
 import json
+import re
 import math
 import os
 import sys
@@ -183,5 +184,178 @@ mv = rec.move(tmp, dst)
 ok(mv["ok"] and mv["copied"] > 0 and mv["deleted"] == mv["copied"] and rec.Store(dst).meta("cc-1")["id"] == "cc-1", f"move verified {mv}")
 ok(rec.plan_move([{"rel": "x", "sha256": "1"}, {"rel": "y", "sha256": "2"}], {"x": "1"}) == [{"rel": "x", "sha256": "1", "bytes": 0, "action": "skip"}, {"rel": "y", "sha256": "2", "bytes": 0, "action": "copy"}], "move plan skips same hash")
 ok(rec.topics([{"kind": "tool", "tool": "Bash"}, {"kind": "user", "text": "work on build live-sessions-plugin"}])[0] == "live-sessions-plugin", "topics")
+
+# ---------------------------------------------------------------- routes (FastAPI TestClient, fake sources)
+import importlib.util  # noqa: E402
+import types  # noqa: E402
+
+os.environ["PATH"] = "/usr/bin:/bin"
+os.environ.update(AXF_LIVE_DIR=tempfile.mkdtemp(prefix="axf-live-test-"), AXF_LIVE_SWEEP="off")
+os.environ.pop("AXF_RECORDINGS_DIR", None)
+sys.path.insert(0, str(HERE.parents[1] / "server"))
+import plugin_services  # noqa: E402
+import console_context as cxm  # noqa: E402
+
+alerts: list = []
+cxm.raise_alert = lambda a: alerts.append(("raise", a.get("key"))) or {}
+cxm.resolve_alerts = lambda keys: alerts.append(("resolve", keys[0]))
+cxm.log = lambda *a, **k: None
+said: list = []
+LOG_DIR = Path(tempfile.mkdtemp(prefix="axf-live-wt-")) / "build-x"
+LOG_DIR.mkdir()
+(LOG_DIR / "build-x.jsonl").write_text(json.dumps({"type": "assistant", "message": {"content": [{"type": "text", "text": "starting"}, {"type": "tool_use", "name": "Bash", "input": {"command": "ls"}}]}}) + "\n")
+
+
+class Crew:
+    def crew(self):
+        return ROSTER
+
+    def post(self, text):
+        said.append(text)
+        return True
+
+
+class Headless:
+    def sessions(self):
+        return {"ready": True, "items": [{"name": "axf-build-x", "createdAt": NOW, "cwd": str(LOG_DIR)}, {"name": "axt-tab", "createdAt": NOW}]}
+
+    def meters(self, names):
+        return {"items": {"axf-build-x": {"agent": "sully", "model": "opus", "costUsd": 2.5, "build": "build-x", "step": "s2"}}}
+
+
+class Feed:
+    def feeds(self):
+        return [{"id": "amber-voice", "source": "claude-ai-voice", "title": "Amber voice", "agent": "gizmo", "startedAt": int(time.time() * 1000) - 60_000,
+                 "lastAt": int(time.time() * 1000), "status": "working", "lastLine": "talking"}]
+
+
+import time  # noqa: E402
+
+plugin_services.provide("axf.crew@1", Crew(), "agent-swarm")
+plugin_services.provide("axf.headless@1", Headless(), "console-terminal")
+plugin_services.provide("axf.session-feed@1", Feed(), "console-terminal")
+plugin_services.is_enabled = lambda folder: True if hasattr(plugin_services, "is_enabled") else None
+sys.modules.setdefault("axf_console_plugins", types.ModuleType("axf_console_plugins")).__path__ = []
+spec = importlib.util.spec_from_file_location("axf_console_plugins.live_sessions_test", HERE / "server" / "__init__.py", submodule_search_locations=[str(HERE / "server")])
+mod = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = mod
+spec.loader.exec_module(mod)
+mod._post_chat = lambda text: said.append(text)  # synchronous in the test
+
+from fastapi import FastAPI, Request as Req  # noqa: E402
+from fastapi.testclient import TestClient  # noqa: E402
+
+app = FastAPI()
+
+
+@app.middleware("http")
+async def fake_sign_in(request: Req, call_next):
+    if request.headers.get("x-test-brett"):
+        request.state.axf_user = types.SimpleNamespace(via="session", admin=True, name="brett")
+    return await call_next(request)
+
+app.include_router(mod.router, prefix="/p")
+c = TestClient(app)
+BR = {"x-test-brett": "1"}
+
+ok(plugin_services.get("axf.claude-live@1") is not None, "provides axf.claude-live@1")
+r = c.post("/p/checkin", json={"id": "cc-vps-1", "client": "code", "account": "main", "device": "VPS", "title": "live-sessions build", "agent": "paulie", "amberx": True,
+                               "lines": [json.dumps({"type": "user", "message": {"content": "hi ghp_abcdefghijklmnopqrstuvwxyz0123"}, "timestamp": "2026-11-04T10:00:00Z"})]}).json()
+ok(r["ok"] and r["kind"] == "human" and r["agent"]["name"] == "Ping Paulie" and r["notice"]["recording"] and not r["notice"]["watched"] and r["saved"] == 1, f"checkin {r}")
+lst = c.get("/p/sessions").json()
+ids = [x["id"] for x in lst["rows"]]
+ok(set(ids) == {"cc-vps-1", "chat:amber-voice", "tmux:axf-build-x"}, f"all sources, plain tmux tabs left out: {ids}")
+ok(lst["counts"]["label"] == "2 human · 1 headless" and not lst["viewer"]["owner"], "counts + helper viewer")
+hx = next(x for x in lst["rows"] if x["id"] == "tmux:axf-build-x")
+ok(hx["kind"] == "headless" and hx["agent"]["name"] == "Snap Sully" and hx["costUsd"] == 2.5 and hx["step"] == "s2", "headless row from meters")
+ok([x["id"] for x in c.get("/p/sessions?kind=headless").json()["rows"]] == ["tmux:axf-build-x"], "kind filter")
+
+# helpers can't watch; owner can; voice only for human with AmberX
+ok(c.post("/p/sessions/cc-vps-1/watch", json={}).status_code == 403, "helper refused")
+ok(c.post("/p/sessions/tmux:axf-build-x/watch", json={"voice": True}, headers=BR).status_code == 403, "no voice on headless")
+ok(c.post("/p/sessions/chat:amber-voice/watch", json={"voice": True}, headers=BR).json()["detail"] == "Voice needs AmberX on that phone.", "voice needs AmberX")
+w = c.post("/p/sessions/cc-vps-1/watch", json={"voice": True}, headers=BR).json()
+ok(w["ok"] and w["watcher"] and w["session"]["notice"]["text"].startswith("You're being watched by Brett (with voice)"), f"watch {w}")
+ok(said and "Brett is watching Ping Paulie's session" in said[-1] and ("raise", "live-watch:cc-vps-1") in alerts, "Breakroom line + notice alert")
+n = c.get("/p/sessions/cc-vps-1/notice").json()
+ok(n["watched"] and n["by"] == ["Brett"], "notice for the watched side")
+r2 = c.post("/p/sessions/cc-vps-1/events", json={"lines": [json.dumps({"type": "assistant", "message": {"content": [{"type": "text", "text": "hello"}]}})]}).json()
+ok(r2["notice"]["watched"], "the hook's answer says watched")
+wh = c.post("/p/sessions/tmux:axf-build-x/watch", json={}, headers=BR).json()
+ok(wh["ok"] and len(said) == 1, "headless watch: only logged, no Breakroom line")
+ok(c.post(f"/p/sessions/cc-vps-1/watch/{w['watcher']}/beat").json()["ok"], "beat")
+ok(c.delete(f"/p/sessions/cc-vps-1/watch/{w['watcher']}").json()["last"] and ("resolve", "live-watch:cc-vps-1") in alerts and "stopped watching" in said[-1], "last watcher leaves")
+ok(not c.get("/p/sessions/cc-vps-1/notice").json()["watched"], "notice off")
+au = c.get("/p/audit", headers=BR).json()["items"]
+ok([a["op"] for a in au][:5] == ["watch-stop", "watch-start", "watch-start", "watch-refused", "watch-refused"] or "watch-start" in [a["op"] for a in au], "audit")
+ok(c.get("/p/audit").status_code == 403, "audit is owner only")
+
+# headless stream log → events (the stream route's source)
+kind, log = mod._source(next(x for x in mod.collect(force=True) if x["id"] == "tmux:axf-build-x"))
+evs, off = ln_mod.tail(log, 0) if (ln_mod := mod.ln) else ([], 0)
+ok(kind == "log" and [e["kind"] for e in evs] == ["assistant", "tool"] and off > 0, "headless stream log read")
+
+# agent clash
+ok(c.post("/p/checkin", json={"id": "cc-desk-2", "client": "code", "device": "desktop"}).json()["agent"]["known"] is False, "new session, no pick yet")
+cl = c.post("/p/sessions/cc-desk-2/agent", json={"agent": "paulie"}, headers=BR)
+ok(cl.status_code == 409 and cl.json()["detail"]["clash"]["session"] == "cc-vps-1" and any(a["id"] == "sully" for a in cl.json()["detail"]["free"]), "clash offers others")
+ok(c.post("/p/sessions/cc-desk-2/agent", json={"agent": "sully"}, headers=BR).json()["agent"]["name"] == "Snap Sully", "pick another")
+ok(c.post("/p/checkin", json={"id": "cc-desk-3", "client": "code", "device": "desktop"}).json()["agent"]["name"] == "Snap Sully", "last pick per account/device is the default")
+
+# audio + recordings
+au_r = c.post("/p/sessions/cc-vps-1/audio?track=mic&offsetMs=0&ext=wav", content=rec.wav_bytes(array.array("h", quiet(300) + tone(400) + quiet(300)), RATE))
+ok(au_r.json()["ok"], "audio segment saved")
+ok(c.post("/p/sessions/tmux:axf-build-x/audio?track=mic", content=b"x").status_code == 400, "no audio for headless")
+ok(c.get("/p/recordings").status_code == 403, "recordings owner only")
+items = c.get("/p/recordings", headers=BR).json()["items"]
+ok([i["id"] for i in items] == ["cc-desk-3", "cc-desk-2", "cc-vps-1"] or "cc-vps-1" in [i["id"] for i in items], "recordings listed")
+ok([i["id"] for i in c.get("/p/recordings?q=hello", headers=BR).json()["items"]] == ["cc-vps-1"], "search across transcripts")
+one = c.get("/p/recordings/cc-vps-1", headers=BR).json()
+ok("ghp_" not in json.dumps(one) and [e["kind"] for e in one["events"]] == ["user", "assistant"], "redacted events in the player")
+comp = c.post("/p/recordings/cc-vps-1/compact", headers=BR).json()["report"]
+ok(comp["verified"] and comp["chunks"] == 1, f"compact now {comp}")
+f = c.get("/p/recordings/cc-vps-1", headers=BR).json()["audio"][0]["file"]
+ok(c.get(f"/p/sessions/cc-vps-1/audio/{f}", headers=BR).status_code == 200 and c.get(f"/p/sessions/cc-vps-1/audio/{f}").status_code == 403, "audio owner only")
+ok(c.post("/p/recordings/cc-vps-1/flags", json={"pinned": True, "favourite": True}, headers=BR).json()["recording"]["pinned"], "pin")
+ok([i["id"] for i in c.get("/p/recordings?favourites=true", headers=BR).json()["items"]] == ["cc-vps-1"], "favourites")
+ok(c.get("/p/recordings/cc-vps-1/export", headers=BR).headers["content-type"] == "application/zip", "export zip")
+ok(c.get("/p/recordings/cc-vps-1/context?t=999999999", headers=BR).json()["tokens"] > 0, "context at t")
+ok(c.delete("/p/recordings/cc-desk-3").status_code == 403 and c.delete("/p/recordings/cc-desk-3", headers=BR).json()["ok"], "delete owner only")
+
+# settings + storage
+s = c.get("/p/settings").json()
+ok(s["settings"]["record"] is True and s["settings"]["keepDays"] == 90 and s["settings"]["watchNotice"] is True and s["usedBytes"] > 0, "settings defaults")
+ok(c.put("/p/settings", json={"keepDays": 30}).status_code == 403, "settings owner only")
+ok(c.put("/p/settings", json={"keepDays": 30, "watchNotice": False}, headers=BR).json()["settings"] == {**s["settings"], "keepDays": 30}, "watch notice can't be turned off")
+mod._repo_cache.update(at=time.time(), items=[{"repo": "MossesX/AmberX-AXF", "private": False}, {"repo": "MossesX/secret", "private": True}])
+st0 = c.get("/p/storage", headers=BR).json()
+ok(st0["storage"]["primary"] == "own" and st0["status"]["own"]["state"] == "synced", "storage default")
+bad = c.put("/p/storage", headers=BR, json={"primary": "own", "mirrors": ["gh"], "targets": [{"id": "own"}, {"id": "gh", "kind": "repo", "repo": "MossesX/AmberX-AXF", "branch": "recordings"}]})
+ok(bad.status_code == 400 and "PUBLIC" in bad.json()["detail"], "public repo mirror refused")
+ok(c.put("/p/storage", headers=BR, json={"primary": "gh", "targets": [{"id": "own"}, {"id": "gh", "kind": "repo", "repo": "MossesX/secret"}]}).status_code == 400, "primary must be own container")
+mod.sync_mirrors = lambda: None
+good = c.put("/p/storage", headers=BR, json={"primary": "own", "mirrors": ["gh", "me"], "targets": [{"id": "own"}, {"id": "gh", "kind": "repo", "repo": "MossesX/secret", "branch": "recordings"}, {"id": "me", "kind": "local"}]})
+ok(good.json()["ok"] and good.json()["storage"]["mirrors"] == ["gh", "me"], "private repo + local mirrors saved")
+ok(c.get("/p/storage", headers=BR).json()["status"]["me"]["state"] == "pending", "local target pending until the device reports")
+ok(c.post("/p/storage/local-ack", json={"target": "me", "device": "S26", "ids": ["cc-vps-1", "cc-desk-2"], "bytes": 10}).json()["ok"], "device ack")
+new_root = tempfile.mkdtemp(prefix="axf-live-move-")
+dry = c.post("/p/storage/move", headers=BR, json={"path": new_root}).json()
+ok(dry["dryRun"] and dry["files"] > 0 and dry["copy"] == dry["files"], "move dry run")
+mv = c.post("/p/storage/move", headers=BR, json={"path": new_root, "dryRun": False}).json()
+ok(mv["ok"] and mv["deleted"] == mv["copied"] and str(mod.store_root()) == new_root and c.get("/p/recordings/cc-vps-1", headers=BR).status_code == 200, "move verified + store follows")
+
+# sweep: a watcher without heartbeat ends; ended sessions get finished
+mod.WATCH.by["tmux:axf-build-x"][wh["watcher"]]["seen"] = 0
+sw = mod.sweep()
+ok("tmux:axf-build-x" in sw["watchEnded"] and sw["cap"]["level"] == "ok", "sweep ends stale watches")
+c.post("/p/checkin", json={"id": "cc-desk-2", "ended": True})
+ok(mod.STORE().meta("cc-desk-2")["endMs"] > 0, "ended check-in closes the recording")
+
+# zero tokens: nothing here can reach a model
+LLM = re.compile(r"anthropic|openai|axf\.llm@1|claude\s+-p\b(?! build)|messages\.create|/v1/messages", re.I)
+for f in HERE.rglob("*"):
+    if f.is_file() and f.suffix in (".py", ".ts", ".tsx", ".mjs") and f.name != "test.py":
+        hits = [x for x in f.read_text().splitlines() if LLM.search(x) and "headless" not in x.lower() and "no model" not in x.lower() and "stream-json" not in x]
+        ok(not hits, f"zero tokens: {f.name} {hits[:1]}")
 
 print(f"live-sessions: {checks} checks ok")

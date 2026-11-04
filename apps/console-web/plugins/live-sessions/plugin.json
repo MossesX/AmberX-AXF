@@ -1,0 +1,87 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.live-sessions",
+  "name": "Live sessions",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "forFramework": true,
+  "description": "Every Claude session going on, on every account: human (Claude Code terminals, claude.ai chats and voice calls, the AmberX / Gizmo companion) and headless (claude -p builds, agent-swarm jobs), each with a Human / Headless badge and the agent running it, in a grid (or a list) with filters. A banner widget counts them ('2 human · 4 headless'). Watch live streams any session's messages, tool calls and results; voice (both sides, through AmberX) only on human sessions. Brett only; every watch is logged, and the watched human sees 'You're being watched' (plus a Breakroom line). Every human session is recorded by default (redacted context-window log + voice) and plays back in real time in the Session browser; the silence is cut out after the session ends. Recordings go to their own container, with mirrors in a VPS container, a private repo (Git LFS) or a device.",
+  "targets": [
+    "axf-console",
+    "molly",
+    "amberx-droid",
+    "axhub-web"
+  ],
+  "provides": [
+    "view:live-sessions",
+    "view:session-recordings",
+    "settings-tab:live-sessions",
+    "action:live-sessions.open",
+    "action:live-sessions.watch",
+    "action:live-sessions.recordings",
+    "service:axf.claude-live@1",
+    "widget:status:live-sessions"
+  ],
+  "optional": [
+    "service:axf.session-feed@1",
+    "service:axf.headless@1",
+    "service:axf.crew@1",
+    "service:axf.containers@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "route": "GET /sessions", "id": "list", "title": "Live Claude sessions", "description": "Every Claude session going on, human and headless, on every account: Human/Headless, agent, account, device, app, what it is on, model, time, cost, watchers. Filters: kind=human|headless, account, agent, q, ended=true.", "readOnly": true },
+      { "route": "POST /checkin", "id": "checkin", "title": "Check a session in", "description": "A Claude session says it is there: input {id, client: code|chat|voice|companion|headless|swarm, account, device, app, title, doing, agent, model, thinking, mode: voice|text, amberx, ended, lines? (transcript JSON lines), events?}. Answers its agent and the notice to show its human ('You're being watched', 'Recording')." },
+      { "route": "GET /sessions/{sid}/notice", "id": "notice", "title": "Am I being watched?", "description": "For the watched side: whether anyone is watching this session (and who) and whether it is being recorded.", "readOnly": true },
+      { "route": "POST /sessions/{sid}/watch", "skip": "Brett's own click only (owner check); not a tool" },
+      { "route": "POST /sessions/{sid}/watch/{wid}/beat", "skip": "watch heartbeat from the browser" },
+      { "route": "DELETE /sessions/{sid}/watch/{wid}", "skip": "watch end from the browser" },
+      { "route": "GET /sessions/{sid}/stream", "skip": "server-sent events stream, not a command" },
+      { "route": "GET /live", "skip": "server-sent events stream, not a command" },
+      { "route": "POST /sessions/{sid}/events", "skip": "transcript intake from the session hook" },
+      { "route": "POST /sessions/{sid}/audio", "skip": "raw audio intake from AmberX" },
+      { "route": "GET /sessions/{sid}/audio/{file}", "skip": "audio file, owner only" },
+      { "route": "POST /sessions/{sid}/agent", "skip": "Brett's own click only" },
+      { "route": "GET /recordings", "skip": "owner only (recordings are Brett's)" },
+      { "route": "GET /recordings/{sid}", "skip": "owner only" },
+      { "route": "GET /recordings/{sid}/context", "skip": "owner only" },
+      { "route": "GET /recordings/{sid}/export", "skip": "file download, owner only" },
+      { "route": "POST /recordings/{sid}/flags", "skip": "owner only" },
+      { "route": "POST /recordings/{sid}/compact", "skip": "owner only" },
+      { "route": "DELETE /recordings/{sid}", "skip": "owner only, destructive" },
+      { "route": "GET /settings", "id": "settings", "title": "Recording settings", "description": "Recording on, keep raw audio hours, speech padding, retention days, size cap, space used and saved by compaction, whether ffmpeg is there.", "readOnly": true },
+      { "route": "PUT /settings", "skip": "owner only" },
+      { "route": "GET /storage", "id": "storage", "title": "Recording storage", "description": "Where recordings are stored: targets (own container, VPS container, repo, local), primary and mirrors, status and space per target.", "readOnly": true },
+      { "route": "PUT /storage", "skip": "owner only" },
+      { "route": "POST /storage/move", "skip": "owner only" },
+      { "route": "POST /storage/local-ack", "skip": "device report" },
+      { "route": "GET /audit", "skip": "owner only" }
+    ]
+  },
+  "builtWith": { "model": "opus", "builtAt": "2026-11-04" },
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/live-sessions",
+    "env": [
+      "AXF_LIVE_DIR",
+      "AXF_RECORDINGS_DIR",
+      "AXF_LIVE_SWEEP"
+    ],
+    "mentions": [
+      "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "help": "help.json",
+  "opens": "main"
+}
