@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-11-03T14:26:22.176Z",
+  "generatedAt": "2026-11-04T21:25:42.257Z",
   "summary": {
     "foundations": {
       "built": 68,
@@ -2121,7 +2121,7 @@
       "parent": "ui.windows",
       "title": "Persist window layouts per app",
       "tag": "suggested",
-      "status": "placeholder",
+      "status": "partial",
       "wave": 2,
       "module": "axf-ui",
       "notes": ""
