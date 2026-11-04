@@ -35,6 +35,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
 | Scrollable menus that stay on screen (Urgent `menu-scroll`, Opus; Brett Nov 3 voice: "The application menus need to be scrollable when they reach beyond the screen."; agent Janitor Joey): menu-fit@1 engine (`core/engines/menufit.ts`) + `react/components/menuFit.ts`; app menu drop-downs, submenus, context menus and plugin ⋯ menus flip / shift to stay on screen (visual viewport, safe areas, keyboard) and scroll inside with fade + chevron hints; browser checks 7/16 → 16/16 | PR open (UI Review waiting) | `claude/menu-scroll` | [#268](https://github.com/MossesX/AmberX-AXF/pull/268) (UI Review r-20261103-2637fd91) | Android twin deferred (PORTING.md). Report `_claude/builds/reports/menu-scroll.md` | 2026-11-03 |
+| Auto-land finished builds (Urgent `auto-land`, Opus, 8 steps, agent Earl the Ear; relaunch as auto-land-2; Brett Nov 3, voice: "zero tokens for merging"): plain-script pipeline `push-banner/land/land.mjs` (host cron 3 min) lands every finished build: worktree cleaned, main merged in (builds files newer-wins, logs unioned), PR opened, CI started; push banner auto-merge merges in dependency order, UI Review stays the gate; status-only commits no longer make PRs behind; blocked = one plain push, agent only for code conflict / red CI; console overview/queue/plan read the store + "Console sees the builds" check; settings + Land now/Hold/Release (REST + MCP + CLI); no-LLM test | review (all 8 steps done; PR open, UI Review r-20261103-6537ada7 waiting) | `claude/auto-land-2` | [#270](https://github.com/MossesX/AmberX-AXF/pull/270) | Also opened: [#267](https://github.com/MossesX/AmberX-AXF/pull/267) (red main CI: widget fixture shadowed by the chrome import; xLayout opens), [axHub#36](https://github.com/MossesX/axHub/pull/36) (claude-sync leaves `.claude-sync-hold` checkouts alone; installed on the VPS already). #265 crew-retrain: UI waiting + real code conflicts with main, the runner hands those to an agent once live. Report `_claude/builds/reports/auto-land.md`. Brett: approve the Auto-land settings shots in UI Review | 2026-11-03 |
 | URGENT main CI green (Current `urgent-main-ci-green`, Opus; agent Earl the Ear, headless): main red on 4 jobs (7 failures, 3 hidden behind the first). Root causes: gen-fixtures.mts imported WIDGET_TYPES/TONES from widgets and chrome (chrome shadowed, widgets.json wrong → check-widgets + Kotlin ConformanceTest); xLayout `opens: false` with a view; KernelTest expected the old thin banner; repo profiles.json missing `current`; deploy test.sh used empty commits after the `_claude`-only skip; 4 unmarked build-orchestrator references (lifecycle). Plus s4: ci-main check names failing jobs, Auto fix queues new `ci-fix` job (Greenlight Gina) | review (auto-merge once green) | `claude/urgent-main-ci-green` | #284 | After merge: update waiting PRs (#265 #266 #268 #269 #271 #279) from main. Report `_claude/builds/reports/urgent-main-ci-green.md` | 2026-11-03 |
 | Window resize fix (Current `window-resize-fix`, urgent, Opus; agent Landin' Lenny; Brett Nov 3 voice: "All floating windows need to be resizable" + Terminal settings Opens in = Dialog did nothing): handles in a grips layer straddling the border, touch-sized (row height on phones), corner grip on every frame; windows share one z layer so dialogs stay on top; `settings.open` honours a plugin's Opens in = Dialog. Merge on Brett's order | review (merging on Brett's order) | `claude/window-resize-fix` | (see PR) | Report `_claude/builds/reports/window-resize-fix.md`. Follow-up: remember window size (engine, Fable) | 2026-11-03 |
 | Land everything (Urgent `land-everything`, Opus; Brett Nov 3 voice: "Just go. Get everything live."): 17 AmberX-AXF PRs + 3 axHub PRs landed on main and deployed; banner PRs #251 #254 and banners-one left for Brett | complete | `claude/land-everything` | — | Report `_claude/builds/reports/land-everything.md`. Brett: banner PRs, hub delete for kill-patches-pilot s7 | 2026-11-03 |
@@ -159,6 +160,13 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 
 ## To carry on
+
+### Auto-land finished builds (`auto-land`, Urgent, Opus) — branch `claude/auto-land-2`, PR #270
+- **Asked (Brett, Nov 3 2026, voice):** finished builds land by themselves with zero tokens: reuse the push banner's merge path, plain scripts only; an agent only for a real code conflict or red CI needing code; UI Review stays the gate; stop claude-sync dropping files into finished worktrees; blocked = one plain push; fix the empty console overview; settings + commands; a no-LLM test.
+- **On the branch:** `<console plugins>/push-banner/land/` (land-core.mjs, land.mjs, land.test.mjs), push banner server/UI/help/plugin.json, `deploy/install-console.sh` (cron `axf-auto-land`), CI step, `framework/plan/builds-store-core.mjs` storeSummary, build-queue/engine-rpc/mcp_server, build-orchestrator health item + test.py, report `_claude/builds/reports/auto-land.md`.
+- **Left:** merge (push banner; UI Review r-20261103-6537ada7 waits for Brett). #267 (main CI fix): the last two red checks (deploy self-test, kernel banner widget test) were fixed in d9b9f000 (19:0x UTC); the banner has since merged main in (head a48687a6). Its CI result was unreadable at 19:42 UTC because the shared GitHub token was out of calls again (banner alert `github:rate-limit`). Check #267's checks; if green, it merges by itself. After merge: `tail /var/log/axf-auto-land.log`, `node <console plugins>/push-banner/land/land.mjs list`. axHub#36 (claude-sync hold) already installed on the VPS.
+- **Checks:** `node <console plugins>/push-banner/land/land.test.mjs`, `python3 <console plugins>/push-banner/test.py`, `python3 <console plugins>/build-orchestrator/test.py`.
+- **First message:** "Carry on auto-land (Urgent): read the To carry on block and `_claude/builds/reports/auto-land.md`, check PR #267's red jobs and #270's CI, fix what's red."
 
 ### Model upgrades need Brett (`model-upgrade-approval`, Urgent, Opus)
 - **Asked (Brett, Nov 3 2026, voice):** a build may switch to a lower model on its own (recorded); switching to a higher model needs Brett's explicit approval (console click or axHub confirm, never veto, never self-approved). Ranking in model-policy (Fable above Opus). Enforce in orchestrator approve/phase logic, console server, launcher/build_start/agent jobs, briefs; axHub approval path; audit; tests; PR.
@@ -570,26 +578,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 20:00 UTC · `window-resize-fix` s1 done (current) · foreign-write
-- 2026-11-03 20:00 UTC · `terminal-sessions-nav` added (8 steps) (current) · foreign-write
-- 2026-11-03 20:00 UTC · `profile-manager` added (6 steps) (current) · foreign-write
-- 2026-11-03 20:00 UTC · `home-cards-live` s1 done (urgent) · orchestrator
-- 2026-11-03 20:00 UTC · `home-cards-live` s2 done (urgent) · orchestrator
-- 2026-11-03 20:00 UTC · `home-cards-live` s4 done (urgent) · orchestrator
-- 2026-11-03 20:00 UTC · `home-cards-live` s5 done (urgent) · orchestrator
-- 2026-11-03 20:01 UTC · `window-resize-fix` s2 done (current) · foreign-write
-- 2026-11-03 20:02 UTC · `profile-manager` s1 done, → running (current) · orchestrator
-- 2026-11-03 20:04 UTC · `profile-manager` s2 done (current) · orchestrator
-- 2026-11-03 20:06 UTC · `window-resize-fix` s2 done (current) · foreign-write
-- 2026-11-03 20:06 UTC · `terminal-sessions-nav` added (24 steps) (current) · foreign-write
-- 2026-11-03 20:06 UTC · `profile-manager` added (6 steps) (current) · foreign-write
-- 2026-11-03 20:00 UTC · `window-resize-fix` branch claude/window-resize-fix, note (current) · reconciler
-- 2026-11-03 20:10 UTC · `window-resize-fix` PR #278, merged, note (current) · reconciler
-- 2026-11-03 19:59 UTC · `window-resize-fix` s2 done (current) · orchestrator
-- 2026-11-03 20:00 UTC · `window-resize-fix` note (current) · foreign-write
-- 2026-11-03 20:00 UTC · `window-resize-fix` branch claude/window-resize-fix, PR #278 (current) · builds-live
-- 2026-11-03 20:12 UTC · `window-resize-fix` note (current) · foreign-write
-- 2026-11-03 20:12 UTC · `profile-manager` s1 done, s2 done (current) · foreign-write
 - 2026-11-03 20:12 UTC · `window-resize-fix` s3 done, → built (current) · orchestrator
 - 2026-11-03 20:12 UTC · `window-resize-fix` note (current) · orchestrator
 - 2026-11-03 20:12 UTC · `window-resize-fix` → complete (current) · orchestrator
@@ -970,3 +958,23 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 00:10 UTC · `molly-banners` s5 done, → built (current) · orchestrator
 - 2026-11-04 00:11 UTC · `terminal-drag-chain-tree` s6 done (current) · foreign-write
 - 2026-11-04 00:11 UTC · `molly-banners` note (current) · orchestrator
+- 2026-11-04 00:10 UTC · `molly-banners` s2 done, s3 done, note (current) · foreign-write
+- 2026-11-04 00:10 UTC · `lenny-land-all` added (7 steps) (current) · foreign-write
+- 2026-11-04 00:11 UTC · `plugin-lazy-load` → running (current) · orchestrator
+- 2026-11-04 00:31 UTC · `browser-automation` added (16 steps) (current) · orchestrator
+- 2026-11-04 00:32 UTC · `browser-automation` → running (current) · orchestrator
+- 2026-11-04 00:35 UTC · `terminal-drag-chain-tree` s6 done, → complete, note (current) · foreign-write
+- 2026-11-04 00:35 UTC · `molly-nav-submenus` s1 done, s2 done, s3 done, s4 done, s5 done, → complete, note (current) · foreign-write
+- 2026-11-04 00:35 UTC · `molly-banners` s5 done, → complete, note (current) · foreign-write
+- 2026-11-04 00:35 UTC · `gizmo-companion` s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s14 done, s15 done, s18 done, note (current) · foreign-write
+- 2026-11-04 00:35 UTC · `browser-automation` added (16 steps) (current) · foreign-write
+- 2026-11-04 00:40 UTC · `browser-automation` added (16 steps) (current) · foreign-write
+- 2026-11-04 00:40 UTC · `profile-switcher-widget` added (5 steps) (current) · orchestrator
+- 2026-11-04 00:41 UTC · `profile-switcher-widget` note (current) · orchestrator
+- 2026-11-04 00:40 UTC · `plugin-lazy-load` s1 done (current) · orchestrator
+- 2026-11-04 00:41 UTC · `profile-switcher-widget` added (5 steps) (current) · foreign-write
+- 2026-11-04 00:41 UTC · `plugin-lazy-load` s2 done (current) · orchestrator
+- 2026-11-04 00:42 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 00:48 UTC · `plugin-lazy-load` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 00:48 UTC · `profile-switcher-widget` added (5 steps) (current) · foreign-write
+- 2026-11-04 00:48 UTC · `browser-automation` s1 done (current) · orchestrator
