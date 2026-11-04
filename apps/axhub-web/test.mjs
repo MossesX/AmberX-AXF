@@ -7,7 +7,7 @@
  * Nothing here touches the network: every case is a hand-written reply.
  */
 import { keepSessionOnFailure, MISSES_SHOWN, sameJson, showReading, shownError } from './src/hub/core.ts';
-import { directRunRows, ranUnderPass, ranWithoutApproval, passClock, passCovers, passSecondsLeft, patternList } from './src/hub/core.ts';
+import { directRunRows, ranUnderPass, ranWithoutApproval, passClock, passCovers, passSecondsLeft, patternList, passCoverage, passGrantBody, passScopeChoices, filterPassTools } from './src/hub/core.ts';
 import { countdownKey, nextSort, replyBase, requestedKey, shownRow, sourceChips, sourceKind, sourceWho, afterPick, approveNowPaths, bashCommand, clipboardFor, clock, errorText, handoffGauges, heldActions, localToUtcMinute, parseRoute, pickOf, waitingCount, waitingTitle, platformOf, relTime, routeHash, safeFilePath, sessionsFor, signInUrl, stepGroups } from './src/hub/core.ts';
 import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../framework/libs/hub/apps.ts';
 
@@ -371,6 +371,30 @@ console.log('Approvals log — calls that ran without an approval (decision 110)
   eq(passCovers({ service: 'axf-console', tools: ['*'] }), 'axf-console · every tool', '* reads as every tool');
   eq(patternList(' tokens.theme, tokens.layout  tokens.theme '), ['tokens.theme', 'tokens.layout'], 'patterns from a field');
   eq(patternList('  '), undefined, 'an empty field is no patterns');
+  // the new-pass form (axHub decision 114)
+  const opts = {
+    everything: { label: 'Everything', description: 'x' },
+    minutes: { min: 1, max: 240, presets: [15, 30, 60, 120, 240] },
+    services: [
+      { namespace: 'axf-console', label: 'AXF console', type: 'mcp', enabled: true, narrow: true, toolsKnown: true, scopes: [{ id: 'tokens.theme', label: 'Colour theme' }], tools: [{ name: 'control_set', description: 'Set a token', policy: 'veto', coverable: true }, { name: 'control_remove', description: 'Remove', policy: 'veto', coverable: false }] },
+      { namespace: 'vps', label: 'VPS', type: 'ssh', enabled: true, narrow: false, why: 'a shell can do anything', toolsKnown: true, scopes: [], tools: [] },
+    ],
+  };
+  const form = { service: '', scope: 'all', tools: null, minutes: 120, reason: '', includeIrreversible: false };
+  eq(passGrantBody(form, opts), { body: { minutes: 120, reason: 'Everything for 120 minutes' } }, 'Everything needs nothing else');
+  eq(passGrantBody({ ...form, includeIrreversible: true, reason: 'Clean-up' }, opts), { body: { minutes: 120, reason: 'Clean-up', include_irreversible: true } }, 'Everything with irreversible calls');
+  eq(passGrantBody({ ...form, service: 'axf-console', scope: 'tokens.theme', reason: 'Theme' }, opts), { body: { service: 'axf-console', scope: ['tokens.theme'], minutes: 120, reason: 'Theme' } }, 'a scope on one service, all tools');
+  eq(passGrantBody({ ...form, service: 'axf-console', scope: '', tools: ['control_set'], reason: 'Theme' }, opts), { body: { service: 'axf-console', tools: ['control_set'], minutes: 120, reason: 'Theme' } }, 'chosen tools of a whole service');
+  ok(/Everything/.test(passGrantBody({ ...form, service: 'vps', scope: '', reason: 'x' }, opts).error), 'a shell only under Everything, said plainly');
+  ok(/at least one tool/.test(passGrantBody({ ...form, service: 'axf-console', scope: '', tools: [], reason: 'x' }, opts).error), 'no tools picked');
+  ok(/what the pass is for/.test(passGrantBody({ ...form, service: 'axf-console', scope: '' }, opts).error), 'a narrow pass needs a reason');
+  ok(/only go with an Everything/.test(passGrantBody({ ...form, service: 'axf-console', scope: '', includeIrreversible: true, reason: 'x' }, opts).error), 'irreversible only with Everything');
+  ok(/how long/.test(passGrantBody({ ...form, minutes: 999 }, opts).error), 'minutes in range');
+  eq(passScopeChoices(opts, '').map((c) => c.value), ['all', 'tokens.theme'], 'all services: Everything first, then scopes on any service');
+  eq(passScopeChoices(opts, 'axf-console').map((c) => c.value), ['', 'tokens.theme'], 'one service: all of it first');
+  eq(filterPassTools(opts.services[0].tools, 'set token').map((t) => t.name), ['control_set'], 'tool search');
+  eq(passCoverage({ all: true, service: '*', tools: ['*'] }).scope, 'Everything', 'Everything reads as Everything');
+  eq(passCoverage({ service: 'axf-console', tools: ['*'], scope: ['tokens.theme'] }), { services: 'axf-console', tools: 'All tools', scope: 'Only tokens.theme' }, 'theme-only reads as theme-only');
   const under = { status: 'ran under pass', qualifiedTool: 'axf-console.control_set', summary: 'axf-console.control_set with arguments {"target":"tokens.theme"}', decidedBy: 'pass p1 (web:brett)', passId: 'p1', passGrantedBy: 'web:brett', passExpiresAt: '2026-11-03T15:30:00.000Z', ranAt: '2026-11-03T15:01:00.000Z' };
   ok(ranUnderPass(under) && ranWithoutApproval(under), 'a call under a pass has no request page: shown inline');
   ok(!ranUnderPass({ status: 'ran' }), 'an approved call is not under a pass');
