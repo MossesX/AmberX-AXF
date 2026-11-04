@@ -48,6 +48,12 @@ Startup bundle 4.46 MB → 2.07 MB (gzip 1.20 → 0.57 MB, −53 %); JS chunks 3
 | plugin-lifecycle (every plugin, clean checkout) | pass |
 | `check-theme`, `check-controls`, `check-toolbars` | pass |
 
+## Landed
+
+PR #298 merged `f15709c32` (2026-11-04 14:24 UTC) after CI passed on all four jobs (run 41845605537). The
+console auto-update rebuilt the container at 14:28; a headless browser against it shows the menu, the banner and
+`/axf-plugin-chunks.json`, stays responsive, and `GET /api/plugins/plugin-manager/lazy` answers with the defaults.
+
 ## Follow-up
 
 - Phone time-to-interactive not measured (no device/screenshot pass on this landing, per brief).
