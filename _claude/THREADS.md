@@ -692,48 +692,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:09 UTC · `crew-profiles` s1 done (current) · orchestrator
-- 2026-11-04 14:09 UTC · `crew-profiles` s2 done (current) · orchestrator
-- 2026-11-04 14:10 UTC · `crew-profiles` s1 done, s2 done (current) · foreign-write
-- 2026-11-04 14:10 UTC · `land-round-2` PR #313, note (current) · reconciler
-- 2026-11-04 14:10 UTC · `terminal-no-focus` note (current) · reconciler
-- 2026-11-04 14:11 UTC · `land-round-2` note (current) · foreign-write
-- 2026-11-04 14:11 UTC · `crew-profiles` s3 done (current) · orchestrator
-- 2026-11-04 14:11 UTC · `terminal-no-focus` note (current) · foreign-write
-- 2026-11-04 14:11 UTC · `urgent-land-lazy-loader` s3 done, note (current) · foreign-write
-- 2026-11-04 14:11 UTC · `follow-amber-switch` s5 done, → complete (current) · foreign-write
-- 2026-11-04 14:11 UTC · `crew-profiles` added (6 steps) (current) · foreign-write
-- 2026-11-04 14:11 UTC · `land-round-2` note (current) · orchestrator
-- 2026-11-04 14:12 UTC · `land-round-2` note (current) · foreign-write
-- 2026-11-04 14:15 UTC · `urgent-land-gizmo-chat` added (4 steps) (current) · foreign-write
-- 2026-11-04 14:15 UTC · `console-wake-finish` added (5 steps) (current) · foreign-write
-- 2026-11-04 14:16 UTC · `console-wake-finish` added (5 steps) (current) · foreign-write
-- 2026-11-04 14:16 UTC · `profile-lists-home-card` added (4 steps) (current) · orchestrator
-- 2026-11-04 14:16 UTC · `profile-lists-home-card` s1 done, → running (current) · orchestrator
-- 2026-11-04 14:15 UTC · `console-wake-finish` added (5 steps) (current) · orchestrator
-- 2026-11-04 14:16 UTC · `profile-lists-home-card` added (4 steps) (current) · foreign-write
-- 2026-11-04 14:17 UTC · `land-round-2` note (current) · foreign-write
-- 2026-11-04 14:17 UTC · `urgent-land-gizmo-chat` added (4 steps) (current) · foreign-write
-- 2026-11-04 14:17 UTC · `console-wake-finish` added (5 steps) (current) · foreign-write
-- 2026-11-04 14:17 UTC · `profile-lists-home-card` added (4 steps) (current) · foreign-write
-- 2026-11-04 14:16 UTC · `console-wake-finish` s1 done, → running (current) · orchestrator
-- 2026-11-04 14:17 UTC · `console-wake-finish` s3 done (current) · orchestrator
-- 2026-11-04 14:17 UTC · `crew-profiles` s4 done (current) · foreign-write
-- 2026-11-04 14:17 UTC · `console-wake-finish` s1 done (current) · foreign-write
-- 2026-11-04 14:17 UTC · `crew-profiles` s4 done (current) · orchestrator
-- 2026-11-04 14:17 UTC · `profile-lists-home-card` note (current) · orchestrator
-- 2026-11-04 14:17 UTC · `profile-switcher-widget` → running, note (current) · orchestrator
-- 2026-11-04 14:17 UTC · `console-wake-finish` s3 done (current) · foreign-write
-- 2026-11-04 14:18 UTC · `profile-lists-home-card` s2 done (current) · orchestrator
-- 2026-11-04 14:19 UTC · `profile-switcher-widget` note (current) · foreign-write
-- 2026-11-04 14:19 UTC · `profile-lists-home-card` s2 done, note (current) · foreign-write
-- 2026-11-04 14:19 UTC · `crew-profiles` s5 done (current) · orchestrator
-- 2026-11-04 14:20 UTC · `crew-profiles` branch claude/crew-profiles (current) · builds-live
-- 2026-11-04 14:14 UTC · `urgent-land-gizmo-chat` added (4 steps) (current) · orchestrator
-- 2026-11-04 14:14 UTC · `urgent-land-gizmo-chat` → running (current) · orchestrator
-- 2026-11-04 14:21 UTC · `profile-switcher-widget` note (current) · foreign-write
-- 2026-11-04 14:21 UTC · `crew-profiles` s4 done, s5 done (current) · foreign-write
-- 2026-11-04 14:21 UTC · `urgent-land-gizmo-chat` added (4 steps) (current) · foreign-write
 - 2026-11-04 14:21 UTC · `console-wake-finish` added (5 steps) (current) · foreign-write
 - 2026-11-04 14:21 UTC · `profile-lists-home-card` added (4 steps) (current) · foreign-write
 - 2026-11-04 14:21 UTC · `urgent-land-gizmo-chat` s1 done, → running (current) · orchestrator
@@ -1092,6 +1050,48 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 17:31 UTC · `land-round-2` merged, note (current) · reconciler
 - 2026-11-04 17:34 UTC · `land-merge-queue-first` added (6 steps) (urgent) · orchestrator
 - 2026-11-04 17:39 UTC · `live-sessions-plugin` → complete, note (current) · builds-live
+- 2026-11-04 17:42 UTC · `live-sessions-plugin` note (current) · orchestrator
+- 2026-11-04 17:52 UTC · `live-sessions-plugin` note (current) · foreign-write
+- 2026-11-04 17:53 UTC · `model-thinking-audit` added (8 steps) (current) · foreign-write
+- 2026-11-04 17:52 UTC · `land-merge-queue-first` → running (urgent) · orchestrator
+- 2026-11-04 17:52 UTC · `land-merge-queue-first` branch claude/merge-queue, PR #320 (urgent) · builds-live
+- 2026-11-04 17:53 UTC · `model-thinking-audit` added (8 steps) (current) · orchestrator
+- 2026-11-04 17:53 UTC · `model-thinking-audit` → running (current) · orchestrator
+- 2026-11-04 17:53 UTC · `model-thinking-audit` branch claude/model-thinking-audit (current) · builds-live
+- 2026-11-04 17:55 UTC · `live-sessions-plugin` note (current) · foreign-write
+- 2026-11-04 17:55 UTC · `model-thinking-audit` added (8 steps) (current) · foreign-write
+- 2026-11-04 18:09 UTC · `model-thinking-audit` s1 done (current) · orchestrator
+- 2026-11-04 18:09 UTC · `model-thinking-audit` s2 done (current) · orchestrator
+- 2026-11-04 18:09 UTC · `model-thinking-audit` s3 done (current) · orchestrator
+- 2026-11-04 18:20 UTC · `model-thinking-audit` s4 done (current) · foreign-write
+- 2026-11-04 18:20 UTC · `model-thinking-audit` s4 done (current) · orchestrator
+- 2026-11-04 18:24 UTC · `model-thinking-audit` s1 done, s2 done, s3 done, s4 done (current) · foreign-write
+- 2026-11-04 18:24 UTC · `build-todo-sync` added (7 steps) (current) · build-todo-sync (Snap Sully)
+- 2026-11-04 18:24 UTC · `build-todo-sync` added (7 steps) (current) · foreign-write
+- 2026-11-04 18:30 UTC · `build-todo-sync` branch claude/build-todo-sync, note (current) · reconciler
+- 2026-11-04 18:33 UTC · `build-todo-sync` branch claude/brett-todo-sync, PR #333 (current) · builds-live
+- 2026-11-04 18:37 UTC · `build-todo-sync` s6 done (current) · build-todo-sync (Snap Sully)
+- 2026-11-04 18:37 UTC · `build-todo-sync` note (current) · build-todo-sync (Snap Sully)
+- 2026-11-04 18:37 UTC · `build-todo-sync` s6 done, note (current) · foreign-write
+- 2026-11-04 18:41 UTC · `build-todo-sync` added (7 steps) (current) · foreign-write
+- 2026-11-04 18:41 UTC · `model-thinking-audit` s5 done (current) · orchestrator
+- 2026-11-04 18:41 UTC · `model-thinking-audit` s6 done (current) · orchestrator
+- 2026-11-04 18:41 UTC · `model-thinking-audit` s7 done (current) · orchestrator
+- 2026-11-04 18:42 UTC · `fable-review-nov3` note (current) · orchestrator
+- 2026-11-04 18:45 UTC · `fable-review-nov3` note (current) · foreign-write
+- 2026-11-04 18:45 UTC · `model-thinking-audit` s5 done, s6 done, s7 done (current) · foreign-write
+- 2026-11-04 18:45 UTC · `handoff-2` added (11 steps) (current) · orchestrator
+- 2026-11-04 18:45 UTC · `handoff-2` → running (current) · orchestrator
+- 2026-11-04 18:55 UTC · `handoff-2` added (11 steps) (current) · foreign-write
+- 2026-11-04 19:00 UTC · `build-todo-sync` → pending, note (current) · reconciler
+- 2026-11-04 19:00 UTC · `build-todo-sync` note (current) · foreign-write
+- 2026-11-04 19:01 UTC · `handoff-2` s1 done (current) · orchestrator
+- 2026-11-04 19:01 UTC · `handoff-2` s2 done (current) · orchestrator
+- 2026-11-04 19:02 UTC · `build-todo-sync` note (current) · foreign-write
+- 2026-11-04 19:02 UTC · `handoff-2` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 19:03 UTC · `model-thinking-audit` PR #334 (current) · builds-live
+- 2026-11-04 19:03 UTC · `model-thinking-audit` s8 done, → built (current) · orchestrator
+- 2026-11-04 19:03 UTC · `model-thinking-audit` note (current) · orchestrator
 
 ## Token passes (log)
 
