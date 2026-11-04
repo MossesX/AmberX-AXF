@@ -14,6 +14,8 @@ export interface ChromeField {
   labels?: Record<string, string>;
   min?: number;
   max?: number;
+  /** the asset type's engine default when the asset leaves the field out */
+  default?: string | number | boolean;
   group: ChromeFieldGroup;
   level: ChromeLevel;
 }

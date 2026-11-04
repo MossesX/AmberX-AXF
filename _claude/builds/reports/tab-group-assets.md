@@ -97,6 +97,18 @@ Per-app custom settings interfaces (addendum 2): console (`axf-console`), Molly,
 | `node framework/cli/axf.mjs validate --framework` + the four apps | ✓ |
 | `npx tsc --noEmit` in apps/console-web, amberx-droid, axhub-web, molly (re-baked with `rebake.mjs apply`) | ✓ 0 errors in each (Molly checked with the console's TypeScript: its node_modules is not installed in this sandbox) |
 
+## Screenshots
+
+UI Review → Screenshots, group **"tab-group-assets - Nov 4 11:38 AM"** (nine shots, console app, screen ui-review; built console served by `vite preview` with `/api/me` + the UI Review items stubbed, Playwright Chromium, desktop 1280×800 and phone 412×915 with touch). Files: `_claude/builds/reports/tab-group-assets/shots/`.
+
+| Shot | What it shows |
+|---|---|
+| `desktop-ui-review.png`, `phone-ui-review.png` | UI Review: Review / Screenshots and the category row are TabGroups (underline, count badges), the row Brett pointed at |
+| `desktop-ui-review-right-click.png`, `phone-ui-review-right-click.png` | right-click / long-press on the category row: **Tab group settings…**, **Change tab style…**, **Move ▸** first, then the other context items |
+| `desktop-tab-group-settings.png`, `phone-tab-group-settings.png` | the Chrome settings dialog for `ui-review.sections`, laid out by `settings/chrome-tab-group`: level bar, Look / Behaviour / Asset / Interface tabs (themselves a TabGroup), every field at its asset value |
+| `desktop-tab-group-settings-chips.png`, `phone-tab-group-settings-chips.png` | Tab style → Chips: the row behind the dialog restyles live, "Set for this one" and Reset appear |
+| `desktop-tab-group-asset-picker.png` | the Asset tab: the app's tab style plus every tab-group starter for this one row |
+
 ## Known gaps
 - Expenses runs its own vendored `@axf/core` line (not asset@1 files): its six custom settings interfaces ship as files under `apps/expenses/src/assets/settings/` for its port; nothing in Expenses reads them yet.
 - The Terminal tab strip keeps its own drag and window menu; it is in the ratchet baseline (2 findings).

@@ -99,53 +99,54 @@ const SURFACE = ['flat', 'raised', 'glass'];
 /**
  * Every field the chrome settings dialog offers, per type: the asset type's own data fields a person may override
  * for one instance (the asset itself stays untouched; the override is a setting). `group` = the dialog tab, `level`
- * = settings-ui@1 level it shows from. Kinds: choice (options), toggle, number (min/max).
+ * = settings-ui@1 level it shows from, `default` = the value the asset type's engine uses when the asset leaves the
+ * field out (so a dialog always shows a value). Kinds: choice (options), toggle, number (min/max).
  */
 export const CHROME_FIELDS = {
   'tab-group': [
-    { key: 'style', label: 'Tab style', kind: 'choice', options: ['underline', 'pills', 'boxed', 'segmented', 'plain', 'chips'], group: 'look', level: 'simple' },
-    { key: 'position', label: 'Position', kind: 'choice', options: ['top', 'bottom', 'left', 'right'], group: 'look', level: 'simple' },
-    { key: 'display', label: 'Show', kind: 'choice', options: ['both', 'text', 'icons'], labels: { both: 'Icons + text', text: 'Text', icons: 'Icons' }, group: 'look', level: 'simple' },
-    { key: 'density', label: 'Size', kind: 'choice', options: DENSITY, group: 'look', level: 'basic' },
-    { key: 'align', label: 'Align', kind: 'choice', options: ['start', 'center', 'end', 'stretch'], group: 'look', level: 'basic' },
-    { key: 'divider', label: 'Rule under the row', kind: 'toggle', group: 'look', level: 'basic' },
-    { key: 'badges', label: 'Count badges', kind: 'toggle', group: 'look', level: 'basic' },
-    { key: 'overflow', label: 'When tabs do not fit', kind: 'choice', options: ['scroll', 'wrap', 'more', 'dropdown'], labels: { scroll: 'Scroll', wrap: 'Wrap', more: 'More menu', dropdown: 'Dropdown' }, group: 'behaviour', level: 'basic' },
-    { key: 'sticky', label: 'Sticky', kind: 'toggle', group: 'behaviour', level: 'basic' },
-    { key: 'collapsible', label: 'Collapsible', kind: 'toggle', group: 'behaviour', level: 'basic' },
-    { key: 'rememberLast', label: 'Remember last tab', kind: 'toggle', group: 'behaviour', level: 'basic' },
-    { key: 'closable', label: 'Closable (where the host allows)', kind: 'toggle', group: 'behaviour', level: 'developer' },
-    { key: 'reorderable', label: 'Reorderable (where the host allows)', kind: 'toggle', group: 'behaviour', level: 'developer' },
+    { key: 'style', label: 'Tab style', kind: 'choice', options: ['underline', 'pills', 'boxed', 'segmented', 'plain', 'chips'], default: "underline", group: 'look', level: 'simple' },
+    { key: 'position', label: 'Position', kind: 'choice', options: ['top', 'bottom', 'left', 'right'], default: "top", group: 'look', level: 'simple' },
+    { key: 'display', label: 'Show', kind: 'choice', options: ['both', 'text', 'icons'], labels: { both: 'Icons + text', text: 'Text', icons: 'Icons' }, default: "both", group: 'look', level: 'simple' },
+    { key: 'density', label: 'Size', kind: 'choice', options: DENSITY, default: 'regular', group: 'look', level: 'basic' },
+    { key: 'align', label: 'Align', kind: 'choice', options: ['start', 'center', 'end', 'stretch'], default: "start", group: 'look', level: 'basic' },
+    { key: 'divider', label: 'Rule under the row', kind: 'toggle', default: true, group: 'look', level: 'basic' },
+    { key: 'badges', label: 'Count badges', kind: 'toggle', default: true, group: 'look', level: 'basic' },
+    { key: 'overflow', label: 'When tabs do not fit', kind: 'choice', options: ['scroll', 'wrap', 'more', 'dropdown'], labels: { scroll: 'Scroll', wrap: 'Wrap', more: 'More menu', dropdown: 'Dropdown' }, default: "scroll", group: 'behaviour', level: 'basic' },
+    { key: 'sticky', label: 'Sticky', kind: 'toggle', default: false, group: 'behaviour', level: 'basic' },
+    { key: 'collapsible', label: 'Collapsible', kind: 'toggle', default: false, group: 'behaviour', level: 'basic' },
+    { key: 'rememberLast', label: 'Remember last tab', kind: 'toggle', default: false, group: 'behaviour', level: 'basic' },
+    { key: 'closable', label: 'Closable (where the host allows)', kind: 'toggle', default: true, group: 'behaviour', level: 'developer' },
+    { key: 'reorderable', label: 'Reorderable (where the host allows)', kind: 'toggle', default: true, group: 'behaviour', level: 'developer' },
   ],
   toolbar: [
-    { key: 'variant', label: 'Buttons', kind: 'choice', options: ['icons', 'icons-labels', 'labels'], labels: { icons: 'Icons', 'icons-labels': 'Icons + labels', labels: 'Labels' }, group: 'look', level: 'simple' },
-    { key: 'align', label: 'Align', kind: 'choice', options: ['start', 'center', 'spread'], group: 'look', level: 'basic' },
-    { key: 'density', label: 'Size', kind: 'choice', options: DENSITY, group: 'look', level: 'basic' },
-    { key: 'surface', label: 'Surface', kind: 'choice', options: SURFACE, group: 'look', level: 'basic' },
-    { key: 'divider', label: 'Rule between groups', kind: 'toggle', group: 'look', level: 'basic' },
-    { key: 'showSearch', label: 'Search box', kind: 'toggle', group: 'behaviour', level: 'basic' },
-    { key: 'collapsible', label: 'Collapsible', kind: 'toggle', group: 'behaviour', level: 'basic' },
+    { key: 'variant', label: 'Buttons', kind: 'choice', options: ['icons', 'icons-labels', 'labels'], labels: { icons: 'Icons', 'icons-labels': 'Icons + labels', labels: 'Labels' }, default: "icons", group: 'look', level: 'simple' },
+    { key: 'align', label: 'Align', kind: 'choice', options: ['start', 'center', 'spread'], default: "start", group: 'look', level: 'basic' },
+    { key: 'density', label: 'Size', kind: 'choice', options: DENSITY, default: 'regular', group: 'look', level: 'basic' },
+    { key: 'surface', label: 'Surface', kind: 'choice', options: SURFACE, default: 'flat', group: 'look', level: 'basic' },
+    { key: 'divider', label: 'Rule between groups', kind: 'toggle', default: true, group: 'look', level: 'basic' },
+    { key: 'showSearch', label: 'Search box', kind: 'toggle', default: false, group: 'behaviour', level: 'basic' },
+    { key: 'collapsible', label: 'Collapsible', kind: 'toggle', default: false, group: 'behaviour', level: 'basic' },
   ],
   banner: [
-    { key: 'surface', label: 'Surface', kind: 'choice', options: ['flat', 'raised', 'accent'], group: 'look', level: 'simple' },
-    { key: 'height', label: 'Height', kind: 'number', min: 16, max: 48, group: 'look', level: 'basic' },
-    { key: 'divider', label: 'Rule under the banner', kind: 'toggle', group: 'look', level: 'basic' },
+    { key: 'surface', label: 'Surface', kind: 'choice', options: ['flat', 'raised', 'accent'], default: "flat", group: 'look', level: 'simple' },
+    { key: 'height', label: 'Height', kind: 'number', min: 16, max: 48, default: 24, group: 'look', level: 'basic' },
+    { key: 'divider', label: 'Rule under the banner', kind: 'toggle', default: true, group: 'look', level: 'basic' },
   ],
   'nav-menu': [
-    { key: 'style', label: 'Style', kind: 'choice', options: ['list', 'pills', 'rail'], group: 'look', level: 'simple' },
-    { key: 'density', label: 'Size', kind: 'choice', options: DENSITY, group: 'look', level: 'basic' },
-    { key: 'indicator', label: 'Active mark', kind: 'choice', options: ['auto', 'bar', 'fill', 'none'], group: 'look', level: 'basic' },
-    { key: 'showIcons', label: 'Icons', kind: 'toggle', group: 'look', level: 'basic' },
-    { key: 'navStyle', label: 'Sub menus (nav-style)', kind: 'toggle', group: 'behaviour', level: 'developer' },
+    { key: 'style', label: 'Style', kind: 'choice', options: ['list', 'pills', 'rail'], default: "list", group: 'look', level: 'simple' },
+    { key: 'density', label: 'Size', kind: 'choice', options: DENSITY, default: 'regular', group: 'look', level: 'basic' },
+    { key: 'indicator', label: 'Active mark', kind: 'choice', options: ['auto', 'bar', 'fill', 'none'], default: "auto", group: 'look', level: 'basic' },
+    { key: 'showIcons', label: 'Icons', kind: 'toggle', default: true, group: 'look', level: 'basic' },
+    { key: 'navStyle', label: 'Sub menus (nav-style)', kind: 'toggle', default: false, group: 'behaviour', level: 'developer' },
   ],
   'app-menu': [
-    { key: 'density', label: 'Size', kind: 'choice', options: DENSITY, group: 'look', level: 'simple' },
-    { key: 'surface', label: 'Surface', kind: 'choice', options: SURFACE, group: 'look', level: 'basic' },
+    { key: 'density', label: 'Size', kind: 'choice', options: DENSITY, default: 'regular', group: 'look', level: 'simple' },
+    { key: 'surface', label: 'Surface', kind: 'choice', options: SURFACE, default: 'flat', group: 'look', level: 'basic' },
   ],
   'context-menu': [
-    { key: 'variant', label: 'Style', kind: 'choice', options: ['compact', 'roomy', 'glass'], group: 'look', level: 'simple' },
-    { key: 'showIcons', label: 'Icons', kind: 'toggle', group: 'look', level: 'basic' },
-    { key: 'showShortcuts', label: 'Shortcuts', kind: 'toggle', group: 'look', level: 'basic' },
+    { key: 'variant', label: 'Style', kind: 'choice', options: ['compact', 'roomy', 'glass'], default: "compact", group: 'look', level: 'simple' },
+    { key: 'showIcons', label: 'Icons', kind: 'toggle', default: true, group: 'look', level: 'basic' },
+    { key: 'showShortcuts', label: 'Shortcuts', kind: 'toggle', default: true, group: 'look', level: 'basic' },
   ],
 };
 
@@ -181,7 +182,9 @@ export function chromeInstanceData(type, base, override) {
 /** The value one field has after an override, else in the base, else undefined. */
 export function chromeFieldValue(type, base, override, key) {
   const o = normalizeInstanceOverride(type, override);
-  return key in o ? o[key] : isObj(base) ? base[key] : undefined;
+  if (key in o) return o[key];
+  if (isObj(base) && base[key] !== undefined && base[key] !== null) return base[key];
+  return CHROME_FIELDS[type]?.find((f) => f.key === key)?.default;
 }
 
 /** What is wrong with a settings asset that names a chrome type (data.for / data.extends); [] when nothing. */

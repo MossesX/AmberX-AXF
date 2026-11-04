@@ -129,6 +129,7 @@
           "plain",
           "chips"
         ],
+        "default": "underline",
         "group": "look",
         "level": "simple"
       },
@@ -142,6 +143,7 @@
           "left",
           "right"
         ],
+        "default": "top",
         "group": "look",
         "level": "simple"
       },
@@ -159,6 +161,7 @@
           "text": "Text",
           "icons": "Icons"
         },
+        "default": "both",
         "group": "look",
         "level": "simple"
       },
@@ -171,6 +174,7 @@
           "regular",
           "roomy"
         ],
+        "default": "regular",
         "group": "look",
         "level": "basic"
       },
@@ -184,6 +188,7 @@
           "end",
           "stretch"
         ],
+        "default": "start",
         "group": "look",
         "level": "basic"
       },
@@ -191,6 +196,7 @@
         "key": "divider",
         "label": "Rule under the row",
         "kind": "toggle",
+        "default": true,
         "group": "look",
         "level": "basic"
       },
@@ -198,6 +204,7 @@
         "key": "badges",
         "label": "Count badges",
         "kind": "toggle",
+        "default": true,
         "group": "look",
         "level": "basic"
       },
@@ -217,6 +224,7 @@
           "more": "More menu",
           "dropdown": "Dropdown"
         },
+        "default": "scroll",
         "group": "behaviour",
         "level": "basic"
       },
@@ -224,6 +232,7 @@
         "key": "sticky",
         "label": "Sticky",
         "kind": "toggle",
+        "default": false,
         "group": "behaviour",
         "level": "basic"
       },
@@ -231,6 +240,7 @@
         "key": "collapsible",
         "label": "Collapsible",
         "kind": "toggle",
+        "default": false,
         "group": "behaviour",
         "level": "basic"
       },
@@ -238,6 +248,7 @@
         "key": "rememberLast",
         "label": "Remember last tab",
         "kind": "toggle",
+        "default": false,
         "group": "behaviour",
         "level": "basic"
       },
@@ -245,6 +256,7 @@
         "key": "closable",
         "label": "Closable (where the host allows)",
         "kind": "toggle",
+        "default": true,
         "group": "behaviour",
         "level": "developer"
       },
@@ -252,6 +264,7 @@
         "key": "reorderable",
         "label": "Reorderable (where the host allows)",
         "kind": "toggle",
+        "default": true,
         "group": "behaviour",
         "level": "developer"
       }
@@ -271,6 +284,7 @@
           "icons-labels": "Icons + labels",
           "labels": "Labels"
         },
+        "default": "icons",
         "group": "look",
         "level": "simple"
       },
@@ -283,6 +297,7 @@
           "center",
           "spread"
         ],
+        "default": "start",
         "group": "look",
         "level": "basic"
       },
@@ -295,6 +310,7 @@
           "regular",
           "roomy"
         ],
+        "default": "regular",
         "group": "look",
         "level": "basic"
       },
@@ -307,6 +323,7 @@
           "raised",
           "glass"
         ],
+        "default": "flat",
         "group": "look",
         "level": "basic"
       },
@@ -314,6 +331,7 @@
         "key": "divider",
         "label": "Rule between groups",
         "kind": "toggle",
+        "default": true,
         "group": "look",
         "level": "basic"
       },
@@ -321,6 +339,7 @@
         "key": "showSearch",
         "label": "Search box",
         "kind": "toggle",
+        "default": false,
         "group": "behaviour",
         "level": "basic"
       },
@@ -328,6 +347,7 @@
         "key": "collapsible",
         "label": "Collapsible",
         "kind": "toggle",
+        "default": false,
         "group": "behaviour",
         "level": "basic"
       }
@@ -342,6 +362,7 @@
           "raised",
           "accent"
         ],
+        "default": "flat",
         "group": "look",
         "level": "simple"
       },
@@ -351,6 +372,7 @@
         "kind": "number",
         "min": 16,
         "max": 48,
+        "default": 24,
         "group": "look",
         "level": "basic"
       },
@@ -358,6 +380,7 @@
         "key": "divider",
         "label": "Rule under the banner",
         "kind": "toggle",
+        "default": true,
         "group": "look",
         "level": "basic"
       }
@@ -372,6 +395,7 @@
           "pills",
           "rail"
         ],
+        "default": "list",
         "group": "look",
         "level": "simple"
       },
@@ -384,6 +408,7 @@
           "regular",
           "roomy"
         ],
+        "default": "regular",
         "group": "look",
         "level": "basic"
       },
@@ -397,6 +422,7 @@
           "fill",
           "none"
         ],
+        "default": "auto",
         "group": "look",
         "level": "basic"
       },
@@ -404,6 +430,7 @@
         "key": "showIcons",
         "label": "Icons",
         "kind": "toggle",
+        "default": true,
         "group": "look",
         "level": "basic"
       },
@@ -411,6 +438,7 @@
         "key": "navStyle",
         "label": "Sub menus (nav-style)",
         "kind": "toggle",
+        "default": false,
         "group": "behaviour",
         "level": "developer"
       }
@@ -425,6 +453,7 @@
           "regular",
           "roomy"
         ],
+        "default": "regular",
         "group": "look",
         "level": "simple"
       },
@@ -437,6 +466,7 @@
           "raised",
           "glass"
         ],
+        "default": "flat",
         "group": "look",
         "level": "basic"
       }
@@ -451,6 +481,7 @@
           "roomy",
           "glass"
         ],
+        "default": "compact",
         "group": "look",
         "level": "simple"
       },
@@ -458,6 +489,7 @@
         "key": "showIcons",
         "label": "Icons",
         "kind": "toggle",
+        "default": true,
         "group": "look",
         "level": "basic"
       },
@@ -465,6 +497,7 @@
         "key": "showShortcuts",
         "label": "Shortcuts",
         "kind": "toggle",
+        "default": true,
         "group": "look",
         "level": "basic"
       }
@@ -777,7 +810,7 @@
     "value": [
       "pills",
       "underline",
-      null
+      "underline"
     ]
   },
   "errors": {

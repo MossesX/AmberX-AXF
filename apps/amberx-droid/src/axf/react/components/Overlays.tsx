@@ -209,11 +209,15 @@ export function ContextMenuHost() {
   const own = cm.contributions === false && !!(cm.targets[ctx.target] ?? (!ctx.target || ctx.target === 'default' ? cm.targets.default : undefined));
   const contributed = own ? [] : rt.contributedContext(ctx.target);
   const extra = own ? [] : [...(rt.contextExtras.get(ctx.target)?.(ctx.target, ctx.payload) ?? []), ...contributed];
-  const everywhere = own ? [] : [...rt.contextExtras.entries()].filter(([k]) => k === '*' || k.startsWith('*:')).flatMap(([, f]) => f(ctx.target, ctx.payload));
-  const base = cm.targets[ctx.target] ?? (extra.length ? [] : cm.targets.default ?? []);
+  // chrome-settings@1: the shared Settings / Change / Move block of a tab group, toolbar, banner, nav or menu bar is
+  // that element's own menu (right after the kind's items), never a tail item under the whole default menu
+  const chrome = own ? [] : rt.contextExtras.get('*:chrome')?.(ctx.target, ctx.payload) ?? [];
+  const everywhere = own ? [] : [...rt.contextExtras.entries()].filter(([k]) => (k === '*' || k.startsWith('*:')) && k !== '*:chrome').flatMap(([, f]) => f(ctx.target, ctx.payload));
+  const base = cm.targets[ctx.target] ?? (extra.length || chrome.length ? [] : cm.targets.default ?? []);
   // An element naming a target the asset doesn't know still gets the default menu's contributions (e.g. a plugin link).
-  const fallback = !own && !cm.targets[ctx.target] && !extra.length ? rt.contributedContext('default') : [];
-  const more = [...extra, ...fallback] as unknown as typeof base;
+  const fallback = !own && !cm.targets[ctx.target] && !extra.length && !chrome.length ? rt.contributedContext('default') : [];
+  const chromeSep = extra.length && chrome.length ? [{ id: 'chrome-sep', separator: true }] : [];
+  const more = [...extra, ...chromeSep, ...chrome, ...fallback] as unknown as typeof base;
   const sep = base.length && more.length && !base[base.length - 1]?.separator ? [{ id: 'x-sep', separator: true } as unknown as (typeof base)[number]] : [];
   const tail = everywhere.length ? [{ id: 'ctx-everywhere-sep', separator: true }, ...everywhere] : [];
   const items = [...base, ...sep, ...more, ...(tail as unknown as typeof base)];
