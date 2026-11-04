@@ -118,6 +118,13 @@ else
   APP="$DIR/$SUB"; REV="$(git -C "$DIR" rev-parse --short HEAD)"
 fi
 mkdir -p "$STATE"; chmod 700 "$STATE"
+# The ledger API token (/api/expenses/v1: CLI, console MCP). Made once, kept root-only in $STATE, handed to the container
+# as env and to the console as a file next to its env (its MCP tools read it). Never in the repo or a log.
+TOKF="$STATE/api-token"
+[ -s "$TOKF" ] || { head -c 32 /dev/urandom | base64 | tr -d '/+=\n' | head -c 40 > "$TOKF"; }
+chmod 600 "$TOKF"
+if [ -d "$AXF_DIR/.axf-console" ]; then install -m 600 "$TOKF" "$AXF_DIR/.axf-console/expenses-api-token"; fi
+ENVS+=(-e "EXPENSES_API_TOKEN=$(cat "$TOKF")" -e "EXPENSES_API_USER=${EXPENSES_API_USER:-Brett}")
 [ -f "$APP/Dockerfile" ] || { say "No app at $APP (not on $BRANCH yet?) - the running container is left as it is"; exit 1; }
 
 # ---- 2. image ----

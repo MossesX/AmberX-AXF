@@ -561,6 +561,7 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
     # ------------------------------------------------------------------ Claude settings (Claude plugin, claude-settings@1)
 
     _register_claude_settings_tools(mcp)
+    _register_expenses_tools(mcp)
 
     # ------------------------------------------------------------------ session mirror (Terminal → sessions nav)
 
@@ -660,6 +661,95 @@ def _register_claude_settings_tools(mcp: MCPServer) -> None:
         if not pairs:
             raise ToolError("invalid: send values as {key: value}")
         return await go("set", *pairs, "--by", by or "mcp")
+
+
+# ---------------------------------------------------------------------- Expenses (apps/expenses, /api/expenses/v1)
+
+EXPENSES_URL = os.environ.get("EXPENSES_URL", "https://expenses.amberxai.com").rstrip("/") + "/api/expenses/v1"
+
+
+def _expenses_token() -> str:
+    """EXPENSES_API_TOKEN, else the file apps/expenses/deploy/install.sh writes next to the console's env
+    (<AXF_ROOT>/.axf-console/expenses-api-token). Never logged or returned."""
+    if os.environ.get("EXPENSES_API_TOKEN"):
+        return os.environ["EXPENSES_API_TOKEN"].strip()
+    root = Path(os.environ.get("AXF_ROOT") or Path(__file__).resolve().parents[3])
+    f = root / ".axf-console" / "expenses-api-token"
+    try:
+        return f.read_text().strip()
+    except OSError:
+        return ""
+
+
+def _expenses(method: str, path: str, query: dict[str, Any] | None = None, body: dict[str, Any] | None = None) -> Any:
+    import urllib.error
+    import urllib.parse
+    import urllib.request
+    token = _expenses_token()
+    if not token:
+        raise ToolError("unavailable: no Expenses API token (apps/expenses/deploy/install.sh writes it)")
+    q = {k: str(v) for k, v in (query or {}).items() if v not in (None, "", 0)}
+    url = EXPENSES_URL + path + ("?" + urllib.parse.urlencode(q) if q else "")
+    req = urllib.request.Request(url, method=method, data=json.dumps(body).encode() if body is not None else None,
+                                 headers={"authorization": f"Bearer {token}", "content-type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            text = r.read().decode()
+            return json.loads(text) if "json" in (r.headers.get("content-type") or "") else {"text": text}
+    except urllib.error.HTTPError as e:
+        raise ToolError(f"expenses {e.code}: {e.read().decode()[:300]}") from None
+    except (urllib.error.URLError, TimeoutError) as e:
+        raise ToolError(f"unavailable: {str(e)[:200]}") from None
+
+
+def _register_expenses_tools(mcp: MCPServer) -> None:
+    async def go(method: str, path: str, query: dict[str, Any] | None = None, body: dict[str, Any] | None = None) -> Any:
+        return await anyio.to_thread.run_sync(lambda: _expenses(method, path, query, body))
+
+    def entry(**kw: Any) -> dict[str, Any]:
+        return {k: v for k, v in kw.items() if v is not None}
+
+    @mcp.tool(annotations=READ)
+    async def expenses_list(date_from: str = "", date_to: str = "", category: str = "", account: str = "", kind: str = "", q: str = "", limit: int = 50) -> dict[str, Any]:
+        """Expense Tracker entries (expenses.amberxai.com, Brett's ledger), newest first. Filters: dates YYYY-MM-DD,
+        category, account (payment method, e.g. Discover), kind (expense|income), q (text in merchant / note / lines).
+        Amounts are integer cents (totalCents) plus dollars (total)."""
+        return await go("GET", "/entries", {"from": date_from, "to": date_to, "category": category, "account": account, "kind": kind, "q": q, "limit": limit})
+
+    @mcp.tool(annotations=READ)
+    async def expenses_get(entry_id: str) -> dict[str, Any]:
+        """One Expense Tracker entry by id."""
+        return await go("GET", f"/entries/{entry_id}")
+
+    @mcp.tool(annotations=READ)
+    async def expenses_accounts_list(date_from: str = "", date_to: str = "") -> dict[str, Any]:
+        """Expense Tracker accounts (payment methods) with entry counts, spent and income in cents, and the last date."""
+        return await go("GET", "/accounts", {"from": date_from, "to": date_to})
+
+    @mcp.tool(annotations=READ)
+    async def expenses_totals_get(date_from: str = "", date_to: str = "", category: str = "", account: str = "", by: str = "") -> dict[str, Any]:
+        """Expense Tracker totals in cents: count, spent, income, net; by = category|account|month|merchant breaks it down."""
+        return await go("GET", "/totals", {"from": date_from, "to": date_to, "category": category, "account": account, "by": by})
+
+    @mcp.tool(annotations=READ)
+    async def expenses_export_get(fmt: Literal["csv", "json"] = "csv", date_from: str = "", date_to: str = "") -> dict[str, Any]:
+        """Export Expense Tracker entries as CSV text ({text}) or JSON ({entries})."""
+        return await go("GET", "/export", {"format": fmt, "from": date_from, "to": date_to})
+
+    @mcp.tool(annotations=WRITE)
+    async def expenses_add(merchant: str, amount: float, date: str = "", category: str = "", account: str = "", note: str = "", income: bool = False) -> dict[str, Any]:
+        """Add an Expense Tracker entry: merchant and amount in dollars; date YYYY-MM-DD (today when empty), category,
+        account (payment method), note; income=true for money in. The ledger is backed up once a day before API writes."""
+        return await go("POST", "/entries", body=entry(merchant=merchant, amount=amount, date=date or None, category=category or None,
+                                                         account=account or None, note=note or None, kind="income" if income else None))
+
+    @mcp.tool(annotations=WRITE)
+    async def expenses_edit(entry_id: str, amount: float | None = None, merchant: str | None = None, date: str | None = None, category: str | None = None,
+                            account: str | None = None, note: str | None = None, disputed: bool | None = None) -> dict[str, Any]:
+        """Change fields of an Expense Tracker entry (only the ones given). amount in dollars. The API never deletes;
+        deleting stays in the app."""
+        return await go("PATCH", f"/entries/{entry_id}", body=entry(amount=amount, merchant=merchant, date=date, category=category, account=account,
+                                                                      note=note, disputed=disputed))
 
 
 # ---------------------------------------------------------------------- control@1 tools (framework/spec/CONTROL.md)
