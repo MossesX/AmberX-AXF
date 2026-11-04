@@ -3,7 +3,7 @@
  * tests. The console's server part has the same rules in Python (server/store.py); test.py checks both agree.
  *
  * One entry per request Claude was asked to build, edit, remove or fix something:
- *   { $axf: 'change-log@1', id, createdAt, updatedAt, kind, title, asked, repos[], model, who {session, where, user, host},
+ *   { $axf: 'change-log@1', id, createdAt, updatedAt, kind, title, asked, repos[], model, who {session, where, user, host, agent},
  *     state, steps[{text, state, startedAt, finishedAt, note}],
  *     result {state, summary, branch, commits[{sha, message}], filesChanged, tests {name: {before, after, state}}, links {name: url|path}} | null,
  *     closed {at, by} | null }
@@ -91,7 +91,7 @@ export function normalize(raw, { now = nowIso() } = {}) {
   e.model = redact(raw.model, LIMITS.model);
   const who = raw.who && typeof raw.who === 'object' && !Array.isArray(raw.who) ? raw.who : {};
   e.who = {};
-  for (const k of ['session', 'where', 'user', 'host']) if (who[k] != null && String(who[k]).trim()) e.who[k] = redact(who[k], LIMITS.who);
+  for (const k of ['session', 'where', 'user', 'host', 'agent']) if (who[k] != null && String(who[k]).trim()) e.who[k] = redact(who[k], LIMITS.who);
 
   const steps = raw.steps == null ? [] : raw.steps;
   if (!Array.isArray(steps)) errors.push('steps is a list');
@@ -448,9 +448,11 @@ export function classify(prompt) {
   for (const [kind, re] of WORDS) { const m = re.exec(p); if (m && (!best || m.index < best.at)) best = { kind, word: m[1], at: m.index }; }
   return best ? { change: true, kind: best.kind, word: best.word } : { change: false, kind: null, word: null };
 }
-/** A title from a prompt: its first sentence, cut short, secrets hidden. */
+/** A title from a prompt: its first line's first sentence without Markdown marks (#, **, `), cut short, secrets hidden. */
 export function titleFrom(prompt) {
-  const first = String(prompt ?? '').replace(/\s+/g, ' ').trim().split(/(?<=[.!?])\s/)[0] ?? '';
+  const line = String(prompt ?? '').trim().split('\n').find((l) => l.trim()) ?? '';
+  const plain = line.replace(/^\s*#{1,6}\s+/, '').replace(/\*\*|__|`/g, '').replace(/\s+/g, ' ').trim();
+  const first = plain.split(/(?<=[.!?])\s/)[0] ?? '';
   return redact(first, 100) || 'Untitled change';
 }
 

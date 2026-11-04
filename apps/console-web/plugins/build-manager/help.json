@@ -29,6 +29,24 @@
         "title": "Clear the search",
         "text": "Empties the search box.",
         "kind": "button"
+      },
+      {
+        "target": "show-builds-as-a-chat-log",
+        "title": "Show builds as a chat log",
+        "text": "An expanded build reads like the Chat viewer: what Brett said, the brief, then each step. Off shows the classic layout, where steps can be ticked.",
+        "kind": "field"
+      },
+      {
+        "target": "chat-log",
+        "title": "Chat log",
+        "text": "Shows this build as a conversation: Brett's words, the brief, then each step as it was done.",
+        "kind": "tab"
+      },
+      {
+        "target": "classic-view",
+        "title": "Classic view",
+        "text": "Shows the classic layout: what was said, the facts and the steps as lists.",
+        "kind": "tab"
       }
     ],
     "intros": []

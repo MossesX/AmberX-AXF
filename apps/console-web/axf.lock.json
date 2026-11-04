@@ -496,6 +496,8 @@
     "src/axf/core/agent-directory.ts": "40b52b963a42c9bb",
     "src/axf/core/agents.ts": "8c0f9d3bed06ed90",
     "src/axf/core/assistant.ts": "1d1b21a4b63aba2b",
+    "src/axf/core/build-chat.d.mts": "3c5e2c778561c4e8",
+    "src/axf/core/build-chat.mjs": "1bd586ac1a8da066",
     "src/axf/core/build-origin.d.mts": "06f24a33582e3ff6",
     "src/axf/core/build-origin.mjs": "f2923181df39063a",
     "src/axf/core/catalog.ts": "294110261dff040c",
@@ -689,6 +691,7 @@
     "src/axf/react/components/BannerStrip.tsx": "f9548c7f1ba10def",
     "src/axf/react/components/Brand.tsx": "6a760e003265bf1f",
     "src/axf/react/components/BuildOrigin.tsx": "3bb7209320577a40",
+    "src/axf/react/components/ChatLog.tsx": "06104980c404100e",
     "src/axf/react/components/Chrome.tsx": "c11bbe3bd55493eb",
     "src/axf/react/components/Controls.tsx": "0627e2446e099ab4",
     "src/axf/react/components/DataCard.tsx": "b927c7d4d6517664",
@@ -714,7 +717,7 @@
     "src/axf/react/components/menuFit.ts": "04c0539214743de1",
     "src/axf/react/editorSync.ts": "4d2dfe9847350acb",
     "src/axf/react/hubAppearance.ts": "d7f3983fdd82b80b",
-    "src/axf/react/index.ts": "cd750a6d166a74a2",
+    "src/axf/react/index.ts": "589407abc61d1c70",
     "src/axf/react/library.ts": "a1e3ee41389eca00",
     "src/axf/react/placeTip.ts": "72554dc0b42e13a3",
     "src/axf/react/placement.tsx": "e50243526c856169",
@@ -817,6 +820,6 @@
     "src/axf/schemas/shared-assets.json": "7d6a5bb4f0b2a9c3",
     "src/axf/schemas/swarm.json": "35dd72b97f7a4a89",
     "src/axf/schemas/ui-review.json": "292b3b2d3482fbad",
-    "src/axf/ui/axf.css": "6001e14091d85a28"
+    "src/axf/ui/axf.css": "d224bd3bb81818b2"
   }
 }

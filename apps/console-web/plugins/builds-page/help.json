@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "builds-page-help",
+  "name": "builds-page help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:builds-page. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:builds-page",
+    "entries": [
+      {
+        "target": "show-an-expanded-build-as-a-chat-log",
+        "title": "Show an expanded build as a chat log",
+        "text": "An expanded build reads like the Chat viewer: what Brett said, the brief, then each step. Off shows the classic list, where steps can be ticked.",
+        "kind": "field"
+      }
+    ],
+    "intros": []
+  }
+}

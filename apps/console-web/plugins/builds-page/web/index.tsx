@@ -58,6 +58,7 @@ export const plugin: AxfWebLibrary = {
     id: 'builds.look', label: 'Builds page', icon: 'list', tab: FOLDER, order: 5,
     settings: [
       { key: KEYS.banner, label: 'Show the build profile\'s percentage on the banner', kind: 'toggle', default: true, scope: 'device' },
+      { key: KEYS.chat, label: 'Show an expanded build as a chat log', kind: 'toggle', default: true, description: 'What Brett said, the brief, then each step, like the Chat viewer. Off = the classic origin + steps list (tick steps there).' },
       { key: KEYS.select, label: 'Steps view: also show a selection control on every row', kind: 'choice', default: 'off', options: [{ value: 'off', label: 'No (Ctrl+click / long-press)' }, { value: 'checkboxes', label: 'Checkboxes' }, { value: 'switches', label: 'Switches' }] },
     ],
   }],

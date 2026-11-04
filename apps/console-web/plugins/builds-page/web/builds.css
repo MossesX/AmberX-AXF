@@ -46,3 +46,5 @@
 .axp-builds__proposal-steps { margin: 0; padding-left: var(--fx-dens-gap-4xl) }
 :where([data-fx-small]) .axp-builds__pick { flex: 1 1 100% } :where([data-fx-small]) .axp-builds__steps li { grid-template-columns: auto calc(var(--fx-space) * 10) auto 1fr } :where([data-fx-small]) .axp-builds__steps li > .fx-chip { display: none }
 .axp-builds__tick { display: inline-flex; align-items: center; min-width: calc(var(--fx-space) * 5); min-height: calc(var(--fx-space) * 5) }
+/* chat log / classic switch over an expanded build (build-chat@1) */
+.axp-builds__viewbar { display: flex; justify-content: flex-end; }

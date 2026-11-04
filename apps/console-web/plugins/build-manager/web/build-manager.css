@@ -205,3 +205,5 @@ button.axp-build-manager__head { gap: var(--fx-dens-gap-xs); padding: var(--fx-d
 .axp-build-manager__filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none }
 .axp-build-manager__filters .axp-build-manager__field { flex: none }
 :where([data-fx-small]) .axp-build-manager__filters .axp-build-manager__field { flex: 1 1 0; min-width: calc(var(--fx-font-size) * 5.5) }
+/* chat log / classic switch over an expanded build (build-chat@1) */
+.axp-build-manager__viewbar { display: flex; justify-content: flex-end; }

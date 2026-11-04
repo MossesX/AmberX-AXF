@@ -80,6 +80,11 @@
         "host": {
           "type": "string",
           "maxLength": 80
+        },
+        "agent": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "the named agent the session worked as (AXF_AGENT), shown on its chat-log bubbles"
         }
       }
     },

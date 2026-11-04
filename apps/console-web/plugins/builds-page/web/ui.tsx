@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent as RKeyboardEvent, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { AgentAvatar, BuildOrigin, Button, Checkbox, Chip, Icon, IconButton, Meter, Segmented, SelectField, Slot, Switch, originSubtitle, useRuntime } from '@console/axf/react';
+import { AgentAvatar, BuildChatLog, BuildOrigin, Button, Checkbox, Chip, Icon, IconButton, Meter, Segmented, SelectField, Slot, Switch, originSubtitle, useAxfState, useRuntime } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridGroup } from '@console/axf/libs/datagrid';
 import { pluginApi } from '@console/plugins';
 import './builds.css';
@@ -17,7 +17,7 @@ import './builds.css';
 
 export const FOLDER = 'builds-page';
 export const VIEW = 'builds';
-export const KEYS = { banner: 'builds.banner', select: 'builds.select', view: 'builds.view', profile: 'builds.profile', filter: 'builds.filter', scope: 'builds.scope' } as const;
+export const KEYS = { banner: 'builds.banner', select: 'builds.select', view: 'builds.view', profile: 'builds.profile', filter: 'builds.filter', scope: 'builds.scope', chat: 'builds.chatLog' } as const;
 export const api = pluginApi(FOLDER, 'Builds', { unavailable: 'The Builds page is switched off or its server part is not running.' });
 
 export type Progress = { total: number; done: number; pct: number; active: boolean; status?: string };
@@ -323,14 +323,34 @@ function StepTick({ s, toast }: { s: StepV; toast: (m: string, k?: 'danger' | 's
   );
 }
 
+/** A build as a chat log (build-chat@1): what Brett said, the brief, each step as it got done, the PR and status lines. */
+function BuildChat({ b }: { b: BuildV }) {
+  const brief = (b.origin as { brief?: string } | undefined)?.brief || b.detail;
+  const events = [
+    ...b.notes.map((n) => ({ at: n.at, text: n.text, kind: 'status' })),
+    ...(b.builtAt ? [{ at: b.builtAt, text: b.status === 'complete' ? 'Built' : 'Built, waiting for the merge', kind: 'merged' }] : []),
+    ...(b.status === 'complete' ? [{ at: b.updatedAt, text: 'Merged: complete', kind: 'merged' }] : []),
+  ];
+  return <BuildChatLog label={`What happened in ${b.title}`} input={{ origin: b.origin, brief, createdAt: b.createdAt, events, pr: b.pr,
+    steps: b.steps.map((s) => ({ text: `${s.id} · ${stepName(s)}`, done: s.done, doneAt: s.doneAt, checks: s.checks.length, model: s.model, note: s.note })) }} />;
+}
+
 function BuildDetail({ b }: { b: BuildV }) {
   const rt = useRuntime();
+  useAxfState();
+  const chat = rt.settings.get(KEYS.chat) !== false;
   return (
     <div className="axp-builds__detail">
+      <div className="axp-builds__viewbar">
+        <Segmented label="Show this build as" size="sm" value={chat ? 'chat' : 'classic'} onChange={(v) => rt.settings.set(KEYS.chat, v === 'chat')}
+          options={[{ value: 'chat', label: 'Chat log', title: 'Like the Chat viewer: what Brett said, the brief, then each step' }, { value: 'classic', label: 'Classic view', title: 'What Brett said and the steps as a list (tick steps here)' }]} />
+      </div>
+      {chat ? <BuildChat b={b} /> : <>
       <BuildOrigin origin={b.origin} showEmpty />
       {b.detail && <p className="axp-builds__text">{b.detail}</p>}
+      </>}
       <p className="fx-small fx-muted">{b.kind === 'epic' ? `Plan epic ${b.planRef} · ` : ''}{b.branch ? `branch ${b.branch} · ` : ''}{b.pr ? `PR ${b.pr} · ` : ''}rev {b.rev}{b.rearranged ? ' · rearranged (Restore default in the Steps view)' : ''}</p>
-      <ol className="axp-builds__steps">
+      {!chat && <ol className="axp-builds__steps">
         {b.steps.map((s) => (
           <li key={s.uid} className={s.done ? 'is-done' : s.next ? 'is-next' : ''}>
             <StepTick s={s} toast={rt.toast} />
@@ -338,8 +358,8 @@ function BuildDetail({ b }: { b: BuildV }) {
             <span className="fx-mono fx-small">{s.id}</span> <Chip tone={s.model === 'Fable' ? 'accent' : undefined}>{s.model}</Chip> <span>{stepName(s)}</span>{s.estimate && <span className="fx-small fx-muted"> · ~{s.estimate}</span>}
           </li>
         ))}
-      </ol>
-      {b.notes.length > 0 && <ul className="fx-small fx-muted axp-builds__notes">{b.notes.map((n, i) => <li key={i}>{n.text}</li>)}</ul>}
+      </ol>}
+      {!chat && b.notes.length > 0 && <ul className="fx-small fx-muted axp-builds__notes">{b.notes.map((n, i) => <li key={i}>{n.text}</li>)}</ul>}
     </div>
   );
 }

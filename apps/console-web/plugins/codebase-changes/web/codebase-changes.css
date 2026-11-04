@@ -109,3 +109,8 @@ button.axp-codebase-changes-banner__entry { flex-direction: row; align-items: ce
 .axp-codebase-changes-banner__item { align-items: center; flex-wrap: wrap }
 .axp-codebase-changes-banner__top > * { flex-shrink: 0 }
 .axp-codebase-changes-banner__top > strong { flex-shrink: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+/* chat log view (build-chat@1, the framework's .fx-chat): the facts as one row of chips above the conversation */
+.axp-codebase-changes__viewbar { display: flex; align-items: flex-start; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axp-codebase-changes__chips { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); flex: 1 1 16em; min-width: 0; }
+.axp-codebase-changes__chips .fx-chip { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-decoration: none; }
+.axp-codebase-changes__carry > summary { cursor: pointer; color: var(--fx-muted); }
