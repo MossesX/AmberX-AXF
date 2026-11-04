@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T00:55:46.151Z",
+ "updatedAt": "2026-11-04T02:17:15.955Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3037,19 +3037,24 @@
    "title": "Scrollable menus that stay on screen",
    "category": "Framework > Menus",
    "detail": "Brett, Nov 3 2026 (voice): application menus need to be scrollable when they reach beyond the screen. Framework level: menubar dropdowns, submenus, context and overflow menus cap to the available viewport height (safe areas, banner, keyboard via visualViewport), scroll inside with fade hints, flip/shift before scrolling, submenus open left at the right edge. Tokens only. Agent: Janitor Joey.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/menu-scroll",
    "pr": "#268",
+   "mergedAt": "2026-11-04T01:22:37Z",
    "createdAt": "2026-11-03T17:56:44.297Z",
-   "updatedAt": "2026-11-03T18:16:10.379Z",
+   "updatedAt": "2026-11-04T01:43:43.665Z",
    "builtAt": "2026-11-03T18:16:08.260Z",
    "notes": [
     {
      "text": "Built by Janitor Joey (Opus). PR #268, UI Review r-20261103-2637fd91. menu-fit@1 engine + menuFit.ts; checks 14/14, browser 7/16 -> 16/16. Report _claude/builds/reports/menu-scroll.md",
      "at": "2026-11-03T18:16:09.646Z"
+    },
+    {
+     "text": "Reconciler: PR #268 merged",
+     "at": "2026-11-04T01:43:43.665Z"
     }
    ],
    "approvals": [],
@@ -3170,14 +3175,15 @@
    "title": "Auto-land finished builds (zero-token merge pipeline)",
    "category": "",
    "detail": "Relaunch of stopped auto-land as auto-land-2 (Brett, Nov 3 2026, voice). Agent: Earl the Ear. Plain-script merge pipeline reusing the push banner batch merge; AI only for real conflicts / red CI needing code.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/auto-land-2",
    "pr": "#270",
+   "mergedAt": "2026-11-04T00:53:37Z",
    "createdAt": "2026-11-03T18:01:41.577Z",
-   "updatedAt": "2026-11-03T18:37:10.577Z",
+   "updatedAt": "2026-11-04T01:24:29.253Z",
    "builtAt": "2026-11-03T18:37:09.577Z",
    "notes": [
     {
@@ -3195,6 +3201,10 @@
     {
      "text": "All 8 steps done. PR #270 (claude/auto-land-2), UI Review r-20261103-6537ada7 waiting. Related: #267 main CI fix, MossesX/axHub#36 claude-sync hold. Report _claude/builds/reports/auto-land.md. Goes live on merge (cron axf-auto-land).",
      "at": "2026-11-03T18:37:10.577Z"
+    },
+    {
+     "text": "Reconciler: PR #270 merged",
+     "at": "2026-11-04T01:24:29.253Z"
     }
    ],
    "approvals": [],

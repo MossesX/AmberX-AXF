@@ -33,8 +33,11 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 ## Active
 
 | Thread | State | Branch | PR | Queued / next | Updated |
+| UI Review shows its pictures again (Urgent `ui-review-shots`, Opus, agent Snap Sully; Brett Nov 3 voice: "items but NO pictures"): files were all on disk and served 200; two console pollers (agent-slots, token-control pass) re-subscribed on every render and fired ~45 status calls/s, starving the picture fetches; on phones a today-made selector (`:where(:not([data-fx-narrow]))`, always true) squeezed the preview to zero width. Fixed both + layout-adopt codemod, shot timeout/retry, "Shot missing" + Re-capture, health@1 `ui-review-shots`, `review.mjs` worktree warning | review (all 5 steps done; PR open, UI Review waiting) | `claude/ui-review-shots` | [#277](https://github.com/MossesX/AmberX-AXF/pull/277) | Report `_claude/builds/reports/ui-review-shots.md`. Console redeploy (on merge) stops the storm. Brett: approve UI Review r-20261103-17ef4a40 | 2026-11-03 |
 |---|---|---|---|---|---|
 | Toolbars plugin: tap-to-confirm on touch (Urgent `toolbar-tap-confirm`, 21 steps; Brett Nov 3 voice + Addendum 1; agent Landin' Lenny, Opus): every toolbar in every app arms on the first finger tap (tip + countdown, 3 s default) and runs on the second; mouse/pen/keyboard single click; framework `core/engines/tapconfirm.ts` + `react/tapConfirm.ts` via AxfProvider; `lib-toolbars` (Settings → Plugins → Toolbars, All toolbars) in every app + templates; 37 toolbars adopted; `check-toolbars.mjs` + `check-tapconfirm.mts` in CI; rules added | part 1 PR open (s1–s7 done); s8–s12 Opus next; s13–s14 Fable (needs Brett's upgrade approval) | `claude/toolbar-tap-confirm` | [#272](https://github.com/MossesX/AmberX-AXF/pull/272) | Report `_claude/builds/reports/toolbar-tap-confirm.md`. UI Review r-20261103-6815df1d waiting. Next: s8 per-toolbar settings + context hooks | 2026-11-03 |
+| Crew retrain (Breakroom `crew-retrain`, Opus, 8 steps; Brett Nov 3, voice: "retrain, don't fire"; booked on Landin' Lenny): every crew agent an all-rounder (job-type@1 `skills`, agent@1 `skills` "*" + `home`), new job types `feature-build` + `ops-fix`, router = any free agent (home job, least busy, round the crew), every headless launch booked on a named agent before it starts (`claude-headless.sh` → `agent-job.mjs book`, tmux `axf-<slug>--<agent>`, `# agent` log line), `agent-job.mjs assign`, today's 13 builds back-assigned, Breakroom cards show skills / home / now + Who's free | review (all 8 steps done; PR open; UI Review waiting) | `claude/crew-retrain` | [#265](https://github.com/MossesX/AmberX-AXF/pull/265) | Land last: land-everything is landing PRs, pick this one up after the rest. Report `_claude/builds/reports/crew-retrain.md`. Brett: UI Review (Breakroom cards + Jobs) | 2026-11-03 |
+| Scrollable menus that stay on screen (Urgent `menu-scroll`, Opus; Brett Nov 3 voice: "The application menus need to be scrollable when they reach beyond the screen."; agent Janitor Joey): menu-fit@1 engine (`core/engines/menufit.ts`) + `react/components/menuFit.ts`; app menu drop-downs, submenus, context menus and plugin ⋯ menus flip / shift to stay on screen (visual viewport, safe areas, keyboard) and scroll inside with fade + chevron hints; browser checks 7/16 → 16/16 | PR open (UI Review waiting) | `claude/menu-scroll` | [#268](https://github.com/MossesX/AmberX-AXF/pull/268) (UI Review r-20261103-2637fd91) | Android twin deferred (PORTING.md). Report `_claude/builds/reports/menu-scroll.md` | 2026-11-03 |
 | Auto-land finished builds (Urgent `auto-land`, Opus, 8 steps, agent Earl the Ear; relaunch as auto-land-2; Brett Nov 3, voice: "zero tokens for merging"): plain-script pipeline `push-banner/land/land.mjs` (host cron 3 min) lands every finished build: worktree cleaned, main merged in (builds files newer-wins, logs unioned), PR opened, CI started; push banner auto-merge merges in dependency order, UI Review stays the gate; status-only commits no longer make PRs behind; blocked = one plain push, agent only for code conflict / red CI; console overview/queue/plan read the store + "Console sees the builds" check; settings + Land now/Hold/Release (REST + MCP + CLI); no-LLM test | review (all 8 steps done; PR open, UI Review r-20261103-6537ada7 waiting) | `claude/auto-land-2` | [#270](https://github.com/MossesX/AmberX-AXF/pull/270) | Also opened: [#267](https://github.com/MossesX/AmberX-AXF/pull/267) (red main CI: widget fixture shadowed by the chrome import; xLayout opens), [axHub#36](https://github.com/MossesX/axHub/pull/36) (claude-sync leaves `.claude-sync-hold` checkouts alone; installed on the VPS already). #265 crew-retrain: UI waiting + real code conflicts with main, the runner hands those to an agent once live. Report `_claude/builds/reports/auto-land.md`. Brett: approve the Auto-land settings shots in UI Review | 2026-11-03 |
 | URGENT main CI green (Current `urgent-main-ci-green`, Opus; agent Earl the Ear, headless): main red on 4 jobs (7 failures, 3 hidden behind the first). Root causes: gen-fixtures.mts imported WIDGET_TYPES/TONES from widgets and chrome (chrome shadowed, widgets.json wrong → check-widgets + Kotlin ConformanceTest); xLayout `opens: false` with a view; KernelTest expected the old thin banner; repo profiles.json missing `current`; deploy test.sh used empty commits after the `_claude`-only skip; 4 unmarked build-orchestrator references (lifecycle). Plus s4: ci-main check names failing jobs, Auto fix queues new `ci-fix` job (Greenlight Gina) | review (auto-merge once green) | `claude/urgent-main-ci-green` | #284 | After merge: update waiting PRs (#265 #266 #268 #269 #271 #279) from main. Report `_claude/builds/reports/urgent-main-ci-green.md` | 2026-11-03 |
 | Window resize fix (Current `window-resize-fix`, urgent, Opus; agent Landin' Lenny; Brett Nov 3 voice: "All floating windows need to be resizable" + Terminal settings Opens in = Dialog did nothing): handles in a grips layer straddling the border, touch-sized (row height on phones), corner grip on every frame; windows share one z layer so dialogs stay on top; `settings.open` honours a plugin's Opens in = Dialog. Merge on Brett's order | review (merging on Brett's order) | `claude/window-resize-fix` | (see PR) | Report `_claude/builds/reports/window-resize-fix.md`. Follow-up: remember window size (engine, Fable) | 2026-11-03 |
@@ -168,6 +171,8 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 - **Read:** `framework/core/engines/tapconfirm.ts`, `framework/react/tapConfirm.ts`, `framework/libs/toolbars/index.tsx`, `framework/cli/check-toolbars.mjs`.
 - **Checks:** `npx -y tsx framework/spec/check-tapconfirm.mts`, `node framework/cli/check-toolbars.mjs`, check-theme, check-controls, `tsc --noEmit` in the five apps after `rebake.mjs apply apps/<app>`.
 - **First message:** "Carry on build toolbar-tap-confirm (Urgent) from s8 on branch claude/toolbar-tap-confirm; read _claude/builds/reports/toolbar-tap-confirm.md first."
+### Crew retrain (`crew-retrain`)
+Done (PR open). If a later session must carry on: read `_claude/builds/reports/crew-retrain.md` (Known gaps: crew pay under the $40 feature-build cap; old console sweep until it lands). Land it after land-everything's other PRs. Checks: `node <console plugins>/agent-swarm/test.mjs`, `npx -y tsx framework/spec/check-job-type.mts`, `npx -y tsx framework/spec/check-swarm.mts`, `node framework/spec/check-agent-slots.mjs`, `node framework/cli/plugin-lifecycle.mjs check agent-swarm`.
 ### Auto-land finished builds (`auto-land`, Urgent, Opus) — branch `claude/auto-land-2`, PR #270
 - **Asked (Brett, Nov 3 2026, voice):** finished builds land by themselves with zero tokens: reuse the push banner's merge path, plain scripts only; an agent only for a real code conflict or red CI needing code; UI Review stays the gate; stop claude-sync dropping files into finished worktrees; blocked = one plain push; fix the empty console overview; settings + commands; a no-LLM test.
 - **On the branch:** `<console plugins>/push-banner/land/` (land-core.mjs, land.mjs, land.test.mjs), push banner server/UI/help/plugin.json, `deploy/install-console.sh` (cron `axf-auto-land`), CI step, `framework/plan/builds-store-core.mjs` storeSummary, build-queue/engine-rpc/mcp_server, build-orchestrator health item + test.py, report `_claude/builds/reports/auto-land.md`.
@@ -585,54 +590,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 20:15 UTC · `profile-manager` s3 done, s4 done, s5 done (current) · foreign-write
-- 2026-11-03 20:18 UTC · `ui-review-predicted` s1 done (urgent) · orchestrator
-- 2026-11-03 20:18 UTC · `ui-review-predicted` s2 done (urgent) · orchestrator
-- 2026-11-03 20:18 UTC · `ui-review-predicted` s3 done (urgent) · orchestrator
-- 2026-11-03 20:19 UTC · `window-resize-fix` s2 done, s3 done, → complete, note (current) · foreign-write
-- 2026-11-03 20:19 UTC · `profile-manager` added (6 steps) (current) · foreign-write
-- 2026-11-03 20:19 UTC · `terminal-sessions-nav` s1 done, → running (current) · orchestrator
-- 2026-11-03 20:19 UTC · `terminal-sessions-nav` s2 done (current) · orchestrator
-- 2026-11-03 20:19 UTC · `terminal-sessions-nav` s3 done (current) · orchestrator
-- 2026-11-03 20:20 UTC · `terminal-sessions-nav` s1 done, s2 done, s3 done (current) · foreign-write
-- 2026-11-03 20:21 UTC · `ui-review-predicted` s4 done (urgent) · orchestrator
-- 2026-11-03 20:23 UTC · `build-prompt-origin` added (5 steps) (current) · janitor-joey
-- 2026-11-03 20:23 UTC · `build-prompt-origin` s1 done, → running (current) · orchestrator
-- 2026-11-03 20:25 UTC · `build-prompt-origin` s2 done (current) · orchestrator
-- 2026-11-03 20:26 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
-- 2026-11-03 20:26 UTC · `terminal-vps-host` added (5 steps) (current) · foreign-write
-- 2026-11-03 20:26 UTC · `window-resize-fix` added (3 steps) (current) · foreign-write
-- 2026-11-03 20:26 UTC · `terminal-sessions-nav` added (4 steps) (current) · foreign-write
-- 2026-11-03 20:26 UTC · `profile-manager` added (6 steps) (current) · foreign-write
-- 2026-11-03 20:26 UTC · `follow-amber` s7 done, → complete (urgent) · orchestrator
-- 2026-11-03 20:26 UTC · `follow-amber` → built, PR #280 (urgent) · orchestrator
-- 2026-11-03 20:26 UTC · `follow-amber` note (urgent) · orchestrator
-- 2026-11-03 20:30 UTC · `plugin-settings-placement` added (6 steps) (current) · orchestrator
-- 2026-11-03 20:30 UTC · `build-prompt-origin` s4 done (current) · orchestrator
-- 2026-11-03 20:31 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
-- 2026-11-03 20:31 UTC · `plugin-settings-placement` added (12 steps) (current) · foreign-write
-- 2026-11-03 20:37 UTC · `terminal-sessions-nav` s1 done, s2 done, s3 done (current) · foreign-write
-- 2026-11-03 20:37 UTC · `profile-manager` s3 done, s4 done, s5 done (current) · foreign-write
-- 2026-11-03 20:37 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
-- 2026-11-03 20:37 UTC · `plugin-settings-placement` added (18 steps) (current) · foreign-write
-- 2026-11-03 20:37 UTC · `smart-menus` s6 done (urgent) · orchestrator
-- 2026-11-03 20:38 UTC · `build-prompt-origin` s4 done (current) · foreign-write
-- 2026-11-03 20:38 UTC · `plugin-settings-placement` added (36 steps) (current) · foreign-write
-- 2026-11-03 20:43 UTC · `smart-menus` PR #281 (urgent) · builds-live
-- 2026-11-03 20:43 UTC · `smart-menus` s7 done, → built (urgent) · orchestrator
-- 2026-11-03 20:43 UTC · `smart-menus` note (urgent) · orchestrator
-- 2026-11-03 20:44 UTC · `smart-menus` s7 done, → built (urgent) · foreign-write
-- 2026-11-03 20:47 UTC · `plugin-settings-placement` s1 done (current) · foreign-write
-- 2026-11-03 20:47 UTC · `build-prompt-origin` s4 done (current) · foreign-write
-- 2026-11-03 20:47 UTC · `plugin-settings-placement` s2 done (current) · foreign-write
-- 2026-11-03 20:47 UTC · `banner-ref-links` added (5 steps) (current) · foreign-write
-- 2026-11-03 20:47 UTC · `plugin-settings-placement` s1 done, → running (current) · orchestrator
-- 2026-11-03 20:47 UTC · `plugin-settings-placement` s2 done (current) · orchestrator
-- 2026-11-03 20:49 UTC · `plugin-settings-placement` s1 done, s2 done (current) · foreign-write
-- 2026-11-03 20:49 UTC · `banner-ref-links` added (5 steps) (current) · foreign-write
-- 2026-11-03 20:53 UTC · `plugin-settings-placement` s1 done, s2 done (current) · foreign-write
-- 2026-11-03 20:53 UTC · `banner-ref-links` added (10 steps) (current) · foreign-write
-- 2026-11-03 20:53 UTC · `build-prompt-origin` s3 done (current) · orchestrator
 - 2026-11-03 20:53 UTC · `build-prompt-origin` s5 done, → complete (current) · orchestrator
 - 2026-11-03 20:53 UTC · `build-prompt-origin` → built, PR #282 (current) · builds-live
 - 2026-11-03 20:55 UTC · `build-prompt-origin` s3 done, s5 done, → complete (current) · foreign-write
@@ -985,3 +942,51 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 00:55 UTC · `plugin-lazy-load` s1 done, s2 done (current) · foreign-write
 - 2026-11-04 00:55 UTC · `browser-automation` added (16 steps) (current) · foreign-write
 - 2026-11-04 00:55 UTC · `profile-switcher-widget` added (5 steps) (current) · foreign-write
+- 2026-11-04 00:57 UTC · `lenny-land-all` s1 done, s5 done, note (current) · foreign-write
+- 2026-11-04 00:57 UTC · `browser-automation` s2 done (current) · orchestrator
+- 2026-11-04 00:55 UTC · `lenny-land-all` s1 done (current) · orchestrator
+- 2026-11-04 00:56 UTC · `lenny-land-all` s5 done (current) · orchestrator
+- 2026-11-04 00:56 UTC · `lenny-land-all` note (current) · orchestrator
+- 2026-11-04 00:52 UTC · `browser-automation` s1 done (current) · foreign-write
+- 2026-11-04 01:00 UTC · `lenny-land-all` s1 done, s5 done, note (current) · foreign-write
+- 2026-11-04 01:04 UTC · `browser-automation` s2 done (current) · foreign-write
+- 2026-11-04 01:15 UTC · `molly-banners` s5 done, → complete, note (current) · foreign-write
+- 2026-11-04 01:15 UTC · `plugin-lazy-load` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 01:15 UTC · `lenny-land-all` s1 done, s5 done, note (current) · foreign-write
+- 2026-11-04 01:15 UTC · `browser-automation` added (16 steps) (current) · foreign-write
+- 2026-11-04 01:15 UTC · `profile-switcher-widget` added (5 steps) (current) · foreign-write
+- 2026-11-04 01:15 UTC · `gizmo-companion` s19 done (current) · orchestrator
+- 2026-11-04 01:19 UTC · `gizmo-companion` s19 done (current) · foreign-write
+- 2026-11-04 01:19 UTC · `profile-switcher-widget` s1 done, → running (current) · orchestrator
+- 2026-11-04 01:25 UTC · `gizmo-companion` s19 done (current) · foreign-write
+- 2026-11-04 01:25 UTC · `plugin-lazy-load` note (current) · foreign-write
+- 2026-11-04 01:25 UTC · `profile-switcher-widget` s1 done (current) · foreign-write
+- 2026-11-04 01:24 UTC · `profile-switcher-widget` s1 done (current) · foreign-write
+- 2026-11-04 01:24 UTC · `auto-land` → complete, merged, note (urgent) · reconciler
+- 2026-11-04 01:24 UTC · `plugin-lazy-load` PR #298, note (current) · reconciler
+- 2026-11-04 01:23 UTC · `gizmo-companion` s19 done (current) · foreign-write
+- 2026-11-04 01:23 UTC · `plugin-lazy-load` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 01:23 UTC · `lenny-land-all` s1 done, s5 done, note (current) · foreign-write
+- 2026-11-04 01:23 UTC · `browser-automation` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 01:23 UTC · `profile-switcher-widget` added (5 steps) (current) · foreign-write
+- 2026-11-04 01:29 UTC · `plugin-lazy-load` note (current) · foreign-write
+- 2026-11-04 01:35 UTC · `main-area-tabs` added (5 steps) (current) · orchestrator
+- 2026-11-04 01:43 UTC · `main-area-tabs` added (5 steps) (current) · foreign-write
+- 2026-11-04 01:43 UTC · `menu-scroll` → complete, merged, note (urgent) · reconciler
+- 2026-11-04 01:43 UTC · `browser-automation` s3 done, PR #299, note (current) · reconciler
+- 2026-11-04 01:44 UTC · `main-area-tabs` added (5 steps) (current) · foreign-write
+- 2026-11-04 01:44 UTC · `app-style-override` added (6 steps) (current) · orchestrator
+- 2026-11-04 01:45 UTC · `app-style-override` → running (current) · orchestrator
+- 2026-11-04 01:48 UTC · `browser-automation` s3 done, note (current) · foreign-write
+- 2026-11-04 01:59 UTC · `browser-automation` s3 done, note (current) · foreign-write
+- 2026-11-04 01:59 UTC · `main-area-tabs` added (10 steps) (current) · foreign-write
+- 2026-11-04 01:59 UTC · `profile-switcher-widget` s2 done (current) · orchestrator
+- 2026-11-04 01:59 UTC · `profile-switcher-widget` s3 done (current) · orchestrator
+- 2026-11-04 02:00 UTC · `profile-switcher-widget` s4 done (current) · orchestrator
+- 2026-11-04 02:10 UTC · `browser-automation` s3 done, note (current) · foreign-write
+- 2026-11-04 02:10 UTC · `profile-switcher-widget` s2 done, s3 done, s4 done (current) · foreign-write
+- 2026-11-04 02:10 UTC · `main-area-tabs` added (25 steps) (current) · foreign-write
+- 2026-11-04 02:10 UTC · `app-style-override` added (6 steps) (current) · foreign-write
+- 2026-11-04 02:11 UTC · `browser-automation` note (current) · orchestrator
+- 2026-11-04 02:14 UTC · `crew-retrain` → complete, merged, note (breakroom) · reconciler
+- 2026-11-04 02:14 UTC · `profile-switcher-widget` PR #300, note (current) · reconciler

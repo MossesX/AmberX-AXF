@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from 'react';
 import type { AssetType, AxfRuntime, MenuItem } from '../core';
 import { installTapConfirm } from './tapConfirm';
+import { installMenuFit } from './components/menuFit';
 
 export const AxfContext = createContext<AxfRuntime | null>(null);
 
@@ -96,6 +97,9 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
     }
     if (el.textContent !== customSheet) el.textContent = customSheet;
   }, [customSheet]);
+
+  // Menus that place themselves (plugins' ⋯ menus) stay on screen and scroll when too tall, like the framework's (menu-fit@1).
+  useEffect(() => installMenuFit(), []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

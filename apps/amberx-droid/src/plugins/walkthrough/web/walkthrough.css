@@ -1,7 +1,7 @@
 /* Walkthrough plugin: layout only (THEMING.md); controls are framework controls, every size and colour is a theme token. */
 .axp-walkthrough { min-width: 0; }
 .axp-walkthrough__player { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--fx-dens-gap-xl); min-width: 0; }
-:where(:not([data-fx-medium])) .axp-walkthrough__player { grid-template-columns: minmax(0, auto) minmax(calc(var(--fx-space) * 30), 1fr); align-items: start; }
+:where([data-fx-scheme]:not([data-fx-medium])) .axp-walkthrough__player { grid-template-columns: minmax(0, auto) minmax(calc(var(--fx-space) * 30), 1fr); align-items: start; }
 .axp-walkthrough__stage { display: flex; justify-content: center; min-width: 0; }
 /* the recording is a phone screen (9:20): as tall as the screen allows, never wider than the page */
 .axp-walkthrough__video {
@@ -45,13 +45,13 @@
 
 /* the whole-stack walkthrough is landscape (16:9): video on top, full width, the chapters under it */
 .axp-walkthrough__player--wide { grid-template-columns: minmax(0, 1fr); }
-:where(:not([data-fx-medium])) .axp-walkthrough__player--wide { grid-template-columns: minmax(0, 1fr); }
+:where([data-fx-scheme]:not([data-fx-medium])) .axp-walkthrough__player--wide { grid-template-columns: minmax(0, 1fr); }
 .axp-walkthrough__video--wide { width: 100%; max-height: none; aspect-ratio: 16 / 9; }
 .axp-walkthrough__downloads { gap: var(--fx-dens-gap-md); }
 
 /* Edit the voice */
 .axp-walkthrough__voicebar { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--fx-dens-gap-lg); }
-:where(:not([data-fx-narrow])) .axp-walkthrough__voicebar { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: end; }
+:where([data-fx-scheme]:not([data-fx-narrow])) .axp-walkthrough__voicebar { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: end; }
 .axp-walkthrough__script { max-height: none; }
 .axp-walkthrough__lines { gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg) var(--fx-dens-gap-xl); }
 .axp-walkthrough__line { gap: var(--fx-dens-gap-xs); }

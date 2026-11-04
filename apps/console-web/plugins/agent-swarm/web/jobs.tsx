@@ -15,7 +15,7 @@ export type JobView = {
   budget: { tokens: number; maxTurns: number; usd: number };
   inputs: { id: string; label: string; required: boolean; default: string; about: string }[];
   outputs: { report: string; uiReviewGroup: string };
-  owners: { id: string; name: string; status: string }[]; routed: string; routeWhy: string; unassigned: boolean;
+  skills?: string[]; home?: string[]; owners: { id: string; name: string; status: string; home?: boolean; busy?: number }[]; routed: string; routeWhy: string; unassigned: boolean;
   lastRun: { at: string; status: string; agent: string; usd: number; runId: string } | null; next: string; due: boolean;
   cost: { runs: number; usd: number };
 };
@@ -39,7 +39,7 @@ export function JobTypesTab({ jobs, error, reload, onAgent }: { jobs: JobView[] 
   const total = jobs.reduce((t, j) => t + j.cost.usd, 0); const open = jobs.filter((j) => j.unassigned).length;
   return (
     <div className="fx-stack">
-      <p className="fx-muted">{jobs.length} job types · {open ? `${open} unassigned · ` : ''}{core.fmtUsd(total)} spent on jobs. Recurring work goes to the agent who owns it: <code>node framework/cli/agent-job.mjs &lt;job-type&gt;</code>.</p>
+      <p className="fx-muted">{jobs.length} job types · {open ? `${open} unassigned · ` : ''}{core.fmtUsd(total)} spent on jobs. Every crew member can take every job; the router picks a free one, home job first, then the least busy: <code>node framework/cli/agent-job.mjs &lt;job-type&gt;</code>.</p>
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
       <div className="sw-cards" role="list">{jobs.map((j) => <JobCard key={j.id} j={j} reload={reload} onAgent={onAgent} />)}</div>
     </div>
@@ -85,7 +85,9 @@ function JobCard({ j, reload, onAgent }: { j: JobView; reload: () => Promise<voi
       </div>
       <p className="fx-muted sw-job__about">{j.description}</p>
       <dl className="sw-card__stats">
-        <div><dt>Owner</dt><dd>{j.owners.length ? j.owners.map((o) => <button key={o.id} type="button" className="fx-btn fx-btn--sm fx-btn--quiet" onClick={() => onAgent(o.id)}>{o.name} · {o.status}</button>) : '—'}</dd></div>
+        <div><dt>Skills</dt><dd>{(j.skills ?? []).join(', ') || '—'}</dd></div>
+        <div><dt>Home</dt><dd>{j.owners.filter((o) => o.home).map((o) => <button key={o.id} type="button" className="fx-btn fx-btn--sm fx-btn--quiet" onClick={() => onAgent(o.id)}>{o.name} · {o.busy ? 'busy' : o.status}</button>)}{j.owners.some((o) => o.home) ? null : '—'}</dd></div>
+        <div><dt>Crew</dt><dd>{j.owners.length ? `${j.owners.length} can take it · ${j.owners.filter((o) => !o.busy).length} free` : '—'}</dd></div>
         <div><dt>Trigger</dt><dd>{triggerText(j.trigger)}</dd></div>
         <div><dt>Last run</dt><dd>{j.lastRun ? `${fmtTime(j.lastRun.at)} · ${j.lastRun.status}` : 'never'}</dd></div>
         <div><dt>Next</dt><dd>{j.trigger.kind !== 'schedule' ? '—' : j.due ? 'due now' : fmtTime(j.next)}</dd></div>

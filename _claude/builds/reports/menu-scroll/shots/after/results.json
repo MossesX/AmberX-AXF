@@ -1,0 +1,82 @@
+[
+ {
+  "name": "phone: Tools drop-down stays inside the screen",
+  "pass": true,
+  "info": "{\"top\":48.359375,\"bottom\":631.359375,\"left\":8,\"right\":404,\"h\":583}"
+ },
+ {
+  "name": "phone: Tools drop-down scrolls inside (more below)",
+  "pass": true,
+  "info": "{\"sh\":962,\"ch\":578,\"more\":\"down\"}"
+ },
+ {
+  "name": "phone: the wheel scrolls the menu and not the page",
+  "pass": true,
+  "info": "{\"st\":384,\"page\":0,\"more\":\"up\"}"
+ },
+ {
+  "name": "phone: keyboard End brings the last row into view",
+  "pass": true,
+  "info": "{\"label\":\"Tool item 36\",\"inside\":true}"
+ },
+ {
+  "name": "phone: drill-down panel stays inside the screen",
+  "pass": true,
+  "info": "{\"top\":48.359375,\"bottom\":631.359375,\"left\":8,\"right\":404,\"h\":583}"
+ },
+ {
+  "name": "phone: context menu near the bottom stays inside the screen",
+  "pass": true,
+  "info": "{\"top\":8,\"bottom\":632,\"left\":184,\"right\":404,\"h\":624}"
+ },
+ {
+  "name": "phone: plugin ⋯ menu at the bottom stays inside the screen",
+  "pass": true,
+  "info": "{\"top\":8.359375,\"bottom\":599.359375,\"left\":8,\"right\":404,\"h\":591}"
+ },
+ {
+  "name": "desktop: Tools drop-down stays inside the screen",
+  "pass": true,
+  "info": "{\"top\":48.359375,\"bottom\":791.359375,\"left\":184,\"right\":414,\"h\":743}"
+ },
+ {
+  "name": "desktop: Tools drop-down scrolls inside (more below)",
+  "pass": true,
+  "info": "{\"sh\":962,\"ch\":738,\"more\":\"down\"}"
+ },
+ {
+  "name": "desktop: the wheel scrolls the menu and not the page",
+  "pass": true,
+  "info": "{\"st\":224,\"page\":0,\"more\":\"up\"}"
+ },
+ {
+  "name": "desktop: keyboard End brings the last row into view",
+  "pass": true,
+  "info": "{\"label\":\"Tool item 36\",\"inside\":true}"
+ },
+ {
+  "name": "desktop: long submenu stays inside the screen and is not clipped by its scrolling parent",
+  "pass": true,
+  "info": "{\"top\":8.359375,\"bottom\":792.359375,\"left\":412,\"right\":612,\"h\":784}"
+ },
+ {
+  "name": "desktop: nested submenus stay on screen",
+  "pass": true,
+  "info": "[{\"top\":391.359375,\"bottom\":578.078125,\"left\":937,\"right\":1137,\"flip\":null},{\"top\":59.359375,\"bottom\":792.078125,\"left\":739,\"right\":939,\"flip\":\"left\"}]"
+ },
+ {
+  "name": "desktop: context menu near the bottom stays inside the screen",
+  "pass": true,
+  "info": "{\"top\":8,\"bottom\":792,\"left\":1052,\"right\":1272,\"h\":784}"
+ },
+ {
+  "name": "desktop: plugin ⋯ menu at the bottom stays inside the screen",
+  "pass": true,
+  "info": "{\"top\":131.359375,\"bottom\":760.078125,\"left\":1035,\"right\":1265,\"h\":628.71875}"
+ },
+ {
+  "name": "phone, keyboard open (412×340 visible): drop-down fits above the keyboard",
+  "pass": true,
+  "info": "{\"top\":48.359375,\"bottom\":331.359375,\"left\":8,\"right\":404,\"h\":283}"
+ }
+]
