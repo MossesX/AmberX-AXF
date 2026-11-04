@@ -1464,3 +1464,5 @@ One line per veto pass grant, change made under it, revoke, undo and end (Token 
 - 2026-11-04 04:09 UTC · `profile-switcher-widget` s1 done, s2 done, s3 done, s4 done, note (current) · foreign-write
 - 2026-11-04 04:09 UTC · `main-area-tabs` added (60 steps) (current) · foreign-write
 - 2026-11-04 04:09 UTC · `app-style-override` added (6 steps) (current) · foreign-write
+- 2026-11-04 04:13 UTC · `toolbar-tap-confirm` merged, note (urgent) · reconciler
+- 2026-11-04 04:13 UTC · `ui-review-predicted` → complete, merged, note (urgent) · reconciler
