@@ -1,23 +1,75 @@
 import { useEffect, useRef, useState } from 'react';
-import { Icon, IconButton, useRuntime } from '@console/axf/react';
+import { Button, Icon, IconButton, useRuntime } from '@console/axf/react';
 import { pluginFetch } from '@console/plugins';
 import { EmptyState } from '@console/emptyState';
 import type { Shot as ShotT } from './review-core.mjs';
 import { FOLDER, KEYS } from './keys';
 
-/** A screenshot through the console token (an <img src> can't send it): fetched once, kept as a blob URL. */
+const SHOT_TIMEOUT_MS = 20000;
+
+/** One fetch with a timeout: a picture never waits forever behind other requests. 404 = the file is gone. */
+async function fetchShot(src: string): Promise<string> {
+  const ctl = new AbortController();
+  const t = setTimeout(() => ctl.abort(), SHOT_TIMEOUT_MS);
+  try {
+    const r = await pluginFetch(FOLDER, `shot?path=${encodeURIComponent(src)}`, { signal: ctl.signal });
+    if (!r.ok) throw new Error(r.status === 404 ? 'missing' : `HTTP ${r.status}`);
+    return URL.createObjectURL(await r.blob());
+  } catch (e) {
+    throw new Error(ctl.signal.aborted ? 'timeout' : (e as Error).message);
+  } finally { clearTimeout(t); }
+}
+
+/** A screenshot through the console token (an <img src> can't send it): fetched once (one retry unless it's gone), kept
+ *  as a blob URL. A failure is reported to the server so the systems check shows it. */
 const blobs = new Map<string, Promise<string>>();
 function shotUrl(src: string): Promise<string> {
   let p = blobs.get(src);
-  if (!p) { p = pluginFetch(FOLDER, `shot?path=${encodeURIComponent(src)}`).then(async (r) => { if (!r.ok) throw new Error(String(r.status)); return URL.createObjectURL(await r.blob()); }); blobs.set(src, p); p.catch(() => blobs.delete(src)); }
+  if (!p) {
+    p = fetchShot(src).catch((e: Error) => (e.message === 'missing' ? Promise.reject(e) : fetchShot(src)));
+    blobs.set(src, p);
+    p.catch((e: Error) => {
+      blobs.delete(src);
+      void pluginFetch(FOLDER, 'shot-failed', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ src, reason: e.message }) }).catch(() => undefined);
+    });
+  }
   return p;
 }
 
-export function Shot({ src, alt, className }: { src: string; alt: string; className?: string }) {
+/**
+ * One picture. While it loads: a placeholder. If it can't load: "Shot missing" (never a blank); with `actions`, also
+ * Retry and Re-capture (hands the screen to the screenshots agent), shown only where it isn't inside a button.
+ */
+export function Shot({ src, alt, className, actions = false }: { src: string; alt: string; className?: string; actions?: boolean }) {
+  const rt = useRuntime();
   const [url, setUrl] = useState('');
-  const [failed, setFailed] = useState(false);
-  useEffect(() => { let live = true; setUrl(''); setFailed(false); shotUrl(src).then((u) => live && setUrl(u), () => live && setFailed(true)); return () => { live = false; }; }, [src]);
-  if (failed) return <span className={`axp-ui-review__noimg ${className ?? ''}`}><Icon name="alert" size={14} /></span>;
+  const [failed, setFailed] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [n, setN] = useState(0);
+  useEffect(() => { let live = true; setUrl(''); setFailed(''); shotUrl(src).then((u) => live && setUrl(u), (e: Error) => live && setFailed(e.message || 'failed')); return () => { live = false; }; }, [src, n]);
+  const recapture = async () => {
+    setBusy(true);
+    try {
+      const r = await pluginFetch(FOLDER, 'recapture', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ src }) });
+      const j = (await r.json().catch(() => ({}))) as { ok?: boolean; message?: string; detail?: string };
+      rt.toast(j.message ?? j.detail ?? (r.ok ? 'Re-capture started' : `HTTP ${r.status}`), j.ok ? 'success' : 'warning', 'UI Review');
+    } catch (e) { rt.toast((e as Error).message, 'danger', 'UI Review'); } finally { setBusy(false); }
+  };
+  if (failed) {
+    const label = failed === 'missing' ? 'Shot missing' : "Shot didn't load";
+    return (
+      <span className={`axp-ui-review__noimg is-failed ${className ?? ''}`} role="img" aria-label={`${label}: ${alt}`} title={`${label} (${failed})`}>
+        <Icon name="alert" size={14} />
+        <span className="axp-ui-review__noimg-text">{label}</span>
+        {actions && (
+          <span className="axp-ui-review__noimg-acts">
+            {failed !== 'missing' && <Button size="sm" icon="refresh" onClick={() => setN(n + 1)}>Retry</Button>}
+            <Button size="sm" icon="monitor" disabled={busy} onClick={() => void recapture()}>Re-capture</Button>
+          </span>
+        )}
+      </span>
+    );
+  }
   return url ? <img src={url} alt={alt} className={className} draggable={false} loading="lazy" /> : <span className={`axp-ui-review__noimg ${className ?? ''}`} aria-busy="true" />;
 }
 
@@ -64,7 +116,7 @@ export function ShotBrowser({ shots, title, index, onIndex, list = true }: { sho
         <div ref={stage} className={`axp-ui-review__stage is-${f.device}`}
           onTouchStart={(e) => { const t = e.touches[0]; if (t) touch.current = { x: t.clientX, y: t.clientY }; }}
           onTouchEnd={(e) => { const s = touch.current; touch.current = null; if (!s) return; const t = e.changedTouches[0]; if (!t) return; const dx = t.clientX - s.x; const dy = t.clientY - s.y; if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) go(dx < 0 ? 1 : -1); }}>
-          <Shot src={f.src} alt={`${title} · ${f.name}`} className="axp-ui-review__img" />
+          <Shot src={f.src} alt={`${title} · ${f.name}`} className="axp-ui-review__img" actions />
         </div>
       </div>
     </div>

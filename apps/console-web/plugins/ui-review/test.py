@@ -345,6 +345,53 @@ check(mod.cf.run_migration(old_dir, apply=True)["changed"] == 0, "the migration 
 
 # ---- intake auth through the real console (token required; plugin routes mounted by main.py)
 import subprocess  # noqa: E402
+# ---- pictures outlive the build worktree (ui-review-shots, Nov 3 2026) ----
+import shutil  # noqa: E402
+wt = Path(tempfile.mkdtemp(prefix="fake-worktree-"))
+(wt / ".git").write_text("gitdir: /nowhere\n")
+png_bytes = (HERE / "packs" / first).read_bytes()
+(wt / "shots").mkdir()
+(wt / "shots" / "home-phone.png").write_bytes(png_bytes)
+body = {"kind": "screen", "name": "Worktree shot", "app": "console-web", "screen": "home", "source": "headless", "submittedBy": "build:claude/fake",
+        "files": [{"name": "home-phone.png", "data": base64.b64encode((wt / "shots" / "home-phone.png").read_bytes()).decode()}]}
+r = c.post("/p/submit", json=body)
+check(r.status_code == 200, f"submit from a fake worktree ({r.status_code} {r.text[:200]})")
+wid = r.json()["item"]["id"] if r.status_code == 200 else ""
+wsrc = (r.json()["item"]["files"]["after"] or [{}])[0].get("src", "") if r.status_code == 200 else ""
+shutil.rmtree(wt)
+check(not wt.exists(), "the fake worktree is deleted")
+g = c.get("/p/shot", params={"path": wsrc})
+check(g.status_code == 200 and g.content == png_bytes, f"its picture still loads after the worktree is gone ({g.status_code})")
+check(wsrc.startswith(f"items/{wid}/") and "fake-worktree" not in wsrc, f"the stored src points into the shared store, never the worktree ({wsrc})")
+a = c.get("/p/audit").json()
+check(a["ok"] and wid not in a["items"], f"audit: the new item's pictures are fine ({a.get('items')})")
+check(mod.health_probe()["status"] in ("ok", "warn"), "health: ok while every picture is on disk")
+# a picture that's gone turns the check red and names the item
+(mod.data_dir() / "shots" / wid / wsrc.split("/")[-1]).unlink()
+a = c.get("/p/audit").json()
+check(wid in a["items"] and a["broken"][0]["src"] == wsrc, f"audit names the item whose picture is gone ({a})")
+h = mod.health_probe()
+check(h["status"] == "error" and "Worktree shot" in h["summary"], f"health: red and names it ({h})")
+check(c.get("/p/shot", params={"path": wsrc}).status_code == 404, "the gone picture answers 404 (the UI shows 'Shot missing')")
+# a truncated / non-image file counts as broken too
+(mod.data_dir() / "shots" / wid / wsrc.split("/")[-1]).write_bytes(b"not a png")
+check(wid in c.get("/p/audit").json()["items"], "audit: a file that isn't an image is broken")
+(mod.data_dir() / "shots" / wid / wsrc.split("/")[-1]).write_bytes(png_bytes)
+check(c.get("/p/audit").json()["items"] == [] or wid not in c.get("/p/audit").json()["items"], "audit: fine again once the picture is back")
+# a browser that couldn't load a picture reports it: amber, with the path
+check(c.post("/p/shot-failed", json={"src": "../etc/passwd"}).status_code == 400, "shot-failed refuses a bad path")
+check(c.post("/p/shot-failed", json={"src": wsrc, "reason": "timeout"}).json()["ok"], "shot-failed records a browser failure")
+h = mod.health_probe()
+check(h["status"] == "warn" and any(wsrc in d for d in h.get("details", [])), f"health: amber when a browser couldn't load a picture on disk ({h})")
+mod._load_fails.clear()
+check(c.post("/p/recapture", json={"id": "r-nope"}).status_code == 404, "recapture: unknown item = 404")
+check(c.get("/p/shot", params={"path": "items/x/../../secret.png"}).status_code in (400, 404), "shot route refuses path tricks")
+
+# ---- the status pollers can't storm (stable subscribe + one request at a time) ----
+for rel in ("agent-slots/web/index.tsx", "token-control/web/pass.tsx"):
+    src_ = (HERE.parent / rel).read_text()
+    check("useSyncExternalStore(subscribe, snapshot)" in src_ and "inFlight" in src_, f"{rel}: module-level subscribe + in-flight guard")
+
 auth_script = r"""
 import os, sys, tempfile, base64
 from pathlib import Path
@@ -367,6 +414,52 @@ pr_ = subprocess.run([sys.executable, "-c", auth_script, str(HERE.parent.parent 
 last = (pr_.stdout.strip().splitlines() or [""])[-1].split()
 check(last[:3] == ["401", "401", "401"], f"intake refuses no token / a wrong token, reads too ({last} {pr_.stderr[-300:]})")
 check(last[3:6] == ["200", "console-token", "0"], f"intake takes the console token, records who, review queue untouched ({last})")
+
+
+# ---------------------------------------------------------------- predicted looks (ui-prediction@1, predicted.py)
+PRED = {"$axf": "ui-prediction@1", "build": "demo-look", "state": "predicted", "hash": "h1", "screens": [{"id": "settings", "app": "console-web", "title": "Settings"}],
+        "cost": {"usd": 0, "model": "rules", "tokens": 0}, "look": {"status": "waiting"}, "refreshes": 0, "addenda": []}
+PFILES = [{"name": "before-settings-phone.png", "data": b64}, {"name": "predicted-settings-phone.png", "data": b64}, {"name": "predicted-settings-desktop.png", "data": b64}]
+check(c.get("/p/settings").json()["waitForLook"] is False, "look approval setting defaults off")
+check(c.put("/p/settings", json={"waitForLook": "yes"}).status_code == 400, "setting must be a boolean")
+check(c.put("/p/settings", json={"waitForLook": True}).json()["waitForLook"] is True and c.get("/p/settings").json()["waitForLook"] is True, "setting saved on the server (the launcher reads it)")
+check(c.post("/p/predict", json={"build": "demo-look", "name": "Look", "files": PFILES}).status_code == 400, "predict needs a ui-prediction@1 block")
+v0 = c.get("/p/predicted?build=demo-look").json()["verdict"]
+check(not v0["go"] and v0["wait"] and v0["look"] == "none", f"setting on + no prediction yet = wait ({v0})")
+pr1 = c.post("/p/predict", json={"build": "demo-look", "name": "Demo look: Settings", "app": "Console", "screen": "Settings", "kind": "settings", "source": "headless",
+                                 "submittedBy": "build:demo-look", "group": "demo-look - predicted", "branch": "claude/demo-look", "prediction": PRED, "files": PFILES})
+pj = pr1.json()
+check(pr1.status_code == 200 and not pj["refreshed"] and pj["item"]["prediction"]["state"] == "predicted" and pj["item"]["status"] == "pending", f"predict makes a waiting predicted item ({pr1.text[:300]})")
+pid = pj["item"]["id"]
+check(len(pj["item"]["files"]["after"]) == 3 and {f["src"].split("/")[-1].split("-")[0] for f in pj["item"]["files"]["after"]} == {"before", "predicted"}, "pictures keep their roles in the file names")
+check(stored_ok(), "a predicted item conforms to ui-review-item@1")
+v1 = c.get("/p/predicted?build=demo-look").json()
+check(len(v1["items"]) == 1 and v1["verdict"]["wait"] and v1["verdict"]["look"] == "waiting", "listed; the build waits for the look")
+pr2 = c.post("/p/predict", json={"build": "demo-look", "prediction": {**PRED, "hash": "h2"}, "files": [{"name": "predicted-settings-phone.png", "data": b64}]}).json()
+check(pr2["refreshed"] and pr2["item"]["id"] == pid and pr2["item"]["prediction"]["refreshes"] == 1 and pr2["item"]["prediction"]["hash"] == "h2", "a second predict refreshes the same item")
+check(sum(1 for f in pr2["item"]["files"]["after"] if "/predicted-" in f["src"]) == 1 and any("/before-" in f["src"] for f in pr2["item"]["files"]["after"]), "refresh replaces the predicted pictures, keeps before")
+ch = c.post("/p/approve-look", json={"build": "demo-look", "decision": "changes", "comment": "Make the switch row taller"})
+it = next(x for x in c.get("/p/items").json()["items"] if x["id"] == pid)
+check(ch.status_code == 200 and it["prediction"]["look"]["status"] == "changes" and it["prediction"]["addenda"][0]["text"] == "Make the switch row taller" and it["status"] == "changes", "Ask changes: look + item status, comment kept as an addendum")
+check(c.get("/p/predicted?build=demo-look").json()["verdict"]["go"], "changes asked = the build may start with the addendum")
+c.post("/p/decide", json={"ids": [pid], "decision": "reject"})
+it = next(x for x in c.get("/p/items").json()["items"] if x["id"] == pid)
+v2 = c.get("/p/predicted?build=demo-look").json()["verdict"]
+check(it["prediction"]["look"]["status"] == "rejected" and not v2["go"] and not v2["wait"], "decide on a predicted item decides its look; rejected = held")
+c.post("/p/approve-look", json={"ids": [pid], "decision": "approve"})
+check(c.get("/p/predicted?build=demo-look").json()["verdict"]["go"], "approved look = go")
+check(mod.state(branch="claude/demo-look")["holds"] is False, "an approved look does not hold the branch")
+c.post("/p/approve-look", json={"ids": [pid], "decision": "reopen"})
+check(mod.state(branch="claude/demo-look")["state"] == "none", "a waiting predicted look never holds a merge (only real screens count)")
+c.post("/p/approve-look", json={"ids": [pid], "decision": "approve"})
+rl = c.post("/p/predict/real", json={"build": "demo-look", "pr": "91", "files": [{"name": "settings-phone.png", "data": b64}]}).json()
+check(rl["item"]["prediction"]["state"] == "real" and rl["item"]["status"] == "pending" and rl["item"]["prediction"]["look"]["status"] == "approved", "real shots: badge Real, waits for the real OK, look decision kept")
+check(any("/real-settings-phone" in f["src"] for f in rl["item"]["files"]["after"]) and any("/predicted-" in f["src"] for f in rl["item"]["files"]["after"]) and rl["item"]["pr"] == 91, "real + predicted pictures both kept (compare); PR linked")
+check(c.post("/p/approve-look", json={"build": "nobody"}).status_code == 404 and c.post("/p/predict/real", json={"build": "nobody", "files": PFILES[:1]}).status_code == 404, "unknown build refused")
+check(c.post("/p/predict", json={"build": "../x", "prediction": PRED, "files": PFILES}).status_code == 400, "bad build id refused")
+c.put("/p/settings", json={"waitForLook": False})
+check(c.get("/p/predicted?build=other").json()["verdict"]["go"], "setting off = every build goes")
+check(stored_ok(), "stores conform after the predicted flow")
 
 print(f"ui-review: {ok} checks ok" + (f", {len(fails)} failed" if fails else ""))
 sys.exit(1 if fails else 0)

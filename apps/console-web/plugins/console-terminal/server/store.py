@@ -185,6 +185,24 @@ def keygen(replace: bool = False) -> str:
     return public_key()
 
 
+def default_host(route_file: str = "/proc/net/route", in_docker: bool | None = None) -> str:
+    """Where the VPS host is from here: AXF_VPS_HOST, else (inside Docker) the default gateway, which is the host itself
+    on Coolify's network. Empty when neither is known."""
+    env = os.environ.get("AXF_VPS_HOST", "").strip()
+    if env:
+        return env
+    if not (Path("/.dockerenv").exists() if in_docker is None else in_docker):
+        return ""
+    try:
+        for ln in Path(route_file).read_text().splitlines()[1:]:
+            p = ln.split()
+            if len(p) > 2 and p[1] == "00000000" and p[2] != "00000000":
+                return ".".join(str(b) for b in reversed(bytes.fromhex(p[2])))
+    except (OSError, ValueError):
+        pass
+    return ""
+
+
 def public_key() -> str:
     try:
         return ssh_key().with_suffix(".pub").read_text().strip()

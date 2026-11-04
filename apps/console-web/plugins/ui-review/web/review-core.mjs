@@ -192,7 +192,8 @@ export function togglePick(picked, id, max = MAX_PICKS) {
  * rejected > changes > waiting > approved; 'none' when nothing was submitted. `holds` = keep the PR from merging.
  */
 export function reviewState(items, { branch = '', pr = null } = {}) {
-  const mine = items.filter((it) => (branch && it.branch === branch) || (pr && Number(it.pr) === Number(pr)));
+  // a predicted look (ui-prediction@1) is approved for the look, not for merging: only real screens count
+  const mine = items.filter((it) => ((branch && it.branch === branch) || (pr && Number(it.pr) === Number(pr))) && it.prediction?.state !== 'predicted');
   const c = { waiting: 0, changes: 0, rejected: 0, approved: 0 };
   for (const it of mine) if (it.status in c) c[it.status]++;
   const state = !mine.length ? 'none' : c.rejected ? 'rejected' : c.changes ? 'changes' : c.waiting ? 'waiting' : 'approved';

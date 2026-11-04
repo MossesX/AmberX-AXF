@@ -17,7 +17,7 @@
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Checkbox, Chip, Icon, Segmented, SelectField, Switch, TextField } from '@console/axf/react';
+import { AgentAvatar, Button, Checkbox, Chip, Icon, Segmented, SelectField, Switch, TextField } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -122,6 +122,7 @@ function ItemRow({ it, isRead, fresh, open, onToggle }: { it: FeedItem; isRead: 
     <li className={`axp-whats-shipped__item${isRead ? '' : ' is-unread'}${fresh ? ' is-fresh' : ''}`}>
       <button type="button" data-fx-row className="axp-whats-shipped__head" aria-expanded={open} onClick={() => { onToggle(); if (!isRead && rt) setRead(rt, [it.id]); }}>
         <span className="axp-whats-shipped__dot" aria-hidden="true" />
+        {it.build ? <AgentAvatar inText={it.build.id} size="small" noMenu /> : null}
         <span className="axp-whats-shipped__title">{it.title}</span>
         <span className="fx-small fx-muted axp-whats-shipped__when">{ago(it.mergedAt)}</span>
       </button>

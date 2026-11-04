@@ -49,7 +49,9 @@ Model switches: a downgrade (Fable → Opus) is fine; an UPGRADE (Opus → Fable
 ask (orchestrator.mjs request-upgrade); never approve one yourself.
 When you finish building a step, call `build_step` with action "complete": the epic and its linked features are
 marked built in the feature tracker, and steps that depended on it are re-checked for rework.
-After reordering with `build_reorder`, call `build_reprocess` (apply=false to preview, then apply=true)."""
+After reordering with `build_reorder`, call `build_reprocess` (apply=false to preview, then apply=true).
+Follow Amber: check `console_follow`; while it is on, call `console_show` every time you mention something in Brett's
+console (a screen, settings tab, dialog, build, plugin, UI Review item), and his approvals pop up in the console."""
 
 
 def _compact(f: dict[str, Any]) -> dict[str, Any]:
@@ -137,9 +139,12 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
 
     @mcp.tool(annotations=READ)
     async def overview() -> dict[str, Any]:
-        """Framework status at a glance: plan counts by status, build queue progress, next step, rework, models."""
+        """Framework status at a glance: plan counts by status, build queue progress, next step, rework, models, and every
+        build in the builds store (all profiles: counts by status and profile, the running ones)."""
         fs = await features()
-        q = (await run("build-queue"))["view"]
+        qr = await run("build-queue")
+        q = qr["view"]
+        b = qr.get("builds") or {}
         by = lambda key, items: {k: sum(1 for x in items if x.get(key) == k) for k in sorted({str(x.get(key)) for x in items})}  # noqa: E731
         nxt = next((s for s in q["steps"] if s["id"] == q["next"]), None)
         return {
@@ -147,6 +152,8 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
             "buildQueue": {"steps": len(q["steps"]), "byState": q["counts"], "remainingByModel": q["byModel"], "violations": q["violations"], "rework": q["rework"], "needsReprocess": q["dirty"] or q["violations"] > 0},
             "next": _step(nxt) if nxt else None,
             "models": MODELS,
+            "builds": {"profile": b.get("profile"), "total": b.get("total", 0), "byStatus": b.get("byStatus", {}), "activeInProfile": b.get("activeCount", 0),
+                       "byProfile": b.get("byProfile", {}), "running": b.get("running", [])},
         }
 
     @mcp.tool(annotations=READ)
@@ -220,12 +227,15 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
     async def build_queue(include_done: bool = False) -> dict[str, Any]:
         """The build queue in build order: each step's state, suggested model (and why), dependencies, linked features,
         violations (runs before an unfinished dependency) and rework flags."""
-        v = (await run("build-queue"))["view"]
+        qr = await run("build-queue")
+        v, b = qr["view"], qr.get("builds") or {}
         steps = [s for s in v["steps"] if include_done or s["state"] not in ("done",)]
         return {"next": v["next"], "counts": v["counts"], "remainingByModel": v["byModel"], "minutesLeftByModel": v.get("minutesLeftByModel", {}),
                 "costLeftByModelUsd": {m: _usd(m, n) for m, n in v.get("minutesLeftByModel", {}).items()},
                 "unsplit": v.get("unsplit", []), "needsReprocess": v["dirty"] or v["violations"] > 0,
-                "steps": [_step(s, features=False, steps=False) | {"features": len(s["features"]), "steps": len(s.get("steps") or [])} for s in steps]}
+                "steps": [_step(s, features=False, steps=False) | {"features": len(s["features"]), "steps": len(s.get("steps") or [])} for s in steps],
+                # the active profile's orchestrator builds with work left (a profile without plan epics has no queue steps)
+                "builds": {"profile": b.get("profile"), "total": b.get("total", 0), "active": b.get("active", []), "running": b.get("running", [])}}
 
     @mcp.tool(annotations=READ)
     async def build_next() -> dict[str, Any]:
@@ -741,6 +751,10 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
 # ---------------------------------------------------------------------- console commands (control@1 console domain)
 
 CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients")
+FOLLOW_TOOLS = ("console_show", "console_follow")  # Follow Amber plugin (follow-amber@1)
+# Opening and moving only navigate, so they are annotated read-only: axHub's recommended preset (decision #112) runs
+# read-only tools at once, and navigation never waits on a veto countdown (Brett, Nov 3 2026: Follow Amber).
+NAVIGATE = ToolAnnotations(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=False)
 Delivery = str  # "recent" (the console used last), "all", or a client id from console_clients
 
 
@@ -763,14 +777,14 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
             d["to"] = to
         return d
 
-    @mcp.tool(annotations=IDEMPOTENT)
+    @mcp.tool(annotations=NAVIGATE)
     async def console_open(screen: str, to: Delivery = "recent") -> dict[str, Any]:
         """Open a screen in Brett's open Dev Console (the one he used last; to="all" for every open one, or a client id).
         `screen` = the view id ("plan-studio"), its title ("Plan Studio") or a few words ("plan studio", "builds",
         "orchestrator"); plugins' screens count. Not sure of the name? console_list(kind="screens", q="…") first."""
         return await go({"op": "act", "target": "console.screens", "path": screen, "action": "open", "input": inp(to)})
 
-    @mcp.tool(annotations=IDEMPOTENT)
+    @mcp.tool(annotations=NAVIGATE)
     async def console_dialog(dialog: str = "", arg: str = "", action: Literal["open", "close"] = "open", to: Delivery = "recent") -> dict[str, Any]:
         """Open a dialog in the open console by id, title or words (`arg` = the dialog's optional argument), or close
         one: action="close" shuts the dialog that is open (dialog="" or "current"), or only that dialog when it is the one open.
@@ -779,7 +793,7 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
             return await go({"op": "act", "target": "console.dialogs", "path": dialog or "current", "action": "close", "input": inp(to)})
         return await go({"op": "act", "target": "console.dialogs", "path": dialog, "action": "open", "input": inp(to, arg=arg)})
 
-    @mcp.tool(annotations=IDEMPOTENT)
+    @mcp.tool(annotations=NAVIGATE)
     async def console_settings(tab: str, anchor: str = "", to: Delivery = "recent") -> dict[str, Any]:
         """Open a Settings tab or sub-tab in the open console: its id ("appearance"), "plugins/<plugin>" for a plugin's
         sub-tab under Settings → Plugins, or its title. `anchor` scrolls to one setting ("setting:<key>") or group."""
@@ -793,7 +807,7 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         confirmation_required with `confirm`: tell Brett what it will do, then call again with that token."""
         return await go({"op": "act", "target": "console.actions", "path": action, "action": "run", "input": inp(to, args=args or None), "confirm": confirm})
 
-    @mcp.tool(annotations=IDEMPOTENT)
+    @mcp.tool(annotations=NAVIGATE)
     async def console_back(move: Literal["back", "home", "close"] = "back", to: Delivery = "recent") -> dict[str, Any]:
         """Move the open console: back (closes an open dialog first, else the screen before), home, or close (the dialog)."""
         return await go({"op": "act", "target": "console.nav", "path": "here", "action": move, "input": inp(to)})
@@ -814,6 +828,59 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         """The consoles open right now (one per browser tab: id, device, screen, last used). Commands go to the one
         used last unless `to` names another (or "all")."""
         return await go({"op": "list", "target": "console.clients"})
+
+    async def follow(op: str, **args: Any) -> dict[str, Any]:
+        r = await anyio.to_thread.run_sync(lambda: follow_call(op, args))
+        if not r.get("ok"):
+            raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
+        return r
+
+    @mcp.tool(annotations=NAVIGATE)
+    async def console_show(target: str, highlight: str = "", say: str = "", to: Delivery = "recent") -> dict[str, Any]:
+        """Follow Amber: call this EVERY time you mention something in Brett's Dev Console (a screen, a settings tab, a
+        dialog, a build, a plugin, a UI Review item, anything that needs him). When Follow Amber is on, his console opens
+        it right away, focused and highlighted, with `say` as a note; when it's off this does nothing (shown: false).
+        `target` = a screen, settings tab, dialog or navigation-only action by id, title or words ("plan studio",
+        "plugins/<plugin>"), or kind:name (screen:, settings:, dialog:, action:, approval:<id> pops up a waiting
+        axHub approval). `highlight` = a CSS selector or exact visible text to flash once it's open. Only navigates."""
+        return await follow("show", target=target, highlight=highlight, say=say, to=to)
+
+    @mcp.tool(annotations=READ)
+    async def console_follow() -> dict[str, Any]:
+        """Is Follow Amber on? {on, by, at, clients}. On: call console_show whenever you mention something in the
+        console, and Brett's approvals pop up there. Only Brett switches it (in the console)."""
+        return await follow("state")
+
+
+def follow_call(op: str, args: dict[str, Any]) -> dict[str, Any]:
+    """Follow Amber through its capability when the console runs; in stdio mode (a local clone) through the console's
+    REST API (AXF_CONSOLE_URL + AXF_TOKEN), since only the console knows Brett's open browser tabs."""
+    try:
+        import plugin_services  # the console's registry (absent in stdio mode)
+    except ImportError:
+        plugin_services = None  # type: ignore[assignment]
+    if plugin_services is not None:
+        if not any(s["name"] == "follow-amber@1" for s in plugin_services.available()):
+            return {"ok": False, "code": "not_implemented", "message": "no plugin provides follow-amber@1 (the Follow Amber plugin)"}
+        svc = plugin_services.get("follow-amber@1")
+        if svc is None:
+            return {"ok": False, "code": "not_implemented", "message": "the Follow Amber plugin is turned off (Settings → Plugins)"}
+        if op == "state":
+            return {"ok": True, **svc.state()}
+        return svc.show(str(args.get("target") or ""), "", str(args.get("highlight") or ""), str(args.get("say") or ""), str(args.get("to") or "recent"), "amber (mcp)")
+    import urllib.error
+    import urllib.request
+    base = os.environ.get("AXF_CONSOLE_URL", "https://console.amberxai.com").rstrip("/") + "/api/plugins/follow-amber/"  # axf-plugin:follow-amber
+    auth = {"authorization": f"Bearer {os.environ['AXF_TOKEN']}"} if os.environ.get("AXF_TOKEN") else {}
+    req = (urllib.request.Request(base + "state", headers=auth) if op == "state" else
+           urllib.request.Request(base + "show", data=json.dumps({**args, "by": "amber (mcp)"}).encode(), method="POST", headers={"content-type": "application/json", **auth}))
+    try:
+        with urllib.request.urlopen(req, timeout=30) as res:
+            return json.loads(res.read().decode() or "{}")
+    except urllib.error.HTTPError as e:
+        return {"ok": False, "code": "unexpected", "message": f"{e.code} from {base}"}
+    except (OSError, ValueError) as e:
+        return {"ok": False, "code": "unexpected", "message": f"could not reach {base}: {str(e)[:200]}"}
 
 
 def console_runner(root: Path) -> Callable[[dict[str, Any]], dict[str, Any]]:

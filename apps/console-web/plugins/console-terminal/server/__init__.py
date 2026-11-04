@@ -31,9 +31,10 @@ from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 
 import plugin_services
 
-from . import sessions, store
+from . import health, sessions, store
 
 router = APIRouter()
+health.ensure()
 
 
 def _err(e: Exception) -> HTTPException:
@@ -48,6 +49,7 @@ def _err(e: Exception) -> HTTPException:
 
 @router.get("/status")
 def status() -> dict[str, Any]:
+    health.ensure()
     exe = os.environ.get("CLAUDE_BIN", "claude")
     cli = bool(subprocess.run(["sh", "-c", f"command -v {shlex.quote(exe)}"], capture_output=True).stdout.strip())
     s = store.settings()
@@ -242,6 +244,7 @@ def hub_runs(since: int = 0) -> dict[str, Any]:
 def headless() -> dict[str, Any]:
     """Headless Claude Code sessions running on the VPS in tmux (deploy/claude-headless.sh, Oct 26 2026): the browser
     opens each new one in a VPS tab attached to it and brings the terminal window to the front."""
+    health.ensure()
     on = bool(store.settings().get("showHeadless", True))
     out = sessions.headless_sessions() if on else {"ready": False, "items": [], "why": "switched off"}
     return {**out, "on": on, "now": int(time.time() * 1000)}
@@ -271,3 +274,24 @@ def keygen(body: dict[str, Any]) -> dict[str, Any]:
 @router.get("/log")
 def session_log(limit: int = 200) -> dict[str, Any]:
     return {"items": store.read_log(max(1, min(limit, 2000)))}
+
+
+class HeadlessService:
+    """Capability `axf.headless@1`: the headless Claude Code runs on the VPS (tmux axf-…), their live meters
+    (headless-meter@1) and ending one, for other plugins (the Crew) that must not reach into this folder."""
+    version = 1
+
+    def sessions(self) -> dict[str, Any]:
+        return sessions.headless_sessions()
+
+    def meters(self, names: list[str]) -> dict[str, Any]:
+        return sessions.meters(list(names))
+
+    def kill(self, name: str) -> dict[str, Any]:
+        for s in list(sessions.MANAGER.sessions.values()):
+            if s.tmux == name and s.where == "vps":
+                sessions.MANAGER.close(s.id, "killed")
+        return sessions.kill_tmux(name, "vps")
+
+
+plugin_services.provide("axf.headless@1", HeadlessService(), "console-terminal")

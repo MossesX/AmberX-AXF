@@ -1,10 +1,11 @@
 /** Overlay engines: dialogs, toasts/popups, and the context menu. */
-import { useEffect, useLayoutEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { BrandMark, BrandWatermark, brandHostProps } from './Brand';
 import { useScopeId } from './InterfaceScope';
-import { MenuList } from './MenuList';
+import { MenuList, MenuScroll } from './MenuList';
+import { useMenuFit } from './menuFit';
 
 export interface DialogDef {
   title: string;
@@ -129,7 +130,6 @@ export function ContextMenuHost() {
   const state = useAxfState();
   const cm = useAsset('context-menu').data;
   const ref = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   const scope = useScopeId();
 
   useEffect(() => {
@@ -193,14 +193,8 @@ export function ContextMenuHost() {
     };
   }, [rt, scope]);
 
-  // Clamp inside the viewport once measured
-  useLayoutEffect(() => {
-    if (!state.context || !ref.current) return setPos(null);
-    const r = ref.current.getBoundingClientRect();
-    const x = Math.min(state.context.x, window.innerWidth - r.width - 8);
-    const y = Math.min(state.context.y, window.innerHeight - r.height - 8);
-    setPos({ x: Math.max(8, x), y: Math.max(8, y) });
-  }, [state.context]);
+  // On screen: below-right of the pointer, flipped or shifted to fit, scrolling inside when taller than the room (menu-fit@1)
+  useMenuFit(ref, 'point', () => state.context && { left: state.context.x, right: state.context.x, top: state.context.y, bottom: state.context.y }, {}, [state.context]);
 
   if (!state.context || (state.context.scope ?? '') !== scope) return null;
   const ctx = state.context;
@@ -220,16 +214,18 @@ export function ContextMenuHost() {
     <div
       ref={ref}
       className="fx-ctx fx-popover"
-      style={{ left: pos?.x ?? state.context.x, top: pos?.y ?? state.context.y, visibility: pos ? 'visible' : 'hidden' }}
+      style={{ left: state.context.x, top: state.context.y }}
       onContextMenu={(e) => e.preventDefault()}
     >
-      <MenuList
-        items={items}
-        payload={state.context.payload}
-        onDone={() => rt.closeContext()}
-        showIcons={cm.showIcons}
-        showShortcuts={cm.showShortcuts}
-      />
+      <MenuScroll box={ref}>
+        <MenuList
+          items={items}
+          payload={state.context.payload}
+          onDone={() => rt.closeContext()}
+          showIcons={cm.showIcons}
+          showShortcuts={cm.showShortcuts}
+        />
+      </MenuScroll>
     </div>
   );
 }
