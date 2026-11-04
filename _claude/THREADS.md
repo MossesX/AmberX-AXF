@@ -698,7 +698,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 15:09 UTC · `urgent-land-gizmo-chat` note (current) · foreign-write
 - 2026-11-04 15:09 UTC · `console-wake-finish` s5 done, → complete, note (current) · foreign-write
 - 2026-11-04 15:09 UTC · `merge-queue` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, → complete (current) · foreign-write
 - 2026-11-04 15:09 UTC · `apps-control-surface` added (5 steps) (current) · foreign-write
@@ -1098,6 +1097,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 21:26 UTC · `drag-to-tab` s5 done, → complete (current) · orchestrator
 - 2026-11-04 21:26 UTC · `drag-to-tab` → built, branch claude/drag-to-tab, PR #344 (current) · builds-live
 - 2026-11-04 21:26 UTC · `drag-to-tab` s3 done, s4 done, s5 done, → complete (current) · foreign-write
+- 2026-11-04 21:28 UTC · `molly-banner-match` note (current) · foreign-write
 
 ## Token passes (log)
 
