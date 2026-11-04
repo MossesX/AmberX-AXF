@@ -577,7 +577,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 20:18 UTC · `ui-review-predicted` s1 done (urgent) · orchestrator
 - 2026-11-03 20:18 UTC · `ui-review-predicted` s2 done (urgent) · orchestrator
 - 2026-11-03 20:18 UTC · `ui-review-predicted` s3 done (urgent) · orchestrator
 - 2026-11-03 20:19 UTC · `window-resize-fix` s2 done, s3 done, → complete, note (current) · foreign-write
@@ -977,3 +976,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 00:55 UTC · `browser-automation` added (16 steps) (current) · foreign-write
 - 2026-11-04 00:55 UTC · `profile-switcher-widget` added (5 steps) (current) · foreign-write
 - 2026-11-04 00:57 UTC · `lenny-land-all` s1 done, s5 done, note (current) · foreign-write
+- 2026-11-04 00:57 UTC · `browser-automation` s2 done (current) · orchestrator
