@@ -40,6 +40,13 @@ hosts.ts,index.tsx,look.tsx,panels.tsx,api.ts}`, `src/assets/toolbar/console-sea
 - `tsc --noEmit` (console-web) clean; check-theme, check-controls, check-toolbars, plugin-commands test, asset
   validate all pass.
 
+## CI fixes on the way
+- help coverage ratchet: help entries for the new setting and the `terminal.toolbar` action.
+- menu-reach: the toolbar's Terminal action is also in the app menu (Plugins → Terminal → Open terminal (new sessions
+  first), with the same count).
+- Pre-existing on main: the apps' baked `assets/help/framework-drafts.json` had drifted from the framework copy
+  (shared-assets check red for every PR); re-baked into console-web, axhub-web, amberx-droid and molly.
+
 ## Known gaps
 - "Seen" is per browser page (in memory); a reload recounts sessions that got a quiet tab only if they no longer have
   one.
