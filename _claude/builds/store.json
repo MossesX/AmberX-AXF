@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 822,
- "updatedAt": "2026-11-04T16:16:18.534Z",
+ "rev": 823,
+ "updatedAt": "2026-11-04T16:20:27.444Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -80707,12 +80707,17 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/settings-placement-everywhere",
    "pr": "",
    "createdAt": "2026-11-04T16:03:38.989Z",
-   "updatedAt": "2026-11-04T16:03:38.989Z",
+   "updatedAt": "2026-11-04T16:20:26.351Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: branch claude/settings-placement-everywhere (no PR yet)",
+     "at": "2026-11-04T16:20:26.351Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -81265,7 +81270,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
