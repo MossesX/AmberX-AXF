@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T15:06:13.999Z",
+ "updatedAt": "2026-11-04T15:06:27.176Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -7649,16 +7649,21 @@
    "title": "Console wake: finish (Follow Amber reaches a sleeping console)",
    "category": "Urgent",
    "detail": "Follow Amber is on, but the console tab sleeps in the background while Brett is in the Claude app on a voice call, so console_show commands sit undelivered. Confirm #288 carried console-wake (#266), close superseded PRs, land axHub amberx.open_url (#35) + redeploy, make sure AmberX handles open_url, and wake automatically when console_show gets no foreground answer within 4 s.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/console-wake-finish",
    "pr": "#317",
    "createdAt": "2026-11-04T14:15:32.628Z",
-   "updatedAt": "2026-11-04T14:31:25.030Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-04T15:06:22.336Z",
+   "builtAt": "2026-11-04T15:06:19.247Z",
+   "notes": [
+    {
+     "text": "PR #317 CI green (afd35c77a, 390e884ab); auto-merge pending. axHub #35 merged + deployed. #308 closed (superseded). Brett: install AmberX b1227+, no phone paired on axHub (banner alert raised).",
+     "at": "2026-11-04T15:06:22.336Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -7759,8 +7764,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T15:06:19.247Z",
      "note": "",
      "uid": "st-mw278j9m0a7u3i"
     }
