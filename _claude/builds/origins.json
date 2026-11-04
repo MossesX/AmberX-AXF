@@ -1613,6 +1613,18 @@
    "from": "detail",
    "addenda": []
   },
+  "urgent-land-lazy-loader": {
+   "said": "Move it to next... start it right away.",
+   "at": "2026-11-04T12:29:55.129Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "veto-everywhere": {
    "said": "it's not an approval system anymore, it's a veto system; send the notice, keep building, don't wait or check; finish the veto system wherever it needs to be and delete anything pending that conflicts. axHub decision #103: hub option confirmAs / AXHUB_CONFIRM_AS (default veto). Shared rules rewritten. Pending item axhub-auto-approve-all removed (main-framework). veto-window + approval-costs were already archived.",
    "at": "2026-10-30",
