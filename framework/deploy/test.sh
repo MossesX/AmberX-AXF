@@ -122,9 +122,11 @@ if command -v git >/dev/null; then
   git clone -q "$R" "$T/clone"
   axf_update_script "$U" "$T/clone" main "$T/log" "touch $T/ran" "$T/st.json"
   bash "$U"; [ ! -e "$T/ran" ] && ok || fail "unchanged: command not run"
-  git -C "$R" -c user.email=t@t -c user.name=t commit -q --allow-empty -m two
+  mkdir -p "$R/_claude"; echo s > "$R/_claude/status"; git -C "$R" add -A; git -C "$R" -c user.email=t@t -c user.name=t commit -q -m status
+  bash "$U"; [ ! -e "$T/ran" ] && ok || fail "only _claude/ changed (builds-live status): command not run"
+  echo 2 > "$R/app"; git -C "$R" add -A; git -C "$R" -c user.email=t@t -c user.name=t commit -q -m two
   bash "$U"; [ -e "$T/ran" ] && grep -q '"state":"done"' "$T/st.json" && ok || fail "changed: command run, status done"
-  git -C "$R" -c user.email=t@t -c user.name=t commit -q --allow-empty -m three
+  echo 3 > "$R/app"; git -C "$R" add -A; git -C "$R" -c user.email=t@t -c user.name=t commit -q -m three
   axf_update_script "$U" "$T/clone" main "$T/log" "false" "$T/st.json"
   ! bash "$U" && grep -q '"state":"failed"' "$T/st.json" && ok || fail "failed command: status failed, non-zero exit"
 fi
