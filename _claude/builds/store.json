@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 582,
- "updatedAt": "2026-11-04T01:05:38.638Z",
+ "rev": 583,
+ "updatedAt": "2026-11-04T01:09:16.245Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -67627,7 +67627,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:48:27.729Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s2",
@@ -67669,9 +67669,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s4",
@@ -67691,9 +67691,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s5",
@@ -67713,9 +67713,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s6",
@@ -67735,9 +67735,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s7",
@@ -67757,9 +67757,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s8",
@@ -67779,9 +67779,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s9",
@@ -67801,9 +67801,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s10",
@@ -67823,9 +67823,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s11",
@@ -67845,9 +67845,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s12",
@@ -67867,9 +67867,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s13",
@@ -67889,9 +67889,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s14",
@@ -67911,9 +67911,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s15",
@@ -67933,9 +67933,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s16",
@@ -67955,9 +67955,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     }
    ],
    "profiles": [
