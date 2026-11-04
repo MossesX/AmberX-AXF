@@ -1,6 +1,6 @@
 /* Codebase changes — the banner, the log browser and the settings summary. Theme tokens only (codebase-changes.css). */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Button, Icon, IconButton, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { Button, Icon, IconButton, RefText, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { MoreMenu } from './MoreMenu';
 import {
   CHANGED, KIND_ICON, NO_FILTERS, STATE_ICON, STATE_LABEL, VIEW, abandonEntry, ago, api, bannerOn, closeAll, closeEntry, isActive, quietMs, startedMs, stuckWhy, kindLabel, linkHref, loadEntry, loadOpen, loadResume,
@@ -81,7 +81,7 @@ export function ChangesBanner() {
                 <button type="button" data-fx-row className="axp-codebase-changes-banner__entry" aria-expanded={shown === e.id} onClick={() => setShown(shown === e.id ? null : e.id)} title={shown === e.id ? 'Hide the details' : 'Show the details'}>
                   <span className="axp-codebase-changes-banner__line">
                     <KindBadge kind={e.kind} />
-                    <span className="axp-codebase-changes-banner__title">{e.title}</span>
+                    <span className="axp-codebase-changes-banner__title"><RefText text={e.title} /></span>
                     <Icon name={shown === e.id ? 'chevron-up' : 'chevron-down'} size={14} />
                   </span>
                   <span className="axp-codebase-changes-banner__line">
@@ -89,7 +89,7 @@ export function ChangesBanner() {
                     {isActive(e) ? <Timer e={e} now={now} /> : <span className="axp-codebase-changes__meta">{ago(e.updatedAt)}</span>}
                     <StepsCount s={e.steps} />
                   </span>
-                  {(e.result?.summary || e.steps.running) && <span className="axp-codebase-changes-banner__sub">{e.result?.summary || `Now: ${e.steps.running}`}</span>}
+                  {(e.result?.summary || e.steps.running) && <span className="axp-codebase-changes-banner__sub"><RefText text={e.result?.summary || `Now: ${e.steps.running}`} /></span>}
                 </button>
                 {stuckWhy(e, now) && <button type="button" className="fx-iconbtn axp-codebase-changes__trash" aria-label={`Remove stuck "${e.title}"`} title="Stuck: mark it failed (stalled) and take it off the banners on every device; it stays in the log" disabled={s.busy === e.id} onClick={() => void abandonEntry(e.id)}><Icon name="trash" size={16} /></button>}
                 <button type="button" className="fx-iconbtn" aria-label={`Close "${e.title}" everywhere`} title="Close (gone on every device; stays in the log)" disabled={s.busy === e.id} onClick={() => void closeEntry(e.id)}><Icon name="x" size={16} /></button>
@@ -124,7 +124,7 @@ function StepsTimeline({ steps }: { steps: Step[] }) {
         <li key={`${i}-${s.text.slice(0, 16)}`} className={`is-${s.state}`}>
           <span className={`axp-codebase-changes__dot is-${s.state}`} aria-label={STATE_LABEL[s.state]} title={STATE_LABEL[s.state]}><Icon name={STATE_ICON[s.state] ?? 'info'} size={12} /></span>
           <span className="axp-codebase-changes__step">
-            <span>{s.text}</span>
+            <span><RefText text={s.text} /></span>
             <span className="axp-codebase-changes__meta">{STATE_LABEL[s.state]}{s.startedAt ? ` · ${when(s.startedAt)}` : ''}{s.finishedAt && s.startedAt ? ` · took ${took(s.startedAt, s.finishedAt)}` : ''}</span>
             {s.note && <span className="axp-codebase-changes__note">{s.note}</span>}
           </span>
@@ -190,7 +190,7 @@ function EntryDetail({ id, onChanged }: { id: string; onChanged: () => void }) {
       {!r ? <p className="fx-small fx-muted axp-codebase-changes__none">No result yet{e.state === 'running' ? ': still in progress.' : '.'}</p> : (
         <div className="axp-codebase-changes__result">
           <div className="axp-codebase-changes__line"><StateBadge state={r.state} />{r.branch && <span className="axp-codebase-changes__meta"><Icon name="branch" size={11} /> {r.branch}</span>}{r.filesChanged != null && <span className="axp-codebase-changes__meta">{r.filesChanged} file{r.filesChanged === 1 ? '' : 's'} changed</span>}</div>
-          {r.summary && <p className="axp-codebase-changes__text">{r.summary}</p>}
+          {r.summary && <p className="axp-codebase-changes__text"><RefText text={r.summary} /></p>}
           {r.commits?.length ? (
             <ul className="axp-codebase-changes__commits">
               {r.commits.map((c) => <li key={c.sha}>{e.repos[0] ? <a href={`https://github.com/${e.repos[0]}/commit/${c.sha}`} target="_blank" rel="noopener noreferrer"><code>{c.sha.slice(0, 7)}</code></a> : <code>{c.sha.slice(0, 7)}</code>}{c.message ? ` ${c.message}` : ''}</li>)}
@@ -231,7 +231,7 @@ function Row({ s, open, onToggle, onChanged }: { s: Summary; open: boolean; onTo
         {/* title line + one meta line; the result summary is in the detail (compact pages, Oct 30 2026) */}
         <span className="axp-codebase-changes__line axp-codebase-changes__line--title" title={s.result?.summary || undefined}>
           <KindBadge kind={s.kind} />
-          <span className="axp-codebase-changes__title">{s.title}</span>
+          <span className="axp-codebase-changes__title"><RefText text={s.title} /></span>
           <StateBadge state={s.state} />
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={14} />
         </span>

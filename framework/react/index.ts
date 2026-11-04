@@ -42,3 +42,4 @@ export { HubAppearanceSource, DEFAULT_HUB, type HubAppearanceOptions } from './h
 export { WaitingForHub } from './components/Waiting';
 export { WatchLiveLink, WatchLiveWindow, watchLiveSrc, type WatchLivePreview } from './components/WatchLive';
 export { installTapConfirm, toolbarOf, toolbarElementId, tipTextOf, type TapConfirmHost } from './tapConfirm';
+export { RefText, REFS_SETTING, addRefSource, refSourcesChanged, refIndexOf, openRef, refLink, type RefTextProps, type RefHow } from './components/RefText';

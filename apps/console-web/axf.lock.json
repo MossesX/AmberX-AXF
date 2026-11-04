@@ -489,7 +489,7 @@
     "src/axf/core/assistant.ts": "1d1b21a4b63aba2b",
     "src/axf/core/catalog.ts": "294110261dff040c",
     "src/axf/core/diagnostics.ts": "b46cda9f38e88006",
-    "src/axf/core/engines/actions.ts": "5c87a4ff7dc55bc6",
+    "src/axf/core/engines/actions.ts": "947962c3da4fb06b",
     "src/axf/core/engines/agent-card-rules.d.mts": "744f53f88011bf19",
     "src/axf/core/engines/agent-card-rules.mjs": "9e407552685d1aca",
     "src/axf/core/engines/alerts.ts": "dd0d426c4bef2390",
@@ -535,6 +535,8 @@
     "src/axf/core/engines/plugin-commands.d.mts": "eda6d23854d35b44",
     "src/axf/core/engines/plugin-commands.mjs": "05e856c87b0a9c43",
     "src/axf/core/engines/plugins.ts": "c523edb6a915e01e",
+    "src/axf/core/engines/refs.d.mts": "e8b66a1d0bcf684c",
+    "src/axf/core/engines/refs.mjs": "e7aee53695483224",
     "src/axf/core/engines/repeat.ts": "d1413b93c571298c",
     "src/axf/core/engines/roll.ts": "5a7d2630f6d63409",
     "src/axf/core/engines/roller.ts": "e05f16a70c695f1b",
@@ -679,6 +681,7 @@
     "src/axf/react/components/Meters.tsx": "d29240f84a96cdc8",
     "src/axf/react/components/ModelBadge.tsx": "c47fb07ddd5584b2",
     "src/axf/react/components/Overlays.tsx": "476e801def77a899",
+    "src/axf/react/components/RefText.tsx": "fc367771ed39849a",
     "src/axf/react/components/Repeat.tsx": "671cf668238880e7",
     "src/axf/react/components/Search.tsx": "dbb8df7fbb7ee827",
     "src/axf/react/components/Slots.tsx": "bab3b097bda69aa1",
@@ -688,7 +691,7 @@
     "src/axf/react/components/menuFit.ts": "04c0539214743de1",
     "src/axf/react/editorSync.ts": "4d2dfe9847350acb",
     "src/axf/react/hubAppearance.ts": "d7f3983fdd82b80b",
-    "src/axf/react/index.ts": "938c77aeee9ce94e",
+    "src/axf/react/index.ts": "832b1a32bf51b920",
     "src/axf/react/library.ts": "923d66f8f64fb37b",
     "src/axf/react/placeTip.ts": "72554dc0b42e13a3",
     "src/axf/react/placement.tsx": "e50243526c856169",
@@ -790,6 +793,6 @@
     "src/axf/schemas/shared-assets.json": "7d6a5bb4f0b2a9c3",
     "src/axf/schemas/swarm.json": "72c7999aebb9e8c2",
     "src/axf/schemas/ui-review.json": "292b3b2d3482fbad",
-    "src/axf/ui/axf.css": "84b891e4532eb084"
+    "src/axf/ui/axf.css": "68b3a41e8ec00624"
   }
 }

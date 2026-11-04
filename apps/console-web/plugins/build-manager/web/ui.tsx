@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { WatchLiveFor } from '@console/watchLive';
-import { BuildOrigin, Button, Icon, IconButton, Slot, Switch, originSubtitle, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { BuildOrigin, Button, Icon, IconButton, RefText, Slot, Switch, originSubtitle, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { addedByLabel, addedByOf, filterRows, GONE_LABEL, goneRows, MODELS, ORIGIN_LABEL, ORIGINS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type GoneKind, type LiveEntry, type Origin, type Row, type SortKey, type Source } from './merge.mjs';
 import { abandonBuild, bannerOn, defaultSort, isStuckLive, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, helpers, takeOff, tickStep, useStore, onStore, usd, verifyBuild, type StartPlan, type Store } from './store';
 import { builtRows, builtTotals, filterBuilt, filterSessions, ITEM_STATUS_LABEL, liveFromChanges, matches, money, PERIOD_LABEL, PERIODS, sessionsFromChanges, type ChangeLive, type Period, type SessionItem, type SessionRow } from './history.mjs';
@@ -111,7 +111,7 @@ function TrackerEntry({ e, now, finished }: { e: LiveEntry; now: number; finishe
     <li className={`axp-build-manager__live${finished ? (failed ? ' is-failed' : ' is-done') : ''}`}>
       <div className="axp-build-manager__live-head">
         <span className={finished ? '' : 'axp-build-manager__spin'} aria-hidden><Icon name={finished ? (failed ? 'x-circle' : 'check-circle') : 'refresh'} size={14} /></span>
-        <span className="axp-build-manager__live-title">{e.row ? e.row.title : e.title}</span>
+        <span className="axp-build-manager__live-title"><RefText text={e.row ? e.row.title : e.title} /></span>
         {e.row && <ModelChip model={e.row.model} />}
       </div>
       <div className="axp-build-manager__live-meta">
@@ -153,7 +153,7 @@ function SessionEntry({ e, now }: { e: ChangeLive; now: number }) {
     <li className={`axp-build-manager__live${e.stale ? ' is-stale' : ''}${e.parent ? ' is-child' : ''}`}>
       <div className="axp-build-manager__live-head">
         <span className={e.stale || e.state === 'queued' ? '' : 'axp-build-manager__spin'} aria-hidden><Icon name={e.stale ? 'alert' : e.state === 'queued' ? 'clock' : 'refresh'} size={14} /></span>
-        <span className="axp-build-manager__live-title">{e.title}</span>
+        <span className="axp-build-manager__live-title"><RefText text={e.title} /></span>
         <ModelChip model={e.model === 'Other' ? 'Opus' : e.model} />
         {isStuckLive(e, now) && <TrashBuild e={e} />}
       </div>
@@ -871,7 +871,7 @@ export function BuildBanner() {
         <button type="button" data-fx-row className="axp-build-manager-banner__main" aria-expanded={full} onClick={() => setFull(!full)} title={full ? 'Hide the details' : 'Show the details'}>
           <span className={first.stale ? '' : 'axp-build-manager__spin'} aria-hidden><Icon name={first.stale ? 'alert' : 'refresh'} size={16} /></span>
           <span className="axp-build-manager-banner__text">
-            <strong>{first.stale ? 'No word from: ' : first.state === 'queued' ? 'Waiting to start: ' : 'Building: '}{first.title}</strong>
+            <strong>{first.stale ? 'No word from: ' : first.state === 'queued' ? 'Waiting to start: ' : 'Building: '}<RefText text={first.title} /></strong>
             {full && <span className="axp-build-manager-banner__meta">
               <ModelChip model={first.model === 'Other' ? 'Opus' : first.model} />
               <Badge icon={isStuckLive(first, now) ? 'alert' : 'clock'} tone={isStuckLive(first, now) ? 'warn' : undefined}>{dur(elapsed)}{first.estimate ? ` / ~${fmt(first.estimate)}` : ''}{first.stale && first.lastSeenAt ? ` · no word ${dur(now - first.lastSeenAt)}` : ''}</Badge>
@@ -880,7 +880,7 @@ export function BuildBanner() {
               <Badge tone="muted">{first.source}{first.host && first.host !== first.source ? ` · ${first.host}` : ''}</Badge>
               {more > 0 && <Badge>+{more} more</Badge>}
             </span>}
-            {full && first.currentStep && <span className="axp-build-manager-banner__step">{first.currentStep}</span>}
+            {full && first.currentStep && <span className="axp-build-manager-banner__step"><RefText text={first.currentStep} /></span>}
             {full && first.progress != null && <Bar value={first.progress} label="Build progress" />}
           </span>
         </button>
@@ -895,7 +895,7 @@ export function BuildBanner() {
               <li key={e.changeId}>
                 <button type="button" data-fx-row className="axp-build-manager-banner__more-head" aria-expanded={shown === e.changeId} onClick={() => setShown(shown === e.changeId ? null : e.changeId)} title={shown === e.changeId ? 'Hide the details' : 'Show the details'}>
                   <Icon name={e.stale ? 'alert' : e.state === 'queued' ? 'clock' : 'refresh'} size={12} />
-                  <span className="axp-build-manager-banner__more-title">{e.stale ? 'No word from: ' : e.state === 'queued' ? 'Waiting: ' : ''}{e.title}</span>
+                  <span className="axp-build-manager-banner__more-title">{e.stale ? 'No word from: ' : e.state === 'queued' ? 'Waiting: ' : ''}<RefText text={e.title} /></span>
                   <Badge icon={isStuckLive(e, now) ? 'alert' : 'clock'} tone={isStuckLive(e, now) ? 'warn' : undefined}>{dur(e.startedAt ? now - e.startedAt : null)}</Badge>
                   <Icon name={shown === e.changeId ? 'chevron-up' : 'chevron-down'} size={12} />
                 </button>
