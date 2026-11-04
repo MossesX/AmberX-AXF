@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 954,
- "updatedAt": "2026-11-04T21:01:18.638Z",
+ "rev": 955,
+ "updatedAt": "2026-11-04T21:01:40.498Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -83218,14 +83218,14 @@
    "title": "Molly's banner = the console's banner asset; embedded apps hide their own",
    "category": "Molly",
    "detail": "",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-banner-match-r2",
    "pr": "#341",
    "createdAt": "2026-11-04T17:18:47.970Z",
-   "updatedAt": "2026-11-04T21:01:17.273Z",
+   "updatedAt": "2026-11-04T21:01:37.945Z",
    "builtAt": "",
    "notes": [
     {
@@ -83271,12 +83271,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:01:27.496Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T17:18:47.971Z",
-     "updatedAt": "2026-11-04T17:18:47.971Z"
+     "updatedAt": "2026-11-04T21:01:27.651Z"
     },
     {
      "id": "s2",
@@ -83337,12 +83337,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:01:36.187Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T17:18:47.971Z",
-     "updatedAt": "2026-11-04T17:18:47.971Z"
+     "updatedAt": "2026-11-04T21:01:36.269Z"
     },
     {
      "id": "s5",
@@ -83359,12 +83359,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:01:37.945Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T17:18:47.971Z",
-     "updatedAt": "2026-11-04T17:18:47.971Z"
+     "updatedAt": "2026-11-04T21:01:38.157Z"
     }
    ],
    "profiles": [
@@ -83375,7 +83375,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
