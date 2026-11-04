@@ -75,6 +75,8 @@ jobs:
         run: node apps/console-web/plugins/plugin-commands/test.mjs  # axf-plugin:plugin-commands
       - name: Claude plugin (claude-settings@1 — open registry, owner-only rules, No wait ↔ pass decisions)  # axf-plugin:claude-settings
         run: node apps/console-web/plugins/claude-settings/test.mjs  # axf-plugin:claude-settings
+      - name: Auto-land (push banner) — zero tokens (no model client in the merge pipeline), landing rules, rounds on fake builds  # axf-plugin:push-banner
+        run: node apps/console-web/plugins/push-banner/land/land.test.mjs  # axf-plugin:push-banner
       - name: Deploy helpers (framework/deploy) — bash -n, shellcheck, self-test; installers that source them
         run: |
           set -e
@@ -146,6 +148,7 @@ jobs:
           npx playwright install --with-deps chromium
           node scripts/theme-swap.mjs
           npx tsx scripts/interface-scope-check.mts     # two <InterfaceScope>s read their own interfaces, the app keeps its own
+          npx tsx scripts/window-handles-check.mts      # every floating window has its 8 resize handles, windows stay under dialogs, settings 'Opens in' dialog
       - name: Alerts + MCP client + axf_server — engines match their fixtures (TS, Python), conflict detection, console alert server, web push encryption
         run: |
           set -o pipefail
