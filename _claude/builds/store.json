@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 980,
- "updatedAt": "2026-11-04T21:42:01.664Z",
+ "rev": 981,
+ "updatedAt": "2026-11-04T21:42:28.216Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -84575,14 +84575,14 @@
    "title": "Follow Amber flash",
    "category": "Feature",
    "detail": "console_show: the referenced item (highlight match; else the opened screen/dialog) scrolls into view and its background flashes 5 times, alternating yellow/orange (flash-a/flash-b colour tokens), pure CSS, reduced-motion = one outline pulse, no layout shift. Settings in Follow Amber: on/off, two colours, count, speed. Best match for repeated text; the console_show result names what flashed (flashed).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "voice",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T21:41:59.597Z",
-   "updatedAt": "2026-11-04T21:41:59.597Z",
+   "updatedAt": "2026-11-04T21:42:11.583Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -84615,12 +84615,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:42:07.884Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T21:41:59.598Z",
-     "updatedAt": "2026-11-04T21:41:59.598Z"
+     "updatedAt": "2026-11-04T21:42:07.998Z"
     },
     {
      "id": "s2",
@@ -84637,12 +84637,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:42:09.906Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T21:41:59.598Z",
-     "updatedAt": "2026-11-04T21:41:59.598Z"
+     "updatedAt": "2026-11-04T21:42:10.043Z"
     },
     {
      "id": "s3",
@@ -84659,12 +84659,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:42:11.583Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T21:41:59.598Z",
-     "updatedAt": "2026-11-04T21:41:59.598Z"
+     "updatedAt": "2026-11-04T21:42:11.649Z"
     },
     {
      "id": "s4",
@@ -84697,7 +84697,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
