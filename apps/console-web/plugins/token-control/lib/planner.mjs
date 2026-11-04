@@ -143,6 +143,11 @@ async function runBuilds(c) {
           'remove-step': { step: i.step },
           'move-step': {},
           archive: {}, hide: {}, unhide: {},
+          // build-todo-sync@1: names and the Planned & fixes checklist
+          name: { ...(typeof i.displayName === 'string' ? { displayName: i.displayName } : {}), ...(typeof i.category === 'string' ? { category: i.category } : {}), ...(typeof i.area === 'string' ? { area: i.area } : {}) },
+          'fix-add': { text: i.text, kind: i.kind, note: i.note, link: i.link },
+          'fix-set': { fix: i.fix, ...(typeof i.done === 'boolean' ? { done: i.done } : {}), ...(typeof i.text === 'string' ? { text: i.text } : {}), ...(typeof i.note === 'string' ? { note: i.note } : {}), ...(typeof i.link === 'string' ? { link: i.link } : {}), ...(typeof i.kind === 'string' ? { kind: i.kind } : {}) },
+          'fix-remove': { fix: i.fix },
         };
         if (!(c.action in map) || !(c.action in (CONTROL_TARGETS['planner.builds'].acts ?? {}))) throw new ControlError('invalid', `planner.builds has no action ${c.action}`);
         if (c.action === 'move-step') { // the orchestrator moves one place at a time: walk to the index asked for

@@ -371,14 +371,21 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
                              detail: str | None = None, model: Literal["", "Fable", "Opus", "Sonnet"] = "",
                              status: Literal["", "pending", "unsafe", "complete", "failed", "broken"] = "", text: str = "", plan_id: str = "",
                              estimate: str | None = None, sub_estimates: list[str] | None = None, index: int | None = None, done: bool | None = None,
-                             said: str = "") -> dict[str, Any]:
+                             said: str = "", name: str = "", category: Literal["", "Plugin", "Plugin extension", "Add-on", "Framework", "App", "Feature", "Module"] = "") -> dict[str, Any]:
         """Change the pending build list. add needs title (model defaults to Fable); status marks unsafe/complete/failed/broken (unsafe = parked, needs design or review before anyone builds it)
         (complete stamps the built date); note and sub (sub prompt) need text; remove deletes the item. estimate = build time ("45 min", "2 h", "1.5 d") on the item
         (add/update) or on a sub prompt (sub); sub_estimates (update) sets one per existing sub prompt in order ("" clears).
         Sub prompts are the item's steps (rule: a build over 30 minutes is split into steps of 30 minutes or less, each with its own estimate):
         step with index (0-based) ticks one off (done=true/false) and may reword it (text) or re-estimate it (estimate, "" clears).
-        said (add): Brett's exact words that asked for this build, verbatim and unedited (build-origin@1); a paraphrase goes in detail, never here."""
+        said (add): Brett's exact words that asked for this build, verbatim and unedited (build-origin@1); a paraphrase goes in detail, never here.
+        name + category (add/update, build-todo-sync@1): the short name Brett references the build by in the to-do manager (ask him for it; 48 characters at most)
+        and its category (Plugin, Plugin extension, Add-on, Framework, App, Feature, Module). Without them the build gets a suggestion flagged for his review."""
         change: dict[str, Any] = {"action": action, "source": "mcp"}
+        if name.strip():
+            change["displayName"] = name.strip()[:48]
+            change["nameReview"] = False
+        if category:
+            change["category"] = category
         if sub_estimates is not None:
             change["subEstimates"] = [str(x) for x in sub_estimates]
         for k, v in (("id", id), ("title", title), ("model", model), ("status", status), ("text", text), ("planId", plan_id)):

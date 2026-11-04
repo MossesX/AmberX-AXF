@@ -38,6 +38,15 @@ journalled.
 | `defaultSteps`, `defaultAt`, `rearranged` | the default breakdown (Restore default); follows orchestrator edits until the Steps view rearranges the build |
 | `removedSteps` | steps taken out (removed, divided, harvested away) with why, when, by |
 | `legacy`, `copies` | where the record came from in the migration; other copies kept verbatim |
+| `displayName` | **build-todo-sync@1 (Nov 4 2026):** the short name Brett references the build by (≤ 48; the to-do list's name). Required: a record without one gets `suggestDisplayName(title)` |
+| `category` | one of `Plugin, Plugin extension, Add-on, Framework, App, Feature, Module` (required; a record without one gets `suggestCategory`). The old free text that used to live here moved to `area` |
+| `area` | the old free-text grouping ("Console > Terminal"), optional |
+| `nameReview` | true while name / category are a suggestion nobody confirmed (backfilled records start true; orchestrator `act name <id> …` clears it) |
+| `fixes[]` | the build's **Planned & fixes** checklist: `{ id f1…, uid, text, kind planned \| fix \| bug, done, doneAt, by, at, note, link, stepUid, pr, updatedAt }` (orchestrator `fix-add` / `fix-set` / `fix-remove`; mirrored to the build's Plan Studio plan and to-do list) |
+
+Rules for the new fields: `framework/core/build-todo-sync.mjs` (`naming`, `normFix`), fixture `spec/fixtures/build-todo-sync.json`,
+check `spec/check-build-todo-sync.mjs`. Every store write may be announced to subscribers (`framework/cli/builds-events.mjs`),
+which is how the to-do lists tick off live.
 
 **StepRecord** = orchestrator@1 step fields (`id`, `text`, `model`, `why`, `phase`, `group`, `estimate`, `files`, `checks`,
 `session`, `agent`, `skip`, `done`, `doneAt`, `note`) plus `uid` (never changes, also across a harvest), `title` (rename),
@@ -52,7 +61,8 @@ policy `framework/core/model-policy.mjs`; a legacy `[Sonnet]` prefix reads as Op
 - Build ids unique; a build has an `order` in every profile in `profiles`; `kind` build | epic; `rev` ≥ 1; ISO timestamps.
 - Live step `uid`s unique across the whole store (a harvested step keeps its uid and leaves its source build); step ids
   unique within a build; every step `Fable` or `Opus` with text.
-- Ids never change: renaming changes `title` only.
+- Ids never change: renaming changes `title` only (and `act name` changes `displayName` / `category`).
+- `displayName` present (≤ 48) and `category` one of the seven (build-todo-sync@1); older files are filled on read, so they validate.
 
 ## Projections and absorbs
 

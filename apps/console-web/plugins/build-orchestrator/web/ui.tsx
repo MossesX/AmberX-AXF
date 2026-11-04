@@ -21,7 +21,8 @@ export const FOLDER = 'build-orchestrator';
 registerRowRefTarget('axf-orchestrator-build', (id) => (id ? { kind: 'orchestrator', id } : null));
 const api = pluginApi(FOLDER, 'Build orchestrator', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
 type Step = { id: string; text: string; model: 'Fable' | 'Opus'; why: string; phase: string; group: string; estimate: string; files: string[]; checks: string[]; session: 'same' | 'new'; agent: boolean; done: boolean; doneAt: string; note: string };
-type Build = { id: string; title: string; category: string; detail: string; status: string; hidden: boolean; source: string; pendingId: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt: string; notes: { text: string; at: string }[]; approvals: { phase: number; from: string; to: string; at: string; by?: string; via?: string; kind?: string; selfApproved?: boolean }[]; upgradeRequests?: { id: string; phase: number; from: string; to: string; at: string; by: string; state: string }[]; origin?: unknown; steps: Step[] };
+type Fix = { id: string; uid: string; text: string; kind: 'planned' | 'fix' | 'bug'; done: boolean; doneAt: string; by: string; at: string; note: string; link: string };
+type Build = { id: string; title: string; displayName: string; category: string; area: string; nameReview: boolean; fixes: Fix[]; detail: string; status: string; hidden: boolean; source: string; pendingId: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt: string; notes: { text: string; at: string }[]; approvals: { phase: number; from: string; to: string; at: string; by?: string; via?: string; kind?: string; selfApproved?: boolean }[]; upgradeRequests?: { id: string; phase: number; from: string; to: string; at: string; by: string; state: string }[]; origin?: unknown; steps: Step[] };
 type Rules = { sameSession: boolean; subAgents: boolean; approveModelSwitch: boolean; maxStepMinutes: number };
 type State = { updatedAt: string; rules: Rules; builds: Build[] };
 type Res = { ok: boolean; error?: string; state?: State; log?: string[]; brief?: string };
@@ -155,17 +156,19 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
   const [detail, setDetail] = useState(b.detail);
   const [branch, setBranch] = useState(b.branch);
   const [category, setCategory] = useState(b.category);
+  const [displayName, setDisplayName] = useState(b.displayName);
+  const [area, setArea] = useState(b.area);
   const [stepGroup, setStepGroup] = useState('');
   const [stepPhase, setStepPhase] = useState('');
   const p = core.progress(b);
   const n = core.nextUp(b, rules);
   const split = core.splitCheck(b, rules);
   const ps = core.phases(b);
-  const open = (m: Mode) => { setMode(m); setText(''); setStepEst(''); setTitle(b.title); setDetail(b.detail); setBranch(b.branch); setCategory(b.category); };
+  const open = (m: Mode) => { setMode(m); setText(''); setStepEst(''); setTitle(b.title); setDetail(b.detail); setBranch(b.branch); setCategory(b.category); setDisplayName(b.displayName); setArea(b.area); };
   const save = async () => {
     if (mode === 'note' && text.trim()) { if (await act({ action: 'note', id: b.id, text })) setMode(null); }
     else if (mode === 'step' && text.trim()) { if (await act({ action: 'add-step', id: b.id, stepData: { text, model: stepModel, estimate: stepEst, group: stepGroup, phase: stepPhase } })) setMode(null); }
-    else if (mode === 'edit') { if (await act({ action: 'update', id: b.id, title, detail, branch, category })) setMode(null); }
+    else if (mode === 'edit') { if (await act({ action: 'update', id: b.id, title, detail, branch, category, area, displayName: displayName.trim() || b.displayName, nameReview: false })) setMode(null); }
   };
   const copyBrief = async () => {
     try { const r = await api.call<Res>(`brief/${encodeURIComponent(b.id)}`); await navigator.clipboard.writeText(r.brief ?? core.brief(b, rules)); rt.toast(`Brief for "${b.title}" copied (current phase only)`, 'success'); }
@@ -174,7 +177,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
   return (
     <article className={`${embedded ? 'oc-embedded ' : ''}pd-card is-${core.isFinished(b.status) ? 'complete' : b.status === 'failed' ? 'failed' : b.status === 'blocked' ? 'broken' : 'pending'}`} role={embedded ? undefined : "listitem"} data-fx-ctx-target="axf-orchestrator-build" data-fx-ctx-payload={b.id}>
       <div className="pd-card__top">
-        <h2 className="pd-card__title">{embedded ? <span className="fx-small fx-muted">Build</span> : b.title}<span className="fx-muted fx-small fx-mono"> {b.id}</span>{b.hidden && <span className="fx-muted fx-small"> · hidden</span>}</h2>
+        <h2 className="pd-card__title">{embedded ? <span className="fx-small fx-muted">Build</span> : (b.displayName || b.title)}<span className="fx-muted fx-small fx-mono"> {b.id}</span>{b.hidden && <span className="fx-muted fx-small"> · hidden</span>}{!embedded && b.nameReview && <span className="fx-small fx-muted" title="The name and category are a suggestion: confirm or change them in Edit"> · name to confirm</span>}</h2>
         <button data-fx-row className={`pd-badge oc-badge is-${b.status}`} aria-expanded={statusOpen} aria-label={`Status: ${b.status}. Change`} onClick={() => setStatusOpen((o) => !o)}>{(core.STATUS_LABEL as Record<string, string>)[b.status]}</button>
       </div>
       {statusOpen && (
@@ -189,7 +192,9 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
         {core.MODELS.map((m) => (p.byModel as Record<string, number>)[m] ? <span key={m} className={`oc-model is-${m.toLowerCase()}`}>{m} {core.formatMinutes((p.byModel as Record<string, number>)[m])}</span> : null)}
         {p.switches > 0 && <span title="Model switches; an upgrade waits for your approval, a downgrade does not"><Icon name="zap" size={13} />{p.switches} switch{p.switches === 1 ? '' : 'es'}</span>}
         {split.needsSplit && !core.isFinished(b.status) && <span className="pd-split" title={split.reasons.join('; ')}><Icon name="alert" size={13} />needs splitting</span>}
-        {b.category && <span><Icon name="layers" size={13} />{b.category}</span>}
+        {b.category && <span><Icon name="layers" size={13} />{b.category}{b.area ? ` · ${b.area}` : ''}</span>}
+        {!embedded && b.displayName && b.displayName !== b.title && <span className="fx-muted" title="Full title">{b.title}</span>}
+        {b.fixes?.length ? <span title="Planned & fixes"><Icon name="check-circle" size={13} />{b.fixes.filter((f) => f.done).length}/{b.fixes.length} fixes</span> : null}
         {b.pendingId && <span className="fx-mono">pending:{b.pendingId}</span>}
         {b.branch && <span className="fx-mono">{b.branch}</span>}
         {(b.status === 'running' || b.status === 'waiting') && <WatchLiveFor branch={b.branch} text={`${b.id} ${b.pendingId ?? ''}`} />}
@@ -348,7 +353,12 @@ function AddForm({ busy, act }: { busy: boolean; act: Act }) {
   const [title, setTitle] = useState('');
   const [detail, setDetail] = useState('');
   const [steps, setSteps] = useState('');
+  const [area, setArea] = useState('');
+  // build-todo-sync@1: the short name Brett references the build by and its category, suggested live from the title
+  const [name, setName] = useState('');
   const [category, setCategory] = useState('');
+  const suggestedName = core.suggestDisplayName(title);
+  const suggestedCategory = core.suggestCategory({ title, detail }).category;
   return (
     <details className="pd-add">
       <summary>Add a build</summary>
@@ -361,11 +371,13 @@ function AddForm({ busy, act }: { busy: boolean; act: Act }) {
           const m = /^(fable|opus)\s*[:|-]\s*(.*?)(?:\s*\((\d+\s*(?:min|h))\))?$/i.exec(l);
           return [{ ...(m ? { model: (m[1] ?? "").toLowerCase() === "fable" ? "Fable" : "Opus", text: m[2] ?? l, estimate: m[3] ?? '' } : { model: 'Opus', text: l, estimate: '' }), phase, group }];
         });
-        if (title.trim() && (await act({ action: 'add', title, detail, category, steps: list, source: 'console' }))) { setTitle(''); setDetail(''); setSteps(''); }
+        if (title.trim() && (await act({ action: 'add', title, detail, displayName: name.trim() || suggestedName, category: category || suggestedCategory, area, nameReview: false, steps: list, source: 'console' }))) { setTitle(''); setDetail(''); setSteps(''); setName(''); setCategory(''); setArea(''); }
       }}>
         <label className="pd-field">Title<input className="fx-input" required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="What to build" /></label>
+        <label className="pd-field">Short name (how you'll reference it in the to-do manager)<input className="fx-input" value={name} maxLength={core.MAX_NAME} onChange={(e) => setName(e.target.value)} placeholder={suggestedName || 'Suggested from the title'} /></label>
+        <label className="pd-field">Category<select className="fx-input" value={category || suggestedCategory} onChange={(e) => setCategory(e.target.value)}>{core.CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}</select></label>
         <label className="pd-field">Details<textarea className="fx-input" rows={3} value={detail} onChange={(e) => setDetail(e.target.value)} placeholder="Scope, files touched, acceptance notes" /></label>
-        <label className="pd-field">Category<input className="fx-input" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="e.g. Console UI" /></label>
+        <label className="pd-field">Area (optional grouping)<input className="fx-input" value={area} onChange={(e) => setArea(e.target.value)} placeholder="e.g. Console > Terminal" /></label>
         <label className="pd-field">Steps, one per line ("# Phase name" and "## Group name" lines label the steps below them): “Fable: design the contract (25 min)” or “Opus: wire the route (20 min)”<textarea className="fx-input fx-mono" rows={5} value={steps} onChange={(e) => setSteps(e.target.value)} /></label>
         <div><Button tone="primary" icon="plus" disabled={busy || !title.trim()} type="submit">Add to orchestrator</Button></div>
       </form>

@@ -78,6 +78,20 @@ export function upgradeAsk(b, p, req) {
   };
 }
 
+/** `act name <id> ["<short name>"] [--category <Plugin|…>] [--area "<text>"] [--review]` (build-todo-sync@1). */
+function nameChange(id, args) {
+  const change = { action: 'name', id };
+  const words = [];
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--category') change.category = args[++i] ?? '';
+    else if (args[i] === '--area') change.area = args[++i] ?? '';
+    else if (args[i] === '--review') change.review = true;
+    else words.push(args[i]);
+  }
+  if (words.length) change.displayName = words.join(' ');
+  return change;
+}
+
 function line(b, rules) {
   const p = core.progress(b); const n = core.nextUp(b, rules);
   const next = n.done ? 'done' : n.needsApproval ? `Brett: upgrade ${n.phase.from}→${n.phase.model}` : `${n.step?.model} ${n.step?.id}`;
@@ -114,7 +128,11 @@ async function main(argv) {
       const [action, id, a, b] = rest;
       change = action === 'step' ? { action, id, step: a, done: b !== 'undo' } : action === 'approve' ? { action, id, phase: Number(a) }
         : action === 'status' ? { action, id, status: a } : action === 'note' ? { action, id, text: rest.slice(2).join(' ') }
-        : action === 'rename' ? { action, id, title: rest.slice(2).join(' ') } : action === 'rename-step' ? { action, id, step: a, title: rest.slice(3).join(' ') } : { action, id };
+        : action === 'rename' ? { action, id, title: rest.slice(2).join(' ') } : action === 'rename-step' ? { action, id, step: a, title: rest.slice(3).join(' ') }
+        : action === 'name' ? nameChange(id, rest.slice(2))
+        : action === 'fix-add' ? { action, id, text: rest.slice(2).filter((w, i, all) => !(w === '--kind' || all[i - 1] === '--kind')).join(' '), kind: rest[rest.indexOf('--kind') + 1] }
+        : action === 'fix-set' ? { action, id, fix: a, ...(b === 'done' ? { done: true } : b === 'undo' || b === 'open' ? { done: false } : {}), ...(rest.slice(4).length ? { text: rest.slice(4).join(' ') } : {}) }
+        : action === 'fix-remove' ? { action, id, fix: a } : { action, id };
     }
     const r = act(change);
     return out({ ok: true, state: r.state, build: r.build, log: r.log }, r.log.join('\n'));

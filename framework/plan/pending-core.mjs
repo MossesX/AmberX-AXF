@@ -167,7 +167,17 @@ export function normalize(raw, now = new Date().toISOString()) {
     ...(str(raw?.estimate).trim() ? { estimate: str(raw.estimate).trim() } : {}),
     source: str(raw?.source) || 'console',
     ...originOf(raw),
+    ...namingOf(raw),
   };
+}
+/** build-todo-sync@1 on an item: the short name and category the build gets (`name` is the shortcut on an add). */
+function namingOf(raw) {
+  const out = {};
+  const name = str(raw?.displayName ?? raw?.name).trim(); if (name) out.displayName = name.slice(0, 48);
+  if (str(raw?.category).trim()) out.category = str(raw.category).trim().slice(0, 60);
+  if (str(raw?.area).trim()) out.area = str(raw.area).trim().slice(0, 60);
+  if (typeof raw?.nameReview === 'boolean') out.nameReview = raw.nameReview;
+  return out;
 }
 /** build-origin@1 on an item: `origin`, or the `said` shortcut (Brett's verbatim words) on an add. */
 function originOf(raw) {

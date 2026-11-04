@@ -31,6 +31,7 @@ import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
 import { enqueueLive, flushLiveSoon } from './builds-live.mjs';
+import { notifySoon } from './builds-events.mjs';
 import { BASE_PROFILE, REPO_ROOT, activeProfile, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
 
 export const STORE_REL = '_claude/builds/store.json';
@@ -203,6 +204,7 @@ export function adoptStore(next, { journals = {} } = {}) {
     for (const [m, text] of Object.entries(journals)) writeFileSync(join(d, `${m}.jsonl`), text);
     if (exportsOn()) exportAll(next);
   } finally { unlock(); }
+  notifySoon({ rev: next.rev, by: 'builds-live', action: 'adopt', builds: [] }); // a pull from main: subscribers re-read the whole store
 }
 /** The store as it is on disk now (no foreign-write absorb). */
 export const readStoreNow = () => readStore();
@@ -237,6 +239,8 @@ export function withStore(fn, meta = {}) {
     const next = r && r.$axf ? r : r.store;
     const saved = saveStore(start, next, meta);
     if (exportsOn()) exportAll(saved.store);
+    // build-todo-sync@1: synced views (the to-do lists) hear about the write at once (framework/cli/builds-events.mjs)
+    if (saved.changes.length) notifySoon({ rev: saved.rev, by: meta.by ?? 'cli', action: meta.action ?? 'write', builds: saved.changes.map((c) => ({ id: c.id, op: c.op })) });
     return { ...(r && r.$axf ? {} : r), store: saved.store, changes: saved.changes, rev: saved.rev, foreign };
   } finally { unlock(); flushLiveSoon(); }
 }
@@ -353,6 +357,11 @@ async function main(argv) {
     return out({ ok: r.report.verify.failed.length === 0, report: r.report }, `${dry ? 'dry run' : 'migrated'}: ${r.report.counts.builds} builds, ${r.report.counts.steps} steps; ${r.report.merges.length} merges, ${r.report.conflicts.length} conflicts, ${r.report.recovered.length} recovered; verify ${r.report.verify.total - r.report.verify.failed.length}/${r.report.verify.total}`);
   }
   if (cmd === 'export') { exportNow(); return out({ ok: true }, 'exports written'); }
+  if (cmd === 'backfill-names') { // build-todo-sync@1: write every record with its (suggested) displayName / category / area / nameReview, once
+    const r = withStore((x) => x, { by: 'build-todo-sync', action: 'backfill-names', note: 'build-todo-sync@1: displayName, category (enum), area, nameReview, fixes on every record; suggestions flagged for review' });
+    const review = r.store.builds.filter((b) => !b.deleted && b.nameReview && !['complete', 'archived'].includes(b.status)).length;
+    return out({ ok: true, rev: r.rev, changed: r.changes.length, toReview: review }, `${r.changes.length} record(s) written (store rev ${r.rev}); ${review} open build(s) have a suggested name / category for Brett to confirm`);
+  }
   if (cmd === 'verify') {
     // 1. the store itself is a valid builds@1 (names what is wrong); 2. nothing from the old files is missing
     const store = loadStore();

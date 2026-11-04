@@ -12,6 +12,8 @@
 
 import { normOrigin, originText } from '../../../../../framework/core/build-origin.mjs';
 import { SWITCH_RULE, normApproval, normRequest, phaseApproved, switchKind, upgradeLine, modelRank } from '../../../../../framework/core/model-switch.mjs';
+import { CATEGORIES, FIX_KINDS, MAX_NAME, findFix, naming, nextFixId, normCategory, normFix, normFixes, suggestCategory, suggestDisplayName } from '../../../../../framework/core/build-todo-sync.mjs';
+export { CATEGORIES, FIX_KINDS, MAX_NAME, normCategory, suggestCategory, suggestDisplayName };
 
 export const SCHEMA = 'orchestrator@1';
 export const MODELS = ['Fable', 'Opus'];
@@ -84,10 +86,17 @@ function normBuild(b) {
   const steps = (Array.isArray(o.steps) ? o.steps : []).map(normStep);
   const seen = new Set();
   steps.forEach((s, i) => { if (seen.has(s.id)) s.id = `s${i + 1}-${i}`; seen.add(s.id); });
+  const id = str(o.id, 80) || slug(o.title);
+  const title = str(o.title, 300) || 'Untitled build';
+  const named = naming({ ...o, id, title }); // build-todo-sync@1: short name + category (suggested until Brett confirms), old free text = area
   return {
-    id: str(o.id, 80) || slug(o.title),
-    title: str(o.title, 300) || 'Untitled build',
-    category: str(o.category, 60),
+    id,
+    title,
+    displayName: named.displayName,
+    category: named.category,
+    area: named.area,
+    nameReview: named.nameReview,
+    fixes: normFixes(o.fixes), // Planned & fixes checklist (build-todo-sync@1)
     detail: str(o.detail, 8000),
     status: STATUSES.includes(o.status) ? o.status : 'pending',
     hidden: o.hidden === true,
@@ -263,8 +272,35 @@ export function apply(state, change) {
       if (s.builds.some((x) => x.id === id)) throw new Error(`"${id}" is already on the list`);
       // origin = what Brett said that started it (build-origin@1); `said` is the shortcut for his verbatim words
       const origin = c.said !== undefined ? { ...(c.origin ?? {}), said: c.said, at: c.origin?.at || now() } : c.origin;
-      b = normBuild({ ...c, id, origin, status: 'pending', createdAt: now() }); s.builds.push(b); log.push(`added ${id} (${b.steps.length} steps)${b.origin?.said ? ', with what Brett said' : ''}`); break;
+      b = normBuild({ ...c, id, origin, status: 'pending', createdAt: now() }); s.builds.push(b); log.push(`added ${id} (${b.steps.length} steps)${b.origin?.said ? ', with what Brett said' : ''}`);
+      if (b.nameReview) log.push(`name it: "${b.displayName}" (${b.category}) is a suggestion; confirm or change it with act name ${id} "<name>" --category <${CATEGORIES.join('|')}>`);
+      break;
     }
+    case 'name': { // build-todo-sync@1: Brett names a build (or confirms the suggestion); the id never changes
+      b = find();
+      const name = str(c.displayName ?? c.name, MAX_NAME).trim(); const cat = normCategory(c.category);
+      if (c.displayName !== undefined || c.name !== undefined) { if (!name) throw new Error('a build needs a short name'); b.displayName = name; }
+      if (c.category !== undefined) { if (!cat) throw new Error(`category must be one of ${CATEGORIES.join(', ')}`); b.category = cat; }
+      if (typeof c.area === 'string') b.area = str(c.area, 60).trim();
+      b.nameReview = c.review === true ? true : false;
+      log.push(`${b.id} named "${b.displayName}" (${b.category})${b.nameReview ? ', still to review' : ''}`); break;
+    }
+    case 'fix-add': { // Planned & fixes checklist (build-todo-sync@1): a planned thing, a fix or a bug found later
+      b = find(); const text = str(c.text, 500).trim(); if (!text) throw new Error('a fix needs some text');
+      const f = normFix({ id: nextFixId(b.fixes), text, kind: c.kind, note: c.note, link: c.link, by: c.by ?? '', at: now(), stepUid: c.stepUid, pr: c.pr }, b.fixes.length, now());
+      b.fixes.push(f); log.push(`${b.id} + ${f.id} (${f.kind}): ${f.text}`); break;
+    }
+    case 'fix-set': {
+      b = find(); const f = findFix(b.fixes, str(c.fix, 60)); if (!f) throw new Error(`no fix "${c.fix}" in ${b.id}`);
+      if (typeof c.done === 'boolean' && c.done !== f.done) { f.done = c.done; f.doneAt = c.done ? now() : ''; }
+      if (typeof c.text === 'string' && c.text.trim()) f.text = str(c.text, 500).trim();
+      if (typeof c.note === 'string') f.note = str(c.note, 2000);
+      if (typeof c.link === 'string') f.link = str(c.link, 500);
+      if (typeof c.pr === 'string') f.pr = str(c.pr, 200);
+      if (FIX_KINDS.includes(c.kind)) f.kind = c.kind;
+      f.updatedAt = now(); log.push(`${b.id} ${f.id} ${typeof c.done === 'boolean' ? (c.done ? 'done' : 'reopened') : 'edited'}`); break;
+    }
+    case 'fix-remove': { b = find(); const f = findFix(b.fixes, str(c.fix, 60)); if (!f) throw new Error(`no fix "${c.fix}" in ${b.id}`); b.fixes = b.fixes.filter((x) => x !== f); log.push(`${b.id} − ${f.id}`); break; }
     case 'import': { // from a pending@1 item: its sub prompts become steps on the item's model
       const it = c.item ?? {}; const id = slug(c.id || it.id || it.title);
       if (s.builds.some((x) => x.id === id)) throw new Error(`"${id}" is already on the list`);
@@ -272,7 +308,11 @@ export function apply(state, change) {
       b = normBuild({ id, title: it.title, detail: it.detail, source: 'pending', pendingId: it.id, steps: (it.subPrompts ?? []).map((p) => ({ text: p.text, estimate: p.estimate, model, done: p.done, doneAt: p.doneAt })) });
       s.builds.push(b); log.push(`imported pending ${it.id} as ${id}`); break;
     }
-    case 'update': { b = find(); if (Array.isArray(c.steps)) for (const ns of c.steps) { const old = b.steps.find((x) => x.id === ns?.id); if (old && !old.done && ns?.model && modelRank(ns.model) > modelRank(old.model)) needApprover(c, `raising ${b.id} ${old.id} from ${old.model} to ${ns.model}`); } for (const k of ['title', 'detail', 'branch', 'pr', 'mergedAt', 'category']) if (typeof c[k] === 'string') b[k] = str(c[k], k === 'detail' ? 8000 : k === 'category' ? 60 : 300); if (Array.isArray(c.steps)) b.steps = c.steps.map(normStep); log.push(`updated ${b.id}`); break; }
+    case 'update': { b = find(); if (Array.isArray(c.steps)) for (const ns of c.steps) { const old = b.steps.find((x) => x.id === ns?.id); if (old && !old.done && ns?.model && modelRank(ns.model) > modelRank(old.model)) needApprover(c, `raising ${b.id} ${old.id} from ${old.model} to ${ns.model}`); } for (const k of ['title', 'detail', 'branch', 'pr', 'mergedAt', 'area']) if (typeof c[k] === 'string') b[k] = str(c[k], k === 'detail' ? 8000 : k === 'area' ? 60 : 300);
+      if (typeof c.category === 'string') { const cat = normCategory(c.category); if (cat) b.category = cat; else b.area = str(c.category, 60); } // an old free-text category is the area
+      if (typeof c.displayName === 'string' && c.displayName.trim()) b.displayName = str(c.displayName, MAX_NAME).trim();
+      if (typeof c.nameReview === 'boolean') b.nameReview = c.nameReview;
+      if (Array.isArray(c.steps)) b.steps = c.steps.map(normStep); log.push(`updated ${b.id}`); break; }
     case 'rename': { b = find(); const t = str(c.title, 300).trim(); if (!t) throw new Error('a build needs a name'); b.title = t; log.push(`${b.id} renamed "${t}"`); break; } // the id never changes
     case 'rename-step': { b = find(); const st = stepOf(b); const t = str(c.title, 200).trim(); if (!t) throw new Error('a step needs a name'); st.title = t; log.push(`${b.id} ${st.id} renamed "${t}"`); break; }
     case 'remove': { b = find(); s.builds = s.builds.filter((x) => x !== b); log.push(`removed ${b.id}`); break; }
