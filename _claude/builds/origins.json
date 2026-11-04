@@ -1642,6 +1642,18 @@
    "from": "detail",
    "addenda": []
   },
+  "readme-rule-every-build": {
+   "said": "We gotta structure the documentation engine later anyway, so leave that out. Just get basic documentation. In Markdown.\n\n(Asked whether every future build should include a basic Markdown readme:) Yeah.",
+   "at": "2026-11-04T00:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "refactor-all": {
    "said": "Stop everything from every session right now except the documentation. Put everything left to build into 1 single build in a new session. Send the build to orchestrator and create the matrix then end all other sessions.",
    "at": "2026-10-28",
