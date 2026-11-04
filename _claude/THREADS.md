@@ -569,7 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 20:00 UTC · `profile-manager` added (6 steps) (current) · foreign-write
 - 2026-11-03 20:00 UTC · `home-cards-live` s1 done (urgent) · orchestrator
 - 2026-11-03 20:00 UTC · `home-cards-live` s2 done (urgent) · orchestrator
 - 2026-11-03 20:00 UTC · `home-cards-live` s4 done (urgent) · orchestrator
@@ -969,3 +968,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 00:11 UTC · `molly-banners` note (current) · orchestrator
 - 2026-11-04 00:10 UTC · `molly-banners` s2 done, s3 done, note (current) · foreign-write
 - 2026-11-04 00:10 UTC · `lenny-land-all` added (7 steps) (current) · foreign-write
+- 2026-11-04 00:11 UTC · `plugin-lazy-load` → running (current) · orchestrator
