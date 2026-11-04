@@ -691,7 +691,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:29 UTC · `plugin-lazy-load` → complete, note (current) · foreign-write
 - 2026-11-04 14:30 UTC · `urgent-land-lazy-loader` note (current) · foreign-write
 - 2026-11-04 14:30 UTC · `urgent-land-lazy-loader` note (current) · orchestrator
 - 2026-11-04 14:30 UTC · `urgent-land-lazy-loader` note (current) · builds-live
@@ -1091,6 +1090,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 20:05 UTC · `handoff-2` note (current) · foreign-write
 - 2026-11-04 20:05 UTC · `grid-column-hiding` s1 done, → running (current) · orchestrator
 - 2026-11-04 20:05 UTC · `grid-column-hiding` s2 done (current) · orchestrator
+- 2026-11-04 20:10 UTC · `grid-column-hiding` s9-8 done (current) · orchestrator
 
 ## Token passes (log)
 
