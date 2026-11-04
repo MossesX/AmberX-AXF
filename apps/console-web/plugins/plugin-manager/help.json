@@ -81,6 +81,54 @@
         "text": "Installs from the catalog. Part of AI assistant.",
         "kind": "menu-item",
         "draft": true
+      },
+      {
+        "target": "banners-load-first",
+        "title": "Banners load first",
+        "text": "Every banner plugin (push banner, What's new, systems check, activity…) loads before any other plugin, all at once, so the banners show as soon as the console opens. On by default.",
+        "kind": "toggle"
+      },
+      {
+        "target": "most-used-plugins-to-preload",
+        "title": "Most-used plugins to preload",
+        "text": "How many of the plugins you open most (counted by how often and how recently) load at startup, after the banners and pins. The rest load the first time you open them. Default 5.",
+        "kind": "slider"
+      },
+      {
+        "target": "idle-preload",
+        "title": "Idle preload",
+        "text": "When the console is quiet, load the next most-used plugins in the background so they open instantly later.",
+        "kind": "toggle"
+      },
+      {
+        "target": "plugins-to-load-when-idle",
+        "title": "Plugins to load when idle",
+        "text": "How many plugins idle preload fetches in the background.",
+        "kind": "slider"
+      },
+      {
+        "target": "plugins-kept-loaded-least-recently-used-goes-first",
+        "title": "Plugins kept loaded",
+        "text": "How many plugins opened on demand stay running. Past that, the one you used longest ago goes back to its placeholder; its menus stay, and it comes back at once when opened. Default 15.",
+        "kind": "slider"
+      },
+      {
+        "target": "keep-plugin-chunks-for-offline-use",
+        "title": "Keep plugin chunks for offline use",
+        "text": "Keeps each loaded plugin's files in the browser's cache storage so it still opens without a connection. Turning it off clears that cache.",
+        "kind": "toggle"
+      },
+      {
+        "target": "offline-cache-size",
+        "title": "Offline cache size",
+        "text": "The most space the offline plugin cache may take. The plugins used longest ago are dropped first.",
+        "kind": "slider"
+      },
+      {
+        "target": "forget-usage",
+        "title": "Forget usage",
+        "text": "Clears the usage counts and what the loader learned about each plugin's menus and pages. The next start loads every plugin once to learn them again.",
+        "kind": "button"
       }
     ],
     "intros": []

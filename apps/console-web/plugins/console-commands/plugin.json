@@ -1,6 +1,7 @@
 {
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.console-commands",
+  "lazy": { "core": "start" },
   "name": "Console commands",
   "version": "0.2.0",
   "kind": "module",
