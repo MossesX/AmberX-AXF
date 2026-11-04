@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 967,
- "updatedAt": "2026-11-04T21:26:04.832Z",
+ "rev": 968,
+ "updatedAt": "2026-11-04T21:26:20.561Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -83898,9 +83898,14 @@
    "branch": "claude/ui-review-alarm",
    "pr": "#343",
    "createdAt": "2026-11-04T21:04:36.261Z",
-   "updatedAt": "2026-11-04T21:26:03.247Z",
+   "updatedAt": "2026-11-04T21:26:14.913Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "PR #343 (s1-s5 + s10): alarm timer, settings, REST/MCP/CLI, open-on-new, sort/group by PR, ids, deep links. Open: s6-s8 live previews + Color/Style/Layout pickers + Layout Apply (layout list waits on three-layouts-per-screen); s9 AmberX full-screen alarm NEEDS A NEW APK. Report _claude/builds/reports/ui-review-alarm.md",
+     "at": "2026-11-04T21:26:14.913Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -84129,12 +84134,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:26:14.288Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T21:04:36.262Z",
-     "updatedAt": "2026-11-04T21:04:36.262Z"
+     "updatedAt": "2026-11-04T21:26:14.334Z"
     }
    ],
    "profiles": [
@@ -84145,7 +84150,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

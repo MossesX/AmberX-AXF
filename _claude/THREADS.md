@@ -698,8 +698,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 15:06 UTC · `console-wake-finish` s5 done, → built (current) · orchestrator
-- 2026-11-04 15:06 UTC · `console-wake-finish` note (current) · orchestrator
 - 2026-11-04 15:08 UTC · `urgent-land-gizmo-chat` note (current) · foreign-write
 - 2026-11-04 15:08 UTC · `console-wake-finish` s5 done, → complete, note (current) · foreign-write
 - 2026-11-04 15:08 UTC · `apps-control-surface` added (5 steps) (current) · foreign-write
@@ -1098,6 +1096,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 21:17 UTC · `ui-review-alarm` s4 done (angel) · claude
 - 2026-11-04 21:17 UTC · `ui-review-alarm` s5 done (angel) · claude
 - 2026-11-04 21:26 UTC · `ui-review-alarm` PR #343 (angel) · builds-live
+- 2026-11-04 21:26 UTC · `ui-review-alarm` s10 done (angel) · claude
+- 2026-11-04 21:26 UTC · `ui-review-alarm` note (angel) · claude
 
 ## Token passes (log)
 
