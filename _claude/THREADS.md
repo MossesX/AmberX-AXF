@@ -683,7 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 10:43 UTC · `land-round-2` → running (current) · orchestrator
 - 2026-11-04 11:19 UTC · `terminal-no-focus` note (current) · foreign-write
 - 2026-11-04 11:19 UTC · `expenses-port` added (6 steps) (current) · foreign-write
 - 2026-11-04 11:19 UTC · `land-round-2` note (current) · orchestrator
@@ -1083,6 +1082,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:29 UTC · `tab-group-assets` added (6 steps) (current) · foreign-write
 - 2026-11-04 15:28 UTC · `urgent-land-gizmo-chat` → complete, note (current) · reconciler
 - 2026-11-04 15:28 UTC · `urgent-land-gizmo-chat` → complete, note (current) · reconciler
+- 2026-11-04 15:29 UTC · `jump-menu-asset` added (5 steps) (current) · orchestrator
 
 ## Token passes (log)
 
