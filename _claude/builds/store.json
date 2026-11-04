@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 839,
- "updatedAt": "2026-11-04T16:46:05.513Z",
+ "rev": 854,
+ "updatedAt": "2026-11-04T17:19:39.340Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -280,6 +280,10 @@
    "big-dog": {
     "artifact": "",
     "updatedAt": "2026-11-03T11:52:58.737Z"
+   },
+   "current": {
+    "artifact": "",
+    "updatedAt": "2026-11-04T17:19:23.755Z"
    }
   }
  },
@@ -58500,10 +58504,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/plugin-settings-placement",
-   "pr": "#289",
+   "branch": "claude/settings-placement-everywhere",
+   "pr": "#329",
    "createdAt": "2026-11-03T20:30:14.217Z",
-   "updatedAt": "2026-11-03T22:08:50.723Z",
+   "updatedAt": "2026-11-04T16:55:20.341Z",
    "builtAt": "2026-11-03T22:08:49.404Z",
    "notes": [
     {
@@ -58517,6 +58521,10 @@
     {
      "text": "Built by Reel Rhonda (headless worktree, Opus). PR #289; UI Review submitted (group 'plugin-settings-placement - Nov 3 10:15 PM'). Report _claude/builds/reports/plugin-settings-placement.md. Follow-ups: Fable review of the settings-placement@1 contract, a shared-presets asset type, exit animations, more plugins adopting <SettingsHost>.",
      "at": "2026-11-03T22:08:50.723Z"
+    },
+    {
+     "text": "Nov 4 2026: PR #289 closed as superseded; its commits land through PR #329 (settings-placement-everywhere, Greenlight Gina), which merged main into it, fixed its two CI failures and gave the contract its Fable review.",
+     "at": "2026-11-04T16:55:20.341Z"
     }
    ],
    "approvals": [],
@@ -58663,7 +58671,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -79950,15 +79958,15 @@
    "title": "Voice commands for every app: land Expenses, voice-command@1 contract, forFramework apps generate voice commands for API/MCP/CLI, Molly runs them",
    "category": "Framework",
    "detail": "Land Expenses PR #307 (CI fix, grid save merges by entry id, redeploy). voice-command@1 contract + project manifest forFramework. Template, axf init and launcher generate voice commands for forFramework apps; CI check. Molly registers and runs them by voice. Applied to Expenses, console, axHub web, AmberX, Molly, Gizmo. Agent: Reel Rhonda (no Polo card).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/app-voice-commands",
    "pr": "#323",
    "createdAt": "2026-11-04T14:43:48.090Z",
-   "updatedAt": "2026-11-04T16:15:38.053Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T17:16:50.593Z",
+   "builtAt": "2026-11-04T17:16:47.198Z",
    "notes": [
     {
      "text": "Assigned: Reel Rhonda (no Polo card). Headless worktree /root/axf-builds/app-voice-commands, session runs on Fable per the brief's standing Fable order (s1 Fable; the Opus steps run in the same session, no model switch, no upgrade phase).",
@@ -79979,6 +79987,14 @@
     {
      "text": "PR #323 open. UI Review: r-20261104-1b7bca5f (Molly dialog), r-20261104-a4e5d893 (console page), group 'app-voice-commands - Nov 4 10:54 AM'. CI fixes pushed: page head, voice-command before help (Kotlin prefix test), console + Molly re-baked (Docker builds use the committed src/axf).",
      "at": "2026-11-04T16:15:38.053Z"
+    },
+    {
+     "text": "CI on PR #323: sweep + Gradle green after the type-order fix; console job failed only on CI's ci-example template copy in the voice check, fixed (template copies skipped). Head 745369512 running.",
+     "at": "2026-11-04T17:07:20.954Z"
+    },
+    {
+     "text": "All steps done. PR #323 CI green (head 745369512); auto-merge waits for Brett's UI Review approval (r-20261104-1b7bca5f Molly dialog, r-20261104-a4e5d893 console page). Report _claude/builds/reports/app-voice-commands.md.",
+     "at": "2026-11-04T17:16:50.593Z"
     }
    ],
    "approvals": [
@@ -80130,12 +80146,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T17:16:47.198Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T14:43:48.095Z",
-     "updatedAt": "2026-11-04T14:43:48.095Z"
+     "updatedAt": "2026-11-04T17:17:15.310Z"
     }
    ],
    "profiles": [
@@ -80146,10 +80162,27 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-04T14:43:48.090Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw288vhh07t3c0": "2026-11-04T14:43:48.095Z",
+     "st-mw288vhh087w8r": "2026-11-04T14:43:48.095Z",
+     "st-mw288vhh09e63j": "2026-11-04T14:43:48.095Z",
+     "st-mw288vhh0awe54": "2026-11-04T14:43:48.095Z",
+     "st-mw288vhh0b68y3": "2026-11-04T14:43:48.095Z",
+     "st-mw288vhh0cvfyx": "2026-11-04T14:43:48.095Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-04T14:43:48.095Z",
    "rearranged": false,
@@ -80351,12 +80384,16 @@
    "branch": "claude/tab-group-assets",
    "pr": "#327",
    "createdAt": "2026-11-04T15:29:38.375Z",
-   "updatedAt": "2026-11-04T16:40:15.440Z",
+   "updatedAt": "2026-11-04T16:47:04.887Z",
    "builtAt": "2026-11-04T16:40:10.739Z",
    "notes": [
     {
      "text": "Built: PR #327 open, all checks + 4 app typechecks green, 9 shots in UI Review → Screenshots group 'tab-group-assets - Nov 4 11:38 AM'. Report _claude/builds/reports/tab-group-assets.md. After merge: redeploy console, AmberX, axHub web.",
      "at": "2026-11-04T16:40:15.440Z"
+    },
+    {
+     "text": "settings-placement-everywhere (Nov 4 2026): the settings asset (settings-ui@1) now carries opensIn (dialog / panel-left / panel-right / sheet / inside / page / window, or a pick); every shared default + per-app custom settings-interface asset this build makes can declare where it pops up with that one field, no new contract needed. The 'Pops up in' row at the top of every settings interface edits the screen / app scopes.",
+     "at": "2026-11-04T16:47:04.887Z"
     }
    ],
    "approvals": [],
@@ -80438,7 +80475,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T15:29:38.376Z",
-     "updatedAt": "2026-11-04T16:42:57.278Z"
+     "updatedAt": "2026-11-04T17:07:20.378Z"
     },
     {
      "id": "s4",
@@ -80460,7 +80497,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T15:29:38.376Z",
-     "updatedAt": "2026-11-04T16:42:57.278Z"
+     "updatedAt": "2026-11-04T17:07:20.378Z"
     },
     {
      "id": "s5",
@@ -80482,7 +80519,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T15:29:38.376Z",
-     "updatedAt": "2026-11-04T16:42:57.278Z"
+     "updatedAt": "2026-11-04T17:07:20.378Z"
     },
     {
      "id": "s6",
@@ -80504,7 +80541,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T15:29:38.376Z",
-     "updatedAt": "2026-11-04T16:42:57.278Z"
+     "updatedAt": "2026-11-04T17:07:20.378Z"
     }
    ],
    "profiles": [
@@ -80515,7 +80552,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -80525,7 +80562,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-04T15:29:38.375Z",
-    "builtAt": "",
+    "builtAt": "2026-11-04T16:40:10.739Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mw29vtlc07r7ed": "2026-11-04T15:29:38.376Z",
@@ -80686,7 +80723,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T15:29:59.387Z",
-     "updatedAt": "2026-11-04T16:42:57.278Z"
+     "updatedAt": "2026-11-04T17:07:20.378Z"
     }
    ],
    "profiles": [
@@ -80713,22 +80750,39 @@
    "title": "Settings placement everywhere: every screen in every app picks where its settings open",
    "category": "Framework",
    "detail": "Brett (Nov 4 2026, voice). Lands PR #289 (plugin-settings-placement) first and gives settings-placement@1 its Fable review. Then: every screen in every app (console, Molly, AmberX web, axHub web, Expenses) gets a per-screen setting for where its settings open (dialog / side panel left or right / bottom sheet / inside the screen / full page / floating window), an app-wide default plus 'use app default' per screen; reachable from right-click / long-press on the screen's settings button or title ('Settings opens in...'), Settings > Settings placement (every screen), and the console control surface (target console.placement) so Amber can set it by voice. Placement is also a field on the settings asset itself (opensIn, shown as a 'Pops up in' row at the top of every settings interface); precedence: per-screen override, then the interface's opensIn, then the app default. Molly's settings open in a dialog. Fixes #289's report gaps: exit animations, a settings host for any screen. Agent: Greenlight Gina (headless worktree).",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/settings-placement-everywhere",
-   "pr": "",
+   "pr": "#329",
    "createdAt": "2026-11-04T16:03:38.989Z",
-   "updatedAt": "2026-11-04T16:20:26.351Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T17:18:27.645Z",
+   "builtAt": "2026-11-04T17:18:27.648Z",
    "notes": [
     {
      "text": "Reconciler: branch claude/settings-placement-everywhere (no PR yet)",
      "at": "2026-11-04T16:20:26.351Z"
+    },
+    {
+     "text": "Reconciler: PR #329",
+     "at": "2026-11-04T17:00:22.822Z"
+    },
+    {
+     "text": "Built by Greenlight Gina (headless worktree, Fable). PR #329 (supersedes #289, closed). UI Review shots submitted non-blocking. Report _claude/builds/reports/settings-placement-everywhere.md.",
+     "at": "2026-11-04T17:17:18.238Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-04T16:43:04.180Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "\"Set the settings interface for Molly to open in a dialog.\" ... \"I should be able to select in every screen where its settings pops up.\" Addendum 1: \"Every settings interface should have a setting to declare where it pops up.\"",
@@ -80745,402 +80799,6 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mw2biv5d01uecx",
-     "title": "",
-     "text": "s1 Land PR #289: merge main into plugin-settings-placement, resolve (framework index/css, Terminal host, baked copies re-baked), CI green, auto-merge",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T16:03:38.993Z",
-     "updatedAt": "2026-11-04T16:15:32.833Z"
-    },
-    {
-     "id": "s2",
-     "uid": "st-mw2biv5d029k4h",
-     "title": "",
-     "text": "s2 Fable review of settings-placement@1 + v2 contract: placements dialog / side panel L|R / bottom sheet / inside / full page / floating window; scopes screen -> owner -> interface opensIn -> app default; opensIn on the settings asset (asset-types, validators); fixture + check regenerated",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T16:03:38.993Z",
-     "updatedAt": "2026-11-04T16:15:32.833Z"
-    },
-    {
-     "id": "s3",
-     "uid": "st-mw2biv5d03bnjo",
-     "title": "",
-     "text": "s3 Settings library + React: 'Pops up in' row at the top of every settings interface, whole-interface surfaces (app.settings routed), exit animations, a settings host for every screen (AppShell), Settings > Settings placement listing every screen + app default, context menu 'Settings opens in...' on screens, nav items and settings buttons",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T16:03:38.993Z",
-     "updatedAt": "2026-11-04T16:15:32.833Z"
-    },
-    {
-     "id": "s4",
-     "uid": "st-mw2biv5d045yfq",
-     "title": "",
-     "text": "s4 Console control target console.placement (list/get/set/reset; REST + MCP + CLI) delivered to the live console; Molly's app default = dialog; console, Molly, AmberX web, axHub web re-baked and type-checked",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T16:03:38.993Z",
-     "updatedAt": "2026-11-04T16:15:32.833Z"
-    },
-    {
-     "id": "s5",
-     "uid": "st-mw2biv5d05oisg",
-     "title": "",
-     "text": "s5 Expenses (vendored @axf/core): per-module 'Settings opens in' (dialog / side panel / bottom sheet / inside / full page / floating window) + app default, context-menu row, persisted in kv",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T16:03:38.993Z",
-     "updatedAt": "2026-11-04T16:15:32.833Z"
-    },
-    {
-     "id": "s6",
-     "uid": "st-mw2biv5d06x3n4",
-     "title": "",
-     "text": "s6 Rule in RULES.md + PORTING.md, checks green, UI Review shots (non-blocking), report _claude/builds/reports/settings-placement-everywhere.md, THREADS, PR, auto-land, redeploy",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T16:03:38.993Z",
-     "updatedAt": "2026-11-04T16:15:32.833Z"
-    },
-    {
-     "id": "s7",
-     "uid": "st-mw2biv5d079h9u",
-     "title": "",
-     "text": "s1 Land PR #289: merge main into plugin-settings-placement, resolve (framework index/css, Terminal host, baked copies re-baked), CI green, auto-merge",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T16:04:12.265Z",
-     "updatedAt": "2026-11-04T16:15:32.833Z"
-    },
-    {
-     "id": "s8",
-     "uid": "st-mw2biv5d08lglu",
-     "title": "",
-     "text": "s2 Fable review of settings-placement@1 + v2 contract: placements dialog / side panel L|R / bottom sheet / inside / full page / floating window; scopes screen -> owner -> interface opensIn -> app default; opensIn on the settings asset (asset-types, validators); fixture + check regenerated",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T16:04:12.265Z",
-     "updatedAt": "2026-11-04T16:15:32.833Z"
-    },
-    {
-     "id": "s9",
-     "uid": "st-mw2biv5d096my7",
-     "title": "",
-     "text": "s3 Settings library + React: 'Pops up in' row at the top of every settings interface, whole-interface surfaces (app.settings routed), exit animations, a settings host for every screen (AppShell), Settings > Settings placement listing every screen + app default, context menu 'Settings opens in...' on screens, nav items and settings buttons",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T16:04:12.265Z",
-     "updatedAt": "2026-11-04T16:15:32.833Z"
-    },
-    {
-     "id": "s10",
-     "uid": "st-mw2biv5d0a7orh",
-     "title": "",
-     "text": "s4 Console control target console.placement (list/get/set/reset; REST + MCP + CLI) delivered to the live console; Molly's app default = dialog; console, Molly, AmberX web, axHub web re-baked and type-checked",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T16:04:12.265Z",
-     "updatedAt": "2026-11-04T16:15:32.833Z"
-    },
-    {
-     "id": "s11",
-     "uid": "st-mw2biv5d0b3efo",
-     "title": "",
-     "text": "s5 Expenses (vendored @axf/core): per-module 'Settings opens in' (dialog / side panel / bottom sheet / inside / full page / floating window) + app default, context-menu row, persisted in kv",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T16:04:12.265Z",
-     "updatedAt": "2026-11-04T16:15:32.833Z"
-    },
-    {
-     "id": "s12",
-     "uid": "st-mw2biv5d0c8zmg",
-     "title": "",
-     "text": "s6 Rule in RULES.md + PORTING.md, checks green, UI Review shots (non-blocking), report _claude/builds/reports/settings-placement-everywhere.md, THREADS, PR, auto-land, redeploy",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T16:04:12.265Z",
-     "updatedAt": "2026-11-04T16:15:32.833Z"
-    },
-    {
-     "id": "s13-12",
-     "uid": "st-mw2b3pun013cd1",
-     "title": "",
-     "text": "s1 Land PR #289: merge main into plugin-settings-placement, resolve (framework index/css, Terminal host, baked copies re-baked), CI green, auto-merge",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T16:03:38.993Z",
-     "updatedAt": "2026-11-04T16:03:46.343Z"
-    },
-    {
-     "id": "s14-13",
-     "uid": "st-mw2b3pun02fdfk",
-     "title": "",
-     "text": "s2 Fable review of settings-placement@1 + v2 contract: placements dialog / side panel L|R / bottom sheet / inside / full page / floating window; scopes screen -> owner -> interface opensIn -> app default; opensIn on the settings asset (asset-types, validators); fixture + check regenerated",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T16:03:38.993Z",
-     "updatedAt": "2026-11-04T16:03:46.343Z"
-    },
-    {
-     "id": "s15-14",
-     "uid": "st-mw2b3pun03wk3y",
-     "title": "",
-     "text": "s3 Settings library + React: 'Pops up in' row at the top of every settings interface, whole-interface surfaces (app.settings routed), exit animations, a settings host for every screen (AppShell), Settings > Settings placement listing every screen + app default, context menu 'Settings opens in...' on screens, nav items and settings buttons",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T16:03:38.993Z",
-     "updatedAt": "2026-11-04T16:03:46.343Z"
-    },
-    {
-     "id": "s16-15",
-     "uid": "st-mw2b3pun04395r",
-     "title": "",
-     "text": "s4 Console control target console.placement (list/get/set/reset; REST + MCP + CLI) delivered to the live console; Molly's app default = dialog; console, Molly, AmberX web, axHub web re-baked and type-checked",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T16:03:38.993Z",
-     "updatedAt": "2026-11-04T16:03:46.343Z"
-    },
-    {
-     "id": "s17-16",
-     "uid": "st-mw2b3pun05u5h1",
-     "title": "",
-     "text": "s5 Expenses (vendored @axf/core): per-module 'Settings opens in' (dialog / side panel / bottom sheet / inside / full page / floating window) + app default, context-menu row, persisted in kv",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T16:03:38.993Z",
-     "updatedAt": "2026-11-04T16:03:46.343Z"
-    },
-    {
-     "id": "s18-17",
-     "uid": "st-mw2b3pun06dw75",
-     "title": "",
-     "text": "s6 Rule in RULES.md + PORTING.md, checks green, UI Review shots (non-blocking), report _claude/builds/reports/settings-placement-everywhere.md, THREADS, PR, auto-land, redeploy",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T16:03:38.993Z",
-     "updatedAt": "2026-11-04T16:03:46.343Z"
-    },
-    {
-     "id": "s7-6",
      "uid": "st-mw2b3k7t07o0yo",
      "title": "",
      "text": "s1 Land PR #289: merge main into plugin-settings-placement, resolve (framework index/css, Terminal host, baked copies re-baked), CI green, auto-merge",
@@ -81154,15 +80812,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T17:18:26.674Z",
      "note": "",
-     "rev": 1,
+     "rev": 3,
      "createdAt": "2026-11-04T16:04:12.265Z",
-     "updatedAt": "2026-11-04T16:04:12.265Z"
+     "updatedAt": "2026-11-04T17:18:27.732Z"
     },
     {
-     "id": "s8-7",
+     "id": "s2",
      "uid": "st-mw2b3k7t08omes",
      "title": "",
      "text": "s2 Fable review of settings-placement@1 + v2 contract: placements dialog / side panel L|R / bottom sheet / inside / full page / floating window; scopes screen -> owner -> interface opensIn -> app default; opensIn on the settings asset (asset-types, validators); fixture + check regenerated",
@@ -81176,15 +80834,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T17:18:26.681Z",
      "note": "",
-     "rev": 1,
+     "rev": 3,
      "createdAt": "2026-11-04T16:04:12.265Z",
-     "updatedAt": "2026-11-04T16:04:12.265Z"
+     "updatedAt": "2026-11-04T17:18:27.732Z"
     },
     {
-     "id": "s9-8",
+     "id": "s3",
      "uid": "st-mw2b3k7t09ctqi",
      "title": "",
      "text": "s3 Settings library + React: 'Pops up in' row at the top of every settings interface, whole-interface surfaces (app.settings routed), exit animations, a settings host for every screen (AppShell), Settings > Settings placement listing every screen + app default, context menu 'Settings opens in...' on screens, nav items and settings buttons",
@@ -81198,15 +80856,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T17:18:26.681Z",
      "note": "",
-     "rev": 1,
+     "rev": 3,
      "createdAt": "2026-11-04T16:04:12.265Z",
-     "updatedAt": "2026-11-04T16:04:12.265Z"
+     "updatedAt": "2026-11-04T17:18:27.732Z"
     },
     {
-     "id": "s10-9",
+     "id": "s4",
      "uid": "st-mw2b3k7t0axa2n",
      "title": "",
      "text": "s4 Console control target console.placement (list/get/set/reset; REST + MCP + CLI) delivered to the live console; Molly's app default = dialog; console, Molly, AmberX web, axHub web re-baked and type-checked",
@@ -81220,15 +80878,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T17:18:26.681Z",
      "note": "",
-     "rev": 1,
+     "rev": 3,
      "createdAt": "2026-11-04T16:04:12.265Z",
-     "updatedAt": "2026-11-04T16:04:12.265Z"
+     "updatedAt": "2026-11-04T17:18:27.732Z"
     },
     {
-     "id": "s11-10",
+     "id": "s5",
      "uid": "st-mw2b3k7t0b1iyp",
      "title": "",
      "text": "s5 Expenses (vendored @axf/core): per-module 'Settings opens in' (dialog / side panel / bottom sheet / inside / full page / floating window) + app default, context-menu row, persisted in kv",
@@ -81242,15 +80900,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T17:18:26.681Z",
      "note": "",
-     "rev": 1,
+     "rev": 3,
      "createdAt": "2026-11-04T16:04:12.265Z",
-     "updatedAt": "2026-11-04T16:04:12.265Z"
+     "updatedAt": "2026-11-04T17:18:27.732Z"
     },
     {
-     "id": "s12-11",
+     "id": "s6",
      "uid": "st-mw2b3k7t0cz2co",
      "title": "",
      "text": "s6 Rule in RULES.md + PORTING.md, checks green, UI Review shots (non-blocking), report _claude/builds/reports/settings-placement-everywhere.md, THREADS, PR, auto-land, redeploy",
@@ -81264,12 +80922,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T17:17:16.263Z",
      "note": "",
-     "rev": 1,
+     "rev": 3,
      "createdAt": "2026-11-04T16:04:12.265Z",
-     "updatedAt": "2026-11-04T16:04:12.265Z"
+     "updatedAt": "2026-11-04T17:18:27.732Z"
     }
    ],
    "profiles": [
@@ -81280,10 +80938,27 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-04T16:03:38.989Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw2b3k7t07o0yo": "2026-11-04T16:04:12.265Z",
+     "st-mw2b3k7t08omes": "2026-11-04T16:04:12.265Z",
+     "st-mw2b3k7t09ctqi": "2026-11-04T16:04:12.265Z",
+     "st-mw2b3k7t0axa2n": "2026-11-04T16:04:12.265Z",
+     "st-mw2b3k7t0b1iyp": "2026-11-04T16:04:12.265Z",
+     "st-mw2b3k7t0cz2co": "2026-11-04T16:04:12.265Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-04T16:03:38.993Z",
    "rearranged": false,
@@ -81341,7 +81016,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T16:09:41.805Z",
-     "updatedAt": "2026-11-04T16:40:09.327Z"
+     "updatedAt": "2026-11-04T17:07:20.378Z"
     },
     {
      "id": "s2",
@@ -81363,7 +81038,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T16:09:41.805Z",
-     "updatedAt": "2026-11-04T16:40:09.327Z"
+     "updatedAt": "2026-11-04T17:07:20.378Z"
     },
     {
      "id": "s3",
@@ -81385,7 +81060,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T16:09:41.805Z",
-     "updatedAt": "2026-11-04T16:40:09.327Z"
+     "updatedAt": "2026-11-04T17:07:20.378Z"
     },
     {
      "id": "s4",
@@ -81407,7 +81082,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T16:09:41.805Z",
-     "updatedAt": "2026-11-04T16:40:09.327Z"
+     "updatedAt": "2026-11-04T17:07:20.378Z"
     }
    ],
    "profiles": [
@@ -81449,16 +81124,25 @@
    "title": "Live sessions plugin: every Claude session live (human/headless), watch, voice, recording + playback",
    "category": "Plugins",
    "detail": "Agent: Ping Paulie. Plugin 'Live sessions' (apps/console-web/plugins/live-sessions, capability axf.claude-live@1): lists every Claude session (human + headless) with a Human/Headless badge and the agent running it, grid default; widget count; Watch live (text for all, voice for human only, owner-only, audited, 'you're being watched' notice); records every human session (redacted event log + AmberX audio), session browser + real-time playback; configurable storage targets (public repos blocked); post-session silence compaction. Replaces Plan Studio plan claude-sessions-list-molly-plugin-wpo6.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/live-sessions-plugin",
    "pr": "",
    "createdAt": "2026-11-04T16:46:03.374Z",
-   "updatedAt": "2026-11-04T16:46:03.374Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-04T17:19:23.689Z",
+   "builtAt": "2026-11-04T17:19:21.361Z",
+   "notes": [
+    {
+     "text": "Reconciler: branch claude/live-sessions-plugin (no PR yet)",
+     "at": "2026-11-04T17:19:23.645Z"
+    },
+    {
+     "text": "PR #331 open. Gaps: live voice needs AmberX to stream segments (new APK); addendum 6 audio editor not started; phases 1+2 in one PR (addendum 7 read late).",
+     "at": "2026-11-04T17:19:23.689Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -81489,12 +81173,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T16:47:43.828Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T16:46:03.385Z",
-     "updatedAt": "2026-11-04T16:46:03.385Z"
+     "updatedAt": "2026-11-04T16:57:38.473Z"
     },
     {
      "id": "s2",
@@ -81511,12 +81195,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T16:50:57.659Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T16:46:03.385Z",
-     "updatedAt": "2026-11-04T16:46:03.385Z"
+     "updatedAt": "2026-11-04T16:57:38.473Z"
     },
     {
      "id": "s3",
@@ -81533,12 +81217,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T16:56:20.071Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T16:46:03.385Z",
-     "updatedAt": "2026-11-04T16:46:03.385Z"
+     "updatedAt": "2026-11-04T16:57:38.473Z"
     },
     {
      "id": "s4",
@@ -81555,12 +81239,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T17:03:21.342Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T16:46:03.385Z",
-     "updatedAt": "2026-11-04T16:46:03.385Z"
+     "updatedAt": "2026-11-04T17:03:21.424Z"
     },
     {
      "id": "s5",
@@ -81577,12 +81261,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T17:07:29.908Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T16:46:03.385Z",
-     "updatedAt": "2026-11-04T16:46:03.385Z"
+     "updatedAt": "2026-11-04T17:16:46.314Z"
     },
     {
      "id": "s6",
@@ -81599,12 +81283,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T17:19:21.361Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T16:46:03.385Z",
-     "updatedAt": "2026-11-04T16:46:03.385Z"
+     "updatedAt": "2026-11-04T17:19:23.463Z"
     }
    ],
    "profiles": [
@@ -81615,12 +81299,189 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 9,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-04T16:46:03.374Z",
+    "builtAt": "2026-11-04T17:19:21.361Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw2cm3hw07w74f": "2026-11-04T16:46:03.385Z",
+     "st-mw2cm3hw08s8i5": "2026-11-04T16:46:03.385Z",
+     "st-mw2cm3hw0916ep": "2026-11-04T16:46:03.385Z",
+     "st-mw2cm3hw0a6kol": "2026-11-04T16:46:03.385Z",
+     "st-mw2cm3hw0bdp9x": "2026-11-04T16:46:03.385Z",
+     "st-mw2cm3hw0c0r4b": "2026-11-04T16:46:03.385Z"
+    }
+   },
+   "queue": null,
+   "defaultAt": "2026-11-04T16:46:03.385Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "urgent-console-perf",
+   "title": "Console loads slowly: node process per read, /api/build-queue 500",
+   "category": "Urgent",
+   "detail": "Host load 45, swap full, axf-console 135% CPU with 23 node processes: every screen/Home-card read spawned node per request per client; GET /api/build-queue 500 on every call. Fix the 500, one shared server cache per source with single-flight + spawn cap, client backoff/hidden-tab/shared reads, reconcile throttle, measure before/after, PR + redeploy.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/urgent-console-perf",
+   "pr": "#330",
+   "createdAt": "2026-11-04T17:04:18.426Z",
+   "updatedAt": "2026-11-04T17:06:04.815Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "How come console is taking forever to load? I thought lazy loader was in. ... Can we dig into it? ... (after the diagnosis) Yes.",
+    "at": "2026-11-04T16:13:00Z",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw2d9kbx06uncr",
+     "title": "",
+     "text": "Fix GET /api/build-queue 500 (store read never fails on the lock; empty exports recorded) + regression test",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T17:04:26.008Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-04T17:04:18.427Z",
+     "updatedAt": "2026-11-04T17:04:26.067Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw2d9kbx073net",
+     "title": "",
+     "text": "Server read cache: single-flight, file-change aware, shared by every client; node spawn cap; tini reaps zombies",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T17:04:26.833Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-04T17:04:18.427Z",
+     "updatedAt": "2026-11-04T17:04:26.877Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw2d9kbx08lol9",
+     "title": "",
+     "text": "Client: shared in-flight /api GETs, hidden tab quiet, 5xx exponential backoff, no stale static fallback on a 5xx",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T17:04:27.556Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-04T17:04:18.427Z",
+     "updatedAt": "2026-11-04T17:04:27.602Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw2d9kbx096xbt",
+     "title": "",
+     "text": "builds-reconcile at most every 5 min, never in a request path",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T17:04:28.209Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-04T17:04:18.427Z",
+     "updatedAt": "2026-11-04T17:04:28.267Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mw2d9kbx0anew0",
+     "title": "",
+     "text": "Measure before/after, report, PR, redeploy the console",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T17:04:18.427Z",
+     "updatedAt": "2026-11-04T17:04:18.427Z"
+    }
+   ],
+   "profiles": [
+    "urgent"
+   ],
+   "order": {
+    "urgent": 29
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-04T16:46:03.385Z",
+   "defaultAt": "2026-11-04T17:04:18.427Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

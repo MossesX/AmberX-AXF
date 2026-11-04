@@ -1,0 +1,92 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-976eeb09-710d-4bee-8c38-696953afa497",
+ "source": "claude-code",
+ "sessionId": "976eeb09-710d-4bee-8c38-696953afa497",
+ "project": "amberx-axf",
+ "title": "JOB job-land-build-2026-11-04-0411: Land a finished build Land branch claude/session-history (build session-history). 1…",
+ "startedAt": "2026-11-04T10:45:39.552Z",
+ "endedAt": "2026-11-04T10:47:56.618Z",
+ "minutes": 2,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/opt/axf/.axf-console/plugins/agent-swarm/job-worktrees/job-land-build-2026-11-04-0411",
+  "repo": "",
+  "branch": "land/session-history"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-04T10:45:47.492Z",
+   "kind": "prompt",
+   "text": "JOB job-land-build-2026-11-04-0411: Land a finished build Land branch claude/session-history (build session-history). 1. git fetch origin; merge origin/main into claude/session-history (never rebase, never force). 2. Bookkeeping clashes (_claude/THREADS.md, _claude/memory/STATUS.md, _claude/builds/, tracker.json, catalogs): keep both sides' lines, then regenerate generated files (tracker.mjs). 3. Code clashes: do NOT resolve by guessing. Abort, list the files and both sides' intent in the report, status blocked. 4. Rerun the build's own tests + node framework/cli/tracker.mjs --check. All gree…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 66,
+    "output": 9174,
+    "cacheRead": 2049371,
+    "cacheWrite": 75048,
+    "thinking": 2020
+   },
+   "costUsd": 0.9689,
+   "costEstimated": false,
+   "seconds": 129,
+   "tools": {
+    "Bash": 32,
+    "Grep": 3,
+    "Read": 2,
+    "Edit": 3,
+    "Write": 1
+   },
+   "commands": 32,
+   "files": [
+    "/opt/axf/.axf-console/plugins/agent-swarm/job-worktrees/job-land-build-2026-11-04-0411/apps/console-web/plugins/README.md",
+    "/opt/axf/.axf-console/plugins/agent-swarm/job-worktrees/job-land-build-2026-11-04-0411/_claude/builds/reports/jobs/land-build/2026-11-04-0411.md"
+   ],
+   "changeIds": [
+    "chg-20261104-453a6ef0f9"
+   ],
+   "features": [],
+   "output": "I didn't land session-history: nothing went to main, and the merge is only on a local branch in this worktree. - **Merge:** I merged origin/main into the branch on the local branch `land/session-history` (merge commit `008081ce1`). The branch was 1213 commits behind. The only clash was a doc, `apps…"
+  }
+ ],
+ "files": [
+  "/opt/axf/.axf-console/plugins/agent-swarm/job-worktrees/job-land-build-2026-11-04-0411/apps/console-web/plugins/README.md",
+  "/opt/axf/.axf-console/plugins/agent-swarm/job-worktrees/job-land-build-2026-11-04-0411/_claude/builds/reports/jobs/land-build/2026-11-04-0411.md"
+ ],
+ "changeIds": [
+  "chg-20261104-453a6ef0f9"
+ ],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 66,
+  "output": 9174,
+  "cacheRead": 2049371,
+  "cacheWrite": 75048,
+  "thinking": 2020,
+  "costUsd": 0.9689,
+  "costEstimated": false,
+  "toolCalls": 41,
+  "commands": 32,
+  "filesTouched": 2,
+  "reportedUsd": 1.194
+ },
+ "ingestedAt": "2026-11-04T10:47:57.038Z"
+}
