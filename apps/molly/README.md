@@ -3,7 +3,8 @@
 One interface for **AmberX**, **axHub** and the **Dev Console**, at https://molly.amberxai.com (build `molly-opus`,
 Big Dog profile, Opus; a Fable version comes later as its own build).
 
-- Each app stays its own app at its own address (`amberx.amberxai.com`, `axhub.amberxai.com`, `console.amberxai.com`)
+- Each app stays its own app at its own address (`amberx.amberxai.com`, `axhub.amberxai.com`, `console.amberxai.com`,
+  `expenses.amberxai.com`)
   and runs exactly the same on its own. Without plugins Molly only frames that address (plain URL, nothing hidden or
   merged); with xLayout the frames carry the embed@1 marker and Molly merges their chrome (below).
 - Frames are kept alive (`src/molly/FrameDeck.tsx`): switching apps never reloads them. Reload or open the one on screen

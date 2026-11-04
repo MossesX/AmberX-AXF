@@ -108,6 +108,7 @@ const DEFINITION_FILES = new Set(['framework/ui/axf.css']);
 /** Frozen code: findings are counted against framework/spec/conform-baseline.json instead of failing outright. */
 const FROZEN = [
   { re: /\.kt$/, why: 'all Android work is on hold (Brett, Oct 21 2026); generated Kotlin (templates) has no baseline' },
+  { re: /^apps\/expenses\//, why: 'imported Expense app (build expenses-port, Nov 4 2026) still runs on its vendored @axf/core 0.0.25 look; moving it onto the theme engines shrinks this baseline' },
 ];
 const GENERATED_KT = /^framework\/(templates|library-templates|boilerplates)\//;
 const scans = paths.length

@@ -6,6 +6,20 @@ paydays, reports and a Claude-powered assistant, behind the app's own sign-in (`
 It started as the `expenses` module "peeled" out of MossesX/studioX, with the AmberX framework
 (`@axf/core` 0.0.25) vendored under `vendor/axf-core`, so this repo builds on its own.
 
+## Now in AmberX-AXF (Nov 4 2026)
+
+This app now lives in **MossesX/AmberX-AXF at `apps/expenses`** (imported with its history by build
+`expenses-port`). Make changes here, through AmberX-AXF PRs. MossesX/Expense is left as it was and no
+longer deploys. The repo-wide rules in AmberX-AXF's `CLAUDE.md` and `_claude/` apply (the "Working with
+Brett" section below is from the old repo; the AXF rules win where they differ, e.g. no Sonnet).
+
+- Manifest: `project.manifest.json` (`expenses`). Molly frames it (`apps/molly/src/molly/apps.ts`).
+- Its UI still runs on the vendored `@axf/core` 0.0.25 look, held to a shrink-only baseline in
+  `framework/spec/conform-baseline.json`; moving it onto the AXF theme engines is follow-up work.
+- Deploy and rollback: `deploy/install.sh` (see `deploy/README.md`). Data stays on the `amberx-studio-data`
+  volume; never in the repo.
+- CLI over the API: `node scripts/expenses-cli.mjs --help`.
+
 ## Status (as of Oct 17 2026)
 
 - **Built:** peeled from studioX on Oct 16 2026, then developed here directly (PRs #1–#9, all Oct 16):
