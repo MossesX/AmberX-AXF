@@ -361,6 +361,9 @@ def parse_build_log(text: str, brief: str = "") -> tuple[list[dict[str, Any]], d
             if len(parts) > 1:
                 facts["cwd"] = parts[1]
             continue
+        if line.startswith("# agent "):  # the agent the run is booked on (claude-headless.sh, Nov 3 2026)
+            facts["agent"] = line[len("# agent "):].strip()[:120]
+            continue
         s = line.lstrip()
         if s.startswith("▸ "):
             flush()
