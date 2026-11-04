@@ -163,6 +163,9 @@ export function planStart({ row, rows = [], features = [], queue = null, running
 /** Asset conformance (Brett, Oct 31 2026; shared rule "Handwritten code conforms to the asset system"), in every brief. */
 export const ASSET_RULE = 'UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.';
 
+/** Basic Markdown readme with every build (Brett, Nov 4 2026; rule "Every build ships a basic readme"), in every brief. */
+export const DOCS_RULE = 'Docs: every build ships a basic Markdown readme for what it adds or changes, in the same PR: `docs/README.md` inside the plugin / app / module folder (or a section added to an existing one) covering what it does, how to use it (screens, settings, right-click actions, voice commands), commands (API / MCP / CLI) and troubleshooting. Plain Markdown, no docs engine. CI (`node framework/cli/check-docs-readme.mjs`) fails a PR that adds a plugin / app / module folder without one.';
+
 export function briefFor({ row, model, branch, areas, deps, dontTouch, live, verify, rules, reportCmd }) {
   const steps = (row.steps ?? []).map((s, i) => `${i + 1}. ${s.done ? '[done] ' : ''}${s.text}${s.estimateText ? ` (~${s.estimateText})` : ''}`);
   const ref = `${row.source}:${row.id}`;
@@ -184,6 +187,7 @@ export function briefFor({ row, model, branch, areas, deps, dontTouch, live, ver
     '- Follow CLAUDE.md and _claude/rules/RULES.md + _claude/shared/rules/RULES.md (plugin rules, theme tokens only, no secrets, small steps, Android on hold).',
     '- Screenshots that are not a planned UI for approval (checking a screen, live captures, PR before/after) go to UI Review → Screenshots with `node framework/cli/shot.mjs <file> --name "…" --app <app> --screen <route> --group "<build name>"` (`axf shot`; ui-review-item@1: a name, app, screen and group, the session is detected), never the review queue.',
     `- ${ASSET_RULE}`,
+    `- ${DOCS_RULE}`,
     ...rules.map((r) => `- ${r}`),
     '- Watch live: whenever you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note "<what you are changing>"` so Brett\'s live preview scrolls to and outlines it.',
     '\n## Report to the Build manager (axHub) as you go',

@@ -100,6 +100,8 @@ start_watch_live() {   # $1 = session name; prints the watcher pid (empty when o
   echo $!
 }
 
+DOCS_NOTE="Docs: every build ships a basic Markdown readme for what it adds or changes, in the same PR: \`docs/README.md\` inside the plugin / app / module folder (or a section added to an existing one) covering what it does, how to use it (screens, settings, right-click actions, voice commands), commands (API / MCP / CLI) and troubleshooting. Plain Markdown, no docs engine. CI (\`node framework/cli/check-docs-readme.mjs\`) fails a PR that adds a plugin / app / module folder without one."
+
 GATE="$HERE/../framework/cli/model-gate.mjs"
 UPGRADE_NOTE="Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Opus) is fine. An UPGRADE (e.g. Opus → Fable) needs Brett's approval: when you reach one, run \`node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>\`, ask once, and stop. Never approve a model switch upgrade yourself (no \`act approve\` on an upgrade), never relaunch on a higher model."  # axf-plugin:build-orchestrator
 # Upgrades need Brett (framework/cli/model-gate.mjs): a build may not start on a higher model than its orchestrator step,
@@ -165,6 +167,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   [[ -n "$wl" ]] && prompt="$prompt"$'\n\n'"$WATCH_NOTE"
   [[ -n "$slot" ]] && slots_on && prompt="$prompt"$'\n\n'"$HEAVY_NOTE"
   prompt="$prompt"$'\n\n'"${UPGRADE_NOTE:-}"
+  prompt="$prompt"$'\n\n'"$DOCS_NOTE"
   if look_on; then   # look changes Brett asked for on the predicted look ride along; the look refreshes as the diff grows
     look_add="$(node "$LOOK" addenda --name "$name" --brief "$brief" 2>/dev/null)"
     [[ -n "$look_add" ]] && prompt="$prompt"$'\n\n'"$look_add"
