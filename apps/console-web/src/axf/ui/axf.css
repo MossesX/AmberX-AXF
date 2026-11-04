@@ -1272,6 +1272,13 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-snap-preview { position: fixed; z-index: 59; pointer-events: none; box-sizing: border-box; border-radius: var(--fx-radius-lg); border: calc(var(--fx-border-w) * 2) solid var(--fx-accent); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); transition: left var(--fx-motion) ease, top var(--fx-motion) ease, width var(--fx-motion) ease, height var(--fx-motion) ease; display: flex; align-items: flex-end; justify-content: flex-end; padding: var(--fx-dens-gap-xl); }
 .fx-snap-preview--target { border-style: dashed; background: transparent; }
 .fx-snap-preview__label { font-size: var(--fx-type-root-xs); text-transform: uppercase; letter-spacing: .06em; color: var(--fx-accent); opacity: var(--fx-opacity-muted); }
+/* molly-multi-instance-tabs (Nov 4 2026): the "+" at the end of a tab group, a tab armed by a long press (phone: hold, then drag), a dialog title that can be dragged out */
+.fx-tabgroup__bar .fx-tab__add { flex: 0 0 auto; color: var(--fx-muted); }
+.fx-tabgroup__bar .fx-tab__add:hover { color: var(--fx-text); }
+.fx-tabgroup__bar .fx-tab.is-armed { outline: calc(var(--fx-border-w) * 2) solid var(--fx-accent); outline-offset: calc(var(--fx-border-w) * -2); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-text); }
+.fx-dialog__head { cursor: grab; touch-action: none; }
+.fx-dialog__head.is-armed { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.fx-dialog__head > h2 { user-select: none; }
 .fx-dragghost { position: fixed; z-index: 200; pointer-events: none; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-2xl); border-radius: var(--fx-radius-sm); background: var(--fx-accent); color: var(--fx-accent-text); font-size: var(--fx-type-root-sm); box-shadow: var(--fx-shadow-md); }
 .fx-corner { position: fixed; z-index: 70; display: flex; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-lg); }
 .fx-corner--top-left { top: 0; left: 0; } .fx-corner--top-right { top: 0; right: 0; } .fx-corner--bottom-left { bottom: 0; left: 0; } .fx-corner--bottom-right { bottom: 0; right: 0; }

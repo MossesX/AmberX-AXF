@@ -36,11 +36,18 @@ export const sideIsBefore = (s: DockSide) => s === 'left' || s === 'top';
  * edges that split the whole tree; `centreFraction` = the share of a pane's body (each axis) that is the centre zone;
  * `splitRatio` = the share a new pane takes of the pane it splits; `rootRatio` = the share it takes of the whole tree.
  */
-export interface DockRules { paneLimit: number; minWeight: number; headerBand: number; edgeBand: number; centreFraction: number; splitRatio: number; rootRatio: number }
-export const DEFAULT_DOCK_RULES: DockRules = { paneLimit: 6, minWeight: 0.1, headerBand: 36, edgeBand: 16, centreFraction: 0.5, splitRatio: 0.5, rootRatio: 0.3 };
+export interface DockRules {
+  paneLimit: number; minWeight: number; headerBand: number; edgeBand: number; centreFraction: number; splitRatio: number; rootRatio: number;
+  /** a tab let go outside every dock pops out to a floating window (molly-multi-instance-tabs: any UI can be dragged out) */
+  floatOut: boolean;
+  /** a floating window held over a dock's zone docks its tabs there on release (and so comes back) */
+  windowDocks: boolean;
+}
+export const DEFAULT_DOCK_RULES: DockRules = { paneLimit: 6, minWeight: 0.1, headerBand: 36, edgeBand: 16, centreFraction: 0.5, splitRatio: 0.5, rootRatio: 0.3, floatOut: true, windowDocks: true };
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 const num = (v: unknown, d: number) => (typeof v === 'number' && Number.isFinite(v) ? v : d);
+const bool = (v: unknown, d: boolean) => (typeof v === 'boolean' ? v : d);
 
 /** Rules with every field present, clamped to sane ranges (a partial object, or nothing, = the defaults). */
 export function normalizeDockRules(raw: Partial<DockRules> | null | undefined): DockRules {
@@ -54,7 +61,21 @@ export function normalizeDockRules(raw: Partial<DockRules> | null | undefined): 
     centreFraction: Math.min(0.9, Math.max(0.1, num(r.centreFraction, DEFAULT_DOCK_RULES.centreFraction))),
     splitRatio: Math.min(0.9, Math.max(0.1, num(r.splitRatio, DEFAULT_DOCK_RULES.splitRatio))),
     rootRatio: Math.min(0.9, Math.max(0.1, num(r.rootRatio, DEFAULT_DOCK_RULES.rootRatio))),
+    floatOut: bool(r.floatOut, DEFAULT_DOCK_RULES.floatOut),
+    windowDocks: bool(r.windowDocks, DEFAULT_DOCK_RULES.windowDocks),
   };
+}
+
+/* ---------- history (undo): the dock before each change ---------- */
+
+/** How many layout changes a window remembers for undo. */
+export const DOCK_HISTORY_MAX = 20;
+/** `history` with `snap` added last: a snapshot equal to the last one is not added twice; the oldest go past `max`. Pure. */
+export function pushHistory(history: readonly DockSnapshot[], snap: DockSnapshot, max = DOCK_HISTORY_MAX): DockSnapshot[] {
+  const last = history[history.length - 1];
+  if (last && JSON.stringify(last) === JSON.stringify(snap)) return [...history];
+  const out = [...history, snap];
+  return out.length > Math.max(1, max) ? out.slice(out.length - Math.max(1, max)) : out;
 }
 
 /* ---------- tree shape ---------- */
@@ -370,7 +391,7 @@ export function serializeDock(state: DockState, tree: Pane | null = state.tree):
   for (const id of ids) { const g = state.groups[id]; if (g) groups[id] = { tabs: g.tabs.map(cleanTab), active: g.active }; }
   return { $axf: DOCK_CONTRACT, tree: tree ? stripTree(tree) : null, groups };
 }
-const cleanTab = (t: TabSpec): TabSpec => { const o: TabSpec = { id: t.id, title: t.title, kind: t.kind }; if (t.payload !== undefined) o.payload = t.payload; if (t.icon) o.icon = t.icon; if (t.closable === false) o.closable = false; return o; };
+const cleanTab = (t: TabSpec): TabSpec => { const o: TabSpec = { id: t.id, title: t.title, kind: t.kind }; if (t.payload !== undefined) o.payload = t.payload; if (t.icon) o.icon = t.icon; if (t.closable === false) o.closable = false; if (typeof t.instance === 'number' && Number.isInteger(t.instance) && t.instance >= 2) o.instance = t.instance; return o; };
 const stripTree = (p: Pane): Pane => p.kind === 'leaf' ? { kind: 'leaf', groupId: p.groupId } : p.kind === 'split' ? { kind: 'split', vertical: p.vertical, children: p.children.map(stripTree), weights: [...p.weights] } : { kind: 'grid', rows: p.rows, cols: p.cols, cells: p.cells.map(stripTree) };
 
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$/;
@@ -386,6 +407,8 @@ export function parseTab(raw: unknown): TabSpec | null {
   const payload = str(o.payload, 4000); if (payload !== undefined) t.payload = payload;
   const icon = str(o.icon, 40); if (icon && /^[a-z0-9][a-z0-9-]{0,39}$/.test(icon)) t.icon = icon;
   if (o.closable === false) t.closable = false;
+  // which copy of the same thing (multi-instance tabs): 2.. kept, 1 / junk dropped (= the first)
+  if (typeof o.instance === 'number' && Number.isInteger(o.instance) && o.instance >= 2 && o.instance <= 999) t.instance = o.instance;
   return t;
 }
 

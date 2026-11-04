@@ -6,7 +6,7 @@
  * (stacked or lined-up title bars) or to a floating toolbar at the cursor. Dock@1 (engines/dock.ts, Nov 3 2026) adds
  * drop zones, the pane limit, splitter resize, snapshots and layout presets on the same tree.
  */
-import { DEFAULT_DOCK_RULES, applyDockDrop, applyPreset as applyDockPreset, dockDropAt, dockDropRect, dropIsLimited, normalizeDockRules, removePane, resizeSplit as resizeSplitTree, restoreDock, serializeDock, splitPane, splitRoot, type DockDrop, type DockDropPreview, type DockLayoutData, type DockRules, type DockSnapshot, type DockState, type GroupBox, type PanePath } from './dock';
+import { DEFAULT_DOCK_RULES, DOCK_CONTRACT, applyDockDrop, applyPreset as applyDockPreset, dockDropAt, dockDropRect, dropIsLimited, normalizeDockRules, pushHistory, removePane, resizeSplit as resizeSplitTree, restoreDock, serializeDock, splitPane, splitRoot, type DockDrop, type DockDropPreview, type DockLayoutData, type DockRules, type DockSide, type DockSnapshot, type DockState, type GroupBox, type PanePath } from './dock';
 
 export type WindowType = 'main' | 'dock' | 'tool' | 'dialog' | 'panel' | 'floating' | 'element';
 export type MinimizeMode = 'stacked' | 'lined';
@@ -154,8 +154,41 @@ export const isFloating = (w: WindowSpec) => w.type === 'floating' || w.type ===
 export const forcesToolbar = (w: WindowSpec) => isFloating(w) && w.type !== 'element';
 export const effectiveToolbar = (w: WindowSpec) => w.toolbarsAllowed && (w.toolbarEnabled || forcesToolbar(w));
 
-/** A tab: what it shows is up to the app (`kind` + `payload`), the engine only moves it around. */
-export interface TabSpec { id: string; title: string; kind: string; payload?: string; icon?: string | null; closable?: boolean }
+/**
+ * A tab: what it shows is up to the app (`kind` + `payload`), the engine only moves it around. `instance` (Nov 4 2026,
+ * molly-multi-instance-tabs: "Need to be able to add a tab so I can have multiple instances") says which copy of the
+ * same thing this is: absent / 1 = the first, 2 = the second ("Console 2")… Copies share `kind` + `payload`; the host
+ * keys what it renders (an iframe, a session) on `payload` + `instance`.
+ */
+export interface TabSpec { id: string; title: string; kind: string; payload?: string; icon?: string | null; closable?: boolean; instance?: number }
+
+/* ---------- multiple instances of one thing (molly-multi-instance-tabs) ---------- */
+
+export const INSTANCE_MAX = 999;
+/** Which copy a tab is (1 = the first). */
+export const instanceOf = (t: Pick<TabSpec, 'instance'>): number => (typeof t.instance === 'number' && Number.isInteger(t.instance) && t.instance >= 2 && t.instance <= INSTANCE_MAX ? t.instance : 1);
+/** The id of copy `n` of a tab whose first copy is `baseId` (`molly-app:console` → `molly-app:console.2`). */
+export const instanceTabId = (baseId: string, n: number): string => (n >= 2 ? `${baseId}.${n}` : baseId);
+/** The first copy's id behind any copy's id. */
+export const baseTabId = (t: Pick<TabSpec, 'id' | 'instance'>): string => { const n = instanceOf(t); return n >= 2 && t.id.endsWith(`.${n}`) ? t.id.slice(0, -(`.${n}`.length)) : t.id; };
+/** What copy `n` is called (`Console` → `Console 2`; the first keeps the plain name). */
+export const instanceTitle = (base: string, n: number): string => (n >= 2 ? `${base} ${n}` : base);
+/** The plain name behind a copy's title (`Console 2` → `Console`; a renamed copy keeps its own name). */
+export const baseTitle = (t: Pick<TabSpec, 'title' | 'instance'>): string => { const n = instanceOf(t); return n >= 2 && t.title.endsWith(` ${n}`) ? t.title.slice(0, -(` ${n}`.length)) : t.title; };
+/** The copies of one thing among `tabs` (same kind + payload), lowest instance first. */
+export const instancesOf = (tabs: readonly TabSpec[], kind: string, payload: string | undefined): TabSpec[] => tabs.filter((t) => t.kind === kind && (t.payload ?? '') === (payload ?? '')).sort((a, b) => instanceOf(a) - instanceOf(b));
+/** The lowest free instance number for another copy (1 when there is none yet; 2 when only the first exists; gaps are reused). */
+export function nextInstance(tabs: readonly TabSpec[], kind: string, payload: string | undefined): number {
+  const used = new Set(instancesOf(tabs, kind, payload).map(instanceOf));
+  let n = 1; while (used.has(n)) n++;
+  return n;
+}
+/** Copy `n` of `tab` as a new TabSpec (id, title and instance follow the rules above; a renamed source passes its plain name on). */
+export function instanceTab(tab: TabSpec, n: number, title?: string): TabSpec {
+  const out: TabSpec = { ...tab, id: instanceTabId(baseTabId(tab), n), title: title ?? instanceTitle(baseTitle(tab), n) };
+  if (n >= 2) out.instance = n; else delete out.instance;
+  return out;
+}
 
 /** Nested layout of a window's content: a leaf group, a split with weights, or a grid of groups. */
 export type Pane =
@@ -469,6 +502,39 @@ export class WindowManager {
   groupOf(tabId: string): string | null {
     return Object.values(this._state.groups).find((g) => g.tabs.some((t) => t.id === tabId))?.id ?? null;
   }
+  /** The tab behind an id, wherever it is (null when it's gone). */
+  tabOf(tabId: string): TabSpec | null {
+    for (const g of Object.values(this._state.groups)) { const t = g.tabs.find((x) => x.id === tabId); if (t) return t; }
+    return null;
+  }
+  /** Every tab in every window (the instance count of one thing is taken across all of them). */
+  allTabs(): TabSpec[] { return Object.values(this._state.groups).flatMap((g) => g.tabs); }
+
+  /**
+   * Another copy of a tab (molly-multi-instance-tabs: "Duplicate this tab"): the next free instance of the same kind +
+   * payload, named `<name> <n>` unless `title` says otherwise, placed right after the source in its group and made
+   * active. `max` caps the copies of one thing (0 = no cap). Returns the new tab's id, or null (gone, or at the cap).
+   */
+  duplicateTab(tabId: string, title?: string, max = 0): string | null {
+    const gid = this.groupOf(tabId); const src = this.tabOf(tabId);
+    if (!gid || !src) return null;
+    const n = nextInstance(this.allTabs(), src.kind, src.payload);
+    if ((max > 0 && n > max) || n > INSTANCE_MAX) return null;
+    const tab = instanceTab(src, n, title);
+    const g = this._state.groups[gid]!;
+    this.addTab(gid, tab, g.tabs.findIndex((t) => t.id === tabId) + 1);
+    return tab.id;
+  }
+  /** Close every other tab of the group a tab is in (closable ones; a tab with `closable: false` stays). */
+  closeOthers(tabId: string) {
+    const gid = this.groupOf(tabId); if (!gid) return;
+    this.checkpoint(this._state.groups[gid]!.windowId);
+    this.set((s) => {
+      const g = s.groups[gid]; if (!g) return s;
+      const tabs = g.tabs.filter((t) => t.id === tabId || t.closable === false);
+      return { ...s, groups: { ...s.groups, [gid]: { ...g, tabs, active: Math.max(0, tabs.findIndex((t) => t.id === tabId)) } } };
+    });
+  }
 
   /** Move a tab to another group (any window) at `index` (-1 = end). Empty source groups disappear; an emptied floating window closes. */
   moveTab(tabId: string, toGroup: string, index = -1) {
@@ -496,12 +562,40 @@ export class WindowManager {
   dragStart(tabId: string, fromGroup: string, x: number, y: number) { this.set((s) => ({ ...s, drag: { tabId, fromGroup, x, y }, dockPreview: null })); }
   /** One step of a tab drag: the ghost follows, and the dock preview says where the tab would land (null = nowhere). */
   dragMove(x: number, y: number) { this.set((s) => (s.drag ? { ...s, drag: { ...s.drag, x, y }, dockPreview: this.dockPreviewAt(s, s.drag.tabId, x, y) } : s)); }
-  /** The drag ends: a dock drop zone wins, else the group under the point takes the tab (older hosts). */
+  /** The ghost follows without a dock preview (the host shows its own drop mark, e.g. a place in a tab strip). */
+  dragGhost(x: number, y: number) { this.set((s) => (s.drag ? { ...s, drag: { ...s.drag, x, y }, dockPreview: null } : s)); }
+  /** Drop the drag without moving anything (the host handled the drop itself, or the pointer left). */
+  dragCancel() { this.set((s) => (s.drag || s.dockPreview ? { ...s, drag: null, dockPreview: null } : s)); }
+  /**
+   * Float one tab (main-tabs@1): it leaves its group (an emptied pane closes, an emptied floating window too) and opens
+   * in a new floating window, centred on the pointer when given. Returns the window id, or null when the tab is gone.
+   */
+  floatTab(tabId: string, x?: number, y?: number, width = 640, height = 480): string | null {
+    const from = Object.values(this._state.groups).find((g) => g.tabs.some((t) => t.id === tabId)); if (!from) return null;
+    const tab = from.tabs.find((t) => t.id === tabId)!;
+    this.checkpoint(from.windowId);
+    this.closeTab(tabId);
+    const at = x !== undefined && y !== undefined ? { x: Math.max(0, Math.round(x - width / 2)), y: Math.max(0, Math.round(y - 16)) } : null;
+    return this.openFloating([tab], tab.title, 'floating', width, height, at?.x, at?.y);
+  }
+  /**
+   * The drag ends: a dock drop zone wins, else the group under the point takes the tab (older hosts), else — let go
+   * outside every dock while `dockRules.floatOut` is on — the tab pops out to a floating window under the pointer
+   * (molly-multi-instance-tabs addendum: "any screen or any UI whatsoever can be dragged … out to a floating window").
+   * Every drop that changes the layout is undoable (`undoLayout`).
+   */
   dragEnd(): boolean {
     const d = this._state.drag, p = this._state.dockPreview ?? null; if (!d) return false;
     this.set((s) => ({ ...s, drag: null, dockPreview: null }));
-    if (p) return this.dropTab(d.tabId, p.windowId, p.drop);
-    return this.dropAt(d.tabId, d.x, d.y);
+    if (p) { this.checkpoint(p.windowId); return this.dropTab(d.tabId, p.windowId, p.drop); }
+    const from = this._state.groups[d.fromGroup];
+    if (from) this.checkpoint(from.windowId);
+    if (this.dropAt(d.tabId, d.x, d.y)) return true;
+    if (!this.dockRules.floatOut || !this.hostBounds.size || !from) return false;
+    // a single tab in a floating window let go outside every dock: it already is its own window, leave it be
+    const w = this._state.windows.find((x) => x.id === from.windowId);
+    if (w && isFloating(w) && from.tabs.length === 1) return false;
+    return this.floatTab(d.tabId, d.x, d.y) !== null;
   }
 
   /* ---------- dock@1: drop zones, pane limit, splitters, snapshots, presets (dock-engine s1) ---------- */
@@ -529,12 +623,12 @@ export class WindowManager {
   /** The dock state of one window: its tree and every group (the dragged tab may come from another window). */
   dockState(windowId: string, s: WindowState = this._state): DockState { return { tree: s.layouts[windowId] ?? null, groups: s.groups }; }
   /** Hosts under a point, topmost first (floating windows above the main window). */
-  private hostsAt(s: WindowState, x: number, y: number): string[] {
+  private hostsAt(s: WindowState, x: number, y: number, except?: string): string[] {
     const z = (wid: string) => (wid === this.mainWindowId ? -1 : s.windows.find((w) => w.id === wid)?.z ?? 0);
-    return [...this.hostBounds.entries()].filter(([, r]) => rectContains(r, x, y)).map(([wid]) => wid).sort((a, b) => z(b) - z(a));
+    return [...this.hostBounds.entries()].filter(([wid, r]) => wid !== except && rectContains(r, x, y)).map(([wid]) => wid).sort((a, b) => z(b) - z(a));
   }
-  private dockPreviewAt(s: WindowState, tabId: string, x: number, y: number): DockDropPreview | null {
-    for (const wid of this.hostsAt(s, x, y)) {
+  private dockPreviewAt(s: WindowState, tabId: string, x: number, y: number, except?: string): DockDropPreview | null {
+    for (const wid of this.hostsAt(s, x, y, except)) {
       const host = this.hostBounds.get(wid)!; const boxes = this.boxesOf(s, wid);
       const drop = dockDropAt(host, boxes, x, y, this.dockRules, (gid) => this.tabEdges.get(gid));
       if (!drop) continue;
@@ -603,6 +697,7 @@ export class WindowManager {
   /** Re-dock a floating window into a zone of another window (default main): its tabs land in one new pane there. */
   redockInto(windowId: string, drop: DockDrop, into = this.mainWindowId): boolean {
     const w = this._state.windows.find((x) => x.id === windowId); if (!w || !isFloating(w) || windowId === into) return false;
+    this.checkpoint(into);
     const tabs = (this._state.layouts[windowId] ? paneGroups(this._state.layouts[windowId]!) : []).flatMap((gid) => this._state.groups[gid]?.tabs ?? []);
     const first = tabs[0]; if (!first) return false;
     if (!this.dropTab(first.id, into, drop)) return false;
@@ -616,9 +711,15 @@ export class WindowManager {
   paneLimitReached(windowId = this.mainWindowId): boolean { return this.paneCount(windowId) >= this.dockRules.paneLimit; }
   /** A JSON-safe snapshot of a window's dock (dock@1), or null when it has none. */
   snapshot(windowId = this.mainWindowId): DockSnapshot | null { const t = this._state.layouts[windowId]; return t ? serializeDock(this.dockState(windowId), t) : null; }
-  /** Restore a snapshot into a window (its current groups go). False when the snapshot holds nothing usable. */
+  /**
+   * Restore a snapshot into a window (its current groups go). A tab the snapshot names that is open in another window
+   * leaves there first (an emptied floating window closes), so no tab is ever on screen twice. False when the snapshot
+   * holds nothing usable.
+   */
   restoreLayout(raw: unknown, windowId = this.mainWindowId): boolean {
     const r = restoreDock(raw, windowId, this.dockRules); if (!r?.tree) return false;
+    const ids = new Set(Object.values(r.groups).flatMap((g) => g.tabs.map((t) => t.id)));
+    for (const g of Object.values(this._state.groups)) if (g.windowId !== windowId) for (const t of g.tabs) if (ids.has(t.id)) this.closeTab(t.id);
     this.set((s) => {
       const groups: Record<string, TabGroup> = {};
       for (const g of Object.values(s.groups)) if (g.windowId !== windowId) groups[g.id] = g;
@@ -627,9 +728,57 @@ export class WindowManager {
     });
     return true;
   }
+
+  /* ---------- undo + reset (molly-multi-instance-tabs: "It confirms first and is undoable", "Undo after every drop") ---------- */
+
+  /** Per window: the dock as it was before each layout change, newest last (dock@1 history, `DOCK_HISTORY_MAX` deep). */
+  private readonly history = new Map<string, DockSnapshot[]>();
+  /** Remember a window's dock before changing it, so `undoLayout` can bring it back. A window with no dock remembers an empty one. */
+  checkpoint(windowId = this.mainWindowId): void {
+    const snap = this.snapshot(windowId) ?? { $axf: DOCK_CONTRACT, tree: null, groups: {} };
+    this.history.set(windowId, pushHistory(this.history.get(windowId) ?? [], snap));
+  }
+  /** Is there a layout change to undo in this window? */
+  canUndo(windowId = this.mainWindowId): boolean { return (this.history.get(windowId)?.length ?? 0) > 0; }
+  /**
+   * Put a window's dock back as it was before the last change (a drop, a pop-out, a close-others, a reset, a preset…).
+   * An empty snapshot clears the dock. False when there is nothing to undo.
+   */
+  undoLayout(windowId = this.mainWindowId): boolean {
+    const list = this.history.get(windowId) ?? [];
+    const snap = list[list.length - 1]; if (!snap) return false;
+    this.history.set(windowId, list.slice(0, -1));
+    if (!snap.tree) { this.clearDock(windowId); return true; }
+    return this.restoreLayout(snap, windowId) || (this.clearDock(windowId), true);
+  }
+  /** The dock of a window emptied: every pane and tab in it goes (a floating window closes). Not undoable by itself. */
+  private clearDock(windowId: string): void {
+    this.set((s) => {
+      const gids = new Set(s.layouts[windowId] ? paneGroups(s.layouts[windowId]!) : []);
+      for (const g of Object.values(s.groups)) if (g.windowId === windowId) gids.add(g.id);
+      const groups = { ...s.groups }; gids.forEach((g) => delete groups[g]);
+      const layouts = { ...s.layouts }; delete layouts[windowId];
+      const w = s.windows.find((x) => x.id === windowId);
+      const windows = w && isFloating(w) ? s.windows.filter((x) => x.id !== windowId) : s.windows;
+      return { ...s, groups, layouts, windows, focused: windows.some((x) => x.id === s.focused) ? s.focused : this.mainWindowId };
+    });
+  }
+  /**
+   * Reset a window's dock: everything in it closes (Brett, Nov 4 2026: "How do I reset the layout? Because I run it IDE
+   * style and I made a bunch of tabs"). Undoable: `undoLayout` brings every pane and tab back. The host confirms first.
+   */
+  resetDock(windowId = this.mainWindowId): void { this.checkpoint(windowId); this.clearDock(windowId); }
+
+  /**
+   * What the "+" at the end of every tab group does (molly-multi-instance-tabs): the host sets it (Molly opens its
+   * picker: an app, a plugin view, a copy of this tab); null = no "+" is drawn.
+   */
+  newTab: ((groupId: string) => void) | null = null;
+  openNewTab(groupId: string): boolean { if (!this.newTab || !this._state.groups[groupId]) return false; this.newTab(groupId); return true; }
   /** Lay a window's open tabs out on a preset (dock-layout@1): spread evenly over its panes, ids reused first. */
   applyPreset(data: DockLayoutData, windowId = this.mainWindowId): boolean {
     if (!this._state.windows.some((w) => w.id === windowId)) return false;
+    this.checkpoint(windowId);
     let changed = false;
     this.set((s) => {
       // only this window's groups take part; the other windows keep theirs
@@ -648,6 +797,7 @@ export class WindowManager {
 
   /** Split a group: its tabs are divided evenly across the new groups (5 tabs split in two → 3 + 2); GRID uses rows × cols. */
   split(groupId: string, mode: SplitMode, rows = 2, cols = 2) {
+    const g0 = this._state.groups[groupId]; if (g0) this.checkpoint(g0.windowId);
     this.set((s) => {
       const g = s.groups[groupId]; if (!g) return s;
       const n = mode === 'four' ? 4 : mode === 'grid' ? Math.max(1, rows * cols) : 2;
@@ -669,6 +819,7 @@ export class WindowManager {
   /** Undock a tab group into a new floating window of type DOCK (toolbar forced on). */
   undock(groupId: string, title?: string): string | null {
     const g = this._state.groups[groupId]; if (!g) return null;
+    this.checkpoint(g.windowId);
     const wid = this.nextId('win');
     this.set((s) => {
       let out = this.removeGroup(s, groupId, true);
@@ -682,6 +833,7 @@ export class WindowManager {
 
   /** Dock every group of a floating window back into the main window (as horizontal splits). */
   redock(windowId: string) {
+    this.checkpoint(this.mainWindowId);
     this.set((s) => {
       const w = s.windows.find((x) => x.id === windowId); if (!w || !isFloating(w)) return s;
       const gids = s.layouts[windowId] ? paneGroups(s.layouts[windowId]) : [];
@@ -698,9 +850,15 @@ export class WindowManager {
   focus(windowId: string) { this.set((s) => { const top = this.topZ(s); return { ...s, windows: s.windows.map((w) => (w.id === windowId ? { ...w, z: top } : w)), focused: windowId }; }); }
   move(windowId: string, dx: number, dy: number) { this.update(windowId, (w) => this.remember({ ...w, x: w.x + dx, y: w.y + dy })); }
   moveTo(windowId: string, x: number, y: number) { this.update(windowId, (w) => this.remember({ ...w, x, y })); }
-  /** Called when a drag ends: applies the preview (zone / split), the no-overlap rule and the grid, then remembers where it is. */
+  /** Called when a drag ends: applies the preview (zone / split / dock), the no-overlap rule and the grid, then remembers where it is. */
   settle(windowId: string) {
-    const prev = this._state.preview ?? null; this.splitArm = null;
+    const prev = this._state.preview ?? null; this.splitArm = null; this.dockArm = null;
+    const dock = this._state.dockPreview ?? null;
+    if (dock) {
+      this.set((s) => ({ ...s, preview: null, dockPreview: null }));
+      this.checkpoint(dock.windowId);
+      if (this.redockInto(windowId, dock.drop, dock.windowId)) return;
+    }
     this.set((s) => {
       let windows = s.windows;
       const w = windows.find((x) => x.id === windowId); if (!w) return { ...s, preview: null };
@@ -711,7 +869,7 @@ export class WindowManager {
         windows = windows.map((x) => (x.id === windowId ? { ...x, ...resolveOverlap(rectOf(x), others) } : x));
       }
       windows = windows.map((x) => (x.id === windowId && !isMaximized(x) ? this.remember({ ...x, x: snapCoord(x.x, this.placement), y: snapCoord(x.y, this.placement) }) : x));
-      return { ...s, windows, preview: null };
+      return { ...s, windows, preview: null, dockPreview: null };
     });
   }
 
@@ -740,9 +898,22 @@ export class WindowManager {
       this.splitArm = armSplit(this.splitArm, target?.id ?? null, now, rules.splitDwellMs);
       if (target && this.splitArm.armed) { const d = splitDrop(target, px, py); preview = { kind: 'split', rect: d.dropped, target: target.id, side: d.side, targetRect: d.target }; }
     }
-    this.set((s) => ({ ...s, windows: s.windows.map((v) => (v.id === windowId ? { ...v, x: snapped.x, y: snapped.y } : v)), preview }));
+    // a window held over another window's dock (the main one, or a floating window with panes) docks its tabs there on
+    // release: the dock@1 zones of that host, armed after the same dwell a split uses, so a window merely carried across
+    // the dock never docks by accident (molly-multi-instance-tabs: "or back")
+    let dockPreview: DockDropPreview | null = null;
+    if (!preview && this.dockRules.windowDocks) {
+      const first = (this._state.layouts[windowId] ? paneGroups(this._state.layouts[windowId]!) : []).flatMap((gid) => this._state.groups[gid]?.tabs ?? [])[0];
+      const p = first ? this.dockPreviewAt(this._state, first.id, px, py, windowId) : null;
+      const key = p ? `${p.windowId}:${p.drop.target === 'group' ? `${p.drop.groupId}:${p.drop.zone}` : `root:${p.drop.zone}`}` : null;
+      this.dockArm = armSplit(this.dockArm, key, now, rules.splitDwellMs);
+      if (p && this.dockArm.armed) dockPreview = p;
+    } else this.dockArm = null;
+    this.set((s) => ({ ...s, windows: s.windows.map((v) => (v.id === windowId ? { ...v, x: snapped.x, y: snapped.y } : v)), preview, dockPreview }));
     return preview;
   }
+  /** The dock-zone arm of a window drag (dwell over the same zone), see `dragTo`. */
+  private dockArm: SplitArm | null = null;
   /** Drop the dragged window straight into a zone (keyboard / menu: Win+Left, etc.). */
   snapTo(windowId: string, zone: SnapZone) {
     const area = this.workArea ?? maximizedRect(this.vp());
@@ -800,9 +971,36 @@ export class WindowManager {
 
   /* ---------- menus ---------- */
 
+  /**
+   * Context-menu items for the `tab` target (payload = tab id; molly-multi-instance-tabs: "Right-click a tab: New tab /
+   * Duplicate / Rename / Close / Close others / Move to pane / Pop out to window"). `tabId` fills the Move submenu with
+   * the other panes of that tab's window; without it the submenu offers only the four sides.
+   */
+  tabMenu(tabId?: string): MenuEntry[] {
+    const gid = tabId ? this.groupOf(tabId) : null;
+    const g = gid ? this._state.groups[gid] : undefined;
+    const tree = g ? this._state.layouts[g.windowId] : undefined;
+    const others = tree ? paneGroups(tree).filter((x) => x !== gid) : [];
+    const name = (id: string) => { const grp = this._state.groups[id]; const t = grp ? activeTab(grp) : undefined; return t ? `${t.title}${grp!.tabs.length > 1 ? ` +${grp!.tabs.length - 1}` : ''}` : id; };
+    const limited = g ? this.paneLimitReached(g.windowId) : false;
+    const sides: MenuEntry[] = (['left', 'right', 'top', 'bottom'] as const).map((side) => ({ id: `pane-${side}`, label: limited ? `New pane ${side} (pane limit: joins as a tab)` : `New pane ${side}`, icon: 'layout', action: `windows.moveTabTo:{payload}:${side}` }));
+    const into: MenuEntry[] = others.map((id, i) => ({ id: `pane-into-${i}`, label: `Pane: ${name(id)}`, icon: 'grid', action: `windows.moveTab:{payload}:${id}` }));
+    return [
+      ...(this.newTab ? [{ id: 'new', label: 'New tab…', icon: 'plus', action: 'windows.newTab:{payload}' }] : []),
+      { id: 'duplicate', label: 'Duplicate', icon: 'copy', action: 'windows.duplicateTab:{payload}' },
+      { id: 'rename', label: 'Rename…', icon: 'edit', action: 'dialog:rename-tab:{payload}' },
+      { id: 's1', separator: true },
+      { id: 'close', label: 'Close', icon: 'x', action: 'windows.closeTab:{payload}' },
+      { id: 'close-others', label: 'Close others', icon: 'x', action: 'windows.closeOthers:{payload}' },
+      { id: 's2', separator: true },
+      { id: 'move', label: 'Move to pane', icon: 'layout', items: [...into, ...(into.length ? [{ id: 'pane-sep', separator: true }] : []), ...sides] },
+      { id: 'float', label: 'Pop out to window', icon: 'external', action: 'windows.floatTab:{payload}' },
+    ];
+  }
   /** Context-menu items for the `tab-group` target (payload = group id) with the Split submenu. */
   groupMenu(): MenuEntry[] {
     return [
+      ...(this.newTab ? [{ id: 'new', label: 'New tab…', icon: 'plus', action: 'windows.newTab:{payload}' }] : []),
       { id: 'undock', label: 'Undock to floating window', icon: 'external', action: 'windows.undock:{payload}' },
       { id: 'split', label: 'Split', icon: 'grid', items: [
         { id: 'split-v', label: 'Vertical', icon: 'layout', action: 'windows.split:{payload}:vertical' },
@@ -812,8 +1010,16 @@ export class WindowManager {
       ] },
       { id: 'layout', label: 'Pane layout…', icon: 'layout', action: 'dialog:dock-layout:{payload}' },
       { id: 's1', separator: true },
+      { id: 'undo', label: 'Undo layout change', icon: 'undo', action: 'windows.undoLayout:{payload}' },
       { id: 'close-group', label: 'Close group', icon: 'x', action: 'windows.closeGroup:{payload}' },
     ];
+  }
+  /** Move a tab into a new pane on `side` of its own pane (past the pane limit it stays, as the dock rules say). */
+  moveTabTo(tabId: string, side: DockSide): boolean {
+    const gid = this.groupOf(tabId); const g = gid ? this._state.groups[gid] : undefined; if (!g) return false;
+    if (g.tabs.length === 1) return false; // alone in its pane already: nothing to split off
+    this.checkpoint(g.windowId);
+    return this.dropTab(tabId, g.windowId, { target: 'group', groupId: g.id, zone: side });
   }
   /** Context-menu items for the `window-title` target (payload = window id). */
   windowMenu(): MenuEntry[] {
@@ -841,5 +1047,5 @@ export class WindowManager {
       { id: 'close', label: 'Close', icon: 'x', action: 'windows.close:{payload}' },
     ];
   }
-  closeGroup(groupId: string) { this.set((s) => this.removeGroup(s, groupId)); }
+  closeGroup(groupId: string) { const g = this._state.groups[groupId]; if (g) this.checkpoint(g.windowId); this.set((s) => this.removeGroup(s, groupId)); }
 }
