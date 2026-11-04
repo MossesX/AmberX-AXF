@@ -662,7 +662,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:57 UTC · `live-key-checks` PR #182, merged, note (angel) · reconciler
 - 2026-11-03 13:57 UTC · `ui-review` PR #184, merged, note (angel) · reconciler
 - 2026-11-03 13:57 UTC · `plan-studio` PR #185, merged, note (angel) · reconciler
 - 2026-11-03 13:57 UTC · `audio-extract` PR #187, merged, note (angel) · reconciler
@@ -1062,6 +1061,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:04 UTC · `urgent-land-lazy-loader` note (current) · orchestrator
 - 2026-11-04 14:04 UTC · `land-round-2` → running (current) · builds-live
 - 2026-11-04 14:04 UTC · `urgent-land-lazy-loader` s3 done, note (current) · builds-live
+- 2026-11-04 14:05 UTC · `crew-profiles` added (6 steps) (current) · foreign-write
 
 ## Token passes (log)
 
