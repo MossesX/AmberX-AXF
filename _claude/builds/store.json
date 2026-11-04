@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 969,
- "updatedAt": "2026-11-04T21:26:35.895Z",
+ "rev": 970,
+ "updatedAt": "2026-11-04T21:26:52.588Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -83411,15 +83411,15 @@
    "title": "Drag to tab",
    "category": "Feature",
    "detail": "Drag a nav item (any app's nav menu) or a tab onto any tab group / pane edge / empty space: opens it as a new tab there, splits a pane (dock@1), or floats it. Touch: long-press then drag. Undo after every drop. Builds on molly-multi-instance-tabs (#328) and tab-group-assets (#327).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "drag-to-tab",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/drag-to-tab",
+   "pr": "#344",
    "createdAt": "2026-11-04T20:44:51.127Z",
-   "updatedAt": "2026-11-04T20:53:29.864Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T21:26:37.615Z",
+   "builtAt": "2026-11-04T21:26:36.967Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -83495,12 +83495,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:26:35.072Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T20:44:39.946Z",
-     "updatedAt": "2026-11-04T20:50:54.247Z"
+     "updatedAt": "2026-11-04T21:26:35.164Z"
     },
     {
      "id": "s4",
@@ -83517,12 +83517,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:26:36.211Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T20:44:39.946Z",
-     "updatedAt": "2026-11-04T20:50:54.247Z"
+     "updatedAt": "2026-11-04T21:26:36.305Z"
     },
     {
      "id": "s5",
@@ -83539,12 +83539,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:26:36.966Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T20:44:39.946Z",
-     "updatedAt": "2026-11-04T20:50:54.247Z"
+     "updatedAt": "2026-11-04T21:26:37.026Z"
     }
    ],
    "profiles": [
@@ -83555,7 +83555,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
