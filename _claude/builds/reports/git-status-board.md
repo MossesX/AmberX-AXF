@@ -62,9 +62,14 @@ console container and filled in it.
 
 ## Screenshots
 
-Phone + desktop in `_claude/builds/reports/git-status-board/shots/after/` (taken offline with
-`AXF_APPEARANCE_HUB=off` and auto-merge off, real GitHub data through the local token): Ready, In CI with a row open,
-Needs push, Held with a row open, Deployed, Batches. Sent to UI Review (group `git-status-board - <time>`).
+Not taken yet. A first pass (Nov 3) showed the phone Held view working (row open: blocker → what clears it, actions,
+checks, commits, files, PR text) and found the desktop lead column overflowing; that CSS is fixed (lead and branch
+capped with ellipsis, full text on hover) but not re-shot. The re-shoot failed three times: the GitHub App token's hourly
+limit ran out (this session's repeated shot runs, ~700 calls each; reset 22:56 UTC), then the VPS load (50-98) made
+the console API and Vite miss their start / page timeouts. To finish: when the VPS is quiet, run
+`node framework/cli/rebuild-shots.mjs --repo <checkout> --out <dir> --shots <shots.json> --label after --env AXF_APPEARANCE_HUB=off --env AXF_PUSH_AUTOMERGE=off`
+once (one pass, auto-merge off), copy to `_claude/builds/reports/git-status-board/shots/after/`, submit to UI Review
+(`review.mjs submit --kind screen --app console-web --screen git-status --pr 291`), tick step s6.
 
 ## Gaps / next
 
