@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 834,
- "updatedAt": "2026-11-04T16:38:36.866Z",
+ "rev": 835,
+ "updatedAt": "2026-11-04T16:38:53.140Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -81291,15 +81291,15 @@
    "title": "Molly: new tab (+), multiple instances of an app, tab context menu, reset layout findable, every surface draggable",
    "category": "Molly",
    "detail": "Build molly-multi-instance-tabs (Fable: touches windows@1 / dock@1 / xlayout@1 / embed@1 contracts). New tab (+) at the end of every tab group with a picker (AmberX / axHub / Console / Expenses / any Molly plugin view / Duplicate this tab); multiple instances of the same app, each its own tab + iframe + console client (instance in the tab spec and the embed marker), labelled Console 2…, renameable, remembered across reloads; tab right-click: New tab / Duplicate / Rename / Close / Close others / Move to pane / Pop out to window; Reset layout in View, in the right-click of any pane or tab bar, in xLayout settings and as a console control, confirmed first and undoable. Addendum: any screen, plugin view, panel, dialog or app instance can be dragged by its title or tab into another tab group, a new pane (drop zones on any edge), out to a floating window or back, on the shared dock engine (dock@1); phone long-press then drag; drop targets highlighted; undo after every drop; rule in RULES.md / PORTING.md.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-multi-instance-tabs",
    "pr": "#328",
    "createdAt": "2026-11-04T16:09:41.799Z",
-   "updatedAt": "2026-11-04T16:38:34.484Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T16:38:37.644Z",
+   "builtAt": "2026-11-04T16:38:37.644Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -81397,12 +81397,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T16:38:37.644Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T16:09:41.805Z",
-     "updatedAt": "2026-11-04T16:09:41.805Z"
+     "updatedAt": "2026-11-04T16:38:37.827Z"
     }
    ],
    "profiles": [
@@ -81413,7 +81413,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
