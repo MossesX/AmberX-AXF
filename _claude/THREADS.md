@@ -708,11 +708,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 15:47 UTC · `app-voice-commands` s2 done, s3 done, s4 done, s5 done, note (current) · foreign-write
-- 2026-11-04 15:47 UTC · `apps-control-surface` s2 done, s3 done, s4 done, s5 done, → complete, note (current) · foreign-write
-- 2026-11-04 15:47 UTC · `app-voice-commands` s5 done, note (current) · foreign-write
-- 2026-11-04 15:47 UTC · `apps-control-surface` note (current) · foreign-write
-- 2026-11-04 15:47 UTC · `jump-menu-asset` s1 done, → running (current) · orchestrator
 - 2026-11-04 15:47 UTC · `tab-group-assets` s1 done (current) · orchestrator
 - 2026-11-04 15:48 UTC · `jump-menu-asset` s1 done (current) · foreign-write
 - 2026-11-04 15:49 UTC · `tab-group-assets` s1 done (current) · foreign-write
@@ -1108,6 +1103,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 22:39 UTC · `fable-no-approval` note (current) · foreign-write
 - 2026-11-04 22:39 UTC · `tab-group-assets` note (current) · foreign-write
 - 2026-11-04 22:39 UTC · `changes-chat-log` s1 done, s2 done, s3 done, s4 done, s5 done, → complete (current) · foreign-write
+- 2026-11-04 22:39 UTC · `notes-views` s1 done, → running (current) · claude:notes-views
+- 2026-11-04 22:39 UTC · `notes-views` s2 done (current) · claude:notes-views
+- 2026-11-04 22:39 UTC · `notes-views` s3 done (current) · claude:notes-views
+- 2026-11-04 22:39 UTC · `notes-views` s4 done (current) · claude:notes-views
+- 2026-11-04 22:39 UTC · `notes-views` note (current) · claude:notes-views
 
 ## Token passes (log)
 
