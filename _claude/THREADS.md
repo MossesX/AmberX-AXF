@@ -683,7 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 12:44 UTC · `molly-console-commands` → complete, note (current) · reconciler
 - 2026-11-04 12:44 UTC · `git-status-board` → pending, note (current) · reconciler
 - 2026-11-04 12:44 UTC · `urgent-main-ci-green` → complete, note (current) · reconciler
 - 2026-11-04 12:44 UTC · `terminal-tabs-left` → pending, note (current) · reconciler
@@ -1083,6 +1082,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:49 UTC · `tab-group-assets` s1 done (current) · foreign-write
 - 2026-11-04 15:50 UTC · `tab-group-assets` s1 done (current) · foreign-write
 - 2026-11-04 15:50 UTC · `jump-menu-asset` s1 done (current) · foreign-write
+- 2026-11-04 15:50 UTC · `urgent-land-gizmo-chat` s4 done, note (current) · foreign-write
 
 ## Token passes (log)
 

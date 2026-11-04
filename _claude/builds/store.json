@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 804,
- "updatedAt": "2026-11-04T15:50:23.538Z",
+ "rev": 805,
+ "updatedAt": "2026-11-04T15:50:48.133Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -73703,7 +73703,7 @@
    "pr": "#296",
    "mergedAt": "2026-11-04T15:24:48Z",
    "createdAt": "2026-11-04T14:14:12.849Z",
-   "updatedAt": "2026-11-04T15:28:12.822Z",
+   "updatedAt": "2026-11-04T15:50:33.218Z",
    "builtAt": "2026-11-04T15:28:12.822Z",
    "notes": [
     {
@@ -73717,6 +73717,10 @@
     {
      "text": "Reconciler: PR #296 merged: complete",
      "at": "2026-11-04T15:28:12.822Z"
+    },
+    {
+     "text": "Landed: PR #296 merged 471e66fe (CI green on 09f142608, all 4 jobs). AmberX web + console redeployed by their 5-min updaters (console rebuild hit Docker layer errors; urgent-approval-popup-crash re-ran it). Live check: console agents include gizmo; a chat answered 'I'm Gizmo, your AmberX sidekick...' (79 stream events, history stored, test chat deleted). AmberX serves the window build; /api/console/plugins/ai-assistant behind the wall (401 unsigned). No phone shot: needs a hub sign-in.",
+     "at": "2026-11-04T15:50:33.211Z"
     }
    ],
    "approvals": [],
@@ -73815,12 +73819,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T15:50:27.527Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T14:14:12.850Z",
-     "updatedAt": "2026-11-04T14:21:00.729Z"
+     "updatedAt": "2026-11-04T15:50:46.765Z"
     }
    ],
    "profiles": [
@@ -73831,7 +73835,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
