@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 833,
- "updatedAt": "2026-11-04T16:35:50.591Z",
+ "rev": 834,
+ "updatedAt": "2026-11-04T16:38:36.866Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -80681,7 +80681,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T15:29:59.387Z",
-     "updatedAt": "2026-11-04T16:35:37.164Z"
+     "updatedAt": "2026-11-04T16:38:34.205Z"
     }
    ],
    "profiles": [
@@ -81296,9 +81296,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-multi-instance-tabs",
-   "pr": "",
+   "pr": "#328",
    "createdAt": "2026-11-04T16:09:41.799Z",
-   "updatedAt": "2026-11-04T16:33:44.606Z",
+   "updatedAt": "2026-11-04T16:38:34.484Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -81413,7 +81413,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {

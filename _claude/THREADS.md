@@ -683,8 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 12:54 UTC · `requests-ledger` s2 done (current) · orchestrator
-- 2026-11-04 12:55 UTC · `requests-ledger` added (5 steps) (current) · foreign-write
 - 2026-11-04 13:04 UTC · `requests-ledger` s3 done (current) · orchestrator
 - 2026-11-04 13:04 UTC · `requests-ledger` s4 done (current) · orchestrator
 - 2026-11-04 13:07 UTC · `bugs-board` added (7 steps) (current) · orchestrator
@@ -1083,6 +1081,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 16:35 UTC · `molly-multi-instance-tabs` added (4 steps) (current) · foreign-write
 - 2026-11-04 16:35 UTC · `jump-menu-asset` s5 done, → built (current) · orchestrator
 - 2026-11-04 16:35 UTC · `jump-menu-asset` note (current) · orchestrator
+- 2026-11-04 16:38 UTC · `jump-menu-asset` s5 done, → complete, note (current) · foreign-write
+- 2026-11-04 16:38 UTC · `molly-multi-instance-tabs` PR #328 (current) · builds-live
 
 ## Token passes (log)
 
