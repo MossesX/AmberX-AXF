@@ -5,6 +5,7 @@ FastAPI service that fronts the framework's build engine (framework/cli, Node) f
   GET  /api/health | catalog | tracker | libraries | boilerplates | boilerplates/items | modules | templates | ported-kits | project | terminal
   POST /api/status | project | boilerplates/save | init | validate | new-asset | new-module | new-demo | install | import-ui
   GET  /api/events        server-sent events: every engine log line as it happens (the console's output terminal follows it)
+  GET|PUT /api/home/layout  the caller's Home cards layout (home-layout@1), kept on axHub (/projects/<project>/_data/home-cards/<user>.json)
   /                        the built console (apps/console-web/dist) when present
 
 Run locally:  cd apps/console-web/server && pip install -r requirements.txt && uvicorn main:app --port 7090 --reload
@@ -90,7 +91,7 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
                 hub.stop()
 
 
-app = FastAPI(title="AXF Dev Console API", version="0.2.0", lifespan=lifespan)
+app = FastAPI(title="GizmoX AI Studio API", version="0.2.0", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 
@@ -219,58 +220,20 @@ def ok_or_500(r: dict[str, Any]) -> dict[str, Any]:
 
 
 def _appearance_hub(hub: str) -> str:
-    """Where the look comes from. AXF_APPEARANCE_HUB wins when set; otherwise the wall's hub, except that a wall turned
-    off with `AXF_WALL=off bash deploy/install-console.sh` (saved as .axf-console/wall = off, the way back in while the
-    hub is down) also turns the hub source off, so the console runs on local settings instead of waiting for the hub
-    (decision Oct 21 2026)."""
+    """Where the look comes from: always axHub (Brett, Nov 1 2026: "The apps should only get appearance from axhub
+    period"). The wall's hub, or AXF_APPEARANCE_HUB when set. The old fallbacks that ran the console on local settings
+    (wall turned off, a hub without a data server) are gone: no hub = the waiting screen. AXF_APPEARANCE_HUB=off is
+    kept only for offline screenshot runs on a dev checkout (rebuild-shots.mjs), never on the VPS."""
     explicit = os.environ.get("AXF_APPEARANCE_HUB", "").strip().rstrip("/")
-    if explicit:
-        return explicit
-    try:
-        if (ROOT / ".axf-console" / "wall").read_text(encoding="utf-8").strip() == "off":
-            return "off"
-    except OSError:
-        pass
-    if _hub_lacks_data_server(hub):
-        return "off"
-    return hub
-
-
-_HUB_PROBE: dict[str, tuple[float, bool]] = {}
-
-
-def _hub_lacks_data_server(hub: str) -> bool:
-    """Rollout guard (Oct 21 2026): a hub that answers but predates the data server (its /healthz names no `data`) can't
-    hold the look yet, so the console uses its local settings instead of waiting forever. A hub that doesn't answer
-    still means "wait" (Brett's rule: developer apps don't run without the hub). Cached 60 s; https only, no redirects."""
-    now = time.time()
-    hit = _HUB_PROBE.get(hub)
-    if hit and now - hit[0] < 60:
-        return hit[1]
-    lacks = False
-    try:
-        import urllib.request
-        if hub.startswith("https://"):
-            class _NoRedirect(urllib.request.HTTPRedirectHandler):
-                def redirect_request(self, *a: Any, **k: Any) -> None:
-                    return None
-            opener = urllib.request.build_opener(_NoRedirect)
-            with opener.open(urllib.request.Request(hub.rstrip("/") + "/healthz", headers={"Accept": "application/json"}), timeout=3) as r:
-                body = json.loads(r.read(65536).decode("utf-8", "replace"))
-            lacks = isinstance(body, dict) and body.get("name") == "axHub" and "data" not in body
-    except Exception:
-        lacks = False
-    _HUB_PROBE[hub] = (now, lacks)
-    return lacks
+    return explicit or hub
 
 
 @app.get("/api/me")
 def me(request: Request) -> dict[str, Any]:
     """Who this browser is: a signed-in hub user/admin (wall on), the console token, or an open console (no wall)."""
     hub = os.environ.get("AXF_WALL_HUB", "https://axhub.amberxai.com").rstrip("/")
-    # Developer app (decision Oct 20 2026): the look + settings come from the hub's data server. Same hub as the wall
-    # unless AXF_APPEARANCE_HUB says otherwise; "off" = no source (local development without a hub only: the console
-    # then runs on its own local settings, which is never the case on the VPS).
+    # The look + settings come from the hub's data server, always (Nov 1 2026). Same hub as the wall unless
+    # AXF_APPEARANCE_HUB says otherwise ("off" only for offline screenshot runs on a dev checkout).
     appearance_hub = _appearance_hub(hub)
     c = wall.wall_caller(request.headers)
     if c:
@@ -424,6 +387,22 @@ def plan_rebuild() -> Any:
 def pending() -> Any:
     """The pending build list (framework/plan/pending.json, pending@1): builds parked until their model is available."""
     return engine("pending")
+
+
+@app.get("/api/builds/{build_id}/origin")
+def build_origin(build_id: str) -> Any:
+    """What Brett said that started a build (build-origin@1, framework/cli/build-origin.mjs): any view that names a build reads it here."""
+    if len(build_id) > 80 or not build_id.replace("-", "").replace(".", "").replace("_", "").replace(":", "").replace("/", "").isalnum():
+        raise HTTPException(400, "not a build id")
+    proc = subprocess.run(["node", str(ROOT / "framework" / "cli" / "build-origin.mjs"), "get", build_id, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=30)
+    out = proc.stdout.strip().splitlines()
+    try:
+        res = json.loads(out[-1]) if out else {"ok": False, "error": "no output"}
+    except json.JSONDecodeError:
+        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-400:]}
+    if not res.get("ok"):
+        raise HTTPException(404, str(res.get("error", "no build")))
+    return res
 
 
 @app.post("/api/pending", dependencies=[Depends(auth)])
@@ -580,6 +559,59 @@ def plan_media_file(name: str) -> FileResponse:
     if not str(f).startswith(str(media)) or not f.is_file():
         raise HTTPException(404, "not found")
     return FileResponse(f)
+
+
+# Home cards (card@1 + home-layout@1, framework/core/engines/card-rules.mjs): each signed-in user's Home layout (their
+# cards, order, sizes, hidden ones, dismissed suggestions) kept on axHub at /projects/<project>/_data/home-cards/<user>.json
+# where /projects is mounted (the repo's .axf-console/home-cards/ otherwise). The console token and hub admins are the
+# owner. The engine normalises the layout on both sides; the server only keeps it.
+HOME_LAYOUT_MAX = 256 * 1024
+
+
+def _home_dir() -> tuple[Path, str]:
+    root = _persist_root()
+    return ((root / "home-cards"), "hub") if root else ((ROOT / ".axf-console" / "home-cards"), "local")
+
+
+def _home_user(request: Request) -> str:
+    u = getattr(request.state, "axf_user", None)
+    if u is None or getattr(u, "admin", False) or u is wall.TOKEN_CALLER:
+        return "owner"
+    name = "".join(ch if ch.isalnum() or ch in "-_." else "-" for ch in str(getattr(u, "name", "") or "")).strip("-.")[:64]
+    return f"user-{name}" if name else "owner"
+
+
+@app.get("/api/home/layout", dependencies=[Depends(auth)])
+def home_layout_get(request: Request) -> dict[str, Any]:
+    d, where = _home_dir()
+    user = _home_user(request)
+    f = d / f"{user}.json"
+    try:
+        layout = json.loads(f.read_text()) if f.is_file() else None
+    except (OSError, ValueError):
+        layout = None
+    return {"layout": layout if isinstance(layout, dict) else None, "user": user, "where": where}
+
+
+@app.put("/api/home/layout", dependencies=[Depends(auth)])
+async def home_layout_put(request: Request) -> dict[str, Any]:
+    raw = await request.body()
+    if len(raw) > HOME_LAYOUT_MAX:
+        raise HTTPException(413, "the Home layout is too big")
+    try:
+        body = json.loads(raw or b"{}")
+    except ValueError:
+        raise HTTPException(400, "not JSON")
+    layout = body.get("layout") if isinstance(body, dict) else None
+    if not isinstance(layout, dict) or layout.get("$axf") != "home-layout@1":
+        raise HTTPException(400, "layout must be a home-layout@1 object")
+    d, where = _home_dir()
+    user = _home_user(request)
+    d.mkdir(parents=True, exist_ok=True)
+    tmp = d / f".{user}.json.tmp"
+    tmp.write_text(json.dumps({**layout, "savedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}, indent=1))
+    tmp.replace(d / f"{user}.json")
+    return {"ok": True, "user": user, "where": where}
 
 
 @app.get("/api/project")
@@ -916,7 +948,11 @@ from starlette.types import Receive, Scope, Send  # noqa: E402
 
 from mcp_server import build_server  # noqa: E402
 
-_mcp = build_server(lambda op, **a: engine(op, "mcp", **a), terminal=lambda since: [l for l in _state["terminal"] if l["at"] > since])
+from mcp_server import control_runner  # noqa: E402
+from mcp_server import console_runner  # noqa: E402
+from mcp_server import CALLER as _MCP_CALLER, feed_recorder, session_note_runner  # noqa: E402
+_mcp = build_server(lambda op, **a: engine(op, "mcp", **a), terminal=lambda since: [l for l in _state["terminal"] if l["at"] > since],
+                    control=control_runner(ROOT), console=console_runner(ROOT), notes=session_note_runner(), on_call=feed_recorder())
 # Stateless JSON responses: works behind Traefik/Coolify and across container restarts. Host checks are off because
 # the endpoint is reached through a proxy under the console's own domain; the bearer token is the gate.
 _mcp_http = _mcp.streamable_http_app(streamable_http_path="/mcp", stateless_http=True, json_response=True,
@@ -934,6 +970,10 @@ class _McpEndpoint:
             if sent != f"Bearer {tok}":
                 await JSONResponse({"error": "unauthorized — send Authorization: Bearer <AXF_TOKEN>"}, status_code=401, headers={"www-authenticate": "Bearer"})(scope, receive, send)
                 return
+        # who is calling: each tool call goes into that session's mirror feed (Terminal → sessions nav)
+        h = dict(scope.get("headers") or []) if scope["type"] == "http" else {}
+        who = (h.get(b"x-axhub-session") or h.get(b"x-axf-session") or b"").decode(errors="replace")[:80]
+        _MCP_CALLER.set(who or ("axHub" if b"axhub" in h.get(b"user-agent", b"").lower() else "MCP client"))
         await _mcp_http(scope, receive, send)
 
 
@@ -964,7 +1004,8 @@ def mcp_info(request: Request) -> dict[str, Any]:
 #   web/index.tsx        exports `plugin: AxfWebLibrary` (views, nav, actions) — bundled by Vite
 #   server/__init__.py   optional; exports `router: fastapi.APIRouter`, mounted at /api/plugins/<folder>/
 # Every plugin route requires the console token for EVERY method (not only writes), and answers 404
-# while the plugin is disabled. Plugin routes are never exposed through the console's MCP server.
+# while the plugin is disabled. Plugin routes reach the console's MCP server only through control@1's plugins domain
+# (the Plugin commands plugin: gated per command, deletes need a confirm token).
 # Folders starting with "_" (templates) are ignored.
 
 import importlib.util
@@ -1225,53 +1266,33 @@ import credentials  # noqa: E402
 credentials.init(ROOT)
 console_context.set_context(ROOT=ROOT, GITHUB_REPO=GITHUB_REPO, PLUGINS=PLUGINS, current_token=current_token, persist_root=_persist_root,
                             data_path=PROFILES.data_path, build_profile=PROFILES.active,
+                            asgi_app=app, mcp_server=_mcp,
                             log=log, plugin_enabled=plugin_enabled, set_plugin_enabled=lambda f, on: set_plugin_enabled(f, {"enabled": on}), terminal_lines=lambda: list(_state.get("terminal", [])))
 
 load_plugins()
 _prune_plugin_state()
+
+# Contract paths a capability serves (the provider plugin's router mounted a second time, same auth; 404 while no
+# enabled plugin provides it). control@1 = framework/spec/CONTROL.md's /api/control routes (the Token control plugin);
+# console-commands@1 = /api/console (open screens, dialogs, settings, run actions in the open console).
+CAPABILITY_MOUNTS = {"control@1": "/api/control"}
+CAPABILITY_MOUNTS["console-commands@1"] = "/api/console"  # the Console commands plugin  axf-plugin:console-commands
+
+
+def _capability_guard(name: str):
+    def guard() -> None:
+        if plugin_services.get(name) is None:
+            raise HTTPException(404, f"no enabled plugin provides {name}")
+    return guard
+
+
+for _cap, _prefix in CAPABILITY_MOUNTS.items():
+    _svc = plugin_services.get(_cap)
+    if _svc is not None and getattr(_svc, "router", None) is not None:
+        app.include_router(_svc.router, prefix=_prefix, dependencies=[Depends(auth), Depends(_capability_guard(_cap))])
+        log("plugins", f"{_cap} served at {_prefix}")
 WALL_USER_PLUGINS = frozenset(f for f, i in PLUGINS.items() if i.get("wallUsers") is True)
 USER_GRANTABLE_PLUGINS = frozenset(f for f, i in PLUGINS.items() if i.get("userGrantable") is True)
-
-
-# ---------------------------------------------------------------- app-ci@1: APKs on GitHub Actions (Build Pilot's Build APK)
-import app_ci  # noqa: E402
-
-APP_CI = app_ci.AppCi(ROOT, GITHUB_REPO, lambda: os.environ.get("GITHUB_TOKEN", ""), ROOT / ".axf-console" / "app-apks")
-_app_ci_lock = __import__("threading").Lock()
-
-
-@app.post("/api/apps/apk", dependencies=[Depends(auth)])
-def app_apk_start(body: dict[str, Any]) -> dict[str, Any]:
-    """Publish apps/<name> to branch pilot/<name> and start the pilot-apk workflow there."""
-    if not _app_ci_lock.acquire(blocking=False):
-        raise HTTPException(409, "another APK build is being published; try again in a moment")
-    try:
-        r = APP_CI.publish(str(body.get("dir") or ""))
-        log("build", f"APK build started for {r['dir']} on {r['branch']}")
-        return r
-    except app_ci.CiError as e:
-        raise HTTPException(400, str(e)) from None
-    finally:
-        _app_ci_lock.release()
-
-
-@app.get("/api/apps/apk", dependencies=[Depends(auth_always)])
-def app_apk_status(dir: str) -> dict[str, Any]:
-    try:
-        return APP_CI.status(dir if app_ci.APP_DIR_RE.match(dir) else "apps/-")
-    except app_ci.CiError as e:
-        raise HTTPException(502, str(e)) from None
-
-
-@app.get("/api/apps/apk/file", dependencies=[Depends(auth_always)])
-def app_apk_file(dir: str) -> Any:
-    if not app_ci.APP_DIR_RE.match(dir):
-        raise HTTPException(400, "dir must be apps/<name>")
-    try:
-        path = APP_CI.apk(dir)
-    except app_ci.CiError as e:
-        raise HTTPException(409, str(e)) from None
-    return FileResponse(path, media_type="application/vnd.android.package-archive", filename=f"{dir.split('/', 1)[1]}-debug.apk")
 
 
 # ---- App catalog (app-catalog@1, app_catalog.py): every framework app's APK, filed on axHub for its Apps page ----------
@@ -1301,8 +1322,8 @@ def app_catalog_sync(body: dict[str, Any] | None = None) -> dict[str, Any]:
 # ---- Plugin catalog (plugin-catalog@1, framework/cli/plugin-catalog.mjs): plugins kept on axHub ----------------------
 # /projects/_shared/_data/plugin-catalog (the console mounts /projects). Console token on every route (admins only behind
 # the wall); never on MCP. Installing a console plugin unpacks it into this clone, runs its lifecycle install and commits
-# it to the repo on GitHub, so the 5-minute update rebuilds the console with it. Other apps (Build Pilot) read packages
-# here with the console token and install them on their side.
+# it to the repo on GitHub, so the 5-minute update rebuilds the console with it. Other apps read packages here with
+# the console token and install them on their side.
 CATALOG_CLI = ROOT / "framework" / "cli" / "plugin-catalog.mjs"
 import threading as _threading  # noqa: E402
 _catalog_lock = _threading.Lock()
@@ -1359,7 +1380,7 @@ def catalog_list(kind: str = "") -> dict[str, Any]:
 
 @app.get("/api/plugin-catalog/package", dependencies=[Depends(auth_always)])
 def catalog_package(kind: str, folder: str, version: str = "") -> Any:
-    """A verified plugin-package@1 (files in base64). Build Pilot fetches pilot plugins here, server to server."""
+    """A verified plugin-package@1 (files in base64). Other apps fetch their plugins here, server to server."""
     _catalog_args(kind, folder)
     if version and not _CATALOG_VERSION.match(version):
         raise HTTPException(400, "bad version")
@@ -1486,7 +1507,7 @@ def catalog_remove(body: dict[str, Any]) -> dict[str, Any]:
 
 # ---- App plugins (plugin-catalog kinds with `into`, e.g. axhub → apps/axhub-web/src/plugins): the console holds the
 # repo, so it installs another app's web plugins for it and commits just that folder; the app's own 5-minute update
-# rebuilds with it. Patches' Plugins per app calls these server to server. Console token; never on MCP.
+# rebuilds with it. Console token; never on MCP.
 _APP_PLUGIN_KINDS = {"axhub", "amberx"}
 # What happens once the change is on GitHub. AmberX is an APK: CI builds it and the app catalog offers the new build.
 _APP_PLUGIN_AFTER = {"amberx": ("CI builds a new AmberX APK with it; the app catalog offers it after that run.",
@@ -1668,6 +1689,24 @@ async def _alert_on_crash(request: Request, exc: Exception) -> JSONResponse:
 
 
 app.add_exception_handler(Exception, _alert_on_crash)
+
+
+# ---------------------------------------------------------------- Watch live (watch-live@1)
+import previews  # noqa: E402 — headless sessions' live previews, proxied at /preview/<session>/<app>/ (server/previews.py)
+
+
+def _preview_allowed(conn: HTTPConnection, _session: str, _app: str) -> bool:
+    """Same people as the console API: a wall admin, the console token, or anyone on an open console (no token, no wall)."""
+    c = wall.wall_caller(conn.headers)
+    if c:
+        return c.admin
+    tok = current_token()
+    if not tok:
+        return not wall.trusted()
+    return _token_ok(conn, tok)
+
+
+previews.mount(app, ROOT, current_token, _preview_allowed)
 
 
 # ---------------------------------------------------------------- the console itself

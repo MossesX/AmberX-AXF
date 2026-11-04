@@ -5,6 +5,7 @@ import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { BrandMark, brandHostProps, useBrandPlace } from './Brand';
 import { AppMenuDropdown } from './AppMenu';
+import { HelpModeButton } from './Help';
 import { LiveSearch } from './Search';
 import type { ViewMap } from '../AppShell';
 import { WidgetView } from './Widgets';
@@ -47,9 +48,10 @@ export function MenuBar() {
   return (
     <div className="fx-menubar" ref={ref} role="menubar" onKeyDown={onKey}>
       <div className="fx-brand">
-        {/* the branding package names the app everywhere it shows (GizmoX for the Dev Console); the manifest name is the fallback */}
+        {/* the app's own name (manifest): the branding package is one look shared by every app through axHub, so it gives the
+            mark, not the name (Nov 1 2026: the console is GizmoX AI Studio, axHub web is AXHub, AmberX is AmberX) */}
         {menuMark?.svg ? <BrandMark slot="app-menu" height={18} /> : <span className="fx-brand__mark" aria-hidden="true" />}
-        <span className="fx-brand__name">{rt.branding()?.name || rt.manifest.app.name}</span>
+        <span className="fx-brand__name">{rt.manifest.app.name || rt.branding()?.name}</span>
       </div>
       <div className="fx-menubar__menus">
         {menus.map((m) => (
@@ -69,6 +71,8 @@ export function MenuBar() {
           </div>
         ))}
       </div>
+      {/* Help mode's switch (Brett, Nov 1 2026): a ? that lights up while it's on */}
+      <HelpModeButton />
       <button type="button" className="fx-rolechip" onClick={() => rt.navigate('account')} title="User account control">
         <Icon name="shield" size={13} />
         {role?.label ?? state.role}
@@ -97,7 +101,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
   const fold = (on: boolean) => rt.setToolbarCollapsed(on);
   if (collapsible && collapsed) {
     return (
-      <div className={`fx-toolbar fx-toolbar--${tb.data.variant} is-collapsed`} data-align={tb.data.align} role="toolbar" aria-label="Toolbar (folded)">
+      <div className={`fx-toolbar fx-toolbar--${tb.data.variant} is-collapsed`} data-align={tb.data.align} role="toolbar" aria-label="Toolbar (folded)" data-axf-toolbar="app">
         <button type="button" className="fx-toolbtn fx-toolbar__fold" aria-label="Unfold the toolbar" aria-expanded="false" onClick={() => fold(false)}><Icon name="chevron-down" size={14} /></button>
       </div>
     );
@@ -126,7 +130,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
   };
 
   return (
-    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}${arrange.on ? ' is-arranging' : ''} ${brandHost.className}`.trim()} data-align={tb.data.align} role="toolbar" data-fx-ctx-target="toolbar" data-axf-arrange-host="toolbar" data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
+    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}${arrange.on ? ' is-arranging' : ''} ${brandHost.className}`.trim()} data-align={tb.data.align} role="toolbar" aria-label="Toolbar" data-axf-toolbar="app" data-fx-ctx-target="toolbar" data-axf-arrange-host="toolbar" data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
       <ArrangeBar host="toolbar" label="toolbar" />
       {brand?.svg && <span className="fx-toolbar__brand"><BrandMark slot="toolbar" height={20} /></span>}
       {(arrange.on || widgets.start.length > 0) && <span className="fx-toolbar__widgets is-start" {...arrange.sideProps('start')}>{arrangedSide(arrange, 'start', widgets.start, drawWidget)}</span>}
@@ -186,7 +190,7 @@ function ToolbarButton({ item: it, variant, lockedNote }: { item: ToolbarItem; v
   if (rt.takenByHost({ action: it.action })) return null; // the host app does this (embed@1 takes)
   const count = it.badge ? rt.badge(it.badge) : 0;
   const pressed = it.checked ? rt.toolbarChecked(it.checked) : null;
-  // a hook of a function the host locks (plugins inside Patches): greyed out, its note as the tooltip
+  // a hook of a function the host locks (e.g. plugins): greyed out, its note as the tooltip
   const hostLock = rt.lockedByHost({ action: it.action }) ?? lockedNote;
   const off = gate === 'disable' || !!hostLock;
   return (
@@ -195,6 +199,7 @@ function ToolbarButton({ item: it, variant, lockedNote }: { item: ToolbarItem; v
       className={`fx-toolbtn${pressed ? ' is-on' : ''}`}
       disabled={off}
       aria-pressed={pressed === null ? undefined : pressed}
+      data-axf-action={it.action}
       title={hostLock ? `${it.label} — ${hostLock}` : gate === 'disable' ? `${it.label} — requires ${it.requires}` : it.label}
       aria-label={count ? `${it.label} (${count} new)` : it.label}
       onClick={() => rt.dispatch(it.action)}
@@ -285,6 +290,7 @@ export function NavMenu({ views }: { views: ViewMap }) {
                   aria-current={state.view === it.view ? 'page' : undefined}
                   disabled={locked}
                   title={hostLock ? `${it.label} — ${hostLock}` : it.label}
+                  data-axf-view-link={it.view}
                   data-fx-ctx-target="nav-item"
                   data-fx-ctx-payload={it.view}
                   onClick={() => rt.navigate(it.view)}

@@ -138,6 +138,8 @@ docker run --rm -v "$DIR":/axf:ro "${DATA_ARGS[@]}" -e AXF_ROOT=/axf --entrypoin
 PLUGIN_ARGS=()
 CA_HOST="$DIR/apps/console-web/plugins/container-access/deploy/host.sh"  # axf-plugin:container-access
 [ -f "$CA_HOST" ] && { mapfile -t PLUGIN_ARGS < <(NAME="$NAME" bash "$CA_HOST" up) || say "Docker socket proxy didn't start"; }  # axf-plugin:container-access
+CV_HOST="$DIR/apps/console-web/plugins/chat-viewer/deploy/host.sh"  # axf-plugin:chat-viewer
+[ -f "$CV_HOST" ] && { mapfile -t CV_ARGS < <(bash "$CV_HOST" up) && PLUGIN_ARGS+=("${CV_ARGS[@]}") || say "Chat viewer mounts skipped"; }  # axf-plugin:chat-viewer
 _PA=(); for a in "${PLUGIN_ARGS[@]}"; do [ -n "$a" ] && _PA+=("$a"); done; PLUGIN_ARGS=("${_PA[@]}")  # never pass an empty arg to docker run (it would be read as the image name)
 # Sidecars of plugins whose folder is gone (label axf.plugin=<folder>) are removed; nothing is run for them.
 for c in $(docker ps -aq --filter label=axf.plugin); do
@@ -210,7 +212,15 @@ fi
 axf_update_script /usr/local/bin/axf-console-update "$DIR" "$BRANCH" /var/log/axf-console-update.log \
   "GITHUB_TOKEN=\"$GITHUB_TOKEN\" DOMAIN=\"$DOMAIN\" NAME=\"$NAME\" DIR=\"$DIR\" PORT=\"$PORT\" bash \"$DIR/deploy/install-console.sh\"" \
   "$DIR/.axf-console/update-status.json" "$DIR/.axf-console/wall-waiting"
-axf_cron_file axf-console "*/5 * * * * root /usr/local/bin/axf-console-update"
+# One run at a time (Nov 4 2026): a rebuild can take longer than 5 minutes under load, and stacked runs each rebuilt
+# the image and restarted the console (five at once starved Docker and kept it down for about 12 minutes).
+axf_cron_file axf-console "*/5 * * * * root flock -n /run/axf-console-update.lock /usr/local/bin/axf-console-update"
+# Builds reconciler (orch-live-sync, Nov 3 2026): links open PRs and claude/* branches to their builds, records merges,
+# lists orphans for the systems check; its store writes go live to main as status-only commits (builds-live.mjs).
+axf_cron_file axf-builds-reconcile "*/10 * * * * root cd $DIR && node framework/cli/builds-reconcile.mjs --apply --brief >> /var/log/axf-builds-reconcile.log 2>&1"
+# Auto-land (push banner, Nov 3 2026, Brett: "zero tokens for merging"): every 3 minutes a plain script lands finished
+# builds (worktree cleaned, main merged in, PR opened, CI started); the console's auto-merge merges them. No model calls.
+axf_cron_file axf-auto-land "*/3 * * * * root L=$DIR/apps/console-web/plugins/push-banner/land/land.mjs; [ -f \$L ] && cd $DIR && AXF_LAND_REPO=$DIR flock -n /run/axf-auto-land.lock timeout 900 node \$L run >> /var/log/axf-auto-land.log 2>&1"  # axf-plugin:push-banner
 # Host report for the console's systems check (mosh, Claude Code, cron, Docker…): every 15 minutes, report only.
 axf_cron_file axf-doctor "*/15 * * * * root DIR=$DIR NAME=$NAME bash $DIR/deploy/console-doctor.sh --report >/dev/null 2>&1"
 DIR="$DIR" NAME="$NAME" bash "$DIR/deploy/console-doctor.sh" --report </dev/null || true

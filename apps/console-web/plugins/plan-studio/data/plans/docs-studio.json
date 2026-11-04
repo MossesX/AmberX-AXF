@@ -1,0 +1,263 @@
+{
+ "id": "docs-studio",
+ "title": "Docs Studio",
+ "status": "parked",
+ "priority": "P2",
+ "category": "Framework > Docs",
+ "tags": [
+  "docs",
+  "plugin",
+  "contract"
+ ],
+ "project": "amberx-axf",
+ "profile": "",
+ "summary": "A console plugin (docs-studio) + cross-port contract docs@1: indexed, chained, narrated docs for every plugin and feature, in 5 hot-swappable layouts. Parked: do not build until Brett says.",
+ "goal": "Every plugin and feature documented from the code, notes and history, with follow-one-click chains, a sandbox, walkthroughs and Ask the docs.",
+ "why": "Docs are scattered across STATUS, decisions, THREADS and code; one studio makes them findable and keeps them current.",
+ "steps": [
+  {
+   "id": "s1",
+   "text": "docs@1 contract: doc page, chain, glossary term, index entry, bookmark, snippet, routine; schema + fixtures",
+   "model": "Fable",
+   "minutes": 30,
+   "phase": "Contract + engines",
+   "dependsOn": [],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s2",
+   "text": "Indexer engine (TS reference): code walker (exports, imports, call chains, assets, plugins) to one database",
+   "model": "Fable",
+   "minutes": 30,
+   "phase": "Contract + engines",
+   "dependsOn": [],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s3",
+   "text": "Chains engine: \"follow one click\" chains from UI to plugin server to axHub, step by step",
+   "model": "Fable",
+   "minutes": 30,
+   "phase": "Contract + engines",
+   "dependsOn": [],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s4",
+   "text": "Notes miner: STATUS, decisions, rebuild reports, THREADS, change log into feature histories",
+   "model": "Opus",
+   "minutes": 25,
+   "phase": "Plugin",
+   "dependsOn": [],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s5",
+   "text": "Server: plugin server API + axHub storage (db, index, glossary, bookmarks, settings)",
+   "model": "Opus",
+   "minutes": 30,
+   "phase": "Plugin",
+   "dependsOn": [],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s6",
+   "text": "Plugin shell: window manager, splits, tabs, layout switcher, settings tab under Plugins",
+   "model": "Opus",
+   "minutes": 25,
+   "phase": "Plugin",
+   "dependsOn": [],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s7",
+   "text": "Layout 1 + 2",
+   "model": "Opus",
+   "minutes": 30,
+   "phase": "Plugin",
+   "dependsOn": [],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s8",
+   "text": "Layout 3 + 4 + 5",
+   "model": "Opus",
+   "minutes": 30,
+   "phase": "Plugin",
+   "dependsOn": [],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s9",
+   "text": "Live browsing windows (open the real console page beside its doc, synced)",
+   "model": "Opus",
+   "minutes": 25,
+   "phase": "Plugin",
+   "dependsOn": [],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s10",
+   "text": "Sandbox: run examples against the real engines in an iframe, editable",
+   "model": "Opus",
+   "minutes": 30,
+   "phase": "Plugin",
+   "dependsOn": [],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s11",
+   "text": "Snippets + code generators (asset, plugin, engine call; AI-assisted via assistant@1)",
+   "model": "Opus",
+   "minutes": 30,
+   "phase": "Plugin",
+   "dependsOn": [],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s12",
+   "text": "Bookmarks: folders, tags, notes, deep links into code lines and chain steps",
+   "model": "Opus",
+   "minutes": 25,
+   "phase": "Plugin",
+   "dependsOn": [],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s13",
+   "text": "Walkthrough player: real browser window, visible cursor, narration, play / pause / stop / skip / speed",
+   "model": "Opus",
+   "minutes": 30,
+   "phase": "Plugin",
+   "dependsOn": [],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s14",
+   "text": "Routine recorder: record mouse + keys into an animated routine, edit, replay",
+   "model": "Opus",
+   "minutes": 30,
+   "phase": "Plugin",
+   "dependsOn": [],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s15",
+   "text": "Generate full docs for every plugin and feature, glossary, index; checks + screenshots",
+   "model": "Opus",
+   "minutes": 20,
+   "phase": "Plugin",
+   "dependsOn": [],
+   "done": false,
+   "doneAt": ""
+  }
+ ],
+ "requirements": [
+  {
+   "text": "Own layouts (no nav menu, no application menu); tokens only, framework controls"
+  },
+  {
+   "text": "All data and settings on axHub (/projects/amberx-axf/_data/docs/)"
+  },
+  {
+   "text": "Each layout is a layout@1 asset (hot-swaps, themes)"
+  },
+  {
+   "text": "Reuse walkthrough@1, assistant@1 and axf.agents@1 through capability services"
+  }
+ ],
+ "decisions": [
+  {
+   "text": "Fable steps 1–3 first (contract, indexer, chains), then Opus (one model switch)"
+  },
+  {
+   "text": "Layout — Workbench: IDE style. Left: explorer tree (features, plugins, code). Centre: tabbed doc editor with split panes. Right: chain inspector and glossary. Bottom dock: sandbox, console output, bookmarks."
+  },
+  {
+   "text": "Layout — Chain Map: a zoomable graph of how things connect; click a node to open its doc in a side drawer; a timeline strip along the bottom plays the chain step by step."
+  },
+  {
+   "text": "Layout — Reader: calm, wide reading column with a sticky outline, inline runnable examples, margin notes and bookmarks; best on the phone."
+  },
+  {
+   "text": "Layout — Theatre: walkthrough mode. Large live browser window with the cursor, a narration transcript beside it, transport bar (play, pause, stop, skip, record), chapter list."
+  },
+  {
+   "text": "Layout — Lab: sandbox first. Code and preview side by side, snippet library and generators on one side, the matching doc sliding in from the other."
+  }
+ ],
+ "outOfScope": [
+  {
+   "text": "Building it now: parked in Plan Studio (Brett, Oct 30 2026)"
+  }
+ ],
+ "touches": [
+  {
+   "key": "plugin:molly-guide"
+  },
+  {
+   "key": "plugin:ai-assistant"
+  },
+  {
+   "key": "plugin:agent-manager"
+  },
+  {
+   "key": "app:walkthrough-studio"
+  }
+ ],
+ "links": [
+  {
+   "kind": "branch",
+   "ref": "claude/project-thread-y4x54r",
+   "label": "Plan branch (kept)"
+  },
+  {
+   "kind": "pr",
+   "ref": "159",
+   "label": "Draft PR (closed: moved to Plan Studio)"
+  },
+  {
+   "kind": "doc",
+   "ref": "_claude/memory/docs/docs-engine-plan.md",
+   "label": "On the plan branch"
+  }
+ ],
+ "body": "# Docs engine: queued plan (waiting for your go)\n\nNew console plugin `docs-studio` + a cross-port contract `docs@1`. Own layouts (no nav menu, no application menu). Everything themed through the engines (tokens only, framework controls). All data and settings on axHub (`/projects/amberx-axf/_data/docs/`).\n\n## Builds on what exists\n- `walkthrough@1` (molly-guide) and Walkthrough Studio's cue tracks (open, move, click, type, scroll, highlight, caption): reused for narrated walkthroughs.\n- `assistant@1` (ai-assistant) and `axf.agents@1` (agent-manager): \"Ask the docs\", generators, a Docs agent, all through capability services.\n- Sources mined: code (framework/, apps/, plugins/), plugin.json files, `_claude/memory` (STATUS, decisions, docs/, rebuilds/), THREADS.md, change log on axHub, orchestrator builds.\n\n## Steps (orchestrator, each 30 min or less)\n| # | Step | Model |\n|---|---|---|\n| 1 | `docs@1` contract: doc page, chain, glossary term, index entry, bookmark, snippet, routine; schema + fixtures | Fable |\n| 2 | Indexer engine (TS reference): code walker (exports, imports, call chains, assets, plugins) to one database | Fable |\n| 3 | Chains engine: \"follow one click\" chains from UI to plugin server to axHub, step by step | Fable |\n| 4 | Notes miner: STATUS, decisions, rebuild reports, THREADS, change log into feature histories | Opus |\n| 5 | Server: plugin server API + axHub storage (db, index, glossary, bookmarks, settings) | Opus |\n| 6 | Plugin shell: window manager, splits, tabs, layout switcher, settings tab under Plugins | Opus |\n| 7 | Layout 1 + 2 | Opus |\n| 8 | Layout 3 + 4 + 5 | Opus |\n| 9 | Live browsing windows (open the real console page beside its doc, synced) | Opus |\n| 10 | Sandbox: run examples against the real engines in an iframe, editable | Opus |\n| 11 | Snippets + code generators (asset, plugin, engine call; AI-assisted via assistant@1) | Opus |\n| 12 | Bookmarks: folders, tags, notes, deep links into code lines and chain steps | Opus |\n| 13 | Walkthrough player: real browser window, visible cursor, narration, play / pause / stop / skip / speed | Opus |\n| 14 | Routine recorder: record mouse + keys into an animated routine, edit, replay | Opus |\n| 15 | Generate full docs for every plugin and feature, glossary, index; checks + screenshots | Opus |\n\nAbout 7 h total. Fable steps 1 to 3 first, then Opus (one switch).\n\n## The 5 layouts\n1. **Workbench**: IDE style. Left: explorer tree (features, plugins, code). Centre: tabbed doc editor with split panes. Right: chain inspector and glossary. Bottom dock: sandbox, console output, bookmarks.\n2. **Chain Map**: a zoomable graph of how things connect; click a node to open its doc in a side drawer; a timeline strip along the bottom plays the chain step by step.\n3. **Reader**: calm, wide reading column with a sticky outline, inline runnable examples, margin notes and bookmarks; best on the phone.\n4. **Theatre**: walkthrough mode. Large live browser window with the cursor, a narration transcript beside it, transport bar (play, pause, stop, skip, record), chapter list.\n5. **Lab**: sandbox first. Code and preview side by side, snippet library and generators on one side, the matching doc sliding in from the other.\n\nEach layout is an asset (layout@1) so it hot-swaps and themes like everything else.\n",
+ "createdAt": "2026-10-30T18:30:00.000Z",
+ "updatedAt": "2026-10-30T18:30:00.000Z",
+ "createdBy": "Plan Studio import",
+ "source": "claude/project-thread-y4x54r:_claude/memory/docs/docs-engine-plan.md (draft PR #159)",
+ "$axf": "plan@1",
+ "targetDate": "",
+ "owner": "",
+ "acceptance": [],
+ "questions": [],
+ "risks": [],
+ "features": [],
+ "attachments": [],
+ "comments": [],
+ "build": null,
+ "version": 1,
+ "effort": {
+  "minutes": 420,
+  "left": 420
+ },
+ "cost": {
+  "usd": 70.95,
+  "estimated": true
+ }
+}

@@ -1,0 +1,58 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261022-77e1ac0bc3",
+  "createdAt": "2026-10-22T06:39:37.146Z",
+  "updatedAt": "2026-10-22T06:47:34.211Z",
+  "kind": "build",
+  "title": "Remember selections and window layout per tab group",
+  "asked": "Started from the Build manager (Start build now).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "console",
+    "user": "build-manager",
+    "host": "console"
+  },
+  "steps": [
+    {
+      "text": "Approve on axHub",
+      "state": "running"
+    },
+    {
+      "text": "Build (headless Claude Code on the VPS)",
+      "state": "queued"
+    },
+    {
+      "text": "Verify nothing broke",
+      "state": "queued"
+    }
+  ],
+  "result": {
+    "state": "failed",
+    "summary": "Not started: failed.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-22T06:47:34.211Z",
+    "by": "console"
+  },
+  "state": "failed",
+  "status": "failed",
+  "buildRef": {
+    "kind": "plan",
+    "id": "lib.browser.persist"
+  },
+  "surface": "console-launch",
+  "startedAt": "2026-10-22T06:39:37.000Z",
+  "finishedAt": "2026-10-22T06:39:52.273Z",
+  "lastSeenAt": "2026-10-22T06:39:37.237Z",
+  "estimate": {},
+  "costEstimated": true,
+  "branch": "build/lib-browser-persist",
+  "areas": [],
+  "doing": "Waiting for Brett's approval on axHub"
+}

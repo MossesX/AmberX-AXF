@@ -1,5 +1,5 @@
 /* Molly guide: layout only; controls are the framework's, colours and sizes are theme tokens. */
-.axp-molly-guide { padding: var(--fx-space); gap: var(--fx-space); }
+.axp-molly-guide { padding: var(--fx-dens-gap-xl); gap: var(--fx-dens-gap-xl); }
 .axp-molly-guide__head { align-items: center; gap: calc(var(--fx-space) / 2); }
 .axp-molly-guide__title { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .axp-molly-guide__say { margin: 0; font-size: var(--fx-font-size); line-height: 1.5; }

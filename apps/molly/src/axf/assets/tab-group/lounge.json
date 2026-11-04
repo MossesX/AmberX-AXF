@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "lounge",
+  "name": "Lounge tabs",
+  "version": "1.0.0",
+  "description": "Lounge: pills tabs, center.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "relaxed",
+    "relaxed"
+  ],
+  "data": {
+    "style": "pills",
+    "align": "center",
+    "position": "top",
+    "density": "roomy",
+    "overflow": "scroll",
+    "showIcons": true,
+    "divider": false
+  }
+}

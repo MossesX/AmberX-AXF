@@ -1,0 +1,107 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-ca1b79c5-9a88-4e88-aee2-e46fc39eb3f6",
+ "source": "claude-code",
+ "sessionId": "ca1b79c5-9a88-4e88-aee2-e46fc39eb3f6",
+ "project": "other",
+ "title": "# Build: agent-pick (Urgent profile) Brett, Nov 3 2026 (voice). Assigned agent: **Snap Sully** (book on his card when t…",
+ "startedAt": "2026-11-03T19:02:39.895Z",
+ "endedAt": "2026-11-03T19:55:54.565Z",
+ "minutes": 53,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/agent-pick",
+  "repo": "",
+  "branch": "claude/agent-pick"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-03T19:03:46.030Z",
+   "kind": "prompt",
+   "text": "# Build: agent-pick (Urgent profile) Brett, Nov 3 2026 (voice). Assigned agent: **Snap Sully** (book on his card when this starts; if he is still busy and the all-rounder router from crew-retrain #265 is on main, the router may give it to whoever is free - record who in the report). Register in Urgent (id `agent-pick`) + banner entry. ## What Brett wants Every Claude session (voice/chat Amber, Claude Code, headless) runs AS an agent Brett assigns. Claude becomes whichever agent he picks. ## Build on what exists (don't duplicate) - Console **Agent manager** plugin + **Agent swarm** page (agent…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 310,
+    "output": 110896,
+    "cacheRead": 31725264,
+    "cacheWrite": 300835,
+    "thinking": 23920
+   },
+   "costUsd": 10.0686,
+   "costEstimated": false,
+   "seconds": 3128,
+   "tools": {
+    "Bash": 148,
+    "Edit": 2,
+    "Write": 6,
+    "Read": 9
+   },
+   "commands": 148,
+   "files": [
+    "/root/axf-builds/agent-pick/apps/console-web/plugins/agent-swarm/swarm.mjs",
+    "/root/axf-builds/agent-pick/apps/console-web/plugins/claude/server/hub.py",
+    "/root/axf-builds/agent-pick/apps/console-web/plugins/claude/server/__init__.py",
+    "/root/axf-builds/agent-pick/apps/console-web/plugins/claude/web/ui.tsx",
+    "/root/axf-builds/agent-pick/apps/console-web/plugins/claude/test.py",
+    "/root/axf-builds/agent-pick/apps/console-web/plugins/claude-session/README.md",
+    "/root/axf-builds/agent-pick/_claude/builds/reports/agent-pick.md"
+   ],
+   "changeIds": [
+    "chg-20261103-f5adc9c247"
+   ],
+   "features": [
+    "orch:agent-pick",
+    "queue:crew-retrain"
+   ],
+   "output": "Agent pick is built, kid. Every Claude session can now run as whichever crew agent you pick. It's on PR #276, waiting on your UI Review, and it auto-merges once CI passes. **What you get:** - **Session start:** each session calls `claude_session_start` first. With *Ask me every session* on (the def…"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/agent-pick/apps/console-web/plugins/agent-swarm/swarm.mjs",
+  "/root/axf-builds/agent-pick/apps/console-web/plugins/claude/server/hub.py",
+  "/root/axf-builds/agent-pick/apps/console-web/plugins/claude/server/__init__.py",
+  "/root/axf-builds/agent-pick/apps/console-web/plugins/claude/web/ui.tsx",
+  "/root/axf-builds/agent-pick/apps/console-web/plugins/claude/test.py",
+  "/root/axf-builds/agent-pick/apps/console-web/plugins/claude-session/README.md",
+  "/root/axf-builds/agent-pick/_claude/builds/reports/agent-pick.md"
+ ],
+ "changeIds": [
+  "chg-20261103-f5adc9c247"
+ ],
+ "features": [
+  "orch:agent-pick",
+  "queue:crew-retrain"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 310,
+  "output": 110896,
+  "cacheRead": 31725264,
+  "cacheWrite": 300835,
+  "thinking": 23920,
+  "costUsd": 10.0686,
+  "costEstimated": false,
+  "toolCalls": 165,
+  "commands": 148,
+  "filesTouched": 7,
+  "reportedUsd": 10.9709
+ },
+ "ingestedAt": "2026-11-03T19:55:55.439Z"
+}

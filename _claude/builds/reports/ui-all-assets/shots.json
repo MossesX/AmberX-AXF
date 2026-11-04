@@ -1,0 +1,11 @@
+[
+ {"name": "home", "steps": [{"eval": "AXF.navigate('home')", "wait": 2500}]},
+ {"name": "pending", "steps": [{"eval": "AXF.navigate('pending')", "wait": 2500}]},
+ {"name": "tracker", "steps": [{"eval": "AXF.navigate('tracker')", "wait": 2500}]},
+ {"name": "catalog", "steps": [{"eval": "AXF.navigate('catalog')", "wait": 2500}]},
+ {"name": "settings", "steps": [{"eval": "AXF.navigate('settings')", "wait": 2500}]},
+ {"name": "plugin-manager", "steps": [{"eval": "AXF.navigate('plugin-manager')", "wait": 2500}]},
+ {"name": "build-manager", "steps": [{"eval": "AXF.navigate('build-manager')", "wait": 2500}]},
+ {"name": "systems-check", "steps": [{"eval": "AXF.navigate('systems-check')", "wait": 2500}]},
+ {"name": "plan-studio", "steps": [{"eval": "AXF.navigate('plan-studio')", "wait": 2500}]}
+]

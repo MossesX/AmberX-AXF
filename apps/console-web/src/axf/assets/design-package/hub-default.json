@@ -1,0 +1,58 @@
+{
+  "$axf": "asset@1",
+  "type": "design-package",
+  "id": "hub-default",
+  "name": "Hub Default",
+  "version": "1.0.0",
+  "description": "The out-of-the-box look for every app on axHub: the Hub style theme with the Hub Night colours, compact chrome, tight spacing. Change the style or colour theme afterwards and only that part changes.",
+  "author": "AmberX AXF",
+  "tags": [
+    "default"
+  ],
+  "data": {
+    "style-theme": "hub",
+    "color-theme": "hub-night",
+    "layout": "classic-ide",
+    "behavior-theme": "standard",
+    "extras": {
+      "slots": {
+        "app-menu": "standard-desktop",
+        "toolbar": "standard-icons",
+        "nav-menu": "sidebar-list",
+        "context-menu": "compact-classic",
+        "tab-group": "underline",
+        "dialog": "centered-modal",
+        "popup": "corner-solid",
+        "button": "rounded-solid",
+        "slider": "classic-round",
+        "container": "soft-card",
+        "gauge": "classic-arc",
+        "meter": "striped-pill",
+        "banner": "amberx-thin",
+        "clock": "digital-12h",
+        "search-bar": "everything",
+        "logo": "wordmark",
+        "action-button": "settings",
+        "label": "version",
+        "status": "online",
+        "counter": "alerts",
+        "progress": "build",
+        "avatar": "account",
+        "link": "docs",
+        "theme-switch": "fresh-day-night",
+        "spacer": "gap",
+        "divider": "rule",
+        "badge": "new",
+        "settings": "standard",
+        "typography": "compact",
+        "density": "compact",
+        "sizing": "compact"
+      },
+      "spacing": "tight",
+      "hidden": {
+        "toolbar": true
+      },
+      "settings": {}
+    }
+  }
+}

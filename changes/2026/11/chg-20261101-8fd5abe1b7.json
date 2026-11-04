@@ -1,0 +1,42 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261101-8fd5abe1b7",
+  "createdAt": "2026-11-01T00:20:36.150Z",
+  "updatedAt": "2026-11-01T00:29:34.327Z",
+  "kind": "edit",
+  "title": "Short headless session for Brett (he's busy, voice).",
+  "asked": "Short headless session for Brett (he's busy, voice). Opus. Do NOT change code or push anything. Repo checkout to read: /opt/axf (main). Goal: check the new Agent swarm / Breakroom on the LIVE console and screenshot it into UI Review. 1. Wait (poll every 30 s, max 15 min) until the running console includes the swarm: /opt/axf is at or after commit d9ea1692 (git -C /opt/axf -c safe.directory='*' merge-base --is-ancestor d9ea1692 HEAD) AND the axf-console container was created after that pull (docker inspect -f '{{.Created}}' axf-console). If the cron hasn't redeployed in 15 min, run the repo's own redeploy (deploy/install-console.sh is safe to re-run) once. 2. Find how to reach it locally: the console listens on the axf-console container port 7090 (docker inspect for its IP, or docker exec). Auth: AXF_TOKEN in /opt/axf/.axf-console/env (never print it). Find the Breakroom / agent-swarm plugin(s) under apps/console-web/plugins (grep -ril 'breakroom\\|group chat\\|agent-swarm') and their routes/views. 3. Use Playwright (installed on this box from earlier builds; else npx playwright) to open: Breakroom, Group chat (note whether the global chat switch is on; do not flip it), Agent manager grid, one agent ID card. Screenshots at phone (412x915) and desktop (1440x900). 4. Submit every screenshot to UI Review the same way builds do (find ui-review plugin's submit API/folder in apps/console-web/plugins/ui-review; title each 'Breakroom check: <screen>'). If submitting fails, save under /opt/axf/_data or the plugin's data folder and say where. 5. Print a short plain-English summary at the end: is Breakroom live, what the group chat shows (switch on/off, any messages), how many agents, anything broken (errors in console logs: docker logs --tail 80 axf-console | grep -i error).",
+  "repos": [],
+  "model": "claude-opus-5-5",
+  "who": {
+    "session": "c7cb26b3-f1f",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "cancelled",
+    "summary": "no change: live Breakroom check, 10 screenshots submitted to UI Review (screen section)",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "cancelled",
+  "status": "failed",
+  "surface": "vps-claude-code",
+  "startedAt": "2026-11-01T00:20:36.150Z",
+  "finishedAt": "2026-11-01T00:29:25.892Z",
+  "lastSeenAt": "2026-11-01T00:28:58.890Z",
+  "actual": {
+    "minutes": 9,
+    "costUsd": 0.8423,
+    "inputTokens": 64,
+    "outputTokens": 11811,
+    "cacheReadTokens": 1550915,
+    "cacheWriteTokens": 59136,
+    "source": "transcript"
+  },
+  "costEstimated": false
+}

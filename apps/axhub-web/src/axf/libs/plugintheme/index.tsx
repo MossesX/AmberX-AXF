@@ -200,7 +200,7 @@ export function PluginThemePanel({ id, name }: { id: string; name: string }) {
         {look.on && (
           <Container title={`Theme override tokens${n ? ` (${n} changed)` : ''}`} icon="sliders" collapsible defaultOpen>
             <div className="fx-stack">
-              <div className="fx-row fx-row--wrap axf-plugintheme__bar">
+              <div className="fx-row fx-row--wrap axf-plugintheme__bar" role="toolbar" aria-label="Plugin look">
                 <Segmented label="Edit as" size="sm" value={mode} onChange={setMode} options={[{ value: 'form', label: 'Form', icon: 'sliders' }, { value: 'tree', label: 'Token tree', icon: 'list' }, { value: 'json', label: 'JSON', icon: 'code' }]} />
                 <Button size="sm" tone={sure ? 'danger' : 'ghost'} icon="refresh" disabled={!n} onClick={() => { if (!sure) { setSure(true); return; } setSure(false); save(resetTokens(look)); }}>
                   {sure ? 'Tap again to reset all' : 'Reset all'}

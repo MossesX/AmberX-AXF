@@ -1,0 +1,26 @@
+{
+  "scopes": {
+    "framework": {
+      "total": 106,
+      "covered": 106,
+      "written": 106,
+      "drafts": 0,
+      "percent": 100
+    },
+    "console-web": {
+      "total": 1198,
+      "covered": 1198,
+      "written": 499,
+      "drafts": 699,
+      "percent": 100
+    },
+    "axhub-web": {
+      "total": 174,
+      "covered": 174,
+      "written": 174,
+      "drafts": 0,
+      "percent": 100
+    }
+  },
+  "$doc": "Help coverage ratchet (framework/cli/help-coverage.mjs --check fails when a scope falls below these; --update raises them, never lowers)."
+}

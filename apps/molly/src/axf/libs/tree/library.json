@@ -1,0 +1,20 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.tree",
+  "module": "lib-tree",
+  "name": "Tree view (categorized outline with search, filters, drag-and-drop)",
+  "description": "A multi-level tree of branches and leaves for any outline: fold / unfold, search that highlights and keeps the path to every match open, filter chips, a meta column and a progress meter per branch, multi-select, context-menu targets and drag-and-drop through lib-dnd (before / after / into a branch). Harvested Oct 22 2026 from Walkthrough Studio's index.",
+  "features": [],
+  "dependsOn": [],
+  "manifestKey": "libraries.tree",
+  "params": [],
+  "parts": [
+    { "id": "search", "label": "Search box", "description": "Search the labels (and anything the app adds); matches are highlighted and their branches stay open.", "params": [ { "key": "placeholder", "label": "Placeholder", "type": "text", "default": "Search" } ] },
+    { "id": "chips", "label": "Filter chips", "description": "Tappable chips that narrow the leaves (status, kind… the app names them)." },
+    { "id": "meters", "label": "Branch meters", "description": "A small progress meter on every branch (the framework's meter asset)." },
+    { "id": "drag", "label": "Drag to rearrange", "description": "Leaves and branches drag before / after / into a branch (needs lib-dnd).", "params": [ { "key": "trash", "label": "Deleting by dropping on the trash can", "type": "bool", "default": true } ] },
+    { "id": "multi", "label": "Multi-select", "description": "Ctrl / Cmd + click adds leaves to a selection.", "default": false }
+  ],
+  "ports": { "web": { "status": "compiled", "dir": "libs/tree" } },
+  "placeholders": [ { "capability": "axf.tree.android", "note": "Compose port — Android on hold." }, { "capability": "axf.tree.virtual", "note": "Windowed rendering for very large trees — not built." } ]
+}

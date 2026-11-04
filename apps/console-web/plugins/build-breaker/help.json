@@ -1,0 +1,60 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "build-breaker-help",
+  "name": "build-breaker help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:build-breaker. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:build-breaker",
+    "entries": [
+      {
+        "target": "built",
+        "title": "/ built",
+        "text": "Shows “/ built”. Part of Build Breaker.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "build-breaker",
+        "title": "Build Breaker",
+        "text": "Shows the “Build Breaker” part of this screen. Part of Build Breaker.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "expand-all",
+        "title": "Expand all",
+        "text": "Expands all. Part of Build Breaker.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "collapse-all",
+        "title": "Collapse all",
+        "text": "Collapses all. Part of Build Breaker.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "on-github",
+        "title": "# on GitHub",
+        "text": "Opens # on GitHub.",
+        "kind": "link",
+        "draft": true
+      },
+      {
+        "target": "pr",
+        "title": "PR #",
+        "text": "Shows “PR #”. Part of Build Breaker.",
+        "kind": "button",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

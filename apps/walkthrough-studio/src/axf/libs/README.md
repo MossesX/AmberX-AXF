@@ -76,8 +76,8 @@ the fixture's `apps` section (web only for now). `libs/hub/react.tsx`: `useHubAp
 
 ## apiclient (`ai.amberx.axf.apiclient`)
 
-The token + call layer every AXF web app had its own copy of (harvested Oct 2026 from the Dev Console, nine console plugins
-and Build Pilot). Core in `libs/apiclient/client.ts` (no React): `createTokenStore({ key, event? })` keeps the app's token in
+The token + call layer every AXF web app had its own copy of (harvested Oct 2026 from the Dev Console, nine console plugins).
+ Core in `libs/apiclient/client.ts` (no React): `createTokenStore({ key, event? })` keeps the app's token in
 localStorage (every access in try/catch, a change event on window, `subscribe` also follows other tabs);
 `createApiClient({ url, tokens, messages })` gives Bearer `call` / `post` / `put` / `patch` / `del`, `fetch` (raw Response),
 `download(path, fallbackName)` (Content-Disposition name, plain names only) and `blob(path, init, accept)`. Failures are
@@ -96,13 +96,14 @@ Right-click anywhere → **AshesUI** (a check mark while on; `ashes.toggle`, als
 ## Harvested from Walkthrough Studio (Oct 22 2026): dnd, tree, datagrid, workspace, recorder, docstore
 
 Six web libraries, each with **parts** (library@1: features inside the library an app includes or leaves out and configures
-one by one; the installer writes `libraries.<key>.parts`, Build Pilot shows them as features under the library). Every one
+one by one; the installer writes `libraries.<key>.parts`, a designer can show them as features under the library). Every one
 reads its parts in `register` (install it with `installLibraries`), and exports `configure<Name>()` for apps that don't.
 
 | Library | What it gives | Parts |
 | --- | --- | --- |
 | `dnd` (`ai.amberx.axf.dnd`) | Pointer drag-and-drop (mouse + touch grip), zones with before / after / inside markers, ghost, pop-up trash can (`startDrag`, `registerZone`, `<DragLayer/>`) | zones, touch, ghost {offset}, trash {label, overLabel, side} |
 | `tree` (`ai.amberx.axf.tree`) | `<TreeView>` (branches + leaves, folding, search highlight that keeps matches open, meters, multi-select, drag) and `<TreeSearch>` | search {placeholder}, chips, meters, drag {trash}, multi |
+| `toolbars` (`ai.amberx.axf.toolbars`) | The Toolbars plugin: Settings → Plugins → Toolbars (tap-to-confirm on touch on/off, arm window) and **All toolbars** (every `role="toolbar"` on screen with its own override). The behaviour is the framework's (`react/tapConfirm.ts`, installed by `AxfProvider`); installed in every app and template | tap, all |
 | `datagrid` (`ai.amberx.axf.datagrid`) | `<DataGrid>`: categorized sub-grids with totals + meters, hideable columns (header context menu `axf-grid-header:<id>`), sort, expandable rows, status edges, drag | groups, column-menu {hidden}, sort, expand, drag {trash}, compact |
 
 **Datasets (Oct 28 2026, `libs/datagrid/datasets.ts`):** every `<DataGrid>` registers itself as a dataset (its id, columns via `sortValue` or the row field of the same id, rows) unless `dataset={false}`; other views call `useDataset({ id, label, fields, rows })`. Plugins attach transforms (`setDatasetTransform(dataset, owner, { filter, compare, active })`, filters AND-ed, sorts chained, never mutating) and draw above a grid through the slot `axf.dataset.toolbar` (props `dataset`, `label`). `getDatasetOrLast` keeps the last snapshot so a dialog opened over the page still works. First user: the Basic filter console plugin. Android twin deferred (placeholder `axf.datagrid.datasets.android`).
@@ -118,7 +119,7 @@ reads its parts in `register` (install it with `installLibraries`), and exports 
 
 Install it with `installLibraries` (it reads `libraries.hubstore` and, with the settings part's `mirror` on, mirrors the
 app's Settings screen) or construct the classes with explicit `hub` / `project` (the console's Voice notes plugin does).
-Picking parts in Build Pilot: settings only, all data (`mode: all`), or some tables (`mode: some`, `tables: lists, notes`).
+Picking parts: settings only, all data (`mode: all`), or some tables (`mode: some`, `tables: lists, notes`).
 The app's origin must be in the hub's `AXHUB_DATA_ORIGINS`.
 
 ## plugintheme (`ai.amberx.axf.plugintheme`)

@@ -1,0 +1,123 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261024-ed3f56c5bb",
+  "createdAt": "2026-10-24T22:41:02.528Z",
+  "updatedAt": "2026-10-25T10:49:55.646Z",
+  "kind": "build",
+  "title": "Make Patches feel like one app (suite mode)",
+  "asked": "",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "host": "vm"
+  },
+  "steps": [
+    {
+      "text": "Design the one-app approach",
+      "state": "done",
+      "startedAt": "2026-10-24T22:41:11.452Z",
+      "finishedAt": "2026-10-25T01:50:22.822Z"
+    },
+    {
+      "text": "Scoped appearance@1 (shared look, per-app frame)",
+      "state": "done",
+      "startedAt": "2026-10-25T01:50:23.981Z",
+      "finishedAt": "2026-10-25T01:50:23.981Z"
+    },
+    {
+      "text": "embed@1 suite takes banner/search/links + guest runtime",
+      "state": "done",
+      "startedAt": "2026-10-25T01:50:24.650Z",
+      "finishedAt": "2026-10-25T01:50:24.650Z"
+    },
+    {
+      "text": "Patches web host 0.2.0: one banner, search, menu, tab keys",
+      "state": "done",
+      "startedAt": "2026-10-25T01:50:25.371Z",
+      "finishedAt": "2026-10-25T01:50:25.371Z"
+    },
+    {
+      "text": "New assets + re-bakes (console, axhub, patches, walkthrough)",
+      "state": "done",
+      "startedAt": "2026-10-25T01:50:26.234Z",
+      "finishedAt": "2026-10-25T01:50:26.234Z"
+    },
+    {
+      "text": "Background load of every app tab (AppShell warm)",
+      "state": "done",
+      "startedAt": "2026-10-25T01:50:27.026Z",
+      "finishedAt": "2026-10-25T01:50:27.026Z"
+    },
+    {
+      "text": "Tests + CI (check-suite 93, Patches 71)",
+      "state": "done",
+      "startedAt": "2026-10-25T01:50:27.734Z",
+      "finishedAt": "2026-10-25T01:50:27.734Z"
+    },
+    {
+      "text": "Docs + interactive guide",
+      "state": "done",
+      "startedAt": "2026-10-25T01:50:28.594Z",
+      "finishedAt": "2026-10-25T01:50:28.594Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "Patches suite mode: apps hand over banner, menu bar, search and links; scoped shared look; Patches web 0.2.0 with background-loaded tabs; docs + interactive guide. PR #71 (draft).",
+    "branch": "claude/project-thread-vcxt2b",
+    "commits": [
+      {
+        "sha": "e14805c43cac20d8747d270204e9568c5b7880fd"
+      }
+    ],
+    "filesChanged": 158,
+    "tests": {
+      "check-suite": {
+        "before": "0",
+        "after": "93"
+      },
+      "patches-web test": {
+        "before": "0",
+        "after": "71"
+      }
+    },
+    "links": {
+      "report": "_claude/memory/docs/patches-one-app.md",
+      "pr": "https://github.com/MossesX/AmberX-AXF/pull/71"
+    }
+  },
+  "closed": {
+    "at": "2026-10-25T10:49:55.646Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "patches-one-app"
+  },
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-24T22:41:02.528Z",
+  "finishedAt": "2026-10-25T01:51:16.869Z",
+  "lastSeenAt": "2026-10-25T01:50:28.594Z",
+  "estimate": {
+    "minutes": 330,
+    "costUsd": 46.2
+  },
+  "costEstimated": true,
+  "branch": "claude/project-thread-vcxt2b",
+  "areas": [
+    "framework/core",
+    "framework/react",
+    "framework/schemas",
+    "framework/spec",
+    "apps/patches-web",
+    "apps/console-web/src",
+    "apps/axhub-web",
+    "_claude"
+  ],
+  "progress": 1.0
+}

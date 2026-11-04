@@ -1,0 +1,10 @@
+_claude/THREADS.md merge=union
+_claude/memory/STATUS.md merge=union
+_claude/memory/decisions.md merge=union
+# Builds store (builds@1): status goes live to main (framework/cli/builds-live.mjs); a branch's copy merges newer-wins.
+# The driver is registered per clone by `node framework/cli/builds-live.mjs install` (session start does it).
+_claude/builds/store.json merge=axf-builds
+_claude/builds/orchestrator.json merge=axf-builds
+_claude/builds/profiles/*/orchestrator.json merge=axf-builds
+_claude/builds/journal/*.jsonl merge=axf-builds
+_claude/builds/origins.json merge=axf-builds

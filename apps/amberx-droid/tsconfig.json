@@ -15,7 +15,7 @@
     "noEmit": true,
     "types": ["vite/client"],
     "baseUrl": ".",
-    "paths": { "react": ["node_modules/@types/react"], "react/*": ["node_modules/@types/react/*"], "react-dom": ["node_modules/@types/react-dom"], "react-dom/*": ["node_modules/@types/react-dom/*"], "@console/axf/*": ["src/axf/*"], "@console/plugins": ["src/console/plugins.ts"], "@console/pluginLifecycle": ["src/console/pluginLifecycle.tsx"], "@console/changeBatch": ["../console-web/src/changeBatch.tsx"], "@console/emptyState": ["../console-web/src/emptyState.tsx"] }
+    "paths": { "react": ["node_modules/@types/react"], "react/*": ["node_modules/@types/react/*"], "react-dom": ["node_modules/@types/react-dom"], "react-dom/*": ["node_modules/@types/react-dom/*"], "@console/axf/*": ["src/axf/*"], "@console/plugins": ["src/console/plugins.ts"], "@console/pluginLifecycle": ["src/console/pluginLifecycle.tsx"], "@console/watchLive": ["src/console/watchLive.tsx"], "@console/changeBatch": ["../console-web/src/changeBatch.tsx"], "@console/emptyState": ["../console-web/src/emptyState.tsx"] }
   },
   "include": ["src", "axf.manifest.json"]
 }

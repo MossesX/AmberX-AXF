@@ -1,0 +1,76 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-548856e1-e845-465e-add9-3973730cb494",
+ "source": "claude-code",
+ "sessionId": "548856e1-e845-465e-add9-3973730cb494",
+ "project": "amberx-axf",
+ "title": "Previous summary: Brett uses the 'amberx' surface and talks to Molly, the AmberX assistant persona. Molly gave him the …",
+ "startedAt": "2026-10-31T08:19:21.993Z",
+ "endedAt": "2026-10-31T08:19:28.688Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "axf-console",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.316",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/axf",
+  "repo": "",
+  "branch": "main"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-10-31T08:19:22.150Z",
+   "kind": "prompt",
+   "text": "Previous summary: Brett uses the 'amberx' surface and talks to Molly, the AmberX assistant persona. Molly gave him the 9-step walkthrough@1 'configure-claude-amberx' for an sk-ant-oat token; it's unconfirmed whether he saved it. The Molly overlay plays only in the console (PR #153). Talk mode isn't in the Refactor orchestrator yet. Talk mode, the textarea-wrap fix and the banners work each need a build profile pick: Main framework is suggested for the first two, and banners is Refactor or Main framework. The wrap fix sets axf.css:810 to pre-wrap, keeps pre for fx-mono, then re-bakes the conso…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 2,
+    "output": 753,
+    "cacheRead": 9290,
+    "cacheWrite": 28268,
+    "thinking": 176
+   },
+   "costUsd": 0.1583,
+   "costEstimated": false,
+   "seconds": 7,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": "{\"facts\": [\"apps/pilot-yo is an uncommitted Android app named \\\"Yo\\\", a fresh axf init from the android-compose template. Android work is on hold except AmberX and Voice Vault, so building it needs Brett's OK.\", \"apps/player is an uncommitted web app named \\\"Media Player\\\", a fresh axf init from th…"
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 2,
+  "output": 753,
+  "cacheRead": 9290,
+  "cacheWrite": 28268,
+  "thinking": 176,
+  "costUsd": 0.1583,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0.2431
+ },
+ "ingestedAt": "2026-10-31T13:52:07.090Z"
+}

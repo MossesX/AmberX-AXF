@@ -42,7 +42,7 @@ console.log('classifier');
 const yes = [['Add another banner to the console', 'build'], ['please remove the old toolbar', 'remove'], ['fix the CI build', 'fix'], ['Rename the plugin', 'edit'],
   ['Can you build the settings tab?', 'build'], ['Remove the stale doc and build a new one', 'remove'], ['Add a remove button', 'build'], ['the login page is broken', 'fix']];
 for (const [p, k] of yes) { const c = classify(p); check(c.change && c.kind === k, `"${p}" → ${k}`); }
-const no = ['What does the build engine do?', 'how do I add a plugin', 'explain the remove flow', '/model opus', 'continue', 'thanks!', '', 'Is the fix merged?'];
+const no = ['What does the build engine do?', 'how do I add a plugin', 'explain the remove flow', '/model opus', 'continue', 'thanks!', '', 'Is the fix merged?', '<task-notification> <task-id>b1</task-id> <summary>Background command "Fix the build" completed</summary>', '<system-reminder>build it</system-reminder>'];
 for (const p of no) check(!classify(p).change, `"${p}" → not a change`);
 
 console.log('CLI on a folder');

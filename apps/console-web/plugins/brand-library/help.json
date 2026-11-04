@@ -1,0 +1,95 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "brand-library-help",
+  "name": "brand-library help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:brand-library. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:brand-library",
+    "entries": [
+      {
+        "target": "light",
+        "title": "Light",
+        "text": "Shows the “Light” part of this screen. Part of Brand library.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "dark",
+        "title": "Dark",
+        "text": "Shows the “Dark” part of this screen. Part of Brand library.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "copy-id",
+        "title": "Copy id",
+        "text": "Copies id. Paste it wherever you need it. Part of Brand library.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "opens-on",
+        "title": "Opens on",
+        "text": "Where you set “Opens on”. Change it and the app uses the new value. Part of Brand library.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "brand-filter",
+        "title": "Brand filter",
+        "text": "Where you set “Brand filter”. Change it and the app uses the new value. Part of Brand library.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "large",
+        "title": "Large",
+        "text": "Shows the “Large” part of this screen. Part of Brand library.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "show-names-under-tiles",
+        "title": "Show names under tiles",
+        "text": "Turns “Show names under tiles” on or off. It takes effect straight away and is remembered. Part of Brand library.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "play-animations",
+        "title": "Play animations",
+        "text": "Turns “Play animations” on or off. It takes effect straight away and is remembered. Part of Brand library.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "open-the-brand-library",
+        "title": "Open the brand library",
+        "text": "Opens the brand library. Part of Brand library.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "reset-the-brand",
+        "title": "Reset the brand",
+        "text": "Resets the brand. Your own changes go. Part of Brand library.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "brand-library",
+        "title": "Brand library",
+        "text": "Shows the “Brand library” part of this screen. Part of Brand library.",
+        "kind": "tab",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

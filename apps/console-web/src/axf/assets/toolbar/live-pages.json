@@ -1,0 +1,42 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "live-pages",
+  "name": "Live Pages",
+  "version": "1.0.0",
+  "description": "Every page of the app as a button, straight from the views provider, so new pages appear by themselves.",
+  "author": "AmberX AXF",
+  "tags": [
+    "live",
+    "navigation"
+  ],
+  "data": {
+    "variant": "icons",
+    "align": "start",
+    "showSearch": true,
+    "search": {
+      "live": true,
+      "placeholder": "Find a page…",
+      "maxResults": 10,
+      "kinds": [
+        "view"
+      ]
+    },
+    "groups": [
+      {
+        "id": "pages",
+        "items": [
+          {
+            "id": "home",
+            "icon": "home",
+            "label": "Go home",
+            "action": "nav:home"
+          }
+        ],
+        "provider": "views",
+        "max": 10,
+        "label": "Pages"
+      }
+    ]
+  }
+}

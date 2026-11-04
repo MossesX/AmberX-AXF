@@ -1,0 +1,157 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261030-7599c63c2c",
+  "createdAt": "2026-10-30T18:21:07.138Z",
+  "updatedAt": "2026-10-30T18:53:03.174Z",
+  "kind": "build",
+  "title": "# Build: live key + health checks in the banners (Angel profile, Opus, one session, no sub-agents) …",
+  "asked": "# Build: live key + health checks in the banners (Angel profile, Opus, one session, no sub-agents) axHub tool allowed: load CLAUDE.md, the shared + repo RULES.md and THREADS.md (claude-sync, else axhub.memory_read), then build. Branch claude/live-key-checks. Steps of 30 min or less in the **Angel** orchestrator (_claude/builds/profiles/angel/orchestrator.json; Brett: \"I want it in the new build profile\", not Refactor). Brett (voice, Oct 30 2026): the console's GITHUB_TOKEN went dead today (GitHub answers 401) and nothing told him. \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\" 1. Live checks, not just \"is it set\": in the systems check / keys-needed banner plugins (read both first; extend whichever owns key checks, add to the other only through its check registry), every key and connection is tested against its service on a schedule (every 15 min, plus on console start and on Check now) with a cheap read-only call: GitHub token (GET /user + scopes the push banner and CI helpers need: repo, pull requests, actions, contents), axHub MCP token, Claude Code token / Anthropic key (cheapest auth check), Hostinger token, ntfy topic, OpenAI / ElevenLabs keys if agent-voice has them, the push notification path to AmberX, git push credentials on the VPS checkout. Results cached; never log or show a secret. 2. A dead, expired, missing-scope or unreachable key shows as a **red banner item** that says in plain words what broke, what it breaks (e.g. \"push banner, auto-merge and branch cleanup can't reach GitHub\"), since when, and an **Auto fix** or **Fix** button (open the right settings field with a test-before-save, or the exact page to make a new token, e.g. GitHub fine-grained token settings with the scopes listed). Expiring soon (GitHub token expiry header) shows amber a week ahead. Goes green by itself once it works again. 3. A registry so any plugin can add a health check (capability health@1: id, label, run(), severity, fix action), and the banner lists them all. Do NOT edit push-banner now (another build owns it, claude/pr-only-merge); add a follow-up step to move its token check onto health@1. 4. Also report: builds stuck (a build tmux session or change-log entry with no heartbeat for 30 min, or a headless launch that exited at once like today's root / go-pass failures), veto calls denied or expired, CI failing on main, a container restarting (amberx-app-backup-1 is in a restart loop right now), disk over 85%. 5. Push every new red item to AmberX through the existing push path (one push per item, not repeats). 6. Rule in _claude/shared/rules/RULES.md: anything broken that Brett needs to know about or fix goes into a banner item with a fix, never only in chat or a log. 7. Coordinate: enterprise-branding (claude/enterprise-branding-3) will restyle these banners later; keep your UI to framework controls + tokens so its restyle applies cleanly. Don't touch veto/approvals (claude/veto-complete), ui-review, plan-studio. Tests with fake services (ok, 401, missing scope, expiring, unreachable), console tsc + vite build, check-theme, check-controls, plugin-lifecycle checks, screenshots. THREADS row, Angel orchestrator, axHub change log. Push, open the PR (gh/git if the banner token 401s). Don't merge. Anything needing Brett = a veto call with a reason, never polled.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "8ca157e1-196",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [
+    {
+      "text": "health@1 registry + 15-min monitor + since/push",
+      "state": "done",
+      "startedAt": "2026-10-30T18:32:17.902Z",
+      "finishedAt": "2026-10-30T18:32:17.902Z"
+    },
+    {
+      "text": "live key probes (GitHub scopes/expiry, Claude, ntfy, git push…)",
+      "state": "done",
+      "startedAt": "2026-10-30T18:32:17.965Z",
+      "finishedAt": "2026-10-30T18:32:17.965Z"
+    },
+    {
+      "text": "system checks (stuck builds, veto, CI main, containers, disk)",
+      "state": "done",
+      "startedAt": "2026-10-30T18:32:18.028Z",
+      "finishedAt": "2026-10-30T18:32:18.028Z"
+    },
+    {
+      "text": "banner UI: red items, breaks/since, test-before-save",
+      "state": "done",
+      "startedAt": "2026-10-30T18:32:18.100Z",
+      "finishedAt": "2026-10-30T18:32:18.100Z"
+    },
+    {
+      "text": "shared rule + README",
+      "state": "done",
+      "startedAt": "2026-10-30T18:32:18.159Z",
+      "finishedAt": "2026-10-30T18:32:18.159Z"
+    },
+    {
+      "text": "tests + tsc + vite build + theme/controls/lifecycle checks + screenshots",
+      "state": "done",
+      "startedAt": "2026-10-30T18:32:18.223Z",
+      "finishedAt": "2026-10-30T18:52:49.475Z"
+    },
+    {
+      "text": "push + open PR",
+      "state": "failed",
+      "startedAt": "2026-10-30T18:52:49.544Z",
+      "finishedAt": "2026-10-30T18:52:49.544Z"
+    }
+  ],
+  "result": {
+    "state": "partial",
+    "summary": "Built and tested (self-test 184, tsc, vite, check-theme, check-controls, lifecycle). Committed 971ec52f on claude/live-key-checks; push/PR blocked: no GitHub push credentials on the VPS (BLOCKED entry chg-20261030-b10c4ed9f1).",
+    "branch": "claude/live-key-checks",
+    "commits": [
+      {
+        "sha": "971ec52f"
+      }
+    ],
+    "tests": {
+      "systems-check self-test": {
+        "before": "134",
+        "after": "184"
+      }
+    },
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "buildRef": {
+    "kind": "plan",
+    "id": "live-key-checks"
+  },
+  "surface": "console-launch",
+  "startedAt": "2026-10-30T18:21:07.138Z",
+  "finishedAt": "2026-10-30T18:52:49.616Z",
+  "lastSeenAt": "2026-10-30T18:52:49.544Z",
+  "estimate": {
+    "minutes": 190,
+    "costUsd": 26.6
+  },
+  "actual": {
+    "minutes": 32,
+    "costUsd": 9.0098,
+    "inputTokens": 264,
+    "outputTokens": 100054,
+    "cacheReadTokens": 27475442,
+    "cacheWriteTokens": 302517,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "claude/live-key-checks",
+  "areas": [
+    "apps/console-web/plugins/systems-check",
+    "_claude/shared/rules",
+    "_claude/THREADS.md",
+    "_claude/builds/profiles/angel"
+  ],
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/claude-live-key-checks",
+    "branch": "claude/live-key-checks",
+    "base": "1b4ecd5a8e0983278746d4d60df2b0ae9fd9eb71",
+    "head": "971ec52f4eadb382e6a8c9573d0ae9971a5c3b4f",
+    "pushed": false,
+    "dirty": 10,
+    "files": [
+      "_claude/THREADS.md",
+      "_claude/builds/profiles/angel/orchestrator.json",
+      "_claude/memory/STATUS.md",
+      "_claude/memory/docs/live-key-checks/README.md",
+      "_claude/memory/docs/live-key-checks/shots/banners-desktop.png",
+      "_claude/memory/docs/live-key-checks/shots/banners-phone.png",
+      "_claude/memory/docs/live-key-checks/shots/keys-dialog-desktop.png",
+      "_claude/memory/docs/live-key-checks/shots/keys-dialog-phone.png",
+      "_claude/shared/rules/RULES.md",
+      "apps/console-web/plugins/systems-check/README.md",
+      "apps/console-web/plugins/systems-check/plugin.json",
+      "apps/console-web/plugins/systems-check/server/__init__.py",
+      "apps/console-web/plugins/systems-check/server/checks.py",
+      "apps/console-web/plugins/systems-check/server/health.py",
+      "apps/console-web/plugins/systems-check/server/healthchecks.py",
+      "apps/console-web/plugins/systems-check/server/probes.py",
+      "apps/console-web/plugins/systems-check/test.py",
+      "apps/console-web/plugins/systems-check/web/KeysBanner.tsx",
+      "apps/console-web/plugins/systems-check/web/SystemCheck.tsx",
+      "apps/console-web/plugins/systems-check/web/index.tsx",
+      "apps/console-web/plugins/systems-check/web/systems-check.css",
+      "apps/console-web/server/credentials.py",
+      ".axf-brief.md",
+      ".axf-build.jsonl",
+      ".axf-build.log",
+      "apps/amberx-droid/_claude/",
+      "apps/axhub-android/_claude/",
+      "apps/axhub-web/_claude/",
+      "apps/patches-web/_claude/",
+      "apps/patches/_claude/",
+      "apps/voicevault/_claude/",
+      "apps/walkthrough-studio/_claude/"
+    ],
+    "at": "2026-10-30T18:53:03.290Z"
+  }
+}

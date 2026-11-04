@@ -15,7 +15,9 @@ const { counterText } = await imp('framework/core/engines/widgets.ts');
 const core = await import('./web/core.ts');
 
 const dir = join(repo, 'apps/console-web/src/assets');
-const assets = readdirSync(dir).flatMap((t) => readdirSync(join(dir, t)).filter((n) => n.endsWith('.json')).map((n) => JSON.parse(readFileSync(join(dir, t, n), 'utf8'))));
+// the console's assets as it registers them: the baked shared set, its own, its overrides (framework/cli/shared-assets.mjs)
+const { appAssetFiles } = await import(pathToFileURL(join(repo, 'framework/cli/shared-assets.mjs')).href);
+const assets = [...appAssetFiles(join(repo, 'apps/console-web'), repo).values()].map((v) => v.asset);
 const manifest = JSON.parse(readFileSync(join(repo, 'apps/console-web/axf.manifest.json'), 'utf8'));
 const rt = new AxfRuntime({ manifest, assets, storageKey: 'test:alerts-bell' });
 const toolbar = JSON.parse(readFileSync(join(dir, 'toolbar/console-search.json'), 'utf8'));

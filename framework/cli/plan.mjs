@@ -48,7 +48,8 @@ export function suggestModel(f) {
   if ((f.tags ?? []).includes('porting') || /python port/i.test(f.area ?? '')) return { model: 'fable', reason: 'Porting must reproduce the kernel exactly against the conformance fixtures' };
   if (f.kind === 'epic' && f.effort === 'XL' && kernelArea) return { model: 'fable', reason: 'XL kernel-level epic touching many modules' };
   if (HARD.test(f.title)) return { model: 'fable', reason: 'Hard reasoning: kernel internals, porting, migrations or architecture' };
-  if (SIMPLE.test(f.title) && !kernelArea && f.effort !== 'L' && f.effort !== 'XL') return { model: 'sonnet', reason: 'Content or simple self-contained UI with a clear spec: Sonnet 5.5 is enough' };
+  // Sonnet is never picked (model policy, Brett Nov 1 2026: Opus or Fable only); simple content work stays on Opus
+  if (SIMPLE.test(f.title) && !kernelArea && f.effort !== 'L' && f.effort !== 'XL') return { model: 'opus', reason: 'Content or simple self-contained UI with a clear spec: Opus 5.5 (the policy never picks Sonnet)' };
   return { model: 'opus', reason: 'Default: Opus 5.5' };
 }
 /** Attach the suggested model unless someone picked one by hand in the console (modelEdited). */

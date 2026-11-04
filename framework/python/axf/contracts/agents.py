@@ -1,7 +1,7 @@
 """agent-definition@1 — the Python port of framework/core/agents.ts (the reference) and the Kotlin kernel's
 ai.amberx.axf.kernel.agents (framework/python, `axf.contracts.agents`). All three replay
 framework/spec/fixtures/agents.json (framework/python/axf/contracts/test.py checks this port). Hosts import it: the
-console's agent-manager plugin, Build Pilot's server (baked copy).
+console's agent-manager plugin, other app servers (baked copy).
 
 Pure: validation + normalisation of every collection, the system-prompt composer, memory config resolution, the
 memory text engine (tokens, BM25, chunking, trimming), workflow template filling, router parsing, tool templates,

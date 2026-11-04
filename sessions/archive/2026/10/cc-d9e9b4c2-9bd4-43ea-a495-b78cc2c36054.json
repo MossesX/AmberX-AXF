@@ -1,0 +1,79 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-d9e9b4c2-9bd4-43ea-a495-b78cc2c36054",
+ "source": "claude-code",
+ "sessionId": "d9e9b4c2-9bd4-43ea-a495-b78cc2c36054",
+ "project": "amberx-axf",
+ "title": "Conversation so far: USER: How do I get to the build matrix ASSISTANT: It's the Feature matrix, under Builds in the app…",
+ "startedAt": "2026-10-31T08:19:08.177Z",
+ "endedAt": "2026-10-31T08:19:21.023Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "axf-console",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.316",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/axf",
+  "repo": "",
+  "branch": "main"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-10-31T08:19:08.347Z",
+   "kind": "prompt",
+   "text": "Conversation so far: USER: How do I get to the build matrix ASSISTANT: It's the Feature matrix, under Builds in the app menu. Open the application menu, tap Builds, then Feature matrix. There are three other ways in: - On any Builds page (the orchestrator, pending, build queue or build manager), tap the Feature matrix button in the toolbar. - On a row in any builds grid, tap its Feature matrix button or right-click it. That opens the matrix on that build. - Right-click anywhere in the console and pick Feature matrix. It came in with PR #169, which is merged. If you don't see it, the console p…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 6,
+    "output": 662,
+    "cacheRead": 93354,
+    "cacheWrite": 34286,
+    "thinking": 215
+   },
+   "costUsd": 0.2034,
+   "costEstimated": false,
+   "seconds": 13,
+   "tools": {
+    "Glob": 2,
+    "Read": 2
+   },
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": "Hey Brett. Is that \"Yo\" about the new Yo app? I took a quick look at both new folders. **`apps/pilot-yo`** is an Android app called \"Yo\". It's a fresh `axf init` from the android-compose template. Heads up: all Android work is on hold except AmberX and Voice Vault, so building on this would need yo…"
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 6,
+  "output": 662,
+  "cacheRead": 93354,
+  "cacheWrite": 34286,
+  "thinking": 215,
+  "costUsd": 0.2034,
+  "costEstimated": false,
+  "toolCalls": 4,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0.3062
+ },
+ "ingestedAt": "2026-10-31T13:52:07.112Z"
+}

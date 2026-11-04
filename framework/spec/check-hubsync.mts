@@ -67,7 +67,7 @@ const fakeFetch = (async (input: string, init: RequestInit = {}) => {
 
 const reg = new SettingsRegistry('t');
 reg.addTab({ id: 'general', label: 'General' } as never);
-reg.addGroup({ id: 'g', label: 'G', tab: 'general', settings: [{ key: 'app.beep', label: 'Beep', kind: 'toggle', default: true }, { key: 'app.token', label: 'T', kind: 'secret', default: '' }] } as never);
+reg.addGroup({ id: 'g', label: 'G', tab: 'general', settings: [{ key: 'app.beep', label: 'Beep', kind: 'toggle', default: true }, { key: 'app.token', label: 'T', kind: 'secret', default: '' }, { key: 'app.here', label: 'Here', kind: 'toggle', default: false, scope: 'device' }] } as never);
 let attached = 0;
 const rt = {
   manifest: { app: { id: 'voice-vault' } }, settings: reg,
@@ -83,10 +83,11 @@ const sync = new HubSync(rt as never, { hub: 'https://hub.example', look: 'off',
 await new Promise((r) => setTimeout(r, 20));
 check(attached === 0 && sync.state().look.status === 'off', 'look off: nothing attached');
 check(sync.state().settings.status === 'ready', 'settings loaded');
-reg.set('app.beep', false); reg.set('app.token', 'secret!');
+reg.set('app.beep', false); reg.set('app.token', 'secret!'); reg.set('app.here', true); reg.set('axf.help.mode', true); reg.set('axf.help.seen', ['home']);
 await new Promise((r) => setTimeout(r, 20));
 const doc = JSON.parse(files.get('shared/settings/apps/voice-vault.json')?.body ?? '{}');
 check(doc.values?.['app.beep'] === false && !('app.token' in (doc.values ?? {})), 'setting mirrored to the app file, secret never');
+check(!('app.here' in (doc.values ?? {})) && !('axf.help.mode' in (doc.values ?? {})) && !('axf.help.seen' in (doc.values ?? {})), 'device-scope settings and Help mode stay on this device');
 check(sync.data.where('notes') === 'hub' && sync.data.where('other') === 'device', 'data: picked tables on the hub');
 await sync.data.table('notes').put('n1', { text: 'hi' });
 check(files.has('shared/data-voice-vault/notes/head.json') || [...files.keys()].some((k) => k.startsWith('shared/data-voice-vault/')), 'table written under the app data folder');

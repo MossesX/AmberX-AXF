@@ -1,0 +1,84 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261101-6ab239dbd3",
+  "createdAt": "2026-11-01T11:02:11.458Z",
+  "updatedAt": "2026-11-01T11:08:18.117Z",
+  "kind": "build",
+  "title": "# Let vps.build_start launch Fable builds A previous run (`build-start-fable`, local clone /root/ax…",
+  "asked": "# Let vps.build_start launch Fable builds A previous run (`build-start-fable`, local clone /root/axf-builds/build-start-fable, never pushed) was stopped part-way; peek at its uncommitted diff there if useful (`git -C /root/axf-builds/build-start-fable diff`), but do the work here. Brett wants Fable builds running ASAP. Read CLAUDE.md and the repo rules first. 1. `vps.build_start` model enum is only opus|sonnet. Add `fable`, mapped to the exact model name/alias the installed Claude Code CLI on this VPS accepts for Fable (check `claude --help`, the CLI's model options, and how AmberX-AXF's build orchestrator names Fable). If the CLI rejects it, report exactly what it says. 2. Make allowed models config-driven (default opus, fable; Brett's rule is Opus or Fable only, never Sonnet, so drop sonnet from the default list). Schema enum generated from config. build_list shows each build's model. 3. Tests for schema + mapping, decision log entry, STATUS/THREADS notes. 4. This one needs to go LIVE fast: when tests pass, merge origin/main, push HEAD to main and redeploy axHub the way the repo documents (Coolify). Then one live test: launch a tiny Fable build via the same code path that just prints the model it runs on, confirm, stop it. Never print secrets. Short report: enum before/after, exact CLI model name for Fable, deploy done or not, live test result. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, patches-web, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once.",
+  "repos": [
+    "MossesX/axHub"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "457a1e3f-105",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "vps.build_start launches Fable (--model fable = claude-fable-5-1); models from config.buildModels (default opus, fable; no sonnet); build_list shows model. Pushed to main 998f03f, redeployed, live Fable test passed",
+    "branch": "claude/fable-launch",
+    "commits": [
+      {
+        "sha": "998f03f"
+      }
+    ],
+    "tests": {
+      "pnpm test": {
+        "before": "514",
+        "after": "517"
+      }
+    },
+    "links": {}
+  },
+  "closed": null,
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plan",
+    "id": "build-start-fable"
+  },
+  "surface": "headless",
+  "startedAt": "2026-11-01T11:02:11.458Z",
+  "finishedAt": "2026-11-01T11:08:06.926Z",
+  "lastSeenAt": "2026-11-01T11:07:41.177Z",
+  "estimate": {
+    "minutes": 40,
+    "costUsd": 6
+  },
+  "actual": {
+    "minutes": 6,
+    "costUsd": 1.4161,
+    "inputTokens": 94,
+    "outputTokens": 16916,
+    "cacheReadTokens": 3450275,
+    "cacheWriteTokens": 77464,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "claude/fable-launch",
+  "areas": [
+    "packages/connectors/ssh",
+    "project/initialization",
+    "_claude",
+    "docs"
+  ],
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/axHub",
+    "folder": "/root/axf-builds/fable-launch",
+    "branch": "claude/fable-launch",
+    "base": "998f03f164bfb991bf4a313c3b617b33f2691d77",
+    "head": "998f03f164bfb991bf4a313c3b617b33f2691d77",
+    "pushed": true,
+    "dirty": 2,
+    "files": [
+      ".axf-watch-live.log",
+      ".pnpm-store/"
+    ],
+    "at": "2026-11-01T11:08:18.164Z"
+  }
+}

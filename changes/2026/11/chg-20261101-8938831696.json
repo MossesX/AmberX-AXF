@@ -1,0 +1,110 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261101-8938831696",
+  "createdAt": "2026-11-01T01:21:49.354Z",
+  "updatedAt": "2026-11-01T01:38:07.265Z",
+  "kind": "build",
+  "title": "Headless build for Brett in ./hub (MossesX/axHub).",
+  "asked": "Headless build for Brett in ./hub (MossesX/axHub). Read its CLAUDE.md + rules + decisions. Opus, one session. Brett's rule: approval timers ONLY for dangerous stuff. Tonight every build launch and every push went through raw vps.run (veto countdown) and spammed his phone. Add fixed-purpose VPS tools with policy ALLOW (no countdown, no approval), each able to do only its one job: 1. vps.build_start {name, repo: 'AmberX-AXF'|'axHub', brief (markdown, max 30 KB), base?: branch (default main), model?: 'opus'|'sonnet' (default opus)}: creates worktree /root/axf-builds/<name> (AXF: git worktree from /opt/axf on branch claude/<name>; axHub: fresh clone), writes .brief.md, launches `bash /opt/axf/deploy/claude-headless.sh --name <name> --brief .brief.md --log <name>.log -- --model <model> --permission-mode acceptEdits --allowedTools 'Bash Edit Write MultiEdit Read Grep Glob'` with PATH incl /root/.local/bin. Refuses if a session with that name is running. 2. vps.build_land {name, repo?}: for a finished build folder: commit nothing new; push its branch; fetch; merge origin/main; bookkeeping files (THREADS.md, STATUS.md, decisions.md: union; orchestrator/pending JSON: /opt/axf-batch/resolve.py) settle automatically; any real code clash -> abort, branch only, report the files; every changed JSON must parse; push HEAD:main (never force main). Returns merged/pushed commit or the clash list. 3. vps.build_stop {name}: kill tmux session axf-<name> (only axf-* sessions). 4. vps.build_list {}: running builds + finished-not-landed (branch ahead of main). Safety: name ^[a-z0-9][a-z0-9-]{0,39}$, repo from the enum only, no shell interpolation of inputs (pass via files/argv), brief written to a file, git auth via /usr/local/bin/axf-git-cred (fallback: http.extraheader from /opt/axf/.axf-console/secrets.env GITHUB_TOKEN, never printed), output secret-redacted like vps.check, rate limit (e.g. 20 starts/hour), every call written to the audit log and shown on the hub's activity/approvals history as 'ran without approval'. Raw vps.run, vps.logs and anything destructive keep their current policies. Record a decision in decisions.md (next number) explaining the policy change and that Brett asked for it (Oct 31 2026). Update the tool descriptions so Claude uses these instead of vps.run for builds and pushes. Tests for validation (bad names, path traversal, unknown repo, refusing main force-push, clash -> branch only). pnpm test green on Node 22 (docker run node:22 if local node is 20). Commit, fetch+merge origin/main, retest, git push origin HEAD:main (git helper; fallback extraheader). Then redeploy via Coolify's API the same way the axhub-checks build did (token saved in the console, never printed), confirm /healthz and that build_list answers with no veto on the live hub. Short report: ./hub/docs or the repo's reports folder + print a 5-line summary.",
+  "repos": [],
+  "model": "opus",
+  "who": {
+    "session": "10d02fa6-b67",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [
+    {
+      "text": "Build vps.build_start/land/stop/list (allow, fixed purpose)",
+      "state": "done",
+      "startedAt": "2026-11-01T01:22:13.587Z",
+      "finishedAt": "2026-11-01T01:33:20.154Z"
+    },
+    {
+      "text": "Full pnpm test on Node 22, decision #110 + docs",
+      "state": "done",
+      "startedAt": "2026-11-01T01:33:20.273Z",
+      "finishedAt": "2026-11-01T01:37:55.802Z"
+    },
+    {
+      "text": "Push main, live policies allow, Coolify redeploy, verify build_list",
+      "state": "done",
+      "startedAt": "2026-11-01T01:37:55.952Z",
+      "finishedAt": "2026-11-01T01:37:55.952Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "vps.build_start/land/stop/list on allow (no veto), logged as 'ran without approval' (decision #110). 514 tests. Pushed to main, policies set, Coolify redeployed, build_list verified live with no veto. claude-sync holds decisions.md + shared RULES.md for Brett.",
+    "branch": "claude/safe-tools",
+    "commits": [
+      {
+        "sha": "209951f"
+      },
+      {
+        "sha": "8e01414"
+      }
+    ],
+    "filesChanged": 17,
+    "tests": {
+      "pnpm test": {
+        "before": "487",
+        "after": "514"
+      }
+    },
+    "links": {
+      "report": "docs/reports/safe-tools-2026-11-01.md"
+    }
+  },
+  "closed": null,
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plan",
+    "id": "axhub-safe-build-tools"
+  },
+  "surface": "vps-claude-code",
+  "startedAt": "2026-11-01T01:21:49.354Z",
+  "finishedAt": "2026-11-01T01:37:56.047Z",
+  "lastSeenAt": "2026-11-01T01:37:55.952Z",
+  "estimate": {
+    "minutes": 90,
+    "costUsd": 12.6
+  },
+  "actual": {
+    "minutes": 16,
+    "costUsd": 4.699,
+    "inputTokens": 146,
+    "outputTokens": 74437,
+    "cacheReadTokens": 10962190,
+    "cacheWriteTokens": 203443,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "main",
+  "areas": [
+    "packages/connectors/ssh",
+    "packages/server",
+    "project/initialization",
+    "_claude/memory",
+    "docs"
+  ],
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/axHub",
+    "folder": "/root/axf-builds/safe-tools/hub",
+    "branch": "claude/safe-tools",
+    "base": "8e014141669e16800123055f9ab49949fa9d5e63",
+    "head": "8e014141669e16800123055f9ab49949fa9d5e63",
+    "pushed": true,
+    "dirty": 0,
+    "plan": "ssh connector build_* tools (Python helper, base64 settings) + core logRuns annotation -> approvals log 'ran without approval'",
+    "next": "test, commit, merge origin/main, push main, set live tool policies, Coolify redeploy, verify build_list",
+    "files": [],
+    "tests": [
+      "pnpm test"
+    ],
+    "at": "2026-11-01T01:38:07.463Z"
+  }
+}

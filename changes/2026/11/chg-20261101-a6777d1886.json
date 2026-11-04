@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261101-a6777d1886",
+  "createdAt": "2026-11-01T08:15:56.955Z",
+  "updatedAt": "2026-11-01T08:16:03.307Z",
+  "kind": "fix",
+  "title": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-…",
+  "asked": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /root/axf-builds/autoclose-fix/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once.",
+  "repos": [],
+  "model": "sonnet",
+  "who": {
+    "session": "2e0a66ea-147",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "surface": "headless",
+  "startedAt": "2026-11-01T08:15:56.955Z",
+  "finishedAt": "2026-11-01T08:16:03.307Z",
+  "lastSeenAt": "2026-11-01T08:16:03.121Z",
+  "actual": {
+    "minutes": 0,
+    "costUsd": 0.0882,
+    "inputTokens": 4,
+    "outputTokens": 299,
+    "cacheReadTokens": 37398,
+    "cacheWriteTokens": 14943,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "doing": "Waiting for the next message"
+}

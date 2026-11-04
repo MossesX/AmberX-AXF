@@ -1,0 +1,39 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "session-checkin-help",
+  "name": "session-checkin help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:session-checkin. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:session-checkin",
+    "entries": [
+      {
+        "target": "check-in-settings",
+        "title": "Check-in settings",
+        "text": "Shows “Check-in settings”. Part of Session check-in.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "save-prices",
+        "title": "Save prices",
+        "text": "Saves prices. Nothing is kept until you tap it. Part of Session check-in.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "session-check-in",
+        "title": "Session check-in",
+        "text": "Shows the “Session check-in” part of this screen. Part of Session check-in.",
+        "kind": "tab",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

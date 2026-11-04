@@ -1,10 +1,11 @@
 /** Overlay engines: dialogs, toasts/popups, and the context menu. */
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { BrandMark, BrandWatermark, brandHostProps } from './Brand';
 import { useScopeId } from './InterfaceScope';
-import { MenuList } from './MenuList';
+import { MenuList, MenuScroll } from './MenuList';
+import { useMenuFit } from './menuFit';
 
 export interface DialogDef {
   title: string;
@@ -31,6 +32,42 @@ export function DialogHost({ dialogs }: { dialogs: DialogMap }) {
     if (def) panelRef.current?.focus();
   }, [def]);
 
+  // Android back (and the browser's back) closes the dialog: one history entry while any dialog is open here. Keyed on
+  // open / shut, not the id, so going from one dialog straight to another keeps the one entry.
+  const isOpen = !!def;
+  useEffect(() => {
+    if (!isOpen) return;
+    history.pushState({ axfDialog: true }, '');
+    let popped = false;
+    const onPop = () => { popped = true; rt.closeDialog(); };
+    addEventListener('popstate', onPop);
+    return () => {
+      removeEventListener('popstate', onPop);
+      // shut some other way (X, outside tap, Escape, swipe, a console command): drop the entry it pushed
+      if (!popped && (history.state as { axfDialog?: boolean } | null)?.axfDialog) history.back();
+    };
+  }, [isOpen, rt]);
+
+  // Swipe down on the title bar (touch) closes it: the dialog follows the finger, and past a quarter of its height it goes.
+  const [pull, setPull] = useState(0);
+  const swipe = useRef<{ id: number; y: number } | null>(null);
+  const onHeadDown = (e: ReactPointerEvent<HTMLElement>) => {
+    if (e.pointerType !== 'touch' || (e.target as Element).closest('button')) return;
+    swipe.current = { id: e.pointerId, y: e.clientY };
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+  };
+  const onHeadMove = (e: ReactPointerEvent<HTMLElement>) => {
+    if (swipe.current?.id === e.pointerId) setPull(Math.max(0, e.clientY - swipe.current.y));
+  };
+  const onHeadUp = (e: ReactPointerEvent<HTMLElement>) => {
+    if (swipe.current?.id !== e.pointerId) return;
+    const h = panelRef.current?.offsetHeight ?? 400;
+    const go = e.type === 'pointerup' && Math.max(0, e.clientY - swipe.current.y) > Math.max(rt.behavior().interaction.dragThreshold * 4, h / 4);
+    swipe.current = null;
+    setPull(0);
+    if (go) rt.closeDialog();
+  };
+
   if (!state.dialog || !mine) return null;
   if (!def) {
     queueMicrotask(() => {
@@ -44,8 +81,8 @@ export function DialogHost({ dialogs }: { dialogs: DialogMap }) {
   const brandHost = brandHostProps(brand);
   return (
     <div className="fx-backdrop" onPointerDown={(e) => d.closeOnBackdrop && rt.behavior().windows.closeOnBackdrop && e.target === e.currentTarget && close()}>
-      <div className={`fx-dialog ${brandHost.className}`.trim()} role="dialog" aria-modal="true" aria-label={def.title} tabIndex={-1} ref={panelRef} data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
-        <header className="fx-dialog__head">
+      <div className={`fx-dialog ${brandHost.className}`.trim()} role="dialog" aria-modal="true" aria-label={def.title} tabIndex={-1} ref={panelRef} data-fx-brand-mode={brandHost['data-fx-brand-mode']} style={pull ? { transform: `translateY(${pull}px)` } : undefined}>
+        <header className="fx-dialog__head" onPointerDown={onHeadDown} onPointerMove={onHeadMove} onPointerUp={onHeadUp} onPointerCancel={onHeadUp}>
           {brand?.svg && <BrandMark slot="dialog" height={16} className="fx-dialog__brand" />}
           {def.icon && <Icon name={def.icon} size={18} />}
           <h2>{def.title}</h2>
@@ -93,7 +130,6 @@ export function ContextMenuHost() {
   const state = useAxfState();
   const cm = useAsset('context-menu').data;
   const ref = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   const scope = useScopeId();
 
   useEffect(() => {
@@ -112,7 +148,8 @@ export function ContextMenuHost() {
       const banner = !!t.closest('[data-fx-ctx-target="axf-banner"], [data-fx-ctx-target="banner"]') && !t.closest('input, textarea, .fx-ctx');
       if (!banner && t.closest('input, textarea, .fx-ctx, [data-fx-ctx-ignore]')) return;
       if (!banner && !t.closest('.fx-shell')) return;
-      if (rt.slotHidden('context-menu')) return; // hidden: the browser's own menu
+      // hidden: the browser's own menu, unless a host that took the context menu shows it (embed@1, rt.openContext forwards)
+      if (rt.slotHidden('context-menu') && !rt.hostTakes('context-menu')) return;
       e.preventDefault();
       open(t, e.clientX, e.clientY);
     };
@@ -120,7 +157,7 @@ export function ContextMenuHost() {
     let timer: ReturnType<typeof setTimeout> | undefined;
     let start: { x: number; y: number } | null = null;
     const onDown = (e: PointerEvent) => {
-      if (e.pointerType !== 'touch' || rt.slotHidden('context-menu')) return;
+      if (e.pointerType !== 'touch' || (rt.slotHidden('context-menu') && !rt.hostTakes('context-menu'))) return;
       const t = e.target as Element;
       const banner = !!t.closest('[data-fx-ctx-target="axf-banner"], [data-fx-ctx-target="banner"]') && !t.closest('input, textarea, .fx-ctx');
       if (!banner && (t.closest('input, textarea, .fx-ctx, [data-fx-ctx-ignore]') || !t.closest('.fx-shell'))) return;
@@ -156,14 +193,8 @@ export function ContextMenuHost() {
     };
   }, [rt, scope]);
 
-  // Clamp inside the viewport once measured
-  useLayoutEffect(() => {
-    if (!state.context || !ref.current) return setPos(null);
-    const r = ref.current.getBoundingClientRect();
-    const x = Math.min(state.context.x, window.innerWidth - r.width - 8);
-    const y = Math.min(state.context.y, window.innerHeight - r.height - 8);
-    setPos({ x: Math.max(8, x), y: Math.max(8, y) });
-  }, [state.context]);
+  // On screen: below-right of the pointer, flipped or shifted to fit, scrolling inside when taller than the room (menu-fit@1)
+  useMenuFit(ref, 'point', () => state.context && { left: state.context.x, right: state.context.x, top: state.context.y, bottom: state.context.y }, {}, [state.context]);
 
   if (!state.context || (state.context.scope ?? '') !== scope) return null;
   const ctx = state.context;
@@ -183,16 +214,18 @@ export function ContextMenuHost() {
     <div
       ref={ref}
       className="fx-ctx fx-popover"
-      style={{ left: pos?.x ?? state.context.x, top: pos?.y ?? state.context.y, visibility: pos ? 'visible' : 'hidden' }}
+      style={{ left: state.context.x, top: state.context.y }}
       onContextMenu={(e) => e.preventDefault()}
     >
-      <MenuList
-        items={items}
-        payload={state.context.payload}
-        onDone={() => rt.closeContext()}
-        showIcons={cm.showIcons}
-        showShortcuts={cm.showShortcuts}
-      />
+      <MenuScroll box={ref}>
+        <MenuList
+          items={items}
+          payload={state.context.payload}
+          onDone={() => rt.closeContext()}
+          showIcons={cm.showIcons}
+          showShortcuts={cm.showShortcuts}
+        />
+      </MenuScroll>
     </div>
   );
 }

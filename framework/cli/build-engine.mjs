@@ -5,7 +5,19 @@
  */
 import { installLibrary } from './libraries.mjs';
 import { brandAssetErrors } from '../core/engines/brand-rules.mjs';
+import { isScaleType, scaleErrors, scaleSchemaProperties } from '../core/engines/scale-rules.mjs';
+import { isLayoutType, layoutErrors, layoutSchemaProperties } from '../core/engines/layout-rules.mjs';
+import { helpErrors } from '../core/engines/help-rules.mjs';
+import { navStyleErrors, navStyleSchemaProperties } from '../core/engines/navstyle-rules.mjs';
+import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../core/engines/agent-card-rules.mjs';
+import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engines/job-type-rules.mjs';
+import { CARD_TYPE, cardErrors, cardSchemaProperties } from '../core/engines/card-rules.mjs';
+import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
+import { jsonSchemas as sessionJsonSchemas, REGISTRY as SESSION_REGISTRY } from '../core/session-schema.mjs';
+import { MODEL_POLICY } from '../core/model-policy.mjs';
+import { SWARM, jsonSchemas as swarmJsonSchemas } from '../core/engines/swarm-rules.mjs';
 import { createHash } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
 import { enforceDefaults } from './build-defaults.mjs';
 import { PROJECT_MANIFEST_FILE, checkProject, requireProject } from './project.mjs';
@@ -85,6 +97,7 @@ export function validateAsset(raw) {
     if (isObj(raw.data[k])) for (const nk of keys) if (!(nk in raw.data[k])) errors.push(`data.${k}.${nk} is required`);
   }
   if (raw.type === 'layout' && 'slots' in raw.data) errors.push(...validateSlots(raw.data.slots));
+  if (raw.type === 'layout' && 'repeat' in raw.data) errors.push(...validateRepeat(raw.data.repeat));
   if (raw.type === 'app-menu' && Array.isArray(raw.data.menus)) {
     raw.data.menus.forEach((m, i) => {
       if (!isObj(m)) return;
@@ -149,6 +162,20 @@ export function validateAsset(raw) {
   }
   // behavior-theme@1 — mirrors behaviorErrors in core/engines/behavior.ts (check-design-package.mts keeps the lists equal)
   if (raw.type === 'behavior-theme') errors.push(...behaviorErrors(raw.data));
+  // typography@1 / density@1 / sizing@1: ONE validator shared with core (core/engines/scale-rules.mjs)
+  errors.push(...scaleErrors(raw.type, raw.data));
+  // layout tokens (every layout parameter is a token): ONE validator shared with core (core/engines/layout-rules.mjs)
+  errors.push(...layoutErrors(raw.type, raw.data));
+  // help@1: ONE validator shared with core (core/engines/help-rules.mjs)
+  errors.push(...helpErrors(raw.type, raw.data));
+  // nav-style@1: ONE validator shared with core and control@1 (core/engines/navstyle-rules.mjs)
+  if (raw.type === 'nav-style') errors.push(...navStyleErrors(raw.data).map((e) => `data.${e}`));
+  // agent-card@1: ONE validator shared with core (core/engines/agent-card-rules.mjs)
+  errors.push(...agentCardErrors(raw.type, raw.data));
+  // job-type@1: ONE validator shared with core (core/engines/job-type-rules.mjs)
+  errors.push(...jobTypeErrors(raw.type, raw.data));
+  // card@1: ONE validator shared with core (core/engines/card-rules.mjs)
+  errors.push(...cardErrors(raw.type, raw.data));
   // brand types (logo-mark, animated-logo, icon-pack, branding): ONE validator shared with core (core/engines/brand-rules.mjs)
   errors.push(...(brandAssetErrors(raw.type, raw.data) ?? []));
   const host = hostSpec(raw.type);
@@ -292,6 +319,37 @@ export function validateSlots(slots) {
   return errors;
 }
 
+/** Repeating slots (layout.repeat); same messages as validateRepeat in core/validate.ts and AssetValidator.kt. */
+export function validateRepeat(repeat) {
+  const { slots: { regions }, repeat: { styles, maxColumns } } = spec.types.layout;
+  if (!Array.isArray(repeat)) return ['data.repeat must be a list of repeating slots'];
+  const errors = [];
+  const seen = new Set();
+  const whole = (v, min, max = Infinity) => typeof v === 'number' && Number.isInteger(v) && v >= min && v <= max;
+  repeat.forEach((r, i) => {
+    const at = `data.repeat[${i}]`;
+    if (!isObj(r)) { errors.push(`${at} must be an object`); return; }
+    if (typeof r.id !== 'string' || !r.id.trim()) errors.push(`${at}.id must be a non-empty string`);
+    else if (seen.has(r.id)) errors.push(`${at}.id "${r.id}" is used twice`);
+    else seen.add(r.id);
+    if (typeof r.dataSet !== 'string' || !r.dataSet.trim()) errors.push(`${at}.dataSet must be a non-empty string`);
+    if ('region' in r && !regions.includes(r.region)) errors.push(`${at}.region is not a layout region (one of: ${regions.join(', ')})`);
+    if ('style' in r && !styles.includes(r.style)) errors.push(`${at}.style must be one of: ${styles.join(', ')}`);
+    if ('columns' in r && !whole(r.columns, 1, maxColumns)) errors.push(`${at}.columns must be a whole number from 1 to ${maxColumns}`);
+    if ('max' in r && !whole(r.max, 0)) errors.push(`${at}.max must be a whole number, 0 or more`);
+    if ('fallback' in r) {
+      const f = r.fallback;
+      if (!isObj(f)) errors.push(`${at}.fallback must be an object`);
+      else {
+        if ('type' in f && (typeof f.type !== 'string' || !spec.types[f.type])) errors.push(`${at}.fallback.type is unknown asset type "${String(f.type)}"`);
+        if ('id' in f && typeof f.id !== 'string') errors.push(`${at}.fallback.id must be a string`);
+        if ('label' in f && typeof f.label !== 'string') errors.push(`${at}.fallback.label must be a string`);
+      }
+    }
+  });
+  return errors;
+}
+
 /** Load every *.json asset under a directory (expects <dir>/<type>/<id>.json). */
 /**
  * Framework assets a new app can start from, per asset type: [{ id, name, description }]. Includes the
@@ -402,7 +460,7 @@ export const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replac
  * apps left on defaults look identical.
  */
 /**
- * Designed assets an app ships with (Build Pilot's banner / toolbar designers, …): asset@1 documents written into the
+ * Designed assets an app ships with (banner / toolbar designers, …): asset@1 documents written into the
  * app's own assets folder before the slot picks are checked, so a pick may name one of them. Each is validated like a
  * framework asset; ids must not collide with a framework starter of the same type.
  */
@@ -548,7 +606,21 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
 
   const report = validateApp(dest);
   if (!report.ok) throw new Error(`Initialized app failed validation:\n${report.errors.join('\n')}`);
+  assetConformance(dest, log);
   return { dir: dest, manifest: installed.length ? readJson(join(dest, 'axf.manifest.json')) : manifest, assets: assets.length, bakedFiles: Object.keys(files).length, libraries: installed.map((i) => ({ library: i.library, config: i.config })), report, next: tpl.next };
+}
+
+/**
+ * Asset conformance gate (Brett, Oct 31 2026; shared rule "Handwritten code conforms to the asset system"): what the
+ * build system generates (templates, boilerplates, library templates) is never handwritten by default, so it must take
+ * every look value from the asset tokens. Runs check-theme.mjs on the generated code (its baked src/axf is skipped)
+ * and refuses to finish on any finding (file:line + the token to use). AXF_SKIP_CONFORM=1 skips it (tests only).
+ */
+export function assetConformance(dest, log = () => {}) {
+  if (process.env.AXF_SKIP_CONFORM === '1') return;
+  log('• checking asset conformance (check-theme)');
+  const r = spawnSync(process.execPath, [join(FRAMEWORK_DIR, 'cli/check-theme.mjs'), dest], { encoding: 'utf8' });
+  if (r.status !== 0) throw new Error(`Generated code does not conform to the asset system:\n${(r.stdout || r.stderr || '').trim()}`);
 }
 
 /** Where `dir` sits inside a git repo whose root has a project manifest: { repo: "owner/name", path }. */
@@ -635,6 +707,12 @@ export function appTemplate(root) {
   try { return templateInfo(id ?? 'react-ts'); } catch { return templateInfo('react-ts'); }
 }
 
+/** Every folder an app registers assets from: the baked shared set, its own, its overrides (those that exist). */
+export function appAssetDirs(root, tpl = appTemplate(root)) {
+  const base = dirname(tpl.assetsDir);
+  return [join(root, base, 'axf/assets'), join(root, tpl.assetsDir), join(root, base, 'assets-overrides')].filter((d, i) => i === 1 || existsSync(d));
+}
+
 export function validateApp(dir) {
   const root = resolve(dir);
   const errors = [];
@@ -650,7 +728,9 @@ export function validateApp(dir) {
     // (apps made before init mapped it, e.g. the Android console): either is the same file.
     if (!existsSync(p) && !existsSync(join(root, e.path))) (e.required ? errors : warnings).push(`missing ${e.kind} ${relative(root, p)}`);
   }
-  const assets = loadAssets(join(root, tpl.assetsDir));
+  // An app that ships the shared set (framework/cli/shared-assets.mjs) has it baked at src/axf/assets, its own assets in
+  // src/assets and the shared ids it tunes in src/assets-overrides: together they are what it registers.
+  const assets = appAssetDirs(root, tpl).flatMap((d) => loadAssets(d));
   for (const a of assets) if (!a.result.ok) errors.push(`${relative(root, a.file)}: ${a.result.errors.join('; ')}`);
   const byType = {};
   for (const a of assets) if (a.result.ok) (byType[a.raw.type] ??= new Set()).add(a.raw.id);
@@ -710,6 +790,14 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     const menuItem = { $ref: '#/$defs/menuItem' };
     if (type === 'app-menu') props.menus = { type: 'array', items: { type: 'object', required: ['id', 'label', 'items'], properties: { id: { type: 'string' }, label: { type: 'string' }, order: { type: 'number' }, items: { type: 'array', items: menuItem } } } };
     if (type === 'context-menu') props.targets = { type: 'object', required: ts.nested?.targets ?? [], additionalProperties: { type: 'array', items: menuItem } };
+    // scale assets (typography, density, sizing): every group optional, fields typed + ranged from the shared registry
+    if (isScaleType(type)) Object.assign(props, scaleSchemaProperties(type));
+    if (type === 'nav-style') Object.assign(props, navStyleSchemaProperties());
+    // layout: every token field typed + ranged from the shared registry (the required list stays the grid)
+    if (isLayoutType(type)) Object.assign(props, layoutSchemaProperties());
+    if (type === AGENT_CARD_TYPE) Object.assign(props, agentCardSchemaProperties());
+    if (type === JOB_TYPE) Object.assign(props, jobTypeSchemaProperties());
+    if (type === CARD_TYPE) Object.assign(props, cardSchemaProperties());
     const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : undefined;
     const schema = {
       ...($defs ? { $defs } : {}),
@@ -732,6 +820,21 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     writeFileSync(f, JSON.stringify(schema, null, 2) + '\n');
     written.push(f);
   }
+  // ui-review-item@1 / ui-review-group@1: JSON Schemas + the registry snapshot the Python server reads
+  for (const [n, schema] of Object.entries(uiReviewJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const reg = join(FRAMEWORK_DIR, 'schemas/ui-review.json');
+  writeFileSync(reg, JSON.stringify(UI_REVIEW_REGISTRY, null, 2) + '\n'); written.push(reg);
+  // session@1 (Chat viewer): JSON Schema + the registry snapshot (redaction patterns included) the Python server reads
+  for (const [n, schema] of Object.entries(sessionJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const sreg = join(FRAMEWORK_DIR, 'schemas/session.json');
+  writeFileSync(sreg, JSON.stringify(SESSION_REGISTRY, null, 2) + '\n'); written.push(sreg);
+  // model-policy@1: which models work may run on (Opus or Fable, never Sonnet), the snapshot Python readers use
+  const mreg = join(FRAMEWORK_DIR, 'schemas/model-policy.json');
+  writeFileSync(mreg, JSON.stringify(MODEL_POLICY, null, 2) + '\n'); written.push(mreg);
+  // agent swarm contracts (agent@1 … swarm-run@1): JSON Schemas + the registry snapshot (core/engines/swarm-rules.mjs)
+  for (const [n, schema] of Object.entries(swarmJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const swreg = join(FRAMEWORK_DIR, 'schemas/swarm.json');
+  writeFileSync(swreg, JSON.stringify(SWARM, null, 2) + '\n'); written.push(swreg);
   return written;
 }
 
@@ -789,7 +892,7 @@ export function listModules() {
   return [...settings.matchAll(/include\("(:[^"]+)"\)/g)].map((m) => m[1].slice(1)).map((name) => {
     const readme = join(ANDROID_DIR, name, 'README.md');
     const first = existsSync(readme) ? readFileSync(readme, 'utf8').split('\n').find((l) => l && !l.startsWith('#'))?.trim() ?? '' : '';
-    // Modules this one builds on: its Gradle `project(":x")` dependencies (Build Pilot highlights them when one is picked).
+    // Modules this one builds on: its Gradle `project(":x")` dependencies (a designer highlights them when one is picked).
     const gradle = join(ANDROID_DIR, name, 'build.gradle.kts');
     const dependsOn = existsSync(gradle) ? [...new Set([...readFileSync(gradle, 'utf8').matchAll(/project\(\s*"(:[^"]+)"\s*\)/g)].map((m) => m[1].slice(1)).filter((d) => d !== name))] : [];
     return { name, kind: name.startsWith('lib-') ? 'library' : name.startsWith('axf-') ? 'framework' : 'other', description: first, dependsOn };

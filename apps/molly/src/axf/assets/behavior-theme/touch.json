@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "touch",
+  "name": "Touch",
+  "version": "1.0.0",
+  "description": "Made for fingers: no hover, ripple on press, dialogs slide up from the bottom, light haptics.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:roomy-touch"
+  ],
+  "data": {
+    "motion": {
+      "speed": "normal",
+      "easing": "standard",
+      "reduced": "system",
+      "entrance": "rise"
+    },
+    "interaction": {
+      "hover": "none",
+      "press": "ripple",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 400,
+      "doubleTapMs": 300,
+      "dragThreshold": 14
+    },
+    "windows": {
+      "dialogOpen": "slide-up",
+      "backdrop": "dim",
+      "popupOpen": "slide",
+      "drawerOpen": "slide",
+      "snap": false,
+      "snapGrid": 8,
+      "stack": "center",
+      "minimize": "none",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "bottom",
+      "toastMs": 4000,
+      "sound": "off",
+      "vibration": "light",
+      "confirmDelete": "risky",
+      "busyCursor": true
+    }
+  }
+}

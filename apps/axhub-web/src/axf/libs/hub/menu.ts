@@ -8,7 +8,8 @@
  *  - `hub.apps`: the hub's app catalog, each downloading the latest build from the hub;
  * and the actions they run: `hub.review:<approval id>`, `hub.download:<project>:<file>`, `hub.open:<page>`.
  * Every link is rebuilt from the hub address (approval ids and file names must have the hub's own shapes) and checked
- * with `isHub`; nothing from a reply is ever opened as given. Read-only: approving still happens on the hub's page.
+ * with `isHub`; nothing from a reply is ever opened as given. Read-only: apps that decide from the menu replace
+ * `hub.approvals` with lib-approvals' `installApprovalsMenu` (Deny / Approve on every row, Nov 1 2026).
  */
 import type { AxfRuntime, MenuItem } from '../../core';
 import { accountUrl, approvalUrl, approvalsUrl, appsUrl, fetchHubFeed, isHub, loginUrl, normalizeHub, HUB_DEFAULT } from './hub';

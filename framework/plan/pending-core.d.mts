@@ -10,10 +10,12 @@ export interface PendingItem {
   id: string; title: string; detail: string; model: PendingModel; status: PendingStatus;
   notes: PendingEntry[]; subPrompts: PendingEntry[];
   createdAt: string; builtAt: string; updatedAt: string; planId?: string; estimate?: string; source: string;
+  /** build-origin@1: what Brett said that started it (framework/core/build-origin.mjs) */
+  origin?: unknown;
 }
 export interface PendingState { $axf: 'pending@1'; updatedAt: string; artifact: string; items: PendingItem[] }
 export type PendingAction =
-  | { action: 'add'; title: string; detail?: string; model?: PendingModel; status?: PendingStatus; planId?: string; estimate?: string; source?: string; id?: string }
+  | { action: 'add'; title: string; detail?: string; model?: PendingModel; status?: PendingStatus; planId?: string; estimate?: string; source?: string; id?: string; said?: string; origin?: unknown }
   | { action: 'update'; id: string; title?: string; detail?: string; model?: PendingModel; status?: PendingStatus; planId?: string; estimate?: string; subEstimates?: string[]; subPrompts?: { text: string; at?: string; estimate?: string; done?: boolean; doneAt?: string }[] }
   | { action: 'status'; id: string; status: PendingStatus }
   | { action: 'note' | 'sub'; id: string; text: string; estimate?: string }

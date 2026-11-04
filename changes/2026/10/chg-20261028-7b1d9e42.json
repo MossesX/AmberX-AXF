@@ -1,0 +1,78 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261028-7b1d9e42",
+  "createdAt": "2026-10-28T05:00:00.000Z",
+  "updatedAt": "2026-10-29T07:02:38.553Z",
+  "kind": "fix",
+  "title": "Fix: console look not saved to axHub (Hub sync replaced the console's own source)",
+  "asked": "Either console isn't saving look to hub or other apps aren't getting look from hub",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "https://claude.ai/code/session_01XfLJCQumNzwqd7NKC8xxfW",
+    "where": "claude-code-cloud",
+    "host": "claude.ai cloud container"
+  },
+  "steps": [
+    {
+      "text": "Reproduce: Hub sync detaches the console source on restart, no PUT reaches the hub",
+      "state": "done",
+      "startedAt": "2026-10-28T04:50:00.000Z"
+    },
+    {
+      "text": "Fix + 3 checks + re-bake console + patch axhub-web and amberx-droid",
+      "state": "done",
+      "startedAt": "2026-10-28T05:00:00.000Z"
+    },
+    {
+      "text": "PR #148: merged main in (orchestrator conflict), CI green, merged on Brett's card",
+      "state": "done",
+      "startedAt": "2026-10-28T05:10:00.000Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "Hub sync detaches only its own look source; the console keeps its own and its look changes reach axHub again. check-hubsync 30 checks.",
+    "branch": "fix/hubsync-own-look-source",
+    "commits": [
+      {
+        "sha": "1359f5f"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "pr": "https://github.com/MossesX/AmberX-AXF/pull/148"
+    }
+  },
+  "closed": {
+    "at": "2026-10-29T07:02:38.553Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "orchestrator",
+    "id": "fix-hubsync-look-source"
+  },
+  "surface": "claude-ai",
+  "startedAt": "2026-10-28T05:00:00.000Z",
+  "finishedAt": "2026-10-28T05:25:00.000Z",
+  "lastSeenAt": "2026-10-28T05:25:00.000Z",
+  "estimate": {
+    "minutes": 30,
+    "costUsd": 4.2
+  },
+  "actual": {
+    "minutes": 35
+  },
+  "costEstimated": true,
+  "branch": "fix/hubsync-own-look-source",
+  "areas": [
+    "framework/core/runtime.ts",
+    "framework/libs/hubsync",
+    "apps/*/src/axf"
+  ],
+  "doing": "Merged"
+}

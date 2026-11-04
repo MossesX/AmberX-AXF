@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "paper-cut",
+  "name": "Paper Cut",
+  "version": "1.0.0",
+  "description": "Outlines on paper: line buttons, flat outlined cards and plain tabs with a hairline rule.",
+  "author": "AmberX AXF",
+  "tags": [
+    "paper",
+    "flat"
+  ],
+  "data": {
+    "slots": {
+      "button": "paper-cut",
+      "container": "paper-cut",
+      "slider": "paper-cut",
+      "dialog": "paper-cut",
+      "popup": "paper-cut",
+      "tab-group": "paper-cut",
+      "gauge": "level-bar",
+      "meter": "hairline"
+    },
+    "tone": "paper"
+  }
+}

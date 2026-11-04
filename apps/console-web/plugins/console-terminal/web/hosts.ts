@@ -9,13 +9,15 @@ import type { AxfRuntime } from '@console/axf/core';
 import type { Open, SessionInfo } from './api';
 
 export type Conn = 'connecting' | 'live' | 'reconnecting' | 'closed';
-export interface HostSession { id: string; title: string; open: Open; color?: string }
+/** split = the tab's two panes (headless tabs: session + context chain); renamed = the title was typed, keep it over the agent name. */
+export interface HostSession { id: string; title: string; open: Open; color?: string; split?: 'side' | 'stacked' | 'none'; renamed?: boolean }
 export interface HostState { sessions: HostSession[]; active: string | null }
 
 /** What a mounted session lets its host do (the toolbar acts on the session in front). */
 export interface SessionCtl {
   conn: Conn; info: SessionInfo | null; mouse: boolean; mosh: boolean; fontSize: number;
-  setMouse(on: boolean): void; setMosh(on: boolean): void; zoom(delta: number): void; search(): void;
+  setMouse(on: boolean): void; setMosh(on: boolean): void; /** a step bigger (1) / smaller (-1), or back to the default (textsize.ts) */
+  zoom(delta: number | 'reset'): void; search(): void;
   copy(): void; paste(plain: boolean): void; selectAll(): void; clear(): void; restart(): void; focus(): void;
   menu(x: number, y: number): void;
 }

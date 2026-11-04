@@ -1,0 +1,21 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.recorder",
+  "module": "lib-recorder",
+  "name": "Screen recorder (mouse + keys, cursor replay, cues)",
+  "description": "Records what a person does over a stage (a page in a frame, or any element): pointer moves, clicks, scrolls, keys, page changes and markers, with times and positions as fractions of the stage; optionally the screen as video (the browser's screen-share prompt, kept on the device). Replays a recording as an animated cursor with click ripples and key captions, and turns events into a cue track (move, click, type, key, scroll, wait, highlight, open page). Harvested Oct 22 2026 from Walkthrough Studio's live browser.",
+  "features": [],
+  "dependsOn": [],
+  "manifestKey": "libraries.recorder",
+  "params": [],
+  "parts": [
+    { "id": "capture-layer", "label": "Capture layer", "description": "A transparent layer over the stage records every move and click anywhere (the page under it doesn't get them)." },
+    { "id": "same-site", "label": "Same-site page events", "description": "When the framed page is from this site, its own clicks and keys are recorded while you use it." },
+    { "id": "keys", "label": "Keys", "description": "Keys pressed while recording (typed text becomes one cue)." },
+    { "id": "screen-video", "label": "Screen video", "description": "Also record the screen (getDisplayMedia + MediaRecorder); the video stays on the device.", "default": false },
+    { "id": "replay", "label": "Cursor replay", "description": "Play a recording back as an animated cursor.", "params": [ { "key": "cursor", "label": "Cursor", "type": "choice", "choices": ["arrow", "dot", "ring"], "default": "arrow" }, { "key": "ripples", "label": "Click ripples", "type": "bool", "default": true } ] },
+    { "id": "cues", "label": "Events → cue track", "description": "Turn a recording into cues (move, click, type, key, scroll, wait, highlight, open page).", "params": [ { "key": "waitAfter", "label": "Pause that becomes a wait (s)", "type": "number", "min": 0.3, "max": 10, "default": 1.5 } ] }
+  ],
+  "ports": { "web": { "status": "compiled", "dir": "libs/recorder" } },
+  "placeholders": [ { "capability": "axf.recorder.android", "note": "Android port (MediaProjection + accessibility events) — Android on hold." }, { "capability": "axf.recorder.audio", "note": "Microphone narration while recording — not built." } ]
+}

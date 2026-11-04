@@ -2,7 +2,7 @@
   "$axf": "manifest@1",
   "app": {
     "id": "axf-console",
-    "name": "AXF Dev Console",
+    "name": "GizmoX AI Studio",
     "version": "0.1.0"
   },
   "framework": {
@@ -15,8 +15,8 @@
   ],
   "startView": "home",
   "defaults": {
-    "color-theme": "fresh-light",
-    "style-theme": "fresh",
+    "color-theme": "hub-night",
+    "style-theme": "hub",
     "layout": "focus-top",
     "behavior-theme": "standard",
     "app-menu": "console",
@@ -48,8 +48,12 @@
     "divider": "rule",
     "badge": "new",
     "uac-policy": "standard",
-    "design-package": "fresh",
-    "branding": "gizmox"
+    "design-package": "hub-default",
+    "branding": "gizmox",
+    "typography": "compact",
+    "density": "compact",
+    "sizing": "compact",
+    "agent-card": "corporate-badge"
   },
   "hidden": [
     "toolbar",

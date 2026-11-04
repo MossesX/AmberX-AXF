@@ -1,0 +1,410 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "agent-manager-help",
+  "name": "agent-manager help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:agent-manager. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:agent-manager",
+    "entries": [
+      {
+        "target": "remove-term",
+        "title": "Remove term",
+        "text": "Removes term. Depending on your behaviour theme it asks first. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "add-term",
+        "title": "Add term",
+        "text": "Adds term. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "remove-example",
+        "title": "Remove example",
+        "text": "Removes example. Depending on your behaviour theme it asks first. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "add-example",
+        "title": "Add example",
+        "text": "Adds example. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "remove-header",
+        "title": "Remove header",
+        "text": "Removes header. Depending on your behaviour theme it asks first. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "add-header",
+        "title": "Add header",
+        "text": "Adds header. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "remove-parameter",
+        "title": "Remove parameter",
+        "text": "Removes parameter. Depending on your behaviour theme it asks first. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "add-parameter",
+        "title": "Add parameter",
+        "text": "Adds parameter. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "remove-step",
+        "title": "Remove step",
+        "text": "Removes step. Depending on your behaviour theme it asks first. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "add-step",
+        "title": "Add step",
+        "text": "Adds step. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "remove-source",
+        "title": "Remove source",
+        "text": "Removes source. Depending on your behaviour theme it asks first. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "agent-manager",
+        "title": "Agent manager",
+        "text": "Shows the “Agent manager” part of this screen. Part of Agent manager.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "view:agent-manager.wizard",
+        "title": "Agent manager",
+        "text": "Opens the Agent manager screen. Create, edit, manage and orchestrate AI agents built from personas, lingo, skills and tools, each with its own persistent memory.",
+        "kind": "screen",
+        "draft": true
+      },
+      {
+        "target": "action:agent-manager.wizard:builder",
+        "title": "New agent (all-in-one)",
+        "text": "Starts a new agent (all-in-one). Part of Agent manager.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:agent-manager.wizard:skill",
+        "title": "New skill",
+        "text": "Starts a new skill. Part of Agent manager.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:agent-manager.wizard:tool",
+        "title": "New tool",
+        "text": "Starts a new tool. Part of Agent manager.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:agent-manager.wizard:training",
+        "title": "New training job",
+        "text": "Starts a new training job. Part of Agent manager.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:agent-manager.vinny",
+        "title": "Vinny's commands",
+        "text": "Shows “Vinny's commands”. Part of Agent manager.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "test-firecrawl",
+        "title": "Test Firecrawl",
+        "text": "Tests firecrawl. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "agent-builder",
+        "title": "Agent builder",
+        "text": "Shows “Agent builder”. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "fork-for",
+        "title": "Fork for",
+        "text": "Shows “Fork for”. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "roll-back",
+        "title": "Roll back",
+        "text": "Rolls back. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "build",
+        "title": "Build",
+        "text": "Starts building it. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "memory-skills",
+        "title": "memory · skills",
+        "text": "Shows “memory · skills”. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "add-ons",
+        "title": "Add-ons",
+        "text": "Shows “Add-ons”. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "train",
+        "title": "Train",
+        "text": "Shows “Train”. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "stop-watching",
+        "title": "Stop watching",
+        "text": "Stops watching. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "save-summary",
+        "title": "Save summary",
+        "text": "Saves summary. Nothing is kept until you tap it. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "remember",
+        "title": "Remember",
+        "text": "Shows “Remember”. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "forget",
+        "title": "Forget",
+        "text": "Shows “Forget”. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "update-keeps-memory",
+        "title": "Update (keeps memory)",
+        "text": "Shows “Update (keeps memory)”. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "reinstall",
+        "title": "Reinstall",
+        "text": "Shows “Reinstall”. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "import-url",
+        "title": "Import URL",
+        "text": "Imports uRL. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "runs",
+        "title": "Runs",
+        "text": "Where you set “Runs”. Change it and the app uses the new value. Part of Agent manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "triggers",
+        "title": "Triggers",
+        "text": "Where you set “Triggers”. Change it and the app uses the new value. Part of Agent manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "folder-on-the-vps",
+        "title": "Folder on the VPS",
+        "text": "Where you set “Folder on the VPS”. Change it and the app uses the new value. Part of Agent manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "axhub-github-tool",
+        "title": "axHub GitHub tool",
+        "text": "Where you set “axHub GitHub tool”. Change it and the app uses the new value. Part of Agent manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "arguments-json",
+        "title": "Arguments (JSON)",
+        "text": "Where you set “Arguments (JSON)”. Change it and the app uses the new value. Part of Agent manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "auto-fix-keys-optional",
+        "title": "Auto fix keys (optional)",
+        "text": "Where you set “Auto fix keys (optional)”. Change it and the app uses the new value. Part of Agent manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "time-limit-seconds",
+        "title": "Time limit (seconds)",
+        "text": "Where you set “Time limit (seconds)”. Change it and the app uses the new value. Part of Agent manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "note",
+        "title": "Note",
+        "text": "Where you set “Note”. Change it and the app uses the new value. Part of Agent manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "run-commands-when-a-trigger-shows-up-in-a-message",
+        "title": "Run commands when a trigger shows up in a message",
+        "text": "Turns “Run commands when a trigger shows up in a message” on or off. It takes effect straight away and is remembered. Part of Agent manager.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "banner-auto-fix-asks-vinny-first-then-mosses-then-claude",
+        "title": "Banner Auto fix asks Vinny first (then Mosses, then Claude)",
+        "text": "Turns “Banner Auto fix asks Vinny first (then Mosses, then Claude)” on or off. It takes effect straight away and is remembered. Part of Agent manager.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "most-commands-one-message-can-start",
+        "title": "Most commands one message can start",
+        "text": "Where you set “Most commands one message can start”. Change it and the app uses the new value. Part of Agent manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "add-back-the-starter-commands",
+        "title": "Add back the starter commands",
+        "text": "Adds back the starter commands. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "message-to-vinny",
+        "title": "Message to Vinny",
+        "text": "Where you set “Message to Vinny”. Change it and the app uses the new value. Part of Agent manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "what-would-run",
+        "title": "What would run",
+        "text": "Shows “What would run”. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "send-to-vinny",
+        "title": "Send to Vinny",
+        "text": "Sends to Vinny. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "manage-vinnys-commands",
+        "title": "Manage Vinny's commands",
+        "text": "Shows “Manage Vinny's commands”. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "save-tool",
+        "title": "Save tool",
+        "text": "Saves tool. Nothing is kept until you tap it. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "run-test",
+        "title": "Run test",
+        "text": "Runs test. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "dont-create",
+        "title": "Don't create",
+        "text": "Shows “Don't create”. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "create-a-lingo-pack",
+        "title": "Create a lingo pack",
+        "text": "Creates a lingo pack. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "remove-this-new-skill",
+        "title": "Remove this new skill",
+        "text": "Removes this new skill. Depending on your behaviour theme it asks first. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "remove-this-new-tool",
+        "title": "Remove this new tool",
+        "text": "Removes this new tool. Depending on your behaviour theme it asks first. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "build-a-new-tool",
+        "title": "Build a new tool",
+        "text": "Builds a new tool. Part of Agent manager.",
+        "kind": "button",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

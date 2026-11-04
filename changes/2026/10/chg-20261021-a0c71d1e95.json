@@ -1,0 +1,146 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-a0c71d1e95",
+  "createdAt": "2026-10-21T18:31:00.000Z",
+  "updatedAt": "2026-10-22T02:58:25.055Z",
+  "kind": "build",
+  "title": "Build queue activity log + session archive with per-prompt costs (Build manager Activity + Sessions tabs)",
+  "asked": "Keep a detailed log of the build queue and changes to it with a very complete inclusive and powerful browser to browse activity in the queue like all moves and rearrangements, additions, removals like why and what prompt caused it || ALSO (bundled, Brett 14:33): equally powerful session archive log and viewer recording all sessions with system, user, app/browser/device, prompts, each prompt cost, input/output cost, changes and features touched, detailed cost record for the build manager; retroactively for every session in AmberX Framework and axHub projects",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "host": "claude-code-cloud"
+  },
+  "steps": [
+    {
+      "text": "queue-log@1: diff engine (adds, removals, moves, status/model/estimate/steps/notes) + daily log files on the hub",
+      "state": "done",
+      "startedAt": "2026-10-21T18:31:00.000Z",
+      "finishedAt": "2026-10-21T18:40:00.000Z"
+    },
+    {
+      "text": "Record from every writer (CLI, console API, MCP, engine-rpc) with who, surface, why and the prompt",
+      "state": "done",
+      "startedAt": "2026-10-21T18:31:00.000Z",
+      "finishedAt": "2026-10-21T18:50:00.000Z"
+    },
+    {
+      "text": "Catch queue changes made outside the tools (axHub direct writes, claude.ai, git sync)",
+      "state": "done",
+      "finishedAt": "2026-10-21T18:52:00.000Z"
+    },
+    {
+      "text": "session-archive@1: transcript parser, per-prompt tokens + cost, system/app/device, files and features touched",
+      "state": "done",
+      "finishedAt": "2026-10-21T18:58:00.000Z"
+    },
+    {
+      "text": "Session recorder hooks (Stop/SessionEnd) + claude.ai recording format",
+      "state": "done",
+      "finishedAt": "2026-10-21T19:00:00.000Z"
+    },
+    {
+      "text": "Cost record for the Build manager: sessions \u2192 changes \u2192 builds, actual vs estimated",
+      "state": "done",
+      "finishedAt": "2026-10-21T19:01:00.000Z"
+    },
+    {
+      "text": "Server API: queue log, sessions, cost record",
+      "state": "done",
+      "finishedAt": "2026-10-21T19:02:00.000Z"
+    },
+    {
+      "text": "Build manager Activity tab (timeline, filters, item history, moves, why/prompt)",
+      "state": "done",
+      "finishedAt": "2026-10-21T19:03:00.000Z"
+    },
+    {
+      "text": "Build manager Sessions tab (archive browser, prompt drill-down, costs, devices) + Costs view",
+      "state": "done",
+      "finishedAt": "2026-10-21T19:04:00.000Z"
+    },
+    {
+      "text": "Backfill: VPS host + container Claude Code transcripts (approval)",
+      "state": "done",
+      "finishedAt": "2026-10-21T19:16:00.000Z",
+      "note": "35 transcripts: host 24, axf-console 5, xgallery-app 4, gizmox-web-green 2"
+    },
+    {
+      "text": "Backfill: claude.ai chats in AmberX Framework + prompt for the axHub project",
+      "state": "done",
+      "finishedAt": "2026-10-21T19:25:00.000Z",
+      "note": "35 AmberX Framework chats in the inbox (4 read in part: hourly read limit); axHub project chats need the prompt pasted in that project"
+    },
+    {
+      "text": "Backfill: change-log entries + session check-ins linked into the archive",
+      "state": "done",
+      "note": "build-log entries counted in the cost record; no session check-in logs on the hub"
+    },
+    {
+      "text": "Tests, docs, screenshots, PR",
+      "state": "done",
+      "finishedAt": "2026-10-21T19:25:00.000Z"
+    }
+  ],
+  "result": {
+    "state": "partial",
+    "summary": "Queue activity log + session archive built (Build manager Activity, Sessions, Cost by build), recording hooks, inbox, backfill of VPS transcripts and AmberX Framework chats. Left: axHub project chats (prompt to paste there) and the unread parts of 4 long chats.",
+    "branch": "feat/queue-activity-log",
+    "commits": [
+      {
+        "sha": "cc8ef1d"
+      },
+      {
+        "sha": "4ddea45"
+      },
+      {
+        "sha": "af1e212"
+      }
+    ],
+    "tests": {
+      "check-queue-log": {
+        "after": "0\u219259"
+      }
+    },
+    "links": {
+      "pr": "https://github.com/MossesX/AmberX-AXF/pull/12",
+      "report": "_claude/memory/docs/session-archive.md"
+    }
+  },
+  "closed": {
+    "at": "2026-10-22T02:58:25.055Z",
+    "by": "console"
+  },
+  "state": "partial",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "queue-activity-log"
+  },
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-21T18:31:00.000Z",
+  "finishedAt": "2026-10-21T19:25:03.000Z",
+  "lastSeenAt": "2026-10-21T19:25:03.000Z",
+  "estimate": {
+    "minutes": 420,
+    "costUsd": 58.8
+  },
+  "costEstimated": true,
+  "branch": "feat/queue-activity-log",
+  "areas": [
+    "framework/plan",
+    "framework/cli/pending.mjs",
+    "framework/cli/build-queue.mjs",
+    "framework/cli/plan.mjs",
+    "framework/cli/engine-rpc.mjs",
+    "apps/console-web/server",
+    "apps/console-web/plugins/build-manager",
+    "framework/cli/session-archive.mjs",
+    "framework/plan/session-archive-core.mjs",
+    "sessions/archive"
+  ],
+  "progress": 1.0
+}

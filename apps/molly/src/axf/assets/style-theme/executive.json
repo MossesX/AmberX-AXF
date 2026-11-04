@@ -1,0 +1,43 @@
+{
+  "$axf": "asset@1",
+  "type": "style-theme",
+  "id": "executive",
+  "name": "Executive",
+  "version": "1.0.0",
+  "description": "Generous spacing, IBM Plex type and soft depth for dashboards that get presented upstairs.",
+  "author": "AmberX AXF",
+  "tags": [
+    "enterprise",
+    "spacious"
+  ],
+  "data": {
+    "fontFamily": "'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontDisplay": "'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontMono": "'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace",
+    "fontSize": 15,
+    "radius": {
+      "sm": 6,
+      "md": 10,
+      "lg": 16
+    },
+    "space": 10,
+    "borderWidth": 1,
+    "shadow": {
+      "sm": "0 1px 3px var(--fx-shadow)",
+      "md": "0 8px 24px var(--fx-shadow)",
+      "lg": "0 20px 56px var(--fx-shadow)"
+    },
+    "density": "spacious",
+    "motion": 200,
+    "blur": 16,
+    "headingWeight": 600,
+    "tracking": -0.015,
+    "opacityDisabled": 0.4,
+    "opacityMuted": 0.62,
+    "opacityHover": 0.08,
+    "opacityTint": 0.14,
+    "opacityScrim": 0.5,
+    "opacityGlass": 0.7,
+    "wrapGroups": false
+  }
+}

@@ -1,0 +1,78 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-ae7a358f-c6d0-4e00-8f8a-a8d8119a567a",
+ "source": "claude-code",
+ "sessionId": "ae7a358f-c6d0-4e00-8f8a-a8d8119a567a",
+ "project": "axhub",
+ "title": "# Build: \"Add an axHub key\" wizard (Hostinger first) on the console Wizards page ## Why The axHub `hostinger` service h…",
+ "startedAt": "2026-11-02T14:13:47.232Z",
+ "endedAt": "2026-11-02T14:13:48.800Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/vault-key-wizard",
+  "repo": "",
+  "branch": "claude/vault-key-wizard"
+ },
+ "user": "Brett (root)",
+ "models": [],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-02T14:13:48.200Z",
+   "kind": "prompt",
+   "text": "# Build: \"Add an axHub key\" wizard (Hostinger first) on the console Wizards page ## Why The axHub `hostinger` service has no credential in the axHub vault, so every hostinger.* call fails with \"credential not available\". axHub has no UI or admin API for secrets yet (plan: axHub memory `plans/axhub-vault-management.md`). Today the only way is the Coolify terminal: `axhub services show <ns>` then `axhub vault set <credentialRef>`. Brett works from his phone and wants a guided wizard for this on the console's Wizards page. ## Find the Wizards page first Brett calls it \"the wizards page\". Find wh…",
+   "model": "",
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0,
+   "costEstimated": false,
+   "seconds": 1,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [
+    "chg-20261102-016853852a"
+   ],
+   "features": [],
+   "output": "You've hit your weekly limit · resets 7am (UTC)"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261102-016853852a"
+ ],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 0,
+  "output": 0,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thinking": 0,
+  "costUsd": 0,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0
+ },
+ "ingestedAt": "2026-11-02T14:13:48.953Z"
+}

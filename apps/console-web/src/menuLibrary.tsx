@@ -5,7 +5,7 @@
  * code: the View menu's chrome toggles (src/menu.ts), the live lists (pending builds, queue steps left, unbuilt
  * features, libraries, modules, boilerplates, plugins), the "Pending builds" badge, and the actions the asset names:
  *   console.search                  focus the search bar, or open the search dialog when no search bar is shown
- *   console.open:<app or page>      open Pilot, axHub pages, the demo or a guide in a new browser tab (fixed list)
+ *   console.open:<app or page>      open axHub pages, the demo or a guide in a new browser tab (fixed list)
  *   console.reveal:<view>:<text>    go to a view and flash the row showing that text
  *   console.pending.open:<id>       Pending builds with that item flashed
  *   console.queue.open:<id>         Build queue with that step flashed
@@ -48,7 +48,6 @@ async function loadHub(): Promise<void> {
 }
 const REPO = 'https://github.com/MossesX/AmberX-AXF';
 const OPEN: Record<string, () => string> = {
-  pilot: () => 'https://pilot.amberxai.com',
   demo: () => 'https://axf.amberxai.com',
   axhub: () => hubBase,
   'axhub-approvals': () => approvalsUrl(hubBase),
@@ -117,8 +116,10 @@ function ChromeRescue() {
   const rt = useRuntime();
   useAxfState();
   if (!rt.slotHidden('app-menu') || !rt.slotHidden('nav-menu')) return null;
-  // Inside a host that carries this menu in its own (embed@1 take `app-menu`, e.g. Patches) nothing is lost.
+  // Inside a host that carries this menu in its own (embed@1 take `app-menu`) nothing is lost.
   if (rt.hostTakes('app-menu')) return null;
+  // A page a host shows on its own (the banner strip, settings) hides the menus on purpose: nothing to rescue.
+  if (rt.embedded?.page) return null;
   return (
     <Note tone="info" icon="menu">
       <span>The menu bar and the side navigation are both hidden. Press <strong>Ctrl K</strong> (⌘K) to search everything, or </span>

@@ -1,0 +1,53 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "roomy-touch",
+  "name": "Roomy Touch",
+  "version": "1.0.0",
+  "description": "Roomy Touch: phones and tablets. Lists the pages it can; each app shows the ones it has. Pairs with the Touch behaviour theme.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:touch"
+  ],
+  "data": {
+    "style": "list",
+    "sections": [
+      {
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "icon": "home",
+            "view": "home"
+          },
+          {
+            "id": "apps",
+            "label": "Apps",
+            "icon": "download",
+            "view": "apps"
+          },
+          {
+            "id": "approvals-log",
+            "label": "Approvals",
+            "icon": "check",
+            "view": "approvals-log"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
+          },
+          {
+            "id": "account",
+            "label": "Account",
+            "icon": "user",
+            "view": "account"
+          }
+        ]
+      }
+    ],
+    "density": "roomy",
+    "indicator": "fill"
+  }
+}

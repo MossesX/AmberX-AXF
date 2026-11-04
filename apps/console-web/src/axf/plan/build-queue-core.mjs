@@ -320,10 +320,12 @@ export function stepAction(features, queue, { id, action, status, by = 'console'
  * Two-way sync, run when the console starts (and after every plan/status write through the API).
  *   features → build: all linked features built ⇒ the step is built; some built while planned ⇒ partial.
  *   steps that became done outside the queue get completedAt; steps that stopped being done get reopenedAt.
- *   First run (no state yet): every built step gets a baseline completion so nothing is flagged retroactively.
+ *   First run (no queue at all yet): every built step gets a baseline completion so nothing is flagged retroactively.
  */
 export function syncQueue(features, queue, now = new Date().toISOString(), by = 'console:init') {
-  const first = !queue || !queue.order?.length;
+  // Only a MISSING queue is created (master cleanup, Oct 31 2026). An existing queue with an empty order is kept as it
+  // is: re-creating it whenever the order was empty wiped Refactor's queue and logged "created from the plan" each boot.
+  const first = !queue;
   const q = structuredClone(queue ?? emptyQueue());
   const changes = [];
   const log = [];

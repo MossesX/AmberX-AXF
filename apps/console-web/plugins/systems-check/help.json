@@ -1,0 +1,78 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "systems-check-help",
+  "name": "systems-check help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:systems-check. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:systems-check",
+    "entries": [
+      {
+        "target": "open-the-ai-assistant-settings",
+        "title": "AI assistant settings",
+        "text": "Opens the AI assistant's settings.",
+        "kind": "button"
+      },
+      {
+        "target": "open-the-page-again",
+        "title": "Open the page again",
+        "text": "Reopens the page this check needs.",
+        "kind": "link"
+      },
+      {
+        "target": "stop-fix-all",
+        "title": "Stop Fix all",
+        "text": "Stops fixing the rest.",
+        "kind": "button"
+      },
+      {
+        "target": "whats-new-since-an-admin-last-cleared-it",
+        "title": "What's new",
+        "text": "What changed since an admin last cleared the list.",
+        "kind": "button"
+      },
+      {
+        "target": "delete-the-routine",
+        "title": "Delete the routine",
+        "text": "Removes this scheduled routine.",
+        "kind": "button"
+      },
+      {
+        "target": "hand-failed-fixes-to-mosses-claude-code-on-the-vps",
+        "title": "Hand failed fixes to Mosses",
+        "text": "A fix that fails goes to Mosses (Claude Code on the VPS) by itself.",
+        "kind": "toggle"
+      },
+      {
+        "target": "let-it-run-shell-commands-on-the-vps",
+        "title": "Shell commands on the VPS",
+        "text": "Lets fixes run shell commands on the VPS.",
+        "kind": "toggle"
+      },
+      {
+        "target": "clear-whats-new-for-everyone",
+        "title": "Clear What's new",
+        "text": "Clears the What's new list for everyone.",
+        "kind": "button"
+      },
+      {
+        "target": "github-route-github",
+        "title": "GitHub route",
+        "text": "How the console reaches GitHub.",
+        "kind": "field"
+      },
+      {
+        "target": "test-the-hub-route",
+        "title": "Test the hub route",
+        "text": "Checks the console can reach GitHub through axHub.",
+        "kind": "button"
+      }
+    ],
+    "intros": []
+  }
+}

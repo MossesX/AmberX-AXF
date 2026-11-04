@@ -3,7 +3,7 @@
 # "When something is ready for merge send approval message to merge"). Sessions run it through axHub `vps.run`, so
 # every merge waits for Brett's approval on axHub; it never runs from cron or by itself.
 #
-# The push banner's POST /merge only merges an open, non-draft PR GitHub can merge, whose CI on the head commit passed,
+# The push banner's POST /merge only merges an open, non-draft PR that isn't behind its base, GitHub can merge and whose CI on the head commit passed,
 # with that commit pinned (never a direct push to main). The console token is read inside the console container from
 # its env file, so no token is ever in a command, a log or an approval page.
 set -euo pipefail

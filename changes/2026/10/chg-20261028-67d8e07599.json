@@ -1,0 +1,107 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261028-67d8e07599",
+  "createdAt": "2026-10-28T15:17:00.389Z",
+  "updatedAt": "2026-10-28T18:22:18.229Z",
+  "kind": "build",
+  "title": "Basic filter plugin (search + filter dialog for any dataset, configurable toolbar)",
+  "asked": "Add new plugin called basic filter that opens a dialog with search and filter options that you can attach to any dataset. Also comes with a toolbar customized in the plugins settings (hide/show, preset actions in a grid with expandable rows, live floating preview). By default toolbar is on with 1 button to open the sort and filter dialog. Attach it to the dataset in plugin switches.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "host": "vm"
+  },
+  "steps": [
+    {
+      "text": "lib-datagrid dataset registry (datasets.ts) + DataGrid registers itself and renders the dataset toolbar slot",
+      "state": "done",
+      "startedAt": "2026-10-28T15:20:20.120Z",
+      "finishedAt": "2026-10-28T15:20:20.120Z"
+    },
+    {
+      "text": "Plugin scaffold + settings store",
+      "state": "done",
+      "startedAt": "2026-10-28T15:26:39.548Z",
+      "finishedAt": "2026-10-28T15:26:39.548Z"
+    },
+    {
+      "text": "Sort & filter dialog + filter engine (8 self-test checks)",
+      "state": "done",
+      "startedAt": "2026-10-28T15:26:39.658Z",
+      "finishedAt": "2026-10-28T15:26:39.658Z"
+    },
+    {
+      "text": "Toolbar with preset actions (default: on, one Sort & filter button)",
+      "state": "done",
+      "startedAt": "2026-10-28T15:26:39.762Z",
+      "finishedAt": "2026-10-28T15:26:39.762Z"
+    },
+    {
+      "text": "Toolbar designer: show/hide, actions grid with expandable rows, live floating preview",
+      "state": "done",
+      "startedAt": "2026-10-28T15:26:39.857Z",
+      "finishedAt": "2026-10-28T15:26:39.857Z"
+    },
+    {
+      "text": "Plugin switches row slot: attach to datasets",
+      "state": "done",
+      "startedAt": "2026-10-28T15:26:39.961Z",
+      "finishedAt": "2026-10-28T15:26:39.961Z"
+    },
+    {
+      "text": "Checks + docs + PR #155 (CI green)",
+      "state": "done",
+      "startedAt": "2026-10-28T15:43:56.388Z",
+      "finishedAt": "2026-10-28T15:43:56.388Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "Basic filter plugin + lib-datagrid datasets + Plugin switches row slot; PR #155, CI green, waiting on Brett's merge approval",
+    "branch": "claude/basic-filter",
+    "commits": [
+      {
+        "sha": "2c185a79"
+      }
+    ],
+    "filesChanged": 16,
+    "tests": {
+      "basic-filter test.mts": {
+        "before": "0",
+        "after": "8"
+      }
+    },
+    "links": {
+      "pr": "https://github.com/MossesX/AmberX-AXF/pull/155"
+    }
+  },
+  "closed": {
+    "at": "2026-10-28T18:22:18.229Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "orchestrator",
+    "id": "basic-filter"
+  },
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-28T15:17:00.389Z",
+  "finishedAt": "2026-10-28T15:43:56.462Z",
+  "lastSeenAt": "2026-10-28T15:43:56.388Z",
+  "estimate": {
+    "minutes": 175,
+    "costUsd": 24.5
+  },
+  "costEstimated": true,
+  "branch": "claude/basic-filter",
+  "areas": [
+    "apps/console-web/plugins/basic-filter",
+    "apps/console-web/plugins/plugin-switches",
+    "framework/libs/datagrid"
+  ],
+  "progress": 1.0
+}

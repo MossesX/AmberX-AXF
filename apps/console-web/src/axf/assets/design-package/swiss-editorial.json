@@ -1,0 +1,30 @@
+{
+  "$axf": "asset@1",
+  "type": "design-package",
+  "id": "swiss-editorial",
+  "name": "Swiss Editorial",
+  "version": "1.0.0",
+  "description": "Swiss typography on near-monochrome paper in a reading column, with quiet text-only navigation.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "editorial"
+  ],
+  "data": {
+    "style-theme": "swiss",
+    "color-theme": "mono-paper",
+    "layout": "document-reader",
+    "behavior-theme": "quiet",
+    "extras": {
+      "slots": {
+        "style-package": "swiss-grid",
+        "toolbar": "reader-bar",
+        "nav-menu": "text-only",
+        "typography": "reader",
+        "density": "compact",
+        "sizing": "compact"
+      },
+      "spacing": "regular"
+    }
+  }
+}

@@ -291,6 +291,7 @@
     "clock:digital-24h",
     "counter:alerts",
     "counter:approvals",
+    "counter:shipped",
     "divider:rule",
     "label:environment",
     "label:version",
@@ -304,6 +305,8 @@
     "spacer:push",
     "status:ai",
     "status:online",
+    "status:shipped",
+    "theme-switch:amberx-day-night",
     "theme-switch:day-night",
     "theme-switch:fresh-day-night"
   ],

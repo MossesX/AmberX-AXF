@@ -1,5 +1,6 @@
 /** Notes tab: every way to drive notes and lists by voice. Trigger words: "note", "notes", "notebook". */
 import { act, ask, category, confirm, intent, op, run, say } from './build';
+import { HELP_VOICE } from '../../../axf/core/engines/help-rules.mjs';
 
 const c = category('notes', 'notes');
 const { action: A, chain: C, wizard: W } = c;
@@ -14,6 +15,10 @@ A('Open', 'manage-lists', 'Manage lists', 'Opens the list manager: rename, move,
 A('Open', 'export', 'Export dialog', 'Opens the export window (Markdown, JSON, copy).', ['export notes', 'open export', 'export dialog'], [act('dialog:notes.export')]);
 A('Open', 'search', 'Search notes', 'Searches every note and shows the results.', ['search notes for {text}', 'search for {text}', 'find notes about {text}', 'look for {text}'], [act('notes.search:{text}')], { slots: { text: 'text' } });
 A('Open', 'search-tag', 'Search a tag', 'Shows notes with one tag.', ['show tag {tag}', 'notes tagged {tag}', 'show hashtag {tag}'], [act('notes.search:{tag}')], { slots: { tag: 'tag' } });
+
+/* ---------------------------------------------------------------- Help mode (every AXF app: tooltips on everything while it's on) */
+A('App', 'help-on', 'Help mode on', 'Turns Help mode on: every button, menu and switch explains itself, and each screen gives a short intro the first time.', [...HELP_VOICE.on], [act('help.mode:on')]);
+A('App', 'help-off', 'Help mode off', 'Turns Help mode off: no tooltips, no clutter.', [...HELP_VOICE.off], [act('help.mode:off')]);
 
 /* ---------------------------------------------------------------- take notes */
 A('Take', 'add', 'Add a note', 'Saves a note to the Inbox.', ['add note {text}', 'new note {text}', 'take a note {text}', 'note that {text}', 'remember {text}'], [intent({ action: 'add', kind: 'note', title: '{text}', text: '{text}' })], { slots: { text: 'text' } });

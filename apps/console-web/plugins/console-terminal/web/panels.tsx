@@ -112,6 +112,7 @@ export function MoshiPanel() {
     <div className="fx-stack">
       <p className="fx-small">In the console, <strong>Mosh mode</strong> (the <Icon name="zap" size={12} /> on a terminal tab) keeps the session on the server so it survives dropped signal, sleep and network switches, reconnects by itself, and echoes your typing right away. Browsers can’t speak real Mosh (UDP), so this copies its behaviour over the WebSocket.</p>
       <p className="fx-small">For the Moshi app (real Mosh to the VPS): <CopyLink text={`mosh ${user}@${host}`} label={`mosh ${user}@${host}`} /> · plain SSH: <CopyLink text={`ssh ${user}@${host}`} label={`ssh ${user}@${host}`} /></p>
+      <p className="fx-small">Every VPS and console tab lives in its own tmux session (axt-…), and every headless build in axf-…: attach the same session from Moshi with <CopyLink text={`mosh ${user}@${host} -- tmux attach -t <name>`} label={`mosh ${user}@${host} -- tmux attach -t <name>`} /> (right-click a tab → Open in Moshi copies the exact command; <code>tmux ls</code> lists them).</p>
       <p className="fx-small fx-muted">The VPS needs mosh-server and UDP 60000–61000 open (the systems check reports both).</p>
     </div>
   );

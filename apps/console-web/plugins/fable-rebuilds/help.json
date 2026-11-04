@@ -1,0 +1,67 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "fable-rebuilds-help",
+  "name": "fable-rebuilds help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:fable-rebuilds. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:fable-rebuilds",
+    "entries": [
+      {
+        "target": "fable-rebuilds",
+        "title": "Fable rebuilds",
+        "text": "Shows the “Fable rebuilds” part of this screen. Part of Fable rebuilds.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "view:fable-rebuilds.report",
+        "title": "Differences report",
+        "text": "Opens the Differences report screen. Every build parked for Fable in one place: what each replaces (the Opus plugin and its uninstall command), its branch, differences report, Android before/after screenshots and rebuild-log line, plus a ready-to-paste brie",
+        "kind": "screen",
+        "draft": true
+      },
+      {
+        "target": "pending-builds",
+        "title": "Pending builds",
+        "text": "Shows “Pending builds”. Part of Fable rebuilds.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "copy-fable-brief",
+        "title": "Copy Fable brief",
+        "text": "Copies fable brief. Paste it wherever you need it. Part of Fable rebuilds.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "differences-report",
+        "title": "Differences report",
+        "text": "Shows “Differences report”. Part of Fable rebuilds.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "mark-rebuilt",
+        "title": "Mark rebuilt",
+        "text": "Marks rebuilt. Part of Fable rebuilds.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "action:fable-rebuilds.open",
+        "title": "Fable rebuilds",
+        "text": "Shows “Fable rebuilds”. Part of Build Breaker.",
+        "kind": "menu-item",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

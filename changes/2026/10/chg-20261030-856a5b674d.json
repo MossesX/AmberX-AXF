@@ -1,0 +1,86 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261030-856a5b674d",
+  "createdAt": "2026-10-30T23:02:07.230Z",
+  "updatedAt": "2026-10-30T23:02:52.745Z",
+  "kind": "fix",
+  "title": "# Fix a failing AXF Dev Console systems check: Hub /projects folder configured The console's system…",
+  "asked": "# Fix a failing AXF Dev Console systems check: Hub /projects folder configured The console's systems check reported this, and its automatic fix failed. Fix the cause, then re-check. - Check id: `routine:env-axhub-projects-dir` (service data, status warn) - What it says: AXHUB_PROJECTS_DIR isn't set - How the fix failed: - **For you:** nothing to do by hand. Point this systems-check fix at the console's Mosses chat instead of this session. `AXF_PUBLIC_URL` is stuck the same way, so both can go there together. Details: - Shared data (pending list, build queue, orchestrator) is read from the hub's /projects only when this points at the mounted volume. - env {\"name\": \"AXHUB_PROJECTS_DIR\"} How it's fixed by hand: - Mount the axhub-projects volume into the console container. - Set AXHUB_PROJECTS_DIR to its mount path (usually /projects) and redeploy. Rules: - Fix only this check. Change nothing unrelated; never delete data, volumes, containers or other people's files. - Never print, copy or commit secrets (tokens, keys, .env files, .axf-console/). - Code changes go on this worktree's branch only: commit and push the branch, never main, never merge. - When done, refresh the host report: `bash /opt/axf/deploy/console-doctor.sh --report`. - Record steps and the result on your change-log entry (the hooks do most of it; `changes.mjs step|result last …`). - You may run shell commands on the VPS (you run as root): prefer the smallest, reversible change.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "claude-opus-5-5",
+  "who": {
+    "session": "a82457d1-69e",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "install-console.sh passes AXHUB_PROJECTS_DIR=/projects with the projects volume (commit 01e26f0c, rebased on main). Push failed: no GitHub credentials on the host (gh logged out, console GITHUB_TOKEN rejected). Live container unchanged: needs push + merge, then the auto-update rebuild applies it.",
+    "branch": "fix/syscheck-routine-env-axhub-projects-dir",
+    "commits": [
+      {
+        "sha": "01e26f0c"
+      }
+    ],
+    "filesChanged": 1,
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "buildRef": {
+    "kind": "fix",
+    "id": "routine:env-axhub-projects-dir"
+  },
+  "surface": "console-launch",
+  "startedAt": "2026-10-30T23:02:07.230Z",
+  "finishedAt": "2026-10-30T23:02:46.598Z",
+  "lastSeenAt": "2026-10-30T23:02:45.749Z",
+  "estimate": {
+    "minutes": 10,
+    "costUsd": 1.4
+  },
+  "actual": {
+    "minutes": 1,
+    "costUsd": 0.398,
+    "inputTokens": 20,
+    "outputTokens": 4235,
+    "cacheReadTokens": 474051,
+    "cacheWriteTokens": 43689,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "fix/syscheck-routine-env-axhub-projects-dir",
+  "areas": [
+    "deploy/install-console.sh"
+  ],
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-fixes/fix-syscheck-routine-env-axhub-projects-dir",
+    "branch": "fix/syscheck-routine-env-axhub-projects-dir",
+    "base": "33bf1434667a6d2939b71b84a412e894f81ebd65",
+    "head": "01e26f0c3994d71360518b87ecf81f819bb46504",
+    "pushed": false,
+    "dirty": 10,
+    "files": [
+      "deploy/install-console.sh",
+      ".axf-brief.md",
+      ".axf-fix.jsonl",
+      ".axf-fix.log",
+      "apps/amberx-droid/_claude/",
+      "apps/axhub-android/_claude/",
+      "apps/axhub-web/_claude/",
+      "apps/patches-web/_claude/",
+      "apps/patches/_claude/",
+      "apps/voicevault/_claude/",
+      "apps/walkthrough-studio/_claude/"
+    ],
+    "at": "2026-10-30T23:02:52.849Z"
+  }
+}

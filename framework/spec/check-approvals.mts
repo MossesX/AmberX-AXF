@@ -7,8 +7,10 @@
 import { ApprovalsWatcher, clampPoll, fetchApprovals } from '../libs/approvals/index.ts';
 import {
   allowed, badgeLabel, badgeText, canDecideHere, countdownOf, decideOnHub, decisionUrl, decisionsOf,
-  formatAge, freshIds, goneIds, goneMessage, interpretApprovals, isUrgent, itemLine, ageSeconds, commandOfSummary,
+  formatAge, freshIds, goneIds, goneMessage, interpretApprovals, isUrgent, itemLine, ageSeconds, commandOfSummary, rowOrder, rowTimes, DECISION_LABELS,
 } from '../libs/approvals/core.ts';
+import { interpretFeed } from '../libs/hub/hub.ts';
+import { parseSource, sourceSortKey, sourceText } from '../libs/hub/source.ts';
 
 let ok = 0, fail = 0;
 const check = (cond: unknown, msg: string) => { if (cond) ok++; else { fail++; console.log(`✗ ${msg}`); } };
@@ -108,7 +110,17 @@ const fake = (replies: Record<string, { status: number; json?: unknown; text?: s
   const r = await decideOnHub(HUB, st.items[1]!, 'approve', { fetch: f, origin: 'https://console.amberxai.com' });
   check(!r.ok && calls.length === 0, 'another origin sends nothing');
   const h = await decideOnHub(HUB, st.items[0]!, 'approve', { fetch: f, origin: HUB });
-  check(!h.ok && h.message.includes('only be denied') && calls.length === 0, 'Approve on a held call is refused before any call');
+  check(!h.ok && h.message.includes("doesn't offer Approve") && calls.length === 0, 'Approve on a held call the hub offers no approve-now for is refused before any call');
+}
+{
+  // decision 104: a held call whose veto actions list approve-now gets Approve (run it now) next to Deny, Deny first
+  const h2 = interpretApprovals(HUB, 200, body([{ ...held(H1), veto: { ...held(H1).veto, actions: ['deny', 'approve-now', 'shelve'] } }]), T).items[0]!;
+  check(h2.decisions.join() === 'deny,approve', 'held + approve-now: Deny and Approve');
+  check(rowOrder(['approve', 'decline']).join() === 'decline,approve' && rowOrder(h2.decisions).join() === 'deny,approve', 'rows put the safe one first');
+  check(DECISION_LABELS.decline === 'Deny' && DECISION_LABELS.approve === 'Approve', 'rows read Approve / Deny');
+  const { f, calls } = fake({ '/auth/api/session': { status: 200, json: { csrf: 'tok' } }, [`/auth/api/approvals/${H1}/approve-now`]: { status: 200, json: { state: 'approved-now' } } });
+  const r = await decideOnHub(HUB, h2, 'approve', { fetch: f, origin: HUB });
+  check(r.ok && calls.some((c) => c.url.endsWith(`/approvals/${H1}/approve-now`)) && !calls.some((c) => c.url.endsWith('/deny')), 'Approve on a held call posts approve-now');
 }
 {
   const { f } = fake({ '/auth/api/session': { status: 200, json: { csrf: 'tok' } }, [`/auth/api/approvals/${H1}/deny`]: { status: 200, json: { state: 'denied' } } });
@@ -143,6 +155,31 @@ const fake = (replies: Record<string, { status: number; json?: unknown; text?: s
 {
   const { f } = fake({ '/auth/admin/approvals.json': { status: 302, text: '' } });
   check((await fetchApprovals(HUB, { fetch: f, now: () => T })).status !== 'ok', 'a redirect is never ok');
+}
+
+// who asked (axHub decision 109)
+{
+  const src = { kind: 'headless', label: 'Headless', who: 'approval-source', session: 'approval-source', client: 'claude-code', clientVersion: '2.1.3', auth: 'token' };
+  check(JSON.stringify(parseSource(src)) === JSON.stringify({ kind: 'headless', label: 'Headless', who: 'approval-source', client: 'claude-code 2.1.3' }), 'source parsed');
+  check(parseSource({ kind: 'claude_ai', oauthClient: 'Claude' })?.who === 'Claude', 'who falls back to the OAuth client');
+  check(parseSource({ kind: 'system' })?.who === 'System', 'who falls back to the label');
+  check(parseSource({ kind: 'nope' }) === null && parseSource('x') === null && parseSource(null) === null && parseSource([]) === null, 'unknown kinds and junk: no source');
+  check(parseSource({ kind: 'agent', who: 'a\u202eb\nc' + 'x'.repeat(100) })!.who.length === 60, 'who is capped');
+  check(!/[\u202e\n]/.test(parseSource({ kind: 'agent', who: 'a\u202eb\nc' })!.who), 'direction and control characters leave who');
+  check(sourceText(parseSource(src)) === 'Headless · approval-source' && sourceText(parseSource({ kind: 'console', who: 'Console' })) === 'Console' && sourceText(null) === '', 'source text');
+  check(sourceSortKey(parseSource({ kind: 'agent', who: 'B' })) < sourceSortKey(parseSource({ kind: 'headless', who: 'a' })) && sourceSortKey(null) > sourceSortKey(parseSource(src)), 'sort: by label, then who; none last');
+  const withSrc = interpretApprovals(HUB, 200, body([held(H1), approval(A1, { source: src, title: 'List containers' }), approval(A2)]), T);
+  check(withSrc.items[1]!.source?.kind === 'headless' && withSrc.items[1]!.source?.who === 'approval-source', 'approvals carry their source');
+  check(withSrc.items[2]!.source === null && withSrc.items[0]!.source === null, 'no source from an older hub: null');
+  check(withSrc.items[0]!.createdAt === '2026-10-28T23:27:00.000Z', 'held calls keep when they were asked');
+  const feed = interpretFeed(HUB, 200, body([approval(A1, { source: src, title: 'List containers' }), approval(A2)]));
+  check(feed.pending[0]!.title === 'List containers' && feed.pending[0]!.source?.label === 'Headless', 'lib-hub feed carries title + source');
+  check(!('source' in feed.pending[1]!) && !('title' in feed.pending[1]!), 'lib-hub feed: neither when the hub sent none');
+  const tm = rowTimes(withSrc.items[1]!, T);
+  check(tm.asked === '3 min ago' && tm.countdown === '15 min left', 'approval row: asked + time left');
+  check(rowTimes(withSrc.items[0]!, T).countdown === 'Runs in 2:30' && rowTimes(withSrc.items[0]!, T + 200_000).countdown === 'Running', 'held row: countdown');
+  check(rowTimes({ createdAt: '', expiresAt: 'x', veto: null }, T).asked === '' && rowTimes({ createdAt: '', expiresAt: 'x', veto: null }, T).countdown === '', 'unknown times: empty');
+  check(rowTimes({ createdAt: '', expiresAt: '2026-10-28T23:29:00.000Z', veto: null }, T).countdown === 'Expired', 'expired');
 }
 
 console.log(`lib-approvals: ${ok} passed, ${fail} failed`);

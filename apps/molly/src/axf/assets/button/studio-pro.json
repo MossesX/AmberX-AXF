@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "studio-pro",
+  "name": "Studio Pro button",
+  "version": "1.0.0",
+  "description": "Studio Pro: rounded solid buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "pro",
+    "creative"
+  ],
+  "data": {
+    "shape": "rounded",
+    "fill": "solid",
+    "weight": 600,
+    "uppercase": false,
+    "size": "md",
+    "elevation": false
+  }
+}

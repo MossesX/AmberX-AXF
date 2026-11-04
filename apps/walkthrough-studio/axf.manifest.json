@@ -49,7 +49,10 @@
     "badge": "new",
     "uac-policy": "standard",
     "design-package": "fresh",
-    "branding": "amberx"
+    "branding": "amberx",
+    "typography": "compact",
+    "density": "compact",
+    "sizing": "compact"
   },
   "hidden": [
     "toolbar"

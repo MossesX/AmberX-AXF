@@ -157,7 +157,7 @@ export function NewAppDialog({ boilerplateId, close }: { boilerplateId: string; 
       <fieldset className="fx-stack" style={{ border: 0, padding: 0, margin: 0 }}>
         <legend className="fx-muted fx-small">Build options</legend>
         {Object.entries(BUILD_OPTIONS).map(([n, o]) => (
-          <label key={n} className="fx-row" style={{ gap: 'calc(var(--fx-space) * 0.75)', alignItems: 'flex-start' }} title={o.description}>
+          <label key={n} className="fx-row" style={{ gap: 'var(--fx-dens-gap-lg)', alignItems: 'flex-start' }} title={o.description}>
             <input id={`newapp-opt-${n}`} type="checkbox" checked={!!options[n]} onChange={(e) => setOptions({ ...options, [n]: e.target.checked })} />
             <span>{o.label} <span className="fx-mono fx-muted fx-small">--{n}</span><br /><span className="fx-muted fx-small">{o.description}</span></span>
           </label>

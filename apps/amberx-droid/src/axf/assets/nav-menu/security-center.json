@@ -1,0 +1,63 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "security-center",
+  "name": "Security Center",
+  "version": "1.0.0",
+  "description": "Security Center: security and access screens. Lists the pages it can; each app shows the ones it has. Pairs with the Secure behaviour theme.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:secure"
+  ],
+  "data": {
+    "style": "list",
+    "header": "Security",
+    "sections": [
+      {
+        "label": "Security",
+        "items": [
+          {
+            "id": "vault",
+            "label": "Vault",
+            "icon": "key",
+            "view": "vault"
+          },
+          {
+            "id": "users",
+            "label": "Users",
+            "icon": "user",
+            "view": "users"
+          },
+          {
+            "id": "audit",
+            "label": "Audit",
+            "icon": "eye",
+            "view": "audit"
+          },
+          {
+            "id": "go-pass",
+            "label": "Go pass",
+            "icon": "rocket",
+            "view": "go-pass"
+          }
+        ]
+      },
+      {
+        "items": [
+          {
+            "id": "account",
+            "label": "Account",
+            "icon": "user",
+            "view": "account"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
+          }
+        ]
+      }
+    ]
+  }
+}

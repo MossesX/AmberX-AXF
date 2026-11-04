@@ -1,0 +1,91 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261101-92971c2ac2",
+  "createdAt": "2026-11-01T10:42:46.557Z",
+  "updatedAt": "2026-11-01T10:46:31.815Z",
+  "kind": "fix",
+  "title": "# Let vps.build_start launch Fable builds Brett (Nov 1 2026): the axHub tool `vps.build_start` only…",
+  "asked": "# Let vps.build_start launch Fable builds Brett (Nov 1 2026): the axHub tool `vps.build_start` only accepts model `opus` or `sonnet` (enum), so Fable builds can't be launched. Fix it. Read CLAUDE.md and the repo rules first. 1. Find the `vps.build_start` tool definition (input schema enum for `model`) and the code that turns `model` into the `claude -p --model <x>` flag for /opt/axf/deploy/claude-headless.sh. 2. Add `fable` (and keep opus, sonnet). Map it to the exact model name/alias the installed Claude Code CLI on this VPS accepts for Fable: check `claude --help` / the CLI's model list / how the AmberX-AXF build orchestrator already names Fable steps, and use that. If the CLI rejects it, report exactly what it says instead of guessing. 3. Better: don't hard-code the list. Read allowed models from axHub config (default opus, sonnet, fable) so new models need no code change; the schema enum is generated from that config. 4. Optional `model` default stays opus. The build_list output shows each build's model. 5. Tests for the schema + mapping, decision log entry, STATUS/THREADS notes. Deploy the way axHub normally deploys (main + Coolify redeploy as the repo documents); do not restart anything the docs don't say to. Commit on this branch, merge origin/main, push the branch. Do NOT push to main; Brett's session lands it with build_land. Never print secrets. Short report: what the enum was, what it is now, the exact CLI model name used for Fable, and whether a live test launch worked. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, patches-web, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once.",
+  "repos": [
+    "MossesX/axHub"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "e650d5d8-2ad",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [
+    {
+      "text": "config-driven model list + fable, tests",
+      "state": "done",
+      "startedAt": "2026-11-01T10:44:40.899Z",
+      "finishedAt": "2026-11-01T10:46:31.815Z",
+      "note": "auto: the session ended"
+    }
+  ],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "buildRef": {
+    "kind": "plan",
+    "id": "build-tools-fable"
+  },
+  "surface": "headless",
+  "startedAt": "2026-11-01T10:42:46.557Z",
+  "finishedAt": "2026-11-01T10:46:31.815Z",
+  "lastSeenAt": "2026-11-01T10:46:01.405Z",
+  "estimate": {
+    "minutes": 40,
+    "costUsd": 5.6
+  },
+  "actual": {
+    "minutes": 4,
+    "costUsd": 1.1715,
+    "inputTokens": 36,
+    "outputTokens": 14843,
+    "cacheReadTokens": 1738007,
+    "cacheWriteTokens": 105385,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "claude/build-start-fable",
+  "areas": [
+    "packages/connectors/ssh",
+    "packages/server",
+    "project/initialization",
+    "docs"
+  ],
+  "doing": "Running: a command",
+  "progress": 0,
+  "resume": {
+    "repo": "MossesX/axHub",
+    "folder": "/root/axf-builds/build-start-fable",
+    "branch": "claude/build-start-fable",
+    "base": "8e014141669e16800123055f9ab49949fa9d5e63",
+    "head": "8e014141669e16800123055f9ab49949fa9d5e63",
+    "pushed": true,
+    "dirty": 10,
+    "files": [
+      "CLAUDE.md",
+      "_claude/memory/decisions.md",
+      "docs/roadmap.md",
+      "packages/connectors/ssh/src/build-tools.ts",
+      "packages/connectors/ssh/src/index.ts",
+      "packages/connectors/ssh/test/build-tools.test.ts",
+      "project/initialization/axhub-context.md",
+      "project/initialization/axhub-planning.md",
+      ".axf-watch-live.log",
+      ".pnpm-store/"
+    ],
+    "at": "2026-11-01T10:46:31.853Z"
+  }
+}

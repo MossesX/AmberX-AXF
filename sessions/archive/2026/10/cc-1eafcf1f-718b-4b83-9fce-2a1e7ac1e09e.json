@@ -1,0 +1,94 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-1eafcf1f-718b-4b83-9fce-2a1e7ac1e09e",
+ "source": "claude-code",
+ "sessionId": "1eafcf1f-718b-4b83-9fce-2a1e7ac1e09e",
+ "project": "other",
+ "title": "# Build: every change goes through a PR, and every PR is brought up to date with main before it merges (Refactor profil…",
+ "startedAt": "2026-10-30T17:49:22.857Z",
+ "endedAt": "2026-10-30T17:49:37.223Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "moshi",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/claude-pr-only-merge",
+  "repo": "",
+  "branch": "claude/pr-only-merge"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-10-30T17:49:23.962Z",
+   "kind": "prompt",
+   "text": "# Build: every change goes through a PR, and every PR is brought up to date with main before it merges (Refactor profile, Opus, one session, no sub-agents) Brett, Oct 30 2026 (voice): \"I want everything to need a PR and to pull against main before it's merged.\" Read CLAUDE.md, _claude/shared/rules/RULES.md, _claude/rules/RULES.md and _claude/THREADS.md first. Branch claude/pr-only-merge (this worktree, based on claude/veto-everywhere = PR #176, which adds push banner 0.4.0 auto-merge). Another build (claude/veto-complete) is working on the veto banner/alarm/AmberX: don't touch those files. Bu…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 10,
+    "output": 1313,
+    "cacheRead": 163308,
+    "cacheWrite": 38919,
+    "thinking": 432
+   },
+   "costUsd": 0.2535,
+   "costEstimated": false,
+   "seconds": 13,
+   "tools": {
+    "Bash": 1,
+    "ToolSearch": 1,
+    "mcp__claude_ai_axHub__call": 1
+   },
+   "commands": 1,
+   "files": [],
+   "changeIds": [
+    "chg-20261030-edc0a3f577"
+   ],
+   "features": [
+    "pending:veto-everywhere",
+    "pending:pr-only-merge",
+    "orchestrator:pr-only-merge",
+    "orchestrator:veto-everywhere"
+   ],
+   "output": "I haven't started this build. A rule stops me before any work: I couldn't load the rules and threads log from axHub, and there's no active go pass. What I found: - **axHub not reachable:** `claude-sync` reported that `/projects` isn't mounted here and there's no axHub token. The `axhub.memory_read`…"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261030-edc0a3f577"
+ ],
+ "features": [
+  "pending:veto-everywhere",
+  "pending:pr-only-merge",
+  "orchestrator:pr-only-merge",
+  "orchestrator:veto-everywhere"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 10,
+  "output": 1313,
+  "cacheRead": 163308,
+  "cacheWrite": 38919,
+  "thinking": 432,
+  "costUsd": 0.2535,
+  "costEstimated": false,
+  "toolCalls": 3,
+  "commands": 1,
+  "filesTouched": 0,
+  "reportedUsd": 0.3703
+ },
+ "ingestedAt": "2026-10-31T13:52:05.017Z"
+}

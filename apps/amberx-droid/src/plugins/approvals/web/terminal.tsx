@@ -9,9 +9,9 @@
  */
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Chip, Icon, Note } from '../../../axf/react';
-import { formatCountdown, VETO_WARNING_SECONDS } from '../../../axf/libs/hub/veto';
+import { formatCountdown, VETO_ACTION_LABELS, VETO_WARNING_SECONDS, type VetoAction } from '../../../axf/libs/hub/veto';
 import { checkVeto, closeTrack, isFinal, startVeto, type Track, type TrackState } from './store';
-import { deny, useVeto } from './deny';
+import { actOn, useVeto } from './deny';
 import './terminal.css';
 
 let wanted: string | null = null;
@@ -20,14 +20,19 @@ const listeners = new Set<(id: string) => void>();
 export function showTab(id: string | null) { wanted = id; if (id) listeners.forEach((f) => f(id)); }
 
 const TONE: Record<TrackState, 'accent' | 'success' | 'warning' | 'danger' | undefined> = {
-  held: 'warning', running: 'accent', ran: 'success', failed: 'danger', denied: undefined, expired: undefined, gone: undefined,
+  held: 'warning', shelved: 'warning', running: 'accent', ran: 'success', failed: 'danger', denied: undefined, expired: undefined, gone: undefined,
 };
-export const label = (t: Track): string => (t.state === 'held' ? (t.left > 0 ? formatCountdown(t.left) : 'running…') : t.state === 'gone' ? 'left the hold' : t.state);
+export const label = (t: Track): string => (t.call.shelved && t.state === 'held' ? 'shelved' : t.state === 'held' ? (t.left > 0 ? formatCountdown(t.left) : 'running…') : t.state === 'gone' ? 'left the hold' : t.state);
+
+const ACTS: { a: VetoAction; icon: string; tone: 'danger' | 'primary' | 'neutral' }[] = [
+  { a: 'deny', icon: 'x-circle', tone: 'danger' }, { a: 'approve-now', icon: 'play', tone: 'primary' }, { a: 'shelve', icon: 'pause', tone: 'neutral' },
+];
 
 function TrackView({ t }: { t: Track }) {
-  const [busy, setBusy] = useState(false);
-  const held = t.state === 'held' && t.left > 0;
-  const urgent = held && t.left <= VETO_WARNING_SECONDS;
+  const [busy, setBusy] = useState<VetoAction | null>(null);
+  const shelved = t.state === 'held' && t.call.shelved;
+  const held = t.state === 'held' && (t.left > 0 || shelved);
+  const urgent = held && !shelved && t.left <= VETO_WARNING_SECONDS;
   return (
     <div className="axp-veto-track">
       <div className="axp-veto-head">
@@ -36,14 +41,16 @@ function TrackView({ t }: { t: Track }) {
           <code className="axp-veto-cmd">$ {t.call.command || t.call.tool}</code>
         </div>
         <div className="axp-veto-side">
-          {held
+          {held && !shelved
             ? <span className={`axp-veto-count${urgent ? ' is-urgent' : ''}`} role="timer" aria-live={urgent ? 'assertive' : 'off'}>{formatCountdown(t.left)}</span>
-            : <Chip tone={TONE[t.state]}>{label(t)}{t.exitCode !== null ? ` · exit ${t.exitCode}` : ''}</Chip>}
-          {held && <Button tone="danger" icon="x-circle" busy={busy} onClick={() => { setBusy(true); void deny(t).finally(() => setBusy(false)); }}>Deny</Button>}
+            : <Chip tone={shelved ? 'warning' : TONE[t.state]}>{label(t)}{t.exitCode !== null ? ` · exit ${t.exitCode}` : ''}</Chip>}
+          {held && ACTS.filter((x) => t.call.actions.includes(x.a)).map((x) => (
+            <Button key={x.a} tone={x.tone} icon={x.icon} busy={busy === x.a} disabled={busy !== null} onClick={() => { setBusy(x.a); void actOn(t, x.a).finally(() => setBusy(null)); }}>{VETO_ACTION_LABELS[x.a]}</Button>
+          ))}
           <Button icon="external" onClick={() => window.open(t.call.url, '_blank', 'noopener,noreferrer')}>On the hub</Button>
         </div>
       </div>
-      {held && <p className="fx-small fx-muted axp-veto-note">Runs on the VPS when the countdown ends. There is no Approve: Deny stops it.</p>}
+      {held && <p className="fx-small fx-muted axp-veto-note">{shelved ? 'Shelved: the countdown is paused until you approve or deny it.' : 'Runs on the VPS when the countdown ends. Deny stops it, Approve runs it now, Shelve pauses the countdown.'}</p>}
       <div className="fx-terminal axp-veto-term" role="log" aria-label={`Output of ${t.call.title}`}>
         <div className="fx-terminal__lines">
           {t.lines.map((l, i) => (
@@ -72,7 +79,7 @@ export function TerminalView() {
         <div>
           <p className="fx-eyebrow">Terminal · held commands</p>
           <h1>{tracks.some((t) => t.state === 'held') ? `${tracks.filter((t) => t.state === 'held').length} held` : 'Terminal'}</h1>
-          <p className="fx-muted">Each command Claude sends through Vinnie opens a tab here: the countdown, Deny, then the output when the hub runs it.</p>
+          <p className="fx-muted">Each command Claude sends through Vinnie opens a tab here: the countdown, Deny / Approve / Shelve, then the output when the hub runs it.</p>
         </div>
         <div className="fx-row fx-row--wrap">
           <Button icon="refresh" onClick={() => void checkVeto()}>Check now</Button>

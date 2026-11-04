@@ -1,0 +1,29 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "navigator-strip",
+  "name": "Navigator Strip",
+  "version": "1.0.0",
+  "description": "The active navigation menu drawn as a labelled strip; swapping the nav menu changes the strip too.",
+  "author": "AmberX AXF",
+  "tags": [
+    "live",
+    "navigation"
+  ],
+  "data": {
+    "variant": "labels",
+    "align": "start",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "nav",
+        "items": [],
+        "provider": "nav",
+        "max": 12,
+        "label": "Navigation"
+      }
+    ],
+    "density": "compact",
+    "divider": false
+  }
+}

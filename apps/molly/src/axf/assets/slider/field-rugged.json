@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "field-rugged",
+  "name": "Field Rugged slider",
+  "version": "1.0.0",
+  "description": "Field Rugged: square thumb on a 8 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "rugged",
+    "rugged",
+    "touch"
+  ],
+  "data": {
+    "track": 8,
+    "thumb": "square",
+    "thumbSize": 24,
+    "fill": "solid",
+    "showValue": "always",
+    "ticks": true
+  }
+}

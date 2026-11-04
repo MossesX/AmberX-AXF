@@ -31,6 +31,9 @@
     "divider",
     "badge",
     "settings",
+    "dock-layout",
+    "xlayout",
+    "nav-style",
     "behavior-theme",
     "design-package",
     "style-package",
@@ -38,7 +41,13 @@
     "logo-mark",
     "animated-logo",
     "icon-pack",
-    "branding"
+    "branding",
+    "typography",
+    "density",
+    "sizing",
+    "agent-card",
+    "job-type",
+    "card"
   ],
   "parsed": {
     "full": {
@@ -80,7 +89,14 @@
         "layout": "classic-ide"
       }
     },
-    "too-big": null
+    "too-big": null,
+    "retired-slot": {
+      "$axf": "appearance@1",
+      "slots": {
+        "design-package": "hub-default",
+        "layout": "classic-ide"
+      }
+    }
   },
   "resolved": {
     "full": {
@@ -141,6 +157,16 @@
       "spacing": null,
       "hidden": {},
       "skipped": []
+    },
+    "retired-slot": {
+      "slots": {
+        "layout": "classic-ide"
+      },
+      "spacing": null,
+      "hidden": {},
+      "skipped": [
+        "design-package:hub-default (not in this app)"
+      ]
     }
   },
   "merged": {
@@ -163,7 +189,7 @@
         "accent": "rgb(31,111,235)",
         "scheme": "light"
       },
-      "updatedBy": "build-pilot",
+      "updatedBy": "axhub-web",
       "updatedAt": "2026-10-21T01:00:00Z"
     },
     "hidden-clear": {
@@ -204,7 +230,7 @@
       "updatedAt": "2026-10-21T01:00:00Z"
     }
   },
-  "serialized": "{\n  \"$axf\": \"appearance@1\",\n  \"slots\": {\n    \"color-theme\": \"neon-tide\",\n    \"layout\": \"focus-top\",\n    \"style-theme\": \"glass-orbit\",\n    \"toolbar\": \"standard-icons\"\n  },\n  \"spacing\": \"compact\",\n  \"hidden\": {\n    \"color-theme\": true,\n    \"nav-menu\": false,\n    \"toolbar\": true\n  },\n  \"palette\": {\n    \"bg\": \"#f2f5f8\",\n    \"accent\": \"rgb(31,111,235)\",\n    \"scheme\": \"light\"\n  },\n  \"updatedBy\": \"build-pilot\",\n  \"updatedAt\": \"2026-10-21T01:00:00Z\"\n}",
+  "serialized": "{\n  \"$axf\": \"appearance@1\",\n  \"slots\": {\n    \"color-theme\": \"neon-tide\",\n    \"layout\": \"focus-top\",\n    \"style-theme\": \"glass-orbit\",\n    \"toolbar\": \"standard-icons\"\n  },\n  \"spacing\": \"compact\",\n  \"hidden\": {\n    \"color-theme\": true,\n    \"nav-menu\": false,\n    \"toolbar\": true\n  },\n  \"palette\": {\n    \"bg\": \"#f2f5f8\",\n    \"accent\": \"rgb(31,111,235)\",\n    \"scheme\": \"light\"\n  },\n  \"updatedBy\": \"axhub-web\",\n  \"updatedAt\": \"2026-10-21T01:00:00Z\"\n}",
   "palette": {
     "amber-ember": {
       "bg": "#0f0d0a",
@@ -359,6 +385,17 @@
       "danger": "#ce2732",
       "ok": "#218c5a",
       "scheme": "light"
+    },
+    "hub-night": {
+      "bg": "#0f1012",
+      "fg": "#ebedf0",
+      "muted": "#9aa1ab",
+      "card": "#16181b",
+      "line": "#2b3036",
+      "accent": "#f5a524",
+      "danger": "#f06a6a",
+      "ok": "#3fcf8e",
+      "scheme": "dark"
     },
     "linen-slate": {
       "bg": "#f8f6f4",

@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "meadow",
+  "name": "Meadow",
+  "version": "1.0.0",
+  "description": "Soft sage neutrals and an evergreen accent for calm operational tools.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "natural"
+  ],
+  "data": {
+    "scheme": "light",
+    "tokens": {
+      "bg": "#f5f7f5",
+      "surface": "#fefefe",
+      "surface2": "#f9faf9",
+      "surface3": "#eaeeea",
+      "text": "#1b281b",
+      "muted": "#637963",
+      "border": "#dbe1db",
+      "accent": "#178250",
+      "accentText": "#ffffff",
+      "accentSoft": "rgba(23,130,80,0.1)",
+      "danger": "#ce2732",
+      "success": "#218c5a",
+      "warning": "#b87614",
+      "info": "#1686b6",
+      "focus": "#178250",
+      "shadow": "rgba(21,50,21,0.12)"
+    }
+  }
+}

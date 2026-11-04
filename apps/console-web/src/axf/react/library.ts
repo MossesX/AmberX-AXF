@@ -37,6 +37,12 @@ export interface AxfWebLibrary {
   /** Custom settings UI for any tab; `render` returns React content. */
   settingsPanels?: SettingsPanel[];
   /**
+   * The library's own help (help@1 data: `{ entries, intros }`), shipped with it so a new plugin brings its help along
+   * (Help mode, Brett Nov 1 2026). Added to the help index while the library is installed. Console plugins may keep it
+   * in `help.json` beside plugin.json instead (plugin.json `help`); the coverage CI counts both.
+   */
+  help?: import('../core/engines/help').HelpData;
+  /**
    * Context-menu items, per target (`default` = the app-wide right-click / long-press menu). Added after the
    * context-menu asset's items and removed with the library, so a plugin's link never outlives the plugin.
    */
@@ -52,7 +58,7 @@ export interface AxfWebLibrary {
   /** Banners the app shows at the top of the page, above app tabs (slot `app.frame.banners`; e.g. a systems check or "what's new"); each renders nothing when idle. */
   banners?: BannerDef[];
   /**
-   * Inside a host app (embed@1, e.g. Patches): when this library isn't needed there, because the host already does its
+   * Inside a host app (embed@1): when this library isn't needed there, because the host already does its
    * job or hides what it draws (`skipWhen`: `embedded` | `take:<fn>` | `hidden:<type>`; see engines/embed.ts
    * embedSkipReason). It is then not installed on that page and is listed in `rt.skippedLibraries`; standalone it loads.
    */
@@ -156,6 +162,7 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
     for (const t of l.settingsTabs ?? []) rt.settings.addTab({ module: l.id, ...t });
     for (const g of l.settings ?? []) rt.settings.addGroup({ module: l.id, ...g });
     for (const p of l.settingsPanels ?? []) rt.settings.addPanel({ module: l.id, ...p });
+    if (l.help) rt.addHelp(`lib:${l.id}`, l.help);
     placeLibrary(rt, l);
     if (!rt.libraries.some((x) => x.id === l.id)) rt.libraries.push(installedLibraryRecord(l));
     rt.terminal.log('libraries', `${l.label} ${l.version} registered`);
@@ -186,7 +193,9 @@ function placeLibrary(rt: AxfRuntime, l: AxfWebLibrary) {
   if (!tab) return;
   rt.settings.addGroup({
     id: `${l.id}.placement`, label: 'Opens in', icon: 'layout', module: l.id, order: 1, tab,
-    description: `Where ${title ?? l.label} opens. Default: ${PLACEMENT_LABELS[l.opens].toLowerCase()}.`,
+    // the pick also decides where these settings open (window-resize-fix): say so, and name the plugin, not its dialog
+    // (the Terminal's primary UI is the "Open a tab" picker; terminal-drag-chain-tree, Nov 3 2026)
+    description: `Where ${l.label}${title && title !== l.label ? ` (${title})` : ''} opens, and where these settings open: Dialog opens them in a pop-up over what you're on, the other choices on the Settings page. Default: ${PLACEMENT_LABELS[l.opens].toLowerCase()}.`,
     settings: [{ key: placementKey(l.id), label: 'Open it in', kind: 'choice', default: l.opens, options: placementOptions() }],
   });
 }

@@ -1,0 +1,53 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "status-strip",
+  "name": "Status Strip",
+  "version": "1.0.0",
+  "description": "Widgets only: AI and connection status, build progress, unread alerts and the clock.",
+  "author": "AmberX AXF",
+  "tags": [
+    "widgets",
+    "status"
+  ],
+  "data": {
+    "variant": "icons",
+    "align": "spread",
+    "showSearch": false,
+    "groups": [],
+    "widgets": [
+      {
+        "type": "status",
+        "id": "ai",
+        "at": "start",
+        "order": 0
+      },
+      {
+        "type": "status",
+        "id": "online",
+        "at": "start",
+        "order": 10
+      },
+      {
+        "type": "progress",
+        "id": "build",
+        "at": "end",
+        "order": 10
+      },
+      {
+        "type": "counter",
+        "id": "alerts",
+        "at": "end",
+        "order": 20
+      },
+      {
+        "type": "clock",
+        "id": "digital-24h",
+        "at": "end",
+        "order": 30
+      }
+    ],
+    "density": "compact",
+    "surface": "flat"
+  }
+}

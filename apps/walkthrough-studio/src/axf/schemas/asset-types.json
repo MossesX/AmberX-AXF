@@ -163,7 +163,39 @@
         }
       },
       "optional_fields": {
-        "slots": "region → list of asset types that region accepts. Overrides the defaults in `slots.defaults` per region; a chrome region renders only when it accepts its asset type. Keys must be a region in `slots.regions`, values known asset types."
+        "statusHeight": "status bar height, px (default 26)",
+        "regionGap": "gap between the grid's regions, × --fx-space (default 0)",
+        "mainPadTop": "main area padding top on desktop, × --fx-space (default 2.4)",
+        "mainPadX": "main area padding left/right on desktop, × --fx-space (default 4)",
+        "mainPadBottom": "main area padding bottom on desktop, × --fx-space (default 6)",
+        "phoneMainPadTop": "main area padding top on a phone, × --fx-space (default 1.6)",
+        "phoneMainPadX": "main area padding left/right on a phone, × --fx-space (default 1.6)",
+        "phoneMainPadBottom": "main area padding bottom on a phone, × --fx-space (default 4)",
+        "phoneNavItemMin": "least width of a nav item in the phone's bottom strip, px (default 64)",
+        "phoneEdge": "inset of dropdowns and toasts from the phone's edges, px (default 8)",
+        "tinyMaxWidth": "viewport cut-off, px (default 480): at or under it the root carries data-fx-tiny",
+        "smallMaxWidth": "viewport cut-off, px (default 640): data-fx-small",
+        "phoneMaxWidth": "viewport cut-off, px (default 760): data-fx-narrow, the single-column phone grid",
+        "mediumMaxWidth": "viewport cut-off, px (default 900): data-fx-medium",
+        "largeMaxWidth": "viewport cut-off, px (default 1200): data-fx-large",
+        "slots": "region → list of asset types that region accepts. Overrides the defaults in `slots.defaults` per region; a chrome region renders only when it accepts its asset type. Keys must be a region in `slots.regions`, values known asset types.",
+        "repeat": "list of repeating slots (engine core/engines/repeat.ts): { id, dataSet, region? (a slot region, default main), style? (`repeat.styles`, default stacked), columns? (1-12, grid/cards; default grid 3, cards 2), max? (0 = all), fallback? { type?, id?, label? } }. The slot draws one item per entry of the data set the page declares under `dataSet`; when the page declares none or it is empty, the fallback slot draws instead."
+      },
+      "repeat": {
+        "styles": [
+          "tabs",
+          "cards",
+          "grid",
+          "stacked"
+        ],
+        "default": "stacked",
+        "maxColumns": 12
+      },
+      "description": "The shell's grid and every layout value (engine core/engines/layout.ts, rules core/engines/layout-rules.mjs): nav side + width, inspector side + width, menubar / toolbar / status switches, content width, status bar height, the gap between regions, the main area's padding on desktop and on a phone, the phone edge inset and nav item minimum, and the viewport cut-offs (tiny < small < phone < medium < large). Every parameter is a token (Nov 2 2026): each field compiles to --fx-layout-<field> and the optional ones default to the framework's own look, so an asset may set only the grid. The viewport cut-offs become root attributes (data-fx-tiny / -small / -narrow / -medium / -large) the stylesheets select on instead of px breakpoints.",
+      "tokens": {
+        "prefix": "layout",
+        "rules": "core/engines/layout-rules.mjs",
+        "note": "Every field below compiles to --fx-layout-<field in kebab-case>: numbers as px or × --fx-space, enums as their word, switches as 1 / 0. The compiled grid (fixture layout.json → compiled) keeps px numbers for native ports; the web grid vars read the tokens."
       }
     },
     "app-menu": {
@@ -1103,6 +1135,47 @@
       },
       "optional": true
     },
+    "dock-layout": {
+      "label": "Pane layout",
+      "group": "Navigation",
+      "icon": "layout",
+      "description": "A preset arrangement of dock panes (dock-layout@1, engine core/engines/dock.ts): a tree of numbered panes split horizontally or vertically with weights, applied to a window's dock by spreading its open tabs over the panes; drawn as a preview thumbnail before it is applied. Used by every host that docks tabs (MD Studio, xLayout's IDE mode, the Theme Editor). The framework ships ten starters; every app bakes them (shared).",
+      "required": [
+        "panes",
+        "tree"
+      ],
+      "optional_fields": {
+        "tree": "{ kind: leaf, pane: 1..n } | { kind: split, vertical: boolean, children: [tree…], weights: [number…] } — every pane number 1..n once; n ≤ 12",
+        "hint": "one line for pickers (`Editor with a terminal below`)",
+        "main": "the pane a new tab opens in when none is picked (1-based; default 1)"
+      },
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional": true
+    },
+    "xlayout": {
+      "label": "xLayout",
+      "group": "System",
+      "icon": "layout",
+      "description": "Molly as one app (xlayout@1, engine core/engines/xlayout.ts): the host-side layout that frames several apps (AmberX, axHub web, the Dev Console) and makes them look like one — which apps, how each kind of chrome is handled (host = only the host's, merged = one bar merged from every app's with the guests hiding theirs and sending them as data, guest = each app keeps its own), the IDE switch (pane limit, dock-layout@1 preset in force, presets offered, an optional inline preset tree) and up to three plugin toolbar slots (visible, location, items opening in the main area, a floating window or a pane). Host-only: standalone apps never load one (not shared). The chrome merge is chrome@1 (core/engines/chrome.ts), the pane tree dock@1.",
+      "required": [
+        "apps"
+      ],
+      "optional_fields": {
+        "apps": "[{ id: [a-z0-9-], label, url: https…, icon? }] — the apps the host frames, ≤ 12; id is the namespace prefix of every item the app sends (`<app>:<id>`)",
+        "merge": "{ banner | app-menu | nav-menu | context-menu | toolbar | widgets: host | merged | guest } — defaults: banner host, the rest merged",
+        "ide": "{ on: boolean, paneLimit 1..64 (default 6), preset: dock-layout id (default ide), presets: [dock-layout ids] (default the ten starters), tree?: preset tree }",
+        "toolbars": "[{ slot 1..3, visible, location: top | bottom | left | right, label?, items: [{ id, label, icon?, app?, action, open: main | floating | pane }] }] — missing slots get defaults (1 top visible, 2 bottom hidden, 3 right hidden)"
+      },
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "shared": false,
+      "optional": true
+    },
     "behavior-theme": {
       "label": "Behaviour theme",
       "group": "Themes",
@@ -1307,6 +1380,177 @@
         "accentFromBrand": "boolean: brand1 becomes the accent (default false)"
       }
     },
+    "typography": {
+      "label": "Typography",
+      "group": "Themes",
+      "icon": "type",
+      "description": "Text sizes everywhere (typography@1, engine core/engines/scale.ts): a size scale (xs–xl) and headings h1–h4 in em of the style theme's font size, weights, line heights, the eyebrow (size, weight, tracking, case) and mono text. Every field has a default equal to the framework's own look, so an asset may set only what it changes; the stylesheet and the components read only the compiled --fx-type-* tokens. One of the three scale assets (typography, density, sizing) that make \"change it in one place, changes it everywhere\" (Brett, Oct 30 2026). Rules: core/engines/scale-rules.mjs.",
+      "required": [],
+      "optional_fields": {
+        "scale": "{ xs, sm, md, lg, xl } em of the font size",
+        "headings": "{ h1, h2, h3, h4 } em; tracking em",
+        "weights": "{ body, medium, strong } 300–900",
+        "line": "{ tight, normal, loose } line heights",
+        "eyebrow": "{ size em, weight, tracking em, case: upper | normal }",
+        "mono": "{ size em }"
+      },
+      "optional": true
+    },
+    "density": {
+      "label": "Density",
+      "group": "Themes",
+      "icon": "sliders",
+      "description": "Spacing everywhere (density@1, engine core/engines/scale.ts): gaps (xs–xl) and paddings (control, card, page, row, cell) as multiples of the style theme's space unit, row heights (list, table, menu, control) as multiples of the font size. Compact vs roomy is one pick. Defaults = the framework's own look; compiles to --fx-dens-* tokens. One of the three scale assets. Rules: core/engines/scale-rules.mjs.",
+      "required": [],
+      "optional_fields": {
+        "gap": "{ xs, sm, md, lg, xl } × --fx-space",
+        "pad": "{ control, card, page, row, cell } × --fx-space",
+        "row": "{ list, table, menu, control } × --fx-font-size"
+      },
+      "optional": true
+    },
+    "sizing": {
+      "label": "Component sizing",
+      "group": "Themes",
+      "icon": "grid",
+      "description": "How big each kind of piece is (sizing@1, engine core/engines/scale.ts): buttons, icon buttons, chips, fields, tabs, segmented controls, cards, list rows, count strips, tables and page heads — heights × the font size, paddings × the space unit, fonts in em, radii as sm | md | lg | pill. Defaults = the framework's own look; compiles to --fx-size-* tokens. One of the three scale assets. Rules: core/engines/scale-rules.mjs.",
+      "required": [],
+      "optional_fields": {
+        "button": "{ height ×font, padX ×space, font em, icon em }",
+        "iconButton": "{ size ×font }",
+        "chip": "{ height ×font, padX ×space, font em, radius: sm | md | pill }",
+        "field": "{ height ×font, padX ×space, font em }",
+        "tab": "{ padY ×space, padX ×space, font em }",
+        "segment": "{ padY, padX ×space, font em }",
+        "card": "{ pad ×space, headFont em, radius: sm | md | lg }",
+        "listRow": "{ minHeight ×font, padX ×space, metaFont em }",
+        "countStrip": "{ number em, label em, pad ×space }",
+        "table": "{ padY, padX ×space, font em }",
+        "pageHead": "{ descriptionFont em, descriptionLines 1–6 }"
+      },
+      "optional": true
+    },
+    "agent-card": {
+      "label": "Agent card",
+      "group": "Widgets",
+      "icon": "user",
+      "description": "An agent's ID card (agent-card@1, rules core/engines/agent-card-rules.mjs): the design family (corporate badge, license, trading card, backstage pass), orientation, where the brand logo sits, which theme roles colour it, finish, photo size, code strip and the fields on each side. Colours and sizes come only from the active colour and style themes, so a theme swap rebrands every card. The active agent-card asset is the default design; apps may override it per agent. Every field has a default.",
+      "required": [],
+      "enums": {
+        "design": [
+          "badge",
+          "license",
+          "trading",
+          "backstage"
+        ],
+        "orientation": [
+          "vertical",
+          "horizontal"
+        ],
+        "logo": [
+          "banner",
+          "watermark",
+          "corner",
+          "none"
+        ],
+        "surface": [
+          "surface",
+          "raised",
+          "inverse",
+          "accent"
+        ],
+        "accent": [
+          "accent",
+          "brand-1",
+          "brand-2",
+          "brand-3",
+          "info",
+          "success",
+          "warning",
+          "danger"
+        ],
+        "finish": [
+          "flat",
+          "foil",
+          "hologram",
+          "neon"
+        ],
+        "photo": [
+          "large",
+          "small",
+          "none"
+        ],
+        "code": [
+          "barcode",
+          "qr",
+          "none"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "front": "card field ids, in order (name, role, specialty, employeeId, email, hiredAt, status, catchphrase, signature, jobs, successRate, spend, favoriteModel); up to 12",
+        "back": "card field ids for the back (flip); empty = no back",
+        "labels": "{ field: label } to rename a field on this design (up to 24 characters)"
+      }
+    },
+    "job-type": {
+      "label": "Job type",
+      "group": "Agents",
+      "icon": "layers",
+      "shared": false,
+      "description": "A recurring kind of work a hired swarm agent owns (job-type@1, rules core/engines/job-type-rules.mjs): the owning specialty (an agent skill id), default model, token budget per run, trigger (on demand, schedule, event), the brief template the agent gets ({{placeholders}} from declared inputs and built-ins) and where its outputs go (report path, UI Review group name with a timestamp). Routed by framework/cli/agent-job.mjs. Not drawn: it carries no colours or sizes.",
+      "required": [
+        "specialty",
+        "budget",
+        "trigger",
+        "brief"
+      ],
+      "enums": {
+        "model": [
+          "opus",
+          "fable"
+        ]
+      },
+      "nested": {
+        "budget": [
+          "tokens"
+        ],
+        "trigger": [
+          "kind"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "model": "default model for a run, from the model policy (core/model-policy.mjs: opus or fable, never sonnet or haiku); default opus",
+        "readOnly": "true = the job changes nothing, only reports",
+        "tools": "tool names the run gets (default: the owning agent's tools; read-only jobs get read tools only)",
+        "inputs": "[{ id, label, required?, default?, about? }] filled into the brief",
+        "command": "a command the job runs (e.g. a re-record command), shown in the brief",
+        "outputs": "{ report: path template, uiReviewGroup: name template with {{when}}, uiReviewApp }"
+      }
+    },
+    "help": {
+      "label": "Help",
+      "group": "System",
+      "icon": "help",
+      "description": "Plain-English help for Help mode (help@1, rules core/engines/help-rules.mjs, engine core/engines/help.ts): a pack of entries, each explaining one control or screen by its help id (target: action:<spec>, view:<id>, banner:<id>, menu:<id>, column:<slug> or the label slug; <screen>/<id> overrides on one screen) with a title, text (what it does, when to use it, what happens if you tap it), an optional longer `more` for the What is this? panel, a `tryIt` step, a `link` and `related` ids; plus short screen intros (2–4 steps, walkthrough@1 step shape). Not a slot you pick: every help asset an app has is in force at once (framework, app, each plugin's help.json), later packs win, a written entry always beats a draft. Shown only while Help mode is on (setting axf.help.mode, per device).",
+      "required": [],
+      "collection": true,
+      "optional_fields": {
+        "scope": "string — where the pack belongs (framework, an app id, plugin:<folder>)",
+        "entries": "[{ id?, target, title, text, more?, tryIt?, link?: path | https URL | { label, href }, related?: [help ids], kind?, draft? }]",
+        "intros": "[{ screen: view id, title?, steps: [{ say, target?, do?, title? }] (1–6) }]"
+      },
+      "optional": true
+    },
     "uac-policy": {
       "label": "User account control",
       "group": "System",
@@ -1326,11 +1570,12 @@
     }
   },
   "rollDefaults": {
-    "_doc": "Randomize rolls. slot = the slot takes part in a roll (randomize all); asset = default for an asset's own `roll` flag. Types may override with their own `roll` block. uac-policy is never rolled.",
+    "_doc": "Randomize rolls. slot = the slot takes part in a roll (randomize all); asset = default for an asset's own `roll` flag. Types may override with their own `roll` block. uac-policy is never rolled. help is never rolled (every help asset is in force at once).",
     "slot": true,
     "asset": true,
     "never": [
-      "uac-policy"
+      "uac-policy",
+      "help"
     ]
   },
   "hideDefaults": {

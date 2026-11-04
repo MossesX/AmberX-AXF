@@ -28,7 +28,7 @@ Plugins    Plugin Manager · Install from the catalog… · Plugin Manager in a 
            one entry per plugin (Activity, Agents ▸, AI assistant ▸, App tabs, Approvals banner, Build manager,
            Claude badge, Container access, Fable rebuilds, Feature assistant ▸, MCP servers ▸, New project,
            Sessions, Snapshots, Systems check ▸, Terminal ▸, Theme manager) · All plugins ▸ · Plugin settings
-Apps       Build Pilot ▸ (Show in a tab, Open in a new tab) · axHub ▸ (Waiting for approval ▸, Check now, Approvals,
+Apps       axHub ▸ (Waiting for approval ▸, Check now, Approvals,
            App catalog, Users, Your hub account, Show the app catalog in a tab, Open axHub) · Demo site ▸
            Back to the console · App tabs ▸ · App tabs settings
 View       ✓ Toolbar · ✓ Side navigation · ✓ Banner · All bars and menus ▸ · Look ▸ (next colour/style/layout,
@@ -51,7 +51,7 @@ Help       Keyboard shortcuts · Documentation · Plugin guide · Systems check 
 Live lists: `console.pending` (open pending items → Pending builds, row flashed), `console.queue` (steps not done →
 Build queue, row flashed), `console.features` (plan features not built → feature window), `console.libraries`,
 `console.modules`, `console.boilerplates` (→ the page, row flashed / picked), `console.plugins` (→ Plugin Manager),
-`build-manager.remaining` (→ Build manager row), `approvals.list` (→ the review dialog), `app-tabs.tabs`; plus the
+`build-manager.remaining` (→ Build manager row), `approvals.list` (→ the review dialog; since Nov 1 2026 each row also carries red Deny + green Approve, framework AppMenu row `buttons` + provider `act`), `app-tabs.tabs`; plus the
 framework's `views`, `nav`, `toolbar`, `settings`, `windows`, `dialogs`, `chrome`.
 
 New actions: `console.search`, `console.open:<pilot|demo|axhub|axhub-approvals|axhub-apps|axhub-users|axhub-account|plugin-guide|docs>`

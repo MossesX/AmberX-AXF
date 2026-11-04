@@ -1,0 +1,41 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-7f3c91a2b4",
+  "createdAt": "2026-10-21T17:32:00.000Z",
+  "updatedAt": "2026-10-21T19:20:00.000Z",
+  "kind": "build",
+  "title": "Patches web port + unified 4-tab settings + Patches serves all Android notifications",
+  "asked": "Build the web port of Patches. Make Patches responsible for serving all Android notifications. When Console, Pilot or axHub run inside Patches, remove their own settings hooks and combine all three apps' settings plus Patches' settings into one settings interface with 4 tabs (one per app), with a hook to it in Patches' application menu and context menu. Build now on Opus, Fable rebuild later.",
+  "repos": ["MossesX/AmberX-AXF", "MossesX/Build-Pilot", "MossesX/axHub"],
+  "model": "opus",
+  "who": { "where": "cloud", "host": "claude-code-cloud" },
+  "surface": "claude-code-cloud",
+  "status": "done",
+  "buildRef": { "kind": "pending", "id": "patches-web-settings-notify" },
+  "startedAt": "2026-10-21T17:40:00.000Z",
+  "lastSeenAt": "2026-10-21T19:20:00.000Z",
+  "finishedAt": "2026-10-21T19:20:00.000Z",
+  "doing": "Done: Patches web live at https://patches.amberxai.com",
+  "progress": 1,
+  "estimate": { "minutes": 200, "costUsd": 28 },
+  "costEstimated": true,
+  "branch": "rebuild/patches-web-settings-notify",
+  "areas": ["apps/patches-web", "framework/core/engines/embed.ts", "framework/core/engines/appmenu.ts", "framework/core/runtime.ts", "framework/react", "framework/spec", "apps/console-web/src/bannerStrip.tsx", "apps/patches", "apps/axhub-android (watch)", "framework/android/lib-hub", "framework/android/axf-kernel (EmbedEngine, EmbedTakes)", "Build-Pilot: re-bake", "axHub: packages/server/src/web.ts, embed.ts"],
+  "steps": [
+    { "text": "Step 1: Patches web port (apps/patches-web): one banner + banner strip + Console/Pilot/axHub tabs kept alive, embed@1, hub look, deploy (45 min)", "state": "done", "startedAt": "2026-10-21T18:08:00.000Z", "finishedAt": "2026-10-21T18:19:00.000Z" },
+    { "text": "Step 2: embed@1 settings contract: takes (settings, notifications), page mode, host/guest messages; apps drop their own settings hooks inside Patches (TS + Kotlin + fixtures) (35 min)", "state": "done", "startedAt": "2026-10-21T17:45:00.000Z", "finishedAt": "2026-10-21T18:08:00.000Z", "note": "check-embed 94 -> 236" },
+    { "text": "Step 3: Patches unified Settings (4 tabs: Patches, Console, Pilot, axHub), hooked into Patches' application menu + context menu, web and Android; Build Pilot re-bake, axHub embed support (55 min)", "state": "done", "startedAt": "2026-10-21T18:19:00.000Z", "finishedAt": "2026-10-21T18:30:00.000Z", "note": "axHub PR #2 (326 tests, merged), Build-Pilot PR #1" },
+    { "text": "Step 4: Patches serves all Android notifications: approvals watch + console alerts + embedded apps' notifications through Patches; AXHub app defers when Patches is installed (45 min)", "state": "done", "startedAt": "2026-10-21T18:22:00.000Z", "finishedAt": "2026-10-21T18:30:00.000Z" },
+    { "text": "Step 5: tests, CI, screenshots, report, rebuild log, tracker, PRs (20 min)", "state": "done", "startedAt": "2026-10-21T18:30:00.000Z", "finishedAt": "2026-10-21T19:09:00.000Z", "note": "AmberX-AXF PR #11 green on 8ffbc74 (Android, console, engine sweep)" },
+    { "text": "Step 6: deploy: axHub redeploy with AXHUB_EMBED_FRAME_ANCESTORS, DNS patches.amberxai.com, Patches web install behind the wall", "state": "done", "startedAt": "2026-10-21T18:50:00.000Z", "finishedAt": "2026-10-21T19:20:00.000Z", "note": "stale GITHUB_TOKEN in the console env found; swap pending approval" }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "Patches web live at https://patches.amberxai.com (hub admins). embed@1 takes + page mode + messages; combined 4-tab Settings; Patches Android serves notifications; axHub decision #89 merged and redeployed; Build Pilot re-baked (PR #1).",
+    "branch": "rebuild/patches-web-settings-notify",
+    "commits": ["a5caa72", "8ffbc74"],
+    "tests": { "check-embed": { "before": "94", "after": "236" }, "axHub pnpm test": { "before": "321", "after": "326" } },
+    "links": { "report": "_claude/memory/docs/rebuilds/patches-web-settings-notify.md", "pr": "https://github.com/MossesX/AmberX-AXF/pull/11", "site": "https://patches.amberxai.com" }
+  },
+  "closed": null
+}

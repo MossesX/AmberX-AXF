@@ -216,6 +216,35 @@
         "--fx-font-size": "14px"
       }
     },
+    "hub": {
+      "tight": {
+        "--fx-space": "3.4px",
+        "--fx-row-h": "22px",
+        "--fx-density-k": "0.48360000000000003",
+        "--fx-radius-sm": "2px",
+        "--fx-radius-md": "5px",
+        "--fx-radius-lg": "7px",
+        "--fx-font-size": "13px"
+      },
+      "compact": {
+        "--fx-space": "4.4px",
+        "--fx-row-h": "22px",
+        "--fx-density-k": "0.6240000000000001",
+        "--fx-radius-sm": "3px",
+        "--fx-radius-md": "6px",
+        "--fx-radius-lg": "10px",
+        "--fx-font-size": "13px"
+      },
+      "regular": {
+        "--fx-space": "5.5px",
+        "--fx-row-h": "27px",
+        "--fx-density-k": "0.78",
+        "--fx-radius-sm": "4px",
+        "--fx-radius-md": "8px",
+        "--fx-radius-lg": "12px",
+        "--fx-font-size": "13px"
+      }
+    },
     "humanist": {
       "tight": {
         "--fx-space": "5.6px",

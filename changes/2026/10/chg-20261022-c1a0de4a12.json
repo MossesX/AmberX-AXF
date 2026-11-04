@@ -1,0 +1,76 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261022-c1a0de4a12",
+  "createdAt": "2026-10-22T12:40:00.000Z",
+  "updatedAt": "2026-10-22T13:33:14.975Z",
+  "kind": "build",
+  "title": "Installer look: gauge + meter asset types, more light/dark colour themes, installer layouts, look dialog with roll tree (saved on axHub)",
+  "asked": "Persistent settings with multiple layouts, gauge styles, progress meter styling and light/dark colour themes; a dialog from the application menu with switches for style, colour and layout; roll includes what is marked; collapsible left tree of every token with switches, parent toggles children.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "claude-code-cloud",
+    "host": "claude.ai/code"
+  },
+  "steps": [
+    {
+      "text": "Framework: gauge + meter types, engine, CSS, components, starters, colour themes",
+      "state": "done"
+    },
+    {
+      "text": "Plugin: installer layouts, preview page, look dialog + roll tree, axHub persistence",
+      "state": "done"
+    },
+    {
+      "text": "Tests, screenshots, docs",
+      "state": "done"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "Gauge + meter framework asset types (5 + 5 starters), 4 new colour themes, installer layouts, Installer preview page, Installer look dialog with switches, roll and token tree, saved on axHub data server. Tests: check-meters 39, look-check 69, test.py 41; tsc, theme, controls, menu-reach, other engine checks clean. Android twin deferred.",
+    "branch": "claude/amberx-cloning-plugin-hzcj78",
+    "commits": [
+      {
+        "sha": "0aee83f"
+      }
+    ],
+    "filesChanged": 88,
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-22T13:33:14.975Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "claude-handoff"
+  },
+  "surface": "cloud",
+  "startedAt": "2026-10-22T12:40:00.000Z",
+  "finishedAt": "2026-10-22T13:00:00.000Z",
+  "lastSeenAt": "2026-10-22T13:00:00.000Z",
+  "estimate": {
+    "minutes": 150,
+    "costUsd": 21.0
+  },
+  "actual": {
+    "minutes": 25
+  },
+  "costEstimated": true,
+  "branch": "claude/amberx-cloning-plugin-hzcj78",
+  "areas": [
+    "framework/schemas/asset-types.json",
+    "framework/core/engines/components.ts",
+    "framework/react/components",
+    "framework/ui/axf.css",
+    "framework/assets",
+    "apps/console-web/src/assets",
+    "apps/console-web/plugins/claude-handoff"
+  ]
+}

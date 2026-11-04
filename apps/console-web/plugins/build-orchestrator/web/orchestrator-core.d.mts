@@ -4,13 +4,15 @@ export const SCHEMA: string;
 export const MODELS: ('Fable' | 'Opus')[];
 export const STATUSES: string[];
 export const STATUS_LABEL: Record<string, string>;
+/** `built` (every step done, PR not merged) or `complete`. */
+export function isFinished(status: string): boolean;
 export const SORTS: string[];
 export const SORT_LABEL: Record<string, string>;
 export const DEFAULT_RULES: { sameSession: boolean; subAgents: boolean; approveModelSwitch: boolean; maxStepMinutes: number };
 export const MODEL_GUIDE: Record<string, string>;
 export const UNCATEGORISED: string;
 export interface Group { label: string; steps: any[]; done: number; skipped: number; minutesLeft: number }
-export interface Phase { index: number; model: 'Fable' | 'Opus'; label: string; name: string; from: string; gate: boolean; approved: boolean; done: boolean; minutesLeft: number; steps: any[]; groups: Group[] }
+export interface Phase { index: number; model: 'Fable' | 'Opus'; label: string; name: string; from: string; gate: boolean; kind: '' | 'upgrade' | 'downgrade' | 'same'; upgrade: boolean; approved: boolean; done: boolean; minutesLeft: number; steps: any[]; groups: Group[] }
 export function categories(builds: any[]): { name: string; count: number }[];
 export function estimateMinutes(e: unknown): number | null;
 export function formatMinutes(min: number | null | undefined): string;
@@ -23,5 +25,6 @@ export function splitCheck(build: any, rules?: any): { needsSplit: boolean; reas
 export function derivedStatus(build: any, rules?: any): string;
 export function counts(builds: any[]): Record<string, number>;
 export function sortBuilds(list: any[], sort?: string, dir?: 'asc' | 'desc', rules?: any): any[];
+export const ASSET_RULE: string;
 export function brief(build: any, rules?: any): string;
 export function apply(state: any, change: any): { state: any; build?: any; log: string[] };

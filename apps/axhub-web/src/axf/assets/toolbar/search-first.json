@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "search-first",
+  "name": "Search First",
+  "version": "1.0.0",
+  "description": "A wide search-bar widget up front that finds anything, with the chrome toggles beside it.",
+  "author": "AmberX AXF",
+  "tags": [
+    "search"
+  ],
+  "data": {
+    "variant": "icons",
+    "align": "start",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "chrome",
+        "items": [],
+        "provider": "chrome",
+        "max": 4,
+        "label": "Bars and menus"
+      }
+    ],
+    "widgets": [
+      {
+        "type": "search-bar",
+        "id": "everything",
+        "at": "start",
+        "order": 0
+      }
+    ]
+  }
+}

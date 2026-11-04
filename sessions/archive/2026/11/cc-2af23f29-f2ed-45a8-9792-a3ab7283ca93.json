@@ -1,0 +1,82 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-2af23f29-f2ed-45a8-9792-a3ab7283ca93",
+ "source": "claude-code",
+ "sessionId": "2af23f29-f2ed-45a8-9792-a3ab7283ca93",
+ "project": "other",
+ "title": "# Read-only check: what serves demo.amberxai.com (Brett, Nov 1 ~3 AM) Short session. Do NOT change anything, do NOT res…",
+ "startedAt": "2026-11-01T06:41:41.864Z",
+ "endedAt": "2026-11-01T06:42:06.437Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/demo-check",
+  "repo": "",
+  "branch": "claude/demo-check"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-sonnet-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-01T06:41:41.982Z",
+   "kind": "prompt",
+   "text": "# Read-only check: what serves demo.amberxai.com (Brett, Nov 1 ~3 AM) Short session. Do NOT change anything, do NOT restart or deploy, do NOT push. Never print secrets. Brett says demo.amberxai.com is his adult streaming site and it is NOT the old `axp-demo` nginx container from 13 days ago. Find out what actually serves it and whether it works. 1. Find the route: Traefik (coolify-proxy) dynamic config files under /data/coolify/proxy and docker labels of every container (docker inspect --format '{{json .Config.Labels}}') for a Host rule containing demo.amberxai.com. Also check Coolify's DB/ap…",
+   "model": "claude-sonnet-5-5",
+   "tokens": {
+    "input": 6,
+    "output": 1708,
+    "cacheRead": 122699,
+    "cacheWrite": 45600,
+    "thinking": 152
+   },
+   "costUsd": 0.1434,
+   "costEstimated": false,
+   "seconds": 23,
+   "tools": {
+    "Bash": 3
+   },
+   "commands": 3,
+   "files": [],
+   "changeIds": [
+    "chg-20261101-525f888bbe"
+   ],
+   "features": [],
+   "output": "demo.amberxai.com is served by the old `axp-demo` container. I couldn't find a separate adult streaming site on this VPS. - **What serves it:** `axp-demo` (`nginx:alpine`, up 13 days, restarted Oct 19) is the only container with a `Host(demo.amberxai.com)` rule. It serves static files from `/opt/ax…"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261101-525f888bbe"
+ ],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 6,
+  "output": 1708,
+  "cacheRead": 122699,
+  "cacheWrite": 45600,
+  "thinking": 152,
+  "costUsd": 0.1434,
+  "costEstimated": false,
+  "toolCalls": 3,
+  "commands": 3,
+  "filesTouched": 0,
+  "reportedUsd": 0.2118
+ },
+ "ingestedAt": "2026-11-01T06:42:07.481Z"
+}

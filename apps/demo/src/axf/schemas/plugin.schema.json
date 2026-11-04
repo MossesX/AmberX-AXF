@@ -133,7 +133,7 @@
       ]
     },
     "tabable": {
-      "description": "Can a host app add this plugin to its tab group (e.g. Patches' tabs)? false (default) = never. true = its first page; {view, label?, icon?} = that page. Only plugins with a page (a view other than settings) can be tabable. Every plugin with a GUI other than settings starts not tabable.",
+      "description": "Can a host app add this plugin to its tab group (embed@1)? false (default) = never. true = its first page; {view, label?, icon?} = that page. Only plugins with a page (a view other than settings) can be tabable. Every plugin with a GUI other than settings starts not tabable.",
       "default": false,
       "oneOf": [
         {
@@ -227,6 +227,10 @@
       "type": "string",
       "pattern": "^(view|dialog):[a-z0-9][a-z0-9._-]{0,63}$",
       "description": "which of its UIs moves with opens (default: its first page, else its first dialog)"
+    },
+    "help": {
+      "type": "string",
+      "description": "The plugin's help pack (help@1 data: { entries, intros }), a file in the plugin folder; default help.json. Loaded into Help mode while the plugin runs; counted by framework/cli/help-coverage.mjs."
     }
   }
 }

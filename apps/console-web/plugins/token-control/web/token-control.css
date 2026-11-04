@@ -1,0 +1,23 @@
+/* Token control page (theme tokens only: framework/spec/THEMING.md). Layout only; controls keep the framework's look. */
+.axf-tc-wrap { flex-wrap: wrap; }
+.axf-tc-pick { min-width: calc(var(--fx-space) * 24); flex: 1 1 calc(var(--fx-space) * 24); }
+.axf-tc-scroll { overflow-x: auto; }
+.axf-tc-table td { vertical-align: middle; }
+.axf-tc-inline { margin: 0; }
+.axf-tc-inline .fx-field__label { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); }
+.axf-tc-over td:first-child { border-inline-start: var(--fx-border-w) solid var(--fx-accent); }
+.axf-tc-small { font-size: var(--fx-type-scale-xs); }
+.axf-tc-pre { white-space: pre-wrap; word-break: break-word; max-block-size: calc(var(--fx-space) * 64); overflow: auto; }
+.axf-tc-target { padding-block: var(--fx-dens-gap-sm); border-block-end: var(--fx-border-w) solid var(--fx-border); }
+.axf-tc-h { margin: 0; font-size: var(--fx-font-size); }
+
+/* Veto pass banner (web/pass.tsx): layout only; the chips' look is the banner's and the framework buttons'. */
+.axp-pass-banner { --axf-banner-tone: var(--fx-info); display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0; flex-wrap: nowrap }
+.axp-pass-banner.is-ask { --axf-banner-tone: var(--fx-accent) }
+.axp-pass-banner.is-warn { --axf-banner-tone: var(--fx-warning) }
+.axp-pass-banner__icon { display: inline-flex; flex: none; color: var(--axf-banner-tone) }
+.axp-pass-banner__main { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0; overflow-x: auto; scroll-snap-type: x proximity }
+.axp-pass-chip { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); white-space: nowrap; flex: none; scroll-snap-align: start; padding-inline: var(--fx-dens-gap-sm); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md) }
+.axp-pass-chip--ask { border-color: var(--fx-accent) }
+.axp-pass-chip__time { font-variant-numeric: tabular-nums }
+.axp-pass-chip__warn { color: var(--fx-warning); font-size: var(--fx-type-scale-xs) }

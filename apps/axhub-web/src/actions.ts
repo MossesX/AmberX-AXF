@@ -1,5 +1,6 @@
 import type { AxfRuntime } from './axf/core';
 import { installHubMenu } from './axf/libs/hub/menu';
+import { installApprovalsMenu } from './axf/libs/approvals/menu';
 import { checkHubNow } from './axf/libs/hub/react';
 import { HUB } from './hub/useHub';
 import { APPROVAL_ID_RE, signInUrl } from './hub/core';
@@ -24,6 +25,8 @@ const visibleSearch = () =>
 export function registerActions(axf: AxfRuntime) {
   const on = axf.actions.register.bind(axf.actions);
   installHubMenu(axf, { hub: HUB, approvalsMore: 'nav:home', appsMore: 'nav:apps' });
+  // Waiting for approval: Deny / Approve on every row (lib-approvals, replaces lib-hub's read-only list).
+  installApprovalsMenu(axf, { hub: HUB, moreAction: 'nav:home' });
   // The hub's pages live in this app now, so lib-hub's links open here instead of a new tab.
   on('hub.open', ([page]) => {
     if (page === 'sign-in') { location.href = signInUrl(HUB, location.href); return; }

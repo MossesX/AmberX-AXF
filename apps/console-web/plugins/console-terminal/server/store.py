@@ -35,11 +35,17 @@ DEFAULTS: dict[str, Any] = {"$axf": "terminal-settings@1", "idleMinutes": 60, "m
                             "startup": "claude", "newTab": "picker", "tabWidth": "equal",
                             "claudeProfiles": [{"id": "default", "name": "Default", "model": "", "permissionMode": "default", "flags": [], "cwd": "",
                                                 "prompt": "", "icon": "sparkles", "color": "", "connection": "console"}],
-                            "defaultClaudeProfile": "default"}
+                            "defaultClaudeProfile": "default",
+                            # headless tabs (Nov 3 2026): persistent tmux-backed tabs, split pane, context chain pacing
+                            "persistTabs": True, "splitDefault": "side", "chainSpeed": "normal", "showChain": True, "sessionsNav": True,
+                            # text size per pane (terminal-drag-chain-tree, Nov 3 2026): phone text 0 = Auto (the theme's
+                            # small text token), context chain as a % of the theme's text
+                            "fontSizePhone": 0, "chainTextSize": 100}
 
 CHOICES: dict[str, tuple[str, ...]] = {"scheme": ("app", "campbell", "one-half-dark", "one-half-light", "solarized-dark", "tango-dark", "vintage"),
                                       "cursorStyle": ("bar", "block", "underline"), "bell": ("none", "visual", "sound"),
-                                      "startup": ("claude", "console", "picker", "none"), "newTab": ("picker", "same"), "tabWidth": ("equal", "compact", "title")}
+                                      "startup": ("claude", "console", "picker", "none"), "newTab": ("picker", "same"), "tabWidth": ("equal", "compact", "title"),
+                                      "splitDefault": ("side", "stacked", "none"), "chainSpeed": ("slow", "normal", "fast", "instant")}
 PROFILE_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
 CONN_ID = re.compile(r"^(console|vps|axhub|container:[A-Za-z0-9_.-]{1,128})$")
 
@@ -93,7 +99,10 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
         for k, lo, hi in (("idleMinutes", 5, 24 * 60), ("moshKeepMinutes", 1, 24 * 60), ("fontSize", 9, 28)):
             if k in patch:
                 s[k] = max(lo, min(int(patch[k]), hi))
-        for k, lo, hi in (("scrollback", 500, 200000), ("padding", 0, 4)):
+        if "fontSizePhone" in patch:
+            v = int(patch["fontSizePhone"])
+            s["fontSizePhone"] = 0 if v <= 0 else max(7, min(v, 28))
+        for k, lo, hi in (("scrollback", 500, 200000), ("padding", 0, 4), ("chainTextSize", 60, 200)):
             if k in patch:
                 s[k] = max(lo, min(int(patch[k]), hi))
         if "lineHeight" in patch:
@@ -122,7 +131,7 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
         for k in ("windowsLook", "mica", "toolbar", "cursorBlink", "closeConfirm"):
             if k in patch:
                 s[k] = bool(patch[k])
-        for k in ("copyOnSelect", "pasteWarn", "mouseDefault", "moshDefault", "showHubRuns", "showHeadless"):
+        for k in ("copyOnSelect", "pasteWarn", "mouseDefault", "moshDefault", "showHubRuns", "showHeadless", "persistTabs", "showChain", "sessionsNav"):
             if k in patch:
                 s[k] = bool(patch[k])
         if "user" in patch:
@@ -180,6 +189,24 @@ def keygen(replace: bool = False) -> str:
             raise RuntimeError(f"ssh-keygen failed: {r.stderr.strip()[:200]}")
         os.chmod(k, 0o600)
     return public_key()
+
+
+def default_host(route_file: str = "/proc/net/route", in_docker: bool | None = None) -> str:
+    """Where the VPS host is from here: AXF_VPS_HOST, else (inside Docker) the default gateway, which is the host itself
+    on Coolify's network. Empty when neither is known."""
+    env = os.environ.get("AXF_VPS_HOST", "").strip()
+    if env:
+        return env
+    if not (Path("/.dockerenv").exists() if in_docker is None else in_docker):
+        return ""
+    try:
+        for ln in Path(route_file).read_text().splitlines()[1:]:
+            p = ln.split()
+            if len(p) > 2 and p[1] == "00000000" and p[2] != "00000000":
+                return ".".join(str(b) for b in reversed(bytes.fromhex(p[2])))
+    except (OSError, ValueError):
+        pass
+    return ""
 
 
 def public_key() -> str:

@@ -1,0 +1,119 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "crew-live-help",
+  "name": "crew-live help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:crew-live (the Crew).",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:crew-live",
+    "entries": [
+      {
+        "target": "action:crew.chat",
+        "title": "Open group chat",
+        "text": "Opens the agent swarm's group chat, where the crew talk about their work.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:crew.assign",
+        "title": "Assign a job",
+        "text": "Opens the agent swarm, where you hand a job to an agent (Breakroom → Jobs).",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:crew.card",
+        "title": "Open employee card",
+        "text": "Opens this agent's employee card: who they are, stats, pay, history and write-ups.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:crew.task",
+        "title": "Their current task",
+        "text": "Opens the Crew with this agent's current run unfolded: what they are doing now, steps, files and diff.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:crew.history",
+        "title": "Their history / past runs",
+        "text": "Opens the agent's profile with their past runs and what each cost.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:crew.session",
+        "title": "Open in Session browser",
+        "text": "Opens the agent's current run in the Session browser (when it is installed).",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:crew.terminal",
+        "title": "Open Terminal tab",
+        "text": "Opens the agent's live run in a Terminal tab attached to its tmux session.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:crew.stop",
+        "title": "Stop current job",
+        "text": "Stops the agent's running job after you confirm. Work already committed stays.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "terminal-tab",
+        "title": "Terminal tab",
+        "text": "Opens this run's live Terminal tab (attached to its tmux session on the VPS).",
+        "kind": "button"
+      },
+      {
+        "target": "session-browser",
+        "title": "Session browser",
+        "text": "Opens this run in the Session browser: the whole conversation, tool calls and cost.",
+        "kind": "button"
+      },
+      {
+        "target": "employee-card",
+        "title": "Employee card",
+        "text": "Opens the agent's employee card: info, stats, pay and history.",
+        "kind": "button"
+      },
+      {
+        "target": "stop",
+        "title": "Stop",
+        "text": "Stops this run after you confirm: its headless session on the VPS ends. Committed work stays.",
+        "kind": "button"
+      },
+      {
+        "target": "off-the-clock",
+        "title": "Off the clock",
+        "text": "Shows or hides the crew members who aren't working on anything right now.",
+        "kind": "button"
+      },
+      {
+        "target": "refresh-now",
+        "title": "Refresh now",
+        "text": "Reads the crew again right away (it also updates live by itself).",
+        "kind": "button"
+      },
+      {
+        "target": "search",
+        "title": "Search",
+        "text": "Filters the rows by agent, build, step, what they're doing or model.",
+        "kind": "field"
+      },
+      {
+        "target": "status",
+        "title": "Status",
+        "text": "Shows every run, or only working, waiting on approval, stuck or idle ones.",
+        "kind": "tab"
+      },
+      {
+        "target": "crew",
+        "title": "Crew",
+        "text": "Every agent working right now, live: what each is doing, their step, time, cost, tokens, files touched and PR. Tap a row for the details and the live diff.",
+        "kind": "screen"
+      }
+    ]
+  }
+}

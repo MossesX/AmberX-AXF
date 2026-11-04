@@ -6,7 +6,7 @@ menus, settings, banners — the same shape as every AXF web library). Import th
 
 They run only in the browser. The hub's server never loads them (axHub decision #93: the server core never depends on AXF).
 
-- **Install / uninstall:** Patches → Plugins per app (axHub column), or on the Dev Console host
+- **Install / uninstall:** on the Dev Console host
   `node framework/cli/plugin-catalog.mjs app-install axhub <folder> --publish` / `app-uninstall axhub <folder> --publish`
   (console routes `GET /api/app-plugins/axhub`, `POST /api/app-plugins/axhub/install|uninstall {folder, confirm}`). The
   folder is committed to GitHub and axhub-web's 5-minute update rebuilds with it.

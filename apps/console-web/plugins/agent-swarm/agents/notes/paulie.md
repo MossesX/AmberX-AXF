@@ -1,0 +1,2 @@
+- Sites: demo.amberxai.com, axhub.amberxai.com, console.amberxai.com, amberx.amberxai.com (axf.amberxai.com = old demo name).
+- Console container: axf-console. Traefik (Coolify) owns 80/443.

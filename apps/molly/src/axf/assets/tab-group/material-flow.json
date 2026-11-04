@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "material-flow",
+  "name": "Material Flow tabs",
+  "version": "1.0.0",
+  "description": "Material Flow: underline tabs, stretch.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "material",
+    "material"
+  ],
+  "data": {
+    "style": "underline",
+    "align": "stretch",
+    "position": "top",
+    "density": "regular",
+    "overflow": "scroll",
+    "showIcons": true,
+    "divider": true
+  }
+}

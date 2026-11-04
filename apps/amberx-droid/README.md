@@ -44,6 +44,7 @@ signed in). Hub calls from the hosted page go straight from the WebView; only a 
 | `src/native.ts` | The one seam to the native side (`AmberxNative`), with a browser fallback |
 | `android/app/src/main/java/ai/amberx/droid` | `WatchService` (foreground service), `AmberxNativePlugin`, `HubWebActivity`, `HubRules` |
 | `src/views/Approvals.tsx`, `src/hub` | Approvals, the only page of its own (home; through lib-hub) |
+| `src/plugins/walkthrough`, `walkthrough/` | The narrated walkthrough video: player (Home card, AmberX menu, Help) and its recorder (`walkthrough/rebuild.sh`, see `walkthrough/README.md`); video served at `/api/walkthrough/*` |
 | `src/plugins/<folder>` | Your plugins: drop one in and it joins the nav, menus, search and Settings → Plugins |
 | `src/axf/` | Baked framework: don't edit, re-bake |
 

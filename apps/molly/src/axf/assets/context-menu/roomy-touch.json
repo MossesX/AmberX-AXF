@@ -1,0 +1,167 @@
+{
+  "$axf": "asset@1",
+  "type": "context-menu",
+  "id": "roomy-touch",
+  "name": "Roomy Touch",
+  "version": "1.0.0",
+  "description": "Large touch targets with nested pickers. No shortcut clutter.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "variant": "roomy",
+    "showIcons": true,
+    "showShortcuts": false,
+    "targets": {
+      "default": [
+        {
+          "id": "colors",
+          "label": "Color theme",
+          "icon": "palette",
+          "items": [
+            {
+              "id": "color-theme-amber-ember",
+              "label": "Amber Ember",
+              "icon": "palette",
+              "action": "swap:color-theme:amber-ember"
+            },
+            {
+              "id": "color-theme-arctic-daylight",
+              "label": "Arctic Daylight",
+              "icon": "palette",
+              "action": "swap:color-theme:arctic-daylight"
+            },
+            {
+              "id": "color-theme-neon-tide",
+              "label": "Neon Tide",
+              "icon": "palette",
+              "action": "swap:color-theme:neon-tide"
+            }
+          ]
+        },
+        {
+          "id": "styles",
+          "label": "Style theme",
+          "icon": "type",
+          "items": [
+            {
+              "id": "style-theme-soft-studio",
+              "label": "Soft Studio",
+              "icon": "type",
+              "action": "swap:style-theme:soft-studio"
+            },
+            {
+              "id": "style-theme-sharp-terminal",
+              "label": "Sharp Terminal",
+              "icon": "type",
+              "action": "swap:style-theme:sharp-terminal"
+            },
+            {
+              "id": "style-theme-glass-orbit",
+              "label": "Glass Orbit",
+              "icon": "type",
+              "action": "swap:style-theme:glass-orbit"
+            }
+          ]
+        },
+        {
+          "id": "layouts",
+          "label": "Layout",
+          "icon": "layout",
+          "items": [
+            {
+              "id": "layout-classic-ide",
+              "label": "Classic IDE",
+              "icon": "layout",
+              "action": "swap:layout:classic-ide"
+            },
+            {
+              "id": "layout-focus-top",
+              "label": "Focus Top",
+              "icon": "layout",
+              "action": "swap:layout:focus-top"
+            },
+            {
+              "id": "layout-studio-dock",
+              "label": "Studio Dock",
+              "icon": "layout",
+              "action": "swap:layout:studio-dock"
+            }
+          ]
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "random",
+          "label": "Surprise me",
+          "icon": "shuffle",
+          "action": "assets.random"
+        },
+        {
+          "id": "about",
+          "label": "About this app",
+          "icon": "info",
+          "action": "help.about"
+        }
+      ],
+      "asset-card": [
+        {
+          "id": "activate",
+          "label": "Activate",
+          "icon": "zap",
+          "action": "swap:{payload}",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "json",
+          "label": "View JSON",
+          "icon": "code",
+          "action": "asset.json:{payload}"
+        },
+        {
+          "id": "copy",
+          "label": "Copy JSON",
+          "icon": "copy",
+          "action": "asset.copy:{payload}"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "import",
+          "label": "Import asset…",
+          "icon": "upload",
+          "action": "dialog:import-asset",
+          "requires": "assets.import"
+        }
+      ],
+      "nav-item": [
+        {
+          "id": "open",
+          "label": "Open",
+          "icon": "chevron-right",
+          "action": "nav:{payload}"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "next-nav",
+          "label": "Next navigation menu",
+          "icon": "grid",
+          "action": "swap:nav-menu:next"
+        },
+        {
+          "id": "next-layout",
+          "label": "Next layout",
+          "icon": "layout",
+          "action": "swap:layout:next",
+          "shortcut": "Alt+L"
+        }
+      ]
+    }
+  }
+}

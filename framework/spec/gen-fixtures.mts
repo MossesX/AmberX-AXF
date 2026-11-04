@@ -6,7 +6,12 @@
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
-import { compileLayout, layoutVars } from '../core/engines/layout';
+import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
+import { AGENT_CARD_SAMPLE, agentCardErrors, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
+import { buildHelpIndex, helpCoverage, helpErrors, helpTarget, introToShow, introToWalkthrough, markSeen, normalizeHelpPack, ratchetErrors, resolveHelp, slugLabel } from '../core/engines/help-rules.mjs';
+import { DEFAULT_LAYOUT, LAYOUT_FIELDS, compileLayout, layoutBreakpointAttr, layoutErrors, layoutTokenVars, layoutTokens, layoutVars, layoutViewportAttrs, layoutViewports, normalizeLayout } from '../core/engines/layout';
+import { CONTROL_TARGET_IDS, canonicalControl, controlConfirmToken, controlConfirmValid, controlErrors, controlGate, controlHash, controlPaths, controlRegistry, controlResult, controlFailure, normalizeControl } from '../core/engines/control-rules.mjs';
+import { compileRepeats, declaredDataSets, missingDataSets, repeatVars, REPEAT_DEFAULT_COLUMNS, REPEAT_DEFAULT_STYLE, REPEAT_MAX_COLUMNS, REPEAT_STYLES } from '../core/engines/repeat';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from '../core/engines/components';
 import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/engines/uac';
 import { ActionBus } from '../core/engines/actions';
@@ -33,6 +38,12 @@ import { APPS_FEED_MAX_BYTES, APPS_FEED_PATH, APPS_MAX, VERSIONS_MAX, appsFeedUr
 import { libraryCards, paramDefaultText, paramError, paramToJson, parseBoilerplate, parseBoilerplateIndex, parseCatalog, parseLibrariesIndex, parseLibrary, parseStatusMap, parseTracker } from '../core/catalog';
 import { CONDITION_KINDS, DEFAULT_BACKOFF_FACTOR, DELAY_KINDS, FALLBACK_OUTCOME, JOB_EFFECTS, JOB_EVENT_TYPES, JOB_PHASES, STOP_REASONS, WORK_CONTRACT, WORK_PLACEHOLDERS, WORK_POLL_CAPABILITY, clampInterval, delayFor, initialJobState, replayJob, shouldRestart, unmetConditions, validateJobSpec, workKinds, type DelayRule, type JobEvent, type JobSpec } from '../core/engines/work';
 import { DEFAULT_SNAP_RULES, RESIZE_EDGES, RESIZE_HANDLE, RESIZE_HANDLE_TOUCH, SNAP_ZONES, WINDOW_MIN, armSplit, dragRestore, hitResizeEdge, maximizeWindow, maximizedRect, resizeCursor, resizeRect, resolveOverlap, restoreWindow, snapRect, snapZoneAt, snapZoneRect, splitDrop, toggleMaximized, topmostAt, type Rect, type ResizeEdge, type SplitArm, type WindowSpec } from '../core/engines/windows';
+import { DEFAULT_DOCK_RULES, DOCK_CONTRACT, DOCK_LAYOUT_MAX_PANES, DOCK_SIDES, DOCK_ZONES, applyDockDrop, applyPreset, clampWeights, countPanes, dockDropAt, dockDropRect, dockLayoutErrors, dockZoneAt, dropIsLimited, enforcePaneLimit, headerIndexAt, normalizeDockLayout, normalizeDockRules, normalizeTree, paneAt, parseTab, parseTree, pathOf, presetRects, presetSvg, presetTree, removePane, resizeSplit, restoreDock, serializeDock, splitPane, splitRoot, type DockDrop, type DockState, type GroupBox } from '../core/engines/dock';
+import type { Pane, TabGroup } from '../core/engines/windows';
+import { NAV_STYLE_FIELDS, NAV_STYLE_FRAME, navArrange, navFollow, navPathTo, navStyleErrors, navStyleOutput, navToggle, normalizeNavStyle } from '../core/engines/navstyle';
+import { navFieldErrors } from '../core/engines/navstyle-rules.mjs';
+import { CHROME_KINDS, DEFAULT_MERGE, DEFAULT_PRESETS, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, dockRulesOf, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId as xNsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
+import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES as CHROME_WIDGET_TONES, WIDGET_TYPES as CHROME_WIDGET_TYPES, activeNav, chromePicks, emptyChrome, mergeChrome, parseChromeBundle, routePick, type ChromeBundle } from '../core/engines/chrome';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -46,7 +57,251 @@ write('theme.json', Object.fromEntries([
   ...load('color-theme').map((a) => [`color-theme:${a.id}`, colorThemeVars(a.data)]),
   ...load('style-theme').map((a) => [`style-theme:${a.id}`, styleThemeVars(a.data)]),
 ]));
+// Scale assets (typography@1, density@1, sizing@1; core/engines/scale.ts): defaults, every starter's tokens, clamping, errors.
+write('scale.json', {
+  types: [...SCALE_TYPES],
+  defaults: Object.fromEntries(SCALE_TYPES.map((t) => [t, normalizeScale(t, null)])),
+  defaultVars: scaleThemeVars({}),
+  starters: Object.fromEntries(SCALE_TYPES.flatMap((t) => load(t).map((a) => [`${t}:${a.id}`, { normalized: normalizeScale(t, a.data), vars: scaleVars(t, a.data) }]))),
+  normalized: {
+    'typography:partial': normalizeScale('typography', { headings: { h1: 3 }, eyebrow: { case: 'normal' }, unknown: { x: 1 } }),
+    'density:clamped': normalizeScale('density', { gap: { xl: 99, xs: -1 }, row: { list: 'tall' } }),
+    'sizing:bad-enum': normalizeScale('sizing', { chip: { radius: 'round', height: 2 }, pageHead: { descriptionLines: 3.7 } }),
+    'sizing:not-an-object': normalizeScale('sizing', 'nope'),
+  },
+  errors: {
+    'typography:ok': scaleErrors('typography', { headings: { h1: 3 }, eyebrow: { case: 'normal' }, unknown: { x: 1 } }),
+    'density:out-of-range': scaleErrors('density', { gap: { xl: 99 }, row: { list: 'tall' } }),
+    'sizing:bad-enum-and-int': scaleErrors('sizing', { chip: { radius: 'round' }, pageHead: { descriptionLines: 3.7 }, card: 'big' }),
+    'sizing:not-an-object': scaleErrors('sizing', 'nope'),
+    'other-type': scaleErrors('button', { shape: 'rounded' }),
+  },
+});
+// Agent ID cards (agent-card@1; core/engines/agent-card-rules.mjs): defaults, every starter's card model for one sample agent, errors.
+write('agent-card.json', {
+  sample: AGENT_CARD_SAMPLE,
+  defaults: normalizeCard(null),
+  starters: Object.fromEntries(load('agent-card').map((a) => [a.id, { normalized: normalizeCard(a.data), model: cardModel(a.data, AGENT_CARD_SAMPLE.identity, AGENT_CARD_SAMPLE.stats) }])),
+  normalized: {
+    'unknown-dropped': normalizeCard({ design: 'poster', front: ['name', 'shoeSize', 'name'], labels: { name: ' Who ', bogus: 'x' }, extra: 1 }),
+    'not-an-object': normalizeCard('nope'),
+  },
+  models: {
+    'no-identity': cardModel({ front: ['name', 'employeeId', 'jobs'], code: 'barcode' }, {}, {}),
+    'qr-page': cardModel({ code: 'qr', front: ['email'] }, { id: 'kat', page: 'axf://agent-swarm/kat' }, {}),
+  },
+  employeeIds: Object.fromEntries(['kat', 'rio', 'boss', 'Doc-Dee'].map((id) => [id, employeeId(id)])),
+  bars: { 'AX-0042': barcodeBars('AX-0042'), '': barcodeBars('') },
+  errors: {
+    ok: agentCardErrors('agent-card', { design: 'license', front: ['name'], labels: { name: 'Who' } }),
+    'bad-enums': agentCardErrors('agent-card', { design: 'poster', finish: 'chrome', code: 'nfc' }),
+    'bad-fields': agentCardErrors('agent-card', { front: ['name', 'shoeSize'], back: 'jobs', labels: { bogus: 'x', name: '' } }),
+    'too-many': agentCardErrors('agent-card', { front: Array(13).fill('name') }),
+    'not-an-object': agentCardErrors('agent-card', 'nope'),
+    'other-type': agentCardErrors('button', { design: 'poster' }),
+  },
+});
+// Help mode (help@1; core/engines/help-rules.mjs): auto help ids, packs, the index (later wins, drafts never beat written), intros, coverage, ratchet, errors.
+const HELP_PACKS = [
+  { id: 'framework', data: { entries: [
+    { target: 'refresh', title: 'Refresh', text: 'Reloads it.' },
+    { target: 'action:app.settings', title: 'Settings', text: 'Opens Settings.' },
+    { target: 'view:home', title: 'Home', text: 'The front page.' },
+    { target: 'deny', title: 'Deny', text: 'Drops it.', draft: true },
+  ], intros: [{ screen: 'home', title: 'Home', steps: [{ say: 'Cards up top.', target: 'view:home' }, { say: 'Banners live.', do: 'nav:home' }] }] } },
+  { id: 'app', data: { entries: [
+    { target: 'refresh', title: 'Refresh (app)', text: 'Reloads it from the hub.' },
+    { target: 'deny', title: 'Deny', text: 'Never runs.' },
+    { target: 'builds/refresh', title: 'Refresh builds', text: 'Reloads the builds.' },
+    { target: 'action:app.settings', title: 'Settings (draft)', text: 'x', draft: true },
+  ] } },
+];
+const HELP_INDEX = buildHelpIndex(HELP_PACKS);
+const helpIndexJson = (ix: ReturnType<typeof buildHelpIndex>) => ({ byTarget: Object.fromEntries([...ix.byTarget].sort(([a], [b]) => a.localeCompare(b))), intros: Object.fromEntries(ix.intros) });
+write('help.json', {
+  slugs: Object.fromEntries(['Approve now (3)', 'Approvals 12 new', 'Save…', 'What is this?', 'Don’t show intros again', 'h1 size', 'Step 2 of 4', '', '  Copy JSON  ', 'Top 10 — 50%'].map((l) => [l, slugLabel(l)])),
+  targets: {
+    'menu-item': helpTarget({ action: 'app.settings', label: 'Settings', screen: 'builds' }),
+    'param-action': helpTarget({ action: 'swap:color-theme:next', label: 'Next color theme' }),
+    'nav-action': helpTarget({ action: 'nav:builds', label: 'Builds' }),
+    'nav-item': helpTarget({ view: 'plan-studio', label: 'Plan Studio', screen: 'home' }),
+    'explicit': helpTarget({ help: 'approval-deny', label: 'Deny: vps.run', screen: 'home' }),
+    'label-only': helpTarget({ label: 'Refresh (2)', screen: 'builds' }),
+    'column': helpTarget({ label: 'Status ▲', column: true, screen: 'builds' }),
+    'banner': helpTarget({ banner: 'approvals', label: '3 waiting' }),
+    'menu': helpTarget({ menu: 'file', label: 'File' }),
+    'nothing': helpTarget({ label: '…' }),
+  },
+  packs: Object.fromEntries(HELP_PACKS.map((p) => [p.id, normalizeHelpPack(p.data)])),
+  index: helpIndexJson(HELP_INDEX),
+  resolve: {
+    'screen-override': resolveHelp(HELP_INDEX, helpTarget({ label: 'Refresh', screen: 'builds' }).lookup)?.title ?? null,
+    'later-pack-wins': resolveHelp(HELP_INDEX, helpTarget({ label: 'Refresh', screen: 'home' }).lookup)?.title ?? null,
+    'written-beats-draft': resolveHelp(HELP_INDEX, helpTarget({ action: 'app.settings', label: 'Settings' }).lookup)?.title ?? null,
+    'draft-replaced': resolveHelp(HELP_INDEX, ['deny'])?.text ?? null,
+    'falls-back-to-label': resolveHelp(HELP_INDEX, helpTarget({ action: 'refresh.all', label: 'Refresh' }).lookup)?.title ?? null,
+    'missing': resolveHelp(HELP_INDEX, helpTarget({ label: 'Frobnicate' }).lookup),
+  },
+  intros: {
+    'first-time': introToShow({ mode: true, seen: [], screen: 'home', index: HELP_INDEX }),
+    'mode-off': introToShow({ mode: false, seen: [], screen: 'home', index: HELP_INDEX }),
+    'seen': introToShow({ mode: true, seen: ['home'], screen: 'home', index: HELP_INDEX }),
+    'intros-off': introToShow({ mode: true, intros: false, seen: [], screen: 'home', index: HELP_INDEX }),
+    'no-intro': introToShow({ mode: true, seen: [], screen: 'plan', index: HELP_INDEX }),
+    'walkthrough': introToWalkthrough(HELP_INDEX.intros.get('home')!, 'console'),
+    'mark-seen': markSeen(['plan', 'home'], 'plan'),
+  },
+  coverage: helpCoverage([
+    { id: 'refresh', lookup: helpTarget({ label: 'Refresh' }).lookup },
+    { id: 'refresh', lookup: helpTarget({ label: 'Refresh' }).lookup },
+    { id: 'action:app.settings', lookup: helpTarget({ action: 'app.settings', label: 'Settings' }).lookup },
+    { id: 'frobnicate', lookup: ['frobnicate'], kind: 'button', label: 'Frobnicate' },
+  ], HELP_INDEX),
+  ratchet: {
+    ok: ratchetErrors({ app: { percent: 80, covered: 10, written: 5 } }, { app: { percent: 80, covered: 10, written: 5 } }),
+    fell: ratchetErrors({ app: { percent: 70.5, covered: 9, written: 4 } }, { app: { percent: 80, covered: 10, written: 5 } }),
+    'scope-gone': ratchetErrors({}, { app: { percent: 80, covered: 10 } }),
+  },
+  errors: {
+    ok: helpErrors('help', HELP_PACKS[0]!.data),
+    'not-an-object': helpErrors('help', 'nope'),
+    'bad-entries': helpErrors('help', { entries: [{ target: 'Bad Id', title: '', text: 'x' }, { target: 'a', title: 'A', text: 'x'.repeat(601), link: 'javascript:alert(1)', related: ['ok', 'Not Ok'], kind: 'widget', draft: 'yes' }, { target: 'a', title: 'A', text: 'again' }, 7] }),
+    'bad-intros': helpErrors('help', { intros: [{ screen: 'home', steps: [] }, { screen: 'home', steps: [{ say: '' }, { say: 'ok', do: 'javascript:x' }] }, { screen: 'BAD', steps: Array(7).fill({ say: 'x' }) }] }),
+    'other-type': helpErrors('button', { entries: 'nope' }),
+  },
+});
 write('layout.json', Object.fromEntries(load('layout').map((a) => [a.id, { compiled: compileLayout(a.data), vars: layoutVars(a.data) }])));
+// control@1 (core/engines/control-rules.mjs): the registry snapshot (also written to framework/schemas/control.json),
+// normalize, errors, the gate (roles × ops, confirm flow), confirm tokens and the result envelopes.
+{
+  const registry = controlRegistry();
+  writeFileSync(join(assetsDir, '..', 'schemas', 'control.json'), JSON.stringify(registry, null, 2) + '\n');
+  const NOW = 1_800_000_000_000;
+  const salt = 'fixture-salt';
+  const remove = { op: 'remove', target: 'amberx.items', path: 'it-42', by: 'claude', reason: 'done with it' };
+  const cmds: Record<string, unknown> = {
+    'list-layout': { op: 'list', target: 'tokens.layout' },
+    'get-theme': { op: 'get', target: 'tokens.theme', path: 'accent' },
+    'set-layout': { op: 'set', target: 'tokens.layout', path: 'navWidth', value: 200, by: 'claude', reason: 'narrower rail' },
+    'set-layout-bad': { op: 'set', target: 'tokens.layout', path: 'navWidth', value: 5000 },
+    'set-layout-unknown': { op: 'set', target: 'tokens.layout', path: 'railWidth', value: 10 },
+    'set-theme': { op: 'set', target: 'tokens.theme', path: 'accent', value: '#ff8800' },
+    'set-theme-bad': { op: 'set', target: 'tokens.theme', path: 'accent', value: 'orange-ish' },
+    'set-style': { op: 'set', target: 'tokens.style', path: 'radius.md', value: 10 },
+    'set-style-enum': { op: 'set', target: 'tokens.style', path: 'density', value: 'loose' },
+    'set-sizing': { op: 'set', target: 'tokens.sizing', path: 'button.height', value: 2.4 },
+    'set-sizing-bad': { op: 'set', target: 'tokens.sizing', path: 'button.height', value: 9 },
+    'set-look': { op: 'set', target: 'tokens.look', path: 'compact', value: 80 },
+    'set-slot': { op: 'set', target: 'tokens.slots', path: 'layout', value: 'studio-dock' },
+    'reset-all': { op: 'reset', target: 'tokens.look' },
+    'add-item': { op: 'add', target: 'amberx.items', value: { kind: 'todo', title: 'Buy milk', list: 'inbox', priority: 2 }, by: 'claude' },
+    'add-item-bad': { op: 'add', target: 'amberx.items', value: { kind: 'memo', title: 7, colour: 'red' } },
+    'set-item': { op: 'set', target: 'amberx.items', path: 'it-42', value: { status: 'done', tags: ['home'] } },
+    'list-items': { op: 'list', target: 'amberx.items', select: { kind: 'task', status: 'not-done', due: 'today' } },
+    'list-items-bad': { op: 'list', target: 'amberx.items', select: { colour: 'red', kind: 'memo' } },
+    'act-item': { op: 'act', target: 'amberx.items', path: 'it-42', action: 'move', input: { list: 'home' } },
+    'act-item-missing-input': { op: 'act', target: 'amberx.items', path: 'it-42', action: 'move' },
+    'act-item-unknown': { op: 'act', target: 'amberx.items', path: 'it-42', action: 'explode' },
+    'remove-system-list': { op: 'remove', target: 'amberx.lists', path: 'inbox' },
+    'act-build-step': { op: 'act', target: 'planner.builds', path: 'token-control', action: 'step', input: { step: 's3', done: true }, by: 'claude' },
+    'act-build-approve': { op: 'act', target: 'planner.builds', path: 'token-control', action: 'approve', input: { phase: 2 } },
+    'act-plan-build': { op: 'act', target: 'planner.plans', path: 'md-studio', action: 'build', input: { profile: 'urgent', buildId: 'md-studio' } },
+    'add-plan': { op: 'add', target: 'planner.plans', value: { title: 'Theme editor', status: 'parked', priority: 'P2', category: 'Console > Themes' } },
+    'remove-item': remove,
+    'wrong-op': { op: 'delete', target: 'amberx.items', path: 'x' },
+    'wrong-target': { op: 'get', target: 'amberx.notes', path: 'x' },
+    'token-op-on-entity': { op: 'reset', target: 'amberx.items' },
+    'entity-op-on-token': { op: 'add', target: 'tokens.layout', value: {} },
+    'path-on-list': { op: 'list', target: 'tokens.layout', path: 'navWidth' },
+    'wrong-frame': { $axf: 'asset@1', op: 'list', target: 'tokens.layout' },
+    'not-an-object': 'nope',
+    'console-open-screen': { op: 'act', target: 'console.screens', path: 'plan studio', action: 'open', by: 'claude' },
+    'console-open-settings': { op: 'act', target: 'console.settings', path: 'plugins/sample-tools', action: 'open', input: { to: 'all' } },
+    'console-list-actions': { op: 'list', target: 'console.actions', select: { q: 'theme', limit: 20 } },
+    'console-run-action': { op: 'act', target: 'console.actions', path: 'assets.random', action: 'run' },
+    'console-back': { op: 'act', target: 'console.nav', path: 'here', action: 'back' },
+    'console-nav-unknown-path': { op: 'act', target: 'console.nav', path: 'forward', action: 'back' },
+    'console-set-screen': { op: 'set', target: 'console.screens', path: 'home', value: 'x' },
+    'console-clients': { op: 'list', target: 'console.clients' },
+    'plugin-list': { op: 'list', target: 'plugins.commands', select: { plugin: 'example' } },
+    'plugin-read': { op: 'act', target: 'plugins.reads', path: 'example/state', action: 'read' },
+    'plugin-run': { op: 'act', target: 'plugins.commands', path: 'example/entries', action: 'run', input: { title: 'x' }, by: 'claude' },
+    'plugin-set': { op: 'set', target: 'plugins.commands', path: 'example/state', value: 1 },
+  };
+  const roles: Record<string, string[]> = {
+    admin: ['*'], control: ['control.*'], tokens: ['control.tokens.*'], reader: ['control.tokens.read', 'control.amberx.read', 'control.planner.read'],
+    'amberx-writer': ['control.amberx.read', 'control.amberx.write'], none: [],
+    'console-navigator': ['control.console.read', 'control.console.navigate'],
+    'plugin-reader': ['control.plugins.read'],
+  };
+  const token = controlConfirmToken(remove, salt, NOW);
+  write('control.json', {
+    commands: cmds,
+    registry: { ops: registry.ops, effects: registry.effects, actEffects: registry.actEffects, permissions: registry.permissions, targets: CONTROL_TARGET_IDS, targetOps: Object.fromEntries(CONTROL_TARGET_IDS.map((t) => [t, (registry.targets as Record<string, { ops: string[] }>)[t].ops])) },
+    paths: Object.fromEntries(CONTROL_TARGET_IDS.map((t) => [t, controlPaths(t)?.map((p) => p.id) ?? null])),
+    normalize: Object.fromEntries(Object.entries(cmds).map(([k, c]) => [k, normalizeControl(c)])),
+    errors: Object.fromEntries(Object.entries(cmds).map(([k, c]) => [k, controlErrors(c)])),
+    gate: Object.fromEntries(Object.entries(roles).map(([role, grants]) => [role, Object.fromEntries(Object.entries(cmds).map(([k, c]) => { const g = controlGate(c, grants, { salt, now: NOW }); return [k, g.ok ? { ok: true, effect: g.effect, requires: g.requires } : { ok: false, code: g.code, requires: g.requires ?? null, confirm: g.confirm ?? null }]; }))])),
+    confirm: {
+      canonical: canonicalControl(remove),
+      'canonical-ignores-by-and-order': canonicalControl({ reason: 'x', path: 'it-42', target: 'amberx.items', op: 'remove' }) === canonicalControl(remove),
+      token,
+      'valid-now': controlConfirmValid(remove, token, salt, NOW),
+      'valid-next-bucket': controlConfirmValid(remove, token, salt, NOW + 10 * 60 * 1000),
+      'expired-two-buckets': controlConfirmValid(remove, token, salt, NOW + 20 * 60 * 1000),
+      'other-path': controlConfirmValid({ ...remove, path: 'it-43' }, token, salt, NOW),
+      'other-salt': controlConfirmValid(remove, token, 'other', NOW),
+      'second-call': (() => { const g = controlGate({ ...remove, confirm: token }, ['control.amberx.delete'], { salt, now: NOW + 60_000 }); return g.ok ? { ok: true, effect: g.effect } : { ok: false, code: g.code }; })(),
+      hash: controlHash('control@1'),
+    },
+    results: {
+      list: controlResult(cmds['list-layout'], { items: [{ id: 'navWidth', value: 224 }], total: 1 }),
+      set: controlResult(cmds['set-layout'], { changed: ['navWidth'] }, { at: '2026-11-03T12:00:00.000Z' }),
+      'set-no-audit-given': controlResult({ op: 'set', target: 'tokens.theme', path: 'accent', value: '#f80' }, { changed: ['accent'] }),
+      act: controlResult(cmds['act-build-step'], { changed: ['steps.s3.done'] }, { by: 'brett', reason: 'ticked', at: '2026-11-03T12:00:00.000Z' }),
+      denied: controlFailure('denied', 'set tokens.layout needs control.tokens.write', { requires: 'control.tokens.write' }),
+      'unknown-code': controlFailure('boom', 'what'),
+    },
+  });
+}
+
+// Every layout parameter is a token (core/engines/layout-rules.mjs): the registry, the defaults, normalize (fill, clamp,
+// round, keep other keys), the token vars for a few inputs, the viewport cut-offs and what the validator reports.
+{
+  const grid = { nav: 'left', navWidth: 224, showMenubar: true, showToolbar: true, toolbarPosition: 'top', showStatusbar: true, inspector: 'right', inspectorWidth: 280, contentMaxWidth: 0 } as const;
+  write('layout-tokens.json', {
+    tokens: layoutTokens(),
+    defaults: DEFAULT_LAYOUT,
+    normalize: {
+      empty: normalizeLayout({}),
+      'grid-only': normalizeLayout(grid),
+      clamped: normalizeLayout({ ...grid, navWidth: 5000, inspectorWidth: 900, statusHeight: 1, regionGap: 9, mainPadX: -2, phoneEdge: 400, tinyMaxWidth: 50 }),
+      rounded: normalizeLayout({ ...grid, navWidth: 200.6, regionGap: 0.33333, mainPadTop: 1.23456 }),
+      'bad-values': normalizeLayout({ ...grid, navWidth: 'wide', nav: 'middle', showStatusbar: 'yes', statusHeight: null, slots: { nav: [] } }),
+    },
+    vars: {
+      defaults: layoutTokenVars(null),
+      'studio-dock': layoutTokenVars(load('layout').find((a) => a.id === 'studio-dock')!.data),
+      custom: layoutVars({ ...grid, nav: 'right', inspector: 'left', inspectorWidth: 320, contentMaxWidth: 1200, statusHeight: 30, regionGap: 0.5, mainPadX: 2, phoneMaxWidth: 700, showMenubar: false }),
+    },
+    viewports: { defaults: layoutViewports(grid), custom: layoutViewports({ ...grid, tinyMaxWidth: 400, smallMaxWidth: 600, phoneMaxWidth: 800, mediumMaxWidth: 1000, largeMaxWidth: 1400 }) },
+    // the root attributes for a window width (the runtime's matchMedia watch, pure) and where a px breakpoint lands
+    viewportAttrs: Object.fromEntries([320, 480, 481, 640, 700, 760, 761, 900, 1200, 1201, 1920].map((w) => [String(w), layoutViewportAttrs(grid, w)])),
+    breakpoints: Object.fromEntries([['max', 480], ['max', 520], ['max', 640], ['max', 720], ['max', 759], ['max', 760], ['max', 900], ['max', 1100], ['max', 1500], ['max', 1600], ['min', 760], ['min', 761], ['min', 900], ['min', 700]].map(([k, px]) => [`${k}-${px}`, layoutBreakpointAttr(px as number, k as 'max' | 'min')])),
+    errors: {
+      'grid-only': layoutErrors('layout', grid),
+      'other-type': layoutErrors('button', { navWidth: 'x' }),
+      'not-an-object': layoutErrors('layout', 'nope'),
+      'out-of-range': layoutErrors('layout', { ...grid, navWidth: 5000, statusHeight: 1, regionGap: 9, phoneEdge: -1 }),
+      'not-whole': layoutErrors('layout', { ...grid, navWidth: 200.5, statusHeight: 26.4 }),
+      'bad-words': layoutErrors('layout', { ...grid, nav: 'middle', toolbarPosition: 'left', inspector: 'top', showMenubar: 'yes' }),
+      'viewports-out-of-order': layoutErrors('layout', { ...grid, phoneMaxWidth: 600, smallMaxWidth: 700 }),
+      'viewports-one-set': layoutErrors('layout', { ...grid, mediumMaxWidth: 700 }),
+      unknown: layoutErrors('layout', { ...grid, somethingElse: 12 }),
+    },
+    ranges: Object.fromEntries(Object.entries(LAYOUT_FIELDS).map(([f, [def, min, max, unit]]) => [f, { default: def, min, max, unit }])),
+  });
+}
 // Slot contract cases: a region that refuses its chrome drops out of the grid on every port.
 const base = load('layout').find((a) => a.id === 'studio-dock')?.data ?? load('layout')[0].data;
 write('layout-slots.json', Object.fromEntries([...Object.entries({
@@ -63,6 +318,34 @@ write('layout-slots.json', Object.fromEntries([...Object.entries({
     'hidden-all-chrome': ['app-menu', 'toolbar', 'nav-menu', 'context-menu'],
   }).map(([k, hidden]) => [k, { slots: {}, hidden, compiled: compileLayout({ ...base, slots: {} }, hidden) }]),
 ]));
+// Repeating slots (core/engines/repeat.ts): a layout's slots against the data sets a page declares.
+const repeatDefs = [
+  { id: 'docs', dataSet: 'docs', style: 'tabs' },
+  { id: 'projects', dataSet: 'projects', style: 'cards', columns: 3, max: 2, fallback: { type: 'container', id: 'empty-projects', label: 'No projects yet' } },
+  { id: 'gallery', dataSet: 'images', style: 'grid', region: 'inspector' },
+  { id: 'feed', dataSet: 'feed', fallback: { label: 'Nothing new' } },
+  { id: 'docs', dataSet: 'other' },
+  { id: '', dataSet: 'x' },
+  { id: 'odd', dataSet: 'docs', style: 'carousel', region: 'sidebar', columns: 99, max: -2 },
+  { id: 'wide', dataSet: 'images', style: 'grid', columns: 2.5 },
+];
+const repeatCases: Record<string, { sets: Record<string, unknown[]>; active?: Record<string, string> }> = {
+  'all-declared': { sets: { docs: [{ id: 'a', label: 'Alpha', icon: 'file' }, { key: 'b', title: 'Beta' }], projects: [{ id: 'p1', label: 'One' }, { id: 'p2' }, { id: 'p3' }], images: ['x.png', 'y.png', 7], feed: [{ label: 'Hi' }] } },
+  'none-declared': { sets: {} },
+  'empty-sets': { sets: { docs: [], projects: [], images: [], feed: [] } },
+  'messy-entries': { sets: { docs: [{ id: 'a' }, { id: 'a', label: 'dup' }, null, true, '', '  ', { label: 'no key' }, 3, 3], images: [{ key: 'k', id: 'ignored', label: '  ' }] } },
+  'tab-picked': { sets: { docs: [{ id: 'a' }, { id: 'b' }, { id: 'c' }] }, active: { docs: 'c' } },
+  'tab-picked-gone': { sets: { docs: [{ id: 'a' }, { id: 'b' }] }, active: { docs: 'z' } },
+};
+write('layout-repeat.json', {
+  styles: REPEAT_STYLES, defaultStyle: REPEAT_DEFAULT_STYLE, maxColumns: REPEAT_MAX_COLUMNS, defaultColumns: REPEAT_DEFAULT_COLUMNS,
+  repeat: repeatDefs,
+  declared: declaredDataSets({ repeat: repeatDefs as never }),
+  cases: Object.fromEntries(Object.entries(repeatCases).map(([k, c]) => {
+    const compiled = compileRepeats({ repeat: repeatDefs as never }, c.sets, c.active);
+    return [k, { ...c, missing: missingDataSets({ repeat: repeatDefs as never }, c.sets), compiled, vars: compiled.map(repeatVars) }];
+  })),
+});
 // Which types can be hidden, and which overrides count (non-hideable types never hide).
 write('hide.json', {
   hideable: hideableTypes(),
@@ -83,17 +366,17 @@ write('hide.json', {
 });
 // Embed marker (core/engines/embed.ts): a host app's mark on the pages it embeds, from the query or the user agent; the hidden chrome it implies.
 {
-  const hosts = ['patches', 'Patches', ' patches ', 'dev-console', 'a', '', '-bad', 'bad id', 'x'.repeat(32), 'x'.repeat(33), 'UPPER-9', null, 12];
+  const hosts = ['host', 'Host', ' host ', 'dev-console', 'a', '', '-bad', 'bad id', 'x'.repeat(32), 'x'.repeat(33), 'UPPER-9', null, 12];
   const hiddenInputs: (string | string[] | null)[] = [null, '', 'banner', 'banner,toolbar', 'toolbar+banner', 'layout', 'banner,layout,nav-menu', ['toolbar', 'toolbar', 'Banner'], ' banner , toolbar ', 'none', 'banner,none', [], ['nothing']];
-  const queries = ['', '?', '?x=1', '?axf-embed=patches', '?axf-embed=patches&axf-embed-hide=banner,toolbar', '?a=b&axf-embed=Patches&axf-embed-hide=layout', '?axf-embed=bad%20id', '?axf-embed=', 'axf-embed=patches&axf-embed-hide=toolbar', '?axf-embed-hide=toolbar'];
+  const queries = ['', '?', '?x=1', '?axf-embed=host', '?axf-embed=host&axf-embed-hide=banner,toolbar', '?a=b&axf-embed=Host&axf-embed-hide=layout', '?axf-embed=bad%20id', '?axf-embed=', 'axf-embed=host&axf-embed-hide=toolbar', '?axf-embed-hide=toolbar'];
   const agents = [
-    'Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 Chrome/130 Mobile Safari/537.36 AXF-Embed/patches',
-    'Mozilla/5.0 (Linux; Android 16) Chrome/130 Mobile AXF-Embed/patches/banner+toolbar',
-    'Mozilla/5.0 (X11; Linux) AXF-Embed/patches/layout Safari/537.36',
+    'Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 Chrome/130 Mobile Safari/537.36 AXF-Embed/host',
+    'Mozilla/5.0 (Linux; Android 16) Chrome/130 Mobile AXF-Embed/host/banner+toolbar',
+    'Mozilla/5.0 (X11; Linux) AXF-Embed/host/layout Safari/537.36',
     'Mozilla/5.0 AXF-Embed/Bad_Host',
     'Mozilla/5.0 (AXF-Embed/dev-console; wv)',
-    'Mozilla/5.0 NotAXF-Embed/patches',
-    'Mozilla/5.0 AXF-Embed/patches/none Chrome/130',
+    'Mozilla/5.0 NotAXF-Embed/host',
+    'Mozilla/5.0 AXF-Embed/host/none Chrome/130',
     'Mozilla/5.0 Chrome/130',
     '',
   ];
@@ -105,9 +388,9 @@ write('hide.json', {
     queries: queries.map((q) => ({ input: q, embed: embedFromQuery(q) })),
     userAgents: agents.map((ua) => ({ input: ua, embed: embedFromUserAgent(ua) })),
     // The query wins over the user agent; either alone counts; neither = standalone.
-    detect: [['?axf-embed=patches', agents[2]], ['?x=1', agents[0]], ['', agents[1]], ['?axf-embed=bad%20id', agents[0]], ['', agents[6]]].map(([q, ua]) => ({ search: q, userAgent: ua, embed: detectEmbed(q, ua) })),
-    suffix: [['patches', undefined], ['patches', ['banner']], ['patches', ['banner', 'toolbar']], ['patches', ['toolbar', 'banner', 'layout']], ['dev-console', []], ['patches', ['nothing']], ['patches', ['none']]].map(([h, hid]) => ({ host: h, hidden: hid ?? null, suffix: userAgentSuffix(h as string, hid as string[] | undefined) })),
-    urls: [['https://console.amberxai.com/', 'patches', undefined], ['https://console.amberxai.com/?x=1#view', 'patches', undefined], ['https://pilot.amberxai.com/app?axf-embed=old&axf-embed-hide=toolbar', 'patches', ['banner']], ['https://axhub.amberxai.com/apps', 'patches', ['banner', 'toolbar']], ['https://h/p#only-hash', 'patches', ['layout']]].map(([u, h, hid]) => ({ url: u, host: h, hidden: hid ?? null, out: embedUrl(u as string, h as string, hid as string[] | undefined) })),
+    detect: [['?axf-embed=host', agents[2]], ['?x=1', agents[0]], ['', agents[1]], ['?axf-embed=bad%20id', agents[0]], ['', agents[6]]].map(([q, ua]) => ({ search: q, userAgent: ua, embed: detectEmbed(q, ua) })),
+    suffix: [['host', undefined], ['host', ['banner']], ['host', ['banner', 'toolbar']], ['host', ['toolbar', 'banner', 'layout']], ['dev-console', []], ['host', ['nothing']], ['host', ['none']]].map(([h, hid]) => ({ host: h, hidden: hid ?? null, suffix: userAgentSuffix(h as string, hid as string[] | undefined) })),
+    urls: [['https://console.amberxai.com/', 'host', undefined], ['https://console.amberxai.com/?x=1#view', 'host', undefined], ['https://other.amberxai.com/app?axf-embed=old&axf-embed-hide=toolbar', 'host', ['banner']], ['https://axhub.amberxai.com/apps', 'host', ['banner', 'toolbar']], ['https://h/p#only-hash', 'host', ['layout']]].map(([u, h, hid]) => ({ url: u, host: h, hidden: hid ?? null, out: embedUrl(u as string, h as string, hid as string[] | undefined) })),
   });
 }
 // What a host takes over + page mode + host/guest messages (embed@1 extension, core/engines/embed.ts; Oct 21 2026).
@@ -115,25 +398,25 @@ write('hide.json', {
   const takeInputs: (string | string[] | null)[] = [null, '', 'settings', 'notifications,settings', 'settings+notifications', 'Settings', 'nothing', 'settings,none', ['settings', 'settings'], ' notifications '];
   const pageInputs: unknown[] = [null, '', 'settings', 'SETTINGS', 'notifications', 'nothing', 3];
   const queries = [
-    '?axf-embed=patches',
-    '?axf-embed=patches&axf-embed-take=settings',
-    '?axf-embed=patches&axf-embed-take=settings,notifications',
-    '?axf-embed=patches&axf-embed-take=bogus',
-    '?axf-embed=patches&axf-embed-page=settings',
-    '?axf-embed=patches&axf-embed-take=settings,notifications&axf-embed-page=settings',
-    '?axf-embed=patches&axf-embed-page=notifications',
+    '?axf-embed=host',
+    '?axf-embed=host&axf-embed-take=settings',
+    '?axf-embed=host&axf-embed-take=settings,notifications',
+    '?axf-embed=host&axf-embed-take=bogus',
+    '?axf-embed=host&axf-embed-page=settings',
+    '?axf-embed=host&axf-embed-take=settings,notifications&axf-embed-page=settings',
+    '?axf-embed=host&axf-embed-page=notifications',
     '?axf-embed-take=settings',
   ];
   const agents = [
-    'Mozilla/5.0 Chrome/130 AXF-Embed/patches AXF-Embed-Take/settings+notifications',
-    'Mozilla/5.0 AXF-Embed/patches/banner+toolbar AXF-Embed-Take/settings',
-    'Mozilla/5.0 AXF-Embed/patches AXF-Embed-Take/none',
+    'Mozilla/5.0 Chrome/130 AXF-Embed/host AXF-Embed-Take/settings+notifications',
+    'Mozilla/5.0 AXF-Embed/host/banner+toolbar AXF-Embed-Take/settings',
+    'Mozilla/5.0 AXF-Embed/host AXF-Embed-Take/none',
     'Mozilla/5.0 AXF-Embed-Take/settings',
-    'Mozilla/5.0 AXF-Embed/patches',
-    'Mozilla/5.0 AXF-Embed/patches AXF-Embed-Take/settings+notifications+app-menu',
-    'Mozilla/5.0 AXF-Embed/patches/none AXF-Embed-Take/app-menu',
+    'Mozilla/5.0 AXF-Embed/host',
+    'Mozilla/5.0 AXF-Embed/host AXF-Embed-Take/settings+notifications+app-menu',
+    'Mozilla/5.0 AXF-Embed/host/none AXF-Embed-Take/app-menu',
   ];
-  const e = (takes: string[] | undefined, page?: string) => ({ host: 'patches', hidden: ['banner'], ...(takes ? { takes } : {}), ...(page ? { page } : {}) });
+  const e = (takes: string[] | undefined, page?: string) => ({ host: 'host', hidden: ['banner'], ...(takes ? { takes } : {}), ...(page ? { page } : {}) });
   const takenActions = ['app.settings', 'settings.open', 'settings.open:appearance', 'nav:settings', 'nav:home', 'settings.reset', 'alerts.open', 'plugin-manager.open', 'nav:plugin-manager', '', null];
   write('embed-takes.json', {
     uaToken: EMBED_TAKE_UA_TOKEN,
@@ -142,18 +425,18 @@ write('hide.json', {
     pages: pageInputs.map((p) => ({ input: p, page: embedPage(p) })),
     queries: queries.map((q) => ({ input: q, embed: embedFromQueryFull(q) })),
     userAgents: agents.map((ua) => ({ input: ua, embed: embedFromUserAgentFull(ua) })),
-    detect: [['?axf-embed=patches', agents[0]], ['?axf-embed=patches&axf-embed-page=settings', agents[0]], ['?axf-embed=patches&axf-embed-take=notifications', agents[0]], ['', agents[1]], ['?axf-embed=other', agents[0]], ['?axf-embed=patches', agents[5]], ['?axf-embed=patches&axf-embed-page=settings', agents[5]]].map(([q, ua]) => ({ search: q, userAgent: ua, embed: detectEmbedFull(q, ua) })),
+    detect: [['?axf-embed=host', agents[0]], ['?axf-embed=host&axf-embed-page=settings', agents[0]], ['?axf-embed=host&axf-embed-take=notifications', agents[0]], ['', agents[1]], ['?axf-embed=other', agents[0]], ['?axf-embed=host', agents[5]], ['?axf-embed=host&axf-embed-page=settings', agents[5]]].map(([q, ua]) => ({ search: q, userAgent: ua, embed: detectEmbedFull(q, ua) })),
     takenBy: [e(['settings']), e(['notifications']), e(undefined), e(['settings', 'notifications']), e(['settings', 'plugins'])].flatMap((em) => takenActions.map((a) => ({ embed: em, action: a, fn: embedTakenBy(em, a) }))),
     takenView: [e(['settings']), e(undefined), e(['plugins'])].flatMap((em) => ['settings', 'home', 'plugin-manager', ''].map((v) => ({ embed: em, view: v, fn: embedTakenView(em, v) }))),
     takenProvider: [e(['settings']), e(undefined)].flatMap((em) => ['settings', 'views'].map((pv) => ({ embed: em, provider: pv, fn: embedTakenProvider(em, pv) }))),
-    suffix: [['patches', null, ['settings', 'notifications', 'app-menu']], ['patches', null, ['settings', 'notifications']], ['patches', ['banner'], []], ['patches', ['banner', 'toolbar'], ['settings']], ['patches', null, ['bogus']]].map(([h, hid, t]) => ({ host: h, hidden: hid, takes: t, suffix: userAgentSuffixFull(h as string, (hid as string[] | null) ?? undefined, t as string[]) })),
+    suffix: [['host', null, ['settings', 'notifications', 'app-menu']], ['host', null, ['settings', 'notifications']], ['host', ['banner'], []], ['host', ['banner', 'toolbar'], ['settings']], ['host', null, ['bogus']]].map(([h, hid, t]) => ({ host: h, hidden: hid, takes: t, suffix: userAgentSuffixFull(h as string, (hid as string[] | null) ?? undefined, t as string[]) })),
     urls: [
       ['https://console.amberxai.com/', { takes: ['settings', 'notifications'] }],
       ['https://console.amberxai.com/?x=1#a', { takes: ['settings'], page: 'settings' }],
-      ['https://pilot.amberxai.com/?axf-embed-take=old&axf-embed-page=old', { page: 'settings' }],
-      ['https://pilot.amberxai.com/', {}],
+      ['https://other.amberxai.com/?axf-embed-take=old&axf-embed-page=old', { page: 'settings' }],
+      ['https://other.amberxai.com/', {}],
       ['https://console.amberxai.com/', { takes: ['settings', 'app-menu'] }],
-    ].map(([u, o]) => ({ url: u, host: 'patches', opts: o, out: embedUrlFull(u as string, 'patches', o as never) })),
+    ].map(([u, o]) => ({ url: u, host: 'host', opts: o, out: embedUrlFull(u as string, 'host', o as never) })),
     links: ['https://axhub.amberxai.com/apps', 'http://x.example/', 'view:alerts', 'settings:appearance', 'javascript:alert(1)', 'https://u:p@h/', 'view:', ''].map((l) => ({ link: l, ok: embedLinkOk(l) })),
     messages: [
       { $axf: 'embed@1', type: 'open-settings' },
@@ -190,7 +473,7 @@ write('hide.json', {
       ['array'],
       null,
     ].map((m) => ({ input: m, message: parseEmbedMessage(m) })),
-    // Locked functions (plugins inside Patches): hooks kept greyed out with a note. Web only so far (Kotlin deferred, PORTING.md).
+    // Locked functions (e.g. plugins): hooks kept greyed out with a note. Web only so far (Kotlin deferred, PORTING.md).
     locked: [e(['settings', 'plugins']), e(['settings']), e(['plugins'], 'settings'), e(undefined)].flatMap((em) =>
       ['plugin-manager.open', 'plugin-manager.view:cards', 'plugin-switches.open', 'plugin-catalog.install', 'nav:plugin-manager', 'app.settings', 'alerts.open', '', null]
         .map((a) => ({ embed: em, action: a, fn: embedLockedBy(em, a), note: embedLockNote(em, embedLockedBy(em, a)) }))),
@@ -203,12 +486,22 @@ write('hide.json', {
       { $axf: 'embed@1', type: 'plugins-request' },
       JSON.stringify({ $axf: 'embed@1', type: 'plugins', plugins: Array.from({ length: 250 }, (_, i) => ({ id: `ai.amberx.axf.p${i}`, name: `Plugin ${i}`, on: i % 2 === 0 })) }),
     ].map((m) => ({ input: m, message: parseEmbedMessage(m) })),
+    // Front messages (`show` guest → host, `shown` host → guest; Nov 3 2026). Web only so far (Kotlin deferred, PORTING.md).
+    frontMessages: [
+      { $axf: 'embed@1', type: 'show' },
+      { $axf: 'embed@1', type: 'show', reason: ' Amber: opening Plan Studio\n' },
+      { $axf: 'embed@1', type: 'show', reason: 7 },
+      { $axf: 'embed@1', type: 'shown', on: true },
+      { $axf: 'embed@1', type: 'shown', on: false },
+      { $axf: 'embed@1', type: 'shown', on: 'yes' },
+      { $axf: 'embed@1', type: 'shown' },
+    ].map((m) => ({ input: m, message: parseEmbedMessage(m) })),
     settingsTab: ['settings.open:appearance', 'settings.open', 'app.settings', 'settings.open:a b'].map((a) => ({ action: a, tab: settingsTabOf(a) ?? null })),
     // View pages (`view:<id>`: one view alone, e.g. a tabable plugin as a host's tab) and plugin tabs in a plugin report.
     // Web only so far (Kotlin deferred, PORTING.md).
     viewPages: ['view:todos', ' view:todos ', 'view:', 'view:bad id', 'view:a/b', `view:${'x'.repeat(70)}`, 'View:Alerts'].map((p) => ({ input: p, page: embedPage(p), view: embedPageView(embedPage(p)) })),
-    viewUrls: [['https://console.amberxai.com/', { takes: ['settings', 'banners', 'plugins'], page: 'view:todos' }]].map(([u, o]) => ({ url: u, host: 'patches', opts: o, out: embedUrlFull(u as string, 'patches', o as never) })),
-    viewDetect: ['?axf-embed=patches&axf-embed-take=settings,plugins&axf-embed-page=view:todos'].map((q) => ({ search: q, embed: embedFromQueryFull(q) })),
+    viewUrls: [['https://console.amberxai.com/', { takes: ['settings', 'banners', 'plugins'], page: 'view:todos' }]].map(([u, o]) => ({ url: u, host: 'host', opts: o, out: embedUrlFull(u as string, 'host', o as never) })),
+    viewDetect: ['?axf-embed=host&axf-embed-take=settings,plugins&axf-embed-page=view:todos'].map((q) => ({ search: q, embed: embedFromQueryFull(q) })),
     pluginTabs: [
       { $axf: 'embed@1', type: 'plugins', plugins: [
         { id: 'ai.amberx.axf.example.alpha', name: 'Todos', on: true, tab: { view: 'todos', label: ' Todos\n', icon: 'list' } },
@@ -229,6 +522,8 @@ write('hide.json', {
     empty: '',
     'code-shaped': JSON.stringify({ $axf: 'appearance@1', slots: { layout: 'classic-ide' }, assets: [{ type: 'color-theme', id: 'evil', data: {} }], script: 'alert(1)' }),
     'too-big': JSON.stringify({ $axf: 'appearance@1', pad: 'x'.repeat(20000) }),
+    // the retired appearance-package slot an older build wrote is dropped on read (Nov 3 2026)
+    'retired-slot': JSON.stringify({ $axf: 'appearance@1', slots: { 'appearance-package': 'fresh', 'design-package': 'hub-default', layout: 'classic-ide' } }),
   };
   const has = (t: string, id: string) => ['color-theme:arctic-daylight', 'style-theme:glass-orbit', 'layout:classic-ide', 'layout:focus-top', 'toolbar:standard-icons', 'uac-policy:admin-only'].includes(`${t}:${id}`);
   const base = parseAppearance(docs.full);
@@ -237,12 +532,12 @@ write('hide.json', {
     parsed: Object.fromEntries(Object.entries(docs).map(([k, v]) => [k, parseAppearance(v)])),
     resolved: Object.fromEntries(Object.entries(docs).map(([k, v]) => [k, resolveAppearance(parseAppearance(v), has)])),
     merged: {
-      'slot-over-full': mergeAppearance(base, { slots: { 'color-theme': 'neon-tide' } }, 'build-pilot', '2026-10-21T01:00:00Z'),
+      'slot-over-full': mergeAppearance(base, { slots: { 'color-theme': 'neon-tide' } }, 'axhub-web', '2026-10-21T01:00:00Z'),
       'hidden-clear': mergeAppearance(base, { hidden: { toolbar: null, 'app-menu': true } }, 'axf-console', '2026-10-21T01:00:00Z'),
       'spacing-only-into-null': mergeAppearance(null, { spacing: 'regular' }, 'axhub-android', '2026-10-21T01:00:00Z'),
       'keeps-other-apps-slots': mergeAppearance(parseAppearance(JSON.stringify({ $axf: 'appearance@1', slots: { 'pilot-only-type': 'thing', layout: 'focus-top' } })), { slots: { layout: 'classic-ide' } }, 'axf-console', '2026-10-21T01:00:00Z'),
     },
-    serialized: serializeAppearance(mergeAppearance(base, { slots: { 'color-theme': 'neon-tide' } }, 'build-pilot', '2026-10-21T01:00:00Z')),
+    serialized: serializeAppearance(mergeAppearance(base, { slots: { 'color-theme': 'neon-tide' } }, 'axhub-web', '2026-10-21T01:00:00Z')),
     palette: Object.fromEntries(load('color-theme').map((a) => [a.id, paletteFromColorTheme(a.data)])),
     retryMs: Object.fromEntries([0, 1, 2, 3, 4, 5, 6, 20].map((n) => [n, appearanceRetryMs(n)])),
   });
@@ -400,6 +695,10 @@ write('validation.json', [
   { case: 'banner-attach-bad', raw: { $axf: 'asset@1', type: 'banner', id: 'xx', name: 'X', version: '1', data: { height: 24, surface: 'flat', logo: { show: true, text: 'X' }, attach: [{ type: 'button', id: 'x', at: 'left' }, { type: 'badge', id: 'new', at: 'top' }] } } },
   { case: 'banner-attach-ok', raw: { $axf: 'asset@1', type: 'banner', id: 'xx', name: 'X', version: '1', data: { height: 24, surface: 'flat', logo: { show: true, text: 'X' }, attach: [{ type: 'search-bar', id: 'everything', at: 'center' }] } } },
   { case: 'toolbar-widgets-bad', raw: { $axf: 'asset@1', type: 'toolbar', id: 'xx', name: 'X', version: '1', data: { variant: 'icons', align: 'start', groups: [], showSearch: false, widgets: [{ type: 'badge', id: 'new', at: 'start' }] } } },
+  // Repeating slots (layout.repeat): same messages on every port.
+  { case: 'repeat-ok', raw: { $axf: 'asset@1', type: 'layout', id: 'x', name: 'X', version: '1', data: { ...base, repeat: [{ id: 'projects', dataSet: 'projects', style: 'cards', columns: 3, max: 6, region: 'main', fallback: { type: 'container', id: 'empty', label: 'No projects yet' } }, { id: 'tabs', dataSet: 'docs', style: 'tabs' }] } } },
+  { case: 'repeat-not-list', raw: { $axf: 'asset@1', type: 'layout', id: 'x', name: 'X', version: '1', data: { ...base, repeat: { id: 'a' } } } },
+  { case: 'repeat-bad', raw: { $axf: 'asset@1', type: 'layout', id: 'x', name: 'X', version: '1', data: { ...base, repeat: [{ id: 'a', dataSet: 'x' }, { id: 'a', dataSet: '', region: 'sidebar', style: 'carousel', columns: 13, max: -1, fallback: { type: 'ribbon', id: 3, label: true } }, 'x', { dataSet: 'y', columns: 2.5, fallback: 'none' }] } } },
 ].map((c) => ({ ...c, result: validateAsset(c.raw) })));
 // Randomize rolls: which slots a roll touches and which assets it may pick (context menus are opt-in).
 const rollCases: Record<string, { slots?: Record<string, boolean>; assets?: Record<string, boolean> }> = {
@@ -1085,26 +1384,26 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   ];
   // The app catalog (libs/hub/apps.ts, harvested from apps/axhub-web Oct 23 2026). Kotlin twin deferred (PORTING.md).
   const SHA = 'a'.repeat(64);
-  const bld = (over: Record<string, unknown> = {}) => ({ version: '0.1.0', build: 12, file: 'patches-0.1.0-b12.apk', size: 7_340_032, sha256: SHA, builtAt: '2026-10-21T18:00:00.000Z', ...over });
-  const app = (over: Record<string, unknown> = {}) => ({ project: 'patches', name: 'Patches', platform: 'android', latest: bld(), versions: [bld()], ...over });
+  const bld = (over: Record<string, unknown> = {}) => ({ version: '0.1.0', build: 12, file: 'notes-0.1.0-b12.apk', size: 7_340_032, sha256: SHA, builtAt: '2026-10-21T18:00:00.000Z', ...over });
+  const app = (over: Record<string, unknown> = {}) => ({ project: 'notes', name: 'Notes', platform: 'android', latest: bld(), versions: [bld()], ...over });
   const cat = (apps: unknown, updatedAt: unknown = '2026-10-21T18:05:00.000Z') => JSON.stringify({ updatedAt, apps });
   const appsCases: [string, number, string][] = [
     ['ok-one', 200, cat([app()])],
     ['ok-empty', 200, cat([])],
-    ['ok-earlier-builds', 200, cat([app({ versions: [bld(), bld({ version: '0.0.9', build: 11, file: 'patches-0.0.9-b11.apk' }), bld({ version: '0.0.8', build: 10, file: 'patches-0.0.8-b10.apk' })] })])],
+    ['ok-earlier-builds', 200, cat([app({ versions: [bld(), bld({ version: '0.0.9', build: 11, file: 'notes-0.0.9-b11.apk' }), bld({ version: '0.0.8', build: 10, file: 'notes-0.0.8-b10.apk' })] })])],
     ['ok-sorted-by-name', 200, cat([app({ project: 'voice-vault', name: 'Voice Vault', latest: bld({ file: 'voice-vault-0.1.0-b3.apk' }), versions: [] }), app({ project: 'axhub-android', name: 'AXHub', latest: bld({ file: 'axhub-android-0.1.0-b9.apk' }), versions: [] })])],
     ['ok-name-and-platform-default', 200, cat([app({ name: undefined, platform: 42 })])],
     ['ok-latest-from-versions', 200, cat([app({ latest: null })])],
-    ['bad-project-dropped', 200, cat([app({ project: '../etc' }), app({ project: 'Patches' }), app({ project: '' }), app()])],
+    ['bad-project-dropped', 200, cat([app({ project: '../etc' }), app({ project: 'Notes' }), app({ project: '' }), app()])],
     ['duplicate-project-dropped', 200, cat([app(), app({ name: 'Again' })])],
-    ['bad-file-dropped', 200, cat([app({ latest: bld({ file: '../../etc/passwd' }), versions: [bld({ file: 'evil.sh' }), bld({ file: 'patches.apk' })] })])],
-    ['bad-size-dropped', 200, cat([app({ latest: bld({ size: -1 }), versions: [bld({ size: 'big', file: 'patches-0.1.0-b13.apk' }), bld({ size: 5e9, file: 'patches-0.1.0-b14.apk' })] })])],
+    ['bad-file-dropped', 200, cat([app({ latest: bld({ file: '../../etc/passwd' }), versions: [bld({ file: 'evil.sh' }), bld({ file: 'notes.apk' })] })])],
+    ['bad-size-dropped', 200, cat([app({ latest: bld({ size: -1 }), versions: [bld({ size: 'big', file: 'notes-0.1.0-b13.apk' }), bld({ size: 5e9, file: 'notes-0.1.0-b14.apk' })] })])],
     ['foreign-url-ignored', 200, cat([app({ latest: bld({ url: 'https://evil.example/x.apk' }) })])],
     ['bad-sha-and-build', 200, cat([app({ latest: bld({ sha256: 'xyz', build: -4 }) })])],
-    ['duplicate-files-dropped', 200, cat([app({ versions: [bld(), bld(), bld({ version: '0.0.9', build: 11, file: 'patches-0.0.9-b11.apk' })] })])],
-    ['too-many-versions', 200, cat([app({ versions: Array.from({ length: 9 }, (_, i) => bld({ build: i + 1, file: `patches-0.1.0-b${i + 1}.apk` })) })])],
+    ['duplicate-files-dropped', 200, cat([app({ versions: [bld(), bld(), bld({ version: '0.0.9', build: 11, file: 'notes-0.0.9-b11.apk' })] })])],
+    ['too-many-versions', 200, cat([app({ versions: Array.from({ length: 9 }, (_, i) => bld({ build: i + 1, file: `notes-0.1.0-b${i + 1}.apk` })) })])],
     ['too-many-apps', 200, cat(Array.from({ length: APPS_MAX + 5 }, (_, i) => app({ project: `app-${String(i).padStart(3, '0')}`, name: `App ${String(i).padStart(3, '0')}`, latest: bld({ file: `app-${String(i).padStart(3, '0')}-0.1.0-b1.apk` }), versions: [] })))],
-    ['apps-not-array', 200, cat({ project: 'patches' })],
+    ['apps-not-array', 200, cat({ project: 'notes' })],
     ['entries-not-objects', 200, cat(['x', null, [1], 5, app()])],
     ['updated-at-capped', 200, cat([], 'x'.repeat(100))],
     ['status-401', 401, JSON.stringify({ signedIn: false })],
@@ -1314,6 +1613,212 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   });
 }
 
+// Dock engine (dock@1, dock-engine s1–s2, Nov 3 2026; core/engines/dock.ts): pane trees with a limit, drop zones
+// (header / centre / pane edge / host edge), splitter resize with a weight floor, snapshots, layout presets
+// (dock-layout@1 starters) with thumbnails. Kotlin `DockEngine.kt` (deferred, PORTING.md) replays the same file.
+{
+  const R = DEFAULT_DOCK_RULES;
+  const leaf = (groupId: string): Pane => ({ kind: 'leaf', groupId });
+  const split = (vertical: boolean, children: Pane[], weights: number[]): Pane => ({ kind: 'split', vertical, children, weights });
+  const group = (id: string, tabs: string[], windowId = 'main'): TabGroup => ({ id, tabs: tabs.map((t) => ({ id: t, title: t.toUpperCase(), kind: 'doc', payload: `p/${t}` })), active: 0, windowId });
+  const rulesCases: unknown[] = [null, {}, { paneLimit: 3 }, { paneLimit: 0, minWeight: 2, headerBand: -4, edgeBand: 3.7, centreFraction: 1.5, splitRatio: 0.05, rootRatio: 'x' }, { paneLimit: 99.9 }];
+  const weightCases: [number[], number, number?][] = [[[1, 1], 2], [[3, 1], 2], [[1, 1, 1], 3], [[0.02, 0.98], 2], [[0.01, 0.01, 0.98], 3], [[-1, NaN, 2], 3], [[], 4], [[5], 1], [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 12, 0.1], [[0.5, 0.5], 2, 0.3], [[0.9, 0.1], 2, 0.2]];
+  const nested = split(false, [leaf('a'), split(false, [leaf('b'), leaf('c')], [1, 3]), split(true, [leaf('d')], [1])], [2, 2, 0]);
+  const normalizeCases: Record<string, Pane | null> = {
+    null: null, leaf: leaf('a'), 'two equal': split(false, [leaf('a'), leaf('b')], [1, 1]), 'flatten same orientation + collapse one child + fix weights': nested,
+    'grid kept': { kind: 'grid', rows: 2, cols: 2, cells: [leaf('a'), leaf('b'), leaf('c'), leaf('d')] }, 'grid with a nested split cell': { kind: 'grid', rows: 1, cols: 2, cells: [leaf('a'), split(true, [leaf('b'), leaf('c')], [1, 1])] },
+    'single grid cell collapses': { kind: 'grid', rows: 1, cols: 1, cells: [leaf('a')] }, 'empty split': split(true, [], []),
+  };
+  const base: Pane = split(false, [leaf('a'), split(true, [leaf('b'), leaf('c')], [0.6, 0.4])], [0.3, 0.7]);
+  const splitCases: [string, string, 'left' | 'right' | 'top' | 'bottom', number?][] = [['a', 'left'], ['a', 'right'], ['a', 'top'], ['a', 'bottom'], ['b', 'top'], ['b', 'bottom', 0.25], ['c', 'left'], ['c', 'right', 0.3], ['zzz', 'left']].map(([g, s, r]) => [`${g}-${s}${r ? `-${r}` : ''}`, g as string, s as 'left', r as number | undefined]);
+  const rootCases: ['left' | 'right' | 'top' | 'bottom', Pane | null, number?][] = [['left', base], ['right', base], ['top', base], ['bottom', base, 0.5], ['right', null], ['left', leaf('a')], ['top', split(true, [leaf('a'), leaf('b')], [1, 1])]];
+  const resizeCases: [number[], number, number][] = [[[], 0, 0.1], [[], 0, -0.1], [[], 0, 0.9], [[], 0, -5], [[1], 0, 0.2], [[1], 0, -0.35], [[1], 1, 0.1], [[], 5, 0.1], [[9], 0, 0.1], [[], 0, NaN]];
+  // zones over one pane 300×200 at (100, 50) with a 32 px header; drops over a host 800×600 holding three panes
+  const box: GroupBox = { groupId: 'a', rect: { x: 100, y: 50, width: 300, height: 200 }, header: 32 };
+  const zoneProbes: [number, number][] = [[250, 60], [250, 81], [250, 82], [250, 150], [110, 150], [390, 150], [250, 90], [250, 245], [120, 240], [380, 90], [99, 100], [401, 100], [250, 49], [250, 251], [175, 100], [176, 100], [250, 125], [250, 124]];
+  const host = { x: 0, y: 0, width: 800, height: 600 };
+  const boxes: GroupBox[] = [{ groupId: 'a', rect: { x: 0, y: 0, width: 240, height: 600 }, header: 32 }, { groupId: 'b', rect: { x: 240, y: 0, width: 560, height: 420 }, header: 32 }, { groupId: 'c', rect: { x: 240, y: 420, width: 560, height: 180 }, header: 32 }];
+  const tabRights = (gid: string) => (gid === 'b' ? [300, 360, 420] : gid === 'a' ? [60] : []);
+  const dropProbes: [number, number][] = [[8, 300], [792, 300], [400, 8], [400, 592], [120, 10], [120, 300], [20, 300], [220, 300], [120, 60], [120, 560], [330, 10], [500, 10], [520, 200], [260, 200], [780, 200], [520, 60], [520, 400], [520, 500], [250, 500], [900, 300], [-1, 300], [16, 300], [17, 300]];
+  const indexCases: [number, number[]][] = [[0, [60, 120, 180]], [89, [60, 120, 180]], [90, [60, 120, 180]], [150, [60, 120, 180]], [1000, [60, 120, 180]], [10, []], [59, [60]], [60, [60]]];
+  const state: DockState = { tree: split(false, [leaf('a'), split(true, [leaf('b'), leaf('c')], [0.7, 0.3])], [0.3, 0.7]), groups: { a: group('a', ['t1', 't2']), b: group('b', ['t3']), c: group('c', ['t4', 't5', 't6']) } };
+  const drops: Record<string, [string, DockDrop, Partial<typeof R>?]> = {
+    'header: t1 to b at 0': ['t1', { target: 'group', groupId: 'b', zone: 'header', index: 0 }],
+    'header: t1 within a to the end': ['t1', { target: 'group', groupId: 'a', zone: 'header', index: 2 }],
+    'header: t2 within a to the start': ['t2', { target: 'group', groupId: 'a', zone: 'header', index: 0 }],
+    'centre: t3 joins c (b empties, its leaf goes)': ['t3', { target: 'group', groupId: 'c', zone: 'centre' }],
+    'side: t4 splits a on the right': ['t4', { target: 'group', groupId: 'a', zone: 'right' }],
+    'side: t4 splits b below (joins the vertical split)': ['t4', { target: 'group', groupId: 'b', zone: 'bottom' }],
+    'side: t3 (only tab) onto its own side = unchanged': ['t3', { target: 'group', groupId: 'b', zone: 'left' }],
+    'side: t3 (only tab) onto its own header = reorder only': ['t3', { target: 'group', groupId: 'b', zone: 'header', index: 0 }],
+    'root: t5 along the top': ['t5', { target: 'root', zone: 'top' }],
+    'root: t5 along the left of a left-right split joins it': ['t5', { target: 'root', zone: 'left' }],
+    'limit 3: a side drop joins the target as a tab': ['t4', { target: 'group', groupId: 'a', zone: 'left' }, { paneLimit: 3 }],
+    'limit 3: a root drop joins the first pane': ['t4', { target: 'root', zone: 'bottom' }, { paneLimit: 3 }],
+    'limit 3: moving the only tab of a pane to a side still fits': ['t3', { target: 'group', groupId: 'a', zone: 'top' }, { paneLimit: 3 }],
+    'unknown tab = unchanged': ['nope', { target: 'root', zone: 'top' }],
+    'unknown group = unchanged': ['t1', { target: 'group', groupId: 'zzz', zone: 'centre' }],
+  };
+  const drop = (name: string) => { const [tab, d, o] = drops[name]!; const rules = normalizeDockRules({ ...R, ...(o ?? {}) }); const out = applyDockDrop(state, tab, d, 'new', 'main', rules); return { tab, drop: d, rules: o ?? null, limited: dropIsLimited(state, tab, d, rules), unchanged: out === state, tree: out.tree, groups: Object.fromEntries(Object.entries(out.groups).map(([k, g]) => [k, { tabs: g.tabs.map((t) => t.id), active: g.active, windowId: g.windowId }])) }; };
+  const limitState: DockState = { tree: split(false, [leaf('a'), leaf('b'), leaf('c'), leaf('d')], [1, 1, 1, 1]), groups: { a: group('a', ['t1']), b: group('b', ['t2']), c: group('c', ['t3', 't4']), d: group('d', ['t5']), x: group('x', ['t9'], 'win-1') } };
+  const limited = enforcePaneLimit(limitState, normalizeDockRules({ paneLimit: 2 }));
+  const snap = serializeDock(state);
+  const rawRestore = { $axf: DOCK_CONTRACT, tree: { kind: 'split', vertical: false, children: [{ kind: 'leaf', groupId: 'a' }, { kind: 'leaf', groupId: 'ghost' }, { kind: 'split', vertical: true, children: [{ kind: 'leaf', groupId: 'b' }, 'junk', { kind: 'leaf', groupId: 'c' }], weights: [1, 'x', 1] }], weights: [1, 1, 2] },
+    groups: { a: { tabs: [{ id: 't1', title: 'T1', kind: 'doc' }, { id: 't1', title: 'again', kind: 'doc' }, { id: 'bad id!', kind: 'doc' }, { kind: 'doc' }], active: 9 }, b: { tabs: [{ id: 't3', kind: 'doc', payload: 'p', icon: 'file', closable: false }], active: -2 }, c: { tabs: [{ id: 't1', title: 'dup across groups', kind: 'doc' }] }, 'bad id!': { tabs: [{ id: 'z', kind: 'doc' }] }, orphan: { tabs: [{ id: 't8', kind: 'doc' }], active: 0 }, empty: { tabs: [] } } };
+  const restoreCases: Record<string, unknown> = { 'round trip': snap, 'junk cleaned': rawRestore, 'not a dock': { $axf: 'windows@1', groups: {} }, 'no groups': { $axf: DOCK_CONTRACT, groups: {} }, 'string': 'nope', 'over the limit': { $axf: DOCK_CONTRACT, tree: null, groups: { a: { tabs: [{ id: 'a1', kind: 'doc' }] }, b: { tabs: [{ id: 'b1', kind: 'doc' }] }, c: { tabs: [{ id: 'c1', kind: 'doc' }] } } } };
+  const presets = load('dock-layout');
+  const tabIds = ['t1', 't2', 't3', 't4', 't5'];
+  const presetApply: DockState = { tree: split(false, [leaf('g1'), leaf('g2')], [1, 1]), groups: { g1: group('g1', ['t1', 't2', 't3']), g2: group('g2', ['t4', 't5']), far: group('far', ['t9'], 'win-2') } };
+  const badLayouts: Record<string, unknown> = { 'nothing': null, 'string': 'x', 'repeat pane': { panes: 2, tree: { kind: 'split', vertical: false, children: [{ kind: 'leaf', pane: 1 }, { kind: 'leaf', pane: 1 }], weights: [1, 1] } }, 'gap in numbering': { panes: 2, tree: { kind: 'split', vertical: true, children: [{ kind: 'leaf', pane: 1 }, { kind: 'leaf', pane: 3 }], weights: [1, 1] } }, 'panes mismatch': { panes: 3, tree: { kind: 'split', vertical: true, children: [{ kind: 'leaf', pane: 1 }, { kind: 'leaf', pane: 2 }], weights: [1, 1] } }, 'one-child split collapses': { panes: 1, tree: { kind: 'split', vertical: true, children: [{ kind: 'leaf', pane: 1 }], weights: [1] } }, 'bad main + hint': { panes: 1, tree: { kind: 'leaf', pane: 1 }, main: 4, hint: 7 }, 'too many': { panes: 13, tree: { kind: 'split', vertical: false, children: Array.from({ length: 13 }, (_, i) => ({ kind: 'leaf', pane: i + 1 })), weights: [] } } };
+  write('dock.json', {
+    contract: DOCK_CONTRACT, rules: R, sides: DOCK_SIDES, zoneList: DOCK_ZONES, maxPresetPanes: DOCK_LAYOUT_MAX_PANES,
+    normalizeRules: rulesCases.map((input) => ({ input, rules: normalizeDockRules(input as never) })),
+    weights: weightCases.map(([w, n, min]) => ({ weights: w, n, min: min ?? null, out: clampWeights(w, n, min) })),
+    normalize: Object.entries(normalizeCases).map(([name, tree]) => ({ name, tree, out: normalizeTree(tree), panes: countPanes(normalizeTree(tree)) })),
+    paths: { tree: base, of: ['a', 'b', 'c', 'zzz'].map((g) => ({ group: g, path: pathOf(base, g) })), at: [[], [0], [1], [1, 0], [1, 1], [1, 2], [0, 0]].map((p) => ({ path: p, node: paneAt(base, p) })) },
+    split: { base, cases: splitCases.map(([name, g, side, ratio]) => ({ name, group: g, side, ratio: ratio ?? null, out: splitPane(base, g, side, 'new', ratio) })) },
+    splitRoot: rootCases.map(([side, tree, ratio]) => ({ side, tree, ratio: ratio ?? null, out: splitRoot(tree, side, 'new', ratio) })),
+    remove: ['a', 'b', 'c', 'zzz'].map((g) => ({ group: g, out: removePane(base, g) })).concat([{ group: 'a', out: removePane(leaf('a'), 'a') }]),
+    resize: resizeCases.map(([path, index, delta]) => ({ path, index, delta: Number.isNaN(delta) ? 'NaN' : delta, out: resizeSplit(base, path, index, delta) })),
+    zones: { box, probes: zoneProbes.map(([px, py]) => ({ px, py, zone: dockZoneAt(box, px, py), zoneDefaultHeader: dockZoneAt({ groupId: 'a', rect: box.rect }, px, py) })) },
+    headerIndex: indexCases.map(([px, rights]) => ({ px, rights, index: headerIndexAt(px, rights) })),
+    drops: { host, boxes, tabRights: { a: tabRights('a'), b: tabRights('b'), c: tabRights('c') }, probes: dropProbes.map(([px, py]) => { const d = dockDropAt(host, boxes, px, py, R, tabRights); return { px, py, drop: d, rect: d ? dockDropRect(d, host, d.target === 'group' ? boxes.find((b) => b.groupId === d.groupId) ?? null : null) : null }; }), noBoxesEdge: dockDropAt(host, [], 8, 300, R, tabRights) },
+    apply: { state: { tree: state.tree, groups: Object.fromEntries(Object.entries(state.groups).map(([k, g]) => [k, { tabs: g.tabs.map((t) => t.id), active: g.active, windowId: g.windowId }])) }, cases: Object.keys(drops).map((name) => ({ name, ...drop(name) })) },
+    limit: { state: { tree: limitState.tree, groups: Object.fromEntries(Object.entries(limitState.groups).map(([k, g]) => [k, g.tabs.map((t) => t.id)])) }, paneLimit: 2, out: { tree: limited.tree, groups: Object.fromEntries(Object.entries(limited.groups).map(([k, g]) => [k, g.tabs.map((t) => t.id)])) } },
+    snapshot: snap,
+    restore: Object.entries(restoreCases).map(([name, raw]) => { const r = restoreDock(raw, 'main', normalizeDockRules(name === 'over the limit' ? { paneLimit: 2 } : null)); return { name, raw, out: r ? { tree: r.tree, groups: Object.fromEntries(Object.entries(r.groups).map(([k, g]) => [k, { tabs: g.tabs, active: g.active, windowId: g.windowId }])) } : null }; }),
+    parseTab: [{ id: 't', kind: 'doc' }, { id: 't', title: 'T', kind: 'doc', payload: 'p', icon: 'file', closable: false }, { id: 'bad id!', kind: 'doc' }, { id: 't', kind: 'bad kind!' }, { id: 't', kind: 'doc', icon: 'Bad Icon', closable: true }, 'x', null, { id: 't', kind: 'doc', payload: 7 }].map((raw) => ({ raw, tab: parseTab(raw) })),
+    parseTree: [rawRestore.tree, { kind: 'leaf', groupId: 'a' }, { kind: 'leaf', groupId: 'nope' }, { kind: 'grid', rows: 2, cols: 2, cells: [{ kind: 'leaf', groupId: 'a' }, { kind: 'leaf', groupId: 'b' }, { kind: 'leaf', groupId: 'c' }, { kind: 'leaf', groupId: 'nope' }] }, { kind: 'grid', rows: 1, cols: 3, cells: [{ kind: 'leaf', groupId: 'a' }, { kind: 'leaf', groupId: 'b' }, { kind: 'leaf', groupId: 'c' }] }, { kind: 'what' }, []].map((raw) => ({ raw, tree: parseTree(raw, (g) => ['a', 'b', 'c'].includes(g)) })),
+    presets: {
+      starters: Object.fromEntries(presets.map((a) => { const d = normalizeDockLayout(a.data); return [a.id, { normalized: d, errors: dockLayoutErrors(a.data), tree: presetTree(d, ['g1', 'g2', 'g3', 'g4']), rects: presetRects(d), svg: presetSvg(d) }]; })),
+      bad: Object.entries(badLayouts).map(([name, raw]) => ({ name, raw, normalized: normalizeDockLayout(raw), errors: dockLayoutErrors(raw) })),
+      apply: presets.map((a) => { const d = normalizeDockLayout(a.data); const out = applyPreset(presetApply, d, 'main', (n) => `new-${n}`, normalizeDockRules({ paneLimit: 3 })); return { preset: a.id, tabs: tabIds, paneLimit: 3, tree: out.tree, groups: Object.fromEntries(Object.entries(out.groups).map(([k, g]) => [k, { tabs: g.tabs.map((t) => t.id), windowId: g.windowId }])) }; }),
+      applyState: { tree: presetApply.tree, groups: Object.fromEntries(Object.entries(presetApply.groups).map(([k, g]) => [k, { tabs: g.tabs, active: g.active, windowId: g.windowId }])) },
+      applyEmpty: applyPreset({ tree: null, groups: {} }, normalizeDockLayout(presets[0]!.data), 'main', (n) => `new-${n}`),
+    },
+  });
+}
+// xLayout (xlayout@1, Big Dog build xlayout s1, Nov 3 2026; core/engines/xlayout.ts): Molly as one app — apps, chrome merge
+// modes, the IDE block, three toolbar slots, namespacing, what the guests hide / the host takes, guest frame URLs.
+{
+  const starters = load('xlayout');
+  const apps = ['amberx', 'axhub', 'console'];
+  const badData: Record<string, unknown> = {
+    nothing: null, string: 'x', 'no apps': {}, 'apps not a list': { apps: 'amberx' },
+    'bad apps': { apps: [{ id: 'Amber X', label: 'A', url: 'https://a.example' }, { id: 'ok', label: '', url: 'http://plain.example' }, { id: 'ok', label: 'Again', url: 'https://ok.example/' }, 'x'] },
+    'bad merge + ide + toolbars': { apps: [{ id: 'a', label: 'A', url: 'https://a.example' }], merge: { banner: 'merged', toolbar: 'maybe', ribbon: 'host' }, ide: { on: 'yes', paneLimit: 0, preset: 'Bad Id', presets: 'ide', tree: { kind: 'what' } }, toolbars: [{ slot: 4 }, { slot: 1, visible: 'yes', location: 'middle', items: [{ id: 'x' }, { id: 'y', label: 'Y', action: 'nav:home', open: 'tab', app: 'nope' }] }, { slot: 1 }, 'x'] },
+    'merge not an object': { apps: [], merge: 'all' }, 'ide not an object': { apps: [], ide: true }, 'toolbars not a list': { apps: [], toolbars: {} },
+    'too many': { apps: Array.from({ length: 13 }, (_, i) => ({ id: `app-${i}`, label: `App ${i}`, url: `https://app-${i}.example` })), ide: { presets: Array.from({ length: 11 }, (_, i) => `p-${i}`) } },
+  };
+  const normalizeInputs: Record<string, unknown> = {
+    ...badData,
+    'full': starters[0]!.data,
+    'inline tree + custom presets': { apps: [{ id: 'a', label: 'A', url: 'https://a.example/' }], ide: { on: true, paneLimit: 3, presets: ['two-rows', 'ide', 'two-rows', 'Bad'], tree: { kind: 'split', vertical: true, children: [{ kind: 'leaf', pane: 1 }, { kind: 'leaf', pane: 2 }], weights: [3, 1] } } },
+    'ide preset falls back to the list': { apps: [], ide: { presets: ['two-columns', 'grid-2x2'] } },
+    'toolbar items namespaced + repeats dropped': { apps: [{ id: 'a', label: 'A', url: 'https://a.example' }], toolbars: [{ slot: 2, visible: true, location: 'left', items: [{ id: 'one', label: 'One', action: 'a:nav:home', app: 'a', open: 'pane' }, { id: 'two', label: 'Two', action: 'nav:home', app: 'A', open: 'floating', icon: 'home' }, { id: 'one', label: 'Again', action: 'x' }, { id: 'three', label: 'Three', action: 'host.thing' }] }] },
+  };
+  const molly = normalizeXLayout(starters[0]!.data);
+  const mergeCases: Record<string, Partial<Record<(typeof CHROME_KINDS)[number], (typeof MERGE_MODES)[number]>>> = {
+    default: {}, 'everything guest': Object.fromEntries(CHROME_KINDS.map((k) => [k, 'guest'])), 'everything host': Object.fromEntries(CHROME_KINDS.map((k) => [k, 'host'])),
+    'nav merged only': { ...Object.fromEntries(CHROME_KINDS.map((k) => [k, 'guest'])), 'nav-menu': 'merged' }, 'banner merged too': { banner: 'merged' },
+  };
+  write('xlayout.json', {
+    contract: XLAYOUT_CONTRACT, kinds: CHROME_KINDS, modes: MERGE_MODES, defaultMerge: DEFAULT_MERGE, slots: TOOLBAR_SLOT_COUNT, locations: TOOLBAR_LOCATIONS, openTargets: OPEN_TARGETS, defaultPresets: DEFAULT_PRESETS, limits: XLAYOUT_LIMITS,
+    starters: Object.fromEntries(starters.map((a) => [a.id, { normalized: normalizeXLayout(a.data), errors: xlayoutErrors(a.data), valid: validateAsset(a) }])),
+    normalize: Object.entries(normalizeInputs).map(([name, raw]) => ({ name, raw, out: normalizeXLayout(raw) })),
+    errors: Object.entries(badData).map(([name, raw]) => ({ name, raw, errors: xlayoutErrors(raw) })),
+    items: [[{ id: 'a', label: 'A', action: 'nav:home' }, apps], [{ id: 'a', label: 'A', action: 'nav:home', app: 'amberx', open: 'pane' }, apps], [{ id: 'a', label: 'A', action: 'amberx:nav:home', app: 'amberx' }, apps], [{ id: 'a', label: 'A', action: 'nav:home', app: 'nope' }, apps], [{ id: 'bad id!', label: 'A', action: 'x' }, apps], [{ id: 'a', label: '', action: 'x' }, apps], [{ id: 'a', label: 'A', action: 'x', open: 'tab', icon: 'Bad' }, apps], ['x', apps]].map(([raw, a]) => ({ raw, item: parseToolbarItem(raw, a as string[]) })),
+    open: OPEN_TARGETS.flatMap((o) => [true, false].map((ide) => ({ open: o, ideOn: ide, target: openTargetFor({ open: o }, ide) }))),
+    ns: { make: [['amberx', 'file.save'], ['console', 'nav:home']].map(([a, i]) => ({ app: a, id: i, ns: xNsId(a!, i!) })), split: ['amberx:file.save', 'console:nav:home', 'nope:x', 'amberx', ':x', 'amberx:', 'file.save'].map((v) => ({ id: v, out: splitNs(v, apps) })), strip: [['amberx:file.save', 'amberx'], ['file.save', 'amberx'], ['console:nav:home', 'amberx']].map(([id, a]) => ({ id, app: a, out: stripNs(id!, a!) })) },
+    merge: Object.entries(mergeCases).map(([name, m]) => { const d = normalizeXLayout({ apps: starters[0]!.data.apps, merge: m }); return { name, merge: d.merge, hidden: guestHidden(d), takes: guestTakes(d), url: guestUrl(d, d.apps[0]!), urlRoute: guestUrl(d, d.apps[2]!, 'molly', '#/build'), userAgent: guestUserAgent(d) }; }),
+    toolbars: { all: visibleToolbars(molly), top: visibleToolbars(molly, 'top'), bottom: visibleToolbars(molly, 'bottom'), everyOn: visibleToolbars({ toolbars: molly.toolbars.map((t) => ({ ...t, visible: true })) }).map((t) => t.slot) },
+    presets: { offered: idePresets(molly, ['ide', 'single', 'two-columns', 'other']), none: idePresets(molly, []), rules: dockRulesOf(molly), rulesClamped: dockRulesOf(normalizeXLayout({ apps: [], ide: { paneLimit: 99 } })) },
+  });
+}
+// Navigation style (nav-style@1, build molly-nav-submenus, Nov 3 2026; core/engines/navstyle.ts + navstyle-rules.mjs): the
+// look and behaviour of a nav with sub menus — normalize, validate, compile to tokens, and the pure sub-menu tree logic.
+{
+  const starters = load('nav-style');
+  const bad: Record<string, unknown> = {
+    nothing: null, string: 'x',
+    'bad values': { colors: { background: '#ff0000', active: 'accent2' }, font: { family: 'comic', weight: 450 }, animation: { kind: 'spin', durationMs: 5000, staggerMs: -4 }, behavior: { single: 'yes' }, accents: { console: 'rainbow' } },
+    'accents not an object': { accents: 'accent' },
+  };
+  const normalizeInputs: Record<string, unknown> = { ...bad, empty: {}, 'width max under min': { width: { min: 300, max: 200 } }, 'lists cleaned': { items: { order: 'console, axhub,,console,Bad Id!', hidden: ['amberx'], pinned: 'console' } } };
+  const tree = [
+    { id: 'home', view: 'home' },
+    { id: 'console', view: 'console', items: [{ id: 'build', view: '', items: [{ id: 'builds', view: 'console/nav:builds' }, { id: 'pending', view: 'console/nav:pending' }] }, { id: 'plugins', view: 'console/nav:plugins' }] },
+    { id: 'axhub', view: 'axhub', items: [{ id: 'approvals', view: 'axhub/nav:approvals' }] },
+  ];
+  const single = normalizeNavStyle({});
+  const multi = normalizeNavStyle({ behavior: { single: false, autoCollapse: false } });
+  const noFollow = normalizeNavStyle({ behavior: { followActive: false } });
+  write('nav-style.json', {
+    contract: NAV_STYLE_FRAME,
+    fields: NAV_STYLE_FIELDS,
+    starters: Object.fromEntries(starters.map((a) => [a.id, { normalized: normalizeNavStyle(a.data), errors: navStyleErrors(a.data), valid: validateAsset(a), output: navStyleOutput(a.data), reduced: navStyleOutput(a.data, { reducedMotion: true }) }])),
+    normalize: Object.entries(normalizeInputs).map(([name, raw]) => ({ name, raw, out: normalizeNavStyle(raw) })),
+    errors: Object.entries(bad).map(([name, raw]) => ({ name, raw, errors: navStyleErrors(raw) })),
+    fieldErrors: [['animation.kind', 'push'], ['animation.kind', 'spin'], ['animation.durationMs', 300], ['animation.durationMs', 9999], ['colors.active', 'accentSoft'], ['colors.active', '#fff'], ['accents.console', 'success'], ['accents.console', 'pink'], ['items.order', 'console,axhub'], ['nope.field', 1]].map(([path, value]) => ({ path, value, errors: navFieldErrors(path as string, value) })),
+    output: {
+      collapsed: navStyleOutput({}, { collapsed: true }),
+      resized: navStyleOutput({ width: { resizable: true, min: 180, max: 400 } }, { width: 999 }),
+      fixedWidth: navStyleOutput({ width: { size: 260 } }),
+      colours: navStyleOutput({ colors: { background: 'surface2', activeText: 'accent' }, font: { family: 'display', size: 'sm', weight: '600' }, layout: { density: 'compact' } }),
+    },
+    tree: {
+      tree,
+      path: ['console/nav:pending', 'axhub', 'nope', ''].map((v) => ({ view: v, path: navPathTo(tree, v) })),
+      toggle: [
+        { name: 'open console (single)', out: navToggle(tree, [], 'console', true) },
+        { name: 'open build inside console (single)', out: navToggle(tree, ['console'], 'build', true) },
+        { name: 'open axhub closes console (single)', out: navToggle(tree, ['console', 'build'], 'axhub', true) },
+        { name: 'open axhub keeps console (multi)', out: navToggle(tree, ['console', 'build'], 'axhub', false) },
+        { name: 'close console closes build', out: navToggle(tree, ['console', 'build', 'axhub'], 'console', false) },
+        { name: 'want open when open', out: navToggle(tree, ['console'], 'console', true, true) },
+      ],
+      follow: [
+        { name: 'page in build opens console + build, closes axhub', out: navFollow(tree, ['axhub'], 'console/nav:pending', single) },
+        { name: 'multi keeps axhub', out: navFollow(tree, ['axhub'], 'console/nav:pending', multi) },
+        { name: 'followActive off only closes', out: navFollow(tree, ['axhub'], 'console/nav:pending', noFollow) },
+        { name: 'app page opens its own', out: navFollow(tree, [], 'console', single) },
+        { name: 'unknown page keeps all', out: navFollow(tree, ['console'], 'nope', single) },
+      ],
+      arrange: [
+        { name: 'default', out: navArrange(tree, single) },
+        { name: 'order + hide + pin', out: navArrange(tree, normalizeNavStyle({ items: { order: 'axhub,console', hidden: 'home', pinned: 'console' } })) },
+      ],
+    },
+  });
+}
+// Unified chrome (chrome@1, Big Dog build xlayout s2, Nov 3 2026; core/engines/chrome.ts): guests send their chrome as data,
+// the host merges it under namespaces and routes picks back.
+{
+  const amberx: ChromeBundle = { $axf: CHROME_CONTRACT, app: 'amberx', label: 'AmberX', menus: [{ id: 'app', label: 'AmberX', items: [{ id: 'home', label: 'Home', icon: 'home' }, { id: 'sep', label: '', separator: true }, { id: 'notes', label: 'Notes', count: 3, items: [{ id: 'notes.new', label: 'New note' }] }] }], nav: [{ label: 'AmberX', items: [{ id: 'home', label: 'Home', icon: 'home' }, { id: 'notes', label: 'Notes', badge: 3 }] }], active: 'notes', context: [{ target: 'default', items: [{ id: 'copy', label: 'Copy' }] }, { target: 'note', items: [{ id: 'note.delete', label: 'Delete note', icon: 'trash' }] }], toolbars: [{ id: 'main', label: 'Main', items: [{ id: 'record', label: 'Record', icon: 'mic', pressed: true }] }], widgets: [{ id: 'clock', type: 'clock', text: '10:42' }, { id: 'approvals', type: 'counter', label: 'Approvals', count: 2, tone: 'accent' }] };
+  const axhub: ChromeBundle = { $axf: CHROME_CONTRACT, app: 'axhub', label: 'axHub', menus: [{ id: 'hub', label: 'Hub', items: [{ id: 'approvals', label: 'Approvals', count: 2 }] }, { id: 'manage', label: 'Manage', items: [{ id: 'services', label: 'Services' }] }], nav: [{ items: [{ id: 'approvals', label: 'Approvals', badge: 2 }, { id: 'services', label: 'Services', locked: true }] }], active: 'approvals', context: [{ target: 'default', items: [{ id: 'refresh', label: 'Refresh' }] }], toolbars: [], widgets: [{ id: 'clock', type: 'clock', text: '10:42' }, { id: 'hub', type: 'status', text: 'Live', tone: 'success' }] };
+  const console_: ChromeBundle = { $axf: CHROME_CONTRACT, app: 'console', menus: [], nav: [{ label: 'Build', items: [{ id: 'build', label: 'Builds' }] }], context: [], toolbars: [{ id: 'tb', items: [{ id: 'run', label: 'Run', icon: 'play' }, { id: 'stop', label: 'Stop', icon: 'square', locked: true }] }], widgets: [] };
+  const host: ChromeBundle = { $axf: CHROME_CONTRACT, app: 'molly', label: 'Molly', menus: [{ id: 'molly', label: 'Molly', items: [{ id: 'molly.home', label: 'Home' }, { id: 'molly.layout', label: 'Layout…' }] }], nav: [{ items: [{ id: 'home', label: 'Home', icon: 'home' }] }], active: 'home', context: [{ target: 'default', items: [{ id: 'molly.settings', label: 'Settings' }] }], toolbars: [], widgets: [{ id: 'host-clock', type: 'clock', text: '10:42' }] };
+  const rawBundles: unknown[] = [
+    amberx, { ...amberx, app: 'Amber X' }, { $axf: 'chrome@2', app: 'amberx' }, { $axf: CHROME_CONTRACT, app: 'x', menus: 'nope', nav: [{ items: [{ id: 'bad id!', label: 'x' }, { id: 'ok', label: '' }, { id: 'ok2', label: 'Ok', icon: 'Bad Icon', badge: -1, locked: 'yes' }, { id: 'ok2', label: 'Repeat' }] }, { items: [] }, 'x'], active: 'missing', context: [{ target: 'bad target!', items: [{ id: 'a', label: 'A' }] }, { target: 'ok', items: [] }, { target: 'ok2', items: [{ id: 'a', label: 'A', items: [{ id: 'b', label: 'B' }] }] }], toolbars: [{ id: 'tb', items: [{ id: 'noicon', label: 'No icon' }, { id: 'x' }] }, { id: 'tb', items: [{ id: 'dup', label: 'Dup', icon: 'x' }] }], widgets: [{ id: 'w', type: 'ribbon' }, { id: 'c', type: 'clock', text: 'now', tone: 'loud', count: 2.9 }, { id: 'c', type: 'clock' }] },
+    JSON.stringify(axhub), 'not json', null, { $axf: CHROME_CONTRACT, app: 'empty' },
+  ];
+  const merged = mergeChrome(host, [amberx, axhub, console_], { order: ['console', 'amberx', 'axhub'], activeApp: 'axhub' });
+  const noHost = mergeChrome(null, [axhub, amberx]);
+  const flat = mergeChrome(host, [axhub, amberx], { menus: 'flat', widgetsOnce: false });
+  const twice = mergeChrome(null, [amberx, { ...amberx, nav: [] }], { activeApp: 'nope' });
+  write('chrome.json', {
+    contract: CHROME_CONTRACT, limits: CHROME_LIMITS, widgetTypes: CHROME_WIDGET_TYPES, widgetTones: CHROME_WIDGET_TONES,
+    empty: emptyChrome('x', 'X'),
+    parse: rawBundles.map((raw) => ({ raw, bundle: parseChromeBundle(raw) })),
+    bundles: { host, amberx, axhub, console: console_ },
+    merged, noHost, flat, twice,
+    picks: chromePicks(merged), active: activeNav(merged), activeNone: activeNav(noHost),
+    route: ['amberx:file.save', 'axhub:nav:home', 'console:tb:run', 'molly.home', 'nope:x', ':x', 'amberx:'].map((id) => ({ id, out: routePick(id, ['amberx', 'axhub', 'console']) })),
+    // every pick of the merged model routes back to the app that sent it (or the host)
+    routed: chromePicks(merged).map((p) => ({ id: p.id, route: routePick(p.id, merged.apps) })),
+    message: [parseEmbedMessage({ $axf: 'embed@1', type: 'chrome', chrome: axhub }), parseEmbedMessage({ $axf: 'embed@1', type: 'chrome', chrome: { app: 'x' } }), parseEmbedMessage({ $axf: 'embed@1', type: 'chrome-request' }), parseEmbedMessage(JSON.stringify({ $axf: 'embed@1', type: 'chrome', chrome: amberx })), parseEmbedMessage({ $axf: 'embed@1', type: 'context', x: 12.4, y: 30, target: 'canvas', payload: 'row-3' })],
+  });
+}
 // Window engine geometry (windows-terminal s17, Oct 28 2026): the 8 resize handles (hit-testing, cursors), resize maths
 // with size floors (opposite edge fixed, no viewport clamp: windows may leave the screen), maximize / restore and the
 // title-bar drag that restores a maximized window under the pointer. Kotlin `Windows.kt` replays the same file.

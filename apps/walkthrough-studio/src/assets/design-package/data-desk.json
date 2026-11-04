@@ -18,7 +18,10 @@
     "extras": {
       "slots": {
         "style-package": "data-pro",
-        "toolbar": "data-grid-tools"
+        "toolbar": "data-grid-tools",
+        "typography": "compact",
+        "density": "dense",
+        "sizing": "compact"
       },
       "spacing": "tight"
     }

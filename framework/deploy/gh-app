@@ -1,0 +1,12 @@
+#!/bin/sh
+# gh through the AmberX GitHub App (github-app@1, Nov 1 2026), installed as /usr/local/bin/gh (in front of /usr/bin/gh).
+# GH_TOKEN = the app's user token (acts as Brett: repo create, `gh api user`), else its installation token. An explicit
+# GH_TOKEN / GITHUB_TOKEN, or no app set up, leaves gh exactly as it was (its own login).
+REAL="${AXF_REAL_GH:-/usr/bin/gh}"
+B="${AXF_GITHUB_BROKER:-${AXF_DIR:-/opt/axf}/framework/cli/github-token.mjs}"
+if [ -z "$GH_TOKEN$GITHUB_TOKEN" ] && [ -f "$B" ] && command -v node >/dev/null 2>&1; then
+  T=$(timeout 40 node "$B" user 2>/dev/null) || T=""
+  [ -n "$T" ] || T=$(timeout 40 node "$B" installation 2>/dev/null) || T=""
+  if [ -n "$T" ]; then GH_TOKEN="$T"; export GH_TOKEN; fi
+fi
+exec "$REAL" "$@"

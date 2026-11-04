@@ -18,6 +18,9 @@
  *     plus http.followRedirects=false — never argv, never a URL, never .git/config.
  */
 import { execFileSync } from 'node:child_process';
+import { existsSync, readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 export const API_BASE = 'https://api.github.com';
 export const GIT_BASE = 'https://github.com';
@@ -162,11 +165,26 @@ export function scrub(text, secrets = []) {
   return s.replace(TOKEN_RE, '***');
 }
 
-/** GITHUB_TOKEN / GH_TOKEN, else `gh auth token`, else ''. */
+/** GITHUB_TOKEN / GH_TOKEN, else the GitHub App's installation token (github-app@1 broker), else `gh auth token`, else ''. */
 export function githubToken() {
   const t = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
   if (t) return t.trim();
+  const app = appInstallationToken();
+  if (app) return app;
   try { return execFileSync('gh', ['auth', 'token'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 10_000 }).trim(); } catch { return ''; }
+}
+/** The broker's installation token when a GitHub App is set up here (cached file while fresh, else one broker run). */
+function appInstallationToken(env = process.env) {
+  const dir = env.AXF_GITHUB_APP_DIR || (env.AXF_ROOT ? join(env.AXF_ROOT, '.axf-console', 'github-app') : '/opt/axf/.axf-console/github-app');
+  if (!existsSync(join(dir, 'app.json'))) return '';
+  try {
+    const c = JSON.parse(readFileSync(join(dir, 'installation-token.json'), 'utf8'));
+    if (c?.token && Date.parse(c.expiresAt) - Date.now() > 10 * 60_000) return String(c.token);
+  } catch { /* none cached */ }
+  try {
+    return execFileSync(process.execPath, [join(dirname(fileURLToPath(import.meta.url)), 'github-token.mjs'), 'installation'],
+      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 30_000, env: { ...env, AXF_GITHUB_APP_DIR: dir } }).trim();
+  } catch { return ''; }
 }
 /** GITHUB_API_URL when set (GitHub Enterprise, or a loopback fake in tests), else https://api.github.com. */
 export const apiBaseFromEnv = () => (process.env.GITHUB_API_URL || API_BASE).replace(/\/+$/, '');

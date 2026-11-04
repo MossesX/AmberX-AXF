@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "amber-signature",
+  "name": "Amber Signature button",
+  "version": "1.0.0",
+  "description": "Amber Signature: rounded gradient buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "signature",
+    "brand",
+    "amber"
+  ],
+  "data": {
+    "shape": "rounded",
+    "fill": "gradient",
+    "weight": 600,
+    "uppercase": false,
+    "size": "md",
+    "elevation": true
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "swiss-grid",
+  "name": "Swiss Grid button",
+  "version": "1.0.0",
+  "description": "Swiss Grid: square solid buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "editorial",
+    "editorial",
+    "flat"
+  ],
+  "data": {
+    "shape": "square",
+    "fill": "solid",
+    "weight": 700,
+    "uppercase": true,
+    "size": "md",
+    "elevation": false
+  }
+}

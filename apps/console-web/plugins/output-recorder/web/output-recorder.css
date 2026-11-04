@@ -1,0 +1,8 @@
+/* Audio Output Recorder: layout only. Every control is a framework component; sizes and colours are theme tokens. */
+.axp-output-recorder-status { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xl); }
+.axp-output-recorder-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.axp-output-recorder-row { display: flex; flex-direction: column; gap: calc(var(--fx-space) / 2); padding: var(--fx-dens-gap-xl) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-output-recorder-row:last-child { border-bottom: 0; }
+.axp-output-recorder-rowhead { display: flex; align-items: center; justify-content: space-between; gap: var(--fx-dens-gap-xl); min-width: 0; }
+.axp-output-recorder-name { font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axp-output-recorder-audio { width: 100%; }

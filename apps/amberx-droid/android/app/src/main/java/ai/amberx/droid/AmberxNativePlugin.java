@@ -8,6 +8,9 @@ import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
+import android.speech.tts.Voice;
+import com.getcapacitor.JSArray;
 import android.webkit.CookieManager;
 import androidx.activity.result.ActivityResult;
 import com.getcapacitor.JSObject;
@@ -48,7 +51,10 @@ public class AmberxNativePlugin extends Plugin {
         current = this;
         WatchService.channels(getContext());
         WatchService.listener = s -> notifyListeners("monitor", js(s));
-        tts = new TextToSpeech(getContext(), status -> ttsReady = status == TextToSpeech.SUCCESS);
+        tts = new TextToSpeech(getContext(), status -> {
+            ttsReady = status == TextToSpeech.SUCCESS;
+            if (ttsReady) tts.setOnUtteranceProgressListener(new Spoken());
+        });
     }
 
     @Override
@@ -64,11 +70,20 @@ public class AmberxNativePlugin extends Plugin {
 
     /* ---------------------------------------------------------------- hands-free events (from WatchService) */
 
-    /** A wake phrase (or, always armed, a whole command) heard while the app is on screen: true when delivered. */
+    private static final java.util.concurrent.atomic.AtomicLong seq = new java.util.concurrent.atomic.AtomicLong();
+
+    /** A unique id for an event the page acts on (it runs each id once, kept across opens). */
+    static String eventId() { return "w" + Long.toString(System.currentTimeMillis(), 36) + "-" + seq.incrementAndGet(); }
+
+    /**
+     * A wake phrase (or, always armed, a whole command) heard while the app is on screen: true when delivered. It is
+     * never retained for a page that isn't listening (Nov 1 2026: Capacitor kept every one and replayed them all into the
+     * page that loaded next, so opening AmberX ran old sentences and said "Note saved" again). Each carries id + at.
+     */
     static boolean wakeInApp(String phrase, String text) {
         AmberxNativePlugin p = current;
-        if (p == null) return false;
-        p.notifyListeners("wake", new JSObject().put("phrase", phrase).put("text", text), true);
+        if (p == null || !p.hasListeners("wake")) return false;
+        p.notifyListeners("wake", new JSObject().put("phrase", phrase).put("text", text).put("id", eventId()).put("at", System.currentTimeMillis()));
         return true;
     }
 
@@ -99,10 +114,17 @@ public class AmberxNativePlugin extends Plugin {
         String veto = intent.getStringExtra(MainActivity.EXTRA_VETO);
         if (veto != null) p.notifyListeners("veto", new JSObject().put("id", veto).put("action", "open"), true);
         String wake = intent.getStringExtra(MainActivity.EXTRA_WAKE);
-        if (wake != null) p.notifyListeners("wake", new JSObject().put("phrase", wake).put("text", intent.getStringExtra(MainActivity.EXTRA_WAKE_TEXT)), true);
+        if (wake != null) {
+            // Retained until the page listens (the app was opened by this wake hit), with its id and time: the page runs
+            // it once and drops it when it is stale, so a later open never replays it.
+            String id = intent.getStringExtra(MainActivity.EXTRA_WAKE_ID);
+            long at = intent.getLongExtra(MainActivity.EXTRA_WAKE_AT, System.currentTimeMillis());
+            p.notifyListeners("wake", new JSObject().put("phrase", wake).put("text", intent.getStringExtra(MainActivity.EXTRA_WAKE_TEXT))
+                .put("id", id != null ? id : eventId()).put("at", at), true);
+        }
     }
 
-    /** A held command was denied (or the Deny failed) from its notification. */
+    /** A held command was denied, approved or shelved (or that failed) from its notification. */
     static void vetoEvent(String id, String action, String error) {
         AmberxNativePlugin p = current;
         if (p == null) return;
@@ -113,29 +135,37 @@ public class AmberxNativePlugin extends Plugin {
 
     /* ---------------------------------------------------------------- veto approvals (VetoAlerts) */
 
+    /** Deny / Approve now / Shelve with the phone's hub session (the veto banner plugin through lib-hub's host seam). */
     @PluginMethod
-    public void vetoSettings(PluginCall call) {
-        VetoAlerts.configure(getContext(), call.getData());
-        call.resolve();
-    }
-
-    @PluginMethod
-    public void vetoDeny(PluginCall call) {
+    public void vetoAction(PluginCall call) {
         String id = call.getString("id", "");
-        if (HubRules.approvalUrl(HubRules.HUB, id) == null) { call.reject("Not a request id."); return; }
+        String action = call.getString("action", "");
+        if (HubRules.approvalUrl(HubRules.HUB, id) == null || !HubRules.isVetoAction(action)) { call.reject("Not a request id or action."); return; }
         io.execute(() -> {
-            int code = VetoAlerts.deny(getContext(), id);
+            int code = VetoAlerts.act(getContext(), id, action);
             JSObject r = new JSObject().put("ok", code == 200);
-            if (code == 200) r.put("state", "denied");
+            if (code == 200) r.put("state", "deny".equals(action) ? "denied" : "shelve".equals(action) ? "shelved" : "approved-now");
             else r.put("error", code < 0 ? "signed out of axHub" : "the hub answered " + code);
             call.resolve(r);
         });
     }
 
+    /** The banner plugin's alarm settings (VetoAlarm). */
     @PluginMethod
-    public void vetoTest(PluginCall call) {
-        String phase = call.getString("phase", "held");
-        VetoAlerts.test(getContext(), "warning".equals(phase) || "running".equals(phase) ? phase : "held");
+    public void vetoAlarm(PluginCall call) {
+        VetoAlarm.configure(getContext(), call.getData());
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void vetoAlarmTest(PluginCall call) {
+        VetoAlarm.test(getContext(), call.getData());
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void vetoAlarmStop(PluginCall call) {
+        VetoAlarm.stop(getContext(), null, null);
         call.resolve();
     }
 
@@ -202,6 +232,7 @@ public class AmberxNativePlugin extends Plugin {
 
     @PluginMethod
     public void listen(PluginCall call) {
+        if (!MicGuard.mayOpen(getContext())) { call.reject("Mic off is on. Turn the mic back on to talk to AmberX."); return; }
         if (getPermissionState("microphone") != PermissionState.GRANTED) { requestPermissionForAlias("microphone", call, "listenAfterPermission"); return; }
         doListen(call);
     }
@@ -212,6 +243,31 @@ public class AmberxNativePlugin extends Plugin {
         else call.reject("The microphone isn't allowed.");
     }
 
+    /** The Speak button's recognizer while it runs, so Mic off can cancel it. */
+    private static volatile Runnable cancelSpeak;
+
+    /** Mic off: a running Speak recognizer stops now (it answers with nothing heard). */
+    static void cancelListen() {
+        Runnable r = cancelSpeak;
+        if (r != null) r.run();
+    }
+
+    /** Mic off or a yield changed: the page's switch, banner and Home show it at once. */
+    static void micChanged(JSONObject state) {
+        AmberxNativePlugin p = current;
+        if (p != null) p.notifyListeners("mic", js(state));
+    }
+
+    /** The Mic off switch (`src/mic.tsx`): every microphone AmberX holds is let go at once; kept across restarts. */
+    @PluginMethod
+    public void micSet(PluginCall call) {
+        MicGuard.set(getContext(), Boolean.TRUE.equals(call.getBoolean("off", true)));
+        call.resolve(js(MicGuard.state(getContext())));
+    }
+
+    @PluginMethod
+    public void micState(PluginCall call) { call.resolve(js(MicGuard.state(getContext()))); }
+
     private void doListen(PluginCall call) {
         WatchService.appMic(true); // hands-free lets go of the microphone while the Speak button listens
         getActivity().runOnUiThread(() -> {
@@ -219,11 +275,13 @@ public class AmberxNativePlugin extends Plugin {
             JSONObject voice = WatchService.voice(getContext());
             SpeechRecognizer rec = SpeechRecognizer.createSpeechRecognizer(getContext());
             SpeechTuning.quiet(getContext(), voice); // no tone
-            rec.setRecognitionListener(new RecognitionListener() {
+            final RecognitionListener[] self = new RecognitionListener[1];
+            rec.setRecognitionListener(self[0] = new RecognitionListener() {
                 private boolean done;
                 private void finish(String text) {
                     if (done) return;
                     done = true;
+                    cancelSpeak = null;
                     WatchService.appMic(false);
                     // Classic hands-free keeps it quiet; the silent wake mode mutes only while Google listens.
                     if (WatchService.running == null || WatchService.wakeMode(getContext())) {
@@ -250,22 +308,123 @@ public class AmberxNativePlugin extends Plugin {
                 }
                 @Override public void onEvent(int t, Bundle b) {}
             });
+            cancelSpeak = () -> getActivity().runOnUiThread(() -> { try { rec.cancel(); } catch (Exception ignored) {} self[0].onError(SpeechRecognizer.ERROR_CLIENT); });
             Intent i = SpeechTuning.request(call.getString("lang", "en-US"), voice, false);
             // Give hands-free a moment to release the microphone first.
             getActivity().getWindow().getDecorView().postDelayed(() -> {
+                if (!MicGuard.mayOpen(getContext())) { self[0].onError(SpeechRecognizer.ERROR_CLIENT); return; }
                 try { rec.startListening(i); } catch (Exception e) { WatchService.appMic(false); call.reject("The microphone is busy."); }
             }, 250);
         });
     }
 
+    /*
+     * Speech out (Oct 29 2026, Agent voice): `speak` takes the voice, rate, pitch and volume an agent's profile picks,
+     * an utterance id (a `spoken` event {id, done, error} is sent when it finishes), `queue` (add instead of flush)
+     * and `holdMic` (hands-free wake listening steps aside while it talks, so it never hears the agent as a command).
+     * Older pages send only text + lang: same as before.
+     */
+    private volatile int holding;
+
     @PluginMethod
     public void speak(PluginCall call) {
         String text = call.getString("text", "");
-        if (tts == null || !ttsReady || text.isEmpty()) { call.resolve(); return; }
+        if (tts == null || !ttsReady || text.isEmpty() || Quiet.on(getContext())) { call.resolve(); return; }
         tts.setLanguage(Locale.forLanguageTag(call.getString("lang", "en-US")));
+        String voice = call.getString("voice", "");
+        if (voice != null && !voice.isEmpty()) {
+            try { for (Voice v : tts.getVoices()) if (voice.equals(v.getName())) { tts.setVoice(v); break; } } catch (Exception ignored) { /* engine without voice list */ }
+        }
+        tts.setSpeechRate(clampF(call.getFloat("rate", 1f), 0.3f, 3f));
+        tts.setPitch(clampF(call.getFloat("pitch", 1f), 0.3f, 2f));
+        Bundle params = new Bundle();
+        params.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, clampF(call.getFloat("volume", 1f), 0f, 1f));
+        String id = call.getString("id", "amberx");
+        if (Boolean.TRUE.equals(call.getBoolean("holdMic", false))) { holding++; WatchService.appMic(true); }
         SpeechTuning.unmuteMedia(getContext()); // "silence-all" mutes media while listening; spoken replies need it
-        tts.speak(text.length() > 2000 ? text.substring(0, 2000) : text, TextToSpeech.QUEUE_FLUSH, null, "amberx");
+        int mode = Boolean.TRUE.equals(call.getBoolean("queue", false)) ? TextToSpeech.QUEUE_ADD : TextToSpeech.QUEUE_FLUSH;
+        tts.speak(text.length() > 2000 ? text.substring(0, 2000) : text, mode, params, id);
         call.resolve();
+    }
+
+    /** The Quiet switch (Settings → Sound and microphone): no speech, no alarm, silent notifications, at once. */
+    @PluginMethod
+    public void quiet(PluginCall call) {
+        boolean q = Boolean.TRUE.equals(call.getBoolean("quiet", false));
+        Quiet.set(getContext(), q);
+        if (q && tts != null) { tts.stop(); releaseHold(); }
+        call.resolve(new JSObject().put("quiet", q));
+    }
+
+    @PluginMethod
+    public void stopSpeaking(PluginCall call) {
+        if (tts != null) tts.stop();
+        releaseHold();
+        call.resolve();
+    }
+
+    /**
+     * Screen capture (Oct 31 2026): `hide` = the "Hide sensitive screens from recordings" setting (off by default),
+     * `sensitive` = a password / key / vault screen is showing now. FLAG_SECURE is set only when both are true.
+     */
+    @PluginMethod
+    public void secureScreen(PluginCall call) {
+        SecureScreen.setHideSensitive(getContext(), Boolean.TRUE.equals(call.getBoolean("hide", false)));
+        SecureScreen.sensitive = Boolean.TRUE.equals(call.getBoolean("sensitive", false));
+        SecureScreen.apply(getActivity(), SecureScreen.sensitive);
+        call.resolve(new JSObject().put("secure", SecureScreen.sensitive && SecureScreen.hideSensitive(getContext())));
+    }
+
+    /** The phone's text-to-speech voices: id (= name), a readable name, language, quality, network. */
+    @PluginMethod
+    public void ttsVoices(PluginCall call) {
+        JSArray out = new JSArray();
+        if (tts != null && ttsReady) {
+            try {
+                for (Voice v : tts.getVoices()) {
+                    if (v.getFeatures() != null && v.getFeatures().contains(TextToSpeech.Engine.KEY_FEATURE_NOT_INSTALLED)) continue;
+                    out.put(new JSObject().put("id", v.getName()).put("name", readable(v)).put("lang", v.getLocale().toLanguageTag())
+                        .put("quality", v.getQuality()).put("network", v.isNetworkConnectionRequired()));
+                }
+            } catch (Exception ignored) { /* engine without voice list */ }
+        }
+        call.resolve(new JSObject().put("voices", out));
+    }
+
+    /** Microphone permission as the page needs it for a tooltip: granted / denied / prompt. */
+    @PluginMethod
+    public void micPermission(PluginCall call) {
+        PermissionState st = getPermissionState("microphone");
+        call.resolve(new JSObject().put("state", st == PermissionState.GRANTED ? "granted" : st == PermissionState.DENIED ? "denied" : "prompt"));
+    }
+
+    private static String readable(Voice v) {
+        String n = v.getName();
+        String loc = v.getLocale().getDisplayName();
+        String q = v.getQuality() >= Voice.QUALITY_HIGH ? " · high quality" : "";
+        return loc + " — " + n.replaceAll("^[a-z]{2}-[a-z]{2}-x-", "").replaceAll("-(local|network)$", "") + q;
+    }
+
+    private static float clampF(Float v, float lo, float hi) {
+        float x = v == null || v.isNaN() ? 1f : v;
+        return Math.max(lo, Math.min(hi, x));
+    }
+
+    private void releaseHold() {
+        if (holding > 0) { holding = 0; WatchService.appMic(false); }
+    }
+
+    private class Spoken extends UtteranceProgressListener {
+        @Override public void onStart(String id) {}
+        @Override public void onDone(String id) { finished(id, null); }
+        @Override public void onError(String id) { finished(id, "speech error"); }
+        @Override public void onStop(String id, boolean interrupted) { finished(id, null); }
+        private void finished(String id, String error) {
+            if (!tts.isSpeaking()) releaseHold();
+            JSObject e = new JSObject().put("id", id).put("done", true);
+            if (error != null) e.put("error", error);
+            notifyListeners("spoken", e);
+        }
     }
 
     /* ---------------------------------------------------------------- background watch */
@@ -295,7 +454,8 @@ public class AmberxNativePlugin extends Plugin {
     @PluginMethod
     public void voiceSet(PluginCall call) {
         JSONObject cfg = call.getData();
-        if (cfg.optBoolean("handsFree", true) && getPermissionState("microphone") != PermissionState.GRANTED) {
+        // Mic off: the config is kept (hands-free comes back when the mic is turned on), but nothing asks for the mic.
+        if (cfg.optBoolean("handsFree", true) && MicGuard.mayOpen(getContext()) && getPermissionState("microphone") != PermissionState.GRANTED) {
             requestPermissionForAlias("microphone", call, "voiceSetAfterPermission");
             return;
         }

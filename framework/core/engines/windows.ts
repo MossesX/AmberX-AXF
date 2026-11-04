@@ -3,8 +3,10 @@
  * Pure state + rules; framework/react/windows renders it. Every window is built from a WindowSpec (the
  * "window schema"); floating windows force toolbars on (ELEMENT windows default off); tab groups split
  * into nested layouts; tabs move between groups and windows; floating windows minimize to a corner
- * (stacked or lined-up title bars) or to a floating toolbar at the cursor.
+ * (stacked or lined-up title bars) or to a floating toolbar at the cursor. Dock@1 (engines/dock.ts, Nov 3 2026) adds
+ * drop zones, the pane limit, splitter resize, snapshots and layout presets on the same tree.
  */
+import { DEFAULT_DOCK_RULES, applyDockDrop, applyPreset as applyDockPreset, dockDropAt, dockDropRect, dropIsLimited, normalizeDockRules, removePane, resizeSplit as resizeSplitTree, restoreDock, serializeDock, splitPane, splitRoot, type DockDrop, type DockDropPreview, type DockLayoutData, type DockRules, type DockSnapshot, type DockState, type GroupBox, type PanePath } from './dock';
 
 export type WindowType = 'main' | 'dock' | 'tool' | 'dialog' | 'panel' | 'floating' | 'element';
 export type MinimizeMode = 'stacked' | 'lined';
@@ -125,6 +127,28 @@ export function dragRestore(w: WindowSpec, pointerX: number, pointerY: number, g
 export type WindowFrame = 'standard' | 'frameless';
 export const windowFrame = (w: Pick<WindowSpec, 'frame'>): WindowFrame => (w.frame === 'frameless' ? 'frameless' : 'standard');
 export const isMaximized = (w: Pick<WindowSpec, 'maximized'>) => w.maximized === true;
+
+/**
+ * Tab press on a frameless window's tab strip (terminal-drag-chain-tree, Nov 3 2026, Brett: "There's nowhere to click
+ * to drag the terminal window around … It's all tabbed."). A strip full of tabs leaves no empty title bar, so a tab
+ * press decides what it is: a quick tap switches tabs; a horizontal drag (started before the hold) reorders; press and
+ * hold (long-press on a phone) then move drags the window, and so does a vertical pull; a hold released without moving
+ * is a `hold` (the caller's long-press menu on touch, a tap with a mouse). Pure, so every port agrees.
+ */
+export const TAB_HOLD_MS = 450;
+export const TAB_SLOP_PX = 6;
+export type TabPressIntent = 'pending' | 'armed' | 'tap' | 'hold' | 'reorder' | 'window';
+export function tabPressIntent(p: { dx: number; dy: number; heldMs: number; released?: boolean }): TabPressIntent {
+  const moved = Math.hypot(p.dx, p.dy) >= TAB_SLOP_PX;
+  const held = p.heldMs >= TAB_HOLD_MS;
+  if (!moved) return p.released ? (held ? 'hold' : 'tap') : held ? 'armed' : 'pending';
+  if (held) return 'window';
+  return Math.abs(p.dx) >= Math.abs(p.dy) ? 'reorder' : 'window';
+}
+/** Where a tab dragged to `x` lands among tabs whose [left, right] edges are `rects` (index in the final order). Pure. */
+export function reorderIndex(rects: readonly { left: number; right: number }[], from: number, x: number): number {
+  return rects.reduce((n, r, i) => (i !== from && x > (r.left + r.right) / 2 ? n + 1 : n), 0);
+}
 
 export const isFloating = (w: WindowSpec) => w.type === 'floating' || w.type === 'dock' || w.type === 'element';
 export const forcesToolbar = (w: WindowSpec) => isFloating(w) && w.type !== 'element';
@@ -323,7 +347,7 @@ export function paneRemove(p: Pane, groupId: string): Pane | null {
 export interface TabGroup { id: string; tabs: TabSpec[]; active: number; windowId: string }
 export const activeTab = (g: TabGroup) => g.tabs[g.active];
 export interface TabDrag { tabId: string; fromGroup: string; x: number; y: number }
-export interface WindowState { windows: WindowSpec[]; groups: Record<string, TabGroup>; layouts: Record<string, Pane>; focused: string | null; drag: TabDrag | null; /** the snap / split preview of a window drag in progress (s18) */ preview?: DragPreview | null }
+export interface WindowState { windows: WindowSpec[]; groups: Record<string, TabGroup>; layouts: Record<string, Pane>; focused: string | null; drag: TabDrag | null; /** the snap / split preview of a window drag in progress (s18) */ preview?: DragPreview | null; /** where the dragged tab would land (dock@1 drop zones: header, centre, pane edge, host edge) */ dockPreview?: DockDropPreview | null }
 
 /** `checked` = check-mark binding, same forms as MenuItem.checked (`setting:<key>` | `counter:<name>` | `slot:<type>` | `hidden:<type>`). */
 export interface MenuEntry { id: string; label?: string; icon?: string; action?: string; separator?: boolean; checked?: string; items?: MenuEntry[] }
@@ -351,6 +375,11 @@ export class WindowManager {
   placement: WindowPlacementRules = { ...DEFAULT_WINDOW_PLACEMENT };
   /** The viewport the UI reports (for `center` stacking and keeping windows on screen); null = unknown. */
   viewport: { width: number; height: number } | null = null;
+  /**
+   * Where the app's fixed chrome along the top ends (banner, menu bar, banner strip), read when a window opens; the UI
+   * sets it. New floating windows open below it so they never cover what is tapped there (0 = no chrome / unknown).
+   */
+  chromeTop: () => number = () => 0;
   /** Last position per remember-key (title or origin) for `stack: remember`. */
   private readonly remembered = new Map<string, { x: number; y: number }>();
   setPlacement(rules: Partial<WindowPlacementRules>) { this.placement = { ...DEFAULT_WINDOW_PLACEMENT, ...rules }; }
@@ -388,7 +417,11 @@ export class WindowManager {
     const wid = this.nextId('win');
     const count = this._state.windows.filter(isFloating).length;
     const at = placeNewWindow(this.placement, count, { width, height }, this.viewport, this.remembered.get(title) ?? null);
-    this.set((s) => ({ ...s, windows: [...s.windows, this.spec(wid, type, title, { toolbarEnabled: type !== 'element', ...opts, x: x ?? at.x, y: y ?? at.y, width, height, z: this.topZ(s) })], focused: wid }));
+    // below the top chrome, shrunk to fit under it when the viewport is known (never under the minimum height)
+    const top = Math.max(0, Math.round(this.chromeTop()));
+    const wy = Math.max(y ?? at.y, top);
+    const h = this.viewport ? Math.max(Math.min(height, this.viewport.height - wy), Math.min(height, opts.minHeight ?? 160)) : height;
+    this.set((s) => ({ ...s, windows: [...s.windows, this.spec(wid, type, title, { toolbarEnabled: type !== 'element', ...opts, x: x ?? at.x, y: wy, width, height: h, z: this.topZ(s) })], focused: wid }));
     this.openGroup(tabs, wid);
     return wid;
   }
@@ -460,9 +493,156 @@ export class WindowManager {
     for (const [gid, b] of this.groupBounds) if (x >= b[0] && x <= b[2] && y >= b[1] && y <= b[3]) { this.moveTab(tabId, gid); return true; }
     return false;
   }
-  dragStart(tabId: string, fromGroup: string, x: number, y: number) { this.set((s) => ({ ...s, drag: { tabId, fromGroup, x, y } })); }
-  dragMove(x: number, y: number) { this.set((s) => (s.drag ? { ...s, drag: { ...s.drag, x, y } } : s)); }
-  dragEnd(): boolean { const d = this._state.drag; if (!d) return false; this.set((s) => ({ ...s, drag: null })); return this.dropAt(d.tabId, d.x, d.y); }
+  dragStart(tabId: string, fromGroup: string, x: number, y: number) { this.set((s) => ({ ...s, drag: { tabId, fromGroup, x, y }, dockPreview: null })); }
+  /** One step of a tab drag: the ghost follows, and the dock preview says where the tab would land (null = nowhere). */
+  dragMove(x: number, y: number) { this.set((s) => (s.drag ? { ...s, drag: { ...s.drag, x, y }, dockPreview: this.dockPreviewAt(s, s.drag.tabId, x, y) } : s)); }
+  /** The drag ends: a dock drop zone wins, else the group under the point takes the tab (older hosts). */
+  dragEnd(): boolean {
+    const d = this._state.drag, p = this._state.dockPreview ?? null; if (!d) return false;
+    this.set((s) => ({ ...s, drag: null, dockPreview: null }));
+    if (p) return this.dropTab(d.tabId, p.windowId, p.drop);
+    return this.dropAt(d.tabId, d.x, d.y);
+  }
+
+  /* ---------- dock@1: drop zones, pane limit, splitters, snapshots, presets (dock-engine s1) ---------- */
+
+  /** The dock rules in force (pane limit, weight floor, zone bands); the runtime may set them from an asset. */
+  dockRules: DockRules = { ...DEFAULT_DOCK_RULES };
+  setDockRules(rules: Partial<DockRules>) { this.dockRules = normalizeDockRules({ ...this.dockRules, ...rules }); }
+  /** Dock host rects in root coordinates, reported by the UI (windowId → rect); a tab dragged outside every host lands nowhere. */
+  readonly hostBounds = new Map<string, Rect>();
+  /** Header heights the UI reports per group (px); absent = `dockRules.headerBand`. */
+  readonly groupHeaders = new Map<string, number>();
+  /** Right edges (root x) of each group's tabs, in order, for header drops at a position. */
+  readonly tabEdges = new Map<string, number[]>();
+
+  private boxesOf(s: WindowState, windowId: string): GroupBox[] {
+    const out: GroupBox[] = [];
+    for (const [gid, b] of this.groupBounds) {
+      const g = s.groups[gid]; if (!g || g.windowId !== windowId) continue;
+      const box: GroupBox = { groupId: gid, rect: { x: b[0], y: b[1], width: b[2] - b[0], height: b[3] - b[1] } };
+      const h = this.groupHeaders.get(gid); if (h !== undefined) box.header = h;
+      out.push(box);
+    }
+    return out;
+  }
+  /** The dock state of one window: its tree and every group (the dragged tab may come from another window). */
+  dockState(windowId: string, s: WindowState = this._state): DockState { return { tree: s.layouts[windowId] ?? null, groups: s.groups }; }
+  /** Hosts under a point, topmost first (floating windows above the main window). */
+  private hostsAt(s: WindowState, x: number, y: number): string[] {
+    const z = (wid: string) => (wid === this.mainWindowId ? -1 : s.windows.find((w) => w.id === wid)?.z ?? 0);
+    return [...this.hostBounds.entries()].filter(([, r]) => rectContains(r, x, y)).map(([wid]) => wid).sort((a, b) => z(b) - z(a));
+  }
+  private dockPreviewAt(s: WindowState, tabId: string, x: number, y: number): DockDropPreview | null {
+    for (const wid of this.hostsAt(s, x, y)) {
+      const host = this.hostBounds.get(wid)!; const boxes = this.boxesOf(s, wid);
+      const drop = dockDropAt(host, boxes, x, y, this.dockRules, (gid) => this.tabEdges.get(gid));
+      if (!drop) continue;
+      const box = drop.target === 'group' ? boxes.find((b) => b.groupId === drop.groupId) ?? null : null;
+      return { windowId: wid, drop, rect: dockDropRect(drop, host, box, this.dockRules), limited: dropIsLimited(this.dockState(wid, s), tabId, drop, this.dockRules) };
+    }
+    return null;
+  }
+  /** Where a tab would land now (for hosts that draw their own overlay); null = nowhere. */
+  previewDrop(tabId: string, x: number, y: number): DockDropPreview | null { return this.dockPreviewAt(this._state, tabId, x, y); }
+
+  /**
+   * Drop a tab into `windowId` at a zone (dock@1). The tab leaves its group wherever it was (an emptied floating window
+   * closes); over the pane limit a side drop joins the target pane as a tab. False when nothing changed.
+   */
+  dropTab(tabId: string, windowId: string, drop: DockDrop): boolean {
+    const from = Object.values(this._state.groups).find((g) => g.tabs.some((t) => t.id === tabId)); if (!from) return false;
+    if (!this._state.windows.some((w) => w.id === windowId)) return false;
+    const gid = this.nextId('group');
+    let changed = false;
+    this.set((s) => {
+      const before = this.dockState(windowId, s);
+      const after = applyDockDrop(before, tabId, drop, gid, windowId, this.dockRules);
+      if (after === before) return s;
+      changed = true;
+      const layouts = { ...s.layouts }; if (after.tree) layouts[windowId] = after.tree; else delete layouts[windowId];
+      let out: WindowState = { ...s, groups: after.groups, layouts };
+      // the source pane emptied in another window: take its leaf out there, and close that window when it was floating
+      if (!after.groups[from.id] && from.windowId !== windowId) {
+        const t = removePane(out.layouts[from.windowId] ?? null, from.id, this.dockRules.minWeight);
+        const l = { ...out.layouts }; if (t) l[from.windowId] = t; else delete l[from.windowId];
+        out = { ...out, layouts: l };
+        const w = out.windows.find((x) => x.id === from.windowId);
+        if (!t && w && isFloating(w)) out = { ...out, windows: out.windows.filter((x) => x.id !== w.id), focused: windowId };
+      }
+      return out;
+    });
+    return changed;
+  }
+
+  /** Open `tabs` in a new pane on `side` of a group (or join the group when the pane limit is reached). Returns the pane's group id. */
+  splitGroup(groupId: string, side: 'left' | 'right' | 'top' | 'bottom', tabs: TabSpec[]): string | null {
+    const g = this._state.groups[groupId]; if (!g || !tabs.length) return null;
+    const limited = (this._state.layouts[g.windowId] ? paneGroups(this._state.layouts[g.windowId]!).length : 0) + 1 > this.dockRules.paneLimit;
+    if (limited) { tabs.forEach((t) => this.addTab(groupId, t)); return groupId; }
+    const gid = this.nextId('group');
+    this.set((s) => {
+      const cur = s.layouts[g.windowId] ?? { kind: 'leaf' as const, groupId };
+      return { ...s, groups: { ...s.groups, [gid]: { id: gid, tabs, active: 0, windowId: g.windowId } }, layouts: { ...s.layouts, [g.windowId]: splitPane(cur, groupId, side, gid, this.dockRules.splitRatio, this.dockRules.minWeight) } };
+    });
+    return gid;
+  }
+  /** Open `tabs` in a new pane along a whole side of a window's dock (`root` drop). */
+  splitWindow(windowId: string, side: 'left' | 'right' | 'top' | 'bottom', tabs: TabSpec[]): string | null {
+    if (!tabs.length || !this._state.windows.some((w) => w.id === windowId)) return null;
+    const cur = this._state.layouts[windowId] ?? null;
+    if (cur && paneGroups(cur).length + 1 > this.dockRules.paneLimit) { const first = paneGroups(cur)[0]!; tabs.forEach((t) => this.addTab(first, t)); return first; }
+    const gid = this.nextId('group');
+    this.set((s) => ({ ...s, groups: { ...s.groups, [gid]: { id: gid, tabs, active: 0, windowId } }, layouts: { ...s.layouts, [windowId]: splitRoot(s.layouts[windowId] ?? null, side, gid, this.dockRules.rootRatio, this.dockRules.minWeight) } }));
+    return gid;
+  }
+  /** Drag the divider after child `index` of the split at `path` in a window's tree by `delta` (share of the split, + = towards the end). */
+  resizeSplit(windowId: string, path: PanePath, index: number, delta: number) {
+    this.set((s) => { const cur = s.layouts[windowId]; if (!cur) return s; const next = resizeSplitTree(cur, path, index, delta, this.dockRules.minWeight); return next === cur ? s : { ...s, layouts: { ...s.layouts, [windowId]: next } }; });
+  }
+  /** Re-dock a floating window into a zone of another window (default main): its tabs land in one new pane there. */
+  redockInto(windowId: string, drop: DockDrop, into = this.mainWindowId): boolean {
+    const w = this._state.windows.find((x) => x.id === windowId); if (!w || !isFloating(w) || windowId === into) return false;
+    const tabs = (this._state.layouts[windowId] ? paneGroups(this._state.layouts[windowId]!) : []).flatMap((gid) => this._state.groups[gid]?.tabs ?? []);
+    const first = tabs[0]; if (!first) return false;
+    if (!this.dropTab(first.id, into, drop)) return false;
+    const gid = this.groupOf(first.id);
+    for (const t of tabs.slice(1)) if (gid) this.dropTab(t.id, into, { target: 'group', groupId: gid, zone: 'centre' });
+    if (this._state.windows.some((x) => x.id === windowId)) this.close(windowId);
+    return true;
+  }
+  /** How many panes a window's dock has. */
+  paneCount(windowId = this.mainWindowId): number { const t = this._state.layouts[windowId]; return t ? paneGroups(t).length : 0; }
+  paneLimitReached(windowId = this.mainWindowId): boolean { return this.paneCount(windowId) >= this.dockRules.paneLimit; }
+  /** A JSON-safe snapshot of a window's dock (dock@1), or null when it has none. */
+  snapshot(windowId = this.mainWindowId): DockSnapshot | null { const t = this._state.layouts[windowId]; return t ? serializeDock(this.dockState(windowId), t) : null; }
+  /** Restore a snapshot into a window (its current groups go). False when the snapshot holds nothing usable. */
+  restoreLayout(raw: unknown, windowId = this.mainWindowId): boolean {
+    const r = restoreDock(raw, windowId, this.dockRules); if (!r?.tree) return false;
+    this.set((s) => {
+      const groups: Record<string, TabGroup> = {};
+      for (const g of Object.values(s.groups)) if (g.windowId !== windowId) groups[g.id] = g;
+      for (const g of Object.values(r.groups)) groups[g.id] = g;
+      return { ...s, groups, layouts: { ...s.layouts, [windowId]: r.tree! } };
+    });
+    return true;
+  }
+  /** Lay a window's open tabs out on a preset (dock-layout@1): spread evenly over its panes, ids reused first. */
+  applyPreset(data: DockLayoutData, windowId = this.mainWindowId): boolean {
+    if (!this._state.windows.some((w) => w.id === windowId)) return false;
+    let changed = false;
+    this.set((s) => {
+      // only this window's groups take part; the other windows keep theirs
+      const own: Record<string, TabGroup> = {}; const others: Record<string, TabGroup> = {};
+      for (const g of Object.values(s.groups)) (g.windowId === windowId ? own : others)[g.id] = g;
+      const before: DockState = { tree: s.layouts[windowId] ?? null, groups: own };
+      const after = applyDockPreset(before, data, windowId, () => this.nextId('group'), this.dockRules);
+      if (after === before || !after.tree) return s;
+      changed = true;
+      return { ...s, groups: { ...others, ...after.groups }, layouts: { ...s.layouts, [windowId]: after.tree } };
+    });
+    return changed;
+  }
 
   /* ---------- split ---------- */
 
@@ -630,6 +810,7 @@ export class WindowManager {
         { id: 'split-4', label: 'Four-way', icon: 'grid', action: 'windows.split:{payload}:four' },
         { id: 'split-grid', label: 'Custom grid…', icon: 'grid', action: 'dialog:split-grid:{payload}' },
       ] },
+      { id: 'layout', label: 'Pane layout…', icon: 'layout', action: 'dialog:dock-layout:{payload}' },
       { id: 's1', separator: true },
       { id: 'close-group', label: 'Close group', icon: 'x', action: 'windows.closeGroup:{payload}' },
     ];
@@ -639,6 +820,12 @@ export class WindowManager {
     return [
       { id: 'settings', label: 'Window settings…', icon: 'settings', action: 'dialog:window-settings:{payload}' },
       { id: 'redock', label: 'Redock', icon: 'download', action: 'windows.redock:{payload}' },
+      { id: 'redock-into', label: 'Redock into…', icon: 'download', items: [
+        { id: 'redock-left', label: 'Left of the dock', icon: 'layout', action: 'windows.redockInto:{payload}:left' },
+        { id: 'redock-right', label: 'Right of the dock', icon: 'layout', action: 'windows.redockInto:{payload}:right' },
+        { id: 'redock-top', label: 'Top of the dock', icon: 'layout', action: 'windows.redockInto:{payload}:top' },
+        { id: 'redock-bottom', label: 'Bottom of the dock', icon: 'layout', action: 'windows.redockInto:{payload}:bottom' },
+      ] },
       { id: 'maximize', label: 'Maximize / restore', icon: 'maximize', action: 'windows.maximize:{payload}' },
       { id: 'snap', label: 'Snap', icon: 'layout', items: [
         { id: 'snap-left', label: 'Left half', icon: 'layout', action: 'windows.snap:{payload}:left' },

@@ -1,0 +1,27 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.molly.xlayout",
+  "name": "xLayout",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Molly as one app: one banner, application menu, navigation and context menu across AmberX, axHub and the Dev Console (they hide theirs and send them as data); IDE mode with draggable, resizable, dockable panes, ten preset layouts and a pane limit; up to three plugin toolbars.",
+  "targets": ["molly"],
+  "provides": ["view:xlayout", "dialog:xlayout.layout", "settings-tab:xlayout"],
+  "scopes": [],
+  "enabledByDefault": true,
+  "optional": ["axf.toolbar-designer@1"],
+  "banner": false,
+  "tabable": false,
+  "uiEditor": ["layout"],
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/xlayout",
+    "env": [],
+    "mentions": ["_claude/memory/STATUS.md", "apps/molly/README.md"]
+  },
+  "builtWith": { "model": "opus", "builtAt": "2026-11-03", "branch": "claude/xlayout-opus" },
+  "help": "help.json",
+  "opens": "main"
+}

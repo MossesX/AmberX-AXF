@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "layout",
+  "id": "split-review",
+  "name": "Split Review",
+  "version": "1.0.0",
+  "description": "Side navigation with a wide inspector on the right for side-by-side review and approvals. The console keeps its menu bar on top (it reaches everything when the toolbar and navigation are hidden).",
+  "author": "AmberX AXF",
+  "tags": [
+    "desktop",
+    "review"
+  ],
+  "data": {
+    "nav": "left",
+    "navWidth": 220,
+    "showMenubar": true,
+    "showToolbar": true,
+    "toolbarPosition": "top",
+    "showStatusbar": false,
+    "inspector": "right",
+    "inspectorWidth": 420,
+    "contentMaxWidth": 0
+  }
+}

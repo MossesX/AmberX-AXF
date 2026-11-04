@@ -5,7 +5,7 @@ import { SystemBanner, SystemCheckDialog, loadSystemCheck, setSystemCheckRuntime
 import { KeysBanner, KeysDialog } from './KeysBanner';
 import { FixHelpDialog } from './FixHelp';
 import { WhatsNewBanner, loadWhatsNew } from './WhatsNew';
-import { AiPanel, BannersPanel, ClaudePanel, RoutinePanel } from './panels';
+import { AiPanel, AutoFixPanel, BannersPanel, ClaudePanel, RoutinePanel } from './panels';
 import { appMenu } from './menu';
 
 /*
@@ -45,7 +45,7 @@ const KEY_RECHECK_EVERY_MS = 5 * 60_000;
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.systems-check',
   label: 'Systems check',
-  version: '0.2.0',
+  version: '0.3.0',
   appMenu,
   provides: ['axf.systems-check'],
   register(rt) {
@@ -68,6 +68,7 @@ export const plugin: AxfWebLibrary = {
   settingsPanels: [
     { id: 'systems-check.ai', tab: 'systems-check', title: 'AI', icon: 'sparkles', order: 10, render: () => <AiPanel /> },
     { id: 'systems-check.routine', tab: 'systems-check', title: 'Saved AI routine', icon: 'list', order: 20, render: () => <RoutinePanel /> },
+    { id: 'systems-check.autofix', tab: 'systems-check', title: 'Fix it yourself', icon: 'hammer', order: 22, render: () => <AutoFixPanel /> },
     { id: 'systems-check.claude', tab: 'systems-check', title: 'When a fix fails', icon: 'zap', order: 25, render: () => <ClaudePanel /> },
     { id: 'systems-check.banners', tab: 'systems-check', title: 'Banners', icon: 'bell', order: 30, render: () => <BannersPanel /> },
     { id: 'systems-check.lifecycle', tab: 'systems-check', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },

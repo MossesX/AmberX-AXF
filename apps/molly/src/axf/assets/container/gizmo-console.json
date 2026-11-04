@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "container",
+  "id": "gizmo-console",
+  "name": "GizmoX Console container",
+  "version": "1.0.0",
+  "description": "GizmoX Console: panel with a divided header.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "developer",
+    "brand",
+    "developer"
+  ],
+  "data": {
+    "variant": "panel",
+    "header": "divided",
+    "padding": "md",
+    "elevation": 1,
+    "collapsible": false
+  }
+}

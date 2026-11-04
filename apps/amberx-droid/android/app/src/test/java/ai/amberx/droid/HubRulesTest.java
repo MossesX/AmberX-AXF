@@ -102,5 +102,25 @@ public class HubRulesTest {
         assertEquals("warning", HubRules.vetoPhase(30));
         assertEquals("running", HubRules.vetoPhase(0));
         assertEquals(0, HubRules.vetoes(HUB, body.replace(HUB + "/auth/api", "https://evil.example/auth/api"), 0L).size());
+        // decision 104: a hub before it sends no actions = Deny only
+        assertEquals(java.util.Collections.singletonList("deny"), v.get(0).actions);
+        assertFalse(v.get(0).shelved);
+    }
+
+    @Test
+    public void vetoApproveNowAndShelve() {
+        String held = "{\"id\":\"" + ID + "\",\"status\":\"held\",\"tool\":\"vps.run\",\"title\":\"Restart\","
+            + "\"veto\":{\"state\":\"shelved\",\"runsAt\":\"2026-10-29T02:03:00.000Z\",\"secondsLeft\":80,\"actions\":[\"approve-now\",\"deny\"]},"
+            + "\"approveNowUrl\":\"" + HUB + "/auth/api/approvals/" + ID + "/approve-now\"}";
+        List<HubRules.Veto> v = HubRules.vetoes(HUB, "{\"held\":[" + held + "]}", 0L);
+        assertEquals(1, v.size());
+        assertTrue(v.get(0).shelved);
+        assertEquals(java.util.Arrays.asList("deny", "approve-now"), v.get(0).actions);
+        assertTrue(v.get(0).can("approve-now"));
+        assertFalse(v.get(0).can("shelve"));
+        assertEquals(HUB + "/auth/api/approvals/" + ID + "/approve-now", HubRules.vetoActionUrl(HUB, ID, "approve-now"));
+        assertEquals(HUB + "/auth/api/approvals/" + ID + "/shelve", HubRules.vetoActionUrl(HUB, ID, "shelve"));
+        assertNull(HubRules.vetoActionUrl(HUB, ID, "approve"));
+        assertEquals(0, HubRules.vetoes(HUB, "{\"held\":[" + held.replace(HUB + "/auth/api", "https://evil.example/auth/api") + "]}", 0L).size());
     }
 }

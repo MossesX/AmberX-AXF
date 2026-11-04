@@ -1,0 +1,19 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.dnd",
+  "module": "lib-dnd",
+  "name": "Drag and drop (mouse + touch, pop-up trash can)",
+  "description": "One pointer drag-and-drop engine for every list, tree, grid, timeline and toolbar of an app: works with a mouse and with a finger (drag from a grip), drop markers before / after / inside, zones that say what they accept, a ghost under the pointer, and a trash can that pops up at the bottom while something deletable is dragged. Harvested Oct 22 2026 from Walkthrough Studio.",
+  "features": [],
+  "dependsOn": [],
+  "manifestKey": "libraries.dnd",
+  "params": [],
+  "parts": [
+    { "id": "zones", "label": "Drop zones + markers", "description": "Elements marked data-axf-drop accept drops; the hovered one shows a before / after / inside marker." },
+    { "id": "touch", "label": "Touch dragging", "description": "On a phone a drag starts from a grip (class axf-dnd-grip), so scrolling still works everywhere else.", "requires": ["zones"] },
+    { "id": "ghost", "label": "Drag ghost", "description": "A label with the item's icon follows the pointer.", "params": [ { "key": "offset", "label": "Distance from the pointer (px)", "type": "number", "min": 0, "max": 48, "default": 12 } ] },
+    { "id": "trash", "label": "Pop-up trash can", "description": "While something deletable is dragged, a trash can pops up; dropping on it deletes.", "requires": ["zones"], "params": [ { "key": "label", "label": "Label", "type": "text", "default": "Drop here to delete" }, { "key": "overLabel", "label": "Label while over it", "type": "text", "default": "Let go to delete" }, { "key": "side", "label": "Where it pops up", "type": "choice", "choices": ["bottom", "top"], "default": "bottom" } ] }
+  ],
+  "ports": { "web": { "status": "compiled", "dir": "libs/dnd" } },
+  "placeholders": [ { "capability": "axf.dnd.android", "note": "Compose port (Modifier.dragAndDrop + the same zones) — Android on hold." }, { "capability": "axf.dnd.keyboard", "note": "Keyboard moves (pick up with Space, arrows, drop with Space) — not built." } ]
+}

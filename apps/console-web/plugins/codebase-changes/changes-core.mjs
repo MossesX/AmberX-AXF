@@ -436,9 +436,13 @@ const WORDS = [
 ];
 const QUESTION = /^(what|why|how|where|when|who|which|whose|is|are|was|were|does|do|did|explain|tell me|show me|list|describe|summari[sz]e|compare)\b/;
 const ASK = /\b(please|go ahead|can you|could you|would you|will you)\b/;
+/** Messages the harness injects as prompts (background task done, reminders): never a new change. */
+export const SYSTEM_NOTICE = /^<(task-notification|system-reminder|local-command-stdout|command-name)\b/;
 export function classify(prompt) {
   const p = String(prompt ?? '').slice(0, 2000).toLowerCase().replace(/\s+/g, ' ').trim();
   if (!p || p.startsWith('/')) return { change: false, kind: null, word: null };
+  // Claude Code hands a background task's completion notice to the session as a prompt: not a request from a person
+  if (SYSTEM_NOTICE.test(p)) return { change: false, kind: null, word: null };
   if (QUESTION.test(p) && !ASK.test(p)) return { change: false, kind: null, word: null };
   let best = null;
   for (const [kind, re] of WORDS) { const m = re.exec(p); if (m && (!best || m.index < best.at)) best = { kind, word: m[1], at: m.index }; }

@@ -1,0 +1,123 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "compact-rail-all",
+  "name": "Compact Rail (every page)",
+  "version": "1.0.0",
+  "description": "Compact Rail (every page): any app: every page it has. Lists the pages it can; each app shows the ones it has. Pairs with the minimal-motion behaviour theme.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:minimal-motion"
+  ],
+  "data": {
+    "style": "rail",
+    "sections": [
+      {
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "icon": "home",
+            "view": "home"
+          },
+          {
+            "id": "plan",
+            "label": "Plan",
+            "icon": "list",
+            "view": "plan"
+          },
+          {
+            "id": "pending",
+            "label": "Pending builds",
+            "icon": "clock",
+            "view": "pending"
+          },
+          {
+            "id": "build",
+            "label": "Build queue",
+            "icon": "hammer",
+            "view": "build"
+          },
+          {
+            "id": "catalog",
+            "label": "Features",
+            "icon": "check-circle",
+            "view": "catalog"
+          },
+          {
+            "id": "libraries",
+            "label": "Libraries",
+            "icon": "package",
+            "view": "libraries"
+          },
+          {
+            "id": "hub",
+            "label": "Hub",
+            "icon": "cloud",
+            "view": "hub"
+          },
+          {
+            "id": "approvals-log",
+            "label": "Approvals",
+            "icon": "check",
+            "view": "approvals-log"
+          },
+          {
+            "id": "apps",
+            "label": "Apps",
+            "icon": "download",
+            "view": "apps"
+          },
+          {
+            "id": "console",
+            "label": "Console",
+            "icon": "terminal",
+            "view": "console"
+          },
+          {
+            "id": "pilot",
+            "label": "Pilot",
+            "icon": "sparkles",
+            "view": "pilot"
+          },
+          {
+            "id": "axhub",
+            "label": "axHub",
+            "icon": "cloud",
+            "view": "axhub"
+          },
+          {
+            "id": "components",
+            "label": "Components",
+            "icon": "grid",
+            "view": "components"
+          },
+          {
+            "id": "assets",
+            "label": "Assets",
+            "icon": "layers",
+            "view": "assets"
+          }
+        ]
+      },
+      {
+        "items": [
+          {
+            "id": "account",
+            "label": "Account",
+            "icon": "user",
+            "view": "account"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
+          }
+        ]
+      }
+    ],
+    "density": "compact",
+    "indicator": "bar"
+  }
+}

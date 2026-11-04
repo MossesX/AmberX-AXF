@@ -458,6 +458,15 @@ r = json.loads(ht.run({"tool": "vps.run", "arguments": {"command": "x"}}, {}, ca
 check(r["status"] == "ok", "wait=true (a model): waits for the approval, then runs")
 r = json.loads(ht.run({"tool": "vps.run", "arguments": {"command": "x"}}, {}, call=hub(["confirm", "reject"]), delays=lambda: [0], sleep=lambda s: None))
 check(r["status"] == "error" and r["message"] == "Rejected on the hub.", "rejected on the hub → an error the model can read")
+# axHub 109: the agent's name rides on its calls (X-Axhub-Session agent:<name>), console outside an agent
+from axf_server import hub_session as hs_  # noqa: E402
+said = []
+def hub_said(tool, arguments, conf=None, timeout=None, reason=None):
+    said.append(hs_.headers().get("x-axhub-session"))
+    return {"ok": "exit 0"}
+ht.run({"tool": "vps.run", "arguments": {"command": "x"}, "wait": False}, {"agent": {"name": "Vinny"}}, call=hub_said)
+ht.run({"tool": "vps.run", "arguments": {"command": "x"}, "wait": False}, {}, call=hub_said)
+check(said == ["agent:Vinny", "console"] and hs_.headers().get("x-axhub-session") == "console", "axhub_call says agent:<name> for an agent, console otherwise")
 check(json.loads(ht.run({"tool": "rm -rf", "arguments": {}}, {}))["status"] == "error", "the tool name must be service.tool")
 check(json.loads(ht.run({"tool": "vps.run", "arguments": {"command": "x" * 4000}}, {}))["status"] == "error", "arguments too long for an approval are refused")
 check(json.loads(ht.run({"tool": "vps.run", "arguments": {"command": "x"}, "confirmation_id": "nope"}, {}))["status"] == "error", "a bad approval id is refused")
@@ -531,10 +540,11 @@ check(c.delete("/am/vinny/commands/pull-console").status_code == 200 and c.delet
 # App tokens (Oct 25 2026): where each app's token is, never its value; added once to books written before
 import subprocess, tempfile, hashlib
 with tempfile.TemporaryDirectory() as td:
-    os.makedirs(f"{td}/patches-web/.app"); open(f"{td}/patches-web/.app/env", "w").write("APP_TOKEN=s3cretPatchesValue0123456789abcd\n")
+    missing = subprocess.run(["bash", "-c", vn.TOKENS_COMMAND.replace("/opt/", td + "/")], capture_output=True, text=True, timeout=30).stdout
+    os.makedirs(f"{td}/axf/.axf-console"); open(f"{td}/axf/.axf-console/env", "w").write("AXF_TOKEN=s3cretConsoleValue0123456789abcd\n")
     out = subprocess.run(["bash", "-c", vn.TOKENS_COMMAND.replace("/opt/", td + "/")], capture_output=True, text=True, timeout=30).stdout
-check("s3cret" not in out and "set, 32 characters, fingerprint " + hashlib.sha256(b"s3cretPatchesValue0123456789abcd").hexdigest()[:8] in out
-      and "BP_TOKEN: not found" in out and "to copy it yourself: sudo sed -n 's/^APP_TOKEN=//p'" in out,
+check("s3cret" not in out and "set, 32 characters, fingerprint " + hashlib.sha256(b"s3cretConsoleValue0123456789abcd").hexdigest()[:8] in out
+      and "AXF_TOKEN: not found" in missing and "to copy it yourself: sudo sed -n 's/^AXF_TOKEN=//p'" in out,
       "the app-tokens command says set / not found, length and a fingerprint, never the value")
 check("$" not in "".join(a + k + f for a, k, f in vn.APP_TOKENS) and "unset v" in vn.TOKENS_COMMAND, "token paths are fixed, nothing is filled in")
 old = vn.load()

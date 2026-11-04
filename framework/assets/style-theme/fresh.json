@@ -6,9 +6,7 @@
   "version": "1.0.0",
   "description": "Crisp and calm: Inter at 14 px, modest corners, hairline borders, soft low shadows, light blur, quick motion.",
   "author": "AmberX AXF",
-  "tags": [
-    "default"
-  ],
+  "tags": [],
   "data": {
     "fontFamily": "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
     "fontDisplay": "'Inter', system-ui, sans-serif",

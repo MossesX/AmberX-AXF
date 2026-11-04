@@ -24,6 +24,9 @@
     "amberx-accent": {
       "--fx-banner-h": "30px"
     },
+    "amberx-branded": {
+      "--fx-banner-h": "32px"
+    },
     "amberx-thin": {
       "--fx-banner-h": "24px"
     },
@@ -67,6 +70,11 @@
             "at": "center"
           },
           {
+            "type": "theme-switch",
+            "id": "day-night",
+            "at": "right"
+          },
+          {
             "type": "clock",
             "id": "digital-12h",
             "at": "right"
@@ -93,7 +101,7 @@
             "type": "clock",
             "id": "digital-12h",
             "at": "right",
-            "order": 10,
+            "order": 20,
             "origin": "asset"
           }
         ]
@@ -112,6 +120,11 @@
             "type": "search-bar",
             "id": "everything",
             "at": "center"
+          },
+          {
+            "type": "theme-switch",
+            "id": "day-night",
+            "at": "right"
           },
           {
             "type": "clock",
@@ -157,7 +170,7 @@
             "type": "clock",
             "id": "digital-12h",
             "at": "right",
-            "order": 10,
+            "order": 20,
             "origin": "asset"
           }
         ]
@@ -176,6 +189,11 @@
             "type": "search-bar",
             "id": "everything",
             "at": "center"
+          },
+          {
+            "type": "theme-switch",
+            "id": "day-night",
+            "at": "right"
           },
           {
             "type": "clock",
@@ -231,6 +249,11 @@
             "at": "center"
           },
           {
+            "type": "theme-switch",
+            "id": "day-night",
+            "at": "right"
+          },
+          {
             "type": "clock",
             "id": "digital-12h",
             "at": "right"
@@ -273,7 +296,7 @@
             "type": "clock",
             "id": "digital-12h",
             "at": "right",
-            "order": 10,
+            "order": 20,
             "origin": "asset"
           }
         ]

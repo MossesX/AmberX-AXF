@@ -1,0 +1,49 @@
+/* Theme editor plugin. Theme tokens only, axp-theme-editor prefix (framework/spec/THEMING.md). */
+.axp-theme-editor__bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0 }
+.axp-theme-editor__search { width: auto; flex: 1 1 calc(var(--fx-space) * 16); min-width: 0; max-width: calc(var(--fx-space) * 34) }
+.axp-theme-editor__bad { color: var(--fx-danger) }
+.axp-theme-editor__load { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 28), 1fr)); gap: var(--fx-dens-gap-md) }
+.axp-theme-editor__save { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2) }
+.axp-theme-editor__save .fx-input { width: auto; min-width: calc(var(--fx-space) * 16) }
+.axp-theme-editor__main { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--fx-dens-gap-xl); align-items: start }
+:where([data-fx-medium]) .axp-theme-editor__main { grid-template-columns: 1fr }
+
+/* tree view: collapsible categories */
+.axp-theme-editor__cats { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.axp-theme-editor__cathead { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-height: var(--fx-row-h); padding: 0 var(--fx-dens-gap-md); border-radius: var(--fx-radius-sm); cursor: pointer; font-weight: var(--fx-heading-weight) }
+.axp-theme-editor__cathead:hover { background: var(--fx-surface2) }
+.axp-theme-editor__rows { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-space) * 40), 1fr)); gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md) var(--fx-dens-gap-lg) var(--fx-dens-gap-4xl) }
+.axp-theme-editor__token { min-width: 0 }
+.axp-theme-editor__withpick { display: flex; align-items: flex-end; gap: var(--fx-dens-gap-sm); min-width: 0 }
+.axp-theme-editor__withpick > :first-child { flex: 1; min-width: 0 }
+.axp-theme-editor__pick { width: auto; flex: none; max-width: calc(var(--fx-space) * 14) }
+.axp-theme-editor__tlabel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+
+/* grid view */
+.axp-theme-editor__grid { display: flex; flex-direction: column }
+.axp-theme-editor__gridrow, .axp-theme-editor__gridhead { display: grid; grid-template-columns: minmax(calc(var(--fx-space) * 12), 1fr) minmax(0, 4fr); gap: var(--fx-dens-gap-md); align-items: center; padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); border-bottom: var(--fx-border-w) solid var(--fx-border) }
+.axp-theme-editor__gridhead { color: var(--fx-muted); font-size: var(--fx-type-root-xs); text-transform: uppercase; letter-spacing: var(--fx-tracking) }
+
+/* swatches view */
+.axp-theme-editor__swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-space) * 17), 1fr)); gap: var(--fx-dens-gap-md) }
+.axp-theme-editor__swatch { all: unset; box-sizing: border-box; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-sm); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); cursor: pointer; min-width: 0; overflow: hidden }
+.axp-theme-editor__swatch.is-sel { border-color: var(--fx-accent); background: var(--fx-accent-soft) }
+.axp-theme-editor__swatch.is-unset { opacity: var(--fx-opacity-muted) }
+.axp-theme-editor__swatch > .fx-small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-theme-editor__chipbox { display: flex; align-items: center; justify-content: center; height: calc(var(--fx-space) * 6); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); font-family: var(--fx-font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+
+/* compare view */
+.axp-theme-editor__cmp { display: flex; flex-direction: column }
+.axp-theme-editor__cmprow { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) minmax(0, 3fr) auto; gap: var(--fx-dens-gap-md); align-items: center; padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); border-bottom: var(--fx-border-w) solid var(--fx-border); min-height: var(--fx-row-h) }
+.axp-theme-editor__cmprow.is-diff { background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-theme-editor__cmpval { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-theme-editor__dot { flex: none; width: calc(var(--fx-space) * 1.6); height: calc(var(--fx-space) * 1.6); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border) }
+
+/* preview card: draws with the draft's compiled theme variables (set inline by the theme engine) */
+.axp-theme-editor__preview { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-lg); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-bg); color: var(--fx-text); font-family: var(--fx-font); font-size: var(--fx-font-size); box-shadow: var(--fx-shadow-md) }
+.axp-theme-editor__preview p { margin: 0 }
+
+.axp-theme-editor__saved { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column }
+.axp-theme-editor__saved li { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-xs) 0; min-width: 0; border-bottom: var(--fx-border-w) solid var(--fx-border) }
+.axp-theme-editor__saved li:last-child { border-bottom: 0 }
+.axp-theme-editor__savedname { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }

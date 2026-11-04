@@ -1,0 +1,31 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-wordmark",
+  "name": "AmberX wordmark",
+  "version": "1.0.0",
+  "description": "The AmberX name in the display face.",
+  "author": "AmberX AXF",
+  "tags": [
+    "amberx"
+  ],
+  "data": {
+    "form": "wordmark",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "paths": [],
+    "text": {
+      "value": "AmberX",
+      "weight": 700,
+      "tracking": -0.02,
+      "font": "display",
+      "fill": "text"
+    },
+    "minSize": 80
+  }
+}

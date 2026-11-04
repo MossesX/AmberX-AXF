@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "glass-air",
+  "name": "Glass Air",
+  "version": "1.0.0",
+  "description": "Frosted glass cards, gradient sliders and floating pill tabs for a light modern feel.",
+  "author": "AmberX AXF",
+  "tags": [
+    "glass",
+    "glass"
+  ],
+  "data": {
+    "slots": {
+      "button": "glass-air",
+      "container": "glass-air",
+      "slider": "glass-air",
+      "dialog": "glass-air",
+      "popup": "glass-air",
+      "tab-group": "glass-air",
+      "gauge": "ring",
+      "meter": "gradient-soft"
+    },
+    "tone": "glass"
+  }
+}

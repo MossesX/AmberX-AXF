@@ -1,0 +1,48 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "amberx-app",
+  "name": "AmberX app",
+  "version": "1.0.0",
+  "description": "The AmberX app's branding: the AmberX Signature marks (amberx-brand-014) placed by the design language (§10): lockup on the banner, mark on windows, floating windows and dialogs, the animated mark on the splash, a faint watermark on empty states, nothing on toolbars, containers or tab groups.",
+  "author": "AmberX AXF",
+  "tags": [
+    "amberx",
+    "enterprise",
+    "app"
+  ],
+  "data": {
+    "brand": {
+      "name": "AmberX",
+      "tagline": "One framework, every port."
+    },
+    "marks": {
+      "mark": "amberx-logo-027",
+      "wordmark": "amberx-logo-064",
+      "lockup": "amberx-logo-057",
+      "animated": "amberx-anim-014"
+    },
+    "iconPack": "pack-053",
+    "palette": {
+      "brand1": "#b9800e",
+      "brand2": "#533104",
+      "brand3": "#eadea9"
+    },
+    "accentFromBrand": true,
+    "decorations": {
+      "banner": "lockup",
+      "window": "mark",
+      "floating-window": "mark",
+      "dialog": "mark",
+      "container": "none",
+      "tab-group": "none",
+      "toolbar": "none",
+      "nav-menu": "none",
+      "app-menu": "none",
+      "context-menu": "none",
+      "splash": "animated",
+      "favicon": "mark",
+      "empty-state": "watermark"
+    }
+  }
+}

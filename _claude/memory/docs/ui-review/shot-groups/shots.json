@@ -1,0 +1,7 @@
+[
+ { "name": "groups-list", "steps": [ { "wait": 5000 }, { "eval": "AXF.navigate('ui-screenshots')", "wait": 7000 }, { "click": ".axp-ui-review__shots .fx-seg__opt >> nth=0", "wait": 1500 } ] },
+ { "name": "groups-thumbs", "steps": [ { "wait": 5000 }, { "eval": "AXF.navigate('ui-screenshots')", "wait": 7000 }, { "click": ".axp-ui-review__shots .fx-seg__opt >> nth=1", "wait": 2500 } ] },
+ { "name": "groups-search", "steps": [ { "wait": 5000 }, { "eval": "AXF.navigate('ui-screenshots')", "wait": 7000 }, { "click": ".axp-ui-review__shots .fx-seg__opt >> nth=0", "wait": 800 }, { "click": ".axp-ui-review__shots input[aria-label='Search groups']", "wait": 300 }, { "type": "breakroom", "wait": 1500 } ] },
+ { "name": "group-open", "steps": [ { "wait": 5000 }, { "eval": "AXF.navigate('ui-screenshots')", "wait": 7000 }, { "click": ".axp-ui-review__shots .fx-seg__opt >> nth=0", "wait": 800 }, { "click": ".axp-ui-review__shots .axf-grid-row:has-text('Oct 31 8:20 PM') >> nth=0", "wait": 2500 } ] },
+ { "name": "group-tools", "steps": [ { "wait": 5000 }, { "eval": "AXF.navigate('ui-screenshots')", "wait": 7000 }, { "click": ".axp-ui-review__shots .fx-seg__opt >> nth=0", "wait": 800 }, { "click": ".axp-ui-review__shots .axf-grid-row:has-text('PR 196') >> nth=0", "wait": 2000 }, { "click": ".axp-ui-review__ghead button:has-text('Select')", "wait": 600 }, { "click": ".axp-ui-review__shots .axf-grid-row >> nth=0", "wait": 800 }, { "click": ".axp-ui-review__ghead button:has-text('Rename')", "wait": 1200 } ] }
+]

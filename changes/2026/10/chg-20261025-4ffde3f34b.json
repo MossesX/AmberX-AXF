@@ -1,0 +1,64 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261025-4ffde3f34b",
+  "createdAt": "2026-10-25T14:46:54.602Z",
+  "updatedAt": "2026-10-25T19:47:52.997Z",
+  "kind": "build",
+  "title": "Claude handoff: Handoff Session recreates open threads",
+  "asked": "",
+  "repos": [
+    "mossesx/amberx-axf"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "user": "console",
+    "host": "vm"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Handoff Session prompt recreates open threads (claude-handoff 0.3.1), PR #80",
+    "branch": "claude/project-thread-tpor29",
+    "commits": [
+      {
+        "sha": "d1762043"
+      }
+    ],
+    "tests": {
+      "claude-handoff test.mjs": {
+        "before": "87",
+        "after": "95"
+      },
+      "claude-handoff test.py": {
+        "before": "80",
+        "after": "82"
+      }
+    },
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-25T19:47:52.997Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "handoff-session-threads"
+  },
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-25T14:46:54.602Z",
+  "finishedAt": "2026-10-25T14:47:24.216Z",
+  "lastSeenAt": "2026-10-25T14:46:55.580Z",
+  "estimate": {
+    "minutes": 30,
+    "costUsd": 4.2
+  },
+  "costEstimated": true,
+  "branch": "claude/project-thread-tpor29",
+  "areas": [
+    "apps/console-web/plugins/claude-handoff"
+  ],
+  "progress": 1.0
+}

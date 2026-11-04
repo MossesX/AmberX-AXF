@@ -1,0 +1,41 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261029-b6d71ebc3c",
+  "createdAt": "2026-10-29T07:00:57.002Z",
+  "updatedAt": "2026-10-29T07:04:08.099Z",
+  "kind": "fix",
+  "title": "Fix: Hub /projects folder is mounted",
+  "asked": "Systems check fix failed (There's nothing Brett has to do himself here, just start this fix from an axHub-connected session. The warning stays until then. The permanent fix (having `install-console.sh` set this env var and mou); handed to headless Claude Code on the VPS.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "console",
+    "user": "systems-check",
+    "host": "console"
+  },
+  "steps": [
+    {
+      "text": "Approve on axHub",
+      "state": "running"
+    },
+    {
+      "text": "Fix (shell allowed): headless Claude Code on the VPS",
+      "state": "queued"
+    },
+    {
+      "text": "Check again",
+      "state": "queued"
+    }
+  ],
+  "result": null,
+  "closed": null,
+  "state": "running",
+  "status": "running",
+  "surface": "console-launch",
+  "startedAt": "2026-10-29T07:00:57.000Z",
+  "lastSeenAt": "2026-10-29T07:04:08.099Z",
+  "branch": "fix/syscheck-routine-env-axhub-projects-dir",
+  "doing": "Launched on the VPS (headless Claude Code)"
+}

@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "container",
+  "id": "lounge",
+  "name": "Lounge container",
+  "version": "1.0.0",
+  "description": "Lounge: glass with a plain header.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "relaxed",
+    "relaxed"
+  ],
+  "data": {
+    "variant": "glass",
+    "header": "plain",
+    "padding": "lg",
+    "elevation": 2,
+    "collapsible": false
+  }
+}

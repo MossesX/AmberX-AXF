@@ -1,0 +1,67 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261031-d5137c6125",
+  "createdAt": "2026-10-31T23:25:25.863Z",
+  "updatedAt": "2026-10-31T23:28:50.010Z",
+  "kind": "build",
+  "title": "Headless build in Brett's AmberX-AXF repo (this worktree, branch claude/orch-rename).",
+  "asked": "Headless build in Brett's AmberX-AXF repo (this worktree, branch claude/orch-rename). Read CLAUDE.md and _claude/shared/rules/RULES.md. Opus, one session. Brett: in the Build orchestrator plugin (console -> Builds -> Build orchestrator, apps/console-web/plugins/build-orchestrator) he can drag/rearrange builds and steps but CANNOT RENAME them. Add rename: 1. Rename a build, a step, and a build profile: double-tap/double-click the name, or right-click (long-press on phone) -> Rename, or the row menu. Inline edit, Enter/blur saves, Esc cancels, empty name refused. 2. Only the display title changes; the id stays the same so links, PRs, THREADS rows, tracker, Pending builds and history don't break. Every place that shows the build/step name (orchestrator, Build manager banner, Pending builds, Plan Studio, AmberX build views) shows the new title. 3. Server: a rename endpoint in the orchestrator server that writes the title into the right _claude/builds/profiles/<profile>/orchestrator.json (and the registry for profiles), logs old -> new with time. 4. Framework controls + theme/scale tokens only (asset-conformant). Add tests (rename build/step/profile, id unchanged, empty refused). Run the full local test block from .github/workflows/android.yml + theme/controls/lifecycle checks; all green. 5. Commit; git fetch origin && git merge origin/main; retest; git push origin HEAD:main, retry until it lands. Short detailed report at _claude/builds/reports/orch-rename.md.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "claude-opus-5-5",
+  "who": {
+    "session": "b0f1a589-88e",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "surface": "vps-claude-code",
+  "startedAt": "2026-10-31T23:25:25.863Z",
+  "finishedAt": "2026-10-31T23:28:50.010Z",
+  "lastSeenAt": "2026-10-31T23:28:18.204Z",
+  "actual": {
+    "minutes": 3,
+    "costUsd": 1.5645,
+    "inputTokens": 62,
+    "outputTokens": 16049,
+    "cacheReadTokens": 3181757,
+    "cacheWriteTokens": 121391,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "doing": "Running: Find pending-changed event usage",
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/orch-rename",
+    "branch": "claude/orch-rename",
+    "base": "f7170f6540dca524a5dc7f91fd23d57bd367a648",
+    "head": "f7170f6540dca524a5dc7f91fd23d57bd367a648",
+    "pushed": true,
+    "dirty": 10,
+    "files": [
+      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+      "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+      "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.d.mts",
+      "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+      "framework/cli/profiles.mjs",
+      ".brief.md",
+      "apps/console-web/plugins/build-orchestrator/web/rename.tsx",
+      "orch-rename.jsonl",
+      "orch-rename.log",
+      "sessions/archive/"
+    ],
+    "at": "2026-10-31T23:28:50.883Z"
+  }
+}

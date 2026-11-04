@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "warm-craft",
+  "name": "Warm Craft dialog",
+  "version": "1.0.0",
+  "description": "Warm Craft: modal, dim backdrop, scale in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "warm",
+    "warm"
+  ],
+  "data": {
+    "variant": "modal",
+    "width": 560,
+    "backdrop": "dim",
+    "animation": "scale",
+    "header": "filled",
+    "closeOnBackdrop": true
+  }
+}

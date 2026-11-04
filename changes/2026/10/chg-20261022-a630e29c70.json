@@ -1,0 +1,61 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261022-a630e29c70",
+  "createdAt": "2026-10-22T06:48:52.103Z",
+  "updatedAt": "2026-10-22T07:06:23.947Z",
+  "kind": "build",
+  "title": "Patches takes the app menu: tab apps hide theirs, Patches menu inherits them",
+  "asked": "Started from the Build manager (Start build now).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "console",
+    "user": "build-manager",
+    "host": "console"
+  },
+  "steps": [
+    {
+      "text": "Approve on axHub",
+      "state": "running"
+    },
+    {
+      "text": "Build (headless Claude Code on the VPS)",
+      "state": "queued"
+    },
+    {
+      "text": "Verify nothing broke",
+      "state": "queued"
+    }
+  ],
+  "result": {
+    "state": "failed",
+    "summary": "Not started: failed.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-22T07:06:23.947Z",
+    "by": "console"
+  },
+  "state": "failed",
+  "status": "failed",
+  "buildRef": {
+    "kind": "pending",
+    "id": "patches-app-menu"
+  },
+  "surface": "console-launch",
+  "startedAt": "2026-10-22T06:48:52.000Z",
+  "finishedAt": "2026-10-22T06:49:07.258Z",
+  "lastSeenAt": "2026-10-22T06:48:52.212Z",
+  "estimate": {
+    "minutes": 90,
+    "costUsd": 12.6
+  },
+  "costEstimated": true,
+  "branch": "build/patches-app-menu",
+  "areas": [],
+  "doing": "Waiting for Brett's approval on axHub"
+}

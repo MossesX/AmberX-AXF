@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "counter",
+  "id": "approvals",
+  "name": "Approvals",
+  "version": "1.0.0",
+  "description": "Approvals waiting (counter `approvals.waiting`); hidden at zero.",
+  "author": "AmberX AXF",
+  "tags": [
+    "counter"
+  ],
+  "data": {
+    "counter": "approvals.waiting",
+    "tone": "warning",
+    "hideAtZero": true,
+    "icon": "shield",
+    "label": "waiting",
+    "link": "approvals.open"
+  }
+}

@@ -170,7 +170,7 @@ export function buildRows({ pending = [], queue = null, queueState = null, featu
     const model = modelName(p.model);
     rows.push({
       key: `pending:${p.id}`, id: str(p.id), source: 'pending', title: str(p.title) || p.id, detail: str(p.detail), model,
-      origin: originOf('pending', p.source), addedBy: addedByKey(p.source),
+      origin: originOf('pending', p.source), addedBy: addedByKey(p.source), ...(p.origin ? { brett: p.origin } : {}),
       status: p.status, statusLabel: PENDING_LABEL[p.status] ?? p.status, order: i, steps, ...t,
       ...(p.planId ? { planId: str(p.planId) } : {}),
       ...(p.planId && queuePos.has(p.planId) ? { queuePosition: queuePos.get(p.planId) } : {}),
@@ -267,9 +267,9 @@ export function statusesOf(rows) {
 /* ---------------- live tracker ---------------- */
 
 const ACTIVE = ['queued', 'running', 'waiting'];
-const BRANCH_RE = /\b(fable|rebuild|harvest|pilot)\/([A-Za-z0-9._-]+)/;
+const BRANCH_RE = /\b(fable|rebuild|harvest)\/([A-Za-z0-9._-]+)/;
 
-/** The build row an activity item is about: its branch (fable/<id>, rebuild/<id>, harvest/…, pilot/…) or a report naming it. */
+/** The build row an activity item is about: its branch (fable/<id>, rebuild/<id>, harvest/…) or a report naming it. */
 export function linkRow(item, rows) {
   const text = `${str(item?.title)}\n${str(item?.detail)}\n${str(item?.id)}`;
   const index = new Map();

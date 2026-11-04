@@ -1,13 +1,9 @@
 import { FRAMEWORK_VERSION } from '../axf/core';
-import { useEffect } from 'react';
-import { Button, Chip, Container, Icon, IconButton, useAxfState, useRuntime } from '../axf/react';
+import { useEffect, useMemo, useState } from 'react';
+import { Button, Chip, IconButton, useAxfState, useRuntime } from '../axf/react';
 import { useStore } from '../store';
 import { EmptyState } from '../emptyState';
-import type { Status } from '../api';
-import { PlanSummaryCard } from './Plan';
-import { BuildSummaryCard } from './BuildManager';
-
-const TABS: [string, string][] = [['foundations', 'Foundations'], ['kernel', 'Kernel'], ['console', 'Console'], ['modules', 'Modules'], ['demos', 'Demos']];
+import { HomeCardView, SuggestedCards, dropOnHome, homeLayout, startersOf, useHomeCardMenu, useHomeLayout } from './HomeCards';
 
 /** Home's ⋯ menu (context-menu target): the less-used page actions. */
 const HOME_MORE = 'cx-home.more';
@@ -24,8 +20,16 @@ export function Home() {
   }, [rt]);
   const s = useStore();
   useAxfState();
-  // the branding package names the console (GizmoX); the manifest name is the fallback
-  const brand = rt.branding()?.name || rt.manifest.app.name;
+  useHomeCardMenu(rt);
+  useMemo(() => homeLayout.setStarters(startersOf(rt)), [rt]);
+  useEffect(() => { void homeLayout.load(); }, []);
+  const { where, loaded } = useHomeLayout();
+  const cards = homeLayout.cards();
+  const shown = cards.filter((c) => !c.hidden);
+  const hidden = cards.filter((c) => c.hidden);
+  const [suggest, setSuggest] = useState(false);
+  // the app's own name (GizmoX AI Studio): the branding package is shared by every app through the axHub look
+  const brand = rt.manifest.app.name || rt.branding()?.name;
   return (
     <div className="fx-stack fx-stack--lg">
       <header className="fx-pagehead">
@@ -42,33 +46,19 @@ export function Home() {
         </div>
       </header>
 
-      <div className="fx-grid">
-        <PlanSummaryCard />
-        <BuildSummaryCard />
-        <Container title="Coverage" icon="chart">
-          <table className="fx-table"><tbody>
-            {TABS.map(([id, label]) => { const c = s.coverage(id); const total = Math.max(1, Object.values(c).reduce((a, b) => a + b, 0)); return (
-              <tr key={id}><th>{label}</th><td className="cx-home__bar"><Bar c={c} total={total} /></td><td className="fx-mono fx-small cx-home__num">{c.built}/{total}</td></tr>); })}
-          </tbody></table>
-        </Container>
-        <Container title="Project" icon="package">
-          <table className="fx-table"><tbody>
-            <tr><th>Open project</th><td className="fx-mono">{s.project || <span className="fx-muted">none — installs and imports need one</span>}</td></tr>
-            <tr><th>Build engine</th><td>{s.backend ? <Chip tone="success">online</Chip> : <><Chip tone="warning">offline</Chip> <span className="fx-muted fx-small">commands are recorded for Claude Code</span></>}</td></tr>
-            <tr><th>Libraries</th><td>{s.libraries.length} installable · {s.modules.length} Android modules</td></tr>
-            <tr><th>Boilerplates</th><td>{s.boilerplates.length}</td></tr>
-            <tr><th>MCP endpoint</th><td>{s.backend ? <span className="fx-mono fx-small">{location.origin}/mcp <span className="fx-muted">(Bearer AXF_TOKEN)</span></span> : <span className="fx-muted">local: python3 apps/console-web/server/mcp_server.py</span>}</td></tr>
-          </tbody></table>
-        </Container>
-        <Container title="Recent installs & imports" icon="download">
-          {s.ports.length === 0 ? <EmptyState icon="download" action={{ label: 'Libraries', icon: 'package', onClick: () => rt.navigate('libraries') }}>Nothing installed or imported yet.</EmptyState> : (
-            <ul className="home-tree">{[...s.ports].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 8).map((p) => <li key={p.id}><span><Icon name={p.kind === 'ui-import' ? 'grid' : 'box'} /> {p.name} <Chip tone={p.status === 'installed' || p.status === 'ported' ? 'success' : 'warning'}>{p.status}</Chip></span><span className="fx-muted fx-small">{p.kind} · {p.source}{p.project ? ` → ${p.project}` : ''}</span></li>)}</ul>)}
-        </Container>
+      <div className="fx-row fx-row--wrap cx-home__cardbar" role="toolbar" aria-label="Home cards">
+        <Button icon="plus" tone="primary" onClick={() => rt.openDialog('home-card')}>Add card</Button>
+        <Button icon="sparkles" onClick={() => setSuggest(!suggest)}>Suggested cards</Button>
+        <Button icon="eye" onClick={() => homeLayout.apply({ op: 'showAll' })} disabled={!hidden.length}>Show all{hidden.length ? ` (${hidden.length} hidden)` : ''}</Button>
+        <Button icon="minus" onClick={() => homeLayout.apply({ op: 'hideAll' })} disabled={!shown.length}>Hide all</Button>
+        <span className="fx-muted fx-small cx-home__where">{where === 'hub' ? 'Layout saved on axHub' : where === 'local' ? 'Layout saved on this console' : loaded ? 'Layout kept in this browser (server away)' : ''}</span>
+      </div>
+      {suggest && <SuggestedCards onDone={() => setSuggest(false)} />}
+
+      <div className="fx-grid cx-home__cards" onDragOver={(e) => e.preventDefault()} onDrop={(e) => { if (e.target === e.currentTarget) dropOnHome(rt, e, homeLayout.get().layout.order.length); }}>
+        {shown.map((c, i) => <HomeCardView key={c.id} entry={c} index={i} onDropAt={(e, at) => dropOnHome(rt, e, homeLayout.get().layout.order.indexOf(shown[at]?.id ?? ''))} />)}
+        {!shown.length && <EmptyState icon="grid" action={{ label: 'Show all', icon: 'eye', onClick: () => homeLayout.apply({ op: 'showAll' }) }}>Every card is hidden. Add a card, or drop a plugin read here.</EmptyState>}
       </div>
     </div>
   );
-}
-
-function Bar({ c, total }: { c: Record<Status, number>; total: number }) {
-  return <div className="cx-bar">{(['built', 'partial', 'placeholder', 'planned'] as Status[]).map((k) => <span key={k} className={`cx-bar__${k}`} style={{ width: `${(c[k] / total) * 100}%` }} title={`${k} ${c[k]}`} />)}</div>;
 }

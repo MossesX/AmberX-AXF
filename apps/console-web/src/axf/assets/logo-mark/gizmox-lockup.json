@@ -1,0 +1,58 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-lockup",
+  "name": "GizmoX lockup",
+  "version": "1.0.0",
+  "description": "Cog + name, for the console banner.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox"
+  ],
+  "data": {
+    "form": "lockup",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#4f46e5",
+      "brand2": "#312e81",
+      "brand3": "#c7d2fe"
+    },
+    "paths": [
+      {
+        "d": "M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M11 2h2v3h-2zM11 19h2v3h-2zM2 11h3v2H2zM19 11h3v2h-3z",
+        "fill": "brand2"
+      },
+      {
+        "d": "M16.5 12a4.5 4.5 0 1 1-1.3-3.2",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.2,
+        "round": true
+      },
+      {
+        "d": "M12 12h4.5",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.2,
+        "round": true
+      }
+    ],
+    "text": {
+      "value": "GizmoX",
+      "weight": 700,
+      "tracking": -0.02,
+      "font": "display",
+      "fill": "text"
+    }
+  }
+}

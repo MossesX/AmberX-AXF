@@ -1,0 +1,9 @@
+[Unit]
+Description=Check every 15 minutes whether the AXP backup repos exist yet
+
+[Timer]
+OnBootSec=5m
+OnUnitActiveSec=15m
+
+[Install]
+WantedBy=timers.target

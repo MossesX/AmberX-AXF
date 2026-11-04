@@ -19,7 +19,10 @@
       "slots": {
         "style-package": "kiosk-bold",
         "toolbar": "kiosk-lite",
-        "context-menu": "locked-down"
+        "context-menu": "locked-down",
+        "typography": "standard",
+        "density": "roomy",
+        "sizing": "touch"
       },
       "spacing": "regular"
     }

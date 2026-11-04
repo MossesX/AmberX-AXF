@@ -133,7 +133,7 @@
       ]
     },
     "tabable": {
-      "description": "Can a host app add this plugin to its tab group (e.g. Patches' tabs)? false (default) = never. true = its first page; {view, label?, icon?} = that page. Only plugins with a page (a view other than settings) can be tabable. Every plugin with a GUI other than settings starts not tabable.",
+      "description": "Can a host app add this plugin to its tab group (embed@1)? false (default) = never. true = its first page; {view, label?, icon?} = that page. Only plugins with a page (a view other than settings) can be tabable. Every plugin with a GUI other than settings starts not tabable.",
       "default": false,
       "oneOf": [
         {
@@ -227,6 +227,78 @@
       "type": "string",
       "pattern": "^(view|dialog):[a-z0-9][a-z0-9._-]{0,63}$",
       "description": "which of its UIs moves with opens (default: its first page, else its first dialog)"
+    },
+    "help": {
+      "type": "string",
+      "description": "The plugin's help pack (help@1 data: { entries, intros }), a file in the plugin folder; default help.json. Loaded into Help mode while the plugin runs; counted by framework/cli/help-coverage.mjs."
+    },
+    "commands": {
+      "type": "object",
+      "description": "plugin-commands@1 (framework/core/engines/plugin-commands.mjs, CONTROL.md plugins domain): every command and read the plugin exposes on REST /api/control/<plugin>/<command>, MCP <plugin>_<command> and the CLI axf <plugin> <command>. Derived automatically from its server routes, registered actions and data folder; items add titles, input schemas, flags, extra commands and skips that say why.",
+      "properties": {
+        "$axf": {
+          "const": "plugin-commands@1"
+        },
+        "auto": {
+          "type": "boolean",
+          "default": true,
+          "description": "derive commands from routes, actions and the data folder"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]{0,62}$"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "route": {
+                "type": "string",
+                "pattern": "^(GET|POST|PUT|PATCH|DELETE) /"
+              },
+              "action": {
+                "type": "string"
+              },
+              "input": {
+                "type": "object",
+                "description": "JSON Schema of what it takes"
+              },
+              "output": {
+                "type": "string"
+              },
+              "readOnly": {
+                "type": "boolean"
+              },
+              "destructive": {
+                "type": "boolean"
+              },
+              "confirm": {
+                "type": "boolean"
+              },
+              "navigate": {
+                "type": "boolean"
+              },
+              "skip": {
+                "type": "string",
+                "description": "not a command, and why"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "noReads": {
+          "type": "string",
+          "description": "why the plugin has nothing to read (only then may it have no reads)"
+        }
+      },
+      "additionalProperties": false
     }
   }
 }

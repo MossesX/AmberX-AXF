@@ -4,7 +4,7 @@ import { pluginApi } from '@console/plugins';
 
 export const ID = 'ai.amberx.axf.console.push-banner';
 export const FOLDER = 'push-banner';
-export const VERSION = '0.3.0';
+export const VERSION = '0.4.0';
 export const BANNER_KEY = 'push-banner.banner';
 const POLL_MS = 120_000;
 
@@ -12,7 +12,7 @@ export const api = pluginApi(FOLDER, 'Push banner');
 
 export interface PullInfo { number: number | null; title: string; url: string; draft: boolean; ci: 'none' | 'running' | 'failure' | 'success' | 'unknown' }
 export interface Branch { name: string; ahead: number | null; behind: number | null; sha?: string; subject?: string; date?: string; url?: string; hidden?: boolean; pr: PullInfo | null; error: string; /** no PR, not behind its base: merges cleanly */ clean?: boolean; ci?: PullInfo['ci']; canMerge?: boolean }
-export interface Pull { number: number; title: string; url: string; draft: boolean; head: string; base: string; fork: boolean; author: string; updated: string; ci: PullInfo['ci']; mergeable: boolean | null; mergeState?: string; ready: boolean; hidden?: boolean; sha?: string }
+export interface Pull { number: number; title: string; url: string; draft: boolean; head: string; base: string; fork: boolean; author: string; updated: string; ci: PullInfo['ci']; mergeable: boolean | null; mergeState?: string; ready: boolean; hidden?: boolean; sha?: string; land?: { build: string; state: string; kind: string; why: string } }
 export interface RepoBranches { repo: string; base: string; url: string; branches: Branch[]; pulls?: Pull[]; error: string }
 export interface PullRow extends Pull { repo: string; key: string; ahead: number | null; behind: number | null }
 /** A successful Merge or Pull main in, kept (every device, 7 days) until its trash can is tapped. */
@@ -159,12 +159,6 @@ export const mergePr = (r: { key: string; repo: string; number: number; base: st
   const n = r.number;
   const m = await api.post<{ merged: boolean }>('merge', { repo: r.repo, number: n, confirm: `${r.repo}#${n}` });
   return m.merged ? `Merged PR #${n} into ${r.base}.` : `GitHub didn't merge PR #${n}.`;
-});
-
-/** Merge a branch without a PR that merges cleanly (the server re-checks it, opens its PR and merges that, head pinned). */
-export const mergeBranch = (r: Row) => act(r.key, async () => {
-  const m = await api.post<{ merged: boolean; number: number }>('merge-branch', { repo: r.repo, branch: r.name, confirm: `${r.repo}:${r.name}` });
-  return m.merged ? `Merged ${r.name} into ${r.base} (#${m.number}).` : `Opened #${m.number}, but GitHub didn't merge it.`;
 });
 
 /** Pull the default branch into a PR's branch, or into a branch without a PR (never touches the default branch). */

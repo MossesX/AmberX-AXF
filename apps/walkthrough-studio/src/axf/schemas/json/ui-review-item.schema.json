@@ -1,0 +1,255 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/ui-review-item.schema.json",
+  "title": "AmberX AXF UI Review item (ui-review-item@1)",
+  "description": "Generated from framework/core/ui-review-schema.mjs. Everything in UI Review (queue and Screenshots) is one of these.",
+  "type": "object",
+  "required": [
+    "$axf",
+    "id",
+    "name",
+    "group",
+    "createdAt",
+    "kind",
+    "source",
+    "submittedBy",
+    "app",
+    "screen",
+    "viewport",
+    "files"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "ui-review-item@1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9:._-]{0,80}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "\\S"
+    },
+    "group": {
+      "type": "object",
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9:._-]{0,80}$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+    },
+    "kind": {
+      "enum": [
+        "review",
+        "screenshot"
+      ]
+    },
+    "source": {
+      "enum": [
+        "claude-chat",
+        "claude-voice",
+        "claude-code",
+        "headless",
+        "agent",
+        "console",
+        "plugin",
+        "manual",
+        "watch-live"
+      ]
+    },
+    "submittedBy": {
+      "type": "object",
+      "required": [
+        "type",
+        "id"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "session",
+            "build",
+            "agent",
+            "user"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "label": {
+          "type": "string"
+        }
+      }
+    },
+    "app": {
+      "type": "string",
+      "minLength": 1
+    },
+    "screen": {
+      "type": "string",
+      "minLength": 1
+    },
+    "viewport": {
+      "enum": [
+        "phone",
+        "desktop",
+        "tablet",
+        "mixed"
+      ]
+    },
+    "files": {
+      "type": "object",
+      "properties": {
+        "before": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "src"
+            ],
+            "properties": {
+              "src": {
+                "type": "string",
+                "minLength": 1
+              },
+              "name": {
+                "type": "string"
+              },
+              "viewport": {
+                "enum": [
+                  "phone",
+                  "desktop",
+                  "tablet",
+                  "mixed"
+                ]
+              }
+            }
+          }
+        },
+        "after": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "src"
+            ],
+            "properties": {
+              "src": {
+                "type": "string",
+                "minLength": 1
+              },
+              "name": {
+                "type": "string"
+              },
+              "viewport": {
+                "enum": [
+                  "phone",
+                  "desktop",
+                  "tablet",
+                  "mixed"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": {
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "changes"
+      ]
+    },
+    "note": {
+      "type": "string"
+    },
+    "pr": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "branch": {
+      "type": "string"
+    },
+    "build": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "step": {
+          "type": "string"
+        }
+      }
+    },
+    "section": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,40}$"
+    },
+    "comment": {
+      "type": "string"
+    },
+    "history": {
+      "type": "array"
+    },
+    "pairId": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "review"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "status"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "screenshot"
+          }
+        }
+      },
+      "then": {
+        "not": {
+          "required": [
+            "status"
+          ]
+        }
+      }
+    }
+  ]
+}

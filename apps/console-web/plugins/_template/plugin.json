@@ -30,6 +30,8 @@
       "apps/console-web/plugins/README.md"
     ]
   },
+  "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "", "builtAt": "" },
+  "help": "help.json",
   "opens": "main"
 }

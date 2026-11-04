@@ -9,10 +9,14 @@
  *
  * Plugins never import Capacitor themselves: they call `native`.
  */
+// First: the page's Mic off guard wraps getUserMedia and SpeechRecognition before anything below captures them.
+import { micGuard, micIsOff } from './micguard';
 import { registerPlugin, Capacitor, type PluginListenerHandle } from '@capacitor/core';
 import { unmask } from './plugins/voice/web/speech';
 import { sharesHubSite } from './hosted';
 import { dbfs, type VoiceConfig } from './plugins/voice/web/handsfree';
+import { setVetoHost, type VetoState } from './axf/libs/hub/veto';
+import { FATAL_RECOGNITION, QUICK_END_MS, restartDelay } from './listeners';
 
 export interface MonitorConfig {
   hub: string;
@@ -38,6 +42,17 @@ export interface MonitorStatus {
   alerts?: number;
 }
 
+/** Mic off (`mic.tsx`, Java `MicGuard`): `off` = the switch; `yielded` = why background listening let go of the mic
+ * (`mic-off` | `call` | `silenced` | `other-app`, null = it may listen); `label` for people. */
+export interface MicState {
+  off: boolean;
+  yielded: string | null;
+  label: string;
+  listening: boolean;
+  /** the recorder's opt-in mic track is recording now */
+  recorderMic?: boolean;
+}
+
 export interface VoiceStatus {
   listening: boolean;
   microphone: boolean;
@@ -51,8 +66,8 @@ export interface VoiceStatus {
   phaseDetail?: string;
 }
 
-/** One veto notification channel: a sound name (plugins/approvals/web/core.ts SOUNDS) and a vibration pattern (ms). */
-export interface VetoChannel { sound: string; vibration: number[]; vibrate: boolean }
+/** An owner action on a held veto call (axHub decision 102 Deny, 104 Approve now + Shelve). */
+export type VetoActionName = 'deny' | 'approve-now' | 'shelve';
 
 export interface NativeApi {
   /** GET a hub page or feed with the hub session. No redirects, capped. */
@@ -64,7 +79,23 @@ export interface NativeApi {
   hubSignOut(opts: { hub: string }): Promise<void>;
   /** One utterance; resolves with what was heard ('' when nothing). */
   listen(opts: { lang: string; prompt?: string }): Promise<{ text: string }>;
-  speak(opts: { text: string; lang: string }): Promise<void>;
+  /** Say something. Agent voice (Oct 29 2026) adds the voice, rate, pitch, volume, an utterance id (a `spoken` event
+   * follows when it ends), `queue` and `holdMic` (hands-free steps aside while it talks). Older callers: text + lang. */
+  speak(opts: { text: string; lang: string; voice?: string; rate?: number; pitch?: number; volume?: number; id?: string; queue?: boolean; holdMic?: boolean }): Promise<void>;
+  stopSpeaking(): Promise<void>;
+  /** The Quiet switch (`sound.tsx`): no speech, no alarm, silent notifications until it is switched off. */
+  quiet(opts: { quiet: boolean }): Promise<{ quiet: boolean }>;
+  /** Mic off: every microphone AmberX holds is let go at once and nothing opens it until it is switched back. Kept
+   * across restarts (Android: in the app's prefs, also switched by the quick-settings tile and the notification). */
+  micSet(opts: { off: boolean }): Promise<MicState>;
+  micState(): Promise<MicState>;
+  /** Screen capture (Oct 31 2026, `securescreen.ts`): hidden from recordings only when `hide` (the opt-in setting) and
+   * `sensitive` (a password / key / vault screen is showing). Browser: nothing to do. */
+  secureScreen(opts: { hide: boolean; sensitive: boolean }): Promise<{ secure: boolean }>;
+  /** The phone's text-to-speech voices (Android); the browser's voices in the fallback. */
+  ttsVoices(): Promise<{ voices: { id: string; name: string; lang: string; quality?: number; network?: boolean }[] }>;
+  /** Microphone permission without asking: granted / denied / prompt. */
+  micPermission(): Promise<{ state: 'granted' | 'denied' | 'prompt' }>;
   monitorStart(opts: MonitorConfig): Promise<MonitorStatus>;
   monitorStop(): Promise<MonitorStatus>;
   monitorStatus(): Promise<MonitorStatus>;
@@ -75,18 +106,27 @@ export interface NativeApi {
   overlayPermission(): Promise<{ allowed: boolean }>;
   /** Ask for the microphone + notifications (Android 13+) permissions. */
   permissions(): Promise<{ microphone: boolean; notifications: boolean }>;
-  /** Veto approvals (plugins/approvals): the sounds + vibration of the three notification channels (Java VetoAlerts). */
-  vetoSettings(opts: { held: VetoChannel; warning: VetoChannel; running: VetoChannel }): Promise<void>;
-  /** Deny a held call with the phone's hub session (POST /auth/api/approvals/<id>/deny, hub Origin + CSRF). Browser: ok false. */
-  vetoDeny(opts: { id: string }): Promise<{ ok: boolean; state?: string; error?: string }>;
-  /** Play one phase's notification (sound + vibration) as a test. */
-  vetoTest(opts: { phase: 'held' | 'warning' | 'running' }): Promise<void>;
-  /** A veto notification was tapped (open its terminal tab) or denied from the notification. */
-  addListener(event: 'veto', fn: (e: { id: string; action: 'open' | 'denied' | 'deny-failed'; error?: string }) => void): Promise<PluginListenerHandle>;
-  addListener(event: 'wake', fn: (e: { phrase: string; text: string }) => void): Promise<PluginListenerHandle>;
+  /**
+   * Veto calls (the veto banner plugin, console `plugins/approvals-banner`, through lib-hub's `setVetoHost`): Deny,
+   * Approve now or Shelve with the phone's hub session (POST /auth/api/approvals/<id>/<action>, hub Origin + CSRF; Java
+   * `VetoAlerts`). Browser: ok false (the plugin opens the call on the hub).
+   */
+  vetoAction(opts: { id: string; action: VetoActionName }): Promise<{ ok: boolean; state?: string; error?: string }>;
+  /** The banner plugin's alarm settings (Java `VetoAlarm`: alarm audio stream, rings through silent mode). */
+  vetoAlarm(opts: Record<string, unknown>): Promise<void>;
+  /** Ring the alarm once now with these settings (Settings → Test). */
+  vetoAlarmTest(opts: Record<string, unknown>): Promise<void>;
+  vetoAlarmStop(): Promise<void>;
+  /** A veto notification was tapped (`open`: the veto screen) or one of its Deny / Approve / Shelve buttons ran. */
+  addListener(event: 'veto', fn: (e: { id: string; action: 'open' | 'denied' | 'approved' | 'shelved' | 'failed'; error?: string }) => void): Promise<PluginListenerHandle>;
+  /** `id` + `at` (ms): the page runs each wake hit once and drops stale ones (older APKs send neither). */
+  addListener(event: 'wake', fn: (e: { phrase: string; text: string; id?: string; at?: number }) => void): Promise<PluginListenerHandle>;
   addListener(event: 'monitor', fn: (e: MonitorStatus) => void): Promise<PluginListenerHandle>;
+  /** Mic off changed (the tile, the notification, another page) or hands-free let go of / took back the mic. */
+  addListener(event: 'mic', fn: (e: MicState) => void): Promise<PluginListenerHandle>;
   addListener(event: 'open', fn: (e: { url: string }) => void): Promise<PluginListenerHandle>;
   /** what hands-free is hearing (only while AmberX is on screen) */
+  addListener(event: 'spoken', fn: (e: { id: string; done: boolean; error?: string }) => void): Promise<PluginListenerHandle>;
   addListener(event: 'heard', fn: (e: { text: string; final: boolean; source?: 'listen' }) => void): Promise<PluginListenerHandle>;
   /** input level in dB (Android: recognizer RMS dB; browser: dBFS), about ten a second while on screen */
   addListener(event: 'level', fn: (e: { db: number; source?: 'android' | 'web' }) => void): Promise<PluginListenerHandle>;
@@ -112,7 +152,12 @@ const Recognition = (globalThis as unknown as { SpeechRecognition?: new () => Re
  * Browser hands-free: while the page is open and visible, continuous Web Speech recognition (restarted when it stops)
  * reports what it hears; every final result goes out as `wake` (the voice plugin decides whether it held a wake phrase or
  * is armed). An analyser on the microphone reports the level in dBFS. No overlay in a browser.
+ *
+ * Restarts back off (Nov 1 2026): Chrome on Android plays its "ding" every time recognition starts, and a recognizer
+ * that can't get the microphone (the AmberX app holds it) ends at once, so the old instant restart dinged non-stop.
+ * `restartDelay` waits longer after every quick end, and a refused or missing microphone stops it for good.
  */
+let webSeq = 0;
 const webVoice: { cfg: VoiceConfig | null; rec: Rec | null; stream: MediaStream | null; ctx: AudioContext | null; timer: ReturnType<typeof setInterval> | null; listening: boolean } =
   { cfg: null, rec: null, stream: null, ctx: null, timer: null, listening: false };
 
@@ -132,7 +177,7 @@ function webVoiceStop() {
 async function webVoiceStart(cfg: VoiceConfig) {
   webVoiceStop();
   webVoice.cfg = cfg;
-  if (!cfg.handsFree || !Recognition) return;
+  if (!cfg.handsFree || !Recognition || micIsOff()) return;
   const rec = new Recognition();
   rec.lang = cfg.lang; rec.interimResults = true; rec.continuous = true; rec.maxAlternatives = 1;
   rec.onresult = (e) => {
@@ -141,10 +186,20 @@ async function webVoiceStart(cfg: VoiceConfig) {
     const text = cfg.swears === false ? raw : unmask(raw);
     if (!last || !text) return;
     emit('heard', { text, final: last.isFinal });
-    if (last.isFinal) emit('wake', { phrase: '', text });
+    if (last.isFinal) emit('wake', { phrase: '', text, id: `web-${Date.now().toString(36)}-${++webSeq}`, at: Date.now() });
   };
-  rec.onerror = () => undefined;
-  rec.onend = () => { if (webVoice.rec === rec && document.visibilityState === 'visible') { try { rec.start(); } catch { /* starting */ } } };
+  let startedAt = Date.now();
+  let quick = 0;
+  let fatal = false;
+  rec.onerror = (e) => { if (FATAL_RECOGNITION.includes(e.error)) fatal = true; };
+  rec.onend = () => {
+    if (webVoice.rec !== rec || document.visibilityState !== 'visible') return;
+    if (fatal) { webVoice.listening = false; emit('monitor', { listening: false }); return; }
+    quick = Date.now() - startedAt < QUICK_END_MS ? quick + 1 : 0;
+    const wait = restartDelay(quick);
+    if (wait === null) { webVoice.listening = false; emit('monitor', { listening: false }); return; }
+    setTimeout(() => { if (webVoice.rec === rec && document.visibilityState === 'visible') { try { startedAt = Date.now(); rec.start(); } catch { /* starting */ } } }, wait);
+  };
   webVoice.rec = rec;
   try { rec.start(); webVoice.listening = true; } catch { webVoice.listening = false; }
   try {
@@ -165,6 +220,11 @@ if (typeof document !== 'undefined') {
     if (!webVoice.cfg) return;
     if (document.visibilityState === 'visible') void webVoiceStart(webVoice.cfg); else webVoiceStop();
   });
+}
+
+function webMicState(): MicState {
+  const off = micIsOff();
+  return { off, yielded: off ? 'mic-off' : null, label: off ? 'Mic off' : 'Listening', listening: !off && webVoice.listening };
 }
 
 let webMonitor: { timer: ReturnType<typeof setInterval> | null; status: MonitorStatus } = {
@@ -189,6 +249,7 @@ const web: NativeApi = {
   },
   async hubSignOut({ hub }) { window.open(`${hub}/auth/logout`, '_blank', 'noopener,noreferrer'); },
   listen({ lang }) {
+    if (micIsOff()) return Promise.reject(new Error('Mic off is on. Turn the mic back on to talk to AmberX.'));
     // Hands-free lets go of the recognizer while the Speak button listens, and comes back afterwards.
     const resume = webVoice.cfg;
     if (webVoice.rec) webVoiceStop();
@@ -209,13 +270,40 @@ const web: NativeApi = {
       rec.start();
     }).then(back, (e) => { back(null); throw e; });
   },
-  async speak({ text, lang }) {
+  async speak({ text, lang, voice, rate, pitch, volume, id, queue }) {
     const synth = globalThis.speechSynthesis;
     if (!synth || !text) return;
-    synth.cancel();
+    if (!queue) synth.cancel();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = lang;
+    if (voice) { const v = synth.getVoices().find((x) => x.voiceURI === voice || x.name === voice); if (v) u.voice = v; }
+    if (rate) u.rate = rate;
+    if (pitch) u.pitch = pitch;
+    if (volume !== undefined) u.volume = volume;
     await new Promise<void>((done) => { u.onend = () => done(); u.onerror = () => done(); synth.speak(u); });
+    if (id) emit('spoken', { id, done: true });
+  },
+  async stopSpeaking() { globalThis.speechSynthesis?.cancel(); },
+  async quiet({ quiet }) { if (quiet) globalThis.speechSynthesis?.cancel(); return { quiet }; },
+  async micSet({ off }) {
+    if (off) webVoiceStop();
+    micGuard().set(off);
+    if (!off && webVoice.cfg) void webVoiceStart(webVoice.cfg);
+    const s = webMicState();
+    emit('mic', s);
+    return s;
+  },
+  async micState() { return webMicState(); },
+  async secureScreen() { return { secure: false }; },
+  async ttsVoices() {
+    const synth = globalThis.speechSynthesis;
+    return { voices: (synth?.getVoices() ?? []).map((v) => ({ id: v.voiceURI, name: v.name, lang: v.lang, network: !v.localService })) };
+  },
+  async micPermission() {
+    try {
+      const p = await (navigator as Navigator & { permissions?: { query(o: { name: string }): Promise<{ state: string }> } }).permissions?.query({ name: 'microphone' });
+      return { state: (p?.state === 'granted' || p?.state === 'denied' ? p.state : 'prompt') as 'granted' | 'denied' | 'prompt' };
+    } catch { return { state: 'prompt' as const }; }
   },
   async monitorStart() {
     // In a browser the page itself is the monitor (plugins/monitor/web polls while it's open); this only records it.
@@ -236,11 +324,12 @@ const web: NativeApi = {
   },
   async voiceStatus() { return { listening: webVoice.listening, microphone: webVoice.stream !== null, overlayAllowed: false }; },
   async overlayPermission() { return { allowed: false }; },
-  // Veto approvals in a browser: the approvals plugin plays its own tones and opens the hub page to deny (the hub
-  // only takes a Deny under its own Origin).
-  async vetoSettings() { /* no channels in a browser */ },
-  async vetoDeny() { return { ok: false, error: 'browser' }; },
-  async vetoTest() { /* the plugin plays tones itself */ },
+  // Veto calls in a browser: the banner plugin rings its own alarm and opens the hub page for Deny / Approve / Shelve
+  // (the hub only takes them under its own Origin).
+  async vetoAction() { return { ok: false, error: 'browser' }; },
+  async vetoAlarm() { /* the plugin rings in the page */ },
+  async vetoAlarmTest() { /* the plugin rings in the page */ },
+  async vetoAlarmStop() { /* nothing rings natively */ },
   async permissions() {
     let microphone = false;
     try { (await navigator.mediaDevices?.getUserMedia({ audio: true }))?.getTracks().forEach((t) => t.stop()); microphone = true; } catch { /* refused */ }
@@ -315,4 +404,36 @@ function routeOpen(origin: string): void {
     if (u && u.origin === origin) { void native.hubOpen({ url: u.href }); return null; }
     return open(url, target, features);
   };
+}
+
+/**
+ * Lends the veto banner plugin (console `plugins/approvals-banner`, loaded here because its `targets` list AmberX) the
+ * phone's side through lib-hub's `setVetoHost`: Deny / Approve now / Shelve with the phone's hub session, the alarm on
+ * the alarm stream (through silent mode), notices raised by the watch service with Deny / Approve / Shelve buttons (with
+ * the app closed too), and notification taps that open the veto screen. In a browser it lends nothing: the plugin works
+ * from the page. Installed once from main.tsx.
+ */
+export function installVetoHost(): void {
+  if (!isNative()) return;
+  const done: Record<string, 'deny' | 'approve-now' | 'shelve'> = { denied: 'deny', approved: 'approve-now', shelved: 'shelve' };
+  setVetoHost({
+    notifiesNatively: true,
+    act: async (id, action) => {
+      const r = await native.vetoAction({ id, action });
+      const state = r.state === 'approved-now' ? 'approved-now' : (r.state as VetoState | undefined);
+      return { ok: r.ok, ...(state ? { state } : {}), ...(r.error ? { error: r.error } : {}) };
+    },
+    alarm: (cfg) => { void native.vetoAlarm(cfg).catch(() => undefined); },
+    testAlarm: (cfg) => { void native.vetoAlarmTest(cfg).catch(() => undefined); },
+    stopAlarm: () => { void native.vetoAlarmStop().catch(() => undefined); },
+    open: (url) => { void native.hubOpen({ url }).catch(() => undefined); },
+    onEvent: (fn) => {
+      const h = native.addListener('veto', (e) => {
+        if (e.action === 'open') fn({ id: e.id, action: 'open' });
+        else if (done[e.action]) fn({ id: e.id, action: done[e.action]!, ok: true });
+        else fn({ id: e.id, action: 'failed', ...(e.error ? { error: e.error } : {}) });
+      });
+      return () => { void h.then((x) => x.remove()).catch(() => undefined); };
+    },
+  });
 }

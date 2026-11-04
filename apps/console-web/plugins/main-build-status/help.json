@@ -1,0 +1,95 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "main-build-status-help",
+  "name": "main-build-status help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:main-build-status. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:main-build-status",
+    "entries": [
+      {
+        "target": "open-on-github",
+        "title": "Open on GitHub",
+        "text": "Opens Open on GitHub.",
+        "kind": "link",
+        "draft": true
+      },
+      {
+        "target": "repository",
+        "title": "Repository",
+        "text": "Where you set “Repository”. Change it and the app uses the new value. Part of Main build status.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "branch",
+        "title": "Branch",
+        "text": "Where you set “Branch”. Change it and the app uses the new value. Part of Main build status.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "workflow",
+        "title": "Workflow",
+        "text": "Where you set “Workflow”. Change it and the app uses the new value. Part of Main build status.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "add-another",
+        "title": "Add another",
+        "text": "Adds another. Part of Main build status.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "back-to-the-default",
+        "title": "Back to the default",
+        "text": "Shows “Back to the default”. Part of Main build status.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "show-the-run",
+        "title": "Show the run",
+        "text": "Shows the run. Part of Main build status.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "show-the-build-status-on-the-banner",
+        "title": "Show the build status on the banner",
+        "text": "Where you set “Show the build status on the banner”. Change it and the app uses the new value. Part of Main build status.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "main-build-status",
+        "title": "Main build status",
+        "text": "Shows the “Main build status” part of this screen. Part of Main build status.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "action:main-build-status.github",
+        "title": "Open on GitHub",
+        "text": "Opens on GitHub. Part of Main build status.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:main-build-status.open",
+        "title": "Main build status",
+        "text": "Shows “Main build status”. Part of Build Breaker.",
+        "kind": "menu-item",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

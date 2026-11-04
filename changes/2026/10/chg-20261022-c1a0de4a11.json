@@ -1,0 +1,81 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261022-c1a0de4a11",
+  "createdAt": "2026-10-22T10:56:00.000Z",
+  "updatedAt": "2026-10-22T13:33:15.577Z",
+  "kind": "build",
+  "title": "Claude handoff plugin (prompt kit for a new Claude account, Tools section, 6-hourly reminder)",
+  "asked": "Console plugin that builds and maintains md files and assembles a prompt that moves the AmberX AXF project to a new Claude account, with a 6-hourly refresh reminder in the banner system and a new Tools section.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "claude-code-cloud",
+    "host": "claude.ai/code"
+  },
+  "steps": [
+    {
+      "text": "handoff-core.mjs + handoff.mjs CLI",
+      "state": "done",
+      "startedAt": "2026-10-22T10:56:00.000Z",
+      "finishedAt": "2026-10-22T11:05:00.000Z"
+    },
+    {
+      "text": "Server part, reminder, alerts hook",
+      "state": "done",
+      "finishedAt": "2026-10-22T11:08:00.000Z"
+    },
+    {
+      "text": "Web part: Tools section, view, banner, settings, menu",
+      "state": "done",
+      "finishedAt": "2026-10-22T11:12:00.000Z"
+    },
+    {
+      "text": "Tests, docs, first kit, push",
+      "state": "done",
+      "finishedAt": "2026-10-22T11:20:00.000Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "New claude-handoff console plugin in a new Tools section: Assemble prompt publishes _claude/handoff and copies the prompt for a new Claude account; 6-hourly banner + one fixed-key alert. Tests 39 + 75 pass; tsc, theme check, menu-reach, lifecycle check clean.",
+    "branch": "claude/amberx-cloning-plugin-hzcj78",
+    "commits": [
+      {
+        "sha": "d806ad2"
+      }
+    ],
+    "filesChanged": 44,
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-22T13:33:15.577Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "claude-handoff"
+  },
+  "surface": "cloud",
+  "startedAt": "2026-10-22T10:56:00.000Z",
+  "finishedAt": "2026-10-22T11:20:00.000Z",
+  "lastSeenAt": "2026-10-22T11:20:00.000Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "actual": {
+    "minutes": 24
+  },
+  "costEstimated": true,
+  "branch": "claude/amberx-cloning-plugin-hzcj78",
+  "areas": [
+    "apps/console-web/plugins/claude-handoff",
+    "apps/console-web/server/console_context.py",
+    "_claude/handoff"
+  ]
+}

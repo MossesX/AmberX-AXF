@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "layout",
+  "id": "canvas-studio",
+  "name": "Canvas Studio",
+  "version": "1.0.0",
+  "description": "Tools rail on the left, properties on the right, toolbar at the bottom: a design-tool frame around a full-bleed canvas.",
+  "author": "AmberX AXF",
+  "tags": [
+    "creative",
+    "desktop"
+  ],
+  "data": {
+    "nav": "left",
+    "navWidth": 64,
+    "showMenubar": true,
+    "showToolbar": true,
+    "toolbarPosition": "bottom",
+    "showStatusbar": true,
+    "inspector": "right",
+    "inspectorWidth": 280,
+    "contentMaxWidth": 0
+  }
+}

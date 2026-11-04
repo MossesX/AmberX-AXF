@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "dialog-launcher",
+  "name": "Dialog Launcher",
+  "version": "1.0.0",
+  "description": "Every dialog the app and its plugins register, one tap away, with a search limited to dialogs and actions.",
+  "author": "AmberX AXF",
+  "tags": [
+    "live",
+    "dialogs"
+  ],
+  "data": {
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": true,
+    "search": {
+      "live": true,
+      "placeholder": "Open a dialog…",
+      "maxResults": 10,
+      "kinds": [
+        "dialog",
+        "action"
+      ]
+    },
+    "groups": [
+      {
+        "id": "dialogs",
+        "items": [],
+        "provider": "dialogs",
+        "max": 8,
+        "label": "Dialogs"
+      }
+    ]
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "ai-keys-help",
+  "name": "ai-keys help",
+  "version": "0.2.0",
+  "description": "Help mode entries for plugin:ai-keys. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:ai-keys",
+    "entries": [
+      {
+        "target": "test-the-pair-and-save",
+        "title": "Test and save",
+        "text": "Tests the key against Anthropic and saves it only if it works.",
+        "kind": "button"
+      },
+      {
+        "target": "save-name",
+        "title": "Save name",
+        "text": "Saves the key's name (the key itself doesn't change).",
+        "kind": "button"
+      },
+      {
+        "target": "write-to-the-vps-now",
+        "title": "Write to the VPS now",
+        "text": "Copies the active key to the VPS so headless Claude Code uses it too.",
+        "kind": "button"
+      },
+      {
+        "target": "test-access-token",
+        "title": "Test access token",
+        "text": "Sends one tiny message with just this account's access token. Nothing is renewed, so it's safe to run any time.",
+        "kind": "button"
+      },
+      {
+        "target": "test-the-pair",
+        "title": "Test the pair",
+        "text": "Checks the access and refresh tokens together. The refresh token gets a new access token, so both are renewed.",
+        "kind": "button"
+      },
+      {
+        "target": "higher-priority",
+        "title": "Higher priority",
+        "text": "Moves the account up one place. When the active account hits a limit, accounts higher up are tried first.",
+        "kind": "button"
+      },
+      {
+        "target": "lower-priority",
+        "title": "Lower priority",
+        "text": "Moves the account down one place. When the active account hits a limit, accounts lower down are tried later.",
+        "kind": "button"
+      },
+      {
+        "target": "add-account",
+        "title": "Add account",
+        "text": "Opens the step-by-step wizard for adding a Claude account. Each key is checked as you enter it.",
+        "kind": "button"
+      },
+      {
+        "target": "make-it-the-active-account-now",
+        "title": "Make it the active account now",
+        "text": "When ticked, the new account becomes the active one as soon as it's saved, for the assistant and the VPS.",
+        "kind": "toggle"
+      },
+      {
+        "target": "put-it-at-the-top-of-the-priority-list",
+        "title": "Put it at the top of the priority list",
+        "text": "When ticked, the new account goes first in the list the automatic switch follows.",
+        "kind": "toggle"
+      },
+      {
+        "target": "account-name",
+        "title": "Account name",
+        "text": "A name for the account so you can tell it apart. The email is looked up by itself when it's saved.",
+        "kind": "field"
+      },
+      {
+        "target": "login-finished-and-im-back-at-the-terminal",
+        "title": "/login finished and I'm back at the terminal",
+        "text": "Tick this once /login has finished in the VPS terminal. The wizard won't go on until you do.",
+        "kind": "toggle"
+      },
+      {
+        "target": "contents-of-credentials-json",
+        "title": "Contents of .credentials.json",
+        "text": "Paste what `cat ~/.claude-add/.credentials.json` printed. It's checked the moment you continue.",
+        "kind": "field"
+      },
+      {
+        "target": "manage-claude-accounts",
+        "title": "Manage Claude accounts",
+        "text": "Opens Manage Claude accounts: every account in priority order, with tests, drag to reorder, and Add account.",
+        "kind": "button"
+      },
+      {
+        "target": "action:ai-keys.accounts",
+        "title": "Manage Claude accounts",
+        "text": "Opens Manage Claude accounts: every account in priority order, with tests, drag to reorder, and Add account.",
+        "kind": "menu-item"
+      }
+    ],
+    "intros": []
+  }
+}

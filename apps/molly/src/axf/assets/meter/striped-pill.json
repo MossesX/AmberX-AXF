@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "meter",
+  "id": "striped-pill",
+  "name": "Striped Pill",
+  "version": "1.0.0",
+  "description": "Rounded bar with moving stripes while it works.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "shape": "bar",
+    "height": 12,
+    "radius": "pill",
+    "stripes": true,
+    "animated": true,
+    "fill": "solid",
+    "segments": 20
+  }
+}

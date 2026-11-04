@@ -1,0 +1,1222 @@
+{
+ "$about": "ui-review-item@1 / ui-review-group@1 conformance: every validator (framework/core/ui-review-schema.mjs, the ui-review server) reports these fields. Regenerate only on purpose.",
+ "items": {
+  "valid review item": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "Breakroom phone check",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "review",
+    "source": "headless",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "status": "pending",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": true,
+   "errors": []
+  },
+  "valid screenshot": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "s-20261101-live",
+    "name": "Live capture of Settings",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "screenshot",
+    "source": "watch-live",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "screen": "/settings",
+    "viewport": "desktop",
+    "files": {
+     "before": [],
+     "after": [
+      {
+       "src": "shots/live-desktop.png"
+      }
+     ]
+    },
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": true,
+   "errors": []
+  },
+  "every source is accepted (claude-voice)": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "Breakroom phone check",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "review",
+    "source": "claude-voice",
+    "submittedBy": {
+     "type": "session",
+     "id": "voice-1"
+    },
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "status": "pending",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": true,
+   "errors": []
+  },
+  "missing name": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "review",
+    "source": "headless",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "status": "pending",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "name"
+   ]
+  },
+  "blank name": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "   ",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "review",
+    "source": "headless",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "status": "pending",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "name"
+   ]
+  },
+  "name is a file name": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "after-phone.png",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "review",
+    "source": "headless",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "status": "pending",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "name"
+   ]
+  },
+  "name looks like an id": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "r-20261101-ab12",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "review",
+    "source": "headless",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "status": "pending",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "name"
+   ]
+  },
+  "missing createdAt": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "Breakroom phone check",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "kind": "review",
+    "source": "headless",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "status": "pending",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "createdAt"
+   ]
+  },
+  "createdAt not ISO": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "Breakroom phone check",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "yesterday",
+    "kind": "review",
+    "source": "headless",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "status": "pending",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "createdAt"
+   ]
+  },
+  "createdAt date only": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "Breakroom phone check",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01",
+    "kind": "review",
+    "source": "headless",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "status": "pending",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "createdAt"
+   ]
+  },
+  "missing group": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "Breakroom phone check",
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "review",
+    "source": "headless",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "status": "pending",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "group"
+   ]
+  },
+  "group without a name": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "Breakroom phone check",
+    "group": {
+     "id": "g-1"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "review",
+    "source": "headless",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "status": "pending",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "group.name"
+   ]
+  },
+  "unknown kind": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "Breakroom phone check",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "design",
+    "source": "headless",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "status": "pending",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "kind"
+   ]
+  },
+  "unknown source": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "Breakroom phone check",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "review",
+    "source": "cli",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "status": "pending",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "source"
+   ]
+  },
+  "missing submittedBy": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "Breakroom phone check",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "review",
+    "source": "headless",
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "status": "pending",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "submittedBy"
+   ]
+  },
+  "submittedBy without a type": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "Breakroom phone check",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "review",
+    "source": "headless",
+    "submittedBy": {
+     "id": "x"
+    },
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "status": "pending",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "submittedBy.type"
+   ]
+  },
+  "missing app": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "Breakroom phone check",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "review",
+    "source": "headless",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "status": "pending",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "app"
+   ]
+  },
+  "missing screen": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "Breakroom phone check",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "review",
+    "source": "headless",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "viewport": "phone",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "status": "pending",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "screen"
+   ]
+  },
+  "bad viewport": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "Breakroom phone check",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "review",
+    "source": "headless",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "watch",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "status": "pending",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "viewport"
+   ]
+  },
+  "no screenshots": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "Breakroom phone check",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "review",
+    "source": "headless",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "before": [],
+     "after": []
+    },
+    "status": "pending",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "files"
+   ]
+  },
+  "file without src": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "Breakroom phone check",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "review",
+    "source": "headless",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "after": [
+      {
+       "name": "x"
+      }
+     ]
+    },
+    "status": "pending",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "files.after[0].src"
+   ]
+  },
+  "review item without status": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "Breakroom phone check",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "review",
+    "source": "headless",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "status"
+   ]
+  },
+  "old status word (waiting) is not stored": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "Breakroom phone check",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "review",
+    "source": "headless",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "status": "waiting",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "status"
+   ]
+  },
+  "screenshot with a status": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "s-20261101-live",
+    "name": "Live capture of Settings",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "screenshot",
+    "source": "watch-live",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "screen": "/settings",
+    "viewport": "desktop",
+    "files": {
+     "before": [],
+     "after": [
+      {
+       "src": "shots/live-desktop.png"
+      }
+     ]
+    },
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed",
+    "status": "approved"
+   },
+   "ok": false,
+   "errors": [
+    "status"
+   ]
+  },
+  "pr not a number": {
+   "item": {
+    "$axf": "ui-review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "Breakroom phone check",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "review",
+    "source": "headless",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "status": "pending",
+    "pr": "abc",
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "pr"
+   ]
+  },
+  "wrong $axf": {
+   "item": {
+    "$axf": "review-item@1",
+    "id": "r-20261101-breakroom",
+    "name": "Breakroom phone check",
+    "group": {
+     "id": "g-20261101-breakroom-check",
+     "name": "Breakroom check - Nov 1 8:20 AM"
+    },
+    "createdAt": "2026-11-01T08:20:00Z",
+    "kind": "review",
+    "source": "headless",
+    "submittedBy": {
+     "type": "build",
+     "id": "claude/review-schema"
+    },
+    "app": "Console",
+    "screen": "Breakroom",
+    "viewport": "phone",
+    "files": {
+     "before": [
+      {
+       "src": "items/r-20261101-breakroom/before-phone.png",
+       "viewport": "phone"
+      }
+     ],
+     "after": [
+      {
+       "src": "items/r-20261101-breakroom/after-phone.png",
+       "viewport": "phone"
+      }
+     ]
+    },
+    "status": "pending",
+    "pr": 412,
+    "build": {
+     "id": "review-schema",
+     "step": "s2"
+    },
+    "note": "Spacing fixed"
+   },
+   "ok": false,
+   "errors": [
+    "$axf"
+   ]
+  },
+  "empty object": {
+   "item": {},
+   "ok": false,
+   "errors": [
+    "$axf",
+    "id",
+    "name",
+    "group",
+    "createdAt",
+    "kind",
+    "source",
+    "submittedBy",
+    "app",
+    "screen",
+    "viewport",
+    "files"
+   ]
+  }
+ },
+ "groups": {
+  "valid group": {
+   "group": {
+    "$axf": "ui-review-group@1",
+    "id": "g-20261101-breakroom-check",
+    "name": "Breakroom check - Nov 1 8:20 AM",
+    "createdAt": "2026-11-01T08:20:00Z",
+    "source": "claude-chat",
+    "submittedBy": {
+     "type": "user",
+     "id": "brett"
+    }
+   },
+   "ok": true,
+   "errors": []
+  },
+  "group missing name": {
+   "group": {
+    "$axf": "ui-review-group@1",
+    "id": "g-1",
+    "createdAt": "2026-11-01T08:20:00Z",
+    "source": "console"
+   },
+   "ok": false,
+   "errors": [
+    "name"
+   ]
+  },
+  "group missing createdAt": {
+   "group": {
+    "$axf": "ui-review-group@1",
+    "id": "g-1",
+    "name": "Settings pass",
+    "source": "console"
+   },
+   "ok": false,
+   "errors": [
+    "createdAt"
+   ]
+  },
+  "group unknown source": {
+   "group": {
+    "$axf": "ui-review-group@1",
+    "id": "g-1",
+    "name": "Settings pass",
+    "createdAt": "2026-11-01T08:20:00Z",
+    "source": "api"
+   },
+   "ok": false,
+   "errors": [
+    "source"
+   ]
+  }
+ }
+}

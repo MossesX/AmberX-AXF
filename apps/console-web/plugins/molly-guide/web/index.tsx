@@ -212,6 +212,7 @@ export const plugin: AxfWebLibrary = {
   ],
   settingsPanels: [
     { id: 'molly-guide.try', tab: 'molly-guide', title: 'Try it', icon: 'play', order: 20, render: () => <TryPanel /> },
+    { id: 'molly-guide.amberx-video', tab: 'molly-guide', title: 'AmberX walkthrough video', icon: 'refresh', order: 30, render: () => <RerecordPanel /> },
     { id: 'molly-guide.lifecycle', tab: 'molly-guide', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
   register(rt) {
@@ -239,6 +240,36 @@ function TryPanel() {
         ] });
         else close();
       }} />
+    </div>
+  );
+}
+
+/** Re-records AmberX's narrated walkthrough video (apps/amberx-droid/walkthrough) after a UI change: one veto call on axHub. */
+function RerecordPanel() {
+  const [st, set] = useState<{ state: string; message: string } | null>(null);
+  const [busy, setBusy] = useState(false);
+  useEffect(() => { void pluginFetch(FOLDER, 'amberx-walkthrough/rerecord').then((r) => (r.ok ? r.json() : null)).then((j) => j?.state !== 'idle' && set(j)).catch(() => undefined); }, []);
+  const go = async () => {
+    setBusy(true);
+    try {
+      const r = await pluginFetch(FOLDER, 'amberx-walkthrough/rerecord', { method: 'POST' });
+      const j = await r.json().catch(() => ({}));
+      set(r.ok ? j : { state: 'failed', message: j.detail ?? `The console answered ${r.status}.` });
+      if (r.ok) for (let i = 0; i < 20; i++) {
+        await new Promise((ok) => setTimeout(ok, 1500));
+        const s = await (await pluginFetch(FOLDER, 'amberx-walkthrough/rerecord')).json();
+        set(s);
+        if (s.state !== 'sending') break;
+      }
+    } finally { setBusy(false); }
+  };
+  return (
+    <div className="fx-stack">
+      <p className="fx-muted">Changed AmberX's screens? Record its walkthrough again: the live app with demo data, Amber's voice, chapters, a secrets scan, then it replaces the video in AmberX → Walkthrough (about 15 minutes). It goes to axHub as a veto call, so you can still deny it.</p>
+      <div className="fx-row fx-row--wrap">
+        <Button icon="refresh" busy={busy} confirm="Re-record the AmberX walkthrough video?" onClick={() => void go()}>Re-record the AmberX walkthrough</Button>
+      </div>
+      {st && <Note tone={st.state === 'failed' ? 'danger' : st.state === 'sent' ? 'success' : 'info'}>{st.message}</Note>}
     </div>
   );
 }

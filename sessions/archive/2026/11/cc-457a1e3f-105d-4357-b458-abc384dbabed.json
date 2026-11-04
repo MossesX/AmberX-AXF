@@ -1,0 +1,88 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-457a1e3f-105d-4357-b458-abc384dbabed",
+ "source": "claude-code",
+ "sessionId": "457a1e3f-105d-4357-b458-abc384dbabed",
+ "project": "amberx-axf",
+ "title": "# Let vps.build_start launch Fable builds A previous run (`build-start-fable`, local clone /root/axf-builds/build-start…",
+ "startedAt": "2026-11-01T11:02:10.654Z",
+ "endedAt": "2026-11-01T11:08:17.984Z",
+ "minutes": 6,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/fable-launch",
+  "repo": "",
+  "branch": "claude/fable-launch"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-01T11:02:11.377Z",
+   "kind": "prompt",
+   "text": "# Let vps.build_start launch Fable builds A previous run (`build-start-fable`, local clone /root/axf-builds/build-start-fable, never pushed) was stopped part-way; peek at its uncommitted diff there if useful (`git -C /root/axf-builds/build-start-fable diff`), but do the work here. Brett wants Fable builds running ASAP. Read CLAUDE.md and the repo rules first. 1. `vps.build_start` model enum is only opus|sonnet. Add `fable`, mapped to the exact model name/alias the installed Claude Code CLI on this VPS accepts for Fable (check `claude --help`, the CLI's model options, and how AmberX-AXF's buil…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 94,
+    "output": 16916,
+    "cacheRead": 3450275,
+    "cacheWrite": 77464,
+    "thinking": 2409
+   },
+   "costUsd": 1.4163,
+   "costEstimated": false,
+   "seconds": 366,
+   "tools": {
+    "Bash": 44,
+    "ToolSearch": 1,
+    "mcp__claude_ai_axHub__describe_service": 1
+   },
+   "commands": 44,
+   "files": [],
+   "changeIds": [
+    "chg-20261101-6ab239dbd3"
+   ],
+   "features": [
+    "plan:build-start-fable"
+   ],
+   "output": "Fable builds are live: `vps.build_start` now launches Fable builds on the deployed axHub, and the live test ran on Fable. - **Enum before → after:** `opus | sonnet` → `opus | fable` (default `opus`). The list now comes from the ssh service's `config.buildModels`, and the tool's `model` enum is gene…"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261101-6ab239dbd3"
+ ],
+ "features": [
+  "plan:build-start-fable"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 94,
+  "output": 16916,
+  "cacheRead": 3450275,
+  "cacheWrite": 77464,
+  "thinking": 2409,
+  "costUsd": 1.4163,
+  "costEstimated": false,
+  "toolCalls": 46,
+  "commands": 44,
+  "filesTouched": 0,
+  "reportedUsd": 1.6485
+ },
+ "ingestedAt": "2026-11-01T11:08:18.218Z"
+}

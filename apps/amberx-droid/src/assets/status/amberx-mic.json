@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "status",
+  "id": "amberx-mic",
+  "name": "Microphone",
+  "version": "1.0.0",
+  "description": "AmberX's Mic off switch on the banner: Listening while counter `amberx.mic.on` is above zero, Mic off otherwise. Tap it to flip Mic off (action amberx.mic.toggle, mic.tsx).",
+  "author": "AmberX AXF",
+  "tags": [
+    "status",
+    "microphone"
+  ],
+  "data": {
+    "counter": "amberx.mic.on",
+    "onLabel": "Listening",
+    "offLabel": "Mic off",
+    "onTone": "success",
+    "offTone": "danger",
+    "link": "amberx.mic.toggle"
+  }
+}

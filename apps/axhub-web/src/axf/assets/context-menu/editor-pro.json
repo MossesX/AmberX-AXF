@@ -1,0 +1,121 @@
+{
+  "$axf": "asset@1",
+  "type": "context-menu",
+  "id": "editor-pro",
+  "name": "Editor Pro",
+  "version": "1.0.0",
+  "description": "Built for editors: clipboard first, then save and export, with every shortcut shown.",
+  "author": "AmberX AXF",
+  "tags": [
+    "desktop",
+    "editing"
+  ],
+  "data": {
+    "variant": "compact",
+    "showIcons": true,
+    "showShortcuts": true,
+    "targets": {
+      "default": [
+        {
+          "id": "cut",
+          "label": "Cut",
+          "icon": "cut",
+          "action": "edit.cut",
+          "shortcut": "Ctrl+X"
+        },
+        {
+          "id": "copy",
+          "label": "Copy",
+          "icon": "copy",
+          "action": "edit.copy",
+          "shortcut": "Ctrl+C"
+        },
+        {
+          "id": "paste",
+          "label": "Paste",
+          "icon": "paste",
+          "action": "edit.paste",
+          "shortcut": "Ctrl+V"
+        },
+        {
+          "id": "delete",
+          "label": "Delete",
+          "icon": "trash",
+          "action": "edit.delete",
+          "shortcut": "Del"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "undo",
+          "label": "Undo",
+          "icon": "undo",
+          "action": "edit.undo",
+          "shortcut": "Ctrl+Z"
+        },
+        {
+          "id": "redo",
+          "label": "Redo",
+          "icon": "redo",
+          "action": "edit.redo",
+          "shortcut": "Ctrl+Shift+Z"
+        },
+        {
+          "id": "s2",
+          "separator": true
+        },
+        {
+          "id": "save",
+          "label": "Save",
+          "icon": "save",
+          "action": "file.save",
+          "shortcut": "Ctrl+S"
+        },
+        {
+          "id": "export",
+          "label": "Export…",
+          "icon": "download",
+          "action": "file.export"
+        }
+      ],
+      "asset-card": [
+        {
+          "id": "activate",
+          "label": "Use this",
+          "icon": "zap",
+          "action": "swap:{payload}",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "json",
+          "label": "View JSON",
+          "icon": "code",
+          "action": "asset.json:{payload}"
+        },
+        {
+          "id": "copy-json",
+          "label": "Copy JSON",
+          "icon": "copy",
+          "action": "asset.copy:{payload}"
+        },
+        {
+          "id": "s2",
+          "separator": true
+        },
+        {
+          "id": "import",
+          "label": "Import asset…",
+          "icon": "upload",
+          "action": "dialog:import-asset",
+          "requires": "assets.import"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,263 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "voice-notes-help",
+  "name": "voice-notes help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:voice-notes. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:voice-notes",
+    "entries": [
+      {
+        "target": "read-again",
+        "title": "Read again",
+        "text": "Reads again. Part of Voice notes.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "listen-for-voice-notes",
+        "title": "Listen for voice notes",
+        "text": "Turns “Listen for voice notes” on or off. It takes effect straight away and is remembered. Part of Voice notes.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "test-beep",
+        "title": "Test beep",
+        "text": "Tests beep. Part of Voice notes.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "beep-before-recording",
+        "title": "Beep before recording",
+        "text": "Turns “Beep before recording” on or off. It takes effect straight away and is remembered. Part of Voice notes.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "beep-again-when-the-stop-trigger-is-heard",
+        "title": "Beep again when the stop trigger is heard",
+        "text": "Turns “Beep again when the stop trigger is heard” on or off. It takes effect straight away and is remembered. Part of Voice notes.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "cut-the-stop-trigger-out-of-the-recording-too",
+        "title": "Cut the stop trigger out of the recording too",
+        "text": "Turns “Cut the stop trigger out of the recording too” on or off. It takes effect straight away and is remembered. Part of Voice notes.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "keep-the-audio-with-the-note",
+        "title": "Keep the audio with the note",
+        "text": "Turns “Keep the audio with the note” on or off. It takes effect straight away and is remembered. Part of Voice notes.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "where-to-store-it-spoken-after-the-note",
+        "title": "Where to store it (spoken after the note)",
+        "text": "Where you set “Where to store it (spoken after the note)”. Change it and the app uses the new value. Part of Voice notes.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "read-the-lists-right-away",
+        "title": "Read the lists right away",
+        "text": "Turns “Read the lists right away” on or off. It takes effect straight away and is remembered. Part of Voice notes.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "how-each-list-is-read",
+        "title": "How each list is read",
+        "text": "Where you set “How each list is read”. Change it and the app uses the new value. Part of Voice notes.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "say-where-it-was-saved",
+        "title": "Say where it was saved",
+        "text": "Turns “Say where it was saved” on or off. It takes effect straight away and is remembered. Part of Voice notes.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "saved-message",
+        "title": "Saved message",
+        "text": "Where you set “Saved message”. Change it and the app uses the new value. Part of Voice notes.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "then-store-it-in",
+        "title": "Then store it in",
+        "text": "Where you set “Then store it in”. Change it and the app uses the new value. Part of Voice notes.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "ask-which-subcategory-after-picking-this-list",
+        "title": "Ask which subcategory after picking this list",
+        "text": "Turns “Ask which subcategory after picking this list” on or off. It takes effect straight away and is remembered. Part of Voice notes.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "subcategory-question",
+        "title": "Subcategory question",
+        "text": "Where you set “Subcategory question”. Change it and the app uses the new value. Part of Voice notes.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "also-called",
+        "title": "Also called",
+        "text": "Where you set “Also called”. Change it and the app uses the new value. Part of Voice notes.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "remove-subcategory",
+        "title": "Remove subcategory",
+        "text": "Removes subcategory. Depending on your behaviour theme it asks first. Part of Voice notes.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "asked-when",
+        "title": "Asked when",
+        "text": "Where you set “Asked when”. Change it and the app uses the new value. Part of Voice notes.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "trigger",
+        "title": "Trigger",
+        "text": "Where you set “Trigger”. Change it and the app uses the new value. Part of Voice notes.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "file-into",
+        "title": "File into",
+        "text": "Where you set “File into”. Change it and the app uses the new value. Part of Voice notes.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "remove-question-set",
+        "title": "Remove question set",
+        "text": "Removes question set. Depending on your behaviour theme it asks first. Part of Voice notes.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "save-the-answer-as",
+        "title": "Save the answer as",
+        "text": "Where you set “Save the answer as”. Change it and the app uses the new value. Part of Voice notes.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "remove-question",
+        "title": "Remove question",
+        "text": "Removes question. Depending on your behaviour theme it asks first. Part of Voice notes.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "add-question",
+        "title": "Add question",
+        "text": "Adds question. Part of Voice notes.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "add-question-set",
+        "title": "Add question set",
+        "text": "Adds question set. Part of Voice notes.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "how-it-asks-for-a-number-or-trigger",
+        "title": "How it asks for a number or trigger",
+        "text": "Where you set “How it asks for a number or trigger”. Change it and the app uses the new value. Part of Voice notes.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "save-list",
+        "title": "Save list",
+        "text": "Saves list. Nothing is kept until you tap it. Part of Voice notes.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "subcategor-question-set",
+        "title": "subcategor · question set",
+        "text": "Shows “subcategor · question set”. Part of Voice notes.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "try-something-youd-say",
+        "title": "Try something you'd say",
+        "text": "Where you set “Try something you'd say”. Change it and the app uses the new value. Part of Voice notes.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "copy-the-note",
+        "title": "Copy the note",
+        "text": "Copies the note. Paste it wherever you need it. Part of Voice notes.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "delete-the-note",
+        "title": "Delete the note",
+        "text": "Deletes the note. Depending on your behaviour theme it asks first. Part of Voice notes.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "set-up",
+        "title": "Set up",
+        "text": "Sets up. Part of Voice notes.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "subcategory",
+        "title": "Subcategory",
+        "text": "Where you set “Subcategory”. Change it and the app uses the new value. Part of Voice notes.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "copy-as-markdown",
+        "title": "Copy as Markdown",
+        "text": "Copies as Markdown. Paste it wherever you need it. Part of Voice notes.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "voice-notes",
+        "title": "Voice notes",
+        "text": "Shows the “Voice notes” part of this screen. Part of Voice notes.",
+        "kind": "tab",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

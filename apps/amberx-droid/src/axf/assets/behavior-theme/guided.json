@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "guided",
+  "name": "Guided",
+  "version": "1.0.0",
+  "description": "Encouraging and clear: springy pages rise in, glowing hovers, a subtle sound on success.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:learning-path"
+  ],
+  "data": {
+    "motion": {
+      "speed": "slow",
+      "easing": "spring",
+      "reduced": "system",
+      "entrance": "rise"
+    },
+    "interaction": {
+      "hover": "glow",
+      "press": "shrink",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 600,
+      "doubleTapMs": 320,
+      "dragThreshold": 10
+    },
+    "windows": {
+      "dialogOpen": "scale",
+      "backdrop": "blur",
+      "popupOpen": "scale",
+      "drawerOpen": "slide",
+      "snap": false,
+      "snapGrid": 8,
+      "stack": "center",
+      "minimize": "cursor",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "top",
+      "toastMs": 6000,
+      "sound": "subtle",
+      "vibration": "light",
+      "confirmDelete": "risky",
+      "busyCursor": true
+    }
+  }
+}

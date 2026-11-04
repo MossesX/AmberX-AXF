@@ -1,0 +1,32 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "agent-slots-help",
+  "name": "agent-slots help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:agent-slots. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:agent-slots",
+    "entries": [
+      {
+        "target": "name-matches-regex",
+        "title": "Name matches (regex)",
+        "text": "Where you set “Name matches (regex)”. Change it and the app uses the new value. Part of Agent cap.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "agent-cap",
+        "title": "Agent cap",
+        "text": "Shows the “Agent cap” part of this screen. Part of Agent cap.",
+        "kind": "tab",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

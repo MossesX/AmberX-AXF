@@ -32,7 +32,7 @@ const ROLE_CATS: { id: string; label: string; icon: string; roles: string[]; fea
   { id: 'memory', label: 'Memory', icon: 'layers', roles: ['memory'], features: ['Read decisions and docs', 'Hash every file', 'Record the reading order'] },
   { id: 'specs', label: 'Specs', icon: 'code', roles: ['spec'], features: ['Read the conformance specs', 'Index them', 'Mark them required reading'] },
   { id: 'manifests', label: 'Project manifests', icon: 'package', roles: ['manifest'], features: ['Read every manifest', 'Check names and repos', 'List the projects'] },
-  { id: 'claude-code', label: 'Claude Code config', icon: 'terminal', roles: ['claude-settings', 'command', 'skill', 'agent', 'mcp'], features: ['Read project settings', 'Read commands and skills', 'Record MCP servers (no tokens)'] },
+  { id: 'claude-code', label: 'Claude Code config', icon: 'terminal', roles: ['claude-code-settings', 'command', 'skill', 'agent', 'mcp'], features: ['Read project settings', 'Read commands and skills', 'Record MCP servers (no tokens)'] },
 ];
 
 const KIT_FILES: [string, string][] = [

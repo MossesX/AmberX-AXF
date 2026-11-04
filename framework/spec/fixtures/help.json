@@ -1,0 +1,335 @@
+{
+  "slugs": {
+    "Approve now (3)": "approve-now",
+    "Approvals 12 new": "approvals",
+    "Save…": "save",
+    "What is this?": "what-is-this",
+    "Don’t show intros again": "dont-show-intros-again",
+    "h1 size": "h1-size",
+    "Step 2 of 4": "step-of",
+    "": "",
+    "  Copy JSON  ": "copy-json",
+    "Top 10 — 50%": "top"
+  },
+  "targets": {
+    "menu-item": {
+      "id": "action:app.settings",
+      "lookup": [
+        "builds/action:app.settings",
+        "action:app.settings",
+        "builds/settings",
+        "settings"
+      ]
+    },
+    "param-action": {
+      "id": "action:swap:color-theme:next",
+      "lookup": [
+        "action:swap:color-theme:next",
+        "action:swap",
+        "next-color-theme"
+      ]
+    },
+    "nav-action": {
+      "id": "view:builds",
+      "lookup": [
+        "view:builds",
+        "builds"
+      ]
+    },
+    "nav-item": {
+      "id": "view:plan-studio",
+      "lookup": [
+        "home/view:plan-studio",
+        "view:plan-studio",
+        "home/plan-studio",
+        "plan-studio"
+      ]
+    },
+    "explicit": {
+      "id": "approval-deny",
+      "lookup": [
+        "home/approval-deny",
+        "approval-deny",
+        "home/deny-vps-run",
+        "deny-vps-run"
+      ]
+    },
+    "label-only": {
+      "id": "refresh",
+      "lookup": [
+        "builds/refresh",
+        "refresh"
+      ]
+    },
+    "column": {
+      "id": "column:status",
+      "lookup": [
+        "builds/column:status",
+        "column:status"
+      ]
+    },
+    "banner": {
+      "id": "banner:approvals",
+      "lookup": [
+        "banner:approvals"
+      ]
+    },
+    "menu": {
+      "id": "menu:file",
+      "lookup": [
+        "menu:file",
+        "file"
+      ]
+    },
+    "nothing": {
+      "id": null,
+      "lookup": []
+    }
+  },
+  "packs": {
+    "framework": {
+      "scope": "",
+      "entries": [
+        {
+          "id": "refresh",
+          "target": "refresh",
+          "title": "Refresh",
+          "text": "Reloads it."
+        },
+        {
+          "id": "action:app.settings",
+          "target": "action:app.settings",
+          "title": "Settings",
+          "text": "Opens Settings."
+        },
+        {
+          "id": "view:home",
+          "target": "view:home",
+          "title": "Home",
+          "text": "The front page."
+        },
+        {
+          "id": "deny",
+          "target": "deny",
+          "title": "Deny",
+          "text": "Drops it.",
+          "draft": true
+        }
+      ],
+      "intros": [
+        {
+          "screen": "home",
+          "title": "Home",
+          "steps": [
+            {
+              "say": "Cards up top.",
+              "target": "view:home",
+              "do": ""
+            },
+            {
+              "say": "Banners live.",
+              "target": "",
+              "do": "nav:home"
+            }
+          ]
+        }
+      ]
+    },
+    "app": {
+      "scope": "",
+      "entries": [
+        {
+          "id": "refresh",
+          "target": "refresh",
+          "title": "Refresh (app)",
+          "text": "Reloads it from the hub."
+        },
+        {
+          "id": "deny",
+          "target": "deny",
+          "title": "Deny",
+          "text": "Never runs."
+        },
+        {
+          "id": "builds/refresh",
+          "target": "builds/refresh",
+          "title": "Refresh builds",
+          "text": "Reloads the builds."
+        },
+        {
+          "id": "action:app.settings",
+          "target": "action:app.settings",
+          "title": "Settings (draft)",
+          "text": "x",
+          "draft": true
+        }
+      ],
+      "intros": []
+    }
+  },
+  "index": {
+    "byTarget": {
+      "action:app.settings": {
+        "id": "action:app.settings",
+        "target": "action:app.settings",
+        "title": "Settings",
+        "text": "Opens Settings.",
+        "pack": "framework"
+      },
+      "builds/refresh": {
+        "id": "builds/refresh",
+        "target": "builds/refresh",
+        "title": "Refresh builds",
+        "text": "Reloads the builds.",
+        "pack": "app"
+      },
+      "deny": {
+        "id": "deny",
+        "target": "deny",
+        "title": "Deny",
+        "text": "Never runs.",
+        "pack": "app"
+      },
+      "refresh": {
+        "id": "refresh",
+        "target": "refresh",
+        "title": "Refresh (app)",
+        "text": "Reloads it from the hub.",
+        "pack": "app"
+      },
+      "view:home": {
+        "id": "view:home",
+        "target": "view:home",
+        "title": "Home",
+        "text": "The front page.",
+        "pack": "framework"
+      }
+    },
+    "intros": {
+      "home": {
+        "screen": "home",
+        "title": "Home",
+        "steps": [
+          {
+            "say": "Cards up top.",
+            "target": "view:home",
+            "do": ""
+          },
+          {
+            "say": "Banners live.",
+            "target": "",
+            "do": "nav:home"
+          }
+        ],
+        "pack": "framework"
+      }
+    }
+  },
+  "resolve": {
+    "screen-override": "Refresh builds",
+    "later-pack-wins": "Refresh (app)",
+    "written-beats-draft": "Settings",
+    "draft-replaced": "Never runs.",
+    "falls-back-to-label": "Refresh (app)",
+    "missing": null
+  },
+  "intros": {
+    "first-time": {
+      "screen": "home",
+      "title": "Home",
+      "steps": [
+        {
+          "say": "Cards up top.",
+          "target": "view:home",
+          "do": ""
+        },
+        {
+          "say": "Banners live.",
+          "target": "",
+          "do": "nav:home"
+        }
+      ],
+      "pack": "framework"
+    },
+    "mode-off": null,
+    "seen": null,
+    "intros-off": null,
+    "no-intro": null,
+    "walkthrough": {
+      "$axf": "walkthrough@1",
+      "id": "intro-home",
+      "title": "Home",
+      "app": "console",
+      "steps": [
+        {
+          "say": "Cards up top.",
+          "do": "",
+          "target": "view:home"
+        },
+        {
+          "say": "Banners live.",
+          "do": "nav:home",
+          "target": ""
+        }
+      ]
+    },
+    "mark-seen": [
+      "home",
+      "plan"
+    ]
+  },
+  "coverage": {
+    "total": 3,
+    "covered": 2,
+    "written": 2,
+    "drafts": 0,
+    "missing": [
+      {
+        "id": "frobnicate",
+        "lookup": [
+          "frobnicate"
+        ],
+        "kind": "button",
+        "label": "Frobnicate"
+      }
+    ],
+    "percent": 66.6
+  },
+  "ratchet": {
+    "ok": [],
+    "fell": [
+      "app: help coverage fell to 70.5% (ratchet 80%): add help for the new controls (node framework/cli/help-coverage.mjs --draft app)",
+      "app: 9 controls have help, the ratchet says 10: help entries were removed",
+      "app: 4 written entries, the ratchet says 5: written help was turned back into drafts or removed"
+    ],
+    "scope-gone": [
+      "app: no coverage measured (was 80%)"
+    ]
+  },
+  "errors": {
+    "ok": [],
+    "not-an-object": [
+      "help: data must be an object"
+    ],
+    "bad-entries": [
+      "help: entries[0].target must be a help id (lower-case letters, digits and . _ : / @ + -)",
+      "help: entries[0].title is required",
+      "help: entries[1].text is longer than 600 (put the rest in \"more\")",
+      "help: entries[1].link must be a path, an https URL or { label, href }",
+      "help: entries[1].related must be a list of help ids",
+      "help: entries[1].kind must be one of button, menu-item, toggle, slider, tab, column, banner, card, field, link, nav, screen, menu, control",
+      "help: entries[1].draft must be true or false",
+      "help: entries[2].target \"a\" appears twice in this pack",
+      "help: entries[3] must be an object"
+    ],
+    "bad-intros": [
+      "help: intros[0].steps needs 1–6 steps",
+      "help: intros[1].screen \"home\" has two intros in this pack",
+      "help: intros[1].steps[0].say is required",
+      "help: intros[1].steps[1].do must be an action spec",
+      "help: intros[2].screen must be a screen (view) id",
+      "help: intros[2].steps has more than 6 steps"
+    ],
+    "other-type": []
+  }
+}

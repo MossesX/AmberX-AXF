@@ -1,0 +1,54 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "github-app-help",
+  "name": "github-app help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:github-app. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:github-app",
+    "entries": [
+      {
+        "target": "app-name",
+        "title": "App name",
+        "text": "What the GitHub App is called on github.com.",
+        "kind": "field"
+      },
+      {
+        "target": "create-github-app",
+        "title": "Create GitHub App",
+        "text": "Opens GitHub to make the app in one click; it comes back here with its keys. After that no session needs a personal token.",
+        "kind": "button"
+      },
+      {
+        "target": "check-installation",
+        "title": "Check installation",
+        "text": "Checks the app is installed on your repos and can push.",
+        "kind": "button"
+      },
+      {
+        "target": "mint-a-token-now",
+        "title": "Mint a token now",
+        "text": "Makes a fresh short-lived token from the app, to test it works.",
+        "kind": "button"
+      },
+      {
+        "target": "forget-the-app-here",
+        "title": "Forget the app here",
+        "text": "Removes the app's keys from this console. The app on GitHub stays.",
+        "kind": "button"
+      },
+      {
+        "target": "github",
+        "title": "GitHub",
+        "text": "The GitHub App's settings.",
+        "kind": "tab"
+      }
+    ],
+    "intros": []
+  }
+}

@@ -1,24 +1,24 @@
 /* Voice notes settings: layout only (controls come from the framework and follow the app's style theme). */
-.axp-voice-notes-phrase { gap: calc(var(--fx-space) * 0.25); align-items: center; }
+.axp-voice-notes-phrase { gap: var(--fx-dens-gap-xs); align-items: center; }
 .axp-voice-notes-add, .axp-voice-notes-sub, .axp-voice-notes-q { align-items: flex-end; }
 .axp-voice-notes-add > .fx-field, .axp-voice-notes-q > .fx-field { flex: 1 1 14em; }
-.axp-voice-notes-set { padding-left: var(--fx-space); border-left: var(--fx-border-w) solid var(--fx-border); }
-.axp-voice-notes-listrow { gap: var(--fx-space); align-items: center; width: 100%; text-align: left; }
-.axp-voice-notes-editor { padding: var(--fx-space); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
-.axp-voice-notes-script { margin: 0; padding-left: calc(var(--fx-space) * 1.5); display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); }
+.axp-voice-notes-set { padding-left: var(--fx-dens-gap-xl); border-left: var(--fx-border-w) solid var(--fx-border); }
+.axp-voice-notes-listrow { gap: var(--fx-dens-gap-xl); align-items: center; width: 100%; text-align: left; }
+.axp-voice-notes-editor { padding: var(--fx-dens-gap-xl); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
+.axp-voice-notes-script { margin: 0; padding-left: var(--fx-dens-gap-2xl); display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
 .axp-voice-notes-line.is-you { font-weight: 600; }
 /* the notes page */
 .axp-voice-notes-filters { align-items: flex-end; }
 .axp-voice-notes-filters > .fx-field { flex: 1 1 12em; }
-.axp-voice-notes-note { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); }
-.axp-voice-notes-notehead { gap: calc(var(--fx-space) * 0.5); align-items: center; }
+.axp-voice-notes-note { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); }
+.axp-voice-notes-notehead { gap: var(--fx-dens-gap-md); align-items: center; }
 .axp-voice-notes-grow { flex: 1 1 auto; }
 .axp-voice-notes-text { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
-.axp-voice-notes-answers { margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(10em, 1fr)); gap: calc(var(--fx-space) * 0.25) var(--fx-space); }
+.axp-voice-notes-answers { margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(10em, 1fr)); gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-xl); }
 .axp-voice-notes-answers dd { margin: 0; overflow-wrap: anywhere; }
 /* Compact layout (Angel screens-compact, Oct 30 2026): one-line head, icon actions, flat note rows. */
 .axp-voice-notes-lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0; }
-.axp-voice-notes-acts { flex-wrap: nowrap; gap: calc(var(--fx-space) * 0.25); }
-.axp-voice-notes-note { gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.75) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
-.axp-voice-notes-editor { padding: var(--fx-space) 0; border-width: var(--fx-border-w) 0; border-radius: 0; }
+.axp-voice-notes-acts { flex-wrap: nowrap; gap: var(--fx-dens-gap-xs); }
+.axp-voice-notes-note { gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-lg) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-voice-notes-editor { padding: var(--fx-dens-gap-xl) 0; border-width: var(--fx-border-w) 0; border-radius: 0; }
 .fx-pagehead > div:first-child:has(> .axp-voice-notes-lede) { flex: 1 1 16em; min-width: 0; max-width: 100% }

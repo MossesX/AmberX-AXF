@@ -32,11 +32,31 @@ export interface ApprovalItem {
   decidedBy?: string;
   postponed?: { kind: string; waitingFor: string; until?: string; since: string; lastCheck?: string; lastNote?: string; nextReminder?: string; reminders: number };
   history: { at: string; from: string; to: string; by: string; note?: string }[];
-  /** Held commands (veto@1): `status: "held"`, run by the hub when the countdown ends unless denied (no Approve). */
-  veto?: { runsAt: string; secondsLeft: number; countdownSeconds: number };
+  /**
+   * Held commands (veto@1): `status: "held"`, run by the hub when the countdown ends unless denied. Since axHub decision
+   * 104 also Approve now (run at once) and Shelve (`state: "shelved"`: the countdown paused until he decides); `actions`
+   * is what applies now (absent on an older hub: Deny only).
+   */
+  veto?: { runsAt: string; secondsLeft: number; countdownSeconds: number; state?: string; approvedNow?: boolean; actions?: ('deny' | 'approve-now' | 'shelve')[] };
   jobId?: string;
   denyUrl?: string;
   streamUrl?: string;
+  /**
+   * Who asked (axHub decision 109): `kind` + badge `label` (Claude.ai / Claude Code / Headless / Console / Agent /
+   * System / Unknown), `who` (session, build or agent name), the MCP client. Absent on an older hub.
+   */
+  source?: ApprovalSourceView;
+}
+
+export interface ApprovalSourceView {
+  kind: string;
+  label: string;
+  who: string;
+  session?: string;
+  client?: string;
+  clientVersion?: string;
+  auth?: string;
+  oauthClient?: string;
 }
 
 export interface AutoState {
@@ -51,7 +71,9 @@ export interface ApprovalGrid {
   page: number;
   pages: number;
   total: number;
+  /** Pending requests only: held veto calls are `heldCount` (add both for what waits, `waitingCount`). */
   waiting: number;
+  heldCount?: number;
   postponed: number;
   items: ApprovalItem[];
   auto: AutoState;
@@ -79,4 +101,9 @@ export const EFFECT_TONE: Record<ApprovalItem['effect'], 'danger' | 'success' | 
 
 export const STATUS_TONE: Record<string, 'accent' | 'success' | 'warning' | 'danger' | undefined> = {
   pending: 'accent', held: 'warning', running: 'accent', ran: 'success', failed: 'danger', denied: undefined, approved: 'success', consumed: 'success', rejected: 'danger', revoked: 'danger', postponed: 'warning', ignored: undefined, expired: undefined,
+};
+
+/** Source badge tones (axHub decision 109): people-driven sources accent, unattended ones warning, the console success. */
+export const SOURCE_TONE: Record<string, 'accent' | 'success' | 'warning' | 'danger' | undefined> = {
+  claude_ai: 'accent', claude_code: 'accent', headless: 'warning', console: 'success', agent: 'warning', system: undefined, unknown: undefined,
 };

@@ -1,0 +1,42 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261023-c96ee84ef2",
+  "createdAt": "2026-10-23T18:23:17.522Z",
+  "updatedAt": "2026-10-24T11:15:45.080Z",
+  "kind": "build",
+  "title": "Settings interface as an asset type",
+  "asked": "",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "",
+  "who": {
+    "where": "cloud",
+    "host": "vm"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "settings asset type + engine + library + starters + fixture",
+    "branch": "claude/project-thread-55oakl",
+    "commits": [],
+    "tests": {
+      "check-settings-ui": {
+        "before": "0",
+        "after": "25"
+      }
+    },
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-24T11:15:45.080Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-23T18:23:17.522Z",
+  "finishedAt": "2026-10-23T18:23:26.738Z",
+  "lastSeenAt": "2026-10-23T18:23:17.522Z",
+  "progress": 1.0
+}

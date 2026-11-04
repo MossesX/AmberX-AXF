@@ -1,0 +1,111 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261030-01e4842722",
+  "createdAt": "2026-10-30T17:54:21.361Z",
+  "updatedAt": "2026-10-30T18:05:18.081Z",
+  "kind": "build",
+  "title": "# Build: every change goes through a PR, and every PR is brought up to date with main before it mer…",
+  "asked": "# Build: every change goes through a PR, and every PR is brought up to date with main before it merges (Refactor profile, Opus, one session, no sub-agents) NOTE (relaunch Oct 30 2026 13:55 EDT): the first launch stopped because it could not load the rules from axHub. This launch is allowed the axHub tool (mcp__claude_ai_axHub__call, list_services, describe_service, get_job): load CLAUDE.md, the shared rules and THREADS.md through axhub.memory_read (project amberx-axf / shared, area claude), then build. The axHub tool is allowed. Brett, Oct 30 2026 (voice): \"I want everything to need a PR and to pull against main before it's merged.\" Read CLAUDE.md, _claude/shared/rules/RULES.md, _claude/rules/RULES.md and _claude/THREADS.md first. Branch claude/pr-only-merge (this worktree, based on claude/veto-everywhere = PR #176, which adds push banner 0.4.0 auto-merge). Another build (claude/veto-complete) is working on the veto banner/alarm/AmberX: don't touch those files. Build, in the push-banner console plugin (server + web + test.py), version 0.5.0: 1. Every branch gets a PR: each auto-merge round, open a PR (existing open_pr) for every branch in the watched repos that is ahead of main and has no open PR (skip main, site, go-pass, gh-pages, forks, hidden branches). Setting autoPr, on by default, next to the Auto-merge switch. 2. No direct merges: the banner's Merge on a branch without a PR (merge_branch) becomes Open PR; the merge-branch route refuses with a message saying to open a PR. Keep merge-pr.sh working for PRs. 3. Pull main in before merging, one at a time: auto-merge takes ready PRs oldest first. If a PR is behind main (compare main...head behind_by > 0, or mergeable_state behind), pull main in (existing update path, head pinned), then leave it for a later round until CI on the NEW head is green. Merge only when behind_by == 0, mergeable, not draft, CI green on the pinned head. At most one merge per round, so the next PR is updated against the new main. A pull that conflicts goes to the existing Pull failed list / Fix with Claude path. 4. If the GitHub token can set branch protection on main (require a PR, require branches up to date, required status check), set it for the watched repos; if not, add a systems check banner item with Auto fix that explains it. Never weaken existing protection. 5. Tests in test.py for all of the above (auto PR, no direct merge, behind -> pull -> wait -> merge, one merge per round, conflict path). Run test.py, console tsc, check-theme, check-controls, plugin-lifecycle check push-banner. 6. Rules: update _claude/shared/rules/RULES.md (\"Automatic merge\" rule: every change through a PR, pulled up to date with main and re-tested before merge, no direct merges to main) and the plugins README push-banner line; THREADS.md row; add a build to the Refactor orchestrator (_claude/builds/profiles/refactor/orchestrator.json) and mark it done when finished. Push the branch and open its PR through the push banner. Don't merge. Anything that needs Brett goes out as a veto call with a reason; never poll it.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "9ec52ae0-81c",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Push banner 0.5.0: autoPr, no direct merges, behind->pull->wait->merge oldest first, one merge per round, branch protection + systems check Auto fix; rules/README/THREADS/orchestrator. Push + PR sent as veto call (job dce3242a).",
+    "branch": "claude/pr-only-merge",
+    "commits": [
+      {
+        "sha": "df64dbe7"
+      }
+    ],
+    "filesChanged": 14,
+    "tests": {
+      "push-banner test.py": {
+        "before": "fail",
+        "after": "132 pass"
+      }
+    },
+    "links": {}
+  },
+  "closed": null,
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "orchestrator",
+    "id": "pr-only-merge"
+  },
+  "surface": "console-launch",
+  "startedAt": "2026-10-30T17:54:21.361Z",
+  "finishedAt": "2026-10-30T18:05:08.452Z",
+  "lastSeenAt": "2026-10-30T18:04:48.481Z",
+  "estimate": {
+    "minutes": 85,
+    "costUsd": 11.9
+  },
+  "actual": {
+    "minutes": 11,
+    "costUsd": 3.7453,
+    "inputTokens": 132,
+    "outputTokens": 52434,
+    "cacheReadTokens": 9056809,
+    "cacheWriteTokens": 176951,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "claude/pr-only-merge",
+  "areas": [
+    "apps/console-web/plugins/push-banner",
+    "apps/console-web/plugins/systems-check/server/derive.py",
+    "_claude"
+  ],
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/claude-pr-only-merge",
+    "branch": "claude/pr-only-merge",
+    "base": "1b4ecd5a8e0983278746d4d60df2b0ae9fd9eb71",
+    "head": "df64dbe7b1aebef5ed6e5ac941bd5436dde52622",
+    "pushed": false,
+    "dirty": 10,
+    "next": "CI on the PR; it auto-merges after #176",
+    "files": [
+      ".github/workflows/boilerplate-shots.yml",
+      "_claude/THREADS.md",
+      "_claude/builds/profiles/refactor/orchestrator.json",
+      "_claude/memory/STATUS.md",
+      "_claude/shared/rules/RULES.md",
+      "apps/console-web/plugins/README.md",
+      "apps/console-web/plugins/push-banner/merge-pr.sh",
+      "apps/console-web/plugins/push-banner/plugin.json",
+      "apps/console-web/plugins/push-banner/server/__init__.py",
+      "apps/console-web/plugins/push-banner/test.py",
+      "apps/console-web/plugins/push-banner/web/index.tsx",
+      "apps/console-web/plugins/push-banner/web/store.ts",
+      "apps/console-web/plugins/push-banner/web/ui.tsx",
+      "apps/console-web/plugins/systems-check/server/derive.py",
+      "framework/plan/pending.json",
+      ".axf-brief.md",
+      ".axf-build.jsonl",
+      ".axf-build.log",
+      "apps/amberx-droid/_claude/",
+      "apps/axhub-android/_claude/",
+      "apps/axhub-web/_claude/",
+      "apps/patches-web/_claude/",
+      "apps/patches/_claude/",
+      "apps/voicevault/_claude/",
+      "apps/walkthrough-studio/_claude/"
+    ],
+    "tests": [
+      "python3 apps/console-web/plugins/push-banner/test.py (console image)"
+    ],
+    "at": "2026-10-30T18:05:18.189Z"
+  }
+}

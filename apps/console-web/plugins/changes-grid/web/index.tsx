@@ -64,7 +64,7 @@ function ChangeDetail({ row }: { row: Row }) {
       {r?.branch ? <Line k="Branch"><span className="fx-mono fx-small">{r.branch}</span></Line> : null}
       {r?.commits?.length ? <Line k="Commits"><span className="fx-mono fx-small">{r.commits.map((c) => c.slice(0, 10)).join(', ')}</span></Line> : null}
       {typeof r?.filesChanged === 'number' ? <Line k="Files"><span className="fx-small">{r.filesChanged} changed</span></Line> : null}
-      {r?.links?.length ? <Line k="Links"><span className="fx-small">{r.links.filter((l) => /^https:\/\//.test(l.url ?? '')).map((l, i) => <a key={i} href={l.url} target="_blank" rel="noreferrer" style={{ marginRight: 'var(--fx-space)' }}>{l.label || l.url}</a>)}</span></Line> : null}
+      {r?.links?.length ? <Line k="Links"><span className="fx-small">{r.links.filter((l) => /^https:\/\//.test(l.url ?? '')).map((l, i) => <a key={i} href={l.url} target="_blank" rel="noreferrer" style={{ marginRight: 'var(--fx-dens-gap-xl)' }}>{l.label || l.url}</a>)}</span></Line> : null}
     </div>
   );
 }

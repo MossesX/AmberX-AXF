@@ -1,0 +1,32 @@
+{
+  "$axf": "asset@1",
+  "type": "design-package",
+  "id": "gizmox-console",
+  "name": "GizmoX Console",
+  "version": "1.0.0",
+  "description": "The GizmoX development console: monospace headings on Obsidian, the console frame, developer toolbar and menus.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "brand",
+    "developer"
+  ],
+  "data": {
+    "style-theme": "terminal-pro",
+    "color-theme": "obsidian",
+    "layout": "console-pro",
+    "behavior-theme": "gizmo",
+    "extras": {
+      "slots": {
+        "style-package": "gizmo-console",
+        "toolbar": "developer-ops",
+        "nav-menu": "gizmo-console",
+        "context-menu": "developer-tools",
+        "typography": "compact",
+        "density": "compact",
+        "sizing": "compact"
+      },
+      "spacing": "tight"
+    }
+  }
+}

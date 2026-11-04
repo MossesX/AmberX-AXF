@@ -4,7 +4,8 @@
  * description are the caller's claim; the code is what the approval binds to, so it is always one tap away.
  */
 import { Chip, Container, Note } from '../axf/react';
-import { EFFECT_LABEL, EFFECT_TONE, type ApprovalItem } from '../hub/types';
+import { relTime, sourceKind, sourceWho, SOURCE_LABEL } from '../hub/core';
+import { EFFECT_LABEL, EFFECT_TONE, SOURCE_TONE, type ApprovalItem } from '../hub/types';
 import { CopyButton } from './hubPage';
 
 /** What it does: the caller's description (labelled as theirs) and the tool's own description. */
@@ -52,5 +53,24 @@ export function CodeSection({ item, defaultOpen = false }: { item: ApprovalItem;
         </div>
       </div>
     </Container>
+  );
+}
+
+/**
+ * Who asked and what it runs, one line under the title (axHub decision 109): Source badge, the session / build / agent
+ * name, the tool as a small chip, when it was asked. The client (e.g. claude-code 2.1.3) is in the badge's tooltip.
+ */
+export function SourceLine({ item, asked }: { item: ApprovalItem; asked: string }) {
+  const kind = sourceKind(item);
+  const label = item.source?.label || SOURCE_LABEL[kind]!;
+  const who = sourceWho(item);
+  const client = [item.source?.client, item.source?.clientVersion].filter(Boolean).join(' ');
+  return (
+    <div className="fx-row fx-row--wrap axp-axhub-source" data-source={kind}>
+      <span title={client ? `${label} · ${client}` : label}><Chip tone={SOURCE_TONE[kind]}>{label}</Chip></span>
+      {who && <strong>{who}</strong>}
+      <Chip>{item.tool}</Chip>
+      <span className="fx-muted" title={item.createdAt}>asked {asked}{item.showExpires ? ` · expires ${relTime(item.expiresAt)}` : ''}</span>
+    </div>
   );
 }

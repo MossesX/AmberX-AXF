@@ -18,6 +18,7 @@ import { vetoFromPush } from '../hub/veto';
 import { APPROVALS_CHECK_EVENT, APPROVALS_POLL_MAX_MS, APPROVALS_POLL_MIN_MS, APPROVALS_POLL_MS, emptyApprovals, interpretApprovals, type ApprovalsState } from './core';
 
 export * from './core';
+export * from './details';
 
 export interface ApprovalsWatcherOptions {
   hub: string;

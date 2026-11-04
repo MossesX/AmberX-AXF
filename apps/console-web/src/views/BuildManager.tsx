@@ -99,26 +99,16 @@ async function act(a: Act, log: Log): Promise<Proposal | null> {
   return null;
 }
 
-/** Called once when the console starts: two-way sync of the feature tracker and the build queue. */
+/**
+ * Called once when the console starts. It only LOADS the queue: the console no longer re-creates or re-syncs the build
+ * queue from the plan on start (master cleanup, Oct 31 2026: that wiped Refactor's queue on every boot). The queue is
+ * the order field of the builds store; it syncs with the feature tracker after plan/status writes, and a queue is
+ * only created when none exists.
+ */
 export async function initBuildSync(log: Log) {
   await loadPlanStore(true);
-  if (api.isBackendUp()) {
-    const r = await api.buildPost('sync', { by: 'console:init' });
-    if (r.ok) {
-      if (r.state) setQ(r.state);
-      for (const l of r.log ?? []) log(l, 'note');
-      await loadPlanStore(true);
-      const v = r.view;
-      log(`build queue synced: ${v?.counts.done ?? 0} done · next ${v?.next ?? '—'}${v?.rework ? ` · ${v.rework} need rework` : ''}`, 'ok');
-      return;
-    }
-    log(r.unauthorized ? 'build queue: read-only until the console token is set (Home → Console token)' : `build queue sync failed: ${r.error}`, 'warn');
-    await loadQueue(true);
-    return;
-  }
   await loadQueue(true);
-  await act({ kind: 'sync', by: 'console:init' }, log);
-  log('build queue synced in this browser (API offline)', 'warn');
+  log('build queue loaded from the builds store (no re-create on start)', 'note');
 }
 
 const STATE_LABEL: Record<string, string> = { done: 'built', rework: 'needs rework', active: 'in progress', queued: 'queued', blocked: 'blocked', dropped: 'dropped', missing: 'missing' };
@@ -209,7 +199,7 @@ export function BuildManager() {
         <Container title="Next up" icon="play">
           {next ? (
             <div className="fx-stack">
-              <div className="fx-row fx-row--wrap" style={{ gap: 'calc(var(--fx-space) * 0.75)' }}><strong>{next.position}. {next.title}</strong><ModelChip model={next.model} reason={next.modelReason} long /><TimePrice s={next} /></div>
+              <div className="fx-row fx-row--wrap" style={{ gap: 'var(--fx-dens-gap-lg)' }}><strong>{next.position}. {next.title}</strong><ModelChip model={next.model} reason={next.modelReason} long /><TimePrice s={next} /></div>
               <p className="fx-small fx-muted" style={{ margin: 0 }}>{next.modelReason}</p>
               <p className="fx-small" style={{ margin: 0 }}>{next.summary}</p>
               <div className="fx-row fx-row--wrap">
@@ -223,7 +213,7 @@ export function BuildManager() {
         <Container title="Progress" icon="chart">
           <table className="fx-table"><tbody>
             {Object.entries(view.counts).map(([k, n]) => <tr key={k}><th>{STATE_LABEL[k] ?? k}</th><td>{n}</td></tr>)}
-            <tr><th>Remaining by model</th><td className="fx-row fx-row--wrap" style={{ gap: 'calc(var(--fx-space) * 0.5)' }}>{api.MODELS.filter((m) => view.byModel[m.id]).map((m) => <span key={m.id}><ModelChip model={m.id} /> {view.byModel[m.id]}</span>)}</td></tr>
+            <tr><th>Remaining by model</th><td className="fx-row fx-row--wrap" style={{ gap: 'var(--fx-dens-gap-md)' }}>{api.MODELS.filter((m) => view.byModel[m.id]).map((m) => <span key={m.id}><ModelChip model={m.id} /> {view.byModel[m.id]}</span>)}</td></tr>
             {api.MODELS.filter((m) => view.byModel[m.id]).map((m) => {
               const left = view.minutesLeftByModel?.[m.id] ?? 0;
               return <tr key={`t-${m.id}`}><th>{m.label}: time left</th><td>~{mins(left)}{priceFor(m.id, left) != null ? <span className="bm-cost__price"> · ~{usd(priceFor(m.id, left))}</span> : null}</td></tr>;
@@ -239,7 +229,7 @@ export function BuildManager() {
         <Container title={`Rework (${reworks.length})`} icon="undo">
           {reworks.length === 0 ? <p className="fx-muted">No built step needs rework.</p> : reworks.map((s) => (
             <div key={s.id} className="bm-rework">
-              <div className="fx-row fx-row--wrap" style={{ gap: 'calc(var(--fx-space) * 0.75)' }}><strong>{s.title}</strong><ModelChip model={s.model} reason={s.modelReason} /></div>
+              <div className="fx-row fx-row--wrap" style={{ gap: 'var(--fx-dens-gap-lg)' }}><strong>{s.title}</strong><ModelChip model={s.model} reason={s.modelReason} /></div>
               <ul className="fx-small">{s.rework!.reasons.map((r, i) => <li key={i}>{r}</li>)}</ul>
               <div className="fx-row fx-row--wrap"><Button icon="copy" onClick={() => copy(s)}>Copy brief</Button><Button icon="check" disabled={busy} onClick={() => run({ kind: 'step', id: s.id, action: 'resolve-rework' })}>Reworked</Button></div>
             </div>
@@ -248,8 +238,8 @@ export function BuildManager() {
       </div>
 
       <div className="fx-row fx-row--wrap">
-        <label className="fx-row" style={{ gap: 'calc(var(--fx-space) * 0.75)' }}><input type="checkbox" checked={showDone} onChange={(e) => setShowDone(e.target.checked)} /> Show built steps ({done.length})</label>
-        <label className="fx-row" style={{ gap: 'calc(var(--fx-space) * 0.75)' }}>Model<select className="fx-input" value={model} onChange={(e) => setModel(e.target.value as '' | api.ModelId)}><option value="">All</option>{api.MODELS.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}</select></label>
+        <label className="fx-row" style={{ gap: 'var(--fx-dens-gap-lg)' }}><input type="checkbox" checked={showDone} onChange={(e) => setShowDone(e.target.checked)} /> Show built steps ({done.length})</label>
+        <label className="fx-row" style={{ gap: 'var(--fx-dens-gap-lg)' }}>Model<select className="fx-input" value={model} onChange={(e) => setModel(e.target.value as '' | api.ModelId)}><option value="">All</option>{api.MODELS.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}</select></label>
       </div>
 
       <div className="bm-queue" role="list">
@@ -277,7 +267,7 @@ function StepRow({ s, open, onToggle, busy, run, copy, draggable, onDragStart, o
       <div className="bm-step__head">
         {draggable ? <span className="bm-grip" title="Drag to reorder"><Icon name="menu" size={14} /></span> : <span className="bm-grip is-fixed"><Icon name="lock" size={12} /></span>}
         <span className="bm-pos">{s.position}</span>
-        <button className="bm-step__title" onClick={onToggle} aria-expanded={open}>
+        <button data-fx-row className="bm-step__title" onClick={onToggle} aria-expanded={open}>
           <Icon name={open ? 'chevron-down' : 'chevron-right'} size={14} />
           <span className="fx-grow"><span>{s.title}</span><span className="fx-muted fx-small fx-mono"> {s.id}</span></span>
         </button>

@@ -1,0 +1,74 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261101-3c60d83ad6",
+  "createdAt": "2026-11-01T01:21:56.078Z",
+  "updatedAt": "2026-11-01T01:31:16.400Z",
+  "kind": "fix",
+  "title": "Short headless session for Brett.",
+  "asked": "Short headless session for Brett. Opus. Read /opt/axf/CLAUDE.md + _claude/shared/rules/RULES.md first. Two finished, tested branches in MossesX/AmberX-AXF clash with main. Resolve and land them, IN THIS ORDER: 1. claude/shots-tab (UI Review Screenshots tab). Clash: apps/console-web/plugins/output-recorder/web/core.ts (main got the recorder-control change e46b8079 / axHub decision #108). 2. claude/watch-live (Watch live hot render). Clash: .gitignore (keep both sides' lines). For each: git clone or worktree from /opt/axf (git -c safe.directory='*'), checkout the branch from origin, git merge origin/main. Notes/bookkeeping files (THREADS.md, STATUS.md, decisions.md, orchestrator/pending JSON): keep both sides (union / 3-way JSON). Code: keep BOTH intents, never drop main's recorder-control changes or the branch's feature. Validate every changed JSON parses. Run the affected tests: output-recorder self-test + plugin test.py, ui-review tests, watch-live checks, console typecheck + build, theme/controls/lifecycle checks. Machine-setup failures that also fail on clean main are fine (Node 20, sync-held files) - say so. Push: git push origin HEAD:main (the server's git login was just fixed to the working token; if push still gets 401, fall back to: T=$(grep -m1 '^GITHUB_TOKEN=' /opt/axf/.axf-console/secrets.env | cut -d= -f2- | tr -d '\"\\r '); git -c http.extraheader=\"AUTHORIZATION: basic $(printf 'x-access-token:%s' \"$T\" | base64 -w0)\" push origin HEAD:main ; never print the token). If main moved, fetch+merge+retest+push again. End with a 5-line plain-English summary: what clashed, how you resolved it, tests, commits on main.",
+  "repos": [],
+  "model": "opus",
+  "who": {
+    "session": "fcdcdcde-b6e",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Landed claude/shots-tab (c777b8ee) and claude/watch-live (60752f86) on main; clashes resolved keeping both sides; all affected tests pass",
+    "commits": [
+      {
+        "sha": "c777b8ee"
+      },
+      {
+        "sha": "60752f86"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "clash-fix"
+  },
+  "surface": "vps-claude-code",
+  "startedAt": "2026-11-01T01:21:56.078Z",
+  "finishedAt": "2026-11-01T01:31:07.512Z",
+  "lastSeenAt": "2026-11-01T01:31:00.154Z",
+  "estimate": {
+    "minutes": 30,
+    "costUsd": 4.2
+  },
+  "actual": {
+    "minutes": 9,
+    "costUsd": 1.2766,
+    "inputTokens": 78,
+    "outputTokens": 13486,
+    "cacheReadTokens": 2692263,
+    "cacheWriteTokens": 93633,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "areas": [
+    "apps/console-web/plugins/output-recorder",
+    ".gitignore",
+    "_claude"
+  ],
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/clash-fix/repo",
+    "branch": "watch",
+    "base": "60752f8697a93085c8e65f97718b9d4d7822c7d1",
+    "head": "60752f8697a93085c8e65f97718b9d4d7822c7d1",
+    "pushed": false,
+    "dirty": 0,
+    "files": [],
+    "at": "2026-11-01T01:31:16.615Z"
+  }
+}

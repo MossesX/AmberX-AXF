@@ -1,0 +1,88 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261022-b7a3c19e42",
+  "createdAt": "2026-10-22T10:00:00.000Z",
+  "updatedAt": "2026-10-22T13:33:16.638Z",
+  "kind": "build",
+  "title": "Push banner details + trash after merge/pull, Build manager trash on every stuck build, Reprocess message clears, app tabs above the application menu",
+  "asked": "Make push pull banner items expand to details and once successfully pushed or pulled show trash can; the trash can on the other banner doesn't remove its entry; in build queue once reprocess is done remove its message; Patches should display tabs for the apps above the application menu.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "user": "claude-code",
+    "host": "claude.ai/code"
+  },
+  "steps": [
+    {
+      "text": "App tabs above the application menu (slot app.frame.head; App tabs plugin + Patches web)",
+      "state": "done"
+    },
+    {
+      "text": "Build queue: Reprocess with nothing to move clears its message",
+      "state": "done"
+    },
+    {
+      "text": "Push banner: details on tap, Done group with trash can (server + UI + tests)",
+      "state": "done"
+    },
+    {
+      "text": "Build manager banner: every stuck build with its own trash; closed + silent entries not live",
+      "state": "done"
+    },
+    {
+      "text": "Typecheck, build, tests, commit, push",
+      "state": "done"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "Pushed to claude/yo-3t9p2d (d7eecc3); not merged to main yet. push-banner test.py 40 -> 54, build-manager test.mjs 109 -> 110, tsc + vite build ok for console-web, patches-web, axhub-web; theme check ok. Not screenshot-verified (the hub isn't reachable from the build sandbox).",
+    "branch": "claude/yo-3t9p2d",
+    "commits": [
+      {
+        "sha": "d7eecc3"
+      }
+    ],
+    "filesChanged": 27,
+    "tests": {
+      "push-banner": {
+        "after": "40 -> 54"
+      },
+      "build-manager test.mjs": {
+        "after": "109 -> 110"
+      }
+    },
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-22T13:33:16.638Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "banners-tabs-reprocess"
+  },
+  "surface": "cloud-claude-code",
+  "startedAt": "2026-10-22T10:00:00.000Z",
+  "finishedAt": "2026-10-22T10:27:00.000Z",
+  "lastSeenAt": "2026-10-22T10:27:00.000Z",
+  "estimate": {
+    "minutes": 90,
+    "costUsd": 12.6
+  },
+  "costEstimated": true,
+  "branch": "claude/yo-3t9p2d",
+  "areas": [
+    "apps/console-web/plugins/push-banner",
+    "apps/console-web/plugins/build-manager",
+    "apps/console-web/plugins/app-tabs",
+    "apps/console-web/src/views/BuildManager.tsx",
+    "apps/patches-web/src",
+    "framework/react/AppShell.tsx"
+  ]
+}

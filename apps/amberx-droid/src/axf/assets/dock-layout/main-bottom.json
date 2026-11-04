@@ -1,0 +1,38 @@
+{
+  "$axf": "asset@1",
+  "type": "dock-layout",
+  "id": "main-bottom",
+  "name": "Main with bottom",
+  "version": "1.0.0",
+  "description": "A main pane with a shorter pane below it (a terminal or output). One of the ten starter pane layouts every dock host offers (dock-layout@1).",
+  "author": "AmberX AXF",
+  "tags": [
+    "dock",
+    "preset",
+    "rows",
+    "terminal"
+  ],
+  "data": {
+    "panes": 2,
+    "tree": {
+      "kind": "split",
+      "vertical": true,
+      "children": [
+        {
+          "kind": "leaf",
+          "pane": 1
+        },
+        {
+          "kind": "leaf",
+          "pane": 2
+        }
+      ],
+      "weights": [
+        0.7,
+        0.3
+      ]
+    },
+    "hint": "A main pane with a shorter pane below it (a terminal or output).",
+    "main": 1
+  }
+}

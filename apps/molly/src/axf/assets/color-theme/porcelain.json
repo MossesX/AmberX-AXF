@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "porcelain",
+  "name": "Porcelain",
+  "version": "1.0.0",
+  "description": "Clean blue-grey neutrals and a confident royal blue; the safe enterprise default.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "cool",
+    "enterprise"
+  ],
+  "data": {
+    "scheme": "light",
+    "tokens": {
+      "bg": "#f5f6f7",
+      "surface": "#fefefe",
+      "surface2": "#f9fafb",
+      "surface3": "#e9ebef",
+      "text": "#181e2a",
+      "muted": "#606b80",
+      "border": "#d9dce2",
+      "accent": "#1452d7",
+      "accentText": "#ffffff",
+      "accentSoft": "rgba(20,82,215,0.1)",
+      "danger": "#ce2732",
+      "success": "#218c5a",
+      "warning": "#b87614",
+      "info": "#1686b6",
+      "focus": "#1452d7",
+      "shadow": "rgba(21,31,50,0.12)"
+    }
+  }
+}

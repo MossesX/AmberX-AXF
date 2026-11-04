@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "touch-friendly",
+  "name": "Touch Friendly button",
+  "version": "1.0.0",
+  "description": "Touch Friendly: pill solid buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "friendly",
+    "touch"
+  ],
+  "data": {
+    "shape": "pill",
+    "fill": "solid",
+    "weight": 600,
+    "uppercase": false,
+    "size": "lg",
+    "elevation": true
+  }
+}

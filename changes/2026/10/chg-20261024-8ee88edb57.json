@@ -1,0 +1,49 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261024-8ee88edb57",
+  "createdAt": "2026-10-24T19:55:42.492Z",
+  "updatedAt": "2026-10-25T10:48:42.537Z",
+  "kind": "fix",
+  "title": "Fix AmberX-AXF claude/framework-walkthrough-video-builder-qocfr1: pull main in failed",
+  "asked": "Push banner: pull main in failed (the banner's Pull all stopped at a failed pull and handed this repo's pulls to this session); handed to headless Claude Code on the VPS.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "console",
+    "user": "push-banner",
+    "host": "console"
+  },
+  "steps": [
+    {
+      "text": "Approve on axHub",
+      "state": "running"
+    },
+    {
+      "text": "Fix and push claude/framework-walkthrough-video-builder-qocfr1 (edits + git only)",
+      "state": "queued"
+    },
+    {
+      "text": "CI runs again on the branch",
+      "state": "queued"
+    }
+  ],
+  "result": {
+    "state": "failed",
+    "summary": "arguments are over 3800 characters: axHub can't show them for approval",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-25T10:48:42.537Z",
+    "by": "console"
+  },
+  "state": "failed",
+  "status": "failed",
+  "surface": "console-launch",
+  "startedAt": "2026-10-24T19:55:42.000Z",
+  "finishedAt": "2026-10-24T19:55:42.714Z",
+  "branch": "claude/framework-walkthrough-video-builder-qocfr1"
+}

@@ -1,0 +1,82 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-9735e3ec-266f-409f-b22c-d84f8e66543f",
+ "source": "claude-code",
+ "sessionId": "9735e3ec-266f-409f-b22c-d84f8e66543f",
+ "project": "other",
+ "title": "# Read-only check: Brett's adult streaming site (the AXP stack) (Nov 1 ~3 AM) Short session. Do NOT change anything, do…",
+ "startedAt": "2026-11-01T06:44:42.065Z",
+ "endedAt": "2026-11-01T06:46:10.469Z",
+ "minutes": 1,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/xchat-check",
+  "repo": "",
+  "branch": "claude/xchat-check"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-sonnet-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-01T06:44:42.240Z",
+   "kind": "prompt",
+   "text": "# Read-only check: Brett's adult streaming site (the AXP stack) (Nov 1 ~3 AM) Short session. Do NOT change anything, do NOT restart/deploy/push. Never print secrets. Do not download, view or save any media or user content; only routes, status codes, headers, config names, health and errors. Brett built an adult streaming site from scratch. demo.amberxai.com turned out to be only the static `axp-demo` page (/opt/axp-demo/html, last modified Sep 13; its nginx proxies a few paths to a dead upstream :3200). The real app is probably the AXP stack: axp-xchat, axp-xchat-media (WebRTC media ports 400…",
+   "model": "claude-sonnet-5-5",
+   "tokens": {
+    "input": 14,
+    "output": 5365,
+    "cacheRead": 415888,
+    "cacheWrite": 64507,
+    "thinking": 901
+   },
+   "costUsd": 0.2565,
+   "costEstimated": false,
+   "seconds": 88,
+   "tools": {
+    "Bash": 8
+   },
+   "commands": 8,
+   "files": [],
+   "changeIds": [
+    "chg-20261101-aecfa74dad"
+   ],
+   "features": [],
+   "output": "Nothing changed. Read-only checks only. - **Real addresses:** `xchat.amberxai.com` is the streaming app. It answers 307 to `/login`, cert good to Jan 14 2027. `studio.amberxai.com` also resolves, but I found no Traefik rule for it. Its 307 goes to `/login-landing`, so it looks like it's served by t…"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261101-aecfa74dad"
+ ],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 14,
+  "output": 5365,
+  "cacheRead": 415888,
+  "cacheWrite": 64507,
+  "thinking": 901,
+  "costUsd": 0.2565,
+  "costEstimated": false,
+  "toolCalls": 8,
+  "commands": 8,
+  "filesTouched": 0,
+  "reportedUsd": 0.3533
+ },
+ "ingestedAt": "2026-11-01T06:46:10.754Z"
+}

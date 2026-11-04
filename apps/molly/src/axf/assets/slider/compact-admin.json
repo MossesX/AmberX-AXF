@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "compact-admin",
+  "name": "Compact Admin slider",
+  "version": "1.0.0",
+  "description": "Compact Admin: circle thumb on a 3 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "compact",
+    "compact"
+  ],
+  "data": {
+    "track": 3,
+    "thumb": "circle",
+    "thumbSize": 14,
+    "fill": "solid",
+    "showValue": "hover",
+    "ticks": false
+  }
+}

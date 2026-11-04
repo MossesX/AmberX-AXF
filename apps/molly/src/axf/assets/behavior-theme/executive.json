@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "executive",
+  "name": "Executive",
+  "version": "1.0.0",
+  "description": "Unhurried and polished: slow fades, lifted cards, frosted dialogs, long toasts.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:executive-overview"
+  ],
+  "data": {
+    "motion": {
+      "speed": "slow",
+      "easing": "standard",
+      "reduced": "system",
+      "entrance": "fade"
+    },
+    "interaction": {
+      "hover": "lift",
+      "press": "none",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 650,
+      "doubleTapMs": 320,
+      "dragThreshold": 10
+    },
+    "windows": {
+      "dialogOpen": "fade",
+      "backdrop": "blur",
+      "popupOpen": "fade",
+      "drawerOpen": "slide",
+      "snap": false,
+      "snapGrid": 8,
+      "stack": "center",
+      "minimize": "dock",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "top-right",
+      "toastMs": 7000,
+      "sound": "subtle",
+      "vibration": "off",
+      "confirmDelete": "always",
+      "busyCursor": true
+    }
+  }
+}

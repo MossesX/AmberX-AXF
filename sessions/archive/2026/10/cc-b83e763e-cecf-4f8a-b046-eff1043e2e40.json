@@ -1,0 +1,76 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-b83e763e-cecf-4f8a-b046-eff1043e2e40",
+ "source": "claude-code",
+ "sessionId": "b83e763e-cecf-4f8a-b046-eff1043e2e40",
+ "project": "amberx-axf",
+ "title": "Connection check from the AmberX console. Reply with one word: OK.",
+ "startedAt": "2026-10-21T18:44:25.257Z",
+ "endedAt": "2026-10-21T18:44:45.618Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "axf-console",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.306",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/axf",
+  "repo": "",
+  "branch": "main"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-10-21T18:44:25.510Z",
+   "kind": "prompt",
+   "text": "Connection check from the AmberX console. Reply with one word: OK.",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 2,
+    "output": 4,
+    "cacheRead": 12318,
+    "cacheWrite": 66781,
+    "thinking": 0
+   },
+   "costUsd": 0.3365,
+   "costEstimated": false,
+   "seconds": 20,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": "OK"
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 2,
+  "output": 4,
+  "cacheRead": 12318,
+  "cacheWrite": 66781,
+  "thinking": 0,
+  "costUsd": 0.3365,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0.5368
+ },
+ "ingestedAt": "2026-10-21T19:16:27.129Z"
+}

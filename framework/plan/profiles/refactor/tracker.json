@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-29T18:10:19.519Z",
+  "generatedAt": "2026-11-03T14:26:27.462Z",
   "summary": {
     "foundations": {
       "built": 0,
@@ -39,8 +39,8 @@
       "built": 0,
       "partial": 0,
       "placeholder": 0,
-      "planned": 84,
-      "total": 84,
+      "planned": 83,
+      "total": 83,
       "coverage": 0
     }
   },
@@ -2329,7 +2329,7 @@
       "id": "lib.hubstore",
       "tab": "kernel",
       "group": "ui-library-every-customization-token",
-      "title": "axHub storage library: an app's settings and data on axHub's data server instead of the device; two classes (HubSettings, HubData); when installed (Build Pilot, axf install) pick settings only, all data, or some tables",
+      "title": "axHub storage library: an app's settings and data on axHub's data server instead of the device; two classes (HubSettings, HubData); when installed (axf install) pick settings only, all data, or some tables",
       "tag": "lib",
       "status": "planned",
       "wave": 3,
@@ -4640,17 +4640,6 @@
       "group": "dev-server-and-ai",
       "title": "In-app browser / WebView running the web demo (axf.amberxai.com)",
       "tag": "lib",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
-      "notes": ""
-    },
-    {
-      "id": "c.patches",
-      "tab": "demos",
-      "group": "dev-server-and-ai",
-      "title": "Patches: one banner, three tabs — the Dev Console, Build Pilot and axHub as web apps in origin-locked web views kept alive across tabs (embed@1 host)",
-      "tag": "app",
       "status": "planned",
       "wave": 3,
       "module": null,

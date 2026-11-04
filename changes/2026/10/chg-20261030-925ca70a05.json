@@ -1,0 +1,131 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261030-925ca70a05",
+  "createdAt": "2026-10-30T21:55:59.516Z",
+  "updatedAt": "2026-10-30T22:17:10.960Z",
+  "kind": "build",
+  "title": "# Build: Audio Extract plugin for AmberX (Angel profile, Opus, one session, no sub-agents) -- TOP P…",
+  "asked": "# Build: Audio Extract plugin for AmberX (Angel profile, Opus, one session, no sub-agents) -- TOP PRIORITY axHub tool allowed: load CLAUDE.md, the shared + repo RULES.md and THREADS.md (claude-sync, else axhub.memory_read), then build. Branch claude/audio-extract. Brett (voice, Oct 30 2026): he screen-records his phone (Samsung Screen recorder) and wants an AmberX plugin that strips the audio out of the video into an audio file. NO live recording, NO microphone, NO fallbacks: \"I don't want that shit if it has fallback.\" Extraction from a video file only, which always works. 1. Plugin **Audio Extract** (folder audio-extract, plugin-lifecycle@1), targets amberx-droid; installed and enabled in AmberX by default in this build. 2. Native side (apps/amberx-droid/android, own Capacitor plugin file next to AmberxNativePlugin.java; don't edit files other builds own): MediaExtractor + MediaMuxer to pull the audio track out losslessly (AAC in MP4 -> .m4a) with no re-encode, fast, no permissions beyond the file picker (MediaStore / SAF). Optional re-encode to MP3 or WAV through MediaCodec only when Brett picks that format. Trim start/end, pick a track if there are several, batch (several videos at once), progress + cancel. Output to Music/AmberX Audio via MediaStore. 3. UI in AmberX: Share-to-AmberX intent (share a video from Gallery -> extract), a Pick video button, auto-detect new screen recordings (watch Movies/Screen recordings / DCIM/Screen recordings and show a \"New screen recording: extract audio?\" card, opt-in setting), a results list (play, rename, share, delete), settings (format, output folder, auto-extract on/off, delete video after). Voice commands: \"extract audio from my last screen recording\". Theme tokens only, framework controls, phone-first. 4. Tests: AmberX tsc + test.mjs, plugin-lifecycle check, fakes for the native bridge; Android compile if the toolchain is present (note if not). Build a debug APK if possible and put it where AmberX APKs go; otherwise say exactly how Brett builds it. 5. Angel orchestrator entry (steps of 30 min or less), THREADS row, axHub change log. Push and open the PR (gh/git if the banner token 401s). Don't merge. Anything needing Brett = a veto call with a reason, never polled. ## 6. Built-in screen recorder (Brett, Oct 30 2026: \"Just plug into recording the screen itself and make the video itself. Might as well.\") - Add a **Record screen** mode to this plugin: MediaProjection + MediaRecorder / MediaCodec + MediaMuxer, with the phone's **media playback audio** captured (AudioPlaybackCapture, Android 10+). Foreground service (mediaProjection type), notification with Pause / Stop, floating recording chip (elapsed, Stop), start/stop by voice (\"start screen recording\", \"stop recording\"), countdown before start, optional hide of the chip while recording. - When the recording stops, it goes straight through the extractor: Brett gets the **video and the audio file both**, or audio only if he sets it that way (video deleted after a successful extract). Same results list, same share/rename/trim. - Settings: resolution (native / 1080p / 720p), frame rate, bitrate, audio quality, output format, audio-only mode, countdown length. - NO microphone anywhere in this plugin: no mic option, no mic fallback. If an app blocks playback capture (Android lets apps opt out), the recording still happens and the UI says plainly before recording that this app's audio may be silent; that's it, no workaround. - Permissions: screen capture consent each time (Android requires it), notification permission, nothing else. - Tests for the state machine (idle / countdown / recording / paused / extracting / done) with a fake native bridge; keep the extractor tests.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "claude-opus-5-5",
+  "who": {
+    "session": "c6c330e9-678",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [
+    {
+      "text": "Web plugin + native Java + tests",
+      "state": "done",
+      "startedAt": "2026-10-30T22:16:57.503Z",
+      "finishedAt": "2026-10-30T22:16:57.503Z"
+    },
+    {
+      "text": "Push + PR via vps.run veto job b4a40ac1",
+      "state": "skipped",
+      "startedAt": "2026-10-30T22:16:57.560Z",
+      "finishedAt": "2026-10-30T22:16:57.625Z"
+    }
+  ],
+  "result": {
+    "state": "partial",
+    "summary": "Audio Extract built and committed (888fd096). Push + PR sent as veto call b4a40ac1; CI builds the APK; s7 (CI + merge) left",
+    "branch": "claude/audio-extract",
+    "commits": [
+      {
+        "sha": "888fd096"
+      }
+    ],
+    "filesChanged": 20,
+    "tests": {
+      "audio-extract test.mts": {
+        "before": "0",
+        "after": "24"
+      },
+      "amberx test.mjs": {
+        "before": "pass",
+        "after": "pass"
+      }
+    },
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "buildRef": {
+    "kind": "orchestrator",
+    "id": "audio-extract"
+  },
+  "surface": "console-launch",
+  "startedAt": "2026-10-30T21:55:59.516Z",
+  "finishedAt": "2026-10-30T22:16:57.625Z",
+  "lastSeenAt": "2026-10-30T22:16:57.560Z",
+  "estimate": {
+    "minutes": 195,
+    "costUsd": 27.3
+  },
+  "actual": {
+    "minutes": 21,
+    "costUsd": 7.0891,
+    "inputTokens": 180,
+    "outputTokens": 139763,
+    "cacheReadTokens": 15139320,
+    "cacheWriteTokens": 253046,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "claude/audio-extract",
+  "areas": [
+    "apps/amberx-droid/src/plugins/audio-extract",
+    "apps/amberx-droid/android/app/src/main",
+    "apps/amberx-droid/test.mjs",
+    "_claude"
+  ],
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/claude-audio-extract",
+    "branch": "claude/audio-extract",
+    "base": "1b4ecd5a8e0983278746d4d60df2b0ae9fd9eb71",
+    "head": "888fd096ea0ae942fcf01da7f94e03569e8c2ff9",
+    "pushed": false,
+    "dirty": 10,
+    "next": "Read vps.run job b4a40ac1 once (get_job) for the PR URL; wait for CI job amberx; send the merge approval; Brett installs the APK",
+    "files": [
+      "_claude/THREADS.md",
+      "_claude/builds/profiles/angel/orchestrator.json",
+      "apps/amberx-droid/android/app/src/main/AndroidManifest.xml",
+      "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AudioExtractPlugin.java",
+      "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AudioExtractor.java",
+      "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/MainActivity.java",
+      "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ScreenRecordService.java",
+      "apps/amberx-droid/src/plugins/voice/web/index.tsx",
+      "apps/amberx-droid/test.mjs",
+      "apps/console-web/plugins/audio-extract/README.md",
+      "apps/console-web/plugins/audio-extract/hooks.mjs",
+      "apps/console-web/plugins/audio-extract/install.mjs",
+      "apps/console-web/plugins/audio-extract/plugin.json",
+      "apps/console-web/plugins/audio-extract/test.mts",
+      "apps/console-web/plugins/audio-extract/uninstall.mjs",
+      "apps/console-web/plugins/audio-extract/web/audio-extract.css",
+      "apps/console-web/plugins/audio-extract/web/bridge.ts",
+      "apps/console-web/plugins/audio-extract/web/core.ts",
+      "apps/console-web/plugins/audio-extract/web/fake.ts",
+      "apps/console-web/plugins/audio-extract/web/index.tsx",
+      ".axf-brief.md",
+      ".axf-build.jsonl",
+      ".axf-build.log",
+      "apps/amberx-droid/_claude/",
+      "apps/axhub-android/_claude/",
+      "apps/axhub-web/_claude/",
+      "apps/patches-web/_claude/",
+      "apps/patches/_claude/",
+      "apps/voicevault/_claude/",
+      "apps/walkthrough-studio/_claude/"
+    ],
+    "at": "2026-10-30T22:17:11.060Z"
+  }
+}

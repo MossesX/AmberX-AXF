@@ -1,0 +1,39 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "container-access-help",
+  "name": "container-access help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:container-access. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:container-access",
+    "entries": [
+      {
+        "target": "container-access",
+        "title": "Container access",
+        "text": "Shows the “Container access” part of this screen. Part of Container access.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "back-to-folder",
+        "title": "Back to folder",
+        "text": "Shows “Back to folder”. Part of Container access.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "browse-files",
+        "title": "Browse files",
+        "text": "Shows “Browse files”. Part of Container access.",
+        "kind": "button",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

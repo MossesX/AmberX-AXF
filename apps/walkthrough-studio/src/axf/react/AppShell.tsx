@@ -13,6 +13,7 @@ import { Banner } from './components/Banner';
 import { FrameBanners, Slot } from './components/Slots';
 import { WaitingForHub } from './components/Waiting';
 import { Note } from './components/Forms';
+import { HelpLayer } from './components/Help';
 import { embedHostLabel, embedPageView } from '../core/engines/embed';
 import { placedParts } from './placement';
 
@@ -34,7 +35,7 @@ export interface AppShellProps {
   tabs?: TabRenderers;
   /**
    * Views kept mounted once shown (hidden while another view is in front) instead of being rebuilt on every switch:
-   * for views holding a live page (Patches' app tabs are frames; moving or remounting a frame reloads it).
+   * for views holding a live page (a host's app tabs are frames; moving or remounting a frame reloads it).
    */
   keep?: readonly string[];
 }
@@ -72,8 +73,9 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
   }, [state.view, keepKey]);
   const keptNow = keep.filter((id) => views[id] && (kept.includes(id) || id === state.view));
 
-  // Developer apps (an appearance source is attached): nothing but the waiting screen until the hub has answered.
-  if (state.appearance && state.appearance.status !== 'ready') {
+  // Developer apps (an appearance source is attached): nothing but the waiting screen until the hub has answered the first
+  // time (or says this browser may not read the look). A later re-read that fails keeps the app on screen (Nov 1 2026).
+  if (state.appearance && rt.appearanceBlocking()) {
     return (
       <div className="fx-frame" data-axf-embed={rt.embedded?.host}>
         <div className="fx-shell fx-shell--waiting"><main className="fx-region fx-main" style={{ gridArea: 'main' }}><div className="fx-main__inner"><WaitingForHub state={state.appearance} hub={rt.appearanceHub?.()} /></div></main></div>
@@ -81,7 +83,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
     );
   }
 
-  // Page mode (embed@1 `page`): the host shows one page of this app on its own, e.g. its settings inside Patches' combined
+  // Page mode (embed@1 `page`): the host shows one page of this app on its own, e.g. its settings inside a host's combined
   // settings. Only that view, full page, no chrome, no banners; dialogs and toasts still work.
   // A view page (`view:<id>`, e.g. a tabable plugin shown as a host's tab) names one view; a missing view (its plugin is
   // off or not loaded yet) shows a note instead of the whole app.
@@ -97,6 +99,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
           </main>
           <DialogHost dialogs={allDialogs} />
           <ToastHost />
+          <HelpLayer />
         </div>
       </div>
       </TabRenderersProvider>
@@ -113,7 +116,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
         contribute, stacked; scrolls inside itself when tall). The menu bar leaves the layout grid for this; its grid row is
         `auto`, so the empty row takes no space. */}
     <Banner />
-    {/* app.frame.head: a page-wide bar above the application menu, e.g. the tabs of the apps a host (Patches) or the App
+    {/* app.frame.head: a page-wide bar above the application menu, e.g. the tabs of the apps a host or the App
         tabs plugin shows (Brett, Oct 22 2026: "tabs for the apps above the application menu"). Empty = nothing. */}
     <Slot name="app.frame.head" />
     {showMenubar && (
@@ -127,7 +130,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
     <Slot name="app.frame.top" />
     <div className="fx-shell">
       {showToolbar && (
-        <div className="fx-region fx-region--toolbar" style={{ gridArea: 'toolbar' }} data-pos={layout.toolbarPosition}>
+        <div className="fx-region fx-region--toolbar" data-axf-not-toolbar="layout region; the Toolbar inside it is the toolbar" style={{ gridArea: 'toolbar' }} data-pos={layout.toolbarPosition}>
           <Toolbar views={views} />
         </div>
       )}
@@ -148,7 +151,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
           </div>
         )}
       </main>
-      {layout.inspector !== 'none' && (
+      {layout.inspector !== 'none' && rt.inspectorShown() && (
         <aside className="fx-region fx-region--inspector" style={{ gridArea: 'inspector' }} data-side={layout.inspector}>
           {inspector ?? <Inspector />}
         </aside>
@@ -162,6 +165,8 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
       <ToastHost />
       <ContextMenuHost />
       <FloatingWindowsHost />
+      {/* Help mode (components/Help.tsx): tooltips on every control, screen intros, What is this?; nothing while it's off */}
+      <HelpLayer />
     </div>
     <Slot name="app.frame.cover" />
     </div>

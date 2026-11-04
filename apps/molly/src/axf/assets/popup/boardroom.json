@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "popup",
+  "id": "boardroom",
+  "name": "Boardroom pop-ups",
+  "version": "1.0.0",
+  "description": "Boardroom: solid pop-ups at the top-right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "formal",
+    "enterprise",
+    "formal"
+  ],
+  "data": {
+    "position": "top-right",
+    "variant": "solid",
+    "duration": 5000,
+    "showIcon": true,
+    "maxVisible": 3
+  }
+}

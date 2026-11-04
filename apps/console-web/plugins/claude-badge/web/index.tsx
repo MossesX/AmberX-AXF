@@ -20,7 +20,7 @@ const KEY = `badge:${BADGE_ID}`;
 const POP_MS = 5000;
 
 export type BadgeState = 'ok' | 'no-credit' | 'error';
-interface TestResult { at: number; ok: boolean; model: string; name: string; provider: string; ms: number; error: string; claude?: boolean; state?: BadgeState }
+interface TestResult { at: number; ok: boolean; model: string; name: string; provider: string; ms: number; error: string; claude?: boolean; state?: BadgeState; account?: string }
 
 /** The three states, their banner tone, default icon and the words the badge uses. */
 export const STATES: Record<BadgeState, { label: string; tone: 'success' | 'warning' | 'muted'; chip: 'success' | 'warning' | 'danger'; icon: string; key: string; setting: string }> = {
@@ -45,7 +45,7 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
 /** "Powered by Claude Opus 5.5" when connected, "Out of credits" when the account works but has none, else "AI unavailable". */
 export const popupText = (r: TestResult | null) => {
   const st = stateOf(r);
-  return st === 'ok' ? `Powered by ${r?.name || 'Claude'}` : st === 'no-credit' ? 'Claude is out of credits' : 'AI unavailable';
+  return st === 'ok' ? `Powered by ${r?.name || 'Claude'}${r?.account ? ` · ${r.account}` : ''}` : st === 'no-credit' ? 'Claude is out of credits' : 'AI unavailable';
 };
 
 function badgeAsset(rt: AxfRuntime, r: TestResult | null, checking: boolean) {
@@ -134,7 +134,7 @@ export const plugin: AxfWebLibrary = {
   version: '0.2.0',
   appMenu,
   provides: ['banner.badge.claude'],
-  // Only a badge on the app's banner: inside a host that hides the banner (Patches) it isn't loaded (embed@1 skipWhen).
+  // Only a badge on the app's banner: inside a host that hides the banner it isn't loaded (embed@1 skipWhen).
   embed: { skipWhen: ['hidden:banner'] },
   register(rt) {
     runtime = rt;

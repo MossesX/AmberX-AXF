@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "lounge",
+  "name": "Lounge button",
+  "version": "1.0.0",
+  "description": "Lounge: pill soft buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "relaxed",
+    "relaxed"
+  ],
+  "data": {
+    "shape": "pill",
+    "fill": "soft",
+    "weight": 500,
+    "uppercase": false,
+    "size": "md",
+    "elevation": false
+  }
+}

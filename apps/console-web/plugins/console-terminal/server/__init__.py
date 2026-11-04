@@ -7,10 +7,22 @@ interactive CLI session). Sessions live on the server (sessions.py) so Mosh mode
 
   GET  status | targets | sessions | log
   POST sessions {kind, container?, cwd?, attach?, confirmProtected?, mosh?, cols, rows}   (attach = an axf-… tmux session, kind vps)
-  GET  headless                        headless Claude Code sessions on the VPS (tmux axf-…)
-  POST sessions/{id}/mosh {on}       DELETE sessions/{id}
+  GET  headless                        headless Claude Code sessions on the VPS (tmux axf-…, agent + model tags)
+  GET  headless/meters?names=a,b       their live meters (headless-meter@1: status, cost, tokens), one ssh call, cached 2 s
+  GET  headless/{name}/chain           a session's context chain (context-chain@1)
+  GET  tmux                            every persistent session (axt-… tabs on the VPS and in the console, axf-… runs)
+  POST tmux/kill {name, where}         end one for good (the tab's Kill session)
+  POST sessions {…, tmux}              tmux = the tab's axt-… name: the tab runs inside that tmux session (persistTabs)
+  POST sessions/{id}/mosh {on}       DELETE sessions/{id} (detaches a persistent tab)   POST sessions/{id}/kill
   WS   sessions/{id}/ws?ticket=…&have=<offset>
   GET/PUT settings      POST ssh/keygen {replace?}
+Sessions nav (left rail, Nov 3 2026; nav.py):
+  GET  nav                             My sessions (Brett's tmux + claude.ai feeds), Agents (headless), Connections, Recent
+  GET  nav/feed?id=&since=             one chat session's mirror feed (notes + console MCP calls)
+  POST nav/note {session, text, …}     a line into a session's own feed (= MCP console_session_note)
+  POST nav/stop {name, where}          end a tmux session for good (asks for a confirm first)
+  WS   nav/ws?ticket=…                 the nav model, pushed when it changes
+  POST sessions {…, attach, readOnly}  a read-only mirror of any tmux session (tmux attach -r); Jump in = readOnly off
 """
 from __future__ import annotations
 
@@ -26,9 +38,11 @@ from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 
 import plugin_services
 
-from . import sessions, store
+from . import health, nav, sessions, store
 
 router = APIRouter()
+health.ensure()
+plugin_services.provide("axf.session-feed@1", nav.SessionFeed(), "console-terminal")
 
 
 def _err(e: Exception) -> HTTPException:
@@ -43,6 +57,7 @@ def _err(e: Exception) -> HTTPException:
 
 @router.get("/status")
 def status() -> dict[str, Any]:
+    health.ensure()
     exe = os.environ.get("CLAUDE_BIN", "claude")
     cli = bool(subprocess.run(["sh", "-c", f"command -v {shlex.quote(exe)}"], capture_output=True).stdout.strip())
     s = store.settings()
@@ -112,6 +127,60 @@ def set_mosh(sid: str, body: dict[str, Any]) -> dict[str, Any]:
     return s.info()
 
 
+@router.post("/sessions/{sid}/kill")
+def kill_session(sid: str) -> dict[str, Any]:
+    """Kill session: the tmux session ends for good (a plain tab just closes)."""
+    try:
+        s = sessions.MANAGER.get(sid)
+    except KeyError as e:
+        raise _err(e) from None
+    name, where = s.tmux, s.where
+    sessions.MANAGER.close(sid, "killed")
+    if name and where:
+        try:
+            sessions.kill_tmux(name, where)
+        except KeyError:
+            pass  # already gone
+        except Exception as e:  # noqa: BLE001
+            raise _err(e) from None
+    return {"ok": True, "tmux": name}
+
+
+@router.get("/tmux")
+def tmux_list() -> dict[str, Any]:
+    v = sessions.vps_tmux()
+    local = sessions.console_tmux(mine=True)
+    own = [x for x in local if x["kind"] != "mine"]
+    # mine = Brett's other tmux sessions (VPS + console), which the sessions nav mirrors; the ∨ menu lists the rest
+    return {"vps": v, "console": own, "mine": [*v.get("mine", []), *[x for x in local if x["kind"] == "mine"]],
+            "attach": {x["name"]: sessions.attach_commands(x["name"], x["where"]) for x in [*v["items"], *v.get("mine", []), *local]}}
+
+
+@router.post("/tmux/kill")
+def tmux_kill(body: dict[str, Any]) -> dict[str, Any]:
+    name, where = str(body.get("name") or ""), str(body.get("where") or "")
+    try:
+        for s in list(sessions.MANAGER.sessions.values()):
+            if s.tmux == name and s.where == where:
+                sessions.MANAGER.close(s.id, "killed")
+        return sessions.kill_tmux(name, where)
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+
+
+@router.get("/headless/meters")
+def headless_meters(names: str = "") -> dict[str, Any]:
+    return sessions.meters([n for n in names.split(",") if n])
+
+
+@router.get("/headless/{name}/chain")
+def headless_chain(name: str) -> dict[str, Any]:
+    try:
+        return sessions.chain(name)
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+
+
 @router.delete("/sessions/{sid}")
 def close_session(sid: str) -> dict[str, Any]:
     sessions.MANAGER.close(sid, "closed by you")
@@ -141,7 +210,7 @@ async def attach(ws: WebSocket, sid: str) -> None:
         while True:
             data = await q.get()
             if data is None:
-                await ws.send_text(json.dumps({"type": "exit"}))
+                await ws.send_text(json.dumps({"type": "exit", "reason": s.close_reason or "exited", "tmux": s.tmux}))
                 await ws.close()
                 return
             await ws.send_bytes(data)
@@ -186,6 +255,7 @@ def hub_runs(since: int = 0) -> dict[str, Any]:
 def headless() -> dict[str, Any]:
     """Headless Claude Code sessions running on the VPS in tmux (deploy/claude-headless.sh, Oct 26 2026): the browser
     opens each new one in a VPS tab attached to it and brings the terminal window to the front."""
+    health.ensure()
     on = bool(store.settings().get("showHeadless", True))
     out = sessions.headless_sessions() if on else {"ready": False, "items": [], "why": "switched off"}
     return {**out, "on": on, "now": int(time.time() * 1000)}
@@ -215,3 +285,106 @@ def keygen(body: dict[str, Any]) -> dict[str, Any]:
 @router.get("/log")
 def session_log(limit: int = 200) -> dict[str, Any]:
     return {"items": store.read_log(max(1, min(limit, 2000)))}
+
+
+# ---------------------------------------------------------------- sessions nav (left rail)
+
+@router.get("/nav")
+def nav_list() -> dict[str, Any]:
+    """Every session the rail lists: My sessions, Agents, Connections, Recent (terminal-nav@1)."""
+    health.ensure()
+    return nav.model(connections)
+
+
+@router.get("/nav/feed")
+def nav_feed(id: str, since: int = 0) -> dict[str, Any]:
+    """One chat session's mirror feed: its console_session_note lines and the console MCP tools it called."""
+    try:
+        return nav.feed(id, max(0, since))
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+
+
+@router.post("/nav/note")
+def nav_note(body: dict[str, Any]) -> dict[str, Any]:
+    """Post one short line into a session's own mirror feed (what MCP console_session_note does)."""
+    try:
+        return nav.note(str(body.get("session") or ""), str(body.get("text") or ""), source=str(body.get("source") or "claude-ai-text"),
+                        agent=str(body.get("agent") or ""), url=str(body.get("url") or ""), title=str(body.get("title") or ""),
+                        model=str(body.get("model") or ""), cost_usd=body.get("costUsd") if isinstance(body.get("costUsd"), (int, float)) else None)
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+
+
+@router.post("/nav/stop")
+def nav_stop(body: dict[str, Any]) -> dict[str, Any]:
+    """Stop a session for good: its tmux session ends, for every device attached to it."""
+    try:
+        return sessions.kill_tmux(str(body.get("name") or ""), str(body.get("where") or "vps"))
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+
+
+@router.websocket("/nav/ws")
+async def nav_ws(ws: WebSocket) -> None:
+    """The nav model, live: sent on connect, then whenever it changes (checked every 3 s, at once on a new feed line)."""
+    await ws.accept()
+    loop = asyncio.get_running_loop()
+    poke = asyncio.Event()
+    stop = nav.on_change(lambda: loop.call_soon_threadsafe(poke.set))
+    last = ""
+
+    async def push() -> None:
+        nonlocal last
+        m = await loop.run_in_executor(None, nav_list)
+        body = json.dumps({k: v for k, v in m.items() if k != "now"}, sort_keys=True, default=str)
+        if body != last:
+            last = body
+            await ws.send_text(json.dumps({"type": "nav", "model": m}, default=str))
+
+    async def ticker() -> None:
+        while True:
+            try:
+                await push()
+            except Exception:  # noqa: BLE001 — VPS unreachable this round: try again
+                pass
+            poke.clear()
+            try:
+                await asyncio.wait_for(poke.wait(), timeout=3.0)
+            except asyncio.TimeoutError:
+                pass
+
+    task = asyncio.create_task(ticker())
+    try:
+        while True:
+            msg = await ws.receive()
+            if msg.get("type") == "websocket.disconnect":
+                break
+            if msg.get("text") == "\x00ping":
+                await ws.send_text(json.dumps({"type": "pong"}))
+    except (WebSocketDisconnect, RuntimeError, OSError):
+        pass
+    finally:
+        task.cancel()
+        stop()
+
+
+class HeadlessService:
+    """Capability `axf.headless@1`: the headless Claude Code runs on the VPS (tmux axf-…), their live meters
+    (headless-meter@1) and ending one, for other plugins (the Crew) that must not reach into this folder."""
+    version = 1
+
+    def sessions(self) -> dict[str, Any]:
+        return sessions.headless_sessions()
+
+    def meters(self, names: list[str]) -> dict[str, Any]:
+        return sessions.meters(list(names))
+
+    def kill(self, name: str) -> dict[str, Any]:
+        for s in list(sessions.MANAGER.sessions.values()):
+            if s.tmux == name and s.where == "vps":
+                sessions.MANAGER.close(s.id, "killed")
+        return sessions.kill_tmux(name, "vps")
+
+
+plugin_services.provide("axf.headless@1", HeadlessService(), "console-terminal")

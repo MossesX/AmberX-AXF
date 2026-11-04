@@ -1,0 +1,124 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-e634061a-a822-4e2a-9b47-aa23bd7c26c1",
+ "source": "claude-code",
+ "sessionId": "e634061a-a822-4e2a-9b47-aa23bd7c26c1",
+ "project": "other",
+ "title": "Claude setup token",
+ "startedAt": "2026-10-15T20:54:56.948Z",
+ "endedAt": "2026-10-15T20:56:42.021Z",
+ "minutes": 2,
+ "system": {
+  "host": "srv1837178",
+  "container": "9fca435733cc",
+  "app": "Claude Code (terminal)",
+  "appVersion": "2.1.299",
+  "entrypoint": "cli",
+  "surface": "vps-claude-code",
+  "device": "moshi",
+  "via": "moshi",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root",
+  "repo": "",
+  "branch": ""
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-fable-5-1"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-10-15T20:54:56.948Z",
+   "kind": "prompt",
+   "text": "/login login",
+   "model": "",
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0,
+   "costEstimated": false,
+   "seconds": 0,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": ""
+  },
+  {
+   "i": 2,
+   "at": "2026-10-15T20:54:56.948Z",
+   "kind": "prompt",
+   "text": "Login successful",
+   "model": "",
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0,
+   "costEstimated": false,
+   "seconds": 0,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": ""
+  },
+  {
+   "i": 3,
+   "at": "2026-10-15T20:56:06.424Z",
+   "kind": "prompt",
+   "text": "claude setup-token",
+   "model": "claude-fable-5-1",
+   "tokens": {
+    "input": 4,
+    "output": 874,
+    "cacheRead": 65795,
+    "cacheWrite": 14908,
+    "thinking": 502
+   },
+   "costUsd": 0.2466,
+   "costEstimated": false,
+   "seconds": 36,
+   "tools": {
+    "Bash": 1
+   },
+   "commands": 1,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": "The command needs an interactive terminal, so running it from inside my shell just hangs and I had to kill it. Nothing was changed. `claude setup-token` opens a browser OAuth flow and prints a long-lived token for headless use, such as CI or scripts via the `CLAUDE_CODE_OAUTH_TOKEN` environment var…"
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 3,
+  "turns": 3,
+  "input": 4,
+  "output": 874,
+  "cacheRead": 65795,
+  "cacheWrite": 14908,
+  "thinking": 502,
+  "costUsd": 0.2466,
+  "costEstimated": false,
+  "toolCalls": 1,
+  "commands": 1,
+  "filesTouched": 0,
+  "reportedUsd": 0.3807
+ },
+ "ingestedAt": "2026-10-31T13:52:04.014Z"
+}

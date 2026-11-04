@@ -27,8 +27,8 @@ const eq = (got, want, what) => ok(JSON.stringify(got) === JSON.stringify(want),
 
 const HUB = 'https://axhub.amberxai.com';
 const SHA = 'a'.repeat(64);
-const buildOf = (over = {}) => ({ version: '0.1.0', build: 12, file: 'patches-0.1.0-b12.apk', size: 7_340_032, sha256: SHA, builtAt: '2026-10-21T18:00:00.000Z', ...over });
-const appOf = (over = {}) => ({ project: 'patches', name: 'Patches', platform: 'android', latest: buildOf(), versions: [buildOf()], ...over });
+const buildOf = (over = {}) => ({ version: '0.1.0', build: 12, file: 'notes-0.1.0-b12.apk', size: 7_340_032, sha256: SHA, builtAt: '2026-10-21T18:00:00.000Z', ...over });
+const appOf = (over = {}) => ({ project: 'notes', name: 'Notes', platform: 'android', latest: buildOf(), versions: [buildOf()], ...over });
 const feed = (apps, updatedAt = '2026-10-21T18:05:00.000Z') => JSON.stringify({ updatedAt, apps });
 
 console.log('AmberX — hub rules, voice and monitoring rules');
@@ -46,14 +46,14 @@ const good = interpretApps(HUB, 200, feed([appOf()]));
 eq(good.status, 'ok', 'a good reply is ok');
 eq(good.apps.length, 1, 'one app');
 eq(good.updatedAt, '2026-10-21T18:05:00.000Z', 'the catalog time is kept');
-eq(good.apps[0].latest.url, `${HUB}/apps/download/patches/patches-0.1.0-b12.apk`, 'the download link is built from the hub and the file name');
+eq(good.apps[0].latest.url, `${HUB}/apps/download/notes/notes-0.1.0-b12.apk`, 'the download link is built from the hub and the file name');
 eq(good.apps[0].earlier, [], 'the latest build is not repeated as an earlier one');
 
 /* ---------------------------------------------------------------- what is thrown away */
 const noName = interpretApps(HUB, 200, feed([appOf({ name: undefined })]));
-eq(noName.apps[0].name, 'patches', 'an app without a name falls back to its project');
+eq(noName.apps[0].name, 'notes', 'an app without a name falls back to its project');
 
-eq(interpretApps(HUB, 200, feed([appOf({ project: 'Patches' })])).apps, [], 'a project name that is not lowercase is dropped');
+eq(interpretApps(HUB, 200, feed([appOf({ project: 'Notes' })])).apps, [], 'a project name that is not lowercase is dropped');
 eq(interpretApps(HUB, 200, feed([appOf({ project: '../etc' })])).apps, [], 'a project name with dots is dropped');
 eq(interpretApps(HUB, 200, feed([appOf({ latest: buildOf({ file: 'evil.sh' }), versions: [] })])).apps, [], 'a file that is not an apk is dropped');
 eq(interpretApps(HUB, 200, feed([appOf({ latest: buildOf({ file: '../../etc/passwd' }), versions: [] })])).apps, [], 'a file name with traversal is dropped');
@@ -62,7 +62,7 @@ eq(interpretApps(HUB, 200, feed([appOf({ latest: buildOf({ size: 9e15 }), versio
 
 // A reply that tries to point the download somewhere else: the link is rebuilt, so the attempt is ignored.
 const foreign = interpretApps(HUB, 200, feed([appOf({ latest: buildOf({ url: 'https://evil.example/x.apk' }) })]));
-eq(foreign.apps[0].latest.url, `${HUB}/apps/download/patches/patches-0.1.0-b12.apk`, 'a link in the reply is never used');
+eq(foreign.apps[0].latest.url, `${HUB}/apps/download/notes/notes-0.1.0-b12.apk`, 'a link in the reply is never used');
 
 const badSha = interpretApps(HUB, 200, feed([appOf({ latest: buildOf({ sha256: 'nope' }) })]));
 eq(badSha.apps[0].latest.sha256, '', 'a malformed hash is left empty');
@@ -73,11 +73,11 @@ eq(shortSha(SHA), 'a'.repeat(12), 'a hash shows its first 12 characters');
 const many = interpretApps(HUB, 200, feed(Array.from({ length: APPS_MAX + 20 }, (_, i) => appOf({ project: `app${i}`, name: `App ${String(i).padStart(3, '0')}` }))));
 eq(many.apps.length, APPS_MAX, `at most ${APPS_MAX} apps`);
 
-const versions = Array.from({ length: VERSIONS_MAX + 4 }, (_, i) => buildOf({ build: 20 - i, file: `patches-0.1.0-b${20 - i}.apk` }));
+const versions = Array.from({ length: VERSIONS_MAX + 4 }, (_, i) => buildOf({ build: 20 - i, file: `notes-0.1.0-b${20 - i}.apk` }));
 const capped = interpretApps(HUB, 200, feed([appOf({ latest: versions[0], versions })]));
 eq(capped.apps[0].earlier.length, VERSIONS_MAX - 1, `at most ${VERSIONS_MAX} builds per app, latest apart`);
 
-const dupes = interpretApps(HUB, 200, feed([appOf(), appOf({ name: 'Patches again' })]));
+const dupes = interpretApps(HUB, 200, feed([appOf(), appOf({ name: 'Notes again' })]));
 eq(dupes.apps.length, 1, 'the same project twice is listed once');
 
 const dupeFiles = interpretApps(HUB, 200, feed([appOf({ versions: [buildOf(), buildOf()] })]));
@@ -87,7 +87,7 @@ const sorted = interpretApps(HUB, 200, feed([appOf({ project: 'zed', name: 'Zed'
 eq(sorted.apps.map((a) => a.name), ['Alpha', 'Zed'], 'apps are sorted by name');
 
 const noLatest = interpretApps(HUB, 200, feed([appOf({ latest: null, versions: [buildOf()] })]));
-eq(noLatest.apps[0].latest.file, 'patches-0.1.0-b12.apk', 'a missing latest falls back to the newest listed build');
+eq(noLatest.apps[0].latest.file, 'notes-0.1.0-b12.apk', 'a missing latest falls back to the newest listed build');
 
 /* ---------------------------------------------------------------- sizes and times */
 eq(formatSize(0), '0 B', 'zero bytes');
@@ -119,19 +119,27 @@ ok(statusNote('not-admin', '').includes('users page'), 'no permission points at 
 eq(statusNote('unreachable', 'Boom.'), 'Boom.', 'unreachable shows why');
 eq(statusNote('ok', ''), '', 'nothing to say when it worked');
 
-// The look comes from axHub's shared appearance document, so this app must ship every colour and style theme
-// the console (the other app in Patches) ships: a missing one would fall back to this app's default.
+// The look is axHub's shared appearance document (appearance@1), live: the app attaches the hub source at start, like
+// the console and axhub-web (amberx-look-fix, Oct 31 2026).
 {
-  const { readdirSync, existsSync } = await import('node:fs');
+  const { readFileSync } = await import('node:fs');
   const here = new URL('.', import.meta.url).pathname;
-  for (const type of ['color-theme', 'style-theme', 'gauge', 'meter']) {
-    const mine = existsSync(`${here}src/assets/${type}`) ? readdirSync(`${here}src/assets/${type}`) : [];
-    for (const f of readdirSync(`${here}../console-web/src/assets/${type}`)) ok(mine.includes(f), `ships the console's ${type} ${f}`);
-  }
+  const main = readFileSync(`${here}src/main.tsx`, 'utf8');
+  const man = JSON.parse(readFileSync(`${here}axf.manifest.json`, 'utf8'));
+  ok(/attachAppearanceSource\(new HubAppearanceSource\(/.test(main), 'main attaches the hub appearance source');
+  eq(man.developer?.hub, 'https://axhub.amberxai.com', 'developer app: the look comes from axHub');
 }
 
+// The look comes from axHub's shared appearance document, so this app ships every shareable asset, baked from the
+// framework at src/axf/assets (framework/cli/shared-assets.mjs, Nov 1 2026): whatever any app picks resolves here.
+const { appAssetFiles: registered, check: sharedCheck } = await import(new URL('../../framework/cli/shared-assets.mjs', import.meta.url).href);
+const here0 = new URL('.', import.meta.url).pathname;
+const mine = registered(here0);
+eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared one');
+
+
 // Its own chrome: banner, toolbar, context menu, navigation menu and application menu are all picked in the manifest
-// and ship with the app. It runs inside Patches, so it installs only what it needs (no plugin shared with the
+// and ship with the app. It installs only what it needs (no plugin shared with the
 // console or Pilot).
 {
   const { readFileSync, existsSync } = await import('node:fs');
@@ -140,12 +148,12 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   const own = { banner: 'amberx-branded', toolbar: 'amberx-droid', 'context-menu': 'amberx-droid', 'nav-menu': 'amberx-droid', 'app-menu': 'amberx-droid' };
   for (const [type, id] of Object.entries(own)) {
     eq(man.defaults[type], id, `default ${type} is ${id}`);
-    ok(existsSync(`${here}src/assets/${type}/${id}.json`), `ships ${type}/${id}`);
+    ok(mine.has(`${type}/${id}`), `ships ${type}/${id}`);
     ok(!(man.hidden ?? []).includes(type), `${type} is not hidden`);
   }
   const app = readFileSync(`${here}src/App.tsx`, 'utf8');
   const libs = [...app.matchAll(/from '\.\/axf\/libs\/([a-z-]+)/g)].map((m) => m[1]).sort();
-  for (const l of libs) ok(['hub', 'hubsync', 'settings'].includes(l), `library ${l} is one it needs`);
+  for (const l of libs) ok(['hub', 'hubsync', 'settings', 'toolbars'].includes(l), `library ${l} is one it needs`);
   ok(!/plugins\//.test(app), 'no console plugin is imported');
 }
 
@@ -155,20 +163,22 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   const { readFileSync, existsSync } = await import('node:fs');
   const here = new URL('.', import.meta.url).pathname;
   const man = JSON.parse(readFileSync(`${here}axf.manifest.json`, 'utf8'));
-  const read = (t, id) => JSON.parse(readFileSync(`${here}src/assets/${t}/${id}.json`, 'utf8'));
-  eq(man.defaults['design-package'], 'amberx-app-day', 'default design package is AmberX · Day');
+  const read = (t, id) => mine.get(`${t}/${id}`).asset;
+  // Nov 1 2026 (Brett): every app inherits one default look from axHub, the Hub Default design theme; AmberX's own
+  // day/night packages still ship and can be picked.
+  eq(man.defaults['design-package'], 'hub-default', 'default design package is Hub Default (shared by every app)');
+  { const hd = read('design-package', 'hub-default').data; for (const t of ['style-theme', 'color-theme']) eq(man.defaults[t], hd[t], `default ${t} matches the default design package`); }
   eq(man.defaults.branding, 'amberx-app', 'default branding is the AmberX app branding package');
   for (const id of ['amberx-app-day', 'amberx-app-night']) {
-    ok(existsSync(`${here}src/assets/design-package/${id}.json`), `ships design-package/${id}`);
+    ok(mine.has(`design-package/${id}`), `ships design-package/${id}`);
     const d = read('design-package', id).data;
-    for (const t of ['style-theme', 'color-theme', 'layout', 'behavior-theme']) ok(existsSync(`${here}src/assets/${t}/${d[t]}.json`), `${id}: ${t} ${d[t]} ships`);
-    for (const [t, sid] of Object.entries(d.extras?.slots ?? {})) ok(existsSync(`${here}src/assets/${t}/${sid}.json`), `${id}: ${t} ${sid} ships`);
-    if (id === 'amberx-app-day') for (const t of ['style-theme', 'color-theme', 'layout', 'behavior-theme']) eq(man.defaults[t], d[t], `default ${t} matches the default design package`);
+    for (const t of ['style-theme', 'color-theme', 'layout', 'behavior-theme']) ok(mine.has(`${t}/${d[t]}`), `${id}: ${t} ${d[t]} ships`);
+    for (const [t, sid] of Object.entries(d.extras?.slots ?? {})) ok(mine.has(`${t}/${sid}`), `${id}: ${t} ${sid} ships`);
   }
   const b = read('branding', 'amberx-app').data;
   for (const [slot, mode] of Object.entries({ banner: 'lockup', toolbar: 'none', container: 'none', 'tab-group': 'none', dialog: 'mark', window: 'mark' })) eq(b.decorations[slot], mode, `brand ${slot} = ${mode} (DESIGN-LANGUAGE §10)`);
-  for (const [k, mid] of Object.entries(b.marks)) ok(existsSync(`${here}src/assets/${k === 'animated' ? 'animated-logo' : 'logo-mark'}/${mid}.json`), `branding ${k} ${mid} ships`);
-  ok(existsSync(`${here}src/assets/icon-pack/${b.iconPack}.json`), `branding icon pack ${b.iconPack} ships`);
+  for (const [k, mid] of Object.entries(b.marks)) ok(mine.has(`${k === 'animated' ? 'animated-logo' : 'logo-mark'}/${mid}`), `branding ${k} ${mid} ships`);
+  ok(mine.has(`icon-pack/${b.iconPack}`), `branding icon pack ${b.iconPack} ships`);
   eq(b.brand.name, 'AmberX', 'the brand is AmberX');
   const banner = read('banner', 'amberx-branded').data;
   ok(banner.height >= 24 && banner.height <= 40, 'the banner is one line, 24–40 px');
@@ -179,7 +189,7 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   ok(read('nav-menu', 'amberx-droid').data.sections.every((s) => typeof s.label === 'string' && s.label), 'every nav section has an eyebrow');
   ok(read('app-menu', 'amberx-droid').data.menus.length <= 9, 'at most 9 top menus');
   const sw = read('theme-switch', man.defaults['theme-switch']).data;
-  ok(existsSync(`${here}src/assets/color-theme/${sw.light}.json`) && existsSync(`${here}src/assets/color-theme/${sw.dark}.json`), 'the day/night switch flips between colours the app ships');
+  ok(mine.has(`color-theme/${sw.light}`) && mine.has(`color-theme/${sw.dark}`), 'the day/night switch flips between colours the app ships');
 }
 
 // Windows (enterprise-branding s32): any page opens in a floating window on the framework's window engine, and the
@@ -325,6 +335,9 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   ok(!mon.autoApproves(false, true, '', 'vps.run'), 'approve everything never covers vps.run');
   ok(mon.autoApproves(true, false, 'vps.run', 'vps.run'), 'naming vps.run in the list does');
   ok(!mon.autoApproves(false, false, '*', 'github.pr'), 'the list is off unless switched on');
+  ok(!mon.autoApproves(true, true, '*', 'amberx.recorder_start'), 'starting a recording is never auto-approved, even with everything on (axHub #108)');
+  ok(!mon.autoApproves(true, false, 'amberx.recorder_start', 'amberx.recorder_start'), 'naming amberx.recorder_start in the list still needs Brett');
+  ok(mon.autoApproves(false, true, '', 'amberx.recorder_stop'), 'stopping is not held back');
   eq(mon.clampInterval(2), 15, 'interval floor');
   eq(mon.clampInterval(9999), 300, 'interval ceiling');
   eq(mon.clampInterval('x'), 30, 'interval default');
@@ -949,7 +962,6 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
 /* ---------------------------------------------------------------- veto@1 held calls (lib-hub veto.ts + plugins/approvals) */
 {
   const vt = await import('../../framework/libs/hub/veto.ts');
-  const ap = await import('./src/plugins/approvals/web/core.ts');
   const ID1 = '11111111-2222-3333-4444-555555555555';
   const ID2 = '66666666-7777-8888-9999-000000000000';
   const NOW = Date.parse('2026-10-29T02:00:00.000Z');
@@ -986,6 +998,14 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
     p = vt.notifyPlan(p.sent, [c], NOW + 180_000);
     eq(p.send.map((x) => x.phase), ['running'], 'notify: running');
     eq(vt.notifyPlan([], [c], NOW + 170_000).send.map((x) => x.phase), ['warning'], 'notify: first seen late = one card');
+    // Brett's Oct 31 recording ("dunk dunk dunk"): a read that misses the call must not make it ring again.
+    let q = vt.notifyPlan([], [c], NOW);
+    q = vt.notifyPlan(q.sent, [], NOW + 5_000);
+    eq(vt.notifyPlan(q.sent, [c], NOW + 10_000).send.length, 0, 'notify: a call missing from one read does not ring again');
+    q = vt.notifyPlan(q.sent, [c], NOW + 151_000);
+    eq(q.send.map((x) => x.phase), ['warning'], 'notify: the warning still comes once');
+    q = vt.notifyPlan(q.sent, [], NOW + 152_000);
+    eq(vt.notifyPlan(q.sent, [c], NOW + 155_000).send.length, 0, 'notify: and not again after a miss');
   }
   const push = vt.vetoFromPush(HUB, JSON.stringify({ type: 'veto', phase: 'warning', id: ID1, jobId: 'job_abc-1', title: 'Restart web', command: 'docker restart web', runsAt: '2026-10-29T02:03:00.000Z', secondsLeft: 30, denyUrl: `${HUB}/auth/api/approvals/${ID1}/deny`, streamUrl: `${HUB}/auth/api/jobs/job_abc-1/stream`, approvalUrl: `${HUB}/auth/admin/approvals/${ID1}` }), NOW);
   ok(push && push.phase === 'warning' && push.call.command === 'docker restart web' && push.call.secondsLeft === 30, 'push: veto push read');
@@ -1012,11 +1032,28 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
     eq(sent[1], [`${HUB}/auth/api/approvals/${ID1}/deny`, 'POST', 'tok12345'], 'deny: POST with the session CSRF');
     eq((await vt.denyVeto(HUB, 'nope', { fetch: fake })).ok, false, 'deny: only request ids');
   }
-  const cfg = ap.alertConfig((k) => ({ [ap.K.sound]: 'ringtone', [ap.K.vibration]: 'none', [ap.K.warningSound]: 'bogus' })[k]);
-  eq([cfg.held.sound, cfg.held.vibrate, cfg.warning.sound, cfg.running.sound], ['ringtone', false, 'alarm', 'default'], 'approvals: alert config with defaults');
-  eq(ap.patternOf('pulse'), [0, 150, 100, 150, 100, 150], 'approvals: vibration pattern');
-  eq(ap.notificationText({ title: 'Restart web', command: 'docker restart web', tool: 'vps.run' }, 'held', 180).title, 'Runs in 3:00: Restart web', 'approvals: timer started text');
-  eq(ap.tonesOf('none').length, 0, 'approvals: silent = no tones');
+  // decision #104: Approve now + Shelve next to Deny; a hub before #104 = Deny only
+  eq(c.actions, ['deny'], 'veto: no actions from the hub = Deny only');
+  {
+    const shelvedBody = JSON.stringify({ held: [held({ veto: { state: 'shelved', runsAt: '2026-10-29T02:03:00.000Z', secondsLeft: 80, countdownSeconds: 90, actions: ['approve-now', 'deny'] } })] });
+    const sc = vt.interpretVeto(HUB, shelvedBody, NOW)[0];
+    eq([sc.shelved, sc.actions], [true, ['deny', 'approve-now']], 'veto: shelved call with its actions');
+    eq(vt.secondsLeftNow(sc, NOW + 600_000), 80, 'veto: a shelved countdown is frozen');
+    eq(vt.notifyPlan([], [sc], NOW).send.length, 0, 'notify: a shelved call gets no notices');
+    eq(vt.vetoActionUrl(HUB, ID1, 'approve-now'), `${HUB}/auth/api/approvals/${ID1}/approve-now`, 'veto: approve-now url rebuilt');
+    eq(vt.vetoActionUrl(HUB, ID1, 'bogus'), null, 'veto: unknown action refused');
+    eq(vt.vetoFromPush(HUB, { type: 'veto', phase: 'cleared', id: ID1, runsAt: '2026-10-29T02:03:00.000Z', secondsLeft: 0, actions: [] }, NOW)?.phase, 'cleared', 'push: cleared phase read');
+    const sent = [];
+    const fake = async (u, i) => { sent.push([u, i?.method ?? 'GET']); return u.endsWith('/session') ? new Response('{"csrf":"tok12345"}') : new Response('{"ok":true,"state":"approved-now"}', { status: 200 }); };
+    const r = await vt.vetoAction(HUB, ID1, 'approve-now', { fetch: fake });
+    ok(r.ok && r.state === 'approved-now' && sent[1][0].endsWith('/approve-now') && sent[1][1] === 'POST', 'veto: approve-now posts with the session CSRF');
+    // the host seam: the phone's act first; nothing posted from a page off the hub
+    let asked = null;
+    vt.setVetoHost({ act: async (id, a) => { asked = [id, a]; return { ok: true, state: 'shelved' }; } });
+    const hr = await vt.runVetoAction(HUB, { id: ID1, url: `${HUB}/auth/admin/approvals/${ID1}` }, 'shelve');
+    eq([hr.ok, asked], [true, [ID1, 'shelve']], 'veto: actions go through the app host');
+    vt.setVetoHost({});
+  }
   {
     const store = await import('./src/plugins/approvals/web/store.ts');
     store.resetVeto();
@@ -1083,6 +1120,457 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   const ui = readFileSync(new URL('./src/plugins/voice/web/index.tsx', import.meta.url), 'utf8');
   ok(/settingsPanels:[\s\S]{0,200}tab: 'voice'/.test(ui), 'voice: the trigger phrase list is a panel in the plugin\'s own settings tab');
   for (const k of ['K.mode', 'K.sensitivity', 'K.triggerTone']) ok(ui.includes(`key: ${k},`), `voice: ${k} is a setting`);
+}
+
+/* ---------------------------------------------------------------- console plugins' voice phrases (generic seam) */
+{
+  const voiceUi = readFileSync(new URL('./src/plugins/voice/web/index.tsx', import.meta.url), 'utf8');
+  ok(/amberxVoice = \{ register: registerVoiceCommands \}/.test(voiceUi), 'voice: console plugins add phrases through globalThis.amberxVoice');
+}
+
+/* ---------------------------------------------------------------- speech gate (Oct 31 2026: the "nothing in Inbox" loop) */
+{
+  const sg = await import('./src/plugins/voice/web/speechgate.ts');
+  const notes = await import('./src/plugins/notes/web/core.ts');
+  // A repeated empty refresh speaks nothing: read the empty Inbox, Voice notes and a missing list, search and remove
+  // in an empty store, ten times a minute apart (past the repeat window, so only the empty-state rule keeps it quiet).
+  const g = sg.newGate();
+  const store = notes.emptyStore();
+  notes.ensureSystemLists(store);
+  let spoken = 0;
+  for (let i = 0; i < 10; i++) {
+    for (const intent of [{ action: 'read', list: 'Inbox' }, { action: 'read', list: 'notes' }, { action: 'read', list: 'no such list' }, { action: 'search', text: 'milk' }, { action: 'remove', target: 'last' }]) {
+      const r = notes.applyIntent(store, intent, { now: new Date(Date.UTC(2026, 9, 31, 12, i)).toISOString() });
+      const now = i * 60_000;
+      if (sg.shouldSpeak(g, r.say, now).speak) { spoken += 1; sg.markSpeaking(g, r.say, now); sg.markDone(g, now + 1000); }
+    }
+  }
+  eq(spoken, 0, 'speech gate: a repeated empty refresh speaks nothing');
+  for (const t of ['Nothing in Inbox.', "There's no list called notes.", 'No steps yet.', 'The inbox is empty.', 'Inbox: nothing in it.', 'No saved notes.', 'No tags yet.', 'Nothing found.', 'Heard nothing.'])
+    ok(sg.isEmptyState(t), `speech gate: "${t}" is an empty state (never spoken)`);
+  for (const t of ['Note saved to Inbox.', 'You have 2 waiting.', 'Yes?', 'Moved “milk” to Shopping.'])
+    ok(!sg.isEmptyState(t), `speech gate: "${t}" is spoken`);
+  // Said once per change: the same sentence again (poll, refresh, re-render, loop) stays quiet; a question may repeat.
+  const h = sg.newGate();
+  ok(sg.shouldSpeak(h, 'You have 2 waiting.', 0).speak, 'speech gate: first time is said');
+  sg.markSpeaking(h, 'You have 2 waiting.', 0); sg.markDone(h, 1500);
+  ok(!sg.shouldSpeak(h, 'You have 2 waiting.', 5000).speak, 'speech gate: the same sentence again is not');
+  ok(sg.shouldSpeak(h, 'You have 3 waiting.', 6000).speak, 'speech gate: a real change is said');
+  ok(sg.shouldSpeak(h, 'You have 2 waiting.', 5000, { asked: true }).speak && sg.shouldSpeak(h, 'You have 2 waiting.', 5000, { change: true }).speak, 'speech gate: questions and fresh saves may repeat');
+  ok(!sg.shouldSpeak(h, 'Nothing in Inbox.', 9000, { asked: true }).speak, 'speech gate: an empty state is silent even as an answer');
+  ok(sg.shouldSpeak(h, 'You have 2 waiting.', 1500 + sg.REPEAT_MS).speak, 'speech gate: after a while it can be said again');
+  // No TTS ↔ mic loop: while talking, just after, and anything that sounds like what it said is AmberX's own voice.
+  const e = sg.newGate();
+  sg.markSpeaking(e, 'Moved milk to Shopping.', 10_000);
+  ok(sg.isEcho(e, 'open approvals', 10_500), 'echo: anything heard while AmberX talks is ignored');
+  sg.markDone(e, 12_000);
+  ok(sg.isEcho(e, 'anything', 12_400), 'echo: and just after');
+  ok(sg.isEcho(e, 'moved milk to shopping', 15_000), 'echo: its own sentence coming back is ignored');
+  ok(!sg.isEcho(e, 'open approvals', 15_000), 'echo: a new command is heard');
+  ok(!sg.isEcho(e, 'yes', 13_000), 'echo: a short answer is heard');
+  // The wiring: every reply goes through the gate, holds the mic, and hands-free drops its own echo.
+  const vui = readFileSync(new URL('./src/plugins/voice/web/index.tsx', import.meta.url), 'utf8');
+  ok(/shouldSpeak\(gate, text/.test(vui) && /holdMic: true/.test(vui), 'voice: say() goes through the gate and holds the mic');
+  ok(/heardEcho\(text\)/.test(vui) && /isEcho\(ctx\.gate, text/.test(readFileSync(new URL('./src/plugins/voice/web/wakeflow.ts', import.meta.url), 'utf8')) && /wakeAction\(e, \{/.test(vui), 'voice: wake + heard events drop AmberX\'s own voice');
+  ok((vui.match(/native\.speak\(/g) ?? []).length === 1, 'voice: say() is the only place that speaks');
+  const dui = readFileSync(new URL('./src/plugins/dictation/web/index.tsx', import.meta.url), 'utf8');
+  ok(!/native\.speak\(/.test(dui) && /heardEcho\(/.test(dui), 'dictation: speaks through the gate and never dictates its own reply');
+  const ws = readFileSync(new URL('./android/app/src/main/java/ai/amberx/droid/WatchService.java', import.meta.url), 'utf8');
+  ok(/else if \(on && w\.recognizer != null\) \{ w\.pauseListening\(\)/.test(ws), 'android: classic hands-free stops listening while AmberX talks');
+}
+
+/* ---------------------------------------------------------------- screen capture (Oct 31 2026: "can't record due to security policy") */
+{
+  const sc = await import('./src/securescreen.ts');
+  const root = (has) => ({ querySelector: (s) => (has && s === sc.SENSITIVE_SELECTOR ? {} : null) });
+  ok(!sc.secureWanted(undefined, true) && !sc.secureWanted(false, true), 'screen: setting off (default) = never hidden, even on a password screen');
+  ok(!sc.secureWanted(true, false), 'screen: setting on, normal screen = recordable');
+  ok(sc.secureWanted(true, true), 'screen: setting on + password / key / vault screen = hidden');
+  ok(sc.isSensitive(root(true)) && !sc.isSensitive(root(false)) && !sc.isSensitive(null), 'screen: a password field makes the screen sensitive');
+  ok(sc.SENSITIVE_SELECTOR.includes('input[type="password"]'), 'screen: password inputs count');
+  eq(sc.secureScreenLibrary.settings[0].settings[0].default, false, 'screen: "Hide sensitive screens from recordings" is off by default');
+  const java = (f) => readFileSync(new URL(`./android/app/src/main/java/ai/amberx/droid/${f}`, import.meta.url), 'utf8');
+  for (const f of ['MainActivity.java', 'HubWebActivity.java']) ok(!/addFlags\(WindowManager\.LayoutParams\.FLAG_SECURE\)/.test(java(f)), `android: ${f} no longer sets FLAG_SECURE`);
+  const ss = java('SecureScreen.java');
+  ok(/sensitiveScreen && hideSensitive\(a\)/.test(ss) && /getBoolean\(HIDE, false\)/.test(ss), 'android: FLAG_SECURE only when opted in and sensitive (default off)');
+  ok(/public void secureScreen\(PluginCall call\)/.test(java('AmberxNativePlugin.java')), 'android: the page reports sensitive screens');
+  const app = readFileSync(new URL('./src/App.tsx', import.meta.url), 'utf8');
+  ok(app.includes('secureScreenLibrary'), 'App installs the screen capture setting');
+}
+
+/* ---------------------------------------------------------------- walkthrough video (Nov 1 2026) */
+{
+  const wt = await import('./src/plugins/walkthrough/web/core.ts');
+  const { CHAPTERS, WALKTHROUGH, walkthroughErrors } = await import('./walkthrough/script.mjs');
+  const { findSecrets } = await import('./walkthrough/check.mjs');
+  const raw = { $axf: 'walkthrough-video@1', id: 'amberx-app', title: 'AmberX walkthrough', duration: 300, video: 'walkthrough.mp4',
+    chapters: [{ id: 'home', title: 'Home', start: 60, segments: [{ start: 60, title: 'This is Home' }, { start: 75, title: 'Deny' }] },
+      { id: 'welcome', title: 'Welcome', start: 0 }, { title: 'No start' }, { id: 'home', title: 'Again', start: 200 }] };
+  const ix = wt.parseIndex(raw);
+  eq(ix.chapters.map((c) => c.id), ['welcome', 'home', 'home-4'], 'walkthrough: chapters sorted, broken ones dropped, ids unique');
+  eq(ix.chapters.map((c) => c.duration), [60, 140, 100], 'walkthrough: chapter lengths filled from the next start');
+  eq(ix.chapters[1].segments.length, 2, 'walkthrough: segments kept');
+  eq(wt.parseIndex({ $axf: 'other@1', chapters: raw.chapters }), null, 'walkthrough: another format is refused');
+  eq(wt.parseIndex({ chapters: [] }), null, 'walkthrough: no chapters = nothing to play');
+  eq(wt.parseIndex({ ...raw, video: '../ai.json', poster: 'https://evil.test/x.jpg' }).video, 'walkthrough.mp4', 'walkthrough: only plain file names are used');
+  eq(wt.parseIndex({ ...raw, poster: 'https://evil.test/x.jpg' }).poster, 'poster.jpg', 'walkthrough: no outside poster');
+  eq([wt.chapterAt(ix, 0), wt.chapterAt(ix, 59.9), wt.chapterAt(ix, 61), wt.chapterAt(ix, 250)], [0, 1, 1, 2], 'walkthrough: chapter playing at a time');
+  eq(wt.previousStart(ix, 70), 60, 'walkthrough: Previous goes to the start of this chapter');
+  eq(wt.previousStart(ix, 61), 0, 'walkthrough: Previous near the start goes one chapter back');
+  eq([wt.nextStart(ix, 10), wt.nextStart(ix, 250)], [60, null], 'walkthrough: Next chapter, none after the last');
+  eq([wt.clock(75), wt.clock(3725), wt.clock(-3)], ['1:15', '1:02:05', '0:00'], 'walkthrough: clock');
+  eq([wt.speedOf('1.5'), wt.speedOf(3), wt.speedOf(undefined)], [1.5, 1, 1], 'walkthrough: speed presets only');
+  eq(walkthroughErrors(WALKTHROUGH, CHAPTERS), [], 'walkthrough: the script validates (walkthrough-video@1)');
+  ok(CHAPTERS.length >= 10 && CHAPTERS.every((c) => c.scenes.length), 'walkthrough: every main part has a chapter');
+  for (const want of ['home', 'terminal', 'command-center', 'dictate', 'ask', 'voice', 'molly', 'recorder', 'settings', 'hub'])
+    ok(CHAPTERS.some((c) => c.id === want), `walkthrough: chapter ${want}`);
+  ok(walkthroughErrors(WALKTHROUGH, [{ id: 'Bad Id', title: '', scenes: [{ say: 'short', act: 1 }] }]).length >= 3, 'walkthrough: a broken script is refused');
+  ok(walkthroughErrors(WALKTHROUGH, [{ id: 'x', title: 'X', scenes: [{ say: 'this is some shit right here kid', act: () => {} }] }]).some((e) => e.includes('clean')), 'walkthrough: narration stays clean');
+  for (const k of ['sk-ant-api03-' + 'Ab3'.repeat(10), 'ghp_' + 'a1B2'.repeat(9), 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.abcDEF12345', 'password: hunter22', 'AKIA' + 'ABCDEFGHIJKLMNOP'])
+    ok(findSecrets(`Settings ${k} end`).length > 0, `walkthrough scan catches ${k.slice(0, 6)}…`);
+  eq(findSecrets('3 waiting · Restart the demo web app · runs in 1:15 · commit 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b'), [], 'walkthrough scan: ordinary screen text (and a commit sha) is clean');
+  const plug = readFileSync(new URL('./src/plugins/walkthrough/web/index.tsx', import.meta.url), 'utf8');
+  ok(/menu: 'axhub'/.test(plug) && /menu: 'help'/.test(plug), 'walkthrough: in the AmberX menu and Help');
+  ok(/'walkthrough\.open'/.test(plug) && /<track kind="captions"/.test(plug) && /SPEEDS\.map/.test(plug), 'walkthrough: open action, captions, speed presets');
+  const home = readFileSync(new URL('./src/views/Approvals.tsx', import.meta.url), 'utf8');
+  ok(/rt\.actions\.get\('walkthrough\.open'\)/.test(home) && /Watch the walkthrough/.test(home), 'walkthrough: Home shows the card when the plugin is there');
+  const css = readFileSync(new URL('./src/plugins/walkthrough/web/walkthrough.css', import.meta.url), 'utf8');
+  ok(!/#[0-9a-f]{3,8}\b|rgba?\(|\b\d+px\b(?![^{]*@media)/i.test(css.replace(/@media[^{]*\{/g, '').replace(/999px/g, '')), 'walkthrough: stylesheet uses theme tokens only');
+
+  // more than one walkthrough, downloads, the voice editor (whole-stack walkthrough, Nov 1 2026)
+  const wide = wt.parseIndex({ ...raw, width: 1920, height: 1080, downloads: [{ file: 'walkthrough.mp4', label: '1080p', bytes: 1.4e9 }, { file: '../x.mp4' }, { file: 'walkthrough-720.mp4', label: '720p', bytes: 4.2e8 }] });
+  eq([wide.wide, wide.downloads.map((d) => d.file)], [true, ['walkthrough.mp4', 'walkthrough-720.mp4']], 'walkthrough: landscape + download copies, no paths');
+  eq(ix.downloads.map((d) => d.file), ['walkthrough.mp4'], 'walkthrough: an older index still offers the video for download');
+  eq([wt.sizeLabel(1.4e9), wt.sizeLabel(4.2e8), wt.sizeLabel(0)], ['1.4 GB', '420 MB', ''], 'walkthrough: download sizes');
+  eq(wt.parseList({ walkthroughs: [{ id: 'amberx-app', title: 'AmberX' }, { id: 'stack', title: 'The whole stack', duration: 5400 }, { id: 'Bad!' }, { id: 'stack' }] }).map((w) => [w.id, w.base]),
+    [['amberx-app', ''], ['stack', 'stack/']], 'walkthrough: the list, each with its folder');
+  const script = wt.parseScript({ id: 'stack', voice: 'en_US-kristin-medium', speed: 0.93, edits: { lines: { 'open-1': 'Edited before' } },
+    chapters: [{ id: 'open', title: 'Open', scenes: [{ key: 'open-0', say: 'Yo, it is Amber.' }, { key: 'open-1', say: 'Second line.' }, { key: 'bad key', say: 'x' }] }] });
+  eq([script.chapters[0].scenes.length, script.speed, script.edits.lines['open-1']], [2, 0.93, 'Edited before'], 'walkthrough voice: script.json read, bad scenes dropped');
+  eq(wt.editsOf(script, 'en_US-kristin-medium', 0.93, { 'open-0': 'Yo, it is Amber.', 'open-1': '  New\nline ', 'nope-0': 'x' }),
+    { voice: null, speed: null, lines: { 'open-1': 'New line' } }, 'walkthrough voice: only real changes are edits');
+  eq(wt.editsOf(script, 'en_US-amy-medium', 1.1, {}), { voice: 'en_US-amy-medium', speed: 1.1, lines: {} }, 'walkthrough voice: voice and speed when changed');
+  eq(wt.normalizeEdits({ voice: 'robot', speed: 9, lines: { 'open-0': 'x'.repeat(900) } }).lines['open-0'].length, 400, 'walkthrough voice: unknown voice / speed dropped, lines capped');
+  eq(wt.editCount({ voice: 'en_US-amy-medium', speed: null, lines: { a: 'x', b: 'y' } }), 3, 'walkthrough voice: change count');
+  // one video per chapter (segments.json, Nov 2 2026)
+  const segs = wt.parseSegments({ chapters: [{ id: 'veto', title: 'The veto', version: 3, duration: 201.4, bytes: 9e6, look: 'soft-studio', recordedAt: '2026-11-02T03:10:00Z' }, { id: '../x' }, null, { id: 'open' }] });
+  eq(segs.map((c) => [c.id, c.file, c.version]), [['veto', 'chapters/veto.mp4', 3], ['open', 'chapters/open.mp4', 1]], 'walkthrough chapters: segments read, bad ids dropped, version at least 1');
+  eq([wt.lookLabel('soft-studio'), wt.lookLabel(''), wt.lookLabel('design-package.midnight_pro')], ['Soft studio', '', 'Midnight pro'], 'walkthrough chapters: design package names');
+  const ld = await import('./walkthrough/load.mjs');
+  eq([ld.voicePath('en_US-kristin-medium'), ld.voicePath('en_GB-jenny_dioco-medium')], ['en/en_US/kristin/medium', 'en/en_GB/jenny_dioco/medium'], 'walkthrough voice: Piper download path from the name');
+  eq(ld.VOICES, wt.VOICES.map((v) => v.id), 'walkthrough voice: the recorder and the editor offer the same voices');
+  const stack = await ld.loadWalkthrough('stack', '/nonexistent');
+  eq(stack.walkthroughErrors(stack.WALKTHROUGH, stack.CHAPTERS), [], 'whole-stack walkthrough: the script validates');
+  const words = stack.CHAPTERS.reduce((n, c) => n + c.scenes.reduce((m, x) => m + x.say.split(/\s+/).length, 0), 0);
+  ok(words / 150 / stack.WALKTHROUGH.speed >= 80, `whole-stack walkthrough: about 90 minutes of narration (${words} words)`);
+  for (const want of ['assets', 'engines', 'ports', 'cli', 'console', 'plugins', 'builds', 'guardrails', 'agents', 'axhub', 'veto', 'amberx', 'vps', 'mcp'])
+    ok(stack.CHAPTERS.some((c) => c.id === want), `whole-stack walkthrough: chapter ${want}`);
+  eq(stack.CHAPTERS.at(-1).id, 'close', 'whole-stack walkthrough: the closing chapter is last');
+  ok(stack.walkthroughErrors(stack.WALKTHROUGH, [{ id: 'x', title: 'X', scenes: [{ say: 'a slur like retard is never ok here', act: () => {} }] }]).length > 0, 'whole-stack walkthrough: swearing ok, slurs refused');
+  const edited = await ld.loadWalkthrough('stack', '/nonexistent');
+  process.env.VOICE_OVERRIDES_B64 = Buffer.from(JSON.stringify({ voice: 'en_US-amy-medium', speed: 1.1, lines: { 'open-0': 'Edited first line.', 'zzz-9': 'gone' } })).toString('base64');
+  const withEdits = await ld.loadWalkthrough('stack', '/nonexistent');
+  delete process.env.VOICE_OVERRIDES_B64;
+  eq([withEdits.WALKTHROUGH.voice, withEdits.WALKTHROUGH.speed, withEdits.CHAPTERS[0].scenes[0].say, withEdits.BASE[0].scenes[0].say === edited.CHAPTERS[0].scenes[0].say],
+    ['en_US-amy-medium', 1.1, 'Edited first line.', true], 'walkthrough voice: the recorder applies the edits, keeps the script as written');
+  const vt = readFileSync(new URL('./src/plugins/walkthrough/web/voice.tsx', import.meta.url), 'utf8');
+  ok(/folder: 'walkthrough'/.test(vt) && /\/render`/.test(vt) && /voiceOnly: kind === 'voice'/.test(vt), 'walkthrough voice: edits saved on axHub, re-voice through the server');
+}
+
+/* ---------------------------------------------------------------- one listener per event (Nov 1 2026: "Note saved" on a loop, Chrome dinging) */
+{
+  const L = await import('./src/listeners.ts');
+  const sg = await import('./src/plugins/voice/web/speechgate.ts');
+  const wf = await import('./src/plugins/voice/web/wakeflow.ts');
+  const notes = await import('./src/plugins/notes/web/core.ts');
+  const java = (f) => readFileSync(new URL(`./android/app/src/main/java/ai/amberx/droid/${f}`, import.meta.url), 'utf8');
+  const src = (f) => readFileSync(new URL(`./src/${f}`, import.meta.url), 'utf8');
+  const WAKE = ['hey amberx', 'okay amberx'];
+
+  // What the phone's recognizer heard tonight while AmberX said "Note saved to Inbox." (hub notes, Nov 1, 125 saves).
+  const HEARD_TONIGHT = ['no save ten bucks', 'no ten bucks', 'no safety inbox', 'note save ten bucks', 'no safety bucks', 'tonight and save ten bucks',
+    'tonight and saved inbox', 'q might and save ten bucks', 'no saved ten bucks', 'no save bucks', 'no safety'];
+
+  /** The phone, simulated: AmberX says the notes reply for every save; the mic hears a mis-heard copy `lag` ms after it
+   * stops talking (always armed, no wake phrase), and the page decides what to do with it, `rounds` times. */
+  const phone = (rounds, lag) => {
+    const gate = sg.newGate();
+    const handled = new L.HandledIds(L.memoryStore(), 'h');
+    const store = notes.emptyStore();
+    let now = 1_000_000, spoken = 0, saved = 0, n = 0;
+    const sayIt = (text, opts) => { if (sg.shouldSpeak(gate, text, now, opts).speak) { spoken += 1; sg.markSpeaking(gate, text, now); now += sg.speechMs(text); sg.markDone(gate, now); } };
+    // Brett says one note, on purpose, with the wake phrase.
+    const first = wf.wakeAction({ phrase: '', text: 'hey amberx note buy milk', id: 'w0', at: now }, { gate, handled, now, owner: true, waiting: false, busy: false, wake: WAKE, alwaysArmed: true });
+    if (first.do === 'handle') { const i = notes.parseIntent(first.text); const r = notes.applyIntent(store, i, { now: new Date(now).toISOString() }); saved += 1; sayIt(r.say, { change: r.changed }); }
+    // The mic only hears AmberX after AmberX spoke: each round is the echo of the last thing it said.
+    let last = -1;
+    for (let k = 0; k < rounds; k++) {
+      if (spoken === last) break; // it said nothing: no echo, the loop is over
+      last = spoken;
+      now += lag;
+      const heard = HEARD_TONIGHT[k % HEARD_TONIGHT.length];
+      const a = wf.wakeAction({ phrase: '', text: heard, id: `w${++n}`, at: now }, { gate, handled, now, owner: true, waiting: false, busy: false, wake: WAKE, alwaysArmed: true });
+      if (a.do !== 'handle') { now += 3000; continue; }
+      // The AI notes parser turns any sentence into a note (that is how "no save ten bucks" became one): it only gets
+      // sentences addressed to AmberX; unprompted ones reach the local parser and the save-loop breaker.
+      const i = notes.parseIntent(a.text) ?? (a.armed ? null : { action: 'add', kind: 'note', text: a.text });
+      if (!i || (a.armed && !sg.armedSaveAllowed(gate, now))) { now += 3000; continue; }
+      const r = notes.applyIntent(store, i, { now: new Date(now).toISOString() });
+      saved += 1;
+      if (a.armed) sg.noteArmedSave(gate, now);
+      sayIt(r.say, { change: r.changed });
+    }
+    return { spoken, saved };
+  };
+  const loop = phone(40, 1200);
+  eq(loop, { spoken: 1, saved: 1 }, 'note saved loop: one save by voice = exactly one "Note saved", its echo (40 mis-heard copies) saves nothing');
+  const late = phone(40, 3500);
+  eq(late.saved, 1, 'note saved loop: echoes 3.5 s after it talks still save nothing');
+  // Even an echo the filters can't catch (heard long after) stops: the loop breaker pauses unprompted saves after 3.
+  {
+    const g = sg.newGate();
+    let paused = false;
+    for (let k = 0; k < 3; k++) paused = sg.noteArmedSave(g, 10_000 + k * 6000);
+    ok(paused && !sg.armedSaveAllowed(g, 30_000) && sg.armedSaveAllowed(g, 30_000 + sg.SAVE_PAUSE_MS), 'note saved loop: three unprompted saves in a minute pause unprompted saves for two minutes');
+    const h = sg.newGate();
+    let said = 0;
+    for (let k = 0; k < 6; k++) { const t = k * 7000; if (sg.shouldSpeak(h, 'Note saved to Inbox.', t, { change: true }).speak) { said += 1; sg.markSpeaking(h, 'Note saved to Inbox.', t); sg.markDone(h, t + 1500); } }
+    eq(said, 2, 'loop guard: the same reply said twice in a minute is not said a third time, even as a change');
+    ok(sg.shouldSpeak(h, 'Note saved to Inbox.', 40_000, { asked: true }).speak, 'loop guard: an answer to a question is still said');
+  }
+  for (const t of ['no save ten bucks', 'note save ten bucks', 'no safety inbox', 'tonight and saved inbox']) {
+    const g = sg.newGate(); sg.markSpeaking(g, 'Note saved to Inbox.', 0); sg.markDone(g, 1500);
+    ok(sg.isEcho(g, t, 9000), `echo: "${t}" (mis-heard "Note saved to Inbox.") is AmberX's own voice`);
+  }
+  {
+    const g = sg.newGate(); sg.markSpeaking(g, 'Note saved to Inbox.', 0); sg.markDone(g, 1500);
+    ok(sg.isEcho(g, 'no ten bucks', 4000, { armed: true }) && sg.isEcho(g, 'safety', 5000, { armed: true }), 'echo: unprompted words within 4 s of AmberX talking are its own voice');
+    ok(!sg.isEcho(g, 'open approvals', 9000) && !sg.isEcho(g, 'add a todo call mom', 9000) && !sg.isEcho(g, 'whats waiting', 9000), 'echo: real commands after it are still heard');
+    ok(!sg.isEcho(g, 'yes', 2500), 'echo: a short answer to a question is heard');
+  }
+
+  // Open / resume ×10 speaks nothing: events handed over from before the page loaded are stale or already handled.
+  {
+    const store = L.memoryStore();
+    let spoken = 0;
+    const retained = [{ phrase: '', text: 'note save ten bucks', id: 'w-old-1', at: 1_000 }, { phrase: '', text: 'no safety inbox', id: 'w-old-2', at: 2_000 }];
+    for (let open = 0; open < 10; open++) {
+      const gate = sg.newGate(); // a fresh page every open
+      const handled = new L.HandledIds(store, 'amberx.voice.handled');
+      const now = 60_000 + open * 30_000;
+      for (const e of retained) { const a = wf.wakeAction(e, { gate, handled, now, owner: true, waiting: false, busy: false, wake: WAKE, alwaysArmed: true }); if (a.do !== 'ignore') spoken += 1; }
+    }
+    eq(spoken, 0, 'open/resume ×10: retained or replayed wake sentences run nothing and speak nothing');
+    const handled = new L.HandledIds(store, 'amberx.voice.handled');
+    const gate = sg.newGate();
+    const e = { phrase: 'hey amberx', text: 'hey amberx whats waiting', id: 'w-new', at: 500_000 };
+    eq(wf.wakeAction(e, { gate, handled, now: 501_000, owner: true, waiting: false, busy: false, wake: WAKE, alwaysArmed: true }).do, 'handle', 'a fresh wake hit runs');
+    eq(wf.wakeAction(e, { gate, handled: new L.HandledIds(store, 'amberx.voice.handled'), now: 502_000, owner: true, waiting: false, busy: false, wake: WAKE, alwaysArmed: true }), { do: 'ignore', why: 'replayed' }, 'the same wake hit again (reopen, reconnect) is a replay');
+    eq(wf.wakeAction({ phrase: '', text: 'open approvals', id: 'x', at: 0 }, { gate, handled, now: 30_000, owner: true, waiting: false, busy: false, wake: WAKE, alwaysArmed: true }).why, 'stale', 'a wake hit older than 20 s is stale');
+    eq(wf.wakeAction({ phrase: '', text: 'open approvals', id: 'y', at: 30_000 }, { gate, handled, now: 30_100, owner: false, waiting: false, busy: false, wake: WAKE, alwaysArmed: true }).why, 'not-owner', 'a tab that is not the device owner stays silent');
+    const armed = wf.wakeAction({ phrase: '', text: 'buy milk tomorrow', id: 'z1', at: 40_000 }, { gate, handled, now: 40_000, owner: true, waiting: false, busy: false, wake: WAKE, alwaysArmed: true });
+    ok(armed.do === 'handle' && armed.armed === true, 'always armed, no wake phrase: unprompted (no AI notes, no spoken "don\'t know")');
+    const addressed = wf.wakeAction({ phrase: '', text: 'hey amberx buy milk tomorrow', id: 'z2', at: 40_000 }, { gate, handled, now: 40_000, owner: true, waiting: false, busy: false, wake: WAKE, alwaysArmed: true });
+    ok(addressed.do === 'handle' && addressed.armed === false, 'with the wake phrase it is addressed to AmberX');
+    // Replayed SSE / hub events after a reconnect are silent: the same ids again = replays.
+    const sse = new L.HandledIds(L.memoryStore(), 'sse');
+    const ids = ['e1', 'e2', 'e3'];
+    const firstPass = ids.filter((id) => L.eventVerdict({ id, at: 100 }, sse, 200).run).length;
+    const replay = ids.filter((id) => L.eventVerdict({ id, at: 100 }, sse, 300).run).length;
+    eq([firstPass, replay], [3, 0], 'replayed events after a reconnect are silent');
+  }
+
+  // Listeners count stays 1 after 20 resume cycles.
+  {
+    const live = new Map();
+    const add = (ev) => { live.set(ev, (live.get(ev) ?? 0) + 1); return { remove: () => live.set(ev, live.get(ev) - 1) }; };
+    const subs = new L.Subscriptions();
+    for (let i = 0; i < 20; i++) for (const ev of ['wake', 'heard', 'spoken', 'level', 'monitor', 'voiceSettings']) subs.bind(ev, () => add(ev));
+    await new Promise((r) => setTimeout(r, 0));
+    eq([...live.values()], [1, 1, 1, 1, 1, 1], 'listeners: one per event after 20 register / resume cycles');
+    subs.clear(); await new Promise((r) => setTimeout(r, 0));
+    eq([...live.values()].reduce((a, b) => a + b, 0), 0, 'listeners: all removed on clear');
+    const voiceUi = src('plugins/voice/web/index.tsx');
+    ok(!/void native\.addListener\(/.test(voiceUi) && /nativeSubs\.bind\('wake'/.test(voiceUi), 'voice: every native listener is bound by key (no stacking)');
+  }
+
+  // Two tabs + the app open = one ding per new approval.
+  {
+    const bus = new Set();
+    const channel = () => { const fns = new Set(); const ch = { post: (m) => bus.forEach((c) => c !== ch && c.fns.forEach((f) => f(m))), onMessage: (f) => { fns.add(f); return () => fns.delete(f); }, close: () => bus.delete(ch), fns }; bus.add(ch); return ch; };
+    let t = 0;
+    const a = L.createOwner({ id: 'tab-a', channel: channel(), now: () => t });
+    const b = L.createOwner({ id: 'tab-b', channel: channel(), now: () => t });
+    for (let i = 0; i < 4; i++) { t += L.HEARTBEAT_MS; a.tick(t); b.tick(t); }
+    eq([a.isOwner(), b.isOwner()].filter(Boolean).length, 1, 'owner: two tabs elect exactly one owner');
+    const c = L.createOwner({ id: 'tab-0', channel: channel(), now: () => t });
+    for (let i = 0; i < 4; i++) { t += L.HEARTBEAT_MS; a.tick(t); b.tick(t); c.tick(t); }
+    eq([a.isOwner(), b.isOwner(), c.isOwner()].filter(Boolean).length, 1, 'owner: a third tab opening (even with a lower id) does not make two owners');
+    const was = [a, b, c].find((x) => x.isOwner());
+    was.close();
+    for (let i = 0; i < 5; i++) { t += L.HEARTBEAT_MS; for (const x of [a, b, c]) if (x !== was) x.tick(t); }
+    eq([a, b, c].filter((x) => x !== was && x.isOwner()).length, 1, 'owner: when the owner tab closes another takes over');
+    const solo = L.createOwner({ id: 'webview' });
+    ok(solo.isOwner(), 'owner: the Android app\'s web view (alone) owns');
+
+    // The phone: the AmberX app (rings natively) + two Chrome tabs (sounds off in a phone browser by default).
+    const ua = 'Mozilla/5.0 (Linux; Android 16; SM-S948U) Chrome/141 Mobile';
+    ok(L.deviceSoundsDefault({ native: true, userAgent: ua }) && !L.deviceSoundsDefault({ native: false, userAgent: ua }) && L.deviceSoundsDefault({ native: false, userAgent: 'Mozilla/5.0 (Windows NT 10.0) Chrome/141' }),
+      'browser sounds: off by default in a phone browser (the app rings there), on in a desktop browser and in the app');
+    const app = { gate: new L.DingGate(L.memoryStore()), allowed: () => L.soundAllowed({ quiet: false, owner: true, deviceSounds: true }) };
+    const chromeStore = L.memoryStore();
+    const tabs = [a, b].map((o) => ({ gate: new L.DingGate(chromeStore), allowed: () => L.soundAllowed({ quiet: false, owner: o.isOwner(), deviceSounds: L.deviceSoundsDefault({ native: false, userAgent: ua }) }) }));
+    let dings = 0;
+    const read = (ids, now) => { for (const x of [app, ...tabs]) if (x.gate.read(ids, now, x.allowed()).ding) dings += 1; };
+    read([], 0); // opening: all clear
+    read([], 5_000); read([], 10_000); // refreshes / heartbeats with nothing waiting
+    eq(dings, 0, 'dings: "All clear", refreshes and heartbeats never ding');
+    read(['ap-1'], 20_000);
+    eq(dings, 1, 'dings: one new approval with the app + two phone tabs open = one ding');
+    read(['ap-1', 'ap-2'], 24_000);
+    eq(dings, 1, 'dings: rate-limited (a second new one within 8 s stays silent)');
+    read(['ap-1', 'ap-2'], 30_000); read(['ap-1', 'ap-2'], 40_000);
+    eq(dings, 1, 'dings: the same approvals on later reads never ding again');
+    read(['ap-1', 'ap-2', 'ap-3'], 60_000);
+    eq(dings, 2, 'dings: the next new approval after the gap dings once');
+    const reopened = new L.DingGate(chromeStore);
+    reopened.read(['ap-1', 'ap-2', 'ap-3'], 70_000, true);
+    eq(reopened.read(['ap-1', 'ap-2', 'ap-3'], 80_000, true).ding, false, 'dings: a reopened tab never rings what was already seen');
+    ok(!L.soundAllowed({ quiet: true, owner: true, deviceSounds: true }), 'Quiet: nothing may make a sound');
+  }
+
+  // The browser recognizer: no ding loop.
+  {
+    eq(L.restartDelay(0), 250, 'browser hands-free: a normal end restarts at once');
+    eq([1, 2, 3, 4].map(L.restartDelay), [1000, 2000, 4000, 8000], 'browser hands-free: quick ends back off');
+    eq(L.restartDelay(13), null, 'browser hands-free: gives up when the mic stays busy');
+    let starts = 0, wait = 0, quick = 0;
+    while (wait < 60_000) { starts += 1; quick += 1; const d = L.restartDelay(quick); if (d === null) break; wait += d; }
+    ok(starts <= 8, `browser hands-free: a minute with the mic held elsewhere starts it ${starts} times (was ~600: a ding every 100 ms)`);
+    ok(L.FATAL_RECOGNITION.includes('not-allowed') && L.FATAL_RECOGNITION.includes('audio-capture'), 'browser hands-free: a refused or busy mic stops it');
+    const nat = src('native.ts');
+    ok(/restartDelay\(quick\)/.test(nat) && !/rec\.onend = \(\) => \{ if \(webVoice\.rec === rec && document\.visibilityState === 'visible'\) \{ try \{ rec\.start\(\)/.test(nat), 'browser hands-free: no instant restart left');
+    const voiceUi = src('plugins/voice/web/index.tsx');
+    ok(/!isNative\(\) && \(!deviceHandsFree\(\) \|\| !isSoundOwner\(\)\)\) cfg = \{ \.\.\.cfg, handsFree: false \}/.test(voiceUi), 'browser hands-free: only the owner tab, only when switched on for this browser (mic released otherwise)');
+    ok(/if \(!mayMakeSound\(\)\) return;/.test(voiceUi), 'voice: say() checks Quiet and the owner');
+  }
+
+  // Mic released when hands-free is off; Quiet; native wiring.
+  {
+    const nat = src('native.ts');
+    ok(/if \(!cfg\.handsFree \|\| !Recognition \|\| micIsOff\(\)\) return;/.test(nat) && /webVoiceStop\(\);\n  webVoice\.cfg = cfg;/.test(nat), 'mic: browser hands-free off = recognizer and mic stream released');
+    const ws = java('WatchService.java');
+    ok(/boolean on = prefs\(this\)\.getBoolean\("on", false\) \|\| handsFree\(this\);\s*if \(!on \|\| !wantsMic\(\) \|\| !micGranted\(\) \|\| !MicGuard\.mayOpen\(this\)\) \{ stopListening\(\); return; \}/.test(ws), 'mic: Android lets go of the microphone when hands-free is off');
+    const sound = src('sound.tsx');
+    ok(/key: K\.quiet, label: 'Quiet', kind: 'toggle', default: false/.test(sound), 'Quiet: a switch in Settings → Sound and microphone, off by default');
+    ok(/native\.quiet\(\{ quiet: true \}\)/.test(sound) && /native\.stopSpeaking\(\)/.test(sound) && /native\.vetoAlarmStop\(\)/.test(sound), 'Quiet: stops speech and the alarm at once');
+    ok(/data-amberx-mic-holder/.test(sound) && /Hands-free \(AmberX\\'s listening service\)/.test(sound), 'Settings shows who holds the microphone');
+    ok(src('App.tsx').includes('soundLibrary'), 'App installs Sound and microphone');
+    const plug = java('AmberxNativePlugin.java');
+    ok(/public void quiet\(PluginCall call\)/.test(plug) && /Quiet\.on\(getContext\(\)\)\) \{ call\.resolve\(\); return; \}/.test(plug), 'android: speak says nothing while Quiet');
+    ok(/if \(Quiet\.on\(c\)\) return;/.test(java('VetoAlarm.java')), 'android: the alarm never rings while Quiet');
+    ok(/p == null \|\| !p\.hasListeners\("wake"\)/.test(plug) && /\.put\("id", eventId\(\)\)\.put\("at", System\.currentTimeMillis\(\)\)\);/.test(plug), 'android: in-app wake hits are not retained for the next page, and carry id + at');
+    const ma = java('MainActivity.java');
+    ok(/if \(state == null && !fromHistory\)/.test(ma) && /setIntent\(spent\(intent\)\)/.test(ma), 'android: the launch intent\'s wake sentence is handed over once (not on re-create or an open from Recents)');
+    ok(/EXTRA_WAKE_ID, AmberxNativePlugin\.eventId\(\)\)/.test(ws), 'android: wake hits that open the app carry an id');
+    ok(/\[SOUND_OWNER_KEY\] = api/.test(sound) && L.SOUND_OWNER_KEY === '__axfSoundOwner', 'sound-owner@1 is on globalThis for console plugins (the veto alarm asks it before ringing)');
+    const mon = src('plugins/monitor/web/index.tsx');
+    ok(/new DingGate\(deviceStore\(\), 'amberx\.monitor\.seen'\)/.test(mon), 'monitor: browser approval notices go through the ding gate');
+  }
+}
+
+/* ---------------------------------------------------------------- Mic off (Nov 1 2026: "turns the green dot off my phone") */
+{
+  const G = await import('./src/micguard.ts');
+  const L = await import('./src/listeners.ts');
+  const java = (f) => readFileSync(new URL(`./android/app/src/main/java/ai/amberx/droid/${f}`, import.meta.url), 'utf8');
+  const src = (f) => readFileSync(new URL(`./src/${f}`, import.meta.url), 'utf8');
+
+  // The page's gate over a fake page: getUserMedia + SpeechRecognition.
+  const stopped = [];
+  const started = [];
+  class FakeRec { start() { started.push(this); } abort() { stopped.push('rec'); } }
+  const fake = {
+    DOMException: class extends Error { constructor(m, n) { super(m); this.name = n; } },
+    navigator: { mediaDevices: { getUserMedia: async (c) => ({ getTracks: () => [{ kind: c.audio ? 'audio' : 'video', stop: () => stopped.push('track') }] }) } },
+    SpeechRecognition: FakeRec,
+  };
+  const store = L.memoryStore();
+  const g = G.createMicGuard(fake, store);
+  eq(g.off(), false, 'mic off: off by default');
+  await fake.navigator.mediaDevices.getUserMedia({ audio: true });
+  const r1 = new fake.SpeechRecognition();
+  r1.start();
+  eq(g.open(), { streams: 1, recognizers: 1 }, 'mic off: the gate sees every audio stream and recognizer the page opens');
+  const fired = [];
+  g.on((o) => fired.push(o));
+  eq(g.set(true), 2, 'mic off: switching it on stops the open audio track and aborts the recognizer at once');
+  eq(stopped, ['track', 'rec'], 'mic off: track stopped, recognizer aborted');
+  eq(fired, [true], 'mic off: listeners hear the change once');
+  eq(store.getItem(G.MIC_OFF_KEY), 'true', 'mic off: kept on this device (survives a restart)');
+  let refused = null;
+  try { await fake.navigator.mediaDevices.getUserMedia({ audio: true }); } catch (e) { refused = e.name; }
+  eq(refused, 'NotAllowedError', 'mic off: a new audio request is refused');
+  const video = await fake.navigator.mediaDevices.getUserMedia({ video: true });
+  ok(!!video, 'mic off: video-only requests are left alone');
+  const r2 = new fake.SpeechRecognition();
+  const errs = [];
+  r2.onerror = (e) => errs.push(e.error);
+  r2.onend = () => errs.push('end');
+  const before = started.length;
+  r2.start();
+  await new Promise((d) => setTimeout(d, 5));
+  eq(started.length, before, 'mic off: a recognizer never really starts');
+  eq(errs, ['not-allowed', 'end'], 'mic off: it ends with not-allowed (callers stop restarting)');
+  ok(fake[G.MIC_OFF_GLOBAL]?.$axf === 'mic-off@1' && fake[G.MIC_OFF_GLOBAL].off() === true, 'mic off: mic-off@1 on the page global for console plugins');
+  const g2 = G.createMicGuard(fake, store);
+  ok(g2.off() === true && fake.SpeechRecognition.__axfMicGuard === true, 'mic off: read back after a reload; constructors wrapped once');
+  g.set(false);
+  r2.start();
+  ok(started.includes(r2), 'mic off: back on, recognizers start again');
+
+  // What the switch says.
+  eq(G.micChip({ off: true, yielded: 'mic-off', listening: false }).text, 'Mic off', 'mic chip: Mic off');
+  eq(G.micChip({ off: false, yielded: null, listening: true }).text, 'Listening', 'mic chip: Listening');
+  eq(G.micChip({ off: false, yielded: 'call', listening: false }).text, 'Paused for another app', 'mic chip: paused while a call has the mic');
+  ok(/green dot is off/.test(G.micDetail({ off: true, yielded: 'mic-off', listening: false }, true)), 'mic detail: says the green dot is off');
+  ok(/comes back by itself/.test(G.micDetail({ off: false, yielded: 'other-app', listening: false }, true)), 'mic detail: says listening comes back after the other app');
+
+  // Wiring: the page.
+  const lib = src('mic.tsx');
+  ok(src('App.tsx').includes('micLibrary') && /<MicSwitch \/>/.test(src('views/Approvals.tsx')), 'mic off: installed, big switch on Home');
+  ok(/attachToBanner\(\{ type: 'status', id: 'amberx-mic'/.test(lib), 'mic off: on the banner (any banner asset)');
+  const st = JSON.parse(src('assets/status/amberx-mic.json'));
+  eq([st.data.counter, st.data.onLabel, st.data.offLabel, st.data.link], ['amberx.mic.on', 'Listening', 'Mic off', 'amberx.mic.toggle'], 'mic off: banner status asset: Listening / Mic off, tap flips it');
+  const tb = JSON.parse(src('assets/toolbar/amberx-droid.json'));
+  ok(tb.data.groups.some((gr) => gr.items.some((i) => i.action === 'amberx.mic.toggle')), 'mic off: on the toolbar');
+  ok(/checked: `counter:\$\{MIC_OFF\}`/.test(lib) && /tab: 'sound'/.test(lib), 'mic off: application menu (check mark) + Settings → Sound and microphone');
+  ok(/target: `action:\$\{MIC_ACTIONS\.toggle\}`/.test(lib) && /target: 'amberx-mic-switch'/.test(lib) && /data-help="amberx-mic-switch"/.test(lib), 'mic off: help@1 entries for the switch');
+  ok(!/#[0-9a-f]{3,8}\b|\d+px/i.test(src('mic.css')), 'mic off: CSS uses tokens only');
+  ok(/^import \{ micGuard, micIsOff \} from '\.\/micguard';/m.test(src('native.ts')) && /^import '\.\/micguard';/m.test(src('main.tsx')), 'mic off: the page gate loads before anything captures getUserMedia / SpeechRecognition');
+  ok(/if \(micIsOff\(\)\) return Promise\.reject/.test(src('native.ts')), 'mic off: browser Speak refused while off');
+  ok(/__axfMicOff\?\.off\(\)\) throw/.test(src('miclease.ts')), 'mic off: the mic lease refuses while off');
+
+  // Wiring: Android, one gate for every mic user.
+  const mg = java('MicGuard.java');
+  ok(/static boolean mayOpen\(Context c\) \{ return !off\(c\); \}/.test(mg), 'android: MicGuard.mayOpen is the one check');
+  ok(/MicGuard\.mayOpen\(app\)/.test(java('WakeListener.java')) && /MicGuard\.claim\(session\)/.test(java('WakeListener.java')), 'android: the wake listener asks before it opens the mic, and registers its session');
+  const plug = java('AmberxNativePlugin.java');
+  ok(/public void listen\(PluginCall call\) \{\n\s*if \(!MicGuard\.mayOpen/.test(plug) && /public void micSet\(PluginCall call\)/.test(plug) && /static void cancelListen\(\)/.test(plug), 'android: Speak refused while off, a running Speak is cancelled, micSet/micState bridge');
+  const rec = java('OutputRecordService.java');
+  ok(/micWanted\(this\) && MicGuard\.mayOpen\(this\)/.test(rec) && /if \(!MicGuard\.mayOpen\(this\)\) \{ micBusy/.test(rec), 'android: the recorder\'s mic track obeys Mic off (playback goes on)');
+  ok(/ACTION_STOP_MIC/.test(mg), 'android: Mic off lets go of a running recorder mic track');
+  const ws = java('WatchService.java');
+  ok(/boolean wantMic = wantsMic\(\) && micGranted\(\) && micAllowed;/.test(ws), 'android: no microphone foreground type while off (green dot off)');
+  ok(/handsFree\(c\) && MicGuard\.mayOpen\(c\)\)/.test(ws), 'android: hands-free alone never keeps the service up while off');
+  ok(/MicGuard\.mayOpen\(this\) && voice\(this\)\.optBoolean\("overlay", true\)/.test(ws), 'android: the detection overlay goes while off');
+  ok(/setAction\(ACTION_MIC\)\.putExtra\("off", !off\)/.test(ws), 'android: Mic off / Mic on on the notification');
+  ok(/registerAudioRecordingCallback/.test(ws) && /addOnModeChangedListener/.test(ws) && /private boolean yieldIfBusy\(\)/.test(ws), 'android: hands-free lets go when a call or another app records, and comes back after');
+  const man = readFileSync(new URL('./android/app/src/main/AndroidManifest.xml', import.meta.url), 'utf8');
+  ok(/android:name="\.MicTile"/.test(man) && /BIND_QUICK_SETTINGS_TILE/.test(man), 'android: quick-settings tile "AmberX mic"');
+  ok(/MicGuard\.set\(this, !MicGuard\.off\(this\)\)/.test(java('MicTile.java')), 'android: the tile flips Mic off');
+  const rules = java('MicRules.java');
+  ok(/static boolean micSource\(int source\)/.test(rules) && /source != 8/.test(rules), 'android: playback capture and the hotword detector never count as another app\'s mic');
 }
 
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);

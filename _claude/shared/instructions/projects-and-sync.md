@@ -27,6 +27,13 @@ Edit the files directly, then run `claude-sync sync`, then commit. On claude.ai,
 `axhub.memory_write` with `project` = manifest name or `shared`, `area` = `claude` (default) or `data`, and
 `path` inside it.
 
+**Notes Brett asks you to save** ("save this", "make a command", handoffs, session logs, plans, install notes) go in
+one place: `notes/<folder>/<file>.md` in the shared Claude files (`/projects/_shared/_claude/notes/`; axHub
+`axhub.memory_write` with `project` = `shared`, `area` = `claude`; in a checkout `_claude/shared/notes/`). Folders:
+`handoffs/`, `sessions/`, `plans/`, `install/`, `commands/`, `orchestrator/`, `misc/` (add one when none fits), and a
+line in `notes/INDEX.md`. They sync everywhere but are not printed at session start; read them on demand. Console:
+Plugins → Notes.
+
 ## Commands
 - `claude-sync status` / `claude-sync projects`: where it syncs, the projects found, data paths, held files.
 - `claude-sync sync`: sync every project in this repo now.

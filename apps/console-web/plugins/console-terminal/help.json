@@ -1,0 +1,464 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "console-terminal-help",
+  "name": "console-terminal help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:console-terminal. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:console-terminal",
+    "entries": [
+      {
+        "target": "close-tab-ctrl-shift-w",
+        "title": "Close tab",
+        "text": "Closes this terminal tab (Ctrl+Shift+W). If something's still running it asks first.",
+        "kind": "button"
+      },
+      {
+        "target": "new-tab",
+        "title": "New tab",
+        "text": "Opens a new terminal tab on the default connection.",
+        "kind": "button"
+      },
+      {
+        "target": "new-tab-menu",
+        "title": "New tab menu",
+        "text": "Pick what the new tab opens: a shell or Claude Code, on which connection.",
+        "kind": "button"
+      },
+      {
+        "target": "close-window",
+        "title": "Close window",
+        "text": "Closes the whole terminal window and its tabs.",
+        "kind": "button"
+      },
+      {
+        "target": "claude-code",
+        "title": "Claude Code",
+        "text": "Opens Claude Code in a tab.",
+        "kind": "button"
+      },
+      {
+        "target": "this-tabs-connection",
+        "title": "This tab's connection",
+        "text": "Where this tab runs: the console container, the VPS, a container or axHub.",
+        "kind": "button"
+      },
+      {
+        "target": "find-ctrl-shift-f",
+        "title": "Find",
+        "text": "Searches the terminal's output (Ctrl+Shift+F).",
+        "kind": "button"
+      },
+      {
+        "target": "a",
+        "title": "Text size",
+        "text": "Makes the terminal text smaller or bigger.",
+        "kind": "button"
+      },
+      {
+        "target": "mouse-mode-a-click-moves-the-cursor",
+        "title": "Mouse mode",
+        "text": "On: a click moves the cursor to where you tapped. Handy on a phone.",
+        "kind": "toggle"
+      },
+      {
+        "target": "copy-ctrl-shift-c",
+        "title": "Copy",
+        "text": "Copies the selected text (Ctrl+Shift+C).",
+        "kind": "button"
+      },
+      {
+        "target": "paste-ctrl-shift-v",
+        "title": "Paste",
+        "text": "Pastes into the terminal (Ctrl+Shift+V). Several lines ask first.",
+        "kind": "button"
+      },
+      {
+        "target": "terminal-settings",
+        "title": "Terminal settings",
+        "text": "Fonts, colours, cursor, bell, scrollback and the Claude Code profiles.",
+        "kind": "button"
+      },
+      {
+        "target": "hide-this-toolbar-right-click-a-tab-to-show-it-again",
+        "title": "Hide this toolbar",
+        "text": "Hides the command toolbar. Right-click a tab to bring it back.",
+        "kind": "button"
+      },
+      {
+        "target": "claude-code-pick-a-connection",
+        "title": "Claude Code on…",
+        "text": "Opens Claude Code on the connection you pick.",
+        "kind": "button"
+      },
+      {
+        "target": "shell-pick-a-connection",
+        "title": "Shell on…",
+        "text": "Opens a shell on the connection you pick.",
+        "kind": "button"
+      },
+      {
+        "target": "open-a-root-shell-anyway",
+        "title": "Open a root shell anyway",
+        "text": "Opens a root shell on the VPS. Careful, kid: root can break anything.",
+        "kind": "button"
+      },
+      {
+        "target": "paste",
+        "title": "Paste",
+        "text": "Shows “Paste”. Part of Terminal.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "start-again",
+        "title": "Start again",
+        "text": "Restarts what was running in this tab.",
+        "kind": "button"
+      },
+      {
+        "target": "shell",
+        "title": "Shell",
+        "text": "Opens a plain shell.",
+        "kind": "button"
+      },
+      {
+        "target": "reconnect",
+        "title": "Reconnect",
+        "text": "Connects this tab again after it dropped.",
+        "kind": "button"
+      },
+      {
+        "target": "switch-connection",
+        "title": "Switch connection",
+        "text": "Moves this tab to another connection.",
+        "kind": "button"
+      },
+      {
+        "target": "new-tab-elsewhere",
+        "title": "New tab elsewhere",
+        "text": "Opens a tab on another connection.",
+        "kind": "button"
+      },
+      {
+        "target": "colour-scheme",
+        "title": "Colour scheme",
+        "text": "The terminal's colours.",
+        "kind": "field"
+      },
+      {
+        "target": "font",
+        "title": "Font",
+        "text": "The terminal font.",
+        "kind": "field"
+      },
+      {
+        "target": "cursor",
+        "title": "Cursor",
+        "text": "The cursor shape.",
+        "kind": "field"
+      },
+      {
+        "target": "line-height",
+        "title": "Line height",
+        "text": "Space between lines.",
+        "kind": "field"
+      },
+      {
+        "target": "padding",
+        "title": "Padding",
+        "text": "Room round the text.",
+        "kind": "field"
+      },
+      {
+        "target": "windows-look",
+        "title": "Windows look",
+        "text": "Makes the terminal look like Windows Terminal.",
+        "kind": "toggle"
+      },
+      {
+        "target": "mica-background",
+        "title": "Mica background",
+        "text": "The see-through Windows background.",
+        "kind": "toggle"
+      },
+      {
+        "target": "command-toolbar",
+        "title": "Command toolbar",
+        "text": "Shows the row of command buttons above the terminal.",
+        "kind": "toggle"
+      },
+      {
+        "target": "blinking-cursor",
+        "title": "Blinking cursor",
+        "text": "Makes the cursor blink.",
+        "kind": "toggle"
+      },
+      {
+        "target": "new-terminal-opens",
+        "title": "New terminal opens",
+        "text": "What a new terminal starts with.",
+        "kind": "field"
+      },
+      {
+        "target": "the-button",
+        "title": "The + button",
+        "text": "What the + on the tab strip opens.",
+        "kind": "field"
+      },
+      {
+        "target": "tab-width",
+        "title": "Tab width",
+        "text": "How wide the tabs are.",
+        "kind": "field"
+      },
+      {
+        "target": "bell",
+        "title": "Bell",
+        "text": "What happens when a program rings the bell.",
+        "kind": "field"
+      },
+      {
+        "target": "scrollback-lines",
+        "title": "Scrollback",
+        "text": "How many lines you can scroll back.",
+        "kind": "field"
+      },
+      {
+        "target": "ask-before-closing-a-running-tab",
+        "title": "Ask before closing",
+        "text": "Asks before closing a tab that's still running something.",
+        "kind": "toggle"
+      },
+      {
+        "target": "copy-on-select",
+        "title": "Copy on select",
+        "text": "Selecting text copies it straight away.",
+        "kind": "toggle"
+      },
+      {
+        "target": "ask-before-pasting-several-lines",
+        "title": "Ask before pasting lines",
+        "text": "Asks before pasting more than one line, so nothing runs by accident.",
+        "kind": "toggle"
+      },
+      {
+        "target": "new-tabs-start-in-mouse-mode",
+        "title": "Mouse mode for new tabs",
+        "text": "New tabs start with mouse mode on.",
+        "kind": "toggle"
+      },
+      {
+        "target": "new-tabs-start-in-mosh-mode",
+        "title": "Mosh mode for new tabs",
+        "text": "New tabs start in Mosh mode (the phone-friendly connection).",
+        "kind": "toggle"
+      },
+      {
+        "target": "permissions",
+        "title": "Permissions",
+        "text": "What Claude Code may do without asking in this profile.",
+        "kind": "field"
+      },
+      {
+        "target": "tab-colour",
+        "title": "Tab colour",
+        "text": "The colour of this profile's tabs.",
+        "kind": "field"
+      },
+      {
+        "target": "folder",
+        "title": "Folder",
+        "text": "Which folder Claude Code starts in.",
+        "kind": "field"
+      },
+      {
+        "target": "extra-flags-one-per-line",
+        "title": "Extra flags",
+        "text": "More Claude Code command-line flags, one per line.",
+        "kind": "field"
+      },
+      {
+        "target": "first-prompt",
+        "title": "First prompt",
+        "text": "The message Claude Code starts with.",
+        "kind": "field"
+      },
+      {
+        "target": "add-a-profile",
+        "title": "Add a profile",
+        "text": "Makes a new Claude Code profile: model, permissions, folder, first prompt, colour.",
+        "kind": "button"
+      },
+      {
+        "target": "open-a-terminal",
+        "title": "Open a terminal",
+        "text": "Opens the terminal window.",
+        "kind": "button"
+      },
+      {
+        "target": "make-a-new-key",
+        "title": "Make a new key",
+        "text": "Makes a new SSH key for a connection.",
+        "kind": "button"
+      },
+      {
+        "target": "slow",
+        "title": "Slow",
+        "text": "The context chain types each rule out slowly, so you can read along as the agent picks it up.",
+        "kind": "tab"
+      },
+      {
+        "target": "normal",
+        "title": "Normal",
+        "text": "The context chain's default pace: a little slower than reading speed.",
+        "kind": "tab"
+      },
+      {
+        "target": "fast",
+        "title": "Fast",
+        "text": "The context chain reveals rules quickly; still one at a time.",
+        "kind": "tab"
+      },
+      {
+        "target": "all",
+        "title": "All",
+        "text": "Shows the whole context chain at once, no typing out.",
+        "kind": "tab"
+      },
+      {
+        "target": "skip-to-the-end",
+        "title": "Skip to the end",
+        "text": "Stops the slow reveal and shows every file and rule the session has taken in so far.",
+        "kind": "button"
+      },
+      {
+        "target": "pause",
+        "title": "Pause",
+        "text": "Pauses the context chain's reveal where it is. Play carries on.",
+        "kind": "button"
+      },
+      {
+        "target": "play",
+        "title": "Play",
+        "text": "Carries on revealing the context chain.",
+        "kind": "button"
+      },
+      {
+        "target": "kill-session",
+        "title": "Kill session",
+        "text": "Ends this tab's tmux session for good: whatever runs in it stops, on every device attached to it. Closing the tab only detaches.",
+        "kind": "button"
+      },
+      {
+        "target": "kill-session-2",
+        "title": "Kill session…",
+        "text": "Asks first, then ends this tab's tmux session for good. Closing the tab only detaches, like closing Moshi.",
+        "kind": "menu"
+      },
+      {
+        "target": "open-in-moshi-copy-command",
+        "title": "Open in Moshi",
+        "text": "Copies the command that attaches this same session from the Moshi app (mosh to the VPS, then tmux attach). Both stay live at once.",
+        "kind": "menu"
+      },
+      {
+        "target": "side-by-side",
+        "title": "Side by side",
+        "text": "Shows the session and its context chain next to each other. Remembered for this tab.",
+        "kind": "menu"
+      },
+      {
+        "target": "stacked",
+        "title": "Stacked",
+        "text": "Shows the context chain under the session. Remembered for this tab.",
+        "kind": "menu"
+      },
+      {
+        "target": "no-split",
+        "title": "No split",
+        "text": "Hides the context chain; the tab shows only the session.",
+        "kind": "menu"
+      },
+      {
+        "target": "session",
+        "title": "Session",
+        "text": "On a phone the two panes swipe: this jumps to the live session.",
+        "kind": "tab"
+      },
+      {
+        "target": "context-chain",
+        "title": "Context chain",
+        "text": "Every file the session reads, in the order it reads them (CLAUDE.md, its imports, rules, then each Read), with the rules it picks up typed out one at a time.",
+        "kind": "tab"
+      },
+      {
+        "target": "tabs-live-in-tmux-sessions-survive-reloads-sleep-and-restarts-attach-from-moshi",
+        "title": "Tabs live in tmux sessions",
+        "text": "VPS and console tabs run inside tmux on the server, so a reload, a sleeping phone or a console restart re-attaches with the scrollback replayed. Moshi can attach the same session.",
+        "kind": "toggle"
+      },
+      {
+        "target": "headless-tabs-show-the-context-chain-next-to-the-session",
+        "title": "Context chain in headless tabs",
+        "text": "Headless build tabs split into the live session and its context chain.",
+        "kind": "toggle"
+      },
+      {
+        "target": "split-for-new-headless-tabs",
+        "title": "Split for new headless tabs",
+        "text": "How new headless tabs split: side by side, stacked or not at all. Each tab can change it in its menu.",
+        "kind": "field"
+      },
+      {
+        "target": "context-chain-speed",
+        "title": "Context chain speed",
+        "text": "How fast the context chain types out the rules a session picks up. Slow is slower than real time on purpose.",
+        "kind": "field"
+      },
+      {
+        "target": "sessions-list",
+        "title": "Sessions list",
+        "text": "Opens or closes the sessions list: My sessions (your own Claude Code and shell sessions, and your claude.ai chats), Agents (headless builds with their model, cost and status), Connections and Recent. On a phone it slides in from the left; swipe it back to close.",
+        "kind": "button"
+      },
+      {
+        "target": "jump-in",
+        "title": "Jump in",
+        "text": "Turns this read-only mirror into a live link on the same session, so what you type reaches it. On a claude.ai chat it opens the chat in claude.ai and keeps its feed here.",
+        "kind": "button"
+      },
+      {
+        "target": "session-browser",
+        "title": "Session browser",
+        "text": "Opens the Sessions page (Session check-in): every Claude session that has ended, with its model and cost.",
+        "kind": "button"
+      },
+      {
+        "target": "stop-session",
+        "title": "Stop session",
+        "text": "Ends this tmux session for good, for every device attached to it, Moshi included. Detaching a tab does not do this.",
+        "kind": "button"
+      },
+      {
+        "target": "action:terminal.sessions",
+        "title": "Terminal sessions",
+        "text": "Opens the Terminal's sessions rail: your sessions, agents, connections and recent ones, to mirror or jump into.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "context-chain-text-size-share-of-the-themes-text",
+        "title": "Context chain text size (share of the theme’s text)",
+        "text": "Slide to set “Context chain text size (share of the theme’s text)”: left is less, right is more. Part of Terminal.",
+        "kind": "slider",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261025-352e503517",
+  "createdAt": "2026-10-25T18:23:34.974Z",
+  "updatedAt": "2026-10-25T19:48:18.812Z",
+  "kind": "edit",
+  "title": "Merge ready open PRs (#79 #80 #81 #85): resolve conflicts with main, merge once CI green",
+  "asked": "",
+  "repos": [
+    "mossesx/amberx-axf"
+  ],
+  "model": "",
+  "who": {
+    "where": "cloud",
+    "user": "console",
+    "host": "vm"
+  },
+  "steps": [
+    {
+      "text": "Combine #79 #80 #81 #85 with main, open PR #87",
+      "state": "done",
+      "startedAt": "2026-10-25T18:28:45.286Z",
+      "finishedAt": "2026-10-25T18:28:45.286Z"
+    },
+    {
+      "text": "Merge #87 once CI green",
+      "state": "done",
+      "startedAt": "2026-10-25T18:28:46.223Z",
+      "finishedAt": "2026-10-25T18:36:18.794Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "Merged #87 (= #79 #80 #81 #85 with conflicts resolved); #78 #82 #83 #84 #86 were already merged",
+    "branch": "claude/project-thread-5gc822",
+    "commits": [
+      {
+        "sha": "d5bd3b7"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-25T19:48:18.812Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-25T18:23:34.974Z",
+  "finishedAt": "2026-10-25T18:36:19.733Z",
+  "lastSeenAt": "2026-10-25T18:36:19.521Z",
+  "doing": "Merge #87 once CI green",
+  "progress": 1.0
+}

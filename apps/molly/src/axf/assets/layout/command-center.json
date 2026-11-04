@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "layout",
+  "id": "command-center",
+  "name": "Command Center",
+  "version": "1.0.0",
+  "description": "Compact rail, wide canvas, status bar and a right inspector for monitoring and operations dashboards.",
+  "author": "AmberX AXF",
+  "tags": [
+    "desktop",
+    "ops"
+  ],
+  "data": {
+    "nav": "left",
+    "navWidth": 72,
+    "showMenubar": true,
+    "showToolbar": true,
+    "toolbarPosition": "top",
+    "showStatusbar": true,
+    "inspector": "right",
+    "inspectorWidth": 320,
+    "contentMaxWidth": 0
+  }
+}

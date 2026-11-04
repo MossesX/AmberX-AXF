@@ -7,15 +7,21 @@ is off, never on the console MCP; hub users never reach it: the plugin isn't use
                                     draft); cached ~2 min
     POST /pr     {repo, branch}     opens a PR into the default branch (or answers the one already open)
     POST /merge  {repo, number, confirm: "<repo>#<number>"}
-                                    merges an open PR (merge commit) only when GitHub says it can and every check on
-                                    its head commit passed; the head commit is pinned so nothing newer slips in
-    POST /merge-branch {repo, branch, confirm: "<repo>:<branch>"}
-                                    a branch without a PR that merges cleanly (ahead, not behind, CI passed on its
-                                    newest commit; all re-checked): opens its PR (or takes the open one) and merges it
-                                    with that commit pinned
+                                    merges an open PR (merge commit) only when it isn't behind its base, GitHub says it
+                                    can and every check on its head commit passed; the head commit is pinned so nothing
+                                    newer slips in
+    POST /auto-merge | GET /auto-merge   one auto-merge round now | the last round's results (see "Auto-merge" below)
+    GET  /protection                what branch protection on each watched repo's default branch looks like (and why
+                                    it couldn't be set); POST /protection sets it again now (the systems check's Auto fix)
+    POST /merge-branch              refused (0.5.0, Oct 30 2026: every change through a PR): says to open a PR
     POST /update {repo, number | branch, confirm: "<repo>#<number>" | "<repo>:<branch>"}
                                     pulls the default branch into a branch that's behind it: a PR through GitHub's
                                     "update branch" (its head pinned), a branch without one as a merge commit on it
+    GET  /land | GET /land/blocked  auto-land: every finished build in landing order (PR, head, state, reason) | only the
+                                    blocked ones (land/land.mjs writes land.json on the VPS host every 3 minutes)
+    POST /land/now | /land/hold | /land/release {build, why?}
+                                    land one now (next round, first) | keep it from landing | let it land again; the
+                                    same land.mjs command the CLI runs (commands declared once in land/land-core.mjs)
     GET  /detail?repo=&number= | ?repo=&branch=
                                     one entry's details: its commits (newest first, up to 20) and the check runs on its
                                     head commit (name, state, link), plus GitHub's mergeable state for a PR
@@ -35,7 +41,30 @@ on the VPS on that branch; it shows in the Build manager's building banner. It n
 A successful Merge or Pull main in is remembered as a finished entry (`done` in /branches, every device, 7 days) until
 its trash can is tapped; the entry itself leaves the other groups meanwhile.
 
-main is never pushed to: a branch reaches main only through its PR. GitHub is read through lib-github
+Auto-merge (0.5.0, Oct 30 2026, Brett: "I want everything to need a PR and to pull against main before it's merged"),
+one round every 3 minutes (settings autoMerge + autoPr, both on by default):
+  1. autoPr: every branch ahead of main without an open PR gets one (main, site, go-pass, gh-pages and hidden ones never);
+  2. ready PRs go oldest first, one at a time per repo: a PR behind its base gets the base pulled in (head pinned) and
+     waits for CI on its new head; it merges only when it is 0 behind, mergeable, not a draft and CI passed on the
+     pinned head, and its UI Review (ui-review@1) isn't waiting, asking for changes or rejected (a held PR is skipped,
+     the next one gets its turn; Merge refuses it too). At most one merge per round, so the next PR is brought up to
+     date with the new main first. A pull
+     that conflicts lands in "Pull failed" (and Fix with Claude when that is on) and is skipped until it is retried;
+  3. branch protection on main (require a PR, branches up to date, the CI checks every PR runs) is set where the token
+     may and never loosened; where it can't, the systems check shows why with an Auto fix that tries again.
+
+Auto-land (Nov 3 2026, Brett: "zero tokens for merging"; settings autoLand + landWaitUi, both on): land/land.mjs runs
+on the VPS host and lands every finished build with plain scripts (worktree cleaned, main merged in with the builds files
+newer-wins, PR opened, CI started), and writes land.json. Auto-merge reads it: finished builds' PRs go first in its
+dependency order, their main pull-ins are left to the host (GitHub's update would conflict on the builds store), and
+"Wait for UI Review" off lets them merge without UI Review. Commits on main that are only status data (`[skip ci]`,
+files under _claude/, builds-live.mjs) never make a PR "behind". A skipped or neutral check run is not CI.
+
+main is never pushed to: a branch reaches main only through its PR. GitHub is reached through `axf.github@1` (the
+systems check's capability: axHub first, the local GITHUB_TOKEN as the fallback, Settings → Plugins → Systems check →
+GitHub route), so the banner still lists branches while the local token is dead; writes (PRs, merges, branch updates
+and deletes, protection) and check-runs have no hub route and use the local token. Its own live check, "Push banner
+reaches GitHub", is on `axf.health@1` (ensure_health). Without the capability it is plain lib-github
 (`axf_server.github`): the token goes to the API origin only, API calls never follow a redirect, answers are size-capped,
 errors scrubbed. Nothing here returns the token, and everything GitHub says is data (the browser renders it as text).
 """
@@ -44,6 +73,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import subprocess
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -61,10 +91,23 @@ from . import claudefix
 
 router = APIRouter()
 
-DEFAULT_REPOS = ["MossesX/AmberX-AXF", "MossesX/axHub", "MossesX/Build-Pilot"]
+DEFAULT_REPOS = ["MossesX/AmberX-AXF", "MossesX/axHub"]
 # Branches that are never "waiting for main": the demo site's build output and GitHub Pages.
 ALWAYS_HIDDEN = {"site", "gh-pages"}
+# Branches that never get a PR opened by autoPr (the go-pass branch is axHub's pass file, never merged).
+NO_AUTO_PR = ALWAYS_HIDDEN | {"main", "master", "go-pass"}
+PROTECT_EVERY_S = 6 * 3600
 CACHE_S = 120
+GITHUB_CAP = "axf.github@1"   # GitHub through axHub first, local GITHUB_TOKEN fallback (systems check, githubsvc.py)
+HEALTH_CAP = "axf.health@1"   # the banners' live checks (systems check, health.py)
+HEALTH_ID = "push-banner-github"
+STATUS_ONLY_MARK = "[skip ci]"   # status-only commits on main (framework/cli/builds-live.mjs); = land-core.mjs
+STATUS_PATHS = "_claude/"          # the only paths they touch
+LAND_SCRIPT = Path(__file__).resolve().parent.parent / "land" / "land.mjs"
+LAND_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,80}\Z")
+UI_REVIEW_CAP = "ui-review@1"  # PRs whose UI is waiting, has changes asked or is rejected in UI Review don't merge
+UI_REVIEW_REPO = os.environ.get("AXF_GITHUB_REPO") or "MossesX/AmberX-AXF"  # the repo UI Review's PR numbers belong to
+NO_ROUTE = "the console can't reach GitHub: neither axHub (AXHUB_TOKEN) nor GITHUB_TOKEN is set on the console server"
 MAX_REPOS = 10
 MAX_BRANCHES = 150  # per repo, newest first by GitHub's listing
 MAX_HIDDEN = 300
@@ -117,7 +160,10 @@ def compare_path(repo: str, base: str, branch: str) -> str:
 
 
 def ci_state(runs: list[dict[str, Any]]) -> str:
-    """One state for a commit's check runs: none | running | failure | success."""
+    """One state for a commit's check runs: none | running | failure | success. A skipped or neutral run (CodeRabbit with
+    nothing to review, a job that didn't run) is not CI: a head whose only runs are those has no CI result (Nov 3 2026,
+    auto-land: #265 counted as passed while no workflow had run on it)."""
+    runs = [r for r in runs if not (r.get("status") == "completed" and r.get("conclusion") in ("skipped", "neutral"))]
     if not runs:
         return "none"
     if any(r.get("status") != "completed" for r in runs):
@@ -150,10 +196,18 @@ class Pushes:
         repos = [r for r in raw.get("repos", []) if github.valid_repo(r)][:MAX_REPOS] if isinstance(raw.get("repos"), list) else []
         hidden = [h for h in raw.get("hidden", []) if isinstance(h, str) and len(h) <= 260][:MAX_HIDDEN] if isinstance(raw.get("hidden"), list) else []
         return {"repos": repos or list(DEFAULT_REPOS), "hidden": hidden, "defaults": list(DEFAULT_REPOS),
-                "claudeOnFail": raw.get("claudeOnFail") is True, "claudeShell": raw.get("claudeShell") is True}
+                "claudeOnFail": raw.get("claudeOnFail") is True, "claudeShell": raw.get("claudeShell") is True,
+                # Auto-merge (Oct 30 2026, Brett: "When stuff needs to merge automatic merge"): on unless switched off.
+                "autoMerge": raw.get("autoMerge") is not False,
+                # Every branch gets a PR (Oct 30 2026, Brett: "I want everything to need a PR"): on unless switched off.
+                "autoPr": raw.get("autoPr") is not False,
+                # Auto-land (Nov 3 2026, Brett: "zero tokens for merging"): land/land.mjs lands finished builds; on unless off.
+                "autoLand": raw.get("autoLand") is not False,
+                # UI Review stays the gate: a held PR waits and merges by itself once Brett approves. On unless off.
+                "landWaitUi": raw.get("landWaitUi") is not False}
 
     def save_config(self, body: Any) -> dict[str, Any]:
-        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell"}:
+        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi"}:
             raise HTTPException(400, "send {repos: [owner/name …], hidden: [\"owner/name:branch\" …]}")
         cur = self.config()
         repos, hidden = cur["repos"], cur["hidden"]
@@ -170,7 +224,7 @@ class Pushes:
                     raise HTTPException(400, f"hidden entries look like owner/name:branch[@sha] ({_text(e, 80)!r})")
             hidden = list(dict.fromkeys(h))
         flags = {}
-        for k in ("claudeOnFail", "claudeShell"):
+        for k in ("claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi"):
             if k in body and not isinstance(body[k], bool):
                 raise HTTPException(400, f"{k} is true or false")
             flags[k] = body[k] if k in body else cur[k]
@@ -181,8 +235,31 @@ class Pushes:
 
     # ---- GitHub
     def gh(self) -> github.GitHubClient:
+        """The client from axf.github@1 (axHub first, the local GITHUB_TOKEN as the fallback; Settings → Plugins →
+        Systems check → GitHub route), else a plain local-token client when the capability isn't installed. Reads the
+        hub has a route for go through axHub; writes (open a PR, merge, update a branch, delete a branch, protection)
+        and check-runs have no hub route, so they still use the local token."""
+        svc = claudefix.plugin_services.get(GITHUB_CAP)
+        if svc is not None:
+            try:
+                return svc.client(user_agent="axf-console-push-banner", token=self.token, timeout=12, max_bytes=8_000_000)
+            except Exception:  # noqa: BLE001 — a broken capability never stops the banner: local token below
+                pass
         return github.GitHubClient(self.token, base_url=github.api_base_from_env(), user_agent="axf-console-push-banner",
                                    timeout=12, max_bytes=8_000_000)
+
+    def has_local(self) -> bool:
+        return bool((self.token() or "").strip())
+
+    def can_read(self) -> bool:
+        """Some route can read GitHub: the local token, or axHub through axf.github@1."""
+        if self.has_local():
+            return True
+        svc = claudefix.plugin_services.get(GITHUB_CAP)
+        try:
+            return bool(svc is not None and svc.hub.configured())
+        except Exception:  # noqa: BLE001
+            return False
 
     def _checks(self, gh: github.GitHubClient, repo: str, sha: str) -> list[dict[str, Any]]:
         data = gh.get(github.repo_path(repo, "commits", sha, "check-runs", query={"per_page": 100}))
@@ -193,6 +270,58 @@ class Pushes:
         """The newest commit on a branch (the commits list: no file diffs, unlike compare's)."""
         data = gh.get(github.repo_path(repo, "commits", query={"sha": branch, "per_page": 1}))
         return data[0] if isinstance(data, list) and data and isinstance(data[0], dict) else {}
+
+    def _behind(self, gh: github.GitHubClient, repo: str, base: str, head: str) -> int | None:
+        """How many commits on <base> the commit/branch <head> lacks (None when GitHub can't say)."""
+        cmp = gh.get(compare_path(repo, base, head))
+        n = cmp.get("behind_by") if isinstance(cmp, dict) else None
+        return n if isinstance(n, int) and not isinstance(n, bool) else None
+
+    def _code_behind(self, gh: github.GitHubClient, repo: str, base: str, head: str, known: int | None = None) -> int | None:
+        """Like _behind, but commits on <base> that are only status data don't count: builds-live.mjs publishes every
+        builds store write to main as a `[skip ci]` commit under _claude/, so every PR would be behind again minutes
+        after it was brought up to date, and re-tested forever (auto-land, Nov 3 2026). Behind only by those = 0."""
+        n = known if known is not None else self._behind(gh, repo, base, head)
+        if not n:
+            return n
+        if n > 250:
+            return n
+        cmp = gh.get(f"{github.repo_path(repo, 'compare')}/{quote(head, safe='')}...{quote(base, safe='')}?per_page=100")
+        if not isinstance(cmp, dict):
+            return n
+        msgs = [str(((c.get("commit") or {}).get("message")) or "") for c in cmp.get("commits") or [] if isinstance(c, dict)]
+        files = [str(f.get("filename") or "") for f in cmp.get("files") or [] if isinstance(f, dict)]
+        if len(msgs) < n or len(files) >= 300:
+            return n
+        status_only = all(STATUS_ONLY_MARK in m for m in msgs) and all(f.startswith(STATUS_PATHS) for f in files)
+        return 0 if status_only else n
+
+    # ---- auto-land (land/land.mjs on the VPS host writes land.json; commands write land-control.json)
+    def land(self) -> dict[str, Any]:
+        st = storage.read_json(data_dir() / "land.json", {}) or {}
+        ctl = storage.read_json(data_dir() / "land-control.json", {}) or {}
+        cfg = self.config()
+        items = [x for x in st.get("items", []) if isinstance(x, dict)] if isinstance(st.get("items"), list) else []
+        holds = ctl.get("holds") if isinstance(ctl.get("holds"), dict) else {}
+        return {"$axf": "auto-land@1", "on": cfg["autoLand"], "waitUi": cfg["landWaitUi"], "at": st.get("at"), "items": items,
+                "holds": holds, "now": ctl.get("now") if isinstance(ctl.get("now"), list) else [],
+                "order": [n for n in st.get("order", []) if isinstance(n, int)] if isinstance(st.get("order"), list) else [],
+                "managed": [n for n in st.get("managed", []) if isinstance(n, int)] if isinstance(st.get("managed"), list) else []}
+
+    def land_command(self, cmd: str, body: Any) -> dict[str, Any]:
+        """now | hold | release: one implementation, land/land.mjs (the same file the CLI and the host runner use)."""
+        if not isinstance(body, dict) or set(body) - {"build", "why"} or not isinstance(body.get("build"), str) or not LAND_ID.match(body["build"]):
+            raise HTTPException(400, "send {build: <build id>, why?}")
+        args = ["node", str(LAND_SCRIPT), cmd, body["build"], "--json"]
+        if cmd == "hold" and isinstance(body.get("why"), str) and body["why"].strip():
+            args += ["--why", _text(body["why"], 200)]
+        try:
+            r = subprocess.run(args, capture_output=True, text=True, timeout=30, env={**os.environ, "AXF_PUSH_BANNER_DIR": str(data_dir())})
+        except (OSError, subprocess.TimeoutExpired) as e:
+            raise HTTPException(502, _text(str(e))) from None
+        if r.returncode != 0:
+            raise HTTPException(400, _text(r.stderr.strip() or r.stdout.strip() or f"land.mjs {cmd} failed"))
+        return {"ok": True, "command": cmd, "build": body["build"], **self.land()}
 
     def _repo(self, gh: github.GitHubClient, repo: str, hidden: set[str]) -> dict[str, Any]:
         out: dict[str, Any] = {"repo": repo, "base": "main", "url": f"{github.GIT_BASE}/{repo}", "branches": [], "pulls": [], "error": ""}
@@ -254,6 +383,7 @@ class Pushes:
             got = [r for r in pool.map(one, todo) if r]
         got.sort(key=lambda b: b.get("date") or "", reverse=True)
         out["branches"] = got
+        behind_of = {g["name"]: g.get("behind") for g in got}
 
         def pull(p: dict[str, Any]) -> dict[str, Any] | None:
             n = p.get("number")
@@ -266,7 +396,7 @@ class Pushes:
                 "head": _text(head.get("ref"), 200), "base": _text((p.get("base") or {}).get("ref") if isinstance(p.get("base"), dict) else "", 200),
                 "fork": ((head.get("repo") or {}).get("full_name") or "").lower() != repo.lower(),
                 "author": _text((p.get("user") or {}).get("login") if isinstance(p.get("user"), dict) else "", 60),
-                "updated": _text(p.get("updated_at"), 40), "ci": "none", "mergeable": None, "mergeState": "", "ready": False,
+                "updated": _text(p.get("updated_at"), 40), "created": _text(p.get("created_at"), 40), "ci": "none", "mergeable": None, "mergeState": "", "ready": False,
                 "hidden": is_hidden(hidden, f"{repo}:#{n}", sha), "sha": sha,
             }
             try:
@@ -281,13 +411,28 @@ class Pushes:
                 item["mergeState"] = st if st in ("clean", "behind", "dirty", "blocked", "unstable", "draft", "has_hooks", "unknown") else ""
             except (github.GitHubError, ValueError):
                 pass
-            item["ready"] = item["ci"] == "success" and item["mergeable"] is True and not item["draft"]
+            # ready = it would merge now: not behind its base (pulled up to date first), CI passed, mergeable, not a draft
+            behind = item["mergeState"] == "behind" or (not item["fork"] and item["base"] == base and (behind_of.get(item["head"]) or 0) > 0)
+            if behind and item["ci"] == "success" and item["mergeable"] is True and not item["draft"] and sha:
+                try:  # behind only by status-only commits counts as up to date (_code_behind)
+                    behind = (self._code_behind(gh, repo, base, sha, behind_of.get(item["head"]) if not item["fork"] else None) or 0) > 0
+                except (github.GitHubError, ValueError):
+                    pass
+            item["ready"] = item["ci"] == "success" and item["mergeable"] is True and not item["draft"] and not behind
             return item
 
         with ThreadPoolExecutor(max_workers=8) as pool:
             out["pulls"] = [x for x in pool.map(pull, [p for p in pulls if isinstance(p, dict)]) if x]
         out["pulls"].sort(key=lambda x: x.get("updated") or "", reverse=True)
         out["pulls"].sort(key=lambda x: not x["ready"])  # ready ones first, newest first within each group
+        if repo == UI_REVIEW_REPO:  # what auto-land says about each finished build's PR (the banner shows it as the reason)
+            by_pr = {x.get("pr"): x for x in self.land()["items"] if isinstance(x.get("pr"), int)}
+            for x in out["pulls"]:
+                hit = by_pr.get(x["number"])
+                if hit:
+                    r = hit.get("reason") if isinstance(hit.get("reason"), dict) else None
+                    x["land"] = {"build": _text(hit.get("id"), 80), "state": _text(hit.get("state"), 20),
+                                 "kind": _text(r.get("kind"), 20) if r else "", "why": _text(r.get("text"), 300) if r else ""}
         return out
 
     def branches(self, force: bool = False) -> dict[str, Any]:
@@ -298,8 +443,8 @@ class Pushes:
             cached = self._cache[2] if not force and self._cache and self._cache[1] == key and now - self._cache[0] < CACHE_S else None
         if cached is not None:
             return {**cached, "done": self.done(), "failed": self.failed()}
-        if not (self.token() or "").strip():
-            out = {"checkedAt": int(now * 1000), "repos": [], "error": "GITHUB_TOKEN isn't set on the console server"}  # done comes below
+        if not self.can_read():
+            out = {"checkedAt": int(now * 1000), "repos": [], "error": NO_ROUTE}  # done comes below
         else:
             gh = self.gh()
             hidden = set(cfg["hidden"])
@@ -330,7 +475,7 @@ class Pushes:
         raw = storage.read_json(data_dir() / "failed.json", {}) or {}
         items = raw.get("items") if isinstance(raw, dict) else None
         now = self.clock()
-        return [{k: d[k] for k in ("key", "at", "repo", "base", "number", "branch", "title", "error") if k in d}
+        return [{k: d[k] for k in ("key", "at", "repo", "base", "number", "branch", "title", "error", "sha") if k in d}
                 for d in (items if isinstance(items, list) else [])
                 if isinstance(d, dict) and isinstance(d.get("key"), str) and isinstance(d.get("at"), (int, float)) and now - d["at"] / 1000 < DONE_KEEP_S][:MAX_FAILED]
 
@@ -435,8 +580,21 @@ class Pushes:
             if isinstance(open_, list) and open_ and isinstance(open_[0], dict):
                 p = open_[0]
                 return {"number": p.get("number"), "url": _safe_url(p.get("html_url")), "existing": True}
+            head = self._head(gh, repo, branch)
+            head_sha = _text(head.get("sha"), 40)
+            # Duplicate PRs after a squash merge (Oct 31 2026, #217 → #218): main got a NEW commit, so the old branch still
+            # counts "commits ahead". A branch whose exact head was already merged, or whose tree equals the base's, has
+            # nothing to push: no PR.
+            closed = gh.get(github.repo_path(repo, "pulls", query={"state": "closed", "head": f"{owner}:{branch}", "base": base, "per_page": 10}))
+            for c in closed if isinstance(closed, list) else []:
+                if isinstance(c, dict) and c.get("merged_at") and head_sha and _text((c.get("head") or {}).get("sha"), 40) == head_sha:
+                    raise HTTPException(409, f"nothing new on {branch}: PR #{c.get('number')} already merged this exact commit")
+            tree = ((head.get("commit") or {}).get("tree") or {}).get("sha") if isinstance(head.get("commit"), dict) else None
+            base_tree = ((self._head(gh, repo, base).get("commit") or {}).get("tree") or {}).get("sha") if tree else None
+            if tree and base_tree and tree == base_tree:
+                raise HTTPException(409, f"nothing to push: {branch} has the same files as {base}")
             cmp = gh.get(compare_path(repo, base, branch))
-            last = self._head(gh, repo, branch).get("commit") or {}
+            last = head.get("commit") or {}
             title = _text(str(last.get("message") or "").split("\n")[0], 120) or branch
             p = gh.json("POST", github.repo_path(repo, "pulls"), {
                 "title": title, "head": branch, "base": base,
@@ -447,7 +605,20 @@ class Pushes:
         self._forget()
         return {"number": p.get("number") if isinstance(p, dict) else None, "url": _safe_url(p.get("html_url")) if isinstance(p, dict) else "", "existing": False}
 
-    def merge(self, body: Any) -> dict[str, Any]:
+    def ui_hold(self, repo: str, number: int, branch: str) -> str:
+        """The UI Review state that holds this PR ('' = free to merge). ui-review@1 items carry a branch and a PR number
+        but no repo, so PR numbers count only for the console's own repo; other repos match by branch. Without the
+        UI Review plugin nothing is held."""
+        svc = claudefix.plugin_services.get(UI_REVIEW_CAP)
+        if svc is None or not (branch or number):
+            return ""
+        try:
+            st = svc.state(branch, number if repo == UI_REVIEW_REPO else None)
+        except Exception:  # noqa: BLE001 — UI Review broken: don't merge blind
+            return "unknown"
+        return str(st.get("state") or "waiting") if st.get("holds") else ""
+
+    def merge(self, body: Any, wait_ui: bool = True) -> dict[str, Any]:
         if not isinstance(body, dict) or set(body) - {"repo", "number", "confirm"}:
             raise HTTPException(400, "send {repo, number, confirm}")
         repo, number = body.get("repo"), body.get("number")
@@ -464,12 +635,22 @@ class Pushes:
                 raise HTTPException(409, "that PR isn't open")
             if p.get("draft") is True:
                 raise HTTPException(409, "that PR is a draft")
+            held = self.ui_hold(repo, number, _text((p.get("head") or {}).get("ref") if isinstance(p.get("head"), dict) else "", 200)) if wait_ui else ""
+            if held:
+                raise HTTPException(409, f"held by UI Review ({held}): Brett approves its screenshots in UI Review first")
             task = self._task(repo, p, "merge", "merge it")
+            sha = _text((p.get("head") or {}).get("sha"), 40)
+            pbase = _text((p.get("base") or {}).get("ref") if isinstance(p.get("base"), dict) else "", 200) or "main"
+            # Up to date with its base first (Oct 30 2026): a PR behind main gets main pulled in and re-tested, then merges.
+            behind = self._code_behind(gh, repo, pbase, sha) if sha else None
+            if behind is None:
+                raise HTTPException(409, f"GitHub couldn't say whether it's up to date with {pbase}: try again in a moment")
+            if behind > 0:
+                raise HTTPException(409, f"it's behind {pbase}: pull {pbase} in first (auto-merge does it, then waits for CI on the new head)")
             if p.get("mergeable") is False:
                 raise HTTPException(409, "GitHub can't merge it: it has conflicts" + self._hand({**task, "failure": "it has conflicts with its base"}))
             if p.get("mergeable") is not True:
                 raise HTTPException(409, "GitHub is still working out whether it can merge: try again in a moment")
-            sha = _text((p.get("head") or {}).get("sha"), 40)
             ci = ci_state(self._checks(gh, repo, sha)) if sha else "none"
             if ci == "failure":
                 raise HTTPException(409, "its CI failed" + self._hand({**task, "failure": "CI failed on its head commit"}))
@@ -483,61 +664,209 @@ class Pushes:
         merged = bool(isinstance(r, dict) and r.get("merged"))
         base = _text((p.get("base") or {}).get("ref") if isinstance(p.get("base"), dict) else "", 200)
         if merged:
+            # the merged head branch goes (Oct 31 2026: a left-over branch was re-opened as a duplicate PR); same-repo only,
+            # never the base or the never-PR branches; best effort (a token without the right just leaves it)
+            ref = _text((p.get("head") or {}).get("ref") if isinstance(p.get("head"), dict) else "", 200)
+            same = (((p.get("head") or {}).get("repo") or {}).get("full_name") or "").lower() == repo.lower() if isinstance(p.get("head"), dict) else False
+            if same and valid_branch(ref) and ref != base and ref not in NO_AUTO_PR and ref not in ALWAYS_HIDDEN:
+                try:
+                    gh.json("DELETE", github.repo_path(repo, "git", "refs", "heads", ref))
+                except Exception:  # noqa: BLE001
+                    pass
             self._remember({"key": f"{repo}:#{number}", "kind": "merged", "repo": repo, "base": base, "number": number,
                             "title": _text(p.get("title")), "url": _safe_url(p.get("html_url")), "text": f"Merged #{number} into {base or 'main'}."})
         return {"merged": merged, "sha": _text(r.get("sha"), 40) if isinstance(r, dict) else "", "url": _safe_url(p.get("html_url"))}
 
 
-    def merge_branch(self, body: Any) -> dict[str, Any]:
-        """Merge a branch without a PR that merges cleanly: re-checked here (ahead, not behind, CI passed on its newest
-        commit), then through a pull request (opened, or the open one) merged with that commit pinned. Never a push to the
-        default branch."""
-        if not isinstance(body, dict) or set(body) - {"repo", "branch", "confirm"}:
-            raise HTTPException(400, "send {repo, branch, confirm}")
-        repo, branch = body.get("repo"), body.get("branch")
-        if repo not in self.config()["repos"]:
-            raise HTTPException(400, "that repo isn't watched here")
-        if not valid_branch(branch):
-            raise HTTPException(400, "that isn't a branch name")
-        if body.get("confirm") != f"{repo}:{branch}":
-            raise HTTPException(400, f'confirm with "{repo}:{branch}"')
-        gh = self.gh()
+    # ---- auto-merge (Oct 30 2026; 0.5.0: every branch through a PR, pulled up to date with main before it merges)
+    def auto_merge(self) -> list[dict[str, Any]]:
+        """One round (module docstring, "Auto-merge"): opens a PR for every branch without one (autoPr), then per repo
+        takes the open PRs oldest first and does one thing with the first one that can go: pull its base in when it is
+        behind (then it waits for CI on the new head), wait while its CI runs, or merge it through `merge` (CI re-checked,
+        head pinned, 0 behind). At most one merge per round. Then branch protection, at most every 6 h. Never raises."""
+        cfg = self.config()
+        if not cfg["autoMerge"] or not self.has_local():  # merging has no hub route: the local token
+            return []
+        done: list[dict[str, Any]] = []
         try:
-            info = gh.repo(repo)
-            base = info.get("default_branch") if isinstance(info, dict) and valid_branch(info.get("default_branch")) else "main"
-            if branch == base:
-                raise HTTPException(400, "that is the default branch")
-            cmp = gh.get(compare_path(repo, base, branch))
-            if not isinstance(cmp, dict) or not isinstance(cmp.get("ahead_by"), int) or cmp["ahead_by"] <= 0:
-                raise HTTPException(409, f"it has nothing {base} doesn't have")
-            if cmp.get("behind_by") != 0:
-                raise HTTPException(409, f"it's behind {base} now: pull {base} in first")
-            sha = _text(self._head(gh, repo, branch).get("sha"), 40)
-            ci = ci_state(self._checks(gh, repo, sha)) if sha else "none"
-            if ci != "success":
-                raise HTTPException(409, {"running": "its CI is still running", "none": "it has no CI result yet", "failure": "its CI failed"}.get(ci, "its CI isn't green"))
-            owner = repo.split("/")[0]
-            open_ = gh.get(github.repo_path(repo, "pulls", query={"state": "open", "head": f"{owner}:{branch}", "base": base}))
-            p = open_[0] if isinstance(open_, list) and open_ and isinstance(open_[0], dict) else None
-            if p is None:
-                last = self._head(gh, repo, branch).get("commit") or {}
-                p = gh.json("POST", github.repo_path(repo, "pulls"), {
-                    "title": _text(str(last.get("message") or "").split("\n")[0], 120) or branch, "head": branch, "base": base,
-                    "body": f"Opened and merged from the Dev Console's Push banner: `{branch}` merged cleanly into `{base}` ({cmp['ahead_by']} commit(s), CI passed)."})
-            number = p.get("number") if isinstance(p, dict) else None
-            if not isinstance(number, int):
-                raise HTTPException(502, "GitHub didn't open the pull request")
-            r = gh.json("PUT", github.repo_path(repo, "pulls", number, "merge"), {"merge_method": "merge", "sha": sha})
+            state = self.branches(force=True)
+        except Exception as e:  # noqa: BLE001 — GitHub down: try again next round
+            return [{"error": _text(str(e), 200)}]
+        if cfg["autoPr"]:
+            for r in state.get("repos", []):
+                for b in r.get("branches", []):
+                    name = b.get("name")
+                    if b.get("pr") or b.get("hidden") or b.get("error") or not valid_branch(name) or name in NO_AUTO_PR or name == r.get("base"):
+                        continue
+                    try:
+                        res = self.open_pr({"repo": r["repo"], "branch": name})
+                        done.append({"branch": f"{r['repo']}:{name}", "opened": res.get("number"), "existing": bool(res.get("existing"))})
+                    except HTTPException as e:
+                        done.append({"branch": f"{r['repo']}:{name}", "opened": None, "why": _text(str(e.detail), 200)})
+                    except Exception as e:  # noqa: BLE001
+                        done.append({"branch": f"{r['repo']}:{name}", "opened": None, "why": _text(str(e), 200)})
+        # a failed pull is skipped until its PR gets a new commit (a fix) or it is taken off Pull failed
+        failed = {d["key"]: d.get("sha", "") for d in self.failed()}
+        land = self.land() if cfg["autoLand"] else {"order": [], "managed": [], "waitUi": True}
+        rank = {n: i for i, n in enumerate(land["order"])}
+        managed = set(land["managed"])
+        wait_ui = land["waitUi"] is not False
+        merged_one = False
+        gh = self.gh()
+        for r in state.get("repos", []):
+            repo, base = r["repo"], r.get("base") or "main"
+            queue = [p for p in r.get("pulls", []) if isinstance(p.get("number"), int) and not p.get("draft") and not p.get("hidden")
+                     and not p.get("fork") and p.get("base") == base and failed.get(f"{repo}:#{p['number']}", None) not in ("", p.get("sha"))]
+            queue.sort(key=lambda p: (p.get("created") or p.get("updated") or "", p["number"]))  # oldest first
+            if repo == UI_REVIEW_REPO and rank:  # finished builds first, in auto-land's dependency order (land.json)
+                queue.sort(key=lambda p: rank.get(p["number"], len(rank)))
+            for p in queue:
+                key = f"{repo}#{p['number']}"
+                line = {"pr": key, "title": p.get("title", "")}
+                if p.get("ci") in ("failure", "none", "unknown"):
+                    continue  # nothing to do until it is fixed (or, without CI, never)
+                held = self.ui_hold(repo, p["number"], p.get("head") or "") if wait_ui else ""
+                if held:  # waiting on Brett in UI Review: the next PR gets its turn
+                    done.append({**line, "merged": False, "held": held, "why": f"held by UI Review ({held})"})
+                    continue
+                try:
+                    behind = self._code_behind(gh, repo, base, p["sha"]) if p.get("sha") else None
+                except (github.GitHubError, ValueError):
+                    behind = None
+                if behind is None:
+                    done.append({**line, "merged": False, "why": "GitHub couldn't say whether it's up to date: next round"})
+                    break
+                if behind > 0 and repo == UI_REVIEW_REPO and p["number"] in managed:
+                    # auto-land merges main in on the host (builds files newer-wins, logs unioned): GitHub's own update
+                    # would conflict on the builds store; the next PR gets its turn
+                    done.append({**line, "merged": False, "why": f"{behind} behind {base} in code: auto-land merges {base} in"})
+                    continue
+                if behind > 0:
+                    try:
+                        self.update({"repo": repo, "number": p["number"], "confirm": key})
+                        done.append({**line, "merged": False, "pulled": True, "why": f"{behind} behind {base}: pulled {base} in, waiting for CI on the new head"})
+                        break  # one at a time: this one goes first once its new CI is green
+                    except HTTPException as e:  # conflicts: in Pull failed (and Fix with Claude when on); the next PR gets its turn
+                        fk = f"{repo}:#{p['number']}"
+                        hit = next((d for d in self.failed() if d["key"] == fk), None)
+                        if hit:
+                            self._set_failed(fk, {**{k: v for k, v in hit.items() if k not in ("key", "at")}, "sha": p.get("sha", "")})
+                        done.append({**line, "merged": False, "pulled": False, "why": _text(str(e.detail), 200)})
+                        continue
+                if p.get("ci") == "running" or p.get("mergeable") is not True:
+                    done.append({**line, "merged": False, "why": "waiting: CI is running on its head" if p.get("ci") == "running" else "waiting: GitHub is working out whether it can merge"})
+                    break
+                if merged_one:
+                    done.append({**line, "merged": False, "why": "ready: merges next round (one merge per round)"})
+                    break
+                try:
+                    res = self.merge({"repo": repo, "number": p["number"], "confirm": key}, wait_ui=wait_ui)
+                    merged_one = bool(res.get("merged"))
+                    done.append({**line, "merged": merged_one})
+                except HTTPException as e:
+                    done.append({**line, "merged": False, "why": _text(str(e.detail), 200)})
+                except Exception as e:  # noqa: BLE001
+                    done.append({**line, "merged": False, "why": _text(str(e), 200)})
+                break
+        try:
+            self.protect_all()
+        except Exception:  # noqa: BLE001 — protection is best effort; the systems check says what's wrong
+            pass
+        if done:
+            try:
+                storage.write_json(data_dir() / "auto-merge.json", {"$axf": "push-banner-automerge@1", "at": int(self.clock() * 1000), "last": done[:50]})
+            except OSError:
+                pass
+        return done
+
+    # ---- branch protection on the default branch (0.5.0): require a PR, branches up to date, the CI every PR runs
+    def protection(self) -> dict[str, Any]:
+        raw = storage.read_json(data_dir() / "protection.json", {}) or {}
+        repos = raw.get("repos") if isinstance(raw, dict) and isinstance(raw.get("repos"), dict) else {}
+        watched = self.config()["repos"]
+        return {"at": raw.get("at") if isinstance(raw, dict) else None, "repos": {k: v for k, v in repos.items() if k in watched and isinstance(v, dict)}}
+
+    def _required_checks(self, gh: github.GitHubClient, repo: str, base: str) -> list[str]:
+        """The check names every recent PR into <base> ran (the intersection over the last few merged PRs' heads): a
+        required check that some PRs never run would hold them forever, so only those."""
+        pulls = gh.get(github.repo_path(repo, "pulls", query={"state": "closed", "base": base, "per_page": 10, "sort": "updated", "direction": "desc"}))
+        names: set[str] | None = None
+        for p in [x for x in (pulls if isinstance(pulls, list) else []) if isinstance(x, dict) and x.get("merged_at")][:5]:
+            sha = _text((p.get("head") or {}).get("sha"), 40)
+            if not sha:
+                continue
+            got = {_text(c.get("name"), 120) for c in self._checks(gh, repo, sha) if c.get("name")}
+            names = got if names is None else names & got
+        return sorted(names or [])
+
+    def protect(self, gh: github.GitHubClient, repo: str) -> dict[str, Any]:
+        """Turn on (never loosen) protection on <repo>'s default branch. Returns what it found/did."""
+        info = gh.repo(repo)
+        base = info.get("default_branch") if isinstance(info, dict) and valid_branch(info.get("default_branch")) else "main"
+        out: dict[str, Any] = {"base": base, "state": "unknown", "error": "", "checks": []}
+        path = github.repo_path(repo, "branches", base, "protection")
+        try:
+            cur = gh.get(path)
         except github.GitHubError as e:
-            self._forget()
-            raise HTTPException(502, _text(str(e)) + (" (the pull request is open: merge it from Ready to merge)" if "number" in locals() and number else "")) from None
-        self._forget()
-        merged = bool(isinstance(r, dict) and r.get("merged"))
-        url = _safe_url(p.get("html_url"))
-        if merged:
-            self._remember({"key": f"{repo}:{branch}", "kind": "merged", "repo": repo, "base": base, "branch": branch, "number": number,
-                            "title": _text(p.get("title")) or branch, "url": url, "text": f"Merged {branch} into {base} (#{number})."})
-        return {"merged": merged, "number": number, "url": url}
+            if getattr(e, "status", 0) != 404:  # 404 = not protected yet; 403 etc. = the token may not read it
+                return {**out, "state": "cannot", "error": _text(str(e), 300)}
+            cur = {}
+        cur = cur if isinstance(cur, dict) else {}
+        rsc = cur.get("required_status_checks") if isinstance(cur.get("required_status_checks"), dict) else None
+        rpr = cur.get("required_pull_request_reviews") if isinstance(cur.get("required_pull_request_reviews"), dict) else None
+        have_checks = [c for c in (rsc or {}).get("contexts", []) if isinstance(c, str)] if rsc else []
+        if rsc and rsc.get("strict") is True and rpr is not None and have_checks:
+            return {**out, "state": "protected", "checks": have_checks}
+        if rpr and (rpr.get("dismissal_restrictions") or rpr.get("bypass_pull_request_allowances")):
+            # rewriting those could loosen them: leave the branch as it is and say what's missing
+            return {**out, "state": "cannot", "checks": have_checks, "error": "it has review restrictions the banner won't rewrite: turn on "
+                    "'Require branches to be up to date' and a required check on GitHub (Settings → Branches)"}
+        want = have_checks or self._required_checks(gh, repo, base)
+        reviews = {"required_approving_review_count": 0}
+        if rpr:  # keep every review rule it already has
+            reviews = {k: rpr[k] for k in ("dismiss_stale_reviews", "require_code_owner_reviews", "required_approving_review_count", "require_last_push_approval") if k in rpr}
+            reviews.setdefault("required_approving_review_count", 0)
+        restr = cur.get("restrictions") if isinstance(cur.get("restrictions"), dict) else None
+        body = {
+            "required_status_checks": {"strict": True, "contexts": sorted(set(want))},
+            # unchanged when set; admins are held to it too when it's new, so nothing reaches main except through a PR
+            "enforce_admins": bool((cur.get("enforce_admins") or {}).get("enabled")) if cur else True,
+            "required_pull_request_reviews": reviews,
+            "restrictions": {"users": [u.get("login") for u in restr.get("users", []) if isinstance(u, dict)],
+                             "teams": [t.get("slug") for t in restr.get("teams", []) if isinstance(t, dict)],
+                             "apps": [a.get("slug") for a in restr.get("apps", []) if isinstance(a, dict)]} if restr else None,
+        }
+        for k in ("required_linear_history", "allow_force_pushes", "allow_deletions", "required_conversation_resolution", "lock_branch", "block_creations"):
+            if isinstance(cur.get(k), dict) and isinstance(cur[k].get("enabled"), bool):
+                body[k] = cur[k]["enabled"]
+        try:
+            gh.json("PUT", path, body)
+        except github.GitHubError as e:
+            return {**out, "state": "cannot", "error": _text(str(e), 300)}
+        return {**out, "state": "protected", "checks": body["required_status_checks"]["contexts"], "set": True}
+
+    def protect_all(self, force: bool = False) -> dict[str, Any]:
+        cur = self.protection()
+        now = self.clock()
+        if not force and isinstance(cur.get("at"), (int, float)) and now - cur["at"] / 1000 < PROTECT_EVERY_S and set(cur["repos"]) >= set(self.config()["repos"]):
+            return cur
+        if not self.has_local():  # protection is a write: the local token
+            return cur
+        gh = self.gh()
+        repos: dict[str, Any] = {}
+        for repo in self.config()["repos"]:
+            try:
+                repos[repo] = self.protect(gh, repo)
+            except (github.GitHubError, ValueError) as e:
+                repos[repo] = {"base": "main", "state": "cannot", "error": _text(str(e), 300), "checks": []}
+        out = {"$axf": "push-banner-protection@1", "at": int(now * 1000), "repos": repos}
+        storage.write_json(data_dir() / "protection.json", out)
+        return {"at": out["at"], "repos": repos}
+
+    def merge_branch(self, body: Any) -> dict[str, Any]:
+        """No direct merges (0.5.0, Oct 30 2026, Brett: "I want everything to need a PR"): a branch reaches main only
+        through its pull request, brought up to date with main and re-tested first. Always refused."""
+        raise HTTPException(409, "branches don't merge straight into main any more: open a PR (Open PR); auto-merge pulls main in and merges it once CI on its up-to-date head is green")
 
     def update(self, body: Any) -> dict[str, Any]:
         """Pull main in; a pull GitHub refuses (or can't be done) goes to the "Pull failed" group, one that works leaves it."""
@@ -676,8 +1005,121 @@ PUSHES = Pushes()
 CLAUDE = claudefix.Launches(lambda: PUSHES.config())
 
 
+class ProtectionChecks:
+    """axf.syscheck.items@1 (one provider per name, so this one is named …:push-protection): the systems check lists
+    these items and runs `fix` for Auto fix."""
+
+    def items(self) -> list[dict[str, Any]]:
+        if not PUSHES.has_local():
+            return []
+        cur = PUSHES.protection()
+        out = []
+        for repo in PUSHES.config()["repos"]:
+            st = cur["repos"].get(repo)
+            title = f"Branch protection: {repo}"
+            if not st:
+                out.append({"id": f"protect:{repo}", "title": title, "status": "info", "autoFix": True,
+                            "summary": "not checked yet: Auto fix sets it (require a PR, branches up to date with main, the CI every PR runs)"})
+            elif st.get("state") == "protected":
+                checks = st.get("checks") or []
+                out.append({"id": f"protect:{repo}", "title": title, "status": "ok" if checks else "info", "autoFix": not checks,
+                            "summary": f"{st.get('base', 'main')} needs a PR that is up to date with it" + (f" and green {', '.join(checks)[:160]}" if checks else
+                                                                                                           "; no required check yet (no CI name every PR runs): Auto fix looks again")})
+            else:
+                out.append({"id": f"protect:{repo}", "title": title, "status": "warn", "autoFix": True,
+                            "summary": f"couldn't protect {st.get('base', 'main')}: {_text(st.get('error'), 200)}",
+                            "details": ["Every change reaches main through a PR that is up to date with main and re-tested (Brett, Oct 30 2026). "
+                                        "The push banner enforces it itself; GitHub's branch protection makes it hold for everyone else too.",
+                                        f"Give the console's GITHUB_TOKEN Administration: Read and write on {repo} (fine-grained token → Repository "
+                                        "permissions), or a classic token with repo scope. Private repos on a free plan need GitHub Pro for protection.",
+                                        "Then tap Auto fix: it sets require a PR, require branches to be up to date and the CI checks every PR runs, "
+                                        "and never loosens what is already set."]})
+        return out
+
+    def fix(self, item_id: str) -> str:
+        res = PUSHES.protect_all(force=True)
+        repo = item_id.split(":", 1)[1] if ":" in item_id else ""
+        st = res["repos"].get(repo, {})
+        if st.get("state") == "protected":
+            return f"{repo}: {st.get('base', 'main')} is protected"
+        raise HTTPException(409, f"{repo}: still can't protect it: {_text(st.get('error'), 200) or 'GITHUB_TOKEN isn’t set'}")
+
+
+claudefix.plugin_services.provide("axf.syscheck.items@1:push-protection", ProtectionChecks(), "push-banner")
+
+AUTO_MERGE_EVERY_S = max(60, int(os.environ.get("AXF_PUSH_AUTOMERGE_S", "180") or 180))
+
+
+def health_probe(p: "Pushes") -> dict[str, Any]:
+    """health@1 run(): can the push banner read GitHub, and through which route; can it write (PRs, merges)?"""
+    if not p.can_read():
+        return {"status": "error", "summary": f"Push banner: {NO_ROUTE}."}
+    gh = p.gh()
+    try:
+        me = gh.get("/user", timeout=10)
+    except github.GitHubError as e:
+        # a GitHub App installation token (github-app@1) may not read /user (403): any authenticated read proves the route
+        try:
+            if e.status != 403:
+                raise
+            me = {"login": "the GitHub App"} if gh.get("/rate_limit", timeout=10) is not None else None
+        except github.GitHubError:
+            return {"status": "error", "summary": f"Push banner can't read GitHub: {_text(str(e), 200)}."}
+    route = "axHub" if getattr(gh, "last_route", "") == "axhub" else "the console's GITHUB_TOKEN"
+    who = f" as {me['login']}" if isinstance(me, dict) and me.get("login") else ""
+    if not p.has_local():
+        return {"status": "warn", "summary": f"Push banner reads GitHub through {route}{who}, but GITHUB_TOKEN isn't set: "
+                                             "opening PRs, merging and auto-merge are off until it is.",
+                "breaks": "Ready PRs don't merge by themselves and branches get no PR."}
+    return {"status": "ok", "summary": f"Push banner reads GitHub through {route}{who}; PRs and merges use the console's GITHUB_TOKEN "
+                                       "(tested by the GitHub token item)."}
+
+
+_health_done = False
+
+
+def ensure_health() -> bool:
+    """Registers the push banner's check on axf.health@1 once the systems check provides it (plugins load in any order,
+    so this runs again from the auto-merge loop and every branches read until it lands). Without it: nothing."""
+    global _health_done
+    if _health_done:
+        return True
+    reg = claudefix.plugin_services.get(HEALTH_CAP)
+    if reg is None:
+        return False
+    try:
+        reg.register({"id": HEALTH_ID, "label": "Push banner reaches GitHub", "service": "github", "order": 14, "severity": "error",
+                      "run": lambda: health_probe(PUSHES),
+                      "breaks": "The push banner can't list branches, open PRs or auto-merge ready PRs.",
+                      "links": [{"label": "GitHub → Fine-grained tokens", "url": "https://github.com/settings/personal-access-tokens"}],
+                      "instructions": ["Reads go through axHub when the console has AXHUB_TOKEN (Settings → Plugins → Systems check → GitHub route).",
+                                       "PRs, merges and branch protection need the console's GITHUB_TOKEN (Contents, Pull requests, "
+                                       "Administration: read and write); set it and tap Check now."]}, "push-banner")
+    except Exception:  # noqa: BLE001 — the banner works without its health item
+        return False
+    _health_done = True
+    return True
+
+
+def _auto_merge_loop() -> None:
+    """Runs in the console server: every few minutes, merge whatever is ready (setting autoMerge, on by default).
+    No Claude session and no tokens: GitHub calls only. AXF_PUSH_AUTOMERGE=off stops the loop."""
+    while True:
+        time.sleep(AUTO_MERGE_EVERY_S)
+        try:
+            ensure_health()
+            PUSHES.auto_merge()
+        except Exception:  # noqa: BLE001 — never take the server down
+            pass
+
+
+if os.environ.get("AXF_PUSH_AUTOMERGE", "").lower() != "off":
+    threading.Thread(target=_auto_merge_loop, name="push-banner-auto-merge", daemon=True).start()
+
+
 @router.get("/branches")
 def branches(refresh: bool = False) -> dict[str, Any]:
+    ensure_health()
     return PUSHES.branches(force=refresh)
 
 
@@ -719,6 +1161,30 @@ def merge(body: Any = Body(None)) -> dict[str, Any]:
     return _tracked("merge", "Merge", body, PUSHES.merge)
 
 
+@router.post("/auto-merge")
+def auto_merge_now() -> dict[str, Any]:
+    """Run auto-merge once now (the banner's "Merge everything ready" and tests)."""
+    return {"results": PUSHES.auto_merge()}
+
+
+@router.get("/auto-merge")
+def auto_merge_last() -> dict[str, Any]:
+    raw = storage.read_json(data_dir() / "auto-merge.json", {}) or {}
+    cfg = PUSHES.config()
+    return {"on": cfg["autoMerge"], "autoPr": cfg["autoPr"], "everyS": AUTO_MERGE_EVERY_S, "last": raw.get("last", []), "at": raw.get("at"),
+            "protection": PUSHES.protection()["repos"]}
+
+
+@router.get("/protection")
+def get_protection() -> dict[str, Any]:
+    return PUSHES.protection()
+
+
+@router.post("/protection")
+def set_protection() -> dict[str, Any]:
+    return PUSHES.protect_all(force=True)
+
+
 @router.post("/merge-branch")
 def merge_branch(body: Any = Body(None)) -> dict[str, Any]:
     return _tracked("merge", "Merge", body, PUSHES.merge_branch)
@@ -755,6 +1221,38 @@ def claude_jobs() -> dict[str, Any]:
 @router.post("/claude")
 def claude_fix(body: Any = Body(None)) -> dict[str, Any]:
     return PUSHES.claude_fix(body)
+
+
+@router.get("/land")
+def land_list() -> dict[str, Any]:
+    return PUSHES.land()
+
+
+@router.get("/land/blocked")
+def land_blocked() -> dict[str, Any]:
+    st = PUSHES.land()
+    return {**st, "items": [x for x in st["items"] if x.get("state") == "blocked"]}
+
+
+@router.get("/ui-hold")
+def ui_hold(branch: str = "", pr: int = 0) -> dict[str, Any]:
+    """The UI Review state holding a PR for the auto-land script ('' = free), asked through ui-review@1."""
+    return {"hold": PUSHES.ui_hold(UI_REVIEW_REPO, pr, branch)}
+
+
+@router.post("/land/now")
+def land_now(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.land_command("now", body)
+
+
+@router.post("/land/hold")
+def land_hold(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.land_command("hold", body)
+
+
+@router.post("/land/release")
+def land_release(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.land_command("release", body)
 
 
 @router.get("/config")

@@ -1,0 +1,54 @@
++ app/api/**/media/
++ app/api/**/storage/
++ app/api/**/data/
++ .env.example
+# AXP backup: never copied from the live folders (rsync --exclude-from)
+.git/
+node_modules/
+.next/
+dist/
++ /build/
++ /build/tools/
+- /build/*
+- build/
+build/reports/
+- .env*
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets*
+*.sqlite*
+*.db
+*.dump
+*.sql.gz
+dumps/
+backups/
+uploads/
+media/
+recordings/
+storage/
+data/
+seed-data/
+.prod-accounts/
+logs/
+build-root/
+*.log
+*.ndjson
+*.ndjson.backup-*
+*.bak
+*.bak-*
+*.backup-*
+.state/
+__pycache__/
+.preview-shots/
+.tmpjsx/
+evidence/
+*.tsbuildinfo
+*.mp4
+*.webm
+*.mov
+*.mkv
+*.wav
+*.mp3

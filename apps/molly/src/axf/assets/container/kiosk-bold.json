@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "container",
+  "id": "kiosk-bold",
+  "name": "Kiosk Bold container",
+  "version": "1.0.0",
+  "description": "Kiosk Bold: card with a accent header.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "bold",
+    "kiosk",
+    "touch"
+  ],
+  "data": {
+    "variant": "card",
+    "header": "accent",
+    "padding": "lg",
+    "elevation": 2,
+    "collapsible": false
+  }
+}

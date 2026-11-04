@@ -1,0 +1,88 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-b4a1e5c0de",
+  "createdAt": "2026-10-21T18:08:12.000Z",
+  "updatedAt": "2026-10-22T02:58:25.482Z",
+  "kind": "build",
+  "title": "Build banner: icon next to the timer opens the session running the build",
+  "asked": "In the in-progress building banner put an icon next to the timer to open the session (whatever runs it: Claude Code, Moshi, Claude in the browser) with its window in focus",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "host": "claude-code-cloud"
+  },
+  "steps": [
+    {
+      "text": "Record where a session runs (runner: claude.ai session link, tmux/Moshi, console terminal) in the hooks",
+      "state": "done",
+      "startedAt": "2026-10-21T18:08:12.000Z",
+      "finishedAt": "2026-10-21T18:12:42.000Z"
+    },
+    {
+      "text": "Banner: open-session icon next to the timer",
+      "state": "done",
+      "startedAt": "2026-10-21T18:12:42.000Z",
+      "finishedAt": "2026-10-21T18:22:59.000Z"
+    },
+    {
+      "text": "Terminal: open a VPS tab attached to the build's tmux session",
+      "state": "done",
+      "startedAt": "2026-10-21T18:22:59.000Z",
+      "finishedAt": "2026-10-21T18:22:59.000Z"
+    },
+    {
+      "text": "Tests, docs, push, PR",
+      "state": "done",
+      "startedAt": "2026-10-21T18:22:59.000Z",
+      "finishedAt": "2026-10-21T18:22:59.000Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "Icon after the banner timer opens what runs the build, in focus: claude.ai/Claude Code web session in a named window, tmux (Moshi) via a VPS terminal tab attached to that session, or a console terminal tab. change-log@1 gains an optional runner, recorded by the hooks.",
+    "branch": "feat/build-banner-open-session",
+    "commits": [
+      {
+        "sha": "5902da6"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "pr": "https://github.com/MossesX/AmberX-AXF/pull/10",
+      "report": "_claude/memory/docs/build-manager.md"
+    }
+  },
+  "closed": {
+    "at": "2026-10-22T02:58:25.482Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "build-banner-open-session"
+  },
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-21T18:08:12.000Z",
+  "finishedAt": "2026-10-21T18:22:59.000Z",
+  "lastSeenAt": "2026-10-21T18:22:59.000Z",
+  "estimate": {
+    "minutes": 40,
+    "costUsd": 5.6
+  },
+  "actual": {
+    "minutes": 15
+  },
+  "costEstimated": true,
+  "branch": "feat/build-banner-open-session",
+  "areas": [
+    "apps/console-web/plugins/build-manager/web",
+    "apps/console-web/plugins/codebase-changes",
+    "apps/console-web/plugins/console-terminal"
+  ],
+  "doing": "Done",
+  "progress": 1.0
+}

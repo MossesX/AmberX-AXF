@@ -1,0 +1,85 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261029-140cb1f202",
+  "createdAt": "2026-10-29T04:25:13.379Z",
+  "updatedAt": "2026-10-29T04:26:02.633Z",
+  "kind": "fix",
+  "title": "# Fix a failing AXF Dev Console systems check: Console public URL is set The console's systems chec…",
+  "asked": "# Fix a failing AXF Dev Console systems check: Console public URL is set The console's systems check reported this, and its automatic fix failed. Fix the cause, then re-check. - Check id: `routine:env-axf-public-url` (service console, status warn) - What it says: AXF_PUBLIC_URL isn't set - How the fix failed: To stop it coming back after a reinstall, `deploy/install-console.sh` should pass the variable on the Coolify run. That's the fix I proposed earlier, and it's still waiting on your go. Details: - Alerts and push notifications build their links from AXF_PUBLIC_URL, so links are empty when it isn't set. - env {\"name\": \"AXF_PUBLIC_URL\"} How it's fixed by hand: - In Coolify, open the console app → Environment variables. - Add AXF_PUBLIC_URL=https://console.amberxai.com and redeploy. Rules: - Fix only this check. Change nothing unrelated; never delete data, volumes, containers or other people's files. - Never print, copy or commit secrets (tokens, keys, .env files, .axf-console/). - Code changes go on this worktree's branch only: commit and push the branch, never main, never merge. - When done, refresh the host report: `bash /opt/axf/deploy/console-doctor.sh --report`. - Record steps and the result on your change-log entry (the hooks do most of it; `changes.mjs step|result last …`). - You may run shell commands on the VPS (you run as root): prefer the smallest, reversible change.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "e12fd40d-276",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [
+    {
+      "text": "install-console.sh passes AXF_PUBLIC_URL to the console container",
+      "state": "done",
+      "startedAt": "2026-10-29T04:25:44.958Z",
+      "finishedAt": "2026-10-29T04:25:44.958Z"
+    }
+  ],
+  "result": {
+    "state": "partial",
+    "summary": "install-console.sh now passes AXF_PUBLIC_URL (default https://$DOMAIN); committed 48626517 on fix/syscheck-routine-env-axf-public-url, push failed: no GitHub credentials on the VPS. Live check stays warn until merged and the 5-min update recreates the container.",
+    "branch": "fix/syscheck-routine-env-axf-public-url",
+    "commits": [
+      {
+        "sha": "48626517"
+      }
+    ],
+    "filesChanged": 1,
+    "tests": {
+      "axf-deploy self-test": {
+        "after": "42 passed"
+      }
+    },
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "surface": "console-launch",
+  "startedAt": "2026-10-29T04:25:13.379Z",
+  "finishedAt": "2026-10-29T04:25:56.511Z",
+  "lastSeenAt": "2026-10-29T04:25:47.588Z",
+  "actual": {
+    "minutes": 1,
+    "costUsd": 0.4383,
+    "inputTokens": 24,
+    "outputTokens": 4160,
+    "cacheReadTokens": 608305,
+    "cacheWriteTokens": 46678,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-fixes/fix-syscheck-routine-env-axf-public-url",
+    "branch": "fix/syscheck-routine-env-axf-public-url",
+    "base": "6a24fa93e70a7f0092325133d4c2a89c6e274d68",
+    "head": "4862651722223254daf80e718d5d7a3d161fa035",
+    "pushed": false,
+    "dirty": 10,
+    "files": [
+      "deploy/install-console.sh",
+      ".axf-brief.md",
+      ".axf-fix.jsonl",
+      ".axf-fix.log",
+      "apps/amberx-droid/_claude/",
+      "apps/axhub-android/_claude/",
+      "apps/axhub-web/_claude/",
+      "apps/patches-web/_claude/",
+      "apps/patches/_claude/",
+      "apps/voicevault/_claude/",
+      "apps/walkthrough-studio/_claude/"
+    ],
+    "at": "2026-10-29T04:26:02.773Z"
+  }
+}

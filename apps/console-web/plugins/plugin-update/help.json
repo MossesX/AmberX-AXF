@@ -1,0 +1,67 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "plugin-update-help",
+  "name": "plugin-update help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:plugin-update. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:plugin-update",
+    "entries": [
+      {
+        "target": "keep-its-data-settings-history-for-the-new-build",
+        "title": "Keep its data (settings, history) for the new build",
+        "text": "Turns “Keep its data (settings, history) for the new build” on or off. It takes effect straight away and is remembered. Part of Plugin Update.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "remove-the-old-build-and-install-the-new-one",
+        "title": "Remove the old build and install the new one",
+        "text": "Removes the old build and install the new one. Depending on your behaviour theme it asks first. Part of Plugin Update.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "park-the-rebuild",
+        "title": "Park the rebuild",
+        "text": "Parks the rebuild. Part of Plugin Update.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "replace",
+        "title": "Replace ( )",
+        "text": "Shows “Replace ( )”. Part of Plugin Update.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "open-plugin-update",
+        "title": "Open Plugin Update",
+        "text": "Opens plugin Update. Part of Plugin Update.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "action:plugin-update.open",
+        "title": "Plugin Update",
+        "text": "Shows “Plugin Update”. Part of Plugin Update.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "plugin-update",
+        "title": "Plugin Update",
+        "text": "Shows the “Plugin Update” part of this screen. Part of Plugin Update.",
+        "kind": "tab",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

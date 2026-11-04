@@ -1,0 +1,76 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-fc3f789d-4088-41fb-97d3-a328f5786182",
+ "source": "claude-code",
+ "sessionId": "fc3f789d-4088-41fb-97d3-a328f5786182",
+ "project": "amberx-axf",
+ "title": "Context: {\"openPlan\":null,\"categories\":[\"Apps\",\"Console\",\"Console > Plugins\",\"Framework\",\"Framework > Docs\",\"Framework …",
+ "startedAt": "2026-10-31T07:48:52.688Z",
+ "endedAt": "2026-10-31T07:48:54.666Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "axf-console",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.316",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/axf",
+  "repo": "",
+  "branch": "main"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-10-31T07:48:52.885Z",
+   "kind": "prompt",
+   "text": "Context: {\"openPlan\":null,\"categories\":[\"Apps\",\"Console\",\"Console > Plugins\",\"Framework\",\"Framework > Docs\",\"Framework > Libraries\",\"Product\",\"Product > Installer\"],\"plans\":[{\"id\":\"amberx-selling-it\",\"title\":\"AmberX — Selling It: Product + Installer Plan\",\"status\":\"parked\",\"left\":0},{\"id\":\"clipx\",\"title\":\"ClipX: clipboard manager app\",\"status\":\"parked\",\"left\":16},{\"id\":\"docs-studio\",\"title\":\"Docs Studio\",\"status\":\"parked\",\"left\":15}],\"catalog\":[{\"key\":\"app:amberx-droid\",\"name\":\"AmberX\",\"features\":[\"app-plugin:ai: AI connection [have]\",\"app-plugin:approvals: Terminal (held commands) [have]\",\"a…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 2,
+    "output": 121,
+    "cacheRead": 11696,
+    "cacheWrite": 48610,
+    "thinking": 0
+   },
+   "costUsd": 0.2478,
+   "costEstimated": false,
+   "seconds": 2,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": "{\"ops\":[{\"op\":\"answer\",\"text\":\"Hi! No plan is open right now. You have three parked plans: AmberX — Selling It, ClipX (16 steps left) and Docs Studio (15 left). Open one to edit it, or tell me what you want to plan.\"}],\"reply\":\"Hi! Open a plan or tell me what you'd like to plan.\"}"
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 2,
+  "output": 121,
+  "cacheRead": 11696,
+  "cacheWrite": 48610,
+  "thinking": 0,
+  "costUsd": 0.2478,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0.3936
+ },
+ "ingestedAt": "2026-10-31T13:52:07.120Z"
+}

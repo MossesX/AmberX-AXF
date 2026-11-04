@@ -1,10 +1,10 @@
 /**
  * Push banner console plugin (ai.amberx.axf.console.push-banner).
  *
- * A banner (order 4.8, after Codebase changes) whenever any watched repo (default AmberX-AXF, axHub, Build-Pilot) has a
+ * A banner (order 4.8, after Codebase changes) whenever any watched repo (default AmberX-AXF, axHub) has a
  * branch ahead of its default branch: repo, branch, commits ahead/behind, age, last commit, its open PR and that PR's CI.
- * Open PR opens one into main; Merge (twice, to confirm) merges it once CI has passed; ✕ hides a branch on every device.
- * main is never pushed to directly. Shown above every tab in Patches through the console's banner strip.
+ * Open PR opens one into main (auto-merge opens one for every branch); Merge (twice, to confirm) merges it once it is up to date with main and CI has passed; ✕ hides a branch on every device.
+ * main is never pushed to directly.
  */
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';

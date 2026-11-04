@@ -16,17 +16,19 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
+import { AccountsDialog } from './accounts';
 
 const ID = 'ai.amberx.axf.console.ai-keys';
 const FOLDER = 'ai-keys';
 const DIALOG = 'ai-keys';
+const ACCOUNTS = 'ai-keys.accounts';
 const api = pluginApi(FOLDER, 'AI keys');
 
 interface Test { ok: boolean; at: number; ms: number; detail?: string; error?: string; steps?: { step: string; ok: boolean; note?: string }[] }
 interface KeyRow {
   id: string; label: string; kind: 'anthropic' | 'claude-code'; kindLabel: string; hint: string; active: boolean; createdAt: number; lastTest: Test | null;
   pair?: boolean; needsRefresh?: boolean; refreshHint?: string; expiresAt?: number | null; refreshedAt?: number | null;
-  refreshError?: { at: number; error: string } | null; subscriptionType?: string | null;
+  refreshError?: { at: number; error: string } | null; subscriptionType?: string | null; email?: string; accountName?: string; limitedAt?: number | null;
 }
 interface VpsLog { at: number; level: string; text: string }
 interface Vps { state: string; via?: string; at?: number; label?: string; approval?: string; error?: string; log: VpsLog[]; direct: boolean; command: string }
@@ -47,6 +49,8 @@ function KeyItem({ k, busy, run }: { k: KeyRow; busy: boolean; run: (fn: () => P
         <code className="fx-muted">{k.hint}</code>
         {k.pair && <code className="fx-muted">refresh {k.refreshHint}</code>}
         {k.subscriptionType && <span className="fx-chip">{k.subscriptionType}</span>}
+        {k.email && <span className="fx-chip" title={k.accountName || 'Claude account'}>{k.email}</span>}
+        {k.limitedAt && !k.active && <span className="fx-chip" title="Hit a usage or weekly limit; re-test it once the limit resets">limit hit</span>}
       </div>
       <p className="fx-muted" style={{ margin: 0 }}>
         {t ? (t.ok ? `Works · tested ${when(t.at)}${t.detail ? ` · ${t.detail}` : ''}` : `Failed ${when(t.at)}: ${t.error}`) : 'Not tested yet'}
@@ -74,6 +78,7 @@ function KeyItem({ k, busy, run }: { k: KeyRow; busy: boolean; run: (fn: () => P
 }
 
 function KeysDialog() {
+  const rt = useRuntime();
   const [data, setData] = useState<Listing | null>(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -101,6 +106,7 @@ function KeysDialog() {
   return (
     <div className="fx-stack">
       <p className="fx-small fx-muted" style={{ margin: 0 }} title="The active key of each kind replaces the AI assistant's own key for that provider (Anthropic / Claude Code subscription). No active key = the assistant's own setting applies.">The active key of each kind replaces the assistant's own key; none active = its own setting.</p>
+      <div className="fx-row"><Button icon="user" onClick={() => rt.openDialog(ACCOUNTS)}>Manage Claude accounts…</Button></div>
       {error && <Note tone="danger">{error}</Note>}
       {data?.kinds.map((kd) => {
         const rows = data.keys.filter((k) => k.kind === kd.id);
@@ -154,7 +160,10 @@ function OpenPanel() {
   return (
     <div className="fx-stack">
       <p style={{ margin: 0 }}>Store several Anthropic API keys and Claude subscription tokens, and pick which one the AI assistant uses.</p>
-      <div className="fx-row"><Button tone="primary" icon="key" onClick={() => rt.openDialog(DIALOG)}>Open AI keys</Button></div>
+      <div className="fx-row fx-row--wrap">
+        <Button tone="primary" icon="user" onClick={() => rt.openDialog(ACCOUNTS)}>Manage Claude accounts</Button>
+        <Button icon="key" onClick={() => rt.openDialog(DIALOG)}>Open AI keys</Button>
+      </div>
     </div>
   );
 }
@@ -162,14 +171,21 @@ function OpenPanel() {
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'AI keys',
-  version: '0.2.0',
+  version: '0.4.0',
   appMenu,
   register(rt) {
     rt.actions.register('ai-keys.open', () => rt.openDialog(DIALOG), { label: 'AI keys' });
+    rt.actions.register('ai-keys.accounts', () => rt.openDialog(ACCOUNTS), { label: 'Manage Claude accounts' });
   },
-  dialogs: { [DIALOG]: { title: 'AI keys', icon: 'key', render: () => <KeysDialog /> } },
+  dialogs: {
+    [DIALOG]: { title: 'AI keys', icon: 'key', render: () => <KeysDialog /> },
+    [ACCOUNTS]: { title: 'Manage Claude accounts', icon: 'user', render: () => <AccountsDialog /> },
+  },
   contextMenu: [
-    { id: 'ai-keys.default', target: 'default', order: 92, items: [{ id: 'ai-keys', label: 'AI keys…', icon: 'key', action: 'ai-keys.open' }] },
+    { id: 'ai-keys.default', target: 'default', order: 92, items: [
+      { id: 'ai-keys', label: 'AI keys…', icon: 'key', action: 'ai-keys.open' },
+      { id: 'ai-keys.accounts', label: 'Manage Claude accounts…', icon: 'user', action: 'ai-keys.accounts' },
+    ] },
   ],
   settingsTabs: [{ id: 'ai-keys', label: 'AI keys', icon: 'key', order: 7, parent: 'plugins' }],
   settingsPanels: [

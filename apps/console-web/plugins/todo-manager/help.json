@@ -1,0 +1,186 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "todo-manager-help",
+  "name": "todo-manager help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:todo-manager. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:todo-manager",
+    "entries": [
+      {
+        "target": "action:todo-manager.done",
+        "title": "Done / not done",
+        "text": "Shows “Done / not done”. Part of Todo manager.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:todo-manager.subtask",
+        "title": "Add a subtask",
+        "text": "Adds a subtask. Part of Todo manager.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "todo-manager",
+        "title": "Todo manager",
+        "text": "Shows the “Todo manager” part of this screen. Part of Todo manager.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "new-list",
+        "title": "New list",
+        "text": "Starts a new list. Part of Todo manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "group-by",
+        "title": "Group by",
+        "text": "Where you set “Group by”. Change it and the app uses the new value. Part of Todo manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "show-done",
+        "title": "Show done",
+        "text": "Turns “Show done” on or off. It takes effect straight away and is remembered. Part of Todo manager.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "list-name",
+        "title": "List name",
+        "text": "Where you set “List name”. Change it and the app uses the new value. Part of Todo manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "rename-group",
+        "title": "Rename group",
+        "text": "Renames group. Part of Todo manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "delete-group",
+        "title": "Delete group",
+        "text": "Deletes group. Depending on your behaviour theme it asks first. Part of Todo manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "clear-the-selection",
+        "title": "Clear the selection",
+        "text": "Clears the selection. Part of Todo manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "subtask-of",
+        "title": "Subtask of",
+        "text": "Where you set “Subtask of”. Change it and the app uses the new value. Part of Todo manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "subtask",
+        "title": "Subtask",
+        "text": "Shows “Subtask”. Part of Todo manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "save-as-draft",
+        "title": "Save as draft",
+        "text": "Saves as draft. Nothing is kept until you tap it. Part of Todo manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "statuses",
+        "title": "Statuses",
+        "text": "Where you set “Statuses”. Change it and the app uses the new value. Part of Todo manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "new-ones-start-as",
+        "title": "New ones start as",
+        "text": "Where you set “New ones start as”. Change it and the app uses the new value. Part of Todo manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "priorities",
+        "title": "Priorities",
+        "text": "Where you set “Priorities”. Change it and the app uses the new value. Part of Todo manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "default-priority",
+        "title": "Default priority",
+        "text": "Where you set “Default priority”. Change it and the app uses the new value. Part of Todo manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "add-field",
+        "title": "Add field",
+        "text": "Adds field. Part of Todo manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "type",
+        "title": "Type",
+        "text": "Where you set “Type”. Change it and the app uses the new value. Part of Todo manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "options",
+        "title": "Options",
+        "text": "Where you set “Options”. Change it and the app uses the new value. Part of Todo manager.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "required",
+        "title": "Required",
+        "text": "Turns “Required” on or off. It takes effect straight away and is remembered. Part of Todo manager.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "column-in-the-grid",
+        "title": "Column in the grid",
+        "text": "Turns “Column in the grid” on or off. It takes effect straight away and is remembered. Part of Todo manager.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "remove-field",
+        "title": "Remove field",
+        "text": "Removes field. Depending on your behaviour theme it asks first. Part of Todo manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "undo-changes",
+        "title": "Undo changes",
+        "text": "Undos changes. Part of Todo manager.",
+        "kind": "button",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

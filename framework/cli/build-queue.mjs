@@ -22,13 +22,23 @@ import { loadPricing } from './model-pricing.mjs';
 
 const PRICING = loadPricing();
 const usd = (model, min) => (min ? formatUsd(costForMinutes(model, min, PRICING)) : '');
-import { dataPath } from './persist.mjs';
+import { activeProfile } from './persist.mjs';
+import { loadStore, withStore } from './builds-store.mjs';
+import { absorbQueue, projectQueue, storeSummary } from '../plan/builds-store-core.mjs';
 
-const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const QUEUE = dataPath('framework/plan/build-queue.json');
-
-export const loadQueueState = () => (existsSync(QUEUE) ? JSON.parse(readFileSync(QUEUE, 'utf8')) : null);
-const saveQueueState = (q) => writeFileSync(QUEUE, JSON.stringify(q, null, 1) + '\n');
+/*
+ * Since the master cleanup (Oct 31 2026) the queue is the order field of the plan-epic builds in the one builds store
+ * (builds@1, framework/cli/builds-store.mjs); framework/plan/build-queue.json files are read-only snapshots.
+ * AXF_QUEUE_FILE points at a plain build-queue@1 file (tests).
+ */
+const LEGACY = process.env.AXF_QUEUE_FILE || '';
+const profile = () => activeProfile().id;
+export const loadQueueState = () => (LEGACY ? (existsSync(LEGACY) ? JSON.parse(readFileSync(LEGACY, 'utf8')) : null) : projectQueue(loadStore(), profile()));
+const saveQueueState = (q, by = 'build-queue') => {
+  if (LEGACY) { writeFileSync(LEGACY, JSON.stringify(q, null, 1) + '\n'); return; }
+  const p = profile(); const features = loadPlan().features;
+  withStore((s) => absorbQueue(s, p, q, features), { by, action: 'build-queue' });
+};
 
 /** Write plan status changes, then re-sync (completions recorded, rework flagged) and save. */
 function commit(changes, q, by, log) {
@@ -43,7 +53,13 @@ function commit(changes, q, by, log) {
 
 export function queueView() {
   const q = loadQueueState();
-  return { state: q ?? core.emptyQueue(), view: core.computeQueue(loadPlan().features, q) };
+  return { state: q ?? core.emptyQueue(), view: core.computeQueue(loadPlan().features, q), builds: buildsSummary() };
+}
+
+/** Every build in the one store (all profiles), so a profile without plan epics never reads as "0 builds". */
+export function buildsSummary() {
+  if (LEGACY) return null;
+  try { return storeSummary(loadStore(), profile()); } catch (e) { return { error: String(e.message || e).slice(0, 200), total: 0 }; }
 }
 
 /** Two-way sync (console start, after plan/status writes). */

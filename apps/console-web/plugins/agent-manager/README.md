@@ -15,7 +15,7 @@ resolution, the memory text engine (tokens, BM25, chunking, trimming), workflow 
 templates, add-on checks/risks/stripping and the agent→add-on export. The runtime interface (`AgentRuntime`:
 listAgents/getAgent/memoryContext/runTool/recordTurn) is what `axf.agents@1` implements; the Kotlin kernel declares
 capability `axf.agents` as a placeholder (`PlaceholderAgentRuntime`) until an Android agent module registers one.
-`GET /api/plugins/agent-manager/contract` describes the format (builtins, limits) for apps such as Build Pilot;
+`GET /api/plugins/agent-manager/contract` describes the format (builtins, limits) for other AXF apps;
 `POST /validate/{collection}` is a dry run (errors, warnings, normalised item — forms and wizards check live).
 
 ## Model

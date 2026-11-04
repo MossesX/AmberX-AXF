@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "popup",
+  "id": "material-flow",
+  "name": "Material Flow pop-ups",
+  "version": "1.0.0",
+  "description": "Material Flow: solid pop-ups at the bottom-center.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "material",
+    "material"
+  ],
+  "data": {
+    "position": "bottom-center",
+    "variant": "solid",
+    "duration": 4000,
+    "showIcon": true,
+    "maxVisible": 3
+  }
+}

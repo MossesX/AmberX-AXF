@@ -1,0 +1,79 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261027-e7a3c1b905",
+  "createdAt": "2026-10-27T23:43:00.000Z",
+  "updatedAt": "2026-10-28T02:01:57.463Z",
+  "kind": "fix",
+  "title": "AmberX: hands-free listening on screen + background, detection overlay (level graph, dB, quick settings)",
+  "asked": "It only detects words when I press speak (AmberX). Build the fix, add a detection overlay that shows audio level input as a moving graph line and decibel number, and quick settings like ActiveX in the overlay. Then: don't pause, always listen. Profile refactor, Opus.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "claude-ai",
+    "host": "claude.ai cloud session"
+  },
+  "steps": [
+    {
+      "text": "s1 native hands-free",
+      "state": "done"
+    },
+    {
+      "text": "s2 detection overlay",
+      "state": "done"
+    },
+    {
+      "text": "s3 web settings + level graph",
+      "state": "done"
+    },
+    {
+      "text": "s4 tests, CI, PR, merge",
+      "state": "done"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "Merged PR #141 (eaba8c58) after Brett's approval: hands-free always listens (on by default, no pause), ActiveX-style detection overlay, live level graph on the Voice page. test.mjs 193/193, CI green.",
+    "branch": "claude/amberx-handsfree",
+    "commits": [
+      {
+        "sha": "eaba8c58"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "pr": "https://github.com/MossesX/AmberX-AXF/pull/141"
+    }
+  },
+  "closed": {
+    "at": "2026-10-28T02:01:57.462Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "orchestrator",
+    "id": "amberx-handsfree"
+  },
+  "surface": "claude-ai",
+  "startedAt": "2026-10-27T23:43:00.000Z",
+  "finishedAt": "2026-10-28T00:27:00.000Z",
+  "lastSeenAt": "2026-10-28T00:27:00.000Z",
+  "estimate": {
+    "minutes": 110,
+    "costUsd": 15.4
+  },
+  "actual": {
+    "minutes": 44
+  },
+  "costEstimated": true,
+  "branch": "claude/amberx-handsfree",
+  "areas": [
+    "apps/amberx-droid/android",
+    "apps/amberx-droid/src/native.ts",
+    "apps/amberx-droid/src/plugins/voice",
+    "apps/amberx-droid/src/plugins/monitor",
+    "apps/amberx-droid/test.mjs"
+  ]
+}

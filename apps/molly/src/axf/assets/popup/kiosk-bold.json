@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "popup",
+  "id": "kiosk-bold",
+  "name": "Kiosk Bold pop-ups",
+  "version": "1.0.0",
+  "description": "Kiosk Bold: solid pop-ups at the bottom-center.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "bold",
+    "kiosk",
+    "touch"
+  ],
+  "data": {
+    "position": "bottom-center",
+    "variant": "solid",
+    "duration": 5000,
+    "showIcon": true,
+    "maxVisible": 2
+  }
+}

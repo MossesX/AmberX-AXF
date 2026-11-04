@@ -1,0 +1,95 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "editor-classic",
+  "name": "Editor Classic",
+  "version": "1.0.0",
+  "description": "The classic editing row: new, open, save, export, undo, redo and the clipboard.",
+  "author": "AmberX AXF",
+  "tags": [
+    "editing"
+  ],
+  "data": {
+    "variant": "icons",
+    "align": "start",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "file",
+        "items": [
+          {
+            "id": "new",
+            "icon": "plus",
+            "label": "New",
+            "action": "file.new"
+          },
+          {
+            "id": "open-file",
+            "icon": "folder",
+            "label": "Open",
+            "action": "file.open"
+          },
+          {
+            "id": "save",
+            "icon": "save",
+            "label": "Save",
+            "action": "file.save"
+          },
+          {
+            "id": "export",
+            "icon": "download",
+            "label": "Export…",
+            "action": "file.export"
+          }
+        ]
+      },
+      {
+        "id": "history",
+        "items": [
+          {
+            "id": "undo",
+            "icon": "undo",
+            "label": "Undo",
+            "action": "edit.undo"
+          },
+          {
+            "id": "redo",
+            "icon": "redo",
+            "label": "Redo",
+            "action": "edit.redo"
+          }
+        ]
+      },
+      {
+        "id": "clipboard",
+        "items": [
+          {
+            "id": "cut",
+            "icon": "cut",
+            "label": "Cut",
+            "action": "edit.cut"
+          },
+          {
+            "id": "copy",
+            "icon": "copy",
+            "label": "Copy",
+            "action": "edit.copy"
+          },
+          {
+            "id": "paste",
+            "icon": "paste",
+            "label": "Paste",
+            "action": "edit.paste"
+          },
+          {
+            "id": "delete",
+            "icon": "trash",
+            "label": "Delete",
+            "action": "edit.delete"
+          }
+        ]
+      }
+    ],
+    "density": "compact"
+  }
+}

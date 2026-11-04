@@ -1,0 +1,78 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-bcf52641-bc25-403a-8ba6-e810cf7ffefc",
+ "source": "claude-code",
+ "sessionId": "bcf52641-bc25-403a-8ba6-e810cf7ffefc",
+ "project": "axhub",
+ "title": "GitHub service connection to axhub",
+ "startedAt": "2026-10-20T17:08:11.492Z",
+ "endedAt": "2026-10-20T17:10:07.404Z",
+ "minutes": 2,
+ "system": {
+  "host": "srv1837178",
+  "container": "9fca435733cc",
+  "app": "Claude Code (terminal)",
+  "appVersion": "2.1.303",
+  "entrypoint": "cli",
+  "surface": "vps-claude-code",
+  "device": "moshi",
+  "via": "moshi",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axHub",
+  "repo": "",
+  "branch": "main"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-fable-5-1"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-10-20T17:08:38.727Z",
+   "kind": "prompt",
+   "text": "add github service to connect github to axhub",
+   "model": "claude-fable-5-1",
+   "tokens": {
+    "input": 226,
+    "output": 5936,
+    "cacheRead": 425994,
+    "cacheWrite": 38236,
+    "thinking": 2409
+   },
+   "costUsd": 0.8836,
+   "costEstimated": false,
+   "seconds": 89,
+   "tools": {
+    "Bash": 7
+   },
+   "commands": 7,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": "GitHub is registered on the live hub. Two things only you can do remain: paste the token, and re-authenticate `gh` so the Status commit can be pushed. **What I did** - Registered service `github` (REST, address api.github.com) on the running Coolify container. Policy is `allow`, which for REST mean…"
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 226,
+  "output": 5936,
+  "cacheRead": 425994,
+  "cacheWrite": 38236,
+  "thinking": 2409,
+  "costUsd": 0.8836,
+  "costEstimated": false,
+  "toolCalls": 7,
+  "commands": 7,
+  "filesTouched": 0,
+  "reportedUsd": 1.208
+ },
+ "ingestedAt": "2026-10-31T13:52:04.047Z"
+}

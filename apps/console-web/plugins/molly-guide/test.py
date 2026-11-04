@@ -64,4 +64,45 @@ plugin_services.provide("axf.agents@1", fake, "agent-manager")
 r = c.post("/mg/ask", json={"task": "show me how to change the theme", "app": "AmberX!", "page": "notes<script>"}).json()
 check(r["text"] == "Sure." and r["walkthrough"]["steps"][0]["do"] == "nav:themes" and r["walkthrough"]["source"] == "amberx", "ask: Molly's answer split into speech + a stored walkthrough")
 check(fake.task.startswith("[from amberx, page notesscript] "), "ask: app and page cleaned before they reach Molly")
+
+# Re-record AmberX's walkthrough: one veto call through Vinny, never without him
+import time as _t  # noqa: E402
+check(c.post("/mg/amberx-walkthrough/rerecord").status_code == 503, "rerecord: no Vinny = 503 with why")
+
+
+class FakeVinny:
+    def __init__(self) -> None:
+        self.calls: list = []
+
+    def ready(self):  # type: ignore[no-untyped-def]
+        return True, ""
+
+    def call(self, tool, arguments, confirmation_id=None, timeout=600, reason=""):  # type: ignore[no-untyped-def]
+        self.calls.append((tool, arguments, reason))
+        return {"confirm": "c-1"}
+
+
+fv = FakeVinny()
+plugin_services.provide("axf.vinny@1", fv, "agent-manager")
+r = c.post("/mg/amberx-walkthrough/rerecord").json()
+check(r["state"] in ("sending", "sent"), "rerecord: accepted")
+for _ in range(50):
+    if fv.calls and c.get("/mg/amberx-walkthrough/rerecord").json()["state"] == "sent":
+        break
+    _t.sleep(0.05)
+tool, args, why = fv.calls[0]
+check(tool == "vps.run" and "apps/amberx-droid/walkthrough/rebuild.sh" in args["command"] and args["command"].rstrip().endswith("&"), "rerecord: vps.run starts rebuild.sh in the background")
+check(why == "Re-record the AmberX walkthrough video", "rerecord: the veto notice says what it's for")
+check(c.get("/mg/amberx-walkthrough/rerecord").json()["state"] == "sent", "rerecord: status says it was sent")
+# the whole-stack walkthrough, re-voiced with edits from AmberX: base64 env, VOICE_ONLY, its own log, its own notice
+import base64 as _b64, json as _json, re as _re  # noqa: E402
+cmd, why2 = mg.rerecord_command("stack", True, {"voice": "en_US-amy-medium", "speed": 0.95, "lines": {"open-0": "Yo; rm -rf / $(x)"}})
+m = _re.search(r"VOICE_OVERRIDES_B64=([A-Za-z0-9+/=]+) ", cmd)
+check("WALKTHROUGH=stack VOICE_ONLY=1" in cmd and "rebuild-stack.log" in cmd and m and _json.loads(_b64.b64decode(m.group(1)))["lines"]["open-0"] == "Yo; rm -rf / $(x)"
+      and "rm -rf" not in cmd, "rerecord: edits travel base64 only, never as shell text")
+check(why2 == "Re-voice the stack walkthrough video", "rerecord: re-voice notice names the walkthrough")
+check(c.post("/mg/amberx-walkthrough/rerecord", json={"walkthrough": "bad id;"}).status_code == 400, "rerecord: bad walkthrough id refused")
+cmd3, why3 = mg.rerecord_command("stack", False, None, "veto")
+check("WALKTHROUGH=stack ONLY=veto nohup" in cmd3 and why3 == "Re-record chapter veto of the stack walkthrough", "rerecord: one chapter (ONLY=), named in the notice")
+check(c.post("/mg/amberx-walkthrough/rerecord", json={"walkthrough": "stack", "chapter": "x; rm"}).status_code == 400, "rerecord: bad chapter id refused")
 print(f"all {ok} checks passed")

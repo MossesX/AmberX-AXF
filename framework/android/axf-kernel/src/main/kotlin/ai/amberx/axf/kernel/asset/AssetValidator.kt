@@ -37,6 +37,7 @@ public class AssetValidator(private val types: AssetTypeRegistry) {
             for (nk in keys) if (nk !in inner) errors += "data.$k.$nk is required"
         }
         if (type == AssetTypes.LAYOUT && "slots" in data) errors += validateSlots(data["slots"])
+        if (type == AssetTypes.LAYOUT && "repeat" in data) errors += validateRepeat(data["repeat"])
         // Widget hosts (banner.attach, toolbar.widgets): every entry names a type and side the host takes.
         ai.amberx.axf.kernel.engine.WidgetEngine.hostSpec(type)?.let { h -> if (h.field in data) errors += ai.amberx.axf.kernel.engine.WidgetEngine.validateHostAttachments(type, data[h.field]) }
         if (type == AssetTypes.UAC_POLICY) {
@@ -64,5 +65,48 @@ public class AssetValidator(private val types: AssetTypeRegistry) {
             }
         }
         return errors
+    }
+
+    /** Repeating slots (layout.repeat); same messages as validateRepeat in core/validate.ts and build-engine.mjs. */
+    private fun validateRepeat(repeat: kotlinx.serialization.json.JsonElement?): List<String> {
+        val regions = ai.amberx.axf.kernel.engine.Region.entries.map { it.id }
+        val styles = REPEAT_STYLES
+        val list = repeat as? JsonArray ?: return listOf("data.repeat must be a list of repeating slots")
+        val errors = mutableListOf<String>()
+        val seen = mutableSetOf<String>()
+        fun str(v: kotlinx.serialization.json.JsonElement?): String? = (v as? JsonPrimitive)?.takeIf { it.isString }?.content
+        fun whole(v: kotlinx.serialization.json.JsonElement?, min: Int, max: Int = Int.MAX_VALUE): Boolean {
+            val d = (v as? JsonPrimitive)?.takeIf { !it.isString }?.content?.toDoubleOrNull() ?: return false
+            return d == kotlin.math.floor(d) && d >= min && d <= max
+        }
+        list.forEachIndexed { i, e ->
+            val at = "data.repeat[$i]"
+            val r = e as? JsonObject
+            if (r == null) { errors += "$at must be an object"; return@forEachIndexed }
+            val id = str(r["id"])
+            if (id == null || id.isBlank()) errors += "$at.id must be a non-empty string"
+            else if (!seen.add(id)) errors += "$at.id \"$id\" is used twice"
+            if (str(r["dataSet"]).isNullOrBlank()) errors += "$at.dataSet must be a non-empty string"
+            if ("region" in r && str(r["region"]) !in regions) errors += "$at.region is not a layout region (one of: ${regions.joinToString(", ")})"
+            if ("style" in r && str(r["style"]) !in styles) errors += "$at.style must be one of: ${styles.joinToString(", ")}"
+            if ("columns" in r && !whole(r["columns"], 1, REPEAT_MAX_COLUMNS)) errors += "$at.columns must be a whole number from 1 to $REPEAT_MAX_COLUMNS"
+            if ("max" in r && !whole(r["max"], 0)) errors += "$at.max must be a whole number, 0 or more"
+            if ("fallback" in r) {
+                val f = r["fallback"] as? JsonObject
+                if (f == null) errors += "$at.fallback must be an object"
+                else {
+                    if ("type" in f) { val t = str(f["type"]); if (t == null || types.get(t) == null) errors += "$at.fallback.type is unknown asset type \"${t ?: (f["type"] as? JsonPrimitive)?.content ?: f["type"].toString()}\"" }
+                    if ("id" in f && str(f["id"]) == null) errors += "$at.fallback.id must be a string"
+                    if ("label" in f && str(f["label"]) == null) errors += "$at.fallback.label must be a string"
+                }
+            }
+        }
+        return errors
+    }
+
+    public companion object {
+        /** asset-types.json layout.repeat (styles, maxColumns); RepeatEngine reads the same values. */
+        public val REPEAT_STYLES: List<String> = listOf("tabs", "cards", "grid", "stacked")
+        public const val REPEAT_MAX_COLUMNS: Int = 12
     }
 }

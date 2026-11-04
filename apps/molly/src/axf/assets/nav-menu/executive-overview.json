@@ -1,0 +1,75 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "executive-overview",
+  "name": "Executive Overview",
+  "version": "1.0.0",
+  "description": "Executive Overview: reporting and dashboards. Lists the pages it can; each app shows the ones it has. Pairs with the Executive behaviour theme.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:executive"
+  ],
+  "data": {
+    "style": "list",
+    "header": "Overview",
+    "sections": [
+      {
+        "label": "Overview",
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "icon": "home",
+            "view": "home"
+          },
+          {
+            "id": "tracker",
+            "label": "Tracker",
+            "icon": "chart",
+            "view": "tracker"
+          },
+          {
+            "id": "plan",
+            "label": "Plan",
+            "icon": "list",
+            "view": "plan"
+          }
+        ]
+      },
+      {
+        "label": "Detail",
+        "items": [
+          {
+            "id": "pending",
+            "label": "Pending builds",
+            "icon": "clock",
+            "view": "pending"
+          },
+          {
+            "id": "build",
+            "label": "Build queue",
+            "icon": "hammer",
+            "view": "build"
+          },
+          {
+            "id": "catalog",
+            "label": "Features",
+            "icon": "check-circle",
+            "view": "catalog"
+          }
+        ]
+      },
+      {
+        "items": [
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
+          }
+        ]
+      }
+    ],
+    "density": "roomy"
+  }
+}

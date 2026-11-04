@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "kiosk-bold",
+  "name": "Kiosk Bold button",
+  "version": "1.0.0",
+  "description": "Kiosk Bold: pill solid buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "bold",
+    "kiosk",
+    "touch"
+  ],
+  "data": {
+    "shape": "pill",
+    "fill": "solid",
+    "weight": 700,
+    "uppercase": true,
+    "size": "lg",
+    "elevation": true
+  }
+}

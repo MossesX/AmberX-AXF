@@ -1,0 +1,158 @@
+{
+ "$axf": "fixture@1",
+ "about": "agent swarm vibe engine (core/engines/swarm-vibe.mjs); regenerate: npx -y tsx framework/spec/check-swarm.mts --write",
+ "at": "2026-11-03T14:00:00.000Z",
+ "wild": "Oh sure, TEX gets a raise. For WHAT? I fixed three damn conflicts, rich ass!!",
+ "scores": {
+  "work": 1,
+  "brett": 40,
+  "plain": 40,
+  "wild": 299,
+  "shout": 115,
+  "bangs": 100,
+  "slang": 72,
+  "max": 500,
+  "empty": 40
+ },
+ "clean": {
+  "c0": "Darn, that stuff is freaking broken, heck.",
+  "c50": "Damn, that stuff is freaking broken, hell.",
+  "c100": "Damn, that shit is fucking broken, hell.",
+  "caps": "Stuff. Crappy day. Complain."
+ },
+ "calm": {
+  "shout": "That is done. Keep the CSS and JSON.",
+  "plain": "fine."
+ },
+ "filter": {
+  "rails": {
+   "from": "rio",
+   "kind": "banter",
+   "text": "Oh sure, TEX gets a raise. For WHAT? I fixed three damn conflicts, rich ass!!",
+   "vibe": 299,
+   "toned": false
+  },
+  "business": null,
+  "mid": {
+   "from": "rio",
+   "kind": "banter",
+   "text": "For what? I fixed three darn conflicts, rich butt.",
+   "vibe": 120,
+   "toned": true
+  },
+  "workToned": {
+   "from": "py",
+   "kind": "discipline",
+   "text": "That's 3 in a row. I'm done with this stuff. I quit.",
+   "vibe": 1,
+   "toned": true
+  },
+  "workKept": {
+   "from": "boss",
+   "kind": "assign",
+   "jobId": "b.s1",
+   "text": "Rio, you got b.s1.",
+   "vibe": 1,
+   "toned": false
+  },
+  "brett": {
+   "from": "brett",
+   "kind": "brett",
+   "text": "FUCK yeah!!",
+   "vibe": 159,
+   "toned": false
+  },
+  "identity": null,
+  "dramaLow": null,
+  "dramaHigh": {
+   "from": "rio",
+   "kind": "banter",
+   "text": "Tex, get your hands off ui.tsx.",
+   "vibe": 80,
+   "toned": false
+  },
+  "overrideRio": {
+   "from": "rio",
+   "kind": "banter",
+   "text": "Damn, nice one.",
+   "vibe": 70,
+   "toned": false
+  },
+  "overrideDoc": null
+ },
+ "reactions": {
+  "business": 0,
+  "crew": 1,
+  "breakroom": 2,
+  "rails": 2
+ },
+ "banter": {
+  "before": {
+   "ok": true,
+   "why": "",
+   "today": 0
+  },
+  "spent": {
+   "ok": false,
+   "why": "today's banter budget ($0.10) is spent; quiet till tomorrow",
+   "today": 0.2
+  },
+  "count": 0,
+  "tomorrow": {
+   "ok": true,
+   "why": "",
+   "today": 0
+  },
+  "quietCrew": {
+   "ok": false,
+   "why": "chattiness is too low for paid banter",
+   "today": 0
+  },
+  "off": {
+   "ok": false,
+   "why": "the group chat is off",
+   "today": 0
+  },
+  "noSettings": 1
+ },
+ "preview": {
+  "rails": {
+   "from": "rio",
+   "kind": "banter",
+   "text": "Oh sure, TEX gets a raise. For WHAT? I fixed three damn conflicts this week, rich ass!!",
+   "vibe": 299,
+   "toned": false
+  },
+  "crew": {
+   "from": "rio",
+   "kind": "banter",
+   "text": "Gradle's running. Cracking a beer, wake me up in twenty.",
+   "vibe": 40,
+   "toned": false
+  },
+  "cleanRoom": {
+   "from": "rio",
+   "kind": "banter",
+   "text": "Boss gave me ui.tsx. Back the heck up, Tex, that stuff's leased to me.",
+   "vibe": 80,
+   "toned": true
+  },
+  "dropped": {
+   "from": "rio",
+   "kind": "banter",
+   "text": "(dropped: above the vibe ceiling)",
+   "vibe": null,
+   "toned": true,
+   "dropped": true,
+   "seed": "preview"
+  }
+ },
+ "shade": {
+  "low": 0.08,
+  "mid": 0.5,
+  "top": 1,
+  "over": 1,
+  "one": 0.08,
+  "none": 0
+ }
+}

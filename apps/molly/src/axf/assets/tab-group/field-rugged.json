@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "field-rugged",
+  "name": "Field Rugged tabs",
+  "version": "1.0.0",
+  "description": "Field Rugged: boxed tabs, stretch.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "rugged",
+    "rugged",
+    "touch"
+  ],
+  "data": {
+    "style": "boxed",
+    "align": "stretch",
+    "position": "top",
+    "density": "roomy",
+    "overflow": "scroll",
+    "showIcons": true,
+    "divider": true
+  }
+}

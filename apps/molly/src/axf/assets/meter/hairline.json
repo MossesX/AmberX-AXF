@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "meter",
+  "id": "hairline",
+  "name": "Hairline",
+  "version": "1.0.0",
+  "description": "A thin line, quiet and precise.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "shape": "line",
+    "height": 3,
+    "radius": "pill",
+    "stripes": false,
+    "animated": true,
+    "fill": "soft",
+    "segments": 20
+  }
+}

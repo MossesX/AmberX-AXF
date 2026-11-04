@@ -1,0 +1,26 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.hubsync",
+  "module": "lib-hubsync",
+  "name": "axHub sync (one look, settings and data for every app and device)",
+  "description": "Keeps an app's whole setup on axHub so every app and every device (web, Android, others) matches: the shared look document (colour + style theme, layout, menus, spacing, hidden chrome; appearance@1), the app's Settings screen values (hub-settings@1, lib-hubstore) and, if chosen, its data tables (hub-table@1). Look 'required' waits for the hub like a developer app; 'follow' uses the same look but still opens while the hub is down. Ships Settings → Plugins → axHub sync: connect (address, project, test, sign in), what syncs, status. The connection is the only thing kept on the device. Built Oct 24 2026.",
+  "features": [],
+  "dependsOn": [],
+  "manifestKey": "libraries.hubsync",
+  "params": [
+    { "key": "hub", "label": "axHub address", "type": "text", "default": "https://axhub.amberxai.com", "help": "https only (http only for localhost while developing)." },
+    { "key": "project", "label": "Hub project", "type": "text", "default": "shared", "help": "Folder on the hub. Apps on the same project share one look." },
+    { "key": "look", "label": "Look", "type": "choice", "choices": ["required", "follow", "off"], "default": "follow", "help": "required = wait for axHub; follow = match axHub but open without it; off = own look." },
+    { "key": "settings", "label": "Settings on axHub", "type": "bool", "default": true, "help": "The Settings screen's values, the same on every device (secrets never)." },
+    { "key": "data", "label": "App data", "type": "choice", "choices": ["off", "all", "some"], "default": "off", "help": "off = on the device; all = every table on axHub; some = the tables below." },
+    { "key": "tables", "label": "Tables on axHub", "type": "list", "default": [], "help": "Only with data 'some'." }
+  ],
+  "ports": {
+    "web": { "status": "compiled", "dir": "libs/hubsync" },
+    "android": { "status": "app-code", "dir": "apps/voicevault/app/src/main/kotlin/ai/amberx/axf/voicevault/sync" }
+  },
+  "placeholders": [
+    { "capability": "axf.hubsync.android", "note": "Framework Android module (lib-hub) — on hold; Voice Vault carries the Kotlin twin in its app code." },
+    { "capability": "axf.hubsync.layout-data", "note": "Per-app layout state (window positions, dock) as a hub table — not built." }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "$axf": "asset@1",
+  "type": "context-menu",
+  "id": "navigator",
+  "name": "Navigator",
+  "version": "1.0.0",
+  "description": "Navigation first: open, go home, switch navigation menus and show or hide the bars.",
+  "author": "AmberX AXF",
+  "tags": [
+    "navigation"
+  ],
+  "data": {
+    "variant": "compact",
+    "showIcons": true,
+    "showShortcuts": true,
+    "targets": {
+      "default": [
+        {
+          "id": "home",
+          "label": "Go home",
+          "icon": "home",
+          "action": "nav:home"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "toggle-nav",
+          "label": "Show or hide navigation",
+          "icon": "list",
+          "action": "slot.hide:nav-menu:toggle"
+        },
+        {
+          "id": "toggle-toolbar",
+          "label": "Show or hide the toolbar",
+          "icon": "menu",
+          "action": "slot.hide:toolbar:toggle"
+        },
+        {
+          "id": "next-nav",
+          "label": "Next navigation menu",
+          "icon": "grid",
+          "action": "swap:nav-menu:next",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "next-layout",
+          "label": "Next layout",
+          "icon": "layout",
+          "action": "swap:layout:next",
+          "shortcut": "Alt+L",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "s2",
+          "separator": true
+        },
+        {
+          "id": "settings",
+          "label": "Settings",
+          "icon": "settings",
+          "action": "app.settings",
+          "shortcut": "Ctrl+,"
+        }
+      ],
+      "nav-item": [
+        {
+          "id": "open",
+          "label": "Open",
+          "icon": "chevron-right",
+          "action": "nav:{payload}"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "next-nav",
+          "label": "Next navigation menu",
+          "icon": "grid",
+          "action": "swap:nav-menu:next",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "next-layout",
+          "label": "Next layout",
+          "icon": "layout",
+          "action": "swap:layout:next",
+          "shortcut": "Alt+L",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "s2",
+          "separator": true
+        },
+        {
+          "id": "toggle-nav",
+          "label": "Show or hide navigation",
+          "icon": "list",
+          "action": "slot.hide:nav-menu:toggle"
+        }
+      ]
+    }
+  }
+}

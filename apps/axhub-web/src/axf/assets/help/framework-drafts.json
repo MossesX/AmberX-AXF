@@ -1,0 +1,102 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "framework-drafts",
+  "name": "Framework help (drafts)",
+  "version": "0.1.0",
+  "description": "Help mode entries for framework. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "framework",
+    "entries": [
+      {
+        "target": "session",
+        "title": "Session",
+        "text": "Opens Session.",
+        "kind": "link",
+        "draft": true
+      },
+      {
+        "target": "brief-characters",
+        "title": "Brief ( characters)",
+        "text": "Shows “Brief ( characters)”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "ui-review",
+        "title": "UI Review",
+        "text": "Shows “UI Review”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "the-build",
+        "title": "The build",
+        "text": "Shows “The build”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "console",
+        "title": "Console",
+        "text": "Shows “Console”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "axhub",
+        "title": "axHub",
+        "text": "Shows “axHub”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "replay-the-animation",
+        "title": "Replay the animation",
+        "text": "Replays the animation.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "preset",
+        "title": "Preset",
+        "text": "Where you set “Preset”. Change it and the app uses the new value.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "reset-open-menus-and-width",
+        "title": "Reset open menus and width",
+        "text": "Resets open menus and width. Your own changes go.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "pinned",
+        "title": "Pinned",
+        "text": "Turns “Pinned” on or off. It takes effect straight away and is remembered.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "shown",
+        "title": "Shown",
+        "text": "Turns “Shown” on or off. It takes effect straight away and is remembered.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "accent",
+        "title": "Accent",
+        "text": "Where you set “Accent”. Change it and the app uses the new value.",
+        "kind": "field",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

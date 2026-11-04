@@ -1,7 +1,7 @@
-"""The Dev Console's token and its API, for servers (the console itself, Build Pilot, any AXF app server).
+"""The Dev Console's token and its API, for servers (the console itself, any AXF app server).
 
 Token file — the console's env file (`.axf-console/env`, written by install-console.sh and by a token reset) holds an
-`AXF_TOKEN=<token>` line among others; Build Pilot gets a copy holding just the token. `TokenFile` reads either,
+`AXF_TOKEN=<token>` line among others; another app gets a copy holding just the token. `TokenFile` reads either,
 re-reading only when the file's mtime changes, and falls back to a fixed value (an env var) when the file is missing:
 
     tok = TokenFile(path, fallback=os.environ.get("AXF_TOKEN", ""))

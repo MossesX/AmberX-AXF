@@ -1,0 +1,25 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "claude-badge-help",
+  "name": "claude-badge help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:claude-badge. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:claude-badge",
+    "entries": [
+      {
+        "target": "claude-badge",
+        "title": "Claude badge",
+        "text": "Shows the “Claude badge” part of this screen. Part of Claude badge.",
+        "kind": "tab",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

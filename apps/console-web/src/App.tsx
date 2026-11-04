@@ -1,6 +1,5 @@
 import { installConsoleSearch } from './consoleSearch';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { InterfaceTabBar, InterfaceTabs } from './interfaceTabs';
 import { AccountView, AppShell, AssetStudio, bannerSlotDefs, FRAME_BANNERS_SLOT, SlotsProvider, useBannerPrefsTick, useAxfState, useRuntime, type ViewMap } from './axf/react';
 import { installLibraries } from './axf/react/library';
 import { dialogs } from './dialogs';
@@ -21,6 +20,7 @@ import type { AxfWebLibrary } from './axf/react/library';
 import { bundledPlugins, enabledPlugins, fetchPluginStatus, hostEnabledPlugins, pluginReport, PLUGINS_CHANGED, serverPartsToSwitchOn, type BundledPlugin, type PluginStatus } from './plugins';
 import { post } from './api';
 import { library as settingsLibrary } from './axf/libs/settings';
+import { toolbarsLibrary } from './axf/libs/toolbars';
 import { createAlertsLibrary } from './axf/libs/alerts';
 import { createAshesLibrary, ownersFrom } from './axf/libs/ashes';
 import { hubStatusLibrary } from './axf/libs/hubstatus';
@@ -31,7 +31,6 @@ import { consoleSettings } from './consoleSettings';
 import { accountLibrary, useBindAccount } from './account';
 import { hubAppearanceLibrary, useHubAppearance } from './hubAppearance';
 import { menuLibrary } from './menuLibrary';
-import { BannerStrip, isBannerStrip, useBannerRelay, useBannersInConsole } from './bannerStrip';
 
 /** Developer alerts (framework library), stored and pushed by the console server. */
 const alertsLibrary = createAlertsLibrary({ transport: consoleAlertsTransport, crashWhere: 'console', serviceWorkerUrl: '/alerts-sw.js' });
@@ -105,7 +104,7 @@ function usePlugins() {
   }, [reload]);
   // Search bar (banner widget): plan features, tracker items, pending builds and plugins on top of the framework's own.
   useEffect(() => installConsoleSearch(rt), [rt]);
-  // Inside a host that manages plugins (Patches, embed@1 take `plugins`): tell it which plugins the console has, and run
+  // Inside a host that manages plugins (embed@1 take `plugins`): tell it which plugins the console has, and run
   // only the ones it enabled for the console (Brett, Oct 22 2026). The console's own switches stay as they are for when
   // it runs on its own.
   const managed = rt.hostTakes('plugins');
@@ -125,7 +124,7 @@ function usePlugins() {
     // The settings library and the console's own settings always run; plugins once the backend (or the host) has answered.
     const enabled = managed ? hostEnabledPlugins(hostIds) : loaded ? enabledPlugins(status) : [];
     for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.removeContextItems(p.manifest.id); rt.removeAppMenuItems(p.manifest.id); rt.settings.removeModule(p.manifest.id); rt.detachAll(p.manifest.id); rt.removePlacement(p.manifest.id); }
-    return installLibraries(rt, [settingsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ashesLibrary, hubStatusLibrary, dataGridLibrary, pluginThemeLibrary, ...enabled.map(underPlugins)]);
+    return installLibraries(rt, [settingsLibrary, toolbarsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ashesLibrary, hubStatusLibrary, dataGridLibrary, pluginThemeLibrary, ...enabled.map(underPlugins)]);
   }, [rt, status, loaded, managed, hostIds]);
   return { contributed };
 }
@@ -139,10 +138,11 @@ function Shell() {
   useHubAppearance();
   const plugins = usePlugins();
   useEffect(() => { (globalThis as unknown as { __axfConsole?: unknown }).__axfConsole = s; }, [s]);
-  // the tab title follows the branding package (GizmoX) and the page: "Plan · GizmoX"
+  // the tab title is the app's own name and the page: "Plan · GizmoX AI Studio". Not the branding package's name: the
+  // look (branding included) is one for every app on axHub, so it can't name this app (Brett, Nov 1 2026)
   const rtTitle = useRuntime();
   const st = useAxfState();
-  const brandName = rtTitle.branding()?.name || rtTitle.manifest.app.name;
+  const brandName = rtTitle.manifest.app.name || rtTitle.branding()?.name || 'GizmoX AI Studio';
   const allViews: ViewMap = {
     ...plugins.contributed.views,
     ...views,
@@ -152,41 +152,31 @@ function Shell() {
   const pageTitle = allViews[st.view]?.title;
   useEffect(() => { document.title = pageTitle && st.view !== 'home' ? `${pageTitle} · ${brandName}` : brandName; }, [pageTitle, brandName, st.view]);
   // Plugin banners (codebase changes, builds, activity, approvals, systems check, keys, What's new) sit above the page
-  // (slot app.frame.banners) when the console runs on its own. As a tab in Patches the console page shows none of them:
-  // Patches shows them above every tab through the banner strip page (`?axf-strip=banners`, src/bannerStrip.tsx), which
-  // is only them (Brett, Oct 21 2026). The console's own banners (the menu rescue note) stay on the console page.
-  const inConsole = useBannersInConsole();
-  useBannerRelay();
+  // (slot app.frame.banners). The console's own banners (the menu rescue note) stay plain.
   const consoleOwn = useMemo(() => new Set((menuLibrary.banners ?? []).map((b) => b.id)), []);
-  const banners = useMemo(() => plugins.contributed.banners.filter((b) => (isBannerStrip
-    ? !consoleOwn.has(b.id)
-    : consoleOwn.has(b.id) || inConsole)), [plugins.contributed.banners, consoleOwn, inConsole]);
+  const banners = plugins.contributed.banners;
   // Every plugin banner goes through Banner settings (framework BannerSettings.tsx): right-click / long-press any of them →
   // Banner settings, one tab per banner, its look and behaviour (Brett, Oct 22 2026). The console's own rescue note stays plain.
   const rt = useRuntime();
   const bannerPrefs = useBannerPrefsTick();
   const slots = useMemo(() => {
-    // Always called: it registers Banner settings and the full banner list, which the dialog needs even when this page
-    // shows none (the console tab inside Patches opens it for banners Patches shows through the strip).
-    const all = plugins.contributed.banners.filter((b) => !consoleOwn.has(b.id));
-    const framed = bannerSlotDefs(rt, all, banners.filter((b) => !consoleOwn.has(b.id)));
-    if (!banners.length && !isBannerStrip) return plugins.contributed.slots;
+    // Always called: it registers Banner settings and the full banner list, which the dialog needs.
+    const all = banners.filter((b) => !consoleOwn.has(b.id));
+    const framed = bannerSlotDefs(rt, all, all);
+    if (!banners.length) return plugins.contributed.slots;
     const own = banners.filter((b) => consoleOwn.has(b.id)).map((b) => ({ id: b.id, order: b.order, render: () => b.render() }));
-    return { ...(isBannerStrip ? {} : plugins.contributed.slots), [FRAME_BANNERS_SLOT]: [...(isBannerStrip ? [] : plugins.contributed.slots[FRAME_BANNERS_SLOT] ?? []), ...own, ...framed] };
-  }, [banners, plugins.contributed.banners, plugins.contributed.slots, consoleOwn, rt, bannerPrefs]);
-  if (isBannerStrip) return <SlotsProvider slots={slots}><BannerStrip /></SlotsProvider>;
-  // GizmoX interface tabs (interfaceTabs.tsx): the tab row goes in app.frame.head, the shell under the open tab's interface.
-  const withTabs = { ...slots, 'app.frame.head': [{ id: 'console.interface-tabs', order: -100, render: () => <InterfaceTabBar /> }, ...(slots['app.frame.head'] ?? [])] };
+    return { ...plugins.contributed.slots, [FRAME_BANNERS_SLOT]: [...(plugins.contributed.slots[FRAME_BANNERS_SLOT] ?? []), ...own, ...framed] };
+  }, [banners, plugins.contributed.slots, consoleOwn, rt, bannerPrefs]);
+  // The GizmoX interface tabs (each drawing the console under its own interface's look) are gone: the look comes from
+  // axHub only (Brett, Nov 1 2026). Applying an interface still works through Settings → Appearance and goes to the hub.
   return (
     <div {...drop} style={{ display: 'contents' }}>
-      <SlotsProvider slots={withTabs}>
-      <InterfaceTabs>
+      <SlotsProvider slots={slots}>
       <AppShell
         views={allViews}
         dialogs={{ ...plugins.contributed.dialogs, ...dialogs }}
         tabs={{ ...plugins.contributed.tabs, ...consoleTabs, 'plan-feature': (t) => <PlanFeatureTab id={t.payload || ''} /> }}
       />
-      </InterfaceTabs>
       </SlotsProvider>
     </div>
   );

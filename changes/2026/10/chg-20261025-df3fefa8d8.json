@@ -1,0 +1,47 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261025-df3fefa8d8",
+  "createdAt": "2026-10-25T20:25:14.140Z",
+  "updatedAt": "2026-10-29T07:02:41.128Z",
+  "kind": "build",
+  "title": "Activity banner: on-hold item with Continue to update the Android framework",
+  "asked": "",
+  "repos": [
+    "mossesx/amberx-axf"
+  ],
+  "model": "",
+  "who": {
+    "where": "cloud",
+    "user": "console",
+    "host": "vm"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Activity 0.3.0: held state + item buttons + holds source; Android framework hold with Continue -> Build manager start (pending android-framework-update, Fable)",
+    "branch": "claude/project-thread-lmyb8k",
+    "commits": [
+      {
+        "sha": "09eb150"
+      }
+    ],
+    "tests": {
+      "activity test.py": {
+        "before": "83",
+        "after": "99"
+      }
+    },
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-29T07:02:41.128Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-25T20:25:14.140Z",
+  "finishedAt": "2026-10-25T20:28:46.652Z",
+  "lastSeenAt": "2026-10-25T20:25:14.140Z",
+  "progress": 1.0
+}

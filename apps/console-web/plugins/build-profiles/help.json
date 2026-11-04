@@ -1,0 +1,42 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "build-profiles-help",
+  "name": "build-profiles help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:build-profiles. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:build-profiles",
+    "entries": [
+      {
+        "target": "plan-rebuilds-import-the-frameworks-seed-feature-catalog",
+        "title": "Seed the plan",
+        "text": "A new profile's plan starts from the framework's seed and feature catalog instead of empty.",
+        "kind": "toggle"
+      },
+      {
+        "target": "take-off-the-list",
+        "title": "Take off the list",
+        "text": "Removes the profile from the list. Its data stays on disk.",
+        "kind": "button"
+      },
+      {
+        "target": "copy-of",
+        "title": "Copy of",
+        "text": "Starts the new profile as a copy of another one.",
+        "kind": "field"
+      },
+      {
+        "target": "use-it-right-away",
+        "title": "Use it right away",
+        "text": "Switches to the new profile as soon as it's made.",
+        "kind": "toggle"
+      }
+    ],
+    "intros": []
+  }
+}

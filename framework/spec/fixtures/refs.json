@@ -1,0 +1,828 @@
+{
+ "$axf": "fixture@1",
+ "engine": "ref@1",
+ "source": "framework/core/engines/refs.mjs",
+ "note": "Inputs: console search entries + builds-store builds → targets (refTargetFromSearch / refTargetFromBuild). Every case: findRefs(text, index, opts) must give exactly `spans`. Kotlin twin deferred (PORTING.md).",
+ "search": [
+  {
+   "id": "view:terminal",
+   "kind": "view",
+   "label": "Terminal",
+   "focus": {
+    "kind": "view",
+    "view": "terminal"
+   }
+  },
+  {
+   "id": "view:plan-studio",
+   "kind": "view",
+   "label": "Plan Studio",
+   "focus": {
+    "kind": "view",
+    "view": "plan-studio"
+   }
+  },
+  {
+   "id": "view:home",
+   "kind": "view",
+   "label": "Home",
+   "focus": {
+    "kind": "view",
+    "view": "home"
+   }
+  },
+  {
+   "id": "settings-tab:terminal",
+   "kind": "settings-tab",
+   "label": "Terminal settings",
+   "focus": {
+    "kind": "setting",
+    "tab": "terminal"
+   }
+  },
+  {
+   "id": "settings-group:terminal.font",
+   "kind": "setting",
+   "label": "Terminal font",
+   "detail": "Settings › Terminal",
+   "focus": {
+    "kind": "setting",
+    "tab": "terminal",
+    "anchor": "settings-group:terminal.font"
+   }
+  },
+  {
+   "id": "setting:axf.display.fontScale",
+   "kind": "setting",
+   "label": "Font size",
+   "detail": "Settings › Appearance › Display",
+   "focus": {
+    "kind": "setting",
+    "tab": "appearance",
+    "anchor": "setting:axf.display.fontScale"
+   }
+  },
+  {
+   "id": "setting:terminal.fontSize",
+   "kind": "setting",
+   "label": "Font size",
+   "detail": "Settings › Terminal › Font",
+   "focus": {
+    "kind": "setting",
+    "tab": "terminal",
+    "anchor": "setting:terminal.fontSize"
+   }
+  },
+  {
+   "id": "dialog:about",
+   "kind": "dialog",
+   "label": "About this console",
+   "focus": {
+    "kind": "dialog",
+    "id": "about"
+   }
+  },
+  {
+   "id": "asset:toolbar:terminal",
+   "kind": "asset",
+   "label": "Terminal",
+   "detail": "toolbar",
+   "focus": {
+    "kind": "asset",
+    "type": "toolbar",
+    "id": "terminal"
+   }
+  },
+  {
+   "id": "asset:context-menu:default",
+   "kind": "asset",
+   "label": "Default context menu",
+   "detail": "context-menu",
+   "focus": {
+    "kind": "asset",
+    "type": "context-menu",
+    "id": "default"
+   }
+  },
+  {
+   "id": "asset:button:pill",
+   "kind": "asset",
+   "label": "Pill button",
+   "detail": "button",
+   "focus": {
+    "kind": "asset",
+    "type": "button",
+    "id": "pill"
+   }
+  },
+  {
+   "id": "plugin:push-banner",
+   "kind": "plugin",
+   "label": "Push banner",
+   "keywords": [
+    "push-banner"
+   ],
+   "focus": {
+    "kind": "action",
+    "spec": "plugin-manager.open:push-banner"
+   }
+  },
+  {
+   "id": "build:orch:banner-ref-links",
+   "kind": "build",
+   "label": "Banner reference links",
+   "keywords": [
+    "banner-ref-links"
+   ],
+   "focus": {
+    "kind": "action",
+    "spec": "build-manager.open:orch%3Abanner-ref-links"
+   }
+  },
+  {
+   "id": "action:builds.open",
+   "kind": "action",
+   "label": "Open the Builds page",
+   "focus": {
+    "kind": "action",
+    "spec": "builds.open"
+   }
+  },
+  {
+   "id": "text:home:h2:Welcome",
+   "kind": "text",
+   "label": "Welcome",
+   "focus": {
+    "kind": "text",
+    "view": "home",
+    "tag": "h2",
+    "text": "Welcome"
+   }
+  },
+  {
+   "id": "live:chg-1",
+   "kind": "build",
+   "label": "Building: Banner reference links",
+   "focus": {
+    "kind": "action",
+    "spec": "build-manager.live"
+   }
+  }
+ ],
+ "builds": [
+  {
+   "id": "terminal-sessions-nav",
+   "title": "Terminal sessions nav",
+   "status": "running",
+   "branch": "claude/terminal-sessions-nav",
+   "detail": "Session list in the terminal. touches: screen.terminal, toolbar.terminal",
+   "steps": []
+  },
+  {
+   "id": "settings-wizard",
+   "title": "Settings wizard",
+   "status": "running",
+   "detail": "New settings wizard dialog. touches: dialog.settings-wizard",
+   "steps": []
+  },
+  {
+   "id": "old-thing",
+   "title": "Old thing",
+   "status": "complete",
+   "detail": "touches: screen.plan-studio",
+   "steps": []
+  }
+ ],
+ "targets": [
+  {
+   "id": "screen:terminal",
+   "kind": "screen",
+   "label": "Terminal",
+   "focus": {
+    "kind": "view",
+    "view": "terminal"
+   }
+  },
+  {
+   "id": "screen:plan-studio",
+   "kind": "screen",
+   "label": "Plan Studio",
+   "focus": {
+    "kind": "view",
+    "view": "plan-studio"
+   }
+  },
+  {
+   "id": "screen:home",
+   "kind": "screen",
+   "label": "Home",
+   "focus": {
+    "kind": "view",
+    "view": "home"
+   }
+  },
+  {
+   "id": "settings:terminal",
+   "kind": "settings",
+   "label": "Terminal settings",
+   "aliases": [
+    "Terminal"
+   ],
+   "focus": {
+    "kind": "setting",
+    "tab": "terminal"
+   }
+  },
+  {
+   "id": "section:terminal/terminal.font",
+   "kind": "section",
+   "label": "Terminal font",
+   "detail": "Settings › Terminal",
+   "focus": {
+    "kind": "setting",
+    "tab": "terminal",
+    "anchor": "settings-group:terminal.font"
+   }
+  },
+  {
+   "id": "setting:axf.display.fontScale",
+   "kind": "setting",
+   "label": "Font size",
+   "detail": "Settings › Appearance › Display",
+   "focus": {
+    "kind": "setting",
+    "tab": "appearance",
+    "anchor": "setting:axf.display.fontScale"
+   }
+  },
+  {
+   "id": "setting:terminal.fontSize",
+   "kind": "setting",
+   "label": "Font size",
+   "detail": "Settings › Terminal › Font",
+   "focus": {
+    "kind": "setting",
+    "tab": "terminal",
+    "anchor": "setting:terminal.fontSize"
+   }
+  },
+  {
+   "id": "dialog:about",
+   "kind": "dialog",
+   "label": "About this console",
+   "focus": {
+    "kind": "dialog",
+    "id": "about"
+   }
+  },
+  {
+   "id": "toolbar:terminal",
+   "kind": "toolbar",
+   "label": "Terminal",
+   "detail": "toolbar",
+   "focus": {
+    "kind": "asset",
+    "type": "toolbar",
+    "id": "terminal"
+   }
+  },
+  {
+   "id": "menu:default",
+   "kind": "menu",
+   "label": "Default context menu",
+   "detail": "context-menu",
+   "focus": {
+    "kind": "asset",
+    "type": "context-menu",
+    "id": "default"
+   }
+  },
+  {
+   "id": "component:button.pill",
+   "kind": "component",
+   "label": "Pill button",
+   "detail": "button",
+   "focus": {
+    "kind": "asset",
+    "type": "button",
+    "id": "pill"
+   }
+  },
+  {
+   "id": "plugin:push-banner",
+   "kind": "plugin",
+   "label": "Push banner",
+   "aliases": [
+    "push-banner"
+   ],
+   "focus": {
+    "kind": "action",
+    "spec": "plugin-manager.open:push-banner"
+   }
+  },
+  {
+   "id": "build:banner-ref-links",
+   "kind": "build",
+   "label": "Banner reference links",
+   "aliases": [
+    "banner-ref-links"
+   ],
+   "focus": {
+    "kind": "action",
+    "spec": "build-manager.open:orch%3Abanner-ref-links"
+   }
+  },
+  {
+   "id": "action:builds.open",
+   "kind": "action",
+   "label": "Open the Builds page",
+   "focus": {
+    "kind": "action",
+    "spec": "builds.open"
+   }
+  },
+  {
+   "id": "build:terminal-sessions-nav",
+   "kind": "build",
+   "label": "Terminal sessions nav",
+   "aliases": [
+    "terminal-sessions-nav"
+   ],
+   "detail": "Build · running · claude/terminal-sessions-nav",
+   "icon": "play",
+   "status": "running",
+   "touches": [
+    "screen:terminal",
+    "toolbar:terminal"
+   ]
+  },
+  {
+   "id": "build:settings-wizard",
+   "kind": "build",
+   "label": "Settings wizard",
+   "aliases": [
+    "settings-wizard"
+   ],
+   "detail": "Build · running",
+   "icon": "play",
+   "status": "running",
+   "touches": [
+    "dialog:settings-wizard"
+   ]
+  },
+  {
+   "id": "build:old-thing",
+   "kind": "build",
+   "label": "Old thing",
+   "aliases": [
+    "old-thing"
+   ],
+   "detail": "Build · complete",
+   "icon": "play",
+   "status": "live",
+   "touches": [
+    "screen:plan-studio"
+   ]
+  }
+ ],
+ "cases": [
+  {
+   "name": "kind word picks the kind",
+   "text": "Editing the Terminal settings and the Terminal toolbar",
+   "opts": {},
+   "spans": [
+    {
+     "start": 12,
+     "end": 29,
+     "ref": "settings:terminal",
+     "kind": "settings",
+     "via": "label",
+     "text": "Terminal settings"
+    },
+    {
+     "start": 38,
+     "end": 54,
+     "ref": "toolbar:terminal",
+     "kind": "toolbar",
+     "via": "label",
+     "text": "Terminal toolbar"
+    }
+   ]
+  },
+  {
+   "name": "one word only as written",
+   "text": "the terminal is slow; Terminal is open",
+   "opts": {},
+   "spans": [
+    {
+     "start": 22,
+     "end": 30,
+     "ref": "screen:terminal",
+     "kind": "screen",
+     "via": "label",
+     "ambiguous": true,
+     "candidates": [
+      "settings:terminal",
+      "toolbar:terminal"
+     ],
+     "text": "Terminal"
+    }
+   ]
+  },
+  {
+   "name": "stop words never link alone",
+   "text": "Home and Settings and Open",
+   "opts": {},
+   "spans": []
+  },
+  {
+   "name": "several words any case",
+   "text": "moved plan studio to the side",
+   "opts": {},
+   "spans": [
+    {
+     "start": 6,
+     "end": 17,
+     "ref": "screen:plan-studio",
+     "kind": "screen",
+     "via": "label",
+     "text": "plan studio"
+    }
+   ]
+  },
+  {
+   "name": "ambiguous name",
+   "text": "Font size is too small",
+   "opts": {},
+   "spans": [
+    {
+     "start": 0,
+     "end": 9,
+     "ref": "setting:axf.display.fontScale",
+     "kind": "setting",
+     "via": "label",
+     "ambiguous": true,
+     "candidates": [
+      "setting:terminal.fontSize"
+     ],
+     "text": "Font size"
+    }
+   ]
+  },
+  {
+   "name": "explicit settles it",
+   "text": "Font size is too small",
+   "opts": {
+    "explicit": [
+     "setting:terminal.fontSize"
+    ]
+   },
+   "spans": [
+    {
+     "start": 0,
+     "end": 9,
+     "ref": "setting:terminal.fontSize",
+     "kind": "setting",
+     "via": "label",
+     "text": "Font size"
+    }
+   ]
+  },
+  {
+   "name": "declared touches in the text win",
+   "text": "touches: settings.terminal, toolbar.new-thing. Terminal looks new",
+   "opts": {},
+   "spans": [
+    {
+     "start": 9,
+     "end": 26,
+     "ref": "settings:terminal",
+     "kind": "settings",
+     "via": "explicit",
+     "text": "settings.terminal"
+    },
+    {
+     "start": 28,
+     "end": 45,
+     "ref": "toolbar:new-thing",
+     "kind": "toolbar",
+     "via": "explicit",
+     "missing": true,
+     "text": "toolbar.new-thing"
+    },
+    {
+     "start": 47,
+     "end": 55,
+     "ref": "settings:terminal",
+     "kind": "settings",
+     "via": "alias",
+     "text": "Terminal"
+    }
+   ]
+  },
+  {
+   "name": "PRs and files",
+   "text": "Merged #254 and PR 251; see apps/console-web/src/main.tsx, not 12#3 or #fff",
+   "opts": {},
+   "spans": [
+    {
+     "start": 7,
+     "end": 11,
+     "ref": "pr:254",
+     "kind": "pr",
+     "via": "pattern",
+     "unknown": true,
+     "text": "#254"
+    },
+    {
+     "start": 16,
+     "end": 22,
+     "ref": "pr:251",
+     "kind": "pr",
+     "via": "pattern",
+     "unknown": true,
+     "text": "PR 251"
+    },
+    {
+     "start": 28,
+     "end": 57,
+     "ref": "file:apps/console-web/src/main.tsx",
+     "kind": "file",
+     "via": "pattern",
+     "text": "apps/console-web/src/main.tsx"
+    }
+   ]
+  },
+  {
+   "name": "file not in the checkout",
+   "text": "framework/core/engines/nope.mjs changed",
+   "opts": {
+    "files": [
+     "framework/core/engines/refs.mjs"
+    ]
+   },
+   "spans": [
+    {
+     "start": 0,
+     "end": 31,
+     "ref": "file:framework/core/engines/nope.mjs",
+     "kind": "file",
+     "via": "pattern",
+     "missing": true,
+     "text": "framework/core/engines/nope.mjs"
+    }
+   ]
+  },
+  {
+   "name": "build ids and titles",
+   "text": "banner-ref-links (Banner reference links) is running; banner-ref-links-2 is not",
+   "opts": {},
+   "spans": [
+    {
+     "start": 0,
+     "end": 16,
+     "ref": "build:banner-ref-links",
+     "kind": "build",
+     "via": "alias",
+     "text": "banner-ref-links"
+    },
+    {
+     "start": 18,
+     "end": 40,
+     "ref": "build:banner-ref-links",
+     "kind": "build",
+     "via": "label",
+     "text": "Banner reference links"
+    }
+   ]
+  },
+  {
+   "name": "plugin by folder and name",
+   "text": "push-banner: the Push banner auto-merged",
+   "opts": {},
+   "spans": [
+    {
+     "start": 0,
+     "end": 11,
+     "ref": "plugin:push-banner",
+     "kind": "plugin",
+     "via": "alias",
+     "text": "push-banner"
+    },
+    {
+     "start": 17,
+     "end": 28,
+     "ref": "plugin:push-banner",
+     "kind": "plugin",
+     "via": "label",
+     "text": "Push banner"
+    }
+   ]
+  },
+  {
+   "name": "longest wins, no overlap",
+   "text": "Terminal font in Terminal settings",
+   "opts": {},
+   "spans": [
+    {
+     "start": 0,
+     "end": 13,
+     "ref": "section:terminal/terminal.font",
+     "kind": "section",
+     "via": "label",
+     "text": "Terminal font"
+    },
+    {
+     "start": 17,
+     "end": 34,
+     "ref": "settings:terminal",
+     "kind": "settings",
+     "via": "label",
+     "text": "Terminal settings"
+    }
+   ]
+  },
+  {
+   "name": "components and menus",
+   "text": "Pill button inside the Default context menu",
+   "opts": {},
+   "spans": [
+    {
+     "start": 0,
+     "end": 11,
+     "ref": "component:button.pill",
+     "kind": "component",
+     "via": "label",
+     "text": "Pill button"
+    },
+    {
+     "start": 23,
+     "end": 43,
+     "ref": "menu:default",
+     "kind": "menu",
+     "via": "label",
+     "text": "Default context menu"
+    }
+   ]
+  },
+  {
+   "name": "words on a page and log rows are not targets",
+   "text": "Welcome to Building: Banner reference links",
+   "opts": {},
+   "spans": [
+    {
+     "start": 21,
+     "end": 43,
+     "ref": "build:banner-ref-links",
+     "kind": "build",
+     "via": "label",
+     "text": "Banner reference links"
+    }
+   ]
+  },
+  {
+   "name": "hyphen boundary",
+   "text": "pre-Terminal and Terminal-ish",
+   "opts": {},
+   "spans": []
+  }
+ ],
+ "resolve": [
+  {
+   "query": "plan studio",
+   "result": {
+    "target": "screen:plan-studio"
+   }
+  },
+  {
+   "query": "screen.terminal",
+   "result": {
+    "target": "screen:terminal"
+   }
+  },
+  {
+   "query": "terminal",
+   "result": {
+    "target": "screen:terminal",
+    "ambiguous": true,
+    "candidates": [
+     "settings:terminal",
+     "toolbar:terminal",
+     "section:terminal/terminal.font",
+     "build:terminal-sessions-nav"
+    ]
+   }
+  },
+  {
+   "query": "#254",
+   "result": {
+    "target": "pr:254",
+    "unknown": true
+   }
+  },
+  {
+   "query": "about console",
+   "result": {
+    "target": "dialog:about"
+   }
+  },
+  {
+   "query": "nothing like it",
+   "result": {
+    "target": null,
+    "missing": true
+   }
+  }
+ ],
+ "peek": [
+  {
+   "span": {
+    "ref": "screen:terminal",
+    "kind": "screen",
+    "text": "Terminal"
+   },
+   "peek": {
+    "ref": "screen:terminal",
+    "kind": "screen",
+    "label": "Terminal",
+    "detail": "",
+    "state": "changing",
+    "line": "Being changed by Terminal sessions nav, not live yet",
+    "changing": [
+     {
+      "id": "build:terminal-sessions-nav",
+      "label": "Terminal sessions nav"
+     }
+    ],
+    "candidates": []
+   }
+  },
+  {
+   "span": {
+    "ref": "screen:plan-studio",
+    "kind": "screen",
+    "text": "Plan Studio"
+   },
+   "peek": {
+    "ref": "screen:plan-studio",
+    "kind": "screen",
+    "label": "Plan Studio",
+    "detail": "",
+    "state": "live",
+    "line": "",
+    "changing": [],
+    "candidates": []
+   }
+  },
+  {
+   "span": {
+    "ref": "dialog:settings-wizard",
+    "kind": "dialog",
+    "text": "dialog.settings-wizard",
+    "missing": true
+   },
+   "peek": {
+    "ref": "dialog:settings-wizard",
+    "kind": "dialog",
+    "label": "dialog.settings-wizard",
+    "detail": "",
+    "state": "new",
+    "line": "New in Settings wizard, not live yet",
+    "changing": [
+     {
+      "id": "build:settings-wizard",
+      "label": "Settings wizard"
+     }
+    ],
+    "candidates": []
+   }
+  },
+  {
+   "span": {
+    "ref": "setting:axf.display.fontScale",
+    "kind": "setting",
+    "text": "Font size",
+    "candidates": [
+     "setting:terminal.fontSize"
+    ]
+   },
+   "peek": {
+    "ref": "setting:axf.display.fontScale",
+    "kind": "setting",
+    "label": "Font size",
+    "detail": "Settings › Appearance › Display",
+    "state": "live",
+    "line": "",
+    "changing": [],
+    "candidates": [
+     {
+      "id": "setting:terminal.fontSize",
+      "kind": "setting",
+      "label": "Font size",
+      "detail": "Settings › Terminal › Font"
+     }
+    ]
+   }
+  }
+ ]
+}

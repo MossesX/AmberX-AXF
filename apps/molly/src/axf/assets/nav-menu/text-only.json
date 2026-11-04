@@ -1,0 +1,65 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "text-only",
+  "name": "Text Only",
+  "version": "1.0.0",
+  "description": "Text Only: reading-first apps. Lists the pages it can; each app shows the ones it has. Pairs with the Quiet behaviour theme.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:quiet"
+  ],
+  "data": {
+    "style": "list",
+    "sections": [
+      {
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "icon": "home",
+            "view": "home"
+          },
+          {
+            "id": "plan",
+            "label": "Plan",
+            "icon": "list",
+            "view": "plan"
+          },
+          {
+            "id": "pending",
+            "label": "Pending builds",
+            "icon": "clock",
+            "view": "pending"
+          },
+          {
+            "id": "catalog",
+            "label": "Features",
+            "icon": "check-circle",
+            "view": "catalog"
+          },
+          {
+            "id": "components",
+            "label": "Components",
+            "icon": "grid",
+            "view": "components"
+          },
+          {
+            "id": "assets",
+            "label": "Assets",
+            "icon": "layers",
+            "view": "assets"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
+          }
+        ]
+      }
+    ],
+    "indicator": "bar",
+    "showIcons": false
+  }
+}

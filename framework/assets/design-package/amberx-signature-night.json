@@ -20,7 +20,10 @@
       "slots": {
         "style-package": "amber-signature",
         "toolbar": "amberx-signature",
-        "nav-menu": "amber-signature"
+        "nav-menu": "amber-signature",
+        "typography": "compact",
+        "density": "compact",
+        "sizing": "compact"
       }
     }
   }

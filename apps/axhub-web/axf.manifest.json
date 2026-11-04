@@ -15,8 +15,8 @@
   ],
   "startView": "home",
   "defaults": {
-    "color-theme": "fresh-light",
-    "style-theme": "fresh",
+    "color-theme": "hub-night",
+    "style-theme": "hub",
     "layout": "axhub-console",
     "behavior-theme": "standard",
     "app-menu": "axhub-web",
@@ -48,8 +48,11 @@
     "meter": "striped-pill",
     "settings": "console",
     "uac-policy": "standard",
-    "design-package": "fresh",
-    "branding": "amberx"
+    "design-package": "hub-default",
+    "branding": "amberx",
+    "typography": "compact",
+    "density": "compact",
+    "sizing": "compact"
   },
   "hidden": [],
   "developer": {

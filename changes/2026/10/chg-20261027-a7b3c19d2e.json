@@ -1,0 +1,31 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261027-a7b3c19d2e",
+  "createdAt": "2026-10-27T18:32:00.000Z",
+  "updatedAt": "2026-10-27T18:32:00.000Z",
+  "kind": "build",
+  "title": "AmberX installs plugins from axHub (no console)",
+  "asked": "Build plugin for amberx app to install plugins from axhub. Install through axHub, not the console.",
+  "repos": ["MossesX/AmberX-AXF", "MossesX/axHub"],
+  "model": "opus",
+  "who": { "where": "claude-ai", "host": "claude.ai" },
+  "surface": "claude-ai",
+  "status": "running",
+  "buildRef": { "kind": "pending", "id": "amberx-plugin-installer" },
+  "startedAt": "2026-10-27T18:32:00.000Z",
+  "lastSeenAt": "2026-10-27T18:32:00.000Z",
+  "doing": "axHub plugin-install module",
+  "estimate": { "minutes": 140, "costUsd": 19.6 },
+  "costEstimated": true,
+  "branch": "claude/amberx-plugin-installer",
+  "areas": ["apps/amberx-droid/src/plugins/plugin-store", "apps/axhub-web/src", "axHub packages/server/src"],
+  "steps": [
+    { "text": "axHub plugin-install.ts + tests", "state": "running", "startedAt": "2026-10-27T18:32:00.000Z" },
+    { "text": "axHub routes + wiring + decision #101", "state": "queued" },
+    { "text": "axhub-web confirm pages", "state": "queued" },
+    { "text": "AmberX plugin-store plugin", "state": "queued" },
+    { "text": "Checks, PRs, logs", "state": "queued" }
+  ],
+  "result": null,
+  "closed": null
+}

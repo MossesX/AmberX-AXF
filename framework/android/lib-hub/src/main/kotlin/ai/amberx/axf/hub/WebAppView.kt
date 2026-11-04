@@ -51,7 +51,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 /**
- * One of a host app's web tabs (embed@1, Patches): a web **application** the host shows inside its own frame — unlike
+ * One of a host app's web tabs (embed@1): a web **application** the host shows inside its own frame — unlike
  * [LockedWebView] (one origin, no JavaScript, for the hub's plain pages), a React/TypeScript app needs JavaScript, DOM
  * storage (its settings + console token), a cache and the hub's origin for the sign-in wall's round trip.
  *
@@ -226,7 +226,7 @@ public class WebAppEntry internal constructor(public val tab: String) {
  * (`remember { WebAppHolder(host) }` is not enough: the composition goes with configuration changes; hold it in the
  * activity or a ViewModel) and call [destroy] when the activity is finished.
  *
- * [host] is the host app's embed id (`patches`): every view's user agent ends in [EmbedEngine.userAgentSuffix] for it,
+ * [host] is the host app's embed id (e.g. `host`): every view's user agent ends in [EmbedEngine.userAgentSuffix] for it,
  * which is how the embedded apps know to hide their banner. [hide] names the chrome the host shows (default: the banner).
  */
 public class WebAppHolder(
@@ -235,7 +235,7 @@ public class WebAppHolder(
     types: AssetTypeRegistry = AssetTypeRegistry.builtin(),
     /** app functions the host takes over from the apps (embed@1 `takes`: `settings`, `notifications`) */
     takes: List<String> = emptyList(),
-    /** false = no embed marker at all: the apps render whole, exactly as on their own (Patches, Brett Oct 24 2026) */
+    /** false = no embed marker at all: the apps render whole, exactly as on their own (Brett Oct 24 2026) */
     marker: Boolean = true,
 ) {
     /** `AXF-Embed/<host>[/<types>]` (+ ` AXF-Embed-Take/<fn>+<fn>`), appended to each view's user agent; empty without [marker]. */

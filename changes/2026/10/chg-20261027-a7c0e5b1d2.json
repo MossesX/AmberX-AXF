@@ -1,0 +1,60 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261027-a7c0e5b1d2",
+  "createdAt": "2026-10-27T20:16:00.000Z",
+  "updatedAt": "2026-10-28T02:01:50.159Z",
+  "kind": "build",
+  "title": "AX Notes: voice AI note-taker app + overlay/voice/triggers/tts/ai/onboarding libraries + 5 AI plugins",
+  "asked": "Voice-controlled AI note-taking Android app with ActiveX-style overlay; core hardcoded in app, rest split into reusable libraries and plugins. Profile refactor.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable+opus",
+  "who": {
+    "where": "claude-ai",
+    "host": "claude.ai cloud session"
+  },
+  "steps": [
+    {
+      "text": "Phase 1 Fable: s1-s5",
+      "state": "skipped"
+    },
+    {
+      "text": "Phase 2 Opus: s6-s21",
+      "state": "skipped"
+    }
+  ],
+  "result": {
+    "state": "cancelled",
+    "summary": "Stopped by Brett 2 minutes after start; no code committed. Orchestrator build ax-notes stays pending with 0/21 steps done.",
+    "branch": "fable/ax-notes",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-28T02:01:50.159Z",
+    "by": "console"
+  },
+  "state": "cancelled",
+  "status": "failed",
+  "buildRef": {
+    "kind": "orchestrator",
+    "id": "ax-notes"
+  },
+  "surface": "claude-ai",
+  "startedAt": "2026-10-27T20:16:00.000Z",
+  "finishedAt": "2026-10-27T20:18:00.000Z",
+  "lastSeenAt": "2026-10-27T20:18:00.000Z",
+  "estimate": {
+    "minutes": 600,
+    "costUsd": 105.0
+  },
+  "actual": {
+    "minutes": 2
+  },
+  "costEstimated": true,
+  "branch": "fable/ax-notes",
+  "areas": [],
+  "doing": "Stopped by Brett"
+}

@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "popup",
+  "id": "studio-pro",
+  "name": "Studio Pro pop-ups",
+  "version": "1.0.0",
+  "description": "Studio Pro: solid pop-ups at the top-right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "pro",
+    "creative"
+  ],
+  "data": {
+    "position": "top-right",
+    "variant": "solid",
+    "duration": 4000,
+    "showIcon": true,
+    "maxVisible": 4
+  }
+}

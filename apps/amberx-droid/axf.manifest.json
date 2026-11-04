@@ -16,8 +16,8 @@
   ],
   "startView": "home",
   "defaults": {
-    "color-theme": "saffron-day",
-    "style-theme": "geometric",
+    "color-theme": "hub-night",
+    "style-theme": "hub",
     "layout": "axhub-console",
     "behavior-theme": "amber",
     "app-menu": "amberx-droid",
@@ -49,9 +49,12 @@
     "meter": "striped-pill",
     "settings": "console",
     "uac-policy": "standard",
-    "design-package": "amberx-app-day",
+    "design-package": "hub-default",
     "branding": "amberx-app",
-    "style-package": "amber-signature"
+    "style-package": "amber-signature",
+    "typography": "compact",
+    "density": "compact",
+    "sizing": "compact"
   },
   "hidden": [],
   "developer": {

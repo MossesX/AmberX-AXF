@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "container",
+  "id": "amber-signature",
+  "name": "Amber Signature container",
+  "version": "1.0.0",
+  "description": "Amber Signature: card with a accent header.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "signature",
+    "brand",
+    "amber"
+  ],
+  "data": {
+    "variant": "card",
+    "header": "accent",
+    "padding": "md",
+    "elevation": 2,
+    "collapsible": false
+  }
+}

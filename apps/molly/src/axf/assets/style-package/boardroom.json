@@ -1,0 +1,27 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "boardroom",
+  "name": "Boardroom",
+  "version": "1.0.0",
+  "description": "Large confident buttons, wide divided cards and full-width tabs for formal reporting.",
+  "author": "AmberX AXF",
+  "tags": [
+    "formal",
+    "enterprise",
+    "formal"
+  ],
+  "data": {
+    "slots": {
+      "button": "boardroom",
+      "container": "boardroom",
+      "slider": "boardroom",
+      "dialog": "boardroom",
+      "popup": "boardroom",
+      "tab-group": "boardroom",
+      "gauge": "tick-arc",
+      "meter": "gradient-soft"
+    },
+    "tone": "formal"
+  }
+}

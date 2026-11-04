@@ -1,0 +1,80 @@
+{
+ "$axf": "session-archive@1",
+ "id": "ai-d640bdce-b20e-4547-bd29-4810b1f34dfe",
+ "source": "claude-ai",
+ "sessionId": "d640bdce-b20e-4547-bd29-4810b1f34dfe",
+ "project": "amberx-axf",
+ "title": "Android app update not installed",
+ "startedAt": "2026-10-21T07:04:00-04:00",
+ "endedAt": "2026-10-21T11:04:21.541221+00:00",
+ "minutes": 0,
+ "system": {
+  "host": "claude.ai",
+  "container": "",
+  "app": "claude.ai",
+  "appVersion": "",
+  "entrypoint": "claude.ai",
+  "surface": "claude-ai",
+  "device": "phone or browser",
+  "via": "",
+  "os": "",
+  "cwd": "",
+  "repo": "",
+  "branch": "",
+  "url": "https://claude.ai/chat/d640bdce-b20e-4547-bd29-4810b1f34dfe"
+ },
+ "user": "Brett",
+ "models": [
+  "claude-opus"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-10-21T07:04:00-04:00",
+   "kind": "prompt",
+   "text": "When I update android apps it says not installed all apps have same icon in android apps generate their own",
+   "model": "claude-opus",
+   "tokens": {
+    "input": 12027,
+    "output": 476,
+    "cacheRead": 0,
+    "cacheWrite": 12503,
+    "thinking": 0
+   },
+   "costUsd": 0.1201,
+   "costEstimated": true,
+   "seconds": 0,
+   "tools": {
+    "mcp__memory__memory_read": 1
+   },
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": "**Why \"App not installed\":** almost certainly a signing-key…"
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [],
+ "subagents": 0,
+ "costSource": "estimated from text",
+ "notes": [
+  "Tokens estimated: 4 characters a token, 12000 tokens of overhead; each turn re-reads the chat so far as cached input."
+ ],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 12027,
+  "output": 476,
+  "cacheRead": 0,
+  "cacheWrite": 12503,
+  "thinking": 0,
+  "costUsd": 0.1201,
+  "costEstimated": true,
+  "toolCalls": 1,
+  "commands": 0,
+  "filesTouched": 0
+ },
+ "ingestedAt": "2026-10-31T13:51:19.637Z"
+}

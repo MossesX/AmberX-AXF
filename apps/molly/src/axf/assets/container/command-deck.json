@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "container",
+  "id": "command-deck",
+  "name": "Command Deck container",
+  "version": "1.0.0",
+  "description": "Command Deck: panel with a accent header.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "command",
+    "ops"
+  ],
+  "data": {
+    "variant": "panel",
+    "header": "accent",
+    "padding": "sm",
+    "elevation": 1,
+    "collapsible": false
+  }
+}

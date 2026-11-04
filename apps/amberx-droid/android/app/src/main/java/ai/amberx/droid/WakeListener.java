@@ -204,11 +204,16 @@ final class WakeListener {
     private void listen(int gen, Model m, List<String> phrases, boolean armed, String sens) {
         AudioRecord rec = null;
         Recognizer r = null;
+        int session = 0;
+        // Mic off (MicGuard): the one check before AmberX opens the microphone.
+        if (!MicGuard.mayOpen(app)) { post(gen, () -> events.phase("stopped", "mic off")); return; }
         try {
             r = armed ? new Recognizer(m, RATE) : new Recognizer(m, RATE, WakeRules.grammarJson(phrases));
             int min = AudioRecord.getMinBufferSize(RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
             rec = new AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION, RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, Math.max(min, RATE));
             if (rec.getState() != AudioRecord.STATE_INITIALIZED) throw new IllegalStateException("the microphone is busy");
+            session = rec.getAudioSessionId();
+            MicGuard.claim(session); // ours: the watch service doesn't take it for another app's recording
             rec.startRecording();
             post(gen, () -> events.phase(armed ? "armed" : "wake", ""));
             short[] buf = new short[RATE / 10];
@@ -256,6 +261,7 @@ final class WakeListener {
             post(gen, () -> events.phase("no-model", why));
         } finally {
             if (rec != null) { try { rec.stop(); } catch (Exception ignored) {} rec.release(); }
+            MicGuard.release(session);
             if (r != null) r.close();
         }
     }

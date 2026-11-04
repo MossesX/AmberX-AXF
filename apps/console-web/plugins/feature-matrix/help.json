@@ -1,0 +1,95 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "feature-matrix-help",
+  "name": "feature-matrix help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:feature-matrix. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:feature-matrix",
+    "entries": [
+      {
+        "target": "row-button-in-builds-grids",
+        "title": "Row button in builds grids",
+        "text": "Where you set “Row button in builds grids”. Change it and the app uses the new value. Part of Feature matrix.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "open-the-history-with-the-matrix",
+        "title": "Open the history with the matrix",
+        "text": "Where you set “Open the history with the matrix”. Change it and the app uses the new value. Part of Feature matrix.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "feature-matrix",
+        "title": "Feature matrix",
+        "text": "Shows the “Feature matrix” part of this screen. Part of Feature matrix.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "import-open-builds",
+        "title": "Import open builds",
+        "text": "Imports open builds. Part of Feature matrix.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "needs-apply",
+        "title": "Needs apply",
+        "text": "Shows the “Needs apply” part of this screen. Part of Feature matrix.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "applied",
+        "title": "Applied",
+        "text": "Shows the “Applied” part of this screen. Part of Feature matrix.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "make-its-matrix",
+        "title": "Make its matrix",
+        "text": "Makes its matrix. Part of Feature matrix.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "title",
+        "title": "Title",
+        "text": "Where you set “Title”. Change it and the app uses the new value. Part of Feature matrix.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "feature",
+        "title": "Feature",
+        "text": "Where you set “Feature”. Change it and the app uses the new value. Part of Feature matrix.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "why",
+        "title": "Why",
+        "text": "Where you set “Why”. Change it and the app uses the new value. Part of Feature matrix.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "minutes",
+        "title": "Minutes",
+        "text": "Where you set “Minutes”. Change it and the app uses the new value. Part of Feature matrix.",
+        "kind": "field",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

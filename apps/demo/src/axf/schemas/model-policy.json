@@ -1,0 +1,29 @@
+{
+  "$axf": "model-policy@1",
+  "since": "2026-11-01",
+  "rule": "Opus or Fable only, never Sonnet (or Haiku). Fable for foundation work: schemas, asset types, data models, kernel/engines, cross-app GUI behaviour. Opus for the rest.",
+  "tiers": [
+    "haiku",
+    "sonnet",
+    "opus",
+    "fable"
+  ],
+  "allowed": [
+    "opus",
+    "fable"
+  ],
+  "default": "opus",
+  "foundation": "fable",
+  "ids": {
+    "haiku": "claude-haiku-5-5",
+    "sonnet": "claude-sonnet-5-5",
+    "opus": "claude-opus-5-5",
+    "fable": "claude-fable-5-1"
+  },
+  "labels": {
+    "haiku": "Haiku 5.5",
+    "sonnet": "Sonnet 5.5",
+    "opus": "Opus 5.5",
+    "fable": "Fable 5.1"
+  }
+}

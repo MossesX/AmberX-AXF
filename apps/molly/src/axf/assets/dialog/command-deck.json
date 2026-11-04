@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "command-deck",
+  "name": "Command Deck dialog",
+  "version": "1.0.0",
+  "description": "Command Deck: drawer, dim backdrop, slide in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "command",
+    "ops"
+  ],
+  "data": {
+    "variant": "drawer",
+    "width": 460,
+    "backdrop": "dim",
+    "animation": "slide",
+    "header": "accent-bar",
+    "closeOnBackdrop": true
+  }
+}

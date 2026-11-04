@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "layout",
+  "id": "console-pro",
+  "name": "Console Pro",
+  "version": "1.0.0",
+  "description": "Developer console frame: menu bar, side navigation, an inspector docked left beside it and a status bar.",
+  "author": "AmberX AXF",
+  "tags": [
+    "developer",
+    "desktop"
+  ],
+  "data": {
+    "nav": "left",
+    "navWidth": 200,
+    "showMenubar": true,
+    "showToolbar": true,
+    "toolbarPosition": "top",
+    "showStatusbar": true,
+    "inspector": "left",
+    "inspectorWidth": 260,
+    "contentMaxWidth": 0
+  }
+}

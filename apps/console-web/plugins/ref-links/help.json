@@ -1,0 +1,53 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "ref-links-help",
+  "name": "Reference links help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Reference links plugin (help@1): its settings tab, the on / off switch and the try box.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:ref-links",
+    "entries": [
+      {
+        "target": "ref-links",
+        "title": "Reference links settings",
+        "text": "Text in the banners that names a part of the app (a screen, a settings page, a plugin, a toolbar, a build, a PR, a file) is a dotted link. Tap it to see what it is and whether a build is changing it, double-tap to open it, hold or right-click for more."
+      },
+      {
+        "target": "axf.refs.links",
+        "title": "Link mentions in banner text",
+        "text": "On: mentions in banner text are links. Off: banner text is plain on this device."
+      },
+      {
+        "target": "ref-links.try",
+        "title": "Try it",
+        "text": "Type a line of text to see which words become links and where they lead."
+      },
+      {
+        "target": "a-line-of-text",
+        "title": "A line of text",
+        "text": "Where you set “A line of text”. Change it and the app uses the new value. Part of Reference links.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "link-mentions-in-banner-text",
+        "title": "Link mentions in banner text",
+        "text": "Where you set “Link mentions in banner text”. Change it and the app uses the new value. Part of Reference links.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "reference-links",
+        "title": "Reference links",
+        "text": "Shows the “Reference links” part of this screen. Part of Reference links.",
+        "kind": "tab",
+        "draft": true
+      }
+    ]
+  }
+}

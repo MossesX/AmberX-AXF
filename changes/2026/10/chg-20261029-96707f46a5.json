@@ -1,0 +1,56 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261029-96707f46a5",
+  "createdAt": "2026-10-29T10:35:08.519Z",
+  "updatedAt": "2026-10-29T10:35:08.622Z",
+  "kind": "build",
+  "title": "Look tokens + settings levels (Fable rebuild)",
+  "asked": "Started from the Build manager (Start build now).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "where": "console",
+    "user": "build-manager",
+    "host": "console"
+  },
+  "steps": [
+    {
+      "text": "Approve on axHub",
+      "state": "running"
+    },
+    {
+      "text": "Build (headless Claude Code on the VPS)",
+      "state": "queued"
+    },
+    {
+      "text": "Verify nothing broke",
+      "state": "queued"
+    }
+  ],
+  "result": {
+    "state": "failed",
+    "summary": "Launch failed on the VPS.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "failed",
+  "status": "failed",
+  "buildRef": {
+    "kind": "pending",
+    "id": "apply-all-levels-fable"
+  },
+  "surface": "console-launch",
+  "startedAt": "2026-10-29T10:35:08.000Z",
+  "finishedAt": "2026-10-29T10:35:08.622Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 33.0
+  },
+  "costEstimated": true,
+  "branch": "fable/apply-all-levels-fable",
+  "areas": []
+}

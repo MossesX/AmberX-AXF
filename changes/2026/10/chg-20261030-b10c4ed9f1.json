@@ -1,0 +1,26 @@
+{
+ "$axf": "change-log@1",
+ "id": "chg-20261030-b10c4ed9f1",
+ "createdAt": "2026-10-30T19:00:00.000Z",
+ "updatedAt": "2026-10-30T19:00:00.000Z",
+ "kind": "build",
+ "title": "BLOCKED, needs you: no GitHub push access on the VPS (live-key-checks can't open its PR)",
+ "asked": "Build live key + health checks in the banners (Angel live-key-checks). The work is done and committed on the VPS worktree, but nothing on the VPS can push: /opt/axf and the build worktrees have no git credentials, and the VPS gh token is invalid (same dead GitHub token Brett reported).",
+ "repos": ["MossesX/AmberX-AXF"],
+ "model": "opus",
+ "who": {"where": "vps", "host": "vps", "session": "claude-code live-key-checks"},
+ "steps": [
+  {"text": "WIZARD 1 (Brett): make a new fine-grained GitHub token for MossesX/AmberX-AXF (Contents, Pull requests, Actions, Workflows: read and write; Metadata: read): https://github.com/settings/personal-access-tokens/new?name=AXF+Dev+Console&target_name=MossesX&expires_in=90&contents=write&pull_requests=write&actions=write&workflows=write&metadata=read", "state": "pending"},
+  {"text": "WIZARD 2 (Brett): paste it in the console's Keys needed banner (GitHub token) so the console's GITHUB_TOKEN works again", "state": "pending"},
+  {"text": "WIZARD 3 (Mosses): on the VPS give git push access (gh auth login --with-token from that token, then gh auth setup-git), then in /root/axf-builds/claude-live-key-checks: git push -u origin claude/live-key-checks and gh pr create --base main --head claude/live-key-checks (don't merge)", "state": "pending"}
+ ],
+ "state": "running",
+ "status": "running",
+ "buildRef": {"kind": "plan", "id": "live-key-checks"},
+ "surface": "vps",
+ "branch": "claude/live-key-checks",
+ "startedAt": "2026-10-30T19:00:00.000Z",
+ "lastSeenAt": "2026-10-30T19:00:00.000Z",
+ "areas": ["apps/console-web/plugins/systems-check"],
+ "resume": {"next": "Mosses brief: Brett has set a new GitHub token. On the VPS run gh auth login --with-token (token from the console's credential store or Brett), gh auth setup-git, then cd /root/axf-builds/claude-live-key-checks && git push -u origin claude/live-key-checks && gh pr create --base main --head claude/live-key-checks --title 'Live key + health checks in the banners (Angel live-key-checks)' --body-file _claude/memory/docs/live-key-checks/README.md. Do not merge. Then close this entry."}
+}

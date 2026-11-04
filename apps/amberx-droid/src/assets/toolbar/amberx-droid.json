@@ -4,7 +4,7 @@
   "id": "amberx-droid",
   "name": "AmberX",
   "version": "3.0.0",
-  "description": "AmberX's toolbar on the enterprise design language: speak a command and Approvals, then Settings; the day/night switch and the account sit at the end. Search lives once, on the banner (Ctrl K). It folds on a phone.",
+  "description": "AmberX's toolbar on the enterprise design language: speak a command, Mic off (one tap lets go of every microphone) and Approvals, then Settings; the day/night switch and the account sit at the end. Search lives once, on the banner (Ctrl K). It folds on a phone.",
   "author": "AmberX AXF",
   "tags": [
     "branded",
@@ -30,6 +30,12 @@
             "icon": "mic",
             "label": "Speak a command",
             "action": "voice.listen"
+          },
+          {
+            "id": "mic-off",
+            "icon": "pause",
+            "label": "Mic off (tap again to listen)",
+            "action": "amberx.mic.toggle"
           },
           {
             "id": "home",

@@ -6,6 +6,13 @@ seen; it gets the missing bytes, or a reset + the whole buffer when they've scro
 (no typed input; output alone doesn't count) for `idleMinutes`, or when nobody is attached for longer than their keep-alive (Mosh mode:
 `moshKeepMinutes`; otherwise a short grace so a page reload re-attaches). The console's own tokens and keys never
 reach a shell's environment.
+
+Persistent tabs (headless-tabs, Nov 3 2026, Brett: "every terminal tab runs on a session that never dies, like
+Mosh"): VPS and console tabs (shells and Claude Code) run inside a tmux session named axt-… (the browser picks the name
+and keeps it with the tab). The ssh / pty link here is only an attachment: when it drops (reload, phone sleep, console
+restart, reaper) the browser opens a new one on the same name, which replays the pane's scrollback (capture-pane) and
+re-attaches. Closing a tab detaches; Kill session ends the tmux session. The same session can be attached from Moshi
+(`info().attachCmd`). Container tabs (axf.containers@1) keep the server-side ring only. Setting `persistTabs`.
 """
 from __future__ import annotations
 
@@ -18,6 +25,7 @@ import re
 import secrets
 import select
 import shlex
+import shutil
 import signal
 import struct
 import subprocess
@@ -46,7 +54,7 @@ def clean_env(extra: dict[str, str] | None = None) -> dict[str, str]:
         stored = set((credentials.STORE.read() if credentials.STORE else {}).keys())
     except Exception:  # noqa: BLE001
         stored = set()
-    env = {k: v for k, v in os.environ.items() if k in _KEEP or (not _SECRETISH.search(k) and k not in stored and not k.startswith("AXF_"))}
+    env = {k: v for k, v in os.environ.items() if k in _KEEP or (not _SECRETISH.search(k) and k not in stored and not k.startswith(("AXF_", "TMUX")))}
     env.update({"TERM": "xterm-256color", "COLORTERM": "truecolor", "AXF_TERMINAL": "1"})
     env.update(extra or {})
     return env
@@ -137,10 +145,14 @@ class TtyBackend:
 # ---------------------------------------------------------------- sessions
 
 class Session:
-    def __init__(self, kind: str, title: str, target: str, cwd: str, backend: Any, mosh: bool, badge: str | None = None, protected: bool = False):
+    def __init__(self, kind: str, title: str, target: str, cwd: str, backend: Any, mosh: bool, badge: str | None = None, protected: bool = False,
+                 tmux: str | None = None, where: str | None = None, read_only: bool = False):
         self.id = "t" + secrets.token_hex(6)
         self.kind, self.title, self.target, self.cwd, self.backend = kind, title, target, cwd, backend
         self.mosh, self.badge, self.protected = mosh, badge, protected
+        self.tmux, self.where = tmux, where  # the tmux session this attaches to, and where it lives (vps | console)
+        self.read_only = read_only  # a mirror (sessions nav): tmux attach -r, and typed input is dropped here as well
+        self.close_reason = ""
         self.created = self.last = self.last_input = time.time()
         self.detached_at: float | None = time.time()
         self.buf = bytearray()
@@ -153,7 +165,9 @@ class Session:
 
     def info(self) -> dict[str, Any]:
         return {"id": self.id, "kind": self.kind, "title": self.title, "target": self.target, "cwd": self.cwd, "mosh": self.mosh, "badge": self.badge,
-                "protected": self.protected, "createdAt": int(self.created * 1000), "attached": len(self.listeners), "closed": self.closed}
+                "protected": self.protected, "createdAt": int(self.created * 1000), "attached": len(self.listeners), "closed": self.closed,
+                "tmux": self.tmux, "where": self.where, "attachCmd": attach_commands(self.tmux, self.where) if self.tmux else None,
+                "readOnly": self.read_only}
 
     def _pump(self) -> None:
         while not self.closed:
@@ -193,6 +207,8 @@ class Session:
                 self.detached_at = time.time()
 
     def write(self, data: bytes) -> None:
+        if self.read_only:  # a mirror never types into the session (Jump in opens a writable link instead)
+            return
         self.last = self.last_input = time.time()
         self.backend.write(data)
 
@@ -224,14 +240,31 @@ class Manager:
             raise ValueError("cwd is an absolute path")
         protected = False
         badge = None
-        if kind == "console":
+        tmux: str | None = None
+        where: str | None = None
+        read_only = bool(req.get("readOnly"))
+        tab_tmux = str(req.get("tmux") or "") if st.get("persistTabs", True) else ""
+        if tab_tmux and not TAB_RE.match(tab_tmux):
+            raise ValueError("tmux is the name of an axt-… session")
+        local_attach = str(req.get("attach") or "") if kind == "console" else ""
+        if local_attach:  # a tmux session in the console's own container (sessions nav → My sessions): mirror or jump in
+            if not ATTACH_RE.match(local_attach) or not shutil.which("tmux"):
+                raise ValueError("attach is the name of a tmux session in this container")
+            argv = ["sh", "-c", attach_script(local_attach, read_only)]
+            be = PtyBackend(argv, str(cx.ROOT), clean_env(), cols, rows)
+            tmux, where = local_attach, "console"
+            title, target = local_attach, "console"
+        elif kind == "console":
             d = Path(cwd) if cwd else cx.ROOT
             if d.is_file():
                 d = d.parent
             if not d.is_dir():
                 d = cx.ROOT
             shell = "bash" if Path("/bin/bash").exists() or Path("/usr/bin/bash").exists() else "sh"
-            be = PtyBackend([shell, "-l"], str(d), clean_env(), cols, rows)
+            tmux = local_tmux(tab_tmux)
+            argv = ["sh", "-c", tmux_script(tmux, f"{shell} -l", str(d), cols, rows)] if tmux else [shell, "-l"]
+            be = PtyBackend(argv, str(d), clean_env(), cols, rows)
+            where = "console" if tmux else None
             title, target, cwd = "Console", "console", str(d)
         elif kind == "container":
             cs = plugin_services.get("axf.containers@1")
@@ -255,12 +288,15 @@ class Manager:
             if not vps.get("host") or not key.exists():
                 raise ValueError("set up the VPS tab first (Settings → Plugins → Terminal → VPS host: host + a key)")
             attach = str(req.get("attach") or "")
-            if attach and not HEADLESS_RE.match(attach):
-                raise ValueError("attach is the name of an axf-… tmux session")
-            if attach:  # a headless Claude Code session claude-headless.sh started: watch it (and type into it) here
-                q = shlex.quote(attach)
-                remote = (f"tmux attach -t ={q} 2>/dev/null || {{ echo 'That session has ended; its log is in its folder (.axf-*.log).'; "
-                          "exec \"${SHELL:-bash}\" -l; }")
+            if attach and not ATTACH_RE.match(attach):
+                raise ValueError("attach is the name of a tmux session (letters, digits, . _ -)")
+            if attach:  # a headless run claude-headless.sh started, a detached tab, or one of Brett's own sessions: watch it here
+                remote = attach_script(attach, read_only)
+                tmux, where = attach, "vps"
+            elif tab_tmux:
+                remote = tmux_script(tab_tmux, "exec \"${SHELL:-bash}\" -l", cwd, cols, rows,
+                                     fallback=(f"cd -- {shlex.quote(cwd)} 2>/dev/null; " if cwd else "") + "exec \"${SHELL:-bash}\" -l")
+                tmux, where = tab_tmux, "vps"
             else:
                 remote = f"cd -- {shlex.quote(cwd)} 2>/dev/null; exec \"${{SHELL:-bash}}\" -l" if cwd else "exec \"${SHELL:-bash}\" -l"
             be = PtyBackend(vps_argv(st, remote, tty=True), str(cx.ROOT), clean_env(), cols, rows)
@@ -283,7 +319,15 @@ class Manager:
                     extra["CLAUDE_CODE_OAUTH_TOKEN"] = tok
                 if via == "axhub":
                     cargs = ["--mcp-config", json.dumps({"mcpServers": {"axHub": {"type": "http", "url": axhub_url()}}}), *cargs]
-                be = PtyBackend([exe, *cargs], str(d), clean_env(extra), cols, rows)
+                tmux = local_tmux(tab_tmux)
+                env = clean_env(extra)
+                if tmux:  # the token reaches the tmux session through the environment of the command, never its command line
+                    run = " ".join(shlex.quote(x) for x in [exe, *cargs])
+                    argv = ["sh", "-c", tmux_script(tmux, run, str(d), cols, rows, env_keys=sorted(extra))]
+                else:
+                    argv = [exe, *cargs]
+                be = PtyBackend(argv, str(d), env, cols, rows)
+                where = "console" if tmux else None
                 title, target, cwd = "Claude Code", ("axhub" if via == "axhub" else "console"), str(d)
             elif via == "vps":
                 vps = st["vps"]
@@ -292,6 +336,10 @@ class Manager:
                 run = " ".join(shlex.quote(x) for x in ["claude", *cargs])
                 remote = (f"cd -- {shlex.quote(cwd)} 2>/dev/null; " if cwd else "") + \
                     f"command -v claude >/dev/null 2>&1 || {{ echo 'Claude Code is not installed on the VPS host.'; exec \"${{SHELL:-bash}}\" -l; }}; exec {run}"
+                if tab_tmux:
+                    inner = f"command -v claude >/dev/null 2>&1 || {{ echo 'Claude Code is not installed on the VPS host.'; exec \"${{SHELL:-bash}}\" -l; }}; exec {run}"
+                    remote = tmux_script(tab_tmux, inner, cwd, cols, rows, fallback=remote)
+                    tmux, where = tab_tmux, "vps"
                 be = PtyBackend(vps_argv(st, remote, tty=True), str(cx.ROOT), clean_env(), cols, rows)
                 title, target, badge = "Claude Code", vps["host"], "HOST ROOT"
             elif via == "container":
@@ -318,7 +366,7 @@ class Manager:
                 raise ValueError("via is console, vps, container or axhub")
         else:
             raise ValueError("kind is console, container, vps or claude")
-        s = Session(kind, title, target, cwd, be, mosh, badge, protected)
+        s = Session(kind, title, target, cwd, be, mosh, badge, protected, tmux, where, read_only=read_only and bool(tmux))
         with self.lock:
             full = len(self.sessions) >= MAX_SESSIONS  # checked again here: two opens can race past the first check
             if not full:
@@ -339,6 +387,7 @@ class Manager:
         if not s or s.closed:
             return
         s.closed = True
+        s.close_reason = reason
         try:
             s.backend.close()
         except Exception:  # noqa: BLE001
@@ -362,6 +411,8 @@ class Manager:
             st = store.settings()
             now = time.time()
             for s in list(self.sessions.values()):
+                if s.tmux and s.listeners:  # a persistent tab someone is watching: its link stays (the tmux session lives on anyway)
+                    continue
                 if now - s.last_input > st["idleMinutes"] * 60:  # output alone (top, tail -f) doesn't keep a terminal open
                     self.close(s.id, "idle")
                 elif s.detached_at is not None:
@@ -374,6 +425,82 @@ MANAGER = Manager()
 
 
 HEADLESS_RE = re.compile(r"^axf-[A-Za-z0-9._-]{1,64}$")
+TAB_RE = re.compile(r"^axt-[A-Za-z0-9._-]{1,64}$")
+TMUX_RE = re.compile(r"^ax[ft]-[A-Za-z0-9._-]{1,64}$")
+# any tmux session a tab may attach to (sessions nav, Nov 3 2026): the terminal's own (axf-/axt-) and Brett's own
+ATTACH_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
+REPLAY_LINES = 3000
+MUX_DIR = os.environ.get("TMPDIR") or "/tmp"
+
+
+def tmux_script(name: str, command: str, cwd: str, cols: int, rows: int, fallback: str = "", env_keys: list[str] | None = None) -> str:
+    """Attach to tmux session `name`, creating it (running `command` in `cwd`) when it isn't there. An existing session
+    first prints its pane's last REPLAY_LINES lines with their colours, so the browser's scrollback is whole again.
+    `env_keys` are copied from this shell's environment into the new session (tmux -e, read from the environment, so
+    a value never sits on a command line). Without tmux on that machine it runs `fallback` (or the command) as before."""
+    q = shlex.quote(name)
+    keys = [k for k in (env_keys or []) if re.fullmatch(r"[A-Z_][A-Z0-9_]*", k)]
+    envs = " ".join(f"-e {k}=\"${k}\"" for k in keys)
+    # env -u: a tmux server this starts must not keep these in its global environment (other tabs' shells would get them)
+    unset = ("env " + " ".join(f"-u {k}" for k in keys) + " ") if keys else ""
+    new = (f"{unset}tmux new-session -d -s {q} -x {max(10, min(cols, 500))} -y {max(5, min(rows, 300))}"
+           + (f" -c {shlex.quote(cwd)}" if cwd else "") + (f" {envs}" if envs else "") + f" {shlex.quote(command)} || exit 1; "
+           f"tmux set-option -t ={q}: history-limit 50000 >/dev/null; tmux set-option -t ={q}: status off >/dev/null; "
+           f"tmux set-option -t ={q}: @axf_kind tab >/dev/null")
+    return (f"if ! command -v tmux >/dev/null 2>&1; then {fallback or 'exec ' + command}; fi; "
+            f"if tmux has-session -t ={q} 2>/dev/null; then tmux capture-pane -p -e -J -S -{REPLAY_LINES} -t ={q}: 2>/dev/null; else {new}; fi; "
+            f"exec tmux attach -t ={q}")
+
+
+def attach_script(name: str, read_only: bool = False) -> str:
+    """Attach to an existing tmux session: its pane's last lines first (with colours), then `tmux attach` (`-r` = a
+    read-only mirror: keys are ignored, Jump in attaches again without it). When it has ended, say so and open a shell."""
+    q = shlex.quote(name)
+    return (f"tmux capture-pane -p -e -J -S -{REPLAY_LINES} -t ={q}: 2>/dev/null; tmux attach {'-r ' if read_only else ''}-t ={q} 2>/dev/null || "
+            "{ echo 'That session has ended; its log is in its folder (.axf-*.log).'; exec \"${SHELL:-bash}\" -l; }")
+
+
+def local_tmux(name: str) -> str | None:
+    """The tab's tmux name when this console has tmux (Dockerfile installs it), else None (a plain pty, as before)."""
+    return name if name and shutil.which("tmux") else None
+
+
+def attach_commands(name: str | None, where: str | None) -> dict[str, str] | None:
+    """How to attach the same session from a phone (Moshi) or any ssh client. A console tab's tmux lives in the console's
+    container, so the command goes through docker exec on the host."""
+    if not name or not ATTACH_RE.match(name):
+        return None
+    vps = store.settings()["vps"]
+    host = vps.get("host") or "<vps-host>"
+    login = f"{vps.get('user') or 'root'}@{host}"
+    port = int(vps.get("port") or 22)
+    inner = f"tmux attach -t {name}"
+    if where == "console":
+        inner = f"docker exec -it {os.environ.get('HOSTNAME') or '<console-container>'} {inner}"
+    ssh_port = f" -p {port}" if port != 22 else ""
+    mosh_port = f" --ssh='ssh -p {port}'" if port != 22 else ""
+    return {"mosh": f"mosh{mosh_port} {login} -- {inner}", "ssh": f"ssh -t{ssh_port} {login} {inner}", "tmux": inner}
+
+
+def kill_tmux(name: str, where: str) -> dict[str, Any]:
+    """End a tmux session for good (the tab's Kill session, after a confirm in the browser)."""
+    if not ATTACH_RE.match(name or ""):
+        raise ValueError("not a tmux session name")
+    cmd = f"tmux kill-session -t ={shlex.quote(name)}"
+    if where == "console":
+        r = RUNNER(["sh", "-c", cmd], capture_output=True, text=True, timeout=10, env=clean_env(), stdin=subprocess.DEVNULL)
+    elif where == "vps":
+        st = store.settings()
+        if not st["vps"].get("host") or not store.ssh_key().exists():
+            raise ValueError("the VPS tab isn't set up")
+        r = RUNNER(vps_argv(st, cmd, tty=False), capture_output=True, text=True, timeout=15, env=clean_env(), stdin=subprocess.DEVNULL)
+    else:
+        raise ValueError("where is vps or console")
+    _headless_cache["value"] = None
+    store.log({"op": "kill", "tmux": name, "where": where, "ok": r.returncode == 0})
+    if r.returncode != 0:
+        raise KeyError(((r.stderr or "").strip().splitlines() or ["no such session"])[-1][:200])
+    return {"ok": True, "name": name}
 
 
 CLAUDE_FLAG = re.compile(r"^--?[A-Za-z][A-Za-z0-9-]*(=[^\x00]*)?$")
@@ -412,39 +539,163 @@ def axhub_url() -> str:
 def vps_argv(st: dict[str, Any], remote: str, tty: bool) -> list[str]:
     """ssh to the VPS with the Terminal's own key (Settings → Plugins → Terminal → VPS host)."""
     vps = st["vps"]
-    return ["ssh", *(["-tt"] if tty else ["-T"]), "-i", str(store.ssh_key()), "-o", "IdentitiesOnly=yes", "-o", "StrictHostKeyChecking=accept-new",
+    # the short status reads (tmux ls, meters every 2 s) share one connection; interactive tabs keep their own
+    mux = [] if tty else ["-o", "ControlMaster=auto", "-o", f"ControlPath={MUX_DIR}/axf-term-%C", "-o", "ControlPersist=120"]
+    return ["ssh", *(["-tt"] if tty else ["-T"]), *mux, "-i", str(store.ssh_key()), "-o", "IdentitiesOnly=yes", "-o", "StrictHostKeyChecking=accept-new",
             "-o", f"UserKnownHostsFile={store.data_dir() / 'ssh' / 'known_hosts'}", "-o", "ServerAliveInterval=30", "-o", "BatchMode=yes",
             "-o", "ConnectTimeout=8", "-p", str(vps.get("port") or 22), f"{vps.get('user') or 'root'}@{vps['host']}", remote]
 
 
 _headless_cache: dict[str, Any] = {"at": 0.0, "value": None}
 HEADLESS_TTL = 8.0
+METER_TTL = 2.0
 RUNNER: Any = subprocess.run  # replaced by the self-test
+HEADLESS_DIR = "${AXF_HEADLESS_DIR:-/var/tmp/axf-headless}"  # on the VPS host (deploy/claude-headless.sh)
+LS_FORMAT = "#{session_name}\t#{session_created}\t#{session_attached}\t#{@axf_kind}\t#{@axf_agent}\t#{@axf_model}\t#{@axf_cwd}"
 
 
-def headless_sessions() -> dict[str, Any]:
-    """The headless Claude Code sessions running on the VPS: tmux sessions named axf-… (deploy/claude-headless.sh).
-    One ssh `tmux ls` at most every 8 s, whoever asks."""
+def parse_ls(text: str, mine: bool = False) -> list[dict[str, Any]]:
+    """`tmux ls -F LS_FORMAT` → the terminal's sessions (axf-… headless runs, axt-… tabs), oldest first. With `mine`,
+    every other tmux session too (kind "mine": Brett's own, e.g. Claude Code he runs over Moshi). Pure."""
+    items = []
+    for ln in (text or "").splitlines():
+        p = ln.split("\t")
+        if not p or not (TMUX_RE.match(p[0]) or (mine and ATTACH_RE.match(p[0]))):
+            continue
+        p += [""] * (7 - len(p))
+        created = int(p[1]) * 1000 if p[1].isdigit() else 0
+        kind = p[3] or ("headless" if p[0].startswith("axf-") else "tab" if p[0].startswith("axt-") else "mine")
+        items.append({"name": p[0], "createdAt": created, "attached": int(p[2]) if p[2].isdigit() else 0, "kind": kind,
+                      "agent": p[4] or (p[0][4:] if kind == "headless" else ""), "model": p[5], "cwd": p[6]})
+    return sorted(items, key=lambda x: x["createdAt"])
+
+
+def _vps_run(st: dict[str, Any], remote: str, timeout: int = 15) -> tuple[str, str]:
+    """Run a short command on the VPS host; returns (stdout, why-it-failed)."""
+    try:
+        r = RUNNER(vps_argv(st, remote, tty=False), capture_output=True, text=True, timeout=timeout, env=clean_env(), stdin=subprocess.DEVNULL)
+        if r.returncode == 0:
+            return r.stdout or "", ""
+        return "", ((r.stderr or "").strip().splitlines() or ["ssh failed"])[-1][:200]
+    except (OSError, subprocess.TimeoutExpired) as e:
+        return "", f"{type(e).__name__}: {e}"[:200]
+
+
+def _vps_ready(st: dict[str, Any]) -> bool:
+    return bool(st["vps"].get("host")) and store.ssh_key().exists()
+
+
+def vps_tmux() -> dict[str, Any]:
+    """Every axf-… / axt-… tmux session on the VPS. One ssh `tmux ls` at most every 8 s, whoever asks."""
     st = store.settings()
-    vps = st["vps"]
-    if not vps.get("host") or not store.ssh_key().exists():
+    if not _vps_ready(st):
         return {"ready": False, "items": [], "why": "the VPS tab isn't set up (Settings → Plugins → Terminal → VPS host)"}
     now = time.time()
     if _headless_cache["value"] is not None and now - _headless_cache["at"] < HEADLESS_TTL:
         return _headless_cache["value"]
-    remote = "tmux ls -F '#{session_name} #{session_created}' 2>/dev/null || true"
-    try:
-        r = RUNNER(vps_argv(st, remote, tty=False), capture_output=True, text=True, timeout=15, env=clean_env(), stdin=subprocess.DEVNULL)
-        lines = (r.stdout or "").splitlines() if r.returncode == 0 else []
-        why = "" if r.returncode == 0 else ((r.stderr or "").strip().splitlines() or ["ssh failed"])[-1][:200]
-    except (OSError, subprocess.TimeoutExpired) as e:
-        lines, why = [], f"{type(e).__name__}: {e}"[:200]
-    items = []
-    for ln in lines:
-        parts = ln.split()
-        if len(parts) >= 1 and HEADLESS_RE.match(parts[0]):
-            created = int(parts[1]) * 1000 if len(parts) > 1 and parts[1].isdigit() else 0
-            items.append({"name": parts[0], "createdAt": created})
-    value = {"ready": not why, "items": items[:40], "why": why}
+    out, why = _vps_run(st, f"tmux ls -F {shlex.quote(LS_FORMAT)} 2>/dev/null || true")
+    every = [{**x, "where": "vps"} for x in parse_ls(out, mine=True)]
+    value = {"ready": not why, "items": [x for x in every if x["kind"] != "mine"][:80], "mine": [x for x in every if x["kind"] == "mine"][:40], "why": why}
     _headless_cache.update(at=now, value=value)
     return value
+
+
+def headless_sessions() -> dict[str, Any]:
+    """The headless Claude Code sessions running on the VPS: tmux sessions named axf-… (deploy/claude-headless.sh),
+    with the agent and model the launcher tagged them with."""
+    v = vps_tmux()
+    return {**v, "items": [x for x in v["items"] if x["name"].startswith("axf-")][:40]}
+
+
+def console_tmux(mine: bool = False) -> list[dict[str, Any]]:
+    """The console's own persistent tabs (axt-… in this container's tmux); with `mine`, its other tmux sessions too."""
+    if not shutil.which("tmux"):
+        return []
+    try:
+        r = RUNNER(["tmux", "ls", "-F", LS_FORMAT], capture_output=True, text=True, timeout=5, env=clean_env(), stdin=subprocess.DEVNULL)
+    except (OSError, subprocess.TimeoutExpired):
+        return []
+    return [{**x, "where": "console"} for x in parse_ls(r.stdout if r.returncode == 0 else "", mine=mine)]
+
+
+_meter_cache: dict[str, Any] = {"at": 0.0, "key": "", "value": None}
+
+
+def meters(names: list[str]) -> dict[str, Any]:
+    """The live meters (headless-meter@1) of these headless sessions, in one ssh call (cached 2 s). A session whose tmux
+    has closed still answers from its meter file in the headless folder, so a finished tab keeps its final cost."""
+    names = [n for n in names if HEADLESS_RE.match(n)][:40]
+    st = store.settings()
+    if not names or not _vps_ready(st):
+        return {"ready": _vps_ready(st), "items": {}}
+    key, now = ",".join(sorted(names)), time.time()
+    if _meter_cache["value"] is not None and _meter_cache["key"] == key and now - _meter_cache["at"] < METER_TTL:
+        return _meter_cache["value"]
+    remote = (f'd="{HEADLESS_DIR}"; for s in {" ".join(shlex.quote(n) for n in names)}; do '
+              'm="$(tmux show-options -t "=$s:" -v @axf_meter 2>/dev/null)"; [ -n "$m" ] || m="$d/$s.meter.json"; '
+              '[ -r "$m" ] && { printf "%s\t" "$s"; head -c 65536 "$m" | tr -d "\n"; echo; }; done; true')
+    out, why = _vps_run(st, remote)
+    items: dict[str, Any] = {}
+    for ln in out.splitlines():
+        n, _, js = ln.partition("\t")
+        try:
+            v = json.loads(js)
+        except ValueError:
+            continue
+        if isinstance(v, dict) and n in names:
+            items[n] = v
+    value = {"ready": not why, "items": items, "why": why, "now": int(now * 1000)}
+    _meter_cache.update(at=now, key=key, value=value)
+    return value
+
+
+def chain_tree(items: list[Any]) -> list[dict[str, Any]]:
+    """The chain as a tree (terminal-drag-chain-tree, Nov 3 2026): each item under the item that pulled it in, its
+    children in `children`. Parent = `parentI` when it names an earlier item, else the earlier item whose `rel` is
+    `parent`, else (older chain files) the nearest earlier item one level up; else a root. Same rules as chainTree in
+    web/headless-core.ts."""
+    nodes: list[dict[str, Any]] = [{**it, "children": []} for it in items if isinstance(it, dict)]
+    roots: list[dict[str, Any]] = []
+    by_rel: dict[str, int] = {}
+    for k, n in enumerate(nodes):
+        up = -1
+        p_i = n.get("parentI")
+        depth = n.get("depth") if isinstance(n.get("depth"), int) else 0
+        if isinstance(p_i, int) and not isinstance(p_i, bool) and 0 <= p_i < k:
+            up = p_i
+        elif n.get("parent") and n.get("parent") in by_rel:
+            up = by_rel[n["parent"]]
+        elif depth > 0:
+            for j in range(k - 1, -1, -1):
+                if nodes[j].get("depth") == depth - 1:
+                    up = j
+                    break
+        (nodes[up]["children"] if up >= 0 else roots).append(n)
+        rel = n.get("rel")
+        if isinstance(rel, str) and rel not in by_rel:
+            by_rel[rel] = k
+    return roots
+
+
+def chain(name: str) -> dict[str, Any]:
+    """A headless session's context chain (context-chain@1): the files it took in, in order, with their rules, plus
+    `tree` (the same items nested under the file that pulled each one in)."""
+    if not HEADLESS_RE.match(name or ""):
+        raise ValueError("not a headless session")
+    st = store.settings()
+    if not _vps_ready(st):
+        raise ValueError("the VPS tab isn't set up")
+    q = shlex.quote(name)
+    remote = (f'd="{HEADLESS_DIR}"; c="$(tmux show-options -t ={q}: -v @axf_chain 2>/dev/null)"; [ -n "$c" ] || c="$d/{name}.chain.json"; '
+              '[ -r "$c" ] && head -c 4000000 "$c"; true')
+    out, why = _vps_run(st, remote, timeout=20)
+    if why:
+        raise OSError(why)
+    try:
+        v = json.loads(out) if out.strip() else None
+    except ValueError:
+        v = None
+    if not isinstance(v, dict):
+        v = {"$axf": "context-chain@1", "session": name, "version": 0, "items": []}
+    items = v.get("items") if isinstance(v.get("items"), list) else []
+    return {**v, "items": items, "tree": chain_tree(items)}

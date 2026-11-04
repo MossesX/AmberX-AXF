@@ -1,0 +1,81 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "project-wizard-help",
+  "name": "project-wizard help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:project-wizard. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:project-wizard",
+    "entries": [
+      {
+        "target": "start-over",
+        "title": "Start over",
+        "text": "Starts over. Part of Project wizard.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "project-wizard-settings",
+        "title": "Project wizard settings",
+        "text": "Opens the project wizard settings. Part of Project wizard.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "open-claude-ai",
+        "title": "Open claude.ai",
+        "text": "Opens Open claude.ai.",
+        "kind": "link",
+        "draft": true
+      },
+      {
+        "target": "copy-instructions",
+        "title": "Copy instructions",
+        "text": "Copies instructions. Paste it wherever you need it. Part of Project wizard.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "download-context-files",
+        "title": "Download context files",
+        "text": "Downloads context files. Part of Project wizard.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "save-link",
+        "title": "Save link",
+        "text": "Saves link. Nothing is kept until you tap it. Part of Project wizard.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "remove-from-list",
+        "title": "Remove from list",
+        "text": "Removes from list. Depending on your behaviour theme it asks first. Part of Project wizard.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "check-again",
+        "title": "Check again",
+        "text": "Checks again. Part of Project wizard.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "project-wizard",
+        "title": "Project wizard",
+        "text": "Shows the “Project wizard” part of this screen. Part of Project wizard.",
+        "kind": "tab",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

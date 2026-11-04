@@ -3,15 +3,23 @@
  * (../orchestrator.mjs), the server part and the tests.
  *
  * A build is a list of small steps (≤ 30 min), each pinned to Fable or Opus. Consecutive steps on the same model
- * form a phase. A phase whose model differs from the phase before it opens behind an approval gate: Brett approves
- * the model switch before the next session starts it. Token rules travel with every build: stay in the same
+ * form a phase. A phase whose model differs from the phase before it is a model switch (framework/core/model-switch.mjs,
+ * Brett, Nov 3 2026): a downgrade (Fable → Opus) passes by itself and is recorded; an UPGRADE (Opus → Fable) opens
+ * behind Brett's approval (his signed-in console click or an axHub approval), which no session, agent, headless build
+ * or the orchestrator itself can give. Token rules travel with every build: stay in the same
  * session, no sub-agents, and only the current phase goes into a brief.
  */
 
+import { normOrigin, originText } from '../../../../../framework/core/build-origin.mjs';
+import { SWITCH_RULE, normApproval, normRequest, phaseApproved, switchKind, upgradeLine, modelRank } from '../../../../../framework/core/model-switch.mjs';
+
 export const SCHEMA = 'orchestrator@1';
 export const MODELS = ['Fable', 'Opus'];
-export const STATUSES = ['pending', 'running', 'waiting', 'blocked', 'failed', 'complete', 'archived'];
-export const STATUS_LABEL = { pending: 'Pending', running: 'Running', waiting: 'Needs approval', blocked: 'Blocked', failed: 'Failed', complete: 'Complete', archived: 'Archived' };
+/** `built` = every step done but the build's PR is not merged yet; `complete` once it merged (or it has no PR). */
+export const STATUSES = ['pending', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
+export const STATUS_LABEL = { pending: 'Pending', running: 'Running', waiting: 'Needs approval', blocked: 'Blocked', failed: 'Failed', built: 'Built · awaiting merge', complete: 'Complete', archived: 'Archived' };
+/** Finished work: no steps left (built waits only on its PR). */
+export const isFinished = (status) => status === 'built' || status === 'complete';
 export const SORTS = ['status', 'added', 'built', 'left', 'next', 'category', 'title'];
 export const SORT_LABEL = { status: 'Status', added: 'Date added', built: 'Date built', left: 'Time left', next: 'Next model', category: 'Category', title: 'Title' };
 export const UNCATEGORISED = 'Uncategorised';
@@ -21,6 +29,12 @@ export const MODEL_GUIDE = {
   Fable: 'Cross-port contracts, kernel/engine internals, schema + migration design, heavy refactors, anything that changes how GUIs work across apps.',
   Opus: 'Everything else: plugin UI on the framework, servers, routes, tests, docs, wiring, security work.',
 };
+
+/**
+ * Every brief carries the asset-conformance rule (Brett, Oct 31 2026; shared rule "Handwritten code conforms to the
+ * asset system"): code a build writes, by hand or generated, takes every look value from hot-swappable assets.
+ */
+export const ASSET_RULE = 'UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.';
 
 const now = () => new Date().toISOString();
 const str = (v, max = 4000) => (typeof v === 'string' ? v.slice(0, max) : '');
@@ -46,6 +60,8 @@ function normStep(s, i) {
   const o = s && typeof s === 'object' ? s : {};
   return {
     id: str(o.id, 40) || `s${i + 1}`,
+    ...(str(o.uid, 60) ? { uid: str(o.uid, 60) } : {}), // builds@1 step record id: never changes (store, Steps view)
+    ...(str(o.title, 200) ? { title: str(o.title, 200) } : {}), // a renamed step shows its title instead of its text
     text: str(o.text, 2000),
     model: MODELS.includes(o.model) ? o.model : 'Opus',
     why: str(o.why, 300),
@@ -79,11 +95,14 @@ function normBuild(b) {
     pendingId: str(o.pendingId, 80),
     branch: str(o.branch, 200),
     pr: str(o.pr, 200),
+    ...(str(o.mergedAt) ? { mergedAt: str(o.mergedAt, 40) } : {}),
     createdAt: str(o.createdAt, 40) || now(),
     updatedAt: str(o.updatedAt, 40) || now(),
-    builtAt: o.status === 'complete' ? str(o.builtAt, 40) : '',
+    builtAt: isFinished(o.status) ? str(o.builtAt, 40) : '',
     notes: (Array.isArray(o.notes) ? o.notes : []).map((n) => ({ text: str(n?.text, 2000), at: str(n?.at, 40) })).filter((n) => n.text),
-    approvals: (Array.isArray(o.approvals) ? o.approvals : []).map((a) => ({ phase: Number(a?.phase) || 0, from: str(a?.from, 10), to: str(a?.to, 10), at: str(a?.at, 40) })),
+    approvals: (Array.isArray(o.approvals) ? o.approvals : []).map(normApproval),
+    upgradeRequests: (Array.isArray(o.upgradeRequests) ? o.upgradeRequests : []).map(normRequest).filter((r) => r.id),
+    ...(normOrigin(o.origin) ? { origin: normOrigin(o.origin) } : {}), // build-origin@1: what Brett said
     steps,
   };
 }
@@ -105,12 +124,13 @@ export function phases(build) {
     const last = out[out.length - 1];
     const sameRun = last && last.model === s.model && (!s.phase || s.phase === last.label);
     if (sameRun) last.steps.push({ ...s, index: i });
-    else out.push({ index: out.length, model: s.model, label: s.phase || '', steps: [{ ...s, index: i }], gate: !!last && last.model !== s.model, from: last?.model ?? '' });
+    else { const gate = !!last && last.model !== s.model; out.push({ index: out.length, model: s.model, label: s.phase || '', steps: [{ ...s, index: i }], gate, from: last?.model ?? '', kind: gate ? switchKind(last.model, s.model) : '' }); }
   });
   for (const p of out) {
     p.name = p.label || `Phase ${p.index + 1}`;
     p.done = p.steps.every((s) => !open(s));
-    p.approved = !p.gate || build.approvals.some((a) => a.phase === p.index && a.to === p.model);
+    p.upgrade = p.gate && p.kind === 'upgrade';
+    p.approved = phaseApproved(build.approvals, p); // downgrades pass; upgrades only with Brett's approval
     p.minutesLeft = p.steps.filter(open).reduce((t, s) => t + (estimateMinutes(s.estimate) ?? 0), 0);
     p.groups = [];
     for (const s of p.steps) {
@@ -136,7 +156,8 @@ export function nextUp(build, rules = DEFAULT_RULES) {
   const phase = ps.find((p) => !p.done) ?? null;
   if (!phase) return { phase: null, step: null, needsApproval: false, done: build.steps.length > 0 };
   const step = phase.steps.find(open) ?? null;
-  const needsApproval = rules.approveModelSwitch !== false && phase.gate && !phase.approved;
+  // An upgrade always waits for Brett (the approveModelSwitch rule can't turn that off); a downgrade never waits.
+  const needsApproval = phase.upgrade && !phase.approved;
   return { phase, step, needsApproval, done: false };
 }
 
@@ -165,8 +186,10 @@ export function splitCheck(build, rules = DEFAULT_RULES) {
 /** Status the build should show, from its steps (explicit blocked/failed/archived stay). */
 export function derivedStatus(build, rules) {
   if (['blocked', 'failed', 'archived'].includes(build.status)) return build.status;
+  if (!build.steps.length) return build.status; // nothing to derive from (e.g. a Pending item built before it had steps)
+  if (isFinished(build.status) && !build.steps.some((s) => s.done)) return build.pr && !build.mergedAt ? 'built' : 'complete'; // built without ticking its steps
   const n = nextUp(build, rules);
-  if (n.done) return 'complete';
+  if (n.done) return build.pr && !build.mergedAt ? 'built' : 'complete';
   if (n.needsApproval) return 'waiting';
   return build.steps.some((s) => s.done) || build.status === 'running' ? 'running' : 'pending';
 }
@@ -197,18 +220,35 @@ export function brief(build, rules = DEFAULT_RULES) {
   const checks = [...new Set(p.steps.filter(open).flatMap((s) => s.checks))];
   const lines = [
     `Continue build "${build.title}" (${build.id})${build.category ? ` [${build.category}]` : ''} — ${p.name}, model ${p.model}.`,
-    n.needsApproval ? `STOP: this phase switches ${p.from} → ${p.model}. Ask Brett to approve the switch (card) before any work: orchestrator.mjs act approve ${build.id} ${p.index}.` : '',
+    build.origin?.said || build.origin?.addenda?.length ? `What Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\n${originText(build.origin)}` : '',
+    n.needsApproval ? `STOP: ${upgradeLine(build.id, p)}. That is a model UPGRADE: only Brett can approve it. Do no work on this phase: run \`orchestrator.mjs request-upgrade ${build.id} ${p.index}\` (files the axHub approval), tell Brett, and end the session. Never approve it yourself.` : '',
+    p.gate && p.kind === 'downgrade' ? `This phase downgrades ${p.from} → ${p.model}: fine, no approval needed (it is recorded when you tick its first step).` : '',
+    SWITCH_RULE,
     `Rules: ${rules.sameSession ? 'stay in this one session' : 'new session allowed'}; ${rules.subAgents ? 'sub-agents allowed' : 'no sub-agents'}; steps ≤ ${rules.maxStepMinutes} min; read only the files listed; stop at the end of this phase.`,
+    `Look: ${ASSET_RULE}`,
     build.branch ? `Branch: ${build.branch}${build.pr ? ` · PR ${build.pr}` : ''}` : '',
     `Steps in this phase (${p.steps.filter(open).length} left, ~${formatMinutes(p.minutesLeft) || '?'}):`,
     ...p.steps.map((s, i) => `${s.group && s.group !== p.steps[i - 1]?.group ? `— ${s.group} —\n` : ''}${s.done ? '[x]' : s.skip ? '[skip]' : '[ ]'} ${s.id} ${s.estimate ? `(~${s.estimate}) ` : ''}${s.text}${s.session === 'new' ? ' [needs a new session]' : ''}${s.agent ? ' [sub-agent allowed]' : ''}`),
     files.length ? `Read first: ${files.join(', ')}` : '',
     checks.length ? `Checks: ${checks.join(' · ')}` : '',
-    `Tick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${build.id} <stepId> done — then commit _claude/builds/orchestrator.json with your work.`,
+    `Tick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${build.id} <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link ${build.id} --branch <b> --pr <n>.`,
+    'Watch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note "…"` so the live preview follows you.',
+    'Screenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name "…" --app … --screen … --group "<build name>" (UI Review → Screenshots; ui-review-item@1), never the review queue.',
   ];
   return lines.filter(Boolean).join('\n');
 }
 
+/**
+ * Who approves an upgrade. The core can't tell people from agents: the caller (CLI from its environment, the console
+ * server from the signed-in hub admin, the console's axHub-approved MCP tool) puts { by, via } on the change as
+ * `approver` only after its own check (framework/core/model-switch.mjs approverFrom). Without it an upgrade is refused.
+ */
+function needApprover(c, what) {
+  const a = c.approver && typeof c.approver === 'object' ? c.approver : null;
+  const by = str(a?.by, 120).trim(); const via = str(a?.via, 20);
+  if (!by || !['console', 'axhub'].includes(via)) throw new Error(`${what}: a model upgrade needs Brett's approval (his console click or an axHub approval); a session, agent or the orchestrator can't give it. Ask: orchestrator.mjs request-upgrade <id> <phase>`);
+  return { by, via };
+}
 /** Apply one change. Returns { state, build?, log: string[] } or throws Error with a plain message. */
 export function apply(state, change) {
   const s = normalizeState(state);
@@ -221,7 +261,9 @@ export function apply(state, change) {
     case 'add': {
       const id = slug(c.id || c.title); if (!str(c.title).trim()) throw new Error('a title is needed');
       if (s.builds.some((x) => x.id === id)) throw new Error(`"${id}" is already on the list`);
-      b = normBuild({ ...c, id, status: 'pending', createdAt: now() }); s.builds.push(b); log.push(`added ${id} (${b.steps.length} steps)`); break;
+      // origin = what Brett said that started it (build-origin@1); `said` is the shortcut for his verbatim words
+      const origin = c.said !== undefined ? { ...(c.origin ?? {}), said: c.said, at: c.origin?.at || now() } : c.origin;
+      b = normBuild({ ...c, id, origin, status: 'pending', createdAt: now() }); s.builds.push(b); log.push(`added ${id} (${b.steps.length} steps)${b.origin?.said ? ', with what Brett said' : ''}`); break;
     }
     case 'import': { // from a pending@1 item: its sub prompts become steps on the item's model
       const it = c.item ?? {}; const id = slug(c.id || it.id || it.title);
@@ -230,26 +272,45 @@ export function apply(state, change) {
       b = normBuild({ id, title: it.title, detail: it.detail, source: 'pending', pendingId: it.id, steps: (it.subPrompts ?? []).map((p) => ({ text: p.text, estimate: p.estimate, model, done: p.done, doneAt: p.doneAt })) });
       s.builds.push(b); log.push(`imported pending ${it.id} as ${id}`); break;
     }
-    case 'update': { b = find(); for (const k of ['title', 'detail', 'branch', 'pr', 'category']) if (typeof c[k] === 'string') b[k] = str(c[k], k === 'detail' ? 8000 : k === 'category' ? 60 : 300); if (Array.isArray(c.steps)) b.steps = c.steps.map(normStep); log.push(`updated ${b.id}`); break; }
+    case 'update': { b = find(); if (Array.isArray(c.steps)) for (const ns of c.steps) { const old = b.steps.find((x) => x.id === ns?.id); if (old && !old.done && ns?.model && modelRank(ns.model) > modelRank(old.model)) needApprover(c, `raising ${b.id} ${old.id} from ${old.model} to ${ns.model}`); } for (const k of ['title', 'detail', 'branch', 'pr', 'mergedAt', 'category']) if (typeof c[k] === 'string') b[k] = str(c[k], k === 'detail' ? 8000 : k === 'category' ? 60 : 300); if (Array.isArray(c.steps)) b.steps = c.steps.map(normStep); log.push(`updated ${b.id}`); break; }
+    case 'rename': { b = find(); const t = str(c.title, 300).trim(); if (!t) throw new Error('a build needs a name'); b.title = t; log.push(`${b.id} renamed "${t}"`); break; } // the id never changes
+    case 'rename-step': { b = find(); const st = stepOf(b); const t = str(c.title, 200).trim(); if (!t) throw new Error('a step needs a name'); st.title = t; log.push(`${b.id} ${st.id} renamed "${t}"`); break; }
     case 'remove': { b = find(); s.builds = s.builds.filter((x) => x !== b); log.push(`removed ${b.id}`); break; }
-    case 'status': { b = find(); if (!STATUSES.includes(c.status)) throw new Error(`unknown status ${c.status}`); b.status = c.status; b.builtAt = c.status === 'complete' ? now() : ''; log.push(`${b.id} → ${c.status}`); break; }
+    case 'status': { b = find(); if (!STATUSES.includes(c.status)) throw new Error(`unknown status ${c.status}`); b.status = c.status; b.builtAt = isFinished(c.status) ? (b.builtAt || now()) : ''; log.push(`${b.id} → ${c.status}`); break; }
     case 'archive': { b = find(); b.status = 'archived'; log.push(`archived ${b.id}`); break; }
     case 'hide': case 'unhide': { b = find(); b.hidden = c.action === 'hide'; log.push(`${c.action} ${b.id}`); break; }
     case 'note': { b = find(); if (!str(c.text).trim()) throw new Error('empty note'); b.notes.push({ text: str(c.text, 2000), at: now() }); log.push(`note on ${b.id}`); break; }
     case 'step': { b = find(); const st = stepOf(b); const ps = phases(b); const ph = ps.find((p) => p.steps.some((x) => x.id === st.id));
-      if (c.done !== false && ph && ph.gate && !ph.approved && s.rules.approveModelSwitch !== false) throw new Error(`phase ${ph.index + 1} switches ${ph.from} → ${ph.model}: approve the switch first`);
+      if (c.done !== false && ph && !ph.approved) throw new Error(`${upgradeLine(b.id, ph)}: a model upgrade needs Brett's approval first (orchestrator.mjs request-upgrade ${b.id} ${ph.index})`);
+      if (c.done !== false && ph && ph.gate && ph.kind === 'downgrade' && !b.approvals.some((a) => a.phase === ph.index && a.to === ph.model)) { b.approvals.push(normApproval({ phase: ph.index, from: ph.from, to: ph.model, at: now(), by: 'auto', kind: 'downgrade' })); log.push(`${b.id}: downgrade ${ph.from} → ${ph.model} recorded (phase ${ph.index + 1})`); }
       st.done = c.done !== false; st.doneAt = st.done ? now() : ''; if (typeof c.note === 'string') st.note = str(c.note, 1000); log.push(`${b.id} ${st.id} ${st.done ? 'done' : 'not done'}`); break; }
     case 'add-step': { b = find(); const st = normStep({ ...c.stepData, id: `s${b.steps.length + 1}` }, b.steps.length); if (!st.text) throw new Error('step text needed'); const at = Number.isInteger(c.at) ? c.at : b.steps.length; b.steps.splice(at, 0, st); log.push(`${b.id} + ${st.id}`); break; }
-    case 'edit-step': { b = find(); const st = stepOf(b); Object.assign(st, normStep({ ...st, ...c.stepData, id: st.id, done: st.done, doneAt: st.doneAt }, 0)); log.push(`${b.id} ${st.id} edited`); break; }
+    case 'edit-step': { b = find(); const st = stepOf(b); if (!st.done && c.stepData?.model && modelRank(c.stepData.model) > modelRank(st.model)) needApprover(c, `raising ${b.id} ${st.id} from ${st.model} to ${c.stepData.model}`); Object.assign(st, normStep({ ...st, ...c.stepData, id: st.id, done: st.done, doneAt: st.doneAt }, 0)); log.push(`${b.id} ${st.id} edited`); break; }
     case 'skip-step': { b = find(); const st = stepOf(b); st.skip = c.skip !== false; log.push(`${b.id} ${st.id} ${st.skip ? 'skipped' : 'back in'}`); break; } // the feature matrix's view of a step; the step stays
     case 'remove-step': { b = find(); const st = stepOf(b); b.steps = b.steps.filter((x) => x !== st); log.push(`${b.id} − ${st.id}`); break; }
     case 'move-step': { b = find(); const st = stepOf(b); const i = b.steps.indexOf(st); const j = i + (c.dir === 'up' ? -1 : 1); if (j >= 0 && j < b.steps.length) { b.steps.splice(i, 1); b.steps.splice(j, 0, st); } log.push(`${b.id} ${st.id} moved ${c.dir}`); break; }
     case 'approve': { b = find(); const p = phases(b)[Number(c.phase)]; if (!p || !p.gate) throw new Error('that phase has no model switch to approve');
-      if (!p.approved) b.approvals.push({ phase: p.index, from: p.from, to: p.model, at: now() }); log.push(`${b.id}: switch ${p.from} → ${p.model} approved (phase ${p.index + 1})`); break; }
+      if (p.kind !== 'upgrade') { // a downgrade needs nobody: record it and go
+        if (!b.approvals.some((a) => a.phase === p.index && a.to === p.model)) b.approvals.push(normApproval({ phase: p.index, from: p.from, to: p.model, at: now(), by: 'auto', kind: 'downgrade' }));
+        log.push(`${b.id}: downgrade ${p.from} → ${p.model} needs no approval; recorded (phase ${p.index + 1})`); break; }
+      const who = needApprover(c, upgradeLine(b.id, p));
+      const req = b.upgradeRequests.find((r) => r.phase === p.index && r.to === p.model && r.state === 'open');
+      if (!p.approved) b.approvals.push(normApproval({ phase: p.index, from: p.from, to: p.model, at: now(), by: who.by, via: who.via, kind: 'upgrade', request: req?.id ?? '' }));
+      if (req) req.state = 'approved';
+      log.push(`${upgradeLine(b.id, p)}: approved by ${who.by} (${who.via})`); break; }
+    case 'request-upgrade': { b = find(); const p = phases(b)[Number(c.phase)]; if (!p || !p.upgrade) throw new Error('that phase is not a model upgrade (a downgrade needs no approval)');
+      if (p.approved) { log.push(`${upgradeLine(b.id, p)}: already approved`); break; }
+      let req = b.upgradeRequests.find((r) => r.phase === p.index && r.to === p.model && r.state === 'open');
+      if (!req) { req = normRequest({ id: `${b.id}.p${p.index + 1}.${Date.now().toString(36)}`, phase: p.index, from: p.from, to: p.model, at: now(), by: str(c.by, 120) || 'session' }); b.upgradeRequests.push(req); }
+      if (str(c.job)) req.job = str(c.job, 120);
+      log.push(`${upgradeLine(b.id, p)}: asked Brett (request ${req.id})`); break; }
+    case 'deny-upgrade': { b = find(); const who = needApprover(c, 'answering an upgrade request');
+      const req = b.upgradeRequests.find((r) => r.phase === Number(c.phase) && r.state === 'open'); if (!req) throw new Error('no open upgrade request on that phase');
+      req.state = 'denied'; log.push(`${b.id}: upgrade request ${req.id} denied by ${who.by}`); break; }
     case 'rules': { for (const k of Object.keys(DEFAULT_RULES)) if (k in (c.rules ?? {})) s.rules[k] = typeof DEFAULT_RULES[k] === 'number' ? Math.max(5, Math.min(240, Number(c.rules[k]) || 30)) : c.rules[k] === true; log.push('rules saved'); break; }
     default: throw new Error(`unknown action ${c.action}`);
   }
-  if (b && s.builds.includes(b)) { b.updatedAt = now(); const st = derivedStatus(b, s.rules); if (st !== b.status && !(c.action === 'status')) { if (st === 'complete') b.builtAt = now(); b.status = st; } }
+  if (b && s.builds.includes(b)) { b.updatedAt = now(); const st = derivedStatus(b, s.rules); if (st !== b.status && !(c.action === 'status')) { if (isFinished(st) && !b.builtAt) b.builtAt = now(); b.status = st; } }
   s.updatedAt = now();
   return { state: s, build: b && s.builds.includes(b) ? b : undefined, log };
 }

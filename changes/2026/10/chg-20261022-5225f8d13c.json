@@ -1,0 +1,58 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261022-5225f8d13c",
+  "createdAt": "2026-10-22T05:29:10.291Z",
+  "updatedAt": "2026-10-22T10:08:33.967Z",
+  "kind": "build",
+  "title": "Patches: one banner, three tabs \u2014 the Dev Console, Build Pilot and axHub as web apps in origin-locked web views kept alive across tabs (embed@1 host)",
+  "asked": "Started from the Build manager (Start build now).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "console",
+    "user": "build-manager",
+    "host": "console"
+  },
+  "steps": [
+    {
+      "text": "Approve on axHub",
+      "state": "skipped"
+    },
+    {
+      "text": "Build (headless Claude Code on the VPS)",
+      "state": "skipped"
+    },
+    {
+      "text": "Verify nothing broke",
+      "state": "skipped"
+    }
+  ],
+  "result": {
+    "state": "failed",
+    "summary": "Stalled: taken off the banners (no word from its session, or stuck 30+ minutes).",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-22T05:30:26.073Z",
+    "by": "console"
+  },
+  "state": "failed",
+  "status": "failed",
+  "buildRef": {
+    "kind": "plan",
+    "id": "c.patches"
+  },
+  "surface": "console-launch",
+  "startedAt": "2026-10-22T05:29:10.000Z",
+  "finishedAt": "2026-10-22T10:08:33.967Z",
+  "lastSeenAt": "2026-10-22T05:29:26.077Z",
+  "estimate": {},
+  "costEstimated": true,
+  "branch": "build/c-patches",
+  "areas": [],
+  "doing": "Launched on the VPS (headless Claude Code)"
+}

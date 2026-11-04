@@ -32,9 +32,14 @@ check(not (HERE / "server").exists(), "web-only: no server part, nothing stored 
 web = (HERE / "web" / "index.tsx").read_text("utf-8")
 check(f"id: ID" in web and "parent: 'plugins'" in web and "PluginLifecyclePanel" in web, "settings are a Plugins sub-tab with the lifecycle panel")
 
-for p in (REPO / "apps/console-web/src/assets/toolbar").glob("*.json"):
+# the console's toolbars as it registers them: baked shared set, its own, its overrides (later wins; shared-assets.mjs)
+console_toolbars = {}
+for d in ("src/axf/assets", "src/assets", "src/assets-overrides"):
+    for p in sorted((REPO / "apps/console-web" / d / "toolbar").glob("*.json")):
+        console_toolbars[p.stem] = p
+for stem, p in sorted(console_toolbars.items()):
     t = p.read_text("utf-8")
-    check("alerts.open" not in t and "alerts.unread" not in t, f"toolbar {p.stem}: no bell (banner only)")
+    check("alerts.open" not in t and "alerts.unread" not in t, f"toolbar {stem}: no bell (banner only)")
 
 npx = shutil.which("npx")
 if not npx:

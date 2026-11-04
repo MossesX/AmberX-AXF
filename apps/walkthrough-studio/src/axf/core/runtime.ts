@@ -5,14 +5,21 @@
  * engines. Framework-agnostic: the React layer only subscribes to it.
  */
 import { SettingsRegistry, type SettingValue } from './settings';
-import { AssetRegistry, serializeAsset } from './registry';
+import { AssetRegistry, serializeAsset, type RegisteredAsset } from './registry';
+import { announceWatchLiveRuntime } from './watch-live';
 import { ActionBus, FRAMEWORK_MODULE, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
 import { colorThemeVars, styleThemeVars, type VarMap } from './engines/theme';
-import { layoutVars } from './engines/layout';
+import { scaleThemeVars } from './engines/scale';
+import { LAYOUT_VIEWPORTS, layoutViewports, layoutVars } from './engines/layout';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
 import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normalizeCustomSlot, type CustomSlot, type CustomValues } from './engines/customize';
+import { CONTROL_TOKEN_SLOTS, applyTokenOverrides, effectiveTokenOverrides } from './engines/control-tokens.mjs';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
+import { normalizeDockLayout } from './engines/dock';
+import { CHROME_CONTRACT, emptyChrome, type ChromeBundle, type ChromeNavItem, type ChromeToolbarItem } from './engines/chrome';
+/** The embed@1 functions whose chrome a host may take over and draw merged (chrome@1). */
+const CHROME_TAKES: readonly string[] = ['app-menu', 'nav-menu', 'context-menu', 'toolbar', 'widgets'];
 import { normalizePlacement, placementKey, placementRoute, PLACEMENT_TAB_GROUP, type Placement, type UiRef } from './engines/placement';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
 import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
@@ -23,11 +30,12 @@ import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded,
 import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
-import { DESIGN_APPLIED_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designPackageSlots, isAppearanceSetting, normalizeDesignPackage, packageSettingsPlan } from './engines/designpackage';
+import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
 import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
 import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, resolveInterface, scopeAttrs, scopeSheet, scopeVarsCss, type InterfaceData, type ResolvedInterface } from './engines/interface';
-import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
+import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceChange, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
+import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpIndex, helpTarget, introFor, introToShow, markSeen, resolveHelp, type HelpDescriptor, type HelpEntry, type HelpIndex, type HelpIntro } from './engines/help';
 import { Diagnostics } from './diagnostics';
 import { OutputTerminal } from './terminal';
 import {
@@ -42,7 +50,9 @@ import {
   type AxfManifest,
   type AxfState,
   type Gate,
+  type MenuActResult,
   type MenuItem,
+  type MenuItemButton,
   type Toast,
 } from './types';
 import { assetTypeSpecs, attachable, type ValidationResult } from './validate';
@@ -92,8 +102,17 @@ export const SPACING_KEY = 'axf.appearance.spacing';
  */
 export const APPEARANCE_LOCK_KEY = 'axf.lock.appearance';
 export const LOCKED_APPEARANCE_PERMS: readonly string[] = ['assets.swap', 'assets.import'];
-/** Developer apps: false = stop reading (and writing) the look on axHub; the app keeps its own saved look. */
+/**
+ * Retired (Nov 1 2026, Brett: "The apps should only get appearance from axhub period"): a developer app always reads
+ * and writes its look on axHub. A saved `false` from the old "Get the look from axHub" switch is cleared on attach.
+ */
 export const APPEARANCE_FOLLOW_KEY = 'axf.hub.appearance.follow';
+/**
+ * The Active assets pane (the layout's inspector region): a developer tool, closed until the user opens it
+ * (View → Active assets pane, the `inspector` action). Layouts only say where it goes when it is open
+ * (Brett, Nov 1 2026: the pane popped up on its own when a design package switched to a layout with an inspector).
+ */
+export const INSPECTOR_KEY = 'axf.inspector.shown';
 
 /** `defaults` = the app's manifest defaults when the choices were saved, so a changed app default can win (see constructor). */
 type Persisted = { active?: Partial<ActiveAssets>; role?: string; defaults?: Partial<ActiveAssets> };
@@ -140,6 +159,12 @@ export interface AppMenuProvider {
   moreLabel?: string;
   /** the module that registered it (`removeAppMenuItems(module)` also drops its providers) */
   module?: string;
+  /**
+   * Runs a button on one of its rows (`MenuItem.buttons`, e.g. Deny / Approve) and says what happened, so the open
+   * menu flips that row in place (`state`) and drops it, without reloading the list. Absent: the button's `action`
+   * is dispatched.
+   */
+  act?: (itemId: string, buttonId: string) => MenuActResult | Promise<MenuActResult>;
 }
 
 /**
@@ -193,7 +218,7 @@ export interface AppearanceSource {
   /** Re-read now (the UI-editor rule: fresh on focus). */
   refresh(): void;
   /** Save a change. `change` is this app's keys only; the source merges into the latest document it holds (last write wins per key). */
-  save(change: { slots?: Record<string, string>; spacing?: Spacing; hidden?: Record<string, boolean | null>; palette?: AppearanceDocument['palette'] }): void;
+  save(change: AppearanceChange): void;
 }
 
 /** What `rt.brandPlace(slot)` gives a UI piece to draw. */
@@ -242,9 +267,54 @@ export class AxfRuntime {
   private storageKey: string;
   private toastSeq = 0;
   private settingsBump = false;
+  /** Help packs added at run time (a plugin's help.json, a library), by id; with the app's help@1 assets they make the help index. */
+  private readonly helpPacks = new Map<string, { id: string; data: unknown }>();
+  private helpCache: { assets: readonly unknown[]; rev: number; index: HelpIndex } | null = null;
+  /** Help ids a control asked for and found nothing (the coverage report's run-time half). */
+  private readonly helpMissingIds = new Set<string>();
+  /** The help id the "What is this?" panel shows (null = closed); a screen intro asked to replay. */
+  private helpPanelId: string | null = null;
+  private helpReplay: string | null = null;
+  /** Viewport cut-offs being watched (layout tokens tinyMaxWidth … largeMaxWidth): the matchMedia lists and what each one says now. */
+  private viewportKeyWatched = '';
+  private viewportLists: { attr: string; list: { matches: boolean; addEventListener?: (t: 'change', f: () => void) => void; addListener?: (f: () => void) => void; removeEventListener?: (t: 'change', f: () => void) => void; removeListener?: (f: () => void) => void }; on: () => void }[] = [];
+
+  /**
+   * Every layout parameter is a token (Nov 2026): the layout's viewport cut-offs become root attributes
+   * (data-fx-tiny / -small / -narrow / -medium / -large) stylesheets select on instead of px breakpoints. The runtime
+   * watches `(max-width: <cut-off>px)` for each; a change re-renders (the provider re-applies the root attributes).
+   */
+  private ensureViewportWatch(): void {
+    const vps = layoutViewports(this.asset('layout').data);
+    const key = vps.map((v) => v.maxWidth).join(',');
+    if (key === this.viewportKeyWatched) return;
+    this.viewportKeyWatched = key;
+    for (const w of this.viewportLists) (w.list.removeEventListener ?? w.list.removeListener)?.call(w.list, 'change' as never, w.on as never);
+    this.viewportLists = [];
+    if (typeof globalThis.matchMedia !== 'function') return;
+    for (const v of vps) {
+      const list = globalThis.matchMedia(`(max-width: ${v.maxWidth}px)`);
+      const on = () => this.set({});
+      if (typeof list.addEventListener === 'function') list.addEventListener('change', on);
+      else (list as { addListener?: (f: () => void) => void }).addListener?.(on);
+      this.viewportLists.push({ attr: v.attr, list, on });
+    }
+  }
+
+  /** The viewport attributes in force now (`data-fx-narrow` → '1' …); '' keys absent when the viewport is wider. */
+  viewportAttrs(): Record<string, string> {
+    this.ensureViewportWatch();
+    const out: Record<string, string> = {};
+    for (const w of this.viewportLists) if (w.list.matches) out[w.attr] = '1';
+    return out;
+  }
+
+  /** A string that changes whenever a viewport attribute changes (a render dependency for the provider). */
+  viewportKey(): string { return Object.keys(this.viewportAttrs()).join(','); }
 
   constructor(opts: AxfRuntimeOptions) {
     this.manifest = opts.manifest;
+    announceWatchLiveRuntime(this);
     this.embedded = opts.embed !== undefined ? opts.embed : detectPageEmbed();
     if (this.embedded) this.listenToHost();
     this.storageKey = opts.storageKey ?? `axf:${opts.manifest.app.id}`;
@@ -257,6 +327,11 @@ export class AxfRuntime {
     );
     // The Spacing choice recompiles the styles (the provider re-applies them on any state change it sees).
     this.settings.onChange(SPACING_KEY, () => { this.terminal.ok('hot-swap', `spacing: ${this.spacing()}`); });
+    // Look settings (Sliders, per-asset tokens, banner looks, rolls…) are shared through the axHub look like the slots
+    // (Nov 1 2026, Brett: "Any theme change applies to all"): every local change goes to the hub document.
+    this.settings.onAnyChange((key, value) => {
+      if (isAppearanceSetting(key) && !isRetiredLookSetting(key)) this.pushAppearance({ settings: { [key]: value ?? null } });
+    });
     // Hot render (Brett, Oct 23 2026): "whenever settings are changed that affect the UI, render immediately". Any
     // settings change is a state change, so everything that reads a setting while it renders (banners, chrome, plugin
     // pages) re-renders at once, wherever it was changed. Coalesced: several changes in one task = one render.
@@ -302,6 +377,13 @@ export class AxfRuntime {
     };
     this.actions.withModule(FRAMEWORK_MODULE, () => this.registerBuiltinActions());
     this.registerBuiltinAppMenuProviders();
+    // Help mode in every app's Help menu (Brett, Nov 1 2026): the switch, replay the intro, intros again.
+    this.addAppMenuItems({ id: 'axf.help', module: 'axf', menu: 'help', menuLabel: 'Help', menuOrder: 1000, order: -10, items: [
+      { id: 'axf-help-mode', label: 'Help mode', icon: 'help', action: `${HELP_ACTIONS.mode}:toggle`, checked: `setting:${HELP_MODE_KEY}`, shortcut: 'F1' },
+      { id: 'axf-help-intro', label: 'Show this screen\'s intro', icon: 'play', action: 'help.intro' },
+      { id: 'axf-help-intros-reset', label: 'Show all screen intros again', icon: 'refresh', action: HELP_ACTIONS.resetIntros },
+      { id: 'axf-help-sep', separator: true },
+    ] });
   }
 
   /* ---------------- appearance source (engines/appearance.ts): settings from the axHub data server ---------------- */
@@ -320,55 +402,52 @@ export class AxfRuntime {
     this.detachAppearanceSource();
     this.appearanceSource = source;
     this.appearanceOff = source.subscribe((ev) => {
-      if (!this.appearanceFollowing()) return;
-      if ('state' in ev) { this.set({ appearance: ev.state }); return; }
+      if ('state' in ev) {
+        if (ev.state.status === 'ready') this.appearanceWasReady = true;
+        if (sameSourceState(this.state.appearance, ev.state)) return; // nothing new: no re-render
+        this.set({ appearance: ev.state });
+        return;
+      }
       this.applyAppearance(ev.doc);
     });
-    this.followOff = this.settings.onChange(APPEARANCE_FOLLOW_KEY, () => this.syncAppearanceFollow());
-    this.appearanceRunning = false;
-    this.syncAppearanceFollow();
+    // the old opt-out switch: a saved "don't follow" is dropped, the look comes from axHub only (Nov 1 2026)
+    if (this.settings.get(APPEARANCE_FOLLOW_KEY) !== null) {
+      this.settings.clear(APPEARANCE_FOLLOW_KEY);
+      this.terminal.ok('appearance', 'the "Get the look from axHub" switch is retired: this app reads its look from axHub only');
+    }
+    this.appearanceRunning = true;
+    this.appearanceWasReady = false;
+    this.set({ appearance: source.state() });
+    source.start();
   }
 
   detachAppearanceSource(): void {
     this.appearanceOff?.();
-    this.followOff?.();
     if (this.appearanceRunning) this.appearanceSource?.stop();
     this.appearanceOff = null;
-    this.followOff = null;
     this.appearanceRunning = false;
+    this.appearanceWasReady = false;
     this.appearanceSource = null;
     this.lastAppearance = null;
     this.set({ appearance: null });
   }
 
-  private followOff: (() => void) | null = null;
   private appearanceRunning = false;
+  /** The source has been ready since it was attached / followed again: the app has its look and stays on screen. */
+  private appearanceWasReady = false;
 
-  /** Is the look read from axHub right now? (A developer app with the follow switch on; true without a source too.) */
-  appearanceFollowing(): boolean { return this.settings.get(APPEARANCE_FOLLOW_KEY) !== false; }
+  /** Is the Active assets pane open? Closed unless the user opened it. */
+  inspectorShown(): boolean { return this.settings.get(INSPECTOR_KEY) === true; }
 
-  /** Turn reading the look from axHub on or off (developer apps). Off = the app runs on its own saved look, no waiting. */
-  setAppearanceFollowing(on: boolean): void {
-    if (!this.mayChangeLook()) return this.toast('Your role cannot change where the look comes from.', 'danger', 'Permission denied');
-    if (on) this.settings.clear(APPEARANCE_FOLLOW_KEY); else this.settings.set(APPEARANCE_FOLLOW_KEY, false);
+  /** Open or close the Active assets pane (a view choice, not part of the look: never sent to axHub). */
+  setInspectorShown(on: boolean): void {
+    if (on) this.settings.set(INSPECTOR_KEY, true); else this.settings.clear(INSPECTOR_KEY);
+    this.set({});
   }
 
-  /** Start or stop the source to match the follow switch. */
-  private syncAppearanceFollow(): void {
-    const src = this.appearanceSource;
-    if (!src) return;
-    const want = this.appearanceFollowing();
-    if (want === this.appearanceRunning) return;
-    this.appearanceRunning = want;
-    if (want) {
-      this.set({ appearance: src.state() });
-      src.start();
-      this.terminal.ok('appearance', 'reading the look from axHub again');
-    } else {
-      src.stop();
-      this.set({ appearance: null });
-      this.terminal.ok('appearance', 'not reading the look from axHub: this app keeps its own saved look');
-    }
+  /** The layout as drawn: its inspector region only while the pane is open. */
+  inspectorLayout<L extends { inspector: string }>(l: L): L {
+    return this.inspectorShown() || l.inspector === 'none' ? l : { ...l, inspector: 'none' };
   }
 
   /** Is a source attached (developer app)? */
@@ -386,6 +465,17 @@ export class AxfRuntime {
   /** The developer app runs only while its source is ready (or it has none). The React layer shows the waiting screen otherwise. */
   appearanceReady(): boolean { return !this.appearanceSource || !this.appearanceRunning || this.state.appearance?.status === 'ready'; }
 
+  /**
+   * Should the React layer show the waiting screen instead of the app? Only until the source is ready the first time,
+   * or while the hub says this browser may not read the look (signed out). A re-read that fails after the app is on screen
+   * keeps the app as it is (the source retries by itself): dropping the whole app for the waiting screen and back
+   * remounted every view on each failed re-read (Brett, Nov 1 2026: the approvals screen flashing "Reading the hub").
+   */
+  appearanceBlocking(): boolean {
+    if (this.appearanceReady()) return false;
+    return !this.appearanceWasReady || this.state.appearance?.status === 'unauthorized';
+  }
+
   /** What the last document resolved to in this app, for Settings → Appearance to explain skipped ids. */
   appearanceSkipped(): string[] { return resolveAppearance(this.lastAppearance, (t, id) => this.registry.has(t as AssetType, id)).skipped; }
 
@@ -397,6 +487,7 @@ export class AxfRuntime {
    */
   private applyAppearance(doc: AppearanceDocument | null): void {
     this.lastAppearance = doc;
+    let retired: string[] = [];
     const r = resolveAppearance(doc, (t, id) => this.registry.has(t as AssetType, id));
     this.applyingAppearance = true;
     try {
@@ -416,17 +507,56 @@ export class AxfRuntime {
       }
       const sp = r.spacing ?? SPACING_DEFAULT_VALUE;
       if (this.spacing() !== sp) this.settings.set(SPACING_KEY, sp);
+      // Look settings: a document that lists them owns them all (keys it doesn't list are cleared here); an older one
+      // without the field leaves this app's own alone (they are sent up once, below, so the hub takes them over).
+      // Retired look settings (Sliders, per-asset tokens, rolls, banners' Apply to all) are never applied (Nov 1 2026).
+      if (doc?.settings) {
+        const shared = Object.fromEntries(Object.entries(doc.settings).filter(([k]) => !isRetiredLookSetting(k)));
+        const saved = this.settings.savedValues();
+        for (const [k, v] of Object.entries(shared)) {
+          if (isAppearanceSetting(k) && JSON.stringify(saved[k]) !== JSON.stringify(v)) this.settings.set(k, v as SettingValue);
+        }
+        for (const k of Object.keys(saved)) if (isAppearanceSetting(k) && !Object.hasOwn(shared, k)) this.settings.clear(k);
+        retired = Object.keys(doc.settings).filter(isRetiredLookSetting);
+      }
+      // A loaded design package decides the style and colour theme; only a recorded override beats it (Nov 1 2026).
+      const pkgId = active[DESIGN_PACKAGE_TYPE as AssetType];
+      const pkgAsset = pkgId ? this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, pkgId) : undefined;
+      if (pkgAsset) {
+        const overrides = normalizeDesignOverrides(doc?.settings ? doc.settings[DESIGN_OVERRIDES_KEY] : this.settings.get(DESIGN_OVERRIDES_KEY));
+        const look = designLookSlots(normalizeDesignPackage(pkgAsset.data), overrides, { 'style-theme': active['style-theme' as AssetType], 'color-theme': active['color-theme' as AssetType] }, (t, id) => this.registry.has(t as AssetType, id));
+        for (const t of DESIGN_OVERRIDABLE) { const v = look[t]; if (v) active[t as AssetType] = v; }
+      }
       const changed = ASSET_TYPES.some((t) => active[t] !== this.state.active[t]);
-      this.set({ active, swaps: this.state.swaps + (changed ? 1 : 0) }, true);
+      // Nothing to swap = no new state: a re-applied document must not re-render every view (Nov 1 2026).
+      if (changed) this.set({ active, swaps: this.state.swaps + 1 }, true);
+      // A new look from the hub is applied to the app itself: hosts drawing the app under something else (the console's
+      // GizmoX interface tabs) bring it back into view, like a local design package does (Brett, Nov 1 2026: the console
+      // sat on its GizmoX Night tab while axHub showed Saffron Day, so the two looked out of sync).
+      if (changed) this.lookApplied('hub', doc?.updatedBy ?? '');
       if (r.skipped.length) this.terminal.warn('appearance', `not in this app, kept the default: ${r.skipped.join(', ')}`);
       this.terminal.ok('appearance', `applied from the hub${doc?.updatedBy ? ` (saved by ${doc.updatedBy})` : ''}`);
     } finally {
       this.applyingAppearance = false;
     }
+    // A document still carrying retired look settings is cleaned once (the next one won't list them).
+    if (retired.length) this.pushAppearance({ settings: Object.fromEntries(retired.map((k) => [k, null])) });
+    // The hub doesn't hold look settings yet: this app's become the shared ones (sent once; the next document lists them).
+    if (doc && !doc.settings) {
+      const mine = this.lookSettings();
+      if (Object.keys(mine).length) this.pushAppearance({ settings: mine });
+    }
+  }
+
+  /** This app's saved look settings (the keys `isAppearanceSetting` counts), as the hub document carries them. */
+  private lookSettings(): Record<string, SettingValue> {
+    const out: Record<string, SettingValue> = {};
+    for (const [k, v] of Object.entries(this.settings.savedValues())) if (isAppearanceSetting(k) && !isRetiredLookSetting(k) && v !== null) out[k] = v;
+    return out;
   }
 
   /** Push a local change to the source (no-op without one, or while applying a pushed document). */
-  private pushAppearance(change: Parameters<AppearanceSource['save']>[0]): void {
+  private pushAppearance(change: AppearanceChange): void {
     if (!this.appearanceSource || !this.appearanceRunning || this.applyingAppearance) return;
     this.appearanceSource.save(change);
   }
@@ -442,7 +572,7 @@ export class AxfRuntime {
     for (const t of ASSET_TYPES) if (t !== 'uac-policy' && this.state.active[t]) slots[t] = this.state.active[t];
     const hidden: Record<string, boolean> = {};
     for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') hidden[t] = v; }
-    return mergeAppearance({ $axf: APPEARANCE_FRAME }, { slots, spacing: this.spacing(), hidden, palette: this.appearancePalette() }, this.manifest.app.id, new Date().toISOString());
+    return mergeAppearance({ $axf: APPEARANCE_FRAME }, { slots, spacing: this.spacing(), hidden, palette: this.appearancePalette(), settings: this.lookSettings() }, this.manifest.app.id, new Date().toISOString());
   }
 
   /* ---------------- store ---------------- */
@@ -525,6 +655,21 @@ export class AxfRuntime {
 
   /** Registered live-list ids. */
   appMenuProviderIds(): string[] { return [...this.appMenuProviders.keys()]; }
+
+  /**
+   * A tap on a button of a live-list row: the provider's `act`, else the button's action. Never throws: a failure is
+   * `{ ok: false, message? }` (the menu toasts the message and puts the buttons back).
+   */
+  async runAppMenuButton(providerId: string, itemId: string, button: Pick<MenuItemButton, 'id' | 'action'>): Promise<MenuActResult> {
+    const p = this.appMenuProviders.get(providerId);
+    try {
+      if (p?.act) return (await p.act(itemId, button.id)) ?? { ok: false, message: 'No answer.' };
+      if (button.action) return { ok: this.dispatch(button.action) };
+      return { ok: false, message: 'Nothing to run.' };
+    } catch (e) {
+      return { ok: false, message: ((e as Error)?.message || 'Something went wrong.').slice(0, 160) };
+    }
+  }
 
   /** What compiling the menu needs from this runtime (the fixtures feed the engine the same shape). */
   private appMenuEnv(): AppMenuEnv {
@@ -911,6 +1056,9 @@ export class AxfRuntime {
       this.toast(`No ${type} asset with id "${target}".`, 'warning', 'Swap failed');
       return false;
     }
+    // A design package is never "just a slot": moving it means loading the package (its themes, extras; overrides
+    // cleared), or every other app on the hub would show the package while this one kept the old themes (Nov 3 2026).
+    if (type === DESIGN_PACKAGE_TYPE) return this.applyDesignPackage(next);
     if (next === this.state.active[type] && type !== STYLE_PACKAGE_TYPE) return true;
     this.terminal.ok('hot-swap', `${type}: ${this.state.active[type]} → ${next}`);
     // a style package is a set of controls: picking one swaps every member it names (engines/stylepackage.ts)
@@ -927,8 +1075,28 @@ export class AxfRuntime {
       }
     }
     this.set(patch, true);
+    this.recordDesignOverride(type, next); // a look setting: it reaches the hub with the other look settings
     if (type !== 'uac-policy') this.pushAppearance({ slots: { [type]: next }, ...(type === 'color-theme' ? { palette: this.appearancePalette() } : {}) });
     return true;
+  }
+
+  /** The style / colour theme overrides on top of the loaded design package (engines/designpackage.ts, precedence rule). */
+  designOverrides(): DesignOverrides { return this.loadedDesignPackage() ? normalizeDesignOverrides(this.settings.get(DESIGN_OVERRIDES_KEY)) : {}; }
+
+  /** The design package in force (its data), or null when none is loaded. */
+  private loadedDesignPackage() {
+    const id = this.state.active[DESIGN_PACKAGE_TYPE as AssetType];
+    const a = id ? this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id) : undefined;
+    return a ? normalizeDesignPackage(a.data) : null;
+  }
+
+  /** A style or colour pick while a package is loaded: record (or drop) its override. Returns the new overrides, or null when nothing changed. */
+  private recordDesignOverride(type: string, id: string): DesignOverrides | null {
+    const next = overrideAfterPick(this.loadedDesignPackage(), normalizeDesignOverrides(this.settings.get(DESIGN_OVERRIDES_KEY)), type, id);
+    if (!next) return null;
+    if (Object.keys(next).length) this.settings.set(DESIGN_OVERRIDES_KEY, next as unknown as SettingValue);
+    else this.settings.clear(DESIGN_OVERRIDES_KEY);
+    return next;
   }
 
   swapAll(targets: Partial<ActiveAssets>) {
@@ -1031,8 +1199,7 @@ export class AxfRuntime {
    * Chrome that belongs to the host while this app runs inside it (embed@1): what it hides for the whole app (its banner
    * by default, plus what a taken function hides, e.g. the app menu). On a page the host shows alone (settings page
    * mode) every bit of chrome is hidden for that page only, so only the whole-app part counts. Settings leave rows about
-   * this chrome out instead of greying them (Brett, Oct 23 2026: "if a program runs inside Patches don't grey out its
-   * settings").
+   * this chrome out instead of greying them (Brett, Oct 23 2026: settings of chrome a host owns aren't greyed out).
    */
   slotOwnedByHost(type: AssetType): boolean {
     const e = this.embedded;
@@ -1125,8 +1292,14 @@ export class AxfRuntime {
     return captureDesignPackage({ active: this.state.active as Record<string, string>, types: ASSET_TYPES, spacing: this.spacing(), hidden, values: this.settings.savedValues() }, withExtras);
   }
 
-  /** The design package last applied in this app, if any (Restore default appearance forgets it). */
+  /**
+   * The design package loaded in this app, if any: the `design-package` slot, which rides the shared look, so every app
+   * on the hub names the same one (the local `axf.appearance.design` note is only written for older readers; a slot
+   * that is a known package always wins over it, Nov 3 2026). After Restore default appearance: the app's default package.
+   */
   appliedDesignPackage(): string | undefined {
+    const active = this.state.active[DESIGN_PACKAGE_TYPE as AssetType];
+    if (active && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, active)) return active;
     let v = this.settings.get(DESIGN_APPLIED_KEY);
     if (typeof v !== 'string') {
       // the retired appearance package's pick: the shipped packages kept their ids, so move it over once
@@ -1140,13 +1313,15 @@ export class AxfRuntime {
    * Apply design package `id`: its style, colour, layout and behaviour themes; and when it carries extras, the other
    * slots, spacing, shown / hidden chrome and the other appearance settings too (the whole look).
    */
-  applyDesignPackage(id: string): boolean {
+  applyDesignPackage(id: string, opts: { quiet?: boolean } = {}): boolean {
     if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
     const a = this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id);
     if (!a) { this.toast(`No design package "${id}".`, 'warning', 'Design package'); return false; }
     const pkg = normalizeDesignPackage(a.data);
     const plan = packageSettingsPlan(pkg, Object.keys(this.settings.savedValues()));
     for (const k of plan.clear) this.settings.clear(k);
+    // loading a package (again) clears the individual style / colour overrides (precedence rule)
+    if (this.settings.get(DESIGN_OVERRIDES_KEY) !== null) this.settings.clear(DESIGN_OVERRIDES_KEY);
     for (const [k, v] of Object.entries(plan.set)) this.settings.set(k, v as SettingValue);
     const hidden: Record<string, boolean | null> = {};
     if (pkg.extras) for (const t of ASSET_TYPES) {
@@ -1164,23 +1339,24 @@ export class AxfRuntime {
     this.settings.set(DESIGN_APPLIED_KEY, id);
     if (this.settings.get(PACKAGE_APPLIED_KEY) !== null) this.settings.clear(PACKAGE_APPLIED_KEY);
     this.terminal.ok('hot-swap', `design package ${id} applied (${Object.keys(slots).length} slots, ${Object.keys(plan.set).length} settings)`);
+    if (opts.quiet) return true; // part of a bigger step (Restore default): that step says what happened
     this.toast(`${a.name} applied.`, 'success', 'Design package');
     this.lookApplied('design-package', id);
     return true;
   }
 
-  private readonly lookAppliedListeners = new Set<(ev: { kind: 'design-package' | 'interface' | 'default'; id: string }) => void>();
+  private readonly lookAppliedListeners = new Set<(ev: { kind: 'design-package' | 'interface' | 'default' | 'hub'; id: string }) => void>();
 
   /**
    * Called after a design package, an interface or the default look is applied to the app (also on "Apply again").
    * Hosts that draw the app under something else (the console's GizmoX interface tabs) bring the app back into view.
    */
-  onLookApplied(fn: (ev: { kind: 'design-package' | 'interface' | 'default'; id: string }) => void): () => void {
+  onLookApplied(fn: (ev: { kind: 'design-package' | 'interface' | 'default' | 'hub'; id: string }) => void): () => void {
     this.lookAppliedListeners.add(fn);
     return () => { this.lookAppliedListeners.delete(fn); };
   }
 
-  private lookApplied(kind: 'design-package' | 'interface' | 'default', id: string): void {
+  private lookApplied(kind: 'design-package' | 'interface' | 'default' | 'hub', id: string): void {
     for (const fn of [...this.lookAppliedListeners]) { try { fn({ kind, id }); } catch (e) { this.terminal.warn('hot-swap', `look listener failed: ${(e as Error).message}`); } }
   }
 
@@ -1198,6 +1374,10 @@ export class AxfRuntime {
     for (const k of Object.keys(this.settings.savedValues())) if (isAppearanceSetting(k) || k === SPACING_KEY || k === PACKAGE_APPLIED_KEY || k === DESIGN_APPLIED_KEY) this.settings.clear(k);
     this.reset();
     this.pushAppearance({ spacing: this.spacing() });
+    // The default look is the app's default design theme, loaded in full (its spacing and chrome too), with no style
+    // or colour override left (precedence rule 3): Restore = load the default design package again (Nov 3 2026).
+    const def = (this.manifest.defaults as Record<string, string | undefined>)[DESIGN_PACKAGE_TYPE];
+    if (def && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, def)) this.applyDesignPackage(def, { quiet: true });
     this.terminal.ok('hot-swap', 'default appearance restored');
     this.toast('Default appearance restored.', 'success', 'Appearance');
     this.lookApplied('default', '');
@@ -1266,6 +1446,20 @@ export class AxfRuntime {
       if (activate && this.can('assets.swap')) this.swap(r.asset.type, r.asset.id);
       else this.set({});
     }
+    return r;
+  }
+
+  /**
+   * Watch live (watch-live@1): an asset file a session is editing changed on disk. Re-registers it in place (keeping
+   * the source of the copy it replaces) and recompiles, so the active theme/layout/menu shows the edit without a
+   * reload. Not a user action: no permission check and no swap; the active choice stays what it was.
+   */
+  hotReplaceAsset(raw: unknown, origin = 'watch-live'): ValidationResult {
+    const t = (raw as { type?: AssetType; id?: string } | null);
+    const prev = t?.type && t.id ? (this.registry.get(t.type, t.id) as RegisteredAsset | undefined) : undefined;
+    const r = this.registry.register(raw, prev?.__source ?? 'imported', prev?.__origin ?? origin);
+    // A fresh `active` (same choices) so everything keyed on it — the provider's compiled tokens — re-applies.
+    if (r.ok) this.set({ active: { ...this.state.active } });
     return r;
   }
 
@@ -1396,11 +1590,95 @@ export class AxfRuntime {
     this.set({ view, context: null });
   }
 
+  /* ---------------- Help mode (engines/help.ts, help@1) ---------------- */
+
+  /** Help mode on? (setting axf.help.mode, per device; off by default.) */
+  helpMode(): boolean {
+    return this.settings.get(HELP_MODE_KEY) === true;
+  }
+
+  /** Switch Help mode on / off (null = toggle). Hot: every control re-reads it on the next render. */
+  setHelpMode(on: boolean | null = null): void {
+    const next = on === null ? !this.helpMode() : on;
+    this.settings.set(HELP_MODE_KEY, next);
+    if (!next) this.helpPanelId = null;
+    this.terminal.ok('help', `help mode ${next ? 'on' : 'off'}`);
+    this.set({});
+  }
+
+  /** Every help pack in force, as one index: the app's help@1 assets (registry order), then run-time packs. */
+  helpIndex(): HelpIndex {
+    const assets = this.registry.list('help' as AssetType);
+    const c = this.helpCache;
+    // registered assets are replaced, never mutated, so the same objects + the same run-time packs = the same index
+    if (c && c.rev === this.helpPacksRev && c.assets.length === assets.length && c.assets.every((a, i) => a === assets[i])) return c.index;
+    const index = buildHelpIndex([...assets.map((a) => ({ id: a.id, data: a.data })), ...this.helpPacks.values()]);
+    this.helpCache = { assets, rev: this.helpPacksRev, index };
+    return index;
+  }
+  private helpPacksRev = 0;
+
+  /** Add (or replace) a help pack at run time: `data` is help@1 data ({ entries, intros }). Returns a remover. */
+  addHelp(id: string, data: unknown): () => void {
+    this.helpPacks.set(id, { id, data });
+    this.helpPacksRev += 1;
+    this.set({});
+    return () => this.removeHelp(id);
+  }
+
+  removeHelp(id: string): void {
+    if (this.helpPacks.delete(id)) { this.helpPacksRev += 1; this.set({}); }
+  }
+
+  /** The help for a control (descriptor → help ids → first entry), with its canonical id; records misses. */
+  helpFor(desc: HelpDescriptor): { id: string | null; entry: (HelpEntry & { pack: string }) | null } {
+    const t = helpTarget({ screen: this.state.view, ...desc });
+    const entry = resolveHelp(this.helpIndex(), t.lookup);
+    if (!entry && t.id) this.helpMissingIds.add(t.id);
+    return { id: t.id, entry };
+  }
+
+  /** Help ids asked for on this page that had no help (newest last). */
+  missingHelp(): string[] {
+    return [...this.helpMissingIds];
+  }
+
+  /** The intro to show on this screen now (Help mode on, intros on, not seen yet), or the one asked to replay. */
+  helpIntro(screen = this.state.view): HelpIntro | null {
+    if (this.helpReplay === screen) return introFor(this.helpIndex(), screen);
+    return introToShow({ mode: this.helpMode(), intros: this.settings.get(HELP_INTROS_KEY) !== false, seen: this.settings.get(HELP_SEEN_KEY), screen, index: this.helpIndex() });
+  }
+
+  /** The intro of a screen was shown (finished or skipped): it won't show again there. `stopAll` turns screen intros off. */
+  helpIntroDone(screen: string, stopAll = false): void {
+    if (this.helpReplay === screen) this.helpReplay = null;
+    this.settings.set(HELP_SEEN_KEY, markSeen(this.settings.get(HELP_SEEN_KEY), screen));
+    if (stopAll) this.settings.set(HELP_INTROS_KEY, false);
+    this.set({});
+  }
+
+  /** Forget which intros were seen (and turn intros back on). */
+  resetHelpIntros(): void {
+    this.settings.set(HELP_SEEN_KEY, []);
+    this.settings.set(HELP_INTROS_KEY, true);
+    this.set({});
+  }
+
+  /** Open / close the "What is this?" panel for a help id (null closes). */
+  explainHelp(id: string | null): void {
+    this.helpPanelId = id;
+    this.set({});
+  }
+
+  helpPanel(): string | null {
+    return this.helpPanelId;
+  }
+
   navigate(view: string) {
     if (this.openPlaced(`view:${view}`)) return;
-    // A view the host took over (embed@1 takes: the settings view inside Patches) opens in the host instead.
+    // A view the host took over (embed@1 takes: e.g. the settings view) opens in the host instead.
     if (embedTakenView(this.embedded, view)) { this.askHost(`nav:${view}`); return; }
-    // A view of a function the host locks (plugins inside Patches): say who manages it instead of opening it.
+    // A view of a function the host locks (e.g. plugins): say who manages it instead of opening it.
     const lock = this.lockedByHost({ view });
     if (lock) { this.toast(lock, 'info', `Managed in ${embedHostLabel(this.embedded)}`); return; }
     this.set({ view, context: null });
@@ -1433,6 +1711,8 @@ export class AxfRuntime {
   }
 
   openContext(x: number, y: number, target: string, payload?: string) {
+    // A host that takes the context menu (embed@1 `context-menu`, Molly's xLayout) shows its one menu for this app.
+    if (this.forwardContext(x, y, target, payload)) return;
     if (this.slotHidden('context-menu')) return;
     this.set({ context: { x, y, target, payload, scope: this.uiScope } });
   }
@@ -1442,9 +1722,9 @@ export class AxfRuntime {
   }
 
   dispatch(spec: string, ctx: Omit<ActionContext, 'runtime'> = {}): boolean {
-    // A hook of a function the host took over (embed@1): the host does it (e.g. Patches' combined settings).
+    // A hook of a function the host took over (embed@1): the host does it (e.g. a host's combined settings).
     if (embedTakenBy(this.embedded, spec)) return this.askHost(spec);
-    // A hook of a function the host locks (plugins inside Patches): shown greyed out; running it only says who manages it.
+    // A hook of a function the host locks (e.g. plugins): shown greyed out; running it only says who manages it.
     const lock = this.lockedByHost({ action: spec });
     if (lock) { this.toast(lock, 'info', `Managed in ${embedHostLabel(this.embedded)}`); return false; }
     return this.actions.dispatch(spec, { runtime: this, ...ctx });
@@ -1464,8 +1744,8 @@ export class AxfRuntime {
   }
 
   /**
-   * Is this action / view / live list a hook of a function the host locks (embed@1 take with `lock`, e.g. plugins
-   * inside Patches)? Returns the note to show (`Plugins are managed in Patches`), or null. Chrome keeps such hooks on
+   * Is this action / view / live list a hook of a function the host locks (embed@1 take with `lock`, e.g. plugins)?
+   * Returns the note to show (`Plugins are managed in <host>`), or null. Chrome keeps such hooks on
    * screen greyed out with the note as their tooltip.
    */
   lockedByHost(what: { action?: string; view?: string; provider?: string }): string | null {
@@ -1475,7 +1755,7 @@ export class AxfRuntime {
     return embedLockNote(e, fn);
   }
 
-  /** The note for a whole function the host locks (`plugins` → `Plugins are managed in Patches`), or null. */
+  /** The note for a whole function the host locks (`plugins` → `Plugins are managed in <host>`), or null. */
   hostLockNote(fn: string): string | null { return embedLockNote(this.embedded, fn); }
 
   /* ---------------- embed@1: the host manages this app's plugins (take `plugins`) ---------------- */
@@ -1541,12 +1821,14 @@ export class AxfRuntime {
       if (m?.type === 'open-tab' && this.embedded?.page === 'settings') this.actions.dispatch(`settings.open:${m.tab}`, { runtime: this });
       if (m?.type === 'open-tab' && this.embedded?.page === 'banners') this.actions.dispatch(`banners.settings:${m.tab}`, { runtime: this });
       if (m?.type === 'menu-request') void this.shareAppMenu({ force: true, refresh: true });
+      if (m?.type === 'chrome-request') void this.shareChrome({ force: true });
       if (m?.type === 'run') this.runSharedMenuItem(m.id);
       if (m?.type === 'plugins-enabled' && this.hostTakes('plugins')) this.receiveHostPlugins(m.plugins);
       if (m?.type === 'plugins-request' && this.reportedPlugins) this.reportPluginsToHost(this.reportedPlugins);
     };
-    // the app itself in a tab shares its menu; a page the host shows alone (its settings page) doesn't
-    if (this.hostTakes('app-menu') && !this.embedded?.page) this.startMenuShare();
+    // the app itself in a tab shares its menu (and, chrome@1, its navigation / context menus / toolbar / widgets when the
+    // host takes them); a page the host shows alone (its settings page) doesn't
+    if (CHROME_TAKES.some((t) => this.hostTakes(t)) && !this.embedded?.page) this.startMenuShare();
     // Android hosts can't post into the page; they call this instead (evaluateJavascript).
     (globalThis as unknown as { AxfEmbedGuest?: { receive: (json: string) => void } }).AxfEmbedGuest = { receive: (json: string) => handle(json) };
     const g = globalThis as unknown as { addEventListener?: (t: string, f: (e: { data: unknown; source: unknown }) => void) => void; parent?: unknown };
@@ -1585,7 +1867,7 @@ export class AxfRuntime {
     const unref = (t: unknown) => (t as { unref?: () => void } | null)?.unref?.();
     const later = (ms: number, refresh = false) => {
       if (this.sharedMenuTimer) clearTimeout(this.sharedMenuTimer);
-      this.sharedMenuTimer = setTimeout(() => { this.sharedMenuTimer = null; void this.shareAppMenu({ refresh }); }, ms);
+      this.sharedMenuTimer = setTimeout(() => { this.sharedMenuTimer = null; void this.shareAppMenu({ refresh }); void this.shareChrome(); }, ms);
       unref(this.sharedMenuTimer);
     };
     unref(setTimeout(() => { later(0, true); this.subscribe(() => later(1500)); }, 600));
@@ -1598,6 +1880,17 @@ export class AxfRuntime {
    */
   async shareAppMenu(opts: { force?: boolean; refresh?: boolean } = {}): Promise<boolean> {
     if (!this.hostTakes('app-menu') || this.embedded?.page) return false;
+    const { menus, run } = await this.buildSharedMenus(opts);
+    const msg: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'menu', menus };
+    const text = JSON.stringify(msg);
+    for (const [k, v] of run) this.sharedMenuRun.set(k, v);
+    if (!opts.force && text === this.sharedMenuText) return false;
+    this.sharedMenuText = text;
+    return this.postToHost(msg);
+  }
+
+  /** The application menu as data (ids `m<menu>.<item>…`), and id → action for the items the host may run back. */
+  private async buildSharedMenus(opts: { refresh?: boolean } = {}): Promise<{ menus: EmbedMenu[]; run: Map<string, string> }> {
     const run = new Map<string, string>();
     const MAX_DEPTH = 4;
     const list = async (provider: string): Promise<CompiledMenuItem[]> => {
@@ -1630,11 +1923,85 @@ export class AxfRuntime {
       const items = (await Promise.all(m.items.map((it, i) => conv(it, `m${mi}.${i}`, 1)))).filter((k): k is EmbedMenuItem => !!k);
       if (items.some((k) => !k.separator)) menus.push({ id: `m${mi}`, label: m.label, items });
     }
-    const msg: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'menu', menus };
+    return { menus, run };
+  }
+
+  /* ---------------- chrome@1: the host draws this app's navigation / context menus / toolbar / widgets ---------------- */
+
+  private sharedChromeText = '';
+
+  /**
+   * Send this app's chrome to the host that took it over (`chrome` message, engines/chrome.ts): the application menu
+   * (when the host takes `app-menu`), the navigation menu (`nav-menu`: ids `nav:<view>`, locked by the access policy),
+   * the context menus (`context-menu`: every target's items, ids `ctx.<target>.<i>…`), the toolbar (`toolbar`: ids
+   * `tb.<group>.<i>`) and nothing else — DATA only, the actions stay here (`runSharedMenuItem`). Unchanged chrome isn't
+   * sent again unless `force`. False when the host takes none of it, or this is a page the host shows alone.
+   */
+  async shareChrome(opts: { force?: boolean; refresh?: boolean } = {}): Promise<boolean> {
+    if (this.embedded?.page || !CHROME_TAKES.some((t) => this.hostTakes(t))) return false;
+    const run = new Map<string, string>();
+    const app = this.manifest.app.id.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 32) || 'app';
+    const bundle: ChromeBundle = { ...emptyChrome(app, this.manifest.app.name), $axf: CHROME_CONTRACT };
+    if (this.hostTakes('app-menu')) { const m = await this.buildSharedMenus(opts); bundle.menus = m.menus; for (const [k, v] of m.run) run.set(k, v); }
+    if (this.hostTakes('nav-menu')) {
+      const nav = this.assetOrNull('nav-menu')?.data;
+      for (const sec of nav?.sections ?? []) {
+        const items: ChromeNavItem[] = [];
+        for (const it of sec.items) {
+          const gate = this.gate(it.requires);
+          if (gate === 'hide') continue;
+          const id = `nav:${it.view}`;
+          const out: ChromeNavItem = { id, label: it.label };
+          if (it.icon) out.icon = it.icon;
+          const n = it.badge ? this.badge(it.badge) : 0; if (n > 0) out.badge = n;
+          if (gate === 'disable') out.locked = true; else run.set(id, id);
+          items.push(out);
+        }
+        if (items.length) bundle.nav.push(sec.label ? { label: sec.label, items } : { items });
+      }
+      bundle.active = `nav:${this.state.view}`;
+    }
+    if (this.hostTakes('context-menu')) {
+      const ctx = this.assetOrNull('context-menu')?.data;
+      const conv = (items: readonly MenuItem[], prefix: string, depth: number): EmbedMenuItem[] => items.flatMap((it, i) => {
+        const id = `${prefix}.${i}`;
+        if (it.separator) return [{ id, label: '', separator: true } as EmbedMenuItem];
+        const gate = this.gate(it.requires);
+        if (gate === 'hide' || !it.label) return [];
+        const out: EmbedMenuItem = { id, label: it.label };
+        if (it.icon) out.icon = it.icon;
+        if (gate === 'disable') out.locked = true;
+        if (it.items?.length && depth < 4) { const kids = conv(it.items, id, depth + 1); if (kids.some((k) => !k.separator)) out.items = kids; }
+        if (!out.items) { if (!it.action) return []; if (!out.locked) run.set(id, it.action); }
+        return [out];
+      });
+      for (const [target, items] of Object.entries(ctx?.targets ?? {})) {
+        const list = conv(items, `ctx.${target}`, 1);
+        if (list.some((k) => !k.separator)) bundle.context.push({ target, items: list });
+      }
+    }
+    if (this.hostTakes('toolbar')) {
+      const tb = this.assetOrNull('toolbar')?.data;
+      for (const [gi, g] of (tb?.groups ?? []).entries()) {
+        const items: ChromeToolbarItem[] = [];
+        for (const [i, it] of g.items.entries()) {
+          const gate = this.gate(it.requires);
+          if (gate === 'hide') continue;
+          const id = `tb.${g.id || gi}.${i}`;
+          const out: ChromeToolbarItem = { id, label: it.label, icon: it.icon || 'circle' };
+          const n = it.badge ? this.badge(it.badge) : 0; if (n > 0) out.badge = n;
+          if (it.checked && resolveChecked(it.checked, this.appMenuEnv()) === true) out.pressed = true;
+          if (gate === 'disable') out.locked = true; else run.set(id, it.action);
+          items.push(out);
+        }
+        if (items.length) bundle.toolbars.push(g.label ? { id: g.id || `g${gi}`, label: g.label, items } : { id: g.id || `g${gi}`, items });
+      }
+    }
+    const msg: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'chrome', chrome: bundle };
     const text = JSON.stringify(msg);
-    this.sharedMenuRun = run;
-    if (!opts.force && text === this.sharedMenuText) return false;
-    this.sharedMenuText = text;
+    for (const [k, v] of run) this.sharedMenuRun.set(k, v);
+    if (!opts.force && text === this.sharedChromeText) return false;
+    this.sharedChromeText = text;
     return this.postToHost(msg);
   }
 
@@ -1642,14 +2009,36 @@ export class AxfRuntime {
   runSharedMenuItem(id: string): boolean {
     const action = this.sharedMenuRun.get(id);
     if (!action) { this.terminal.warn('menus', `the host asked to run menu item "${id}", which this app didn't offer`); return false; }
-    return this.dispatch(action);
+    // a context-menu item runs with the payload of the element that was right-clicked here
+    const payload = id.startsWith('ctx.') ? this.forwardedContext?.payload : undefined;
+    return this.dispatch(action, payload ? { payload } : {});
+  }
+
+  /** The last right-click sent to the host (its payload is what a context item the host runs back acts on). */
+  private forwardedContext: { target: string; payload?: string } | null = null;
+
+  /** Send a right-click to a host that takes the context menu (`context` message); false = show it here as usual. */
+  forwardContext(x: number, y: number, target: string, payload?: string): boolean {
+    if (!this.hostTakes('context-menu') || this.embedded?.page) return false;
+    const msg: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'context', x, y, target, ...(payload ? { payload } : {}) };
+    if (!this.postToHost(msg)) return false;
+    this.forwardedContext = { target, ...(payload ? { payload } : {}) };
+    return true;
   }
 
   /* ---------------- rendering ---------------- */
 
   /** Compile every active asset into CSS vars + root data-attributes. */
+  /** An asset's data with the control@1 token overrides of its set written in (engines/control-tokens.mjs). */
+  private withTokenOverrides<T>(target: string, type: AssetType, data: T): T {
+    const spec = (CONTROL_TOKEN_SLOTS as Record<string, { key: string }>)[target];
+    if (!spec || data === undefined || data === null) return data;
+    const o = effectiveTokenOverrides(this.settings.get(spec.key), (this.state.active as Record<string, string | undefined>)[type]);
+    return Object.keys(o).length ? applyTokenOverrides(target, data, o) : data;
+  }
+
   compileStyles(): { vars: VarMap; attrs: Record<string, string> } {
-    const color = this.asset('color-theme').data;
+    const color = this.withTokenOverrides('tokens.theme', 'color-theme', this.asset('color-theme').data);
     const parts = [
       buttonStyle(this.asset('button').data),
       sliderStyle(this.asset('slider').data),
@@ -1667,8 +2056,14 @@ export class AxfRuntime {
     ];
     const vars: VarMap = {
       ...colorThemeVars(color),
-      ...styleThemeVars(this.asset('style-theme').data, this.spacing()),
-      ...layoutVars(this.asset('layout').data, this.hiddenSlots()),
+      ...styleThemeVars(this.withTokenOverrides('tokens.style', 'style-theme', this.asset('style-theme').data), this.spacing()),
+      // the scale assets (typography, density, sizing): every size the stylesheet and components read; defaults when an app has none
+      ...scaleThemeVars({
+        typography: this.withTokenOverrides('tokens.typography', 'typography' as AssetType, this.assetOrNull('typography' as AssetType)?.data ?? (this.settings.get(CONTROL_TOKEN_SLOTS['tokens.typography'].key) ? {} : undefined)),
+        density: this.withTokenOverrides('tokens.density', 'density' as AssetType, this.assetOrNull('density' as AssetType)?.data ?? (this.settings.get(CONTROL_TOKEN_SLOTS['tokens.density'].key) ? {} : undefined)),
+        sizing: this.withTokenOverrides('tokens.sizing', 'sizing' as AssetType, this.assetOrNull('sizing' as AssetType)?.data ?? (this.settings.get(CONTROL_TOKEN_SLOTS['tokens.sizing'].key) ? {} : undefined)),
+      }),
+      ...layoutVars(this.inspectorLayout(this.withTokenOverrides('tokens.layout', 'layout', this.asset('layout').data)), this.hiddenSlots()),
       ...bannerVars(this.assetOrNull('banner')?.data, this.slotHidden('banner')),
       // branding package (optional): palette slots as --fx-brand-1/2/3, the brand name, the accent when it asks for it
       ...brandingVars(this.assetOrNull('branding' as AssetType)?.data ?? { brand: { name: '' }, marks: {} }),
@@ -1679,7 +2074,7 @@ export class AxfRuntime {
     parts.push(behaviorStyle(behavior, reducedMotion));
     // the window manager follows the behaviour theme's `windows` group (stack / snap / minimize) from the same compile
     this.windows.setPlacement(normalizeBehavior(behavior).windows);
-    const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme };
+    const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme, ...this.viewportAttrs() };
     const brandId = this.state.active['branding' as AssetType];
     if (brandId) attrs['data-fx-brand'] = brandId;
     if (this.busyCount > 0 && normalizeBehavior(behavior).feedback.busyCursor) attrs['data-fx-busy'] = '1';
@@ -1913,6 +2308,8 @@ export class AxfRuntime {
     const { vars, attrs } = this.compileStyles();
     for (const [k, v] of Object.entries(vars)) el.style.setProperty(k, v);
     for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+    // viewport attributes come and go with the window width
+    for (const v of LAYOUT_VIEWPORTS) if (!(v.attr in attrs)) el.removeAttribute(v.attr);
     el.style.colorScheme = attrs['data-fx-scheme'] ?? 'light';
   }
 
@@ -1928,6 +2325,16 @@ export class AxfRuntime {
       else this.toast(`Unknown asset type "${type}".`, 'warning');
     }, { label: 'Swap asset', params: true });
     a.register('nav', ([view]) => view && this.navigate(view), { label: 'Navigate', params: true });
+    // Help mode (engines/help.ts): help.mode[:on|off|toggle] · help.intros.reset · help.intro (replay this screen's intro) · help.explain:<help id>
+    a.register(HELP_ACTIONS.mode, ([v]) => this.setHelpMode(v === 'on' ? true : v === 'off' ? false : null), { label: 'Help mode (tooltips everywhere)', params: true });
+    a.register(HELP_ACTIONS.resetIntros, () => { this.resetHelpIntros(); this.toast('Screen intros will show again, once per screen.', 'success', 'Help mode'); }, { label: 'Show the screen intros again' });
+    a.register('help.intro', () => {
+      if (!introFor(this.helpIndex(), this.state.view)) return this.toast('This screen has no intro yet.', 'info', 'Help mode');
+      if (!this.helpMode()) this.settings.set(HELP_MODE_KEY, true);
+      this.helpReplay = this.state.view;
+      this.set({});
+    }, { label: 'Replay this screen\'s intro' });
+    a.register(HELP_ACTIONS.explain, ([id]) => this.explainHelp(id || null), { label: 'Explain a control (What is this?)', params: true });
     a.register('dialog', ([id, ...rest]) => id && this.openDialog(id, rest.length ? { arg: rest.join(':') } : undefined), { label: 'Open dialog', params: true });
     a.register('toast', ([kind = 'info', ...msg]) => this.toast(msg.join(':') || 'Hello from AmberX AXF', kind as Toast['kind']), { label: 'Show toast', params: true });
     a.register('role', ([id]) => id && this.setRole(id), { label: 'Switch role', params: true });
@@ -1980,7 +2387,7 @@ export class AxfRuntime {
     // No `requires`: these must work while the lock greys out every assets.swap control (setAppearanceLocked checks the role).
     const turn = (arg: string | undefined, cur: boolean) => (arg === 'on' ? true : arg === 'off' ? false : !cur);
     a.register('appearance.lock', ([v]) => { this.setAppearanceLocked(turn(v, this.appearanceLocked())); }, { label: 'Lock the look', params: true });
-    a.register('appearance.hub', ([v]) => { this.setAppearanceFollowing(turn(v, this.appearanceFollowing())); }, { label: 'Read the look from axHub', params: true });
+    a.register('inspector', ([v]) => { this.setInspectorShown(turn(v, this.inspectorShown())); }, { label: 'Active assets pane', params: true });
     a.register('asset.json', ([type, id]) => this.openDialog('asset-json', { type, id }), { label: 'View asset JSON', params: true });
     a.register('asset.copy', ([type, id]) => {
       const json = type && id ? this.exportAsset(type as AssetType, id) : '';
@@ -2003,6 +2410,14 @@ export class AxfRuntime {
     a.register('windows.maximize', ([w]) => w && wm.toggleMaximize(w), { label: 'Maximize / restore window', params: true });
     a.register('windows.snap', ([w, zone = 'left']) => w && wm.snapTo(w, zone as import('./engines/windows').SnapZone), { label: 'Snap window to a zone', params: true });
     a.register('windows.focus', ([w]) => w && wm.focus(w), { label: 'Focus window', params: true });
+    // dock@1 (Nov 3 2026): re-dock a floating window along a side of the main dock; lay the open tabs out on a preset
+    a.register('windows.redockInto', ([w, side = 'right']) => w && wm.redockInto(w, { target: 'root', zone: (['left', 'right', 'top', 'bottom'].includes(side) ? side : 'right') as import('./engines/dock').DockSide }), { label: 'Redock window into the dock', params: true });
+    a.register('windows.layout', ([preset = '', w = '']) => {
+      const asset = preset ? this.registry.get('dock-layout', preset) : undefined;
+      if (!asset) { this.toast(`No pane layout "${preset}"`, 'warning', 'Pane layout'); return; }
+      const target = w && wm.state.windows.some((x) => x.id === w) ? w : wm.mainWindowId;
+      if (!wm.applyPreset(normalizeDockLayout(asset.data), target)) this.toast('Open some tabs first: a layout spreads the open tabs over its panes.', 'info', asset.name);
+    }, { label: 'Apply a pane layout', params: true });
     a.register('windows.openFloating', ([kind = 'placeholder', title = 'Window', payload = '']) => wm.openFloating([{ id: `tab-${Date.now()}`, title, kind, payload }], title), { label: 'Open floating window', searchable: false });
     a.register('terminal.open', ([channel = '']) => wm.openFloating([{ id: `terminal-${Date.now()}`, title: 'Output', kind: 'terminal', payload: channel, icon: 'terminal' }], 'Output terminal', 'floating', 520, 320), { label: 'Open output terminal' });
     a.register('terminal.dialog', ([channel = '']) => this.openDialog('terminal', { channel }), { label: 'Output terminal (dialog)' });
@@ -2030,4 +2445,10 @@ export function createAxf(opts: AxfRuntimeOptions): AxfRuntime {
   // Expose the runtime as a cross-application API (devtools, MCP bridges, other AmberX AXF apps in the page).
   (globalThis as unknown as { AXF?: AxfRuntime }).AXF = rt;
   return rt;
+}
+
+/** Two source states that say the same thing (status, version, reason, retry): re-setting one would only re-render. */
+function sameSourceState(a: AppearanceSourceState | null | undefined, b: AppearanceSourceState): boolean {
+  if (!a || a.status !== b.status) return false;
+  return JSON.stringify(a) === JSON.stringify(b);
 }

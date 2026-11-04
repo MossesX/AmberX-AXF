@@ -1,0 +1,67 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "theme-manager-help",
+  "name": "theme-manager help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:theme-manager. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:theme-manager",
+    "entries": [
+      {
+        "target": "roll-ticked",
+        "title": "Roll ticked",
+        "text": "Rolls ticked. Part of Theme manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "colours",
+        "title": "Colours",
+        "text": "Shows “Colours”. Part of Theme manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "redo",
+        "title": "Redo",
+        "text": "Shows “Redo”. Part of Theme manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "pin-this-roll",
+        "title": "Pin this roll",
+        "text": "Pins this roll. Part of Theme manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "apply-this-pinned-roll",
+        "title": "Apply this pinned roll",
+        "text": "Applies this pinned roll. Part of Theme manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "save-as-asset",
+        "title": "Save as asset",
+        "text": "Saves as asset. Nothing is kept until you tap it. Part of Theme manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "themes",
+        "title": "Themes",
+        "text": "Shows the “Themes” part of this screen. Part of Theme manager.",
+        "kind": "tab",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

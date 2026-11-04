@@ -1,0 +1,63 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "ops-monitor",
+  "name": "Ops Monitor",
+  "version": "1.0.0",
+  "description": "Ops Monitor: monitoring and on-call. Lists the pages it can; each app shows the ones it has. Pairs with the Alert behaviour theme.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:alert"
+  ],
+  "data": {
+    "style": "rail",
+    "sections": [
+      {
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "icon": "home",
+            "view": "home"
+          },
+          {
+            "id": "jobs",
+            "label": "Jobs",
+            "icon": "refresh",
+            "view": "jobs"
+          },
+          {
+            "id": "services",
+            "label": "Services",
+            "icon": "zap",
+            "view": "services"
+          },
+          {
+            "id": "audit",
+            "label": "Audit",
+            "icon": "eye",
+            "view": "audit"
+          },
+          {
+            "id": "devices",
+            "label": "Devices",
+            "icon": "smartphone",
+            "view": "devices"
+          }
+        ]
+      },
+      {
+        "items": [
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
+          }
+        ]
+      }
+    ],
+    "density": "compact",
+    "indicator": "fill"
+  }
+}

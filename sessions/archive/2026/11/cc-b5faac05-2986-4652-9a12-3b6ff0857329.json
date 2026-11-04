@@ -1,0 +1,80 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-b5faac05-2986-4652-9a12-3b6ff0857329",
+ "source": "claude-code",
+ "sessionId": "b5faac05-2986-4652-9a12-3b6ff0857329",
+ "project": "other",
+ "title": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each …",
+ "startedAt": "2026-11-01T11:25:39.841Z",
+ "endedAt": "2026-11-01T11:25:45.240Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/tmp/axf-slots-gVMFw9/two",
+  "repo": "",
+  "branch": ""
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-01T11:25:40.685Z",
+   "kind": "prompt",
+   "text": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /root/axf-builds/fable-review/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once.",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 2,
+    "output": 148,
+    "cacheRead": 11334,
+    "cacheWrite": 14255,
+    "thinking": 0
+   },
+   "costUsd": 0.0765,
+   "costEstimated": false,
+   "seconds": 4,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [
+    "pending:fable-review"
+   ],
+   "output": "Hi! What would you like to work on? I'm in `/tmp/axf-slots-gVMFw9/two`. It's not a git repo, and there's no project manifest here yet, so only your shared rules are loaded. If you have a build in mind, I'll check the pending build list first. Any heavy step (pnpm/npm/vite builds, docker node:22 tes…"
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [
+  "pending:fable-review"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 2,
+  "output": 148,
+  "cacheRead": 11334,
+  "cacheWrite": 14255,
+  "thinking": 0,
+  "costUsd": 0.0765,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0.1193
+ },
+ "ingestedAt": "2026-11-01T11:25:45.374Z"
+}

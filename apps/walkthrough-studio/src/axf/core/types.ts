@@ -40,6 +40,8 @@ export const ASSET_TYPES = [
   'divider',
   'badge',
   'settings',
+  'dock-layout',
+  'xlayout',
   'behavior-theme',
   'design-package',
   'style-package',
@@ -48,11 +50,17 @@ export const ASSET_TYPES = [
   'animated-logo',
   'icon-pack',
   'branding',
+  'typography',
+  'density',
+  'sizing',
+  'agent-card',
+  'job-type',
+  'help',
   'uac-policy',
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'behavior-theme', 'design-package', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'behavior-theme', 'design-package', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'help'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -96,6 +104,54 @@ export interface MenuItem {
   order?: number;
   before?: string;
   after?: string;
+  /* ---- live-list rows only (a provider's items; engines/appmenu.ts) ---- */
+  /** buttons on the row itself (e.g. Deny / Approve): run without closing the menu, the row flips in place */
+  buttons?: MenuItemButton[];
+  /** a second, muted line under the label */
+  detail?: string;
+  /** local-clock time (ms) a live countdown on the row reaches 0 */
+  deadline?: number;
+  /** text shown instead of the countdown while it is paused (e.g. `Shelved`) */
+  paused?: string;
+  /**
+   * `<kind>:<key>`: the row expands in place (caret on the far right) and shows what the details renderer registered
+   * for `<kind>` draws for `<key>` (React `registerMenuRowDetails`, e.g. lib-approvals' `approval:<id>`). No renderer
+   * for the kind: an ordinary row.
+   */
+  expand?: string;
+  /** a small badge before the second line (e.g. who asked: `Headless`), drawn as a framework chip */
+  tag?: MenuItemTag;
+  /** a small chip after the badge (e.g. the tool, `vps.run`) */
+  chip?: string;
+}
+
+/** A live-list row's badge (`MenuItem.tag`). */
+export interface MenuItemTag {
+  label: string;
+  tone?: 'accent' | 'success' | 'warning' | 'danger';
+  /** tooltip */
+  title?: string;
+}
+
+/** A button on a live-list row (`MenuItem.buttons`): the provider's `act` runs it, else `action` is dispatched. */
+export interface MenuItemButton {
+  id: string;
+  label: string;
+  icon?: string;
+  tone?: 'success' | 'danger' | 'neutral' | 'primary';
+  action?: string;
+  requires?: string;
+}
+
+/** What a row button did (`AppMenuProvider.act`): the row shows `state` in place, then drops off unless `keep`. */
+export interface MenuActResult {
+  ok: boolean;
+  /** what the row reads now (`Running`, `Denied`); default `Done` when ok */
+  state?: string;
+  /** a toast for the result (none when absent: the provider may have told the user itself) */
+  message?: string;
+  /** the row stays (e.g. the decision opened a page elsewhere) */
+  keep?: boolean;
 }
 
 /* ---------- themes ---------- */
@@ -157,8 +213,55 @@ export interface LayoutData {
   inspector: 'left' | 'right' | 'none';
   inspectorWidth: number;
   contentMaxWidth: number;
+  /* Every layout parameter is a token (core/engines/layout-rules.mjs): the fields below default to the framework's own look. */
+  /** status bar height, px */
+  statusHeight?: number;
+  /** gap between the grid's regions, × --fx-space */
+  regionGap?: number;
+  /** the main area's padding on desktop, × --fx-space */
+  mainPadTop?: number;
+  mainPadX?: number;
+  mainPadBottom?: number;
+  /** the main area's padding on a phone, × --fx-space */
+  phoneMainPadTop?: number;
+  phoneMainPadX?: number;
+  phoneMainPadBottom?: number;
+  /** the least width of a nav item in the phone's bottom strip, px */
+  phoneNavItemMin?: number;
+  /** inset of dropdowns and toasts from the phone's edges, px */
+  phoneEdge?: number;
+  /** viewport cut-offs (max-width px; tiny < small < phone < medium < large) → root attributes data-fx-tiny / -small / -narrow / -medium / -large */
+  tinyMaxWidth?: number;
+  smallMaxWidth?: number;
+  phoneMaxWidth?: number;
+  mediumMaxWidth?: number;
+  largeMaxWidth?: number;
   /** region → asset types it accepts; overrides the defaults in asset-types.json (layout.slots.defaults) */
   slots?: Partial<Record<string, string[]>>;
+  /** repeating slots: one item per entry of a data set the page declares (core/engines/repeat.ts) */
+  repeat?: RepeatSlotDef[];
+}
+
+/** Repeating slot styles (asset-types.json layout.repeat.styles). Append-only. */
+export type RepeatStyle = 'tabs' | 'cards' | 'grid' | 'stacked';
+/** What draws when the page's data set is missing or empty: an asset by type (+ id), or a plain label. */
+export interface RepeatFallback {
+  type?: string;
+  id?: string;
+  label?: string;
+}
+export interface RepeatSlotDef {
+  id: string;
+  /** name of the data set the page declares (`PageDataSets`) */
+  dataSet: string;
+  /** slot region it sits in (default main) */
+  region?: string;
+  style?: RepeatStyle;
+  /** grid / cards columns, 1-12 */
+  columns?: number;
+  /** items shown at most; 0 = all */
+  max?: number;
+  fallback?: RepeatFallback;
 }
 
 /** Shared density / surface vocabulary for chrome assets (toolbar, nav-menu, app-menu). */
@@ -478,6 +581,8 @@ export interface AssetDataMap {
   divider: DividerData;
   badge: BadgeData;
   settings: SettingsData;
+  'dock-layout': import('./engines/dock').DockLayoutData;
+  xlayout: import('./engines/xlayout').XLayoutData;
   'behavior-theme': BehaviorThemeData;
   'design-package': DesignPackageData;
   'style-package': import('./engines/stylepackage').StylePackageData;
@@ -486,6 +591,12 @@ export interface AssetDataMap {
   'animated-logo': AnimatedLogoData;
   'icon-pack': IconPackData;
   'branding': BrandingData;
+  typography: import('./engines/scale').TypographyData;
+  density: import('./engines/scale').DensityData;
+  sizing: import('./engines/scale').SizingData;
+  'agent-card': import('./engines/agent-card-rules.mjs').AgentCardData;
+  'job-type': import('./engines/job-type-rules.mjs').JobTypeData;
+  help: import('./engines/help').HelpData;
   'uac-policy': UACPolicyData;
 }
 
@@ -493,7 +604,7 @@ export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
 /** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'behavior-theme' | 'design-package' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface';
+export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'behavior-theme' | 'design-package' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'help';
 
 export interface AxfManifest {
   $axf: 'manifest@1';

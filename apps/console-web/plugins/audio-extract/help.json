@@ -1,0 +1,172 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "audio-extract-help",
+  "name": "audio-extract help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:audio-extract. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:audio-extract",
+    "entries": [
+      {
+        "target": "not-now",
+        "title": "Not now",
+        "text": "Shows “Not now”. Part of Audio Extract.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "extract-audio",
+        "title": "Extract audio",
+        "text": "Shows “Extract audio”. Part of Audio Extract.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "cancel-all",
+        "title": "Cancel all",
+        "text": "Cancels all. Part of Audio Extract.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "audio-track",
+        "title": "Audio track",
+        "text": "Where you set “Audio track”. Change it and the app uses the new value. Part of Audio Extract.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "extract",
+        "title": "Extract",
+        "text": "Shows “Extract”. Part of Audio Extract.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "pick-videos",
+        "title": "Pick videos",
+        "text": "Picks videos. Part of Audio Extract.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "last-screen-recording",
+        "title": "Last screen recording",
+        "text": "Shows “Last screen recording”. Part of Audio Extract.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "trim-or-pick-a-track",
+        "title": "Trim or pick a track",
+        "text": "Shows “Trim or pick a track”. Part of Audio Extract.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "record-screen",
+        "title": "Record screen",
+        "text": "Records screen. Part of Audio Extract.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "new-name",
+        "title": "New name",
+        "text": "Where you set “New name”. Change it and the app uses the new value. Part of Audio Extract.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "show-the-floating-chip-while-recording",
+        "title": "Show the floating chip while recording",
+        "text": "Turns “Show the floating chip while recording” on or off. It takes effect straight away and is remembered. Part of Audio Extract.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "check-display-over-other-apps",
+        "title": "Check “Display over other apps”",
+        "text": "Checks “Display over other apps”. Part of Audio Extract.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "format",
+        "title": "Format",
+        "text": "Where you set “Format”. Change it and the app uses the new value. Part of Audio Extract.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "output-folder-inside-music",
+        "title": "Output folder (inside Music)",
+        "text": "Where you set “Output folder (inside Music)”. Change it and the app uses the new value. Part of Audio Extract.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "watch-for-new-screen-recordings",
+        "title": "Watch for new screen recordings",
+        "text": "Where you set “Watch for new screen recordings”. Change it and the app uses the new value. Part of Audio Extract.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "extract-new-screen-recordings-without-asking",
+        "title": "Extract new screen recordings without asking",
+        "text": "Where you set “Extract new screen recordings without asking”. Change it and the app uses the new value. Part of Audio Extract.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "delete-the-video-after-extracting",
+        "title": "Delete the video after extracting",
+        "text": "Where you set “Delete the video after extracting”. Change it and the app uses the new value. Part of Audio Extract.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "video-bitrate-mbps",
+        "title": "Video bitrate (Mbps)",
+        "text": "Where you set “Video bitrate (Mbps)”. Change it and the app uses the new value. Part of Audio Extract.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "countdown-seconds",
+        "title": "Countdown (seconds)",
+        "text": "Where you set “Countdown (seconds)”. Change it and the app uses the new value. Part of Audio Extract.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "audio-extract",
+        "title": "Audio Extract",
+        "text": "Shows the “Audio Extract” part of this screen. Part of Audio Extract.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "action:audio-extract.latest",
+        "title": "Extract audio from last screen recording",
+        "text": "Shows “Extract audio from last screen recording”. Part of Audio Extract.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:audio-extract.record",
+        "title": "Record screen",
+        "text": "Records screen. Part of Audio Extract.",
+        "kind": "menu-item",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

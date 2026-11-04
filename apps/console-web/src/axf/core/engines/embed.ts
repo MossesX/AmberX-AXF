@@ -1,7 +1,7 @@
 /**
  * Embed engine (embed@1) — an app running inside another app's frame.
  *
- * A host app (Patches: one banner, the Dev Console / Build Pilot / axHub in tabs) marks the pages it embeds, and the
+ * A host app (e.g. one banner with other apps in tabs) marks the pages it embeds, and the
  * embedded app hides the chrome the host already shows (its banner by default), so there is one banner on screen.
  * Standalone, the same app keeps its own banner. Nothing is stored: the marker rides on every page load.
  *
@@ -15,13 +15,14 @@
  * forced)): the user's "show the banner" choice can't bring the host's banner back while embedded, and the choice itself
  * is left untouched for when the app runs on its own.
  *
- * Pure; the Kotlin kernel mirrors it as EmbedEngine (fixture spec/fixtures/embed.json). The host side (Patches) uses
+ * Pure; the Kotlin kernel mirrors it as EmbedEngine (fixture spec/fixtures/embed.json). The host side uses
  * `userAgentSuffix` / `embedUrl` to mark what it loads; the guest side uses `detectEmbed`.
  */
 import { hideable, hideableTypes } from './hide';
+import { parseChromeBundle, type ChromeBundle } from './chrome';
 
 export interface Embed {
-  /** the host app's id, e.g. `patches` */
+  /** the host app's id, e.g. `host` */
   host: string;
   /** chrome the host shows for the app (hideable types only, spec order); forced hidden while embedded */
   hidden: string[];
@@ -119,8 +120,8 @@ export function embedUrl(url: string, host: string, hidden: readonly string[] = 
 }
 
 /* ---------------------------------------------------------------------------------------------------------------
- * What a host takes over (embed@1 `takes`, Brett Oct 21 2026: "when console, pilot or axhub are running inside
- * Patches remove settings hooks from the apps and combine all 3 apps' settings … into a single settings interface").
+ * What a host takes over (embed@1 `takes`, Brett Oct 21 2026: a host can remove the settings hooks from the apps it
+ * embeds and combine their settings into a single settings interface).
  *
  * A host may take app functions over from the apps it embeds. The embedded app then drops its own hooks for that
  * function (menu items, toolbar buttons, nav entries, widgets, context items) and hands any request that still reaches
@@ -155,8 +156,8 @@ export interface EmbedTakeSpec {
   /** chrome the app hides while the host takes this function (the app menu: the host's menu carries it instead) */
   hides: string[];
   /**
-   * Lock instead of drop (plugins, Brett Oct 22 2026: "grey out all hooks in the apps to plugin related stuff with a
-   * note plugins are managed in Patches"): the app keeps showing this function's hooks, greyed out with a note that the
+   * Lock instead of drop (plugins, Brett Oct 22 2026: hooks to a function the host manages are greyed out with a
+   * note): the app keeps showing this function's hooks, greyed out with a note that the
    * host manages it, and running one shows that note instead of asking the host. False = the hooks are dropped.
    */
   lock: boolean;
@@ -164,20 +165,27 @@ export interface EmbedTakeSpec {
 
 const TAKES = new Map<string, EmbedTakeSpec>([
   ['settings', { actions: ['app.settings', 'settings.open', 'nav:settings'], prefixes: ['settings.open:'], views: ['settings'], providers: ['settings'], page: true, hides: [], lock: false }],
-  // The host shows the app's notifications (Patches on Android): the app hands them over instead of posting its own.
+  // The host shows the app's notifications (e.g. on Android): the app hands them over instead of posting its own.
   ['notifications', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: [], lock: false }],
-  // The host's application menu carries the app's (Brett, Oct 22 2026: "all app menus are inherited by Patches' menu and
-  // the apps in tabs hide theirs"): the app hides its own menu bar and sends its menu to the host (`menu` message); the
+  // The host's application menu carries the app's (Brett, Oct 22 2026: the host's menu inherits the app menus and the
+  // apps in tabs hide theirs): the app hides its own menu bar and sends its menu to the host (`menu` message); the
   // host runs a picked item back in the app (`run` message).
   ['app-menu', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: ['app-menu'], lock: false }],
-  // The host shows every banner's settings in one place (Brett, Oct 22 2026: "Patches' settings renders the combined
-  // banners interface in a tab"): Banner settings opens in the host, which shows the app's page `banners` on its own.
+  // The host shows every banner's settings in one place (Brett, Oct 22 2026: the host's settings render the combined
+  // banners interface in a tab): Banner settings opens in the host, which shows the app's page `banners` on its own.
   ['banners', { actions: ['banners.settings'], prefixes: ['banners.settings:'], views: ['banners'], providers: [], page: true, hides: [], lock: false }],
-  // The host manages the app's plugins (Brett, Oct 22 2026: "disable all plugins from the apps and only enable them in
-  // Patches"): the app loads only the plugins the host enabled for it (`plugins-enabled` message), reports the plugins
+  // The host manages the app's plugins (Brett, Oct 22 2026: plugins are disabled in the apps and enabled only in
+  // the host): the app loads only the plugins the host enabled for it (`plugins-enabled` message), reports the plugins
   // it has (`plugins`), and its plugin-management hooks (Plugin Manager, plugin switches, the plugin catalog, Settings →
   // Plugins) stay on screen greyed out with "Plugins are managed in <host>".
   ['plugins', { actions: ['plugin-switches.open', 'plugin-manager.open', 'plugin-manager.install', 'plugin-manager.window'], prefixes: ['plugin-manager.', 'plugin-switches.', 'plugin-catalog.', 'plugins-menu.', 'plugin-update.'], views: ['plugin-manager', 'plugins'], providers: ['console.plugins'], page: false, hides: [], lock: true }],
+  // Molly as one app (xlayout@1 / chrome@1, Brett Nov 2 2026): the host draws ONE navigation menu, context menu and set
+  // of toolbars / banner widgets merged from every app it frames. The app hides that chrome and sends it as data in a
+  // `chrome` message; the host runs a pick back with `run` (the id is the app's own, the host strips its namespace).
+  ['nav-menu', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: ['nav-menu'], lock: false }],
+  ['context-menu', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: ['context-menu'], lock: false }],
+  ['toolbar', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: ['toolbar'], lock: false }],
+  ['widgets', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: [], lock: false }],
 ]);
 
 /** Add (or replace) a function hosts can take over. Same id on every port (the Kotlin twin keeps the same registry). */
@@ -202,7 +210,7 @@ export function embedTakes(named: readonly string[] | string | null | undefined)
 
 /**
  * A view page: one view of the app on its own (`view:<view id>`), e.g. a tabable plugin's page as a tab of its own in the
- * host (Brett, Oct 22 2026: plugins declared `tabable` can be added to Patches' tab group). Same as any page: all chrome
+ * host (Brett, Oct 22 2026: plugins declared `tabable` can be added to a host's tab group). Same as any page: all chrome
  * hidden, never skips libraries.
  */
 export const EMBED_VIEW_PAGE = /^view:[a-z0-9][a-z0-9._-]{0,63}$/i;
@@ -300,13 +308,13 @@ export function embedTakenProvider(e: Embed | null | undefined, provider: string
   return null;
 }
 
-/** The host's name as people read it (`patches` → `Patches`). */
+/** The host's name as people read it (`host` → `Host`). */
 export function embedHostLabel(e: Embed | null | undefined): string {
   const h = e?.host ?? '';
   return h ? h.charAt(0).toUpperCase() + h.slice(1) : 'the host app';
 }
 
-/** The note a locked hook shows (`Plugins are managed in Patches`), or null when the host doesn't lock that function. */
+/** The note a locked hook shows (`Plugins are managed in Host`), or null when the host doesn't lock that function. */
 export function embedLockNote(e: Embed | null | undefined, fn: string | null | undefined): string | null {
   if (!fn || !embedTakesFn(e, fn) || !TAKES.get(fn)?.lock) return null;
   return `${titleFromFn(fn)} are managed in ${embedHostLabel(e)}`;
@@ -366,7 +374,24 @@ export type EmbedMessage =
   /** host → guest (the host takes `plugins`): the plugins the host has installed and enabled for this app; load only these */
   | { $axf: typeof EMBED_MESSAGE; type: 'plugins-enabled'; plugins: string[] }
   /** host → guest: send your plugin list again (after the host's own list changed or it just loaded) */
-  | { $axf: typeof EMBED_MESSAGE; type: 'plugins-request' };
+  | { $axf: typeof EMBED_MESSAGE; type: 'plugins-request' }
+  /** guest → host (the host takes nav-menu / context-menu / toolbar / widgets): the app's chrome as data (chrome@1, engines/chrome.ts) */
+  | { $axf: typeof EMBED_MESSAGE; type: 'chrome'; chrome: ChromeBundle }
+  /** host → guest: send your chrome now (the host just loaded, or its layout changed) */
+  | { $axf: typeof EMBED_MESSAGE; type: 'chrome-request' }
+  /**
+   * guest → host: bring this app's frame to the front (a remote command is about to change what it shows, so the
+   * person should see it happen; Nov 3 2026). `reason` is a short line the host may show. Web only so far.
+   */
+  | { $axf: typeof EMBED_MESSAGE; type: 'show'; reason?: string }
+  /** host → guest: whether this app's frame is on screen now (`on`), so the guest can say which client is in front. */
+  | { $axf: typeof EMBED_MESSAGE; type: 'shown'; on: boolean }
+  /**
+   * guest → host (the host takes `context-menu`): the user right-clicked (or long-pressed) at x, y in the guest's own
+   * viewport on `target` (its data-fx-ctx-target, `default` when none) with that element's payload; the host shows its
+   * one context menu there. Picks come back as `run` with the ids the guest sent in its chrome.
+   */
+  | { $axf: typeof EMBED_MESSAGE; type: 'context'; x: number; y: number; target: string; payload?: string };
 
 /**
  * One plugin an app reports to its host (data only: id, name, version, whether the app had it on by itself). A tabable
@@ -414,11 +439,14 @@ export interface EmbedMenuItem {
 }
 export interface EmbedMenu { id: string; label: string; items: EmbedMenuItem[] }
 
-export const EMBED_MESSAGE_LIMITS = { title: 120, body: 500, tag: 64, tab: 64, app: 32, link: 300, raw: 4000, menuRaw: 131072, menus: 16, menuItems: 600, menuDepth: 4, label: 80, itemId: 160, icon: 40, plugins: 200, pluginId: 120, version: 40 } as const;
+export const EMBED_MESSAGE_LIMITS = { title: 120, body: 500, tag: 64, tab: 64, app: 32, link: 300, raw: 4000, menuRaw: 131072, menus: 16, menuItems: 600, menuDepth: 4, label: 80, itemId: 160, icon: 40, plugins: 200, pluginId: 120, version: 40, payload: 200 } as const;
+/** A context target a guest may name (data-fx-ctx-target values). */
+const CONTEXT_TARGET = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$/;
 const MENU_ITEM_ID = /^[A-Za-z0-9][A-Za-z0-9._:\/-]{0,159}$/;
 const ICON_ID = /^[a-z0-9][a-z0-9-]{0,39}$/;
 
-/** A menu an app sent, checked and cut to size (limits above; bad entries dropped, never the whole menu). */
+/** A menu an app sent, checked and cut to size (limits above; bad entries dropped, never the whole menu). Shared with chrome@1. */
+export function parseEmbedMenus(raw: unknown): EmbedMenu[] | null { return parseMenus(raw); }
 function parseMenus(raw: unknown): EmbedMenu[] | null {
   if (!Array.isArray(raw)) return null;
   const L = EMBED_MESSAGE_LIMITS;
@@ -502,7 +530,7 @@ export function parseEmbedMessage(raw: unknown): EmbedMessage | null {
     try { m = JSON.parse(raw); } catch { return null; }
     // a menu and a plugin list may be long (both capped by their own limits); every other message stays small
     const t = (m as { type?: unknown } | null)?.type;
-    if (raw.length > EMBED_MESSAGE_LIMITS.raw && t !== 'menu' && t !== 'plugins' && t !== 'plugins-enabled') return null;
+    if (raw.length > EMBED_MESSAGE_LIMITS.raw && t !== 'menu' && t !== 'plugins' && t !== 'plugins-enabled' && t !== 'chrome') return null;
   }
   if (!m || typeof m !== 'object' || Array.isArray(m)) return null;
   const o = m as Record<string, unknown>;
@@ -547,13 +575,32 @@ export function parseEmbedMessage(raw: unknown): EmbedMessage | null {
       return { $axf: EMBED_MESSAGE, type: 'plugins-enabled', plugins: ids };
     }
     case 'plugins-request': return { $axf: EMBED_MESSAGE, type: 'plugins-request' };
+    case 'chrome': {
+      const chrome = parseChromeBundle(o.chrome);
+      return chrome ? { $axf: EMBED_MESSAGE, type: 'chrome', chrome } : null;
+    }
+    case 'chrome-request': return { $axf: EMBED_MESSAGE, type: 'chrome-request' };
+    case 'show': {
+      const reason = clip(o.reason, EMBED_MESSAGE_LIMITS.title);
+      return reason ? { $axf: EMBED_MESSAGE, type: 'show', reason } : { $axf: EMBED_MESSAGE, type: 'show' };
+    }
+    case 'shown': return typeof o.on === 'boolean' ? { $axf: EMBED_MESSAGE, type: 'shown', on: o.on } : null;
+    case 'context': {
+      const coord = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? Math.min(Math.max(Math.round(v), 0), 100000) : null);
+      const x = coord(o.x), y = coord(o.y);
+      const target = typeof o.target === 'string' && CONTEXT_TARGET.test(o.target) ? o.target : 'default';
+      if (x === null || y === null) return null;
+      const out: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'context', x, y, target };
+      const payload = clip(o.payload, EMBED_MESSAGE_LIMITS.payload); if (payload) out.payload = payload;
+      return out;
+    }
     default: return null;
   }
 }
 
 /* ---------------------------------------------------------------------------------------------------------------
- * Plugins a host makes unneeded (Brett, Oct 22 2026: "when apps are running in Patches disable any plugins that … render
- * something twice … or don't need to be, and log disabled plugins on launch"). A library or plugin says when it isn't
+ * Plugins a host makes unneeded (Brett, Oct 22 2026: inside a host, plugins that would render something twice or
+ * aren't needed are disabled, and the disabled ones are logged on launch). A library or plugin says when it isn't
  * needed inside a host with `embed.skipWhen`, a list of conditions; any one that holds skips it for this page only
  * (standalone it always loads):
  *

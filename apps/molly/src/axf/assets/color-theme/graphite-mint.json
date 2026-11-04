@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "graphite-mint",
+  "name": "Graphite Mint",
+  "version": "1.0.0",
+  "description": "Neutral graphite with a cool mint accent for developer tools.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "neutral"
+  ],
+  "data": {
+    "scheme": "dark",
+    "tokens": {
+      "bg": "#101112",
+      "surface": "#17191a",
+      "surface2": "#1e2122",
+      "surface3": "#282b2d",
+      "text": "#e7e9e9",
+      "muted": "#98a0a4",
+      "border": "#2f3335",
+      "accent": "#58dabc",
+      "accentText": "#09251e",
+      "accentSoft": "rgba(88,218,188,0.14)",
+      "danger": "#ef6174",
+      "success": "#3ecc89",
+      "warning": "#f1b041",
+      "info": "#6caef9",
+      "focus": "#58dabc",
+      "shadow": "rgba(0,0,0,0.55)"
+    }
+  }
+}

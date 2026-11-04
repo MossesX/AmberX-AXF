@@ -1,0 +1,1199 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "console",
+  "name": "Dev Console help",
+  "version": "1.0.0",
+  "description": "Help mode entries for the Dev Console: every screen, the banners, approvals (Approve / Deny / details / Watch live), Builds + Steps, the orchestrator, build profiles, UI Review + Screenshots, the Breakroom (agent swarm + HR), keys, systems check, push banner, Plan Studio, plus screen intros. Hand-written; plugin drafts live in each plugin's help.json.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help",
+    "console"
+  ],
+  "data": {
+    "scope": "console-web",
+    "entries": [
+      {
+        "target": "view:home",
+        "title": "Home",
+        "text": "The console's front page: how the framework is doing, what's building, what needs you. Start here when you're lost.",
+        "tryIt": "Tap any card to jump to its screen.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:tracker",
+        "title": "Tracker",
+        "text": "Every framework feature and where it's at: built, partial, planned. Green means done, kid.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:plan",
+        "title": "Plan",
+        "text": "The build plan: what gets built, in what order, and what's done.",
+        "related": [
+          "view:build",
+          "view:pending"
+        ],
+        "kind": "screen"
+      },
+      {
+        "target": "view:build",
+        "title": "Build queue",
+        "text": "The queue of build steps waiting their turn. The MCP tools build_next and build_step work through it.",
+        "related": [
+          "view:builds"
+        ],
+        "kind": "screen"
+      },
+      {
+        "target": "view:pending",
+        "title": "Pending builds",
+        "text": "Builds parked until you say go (or until their model is around). 'Add it to the pending list' means it lands here, not built.",
+        "related": [
+          "view:builds",
+          "view:build-orchestrator"
+        ],
+        "kind": "screen"
+      },
+      {
+        "target": "view:standards-projects",
+        "title": "Projects",
+        "text": "Every project's manifest. Nothing gets loaded or built without a valid one.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:standards-rules",
+        "title": "Manifest rules",
+        "text": "The rules every project manifest is checked against. Locked rules can't be loosened.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:catalog",
+        "title": "Catalog",
+        "text": "Every feature the framework has or plans, with its status.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:libraries",
+        "title": "Libraries",
+        "text": "Installable libraries for apps on the framework (settings, alerts, hub…).",
+        "kind": "screen"
+      },
+      {
+        "target": "view:demos",
+        "title": "Demos",
+        "text": "Demo apps showing the framework off.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:modules",
+        "title": "Modules",
+        "text": "The Android modules (on hold for now).",
+        "kind": "screen"
+      },
+      {
+        "target": "view:boilerplates",
+        "title": "Boilerplates",
+        "text": "Starting points for new apps.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:components",
+        "title": "Components",
+        "text": "Every framework control, live, in the current theme. Handy to see what a swap does.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:assets",
+        "title": "Assets",
+        "text": "Every asset in the app (themes, layouts, menus…). Pick one, look at its JSON, activate it live.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:account",
+        "title": "Account",
+        "text": "Your role and what it lets you do. Switch roles to see the console as someone else.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:builds",
+        "title": "Builds",
+        "text": "Every build of the active profile in one place. Builds view: one row per build with a live progress bar. Steps view: every step on its own row.",
+        "more": "This is the one builds store (builds@1). Everything else — Pending builds, the build queue, the Build manager — is just a view of it, so they can't drift apart. Changes are drafts until you tap Apply; Discard throws them away. Every save is versioned, so Restore default or the history can always get you back.",
+        "tryIt": "Double-tap a build's name to rename it.",
+        "related": [
+          "view:build-orchestrator",
+          "view:pending",
+          "view:build-manager"
+        ],
+        "kind": "screen"
+      },
+      {
+        "target": "view:build-orchestrator",
+        "title": "Build orchestrator",
+        "text": "Breaks every build into steps of 30 minutes or less, each pinned to Fable or Opus. When the model switches between phases it waits for your OK.",
+        "more": "Tabs: Builds (like Pending builds, with more options), Approvals (phases waiting for your OK at a model switch) and Rules (the token rules: one session, no sub-agents, briefs carry only the current phase).",
+        "related": [
+          "view:builds"
+        ],
+        "kind": "screen"
+      },
+      {
+        "target": "view:build-manager",
+        "title": "Build manager",
+        "text": "Everything building right now and everything left: model, status, time left, steps. Start a build from here and watch it live.",
+        "related": [
+          "view:builds"
+        ],
+        "kind": "screen"
+      },
+      {
+        "target": "view:build-breaker",
+        "title": "Build Breaker",
+        "text": "Everything you ever asked for, in plain English, with what happened to each ask.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:feature-matrix",
+        "title": "Feature matrix",
+        "text": "Each build's list of pieces with minutes, model and why. Tick = keep, untick = skip, then Apply.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:ui-review",
+        "title": "UI Review",
+        "text": "Every new screen, dialog, menu or banner a build makes waits here for your OK, with phone and desktop shots. Approve, ask for changes or reject.",
+        "more": "A PR whose UI is waiting, has changes asked or is rejected is held: it won't merge until you approve it here. Screenshots that aren't for approval go to Screenshots instead.",
+        "tryIt": "Open one and swipe between the phone and desktop shots.",
+        "related": [
+          "view:ui-screenshots",
+          "view:design-packs"
+        ],
+        "kind": "screen"
+      },
+      {
+        "target": "view:ui-screenshots",
+        "title": "Screenshots",
+        "text": "Pictures Claude took while checking things — not for approval. Every shot sits in a named, timestamped group.",
+        "tryIt": "Open a group, then Send to review if one should be approved after all.",
+        "related": [
+          "view:ui-review"
+        ],
+        "kind": "screen"
+      },
+      {
+        "target": "view:design-packs",
+        "title": "Design packs",
+        "text": "Whole matched looks waiting for review.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:agent-swarm",
+        "title": "Agent swarm (the Breakroom)",
+        "text": "Your crew of specialist agents: who's working, on what, what it's costing, and their ID cards. The HR side lets you hire, suspend, rehire and top them up.",
+        "more": "Crew is the roster: on duty or not, salary, what they spent, jobs done. ID cards are the badge designs. Agents lists their skills and models. Jobs shows what a build was split into and which agent holds which files. Cost shows runs, tokens and dollars per agent — today, this week and all time. Group chat is where they talk.",
+        "tryIt": "Open Crew and look at an agent's card.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:agent-manager",
+        "title": "Agent manager",
+        "text": "Your named agents (Molly and friends): who they are, what they know, what they may do.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:ai-assistant",
+        "title": "AI assistant",
+        "text": "Ask Claude about the console, the framework or your builds.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:plan-studio",
+        "title": "Plan Studio",
+        "text": "Every plan in one place. 'Put it in a plan for later' lands here, parked — it only becomes a build when you say Turn into a build.",
+        "tryIt": "Switch between Tree, Grid, Board and Roadmap at the top.",
+        "related": [
+          "view:builds"
+        ],
+        "kind": "screen"
+      },
+      {
+        "target": "view:plugin-manager",
+        "title": "Plugin Manager",
+        "text": "Every plugin: what it does, its switch, logs, settings and what it needs. Turn one off and it's gone from every screen.",
+        "tryIt": "Tap a plugin, then its Settings.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:plugin-update",
+        "title": "Plugin Update",
+        "text": "New versions of your plugins, and replacing one built by another model.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:project-wizard",
+        "title": "New project",
+        "text": "Make a new project: an AXF app, a GitHub repo or a folder, with its manifest and Claude files.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:session-checkin",
+        "title": "Sessions",
+        "text": "Every Claude session that checked in: where it ran, what it's doing.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:theme-manager",
+        "title": "Theme manager",
+        "text": "Make and edit colour and style themes.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:todo-manager",
+        "title": "Todos",
+        "text": "Your to-do list.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:voice-notes",
+        "title": "Voice notes",
+        "text": "Record a note out loud; it's transcribed and kept.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:output-recorder",
+        "title": "Audio out",
+        "text": "Records what the phone plays (never the mic), in parts, grouped by session.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:audio-extract",
+        "title": "Audio Extract",
+        "text": "Pulls the audio out of a video.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:brand-library",
+        "title": "Brand library",
+        "text": "Logos, animated marks and icon packs for your apps.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:changes-grid",
+        "title": "Changes & features",
+        "text": "Every codebase change and the feature it belongs to, in one grid.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:claude-handoff",
+        "title": "Claude handoff",
+        "text": "Hands work to another Claude account with everything it needs.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:context-menu-designer",
+        "title": "Context menu designer",
+        "text": "Design what the right-click / long-press menu shows.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:fable-rebuilds",
+        "title": "Fable rebuilds",
+        "text": "Old rebuild items and their differences reports.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:mcp",
+        "title": "MCP servers",
+        "text": "The MCP servers the console talks to.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:approvals-log",
+        "title": "Approvals",
+        "text": "Every approval and veto call: who asked, what, when, and what happened.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:apps",
+        "title": "Apps",
+        "text": "The Apps screen of the hub, opened inside the console.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:audit",
+        "title": "Audit",
+        "text": "The Audit screen of the hub, opened inside the console.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:devices",
+        "title": "Devices",
+        "text": "The Devices screen of the hub, opened inside the console.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:jobs",
+        "title": "Jobs",
+        "text": "The Jobs screen of the hub, opened inside the console.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:services",
+        "title": "Services",
+        "text": "The Services screen of the hub, opened inside the console.",
+        "kind": "screen"
+      },
+      {
+        "target": "banner:approvals",
+        "title": "Approvals banner",
+        "text": "Shows up whenever axHub is holding a call on its 90-second countdown, or waiting on you. It runs by itself when the countdown ends unless you Deny it.",
+        "more": "Deny = it never runs. Approve = run it now. Shelve = pause the countdown until you decide. The banner rings (Settings → Plugins → Approvals banner) so you don't miss one.",
+        "tryIt": "Tap a row to open the full call.",
+        "related": [
+          "approval-deny",
+          "approval-approve",
+          "approval-details"
+        ],
+        "kind": "banner"
+      },
+      {
+        "target": "banner:build-manager",
+        "title": "Build manager banner",
+        "text": "What's building right now, with progress and time left. Tap it for the Build manager.",
+        "related": [
+          "view:build-manager"
+        ],
+        "kind": "banner"
+      },
+      {
+        "target": "banner:codebase-changes",
+        "title": "Codebase changes banner",
+        "text": "Every change Claude made that you haven't closed yet. Closing one clears it on every device; it stays in the log.",
+        "kind": "banner"
+      },
+      {
+        "target": "banner:keys-needed",
+        "title": "Keys needed",
+        "text": "A key or token is missing or dead. Tap Fix for the exact steps.",
+        "kind": "banner"
+      },
+      {
+        "target": "banner:push-banner",
+        "title": "Push banner",
+        "text": "Every branch not on main yet, with its PR and CI. Ready PRs merge by themselves; you don't have to do a thing.",
+        "kind": "banner"
+      },
+      {
+        "target": "banner:systems-check",
+        "title": "Systems check",
+        "text": "Something's broken: what broke, what it breaks and since when, with a Fix button. Green means you're good.",
+        "kind": "banner"
+      },
+      {
+        "target": "open-the-approvals-page",
+        "title": "Open the approvals page",
+        "text": "Opens every approval on axHub."
+      },
+      {
+        "target": "call-waiting-for-your-approval-in-axhub",
+        "title": "Waiting on axHub",
+        "text": "A call is waiting for your OK on axHub. Tap to see it."
+      },
+      {
+        "target": "hide-until-something-new-is-waiting",
+        "title": "Hide until something new",
+        "text": "Hides the banner until another call shows up."
+      },
+      {
+        "target": "alarm",
+        "title": "Alarm",
+        "text": "How the approvals banner rings: tone, volume and repeats.",
+        "kind": "field"
+      },
+      {
+        "target": "test-the-alarm",
+        "title": "Test the alarm",
+        "text": "Plays the alarm so you know what it sounds like."
+      },
+      {
+        "target": "notices-timer-started-s-left-running",
+        "title": "Notices",
+        "text": "Which moments of a countdown push a notice to the AmberX app.",
+        "kind": "toggle"
+      },
+      {
+        "target": "action:approvals.check",
+        "title": "Check approvals now",
+        "text": "Asks axHub right now instead of waiting for the next check."
+      },
+      {
+        "target": "action:builds.view",
+        "title": "Builds / Steps",
+        "text": "Switches the Builds page between one row per build and one row per step."
+      },
+      {
+        "target": "action:builds.view:steps",
+        "title": "Steps view",
+        "text": "Every step of every build on its own row: expand, multi-select, divide or move them."
+      },
+      {
+        "target": "steps",
+        "title": "Steps",
+        "text": "Every step on its own row.",
+        "kind": "tab"
+      },
+      {
+        "target": "builds",
+        "title": "Builds",
+        "text": "One row per build with a live progress bar.",
+        "kind": "tab"
+      },
+      {
+        "target": "divide",
+        "title": "Divide",
+        "text": "Splits the picked step into smaller steps (each 30 minutes or less)."
+      },
+      {
+        "target": "harvest",
+        "title": "Harvest",
+        "text": "Pulls the open steps out of several builds into one new build, so related work is built together."
+      },
+      {
+        "target": "split-into-n-builds",
+        "title": "Split into N builds",
+        "text": "Breaks one big build into several smaller ones."
+      },
+      {
+        "target": "restore-default",
+        "title": "Restore default",
+        "text": "Puts the order and names back the way the orchestrator had them."
+      },
+      {
+        "target": "add-to-orchestrator",
+        "title": "Add to orchestrator",
+        "text": "Sends this to the Build orchestrator, which splits it into Fable / Opus steps and puts it on every list."
+      },
+      {
+        "target": "add-to-draft",
+        "title": "Add to draft",
+        "text": "Adds it to your draft; nothing is saved until Apply."
+      },
+      {
+        "target": "copy-next-brief",
+        "title": "Copy next brief",
+        "text": "Copies the brief for the next phase, ready to paste into a session on the right model."
+      },
+      {
+        "target": "copy-resume-prompt",
+        "title": "Copy resume prompt",
+        "text": "Copies a message another Claude session can start from to carry on this work."
+      },
+      {
+        "target": "approve-switch-to",
+        "title": "Approve the model switch",
+        "text": "OKs the next phase on the other model (Fable ↔ Opus)."
+      },
+      {
+        "target": "approve-switch-from",
+        "title": "Approve the model switch",
+        "text": "OKs the next phase on the other model (Fable ↔ Opus)."
+      },
+      {
+        "target": "build-orchestrator",
+        "title": "Build orchestrator",
+        "text": "Its settings: how builds are split and when it asks you.",
+        "kind": "tab"
+      },
+      {
+        "target": "build-profiles",
+        "title": "Build profiles",
+        "text": "Which set of work the console is on (Main framework, Refactor, Angel…). Switching changes it on every device.",
+        "kind": "tab"
+      },
+      {
+        "target": "switch-or-manage-profiles",
+        "title": "Build profile",
+        "text": "The profile in force. Tap to switch or manage profiles.",
+        "more": "A build profile is one whole set of work data: plan, queue, pending builds, tracker and orchestrator builds. Main framework is the base. Sessions can use another one for one command with AXF_BUILD_PROFILE."
+      },
+      {
+        "target": "new-profile",
+        "title": "New profile",
+        "text": "Makes a new, empty build profile."
+      },
+      {
+        "target": "show-the-profile-on-the-banner",
+        "title": "Show the profile on the banner",
+        "text": "Shows which profile is in force as a chip on the banner.",
+        "kind": "toggle"
+      },
+      {
+        "target": "reload-the-console-after-switching",
+        "title": "Reload after switching",
+        "text": "Reloads the console after a profile switch, so every screen shows the new profile's data.",
+        "kind": "toggle"
+      },
+      {
+        "target": "action:build-manager.live",
+        "title": "Building now",
+        "text": "Opens the Build manager on what's running right now."
+      },
+      {
+        "target": "action:build-manager.built",
+        "title": "Built",
+        "text": "What's been built, with its cost and time."
+      },
+      {
+        "target": "open-in-build-manager",
+        "title": "Open in Build manager",
+        "text": "Opens this build in the Build manager."
+      },
+      {
+        "target": "follow-it-in-the-build-manager",
+        "title": "Follow it in the Build manager",
+        "text": "Opens the Build manager so you can watch this build."
+      },
+      {
+        "target": "open-the-build-manager",
+        "title": "Open the Build manager",
+        "text": "Opens the Build manager."
+      },
+      {
+        "target": "build-manager",
+        "title": "Build manager",
+        "text": "Its settings.",
+        "kind": "tab"
+      },
+      {
+        "target": "banner-while-a-build-runs",
+        "title": "Banner while a build runs",
+        "text": "Shows the Build manager banner whenever a build is running.",
+        "kind": "toggle"
+      },
+      {
+        "target": "banner-on-every-load",
+        "title": "Banner on every load",
+        "text": "Shows the banner every time the console opens.",
+        "kind": "toggle"
+      },
+      {
+        "target": "refresh-the-list-live-builds-and-history",
+        "title": "Refresh",
+        "text": "Reloads the list, the live builds and the history."
+      },
+      {
+        "target": "one-build",
+        "title": "One build",
+        "text": "Shows the steps of one build only.",
+        "kind": "tab"
+      },
+      {
+        "target": "already-built",
+        "title": "Already built",
+        "text": "This is already on main; nothing to do."
+      },
+      {
+        "target": "fable-rebuild",
+        "title": "Fable rebuild",
+        "text": "An old rebuild item. New Fable work is built on Fable in the first place."
+      },
+      {
+        "target": "send-to-review",
+        "title": "Send to review",
+        "text": "Moves this screenshot into the UI Review queue, waiting for your Approve / Reject."
+      },
+      {
+        "target": "ask-changes",
+        "title": "Ask for changes",
+        "text": "Sends it back with your comment. The PR stays held until it's approved."
+      },
+      {
+        "target": "all-groups",
+        "title": "All groups",
+        "text": "Back to the list of screenshot groups."
+      },
+      {
+        "target": "group-name",
+        "title": "Group name",
+        "text": "What this group of shots is called. Same name the same day = the same group.",
+        "kind": "field"
+      },
+      {
+        "target": "group-by-day",
+        "title": "Group by day",
+        "text": "Groups the shots by the day they were taken.",
+        "kind": "toggle"
+      },
+      {
+        "target": "before-after",
+        "title": "Before / After",
+        "text": "Drag the slider to compare the before and after shots."
+      },
+      {
+        "target": "next-screenshot",
+        "title": "Next screenshot",
+        "text": "Next picture in this group."
+      },
+      {
+        "target": "previous-screenshot",
+        "title": "Previous screenshot",
+        "text": "Previous picture."
+      },
+      {
+        "target": "reload-screenshots",
+        "title": "Reload screenshots",
+        "text": "Reads the screenshots again."
+      },
+      {
+        "target": "copy-link",
+        "title": "Copy link",
+        "text": "Copies a link straight to this."
+      },
+      {
+        "target": "pick-pictures",
+        "title": "Pick pictures",
+        "text": "Choose the screenshots to upload."
+      },
+      {
+        "target": "name-what-the-pictures-show",
+        "title": "Name",
+        "text": "Say what the pictures show, so you can find them later.",
+        "kind": "field"
+      },
+      {
+        "target": "screen-or-route",
+        "title": "Screen",
+        "text": "Which screen (or route) the pictures are of.",
+        "kind": "field"
+      },
+      {
+        "target": "ui-review",
+        "title": "UI Review",
+        "text": "Its settings.",
+        "kind": "tab"
+      },
+      {
+        "target": "grid",
+        "title": "Grid",
+        "text": "Shows them as a grid of pictures.",
+        "kind": "tab"
+      },
+      {
+        "target": "list",
+        "title": "List",
+        "text": "Shows them as a list.",
+        "kind": "tab"
+      },
+      {
+        "target": "move-to",
+        "title": "Move to",
+        "text": "Moves the picked shots into another group."
+      },
+      {
+        "target": "swarm",
+        "title": "Swarm",
+        "text": "The jobs a build was split into, who holds which files, and what's running.",
+        "kind": "tab"
+      },
+      {
+        "target": "crew",
+        "title": "Crew",
+        "text": "The roster: every agent with its status, salary, spend and jobs done.",
+        "kind": "tab"
+      },
+      {
+        "target": "id-cards",
+        "title": "ID cards",
+        "text": "The badge designs agents wear. Make default picks the one everyone wears.",
+        "kind": "tab"
+      },
+      {
+        "target": "agents",
+        "title": "Agents",
+        "text": "Each agent's skills, model and rules.",
+        "kind": "tab"
+      },
+      {
+        "target": "jobs",
+        "title": "Jobs",
+        "text": "What each build was split into, who holds which files, and what's running.",
+        "kind": "tab"
+      },
+      {
+        "target": "cost",
+        "title": "Cost",
+        "text": "Runs, tokens and dollars per agent: today, this week, all time.",
+        "kind": "tab"
+      },
+      {
+        "target": "cards",
+        "title": "Cards",
+        "text": "The ID-card designs. Make default picks the one every agent wears.",
+        "kind": "tab"
+      },
+      {
+        "target": "group-chat",
+        "title": "Group chat",
+        "text": "Where the agents talk to each other (and you).",
+        "kind": "tab"
+      },
+      {
+        "target": "rehire",
+        "title": "Rehire",
+        "text": "Brings a suspended or fired agent back on the crew."
+      },
+      {
+        "target": "suspend",
+        "title": "Suspend",
+        "text": "Benches an agent: it takes no new jobs until you rehire it."
+      },
+      {
+        "target": "top-up",
+        "title": "Top up",
+        "text": "Gives an agent more budget to spend."
+      },
+      {
+        "target": "make-default",
+        "title": "Make default",
+        "text": "Every agent wears this card design from now on."
+      },
+      {
+        "target": "new-design",
+        "title": "New design",
+        "text": "Opens the card designer on a fresh card."
+      },
+      {
+        "target": "save-card-details",
+        "title": "Save card details",
+        "text": "Saves the name, photo and fields on this agent's card."
+      },
+      {
+        "target": "save-as-new",
+        "title": "Save as new",
+        "text": "Saves your changes as a new one and leaves the original alone."
+      },
+      {
+        "target": "edit-as-new",
+        "title": "Edit as new",
+        "text": "Starts a copy you can change without touching the original."
+      },
+      {
+        "target": "agent-swarm",
+        "title": "Agent swarm",
+        "text": "Its settings.",
+        "kind": "tab"
+      },
+      {
+        "target": "color-by-vibe",
+        "title": "Color by vibe",
+        "text": "Colours each chat message by how it reads (happy, stressed…).",
+        "kind": "toggle"
+      },
+      {
+        "target": "color-every-message-by-its-vibe-score",
+        "title": "Color by vibe",
+        "text": "Colours each chat message by how it reads.",
+        "kind": "toggle"
+      },
+      {
+        "target": "use-the-room",
+        "title": "Use the room",
+        "text": "Puts the agents in the shared room so they can see each other's work."
+      },
+      {
+        "target": "column:runs",
+        "title": "Runs",
+        "text": "How many jobs it ran. Tap the header to sort.",
+        "kind": "column"
+      },
+      {
+        "target": "column:tokens",
+        "title": "Tokens",
+        "text": "Tokens used. Tap the header to sort.",
+        "kind": "column"
+      },
+      {
+        "target": "column:dollars",
+        "title": "Dollars",
+        "text": "What it cost. Tap the header to sort.",
+        "kind": "column"
+      },
+      {
+        "target": "column:today",
+        "title": "Today",
+        "text": "Today only. Tap the header to sort.",
+        "kind": "column"
+      },
+      {
+        "target": "column:week",
+        "title": "Week",
+        "text": "This week. Tap the header to sort.",
+        "kind": "column"
+      },
+      {
+        "target": "column:all-time",
+        "title": "All time",
+        "text": "Since the start. Tap the header to sort.",
+        "kind": "column"
+      },
+      {
+        "target": "action:ai-keys.open",
+        "title": "AI keys",
+        "text": "Your Anthropic keys: API keys and Claude subscription tokens. Every key is tested before it's saved and only the last 4 characters ever come back to the browser."
+      },
+      {
+        "target": "ai-keys",
+        "title": "AI keys",
+        "text": "Its settings.",
+        "kind": "tab"
+      },
+      {
+        "target": "open-ai-keys",
+        "title": "Open AI keys",
+        "text": "Opens the AI keys dialog."
+      },
+      {
+        "target": "api-key",
+        "title": "API key",
+        "text": "Paste an Anthropic API key (sk-ant-api…). It's tested before it's saved.",
+        "kind": "field"
+      },
+      {
+        "target": "access-token",
+        "title": "Access token",
+        "text": "The token this connection uses. It's stored on the server, never shown again.",
+        "kind": "field"
+      },
+      {
+        "target": "refresh-token",
+        "title": "Refresh token",
+        "text": "Lets the connection get a new access token when the old one runs out.",
+        "kind": "field"
+      },
+      {
+        "target": "claude-code-credentials",
+        "title": "Claude Code credentials",
+        "text": "The login headless Claude Code uses on the VPS."
+      },
+      {
+        "target": "set-token",
+        "title": "Set token",
+        "text": "Saves a new token (tested first)."
+      },
+      {
+        "target": "test-again",
+        "title": "Test again",
+        "text": "Re-tests the key against its service."
+      },
+      {
+        "target": "use-this-one",
+        "title": "Use this one",
+        "text": "Makes this key the active one."
+      },
+      {
+        "target": "stop-using",
+        "title": "Stop using",
+        "text": "This key isn't used any more (it stays saved)."
+      },
+      {
+        "target": "action:system-check.open",
+        "title": "Systems check",
+        "text": "Every key and connection, tested live. Red = broken, with what it breaks and a Fix."
+      },
+      {
+        "target": "systems-check",
+        "title": "Systems check",
+        "text": "Its settings, including Fix it yourself per check.",
+        "kind": "tab"
+      },
+      {
+        "target": "open-the-systems-check",
+        "title": "Open the systems check",
+        "text": "Opens the systems check."
+      },
+      {
+        "target": "check-all-again",
+        "title": "Check all again",
+        "text": "Tests every key and connection right now."
+      },
+      {
+        "target": "fix",
+        "title": "Fix",
+        "text": "Runs the fix for this check, or shows exactly what to do."
+      },
+      {
+        "target": "auto-fix-with-vinny",
+        "title": "Auto fix with Vinny",
+        "text": "Hands the fix to Vinny (axHub's agent) to run as a veto call."
+      },
+      {
+        "target": "action:keys-needed.open",
+        "title": "Keys needed",
+        "text": "The keys and tokens that are missing or dead, with how to fix each."
+      },
+      {
+        "target": "open-keys-needed",
+        "title": "Open Keys needed",
+        "text": "Opens the list of missing keys."
+      },
+      {
+        "target": "push-banner",
+        "title": "Push banner",
+        "text": "Its settings: auto-merge, PR for every branch, who fixes failed pulls.",
+        "kind": "tab"
+      },
+      {
+        "target": "open-pr",
+        "title": "Open PR",
+        "text": "Opens a pull request for this branch (a veto call)."
+      },
+      {
+        "target": "merge-ready-pull-requests-by-themselves",
+        "title": "Auto-merge",
+        "text": "Merges ready PRs by themselves: not a draft, no conflicts, up to date with main, CI green.",
+        "kind": "toggle"
+      },
+      {
+        "target": "open-a-pull-request-for-every-branch",
+        "title": "PR for every branch",
+        "text": "Opens a pull request for every branch ahead of main, so nothing reaches main except through a PR.",
+        "kind": "toggle"
+      },
+      {
+        "target": "run-a-round-now",
+        "title": "Run a round now",
+        "text": "Checks every branch and PR right now instead of in 3 minutes."
+      },
+      {
+        "target": "codebase-changes",
+        "title": "Codebase changes",
+        "text": "Its settings.",
+        "kind": "tab"
+      },
+      {
+        "target": "codebase-change",
+        "title": "Codebase change",
+        "text": "One change Claude made: what was asked, the steps, the result."
+      },
+      {
+        "target": "close-everywhere",
+        "title": "Close (everywhere)",
+        "text": "Takes it off the banner on every device. It stays in the log."
+      },
+      {
+        "target": "open-the-log",
+        "title": "Open the log",
+        "text": "Opens the full log of changes on axHub."
+      },
+      {
+        "target": "open-in-the-log",
+        "title": "Open in the log",
+        "text": "Opens this entry in the full log."
+      },
+      {
+        "target": "view:plan-studio.reader",
+        "title": "Reader",
+        "text": "Read a plan like a document."
+      }
+    ],
+    "intros": [
+      {
+        "screen": "home",
+        "title": "Home",
+        "steps": [
+          {
+            "say": "This is the console's front page. The cards show how the framework's doing and what needs you.",
+            "target": ""
+          },
+          {
+            "say": "The banners up top are live: approvals waiting, builds running, anything broken. Tap one to deal with it.",
+            "target": ".fx-frame__banners"
+          },
+          {
+            "say": "Everything is also in the app menu at the top, even when the nav is hidden. The ? next to it turns this help on and off.",
+            "target": "action:help.mode"
+          }
+        ]
+      },
+      {
+        "screen": "builds",
+        "title": "Builds",
+        "steps": [
+          {
+            "say": "Every build of the active profile, one row each, with a live progress bar and the time left.",
+            "target": ""
+          },
+          {
+            "say": "Switch to Steps to see every step on its own row — expand, select, divide or move them.",
+            "target": "action:builds.view:steps"
+          },
+          {
+            "say": "Your edits are a draft until you hit Apply. Discard throws them away; every save can be restored.",
+            "target": ""
+          }
+        ]
+      },
+      {
+        "screen": "build-orchestrator",
+        "title": "Build orchestrator",
+        "steps": [
+          {
+            "say": "Every build gets broken into steps of 30 minutes or less, each pinned to Fable or Opus.",
+            "target": ""
+          },
+          {
+            "say": "When the model switches between phases, it stops and asks you. That's the only time it asks.",
+            "target": ""
+          },
+          {
+            "say": "Rules shows the token rules every session follows: one session, no sub-agents, short briefs.",
+            "target": ""
+          }
+        ]
+      },
+      {
+        "screen": "pending",
+        "title": "Pending builds",
+        "steps": [
+          {
+            "say": "Builds parked until you say go. Each step shows [Fable] or [Opus].",
+            "target": ""
+          },
+          {
+            "say": "It's a view of the one builds store, so it always matches the Builds page and the orchestrator.",
+            "target": ""
+          }
+        ]
+      },
+      {
+        "screen": "build-manager",
+        "title": "Build manager",
+        "steps": [
+          {
+            "say": "What's building right now and what's left, with model, status and time left.",
+            "target": ""
+          },
+          {
+            "say": "Watch live on a running build pops up the screen it's changing, hot-rendering.",
+            "target": "watch-live"
+          }
+        ]
+      },
+      {
+        "screen": "ui-review",
+        "title": "UI Review",
+        "steps": [
+          {
+            "say": "Every new screen, dialog or banner a build makes waits here for your OK, with phone and desktop shots.",
+            "target": ""
+          },
+          {
+            "say": "Approve, Ask for changes or Reject. A PR stays held until its UI is approved.",
+            "target": ""
+          },
+          {
+            "say": "Plain screenshots that don't need approval live next door in Screenshots.",
+            "target": "view:ui-screenshots"
+          }
+        ]
+      },
+      {
+        "screen": "ui-screenshots",
+        "title": "Screenshots",
+        "steps": [
+          {
+            "say": "Pictures Claude took while checking things, each in a named, timestamped group.",
+            "target": ""
+          },
+          {
+            "say": "Open a group to swipe through it; Send to review moves one into the approval queue.",
+            "target": ""
+          }
+        ]
+      },
+      {
+        "screen": "agent-swarm",
+        "title": "The Breakroom",
+        "steps": [
+          {
+            "say": "Your crew of specialist agents. Crew is the roster: who's on duty, salary, spend, jobs done.",
+            "target": "crew"
+          },
+          {
+            "say": "Suspend, Rehire and Top up are the HR buttons on each card. ID cards is where you pick their badge design.",
+            "target": "id-cards"
+          },
+          {
+            "say": "Jobs shows what a build was split into and which agent holds which files.",
+            "target": "jobs"
+          },
+          {
+            "say": "Cost shows what each agent spent today, this week and all time. Group chat is where they talk.",
+            "target": "cost"
+          }
+        ]
+      },
+      {
+        "screen": "plan-studio",
+        "title": "Plan Studio",
+        "steps": [
+          {
+            "say": "Every plan in one place. 'Put it in a plan for later' lands here, parked.",
+            "target": ""
+          },
+          {
+            "say": "Switch views at the top: Tree, Grid, Board, Roadmap, Reader.",
+            "target": ""
+          },
+          {
+            "say": "A plan only becomes a build when you hit Turn into a build.",
+            "target": ""
+          }
+        ]
+      },
+      {
+        "screen": "plugin-manager",
+        "title": "Plugin Manager",
+        "steps": [
+          {
+            "say": "Every plugin with what it does, its switch, logs and settings.",
+            "target": ""
+          },
+          {
+            "say": "Turn one off and it's gone from every screen. Each one can be uninstalled completely.",
+            "target": ""
+          }
+        ]
+      },
+      {
+        "screen": "tracker",
+        "title": "Tracker",
+        "steps": [
+          {
+            "say": "Every framework feature and where it's at: built, partial or planned.",
+            "target": ""
+          },
+          {
+            "say": "It's generated from the catalog and status files, so it never lies about what's done.",
+            "target": ""
+          }
+        ]
+      },
+      {
+        "screen": "plan",
+        "title": "Plan",
+        "steps": [
+          {
+            "say": "The build plan: what gets built and in what order.",
+            "target": ""
+          },
+          {
+            "say": "Tap a feature to see its steps and what it depends on.",
+            "target": ""
+          }
+        ]
+      }
+    ]
+  }
+}

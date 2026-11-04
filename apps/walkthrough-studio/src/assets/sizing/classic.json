@@ -1,0 +1,69 @@
+{
+  "$axf": "asset@1",
+  "type": "sizing",
+  "id": "classic",
+  "name": "Classic",
+  "version": "1.0.0",
+  "description": "The sizes before Oct 30 2026: bigger buttons and pill chips, lg-radius cards, large count tiles, unclamped descriptions.",
+  "author": "AmberX AXF",
+  "tags": [
+    "classic",
+    "roomy"
+  ],
+  "data": {
+    "button": {
+      "height": 2.5,
+      "padX": 1.75,
+      "font": 0.93,
+      "icon": 1.1
+    },
+    "iconButton": {
+      "size": 1.9
+    },
+    "chip": {
+      "height": 1.8,
+      "padX": 1.25,
+      "font": 0.86,
+      "radius": "pill"
+    },
+    "field": {
+      "height": 2.5,
+      "padX": 1,
+      "font": 1
+    },
+    "tab": {
+      "padY": 1,
+      "padX": 1.5,
+      "font": 1
+    },
+    "segment": {
+      "padY": 0.5,
+      "padX": 1.25,
+      "font": 0.92
+    },
+    "card": {
+      "pad": 2,
+      "headFont": 1,
+      "radius": "lg"
+    },
+    "listRow": {
+      "minHeight": 3.2,
+      "padX": 1.5,
+      "metaFont": 0.85
+    },
+    "countStrip": {
+      "number": 1.5,
+      "label": 0.79,
+      "pad": 1
+    },
+    "table": {
+      "padY": 1,
+      "padX": 1.25,
+      "font": 0.9
+    },
+    "pageHead": {
+      "descriptionFont": 1,
+      "descriptionLines": 6
+    }
+  }
+}

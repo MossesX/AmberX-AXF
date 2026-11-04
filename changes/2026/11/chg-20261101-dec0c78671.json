@@ -1,0 +1,95 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261101-dec0c78671",
+  "createdAt": "2026-11-01T10:45:57.215Z",
+  "updatedAt": "2026-11-01T10:46:30.860Z",
+  "kind": "build",
+  "title": "# Ways into the Breakroom + its group chat (restart on Opus) A Sonnet run of this (folder /root/axf…",
+  "asked": "# Ways into the Breakroom + its group chat (restart on Opus) A Sonnet run of this (folder /root/axf-builds/breakroom-hooks, branch claude/breakroom-hooks) was stopped part-way because Brett's rule is Opus or Fable only, never Sonnet. Look at that branch for anything useful, but redo and verify it yourself. Read CLAUDE.md, _claude/shared/rules/RULES.md first. 1. Audit: list every existing way into the Breakroom and into its Group chat tab (app menu, nav menu, context menu, banner, home cards, shortcuts, deep links, keyboard, search widget). Write the list in the report. 2. Add what's missing, through the existing menu/context-menu assets and the plugin's manifest menu switches (no hard-coded menus): context menu \"Open Breakroom\" and \"Open group chat\" (global target), plus on an agent row/card \"Message in group chat\". Make sure the app menu, nav menu, search widget, Shortcuts and `axf://breakroom` + `axf://breakroom/chat` deep links reach both. (The running `directory` build adds Breakroom to default Shortcuts too; don't clash, merge origin/main before finishing.) 3. Entries honour UAC. Plugin-lifecycle stays green: entries live in the agent-swarm plugin's own folder and vanish on uninstall. 4. Tests + lifecycle + theme checks, phone screenshots of the context menu, report `_claude/builds/reports/breakroom-hooks.md`, THREADS row. Commit on this branch, merge origin/main, push the branch. Do NOT push to main; Brett's session lands it with build_land. Never print secrets. Report: every way in, before and after. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, patches-web, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "claude-opus-5-5",
+  "who": {
+    "session": "acd0478c-820",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "buildRef": {
+    "kind": "plan",
+    "id": "breakroom-hooks"
+  },
+  "surface": "headless",
+  "startedAt": "2026-11-01T10:45:57.215Z",
+  "finishedAt": "2026-11-01T10:46:30.860Z",
+  "lastSeenAt": "2026-11-01T10:46:16.575Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "actual": {
+    "minutes": 1,
+    "costUsd": 0.4244,
+    "inputTokens": 14,
+    "outputTokens": 2127,
+    "cacheReadTokens": 402190,
+    "cacheWriteTokens": 60274,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "claude/breakroom-hooks-opus",
+  "areas": [
+    "apps/console-web/plugins/agent-swarm",
+    "_claude/builds/reports",
+    "_claude/THREADS.md"
+  ],
+  "doing": "Running: Check branches and the earlier Sonnet run's state",
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/breakroom-hooks-opus",
+    "branch": "claude/breakroom-hooks-opus",
+    "base": "2713d09d4c2fa6d106b67a319f57604ca9f16fd9",
+    "head": "2713d09d4c2fa6d106b67a319f57604ca9f16fd9",
+    "pushed": true,
+    "dirty": 24,
+    "files": [
+      "changes/2026/11/chg-20261101-1a2f437924.json",
+      "changes/2026/11/chg-20261101-1be63f8f1b.json",
+      "changes/2026/11/chg-20261101-2569cb816e.json",
+      "changes/2026/11/chg-20261101-398ef192a8.json",
+      "changes/2026/11/chg-20261101-49101f1545.json",
+      "changes/2026/11/chg-20261101-6c13622b7b.json",
+      "changes/2026/11/chg-20261101-6ccae6f4d3.json",
+      "changes/2026/11/chg-20261101-70795946ff.json",
+      "changes/2026/11/chg-20261101-710d4dab8e.json",
+      "changes/2026/11/chg-20261101-8a3ebed65d.json",
+      "changes/2026/11/chg-20261101-8f773887f3.json",
+      "changes/2026/11/chg-20261101-905d1f449c.json",
+      "changes/2026/11/chg-20261101-92971c2ac2.json",
+      "changes/2026/11/chg-20261101-9504b77bde.json",
+      "changes/2026/11/chg-20261101-a6777d1886.json",
+      "changes/2026/11/chg-20261101-d7b70e43f7.json",
+      "sessions/archive/2026/11/cc-2e0a66ea-1471-489a-a14d-12698c271604.json",
+      "sessions/archive/2026/11/cc-538b069c-d205-4dab-90f2-12d5c34fdcd6.json",
+      "sessions/archive/2026/11/cc-5bd3dd32-7712-4e0e-aedc-5e2897cd20a9.json",
+      "sessions/archive/2026/11/cc-75b2a975-d5fa-42fa-abb9-1f406fbf49ff.json",
+      "sessions/archive/2026/11/cc-92543c42-347c-455b-838e-259586c69382.json",
+      "sessions/archive/2026/11/cc-965b375e-ddd4-4edb-8121-ff06e8864f32.json",
+      "sessions/archive/2026/11/cc-ea3d3dfe-3be4-4147-aa83-699be917a582.json",
+      "sessions/archive/2026/11/cc-ea4ac6c5-9077-4a17-ad9d-aa96b5a2c3e8.json"
+    ],
+    "at": "2026-11-01T10:46:30.975Z"
+  }
+}

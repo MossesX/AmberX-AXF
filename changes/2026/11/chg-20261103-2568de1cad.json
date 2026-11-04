@@ -1,0 +1,89 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261103-2568de1cad",
+  "createdAt": "2026-11-03T15:52:54.537Z",
+  "updatedAt": "2026-11-03T15:52:58.055Z",
+  "kind": "build",
+  "title": "# Build: axhub-pass-all (axHub repo) Brett, Nov 3 2026 (voice), correcting the pass that was just b…",
+  "asked": "# Build: axhub-pass-all (axHub repo) Brett, Nov 3 2026 (voice), correcting the pass that was just built on branch claude/axhub-veto-pass: \"It's not supposed to be 30 minutes for theme changes. It's 30 minutes to do whatever I tell you.\" ## Change - Add a scope `all` (the default when no scope is given) to timed passes: while an `all` pass is active, EVERY held call on EVERY service (vps.run, vps.logs, memory writes/deletes, github, amberx, console/token-control, anything added later) runs immediately with no veto/confirm hold. Existing narrower scopes stay available. - Spoken grant phrasing the tool must handle cleanly: `axhub.pass_grant {minutes: 30}` = all, 30 min; `{scope: 'tokens.theme', minutes: 30}` = narrow. - Keep exactly one guard, and say it in the tool description: calls the connector marks `irreversible` (deleting a GitHub repo, wiping a database/volume, deleting the vault, dropping a Coolify app's data) still ask, unless the grant says `include_irreversible: true` (Brett can say \"including deletes\"). Ordinary deletes (a note, a file, a branch, a container) ARE covered by `all`. - The grant itself still needs Brett once (owner approval or axHub web); an agent can never grant itself a pass. Unchanged. - Banner/countdown and the 'ran under pass' log already exist: show the scope ('everything') there. - Tests (all covers every service; irreversible guard; include_irreversible; narrow scopes unchanged), docs, decision log entry. - When done, push your commits onto `claude/axhub-veto-pass` too (fast-forward; your branch is based on it) so the landing job lands the complete version, and note it in the PR. Commits clean and professional. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, patches-web, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once.",
+  "repos": [
+    "MossesX/axHub"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "b04d6149-024",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": null,
+  "closed": null,
+  "state": "running",
+  "status": "running",
+  "buildRef": {
+    "kind": "plan",
+    "id": "axhub-pass-all"
+  },
+  "surface": "headless",
+  "startedAt": "2026-11-03T15:52:54.537Z",
+  "lastSeenAt": "2026-11-03T15:52:58.055Z",
+  "estimate": {
+    "minutes": 60,
+    "costUsd": 8.4
+  },
+  "costEstimated": true,
+  "branch": "claude/axhub-pass-all",
+  "areas": [
+    "packages/core",
+    "packages/server",
+    "docs",
+    "project/initialization"
+  ],
+  "doing": "Running: Check branch and record build estimate",
+  "resume": {
+    "repo": "MossesX/axHub",
+    "folder": "/root/axf-builds/axhub-pass-all",
+    "branch": "claude/axhub-pass-all",
+    "base": "998f03f164bfb991bf4a313c3b617b33f2691d77",
+    "head": "1856d280ef560b2e4e8559dbeb904b178c53982a",
+    "pushed": true,
+    "dirty": 2,
+    "files": [
+      "CLAUDE.md",
+      "docs/cli.md",
+      "docs/roadmap.md",
+      "docs/veto-pass.md",
+      "examples/README.md",
+      "packages/core/src/builtin.ts",
+      "packages/core/src/hub.ts",
+      "packages/core/src/index.ts",
+      "packages/core/src/memory-storage.ts",
+      "packages/core/src/model.ts",
+      "packages/core/src/passes.ts",
+      "packages/core/src/policy.ts",
+      "packages/core/src/registry.ts",
+      "packages/core/src/schemas.ts",
+      "packages/core/src/storage.ts",
+      "packages/core/test/passes.test.ts",
+      "packages/server/src/app.ts",
+      "packages/server/src/approval-log.ts",
+      "packages/server/src/approvals-web.ts",
+      "packages/server/src/cli.ts",
+      "packages/server/src/main.ts",
+      "packages/server/src/mcp.ts",
+      "packages/server/src/pass-feed.ts",
+      "packages/server/src/passes-web.ts",
+      "packages/server/src/web.ts",
+      "packages/server/test/passes.test.ts",
+      "packages/storage-sqlite/src/migrations.ts",
+      "packages/storage-sqlite/src/sqlite-storage.ts",
+      "packages/storage-sqlite/test/storage-contract.test.ts",
+      "project/initialization/axhub-context.md",
+      "project/initialization/axhub-planning.md",
+      ".axf-watch-live.log",
+      "_claude/shared/notes/"
+    ],
+    "at": "2026-11-03T15:52:54.609Z"
+  }
+}

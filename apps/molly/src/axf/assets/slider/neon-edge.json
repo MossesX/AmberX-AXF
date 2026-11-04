@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "neon-edge",
+  "name": "Neon Edge slider",
+  "version": "1.0.0",
+  "description": "Neon Edge: bar thumb on a 3 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "neon",
+    "vivid",
+    "dark"
+  ],
+  "data": {
+    "track": 3,
+    "thumb": "bar",
+    "thumbSize": 14,
+    "fill": "gradient",
+    "showValue": "always",
+    "ticks": true
+  }
+}

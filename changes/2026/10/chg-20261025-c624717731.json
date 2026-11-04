@@ -1,0 +1,64 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261025-c624717731",
+  "createdAt": "2026-10-25T20:11:54.182Z",
+  "updatedAt": "2026-10-29T07:02:41.513Z",
+  "kind": "build",
+  "title": "Shared settings interface across apps (settings/console asset + Appearance picker)",
+  "asked": "",
+  "repos": [
+    "mossesx/amberx-axf"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "user": "console",
+    "host": "vm"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "settings/console framework asset is the default of 5 web apps, all ship the same settings assets, Appearance > Settings interface panel; synced via axHub appearance doc",
+    "branch": "claude/project-thread-lmyb8k",
+    "commits": [
+      {
+        "sha": "97d0377"
+      }
+    ],
+    "filesChanged": 140,
+    "tests": {
+      "check-settings-ui": {
+        "before": "27",
+        "after": "27"
+      }
+    },
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-29T07:02:41.513Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "shared-settings-interface"
+  },
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-25T20:11:54.182Z",
+  "finishedAt": "2026-10-25T20:15:17.472Z",
+  "lastSeenAt": "2026-10-25T20:12:00.828Z",
+  "estimate": {
+    "minutes": 50,
+    "costUsd": 7.0
+  },
+  "costEstimated": true,
+  "branch": "claude/project-thread-lmyb8k",
+  "areas": [
+    "framework/assets/settings",
+    "framework/libs/settings",
+    "apps/*/src/assets/settings",
+    "apps/*/axf.manifest.json"
+  ],
+  "progress": 1.0
+}

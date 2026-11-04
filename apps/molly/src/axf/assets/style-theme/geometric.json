@@ -1,0 +1,43 @@
+{
+  "$axf": "asset@1",
+  "type": "style-theme",
+  "id": "geometric",
+  "name": "Geometric",
+  "version": "1.0.0",
+  "description": "Outfit display over DM Sans with pill-like 10–20 px radii: confident, product-marketing polish.",
+  "author": "AmberX AXF",
+  "tags": [
+    "brand",
+    "modern"
+  ],
+  "data": {
+    "fontFamily": "'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontDisplay": "'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontMono": "'DM Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace",
+    "fontSize": 14,
+    "radius": {
+      "sm": 10,
+      "md": 14,
+      "lg": 20
+    },
+    "space": 8,
+    "borderWidth": 1,
+    "shadow": {
+      "sm": "0 1px 3px var(--fx-shadow)",
+      "md": "0 8px 24px var(--fx-shadow)",
+      "lg": "0 20px 56px var(--fx-shadow)"
+    },
+    "density": "comfortable",
+    "motion": 180,
+    "blur": 14,
+    "headingWeight": 700,
+    "tracking": -0.02,
+    "opacityDisabled": 0.4,
+    "opacityMuted": 0.62,
+    "opacityHover": 0.08,
+    "opacityTint": 0.14,
+    "opacityScrim": 0.5,
+    "opacityGlass": 0.7,
+    "wrapGroups": false
+  }
+}

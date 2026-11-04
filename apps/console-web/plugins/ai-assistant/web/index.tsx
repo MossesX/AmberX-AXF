@@ -10,7 +10,7 @@ import { appMenu } from './menu';
 
 /*
  * AI assistant plugin (web part, Fable rebuild). The chat UI is built on the framework's assistant contract
- * (assistant@1, framework/core/assistant.ts: types, HttpAssistantClient, watchReply) so Build Pilot and other AXF apps
+ * (assistant@1, framework/core/assistant.ts: types, HttpAssistantClient, watchReply) so other AXF apps
  * can reuse the same core — see server/__init__.py for the engine.
  *  - view "ai-assistant": full-page chat (nav → Plugins → AI assistant)
  *  - dialog "ai-assistant.chat": the chat dialog, from anywhere (action ai-assistant.open, payload = optional prompt)
@@ -43,7 +43,7 @@ function WizardIntro() {
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'AI assistant',
-  version: '0.2.1',
+  version: '0.2.2',
   appMenu,
   provides: ['axf.ai-assistant', 'axf.llm@1', 'axf.live-sessions@1'],
   register(rt) {

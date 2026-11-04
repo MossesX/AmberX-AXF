@@ -5,9 +5,11 @@
  * engines. Framework-agnostic: the React layer only subscribes to it.
  */
 import { SettingsRegistry, type SettingValue } from './settings';
-import { AssetRegistry, serializeAsset } from './registry';
+import { AssetRegistry, serializeAsset, type RegisteredAsset } from './registry';
+import { announceWatchLiveRuntime } from './watch-live';
 import { ActionBus, FRAMEWORK_MODULE, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
 import { colorThemeVars, styleThemeVars, type VarMap } from './engines/theme';
+import { scaleThemeVars } from './engines/scale';
 import { layoutVars } from './engines/layout';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
 import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normalizeCustomSlot, type CustomSlot, type CustomValues } from './engines/customize';
@@ -28,6 +30,7 @@ import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern
 import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
 import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, resolveInterface, scopeAttrs, scopeSheet, scopeVarsCss, type InterfaceData, type ResolvedInterface } from './engines/interface';
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
+import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpIndex, helpTarget, introFor, introToShow, markSeen, resolveHelp, type HelpDescriptor, type HelpEntry, type HelpIndex, type HelpIntro } from './engines/help';
 import { Diagnostics } from './diagnostics';
 import { OutputTerminal } from './terminal';
 import {
@@ -42,7 +45,9 @@ import {
   type AxfManifest,
   type AxfState,
   type Gate,
+  type MenuActResult,
   type MenuItem,
+  type MenuItemButton,
   type Toast,
 } from './types';
 import { assetTypeSpecs, attachable, type ValidationResult } from './validate';
@@ -94,6 +99,12 @@ export const APPEARANCE_LOCK_KEY = 'axf.lock.appearance';
 export const LOCKED_APPEARANCE_PERMS: readonly string[] = ['assets.swap', 'assets.import'];
 /** Developer apps: false = stop reading (and writing) the look on axHub; the app keeps its own saved look. */
 export const APPEARANCE_FOLLOW_KEY = 'axf.hub.appearance.follow';
+/**
+ * The Active assets pane (the layout's inspector region): a developer tool, closed until the user opens it
+ * (View → Active assets pane, the `inspector` action). Layouts only say where it goes when it is open
+ * (Brett, Nov 1 2026: the pane popped up on its own when a design package switched to a layout with an inspector).
+ */
+export const INSPECTOR_KEY = 'axf.inspector.shown';
 
 /** `defaults` = the app's manifest defaults when the choices were saved, so a changed app default can win (see constructor). */
 type Persisted = { active?: Partial<ActiveAssets>; role?: string; defaults?: Partial<ActiveAssets> };
@@ -140,6 +151,12 @@ export interface AppMenuProvider {
   moreLabel?: string;
   /** the module that registered it (`removeAppMenuItems(module)` also drops its providers) */
   module?: string;
+  /**
+   * Runs a button on one of its rows (`MenuItem.buttons`, e.g. Deny / Approve) and says what happened, so the open
+   * menu flips that row in place (`state`) and drops it, without reloading the list. Absent: the button's `action`
+   * is dispatched.
+   */
+  act?: (itemId: string, buttonId: string) => MenuActResult | Promise<MenuActResult>;
 }
 
 /**
@@ -242,9 +259,18 @@ export class AxfRuntime {
   private storageKey: string;
   private toastSeq = 0;
   private settingsBump = false;
+  /** Help packs added at run time (a plugin's help.json, a library), by id; with the app's help@1 assets they make the help index. */
+  private readonly helpPacks = new Map<string, { id: string; data: unknown }>();
+  private helpCache: { assets: readonly unknown[]; rev: number; index: HelpIndex } | null = null;
+  /** Help ids a control asked for and found nothing (the coverage report's run-time half). */
+  private readonly helpMissingIds = new Set<string>();
+  /** The help id the "What is this?" panel shows (null = closed); a screen intro asked to replay. */
+  private helpPanelId: string | null = null;
+  private helpReplay: string | null = null;
 
   constructor(opts: AxfRuntimeOptions) {
     this.manifest = opts.manifest;
+    announceWatchLiveRuntime(this);
     this.embedded = opts.embed !== undefined ? opts.embed : detectPageEmbed();
     if (this.embedded) this.listenToHost();
     this.storageKey = opts.storageKey ?? `axf:${opts.manifest.app.id}`;
@@ -302,6 +328,13 @@ export class AxfRuntime {
     };
     this.actions.withModule(FRAMEWORK_MODULE, () => this.registerBuiltinActions());
     this.registerBuiltinAppMenuProviders();
+    // Help mode in every app's Help menu (Brett, Nov 1 2026): the switch, replay the intro, intros again.
+    this.addAppMenuItems({ id: 'axf.help', module: 'axf', menu: 'help', menuLabel: 'Help', menuOrder: 1000, order: -10, items: [
+      { id: 'axf-help-mode', label: 'Help mode', icon: 'help', action: `${HELP_ACTIONS.mode}:toggle`, checked: `setting:${HELP_MODE_KEY}`, shortcut: 'F1' },
+      { id: 'axf-help-intro', label: 'Show this screen\'s intro', icon: 'play', action: 'help.intro' },
+      { id: 'axf-help-intros-reset', label: 'Show all screen intros again', icon: 'refresh', action: HELP_ACTIONS.resetIntros },
+      { id: 'axf-help-sep', separator: true },
+    ] });
   }
 
   /* ---------------- appearance source (engines/appearance.ts): settings from the axHub data server ---------------- */
@@ -321,7 +354,12 @@ export class AxfRuntime {
     this.appearanceSource = source;
     this.appearanceOff = source.subscribe((ev) => {
       if (!this.appearanceFollowing()) return;
-      if ('state' in ev) { this.set({ appearance: ev.state }); return; }
+      if ('state' in ev) {
+        if (ev.state.status === 'ready') this.appearanceWasReady = true;
+        if (sameSourceState(this.state.appearance, ev.state)) return; // nothing new: no re-render
+        this.set({ appearance: ev.state });
+        return;
+      }
       this.applyAppearance(ev.doc);
     });
     this.followOff = this.settings.onChange(APPEARANCE_FOLLOW_KEY, () => this.syncAppearanceFollow());
@@ -336,6 +374,7 @@ export class AxfRuntime {
     this.appearanceOff = null;
     this.followOff = null;
     this.appearanceRunning = false;
+    this.appearanceWasReady = false;
     this.appearanceSource = null;
     this.lastAppearance = null;
     this.set({ appearance: null });
@@ -343,9 +382,25 @@ export class AxfRuntime {
 
   private followOff: (() => void) | null = null;
   private appearanceRunning = false;
+  /** The source has been ready since it was attached / followed again: the app has its look and stays on screen. */
+  private appearanceWasReady = false;
 
   /** Is the look read from axHub right now? (A developer app with the follow switch on; true without a source too.) */
   appearanceFollowing(): boolean { return this.settings.get(APPEARANCE_FOLLOW_KEY) !== false; }
+
+  /** Is the Active assets pane open? Closed unless the user opened it. */
+  inspectorShown(): boolean { return this.settings.get(INSPECTOR_KEY) === true; }
+
+  /** Open or close the Active assets pane (a view choice, not part of the look: never sent to axHub). */
+  setInspectorShown(on: boolean): void {
+    if (on) this.settings.set(INSPECTOR_KEY, true); else this.settings.clear(INSPECTOR_KEY);
+    this.set({});
+  }
+
+  /** The layout as drawn: its inspector region only while the pane is open. */
+  inspectorLayout<L extends { inspector: string }>(l: L): L {
+    return this.inspectorShown() || l.inspector === 'none' ? l : { ...l, inspector: 'none' };
+  }
 
   /** Turn reading the look from axHub on or off (developer apps). Off = the app runs on its own saved look, no waiting. */
   setAppearanceFollowing(on: boolean): void {
@@ -360,6 +415,7 @@ export class AxfRuntime {
     const want = this.appearanceFollowing();
     if (want === this.appearanceRunning) return;
     this.appearanceRunning = want;
+    this.appearanceWasReady = false;
     if (want) {
       this.set({ appearance: src.state() });
       src.start();
@@ -385,6 +441,17 @@ export class AxfRuntime {
 
   /** The developer app runs only while its source is ready (or it has none). The React layer shows the waiting screen otherwise. */
   appearanceReady(): boolean { return !this.appearanceSource || !this.appearanceRunning || this.state.appearance?.status === 'ready'; }
+
+  /**
+   * Should the React layer show the waiting screen instead of the app? Only until the source is ready the first time,
+   * or while the hub says this browser may not read the look (signed out). A re-read that fails after the app is on screen
+   * keeps the app as it is (the source retries by itself): dropping the whole app for the waiting screen and back
+   * remounted every view on each failed re-read (Brett, Nov 1 2026: the approvals screen flashing "Reading the hub").
+   */
+  appearanceBlocking(): boolean {
+    if (this.appearanceReady()) return false;
+    return !this.appearanceWasReady || this.state.appearance?.status === 'unauthorized';
+  }
 
   /** What the last document resolved to in this app, for Settings → Appearance to explain skipped ids. */
   appearanceSkipped(): string[] { return resolveAppearance(this.lastAppearance, (t, id) => this.registry.has(t as AssetType, id)).skipped; }
@@ -417,7 +484,12 @@ export class AxfRuntime {
       const sp = r.spacing ?? SPACING_DEFAULT_VALUE;
       if (this.spacing() !== sp) this.settings.set(SPACING_KEY, sp);
       const changed = ASSET_TYPES.some((t) => active[t] !== this.state.active[t]);
-      this.set({ active, swaps: this.state.swaps + (changed ? 1 : 0) }, true);
+      // Nothing to swap = no new state: a re-applied document must not re-render every view (Nov 1 2026).
+      if (changed) this.set({ active, swaps: this.state.swaps + 1 }, true);
+      // A new look from the hub is applied to the app itself: hosts drawing the app under something else (the console's
+      // GizmoX interface tabs) bring it back into view, like a local design package does (Brett, Nov 1 2026: the console
+      // sat on its GizmoX Night tab while axHub showed Saffron Day, so the two looked out of sync).
+      if (changed) this.lookApplied('hub', doc?.updatedBy ?? '');
       if (r.skipped.length) this.terminal.warn('appearance', `not in this app, kept the default: ${r.skipped.join(', ')}`);
       this.terminal.ok('appearance', `applied from the hub${doc?.updatedBy ? ` (saved by ${doc.updatedBy})` : ''}`);
     } finally {
@@ -525,6 +597,21 @@ export class AxfRuntime {
 
   /** Registered live-list ids. */
   appMenuProviderIds(): string[] { return [...this.appMenuProviders.keys()]; }
+
+  /**
+   * A tap on a button of a live-list row: the provider's `act`, else the button's action. Never throws: a failure is
+   * `{ ok: false, message? }` (the menu toasts the message and puts the buttons back).
+   */
+  async runAppMenuButton(providerId: string, itemId: string, button: Pick<MenuItemButton, 'id' | 'action'>): Promise<MenuActResult> {
+    const p = this.appMenuProviders.get(providerId);
+    try {
+      if (p?.act) return (await p.act(itemId, button.id)) ?? { ok: false, message: 'No answer.' };
+      if (button.action) return { ok: this.dispatch(button.action) };
+      return { ok: false, message: 'Nothing to run.' };
+    } catch (e) {
+      return { ok: false, message: ((e as Error)?.message || 'Something went wrong.').slice(0, 160) };
+    }
+  }
 
   /** What compiling the menu needs from this runtime (the fixtures feed the engine the same shape). */
   private appMenuEnv(): AppMenuEnv {
@@ -1031,8 +1118,7 @@ export class AxfRuntime {
    * Chrome that belongs to the host while this app runs inside it (embed@1): what it hides for the whole app (its banner
    * by default, plus what a taken function hides, e.g. the app menu). On a page the host shows alone (settings page
    * mode) every bit of chrome is hidden for that page only, so only the whole-app part counts. Settings leave rows about
-   * this chrome out instead of greying them (Brett, Oct 23 2026: "if a program runs inside Patches don't grey out its
-   * settings").
+   * this chrome out instead of greying them (Brett, Oct 23 2026: settings of chrome a host owns aren't greyed out).
    */
   slotOwnedByHost(type: AssetType): boolean {
     const e = this.embedded;
@@ -1169,18 +1255,18 @@ export class AxfRuntime {
     return true;
   }
 
-  private readonly lookAppliedListeners = new Set<(ev: { kind: 'design-package' | 'interface' | 'default'; id: string }) => void>();
+  private readonly lookAppliedListeners = new Set<(ev: { kind: 'design-package' | 'interface' | 'default' | 'hub'; id: string }) => void>();
 
   /**
    * Called after a design package, an interface or the default look is applied to the app (also on "Apply again").
    * Hosts that draw the app under something else (the console's GizmoX interface tabs) bring the app back into view.
    */
-  onLookApplied(fn: (ev: { kind: 'design-package' | 'interface' | 'default'; id: string }) => void): () => void {
+  onLookApplied(fn: (ev: { kind: 'design-package' | 'interface' | 'default' | 'hub'; id: string }) => void): () => void {
     this.lookAppliedListeners.add(fn);
     return () => { this.lookAppliedListeners.delete(fn); };
   }
 
-  private lookApplied(kind: 'design-package' | 'interface' | 'default', id: string): void {
+  private lookApplied(kind: 'design-package' | 'interface' | 'default' | 'hub', id: string): void {
     for (const fn of [...this.lookAppliedListeners]) { try { fn({ kind, id }); } catch (e) { this.terminal.warn('hot-swap', `look listener failed: ${(e as Error).message}`); } }
   }
 
@@ -1266,6 +1352,20 @@ export class AxfRuntime {
       if (activate && this.can('assets.swap')) this.swap(r.asset.type, r.asset.id);
       else this.set({});
     }
+    return r;
+  }
+
+  /**
+   * Watch live (watch-live@1): an asset file a session is editing changed on disk. Re-registers it in place (keeping
+   * the source of the copy it replaces) and recompiles, so the active theme/layout/menu shows the edit without a
+   * reload. Not a user action: no permission check and no swap; the active choice stays what it was.
+   */
+  hotReplaceAsset(raw: unknown, origin = 'watch-live'): ValidationResult {
+    const t = (raw as { type?: AssetType; id?: string } | null);
+    const prev = t?.type && t.id ? (this.registry.get(t.type, t.id) as RegisteredAsset | undefined) : undefined;
+    const r = this.registry.register(raw, prev?.__source ?? 'imported', prev?.__origin ?? origin);
+    // A fresh `active` (same choices) so everything keyed on it — the provider's compiled tokens — re-applies.
+    if (r.ok) this.set({ active: { ...this.state.active } });
     return r;
   }
 
@@ -1396,11 +1496,95 @@ export class AxfRuntime {
     this.set({ view, context: null });
   }
 
+  /* ---------------- Help mode (engines/help.ts, help@1) ---------------- */
+
+  /** Help mode on? (setting axf.help.mode, per device; off by default.) */
+  helpMode(): boolean {
+    return this.settings.get(HELP_MODE_KEY) === true;
+  }
+
+  /** Switch Help mode on / off (null = toggle). Hot: every control re-reads it on the next render. */
+  setHelpMode(on: boolean | null = null): void {
+    const next = on === null ? !this.helpMode() : on;
+    this.settings.set(HELP_MODE_KEY, next);
+    if (!next) this.helpPanelId = null;
+    this.terminal.ok('help', `help mode ${next ? 'on' : 'off'}`);
+    this.set({});
+  }
+
+  /** Every help pack in force, as one index: the app's help@1 assets (registry order), then run-time packs. */
+  helpIndex(): HelpIndex {
+    const assets = this.registry.list('help' as AssetType);
+    const c = this.helpCache;
+    // registered assets are replaced, never mutated, so the same objects + the same run-time packs = the same index
+    if (c && c.rev === this.helpPacksRev && c.assets.length === assets.length && c.assets.every((a, i) => a === assets[i])) return c.index;
+    const index = buildHelpIndex([...assets.map((a) => ({ id: a.id, data: a.data })), ...this.helpPacks.values()]);
+    this.helpCache = { assets, rev: this.helpPacksRev, index };
+    return index;
+  }
+  private helpPacksRev = 0;
+
+  /** Add (or replace) a help pack at run time: `data` is help@1 data ({ entries, intros }). Returns a remover. */
+  addHelp(id: string, data: unknown): () => void {
+    this.helpPacks.set(id, { id, data });
+    this.helpPacksRev += 1;
+    this.set({});
+    return () => this.removeHelp(id);
+  }
+
+  removeHelp(id: string): void {
+    if (this.helpPacks.delete(id)) { this.helpPacksRev += 1; this.set({}); }
+  }
+
+  /** The help for a control (descriptor → help ids → first entry), with its canonical id; records misses. */
+  helpFor(desc: HelpDescriptor): { id: string | null; entry: (HelpEntry & { pack: string }) | null } {
+    const t = helpTarget({ screen: this.state.view, ...desc });
+    const entry = resolveHelp(this.helpIndex(), t.lookup);
+    if (!entry && t.id) this.helpMissingIds.add(t.id);
+    return { id: t.id, entry };
+  }
+
+  /** Help ids asked for on this page that had no help (newest last). */
+  missingHelp(): string[] {
+    return [...this.helpMissingIds];
+  }
+
+  /** The intro to show on this screen now (Help mode on, intros on, not seen yet), or the one asked to replay. */
+  helpIntro(screen = this.state.view): HelpIntro | null {
+    if (this.helpReplay === screen) return introFor(this.helpIndex(), screen);
+    return introToShow({ mode: this.helpMode(), intros: this.settings.get(HELP_INTROS_KEY) !== false, seen: this.settings.get(HELP_SEEN_KEY), screen, index: this.helpIndex() });
+  }
+
+  /** The intro of a screen was shown (finished or skipped): it won't show again there. `stopAll` turns screen intros off. */
+  helpIntroDone(screen: string, stopAll = false): void {
+    if (this.helpReplay === screen) this.helpReplay = null;
+    this.settings.set(HELP_SEEN_KEY, markSeen(this.settings.get(HELP_SEEN_KEY), screen));
+    if (stopAll) this.settings.set(HELP_INTROS_KEY, false);
+    this.set({});
+  }
+
+  /** Forget which intros were seen (and turn intros back on). */
+  resetHelpIntros(): void {
+    this.settings.set(HELP_SEEN_KEY, []);
+    this.settings.set(HELP_INTROS_KEY, true);
+    this.set({});
+  }
+
+  /** Open / close the "What is this?" panel for a help id (null closes). */
+  explainHelp(id: string | null): void {
+    this.helpPanelId = id;
+    this.set({});
+  }
+
+  helpPanel(): string | null {
+    return this.helpPanelId;
+  }
+
   navigate(view: string) {
     if (this.openPlaced(`view:${view}`)) return;
-    // A view the host took over (embed@1 takes: the settings view inside Patches) opens in the host instead.
+    // A view the host took over (embed@1 takes: e.g. the settings view) opens in the host instead.
     if (embedTakenView(this.embedded, view)) { this.askHost(`nav:${view}`); return; }
-    // A view of a function the host locks (plugins inside Patches): say who manages it instead of opening it.
+    // A view of a function the host locks (e.g. plugins): say who manages it instead of opening it.
     const lock = this.lockedByHost({ view });
     if (lock) { this.toast(lock, 'info', `Managed in ${embedHostLabel(this.embedded)}`); return; }
     this.set({ view, context: null });
@@ -1442,9 +1626,9 @@ export class AxfRuntime {
   }
 
   dispatch(spec: string, ctx: Omit<ActionContext, 'runtime'> = {}): boolean {
-    // A hook of a function the host took over (embed@1): the host does it (e.g. Patches' combined settings).
+    // A hook of a function the host took over (embed@1): the host does it (e.g. a host's combined settings).
     if (embedTakenBy(this.embedded, spec)) return this.askHost(spec);
-    // A hook of a function the host locks (plugins inside Patches): shown greyed out; running it only says who manages it.
+    // A hook of a function the host locks (e.g. plugins): shown greyed out; running it only says who manages it.
     const lock = this.lockedByHost({ action: spec });
     if (lock) { this.toast(lock, 'info', `Managed in ${embedHostLabel(this.embedded)}`); return false; }
     return this.actions.dispatch(spec, { runtime: this, ...ctx });
@@ -1464,8 +1648,8 @@ export class AxfRuntime {
   }
 
   /**
-   * Is this action / view / live list a hook of a function the host locks (embed@1 take with `lock`, e.g. plugins
-   * inside Patches)? Returns the note to show (`Plugins are managed in Patches`), or null. Chrome keeps such hooks on
+   * Is this action / view / live list a hook of a function the host locks (embed@1 take with `lock`, e.g. plugins)?
+   * Returns the note to show (`Plugins are managed in <host>`), or null. Chrome keeps such hooks on
    * screen greyed out with the note as their tooltip.
    */
   lockedByHost(what: { action?: string; view?: string; provider?: string }): string | null {
@@ -1475,7 +1659,7 @@ export class AxfRuntime {
     return embedLockNote(e, fn);
   }
 
-  /** The note for a whole function the host locks (`plugins` → `Plugins are managed in Patches`), or null. */
+  /** The note for a whole function the host locks (`plugins` → `Plugins are managed in <host>`), or null. */
   hostLockNote(fn: string): string | null { return embedLockNote(this.embedded, fn); }
 
   /* ---------------- embed@1: the host manages this app's plugins (take `plugins`) ---------------- */
@@ -1668,7 +1852,9 @@ export class AxfRuntime {
     const vars: VarMap = {
       ...colorThemeVars(color),
       ...styleThemeVars(this.asset('style-theme').data, this.spacing()),
-      ...layoutVars(this.asset('layout').data, this.hiddenSlots()),
+      // the scale assets (typography, density, sizing): every size the stylesheet and components read; defaults when an app has none
+      ...scaleThemeVars({ typography: this.assetOrNull('typography' as AssetType)?.data, density: this.assetOrNull('density' as AssetType)?.data, sizing: this.assetOrNull('sizing' as AssetType)?.data }),
+      ...layoutVars(this.inspectorLayout(this.asset('layout').data), this.hiddenSlots()),
       ...bannerVars(this.assetOrNull('banner')?.data, this.slotHidden('banner')),
       // branding package (optional): palette slots as --fx-brand-1/2/3, the brand name, the accent when it asks for it
       ...brandingVars(this.assetOrNull('branding' as AssetType)?.data ?? { brand: { name: '' }, marks: {} }),
@@ -1928,6 +2114,16 @@ export class AxfRuntime {
       else this.toast(`Unknown asset type "${type}".`, 'warning');
     }, { label: 'Swap asset', params: true });
     a.register('nav', ([view]) => view && this.navigate(view), { label: 'Navigate', params: true });
+    // Help mode (engines/help.ts): help.mode[:on|off|toggle] · help.intros.reset · help.intro (replay this screen's intro) · help.explain:<help id>
+    a.register(HELP_ACTIONS.mode, ([v]) => this.setHelpMode(v === 'on' ? true : v === 'off' ? false : null), { label: 'Help mode (tooltips everywhere)', params: true });
+    a.register(HELP_ACTIONS.resetIntros, () => { this.resetHelpIntros(); this.toast('Screen intros will show again, once per screen.', 'success', 'Help mode'); }, { label: 'Show the screen intros again' });
+    a.register('help.intro', () => {
+      if (!introFor(this.helpIndex(), this.state.view)) return this.toast('This screen has no intro yet.', 'info', 'Help mode');
+      if (!this.helpMode()) this.settings.set(HELP_MODE_KEY, true);
+      this.helpReplay = this.state.view;
+      this.set({});
+    }, { label: 'Replay this screen\'s intro' });
+    a.register(HELP_ACTIONS.explain, ([id]) => this.explainHelp(id || null), { label: 'Explain a control (What is this?)', params: true });
     a.register('dialog', ([id, ...rest]) => id && this.openDialog(id, rest.length ? { arg: rest.join(':') } : undefined), { label: 'Open dialog', params: true });
     a.register('toast', ([kind = 'info', ...msg]) => this.toast(msg.join(':') || 'Hello from AmberX AXF', kind as Toast['kind']), { label: 'Show toast', params: true });
     a.register('role', ([id]) => id && this.setRole(id), { label: 'Switch role', params: true });
@@ -1980,6 +2176,7 @@ export class AxfRuntime {
     // No `requires`: these must work while the lock greys out every assets.swap control (setAppearanceLocked checks the role).
     const turn = (arg: string | undefined, cur: boolean) => (arg === 'on' ? true : arg === 'off' ? false : !cur);
     a.register('appearance.lock', ([v]) => { this.setAppearanceLocked(turn(v, this.appearanceLocked())); }, { label: 'Lock the look', params: true });
+    a.register('inspector', ([v]) => { this.setInspectorShown(turn(v, this.inspectorShown())); }, { label: 'Active assets pane', params: true });
     a.register('appearance.hub', ([v]) => { this.setAppearanceFollowing(turn(v, this.appearanceFollowing())); }, { label: 'Read the look from axHub', params: true });
     a.register('asset.json', ([type, id]) => this.openDialog('asset-json', { type, id }), { label: 'View asset JSON', params: true });
     a.register('asset.copy', ([type, id]) => {
@@ -2030,4 +2227,10 @@ export function createAxf(opts: AxfRuntimeOptions): AxfRuntime {
   // Expose the runtime as a cross-application API (devtools, MCP bridges, other AmberX AXF apps in the page).
   (globalThis as unknown as { AXF?: AxfRuntime }).AXF = rt;
   return rt;
+}
+
+/** Two source states that say the same thing (status, version, reason, retry): re-setting one would only re-render. */
+function sameSourceState(a: AppearanceSourceState | null | undefined, b: AppearanceSourceState): boolean {
+  if (!a || a.status !== b.status) return false;
+  return JSON.stringify(a) === JSON.stringify(b);
 }

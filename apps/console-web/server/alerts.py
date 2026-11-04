@@ -491,7 +491,7 @@ class AlertHub:
         return False, "; ".join(errors) or ("every device's subscription had expired" if gone else "nothing sent")
 
     def test(self, channel: str) -> tuple[bool, str]:
-        alert = {"key": f"test:{channel}", "title": "Test alert from the AXF Dev Console", "body": "If you can read this, alerts reach this device.", "severity": "info", "source": "alerts", "link": ""}
+        alert = {"key": f"test:{channel}", "title": "Test alert from GizmoX AI Studio", "body": "If you can read this, alerts reach this device.", "severity": "info", "source": "alerts", "link": ""}
         if channel == "ntfy":
             return self.send_ntfy(alert)
         if channel == "webpush":

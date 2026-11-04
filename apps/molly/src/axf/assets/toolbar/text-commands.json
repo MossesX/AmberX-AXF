@@ -1,0 +1,63 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "text-commands",
+  "name": "Text Commands",
+  "version": "1.0.0",
+  "description": "Centered text-only command strip for quick navigation.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "variant": "labels",
+    "align": "center",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "go",
+        "items": [
+          {
+            "id": "go-home",
+            "icon": "home",
+            "label": "Home",
+            "action": "nav:home"
+          },
+          {
+            "id": "go-components",
+            "icon": "grid",
+            "label": "Components",
+            "action": "nav:components"
+          },
+          {
+            "id": "go-assets",
+            "icon": "layers",
+            "label": "Assets",
+            "action": "nav:assets"
+          },
+          {
+            "id": "go-account",
+            "icon": "user",
+            "label": "Account",
+            "action": "nav:account"
+          }
+        ]
+      },
+      {
+        "id": "look",
+        "items": [
+          {
+            "id": "random",
+            "icon": "shuffle",
+            "label": "Randomize",
+            "action": "assets.random"
+          },
+          {
+            "id": "reset",
+            "icon": "refresh",
+            "label": "Reset",
+            "action": "assets.reset"
+          }
+        ]
+      }
+    ]
+  }
+}

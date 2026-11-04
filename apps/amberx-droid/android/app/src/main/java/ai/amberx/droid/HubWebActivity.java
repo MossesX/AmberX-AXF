@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -18,7 +17,8 @@ import android.widget.TextView;
 
 /**
  * A hub page (sign-in, an approval) in a web view locked to the hub's origin: no file or content access, any link off
- * the hub is refused, the window is never captured (FLAG_SECURE). Since axHub decision #96 the hub's pages are the
+ * the hub is refused, and the window is hidden from recordings (FLAG_SECURE) only when "Hide sensitive screens from
+ * recordings" is on (it can hold the hub sign-in password; SecureScreen, Oct 31 2026). Since axHub decision #96 the hub's pages are the
  * AXHub web app on the hub's own address (an approval link lands on `/#/approvals/<id>`), so JavaScript and DOM storage
  * are on — still only for the hub's origin. Deciding an approval happens there, through the hub's JSON API under its
  * Origin and CSRF checks. The session cookie it gets lands in Android's cookie store, which the watcher and `hubGet` read.
@@ -31,7 +31,7 @@ public class HubWebActivity extends Activity {
     @Override
     protected void onCreate(Bundle state) {
         super.onCreate(state);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        SecureScreen.apply(this, true); // a hub page can be the sign-in (password) screen
         String url = getIntent().getStringExtra(EXTRA_URL);
         String hub = HubRules.normalize(url);
         if (hub == null) { finish(); return; }

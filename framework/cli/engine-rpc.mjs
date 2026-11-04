@@ -18,7 +18,7 @@ import { installLibrary, listLibraries, writeLibrariesIndex } from './libraries.
 import { importUiLibrary, listPortedKits } from './ui-port.mjs';
 import { compileLibrary, listLibraryTemplates, newLibrary, portLibrary, removeLibrary } from './library-templates.mjs';
 import { buildPlan, deleteFeature, loadPlan, saveMedia, upsertFeature } from './plan.mjs';
-import { queueView, reorderQueue, reprocessQueue, stepQueue, stepsQueue, syncBuildQueue } from './build-queue.mjs';
+import { buildsSummary, queueView, reorderQueue, reprocessQueue, stepQueue, stepsQueue, syncBuildQueue } from './build-queue.mjs';
 import { actPending, loadPending } from './pending.mjs';
 import { dataPath } from './persist.mjs';
 import { RULES_REL, baseRules, checkProject, findProjects, loadRules, validateProjectManifest, validateProjectRules } from './project.mjs';
@@ -35,7 +35,7 @@ const raw = argJson ?? (op && process.argv.length === 3 ? '{}' : readStdin() || 
 const req = JSON.parse(raw);
 const b = { ...req, op: op ?? req.op };
 const lines = [];
-/** What a new app starts with besides its slots (framework/app-defaults.json) plus what the chrome can do: for designers (Build Pilot). */
+/** What a new app starts with besides its slots (framework/app-defaults.json) plus what the chrome can do: for designers. */
 function appDefaultsView() {
   const types = assetSpec.types;
   const widgetTypes = Object.keys(types).filter((t) => types[t].widget === true);
@@ -109,9 +109,10 @@ function run() {
       const r = checkProject(safeDir(b.dir ?? '.'));
       return { dir: r.rel, manifest: r.manifest, validation: r.validation };
     }
-    case 'pending': return loadPending();
+    // catch-up first: edits that bypassed both writers (a session writing the hub copy, a git pull of the tracker)
+    case 'pending': return loadPending(); // a projection of the builds store: nothing to sync
     case 'pending-act': { const r = actPending(b.change ?? {}); r.log.forEach(log); return { state: r.state, item: r.item }; }
-    case 'plan': return loadPlan();
+    case 'plan': return { ...loadPlan(), builds: buildsSummary() }; // the store's builds next to the plan (auto-land s5)
     case 'plan-rebuild': { const p = buildPlan(); log(`plan rebuilt: ${p.features.length} features`); return { count: p.features.length }; }
     case 'plan-upsert': { const f = upsertFeature(b.feature, b.note); log(`plan: ${f.id} saved (${f.status})`); syncAfter(); return { feature: f }; }
     case 'plan-delete': { deleteFeature(b.id); log(`plan: ${b.id} deleted`); return { id: b.id }; }

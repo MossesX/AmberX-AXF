@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "sandstone",
+  "name": "Sandstone",
+  "version": "1.0.0",
+  "description": "Sun-baked sand with a terracotta accent; friendly without being loud.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "warm"
+  ],
+  "data": {
+    "scheme": "light",
+    "tokens": {
+      "bg": "#f8f6f4",
+      "surface": "#fefefd",
+      "surface2": "#fbfaf9",
+      "surface3": "#f0ece8",
+      "text": "#2d2116",
+      "muted": "#84705c",
+      "border": "#e5ded7",
+      "accent": "#c54c20",
+      "accentText": "#ffffff",
+      "accentSoft": "rgba(197,76,32,0.1)",
+      "danger": "#ce2732",
+      "success": "#218c5a",
+      "warning": "#b87614",
+      "info": "#1686b6",
+      "focus": "#c54c20",
+      "shadow": "rgba(50,36,21,0.12)"
+    }
+  }
+}

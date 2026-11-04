@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "container",
+  "id": "calm-reader",
+  "name": "Calm Reader container",
+  "version": "1.0.0",
+  "description": "Calm Reader: outline with a plain header.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "calm",
+    "reading"
+  ],
+  "data": {
+    "variant": "outline",
+    "header": "plain",
+    "padding": "lg",
+    "elevation": 0,
+    "collapsible": false
+  }
+}

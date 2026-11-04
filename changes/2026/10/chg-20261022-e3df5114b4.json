@@ -1,0 +1,57 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261022-e3df5114b4",
+  "createdAt": "2026-10-22T02:00:00Z",
+  "updatedAt": "2026-10-22T02:58:24.605Z",
+  "kind": "build",
+  "title": "Build banner shows every working session (merge build-manager + patches-web)",
+  "asked": "Every session doing any work registers in the banner. Merge feat/patches-banners-bm (Live from every session) and rebuild/patches-web-settings-notify (apps/patches-web) into main, then redeploy the console and patches-web.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "claude.ai",
+    "where": "cloud"
+  },
+  "steps": [
+    {
+      "text": "Merge feat/patches-banners-bm into main",
+      "state": "done",
+      "note": "conflicts in _claude/rules/RULES.md, plugin-lifecycle.mjs, pending.json resolved"
+    },
+    {
+      "text": "Merge rebuild/patches-web-settings-notify (apps/patches-web) into main",
+      "state": "done",
+      "note": "WebAppView.kt conflict resolved: main's blank-tab fix kept, embed bridge re-applied"
+    },
+    {
+      "text": "Run build-manager, codebase-changes and console checks",
+      "state": "done",
+      "note": "83 + 38 + 140 checks, console typecheck/build, menu-reach 168, theme 292, patches-web build + 29"
+    },
+    {
+      "text": "Push main and redeploy axf-console + patches-web",
+      "state": "failed",
+      "note": "pushed 7f15822; axf-console picked it up but keeps restarting every few minutes; patches-web still on its 7-hour-old image. Update logs need an axHub approval."
+    }
+  ],
+  "result": {
+    "state": "partial",
+    "summary": "Both branches merged into main (7f15822) with all checks green. The console rebuilt from main but is cycling; patches-web has not picked the commit up. Needs the update logs (axHub approval) to finish.",
+    "branch": "main",
+    "commits": [
+      {
+        "sha": "7f15822"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-22T02:58:24.604Z",
+    "by": "console"
+  },
+  "state": "partial",
+  "status": "done"
+}

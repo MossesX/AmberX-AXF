@@ -86,7 +86,7 @@ export function repoSources(root) {
   add(join(root, 'CLAUDE.md'), 'instructions');
   add(join(root, 'project.manifest.json'), 'manifest');
   add(join(root, '.mcp.json'), 'mcp');
-  add(join(root, '.claude/settings.json'), 'claude-settings');
+  add(join(root, '.claude/settings.json'), 'claude-code-settings');
   for (const p of walk(join(root, '.claude/commands'))) add(p, 'command');
   for (const p of walk(join(root, '.claude/skills'))) add(p, 'skill');
   for (const p of walk(join(root, '.claude/agents'))) add(p, 'agent');
@@ -217,7 +217,7 @@ export function defaultClaudeAi(manifest) {
   items.push(
     { id: 'axhub', kind: 'connector', name: 'axHub', url: 'https://axhub.amberxai.com/mcp', notes: 'Connector hub (list_services, describe_service, call, axhub.memory_*). Approvals at https://axhub.amberxai.com/auth/admin/approvals.', recreate: 'Settings → Connectors → Add custom connector → the URL; sign in with the hub (token AXHUB_MCP_TOKEN, never pasted in chat).' },
     { id: 'axf-console', kind: 'connector', name: 'AXF Dev Console MCP', url: 'https://console.amberxai.com/mcp', notes: '26 tools (pending_list, build_next, …); bearer = AXF_TOKEN.', recreate: 'Add as a custom connector, or reach it through axHub (it is axHub\'s first downstream service).' },
-    { id: 'github', kind: 'connector', name: 'GitHub (account MossesX)', url: 'https://github.com/apps/claude', notes: 'Repos MossesX/AmberX-AXF, axHub, Build-Pilot, xGallery.', recreate: 'Connect GitHub as MossesX and give the Claude GitHub app access to the repos.' },
+    { id: 'github', kind: 'connector', name: 'GitHub (account MossesX)', url: 'https://github.com/apps/claude', notes: 'Repos MossesX/AmberX-AXF, axHub, xGallery.', recreate: 'Connect GitHub as MossesX and give the Claude GitHub app access to the repos.' },
     { id: 'hostinger', kind: 'connector', name: 'Hostinger', url: '', notes: 'DNS for amberxai.com (rule: DNS is done by the session, logged in /projects/_shared/_data/dns/log.md).', recreate: 'Add the Hostinger connector; token from hPanel → Account → API.' },
     { id: 'memory', kind: 'memory', name: 'claude.ai memory', url: '', notes: 'Paste the account\'s memory (Settings → Capabilities → Memory) in the console so it travels with the kit.', recreate: 'Import with the memory import (claude.ai → Settings → Memory) from user/claude-ai/memory.md.' },
   );
@@ -416,7 +416,7 @@ ${order('memory')}
 ${order('spec')}
 6. Project manifests (no project is loaded or compiled without a valid one):
 ${order('manifest')}
-7. Claude Code project config: ${repo.filter((s) => ['claude-settings', 'command', 'skill', 'agent', 'mcp'].includes(s.role)).map((s) => `\`${s.path}\``).join(', ') || '(none)'}
+7. Claude Code project config: ${repo.filter((s) => ['claude-code-settings', 'command', 'skill', 'agent', 'mcp'].includes(s.role)).map((s) => `\`${s.path}\``).join(', ') || '(none)'}
 
 Full index with hashes: [FILES.md](FILES.md).
 
@@ -464,7 +464,6 @@ ${nested.join('\n')}
 ## Related repos
 
 - **MossesX/axHub** — connector hub at https://axhub.amberxai.com (one MCP server; holds \`/projects\` = the shared _claude and _data).
-- **MossesX/Build-Pilot** — plugin-driven app designer built on AXF.
 - **MossesX/xGallery** — standalone gallery (not on AXF).
 `;
 }
@@ -596,7 +595,7 @@ function setupMd(P, hosts, c) {
 Tick each line; say which ones still need Brett.
 
 ## A. Repo access
-- [ ] GitHub connected as \`MossesX\`; the Claude GitHub app has access to ${P.repo} (and axHub, Build-Pilot).
+- [ ] GitHub connected as \`MossesX\`; the Claude GitHub app has access to ${P.repo} (and axHub).
 - [ ] The new account works in ${P.repo} itself (claude.ai/code or the GitHub connector), not a new repo or a fork; \`git log -1\` is at or after \`${P.commit.slice(0, 12) || 'the kit commit'}\`.
 
 ## B. claude.ai Project
@@ -633,7 +632,7 @@ export const SESSION_RULES = [
   'One agent: no sub-agents, parallel workers or deep-research fan-outs unless Brett asks for one by name.',
   'Ask Brett with tap-to-pick choices; he works from his phone, so lead with the result and keep it short.',
   'No secrets anywhere (repo, _claude, _data, chat): ask him for values, never guess them.',
-  'Android work is on hold except Voice Vault and Patches app code.',
+  'Android work is on hold except Voice Vault and AmberX app code.',
 ];
 
 /** Gaps a new account should know about; editable in the console (Tools → Claude handoff → Handoff Session notes). */

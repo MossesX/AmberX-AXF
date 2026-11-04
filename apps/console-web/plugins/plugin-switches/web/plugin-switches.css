@@ -1,18 +1,18 @@
 /* Plugin switches. Theme tokens only, axp-plugin-switches prefix, shared is-* states. */
-.axp-plugin-switches { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.75); width: 100%; min-width: min(calc(var(--fx-font-size) * 26), 80vw); max-height: 70vh; min-width: 0; color: var(--fx-text) }
-.axp-plugin-switches__summary { margin: 0; color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14) }
-.axp-plugin-switches__empty { margin: 0; padding: calc(var(--fx-space) * 2); text-align: center; color: var(--fx-muted) }
-.axp-plugin-switches__notice { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); margin: 0; padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); font-size: calc(var(--fx-font-size) * 13 / 14) }
-.axp-plugin-switches__confirm { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.75); border: var(--fx-border-w) solid var(--fx-danger); border-radius: var(--fx-radius-md); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }
-.axp-plugin-switches__confirm-text { margin: 0; font-size: calc(var(--fx-font-size) * 13 / 14) }
+.axp-plugin-switches { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); width: 100%; min-width: min(calc(var(--fx-font-size) * 26), 80vw); max-height: 70vh; min-width: 0; color: var(--fx-text) }
+.axp-plugin-switches__summary { margin: 0; color: var(--fx-muted); font-size: var(--fx-type-root-sm) }
+.axp-plugin-switches__empty { margin: 0; padding: var(--fx-dens-gap-3xl); text-align: center; color: var(--fx-muted) }
+.axp-plugin-switches__notice { display: flex; align-items: center; gap: var(--fx-dens-gap-md); margin: 0; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); font-size: var(--fx-type-root-md) }
+.axp-plugin-switches__confirm { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-lg); border: var(--fx-border-w) solid var(--fx-danger); border-radius: var(--fx-radius-md); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-plugin-switches__confirm-text { margin: 0; font-size: var(--fx-type-root-md) }
 .axp-plugin-switches__list { list-style: none; margin: 0; padding: 0; overflow-y: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
-.axp-plugin-switches__row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--fx-space); min-height: var(--fx-row-h); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75) }
+.axp-plugin-switches__row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--fx-dens-gap-xl); min-height: var(--fx-row-h); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg) }
 .axp-plugin-switches__row + .axp-plugin-switches__row { border-top: var(--fx-border-w) solid var(--fx-border) }
 .axp-plugin-switches__row.is-self { opacity: var(--fx-opacity-disabled) }
-.axp-plugin-switches__text { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.15); min-width: 0 }
+.axp-plugin-switches__text { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); min-width: 0 }
 .axp-plugin-switches__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600 }
 .axp-plugin-switches__row:not(.is-active) .axp-plugin-switches__name { color: var(--fx-muted) }
-.axp-plugin-switches__note { color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 11 / 14) }
+.axp-plugin-switches__note { color: var(--fx-muted); font-size: var(--fx-type-root-xs) }
 .axp-plugin-switches__note.is-warn { color: var(--fx-warning) }
 .axp-plugin-switches__note.is-error { color: var(--fx-danger) }
 

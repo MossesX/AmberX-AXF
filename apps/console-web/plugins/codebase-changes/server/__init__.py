@@ -246,6 +246,8 @@ def activity_items(rows: list[dict[str, Any]], now: float | None = None) -> list
               "detail": (res or {}).get("summary") or r.get("doing") or steps.get("running") or r.get("asked") or "",
               "startedAt": r.get("startedAt") or r.get("createdAt"), "updatedAt": r.get("lastSeenAt") or r.get("updatedAt"),
               "by": r.get("model") or r.get("where") or None, "changeId": r["id"]}
+        if r.get("session"):
+            it["session"] = r["session"]  # the Activity banner folds it into that Claude Code session's row
         if state not in ("queued", "running", "waiting"):
             it["finishedAt"] = r.get("finishedAt") or r.get("updatedAt")
         if steps.get("total"):

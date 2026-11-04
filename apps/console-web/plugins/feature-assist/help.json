@@ -1,0 +1,81 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "feature-assist-help",
+  "name": "feature-assist help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:feature-assist. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:feature-assist",
+    "entries": [
+      {
+        "target": "mark-built",
+        "title": "Mark built",
+        "text": "Marks built. Part of Feature assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "feature-assistant",
+        "title": "Feature assistant",
+        "text": "Shows the “Feature assistant” part of this screen. Part of Feature assistant.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "draft-again",
+        "title": "Draft again",
+        "text": "Drafts again. Part of Feature assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "mark-partial",
+        "title": "Mark partial",
+        "text": "Marks partial. Part of Feature assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "build-with-mosses",
+        "title": "Build with Mosses",
+        "text": "Builds with Mosses. Part of Feature assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "plan-it",
+        "title": "Plan it",
+        "text": "Plans it. Part of Feature assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "approve-plan-and-order",
+        "title": "Approve plan and order",
+        "text": "Approves plan and order. It runs straight away. Part of Feature assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "plan-again",
+        "title": "Plan again",
+        "text": "Plans again. Part of Feature assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "open-the-plan",
+        "title": "Open the Plan",
+        "text": "Opens the Plan. Part of Feature assistant.",
+        "kind": "button",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

@@ -21,7 +21,10 @@
         "style-package": "gizmo-console",
         "toolbar": "developer-ops",
         "nav-menu": "gizmo-console",
-        "context-menu": "developer-tools"
+        "context-menu": "developer-tools",
+        "typography": "compact",
+        "density": "compact",
+        "sizing": "compact"
       },
       "spacing": "tight"
     }

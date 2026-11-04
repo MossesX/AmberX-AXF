@@ -15,13 +15,19 @@
  *   axf list [dir]              list assets by slot
  *   axf new-asset <type> <id> [--from <id>] [--name "Name"] [--dir .]
  *   axf schemas                 regenerate JSON Schemas in framework/schemas/json
+ *   axf repo create <name> [--private|--public] [--description "…"]
+ *                               new GitHub repo with the GitHub App's user token (framework/cli/github-app.mjs)
+ *   axf shot <file> --name "…" --app A --screen S [--group "<name>"] [--source <ui-review-item@1 source>] [--by type:id]
+ *                               save a non-review screenshot to UI Review → Screenshots (framework/cli/shot.mjs)
  *   axf templates               list app templates (react-ts, android-compose, …)
  *   axf new-module <name> [--label "Name"] [--capabilities a,b] [--depends-on id,id] [--no-compose]
  *                               scaffold framework/android/lib-<name> (Android port)
  *   axf new-demo <library>      create apps/demo-<library>, an Android app showcasing one library
  *   axf modules                 list Android framework modules
  *   axf boilerplates            list boilerplates (framework/boilerplates)
- *   axf dev [dir] [--port 7070] [--framework]   live-reload server: watches assets, pushes changes to devices
+ *   axf dev [dir] [--port 7070] [--host 0.0.0.0] [--framework]   live-reload server: watches assets, pushes changes to devices
+ *   axf focus <app> [route] [selector] [--note "…"]   Watch live: the screen + element this session is changing
+ *                               (writes .axf-focus.json; the console's Watch live popup scrolls to and outlines it)
  *   axf serve [--port 7080] [--token secret]    HTTP driver for the build engine (the Dev Console / VPS)
  *   axf import-ui --name "Cupertino" --kit cupertino --source git --url https://github.com/x/y [--version 1.0] [--covers BUTTON,CHIP] [--apply apps/my-app]
  *                               port a third-party UI library: clone → refactor to AXF tokens → save as kit-<id> → apply to a project
@@ -35,6 +41,16 @@
  *   axf install <library> [appDir] [--param key=value …] [--yes]
  *                               add a library to an app: interactive wizard asks for the required parameters,
  *                               then writes manifest + gradle + App.kt + a generated <Name>Setup.kt
+ *   axf control <op> <target> …  control@1 (framework/spec/CONTROL.md): tokens, AmberX items/lists, plans, builds
+ *   axf token <set> <op> …       axf token layout set navWidth 200 · axf token theme reset accent · axf token slots set color-theme <id>
+ *   axf note|todo|task|list|plan|build <op|verb> …   axf todo add "Buy milk" · axf todo done <id> · axf build step <id> s3
+ *   axf pass grant [minutes] [--scope theme|style|layout|tokens]   timed veto pass, everything by default (Brett approves once)
+ *                               (needs a plugin providing service:control@1, the Token control plugin; axf control help)  <!-- axf-plugin:token-control -->
+ *   axf plugins [plugin]        every plugin's commands and reads (or one plugin's help)
+ *   axf <plugin> <command> [--field value]…   run a plugin command or read (also axf plugin <plugin> <command>; needs
+ *                               a plugin providing service:plugin-commands@1, the Plugin commands plugin)  <!-- axf-plugin:plugin-commands -->
+ *   axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | where | list [kind] [words] | clients
+ *                               load a screen in Brett's open console (needs a plugin providing service:console-commands@1)
  */
 import { join, relative } from 'node:path';
 import { importUiLibrary, listPortedKits } from './ui-port.mjs';
@@ -45,6 +61,55 @@ import { FRAMEWORK_DIR, FRAMEWORK_VERSION, appOptions, init, listBoilerplates, l
 import { checkProject } from './project.mjs';
 
 const [cmd, ...rest] = process.argv.slice(2);
+
+// control@1 commands go to the plugin that provides the capability (never by folder name). `axf list <dir>` (assets)
+// stays as it was: `axf list` routes to control only when its next word is a control op or a list verb.
+const CONTROL_WORDS = new Set(['control', 'token', 'tokens', 'note', 'todo', 'task', 'plan', 'build', 'pass']);
+const CONTROL_LIST_WORDS = new Set(['list', 'get', 'set', 'reset', 'add', 'remove', 'act', 'move', 'reorder', 'rename']);
+if (CONTROL_WORDS.has(cmd) || (cmd === 'list' && CONTROL_LIST_WORDS.has(rest[0]))) {
+  const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
+  const { join: joinPath } = await import('node:path');
+  const { pathToFileURL } = await import('node:url');
+  const plugins = joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps/console-web/plugins');
+  const dir = (exists(plugins) ? readdirSync(plugins) : []).sort().find((d) => {
+    try { return JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')).provides?.includes('service:control@1') && exists(joinPath(plugins, d, 'control.mjs')); } catch { return false; }
+  });
+  if (!dir) { console.error('no plugin provides control@1 (install the Token control plugin)'); process.exit(1); }
+  const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'control.mjs')).href);
+  process.exit(await main([cmd, ...rest]));
+}
+// console commands (control@1 console domain) go to the plugin that provides console-commands@1 (never by folder name).
+if (cmd === 'console') {
+  const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
+  const { join: joinPath } = await import('node:path');
+  const { pathToFileURL } = await import('node:url');
+  const plugins = joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps/console-web/plugins');
+  const dir = (exists(plugins) ? readdirSync(plugins) : []).sort().find((d) => {
+    try { return JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')).provides?.includes('service:console-commands@1') && exists(joinPath(plugins, d, 'console.mjs')); } catch { return false; }
+  });
+  if (!dir) { console.error('no plugin provides console-commands@1 (install the Console commands plugin)'); process.exit(1); }
+  const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'console.mjs')).href);
+  process.exit(await main(rest));
+}
+// plugin commands (control@1 plugins domain): `axf plugins [plugin]`, `axf plugin <plugin> <command> …`, and
+// `axf <plugin> <command> …` for any console plugin whose folder isn't an axf command; they go to the plugin that
+// provides plugin-commands@1 (never by folder name).
+const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas']);
+{
+  const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
+  const { join: joinPath } = await import('node:path');
+  const plugins = joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps/console-web/plugins');
+  const isPlugin = cmd && !AXF_COMMANDS.has(cmd) && /^[a-z0-9][a-z0-9-]+$/.test(cmd) && exists(joinPath(plugins, cmd, 'plugin.json'));
+  if (cmd === 'plugins' || cmd === 'plugin' || isPlugin) {
+    const { pathToFileURL } = await import('node:url');
+    const dir = (exists(plugins) ? readdirSync(plugins) : []).sort().find((d) => {
+      try { return JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')).provides?.includes('service:plugin-commands@1') && exists(joinPath(plugins, d, 'commands.mjs')); } catch { return false; }
+    });
+    if (!dir) { console.error('no plugin provides plugin-commands@1 (install the Plugin commands plugin)'); process.exit(1); }
+    const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'commands.mjs')).href);
+    process.exit(await main([cmd, ...rest]));
+  }
+}
 const flags = {};
 const args = [];
 for (let i = 0; i < rest.length; i++) {
@@ -166,8 +231,19 @@ try {
     }
     case 'dev': {
       const { startDevServer } = await import('./dev-server.mjs');
-      startDevServer({ dir: args[0] ?? '.', port: Number(flags.port ?? 7070), framework: !!flags.framework });
+      startDevServer({ dir: args[0] ?? '.', port: Number(flags.port ?? 7070), host: flags.host ?? '0.0.0.0', framework: !!flags.framework });
       await new Promise(() => {});
+      break;
+    }
+    case 'focus': {
+      // Watch live: the session says which screen and element it is working on (.axf-focus.json in the checkout).
+      const { writeFocus, TARGETS } = await import('./watch-live.mjs');
+      const [app, route = '', selector = ''] = args;
+      const { execSync } = await import('node:child_process');
+      let top = '.';
+      try { top = execSync('git rev-parse --show-toplevel', { encoding: 'utf8' }).trim(); } catch { /* not a checkout */ }
+      const { focus, known } = writeFocus(flags.worktree ?? top, { app, route, selector, note: typeof flags.note === 'string' ? flags.note : '' });
+      console.log(c.ok(`✓ focus → ${focus.app} ${focus.route || '/'} ${focus.selector || '(whole screen)'}`) + (known ? '' : c.warn(`  "${app}" is not a preview target (${TARGETS.map((t) => t.app).join(', ')})`)));
       break;
     }
     case 'import-ui': {
@@ -267,13 +343,28 @@ try {
       for (const m of listModules()) console.log(`${c.b(m.name.padEnd(24))} ${c.dim(m.kind.padEnd(10))} ${m.description}`);
       break;
     }
+    case 'repo': {
+      // github-app@1: new repos with the GitHub App's user token (installation tokens can't create repos on a personal account)
+      const [sub, name] = args;
+      if (sub !== 'create' || !name) throw new Error('Usage: axf repo create <name> [--private (default) | --public] [--description "…"]');
+      const { appDir, createRepo } = await import('./github-app.mjs');
+      const r = await createRepo(appDir(), { name, private: !flags.public, description: typeof flags.description === 'string' ? flags.description : '' });
+      console.log(c.ok(`✓ ${r.created ? 'created' : 'already there'}: ${r.fullName} (${r.private ? 'private' : 'public'}) ${r.htmlUrl}`));
+      break;
+    }
+    case 'shot': {
+      // UI Review → Screenshots (not the approve / reject queue): framework/cli/shot.mjs, raw arguments passed through
+      const { main: shot } = await import('./shot.mjs');
+      await shot(process.argv.slice(3));
+      break;
+    }
     case 'schemas': {
       const files = writeSchemas();
       console.log(c.ok(`✓ wrote ${files.length} JSON Schemas`));
       break;
     }
     default:
-      console.log(`AmberX AXF ${FRAMEWORK_VERSION}\n\nCommands: init, validate, list, new-asset, schemas`);
+      console.log(`AmberX AXF ${FRAMEWORK_VERSION}\n\nCommands: init, validate, list, new-asset, schemas, plugins, <plugin> <command>`);
   }
 } catch (e) {
   console.error(c.bad(`✗ ${e.message}`));

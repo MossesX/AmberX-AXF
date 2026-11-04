@@ -1,0 +1,221 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "context-menu-designer-help",
+  "name": "context-menu-designer help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:context-menu-designer. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:context-menu-designer",
+    "entries": [
+      {
+        "target": "show-every-owner",
+        "title": "Show every owner",
+        "text": "Shows every owner. Part of Context menu designer.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "ready-made-pages-dialogs-and-settings",
+        "title": "Ready-made pages, dialogs and settings",
+        "text": "Turns “Ready-made pages, dialogs and settings” on or off. It takes effect straight away and is remembered. Part of Context menu designer.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "actions-that-need-arguments",
+        "title": "Actions that need arguments",
+        "text": "Turns “Actions that need arguments” on or off. It takes effect straight away and is remembered. Part of Context menu designer.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "stand-ins-with-no-handler-yet",
+        "title": "Stand-ins with no handler yet",
+        "text": "Turns “Stand-ins with no handler yet” on or off. It takes effect straight away and is remembered. Part of Context menu designer.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "only-what-my-role-can-run",
+        "title": "Only what my role can run",
+        "text": "Turns “Only what my role can run” on or off. It takes effect straight away and is remembered. Part of Context menu designer.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "by-source",
+        "title": "By source",
+        "text": "Shows the “By source” part of this screen. Part of Context menu designer.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "action-id",
+        "title": "Action id",
+        "text": "Shows the “Action id” part of this screen. Part of Context menu designer.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "back-to-the-defaults",
+        "title": "Back to the defaults",
+        "text": "Shows “Back to the defaults”. Part of Context menu designer.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "open-the-actions-window",
+        "title": "Open the Actions window",
+        "text": "Opens the Actions window. Part of Context menu designer.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "font-weight",
+        "title": "Font weight",
+        "text": "Where you set “Font weight”. Change it and the app uses the new value. Part of Context menu designer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "font-style",
+        "title": "Font style",
+        "text": "Where you set “Font style”. Change it and the app uses the new value. Part of Context menu designer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "chunk",
+        "title": "Chunk",
+        "text": "Where you set “Chunk”. Change it and the app uses the new value. Part of Context menu designer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "label",
+        "title": "Label",
+        "text": "Where you set “Label”. Change it and the app uses the new value. Part of Context menu designer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "action",
+        "title": "Action",
+        "text": "Where you set “Action”. Change it and the app uses the new value. Part of Context menu designer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "pick",
+        "title": "Pick",
+        "text": "Shows “Pick”. Part of Context menu designer.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "shortcut",
+        "title": "Shortcut",
+        "text": "Where you set “Shortcut”. Change it and the app uses the new value. Part of Context menu designer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "live-list",
+        "title": "Live list",
+        "text": "Where you set “Live list”. Change it and the app uses the new value. Part of Context menu designer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "items",
+        "title": "· items",
+        "text": "Shows “· items”. Part of Context menu designer.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "load-into-the-designer",
+        "title": "Load into the designer",
+        "text": "Loads into the designer. Part of Context menu designer.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "keep-other-targets-from",
+        "title": "Keep other targets from",
+        "text": "Where you set “Keep other targets from”. Change it and the app uses the new value. Part of Context menu designer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "icons",
+        "title": "Icons",
+        "text": "Turns “Icons” on or off. It takes effect straight away and is remembered. Part of Context menu designer.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "tap-again-to-delete",
+        "title": "Tap again to delete",
+        "text": "Shows “Tap again to delete”. Part of Context menu designer.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "save-as-chunk",
+        "title": "Save as chunk",
+        "text": "Saves as chunk. Nothing is kept until you tap it. Part of Context menu designer.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "inherit-the-menus-style",
+        "title": "Inherit the menu’s style",
+        "text": "Turns “Inherit the menu’s style” on or off. It takes effect straight away and is remembered. Part of Context menu designer.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "actions",
+        "title": "Actions",
+        "text": "Shows “Actions”. Part of Context menu designer.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "insert",
+        "title": "Insert",
+        "text": "Shows “Insert”. Part of Context menu designer.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "open-the-designer",
+        "title": "Open the designer",
+        "text": "Opens the designer. Part of Context menu designer.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "action:context-menu-designer.open",
+        "title": "Design this menu",
+        "text": "Opens the design this menu. Part of Context menu designer.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "context-menu-designer",
+        "title": "Context menu designer",
+        "text": "Shows the “Context menu designer” part of this screen. Part of Context menu designer.",
+        "kind": "tab",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

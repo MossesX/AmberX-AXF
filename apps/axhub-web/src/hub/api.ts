@@ -7,7 +7,7 @@
  * holds can decide a call. Redirects are refused and replies are never cached.
  */
 import { useEffect, useSyncExternalStore } from 'react';
-import { errorText } from './core';
+import { errorText, keepSessionOnFailure, sameJson } from './core';
 import { HUB } from './useHub';
 
 export interface HubUser {
@@ -69,7 +69,14 @@ export function refreshSession(): Promise<HubSession | null> {
     const r = await request('GET', '/auth/api/session');
     loading = null;
     const s = r.json as HubSession | null;
-    if (r.status === 200 && s && typeof s.signedIn === 'boolean') { emit({ phase: 'ready', session: s }); return s; }
+    if (r.status === 200 && s && typeof s.signedIn === 'boolean') {
+      // The same session again (every tab-back re-read) is not news: no re-render of every page under the gate.
+      if (state.phase === 'ready' && sameJson(state.session, s)) return state.session;
+      emit({ phase: 'ready', session: s });
+      return s;
+    }
+    // A blip while signed in keeps the page; the next read (or the next write's own check) tries again.
+    if (keepSessionOnFailure(state.phase, r.status)) return state.phase === 'ready' ? state.session : null;
     // A hub that hasn't been updated yet has no /auth/api: say so, its own pages still work meanwhile.
     emit({ phase: 'error', error: r.status === 404 ? OLD_HUB : errorText(r.status, r.json) });
     return null;

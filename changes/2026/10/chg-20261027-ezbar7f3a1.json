@@ -1,0 +1,27 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261027-ezbar7f3a1",
+  "createdAt": "2026-10-27T13:30:00.000Z",
+  "updatedAt": "2026-10-27T13:30:00.000Z",
+  "kind": "build",
+  "title": "Toolbar attach + plugin binding; ezgrid and ezfilter on Pending builds",
+  "asked": "Make the Pending builds sort row a toolbar asset 'ezgrid' and the status count buttons a toolbar asset 'ezfilter' (icon, text, corner count badge), both attached to the pending list. Toolbar asset type gains attachTo (any element: grid, chart, image...) so its actions apply to the attached element, and a plugin field so the toolbar's settings show in the plugin's settings; plugin toolbars must declare it's a plugin toolbar, which plugin and which element or they don't validate. Validated with Pydantic.",
+  "repos": ["MossesX/AmberX-AXF"],
+  "model": "opus",
+  "who": { "where": "claude-ai", "host": "claude.ai cloud workspace" },
+  "surface": "claude-ai",
+  "status": "running",
+  "buildRef": { "kind": "pending", "id": "ezbar-toolbars" },
+  "estimateMin": 60,
+  "estimateCost": 8.4,
+  "areas": ["framework/schemas", "framework/core", "framework/react", "apps/console-web/src/views", "apps/console-web/assets"],
+  "branch": "claude/ezbar-toolbars",
+  "startedAt": "2026-10-27T13:30:00.000Z",
+  "lastSeenAt": "2026-10-27T13:30:00.000Z",
+  "doing": "Reading the toolbar asset type and the Pending builds view",
+  "steps": [
+    { "text": "Toolbar asset type: attachTo + plugin binding, validated (schema, TS, Pydantic)", "state": "running" },
+    { "text": "ezgrid + ezfilter assets, wired into Pending builds", "state": "queued" },
+    { "text": "Validate, typecheck, tests, PR", "state": "queued" }
+  ]
+}

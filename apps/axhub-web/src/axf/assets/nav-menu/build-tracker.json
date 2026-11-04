@@ -1,0 +1,63 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "build-tracker",
+  "name": "Build Tracker",
+  "version": "1.0.0",
+  "description": "Build Tracker: build and task tracking. Lists the pages it can; each app shows the ones it has. Pairs with the Focused behaviour theme.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:focused"
+  ],
+  "data": {
+    "style": "list",
+    "sections": [
+      {
+        "label": "Builds",
+        "items": [
+          {
+            "id": "plan",
+            "label": "Plan",
+            "icon": "list",
+            "view": "plan"
+          },
+          {
+            "id": "pending",
+            "label": "Pending builds",
+            "icon": "clock",
+            "view": "pending"
+          },
+          {
+            "id": "build",
+            "label": "Build queue",
+            "icon": "hammer",
+            "view": "build"
+          },
+          {
+            "id": "tracker",
+            "label": "Tracker",
+            "icon": "chart",
+            "view": "tracker"
+          }
+        ]
+      },
+      {
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "icon": "home",
+            "view": "home"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
+          }
+        ]
+      }
+    ],
+    "density": "compact"
+  }
+}

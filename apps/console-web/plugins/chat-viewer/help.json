@@ -1,0 +1,277 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "chat-viewer-help",
+  "name": "chat-viewer help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:chat-viewer. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:chat-viewer",
+    "entries": [
+      {
+        "target": "chat-viewer",
+        "title": "Chat viewer",
+        "text": "Its settings: where sessions come from, voices, how often it checks.",
+        "kind": "tab"
+      },
+      {
+        "target": "check-for-updates",
+        "title": "Check for updates",
+        "text": "Looks for new sessions now instead of waiting.",
+        "kind": "button"
+      },
+      {
+        "target": "import-export",
+        "title": "Import export",
+        "text": "Imports export. Part of Chat viewer.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "mark-all-read",
+        "title": "Mark all read",
+        "text": "Clears the unread marks on every session.",
+        "kind": "button"
+      },
+      {
+        "target": "back-to-every-session",
+        "title": "Back to every session",
+        "text": "Back to the list.",
+        "kind": "button"
+      },
+      {
+        "target": "copy-the-transcript",
+        "title": "Copy the transcript",
+        "text": "Copies the whole session as text.",
+        "kind": "button"
+      },
+      {
+        "target": "export-as-markdown",
+        "title": "Export as Markdown",
+        "text": "Saves the session as a Markdown file.",
+        "kind": "button"
+      },
+      {
+        "target": "export-as-text",
+        "title": "Export as text",
+        "text": "Saves the session as a plain text file.",
+        "kind": "button"
+      },
+      {
+        "target": "audio",
+        "title": "Audio",
+        "text": "Turn the session into audio: you and Amber in two voices.",
+        "kind": "tab"
+      },
+      {
+        "target": "tool-calls",
+        "title": "Tool calls",
+        "text": "Shows or hides the tool calls between the messages.",
+        "kind": "toggle"
+      },
+      {
+        "target": "voices-from",
+        "title": "Voices from",
+        "text": "Where you set “Voices from”. Change it and the app uses the new value. Part of Chat viewer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "bretts-voice",
+        "title": "Brett's voice",
+        "text": "Where you set “Brett's voice”. Change it and the app uses the new value. Part of Chat viewer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "ambers-voice",
+        "title": "Amber's voice",
+        "text": "Where you set “Amber's voice”. Change it and the app uses the new value. Part of Chat viewer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "bretts-voice-id",
+        "title": "Brett's voice id",
+        "text": "Where you set “Brett's voice id”. Change it and the app uses the new value. Part of Chat viewer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "ambers-voice-id",
+        "title": "Amber's voice id",
+        "text": "Where you set “Amber's voice id”. Change it and the app uses the new value. Part of Chat viewer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "from-message",
+        "title": "From message",
+        "text": "Where you set “From message”. Change it and the app uses the new value. Part of Chat viewer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "to-message",
+        "title": "To message",
+        "text": "Where you set “To message”. Change it and the app uses the new value. Part of Chat viewer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "set-up-free-voices",
+        "title": "Set up free voices",
+        "text": "Installs the free Piper voices on the server so audio costs nothing.",
+        "kind": "button"
+      },
+      {
+        "target": "make-audio",
+        "title": "Make audio",
+        "text": "Reads the session out loud into an audio file, one voice for you, one for Amber.",
+        "kind": "button"
+      },
+      {
+        "target": "delete-this-audio",
+        "title": "Delete this audio",
+        "text": "Deletes the audio file. The session stays.",
+        "kind": "button"
+      },
+      {
+        "target": "load-player",
+        "title": "Load player",
+        "text": "Loads the audio so you can play it here.",
+        "kind": "button"
+      },
+      {
+        "target": "check-every-minutes-only-on-load",
+        "title": "Check every (minutes, 0 = only on load)",
+        "text": "Where you set “Check every (minutes, 0 = only on load)”. Change it and the app uses the new value. Part of Chat viewer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "claude-code-session-folders-one-per-line-path-label",
+        "title": "Claude Code session folders (one per line: path | label)",
+        "text": "Where you set “Claude Code session folders (one per line: path | label)”. Change it and the app uses the new value. Part of Chat viewer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "headless-build-logs-one-glob-per-line",
+        "title": "Headless build logs (one glob per line)",
+        "text": "Where you set “Headless build logs (one glob per line)”. Change it and the app uses the new value. Part of Chat viewer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "hub-drop-folder-empty-the-hubs-sessions-claude-ai",
+        "title": "Hub drop folder (empty = the hub's sessions/claude-ai)",
+        "text": "Where you set “Hub drop folder (empty = the hub's sessions/claude-ai)”. Change it and the app uses the new value. Part of Chat viewer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "save-sources",
+        "title": "Save sources",
+        "text": "Saves where sessions are read from.",
+        "kind": "button"
+      },
+      {
+        "target": "back-to-defaults",
+        "title": "Back to defaults",
+        "text": "Shows “Back to defaults”. Part of Chat viewer.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "default-voices-from",
+        "title": "Default voices from",
+        "text": "Where you set “Default voices from”. Change it and the app uses the new value. Part of Chat viewer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "brett-piper",
+        "title": "Brett (Piper)",
+        "text": "Where you set “Brett (Piper)”. Change it and the app uses the new value. Part of Chat viewer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "amber-piper",
+        "title": "Amber (Piper)",
+        "text": "Where you set “Amber (Piper)”. Change it and the app uses the new value. Part of Chat viewer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "brett-openai",
+        "title": "Brett (OpenAI)",
+        "text": "Where you set “Brett (OpenAI)”. Change it and the app uses the new value. Part of Chat viewer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "amber-openai",
+        "title": "Amber (OpenAI)",
+        "text": "Where you set “Amber (OpenAI)”. Change it and the app uses the new value. Part of Chat viewer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "brett-elevenlabs-voice-id",
+        "title": "Brett (ElevenLabs voice id)",
+        "text": "Where you set “Brett (ElevenLabs voice id)”. Change it and the app uses the new value. Part of Chat viewer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "amber-elevenlabs-voice-id",
+        "title": "Amber (ElevenLabs voice id)",
+        "text": "Where you set “Amber (ElevenLabs voice id)”. Change it and the app uses the new value. Part of Chat viewer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "pause-between-turns-ms",
+        "title": "Pause between turns (ms)",
+        "text": "Where you set “Pause between turns (ms)”. Change it and the app uses the new value. Part of Chat viewer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "file-type",
+        "title": "File type",
+        "text": "Where you set “File type”. Change it and the app uses the new value. Part of Chat viewer.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "save-pause",
+        "title": "Save pause",
+        "text": "Saves pause. Nothing is kept until you tap it. Part of Chat viewer.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "column:msgs",
+        "title": "Msgs",
+        "text": "The “Msgs” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
+      },
+      {
+        "target": "column:project",
+        "title": "Project",
+        "text": "The “Project” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261025-a916e7a69f",
+  "createdAt": "2026-10-25T10:32:33.836Z",
+  "updatedAt": "2026-10-25T10:48:37.272Z",
+  "kind": "build",
+  "title": "Claude handoff: Handoff Session button",
+  "asked": "",
+  "repos": [
+    "mossesx/amberx-axf"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "user": "console",
+    "host": "vm"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Handoff Session button (claude-handoff 0.3.0) in PR #65",
+    "branch": "claude/project-thread-tpor29",
+    "commits": [
+      {
+        "sha": "ac23090b"
+      }
+    ],
+    "filesChanged": 12,
+    "tests": {
+      "claude-handoff test.mjs": {
+        "before": "77",
+        "after": "87"
+      },
+      "claude-handoff test.py": {
+        "before": "73",
+        "after": "80"
+      }
+    },
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-25T10:48:37.272Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "handoff-session-button"
+  },
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-25T10:32:33.836Z",
+  "finishedAt": "2026-10-25T10:38:26.976Z",
+  "lastSeenAt": "2026-10-25T10:32:39.471Z",
+  "estimate": {
+    "minutes": 60,
+    "costUsd": 8.4
+  },
+  "costEstimated": true,
+  "branch": "claude/project-thread-tpor29",
+  "areas": [
+    "apps/console-web/plugins/claude-handoff",
+    "_claude/handoff"
+  ],
+  "progress": 1.0
+}
