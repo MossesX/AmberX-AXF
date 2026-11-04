@@ -544,7 +544,7 @@
     "src/axf/core/engines/job-type-rules.mjs": "1b0185de2f27f003",
     "src/axf/core/engines/jumpmenu-rules.d.mts": "c403bf127d5a3078",
     "src/axf/core/engines/jumpmenu-rules.mjs": "6969b0928eb46176",
-    "src/axf/core/engines/jumpmenu.ts": "25ca9332a6712069",
+    "src/axf/core/engines/jumpmenu.ts": "3828e5489c0b2b86",
     "src/axf/core/engines/layout-rules.d.mts": "5520bdbfa896cefa",
     "src/axf/core/engines/layout-rules.mjs": "3ee84e8f57fe3927",
     "src/axf/core/engines/layout.ts": "41857e0379f37d1b",
@@ -825,6 +825,6 @@
     "src/axf/schemas/shared-assets.json": "7d6a5bb4f0b2a9c3",
     "src/axf/schemas/swarm.json": "35dd72b97f7a4a89",
     "src/axf/schemas/ui-review.json": "292b3b2d3482fbad",
-    "src/axf/ui/axf.css": "b10d4039dc5c9b15"
+    "src/axf/ui/axf.css": "5d8a6913c3b12403"
   }
 }

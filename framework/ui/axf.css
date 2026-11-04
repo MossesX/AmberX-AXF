@@ -752,6 +752,8 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-jump__item:hover:not(:disabled) { color: var(--fx-text); }
 .fx-jump__item:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w); }
 .fx-jump__icon { width: var(--fx-jump-icon); height: var(--fx-jump-icon); flex: none; }
+.fx-jump__text { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.fx-jump[data-fx-jump-axis='column'] .fx-jump__item { min-width: 0; }
 .fx-jump[data-fx-jump-display='icons'] .fx-jump__item { justify-content: center; min-width: var(--fx-row-h); }
 .fx-jump[data-fx-jump-axis='column'] .fx-jump__item { justify-content: flex-start; width: 100%; }
 .fx-jump[data-fx-jump-axis='column'][data-fx-jump-display='icons'] .fx-jump__item { justify-content: center; width: auto; }

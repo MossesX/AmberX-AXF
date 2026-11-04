@@ -57,7 +57,8 @@
     "agent-card": "corporate-badge",
     "help": "framework",
     "uac-policy": "standard",
-    "xlayout": "molly"
+    "xlayout": "molly",
+    "jump-menu": "classic-chips"
   },
   "hidden": [
     "toolbar"

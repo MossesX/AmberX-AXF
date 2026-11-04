@@ -54,7 +54,8 @@
     "style-package": "amber-signature",
     "typography": "compact",
     "density": "compact",
-    "sizing": "compact"
+    "sizing": "compact",
+    "jump-menu": "classic-chips"
   },
   "hidden": [],
   "developer": {

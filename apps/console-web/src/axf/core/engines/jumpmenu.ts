@@ -104,15 +104,18 @@ export function jumpItems(sections: readonly JumpSection[], display: JumpDisplay
 /** Where a section sits in the scroll container (px, relative to the container's scroll origin). */
 export interface JumpPosition { id: string; top: number; bottom: number }
 
+/** The reading line sits this far down the viewport (a fraction of its height) below the offset: a heading just under a sticky bar still counts as reached. */
+export const JUMP_SPY_BAND = 0.25;
+
 /**
  * Scroll-spy: the section on screen. The last section whose top has passed the reading line (the scroll position plus
- * the offset, with a small tolerance) is active; before the first one, the first; at the very end of the scroll, the
- * last (a short final section would otherwise never light). Null without sections.
+ * the offset, plus a quarter of the viewport, with a small tolerance) is active; before the first one, the first; at
+ * the very end of the scroll, the last (a short final section would otherwise never light). Null without sections.
  */
-export function jumpSpy(positions: readonly JumpPosition[], scrollTop: number, viewport: number, scrollMax: number, offsetPx = 0, tolerance = 2): string | null {
+export function jumpSpy(positions: readonly JumpPosition[], scrollTop: number, viewport: number, scrollMax: number, offsetPx = 0, tolerance = 2, band = JUMP_SPY_BAND): string | null {
   if (!positions.length) return null;
   if (scrollMax > 0 && scrollTop + viewport >= scrollMax - tolerance) return positions[positions.length - 1]!.id;
-  const line = scrollTop + offsetPx + tolerance;
+  const line = scrollTop + offsetPx + tolerance + Math.max(0, viewport) * band;
   let active = positions[0]!.id;
   for (const p of positions) { if (p.top <= line) active = p.id; else break; }
   return active;
