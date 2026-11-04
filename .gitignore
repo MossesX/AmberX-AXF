@@ -30,3 +30,6 @@ _claude/builds/store.json.tmp-*
 .axf-watch-live.log
 _claude/builds/store.json.live-outbox.jsonl*
 _claude/builds/store.json.live.json
+
+# Auto-land (push banner): a finished worktree claude-sync leaves alone
+.claude-sync-hold

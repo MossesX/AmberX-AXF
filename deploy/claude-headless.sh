@@ -94,7 +94,7 @@ start_watch_live() {   # $1 = session name; prints the watcher pid (empty when o
 }
 
 GATE="$HERE/../framework/cli/model-gate.mjs"
-UPGRADE_NOTE="Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Opus) is fine. An UPGRADE (e.g. Opus → Fable) needs Brett's approval: when you reach one, run \`node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>\`, ask once, and stop. Never approve a model switch upgrade yourself (no \`act approve\` on an upgrade), never relaunch on a higher model."
+UPGRADE_NOTE="Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Opus) is fine. An UPGRADE (e.g. Opus → Fable) needs Brett's approval: when you reach one, run \`node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>\`, ask once, and stop. Never approve a model switch upgrade yourself (no \`act approve\` on an upgrade), never relaunch on a higher model."  # axf-plugin:build-orchestrator
 # Upgrades need Brett (framework/cli/model-gate.mjs): a build may not start on a higher model than its orchestrator step,
 # nor start a phase that upgrades the model before Brett approved it. Checked once, before the slot (the queue waiter
 # and the tmux inner run were checked when they were asked for). AXF_BUILD_ID names the build when the name doesn't.
@@ -140,7 +140,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   prompt="$(cat "$brief")"
   [[ -n "$wl" ]] && prompt="$prompt"$'\n\n'"$WATCH_NOTE"
   [[ -n "$slot" ]] && slots_on && prompt="$prompt"$'\n\n'"$HEAVY_NOTE"
-  prompt="$prompt"$'\n\n'"$UPGRADE_NOTE"
+  prompt="$prompt"$'\n\n'"${UPGRADE_NOTE:-}"
   # Several Claude accounts (Nov 2 2026, Brett): when the run stops on a usage limit ("You've hit your weekly limit"),
   # AI keys switches to the next saved account that still answers and writes it to the VPS (the AI keys plugin),
   # then the run starts again on it. At most AXF_ACCOUNT_SWITCHES times (default 3; 0 turns it off).

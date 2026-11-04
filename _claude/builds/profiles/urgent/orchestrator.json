@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T20:50:06.378Z",
+ "updatedAt": "2026-11-04T01:23:08.641Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4905,21 +4905,37 @@
     {
      "text": "Agent: Ping Paulie (headless, Opus). All steps Opus; no model switch. Replaces pending home-cards (angel).",
      "at": "2026-11-03T19:43:06.356Z"
+    },
+    {
+     "text": "Reconciler: branch claude/home-cards-live (no PR yet)",
+     "at": "2026-11-03T21:00:30.825Z"
+    },
+    {
+     "text": "s3: Home drop target + draggable Plugin commands reads built; drops covered by check-card.mjs (cardFromDrop), a real browser drag was not exercised. PR #283, UI Review r-20261103-88aadcbf waiting.",
+     "at": "2026-11-03T21:17:47.027Z"
+    },
+    {
+     "text": "Reconciler: PR #283",
+     "at": "2026-11-03T21:03:58.646Z"
+    },
+    {
+     "text": "Reconciler: branch claude/home-cards-live (no PR yet)",
+     "at": "2026-11-03T20:54:49.605Z"
     }
    ],
    "id": "home-cards-live",
    "title": "Home cards draw live data: one card engine (card@1 binding), Add card, drag to Home, suggested cards",
    "category": "Console",
    "detail": "Brett, Nov 3 2026 (voice): \"I shouldn't need to build cards. I should draw dynamic data.\" One card engine draws any plugin read command (control@1 / plugin-commands-auto) as number, list, meter, chart, feed, table or status, live or every N s. Add card on Home (plugin -> read command -> live preview -> smart view -> fields -> Save), drag any hook onto Home, layout (reorder, size, show/hide, context menu) saved per user on axHub, Suggested cards. Zero code, zero agents, zero tokens. Replaces pending item home-cards. Agent: Ping Paulie.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/home-cards-live",
+   "pr": "#283",
    "createdAt": "2026-11-03T19:43:04.673Z",
-   "updatedAt": "2026-11-03T20:00:21.689Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T21:17:55.434Z",
+   "builtAt": "2026-11-03T21:17:53.520Z",
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -4972,8 +4988,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:17:50.508Z",
      "note": "",
      "uid": "st-mw13hw6d09wam6"
     },
@@ -5026,8 +5042,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:17:53.520Z",
      "note": "",
      "uid": "st-mw13hw6h0c4lfl"
     }
@@ -5055,6 +5071,10 @@
     {
      "text": "All 7 steps done on Opus; PR #281 open, UI Review r-20261103-1450743b waiting. Follow-ups (not in this build): menu-style asset type + Fable review of the smart-menu engine contract (an Opus->Fable upgrade, needs Brett's approval); axHub admin to allow console_context on axf-console.",
      "at": "2026-11-03T20:43:42.106Z"
+    },
+    {
+     "text": "Clash note (molly-nav-submenus, Nov 3): both touch framework/react/components/Chrome.tsx, core/types.ts, schemas/asset-types.json and ui/axf.css in different sections (smart-menus: app/context menus; molly-nav-submenus: NavMenu + new nav-style type). Whichever merges second rebases.",
+     "at": "2026-11-03T21:55:42.769Z"
     }
    ],
    "id": "smart-menus",
@@ -5068,7 +5088,7 @@
    "branch": "claude/smart-menus",
    "pr": "#281",
    "createdAt": "2026-11-03T19:45:20.635Z",
-   "updatedAt": "2026-11-03T20:43:42.106Z",
+   "updatedAt": "2026-11-03T21:55:42.769Z",
    "builtAt": "2026-11-03T20:43:38.552Z",
    "approvals": [],
    "upgradeRequests": [],
@@ -5241,21 +5261,29 @@
     {
      "text": "Agent: Snap Sully (sully), booked as a swarm-run@1 (source assign). Built on main after ui-review-shots s1-s3 (its storage finding: all shots live in the bind-mounted store, nothing to move).",
      "at": "2026-11-03T19:55:30.345Z"
+    },
+    {
+     "text": "Reconciler: PR #285",
+     "at": "2026-11-03T21:30:43.754Z"
+    },
+    {
+     "text": "PR #285 open. Its CI red jobs (check-widgets widget types, molly xlayout opens:false, Gradle) are the same failures on main, being fixed by urgent-main-ci-green; nothing from this build. UI Review r-20261103-c9a82c5e waiting.",
+     "at": "2026-11-03T21:49:21.858Z"
     }
    ],
    "id": "ui-review-predicted",
    "title": "UI Review shows predicted pictures before a build runs",
    "category": "Console",
    "detail": "Brett, Nov 3 2026 (voice): UI Review must show PREDICTED pictures - what a build will probably look like - BEFORE it's built, so he can approve the look before an agent spends money. Agent: Snap Sully (also on ui-review-shots; built on its storage fix). Predicted mockups are made from the brief + steps (+ diff while running) by rendering real framework components with the current theme in a headless browser (reusing rebuild-shots capture, no new capture system); item status 'Predicted - approve the look'; Approve look / Ask changes (addendum to the build) / Reject (build held); setting 'Wait for my look approval before UI builds start' (default off); refresh while running, real after-shot replaces it at the end (badge Real, compare toggle); backfill for queued/running UI builds; commands declared once -> REST + MCP + CLI. Moved here from pending batch-manager (its predicted-shots part).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-review-predicted",
-   "pr": "",
+   "pr": "#285",
    "createdAt": "2026-11-03T19:54:18.485Z",
-   "updatedAt": "2026-11-03T20:21:13.847Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T21:58:23.579Z",
+   "builtAt": "2026-11-03T21:58:23.579Z",
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -5344,8 +5372,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:58:22.280Z",
      "note": "",
      "uid": "st-mw13wc2w0bi2db"
     },
@@ -5362,8 +5390,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:58:23.579Z",
      "note": "",
      "uid": "st-mw13wc2w0cmw1i"
     }
