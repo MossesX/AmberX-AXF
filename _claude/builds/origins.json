@@ -1108,6 +1108,18 @@
    "from": "detail",
    "addenda": []
   },
+  "live-sessions-plugin": {
+   "said": "Make a plugin with a widget that lists the active Claude accounts only. The ones that actually have a human involved, either this one or the helper. It needs to list any account that's actively being run, any session being run by a human, and then you can click a button and you can watch its output live, including voice. It will be able to hear you talking to me, and me talking to you.\n\nAsked whether the person on a watched session should know: \"You can have it: 'you're being watched'.\"\n\n## Addendum 1 (Brett, Nov 4 2026 (voice))\nActually, make it list all sessions, but note whether it's a human or a headless. Only allow voice monitoring of the human.\n\n## Addendum 2 (Brett, Nov 4 2026 (voice))\nIn the session list, it needs to list the sessions in a grid, and it needs to show the agent that's running that session. Every time you open a session, you are prompted with a list of agents to select from: who you are, or who do you want to run this session, and then you pick one of the agents. So when you see the sessions listed and you want to assign jobs to one, you open it as a helper and just see who's running it.\n\n## Addendum 3 (Brett, Nov 4 2026 (voice))\nAll human sessions need to be meticulously logged so that in the future they can be browsed. It will open it and you can watch in real time the context window and hear or listen to our conversation, as the whole entire session is played back.\n\n## Addendum 4 (Brett, Nov 4 2026 (voice))\nYou can configure where to store recordings in the plugin settings interface. You can choose whether you want to store it on the VPS, or in the repo, or in its own container. If you choose VPS, you can select the container from a dropdown list of containers. Or a repo: you can select from a dropdown list of repos. Or you can even store it locally if you want to and have them all synced.\n\n## Addendum 5 (Brett, Nov 4 2026 (voice))\nAfter the session is done, it needs to compress the audio to remove all the dead space where it's not you talking or me talking. Obviously the dead space needs to stay to maintain its real time, but it needs to cut that data out of the stream.",
+   "at": "2026-11-04T16:46:03.374Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Ping Paulie (headless)",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "md-studio": {
    "said": "build MD Studio. It was planned but NEVER built (no branch, no log). Assigned agent: **Reel Rhonda** (book on her agent-swarm card; set AXF_AGENT=reel-rhonda if supported, else record in report + store note).",
    "at": "2026-11-03",
