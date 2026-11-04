@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T14:43:18.412Z",
+ "updatedAt": "2026-11-04T14:43:30.218Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10327,15 +10327,15 @@
    "title": "Fable upgrades need no approval",
    "category": "Builds > Model policy",
    "detail": "Owner-only Claude setting 'Fable upgrades need my approval' (builds.fableUpgradeApproval, default off). Off: a phase or step that needs Fable runs on Fable by itself; the switch is recorded on the build (approvals[] by auto via policy + a build note). On: the Nov 3 approval rule. Waiting upgrade phases switched now; Fable review of Nov 3-4 Opus foundation work queued as fable-review-nov3.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/fable-no-approval",
    "pr": "#319",
    "createdAt": "2026-11-04T14:39:06.938Z",
-   "updatedAt": "2026-11-04T14:43:17.112Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T14:43:18.172Z",
+   "builtAt": "2026-11-04T14:43:18.172Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -10401,8 +10401,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T14:43:18.172Z",
      "note": "",
      "uid": "st-mw282uit06ajzg"
     }
