@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 929,
- "updatedAt": "2026-11-04T20:04:46.112Z",
+ "rev": 930,
+ "updatedAt": "2026-11-04T20:05:06.593Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -82228,7 +82228,7 @@
    "branch": "claude/handoff-2",
    "pr": "#338",
    "createdAt": "2026-11-04T18:45:40.326Z",
-   "updatedAt": "2026-11-04T19:59:05.143Z",
+   "updatedAt": "2026-11-04T20:04:44.792Z",
    "builtAt": "2026-11-04T19:59:02.487Z",
    "notes": [
     {
@@ -82238,6 +82238,10 @@
     {
      "text": "PR #338 open (branch claude/handoff-2). Report _claude/builds/reports/handoff-2.md. UI Review shots still owed (non-blocking).",
      "at": "2026-11-04T19:59:05.143Z"
+    },
+    {
+     "text": "UI Review r-20261104-120e1720 waiting (shots in _claude/builds/reports/handoff-2/shots/after). PR #338 auto-merges on green CI; claude-sync holds the handoff-note deletions for Brett (claude-sync status).",
+     "at": "2026-11-04T20:04:44.792Z"
     }
    ],
    "approvals": [],
@@ -82506,7 +82510,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
