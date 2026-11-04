@@ -33,7 +33,7 @@ import { tmpdir } from 'node:os';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as P from '../core/ui-predict.mjs';
-import { loadStore } from './builds-store.mjs';
+import { loadStore, withStore } from './builds-store.mjs';
 import { findBuild } from './model-gate.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -204,10 +204,13 @@ async function gate() {
 async function addendum(id, text) {
   const b = buildOf(id);
   if (!b) throw new Error(`no orchestrator build "${id}"`);
-  const profile = (b.profiles ?? [])[0] || '';
-  const r = spawnSync(process.execPath, [join(REPO, 'apps/console-web/plugins/build-orchestrator/orchestrator.mjs'), 'act', 'note', b.id, `Look change asked in UI Review (apply before or at the next step): ${text}`],
-    { encoding: 'utf8', env: { ...process.env, ...(profile ? { AXF_BUILD_PROFILE: profile } : {}) } });
-  if (r.status !== 0) throw new Error(`orchestrator note failed: ${(r.stderr || r.stdout).trim().slice(0, 300)}`);
+  // one store write (live to main), like the reconciler's notes
+  withStore((s) => {
+    const x = s.builds.find((y) => y.id === b.id); if (!x) throw new Error(`no orchestrator build "${id}"`);
+    const now = new Date().toISOString();
+    x.notes.push({ text: `Look change asked in UI Review (apply before or at the next step): ${text}`.slice(0, 2000), at: now }); x.updatedAt = now;
+    return s;
+  }, { by: 'ui-predict', action: 'note', note: b.id });
   return { build: b.id, noted: true };
 }
 

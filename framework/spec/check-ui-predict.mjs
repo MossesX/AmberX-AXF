@@ -36,7 +36,7 @@ t('screensFor: most likely first, passing mentions dropped, plugin files become 
   assert.deepEqual(P.screensFor(BUILD).map((s) => s.id), ['ui-review']);
   const s = P.screensFor({ title: 'Toolbars: tap to confirm', steps: [{ text: 'toolbar settings dialog' }] });
   assert.equal(s[0].id, 'toolbars');
-  const f = P.screensFor({ title: 'x', steps: [] }, ['apps/console-web/plugins/agent-swarm/web/x.tsx'], { plugins: { 'agent-swarm': 'Breakroom crew' } });
+  const f = P.screensFor({ title: 'x', steps: [] }, ['apps/console-web/plugins/sample-crew/web/x.tsx'], { plugins: { 'sample-crew': 'Breakroom crew' } });
   assert.equal(f[0].title, 'Breakroom crew'); assert.equal(f[0].search, 'Breakroom crew');
   assert.equal(P.screensFor({ title: 'Something new', steps: [] }).length, 1, 'always at least one screen');
 });
