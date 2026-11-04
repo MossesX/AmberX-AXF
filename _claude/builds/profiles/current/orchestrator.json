@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T13:29:13.081Z",
+ "updatedAt": "2026-11-04T13:30:46.395Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3490,14 +3490,15 @@
    "title": "Molly: navigation sub menus that slide open + Navigation settings",
    "category": "Molly",
    "detail": "Brett (Nov 3 2026, voice): \"I want Molly to have the console's navigation menu slide open, like when you click console, have a sub menu slide open, show its menu, and same thing for AXHub and AmberX. Have a sub menu slide open with an animation and give the navigation menu its own settings interface to control everything. The theme, the way it looks, its animation, its behavior, all that.\" Agent: Reel Rhonda (headless worktree, not on main). Model: Opus for every step (Claude decides): the nav-style contract is web-only, additive and opt-in; Android twin deferred in PORTING.md; flagged for a Fable review per the shared rule.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-nav-submenus",
    "pr": "#295",
+   "mergedAt": "2026-11-04T13:30:38.928Z",
    "createdAt": "2026-11-03T21:55:24.277Z",
-   "updatedAt": "2026-11-03T23:54:29.725Z",
+   "updatedAt": "2026-11-04T13:30:39.233Z",
    "builtAt": "2026-11-03T23:54:29.725Z",
    "notes": [
     {
