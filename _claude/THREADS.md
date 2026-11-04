@@ -684,8 +684,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:17 UTC · `profile-switcher-widget` → running, note (current) · orchestrator
-- 2026-11-04 14:17 UTC · `console-wake-finish` s3 done (current) · foreign-write
 - 2026-11-04 14:18 UTC · `profile-lists-home-card` s2 done (current) · orchestrator
 - 2026-11-04 14:19 UTC · `profile-switcher-widget` note (current) · foreign-write
 - 2026-11-04 14:19 UTC · `profile-lists-home-card` s2 done, note (current) · foreign-write
@@ -1084,6 +1082,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 18:42 UTC · `fable-review-nov3` note (current) · orchestrator
 - 2026-11-04 18:45 UTC · `fable-review-nov3` note (current) · foreign-write
 - 2026-11-04 18:45 UTC · `model-thinking-audit` s5 done, s6 done, s7 done (current) · foreign-write
+- 2026-11-04 18:45 UTC · `handoff-2` added (11 steps) (current) · orchestrator
+- 2026-11-04 18:45 UTC · `handoff-2` → running (current) · orchestrator
 
 ## Token passes (log)
 
