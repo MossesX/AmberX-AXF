@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 778,
- "updatedAt": "2026-11-04T15:24:57.863Z",
+ "rev": 779,
+ "updatedAt": "2026-11-04T15:25:11.453Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -68755,7 +68755,7 @@
    "branch": "claude/gizmo-companion",
    "pr": "#296",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-04T12:44:12.117Z",
+   "updatedAt": "2026-11-04T15:25:05.014Z",
    "builtAt": "",
    "notes": [
     {
@@ -68777,6 +68777,14 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-04T12:44:12.117Z"
+    },
+    {
+     "text": "Step 1 (basic chat + window look) landed in PR #296 (merged 471e66fe) by urgent-land-gizmo-chat. Remaining steps continue as gizmo-voice, then gizmo-terminal.",
+     "at": "2026-11-04T15:24:59.452Z"
+    },
+    {
+     "text": "Reconciler: PR #296 merged",
+     "at": "2026-11-04T15:25:05.014Z"
     }
    ],
    "approvals": [],
@@ -69209,7 +69217,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -73686,12 +73694,16 @@
    "pr": "#296",
    "mergedAt": "2026-11-04T15:24:48Z",
    "createdAt": "2026-11-04T14:14:12.849Z",
-   "updatedAt": "2026-11-04T15:24:56.902Z",
+   "updatedAt": "2026-11-04T15:25:05.014Z",
    "builtAt": "",
    "notes": [
     {
      "text": "CI green on efe58a9d7 (all 4 jobs). Waiting for push-banner auto-merge (GitHub REST token rate-limited until 15:05 UTC; GitHub App not set up).",
      "at": "2026-11-04T15:05:56.718Z"
+    },
+    {
+     "text": "Reconciler: PR #296 merged",
+     "at": "2026-11-04T15:25:05.014Z"
     }
    ],
    "approvals": [],
@@ -73769,11 +73781,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-04T14:27:20.536Z",
+     "doneAt": "2026-11-04T15:24:58.362Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-04T14:14:12.850Z",
-     "updatedAt": "2026-11-04T15:05:56.098Z"
+     "updatedAt": "2026-11-04T15:25:09.457Z"
     },
     {
      "id": "s4",
