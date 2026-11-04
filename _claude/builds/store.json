@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 962,
- "updatedAt": "2026-11-04T21:14:28.116Z",
+ "rev": 963,
+ "updatedAt": "2026-11-04T21:14:46.668Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -83587,15 +83587,15 @@
    "title": "Build optimizer: repack waiting steps into fewer builds (Basic + Deep), confirm dialog, drag steps between builds",
    "category": "Feature",
    "detail": "Optimize builds (Build manager toolbar, right-click, voice/MCP orchestrator.optimize, owner-only on the primary). Deterministic planner (Basic, zero tokens) shared with fable-packager's build-package@1 core; Deep (AI) mode when an AI connection is there. Confirm dialog with the new package of builds, every step, reasoning, rename/drag/untick, Apply/Cancel; apply = one transaction (new package builds, emptied builds archived, one undo). Drag steps between builds anywhere. Settings + presets + filters, notifications, schedule.",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "build-optimizer",
    "branch": "claude/build-optimizer",
    "pr": "#342",
    "createdAt": "2026-11-04T20:46:33.439Z",
-   "updatedAt": "2026-11-04T21:14:26.820Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T21:14:27.954Z",
+   "builtAt": "2026-11-04T21:14:27.954Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -83839,12 +83839,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:14:27.954Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T20:46:33.441Z",
-     "updatedAt": "2026-11-04T21:14:26.401Z"
+     "updatedAt": "2026-11-04T21:14:28.027Z"
     }
    ],
    "profiles": [
