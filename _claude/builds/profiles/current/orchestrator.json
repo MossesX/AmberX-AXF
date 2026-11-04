@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T17:00:24.547Z",
+ "updatedAt": "2026-11-04T17:03:21.995Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10871,7 +10871,7 @@
    },
    "steps": [
     {
-     "id": "s1",
+     "id": "s19-18",
      "text": "s1 Land PR #289: merge main into plugin-settings-placement, resolve (framework index/css, Terminal host, baked copies re-baked), CI green, auto-merge",
      "model": "Fable",
      "why": "",
@@ -10889,7 +10889,7 @@
      "uid": "st-mw2biv5d01uecx"
     },
     {
-     "id": "s2",
+     "id": "s20-19",
      "text": "s2 Fable review of settings-placement@1 + v2 contract: placements dialog / side panel L|R / bottom sheet / inside / full page / floating window; scopes screen -> owner -> interface opensIn -> app default; opensIn on the settings asset (asset-types, validators); fixture + check regenerated",
      "model": "Fable",
      "why": "",
@@ -10907,7 +10907,7 @@
      "uid": "st-mw2biv5d029k4h"
     },
     {
-     "id": "s3",
+     "id": "s21-20",
      "text": "s3 Settings library + React: 'Pops up in' row at the top of every settings interface, whole-interface surfaces (app.settings routed), exit animations, a settings host for every screen (AppShell), Settings > Settings placement listing every screen + app default, context menu 'Settings opens in...' on screens, nav items and settings buttons",
      "model": "Fable",
      "why": "",
@@ -10925,7 +10925,7 @@
      "uid": "st-mw2biv5d03bnjo"
     },
     {
-     "id": "s4",
+     "id": "s22-21",
      "text": "s4 Console control target console.placement (list/get/set/reset; REST + MCP + CLI) delivered to the live console; Molly's app default = dialog; console, Molly, AmberX web, axHub web re-baked and type-checked",
      "model": "Fable",
      "why": "",
@@ -10943,7 +10943,7 @@
      "uid": "st-mw2biv5d045yfq"
     },
     {
-     "id": "s5",
+     "id": "s23-22",
      "text": "s5 Expenses (vendored @axf/core): per-module 'Settings opens in' (dialog / side panel / bottom sheet / inside / full page / floating window) + app default, context-menu row, persisted in kv",
      "model": "Opus",
      "why": "",
@@ -10961,7 +10961,7 @@
      "uid": "st-mw2biv5d05oisg"
     },
     {
-     "id": "s6",
+     "id": "s24-23",
      "text": "s6 Rule in RULES.md + PORTING.md, checks green, UI Review shots (non-blocking), report _claude/builds/reports/settings-placement-everywhere.md, THREADS, PR, auto-land, redeploy",
      "model": "Opus",
      "why": "",
@@ -11413,7 +11413,7 @@
    "title": "Live sessions plugin: every Claude session live (human/headless), watch, voice, recording + playback",
    "category": "Plugins",
    "detail": "Agent: Ping Paulie. Plugin 'Live sessions' (apps/console-web/plugins/live-sessions, capability axf.claude-live@1): lists every Claude session (human + headless) with a Human/Headless badge and the agent running it, grid default; widget count; Watch live (text for all, voice for human only, owner-only, audited, 'you're being watched' notice); records every human session (redacted event log + AmberX audio), session browser + real-time playback; configurable storage targets (public repos blocked); post-session silence compaction. Replaces Plan Studio plan claude-sessions-list-molly-plugin-wpo6.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
