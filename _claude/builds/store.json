@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 851,
- "updatedAt": "2026-11-04T17:18:29.974Z",
+ "rev": 853,
+ "updatedAt": "2026-11-04T17:19:36.835Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -81120,16 +81120,21 @@
    "title": "Live sessions plugin: every Claude session live (human/headless), watch, voice, recording + playback",
    "category": "Plugins",
    "detail": "Agent: Ping Paulie. Plugin 'Live sessions' (apps/console-web/plugins/live-sessions, capability axf.claude-live@1): lists every Claude session (human + headless) with a Human/Headless badge and the agent running it, grid default; widget count; Watch live (text for all, voice for human only, owner-only, audited, 'you're being watched' notice); records every human session (redacted event log + AmberX audio), session browser + real-time playback; configurable storage targets (public repos blocked); post-session silence compaction. Replaces Plan Studio plan claude-sessions-list-molly-plugin-wpo6.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/live-sessions-plugin",
+   "pr": "#331",
    "createdAt": "2026-11-04T16:46:03.374Z",
-   "updatedAt": "2026-11-04T17:07:29.908Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-04T17:19:23.689Z",
+   "builtAt": "2026-11-04T17:19:21.361Z",
+   "notes": [
+    {
+     "text": "PR #331 open. Gaps: live voice needs AmberX to stream segments (new APK); addendum 6 audio editor not started; phases 1+2 in one PR (addendum 7 read late).",
+     "at": "2026-11-04T17:19:23.689Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -81270,12 +81275,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T17:19:21.361Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T16:46:03.385Z",
-     "updatedAt": "2026-11-04T16:46:03.385Z"
+     "updatedAt": "2026-11-04T17:19:21.435Z"
     }
    ],
    "profiles": [
@@ -81286,7 +81291,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

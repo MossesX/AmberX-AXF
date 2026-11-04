@@ -7,7 +7,7 @@
  * - Inner tabs: Commands (single actions) · Chains & wizards. Each is a sortable, filterable, searchable grid in a
  *   scrolling pane; a row opens to its details, its own settings, its phrases (record one: say it twice, the two must
  *   match, or pick a predefined phrase) and, for chains and wizards, its steps (edit them, or by voice).
- * - Developer and AI snippets need the AI (and Molly for Developer). When it's off or not answering, the tab says why
+ * - Developer and AI snippets need the AI (and Gizmo for Developer). When it's off or not answering, the tab says why
  *   and offers the fix: switch it on, open the connection, run the setup wizard, check again.
  *
  * Library: lib-*.ts (code). Everything a person changes is an override or their own command (settings, per device
@@ -55,7 +55,7 @@ const saveOverrides = (rt: AxfRuntime, o: ReturnType<typeof parseOverrides>) => 
 const saveCustom = (rt: AxfRuntime, list: Command[]) => rt.settings.set(K.custom, JSON.stringify(list));
 const patchCommand = (rt: AxfRuntime, id: string, patch: CommandOverride) => saveOverrides(rt, setOverride(overridesOf(rt), id, { ...overridesOf(rt)[id], ...patch }));
 
-/* ---------------------------------------------------------------- Molly status (developer tab) */
+/* ---------------------------------------------------------------- Gizmo status (developer tab) */
 
 interface MollyState { known: boolean; ok: boolean; reason: string; fix: string; checking: boolean }
 let mollyState: MollyState = { known: false, ok: false, reason: 'Not checked yet.', fix: '', checking: false };
@@ -67,7 +67,7 @@ export async function checkMolly(): Promise<MollyState> {
   try {
     const r = await fetch('/api/ai/molly/status', { credentials: 'same-origin', redirect: 'error', cache: 'no-store' });
     if (r.status === 403) setMolly({ known: true, ok: false, reason: 'Developer commands are for hub admins.', fix: 'admin' });
-    else if (!r.ok) setMolly({ known: true, ok: false, reason: r.status === 404 ? 'This AmberX has no server for Molly.' : `The AmberX server answered ${r.status}.`, fix: 'server' });
+    else if (!r.ok) setMolly({ known: true, ok: false, reason: r.status === 404 ? 'This AmberX has no server for Gizmo.' : `The AmberX server answered ${r.status}.`, fix: 'server' });
     else { const j = (await r.json()) as { ok?: boolean; reason?: string; fix?: string }; setMolly({ known: true, ok: !!j.ok, reason: j.reason ?? '', fix: j.fix ?? '' }); }
   } catch (e) { setMolly({ known: true, ok: false, reason: `The AmberX server can't be reached (${(e as Error).message}).`, fix: 'server' }); }
   setMolly({ checking: false });
@@ -197,7 +197,7 @@ function RecordPhrase({ cmd, all, onSave, onClose }: { cmd: Effective; all: Effe
 const STEP_KINDS: { value: Step['do']; label: string }[] = [
   { value: 'say', label: 'Say something' }, { value: 'ask', label: 'Ask a question' }, { value: 'confirm', label: 'Ask yes / no (no stops)' },
   { value: 'run', label: 'Run another command' }, { value: 'op', label: 'Notes / tasks operation' }, { value: 'action', label: 'App action' },
-  { value: 'ai', label: 'Ask the AI' }, { value: 'molly', label: 'Task for Molly' }, { value: 'wait', label: 'Wait' },
+  { value: 'ai', label: 'Ask the AI' }, { value: 'molly', label: 'Task for Gizmo' }, { value: 'wait', label: 'Wait' },
 ];
 
 function newStep(kind: Step['do'], a: string, b: string): Step | null {
@@ -395,7 +395,7 @@ function Unavailable({ cat }: { cat: CategoryId }) {
   } else {
     why = m.fix === 'token' ? `${m.reason} The AmberX installer copies it from the console; re-running it (or the 5-minute update) connects her.`
       : m.fix === 'admin' ? 'Developer commands drive the console and the VPS, so only hub admins can use them.'
-        : `Molly can't be reached: ${m.reason}`;
+        : `Gizmo can't be reached: ${m.reason}`;
     what = <>
       <Button tone="primary" icon="refresh" disabled={m.checking} onClick={() => void checkMolly()}>{m.checking ? 'Checking…' : 'Check again'}</Button>
       <Button tone="quiet" icon="settings" onClick={() => rt.dispatch('ai.status.open')}>AI settings</Button>
@@ -404,7 +404,7 @@ function Unavailable({ cat }: { cat: CategoryId }) {
   return (
     <div className="fx-empty axp-cmd-unavailable">
       <Icon name={cat === 'developer' ? 'code' : 'sparkles'} size={28} />
-      <h2>{cat === 'developer' ? 'Developer commands need Molly' : 'AI snippets need the AI'}</h2>
+      <h2>{cat === 'developer' ? 'Developer commands need Gizmo' : 'AI snippets need the AI'}</h2>
       <p className="fx-muted">{why}</p>
       <p className="fx-muted">{allCommands(rt).filter((c) => c.category === cat).length} commands are waiting here; they show up as soon as it's fixed.</p>
       <div className="fx-row fx-row--wrap axp-cmd-unavailable__actions">{what}</div>
