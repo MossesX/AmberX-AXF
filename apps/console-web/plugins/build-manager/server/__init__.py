@@ -385,7 +385,7 @@ async def start(request: Request) -> dict[str, Any]:
                       "steps": [{"text": "Approve on axHub", "state": "running"}, {"text": "Build (headless Claude Code on the VPS)", "state": "queued"},
                                 {"text": "Verify nothing broke", "state": "queued"}]}, "build-manager")
         change_id = e.get("id", "")
-    command = (await asyncio.to_thread(_node, "web/plan-cli.mjs", {"command": {"brief": planned["brief"], "branch": planned["branch"], "model": planned["model"], "changeId": change_id}})).get("command", "")
+    command = (await asyncio.to_thread(_node, "web/plan-cli.mjs", {"command": {"brief": planned["brief"], "branch": planned["branch"], "model": planned["model"], "thinking": planned.get("thinking", ""), "changeId": change_id}})).get("command", "")
     if not command:
         raise HTTPException(500, "no launch command")
     job = JOBS.start(key, planned, change_id, command)

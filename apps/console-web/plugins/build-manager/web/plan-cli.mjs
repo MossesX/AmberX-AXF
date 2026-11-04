@@ -21,7 +21,7 @@ const input = JSON.parse(readFileSync(0, 'utf8') || '{}');
 const out = (x) => console.log(JSON.stringify(x));
 
 if (input.verifyFor) { out({ ok: true, verify: verifyChecks(input.verifyFor) }); process.exit(0); }
-if (input.command) { const c = input.command; out({ ok: true, command: launchCommand({ brief: String(c.brief ?? ''), branch: String(c.branch ?? ''), model: String(c.model ?? ''), changeId: String(c.changeId ?? '') }) }); process.exit(0); }
+if (input.command) { const c = input.command; out({ ok: true, command: launchCommand({ brief: String(c.brief ?? ''), branch: String(c.branch ?? ''), model: String(c.model ?? ''), thinking: String(c.thinking ?? ''), changeId: String(c.changeId ?? '') }) }); process.exit(0); }
 
 const features = input.plan?.features ?? [];
 const queueState = input.queue ?? null;
@@ -36,5 +36,5 @@ if (row) {
   const min = row.left || row.total;
   if (min) plan.estimate = { minutes: min, ...(pricing?.estimateCost(plan.model, min) != null ? { costUsd: pricing.estimateCost(plan.model, min) } : {}) };
 }
-if (input.launch && plan.ok) plan.command = launchCommand({ brief: plan.brief, branch: plan.branch, model: plan.model, changeId: input.launch.changeId ?? '' });
+if (input.launch && plan.ok) plan.command = launchCommand({ brief: plan.brief, branch: plan.branch, model: plan.model, thinking: plan.thinking ?? '', changeId: input.launch.changeId ?? '' });
 out(plan);

@@ -10,6 +10,7 @@
  *                `remove`.
  */
 import { CONTROL_TARGETS } from '../../../../../framework/core/engines/control-rules.mjs';
+import { buildView, matchesFilter, stepView } from '../../../../../framework/core/model-advice.mjs';
 import { ControlError } from './common.mjs';
 import { provider } from './providers.mjs';
 
@@ -86,9 +87,12 @@ async function runPlans(c) {
   }
 }
 
+/** model-advice@1: every build and step read carries model, thinking, the recommendation and the review status. */
+const adviceOf = (v, build = false) => ({ model: v.model, thinking: v.thinking, recommendedModel: v.recommendedModel, recommendedThinking: v.recommendedThinking, reviewStatus: v.reviewStatus, ...(v.modelWhy ? { modelWhy: v.modelWhy } : {}), ...(build ? { verdict: v.verdict, ...(v.adviceCost ? { adviceCost: v.adviceCost } : {}), stepsToLook: v.stepsToLook } : {}) });
+const withAdvice = (b) => ({ ...b, ...adviceOf(buildView(b), true), steps: (b.steps ?? []).map((s) => ({ ...s, ...adviceOf(stepView(s)) })) });
 const buildRow = (b) => {
   const steps = b.steps ?? [];
-  return { id: b.id, title: b.title, status: b.status, category: b.category, hidden: !!b.hidden, branch: b.branch, pr: b.pr, steps: steps.length, stepsDone: steps.filter((s) => s.done).length, next: steps.find((s) => !s.done && !s.skip)?.id ?? null, updatedAt: b.updatedAt };
+  return { id: b.id, title: b.title, status: b.status, category: b.category, hidden: !!b.hidden, branch: b.branch, pr: b.pr, steps: steps.length, stepsDone: steps.filter((s) => s.done).length, next: steps.find((s) => !s.done && !s.skip)?.id ?? null, updatedAt: b.updatedAt, ...adviceOf(buildView(b), true) };
 };
 
 async function runBuilds(c) {
@@ -108,9 +112,12 @@ async function runBuilds(c) {
         if (f.status) rows = rows.filter((b) => b.status === f.status);
         if (f.category) rows = rows.filter((b) => (b.category ?? '') === f.category);
         if (words.length) rows = rows.filter((b) => words.every((w) => `${b.id} ${b.title} ${b.detail ?? ''}`.toLowerCase().includes(w)));
+        // model-advice@1 filters: model, thinking, review (ok | look), needsLook, fable (Fable candidates)
+        const adv = { model: f.model, thinking: f.thinking, status: f.review, needsLook: f.needsLook === true, fable: f.fable === true };
+        if (adv.model || adv.thinking || adv.status || adv.needsLook || adv.fable) rows = rows.filter((b) => matchesFilter(buildView(b), adv));
         return { items: rows.slice(0, Math.max(1, Math.min(Number(f.limit) || 200, 500))).map(buildRow), total: rows.length, profile: profile || undefined };
       }
-      case 'get': return { item: need() };
+      case 'get': return { item: withAdvice(need()) };
       case 'add': {
         const { profile: _p, ...v } = c.value;
         const r = await act({ action: 'add', ...v });
@@ -143,6 +150,11 @@ async function runBuilds(c) {
           'remove-step': { step: i.step },
           'move-step': {},
           archive: {}, hide: {}, unhide: {},
+          // model-advice@1: recommendations only; apply / dismiss need Brett (the orchestrator refuses a session)
+          advise: { ...(i.force === true ? { force: true } : {}) },
+          'set-thinking': { ...(i.step ? { step: i.step } : {}), thinking: i.thinking ?? '' },
+          'apply-advice': { ...(i.step ? { step: i.step } : {}) },
+          'dismiss-advice': { ...(i.step ? { step: i.step } : {}), ...(typeof i.note === 'string' ? { note: i.note } : {}) },
         };
         if (!(c.action in map) || !(c.action in (CONTROL_TARGETS['planner.builds'].acts ?? {}))) throw new ControlError('invalid', `planner.builds has no action ${c.action}`);
         if (c.action === 'move-step') { // the orchestrator moves one place at a time: walk to the index asked for

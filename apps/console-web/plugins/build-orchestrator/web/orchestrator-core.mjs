@@ -12,6 +12,7 @@
 
 import { normOrigin, originText } from '../../../../../framework/core/build-origin.mjs';
 import { SWITCH_RULE, normApproval, normRequest, phaseApproved, switchKind, upgradeLine, modelRank } from '../../../../../framework/core/model-switch.mjs';
+import { adviceRecord, adviseBuild, buildView, normThinking, reviewOkFor, stepView, thinkingOf } from '../../../../../framework/core/model-advice.mjs';
 
 export const SCHEMA = 'orchestrator@1';
 export const MODELS = ['Fable', 'Opus'];
@@ -76,6 +77,7 @@ function normStep(s, i) {
     done: o.done === true,
     doneAt: o.done === true ? str(o.doneAt, 40) : '',
     note: str(o.note, 1000),
+    ...adviceRecord(o), // model-advice@1: thinking, the recommendation, why, Brett's OK (only when set)
   };
 }
 
@@ -103,6 +105,7 @@ function normBuild(b) {
     approvals: (Array.isArray(o.approvals) ? o.approvals : []).map(normApproval),
     upgradeRequests: (Array.isArray(o.upgradeRequests) ? o.upgradeRequests : []).map(normRequest).filter((r) => r.id),
     ...(normOrigin(o.origin) ? { origin: normOrigin(o.origin) } : {}), // build-origin@1: what Brett said
+    ...adviceRecord(o, { build: true }), // model-advice@1: recommendation, verdict, cost, Brett's OK (only when set)
     steps,
   };
 }
@@ -243,11 +246,58 @@ export function brief(build, rules = DEFAULT_RULES) {
  * server from the signed-in hub admin, the console's axHub-approved MCP tool) puts { by, via } on the change as
  * `approver` only after its own check (framework/core/model-switch.mjs approverFrom). Without it an upgrade is refused.
  */
-function needApprover(c, what) {
+function needApprover(c, what, kind = 'upgrade') {
   const a = c.approver && typeof c.approver === 'object' ? c.approver : null;
   const by = str(a?.by, 120).trim(); const via = str(a?.via, 20);
-  if (!by || !['console', 'axhub'].includes(via)) throw new Error(`${what}: a model upgrade needs Brett's approval (his console click or an axHub approval); a session, agent or the orchestrator can't give it. Ask: orchestrator.mjs request-upgrade <id> <phase>`);
+  if (!by || !['console', 'axhub'].includes(via)) throw new Error(kind === 'upgrade'
+    ? `${what}: a model upgrade needs Brett's approval (his console click or an axHub approval); a session, agent or the orchestrator can't give it. Ask: orchestrator.mjs request-upgrade <id> <phase>`
+    : `${what}: only Brett does that (his signed-in console click or an axHub approval); a session, agent or the orchestrator can't. Recommendations stay recommendations until he acts.`);
   return { by, via };
+}
+
+/**
+ * model-advice@1 on the orchestrator (Nov 4 2026). `advise` writes the engine's recommendation onto a build and its
+ * steps (never over a pinned one unless `force`); `set-thinking` sets the level a step or build runs at; `apply-advice`
+ * and `dismiss-advice` are Brett's (owner-only, like a model upgrade): apply moves open steps onto the recommended model
+ * and thinking (a raise is an upgrade, so it needs him anyway), dismiss records that he OK'd it as is. Both are bound to
+ * what they answered, so a later change brings the triangle back.
+ */
+function advise(b, c) {
+  const given = c.advice && typeof c.advice === 'object' ? c.advice : null;
+  const a = given ?? adviseBuild(b);
+  const at = now(); const force = c.force === true; const pin = c.pin === true;
+  const put = (target, src, build) => {
+    if (target.advicePinned && !force && !pin) return false;
+    Object.assign(target, adviceRecord({ ...src, adviceAt: at, advicePinned: pin || (target.advicePinned && force ? true : undefined) }, { build }));
+    if (!pin && !(target.advicePinned && force)) delete target.advicePinned;
+    return true;
+  };
+  let n = 0;
+  if (put(b, { recommendedModel: a.recommendedModel, recommendedThinking: a.recommendedThinking, modelWhy: a.modelWhy, adviceKind: a.adviceKind, verdict: a.verdict, adviceCost: a.adviceCost }, true)) n += 1;
+  const stepAdvice = Array.isArray(a.steps) ? a.steps : adviseBuild(b).steps; // advice given without steps: the engine judges the steps
+  for (const sa of stepAdvice) { const st = b.steps.find((x) => (sa.uid && x.uid === sa.uid) || x.id === sa.id); if (st && put(st, sa, false)) n += 1; }
+  return n;
+}
+function applyAdvice(b, c, who) {
+  const targets = c.step ? [b.steps.find((x) => x.id === c.step || x.uid === c.step)].filter(Boolean) : b.steps;
+  if (c.step && !targets.length) throw new Error(`no step "${c.step}" in ${b.id}`);
+  const at = now(); const changed = [];
+  for (const st of targets) {
+    const v = stepView(st);
+    if (v.reviewStatus !== 'look') continue;
+    if (!st.done && !st.skip && v.recommendedModel && v.recommendedModel !== st.model) { st.model = v.recommendedModel; changed.push(`${st.id} → ${st.model}`); }
+    if (v.recommendedThinking && v.recommendedThinking !== thinkingOf(st.model, st.thinking)) { st.thinking = v.recommendedThinking; changed.push(`${st.id} thinking ${st.thinking}`); }
+    st.reviewOk = reviewOkFor(stepView(st), { at, by: who.by, via: who.via, how: 'apply' });
+  }
+  if (!c.step) {
+    const bv = buildView(b);
+    if (bv.reviewStatus === 'look') {
+      if (bv.verdict && bv.verdict !== 'keep') { b.notes.push({ text: `Brett took the recommendation: ${bv.verdict === 'redo-on-fable' ? 'redo on Fable' : 'Fable review'}${bv.adviceCost?.usd ? ` (~$${bv.adviceCost.usd}, ~${bv.adviceCost.minutes} min)` : ''}. The Fable review build picks it up from the model-thinking audit list.`, at }); changed.push(`verdict ${bv.verdict} accepted`); }
+      else if (!b.steps.length && bv.recommendedThinking && bv.recommendedThinking !== bv.thinking) { b.thinking = bv.recommendedThinking; changed.push(`thinking ${b.thinking}`); }
+      b.reviewOk = reviewOkFor(buildView(b), { at, by: who.by, via: who.via, how: 'apply' });
+    }
+  }
+  return changed;
 }
 /** Apply one change. Returns { state, build?, log: string[] } or throws Error with a plain message. */
 export function apply(state, change) {
@@ -308,6 +358,18 @@ export function apply(state, change) {
       const req = b.upgradeRequests.find((r) => r.phase === Number(c.phase) && r.state === 'open'); if (!req) throw new Error('no open upgrade request on that phase');
       req.state = 'denied'; log.push(`${b.id}: upgrade request ${req.id} denied by ${who.by}`); break; }
     case 'rules': { for (const k of Object.keys(DEFAULT_RULES)) if (k in (c.rules ?? {})) s.rules[k] = typeof DEFAULT_RULES[k] === 'number' ? Math.max(5, Math.min(240, Number(c.rules[k]) || 30)) : c.rules[k] === true; log.push('rules saved'); break; }
+    // ---- model-advice@1 (Nov 4 2026): recommendations only; Apply and Dismiss are Brett's
+    case 'advise': { b = find(); const n = advise(b, c); const v = buildView(b); log.push(`${b.id}: advice on ${n} record(s) → ${v.recommendedModel} · ${v.recommendedThinking}${v.verdict ? ` · ${v.verdict}` : ''} (${v.reviewStatus})`); break; }
+    case 'set-thinking': { b = find(); const t = normThinking(c.thinking); if (c.thinking && !t) throw new Error(`thinking must be one of low, medium, high, max (got "${c.thinking}")`);
+      if (c.step) { const st = stepOf(b); if (t) st.thinking = t; else delete st.thinking; log.push(`${b.id} ${st.id} thinking ${t || 'default'}`); }
+      else { if (t) b.thinking = t; else delete b.thinking; log.push(`${b.id} thinking ${t || 'default'}`); } break; }
+    case 'apply-advice': { b = find(); const who = needApprover(c, `applying the recommendation on ${b.id}${c.step ? ` ${c.step}` : ''}`, 'advice'); const changed = applyAdvice(b, c, who); log.push(changed.length ? `${b.id}: ${changed.join(', ')} (by ${who.by}, ${who.via})` : `${b.id}: nothing to apply`); break; }
+    case 'dismiss-advice': { b = find(); const who = needApprover(c, `dismissing the recommendation on ${b.id}${c.step ? ` ${c.step}` : ''}`, 'advice'); const at = now();
+      if (c.step) { const st = stepOf(b); st.reviewOk = reviewOkFor(stepView(st), { at, by: who.by, via: who.via, how: 'dismiss', note: str(c.note, 500) }); log.push(`${b.id} ${st.id}: OK as is (by ${who.by})`); }
+      else { b.reviewOk = reviewOkFor(buildView(b), { at, by: who.by, via: who.via, how: 'dismiss', note: str(c.note, 500) }); for (const st of b.steps) if (stepView(st).reviewStatus === 'look') st.reviewOk = reviewOkFor(stepView(st), { at, by: who.by, via: who.via, how: 'dismiss' }); log.push(`${b.id}: OK as is, steps too (by ${who.by})`); } break; }
+    case 'apply-advice-all': { const who = needApprover(c, 'applying every recommendation', 'advice'); const ids = Array.isArray(c.ids) && c.ids.length ? c.ids : s.builds.filter((x) => !x.hidden && x.status !== 'archived').map((x) => x.id);
+      let n = 0; for (const id of ids) { const x = s.builds.find((y) => y.id === id); if (!x) continue; const changed = applyAdvice(x, { ...c, step: undefined }, who); if (changed.length) { n += 1; x.updatedAt = now(); } }
+      log.push(`applied the recommendation on ${n} build(s) (by ${who.by}, ${who.via})`); break; }
     default: throw new Error(`unknown action ${c.action}`);
   }
   if (b && s.builds.includes(b)) { b.updatedAt = now(); const st = derivedStatus(b, s.rules); if (st !== b.status && !(c.action === 'status')) { if (isFinished(st) && !b.builtAt) b.builtAt = now(); b.status = st; } }
