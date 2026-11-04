@@ -7,12 +7,13 @@ import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
-import { AGENT_CARD_SAMPLE, agentCardErrors, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
+import { AGENT_CARD_SAMPLE, agentCardErrors, avatarColors, avatarModel, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
+import { AVATAR_FACES, AVATAR_GEAR } from '../core/engines/swarm-rules.mjs';
 import { buildHelpIndex, helpCoverage, helpErrors, helpTarget, introToShow, introToWalkthrough, markSeen, normalizeHelpPack, ratchetErrors, resolveHelp, slugLabel } from '../core/engines/help-rules.mjs';
 import { DEFAULT_LAYOUT, LAYOUT_FIELDS, compileLayout, layoutBreakpointAttr, layoutErrors, layoutTokenVars, layoutTokens, layoutVars, layoutViewportAttrs, layoutViewports, normalizeLayout } from '../core/engines/layout';
 import { CONTROL_TARGET_IDS, canonicalControl, controlConfirmToken, controlConfirmValid, controlErrors, controlGate, controlHash, controlPaths, controlRegistry, controlResult, controlFailure, normalizeControl } from '../core/engines/control-rules.mjs';
 import { compileRepeats, declaredDataSets, missingDataSets, repeatVars, REPEAT_DEFAULT_COLUMNS, REPEAT_DEFAULT_STYLE, REPEAT_MAX_COLUMNS, REPEAT_STYLES } from '../core/engines/repeat';
-import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from '../core/engines/components';
+import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, normalizeTabGroup, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from '../core/engines/components';
 import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/engines/uac';
 import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
@@ -32,6 +33,7 @@ import { ASSET_TYPES } from '../core/types';
 import { ASSET_ORIGIN, CHECKED_KINDS, DEFAULT_MENU, MENU_DEFAULT_ORDER, MENU_ITEM_FIELDS, MENU_MAX_DEPTH, PROVIDER_MAX, appMenuSearchEntries, buildAppMenu, chromeToggleItems, chromeToggleTypes, compileAppMenu, compileProviderItems, mergeAppMenu, parseChecked, resolveChecked, titleFromId, truthy, validateMenuItems, type AppMenuContribution, type AppMenuEnv } from '../core/engines/appmenu';
 import { LIBRARY_PARAM_TYPES, PARAM_TRUE_WORDS, paramBool, paramDefaultText, paramDefaults, paramError, paramToJson, type LibraryParam } from '../core/library';
 import { validateAsset } from '../core/validate';
+import * as cs from '../core/engines/chrome-settings-rules.mjs';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
 import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES, HUB_FIELD_CAPS, HUB_MESSAGES, HUB_PATHS, HUB_SEEN_CAP, accountUrl, apkDownloadName, approvalUrl, approvalsUrl, appsUrl, csrfFromPage, feedUrl, hubOrigin, interpretFeed, isHub, loginUrl, logoutUrl, normalizeHub, seenPlan, unreachableFeed } from '../libs/hub/hub';
 import { APPS_FEED_MAX_BYTES, APPS_FEED_PATH, APPS_MAX, VERSIONS_MAX, appsFeedUrl, interpretApps } from '../libs/hub/apps';
@@ -99,6 +101,14 @@ write('agent-card.json', {
     'too-many': agentCardErrors('agent-card', { front: Array(13).fill('name') }),
     'not-an-object': agentCardErrors('agent-card', 'nope'),
     'other-type': agentCardErrors('button', { design: 'poster' }),
+  },
+  // the avatar (agent@1 face / hair / gear / hue → a part list of theme tokens): what every port draws
+  avatar: {
+    sample: avatarModel(AGENT_CARD_SAMPLE.avatar),
+    junk: avatarModel('nope'),
+    faces: Object.fromEntries(AVATAR_FACES.map((face) => [face, avatarModel({ face }).parts.find((x) => x.id === 'face')])),
+    gear: Object.fromEntries(AVATAR_GEAR.map((gear) => [gear, avatarModel({ gear }).parts.filter((x) => x.id.startsWith('gear'))])),
+    hues: Object.fromEntries([0, 45, 90, 180, 270, 359].map((hue) => [hue, avatarColors({ hue, hair: 0 })])),
   },
 });
 // Help mode (help@1; core/engines/help-rules.mjs): auto help ids, packs, the index (later wins, drafts never beat written), intros, coverage, ratchet, errors.
@@ -648,6 +658,48 @@ write('spacing.json', {
     kinds,
   });
 }
+// chrome-settings@1 (Nov 4 2026): registry, ids, inherit@1 chain, picks, instance overrides, custom copies
+{
+  const defaults = Object.fromEntries(load('settings').filter((a) => (a.data as { for?: string }).for).map((a) => [a.id, a]));
+  const custom = cs.customCopy(defaults['chrome-tab-group']!, { id: 'axf-console', name: 'Dev Console' });
+  const edited = { ...custom, id: 'chrome-tab-group-edited', data: { ...custom.data, layout: 'tabs-side', tabs: [], hide: ['interface'], levelOf: { look: 'basic' } } };
+  const get = (id: string) => ({ ...defaults, [custom.id]: custom, [edited.id]: edited, loop1: { id: 'loop1', data: { for: 'toolbar', extends: 'loop2' } }, loop2: { id: 'loop2', data: { for: 'toolbar', extends: 'loop1', header: 'none' } } } as Record<string, unknown>)[id] ?? null;
+  write('chrome-settings.json', {
+    contract: cs.CHROME_SETTINGS_CONTRACT,
+    types: cs.CHROME_TYPES, labels: cs.CHROME_LABELS, many: cs.CHROME_MANY, targets: cs.CHROME_TARGETS, moves: cs.CHROME_MOVES, tabs: cs.CHROME_SETTINGS_TABS, fields: cs.CHROME_FIELDS,
+    ids: Object.fromEntries(cs.CHROME_TYPES.map((t) => [t, { default: cs.chromeSettingsDefaultId(t), custom: cs.chromeSettingsCustomId(t, 'axf-console'), typeOfDefault: cs.chromeTypeOfSettingsId(cs.chromeSettingsDefaultId(t)), typeOfCustom: cs.chromeTypeOfSettingsId(cs.chromeSettingsCustomId(t, 'axf-console')) }])),
+    keys: { pick: cs.CHROME_SETTINGS_PICK_KEY('tab-group'), patch: cs.CHROME_SETTINGS_PATCH_KEY('tab-group'), instance: cs.CHROME_INSTANCE_KEY('tab-group', 'ui-review.sections'), instanceAsset: cs.CHROME_INSTANCE_ASSET_KEY('tab-group', 'ui-review.sections'), last: cs.TAB_GROUP_LAST_KEY('ui-review.sections'), fold: cs.TAB_GROUP_FOLD_KEY('ui-review.sections') },
+    slugs: { 'Dev Console': cs.appSlug('Dev Console'), 'axf-console': cs.appSlug('axf-console'), '': cs.appSlug(''), '  Weird__Name!!': cs.appSlug('  Weird__Name!!') },
+    targetTypes: Object.fromEntries(['tab-group', 'toolbar', 'banner', 'axf-banner', 'nav', 'nav-item', 'app-menu', 'menubar', 'canvas', 'default', ''].map((t) => [t || '(empty)', cs.chromeTypeOfTarget(t)])),
+    customCopy: custom,
+    chain: { custom: cs.resolveSettingsChain(get, custom.id), edited: cs.resolveSettingsChain(get, edited.id), default: cs.resolveSettingsChain(get, 'chrome-tab-group'), loop: cs.resolveSettingsChain(get, 'loop1'), missing: cs.resolveSettingsChain(get, 'nope') },
+    picks: {
+      unset: cs.chromeSettingsPick(undefined, 'tab-group', ['chrome-tab-group', custom.id]),
+      custom: cs.chromeSettingsPick(custom.id, 'tab-group', ['chrome-tab-group', custom.id]),
+      gone: cs.chromeSettingsPick('chrome-tab-group-old', 'tab-group', ['chrome-tab-group', custom.id]),
+      wrongType: cs.chromeSettingsPick('chrome-toolbar', 'tab-group', ['chrome-tab-group', 'chrome-toolbar']),
+      noDefault: cs.chromeSettingsPick(undefined, 'tab-group', [custom.id]),
+    },
+    choices: cs.chromeSettingsChoices('tab-group', [edited, defaults['chrome-toolbar']!, custom, defaults['chrome-tab-group']!]),
+    overrides: {
+      clean: cs.normalizeInstanceOverride('tab-group', { style: 'pills', position: 'left', badges: false, bogus: 1, density: 'huge', sticky: 'yes' }),
+      number: cs.normalizeInstanceOverride('banner', { height: 999.6, surface: 'raised' }),
+      empty: cs.normalizeInstanceOverride('toolbar', null),
+      unknownType: cs.normalizeInstanceOverride('clock', { format: '12h' }),
+      data: cs.chromeInstanceData('tab-group', { style: 'underline', align: 'start' }, { style: 'pills', bogus: true }),
+      value: [cs.chromeFieldValue('tab-group', { style: 'underline' }, { style: 'pills' }, 'style'), cs.chromeFieldValue('tab-group', { style: 'underline' }, {}, 'style'), cs.chromeFieldValue('tab-group', {}, {}, 'style')],
+    },
+    errors: {
+      ok: cs.chromeSettingsErrors(custom),
+      badFor: cs.chromeSettingsErrors({ id: 'chrome-x', data: { for: 'clock' } }),
+      self: cs.chromeSettingsErrors({ id: 'chrome-toolbar-a', data: { for: 'toolbar', extends: 'chrome-toolbar-a' } }),
+      badName: cs.chromeSettingsErrors({ id: 'my-settings', data: { for: 'toolbar' } }),
+      notAsset: cs.chromeSettingsErrors(null),
+    },
+    plan: cs.chromeSettingsPlan('molly'),
+    missing: cs.chromeSettingsMissing('molly', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-toolbar']),
+  });
+}
 write('components.json', {
   button: Object.fromEntries(load('button').map((a) => [a.id, buttonStyle(a.data)])),
   slider: Object.fromEntries(load('slider').map((a) => [a.id, sliderStyle(a.data)])),
@@ -658,6 +710,17 @@ write('components.json', {
   toolbar: Object.fromEntries(load('toolbar').map((a) => [a.id, toolbarStyle(a.data)])),
   'nav-menu': Object.fromEntries(load('nav-menu').map((a) => [a.id, navMenuStyle(a.data)])),
   'app-menu': Object.fromEntries(load('app-menu').map((a) => [a.id, appMenuStyle(a.data)])),
+  // tab-group@1 (Nov 4 2026): every starter's compiled output + normalized data, and the edge cases a port must match
+  'tab-group': Object.fromEntries(load('tab-group').map((a) => [a.id, { normalized: normalizeTabGroup(a.data), ...tabGroupStyle(a.data) }])),
+  'tab-group-cases': {
+    missing: { normalized: normalizeTabGroup(null), ...tabGroupStyle(null) },
+    hidden: tabGroupStyle({ style: 'pills', align: 'start' }, true),
+    'legacy-show-icons-false': normalizeTabGroup({ style: 'underline', align: 'start', showIcons: false }),
+    'display-wins-over-show-icons': normalizeTabGroup({ style: 'underline', align: 'start', showIcons: false, display: 'icons' }),
+    'unknown-values-fall-back': normalizeTabGroup({ style: 'x' as never, align: 'y' as never, position: 'z' as never, overflow: 'q' as never, display: 'w' as never, density: 'v' as never }),
+    'left-rail': tabGroupStyle({ style: 'pills', align: 'start', position: 'left', display: 'icons', sticky: true, badges: false }),
+    'every-flag-on': normalizeTabGroup({ style: 'boxed', align: 'stretch', sticky: true, collapsible: true, closable: true, reorderable: true, badges: true, rememberLast: true, overflow: 'more', position: 'bottom' }),
+  },
   // style fields set explicitly (the starter assets mostly use defaults)
   'chrome-cases': {
     'toolbar-compact-glass': toolbarStyle({ variant: 'labels', align: 'start', groups: [], showSearch: false, density: 'compact', surface: 'glass', divider: false }),

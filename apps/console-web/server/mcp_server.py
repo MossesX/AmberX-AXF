@@ -50,8 +50,10 @@ Builds over 30 minutes are split into steps of 30 minutes or less: `pending_step
 one off with `pending_change(action="step", …)` or `build_steps(index=…, done=True)` as you finish it.
 Model policy (framework/core/model-policy.mjs): Opus or Fable only, never Sonnet or Haiku. Fable 5.1 for foundation
 work (kernel internals, porting, cross-port contracts, schemas, heavy refactors); Opus 5.5 for everything else.
-Model switches: a downgrade (Fable → Opus) is fine; an UPGRADE (Opus → Fable) needs Brett's approval. Stop at it and
-ask (orchestrator.mjs request-upgrade); never approve one yourself.
+Model switches: a downgrade (Fable → Opus) is fine. An UPGRADE (Opus → Fable) waits for Brett only while his Claude
+setting "Fable upgrades need my approval" is on (`node framework/cli/upgrade-policy.mjs`; off by default since Nov 4
+2026: a step that needs Fable is set to Fable and runs). While it is on: stop at it and ask (orchestrator.mjs
+request-upgrade); never approve one yourself.
 When you finish building a step, call `build_step` with action "complete": the epic and its linked features are
 marked built in the feature tracker, and steps that depended on it are re-checked for rework.
 After reordering with `build_reorder`, call `build_reprocess` (apply=false to preview, then apply=true).

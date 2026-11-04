@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type DragEvent } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, Markdown, Segmented, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, IconButton, Markdown, Segmented, TabGroup, useRuntime } from '@console/axf/react';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as pc from './plan-core.mjs';
 import type { CatNode, Filter, Plan, SavedView } from './plan-core.mjs';
@@ -69,11 +69,8 @@ export function PlanStudioPage() {
     <div className="fx-stack axp-plan-studio">
       <Head count={state.plans.length} />
       <div className="axp-plan-studio__topbar">
-        <div className="fx-tabs" role="tablist" aria-label="Plan Studio">
-          {([['plans', 'Plans', 'list', state.plans.length], ['catalog', 'Catalog', 'package', null], ['categories', 'Categories', 'folder', state.categories.paths.length]] as const).map(([id, label, icon, n]) => (
-            <button key={id} type="button" role="tab" aria-selected={tab === id} className={`fx-tab${tab === id ? ' is-active' : ''}`} onClick={() => setTab(id)}><Icon name={icon} size={12} />{label}{n !== null && <span className="axp-plan-studio__n">{n}</span>}</button>
-          ))}
-        </div>
+        <TabGroup id="plan-studio.tabs" label="Plan Studio" value={tab} onChange={setTab}
+          tabs={([['plans', 'Plans', 'list', state.plans.length], ['catalog', 'Catalog', 'package', null], ['categories', 'Categories', 'folder', state.categories.paths.length]] as const).map(([id, label, icon, n]) => ({ value: id, label, icon, badge: n ?? undefined }))} />
         <span className="axp-plan-studio__grow" />
         {canListen() && <Button size="sm" icon="mic" onClick={() => setVoice(true)}>Talk</Button>}
         <NewPlanButton onNew={(p) => setOpen({ plan: p, isNew: true })} />

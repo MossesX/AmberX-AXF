@@ -165,3 +165,18 @@ export function evictions(opts: { installed: string[]; cfg: LazyConfig; lastUsed
   if (extra <= 0) return [];
   return lru.sort((a, b) => (opts.lastUsed[a] ?? 0) - (opts.lastUsed[b] ?? 0)).slice(0, extra);
 }
+
+/** A dynamic import that failed to fetch or evaluate its file (a redeploy renamed the chunks, the network dropped). */
+export function isChunkLoadError(e: unknown): boolean {
+  const m = String((e as Error)?.message ?? e);
+  return /dynamically imported module|Importing a module script failed|error loading dynamically imported|Failed to fetch|Loading chunk|Unable to preload|is not a valid JavaScript MIME type/i.test(m);
+}
+
+/** Imports a chunk; on a chunk-load error, tries once more before giving up (a blip, or a half-finished deploy). */
+export async function importOnce<T>(imp: () => Promise<T>, waitMs = 600): Promise<T> {
+  try { return await imp(); } catch (e) {
+    if (!isChunkLoadError(e)) throw e;
+    await new Promise((r) => setTimeout(r, waitMs));
+    return imp();
+  }
+}

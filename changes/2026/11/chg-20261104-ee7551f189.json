@@ -2,7 +2,7 @@
   "$axf": "change-log@1",
   "id": "chg-20261104-ee7551f189",
   "createdAt": "2026-11-04T14:13:12.887Z",
-  "updatedAt": "2026-11-04T14:27:54.839Z",
+  "updatedAt": "2026-11-04T14:31:18.071Z",
   "kind": "build",
   "title": "# Build: profile-lists-home-card (Current profile) - continues profile-switcher-widget (PR #300, pa…",
   "asked": "# Build: profile-lists-home-card (Current profile) - continues profile-switcher-widget (PR #300, paused, NOT merged) ## What Brett said (verbatim, Nov 4 2026, voice) \"I want a card on the home screen for build profiles.\" ... \"And I don't want them to be all one list and filters anymore. I want it back to separate lists.\" Book to a free named agent (Polo if his card exists, else Ping Paulie). Register id `profile-lists-home-card` in the `current` profile + banner entry + What Brett said block. Base = branch claude/profile-switcher-widget (read /root/axf-builds/profile-switcher-widget/.brief.md for history). Update it from main first. ## Changes (override that build's Addendum 1 + 2 'profiles are a filter') - **Build profiles are separate lists again.** No combined 'all builds, filtered' model and no 'All profiles' merged view as the default. Each profile has its own list; the builds tables show the **selected profile's list**. The switcher widget switches which profile's list you're looking at (and which profile new builds go to). Keep bulk actions acting on the visible (= selected profile's) list. If an 'All profiles' overview remains at all, it's a separate read-only summary page, not the default tables. - Keep the rest of the widget: chip with active profile + counts, dropdown to switch, attach anywhere (hook@1), settings, REST + MCP + CLI. - **Home screen card: Build profiles** - a card@1 on Home (home-cards #283 engine, on main) listing every profile with counts (running / queued / pending / built), the active one highlighted; tap a profile = switch to it and open Builds; '+ New profile' and 'Manage' links. Added to Home by default and in the Add card suggestions. - Close PR #300 in favour of this PR (or update #300 itself - one PR only). Tests/type-check, phone screenshot filed to UI Review (non-blocking), PR -> merges when CI green, redeploy console. Never leave tsc/vite/playwright running. Report `_claude/builds/reports/profile-lists-home-card.md`. Commits clean and professional. ## ADDENDUM 1 (Brett, voice) - OVERRIDES 'Changes' above Brett: \"Actually, no, never mind. Leave it as filters.\" - **Keep profiles as FILTERS** exactly as profile-switcher-widget's Addendum 1 + 2 say: every builds view loads all builds, the switcher filters what's shown (multi-select, 'Filtered: X - N hidden' + Show all), bulk actions act only on what's visible. Do NOT go back to separate lists. - This build = finish the profile switcher widget (#300) + add the **Build profiles Home card** (counts per profile; tap = set the filter to that profile and open Builds; '+ New profile', 'Manage'). Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Opus) is fine. An UPGRADE (e.g. Opus → Fable) needs Brett's approval: when you reach one, run `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>`, ask once, and stop. Never approve a model switch upgrade yourself (no `act approve` on an upgrade), never relaunch on a higher model.",
@@ -34,7 +34,7 @@
   },
   "surface": "headless",
   "startedAt": "2026-11-04T14:13:12.887Z",
-  "lastSeenAt": "2026-11-04T14:27:54.839Z",
+  "lastSeenAt": "2026-11-04T14:31:18.071Z",
   "estimate": {
     "minutes": 100,
     "costUsd": 14
@@ -48,7 +48,7 @@
     "apps/console-web/src/views/HomeCards.tsx",
     "framework/core/engines"
   ],
-  "doing": "Running: Check leftover uvicorn's working dir",
+  "doing": "Running: Retake screenshots with working server",
   "progress": 1,
   "resume": {
     "repo": "MossesX/AmberX-AXF",

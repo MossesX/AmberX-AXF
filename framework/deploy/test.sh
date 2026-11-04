@@ -107,7 +107,7 @@ U="$T/update"
 axf_update_script "$U" /opt/app main /var/log/app.log 'DOMAIN="x" bash "/opt/app/deploy/install.sh"' /opt/app/.state/update.json /opt/app/.state/wall-waiting /opt/app/.state/rebuild
 bash -n "$U" && ok || fail "update script syntax"
 eq "$(stat -c %a "$U")" 700 "update script root-only"
-grep -qF '[ "$before" = "$(git rev-parse HEAD)" ] && [ ! -f "/opt/app/.state/wall-waiting" ] && [ ! -f "/opt/app/.state/rebuild" ] && exit 0' "$U" && ok || fail "re-run markers"
+grep -qF '[ "$before" = "$(git rev-parse HEAD)" ] && [ ! -f "/opt/app/.state/wall-waiting" ] && [ ! -f "/opt/app/.state/rebuild" ] && ! grep -qs '"'"'"state":"failed"'"'"' "/opt/app/.state/update.json" && exit 0' "$U" && ok || fail "re-run markers + retry after a failed run"
 grep -qF 'DOMAIN="x" bash "/opt/app/deploy/install.sh" >> /var/log/app.log 2>&1 || state=failed' "$U" && ok || fail "command + status"
 [ "$(head -n 4 "$U" | tail -n 1)" = "{" ] && [ "$(tail -n 1 "$U")" = "}" ] && ok || fail "one block"
 AXF_UPDATE_PRELUDE='H=(-c x)' AXF_UPDATE_FETCH='git "${H[@]}"' axf_update_script "$U" /opt/app main /var/log/app.log 'bash x'
@@ -129,6 +129,10 @@ if command -v git >/dev/null; then
   echo 3 > "$R/app"; git -C "$R" add -A; git -C "$R" -c user.email=t@t -c user.name=t commit -q -m three
   axf_update_script "$U" "$T/clone" main "$T/log" "false" "$T/st.json"
   ! bash "$U" && grep -q '"state":"failed"' "$T/st.json" && ok || fail "failed command: status failed, non-zero exit"
+  # unchanged main after a failed run (it may have removed the container part way): the next tick runs it again
+  rm -f "$T/ran"; axf_update_script "$U" "$T/clone" main "$T/log" "touch $T/ran" "$T/st.json"
+  bash "$U"; [ -e "$T/ran" ] && grep -q '"state":"done"' "$T/st.json" && ok || fail "after a failed run: retried on the next tick"
+  rm -f "$T/ran"; bash "$U"; [ ! -e "$T/ran" ] && ok || fail "after the retry succeeded: unchanged again, not run"
 fi
 
 echo "axf-deploy self-test: $pass checks passed"

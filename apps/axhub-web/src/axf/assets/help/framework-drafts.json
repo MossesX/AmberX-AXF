@@ -95,6 +95,84 @@
         "text": "Where you set “Accent”. Change it and the app uses the new value.",
         "kind": "field",
         "draft": true
+      },
+      {
+        "target": "reset-custom-to-default",
+        "title": "Reset custom to default",
+        "text": "Throws away this app's edits to the settings interface and goes back to the shared default.",
+        "kind": "button"
+      },
+      {
+        "target": "tabs-on-top",
+        "title": "Tabs on top",
+        "text": "Lays the settings interface out with its tabs in a row across the top.",
+        "kind": "tab"
+      },
+      {
+        "target": "tabs-at-the-side",
+        "title": "Tabs at the side",
+        "text": "Lays the settings interface out with its tabs stacked down the side.",
+        "kind": "tab"
+      },
+      {
+        "target": "list",
+        "title": "List",
+        "text": "Lays the settings interface out as one list, no tabs.",
+        "kind": "tab"
+      },
+      {
+        "target": "full",
+        "title": "Full",
+        "text": "Shows the full header (title and description) above the settings.",
+        "kind": "tab"
+      },
+      {
+        "target": "compact",
+        "title": "Compact",
+        "text": "Shows a slim one-line header above the settings.",
+        "kind": "tab"
+      },
+      {
+        "target": "none",
+        "title": "None",
+        "text": "Hides the header above the settings.",
+        "kind": "tab"
+      },
+      {
+        "target": "search-field",
+        "title": "Search field",
+        "text": "Shows a search box that filters the settings as you type.",
+        "kind": "toggle"
+      },
+      {
+        "target": "descriptions",
+        "title": "Descriptions",
+        "text": "Shows each setting's short description under its name.",
+        "kind": "toggle"
+      },
+      {
+        "target": "hidden-ids-comma-separated-a-tab-group-or-field-key",
+        "title": "Hidden ids (comma-separated: a tab, group or field key)",
+        "text": "Tabs, groups or setting keys to hide from this app's settings interface, separated by commas.",
+        "kind": "field"
+      },
+      {
+        "target": "banner-settings-look-behaviour-apply-to-all",
+        "title": "Banner settings (look, behaviour, Apply to all)",
+        "text": "Opens the full banner settings: its look, its behaviour, and Apply to all banners.",
+        "kind": "button"
+      },
+      {
+        "target": "find-a-setting",
+        "title": "Find a setting",
+        "text": "Type part of a setting's name to show only the settings that match.",
+        "kind": "field"
+      },
+      {
+        "target": "more",
+        "title": "More",
+        "text": "Opens a menu with the tabs that don't fit in the row.",
+        "kind": "button"
       }
     ],
     "intros": []
