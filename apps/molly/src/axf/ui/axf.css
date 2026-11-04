@@ -1276,7 +1276,6 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-tabgroup__bar .fx-tab__add { flex: 0 0 auto; color: var(--fx-muted); }
 .fx-tabgroup__bar .fx-tab__add:hover { color: var(--fx-text); }
 .fx-tabgroup__bar .fx-tab.is-armed { outline: calc(var(--fx-border-w) * 2) solid var(--fx-accent); outline-offset: calc(var(--fx-border-w) * -2); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-text); }
-.fx-tabgroup__bar .fx-tab[data-fx-instance]::after { content: attr(data-fx-instance); font-size: var(--fx-type-root-xs); color: var(--fx-muted); padding: 0 var(--fx-dens-gap-xs); border-radius: 999px; background: var(--fx-surface2); }
 .fx-dialog__head { cursor: grab; touch-action: none; }
 .fx-dialog__head.is-armed { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
 .fx-dialog__head > h2 { user-select: none; }
