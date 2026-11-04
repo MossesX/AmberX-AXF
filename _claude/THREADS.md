@@ -691,9 +691,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:32 UTC · `merge-queue` added (6 steps) (current) · orchestrator
-- 2026-11-04 14:32 UTC · `merge-queue` → running (current) · orchestrator
-- 2026-11-04 14:38 UTC · `profile-lists-home-card` PR #318 (current) · builds-live
 - 2026-11-04 14:38 UTC · `batch-manager` note (angel) · orchestrator
 - 2026-11-04 14:38 UTC · `grid-sort-filter` note (angel) · orchestrator
 - 2026-11-04 14:38 UTC · `grid-sort-filter` note (angel) · orchestrator
@@ -1091,6 +1088,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 20:18 UTC · `grid-column-hiding` s12-11 done, → built (current) · orchestrator
 - 2026-11-04 20:18 UTC · `grid-column-hiding` s12-11 done, → built (current) · foreign-write
 - 2026-11-04 20:20 UTC · `land-merge-queue-first` → complete, note (urgent) · reconciler
+- 2026-11-04 19:59 UTC · `handoff-2` s11 done, → built (current) · orchestrator
+- 2026-11-04 19:59 UTC · `handoff-2` note (current) · orchestrator
+- 2026-11-04 20:19 UTC · `land-merge-queue-first` → complete, note (urgent) · reconciler
 
 ## Token passes (log)
 
