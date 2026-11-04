@@ -156,11 +156,10 @@
     {
       "text": "New asset type tab-group@1 in asset-types.json with both validators and a Kotlin twin recorded in PORTING.md",
       "files": [],
-      "kind": "kernel",
+      "kind": "foundation",
       "model": "Fable",
-      "thinking": "max",
+      "thinking": "high",
       "signals": [
-        "porting",
         "asset type",
         "asset-types",
         "validators",

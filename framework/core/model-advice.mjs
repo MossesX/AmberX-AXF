@@ -67,9 +67,15 @@ export const effortArgs = (thinking) => (normThinking(thinking) ? ['--effort', n
 
 const KERNEL_WORDS = /\b(kernel|cross-port|conformance|porting|wire (format|code)s?|protocol adapters?|breaking change)\b/i;
 const MIGRATION_WORDS = /\b(migrations?|merge driver|newer-wins|store core|journal(led)?|one builds store|builds@1|data model)\b/i;
-const CONTRACT_TAG = /\b[a-z][a-z0-9-]*@\d\b/i;
-const CONTRACT_VERB = /\b(new|add|define|design|change|extend|contract|schema|fields?|type|engine|registr(y|ies)|resolver|matching|rules|messages?|protocol|store|addition)\b/i;
-const EXTRA_FOUNDATION = /\b(registries|asset[- ]types?\.json|asset types?|new asset type|token engine|hot-?swap|cross-app|across (every|all) apps?|every app|all apps|shared assets?|appearance@1|design package|style theme engine|layout engine|rules? file|both validators|kotlin twin|android twin|gui behaviou?r)\b/i;
+/** A contract tag within five words of a contract verb, either side: "new asset type tab-group@1", "embed@1 front messages addition". */
+const TAG_NEAR_VERB = /\b(?:new|adds?|added|define[sd]?|design(?:ed)?|change[sd]?|extend(?:s|ed)?|contracts?|schemas?|fields?|rules|type|engine|registr(?:y|ies)|resolver|matching|messages?|protocol|addition)\b\W+(?:[\w-]+\W+){0,5}?([a-z][a-z0-9-]*@\d)\b|\b([a-z][a-z0-9-]*@\d)\b\W+(?:[\w-]+\W+){0,5}?(?:contracts?|schemas?|fields?|rules|addition|change[sd]?|type|engine|resolver|matching|messages?|protocol|registr(?:y|ies)|validators?|fixtures?)\b/gi;
+const EXTRA_FOUNDATION = /\b(registries|asset[- ]types?\.json|asset types?|new asset type|token engine|hot-?swap|cross-app|across (every|all) apps?|shared assets?|appearance@1|design package|style theme engine|layout engine|rules? file|both validators|kotlin twin|android twin|gui behaviou?r)\b/i;
+/**
+ * Words that look like foundation signals but are not: a note that the Android twin is a deferred gap in PORTING.md
+ * (every web build says so), a negation ("no docs engine", "no schema change"), and a file path mention.
+ */
+const NOT_SIGNALS = [/\bPORTING\.md\b/gi, /\bdeferred gap[^.;\n]*/gi, /\bporting (gap|notes?|docs?|spec|line|entry)[^.;\n]*/gi, /\bframework\/spec\/PORTING\b/gi, /\b(no|not a|without( a| an)?|never a)\s+(\w+[- ]){0,2}(engines?|schemas?|kernel|migrations?|contracts?|registry|asset types?|fixtures?)\b/gi, /\b(kotlin|android) (twin|side)[^.;\n]*(hold|deferred|later|gap)[^.;\n]*/gi];
+const cleanWords = (s) => NOT_SIGNALS.reduce((t, re) => t.replace(re, ' '), s);
 /** A step whose first words say it is landing work is landing work, whatever it mentions after ("Docs: … from the control@1 schema"). */
 const LANDING_START = /^\s*(s\d+[a-z]?\s+)?(docs?|documentation|tests?|report|screenshots?|land(ing)?|readme|cleanup|tidy|wording|rename|commands?( once)?\s*(->|→)|redeploy|deploy|changelog|release notes|ui review|threads)\b/i;
 const FOUNDATION_PATHS = /(^|\/)framework\/(core|schemas|spec|plan|android|assets)\//i;
@@ -84,7 +90,7 @@ const SMALL_FIX = /\b(small fix|hotfix|quick fix|one-?line|tiny|minor|cosmetic)\
  * work), then debugging / architecture (Opus, high), then landing / wording (Opus, low), else plugin work (Opus, medium).
  */
 export function classify(text, { files = [], category = '', why = '', title = '' } = {}) {
-  const words = [title, text, why, category].map((x) => str(x)).join(' \n ');
+  const words = cleanWords([title, text, why, category].map((x) => str(x)).join(' \n '));
   const paths = (Array.isArray(files) ? files : []).map((f) => str(f, 300)).join(' ');
   const hits = (re, s = words) => { const m = s.match(new RegExp(re.source, `${re.flags.replace('g', '')}g`)); return m ? [...new Set(m.map((x) => x.toLowerCase()))] : []; };
   const signals = [];
@@ -94,9 +100,13 @@ export function classify(text, { files = [], category = '', why = '', title = ''
   }
   const kernel = hits(KERNEL_WORDS); const migration = hits(MIGRATION_WORDS);
   const found = [...hits(FOUNDATION_WORDS), ...hits(EXTRA_FOUNDATION)];
-  const tagged = CONTRACT_TAG.test(words) && CONTRACT_VERB.test(words) ? hits(CONTRACT_TAG) : [];
+  // a contract tag (ref@1, embed@1) counts only next to a contract verb: "embed@1 addition", "new asset type tab-group@1";
+  // a step that merely USES a contract ("through embed@1") is not foundation work
+  const tagged = [...new Set([...words.matchAll(TAG_NEAR_VERB)].map((m) => (m[1] ?? m[2] ?? '').toLowerCase()).filter(Boolean))];
   const fpaths = paths.split(/\s+/).filter((p) => FOUNDATION_PATHS.test(p));
-  const foundation = kernel.length || migration.length || found.length || tagged.length || fpaths.length;
+  // a long text (a brief, a detail) needs more than one incidental word to be foundation work; a short step line needs one
+  const distinct = new Set([...found, ...tagged, ...fpaths]).size;
+  const foundation = kernel.length || migration.length || (words.length > 400 ? distinct >= 2 : distinct >= 1);
   if (foundation) {
     const kind = kernel.length ? 'kernel' : migration.length ? 'migration' : 'foundation';
     signals.push(...kernel, ...migration, ...found, ...tagged, ...fpaths.map((p) => p.replace(/^.*?(framework\/[a-z]+)\/.*$/i, '$1/')));
