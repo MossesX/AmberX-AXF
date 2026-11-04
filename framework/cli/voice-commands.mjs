@@ -37,6 +37,8 @@ export const ROOT = resolve(process.env.AXF_ROOT || join(dirname(fileURLToPath(i
 export const COMMANDS_FILE = 'axf.commands.json';
 export const COMMANDS_FRAME = 'commands@1';
 export const ASSET_DIR = 'src/assets/voice-command';
+/** The plugin template's id: a folder still carrying it is a copy nobody renamed (plugins/_template, CI's ci-example). */
+export const TEMPLATE_PLUGIN_ID = 'ai.amberx.axf.console.example';
 /** Short names a person says for an app whose manifest name is longer (the asset's wake words; the manifest's displayName words are added). */
 export const WAKE_WORDS = { 'axf-console-web': ['console', 'dev console'], 'amberx-droid': ['amberx', 'amber x'], 'axhub-web': ['axhub', 'ax hub', 'hub'], molly: ['molly'], expenses: ['expenses', 'expense'], 'walkthrough-studio': ['walkthrough studio', 'walkthroughs'], 'voice-vault': ['voice vault'], 'axf-demo': ['demo'] };
 
@@ -114,11 +116,14 @@ export function voiceSurface(app) {
   const home = PLUGIN_HOMES.find((h) => h.app === app.folder);
   if (home) {
     const reg = pluginCommandRegistry(readPlugins({ apps: [app.folder] }));
-    for (const p of reg.plugins ?? []) for (const c of p.commands ?? []) {
+    for (const p of reg.plugins ?? []) {
+      if (p.id === TEMPLATE_PLUGIN_ID) continue; // a copy of plugins/_template not renamed yet (CI builds one as ci-example): not a real plugin
+      for (const c of p.commands ?? []) {
       const tool = commandToolName(p.folder, c.id);
       const method = c.run?.route?.method ?? (c.effect === 'read' ? 'GET' : 'POST');
       commands.push({ id: tool, title: `${p.name || p.folder}: ${c.title || c.id}`, description: c.description || '', effect: c.effect, readOnly: c.readOnly, destructive: c.destructive, input: c.input, run: { mcp: tool, api: `${method} /api/control/${p.folder}/${c.id}`, cli: `axf ${p.folder} ${c.id}` }, plugin: p.folder });
       from.plugins++;
+      }
     }
   }
   if (app.folder === 'console-web') {
