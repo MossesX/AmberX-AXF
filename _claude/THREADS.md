@@ -662,31 +662,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 17:19 UTC · landed `claude/one-look-default-2` (PR#244) on main at 4ff2cc50 · land-everything
-- 2026-11-03 17:26 UTC · landed `claude/theme-veto-pass` (PR#262) on main at 16620d72 · land-everything
-- 2026-11-03 17:26 UTC · landed `claude/pass-all` (PR#264) on main at 16620d72 · land-everything
-- 2026-11-03 17:35 UTC · landed `claude/plugin-commands-auto` (PR#263) on main at cdd568c2 · land-everything
-- 2026-11-03 17:42 UTC · landed `claude/axhub-veto-pass-web` (PR#261) on main at bc344492 · land-everything
-- 2026-11-03 17:42 UTC · landed axHub `claude/kill-patches-pilot` (#32) at d3cf462 and `claude/axhub-veto-pass` (#33/#34) at 6334d34, deployed · land-everything
-- 2026-11-03 13:53 UTC · `orch-live-sync` s1 done (urgent) · orchestrator
-- 2026-11-03 13:54 UTC · `xlayout` s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done (big-dog) · builds-live
-- 2026-11-03 14:45 UTC · `headless-tabs` s1–s7 done (urgent) · PR #259 · UI Review r-20261103-3sp5x01
-- 2026-11-03 13:55 UTC · `orch-live-sync` s2 done (urgent) · orchestrator
-- 2026-11-03 13:55 UTC · `orch-live-sync` s3 done (urgent) · orchestrator
-- 2026-11-03 13:55 UTC · `orch-live-sync` s4 done (urgent) · orchestrator
-- 2026-11-03 13:56 UTC · `urgent-builds` → archived, merged, note (urgent) · orch-live-sync
-- 2026-11-03 13:56 UTC · `orch-step-click` note (refactor) · orch-live-sync
-- 2026-11-03 13:56 UTC · `dock-engine` s1 done, s2 done, s3 done, s4 done, → built, branch claude/molly-fable, PR #245, note (urgent) · orch-live-sync
-- 2026-11-03 13:56 UTC · `theme-editor` s1 done, s2 done, s3 done, s4 done, s5 done, → built, branch claude/theme-editor, PR #243, note (urgent) · orch-live-sync
-- 2026-11-03 13:56 UTC · `token-control` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, → built, branch claude/token-control-opus, PR #250, note (urgent) · orch-live-sync
-- 2026-11-03 13:57 UTC · `enterprise-branding` merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `apply-all-levels` branch claude/apply-all-levels, PR #115, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-empty-shell` branch claude/amberx-empty-shell, PR #118, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `fresh-look` branch claude/fresh-look-done, PR #120, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `design-packages-10` branch claude/design-packages-10, PR #124, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `build-orchestrator` branch claude/build-orchestrator, PR #122, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `build-profiles` branch claude/build-profiles, PR #127, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-appearance-lock` branch claude/amberx-appearance-lock, PR #126, merged, note (main-framework, refactor) · reconciler
 - 2026-11-03 13:57 UTC · `amberx-handsfree` merged, note (refactor) · reconciler
 - 2026-11-03 13:57 UTC · `amberx-notes` merged, note (refactor) · reconciler
 - 2026-11-03 13:57 UTC · `fix-interface-scope-settings` merged, note (refactor) · reconciler
@@ -1062,6 +1037,31 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 13:33 UTC · `land-round-2` s2 done (current) · foreign-write
 - 2026-11-04 13:33 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · foreign-write
 - 2026-11-04 13:33 UTC · `follow-amber-switch` added (5 steps) (current) · orchestrator
+- 2026-11-04 13:25 UTC · `requests-ledger` s5 done, → complete (current) · foreign-write
+- 2026-11-04 13:25 UTC · `bugs-board` s1 done, note (current) · foreign-write
+- 2026-11-04 13:28 UTC · `hotfix-build-manager` note (current) · foreign-write
+- 2026-11-04 13:28 UTC · `bugs-board` s1 done (current) · foreign-write
+- 2026-11-04 13:37 UTC · `land-round-2` s2 done, s3 done (current) · foreign-write
+- 2026-11-04 13:37 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · foreign-write
+- 2026-11-04 13:37 UTC · `follow-amber-switch` added (5 steps) (current) · foreign-write
+- 2026-11-04 13:26 UTC · `bugs-board` s1 done (current) · foreign-write
+- 2026-11-04 13:27 UTC · `hotfix-build-manager` s1 undone, → running (current) · builds-page
+- 2026-11-04 13:27 UTC · `hotfix-build-manager` s1 done, → complete (current) · builds-page
+- 2026-11-04 13:48 UTC · `bugs-board` PR #311 (current) · builds-live
+- 2026-11-04 13:48 UTC · `bugs-board` s7 done, → built (current) · orchestrator
+- 2026-11-04 13:48 UTC · `bugs-board` note (current) · orchestrator
+- 2026-11-04 13:49 UTC · `bugs-board` s7 done, → complete, note (current) · foreign-write
+- 2026-11-04 13:50 UTC · `bugs-board` s7 done, → complete, note (current) · foreign-write
+- 2026-11-04 13:50 UTC · `follow-amber-switch` s1 done, → running (current) · orchestrator
+- 2026-11-04 13:50 UTC · `follow-amber-switch` s2 done (current) · orchestrator
+- 2026-11-04 13:50 UTC · `follow-amber-switch` s3 done (current) · orchestrator
+- 2026-11-04 13:50 UTC · `follow-amber-switch` s4 done (current) · orchestrator
+- 2026-11-04 13:52 UTC · `land-round-2` note (current) · orchestrator
+- 2026-11-04 13:52 UTC · `land-round-2` → blocked (current) · orchestrator
+- 2026-11-04 13:53 UTC · `land-round-2` note (current) · foreign-write
+- 2026-11-04 13:53 UTC · `follow-amber-switch` PR #312 (current) · builds-live
+- 2026-11-04 13:53 UTC · `follow-amber-switch` s5 done, → built (current) · orchestrator
+- 2026-11-04 13:53 UTC · `follow-amber-switch` s5 done, → complete (current) · foreign-write
 
 ## Token passes (log)
 
