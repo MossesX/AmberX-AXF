@@ -691,10 +691,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:31 UTC · `profile-lists-home-card` s2 done, s3 done, note (current) · foreign-write
-- 2026-11-04 14:31 UTC · `gizmo-voice` added (24 steps) (current) · foreign-write
-- 2026-11-04 14:31 UTC · `gizmo-terminal` added (32 steps) (current) · foreign-write
-- 2026-11-04 14:31 UTC · `console-wake-finish` PR #317 (current) · builds-live
 - 2026-11-04 14:28 UTC · `plugin-lazy-load` → complete, note (current) · reconciler
 - 2026-11-04 14:31 UTC · `urgent-land-lazy-loader` note (current) · foreign-write
 - 2026-11-04 14:31 UTC · `console-wake-finish` s2 done (current) · orchestrator
@@ -1091,6 +1087,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 20:11 UTC · `handoff-2` added (11 steps) (current) · foreign-write
 - 2026-11-04 20:11 UTC · `fable-packager` added (5 steps) (current) · foreign-write
 - 2026-11-04 20:11 UTC · `grid-column-hiding` added (6 steps) (current) · foreign-write
+- 2026-11-04 20:11 UTC · `land-merge-queue-first` s2 done (urgent) · orchestrator
+- 2026-11-04 20:11 UTC · `land-merge-queue-first` s4 done (urgent) · orchestrator
+- 2026-11-04 20:11 UTC · `land-merge-queue-first` s5 done (urgent) · orchestrator
+- 2026-11-04 20:11 UTC · `land-merge-queue-first` branch claude/land-batch-1, PR #339 (urgent) · builds-live
 
 ## Token passes (log)
 
