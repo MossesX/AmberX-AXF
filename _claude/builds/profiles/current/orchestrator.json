@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T04:13:55.246Z",
+ "updatedAt": "2026-11-04T04:34:21.359Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4203,12 +4203,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T23:03:01.354Z",
-   "updatedAt": "2026-11-04T00:56:46.854Z",
+   "updatedAt": "2026-11-04T04:27:00.341Z",
    "builtAt": "",
    "notes": [
     {
      "text": "#270 auto-land merged (3caf0ee0) after two landing fixes (THREADS plugin references; UI Review read through the push banner's ui-review@1 route). #267 closed as superseded by #284. #251/#254 set to draft so auto-merge leaves them for Brett.",
      "at": "2026-11-04T00:56:46.854Z"
+    },
+    {
+     "text": "Landed so far: #270 #268 #265 #277 #271 #273 #280 #274 #279 #285 #272 #276 (main green at 363485d7). Batch PR #303 carries #275 #282 #283 #286 #287 #290 #292 (one CI run). Held: #266 #288 (racy console-wake test), #269 (AmberX build: @console/api), #289 (placement system vs #278), #281 (menu engines vs #268), #291 (WIP, paused by Brett).",
+     "at": "2026-11-04T04:27:00.341Z"
     }
    ],
    "approvals": [],
@@ -4245,8 +4249,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T04:26:55.942Z",
      "note": "",
      "uid": "st-mw1an31y09ppg8"
     },

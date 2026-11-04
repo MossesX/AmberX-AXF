@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T04:13:55.246Z",
+ "updatedAt": "2026-11-04T04:34:21.359Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4260,19 +4260,24 @@
    "title": "Agent pick: every Claude session runs as the agent Brett assigns",
    "category": "Claude",
    "detail": "Brett, Nov 3 2026 (voice). Every Claude session (voice/chat Amber, Claude Code, headless) runs AS an agent Brett assigns. Agent manager 'Assign to Claude' + context menu; Claude settings 'Claude agent' default + 'Ask me every session' (default on); agent picker dialog (avatars, status, job, cost, hours, pay, rating; expand for all stats + hooks); MCP claude_session_start pops the picker as a console approval (+ axHub fallback + push), default agent until answered; work/cost/commits booked on the agent (AXF_AGENT), persona/voice field; claude_agent_get. Rule in RULES.md + CLAUDE.md. Zero tokens. Agent: Snap Sully.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/agent-pick",
    "pr": "#276",
+   "mergedAt": "2026-11-04T04:11:51Z",
    "createdAt": "2026-11-03T19:04:24.442Z",
-   "updatedAt": "2026-11-03T19:55:40.767Z",
+   "updatedAt": "2026-11-04T04:33:55.743Z",
    "builtAt": "2026-11-03T19:55:39.343Z",
    "notes": [
     {
      "text": "All 9 steps done on claude/agent-pick, PR #276; UI Review r-20261103-14fadefe waiting. Booked on Snap Sully. Report _claude/builds/reports/agent-pick.md.",
      "at": "2026-11-03T19:55:40.767Z"
+    },
+    {
+     "text": "Reconciler: PR #276 merged",
+     "at": "2026-11-04T04:33:55.743Z"
     }
    ],
    "approvals": [],
