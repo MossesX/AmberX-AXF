@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T20:50:55.747Z",
+ "updatedAt": "2026-11-04T20:51:16.387Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -12366,14 +12366,14 @@
    "title": "Drag to tab",
    "category": "Feature",
    "detail": "Drag a nav item (any app's nav menu) or a tab onto any tab group / pane edge / empty space: opens it as a new tab there, splits a pane (dock@1), or floats it. Touch: long-press then drag. Undo after every drop. Builds on molly-multi-instance-tabs (#328) and tab-group-assets (#327).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
-   "pendingId": "",
+   "pendingId": "drag-to-tab",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T20:44:51.127Z",
-   "updatedAt": "2026-11-04T20:44:51.127Z",
+   "updatedAt": "2026-11-04T20:50:54.971Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -12404,10 +12404,10 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T20:50:54.971Z",
      "note": "",
-     "uid": "st-mw2l4y4p0625v2"
+     "uid": "st-mw2lcyxh1d1brf"
     },
     {
      "id": "s2",
@@ -12425,7 +12425,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2l4y4p07i6tt"
+     "uid": "st-mw2lcyxh1ejngz"
     },
     {
      "id": "s3",
@@ -12443,7 +12443,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2l4y4p08fmjz"
+     "uid": "st-mw2lcyxh1fyhmv"
     },
     {
      "id": "s4",
@@ -12461,7 +12461,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2l4y4p09ywm1"
+     "uid": "st-mw2lcyxh1gtdeh"
     },
     {
      "id": "s5",
@@ -12479,7 +12479,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2l4y4q0afzff"
+     "uid": "st-mw2lcyxh1hu8jz"
     }
    ]
   },
