@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Server health and safe clean-up for the VPS (maintenance@1). A dashboard of disk, memory, swap, load, Docker images, volumes and build cache, build worktrees, logs and /tmp, with the biggest space users. Clean-up jobs (finished build worktrees, dangling Docker images and build cache, old logs, /tmp leftovers, containers stuck in Created) always preview first, then go to axHub as one held call: nothing is removed until Brett approves it, and the VPS re-checks every item before removing it. Never running containers, volumes in use or app data. Nightly auto-clean of the safe jobs (off by default), alerts at 80/85/90% disk and when swap stays nearly full (console and phone), the systems-check row Server health with Auto fix, and a Server disk card for Home. Plain code, no AI.",
+  "description": "Server health and safe clean-up for the VPS (maintenance@1). A dashboard of disk, memory, swap, load, Docker images, volumes and build cache, build worktrees, logs and /tmp, with the biggest space users. Clean-up jobs (finished build worktrees, dangling Docker images and build cache, old logs, /tmp leftovers, containers stuck in Created) always preview first, then go to axHub as one held call: nothing is removed until Brett approves it, and the VPS re-checks every item before removing it. Never running containers, volumes in use or app data. Nightly auto-clean of the safe jobs (off by default), alerts at 80/85/90% disk and when swap stays nearly full (console and phone), the systems check row Server health with Auto fix, and a Server disk card for Home. Plain code, no AI.",
   "targets": [
     "axf-console"
   ],

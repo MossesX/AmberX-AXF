@@ -11,7 +11,7 @@ ONE held ``vps.run`` call; Brett approves it on axHub (or his phone), axHub runs
 re-checks every item before removing it. Nothing here deletes anything.
 
 Routes: GET status · GET summary · GET snapshot · GET jobs · POST preview · POST run · GET runs · GET/PUT settings ·
-POST check. Registers the systems-check row ``maintenance-server-health`` ("Server health", with Auto fix = the safe
+POST check. Registers the systems check row ``maintenance-server-health`` ("Server health", with Auto fix = the safe
 clean-up) on axf.health@1, raises console alerts (phone push from error up) at the disk levels and when swap stays
 nearly full, and sends the nightly safe clean-up when that setting is on (off by default).
 """
@@ -224,7 +224,7 @@ def start_run(jobs: list[str], only: list[str] | None = None, by: str = "console
                 if not vps_run:
                     raise hub.HubError("axHub isn't connected (no AXHUB_TOKEN) and the systems check can't reach the VPS")
                 r = vps_run(command)
-                h = {"via": "systems-check", "state": r.get("state"), "message": r.get("message"), **({"job": r["jobId"]} if r.get("jobId") else {})}
+                h = {"via": "axf.health", "state": r.get("state"), "message": r.get("message"), **({"job": r["jobId"]} if r.get("jobId") else {})}
                 if r.get("state") == "failed":
                     h["error"] = r.get("message") or "the VPS command failed"
         except hub.HubError as e:
@@ -318,7 +318,7 @@ def health_probe() -> dict[str, Any]:
 def autofix() -> dict[str, Any]:
     """Auto fix for Server health: the safe clean-up, as one held call on axHub (runs only once approved)."""
     try:
-        r = start_run(maint.SAFE_JOBS, by="systems-check", kind="autofix")
+        r = start_run(maint.SAFE_JOBS, by="auto-fix", kind="autofix")
     except HTTPException as e:
         return {"state": "failed", "message": str(e.detail)}
     return {"state": "started", "message": f"Safe clean-up ({maint.human(r.get('bytes'))}) is waiting for your approval on axHub.",

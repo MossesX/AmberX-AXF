@@ -226,7 +226,7 @@ class FakeHealth:
 
 
 HEALTH = FakeHealth()
-plugin_services.provide("axf.health@1", HEALTH, "systems-check")
+plugin_services.provide("axf.health@1", HEALTH, "health-provider")
 
 sys.modules.setdefault("axf_console_plugins", types.ModuleType("axf_console_plugins")).__path__ = []
 sspec = importlib.util.spec_from_file_location("axf_console_plugins.maintenance_test", HERE / "server" / "__init__.py", submodule_search_locations=[str(HERE / "server")])
