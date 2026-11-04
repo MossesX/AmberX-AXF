@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T23:21:03.650Z",
+ "updatedAt": "2026-11-04T02:35:17.556Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -827,19 +827,24 @@
    "title": "Crew retrain: every agent an all-rounder, no anonymous sessions",
    "category": "Breakroom",
    "detail": "Brett, Nov 3 2026 (voice). Retrain, don't fire: every swarm agent can take every job type (skills, home job as preference only); new job types feature-build and ops-fix; router picks any free agent under budget; every headless launch is assigned to a named agent first and booked on its card; back-assign today's headless builds; Breakroom cards show skills, home job, current job. Booked on Landin' Lenny.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/crew-retrain",
    "pr": "#265",
+   "mergedAt": "2026-11-04T02:10:22Z",
    "createdAt": "2026-11-03T15:58:12.029Z",
-   "updatedAt": "2026-11-03T16:23:06.193Z",
+   "updatedAt": "2026-11-04T02:14:30.962Z",
    "builtAt": "2026-11-03T16:23:05.239Z",
    "notes": [
     {
      "text": "All 8 steps done. PR #265 (claude/crew-retrain), UI Review r-20261103-5e7f222e waiting. Report _claude/builds/reports/crew-retrain.md. Land after land-everything's other PRs.",
      "at": "2026-11-03T16:23:06.193Z"
+    },
+    {
+     "text": "Reconciler: PR #265 merged",
+     "at": "2026-11-04T02:14:30.962Z"
     }
    ],
    "approvals": [],

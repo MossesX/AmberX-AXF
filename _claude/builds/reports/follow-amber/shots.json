@@ -1,0 +1,117 @@
+[
+ {
+  "name": "follow-amber-settings",
+  "steps": [
+   {
+    "eval": "(() => { const now = Date.now(); const H = 'https://axhub.amberxai.com'; const u = (id) => H + '/auth/admin/approvals/' + id;\nconst feed = { signedIn: true, admin: true, count: 2, pending: [\n { id: '33333333-3333-4333-8333-333333333333', tool: 'vps.run', summary: 'vps.run with arguments {\"command\":\"docker restart axf-console\"}', createdAt: new Date(now - 10000).toISOString(), expiresAt: new Date(now + 600000).toISOString(), url: u('33333333-3333-4333-8333-333333333333'), status: 'held', reason: { title: 'Restart the Dev Console container', description: 'Picks up the new Follow Amber plugin. The console is back in about 20 seconds.' }, title: 'Restart the Dev Console container', veto: { runsAt: new Date(now + 74000).toISOString(), secondsLeft: 74, countdownSeconds: 90, actions: ['deny', 'approve-now', 'shelve'] }, jobId: 'job-1', source: { kind: 'claude-code', name: 'follow-amber' } },\n { id: '11111111-1111-4111-8111-111111111111', tool: 'axhub.pass_grant', summary: 'axhub.pass_grant with arguments {\"minutes\":30,\"scope\":\"tokens.theme\"}', createdAt: new Date(now - 60000).toISOString(), expiresAt: new Date(now + 600000).toISOString(), url: u('11111111-1111-4111-8111-111111111111'), reason: { title: 'Allow theme changes for 30 minutes', description: 'Lets Amber change theme tokens without the veto countdown.' }, actions: ['approve', 'decline'], revision: 3 } ] };\nconst real = window.fetch.bind(window);\nwindow.fetch = (input, init) => { const s = String(input && input.url || input); if (s.startsWith(H + '/auth/admin/approvals.json')) return Promise.resolve(new Response(JSON.stringify(feed), { status: 200, headers: { 'content-type': 'application/json' } })); if (s.startsWith(H)) return Promise.resolve(new Response('{}', { status: 404 })); return real(input, init); };\nreturn true; })()"
+   },
+   {
+    "wait": 12000
+   },
+   {
+    "eval": "(async () => { for (let i = 0; i < 90 && !window.AXF; i++) await new Promise((r) => setTimeout(r, 1000)); return AXF.dispatch('follow-amber.toggle:on'); })()"
+   },
+   {
+    "wait": 2500
+   },
+   {
+    "press": "Escape"
+   },
+   {
+    "eval": "(async () => { for (let i = 0; i < 90 && !window.AXF; i++) await new Promise((r) => setTimeout(r, 1000)); return AXF.dispatch('settings.open:follow-amber'); })()"
+   },
+   {
+    "wait": 4000
+   }
+  ]
+ },
+ {
+  "name": "follow-amber-approval",
+  "steps": [
+   {
+    "eval": "(() => { const now = Date.now(); const H = 'https://axhub.amberxai.com'; const u = (id) => H + '/auth/admin/approvals/' + id;\nconst feed = { signedIn: true, admin: true, count: 2, pending: [\n { id: '33333333-3333-4333-8333-333333333333', tool: 'vps.run', summary: 'vps.run with arguments {\"command\":\"docker restart axf-console\"}', createdAt: new Date(now - 10000).toISOString(), expiresAt: new Date(now + 600000).toISOString(), url: u('33333333-3333-4333-8333-333333333333'), status: 'held', reason: { title: 'Restart the Dev Console container', description: 'Picks up the new Follow Amber plugin. The console is back in about 20 seconds.' }, title: 'Restart the Dev Console container', veto: { runsAt: new Date(now + 74000).toISOString(), secondsLeft: 74, countdownSeconds: 90, actions: ['deny', 'approve-now', 'shelve'] }, jobId: 'job-1', source: { kind: 'claude-code', name: 'follow-amber' } },\n { id: '11111111-1111-4111-8111-111111111111', tool: 'axhub.pass_grant', summary: 'axhub.pass_grant with arguments {\"minutes\":30,\"scope\":\"tokens.theme\"}', createdAt: new Date(now - 60000).toISOString(), expiresAt: new Date(now + 600000).toISOString(), url: u('11111111-1111-4111-8111-111111111111'), reason: { title: 'Allow theme changes for 30 minutes', description: 'Lets Amber change theme tokens without the veto countdown.' }, actions: ['approve', 'decline'], revision: 3 } ] };\nconst real = window.fetch.bind(window);\nwindow.fetch = (input, init) => { const s = String(input && input.url || input); if (s.startsWith(H + '/auth/admin/approvals.json')) return Promise.resolve(new Response(JSON.stringify(feed), { status: 200, headers: { 'content-type': 'application/json' } })); if (s.startsWith(H)) return Promise.resolve(new Response('{}', { status: 404 })); return real(input, init); };\nreturn true; })()"
+   },
+   {
+    "wait": 12000
+   },
+   {
+    "eval": "(async () => { for (let i = 0; i < 90 && !window.AXF; i++) await new Promise((r) => setTimeout(r, 1000)); return AXF.dispatch('follow-amber.toggle:on'); })()"
+   },
+   {
+    "wait": 3000
+   },
+   {
+    "eval": "window.dispatchEvent(new Event('axf:hub-check'))"
+   },
+   {
+    "wait": 3000
+   },
+   {
+    "eval": "document.querySelector('.fx-dialog')&&true"
+   },
+   {
+    "wait": 500
+   },
+   {
+    "click": ".axp-follow-amber__foot >> text=Next",
+    "wait": 1200
+   }
+  ]
+ },
+ {
+  "name": "follow-amber-approval-frame",
+  "steps": [
+   {
+    "eval": "(() => { const now = Date.now(); const H = 'https://axhub.amberxai.com'; const u = (id) => H + '/auth/admin/approvals/' + id;\nconst feed = { signedIn: true, admin: true, count: 2, pending: [\n { id: '33333333-3333-4333-8333-333333333333', tool: 'vps.run', summary: 'vps.run with arguments {\"command\":\"docker restart axf-console\"}', createdAt: new Date(now - 10000).toISOString(), expiresAt: new Date(now + 600000).toISOString(), url: u('33333333-3333-4333-8333-333333333333'), status: 'held', reason: { title: 'Restart the Dev Console container', description: 'Picks up the new Follow Amber plugin. The console is back in about 20 seconds.' }, title: 'Restart the Dev Console container', veto: { runsAt: new Date(now + 74000).toISOString(), secondsLeft: 74, countdownSeconds: 90, actions: ['deny', 'approve-now', 'shelve'] }, jobId: 'job-1', source: { kind: 'claude-code', name: 'follow-amber' } },\n { id: '11111111-1111-4111-8111-111111111111', tool: 'axhub.pass_grant', summary: 'axhub.pass_grant with arguments {\"minutes\":30,\"scope\":\"tokens.theme\"}', createdAt: new Date(now - 60000).toISOString(), expiresAt: new Date(now + 600000).toISOString(), url: u('11111111-1111-4111-8111-111111111111'), reason: { title: 'Allow theme changes for 30 minutes', description: 'Lets Amber change theme tokens without the veto countdown.' }, actions: ['approve', 'decline'], revision: 3 } ] };\nconst real = window.fetch.bind(window);\nwindow.fetch = (input, init) => { const s = String(input && input.url || input); if (s.startsWith(H + '/auth/admin/approvals.json')) return Promise.resolve(new Response(JSON.stringify(feed), { status: 200, headers: { 'content-type': 'application/json' } })); if (s.startsWith(H)) return Promise.resolve(new Response('{}', { status: 404 })); return real(input, init); };\nreturn true; })()"
+   },
+   {
+    "wait": 12000
+   },
+   {
+    "eval": "(async () => { for (let i = 0; i < 90 && !window.AXF; i++) await new Promise((r) => setTimeout(r, 1000)); return AXF.dispatch('follow-amber.toggle:on'); })()"
+   },
+   {
+    "wait": 3000
+   },
+   {
+    "eval": "window.dispatchEvent(new Event('axf:hub-check'))"
+   },
+   {
+    "wait": 3000
+   },
+   {
+    "eval": "document.querySelector('.fx-dialog')&&true"
+   },
+   {
+    "wait": 500
+   },
+   {
+    "click": ".axp-follow-amber__acts >> text=Approve",
+    "wait": 1500
+   }
+  ]
+ },
+ {
+  "name": "follow-amber-show",
+  "steps": [
+   {
+    "eval": "(() => { const now = Date.now(); const H = 'https://axhub.amberxai.com'; const u = (id) => H + '/auth/admin/approvals/' + id;\nconst feed = { signedIn: true, admin: true, count: 2, pending: [\n { id: '33333333-3333-4333-8333-333333333333', tool: 'vps.run', summary: 'vps.run with arguments {\"command\":\"docker restart axf-console\"}', createdAt: new Date(now - 10000).toISOString(), expiresAt: new Date(now + 600000).toISOString(), url: u('33333333-3333-4333-8333-333333333333'), status: 'held', reason: { title: 'Restart the Dev Console container', description: 'Picks up the new Follow Amber plugin. The console is back in about 20 seconds.' }, title: 'Restart the Dev Console container', veto: { runsAt: new Date(now + 74000).toISOString(), secondsLeft: 74, countdownSeconds: 90, actions: ['deny', 'approve-now', 'shelve'] }, jobId: 'job-1', source: { kind: 'claude-code', name: 'follow-amber' } },\n { id: '11111111-1111-4111-8111-111111111111', tool: 'axhub.pass_grant', summary: 'axhub.pass_grant with arguments {\"minutes\":30,\"scope\":\"tokens.theme\"}', createdAt: new Date(now - 60000).toISOString(), expiresAt: new Date(now + 600000).toISOString(), url: u('11111111-1111-4111-8111-111111111111'), reason: { title: 'Allow theme changes for 30 minutes', description: 'Lets Amber change theme tokens without the veto countdown.' }, actions: ['approve', 'decline'], revision: 3 } ] };\nconst real = window.fetch.bind(window);\nwindow.fetch = (input, init) => { const s = String(input && input.url || input); if (s.startsWith(H + '/auth/admin/approvals.json')) return Promise.resolve(new Response(JSON.stringify(feed), { status: 200, headers: { 'content-type': 'application/json' } })); if (s.startsWith(H)) return Promise.resolve(new Response('{}', { status: 404 })); return real(input, init); };\nreturn true; })()"
+   },
+   {
+    "wait": 12000
+   },
+   {
+    "eval": "(async () => { for (let i = 0; i < 90 && !window.AXF; i++) await new Promise((r) => setTimeout(r, 1000)); return AXF.dispatch('follow-amber.toggle:on'); })()"
+   },
+   {
+    "wait": 3000
+   },
+   {
+    "eval": "fetch('/api/plugins/follow-amber/show', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + localStorage.getItem('axf-console:token') }, body: JSON.stringify({ target: 'plan studio', highlight: 'Plan Studio', say: 'This is the plan we are building from.' }) })"
+   },
+   {
+    "wait": 1800
+   }
+  ]
+ }
+]
