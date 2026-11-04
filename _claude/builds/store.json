@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 821,
- "updatedAt": "2026-11-04T16:15:40.923Z",
+ "rev": 822,
+ "updatedAt": "2026-11-04T16:16:18.534Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -79957,7 +79957,7 @@
    "branch": "claude/app-voice-commands",
    "pr": "#323",
    "createdAt": "2026-11-04T14:43:48.090Z",
-   "updatedAt": "2026-11-04T15:43:28.346Z",
+   "updatedAt": "2026-11-04T16:15:38.053Z",
    "builtAt": "",
    "notes": [
     {
@@ -79975,6 +79975,10 @@
     {
      "text": "s3 done (console voice-commands plugin + Molly voice-control plugin), s4 done (manifests + generated assets: console 899, AmberX 44, Molly 17, axHub web 8, Walkthrough Studio 5, Expenses 7). Branch claude/app-voice-commands pushed; PR opening.",
      "at": "2026-11-04T15:43:11.935Z"
+    },
+    {
+     "text": "PR #323 open. UI Review: r-20261104-1b7bca5f (Molly dialog), r-20261104-a4e5d893 (console page), group 'app-voice-commands - Nov 4 10:54 AM'. CI fixes pushed: page head, voice-command before help (Kotlin prefix test), console + Molly re-baked (Docker builds use the committed src/axf).",
+     "at": "2026-11-04T16:15:38.053Z"
     }
    ],
    "approvals": [
@@ -80142,7 +80146,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
