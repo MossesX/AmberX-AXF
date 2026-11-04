@@ -21,6 +21,10 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CONTROL_TARGETS, controlFailure, controlGate, controlResult, normalizeControl } from '../../../../framework/core/engines/control-rules.mjs';
 import { CONSOLE_TOOLS, normalizeConsoleCatalog, runConsoleCommand } from '../../../../framework/core/engines/console-commands.mjs';
+import { PLACEMENT_ALIASES, PLACEMENT_LABELS, PLACEMENT_WORDS, SETTINGS_PLACEMENTS, parsePlacementChoice } from '../../../../framework/core/engines/settingsplacement-rules.mjs';
+
+/** Every word that can start the "where" part of `axf console placement <screen…> <where…>` (the vocabulary's words plus fillers). */
+const PLACEMENT_VOCAB = new Set([...SETTINGS_PLACEMENTS, ...Object.keys(PLACEMENT_ALIASES), ...Object.values(PLACEMENT_LABELS), ...Object.values(PLACEMENT_WORDS).flat(), 'in', 'a', 'an', 'the', 'as', 'on', 'into', 'to', 'its', 'own', 'my', 'pop', 'pops', 'it', 'up', 'default', 'use'].flatMap((w) => String(w).toLowerCase().split(/[\s,-]+/)).filter(Boolean));
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '../../../..');
@@ -72,8 +76,8 @@ function flags(argv) {
   return out;
 }
 
-const LIST_KINDS = { screens: 'console.screens', screen: 'console.screens', dialogs: 'console.dialogs', dialog: 'console.dialogs', settings: 'console.settings', actions: 'console.actions', action: 'console.actions', clients: 'console.clients', consoles: 'console.clients' };
-export const USAGE = 'usage: axf console open <screen> | dialog <id> | dialog close [id] | settings <tab> | action <id> [args…] | back | home | close | where | list [screens|dialogs|settings|actions|clients] [words] | clients   [--to recent|all|<client>]';
+const LIST_KINDS = { screens: 'console.screens', screen: 'console.screens', dialogs: 'console.dialogs', dialog: 'console.dialogs', settings: 'console.settings', actions: 'console.actions', action: 'console.actions', clients: 'console.clients', consoles: 'console.clients', placement: 'console.placement', placements: 'console.placement' };
+export const USAGE = 'usage: axf console open <screen> | dialog <id> | dialog close [id] | settings <tab> | action <id> [args…] | back | home | close | where | list [screens|dialogs|settings|actions|placement|clients] [words] | clients | placement [<screen>|plugin:<id>|app] [--in <dialog|panel-left|panel-right|sheet|inside|page|window|default>]   [--to recent|all|<client>]';
 
 /** `axf console …` words → a control@1 console command, or { error }. */
 export function commandFromArgv(argv) {
@@ -97,6 +101,23 @@ export function commandFromArgv(argv) {
     case 'back': case 'home': case 'close': cmd = act('console.nav', verb, 'here'); break;
     case 'where': case 'here': cmd = { op: 'get', target: 'console.nav', path: 'here' }; break;
     case 'clients': case 'consoles': cmd = { op: 'list', target: 'console.clients' }; break;
+    case 'placement': case 'place': case 'opens-in': {
+      // axf console placement                      → where settings open, every screen / plugin / the app default
+      // axf console placement home --in dialog     → set it (--in default = back to the app default)
+      // axf console placement home side panel left → the last words that name a placement are the value
+      let where = typeof f.in === 'string' ? f.in : '';
+      let path = words;
+      if (!where && rest.length > 1) {
+        // the tail from the first placement word that names a placement ("plan studio side panel left" → path "plan studio", where "side panel left")
+        for (let i = 0; i < rest.length && !where; i++) { if (!PLACEMENT_VOCAB.has(rest[i].toLowerCase())) continue; const tail = rest.slice(i).join(' '); if (parsePlacementChoice(tail)) { where = tail; path = rest.slice(0, i).join(' '); } }
+      }
+      if (!path && !where) { cmd = { op: 'list', target: 'console.placement' }; break; }
+      if (!where) { cmd = { op: 'get', target: 'console.placement', path: path || 'app' }; break; }
+      const parsed = parsePlacementChoice(where);
+      if (!parsed) return { error: `"${where}" doesn't say where settings open (dialog, panel-left, panel-right, sheet, inside, page, window or default)` };
+      cmd = parsed === 'default' ? { op: 'reset', target: 'console.placement', path: path || 'app', ...(Object.keys(input).length ? { input } : {}) } : { op: 'set', target: 'console.placement', path: path || 'app', value: where, ...(Object.keys(input).length ? { input } : {}) };
+      break;
+    }
     case 'list': case 'ls': {
       const kind = LIST_KINDS[rest[0]];
       const q = (kind ? rest.slice(1) : rest).join(' ').trim();
@@ -115,11 +136,12 @@ export function commandFromArgv(argv) {
 /** An answer as a person reads it. */
 export function formatAnswer(r) {
   if (!r.ok) return r.code === 'confirmation_required' ? `${r.message}\nconfirm token: ${r.confirm}` : `${r.code}: ${r.message}`;
+  if ((r.op === 'set' || r.op === 'reset') && r.target === 'console.placement') { const sent = r.delivered ?? []; return `${sent.some((d) => d.ok) ? '✓' : sent.length ? '✗' : '…'} ${r.item?.label ?? r.path}: settings open ${r.op === 'reset' ? 'where the app default says' : `in ${r.value}`}${sent.length ? ` → ${sent.map((d) => `${d.client}: ${d.ok ? d.message || 'done' : `failed: ${d.message}`}`).join(' · ')}` : r.queued ? ' (queued for the next open console)' : ''}`; }
   if (r.op === 'list') {
     const rows = r.items ?? [];
     if (!rows.length) return r.target === 'console.clients' ? 'no console is open right now' : 'nothing matches';
     if (r.target === 'console.clients') return rows.map((c) => `${c.id.padEnd(26)} ${(c.device || '').padEnd(8)} ${(c.here?.screen ?? '').padEnd(22)} ${c.lastUsed}  ${c.user}`).join('\n');
-    return `${rows.map((i) => `${i.id.padEnd(32)} ${i.label}${i.params ? '  (needs args)' : ''}`).join('\n')}${r.total > rows.length ? `\n… ${r.total - rows.length} more (add words, or --limit N)` : ''}`;
+    return `${rows.map((i) => `${i.id.padEnd(32)} ${i.label}${i.params ? '  (needs args)' : ''}${i.kind === 'placement' && i.detail ? `  → ${i.detail}` : ''}`).join('\n')}${r.total > rows.length ? `\n… ${r.total - rows.length} more (add words, or --limit N)` : ''}`;
   }
   if (r.op === 'get') return r.item ? `${r.item.kind} ${r.item.id}: ${r.item.label}${r.item.detail ? ` (${r.item.detail})` : ''}` : `here: ${Object.entries(r.value ?? {}).map(([k, v]) => `${k} ${v}`).join(' · ') || 'unknown'}`;
   const sent = r.delivered ?? [];

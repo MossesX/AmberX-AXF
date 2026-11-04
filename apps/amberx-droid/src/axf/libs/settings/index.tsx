@@ -15,8 +15,9 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, designLookLabel, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
+import { AssetToolbar, askBannerTab, choiceOptions, closeSettingsSurface, openSettingsSurface, parseScope, PopsUpInRow, routeSettings, scopeId, scopeKey, screenOwner, SettingsPageSurfaces, SettingsPlacementPicker, setSettingsSurfaceContent, settingsPickFor, settingsSurfaceOpen, settingsTargetOf, surfaceKey, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, IconButton, ModelBadge, Note, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime, type PlacementScope } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
+import { CHOICE_LABELS, PLACEMENT_CHOICES, applyChoice, choiceOf, describePick, hasPlacement, normalizePick, type PlacementChoice } from '../../core/engines/settingsplacement';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
 
@@ -25,6 +26,13 @@ const VIEW = 'settings';
 const TAB_KEY = 'axf.settings.lastTab';
 /** One settings tab in a pop-up dialog (a plugin whose "Opens in" is dialog; settings.open:<tab>). */
 const TAB_DIALOG = 'axf.settings.tab';
+/** Where settings open (settings-placement@1): the picker in a dialog, the floating-window tab kind, the Settings placement tab. */
+const PLACEMENT_DIALOG = 'axf.settings.placement';
+export const SETTINGS_WINDOW_TAB = 'axf-settings-tab';
+export const SETTINGS_PLACEMENT_TAB = 'settings-placement';
+/** Context-menu contributions (`*:` = on every target): the plugin under the pointer, and "Settings opens in" for the screen. */
+const PLACEMENT_CTX = '*:axf-settings-placement';
+const SCREEN_CTX_TARGETS = ['canvas', 'nav-item', 'toolbar', 'window-title'] as const;
 
 /** Standard tabs, in order. Ids are stable: libraries target them by id. */
 export const SETTINGS_TABS = {
@@ -432,7 +440,7 @@ function NavRow({ icon, label, desc, active, onClick }: { icon?: string; label: 
 /** Sections with more sub-pages than this list them as rows instead of a tab row. */
 const SUB_LIST_FROM = 5;
 
-export function SettingsView() {
+export function SettingsView({ compact = false, screen }: { compact?: boolean; screen?: string } = {}) {
   const rt = useRuntime();
   useSettingsRevision(rt);
   const ui = useSettingsUi();
@@ -478,7 +486,9 @@ export function SettingsView() {
   const toolbarSearch = !!toolbarAsset && (toolbarAsset.data as { showSearch?: boolean }).showSearch === true;
   const searchOn = ui.search || toolbarSearch;
   const searching = searchOn && query.trim().length > 0;
-  const cls = ['fx-stack', 'fx-stack--lg', 'axf-settings', `axf-settings--${ui.layout}`, ui.descriptions ? '' : 'axf-settings--nodesc'].filter(Boolean).join(' ');
+  const cls = ['fx-stack', 'fx-stack--lg', 'axf-settings', `axf-settings--${ui.layout}`, ui.descriptions ? '' : 'axf-settings--nodesc', compact ? 'axf-settings--surface' : ''].filter(Boolean).join(' ');
+  // the screen these settings are for: the one they were opened from (a surface says; the page remembers)
+  const forScreen = screen ?? (compact ? undefined : lastScreen);
 
   const tabBar = ui.layout === 'list' ? null : (
     <nav className="axf-settings__tabs" role="tablist" aria-label="Settings sections" aria-orientation={ui.layout === 'tabs-side' ? 'vertical' : 'horizontal'}>
@@ -527,8 +537,10 @@ export function SettingsView() {
 
   return (
     <div className={cls}>
-      {ui.header === 'full' && <header className="fx-pagehead"><div><p className="fx-eyebrow">{rt.manifest.app.name}</p><h1>Settings</h1></div></header>}
-      {ui.header === 'compact' && <h2 className="axf-settings__title">Settings</h2>}
+      {ui.header === 'full' && !compact && <header className="fx-pagehead"><div><p className="fx-eyebrow">{rt.manifest.app.name}</p><h1>Settings</h1></div></header>}
+      {ui.header === 'compact' && !compact && <h2 className="axf-settings__title">Settings</h2>}
+      {/* settings-placement@1 (Brett, Nov 4 2026): where this interface pops up, at the top of every settings interface */}
+      <PopsUpInRow screen={forScreen} />
       {toolbarAsset && (
         <AssetToolbar id={toolbarAsset.id} label="Settings toolbar" search={
           <form className="fx-search" role="search" onSubmit={(e) => e.preventDefault()}>
@@ -625,7 +637,144 @@ export function TabContent({ id, all = false }: { id: string; all?: boolean }) {
   const rt = useRuntime();
   useSettingsRevision(rt);
   const plugin = rt.settings.getTab(id)?.plugin;
-  return plugin ? <div className="fx-plugin-scope" data-axf-plugin={plugin}><TabBody id={id} all={all} /></div> : <TabBody id={id} all={all} />;
+  const body = <TabBody id={id} all={all} />;
+  return plugin ? <div className="fx-plugin-scope" data-axf-plugin={plugin}>{body}</div> : body;
+}
+
+/** The owner whose settings a tab is (its plugin, else the library that added it); none for the settings library's own tabs. */
+export function settingsOwnerOf(rt: AxfRuntime, tab: string): string | undefined {
+  const t = rt.settings.getTab(tab);
+  const owner = t?.plugin ?? t?.module;
+  return owner && owner !== SETTINGS_LIBRARY_ID ? owner : undefined;
+}
+
+/** Settings → Settings placement: the app default, every screen with its pick, and every plugin with settings. */
+function ScreenPlacementList() {
+  const rt = useRuntime();
+  useSettingsRevision(rt);
+  const [, tick] = useState(0);
+  useEffect(() => rt.settings.subscribe(() => tick((n) => n + 1)), [rt]);
+  const [open, setOpen] = useState<string | null>(null);
+  const screens = rt.search.entries().filter((e) => e.kind === 'view' && e.focus.kind === 'view' && e.focus.view !== VIEW).sort((x, y) => x.label.localeCompare(y.label));
+  const owners = rt.libraries.filter((l) => l.id !== SETTINGS_LIBRARY_ID && (l.ui?.settingsTabs.length ?? 0) > 0).sort((x, y) => x.label.localeCompare(y.label));
+  const iface = (rt.assetOrNull('settings')?.data as { opensIn?: unknown } | undefined)?.opensIn;
+  const appPick = settingsPickFor(rt, {}).pick;
+  const row = (scope: PlacementScope, label: ReactNode, hint: string, tryAction: string, key: string) => {
+    const r = scope.kind === 'screen' ? settingsPickFor(rt, { screen: scope.view, ...settingsTargetOf(rt, scope.view) }) : settingsPickFor(rt, { owner: (scope as { owner: string }).owner });
+    const own = hasPlacement(rt.settings.get(scopeKey(scope)));
+    const id = scopeId(scope);
+    return (
+      <li key={key} data-axf-sp-scope={id}>
+        <span className="fx-grow">{label}<br /><span className="fx-muted axf-settings__hint">{describePick(r.pick)}{own ? '' : ` (${hint})`}</span></span>
+        <select className="fx-select" aria-label={`Where ${typeof label === 'string' ? label : key} settings open`} value={own ? choiceOf(r.pick) : 'default'} onChange={(e) => rt.settings.set(scopeKey(scope), e.target.value === 'default' ? null : JSON.stringify(applyChoice(e.target.value as PlacementChoice, r.pick)))}>
+          {choiceOptions(scope, describePick(appPick)).map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+        </select>
+        <Button tone="ghost" size="sm" icon="sliders" onClick={() => setOpen(open === id ? null : id)}>{open === id ? 'Done' : 'Look'}</Button>
+        <Button tone="ghost" size="sm" icon="play" onClick={() => rt.dispatch(tryAction)}>Try it</Button>
+        {open === id && <div className="axf-settings__nest" style={{ flexBasis: '100%' }}><SettingsPlacementPicker scope={scope} /></div>}
+      </li>
+    );
+  };
+  return (
+    <div className="fx-stack">
+      <p className="fx-muted axf-settings__desc">Where settings pop up when you ask for them from a screen: a pop-up dialog, a side panel (left or right), a bottom sheet, inside the screen (an inline section, a slide-out pane, a drop-down, a tab or a split view), the full settings page or a floating window. Each screen can have its own pick or use the app default; a plugin can have its own too. Settings always stay on the full page as well.</p>
+      <FlatSection anchor="settings-placement:default" title={`App default (${describePick(appPick).toLowerCase()})`} icon="star" collapsible defaultOpen={false} className="axf-settings__nest">
+        {hasPlacement(iface) && <Note tone="info">The settings interface asset says {describePick(normalizePick(iface)).toLowerCase()}; it beats the app default. Change it on the asset (Appearance → Settings interface) or set a screen's own pick.</Note>}
+        <SettingsPlacementPicker scope={{ kind: 'app' }} />
+      </FlatSection>
+      <FlatSection anchor="settings-placement:screens" title={`Every screen (${screens.length})`} icon="layout">
+        <ul className="axf-settings__screens" data-axf-sp-screens="">
+          {screens.map((e) => { const view = String((e.focus as { view?: unknown }).view ?? e.id.replace(/^view:/, '')); return row({ kind: 'screen', view }, <strong><Icon name={e.icon ?? 'layout'} size={13} /> {e.label}</strong>, 'app default', `settings.open-for:${view}`, e.id); })}
+        </ul>
+      </FlatSection>
+      <FlatSection anchor="settings-placement:plugins" title={`Plugins with settings (${owners.length})`} icon="box" collapsible defaultOpen={false}>
+        <ul className="axf-settings__screens" data-axf-sp-list="">
+          {owners.map((l) => row({ kind: 'owner', owner: l.id }, <strong>{l.label}</strong>, l.settingsHost?.length ? 'default' : 'default · no room inside it: a side panel', `settings.open:${l.ui!.settingsTabs[0]!.id}`, l.id))}
+        </ul>
+      </FlatSection>
+    </div>
+  );
+}
+
+/** The screen the settings were last asked for from (so the settings page's "Pops up in" row knows which screen it is for). */
+let lastScreen: string | undefined;
+
+/**
+ * Open settings where the placement says (settings-placement@1): the whole interface (no tab) or one tab, as asked for
+ * from `screen`. false = the full settings page. Inside the settings page itself and in page mode, always the page.
+ */
+function openPlaced(rt: AxfRuntime, tab: string | undefined, screen = rt.getState().view): boolean {
+  if (rt.embedded?.page || rt.getState().view === VIEW) return false;
+  const owner = tab ? settingsOwnerOf(rt, tab) : undefined;
+  const host = owner ?? screenOwner(screen);
+  if (settingsSurfaceOpen(host, tab)) { closeSettingsSurface(surfaceKey(host, tab)); return true; } // the gear toggles it
+  const { route, hostId } = routeSettings(rt, { owner, screen });
+  if (route.via === 'page') return false;
+  lastScreen = screen;
+  if (route.via === 'window') {
+    const label = tab ? rt.settings.getTab(tab)?.label ?? tab : rt.manifest.app.name;
+    rt.windows.openFloating([{ id: `axf-settings-${tab ?? 'all'}-${Date.now().toString(36)}`, title: `${label} settings`, kind: SETTINGS_WINDOW_TAB, payload: tab ?? '', icon: 'settings' }], `${label} settings`, 'floating', Math.min(560, innerWidth - 32), Math.min(640, innerHeight - 96));
+    return true;
+  }
+  openSettingsSurface({ owner: host, tab, screen, route, ...(route.via === 'host' && hostId ? { hostId } : {}) });
+  return true;
+}
+
+/** The full settings page on one tab (past any placement). */
+function openMain(rt: AxfRuntime, tab?: string) {
+  if (rt.getState().view !== VIEW) lastScreen = rt.getState().view;
+  rt.navigate(VIEW);
+  if (tab) {
+    rt.settings.set(TAB_KEY, tab);
+    globalThis.dispatchEvent?.(new CustomEvent('axf:settings-tab', { detail: tab }));
+  }
+}
+
+/** Which plugin UI the pointer was last in (its settings host or its themed root), for the context-menu item. */
+let lastOwner: string | null = null;
+
+/** A settings tab on a surface (pane, drop-down, tab, split, inline, dialog, panel, sheet, window): the Pops up in row, the level toolbar and its panels and groups. */
+function TabSurface({ id, screen }: { id: string; screen?: string }) {
+  const rt = useRuntime();
+  const tab = rt.settings.getTab(id);
+  const ui = useSettingsUi();
+  const level = useSettingsLevel(ui);
+  const bar = useLevelBarOn();
+  if (!tab) return <p className="fx-muted">No settings tab "{id}".</p>;
+  return (
+    <div className="fx-stack axf-settings axf-settings--surface" data-axf-settings-tab={id}>
+      <PopsUpInRow screen={screen} owner={settingsOwnerOf(rt, id)} />
+      {ui.levels && bar && <SettingsLevelBar level={level} />}
+      <TabContent id={id} />
+    </div>
+  );
+}
+
+/** One scope's settings placement picker, in a dialog (Look… / Settings placement…). */
+function PlacementDialog({ scope }: { scope: PlacementScope }) {
+  const rt = useRuntime();
+  const title = scope.kind === 'app' ? `${rt.manifest.app.name}: app default` : scope.kind === 'owner' ? rt.libraries.find((l) => l.id === scope.owner)?.label ?? scope.owner : `Screen: ${rt.search.entries().find((e) => e.id === `view:${scope.view}`)?.label ?? scope.view}`;
+  return (
+    <div className="fx-stack axf-settings">
+      <p className="fx-eyebrow"><Icon name="layout" /> {title}</p>
+      <SettingsPlacementPicker scope={scope} />
+    </div>
+  );
+}
+
+/** "Settings opens in" for a screen's context menu (canvas, its nav item, the toolbar): the choices, the current one ticked, the app default, the look. */
+function screenPlacementMenu(rt: AxfRuntime, view: string) {
+  const r = settingsPickFor(rt, { screen: view, ...settingsTargetOf(rt, view) });
+  const own = hasPlacement(rt.settings.get(scopeKey({ kind: 'screen', view })));
+  const now = own ? choiceOf(r.pick) : 'default';
+  return [{
+    id: 'axf-settings-opens-in', label: 'Settings opens in', icon: 'layout', items: [
+      ...PLACEMENT_CHOICES.map((c) => ({ id: `axf-settings-place-${c}`, label: CHOICE_LABELS[c], icon: now === c ? 'check' : undefined, action: `settings.place:screen:${view}:${c}` })),
+      { id: 'axf-settings-place-sep', separator: true },
+      { id: 'axf-settings-place-default', label: `Use the app default (${describePick(settingsPickFor(rt, {}).pick).toLowerCase()})`, icon: now === 'default' ? 'check' : undefined, action: `settings.place:screen:${view}:default` },
+      { id: 'axf-settings-place-look', label: 'Look and animation…', icon: 'sliders', action: `settings.placement:screen:${view}` },
+    ],
+  }];
 }
 
 /** A settings tab on its own, in a dialog: its name, the level toolbar and its panels and groups. */
@@ -639,6 +788,7 @@ function TabDialog({ id }: { id: string }) {
   return (
     <div className="fx-stack axf-settings axf-settings--dialog" data-axf-settings-tab={id}>
       <p className="fx-eyebrow"><Icon name={tab.icon} /> {tab.label}</p>
+      <PopsUpInRow screen={lastScreen} owner={settingsOwnerOf(rt, id)} />
       {ui.levels && bar && <SettingsLevelBar level={level} />}
       <TabContent id={id} />
     </div>
@@ -858,7 +1008,8 @@ export const library: AxfWebLibrary = {
     rt.settings.onChange(APPEARANCE_LOCK_KEY, () => applyAppLook(rt));
     rt.settings.onChange('axf.display.fontScale', () => applyDisplay(rt));
     rt.settings.onChange('axf.display.animations', () => applyDisplay(rt));
-    rt.actions.register('app.settings', () => rt.navigate(VIEW), { label: 'Settings' });
+    // settings-placement@1 (Brett, Nov 4 2026): the whole settings interface opens where the screen (or the app) says
+    rt.actions.register('app.settings', () => { if (!openPlaced(rt, undefined)) openMain(rt); }, { label: 'Settings' });
     // The level toolbar's own menu and actions (Brett, Oct 28 2026: default on, hideable from its menu or the setting).
     rt.actions.register('settings.levelbar', ([v]) => rt.settings.set(SETTINGS_LEVEL_BAR_KEY, v === 'on' ? true : v === 'off' ? false : rt.settings.get(SETTINGS_LEVEL_BAR_KEY) === false), { label: 'Show or hide the settings level toolbar', params: true });
     rt.actions.register('settings.level', ([l]) => { const lv = settingsLevel(settingsUi(rt), l); if (l) rt.settings.set(SETTINGS_LEVEL_KEY, lv); }, { label: 'Pick the settings level', params: true });
@@ -880,14 +1031,55 @@ export const library: AxfWebLibrary = {
       // A plugin's own tab follows the plugin's "Opens in" pick (window-resize-fix, Nov 3 2026, Brett: "I selected
       // dialog for the terminal settings in its settings, but it doesn't open"): dialog = that tab in a pop-up dialog
       // over whatever is open; anything else = the main settings page, as before.
-      const owner = tab ? rt.settings.getTab(tab)?.module : undefined;
-      if (tab && owner && rt.placementOf(owner) === 'dialog') { rt.openDialog(TAB_DIALOG, { tab }); return; }
-      rt.navigate(VIEW);
-      if (tab) {
-        rt.settings.set(TAB_KEY, tab);
-        globalThis.dispatchEvent?.(new CustomEvent('axf:settings-tab', { detail: tab }));
-      }
+      // Since Nov 3 2026 (settings-placement@1) every opening follows the owner's settings placement (inside the
+      // plugin, a dialog, a floating window or the main page); with no pick, "Opens in" = dialog still means a dialog.
+      // Since Nov 4 2026 every screen picks where its settings open (dialog, side panel, bottom sheet, inside, page, window).
+      if (openPlaced(rt, tab || undefined)) return;
+      openMain(rt, tab);
     }, { label: 'Open a settings tab', params: true });
+    rt.actions.register('settings.open-main', ([tab]) => openMain(rt, tab), { label: 'Open a settings tab on the full settings page', params: true });
+    // a screen's settings (its plugin's first tab, else the whole interface), as if asked for from that screen
+    rt.actions.register('settings.open-for', ([view]) => { const v = view || rt.getState().view; const t = settingsTargetOf(rt, v); if (!openPlaced(rt, t.tab, v)) openMain(rt, t.tab); }, { label: 'Open a screen\'s settings where that screen says', params: true });
+    rt.actions.register('settings.placement', (args) => {
+      const id = args.join(':') || (lastOwner ? `owner:${lastOwner}` : '');
+      const scope = parseScope(id) ?? (id ? { kind: 'owner' as const, owner: id } : null);
+      if (scope) rt.openDialog(PLACEMENT_DIALOG, { scope: scopeId(scope) });
+      else openMain(rt, SETTINGS_PLACEMENT_TAB);
+    }, { label: 'Where settings open (a screen, a plugin or the app default)', params: true });
+    // settings.place:<scope…>:<choice> (choice = dialog | panel-left | panel-right | sheet | inside | page | window | default)
+    rt.actions.register('settings.place', (args) => {
+      const choice = args[args.length - 1] ?? '';
+      const scope = parseScope(args.slice(0, -1).join(':'));
+      if (!scope) return;
+      const key = scopeKey(scope);
+      if (choice === 'default') { rt.settings.set(key, null); return; }
+      if (!(PLACEMENT_CHOICES as readonly string[]).includes(choice)) return;
+      const r = scope.kind === 'screen' ? settingsPickFor(rt, { screen: scope.view, ...settingsTargetOf(rt, scope.view) }) : scope.kind === 'owner' ? settingsPickFor(rt, { owner: scope.owner }) : settingsPickFor(rt, {});
+      rt.settings.set(key, JSON.stringify(applyChoice(choice as PlacementChoice, r.pick)));
+    }, { label: 'Set where settings open', params: true });
+    // The surfaces (dialog, panels, sheets, panes) render a tab, or the whole interface; the page-level ones live in slot app.frame.cover.
+    setSettingsSurfaceContent((tab, _close, s) => (tab ? <TabSurface id={tab} screen={s.screen} /> : <SettingsView compact screen={s.screen} />));
+    // right-click / long-press a screen (its canvas, its nav item, the toolbar, a window title): "Settings opens in" (runtime contribution; the context-menu asset is untouched)
+    for (const target of SCREEN_CTX_TARGETS) {
+      const prev = rt.contextExtras.get(target);
+      rt.contextExtras.set(target, (t, payload) => [...(prev?.(t, payload) ?? []), ...(rt.embedded?.page ? [] : screenPlacementMenu(rt, target === 'nav-item' && payload && payload !== VIEW ? payload : rt.getState().view))]);
+    }
+    // right-click inside a plugin: "Settings placement…" (runtime contribution; the context-menu asset is untouched)
+    const track = (e: Event) => {
+      const el = (e.target as Element | null)?.closest?.('[data-axf-sphost],[data-axf-plugin]');
+      lastOwner = el?.getAttribute('data-axf-sphost') ?? el?.getAttribute('data-axf-plugin') ?? null;
+    };
+    globalThis.document?.addEventListener('contextmenu', track, true);
+    globalThis.document?.addEventListener('pointerdown', track, true);
+    rt.contextExtras.set(PLACEMENT_CTX, (target) => {
+      const lib = lastOwner ? rt.libraries.find((l) => l.id === lastOwner) : undefined;
+      const tab = lib?.ui?.settingsTabs[0];
+      if (!lib || !tab || (SCREEN_CTX_TARGETS as readonly string[]).includes(target ?? '')) return [];
+      return [
+        { id: 'axf-settings-open-placed', label: `${lib.label} settings`, icon: 'settings', action: `settings.open:${tab.id}` },
+        { id: 'axf-settings-placement', label: 'Settings opens in…', icon: 'layout', action: `settings.placement:owner:${lib.id}` },
+      ];
+    });
   },
   views: {
     [VIEW]: { title: 'Settings', icon: 'settings', render: () => <SettingsView /> },
@@ -896,9 +1088,12 @@ export const library: AxfWebLibrary = {
   },
   dialogs: {
     [TAB_DIALOG]: { title: 'Settings', icon: 'settings', searchable: false, render: (p: Record<string, unknown>) => <TabDialog id={String(p.tab ?? '')} /> },
+    [PLACEMENT_DIALOG]: { title: 'Settings opens in', icon: 'layout', searchable: false, render: (p: Record<string, unknown>) => <PlacementDialog scope={parseScope(String(p.scope ?? '')) ?? (p.owner ? { kind: 'owner', owner: String(p.owner) } : { kind: 'app' })} /> },
     [LEVEL_EDITOR_DIALOG]: { title: 'Settings levels', icon: 'sliders', searchable: true, render: () => <LevelEditor /> },
   },
-  settingsTabs: Object.values(SETTINGS_TABS),
+  tabs: { [SETTINGS_WINDOW_TAB]: (t) => <div className="axf-settings-window">{t.payload ? <TabSurface id={t.payload} screen={lastScreen} /> : <SettingsView compact screen={lastScreen} />}</div> },
+  slots: { 'app.frame.cover': [{ id: 'axf-settings.surfaces', order: 50, render: () => <SettingsPageSurfaces /> }] },
+  settingsTabs: [...Object.values(SETTINGS_TABS), { id: SETTINGS_PLACEMENT_TAB, label: 'Settings placement', icon: 'layout', order: 35, description: 'Where settings pop up, for every screen and plugin: a pop-up dialog, a side panel, a bottom sheet, inside the screen, the full page or a floating window, with a look and animation each.' }],
   settings: [
     {
       id: 'axf.display',
@@ -928,6 +1123,7 @@ export const library: AxfWebLibrary = {
     },
   ],
   settingsPanels: [
+    { id: 'axf.settings.placement', tab: SETTINGS_PLACEMENT_TAB, title: 'Where settings open', icon: 'layout', order: 1, render: () => <ScreenPlacementList /> },
     { id: 'axf.account.role', tab: 'account', title: 'Role', icon: 'shield', order: 10, render: () => <RolePanel /> },
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
     { id: DESIGN_PANEL_ID, tab: 'appearance', title: 'Look', icon: 'palette', order: 0, render: () => <LookPickerPanel /> },

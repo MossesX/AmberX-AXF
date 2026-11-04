@@ -1,0 +1,44 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261103-1e14aeffa2",
+  "createdAt": "2026-11-03T23:05:02.084Z",
+  "updatedAt": "2026-11-04T05:27:43.948Z",
+  "kind": "edit",
+  "title": "Lenny: land everything finished (freeze plan step two)",
+  "asked": "",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [
+    {
+      "text": "Land #270 auto-land",
+      "state": "done",
+      "startedAt": "2026-11-04T00:56:59.240Z",
+      "finishedAt": "2026-11-04T00:56:59.240Z"
+    }
+  ],
+  "result": {
+    "state": "partial",
+    "summary": "19 PRs landed (incl. batch #303), 6 held with reasons, #267 closed, #251/#254 drafted for Brett; all apps redeployed; console update cron locked (outage ~12 min fixed). Report PR #304.",
+    "branch": "claude/lenny-land-all",
+    "commits": [],
+    "tests": {},
+    "links": {
+      "report": "_claude/builds/reports/lenny-land-all.md"
+    }
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "surface": "headless",
+  "startedAt": "2026-11-03T23:05:02.084Z",
+  "finishedAt": "2026-11-04T05:27:43.948Z",
+  "lastSeenAt": "2026-11-04T00:56:59.240Z",
+  "progress": 1
+}

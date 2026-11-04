@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261103-07159440e5",
+  "createdAt": "2026-11-03T23:44:19.128Z",
+  "updatedAt": "2026-11-03T23:44:58.847Z",
+  "kind": "build",
+  "title": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-…",
+  "asked": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /root/axf-builds/lenny-merge/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Opus) is fine. An UPGRADE (e.g. Opus → Fable) needs Brett's approval: when you reach one, run `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>`, ask once, and stop. Never approve a model switch upgrade yourself (no `act approve` on an upgrade), never relaunch on a higher model.",
+  "repos": [],
+  "model": "opus",
+  "who": {
+    "session": "053aa91c-f26",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "surface": "headless",
+  "startedAt": "2026-11-03T23:44:19.128Z",
+  "finishedAt": "2026-11-03T23:44:58.847Z",
+  "lastSeenAt": "2026-11-03T23:44:53.034Z",
+  "actual": {
+    "minutes": 1,
+    "costUsd": 0.0903,
+    "inputTokens": 4,
+    "outputTokens": 318,
+    "cacheReadTokens": 37722,
+    "cacheWriteTokens": 15273,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "doing": "Waiting for the next message"
+}

@@ -23,6 +23,9 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import './console-commands.css';
 import { consoleCatalogFrom, consoleMessageErrors, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
+import { parsePlacementChoice } from '@console/axf/core/engines/settingsplacement-rules.mjs';
+import { settingsPlacement as SP } from '@console/axf/core';
+import { settingsPickFor, settingsTargetOf } from '@console/axf/react';
 
 const FOLDER = 'console-commands';
 const ID = 'ai.amberx.axf.console.console-commands';
@@ -88,10 +91,33 @@ function hereOf(rt: AxfRuntime): ConsoleHere {
 }
 
 /** What this console has: its search index's screens and dialogs, every settings tab (with its parent), every action. */
+/** Where settings open (settings-placement@1), one item per screen, plugin with settings and the app default; `value` = the choice now. */
+function placementItems(rt: AxfRuntime) {
+  const choice = (r: { pick: SP.SettingsPlacementPick; from: SP.PickSource }, own: boolean) => (own ? SP.choiceOf(r.pick) : 'default');
+  const app = settingsPickFor(rt, {});
+  const items: { kind: 'placement'; id: string; label: string; detail: string; value: string; keywords?: string[] }[] = [
+    { kind: 'placement' as const, id: 'app', label: 'App default', detail: SP.describePick(app.pick), value: SP.choiceOf(app.pick), keywords: ['default', 'everything', 'app'] },
+  ];
+  for (const e of rt.search.entries()) {
+    if (e.kind !== 'view') continue;
+    const view = String((e.focus as { view?: unknown }).view ?? e.id.replace(/^view:/, ''));
+    const r = settingsPickFor(rt, { screen: view, ...settingsTargetOf(rt, view) });
+    const own = SP.hasPlacement(rt.settings.get(SP.screenPlacementKey(view)));
+    items.push({ kind: 'placement', id: `screen:${view}`, label: e.label, detail: `${SP.describePick(r.pick)}${own ? '' : ' (app default)'}`, value: choice(r, own), keywords: [view, 'screen', ...(e.keywords ?? [])] });
+  }
+  for (const l of rt.libraries) {
+    if (!l.ui?.settingsTabs.length) continue;
+    const r = settingsPickFor(rt, { owner: l.id });
+    const own = SP.hasPlacement(rt.settings.get(SP.settingsPlacementKey(l.id)));
+    items.push({ kind: 'placement', id: `plugin:${l.id}`, label: l.label, detail: `${SP.describePick(r.pick)}${own ? '' : ' (default)'}`, value: choice(r, own), keywords: ['plugin', l.id] });
+  }
+  return items;
+}
+
 function catalogOf(rt: AxfRuntime) {
   const tabs = rt.settings.listTabs().map((t) => ({ kind: 'settings-tab', label: t.label, icon: t.icon, keywords: [t.description ?? '', t.parent ? `${t.parent} sub-tab` : ''], parent: t.parent, focus: { kind: 'setting', tab: t.id } }));
   const entries = [...rt.search.entries().filter((e) => e.kind === 'view' || e.kind === 'dialog'), ...tabs];
-  return consoleCatalogFrom(entries, rt.actions.list(), { app: 'console-web', here: hereOf(rt) });
+  return consoleCatalogFrom(entries, rt.actions.list(), { app: 'console-web', here: hereOf(rt), items: placementItems(rt) });
 }
 
 /** Run one message; → [ok, what happened]. */
@@ -112,6 +138,16 @@ function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [bool
       if (m.target && open.id !== m.target && !open.id.endsWith(`:${m.target}`)) return [true, `${m.label ?? m.target} wasn't open (${open.id} is), left it`];
       rt.closeDialog();
       return [true, `closed ${m.label ?? open.id}`];
+    }
+    case 'place': {
+      // where settings open (settings-placement@1): app | screen:<view> | plugin:<id> → the settings library's settings.place action
+      const scope = m.target === 'app' ? 'app' : m.target!.startsWith('plugin:') ? `owner:${m.target!.slice(7)}` : m.target!;
+      const parsed = parsePlacementChoice(m.value);
+      if (!parsed) return [false, `"${m.value}" doesn't say where settings open`];
+      const choice = parsed === 'default' ? 'default' : parsed.choice;
+      if (!rt.dispatch(`settings.place:${scope}:${choice}`)) return [false, 'the settings library is not loaded here'];
+      if (parsed !== 'default' && parsed.mode) { const key = scope === 'app' ? SP.SETTINGS_PLACEMENT_DEFAULT_KEY : scope.startsWith('owner:') ? SP.settingsPlacementKey(scope.slice(6)) : SP.screenPlacementKey(scope.slice(7)); const cur = SP.normalizePick(rt.settings.get(key)); rt.settings.set(key, SP.encodePick({ ...cur, mode: parsed.mode })); }
+      return [true, `${m.label ?? m.target}: settings now open ${parsed === 'default' ? 'where the app default says' : `in ${SP.CHOICE_LABELS[parsed.choice].toLowerCase()}`}`];
     }
     case 'home': rt.navigate(rt.manifest.startView ?? 'home'); return [true, `went home (${rt.getState().view})`];
     case 'back': {
@@ -144,7 +180,7 @@ function ConsoleCommandsClient() {
     let pick = pickedCommand();
     const announce = (used = false) => {
       const catalog = catalogOf(rt);
-      const key = `${catalog.items.length}:${catalog.items.map((i) => i.id).join(',').length}`;
+      const key = `${catalog.items.length}:${catalog.items.map((i) => i.id).join(',').length}:${catalog.items.filter((i) => i.kind === 'placement').map((i) => i.value).join(',')}`;
       if (key === catalogKey && !used) return post('seen', { client: id, here: catalog.here, ...where() }).catch(() => undefined);
       catalogKey = key;
       const body = { client: id, app, title: document.title, device: device(), catalog, here: catalog.here, ...where(), used: used || !!pick, ...(pick ? { pick } : {}) };
@@ -164,6 +200,9 @@ function ConsoleCommandsClient() {
     window.addEventListener('focus', used);
     document.addEventListener('visibilitychange', onVisible);
     const beat = setInterval(() => void announce(false), HEARTBEAT_MS);
+    // a settings placement changed here (a pick, a context-menu choice): the catalog's placement items follow
+    let settle: ReturnType<typeof setTimeout> | undefined;
+    const offSettings = rt.settings.subscribe(() => { clearTimeout(settle); settle = setTimeout(() => void announce(false), 600); });
     // Only when the page really goes away (not into the back/forward cache, not a React re-render): a bye makes the
     // server stop sending here at once.
     const bye = (e: PageTransitionEvent) => { if (!e.persisted) void post('bye', { client: id }, true).catch(() => undefined); };
@@ -186,7 +225,7 @@ function ConsoleCommandsClient() {
         void post('ack', { client: id, id: m.id, ok: res[0], message: res[1], here: hereOf(rt), ...where() }).catch(() => undefined);
       },
     );
-    return () => { stop(); offState(); offFront(); clearInterval(beat); window.removeEventListener('focus', used); document.removeEventListener('visibilitychange', onVisible); window.removeEventListener('pagehide', bye); };
+    return () => { stop(); offState(); offFront(); offSettings(); clearTimeout(settle); clearInterval(beat); window.removeEventListener('focus', used); document.removeEventListener('visibilitychange', onVisible); window.removeEventListener('pagehide', bye); };
   }, [rt, on]);
   return null;
 }

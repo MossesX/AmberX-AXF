@@ -921,7 +921,7 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
 
 # ---------------------------------------------------------------------- console commands (control@1 console domain)
 
-CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients")
+CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients", "console_placement")
 FOLLOW_TOOLS = ("console_show", "console_follow")  # Follow Amber plugin (follow-amber@1)
 # Opening and moving only navigate, so they are annotated read-only: axHub's recommended preset (decision #112) runs
 # read-only tools at once, and navigation never waits on a veto countdown (Brett, Nov 3 2026: Follow Amber).
@@ -992,10 +992,24 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         return await go({"op": "get", "target": "console.nav", "path": "here"})
 
     @mcp.tool(annotations=READ)
-    async def console_list(kind: Literal["screens", "dialogs", "settings", "actions"] = "screens", q: str = "", limit: int = 50) -> dict[str, Any]:
-        """What the open console has, so you can pick the right name: its screens, dialogs, settings tabs or actions,
-        best matches for `q` first (all of them when q is empty)."""
+    async def console_list(kind: Literal["screens", "dialogs", "settings", "actions", "placement"] = "screens", q: str = "", limit: int = 50) -> dict[str, Any]:
+        """What the open console has, so you can pick the right name: its screens, dialogs, settings tabs, actions, or
+        where settings open for every screen / plugin (kind="placement"), best matches for `q` first (all when q is empty)."""
         return await go({"op": "list", "target": f"console.{kind}", "select": {k: v for k, v in {"q": q, "limit": max(1, min(limit, 500))}.items() if v}})
+
+    @mcp.tool(annotations=WRITE)
+    async def console_placement(screen: str = "app", placement: str = "", to: Delivery = "recent") -> dict[str, Any]:
+        """Where settings pop up (settings-placement@1, Brett Nov 4 2026: "select in every screen where its settings pops up").
+        `screen` = a screen ("home", "Plan Studio", "screen:<view id>"), a plugin ("plugin:<id>" or its name) or "app"
+        (the app default). `placement` = where: dialog, panel-left, panel-right, sheet, inside, page, window — spoken forms
+        work ("side panel left", "bottom sheet", "in a dialog", "inside as a split view"); "default" puts a screen back on
+        the app default. Empty = read where it opens now. The pick is saved in the console (and follows Brett between
+        browsers through the Settings placement plugin)."""
+        if not placement:
+            return await go({"op": "get", "target": "console.placement", "path": screen or "app"})
+        if placement.strip().lower() in ("default", "app default", "use the app default", "reset"):
+            return await go({"op": "reset", "target": "console.placement", "path": screen or "app", "input": inp(to)})
+        return await go({"op": "set", "target": "console.placement", "path": screen or "app", "value": placement, "input": inp(to)})
 
     @mcp.tool(annotations=READ)
     async def console_clients() -> dict[str, Any]:

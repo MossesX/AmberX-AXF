@@ -45,6 +45,7 @@ import { registry } from "../registry";
 import type { Module } from "../module";
 import { Glyph } from "../brand/Glyph";
 import { setHostedModule, settings, settingsUi } from "../settings/store";
+import { InlineSettings } from "../settings/SettingsDialog";
 import { token } from "../theme/apply";
 import { Boundary, ContributionView } from "./Boundary";
 
@@ -179,6 +180,8 @@ export function ModuleHost({ moduleId }: { moduleId: string }) {
         {/* The module tier: a screen that throws is replaced by a named panel
             while AppShell's banner and nav above stay alive. */}
         <Boundary tier="module" source={module.id}>
+          {/* settings-placement@1: placement "inside" draws the module's settings here, at the top of its own screen */}
+          <InlineSettings moduleId={module.id} />
           <Screen />
         </Boundary>
       </Box>

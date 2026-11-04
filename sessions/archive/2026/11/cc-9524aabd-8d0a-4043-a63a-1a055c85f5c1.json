@@ -1,0 +1,113 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-9524aabd-8d0a-4043-a63a-1a055c85f5c1",
+ "source": "claude-code",
+ "sessionId": "9524aabd-8d0a-4043-a63a-1a055c85f5c1",
+ "project": "other",
+ "title": "# Build: molly-banners (Current profile) ## Brett said (verbatim, Nov 3 2026, voice) \"Install the banners in Molly.\" As…",
+ "startedAt": "2026-11-03T22:03:38.183Z",
+ "endedAt": "2026-11-04T00:29:48.935Z",
+ "minutes": 146,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/molly-banners",
+  "repo": "",
+  "branch": "claude/molly-banners"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-03T22:03:56.405Z",
+   "kind": "prompt",
+   "text": "# Build: molly-banners (Current profile) ## Brett said (verbatim, Nov 3 2026, voice) \"Install the banners in Molly.\" Assigned agent: whoever is free (router if on main; else **Ping Paulie**; record who). Register in the `current` profile (id `molly-banners`) + banner entry. ## Build - s1 Check first: what banners Molly (apps/molly, chrome@1 + xLayout, PRs #245/#252) shows today vs the Dev Console's banners (What's New / whats-shipped, push banner, Activity, Systems check, alerts bell, build/orchestrator status, approvals/veto chip, build profile chip, keys/health banners, Claude badge, pass c…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 316,
+    "output": 97295,
+    "cacheRead": 29290465,
+    "cacheWrite": 255781,
+    "thinking": 31803
+   },
+   "costUsd": 9.0847,
+   "costEstimated": false,
+   "seconds": 8740,
+   "tools": {
+    "Bash": 145,
+    "Write": 6,
+    "Edit": 1,
+    "Read": 7,
+    "ToolSearch": 1,
+    "Monitor": 3
+   },
+   "commands": 145,
+   "files": [
+    "/root/axf-builds/molly-banners/framework/react/bannerStrip.ts",
+    "/root/axf-builds/molly-banners/framework/react/components/BannerStrip.tsx",
+    "/root/axf-builds/molly-banners/framework/ui/axf.css",
+    "/root/axf-builds/molly-banners/apps/molly/plugins/banners/web/index.tsx",
+    "/root/axf-builds/molly-banners/framework/spec/check-banner-strip.mts",
+    "/tmp/mb-pw/run.mjs",
+    "/root/axf-builds/molly-banners/_claude/builds/reports/molly-banners.md"
+   ],
+   "changeIds": [
+    "chg-20261103-44b13c3aac"
+   ],
+   "features": [
+    "orch:molly-banners",
+    "pending:molly-banners",
+    "plugin:activity",
+    "queue:xlayout"
+   ],
+   "output": "The banners are in Molly, boss. PR #294 is open, CI is green, and the push banner will merge it on its own. One thing never got tested live, and it's below. **What Molly showed before:** no banners at all. Molly was throwing away plugin banners, and with xLayout on, every framed app hid its own ban…"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/molly-banners/framework/react/bannerStrip.ts",
+  "/root/axf-builds/molly-banners/framework/react/components/BannerStrip.tsx",
+  "/root/axf-builds/molly-banners/framework/ui/axf.css",
+  "/root/axf-builds/molly-banners/apps/molly/plugins/banners/web/index.tsx",
+  "/root/axf-builds/molly-banners/framework/spec/check-banner-strip.mts",
+  "/tmp/mb-pw/run.mjs",
+  "/root/axf-builds/molly-banners/_claude/builds/reports/molly-banners.md"
+ ],
+ "changeIds": [
+  "chg-20261103-44b13c3aac"
+ ],
+ "features": [
+  "orch:molly-banners",
+  "pending:molly-banners",
+  "plugin:activity",
+  "queue:xlayout"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 316,
+  "output": 97295,
+  "cacheRead": 29290465,
+  "cacheWrite": 255781,
+  "thinking": 31803,
+  "costUsd": 9.0847,
+  "costEstimated": false,
+  "toolCalls": 163,
+  "commands": 145,
+  "filesTouched": 7,
+  "reportedUsd": 9.8515
+ },
+ "ingestedAt": "2026-11-04T00:30:14.445Z"
+}

@@ -1,0 +1,41 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261103-9b76f2c256",
+  "createdAt": "2026-11-03T23:22:37.224Z",
+  "updatedAt": "2026-11-03T23:22:55.328Z",
+  "kind": "build",
+  "title": "Plugin lazy loader (console speed)",
+  "asked": "",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "claude-opus-5-5",
+  "who": {
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": null,
+  "closed": null,
+  "state": "running",
+  "status": "running",
+  "buildRef": {
+    "kind": "orch",
+    "id": "plugin-lazy-load"
+  },
+  "surface": "headless",
+  "startedAt": "2026-11-03T23:22:37.224Z",
+  "lastSeenAt": "2026-11-03T23:22:55.328Z",
+  "estimate": {
+    "minutes": 90,
+    "costUsd": 12.6
+  },
+  "costEstimated": true,
+  "branch": "claude/plugin-lazy-load",
+  "areas": [
+    "apps/console-web/src",
+    "apps/console-web/plugins/plugin-manager",
+    "apps/console-web/vite.config.ts"
+  ]
+}

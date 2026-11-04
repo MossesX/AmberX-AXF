@@ -240,6 +240,20 @@ export function registerCtxCommands(): void {
     }
   });
 
+  /* ---------------------- settings placement (settings-placement@1) ------- */
+
+  // Where this module's settings open (Brett, Nov 4 2026): the same surface, so the "Pops up in" row at its top is
+  // the picker; the row shows the choices (dialog, side panel left / right, bottom sheet, inside, page, window).
+  commands.register({
+    id: "module.settings.placement",
+    title: "Settings opens in…",
+    run: () => {
+      const mod = hostedModule();
+      const id = mod?.id ?? activeContext()?.path.find((a) => a.startsWith("module:"))?.slice("module:".length);
+      if (id) settingsUi.open(id);
+    }
+  });
+
   /* ---------------------------- toolbar settings (0.0.21) ---------------- */
 
   commands.register({

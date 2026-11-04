@@ -272,6 +272,9 @@ export {
   registerSettingsGate,
   useSettingsGates
 } from "./settings";
+// settings-placement@1 (Nov 4 2026): where each screen's settings open (dialog, side panel, bottom sheet, inside, page, window)
+export { PLACEMENT_CHOICES, CHOICE_LABELS, settingsPlacement, useSettingsPlacement, resolvePlacement, PopsUpInRow, InlineSettings } from "./settings";
+export type { PlacementChoice, PlacementDoc } from "./settings";
 export type {
   ModuleSettingsDecl,
   SettingKind,

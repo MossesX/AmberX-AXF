@@ -1,6 +1,6 @@
 {
   "$axf": "libraries@1",
-  "generatedAt": "2026-11-03T13:58:20.761Z",
+  "generatedAt": "2026-11-04T16:53:49.189Z",
   "items": [
     {
       "$axf": "library@1",
@@ -1172,6 +1172,53 @@
         {
           "capability": "axf.recorder.audio",
           "note": "Microphone narration while recording — not built."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.toolbars",
+      "module": "lib-toolbars",
+      "name": "Toolbars (every toolbar: tap-to-confirm on touch, per-toolbar choices)",
+      "description": "The Toolbars plugin (Brett, Nov 3 2026): owns every toolbar in the app. Settings → Plugins → Toolbars switches tap-to-confirm on touch (first tap shows what a button does and arms it, second tap runs it; mouse, pen and keyboard click once) and sets the arm window; All toolbars lists every toolbar on screen with its own override. The behaviour is the framework's (react/tapConfirm.ts, installed by AxfProvider).",
+      "features": [],
+      "dependsOn": [],
+      "manifestKey": "libraries.toolbars",
+      "params": [],
+      "parts": [
+        {
+          "id": "tap",
+          "label": "Tap to confirm (touch)",
+          "description": "On/off for touch and the arm window (default 3 s)."
+        },
+        {
+          "id": "all",
+          "label": "All toolbars",
+          "description": "Every toolbar on screen with its settings id and its own tap-to-confirm choice."
+        }
+      ],
+      "ports": {
+        "web": {
+          "status": "compiled",
+          "dir": "libs/toolbars"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.toolbars.android",
+          "note": "Compose twin of tap-to-confirm and the settings: Android on hold (PORTING.md)."
+        },
+        {
+          "capability": "axf.toolbars.look",
+          "note": "Per-toolbar look and layout settings — build toolbar-tap-confirm s8-s9."
+        },
+        {
+          "capability": "axf.toolbars.editor",
+          "note": "Toolbar editor (save as toolbar asset) — build toolbar-tap-confirm s11-s12."
+        },
+        {
+          "capability": "axf.toolbars.drop",
+          "note": "Dropped hooks (hook@1 / drop-target@1) — build toolbar-tap-confirm s13-s18."
         }
       ]
     },

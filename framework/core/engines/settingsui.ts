@@ -18,6 +18,7 @@
  * Kotlin twin deferred (Android on hold, spec/PORTING.md); spec/fixtures/settings-ui.json is what it will replay.
  */
 import type { SettingKind, SettingSpec, SettingsGroup, SettingsTab, SettingValue } from '../settings';
+import { normalizeOpensIn, type SettingsPlacementPick } from './settingsplacement';
 
 /* ---------------- levels ---------------- */
 
@@ -79,6 +80,11 @@ export interface SettingsUi {
   levelOf: Record<string, SettingsLevel>;
   /** per-level visible sets on top of the rank rule (the interface's own; a user's saved sets merge over them) */
   visible: SettingsVisible;
+  /** Where this interface pops up (Brett, Nov 4 2026: "Every settings interface should have a setting to declare where
+   *  it pops up"): a settings-placement@1 pick (dialog / side panel left or right / bottom sheet / inside the screen /
+   *  full page / floating window, with size and animation). A screen's own override beats it; the app default is below
+   *  it. Absent = the interface says nothing. Shown as the "Pops up in" row at the top of every settings interface. */
+  opensIn?: SettingsPlacementPick;
 }
 
 export const SETTINGS_LAYOUTS: readonly SettingsLayout[] = ['tabs-top', 'tabs-side', 'list'];
@@ -195,6 +201,7 @@ export function normalizeSettingsUi(raw: unknown): SettingsUi {
     defaultLevel: level(d.defaultLevel) ?? SETTINGS_UI_DEFAULTS.defaultLevel,
     levelOf: Object.fromEntries(Object.entries(isObj(d.levelOf) ? d.levelOf : {}).filter(([k, v]) => id(k) && level(v)).slice(0, SETTINGS_UI_LIMITS.hide).map(([k, v]) => [k, level(v)!])) as Record<string, SettingsLevel>,
     visible: normalizeSettingsVisible(d.visible),
+    ...(normalizeOpensIn(d.opensIn) ? { opensIn: normalizeOpensIn(d.opensIn)! } : {}),
   };
 }
 

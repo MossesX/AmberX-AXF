@@ -34,4 +34,8 @@ export {
 } from "./gates";
 export type { SettingsGate } from "./gates";
 
-export { SettingsDialog } from "./SettingsDialog";
+export { SettingsDialog, InlineSettings, PopsUpInRow, SettingsBody, settingsTitle } from "./SettingsDialog";
+
+// settings-placement@1 (Nov 4 2026): where each screen's settings open — dialog, side panel, bottom sheet, inside, page, window
+export { PLACEMENT_CHOICES, CHOICE_LABELS, SYSTEM_DEFAULT, PLACEMENT_NS, PlacementStore, settingsPlacement, useSettingsPlacement, resolvePlacement, isChoice } from "./placement";
+export type { PlacementChoice, PlacementDoc } from "./placement";

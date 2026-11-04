@@ -65,12 +65,16 @@ ok(backdrop > 60, `dialog backdrop (${backdrop}) is above the window layer`);
 settingsLibrary.register?.(rt);
 rt.settings.addTab({ id: 'probe-tab', label: 'Probe', icon: 'settings', order: 1, module: 'probe.plugin' });
 rt.setPlacement('probe.plugin', { kind: 'dialog', id: 'probe.dialog' }, 'dialog', 'Probe');
+// settings-placement@1 (Nov 3 / Nov 4 2026): the opening lands on a settings surface (a pop-up dialog drawn by
+// SettingsPageSurfaces with its look and animation), not on the dialog host
+const { openSurfaces, closeSettingsSurface, dropSettingsSurface } = await import('../src/axf/react/settingsHost');
 rt.dispatch('settings.open:probe-tab');
-ok(rt.getState().dialog?.id === 'axf.settings.tab' && rt.getState().dialog?.props?.tab === 'probe-tab', 'placement dialog opens the tab in a dialog');
-rt.closeDialog();
+const opened = openSurfaces().find((s) => s.owner === 'probe.plugin' && s.tab === 'probe-tab');
+ok(!!opened && opened.route.via === 'dialog', `placement dialog opens the tab in a pop-up dialog (${opened?.route.via})`);
+closeSettingsSurface(); if (opened) dropSettingsSurface(opened.key);
 rt.settings.set('axf.placement.probe.plugin', 'main');
 rt.dispatch('settings.open:probe-tab');
-ok(!rt.getState().dialog && rt.getState().view === 'settings', 'placement main opens the settings page');
+ok(!rt.getState().dialog && !openSurfaces().length && rt.getState().view === 'settings', 'placement main opens the settings page');
 // the "Opens in" choice says it also decides where the plugin's settings open, and names the plugin
 const { installLibraries } = await import('../src/axf/react/library');
 installLibraries(rt, [{ id: 'probe.term', label: 'Probe Terminal', opens: 'window', dialogs: { 'probe.term.open': { title: 'Open a tab', render: () => null } }, settingsTabs: [{ id: 'probe-term', label: 'Probe Terminal' }] } as never]);

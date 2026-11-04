@@ -17,12 +17,14 @@
  * Kotlin twin deferred (Android on hold, spec/PORTING.md).
  */
 import { CONTROL_WIRE, controlConfirmToken, controlConfirmValid, controlGranted, CONTROL_CONFIRM_TTL_MS } from './control-rules.mjs';
+import { CHOICE_LABELS, PLACEMENT_CHOICES, parsePlacementChoice } from './settingsplacement-rules.mjs';
 
 export const CONSOLE_CATALOG_FRAME = 'console-catalog@1';
 export const CONSOLE_COMMAND_FRAME = 'console-command@1';
 /** control@1 target → catalog kind. */
-export const CONSOLE_KINDS = { 'console.screens': 'screen', 'console.dialogs': 'dialog', 'console.settings': 'settings', 'console.actions': 'action' };
-export const CONSOLE_ITEM_KINDS = ['screen', 'dialog', 'settings', 'action'];
+export const CONSOLE_KINDS = { 'console.screens': 'screen', 'console.dialogs': 'dialog', 'console.settings': 'settings', 'console.actions': 'action', 'console.placement': 'placement' };
+/** `placement` (settings-placement@1, Nov 4 2026): where settings open, one item per screen (`screen:<view>`), plugin (`plugin:<id>`) and the app default (`app`); `value` = its choice now. */
+export const CONSOLE_ITEM_KINDS = ['screen', 'dialog', 'settings', 'action', 'placement'];
 /** Where a console command goes: the console used last (default), every open console of the caller, or one client id. */
 export const CONSOLE_DELIVERY = ['recent', 'all'];
 export const CONSOLE_CATALOG_MAX = 3000;
@@ -30,7 +32,7 @@ export const CONSOLE_LIST_DEFAULT = 50;
 /** How long a console counts as open without a heartbeat (the client re-announces every 30 s and on focus). */
 export const CONSOLE_CLIENT_STALE_MS = 90_000;
 /** The MCP shortcut tools every console MCP server publishes (names are a contract: Claude sessions call them through axHub). */
-export const CONSOLE_TOOLS = ['console_open', 'console_dialog', 'console_settings', 'console_action', 'console_back', 'console_where', 'console_list', 'console_clients'];
+export const CONSOLE_TOOLS = ['console_open', 'console_dialog', 'console_settings', 'console_action', 'console_back', 'console_where', 'console_list', 'console_clients', 'console_placement'];
 
 /** Action ids that only navigate (open, show, move a window): run with control.console.navigate alone. */
 const NAVIGATING = /^(nav|dialog|settings\.open|banners\.settings|windows\.[A-Za-z]+|terminal\.(open|dialog)|help(\.[A-Za-z.]+)?|help\.mode|search(\.[A-Za-z]+)?|inspector|asset\.json|plugins\.open|views?\.[A-Za-z.]+)$/;
@@ -52,7 +54,7 @@ export function normalizeConsoleItem(raw) {
   const id = str(raw.id, 160);
   if (!id) return null;
   const out = { kind: raw.kind, id, label: str(raw.label, 160) || id };
-  for (const k of ['detail', 'icon', 'requires', 'parent', 'module']) { const v = str(raw[k], 200); if (v) out[k] = v; }
+  for (const k of ['detail', 'icon', 'requires', 'parent', 'module', 'value']) { const v = str(raw[k], 200); if (v) out[k] = v; }
   if (Array.isArray(raw.keywords)) { const kw = raw.keywords.map((x) => str(x, 80)).filter(Boolean).slice(0, 12); if (kw.length) out.keywords = kw; }
   if (['navigate', 'read', 'write', 'destructive'].includes(raw.effect)) out.effect = raw.effect;
   if (raw.params === true) out.params = true;
@@ -100,6 +102,8 @@ export function consoleCatalogFrom(entries, actions = [], extra = {}) {
     if (!a?.id || m.stub) continue;
     items.push({ kind: 'action', id: a.id, label: m.label || a.id, detail: a.id, requires: m.requires, effect: m.effect, params: m.params === true, module: m.module });
   }
+  // extra.items: items the client builds itself (the placement of every screen, plugin and the app default)
+  if (Array.isArray(extra.items)) items.push(...extra.items);
   return normalizeConsoleCatalog({ ...extra, items });
 }
 
@@ -209,7 +213,7 @@ export const consoleClientSummary = (c) => ({ id: c.id, app: c.app ?? 'console-w
 /** The message an open console receives. */
 export function consoleMessage(fields, { id, by = '', now = Date.now() } = {}) {
   const m = { $axf: CONSOLE_COMMAND_FRAME, id: String(id ?? ''), op: fields.op };
-  for (const k of ['kind', 'target', 'label', 'spec', 'anchor', 'arg']) if (fields[k] !== undefined && fields[k] !== '') m[k] = String(fields[k]);
+  for (const k of ['kind', 'target', 'label', 'spec', 'anchor', 'arg', 'value']) if (fields[k] !== undefined && fields[k] !== '') m[k] = String(fields[k]);
   m.by = by;
   m.at = new Date(now).toISOString();
   return m;
@@ -219,9 +223,10 @@ export function consoleMessage(fields, { id, by = '', now = Date.now() } = {}) {
 export function consoleMessageErrors(m) {
   const errors = [];
   if (!isObj(m) || m.$axf !== CONSOLE_COMMAND_FRAME) return [`$axf must be ${CONSOLE_COMMAND_FRAME}`];
-  if (!['open', 'run', 'back', 'home', 'close'].includes(m.op)) errors.push('op must be open, run, back, home or close');
-  if (m.op === 'open' && (!CONSOLE_ITEM_KINDS.includes(m.kind) || m.kind === 'action' || !m.target)) errors.push('open needs a kind (screen, dialog, settings) and a target');
+  if (!['open', 'run', 'back', 'home', 'close', 'place'].includes(m.op)) errors.push('op must be open, run, back, home, close or place');
+  if (m.op === 'open' && (!CONSOLE_ITEM_KINDS.includes(m.kind) || m.kind === 'action' || m.kind === 'placement' || !m.target)) errors.push('open needs a kind (screen, dialog, settings) and a target');
   if (m.op === 'run' && !m.spec) errors.push('run needs an action spec');
+  if (m.op === 'place' && (!m.target || !m.value || !parsePlacementChoice(m.value))) errors.push('place needs a target (screen:<view>, plugin:<id> or app) and a placement word (dialog, panel-left, panel-right, sheet, inside, page, window or default)');
   return errors;
 }
 
@@ -261,6 +266,16 @@ export function runConsoleCommand(c, ctx = {}) {
     return send({ op: c.action });
   }
   const kind = CONSOLE_KINDS[c.target];
+  // where settings open (settings-placement@1): list / get read the catalog; set / reset send `place` to the console
+  if (c.target === 'console.placement' && (c.op === 'set' || c.op === 'reset')) {
+    const p = str(c.path, 200).trim() || 'app';
+    const r = consoleResolve(catalog, kind, p);
+    if (!r.item) return fail(r.ambiguous ? CONTROL_WIRE.VALIDATION : CONTROL_WIRE.NOT_FOUND, r.ambiguous ? `"${p}" matches several: ${r.candidates.map((i) => `${i.label} (${i.id})`).join(', ')}; send the id` : `the console has no screen, plugin or app default "${p}" (control list console.placement names them: screen:<view>, plugin:<id>, app)`, { candidates: r.candidates ?? [] });
+    const parsed = c.op === 'reset' ? 'default' : parsePlacementChoice(c.value);
+    if (!parsed) return fail(CONTROL_WIRE.VALIDATION, `value must say where: ${PLACEMENT_CHOICES.map((x) => `${x} (${CHOICE_LABELS[x]})`).join(', ')}, or default`);
+    const value = parsed === 'default' ? 'default' : parsed.mode ? `${parsed.choice}:${parsed.mode}` : parsed.choice;
+    return send({ op: 'place', kind, target: r.item.id, label: r.item.label, value }, { item: r.item, value, changed: [{ path: r.item.id, from: r.item.value ?? '', to: value }] });
+  }
   // act close on dialogs: shut the open one ("current" / "any" / "open" = whichever it is; a dialog's id or name = only that one)
   if (c.target === 'console.dialogs' && c.op === 'act' && c.action === 'close') {
     const p = str(c.path, 200).trim().toLowerCase();
