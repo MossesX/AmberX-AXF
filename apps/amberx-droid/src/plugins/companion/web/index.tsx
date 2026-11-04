@@ -66,7 +66,23 @@ function ChatsPanel() {
   );
 }
 
-function open(rt: AxfRuntime) { rt.navigate('companion'); }
+/** Tab kind of Gizmo's floating window (one at a time; payload unused). */
+export const WINDOW_KIND = 'companion';
+
+/**
+ * Open Gizmo in a frameless floating window, the console Terminal's Windows Terminal look (frameless, the chat's title
+ * bar is the window's, acrylic, rounded, eight resize edges, snap, maximize). Brings an open one to the front instead.
+ * On a touch screen it is centred with a margin each side, clear of the phone's edge-swipe (back) zone.
+ */
+function open(rt: AxfRuntime) {
+  const wm = rt.windows;
+  const g = Object.values(wm.state.groups).find((x) => x.tabs.some((t) => t.kind === WINDOW_KIND));
+  if (g?.windowId) { wm.focus(g.windowId); return; }
+  const touch = matchMedia('(pointer: coarse)').matches;
+  const width = Math.max(280, Math.min(720, innerWidth - (touch ? 32 : 64))), height = Math.max(320, Math.min(760, innerHeight - (touch ? 96 : 120)));
+  wm.openFloating([{ id: `companion-${Date.now().toString(36)}`, title: COMPANION.name, kind: WINDOW_KIND, payload: '', icon: 'sparkles' }], COMPANION.name, 'floating', width, height,
+    touch ? Math.round((innerWidth - width) / 2) : undefined, undefined, { frame: 'frameless', minWidth: Math.min(300, width), minHeight: 280 });
+}
 
 export const library: AxfWebLibrary = {
   id: COMPANION_ID,
@@ -74,6 +90,7 @@ export const library: AxfWebLibrary = {
   version: VERSION,
   builtWith: { model: 'opus', builtAt: '2026-11-03' },
   provides: ['amberx.companion'],
+  tabs: { [WINDOW_KIND]: () => <CompanionView /> },
   views: { companion: { title: COMPANION.name, icon: 'sparkles', keywords: ['gizmo', 'companion', 'chat', 'claude', 'assistant', 'talk', 'ask', 'sidekick'], render: () => <CompanionView /> } },
   nav: { label: 'Gizmo', items: [{ id: 'companion', label: COMPANION.name, icon: 'sparkles', view: 'companion' }] },
   appMenu: [{

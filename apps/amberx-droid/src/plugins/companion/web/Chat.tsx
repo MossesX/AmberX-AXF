@@ -6,7 +6,7 @@
  * a drawer. Talk mode (./talk) sends what Brett says and speaks the reply as it streams.
  */
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
-import { Button, Icon, IconButton, Markdown, useAxfState, useRuntime } from '../../../axf/react';
+import { Button, Icon, IconButton, Markdown, WindowGrip, useAxfState, useRuntime, useWindowFrame } from '../../../axf/react';
 import {
   emptyLiveReply, normalizeChatContext, watchReply,
   type AgentRef, type AssistantStatus, type ChatImage, type Conversation, type ConversationSettings, type ConversationSummary, type LiveReply, type Message,
@@ -42,7 +42,7 @@ function useStatus() {
 function ToolCards({ tools, open, toggle }: { tools: ToolCardView[]; open: Set<string>; toggle: (id: string) => void }) {
   if (!tools.length) return null;
   return (
-    <div className="axp-companion__tools">
+    <div className="axp-companion__tools" data-axf-not-toolbar="list of tool-call cards in a reply, not a button row">
       {tools.map((t) => (
         <div key={t.id} className={`axp-companion__tool axp-companion__tool--${t.state}`}>
           <button type="button" data-fx-row className="axp-companion__toolhead" aria-expanded={open.has(t.id)} onClick={() => toggle(t.id)}>
@@ -61,6 +61,10 @@ function ToolCards({ tools, open, toggle }: { tools: ToolCardView[]; open: Set<s
 export function CompanionView() {
   const rt = useRuntime();
   useAxfState();
+  // frameless window (like the console's Terminal): the chat's title bar is the window's title bar. Empty bar space
+  // drags (double-tap maximizes); caption buttons at its end in Windows order. In the main shell there is no frame.
+  const frame = useWindowFrame();
+  const barDown = (e: React.PointerEvent) => { if (!frame || (e.target as HTMLElement).closest('button, input, [role="radiogroup"], .fx-window__grip')) return; frame.startMove(e); };
   const { status, error: statusErr } = useStatus();
   const talk = useTalk();
   const [list, setList] = useState<ConversationSummary[]>([]);
@@ -262,8 +266,9 @@ export function CompanionView() {
   }
 
   return (
-    <div className="axp-companion" data-talk={talk.phase}>
-      <header className="axp-companion__bar">
+    <div className={`axp-companion axp-companion--wt ${frame ? 'axp-companion--window' : ''}`} data-talk={talk.phase}>
+      <header className={`axp-companion__bar ${frame ? 'axp-companion__bar--titlebar' : ''}`} onPointerDown={barDown}>
+        {frame && <WindowGrip className="axp-companion__grip" />}
         <IconButton icon="menu" label="Chats" onClick={() => setDrawer((d) => !d)} />
         <div className="axp-companion__title">
           <Icon name="sparkles" size={16} />
@@ -277,6 +282,14 @@ export function CompanionView() {
         </div>
         <IconButton icon="download" label="Export this chat" onClick={() => void exportConv()} disabled={!conv} />
         <IconButton icon="plus" label="New chat" onClick={newChat} />
+        {!frame && <IconButton icon="external" label="Open in a window" onClick={() => rt.dispatch('companion.open')} />}
+        {frame && (
+          <div className="axp-companion__caption" role="group" aria-label="Window">
+            {frame.canMinimize && <button type="button" className="fx-iconbtn axp-companion__cap" title="Minimize" aria-label="Minimize" onPointerDown={(e) => e.stopPropagation()} onClick={frame.minimize}><Icon name="minimize" size={14} /></button>}
+            <button type="button" className="fx-iconbtn axp-companion__cap" title={frame.maximized ? 'Restore down' : 'Maximize'} aria-label={frame.maximized ? 'Restore down' : 'Maximize'} onPointerDown={(e) => e.stopPropagation()} onClick={frame.toggleMaximize}><Icon name={frame.maximized ? 'restore' : 'maximize'} size={13} /></button>
+            {frame.w.closable && <button type="button" className="fx-iconbtn axp-companion__cap" title="Close" aria-label="Close window" onPointerDown={(e) => e.stopPropagation()} onClick={frame.close}><Icon name="x" size={14} /></button>}
+          </div>
+        )}
       </header>
 
       {drawer && (
