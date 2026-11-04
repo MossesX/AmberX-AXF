@@ -1042,6 +1042,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 12:54 UTC · `requests-ledger` → running (current) · orchestrator
 - 2026-11-04 12:54 UTC · `requests-ledger` s1 done (current) · orchestrator
 - 2026-11-04 12:54 UTC · `requests-ledger` s2 done (current) · orchestrator
+- 2026-11-04 12:55 UTC · `requests-ledger` added (5 steps) (current) · foreign-write
 
 ## Token passes (log)
 
