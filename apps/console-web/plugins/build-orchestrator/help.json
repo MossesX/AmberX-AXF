@@ -53,6 +53,114 @@
         "title": "Approve upgrade",
         "text": "Approves the waiting model upgrade request for this phase. Only Brett's own click counts; it is recorded with his name.",
         "kind": "button"
+      },
+      {
+        "target": "action:build-orchestrator.package",
+        "title": "Package builds",
+        "text": "Opens the Package builds window: every step still waiting to be built, Fable by default. Tick the ones you want, put them in order, and combine them into one build.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:build-orchestrator.package-fable",
+        "title": "Package the Fable work",
+        "text": "Opens Package builds with every waiting Fable step already ticked and Send to helper picked. Untick any of them; nothing is sent until you confirm the list.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "package-more",
+        "title": "Package more",
+        "text": "Starts another package from the steps still waiting.",
+        "kind": "button"
+      },
+      {
+        "target": "thinking",
+        "title": "Thinking",
+        "text": "How hard the model thinks: low, medium, high or max. Filters the list, or sets the package's thinking level.",
+        "kind": "field"
+      },
+      {
+        "target": "area",
+        "title": "Area",
+        "text": "Shows only steps that touch this part of the code (a plugin, an app, the kernel, the spec).",
+        "kind": "field"
+      },
+      {
+        "target": "select-none",
+        "title": "Select none",
+        "text": "Unticks every step in view.",
+        "kind": "button"
+      },
+      {
+        "target": "invert",
+        "title": "Invert",
+        "text": "Ticks what is unticked in view and unticks what is ticked.",
+        "kind": "button"
+      },
+      {
+        "target": "all-fable-work",
+        "title": "All Fable work",
+        "text": "Ticks every waiting Fable step and picks Send to helper, do it now. It only pre-ticks: untick anything, and you confirm the list before it goes.",
+        "kind": "button"
+      },
+      {
+        "target": "send-to-helper",
+        "title": "Send to helper",
+        "text": "The package goes to a helper session (Session sync) as one offer. Do it now puts it at the top of that helper's list.",
+        "kind": "tab"
+      },
+      {
+        "target": "add-to-my-orchestrator",
+        "title": "Add to my orchestrator",
+        "text": "The package becomes its own build in your orchestrator, at the queue position you pick.",
+        "kind": "tab"
+      },
+      {
+        "target": "helper",
+        "title": "Helper",
+        "text": "Which helper session gets the package. Any free helper lets the orchestrator pick.",
+        "kind": "field"
+      },
+      {
+        "target": "do-it-now",
+        "title": "Do it now",
+        "text": "Top priority on that helper: it starts on this package before anything else on its list.",
+        "kind": "toggle"
+      },
+      {
+        "target": "queue-position",
+        "title": "Queue position",
+        "text": "Where the package goes in your build queue: the top, a position, or the end.",
+        "kind": "field"
+      },
+      {
+        "target": "review-ticked-step",
+        "title": "Review ticked steps",
+        "text": "Shows exactly what will be packaged, in order, so you can confirm it before anything is made or sent.",
+        "kind": "button"
+      },
+      {
+        "target": "bring-the-prerequisites-along",
+        "title": "Bring the prerequisites along",
+        "text": "Adds the earlier steps the ticked ones need (from the same builds) to the package, in front of them.",
+        "kind": "button"
+      },
+      {
+        "target": "package-builds",
+        "title": "Package builds",
+        "text": "Opens the Package builds window: pick waiting steps (Fable by default) and combine them into one build.",
+        "kind": "button"
+      },
+      {
+        "target": "send-to-helper-now",
+        "title": "Send to helper now",
+        "text": "Offers this package to a helper session as top priority, then re-checks the build order.",
+        "kind": "button"
+      },
+      {
+        "target": "unpackage",
+        "title": "Unpackage",
+        "text": "Puts this package's steps back in their own builds and removes the package. Only while none of its steps are done.",
+        "kind": "button"
       }
     ],
     "intros": []

@@ -97,6 +97,243 @@ async def act(request: Request) -> dict[str, Any]:
     return _run("act", json.dumps(change), approver=brett_click(request))
 
 
+# ---- build packages (build-package@1, web/packager-core.mjs): package waiting steps, send to a helper or queue them
+#
+# Brett, Nov 4 2026: select the steps waiting to be built (Fable by default), combine them into one build, then send it
+# to a helper or add it to this orchestrator. Owner-only on the primary: a secondary session (Session sync,
+# capability axf.session-sync@1) is refused here, whatever its UI shows. Sending goes through that capability's
+# offer(); without it the package stays in this orchestrator and the answer says why. Every package and every send
+# re-analyzes the order (packager.mjs reanalyze) and the Breakroom Sessions channel gets one line (axf.crew@1 post).
+
+PACKAGER = CLI.parent / "packager.mjs"
+SYNC_CAP = "axf.session-sync@1"
+CREW_CAP = "axf.crew@1"
+PLANS_CAP = "plans@1"
+SESSION_HEADERS = ("x-axf-session", "x-axhub-session")
+ACCOUNT_HEADERS = ("x-axf-account",)
+
+
+def _sync():
+    cap = plugin_services.get(SYNC_CAP)
+    return cap if cap is not None and hasattr(cap, "link") else None
+
+
+def package_role(request: Request) -> str:
+    """primary | secondary for the caller. Brett's own click, the console itself and a project without Session sync are primary."""
+    if brett_click(request):
+        return "primary"
+    cap = _sync()
+    if cap is None:
+        return "primary"
+    session = next((request.headers.get(h, "").strip() for h in SESSION_HEADERS if request.headers.get(h, "").strip()), "")
+    if not session or session == "console":
+        return "primary"
+    account = next((request.headers.get(h, "").strip() for h in ACCOUNT_HEADERS if request.headers.get(h, "").strip()), "")
+    try:
+        return "secondary" if cap.role_of(session, account) == "secondary" else "primary"
+    except Exception:  # noqa: BLE001 — a broken link never locks the owner out
+        return "primary"
+
+
+def _owner_only(request: Request) -> None:
+    if package_role(request) != "primary":
+        raise HTTPException(403, "secondary sessions can't package builds: only the primary (Brett's sessions) owns the orchestrator")
+
+
+def _plans_file() -> str:
+    """Plan Studio's ready plans for the packager (through plans@1, never its folder); '' when not installed."""
+    cap = plugin_services.get(PLANS_CAP)
+    if cap is None:
+        return ""
+    try:
+        plans = [p for p in cap.list() if isinstance(p, dict) and p.get("status") == "ready"]
+    except Exception:  # noqa: BLE001
+        return ""
+    f = ROOT / ".axf-console" / "plugins" / FOLDER / "ready-plans.json"
+    try:
+        f.parent.mkdir(parents=True, exist_ok=True)
+        f.write_text(json.dumps(plans))
+    except OSError:
+        return ""
+    return str(f)
+
+
+def _pack(*args: str, approver: str = "") -> dict[str, Any]:
+    env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}
+    if approver:
+        env.update(AXF_APPROVER=approver, AXF_APPROVER_VIA="console")
+    plans = _plans_file()
+    if plans:
+        env["AXF_PACKAGER_PLANS"] = plans
+    proc = subprocess.run(["node", str(PACKAGER), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=90, env=env)
+    out = proc.stdout.strip().splitlines()
+    try:
+        return json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        return {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+
+
+def helpers() -> list[dict[str, Any]]:
+    """Helper (secondary) sessions on the link that can take work, for the Send to helper picker."""
+    cap = _sync()
+    if cap is None:
+        return []
+    try:
+        link = cap.link() or {}
+    except Exception:  # noqa: BLE001
+        return []
+    p = link.get("primary") or {}
+    out = []
+    for s in (link.get("sessions") or {}).values():
+        if not isinstance(s, dict) or s.get("endedAt") or s.get("id") == p.get("session") or (p.get("account") and s.get("account") == p.get("account")):
+            continue
+        out.append({"id": s.get("id"), "account": s.get("account"), "agent": s.get("agent"), "client": s.get("client"), "lastSeenAt": s.get("lastSeenAt"), "doing": s.get("doing")})
+    return out
+
+
+def post_chat(text: str) -> bool:
+    """One line in the Breakroom Sessions channel (best effort; the crew chat may not have channels yet)."""
+    crew = plugin_services.get(CREW_CAP)
+    if crew is None or not hasattr(crew, "post"):
+        return False
+    try:
+        crew.post([{"from": "boss", "kind": "handover", "text": text[:1000], "channel": "sessions"}])
+        return True
+    except Exception:  # noqa: BLE001 — the chat is best effort
+        return False
+
+
+def send_to_helper(build_id: str, to: str, now: bool, request: Request) -> dict[str, Any]:
+    """Offer a package to a helper through Session sync (one handover transaction there), then record it here."""
+    cap = _sync()
+    if cap is None or not hasattr(cap, "offer"):
+        return {"sent": False, "why": "Session sync isn't running here (or can't take offers yet), so the package stays in your orchestrator."}
+    who = {"session": "console", "account": "", "brett": bool(brett_click(request)), "name": brett_click(request)}
+    try:
+        r = cap.offer({"build": build_id, "mode": "whole", "to": to or None, "reason": f"Build package {build_id}" + (" (do it now)" if now else ""), "priority": "now" if now else "normal"}, who)
+    except Exception as e:  # noqa: BLE001
+        return {"sent": False, "why": f"Session sync refused the offer: {str(e)[:300]}"}
+    if isinstance(r, dict) and r.get("ok") is False:
+        return {"sent": False, "why": str(r.get("message") or r.get("error") or "refused")[:300]}
+    offer = (r or {}).get("offer") or {}
+    _pack("mark-sent", build_id, json.dumps({"to": to or "any helper", "offer": offer.get("id", "") if isinstance(offer, dict) else "", "now": now}))
+    return {"sent": True, "offer": offer, "to": to or "any helper"}
+
+
+def replan_everything(request: Request) -> dict[str, Any]:
+    """Re-analyze after every send (addendum 1): this orchestrator's order, then Session sync's whole picture when present."""
+    mine = _pack("reanalyze", "--apply")
+    cap = _sync()
+    theirs: Any = None
+    if cap is not None and hasattr(cap, "replan"):
+        try:
+            theirs = cap.replan({"dryRun": False}, {"session": "console", "brett": bool(brett_click(request))})
+        except Exception as e:  # noqa: BLE001
+            theirs = {"ok": False, "error": str(e)[:300]}
+    return {"orchestrator": mine, "sessions": theirs}
+
+
+@router.get("/package/candidates")
+def package_candidates(request: Request) -> dict[str, Any]:
+    """Every waiting step (all builds, all profiles, ready plans) for the Package builds window, with filters and helpers."""
+    role = package_role(request)
+    if role != "primary":
+        return {"ok": True, "role": role, "candidates": [], "hidden": "Packaging is the primary session's job."}
+    r = _pack("candidates")
+    r.update(role=role, helpers=helpers(), sessionSync=_sync() is not None, canSend=_sync() is not None and hasattr(_sync(), "offer"), chat=hasattr(plugin_services.get(CREW_CAP) or object(), "post"))
+    return r
+
+
+@router.post("/package")
+async def package(request: Request) -> dict[str, Any]:
+    """Package the ticked steps (`order` = priority), then add it to this orchestrator (`position`) or send it (`dest: helper`, `to`, `now`)."""
+    _owner_only(request)
+    body = await _json_body(request)
+    order = body.get("order")
+    if not isinstance(order, list) or not order or not all(isinstance(k, str) and len(k) < 200 for k in order) or len(order) > 400:
+        raise HTTPException(400, "order = the ticked step keys, in priority order")
+    if body.get("confirmed") is not True:
+        raise HTTPException(400, "confirm the ticked list first (confirmed: true)")
+    req = {k: body.get(k) for k in ("order", "name", "model", "thinking", "position", "dest", "said", "category") if body.get(k) is not None}
+    res = _pack("package", json.dumps(req), approver=brett_click(request))
+    if not res.get("ok"):
+        raise HTTPException(400, str(res.get("error") or "packaging failed"))
+    build = res.get("build") or {}
+    for m in res.get("plans") or []:
+        _link_plan(m, build.get("id", ""))
+    sent: dict[str, Any] = {"sent": False}
+    if body.get("dest") == "helper":
+        sent = send_to_helper(build.get("id", ""), str(body.get("to") or ""), body.get("now") is True, request)
+        res["replan"] = replan_everything(request)
+    res["send"] = sent
+    res["posted"] = post_chat(_chat_line(build, sent, body))
+    return res
+
+
+@router.post("/package/{build_id}/send")
+async def package_send(build_id: str, request: Request) -> dict[str, Any]:
+    """Send an existing package to a helper (`to`, `now`); re-analyzes afterwards."""
+    _owner_only(request)
+    if len(build_id) > 80:
+        raise HTTPException(400, "id too long")
+    body = await _json_body(request)
+    sent = send_to_helper(build_id, str(body.get("to") or ""), body.get("now") is True, request)
+    replan = replan_everything(request)
+    state = _run("state")
+    b = next((x for x in (state.get("state") or {}).get("builds", []) if x.get("id") == build_id), {"id": build_id, "title": build_id, "steps": []})
+    return {"ok": True, "send": sent, "replan": replan, "posted": post_chat(_chat_line(b, sent, body)) if sent.get("sent") else False}
+
+
+@router.post("/package/{build_id}/unpackage")
+async def package_undo(build_id: str, request: Request) -> dict[str, Any]:
+    """A package with nothing done goes back to its builds (its steps return, the package is removed)."""
+    _owner_only(request)
+    if len(build_id) > 80:
+        raise HTTPException(400, "id too long")
+    res = _pack("unpackage", build_id)
+    if not res.get("ok"):
+        raise HTTPException(400, str(res.get("error") or "failed"))
+    return res
+
+
+@router.post("/package/reanalyze")
+async def package_reanalyze(request: Request) -> dict[str, Any]:
+    """Re-check the queue order against every package (`apply: false` previews)."""
+    _owner_only(request)
+    body = await _json_body(request)
+    if body.get("apply") is False:
+        return _pack("reanalyze")
+    return {"ok": True, **replan_everything(request)}
+
+
+def _chat_line(build: dict[str, Any], sent: dict[str, Any], body: dict[str, Any]) -> str:
+    steps = build.get("steps") or []
+    where = f"sent to {sent.get('to')}" + (" (do it now)" if body.get("now") else "") if sent.get("sent") else (
+        "added to the orchestrator" + (" at the top of the queue" if body.get("position", 0) == 0 else ""))
+    lines = [f"{i + 1}. [{s.get('model')}] {str(s.get('text') or '')[:140]} ({(s.get('origin') or {}).get('build', '')})" for i, s in enumerate(steps[:30])]
+    return f"Package {build.get('id')} \"{build.get('title')}\" {where}: {len(steps)} step(s).\n" + "\n".join(lines)
+
+
+def _link_plan(mark: dict[str, Any], pkg_id: str) -> None:
+    """A packaged plan step: marked on its plan (plans@1 save), with a link to the package."""
+    cap = plugin_services.get(PLANS_CAP)
+    if cap is None or not pkg_id:
+        return
+    try:
+        plan = cap.get(str(mark.get("build", "")).removeprefix("plan:"))
+        if not plan:
+            return
+        for st in plan.get("steps") or []:
+            if str(st.get("id")) == str(mark.get("step")):
+                st["packagedInto"] = pkg_id
+        links = plan.setdefault("links", [])
+        if not any(link.get("ref") == pkg_id for link in links):
+            links.append({"kind": "build", "ref": pkg_id, "label": "packaged into"})
+        cap.save(plan, by="build-orchestrator", force=True)
+    except Exception:  # noqa: BLE001 — the package is made; the plan link is best effort
+        pass
+
+
 # ---- what Brett said (build-origin@1): framework/cli/build-origin.mjs, zero tokens
 
 ORIGIN_CLI = ROOT / "framework" / "cli" / "build-origin.mjs"
