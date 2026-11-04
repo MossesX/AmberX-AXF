@@ -1526,6 +1526,16 @@
         "target": "apply-layout",
         "title": "Apply layout",
         "text": "Lays the open tabs out on the layout you picked, spread evenly over its panes. The pane limit holds: a layout with more panes uses only its first ones."
+      },
+      {
+        "target": "expand-all",
+        "title": "Expand all",
+        "text": "Opens every section of this note or document, sub-sections too. What you open or close is remembered on this device."
+      },
+      {
+        "target": "collapse-all",
+        "title": "Collapse all",
+        "text": "Folds every section of this note or document down to its header, so you can see its outline at a glance."
       }
     ],
     "intros": [

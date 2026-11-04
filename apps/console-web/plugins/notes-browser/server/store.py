@@ -191,8 +191,9 @@ class NotesStore:
             "updatedBy": m.get("updatedBy", ""),
         }
 
-    def list(self, q: str = "") -> dict[str, Any]:
-        """Every folder and note; with `q`, only notes whose name, title or text contains every word (with a snippet)."""
+    def list(self, q: str = "", content: bool = False) -> dict[str, Any]:
+        """Every folder and note; with `q`, only notes whose name, title or text contains every word (with a snippet);
+        `content` adds each note's text."""
         self._require()
         meta = self._meta()
         folders: list[str] = []
@@ -217,6 +218,8 @@ class NotesStore:
                         if not all(w in hay for w in words):
                             continue
                         info["snippet"] = _snippet(text, words[0])
+                    if content:
+                        info["content"] = text
                     notes.append(info)
         return {"root": str(self.notes_dir), "available": True, "folders": folders, "notes": notes}
 

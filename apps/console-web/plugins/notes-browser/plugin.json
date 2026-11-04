@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.notes-browser",
   "name": "Notes",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Brett's saved notes in one place: handoffs, session logs, plans, install notes and saved commands, kept in the hub's shared Claude files (/projects/_shared/_claude/notes). Folders and notes on the left, the rendered note on the right; search, sort by date or name, new note, rename, move between folders, delete (confirmed, history kept on the hub) and an edit switch that saves only when nobody else changed the note. Provides axf.notes@1 for other plugins (MD Studio's Notes scope).",
+  "description": "Brett's notes in one place, from two sources: the AmberX app's notes (amberx.items, through control@1) and the hub's shared Claude files (/projects/_shared/_claude/notes). Two views, remembered per device: Classic (notes on the left, the open note on the right) and Grid (sortable, filterable rows that expand to the note; cards on a phone). Every note body folds into collapsible sections (framework FoldSections: Markdown and ALL-CAPS headers, item counts, expand / collapse all, search hits opened and marked). Edit, pin, move and delete; Claude files add new note / folder, rename and conflict-safe saves. Provides axf.notes@1 for other plugins (MD Studio's Notes scope).",
   "targets": [
     "axf-console"
   ],
@@ -19,7 +19,9 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
-  "optional": [],
+  "optional": [
+    "service:control@1"
+  ],
   "banner": false,
   "tabable": false,
   "lifecycle": {
@@ -33,11 +35,14 @@
       "_claude/memory/STATUS.md"
     ]
   },
-  "commands": { "$axf": "plugin-commands@1", "auto": true },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true
+  },
   "builtWith": {
     "model": "opus",
-    "builtAt": "2026-11-03",
-    "branch": "claude/notes-vault"
+    "builtAt": "2026-11-04",
+    "branch": "claude/notes-views"
   },
   "help": "help.json",
   "opens": "main"

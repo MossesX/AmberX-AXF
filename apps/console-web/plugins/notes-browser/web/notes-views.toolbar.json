@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "notes-views",
+  "name": "Notes views",
+  "version": "1.0.0",
+  "description": "The Notes page's view switcher: Classic or Grid, and where the notes come from (AmberX or the hub's Claude files). Shipped by the Notes plugin.",
+  "author": "AmberX AXF",
+  "tags": ["notes", "views"],
+  "data": {
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "density": "compact",
+    "surface": "flat",
+    "groups": [
+      {
+        "id": "view",
+        "label": "View",
+        "items": [
+          { "id": "classic", "icon": "file", "label": "Classic", "action": "notes-browser.view:classic", "checked": "counter:notes-browser.view:classic" },
+          { "id": "grid", "icon": "list", "label": "Grid", "action": "notes-browser.view:grid", "checked": "counter:notes-browser.view:grid" }
+        ]
+      },
+      {
+        "id": "source",
+        "label": "Notes from",
+        "items": [
+          { "id": "amberx", "icon": "edit", "label": "AmberX", "action": "notes-browser.source:amberx", "checked": "counter:notes-browser.source:amberx" },
+          { "id": "claude", "icon": "folder", "label": "Claude files", "action": "notes-browser.source:claude", "checked": "counter:notes-browser.source:claude" }
+        ]
+      }
+    ]
+  }
+}
