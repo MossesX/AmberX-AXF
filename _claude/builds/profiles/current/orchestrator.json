@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T16:35:37.754Z",
+ "updatedAt": "2026-11-04T16:35:50.591Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10696,16 +10696,21 @@
    "title": "Jump menu asset type (jump-menu@1): in-page section index with its own settings, location, display and right-click Settings / Change / Move; Plan Studio first consumer",
    "category": "Framework",
    "detail": "New shared optional asset type jump-menu@1 (rules + engine + fixture + schema + 5 starters + defaults.json), per-page settings as control@1 token overrides (tokens.jump), scroll-spy, right-click / long-press Settings / Change jump menu / Move like toolbars and banners, Plan Studio plan view replaces its hard-coded chip row, Assets screen picker, voice controls. Replaces the cancelled plan-studio-section-nav.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/jump-menu-asset",
    "pr": "#326",
    "createdAt": "2026-11-04T15:29:59.385Z",
-   "updatedAt": "2026-11-04T15:58:17.903Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-04T16:35:39.174Z",
+   "builtAt": "2026-11-04T16:35:37.112Z",
+   "notes": [
+    {
+     "text": "PR #326 open, UI Review r-20261104-2135a0d7 (14 shots, non-blocking per the brief), report _claude/builds/reports/jump-menu-asset.md",
+     "at": "2026-11-04T16:35:39.173Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -10806,8 +10811,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T16:35:37.112Z",
      "note": "",
      "uid": "st-mw29w9v70g38uh"
     }
