@@ -227,7 +227,7 @@ export function SessionsRail({ hostId, drawer, onDrawer }: { hostId: string; dra
           {!collapsed && <span className={`${N}__live ${isLive ? 'is-on' : ''}`} title={isLive ? 'Live' : 'Updating every few seconds'}>{isLive ? 'live' : 'polling'}</span>}
         </div>
         {!collapsed && (
-          <div className={`${N}__tools`}>
+          <div className={`${N}__tools`} role="toolbar" aria-label="Find sessions">
             <input className="fx-input" type="search" placeholder="Search sessions" aria-label="Search sessions" value={q} onChange={(e) => setQ(e.target.value)} />
             <div className={`${N}__chips`} role="group" aria-label="Filter and sort">
               {(['all', 'live', 'working', 'waiting'] as Filter[]).map((f) => (
