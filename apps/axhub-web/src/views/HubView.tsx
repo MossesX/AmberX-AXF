@@ -14,7 +14,6 @@ const LINKS: { label: string; view: string; icon: string; note: string }[] = [
   { label: 'Approvals log', view: 'approvals-log', icon: 'list', note: 'Every request and how it ended' },
   { label: 'Apps', view: 'apps', icon: 'download', note: 'The app catalog' },
   { label: 'Users', view: 'users', icon: 'user', note: 'Accounts and permissions (admins)' },
-  { label: 'Handoff', view: 'handoff', icon: 'package', note: 'Claude handoff results (admins)' },
   { label: 'Your account', view: 'account', icon: 'key', note: 'Password and signed-in browsers' },
 ];
 

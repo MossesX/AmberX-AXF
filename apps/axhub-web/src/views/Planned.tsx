@@ -86,7 +86,7 @@ export function Planned({ area }: { area: PlannedArea }) {
             </div>
           )}
           <Note tone="info" icon="info">
-            Approvals, users, your account, handoff results and app downloads work now. The rest waits on the hub's admin API.
+            Approvals, users, your account and app downloads work now. The rest waits on the hub's admin API.
           </Note>
         </div>
       </Container>

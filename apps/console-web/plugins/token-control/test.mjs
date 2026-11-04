@@ -12,7 +12,7 @@ const T = mkdtempSync(join(tmpdir(), 'axf-tc-'));
 Object.assign(process.env, {
   AXF_APPEARANCE_FILE: join(T, 'appearance.json'), AXF_AMBERX_NOTES_DIR: join(T, 'notes'), AXF_CONTROL_DATA_DIR: join(T, 'data'),
   AXF_PLANS_DIR: join(T, 'plans'), AXF_ORCH_FILE: join(T, 'orch.json'), AXF_CONTROL_SALT: 'test-salt',
-  AXF_THREADS_FILE: join(T, 'THREADS.md'), AXF_PASS_SECRET: 'pass-secret', AXF_NO_TTY_APPROVAL: '1',
+  AXF_PASS_SECRET: 'pass-secret', AXF_NO_TTY_APPROVAL: '1',
 });
 writeFileSync(process.env.AXF_APPEARANCE_FILE, JSON.stringify({ $axf: 'appearance@1', slots: { 'design-package': 'hub-default', layout: 'axhub-console' }, settings: { 'axf.banners.x': 1 } }));
 
@@ -218,8 +218,6 @@ await test('pass: Brett\'s own grant is on at once; covered writes are logged; d
   const a = await runControl({ op: 'add', target: 'amberx.items', value: { text: 'pass cannot delete me' } });
   const rm = await runControl({ op: 'remove', target: 'amberx.items', path: a.item.id });
   assert.equal(rm.code, 'confirmation_required', 'a token pass never covers deletes');
-  const log = readFileSync(process.env.AXF_THREADS_FILE, 'utf8');
-  assert.match(log, /## Token passes \(log\)/); assert.match(log, /granted 30 min by brett \(console\)/); assert.match(log, /claude: tokens\.layout navWidth .* → 220/);
   const { readAudit } = await import('./lib/common.mjs');
   assert.ok(readAudit(50).some((r) => r.pass === g.item.id && r.action === 'change' && r.change.path === 'navWidth'));
 });
@@ -251,7 +249,6 @@ await test('pass: extend replaces and keeps the change log; revoke; expiry on th
   assert.equal(st.active, null); assert.match(st.text, /go through the veto/);
   const s = await runControl({ op: 'set', target: 'tokens.theme', path: 'bg', value: '#111111' }, { now: later }); // theme-ok
   assert.equal(s.pass, undefined, 'an ended pass covers nothing');
-  assert.match(readFileSync(process.env.AXF_THREADS_FILE, 'utf8'), /ended at/);
   await grant('tokens.layout', 5, { approver: BRETT });
   const rv = await runControl({ op: 'act', target: 'pass.scopes', path: 'tokens.layout', action: 'revoke', by: 'brett' });
   assert.equal(rv.ok, true); assert.match(rv.text, /revoked/);
@@ -319,7 +316,6 @@ await test('pass all: everything by default, ordinary deletes skip the confirm, 
   assert.equal(u.restored.length, 2); assert.ok(u.notUndoable.some((x) => x.op === 'remove' && x.target === 'planner.plans'));
   assert.match(u.text, /can't be rolled back automatically: .*add amberx\.items .*made under the pass/);
   assert.equal((await runControl({ op: 'get', target: 'tokens.sizing', path: 'button.height' })).value, 2.5, 'sizing back to its override from before the pass');
-  assert.match(readFileSync(process.env.AXF_THREADS_FILE, 'utf8'), /\(all\) · claude: remove planner\.plans/);
 
   // include_irreversible: Brett's own grant (or axHub's signature over the flag) reaches hard deletes
   const req = await runControl({ op: 'act', target: 'pass.scopes', path: 'all', action: 'grant', input: { minutes: 10, include_irreversible: true }, by: 'claude' });

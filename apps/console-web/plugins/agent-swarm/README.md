@@ -39,7 +39,7 @@ tokens, so swapping the theme rebrands every card. The `qr` code strip shows the
 1. **Plan** (`swarm.mjs plan <build>…`): each open step becomes a job. The agent is picked by keywords and the
    step's files; the model is the cheapest one that reaches the job's tier (Fable only for contract/design work
    pinned to Fable). Each job leases its files; jobs that touch the same files go in later waves. Several builds
-   share one lease table. Shared files (THREADS, STATUS, trackers, catalogs) are never leased.
+   share one lease table. Shared files (the sync file, STATUS, trackers, catalogs) are never leased.
 2. **Pack** (`swarm.mjs pack <build> <step>`): the brief is the shared prefix (same bytes for every job, so the
    prompt cache hits), the agent's skill, the task, its leases and snippets cut from the leased files only.
 3. **Run** (`swarm.mjs run <build> <step>`): `claude -p` in its own worktree (branch `swarm/<build>/<step>`), with

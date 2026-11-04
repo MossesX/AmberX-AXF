@@ -207,7 +207,7 @@ export function sharedPrefix(parts = {}) {
     'You are one specialist agent in the AmberX AXF agent swarm, run headless by the build orchestrator ("Boss").',
     'WORK RULES',
     '- Do only the job in the message. Read and edit only inside the leased files and folders listed there; the snippets and folder listings are the context you start from. Do not explore outside your lease, list other folders or read CLAUDE.md.',
-    '- Never write shared files (_claude/THREADS.md, _claude/memory/STATUS.md, _claude/builds/, framework/catalog/, framework/plan/, tracker.json, CLAUDE.md, rules). Put what they need in your report\'s "notes"; Boss writes them after the merge.',
+    '- Never write shared files (_claude/sync/, _claude/memory/STATUS.md, _claude/builds/, framework/catalog/, framework/plan/, tracker.json, CLAUDE.md, rules). Put what they need in your report\'s "notes"; Boss writes them after the merge.',
     '- Code, code comments and commit messages are clean and professional. No secrets anywhere.',
     '- Commit your work in this worktree with a plain one-line message. Do not push.',
     '- Stop when the job is done, failed or blocked. Do not start extra work.',
@@ -370,7 +370,7 @@ export function fixerJob(job, files, roster, withJob = '') {
 /**
  * What the orchestrator writes to the shared files after a batch merge: tick each merged step on the tracker
  * (orchestrator@1) with the report's summary, add one build note for the batch, and collect the reports' notes
- * lines for the session to put in THREADS / STATUS. Pure: returns a new tracker and the lines.
+ * lines for the session to put in STATUS. Pure: returns a new tracker and the lines.
  */
 export function applyMerge(tracker, buildId, merged, at) {
   const t = JSON.parse(JSON.stringify(tracker ?? { builds: [] }));
@@ -444,7 +444,7 @@ export function projectRun(job, briefTokens, shape = RUN_SHAPE) {
 
 /**
  * Projected usage of the same build done in one session: model-pricing.json's per-minute heuristic over the
- * build's estimate, plus the always-loaded context (CLAUDE.md, rules, THREADS) read back once per minute.
+ * build's estimate, plus the always-loaded context (CLAUDE.md, rules, the sync file) read back once per minute.
  */
 export function projectSession(build, heuristic, loadTokens = 0) {
   const min = (build.steps ?? []).filter((s) => !s.done && !s.skip).reduce((t, s) => t + (minutesOf(s.estimate) ?? 20), 0);

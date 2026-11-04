@@ -42,8 +42,7 @@
       "CLAUDE.md",
       "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md",
-      "install_steps.md",
-      "_claude/THREADS.md"
+      "install_steps.md"
     ]
   },
   "opens": false

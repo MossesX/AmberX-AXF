@@ -56,6 +56,10 @@ jobs:
       - run: node framework/spec/check-ui-review.mjs                 # ui-review-item@1: fixtures, schema snapshots, migration, every UI Review submitter names + times its items
       - run: node framework/spec/check-ui-predict.mjs                # ui-prediction@1 / ui-mockup@1: predicted looks before a build runs, look gate, CLI offline
       - run: node framework/spec/check-session.mjs                   # session@1 (Chat viewer): fixtures, redaction, chain hash, schema snapshots
+      - run: node framework/spec/check-handoff.mjs                   # handoff@1 + session-link@1 (Session sync): roles, claims racing, offers → accept → steps, reactions, take-back, replan, dedupe, sync file, channel lines, events
+      - run: node framework/spec/check-no-threads.mjs                # the old handoff system (threads log, handoff kit, handoff notes, old handoff plugin) stays deleted
+      - run: node apps/console-web/plugins/session-sync/test.mjs      # Session sync CLI: two sessions racing, offers, child builds, hook, commit check, sync file  # axf-plugin:session-sync
+      - run: node apps/console-web/plugins/session-sync/sync.mjs check-commit --ci --range origin/main...HEAD   # a PR never touches files outside its session's claims (sync file)  # axf-plugin:session-sync
       - run: node framework/spec/check-refs.mjs                      # ref@1: mentions in banner text → links (fixtures/refs.json: names, kind words, explicit touches, PRs, files, peek)
       - run: node framework/cli/help-coverage.mjs --check            # Help mode: every control in the framework chrome, the console + plugins and axHub web has help; fails if coverage drops below framework/spec/help-coverage.json
       - run: node framework/cli/axf.mjs libraries

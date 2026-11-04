@@ -81,7 +81,7 @@ t('an agent that cannot reach the model is passed over; when nobody can, the dea
   const q = c.planJobs(B('b', [{ text: 'Python server', model: 'Fable' }]), only); assert.equal(q.jobs[0].model, 'opus'); assert.match(q.warnings[0], /tops out at opus; job wants fable/);
 });
 t('every planned job is a swarm-job@1 record', () => {
-  const p = c.planJobs([B('a', [{ text: 'React ui in apps/x/web/ui.tsx' }, { text: 'Update the README docs', files: ['_claude/THREADS.md'] }]), B('b', [{ text: 'nothing anyone knows' }])], roster);
+  const p = c.planJobs([B('a', [{ text: 'React ui in apps/x/web/ui.tsx' }, { text: 'Update the README docs', files: ['_claude/memory/STATUS.md'] }]), B('b', [{ text: 'nothing anyone knows' }])], roster);
   for (const j of p.jobs) { assert.equal(j.$axf, 'swarm-job@1'); assert.deepEqual(c.jobErrors(j), [], j.id); }
   const f = c.fixerJob(p.jobs[0], ['apps/x/web/ui.tsx'], roster, 'a.s2'); assert.deepEqual(c.jobErrors(f), []); assert.equal(f.model, 'opus');
 });
@@ -108,7 +108,7 @@ t('a folder lease and a glob rooted inside it overlap; globs with different root
   assert.ok(!c.leasesOverlap(['apps/console-web/plugins/*/web/'], ['apps/console-web/plugins/*/server/'])); assert.ok(!c.leasesOverlap(['framework/android/'], ['apps/*/src/']));
   assert.ok(!c.leasesOverlap(['**/*.kt'], ['**/*.kts'])); assert.ok(c.leasesOverlap(['**/*.json'], ['apps/x/plugin.json']));
 });
-t('shared files are never leased', () => { const j = c.planJobs(B('b', [{ text: 'docs', files: ['_claude/THREADS.md', 'apps/x/README.md'] }]), roster).jobs[0]; assert.deepEqual(j.leases, ['apps/x/README.md']); assert.deepEqual(j.shared, ['_claude/THREADS.md']); });
+t('shared files are never leased', () => { const j = c.planJobs(B('b', [{ text: 'docs', files: ['_claude/memory/STATUS.md', 'apps/x/README.md'] }]), roster).jobs[0]; assert.deepEqual(j.leases, ['apps/x/README.md']); assert.deepEqual(j.shared, ['_claude/memory/STATUS.md']); });
 t('done and skipped steps make no job; ineligible agents are passed over', () => {
   const p = c.planJobs(B('b', [{ text: 'docs', done: true }, { text: 'docs', skip: true }, { text: 'Update the README docs' }]), roster, { eligible: (a) => a.id !== 'doc' });
   assert.equal(p.jobs.length, 1); assert.notEqual(p.jobs[0].agent, 'doc');
@@ -135,9 +135,9 @@ t('the best hits win the cap: a definition carrying two task words at the end of
   assert.match(c.extractSnippet('n', noisy, 'card width').text, /cardWidth/); assert.ok(c.extractSnippet('n', noisy, 'card width').text.split('\n').length < 30);
 });
 t('brief carries only the job, its leases, snippets and folder listings', () => {
-  const job = c.planJobs(B('b', [{ text: 'React card in apps/x/web/ui.tsx', files: ['apps/x/web/ui.tsx', 'apps/x/web/', '_claude/THREADS.md'] }]), roster).jobs[0];
+  const job = c.planJobs(B('b', [{ text: 'React card in apps/x/web/ui.tsx', files: ['apps/x/web/ui.tsx', 'apps/x/web/', '_claude/memory/STATUS.md'] }]), roster).jobs[0];
   const p = c.packJob(job, { prefix: c.sharedPrefix(), skill: skills['react-ui'], snippets: [c.extractSnippet('apps/x/web/ui.tsx', 'export const A = 1;', job.text)], indexes: [c.folderIndex('apps/x/web/', ['ui.tsx', 'cards.tsx', 'swarm.css'])] });
-  assert.ok(p.system.startsWith(c.sharedPrefix())); assert.match(p.system, /React UI/); assert.match(p.prompt, /Leased files and folders \(only these\): apps\/x\/web\/ui\.tsx, apps\/x\/web\//); assert.match(p.prompt, /Boss will write.*THREADS/); assert.match(p.prompt, /export const A/);
+  assert.ok(p.system.startsWith(c.sharedPrefix())); assert.match(p.system, /React UI/); assert.match(p.prompt, /Leased files and folders \(only these\): apps\/x\/web\/ui\.tsx, apps\/x\/web\//); assert.match(p.prompt, /Boss will write.*STATUS/); assert.match(p.prompt, /export const A/);
   assert.match(p.prompt, /--- apps\/x\/web\/ \(3 files\) ---\ncards\.tsx\nswarm\.css\nui\.tsx/);
   assert.ok(p.tokens.system + p.tokens.prompt < 2500);
   const big = c.folderIndex('f/', [...Array.from({ length: 200 }, (_, i) => `sub${i % 3}/f${String(i).padStart(3, '0')}.ts`), 'README.md']);
@@ -181,7 +181,7 @@ t('report parsing: last valid block wins, bad status ignored', () => { assert.eq
 t('lease check: inside ok, outside and shared refused', () => {
   const j = { leases: ['apps/x/web/', 'README.md'], leaseKind: 'files' };
   assert.equal(c.leaseCheck(j, ['apps/x/web/ui.tsx', 'README.md']).ok, true);
-  const r = c.leaseCheck(j, ['apps/y/a.ts', '_claude/THREADS.md']); assert.deepEqual(r.outside, ['apps/y/a.ts']); assert.deepEqual(r.shared, ['_claude/THREADS.md']);
+  const r = c.leaseCheck(j, ['apps/y/a.ts', '_claude/memory/STATUS.md']); assert.deepEqual(r.outside, ['apps/y/a.ts']); assert.deepEqual(r.shared, ['_claude/memory/STATUS.md']);
 });
 t('merge queue: done + lease clean + not merged, in plan order', () => {
   const p = { jobs: [{ id: 'b.s1' }, { id: 'b.s2' }, { id: 'b.s3' }, { id: 'b.s4' }] };
@@ -540,7 +540,7 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
   t('brief = the job brief + the agent\'s own notes only; read-only gets no edit tools', () => {
     const paulie = roster.agents.find((a) => a.id === 'paulie');
     const b = jc.jobBrief(site, paulie, { values: rules.jobInputs(site.data, {}).values, at, runId: 'job-site-check-x', skill: skills['site-checks'], notes: 'NOTE-LINE' });
-    assert.match(b.text, /NOTE-LINE/); assert.match(b.text, /demo\.amberxai\.com/); assert.doesNotMatch(b.text, /_claude\/THREADS|RULES\.md/);
+    assert.match(b.text, /NOTE-LINE/); assert.match(b.text, /demo\.amberxai\.com/); assert.doesNotMatch(b.text, /_claude\/memory\/STATUS|RULES\.md/);
     assert.ok(b.tokens < 2500, `brief is ${b.tokens} tokens`);
     const args = jc.jobArgs(site, paulie, 'opus'); const tools = args[args.indexOf('--allowedTools') + 1];
     assert.doesNotMatch(tools, /\b(Edit|Write)\b/); assert.equal(args[args.indexOf('--permission-mode') + 1], 'default'); assert.ok(args.includes('--strict-mcp-config'));

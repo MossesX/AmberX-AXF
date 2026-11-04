@@ -40,7 +40,6 @@
       "AXF_AMBERX_NOTES_DIR",
       "AXF_PASS_SECRET",
       "AXF_PASS_MAX_MINUTES",
-      "AXF_THREADS_FILE",
       "AXF_TIMEZONE",
       "AXF_OWNER",
       "AXF_NO_TTY_APPROVAL"
@@ -48,7 +47,6 @@
     "mentions": [
       "CLAUDE.md",
       "_claude/memory/STATUS.md",
-      "_claude/THREADS.md",
       "apps/console-web/plugins/README.md",
       "framework/spec/CONTROL.md",
       "framework/cli/axf.mjs",

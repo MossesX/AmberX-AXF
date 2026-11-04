@@ -95,7 +95,7 @@
       {
         "target": "look-again-new-plugins-and-apps-appear-by-themselves",
         "title": "Look again (new plugins and apps appear by themselves)",
-        "text": "Shows “Look again (new plugins and apps appear by themselves)”. Part of Plan Studio.",
+        "text": "Shows \u201cLook again (new plugins and apps appear by themselves)\u201d. Part of Plan Studio.",
         "kind": "button",
         "draft": true
       },
@@ -114,14 +114,14 @@
       {
         "target": "gone",
         "title": "Gone",
-        "text": "Shows “Gone”. Part of Plan Studio.",
+        "text": "Shows \u201cGone\u201d. Part of Plan Studio.",
         "kind": "button",
         "draft": true
       },
       {
         "target": "a-new-plan-instead",
         "title": "A new plan instead",
-        "text": "Shows “A new plan instead”. Part of Plan Studio.",
+        "text": "Shows \u201cA new plan instead\u201d. Part of Plan Studio.",
         "kind": "button",
         "draft": true
       },
@@ -196,14 +196,14 @@
       {
         "target": "project",
         "title": "Project",
-        "text": "Where you set “Project”. Change it and the app uses the new value. Part of Plan Studio.",
+        "text": "Where you set \u201cProject\u201d. Change it and the app uses the new value. Part of Plan Studio.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "owner",
         "title": "Owner",
-        "text": "Where you set “Owner”. Change it and the app uses the new value. Part of Plan Studio.",
+        "text": "Where you set \u201cOwner\u201d. Change it and the app uses the new value. Part of Plan Studio.",
         "kind": "field",
         "draft": true
       },
@@ -216,7 +216,7 @@
       {
         "target": "tags",
         "title": "Tags",
-        "text": "Where you set “Tags”. Change it and the app uses the new value. Part of Plan Studio.",
+        "text": "Where you set \u201cTags\u201d. Change it and the app uses the new value. Part of Plan Studio.",
         "kind": "field",
         "draft": true
       },
@@ -298,14 +298,14 @@
       {
         "target": "autosave-saved-plans-while-editing",
         "title": "Autosave saved plans while editing",
-        "text": "Where you set “Autosave saved plans while editing”. Change it and the app uses the new value. Part of Plan Studio.",
+        "text": "Where you set \u201cAutosave saved plans while editing\u201d. Change it and the app uses the new value. Part of Plan Studio.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "apply-small-ai-edits-straight-away-with-undo",
         "title": "Apply small AI edits straight away (with Undo)",
-        "text": "Where you set “Apply small AI edits straight away (with Undo)”. Change it and the app uses the new value. Part of Plan Studio.",
+        "text": "Where you set \u201cApply small AI edits straight away (with Undo)\u201d. Change it and the app uses the new value. Part of Plan Studio.",
         "kind": "field",
         "draft": true
       },
@@ -350,7 +350,7 @@
       {
         "target": "tag",
         "title": "Tag",
-        "text": "Shows “Tag”. Part of Plan Studio.",
+        "text": "Shows \u201cTag\u201d. Part of Plan Studio.",
         "kind": "button",
         "draft": true
       },
@@ -370,10 +370,16 @@
       },
       {
         "target": "here-in-all",
-        "title": "here · in all",
-        "text": "Shows “here · in all”. Part of Plan Studio.",
+        "title": "here \u00b7 in all",
+        "text": "Shows \u201chere \u00b7 in all\u201d. Part of Plan Studio.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "undo",
+        "title": "Undo",
+        "text": "Puts the plan back as it was before the last AI edit.",
+        "kind": "button"
       }
     ],
     "intros": []

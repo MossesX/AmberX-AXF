@@ -203,7 +203,7 @@ def health_probe(live: dict[str, Any] | None = None, report: dict[str, Any] | No
     queued = int(live.get("queued") or 0)
     if queued and live.get("error") and _age_min(str(live.get("lastError") or ""), now) < 60 and _age_min(str(live.get("lastOk") or ""), now) >= STUCK_MIN:
         return {"status": "error", "summary": f"{queued} build change(s) haven't reached main: {str(live.get('error'))[:200]}",
-                "details": ["Banners and THREADS on main are behind until they go through.", "On the VPS: `node framework/cli/builds-live.mjs flush` retries and prints why."]}
+                "details": ["Banners on main are behind until they go through.", "On the VPS: `node framework/cli/builds-live.mjs flush` retries and prints why."]}
     orphans = report.get("orphans") or {}
     prs, branches = orphans.get("prs") or [], orphans.get("branches") or []
     if report.get("at"):
@@ -284,7 +284,7 @@ def ensure_health() -> bool:
     try:
         reg.register({"id": HEALTH_ID, "label": "Builds reach main live", "service": "github", "order": 55, "severity": "error",
                       "run": lambda: health_probe(), "interval": 300,
-                      "breaks": "The Build orchestrator, banners and THREADS on main show stale build status; finished work shows as pending.",
+                      "breaks": "The Build orchestrator and banners on main show stale build status; finished work shows as pending.",
                       "instructions": ["`node framework/cli/builds-live.mjs status` / `flush` on the VPS.",
                                        "`node framework/cli/builds-reconcile.mjs` lists what it would link; `--apply` writes it (live)."]}, FOLDER)
         reg.register({"id": SEES_ID, "label": "Console sees the builds", "service": "console", "order": 56, "severity": "error",

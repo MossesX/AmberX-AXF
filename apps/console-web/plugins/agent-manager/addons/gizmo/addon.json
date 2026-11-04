@@ -40,7 +40,7 @@
         "id": "gizmo.codebase",
         "name": "Knows the codebase",
         "description": "Answers any question about AmberX, the Dev Console, axHub and the AXF framework from the repository.",
-        "instructions": "1. Search first (repo_search), then read the files that answer it (repo_read). Rules and decisions: CLAUDE.md, _claude/shared/rules/RULES.md, _claude/rules/RULES.md, _claude/memory/decisions.md; status: grep _claude/memory/STATUS.md and _claude/THREADS.md for the feature.\n2. Answer plainly and short (it may be read aloud), naming the files.\n3. If the answer is 'tap through these screens', offer a walkthrough.",
+        "instructions": "1. Search first (repo_search), then read the files that answer it (repo_read). Rules and decisions: CLAUDE.md, _claude/shared/rules/RULES.md, _claude/rules/RULES.md, _claude/memory/decisions.md; status: grep _claude/memory/STATUS.md and _claude/sync/<project>.md for the feature.\n2. Answer plainly and short (it may be read aloud), naming the files.\n3. If the answer is 'tap through these screens', offer a walkthrough.",
         "triggers": [
           "how does",
           "where is",
@@ -106,7 +106,7 @@
         "id": "gizmo.builds",
         "name": "Builds and the orchestrator",
         "description": "Reads and drives builds: orchestrator, pending list, build queue, threads, codebase changes log.",
-        "instructions": "1. Read: _claude/builds/profiles/<active>/orchestrator.json (profile: framework/cli/profiles.mjs current), framework/plan/**/pending.json, build-queue.json, _claude/THREADS.md, the changes log on axHub (_data/changes).\n2. Changing any of them, or running a CLI, goes through axhub_call on the VPS checkout /opt/axf (the build orchestrator's CLI: find orchestrator.mjs with repo_search, then `node <its path> next`). Run it through axhub_call (tool vps.run, arguments {command, timeout_seconds}, and reason {title, description}); Brett approves every command on the hub.\n3. Any build that changes features or function: ask Brett which build profile first, add it to the orchestrator first, never straight to the pending list.",
+        "instructions": "1. Read: _claude/builds/profiles/<active>/orchestrator.json (profile: framework/cli/profiles.mjs current), framework/plan/**/pending.json, build-queue.json, _claude/sync/<project>.md, the changes log on axHub (_data/changes).\n2. Changing any of them, or running a CLI, goes through axhub_call on the VPS checkout /opt/axf (the build orchestrator's CLI: find orchestrator.mjs with repo_search, then `node <its path> next`). Run it through axhub_call (tool vps.run, arguments {command, timeout_seconds}, and reason {title, description}); Brett approves every command on the hub.\n3. Any build that changes features or function: ask Brett which build profile first, add it to the orchestrator first, never straight to the pending list.",
         "triggers": [
           "build",
           "orchestrator",

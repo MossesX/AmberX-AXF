@@ -177,5 +177,5 @@ eq(validateAsset(read('apps/console-web/src/assets/context-menu/amber.json')).er
 eq(amber.contributions, false, 'amber shows only its own items');
 eq(items[0]?.provider, 'amber.plugins', 'Plugins live list first');
 eq(items.slice(-2).map((i) => i.spacer ?? i.action), [true, 'app.settings'], 'spacer then Settings at the bottom');
-for (const a of ['ashes.toggle', 'terminal.new', 'claude-handoff.open', 'plugin-switches.open', 'edit.cut', 'edit.copy', 'edit.paste', 'swap:color-theme:next', 'swap:color-theme:prev']) ok(items.some((i) => i.action === a), `amber has ${a}`);
+for (const a of ['ashes.toggle', 'terminal.new', 'plugin-switches.open', 'edit.cut', 'edit.copy', 'edit.paste', 'swap:color-theme:next', 'swap:color-theme:prev']) ok(items.some((i) => i.action === a), `amber has ${a}`);
 console.log(`check-design-package: ${n} checks passed`);

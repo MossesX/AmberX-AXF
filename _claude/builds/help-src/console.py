@@ -49,7 +49,6 @@ S("view:output-recorder", "Audio out", "Records what the phone plays (never the 
 S("view:audio-extract", "Audio Extract", "Pulls the audio out of a video.")
 S("view:brand-library", "Brand library", "Logos, animated marks and icon packs for your apps.")
 S("view:changes-grid", "Changes & features", "Every codebase change and the feature it belongs to, in one grid.")
-S("view:claude-handoff", "Claude handoff", "Hands work to another Claude account with everything it needs.")
 S("view:context-menu-designer", "Context menu designer", "Design what the right-click / long-press menu shows.")
 S("view:fable-rebuilds", "Fable rebuilds", "Old rebuild items and their differences reports.")
 S("view:mcp", "MCP servers", "The MCP servers the console talks to.")

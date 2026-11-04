@@ -43,7 +43,7 @@
       "CLAUDE.md", "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md",
       "_claude/memory/decisions.md",
-      "_claude/memory/docs/rebuilds/plugin-manager.md", "apps/console-web/src/pluginLoader.tsx", "_claude/THREADS.md"
+      "_claude/memory/docs/rebuilds/plugin-manager.md", "apps/console-web/src/pluginLoader.tsx"
     ]
   },
   "opens": "main"

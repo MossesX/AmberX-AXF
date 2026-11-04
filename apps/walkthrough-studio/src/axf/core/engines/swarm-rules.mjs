@@ -47,9 +47,11 @@ export const STATUSES = {
 /** Statuses Brett sets from the dropdown; Suspended and Quit come from Suspend and rage-quit. */
 export const PICKABLE = ['on-duty', 'off-duty', 'injured', 'medical-leave', 'probation', 'fired', 'custom'];
 
-export const CHAT_KINDS = ['assign', 'lease', 'report', 'handoff', 'merge', 'status', 'discipline', 'pay', 'banter', 'brett'];
+export const CHAT_KINDS = ['assign', 'lease', 'report', 'handoff', 'merge', 'status', 'discipline', 'pay', 'banter', 'brett', 'session', 'handover', 'claim'];
+/** Channels: the room (''), and `sessions` = the Session sync plugin's channel (session-link@1, spec/HANDOFF.md): what two Claude sessions and the orchestrator say to each other. */
+export const CHAT_CHANNELS = ['', 'sessions'];
 /** Work kinds are built from orchestrator messages and agent reports: no tokens. */
-export const WORK_KINDS = ['assign', 'lease', 'report', 'handoff', 'merge', 'status', 'discipline', 'pay', 'brett'];
+export const WORK_KINDS = ['assign', 'lease', 'report', 'handoff', 'merge', 'status', 'discipline', 'pay', 'brett', 'session', 'handover', 'claim'];
 export const BOSS = { id: 'boss', name: 'Boss' };
 export const BRETT = 'brett';
 
@@ -81,7 +83,7 @@ export const CARD_KEYS = ['design', 'orientation', 'logo', 'surface', 'accent', 
  * never leases them; what it would have written there goes in its report's `notes` instead.
  */
 export const SHARED_FILES = [
-  '_claude/THREADS.md', '_claude/memory/STATUS.md', '_claude/memory/decisions.md', '_claude/builds/', 'tracker.json',
+  '_claude/sync/', '_claude/memory/STATUS.md', '_claude/memory/decisions.md', '_claude/builds/', 'tracker.json',
   'framework/catalog/', 'framework/plan/', 'framework/catalog/plugins.json', 'CLAUDE.md', '_claude/rules/', '_claude/shared/',
 ];
 
@@ -101,7 +103,7 @@ export const SWARM = {
   models: { tiers: MODEL_TIERS, allowed: ALLOWED_MODELS, default: DEFAULT_MODEL },
   agent: {
     required: ['id', 'skill'],
-    limits: { id: 40, name: 60, role: 80, skill: 40, specialty: 200, keywords: 40, keyword: 40, paths: 40, path: 200, models: 4, tools: 30, tool: 120, catchphrase: 160, bio: 600, hiredAt: 40 },
+    limits: { id: 40, name: 60, role: 80, skill: 40, skills: 60, home: 40, specialty: 200, keywords: 40, keyword: 40, paths: 40, path: 200, models: 4, tools: 30, tool: 120, catchphrase: 160, bio: 600, hiredAt: 40 },
     ranges: { maxTurns: [1, 200], tokenBudget: [1000, 10_000_000], salary: [0, 10000] },
     defaults: { maxTurns: 20, tokenBudget: 300000, salary: 10 },
     avatar: { faces: AVATAR_FACES, gear: AVATAR_GEAR, hair: [0, 5], hue: [0, 359], tokens: AVATAR_TOKENS },
@@ -115,7 +117,7 @@ export const SWARM = {
     limits: { note: 300, until: 40, customName: 40, salary: 100000, topups: 100, pay: 100, bonuses: 200, history: 200, notices: 200, banterSpend: 500, hired: 50, hiredSkills: 50, designs: 50, identity: 200, photo: 600 },
   },
   chat: {
-    kinds: CHAT_KINDS, workKinds: WORK_KINDS, boss: BOSS, brett: BRETT, max: 2000, textMax: 1000,
+    kinds: CHAT_KINDS, workKinds: WORK_KINDS, channels: CHAT_CHANNELS, boss: BOSS, brett: BRETT, max: 2000, textMax: 1000,
     sliders: SLIDERS, vibe: VIBE, presets: PRESETS, defaultPreset: DEFAULT_PRESET, vibeColors: VIBE_COLORS,
     banterBudget: { default: 0.5, max: 1000 }, savedPresets: 30,
   },
@@ -150,6 +152,11 @@ export const rejection = (errors) => errors.map((e) => e.message).join('; ');
 
 const A = SWARM.agent;
 
+/** The skills list word for "every skill, including ones added later". */
+export const ALL_SKILLS = '*';
+/** Does the agent hold every skill in `need`? */
+export const hasSkills = (agent, need) => (agent?.skills ?? []).includes(ALL_SKILLS) || (need ?? []).every((k) => k === agent?.skill || (agent?.skills ?? []).includes(k));
+
 /** Fill defaults, drop junk, coerce models to the policy (blocked ones go up, unknown words are dropped). */
 export function normAgent(a) {
   const o = isObj(a) ? a : {};
@@ -161,6 +168,10 @@ export function normAgent(a) {
     name: str(o.name, A.limits.name) || str(o.id, A.limits.id),
     role: str(o.role, A.limits.role),
     skill: str(o.skill, A.limits.skill),
+    // every skill the agent can work (Brett, Nov 3 2026: all-rounders; "*" = every skill, now and later). The home
+    // skill is always in it; `home` is the job type it prefers (a tie-break for the router, never exclusive)
+    skills: [...new Set([str(o.skill, A.limits.skill), ...list(o.skills, A.limits.skills, A.limits.skill)].filter(Boolean))],
+    home: str(o.home, A.limits.home),
     // hired for recurring job types (job-type@1) only: the build planner never hands them build steps
     jobsOnly: o.jobsOnly === true,
     specialty: str(o.specialty, A.limits.specialty),
@@ -191,6 +202,8 @@ export function agentErrors(a, p = 'agent') {
     if (!Array.isArray(a.models)) out.push(err(`${p}.models`, 'invalid', `agent ${who}: models must be a list`));
     else a.models.forEach((m, i) => { if (!modelAllowed(m)) out.push(err(`${p}.models[${i}]`, 'invalid', `agent ${who}: ${modelProblem(m)}`)); });
   }
+  if (a.skills !== undefined && (!Array.isArray(a.skills) || a.skills.some((x) => typeof x !== 'string' || !(x === ALL_SKILLS || ID_RE.test(x))))) out.push(err(`${p}.skills`, 'invalid', `agent ${who}: skills must be a list of skill ids (or "${ALL_SKILLS}" for every skill)`));
+  if (a.home !== undefined && (typeof a.home !== 'string' || (a.home && !ID_RE.test(a.home)))) out.push(err(`${p}.home`, 'invalid', `agent ${who}: home is a job type id`));
   if (a.tools !== undefined && !Array.isArray(a.tools)) out.push(err(`${p}.tools`, 'invalid', `agent ${who}: tools must be a list`));
   else if (!list(a.tools, A.limits.tools, A.limits.tool).length) out.push(err(`${p}.tools`, 'missing', `agent ${who}: no tools`));
   for (const k of ['keywords', 'paths']) if (a[k] !== undefined && !Array.isArray(a[k])) out.push(err(`${p}.${k}`, 'invalid', `agent ${who}: ${k} must be a list`));
@@ -308,7 +321,7 @@ export function normChat(c) {
 }
 
 /** One chat message. Unknown kinds read as banter (the cheap kind); `vibe` and `toned` are set by the vibe filter. */
-export const normMessage = (m, i = 0) => ({ id: str(m?.id, 40) || `m${i}`, at: str(m?.at, 40), from: str(m?.from, 40), kind: CHAT_KINDS.includes(m?.kind) ? m.kind : 'banter', text: str(m?.text, C.textMax), jobId: str(m?.jobId, 120), vibe: Number.isFinite(m?.vibe) ? m.vibe : null, toned: m?.toned === true });
+export const normMessage = (m, i = 0) => ({ id: str(m?.id, 40) || `m${i}`, at: str(m?.at, 40), from: str(m?.from, 40), kind: CHAT_KINDS.includes(m?.kind) ? m.kind : 'banter', text: str(m?.text, C.textMax), jobId: str(m?.jobId, 120), vibe: Number.isFinite(m?.vibe) ? m.vibe : null, toned: m?.toned === true, ...(CHAT_CHANNELS.includes(m?.channel) && m.channel ? { channel: m.channel } : {}) });
 
 const sliderVals = (v, d) => ({ vibe: Math.round(num(v?.vibe, d.vibe, VIBE.min, VIBE.max)), chattiness: slider(v?.chattiness, d.chattiness), cussing: slider(v?.cussing, d.cussing), drama: slider(v?.drama, d.drama) });
 
@@ -524,7 +537,8 @@ export function normRun(r) {
     reportedCost: isNum(o.reportedCost) ? o.reportedCost : null,
   };
   if (kind === 'job') out.jobType = str(o.jobType, 80);
-  for (const k of ['cwd', 'branch', 'worktree', 'session', 'tmux', 'log', 'briefFile', 'reportPath', 'reportFile', 'group']) if (typeof o[k] === 'string') out[k] = o[k].slice(0, 600);
+  for (const k of ['cwd', 'branch', 'worktree', 'session', 'tmux', 'log', 'briefFile', 'reportPath', 'reportFile', 'group', 'build', 'source']) if (typeof o[k] === 'string') out[k] = o[k].slice(0, 600);
+  if (typeof o.forced === 'boolean') out.forced = o.forced; // booked with nobody free (claude-headless.sh launches)
   if (isObj(o.lease)) out.lease = { ok: o.lease.ok !== false, outside: list(o.lease.outside, 500, 400), shared: list(o.lease.shared, 500, 400), files: list(o.lease.files, 5000, 400) };
   if (isObj(o.inputs)) out.inputs = Object.fromEntries(Object.entries(o.inputs).slice(0, 40).map(([k, v]) => [str(k, 40), str(String(v ?? ''), 2000)]));
   if (isNum(o.briefTokens)) out.briefTokens = o.briefTokens | 0;
@@ -592,7 +606,7 @@ export function jsonSchemas() {
     type: 'object', required: A.required,
     properties: {
       $axf: { const: TAGS.agent }, id: { type: 'string', pattern: SWARM.idPattern }, name: { type: 'string', maxLength: A.limits.name }, role: { type: 'string', maxLength: A.limits.role },
-      skill: { type: 'string', maxLength: A.limits.skill }, jobsOnly: { type: 'boolean' }, specialty: { type: 'string', maxLength: A.limits.specialty },
+      skill: { type: 'string', maxLength: A.limits.skill }, skills: strList(A.limits.skills, A.limits.skill), home: { type: 'string', maxLength: A.limits.home }, jobsOnly: { type: 'boolean' }, specialty: { type: 'string', maxLength: A.limits.specialty },
       keywords: strList(A.limits.keywords, A.limits.keyword), paths: strList(A.limits.paths, A.limits.path), models: { type: 'array', maxItems: A.limits.models, items: { enum: ALLOWED_MODELS } },
       tools: strList(A.limits.tools, A.limits.tool), maxTurns: rng(A.ranges.maxTurns), tokenBudget: rng(A.ranges.tokenBudget), salary: rng(A.ranges.salary), hiredAt: { type: 'string' },
       avatar: { type: 'object', properties: { face: { enum: AVATAR_FACES }, hair: rng(A.avatar.hair), gear: { enum: AVATAR_GEAR }, hue: rng(A.avatar.hue) } },
@@ -622,7 +636,7 @@ export function jsonSchemas() {
       identity: { type: 'object', propertyNames: { enum: IDENTITY_FIELDS }, additionalProperties: { type: 'string' } }, card: { anyOf: [{ type: 'string', pattern: SWARM.cardIdPattern }, { const: '' }] },
     },
   };
-  const message = { type: 'object', required: ['from', 'kind', 'text'], properties: { id: { type: 'string' }, at: { type: 'string' }, from: { type: 'string' }, kind: { enum: CHAT_KINDS }, text: { type: 'string', maxLength: C.textMax }, jobId: { type: 'string' }, vibe: { anyOf: [rng([VIBE.min, VIBE.max]), { type: 'null' }] }, toned: { type: 'boolean' } } };
+  const message = { type: 'object', required: ['from', 'kind', 'text'], properties: { id: { type: 'string' }, at: { type: 'string' }, from: { type: 'string' }, kind: { enum: CHAT_KINDS }, text: { type: 'string', maxLength: C.textMax }, jobId: { type: 'string' }, vibe: { anyOf: [rng([VIBE.min, VIBE.max]), { type: 'null' }] }, toned: { type: 'boolean' }, channel: { enum: CHAT_CHANNELS.filter(Boolean) } } };
   const state = {
     ...head('swarm-state', TAGS.state, 'swarm runtime state', 'Statuses, pay, history, chat, chat settings, ID cards and Breakroom hires.'),
     type: 'object', required: ['agents'],

@@ -332,10 +332,9 @@ On claude.ai in a browser → **Settings → Connectors**:
 
 ### Step 22. The project
 
-1. In the console: **Tools → Claude handoff → Assemble prompt**. This writes the kit to `_claude/handoff/`.
-2. claude.ai → **Projects → New project** → name `AmberX AXF`.
-3. **Instructions:** paste `_claude/handoff/INSTRUCTIONS.md` (everything below its line).
-4. **Knowledge:** upload every file in `_claude/handoff/context/`.
+1. claude.ai → **Projects → New project** → name `AmberX AXF`.
+2. **Instructions:** paste `CLAUDE.md` and the rules (`_claude/shared/rules/RULES.md`, `_claude/rules/RULES.md`).
+3. In a session: say "sync AmberX" (Session sync): it reads `_claude/sync/amberx-axf.md` and joins the session link.
 
 ### Step 23. Cloud sessions (claude.ai/code)
 
@@ -420,12 +419,12 @@ VPS helpers (once per server, root): `sh framework/deploy/install-github-helpers
 
 In Moshi (`cd /opt/axf && claude`) or a claude.ai/code session in the repo, start with:
 
-> Read CLAUDE.md, the rules and `_claude/THREADS.md`. Tell me what's open and what you'd do first.
+> Read CLAUDE.md, the rules and `_claude/sync/amberx-axf.md` if it exists. Tell me what's open and what you'd do first.
 
 From then on:
 
-- Every session reads `_claude/THREADS.md` first and keeps it current
-  ([install_instructions §10](install_instructions.md#10-the-threads-file)).
+- Every session reads the sync file first and `/sync` keeps it current
+  ([install_instructions §10](install_instructions.md#10-the-sync-file-session-sync)).
 - Claude asks which model to use before each build. Pick Fable, Opus or Sonnet.
 - Builds happen on branches with PRs. Merges to `main` deploy by themselves.
 - Anything that touches the VPS shows up as an approval on axHub (the console banner, the AXHub app or

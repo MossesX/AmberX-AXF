@@ -352,7 +352,10 @@
               "discipline",
               "pay",
               "banter",
-              "brett"
+              "brett",
+              "session",
+              "handover",
+              "claim"
             ]
           },
           "text": {
@@ -376,6 +379,11 @@
           },
           "toned": {
             "type": "boolean"
+          },
+          "channel": {
+            "enum": [
+              "sessions"
+            ]
           }
         }
       }

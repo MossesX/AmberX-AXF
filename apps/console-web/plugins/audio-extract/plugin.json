@@ -26,7 +26,6 @@
     "dataDir": ".axf-console/plugins/audio-extract",
     "env": [],
     "mentions": [
-      "_claude/THREADS.md"
     ]
   },
   "opens": "main"

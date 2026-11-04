@@ -29,7 +29,6 @@
       "AXF_CONSOLE_COMMANDS_DATA_DIR"
     ],
     "mentions": [
-      "_claude/THREADS.md",
       "apps/console-web/server/main.py",
       "apps/console-web/server/mcp_server.py",
       ".github/workflows/android.yml"

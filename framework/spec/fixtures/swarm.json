@@ -244,7 +244,7 @@
    ],
    "leaseKind": "files",
    "shared": [
-    "_claude/THREADS.md"
+    "_claude/memory/STATUS.md"
    ],
    "budget": {
     "tokens": 200000,
@@ -838,7 +838,7 @@
    ],
    "leaseKind": "files",
    "shared": [
-    "_claude/THREADS.md"
+    "_claude/memory/STATUS.md"
    ],
    "budget": {
     "tokens": 200000,

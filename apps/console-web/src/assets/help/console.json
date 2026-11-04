@@ -76,7 +76,7 @@
       {
         "target": "view:libraries",
         "title": "Libraries",
-        "text": "Installable libraries for apps on the framework (settings, alerts, hub…).",
+        "text": "Installable libraries for apps on the framework (settings, alerts, hub\u2026).",
         "kind": "screen"
       },
       {
@@ -106,7 +106,7 @@
       {
         "target": "view:assets",
         "title": "Assets",
-        "text": "Every asset in the app (themes, layouts, menus…). Pick one, look at its JSON, activate it live.",
+        "text": "Every asset in the app (themes, layouts, menus\u2026). Pick one, look at its JSON, activate it live.",
         "kind": "screen"
       },
       {
@@ -119,7 +119,7 @@
         "target": "view:builds",
         "title": "Builds",
         "text": "Every build of the active profile in one place. Builds view: one row per build with a live progress bar. Steps view: every step on its own row.",
-        "more": "This is the one builds store (builds@1). Everything else — Pending builds, the build queue, the Build manager — is just a view of it, so they can't drift apart. Changes are drafts until you tap Apply; Discard throws them away. Every save is versioned, so Restore default or the history can always get you back.",
+        "more": "This is the one builds store (builds@1). Everything else \u2014 Pending builds, the build queue, the Build manager \u2014 is just a view of it, so they can't drift apart. Changes are drafts until you tap Apply; Discard throws them away. Every save is versioned, so Restore default or the history can always get you back.",
         "tryIt": "Double-tap a build's name to rename it.",
         "related": [
           "view:build-orchestrator",
@@ -174,7 +174,7 @@
       {
         "target": "view:ui-screenshots",
         "title": "Screenshots",
-        "text": "Pictures Claude took while checking things — not for approval. Every shot sits in a named, timestamped group.",
+        "text": "Pictures Claude took while checking things \u2014 not for approval. Every shot sits in a named, timestamped group.",
         "tryIt": "Open a group, then Send to review if one should be approved after all.",
         "related": [
           "view:ui-review"
@@ -191,7 +191,7 @@
         "target": "view:agent-swarm",
         "title": "Agent swarm (the Breakroom)",
         "text": "Your crew of specialist agents: who's working, on what, what it's costing, and their ID cards. The HR side lets you hire, suspend, rehire and top them up.",
-        "more": "Crew is the roster: on duty or not, salary, what they spent, jobs done. ID cards are the badge designs. Agents lists their skills and models. Jobs shows what a build was split into and which agent holds which files. Cost shows runs, tokens and dollars per agent — today, this week and all time. Group chat is where they talk.",
+        "more": "Crew is the roster: on duty or not, salary, what they spent, jobs done. ID cards are the badge designs. Agents lists their skills and models. Jobs shows what a build was split into and which agent holds which files. Cost shows runs, tokens and dollars per agent \u2014 today, this week and all time. Group chat is where they talk.",
         "tryIt": "Open Crew and look at an agent's card.",
         "kind": "screen"
       },
@@ -210,7 +210,7 @@
       {
         "target": "view:plan-studio",
         "title": "Plan Studio",
-        "text": "Every plan in one place. 'Put it in a plan for later' lands here, parked — it only becomes a build when you say Turn into a build.",
+        "text": "Every plan in one place. 'Put it in a plan for later' lands here, parked \u2014 it only becomes a build when you say Turn into a build.",
         "tryIt": "Switch between Tree, Grid, Board and Roadmap at the top.",
         "related": [
           "view:builds"
@@ -285,12 +285,6 @@
         "kind": "screen"
       },
       {
-        "target": "view:claude-handoff",
-        "title": "Claude handoff",
-        "text": "Hands work to another Claude account with everything it needs.",
-        "kind": "screen"
-      },
-      {
         "target": "view:context-menu-designer",
         "title": "Context menu designer",
         "text": "Design what the right-click / long-press menu shows.",
@@ -348,7 +342,7 @@
         "target": "banner:approvals",
         "title": "Approvals banner",
         "text": "Shows up whenever axHub is holding a call on its 90-second countdown, or waiting on you. It runs by itself when the countdown ends unless you Deny it.",
-        "more": "Deny = it never runs. Approve = run it now. Shelve = pause the countdown until you decide. The banner rings (Settings → Plugins → Approvals banner) so you don't miss one.",
+        "more": "Deny = it never runs. Approve = run it now. Shelve = pause the countdown until you decide. The banner rings (Settings \u2192 Plugins \u2192 Approvals banner) so you don't miss one.",
         "tryIt": "Tap a row to open the full call.",
         "related": [
           "approval-deny",
@@ -492,12 +486,12 @@
       {
         "target": "approve-switch-to",
         "title": "Approve the model switch",
-        "text": "OKs the next phase on the other model (Fable ↔ Opus)."
+        "text": "OKs the next phase on the other model (Fable \u2194 Opus)."
       },
       {
         "target": "approve-switch-from",
         "title": "Approve the model switch",
-        "text": "OKs the next phase on the other model (Fable ↔ Opus)."
+        "text": "OKs the next phase on the other model (Fable \u2194 Opus)."
       },
       {
         "target": "build-orchestrator",
@@ -508,7 +502,7 @@
       {
         "target": "build-profiles",
         "title": "Build profiles",
-        "text": "Which set of work the console is on (Main framework, Refactor, Angel…). Switching changes it on every device.",
+        "text": "Which set of work the console is on (Main framework, Refactor, Angel\u2026). Switching changes it on every device.",
         "kind": "tab"
       },
       {
@@ -787,7 +781,7 @@
       {
         "target": "color-by-vibe",
         "title": "Color by vibe",
-        "text": "Colours each chat message by how it reads (happy, stressed…).",
+        "text": "Colours each chat message by how it reads (happy, stressed\u2026).",
         "kind": "toggle"
       },
       {
@@ -856,7 +850,7 @@
       {
         "target": "api-key",
         "title": "API key",
-        "text": "Paste an Anthropic API key (sk-ant-api…). It's tested before it's saved.",
+        "text": "Paste an Anthropic API key (sk-ant-api\u2026). It's tested before it's saved.",
         "kind": "field"
       },
       {
@@ -1025,7 +1019,7 @@
             "target": ""
           },
           {
-            "say": "Switch to Steps to see every step on its own row — expand, select, divide or move them.",
+            "say": "Switch to Steps to see every step on its own row \u2014 expand, select, divide or move them.",
             "target": "action:builds.view:steps"
           },
           {

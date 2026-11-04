@@ -83,7 +83,7 @@ export const CARD_KEYS = ['design', 'orientation', 'logo', 'surface', 'accent', 
  * never leases them; what it would have written there goes in its report's `notes` instead.
  */
 export const SHARED_FILES = [
-  '_claude/THREADS.md', '_claude/memory/STATUS.md', '_claude/memory/decisions.md', '_claude/builds/', 'tracker.json',
+  '_claude/sync/', '_claude/memory/STATUS.md', '_claude/memory/decisions.md', '_claude/builds/', 'tracker.json',
   'framework/catalog/', 'framework/plan/', 'framework/catalog/plugins.json', 'CLAUDE.md', '_claude/rules/', '_claude/shared/',
 ];
 

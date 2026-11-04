@@ -33,7 +33,6 @@
     "env": [],
     "mentions": [
       "CLAUDE.md", "_claude/memory/STATUS.md",
-      "_claude/THREADS.md",
       "_claude/builds/README.md",
       "apps/console-web/plugins/README.md"
     ]

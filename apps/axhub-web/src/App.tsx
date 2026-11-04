@@ -10,7 +10,6 @@ import { ApprovalDetail } from './views/ApprovalDetail';
 import { ApprovalLog } from './views/ApprovalLog';
 import { GoPass } from './views/GoPass';
 import { Passes } from './views/Passes';
-import { HandoffList, HandoffRun } from './views/Handoff';
 import { HubAccount } from './views/HubAccount';
 import { Users } from './views/Users';
 import { Apps } from './views/Apps';
@@ -23,7 +22,7 @@ import { loadPlugins } from './plugins';
 /**
  * Views the shell can show; the nav-menu asset `axhub-web` references these ids. Approvals is home,
  * because that is what this app is for: seeing what axHub is waiting on and getting to it in one tap.
- * Since axHub decision #96 these are the hub's own pages too: one request, the log, users, your account, handoff
+ * Since axHub decision #96 these are the hub's own pages too: one request, the log, users, your account
  * results (the hub redirects its old addresses to `#/<route>`, see `hub/route.ts`). The hub areas that aren't built
  * yet are real routes with a note each (see `views/Planned.tsx`).
  */
@@ -36,8 +35,6 @@ const views: ViewMap = {
   'approvals-log': { title: 'Approvals log', icon: 'list', keywords: ['log', 'history', 'auto-approve'], render: () => <ApprovalLog /> },
   apps: { title: 'Apps', icon: 'download', keywords: ['apk', 'download', 'catalog'], render: () => <Apps /> },
   users: { title: 'Users', icon: 'user', keywords: ['accounts', 'permissions', 'roles'], render: () => <Users /> },
-  handoff: { title: 'Handoff', icon: 'package', keywords: ['claude', 'handoff', 'new account'], render: () => <HandoffList /> },
-  'handoff-run': { title: 'Handoff run', icon: 'package', render: () => <HandoffRun /> },
   ...Object.fromEntries(
     PLANNED.map((area) => [area.id, { title: area.title, icon: area.icon, keywords: [area.id], render: () => <Planned area={area} /> }]),
   ),

@@ -51,8 +51,7 @@ Brett: "every completed step, no matter how small, must reach the orchestrator a
 Every store write that changes a build (step ticked, status, note, branch, PR) is published to **main** at once as its
 own status-only commit (`Builds live: … [skip ci]`), whatever branch the session is on (`framework/cli/builds-live.mjs`):
 fetched main + this checkout's changed builds, merged per build and per step **newer wins**
-(`framework/plan/builds-merge-core.mjs`), journal lines appended, one line per change in THREADS.md's **Live build
-log**, orchestrator exports regenerated, pushed (rebase-retry when main moved, never forced). Main's newer builds then
+(`framework/plan/builds-merge-core.mjs`), journal lines appended, orchestrator exports regenerated, pushed (rebase-retry when main moved, never forced). Main's newer builds then
 come back into the checkout and into the console's checkout (`/opt/axf`), so the banners show it now. Code still goes
 through the branch and its PR. The console's auto-update skips the rebuild when only `_claude/` changed.
 

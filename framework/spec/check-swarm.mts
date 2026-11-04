@@ -36,7 +36,7 @@ const state = {
   cards: { default: 'corporate-badge', designs: [{ id: 'my-pass', name: 'My pass', data: { design: 'backstage', front: ['name', 'status'], labels: { status: 'Access' }, evil: 1 } }, { id: 'X', data: {} }] },
   hired: [{ id: 'paulie', skill: 'site-checks', jobsOnly: true, tools: ['Read'], models: ['opus'] }], hiredSkills: { 'site-checks': { title: 'Site checks', body: 'Ping the sites.' } },
 };
-const job = { $axf: 'swarm-job@1', id: 'b.s1', buildId: 'b', stepId: 's1', text: 'React card in apps/x/web/ui.tsx', estimate: '20 min', agent: 'rio', skill: 'react-ui', tier: 'sonnet', model: 'sonnet', match: 5, leases: ['apps/x/web/ui.tsx'], leaseKind: 'files', shared: ['_claude/THREADS.md'], budget: { tokens: 200000, maxTurns: 20 }, checks: ['tsc'], wave: 1, after: ['a.s1'] };
+const job = { $axf: 'swarm-job@1', id: 'b.s1', buildId: 'b', stepId: 's1', text: 'React card in apps/x/web/ui.tsx', estimate: '20 min', agent: 'rio', skill: 'react-ui', tier: 'sonnet', model: 'sonnet', match: 5, leases: ['apps/x/web/ui.tsx'], leaseKind: 'files', shared: ['_claude/memory/STATUS.md'], budget: { tokens: 200000, maxTurns: 20 }, checks: ['tsc'], wave: 1, after: ['a.s1'] };
 const report = { $axf: 'swarm-report@1', status: 'done', summary: 'card added', files: ['apps/x/web/ui.tsx'], checks: [{ name: 'tsc', ok: true }, { name: 'lint', ok: 'yes' }], notes: 'STATUS: card', handoff: 'props renamed', question: '' };
 const usage = { input: 1000, output: 200, cacheRead: 5000, cacheWrite: 0 };
 const buildRun = { $axf: 'swarm-run@1', kind: 'build', jobId: 'b.s1', buildId: 'b', stepId: 's1', agent: 'rio', model: 'haiku', startedAt: AT, endedAt: '2026-11-03T14:20:00.000Z', status: 'done', reason: '', report, usage, budget: { tokens: 200000, maxTurns: 20 }, turns: 7, reportedCost: 0.42, cwd: '/tmp/wt', branch: 'swarm/b/s1', worktree: '/tmp/wt', lease: { ok: true, outside: [], shared: [], files: ['apps/x/web/ui.tsx'] } };
@@ -182,7 +182,7 @@ const chatComputed = {
     reportBlocked: C.reportLines(S.normRun({ ...buildRun, status: 'blocked', report: { ...report, status: 'blocked', handoff: '', question: 'Which theme?' } })),
     reportKilled: C.reportLines(S.normRun({ ...buildRun, status: 'killed', reason: 'over the token budget', report: null })),
     reportFailed: C.reportLines(S.normRun({ ...buildRun, status: 'failed', reason: 'no swarm-report@1 block', report: null })),
-    merge: C.mergeLines({ branch: 'swarm/b/merge', merged: ['b.s1'], conflicts: [{ job: 'b.s2', files: ['a.ts', 'b.ts', 'c.ts', 'd.ts'], fixer: 'b.fix-s2' }], refused: [{ job: 'b.s3', outside: ['z.ts'], shared: ['_claude/THREADS.md'] }] }, { max: 'Merge Max' }),
+    merge: C.mergeLines({ branch: 'swarm/b/merge', merged: ['b.s1'], conflicts: [{ job: 'b.s2', files: ['a.ts', 'b.ts', 'c.ts', 'd.ts'], fixer: 'b.fix-s2' }], refused: [{ job: 'b.s3', outside: ['z.ts'], shared: ['_claude/memory/STATUS.md'] }] }, { max: 'Merge Max' }),
     status: C.statusLine('rio', 'Off duty', 'day off', names),
     raise: C.payLine('raise', 'rio', { from: 5, to: 9, note: 'great work' }, names),
     dock: C.payLine('dock', 'rio', { from: 9, to: 3 }, names),
@@ -243,7 +243,7 @@ ok(/Blocked on b\.s1\. card added Q for Brett: Which theme\?/.test(L.reportBlock
 ok(/^Got killed on b\.s1: over the token budget\.$/.test(L.reportKilled[0].text) && /^Failed b\.s1: no swarm-report@1 block\.$/.test(L.reportFailed[0].text), 'killed and failed heads');
 eq(L.merge.map((l: { kind: string }) => l.kind), ['merge', 'handoff', 'lease'], 'merge lines: merged, a fixer handoff, a refusal');
 ok(/^Merge Max, b\.s2 clashed on a\.ts, b\.ts, c\.ts \+1\. Clean it up \(b\.fix-s2\)\.$/.test(L.merge[1].text) && L.merge[1].jobId === 'b.fix-s2', 'the fixer is named with the clash');
-ok(/outside its lease \(z\.ts, _claude\/THREADS\.md\)/.test(L.merge[2].text), 'a refusal names what left the lease');
+ok(/outside its lease \(z\.ts, _claude\/memory\/STATUS\.md\)/.test(L.merge[2].text), 'a refusal names what left the lease');
 eq(L.status.text, 'Rio React is now Off duty: day off.', 'status line');
 eq([L.raise.text, L.dock.text, L.topup.text, L.bonus.text], ['Rio React gets a raise: $5.00 → $9.00 a week. great work', 'Rio React got docked: $9.00 → $3.00 a week.', 'Brett topped Rio React up by $5.00 this week.', 'Rio React finished b.s1 for $0.05, $0.95 under budget. Bonus.'], 'pay lines');
 ok(/^I'm broke\. Spent \$4\.00 of \$4\.00 this week, so no more jobs till payday \(2026-11-09\)/.test(L.broke.text) && L.broke.from === 'rio', 'broke line is the agent\'s own');

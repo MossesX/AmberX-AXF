@@ -59,7 +59,7 @@ FILES = {
     250: ["apps/console-web/plugins/sample-tools/web/index.tsx", "framework/core/engines/layout.ts", "apps/axhub-web/src/axf/core/x.ts"],
     245: ["framework/core/engines/dock.ts", "apps/molly/src/App.tsx", "apps/molly/_claude/x.md"],
     243: ["apps/console-web/plugins/sample-editor/web/index.tsx"],
-    242: ["_claude/THREADS.md", "framework/plan/plan.json", "changes/2026/11/c.json"],
+    242: ["_claude/sync/amberx-axf.md", "framework/plan/plan.json", "changes/2026/11/c.json"],
 }
 DEPLOYS = [{"conclusion": "success", "updated_at": "2026-11-03T11:00:00Z"}, {"conclusion": "success", "updated_at": "2026-10-21T00:00:00Z"}]
 MODE = {"fail": False}

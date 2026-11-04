@@ -129,32 +129,32 @@ check(advance({ step: 1, chars: 0, wait: 0 }, seq, 1000, 'slow').chars < advance
 
 // ---- the chain as a tree (terminal-drag-chain-tree, Nov 3 2026): parents from @imports, mentions and start rules
 console.log('context chain tree');
-check(mentionsOf('Read `_claude/THREADS.md` first; see [spec](docs/a.md), framework/cli/x.mjs and https://e.com/b.md').map((x: { path: string }) => x.path).join() === '_claude/THREADS.md,docs/a.md,framework/cli/x.mjs',
+check(mentionsOf('Read `_claude/sync/amberx-axf.md` first; see [spec](docs/a.md), framework/cli/x.mjs and https://e.com/b.md').map((x: { path: string }) => x.path).join() === '_claude/sync/amberx-axf.md,docs/a.md,framework/cli/x.mjs',
   'mentions: code spans, links and bare paths; never URLs');
-check(startRule('Read `_claude/THREADS.md` first') && startRule('on every load, read it') && !startRule('see the report for details'), 'a "read it first / on load" line is a session-start rule');
+check(startRule('Read `_claude/sync/amberx-axf.md` first') && startRule('on every load, read it') && !startRule('see the report for details'), 'a "read it first / on load" line is a session-start rule');
 const tp = join(root, 'tree'); for (const d of [join(tp, '_claude', 'rules'), join(tp, '_claude', 'shared', 'rules'), join(tp, '_claude', 'memory'), join(tp, 'src')]) mkdirSync(d, { recursive: true });
-writeFileSync(join(tp, 'CLAUDE.md'), '# Project\n@_claude/rules/RULES.md\n- Read `_claude/THREADS.md` first, on every load.\n- Decisions live in `_claude/memory/decisions.md`.\n- Specs: `memory/spec.md`.\n');
+writeFileSync(join(tp, 'CLAUDE.md'), '# Project\n@_claude/rules/RULES.md\n- Read `_claude/sync/amberx-axf.md` first, on every load.\n- Decisions live in `_claude/memory/decisions.md`.\n- Specs: `memory/spec.md`.\n');
 writeFileSync(join(tp, '_claude', 'rules', 'RULES.md'), '# Rules\n@../shared/rules/RULES.md\n- r1\n');
 writeFileSync(join(tp, '_claude', 'shared', 'rules', 'RULES.md'), '# Shared\n- s1\n- s2\n');
-writeFileSync(join(tp, '_claude', 'THREADS.md'), '# Threads\n- see src/app.ts\n');
+mkdirSync(join(tp, '_claude', 'sync'), { recursive: true }); writeFileSync(join(tp, '_claude', 'sync/amberx-axf.md'), '# Session sync\n- see src/app.ts\n');
 writeFileSync(join(tp, '_claude', 'memory', 'decisions.md'), '# Decisions\n- d1\n'); writeFileSync(join(tp, '_claude', 'memory', 'spec.md'), '# Spec\n');
 writeFileSync(join(tp, 'src', 'app.ts'), 'x'); writeFileSync(join(tp, 'src', 'lone.ts'), 'y');
 const home2 = join(root, 'home2'); mkdirSync(home2, { recursive: true });
 const tm = createMeter({ session: 'axf-t', model: 'opus', cwd: tp, home: home2, pricing, now: () => t });
 const readEv = (id: string, f: string) => ({ type: 'assistant', message: { id, content: [{ type: 'tool_use', id: `t-${id}`, name: 'Read', input: { file_path: join(tp, f) } }] } });
-for (const [id, f] of [['a', '_claude/THREADS.md'], ['b', '_claude/memory/decisions.md'], ['c', 'src/app.ts'], ['d', 'src/lone.ts'], ['e', '_claude/memory/spec.md']] as const) tm.add(readEv(id, f));
+for (const [id, f] of [['a', '_claude/sync/amberx-axf.md'], ['b', '_claude/memory/decisions.md'], ['c', 'src/app.ts'], ['d', 'src/lone.ts'], ['e', '_claude/memory/spec.md']] as const) tm.add(readEv(id, f));
 const ti: ChainItem[] = tm.chain().items;
 const by = (r: string) => ti.find((x) => x.rel === r)!;
 check(by('CLAUDE.md').reason === 'session-start' && by('_claude/rules/RULES.md').reason === 'import' && by('_claude/rules/RULES.md').parentI === by('CLAUDE.md').i
   && by('_claude/shared/rules/RULES.md').parentI === by('_claude/rules/RULES.md').i, 'session-start file, @imports nested two levels under the file that imports them');
-check(by('_claude/THREADS.md').reason === 'session-start rule' && by('_claude/THREADS.md').parentI === by('CLAUDE.md').i && /first/.test(by('_claude/THREADS.md').why ?? ''), 'a Read the CLAUDE.md says to do first: under it, as a session-start rule, with the line why');
+check(by('_claude/sync/amberx-axf.md').reason === 'session-start rule' && by('_claude/sync/amberx-axf.md').parentI === by('CLAUDE.md').i && /first/.test(by('_claude/sync/amberx-axf.md').why ?? ''), 'a Read the CLAUDE.md says to do first: under it, as a session-start rule, with the line why');
 check(by('_claude/memory/decisions.md').reason === 'reference' && by('_claude/memory/decisions.md').parentI === by('CLAUDE.md').i, 'a Read a loaded file mentions: a reference under it');
-check(by('src/app.ts').parentI === by('_claude/THREADS.md').i && by('src/app.ts').depth === 2, 'chains keep going: a file THREADS.md mentions sits under THREADS.md');
+check(by('src/app.ts').parentI === by('_claude/sync/amberx-axf.md').i && by('src/app.ts').depth === 2, 'chains keep going: a file the sync file mentions sits under the sync file');
 check(by('src/lone.ts').reason === 'read' && by('src/lone.ts').parentI === -1, 'a Read nothing mentions is a root');
 check(by('_claude/memory/spec.md').parentI === by('CLAUDE.md').i && by('_claude/memory/spec.md').reason === 'reference', 'a partial mention (memory/spec.md) still finds its file');
 const tr = chainTree(ti);
-check(tr.map((n) => n.rel).join() === 'CLAUDE.md,src/lone.ts' && tr[0]!.children.map((n) => n.rel).join() === '_claude/rules/RULES.md,_claude/THREADS.md,_claude/memory/decisions.md,_claude/memory/spec.md', 'chainTree nests every file under the file that pulled it in, load order kept');
-check(treeOrder(tr).map((k) => ti[k]!.rel).join(' > ') === 'CLAUDE.md > _claude/rules/RULES.md > _claude/shared/rules/RULES.md > _claude/THREADS.md > src/app.ts > _claude/memory/decisions.md > _claude/memory/spec.md > src/lone.ts', 'the reveal walks the tree depth-first');
+check(tr.map((n) => n.rel).join() === 'CLAUDE.md,src/lone.ts' && tr[0]!.children.map((n) => n.rel).join() === '_claude/rules/RULES.md,_claude/sync/amberx-axf.md,_claude/memory/decisions.md,_claude/memory/spec.md', 'chainTree nests every file under the file that pulled it in, load order kept');
+check(treeOrder(tr).map((k) => ti[k]!.rel).join(' > ') === 'CLAUDE.md > _claude/rules/RULES.md > _claude/shared/rules/RULES.md > _claude/sync/amberx-axf.md > src/app.ts > _claude/memory/decisions.md > _claude/memory/spec.md > src/lone.ts', 'the reveal walks the tree depth-first');
 check(treeOrder(tr, new Set([by('CLAUDE.md').i])).length === 2, 'a folded file hides (and holds back) its children');
 const legacy = [{ i: 0, path: '/a', rel: 'a', via: 'project memory', depth: 0, parent: '', at: '', rules: [] }, { i: 1, path: '/b', rel: 'b', via: 'import', depth: 1, parent: '', at: '', rules: [] }, { i: 2, path: '/c', rel: 'c', via: 'import', depth: 2, parent: 'nope', at: '', rules: [] }];
 check(chainTree(legacy)[0]!.children[0]!.children[0]!.rel === 'c', 'older chain files (depth only) still nest');

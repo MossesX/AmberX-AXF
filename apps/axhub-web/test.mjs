@@ -8,7 +8,7 @@
  */
 import { keepSessionOnFailure, MISSES_SHOWN, sameJson, showReading, shownError } from './src/hub/core.ts';
 import { directRunRows, ranUnderPass, ranWithoutApproval, passClock, passCovers, passSecondsLeft, patternList } from './src/hub/core.ts';
-import { countdownKey, nextSort, replyBase, requestedKey, shownRow, sourceChips, sourceKind, sourceWho, afterPick, approveNowPaths, bashCommand, clipboardFor, clock, errorText, handoffGauges, heldActions, localToUtcMinute, parseRoute, pickOf, waitingCount, waitingTitle, platformOf, relTime, routeHash, safeFilePath, sessionsFor, signInUrl, stepGroups } from './src/hub/core.ts';
+import { countdownKey, nextSort, replyBase, requestedKey, shownRow, sourceChips, sourceKind, sourceWho, approveNowPaths, clock, errorText, heldActions, localToUtcMinute, parseRoute, pickOf, waitingCount, waitingTitle, relTime, routeHash, safeFilePath, signInUrl } from './src/hub/core.ts';
 import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../framework/libs/hub/apps.ts';
 
 let checks = 0;
@@ -146,7 +146,6 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
 /* ---------------------------------------------------------------- the hub's pages (decision #96) */
 {
   const ID = '0123abcd-0123-4567-89ab-0123456789ab';
-  const RUN = '20261022-143005-ab12';
   eq(parseRoute(''), { view: 'home', params: {} }, 'no hash is the approvals page');
   eq(parseRoute('#/approvals'), { view: 'home', params: {} }, '#/approvals is home');
   eq(parseRoute('#/go-pass'), { view: 'go-pass', params: {} }, '#/go-pass opens the Go pass page (axHub decision #99)');
@@ -175,15 +174,10 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   eq(parseRoute('#/users'), { view: 'users', params: {} }, 'users');
   eq(parseRoute('#/account'), { view: 'account', params: {} }, 'account');
   eq(parseRoute('#/apps'), { view: 'apps', params: {} }, 'apps');
-  eq(parseRoute('#/handoff'), { view: 'handoff', params: {} }, 'handoff list');
-  eq(parseRoute(`#/handoff/${RUN}`), { view: 'handoff-run', params: { id: RUN } }, 'one handoff run');
-  eq(parseRoute(`#/handoff/${RUN}?file=_claude%2Fhandoff%2FHANDOFF.md`), { view: 'handoff-run', params: { id: RUN, file: '_claude/handoff/HANDOFF.md' } }, 'a kit file');
-  eq(parseRoute(`#/handoff/${RUN}?file=..%2Fsecret`), { view: 'handoff-run', params: { id: RUN } }, 'a traversing file is dropped');
-  eq(parseRoute('#/handoff/../../x'), { view: 'home', params: {} }, 'a bad run id is home');
   eq(parseRoute('#/Settings'), { view: 'home', params: {} }, 'a view name with capitals is home');
   eq(parseRoute('#/a/b/c'), { view: 'home', params: {} }, 'deep unknown routes are home');
   eq(parseRoute('#/%E0%A4%A'), { view: 'home', params: {} }, 'a broken escape is home');
-  for (const [view, params] of [['home', {}], ['home', { status: 'postponed' }], ['approval', { id: ID }], ['approvals-log', {}], ['approvals-log', { pass: 'any' }], ['approvals-log', { pass: ID }], ['passes', {}], ['users', {}], ['account', {}], ['handoff', {}], ['handoff-run', { id: RUN }], ['handoff-run', { id: RUN, file: 'a/b.md' }], ['settings', {}]]) {
+  for (const [view, params] of [['home', {}], ['home', { status: 'postponed' }], ['approval', { id: ID }], ['approvals-log', {}], ['approvals-log', { pass: 'any' }], ['approvals-log', { pass: ID }], ['passes', {}], ['users', {}], ['account', {}], ['settings', {}]]) {
     eq(parseRoute(routeHash(view, params)), { view, params }, `${view} ${JSON.stringify(params)} round-trips`);
   }
   eq(routeHash('approval', { id: 'x' }), '#/approvals', 'a bad id never goes into the hash');
@@ -206,29 +200,6 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   ok(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(localToUtcMinute('2026-10-27T09:30')), 'a local time becomes the UTC minute the hub takes');
   eq(localToUtcMinute('tomorrow'), '', 'a bad time is empty');
 
-  eq(platformOf('Mozilla/5.0 (Linux; Android 16; SM-S948B)'), 'android', 'Android');
-  eq(platformOf('Mozilla/5.0 (Windows NT 10.0; Win64; x64)'), 'windows', 'Windows');
-  eq(sessionsFor('android')[0].os, 'android', "this device's sessions come first");
-  eq(sessionsFor('')[0].id, 'claude-code-web', 'otherwise Claude Code on the web first');
-  eq(sessionsFor('', 'moshi').map((x) => x.id), ['android-moshi'], 'search finds Moshi');
-  const moshi = sessionsFor('', 'moshi')[0];
-  ok(clipboardFor(moshi, 'do $(rm -rf ~) it').includes("<<'AXF_HANDOFF_EOF'"), 'a command keeps the prompt in a quoted here-doc');
-  eq(bashCommand('hi'), `claude "$(cat <<'AXF_HANDOFF_EOF'\nhi\nAXF_HANDOFF_EOF\n)"`, 'the ready command');
-  ok(afterPick(moshi, true, false).includes('terminal'), 'what to do after a command pick');
-  ok(afterPick(sessionsFor('', 'android · claude app')[0], false, false).includes("Couldn't reach the clipboard"), 'a blocked clipboard says so');
-
-  const steps = [
-    { id: 'a01', group: 'Assemble', label: 'Clicked', remaining: false, done: true, state: 'done', note: '', at: 0 },
-    { id: 'h01', group: 'Handoff', label: 'Sent', remaining: true, done: true, state: 'done', note: '', at: 0 },
-    { id: 'h02', group: 'Handoff', label: 'Read', remaining: true, done: false, state: 'running', note: '', at: 0 },
-  ];
-  const g0 = handoffGauges(steps, 0, now);
-  eq([g0.total, g0.done, g0.remaining, g0.remDone, g0.live], [3, 2, 2, 1, false], 'not sent yet: counts, not live');
-  ok(g0.status.startsWith('Waiting'), 'waiting for the prompt');
-  const g1 = handoffGauges(steps, now - 120_000, now);
-  eq([g1.live, g1.pace, Math.round(g1.left)], [true, 0.5, 120_000], 'live: pace and time left');
-  eq(handoffGauges(steps.map((s) => ({ ...s, done: true })), now - 60_000, now).status, 'Handoff complete.', 'all done');
-  eq(stepGroups(steps).map((x) => [x.name, x.done, x.steps.length]), [['Assemble', 1, 1], ['Handoff', 1, 2]], 'steps grouped in order');
 
   // The pages never hold a token and only talk to the hub's own /auth/api routes.
   const { readFileSync } = await import('node:fs');
@@ -236,7 +207,7 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   const api = readFileSync(`${here}src/hub/api.ts`, 'utf8');
   ok(api.includes("redirect: 'error'") && api.includes("credentials: 'include'") && api.includes("'X-AxHub-CSRF'"), 'the API client: session cookie, CSRF header, no redirects');
   ok(!/Authorization|Bearer/.test(api), 'the API client sends no token');
-  for (const f of ['Approvals', 'ApprovalDetail', 'ApprovalLog', 'Users', 'HubAccount', 'Handoff']) {
+  for (const f of ['Approvals', 'ApprovalDetail', 'ApprovalLog', 'Users', 'HubAccount']) {
     const src = readFileSync(`${here}src/views/${f}.tsx`, 'utf8');
     ok(src.includes('<HubGate'), `${f} is behind the sign-in gate`);
     ok(!/<button(?![^>]*className=\{?`?["']?fx-chip)/.test(src), `${f} draws no hand-styled buttons`);
@@ -248,7 +219,7 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   ok(/orderActions\(item\.actions\)/.test(detail) && /filter\(\(a\) => a === 'approve'\)/.test(detail), 'Approve comes first among the actions');
   const nav = JSON.parse(readFileSync(`${here}src/assets/nav-menu/axhub-web.json`, 'utf8'));
   const navViews = nav.data.sections.flatMap((x) => x.items.map((i) => i.view));
-  for (const v of ['home', 'approvals-log', 'passes', 'users', 'handoff', 'account', 'apps']) ok(navViews.includes(v), `the nav reaches ${v}`);
+  for (const v of ['home', 'approvals-log', 'passes', 'users', 'account', 'apps']) ok(navViews.includes(v), `the nav reaches ${v}`);
 }
 
 /* ---------------------------------------------------------------- Approve now on every waiting row (Oct 31 2026) */

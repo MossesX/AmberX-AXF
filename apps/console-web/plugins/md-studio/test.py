@@ -48,7 +48,7 @@ put(REPO / "docs/notes.txt", "not markdown")
 put(HUB / "_shared/_claude/rules/RULES.md", "# Shared rules\n")
 put(HUB / "_shared/_claude/notes/plans/p.md", "# A plan\n")
 put(HUB / "amberx-axf/_claude/rules/RULES.md", "# AXF rules\n\nShared: `_claude/shared/rules/RULES.md`.\n")
-put(HUB / "amberx-axf/_claude/THREADS.md", "# Threads\n")
+put(HUB / "amberx-axf/_claude/sync/amberx-axf.md", "# Session sync\n")
 
 
 class FakeNotes:
@@ -138,9 +138,9 @@ try:
     check("repo skips vendored, baked, journal, non-md", not any(x in " ".join(repo_ids) for x in ("node_modules", "src/axf", "journal", "notes.txt")), repo_ids)
     check("repo groups by top folder", {g["label"] for g in sc["repo"]["groups"]} >= {"(top level)", "docs", "framework", "_claude", "apps"}, [g["label"] for g in sc["repo"]["groups"]])
     claude_ids = ids(sc["claude"])
-    check("claude lists hub files of every project", {"hub:_shared/rules/RULES.md", "hub:amberx-axf/rules/RULES.md", "hub:amberx-axf/THREADS.md"} <= set(claude_ids), claude_ids)
+    check("claude lists hub files of every project", {"hub:_shared/rules/RULES.md", "hub:amberx-axf/rules/RULES.md", "hub:amberx-axf/sync/amberx-axf.md"} <= set(claude_ids), claude_ids)
     check("claude leaves the notes folder to Notes", not any("notes/" in x for x in claude_ids), claude_ids)
-    check("claude categories", {(g["label"], g["category"]) for g in sc["claude"]["groups"]} >= {("Shared (every project)", "rules"), ("amberx-axf", "top")}, sc["claude"]["groups"])
+    check("claude categories", {(g["label"], g["category"]) for g in sc["claude"]["groups"]} >= {("Shared (every project)", "rules"), ("amberx-axf", "sync")}, sc["claude"]["groups"])
     check("notes scope via axf.notes@1", sc["notes"]["available"] and ids(sc["notes"]) == ["notes:plans/p.md"], sc["notes"])
     r = c.get("/files", params={"q": "guide"})
     check("path search", ids({s["id"]: s for s in r.json()["scopes"]}["repo"]) == ["repo:docs/guide.md"], r.json())

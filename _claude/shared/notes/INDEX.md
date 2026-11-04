@@ -8,9 +8,6 @@ install notes and saved commands. One place for every project and session: `/pro
 New notes go in the folder that fits (add a folder when none does) and get a line here, newest first in each folder.
 
 ## handoffs/
-- `handoff-2026-11-03.md` (Nov 3 2026): Brett's voice asks to fold into plans; adds to the Nov 2 handoff.
-- `handoff-2026-11-02.md` (Nov 2 2026): what landed since Nov 1, open items; adds to the Nov 1 handoff.
-- `handoff-2026-11-01.md` (Nov 1 2026): full handoff for the other Claude account: rules, stack, persona, stopped builds, parked plans.
 - `kickoff-prompt-other-account-2026-11-01.md` (Nov 1 2026): paste-ready first message that makes the other account read the Nov 1 handoff (was `_claude/fuck-you.md`).
 
 ## sessions/

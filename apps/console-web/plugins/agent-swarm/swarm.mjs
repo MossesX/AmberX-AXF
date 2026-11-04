@@ -331,9 +331,9 @@ export function state() {
   return { swarm, spend, pay, banterToday: core.banterAllowed(swarm, at).today, statuses: core.STATUSES, pickable: core.PICKABLE, roster, skills: Object.fromEntries(Object.entries(sk).map(([k, v]) => [k, { id: v.id, title: v.title, body: v.body }])), problems: core.checkRoster(roster, sk),
     runs: runs.slice(-300), meter: core.meter(runs, table), prices: table, builds, tracker: trackerFile() };
 }
-/** Tokens every plain session loads before it starts (CLAUDE.md and the rules it pulls in, THREADS.md). */
+/** Tokens every plain session loads before it starts (CLAUDE.md and the rules it pulls in, the sync file). */
 export function sessionLoadTokens() {
-  return ['CLAUDE.md', '_claude/shared/rules/RULES.md', '_claude/rules/RULES.md', '_claude/THREADS.md'].reduce((t, f) => { try { return t + core.tokensOf(readFileSync(join(ROOT, f), 'utf8')); } catch { return t; } }, 0);
+  return ['CLAUDE.md', '_claude/shared/rules/RULES.md', '_claude/rules/RULES.md', '_claude/sync/amberx-axf.md'].reduce((t, f) => { try { return t + core.tokensOf(readFileSync(join(ROOT, f), 'utf8')); } catch { return t; } }, 0);
 }
 
 /** Pilot: plan + pack every job of a build (no run), project both ways, suggest a budget scale. --apply saves it on the roster. */

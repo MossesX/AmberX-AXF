@@ -144,11 +144,11 @@ by the session doing it), and every banner plugin. Everything else keeps its cur
 Read live on Oct 27 2026 (axHub `vps.run`, approval 72afb5a6): the console has no `.axf-console/plugins.json`,
 so nothing has been switched off and every installed plugin runs — all 32 (`activity`, `agent-manager`,
 `ai-assistant`, `ai-keys`, `alerts-bell`, `approvals-banner`, `build-manager`, `build-orchestrator`,
-`changes-grid`, `claude-badge`, `claude-handoff`, `codebase-changes`, `console-terminal`, `container-access`,
+`changes-grid`, `claude-badge`, `codebase-changes`, `console-terminal`, `container-access`,
 `context-menu-designer`, `fable-rebuilds`, `feature-assist`, `hub-sync`, `main-build-status`, `mcp-client`,
 `plugin-manager`, `plugin-switches`, `plugin-update`, `plugins-menu`, `project-wizard`, `push-banner`,
 `session-checkin`, `snapshot-manager`, `systems-check`, `theme-manager`, `todo-manager`, `voice-notes`) are in
-scope; the seven banner plugins (`activity`, `approvals-banner`, `build-manager`, `claude-handoff`,
+scope; the banner plugins (`activity`, `approvals-banner`, `build-manager`,
 `codebase-changes`, `push-banner`, `systems-check`) are among them.
 
 ## 14. What a checker verifies

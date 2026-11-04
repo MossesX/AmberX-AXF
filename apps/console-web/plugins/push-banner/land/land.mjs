@@ -18,7 +18,7 @@
  *      code changes never committed stop it (reason `code`); the branch is pushed when it is ahead of GitHub;
  *   2. main merged in (a temporary worktree, never the build's): only when main moved in code (status-only `[skip ci]`
  *      commits under _claude/ don't count) or GitHub says the PR conflicts. Builds files newer-wins (builds-live.mjs
- *      merge driver), THREADS / STATUS / decisions / logs unioned, generated files from main then regenerated, code
+ *      merge driver), STATUS / decisions / logs unioned, generated files from main then regenerated, code
  *      conflicts abort (reason `conflict`, an agent job);
  *   3. its PR opened when it has none; CI started (workflow_dispatch) when nothing ran on the head;
  *   4. the reason it waits (land-core.mjs blockReason) written to land.json; a new reason is pushed to Brett once

@@ -43,7 +43,7 @@ check(/"claudeOnFail": raw.get\("claudeOnFail"\) is True/.test(server), 'Fix wit
 // ------------------------------------------------------------------ 2. pure rules
 console.log('rules (land-core.mjs)');
 check(core.classifyPath('_claude/builds/store.json') === 'builds' && core.classifyPath('_claude/builds/journal/2026-11.jsonl') === 'builds', 'builds store + journal = builds files');
-check(core.classifyPath('_claude/THREADS.md') === 'union' && core.classifyPath('deploy.log') === 'union', 'THREADS + logs = union');
+check(core.classifyPath('_claude/memory/STATUS.md') === 'union' && core.classifyPath('deploy.log') === 'union', 'STATUS + logs = union');
 check(core.classifyPath('tracker.json') === 'generated' && core.classifyPath('changes/2026/11/x.json') === 'generated', 'tracker + hub data copies = generated');
 check(core.classifyPath('framework/core/x.ts') === 'code' && core.classifyPath('deploy/claude-headless.sh') === 'code', 'everything else = code');
 const sp = core.strayPlan(' M _claude/builds/store.json\n?? .brief.md\n?? auto-land.jsonl\n?? _claude/dup.md\n M framework/core/a.ts\n?? notes.txt\n M changes/2026/11/c.json\n M _claude/shared/x.md', (p) => p === '_claude/dup.md' || p === '_claude/shared/x.md');
@@ -121,14 +121,14 @@ const builds = [
   B('busy', { status: 'running', steps: [{ id: 's1', done: false }] }),
 ];
 put('project.manifest.json', JSON.stringify({ name: 'proj', data: { shared: ['changes/'] } }));
-put('_claude/builds/store.json', store(builds)); put('_claude/THREADS.md', '# Threads\n- base\n'); put('shared.ts', 'export const a = 1;\n'); put('app.ts', 'one\n');
+put('_claude/builds/store.json', store(builds)); put('_claude/memory/STATUS.md', '# Threads\n- base\n'); put('shared.ts', 'export const a = 1;\n'); put('app.ts', 'one\n');
 commit('base'); sh(['push', '-q', 'origin', 'main'], repo);
 const branch = (id, fn) => { sh(['checkout', '-q', '-b', `claude/${id}`, 'main'], repo); fn(); commit(`${id} work`); sh(['push', '-q', 'origin', `claude/${id}`], repo); sh(['checkout', '-q', 'main'], repo); };
 branch('clash', () => put('shared.ts', 'export const a = 2; // clash branch\n'));
-branch('logs', () => { put('_claude/THREADS.md', '# Threads\n- base\n- logs thread\n'); put('logs.ts', 'x\n'); });
+branch('logs', () => { put('_claude/memory/STATUS.md', '# Threads\n- base\n- logs thread\n'); put('logs.ts', 'x\n'); });
 branch('wt', () => put('wt.ts', 'x\n'));
-// main moves on in code (clashes with `clash`, a THREADS line); the next builds branch off it; then status-only commits
-put('shared.ts', 'export const a = 3; // main\n'); put('_claude/THREADS.md', '# Threads\n- base\n- main thread\n'); commit('main code change');
+// main moves on in code (clashes with `clash`, a STATUS line); the next builds branch off it; then status-only commits
+put('shared.ts', 'export const a = 3; // main\n'); put('_claude/memory/STATUS.md', '# Threads\n- base\n- main thread\n'); commit('main code change');
 sh(['push', '-q', 'origin', 'main'], repo);
 for (const id of ['ok', 'later', 'held', 'ui', 'green']) branch(id, () => put(`${id}.ts`, `export const ${id} = 1;\n`));
 put('_claude/builds/store.json', store(builds.map((b) => (b.id === 'busy' ? { ...b, notes: [{ text: 'tick' }] } : b)))); commit('Builds live: busy note (urgent) [skip ci]');
@@ -173,8 +173,8 @@ check(calls.gh.some((c) => c.includes('/actions/workflows/android.yml/dispatches
 check(by.clash?.state === 'blocked' && by.clash.reason.kind === 'conflict' && by.clash.reason.files.join() === 'shared.ts', 'clash: a code conflict blocks it, file named');
 check(calls.jobs.some((j) => j.input.build === 'clash' && j.type === 'land-build') && by.clash.agent, 'clash: one agent job for the code conflict');
 check(calls.api.some((c) => c.path === '/api/alerts' && c.body.key === 'land:clash' && /conflicts in code \(shared\.ts\)/.test(c.body.title)), 'clash: one push to Brett in plain words');
-const logsThreads = sh(['show', 'origin/claude/logs:_claude/THREADS.md'], repo);
-check(by.logs?.mergedMain && /logs thread/.test(logsThreads) && /main thread/.test(logsThreads), 'logs: main merged in, THREADS lines from both sides kept (union), pushed');
+const logsThreads = sh(['show', 'origin/claude/logs:_claude/memory/STATUS.md'], repo);
+check(by.logs?.mergedMain && /logs thread/.test(logsThreads) && /main thread/.test(logsThreads), 'logs: main merged in, STATUS lines from both sides kept (union), pushed');
 check(sh(['show', 'origin/claude/logs:shared.ts'], repo).includes('main'), 'logs: it now has main\'s code');
 check(by.later?.reason?.kind === 'dependency' && /waits for ok/.test(by.later.reason.text), 'later: waits for its dependency (before its red CI is even looked at)');
 check(by.held?.reason?.kind === 'held' && /Brett wants to look first/.test(by.held.reason.text) && !calls.gh.some((c) => c.includes('claude%2Fheld')), 'held: held by hand, nothing done to it');

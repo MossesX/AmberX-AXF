@@ -60,7 +60,7 @@ log. When a step says "copy it", paste it straight into its destination or into 
  GitHub (MossesX/AmberX-AXF, MossesX/axHub) ─────────┘ (deploy key / GitHub App, auto-deploy, Actions)
 ```
 
-- **GitHub** holds the code and is the memory between sessions (repo files, branches, PRs, `_claude/THREADS.md`).
+- **GitHub** holds the code and is the memory between sessions (repo files, branches, PRs, `_claude/sync/`).
 - **Hostinger** is the VPS and the DNS for `amberxai.com`.
 - **Coolify** runs on the VPS, builds each app from GitHub and runs it behind its Traefik proxy (HTTPS).
 - **axHub** is the connector hub. Claude talks to one MCP server, and axHub reaches GitHub, Hostinger, the VPS
@@ -429,63 +429,43 @@ the pending list check, one agent only and the threads file.
 
 ---
 
-## 10. The threads file
+## 10. The sync file (Session sync)
 
-`_claude/THREADS.md` is the log of every thread and build. **Why:** sessions on the phone, the VPS, the cloud and
-different Claude accounts share no chat history. The repo is the only memory they all have. If a session runs out
-of credits, gets cut off or is handed to another account, the next one picks up from this file instead of
-guessing.
+`_claude/sync/<project>.md` (+ `.json`, handoff@1) is what a session reads to jump in: who is on, what each one is
+doing, the claims, running and queued work, offers, PRs and what needs attention. **Why:** sessions on the phone, the
+VPS, the cloud and different Claude accounts share no chat history. The repo is the only memory they all have.
 
-**Every session reads it before doing anything,** then updates the row, commits and pushes:
-
-| When | State to set | Write in "Queued / next" |
-| --- | --- | --- |
-| A thread starts or a new build is asked for | `working` (new row) | what was asked, model |
-| It starts a step (build, edit, tests, push, pull, merge) | `working` | the step it's on |
-| A build completes | `working` → next state | build result |
-| Tests start | `testing` | which tests |
-| Tests pass / fail / stop part way | `working` / `failed` / `stopped` | counts, the failing test, where it stopped |
-| It needs to push, or a push or pull completes or fails | `working` / `failed` | branch, the error |
-| A PR is opened | `review` | PR number |
-| It needs a merge | `review` | "Merge PR #…" |
-| A merge completes or fails | `done` / `failed` | the error or the merge commit |
-| A deploy is needed | `deploy` | which app, how |
-| Something fails | `failed` | the error, what was tried |
-| It runs out of credits or hits a usage limit | `stopped` | "Out of credits at <step>", how to resume |
-| It needs Brett | `blocked` | the exact question |
-| It's queued for later | `queued` | what's waiting |
-| It's finished | move to **Done** | result |
-
-If a session can't push (no access, no network), it says so in its reply and puts the row in the change-log
-entry, so the next session can copy it in. The rule is also in `_claude/rules/RULES.md` ("Threads log in the
-repo").
+- `/sync <project>` in Claude Code (or the plugin's `sync.mjs sync`, the console's **Sync session** button, MCP
+  `session_sync_sync`, or "sync AmberX" by voice) writes it and publishes it to main as a status-only commit, then
+  joins the session link (first in = primary, owns the orchestrator; a joiner = secondary).
+- Every project's CLAUDE.md says: on start, if `_claude/sync/` exists, read it. A stale file (older than 30 min) is
+  refreshed first.
+- Live state (claims, offers, assigned work, the Sessions channel) is the session link on the console: Builds →
+  Sessions. Spec: `framework/spec/HANDOFF.md`; plugin: `apps/console-web/plugins/session-sync/README.md`. <!-- axf-plugin:session-sync -->
 
 ---
 
-## 11. Handing off sessions
+## 11. Working from a second account
 
-A handoff moves the work to another Claude account (a new subscription, a fresh account, another person) with
-everything it needs.
+Two Claude sessions (any accounts) work on the project side by side through Session sync; nothing is pasted.
 
-**From the console:**
+1. The second account needs the axHub connector once (claude.ai → connectors → `axHub`, as in Step 21) or the console
+   token in its Claude Code shell.
+2. In its session, run `/sync <project>` (Claude Code) or say "sync <project>" (claude.ai). It reads the sync file,
+   joins the session link as **secondary** and says hi in the Breakroom's Sessions channel. The first join from a new
+   account waits for your approval: a console click (Builds → Sessions → Approve account) or the axHub approval on
+   your phone.
+3. It asks for work (`Request work`, or `session-sync request-work`); the orchestrator offers whole queued builds or
+   steps split out of builds in progress. It accepts, rejects or holds them; you can also right-click any build or
+   step on the primary console → **Send to helper**.
+4. Claims keep the two apart: a session claims an area before editing it; the hook and the commit check refuse edits
+   outside its claims and name the holder.
+5. **End pairing** (Sessions panel, or `session-sync end`) releases its claims, gives its work back and posts a
+   closing line.
 
-1. Open the console → **Tools → Claude handoff** → **Assemble prompt**. The console rebuilds the kit in
-   `_claude/handoff/` (rules, instructions, memory, open threads, secret *names* only, set-up checklist) and
-   records the run on axHub.
-2. It opens the run's page on the hub, `https://axhub.amberxai.com/handoff/<id>`, which shows every step.
-3. Tap **Continue installation and handoff**. Pick the new account's session (likely ones first). It copies the
-   prompt or a ready command and opens it where it can.
-4. Paste it into the new account's Claude (a claude.ai/code session in `MossesX/AmberX-AXF`, or Claude Code on the
-   VPS signed in to that account) and tap **I've sent it**.
-5. The new account's Claude reports each of the 13 handoff steps back (with the one-run key in the prompt), and
-   they tick off on the page.
-6. Make the new account's subscription active in **AI keys** ([section 8](#8-several-claude-accounts)) if it
-   should also drive the VPS.
-
-**What carries over:** the repo (branches, open PRs, `THREADS.md`), `_claude/` (rules, decisions, memory), the
-Codebase changes log (each entry has a **Copy resume prompt**; `changes.mjs resume <id> --prompt`), the pending
-list and build queue on axHub. **What doesn't:** chat history, and secrets. The new account asks for each secret
-by name (`_claude/handoff/SECRETS.md`), and you enter it in its destination yourself.
+**What carries over:** the repo (branches, open PRs, `_claude/sync/`), `_claude/` (rules, decisions, memory), the
+Codebase changes log, the builds store on axHub. **What doesn't:** chat history, and secrets (set them in the new
+account's own environment).
 
 ---
 

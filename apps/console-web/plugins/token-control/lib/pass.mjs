@@ -74,28 +74,13 @@ export function loadPasses(now = Date.now()) {
   return moved ? writeStore(d) : d;
 }
 
-/* ------------------------------------------------------------------ log lines (audit + THREADS) */
+/* ------------------------------------------------------------------ log lines (audit) */
 
-/** THREADS.md where the console can write it: AXF_THREADS_FILE, the hub's copy, else the checkout's. '' = none. */
-export function threadsFile() {
-  if (process.env.AXF_THREADS_FILE !== undefined) return process.env.AXF_THREADS_FILE;
-  const hub = join(process.env.AXHUB_PROJECTS_DIR || '/projects', 'amberx-axf', '_claude', 'THREADS.md');
-  if (existsSync(hub)) return hub;
-  const local = join(ROOT, '_claude', 'THREADS.md');
-  return existsSync(local) ? local : '';
-}
-const THREADS_HEAD = '## Token passes (log)';
-
-/** One line in THREADS.md (under its Token passes section, added at the end once) and one audit row. */
+/** One audit row per pass moment (grant, request, approve, deny, revoke, lapse, end); the audit is the only log (Nov 4 2026). */
 export function logLine(p, text, extra = {}) {
   const line = `- ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC · pass \`${p.id}\` (${p.scope}) · ${text}`;
   audit({ by: extra.by || p.approvedBy || p.requestedBy || 'unknown', op: 'pass', target: 'pass.scopes', path: p.scope, action: extra.action ?? 'log', pass: p.id, text, ...(extra.change ? { change: extra.change } : {}) });
-  const f = threadsFile();
-  if (!f) return;
-  try {
-    const body = existsSync(f) ? readFileSync(f, 'utf8') : '';
-    appendFileSync(f, `${body.includes(THREADS_HEAD) ? '' : `${body.endsWith('\n') || !body ? '' : '\n'}\n${THREADS_HEAD}\n\nOne line per veto pass grant, change made under it, revoke, undo and end (Token control plugin).\n\n`}${line}\n`);
-  } catch { /* the log never blocks a change */ }
+  return line;
 }
 
 /* ------------------------------------------------------------------ signing (axHub reads passes, approves grants) */

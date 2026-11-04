@@ -23,17 +23,17 @@ check(componentOf(['axf-gizmo'])?.name === 'Gizmo', 'an app can register its own
 
 // --- owners
 const known = ownersFrom(
-  [{ folder: 'claude', name: 'Claude', model: 'sonnet' }, { folder: 'claude-handoff', name: 'Claude handoff', id: 'ai.amberx.axf.console.claude-handoff', model: 'opus', version: '0.2.0' }],
-  [{ id: 'ai.amberx.axf.settings', label: 'Settings' }, { id: 'ai.amberx.axf.console.claude-handoff', label: 'dup' }],
+  [{ folder: 'claude', name: 'Claude', model: 'sonnet' }, { folder: 'claude-notes', name: 'Claude notes', id: 'ai.amberx.axf.console.claude-notes', model: 'opus', version: '0.2.0' }],
+  [{ id: 'ai.amberx.axf.settings', label: 'Settings' }, { id: 'ai.amberx.axf.console.claude-notes', label: 'dup' }],
 );
 check(known.length === 3, 'a library already known as a plugin is not listed twice');
 check(known.some((k) => k.kind === 'library' && k.prefix === 'axf-settings'), 'a library is known by axf-<last id part>');
-let o = resolveOwner([['fx-btn'], ['axp-claude-handoff-files__row'], ['axp-claude']], known);
-check(o?.name === 'Claude handoff' && o.model === 'opus' && o.via.includes('ancestor'), `the nearest owner, longest prefix first: ${JSON.stringify(o)}`);
+let o = resolveOwner([['fx-btn'], ['axp-claude-notes-files__row'], ['axp-claude']], known);
+check(o?.name === 'Claude notes' && o.model === 'opus' && o.via.includes('ancestor'), `the nearest owner, longest prefix first: ${JSON.stringify(o)}`);
 o = resolveOwner([['axp-claude__x']], known);
 check(o?.name === 'Claude' && o.model === 'sonnet' && o.via === 'class .axp-claude__x', 'a plugin by its own class, with its model');
-o = resolveOwner([['fx-btn'], ['x']], known, [null, 'claude-handoff']);
-check(o?.id === 'ai.amberx.axf.console.claude-handoff' && o.via.includes('data-axf-plugin'), 'data-axf-plugin names a plugin');
+o = resolveOwner([['fx-btn'], ['x']], known, [null, 'claude-notes']);
+check(o?.id === 'ai.amberx.axf.console.claude-notes' && o.via.includes('data-axf-plugin'), 'data-axf-plugin names a plugin');
 check(resolveOwner([['fx-btn'], ['fx-card']], known) === null, 'framework classes alone = no plugin');
 check(resolveOwner([['axp-unknown']], known) === null, 'an unknown plugin prefix is no owner');
 check(ownerText(null) === 'the app (no plugin)', 'no owner says so');
@@ -50,23 +50,23 @@ check(contrastGrade(21) === 'AAA' && contrastGrade(5) === 'AA' && contrastGrade(
 
 // --- a snapshot
 const snap: ElementSnap = {
-  tag: 'button', id: '', classes: ['fx-btn', 'fx-btn--primary', 'axp-claude-handoff__go', 'is-on'],
+  tag: 'button', id: '', classes: ['fx-btn', 'fx-btn--primary', 'axp-claude-notes__go', 'is-on'],
   role: null, label: 'Assemble prompt', title: null, text: 'Assemble prompt',
   rect: { x: 10.4, y: 20.6, w: 120, h: 32 },
   attrs: { type: 'button', '--ashes-bg': 'rgb(255, 255, 255)' },
   style: { color: 'rgb(0, 0, 0)', 'background-color': 'rgba(0, 0, 0, 0)', 'font-size': '14px', 'font-weight': '600', 'font-family': '"Inter", sans-serif', display: 'inline-flex', margin: '0px', padding: '4px 8px' },
   inline: { width: '120px' }, tokens: { '--fx-accent': 'rgb(1, 2, 3)' },
   components: ['Button', 'Installer'], handlers: ['onClick'],
-  chain: [['fx-btn', 'axp-claude-handoff__go']], pluginAttrs: [null],
+  chain: [['fx-btn', 'axp-claude-notes__go']], pluginAttrs: [null],
   depth: 7, childCount: 1, path: ['body', 'div.fx-frame', 'button.fx-btn.fx-btn--primary:nth-of-type(2)'],
   asset: { type: 'button', id: 'soft', name: 'Soft', data: { radius: 8 } },
-  owner: resolveOwner([['fx-btn', 'axp-claude-handoff__go']], known),
+  owner: resolveOwner([['fx-btn', 'axp-claude-notes__go']], known),
   focusable: true, disabled: false, hidden: false,
 };
 const tip = tooltipRows(snap);
 const tv = (k: string) => tip.find((r) => r.key === k);
 check(tv('Component')?.value === 'Button · primary' && tv('Component')?.tone === 'accent', 'the tooltip names the component');
-check(tv('Belongs to')?.value === 'plugin Claude handoff · built with opus' && tv('Belongs to')?.tone === 'warning', 'the tooltip says which plugin it belongs to');
+check(tv('Belongs to')?.value === 'plugin Claude notes · built with opus' && tv('Belongs to')?.tone === 'warning', 'the tooltip says which plugin it belongs to');
 check(tv('Asset')?.value === 'button / soft', 'the tooltip names the active asset');
 check(tv('Size')?.value === '120 × 32 at 10, 21', 'size and position are rounded');
 check(tv('Contrast')?.value === '21:1 AAA', 'transparent background → the ancestor background is used for contrast');
@@ -100,7 +100,7 @@ check(pathStep('li', '', ['is-on', 'row', 'a', 'b'], 3, 5) === 'li.row.a:nth-of-
 // --- element tree
 const T: ElNode[] = [{ key: 1, label: 'div.app', children: [
   { key: 2, label: 'nav', comp: 'Nav menu', children: [{ key: 3, label: 'a home', children: [] }] },
-  { key: 4, label: 'section', owner: 'Claude handoff', ownerKind: 'plugin', children: [{ key: 5, label: 'button go', comp: 'Button', owner: 'Claude handoff', ownerKind: 'plugin', children: [] }] },
+  { key: 4, label: 'section', owner: 'Claude notes', ownerKind: 'plugin', children: [{ key: 5, label: 'button go', comp: 'Button', owner: 'Claude notes', ownerKind: 'plugin', children: [] }] },
 ] }];
 check(JSON.stringify(pathTo(T, 5)) === '[1,4]' && JSON.stringify(pathTo(T, 1)) === '[]' && pathTo(T, 99) === null, 'path to a node opens its ancestors');
 check(filterTree(T, '').length === 1 && filterTree(T, '')[0] === T[0], 'no filter = the tree');
@@ -111,7 +111,7 @@ check(p[0]!.children.length === 1 && p[0]!.children[0]!.key === 4, 'plugins only
 const fw = filterTree(T, '', 'framework');
 check(fw[0]!.children.map((n) => n.key).join() === '2,4' && fw[0]!.children[1]!.children[0]!.key === 5, 'framework components only');
 const st = treeStats(T);
-check(st.elements === 5 && st.components['Button'] === 1 && st.owners['Claude handoff'] === 2, 'stats');
+check(st.elements === 5 && st.components['Button'] === 1 && st.owners['Claude notes'] === 2, 'stats');
 
 // --- placement + taps
 check(JSON.stringify(tipPosition(10, 10, 100, 50, 800, 600)) === '{"x":26,"y":26}', 'tooltip next to the pointer');

@@ -357,7 +357,7 @@
       "all"
     ],
     "sharedFiles": [
-      "_claude/THREADS.md",
+      "_claude/sync/",
       "_claude/memory/STATUS.md",
       "_claude/memory/decisions.md",
       "_claude/builds/",

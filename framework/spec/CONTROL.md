@@ -268,8 +268,7 @@ for token set / reset, `all` for every other write, `null` for the pass target) 
   when included) with **Extend**, **Undo N**, **Revoke**; it turns to the warning tone with "ending soon" two minutes before the
   end. Waiting requests show as "<who> asks: everything without veto for 30 min" with **Approve** / **Deny**.
 - Every grant, request, approval, change (who, token, old → new; or the command for anything else), revoke, undo (with what it
-  couldn't roll back) and end is one audit row (`audit.jsonl`, with the pass id) and one line under `## Token passes (log)` in
-  THREADS.md (the hub's copy where mounted).
+  couldn't roll back) and end is one audit row (`audit.jsonl`, with the pass id).
 - Each pass keeps its changes (bounded to 400, the first touch of every token always kept so undo is exact).
 
 ### Recommended axHub policy for the console MCP

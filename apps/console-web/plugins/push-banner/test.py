@@ -684,11 +684,11 @@ class CmpGh:
 
 
 live = ["Builds live: x note (urgent) [skip ci]"] * 3
-check(mod.PUSHES._code_behind(CmpGh(3, live, ["_claude/builds/store.json", "_claude/THREADS.md"]), "MossesX/AmberX-AXF", "main", "abc123") == 0,
+check(mod.PUSHES._code_behind(CmpGh(3, live, ["_claude/builds/store.json", "_claude/memory/STATUS.md"]), "MossesX/AmberX-AXF", "main", "abc123") == 0,
       "behind only by status-only [skip ci] commits under _claude/ = up to date")
 check(mod.PUSHES._code_behind(CmpGh(3, live, ["_claude/builds/store.json", "framework/core/x.ts"]), "MossesX/AmberX-AXF", "main", "abc123") == 3,
       "a code file among them = behind")
-check(mod.PUSHES._code_behind(CmpGh(2, ["Fix it", live[0]], ["_claude/THREADS.md"]), "MossesX/AmberX-AXF", "main", "abc123") == 2,
+check(mod.PUSHES._code_behind(CmpGh(2, ["Fix it", live[0]], ["_claude/memory/STATUS.md"]), "MossesX/AmberX-AXF", "main", "abc123") == 2,
       "a commit without [skip ci] = behind")
 check(mod.PUSHES._code_behind(CmpGh(0, [], []), "MossesX/AmberX-AXF", "main", "abc123") == 0, "not behind = 0")
 

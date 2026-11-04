@@ -15,14 +15,14 @@
       {
         "target": "documentation",
         "title": "Documentation",
-        "text": "Shows the “Documentation” part of this screen. Part of Plugins menu.",
+        "text": "Shows the \u201cDocumentation\u201d part of this screen. Part of Plugins menu.",
         "kind": "tab",
         "draft": true
       },
       {
         "target": "about",
         "title": "About",
-        "text": "Shows the “About” part of this screen. Part of Plugins menu.",
+        "text": "Shows the \u201cAbout\u201d part of this screen. Part of Plugins menu.",
         "kind": "tab",
         "draft": true
       },
@@ -43,14 +43,14 @@
       {
         "target": "dialog",
         "title": "Dialog",
-        "text": "Shows the “Dialog” part of this screen. Part of Plugins menu.",
+        "text": "Shows the \u201cDialog\u201d part of this screen. Part of Plugins menu.",
         "kind": "tab",
         "draft": true
       },
       {
         "target": "window",
         "title": "Window",
-        "text": "Shows the “Window” part of this screen. Part of Plugins menu.",
+        "text": "Shows the \u201cWindow\u201d part of this screen. Part of Plugins menu.",
         "kind": "tab",
         "draft": true
       },
@@ -64,84 +64,84 @@
       {
         "target": "browse",
         "title": "Browse",
-        "text": "Shows the “Browse” part of this screen. Part of Plugins menu.",
+        "text": "Shows the \u201cBrowse\u201d part of this screen. Part of Plugins menu.",
         "kind": "tab",
         "draft": true
       },
       {
         "target": "archives",
         "title": "Archives",
-        "text": "Shows the “Archives” part of this screen. Part of Plugins menu.",
+        "text": "Shows the \u201cArchives\u201d part of this screen. Part of Plugins menu.",
         "kind": "tab",
         "draft": true
       },
       {
         "target": "version",
         "title": "Version",
-        "text": "Where you set “Version”. Change it and the app uses the new value. Part of Plugins menu.",
+        "text": "Where you set \u201cVersion\u201d. Change it and the app uses the new value. Part of Plugins menu.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "keep-the-old-builds-data",
         "title": "Keep the old build's data",
-        "text": "Turns “Keep the old build's data” on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
+        "text": "Turns \u201cKeep the old build's data\u201d on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
         "kind": "toggle",
         "draft": true
       },
       {
         "target": "location",
         "title": "Location",
-        "text": "Where you set “Location”. Change it and the app uses the new value. Part of Plugins menu.",
+        "text": "Where you set \u201cLocation\u201d. Change it and the app uses the new value. Part of Plugins menu.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "credentials",
         "title": "Credentials",
-        "text": "Where you set “Credentials”. Change it and the app uses the new value. Part of Plugins menu.",
+        "text": "Where you set \u201cCredentials\u201d. Change it and the app uses the new value. Part of Plugins menu.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "token",
         "title": "Token",
-        "text": "Where you set “Token”. Change it and the app uses the new value. Part of Plugins menu.",
+        "text": "Where you set \u201cToken\u201d. Change it and the app uses the new value. Part of Plugins menu.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "user",
         "title": "User",
-        "text": "Where you set “User”. Change it and the app uses the new value. Part of Plugins menu.",
+        "text": "Where you set \u201cUser\u201d. Change it and the app uses the new value. Part of Plugins menu.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "password",
         "title": "Password",
-        "text": "Where you set “Password”. Change it and the app uses the new value. Part of Plugins menu.",
+        "text": "Where you set \u201cPassword\u201d. Change it and the app uses the new value. Part of Plugins menu.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "header-name",
         "title": "Header name",
-        "text": "Where you set “Header name”. Change it and the app uses the new value. Part of Plugins menu.",
+        "text": "Where you set \u201cHeader name\u201d. Change it and the app uses the new value. Part of Plugins menu.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "header-value",
         "title": "Header value",
-        "text": "Where you set “Header value”. Change it and the app uses the new value. Part of Plugins menu.",
+        "text": "Where you set \u201cHeader value\u201d. Change it and the app uses the new value. Part of Plugins menu.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "use-this-archive",
         "title": "Use this archive",
-        "text": "Turns “Use this archive” on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
+        "text": "Turns \u201cUse this archive\u201d on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
         "kind": "toggle",
         "draft": true
       },
@@ -155,63 +155,63 @@
       {
         "target": "commit-installs-to-github",
         "title": "Commit installs to GitHub",
-        "text": "Turns “Commit installs to GitHub” on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
+        "text": "Turns \u201cCommit installs to GitHub\u201d on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
         "kind": "toggle",
         "draft": true
       },
       {
         "target": "keep-the-old-builds-data-when-replacing",
         "title": "Keep the old build's data when replacing",
-        "text": "Turns “Keep the old build's data when replacing” on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
+        "text": "Turns \u201cKeep the old build's data when replacing\u201d on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
         "kind": "toggle",
         "draft": true
       },
       {
         "target": "list-plugins-that-are-already-installed",
         "title": "List plugins that are already installed",
-        "text": "Turns “List plugins that are already installed” on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
+        "text": "Turns \u201cList plugins that are already installed\u201d on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
         "kind": "toggle",
         "draft": true
       },
       {
         "target": "list-other-apps-plugins-too",
         "title": "List other apps' plugins too",
-        "text": "Turns “List other apps' plugins too” on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
+        "text": "Turns \u201cList other apps' plugins too\u201d on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
         "kind": "toggle",
         "draft": true
       },
       {
         "target": "read-the-archives-when-the-installer-opens",
         "title": "Read the archives when the installer opens",
-        "text": "Turns “Read the archives when the installer opens” on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
+        "text": "Turns \u201cRead the archives when the installer opens\u201d on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
         "kind": "toggle",
         "draft": true
       },
       {
         "target": "type-the-folder-name-to-confirm",
         "title": "Type the folder name to confirm",
-        "text": "Turns “Type the folder name to confirm” on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
+        "text": "Turns \u201cType the folder name to confirm\u201d on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
         "kind": "toggle",
         "draft": true
       },
       {
         "target": "sort-by",
         "title": "Sort by",
-        "text": "Where you set “Sort by”. Change it and the app uses the new value. Part of Plugins menu.",
+        "text": "Where you set \u201cSort by\u201d. Change it and the app uses the new value. Part of Plugins menu.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "plugins-per-page",
         "title": "Plugins per page",
-        "text": "Where you set “Plugins per page”. Change it and the app uses the new value. Part of Plugins menu.",
+        "text": "Where you set \u201cPlugins per page\u201d. Change it and the app uses the new value. Part of Plugins menu.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "archive-shown-first",
         "title": "Archive shown first",
-        "text": "Where you set “Archive shown first”. Change it and the app uses the new value. Part of Plugins menu.",
+        "text": "Where you set \u201cArchive shown first\u201d. Change it and the app uses the new value. Part of Plugins menu.",
         "kind": "field",
         "draft": true
       },
@@ -232,7 +232,7 @@
       {
         "target": "plugins-menu",
         "title": "Plugins menu",
-        "text": "Shows the “Plugins menu” part of this screen. Part of Plugins menu.",
+        "text": "Shows the \u201cPlugins menu\u201d part of this screen. Part of Plugins menu.",
         "kind": "tab",
         "draft": true
       },
@@ -242,6 +242,12 @@
         "text": "Installs it. Part of AI assistant.",
         "kind": "menu-item",
         "draft": true
+      },
+      {
+        "target": "kind",
+        "title": "Kind",
+        "text": "Which kind of plugin archive to list or install (console, library, app).",
+        "kind": "field"
       }
     ],
     "intros": []

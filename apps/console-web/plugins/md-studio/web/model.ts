@@ -259,12 +259,6 @@ export const WIZARDS: Wizard[] = [
     render: (v) => `# ${v.name || 'Persona'} (how Claude talks to Brett)\n\nAlways. Every session, every surface.\n\n- Your name is **${v.name || '…'}**.\n- ${v.voice || 'Talk …'}\n${lines(v.limits).map((l) => `- Never ${l.replace(/^never\s+/i, '')}`).join('\n')}\n- Code, code comments, commit messages and docs stay clean and professional.\n`,
   },
   {
-    id: 'threads', label: 'Threads log', icon: 'list', purpose: 'Tracking', scopes: ['claude', 'repo'],
-    path: { claude: 'THREADS.md', repo: '_claude/THREADS.md' },
-    fields: [{ id: 'name', label: 'Project', placeholder: 'AmberX AXF' }],
-    render: (v) => `# Threads: ${v.name || 'project'}\n\nEvery thread, its state, branch, PR and queued items. Read it first; update it whenever a thread starts, changes, opens or merges a PR.\n\n| Thread | State | Branch | PR | Notes | Updated |\n| --- | --- | --- | --- | --- | --- |\n\n## To carry on\n`,
-  },
-  {
     id: 'skill', label: 'Skill', icon: 'sparkles', purpose: 'Skills', scopes: ['repo', 'claude'],
     path: { repo: '.claude/skills/{slug}/SKILL.md', claude: 'skills/{slug}/SKILL.md' },
     fields: [{ id: 'name', label: 'Skill name', placeholder: 'deploy-console' }, { id: 'description', label: 'When to use it', rows: 2 }, { id: 'steps', label: 'Steps (one a line)', rows: 5 }],

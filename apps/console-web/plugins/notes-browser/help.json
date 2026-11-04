@@ -102,6 +102,12 @@
         "target": "notes-browser",
         "title": "Notes settings",
         "text": "Where the notes are kept, and the plugin's install and uninstall panel."
+      },
+      {
+        "target": "notes",
+        "title": "Notes",
+        "text": "The Notes tab: every note the browser found, newest first.",
+        "kind": "tab"
       }
     ],
     "intros": [

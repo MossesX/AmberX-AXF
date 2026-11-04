@@ -46,7 +46,7 @@
         "default": "the next open step of the build in the orchestrator"
       }
     ],
-    "brief": "Build {{build}}: {{task}}.\n1. Read _claude/THREADS.md and the build's record (orchestrator.mjs next {{build}}); work only on its open steps.\n2. Branch claude/{{build}} from origin/main; small commits, clean messages.\n3. Run the build's checks and the conformance checks (check-theme, check-controls) for anything visible.\n4. Tick each finished step through the orchestrator (act step), push the branch, open the PR and link it (builds-live.mjs link).\nReport what changed, the checks, the PR, and what is left.",
+    "brief": "Build {{build}}: {{task}}.\n1. Read _claude/sync/<project>.md (if it exists) and the build's record (orchestrator.mjs next {{build}}); work only on its open steps.\n2. Branch claude/{{build}} from origin/main; small commits, clean messages.\n3. Run the build's checks and the conformance checks (check-theme, check-controls) for anything visible.\n4. Tick each finished step through the orchestrator (act step), push the branch, open the PR and link it (builds-live.mjs link).\nReport what changed, the checks, the PR, and what is left.",
     "outputs": {
       "report": "_claude/builds/reports/jobs/feature-build/{{stamp}}.md"
     }

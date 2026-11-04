@@ -35,7 +35,6 @@
       "AXF_CONSOLE_INTERNAL_URL"
     ],
     "mentions": [
-      "_claude/THREADS.md",
       "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md",
       "apps/console-web/server/main.py",

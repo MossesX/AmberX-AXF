@@ -32,7 +32,6 @@
       "AXF_REPO_ROOT"
     ],
     "mentions": [
-      "_claude/THREADS.md",
       "_claude/memory/STATUS.md",
       ".github/workflows/android.yml"
     ]

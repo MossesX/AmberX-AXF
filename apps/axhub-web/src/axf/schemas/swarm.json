@@ -250,7 +250,10 @@
       "discipline",
       "pay",
       "banter",
-      "brett"
+      "brett",
+      "session",
+      "handover",
+      "claim"
     ],
     "workKinds": [
       "assign",
@@ -261,7 +264,14 @@
       "status",
       "discipline",
       "pay",
-      "brett"
+      "brett",
+      "session",
+      "handover",
+      "claim"
+    ],
+    "channels": [
+      "",
+      "sessions"
     ],
     "boss": {
       "id": "boss",
@@ -347,7 +357,7 @@
       "all"
     ],
     "sharedFiles": [
-      "_claude/THREADS.md",
+      "_claude/sync/",
       "_claude/memory/STATUS.md",
       "_claude/memory/decisions.md",
       "_claude/builds/",

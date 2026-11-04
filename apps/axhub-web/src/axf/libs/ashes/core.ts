@@ -87,8 +87,8 @@ export interface Owner extends KnownOwner { via: string }
 /**
  * Who drew an element: the nearest ancestor (or itself) with a class `axp-<folder>…` (plugins) / `axf-<lib>…`
  * (libraries), `data-axf-plugin`, or a settings anchor of a module. `chain` = the element's classes then each
- * ancestor's, nearest first; `attrs` the same for data-axf-plugin. Longest matching prefix wins (`axp-claude-handoff-files`
- * → claude-handoff, not claude). Framework classes (fx-*) alone = the framework.
+ * ancestor's, nearest first; `attrs` the same for data-axf-plugin. Longest matching prefix wins (`axp-claude-notes-files`
+ * → claude-notes, not claude). Framework classes (fx-*) alone = the framework.
  */
 export function resolveOwner(chain: readonly (readonly string[])[], known: readonly KnownOwner[], attrs: readonly (string | null)[] = []): Owner | null {
   const byPrefix = [...known].sort((a, b) => b.prefix.length - a.prefix.length);

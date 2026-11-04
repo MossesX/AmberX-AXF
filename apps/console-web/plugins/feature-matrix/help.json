@@ -15,21 +15,21 @@
       {
         "target": "row-button-in-builds-grids",
         "title": "Row button in builds grids",
-        "text": "Where you set “Row button in builds grids”. Change it and the app uses the new value. Part of Feature matrix.",
+        "text": "Where you set \u201cRow button in builds grids\u201d. Change it and the app uses the new value. Part of Feature matrix.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "open-the-history-with-the-matrix",
         "title": "Open the history with the matrix",
-        "text": "Where you set “Open the history with the matrix”. Change it and the app uses the new value. Part of Feature matrix.",
+        "text": "Where you set \u201cOpen the history with the matrix\u201d. Change it and the app uses the new value. Part of Feature matrix.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "feature-matrix",
         "title": "Feature matrix",
-        "text": "Shows the “Feature matrix” part of this screen. Part of Feature matrix.",
+        "text": "Shows the \u201cFeature matrix\u201d part of this screen. Part of Feature matrix.",
         "kind": "tab",
         "draft": true
       },
@@ -43,14 +43,14 @@
       {
         "target": "needs-apply",
         "title": "Needs apply",
-        "text": "Shows the “Needs apply” part of this screen. Part of Feature matrix.",
+        "text": "Shows the \u201cNeeds apply\u201d part of this screen. Part of Feature matrix.",
         "kind": "tab",
         "draft": true
       },
       {
         "target": "applied",
         "title": "Applied",
-        "text": "Shows the “Applied” part of this screen. Part of Feature matrix.",
+        "text": "Shows the \u201cApplied\u201d part of this screen. Part of Feature matrix.",
         "kind": "tab",
         "draft": true
       },
@@ -64,30 +64,36 @@
       {
         "target": "title",
         "title": "Title",
-        "text": "Where you set “Title”. Change it and the app uses the new value. Part of Feature matrix.",
+        "text": "Where you set \u201cTitle\u201d. Change it and the app uses the new value. Part of Feature matrix.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "feature",
         "title": "Feature",
-        "text": "Where you set “Feature”. Change it and the app uses the new value. Part of Feature matrix.",
+        "text": "Where you set \u201cFeature\u201d. Change it and the app uses the new value. Part of Feature matrix.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "why",
         "title": "Why",
-        "text": "Where you set “Why”. Change it and the app uses the new value. Part of Feature matrix.",
+        "text": "Where you set \u201cWhy\u201d. Change it and the app uses the new value. Part of Feature matrix.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "minutes",
         "title": "Minutes",
-        "text": "Where you set “Minutes”. Change it and the app uses the new value. Part of Feature matrix.",
+        "text": "Where you set \u201cMinutes\u201d. Change it and the app uses the new value. Part of Feature matrix.",
         "kind": "field",
         "draft": true
+      },
+      {
+        "target": "add-item",
+        "title": "Add item",
+        "text": "Adds a row to the matrix with the title, feature, why and minutes you filled in.",
+        "kind": "button"
       }
     ],
     "intros": []

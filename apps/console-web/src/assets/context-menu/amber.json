@@ -45,12 +45,6 @@
           "action": "terminal.new"
         },
         {
-          "id": "handoff",
-          "label": "Account handoff",
-          "icon": "rocket",
-          "action": "claude-handoff.open"
-        },
-        {
           "id": "plugin-switches",
           "label": "Plugin switches",
           "icon": "sliders",

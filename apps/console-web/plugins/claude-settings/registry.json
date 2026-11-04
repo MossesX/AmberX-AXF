@@ -82,6 +82,6 @@
     { "key": "memory.sessionNotes", "group": "memory", "label": "Save session notes to Notes Vault", "kind": "toggle", "default": true, "level": "basic",
       "description": "Each session saves its notes to the Notes Vault on its own." },
     { "key": "memory.handoffNote", "group": "memory", "label": "Handoff note at end of session", "kind": "toggle", "default": true, "level": "basic",
-      "description": "Each session ends with a handoff note (what was done, what's left) in THREADS.md." }
+      "description": "Each session ends by refreshing the sync file (_claude/sync/<project>.md, Session sync) and posting a closing line in the Sessions channel." }
   ]
 }

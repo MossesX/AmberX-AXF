@@ -377,12 +377,12 @@ _items = [
     {"i": 1, "rel": "_claude/rules/RULES.md", "depth": 1, "parent": "CLAUDE.md", "parentI": 0, "reason": "import", "rules": []},
     {"i": 2, "rel": "_claude/shared/rules/RULES.md", "depth": 2, "parent": "_claude/rules/RULES.md", "rules": []},
     {"i": 3, "rel": "old.md", "depth": 1, "parent": "", "rules": []},
-    {"i": 4, "rel": "_claude/THREADS.md", "depth": 1, "parent": "CLAUDE.md", "parentI": 0, "reason": "session-start rule", "rules": []},
+    {"i": 4, "rel": "_claude/sync/amberx-axf.md", "depth": 1, "parent": "CLAUDE.md", "parentI": 0, "reason": "session-start rule", "rules": []},
     {"i": 5, "rel": "x.ts", "depth": 0, "parent": "", "parentI": -1, "reason": "read", "rules": []},
 ]
 _t = sessions.chain_tree(_items)
 check([n["rel"] for n in _t] == ["CLAUDE.md", "x.ts"], "tree roots: the session-start file and an unreferenced read")
-check([n["rel"] for n in _t[0]["children"]] == ["_claude/rules/RULES.md", "old.md", "_claude/THREADS.md"], "children in load order under the file that pulled them in")
+check([n["rel"] for n in _t[0]["children"]] == ["_claude/rules/RULES.md", "old.md", "_claude/sync/amberx-axf.md"], "children in load order under the file that pulled them in")
 check(_t[0]["children"][0]["children"][0]["rel"] == "_claude/shared/rules/RULES.md", "nested import two levels down")
 ac = S.attach_commands("axf-a", "vps")
 check(ac["mosh"] == "mosh root@vps.example -- tmux attach -t axf-a" and ac["ssh"] == "ssh -t root@vps.example tmux attach -t axf-a", "Moshi + ssh attach commands")

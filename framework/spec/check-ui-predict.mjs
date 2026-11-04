@@ -21,7 +21,7 @@ const BUILD = {
   steps: [
     { id: 's1', text: "s1 Setting: 'Wait for my look approval before UI builds start' (default off)" },
     { id: 's2', text: 's2 UI Review item: badge Predicted, Approve look / Ask changes / Reject buttons' },
-    { id: 's3', text: 's3 Tests, report, THREADS, PR' },
+    { id: 's3', text: 's3 Tests, report, sync, PR' },
     { id: 's4', text: 's4 Backfill predicted items for queued builds' },
   ],
 };
