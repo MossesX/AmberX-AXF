@@ -167,6 +167,7 @@ for (const c of f.parseTree) eq(parseTree(c.raw, (g) => ['a', 'b', 'c'].includes
   const plan = wm.tabForNav({ view: 'plan', label: 'Plan' })!;
   wm.dragNew(plan, 900, 300); wm.dragMove(950, 650); eq(wm.state.dockPreview ?? null, null, 'outside: no zone');
   ok(wm.dragEnd(), 'floats'); eq(wm.state.windows.length, 2, 'a floating window'); eq(wm.groupOf(plan.id) && wm.state.groups[wm.groupOf(plan.id)!]!.windowId !== 'main', true, 'in that window');
+  { const w = wm.state.windows.find((x) => x.id !== 'main')!; ok(w.x + w.width <= 1000 && w.y + w.height <= 700, 'the window is kept on screen'); }
   ok(wm.undoDrop(), 'undo'); eq(wm.state.windows.length, 1, 'the window closed');
   wm.setDockRules({ floatOut: false }); wm.dragNew(plan, 900, 300); wm.dragMove(950, 650); ok(!wm.dragEnd(), 'floatOut off: nothing opens'); wm.setDockRules({ floatOut: true });
   // a cancelled drag opens nothing; the host's own say (navTab) and the copy cap

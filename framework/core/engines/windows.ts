@@ -623,8 +623,14 @@ export class WindowManager {
     const tab = from.tabs.find((t) => t.id === tabId)!;
     this.checkpoint(from.windowId);
     this.closeTab(tabId);
-    const at = x !== undefined && y !== undefined ? { x: Math.max(0, Math.round(x - width / 2)), y: Math.max(0, Math.round(y - 16)) } : null;
+    const at = x !== undefined && y !== undefined ? this.floatAt(x, y, width, height) : null;
     return this.openFloating([tab], tab.title, 'floating', width, height, at?.x, at?.y);
+  }
+  /** Where a window popped out under the pointer goes: centred on it, the title under the finger, kept on screen. */
+  floatAt(x: number, y: number, width: number, height: number): { x: number; y: number } {
+    const vp = this.viewport;
+    const fx = Math.round(x - width / 2), fy = Math.round(y - 16);
+    return { x: Math.max(0, vp ? Math.min(fx, vp.width - width) : fx), y: Math.max(0, vp ? Math.min(fy, vp.height - height) : fy) };
   }
   /**
    * The drag ends: a dock drop zone wins, else the group under the point takes the tab (older hosts), else — let go
@@ -672,8 +678,9 @@ export class WindowManager {
       return changed;
     }
     if (!this.dockRules.floatOut) return false;
-    const width = 640, height = 480;
-    this.openFloating([tab], tab.title, 'floating', width, height, Math.max(0, Math.round(x - width / 2)), Math.max(0, Math.round(y - 16)));
+    const width = Math.min(640, this.viewport?.width ?? 640), height = Math.min(480, this.viewport?.height ?? 480);
+    const pos = this.floatAt(x, y, width, height);
+    this.openFloating([tab], tab.title, 'floating', width, height, pos.x, pos.y);
     this.lastDrop = { kind: 'fresh', tabId: tab.id };
     return true;
   }

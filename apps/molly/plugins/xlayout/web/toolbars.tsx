@@ -9,8 +9,8 @@
 import { useSyncExternalStore, type ReactNode } from 'react';
 import type { AxfRuntime } from '../../../src/axf/core';
 import { openTargetFor, splitNs, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, visibleToolbars, type ToolbarLocation, type XToolbarItem } from '../../../src/axf/core/engines/xlayout';
-import { Icon, useAxfState, useRuntime } from '../../../src/axf/react';
-import { MOLLY_APPS } from '../../../src/molly/apps';
+import { Icon, useAxfState, useDragToTab, useRuntime, type DragToTabSource } from '../../../src/axf/react';
+import { MOLLY_APPS, mollyApp } from '../../../src/molly/apps';
 import { appOfView } from '../../../src/molly/host';
 import type { ChromeHost } from './host';
 import { effectiveXLayout } from './model';
@@ -69,9 +69,11 @@ export function runToolbarItem(rt: AxfRuntime, host: ChromeHost, item: XToolbarI
 
 /* ---------- drawing ---------- */
 
-function Btn({ icon, label, badge, pressed, locked, onClick }: { icon: string; label: string; badge?: number; pressed?: boolean; locked?: boolean; onClick: () => void }) {
+function Btn({ icon, label, badge, pressed, locked, onClick, drag }: { icon: string; label: string; badge?: number; pressed?: boolean; locked?: boolean; onClick: () => void; drag?: DragToTabSource | null }) {
+  // drag-to-tab: an app launcher drags into a pane's strip, a pane's edge or out to a window (its next copy when open)
+  const dragProps = useDragToTab(locked ? null : drag ?? null);
   return (
-    <button type="button" className={`fx-toolbtn${pressed ? ' is-on' : ''}`} disabled={locked} aria-pressed={pressed === undefined ? undefined : pressed} title={label} aria-label={badge ? `${label} (${badge})` : label} onClick={onClick}>
+    <button type="button" className={`fx-toolbtn${pressed ? ' is-on' : ''}`} disabled={locked} aria-pressed={pressed === undefined ? undefined : pressed} title={label} aria-label={badge ? `${label} (${badge})` : label} onClick={onClick} {...dragProps}>
       <Icon name={locked ? 'lock' : icon} size={16} />
       {!!badge && <span className="fx-toolbtn__badge" aria-hidden="true">{badge > 99 ? '99+' : badge}</span>}
     </button>
@@ -97,7 +99,7 @@ export function ToolbarEdge({ host, location }: { host: ChromeHost; location: To
     if (!t.items.length && !guest.length) continue;
     out.push(
       <Bar key={`x${t.slot}`} location={location} label={t.label} ctx={`xlayout|*|${t.slot}`}>
-        {t.items.map((it) => <Btn key={it.id} icon={it.icon ?? 'box'} label={it.label} onClick={() => runToolbarItem(rt, host, it)} />)}
+        {t.items.map((it) => <Btn key={it.id} icon={it.icon ?? 'box'} label={it.label} onClick={() => runToolbarItem(rt, host, it)} drag={it.app ? { view: it.app, label: mollyApp(it.app)?.label ?? it.label, icon: it.icon } : null} />)}
         {guest.map((g) => (
           <span key={g.id} className="fx-toolbar__group" role="group" aria-label={g.label}>
             {g.items.map((it) => <Btn key={it.id} icon={it.icon} label={it.label} badge={it.badge} pressed={it.pressed} locked={it.locked} onClick={() => host.run(it.id)} />)}

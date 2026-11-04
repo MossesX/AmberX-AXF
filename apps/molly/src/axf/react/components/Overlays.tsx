@@ -187,6 +187,7 @@ export function ContextMenuHost() {
     const onCtx = (e: MouseEvent) => {
       // A touch long-press also fires the browser's own contextmenu: the long-press timer handles it, once.
       if (start) { e.preventDefault(); return; }
+      if (srcHold) { srcHold = false; e.preventDefault(); return; }
       const t = e.target as Element;
       // A banner (outside the shell, in a box that otherwise ignores the menu) is always a target: Banner settings.
       const banner = !!t.closest('[data-fx-ctx-target="axf-banner"], [data-fx-ctx-target="banner"]') && !t.closest('input, textarea, .fx-ctx');
@@ -200,7 +201,12 @@ export function ContextMenuHost() {
     // Long-press for touch devices
     let timer: ReturnType<typeof setTimeout> | undefined;
     let start: { x: number; y: number } | null = null;
+    let srcHold = false;
     const onDown = (e: PointerEvent) => {
+      // a drag-to-tab source runs its own hold (then drag, or its menu when let go in place: react/windows/dragToTab.ts),
+      // and the browser's contextmenu that hold fires is not this one's either
+      srcHold = e.pointerType === 'touch' && !!(e.target as Element | null)?.closest?.('[data-fx-tab-source]');
+      if (srcHold) return;
       if (e.pointerType !== 'touch' || (rt.slotHidden('context-menu') && !rt.hostTakes('context-menu'))) return;
       const t = e.target as Element;
       const banner = !!t.closest('[data-fx-ctx-target="axf-banner"], [data-fx-ctx-target="banner"]') && !t.closest('input, textarea, .fx-ctx');
