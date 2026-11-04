@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T17:53:24.538Z",
+ "updatedAt": "2026-11-04T17:53:36.822Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -11272,7 +11272,7 @@
   {
    "id": "model-thinking-audit",
    "title": "Model & thinking audit: recommended model + thinking level on every build, step and plan",
-   "category": "",
+   "category": "Builds > Model policy",
    "detail": "Go through everything that can be built (queued, pending, Plan Studio, and work built on Opus in the last two weeks) and put next to each item the model it should be on (Fable / Opus), the thinking level (low / medium / high / max) and why; built items get a verdict (keep / Fable review / redo on Fable) with a cost. Shown as chips and a check / triangle icon everywhere a build or step appears, with a right-click why-panel, Apply (owner-only) and Dismiss, an on/off switch (Settings > Builds) with per-screen override, filters (model, thinking, status, Needs a look, Fable candidates), the same fields on every API/MCP/CLI read, and thinking wired to the launcher's --effort. Recommendations only: no build changes model by itself. Report _claude/builds/reports/model-thinking-audit.md.",
    "status": "pending",
    "hidden": false,
@@ -11318,6 +11318,178 @@
      "id": "s1",
      "text": "model-advice@1 engine (framework/core/model-advice.mjs): thinking levels, per-step and per-build recommendation (model, thinking, why, kind), verdict for built work (keep / Fable review / redo on Fable) with cost, review status (ok / look / dismissed); fixture + check script",
      "model": "Fable",
+     "why": "a cross-port contract and the rule that judges foundation work: Fable",
+     "phase": "Contract",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "framework/core/model-policy.mjs",
+      "framework/plan/builds-store-core.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2f0ce90909ax"
+    },
+    {
+     "id": "s2",
+     "text": "builds@1: thinking, recommendedModel, recommendedThinking, modelWhy, verdict, reviewOk on every build and step; carried by the orchestrator, Pending and queue projections and every API/MCP/CLI read (planner.builds, pending_list, build_queue); validateStore; store tests",
+     "model": "Fable",
+     "why": "schema + migration of the one builds store",
+     "phase": "Contract",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "framework/plan/builds-store-core.mjs",
+      "framework/spec/check-builds-store.mjs",
+      "framework/core/engines/control-rules.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2f0ce90amrta"
+    },
+    {
+     "id": "s3",
+     "text": "Orchestrator actions: advise (engine writes recommendations), apply-advice / apply-advice-all and dismiss-advice (owner-only: Brett's console click or axHub), set-thinking; CLI + REST + control@1 acts",
+     "model": "Fable",
+     "why": "owner-only gate shares the model-switch approver contract",
+     "phase": "Contract",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+      "framework/core/model-switch.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2f0ce90beuxk"
+    },
+    {
+     "id": "s4",
+     "text": "Audit CLI framework/cli/model-advice.mjs: audit every build + step of every profile, Plan Studio plans and the agent-slots queue; curated overrides; writes the store and the report table (model, thinking, verdict, why; top 5 redo-on-Fable picks)",
+     "model": "Opus",
+     "why": "wiring and a report",
+     "phase": "Audit",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "framework/cli/model-advice.mjs",
+      "_claude/builds/reports/model-thinking-audit.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2f0ce90cpw8w"
+    },
+    {
+     "id": "s5",
+     "text": "Launcher: thinking → claude --effort (deploy/claude-headless.sh AXF_THINKING, build_start launchCommand, brief template line); recorded on the run",
+     "model": "Opus",
+     "why": "launcher wiring",
+     "phase": "Audit",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "deploy/claude-headless.sh",
+      "apps/console-web/plugins/build-manager/web/orchestrate.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2f0ce90d01et"
+    },
+    {
+     "id": "s6",
+     "text": "One shared component (framework/react ModelAdvice): model + thinking chips, green check / yellow triangle icon from tokens, right-click / long-press why-panel under the row with Apply / Dismiss; global switch Settings > Builds > Show model & thinking (claude-settings builds.showModelThinking) + per-screen override; filters (model, thinking, status, Needs a look, Fable candidates) and console actions for voice",
+     "model": "Opus",
+     "why": "plugin / screen work on the framework",
+     "phase": "Console",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "framework/react/components/ModelAdvice.tsx",
+      "apps/console-web/plugins/claude-settings/registry.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2f0ce90epnex"
+    },
+    {
+     "id": "s7",
+     "text": "Wire it into every screen that shows a build or a step: Build manager, Builds, Pending builds, Queue, Build orchestrator, Plan Studio, Crew / job rows, Home cards, Codebase changes (Requests ledger and Git board when they land)",
+     "model": "Opus",
+     "why": "screens",
+     "phase": "Console",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/build-manager/web/ui.tsx",
+      "apps/console-web/plugins/builds-page/web/ui.tsx",
+      "apps/console-web/src/views/Pending.tsx",
+      "apps/console-web/plugins/build-orchestrator/web/ui.tsx",
+      "apps/console-web/plugins/plan-studio/web/ui.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2f0ce90fmfj2"
+    },
+    {
+     "id": "s8",
+     "text": "Docs (builds README, BUILDS.md, STATUS, decisions, PORTING gap), THREADS row + carry-on, screenshots to UI Review, PR to the merge queue, coordinate with fable-review-nov3",
+     "model": "Opus",
+     "why": "landing",
+     "phase": "Console",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/README.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2f0ce90gsbo1"
+    },
+    {
+     "id": "s9-8",
+     "text": "model-advice@1 engine (framework/core/model-advice.mjs): thinking levels, per-step and per-build recommendation (model, thinking, why, kind), verdict for built work (keep / Fable review / redo on Fable) with cost, review status (ok / look / dismissed); fixture + check script",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -11333,7 +11505,7 @@
      "uid": "st-mw2f0cqv01n3yk"
     },
     {
-     "id": "s2",
+     "id": "s10-9",
      "text": "builds@1: thinking, recommendedModel, recommendedThinking, modelWhy, verdict, reviewOk on every build and step; carried by the orchestrator, Pending and queue projections and every API/MCP/CLI read (planner.builds, pending_list, build_queue); validateStore; store tests",
      "model": "Fable",
      "why": "",
@@ -11351,7 +11523,7 @@
      "uid": "st-mw2f0cqv02o8y4"
     },
     {
-     "id": "s3",
+     "id": "s11-10",
      "text": "Orchestrator actions: advise (engine writes recommendations), apply-advice / apply-advice-all and dismiss-advice (owner-only: Brett's console click or axHub), set-thinking; CLI + REST + control@1 acts",
      "model": "Fable",
      "why": "",
@@ -11369,7 +11541,7 @@
      "uid": "st-mw2f0cqv03buiv"
     },
     {
-     "id": "s4",
+     "id": "s12-11",
      "text": "Audit CLI framework/cli/model-advice.mjs: audit every build + step of every profile, Plan Studio plans and the agent-slots queue; curated overrides; writes the store and the report table (model, thinking, verdict, why; top 5 redo-on-Fable picks)",
      "model": "Opus",
      "why": "",
@@ -11387,7 +11559,7 @@
      "uid": "st-mw2f0cqv04ngnd"
     },
     {
-     "id": "s5",
+     "id": "s13-12",
      "text": "Launcher: thinking → claude --effort (deploy/claude-headless.sh AXF_THINKING, build_start launchCommand, brief template line); recorded on the run",
      "model": "Opus",
      "why": "",
@@ -11405,7 +11577,7 @@
      "uid": "st-mw2f0cqv055qxo"
     },
     {
-     "id": "s6",
+     "id": "s14-13",
      "text": "One shared component (framework/react ModelAdvice): model + thinking chips, green check / yellow triangle icon from tokens, right-click / long-press why-panel under the row with Apply / Dismiss; global switch Settings > Builds > Show model & thinking (claude-settings builds.showModelThinking) + per-screen override; filters (model, thinking, status, Needs a look, Fable candidates) and console actions for voice",
      "model": "Opus",
      "why": "",
@@ -11423,7 +11595,7 @@
      "uid": "st-mw2f0cqv060olm"
     },
     {
-     "id": "s7",
+     "id": "s15-14",
      "text": "Wire it into every screen that shows a build or a step: Build manager, Builds, Pending builds, Queue, Build orchestrator, Plan Studio, Crew / job rows, Home cards, Codebase changes (Requests ledger and Git board when they land)",
      "model": "Opus",
      "why": "",
@@ -11441,7 +11613,7 @@
      "uid": "st-mw2f0cqv07eskt"
     },
     {
-     "id": "s8",
+     "id": "s16-15",
      "text": "Docs (builds README, BUILDS.md, STATUS, decisions, PORTING gap), THREADS row + carry-on, screenshots to UI Review, PR to the merge queue, coordinate with fable-review-nov3",
      "model": "Opus",
      "why": "",

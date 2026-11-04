@@ -684,7 +684,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:11 UTC · `land-round-2` note (current) · foreign-write
 - 2026-11-04 14:11 UTC · `crew-profiles` s3 done (current) · orchestrator
 - 2026-11-04 14:11 UTC · `terminal-no-focus` note (current) · foreign-write
 - 2026-11-04 14:11 UTC · `urgent-land-lazy-loader` s3 done, note (current) · foreign-write
@@ -1084,6 +1083,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 17:53 UTC · `model-thinking-audit` added (8 steps) (current) · foreign-write
 - 2026-11-04 17:52 UTC · `land-merge-queue-first` → running (urgent) · orchestrator
 - 2026-11-04 17:52 UTC · `land-merge-queue-first` branch claude/merge-queue, PR #320 (urgent) · builds-live
+- 2026-11-04 17:53 UTC · `model-thinking-audit` added (8 steps) (current) · orchestrator
 
 ## Token passes (log)
 
