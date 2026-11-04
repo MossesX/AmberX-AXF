@@ -669,14 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:02 UTC · `builds-one-page` s11 done (refactor) · snap-sully
-- 2026-11-03 18:02 UTC · `builds-one-page` s15 done (refactor) · snap-sully
-- 2026-11-03 18:02 UTC · `builds-one-page` s16 done (refactor) · snap-sully
-- 2026-11-03 18:02 UTC · `builds-one-page` s7 done, s8 done, s9 done, s10 done, s11 done, s15 done, s30 done (refactor) · foreign-write
-- 2026-11-03 18:02 UTC · `builds-one-page-done` s3 done (urgent) · foreign-write
-- 2026-11-03 18:06 UTC · `land-everything` s10 done (urgent) · orchestrator
-- 2026-11-03 18:07 UTC · `land-everything` s11 done, → complete (urgent) · orchestrator
-- 2026-11-03 18:07 UTC · `builds-one-page` s7 done, s8 done, s9 done, s10 done, s11 done, s15 done, s30 done, s30 done (refactor) · foreign-write
 - 2026-11-03 18:07 UTC · `menu-scroll` s1 done, → running (urgent) · orchestrator
 - 2026-11-03 18:07 UTC · `menu-scroll` s2 done (urgent) · orchestrator
 - 2026-11-03 18:07 UTC · `menu-scroll` s3 done (urgent) · orchestrator
@@ -1069,6 +1061,14 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:32 UTC · `merge-queue` added (6 steps) (current) · orchestrator
 - 2026-11-04 14:32 UTC · `merge-queue` → running (current) · orchestrator
 - 2026-11-04 14:38 UTC · `profile-lists-home-card` PR #318 (current) · builds-live
+- 2026-11-04 14:38 UTC · `batch-manager` note (angel) · orchestrator
+- 2026-11-04 14:38 UTC · `grid-sort-filter` note (angel) · orchestrator
+- 2026-11-04 14:38 UTC · `grid-sort-filter` note (angel) · orchestrator
+- 2026-11-04 14:38 UTC · `grid-sort-filter` note (angel) · orchestrator
+- 2026-11-04 14:38 UTC · `plugin-cleanup` note (angel) · orchestrator
+- 2026-11-04 14:38 UTC · `transcription-engine` note (angel) · orchestrator
+- 2026-11-04 14:38 UTC · `toolbar-tap-confirm` → running, note (urgent) · orchestrator
+- 2026-11-04 14:38 UTC · `browser-automation` → running, note (current) · orchestrator
 
 ## Token passes (log)
 

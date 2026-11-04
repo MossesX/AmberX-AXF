@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 744,
- "updatedAt": "2026-11-04T14:38:08.600Z",
+ "rev": 745,
+ "updatedAt": "2026-11-04T14:38:28.038Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -39088,7 +39088,7 @@
    "branch": "claude/batch-manager",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-03T21:11:04.090Z",
+   "updatedAt": "2026-11-04T14:38:17.121Z",
    "builtAt": "",
    "notes": [
     {
@@ -39098,9 +39098,24 @@
     {
      "text": "Replaced by build git-status-board (current profile, branch claude/git-status-board, Nov 3 2026): batch grid + badges, PR sub-grid + Fix, dense phone rows, PR browser with plain-English lead, Merge/Hold, left click review, right-click menu all move there. Predicted shots: ui-review-predicted.",
      "at": "2026-11-03T21:11:04.090Z"
+    },
+    {
+     "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-04T14:38:17.121Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-04T14:38:17.121Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Grid of push batches with live badges, Merge/Hold on rows, expandable PR sub-grid, failing check + Fix. Dense: small type, small badges, no clutter. Left click opens review, right click menu. PR BROWSER (Brett, Oct 31): a tab listing every open PR across AmberX-AXF, axHub and Build-Pilot. One dense line per PR with everything: number, title, branch, built by (agent/session), live checks badge, behind main, mergeable/conflict, in which batch, age, cost. Expand a row: every check with its error lines, files changed, commits, description, linked build/plan, and actions: Fix, Merge (via batch), Add to batch, Close. Sort/search/filter like every grid; live updates. ROW LEAD (Brett): every row starts with the PR number + a plain-English line of what it does (e.g. '#187 Audio Extract: pulls audio out of screen recordings, no mic'), written from the actual diff not just the title; badges follow on the same line. SCREENSHOTS (Brett): every PR gets BEFORE (main) and AFTER (PR branch) screenshots of the screens it touches, captured automatically by CI/headless browser (web) and emulator (Android); small before/after thumbnails on the row, side-by-side or slider compare in the expanded view, stored with the PR. SCREENSHOT CORRECTION (Brett): do NOT build a new capture system - REUSE the existing pre-build and post-build screenshots the framework already takes (find them first). BEFORE = the existing pre-build screenshot. AFTER: if the PR/build is not done yet, show a PREDICTED screenshot (rendered mockup of the expected result from the build spec + diff so far, clearly badged 'Predicted'); as soon as the build finishes, the real post-build screenshot replaces it automatically (badge 'Real'), live, no refresh. FEATURE SHOTS (Brett): the existing pre/post-build screenshots are NOT enough - they must show the ACTUAL FEATURE the PR built. Per PR, build a feature map from the diff (changed plugins, components, routes, menus, dialogs -> the screens and states that show them). Drive the existing capture tooling to navigate to each one, open it (expand the row, open the dialog/menu, switch the tab, put it in the right state with demo data), and shoot it: BEFORE on main, AFTER on the PR branch. Each shot cropped to the feature plus a full-screen version, web + Android. Brand-new UI has no before: show a 'New' card. Every feature shot shows Predicted (mockup from spec + diff) until the build is done, then the real shot replaces it live. Captions say which feature each shot is. Missed features (no shot) flagged on the row.",
@@ -39300,7 +39315,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -40243,10 +40258,54 @@
    "branch": "claude/grid-sort-filter",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "updatedAt": "2026-11-04T14:38:20.523Z",
    "builtAt": "",
-   "notes": [],
-   "approvals": [],
+   "notes": [
+    {
+     "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-04T14:38:18.079Z"
+    },
+    {
+     "text": "Model switch: phase 4 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-04T14:38:19.305Z"
+    },
+    {
+     "text": "Model switch: phase 6 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-04T14:38:20.523Z"
+    }
+   ],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-04T14:38:18.079Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    },
+    {
+     "phase": 3,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-04T14:38:19.305Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    },
+    {
+     "phase": 5,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-04T14:38:20.523Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Every grid that lists builds, tasks, asks or anything else is sortable, searchable and filterable, taking little screen. Basic filter attached by default. Tap header sorts, tap again reverses, long-press adds a second sort. One thin row: small search box + filter icon; on phones just a search icon. Filters hidden until used, then small clearable chips. Custom tables move onto the framework grid. Android parity. Per grid: right-click a grid or its header -> Filter -> off/on for this grid; 'All grids...' lists every grid in the app with the right-clicked one scrolled into view and highlighted, a switch per grid; a default switch decides whether new grids get the filter (on). Defaults are decided per grid by the build: on for data grids with many rows or columns (builds, asks, changes, plugins, PRs), off for small lists (settings, keys, short pickers); record the choice and reason per grid. On grids where it is off, hovering the header for a moment shows a tooltip 'Add the filter to this grid?' with Enable (long-press on phones). Framework grid (part of the app, not the filter plugin): every grid that has no date/time column gets an automatic 'Date and time' column (row created / last changed), hidden by default; grids that already show a date/time get nothing. Right-click the header -> Show/Hide 'Date and time'. Web + Android. UPDATE (Brett): build BOTH into the framework grid. Sort/search/filter live in the framework (not the Basic filter plugin); smart per-grid defaults, right-click on/off, All grids list and hover offer all framework features. Date and time column is ensured at first render: if a grid renders without one, the framework adds the hidden column then. New grids get everything automatically. CI check flags any table not built on the framework grid.",
@@ -40534,7 +40593,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -40591,10 +40650,26 @@
    "branch": "claude/plugin-cleanup",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "updatedAt": "2026-11-04T14:38:21.427Z",
    "builtAt": "",
-   "notes": [],
-   "approvals": [],
+   "notes": [
+    {
+     "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-04T14:38:21.427Z"
+    }
+   ],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-04T14:38:21.427Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "First a merge map so no feature is lost, then: Build Breaker + Changes & features grid + Codebase changes banner -> one; Plugin switches + Plugin Update + Plugins menu -> Plugin Manager; Main build status -> Activity banner; retire Design packs after UI Review (#184); console Todo manager on the shared AmberX notes store; Voice notes vs Dictation; AmberX Voice control vs Voice command center. Uninstall scripts for removed plugins. Also retire the Basic filter plugin once grid-sort-filter moves filtering into the framework (migrate its saved filters).",
@@ -40750,7 +40825,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -41189,10 +41264,26 @@
    "branch": "claude/transcription-engine",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "updatedAt": "2026-11-04T14:38:22.335Z",
    "builtAt": "",
-   "notes": [],
-   "approvals": [],
+   "notes": [
+    {
+     "text": "Model switch: phase 3 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-04T14:38:22.335Z"
+    }
+   ],
+   "approvals": [
+    {
+     "phase": 2,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-04T14:38:22.335Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "his own transcription engine, no paid API. ON DEMAND ONLY: nothing is transcribed automatically; a Transcribe button on any recording. DEFAULT: Whisper runs on the phone (whisper.cpp / on-device model in AmberX). SWITCH: send it to the self-hosted Whisper on axHub instead (own container, low priority, CPU cap) for bigger models or when not using the phone. Timestamps per line, tap a line to jump the audio, search all transcripts, export text/SRT, send to AmberX notes. Transcripts saved on axHub with the recording.",
@@ -41326,7 +41417,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -55451,7 +55542,7 @@
    "title": "Toolbars plugin: tap-to-confirm on touch, per-toolbar settings + editor, drag-and-drop hooks",
    "category": "Toolbars",
    "detail": "Brett, Nov 3 2026 (voice) + Addendum 1. Every existing and future toolbar: first tap on touch shows the tip and arms the button for 3 s (configurable), second tap within the window runs it; mouse/pen stays single click with hover tooltip; decided per interaction. All of it is one Toolbars plugin (plugin@1) owning every toolbar: global settings, per-toolbar settings (synced), context-menu hooks (Toolbar settings / Edit toolbar / All toolbars), Toolbar editor (save as asset), drag-and-drop hooks anywhere via hook@1 + drop-target@1 contracts with per-target configure dialogs, move/copy, undo. Banners: only the generic drop target, no banner-pack/banner-editor/banners-one changes. Agent: Landin' Lenny. Note: no Terminal 'Tooltip mode' exists on main or any branch (headless-tabs #259 has 7 steps, no s8), so it is built fresh in the framework.",
-   "status": "complete",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -55459,8 +55550,8 @@
    "pr": "#272",
    "mergedAt": "2026-11-04T04:11:27Z",
    "createdAt": "2026-11-03T18:23:45.044Z",
-   "updatedAt": "2026-11-04T12:44:12.117Z",
-   "builtAt": "2026-11-04T12:44:12.117Z",
+   "updatedAt": "2026-11-04T14:38:23.212Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Agent: Landin' Lenny (headless, Opus). Phase 1 (s1-s12) Opus; s13-s14 contracts pinned Fable need Brett's upgrade approval.",
@@ -55481,9 +55572,24 @@
     {
      "text": "Reconciler: PR #272 merged: complete",
      "at": "2026-11-04T12:44:12.117Z"
+    },
+    {
+     "text": "Model switch: phase 2 (Contracts) Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-04T14:38:23.212Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-04T14:38:23.212Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "every EXISTING and FUTURE toolbar uses the Terminal's Tooltip mode (first tap shows what the button does and arms it lit for 3 s, second tap within 3 s runs it, duration configurable; built in headless-tabs PR #259, s8). The double tap is ONLY on phones / touch. On a computer it stays a normal single click (hover tooltip as usual) - 'it really works on a computer.' Assigned agent: **Landin' Lenny** (book on his card; AXF_AGENT=landin-lenny if supported). Register in Urgent (id `toolbar-tap-confirm`) + banner entry.",
@@ -55977,7 +56083,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -69483,14 +69589,14 @@
    "title": "Automated Browser plugin (drive, record, edit, schedule)",
    "category": "Console > Plugins",
    "detail": "Brett, Nov 3 2026 (voice), verbatim: \"Make me a plugin that shows a browser that can be driven by the app, give it the ability to be automated and to record automation routines through the browser, like make it record in real time what you do and save the events, so you can redo everything that you just recorded, and have a powerful editor to see what each step is doing. Make it so that you can create workflows through the automated browser and record the steps, or do them automatically and record as you go, or record manually, and full powerful editing, able to tweak the JavaScript and whatever you gotta do to make it follow a routine, like go to a site and log in, or go to a site and go to a products page and grab something, and then have a scheduler built into it that you can schedule when to perform these routines.\" Addendum: \"Be able to manually record, or tell you to do it, so it needs to be integrated with the assistant or with its own access to the assistant.\" Browser runs on the VPS (Playwright + headless Chromium), live view over CDP screencast; REST + MCP + CLI; secrets by vault reference only. Booked to Snap Sully (no Polo card).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/browser-automation",
    "pr": "#299",
    "createdAt": "2026-11-04T00:31:47.837Z",
-   "updatedAt": "2026-11-04T12:44:12.117Z",
+   "updatedAt": "2026-11-04T14:38:24.255Z",
    "builtAt": "",
    "notes": [
     {
@@ -69504,9 +69610,24 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-04T12:44:12.117Z"
+    },
+    {
+     "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-04T14:38:24.255Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-04T14:38:24.255Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    }
+   ],
    "upgradeRequests": [],
    "steps": [
     {
@@ -69870,7 +69991,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
