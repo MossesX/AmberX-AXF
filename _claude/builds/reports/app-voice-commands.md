@@ -44,4 +44,4 @@ Every app now says in its project manifest whether it is for the framework's own
 - **The console's asset is 400 KB** (899 commands) and ships in the console bundle like every `src/assets` file. If that weighs on phones, the next step is loading voice-command assets lazily (they are never slots).
 - **Android apps and the demo** are noted `forFramework: false`; the rule warns an app manifest without the field, errors on a non-boolean.
 - **Commands that only have a CLI line** (no MCP tool, console route or action) match but cannot run from the console; the answer says to declare one in `axf.commands.json`.
-- **UI Review:** Molly's Say a command dialog is item r-20261104-1b7bca5f (group `app-voice-commands - Nov 4 10:54 AM`, waiting for Brett); the console Voice commands page follows in the same group.
+- **UI Review:** Molly's Say a command dialog is item r-20261104-1b7bca5f (group `app-voice-commands - Nov 4 10:54 AM`, waiting for Brett); the console Voice commands page is item r-20261104-a4e5d893 (same group).
