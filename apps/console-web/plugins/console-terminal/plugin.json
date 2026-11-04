@@ -1,6 +1,7 @@
 {
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.terminal",
+  "lazy": { "core": "open" },
   "name": "Terminal",
   "version": "0.5.0",
   "kind": "module",

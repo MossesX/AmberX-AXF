@@ -318,3 +318,14 @@ select.fx-input.axp-plugin-manager-studio__filtersel { display: none; width: aut
 :where([data-fx-small]) .axp-plugin-manager--studio .axp-plugin-manager-card__actions { margin-top: 0; flex: none }
 :where([data-fx-small]) .axp-plugin-manager--studio .axp-plugin-manager-card__actions .axp-plugin-manager-iconbtns { gap: 0 }
 :where([data-fx-small]) .axp-plugin-manager--studio .axp-plugin-manager-card__cover { align-self: flex-start }
+
+/* ---------- lazy loader settings (LazyLoader.tsx) ---------- */
+.axp-plugin-manager-lazy__lead, .axp-plugin-manager-lazy__hint { margin: 0 }
+.axp-plugin-manager-lazy__stats { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm) }
+.axp-plugin-manager-lazy__order { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.axp-plugin-manager-lazy__item { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-height: var(--fx-row-h); padding: 0 var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface); cursor: grab }
+.axp-plugin-manager-lazy__item.is-dragging { opacity: var(--fx-opacity-muted) }
+.axp-plugin-manager-lazy__item .axp-plugin-manager-iconbtns { margin-left: auto }
+.axp-plugin-manager-lazy__name { margin-right: var(--fx-dens-gap-sm); font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-plugin-manager-lazy__table td { vertical-align: middle; white-space: nowrap }
+.axp-plugin-manager-lazy__num { font-variant-numeric: tabular-nums; text-align: right }
