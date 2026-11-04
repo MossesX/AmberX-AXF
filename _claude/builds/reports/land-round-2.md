@@ -46,7 +46,10 @@ Not touched as asked: #299, #301, #302 (WIP).
   fresh push.
 - **The shared GitHub token runs out of its 5000/hour budget in ~25 minutes**, three times today (resets at 11:04,
   12:04, 13:05; empty again at 12:27 and 13:37). Something on the VPS polls GitHub hard (candidates: the push banner's
-  auto-merge rounds, auto-land every 3 min, the reconciler, What's new). While it is empty no CI result can be read
+  auto-merge rounds, auto-land every 3 min, the reconciler, What's new). **Measured after the 14:05 reset** (remaining sampled every 15 s): flat at a few calls a minute, then bursts of
+  ~830 calls right after 14:06 and ~430 right after 14:09, the minutes auto-land's cron (`*/3`) fires. So `land/land.mjs`
+  is the burner: hundreds of calls per run, 20 runs an hour. Fix in land.mjs (cache PR/check reads, conditional
+  requests, or run it less often), not in the sessions. While it is empty no CI result can be read
   and nothing can merge. This needs a fix (the GitHub App's own budget, or slower pollers) before the next landing run.
 - **Auto-land works the same branches**: it merged main into #295 and #298 while this session did; harmless, but the
   two raced.
