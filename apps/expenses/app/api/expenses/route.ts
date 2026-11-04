@@ -44,10 +44,25 @@ export async function POST(request: Request): Promise<Response> {
   } catch {
     return Response.json({ error: "body is not JSON" }, { status: 400 });
   }
-  const expenses = (body as { expenses?: unknown }).expenses;
+  const { expenses, known, replace } = body as { expenses?: unknown; known?: unknown; replace?: unknown };
   if (!Array.isArray(expenses)) {
     return Response.json({ error: "body.expenses must be an array" }, { status: 400 });
   }
-  await axfKv.write(kvUser(request), NS, { expenses });
+  const user = kvUser(request);
+  // Merge by entry id (build app-voice-commands): a tab sends the ids it has seen (`known`), and every entry the
+  // server holds that the tab never saw (added by the ledger API, the CLI, MCP or a voice command since the tab last
+  // synced) is kept, not overwritten. Ids the tab knew and dropped are deletes. `replace: true` (Load a snapshot)
+  // and a body without `known` (older clients) replace the whole list as before.
+  if (Array.isArray(known) && replace !== true) {
+    const seen = new Set(known.filter((k): k is string => typeof k === "string"));
+    const posted = new Set(expenses.map((e) => (e as { id?: unknown })?.id).filter((v): v is string => typeof v === "string"));
+    const current = await axfKv.read(user, NS);
+    const held = Array.isArray((current as { expenses?: unknown } | null)?.expenses) ? ((current as { expenses: unknown[] }).expenses) : [];
+    const added = held.filter((e) => { const id = (e as { id?: unknown })?.id; return typeof id === "string" && !seen.has(id) && !posted.has(id); });
+    const merged = [...expenses, ...added];
+    await axfKv.write(user, NS, { expenses: merged });
+    return Response.json({ ok: true, added: added.length, expenses: added.length ? merged : undefined });
+  }
+  await axfKv.write(user, NS, { expenses });
   return Response.json({ ok: true });
 }

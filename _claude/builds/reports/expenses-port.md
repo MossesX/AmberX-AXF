@@ -70,7 +70,7 @@ Without the script, the same thing by hand: `docker rm -f amberx-expenses && rm 
 ## Tests
 
 - `npx tsc --noEmit` in apps/expenses: clean.
-- `npx tsx scripts/expenses-api.test.mts`: 17 checks. They cover auth, add, edit, filters, totals, accounts, CSV, that the app's kv document shape is kept, and the daily backup.
+- `npx tsx scripts/expenses-api.test.mts`: 17 checks. `npx tsx scripts/expenses-grid.test.mts`: 7 checks (grid save merges by id). They cover auth, add, edit, filters, totals, accounts, CSV, that the app's kv document shape is kept, and the daily backup.
 - `python3 apps/console-web/server/test_mcp_tools.py`: 202 checks, 65 tools.
 - `project.mjs validate --all`, `check-theme`, `check-conform`, `check-controls`, `check-toolbars`, `check-xlayout`, `help-coverage --check` and `check-plugin-pages` all pass.
   - `plugins.mjs --check`, `tracker.mjs --check` and `shared-assets.mjs check` fail the same way on main without this branch, so this build didn't cause them.
@@ -82,7 +82,7 @@ Without the script, the same thing by hand: `docker rm -f amberx-expenses && rm 
   - its 923 theme findings are held to a shrink-only baseline in `framework/spec/conform-baseline.json` (`check-theme.mjs` FROZEN entry), so CI stays green and the count can only go down;
   - the manifest says `framework.relation: "for"`, not `built-on`;
   - it is not in `shared-assets.json`, has no baked `src/axf` and no AXF help or banner.
-- **Last save wins between the grid and the API.** The app's grid saves the whole ledger. An entry added through the API while the app is open in a browser can be overwritten by that tab's next save. The daily `expenses.api-backup-YYYYMMDD.json` beside the ledger is the safety net. A fix would make the app's save merge by id.
+- **Last save wins between the grid and the API: fixed (Nov 4 2026, build app-voice-commands).** The grid's save now merges by entry id: the tab sends the ids it has seen (`known`), the route keeps every entry it never saw (added by the API, CLI, MCP or a voice command) and answers with them so the tab takes them in; an id the tab knew and dropped is a delete; `replace: true` (Load a snapshot) and bodies without `known` replace the list as before. `npx tsx scripts/expenses-grid.test.mts` (7 checks). The daily `expenses.api-backup-YYYYMMDD.json` stays as the safety net.
 - **The old deploy paths still exist.**
   - `~/hub/deploy/expense.sh` (on a push to MossesX/Expense) and studioX's deploy both run `docker compose up --build` for the same container name. Either would now fail on the name clash and leave the AXF container running.
   - Nobody pushes to MossesX/Expense any more. Archive it only when Brett says so.

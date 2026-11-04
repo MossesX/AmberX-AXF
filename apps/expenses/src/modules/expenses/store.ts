@@ -67,30 +67,52 @@ class ExpenseStore {
         const res = await fetch("/api/expenses");
         const data = await res.json();
         if (!res.ok) throw new Error(data.error ?? `load failed (${res.status})`);
-        this.#set({ list: (data.expenses ?? []) as Expense[], ready: true });
+        const list = (data.expenses ?? []) as Expense[];
+        for (const e of list) this.#known.add(e.id);
+        this.#set({ list, ready: true });
       } catch (e) {
         this.#set({ error: e instanceof Error ? e.message : String(e), ready: true });
       }
     })();
   }
 
-  #persist(next: readonly Expense[]): void {
+  /**
+   * Every entry id this tab has seen from the server or saved itself. Sent with each save as `known`, so the route
+   * keeps entries added elsewhere (the ledger API, CLI, MCP, a voice command) instead of letting this tab's whole-list
+   * save overwrite them; an id we knew and no longer send is a delete.
+   */
+  #known = new Set<string>();
+
+  #persist(next: readonly Expense[], replace = false): void {
     if (this.#saveTimer) clearTimeout(this.#saveTimer);
     this.#saveTimer = setTimeout(() => {
+      const known = [...this.#known];
+      for (const e of next) this.#known.add(e.id);
       void fetch("/api/expenses", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ expenses: next })
-      }).catch(() => {
-        /* offline/failed mirror — the in-memory list is still the session's
-           truth, and the next successful commit writes the whole list */
-      });
+        body: JSON.stringify(replace ? { expenses: next, replace: true } : { expenses: next, known })
+      })
+        .then(async (res) => {
+          if (!res.ok) return;
+          const data = (await res.json()) as { added?: number; expenses?: Expense[] };
+          if (!data.added || !Array.isArray(data.expenses)) return;
+          // Entries that arrived through the API while this tab was open: take them in, once.
+          const have = new Set(this.#state.list.map((e) => e.id));
+          const fresh = data.expenses.filter((e) => !have.has(e.id) && !this.#known.has(e.id));
+          for (const e of data.expenses) this.#known.add(e.id);
+          if (fresh.length) this.#set({ list: [...this.#state.list, ...fresh] });
+        })
+        .catch(() => {
+          /* offline/failed mirror — the in-memory list is still the session's
+             truth, and the next successful commit writes the whole list */
+        });
     }, 400);
   }
 
-  commit(next: readonly Expense[]): void {
+  commit(next: readonly Expense[], replace = false): void {
     this.#set({ list: next });
-    this.#persist(next);
+    this.#persist(next, replace);
   }
 
   add(e: Expense): Expense {
@@ -139,7 +161,7 @@ class ExpenseStore {
    * and impossible to undo from the UI.
    */
   replaceAll(list: readonly Expense[]): void {
-    this.commit([...list]);
+    this.commit([...list], true);
   }
 
   /** Append expenses (an import), skipping ids already present. */
