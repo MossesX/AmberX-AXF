@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 720,
- "updatedAt": "2026-11-04T14:17:31.713Z",
+ "rev": 721,
+ "updatedAt": "2026-11-04T14:18:01.051Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -69904,14 +69904,14 @@
    "title": "Profile switcher widget (filter builds by profile, All profiles, attach to any toolbar or banner)",
    "category": "Builds",
    "detail": "What Brett said (verbatim, Nov 3 2026, voice): \"I need a plugin that makes a widget that can be attached to a toolbar or a banner or whatever, that lets you select their build package. Also, select something that combines all build profiles.\" Addendum 1: \"So basically it's like a filter. They're all shown everywhere, but only one of them is rendered. Basically make it a filter. Always just show everything in every build profile, but it just effectively filters to hide them.\" Addendum 2: \"That said, it's gonna act upon what's visible.\" Profiles are a view filter (multi-select, All = no filter) shared by every builds table; bulk actions act only on what is visible; the active profile stays the target for new builds. Assigned agent: Ping Paulie (no Polo card).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "voice",
    "pendingId": "",
    "branch": "claude/profile-switcher-widget",
    "pr": "#300",
    "createdAt": "2026-11-04T00:40:48.340Z",
-   "updatedAt": "2026-11-04T12:44:12.117Z",
+   "updatedAt": "2026-11-04T14:17:33.299Z",
    "builtAt": "",
    "notes": [
     {
@@ -69925,6 +69925,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-04T12:44:12.117Z"
+    },
+    {
+     "text": "Carried on as profile-lists-home-card (same work plus the Build profiles Home card); its PR replaces #300.",
+     "at": "2026-11-04T14:17:33.299Z"
     }
    ],
    "approvals": [],
@@ -70093,7 +70097,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -73797,9 +73801,14 @@
    "branch": "claude/profile-lists-home-card",
    "pr": "",
    "createdAt": "2026-11-04T14:16:24.131Z",
-   "updatedAt": "2026-11-04T14:16:25.527Z",
+   "updatedAt": "2026-11-04T14:17:30.979Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Assigned: Ping Paulie (no Polo card in the agent roster). Brett's Addendum 1: keep profiles as filters. Folds in profile-switcher-widget (PR #300), which this build's PR replaces.",
+     "at": "2026-11-04T14:17:30.979Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -73912,7 +73921,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
