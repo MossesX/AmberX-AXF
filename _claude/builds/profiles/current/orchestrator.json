@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T22:00:48.970Z",
+ "updatedAt": "2026-11-04T22:03:24.839Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -13073,7 +13073,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2nsa4d06abua"
+     "uid": "st-mw2ny6h301hcip"
     },
     {
      "id": "s2",
@@ -13091,7 +13091,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2nsa4d07n7wc"
+     "uid": "st-mw2ny6h30276kl"
     },
     {
      "id": "s3",
@@ -13109,7 +13109,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2nsa4d08dnuu"
+     "uid": "st-mw2ny6h303lrwg"
     },
     {
      "id": "s4",
@@ -13127,10 +13127,100 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw2nsa4d09ft3c"
+     "uid": "st-mw2ny6h304c8mi"
     },
     {
      "id": "s5",
+     "text": "Switcher everywhere (toolbar, View menu, right-click, commands), settings, docs, shots, report, PR to queue",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2ny6h305n89q"
+    },
+    {
+     "id": "s6-5",
+     "text": "Shared collapsible-section renderer (framework/react FoldSections + parser, tests)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2nsa4d06abua"
+    },
+    {
+     "id": "s7-6",
+     "text": "Notes server: AmberX notes source through control@1 + view settings",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2nsa4d07n7wc"
+    },
+    {
+     "id": "s8-7",
+     "text": "Classic view: fold sections, expand/collapse all, fold memory, search hits",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2nsa4d08dnuu"
+    },
+    {
+     "id": "s9-8",
+     "text": "Grid view: DataGrid rows, sort/filter/hide, expandable rows, actions, phone cards",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2nsa4d09ft3c"
+    },
+    {
+     "id": "s10-9",
      "text": "Switcher everywhere (toolbar, View menu, right-click, commands), settings, docs, shots, report, PR to queue",
      "model": "Opus",
      "why": "",
