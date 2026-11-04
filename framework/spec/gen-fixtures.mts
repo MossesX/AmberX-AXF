@@ -12,7 +12,7 @@ import { buildHelpIndex, helpCoverage, helpErrors, helpTarget, introToShow, intr
 import { DEFAULT_LAYOUT, LAYOUT_FIELDS, compileLayout, layoutBreakpointAttr, layoutErrors, layoutTokenVars, layoutTokens, layoutVars, layoutViewportAttrs, layoutViewports, normalizeLayout } from '../core/engines/layout';
 import { CONTROL_TARGET_IDS, canonicalControl, controlConfirmToken, controlConfirmValid, controlErrors, controlGate, controlHash, controlPaths, controlRegistry, controlResult, controlFailure, normalizeControl } from '../core/engines/control-rules.mjs';
 import { compileRepeats, declaredDataSets, missingDataSets, repeatVars, REPEAT_DEFAULT_COLUMNS, REPEAT_DEFAULT_STYLE, REPEAT_MAX_COLUMNS, REPEAT_STYLES } from '../core/engines/repeat';
-import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from '../core/engines/components';
+import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, normalizeTabGroup, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from '../core/engines/components';
 import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/engines/uac';
 import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
@@ -658,6 +658,17 @@ write('components.json', {
   toolbar: Object.fromEntries(load('toolbar').map((a) => [a.id, toolbarStyle(a.data)])),
   'nav-menu': Object.fromEntries(load('nav-menu').map((a) => [a.id, navMenuStyle(a.data)])),
   'app-menu': Object.fromEntries(load('app-menu').map((a) => [a.id, appMenuStyle(a.data)])),
+  // tab-group@1 (Nov 4 2026): every starter's compiled output + normalized data, and the edge cases a port must match
+  'tab-group': Object.fromEntries(load('tab-group').map((a) => [a.id, { normalized: normalizeTabGroup(a.data), ...tabGroupStyle(a.data) }])),
+  'tab-group-cases': {
+    missing: { normalized: normalizeTabGroup(null), ...tabGroupStyle(null) },
+    hidden: tabGroupStyle({ style: 'pills', align: 'start' }, true),
+    'legacy-show-icons-false': normalizeTabGroup({ style: 'underline', align: 'start', showIcons: false }),
+    'display-wins-over-show-icons': normalizeTabGroup({ style: 'underline', align: 'start', showIcons: false, display: 'icons' }),
+    'unknown-values-fall-back': normalizeTabGroup({ style: 'x' as never, align: 'y' as never, position: 'z' as never, overflow: 'q' as never, display: 'w' as never, density: 'v' as never }),
+    'left-rail': tabGroupStyle({ style: 'pills', align: 'start', position: 'left', display: 'icons', sticky: true, badges: false }),
+    'every-flag-on': normalizeTabGroup({ style: 'boxed', align: 'stretch', sticky: true, collapsible: true, closable: true, reorderable: true, badges: true, rememberLast: true, overflow: 'more', position: 'bottom' }),
+  },
   // style fields set explicitly (the starter assets mostly use defaults)
   'chrome-cases': {
     'toolbar-compact-glass': toolbarStyle({ variant: 'labels', align: 'start', groups: [], showSearch: false, density: 'compact', surface: 'glass', divider: false }),

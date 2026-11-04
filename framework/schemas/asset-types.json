@@ -350,7 +350,7 @@
       "label": "Tab group",
       "group": "Navigation",
       "icon": "layers",
-      "description": "How every tab row looks: page tabs (.fx-tabs) and the tab bars of floating-window tab groups. Engine tabGroupStyle in core/engines/components.ts; Hidden (hideable) leaves only the active tab of each row on screen.",
+      "description": "tab-group@1: how every tab row looks and behaves — page tabs, section switchers, settings tab bars and the tab bars of window tab groups (every tab row is a tab-group asset, Brett Nov 4 2026; the framework TabGroup component draws them and gives each one the chrome context menu: Settings / Change tab style / Move). Engine tabGroupStyle in core/engines/components.ts; Hidden (hideable) leaves only the active tab of each row on screen. Its settings interface is the settings asset chrome-tab-group (chrome-settings@1).",
       "required": [
         "style",
         "align"
@@ -361,7 +361,8 @@
           "pills",
           "boxed",
           "segmented",
-          "plain"
+          "plain",
+          "chips"
         ],
         "align": [
           "start",
@@ -371,7 +372,9 @@
         ],
         "position": [
           "top",
-          "bottom"
+          "bottom",
+          "left",
+          "right"
         ],
         "density": [
           "compact",
@@ -380,15 +383,29 @@
         ],
         "overflow": [
           "scroll",
-          "wrap"
+          "wrap",
+          "more",
+          "dropdown"
+        ],
+        "display": [
+          "both",
+          "text",
+          "icons"
         ]
       },
       "optional_fields": {
-        "position": "top (default) | bottom — where a window tab group's bar sits",
-        "density": "compact | regular (default) | roomy — tab padding",
-        "overflow": "scroll (default) | wrap — what a row does when its tabs don't fit",
-        "showIcons": "boolean, default true",
-        "divider": "boolean, default true — the rule under the row"
+        "position": "top (default) | bottom | left | right — where the row sits against its panel (left / right = a vertical rail)",
+        "density": "compact | regular (default) | roomy — tab padding (size)",
+        "overflow": "scroll (default) | wrap | more (tabs that don't fit go under a More menu) | dropdown (one button opens the list)",
+        "display": "both (default: icons + text) | text | icons (text becomes the tooltip)",
+        "showIcons": "boolean, default true — older form of display: false = text only",
+        "divider": "boolean, default true — the rule under the row",
+        "sticky": "boolean, default false — the row stays at the top of its scrolling panel",
+        "collapsible": "boolean, default false — a fold button leaves only the active tab (per device)",
+        "closable": "boolean, default false — tabs get a close button where the host allows closing",
+        "reorderable": "boolean, default false — tabs can be dragged into another order where the host allows it",
+        "badges": "boolean, default true — count badges on tabs",
+        "rememberLast": "boolean, default false — the row reopens on the tab it was on last time (per device)"
       },
       "hideable": true,
       "optional": true

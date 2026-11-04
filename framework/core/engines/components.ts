@@ -153,23 +153,44 @@ export function contextMenuStyle(c: ContextMenuData): StyleOutput {
 
 /* ---------- tab-group: every tab row (page tabs + window tab bars) ---------- */
 
-export const TAB_GROUP_DEFAULT: Required<TabGroupData> = { style: 'underline', align: 'start', position: 'top', density: 'regular', overflow: 'scroll', showIcons: true, divider: true };
+export const TAB_GROUP_DEFAULT: Required<TabGroupData> = { style: 'underline', align: 'start', position: 'top', density: 'regular', overflow: 'scroll', display: 'both', showIcons: true, divider: true, sticky: false, collapsible: false, closable: false, reorderable: false, badges: true, rememberLast: false };
+export const TAB_GROUP_STYLES = ['underline', 'pills', 'boxed', 'segmented', 'plain', 'chips'] as const;
+export const TAB_GROUP_POSITIONS = ['top', 'bottom', 'left', 'right'] as const;
+export const TAB_GROUP_OVERFLOWS = ['scroll', 'wrap', 'more', 'dropdown'] as const;
+export const TAB_GROUP_DISPLAYS = ['both', 'text', 'icons'] as const;
 const TAB_PAD: Record<ChromeDensity, [number, number]> = { compact: [0.4, 0.75], regular: [0.65, 1], roomy: [0.9, 1.4] };
 
+const flag = (v: unknown, d: boolean): boolean => (typeof v === 'boolean' ? v : d);
+
+/** Every field at a value the engine knows. `display` wins over the older `showIcons` (false = text only). */
 export function normalizeTabGroup(t: Partial<TabGroupData> | null | undefined): Required<TabGroupData> {
   const d = TAB_GROUP_DEFAULT;
+  const showIcons = flag(t?.showIcons, d.showIcons);
+  const display = pick(t?.display, TAB_GROUP_DISPLAYS, showIcons ? 'both' : 'text');
   return {
-    style: pick(t?.style, ['underline', 'pills', 'boxed', 'segmented', 'plain'] as const, d.style),
+    style: pick(t?.style, TAB_GROUP_STYLES, d.style),
     align: pick(t?.align, ['start', 'center', 'end', 'stretch'] as const, d.align),
-    position: pick(t?.position, ['top', 'bottom'] as const, d.position),
+    position: pick(t?.position, TAB_GROUP_POSITIONS, d.position),
     density: pick(t?.density, ['compact', 'regular', 'roomy'] as const, d.density),
-    overflow: pick(t?.overflow, ['scroll', 'wrap'] as const, d.overflow),
-    showIcons: typeof t?.showIcons === 'boolean' ? t.showIcons : d.showIcons,
-    divider: typeof t?.divider === 'boolean' ? t.divider : d.divider,
+    overflow: pick(t?.overflow, TAB_GROUP_OVERFLOWS, d.overflow),
+    display,
+    showIcons: display !== 'text',
+    divider: flag(t?.divider, d.divider),
+    sticky: flag(t?.sticky, d.sticky),
+    collapsible: flag(t?.collapsible, d.collapsible),
+    closable: flag(t?.closable, d.closable),
+    reorderable: flag(t?.reorderable, d.reorderable),
+    badges: flag(t?.badges, d.badges),
+    rememberLast: flag(t?.rememberLast, d.rememberLast),
   };
 }
 
-/** Missing asset = the original underline look; `hidden` (hideable slot) leaves only each row's active tab. */
+/**
+ * Missing asset = the original underline look; `hidden` (hideable slot) leaves only each row's active tab.
+ * The same attributes go on the app root (the app's active tab-group asset) and on every TabGroup element (its own
+ * effective asset), so a row with its own pick is styled by the row's attributes: axf.css rules for the element
+ * (`.fx-tabs[data-fx-tabs=…]`) outrank the root's descendant rules.
+ */
 export function tabGroupStyle(t: Partial<TabGroupData> | null | undefined, hidden = false): StyleOutput {
   const n = normalizeTabGroup(t);
   const [py, px] = TAB_PAD[n.density];
@@ -180,8 +201,12 @@ export function tabGroupStyle(t: Partial<TabGroupData> | null | undefined, hidde
       'data-fx-tabs-align': n.align,
       'data-fx-tabs-position': n.position,
       'data-fx-tabs-overflow': n.overflow,
-      'data-fx-tabs-icons': n.showIcons ? 'on' : 'off',
+      'data-fx-tabs-display': n.display,
+      'data-fx-tabs-icons': n.display === 'text' ? 'off' : 'on',
       'data-fx-tabs-divider': n.divider ? 'on' : 'off',
+      'data-fx-tabs-sticky': n.sticky ? 'on' : 'off',
+      'data-fx-tabs-collapsible': n.collapsible ? 'on' : 'off',
+      'data-fx-tabs-badges': n.badges ? 'on' : 'off',
       'data-fx-tabs-hidden': hidden ? 'on' : 'off',
     },
   };
