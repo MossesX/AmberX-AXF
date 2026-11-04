@@ -2,7 +2,7 @@
   "$axf": "change-log@1",
   "id": "chg-20261103-c96619cfe9",
   "createdAt": "2026-11-03T19:52:55.311Z",
-  "updatedAt": "2026-11-03T21:59:18.801Z",
+  "updatedAt": "2026-11-03T21:38:41.525Z",
   "kind": "build",
   "title": "# Build: ui-review-predicted (Urgent profile) Brett, Nov 3 2026 (voice): UI Review must show PREDIC…",
   "asked": "# Build: ui-review-predicted (Urgent profile) Brett, Nov 3 2026 (voice): UI Review must show PREDICTED pictures - what a build will probably look like - BEFORE it's built, so he can approve the look before an agent spends money. Assigned agent: **Snap Sully** (book on his card; he's also on ui-review-shots - run after it or build on its storage fix; if the all-rounder router is on main and he's busy, whoever is free - record who). Register in Urgent (id `ui-review-predicted`) + banner entry. Mark the predicted-shots part of pending item `batch-manager` as moved here (pending_change note). ## Build - s1 Predicted mockups: when a build is launched (or added to the orchestrator/pending list), generate a mockup per screen it will touch from the brief + step list (+ diff so far while running): render real framework components with the current theme/assets and demo data in a headless browser (reuse rebuild-shots / ui-screenshots capture tooling; do NOT build a new capture system). Phone + desktop. If an LLM is needed to turn the brief into a mockup spec, do it ONCE per build at launch with the cheapest capable model and cache it; record the cost on the item. - s2 UI Review item created at launch with status 'Predicted - approve the look', badge 'Predicted', before = current real screen (from main), after = predicted mockup. Brett can Approve look / Ask changes (comment goes to the build as an addendum before it starts or at the next step) / Reject (build is held, not started). - s3 Setting (Claude settings / UI Review settings): 'Wait for my look approval before UI builds start' (default OFF; when ON, UI-touching builds queue until the predicted look is approved). - s4 While running, the predicted shot refreshes as the diff grows; when the build finishes, the real after-shot replaces it live (badge 'Real'), with a toggle to compare predicted vs real. - s5 Backfill: create predicted items now for every queued/running build that touches UI (toolbar-tap-confirm, crew-live, follow-amber, claude-settings, agent-pick, home-cards-live, smart-menus). - s6 Commands declared once -> REST + MCP + CLI (predict, list predicted, approve look). Tests, screenshots, report `_claude/builds/reports/ui-review-predicted.md`, THREADS, PR, steps through the store. Commits clean and professional. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Opus) is fine. An UPGRADE (e.g. Opus → Fable) needs Brett's approval: when you reach one, run `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>`, ask once, and stop. Never approve a model switch upgrade yourself (no `act approve` on an upgrade), never relaunch on a higher model.",
@@ -43,9 +43,8 @@
     },
     {
       "text": "s5 backfill 7 UI builds",
-      "state": "done",
-      "startedAt": "2026-11-03T21:30:57.241Z",
-      "finishedAt": "2026-11-03T21:59:05.346Z"
+      "state": "running",
+      "startedAt": "2026-11-03T21:30:57.241Z"
     },
     {
       "text": "s6 commands, tests, report, PR #285",
@@ -54,129 +53,52 @@
       "finishedAt": "2026-11-03T21:30:57.426Z"
     }
   ],
-  "result": {
-    "state": "done",
-    "summary": "UI Review predicted looks: ui-predict core + CLI, mockup page, predicted items with Approve look / Ask changes / Reject, wait-for-look setting + launcher gate, refresh + real swap, 7 builds backfilled, phone detail layout fix. PR #285 (UI Review r-20261103-c9a82c5e waiting).",
-    "branch": "claude/ui-review-predicted",
-    "commits": [
-      {
-        "sha": "c3d51acc"
-      }
-    ],
-    "tests": {
-      "ui-review test.py": {
-        "before": "155",
-        "after": "178"
-      },
-      "check-ui-predict": {
-        "before": "0",
-        "after": "12"
-      }
-    },
-    "links": {
-      "report": "_claude/builds/reports/ui-review-predicted.md"
-    }
-  },
+  "result": null,
   "closed": null,
-  "state": "done",
-  "status": "done",
+  "state": "running",
+  "status": "running",
   "buildRef": {
     "kind": "orchestrator",
     "id": "ui-review-predicted"
   },
   "surface": "headless",
   "startedAt": "2026-11-03T19:52:55.311Z",
-  "finishedAt": "2026-11-03T21:59:05.685Z",
-  "lastSeenAt": "2026-11-03T21:59:05.346Z",
+  "lastSeenAt": "2026-11-03T21:38:41.525Z",
   "estimate": {
     "minutes": 155,
     "costUsd": 21.7
   },
-  "actual": {
-    "minutes": 126,
-    "costUsd": 14.1264,
-    "inputTokens": 406,
-    "outputTokens": 144862,
-    "cacheReadTokens": 47492147,
-    "cacheWriteTokens": 345821,
-    "source": "transcript"
-  },
-  "costEstimated": false,
+  "costEstimated": true,
   "branch": "claude/ui-review-predicted",
   "areas": [
     "apps/console-web/plugins/ui-review",
     "framework/cli",
     "framework/core"
   ],
-  "progress": 1,
+  "doing": "Running: Wait for backfill to complete",
+  "progress": 0.833,
   "resume": {
     "repo": "MossesX/AmberX-AXF",
     "folder": "/root/axf-builds/ui-review-predicted",
     "branch": "claude/ui-review-predicted",
-    "base": "0f4712ace52624e4165097e31e1b52f61bdf77e3",
-    "head": "c3d51acc912c09788114cbba0379b80caf7b8128",
+    "base": "14f2aa497e8e0510c2281f401cf0c2028437085a",
+    "head": "14f2aa497e8e0510c2281f401cf0c2028437085a",
     "pushed": true,
-    "dirty": 109,
+    "dirty": 113,
     "pr": "https://github.com/MossesX/AmberX-AXF/pull/285",
     "plan": "ui-predict core + CLI + UI Review predicted items + launcher look gate",
     "next": "finish backfill (ui-predict.mjs backfill …), tick s5/s6, mark built",
     "files": [
-      ".github/workflows/android.yml",
-      "_claude/THREADS.md",
-      "_claude/builds/reports/ui-review-predicted.md",
-      "_claude/builds/reports/ui-review-predicted/shots/backfill-toolbar-tap-confirm-predicted-desktop.png",
-      "_claude/builds/reports/ui-review-predicted/shots/backfill-toolbar-tap-confirm-predicted-phone.png",
-      "_claude/builds/reports/ui-review-predicted/shots/predicted-ui-review-desktop.png",
-      "_claude/builds/reports/ui-review-predicted/shots/predicted-ui-review-phone.png",
-      "_claude/builds/reports/ui-review-predicted/shots/ui-review-look-setting-desktop.png",
-      "_claude/builds/reports/ui-review-predicted/shots/ui-review-look-setting-phone.png",
-      "_claude/builds/reports/ui-review-predicted/shots/ui-review-predicted-item-desktop.png",
-      "_claude/builds/reports/ui-review-predicted/shots/ui-review-predicted-item-phone.png",
-      "apps/console-web/axf.lock.json",
-      "apps/console-web/plugins/ui-review/README.md",
-      "apps/console-web/plugins/ui-review/plugin.json",
-      "apps/console-web/plugins/ui-review/server/__init__.py",
-      "apps/console-web/plugins/ui-review/server/predicted.py",
-      "apps/console-web/plugins/ui-review/server/schema.py",
-      "apps/console-web/plugins/ui-review/test.py",
-      "apps/console-web/plugins/ui-review/web/index.tsx",
-      "apps/console-web/plugins/ui-review/web/keys.ts",
-      "apps/console-web/plugins/ui-review/web/look-settings.tsx",
-      "apps/console-web/plugins/ui-review/web/mockup.tsx",
-      "apps/console-web/plugins/ui-review/web/review-core.mjs",
-      "apps/console-web/plugins/ui-review/web/ui-review.css",
-      "apps/console-web/plugins/ui-review/web/ui.tsx",
-      "apps/console-web/src/axf/core/ui-predict.d.mts",
-      "apps/console-web/src/axf/core/ui-predict.mjs",
-      "apps/console-web/src/axf/core/ui-review-schema.mjs",
-      "apps/console-web/src/axf/schemas/json/ui-review-item.schema.json",
-      "apps/console-web/src/axf/schemas/ui-review.json",
-      "deploy/claude-headless.sh",
-      "framework/cli/ui-predict.mjs",
-      "framework/core/ui-predict.d.mts",
-      "framework/core/ui-predict.mjs",
-      "framework/core/ui-review-schema.mjs",
-      "framework/plan/profiles/current/framework/catalog/status.json",
-      "framework/plan/profiles/current/framework/plan/build-queue.json",
-      "framework/plan/profiles/current/framework/plan/pending.json",
-      "framework/plan/profiles/current/framework/plan/plan.json",
-      "framework/plan/profiles/current/tracker.json",
-      "framework/plan/profiles/urgent/framework/catalog/status.json",
-      "framework/plan/profiles/urgent/framework/plan/plan.json",
-      "framework/plan/profiles/urgent/tracker.json",
-      "framework/schemas/json/ui-review-item.schema.json",
-      "framework/schemas/ui-review.json",
-      "framework/spec/check-ui-predict.mjs",
       "_claude/builds/journal/2026-11.jsonl",
       "_claude/builds/orchestrator.json",
       "_claude/builds/profiles/angel/orchestrator.json",
       "_claude/builds/profiles/big-dog/orchestrator.json",
       "_claude/builds/profiles/breakroom/orchestrator.json",
-      "_claude/builds/profiles/current/orchestrator.json",
       "_claude/builds/profiles/refactor/orchestrator.json",
       "_claude/builds/profiles/urgent/orchestrator.json",
       "_claude/builds/store.json",
       ".axf-queue.log",
+      "_claude/builds/profiles/current/",
       "_claude/builds/reports/claude-settings.md",
       "_claude/builds/reports/claude-settings/",
       "_claude/fuck-you.md",
@@ -224,6 +146,10 @@
       "changes/2026/11/chg-20261103-f30d31971c.json",
       "changes/2026/11/chg-20261103-f51a6a8610.json",
       "changes/2026/11/chg-20261103-f5adc9c247.json",
+      "framework/plan/profiles/current/",
+      "framework/plan/profiles/urgent/framework/catalog/",
+      "framework/plan/profiles/urgent/framework/plan/plan.json",
+      "framework/plan/profiles/urgent/tracker.json",
       "sessions/2026-10-31-amber-voice.md",
       "sessions/archive/2026/11/cc-031b0190-e7d1-4b61-9582-c6802aa0dae6.json",
       "sessions/archive/2026/11/cc-04dbe8a6-6209-44d4-87e5-62f696955ec8.json",
@@ -275,11 +201,8 @@
       "sessions/archive/2026/11/cc-e5441509-6b3d-4800-9fba-c769af1d3fa1.json",
       "sessions/archive/2026/11/cc-eec36937-42a3-41d4-be92-6d4e68d9aa1b.json",
       "sessions/archive/2026/11/cc-fcc07d2a-12a0-42c2-a108-dcbe6e3fe96c.json",
-      "sessions/archive/2026/11/cc-ffa43f6c-21e2-4f93-851f-7a92b2246f7e.json",
-      "_claude/builds/profiles/current/",
-      "framework/plan/profiles/current/",
-      "framework/plan/profiles/urgent/framework/catalog/"
+      "sessions/archive/2026/11/cc-ffa43f6c-21e2-4f93-851f-7a92b2246f7e.json"
     ],
-    "at": "2026-11-03T21:59:19.024Z"
+    "at": "2026-11-03T21:30:57.564Z"
   }
 }

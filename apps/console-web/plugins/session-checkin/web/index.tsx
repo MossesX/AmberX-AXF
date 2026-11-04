@@ -100,7 +100,7 @@ function SessionsView() {
       )}
       {err && <p className={`${P}__error`}>{err}</p>}
 
-      <div className={`${P}__bar`}>
+      <div className={`${P}__bar`} role="toolbar" aria-label="Session check-in">
         <div className={`${P}__strip`}>
           <Chip>{rows?.length ?? '…'} sessions</Chip>
           <Chip tone={mismatches ? 'warning' : undefined}>{rows ? mismatches : '…'} flagged</Chip>

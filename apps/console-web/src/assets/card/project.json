@@ -1,0 +1,27 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "project",
+  "name": "Project",
+  "version": "1.0.0",
+  "description": "The open project, the build engine and what is installable.",
+  "author": "AmberX AXF",
+  "tags": [
+    "home",
+    "starter"
+  ],
+  "data": {
+    "title": "Project",
+    "icon": "package",
+    "source": {
+      "kind": "console",
+      "id": "console.project"
+    },
+    "view": "table",
+    "refresh": {
+      "kind": "live"
+    },
+    "size": "m",
+    "limit": 12
+  }
+}

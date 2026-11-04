@@ -25,6 +25,7 @@ export { Inspector } from './studio/Inspector';
 export { AssetPreview } from './studio/AssetPreview';
 export { builtinDialogs } from './studio/builtinDialogs';
 export { FloatingWindowsHost, DockArea, PaneView, TabGroupView, WindowToolbar, WindowResizeHandles, TabRenderersProvider, useWindowManager, useWindowState, useWindowSpec, useWindowFrame, windowDialogs, type TabRenderer, type TabRenderers, type WindowFrameHooks } from './windows/WindowHost';
+export { DockHost, DockPaneView, DockDropOverlay, DockPresetThumb, DockLayoutDialog, dockLayoutDialog } from './windows/DockHost';
 export { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
 export { installLibraries, orderLibraries, type AxfWebLibrary, type BannerDef, type SlotDef } from './library';
 export { FRAME_BANNERS_SLOT, FrameBanners, Slot, SlotsProvider, useSlotFilled } from './components/Slots';
@@ -35,3 +36,4 @@ export { pluginRecordOfLibrary, pluginRecordsFromRuntime, runtimeInventory } fro
 export { HubAppearanceSource, DEFAULT_HUB, type HubAppearanceOptions } from './hubAppearance';
 export { WaitingForHub } from './components/Waiting';
 export { WatchLiveLink, WatchLiveWindow, watchLiveSrc, type WatchLivePreview } from './components/WatchLive';
+export { installTapConfirm, toolbarOf, toolbarElementId, tipTextOf, type TapConfirmHost } from './tapConfirm';

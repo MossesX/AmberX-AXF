@@ -2,6 +2,7 @@ import { useMemo, useSyncExternalStore } from 'react';
 import { AccountView, AppShell, installLibraries, SlotsProvider, useRuntime, type ViewMap } from './axf/react';
 import type { AxfWebLibrary } from './axf/react/library';
 import { library as settingsLibrary } from './axf/libs/settings';
+import { toolbarsLibrary } from './axf/libs/toolbars';
 import { dialogs } from './dialogs';
 import { Home } from './views/Home';
 import { AppSlot, FrameDeck } from './molly/FrameDeck';
@@ -29,7 +30,7 @@ const pluginModules = import.meta.glob<{ plugin?: AxfWebLibrary }>('../plugins/*
 const plugins = Object.values(pluginModules).map((m) => m.plugin).filter((p): p is AxfWebLibrary => !!p);
 
 /** Every app ships the settings interface (lib-settings); plugins add sub-tabs under Settings → Plugins. */
-const libraries = [settingsLibrary, ...plugins];
+const libraries = [settingsLibrary, toolbarsLibrary, ...plugins];
 
 export function App() {
   const rt = useRuntime();

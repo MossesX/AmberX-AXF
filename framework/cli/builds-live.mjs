@@ -42,18 +42,19 @@ import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { REPO_ROOT } from './persist.mjs';
 import { gitAuthEnv, githubToken, scrub } from './github.mjs';
-import { adoptStore, journalDir, orchestratorExports, readStoreNow, storeFile, storeText, withStore } from './builds-store.mjs';
+import { adoptStore, journalDir, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, storeFile, storeText, withStore } from './builds-store.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 const STORE_REL = '_claude/builds/store.json'; // = builds-store STORE_REL (not imported: the two modules import each other)
 const JOURNAL_REL = '_claude/builds/journal';
+const ORIGINS_REL = '_claude/builds/origins.json'; // = builds-store ORIGINS_REL (build-origin@1 sidecar)
 const THREADS_REL = '_claude/THREADS.md';
 export const LIVE_HEAD = '## Live build log';
 const LIVE_NOTE = '<!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->';
 const LIVE_KEEP = 400;
 const ATTEMPTS = 6;
 /** Files a builds-only conflict may touch (heal) and the merge driver handles. */
-export const BUILDS_PATHS = [STORE_REL, `${JOURNAL_REL}/`, '_claude/builds/orchestrator.json', '_claude/builds/profiles/', THREADS_REL];
+export const BUILDS_PATHS = [STORE_REL, ORIGINS_REL, `${JOURNAL_REL}/`, '_claude/builds/orchestrator.json', '_claude/builds/profiles/', THREADS_REL];
 
 const env = (k, d = '') => process.env[k] ?? d;
 const remote = () => env('AXF_BUILDS_LIVE_REMOTE', 'origin');
@@ -208,6 +209,11 @@ export function publish(entries, { journalExtra = {} } = {}) {
     const threads = show(base, THREADS_REL);
     if (threads !== null && threadLines.length) files[THREADS_REL] = appendThreads(threads, threadLines);
     for (const x of orchestratorExports(merged)) { const old = show(base, x.rel); if (old !== null || x.builds) files[x.rel] = x.text; }
+    // what Brett said (build-origin@1): main's sidecar + every origin on the merged records, never fewer
+    { let mine = ''; try { mine = readFileSync(originsFile(), 'utf8'); } catch { /* none yet */ }
+      const fromRecords = JSON.stringify({ origins: Object.fromEntries(merged.builds.filter((b) => b.origin).map((b) => [b.id, b.origin])) });
+      const text = mergeOriginsText(mergeOriginsText(show(base, ORIGINS_REL) ?? '', mine), fromRecords);
+      if (text !== mergeOriginsText('', '') || show(base, ORIGINS_REL) !== null) files[ORIGINS_REL] = text; }
     // what actually differs from main
     const changed = Object.entries(files).filter(([rel, text]) => show(base, rel) !== text);
     if (!changed.length) return { ok: true, sha: '', files: allFiles(base, files) };
@@ -268,6 +274,7 @@ export function pullFrom(files) {
     let mine = ''; try { mine = readFileSync(join(journalDir(), `${m}.jsonl`), 'utf8'); } catch { /* new month */ }
     journals[m] = merge.mergeJournalText(t, mine);
   }
+  if (files[ORIGINS_REL]) { let mine = ''; try { mine = readFileSync(originsFile(), 'utf8'); } catch { /* none yet */ } const t = mergeOriginsText(files[ORIGINS_REL], mine); if (t !== mine) writeFileSync(originsFile(), t); }
   if (!taken.length && !Object.keys(journals).length && storeText(local) === storeText(next)) return { ok: true, taken: [] };
   adoptStore(next, { journals });
   return { ok: true, taken };
@@ -381,6 +388,7 @@ export function install() {
 export function mergeFile(oursPath, theirsPath, path) {
   const ours = readFileSync(oursPath, 'utf8'); const theirs = readFileSync(theirsPath, 'utf8');
   if (path.endsWith('.jsonl')) { writeFileSync(oursPath, merge.mergeJournalText(ours, theirs)); return true; }
+  if (path.endsWith(ORIGINS_REL)) { writeFileSync(oursPath, mergeOriginsText(theirs, ours)); return true; }
   if (path.endsWith(STORE_REL.split('/').pop()) && path.includes('_claude/builds/') && !path.includes('/profiles/')) {
     writeFileSync(oursPath, storeText(merge.mergeStoreFiles(ours, theirs))); return true;
   }

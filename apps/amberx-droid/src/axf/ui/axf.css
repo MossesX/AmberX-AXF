@@ -237,6 +237,27 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-widget-avatar__initials { display: inline-flex; align-items: center; justify-content: center; font-weight: 700; background: var(--fx-accent); color: var(--fx-accent-text); }
 .fx-widget-avatar.is-circle img, .fx-widget-avatar.is-circle .fx-widget-avatar__initials { border-radius: 999px; }
 .fx-widget-avatar.is-rounded img, .fx-widget-avatar.is-rounded .fx-widget-avatar__initials { border-radius: var(--fx-radius-sm); }
+/* AgentAvatar (react/components/AgentAvatar.tsx): an agent's drawn face or initials; size + shape from the agent-avatar asset */
+.fx-agent-avatar { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); flex: none; min-width: 0; vertical-align: middle; }
+.fx-agent-avatar__face, .fx-agent-avatar__initials { flex: none; display: block; box-sizing: border-box; }
+.fx-agent-avatar.is-circle .fx-agent-avatar__face, .fx-agent-avatar.is-circle .fx-agent-avatar__initials { border-radius: 999px; }
+.fx-agent-avatar.is-rounded .fx-agent-avatar__face, .fx-agent-avatar.is-rounded .fx-agent-avatar__initials { border-radius: var(--fx-radius-sm); }
+.fx-agent-avatar__bg { fill: var(--fx-accent-soft); }
+.fx-agent-avatar__skin { fill: var(--fx-surface3); stroke: var(--fx-text); stroke-width: var(--fx-border-w); }
+.fx-agent-avatar__ink { fill: var(--fx-text); }
+.fx-agent-avatar__line { fill: none; stroke: var(--fx-text); stroke-width: calc(var(--fx-border-w) * 1.5); stroke-linecap: round; }
+.fx-agent-avatar__thick { stroke-width: calc(var(--fx-border-w) * 3); }
+.fx-agent-avatar__initials { display: inline-flex; align-items: center; justify-content: center; font-weight: 700; color: var(--fx-text); border: var(--fx-border-w) solid var(--fx-border); }
+.fx-agent-avatar__initials.is-accent { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-accent); }
+.fx-agent-avatar__initials.is-brand-1 { background: color-mix(in srgb, var(--fx-brand-1) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-brand-1); }
+.fx-agent-avatar__initials.is-brand-2 { background: color-mix(in srgb, var(--fx-brand-2) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-brand-2); }
+.fx-agent-avatar__initials.is-brand-3 { background: color-mix(in srgb, var(--fx-brand-3) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-brand-3); }
+.fx-agent-avatar__initials.is-success { background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-success); }
+.fx-agent-avatar__initials.is-warning { background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-warning); }
+.fx-agent-avatar__initials.is-info { background: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-info); }
+.fx-agent-avatar__initials.is-danger { background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-danger); }
+.fx-agent-avatar__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fx-agent-avatar.is-unknown .fx-agent-avatar__name { color: var(--fx-muted); }
 .fx-widget-link { text-decoration: none; color: var(--fx-accent); }
 .fx-widget-link:hover { text-decoration: underline; }
 .fx-widget-theme { background: none; border: var(--fx-border-w) solid var(--fx-border); border-radius: 999px; padding: 0 var(--fx-dens-gap-lg); height: calc(var(--fx-row-h) * 0.7); cursor: pointer; }
@@ -334,7 +355,7 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 }
 .fx-dropdown { position: fixed; margin-top: var(--fx-dens-gap-md); min-width: 230px; padding: var(--fx-dens-gap-md); }
 .fx-menu { list-style: none; margin: 0; padding: 0; }
-.fx-menu__li { position: relative; }
+.fx-menu__li { position: static; } /* submenus are placed in the menu box, so a scrolling menu never clips them */
 .fx-menu__item {
   width: 100%; display: flex; align-items: center; gap: var(--fx-dens-gap-2xl); text-align: left;
   border: 0; background: transparent; border-radius: calc(var(--fx-radius-md) - var(--fx-dens-gap-sm));
@@ -346,9 +367,7 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-menu__label { flex: 1; white-space: nowrap; }
 .fx-menu__sep { height: var(--fx-border-w); background: var(--fx-border); margin: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); }
 .fx-menu__spacer { height: calc(var(--fx-space) * 2); list-style: none; }
-.fx-menu__sub { position: absolute; left: calc(100% + 2px); top: -4px; min-width: 200px; padding: var(--fx-dens-gap-md); }
-/* no room on the right (MenuSub measures): open to the left of the row instead */
-.fx-menu__sub[data-fx-flip='left'] { left: auto; right: calc(100% + 2px); }
+.fx-menu__sub { position: absolute; left: 100%; top: 0; min-width: 200px; padding: var(--fx-dens-gap-md); }
 /* application menu (components/AppMenu.tsx): check marks, badges, live-list rows, phone drill-down */
 .fx-menu__check { width: 16px; display: inline-flex; justify-content: center; color: var(--fx-accent); }
 .fx-menu__item.is-checked { color: var(--fx-text); }
@@ -396,7 +415,44 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
   border-bottom: var(--fx-border-w) solid var(--fx-border); border-radius: 0;
 }
 .fx-menu__back:hover { color: var(--fx-accent); }
-.fx-dropdown--phone { max-height: 70vh; overflow-y: auto; }
+/* ---- menus that stay on screen (menu-fit@1, react/components/menuFit.ts; Brett, Nov 3 2026) ----
+   The fit engine places every menu box (drop-down, submenu, context menu, ⋯ menu), flips or shifts it to stay inside
+   the visible screen (safe areas and the on-screen keyboard count) and caps its height to the room it has; the box's
+   `.fx-menu__scroll` (or the box itself, for menus that place themselves) then scrolls inside. `data-fx-more` says
+   there is more above / below: the rows fade out at that edge and a chevron sits there; a tap on it scrolls most of a
+   page. */
+.fx-dropdown, .fx-ctx, .fx-menu__sub { display: flex; flex-direction: column; }
+.fx-dropdown > *, .fx-ctx > *, .fx-menu__sub > * { flex: none; }
+.fx-menu__scroll {
+  flex: 0 1 auto !important; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch; touch-action: pan-y; scroll-padding-block: var(--fx-dens-row-menu);
+}
+[data-fx-fit='auto'] { overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; touch-action: pan-y; scroll-padding-block: var(--fx-dens-row-menu); }
+/* menus that place themselves have no submenus, so their rows fade out with a mask */
+[data-fx-fit='auto'][data-fx-more='up'] { mask-image: linear-gradient(to bottom, transparent, currentColor var(--fx-dens-row-menu)); }
+[data-fx-fit='auto'][data-fx-more='down'] { mask-image: linear-gradient(to top, transparent, currentColor var(--fx-dens-row-menu)); }
+[data-fx-fit='auto'][data-fx-more='up down'] {
+  mask-image: linear-gradient(to bottom, transparent, currentColor var(--fx-dens-row-menu), currentColor calc(100% - var(--fx-dens-row-menu)), transparent);
+}
+.fx-menu__more { position: relative; z-index: 1; display: block; height: 0; overflow: visible; pointer-events: none; }
+.fx-menu__more > svg {
+  position: absolute; left: 50%; transform: translateX(-50%); display: none; pointer-events: auto; cursor: pointer;
+  color: var(--fx-muted); padding: var(--fx-dens-gap-xs); box-sizing: content-box;
+}
+.fx-menu__more--up > svg { top: 0; }
+.fx-menu__more--down > svg { bottom: 0; }
+/* framework menus fade with an overlay, not a mask: a mask would also hide the submenus that hang outside the list */
+.fx-menu__more::before { content: ''; position: absolute; left: 0; right: 0; height: var(--fx-dens-row-menu); display: none; pointer-events: none; }
+.fx-menu__more--up::before { top: 0; background: linear-gradient(to bottom, var(--fx-surface), transparent); }
+.fx-menu__more--down::before { bottom: 0; background: linear-gradient(to top, var(--fx-surface), transparent); }
+[data-fx-more~='up'] > .fx-menu__more--up > svg, [data-fx-more~='down'] > .fx-menu__more--down > svg,
+[data-fx-more~='up'] > .fx-menu__more--up::before, [data-fx-more~='down'] > .fx-menu__more--down::before { display: block; }
+.fx-menu__more > svg:hover { color: var(--fx-accent); }
+.fx-menu-probe {
+  position: fixed; left: 0; top: 0; visibility: hidden; pointer-events: none; height: 0;
+  width: var(--fx-layout-phone-edge); box-sizing: content-box;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
 .fx-menu__item:focus-visible { outline: 2px solid var(--fx-focus); outline-offset: -2px; }
 @media (prefers-reduced-motion: reduce) { .fx-menu__spinner { animation: none; border-top-color: var(--fx-border); } }
 
@@ -412,6 +468,30 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 }
 
 /* ---------------- toolbar (toolbar asset) ---------------- */
+
+/* Tap-to-confirm (framework/react/tapConfirm.ts): on touch the first tap lights the button for the arm window and a tip
+   says what it does; the second tap runs it. The bar under the button empties over --fx-tap-arm-ms. */
+[role='toolbar'] { touch-action: manipulation; }
+[data-axf-armed] {
+  background-color: var(--fx-accent-soft); color: var(--fx-text);
+  box-shadow: 0 0 0 var(--fx-border-w) var(--fx-accent) inset;
+  background-image: linear-gradient(var(--fx-accent), var(--fx-accent)); background-repeat: no-repeat;
+  background-position: left bottom; background-size: 0% calc(var(--fx-border-w) * 2);
+  animation: fx-tap-arm var(--fx-tap-arm-ms) linear both;
+}
+@keyframes fx-tap-arm { from { background-size: 100% calc(var(--fx-border-w) * 2); } to { background-size: 0% calc(var(--fx-border-w) * 2); } }
+[data-fx-motion='reduced'] [data-axf-armed] { animation: none; }
+@media (prefers-reduced-motion: reduce) { [data-axf-armed] { animation: none; } }
+.fx-taptip {
+  position: fixed; z-index: 70; max-width: calc(100vw - var(--fx-dens-gap-2xl) * 2); pointer-events: none;
+  display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl);
+  background: var(--fx-surface); color: var(--fx-text); border: var(--fx-border-w) solid var(--fx-accent);
+  border-radius: var(--fx-radius-md); box-shadow: var(--fx-shadow-lg); font-size: var(--fx-type-scale-sm);
+  animation: fx-pop calc(var(--fx-motion) * 1.2) ease both;
+}
+.fx-taptip__text { font-weight: var(--fx-btn-weight, 600); }
+.fx-taptip__hint { color: var(--fx-muted); font-size: var(--fx-type-scale-xs); }
+
 
 .fx-toolbar {
   display: flex; align-items: center; gap: var(--fx-dens-gap-xl);
@@ -487,6 +567,29 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 }
 .fx-search-flash { animation: fx-search-flash 1.8s ease; border-radius: var(--fx-radius-sm); }
 [data-reduced-motion] .fx-search-flash { animation: none !important; outline: 3px solid var(--fx-accent); outline-offset: 2px; }
+
+/* ---------------- reference links (ref@1, RefText): a mention of a real thing in banner / build text ---------------- */
+.fx-ref {
+  cursor: pointer; border-radius: var(--fx-radius-sm); text-decoration: underline dotted;
+  text-decoration-thickness: var(--fx-border-w); text-underline-offset: calc(var(--fx-border-w) * 3);
+  text-decoration-color: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent);
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation; -webkit-touch-callout: none;
+}
+.fx-ref:hover, .fx-ref:focus-visible { color: var(--fx-accent); text-decoration-color: var(--fx-accent); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); outline: none; }
+.fx-ref.is-missing { text-decoration-style: dashed; text-decoration-color: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-muted) * 100%), transparent); }
+.fx-ref-peek {
+  position: fixed; z-index: 85; display: grid; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-xl);
+  min-width: calc(var(--fx-font-size) * 14); max-width: min(calc(var(--fx-font-size) * 24), calc(100vw - var(--fx-dens-gap-xl) * 2));
+  font-size: var(--fx-type-scale-md); color: var(--fx-text); white-space: normal; text-align: left; animation: fx-pop 120ms ease both;
+}
+.fx-ref-peek__head { display: flex; align-items: center; gap: var(--fx-dens-gap-md); color: var(--fx-muted); }
+.fx-ref-peek__kind { font-size: var(--fx-type-scale-2xs); text-transform: uppercase; letter-spacing: 0.06em; }
+.fx-ref-peek__label { font-weight: 600; overflow-wrap: anywhere; }
+.fx-ref-peek__detail { font-size: var(--fx-type-scale-xs); color: var(--fx-muted); overflow-wrap: anywhere; }
+.fx-ref-peek__state { font-size: var(--fx-type-scale-xs); color: var(--fx-warning); }
+.fx-ref-peek__also { display: grid; gap: var(--fx-dens-gap-sm); justify-items: start; }
+.fx-ref-peek__actions { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); }
+[data-reduced-motion] .fx-ref-peek { animation: none; }
 
 /* ---------------- nav menu (nav-menu asset) ---------------- */
 
@@ -700,6 +803,11 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-dialog__head h2 { font-size: var(--fx-type-scale-lg); flex: 1; }
 .fx-dialog__head > svg { color: var(--fx-accent); }
 .fx-dialog__body { padding: var(--fx-dens-gap-3xl); overflow: auto; }
+/* phones: the title bar is the swipe-down handle, and the close button is a full finger-sized target */
+@media (pointer: coarse) {
+  .fx-dialog__head { touch-action: none; }
+  .fx-dialog__head .fx-iconbtn { min-width: max(calc(var(--fx-space) * 5.5), 2.75rem); min-height: max(calc(var(--fx-space) * 5.5), 2.75rem); }
+}
 [data-fx-dialog-header='accent-bar'] .fx-dialog { border-top: calc(var(--fx-border-w) * 4) solid var(--fx-accent); }
 [data-fx-dialog-header='filled'] .fx-dialog__head { background: var(--fx-accent); color: var(--fx-accent-text); border-bottom: 0; }
 [data-fx-dialog-header='filled'] .fx-dialog__head > svg, [data-fx-dialog-header='filled'] .fx-dialog__head .fx-iconbtn { color: var(--fx-accent-text); }
@@ -1041,6 +1149,19 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-window--frameless .fx-window__body > .fx-dock > .fx-tabgroup { border: 0; border-radius: 0; }
 .fx-window--frameless .fx-window__body > .fx-dock > .fx-tabgroup[data-fx-tabs='1'] > .fx-tabgroup__bar { display: none; }
 .fx-window--frameless .fx-window__body > .fx-dock > .fx-tabgroup[data-fx-tabs='1'] > .fx-tabgroup__body { padding: 0; }
+/* move grip (terminal-drag-chain-tree, Nov 3 2026): a frameless window's always-present drag area, first in its tab
+   strip (sticky, so a strip full of tabs scrolls under it, never over it); a 44 px target on touch screens. The host's
+   fallback floats in the top-left corner when the content has no grip of its own. A held tab shows it is armed. */
+.fx-window__grip { flex: none; align-self: stretch; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box;
+  min-width: calc(var(--fx-space) * 2.5); min-height: calc(var(--fx-space) * 2.5); color: var(--fx-muted); cursor: move;
+  touch-action: none; user-select: none; -webkit-touch-callout: none; position: sticky; left: 0; top: 0; z-index: 2; background: inherit; border-radius: var(--fx-radius-sm); }
+.fx-window__grip .fx-icon { opacity: var(--fx-opacity-muted); pointer-events: none; }
+.fx-window__grip:hover .fx-icon, .fx-window__grip:active .fx-icon { opacity: 1; }
+.fx-window__grip:hover { background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-hover) * 100%), transparent); }
+.fx-window__grip--column { align-self: auto; width: 100%; }
+.fx-window__grip--float { position: absolute; left: 0; top: 0; z-index: 4; background: var(--fx-surface2); border-radius: var(--fx-radius-lg) 0 var(--fx-radius-sm) 0; }
+@media (pointer: coarse) { .fx-window__grip { min-width: max(var(--fx-row-h), calc(var(--fx-space) * 5.5)); min-height: max(var(--fx-row-h), calc(var(--fx-space) * 5.5)); } }
+.fx-tab.is-armed, [role='tab'].is-armed { cursor: move; outline: calc(var(--fx-border-w) * 2) dashed var(--fx-accent); outline-offset: calc(var(--fx-border-w) * -2); }
 /* dock@1 (Nov 3 2026): splitters sit in the split's gap (same size, so nothing moves), the drop overlay says where a
    dragged tab lands, the pane-layout dialog shows preset thumbnails (the engine's SVG reads theme tokens only). */
 .fx-dock { position: relative; }
@@ -1447,3 +1568,68 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 }
 :where([data-fx-small]) .fx-help-panel { left: var(--fx-dens-gap-lg); right: var(--fx-dens-gap-lg); bottom: var(--fx-dens-gap-lg); width: auto; }
 :where([data-fx-small]) .fx-help-intro { bottom: var(--fx-dens-gap-lg); }
+
+/* What Brett said (build-origin@1, framework/react/components/BuildOrigin.tsx): his words first on every expanded build,
+   as a speech bubble; the brief collapsed below; addenda in order. Tokens only. */
+.axf-origin { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-lg) 0; min-width: 0; }
+.axf-origin__label { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); font-size: var(--fx-type-scale-xs); font-weight: 600; color: var(--fx-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.axf-origin__said { margin: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axf-origin__bubble {
+  position: relative; margin: 0; padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl); border-radius: var(--fx-radius-lg); border-top-left-radius: var(--fx-radius-sm);
+  background: var(--fx-accent-soft); color: var(--fx-text); border: var(--fx-border-w) solid color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent);
+  font-size: var(--fx-type-scale-md); line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.axf-origin__bubble::before { content: '\201C'; color: var(--fx-accent); font-weight: 700; margin-right: var(--fx-dens-gap-xs); }
+.axf-origin__bubble::after { content: '\201D'; color: var(--fx-accent); font-weight: 700; margin-left: var(--fx-dens-gap-xs); }
+.axf-origin__meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); font-size: var(--fx-type-scale-xs); color: var(--fx-muted); }
+.axf-origin__link { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); color: var(--fx-accent); text-decoration: none; }
+.axf-origin__link:hover { text-decoration: underline; }
+.axf-origin__by, .axf-origin__none { font-size: var(--fx-type-scale-xs); color: var(--fx-muted); }
+.axf-origin--empty { flex-direction: row; align-items: center; gap: var(--fx-dens-gap-md); }
+.axf-origin__brief { display: flex; flex-direction: column; align-items: flex-start; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axf-origin__brief-text {
+  margin: 0; width: 100%; box-sizing: border-box; max-height: calc(var(--fx-row-h) * 12); overflow: auto; padding: var(--fx-dens-gap-lg);
+  border-radius: var(--fx-radius-md); background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border);
+  font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-xs); color: var(--fx-text); white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.axf-origin__addenda { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); }
+.axf-origin__addenda > li { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axf-origin-sub { display: block; font-size: var(--fx-type-scale-xs); color: var(--fx-muted); font-style: italic; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+
+/* ---------------------------------------------------------------- data cards (card@1, react/components/DataCard.tsx)
+   One card engine draws any data; every value here is a token, so a theme or scale swap restyles every card. */
+.fx-dcard { min-width: 0 }
+.fx-dcard--wide { grid-column: 1 / -1 }
+.fx-dcard--l { grid-row: span 2 }
+.fx-dcard--s .fx-dcard__big { font-size: var(--fx-type-scale-lg) }
+.fx-dcard__note { margin: 0; color: var(--fx-muted); font-size: var(--fx-type-scale-sm) }
+.fx-dcard__note.is-error { color: var(--fx-danger) }
+.fx-dcard__number { display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--fx-dens-gap-sm) }
+.fx-dcard__big { font-family: var(--fx-font-display); font-size: var(--fx-type-scale-2xl); font-weight: var(--fx-type-weights-strong); line-height: 1; color: var(--fx-text); font-variant-numeric: tabular-nums }
+.fx-dcard__unit { color: var(--fx-muted); font-size: var(--fx-type-scale-sm) }
+.fx-dcard__sub { color: var(--fx-muted); font-size: var(--fx-type-scale-xs); min-width: 0; overflow: hidden; text-overflow: ellipsis }
+.fx-dcard__status { display: flex; align-items: center; flex-wrap: wrap; gap: var(--fx-dens-gap-sm) }
+.fx-dcard__dot { flex: none; width: calc(var(--fx-space) * 1.25); height: calc(var(--fx-space) * 1.25); border-radius: 999px; background: var(--fx-muted) }
+.fx-dcard__dot.is-success { background: var(--fx-success) }
+.fx-dcard__dot.is-warning { background: var(--fx-warning) }
+.fx-dcard__dot.is-danger { background: var(--fx-danger) }
+.fx-dcard__dot.is-accent { background: var(--fx-accent) }
+.fx-dcard__state { font-size: var(--fx-type-scale-lg); font-weight: var(--fx-type-weights-strong); text-transform: capitalize }
+.fx-dcard__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.fx-dcard__item { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: var(--fx-dens-gap-sm); padding-block: var(--fx-dens-gap-xs); border-bottom: var(--fx-border-w) solid color-mix(in srgb, var(--fx-border) calc(var(--fx-opacity-muted) * 100%), transparent) }
+.fx-dcard__item:last-child { border-bottom: 0 }
+.fx-dcard__item > .fx-dcard__sub { grid-column: 1 / -1 }
+.fx-dcard__title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.fx-dcard__meters { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm) }
+.fx-dcard__meter { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) auto; align-items: center; gap: var(--fx-dens-gap-sm) }
+.fx-dcard__label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fx-type-scale-sm) }
+.fx-dcard__num { font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-xs); color: var(--fx-muted); font-variant-numeric: tabular-nums }
+.fx-dcard__chart { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.fx-dcard__svg { width: 100%; height: calc(var(--fx-space) * 10); display: block; overflow: visible }
+.fx-dcard__chart.is-spark .fx-dcard__svg { height: calc(var(--fx-space) * 4) }
+.fx-dcard__line { fill: none; stroke: var(--fx-accent); stroke-width: calc(var(--fx-border-w) * 2); stroke-linejoin: round; stroke-linecap: round }
+.fx-dcard__area { fill: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); stroke: none }
+.fx-dcard__bars { display: flex; align-items: flex-end; gap: var(--fx-dens-gap-xs); height: calc(var(--fx-space) * 10) }
+.fx-dcard__bar { flex: 1 1 0; min-width: 0; background: var(--fx-accent); border-radius: var(--fx-radius-sm) var(--fx-radius-sm) 0 0 }
+.fx-dcard__table { font-size: var(--fx-type-scale-sm) }
+.fx-dcard__table td { overflow-wrap: anywhere }

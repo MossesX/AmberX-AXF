@@ -5,6 +5,8 @@ import { NewAppDialog } from './views/Boilerplates';
 import { AddFeatureDialog } from './views/Plan';
 import { NewLibraryDialog } from './views/LibraryTemplates';
 import { ReprocessDialog, TokenDialog } from './views/BuildManager';
+import { HomeCardDialog } from './views/HomeCards';
+import type { CardData } from './axf/core/engines/card-rules.mjs';
 
 export const dialogs: DialogMap = {
   'build-reprocess': { title: 'Reprocess the build queue', icon: 'shuffle', render: (_p, close) => <ReprocessDialog close={close} /> },
@@ -15,6 +17,7 @@ export const dialogs: DialogMap = {
   libpicker: { title: 'Build a library', icon: 'box', render: (p, close) => <LibraryPickerDialog libraryId={String(p.library ?? '')} close={close} /> },
   install: { title: 'Install library', icon: 'download', render: (p, close) => <InstallWizardDialog libraryId={String(p.library ?? '')} close={close} /> },
   uiimport: { title: 'Import UI library', icon: 'download', render: (p, close) => <UiImportWizardDialog sourceId={String(p.source ?? '')} close={close} /> },
+  'home-card': { title: 'Card', icon: 'chart', render: (p, close) => <HomeCardDialog id={String(p.id ?? p.arg ?? '') || undefined} draft={p.draft as CardData | undefined} at={typeof p.at === 'number' ? p.at : undefined} close={close} /> },
   project: { title: 'Open project', icon: 'folder', render: (_p, close) => <OpenProjectDialog close={close} /> },
   newapp: { title: 'Create app from boilerplate', icon: 'rocket', render: (p, close) => <NewAppDialog boilerplateId={String(p.boilerplate ?? '')} close={close} /> },
 };

@@ -467,7 +467,7 @@ export function CommandCenter({ start }: { start?: string }) {
               </button>
             ))}
           </div>
-          <div className="axp-cmd-tools">
+          <div className="axp-cmd-tools" role="toolbar" aria-label="Command filters">
             <TextField label="Search" value={f.q ?? ''} onChange={(q) => setF({ ...f, q })} placeholder="what you'd say, or what it does" />
             <SelectField label="Group" value={f.group ?? ''} onChange={(group) => setF({ ...f, group })} options={[{ value: '', label: 'All groups' }, ...groupsOf(inTab).map((g) => ({ value: g, label: g }))]} />
             {inner === 'chains' && <SelectField label="Kind" value={f.kind ?? ''} onChange={(kind) => setF({ ...f, kind: kind as GridFilter['kind'] })} options={[{ value: '', label: 'Chains and wizards' }, { value: 'chain', label: 'Chains' }, { value: 'wizard', label: 'Wizards' }]} />}

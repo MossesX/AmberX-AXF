@@ -4,7 +4,8 @@ import { Icon } from '../components/Icon';
 import { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from '../components/Brand';
 import { useScopeId } from '../components/InterfaceScope';
 import type { Pane, TabGroup, TabSpec, WindowManager, WindowSettings, WindowSpec, WindowState, Corner, DragPreview, ResizeEdge, WindowFrame } from '../../core/engines/windows';
-import { effectiveToolbar, forcesToolbar, isFloating, isMaximized, rectOf, resizeCursor, windowFrame, CORNERS, RESIZE_EDGES } from '../../core/engines/windows';
+import { effectiveToolbar, forcesToolbar, isFloating, isMaximized, paneGroups, rectOf, resizeCursor, windowFrame, CORNERS, RESIZE_EDGES } from '../../core/engines/windows';
+import { DockDropOverlay, DockHost, DockPaneView, dockLayoutDialog } from './DockHost';
 
 /* ------------------------------------------------------------------ */
 /* registry of tab renderers + locals                                  */
@@ -29,23 +30,18 @@ export function TabRenderersProvider({ renderers, children }: { renderers: TabRe
 /* dock area (groups inside the main window)                           */
 /* ------------------------------------------------------------------ */
 
-/** Renders the main window's nested layout; `empty` shows when nothing is docked. */
+/** Renders the main window's nested layout (dock@1: splitters, drop zones); `empty` shows when nothing is docked. */
 export function DockArea({ windowId, empty, className }: { windowId?: string; empty?: ReactNode; className?: string }) {
-  const wm = useWindowManager();
-  const s = useWindowState();
-  const id = windowId ?? wm.mainWindowId;
-  const layout = s.layouts[id];
-  return <div className={`fx-dock ${className ?? ''}`}>{layout ? <PaneView pane={layout} /> : empty ?? <div className="fx-empty">No tabs — open something here, or drag a tab in.</div>}</div>;
+  return <DockHost windowId={windowId} empty={empty} className={className} />;
 }
 
+/** A pane tree on its own (older callers); the window is the one its first group lives in. Prefer DockHost / DockPaneView. */
 export function PaneView({ pane }: { pane: Pane }) {
+  const wm = useWindowManager();
   const s = useWindowState();
-  if (pane.kind === 'leaf') { const g = s.groups[pane.groupId]; return g ? <TabGroupView group={g} /> : null; }
-  if (pane.kind === 'split') {
-    const total = pane.weights.reduce((a, b) => a + b, 0) || 1;
-    return <div className={`fx-split ${pane.vertical ? 'fx-split--v' : 'fx-split--h'}`}>{pane.children.map((c, i) => <div key={i} className="fx-split__cell" style={{ flex: `${(pane.weights[i] ?? 1) / total} 1 0` }}><PaneView pane={c} /></div>)}</div>;
-  }
-  return <div className="fx-grid" style={{ gridTemplateColumns: `repeat(${pane.cols}, 1fr)`, gridTemplateRows: `repeat(${pane.rows}, 1fr)` }}>{pane.cells.map((c, i) => <div key={i} className="fx-grid__cell"><PaneView pane={c} /></div>)}</div>;
+  const first = paneGroups(pane)[0];
+  const windowId = (first && s.groups[first]?.windowId) || wm.mainWindowId;
+  return <DockPaneView pane={pane} path={[]} windowId={windowId} />;
 }
 
 /* ------------------------------------------------------------------ */
@@ -58,14 +54,18 @@ export function TabGroupView({ group }: { group: TabGroup }) {
   const renderers = useContext(RenderersCtx);
   const ref = useRef<HTMLDivElement>(null);
   const active = group.tabs[group.active];
-  // report bounds for drop targeting
+  // report bounds for drop targeting: the group's rect, its header height and each tab's right edge (dock@1 zones)
   useLayoutEffect(() => {
     const el = ref.current; if (!el) return;
-    const report = () => { const r = el.getBoundingClientRect(); wm.groupBounds.set(group.id, [r.left, r.top, r.right, r.bottom]); };
+    const report = () => {
+      const r = el.getBoundingClientRect(); wm.groupBounds.set(group.id, [r.left, r.top, r.right, r.bottom]);
+      const bar = el.querySelector<HTMLElement>(':scope > .fx-tabgroup__bar');
+      if (bar) { wm.groupHeaders.set(group.id, bar.getBoundingClientRect().height); wm.tabEdges.set(group.id, [...bar.querySelectorAll<HTMLElement>(':scope > .fx-tab')].map((t) => t.getBoundingClientRect().right)); }
+    };
     report();
     const ro = new ResizeObserver(report); ro.observe(el);
     window.addEventListener('scroll', report, true);
-    return () => { ro.disconnect(); window.removeEventListener('scroll', report, true); wm.groupBounds.delete(group.id); };
+    return () => { ro.disconnect(); window.removeEventListener('scroll', report, true); wm.groupBounds.delete(group.id); wm.groupHeaders.delete(group.id); wm.tabEdges.delete(group.id); };
   });
   const brand = useBrandPlace('tab-group');
   const brandHost = brandHostProps(brand);
@@ -133,6 +133,7 @@ export function FloatingWindowsHost() {
       {CORNERS.map((c) => <MinimizedCorner key={c} corner={c} windows={wm.minimizedAt(c).filter(own)} />)}
       {s.windows.filter((w) => w.minimized === 'floating-toolbar' && own(w)).map((w) => <FloatingMiniToolbar key={w.id} w={w} />)}
       {s.preview && <SnapPreview preview={s.preview} />}
+      {s.dockPreview && <DockDropOverlay preview={s.dockPreview} />}
       {s.drag && <div className="fx-dragghost" style={{ left: s.drag.x + 8, top: s.drag.y + 8 }}>{Object.values(s.groups).flatMap((g) => g.tabs).find((t) => t.id === s.drag!.tabId)?.title ?? 'tab'}</div>}
     </>
   );
@@ -248,7 +249,7 @@ function FloatingWindow({ w }: { w: WindowSpec }) {
             </div>
           )}
           {frame === 'standard' && effectiveToolbar(w) && <WindowToolbar w={w} />}
-          <div className="fx-window__body">{layout ? <PaneView pane={layout} /> : <div className="fx-empty">Empty window</div>}<BrandWatermark slot={brandSlot} /></div>
+          <div className="fx-window__body">{layout ? <DockHost windowId={w.id} empty={<div className="fx-empty">Empty window</div>} /> : <div className="fx-empty">Empty window</div>}<BrandWatermark slot={brandSlot} /></div>
           {!maximized && <WindowResizeHandles onStart={startResize} />}
         </div>
       </FrameCtx.Provider>
@@ -261,7 +262,7 @@ export function WindowToolbar({ w }: { w: WindowSpec }) {
   const rt = useRuntime();
   const wm = rt.windows;
   return (
-    <div className="fx-window__toolbar">
+    <div className="fx-window__toolbar" role="toolbar" aria-label="Window">
       <button className="fx-iconbtn" title="Window settings" onClick={() => rt.openDialog('window-settings', { arg: w.id })}><Icon name="settings" /></button>
       <button className="fx-iconbtn" title="Redock" onClick={() => wm.redock(w.id)}><Icon name="download" /></button>
       <button className="fx-iconbtn" title={isMaximized(w) ? 'Restore' : 'Maximize'} onClick={() => wm.toggleMaximize(w.id)}><Icon name={isMaximized(w) ? 'restore' : 'maximize'} /></button>
@@ -287,7 +288,7 @@ function MinimizedCorner({ corner, windows }: { corner: Corner; windows: WindowS
 function FloatingMiniToolbar({ w }: { w: WindowSpec }) {
   const wm = useWindowManager();
   return (
-    <div className="fx-minitoolbar" style={{ left: w.minimizedAtX, top: w.minimizedAtY }}>
+    <div className="fx-minitoolbar" role="toolbar" aria-label="Minimized window" style={{ left: w.minimizedAtX, top: w.minimizedAtY }}>
       <span className="fx-minitoolbar__title">{w.title}</span>
       <button className="fx-iconbtn" title="Restore" onClick={() => wm.restore(w.id)}><Icon name="external" /></button>
       <button className="fx-iconbtn" title="Redock" onClick={() => wm.redock(w.id)}><Icon name="download" /></button>
@@ -334,6 +335,7 @@ export function WindowSettingsDialog({ windowId, close }: { windowId: string; cl
 
 /** Register these with the shell's dialogs: `{ ...windowDialogs }`. */
 export const windowDialogs = {
+  ...dockLayoutDialog,
   'split-grid': { title: 'Custom grid', icon: 'grid', searchable: false, render: (p: Record<string, unknown>, close: () => void) => <SplitGridDialog groupId={String(p.arg ?? '')} close={close} /> },
   'window-settings': { title: 'Window settings', icon: 'settings', searchable: false, render: (p: Record<string, unknown>, close: () => void) => <WindowSettingsDialog windowId={String(p.arg ?? '')} close={close} /> },
 };

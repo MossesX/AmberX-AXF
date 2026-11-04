@@ -2,6 +2,33 @@
 
 `ai.amberx.axf.console.terminal` · built on Opus (Oct 18 2026).
 
+**Sessions nav (v0.5.0, Nov 3 2026, Opus; build `terminal-sessions-nav`).** A collapsible rail on the left of every
+terminal window (`web/nav.tsx`, model `server/nav.py`, answer `terminal-nav@1`; setting `sessionsNav`).
+- **Sections:** *My sessions* (Brett's own tmux sessions on the VPS and in the console, e.g. Claude Code over Moshi, the
+  persistent `axt-…` tabs, and his claude.ai chat / voice sessions as feeds), *Agents* (headless `axf-…` builds with
+  agent, model, live cost and status from the headless meters), *Connections* (where a tab can open) and *Recent* (ended,
+  with a link to the Session browser). Each row shows its start time and a running timer. Search, filter (all / live /
+  working / waiting), sort (started / activity / name), collapsible groups, all remembered per browser.
+- **Collapsed** = icons with status dots; **phone** = a drawer behind ☰ in the tab strip (or swipe from the left edge,
+  swipe back to close).
+- **Tap** opens or focuses the tab. A session of Brett's opens as a **read-only mirror** (`tmux attach -r`, and the
+  server drops typed input too); **Jump in** on the mirror bar re-attaches writable on the same tmux session. Headless
+  builds open as before (writable). **Right-click / long-press:** Open, Open in a new window, Jump in, Open in Moshi
+  (copies the attach command), Session info, Stop… (with a confirm; `POST nav/stop`).
+- **claude.ai chats:** claude.ai has no live transcript API, so a chat is mirrored from what reaches the console: the
+  lines it posts with the MCP tool `console_session_note` (session, text, source, agent, url) and every console MCP tool
+  it calls (tool, a secret-free argument summary, ok / error, time), grouped by the session name (`X-Axhub-Session`
+  header, else "axHub"). Its tab is a feed (`kind: 'feed'`); **Jump in** opens the chat's claude.ai link. Feeds live in
+  `feeds.json` (last 60 sessions × 200 lines, 0600). Capability `axf.session-feed@1` (note / record_call / feeds) is how
+  the console's MCP server posts into it. Zero tokens.
+- **Live:** websocket `nav/ws` (one per page, pushed on change, at once on a new feed line); falls back to polling `GET nav`.
+- **Commands** (plugin-commands@1, so REST + MCP + CLI): `sessions-list`, `sessions-feed`, `sessions-note`,
+  `sessions-stop` (destructive, confirm), and the console actions `sessions-mirror` / `sessions-jump`
+  (`terminal.mirror` / `terminal.jump` with args `[name, where]`).
+- **Known gap:** axHub does not pass the caller's session or correlation id to downstream MCP servers, and its audit log
+  is only readable from Brett's signed-in browser, so calls a chat makes to *other* axHub services are not in its feed;
+  only its console calls and its own `console_session_note` lines are.
+
 **Headless tabs (v0.4.0, Nov 3 2026, Opus; Urgent build `headless-tabs`).**
 - **Persistent tabs:** VPS and console tabs (shells and Claude Code) run inside a tmux session named `axt-…` (the
   browser picks it once and keeps it with the tab; setting `persistTabs`). The ssh / pty link is only an attachment:
@@ -25,10 +52,24 @@
 - **Context chain** (`web/ChainPane.tsx`, `GET headless/<name>/chain`): the files the session takes in, in order, nested
   under the file that imported them, with their rules typed out one at a time (`chainSpeed`: slow / normal / fast /
   all), Pause, Skip to the end. Pure helpers in `web/headless-core.ts`; check `framework/spec/check-headless-tabs.mts`.
+  **A tree (Nov 3 2026, `terminal-drag-chain-tree`):** each file sits indented under the file that pulled it in — an
+  @import, a path a loaded file mentions that the session then Read (`reference`), or one it says to read first / on
+  every load (`session-start rule`); the rest are roots (`session-start`, `read`, `nested memory`). Each row: fold ▸/▾,
+  file icon, name + folder, why it loaded, rule count. The reveal walks the tree depth-first; tapping a file types its
+  content out again. The meter (`deploy/claude-meter.mjs`) records `reason`, `parentI` and `why` per item; the route
+  also returns `tree` (the same items nested, `sessions.chain_tree`).
+- **Window grip, menus, text size (Nov 3 2026, `terminal-drag-chain-tree`):** the strip starts with the framework's
+  `WindowGrip` (drag = move, double-tap = maximize; 44 px on touch), tabs use `useTabPress` (tap switches, horizontal
+  drag reorders, press-and-hold then move or a vertical pull drags the window, long-press = tab menu). Right-click /
+  long-press on the strip, grip, toolbar or empty body shows the window menu, **Terminal settings** first (also first in
+  the tab menu and the terminal text menu; it opens where *Opens in* says). Text size per pane (`web/textsize.ts`): the
+  terminal text and the context chain each have A− / size (tap = reset) / A+ on the toolbar for the pane last touched,
+  Ctrl/Cmd + − / = / 0, Ctrl + wheel and pinch; every tab remembers its size on the device (and for its Claude Code
+  profile); defaults `fontSize` (computer), `fontSizePhone` (0 = Auto: the theme's small text token), `chainTextSize` (%).
 
 **Windows-style terminal (v0.3.0, Oct 28 2026, Opus).** One floating window per terminal host (tab kind
 `terminal-host`, `web/TerminalHost.tsx`) drawn like Windows Terminal: its own tab strip (icon, title, status dot, close;
-double-click renames, middle-click closes, drag reorders; right-click = Connection…, rename, duplicate, colour, move to
+double-click renames, middle-click closes, horizontal drag reorders; right-click = Connection…, rename, duplicate, colour, move to
 a new window, close / others / to the right), **+** and **∨** (Claude Code…, every Claude Code profile, Shell…, the
 console, the VPS host, containers, Settings), a hideable command toolbar (Claude Code, the tab's connection, find, text
 size, mouse + Mosh modes, copy / paste, settings), Mica, and Windows keys (Ctrl+Shift+T / W / D, Ctrl+Tab, Ctrl+Alt+1…9,

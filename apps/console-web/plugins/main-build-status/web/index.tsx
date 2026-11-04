@@ -17,7 +17,7 @@
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Chip, Icon, TextField } from '@console/axf/react';
+import { Button, Chip, Icon, RefText, TextField } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -104,7 +104,7 @@ function RunCard({ it }: { it: BuildItem }) {
         <span className="fx-mono fx-small">{it.branch}</span>
         <Chip tone={it.state === 'success' ? 'success' : it.state === 'failure' ? 'danger' : it.state === 'running' ? 'accent' : undefined}>{WORD[it.state]}</Chip>
       </div>
-      {it.title && <p className="axp-main-build-status__title">{it.title}</p>}
+      {it.title && <p className="axp-main-build-status__title"><RefText text={it.title} /></p>}
       <p className="fx-small fx-muted axp-main-build-status__meta">
         {it.name || it.workflow}{it.runNumber ? ` #${it.runNumber}` : ''}
         {it.sha ? <> · <span className="fx-mono">{it.sha.slice(0, 7)}</span></> : null}

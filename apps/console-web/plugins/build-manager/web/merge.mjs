@@ -170,7 +170,7 @@ export function buildRows({ pending = [], queue = null, queueState = null, featu
     const model = modelName(p.model);
     rows.push({
       key: `pending:${p.id}`, id: str(p.id), source: 'pending', title: str(p.title) || p.id, detail: str(p.detail), model,
-      origin: originOf('pending', p.source), addedBy: addedByKey(p.source),
+      origin: originOf('pending', p.source), addedBy: addedByKey(p.source), ...(p.origin ? { brett: p.origin } : {}),
       status: p.status, statusLabel: PENDING_LABEL[p.status] ?? p.status, order: i, steps, ...t,
       ...(p.planId ? { planId: str(p.planId) } : {}),
       ...(p.planId && queuePos.has(p.planId) ? { queuePosition: queuePos.get(p.planId) } : {}),
