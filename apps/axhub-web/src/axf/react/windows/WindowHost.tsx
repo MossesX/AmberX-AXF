@@ -271,7 +271,7 @@ export function WindowToolbar({ w }: { w: WindowSpec }) {
   const rt = useRuntime();
   const wm = rt.windows;
   return (
-    <div className="fx-window__toolbar">
+    <div className="fx-window__toolbar" role="toolbar" aria-label="Window">
       <button className="fx-iconbtn" title="Window settings" onClick={() => rt.openDialog('window-settings', { arg: w.id })}><Icon name="settings" /></button>
       <button className="fx-iconbtn" title="Redock" onClick={() => wm.redock(w.id)}><Icon name="download" /></button>
       <button className="fx-iconbtn" title={isMaximized(w) ? 'Restore' : 'Maximize'} onClick={() => wm.toggleMaximize(w.id)}><Icon name={isMaximized(w) ? 'restore' : 'maximize'} /></button>
@@ -297,7 +297,7 @@ function MinimizedCorner({ corner, windows }: { corner: Corner; windows: WindowS
 function FloatingMiniToolbar({ w }: { w: WindowSpec }) {
   const wm = useWindowManager();
   return (
-    <div className="fx-minitoolbar" style={{ left: w.minimizedAtX, top: w.minimizedAtY }}>
+    <div className="fx-minitoolbar" role="toolbar" aria-label="Minimized window" style={{ left: w.minimizedAtX, top: w.minimizedAtY }}>
       <span className="fx-minitoolbar__title">{w.title}</span>
       <button className="fx-iconbtn" title="Restore" onClick={() => wm.restore(w.id)}><Icon name="external" /></button>
       <button className="fx-iconbtn" title="Redock" onClick={() => wm.redock(w.id)}><Icon name="download" /></button>

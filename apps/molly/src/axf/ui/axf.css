@@ -438,6 +438,30 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 
 /* ---------------- toolbar (toolbar asset) ---------------- */
 
+/* Tap-to-confirm (framework/react/tapConfirm.ts): on touch the first tap lights the button for the arm window and a tip
+   says what it does; the second tap runs it. The bar under the button empties over --fx-tap-arm-ms. */
+[role='toolbar'] { touch-action: manipulation; }
+[data-axf-armed] {
+  background-color: var(--fx-accent-soft); color: var(--fx-text);
+  box-shadow: 0 0 0 var(--fx-border-w) var(--fx-accent) inset;
+  background-image: linear-gradient(var(--fx-accent), var(--fx-accent)); background-repeat: no-repeat;
+  background-position: left bottom; background-size: 0% calc(var(--fx-border-w) * 2);
+  animation: fx-tap-arm var(--fx-tap-arm-ms) linear both;
+}
+@keyframes fx-tap-arm { from { background-size: 100% calc(var(--fx-border-w) * 2); } to { background-size: 0% calc(var(--fx-border-w) * 2); } }
+[data-fx-motion='reduced'] [data-axf-armed] { animation: none; }
+@media (prefers-reduced-motion: reduce) { [data-axf-armed] { animation: none; } }
+.fx-taptip {
+  position: fixed; z-index: 70; max-width: calc(100vw - var(--fx-dens-gap-2xl) * 2); pointer-events: none;
+  display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl);
+  background: var(--fx-surface); color: var(--fx-text); border: var(--fx-border-w) solid var(--fx-accent);
+  border-radius: var(--fx-radius-md); box-shadow: var(--fx-shadow-lg); font-size: var(--fx-type-scale-sm);
+  animation: fx-pop calc(var(--fx-motion) * 1.2) ease both;
+}
+.fx-taptip__text { font-weight: var(--fx-btn-weight, 600); }
+.fx-taptip__hint { color: var(--fx-muted); font-size: var(--fx-type-scale-xs); }
+
+
 .fx-toolbar {
   display: flex; align-items: center; gap: var(--fx-dens-gap-xl);
   padding: var(--fx-toolbar-py, var(--fx-dens-gap-lg)) var(--fx-dens-gap-2xl);

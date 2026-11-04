@@ -64,7 +64,7 @@ export function ChainPane({ session, settings }: { session: string; settings: Se
 
   return (
     <section className={P} aria-label="Context chain">
-      <header className={`${P}__bar`}>
+      <header className={`${P}__bar`} role="toolbar" aria-label="Context chain">
         <Icon name="branch" size={14} />
         <strong className={`${P}__title`}>Context chain</strong>
         <span className={`${P}__count`}>{Math.min(curItem + (done ? 0 : 1), items.length)}/{items.length} files · {seenRules}/{totalRules} rules</span>

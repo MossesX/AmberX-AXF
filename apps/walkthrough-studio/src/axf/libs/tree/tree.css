@@ -12,4 +12,4 @@
 .axf-tree-mark { background: var(--fx-accent-soft); color: var(--fx-accent); border-radius: var(--fx-radius-sm); }
 .axf-tree-tools { display: flex; align-items: center; flex-wrap: wrap; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); border-bottom: var(--fx-border-w) solid var(--fx-border); }
 .axf-tree-tools .axf-tree-search { flex: 1 1 auto; margin-left: 0; min-width: 0; }
-@media (max-width: 760px) { .axf-tree-meter { display: none; } }
+:where([data-fx-narrow]) .axf-tree-meter { display: none; }

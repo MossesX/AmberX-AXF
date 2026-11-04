@@ -68,7 +68,7 @@ export function FilesDialog() {
   const shown = files.filter((f) => !q || `${f.label} ${f.path} ${f.by}`.toLowerCase().includes(q.toLowerCase()));
   return (
     <div className="axp-claude-handoff-files">
-      <div className="axp-claude-handoff-files__bar">
+      <div className="axp-claude-handoff-files__bar" role="toolbar" aria-label="Files">
         <TextField label="" placeholder="Find a file" value={q} onChange={setQ} />
         <Button tone="ghost" icon="refresh" size="sm" onClick={() => void load()}>Refresh</Button>
       </div>
@@ -126,7 +126,7 @@ export function FileTab({ tab }: { tab: { payload?: string } }) {
   const text = data?.text ?? '';
   return (
     <div className="axp-claude-handoff-filetab">
-      <div className="axp-claude-handoff-filetab__bar">
+      <div className="axp-claude-handoff-filetab__bar" role="toolbar" aria-label="File">
         <span className="axp-claude-handoff-files__path">{f.path}</span>
         {data && !data.remote && <span className="axp-claude-handoff__meta">{data.exists ? `${kb(data.bytes)} · ${when(data.modifiedAt)}` : ''}</span>}
         {isMd && <Button tone="ghost" size="sm" icon="code" onClick={() => setRaw(!raw)}>{raw ? 'Formatted' : 'Raw'}</Button>}

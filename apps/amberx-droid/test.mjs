@@ -153,7 +153,7 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   }
   const app = readFileSync(`${here}src/App.tsx`, 'utf8');
   const libs = [...app.matchAll(/from '\.\/axf\/libs\/([a-z-]+)/g)].map((m) => m[1]).sort();
-  for (const l of libs) ok(['hub', 'hubsync', 'settings'].includes(l), `library ${l} is one it needs`);
+  for (const l of libs) ok(['hub', 'hubsync', 'settings', 'toolbars'].includes(l), `library ${l} is one it needs`);
   ok(!/plugins\//.test(app), 'no console plugin is imported');
 }
 

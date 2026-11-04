@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { AppShell, installLibraries, useRuntime, type ViewMap } from './axf/react';
 import { library as settingsLibrary } from './axf/libs/settings';
+import { toolbarsLibrary } from './axf/libs/toolbars';
 import { hubSyncLibrary } from './axf/libs/hubsync';
 import { dialogs } from './dialogs';
 import { Approvals } from './views/Approvals';
@@ -29,7 +30,7 @@ const views: ViewMap = {
  * FLAG_SECURE unless opted in, `securescreen.ts`) and Sound and microphone (Quiet, one owner per device, `sound.tsx`)
  * are AmberX's own, and so is Mic off (`mic.tsx`: one tap lets go of every microphone). The plugins come after them.
  */
-const libraries = [settingsLibrary, hubSyncLibrary, secureScreenLibrary, soundLibrary, micLibrary, ...loadPlugins().map((p) => p.library)];
+const libraries = [settingsLibrary, toolbarsLibrary, hubSyncLibrary, secureScreenLibrary, soundLibrary, micLibrary, ...loadPlugins().map((p) => p.library)];
 
 export function App() {
   const rt = useRuntime();

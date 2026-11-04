@@ -86,7 +86,7 @@ function PluginCommandsView() {
         Made from what each plugin already has (its routes, its actions, its data folder and plugin.json). Claude reaches them through axHub as MCP tools named <code>&lt;plugin&gt;_&lt;command&gt;</code> (or <code>plugin_commands</code>, <code>plugin_read</code>, <code>plugin_run</code>), the REST API at <code>/api/control/&lt;plugin&gt;/&lt;command&gt;</code>, and the CLI <code>axf &lt;plugin&gt; &lt;command&gt;</code>. A new plugin shows up here by itself.
       </Note>
       {err && <Note tone="warning">{err}</Note>}
-      <div className="axf-pc__bar">
+      <div className="axf-pc__bar" role="toolbar" aria-label="Plugin commands">
         <TextField label="Find" value={q} onChange={setQ} placeholder="plugin, command or words" />
         <Segmented label="Show" value={kind} onChange={(v) => setKind(v as Kind)} options={[{ value: 'all', label: 'All' }, { value: 'read', label: 'Reads' }, { value: 'command', label: 'Commands' }]} />
         <Button icon="refresh" onClick={() => void load()} data-help="pc-refresh">Refresh</Button>

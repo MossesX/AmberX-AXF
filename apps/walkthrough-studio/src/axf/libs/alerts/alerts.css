@@ -29,4 +29,4 @@
 .axf-alerts__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--fx-dens-gap-xl) }
 .axf-alerts__field { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); font-size: var(--fx-type-root-md); color: var(--fx-muted); min-width: 0 }
 .axf-alerts__field .fx-input { color: var(--fx-text) }
-@media (max-width: 560px) { .axf-alerts__grid { grid-template-columns: minmax(0, 1fr) } }
+:where([data-fx-small]) .axf-alerts__grid { grid-template-columns: minmax(0, 1fr) }

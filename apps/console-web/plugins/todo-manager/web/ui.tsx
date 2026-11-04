@@ -122,7 +122,7 @@ function OpenList() {
         <span className="axp-todo__progress">{p.total ? `${p.done} of ${p.total} done` : `${open.entries.length} entr${open.entries.length === 1 ? 'y' : 'ies'}`}</span>
       </div>
       {/* one bar: add (first kind up front, the rest behind ⋯), search, tree / grid, and the filters behind one toggle (compact pages, Oct 30 2026) */}
-      <div className="axp-todo__bar">
+      <div className="axp-todo__bar" role="toolbar" aria-label="To-do">
         <Button size="sm" tone="primary" icon={types.task.icon} onClick={() => newEntry('task')}>{types.task.label}</Button>
         <MoreMenu label="Add something else" items={[
           ...KINDS.filter((k) => k !== 'task').map((k) => ({ id: k, label: `New ${types[k].label.toLowerCase()}`, icon: types[k].icon, onSelect: () => newEntry(k) })),
