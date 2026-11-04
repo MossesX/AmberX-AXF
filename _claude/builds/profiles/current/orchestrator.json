@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T11:25:36.126Z",
+ "updatedAt": "2026-11-04T11:33:08.623Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6461,7 +6461,7 @@
    "branch": "claude/expenses-port",
    "pr": "",
    "createdAt": "2026-11-04T11:09:10.279Z",
-   "updatedAt": "2026-11-04T11:25:25.800Z",
+   "updatedAt": "2026-11-04T11:33:07.772Z",
    "builtAt": "",
    "notes": [
     {
@@ -6569,9 +6569,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-04T11:33:07.772Z",
+     "note": "/api/expenses/v1 (entries list/get/add/edit, accounts, totals, export) + scripts/expenses-cli.mjs + console MCP expenses_* (7 tools). Live; read-tested on the real ledger (524 entries), no live writes. Test 17 checks.",
      "uid": "st-mw20kuv40bvd5i"
     },
     {

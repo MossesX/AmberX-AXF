@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 646,
- "updatedAt": "2026-11-04T11:25:36.126Z",
+ "rev": 647,
+ "updatedAt": "2026-11-04T11:33:08.623Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -72095,7 +72095,7 @@
    "branch": "claude/expenses-port",
    "pr": "",
    "createdAt": "2026-11-04T11:09:10.279Z",
-   "updatedAt": "2026-11-04T11:25:25.800Z",
+   "updatedAt": "2026-11-04T11:33:07.772Z",
    "builtAt": "",
    "notes": [
     {
@@ -72221,12 +72221,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-04T11:33:07.772Z",
+     "note": "/api/expenses/v1 (entries list/get/add/edit, accounts, totals, export) + scripts/expenses-cli.mjs + console MCP expenses_* (7 tools). Live; read-tested on the real ledger (524 entries), no live writes. Test 17 checks.",
+     "rev": 2,
      "createdAt": "2026-11-04T11:09:10.280Z",
-     "updatedAt": "2026-11-04T11:09:10.280Z"
+     "updatedAt": "2026-11-04T11:33:07.811Z"
     },
     {
      "id": "s6",
@@ -72259,7 +72259,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
