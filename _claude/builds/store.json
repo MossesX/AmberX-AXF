@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 785,
- "updatedAt": "2026-11-04T15:32:25.205Z",
+ "rev": 786,
+ "updatedAt": "2026-11-04T15:32:39.084Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -79422,7 +79422,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T14:43:48.090Z",
-   "updatedAt": "2026-11-04T15:09:08.676Z",
+   "updatedAt": "2026-11-04T15:32:25.522Z",
    "builtAt": "",
    "notes": [
     {
@@ -79432,9 +79432,22 @@
     {
      "text": "s1 done: voice-command@1 rules + type + schema + fixture + check + forFramework manifest rules (commit 340483ee0 on claude/app-voice-commands). s0: Expenses fix pushed to claude/expenses-port, PR #307 CI green, auto-merge pending.",
      "at": "2026-11-04T15:09:08.676Z"
+    },
+    {
+     "text": "s0 done: Expenses PR #307 merged 15:14 UTC (CI fix: plugin-lifecycle ignores other apps' own plugin folders; grid save merges by entry id, 7 new checks). s2 done: voice-commands.mjs (surface/generate/check/registry/help/say/fill/bake), axf init --for-framework, templates, launcher note, CI check.",
+     "at": "2026-11-04T15:32:25.522Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-04T15:32:24.370Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "\"It's voice control too - like I can control it with my voice, right?\" ... \"Anytime I build a new app or port an app like that, it needs to be noted whether it's for the framework development itself, and if so, it needs to build in voice commands for the API and MCP and CLI automatically, so they can be added to Molly and controlled by voice.\"",
@@ -79486,12 +79499,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T15:32:24.371Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T14:43:48.095Z",
-     "updatedAt": "2026-11-04T14:43:48.095Z"
+     "updatedAt": "2026-11-04T15:32:24.437Z"
     },
     {
      "id": "s3",
@@ -79590,7 +79603,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

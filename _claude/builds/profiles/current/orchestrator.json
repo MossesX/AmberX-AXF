@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T15:32:25.205Z",
+ "updatedAt": "2026-11-04T15:32:39.084Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -12131,7 +12131,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T14:43:48.090Z",
-   "updatedAt": "2026-11-04T15:09:08.676Z",
+   "updatedAt": "2026-11-04T15:32:25.522Z",
    "builtAt": "",
    "notes": [
     {
@@ -12141,9 +12141,22 @@
     {
      "text": "s1 done: voice-command@1 rules + type + schema + fixture + check + forFramework manifest rules (commit 340483ee0 on claude/app-voice-commands). s0: Expenses fix pushed to claude/expenses-port, PR #307 CI green, auto-merge pending.",
      "at": "2026-11-04T15:09:08.676Z"
+    },
+    {
+     "text": "s0 done: Expenses PR #307 merged 15:14 UTC (CI fix: plugin-lifecycle ignores other apps' own plugin folders; grid save merges by entry id, 7 new checks). s2 done: voice-commands.mjs (surface/generate/check/registry/help/say/fill/bake), axf init --for-framework, templates, launcher note, CI check.",
+     "at": "2026-11-04T15:32:25.522Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-04T15:32:24.370Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "\"It's voice control too - like I can control it with my voice, right?\" ... \"Anytime I build a new app or port an app like that, it needs to be noted whether it's for the framework development itself, and if so, it needs to build in voice commands for the API and MCP and CLI automatically, so they can be added to Molly and controlled by voice.\"",
@@ -12189,8 +12202,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T15:32:24.371Z",
      "note": "",
      "uid": "st-mw288vhh087w8r"
     },
