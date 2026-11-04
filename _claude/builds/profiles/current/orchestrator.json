@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T02:15:37.239Z",
+ "updatedAt": "2026-11-04T02:17:15.955Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4664,14 +4664,18 @@
    "source": "voice",
    "pendingId": "",
    "branch": "claude/profile-switcher-widget",
-   "pr": "",
+   "pr": "#300",
    "createdAt": "2026-11-04T00:40:48.340Z",
-   "updatedAt": "2026-11-04T02:00:01.884Z",
+   "updatedAt": "2026-11-04T02:14:30.962Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Assigned: Ping Paulie (headless Opus session, worktree /root/axf-builds/profile-switcher-widget, branch claude/profile-switcher-widget)",
      "at": "2026-11-04T00:41:54.056Z"
+    },
+    {
+     "text": "Reconciler: PR #300",
+     "at": "2026-11-04T02:14:30.962Z"
     }
    ],
    "approvals": [],
@@ -4766,24 +4770,6 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw1e4to60axzr8"
-    },
-    {
-     "id": "s11",
-     "text": "Adopt the profile filter in the remaining builds tables: Orchestrator view (needs an all-profiles projection), Pending, Queue, Plan, Tracker, Git status board, Crew, Home cards; existing bulk CLI/MCP commands (land-all, merge batch) take resolveFilter + profiles arg",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw1hc3o001vokl"
     },
     {
      "id": "s6",

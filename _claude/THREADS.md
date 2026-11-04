@@ -582,8 +582,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 20:53 UTC · `banner-ref-links` added (10 steps) (current) · foreign-write
-- 2026-11-03 20:53 UTC · `build-prompt-origin` s3 done (current) · orchestrator
 - 2026-11-03 20:53 UTC · `build-prompt-origin` s5 done, → complete (current) · orchestrator
 - 2026-11-03 20:53 UTC · `build-prompt-origin` → built, PR #282 (current) · builds-live
 - 2026-11-03 20:55 UTC · `build-prompt-origin` s3 done, s5 done, → complete (current) · foreign-write
@@ -982,3 +980,5 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 02:10 UTC · `main-area-tabs` added (25 steps) (current) · foreign-write
 - 2026-11-04 02:10 UTC · `app-style-override` added (6 steps) (current) · foreign-write
 - 2026-11-04 02:11 UTC · `browser-automation` note (current) · orchestrator
+- 2026-11-04 02:14 UTC · `crew-retrain` → complete, merged, note (breakroom) · reconciler
+- 2026-11-04 02:14 UTC · `profile-switcher-widget` PR #300, note (current) · reconciler

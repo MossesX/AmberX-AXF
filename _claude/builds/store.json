@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 601,
- "updatedAt": "2026-11-04T02:15:37.239Z",
+ "rev": 602,
+ "updatedAt": "2026-11-04T02:17:15.955Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -51071,19 +51071,24 @@
    "title": "Crew retrain: every agent an all-rounder, no anonymous sessions",
    "category": "Breakroom",
    "detail": "Brett, Nov 3 2026 (voice). Retrain, don't fire: every swarm agent can take every job type (skills, home job as preference only); new job types feature-build and ops-fix; router picks any free agent under budget; every headless launch is assigned to a named agent first and booked on its card; back-assign today's headless builds; Breakroom cards show skills, home job, current job. Booked on Landin' Lenny.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/crew-retrain",
    "pr": "#265",
+   "mergedAt": "2026-11-04T02:10:22Z",
    "createdAt": "2026-11-03T15:58:12.029Z",
-   "updatedAt": "2026-11-03T16:23:06.193Z",
+   "updatedAt": "2026-11-04T02:14:30.962Z",
    "builtAt": "2026-11-03T16:23:05.239Z",
    "notes": [
     {
      "text": "All 8 steps done. PR #265 (claude/crew-retrain), UI Review r-20261103-5e7f222e waiting. Report _claude/builds/reports/crew-retrain.md. Land after land-everything's other PRs.",
      "at": "2026-11-03T16:23:06.193Z"
+    },
+    {
+     "text": "Reconciler: PR #265 merged",
+     "at": "2026-11-04T02:14:30.962Z"
     }
    ],
    "approvals": [],
@@ -51274,7 +51279,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -68054,14 +68059,18 @@
    "source": "voice",
    "pendingId": "",
    "branch": "claude/profile-switcher-widget",
-   "pr": "",
+   "pr": "#300",
    "createdAt": "2026-11-04T00:40:48.340Z",
-   "updatedAt": "2026-11-04T02:00:01.884Z",
+   "updatedAt": "2026-11-04T02:14:30.962Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Assigned: Ping Paulie (headless Opus session, worktree /root/axf-builds/profile-switcher-widget, branch claude/profile-switcher-widget)",
      "at": "2026-11-04T00:41:54.056Z"
+    },
+    {
+     "text": "Reconciler: PR #300",
+     "at": "2026-11-04T02:14:30.962Z"
     }
    ],
    "approvals": [],
@@ -68178,28 +68187,6 @@
      "updatedAt": "2026-11-04T00:40:48.341Z"
     },
     {
-     "id": "s11",
-     "uid": "st-mw1hc3o001vokl",
-     "title": "",
-     "text": "Adopt the profile filter in the remaining builds tables: Orchestrator view (needs an all-profiles projection), Pending, Queue, Plan, Tracker, Git status board, Crew, Home cards; existing bulk CLI/MCP commands (land-all, merge batch) take resolveFilter + profiles arg",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-04T02:10:25.954Z",
-     "updatedAt": "2026-11-04T02:10:29.136Z"
-    },
-    {
      "id": "s6",
      "uid": "st-mw1fwaya01kz74",
      "title": "",
@@ -68230,7 +68217,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
