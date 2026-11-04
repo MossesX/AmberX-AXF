@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 959,
- "updatedAt": "2026-11-04T21:08:39.337Z",
+ "rev": 960,
+ "updatedAt": "2026-11-04T21:12:40.031Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -83871,14 +83871,14 @@
    "title": "UI Review alarm",
    "category": "Feature",
    "detail": "Open UI Review on new items; alarm at 30 min unreviewed; 5 min grace then auto-approve or hold (switch). Addenda: sort/group by PR + ids on rows + deep links; default newest-first; live previews in active theme; per-item Color/Style/Layout preview pickers; Layout Apply adds a follow-up step; layout list = the screen's 3 generated layouts.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-review-alarm",
    "pr": "",
    "createdAt": "2026-11-04T21:04:36.261Z",
-   "updatedAt": "2026-11-04T21:04:41.998Z",
+   "updatedAt": "2026-11-04T21:12:38.359Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -83911,12 +83911,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:12:38.359Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T21:04:36.262Z",
-     "updatedAt": "2026-11-04T21:04:36.262Z"
+     "updatedAt": "2026-11-04T21:12:38.454Z"
     },
     {
      "id": "s2",
@@ -84125,7 +84125,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
