@@ -69,14 +69,19 @@ function useShownCount(ref: RefObject<HTMLElement | null>): number {
   return n;
 }
 
-export function BannerGroup({ children }: { children: ReactNode }) {
+/**
+ * `docked`: the group never floats here, whatever the saved state says. A host's banner strip (BannerStrip.tsx) is the
+ * host's banner region: a floating window inside that thin frame would be clipped to nothing (Brett, Nov 4 2026: "What
+ * happened to the banners?" after the shared look saved the group as floating).
+ */
+export function BannerGroup({ children, docked = false }: { children: ReactNode; docked?: boolean }) {
   const [state, save] = useGroupState();
   const bodyRef = useRef<HTMLDivElement>(null);
   const winRef = useRef<HTMLDivElement>(null);
   const shown = useShownCount(bodyRef);
   // Live position while dragging (saved once on release, so a drag isn't a stream of settings writes).
   const [drag, setDrag] = useState<{ x: number; y: number } | null>(null);
-  const floating = state.floating && shown > 0;
+  const floating = state.floating && shown > 0 && !docked;
   const grouped = shown > 1 || floating;
   const view = floating ? clampBannerGroup(state, window.innerWidth, window.innerHeight) : state;
 
@@ -140,12 +145,12 @@ export function BannerGroup({ children }: { children: ReactNode }) {
             size={12}
             onClick={() => save({ ...state, folded: !state.folded })}
           />
-          <IconButton
+          {!docked && <IconButton
             icon={floating ? 'minimize' : 'external'}
             label={floating ? 'Dock the banners above the page' : 'Undock into a floating window'}
             size={12}
             onClick={() => save({ ...state, floating: !floating, folded: false })}
-          />
+          />}
         </div>
       )}
       <div ref={bodyRef} className="fx-banner-group__body" hidden={grouped && state.folded}>{children}</div>

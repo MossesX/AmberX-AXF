@@ -73,10 +73,12 @@ function bannerMarkPx(data: { height?: number }): number {
   return Math.round(((data.height ?? 24) * 0.55));
 }
 
-export function Banner() {
+/** `asHost`: drawn in a host's banner strip as the host's top banner (BannerStrip.tsx), so only the user's own hide choice
+ * counts, not the strip page's forced chrome layer. */
+export function Banner({ asHost = false }: { asHost?: boolean } = {}) {
   const rt = useRuntime();
   useAxfState();
-  const { data, placed } = rt.banner();
+  const { data, placed } = rt.banner({ ownChoice: asHost });
   const arrange = useArrange('banner', placed);
   // branding@1: the banner's brand slot replaces the built-in mark (lockup by default); accent-edge / watermark mark the host
   const brand = useBrandPlace('banner');

@@ -932,8 +932,10 @@ export class AxfRuntime {
   detachFromBanner(keyOrOrigin: string): void { this.detachFromHost('banner', keyOrOrigin); }
 
   /** The banner to draw: its data (null = no banner or hidden) and where every attachment goes. */
-  banner(): { data: Asset<'banner'>['data'] | null; placed: PlacedBanner } {
-    const b = this.slotHidden('banner') ? null : this.assetOrNull('banner')?.data ?? null;
+  banner(opts: { ownChoice?: boolean } = {}): { data: Asset<'banner'>['data'] | null; placed: PlacedBanner } {
+    // ownChoice: only the user's own hide choice counts, not a host's (a host's banner strip draws this app's bar as its own)
+    const hidden = opts.ownChoice ? this.slotHiddenOwn('banner') : this.slotHidden('banner');
+    const b = hidden ? null : this.assetOrNull('banner')?.data ?? null;
     const placed = placeAttachments(b, b ? (this.hostExtra.get('banner') as BannerAttachment[] | undefined) ?? [] : [], (t, id) => this.registry.has(t as AssetType, id), this.hostArrangement('banner'));
     return { data: b, placed };
   }

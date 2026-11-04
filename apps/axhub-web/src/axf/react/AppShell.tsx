@@ -130,7 +130,10 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
         <MenuBar />
       </div>
     )}
-    <FrameBanners />
+    {/* Inside a host that hides this app's banner (embed@1 `hidden: banner`) the host owns the banner region: its banner
+        strip (bannerStrip.ts) draws these live banners there, once, so this frame leaves them out (Brett, Nov 4 2026:
+        "when console's open in Molly, don't display its own banner"). */}
+    {!rt.slotHiddenByHost('banner') && <FrameBanners />}
     {/* Page-level extension points (AxfWebLibrary.slots): app.frame.head sits above the menu bar (app tabs), app.frame.top below the banners (a page-wide bar a plugin adds);
         app.frame.cover is rendered after the shell so a plugin can cover the page (it positions itself). Empty = nothing. */}
     <Slot name="app.frame.top" />
