@@ -301,6 +301,13 @@ export function CrewView() {
   const off = snap?.offTheClock ?? [];
   return (
     <div className="axp-crew">
+      <header className="fx-pagehead">
+        <div>
+          <p className="fx-eyebrow">Agents · live</p>
+          <h1>Crew</h1>
+          <p className="fx-muted">Every agent working right now: what it is on, how long, and what it costs.</p>
+        </div>
+      </header>
       <div className="axp-crew__bar" role="status" aria-live="polite">
         <span className="axp-crew__total"><b>{t?.working ?? 0}</b> working</span>
         <span className="axp-crew__total"><b className="fx-mono">{usd(t?.costRunningUsd)}</b> running now</span>
