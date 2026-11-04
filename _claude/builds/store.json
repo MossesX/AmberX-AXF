@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 618,
- "updatedAt": "2026-11-04T04:27:01.056Z",
+ "rev": 619,
+ "updatedAt": "2026-11-04T04:27:42.354Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -67468,12 +67468,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T23:03:01.354Z",
-   "updatedAt": "2026-11-04T04:26:55.942Z",
+   "updatedAt": "2026-11-04T04:27:00.341Z",
    "builtAt": "",
    "notes": [
     {
      "text": "#270 auto-land merged (3caf0ee0) after two landing fixes (THREADS plugin references; UI Review read through the push banner's ui-review@1 route). #267 closed as superseded by #284. #251/#254 set to draft so auto-merge leaves them for Brett.",
      "at": "2026-11-04T00:56:46.854Z"
+    },
+    {
+     "text": "Landed so far: #270 #268 #265 #277 #271 #273 #280 #274 #279 #285 #272 #276 (main green at 363485d7). Batch PR #303 carries #275 #282 #283 #286 #287 #290 #292 (one CI run). Held: #266 #288 (racy console-wake test), #269 (AmberX build: @console/api), #289 (placement system vs #278), #281 (menu engines vs #268), #291 (WIP, paused by Brett).",
+     "at": "2026-11-04T04:27:00.341Z"
     }
    ],
    "approvals": [],
@@ -67642,7 +67646,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
