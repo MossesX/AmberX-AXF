@@ -26,6 +26,27 @@
         "target": "ref-links.try",
         "title": "Try it",
         "text": "Type a line of text to see which words become links and where they lead."
+      },
+      {
+        "target": "a-line-of-text",
+        "title": "A line of text",
+        "text": "Where you set “A line of text”. Change it and the app uses the new value. Part of Reference links.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "link-mentions-in-banner-text",
+        "title": "Link mentions in banner text",
+        "text": "Where you set “Link mentions in banner text”. Change it and the app uses the new value. Part of Reference links.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "reference-links",
+        "title": "Reference links",
+        "text": "Shows the “Reference links” part of this screen. Part of Reference links.",
+        "kind": "tab",
+        "draft": true
       }
     ]
   }
