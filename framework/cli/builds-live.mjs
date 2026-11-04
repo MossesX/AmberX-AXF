@@ -11,7 +11,7 @@
  *   2. a flush publishes the outbox to main as ONE small status-only commit, made with git plumbing on origin/main
  *      (a private index, never this checkout's working tree or branch): fetch, take main's store, merge this
  *      checkout's changed builds into it (per build and per step, newer wins: builds-merge-core.mjs), append the journal
- *      lines (union), append one line per change to THREADS.md's live log, regenerate the orchestrator exports, commit
+ *      lines (union), regenerate the orchestrator exports, commit
  *      with `[skip ci]`, push. Rejected because main moved: fetch again and re-apply (bounded); never a force push;
  *   3. main's newer builds come back into this checkout (pull), and into the console's checkout (AXF_CONSOLE_ROOT,
  *      default /opt/axf, mounted live into the console) so the banners show the change now, not at the next update.
@@ -48,13 +48,9 @@ const SELF = fileURLToPath(import.meta.url);
 const STORE_REL = '_claude/builds/store.json'; // = builds-store STORE_REL (not imported: the two modules import each other)
 const JOURNAL_REL = '_claude/builds/journal';
 const ORIGINS_REL = '_claude/builds/origins.json'; // = builds-store ORIGINS_REL (build-origin@1 sidecar)
-const THREADS_REL = '_claude/THREADS.md';
-export const LIVE_HEAD = '## Live build log';
-const LIVE_NOTE = '<!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->';
-const LIVE_KEEP = 400;
 const ATTEMPTS = 6;
 /** Files a builds-only conflict may touch (heal) and the merge driver handles. */
-export const BUILDS_PATHS = [STORE_REL, ORIGINS_REL, `${JOURNAL_REL}/`, '_claude/builds/orchestrator.json', '_claude/builds/profiles/', THREADS_REL];
+export const BUILDS_PATHS = [STORE_REL, ORIGINS_REL, `${JOURNAL_REL}/`, '_claude/builds/orchestrator.json', '_claude/builds/profiles/'];
 
 const env = (k, d = '') => process.env[k] ?? d;
 const remote = () => env('AXF_BUILDS_LIVE_REMOTE', 'origin');
@@ -164,19 +160,29 @@ function recordsOf(entries) {
   return [...by.values()];
 }
 
-/** THREADS.md with the live lines appended to its live log section (made at the end when missing; last LIVE_KEEP kept). */
-export function appendThreads(text, lines) {
-  if (!lines.length) return text;
-  let t = text ?? '';
-  const i = t.indexOf(`\n${LIVE_HEAD}\n`);
-  if (i < 0) { t = `${t.replace(/\s*$/, '')}\n\n${LIVE_HEAD}\n\n${LIVE_NOTE}\n\n`; }
-  const at = t.indexOf(`\n${LIVE_HEAD}\n`) + 1;
-  const next = t.indexOf('\n## ', at + LIVE_HEAD.length);
-  const head = t.slice(0, at); const tail = next >= 0 ? t.slice(next) : '';
-  const body = (next >= 0 ? t.slice(at, next) : t.slice(at)).split('\n');
-  const log = body.filter((l) => l.startsWith('- '));
-  const all = [...log, ...lines.filter((l) => !log.includes(l))].slice(-LIVE_KEEP);
-  return `${head}${LIVE_HEAD}\n\n${LIVE_NOTE}\n\n${all.join('\n')}\n${tail}`;
+/**
+ * Publish plain files straight to main as one status-only commit (same plumbing as the store: fetch, commit onto
+ * origin/main with a private index, push, retry when main moved; never a force push). `files` = { rel: text }.
+ * Used by the Session sync plugin for `_claude/sync/<project>.{json,md}` (handoff@1): status data only, never code.
+ */
+export function publishFiles(files, msg) {
+  const ref = `refs/remotes/${remote()}/${branch()}`;
+  let last = '';
+  for (let attempt = 1; attempt <= ATTEMPTS; attempt += 1) {
+    const f = git(['fetch', '-q', remote(), `+refs/heads/${branch()}:${ref}`], { timeout: 45000 });
+    if (f.code !== 0) return { ok: false, error: `fetch ${remote()}/${branch()} failed: ${f.err.slice(-300)}` };
+    const base = git(['rev-parse', ref]).out;
+    const changed = Object.entries(files).filter(([rel, text]) => show(base, rel) !== text);
+    if (!changed.length) return { ok: true, sha: '', changed: [] };
+    const sha = commitOnto(base, changed, msg);
+    if (!sha.ok) return sha;
+    const p = git(['push', '-q', remote(), `${sha.sha}:refs/heads/${branch()}`], { timeout: 60000 });
+    if (p.code === 0) { git(['update-ref', ref, sha.sha]); return { ok: true, sha: sha.sha, changed: changed.map(([rel]) => rel) }; }
+    last = p.err;
+    if (!/non-fast-forward|fetch first|stale info|failed to update ref|cannot lock ref|rejected/i.test(p.err) || /protected branch|permission|denied|403|GH006|GH013/i.test(p.err)) return { ok: false, error: `push to ${branch()} refused: ${p.err.slice(-400)}` };
+    sleep(200 * attempt + Math.floor(Math.random() * 400));
+  }
+  return { ok: false, error: `main kept moving: gave up after ${ATTEMPTS} tries (${last.slice(-200)})` };
 }
 
 /**
@@ -205,9 +211,6 @@ export function publish(entries, { journalExtra = {} } = {}) {
     for (const e of entries) { const m = String(e.at ?? now).slice(0, 7); if (!months.has(m)) months.set(m, []); months.get(m).push(JSON.stringify(e)); }
     for (const [m, lines] of Object.entries(journalExtra)) { if (!months.has(m)) months.set(m, []); months.get(m).unshift(...lines); }
     for (const [m, lines] of months) { const rel = `${JOURNAL_REL}/${m}.jsonl`; files[rel] = merge.mergeJournalText(show(base, rel) ?? '', lines.join('\n')); }
-    const threadLines = entries.flatMap((e) => merge.changeLines(e));
-    const threads = show(base, THREADS_REL);
-    if (threads !== null && threadLines.length) files[THREADS_REL] = appendThreads(threads, threadLines);
     for (const x of orchestratorExports(merged)) { const old = show(base, x.rel); if (old !== null || x.builds) files[x.rel] = x.text; }
     // what Brett said (build-origin@1): main's sidecar + every origin on the merged records, never fewer
     { let mine = ''; try { mine = readFileSync(originsFile(), 'utf8'); } catch { /* none yet */ }
@@ -237,7 +240,7 @@ function allFiles(rev, files) {
 function message(entries, taken) {
   const lines = entries.flatMap((e) => merge.changeLines(e)).map((l) => l.replace(/^- [^·]*· /, '').replace(/ · [^·]*$/, ''));
   const head = lines.length === 1 ? lines[0] : `${taken.length || entries.length} build change(s): ${[...new Set(taken)].slice(0, 4).join(', ')}`;
-  return `Builds live: ${head.replace(/`/g, '').slice(0, 140)} [skip ci]\n\n${lines.slice(0, 40).join('\n')}\n\nStatus-only commit from framework/cli/builds-live.mjs (store, journal, exports, THREADS live log).`;
+  return `Builds live: ${head.replace(/`/g, '').slice(0, 140)} [skip ci]\n\n${lines.slice(0, 40).join('\n')}\n\nStatus-only commit from framework/cli/builds-live.mjs (store, journal, exports).`;
 }
 /** A commit on `base` with the given files replaced, through a private index (no working tree is touched). */
 function commitOnto(base, files, msg) {

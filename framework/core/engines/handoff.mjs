@@ -402,8 +402,9 @@ export function respond(link, req, now) {
     const order = Object.values(link.assignments).filter((x) => x.session === s.id && ['queued', 'working'].includes(x.status)).length + 1;
     a = normAssignment({ id: `a-${link.seq + 1}`, build: o.mode === 'steps-new-build' ? o.childBuild : o.build, steps: o.steps, session: s.id, account: s.account, agent: s.agent, offer: o.id, status: 'queued', order, since: now, updatedAt: now, parent: o.mode === 'steps-new-build' ? o.build : '' });
     link.assignments[a.id] = a; o.assignment = a.id;
-    pushEvent(link, 'handover', { action: 'accept', offer: o.id, assignment: a.id, build: a.build, steps: a.steps, agent: s.agent, parent: a.parent }, now, { id: a.id, session: s.id });
-    return { assignment: a, offer: o, reaction: { decision: 'replan', why: `${s.agent || s.id} took ${a.build}${a.steps ? ` (${a.steps.join(', ')})` : ''}: re-planning around its claims` } };
+    const reaction = { decision: 'replan', why: `${s.agent || s.id} took ${a.build}${a.steps ? ` (${a.steps.join(', ')})` : ''}: re-planning around its claims` };
+    pushEvent(link, 'handover', { action: 'accept', offer: o.id, assignment: a.id, build: a.build, steps: a.steps, agent: s.agent, parent: a.parent, reaction }, now, { id: a.id, session: s.id });
+    return { assignment: a, offer: o, reaction };
   }
   if (response === 'reject') { if (a) { a.status = 'rejected'; a.reason = reason; a.updatedAt = now; } else o.status = 'rejected'; stats.rejects++; }
   if (response === 'hold') { if (a) { a.status = 'held'; a.reason = reason; a.backAt = backAt; a.updatedAt = now; } else { o.status = 'held'; } stats.holds++; }
@@ -743,11 +744,14 @@ export function channelLine(ev, names = {}) {
       if (d.action === 'accept') return { kind: 'handover', channel: CHANNEL, text: `${agent} took ${d.build}${d.steps ? ` (${d.steps.join(', ')})` : ''}${d.parent ? ` from ${d.parent}` : ''} — ${d.reaction?.why ?? ''}`.trim(), jobId: d.build };
       if (d.action === 'take-back') return { kind: 'handover', channel: CHANNEL, text: `Orchestrator took ${d.build}${d.steps ? ` (${d.steps.join(', ')})` : ''} back from ${agent}${d.reason ? `: ${d.reason}` : ''}`, jobId: d.build };
       if (d.action === 'undo') return { kind: 'handover', channel: CHANNEL, text: `Undid handover event ${d.of}: ${d.assignment} is ${d.status}`, jobId: '' };
+      if (d.action === 'request-work') return { kind: 'handover', channel: CHANNEL, text: `${agent} asked for work${d.minutes ? ` (${d.minutes} min)` : ''}${d.areas?.length ? ` in ${d.areas.join(', ')}` : ''}${d.model ? ` on ${d.model}` : ''}: ${d.offered?.length ? `offered ${d.offered.join(', ')}` : 'nothing fits right now'}`, jobId: '' };
+      if (d.action === 'claim-job') return { kind: 'handover', channel: CHANNEL, text: `${agent} is doing ${d.build}${d.branch ? ` on ${d.branch}` : ''} (${d.how === 'new' ? 'unregistered work, registered now with a warning' : `matched by ${d.how}${d.wasQueued ? ', removed from the main queue' : ''}`})`, jobId: d.build };
       return { kind: 'handover', channel: CHANNEL, text: `${agent} ${d.action === 'hold' ? 'put on hold' : d.action === 'reject' ? 'rejected' : 'released'} ${d.build}${d.reason ? ` (${d.reason})` : ''}${d.backAt ? `, back ${d.backAt}` : ''} — ${d.reaction?.why ?? ''}`.trim(), jobId: d.build };
     }
     case 'assignment': return { kind: d.state === 'blocked' ? 'report' : 'report', channel: CHANNEL, text: `${agent} ${d.state === 'done' ? 'finished' : d.state === 'blocked' ? 'is blocked on' : 'started'} ${d.build} ${d.step}${d.reason ? ` (${d.reason})` : ''}${d.reaction?.why && d.state !== 'started' ? ` — ${d.reaction.why}` : ''}`, jobId: `${d.build}.${d.step}` };
     case 'replan': return d.moves?.length ? { kind: 'handover', channel: CHANNEL, text: `Replanned: ${d.moves.map((m) => `moved ${m.id} ${m.to < m.from ? 'above' : 'below'} ${m.why ? `because ${m.why}` : ''}`).join('; ')}`, jobId: '' } : null;
     case 'sync': return { kind: 'session', channel: CHANNEL, text: `${agent} wrote the sync file${d.path ? ` ${d.path}` : ''}`, jobId: '' };
+    case 'message': return d.text ? { kind: MESSAGE_KINDS.includes(d.kind) ? d.kind : 'session', channel: CHANNEL, text: `${d.build ? `[${d.build}${d.step ? ` ${d.step}` : ''}] ` : ''}${d.text}${d.files?.length ? ` (${d.files.slice(0, 5).join(', ')}${d.files.length > 5 ? ` +${d.files.length - 5}` : ''})` : ''}`, jobId: str(d.build, 120), from: d.agent || ev.session } : null;
     case 'build': return d.text ? { kind: 'report', channel: CHANNEL, text: `${agent}: ${d.text}`, jobId: str(d.build, 120) } : null;
     default: return null;
   }

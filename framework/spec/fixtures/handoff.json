@@ -1403,7 +1403,7 @@
     "line": {
      "kind": "handover",
      "channel": "sessions",
-     "text": "Ping Paulie took foo —",
+     "text": "Ping Paulie took foo — paulie took foo: re-planning around its claims",
      "jobId": "foo"
     }
    },
@@ -1433,7 +1433,7 @@
     "line": {
      "kind": "handover",
      "channel": "sessions",
-     "text": "Ping Paulie took handoff-2-s-2-4-5 (s4, s5) from handoff-2 —",
+     "text": "Ping Paulie took handoff-2-s-2-4-5 (s4, s5) from handoff-2 — paulie took handoff-2-s-2-4-5 (s4, s5): re-planning around its claims",
      "jobId": "handoff-2-s-2-4-5"
     }
    },

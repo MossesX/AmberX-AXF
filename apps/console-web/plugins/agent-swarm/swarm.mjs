@@ -15,6 +15,7 @@
  *   … crew                               the crew in one compact read (the Claude agent picker)
  *   … book '<json>'                      book a Claude session on an agent's card ({session, agent, usd?, summary?, commits?, final?})
  *   … chat [n] | banter [--dry-run]      the group chat | one cheap small-model batch of banter
+ *   … post '<json messages>' · messages [n] [--channel=sessions]   post validated lines (another plugin's server part) · read a channel
  *   … mentions [n] [--negative]          chat messages about Brett (the boss, the owner), newest first, redacted
  *   … chats-export                       rewrite the hub's read-only chat mirror now (breakroom-chats@1)
  *   … act chat on|off · act chat <agent> on|off · act say <text>
@@ -32,6 +33,7 @@ import { fileURLToPath } from 'node:url';
 import * as core from './web/swarm-core.mjs';
 import { orchestratorPath, persistRoot } from '../../../../framework/cli/persist.mjs';
 import * as watch from './web/chat-watch.mjs';
+import * as chatRules from '../../../../framework/core/engines/swarm-chat.mjs';
 import { spawnSync } from 'node:child_process';
 import { runJob, worktreeFor } from './runner.mjs';
 import { withSlot } from '../../../../framework/cli/agent-slots.mjs';
@@ -394,6 +396,13 @@ export async function main(argv) {
     const rows = s.runs.map((r) => ({ jobId: r.jobId, agent: r.agent, name: by.get(r.agent)?.name ?? r.agent, status: core.statusLabel(s.swarm.agents[r.agent] ?? core.normAgentState({})), run: r.status, usd: core.runCost(r, s.prices), spend: s.spend[r.agent] }));
     return out({ ok: true, sessions: rows }, rows.map((x) => `${x.jobId.padEnd(26)} ${x.name.padEnd(12)} ${x.status.padEnd(14)} ${x.run.padEnd(7)} ${core.fmtUsd(x.usd)}`).join('\n') || 'No runs yet.');
   }
+  if (cmd === 'post') { // JSON messages from another plugin's server part (through axf.crew@1.post): validated like every line
+    const msgs = JSON.parse(rest[0] ?? '[]'); const roster = loadRoster(); const ids = roster.agents.map((a) => a.id);
+    const bad = (Array.isArray(msgs) ? msgs : []).map((m) => chatRules.messageErrors(m, ids)).flat();
+    if (bad.length) return out({ ok: false, errors: bad }, bad.map((e) => `${e.field}: ${e.message}`).join('\n'));
+    const n = say(msgs); return out({ ok: true, posted: n }, `posted ${n}`);
+  }
+  if (cmd === 'messages') { const st = loadState(); const n = Number(rest.find((a) => /^\d+$/.test(a))) || 200; const ch = (rest.find((a) => a.startsWith('--channel=')) ?? '').slice(10); const list = st.messages.filter((m) => !ch || m.channel === ch).slice(-n); return out({ ok: true, messages: list }, list.map((m) => `${m.at.slice(11, 16)} ${m.from.padEnd(6)} ${m.text}`).join('\n') || 'Quiet.'); }
   if (cmd === 'chat') { const st = loadState(); const n = Number(rest[0]) || 30; return out({ ok: true, chat: st.chat, messages: st.messages.slice(-n) }, st.chat.enabled ? st.messages.slice(-n).map((m) => `${m.at.slice(11, 16)} ${m.from.padEnd(6)} ${m.text}`).join('\n') || 'Quiet.' : 'The group chat is off.'); }
   if (cmd === 'mentions') { // messages about Brett, newest first (redacted)
     const st = loadState(); const n = Number(rest.find((a) => /^\d+$/.test(a))) || 50;

@@ -1234,7 +1234,7 @@
    {
     "field": "messages[0].kind",
     "code": "invalid",
-    "message": "messages[0].kind must be one of assign, lease, report, handoff, merge, status, discipline, pay, banter, brett"
+    "message": "messages[0].kind must be one of assign, lease, report, handoff, merge, status, discipline, pay, banter, brett, session, handover, claim"
    },
    {
     "field": "messages[0].text",

@@ -45,7 +45,6 @@ function seed() {
   for (const id of ['x', 'y']) store.builds.push(core.normBuild({ id, title: `Build ${id}`, profiles: ['main-framework'], steps: [1, 2, 3, 4].map((n) => ({ id: `s${n}`, text: `step ${n} of ${id}`, model: 'Opus' })) }, { now, seed: id }));
   mkdirSync(join(s, '_claude/builds/journal'), { recursive: true });
   writeFileSync(join(s, STORE_REL), `${JSON.stringify(core.compactStore(store), null, 1)}\n`);
-  writeFileSync(join(s, '_claude/THREADS.md'), '# Threads\n\n## Active\n\n| Thread | State |\n|---|---|\n| a | working |\n');
   writeFileSync(join(s, '.gitattributes'), '_claude/builds/store.json merge=axf-builds\n_claude/builds/journal/*.jsonl merge=axf-builds\n');
   git(s, 'add', '-A'); git(s, 'commit', '-q', '-m', 'seed'); git(s, 'push', '-q', 'origin', 'main');
   for (const c of ['a', 'b', 'c']) git(T, 'clone', '-q', join(T, 'remote.git'), c);
@@ -65,9 +64,6 @@ async function main() {
   check(git(A, 'rev-parse', 'HEAD') === seedSha, 'A\'s own branch got no commit');
   const msg = git(A, 'log', '-1', '--format=%B', 'origin/main');
   check(/\[skip ci\]/.test(msg) && /Builds live: .*x.* s1 done/.test(msg), `status commit says what changed and skips CI: ${msg.split('\n')[0]}`);
-  const threads = git(A, 'show', 'origin/main:_claude/THREADS.md');
-  check(threads.includes(merge.LIVE_HEAD ?? '## Live build log') && /`x` s1 done/.test(threads), 'THREADS.md on main got a live log line');
-  check(threads.indexOf('| a | working |') < threads.indexOf('## Live build log'), 'the live log sits after the thread rows');
   const files = git(A, 'show', '--name-only', '--format=', 'origin/main').split('\n');
   check(files.every((f) => f.startsWith('_claude/')), `status commit touches only _claude/ (${files.join(' ')})`);
   check(files.some((f) => f.startsWith('_claude/builds/journal/')), 'status commit carries the journal line');
@@ -194,12 +190,12 @@ async function main() {
   const merged = rc.plan([{ ...B1, branch: 'claude/theme-editor', pr: '#243', steps: B1.steps.map((s) => ({ ...s, done: true })) }], [{ ...prs[0], state: 'merged', mergedAt: '2026-11-03T11:00:00Z' }], [], {});
   check(merged.changes[0]?.set.mergedAt === '2026-11-03T11:00:00Z', 'the build\'s own PR merged: mergedAt recorded');
 
-  // 10. threads log: appended in its section, capped, before a later heading
-  let t = 'x\n## Active\nrow\n';
-  t = merge.LIVE_HEAD ? t : t;
-  const { appendThreads } = await import('../cli/builds-live.mjs');
-  t = appendThreads(t, ['- one']); t = appendThreads(`${t}\n## After\nkeep\n`, ['- two', '- one']);
-  check(/## Live build log[\s\S]*- one\n- two\n\n## After\nkeep/.test(t) && t.indexOf('row') < t.indexOf('## Live build log'), `threads section: ${JSON.stringify(t.slice(-80))}`);
+  // 10. plain files straight to main (publishFiles, used by the Session sync plugin's sync file): one status-only commit, nothing when unchanged
+  { // in a subprocess with A's env (never this repo's git root)
+    const pub = () => { const r = spawnSync(process.execPath, ['--input-type=module', '-e', `import { publishFiles } from ${JSON.stringify(new URL('../cli/builds-live.mjs', import.meta.url).href)}; console.log(JSON.stringify(publishFiles({ '_claude/sync/demo.json': '{"a":1}\\n' }, 'Session sync: demo [skip ci]')));`], { cwd: ROOT, encoding: 'utf8', env: envFor(A) }); try { return JSON.parse(r.stdout.trim().split('\n').pop()); } catch { return { ok: false, error: r.stderr }; } };
+    const r1 = pub(); const r2 = pub();
+    check(r1.ok && r1.sha && r1.changed.join() === '_claude/sync/demo.json' && git(A, 'show', 'origin/main:_claude/sync/demo.json').trim() === '{"a":1}', `publishFiles commits a plain file to main (${JSON.stringify(r1).slice(0, 120)})`);
+    check(r2.ok && !r2.sha && r2.changed.length === 0, 'publishFiles makes no commit when main already has the bytes'); }
 
   console.log(`${fail ? '✗' : '✓'} builds-live: ${pass} passed, ${fail} failed`);
   rmSync(T, { recursive: true, force: true });

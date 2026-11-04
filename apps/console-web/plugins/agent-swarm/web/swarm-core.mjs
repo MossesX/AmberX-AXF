@@ -576,7 +576,7 @@ export function applyChange(state, change, roster, at) {
     }
     case 'say': { // Brett posts in the room (no tokens; nobody answers unless banter is asked for)
       const text = str(c.text, 1000).trim(); if (!text) throw new Error('empty message');
-      if (!post(s, [{ from: 'brett', kind: 'brett', text }], at)) throw new Error('the group chat is off'); log.push('posted'); break;
+      if (!post(s, [{ from: 'brett', kind: 'brett', text, ...(c.channel === 'sessions' ? { channel: 'sessions' } : {}) }], at)) throw new Error('the group chat is off'); log.push('posted'); break;
     }
     case 'suspend': {
       const until = str(c.until, 40); const reason = str(c.reason, 300).trim();

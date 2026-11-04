@@ -8,7 +8,8 @@ GET never spends anything.
 Never exposed on the console MCP.
 
 Capability axf.crew@1 (for other plugins, e.g. the Claude plugin's agent picker): crew() = every agent with status,
-pay, spend, hours and stats; book(entry) = book a Claude session on an agent's card (swarm.mjs book).
+pay, spend, hours and stats; book(entry) = book a Claude session on an agent's card (swarm.mjs book); post(msgs) /
+messages(limit, channel) = the group chat for another plugin's server part (the Session sync plugin's Sessions channel).
 """
 from __future__ import annotations
 
@@ -53,6 +54,20 @@ class CrewService:
         if not r.get("ok"):
             raise ValueError(r.get("error") or "booking failed")
         return r.get("run") or {}
+
+    def post(self, msgs: list[dict[str, Any]]) -> int:
+        """Post lines into the group chat (validated like every line: speaker, kind, job; `channel` picks the Sessions channel)."""
+        r = _run("post", json.dumps(msgs))
+        if not r.get("ok"):
+            raise ValueError("; ".join(f"{e.get('field')}: {e.get('message')}" for e in r.get("errors") or []) or r.get("error") or "post failed")
+        return int(r.get("posted") or 0)
+
+    def messages(self, limit: int = 200, channel: str = "") -> list[dict[str, Any]]:
+        """The chat's last `limit` messages (optionally one channel), newest last."""
+        r = _run("messages", str(max(1, min(limit, 2000))), *([f"--channel={channel}"] if channel else []))
+        if not r.get("ok"):
+            raise RuntimeError(r.get("error") or "messages read failed")
+        return r.get("messages") or []
 
 
 plugin_services.provide("axf.crew@1", CrewService(), CLI.parent.name)

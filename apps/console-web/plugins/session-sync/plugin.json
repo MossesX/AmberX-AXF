@@ -1,0 +1,91 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.session-sync",
+  "name": "Session sync",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Two Claude sessions (any accounts, Claude Code or claude.ai) work on one project side by side without conflicts (handoff@1 + session-link@1, framework/spec/HANDOFF.md). /sync writes _claude/sync/<project>.{json,md} so any session can jump in; sessions talk in the Breakroom's Sessions channel; area / path claims are enforced leases; the primary (first to sync) owns the orchestrator and hands whole builds or steps to helpers, who accept / reject / hold / release while the orchestrator reacts, replans and dedupes. Sessions panel, join dialog, helper status widget (attachable to the banner, a toolbar or any window title bar through Add widgets…), multi-select Send to helper, helper badges, Managed by orchestrator for helpers, live push (SSE) and a Claude Code hook that delivers the channel at every step. Replaces the threads log and the handoff notes.",
+  "targets": [
+    "axf-console",
+    "molly",
+    "amberx",
+    "axhub-web"
+  ],
+  "forFramework": true,
+  "provides": [
+    "view:session-sync",
+    "dialog:session-sync.join",
+    "dialog:session-sync.send",
+    "dialog:session-sync.widgets",
+    "settings-tab:session-sync",
+    "banner:session-sync",
+    "action:session-sync.sync",
+    "action:session-sync.open",
+    "action:session-sync.join",
+    "action:session-sync.send",
+    "action:session-sync.send-step",
+    "action:session-sync.request-work",
+    "action:session-sync.take-back",
+    "action:session-sync.widgets",
+    "capability:axf.session-sync@1"
+  ],
+  "requires": [],
+  "optional": [
+    "axf.crew@1",
+    "axf.health@1",
+    "axf.claude-settings@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "banner": ["session-sync"],
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/session-sync",
+    "env": [
+      "AXF_SESSION_SYNC_DIR",
+      "AXF_SESSION_LINK_FILE",
+      "AXF_SESSION_SYNC_ON",
+      "AXF_SESSION_SYNC_WATCH",
+      "AXF_SYNC_PUBLISH"
+    ],
+    "mentions": [
+      "CLAUDE.md", "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/README.md",
+      "framework/spec/HANDOFF.md",
+      ".github/workflows/android.yml"
+    ],
+    "keeps": [
+      "_claude/sync/ in the repo: the sync file (handoff@1) sessions read to jump in; take it out by hand (git rm) if it is no longer wanted",
+      ".claude/commands/sync.md: the /sync command; remove it with the plugin's uninstall --all",
+      "~/.claude/settings.json hooks: node …/session-sync/sync.mjs hooks remove"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "route": "GET /events", "skip": "server-sent events stream (live push), not a command" },
+      { "route": "POST /sync", "id": "sync", "title": "Sync session: write the sync file", "description": "Writes _claude/sync/<project>.{json,md} (handoff@1) from the live link and publishes it to main, so any session on any account can read it and jump in. Voice: 'sync AmberX'.", "input": { "type": "object", "properties": { "publish": { "type": "boolean" } } } },
+      { "route": "POST /join", "id": "join", "title": "Join the session link", "description": "Register this session (first in = primary, owns the orchestrator; a new account waits for Brett's approval). Voice: 'sync amberx' in a new session.", "input": { "type": "object", "properties": { "agent": { "type": "string" }, "client": { "type": "string", "enum": ["code", "chat", "voice", "headless", "console"] } } } },
+      { "route": "POST /send", "id": "send", "title": "Say something in the Sessions channel", "input": { "type": "object", "properties": { "text": { "type": "string" }, "kind": { "type": "string", "enum": ["session", "handover", "claim", "report"] }, "build": { "type": "string" }, "step": { "type": "string" } }, "required": ["text"] } },
+      { "route": "POST /inbox", "id": "inbox", "title": "Read what the other session said", "readOnly": false },
+      { "route": "POST /claim", "id": "claim", "title": "Claim an area or paths", "input": { "type": "object", "properties": { "kind": { "type": "string", "enum": ["area", "path"] }, "area": { "type": "string" }, "paths": { "type": "array", "items": { "type": "string" } }, "reason": { "type": "string" }, "build": { "type": "string" }, "step": { "type": "string" } } } },
+      { "route": "POST /release", "id": "release", "title": "Release a claim" },
+      { "route": "GET /state", "id": "status", "title": "Who is on and what they hold", "readOnly": true },
+      { "route": "POST /request-work", "id": "request_work", "title": "Ask the orchestrator for work (helper)", "input": { "type": "object", "properties": { "minutes": { "type": "number" }, "areas": { "type": "array", "items": { "type": "string" } }, "model": { "type": "string" } } } },
+      { "route": "POST /respond", "id": "respond", "title": "Accept, reject, hold or release an offer / assignment", "input": { "type": "object", "properties": { "id": { "type": "string" }, "response": { "type": "string", "enum": ["accept", "reject", "hold", "release"] }, "reason": { "type": "string" }, "backAt": { "type": "string" } }, "required": ["id", "response"] } },
+      { "route": "POST /take-back", "id": "take_back", "title": "Take work back from a helper (primary)", "confirm": false },
+      { "route": "POST /replan", "id": "replan", "title": "Re-plan the whole picture (dry run available)", "input": { "type": "object", "properties": { "dryRun": { "type": "boolean" } } } },
+      { "route": "POST /approve-account", "id": "approve_account", "title": "Approve a new account (Brett only)" },
+      { "route": "POST /consistency", "id": "consistency_fix", "title": "Make every store agree with the link" }
+    ]
+  },
+  "builtWith": { "model": "fable", "builtAt": "2026-11-04" },
+  "help": "help.json",
+  "opens": "main"
+}

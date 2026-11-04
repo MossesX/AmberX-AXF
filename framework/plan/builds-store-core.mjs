@@ -102,8 +102,14 @@ export function normStep(s, i = 0, ctx = {}) {
     createdAt: str(o.createdAt, 40) || at,
     updatedAt: str(o.updatedAt, 40) || at,
     ...(o.origin && typeof o.origin === 'object' ? { origin: { build: str(o.origin.build, 80), step: str(o.origin.step, 60), how: str(o.origin.how, 20) } } : {}),
+    // session-link@1 (Session sync plugin, spec/HANDOFF.md): only present when a helper session has the step
+    ...(Array.isArray(o.after) && o.after.length ? { after: o.after.map((d) => str(d, 120)).filter(Boolean).slice(0, 20) } : {}),
+    ...(o.assignedTo && typeof o.assignedTo === 'object' ? { assignedTo: normAssignedTo(o.assignedTo) } : {}),
+    ...(str(o.withHelper) ? { withHelper: str(o.withHelper, 120) } : {}),
   };
 }
+/** Who has a build or step through the Session sync plugin (session-link@1 assignment); the link is the record, this is its projection. */
+export const normAssignedTo = (a) => ({ assignment: str(a?.assignment, 60), session: str(a?.session, 120), account: str(a?.account, 120), agent: str(a?.agent, 40), status: str(a?.status, 20), since: str(a?.since, 40) });
 
 export function normBuild(b, ctx = {}) {
   const o = b && typeof b === 'object' ? b : {};
@@ -151,6 +157,12 @@ export function normBuild(b, ctx = {}) {
     removedSteps: Array.isArray(o.removedSteps) ? o.removedSteps.map((r) => ({ step: normStep(r?.step, 0, ctx), at: str(r?.at, 40), why: str(r?.why, 300), by: str(r?.by, 80) })) : [],
     legacy: Array.isArray(o.legacy) ? o.legacy.map((l) => ({ file: str(l?.file, 300), profile: str(l?.profile, 40), id: str(l?.id, 80) })) : [],
     copies: Array.isArray(o.copies) ? clone(o.copies) : [],
+    // session-link@1 (Session sync plugin, spec/HANDOFF.md): present only when set
+    ...(Array.isArray(o.touches) && o.touches.length ? { touches: o.touches.map((t) => str(t, 300)).filter(Boolean).slice(0, 40) } : {}),
+    ...(Array.isArray(o.after) && o.after.length ? { after: o.after.map((d) => str(d, 120)).filter(Boolean).slice(0, 20) } : {}),
+    ...(str(o.parent) ? { parent: str(o.parent, 80) } : {}),
+    ...(o.pinned === true ? { pinned: true } : {}),
+    ...(o.assignedTo && typeof o.assignedTo === 'object' ? { assignedTo: normAssignedTo(o.assignedTo) } : {}),
   };
 }
 

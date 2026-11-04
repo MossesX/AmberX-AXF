@@ -31,10 +31,12 @@ const err = (field, code, message) => ({ field, code, message });
 
 /** Kinds Boss posts (a `handoff` from Boss hands a clash to the merge fixer); kinds an agent posts about its own run; what Brett posts. */
 export const SPEAKERS = {
-  boss: ['assign', 'lease', 'merge', 'handoff', 'status', 'discipline', 'pay'],
-  agent: ['report', 'handoff', 'banter', 'discipline', 'pay'],
+  boss: ['assign', 'lease', 'merge', 'handoff', 'status', 'discipline', 'pay', 'session', 'handover', 'claim'],
+  agent: ['report', 'handoff', 'banter', 'discipline', 'pay', 'session', 'handover', 'claim'],
   brett: ['brett'],
 };
+/** The Sessions channel's kinds (Session sync plugin, session-link@1): what two Claude sessions and the orchestrator post. */
+export const SESSION_KINDS = ['session', 'handover', 'claim', 'report'];
 /** Work kinds that are about one job and must name it. */
 export const JOB_KINDS = ['assign', 'lease', 'report', 'handoff'];
 export const BANTER_MAX_CHARS = 200;
@@ -59,7 +61,7 @@ export function messageErrors(m, agents = [], p = 'message') {
 }
 
 /** Is this speaker's voice on? Boss and Brett only need the room switch; an agent also needs its own. */
-export const chatOn = (state, from) => state.chat.enabled && (from === BOSS.id || from === BRETT || state.chat.agents[from] !== false);
+export const chatOn = (state, from, channel = '') => channel === 'sessions' || (state.chat.enabled && (from === BOSS.id || from === BRETT || state.chat.agents[from] !== false));
 
 /**
  * Post messages into the state. Room off = nothing kept and nothing spent; an agent switched off stays quiet while
@@ -69,7 +71,7 @@ export const chatOn = (state, from) => state.chat.enabled && (from === BOSS.id |
 export function post(state, msgs, at, filter = (m) => m) {
   let n = 0;
   for (const raw of Array.isArray(msgs) ? msgs : []) {
-    if (!raw?.text || !chatOn(state, raw.from)) continue;
+    if (!raw?.text || !chatOn(state, raw.from, raw.channel)) continue; // the Sessions channel is a work record: kept even when the room is off
     const m = filter(raw);
     if (!m) continue;
     const id = `m${Date.parse(at) || 0}-${state.messages.length}`;

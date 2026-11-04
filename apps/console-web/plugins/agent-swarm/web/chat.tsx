@@ -12,7 +12,7 @@ import { fmtTime, type Act, type Agent, type ChatMsg, type SwarmState } from './
  * Brett (chat-watch.mjs, same rules as `swarm.mjs mentions` and the hub mirror), with the negative ones marked.
  */
 
-const VIEWS = [{ id: 'all', label: 'Everyone' }, { id: 'brett', label: 'About Brett' }, { id: 'negative', label: 'Negative' }] as const;
+const VIEWS = [{ id: 'all', label: 'Everyone' }, { id: 'sessions', label: 'Sessions' }, { id: 'brett', label: 'About Brett' }, { id: 'negative', label: 'Negative' }] as const;
 type View = (typeof VIEWS)[number]['id'];
 
 export function Bubble({ m, agents, ceiling, flag }: { m: ChatMsg; agents: Map<string, Agent>; ceiling?: number; flag?: watch.Mention }) {
@@ -36,8 +36,8 @@ export function ChatTab({ state, act }: { state: SwarmState; act: Act }) {
   const [view, setView] = useState<View>('all');
   const flagged = watch.mentions(state.swarm, state.roster, { limit: 500 });
   const flags = new Map(flagged.map((f) => [f.id, f]));
-  const counts = { all: state.swarm.messages.length, brett: flagged.length, negative: flagged.filter((f) => f.tone === 'negative').length };
-  const msgs = view === 'all' ? state.swarm.messages.slice(-200) : state.swarm.messages.filter((m) => flags.has(m.id) && (view === 'brett' || flags.get(m.id)?.tone === 'negative'));
+  const counts = { all: state.swarm.messages.length, sessions: state.swarm.messages.filter((m) => m.channel === 'sessions').length, brett: flagged.length, negative: flagged.filter((f) => f.tone === 'negative').length };
+  const msgs = view === 'all' ? state.swarm.messages.slice(-200) : view === 'sessions' ? state.swarm.messages.filter((m) => m.channel === 'sessions').slice(-200) : state.swarm.messages.filter((m) => flags.has(m.id) && (view === 'brett' || flags.get(m.id)?.tone === 'negative'));
   useEffect(() => { end.current?.scrollIntoView({ block: 'end' }); }, [msgs.length, view]);
   const on = state.swarm.chat.enabled;
   const colorBy = useSetting<boolean>(KEYS.colorByVibe, false);
@@ -54,14 +54,15 @@ export function ChatTab({ state, act }: { state: SwarmState; act: Act }) {
         <div className="fx-seg fx-seg--sm" role="tablist" aria-label="Show">
           {VIEWS.map((v) => <button key={v.id} type="button" role="tab" aria-selected={view === v.id} className={`fx-seg__opt${view === v.id ? ' is-on' : ''}`} onClick={() => setView(v.id)}>{v.label} ({counts[v.id]})</button>)}
         </div>
-        {view !== 'all' && <span className="fx-muted">What the crew says about Brett, the boss or the owner. Secrets are redacted. Sessions read the same list on axHub: data path {watch.HUB_FOLDER}/mentions.json.</span>}
+        {view === 'sessions' && <span className="fx-muted">The Sessions channel: what the Claude sessions on this project and the orchestrator say to each other (handovers, claims, steps). Post with the box below.</span>}
+        {view !== 'all' && view !== 'sessions' && <span className="fx-muted">What the crew says about Brett, the boss or the owner. Secrets are redacted. Sessions read the same list on axHub: data path {watch.HUB_FOLDER}/mentions.json.</span>}
       </div>
       <div className={`sw-room ${colorBy ? `is-vibe is-${base}` : ''}`} data-fx-ctx-target="agent-swarm-chat">
-        {msgs.length === 0 ? <p className="fx-empty">{view === 'all' ? 'Quiet in here. Messages show up as Boss hands out jobs.' : view === 'brett' ? 'Nobody is talking about Brett.' : 'Nothing negative about Brett.'}</p>
+        {msgs.length === 0 ? <p className="fx-empty">{view === 'all' ? 'Quiet in here. Messages show up as Boss hands out jobs.' : view === 'sessions' ? 'No session talk yet. Lines show up when a second Claude session joins (/sync).' : view === 'brett' ? 'Nobody is talking about Brett.' : 'Nothing negative about Brett.'}</p>
           : <ul className="sw-msgs">{msgs.map((m) => <Bubble key={m.id} m={m} agents={agents} ceiling={colorBy ? state.swarm.chatSettings.vibe : undefined} flag={view === 'all' ? undefined : flags.get(m.id)} />)}</ul>}
         <div ref={end} />
       </div>
-      <form className="sw-bar" onSubmit={(e) => { e.preventDefault(); if (!text.trim()) return; void act({ action: 'say', text }).then((l) => { if (l) setText(''); }); }}>
+      <form className="sw-bar" onSubmit={(e) => { e.preventDefault(); if (!text.trim()) return; void act({ action: 'say', text, ...(view === 'sessions' ? { channel: 'sessions' } : {}) }).then((l) => { if (l) setText(''); }); }}>
         <input className="fx-input sw-grow" aria-label="Message the crew" placeholder={on ? 'Say something to the crew…' : 'The group chat is off'} disabled={!on} value={text} onChange={(e) => setText(e.target.value)} />
         <Button type="submit" icon="play" disabled={!on || !text.trim()}>Send</Button>
       </form>

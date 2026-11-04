@@ -10,14 +10,14 @@
    {
     "field": "message.kind",
     "code": "invalid",
-    "message": "message: rio cannot post a \"assign\" line (agent posts report, handoff, banter, discipline, pay)"
+    "message": "message: rio cannot post a \"assign\" line (agent posts report, handoff, banter, discipline, pay, session, handover, claim)"
    }
   ],
   "boss-banter": [
    {
     "field": "message.kind",
     "code": "invalid",
-    "message": "message: boss cannot post a \"banter\" line (boss posts assign, lease, merge, handoff, status, discipline, pay)"
+    "message": "message: boss cannot post a \"banter\" line (boss posts assign, lease, merge, handoff, status, discipline, pay, session, handover, claim)"
    }
   ],
   "stranger": [
@@ -43,7 +43,7 @@
    {
     "field": "message.kind",
     "code": "invalid",
-    "message": "message.kind must be one of assign, lease, report, handoff, merge, status, discipline, pay, banter, brett"
+    "message": "message.kind must be one of assign, lease, report, handoff, merge, status, discipline, pay, banter, brett, session, handover, claim"
    },
    {
     "field": "message.text",
