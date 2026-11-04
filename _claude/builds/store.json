@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 844,
- "updatedAt": "2026-11-04T17:04:36.937Z",
+ "rev": 845,
+ "updatedAt": "2026-11-04T17:06:06.383Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -81648,9 +81648,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/urgent-console-perf",
-   "pr": "",
+   "pr": "#330",
    "createdAt": "2026-11-04T17:04:18.426Z",
-   "updatedAt": "2026-11-04T17:04:28.209Z",
+   "updatedAt": "2026-11-04T17:06:04.815Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -81787,7 +81787,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
