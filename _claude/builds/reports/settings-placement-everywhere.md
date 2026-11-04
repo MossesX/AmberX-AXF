@@ -7,7 +7,7 @@
 
 Addendum 1 (Brett, voice, Nov 4): "Every settings interface should have a setting to declare where it pops up."
 
-Branch `claude/settings-placement-everywhere` (= main + PR #289 merged + this build).
+Branch `claude/settings-placement-everywhere` (= main + PR #289 merged + this build). PR #329 (supersedes #289, closed).
 
 ## PR #289 (plugin-settings-placement) landed into this branch
 
@@ -65,8 +65,22 @@ Settings always stay on the full settings page too; a placement only picks where
 
 ## Screenshots
 
-`_claude/builds/reports/settings-placement-everywhere/shots/` (see the table below once captured; UI Review group
-`settings-placement-everywhere - Nov 4`). Non-blocking.
+`_claude/builds/reports/settings-placement-everywhere/shots/` (desktop 1366×860, phone 412×915; the built console served
+locally with the appearance source off, picks made through the right-click menu). UI Review group
+`settings-placement-everywhere - Nov 4` (non-blocking). PR #329.
+
+| Shot | What |
+|---|---|
+| ![](settings-placement-everywhere/shots/settings-page-pops-up-in-desktop.png) | The settings page: the **Pops up in** row at the top (This screen (Home) / Whole app, Look…) |
+| ![](settings-placement-everywhere/shots/settings-placement-list-desktop.png) | Settings → Settings placement: the app default, every screen (55) with its pick, Look, Try it |
+| ![](settings-placement-everywhere/shots/context-menu-settings-opens-in-desktop.png) | Right-click on a screen → **Settings opens in** (the submenu lists the seven choices, the app default, Look and animation…) |
+| ![](settings-placement-everywhere/shots/home-settings-dialog-desktop.png) | Home → Pop-up dialog: the whole settings interface in a dialog |
+| ![](settings-placement-everywhere/shots/home-settings-panel-left-desktop.png) | Home → Side panel, left |
+| ![](settings-placement-everywhere/shots/home-settings-inside-desktop.png) | Home → Inside the screen: an inline section at the top of Home |
+| ![](settings-placement-everywhere/shots/home-settings-window-desktop.png) | Home → Floating window |
+| ![](settings-placement-everywhere/shots/settings-page-pops-up-in-phone.png) | The settings page on a phone, with the row |
+| ![](settings-placement-everywhere/shots/home-settings-sheet-phone.png) | Home → Bottom sheet on a phone |
+| ![](settings-placement-everywhere/shots/home-settings-dialog-phone.png) | Home → Pop-up dialog on a phone |
 
 ## Gaps / notes
 
