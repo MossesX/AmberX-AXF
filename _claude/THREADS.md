@@ -700,7 +700,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 15:50 UTC · `urgent-land-gizmo-chat` s4 done, note (current) · foreign-write
 - 2026-11-04 15:50 UTC · `molly-console-commands` note (current) · foreign-write
 - 2026-11-04 15:50 UTC · `urgent-land-gizmo-chat` → complete, note (current) · foreign-write
 - 2026-11-04 15:50 UTC · `app-voice-commands` s2 done, s3 done, s4 done, s5 done, note (current) · foreign-write
@@ -1100,6 +1099,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 23:01 UTC · `fable-review-shipped-features-build-hook-contrac` added (0 steps) (current) · pending
 - 2026-11-04 23:10 UTC · `shipped-features-r2` PR #350, note (angel) · reconciler
 - 2026-11-04 23:57 UTC · `claude-account-switcher` added (5 steps) (current) · orchestrator
+- 2026-11-04 23:57 UTC · `claude-account-switcher` added (5 steps) (current) · foreign-write
 
 ## Token passes (log)
 
