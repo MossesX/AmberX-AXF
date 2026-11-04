@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T22:41:59.905Z",
+ "updatedAt": "2026-11-04T22:42:31.349Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -12863,15 +12863,15 @@
    "title": "Notes views",
    "category": "Feature",
    "detail": "Console Notes: Classic view with collapsible sections + Grid view with expandable rows; AmberX notes source; shared FoldSections framework component.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/notes-views",
    "pr": "#349",
    "createdAt": "2026-11-04T21:58:47.815Z",
-   "updatedAt": "2026-11-04T22:41:58.719Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T22:42:30.158Z",
+   "builtAt": "2026-11-04T22:42:30.158Z",
    "notes": [
     {
      "text": "Follow-up: the AmberX app Notes screen (apps/amberx-droid notes plugin) does not share the console component; re-bake AmberX, then use FoldSections in its item view and add the Grid view there. Report _claude/builds/reports/notes-views.md.",
@@ -12978,8 +12978,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T22:42:30.158Z",
      "note": "",
      "uid": "st-mw2nsa4d0a54sn"
     }
