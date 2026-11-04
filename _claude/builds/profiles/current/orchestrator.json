@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T02:17:15.955Z",
+ "updatedAt": "2026-11-04T03:13:05.927Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4415,7 +4415,7 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-04T02:10:56.963Z",
-     "note": "",
+     "note": "PR #299 (claude/browser-automation)",
      "uid": "st-mw1dt95p0j4y85"
     },
     {
@@ -4666,7 +4666,7 @@
    "branch": "claude/profile-switcher-widget",
    "pr": "#300",
    "createdAt": "2026-11-04T00:40:48.340Z",
-   "updatedAt": "2026-11-04T02:14:30.962Z",
+   "updatedAt": "2026-11-04T02:35:08.371Z",
    "builtAt": "",
    "notes": [
     {
@@ -4801,11 +4801,16 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/main-area-tabs",
-   "pr": "",
+   "pr": "#301",
    "createdAt": "2026-11-04T01:34:59.457Z",
-   "updatedAt": "2026-11-04T01:34:59.457Z",
+   "updatedAt": "2026-11-04T03:12:51.746Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #301",
+     "at": "2026-11-04T03:12:51.746Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -4825,7 +4830,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1hc3o202l8jm"
+     "uid": "st-mw1gkwck01x2xx"
     },
     {
      "id": "s2",
@@ -4843,7 +4848,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1hc3o303b4rr"
+     "uid": "st-mw1gkwck02zcpl"
     },
     {
      "id": "s3",
@@ -4861,7 +4866,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1hc3o3041dh8"
+     "uid": "st-mw1gkwck037x58"
     },
     {
      "id": "s4",
@@ -4879,7 +4884,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1hc3o3056eeg"
+     "uid": "st-mw1gkwck047f3b"
     },
     {
      "id": "s5",
@@ -4897,7 +4902,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1hc3o306xe7d"
+     "uid": "st-mw1gkwck055yea"
     },
     {
      "id": "s6",
@@ -4915,7 +4920,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1hc3o3074avq"
+     "uid": "st-mw1gkwck06y9ac"
     },
     {
      "id": "s7",
@@ -4933,7 +4938,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1hc3o308cary"
+     "uid": "st-mw1gkwck07vfqo"
     },
     {
      "id": "s8",
@@ -4951,7 +4956,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1hc3o309vnjr"
+     "uid": "st-mw1gkwck08zg5f"
     },
     {
      "id": "s9",
@@ -4969,10 +4974,190 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1hc3o30alu3d"
+     "uid": "st-mw1gkwck093skq"
     },
     {
      "id": "s10",
+     "text": "Phone: compact strip, swipe between tabs, long-press to drag; tests + type-check, phone + desktop screenshots, UI Review item, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1gkwck0awtnn"
+    },
+    {
+     "id": "s11-10",
+     "text": "Main area becomes a tab group on the dock engine: every screen/plugin opens as a tab (icon, title, close, dirty dot); tabs persist across reloads; reopen closed tab; overflow scroll + list menu; middle-click / close others / close to the right",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1hc3o202l8jm"
+    },
+    {
+     "id": "s12-11",
+     "text": "Tab position top / bottom / left stack / right stack (setting + right-click on the strip)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1hc3o303b4rr"
+    },
+    {
+     "id": "s13-12",
+     "text": "Float and dock: drag a tab out to float (shared window layer, resize grips), drag a window title onto the strip to dock (drop indicator), Float / Dock in tab + window menus, split by dropping a tab on an edge (folds in plugin-floatable)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1hc3o3041dh8"
+    },
+    {
+     "id": "s14-13",
+     "text": "Tab context menu (Settings, Float, Split, Pin, Duplicate, Close) + strip menu -> Tab group settings (position, size, icons, close buttons, max tabs, open as tab vs replace, restore on start, animation); in main Settings; REST + MCP + CLI (tabs_list, tab_open, tab_close, tab_float, tab_dock)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1hc3o3056eeg"
+    },
+    {
+     "id": "s15-14",
+     "text": "Phone: compact strip, swipe between tabs, long-press to drag; tests + type-check, phone + desktop screenshots, UI Review item, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1hc3o306xe7d"
+    },
+    {
+     "id": "s16-15",
+     "text": "Main area becomes a tab group on the dock engine: every screen/plugin opens as a tab (icon, title, close, dirty dot); tabs persist across reloads; reopen closed tab; overflow scroll + list menu; middle-click / close others / close to the right",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1hc3o3074avq"
+    },
+    {
+     "id": "s17-16",
+     "text": "Tab position top / bottom / left stack / right stack (setting + right-click on the strip)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1hc3o308cary"
+    },
+    {
+     "id": "s18-17",
+     "text": "Float and dock: drag a tab out to float (shared window layer, resize grips), drag a window title onto the strip to dock (drop indicator), Float / Dock in tab + window menus, split by dropping a tab on an edge (folds in plugin-floatable)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1hc3o309vnjr"
+    },
+    {
+     "id": "s19-18",
+     "text": "Tab context menu (Settings, Float, Split, Pin, Duplicate, Close) + strip menu -> Tab group settings (position, size, icons, close buttons, max tabs, open as tab vs replace, restore on start, animation); in main Settings; REST + MCP + CLI (tabs_list, tab_open, tab_close, tab_float, tab_dock)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1hc3o30alu3d"
+    },
+    {
+     "id": "s20-19",
      "text": "Phone: compact strip, swipe between tabs, long-press to drag; tests + type-check, phone + desktop screenshots, UI Review item, report, THREADS, PR",
      "model": "Opus",
      "why": "",
@@ -5440,7 +5625,7 @@
      "uid": "st-mw1gxbso0ao8r3"
     },
     {
-     "id": "s11-10",
+     "id": "s46-45",
      "text": "Main area becomes a tab group on the dock engine: every screen/plugin opens as a tab (icon, title, close, dirty dot); tabs persist across reloads; reopen closed tab; overflow scroll + list menu; middle-click / close others / close to the right",
      "model": "Opus",
      "why": "",
@@ -5458,7 +5643,7 @@
      "uid": "st-mw1genw7010qfw"
     },
     {
-     "id": "s12-11",
+     "id": "s47-46",
      "text": "Tab position top / bottom / left stack / right stack (setting + right-click on the strip)",
      "model": "Opus",
      "why": "",
@@ -5476,7 +5661,7 @@
      "uid": "st-mw1genw702okbc"
     },
     {
-     "id": "s13-12",
+     "id": "s48-47",
      "text": "Float and dock: drag a tab out to float (shared window layer, resize grips), drag a window title onto the strip to dock (drop indicator), Float / Dock in tab + window menus, split by dropping a tab on an edge (folds in plugin-floatable)",
      "model": "Opus",
      "why": "",
@@ -5494,7 +5679,7 @@
      "uid": "st-mw1genw703ocpo"
     },
     {
-     "id": "s14-13",
+     "id": "s49-48",
      "text": "Tab context menu (Settings, Float, Split, Pin, Duplicate, Close) + strip menu -> Tab group settings (position, size, icons, close buttons, max tabs, open as tab vs replace, restore on start, animation); in main Settings; REST + MCP + CLI (tabs_list, tab_open, tab_close, tab_float, tab_dock)",
      "model": "Opus",
      "why": "",
@@ -5512,7 +5697,7 @@
      "uid": "st-mw1genw7049q6a"
     },
     {
-     "id": "s15-14",
+     "id": "s50-49",
      "text": "Phone: compact strip, swipe between tabs, long-press to drag; tests + type-check, phone + desktop screenshots, UI Review item, report, THREADS, PR",
      "model": "Opus",
      "why": "",
@@ -5721,11 +5906,16 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/app-style-override",
-   "pr": "",
+   "pr": "#302",
    "createdAt": "2026-11-04T01:44:48.256Z",
-   "updatedAt": "2026-11-04T01:45:30.745Z",
+   "updatedAt": "2026-11-04T03:12:51.746Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #302",
+     "at": "2026-11-04T03:12:51.746Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -5778,8 +5968,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T02:46:41.562Z",
      "note": "",
      "uid": "st-mw1gf3s50ev7ob"
     },
@@ -5796,8 +5986,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T02:47:09.560Z",
      "note": "",
      "uid": "st-mw1gf3s50fsmyk"
     },

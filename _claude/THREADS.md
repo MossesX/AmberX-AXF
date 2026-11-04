@@ -61,7 +61,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Fable rebuild: agent swarm (Breakroom `agent-swarm-fable-rebuild`, 7 steps, Fable s1–s6 + Opus s7; Brett Nov 3, voice: "finish the Breakroom profile"): the swarm's seven contracts into `framework/core/engines/swarm-rules.mjs` (one registry, normalizers, field-naming validators, JSON Schemas, snapshot `schemas/swarm.json`, fixture `spec/fixtures/swarm.json`, `check-swarm.mts` in CI; plugin re-exports them), then planner, context packer, card/avatar check, group chat contract, vibe engine, differences report | review (all 7 steps done; PR open, the push banner merges it) | `claude/agent-swarm-fable-rebuild` | [#247](https://github.com/MossesX/AmberX-AXF/pull/247) | s1: contracts in the framework. s2: planner on the model policy, `fallback` agent, folder-vs-glob overlap, one agent one job across builds. s3: best-hit snippets, folder outlines (real brief 4321 → 352 tokens). s4: avatar as a part list from the card rules. s5: chat contract `swarm-chat.mjs`. s6: vibe engine `swarm-vibe.mjs`; `check-swarm.mts` 223 checks. s7: report `_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md` + LOG.md; no shots (the sandbox console cannot render without axHub; same pixels anyway). Brett: none needed | 2026-11-03 |
 | Shared dock engine (Urgent `dock-engine`, Fable): split/float/re-dock/drop zones/10 layout presets on the windows engine; used by MD Studio, xLayout (replaces its s3), Theme Editor | queued (needs a Fable session) | `claude/dock-engine` (not made) | - | run first | 2026-11-02 |
 | Shared dock engine (Urgent `dock-engine`, Fable): split/float/re-dock/drop zones/10 layout presets on the windows engine; used by MD Studio, xLayout (replaces its s3), Theme Editor | review (built s1-s4 on Fable, headless run `molly-fable`; orchestrator complete; PR from `claude/molly-fable`, push banner merges) | `claude/molly-fable` | [#245](https://github.com/MossesX/AmberX-AXF/pull/245) | `core/engines/dock.ts`, dock-layout@1 (10 starters baked into every app), `react/windows/DockHost.tsx`, `spec/fixtures/dock.json`, `spec/check-dock.mts`; UI Review: waiting, item r-20261103-80e15b02 in group "molly-fable - Nov 3 6:46 AM" (console Libraries → Docked comparisons + Pane layout dialog, desktop + phone) | 2026-11-03 |
-| MD Studio plugin (Urgent `md-studio`, Opus; Brett Nov 2 21:30 ET): md browser/editor, scope column Project/Claude/Repo, docking tabs, reference branches + click-to-split, 3 views + IDE view, snippets, Claude-file wizards | queued (after dock-engine) | `claude/md-studio` (not made) | - | waits on dock-engine | 2026-11-02 |
+| MD Studio plugin (Urgent `md-studio`, Opus; Brett Nov 2 21:30 ET + Nov 3 voice; agent Reel Rhonda): md browser/editor on the dock engine: scope column Project/Claude/Repo/Notes with edit switch + reference branches, dock tabs (split/float/drop), preview/split/edit with Markdown toolbar, find/replace, autosave, conflict-safe saves, version history + restore, 4 views (Browse/Read/Write/IDE with outline + references docked), snippets, Claude-file wizards, context view with tokens per part, commands for voice (REST/MCP/CLI) | review (s1–s9, s11–s14 done; s10 = PR + UI Review; push banner merges) | `claude/md-studio` | [#271](https://github.com/MossesX/AmberX-AXF/pull/271) | Report `_claude/builds/reports/md-studio.md`; UI Review group "md-studio - Nov 3 6:30 PM" | 2026-11-03 |
 | Theme Editor plugin (Urgent `theme-editor`, Opus; Brett Nov 2 21:30 ET): colour + style sections, every token, copy/save/load, multi-view toolbar; reuses Theme manager's tree (web capability `axf.token-tree@1`) | PR open, waiting in UI Review (r-20261103-6a35ef38); orchestrator complete | `claude/theme-editor` | #243 | auto-merges once UI Review approves + CI green; dock engine adoption later | 2026-11-03 |
 | Walkthrough random looks (Brett Nov 2 14:36 ET: random design pack for stack chapters 5-10; recording-only look, axHub look untouched). Orchestrator `walkthrough-random-look` (Refactor, Opus) | working (re-recording on the VPS) | `claude/walkthrough-random-look` | - | re-record cli,console,plugins,builds,guardrails,agents | 2026-11-02 |
 | xLayout: Molly as ONE app (Brett Nov 2 13:46 ET: one banner, app menu, nav, context menu across AmberX + axHub + Console; IDE switch with draggable/resizable/dockable panes, pane limit, 10 preset layouts with preview; up to 3 plugin toolbars, Toolbar designer from settings hook + right-click any toolbar; open in main/floating/pane). Orchestrator `xlayout` (Big Dog), s1-s3 Fable, s4-s12 Opus. Replaces queued 'Molly: one app' | review (all 12 steps built: Fable s1-s3 on `claude/molly-fable` #245, Opus s4-s12 on `claude/xlayout-opus` #252; UI Review waiting, group "xlayout - Nov 3 7:28 AM"; push banner merges #245 then #252) | `claude/xlayout-opus` | [#252](https://github.com/MossesX/AmberX-AXF/pull/252) (after [#245](https://github.com/MossesX/AmberX-AXF/pull/245)) | Brett: UI Review approve / changes; then redeploy AmberX, axHub web, Console so the live guests merge | 2026-11-03 |
@@ -209,6 +209,7 @@ Done (PR open). If a later session must carry on: read `_claude/builds/reports/o
   "Carry on token-control (Urgent) from s1 on Fable: `AXF_BUILD_PROFILE=urgent node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief token-control`." <!-- axf-plugin:build-orchestrator -->
   "Carry on theme-editor (Urgent) from s1 on Opus: `AXF_BUILD_PROFILE=urgent node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief theme-editor`." <!-- axf-plugin:build-orchestrator -->
   token-control: see its own block below (Fable phase done Nov 3 2026).
+  md-studio: built Nov 3 2026 on `claude/md-studio` (Opus, agent Reel Rhonda); s10 left = PR merge (push banner) + Brett's UI Review. Follow-ups not built: "Open context in MD Studio" on approval rows in axHub / AmberX (deep link `?md-context=<id or path>` and command `open-context` are ready; per-session context md files do not exist yet). Report `_claude/builds/reports/md-studio.md`. <!-- axf-plugin:md-studio -->
 
 ### Theme veto pass (orchestrator `theme-veto-pass`, profile Urgent) — branch `claude/theme-veto-pass`
 - Asked (Brett Nov 3 2026, voice, GO given): a timed override: "allow theme changes for the next 30 minutes" makes token changes run with no veto for that window. Grant approved once (traces to Brett), expiry server-side, deletes never covered, banner chip with live countdown (revoke / extend, warning 2 min before), audit + THREADS line per grant and change, `pass.undo`, read tools annotated read-only + recommended axHub policy, contract with axHub build `axhub-veto-pass`.
@@ -590,38 +591,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 20:53 UTC · `build-prompt-origin` s5 done, → complete (current) · orchestrator
-- 2026-11-03 20:53 UTC · `build-prompt-origin` → built, PR #282 (current) · builds-live
-- 2026-11-03 20:55 UTC · `build-prompt-origin` s3 done, s5 done, → complete (current) · foreign-write
-- 2026-11-03 20:55 UTC · `plugin-settings-placement` s3 done, → running (current) · orchestrator
-- 2026-11-03 20:55 UTC · `plugin-settings-placement` s4 done (current) · orchestrator
-- 2026-11-03 20:55 UTC · `plugin-settings-placement` s5 done (current) · orchestrator
-- 2026-11-03 20:56 UTC · `plugin-settings-placement` s3 done, s4 done, s5 done (current) · foreign-write
-- 2026-11-03 20:47 UTC · `plugin-settings-placement` s1 done, s2 done (current) · foreign-write
-- 2026-11-03 20:47 UTC · `banner-ref-links` added (5 steps) (current) · orchestrator
-- 2026-11-03 20:47 UTC · `banner-ref-links` → running (current) · orchestrator
-- 2026-11-03 20:56 UTC · `build-prompt-origin` s3 done, s5 done, → complete (current) · foreign-write
-- 2026-11-03 20:56 UTC · `banner-ref-links` s1 done (current) · orchestrator
-- 2026-11-03 20:57 UTC · `banner-ref-links` → running, branch claude/banner-ref-links (current) · foreign-write
-- 2026-11-03 21:00 UTC · `home-cards-live` branch claude/home-cards-live, note (urgent) · reconciler
-- 2026-11-03 21:02 UTC · `build-prompt-origin` s3 done, s5 done, → complete (current) · foreign-write
-- 2026-11-03 21:02 UTC · `plugin-settings-placement` s3 done, s4 done, s5 done (current) · foreign-write
-- 2026-11-03 21:02 UTC · `banner-ref-links` s1 done (current) · foreign-write
-- 2026-11-03 21:05 UTC · `window-resize-fix` s3 done, → complete, note (current) · foreign-write
-- 2026-11-03 21:05 UTC · `terminal-sessions-nav` s1 done, s2 done, s3 done (current) · foreign-write
-- 2026-11-03 21:05 UTC · `profile-manager` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
-- 2026-11-03 21:05 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
-- 2026-11-03 21:05 UTC · `plugin-settings-placement` added (6 steps) (current) · foreign-write
-- 2026-11-03 21:05 UTC · `banner-ref-links` added (5 steps) (current) · foreign-write
-- 2026-11-03 21:05 UTC · `home-cards-live` branch claude/home-cards-live (urgent) · builds-live
-- 2026-11-03 21:03 UTC · `home-cards-live` PR #283, note (urgent) · reconciler
-- 2026-11-03 21:05 UTC · `molly-console-commands` added (7 steps) (current) · orchestrator
-- 2026-11-03 21:08 UTC · `molly-console-commands` added (7 steps) (current) · foreign-write
-- 2026-11-03 21:10 UTC · `git-status-board` added (6 steps) (current) · foreign-write
-- 2026-11-03 20:54 UTC · `home-cards-live` branch claude/home-cards-live, note (urgent) · reconciler
-- 2026-11-03 21:11 UTC · `plugin-settings-placement` s3 done, s4 done, s5 done (current) · foreign-write
-- 2026-11-03 21:11 UTC · `banner-ref-links` s1 done (current) · foreign-write
-- 2026-11-03 21:11 UTC · `molly-console-commands` added (14 steps) (current) · foreign-write
 - 2026-11-03 21:11 UTC · `git-status-board` added (6 steps) (current) · foreign-write
 - 2026-11-03 21:12 UTC · `urgent-main-ci-green` added (5 steps) (current) · orchestrator
 - 2026-11-03 21:12 UTC · `urgent-main-ci-green` added (5 steps) (current) · foreign-write
@@ -990,3 +959,35 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 02:11 UTC · `browser-automation` note (current) · orchestrator
 - 2026-11-04 02:14 UTC · `crew-retrain` → complete, merged, note (breakroom) · reconciler
 - 2026-11-04 02:14 UTC · `profile-switcher-widget` PR #300, note (current) · reconciler
+- 2026-11-04 01:19 UTC · `lenny-land-all` s1 done, s5 done, note (current) · foreign-write
+- 2026-11-04 01:19 UTC · `browser-automation` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 01:20 UTC · `gizmo-companion` s19 done (current) · foreign-write
+- 2026-11-04 01:20 UTC · `lenny-land-all` s1 done, s5 done, note (current) · foreign-write
+- 2026-11-04 01:20 UTC · `browser-automation` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 01:20 UTC · `profile-switcher-widget` s1 done (current) · foreign-write
+- 2026-11-04 01:26 UTC · `plugin-lazy-load` note (current) · foreign-write
+- 2026-11-04 01:49 UTC · `browser-automation` s3 done, note (current) · foreign-write
+- 2026-11-04 01:49 UTC · `main-area-tabs` added (10 steps) (current) · foreign-write
+- 2026-11-04 02:00 UTC · `profile-switcher-widget` s2 done (current) · foreign-write
+- 2026-11-04 02:00 UTC · `profile-switcher-widget` s2 done, s3 done, s4 done (current) · foreign-write
+- 2026-11-04 02:04 UTC · `app-style-override` added (6 steps) (current) · foreign-write
+- 2026-11-04 02:05 UTC · `app-style-override` added (6 steps) (current) · foreign-write
+- 2026-11-04 02:26 UTC · `ui-review-shots` → complete, merged, note (urgent) · reconciler
+- 2026-11-04 02:35 UTC · `crew-retrain` note (breakroom) · foreign-write
+- 2026-11-04 02:35 UTC · `browser-automation` note (current) · foreign-write
+- 2026-11-04 02:35 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 02:35 UTC · `profile-switcher-widget` PR #300 (current) · builds-live
+- 2026-11-04 01:51 UTC · `app-style-override` added (6 steps) (current) · orchestrator
+- 2026-11-04 01:52 UTC · `app-style-override` → running (current) · orchestrator
+- 2026-11-04 02:46 UTC · `crew-retrain` note (breakroom) · foreign-write
+- 2026-11-04 02:46 UTC · `browser-automation` note (current) · foreign-write
+- 2026-11-04 02:46 UTC · `profile-switcher-widget` s2 done, s3 done, s4 done, note (current) · foreign-write
+- 2026-11-04 02:46 UTC · `app-style-override` s3 done (current) · orchestrator
+- 2026-11-04 02:47 UTC · `app-style-override` s4 done (current) · orchestrator
+- 2026-11-04 02:59 UTC · `crew-retrain` note (breakroom) · foreign-write
+- 2026-11-04 02:59 UTC · `browser-automation` note (current) · foreign-write
+- 2026-11-04 02:59 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 03:12 UTC · `main-area-tabs` PR #301, note (current) · reconciler
+- 2026-11-04 03:12 UTC · `app-style-override` PR #302, note (current) · reconciler
+- 2026-11-04 03:19 UTC · `main-area-tabs` note (current) · foreign-write
+- 2026-11-04 03:19 UTC · `app-style-override` note (current) · foreign-write
