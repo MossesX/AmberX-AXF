@@ -94,6 +94,12 @@ Fable build **`fable-review-nov3`** (Current profile, 7 Fable steps, ~3 h 15 min
 \* `repo store: orchestrator builds are valid and small-stepped` fails on `console-wake-finish` (a step over 30 min
 in the live store the session-start hook synced in). That's data, not this change.
 
+**CI (first run, PR #319):** red on *Web Dev Console + Python API*, at `ai-assistant/test.py` → "CLI gets the console
+tools over MCP; its own Edit/Bash stay off" (the fake Claude CLI bridge). This diff doesn't touch it, it passes
+locally (143/143), and `profile-lists-home-card`, `crew-profiles` and `bugs-board` went red in the same window. The
+loop stops at the first failing plugin test, so `build-orchestrator/server/test_upgrade.py` never ran there (it
+passes locally). Gradle, AmberX and the build engine sweep passed.
+
 ## Known gaps
 
 - Change-log entries for each automatic switch: recorded in the build notes, `approvals[]` and the builds store
