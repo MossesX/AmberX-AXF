@@ -1,0 +1,243 @@
+{
+ "$axf": "asset@1",
+ "type": "help",
+ "id": "bugs-board-help",
+ "name": "Bugs board help",
+ "version": "0.1.0",
+ "description": "Help mode entries for the bugs board (help@1).",
+ "author": "Brett",
+ "tags": [
+  "help"
+ ],
+ "data": {
+  "scope": "plugin:bugs-board",
+  "entries": [
+   {
+    "target": "view:bugs-board",
+    "title": "Bugs",
+    "text": "The confirmed bugs board: every open bug grouped by the build it is part of, with that build's live state (running with its agent and step, queued with its place in line, built with its PR, merged). Drag a bug by its grip to reorder it or drop it on another build."
+   },
+   {
+    "target": "banner:bugs-board",
+    "title": "Open bugs",
+    "text": "How many confirmed bugs are open, how many have no build yet and how many wait on you. Tap it to open the bugs board."
+   },
+   {
+    "target": "open-bug-unassigned",
+    "title": "Open bugs",
+    "text": "Opens the bugs board."
+   },
+   {
+    "target": "bugs",
+    "title": "Bugs settings",
+    "text": "Settings for the bugs board: auto-optimize, the most bugs one build may take, which builds the optimizer looks at and how handoffs show in the crew chat."
+   },
+   {
+    "target": "add-bug",
+    "title": "Add bug",
+    "text": "Opens the form for a new confirmed bug. It lands at the top of Unassigned (or straight in a build when auto-optimize is on)."
+   },
+   {
+    "target": "auto-optimize",
+    "title": "Auto-optimize",
+    "text": "When on, new and unassigned bugs are moved into the best queued or running build by themselves (zero tokens: matched by words, app, area and the files the build touches). Off by default."
+   },
+   {
+    "target": "optimize",
+    "title": "Optimize…",
+    "text": "Shows the moves auto-optimize would make right now, with the reason for each. Nothing changes until you tap Apply; Undo takes the whole batch back."
+   },
+   {
+    "target": "undo",
+    "title": "Undo",
+    "text": "Takes back the last batch of moves (an optimize run or a new build from bugs)."
+   },
+   {
+    "target": "new-build-from",
+    "title": "New build from selected",
+    "text": "Starts a new build in the active profile with one 'Fix bug' step per selected bug, and moves the bugs into it."
+   },
+   {
+    "target": "new-build-from-bug",
+    "title": "New build from bug",
+    "text": "Starts a new build in the active profile with a 'Fix bug' step for this bug, and moves the bug into it."
+   },
+   {
+    "target": "mark-fixed",
+    "title": "Mark fixed",
+    "text": "Marks the bug fixed. Bugs are also marked fixed by themselves when their build's PR merges."
+   },
+   {
+    "target": "wont-fix",
+    "title": "Won't fix",
+    "text": "Closes the bug without fixing it. It moves to the Won't fix group; Reopen brings it back."
+   },
+   {
+    "target": "reopen",
+    "title": "Reopen",
+    "text": "Puts a fixed or closed bug back on the board as confirmed."
+   },
+   {
+    "target": "remove",
+    "title": "Remove",
+    "text": "Takes the bug off the board for good (after a confirm)."
+   },
+   {
+    "target": "open-build",
+    "title": "Open build",
+    "text": "Opens the Build orchestrator, where this build's steps and brief are."
+   },
+   {
+    "target": "move-to-build",
+    "title": "Move to build",
+    "text": "Pick a queued or running build for this bug. The bug gets a 'Fix bug' step and an addendum there, the running session is told, and the build's agent answers in the crew chat."
+   },
+   {
+    "target": "move",
+    "title": "Move",
+    "text": "Moves the bug into the picked build."
+   },
+   {
+    "target": "severity",
+    "title": "Severity",
+    "text": "How bad the bug is: urgent, high, normal or low. Auto-optimize homes the worst ones first."
+   },
+   {
+    "target": "app",
+    "title": "App",
+    "text": "Which app the bug is in (console-web, molly, axhub-web…). The board can filter by it and the optimizer matches on it."
+   },
+   {
+    "target": "area",
+    "title": "Area",
+    "text": "The plugin, screen or part of the app (e.g. console-terminal, banner tokens). The optimizer matches it against each build's brief and steps."
+   },
+   {
+    "target": "tags-comma-separated",
+    "title": "Tags",
+    "text": "Extra words for matching and filtering, comma separated."
+   },
+   {
+    "target": "what-brett-said-verbatim",
+    "title": "What Brett said",
+    "text": "Your exact words about the bug. They travel with it into the build's addendum."
+   },
+   {
+    "target": "title",
+    "title": "Title",
+    "text": "A short line that says what is broken."
+   },
+   {
+    "target": "details",
+    "title": "Details",
+    "text": "What happens, where, and how to make it happen."
+   },
+   {
+    "target": "by-build",
+    "title": "By build",
+    "text": "Shows the bugs grouped by build, with each build's live state on its header."
+   },
+   {
+    "target": "list",
+    "title": "List",
+    "text": "Shows every bug in one list in board order, each with its build chip."
+   },
+   {
+    "target": "open",
+    "title": "Open",
+    "text": "Only open bugs (confirmed or in a build)."
+   },
+   {
+    "target": "all",
+    "title": "All",
+    "text": "Every bug, fixed and closed ones too."
+   },
+   {
+    "target": "fixed",
+    "title": "Fixed",
+    "text": "Only fixed bugs, with the PR that fixed them."
+   },
+   {
+    "target": "view",
+    "title": "View",
+    "text": "By build or one list."
+   },
+   {
+    "target": "status",
+    "title": "Status",
+    "text": "Which bugs to show: open, all, fixed or won't fix."
+   },
+   {
+    "target": "profile",
+    "title": "Profile",
+    "text": "Only bugs of one build profile."
+   },
+   {
+    "target": "builds-the-optimizer-looks-at",
+    "title": "Builds the optimizer looks at",
+    "text": "The active build profile's builds only, or every profile's."
+   },
+   {
+    "target": "most-bugs-per-build",
+    "title": "Most bugs per build",
+    "text": "Auto-optimize and the agents never put more open bugs than this on one build; a full build bounces new ones."
+   },
+   {
+    "target": "match-threshold",
+    "title": "Match threshold",
+    "text": "How strong a match must be before auto-optimize moves a bug. Higher = fewer, surer moves."
+   },
+   {
+    "target": "skip-builds-untouched-for-days",
+    "title": "Skip old builds",
+    "text": "Auto-optimize leaves builds nobody touched for this many days alone. Dragging onto them still works."
+   },
+   {
+    "target": "ask-ai-button",
+    "title": "Ask AI button",
+    "text": "Lets you ask a model about bugs auto-optimize can't place. Off by default because it costs tokens."
+   },
+   {
+    "target": "handoffs-in-the-crew-chat",
+    "title": "Handoffs in the crew chat",
+    "text": "Posts every move in the crew group chat: the sender tags the build's agent, who takes it or bounces it."
+   },
+   {
+    "target": "chat-tone",
+    "title": "Chat tone",
+    "text": "Street (crew slang) or clean lines for the handoffs."
+   },
+   {
+    "target": "when-bounced",
+    "title": "When bounced",
+    "text": "Auto-reroute: Boss offers a bounced bug to the next best build until someone takes it. Ask Brett: it waits for you with the best builds to pick from."
+   },
+   {
+    "target": "bounces-before-asking-brett",
+    "title": "Bounces before asking Brett",
+    "text": "After this many bounces in a row the bug goes back to Unassigned and waits for you."
+   },
+   {
+    "target": "cancel",
+    "title": "Cancel",
+    "text": "Closes this without changing anything."
+   },
+   {
+    "target": "apply",
+    "title": "Apply",
+    "text": "Makes the proposed moves. Each one is offered to the build's agent in the crew chat first."
+   },
+   {
+    "target": "close",
+    "title": "Close",
+    "text": "Closes the bug's editor."
+   },
+   {
+    "target": "save",
+    "title": "Save",
+    "text": "Saves your changes to the bug."
+   }
+  ],
+  "intros": []
+ }
+}

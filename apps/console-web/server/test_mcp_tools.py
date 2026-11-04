@@ -86,6 +86,19 @@ with tempfile.TemporaryDirectory() as tmp:
     ok("false" in json.dumps(asyncio.run(server.call_tool("claude_settings_get", {"key": "noWait.enabled"})), default=str).lower(), "No wait stays off")
     del os.environ["AXF_CLAUDE_SETTINGS_FILE"], os.environ["AXF_CLAUDE_SETTINGS_DATA"]
 
+# Bugs board (build bugs-board): bugs_list reads; the rest write through bugs.mjs (a temp file here, no side effects)
+for name in ("bugs_list", "bug_add", "bug_update", "bug_move", "bug_reorder", "bugs_optimize"):
+    ok(name in tools, f"{name} is registered")
+ok(tools["bugs_list"].annotations.read_only_hint is True, "bugs_list reads")
+ok(tools["bug_move"].annotations.read_only_hint is not True, "bug_move writes")
+with tempfile.TemporaryDirectory() as tmp:
+    os.environ.update({"AXF_BUGS_FILE": f"{tmp}/bugs.json", "AXF_BUGS_SIDE": "0", "AXF_BUGS_LIVE": "0"})
+    asyncio.run(server.call_tool("bug_add", {"title": "MCP test bug", "app": "console-web", "said": "it broke"}))
+    text = json.dumps(asyncio.run(server.call_tool("bugs_list", {})), default=str)
+    ok("MCP test bug" in text and "Unassigned" in text, "bug_add lands on the board, unassigned")
+    for k in ("AXF_BUGS_FILE", "AXF_BUGS_SIDE", "AXF_BUGS_LIVE"):
+        del os.environ[k]
+
 # sessions nav (terminal-sessions-nav): console_session_note posts into the caller's mirror feed; every call is recorded
 notes: list[dict] = []
 calls: list[tuple] = []

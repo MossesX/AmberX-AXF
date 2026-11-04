@@ -228,6 +228,41 @@ export function publish(entries, { journalExtra = {} } = {}) {
   }
   return { ok: false, error: `main kept moving: gave up after ${ATTEMPTS} tries (${last.slice(-200)})` };
 }
+/**
+ * A builds sidecar file (e.g. the bugs board's _claude/builds/bugs.json) to main as one status-only commit, the same
+ * way as the store: fetch, `mergeText(mainText | null)` → the text main should hold (newer wins, done by the owner),
+ * commit through a private index, push; main moved = fetch and merge again. Returns { ok, sha, text } (text = what
+ * main holds now) or { ok: false, error }. Only `_claude/builds/` files: status data, never code.
+ */
+export function publishSidecar(rel, mergeText, msg) {
+  if (!/^_claude\/builds\/[a-z0-9._-]+\.json$/.test(rel) || rel === STORE_REL || rel === ORIGINS_REL) return { ok: false, error: `not a builds sidecar: ${rel}` };
+  if (!liveOn()) return { ok: true, skipped: 'off' };
+  const ref = `refs/remotes/${remote()}/${branch()}`;
+  let last = '';
+  for (let attempt = 1; attempt <= ATTEMPTS; attempt += 1) {
+    const f = git(['fetch', '-q', remote(), `+refs/heads/${branch()}:${ref}`], { timeout: 45000 });
+    if (f.code !== 0) return { ok: false, error: `fetch ${remote()}/${branch()} failed: ${f.err.slice(-300)}` };
+    const base = git(['rev-parse', ref]).out;
+    const mainText = show(base, rel);
+    const text = mergeText(mainText);
+    if (text === mainText) return { ok: true, sha: '', text };
+    const sha = commitOnto(base, [[rel, text]], `${msg.replace(/`/g, '').slice(0, 140)} [skip ci]\n\nStatus-only commit (${rel}) from framework/cli/builds-live.mjs publishSidecar.`);
+    if (!sha.ok) return sha;
+    const p = git(['push', '-q', remote(), `${sha.sha}:refs/heads/${branch()}`], { timeout: 60000 });
+    if (p.code === 0) { git(['update-ref', ref, sha.sha]); return { ok: true, sha: sha.sha, text }; }
+    last = p.err;
+    if (!/non-fast-forward|fetch first|stale info|failed to update ref|cannot lock ref|rejected/i.test(p.err) || /protected branch|permission|denied|403|GH006|GH013/i.test(p.err)) return { ok: false, error: `push to ${branch()} refused: ${p.err.slice(-400)}` };
+    sleep(200 * attempt + Math.floor(Math.random() * 400));
+  }
+  return { ok: false, error: `main kept moving: gave up after ${ATTEMPTS} tries (${last.slice(-200)})` };
+}
+/** A file as main holds it now (after a fetch), or null. */
+export function mainFile(rel) {
+  const ref = `refs/remotes/${remote()}/${branch()}`;
+  const f = git(['fetch', '-q', remote(), `+refs/heads/${branch()}:${ref}`], { timeout: 45000 });
+  if (f.code !== 0) return { ok: false, error: f.err.slice(-300) };
+  return { ok: true, text: show(git(['rev-parse', ref]).out, rel) };
+}
 function allFiles(rev, files) {
   const out = { ...files };
   const ls = git(['ls-tree', '-r', '--name-only', rev, '--', '_claude/builds/profiles', '_claude/builds/orchestrator.json']).out.split('\n').filter((x) => x.endsWith('orchestrator.json'));

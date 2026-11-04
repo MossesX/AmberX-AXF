@@ -232,3 +232,4 @@ menu-fit@1: `framework/core/engines/menufit.ts` (pure `fitMenu` / `menuBox`; che
 menu box, `.fx-menu__li` static), context menus and plugin ⋯ menus flip / shift to stay on screen and only then scroll,
 with `data-fx-more` fade + chevron hints and contained overscroll. Re-baked console, axHub web, AmberX, Molly. Android
 twin deferred (PORTING.md). Report `_claude/builds/reports/menu-scroll.md`.
+- **Bugs board (Nov 4 2026, `bugs-board`):** confirmed bugs list plugin (nav → Builds → Bugs): bugs@1 in `_claude/builds/bugs.json` (published to main by `builds-live.mjs publishSidecar`), drag-and-drop priority and build moves, live build chips, crew-chat handoffs, auto-optimize (default off), REST/MCP/CLI (`apps/console-web/plugins/bugs-board/bugs.mjs`). Report `_claude/builds/reports/bugs-board.md`. <!-- axf-plugin:bugs-board -->

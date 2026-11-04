@@ -83,6 +83,8 @@ jobs:
         run: node apps/console-web/plugins/plugin-commands/test.mjs  # axf-plugin:plugin-commands
       - name: Claude plugin (claude-settings@1 — open registry, owner-only rules, No wait ↔ pass decisions)  # axf-plugin:claude-settings
         run: node apps/console-web/plugins/claude-settings/test.mjs  # axf-plugin:claude-settings
+      - name: Bugs board plugin (bugs@1 — changes, newer-wins merge, optimizer, crew-chat handoffs, board groups, CLI)  # axf-plugin:bugs-board
+        run: node apps/console-web/plugins/bugs-board/test.mjs  # axf-plugin:bugs-board
       - name: Auto-land (push banner) — zero tokens (no model client in the merge pipeline), landing rules, rounds on fake builds  # axf-plugin:push-banner
         run: node apps/console-web/plugins/push-banner/land/land.test.mjs  # axf-plugin:push-banner
       - name: Deploy helpers (framework/deploy) — bash -n, shellcheck, self-test; installers that source them
