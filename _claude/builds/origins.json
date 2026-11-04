@@ -2056,6 +2056,18 @@
    "from": "detail",
    "addenda": []
   },
+  "ui-review-alarm": {
+   "said": "From now on, open UI Review, but if they don't get approved in 30 minutes, set an alarm off on my phone, a loud-ass alarm. That gives me five more minutes before it gets approved. … After 30 minutes, if it's not been reviewed, it needs to do a loud alarm five minutes before it's gonna be run. And if the alarm is unanswered, then don't run it. No, then run it. Make it a switch. Either or.",
+   "at": "2026-11-04T21:04:36.261Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "ui-review-predicted": {
    "said": "UI Review must show PREDICTED pictures - what a build will probably look like - BEFORE it's built, so he can approve the look before an agent spends money. Assigned agent: **Snap Sully** (book on his card; he's also on ui-review-shots - run after it or build on its storage fix; if the all-rounder router is on main and he's busy, whoever is free - record who). Register in Urgent (id `ui-review-predicted`) + banner entry. Mark the predicted-shots part of pending item `batch-manager` as moved here (pending_change note).",
    "at": "2026-11-03",
