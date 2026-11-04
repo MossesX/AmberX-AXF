@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 999,
- "updatedAt": "2026-11-04T22:07:09.729Z",
+ "rev": 1000,
+ "updatedAt": "2026-11-04T22:07:29.050Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -84185,9 +84185,14 @@
    "branch": "claude/build-docs-walkthroughs",
    "pr": "#346",
    "createdAt": "2026-11-04T21:30:06.088Z",
-   "updatedAt": "2026-11-04T22:07:07.958Z",
+   "updatedAt": "2026-11-04T22:07:09.158Z",
    "builtAt": "2026-11-04T22:07:07.958Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "PR #346: plugin build-docs (right-click docs + walkthrough video on every build view, script approval, recorder via one veto call + heavy slot, plan Docs section). 25 s test video recorded live on the VPS. Open: Molly phrases after PR 323 lands; docs screenshots capture is a follow-up. Report _claude/builds/reports/build-docs-walkthroughs.md",
+     "at": "2026-11-04T22:07:09.158Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -84388,7 +84393,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
