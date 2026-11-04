@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T22:19:11.530Z",
+ "updatedAt": "2026-11-04T22:19:34.382Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -5600,16 +5600,16 @@
    "title": "Land the merge queue first, then the waiting batch as one stack",
    "category": "Feature",
    "detail": "",
-   "status": "complete",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/land-batch-1",
-   "pr": "#339",
+   "branch": "claude/ci-bundle-skipped-shell",
+   "pr": "#348",
    "mergedAt": "2026-11-04T19:51:03Z",
    "createdAt": "2026-11-04T17:34:06.563Z",
-   "updatedAt": "2026-11-04T20:20:21.397Z",
-   "builtAt": "2026-11-04T20:20:21.397Z",
+   "updatedAt": "2026-11-04T22:19:13.810Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: PR #320 merged",
@@ -5700,8 +5700,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T22:19:09.893Z",
      "note": "",
      "uid": "st-mw2ebw5l0944kh"
     },
@@ -5754,8 +5754,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T22:19:11.974Z",
      "note": "",
      "uid": "st-mw2ebw5l0c80os"
     }

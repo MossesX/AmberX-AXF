@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1006,
- "updatedAt": "2026-11-04T22:19:11.530Z",
+ "rev": 1007,
+ "updatedAt": "2026-11-04T22:19:34.382Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -81509,16 +81509,16 @@
    "title": "Land the merge queue first, then the waiting batch as one stack",
    "category": "Feature",
    "detail": "",
-   "status": "complete",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/land-batch-1",
-   "pr": "#339",
+   "branch": "claude/ci-bundle-skipped-shell",
+   "pr": "#348",
    "mergedAt": "2026-11-04T19:51:03Z",
    "createdAt": "2026-11-04T17:34:06.563Z",
-   "updatedAt": "2026-11-04T20:20:21.397Z",
-   "builtAt": "2026-11-04T20:20:21.397Z",
+   "updatedAt": "2026-11-04T22:19:13.810Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: PR #320 merged",
@@ -81619,12 +81619,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T22:19:09.893Z",
      "note": "",
-     "rev": 5,
+     "rev": 6,
      "createdAt": "2026-11-04T17:34:06.580Z",
-     "updatedAt": "2026-11-04T18:55:12.567Z"
+     "updatedAt": "2026-11-04T22:19:10.061Z"
     },
     {
      "id": "s4",
@@ -81685,12 +81685,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T22:19:11.974Z",
      "note": "",
-     "rev": 5,
+     "rev": 6,
      "createdAt": "2026-11-04T17:34:06.580Z",
-     "updatedAt": "2026-11-04T18:55:12.567Z"
+     "updatedAt": "2026-11-04T22:19:12.148Z"
     }
    ],
    "profiles": [
@@ -81701,7 +81701,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

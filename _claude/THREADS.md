@@ -708,9 +708,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 15:37 UTC · `apps-control-surface` s5 done, → built (current) · orchestrator
-- 2026-11-04 15:37 UTC · `apps-control-surface` note (current) · orchestrator
-- 2026-11-04 15:42 UTC · `apps-control-surface` note (current) · orchestrator
 - 2026-11-04 15:43 UTC · `molly-console-commands` note (current) · foreign-write
 - 2026-11-04 15:43 UTC · `apps-control-surface` s2 done, s3 done, s4 done, s5 done, → complete, note (current) · foreign-write
 - 2026-11-04 15:43 UTC · `app-voice-commands` s5 done (current) · orchestrator
@@ -1108,6 +1105,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 22:19 UTC · `build-optimizer` added (9 steps) (current) · foreign-write
 - 2026-11-04 22:19 UTC · `changes-chat-log` added (5 steps) (current) · foreign-write
 - 2026-11-04 22:19 UTC · `notes-views` added (20 steps) (current) · foreign-write
+- 2026-11-04 22:19 UTC · `land-merge-queue-first` s3 done (urgent) · orchestrator
+- 2026-11-04 22:19 UTC · `land-merge-queue-first` s6 done (urgent) · orchestrator
+- 2026-11-04 22:19 UTC · `land-merge-queue-first` branch claude/ci-bundle-skipped-shell, PR #348 (urgent) · builds-live
 
 ## Token passes (log)
 
