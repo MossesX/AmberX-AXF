@@ -161,7 +161,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 ## To carry on
 
 ### Crew retrain (`crew-retrain`)
-Done (PR open). If a later session must carry on: read `_claude/builds/reports/crew-retrain.md` (Known gaps: crew pay under the $40 feature-build cap; old console sweep until it lands). Land it after land-everything's other PRs. Checks: `node apps/console-web/plugins/agent-swarm/test.mjs`, `npx -y tsx framework/spec/check-job-type.mts`, `npx -y tsx framework/spec/check-swarm.mts`, `node framework/spec/check-agent-slots.mjs`, `node framework/cli/plugin-lifecycle.mjs check agent-swarm`.
+Done (PR open). If a later session must carry on: read `_claude/builds/reports/crew-retrain.md` (Known gaps: crew pay under the $40 feature-build cap; old console sweep until it lands). Land it after land-everything's other PRs. Checks: `node <console plugins>/agent-swarm/test.mjs`, `npx -y tsx framework/spec/check-job-type.mts`, `npx -y tsx framework/spec/check-swarm.mts`, `node framework/spec/check-agent-slots.mjs`, `node framework/cli/plugin-lifecycle.mjs check agent-swarm`.
 
 ### Model upgrades need Brett (`model-upgrade-approval`, Urgent, Opus)
 - **Asked (Brett, Nov 3 2026, voice):** a build may switch to a lower model on its own (recorded); switching to a higher model needs Brett's explicit approval (console click or axHub confirm, never veto, never self-approved). Ranking in model-policy (Fable above Opus). Enforce in orchestrator approve/phase logic, console server, launcher/build_start/agent jobs, briefs; axHub approval path; audit; tests; PR.
