@@ -76,6 +76,8 @@ jobs:
         run: node apps/console-web/plugins/ref-links/test.mjs  # axf-plugin:ref-links
       - name: Plugin commands plugin (control@1 plugins domain — runner gate, reads, dispatch, confirm, CLI)  # axf-plugin:plugin-commands
         run: node apps/console-web/plugins/plugin-commands/test.mjs  # axf-plugin:plugin-commands
+      - name: Auto-land (push banner) — zero tokens (no model client in the merge pipeline), landing rules, rounds on fake builds  # axf-plugin:push-banner
+        run: node apps/console-web/plugins/push-banner/land/land.test.mjs  # axf-plugin:push-banner
       - name: Deploy helpers (framework/deploy) — bash -n, shellcheck, self-test; installers that source them
         run: |
           set -e
@@ -156,6 +158,7 @@ jobs:
             (cd framework && npm install --no-audit --no-fund --silent)
             npx -y tsx framework/spec/check-alerts.mts
             npx -y tsx framework/spec/check-widgets.mts
+            npx -y tsx framework/spec/check-menu-fit.mts               # menu-fit@1: menus flip / shift to stay on screen and scroll only when taller than the room
             npx -y tsx framework/spec/check-windows.mts                # window engine: 8 resize handles, maximize / restore, frames, snapping (windows.json)
             npx -y tsx framework/spec/check-dock.mts                   # dock engine (dock@1): pane tree, drop zones, pane limit, splitters, snapshots, dock-layout@1 presets (dock.json)
             npx -y tsx framework/spec/check-xlayout.mts                # xlayout@1 (Molly as one app): apps, merge modes, IDE block, toolbar slots, guest URLs (xlayout.json)

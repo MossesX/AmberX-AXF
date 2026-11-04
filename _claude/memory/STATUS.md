@@ -218,3 +218,11 @@ Console plugin `chat-viewer` (also AmberX "Chats"): every session as session@1 (
 - Framework: embed@1 message `context` (guest → host right-click; `rt.forwardContext`, ctx picks run with the payload; `ContextMenuHost` hands a taken menu to the host); Molly `src/molly/host.ts` hooks + `FrameDeck` several frames over pane slots; `plugin-lifecycle.mjs` `AXF_PLUGINS_DIR`; `check-controls` accepts `fx-toolbtn`. Re-baked molly, amberx-droid, axhub-web, console-web. The live guests merge once redeployed with this runtime (older builds keep drawing their own chrome). Known gaps: guest banner widgets aren't drawn by Molly yet; the Android twin of `context` is deferred (PORTING).
 ## Notes vault (Nov 3 2026, notes-vault, Opus) <!-- axf-plugin:notes-browser -->
 Brett's hand-saved notes (handoffs, session logs, plans, install notes, saved commands) live in one place: `/projects/_shared/_claude/notes/` (axHub memory project `shared`, area `claude`; `_claude/shared/notes/` in a checkout), index `notes/INDEX.md`. Console plugin `notes-browser` (Plugins → Notes): folders + notes, rendered Markdown, search, sort, new / rename / move / delete, conflict-safe edit (if_version), hub version history kept; capability `axf.notes@1` for MD Studio's Notes scope (md-studio s11). Report: `_claude/builds/reports/notes-vault.md`. <!-- axf-plugin:notes-browser -->
+
+## Menus stay on screen and scroll (Nov 3 2026, menu-scroll, Opus; branch `claude/menu-scroll`)
+menu-fit@1: `framework/core/engines/menufit.ts` (pure `fitMenu` / `menuBox`; checks `spec/check-menu-fit.mts`, in CI) and
+`framework/react/components/menuFit.ts` (visual viewport + safe areas + `--fx-layout-phone-edge`; `useMenuFit`,
+`installMenuFit` for self-placed plugin ⋯ menus, `focusMenuItem`). App menu drop-downs, submenus (placed in the parent
+menu box, `.fx-menu__li` static), context menus and plugin ⋯ menus flip / shift to stay on screen and only then scroll,
+with `data-fx-more` fade + chevron hints and contained overscroll. Re-baked console, axHub web, AmberX, Molly. Android
+twin deferred (PORTING.md). Report `_claude/builds/reports/menu-scroll.md`.
