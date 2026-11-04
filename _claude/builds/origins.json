@@ -1452,6 +1452,18 @@
    "from": "detail",
    "addenda": []
   },
+  "notes-views": {
+   "said": "\"Make the sections in your note collapsible.\" (Asked: just this note or every note?) \"Yeah, make a couple of views. One view is the same way it is now, but with collapsible sections, and another view is the notes in a grid with expandable rows that shows the note.\"",
+   "at": "2026-11-04T21:40:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "orch-live-sync": {
    "said": "you fix it, I trust you",
    "at": "2026-11-03",
