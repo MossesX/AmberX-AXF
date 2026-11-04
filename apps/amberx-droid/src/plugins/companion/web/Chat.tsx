@@ -45,7 +45,7 @@ function ToolCards({ tools, open, toggle }: { tools: ToolCardView[]; open: Set<s
     <div className="axp-companion__tools">
       {tools.map((t) => (
         <div key={t.id} className={`axp-companion__tool axp-companion__tool--${t.state}`}>
-          <button type="button" className="fx-btn fx-btn--ghost fx-btn--sm axp-companion__toolhead" aria-expanded={open.has(t.id)} onClick={() => toggle(t.id)}>
+          <button type="button" data-fx-row className="axp-companion__toolhead" aria-expanded={open.has(t.id)} onClick={() => toggle(t.id)}>
             <Icon name={open.has(t.id) ? 'chevron-down' : 'chevron-right'} size={12} />
             <Icon name={t.icon} size={12} />
             <span className="axp-companion__clip">{t.title}</span>
@@ -272,7 +272,7 @@ export function CompanionView() {
         </div>
         <div className="fx-seg" role="radiogroup" aria-label="Model">
           {models.map((m) => (
-            <button key={m.key} type="button" role="radio" aria-checked={m.key === modelKey} className={`fx-seg__opt ${m.key === modelKey ? 'is-active' : ''}`} onClick={() => void setModel(m.key)}>{modelName(m.id)}</button>
+            <button key={m.key} type="button" role="radio" aria-checked={m.key === modelKey} className={`fx-seg__opt ${m.key === modelKey ? 'is-active' : ''}`} onClick={() => void setModel(m.key)}>{modelName(m.id).split(' ')[0]}</button>
           ))}
         </div>
         <IconButton icon="download" label="Export this chat" onClick={() => void exportConv()} disabled={!conv} />
@@ -365,16 +365,17 @@ export function CompanionView() {
             {files.map((f, i) => <span key={`f${i}`} className="fx-chip">{f.name} <IconButton icon="x" label="Remove" onClick={() => setFiles((x) => x.filter((_, j) => j !== i))} /></span>)}
           </div>
         )}
+        <textarea ref={inputRef} className="fx-input axp-companion__input" rows={2} value={text} placeholder={`Message ${COMPANION.name}`} aria-label={`Message ${COMPANION.name}`}
+          onChange={(e) => setText(e.target.value)} onKeyDown={onKey} onPaste={(e) => { const fl = Array.from(e.clipboardData.files); if (fl.length) { e.preventDefault(); void addFiles(fl); } }} />
         <div className="axp-companion__inputrow">
           <IconButton icon="upload" label="Attach a file or image" onClick={() => fileRef.current?.click()} />
           <IconButton icon="smartphone" label="Take a photo" onClick={() => photoRef.current?.click()} />
           <input ref={fileRef} type="file" multiple hidden accept="image/*,text/*,.md,.json,.ts,.tsx,.js,.mjs,.py,.kt,.css,.html,.yml,.yaml,.log,.csv" onChange={(e) => { if (e.target.files) void addFiles(e.target.files); e.target.value = ''; }} />
           <input ref={photoRef} type="file" hidden accept="image/*" capture="environment" onChange={(e) => { if (e.target.files) void addFiles(e.target.files); e.target.value = ''; }} />
-          <textarea ref={inputRef} className="fx-input axp-companion__grow" rows={1} value={text} placeholder={`Message ${COMPANION.name}`} aria-label={`Message ${COMPANION.name}`}
-            onChange={(e) => setText(e.target.value)} onKeyDown={onKey} onPaste={(e) => { const fl = Array.from(e.clipboardData.files); if (fl.length) { e.preventDefault(); void addFiles(fl); } }} />
+          <span className="axp-companion__grow" />
           <IconButton icon="mic" label="Push to talk" onClick={ptt} disabled={!!live} />
           <IconButton icon={talk.on ? 'pause' : 'play'} label={talk.on ? 'Leave talk mode' : 'Talk mode (hands-free)'} onClick={toggleTalk} />
-          {live ? <Button tone="danger" icon="x-circle" onClick={stop}>Stop</Button> : <Button tone="primary" icon="arrow-right" onClick={() => send()} disabled={!text.trim() && !images.length && !files.length}>Send</Button>}
+          {live ? <Button tone="danger" size="sm" icon="x-circle" onClick={stop}>Stop</Button> : <Button tone="primary" size="sm" icon="arrow-right" onClick={() => send()} disabled={!text.trim() && !images.length && !files.length}>Send</Button>}
         </div>
       </footer>
     </div>

@@ -37,6 +37,17 @@ AmberX (phone / browser)                         VPS
 | s6b (part) | Per-chat model choice (policy: Opus / Fable only), daily budget cap with a warning at 80 % and a stop at the cap. | lib checks |
 | s9 | Gizmo agent: agent-manager add-on `gizmo` (installed once on start like Molly, dangerous tools behind the same axHub approvals, uninstall respected), crew card in `agent-swarm/agents/roster.json` + skill `companion`. Molly → Gizmo in AmberX's assistant texts (commands library, snippets, runner, AI connection); code ids, stored chains (`do: 'molly'`) and the `/api/ai/molly` route kept for compatibility. | agent-manager test: Gizmo checks pass; swarm 93/93 + check-swarm 224 |
 
+## Screenshots
+
+UI Review item `r-20261104-4db7efaa` (group `gizmo-companion - Nov 3 8:15 PM`), waiting for Brett. Demo data (the
+assistant API mocked; the AmberX production build served locally with the live axHub look).
+
+| | Phone | Desktop |
+| --- | --- | --- |
+| Chat | ![](gizmo-companion/shots/gizmo-chat-phone.png) | ![](gizmo-companion/shots/gizmo-chat-desktop.png) |
+| Chats drawer | ![](gizmo-companion/shots/gizmo-drawer-phone.png) | ![](gizmo-companion/shots/gizmo-drawer-desktop.png) |
+| Welcome | ![](gizmo-companion/shots/gizmo-empty-phone.png) | ![](gizmo-companion/shots/gizmo-empty-desktop.png) |
+
 ## Left (next build continues from the store)
 
 - **s4a Connectors:** the chat already gets Gizmo's tools (axhub_call, repo read/search …) with the usual approvals and
@@ -60,5 +71,5 @@ AmberX web build is redeployed; Gizmo's agent appears after the console restarts
 
 ## Cost so far
 
-About 1.5 h of an Opus session (actual tokens are filled into the change-log entry `chg-20261103-f946c0c1a3` by the
+About 3 h of an Opus session (about half of it waiting for the VPS's shared build slots) (actual tokens are filled into the change-log entry `chg-20261103-f946c0c1a3` by the
 session hooks).

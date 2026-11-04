@@ -1,5 +1,5 @@
 /* Companion (Gizmo): layout only (THEMING.md); every control is a framework control, sizes and colours are theme tokens. */
-.axp-companion { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; height: 100%; }
+.axp-companion { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; height: calc(100dvh - var(--fx-space) * 5); }
 .axp-companion--empty { align-items: center; justify-content: center; text-align: center; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-xl); }
 .axp-companion__clip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .axp-companion__grow { flex: 1 1 auto; min-width: 0; }
@@ -7,6 +7,8 @@
 
 .axp-companion__bar { display: flex; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md); border-bottom: var(--fx-border-w) solid var(--fx-border); min-width: 0; }
 .axp-companion__title { display: flex; align-items: center; gap: var(--fx-dens-gap-md); flex: 1 1 auto; min-width: 0; }
+.axp-companion__bar > .fx-seg { flex: 0 0 auto; flex-wrap: nowrap; }
+.axp-companion__bar .fx-seg__opt { white-space: nowrap; }
 
 .axp-companion__drawer { position: absolute; inset: calc(var(--fx-space) * 3.5) auto 0 0; z-index: 2; display: flex; flex-direction: column; width: min(100%, calc(var(--fx-space) * 22)); background: var(--fx-surface); border-right: var(--fx-border-w) solid var(--fx-border); box-shadow: var(--fx-shadow-md); min-height: 0; }
 .axp-companion__drawerhead { display: flex; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md); }
@@ -35,12 +37,12 @@
 .axp-companion__tools { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
 .axp-companion__tool { border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); min-width: 0; }
 .axp-companion__tool--failed { border-color: var(--fx-danger); }
-.axp-companion__toolhead { display: flex; align-items: center; gap: var(--fx-dens-gap-md); width: 100%; justify-content: flex-start; min-width: 0; }
+.axp-companion__toolhead { display: flex; align-items: center; gap: var(--fx-dens-gap-md); width: 100%; min-width: 0; padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); background: transparent; border: 0; color: inherit; font: inherit; text-align: start; cursor: pointer; }
 .axp-companion__tooldetail { margin: 0; padding: var(--fx-dens-gap-md); overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
 
 .axp-companion__composer { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md); border-top: var(--fx-border-w) solid var(--fx-border); }
 .axp-companion__talk { display: flex; align-items: center; gap: var(--fx-dens-gap-md); color: var(--fx-accent); min-width: 0; }
 .axp-companion__attached { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); }
-.axp-companion__inputrow { display: flex; align-items: flex-end; gap: var(--fx-dens-gap-xs); min-width: 0; }
-.axp-companion__inputrow > textarea { resize: none; max-height: calc(var(--fx-space) * 10); }
+.axp-companion__inputrow { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); min-width: 0; }
+.axp-companion__input { width: 100%; resize: none; max-height: calc(var(--fx-space) * 10); }
 .axp-companion-voice { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); }
