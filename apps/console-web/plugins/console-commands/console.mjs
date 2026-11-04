@@ -124,8 +124,10 @@ export function formatAnswer(r) {
   if (r.op === 'get') return r.item ? `${r.item.kind} ${r.item.id}: ${r.item.label}${r.item.detail ? ` (${r.item.detail})` : ''}` : `here: ${Object.entries(r.value ?? {}).map(([k, v]) => `${k} ${v}`).join(' · ') || 'unknown'}`;
   const sent = r.delivered ?? [];
   const what = r.item ? `${r.item.label} (${r.item.id})` : r.action;
+  if (r.queued) return `queued: ${r.action} ${what} — ${r.message ?? 'waiting for a console'}`;
   if (!sent.length) return `sent: ${r.action} ${what} (no console answered yet)`;
-  return `${sent.some((d) => d.ok) ? '✓' : '✗'} ${r.action} ${what} → ${sent.map((d) => `${d.client}: ${d.ok ? d.message || 'done' : `failed: ${d.message}`}`).join(' · ')}`;
+  const how = r.delivery?.how && r.delivery.how !== 'live' ? ` (${r.delivery.how})` : '';
+  return `${sent.some((d) => d.ok) ? '✓' : '✗'} ${r.action} ${what}${how} → ${sent.map((d) => `${d.client}: ${d.ok ? d.message || 'done' : `failed: ${d.message}`}`).join(' · ')}`;
 }
 
 /** Send a whole command to a console's /api/console. Never throws: network trouble is an `unexpected` failure. */

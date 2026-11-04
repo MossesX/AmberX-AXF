@@ -32,12 +32,18 @@ import org.json.JSONObject;
  *    approval then reads "Playback + MIC") or, with no `mic`, when "Record my mic too" is on.
  *  - `recorder.stop` stops it the same way the notification's Stop does.
  *  - `recorder.status` answers on/off, since, session, current file, uploaded parts and the queue.
+ *  - `browser.open` (capability `open-url@1`, console wake, Nov 3 2026) opens one of Brett's own pages
+ *    ({@link OpenUrlRules#allowed}: https on amberxai.com only) in Chrome or the default browser, e.g. the Dev Console
+ *    with a queued console command. Android 10+ blocks most starts from the background, so a high-priority
+ *    notification with a full-screen intent opens it too (one tap when the screen is on).
  */
 final class AxppLink {
     private AxppLink() {}
 
     static final String CAPABILITY = "recorder@1";
     static final int NOTE_PROMPT = 7312;
+    static final int NOTE_OPEN = 7313;
+    private static final String CHANNEL_OPEN = "amberx-open-console";
     private static final String CHANNEL = "amberx-recorder-remote";
     private static final int POLL_SECONDS = 25;
     private static Thread thread;
@@ -110,7 +116,7 @@ final class AxppLink {
             .put("deviceId", id)
             .put("name", (Build.MANUFACTURER + " " + Build.MODEL).trim())
             .put("app", "amberx-droid")
-            .put("capabilities", new org.json.JSONArray().put(CAPABILITY))
+            .put("capabilities", new org.json.JSONArray().put(CAPABILITY).put(OpenUrlRules.CAPABILITY))
             .put("state", state);
         return envelope("hello", null, p);
     }
@@ -129,7 +135,7 @@ final class AxppLink {
         JSONObject args = p == null ? new JSONObject() : p.optJSONObject("arguments");
         JSONObject reply;
         try {
-            if (!"call".equals(call.optString("kind")) || !RecorderControl.known(tool)) throw new IllegalArgumentException("AmberX doesn't know \"" + tool + "\".");
+            if (!"call".equals(call.optString("kind")) || !(RecorderControl.known(tool) || OpenUrlRules.known(tool))) throw new IllegalArgumentException("AmberX doesn't know \"" + tool + "\".");
             JSONObject data = run(tool, args == null ? new JSONObject() : args);
             reply = envelope("result", callId, new JSONObject().put("data", data).put("state", new JSONObject().put(CAPABILITY, status(app))));
         } catch (Exception e) {
@@ -143,6 +149,8 @@ final class AxppLink {
     static JSONObject run(String tool, JSONObject args) throws Exception {
         Context c = app;
         switch (tool) {
+            case OpenUrlRules.OPEN:
+                return openUrl(c, OpenUrlRules.allowed(args.optString("url", "")), OpenUrlRules.browserOf(args));
             case RecorderControl.START: {
                 RecorderControl.Session s = RecorderControl.sessionOf(args);
                 if (OutputRecordService.running) {
@@ -222,6 +230,59 @@ final class AxppLink {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) b.setTimeoutAfter(10 * 60_000L);
             nm.notify(NOTE_PROMPT, b.build());
         });
+    }
+
+    /* ---------------------------------------------------------------- console wake: open one of Brett's pages */
+
+    /** The browser intent for a URL: Chrome when asked for and installed, else whatever handles https. */
+    private static Intent browserIntent(Context c, String url, String browser) {
+        Intent i = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url)).addCategory(Intent.CATEGORY_BROWSABLE)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if ("chrome".equals(browser)) {
+            try {
+                c.getPackageManager().getPackageInfo(OpenUrlRules.CHROME, 0);
+                i.setPackage(OpenUrlRules.CHROME);
+            } catch (Exception ignored) { /* no Chrome: the default browser */ }
+        }
+        return i;
+    }
+
+    /**
+     * Opens the page now where Android lets it (AmberX on screen, or allowed to draw over other apps), and always posts
+     * an "Amber is opening the console" notification with a full-screen intent, so a locked or busy phone still gets
+     * there with one tap. The answer says which happened.
+     */
+    private static JSONObject openUrl(Context c, String url, String browser) throws Exception {
+        Intent open = browserIntent(c, url, browser);
+        boolean[] started = { false };
+        java.util.concurrent.CountDownLatch done = new java.util.concurrent.CountDownLatch(1);
+        main.post(() -> {
+            try { c.startActivity(open); started[0] = true; } catch (RuntimeException ignored) { /* background start refused: the notification does it */ }
+            try {
+                NotificationManager nm = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && nm.getNotificationChannel(CHANNEL_OPEN) == null) {
+                    NotificationChannel ch = new NotificationChannel(CHANNEL_OPEN, "Console opened by Amber", NotificationManager.IMPORTANCE_HIGH);
+                    ch.setDescription("A console command is waiting and no Dev Console is open: tap to open it");
+                    nm.createNotificationChannel(ch);
+                }
+                PendingIntent pi = PendingIntent.getActivity(c, 4, open, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+                Notification.Builder b = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? new Notification.Builder(c, CHANNEL_OPEN) : new Notification.Builder(c);
+                b.setSmallIcon(android.R.drawable.ic_menu_view)
+                    .setContentTitle("Amber is opening the console")
+                    .setContentText("A command is waiting for the Dev Console. Tap to open it.")
+                    .setContentIntent(pi)
+                    .setFullScreenIntent(pi, true)
+                    .setCategory(Notification.CATEGORY_REMINDER)
+                    .setPriority(Notification.PRIORITY_HIGH)
+                    .setAutoCancel(true);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) b.setTimeoutAfter(2 * 60_000L);
+                nm.notify(NOTE_OPEN, b.build());
+            } catch (RuntimeException ignored) { /* notifications off: the start above is all there is */ }
+            done.countDown();
+        });
+        done.await(5, java.util.concurrent.TimeUnit.SECONDS);
+        return new JSONObject().put("url", url).put("browser", open.getPackage() == null ? "default" : "chrome")
+            .put("opened", started[0]).put("notified", true);
     }
 
     static void cancelPrompt(Context c) {
