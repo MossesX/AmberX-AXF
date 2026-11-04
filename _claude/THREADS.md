@@ -683,12 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 13:50 UTC · `follow-amber-switch` s1 done, → running (current) · orchestrator
-- 2026-11-04 13:50 UTC · `follow-amber-switch` s2 done (current) · orchestrator
-- 2026-11-04 13:50 UTC · `follow-amber-switch` s3 done (current) · orchestrator
-- 2026-11-04 13:50 UTC · `follow-amber-switch` s4 done (current) · orchestrator
-- 2026-11-04 13:52 UTC · `land-round-2` note (current) · orchestrator
-- 2026-11-04 13:52 UTC · `land-round-2` → blocked (current) · orchestrator
 - 2026-11-04 13:53 UTC · `land-round-2` note (current) · foreign-write
 - 2026-11-04 13:53 UTC · `follow-amber-switch` PR #312 (current) · builds-live
 - 2026-11-04 13:53 UTC · `follow-amber-switch` s5 done, → built (current) · orchestrator
@@ -1083,6 +1077,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 17:04 UTC · `urgent-console-perf` s3 done (urgent) · orchestrator
 - 2026-11-04 17:04 UTC · `urgent-console-perf` s4 done (urgent) · orchestrator
 - 2026-11-04 17:06 UTC · `urgent-console-perf` PR #330 (urgent) · builds-live
+- 2026-11-04 17:07 UTC · `plugin-settings-placement` note (current) · foreign-write
+- 2026-11-04 17:07 UTC · `tab-group-assets` s3 done, s4 done, s5 done, s6 done, → complete, note (current) · foreign-write
+- 2026-11-04 17:07 UTC · `jump-menu-asset` s5 done, → complete, note (current) · foreign-write
+- 2026-11-04 17:07 UTC · `settings-placement-everywhere` note (current) · foreign-write
+- 2026-11-04 17:07 UTC · `molly-multi-instance-tabs` s1 done, s2 done, s3 done, s4 done, → complete (current) · foreign-write
+- 2026-11-04 17:07 UTC · `live-sessions-plugin` added (6 steps) (current) · foreign-write
 
 ## Token passes (log)
 
