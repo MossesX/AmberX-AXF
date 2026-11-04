@@ -16,6 +16,14 @@ hello; the call waits up to a minute for it. When nothing connects within a few 
 asked through axHub (`amberx.open_url`) to open the console with `?axf-cmd=<id>`. The answer's `delivery.how` says
 how it got there: `live`, `after reconnect`, `woke via AmberX`, or `queued` (still waiting when the call returned).
 
+Every app on the framework, not only the console (build apps-control-surface, Nov 4 2026, Brett: "Put EVERY app on
+the API, MCP and CLI"): this server is the control surface broker. AmberX, axHub web, Molly and every app the template
+builds run the control-surface library (framework/libs/control-surface), which says hello here with the app's id and
+catalog (through the app's own proxy, or straight to this server with the browser's hub session). The apps domain of
+control@1 (`apps.*`, input.app / select.app) resolves against that app's clients; `apps.list` lists every app
+(framework/schemas/apps.json plus any app connected) with its clients online. A command for an app with no client open
+is queued the same way and AmberX is asked to open that app's own address with `?axf-cmd=<id>`.
+
 Mounted twice: /api/plugins/console-commands/… (the plugin mount; the console client uses it) and /api/console/…
 (the contract path, main.py's CAPABILITY_MOUNTS; console token or a hub admin).
 
@@ -29,6 +37,9 @@ Mounted twice: /api/plugins/console-commands/… (the plugin mount; the console 
   POST ""                                                          a whole control@1 command of the console domain
   POST open {screen} · dialog {id, arg?} (close: {"action": "close", id?}) · settings {tab, anchor?} · action {id, args?, confirm?} · back · home · close   (each takes `to`)
   GET  where · GET list?kind=screens|dialogs|settings|actions&q=…&limit=…
+  GET  apps?q=…&online=1                                           every app, its clients online, what it reports (apps.list)
+  POST app/open {app, screen} · app/dialog · app/settings · app/action · app/back · app/home · app/close   (each takes `app`, `to`)
+  GET  app/where?app=… · GET app/list?app=…&kind=…&q=… · GET app/clients[?app=…]
 
 Capability console-commands@1: plugin_services.get("console-commands@1").run(command, grants=[…], by="…", audience="owner").
 """
@@ -75,8 +86,8 @@ _lock = threading.Lock()
 _clients: dict[str, dict[str, Any]] = {}
 _acks: dict[str, dict[str, Any]] = {}
 _recent: deque[dict[str, Any]] = deque(maxlen=50)
-_queue: list[dict[str, Any]] = []            # commands that found no console: {id, audience, command, grants, by, at, expires, state, …}
-_catalogs: dict[str, dict[str, Any]] = {}    # the last catalog each audience's console sent (checks a queued command early)
+_queue: list[dict[str, Any]] = []            # commands that found no client: {id, audience, command, grants, by, at, expires, state, app, url, label, …}
+_catalogs: dict[str, dict[str, dict[str, Any]]] = {}    # audience → app (as the client reports it) → the last catalog it sent (checks a queued command early)
 _draining: set[str] = set()
 _woke_at: dict[str, float] = {}
 
@@ -235,77 +246,108 @@ def save_settings(change: dict[str, Any]) -> dict[str, Any]:
     return s
 
 
-# ---------------------------------------------------------------------- the last catalog (checks a queued command early)
+# ---------------------------------------------------------------------- the last catalogs (check a queued command early)
 
-def _catalog_file(audience: str) -> Path:
-    return DATA_DIR / f"catalog-{re.sub(r'[^A-Za-z0-9_-]', '_', audience)[:80]}.json"
+APP_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._/-]{0,59}$")
 
 
-def remember_catalog(audience: str, catalog: dict[str, Any]) -> None:
+def _safe(s: str, cap: int = 80) -> str:
+    return re.sub(r"[^A-Za-z0-9_-]", "_", s)[:cap]
+
+
+def _catalog_file(audience: str, app: str) -> Path:
+    return DATA_DIR / (f"catalog-{_safe(audience)}.json" if app in ("", "console-web") else f"catalog-{_safe(audience)}--{_safe(app, 60)}.json")
+
+
+def remember_catalog(audience: str, catalog: dict[str, Any], app: str = "console-web") -> None:
+    """The last catalog this audience's client of `app` sent (per app since the broker serves every app)."""
     if not (catalog or {}).get("items"):
         return
+    app = app if APP_RE.match(app or "") else "console-web"
     with _lock:
-        same = _catalogs.get(audience) == catalog
-        _catalogs[audience] = catalog
+        same = _catalogs.setdefault(audience, {}).get(app) == catalog
+        _catalogs[audience][app] = catalog
     if not same:
         try:
             DATA_DIR.mkdir(parents=True, exist_ok=True)
-            _catalog_file(audience).write_text(json.dumps(catalog))
+            _catalog_file(audience, app).write_text(json.dumps(catalog))
         except OSError:
             pass
 
 
-def remembered_catalog(audience: str) -> dict[str, Any] | None:
+def remembered_catalogs(audience: str) -> list[tuple[str, dict[str, Any]]]:
+    """Every (app, catalog) remembered for this audience: memory first, then the files on disk (after a restart)."""
     with _lock:
-        if audience in _catalogs:
-            return _catalogs[audience]
-    try:
-        cat = json.loads(_catalog_file(audience).read_text())
-    except (OSError, ValueError):
-        return None
-    if isinstance(cat, dict) and cat.get("items"):
-        with _lock:
-            _catalogs.setdefault(audience, cat)
-        return cat
+        known = dict(_catalogs.get(audience) or {})
+    if not known:
+        prefix = f"catalog-{_safe(audience)}"
+        try:
+            files = sorted(DATA_DIR.glob(f"{prefix}*.json"))
+        except OSError:
+            files = []
+        for f in files:
+            stem = f.stem
+            if stem != prefix and not stem.startswith(prefix + "--"):
+                continue
+            try:
+                cat = json.loads(f.read_text())
+            except (OSError, ValueError):
+                continue
+            if isinstance(cat, dict) and cat.get("items"):
+                known[str(cat.get("app") or ("console-web" if stem == prefix else stem[len(prefix) + 2:]))] = cat
+        if known:
+            with _lock:
+                _catalogs.setdefault(audience, {}).update(known)
+    return list(known.items())
+
+
+def remembered_catalog(audience: str) -> dict[str, Any] | None:
+    """The console's remembered catalog (kept for callers of the old name)."""
+    for app, cat in remembered_catalogs(audience):
+        if app in ("console-web", "axf-console") or app.endswith("/console-web"):
+            return cat
     return None
 
 
 # ---------------------------------------------------------------------- waking a closed console through AmberX
 
-def _hub_wake(url: str, browser: str) -> dict[str, Any]:
-    """Ask Brett's AmberX phone (axHub device service `amberx`, AXPP) to open the console. → {ok, message}."""
+def _hub_wake(url: str, browser: str, label: str = "the Dev Console") -> dict[str, Any]:
+    """Ask Brett's AmberX phone (axHub device service `amberx`, AXPP) to open an app's address. → {ok, message}."""
     from . import wake
-    return wake.open_url(url, browser)
+    return wake.open_url(url, browser, label)
 
 
-WAKER: Callable[[str, str], dict[str, Any]] = _hub_wake  # tests swap in a fake phone
+WAKER: Callable[..., dict[str, Any]] = _hub_wake  # tests swap in a fake phone
 
 
 def _wake_later(entry: dict[str, Any]) -> None:
-    """WAKE_AFTER_S after queuing: still no console → open one on the owner's phone (once per WAKE_AGAIN_S)."""
+    """WAKE_AFTER_S after queuing: still no client of that app → open the app on the owner's phone (once per WAKE_AGAIN_S per app)."""
     def go() -> None:
+        label = entry.get("label") or "the Dev Console"
+        base = (entry.get("url") or CONSOLE_URL).rstrip("/")
         with _lock:
             if entry["state"] != "queued":
                 return
             audience = entry["audience"]
-            recent = _now() - _woke_at.get(audience, 0) < WAKE_AGAIN_S
+            key = f"{audience}|{base}"
+            recent = _now() - _woke_at.get(key, 0) < WAKE_AGAIN_S
             if not recent:
-                _woke_at[audience] = _now()
+                _woke_at[key] = _now()
         st = settings()
         if audience != OWNER or not st["wake"]:
-            entry["wake"] = {"sent": False, "message": "waking through AmberX is off" if audience == OWNER else "only the owner's console is woken through AmberX"}
+            entry["wake"] = {"sent": False, "message": "waking through AmberX is off" if audience == OWNER else "only the owner's apps are woken through AmberX"}
             return
         if recent:
-            entry["wake"] = {"sent": True, "message": "AmberX was already asked to open the console"}
+            entry["wake"] = {"sent": True, "message": f"AmberX was already asked to open {label}"}
             return
         try:
-            r = WAKER(f"{CONSOLE_URL}/?axf-cmd={entry['id']}", st["browser"])
+            r = WAKER(f"{base}/?axf-cmd={entry['id']}", st["browser"], label)
         except Exception as e:  # noqa: BLE001 — a failed wake leaves the command queued; the answer says why
             r = {"ok": False, "message": str(e)[:300]}
         entry["wake"] = {"sent": bool(r.get("ok")), "message": str(r.get("message") or "")[:300], "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
         if not r.get("ok"):
             with _lock:
-                _woke_at.pop(audience, None)
+                _woke_at.pop(key, None)
 
     t = threading.Timer(WAKE_AFTER_S, go)
     t.daemon = True
@@ -328,10 +370,14 @@ def _expire() -> None:
         _queue[:] = [e for e in _queue if e["state"] in ("queued", "delivering") or now - e["at"] < 600][-200:]
 
 
-def _enqueue(command: dict[str, Any], grants: list[str], by: str, audience: str) -> dict[str, Any]:
+def _enqueue(command: dict[str, Any], grants: list[str], by: str, audience: str, missing: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Queue a command no client of its app could take; `missing` = the runner's noConsole answer (the app, its label, its address)."""
     ttl = float(settings()["ttlS"])
+    m = missing or {}
+    url = str(m.get("url") or "")
     e = {"id": f"cq-{int(_now() * 1000):x}-{os.urandom(3).hex()}", "audience": audience, "command": command, "grants": grants, "by": by,
-         "at": _now(), "expires": _now() + ttl, "state": "queued", "event": threading.Event(), "result": None, "wake": None, "picked": False}
+         "at": _now(), "expires": _now() + ttl, "state": "queued", "event": threading.Event(), "result": None, "wake": None, "picked": False,
+         "app": str(m.get("app") or ""), "label": str(m.get("label") or "the Dev Console"), "url": url if url.startswith("https://") else CONSOLE_URL}
     with _lock:
         _queue.append(e)
     _wake_later(e)
@@ -342,7 +388,7 @@ def queued_for(audience: str) -> list[dict[str, Any]]:
     _expire()
     with _lock:
         return [{"id": e["id"], "state": e["state"], "at": _iso(e["at"]), "expiresAt": _iso(e["expires"]), "target": e["command"].get("target"),
-                 "path": e["command"].get("path"), "action": e["command"].get("action"), "by": e["by"], "wake": e["wake"]}
+                 "path": e["command"].get("path"), "action": e["command"].get("action"), "by": e["by"], "wake": e["wake"], "app": e.get("app", ""), "label": e.get("label", "")}
                 for e in _queue if e["audience"] == audience]
 
 
@@ -414,7 +460,7 @@ def _log(command: dict[str, Any], r: dict[str, Any], by: str, audience: str) -> 
         return
     _recent.appendleft({"at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "by": r.get("audit", {}).get("by") or by or command.get("by", ""), "target": command.get("target"),
                         "path": command.get("path"), "action": command.get("action"), "ok": bool(r.get("ok")), "code": r.get("code", ""), "message": r.get("message", ""),
-                        "audience": audience, "how": (r.get("delivery") or {}).get("how", ""),
+                        "app": str(r.get("app") or ""), "audience": audience, "how": (r.get("delivery") or {}).get("how", ""),
                         "delivered": [{"client": x.get("client"), "ok": x.get("ok"), "message": x.get("message", "")} for x in r.get("delivered") or []]})
 
 
@@ -432,7 +478,7 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
     by = by or str(command.get("by") or "")
     r = _runner(command, grants, by, ready_clients(audience))
     if _queueable(command, r):
-        return _run_queued(command, grants, by, audience, DELIVERY_WAIT_S if wait is None else wait)
+        return _run_queued(command, grants, by, audience, DELIVERY_WAIT_S if wait is None else wait, r)
     d = r.pop("deliver", None)
     if r.get("ok") and isinstance(d, dict):
         r["sent"] = d.get("message")
@@ -442,17 +488,21 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
     return r
 
 
-def _run_queued(command: dict[str, Any], grants: list[str], by: str, audience: str, wait: float) -> dict[str, Any]:
-    # Checked first against the last catalog this user's console sent, so a wrong name or a missing permission
-    # answers now instead of after the console opens.
+def _run_queued(command: dict[str, Any], grants: list[str], by: str, audience: str, wait: float, missing: dict[str, Any] | None = None) -> dict[str, Any]:
+    # Checked first against the last catalogs this user's clients sent (one per app: the runner picks the command's
+    # app), so a wrong name or a missing permission answers now instead of after the app opens.
     pre: dict[str, Any] | None = None
-    cat = remembered_catalog(audience)
-    if cat:
-        pre = _runner(command, grants, by, [{"id": "remembered", "lastSeen": int(_now() * 1000), "lastUsed": int(_now() * 1000), "catalog": cat, "here": {}}])
+    remembered = remembered_catalogs(audience)
+    if remembered:
+        now_ms = int(_now() * 1000)
+        fake = [{"id": f"remembered-{i}", "app": app, "lastSeen": now_ms, "lastUsed": now_ms, "catalog": cat, "here": {}} for i, (app, cat) in enumerate(remembered)]
+        pre = _runner(command, grants, by, fake)
         pre.pop("deliver", None)
         if not pre.get("ok"):
-            return pre
-    e = _enqueue(command, grants, by, audience)
+            if not pre.get("noConsole"):
+                return pre
+            pre = None  # that app has never connected here: nothing to check against, queue it anyway
+    e = _enqueue(command, grants, by, audience, missing)
     if ready_clients(audience):  # a console said hello while this was being checked
         _drain_soon(audience)
     e["event"].wait(max(0.0, min(wait, e["expires"] - _now())))
@@ -460,16 +510,17 @@ def _run_queued(command: dict[str, Any], grants: list[str], by: str, audience: s
         state, result = e["state"], e["result"]
     if state in ("delivered", "failed") and result is not None:
         return result
-    base = pre or {"$axf": "control@1", "ok": True, "op": command.get("op"), "target": command.get("target"), **({"path": command["path"]} if command.get("path") else {}), "data": {"changed": []}}
+    base = pre or {"$axf": "control@1", "ok": True, "op": command.get("op"), "target": command.get("target"), **({"path": command["path"]} if command.get("path") else {}), "data": {"changed": []}, **({"app": e["app"]} if e.get("app") else {})}
     waiting = state in ("queued", "delivering")
+    label = e.get("label") or "the Dev Console"
     out = {**base, "ok": waiting, "queued": waiting,
-           "delivery": {"how": "queued" if waiting else state, "id": e["id"], "expiresAt": _iso(e["expires"]), **({"wake": e["wake"]} if e["wake"] else {})}}
+           "delivery": {"how": "queued" if waiting else state, "id": e["id"], "expiresAt": _iso(e["expires"]), **({"wake": e["wake"]} if e["wake"] else {}), **({"app": e["app"], "url": e["url"]} if e.get("app") else {})}}
     if waiting:
         woke = (e["wake"] or {}).get("sent")
-        out["message"] = f"queued, waiting for the console: it runs the moment one opens (until {_iso(e['expires'])})" + (
+        out["message"] = f"queued, waiting for {label}: it runs the moment one opens (until {_iso(e['expires'])})" + (
             "; AmberX was asked to open it on Brett's phone" if woke else (f"; {e['wake']['message']}" if e["wake"] else ""))
     else:
-        out.update({"code": "not_found", "message": "no console opened before the command expired (Settings → Plugins → Console commands: how long a command waits)"})
+        out.update({"code": "not_found", "message": f"no {label} opened before the command expired (Settings → Plugins → Console commands: how long a command waits)"})
     _log(command, out, by, audience)
     return out
 
@@ -517,13 +568,16 @@ async def hello(request: Request) -> dict[str, Any]:
     if len(json.dumps(cat)) > CATALOG_MAX_BYTES:
         raise HTTPException(413, "catalog too large")
     c = _client_of(b, audience, name)
+    app = str(b.get("app") or "console-web")[:60]
+    if not APP_RE.match(app):
+        raise HTTPException(400, "app must be a short id (letters, digits, . _ - and one / for a host)")
     with _lock:
-        c.update({"app": str(b.get("app") or "console-web")[:60], "title": str(b.get("title") or "")[:120], "device": str(b.get("device") or "")[:20],
+        c.update({"app": app, "title": str(b.get("title") or "")[:120], "device": str(b.get("device") or "")[:20],
                   "catalog": cat, "here": b.get("here") if isinstance(b.get("here"), dict) else {}, "lastSeen": _now()})
         _front_of(c, b)
         if b.get("used") or not c["lastUsed"]:
             c["lastUsed"] = _now()
-    remember_catalog(audience, cat)
+    remember_catalog(audience, cat, app)
     pick = str(b.get("pick") or "")[:40]
     if _ready(c):
         _drain_soon(audience, pick)  # anything that waited for a console goes now (each command once)
@@ -709,6 +763,86 @@ async def list_(request: Request, kind: str = "screens", q: str = "", limit: int
     return await go(request, {"op": "list", "target": target, **({"select": select} if select else {})})
 
 
+# ---------------------------------------------------------------------- routes: every app (the apps domain)
+
+def _app_of(b: dict[str, Any], request: Request) -> str:
+    """The app a request names: body `app`, else the `app` query parameter."""
+    a = b.get("app") if isinstance(b.get("app"), str) else request.query_params.get("app", "")
+    return str(a or "")[:80]
+
+
+def _app_input(b: dict[str, Any], app: str, **more: Any) -> dict[str, Any]:
+    inp = _to(b, **more).get("input", {})
+    inp["app"] = app
+    return {"input": inp}
+
+
+@router.get("/apps")
+async def apps(request: Request, q: str = "", online: str = "", limit: int = 50) -> JSONResponse:
+    select: dict[str, Any] = {k: v for k, v in {"q": q}.items() if v}
+    if online.lower() in ("1", "true", "yes", "on"):
+        select["online"] = True
+    if limit != 50:
+        select["limit"] = max(1, min(limit, 500))
+    return await go(request, {"op": "list", "target": "apps.list", **({"select": select} if select else {})})
+
+
+@router.post("/app/open")
+async def app_open(request: Request) -> JSONResponse:
+    b = await _body(request)
+    return await go(request, {"op": "act", "target": "apps.screens", "path": b.get("screen") or b.get("path") or b.get("q"), "action": "open", **_app_input(b, _app_of(b, request)), **_audit(b)})
+
+
+@router.post("/app/dialog")
+async def app_dialog(request: Request) -> JSONResponse:
+    b = await _body(request)
+    action = "close" if b.get("action") == "close" or b.get("close") is True else "open"
+    path = b.get("id") or b.get("dialog") or b.get("path") or b.get("q") or ("current" if action == "close" else None)
+    return await go(request, {"op": "act", "target": "apps.dialogs", "path": path, "action": action, **_app_input(b, _app_of(b, request), arg=b.get("arg")), **_audit(b)})
+
+
+@router.post("/app/settings")
+async def app_settings(request: Request) -> JSONResponse:
+    b = await _body(request)
+    return await go(request, {"op": "act", "target": "apps.settings", "path": b.get("tab") or b.get("path") or b.get("q"), "action": "open", **_app_input(b, _app_of(b, request), anchor=b.get("anchor")), **_audit(b)})
+
+
+@router.post("/app/action")
+async def app_action(request: Request) -> JSONResponse:
+    b = await _body(request)
+    cmd = {"op": "act", "target": "apps.actions", "path": b.get("id") or b.get("action") or b.get("path") or b.get("q"), "action": "run", **_app_input(b, _app_of(b, request), args=b.get("args")), **_audit(b)}
+    if b.get("confirm"):
+        cmd["confirm"] = b["confirm"]
+    return await go(request, cmd)
+
+
+@router.post("/app/back")
+@router.post("/app/home")
+@router.post("/app/close")
+async def app_nav(request: Request) -> JSONResponse:
+    b = await _body(request)
+    return await go(request, {"op": "act", "target": "apps.nav", "path": "here", "action": request.url.path.rstrip("/").rsplit("/", 1)[-1], **_app_input(b, _app_of(b, request)), **_audit(b)})
+
+
+@router.get("/app/where")
+async def app_where(request: Request, app: str = "") -> JSONResponse:
+    return await go(request, {"op": "get", "target": "apps.nav", "path": "here", "input": {"app": app[:80]}})
+
+
+@router.get("/app/list")
+async def app_list(request: Request, app: str = "", kind: str = "screens", q: str = "", limit: int = 50, client: str = "") -> JSONResponse:
+    target = {"screens": "apps.screens", "dialogs": "apps.dialogs", "settings": "apps.settings", "actions": "apps.actions", "clients": "apps.clients"}.get(kind, f"apps.{kind}")
+    select: dict[str, Any] = {k: v for k, v in {"app": app[:80], "q": q, "client": client}.items() if v}
+    if target != "apps.clients" or limit != 50:
+        select["limit"] = max(1, min(limit, 500))
+    return await go(request, {"op": "list", "target": target, "select": select})
+
+
+@router.get("/app/clients")
+async def app_clients(request: Request, app: str = "") -> JSONResponse:
+    return await go(request, {"op": "list", "target": "apps.clients", **({"select": {"app": app[:80]}} if app else {})})
+
+
 class ConsoleCommands:
     """console-commands@1 for other plugins (Token control's /api/control hands console.* targets here), the /api/console
     mount and the console's MCP tools."""
@@ -726,6 +860,11 @@ class ConsoleCommands:
 
     def clients(self, audience: str = OWNER) -> list[dict[str, Any]]:
         return [{k: v for k, v in c.items() if k != "catalog"} for c in clients_of(audience)]
+
+    def apps(self, audience: str = OWNER) -> list[dict[str, Any]]:
+        """Every app with its clients online (apps.list), for other plugins."""
+        r = run({"op": "list", "target": "apps.list"}, ["*"], "console", audience)
+        return list(r.get("items") or []) if r.get("ok") else []
 
 
 plugin_services.provide("console-commands@1", ConsoleCommands(), folder=FOLDER)

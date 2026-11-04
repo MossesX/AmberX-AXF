@@ -1,0 +1,18 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.control-surface",
+  "module": "lib-control-surface",
+  "name": "Control surface (the app on the API, MCP and CLI)",
+  "description": "Puts the app on the API, MCP and CLI (build apps-control-surface, Brett Nov 3 2026: \"Put EVERY app on the API, MCP and CLI\"). While the app is open it reports its catalog (every screen, dialog, settings tab and sub-tab, and every registered action, plugins' too, from its own search index) to the control surface broker on the console server, keeps a stream open, and runs the console-command@1 messages it is sent through its own runtime: open a screen, a dialog or a settings tab, run an action under its own policy, go back or home, close a dialog; then acks what it did. A Claude session says `app_show {app, target}` and the app goes there. Inside a host (Molly) it reports the host and whether its frame is in front, and asks to be brought forward before it runs a command. Settings → Plugins → Remote control: on / off for this device and a note per command. Transport: the console's /api/console with the browser's own hub session by default, or the app's own proxy (AmberX forwards through its server). Core: framework/core/engines/console-commands.mjs. Built Nov 4 2026 (Fable).",
+  "features": [],
+  "dependsOn": [],
+  "manifestKey": "libraries.controlSurface",
+  "params": [
+    { "key": "broker", "label": "Control surface broker", "type": "text", "default": "https://console.amberxai.com", "help": "The console server that keeps the app's clients and delivers commands. https only (http only for localhost)." }
+  ],
+  "ports": { "web": { "status": "compiled", "dir": "libs/control-surface" } },
+  "placeholders": [
+    { "capability": "axf.control-surface.android", "note": "Kotlin ControlSurfaceClient (axf-devtools) for Android apps — Android on hold (spec/PORTING.md)." },
+    { "capability": "axf.control-surface.voice", "note": "Voice phrases per command come from the voice-command@1 generator (build app-voice-commands)." }
+  ]
+}

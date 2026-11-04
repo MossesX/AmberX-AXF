@@ -8,8 +8,8 @@
 import assert from 'node:assert/strict';
 import { controlGate } from '../core/engines/control-rules.mjs';
 import {
-  CONSOLE_CLIENT_STALE_MS, CONSOLE_TOOLS, consoleActionConfirm, consoleActionEffect, consoleActionNeeds, consoleCatalogFrom, consoleMessage, consoleMessageErrors,
-  consolePickClients, consoleResolve, consoleSearch, normalizeConsoleCatalog, runConsoleCommand,
+  APP_TOOLS, CONSOLE_CLIENT_STALE_MS, CONSOLE_TOOLS, clientAppId, consoleActionConfirm, consoleActionEffect, consoleActionNeeds, consoleCatalogFrom, consoleMessage, consoleMessageErrors,
+  consolePickClients, consoleResolve, consoleSearch, normalizeApps, normalizeConsoleCatalog, resolveAppId, runConsoleCommand,
 } from '../core/engines/console-commands.mjs';
 
 let n = 0;
@@ -152,5 +152,72 @@ ok(consoleMessageErrors({ $axf: 'console-command@1', op: 'explode' }).length ===
 ok(consoleMessageErrors({ op: 'back' }).length === 1, 'frame required');
 eq(consoleMessage({ op: 'back' }, { id: 'x', by: 'me', now: NOW }), { $axf: 'console-command@1', id: 'x', op: 'back', by: 'me', at: new Date(NOW).toISOString() }, 'message shape');
 eq(CONSOLE_TOOLS.length, 8, 'eight MCP shortcut tools');
+
+/* ---- apps: the same surface for every app (build apps-control-surface) ---- */
+const apps = [
+  { id: 'amberx-droid', label: 'AmberX', url: 'https://amberx.amberxai.com', kind: 'web+android', aliases: ['amberx', 'the phone'] },
+  { id: 'molly', label: 'Molly', url: 'https://molly.amberxai.com', kind: 'web', aliases: ['molly'] },
+];
+eq(normalizeApps({ apps }).map((a) => a.id), ['amberx-droid', 'molly', 'axf-console'], 'the console is always in the registry');
+eq(resolveAppId('AmberX', apps), 'amberx-droid', 'label → id');
+eq(resolveAppId('the phone', apps), 'amberx-droid', 'alias → id');
+eq(resolveAppId('console-web', apps), 'axf-console', 'the console\'s old client id → its app id');
+eq(resolveAppId('Expenses App', apps), 'expenses-app', 'an unlisted app is its own id');
+eq(resolveAppId('', apps), '', 'nothing given');
+eq(clientAppId({ app: 'molly/console-web' }), 'axf-console', 'a hosted console is the console');
+eq(clientAppId({ app: 'molly/amberx-droid' }), 'amberx-droid', 'a hosted app is that app');
+eq(clientAppId({}), 'axf-console', 'a client without an app is a console (old clients)');
+const amberCat = consoleCatalogFrom([
+  { kind: 'view', label: 'To-dos', focus: { kind: 'view', view: 'todos' } }, { kind: 'view', label: 'Notes', focus: { kind: 'view', view: 'notes' } },
+  { kind: 'view', label: 'Inbox', focus: { kind: 'view', view: 'inbox' } }, { kind: 'settings-tab', label: 'Voice settings', parent: 'plugins', focus: { kind: 'setting', tab: 'voice' } },
+], [{ id: 'notes.new', meta: { label: 'New note' } }, { id: 'notes.clear', meta: { label: 'Clear notes' } }], { app: 'amberx-droid', here: { screen: 'inbox', extra: { list: 'Inbox', junk: 'x'.repeat(400) } }, items: [{ kind: 'screen', id: 'voice', label: 'Voice' }, { kind: 'bogus', id: 'z' }] });
+eq(amberCat.items.filter((i) => i.kind === 'screen').map((i) => i.id), ['todos', 'notes', 'inbox', 'voice'], 'extra items join the catalog (bad ones dropped)');
+eq(amberCat.here.extra, { list: 'Inbox', junk: 'x'.repeat(160) }, 'here.extra kept, values capped');
+const everyClient = [
+  ...clients,
+  { id: 'amber-phone', app: 'amberx-droid', device: 'phone', lastUsed: NOW - 2_000, lastSeen: NOW - 1_000, here: { screen: 'inbox' }, catalog: amberCat },
+  { id: 'amber-in-molly', app: 'molly/amberx-droid', host: 'molly', front: false, device: 'desktop', lastUsed: NOW - 500, lastSeen: NOW - 1_000, here: { screen: 'notes' }, catalog: amberCat },
+  { id: 'molly-tab', app: 'molly', device: 'desktop', lastUsed: NOW - 9_000, lastSeen: NOW - 1_000, here: { screen: 'console', extra: { app: 'console' } }, catalog: consoleCatalogFrom([{ kind: 'view', label: 'Console', focus: { kind: 'view', view: 'console' } }], [{ id: 'xlayout.ide', meta: { label: 'IDE mode on / off' } }], { app: 'molly' }) },
+];
+eq(consolePickClients(everyClient, 'recent', NOW, 'amberx-droid').map((c) => c.id), ['amber-phone'], 'recent of an app: in front beats used last; other apps left out');
+eq(consolePickClients(everyClient, 'all', NOW, 'axf-console').map((c) => c.id), ['phone', 'desk'], 'the console\'s clients only');
+eq(consolePickClients(everyClient, 'recent', NOW).map((c) => c.id), ['amber-phone'], 'no app = every app (front first, then used last: the hidden Molly frame loses)');
+const actx = { ...ctx, clients: everyClient, apps };
+const l1 = runConsoleCommand({ op: 'list', target: 'apps.list' }, actx);
+ok(l1.ok && (l1.data.items as { id: string; online: number }[]).map((i) => `${i.id}:${i.online}`).join() === 'amberx-droid:2,axf-console:2,molly:1', `apps.list: every app with its clients online, online first (${l1.ok ? (l1.data.items as { id: string; online: number }[]).map((i) => `${i.id}:${i.online}`).join() : l1.message})`);
+const l1b = runConsoleCommand({ op: 'list', target: 'apps.list' }, { ...actx, clients: [...everyClient, { id: 'x1', app: 'expenses', lastUsed: NOW, lastSeen: NOW, catalog: { items: [{ kind: 'screen', id: 'grid', label: 'Grid' }] } }] });
+ok(l1b.ok && (l1b.data.items as { id: string; screens: number }[]).some((i) => i.id === 'expenses' && i.screens === 1), 'an unlisted app with a client shows under its own id');
+const l1c = runConsoleCommand({ op: 'list', target: 'apps.list', select: { online: true, q: 'amber' } }, { ...actx, clients: [] });
+ok(l1c.ok && l1c.data.total === 0, 'online filter: none online');
+const o1 = runConsoleCommand({ op: 'act', target: 'apps.screens', path: 'to-dos', action: 'open', input: { app: 'amberx' } }, actx);
+ok(o1.ok && o1.deliver!.to.join() === 'amber-phone' && o1.deliver!.message.target === 'todos' && o1.deliver!.message.app === 'amberx-droid', 'open a screen in AmberX by alias → its client in front, message carries the app');
+const o2 = runConsoleCommand({ op: 'act', target: 'apps.screens', path: 'to-dos', action: 'open', input: { app: 'AmberX', to: 'all' } }, actx);
+ok(o2.ok && o2.deliver!.to.join() === 'amber-phone,amber-in-molly', 'to all = every client of that app');
+const o3 = runConsoleCommand({ op: 'act', target: 'apps.screens', path: 'plan studio', action: 'open', input: { app: 'console' } }, actx);
+ok(o3.ok && o3.deliver!.to.join() === 'phone' && o3.deliver!.message.target === 'plan-studio', 'apps.* with app console = the console');
+const o4 = runConsoleCommand({ op: 'act', target: 'apps.screens', path: 'to-dos', action: 'open' }, actx);
+ok(!o4.ok && o4.code === 'validation' && o4.message.includes('input.app'), 'apps.* without an app says which field');
+const o5 = runConsoleCommand({ op: 'act', target: 'apps.screens', path: 'grid', action: 'open', input: { app: 'expenses' } }, actx);
+ok(!o5.ok && o5.code === 'not_found' && o5.noConsole === true && o5.app === 'expenses', 'no client of that app → noConsole with the app');
+const o6 = runConsoleCommand({ op: 'act', target: 'apps.screens', path: 'to-dos', action: 'open', input: { app: 'amberx' } }, { ...actx, clients: clients });
+ok(!o6.ok && o6.noConsole === true && o6.url === 'https://amberx.amberxai.com' && o6.message.includes('AmberX'), 'no AmberX open → says so with its address (the broker wakes it)');
+const w1 = runConsoleCommand({ op: 'get', target: 'apps.nav', path: 'here', input: { app: 'molly' } }, actx);
+ok(w1.ok && (w1.data.value as { screen: string; extra?: { app: string } }).screen === 'console' && (w1.data.value as { extra?: { app: string } }).extra?.app === 'console', 'where Molly is, with what the app adds');
+const s1 = runConsoleCommand({ op: 'list', target: 'apps.screens', select: { app: 'amberx', q: 'note' } }, actx);
+ok(s1.ok && (s1.data.items as { id: string }[]).map((i) => i.id).join() === 'notes' && s1.data.app === 'amberx-droid', 'list an app\'s screens');
+const c5 = runConsoleCommand({ op: 'list', target: 'apps.clients', select: { app: 'amberx' } }, actx);
+ok(c5.ok && c5.data.total === 2 && (c5.data.items as { appId: string }[]).every((i) => i.appId === 'amberx-droid'), 'an app\'s clients');
+const c6 = runConsoleCommand({ op: 'list', target: 'apps.clients' }, actx);
+ok(c6.ok && c6.data.total === 5, 'every client across apps');
+const a6 = runConsoleCommand({ op: 'act', target: 'apps.actions', path: 'xlayout.ide', action: 'run', input: { app: 'molly' } }, { ...actx, grants: ['control.apps.write'] });
+ok(a6.ok && a6.deliver!.message.spec === 'xlayout.ide' && a6.deliver!.to.join() === 'molly-tab', 'an app action runs with control.apps.write');
+ok(!runConsoleCommand({ op: 'act', target: 'apps.actions', path: 'xlayout.ide', action: 'run', input: { app: 'molly' } }, { ...actx, grants: ['control.console.write'] }).ok, 'the console\'s write grant does not cover another app');
+const a7 = runConsoleCommand({ op: 'act', target: 'apps.actions', path: 'notes.clear', action: 'run', input: { app: 'amberx' } }, actx);
+ok(!a7.ok && a7.code === 'confirmation_required' && a7.confirm === consoleActionConfirm('notes.clear', salt, NOW, 'amberx-droid'), 'a destructive app action asks for a confirm bound to the app');
+ok(runConsoleCommand({ op: 'act', target: 'apps.actions', path: 'notes.clear', action: 'run', input: { app: 'amberx' }, confirm: a7.ok ? '' : a7.confirm }, actx).ok, '… and runs with it');
+const b1 = runConsoleCommand({ op: 'act', target: 'apps.nav', path: 'here', action: 'back', input: { app: 'amberx', to: 'amber-in-molly' } }, actx);
+ok(b1.ok && b1.deliver!.to.join() === 'amber-in-molly', 'to a client id of the app');
+ok(!runConsoleCommand({ op: 'act', target: 'apps.nav', path: 'here', action: 'back', input: { app: 'molly', to: 'amber-phone' } }, actx).ok, 'a client id of another app is not found');
+eq(APP_TOOLS.length, 10, 'ten app MCP shortcut tools');
 
 console.log(`✓ console commands — ${n} checks`);

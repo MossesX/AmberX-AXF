@@ -4,6 +4,7 @@ import { library as settingsLibrary } from './axf/libs/settings';
 import { toolbarsLibrary } from './axf/libs/toolbars';
 import { library as dataGridLibrary } from './axf/libs/datagrid';
 import { hubSyncLibrary } from './axf/libs/hubsync';
+import { controlSurfaceLibrary } from './axf/libs/control-surface';
 import { dialogs } from './dialogs';
 import { Approvals } from './views/Approvals';
 import { ApprovalDetail } from './views/ApprovalDetail';
@@ -51,7 +52,9 @@ const views: ViewMap = {
  * settings on axHub (same on every device) and adds Settings → Plugins → axHub sync; the look stays the developer one.
  * Installed axHub web plugins (src/plugins, catalog kind `axhub`) come after them.
  */
-const libraries = [settingsLibrary, toolbarsLibrary, dataGridLibrary, hubSyncLibrary, ...loadPlugins().map((p) => p.library)];
+// The control surface (apps-control-surface, Nov 4 2026): axHub web is on the API, MCP and CLI (`app_show {app: 'hub',
+// target: 'passes'}`). It talks to the broker on the console server with the browser's own hub session (same site).
+const libraries = [settingsLibrary, toolbarsLibrary, dataGridLibrary, hubSyncLibrary, controlSurfaceLibrary, ...loadPlugins().map((p) => p.library)];
 
 export function App() {
   const rt = useRuntime();

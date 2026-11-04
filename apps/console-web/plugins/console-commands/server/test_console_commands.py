@@ -35,7 +35,7 @@ cc = importlib.util.module_from_spec(spec)
 assert spec and spec.loader
 spec.loader.exec_module(cc)
 cc.WAKE_AFTER_S = 0.3
-cc.WAKER = lambda url, browser: (WOKEN.append((url, browser)), {"ok": True, "message": "AmberX is opening the console"})[1]
+cc.WAKER = lambda url, browser, label="the Dev Console": (WOKEN.append((url, browser)), {"ok": True, "message": f"AmberX is opening {label}"})[1]
 
 checks = 0
 
@@ -264,7 +264,7 @@ eq(client.post("/api/console/settings", json={"wake": True}, headers={"x-user": 
 client.post("/api/console/bye", json={"client": "woke-0001"})
 r = cc.run({"op": "act", "target": "console.screens", "path": "plan studio", "action": "open"}, ["*"], "Amber", cc.OWNER, wait=cc.WAKE_AFTER_S + 0.5)
 ok(r["ok"] and r["queued"] and r["delivery"]["how"] == "queued", f"still nobody after the wait: answered queued ({r})")
-ok("queued, waiting for the console" in r["message"], "the answer says it is waiting")
+ok("queued, waiting for Dev Console" in r["message"], "the answer says it is waiting")
 time.sleep(0.4)
 eq(len(WOKEN), 1, "wake off: AmberX not asked")
 ok("off" in r["delivery"]["wake"]["message"] and "off" in r["message"], f"the answer says waking is off ({r['delivery']})")
@@ -321,6 +321,52 @@ ok(molly and molly[-1]["target"] == "plan-studio", "Molly's console ran it")
 eq(client.get("/api/console/clients").json()["items"][0]["id"], "molly-0001", "the console in front is listed first")
 client.post("/api/console/hello", json={"client": "molly-0001", "host": "Bad Host!", "catalog": CATALOG})
 eq(next(c for c in client.get("/api/console/clients").json()["items"] if c["id"] == "molly-0001").get("host", ""), "", "a malformed host name is dropped")
+
+# every app on the framework (apps-control-surface, Nov 4 2026): an AmberX client says hello with its own catalog; the
+# apps domain reaches it and only it; apps lists it online; a command for an app with nobody open wakes that app's address
+AMBERX = {"app": "amberx-droid", "items": [
+    {"kind": "screen", "id": "todos", "label": "To-dos"}, {"kind": "screen", "id": "notes", "label": "Notes"}, {"kind": "screen", "id": "inbox", "label": "Inbox"},
+    {"kind": "settings", "id": "voice", "label": "Voice", "parent": "plugins"}, {"kind": "action", "id": "notes.new", "label": "New note"},
+], "here": {"screen": "inbox", "screenLabel": "Inbox"}}
+amber: list[dict] = []
+client.post("/api/console/hello", json={"client": "amber-0001", "app": "amberx-droid", "device": "phone", "catalog": AMBERX, "here": AMBERX["here"], "used": True})
+fake_console("amber-0001", answers=amber)
+wait_for(lambda: stream_open("amber-0001"))
+eq(client.post("/api/console/hello", json={"client": "amber-0002", "app": "bad app!", "catalog": AMBERX}).status_code, 400, "a malformed app id is refused")
+j = client.get("/api/console/apps").json()
+rows = {a["id"]: a for a in j["items"]}
+ok(j["ok"] and rows["amberx-droid"]["online"] == 1 and rows["amberx-droid"]["screens"] == 3 and rows["amberx-droid"]["here"]["screen"] == "inbox", f"apps lists AmberX online with what it reports ({rows.get('amberx-droid')})")
+ok(rows["axf-console"]["online"] >= 1 and rows["molly"]["online"] == 0 and rows["molly"]["url"] == "https://molly.amberxai.com", "the console is online, Molly closed, from the registry")
+ok([a["id"] for a in j["items"]][:1] != ["molly"], "online apps come first")
+j = client.post("/api/console/app/open", json={"app": "amberx", "screen": "to-dos", "by": "Amber"}).json()
+ok(j["ok"] and j["app"] == "amberx-droid" and [d["client"] for d in j["delivered"]] == ["amber-0001"] and amber and amber[-1]["target"] == "todos" and amber[-1]["app"] == "amberx-droid", f"app/open by alias reaches AmberX's client, the message carries the app ({j})")
+j = client.post("/api/console/open", json={"screen": "plan studio"}).json()
+ok(j["ok"] and all(d["client"] != "amber-0001" for d in j["delivered"]), "a console command never goes to AmberX (even though it was used last)")
+j = client.get("/api/console/app/where?app=amberx").json()
+ok(j["ok"] and j["value"]["screen"] == "todos" and j["client"]["appId"] == "amberx-droid", f"app/where ({j})")
+j = client.get("/api/console/app/list?app=amberx&kind=screens&q=note").json()
+ok(j["ok"] and [i["id"] for i in j["items"]] == ["notes"], "app/list")
+j = client.get("/api/console/app/clients?app=amberx").json()
+ok(j["ok"] and [cl["id"] for cl in j["items"]] == ["amber-0001"], "app/clients for one app")
+ok(len(client.get("/api/console/app/clients").json()["items"]) > 1, "app/clients for every app")
+j = client.post("/api/console/app/open", json={"screen": "to-dos"}).json()
+ok(not j["ok"] and j["code"] == "validation", "app/open without an app: validation")
+j = client.post("/api/console/app/open", json={"app": "amberx", "screen": "spreadsheet"}).json()
+ok(not j["ok"] and j["code"] == "not_found" and "AmberX has no screen" in j["message"], "an unknown screen names the app")
+# nobody has Molly open: queued, and AmberX is asked to open Molly's own address (not the console's)
+client.post("/api/console/settings", json={"wake": True, "ttlS": 30})
+woke_before = len(WOKEN)
+r = cc.run({"op": "act", "target": "apps.screens", "path": "console", "action": "open", "input": {"app": "molly"}}, ["*"], "Amber", cc.OWNER, wait=cc.WAKE_AFTER_S + 0.6)
+ok(r["ok"] and r["queued"] and r["delivery"]["app"] == "molly" and r["delivery"]["url"] == "https://molly.amberxai.com", f"a command for a closed app is queued with the app and its address ({r.get('delivery')})")
+ok("waiting for Molly" in r["message"], "the answer names the app")
+wait_for(lambda: len(WOKEN) > woke_before)
+ok(len(WOKEN) == woke_before + 1 and WOKEN[-1][0].startswith("https://molly.amberxai.com/?axf-cmd="), f"AmberX asked to open Molly's address ({WOKEN[-1:]})")
+q = [x for x in client.get("/api/console/queue").json()["items"] if x["state"] == "queued"]
+ok(q and q[-1]["app"] == "molly" and q[-1]["label"] == "Molly", "the queue row says which app")
+with cc._lock:
+    for e in cc._queue:
+        e["state"] = "expired"
+        e["event"].set()
 
 print(f"✓ console commands server — {checks} checks", flush=True)
 os._exit(0)  # the fake consoles' streams are still open

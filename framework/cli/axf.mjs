@@ -78,8 +78,9 @@ if (CONTROL_WORDS.has(cmd) || (cmd === 'list' && CONTROL_LIST_WORDS.has(rest[0])
   const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'control.mjs')).href);
   process.exit(await main([cmd, ...rest]));
 }
-// console commands (control@1 console domain) go to the plugin that provides console-commands@1 (never by folder name).
-if (cmd === 'console') {
+// console commands (control@1 console domain) and every app's control surface (`axf app <app> …`, `axf apps`; the apps
+// domain) go to the plugin that provides console-commands@1 (never by folder name).
+if (cmd === 'console' || cmd === 'app' || cmd === 'apps') {
   const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
   const { join: joinPath } = await import('node:path');
   const { pathToFileURL } = await import('node:url');
@@ -89,7 +90,7 @@ if (cmd === 'console') {
   });
   if (!dir) { console.error('no plugin provides console-commands@1 (install the Console commands plugin)'); process.exit(1); }
   const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'console.mjs')).href);
-  process.exit(await main(rest));
+  process.exit(await main(cmd === 'console' ? rest : [cmd, ...rest]));
 }
 // plugin commands (control@1 plugins domain): `axf plugins [plugin]`, `axf plugin <plugin> <command> …`, and
 // `axf <plugin> <command> …` for any console plugin whose folder isn't an axf command; they go to the plugin that

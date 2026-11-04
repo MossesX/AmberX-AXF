@@ -1,0 +1,10 @@
+{
+  "$axf": "apps@1",
+  "$comment": "The apps on the framework that carry the control surface (build apps-control-surface, Brett Nov 3 2026: \"Put EVERY app on the API, MCP and CLI\"). Read by core/engines/console-commands.mjs (apps_list, which app a word names, the address to wake an app at) and the console server's control surface broker. `id` = the app's axf.manifest.json app.id (what its client reports); `aliases` = the words a person uses for it. An app not listed here still works the moment its client says hello (it shows under its own id); listing it gives it a name, a wake address and a place in apps_list while it is closed.",
+  "apps": [
+    { "id": "axf-console", "label": "Dev Console", "url": "https://console.amberxai.com", "kind": "web", "aliases": ["console", "console-web", "dev console", "the console", "gizmox"], "description": "The AXF Dev Console: builds, plugins, UI Review, settings." },
+    { "id": "amberx-droid", "label": "AmberX", "url": "https://amberx.amberxai.com", "kind": "web+android", "aliases": ["amberx", "amber x", "phone app", "the phone"], "description": "The AmberX app: notes, to-dos, lists, voice, approvals, walkthroughs." },
+    { "id": "axhub-web", "label": "axHub", "url": "https://axhub.amberxai.com", "kind": "web", "aliases": ["axhub", "hub", "the hub", "ax hub"], "description": "The connector hub's web app: approvals, go pass, passes, users, services." },
+    { "id": "molly", "label": "Molly", "url": "https://molly.amberxai.com", "kind": "web", "aliases": ["molly"], "description": "One interface for AmberX, axHub and the Dev Console: frames, panes, banners." }
+  ]
+}

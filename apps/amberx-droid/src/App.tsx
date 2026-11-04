@@ -3,6 +3,8 @@ import { AppShell, installLibraries, useRuntime, type ViewMap } from './axf/reac
 import { library as settingsLibrary } from './axf/libs/settings';
 import { toolbarsLibrary } from './axf/libs/toolbars';
 import { hubSyncLibrary } from './axf/libs/hubsync';
+import { createControlSurfaceLibrary } from './axf/libs/control-surface';
+import { pluginFetch } from './console/plugins';
 import { dialogs } from './dialogs';
 import { Approvals } from './views/Approvals';
 import { useHubBannerCount } from './axf/libs/hub/react';
@@ -30,7 +32,14 @@ const views: ViewMap = {
  * FLAG_SECURE unless opted in, `securescreen.ts`) and Sound and microphone (Quiet, one owner per device, `sound.tsx`)
  * are AmberX's own, and so is Mic off (`mic.tsx`: one tap lets go of every microphone). The plugins come after them.
  */
-const libraries = [settingsLibrary, toolbarsLibrary, hubSyncLibrary, secureScreenLibrary, soundLibrary, micLibrary, ...loadPlugins().map((p) => p.library)];
+/**
+ * The control surface (apps-control-surface, Nov 4 2026): AmberX is on the API, MCP and CLI. Amber says
+ * `app_show {app: 'amberx', target: 'to-dos'}` and this app (phone or browser) opens it. The client reaches the broker on
+ * the console server through AmberX's own server (its console plugin proxy, `/api/console/plugins/<folder>/…`, forwarded
+ * with the console token; hub admins only), so the page holds no token and the Android shell needs nothing new.
+ */
+const controlSurface = createControlSurfaceLibrary({ transport: { fetch: (path, init) => pluginFetch('console-commands', path, init) } });
+const libraries = [settingsLibrary, toolbarsLibrary, hubSyncLibrary, controlSurface, secureScreenLibrary, soundLibrary, micLibrary, ...loadPlugins().map((p) => p.library)];
 
 export function App() {
   const rt = useRuntime();

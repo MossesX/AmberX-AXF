@@ -284,6 +284,92 @@
       "op": "list",
       "target": "console.clients"
     },
+    "apps-list": {
+      "op": "list",
+      "target": "apps.list"
+    },
+    "apps-list-online": {
+      "op": "list",
+      "target": "apps.list",
+      "select": {
+        "online": true,
+        "q": "amber"
+      }
+    },
+    "app-open-screen": {
+      "op": "act",
+      "target": "apps.screens",
+      "path": "to-dos",
+      "action": "open",
+      "input": {
+        "app": "amberx"
+      },
+      "by": "claude"
+    },
+    "app-open-settings": {
+      "op": "act",
+      "target": "apps.settings",
+      "path": "plugins/voice",
+      "action": "open",
+      "input": {
+        "app": "amberx-droid",
+        "to": "all"
+      }
+    },
+    "app-list-screens": {
+      "op": "list",
+      "target": "apps.screens",
+      "select": {
+        "app": "molly",
+        "q": "console"
+      }
+    },
+    "app-run-action": {
+      "op": "act",
+      "target": "apps.actions",
+      "path": "xlayout.ide",
+      "action": "run",
+      "input": {
+        "app": "molly"
+      }
+    },
+    "app-where": {
+      "op": "get",
+      "target": "apps.nav",
+      "path": "here",
+      "input": {
+        "app": "hub"
+      }
+    },
+    "app-back": {
+      "op": "act",
+      "target": "apps.nav",
+      "path": "here",
+      "action": "back",
+      "input": {
+        "app": "amberx"
+      }
+    },
+    "app-clients": {
+      "op": "list",
+      "target": "apps.clients",
+      "select": {
+        "app": "amberx"
+      }
+    },
+    "app-set-screen": {
+      "op": "set",
+      "target": "apps.screens",
+      "path": "home",
+      "value": "x"
+    },
+    "app-list-bad-filter": {
+      "op": "list",
+      "target": "apps.screens",
+      "select": {
+        "kind": "x"
+      }
+    },
     "plugin-list": {
       "op": "list",
       "target": "plugins.commands",
@@ -357,6 +443,24 @@
       },
       "plugins.reads": {
         "read": "read"
+      },
+      "apps.screens": {
+        "open": "navigate"
+      },
+      "apps.dialogs": {
+        "open": "navigate",
+        "close": "navigate"
+      },
+      "apps.settings": {
+        "open": "navigate"
+      },
+      "apps.actions": {
+        "run": "write"
+      },
+      "apps.nav": {
+        "back": "navigate",
+        "home": "navigate",
+        "close": "navigate"
       }
     },
     "permissions": {
@@ -372,13 +476,17 @@
       "control.console.read": "console: read",
       "control.console.write": "console: write",
       "control.console.delete": "console: delete",
+      "control.apps.read": "apps: read",
+      "control.apps.write": "apps: write",
+      "control.apps.delete": "apps: delete",
       "control.pass.read": "pass: read",
       "control.pass.write": "pass: write",
       "control.pass.delete": "pass: delete",
       "control.plugins.read": "plugins: read",
       "control.plugins.write": "plugins: write",
       "control.plugins.delete": "plugins: delete",
-      "control.console.navigate": "console: navigate"
+      "control.console.navigate": "console: navigate",
+      "control.apps.navigate": "apps: navigate"
     },
     "targets": [
       "tokens.theme",
@@ -403,7 +511,14 @@
       "pass.scopes",
       "plugins.commands",
       "plugins.reads",
-      "tokens.nav"
+      "tokens.nav",
+      "apps.list",
+      "apps.screens",
+      "apps.dialogs",
+      "apps.settings",
+      "apps.actions",
+      "apps.nav",
+      "apps.clients"
     ],
     "targetOps": {
       "tokens.theme": [
@@ -539,6 +654,36 @@
         "get",
         "set",
         "reset"
+      ],
+      "apps.list": [
+        "list"
+      ],
+      "apps.screens": [
+        "list",
+        "get",
+        "act"
+      ],
+      "apps.dialogs": [
+        "list",
+        "get",
+        "act"
+      ],
+      "apps.settings": [
+        "list",
+        "get",
+        "act"
+      ],
+      "apps.actions": [
+        "list",
+        "get",
+        "act"
+      ],
+      "apps.nav": [
+        "get",
+        "act"
+      ],
+      "apps.clients": [
+        "list"
       ]
     }
   },
@@ -751,7 +896,16 @@
       "items.order",
       "items.hidden",
       "items.pinned"
-    ]
+    ],
+    "apps.list": null,
+    "apps.screens": null,
+    "apps.dialogs": null,
+    "apps.settings": null,
+    "apps.actions": null,
+    "apps.nav": [
+      "here"
+    ],
+    "apps.clients": null
   },
   "normalize": {
     "list-layout": {
@@ -1081,6 +1235,103 @@
       "op": "list",
       "target": "console.clients"
     },
+    "apps-list": {
+      "$axf": "control@1",
+      "op": "list",
+      "target": "apps.list"
+    },
+    "apps-list-online": {
+      "$axf": "control@1",
+      "op": "list",
+      "target": "apps.list",
+      "select": {
+        "online": true,
+        "q": "amber"
+      }
+    },
+    "app-open-screen": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "apps.screens",
+      "path": "to-dos",
+      "action": "open",
+      "input": {
+        "app": "amberx"
+      },
+      "by": "claude"
+    },
+    "app-open-settings": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "apps.settings",
+      "path": "plugins/voice",
+      "action": "open",
+      "input": {
+        "app": "amberx-droid",
+        "to": "all"
+      }
+    },
+    "app-list-screens": {
+      "$axf": "control@1",
+      "op": "list",
+      "target": "apps.screens",
+      "select": {
+        "app": "molly",
+        "q": "console"
+      }
+    },
+    "app-run-action": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "apps.actions",
+      "path": "xlayout.ide",
+      "action": "run",
+      "input": {
+        "app": "molly"
+      }
+    },
+    "app-where": {
+      "$axf": "control@1",
+      "op": "get",
+      "target": "apps.nav",
+      "path": "here",
+      "input": {
+        "app": "hub"
+      }
+    },
+    "app-back": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "apps.nav",
+      "path": "here",
+      "action": "back",
+      "input": {
+        "app": "amberx"
+      }
+    },
+    "app-clients": {
+      "$axf": "control@1",
+      "op": "list",
+      "target": "apps.clients",
+      "select": {
+        "app": "amberx"
+      }
+    },
+    "app-set-screen": {
+      "$axf": "control@1",
+      "op": "set",
+      "target": "apps.screens",
+      "path": "home",
+      "value": "x"
+    },
+    "app-list-bad-filter": {
+      "$axf": "control@1",
+      "op": "list",
+      "target": "apps.screens",
+      "select": {
+        "kind": "x"
+      }
+    },
     "plugin-list": {
       "$axf": "control@1",
       "op": "list",
@@ -1172,7 +1423,7 @@
       "op must be one of: list, get, set, reset, add, remove, act"
     ],
     "wrong-target": [
-      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients, pass.scopes, plugins.commands, plugins.reads, tokens.nav"
+      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients, pass.scopes, plugins.commands, plugins.reads, tokens.nav, apps.list, apps.screens, apps.dialogs, apps.settings, apps.actions, apps.nav, apps.clients"
     ],
     "token-op-on-entity": [
       "amberx.items does not take reset (it takes list, get, set, add, remove, act)"
@@ -1188,7 +1439,7 @@
     ],
     "not-an-object": [
       "op must be one of: list, get, set, reset, add, remove, act",
-      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients, pass.scopes, plugins.commands, plugins.reads, tokens.nav"
+      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients, pass.scopes, plugins.commands, plugins.reads, tokens.nav, apps.list, apps.screens, apps.dialogs, apps.settings, apps.actions, apps.nav, apps.clients"
     ],
     "console-open-screen": [],
     "console-open-settings": [],
@@ -1202,6 +1453,21 @@
       "console.screens does not take set (it takes list, get, act)"
     ],
     "console-clients": [],
+    "apps-list": [],
+    "apps-list-online": [],
+    "app-open-screen": [],
+    "app-open-settings": [],
+    "app-list-screens": [],
+    "app-run-action": [],
+    "app-where": [],
+    "app-back": [],
+    "app-clients": [],
+    "app-set-screen": [
+      "apps.screens does not take set (it takes list, get, act)"
+    ],
+    "app-list-bad-filter": [
+      "apps.screens list has no filter kind (it has app, q, limit, client)"
+    ],
     "plugin-list": [],
     "plugin-read": [],
     "plugin-run": [],
@@ -1444,6 +1710,63 @@
         "ok": true,
         "effect": "read",
         "requires": "control.console.read"
+      },
+      "apps-list": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.apps.read"
+      },
+      "apps-list-online": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.apps.read"
+      },
+      "app-open-screen": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.apps.navigate"
+      },
+      "app-open-settings": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.apps.navigate"
+      },
+      "app-list-screens": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.apps.read"
+      },
+      "app-run-action": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.apps.write"
+      },
+      "app-where": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.apps.read"
+      },
+      "app-back": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.apps.navigate"
+      },
+      "app-clients": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.apps.read"
+      },
+      "app-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "app-list-bad-filter": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.apps.read",
+        "confirm": null
       },
       "plugin-list": {
         "ok": true,
@@ -1701,6 +2024,63 @@
         "ok": true,
         "effect": "read",
         "requires": "control.console.read"
+      },
+      "apps-list": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.apps.read"
+      },
+      "apps-list-online": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.apps.read"
+      },
+      "app-open-screen": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.apps.navigate"
+      },
+      "app-open-settings": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.apps.navigate"
+      },
+      "app-list-screens": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.apps.read"
+      },
+      "app-run-action": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.apps.write"
+      },
+      "app-where": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.apps.read"
+      },
+      "app-back": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.apps.navigate"
+      },
+      "app-clients": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.apps.read"
+      },
+      "app-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "app-list-bad-filter": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.apps.read",
+        "confirm": null
       },
       "plugin-list": {
         "ok": true,
@@ -1971,6 +2351,72 @@
         "ok": false,
         "code": "denied",
         "requires": "control.console.read",
+        "confirm": null
+      },
+      "apps-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "apps-list-online": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-open-screen": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.navigate",
+        "confirm": null
+      },
+      "app-open-settings": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.navigate",
+        "confirm": null
+      },
+      "app-list-screens": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-run-action": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.write",
+        "confirm": null
+      },
+      "app-where": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-back": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.navigate",
+        "confirm": null
+      },
+      "app-clients": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "app-list-bad-filter": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
         "confirm": null
       },
       "plugin-list": {
@@ -2253,6 +2699,72 @@
         "requires": "control.console.read",
         "confirm": null
       },
+      "apps-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "apps-list-online": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-open-screen": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.navigate",
+        "confirm": null
+      },
+      "app-open-settings": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.navigate",
+        "confirm": null
+      },
+      "app-list-screens": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-run-action": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.write",
+        "confirm": null
+      },
+      "app-where": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-back": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.navigate",
+        "confirm": null
+      },
+      "app-clients": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "app-list-bad-filter": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
       "plugin-list": {
         "ok": false,
         "code": "denied",
@@ -2531,6 +3043,72 @@
         "ok": false,
         "code": "denied",
         "requires": "control.console.read",
+        "confirm": null
+      },
+      "apps-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "apps-list-online": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-open-screen": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.navigate",
+        "confirm": null
+      },
+      "app-open-settings": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.navigate",
+        "confirm": null
+      },
+      "app-list-screens": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-run-action": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.write",
+        "confirm": null
+      },
+      "app-where": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-back": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.navigate",
+        "confirm": null
+      },
+      "app-clients": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "app-list-bad-filter": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
         "confirm": null
       },
       "plugin-list": {
@@ -2817,6 +3395,72 @@
         "requires": "control.console.read",
         "confirm": null
       },
+      "apps-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "apps-list-online": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-open-screen": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.navigate",
+        "confirm": null
+      },
+      "app-open-settings": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.navigate",
+        "confirm": null
+      },
+      "app-list-screens": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-run-action": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.write",
+        "confirm": null
+      },
+      "app-where": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-back": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.navigate",
+        "confirm": null
+      },
+      "app-clients": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "app-list-bad-filter": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
       "plugin-list": {
         "ok": false,
         "code": "denied",
@@ -3095,6 +3739,414 @@
         "ok": true,
         "effect": "read",
         "requires": "control.console.read"
+      },
+      "apps-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "apps-list-online": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-open-screen": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.navigate",
+        "confirm": null
+      },
+      "app-open-settings": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.navigate",
+        "confirm": null
+      },
+      "app-list-screens": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-run-action": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.write",
+        "confirm": null
+      },
+      "app-where": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-back": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.navigate",
+        "confirm": null
+      },
+      "app-clients": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "app-list-bad-filter": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "plugin-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-read": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-run": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.write",
+        "confirm": null
+      },
+      "plugin-set": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      }
+    },
+    "app-navigator": {
+      "list-layout": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "get-theme": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "set-layout": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-layout-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-layout-unknown": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-theme": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-theme-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-style": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-style-enum": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-sizing": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-sizing-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-look": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-slot": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "reset-all": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "add-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "add-item-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "set-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "list-items": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.read",
+        "confirm": null
+      },
+      "list-items-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.read",
+        "confirm": null
+      },
+      "act-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "act-item-missing-input": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "act-item-unknown": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "remove-system-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.delete",
+        "confirm": null
+      },
+      "act-build-step": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "act-build-approve": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "act-plan-build": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "add-plan": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "remove-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.delete",
+        "confirm": null
+      },
+      "wrong-op": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "wrong-target": {
+        "ok": false,
+        "code": "not_found",
+        "requires": null,
+        "confirm": null
+      },
+      "token-op-on-entity": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "entity-op-on-token": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "path-on-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "wrong-frame": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "not-an-object": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-open-screen": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-open-settings": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-list-actions": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
+        "confirm": null
+      },
+      "console-run-action": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.write",
+        "confirm": null
+      },
+      "console-back": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-nav-unknown-path": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-clients": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
+        "confirm": null
+      },
+      "apps-list": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.apps.read"
+      },
+      "apps-list-online": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.apps.read"
+      },
+      "app-open-screen": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.apps.navigate"
+      },
+      "app-open-settings": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.apps.navigate"
+      },
+      "app-list-screens": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.apps.read"
+      },
+      "app-run-action": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.write",
+        "confirm": null
+      },
+      "app-where": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.apps.read"
+      },
+      "app-back": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.apps.navigate"
+      },
+      "app-clients": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.apps.read"
+      },
+      "app-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "app-list-bad-filter": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.apps.read",
+        "confirm": null
       },
       "plugin-list": {
         "ok": false,
@@ -3378,6 +4430,72 @@
         "ok": false,
         "code": "denied",
         "requires": "control.console.read",
+        "confirm": null
+      },
+      "apps-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "apps-list-online": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-open-screen": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.navigate",
+        "confirm": null
+      },
+      "app-open-settings": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.navigate",
+        "confirm": null
+      },
+      "app-list-screens": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-run-action": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.write",
+        "confirm": null
+      },
+      "app-where": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-back": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.navigate",
+        "confirm": null
+      },
+      "app-clients": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
+        "confirm": null
+      },
+      "app-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "app-list-bad-filter": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.apps.read",
         "confirm": null
       },
       "plugin-list": {

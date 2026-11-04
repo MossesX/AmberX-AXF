@@ -187,6 +187,8 @@ function FollowClient() {
         if (m.type === 'state') { if (m.on !== st.on || !st.known) applyState(m.on, m.by ?? '', m.at ?? ''); return; }
         if (!st.on) return;
         if (m.type === 'show') {
+          // opened in another app (AmberX, axHub web, Molly): that app highlights it; this console only shows the note
+          if (m.app && !['console', 'console-web', 'axf-console'].includes(m.app)) { rt.toast(m.say ? `Amber: ${m.say}` : `Amber opened ${m.label || m.target} in ${m.app}`, 'info', 'Follow Amber'); return; }
           highlight(m.highlight ?? '');
           rt.toast(m.say ? `Amber: ${m.say}` : `Amber opened ${m.label || m.target}`, 'info', 'Follow Amber');
           return;

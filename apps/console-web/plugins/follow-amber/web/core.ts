@@ -11,7 +11,7 @@ export const FOLLOW_FRAME = 'follow-amber@1';
 /** What the server sends down a follow stream. */
 export type FollowFrame =
   | { $axf: typeof FOLLOW_FRAME; type: 'state'; on: boolean; by?: string; at?: string }
-  | { $axf: typeof FOLLOW_FRAME; type: 'show'; kind: string; target: string; label?: string; highlight?: string; say?: string; by?: string }
+  | { $axf: typeof FOLLOW_FRAME; type: 'show'; kind: string; target: string; label?: string; highlight?: string; say?: string; by?: string; /** another app opened it (apps-control-surface): the console only shows the note */ app?: string }
   | { $axf: typeof FOLLOW_FRAME; type: 'approval'; id?: string; say?: string; by?: string };
 
 const str = (v: unknown, cap = 300) => (typeof v === 'string' ? v.slice(0, cap) : '');
@@ -23,7 +23,7 @@ export function parseFrame(raw: unknown): FollowFrame | null {
   if (f.$axf !== FOLLOW_FRAME) return null;
   if (f.type === 'state' && typeof f.on === 'boolean') return { $axf: FOLLOW_FRAME, type: 'state', on: f.on, by: str(f.by, 80), at: str(f.at, 40) };
   if (f.type === 'show' && typeof f.target === 'string' && f.target) {
-    return { $axf: FOLLOW_FRAME, type: 'show', kind: str(f.kind, 20), target: str(f.target, 200), label: str(f.label, 200), highlight: str(f.highlight, 200), say: str(f.say), by: str(f.by, 80) };
+    return { $axf: FOLLOW_FRAME, type: 'show', kind: str(f.kind, 20), target: str(f.target, 200), label: str(f.label, 200), highlight: str(f.highlight, 200), say: str(f.say), by: str(f.by, 80), app: str(f.app, 80) };
   }
   if (f.type === 'approval') return { $axf: FOLLOW_FRAME, type: 'approval', id: str(f.id, 80), say: str(f.say), by: str(f.by, 80) };
   return null;

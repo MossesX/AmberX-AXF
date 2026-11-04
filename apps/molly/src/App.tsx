@@ -3,10 +3,11 @@ import { AccountView, AppShell, installLibraries, SlotsProvider, useRuntime, typ
 import type { AxfWebLibrary } from './axf/react/library';
 import { library as settingsLibrary } from './axf/libs/settings';
 import { toolbarsLibrary } from './axf/libs/toolbars';
+import { createControlSurfaceLibrary } from './axf/libs/control-surface';
 import { dialogs } from './dialogs';
 import { Home } from './views/Home';
 import { AppSlot, FrameDeck } from './molly/FrameDeck';
-import { MOLLY_APPS } from './molly/apps';
+import { MOLLY_APPS, mollyApp } from './molly/apps';
 import { mollyHooks, mollyHooksRev, onMollyHooks } from './molly/host';
 
 /**
@@ -29,8 +30,17 @@ const views: ViewMap = {
 const pluginModules = import.meta.glob<{ plugin?: AxfWebLibrary }>('../plugins/*/web/index.tsx', { eager: true });
 const plugins = Object.values(pluginModules).map((m) => m.plugin).filter((p): p is AxfWebLibrary => !!p);
 
+/**
+ * The control surface (apps-control-surface, Nov 4 2026): Molly is on the API, MCP and CLI. Its apps are its screens
+ * (`app_open {app: 'molly', screen: 'console'}` switches the frame), its plugins' actions (IDE mode, pane layout,
+ * banners) run through `app_action`, and `app_where` says which app is on screen. The apps inside Molly's frames carry
+ * their own surface (they report as `molly/<app>`), so nothing is relayed here.
+ */
+const controlSurface = createControlSurfaceLibrary({
+  extraHere: (rt): Record<string, string> => { const a = mollyApp(rt.getState().view.split('/')[0]); return a ? { app: a.id, appLabel: a.label } : { app: 'home', appLabel: 'Molly' }; },
+});
 /** Every app ships the settings interface (lib-settings); plugins add sub-tabs under Settings → Plugins. */
-const libraries = [settingsLibrary, toolbarsLibrary, ...plugins];
+const libraries = [settingsLibrary, toolbarsLibrary, controlSurface, ...plugins];
 
 export function App() {
   const rt = useRuntime();
