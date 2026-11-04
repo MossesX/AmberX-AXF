@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T17:39:57.790Z",
+ "updatedAt": "2026-11-04T17:42:45.338Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -11122,7 +11122,7 @@
    "branch": "claude/live-sessions-plugin",
    "pr": "#331",
    "createdAt": "2026-11-04T16:46:03.374Z",
-   "updatedAt": "2026-11-04T17:19:23.689Z",
+   "updatedAt": "2026-11-04T17:42:44.089Z",
    "builtAt": "2026-11-04T17:19:21.361Z",
    "notes": [
     {
@@ -11132,6 +11132,10 @@
     {
      "text": "Reconciler: branch claude/live-sessions-plugin (no PR yet)",
      "at": "2026-11-04T17:19:23.645Z"
+    },
+    {
+     "text": "Resumed (Paulie): WIP pause commit (222 synced data files) dropped from PR #331; branch merges clean with main. Waiting on the merge queue (#320) to land, then #331 joins it by itself. Banner alert live-sessions:amberx-live-voice raised for the AmberX live-voice APK gap.",
+     "at": "2026-11-04T17:42:44.089Z"
     }
    ],
    "approvals": [],
