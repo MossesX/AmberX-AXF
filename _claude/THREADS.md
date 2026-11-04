@@ -578,19 +578,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 20:18 UTC · `ui-review-predicted` s1 done (urgent) · orchestrator
-- 2026-11-03 20:18 UTC · `ui-review-predicted` s2 done (urgent) · orchestrator
-- 2026-11-03 20:18 UTC · `ui-review-predicted` s3 done (urgent) · orchestrator
-- 2026-11-03 20:19 UTC · `window-resize-fix` s2 done, s3 done, → complete, note (current) · foreign-write
-- 2026-11-03 20:19 UTC · `profile-manager` added (6 steps) (current) · foreign-write
-- 2026-11-03 20:19 UTC · `terminal-sessions-nav` s1 done, → running (current) · orchestrator
-- 2026-11-03 20:19 UTC · `terminal-sessions-nav` s2 done (current) · orchestrator
-- 2026-11-03 20:19 UTC · `terminal-sessions-nav` s3 done (current) · orchestrator
-- 2026-11-03 20:20 UTC · `terminal-sessions-nav` s1 done, s2 done, s3 done (current) · foreign-write
-- 2026-11-03 20:21 UTC · `ui-review-predicted` s4 done (urgent) · orchestrator
-- 2026-11-03 20:23 UTC · `build-prompt-origin` added (5 steps) (current) · janitor-joey
-- 2026-11-03 20:23 UTC · `build-prompt-origin` s1 done, → running (current) · orchestrator
-- 2026-11-03 20:25 UTC · `build-prompt-origin` s2 done (current) · orchestrator
 - 2026-11-03 20:26 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
 - 2026-11-03 20:26 UTC · `terminal-vps-host` added (5 steps) (current) · foreign-write
 - 2026-11-03 20:26 UTC · `window-resize-fix` added (3 steps) (current) · foreign-write
@@ -978,3 +965,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 00:55 UTC · `browser-automation` added (16 steps) (current) · foreign-write
 - 2026-11-04 00:55 UTC · `profile-switcher-widget` added (5 steps) (current) · foreign-write
 - 2026-11-04 00:57 UTC · `lenny-land-all` s1 done, s5 done, note (current) · foreign-write
+- 2026-11-04 00:57 UTC · `browser-automation` s2 done (current) · orchestrator
+- 2026-11-04 00:55 UTC · `lenny-land-all` s1 done (current) · orchestrator
+- 2026-11-04 00:56 UTC · `lenny-land-all` s5 done (current) · orchestrator
+- 2026-11-04 00:56 UTC · `lenny-land-all` note (current) · orchestrator
+- 2026-11-04 00:52 UTC · `browser-automation` s1 done (current) · foreign-write
+- 2026-11-04 01:00 UTC · `lenny-land-all` s1 done, s5 done, note (current) · foreign-write
+- 2026-11-04 01:04 UTC · `browser-automation` s2 done (current) · foreign-write
+- 2026-11-04 01:15 UTC · `molly-banners` s5 done, → complete, note (current) · foreign-write
+- 2026-11-04 01:15 UTC · `plugin-lazy-load` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 01:15 UTC · `lenny-land-all` s1 done, s5 done, note (current) · foreign-write
+- 2026-11-04 01:15 UTC · `browser-automation` added (16 steps) (current) · foreign-write
+- 2026-11-04 01:15 UTC · `profile-switcher-widget` added (5 steps) (current) · foreign-write
+- 2026-11-04 01:15 UTC · `gizmo-companion` s19 done (current) · orchestrator

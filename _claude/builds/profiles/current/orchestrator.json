@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T00:59:04.857Z",
+ "updatedAt": "2026-11-04T01:19:21.148Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3740,7 +3740,7 @@
    "branch": "claude/gizmo-companion",
    "pr": "#296",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-03T23:57:12.826Z",
+   "updatedAt": "2026-11-04T01:15:50.561Z",
    "builtAt": "",
    "notes": [
     {
@@ -4100,8 +4100,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T01:15:50.561Z",
      "note": "",
      "uid": "st-mw1927q512l9n0"
     }
@@ -4220,7 +4220,7 @@
      "done": true,
      "doneAt": "2026-11-04T00:55:26.046Z",
      "note": "",
-     "uid": "st-mw1adfon08byz9"
+     "uid": "st-mw1an31y08kual"
     },
     {
      "id": "s2",
@@ -4238,7 +4238,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1adfon09n9wc"
+     "uid": "st-mw1an31y09ppg8"
     },
     {
      "id": "s3",
@@ -4256,7 +4256,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1adfon0acxc1"
+     "uid": "st-mw1an31y0ants3"
     },
     {
      "id": "s4",
@@ -4274,7 +4274,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1adfon0bjteu"
+     "uid": "st-mw1an31y0bn4qk"
     },
     {
      "id": "s5",
@@ -4292,7 +4292,7 @@
      "done": true,
      "doneAt": "2026-11-04T00:56:03.656Z",
      "note": "",
-     "uid": "st-mw1adfon0cl6wg"
+     "uid": "st-mw1an31y0c6l63"
     },
     {
      "id": "s6",
@@ -4310,7 +4310,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1adfon0djrrf"
+     "uid": "st-mw1an31y0dvaoi"
     },
     {
      "id": "s7",
@@ -4328,7 +4328,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1adfon0el0oz"
+     "uid": "st-mw1an31y0eizui"
     }
    ]
   },
@@ -4344,7 +4344,7 @@
    "branch": "claude/browser-automation",
    "pr": "",
    "createdAt": "2026-11-04T00:31:47.837Z",
-   "updatedAt": "2026-11-04T00:48:26.942Z",
+   "updatedAt": "2026-11-04T00:57:39.733Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -4381,8 +4381,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T00:57:39.733Z",
      "note": "",
      "uid": "st-mw1dt95p0i53rr"
     },
