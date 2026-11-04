@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 896,
- "updatedAt": "2026-11-04T19:10:20.906Z",
+ "rev": 906,
+ "updatedAt": "2026-11-04T19:27:34.763Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -81928,7 +81928,7 @@
      "note": "",
      "rev": 5,
      "createdAt": "2026-11-04T17:53:07.344Z",
-     "updatedAt": "2026-11-04T19:03:35.247Z"
+     "updatedAt": "2026-11-04T19:25:23.698Z"
     }
    ],
    "profiles": [
@@ -82208,7 +82208,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T18:45:40.326Z",
-   "updatedAt": "2026-11-04T19:01:49.865Z",
+   "updatedAt": "2026-11-04T19:25:26.545Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -82285,12 +82285,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T19:25:24.231Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T18:45:40.327Z",
-     "updatedAt": "2026-11-04T18:45:40.327Z"
+     "updatedAt": "2026-11-04T19:26:09.415Z"
     },
     {
      "id": "s4",
@@ -82307,12 +82307,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T19:25:25.476Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T18:45:40.327Z",
-     "updatedAt": "2026-11-04T18:45:40.327Z"
+     "updatedAt": "2026-11-04T19:26:09.415Z"
     },
     {
      "id": "s5",
@@ -82329,12 +82329,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T19:25:26.545Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T18:45:40.327Z",
-     "updatedAt": "2026-11-04T18:45:40.327Z"
+     "updatedAt": "2026-11-04T19:26:09.415Z"
     },
     {
      "id": "s6",
@@ -82477,7 +82477,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -82493,15 +82493,15 @@
    "title": "AmberX live audio",
    "category": "App (AmberX)",
    "detail": "AmberX streams both tracks (device output = Claude's TTS, mic = Brett) live to the console's Live sessions Watch live player in short frames on one session clock, while a watcher is connected or recording is on; still writes chunks for the archive. 'You're being watched' notice wired to stream state. New APK via CI + banner item. Android work is an approved exception to the Android hold (Brett asked).",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T19:08:27.526Z",
-   "updatedAt": "2026-11-04T19:08:27.527Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T19:27:34.689Z",
+   "builtAt": "2026-11-04T19:27:33.720Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -82533,12 +82533,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T19:14:20.358Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T19:08:27.528Z",
-     "updatedAt": "2026-11-04T19:08:27.528Z"
+     "updatedAt": "2026-11-04T19:14:20.446Z"
     },
     {
      "id": "s2",
@@ -82555,12 +82555,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T19:14:21.609Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T19:08:27.528Z",
-     "updatedAt": "2026-11-04T19:08:27.528Z"
+     "updatedAt": "2026-11-04T19:14:21.685Z"
     },
     {
      "id": "s3",
@@ -82577,12 +82577,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T19:24:37.704Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T19:08:27.528Z",
-     "updatedAt": "2026-11-04T19:08:27.528Z"
+     "updatedAt": "2026-11-04T19:24:37.765Z"
     },
     {
      "id": "s4",
@@ -82599,12 +82599,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T19:24:38.667Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T19:08:27.528Z",
-     "updatedAt": "2026-11-04T19:08:27.528Z"
+     "updatedAt": "2026-11-04T19:24:38.718Z"
     },
     {
      "id": "s5",
@@ -82621,12 +82621,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T19:26:10.153Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T19:08:27.528Z",
-     "updatedAt": "2026-11-04T19:08:27.528Z"
+     "updatedAt": "2026-11-04T19:26:10.224Z"
     },
     {
      "id": "s6",
@@ -82643,12 +82643,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T19:27:33.720Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T19:08:27.528Z",
-     "updatedAt": "2026-11-04T19:08:27.528Z"
+     "updatedAt": "2026-11-04T19:27:33.766Z"
     }
    ],
    "profiles": [
@@ -82659,7 +82659,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

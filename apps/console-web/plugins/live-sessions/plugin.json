@@ -175,7 +175,8 @@
     "mentions": [
       "_claude/memory/STATUS.md",
       "_claude/THREADS.md",
-      "apps/console-web/plugins/README.md"
+      "apps/console-web/plugins/README.md",
+      "apps/amberx-droid/README.md"
     ]
   },
   "help": "help.json",
