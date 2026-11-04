@@ -1,0 +1,29 @@
+/* Bugs board (bugs-board): layout only; controls come from the framework (Button, Chip, Switch, SelectField, …). */
+.axp-bb-muted { color: var(--fx-muted); }
+.axp-bb-pre { white-space: pre-wrap; }
+.axp-bb-bar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); }
+.axp-bb-group { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); }
+.axp-bb-group.is-over, .axp-bb-target.is-over { border-color: var(--fx-accent); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)); }
+.axp-bb-group__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); }
+.axp-bb-group__title { margin-right: auto; }
+.axp-bb-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axp-bb-row { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); }
+.axp-bb-row.is-over { border-top-color: var(--fx-accent); box-shadow: inset 0 calc(var(--fx-border-w) * 2) 0 var(--fx-accent); }
+.axp-bb-row.is-selected { border-color: var(--fx-accent); }
+.axp-bb-row__main { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); flex-wrap: wrap; min-width: 0; }
+.axp-bb-row__title { flex: 1 1 calc(var(--fx-space) * 30); min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: var(--fx-dens-gap-xs); padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.axp-bb-grip { display: inline-flex; align-items: center; justify-content: center; min-width: var(--fx-row-h); min-height: var(--fx-row-h); color: var(--fx-muted); cursor: grab; touch-action: none; user-select: none; }
+.axp-bb-grip:active { cursor: grabbing; color: var(--fx-accent); }
+.axp-bb-chip { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); }
+.axp-bb-edit { padding-top: var(--fx-dens-gap-sm); border-top: var(--fx-border-w) solid var(--fx-border); }
+.axp-bb-edit__row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md); }
+.axp-bb-edit__row > * { flex: 1 1 calc(var(--fx-space) * 20); }
+.axp-bb-edit__row > .fx-btn { flex: 0 0 auto; }
+.axp-bb-edit__acts { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); }
+.axp-bb-hist ul { margin: var(--fx-dens-gap-xs) 0 0; padding-left: var(--fx-dens-gap-xl); }
+.axp-bb-moves { margin: 0; padding-left: var(--fx-dens-gap-xl); display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axp-bb-targets { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); align-items: center; }
+.axp-bb-target { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface); }
+.axp-bb-ghost { position: fixed; left: 0; top: 0; z-index: 80; pointer-events: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); border-radius: var(--fx-radius-sm); background: var(--fx-accent); color: var(--fx-accent-text); box-shadow: var(--fx-shadow-sm); transform: translate(calc(var(--bb-x) * 1px + var(--fx-space)), calc(var(--bb-y) * 1px + var(--fx-space))); }
+.axp-bb-banner { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); white-space: nowrap; }
+.axp-bb-banner__main { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }

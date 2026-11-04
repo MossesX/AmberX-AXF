@@ -562,6 +562,10 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
 
     _register_claude_settings_tools(mcp)
 
+    # ------------------------------------------------------------------ confirmed bugs (Bugs board plugin, bugs@1)
+
+    _register_bugs_tools(mcp)
+
     # ------------------------------------------------------------------ session mirror (Terminal → sessions nav)
 
     if notes is not None:
@@ -660,6 +664,83 @@ def _register_claude_settings_tools(mcp: MCPServer) -> None:
         if not pairs:
             raise ToolError("invalid: send values as {key: value}")
         return await go("set", *pairs, "--by", by or "mcp")
+
+
+# ---------------------------------------------------------------------- confirmed bugs (bugs@1)
+
+BUGS_CLI = Path(__file__).resolve().parents[1] / "plugins" / "bugs-board" / "bugs.mjs"
+
+
+def _bugs(*args: str) -> dict[str, Any]:
+    """One bugs.mjs command (the same core the console board and the CLI use)."""
+    if not BUGS_CLI.exists():
+        return {"ok": False, "error": "the Bugs board plugin (bugs-board) is not installed"}
+    try:
+        p = subprocess.run(["node", str(BUGS_CLI), *args, "--json"], cwd=BUGS_CLI.parents[4], capture_output=True, text=True, timeout=90)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        return {"ok": False, "error": str(e)[:200]}
+    lines = p.stdout.strip().splitlines()
+    try:
+        return json.loads(lines[-1]) if lines else {"ok": False, "error": p.stderr.strip()[-400:] or "no output"}
+    except json.JSONDecodeError:
+        return {"ok": False, "error": (p.stderr or p.stdout).strip()[-400:]}
+
+
+def _register_bugs_tools(mcp: MCPServer) -> None:
+    async def go(*args: str) -> dict[str, Any]:
+        r = await anyio.to_thread.run_sync(lambda: _bugs(*args))
+        if not r.get("ok"):
+            raise ToolError(r.get("error") or "failed")
+        r.pop("ok", None)
+        return r
+
+    async def act(change: dict[str, Any], by: str) -> dict[str, Any]:
+        return await go("act", json.dumps(change), "--by", by or os.environ.get("AXF_AGENT") or "mcp")
+
+    @mcp.tool(annotations=READ)
+    async def bugs_list(status: str = "open", app: str = "") -> dict[str, Any]:
+        """The confirmed bugs board: every bug grouped by the build it is part of (with the build's live state:
+        running with agent and step x/y, queued with its place in the agent-slot line, built with PR, merged), then
+        Unassigned, Fixed, Won't fix. `status` open | all | fixed | wontfix; `app` filters by app."""
+        args = ["list", "--status", status]
+        if app:
+            args += ["--app", app]
+        return await go(*args)
+
+    @mcp.tool(annotations=WRITE)
+    async def bug_add(title: str, details: str = "", severity: str = "normal", app: str = "", area: str = "", tags: list[str] | None = None,
+                      files: list[str] | None = None, said: str = "", build: str = "", by: str = "") -> dict[str, Any]:
+        """Add a confirmed bug. `said` = Brett's exact words about it (verbatim). `build` = put it straight into a queued
+        or running build (the build's agent answers in the crew chat). Severity low | normal | high | urgent."""
+        return await act({"action": "add", "bug": {"title": title, "details": details, "severity": severity, "app": app, "area": area,
+                                                   "tags": tags or [], "files": files or [], "said": said, "build": build}}, by)
+
+    @mcp.tool(annotations=WRITE)
+    async def bug_update(bug: str, patch: dict[str, Any], by: str = "") -> dict[str, Any]:
+        """Change a bug: title, details, severity, app, area, tags, files, said, status (confirmed | in-build | fixed |
+        wontfix), fixedPr."""
+        return await act({"action": "update", "id": bug, "patch": patch}, by)
+
+    @mcp.tool(annotations=WRITE)
+    async def bug_move(bug: str, build: str, by: str = "") -> dict[str, Any]:
+        """Move a bug into a queued or running build ('-' = back to Unassigned). Adds a 'Fix bug' step and an addendum to
+        the build, tells its running session, and posts the handoff in the crew group chat: the agent accepts, or
+        bounces it and Boss offers it to the next best build (or asks Brett)."""
+        return await act({"action": "move", "id": bug, "build": build}, by)
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def bug_reorder(ids: list[str] | None = None, bug: str = "", before: str = "", by: str = "") -> dict[str, Any]:
+        """Board order (priority), top first: `ids` = the new order, or `bug` + `before` = put one bug above another
+        (before '' = to the bottom)."""
+        return await act({"action": "reorder", "ids": ids} if ids else {"action": "reorder", "id": bug, "before": before}, by)
+
+    @mcp.tool(annotations=WRITE)
+    async def bugs_optimize(apply: bool = False, by: str = "") -> dict[str, Any]:
+        """Auto-optimize (zero tokens): match each unassigned bug to the best queued or running build by app, area and
+        files (never into a finished or merging build, at most the per-build cap). apply=false = the preview only."""
+        if not apply:
+            return await go("optimize")
+        return await act({"action": "optimize"}, by)
 
 
 # ---------------------------------------------------------------------- control@1 tools (framework/spec/CONTROL.md)
