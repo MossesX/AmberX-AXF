@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 577,
- "updatedAt": "2026-11-04T00:50:30.844Z",
+ "rev": 594,
+ "updatedAt": "2026-11-04T01:46:59.655Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -53293,19 +53293,24 @@
    "title": "Scrollable menus that stay on screen",
    "category": "Framework > Menus",
    "detail": "Brett, Nov 3 2026 (voice): application menus need to be scrollable when they reach beyond the screen. Framework level: menubar dropdowns, submenus, context and overflow menus cap to the available viewport height (safe areas, banner, keyboard via visualViewport), scroll inside with fade hints, flip/shift before scrolling, submenus open left at the right edge. Tokens only. Agent: Janitor Joey.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/menu-scroll",
    "pr": "#268",
+   "mergedAt": "2026-11-04T01:22:37Z",
    "createdAt": "2026-11-03T17:56:44.297Z",
-   "updatedAt": "2026-11-03T18:16:10.379Z",
+   "updatedAt": "2026-11-04T01:43:43.665Z",
    "builtAt": "2026-11-03T18:16:08.260Z",
    "notes": [
     {
      "text": "Built by Janitor Joey (Opus). PR #268, UI Review r-20261103-2637fd91. menu-fit@1 engine + menuFit.ts; checks 14/14, browser 7/16 -> 16/16. Report _claude/builds/reports/menu-scroll.md",
      "at": "2026-11-03T18:16:09.646Z"
+    },
+    {
+     "text": "Reconciler: PR #268 merged",
+     "at": "2026-11-04T01:43:43.665Z"
     }
    ],
    "approvals": [],
@@ -53452,7 +53457,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -53468,14 +53473,15 @@
    "title": "Auto-land finished builds (zero-token merge pipeline)",
    "category": "",
    "detail": "Relaunch of stopped auto-land as auto-land-2 (Brett, Nov 3 2026, voice). Agent: Earl the Ear. Plain-script merge pipeline reusing the push banner batch merge; AI only for real conflicts / red CI needing code.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/auto-land-2",
    "pr": "#270",
+   "mergedAt": "2026-11-04T00:53:37Z",
    "createdAt": "2026-11-03T18:01:41.577Z",
-   "updatedAt": "2026-11-03T18:37:10.577Z",
+   "updatedAt": "2026-11-04T01:24:29.253Z",
    "builtAt": "2026-11-03T18:37:09.577Z",
    "notes": [
     {
@@ -53493,6 +53499,10 @@
     {
      "text": "All 8 steps done. PR #270 (claude/auto-land-2), UI Review r-20261103-6537ada7 waiting. Related: #267 main CI fix, MossesX/axHub#36 claude-sync hold. Report _claude/builds/reports/auto-land.md. Goes live on merge (cron axf-auto-land).",
      "at": "2026-11-03T18:37:10.577Z"
+    },
+    {
+     "text": "Reconciler: PR #270 merged",
+     "at": "2026-11-04T01:24:29.253Z"
     }
    ],
    "approvals": [],
@@ -53683,7 +53693,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -62037,7 +62047,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T21:50:21.573Z",
-     "updatedAt": "2026-11-04T00:35:17.941Z"
+     "updatedAt": "2026-11-04T00:55:05.748Z"
     }
    ],
    "profiles": [
@@ -62119,7 +62129,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T21:55:24.280Z",
-     "updatedAt": "2026-11-04T00:35:17.941Z"
+     "updatedAt": "2026-11-04T00:55:05.748Z"
     },
     {
      "id": "s2",
@@ -62141,7 +62151,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T21:55:24.280Z",
-     "updatedAt": "2026-11-04T00:35:17.941Z"
+     "updatedAt": "2026-11-04T00:55:05.748Z"
     },
     {
      "id": "s3",
@@ -62163,7 +62173,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T21:55:24.280Z",
-     "updatedAt": "2026-11-04T00:35:17.941Z"
+     "updatedAt": "2026-11-04T00:55:05.748Z"
     },
     {
      "id": "s4",
@@ -62185,7 +62195,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T21:55:24.280Z",
-     "updatedAt": "2026-11-04T00:35:17.941Z"
+     "updatedAt": "2026-11-04T00:55:05.748Z"
     },
     {
      "id": "s5",
@@ -62207,7 +62217,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T21:55:24.280Z",
-     "updatedAt": "2026-11-04T00:35:17.941Z"
+     "updatedAt": "2026-11-04T00:55:05.748Z"
     }
    ],
    "profiles": [
@@ -66681,7 +66691,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:04:42.487Z",
-     "updatedAt": "2026-11-04T00:10:47.037Z"
+     "updatedAt": "2026-11-04T00:55:05.748Z"
     },
     {
      "id": "s3",
@@ -66703,7 +66713,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:04:42.487Z",
-     "updatedAt": "2026-11-04T00:10:47.037Z"
+     "updatedAt": "2026-11-04T00:55:05.748Z"
     },
     {
      "id": "s4",
@@ -66747,7 +66757,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:04:42.487Z",
-     "updatedAt": "2026-11-04T00:35:17.941Z"
+     "updatedAt": "2026-11-04T01:15:19.859Z"
     }
    ],
    "profiles": [
@@ -66797,7 +66807,7 @@
    "branch": "claude/gizmo-companion",
    "pr": "#296",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-03T23:57:12.826Z",
+   "updatedAt": "2026-11-04T01:15:50.561Z",
    "builtAt": "",
    "notes": [
     {
@@ -66884,7 +66894,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-04T00:35:17.941Z"
+     "updatedAt": "2026-11-04T00:55:05.748Z"
     },
     {
      "id": "s4",
@@ -66906,7 +66916,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-04T00:35:17.941Z"
+     "updatedAt": "2026-11-04T00:55:05.748Z"
     },
     {
      "id": "s5",
@@ -66928,7 +66938,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-04T00:35:17.941Z"
+     "updatedAt": "2026-11-04T00:55:05.748Z"
     },
     {
      "id": "s6",
@@ -66950,7 +66960,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-04T00:35:17.941Z"
+     "updatedAt": "2026-11-04T00:55:05.748Z"
     },
     {
      "id": "s7",
@@ -66972,7 +66982,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-04T00:35:17.941Z"
+     "updatedAt": "2026-11-04T00:55:05.748Z"
     },
     {
      "id": "s8",
@@ -66994,7 +67004,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-04T00:35:17.941Z"
+     "updatedAt": "2026-11-04T00:55:05.748Z"
     },
     {
      "id": "s9",
@@ -67126,7 +67136,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-04T00:35:17.941Z"
+     "updatedAt": "2026-11-04T00:55:05.748Z"
     },
     {
      "id": "s15",
@@ -67148,7 +67158,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-04T00:35:17.941Z"
+     "updatedAt": "2026-11-04T00:55:05.748Z"
     },
     {
      "id": "s16",
@@ -67214,7 +67224,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-04T00:35:17.941Z"
+     "updatedAt": "2026-11-04T00:55:05.748Z"
     },
     {
      "id": "s19",
@@ -67231,12 +67241,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T01:15:50.561Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T22:18:50.824Z"
+     "updatedAt": "2026-11-04T01:25:34.264Z"
     }
    ],
    "profiles": [
@@ -67247,7 +67257,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -67298,11 +67308,16 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/plugin-lazy-load",
-   "pr": "",
+   "pr": "#298",
    "createdAt": "2026-11-03T22:55:16.843Z",
-   "updatedAt": "2026-11-04T00:41:46.533Z",
+   "updatedAt": "2026-11-04T01:24:29.253Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #298",
+     "at": "2026-11-04T01:24:29.253Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -67326,7 +67341,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:55:16.846Z",
-     "updatedAt": "2026-11-04T00:48:16.447Z"
+     "updatedAt": "2026-11-04T01:23:31.166Z"
     },
     {
      "id": "s2",
@@ -67348,7 +67363,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:55:16.846Z",
-     "updatedAt": "2026-11-04T00:48:16.447Z"
+     "updatedAt": "2026-11-04T01:23:31.166Z"
     },
     {
      "id": "s3",
@@ -67381,10 +67396,24 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-03T22:55:16.843Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw1ad3pr04dhfd": "2026-11-03T22:55:16.846Z",
+     "st-mw1ad3pr055ffm": "2026-11-03T22:55:16.846Z",
+     "st-mw1ad3pr06m09a": "2026-11-03T22:55:16.846Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-03T22:55:16.846Z",
    "rearranged": false,
@@ -67404,15 +67433,20 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T23:03:01.354Z",
-   "updatedAt": "2026-11-03T23:04:15.928Z",
+   "updatedAt": "2026-11-04T00:56:46.854Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "#270 auto-land merged (3caf0ee0) after two landing fixes (THREADS plugin references; UI Review read through the push banner's ui-review@1 route). #267 closed as superseded by #284. #251/#254 set to draft so auto-merge leaves them for Brett.",
+     "at": "2026-11-04T00:56:46.854Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mw1adfon08byz9",
+     "uid": "st-mw1an31y08kual",
      "title": "",
      "text": "Land #270 auto-land first",
      "model": "Opus",
@@ -67425,16 +67459,16 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T00:55:26.046Z",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-03T22:55:32.443Z",
-     "updatedAt": "2026-11-03T22:55:32.443Z"
+     "rev": 2,
+     "createdAt": "2026-11-03T23:03:01.355Z",
+     "updatedAt": "2026-11-04T00:55:27.531Z"
     },
     {
      "id": "s2",
-     "uid": "st-mw1adfon09n9wc",
+     "uid": "st-mw1an31y09ppg8",
      "title": "",
      "text": "Land #265-#269, #271-#277 oldest first (update from main, resolve, CI green, merge)",
      "model": "Opus",
@@ -67451,12 +67485,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-03T22:55:32.443Z",
-     "updatedAt": "2026-11-03T22:55:32.443Z"
+     "createdAt": "2026-11-03T23:03:01.355Z",
+     "updatedAt": "2026-11-03T23:03:01.355Z"
     },
     {
      "id": "s3",
-     "uid": "st-mw1adfon0acxc1",
+     "uid": "st-mw1an31y0ants3",
      "title": "",
      "text": "Land #280-#283, #285-#289",
      "model": "Opus",
@@ -67473,12 +67507,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-03T22:55:32.443Z",
-     "updatedAt": "2026-11-03T22:55:32.443Z"
+     "createdAt": "2026-11-03T23:03:01.355Z",
+     "updatedAt": "2026-11-03T23:03:01.355Z"
     },
     {
      "id": "s4",
-     "uid": "st-mw1adfon0bjteu",
+     "uid": "st-mw1an31y0bn4qk",
      "title": "",
      "text": "Land #290-#292 and #279",
      "model": "Opus",
@@ -67495,12 +67529,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-03T22:55:32.443Z",
-     "updatedAt": "2026-11-03T22:55:32.443Z"
+     "createdAt": "2026-11-03T23:03:01.355Z",
+     "updatedAt": "2026-11-03T23:03:01.355Z"
     },
     {
      "id": "s5",
-     "uid": "st-mw1adfon0cl6wg",
+     "uid": "st-mw1an31y0c6l63",
      "title": "",
      "text": "Close #267 as superseded by #284",
      "model": "Opus",
@@ -67513,16 +67547,16 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T00:56:03.656Z",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-03T22:55:32.443Z",
-     "updatedAt": "2026-11-03T22:55:32.443Z"
+     "rev": 2,
+     "createdAt": "2026-11-03T23:03:01.355Z",
+     "updatedAt": "2026-11-04T00:56:05.549Z"
     },
     {
      "id": "s6",
-     "uid": "st-mw1adfon0djrrf",
+     "uid": "st-mw1an31y0dvaoi",
      "title": "",
      "text": "Redeploy console, Molly, axHub web, demo; confirm up",
      "model": "Opus",
@@ -67539,12 +67573,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-03T22:55:32.443Z",
-     "updatedAt": "2026-11-03T22:55:32.443Z"
+     "createdAt": "2026-11-03T23:03:01.355Z",
+     "updatedAt": "2026-11-03T23:03:01.355Z"
     },
     {
      "id": "s7",
-     "uid": "st-mw1adfon0el0oz",
+     "uid": "st-mw1an31y0eizui",
      "title": "",
      "text": "Report, older-PR list for Brett, THREADS",
      "model": "Opus",
@@ -67561,8 +67595,8 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-03T22:55:32.443Z",
-     "updatedAt": "2026-11-03T22:55:32.443Z"
+     "createdAt": "2026-11-03T23:03:01.355Z",
+     "updatedAt": "2026-11-03T23:03:01.355Z"
     }
    ],
    "profiles": [
@@ -67573,12 +67607,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-03T22:55:32.443Z",
+   "defaultAt": "2026-11-03T23:03:01.355Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
@@ -67594,11 +67628,16 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/browser-automation",
-   "pr": "",
+   "pr": "#299",
    "createdAt": "2026-11-04T00:31:47.837Z",
-   "updatedAt": "2026-11-04T00:48:26.942Z",
+   "updatedAt": "2026-11-04T01:43:43.665Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #299; PR #299 names s1, s2, s3 done",
+     "at": "2026-11-04T01:43:43.665Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -67622,7 +67661,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:48:27.729Z"
+     "updatedAt": "2026-11-04T01:23:31.166Z"
     },
     {
      "id": "s2",
@@ -67639,12 +67678,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T00:57:39.733Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T01:23:31.166Z"
     },
     {
      "id": "s3",
@@ -67661,12 +67700,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-04T01:43:43.665Z",
+     "note": "PR #299 (claude/browser-automation)",
+     "rev": 3,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T01:43:43.665Z"
     },
     {
      "id": "s4",
@@ -67686,9 +67725,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s5",
@@ -67708,9 +67747,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s6",
@@ -67730,9 +67769,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s7",
@@ -67752,9 +67791,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s8",
@@ -67774,9 +67813,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s9",
@@ -67796,9 +67835,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s10",
@@ -67818,9 +67857,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s11",
@@ -67840,9 +67879,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s12",
@@ -67862,9 +67901,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s13",
@@ -67884,9 +67923,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s14",
@@ -67906,9 +67945,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s15",
@@ -67928,9 +67967,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     },
     {
      "id": "s16",
@@ -67950,9 +67989,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T00:31:48.444Z"
+     "updatedAt": "2026-11-04T00:52:17.957Z"
     }
    ],
    "profiles": [
@@ -67963,7 +68002,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -67979,14 +68018,14 @@
    "title": "Profile switcher widget (filter builds by profile, All profiles, attach to any toolbar or banner)",
    "category": "Builds",
    "detail": "What Brett said (verbatim, Nov 3 2026, voice): \"I need a plugin that makes a widget that can be attached to a toolbar or a banner or whatever, that lets you select their build package. Also, select something that combines all build profiles.\" Addendum 1: \"So basically it's like a filter. They're all shown everywhere, but only one of them is rendered. Basically make it a filter. Always just show everything in every build profile, but it just effectively filters to hide them.\" Addendum 2: \"That said, it's gonna act upon what's visible.\" Profiles are a view filter (multi-select, All = no filter) shared by every builds table; bulk actions act only on what is visible; the active profile stays the target for new builds. Assigned agent: Ping Paulie (no Polo card).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "voice",
    "pendingId": "",
    "branch": "claude/profile-switcher-widget",
    "pr": "",
    "createdAt": "2026-11-04T00:40:48.340Z",
-   "updatedAt": "2026-11-04T00:41:54.056Z",
+   "updatedAt": "2026-11-04T01:30:10.669Z",
    "builtAt": "",
    "notes": [
     {
@@ -68012,12 +68051,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T01:19:41.454Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T00:40:48.341Z",
-     "updatedAt": "2026-11-04T00:40:48.341Z"
+     "updatedAt": "2026-11-04T01:25:34.264Z"
     },
     {
      "id": "s2",
@@ -68106,6 +68145,72 @@
      "rev": 1,
      "createdAt": "2026-11-04T00:40:48.341Z",
      "updatedAt": "2026-11-04T00:40:48.341Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mw1g75cz01rkbl",
+     "title": "",
+     "text": "Adopt the profile filter in the remaining builds tables: Orchestrator view (needs an all-profiles projection), Pending, Queue, Plan, Tracker, Git status board, Crew, Home cards; existing bulk CLI/MCP commands (land-all, merge batch) take resolveFilter + profiles arg",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T01:38:36.950Z",
+     "updatedAt": "2026-11-04T01:38:38.435Z"
+    },
+    {
+     "id": "s7-6",
+     "uid": "st-mw1gdizs01mlwb",
+     "title": "",
+     "text": "Adopt the profile filter in the remaining builds tables: Orchestrator view (needs an all-profiles projection), Pending, Queue, Plan, Tracker, Git status board, Crew, Home cards; existing bulk CLI/MCP commands (land-all, merge batch) take resolveFilter + profiles arg",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T01:43:34.836Z",
+     "updatedAt": "2026-11-04T01:43:36.040Z"
+    },
+    {
+     "id": "s8-7",
+     "uid": "st-mw1g9jpk01cth4",
+     "title": "",
+     "text": "Adopt the profile filter in the remaining builds tables: Orchestrator view (needs an all-profiles projection), Pending, Queue, Plan, Tracker, Git status board, Crew, Home cards; existing bulk CLI/MCP commands (land-all, merge batch) take resolveFilter + profiles arg",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T01:40:29.937Z",
+     "updatedAt": "2026-11-04T01:40:30.344Z"
     }
    ],
    "profiles": [
@@ -68116,12 +68221,287 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 4,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "voice",
+    "planId": "",
+    "createdAt": "2026-11-04T00:40:48.340Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw1e4to606peb2": "2026-11-04T00:40:48.341Z",
+     "st-mw1e4to6078k75": "2026-11-04T00:40:48.341Z",
+     "st-mw1e4to608xvxc": "2026-11-04T00:40:48.341Z",
+     "st-mw1e4to609qwnz": "2026-11-04T00:40:48.341Z",
+     "st-mw1e4to60axzr8": "2026-11-04T00:40:48.341Z",
+     "st-mw1g9jpk01cth4": "2026-11-04T01:30:10.670Z"
+    }
+   },
+   "queue": null,
+   "defaultAt": "2026-11-04T00:40:48.341Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "main-area-tabs",
+   "title": "Main area tab group (tabs, positions, float and dock, split)",
+   "category": "Console > Shell",
+   "detail": "What Brett said (Nov 3 2026, voice, verbatim): \"Which build loads the windows in a tab group in the main area?\" -> none yet -> \"Build that now.\" Earlier (follow-ups.md): main-area tab group - persistent tabs, right-click for settings, position top/left/right/bottom, drag out to float, drop back to dock, built on the dock engine #245. Folds in 'detach anything in the main area' (pending plugin-floatable). Booked to Snap Sully (no Polo card).",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/main-area-tabs",
+   "pr": "",
+   "createdAt": "2026-11-04T01:34:59.457Z",
+   "updatedAt": "2026-11-04T01:34:59.457Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw1gdizs022vpa",
+     "title": "",
+     "text": "Main area becomes a tab group on the dock engine: every screen/plugin opens as a tab (icon, title, close, dirty dot); tabs persist across reloads; reopen closed tab; overflow scroll + list menu; middle-click / close others / close to the right",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T01:34:59.458Z",
+     "updatedAt": "2026-11-04T01:43:34.836Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw1gdizt03zq3k",
+     "title": "",
+     "text": "Tab position top / bottom / left stack / right stack (setting + right-click on the strip)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T01:34:59.458Z",
+     "updatedAt": "2026-11-04T01:43:34.836Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw1gdizt04vo1l",
+     "title": "",
+     "text": "Float and dock: drag a tab out to float (shared window layer, resize grips), drag a window title onto the strip to dock (drop indicator), Float / Dock in tab + window menus, split by dropping a tab on an edge (folds in plugin-floatable)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T01:34:59.458Z",
+     "updatedAt": "2026-11-04T01:43:34.836Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw1gdizt050cws",
+     "title": "",
+     "text": "Tab context menu (Settings, Float, Split, Pin, Duplicate, Close) + strip menu -> Tab group settings (position, size, icons, close buttons, max tabs, open as tab vs replace, restore on start, animation); in main Settings; REST + MCP + CLI (tabs_list, tab_open, tab_close, tab_float, tab_dock)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T01:34:59.458Z",
+     "updatedAt": "2026-11-04T01:43:34.836Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mw1gdizt06kdt7",
+     "title": "",
+     "text": "Phone: compact strip, swipe between tabs, long-press to drag; tests + type-check, phone + desktop screenshots, UI Review item, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T01:34:59.458Z",
+     "updatedAt": "2026-11-04T01:43:34.836Z"
+    },
+    {
+     "id": "s6-5",
+     "uid": "st-mw1g2jcf0607ap",
+     "title": "",
+     "text": "Main area becomes a tab group on the dock engine: every screen/plugin opens as a tab (icon, title, close, dirty dot); tabs persist across reloads; reopen closed tab; overflow scroll + list menu; middle-click / close others / close to the right",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T01:34:59.458Z",
+     "updatedAt": "2026-11-04T01:34:59.458Z"
+    },
+    {
+     "id": "s7-6",
+     "uid": "st-mw1g2jcf07jv6r",
+     "title": "",
+     "text": "Tab position top / bottom / left stack / right stack (setting + right-click on the strip)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T01:34:59.458Z",
+     "updatedAt": "2026-11-04T01:34:59.458Z"
+    },
+    {
+     "id": "s8-7",
+     "uid": "st-mw1g2jcf082lcu",
+     "title": "",
+     "text": "Float and dock: drag a tab out to float (shared window layer, resize grips), drag a window title onto the strip to dock (drop indicator), Float / Dock in tab + window menus, split by dropping a tab on an edge (folds in plugin-floatable)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T01:34:59.458Z",
+     "updatedAt": "2026-11-04T01:34:59.458Z"
+    },
+    {
+     "id": "s9-8",
+     "uid": "st-mw1g2jcf09qps3",
+     "title": "",
+     "text": "Tab context menu (Settings, Float, Split, Pin, Duplicate, Close) + strip menu -> Tab group settings (position, size, icons, close buttons, max tabs, open as tab vs replace, restore on start, animation); in main Settings; REST + MCP + CLI (tabs_list, tab_open, tab_close, tab_float, tab_dock)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T01:34:59.458Z",
+     "updatedAt": "2026-11-04T01:34:59.458Z"
+    },
+    {
+     "id": "s10-9",
+     "uid": "st-mw1g2jcf0a5sj5",
+     "title": "",
+     "text": "Phone: compact strip, swipe between tabs, long-press to drag; tests + type-check, phone + desktop screenshots, UI Review item, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T01:34:59.458Z",
+     "updatedAt": "2026-11-04T01:34:59.458Z"
+    }
+   ],
+   "profiles": [
+    "current"
+   ],
+   "order": {
+    "current": 20
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-04T00:40:48.341Z",
+   "defaultAt": "2026-11-04T01:34:59.458Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
