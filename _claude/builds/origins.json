@@ -421,6 +421,18 @@
    "from": "detail",
    "addenda": []
   },
+  "bugs-board": {
+   "said": "\"Do we have a confirmed bugs list?\" -> \"Yep, and I want to be able to drag and drop and arrange them. And show which builds they're part of. And if they're part of a build that's being run, and what line it is in the queue. And all that good stuff. I want to be able to move it from one build to another one.\" ... \"I need an auto-optimize switch, which will move the bugs to appropriate builds that are either in queue or in process.\"",
+   "at": "2026-11-04T00:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "build-manager-history": {
    "said": "every session on every machine reports builds to axHub (change-log@1 with build stats: ref, model, estimate, actual tokens/cost, status, heartbeat, surface, host, areas); Build manager shows them live, adds a Built history (cost + time by model/week), a search bar, and a context-menu Start build now (dependency closure, overlap guard, axHub vps.run headless Claude Code, verification). Backfill of everything already built. Branch feat/build-manager-history.",
    "at": "2026-10-21",
@@ -1307,6 +1319,18 @@
    "from": "detail",
    "addenda": []
   },
+  "requests-ledger": {
+   "said": "I need a way to see all the little things I've asked for, like a list of all these things I've asked for, and then when I open it up, it expands into a row. I need to be able to see verbatim what I said that initiated it. And where it is in line, and what its status is, and all that stuff. So I need a way to view every single little thing that I've asked for in a list that expands to all its information regarding its list and the queue, or whatever list it's in, or whatever its status is. I need a hook to access every piece of information about that particular request.",
+   "at": "2026-11-04T00:00:00.000Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "screens-compact": {
    "said": "'More compact screens' after app-compact (PR #178). Per-screen: replace rows/walls of buttons and filter chips with one dropdown or a ⋯ menu, shorten page descriptions, tighten lists. Profile: Angel. Web only.",
    "at": "2026-10-30",
@@ -1611,6 +1635,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "urgent-land-lazy-loader": {
+   "said": "Move it to next... start it right away.",
+   "at": "2026-11-04T12:29:55.129Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "veto-everywhere": {

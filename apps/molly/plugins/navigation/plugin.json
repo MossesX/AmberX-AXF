@@ -1,0 +1,40 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.molly.navigation",
+  "name": "Navigation",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Molly's navigation menu: each app (Console, axHub, AmberX and any app added later) opens a sub menu with that app's own pages that slides open; its own settings interface for the theme, colours, fonts, icons, density, width, animation, behaviour and the order of the apps (nav-style@1, hot-swappable presets, live preview, reset).",
+  "targets": ["molly"],
+  "provides": ["settings-tab:navigation", "dialog:navigation.settings"],
+  "scopes": [],
+  "enabledByDefault": true,
+  "optional": ["axf.xlayout@1"],
+  "banner": false,
+  "tabable": false,
+  "uiEditor": ["style"],
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/navigation",
+    "env": [],
+    "mentions": ["_claude/memory/STATUS.md", "apps/molly/README.md"]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "id": "get", "title": "Read the navigation settings", "description": "Every nav-style field in force (the preset with the changes on top). Same values as control@1: axf token nav list.", "action": "navigation.get", "readOnly": true, "output": "nav-style@1 data" },
+      { "id": "set", "title": "Change one navigation setting", "description": "Set one nav-style field, e.g. animation.kind push. Same as axf token nav set <path> <value>.", "action": "navigation.set", "input": { "type": "object", "properties": { "path": { "type": "string" }, "value": { "type": ["string", "number", "boolean"] } }, "required": ["path", "value"] } },
+      { "id": "reset", "title": "Reset the navigation settings", "description": "Drops every change, back to the preset.", "action": "navigation.reset" },
+      { "id": "preset", "title": "Pick a navigation preset", "description": "Hot-swaps the nav-style asset (standard, glide, accordion, soft-fade, push, still).", "action": "navigation.preset", "input": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"] } },
+      { "id": "open", "title": "Open a navigation item", "description": "Opens a page: an app (console) or one of its pages (console/nav:builds), inside the app's frame, and slides its sub menu open.", "action": "navigation.open", "input": { "type": "object", "properties": { "view": { "type": "string" } }, "required": ["view"] } },
+      { "id": "settings", "title": "Open Navigation settings", "action": "navigation.settings" }
+    ],
+    "noReads": "no data folder: the settings are look settings on axHub (axf.tokens.nav) and per-device state"
+  },
+  "builtWith": { "model": "opus", "builtAt": "2026-11-03", "branch": "claude/molly-nav-submenus" },
+  "help": "help.json",
+  "opens": "dialog"
+}

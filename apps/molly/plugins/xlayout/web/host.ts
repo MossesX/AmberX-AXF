@@ -25,6 +25,8 @@ const MERGED = `${PLUGIN_ID}.merged`;
 export const RUN_ACTION = 'xlayout.run';
 /** Context targets for a right-click inside an app: `xl.<app>.<the app's target>`. */
 export const ctxTarget = (app: string, target: string) => `xl.${app}.${target}`;
+/** The nav section the apps' sub menus are contributed as (it joins the nav-menu asset's own "Apps" section by label). */
+const APPS_NAV = 'xlayout.nav.apps';
 const badgeName = (nsid: string) => `xlayout.${nsid.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').toLowerCase()}`;
 
 type Listener = () => void;
@@ -50,6 +52,8 @@ export class ChromeHost {
     const onMessage = (e: MessageEvent) => this.receive(e);
     window.addEventListener('message', onMessage);
     this.off.push(() => window.removeEventListener('message', onMessage));
+    // the nav started or stopped drawing sub menus (the nav-style asset or Molly's nav-menu changed): fold again
+    this.off.push(this.rt.subscribe(() => { if (!!this.rt.navStyleData() !== this.subMenus && this.bundles.size) this.apply(); }));
     // Molly's view moved to one of an app's pages: open that page in the app
     let last = this.rt.getState().view;
     this.off.push(this.rt.subscribe(() => {
@@ -208,7 +212,29 @@ export class ChromeHost {
     // navigation: a section per app; each entry is a Molly view of that app's page
     const views: Record<string, { title: string; icon: string }> = {};
     const navIds = new Set<string>();
-    if (merged('nav-menu')) for (const s of u.nav) {
+    // a nav with sub menus (nav-style@1, Molly's nav-menu opts in): each app's pages hang under that app's own entry
+    // and slide open from it; its labelled sections become groups inside (nested), one section is shown flat
+    this.subMenus = !!this.rt.navStyleData();
+    if (merged('nav-menu') && this.subMenus) {
+      // each app's own sections as it sent them (the merged model folds them into one), so their labels survive
+      const byApp = new Map<string, NavItem[]>();
+      for (const [app, b] of this.bundles) {
+        const toItem = (it: ChromeBundle['nav'][number]['items'][number]): NavItem => {
+          const view = `${app}/${it.id}`;
+          views[view] = { title: it.label, icon: it.icon ?? 'box' };
+          const nav: NavItem = { id: `xl.${app}:${it.id}`, label: it.label, icon: it.icon ?? 'box', view };
+          if (it.badge) { const bn = badgeName(`${app}:${it.id}`); this.rt.setBadge(bn, it.badge); badges.add(bn); nav.badge = bn; }
+          return nav;
+        };
+        const secs = b.nav.filter((x) => x.items.length);
+        const flat = secs.length === 1;
+        const kids = secs.flatMap((x, i) => (flat || !x.label ? x.items.map(toItem) : [{ id: `xl.${app}.section-${i}`, label: x.label, icon: 'folder', view: '', items: x.items.map(toItem) }]));
+        if (kids.length) byApp.set(app, kids);
+      }
+      const items: NavItem[] = order.map((id) => MOLLY_APPS.find((a) => a.id === id)).filter((a): a is MollyApp => !!a && byApp.has(a.id))
+        .map((a) => ({ id: a.id, label: a.label, icon: a.icon, view: a.id, items: byApp.get(a.id)! }));
+      if (items.length) { navIds.add(APPS_NAV); this.rt.setNavSection({ id: APPS_NAV, label: 'Apps', items }); }
+    } else if (merged('nav-menu')) for (const s of u.nav) {
       if (!s.app) continue;
       const items: NavItem[] = s.items.map((it) => {
         const own = it.id.slice(s.app!.length + 1);
@@ -241,6 +267,9 @@ export class ChromeHost {
     this.pushedBadges = badges;
     this.changed();
   }
+
+  /** Is the nav drawing sub menus (nav-style@1)? Re-folded when that changes. */
+  private subMenus = false;
 
   /** The Molly views of the apps' pages (`<app>/<item>`), for molly/host.ts. */
   navViews: Record<string, { title: string; icon: string }> = {};

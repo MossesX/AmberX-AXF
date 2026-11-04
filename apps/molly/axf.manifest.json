@@ -23,6 +23,7 @@
     "app-menu": "molly",
     "toolbar": "molly",
     "nav-menu": "molly",
+    "nav-style": "standard",
     "context-menu": "compact-classic",
     "tab-group": "underline",
     "dialog": "centered-modal",

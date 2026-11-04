@@ -4,7 +4,7 @@
   "id": "molly",
   "name": "Molly navigation",
   "version": "0.1.0",
-  "description": "Molly: its start page, the three apps it holds, account and settings.",
+  "description": "Molly: its start page, the three apps it holds (each opens a sub menu with that app's own pages), account and settings.",
   "author": "AmberX AXF",
   "tags": [
     "molly"
@@ -64,6 +64,7 @@
           }
         ]
       }
-    ]
+    ],
+    "navStyle": true
   }
 }
