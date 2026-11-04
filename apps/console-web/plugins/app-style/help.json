@@ -1,0 +1,18 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "app-style-help",
+  "name": "App style help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the App style settings tab (help@1).",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:app-style",
+    "entries": [
+      { "target": "app-style-table", "title": "Every app's style", "text": "Each app's design and colours: inherited from axHub, or its own (overriding axHub) with axHub's value beside it. Change an app's own from its Settings → Appearance → axHub style." },
+      { "target": "app-style-reload", "title": "Reload from axHub", "text": "Makes every open app re-read axHub's look now. Overrides stay." },
+      { "target": "app-style-follow", "title": "Follow axHub", "text": "Turns this app's override off, so it shows axHub's design or colours again." }
+    ]
+  }
+}

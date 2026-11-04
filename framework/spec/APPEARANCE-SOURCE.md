@@ -173,3 +173,32 @@ Security: the document is not an injection path (ids validated against the app's
 unknown fields dropped, size-capped, `uac-policy` excluded, the hub refuses non-JSON and oversized bodies); hub down
 opens nothing (the app shows a card and nothing else); no secrets anywhere (credentials are the browser's cookie or
 the app's own store).
+
+## App style override (Nov 3 2026, build app-style-override)
+
+Brett: "Put a button in each app's settings to override axHub's style, in design and colors." … "And the hook will
+reload axHub, and you can also save design back to axHub." This refines the Nov 1 rule: axHub's look stays the
+**default** of every app and every app follows it live, but an app may now keep its own **design** (style theme and
+its token sets) and/or **colours** (colour theme and its token set). Everything else in the look (layout, spacing,
+hidden chrome, banner looks…) is still shared as before.
+
+Rules: `core/engines/app-style.mjs` (app-style@1) over the generic `core/engines/inherit.mjs` (inherit@1, also for nav
+menus and add-ons). Where it lives: the same document, one look setting per app,
+`settings["axf.appearance.app.<app id>"] = { $axf: "app-style@1", design?: true, colors?: true, own: { slots, keys } }`,
+so an app's choice follows it to every device and the console can read and change it.
+
+- **Settings → Appearance → axHub style** (every app on the settings library): *Override axHub design* and *Override
+  axHub colours*. Off = "Inherited from axHub" with axHub's theme; on = "Overriding axHub" with axHub's value beside
+  the app's. Picking a style / colour theme or a design package, or editing a style / colour token, while inheriting
+  switches that part on by itself (toast + note). **Reset to axHub** (both parts follow axHub again).
+- **Reload from axHub**: re-read axHub's look now (overrides kept), or with reset. Actions `appearance.axhub.reload`,
+  `appearance.axhub.reload-reset`, `appearance.axhub.reset`, `appearance.axhub.override:<part>[:on|off]`, droppable on
+  any toolbar or menu.
+- **Save to axHub…**: a dialog picks design, colours or both and lists the apps that change (every app inheriting
+  them); the owner's tap writes the app's values as axHub's (themes also as the design package's overrides, so a
+  loaded package doesn't beat them) after keeping axHub's current ones in `axf.appearance.history` (newest five).
+  **Restore previous axHub style** takes the newest back. Action `appearance.axhub.save` only opens the dialog.
+- axHub's own web app (`axhub-web`) is the style source: it has no override switches; its picks are axHub's look.
+- The palette (for axHub's own pages) is pushed only while an app's colours inherit.
+- Console: plugin `app-style` (REST `/api/plugins/app-style/*`, MCP `app_style_get | _override | _reload |
+  _save_to_axhub | _restore`, CLI `axf app-style …`); save and restore only from Brett's own signed-in click.

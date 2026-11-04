@@ -12,9 +12,9 @@
 .axf-tc-h { margin: 0; font-size: var(--fx-font-size); }
 
 /* Veto pass banner (web/pass.tsx): layout only; the chips' look is the banner's and the framework buttons'. */
-.axp-pass-banner { --axf-banner-tone: var(--fx-info); display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0; flex-wrap: nowrap }
+.axp-pass-banner { --axf-banner-tone: var(--fx-banner-info); display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0; flex-wrap: nowrap }
 .axp-pass-banner.is-ask { --axf-banner-tone: var(--fx-accent) }
-.axp-pass-banner.is-warn { --axf-banner-tone: var(--fx-warning) }
+.axp-pass-banner.is-warn { --axf-banner-tone: var(--fx-banner-warning) }
 .axp-pass-banner__icon { display: inline-flex; flex: none; color: var(--axf-banner-tone) }
 .axp-pass-banner__main { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0; overflow-x: auto; scroll-snap-type: x proximity }
 .axp-pass-chip { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); white-space: nowrap; flex: none; scroll-snap-align: start; padding-inline: var(--fx-dens-gap-sm); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md) }

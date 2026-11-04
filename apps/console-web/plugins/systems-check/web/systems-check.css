@@ -1,6 +1,6 @@
 /* Systems check plugin (banner, dialog, settings). Theme tokens only, axp-systems-check prefix. */
-.axp-systems-check-banner { --axf-banner-tone: var(--fx-warning); display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
-.axp-systems-check-banner.is-error { --axf-banner-tone: var(--fx-danger) }
+.axp-systems-check-banner { --axf-banner-tone: var(--fx-banner-warning); display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+.axp-systems-check-banner.is-error { --axf-banner-tone: var(--fx-banner-error) }
 .axp-systems-check-banner__row, .axp-systems-check-banner > .axp-systems-check-banner__text { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); flex-wrap: wrap }
 .axp-systems-check-banner.is-warn:not(:has(.axp-systems-check-banner__row)) { flex-direction: row; align-items: center; flex-wrap: wrap }
 .axp-systems-check-banner__text { all: unset; flex: 1; min-width: 0; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md); font-weight: 600; cursor: pointer }
@@ -67,7 +67,7 @@
 .axp-systems-check-prompt__actions { border-top: var(--fx-border-w) solid var(--fx-border); padding-top: var(--fx-dens-gap-xl) }
 @media (prefers-reduced-motion: reduce) { .axp-systems-check-run.is-waiting { animation: none } }
 .axp-systems-check-bad { color: var(--fx-danger) }
-.axp-systems-check-new { --axf-banner-tone: var(--fx-accent) }
+.axp-systems-check-new { --axf-banner-tone: var(--fx-banner-info) }
 .axp-systems-check-new__body { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); padding-top: var(--fx-dens-gap-md); border-top: var(--fx-border-w) solid var(--fx-border); max-height: 60vh; overflow: auto }
 .axp-systems-check-new__summary { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); background: var(--fx-surface) }
 .axp-systems-check-new__list { margin: 0; padding-left: var(--fx-dens-gap-2xl); display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); font-size: var(--fx-type-root-md); overflow-wrap: anywhere }

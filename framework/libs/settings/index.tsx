@@ -19,6 +19,7 @@ import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSe
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
+import { APP_STYLE_CSS, APP_STYLE_PANEL_ID, APP_STYLE_SAVE_DIALOG, AppStylePanel, SaveToAxhubDialog, registerAppStyleActions, useStyleNote } from './appstyle';
 
 export const SETTINGS_LIBRARY_ID = 'ai.amberx.axf.settings';
 const VIEW = 'settings';
@@ -590,6 +591,8 @@ function LookPickerPanel() {
   const designAsset = design ? rt.registry.get('design-package', design) : undefined;
   const overrides = rt.designOverrides();
   const [confirm, setConfirm] = useState(false);
+  const designNote = useStyleNote('design');
+  const colourNote = useStyleNote('colors');
   const row = (label: string, hint: string, value: string, list: { id: string; name: string }[], onPick: (id: string) => void) => (
     <div className="axf-settings__row">
       <div className="axf-settings__label"><span>{label}</span>{hint && <span className="fx-muted axf-settings__hint">{hint}</span>}</div>
@@ -604,11 +607,11 @@ function LookPickerPanel() {
   return (
     <div className="axf-settings__rows">
       <p className="fx-muted axf-settings__desc" style={{ margin: 0 }}>
-        {designAsset ? designLookLabel(designAsset.name, overrides) : 'No design theme loaded.'} · from axHub, the same in every app.
+        {designAsset ? designLookLabel(designAsset.name, overrides) : 'No design theme loaded.'} · {designNote || colourNote ? 'axHub sets the default; this app can keep its own design or colours (axHub style, below).' : 'from axHub, the same in every app.'}
       </p>
       {row('Design theme', 'Sets the style and colour theme together. Picking one clears any change below.', design, designs, (id) => rt.applyDesignPackage(id))}
-      {row('Style theme', overrides['style-theme'] ? 'Changed from the design theme.' : designAsset ? 'From the design theme.' : '', st.active['style-theme' as AssetType] ?? '', styles, (id) => rt.swap('style-theme' as AssetType, id))}
-      {row('Colour theme', overrides['color-theme'] ? 'Changed from the design theme.' : designAsset ? 'From the design theme.' : '', st.active['color-theme' as AssetType] ?? '', colours, (id) => rt.swap('color-theme' as AssetType, id))}
+      {row('Style theme', designNote || (overrides['style-theme'] ? 'Changed from the design theme.' : designAsset ? 'From the design theme.' : ''), st.active['style-theme' as AssetType] ?? '', styles, (id) => rt.swap('style-theme' as AssetType, id))}
+      {row('Colour theme', colourNote || (overrides['color-theme'] ? 'Changed from the design theme.' : designAsset ? 'From the design theme.' : ''), st.active['color-theme' as AssetType] ?? '', colours, (id) => rt.swap('color-theme' as AssetType, id))}
       <div className="axf-settings__row">
         <div className="axf-settings__label"><span>Default look</span></div>
         <div className="axf-settings__control"><Button size="sm" tone="quiet" disabled={locked} onClick={() => { if (!confirm) { setConfirm(true); setTimeout(() => setConfirm(false), 4000); return; } setConfirm(false); rt.restoreDefaultAppearance(); }}>{confirm ? 'Tap again to restore' : 'Restore'}</Button></div>
@@ -667,10 +670,12 @@ function TabBody({ id, all = false }: { id: string; all?: boolean }) {
   // Settings → Appearance: the AmberX Design Package picker on top, everything else in one collapsible container
   const design = id === 'appearance' && !all ? panels.find((p) => p.id === DESIGN_PANEL_ID) : undefined;
   const lock = design ? panels.find((p) => p.id === LOCK_PANEL_ID) : undefined;
-  const items = design ? ordered(panels.filter((p) => p !== design && p !== lock), groups) : ordered(panels, groups);
+  const axhub = design ? panels.find((p) => p.id === APP_STYLE_PANEL_ID) : undefined;
+  const items = design ? ordered(panels.filter((p) => p !== design && p !== lock && p !== axhub), groups) : ordered(panels, groups);
   const shown = design ? (
     <>
       {lock && panelNode(lock, 'lock')}
+      {axhub && panelNode(axhub, 'cloud')}
       {panelNode(design, 'palette')}
       {items.length > 0 && <FlatSection anchor="settings-panel:axf.appearance.rest" title="Everything else" icon="sliders" collapsible defaultOpen={false} className="axf-settings__nest"><div className="axf-settings__nested">{items}</div></FlatSection>}
     </>
@@ -837,7 +842,7 @@ function injectStyles(): void {
   if (!doc || doc.getElementById('axf-settings-css')) return;
   const el = doc.createElement('style');
   el.id = 'axf-settings-css';
-  el.textContent = CSS + LEVELS_CSS;
+  el.textContent = CSS + LEVELS_CSS + APP_STYLE_CSS;
   doc.head.appendChild(el);
 }
 
@@ -859,6 +864,7 @@ export const library: AxfWebLibrary = {
     rt.settings.onChange('axf.display.fontScale', () => applyDisplay(rt));
     rt.settings.onChange('axf.display.animations', () => applyDisplay(rt));
     rt.actions.register('app.settings', () => rt.navigate(VIEW), { label: 'Settings' });
+    registerAppStyleActions(rt); // Reload from axHub, Reset to axHub, Save to axHub… (droppable on any toolbar or menu)
     // The level toolbar's own menu and actions (Brett, Oct 28 2026: default on, hideable from its menu or the setting).
     rt.actions.register('settings.levelbar', ([v]) => rt.settings.set(SETTINGS_LEVEL_BAR_KEY, v === 'on' ? true : v === 'off' ? false : rt.settings.get(SETTINGS_LEVEL_BAR_KEY) === false), { label: 'Show or hide the settings level toolbar', params: true });
     rt.actions.register('settings.level', ([l]) => { const lv = settingsLevel(settingsUi(rt), l); if (l) rt.settings.set(SETTINGS_LEVEL_KEY, lv); }, { label: 'Pick the settings level', params: true });
@@ -897,6 +903,7 @@ export const library: AxfWebLibrary = {
   dialogs: {
     [TAB_DIALOG]: { title: 'Settings', icon: 'settings', searchable: false, render: (p: Record<string, unknown>) => <TabDialog id={String(p.tab ?? '')} /> },
     [LEVEL_EDITOR_DIALOG]: { title: 'Settings levels', icon: 'sliders', searchable: true, render: () => <LevelEditor /> },
+    [APP_STYLE_SAVE_DIALOG]: { title: 'Save to axHub', icon: 'upload', searchable: true, render: (p: Record<string, unknown>) => <SaveToAxhubDialog parts={typeof p.parts === 'string' ? p.parts : undefined} /> },
   },
   settingsTabs: Object.values(SETTINGS_TABS),
   settings: [
@@ -931,6 +938,7 @@ export const library: AxfWebLibrary = {
     { id: 'axf.account.role', tab: 'account', title: 'Role', icon: 'shield', order: 10, render: () => <RolePanel /> },
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
     { id: DESIGN_PANEL_ID, tab: 'appearance', title: 'Look', icon: 'palette', order: 0, render: () => <LookPickerPanel /> },
+    { id: APP_STYLE_PANEL_ID, tab: 'appearance', title: 'axHub style', icon: 'cloud', order: 1, render: () => <AppStylePanel /> },
     { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
     { id: 'axf.banners', tab: 'banners', title: 'Every banner', icon: 'bell', order: 10, render: () => <BannerSettingsPanel /> },
     { id: 'axf.about', tab: 'about', title: 'About', icon: 'info', order: 10, render: () => <AboutPanel /> },

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T01:50:41.461Z",
+ "updatedAt": "2026-11-04T02:47:11.052Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4432,14 +4432,15 @@
    "title": "UI Review shows its pictures again",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-review-shots",
    "pr": "#277",
+   "mergedAt": "2026-11-04T02:12:59Z",
    "createdAt": "2026-11-03T19:09:04.730Z",
-   "updatedAt": "2026-11-03T19:56:34.846Z",
+   "updatedAt": "2026-11-04T02:26:33.241Z",
    "builtAt": "2026-11-03T19:56:34.846Z",
    "notes": [
     {
@@ -4457,6 +4458,10 @@
     {
      "text": "PR #277; UI Review r-20261103-17ef4a40 (group 'ui-review-shots - Nov 3 7:50 PM'); report _claude/builds/reports/ui-review-shots.md. Also fixed: phone zero-width preview (always-true :not([data-fx-narrow]) selector from layout-adopt).",
      "at": "2026-11-03T19:56:12.304Z"
+    },
+    {
+     "text": "Reconciler: PR #277 merged",
+     "at": "2026-11-04T02:26:33.241Z"
     }
    ],
    "approvals": [],

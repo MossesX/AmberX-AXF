@@ -81,8 +81,9 @@ button.axp-build-manager__head { all: unset; box-sizing: border-box; width: 100%
 
 /* banner (after the Activity banner) */
 .axp-build-manager-banner { display: flex; align-items: center; gap: var(--fx-dens-gap-md) }
-.axp-build-manager-banner.is-done { --axf-banner-tone: var(--fx-success) }
-.axp-build-manager-banner.is-failed { --axf-banner-tone: var(--fx-danger) }
+.axp-build-manager-banner { --axf-banner-tone: var(--fx-banner-build) }
+.axp-build-manager-banner.is-done { --axf-banner-tone: var(--fx-banner-success) }
+.axp-build-manager-banner.is-failed { --axf-banner-tone: var(--fx-banner-error) }
 button.axp-build-manager-banner__main { all: unset; box-sizing: border-box; flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--fx-dens-gap-lg); cursor: pointer }
 .axp-build-manager-banner__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
 .axp-build-manager-banner__text > strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }

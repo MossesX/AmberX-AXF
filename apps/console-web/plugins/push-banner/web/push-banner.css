@@ -30,7 +30,8 @@ a.axp-push-banner__name:hover { text-decoration: underline }
 .axp-push-banner__foot { display: flex; align-items: center; flex-wrap: wrap; gap: var(--fx-dens-gap-md) }
 .axp-push-banner__min { margin-left: auto }
 /* pull requests as entries, grouped by what's ready (Oct 22 2026) */
-.axp-push-banner.is-ready { --axf-banner-tone: var(--fx-success) }
+.axp-push-banner { --axf-banner-tone: var(--fx-banner-merge) }
+.axp-push-banner.is-ready { --axf-banner-tone: var(--fx-banner-success) }
 .axp-push-banner.is-ready .axp-push-banner__icon { color: var(--fx-success) }
 .axp-push-banner__group { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
 .axp-push-banner__group-title { margin: 0; font-size: var(--fx-type-root-xs); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--fx-muted) }

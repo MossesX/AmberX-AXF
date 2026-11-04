@@ -28,7 +28,15 @@
       "warning": "#fdb022",
       "info": "#53b1fd",
       "focus": "#8b93ff",
-      "shadow": "rgba(0,0,0,0.45)"
+      "shadow": "rgba(0,0,0,0.45)",
+      "bannerInfo": "#53b1fd",
+      "bannerSuccess": "#47cd89",
+      "bannerWarning": "#fdb022",
+      "bannerError": "#f97066",
+      "bannerBuild": "#8b93ff",
+      "bannerMerge": "#d374e7",
+      "bannerAi": "#e774b7",
+      "bannerNeutral": "#9a9ea9"
     }
   }
 }

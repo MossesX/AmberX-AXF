@@ -161,9 +161,14 @@ export type ColorToken =
   | 'accent' | 'accentText' | 'accentSoft' | 'danger' | 'success' | 'warning'
   | 'info' | 'focus' | 'shadow';
 
+/** Per-banner-type colours (optional; the theme engine derives any missing one from the status colours). */
+export type BannerToken =
+  | 'bannerInfo' | 'bannerSuccess' | 'bannerWarning' | 'bannerError'
+  | 'bannerBuild' | 'bannerMerge' | 'bannerAi' | 'bannerNeutral';
+
 export interface ColorThemeData {
   scheme: 'light' | 'dark';
-  tokens: Record<ColorToken, string>;
+  tokens: Record<ColorToken, string> & Partial<Record<BannerToken, string>>;
 }
 
 export interface StyleThemeData {

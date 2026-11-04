@@ -35,6 +35,7 @@ import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern
 import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
 import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, resolveInterface, scopeAttrs, scopeSheet, scopeVarsCss, type InterfaceData, type ResolvedInterface } from './engines/interface';
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceChange, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
+import { APP_STYLE_HISTORY_KEY, APP_STYLE_PARTS, appStyleKey, appStyleView, emptyLookChange, filterLookChange, heldKey, heldSlot, hubStyleValues, isStyleSource, normalizeAppStyle, restorePreviousChange, saveToHubChange, serializeAppStyle, styleHistory, withPartOverride, type AppStyle, type AppStylePart, type AppStyleView, type AppStyleHistoryEntry } from './engines/app-style.mjs';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpIndex, helpTarget, introFor, introToShow, markSeen, resolveHelp, type HelpDescriptor, type HelpEntry, type HelpIndex, type HelpIntro } from './engines/help';
 import { Diagnostics } from './diagnostics';
 import { OutputTerminal } from './terminal';
@@ -489,6 +490,8 @@ export class AxfRuntime {
     this.lastAppearance = doc;
     let retired: string[] = [];
     const r = resolveAppearance(doc, (t, id) => this.registry.has(t as AssetType, id));
+    // This app's own design / colours (app-style@1): the parts it overrides keep its values, never axHub's.
+    const style = doc?.settings ? normalizeAppStyle(doc.settings[appStyleKey(this.manifest.app.id)]) : this.appStyle();
     this.applyingAppearance = true;
     try {
       const active = { ...this.state.active };
@@ -514,9 +517,12 @@ export class AxfRuntime {
         const shared = Object.fromEntries(Object.entries(doc.settings).filter(([k]) => !isRetiredLookSetting(k)));
         const saved = this.settings.savedValues();
         for (const [k, v] of Object.entries(shared)) {
+          if (heldKey(style, k)) continue;
           if (isAppearanceSetting(k) && JSON.stringify(saved[k]) !== JSON.stringify(v)) this.settings.set(k, v as SettingValue);
         }
-        for (const k of Object.keys(saved)) if (isAppearanceSetting(k) && !Object.hasOwn(shared, k)) this.settings.clear(k);
+        for (const k of Object.keys(saved)) if (isAppearanceSetting(k) && !heldKey(style, k) && !Object.hasOwn(shared, k)) this.settings.clear(k);
+        // the overridden token sets: this app's own values (saved with its choice on axHub, so every device agrees)
+        for (const [k, v] of Object.entries(style.own.keys)) if (heldKey(style, k) && JSON.stringify(saved[k]) !== JSON.stringify(v)) this.settings.set(k, v as SettingValue);
         retired = Object.keys(doc.settings).filter(isRetiredLookSetting);
       }
       // A loaded design package decides the style and colour theme; only a recorded override beats it (Nov 1 2026).
@@ -526,6 +532,13 @@ export class AxfRuntime {
         const overrides = normalizeDesignOverrides(doc?.settings ? doc.settings[DESIGN_OVERRIDES_KEY] : this.settings.get(DESIGN_OVERRIDES_KEY));
         const look = designLookSlots(normalizeDesignPackage(pkgAsset.data), overrides, { 'style-theme': active['style-theme' as AssetType], 'color-theme': active['color-theme' as AssetType] }, (t, id) => this.registry.has(t as AssetType, id));
         for (const t of DESIGN_OVERRIDABLE) { const v = look[t]; if (v) active[t as AssetType] = v; }
+      }
+      this.hubActive = { ...active };
+      // overridden slots: the app's own pick (saved with its choice), else what it shows now
+      for (const t of ASSET_TYPES) {
+        if (!heldSlot(style, t)) continue;
+        const own = style.own.slots[t];
+        active[t] = own && this.registry.has(t, own) ? own : this.state.active[t];
       }
       const changed = ASSET_TYPES.some((t) => active[t] !== this.state.active[t]);
       // Nothing to swap = no new state: a re-applied document must not re-render every view (Nov 1 2026).
@@ -555,10 +568,178 @@ export class AxfRuntime {
     return out;
   }
 
-  /** Push a local change to the source (no-op without one, or while applying a pushed document). */
+  /**
+   * Push a local change to the source (no-op without one, or while applying a pushed document). The app's own design /
+   * colours stay here (app-style@1): what an overriding part changes is recorded as the app's own value instead, and
+   * an edit of an inheriting part switches its override on first (except in the style source, axHub itself).
+   */
   private pushAppearance(change: AppearanceChange): void {
     if (!this.appearanceSource || !this.appearanceRunning || this.applyingAppearance) return;
+    const f = filterLookChange(change, this.appStyle(), { isSource: this.isStyleSource() });
+    if (f.changed) this.writeAppStyle(f.style, f.switched);
+    if (!emptyLookChange(f.change)) this.appearanceSource.save(f.change);
+  }
+
+  /* ---------------- app style override (engines/app-style.mjs, inherit@1) ---------------- */
+
+  /** The look slots axHub's document resolved to in this app (before its own overrides), for "axHub: …" notes. */
+  private hubActive: Partial<ActiveAssets> = {};
+
+  /** Is this app axHub's own look (its edits are axHub's style; it never overrides it)? */
+  isStyleSource(): boolean { return isStyleSource(this.manifest.app.id); }
+
+  /** This app's choice: which parts (design, colours) override axHub's look, and its own values for them. */
+  appStyle(): AppStyle { return normalizeAppStyle(this.settings.get(appStyleKey(this.manifest.app.id))); }
+
+  /** Save the choice (a look setting: it rides the axHub document, so every device of this app agrees). */
+  private writeAppStyle(style: AppStyle, switched: readonly string[] = []): void {
+    const v = serializeAppStyle(style, this.manifest.app.id, new Date().toISOString());
+    if (v) this.settings.set(appStyleKey(this.manifest.app.id), v as unknown as SettingValue);
+    else this.settings.clear(appStyleKey(this.manifest.app.id));
+    for (const id of switched) {
+      const label = APP_STYLE_PARTS.find((p) => p.id === id)?.label ?? id;
+      this.terminal.ok('appearance', `${label}: overriding axHub (edited in this app)`);
+      this.toast(`${label} now overrides axHub in this app. Settings → Appearance → Reset to axHub takes it back.`, 'info', 'Overriding axHub');
+    }
+    this.set({});
+  }
+
+  /** A local look edit is about to happen: switch its part to override first (so nothing of it reaches axHub). */
+  private styleTouch(change: AppearanceChange): void {
+    if (!this.appearanceSource || this.applyingAppearance || this.isStyleSource()) return;
+    const f = filterLookChange(change, this.appStyle(), { isSource: false });
+    if (f.switched.length) this.writeAppStyle(f.style, f.switched);
+  }
+
+  /** The values this app shows now for every part (own values while overriding). */
+  private currentStyleValues(): { slots: Record<string, string>; keys: Record<string, unknown> } {
+    const slots: Record<string, string> = {};
+    const keys: Record<string, unknown> = {};
+    for (const p of APP_STYLE_PARTS) {
+      for (const t of p.slots) { const v = this.state.active[t as AssetType]; if (v) slots[t] = v; }
+      for (const k of p.keys) { const v = this.settings.get(k); if (v !== null && v !== undefined) keys[k] = v; }
+    }
+    return { slots, keys };
+  }
+
+  /** The document as this app knows it now (the last one read, with the look settings it applied since). */
+  private knownAppearance(): AppearanceDocument {
+    const settings: Record<string, unknown> = { ...(this.lastAppearance?.settings ?? {}) };
+    const h = this.settings.get(APP_STYLE_HISTORY_KEY);
+    if (h !== null) settings[APP_STYLE_HISTORY_KEY] = h; else delete settings[APP_STYLE_HISTORY_KEY];
+    return { ...(this.lastAppearance ?? { $axf: APPEARANCE_FRAME }), settings } as AppearanceDocument;
+  }
+
+  /** Per part: overriding or not, axHub's value and this app's beside it (Settings → Appearance, the API). */
+  appStyleView(): AppStyleView {
+    const doc = this.knownAppearance();
+    const hub = hubStyleValues(doc, (slot) => this.hubActive[slot as AssetType] ?? (this.lastAppearance ? undefined : this.state.active[slot as AssetType]));
+    return appStyleView({ settings: { ...(doc.settings ?? {}), [appStyleKey(this.manifest.app.id)]: this.appStyle() } }, this.manifest.app.id, hub, this.currentStyleValues());
+  }
+
+  /** Switch one part's override on (keeps what the app shows now as its own) or off (follows axHub again). */
+  setStyleOverride(part: AppStylePart, on: boolean): boolean {
+    if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
+    const before = this.appStyle();
+    if (!!before[part] === on) return true;
+    this.writeAppStyle(withPartOverride(before, part, on, this.currentStyleValues()));
+    const label = APP_STYLE_PARTS.find((p) => p.id === part)?.label ?? part;
+    this.terminal.ok('appearance', `${label}: ${on ? 'overriding axHub' : 'inherited from axHub'}`);
+    if (!on) this.applyHubParts([part]);
+    return true;
+  }
+
+  /**
+   * Show axHub's values again for parts that stopped overriding: their slots from what the last document resolved
+   * to, their token sets from it (only those: re-applying the whole document would undo look changes this app has
+   * pushed since it was read).
+   */
+  private applyHubParts(parts: readonly string[]): void {
+    if (!this.lastAppearance) return;
+    const style = this.appStyle();
+    this.applyingAppearance = true;
+    try {
+      const active = { ...this.state.active };
+      for (const p of APP_STYLE_PARTS.filter((x) => parts.includes(x.id))) {
+        for (const t of p.slots) { const v = this.hubActive[t as AssetType]; if (!heldSlot(style, t) && v !== undefined && (v === '' || this.registry.has(t as AssetType, v))) active[t as AssetType] = v; }
+        for (const k of p.keys) {
+          if (heldKey(style, k)) continue;
+          const v = this.lastAppearance.settings?.[k];
+          if (v === undefined || v === null) { if (this.settings.get(k) !== null) this.settings.clear(k); } else this.settings.set(k, v as SettingValue);
+        }
+      }
+      if (!heldKey(style, DESIGN_OVERRIDES_KEY)) {
+        const v = this.lastAppearance.settings?.[DESIGN_OVERRIDES_KEY];
+        if (v === undefined || v === null) { if (this.settings.get(DESIGN_OVERRIDES_KEY) !== null) this.settings.clear(DESIGN_OVERRIDES_KEY); } else this.settings.set(DESIGN_OVERRIDES_KEY, v as SettingValue);
+      }
+      if (ASSET_TYPES.some((t) => active[t] !== this.state.active[t])) { this.set({ active, swaps: this.state.swaps + 1 }, true); this.lookApplied('hub', 'axhub'); }
+    } finally {
+      this.applyingAppearance = false;
+    }
+  }
+
+  /** Reset to axHub: both parts follow axHub again (this app's own design and colours are dropped). */
+  resetStyleToHub(): boolean {
+    if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
+    this.settings.clear(appStyleKey(this.manifest.app.id));
+    this.applyHubParts(APP_STYLE_PARTS.map((p) => p.id));
+    this.terminal.ok('appearance', 'reset to axHub: design and colours inherited');
+    this.set({});
+    return true;
+  }
+
+  /** Reload from axHub: re-read axHub's current look now and apply it; `reset` also drops this app's overrides. */
+  reloadStyleFromHub(opts: { reset?: boolean } = {}): boolean {
+    if (opts.reset && !this.resetStyleToHub()) return false;
+    if (!this.appearanceSource) { this.toast('This app has no axHub connection, so there is nothing to reload.', 'warning', 'Reload from axHub'); return false; }
+    this.appearanceSource.refresh();
+    this.toast(opts.reset ? 'Reloaded axHub\'s design and colours; this app\'s overrides were reset.' : 'Reloaded axHub\'s look; this app\'s overrides were kept.', 'success', 'Reload from axHub');
+    return true;
+  }
+
+  /** The axHub styles saved before each Save to axHub, newest last (Restore previous axHub style takes the newest). */
+  styleHistory(): AppStyleHistoryEntry[] { return styleHistory(this.knownAppearance()); }
+
+  /**
+   * Save to axHub: this app's design and/or colours become axHub's look, the default of every app that inherits
+   * them. Owner only: the role must be allowed to change the look, and the UI asks first (confirm dialog listing the
+   * apps that change). The style it replaces goes into the history first. The saved parts follow axHub again here.
+   */
+  saveStyleToHub(parts: AppStylePart[]): boolean {
+    if (!this.can('assets.swap')) { this.toast('Your role cannot change axHub\'s look.', 'danger', 'Permission denied'); return false; }
+    if (!this.appearanceSource) { this.toast('This app has no axHub connection.', 'warning', 'Save to axHub'); return false; }
+    const doc = this.knownAppearance();
+    let out;
+    try { out = saveToHubChange(doc, parts, this.currentStyleValues(), { appId: this.manifest.app.id, by: this.manifest.app.id }); }
+    catch (e) { this.toast(String((e as Error).message ?? e), 'warning', 'Save to axHub'); return false; }
+    const change = { ...out.change, ...(out.parts.includes('colors') ? { palette: this.appearancePalette() } : {}) } as AppearanceChange;
     this.appearanceSource.save(change);
+    // what this app now knows: the history it just wrote, and its saved parts following axHub (they match it now)
+    this.applyingAppearance = true;
+    try { this.settings.set(APP_STYLE_HISTORY_KEY, out.change.settings[APP_STYLE_HISTORY_KEY] as SettingValue); } finally { this.applyingAppearance = false; }
+    let style = this.appStyle();
+    for (const p of out.parts) style = withPartOverride(style, p, false);
+    this.writeAppStyle(style);
+    for (const p of out.parts) for (const t of APP_STYLE_PARTS.find((x) => x.id === p)!.slots) { const v = out.change.slots?.[t]; if (v) this.hubActive[t as AssetType] = v; }
+    const label = out.parts.map((p) => APP_STYLE_PARTS.find((x) => x.id === p)?.label ?? p).join(' and ').toLowerCase();
+    this.terminal.ok('appearance', `saved this app's ${label} to axHub`);
+    this.toast(`This app's ${label} are now axHub's look; every app that inherits them changes.`, 'success', 'Saved to axHub');
+    return true;
+  }
+
+  /** Restore previous axHub style: take back the newest Save to axHub. */
+  restorePreviousHubStyle(): boolean {
+    if (!this.can('assets.swap')) { this.toast('Your role cannot change axHub\'s look.', 'danger', 'Permission denied'); return false; }
+    if (!this.appearanceSource) { this.toast('This app has no axHub connection.', 'warning', 'Restore previous axHub style'); return false; }
+    const r = restorePreviousChange(this.knownAppearance());
+    if (!r) { this.toast('There is no earlier axHub style to restore.', 'info', 'Restore previous axHub style'); return false; }
+    this.appearanceSource.save(r.change as AppearanceChange);
+    this.applyingAppearance = true;
+    try { const h = r.change.settings[APP_STYLE_HISTORY_KEY]; if (h) this.settings.set(APP_STYLE_HISTORY_KEY, h as SettingValue); else this.settings.clear(APP_STYLE_HISTORY_KEY); } finally { this.applyingAppearance = false; }
+    this.appearanceSource.refresh();
+    this.terminal.ok('appearance', `restored the axHub style saved before ${r.entry.at}`);
+    this.toast('The previous axHub style is back for every app that inherits it.', 'success', 'Restored');
+    return true;
   }
 
   /** The palette the hub's own pages use, from this app's active colour theme. */
@@ -1064,6 +1245,7 @@ export class AxfRuntime {
     // a style package is a set of controls: picking one swaps every member it names (engines/stylepackage.ts)
     if (type === STYLE_PACKAGE_TYPE) { this.swapAll({ [type]: next } as Partial<ActiveAssets>); return true; }
 
+    if (type !== 'uac-policy') this.styleTouch({ slots: { [type]: next } }); // an edit of axHub's design / colours: override first
     const active = { ...this.state.active, [type]: next };
     const patch: Partial<AxfState> = { active, swaps: this.state.swaps + 1 };
     if (type === 'uac-policy') {
@@ -1317,6 +1499,7 @@ export class AxfRuntime {
     if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
     const a = this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id);
     if (!a) { this.toast(`No design package "${id}".`, 'warning', 'Design package'); return false; }
+    this.styleTouch({ slots: { [DESIGN_PACKAGE_TYPE]: id } }); // a package names design and colours: both override axHub here
     const pkg = normalizeDesignPackage(a.data);
     const plan = packageSettingsPlan(pkg, Object.keys(this.settings.savedValues()));
     for (const k of plan.clear) this.settings.clear(k);

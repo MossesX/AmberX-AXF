@@ -12,8 +12,26 @@ const kebab = (s: string) => s.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase());
 
 export function colorThemeVars(t: ColorThemeData): VarMap {
   const vars: VarMap = {};
-  for (const [k, v] of Object.entries(t.tokens)) vars[`--fx-${kebab(k)}`] = v;
+  for (const [k, v] of Object.entries(bannerTokens(t.tokens))) vars[`--fx-${kebab(k)}`] = v;
   return vars;
+}
+
+/**
+ * Banner types and the colour token each one reads (app-style-override s4, Nov 3 2026: Brett saw every console
+ * banner turn one colour after a theme change). A banner plugin sets `--axf-banner-tone: var(--fx-banner-<type>)`, so
+ * banners stay apart in every theme. Every starter theme carries them; a theme without one gets it from the status
+ * colours (`BANNER_TOKEN_FALLBACK`).
+ */
+export const BANNER_TYPES = ['info', 'success', 'warning', 'error', 'build', 'merge', 'ai', 'neutral'] as const;
+export type BannerType = (typeof BANNER_TYPES)[number];
+export const BANNER_TOKEN_FALLBACK: Record<BannerType, string> = { info: 'info', success: 'success', warning: 'warning', error: 'danger', build: 'accent', merge: 'success', ai: 'info', neutral: 'muted' };
+export const bannerToken = (type: BannerType): string => `banner${type[0]!.toUpperCase()}${type.slice(1)}`;
+
+/** The theme's tokens with every banner token present (a missing one taken from its fallback colour). */
+export function bannerTokens(tokens: Record<string, string>): Record<string, string> {
+  const out = { ...tokens };
+  for (const type of BANNER_TYPES) { const k = bannerToken(type); if (!out[k] && tokens[BANNER_TOKEN_FALLBACK[type]]) out[k] = tokens[BANNER_TOKEN_FALLBACK[type]]!; }
+  return out;
 }
 
 /** Transparency defaults, identical to the Android kernel's StyleTheme defaults. */

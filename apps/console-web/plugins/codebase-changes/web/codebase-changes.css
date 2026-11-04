@@ -18,8 +18,8 @@ a.axp-codebase-changes__act { text-decoration: none }
 .axp-codebase-changes__meta.is-accent { color: var(--fx-accent) }
 
 /* banner */
-.axp-codebase-changes-banner { --axf-banner-tone: var(--fx-info); display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
-.axp-codebase-changes-banner.is-failed { --axf-banner-tone: var(--fx-danger) }
+.axp-codebase-changes-banner { --axf-banner-tone: var(--fx-banner-ai); display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+.axp-codebase-changes-banner.is-failed { --axf-banner-tone: var(--fx-banner-error) }
 .axp-codebase-changes-banner__row { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); min-width: 0 }
 .axp-codebase-changes-banner__icon { display: inline-flex; color: var(--fx-info); flex: none }
 /* a row you tap (data-fx-row); `button.` outranks the framework row reset */

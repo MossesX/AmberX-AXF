@@ -53,6 +53,16 @@
           "focus",
           "shadow"
         ]
+      },
+      "optional_fields": {
+        "tokens.bannerInfo": "colour of information banners (--fx-banner-info); missing = tokens.info",
+        "tokens.bannerSuccess": "colour of success banners (--fx-banner-success); missing = tokens.success",
+        "tokens.bannerWarning": "colour of warning banners (--fx-banner-warning); missing = tokens.warning",
+        "tokens.bannerError": "colour of error banners (--fx-banner-error); missing = tokens.danger",
+        "tokens.bannerBuild": "colour of build banners (--fx-banner-build); missing = tokens.accent",
+        "tokens.bannerMerge": "colour of merge / pull request banners (--fx-banner-merge); missing = tokens.success",
+        "tokens.bannerAi": "colour of AI / Claude banners (--fx-banner-ai); missing = tokens.info",
+        "tokens.bannerNeutral": "colour of neutral / activity banners (--fx-banner-neutral); missing = tokens.muted"
       }
     },
     "style-theme": {

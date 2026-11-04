@@ -1,8 +1,8 @@
 /* Activity banner: same shape as the other console banners. Theme tokens only. Open, the whole banner stays within
    about 30% of the screen (Brett, Oct 31 2026): the list scrolls inside. */
-.axp-activity { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
-.axp-activity--idle { --axf-banner-tone: var(--fx-success) }
-.axp-activity--failed { --axf-banner-tone: var(--fx-danger) }
+.axp-activity { --axf-banner-tone: var(--fx-banner-neutral); display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+.axp-activity--idle { --axf-banner-tone: var(--fx-banner-success) }
+.axp-activity--failed { --axf-banner-tone: var(--fx-banner-error) }
 .axp-activity__row { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); min-width: 0 }
 /* a row you tap (data-fx-row); `button.` outranks the framework row reset */
 button.axp-activity__summary { all: unset; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); cursor: pointer }

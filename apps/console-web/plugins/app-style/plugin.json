@@ -1,0 +1,57 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.app-style",
+  "name": "App style",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "axHub's look is every app's default style; each app can override its design (style theme) and/or colours (colour theme) from Settings → Appearance → axHub style. This plugin is the console's view and remote control of that: which apps inherit and which override (with axHub's value beside theirs), override or follow axHub again for any app, make every open app reload axHub's look, and (Brett only) save an app's design or colours back to axHub as the new default, with the previous style kept for Restore. REST under /api/plugins/app-style, MCP tools app_style_get / app_style_override / app_style_reload / app_style_save_to_axhub / app_style_restore, CLI `axf app-style …` (also `node apps/console-web/plugins/app-style/appstyle.mjs`). Rules: framework/core/engines/app-style.mjs (app-style@1 over inherit@1).",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "settings-tab:app-style"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [],
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/app-style",
+    "env": [
+      "AXF_APPEARANCE_FILE",
+      "AXF_APP_STYLE_DATA_DIR"
+    ],
+    "mentions": [
+      "_claude/memory/STATUS.md",
+      "framework/spec/APPEARANCE-SOURCE.md"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "route": "GET /get", "id": "get", "title": "Every app's style", "description": "Which apps inherit axHub's design and colours and which override them, with axHub's value and the app's own beside it. input.app = one app (axf-console, molly, axhub-web, amberx-droid, walkthrough-studio).", "readOnly": true,
+        "input": { "type": "object", "properties": { "app": { "type": "string", "description": "one app id (default: every app)" } }, "additionalProperties": false } },
+      { "route": "POST /override", "id": "override", "title": "Override or inherit axHub's design or colours in one app", "description": "on = the app keeps its own design / colours (theme = its own pick, else axHub's current one); off = it follows axHub again.",
+        "input": { "type": "object", "properties": { "app": { "type": "string" }, "part": { "type": "string", "enum": ["design", "colors"] }, "on": { "type": "boolean" }, "theme": { "type": "string", "description": "a style-theme (design) or color-theme (colors) asset id" } }, "required": ["app", "part", "on"], "additionalProperties": false } },
+      { "route": "POST /reload", "id": "reload", "title": "Reload axHub's look", "description": "Every open app re-reads axHub's design and colours now. reset = also drop that app's overrides.",
+        "input": { "type": "object", "properties": { "app": { "type": "string" }, "reset": { "type": "boolean" } }, "required": ["app"], "additionalProperties": false } },
+      { "route": "POST /save-to-axhub", "id": "save-to-axhub", "title": "Save an app's design or colours to axHub (Brett only)", "description": "The app's own design and/or colours become axHub's look, the default of every app that inherits them; the previous style is kept for app_style_restore. Only Brett's own click in the console may: agents and Claude sessions get 403 with the reason.",
+        "input": { "type": "object", "properties": { "app": { "type": "string" }, "parts": { "type": "array", "items": { "type": "string", "enum": ["design", "colors"] } } }, "required": ["app", "parts"], "additionalProperties": false } },
+      { "route": "POST /restore", "id": "restore", "title": "Restore the previous axHub style (Brett only)", "description": "Takes back the newest Save to axHub for every app that inherits it. Brett only.", "confirm": true,
+        "input": { "type": "object", "properties": {}, "additionalProperties": false } }
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-04"
+  },
+  "help": "help.json",
+  "opens": "main"
+}

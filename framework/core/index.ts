@@ -27,6 +27,8 @@ export * from './engines/agent-card-rules.mjs';
 export * from './engines/job-type-rules.mjs';
 export * from './engines/help';
 export * from './engines/appearance';
+export * from './engines/inherit.mjs';
+export * from './engines/app-style.mjs';
 export * from './engines/banner';
 export * from './engines/bannerhide';
 export { WIDGET_TYPES, ATTACHABLE_ASSET_TYPES, TOOLBAR_SIDES, SEARCH_BAR_WIDTH, SEARCH_BAR_MAX_RESULTS, isWidgetType, isHost, hostSpec, hostSpecs, registerHost, placeOnHost, placeHost, normalizeArrangement, moveOnHost, snapIndex, ARRANGEMENT_MAX, placeToolbarWidgets, validateHostAttachments, searchBarConfig, WIDGET_TONES, widgetTone, counterText, statusOn, progressPercent, avatarInitials, linkHref, imageSrc, spacerUnits, logoSize, avatarSize, progressWidth, themeSwitchNext, type HostAttachment, type HostArrangement, type HostSpec, type SearchBarConfig, type WidgetTone } from './engines/widgets';
