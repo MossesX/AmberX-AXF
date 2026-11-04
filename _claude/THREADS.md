@@ -669,7 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 10:44 UTC · `land-round-2` added (9 steps) (current) · foreign-write
 - 2026-11-04 10:48 UTC · `terminal-no-focus` added (3 steps) (current) · foreign-write
 - 2026-11-04 10:48 UTC · `terminal-no-focus` added (3 steps) (current) · janitor-joey
 - 2026-11-04 10:53 UTC · `terminal-no-focus` s1 done, → running (current) · orchestrator
@@ -1069,6 +1068,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:11 UTC · `merge-queue` s6 done, → complete (current) · foreign-write
 - 2026-11-04 15:11 UTC · `app-voice-commands` s1 done, note (current) · foreign-write
 - 2026-11-04 15:11 UTC · `apps-control-surface` s1 done (current) · orchestrator
+- 2026-11-04 15:11 UTC · `apps-control-surface` s1 done (current) · foreign-write
 
 ## Token passes (log)
 
