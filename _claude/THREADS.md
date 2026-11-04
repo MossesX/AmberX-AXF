@@ -684,7 +684,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:21 UTC · `urgent-land-gizmo-chat` s2 done (current) · orchestrator
 - 2026-11-04 14:21 UTC · `urgent-land-gizmo-chat` branch claude/gizmo-companion, PR #296 (current) · builds-live
 - 2026-11-04 14:21 UTC · `land-round-2` note (current) · orchestrator
 - 2026-11-04 14:21 UTC · `gizmo-voice` added (3 steps) (current) · orchestrator
@@ -1084,6 +1083,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 19:08 UTC · `amberx-live-audio` added (6 steps) (angel) · orchestrator
 - 2026-11-04 19:14 UTC · `amberx-live-audio` s1 done, → running (angel) · orchestrator
 - 2026-11-04 19:14 UTC · `amberx-live-audio` s2 done (angel) · orchestrator
+- 2026-11-04 19:24 UTC · `amberx-live-audio` s3 done (angel) · orchestrator
 
 ## Token passes (log)
 
