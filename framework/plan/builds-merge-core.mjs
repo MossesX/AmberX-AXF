@@ -33,13 +33,16 @@ export function newer(a, b) {
  */
 export function liveStatus(b) {
   if (['blocked', 'failed', 'archived'].includes(b.status)) return b.status;
+  if (b.status === 'complete' && str(b.mergedAt)) return 'complete'; // its PR merged: done, even with steps left unticked
   const steps = (b.steps ?? []).filter((s) => !s.skip);
   if (!steps.length) return b.status === 'built' && str(b.mergedAt) ? 'complete' : b.status;
   const done = steps.filter((s) => s.done).length;
   if (done === steps.length) return str(b.pr) && !str(b.mergedAt) ? 'built' : 'complete';
   if (!done && (b.status === 'complete' || b.status === 'built')) return b.status; // built without ticking its steps
   if (b.status === 'waiting') return 'waiting';
-  return done > 0 || b.status === 'running' ? 'running' : 'pending';
+  // a pending build with ticked steps stays pending (paused: nothing is running it); a tick through the Builds page or
+  // the orchestrator moves it back to running
+  return b.status === 'running' || (done > 0 && b.status !== 'pending') ? 'running' : 'pending';
 }
 
 /** Apply liveStatus in place (and builtAt when it turns complete or built). Returns true when it changed. */
