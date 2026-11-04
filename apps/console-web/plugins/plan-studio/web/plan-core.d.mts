@@ -8,7 +8,7 @@ export interface Step { id: string; text: string; model: Model; minutes: number;
 export interface TextItem { text: string; done?: boolean; answer?: string; mitigation?: string; [k: string]: unknown }
 export interface Link { kind: string; ref: string; label: string; [k: string]: unknown }
 export interface PlanFeature { entry: string; feature: string; title: string; state: FeatureState; [k: string]: unknown }
-export interface Attachment { id: string; kind: 'image' | 'file' | 'voice'; name: string; url: string; size: number; transcript: string; [k: string]: unknown }
+export interface Attachment { id: string; kind: 'image' | 'file' | 'voice' | 'video'; name: string; url: string; size: number; transcript: string; [k: string]: unknown }
 export interface Comment { id: string; by: string; at: string; text: string; [k: string]: unknown }
 export interface BuildLink { profile: string; id: string; linkedAt?: string; status?: string; progress?: number; title?: string; branch?: string; pr?: string; [k: string]: unknown }
 export interface Plan {

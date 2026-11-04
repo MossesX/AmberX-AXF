@@ -323,7 +323,7 @@ function BuiltView({ query }: { query: string }) {
           : (
             <ul className="axp-build-manager__list" aria-label={`${shown.length} builds`}>
               {shown.slice(0, limit).map((r) => (
-                <li key={r.id} className={`axp-build-manager__row${r.status === 'failed' ? ' is-failed' : ''}`}>
+                <li key={r.id} className={`axp-build-manager__row${r.status === 'failed' ? ' is-failed' : ''}`} data-fx-ctx-target="axf-built-item" data-fx-ctx-payload={r.ref?.id || r.branch}>
                   <div className="axp-build-manager__head is-static">
                     <span className="axp-build-manager__title-line"><span className="axp-build-manager__title">{r.title}</span></span>
                     <span className="axp-build-manager__chips">

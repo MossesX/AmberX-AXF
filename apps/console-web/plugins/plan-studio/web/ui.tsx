@@ -190,7 +190,7 @@ function Row({ p, sel, pick, onOpen }: { p: Plan; sel: Set<string>; pick: (id: s
   const st = statusInfo(p.status);
   const t = pc.totals(p);
   return (
-    <li className={`axp-plan-studio__row${open ? ' is-open' : ''}`}>
+    <li className={`axp-plan-studio__row${open ? ' is-open' : ''}`} data-fx-ctx-target="axf-plan" data-fx-ctx-payload={p.id}>
       <div className="axp-plan-studio__rline">
         <input type="checkbox" className="fx-check" checked={sel.has(p.id)} onChange={() => pick(p.id)} aria-label={`Select ${p.title}`} />
         <button type="button" data-fx-row className="axp-plan-studio__rmain" aria-expanded={open} onClick={() => setOpen(!open)}>
@@ -277,7 +277,7 @@ function TreeView({ plans, sel, pick, onOpen, onCategory }: { plans: Plan[]; sel
 function TreeLeaf({ p, sel, pick, onOpen }: { p: Plan; sel: Set<string>; pick: (id: string) => void; onOpen: (p: Plan) => void }) {
   const st = statusInfo(p.status);
   return (
-    <li className="axp-plan-studio__tleaf" role="treeitem" aria-selected={sel.has(p.id)}>
+    <li className="axp-plan-studio__tleaf" role="treeitem" aria-selected={sel.has(p.id)} data-fx-ctx-target="axf-plan" data-fx-ctx-payload={p.id}>
       <input type="checkbox" className="fx-check" checked={sel.has(p.id)} onChange={() => pick(p.id)} aria-label={`Select ${p.title}`} />
       <button type="button" data-fx-row className="axp-plan-studio__tname" onClick={() => onOpen(p)}><span className={`axp-plan-studio__prio is-${p.priority.toLowerCase()}`}>{p.priority}</span>{p.title}</button>
       <Chip tone={st.tone || undefined}>{st.label}</Chip>

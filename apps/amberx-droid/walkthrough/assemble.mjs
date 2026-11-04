@@ -4,7 +4,7 @@
 // poster.jpg. Adapted from the AmberX Tour recorder's assemble.mjs.
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, writeFileSync, statSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync, statSync } from 'node:fs';
 import { loadWalkthrough } from './load.mjs';
 
 const OUT = process.env.OUT || '/out';
@@ -122,6 +122,15 @@ writeFileSync(`${PUB}/script.json`, JSON.stringify({
   chapters: BASE.map((c) => ({ id: c.id, title: c.title, scenes: c.scenes.map((x, i) => ({ key: `${c.id}-${i}`, say: x.say })) })),
 }));
 writeFileSync(`${PUB}/walkthrough.vtt`, `WEBVTT\n\n${cues.join('\n\n')}\n`);
+// captions burned into the picture (a build walkthrough with Captions on); the .vtt stays next to it either way.
+// libass sizes are on its 384×288 script canvas, scaled to the frame.
+if (WALKTHROUGH.captions === true) {
+  try {
+    ff(['-i', `${PUB}/walkthrough.mp4`, '-vf', `subtitles=${PUB}/walkthrough.vtt:force_style='FontSize=${H > W ? 11 : 15},Outline=1.5,Shadow=0,MarginV=${H > W ? 40 : 18}'`,
+      '-c:v', 'libx264', '-preset', WALKTHROUGH.output?.preset ?? 'veryfast', '-crf', String(WALKTHROUGH.output?.crf ?? 27), '-c:a', 'copy', '-movflags', '+faststart', `${TMP}/captioned.mp4`]);
+    renameSync(`${TMP}/captioned.mp4`, `${PUB}/walkthrough.mp4`);
+  } catch (e) { console.log(`captions: not burned in (${String(e.message).split('\n')[0].slice(0, 120)}); walkthrough.vtt has them`); }
+}
 const index = {
   $axf: WALKTHROUGH.$axf, id: WALKTHROUGH.id, title: WALKTHROUGH.title, app: WALKTHROUGH.app,
   recordedAt: new Date().toISOString(), duration: r1(offset), width: W, height: H,

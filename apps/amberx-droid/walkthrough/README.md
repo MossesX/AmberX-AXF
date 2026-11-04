@@ -58,6 +58,16 @@ files in AmberX's data folder `/opt/amberx-web/.app/data/walkthrough/`, served b
 `/api/walkthrough/*` behind the hub's wall. The recorder account is `/root/.tour-recorder.env` (root only). The image is
 the AmberX Tour recorder's (`amberx-tour-recorder`, built from `/opt/amberx-tour/recorder`).
 
+## Walkthroughs written as data (Nov 4 2026)
+
+Any `WALKTHROUGH` id that isn't in `load.mjs` reads `$WORK/script.input.json` (or `WALKTHROUGH_SCRIPT`): a
+walkthrough-video@1 script as data, chapters → scenes `{ say, do: [{ op, … }] }`, turned into acts by `script-file.mjs`
+(only the helper moves it lists; unknown ones are skipped). The console's Build docs plugin writes these for build
+walkthrough videos and runs `rebuild.sh` with `NO_PUBLISH=1` (`apps/console-web/plugins/build-docs/runner.mjs`). <!-- axf-plugin:build-docs -->
+New for it: the `card` (full-screen title card), `dialog` (open an AXF dialog) and `navigate` / `dispatch` (the app's
+runtime) helpers in `record.mjs`; `LOOK_B64={id,slots}` records every chapter under one look (browser only);
+`narration: false` voices silence of each line's length; `captions: true` burns the captions into the MP4.
+
 ## One video per chapter (Nov 2 2026)
 
 Assembly keeps every chapter as its own video, `publish/chapters/<id>.mp4`, listed in `publish/segments.json`

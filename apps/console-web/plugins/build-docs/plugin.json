@@ -1,0 +1,58 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.build-docs",
+  "name": "Build docs",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Right-click any built build or step (Build manager, Build orchestrator, Pending builds, Plan Studio, Codebase changes) and pick Create documentation or Create walkthrough video; several builds and single steps at once. Docs: Markdown from Brett's words, the steps, the report, the diff and the screens and commands the build added (AI in deep mode, a template otherwise), as a pull request through the merge queue into the plugin's or app's docs/ folder, linked in the build's plan. Video: pick the length, what to cover, viewport, theme, layout, narration voice, captions, speed and intro/outro; approve the click-path script, then a real headless browser session is recorded on the VPS (the walkthrough recorder: Playwright, Piper, ffmpeg) in a heavy slot and the MP4 attaches to the plan. Docs & videos lists every job with progress, cancel and re-run with tweaks. Jobs and videos live on the VPS data volume.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:build-docs",
+    "dialog:build-docs.docs",
+    "dialog:build-docs.video",
+    "dialog:build-docs.script",
+    "settings-tab:build-docs"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [
+    "axf.llm@1",
+    "axf.vinny@1",
+    "plans@1"
+  ],
+  "banner": false,
+  "tabable": {
+    "view": "build-docs",
+    "label": "Docs & videos",
+    "icon": "file"
+  },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/build-docs",
+    "env": [
+      "AXF_BUILD_DOCS_DIR",
+      "AXF_BUILD_DOCS_RECORDER"
+    ],
+    "mentions": [
+      "_claude/THREADS.md",
+      "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/README.md",
+      "apps/amberx-droid/walkthrough/README.md",
+      "apps/amberx-droid/walkthrough/script-file.mjs",
+      "apps/amberx-droid/walkthrough/rebuild.sh"
+    ]
+  },
+  "commands": { "$axf": "plugin-commands@1", "auto": true },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-04"
+  },
+  "help": "help.json",
+  "opens": "main"
+}
