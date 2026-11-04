@@ -1,0 +1,108 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-c722d2fa-2157-456b-a9bc-7f892c35287c",
+ "source": "claude-code",
+ "sessionId": "c722d2fa-2157-456b-a9bc-7f892c35287c",
+ "project": "other",
+ "title": "# Build: urgent-main-ci-green (Current profile) - URGENT ops fix Found by window-resize-fix (#278): CI on main is RED o…",
+ "startedAt": "2026-11-03T20:54:10.196Z",
+ "endedAt": "2026-11-03T21:32:17.802Z",
+ "minutes": 38,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/urgent-main-ci-green",
+  "repo": "",
+  "branch": "claude/urgent-main-ci-green"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-03T20:54:50.274Z",
+   "kind": "prompt",
+   "text": "# Build: urgent-main-ci-green (Current profile) - URGENT ops fix Found by window-resize-fix (#278): CI on main is RED on three jobs unrelated to that fix: (1) a widget types check, (2) Molly's xlayout plugin has `opens: false` (a plugin manifest/check failure), (3) two Kotlin widget tests. Every PR fails on the same three, so auto-merge (auto-land-2) and the batch merge are stuck for everything. Brett's standing rule: fix broken stuff right away, tell him after. Assigned agent: whoever is free (router if on main; else **Earl the Ear**; record who). Register in the `current` profile (id `urgen…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 280,
+    "output": 49469,
+    "cacheRead": 16301420,
+    "cacheWrite": 158119,
+    "thinking": 8783
+   },
+   "costUsd": 5.0416,
+   "costEstimated": false,
+   "seconds": 2248,
+   "tools": {
+    "Bash": 131,
+    "Read": 3,
+    "Write": 2,
+    "Edit": 3
+   },
+   "commands": 131,
+   "files": [
+    "/root/axf-builds/urgent-main-ci-green/framework/assets/job-type/ci-fix.json",
+    "/root/axf-builds/urgent-main-ci-green/apps/console-web/plugins/systems-check/server/healthchecks.py",
+    "/root/axf-builds/urgent-main-ci-green/apps/console-web/plugins/systems-check/test.py",
+    "/root/axf-builds/urgent-main-ci-green/_claude/builds/reports/urgent-main-ci-green.md"
+   ],
+   "changeIds": [
+    "chg-20261103-df4d3fcbbc"
+   ],
+   "features": [
+    "queue:urgent-main-ci-green",
+    "pending:window-resize-fix",
+    "pending:urgent-main-ci-green",
+    "queue:xlayout",
+    "plan:window-resize-fix",
+    "queue:auto-land"
+   ],
+   "output": "Still running. Waiting for the notification."
+  }
+ ],
+ "files": [
+  "/root/axf-builds/urgent-main-ci-green/framework/assets/job-type/ci-fix.json",
+  "/root/axf-builds/urgent-main-ci-green/apps/console-web/plugins/systems-check/server/healthchecks.py",
+  "/root/axf-builds/urgent-main-ci-green/apps/console-web/plugins/systems-check/test.py",
+  "/root/axf-builds/urgent-main-ci-green/_claude/builds/reports/urgent-main-ci-green.md"
+ ],
+ "changeIds": [
+  "chg-20261103-df4d3fcbbc"
+ ],
+ "features": [
+  "queue:urgent-main-ci-green",
+  "pending:window-resize-fix",
+  "pending:urgent-main-ci-green",
+  "queue:xlayout",
+  "plan:window-resize-fix",
+  "queue:auto-land"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 280,
+  "output": 49469,
+  "cacheRead": 16301420,
+  "cacheWrite": 158119,
+  "thinking": 8783,
+  "costUsd": 5.0416,
+  "costEstimated": false,
+  "toolCalls": 139,
+  "commands": 131,
+  "filesTouched": 4
+ },
+ "ingestedAt": "2026-11-03T21:32:18.861Z"
+}

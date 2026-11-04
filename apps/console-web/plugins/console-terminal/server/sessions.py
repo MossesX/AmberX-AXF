@@ -649,8 +649,37 @@ def meters(names: list[str]) -> dict[str, Any]:
     return value
 
 
+def chain_tree(items: list[Any]) -> list[dict[str, Any]]:
+    """The chain as a tree (terminal-drag-chain-tree, Nov 3 2026): each item under the item that pulled it in, its
+    children in `children`. Parent = `parentI` when it names an earlier item, else the earlier item whose `rel` is
+    `parent`, else (older chain files) the nearest earlier item one level up; else a root. Same rules as chainTree in
+    web/headless-core.ts."""
+    nodes: list[dict[str, Any]] = [{**it, "children": []} for it in items if isinstance(it, dict)]
+    roots: list[dict[str, Any]] = []
+    by_rel: dict[str, int] = {}
+    for k, n in enumerate(nodes):
+        up = -1
+        p_i = n.get("parentI")
+        depth = n.get("depth") if isinstance(n.get("depth"), int) else 0
+        if isinstance(p_i, int) and not isinstance(p_i, bool) and 0 <= p_i < k:
+            up = p_i
+        elif n.get("parent") and n.get("parent") in by_rel:
+            up = by_rel[n["parent"]]
+        elif depth > 0:
+            for j in range(k - 1, -1, -1):
+                if nodes[j].get("depth") == depth - 1:
+                    up = j
+                    break
+        (nodes[up]["children"] if up >= 0 else roots).append(n)
+        rel = n.get("rel")
+        if isinstance(rel, str) and rel not in by_rel:
+            by_rel[rel] = k
+    return roots
+
+
 def chain(name: str) -> dict[str, Any]:
-    """A headless session's context chain (context-chain@1): the files it took in, in order, with their rules."""
+    """A headless session's context chain (context-chain@1): the files it took in, in order, with their rules, plus
+    `tree` (the same items nested under the file that pulled each one in)."""
     if not HEADLESS_RE.match(name or ""):
         raise ValueError("not a headless session")
     st = store.settings()
@@ -666,4 +695,7 @@ def chain(name: str) -> dict[str, Any]:
         v = json.loads(out) if out.strip() else None
     except ValueError:
         v = None
-    return v if isinstance(v, dict) else {"$axf": "context-chain@1", "session": name, "version": 0, "items": []}
+    if not isinstance(v, dict):
+        v = {"$axf": "context-chain@1", "session": name, "version": 0, "items": []}
+    items = v.get("items") if isinstance(v.get("items"), list) else []
+    return {**v, "items": items, "tree": chain_tree(items)}

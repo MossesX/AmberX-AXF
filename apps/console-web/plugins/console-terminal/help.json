@@ -450,6 +450,13 @@
         "title": "Terminal sessions",
         "text": "Opens the Terminal's sessions rail: your sessions, agents, connections and recent ones, to mirror or jump into.",
         "kind": "menu-item"
+      },
+      {
+        "target": "context-chain-text-size-share-of-the-themes-text",
+        "title": "Context chain text size (share of the theme’s text)",
+        "text": "Slide to set “Context chain text size (share of the theme’s text)”: left is less, right is more. Part of Terminal.",
+        "kind": "slider",
+        "draft": true
       }
     ],
     "intros": []

@@ -128,6 +128,28 @@ export type WindowFrame = 'standard' | 'frameless';
 export const windowFrame = (w: Pick<WindowSpec, 'frame'>): WindowFrame => (w.frame === 'frameless' ? 'frameless' : 'standard');
 export const isMaximized = (w: Pick<WindowSpec, 'maximized'>) => w.maximized === true;
 
+/**
+ * Tab press on a frameless window's tab strip (terminal-drag-chain-tree, Nov 3 2026, Brett: "There's nowhere to click
+ * to drag the terminal window around … It's all tabbed."). A strip full of tabs leaves no empty title bar, so a tab
+ * press decides what it is: a quick tap switches tabs; a horizontal drag (started before the hold) reorders; press and
+ * hold (long-press on a phone) then move drags the window, and so does a vertical pull; a hold released without moving
+ * is a `hold` (the caller's long-press menu on touch, a tap with a mouse). Pure, so every port agrees.
+ */
+export const TAB_HOLD_MS = 450;
+export const TAB_SLOP_PX = 6;
+export type TabPressIntent = 'pending' | 'armed' | 'tap' | 'hold' | 'reorder' | 'window';
+export function tabPressIntent(p: { dx: number; dy: number; heldMs: number; released?: boolean }): TabPressIntent {
+  const moved = Math.hypot(p.dx, p.dy) >= TAB_SLOP_PX;
+  const held = p.heldMs >= TAB_HOLD_MS;
+  if (!moved) return p.released ? (held ? 'hold' : 'tap') : held ? 'armed' : 'pending';
+  if (held) return 'window';
+  return Math.abs(p.dx) >= Math.abs(p.dy) ? 'reorder' : 'window';
+}
+/** Where a tab dragged to `x` lands among tabs whose [left, right] edges are `rects` (index in the final order). Pure. */
+export function reorderIndex(rects: readonly { left: number; right: number }[], from: number, x: number): number {
+  return rects.reduce((n, r, i) => (i !== from && x > (r.left + r.right) / 2 ? n + 1 : n), 0);
+}
+
 export const isFloating = (w: WindowSpec) => w.type === 'floating' || w.type === 'dock' || w.type === 'element';
 export const forcesToolbar = (w: WindowSpec) => isFloating(w) && w.type !== 'element';
 export const effectiveToolbar = (w: WindowSpec) => w.toolbarsAllowed && (w.toolbarEnabled || forcesToolbar(w));

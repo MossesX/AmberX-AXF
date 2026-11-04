@@ -29,7 +29,7 @@ export { AccountView } from './studio/AccountView';
 export { Inspector } from './studio/Inspector';
 export { AssetPreview } from './studio/AssetPreview';
 export { builtinDialogs } from './studio/builtinDialogs';
-export { FloatingWindowsHost, DockArea, PaneView, TabGroupView, WindowToolbar, WindowResizeHandles, TabRenderersProvider, useWindowManager, useWindowState, useWindowSpec, useWindowFrame, windowDialogs, type TabRenderer, type TabRenderers, type WindowFrameHooks } from './windows/WindowHost';
+export { FloatingWindowsHost, DockArea, PaneView, TabGroupView, WindowToolbar, WindowResizeHandles, WindowGrip, useTabPress, TabRenderersProvider, useWindowManager, useWindowState, useWindowSpec, useWindowFrame, windowDialogs, type TabRenderer, type TabRenderers, type WindowFrameHooks, type TabPressHandlers } from './windows/WindowHost';
 export { DockHost, DockPaneView, DockDropOverlay, DockPresetThumb, DockLayoutDialog, dockLayoutDialog } from './windows/DockHost';
 export { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
 export { installLibraries, orderLibraries, type AxfWebLibrary, type BannerDef, type SlotDef } from './library';
