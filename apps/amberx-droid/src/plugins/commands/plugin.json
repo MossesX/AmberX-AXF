@@ -3,7 +3,7 @@
   "id": "ai.amberx.amberx.commands",
   "name": "Voice command center",
   "version": "0.1.0",
-  "description": "Hundreds of voice commands, chains and wizards for notes, tasks, the Dev Console (through Molly) and AI snippets, in a tab group with sortable, searchable grids; record your own phrases (said twice, must match), edit chains by hand or by voice.",
+  "description": "Hundreds of voice commands, chains and wizards for notes, tasks, the Dev Console (through Gizmo) and AI snippets, in a tab group with sortable, searchable grids; record your own phrases (said twice, must match), edit chains by hand or by voice.",
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "opus", "builtAt": "2026-10-28" }
 }
