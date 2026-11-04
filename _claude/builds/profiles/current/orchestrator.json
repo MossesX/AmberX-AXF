@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T14:24:32.190Z",
+ "updatedAt": "2026-11-04T14:24:48.994Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4246,13 +4246,18 @@
    "pendingId": "",
    "branch": "claude/plugin-lazy-load",
    "pr": "#298",
+   "mergedAt": "2026-11-04T14:24:10Z",
    "createdAt": "2026-11-03T22:55:16.843Z",
-   "updatedAt": "2026-11-04T01:24:29.253Z",
+   "updatedAt": "2026-11-04T14:24:38.168Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: PR #298",
      "at": "2026-11-04T01:24:29.253Z"
+    },
+    {
+     "text": "Landed by urgent-land-lazy-loader: PR #298 merged f15709c32 (2026-11-04 14:24 UTC). Still owed from s3: live phone check + UI Review shots of the Lazy loader tab.",
+     "at": "2026-11-04T14:24:38.168Z"
     }
    ],
    "approvals": [],
@@ -6787,7 +6792,7 @@
    "title": "Land PR #298: console plugin lazy loader",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -6795,8 +6800,8 @@
    "pr": "#298",
    "mergedAt": "2026-11-04T14:24:10Z",
    "createdAt": "2026-11-04T12:29:55.129Z",
-   "updatedAt": "2026-11-04T14:24:21.712Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T14:24:36.644Z",
+   "builtAt": "2026-11-04T14:24:36.644Z",
    "notes": [
     {
      "text": "Merged main into #298, seeded 20 banner plugins, fixed a first-visit hang (per-plugin re-install of all libraries; CI theme-swap timeout) and plugin-lifecycle refs. Startup 4.46 -> 2.07 MB. CI dispatched on c97d1967e.",
@@ -6885,8 +6890,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T14:24:36.644Z",
      "note": "",
      "uid": "st-mw23gp6508tldc"
     }
