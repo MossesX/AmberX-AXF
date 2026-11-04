@@ -669,12 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:09 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 18:10 UTC · `builds-one-page` s7 done, s8 done, s9 done, s10 done, s11 done, s15 done, s30 done, s30 done, note (refactor) · foreign-write
-- 2026-11-03 18:10 UTC · `md-studio` s1 done (urgent) · orchestrator
-- 2026-11-03 18:10 UTC · `md-studio` s2 done (urgent) · orchestrator
-- 2026-11-03 18:15 UTC · `crew-live` added (7 steps) (urgent) · orchestrator
-- 2026-11-03 18:15 UTC · `crew-live` branch claude/crew-live (urgent) · builds-live
 - 2026-11-03 18:15 UTC · `crew-live` s1 done, → running (urgent) · orchestrator
 - 2026-11-03 18:16 UTC · `menu-scroll` s5 done (urgent) · orchestrator
 - 2026-11-03 18:16 UTC · `menu-scroll` s6 done, → complete (urgent) · orchestrator
@@ -1069,6 +1063,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:38 UTC · `profile-switcher-widget` note (current) · orchestrator
 - 2026-11-04 14:38 UTC · `profile-switcher-widget` → archived (current) · orchestrator
 - 2026-11-04 14:38 UTC · `profile-lists-home-card` s4 done, → built (current) · orchestrator
+- 2026-11-04 14:38 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 14:38 UTC · `profile-lists-home-card` s4 done, → complete (current) · foreign-write
+- 2026-11-04 14:38 UTC · `profile-filter-tables` added (4 steps) (current) · foreign-write
+- 2026-11-04 14:39 UTC · `fable-no-approval` added (3 steps) (current) · fable-no-approval
+- 2026-11-04 14:39 UTC · `fable-review-nov3` added (7 steps) (current) · fable-no-approval
+- 2026-11-04 14:39 UTC · `fable-no-approval` s1 done, → running (current) · orchestrator
 
 ## Token passes (log)
 
