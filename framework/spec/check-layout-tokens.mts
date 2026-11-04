@@ -138,7 +138,7 @@ ok(/would move 0 media block/.test(adopt), `layout-adopt finds nothing left in t
 const { adoptLayoutSource } = await import('../cli/layout-adopt.mjs');
 const sample = '@media (max-width: 640px) { .a, .b { color: var(--fx-text); } .c { gap: 0 } }\n@media (min-width: 761px) {\n  .d { display: none }\n}\n@media (max-width: 1500px) { .e { x: 1 } }';
 const r = adoptLayoutSource(sample);
-eq(r.out, ':where([data-fx-small]) .a, :where([data-fx-small]) .b { color: var(--fx-text); } :where([data-fx-small]) .c { gap: 0 }\n:where(:not([data-fx-narrow])) .d { display: none }\n@media (max-width: 1500px) { .e { x: 1 } }', 'codemod output');
+eq(r.out, ':where([data-fx-small]) .a, :where([data-fx-small]) .b { color: var(--fx-text); } :where([data-fx-small]) .c { gap: 0 }\n:where([data-fx-scheme]:not([data-fx-narrow])) .d { display: none }\n@media (max-width: 1500px) { .e { x: 1 } }', 'codemod output');
 eq(r.left.map((l) => l.px), [1500], 'a breakpoint above the largest cut-off is left and reported');
 eq(adoptLayoutSource(r.out).changed, [], 'idempotent');
 

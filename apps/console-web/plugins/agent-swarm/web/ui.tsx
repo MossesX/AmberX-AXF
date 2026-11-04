@@ -14,7 +14,8 @@ import './swarm.css';
 export { FOLDER };
 
 /*
- * Agent swarm page (the Breakroom): a tab group. Jobs = recurring job types and the hired agent who owns each (jobs.tsx);
+ * Agent swarm page (the Breakroom): a tab group. Crew = the cards (skills, home job, current job) and who's free;
+ * Jobs = job types and the agents who can take each (jobs.tsx);
  * Build plan = a build split into jobs (agent, model, budget, leases, waves); Cost = the
  * cost meter per agent, build and job. All rules are in swarm-core.mjs; the server reads through swarm.mjs.
  */
@@ -26,8 +27,9 @@ export function SwarmPage() {
   const rt = useRuntime();
   const { state, error, load, act } = useSwarm();
   const jobs = useJobs();
-  // which job types each agent owns (its card lists them)
-  const jobsBy = useMemo(() => { const m: Record<string, { id: string; name: string }[]> = {}; for (const j of jobs.jobs ?? []) for (const o of j.owners) (m[o.id] ??= []).push({ id: j.id, name: j.name }); return m; }, [jobs.jobs]);
+  // which job types each agent can take (its card lists them, home job first) and every skill the job types need
+  const jobsBy = useMemo(() => { const m: Record<string, { id: string; name: string; home: boolean }[]> = {}; for (const j of jobs.jobs ?? []) for (const o of j.owners) (m[o.id] ??= []).push({ id: j.id, name: j.name, home: !!o.home }); for (const k of Object.keys(m)) m[k]!.sort((x, y) => Number(y.home) - Number(x.home)); return m; }, [jobs.jobs]);
+  const allSkills = useMemo(() => [...new Set((jobs.jobs ?? []).flatMap((j) => j.skills ?? []))].sort(), [jobs.jobs]);
   const openAgent = (id: string) => { consoleApi.writeLocal('swarm-profile', id); setTab('crew'); };
   const [tab, setTab] = useState<Tab>(() => consoleApi.readLocal<Tab>('swarm-tab', 'crew'));
   const stats = useMemo(() => (state ? Object.fromEntries(state.roster.agents.map((a) => [a.id, core.agentStats(state.runs, a.id, state.prices)])) : {}), [state]);
@@ -50,7 +52,7 @@ export function SwarmPage() {
       <div className="fx-tabs" role="tablist" aria-label="Agent swarm">
         {TABS.map((t) => <button key={t.id} role="tab" className="fx-tab" aria-selected={tab === t.id} onClick={() => setTab(t.id)}><Icon name={t.icon} size={14} />{t.label}</button>)}
       </div>
-      {tab === 'crew' && <CrewTab state={state} stats={stats} act={doAct} jobsBy={jobsBy} onFeed={() => setTab('cost')} />}
+      {tab === 'crew' && <CrewTab state={state} stats={stats} act={doAct} jobsBy={jobsBy} allSkills={allSkills} onFeed={() => setTab('cost')} />}
       {tab === 'job-types' && <JobTypesTab jobs={jobs.jobs} error={jobs.error} reload={async () => { await Promise.all([jobs.load(), load()]); }} onAgent={openAgent} />}
       {tab === 'cards' && <CardsTab state={state} stats={stats} act={doAct} photo={(a) => <Avatar a={a} size={120} />} />}
       {tab === 'agents' && <AgentsTab state={state} act={doAct} />}
