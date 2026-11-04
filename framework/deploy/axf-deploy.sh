@@ -168,6 +168,28 @@ axf_wall_labels() {
     -l "traefik.http.routers.$_axf_r.middlewares=$_axf_r-strip,$_axf_r-wall")
 }
 
+# ---------------------------------------------------------------------------------------------------- deploy log
+
+# axf_deploy_log LOGFILE TARGET SHA [WHO] [STATE] [FROM] [VERSION]
+# Appends one deploy-log@1 record (framework/core/deploy-log.mjs) to LOGFILE: what went live where, and when. Every
+# deploy script calls it once per target after the container / site is up (STATE done) or when it failed (STATE
+# failed: logged, but a failed deploy never makes a feature live). Shapes only: target and sha are checked here,
+# nothing else is interpreted. WHO defaults to $AXF_DEPLOY_WHO (the auto-update script sets "update"), else install.
+axf_deploy_log() {
+  local _f="$1" _t="$2" _sha="$3" _who="${4:-${AXF_DEPLOY_WHO:-install}}" _st="${5:-done}" _from="${6:-}" _ver="${7:-}"
+  case "$_t" in ''|*[!a-z0-9:-]*) echo "[axf] deploy log: bad target '$_t'" >&2; return 0 ;; esac
+  case "$_sha" in ''|*[!0-9a-f]*) echo "[axf] deploy log: bad sha for $_t" >&2; return 0 ;; esac
+  case "$_st" in done|failed) ;; *) _st=done ;; esac
+  case "$_from" in *[!0-9a-f]*) _from="" ;; esac
+  local _at _id _host
+  _at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"; _host="$(hostname 2>/dev/null | tr -cd 'A-Za-z0-9._-')"
+  _id="d-${_t/:/-}-$(date -u +%s)-${_sha:0:7}"
+  _who="$(printf '%s' "$_who" | tr -cd 'A-Za-z0-9 ._:-' | cut -c1-120)"; _ver="$(printf '%s' "$_ver" | tr -cd 'A-Za-z0-9._+-' | cut -c1-60)"
+  mkdir -p "$(dirname "$_f")"
+  printf '{"$axf":"deploy@1","id":"%s","target":"%s","sha":"%s","from":"%s","at":"%s","who":"%s","host":"%s","kind":"deploy","state":"%s","version":"%s","note":"","guessed":false}\n' \
+    "$_id" "$_t" "$_sha" "$_from" "$_at" "$_who" "$_host" "$_st" "$_ver" >> "$_f"
+}
+
 # ---------------------------------------------------------------------------------------------------- auto-update
 
 # axf_update_script PATH DIR BRANCH LOG COMMAND [STATUS_FILE] [RERUN_MARKER…]
@@ -176,7 +198,8 @@ axf_wall_labels() {
 # `VAR="…" bash "$DIR/deploy/install.sh"`) with its output appended to LOG. With STATUS_FILE it also writes
 # activity@1-style progress JSON there ({"state":"building"|"done"|"failed","from","to","startedAt","finishedAt"};
 # no secrets). The whole script is one { … } block, so bash has read all of it before COMMAND rewrites the file.
-# Optional, read when called: AXF_UPDATE_FETCH = the git command used for the fetch (default `git`; e.g. a private repo:
+# Optional, read when called: AXF_UPDATE_DEPLOY = "LOGFILE TARGET": a failed run appends a failed deploy-log@1 record
+# (needs STATUS_FILE); AXF_UPDATE_FETCH = the git command used for the fetch (default `git`; e.g. a private repo:
 # `git "${H[@]}"`), AXF_UPDATE_PRELUDE = shell lines run right after `cd DIR` (e.g. building that H array).
 # The script is root-only (0700): COMMAND may carry a token the installer passes on to itself.
 axf_update_script() {
@@ -188,7 +211,7 @@ axf_update_script() {
     printf '%s\n' '#!/usr/bin/env bash' \
       '# Written by framework/deploy/axf-deploy.sh (axf_update_script). One block, so bash reads it all before running:' \
       '# the installer rewrites this file while it runs.' \
-      '{' 'set -e' "cd \"$_axf_dir\""
+      '{' 'set -e' "cd \"$_axf_dir\"" 'export AXF_DEPLOY_WHO=update  # deploy-log@1: the installer it runs logs the deploy as an update'
     [ -n "${AXF_UPDATE_PRELUDE:-}" ] && printf '%s\n' "$AXF_UPDATE_PRELUDE"
     printf '%s\n' \
       "before=\$(git rev-parse HEAD); ${AXF_UPDATE_FETCH:-git} fetch -q origin $_axf_branch && git reset -q --hard origin/$_axf_branch" \
@@ -200,6 +223,7 @@ axf_update_script() {
         "printf '{\"state\":\"building\",\"from\":\"%s\",\"to\":\"%s\",\"startedAt\":%s}\\n' \"\$before\" \"\$after\" \"\$t0\" > \"\$st.tmp\" && mv -f \"\$st.tmp\" \"\$st\"" \
         'state=done' \
         "$_axf_cmd >> $_axf_log 2>&1 || state=failed" \
+        "${AXF_UPDATE_DEPLOY:+[ \"\$state\" = failed ] && printf '{\"\$axf\":\"deploy@1\",\"target\":\"%s\",\"sha\":\"%s\",\"from\":\"%s\",\"at\":\"%s\",\"who\":\"update\",\"kind\":\"deploy\",\"state\":\"failed\"}\\n' \"${AXF_UPDATE_DEPLOY#* }\" \"\$after\" \"\$before\" \"\$(date -u +%Y-%m-%dT%H:%M:%SZ)\" >> \"${AXF_UPDATE_DEPLOY%% *}\" || true  # deploy-log@1: a failed update is logged (never makes anything live)}" \
         "printf '{\"state\":\"%s\",\"from\":\"%s\",\"to\":\"%s\",\"startedAt\":%s,\"finishedAt\":%s}\\n' \"\$state\" \"\$before\" \"\$after\" \"\$t0\" \"\$(date +%s)\" > \"\$st.tmp\" && mv -f \"\$st.tmp\" \"\$st\"" \
         '[ "$state" = done ]'
     else
