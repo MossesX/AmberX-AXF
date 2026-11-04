@@ -2,8 +2,9 @@
  * The banner strip page and its follower (framework/react/bannerStrip.ts has the contract).
  *
  * `BannerStripPage` is what an app draws when a host asks for its banner strip (embed@1 page `view:axf-banners`; AppShell
- * picks it): the widgets its plugins attach to its banner bar, then its banners exactly as on its own page (the
- * app.frame.banners slot, Banner settings, colours, order). It tells the host how tall it is, asks for the whole window
+ * picks it): the widgets its plugins attach to its banner bar (or, when the host asks for `bar`, the whole banner bar: its
+ * banner asset in force with its logo and attachments, so the host's top banner is this app's), then its banners exactly
+ * as on its own page (the app.frame.banners slot, Banner settings, colours, order; always docked). It tells the host how tall it is, asks for the whole window
  * while a dialog / menu / popover it opened is up, and sends a view a banner item opened to the app's own frame.
  *
  * `useBannerStripFollower` runs in the app's own frame inside the same host: it opens those views.
@@ -13,7 +14,7 @@ import type { BadgeData } from '../../core/types';
 import type { AxfRuntime } from '../../core/runtime';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { BANNER_STRIP_CHANNEL, BANNER_STRIP_MESSAGE, parseBannerStripChannel, parseBannerStripMessage, type BannerStripChannelMessage, type BannerStripMessage } from '../bannerStrip';
-import { BannerBadge } from './Banner';
+import { Banner, BannerBadge } from './Banner';
 import { bannerLabel, bannerPrefs, setBannerPrefs, useBannerPrefsTick, useKnownBanners } from './BannerSettings';
 import { FrameBanners } from './Slots';
 import { WidgetView } from './Widgets';
@@ -65,6 +66,8 @@ export function BannerStripPage() {
   const rt = useRuntime();
   const ref = useRef<HTMLDivElement>(null);
   const [inset, setInset] = useState<{ top: number; left: number; width: number } | null>(null);
+  // the host's top banner is this app's banner bar (host → strip `bar`): its banner asset in force, logo and attachments
+  const [bar, setBar] = useState(false);
   const all = useKnownBanners();
   const prefsTick = useBannerPrefsTick();
 
@@ -82,8 +85,10 @@ export function BannerStripPage() {
     const report = () => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
-        const m: BannerStripMessage = { $axf: BANNER_STRIP_MESSAGE, type: 'size', height: Math.ceil(el.getBoundingClientRect().height), overlay: needsWindow(el) };
-        const key = `${m.height}:${m.overlay}`;
+        // `bar` only once the bar is really drawn (a hidden banner slot or no banner asset draws nothing: the host keeps its own)
+        const drawn = !!el.querySelector(':scope > .fx-banner[role="banner"]');
+        const m: BannerStripMessage = { $axf: BANNER_STRIP_MESSAGE, type: 'size', height: Math.ceil(el.getBoundingClientRect().height), overlay: needsWindow(el), ...(drawn ? { bar: true } : {}) };
+        const key = `${m.height}:${m.overlay}:${drawn}`;
         if (key !== last) { last = key; toHost(m); }
       });
     };
@@ -105,6 +110,7 @@ export function BannerStripPage() {
       if (e.source !== window.parent || window.parent === window) return;
       const m = parseBannerStripMessage(e.data); if (!m) return;
       if (m.type === 'inset') setInset(m.width > 0 ? { top: m.top, left: m.left, width: m.width } : null);
+      else if (m.type === 'bar') setBar(m.on);
       else if (m.type === 'set-hidden') setBannerPrefs(rt, m.id, { hideInHost: m.hidden });
       else if (m.type === 'banners-request') toHost({ $axf: BANNER_STRIP_MESSAGE, type: 'banners', banners: all.map((b) => ({ id: b.id, label: bannerLabel(b), ...(b.icon ? { icon: b.icon } : {}), hidden: bannerPrefs(rt, b.id).hideInHost })) });
     };
@@ -117,8 +123,9 @@ export function BannerStripPage() {
 
   return (
     <div ref={ref} className="fx-banner-strip" style={inset ? { marginTop: inset.top, marginLeft: inset.left, width: inset.width } : undefined}>
-      <StripWidgets />
-      <FrameBanners />
+      {bar ? <Banner asHost /> : <StripWidgets />}
+      {/* docked: the host's banner region is this strip; a floating group would be clipped inside its frame */}
+      <FrameBanners docked />
     </div>
   );
 }

@@ -25,12 +25,12 @@ export const useSlotFilled = (name: string) => (useContext(SlotsCtx)[name]?.leng
 /** Slot for banners above the whole page (`app.frame.banners`): above app.frame.top (a plugin's page-wide bar), so they stay
  * visible while a plugin covers the page. Contributed banners render nothing when idle; then the box collapses. */
 export const FRAME_BANNERS_SLOT = 'app.frame.banners';
-export function FrameBanners() {
+export function FrameBanners({ docked = false }: { docked?: boolean } = {}) {
   const filled = useSlotFilled(FRAME_BANNERS_SLOT);
   const empty = useStripEmpty();
   if (!filled) return null;
   // One wrapper for every banner, whichever plugins drew them: the banner group (title bar, fold, undock) once 2+ show.
-  return <div ref={empty.ref} className="fx-frame-banners" data-fx-empty={empty.on ? 'on' : undefined} data-fx-ctx-ignore="" onClickCapture={revealExpanded}><BannerGroup><Slot name={FRAME_BANNERS_SLOT} /></BannerGroup><HiddenBannersNote /></div>;
+  return <div ref={empty.ref} className="fx-frame-banners" data-fx-empty={empty.on ? 'on' : undefined} data-fx-ctx-ignore="" onClickCapture={revealExpanded}><BannerGroup docked={docked}><Slot name={FRAME_BANNERS_SLOT} /></BannerGroup><HiddenBannersNote /></div>;
 }
 
 /**

@@ -7,3 +7,5 @@
 /* while a dialog or menu the strip opened is up, it covers Molly's whole window (its banners stay where they were) */
 .axp-banners-strip__frame[data-cover='true'] { position: fixed; inset: 0; width: 100vw; height: 100vh; max-height: none; z-index: 900; }
 .axp-banners-code { margin: 0; white-space: pre-wrap; font-family: var(--fx-font-mono); font-size: var(--fx-type-root-xs); }
+/* top banner = the source app's (Settings → Plugins → Banners → Top banner): its strip draws the bar, Molly leaves its own out */
+html[data-molly-top-banner='source'] .fx-frame > .fx-banner[role='banner'] { display: none; }

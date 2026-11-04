@@ -17,6 +17,10 @@ eq(parseBannerStripMessage({ $axf: M, type: 'size', height: 120.4, overlay: true
 eq(parseBannerStripMessage({ $axf: M, type: 'size', height: -5 }), { $axf: M, type: 'size', height: 0, overlay: false }, 'size floors at 0, overlay only when true');
 eq(parseBannerStripMessage({ $axf: M, type: 'size', height: 'x' }), null, 'size needs a number');
 eq(parseBannerStripMessage({ $axf: M, type: 'size', height: 1e9, overlay: 1 }), { $axf: M, type: 'size', height: BANNER_STRIP_LIMITS.px, overlay: false }, 'size capped');
+eq(parseBannerStripMessage({ $axf: M, type: 'size', height: 40, overlay: false, bar: true }), { $axf: M, type: 'size', height: 40, overlay: false, bar: true }, 'size: the strip draws the whole bar');
+eq(parseBannerStripMessage({ $axf: M, type: 'size', height: 40, bar: 'yes' }), { $axf: M, type: 'size', height: 40, overlay: false }, 'size: bar only when true (an older strip = widgets only)');
+eq(parseBannerStripMessage({ $axf: M, type: 'bar', on: true }), { $axf: M, type: 'bar', on: true }, 'bar: host asks for the whole banner bar');
+eq(parseBannerStripMessage({ $axf: M, type: 'bar' }), { $axf: M, type: 'bar', on: false }, 'bar: on only when true');
 eq(parseBannerStripMessage({ $axf: M, type: 'open', view: 'build-manager' }), { $axf: M, type: 'open', view: 'build-manager' }, 'open');
 eq(parseBannerStripMessage({ $axf: M, type: 'open', view: '<script>' }), null, 'open: bad view');
 eq(parseBannerStripMessage({ $axf: M, type: 'inset', top: 40, left: 0, width: 800 }), { $axf: M, type: 'inset', top: 40, left: 0, width: 800 }, 'inset');

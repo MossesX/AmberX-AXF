@@ -5,8 +5,8 @@
  * popup (rt.showBannerPopup) pops a short message out to the right of its attachment for a few seconds; tapping it
  * dismisses it early. Theme tokens only.
  */
-import { useEffect, useState } from 'react';
-import { BANNER_SIDES, badgeToneToken, bannerSurface, clockTickMs, formatClock, type ClockParts, type PlacedAttachment } from '../../core/engines/banner';
+import { useEffect, useState, type CSSProperties } from 'react';
+import { BANNER_SIDES, badgeToneToken, bannerSurface, bannerVars, clockTickMs, formatClock, type ClockParts, type PlacedAttachment } from '../../core/engines/banner';
 import type { BadgeData, ClockData } from '../../core/types';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
@@ -73,10 +73,13 @@ function bannerMarkPx(data: { height?: number }): number {
   return Math.round(((data.height ?? 24) * 0.55));
 }
 
-export function Banner() {
+/** `asHost`: drawn in a host's banner strip as the host's top banner (BannerStrip.tsx), so only the user's own hide choice
+ * counts, not the strip page's forced chrome layer (which also compiles the page's banner height to 0: the bar carries
+ * its own, from the same engine). */
+export function Banner({ asHost = false }: { asHost?: boolean } = {}) {
   const rt = useRuntime();
   useAxfState();
-  const { data, placed } = rt.banner();
+  const { data, placed } = rt.banner({ ownChoice: asHost });
   const arrange = useArrange('banner', placed);
   // branding@1: the banner's brand slot replaces the built-in mark (lockup by default); accent-edge / watermark mark the host
   const brand = useBrandPlace('banner');
@@ -86,7 +89,7 @@ export function Banner() {
   // a lockup / wordmark already carries the brand name, so the asset's own logo text is only shown next to a plain mark
   const showText = data.logo?.text && (!drawsMark || brand?.mode === 'mark' || brand?.mode === 'animated');
   return (
-    <div className={`fx-banner is-${bannerSurface(data)}${data.divider === false ? '' : ' has-divider'}${arrange.on ? ' is-arranging' : ''} ${host.className}`.trim()} role="banner" data-fx-ctx-target="banner" data-axf-search="off" data-axf-arrange-host="banner" data-fx-brand-mode={host['data-fx-brand-mode']}>
+    <div className={`fx-banner is-${bannerSurface(data)}${data.divider === false ? '' : ' has-divider'}${arrange.on ? ' is-arranging' : ''} ${host.className}`.trim()} style={asHost ? (bannerVars(data) as CSSProperties) : undefined} role="banner" data-fx-ctx-target="banner" data-axf-search="off" data-axf-arrange-host="banner" data-fx-brand-mode={host['data-fx-brand-mode']}>
       {BANNER_SIDES.map((side) => (
         <div key={side} className={`fx-banner__side is-${side}`} {...arrange.sideProps(side)}>
           {side === 'left' && data.logo?.show !== false && (
