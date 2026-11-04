@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 599,
- "updatedAt": "2026-11-04T02:04:08.945Z",
+ "rev": 600,
+ "updatedAt": "2026-11-04T02:13:33.066Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -67630,7 +67630,7 @@
    "branch": "claude/browser-automation",
    "pr": "#299",
    "createdAt": "2026-11-04T00:31:47.837Z",
-   "updatedAt": "2026-11-04T01:43:43.665Z",
+   "updatedAt": "2026-11-04T02:10:56.963Z",
    "builtAt": "",
    "notes": [
     {
@@ -67701,11 +67701,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-04T01:43:43.665Z",
+     "doneAt": "2026-11-04T02:10:56.963Z",
      "note": "",
-     "rev": 3,
+     "rev": 4,
      "createdAt": "2026-11-04T00:31:48.444Z",
-     "updatedAt": "2026-11-04T01:48:19.458Z"
+     "updatedAt": "2026-11-04T02:11:46.055Z"
     },
     {
      "id": "s4",
@@ -68002,10 +68002,37 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-04T00:31:47.837Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw1dt95p0h99uo": "2026-11-04T00:31:48.444Z",
+     "st-mw1dt95p0i53rr": "2026-11-04T00:31:48.444Z",
+     "st-mw1dt95p0j4y85": "2026-11-04T00:31:48.444Z",
+     "st-mw1dt95p0km41z": "2026-11-04T00:31:48.444Z",
+     "st-mw1dt95p0lguxg": "2026-11-04T00:31:48.444Z",
+     "st-mw1dt95p0m4vnl": "2026-11-04T00:31:48.444Z",
+     "st-mw1dt95p0ngt38": "2026-11-04T00:31:48.444Z",
+     "st-mw1dt95p0o6vsl": "2026-11-04T00:31:48.444Z",
+     "st-mw1dt95p0pfmm1": "2026-11-04T00:31:48.444Z",
+     "st-mw1dt95p0qb5lk": "2026-11-04T00:31:48.444Z",
+     "st-mw1dt95p0rfv8k": "2026-11-04T00:31:48.444Z",
+     "st-mw1dt95p0sabgz": "2026-11-04T00:31:48.444Z",
+     "st-mw1dt95p0ts27e": "2026-11-04T00:31:48.444Z",
+     "st-mw1dt95p0u5iu1": "2026-11-04T00:31:48.444Z",
+     "st-mw1dt95p0vndfj": "2026-11-04T00:31:48.444Z",
+     "st-mw1dt95p0wc6al": "2026-11-04T00:31:48.444Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-04T00:31:48.444Z",
    "rearranged": false,
