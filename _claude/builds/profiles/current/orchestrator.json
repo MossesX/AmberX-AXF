@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T16:46:05.513Z",
+ "updatedAt": "2026-11-04T17:00:24.547Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -663,7 +663,7 @@
    "branch": "claude/plugin-settings-placement",
    "pr": "#289",
    "createdAt": "2026-11-03T20:30:14.217Z",
-   "updatedAt": "2026-11-03T22:08:50.723Z",
+   "updatedAt": "2026-11-04T16:55:20.341Z",
    "builtAt": "2026-11-03T22:08:49.404Z",
    "notes": [
     {
@@ -677,6 +677,10 @@
     {
      "text": "Built by Reel Rhonda (headless worktree, Opus). PR #289; UI Review submitted (group 'plugin-settings-placement - Nov 3 10:15 PM'). Report _claude/builds/reports/plugin-settings-placement.md. Follow-ups: Fable review of the settings-placement@1 contract, a shared-presets asset type, exit animations, more plugins adopting <SettingsHost>.",
      "at": "2026-11-03T22:08:50.723Z"
+    },
+    {
+     "text": "Nov 4 2026: PR #289 closed as superseded; its commits land through PR #329 (settings-placement-everywhere, Greenlight Gina), which merged main into it, fixed its two CI failures and gave the contract its Fable review.",
+     "at": "2026-11-04T16:55:20.341Z"
     }
    ],
    "approvals": [],
@@ -10563,12 +10567,16 @@
    "branch": "claude/tab-group-assets",
    "pr": "#327",
    "createdAt": "2026-11-04T15:29:38.375Z",
-   "updatedAt": "2026-11-04T16:40:15.440Z",
+   "updatedAt": "2026-11-04T16:47:04.887Z",
    "builtAt": "2026-11-04T16:40:10.739Z",
    "notes": [
     {
      "text": "Built: PR #327 open, all checks + 4 app typechecks green, 9 shots in UI Review → Screenshots group 'tab-group-assets - Nov 4 11:38 AM'. Report _claude/builds/reports/tab-group-assets.md. After merge: redeploy console, AmberX, axHub web.",
      "at": "2026-11-04T16:40:15.440Z"
+    },
+    {
+     "text": "settings-placement-everywhere (Nov 4 2026): the settings asset (settings-ui@1) now carries opensIn (dialog / panel-left / panel-right / sheet / inside / page / window, or a pick); every shared default + per-app custom settings-interface asset this build makes can declare where it pops up with that one field, no new contract needed. The 'Pops up in' row at the top of every settings interface edits the screen / app scopes.",
+     "at": "2026-11-04T16:47:04.887Z"
     }
    ],
    "approvals": [],
@@ -10833,14 +10841,18 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/settings-placement-everywhere",
-   "pr": "",
+   "pr": "#329",
    "createdAt": "2026-11-04T16:03:38.989Z",
-   "updatedAt": "2026-11-04T16:20:26.351Z",
+   "updatedAt": "2026-11-04T17:00:22.822Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: branch claude/settings-placement-everywhere (no PR yet)",
      "at": "2026-11-04T16:20:26.351Z"
+    },
+    {
+     "text": "Reconciler: PR #329",
+     "at": "2026-11-04T17:00:22.822Z"
     }
    ],
    "approvals": [],
@@ -11408,7 +11420,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T16:46:03.374Z",
-   "updatedAt": "2026-11-04T16:46:03.374Z",
+   "updatedAt": "2026-11-04T16:56:20.071Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -11439,8 +11451,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T16:47:43.828Z",
      "note": "",
      "uid": "st-mw2cm3hw07w74f",
      "title": "Sessions engine"
@@ -11458,8 +11470,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T16:50:57.659Z",
      "note": "",
      "uid": "st-mw2cm3hw08s8i5",
      "title": "Recordings engine"
@@ -11477,8 +11489,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T16:56:20.071Z",
      "note": "",
      "uid": "st-mw2cm3hw0916ep",
      "title": "Server routes + capability"

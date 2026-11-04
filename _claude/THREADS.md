@@ -683,17 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 13:30 UTC · `hotfix-build-manager` note (current) · foreign-write
-- 2026-11-04 13:30 UTC · `bugs-board` s1 done, s2 done (current) · orchestrator
-- 2026-11-04 13:30 UTC · `bugs-board` s1 done, s2 done, s3 done (current) · orchestrator
-- 2026-11-04 13:30 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done (current) · orchestrator
-- 2026-11-04 13:30 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done, s6 done (current) · orchestrator
-- 2026-11-04 13:30 UTC · `land-round-2` s3 done (current) · foreign-write
-- 2026-11-04 13:30 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · orchestrator
-- 2026-11-04 13:31 UTC · `land-round-2` s2 done (current) · foreign-write
-- 2026-11-04 13:31 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · bugs-board
-- 2026-11-04 13:33 UTC · `land-round-2` s2 done (current) · foreign-write
-- 2026-11-04 13:33 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · foreign-write
 - 2026-11-04 13:33 UTC · `follow-amber-switch` added (5 steps) (current) · orchestrator
 - 2026-11-04 13:25 UTC · `requests-ledger` s5 done, → complete (current) · foreign-write
 - 2026-11-04 13:25 UTC · `bugs-board` s1 done, note (current) · foreign-write
@@ -1083,6 +1072,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 16:42 UTC · `settings-placement-everywhere` note (current) · foreign-write
 - 2026-11-04 16:42 UTC · `molly-multi-instance-tabs` s1 done, s2 done, s3 done, s4 done, → complete (current) · foreign-write
 - 2026-11-04 16:46 UTC · `live-sessions-plugin` added (6 steps) (current) · orchestrator
+- 2026-11-04 16:44 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-04 16:47 UTC · `tab-group-assets` note (current) · foreign-write
+- 2026-11-04 16:47 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-04 16:50 UTC · `tab-group-assets` note (current) · foreign-write
+- 2026-11-04 16:50 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-04 16:50 UTC · `live-sessions-plugin` s1 done (current) · foreign-write
+- 2026-11-04 16:57 UTC · `plugin-settings-placement` note (current) · foreign-write
+- 2026-11-04 16:57 UTC · `tab-group-assets` note (current) · foreign-write
+- 2026-11-04 16:57 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-04 16:57 UTC · `live-sessions-plugin` s1 done, s2 done, s3 done (current) · foreign-write
+- 2026-11-04 17:00 UTC · `settings-placement-everywhere` PR #329, note (current) · reconciler
 
 ## Token passes (log)
 
