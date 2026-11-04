@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T14:10:16.165Z",
+ "updatedAt": "2026-11-04T14:10:25.946Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6210,9 +6210,9 @@
    "source": "console",
    "pendingId": "land-round-2",
    "branch": "claude/land-round-2",
-   "pr": "",
+   "pr": "#313",
    "createdAt": "2026-11-04T10:43:58.630Z",
-   "updatedAt": "2026-11-04T13:52:35.878Z",
+   "updatedAt": "2026-11-04T14:10:24.329Z",
    "builtAt": "",
    "notes": [
     {
@@ -6226,6 +6226,10 @@
     {
      "text": "Stopped at the $15 per-build cap (~$42 in tokens). Landed #288 (+#266), #294, #295; closed #266 #297. #296 pushed (CI unread: GitHub budget out); #298 #281 #291 #293 #289 #269 resolved on local branches land/<pr> (#281 now conflicts with #295 in runtime.ts); #300 needs a rework on #269. Blocker: the shared GitHub token empties its 5000/h budget in ~25 min. Report _claude/builds/reports/land-round-2.md",
      "at": "2026-11-04T13:52:34.961Z"
+    },
+    {
+     "text": "Reconciler: PR #313",
+     "at": "2026-11-04T14:10:24.329Z"
     }
    ],
    "approvals": [],
@@ -6420,7 +6424,7 @@
    "pr": "#305",
    "mergedAt": "2026-11-04T14:03:08Z",
    "createdAt": "2026-11-04T10:48:28.927Z",
-   "updatedAt": "2026-11-04T14:04:44.092Z",
+   "updatedAt": "2026-11-04T14:10:24.329Z",
    "builtAt": "2026-11-04T10:55:44.452Z",
    "notes": [
     {
@@ -6434,6 +6438,10 @@
     {
      "text": "Reconciler: PR #305 merged",
      "at": "2026-11-04T14:04:44.092Z"
+    },
+    {
+     "text": "Reconciler: PR #305 merged",
+     "at": "2026-11-04T14:10:24.329Z"
     }
    ],
    "approvals": [],

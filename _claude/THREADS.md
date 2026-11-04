@@ -662,9 +662,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:57 UTC · `molly-opus` merged, note (big-dog) · reconciler
-- 2026-11-03 13:57 UTC · `xlayout` s12 done, → built, branch claude/xlayout-opus, PR #252, note (big-dog) · reconciler
-- 2026-11-03 13:57 UTC · `walkthrough-random-look` PR #240, merged, note (refactor) · reconciler
 - 2026-11-03 13:57 UTC · `md-studio` branch claude/md-studio-theme-editor-plan, PR #242, merged, note (urgent) · reconciler
 - 2026-11-03 13:57 UTC · `orch-live-sync` s5 done (urgent) · orchestrator
 - 2026-11-03 13:57 UTC · `orch-live-sync` s6 done (urgent) · orchestrator
@@ -1062,6 +1059,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:05 UTC · `crew-profiles` → running (current) · orchestrator
 - 2026-11-04 14:09 UTC · `crew-profiles` s1 done (current) · orchestrator
 - 2026-11-04 14:09 UTC · `crew-profiles` s2 done (current) · orchestrator
+- 2026-11-04 14:10 UTC · `crew-profiles` s1 done, s2 done (current) · foreign-write
+- 2026-11-04 14:10 UTC · `land-round-2` PR #313, note (current) · reconciler
+- 2026-11-04 14:10 UTC · `terminal-no-focus` note (current) · reconciler
 
 ## Token passes (log)
 
