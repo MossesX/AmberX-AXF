@@ -613,8 +613,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 21:17 UTC · `home-cards-live` s3 done (urgent) · orchestrator
-- 2026-11-03 21:17 UTC · `home-cards-live` s6 done, → complete (urgent) · orchestrator
 - 2026-11-03 21:17 UTC · `home-cards-live` → built, PR #283 (urgent) · builds-live
 - 2026-11-03 21:19 UTC · `molly-console-commands` added (56 steps) (current) · foreign-write
 - 2026-11-03 21:19 UTC · `git-status-board` added (24 steps) (current) · foreign-write
@@ -1013,3 +1011,5 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 04:09 UTC · `profile-switcher-widget` s1 done, s2 done, s3 done, s4 done, note (current) · foreign-write
 - 2026-11-04 04:09 UTC · `main-area-tabs` added (60 steps) (current) · foreign-write
 - 2026-11-04 04:09 UTC · `app-style-override` added (6 steps) (current) · foreign-write
+- 2026-11-04 04:13 UTC · `toolbar-tap-confirm` merged, note (urgent) · reconciler
+- 2026-11-04 04:13 UTC · `ui-review-predicted` → complete, merged, note (urgent) · reconciler

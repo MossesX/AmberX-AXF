@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T04:09:59.744Z",
+ "updatedAt": "2026-11-04T04:13:55.246Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3523,8 +3523,9 @@
    "pendingId": "",
    "branch": "claude/toolbar-tap-confirm",
    "pr": "#272",
+   "mergedAt": "2026-11-04T04:11:27Z",
    "createdAt": "2026-11-03T18:23:45.044Z",
-   "updatedAt": "2026-11-03T18:54:23.691Z",
+   "updatedAt": "2026-11-04T04:13:39.547Z",
    "builtAt": "",
    "notes": [
     {
@@ -3538,6 +3539,10 @@
     {
      "text": "Reconciler: PR #272 names s8 done",
      "at": "2026-11-03T18:54:23.691Z"
+    },
+    {
+     "text": "Reconciler: PR #272 merged; PR #272 names s8 done",
+     "at": "2026-11-04T04:13:39.547Z"
     }
    ],
    "approvals": [],
@@ -4882,14 +4887,15 @@
    "title": "UI Review shows predicted pictures before a build runs",
    "category": "Console",
    "detail": "Brett, Nov 3 2026 (voice): UI Review must show PREDICTED pictures - what a build will probably look like - BEFORE it's built, so he can approve the look before an agent spends money. Agent: Snap Sully (also on ui-review-shots; built on its storage fix). Predicted mockups are made from the brief + steps (+ diff while running) by rendering real framework components with the current theme in a headless browser (reusing rebuild-shots capture, no new capture system); item status 'Predicted - approve the look'; Approve look / Ask changes (addendum to the build) / Reject (build held); setting 'Wait for my look approval before UI builds start' (default off); refresh while running, real after-shot replaces it at the end (badge Real, compare toggle); backfill for queued/running UI builds; commands declared once -> REST + MCP + CLI. Moved here from pending batch-manager (its predicted-shots part).",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-review-predicted",
    "pr": "#285",
+   "mergedAt": "2026-11-04T04:01:29Z",
    "createdAt": "2026-11-03T19:54:18.485Z",
-   "updatedAt": "2026-11-03T21:58:23.579Z",
+   "updatedAt": "2026-11-04T04:13:39.547Z",
    "builtAt": "2026-11-03T21:58:23.579Z",
    "notes": [
     {
@@ -4903,6 +4909,10 @@
     {
      "text": "PR #285 open. Its CI red jobs (check-widgets widget types, molly xlayout opens:false, Gradle) are the same failures on main, being fixed by urgent-main-ci-green; nothing from this build. UI Review r-20261103-c9a82c5e waiting.",
      "at": "2026-11-03T21:49:21.858Z"
+    },
+    {
+     "text": "Reconciler: PR #285 merged",
+     "at": "2026-11-04T04:13:39.547Z"
     }
    ],
    "approvals": [],
