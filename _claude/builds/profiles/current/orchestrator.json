@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T01:25:45.757Z",
+ "updatedAt": "2026-11-04T01:28:05.374Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4119,9 +4119,14 @@
    "branch": "claude/plugin-lazy-load",
    "pr": "",
    "createdAt": "2026-11-03T22:55:16.843Z",
-   "updatedAt": "2026-11-04T00:41:46.533Z",
+   "updatedAt": "2026-11-04T01:24:29.253Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #298",
+     "at": "2026-11-04T01:24:29.253Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 587,
- "updatedAt": "2026-11-04T01:25:45.757Z",
+ "rev": 588,
+ "updatedAt": "2026-11-04T01:28:05.374Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -67236,7 +67236,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-04T01:19:26.759Z"
+     "updatedAt": "2026-11-04T01:25:34.264Z"
     }
    ],
    "profiles": [
@@ -67300,9 +67300,14 @@
    "branch": "claude/plugin-lazy-load",
    "pr": "",
    "createdAt": "2026-11-03T22:55:16.843Z",
-   "updatedAt": "2026-11-04T00:41:46.533Z",
+   "updatedAt": "2026-11-04T01:24:29.253Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #298",
+     "at": "2026-11-04T01:24:29.253Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -67381,10 +67386,24 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-03T22:55:16.843Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw1ad3pr04dhfd": "2026-11-03T22:55:16.846Z",
+     "st-mw1ad3pr055ffm": "2026-11-03T22:55:16.846Z",
+     "st-mw1ad3pr06m09a": "2026-11-03T22:55:16.846Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-03T22:55:16.846Z",
    "rearranged": false,
@@ -68022,7 +68041,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T00:40:48.341Z",
-     "updatedAt": "2026-11-04T01:19:43.755Z"
+     "updatedAt": "2026-11-04T01:25:34.264Z"
     },
     {
      "id": "s2",
