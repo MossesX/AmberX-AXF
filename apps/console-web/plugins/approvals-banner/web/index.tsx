@@ -59,9 +59,13 @@ const save = (k: string, v: string) => { try { globalThis.localStorage?.setItem(
 export const autoOpenOn = () => load(AUTO_KEY) !== 'off';
 const opened = new Set<string>((load(OPENED_KEY) ?? '').split(',').filter(Boolean));
 let reviewing: string | null = null;
-/** Open each new request once, in the console, unless switched off or one is already on screen. */
+/**
+ * Open each new request once, in the console, unless switched off or one is already on screen. A one-page view of the
+ * console that a host shows on its own (embed@1 `page`: Molly's banner strip) never opens one by itself: the console's
+ * own frame beside it does, so a host shows one pop-up, not two stacked (Nov 4 2026).
+ */
 function autoOpen(pending: { id: string }[]) {
-  if (!runtime || !autoOpenOn() || reviewing) return;
+  if (!runtime || !autoOpenOn() || reviewing || runtime.embedded?.page) return;
   const next = pending.find((p) => !opened.has(p.id));
   if (!next) return;
   opened.add(next.id);
@@ -460,7 +464,7 @@ export const plugin: AxfWebLibrary = {
   },
   register(rt) {
     runtime = rt;
-    watch.setup((k) => rt.settings.get(k), (id) => openVeto(id));
+    watch.setup((k) => rt.settings.get(k), (id) => { if (!rt.embedded?.page) openVeto(id); });
     start();
     // approvals.veto:<id> — the veto screen; approvals.deny|approve-now|shelve:<id> — one action (a person's tap only)
     rt.actions.register('approvals.veto', ([id]) => { if (id) openVeto(id); }, { label: 'Open a held call', params: true, searchable: false });
