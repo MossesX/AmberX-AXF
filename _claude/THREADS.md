@@ -965,6 +965,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 12:34 UTC · `hotfix-build-manager` s1 undone (current) · foreign-write
 - 2026-11-04 12:34 UTC · `urgent-land-lazy-loader` added (4 steps) (current) · foreign-write
 - 2026-11-04 12:36 UTC · `urgent-land-lazy-loader` added (4 steps) (current) · foreign-write
+- 2026-11-04 12:29 UTC · `hotfix-build-manager` s1 undone (current) · foreign-write
+- 2026-11-04 12:29 UTC · `urgent-land-lazy-loader` added (4 steps) (current) · orchestrator
+- 2026-11-04 12:29 UTC · `urgent-land-lazy-loader` → running (current) · orchestrator
 
 ## Token passes (log)
 
