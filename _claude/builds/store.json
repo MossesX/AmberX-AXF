@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 769,
- "updatedAt": "2026-11-04T15:08:36.389Z",
+ "rev": 770,
+ "updatedAt": "2026-11-04T15:09:08.466Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -73952,7 +73952,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T14:15:32.630Z",
-     "updatedAt": "2026-11-04T15:08:12.201Z"
+     "updatedAt": "2026-11-04T15:09:06.666Z"
     }
    ],
    "profiles": [
@@ -76702,7 +76702,7 @@
    "title": "Merge queue: test once, never twice",
    "category": "Landing",
    "detail": "Stacked merge queue in auto-land (GitHub's native merge queue needs an org-owned repo; MossesX is a personal account). Each ready PR is tested once on top of main + every PR ahead of it on a queue/pr-<n> branch; green head merges with no retest; red is kicked out with a plain reason and the ones behind are rebuilt without it. CI path filters (framework/cli/ci-scope.mjs), light checks on PRs while the queue is on, main push skips jobs the queue already ran on the same code. Merge queue view + banner chip + REST/MCP/CLI (mergequeue_list/add/remove/move). UI Review gate kept.",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -76747,7 +76747,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T14:32:10.065Z",
-     "updatedAt": "2026-11-04T14:48:15.365Z"
+     "updatedAt": "2026-11-04T15:09:06.666Z"
     },
     {
      "id": "s2",
@@ -76769,7 +76769,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T14:32:10.065Z",
-     "updatedAt": "2026-11-04T14:48:15.365Z"
+     "updatedAt": "2026-11-04T15:09:06.666Z"
     },
     {
      "id": "s3",
@@ -76791,7 +76791,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T14:32:10.065Z",
-     "updatedAt": "2026-11-04T14:48:15.365Z"
+     "updatedAt": "2026-11-04T15:09:06.666Z"
     },
     {
      "id": "s4",
@@ -76813,7 +76813,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T14:32:10.065Z",
-     "updatedAt": "2026-11-04T14:48:30.652Z"
+     "updatedAt": "2026-11-04T15:09:06.666Z"
     },
     {
      "id": "s5",
@@ -76835,7 +76835,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T14:32:10.065Z",
-     "updatedAt": "2026-11-04T14:48:30.652Z"
+     "updatedAt": "2026-11-04T15:09:06.666Z"
     },
     {
      "id": "s6",
@@ -76857,7 +76857,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T14:32:10.065Z",
-     "updatedAt": "2026-11-04T15:08:30.872Z"
+     "updatedAt": "2026-11-04T15:09:06.666Z"
     }
    ],
    "profiles": [
