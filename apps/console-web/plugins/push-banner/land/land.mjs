@@ -322,7 +322,7 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
             try { await gh('POST', `/repos/${s.slug}/actions/workflows/${s.workflow}/dispatches`, { ref: b.branch }); it.dispatched = it.head; } catch (e) { log(`dispatch ${b.id}: ${e.message}`); }
           } else if (old.dispatched === it.head) it.dispatched = it.head;
         }
-        if (it.pr) { const u = await api('GET', `/api/plugins/ui-review/state?branch=${encodeURIComponent(b.branch)}&pr=${it.pr}`); facts.ui = u ? (u.holds ? String(u.state || 'waiting') : '') : 'unknown'; }
+        if (it.pr) { const u = await api('GET', `/api/plugins/push-banner/ui-hold?branch=${encodeURIComponent(b.branch)}&pr=${it.pr}`); facts.ui = u ? String(u.hold || '') : 'unknown'; } // UI Review through ui-review@1
         facts.deps = o.after.filter((d) => { const x = byId.get(d); return x && !x.mergedAt && x.status !== 'complete' && x.status !== 'archived'; });
       }
       it.reason = core.blockReason(b.id, facts);

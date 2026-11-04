@@ -1234,6 +1234,12 @@ def land_blocked() -> dict[str, Any]:
     return {**st, "items": [x for x in st["items"] if x.get("state") == "blocked"]}
 
 
+@router.get("/ui-hold")
+def ui_hold(branch: str = "", pr: int = 0) -> dict[str, Any]:
+    """The UI Review state holding a PR for the auto-land script ('' = free), asked through ui-review@1."""
+    return {"hold": PUSHES.ui_hold(UI_REVIEW_REPO, pr, branch)}
+
+
 @router.post("/land/now")
 def land_now(body: Any = Body(None)) -> dict[str, Any]:
     return PUSHES.land_command("now", body)

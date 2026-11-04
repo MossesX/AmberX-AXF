@@ -159,7 +159,7 @@ const gh = async (method, path, body) => {
   if (method === 'POST' && path.includes('/dispatches')) return null;
   throw new Error(`unexpected ${method} ${path}`);
 };
-const api = async (method, path, body) => { calls.api.push({ method, path, body }); if (path.includes('ui-review/state')) return path.includes('claude%2Fui') ? { holds: true, state: 'waiting' } : { holds: false, state: 'free' }; return { ok: true }; };
+const api = async (method, path, body) => { calls.api.push({ method, path, body }); if (path.includes('/ui-hold')) return path.includes('claude%2Fui') ? { hold: 'waiting' } : { hold: '' }; return { ok: true }; };
 const s = { repo, slug: 'MossesX/AmberX-AXF', dataDir: join(tmp, 'data'), archive: join(tmp, 'archive'), console: 'off', api: '', workflow: 'android.yml', projects, remote: 'origin', base: 'main' };
 mkdirSync(s.dataDir, { recursive: true });
 control(s, 'hold', 'held', { why: 'Brett wants to look first' });
