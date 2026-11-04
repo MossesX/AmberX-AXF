@@ -334,14 +334,19 @@ export function JobsPage() {
   const jobs = s.jobs.filter((j) => kind === 'all' || j.kind === kind);
   return (
     <div className="fx-page axp-build-docs">
-      <header className="fx-row fx-row--wrap axp-build-docs__bar" role="toolbar" aria-label="Docs and videos">
-        <h1 className="axp-build-docs__h1"><Icon name="file" size={18} /> Docs & videos</h1>
+      <header className="fx-pagehead">
+        <div>
+          <p className="fx-eyebrow">Builds · docs and walkthroughs{s.jobs.length ? ` · ${s.jobs.length}` : ''}</p>
+          <h1>Docs & videos</h1>
+          <p className="fx-muted">Right-click any built build or step (Build manager, Builds, Plan Studio, Codebase changes) → Create documentation or Create walkthrough video. Results attach to the build's plan.</p>
+        </div>
+      </header>
+      <div className="fx-row fx-row--wrap axp-build-docs__bar" role="toolbar" aria-label="Docs and videos">
         <Segmented label="Show" value={kind} onChange={setKind} options={[{ value: 'all', label: 'All' }, { value: 'docs', label: 'Docs', icon: 'file' }, { value: 'video', label: 'Videos', icon: 'play' }]} />
         <Button icon="file" onClick={() => rt.openDialog('build-docs.docs', {})}>New docs</Button>
         <Button icon="play" onClick={() => rt.openDialog('build-docs.video', {})}>New video</Button>
         <Button icon="refresh" onClick={() => { void loadJobs(); void loadIndex(); }}>Refresh</Button>
-      </header>
-      <p className="fx-small fx-muted axp-build-docs__text">Right-click any built build or step (Build manager, Builds, Plan Studio, Codebase changes) → Create documentation or Create walkthrough video. Results attach to the build's plan.</p>
+      </div>
       {s.error && <Note tone="warning">{s.error}</Note>}
       {!jobs.length ? <div className="fx-empty">{s.jobs.length ? 'Nothing of that kind yet.' : 'No docs or videos yet.'}</div>
         : <ul className="axp-build-docs__jobs">{jobs.map((j) => <JobRow key={j.id} job={j} open={open === j.id} onToggle={() => setOpen(open === j.id ? '' : j.id)} />)}</ul>}

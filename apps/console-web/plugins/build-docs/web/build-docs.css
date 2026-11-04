@@ -1,7 +1,6 @@
 /* Build docs: dialogs, the script review and the Docs & videos page. Theme tokens only. */
 .axp-build-docs { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
 .axp-build-docs__bar { align-items: center; gap: var(--fx-dens-gap-sm) }
-.axp-build-docs__h1 { margin: 0; flex: 1 1 auto; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); font-size: var(--fx-type-scale-lg) }
 .axp-build-docs__text { margin: 0; overflow-wrap: anywhere }
 .axp-build-docs__dialog { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: min(100%, calc(var(--fx-font-size) * 34)) }
 .axp-build-docs__foot { justify-content: flex-end; gap: var(--fx-dens-gap-sm) }
