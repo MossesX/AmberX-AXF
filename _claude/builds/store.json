@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 863,
- "updatedAt": "2026-11-04T17:53:50.688Z",
+ "rev": 864,
+ "updatedAt": "2026-11-04T18:01:18.407Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -81492,7 +81492,7 @@
    "branch": "claude/merge-queue",
    "pr": "#320",
    "createdAt": "2026-11-04T17:34:06.563Z",
-   "updatedAt": "2026-11-04T17:52:51.516Z",
+   "updatedAt": "2026-11-04T18:01:16.962Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -81519,7 +81519,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "15 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -81528,9 +81528,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T17:34:06.580Z",
-     "updatedAt": "2026-11-04T17:34:06.580Z"
+     "updatedAt": "2026-11-04T18:01:17.007Z"
     },
     {
      "id": "s2",
@@ -81651,7 +81651,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
