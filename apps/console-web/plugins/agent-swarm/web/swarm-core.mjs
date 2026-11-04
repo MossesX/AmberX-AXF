@@ -578,6 +578,10 @@ export function applyChange(state, change, roster, at) {
       const text = str(c.text, 1000).trim(); if (!text) throw new Error('empty message');
       if (!post(s, [{ from: 'brett', kind: 'brett', text }], at)) throw new Error('the group chat is off'); log.push('posted'); break;
     }
+    case 'notice': { // a plugin's notice (e.g. UI Review's auto-approval), posted by Boss as a status line; no tokens
+      const text = str(c.text, 1000).trim(); if (!text) throw new Error('empty message');
+      post(s, [{ from: BOSS.id, kind: 'status', text }], at); log.push('notice posted'); break; // room off = dropped, never an error
+    }
     case 'suspend': {
       const until = str(c.until, 40); const reason = str(c.reason, 300).trim();
       if (!(until > at)) throw new Error('a suspension needs an end in the future');

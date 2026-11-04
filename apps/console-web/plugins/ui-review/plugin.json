@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.ui-review",
   "name": "UI Review",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Every UI a build makes comes here for Brett's approval, one section per kind (open registry: Design packs, Whole apps / programs, Screens & pages, Settings interfaces, Dialogs & popups, Menus & toolbars, Banners & cards, Other). Each item carries its app, build, branch and PR, desktop + phone screenshots, notes, a status (waiting, approved, changes asked, rejected), his comment and its history. Views: tree, collapsible grid, grid with sub-grids, gallery and side-by-side compare, all with multi-select and bulk Approve / Ask changes / Reject. Builds submit through review.mjs, POST /api/plugins/ui-review/submit or rebuild-shots --submit; other plugins read the per-branch / per-PR state through the ui-review@1 capability. Design packs (formerly their own plugin) are one section: pick up to 3. Screenshots tab (ui-screenshot@1): ad-hoc pictures (check sessions, live captures, PR before/after, uploads) that never enter the approve / reject queue, saved with axf shot / POST shots / Upload; grid grouped by app, screen, source or day, thumbnails, full-screen viewer with before/after slider, copy link, delete, Send to review. Predicted looks (ui-prediction@1): when a build that changes UI is launched, framework/cli/ui-predict.mjs makes a mockup of each screen it will touch (framework controls, current theme, demo data) and files it here as 'Predicted - approve the look' next to the screen as it is now; Approve look / Ask changes (the comment goes to the build) / Reject (the build is held). Setting: wait for the look approval before UI builds start. The predicted pictures refresh while the build runs and the real after-shots replace them at the end (badge Real, predicted vs real compare).",
+  "description": "Every UI a build makes comes here for Brett's approval, one section per kind (open registry: Design packs, Whole apps / programs, Screens & pages, Settings interfaces, Dialogs & popups, Menus & toolbars, Banners & cards, Other). Each item carries its app, build, branch and PR, desktop + phone screenshots, notes, a status (waiting, approved, changes asked, rejected), his comment and its history. Views: tree, collapsible grid, grid with sub-grids, gallery and side-by-side compare, all with multi-select and bulk Approve / Ask changes / Reject. Builds submit through review.mjs, POST /api/plugins/ui-review/submit or rebuild-shots --submit; other plugins read the per-branch / per-PR state through the ui-review@1 capability. Design packs (formerly their own plugin) are one section: pick up to 3. Screenshots tab (ui-screenshot@1): ad-hoc pictures (check sessions, live captures, PR before/after, uploads) that never enter the approve / reject queue, saved with axf shot / POST shots / Upload; grid grouped by app, screen, source or day, thumbnails, full-screen viewer with before/after slider, copy link, delete, Send to review. Predicted looks (ui-prediction@1): when a build that changes UI is launched, framework/cli/ui-predict.mjs makes a mockup of each screen it will touch (framework controls, current theme, demo data) and files it here as 'Predicted - approve the look' next to the screen as it is now; Approve look / Ask changes (the comment goes to the build) / Reject (the build is held). Setting: wait for the look approval before UI builds start. The predicted pictures refresh while the build runs and the real after-shots replace them at the end (badge Real, predicted vs real compare). Review alarm (ui-review-alarm@1): a new item opens UI Review and notifies the phone; unreviewed for 30 min it rings a loud alarm on the phone (and the banner), and 5 min later it follows Brett's switch 'When the alarm isn't answered': auto-approve (default, logged, undoable) or leave it waiting; tapping the alarm pauses it. Settings: window, grace, sound, quiet hours, scope. List: sort by time added (newest first), group by PR / date / build / type, PR + item id on every row, deep links ?item= / ?pr=.",
   "targets": [
     "axf-console"
   ],
@@ -37,7 +37,8 @@
       "AXF_UI_PREDICT_CACHE",
       "AXF_UI_PREDICT_CAPTURE_REPO",
       "AXF_UI_PREDICT_CONSOLE",
-      "AXF_UI_REVIEW_DIR"
+      "AXF_UI_REVIEW_DIR",
+      "AXF_UI_REVIEW_NO_TICKER"
     ],
     "mentions": [
       "apps/console-web/plugins/README.md",
@@ -213,6 +214,159 @@
           ]
         },
         "output": "{ waitForLook }"
+      },
+      {
+        "id": "alarm",
+        "route": "GET /alarm",
+        "title": "UI Review alarm status",
+        "description": "The review alarm (ui-review-alarm@1): its settings, and per waiting item when the alarm rings, when the switch acts, and its phase (none, alarm, answered, approved, held, done), plus the recent log.",
+        "readOnly": true,
+        "forFramework": true,
+        "output": "{ settings, since, now, items: {id: {phase, alarmAt, actAt}}, log }"
+      },
+      {
+        "id": "alarm-settings",
+        "route": "GET /alarm/settings",
+        "title": "UI Review alarm settings",
+        "description": "The alarm settings: window (30 min), grace (5 min), the switch 'When the alarm isn't answered' (approve | hold), sound, volume, vibrate, quiet hours, scope.",
+        "readOnly": true,
+        "forFramework": true,
+        "output": "ui-review-alarm-settings@1"
+      },
+      {
+        "id": "alarm-settings-set",
+        "route": "PUT /alarm/settings",
+        "title": "Change the UI Review alarm",
+        "description": "Change the review alarm. Voice: \"don't auto-approve UI reviews\" = {unanswered: hold}; \"auto-approve UI reviews again\" = {unanswered: approve}; \"turn off the UI Review alarm\" = {enabled: false}; \"give me 45 minutes\" = {windowMin: 45}.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "the alarm on/off"
+            },
+            "unanswered": {
+              "type": "string",
+              "enum": [
+                "approve",
+                "hold"
+              ],
+              "description": "When the alarm isn't answered: approve = auto-approve (run it), hold = don't run it (leave it waiting)"
+            },
+            "windowMin": {
+              "type": "integer",
+              "description": "minutes unreviewed before the alarm (default 30)"
+            },
+            "graceMin": {
+              "type": "integer",
+              "description": "minutes after the alarm before the switch acts (default 5)"
+            },
+            "openOnNew": {
+              "type": "boolean",
+              "description": "open UI Review on each new item and notify the phone"
+            },
+            "sound": {
+              "type": "string",
+              "enum": [
+                "alarm",
+                "ringtone",
+                "siren",
+                "beacon",
+                "pulse"
+              ]
+            },
+            "volume": {
+              "type": "integer",
+              "description": "0-100"
+            },
+            "vibrate": {
+              "type": "boolean"
+            },
+            "repeat": {
+              "type": "boolean",
+              "description": "keep ringing until tapped"
+            },
+            "quietHours": {
+              "type": "boolean"
+            },
+            "quietStart": {
+              "type": "string",
+              "description": "HH:MM"
+            },
+            "quietEnd": {
+              "type": "string",
+              "description": "HH:MM"
+            },
+            "quietMode": {
+              "type": "string",
+              "enum": [
+                "silent",
+                "hold"
+              ],
+              "description": "during quiet hours: silent = follow the switch without ringing, hold = wait for quiet hours to end"
+            },
+            "timeZone": {
+              "type": "string"
+            },
+            "scope": {
+              "type": "string",
+              "enum": [
+                "all",
+                "blocking"
+              ],
+              "description": "every item, or only items blocking a merge (PR / branch)"
+            }
+          }
+        },
+        "forFramework": true,
+        "output": "ui-review-alarm-settings@1"
+      },
+      {
+        "id": "alarm-answer",
+        "route": "POST /alarm/answer",
+        "title": "Answer the UI Review alarm",
+        "description": "The alarm was tapped: that item's countdown stops until Brett approves or rejects it himself.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "UI Review item id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "forFramework": true,
+        "output": "{ ok, item, phase }"
+      },
+      {
+        "id": "alarm-undo",
+        "route": "POST /alarm/undo",
+        "title": "Undo an auto-approval",
+        "description": "Re-open an item the alarm auto-approved (back to waiting) and restart its clock.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "forFramework": true,
+        "output": "{ ok, item }"
+      },
+      {
+        "id": "alarm-tick",
+        "route": "POST /alarm/tick",
+        "title": "Run the UI Review alarm timer now",
+        "description": "Check every waiting item now (the ticker does this every 30 seconds).",
+        "forFramework": true,
+        "output": "{ events }"
       }
     ]
   },

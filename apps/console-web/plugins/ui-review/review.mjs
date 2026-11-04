@@ -12,6 +12,9 @@
  *   node apps/console-web/plugins/ui-review/review.mjs migrate [--apply] [--report <file.md>]   older items → ui-review-item@1
  *   node apps/console-web/plugins/ui-review/review.mjs check        every stored item + screenshot conforms (exit 1 if not)
  *   node apps/console-web/plugins/ui-review/review.mjs kinds | paths
+ *   node apps/console-web/plugins/ui-review/review.mjs alarm [status] | alarm set key=value… | alarm answer|undo <id>
+ *        the review alarm (ui-review-alarm@1) in the running console (AXF_CONSOLE_URL + AXF_TOKEN), e.g.
+ *        `alarm set unanswered=hold` (don't auto-approve), `alarm set unanswered=approve windowMin=30 graceMin=5`
  *
  * Every item is ui-review-item@1 (framework/core/ui-review-schema.mjs): a human name (--name; --title is the same),
  * a group (--group "<name>": ask Brett for it; none = '<session/build/source> - <YYYY-MM-DD HH:mm>'), app, screen,
@@ -126,10 +129,10 @@ export function decideLocal(ids, decision, { comment = '', by = 'brett' } = {}) 
 const isWorktree = () => { try { return statSync(join(ROOT, '.git')).isFile(); } catch { return false; } };
 
 /* -------------------------------------------------------------- console API (--console) */
-async function consoleCall(path, body) {
+async function consoleCall(path, body, method = body ? 'POST' : 'GET') {
   const url = process.env.AXF_CONSOLE_URL, tok = process.env.AXF_TOKEN;
   if (!url || !tok) throw new Error('--console needs AXF_CONSOLE_URL and AXF_TOKEN');
-  const r = await fetch(`${url.replace(/\/$/, '')}/api/plugins/ui-review/${path}`, { method: body ? 'POST' : 'GET', headers: { Authorization: `Bearer ${tok}`, 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
+  const r = await fetch(`${url.replace(/\/$/, '')}/api/plugins/ui-review/${path}`, { method, headers: { Authorization: `Bearer ${tok}`, 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(`console ${r.status}: ${typeof j.detail === 'string' ? j.detail : r.statusText}`);
   return j;
@@ -205,6 +208,26 @@ export async function main(argv = process.argv.slice(2)) {
     const r = checkAll(dataDir());
     if (r.errors.length) process.exitCode = 1;
     return out(r, r.errors.length ? r.errors.map((e) => `✗ ${e.message}`).join('\n') : `✓ ${r.items} item(s), ${r.shots} screenshot(s), ${r.groups} group(s): all ui-review-item@1 / ui-review-group@1`);
+  }
+  if (cmd === 'alarm') { // the timer lives in the console server, so this always talks to it
+    const [, sub = 'status', ...rest] = pos;
+    if (sub === 'status') {
+      const v = await consoleCall('alarm');
+      const rows = Object.entries(v.items).map(([id, x]) => `${x.phase.padEnd(9)} ${id.padEnd(22)} alarm ${x.alarmAt ?? '-'} · acts ${x.actAt ?? '-'}`);
+      return out({ ok: true, ...v }, [`alarm ${v.settings.enabled ? 'on' : 'off'} · ${v.settings.windowMin} min + ${v.settings.graceMin} min grace · unanswered → ${v.settings.unanswered === 'approve' ? 'auto-approve' : "don't run it"}`, ...rows].join('\n'));
+    }
+    if (sub === 'set') {
+      const body = Object.fromEntries(rest.map((kv) => { const [k, ...v] = kv.split('='); const x = v.join('='); return [k, x === 'true' ? true : x === 'false' ? false : /^\d+$/.test(x) ? Number(x) : x]; }));
+      if (!Object.keys(body).length) throw new Error('alarm set key=value… (unanswered=approve|hold, windowMin, graceMin, enabled, …)');
+      const s = await consoleCall('alarm/settings', body, 'PUT');
+      return out({ ok: true, settings: s }, `saved: ${Object.keys(body).join(', ')} · unanswered → ${s.unanswered}`);
+    }
+    if (sub === 'answer' || sub === 'undo') {
+      if (!rest[0]) throw new Error(`alarm ${sub} <item id>`);
+      const r = await consoleCall(`alarm/${sub}`, { id: rest[0] });
+      return out(r, `${sub === 'answer' ? 'answered (countdown paused)' : 're-opened'}: ${rest[0]}`);
+    }
+    throw new Error('alarm [status] | alarm set key=value… | alarm answer|undo <id>');
   }
   if (cmd === 'kinds') { const k = kinds(); return out({ ok: true, kinds: k }, k.map((x) => `${x.id.padEnd(12)} ${x.label}`).join('\n')); }
   if (cmd === 'paths') return out({ ok: true, dataDir: dataDir(), items: itemsFile() }, `data folder ${dataDir()}\nitems ${itemsFile()}`);

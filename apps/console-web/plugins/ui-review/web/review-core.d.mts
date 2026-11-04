@@ -14,7 +14,7 @@ export interface Kind { id: string; label: string; icon: string; order: number; 
 export interface StatusInfo { id: Status; label: string; icon: string; tone: 'accent' | 'warning' | 'danger' | 'success'; holds: boolean }
 export interface Filter { kind?: string; status?: string; app?: string; branch?: string; pr?: number | string | null; q?: string }
 export interface Counts { total: number; waiting: number; changes: number; rejected: number; approved: number }
-export interface Group { id: string; label: string; items: Item[] }
+export interface Group { id: string; label: string; items: Item[]; newest?: string }
 export interface TreeKind extends Group { apps: Group[] }
 export interface ReviewState { $axf: 'ui-review@1'; branch: string; pr: number | null; state: 'none' | Status; holds: boolean; counts: Omit<Counts, 'total'>; items: { id: string; title: string; kind: string; status: Status }[] }
 
@@ -24,6 +24,7 @@ export const DESIGN_KIND: string;
 export const STATUSES: StatusInfo[];
 export const DECISIONS: Record<Decision, Status>;
 export const SORTS: { id: string; label: string }[];
+export const DEFAULT_SORT: string;
 export function statusInfo(id: string): StatusInfo;
 export function isKind(k: unknown): boolean;
 export function isItemId(k: unknown): boolean;
@@ -39,13 +40,19 @@ export function packGroups(index: { packs?: unknown[] } | null | undefined): { $
 export function packItems(index: { packs?: unknown[] } | null | undefined, overlay?: Record<string, Partial<Item>>): Item[];
 export function matches(it: Item, q?: string): boolean;
 export function filterItems(items: Item[], f?: Filter): Item[];
-export function sortItems(items: Item[], sort?: string): Item[];
+export function addedAt(it: Item): string;
+export function addedDay(it: Item): string;
+export function sortItems(items: Item[], sort?: string, opts?: { pinWaiting?: boolean }): Item[];
 export function counts(items: Item[]): Record<string, Counts>;
-export function groupItems(items: Item[], by?: 'kind' | 'app' | 'status' | 'build', kinds?: Kind[]): Group[];
+export function prLabel(pr: number | null, list?: Item[]): string;
+export function groupItems(items: Item[], by?: 'kind' | 'app' | 'status' | 'build' | 'pr' | 'date', kinds?: Kind[], opts?: { desc?: boolean }): Group[];
 export function tree(items: Item[], kinds?: Kind[]): TreeKind[];
 export function toggleId(sel: string[], id: string): string[];
 export function groupChecked(sel: string[], ids: string[]): 'all' | 'some' | 'none';
 export function setGroup(sel: string[], ids: string[], on: boolean): string[];
 export function togglePick(picked: string[], id: string, max?: number): { picked: string[]; error: string };
 export function reviewState(items: Item[], q?: { branch?: string; pr?: number | string | null }): ReviewState;
+export function deepLink(search?: string): { item: string; pr: number | null };
+export function ago(at: string, now?: number): string;
+export function shortId(id: string): string;
 export function apps(items: Item[]): string[];

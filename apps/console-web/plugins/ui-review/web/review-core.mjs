@@ -24,10 +24,12 @@ export const statusInfo = (id) => STATUSES.find((s) => s.id === id) ?? STATUSES[
 /** Decision verbs the UI and CLI use → the status they set. */
 export const DECISIONS = { approve: 'approved', changes: 'changes', reject: 'rejected', reopen: 'waiting' };
 
+/** Orders. Default = time added, newest first (Brett, Nov 4 2026); waiting items can be pinned on top (pinWaiting). */
+export const DEFAULT_SORT = 'newest';
 export const SORTS = [
+  { id: 'newest', label: 'Added: newest first' },
+  { id: 'oldest', label: 'Added: oldest first' },
   { id: 'waiting', label: 'Waiting first' },
-  { id: 'newest', label: 'Newest' },
-  { id: 'oldest', label: 'Oldest' },
   { id: 'title', label: 'Title' },
   { id: 'app', label: 'App' },
 ];
@@ -125,7 +127,7 @@ export function packItems(index, overlay = {}) {
 export function matches(it, q) {
   const words = String(q ?? '').toLowerCase().split(/\s+/).filter(Boolean);
   if (!words.length) return true;
-  const hay = `${it.title} ${it.app} ${it.build} ${it.branch} ${it.pr ? `#${it.pr} pr${it.pr}` : ''} ${it.notes} ${it.comment} ${it.kind} ${statusInfo(it.status).label}`.toLowerCase();
+  const hay = `${it.id} ${it.title} ${it.app} ${it.build} ${it.branch} ${it.pr ? `#${it.pr} pr${it.pr} pr #${it.pr} ${it.pr}` : ''} ${it.notes} ${it.comment} ${it.kind} ${statusInfo(it.status).label}`.toLowerCase();
   return words.every((w) => hay.includes(w));
 }
 
@@ -138,14 +140,19 @@ export function filterItems(items, f = {}) {
 }
 
 const rank = (s) => { const i = STATUS_IDS.indexOf(s); return i < 0 ? 99 : i; };
+/** When an item was added (submittedAt); the order every list uses by default. */
+export const addedAt = (it) => String(it.submittedAt || it.updatedAt || '');
 const when = (it) => String(it.updatedAt || it.submittedAt || '');
-export function sortItems(items, sort = 'waiting') {
+/** Sort. `pinWaiting` keeps waiting items above the rest (still in the chosen order within each part). */
+export function sortItems(items, sort = DEFAULT_SORT, { pinWaiting = false } = {}) {
   const a = [...items];
-  const byNew = (x, y) => when(y).localeCompare(when(x));
-  if (sort === 'newest') return a.sort(byNew);
-  if (sort === 'oldest') return a.sort((x, y) => -byNew(x, y));
-  if (sort === 'title') return a.sort((x, y) => x.title.localeCompare(y.title));
-  if (sort === 'app') return a.sort((x, y) => (x.app ? 0 : 1) - (y.app ? 0 : 1) || x.app.localeCompare(y.app) || x.title.localeCompare(y.title));
+  const byNew = (x, y) => addedAt(y).localeCompare(addedAt(x));
+  const pin = (x, y) => (pinWaiting ? (x.status === 'waiting' ? 0 : 1) - (y.status === 'waiting' ? 0 : 1) : 0);
+  if (sort === 'newest') return a.sort((x, y) => pin(x, y) || byNew(x, y));
+  if (sort === 'oldest') return a.sort((x, y) => pin(x, y) || -byNew(x, y));
+  if (sort === 'title') return a.sort((x, y) => pin(x, y) || x.title.localeCompare(y.title));
+  if (sort === 'app') return a.sort((x, y) => pin(x, y) || (x.app ? 0 : 1) - (y.app ? 0 : 1) || x.app.localeCompare(y.app) || x.title.localeCompare(y.title));
+  if (sort === 'updated') return a.sort((x, y) => pin(x, y) || when(y).localeCompare(when(x)));
   return a.sort((x, y) => rank(x.status) - rank(y.status) || byNew(x, y)); // waiting first, newest within
 }
 
@@ -157,8 +164,26 @@ export function counts(items) {
   return out;
 }
 
-/** Group for the sub-grid view: by 'kind' | 'app' | 'status' | 'build'. Groups keep the item order given. */
-export function groupItems(items, by = 'kind', kinds = []) {
+/** The By PR group heads: "PR <n> · <build name>" (the build name, else the branch). */
+export function prLabel(pr, list = []) {
+  const b = list.find((x) => x.build)?.build || list.find((x) => x.branch)?.branch?.replace(/^[^/]*\//, '') || '';
+  return pr ? `PR #${pr}${b ? ` · ${b}` : ''}` : 'No PR';
+}
+/** Day an item was added, YYYY-MM-DD (By date groups). */
+export const addedDay = (it) => addedAt(it).slice(0, 10);
+
+/**
+ * Group for the sub-grid view: by 'kind' | 'app' | 'status' | 'build' | 'pr' | 'date'. Groups keep the item order
+ * given. By PR and By date: groups ordered by their newest item (newest first, `desc` false flips it), no PR last.
+ */
+export function groupItems(items, by = 'kind', kinds = [], { desc = true } = {}) {
+  if (by === 'pr' || by === 'date') {
+    const g = new Map();
+    for (const it of items) { const k = by === 'pr' ? (it.pr ? String(it.pr) : '') : addedDay(it); if (!g.has(k)) g.set(k, []); g.get(k).push(it); }
+    const newest = (l) => l.reduce((m, it) => (addedAt(it) > m ? addedAt(it) : m), '');
+    return [...g.entries()].map(([id, list]) => ({ id, label: by === 'pr' ? prLabel(id ? Number(id) : null, list) : id || 'No date', items: list, newest: newest(list) }))
+      .sort((a, b) => (a.id ? 0 : 1) - (b.id ? 0 : 1) || (desc ? b.newest.localeCompare(a.newest) : a.newest.localeCompare(b.newest)));
+  }
   const groups = new Map();
   const key = (it) => (by === 'app' ? it.app || '' : by === 'status' ? it.status : by === 'build' ? it.branch || it.build || '' : it.kind);
   for (const it of items) { const k = key(it); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(it); }
@@ -199,6 +224,26 @@ export function reviewState(items, { branch = '', pr = null } = {}) {
   const state = !mine.length ? 'none' : c.rejected ? 'rejected' : c.changes ? 'changes' : c.waiting ? 'waiting' : 'approved';
   return { $axf: 'ui-review@1', branch, pr: pr ? Number(pr) : null, state, holds: state !== 'none' && state !== 'approved', counts: c, items: mine.map((it) => ({ id: it.id, title: it.title, kind: it.kind, status: it.status })) };
 }
+
+/**
+ * Deep links: `?item=<id>` (or `ui-review?item=<id>` from an alarm / Amber) focuses that item, `?pr=<n>` every item of
+ * that PR. Returns { item, pr } (blank when absent or malformed).
+ */
+export function deepLink(search = '') {
+  const q = String(search).includes('?') ? String(search).slice(String(search).indexOf('?')) : String(search);
+  const p = new URLSearchParams(q);
+  const item = p.get('item') ?? ''; const pr = String(p.get('pr') ?? '').replace(/^#/, '');
+  return { item: isItemId(item) ? item : '', pr: /^\d{1,7}$/.test(pr) ? Number(pr) : null };
+}
+
+/** "3 min ago" / "2 h ago" / "4 d ago" (the Added column; the exact time is on hover). */
+export function ago(at, now = Date.now()) {
+  const t = Date.parse(at); if (!Number.isFinite(t)) return '';
+  const s = Math.max(0, Math.round((now - t) / 1000));
+  return s < 60 ? 'just now' : s < 3600 ? `${Math.floor(s / 60)} min ago` : s < 86400 ? `${Math.floor(s / 3600)} h ago` : `${Math.floor(s / 86400)} d ago`;
+}
+/** A short id to show and copy: the last part of r-20261104-abc12xy. */
+export const shortId = (id) => { const s = String(id ?? ''); const m = s.match(/^r-\d{8}-(.+)$/); return m ? m[1] : s.length > 14 ? s.slice(-10) : s; };
 
 /** Distinct apps in a list (filter menu). */
 export const apps = (items) => [...new Set(items.map((it) => it.app).filter(Boolean))].sort((a, b) => a.localeCompare(b));
