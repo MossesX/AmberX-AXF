@@ -1024,6 +1024,18 @@
    "from": "detail",
    "addenda": []
   },
+  "jump-menu-asset": {
+   "said": "So make the jump menu an asset type. And um, so when you right click on it, you can go to its settings. It has its own settings. It's allow placing it. Allow different options like whether it shows icons or text or whatever. And um, you can select its location.",
+   "at": "2026-11-04T15:00:00.000Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "kill-patches-pilot": {
    "said": "Patches is dead. Delete it, all references. Build Pilot dead, same thing. Delete it. All references.",
    "at": "2026-11-03",
