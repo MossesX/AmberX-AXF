@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 843,
- "updatedAt": "2026-11-04T17:04:20.180Z",
+ "rev": 844,
+ "updatedAt": "2026-11-04T17:04:36.937Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -81643,14 +81643,14 @@
    "title": "Console loads slowly: node process per read, /api/build-queue 500",
    "category": "Urgent",
    "detail": "Host load 45, swap full, axf-console 135% CPU with 23 node processes: every screen/Home-card read spawned node per request per client; GET /api/build-queue 500 on every call. Fix the 500, one shared server cache per source with single-flight + spawn cap, client backoff/hidden-tab/shared reads, reconcile throttle, measure before/after, PR + redeploy.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/urgent-console-perf",
    "pr": "",
    "createdAt": "2026-11-04T17:04:18.426Z",
-   "updatedAt": "2026-11-04T17:04:18.427Z",
+   "updatedAt": "2026-11-04T17:04:28.209Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -81683,12 +81683,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T17:04:26.008Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T17:04:18.427Z",
-     "updatedAt": "2026-11-04T17:04:18.427Z"
+     "updatedAt": "2026-11-04T17:04:26.067Z"
     },
     {
      "id": "s2",
@@ -81705,12 +81705,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T17:04:26.833Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T17:04:18.427Z",
-     "updatedAt": "2026-11-04T17:04:18.427Z"
+     "updatedAt": "2026-11-04T17:04:26.877Z"
     },
     {
      "id": "s3",
@@ -81727,12 +81727,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T17:04:27.556Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T17:04:18.427Z",
-     "updatedAt": "2026-11-04T17:04:18.427Z"
+     "updatedAt": "2026-11-04T17:04:27.602Z"
     },
     {
      "id": "s4",
@@ -81749,12 +81749,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T17:04:28.209Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T17:04:18.427Z",
-     "updatedAt": "2026-11-04T17:04:18.427Z"
+     "updatedAt": "2026-11-04T17:04:28.267Z"
     },
     {
      "id": "s5",
@@ -81787,7 +81787,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

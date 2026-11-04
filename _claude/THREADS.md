@@ -683,10 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 13:48 UTC · `bugs-board` PR #311 (current) · builds-live
-- 2026-11-04 13:48 UTC · `bugs-board` s7 done, → built (current) · orchestrator
-- 2026-11-04 13:48 UTC · `bugs-board` note (current) · orchestrator
-- 2026-11-04 13:49 UTC · `bugs-board` s7 done, → complete, note (current) · foreign-write
 - 2026-11-04 13:50 UTC · `bugs-board` s7 done, → complete, note (current) · foreign-write
 - 2026-11-04 13:50 UTC · `follow-amber-switch` s1 done, → running (current) · orchestrator
 - 2026-11-04 13:50 UTC · `follow-amber-switch` s2 done (current) · orchestrator
@@ -1083,6 +1079,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 17:03 UTC · `settings-placement-everywhere` note (current) · foreign-write
 - 2026-11-04 17:03 UTC · `live-sessions-plugin` added (6 steps) (current) · foreign-write
 - 2026-11-04 17:04 UTC · `urgent-console-perf` added (5 steps) (urgent) · orchestrator
+- 2026-11-04 17:04 UTC · `urgent-console-perf` s1 done, → running (urgent) · orchestrator
+- 2026-11-04 17:04 UTC · `urgent-console-perf` s2 done (urgent) · orchestrator
+- 2026-11-04 17:04 UTC · `urgent-console-perf` s3 done (urgent) · orchestrator
+- 2026-11-04 17:04 UTC · `urgent-console-perf` s4 done (urgent) · orchestrator
 
 ## Token passes (log)
 
