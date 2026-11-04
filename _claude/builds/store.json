@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 776,
- "updatedAt": "2026-11-04T15:20:23.331Z",
+ "rev": 777,
+ "updatedAt": "2026-11-04T15:21:25.826Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -72349,7 +72349,7 @@
    "pr": "#307",
    "mergedAt": "2026-11-04T15:14:30Z",
    "createdAt": "2026-11-04T11:09:10.279Z",
-   "updatedAt": "2026-11-04T15:20:21.992Z",
+   "updatedAt": "2026-11-04T15:20:34.063Z",
    "builtAt": "2026-11-04T11:35:37.941Z",
    "notes": [
     {
@@ -72517,10 +72517,27 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-04T11:09:10.279Z",
+    "builtAt": "2026-11-04T11:35:37.941Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw20kuv407k0h0": "2026-11-04T11:09:10.280Z",
+     "st-mw20kuv408i02a": "2026-11-04T11:09:10.280Z",
+     "st-mw20kuv409ndua": "2026-11-04T11:09:10.280Z",
+     "st-mw20kuv40aictq": "2026-11-04T11:09:10.280Z",
+     "st-mw20kuv40bvd5i": "2026-11-04T11:09:10.280Z",
+     "st-mw20kuv40crqm9": "2026-11-04T11:09:10.280Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-04T11:09:10.280Z",
    "rearranged": false,
