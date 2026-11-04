@@ -698,16 +698,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 15:05 UTC · `fable-review-nov3` added (7 steps) (current) · foreign-write
-- 2026-11-04 15:05 UTC · `app-voice-commands` added (6 steps) (current) · foreign-write
-- 2026-11-04 15:05 UTC · `apps-control-surface` added (5 steps) (current) · foreign-write
-- 2026-11-04 15:06 UTC · `urgent-land-gizmo-chat` note (current) · foreign-write
-- 2026-11-04 15:06 UTC · `console-wake-finish` s5 done, → complete (current) · foreign-write
-- 2026-11-04 15:06 UTC · `console-wake-finish` note (current) · foreign-write
-- 2026-11-04 15:06 UTC · `browser-automation` note (current) · foreign-write
-- 2026-11-04 15:06 UTC · `profile-switcher-widget` note (current) · foreign-write
-- 2026-11-04 15:06 UTC · `profile-lists-home-card` s4 done, → complete (current) · foreign-write
-- 2026-11-04 15:06 UTC · `merge-queue` added (6 steps) (current) · foreign-write
 - 2026-11-04 15:06 UTC · `profile-filter-tables` added (48 steps) (current) · foreign-write
 - 2026-11-04 15:06 UTC · `fable-no-approval` added (3 steps) (current) · foreign-write
 - 2026-11-04 15:06 UTC · `fable-review-nov3` added (7 steps) (current) · foreign-write
@@ -1098,6 +1088,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 21:12 UTC · `ui-review-alarm` s1 done, → running (angel) · claude
 - 2026-11-04 21:12 UTC · `ui-review-alarm` s2 done (angel) · claude
 - 2026-11-04 21:12 UTC · `ui-review-alarm` s3 done (angel) · claude
+- 2026-11-04 21:14 UTC · `merge-queue` note (current) · foreign-write
+- 2026-11-04 21:14 UTC · `app-voice-commands` note (current) · foreign-write
+- 2026-11-04 21:14 UTC · `settings-placement-everywhere` note (current) · foreign-write
+- 2026-11-04 21:14 UTC · `handoff-2` s10 done, s11 done, → complete, note (current) · foreign-write
+- 2026-11-04 21:14 UTC · `fable-packager` s5 done, → complete (current) · foreign-write
+- 2026-11-04 21:14 UTC · `molly-banner-match` added (5 steps) (current) · foreign-write
+- 2026-11-04 21:14 UTC · `grid-column-hiding` added (6 steps) (current) · foreign-write
+- 2026-11-04 21:14 UTC · `drag-to-tab` added (5 steps) (current) · foreign-write
+- 2026-11-04 21:14 UTC · `build-optimizer` added (9 steps) (current) · foreign-write
+- 2026-11-04 21:14 UTC · `build-optimizer` branch claude/build-optimizer, PR #342 (current) · builds-live
 
 ## Token passes (log)
 
