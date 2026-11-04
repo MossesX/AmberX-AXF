@@ -41,6 +41,7 @@ WRITE = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHin
 INSTRUCTIONS = """AmberX AXF framework — plan, build queue, libraries and projects.
 Every Claude session calls `claude_session_start` first (when the Claude sessions plugin is on) and works as the crew agent
 it answers; `claude_session_agent` says when Brett picks another, `claude_session_book` books the work on that agent's card.
+At session start and before acting, read Claude settings (`claude_settings_get`) and follow them.
 Start with `overview`, then `build_next` to see what to build next and which model should build it.
 Before starting any build, check `pending_list`: builds parked until their model (usually Fable) is available.
 Builds over 30 minutes are split into steps of 30 minutes or less: `pending_steps` / `build_queue` list them, and you tick
@@ -537,6 +538,10 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
     if console is not None:
         _register_console_tools(mcp, console)
 
+    # ------------------------------------------------------------------ Claude settings (Claude plugin, claude-settings@1)
+
+    _register_claude_settings_tools(mcp)
+
     # ------------------------------------------------------------------ resources + prompt
 
     @mcp.resource("axf://build-queue", name="build-queue", title="Build queue", mime_type="application/json",
@@ -581,6 +586,55 @@ def upgrade_via_axhub(build: str, phase: int, request: str = "") -> dict[str, An
         return json.loads(lines[-1]) if lines else {"ok": False, "error": p.stderr.strip()[-600:] or "no output"}
     except json.JSONDecodeError:
         return {"ok": False, "error": (p.stderr or p.stdout).strip()[-600:]}
+
+
+# ---------------------------------------------------------------------- Claude settings (claude-settings@1)
+
+CLAUDE_SETTINGS_CLI = Path(__file__).resolve().parents[1] / "plugins" / "claude-settings" / "claude-settings.mjs"
+
+
+def _claude_settings(*args: str) -> dict[str, Any]:
+    """One claude-settings.mjs command (the same core the console and the CLI use). Never an owner: no MCP call can
+    change an owner-only setting, whoever makes it."""
+    if not CLAUDE_SETTINGS_CLI.exists():
+        return {"ok": False, "code": "unavailable", "message": "the Claude plugin (claude-settings) is not installed"}
+    try:
+        p = subprocess.run(["node", str(CLAUDE_SETTINGS_CLI), *args, "--json"], cwd=CLAUDE_SETTINGS_CLI.parents[4], capture_output=True, text=True, timeout=30)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        return {"ok": False, "code": "unavailable", "message": str(e)[:200]}
+    lines = p.stdout.strip().splitlines()
+    try:
+        return json.loads(lines[-1]) if lines else {"ok": False, "code": "unexpected", "message": p.stderr.strip()[-400:] or "no output"}
+    except json.JSONDecodeError:
+        return {"ok": False, "code": "unexpected", "message": (p.stderr or p.stdout).strip()[-400:]}
+
+
+def _register_claude_settings_tools(mcp: MCPServer) -> None:
+    async def go(*args: str) -> dict[str, Any]:
+        r = await anyio.to_thread.run_sync(lambda: _claude_settings(*args))
+        if not r.get("ok"):
+            raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
+        r.pop("ok", None)
+        return r
+
+    @mcp.tool(annotations=READ)
+    async def claude_settings_get(key: str = "") -> dict[str, Any]:
+        """Claude settings (kept on axHub, shared by every Claude session): read them at session start and before
+        acting, and follow them. Every setting comes with its value, default, who may change it and a plain
+        description: No wait (held calls run at once), Follow Amber, builds (default model, launch without asking,
+        max parallel, budget caps), verification, talking (persona, tone, swearing, length, costs), notifications,
+        memory. `key` = one setting only."""
+        return await go("get", key) if key else await go("get")
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def claude_settings_set(values: dict[str, Any], by: str = "") -> dict[str, Any]:
+        """Change Claude settings that are not owner-only ({key: value}). Owner-only settings (No wait, Include
+        irreversible, launch without asking, default model, UI Review gate, raising a budget cap or max parallel) are
+        refused here: only Brett changes them, with his own click in the console (Settings → Plugins → Claude)."""
+        pairs = [f"{k}={v if isinstance(v, str) else json.dumps(v)}" for k, v in (values or {}).items()]
+        if not pairs:
+            raise ToolError("invalid: send values as {key: value}")
+        return await go("set", *pairs, "--by", by or "mcp")
 
 
 # ---------------------------------------------------------------------- control@1 tools (framework/spec/CONTROL.md)
