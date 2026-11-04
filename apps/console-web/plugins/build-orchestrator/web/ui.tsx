@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AgentAvatar, BuildOrigin, Button, Icon, Segmented, Slot, originSubtitle, useRuntime } from '@console/axf/react';
+import { AdviceFilterBar, AgentAvatar, BuildOrigin, Button, Icon, ModelChips, Segmented, Slot, buildView, matchesFilter, originSubtitle, stepView, useAdviceFilter, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import { WatchLiveFor } from '@console/watchLive';
@@ -94,6 +94,7 @@ function BuildsTab({ state, busy, act }: { state: State; busy: boolean; act: Act
   const [showHidden, setShowHidden] = useState(false);
   const [view, setView] = useState<'list' | 'grid'>(() => consoleApi.readLocal('orch-view', 'grid'));
   const [cat, setCat] = useState('');
+  const [adviceFilter] = useAdviceFilter(); // model-advice@1: the shared model / thinking / needs-a-look filter
   useEffect(() => { consoleApi.writeLocal('orch-view', view); }, [view]);
   useEffect(() => { consoleApi.writeLocal('orch-sort', sort); consoleApi.writeLocal('orch-dir', dir); }, [sort, dir]);
   const builds = useMemo(() => {
@@ -102,8 +103,9 @@ function BuildsTab({ state, busy, act }: { state: State; busy: boolean; act: Act
     else all = all.filter((b) => b.status === filter);
     if (model) all = all.filter((b) => core.nextUp(b, state.rules).step?.model === model);
     if (cat) all = all.filter((b) => (b.category || core.UNCATEGORISED) === cat);
+    all = all.filter((b) => matchesFilter(buildView(b), adviceFilter) || b.steps.some((s) => matchesFilter(stepView(s), adviceFilter)));
     return core.sortBuilds(all, sort, dir, state.rules) as Build[];
-  }, [state, sort, dir, filter, model, showHidden, cat]);
+  }, [state, sort, dir, filter, model, showHidden, cat, adviceFilter]);
   const cats = core.categories(state.builds.filter((b) => b.status !== 'archived'));
   const counts = core.counts(state.builds) as Record<string, number>;
   const hiddenCount = state.builds.filter((b) => b.hidden).length;
@@ -134,6 +136,7 @@ function BuildsTab({ state, busy, act }: { state: State; busy: boolean; act: Act
         {hiddenCount > 0 && <button data-fx-row className="pd-sort" aria-pressed={showHidden} onClick={() => setShowHidden((v) => !v)}><Icon name={showHidden ? 'eye' : 'minimize'} size={13} />Hidden ({hiddenCount})</button>}
         {filter && <button data-fx-row className="pd-sort" onClick={() => setFilter('')}><Icon name="x" size={13} />{(core.STATUS_LABEL as Record<string, string>)[filter]} only</button>}
       </div>
+      <AdviceFilterBar screen="orchestrator" counts={{ look: state.builds.filter((b) => b.status !== 'archived' && buildView(b).reviewStatus === 'look').length, fable: state.builds.filter((b) => b.status !== 'archived' && matchesFilter(buildView(b), { fable: true })).length }} />
       {builds.length === 0 ? <div className="fx-empty">{filter || cat ? 'No builds match.' : 'Nothing to orchestrate. Add a build below.'}</div>
         : view === 'grid' ? <BuildGrid builds={builds} rules={state.rules} busy={busy} act={act} />
         : <div className="pd-list" role="list">{builds.map((b) => <BuildCard key={b.id} b={b} rules={state.rules} busy={busy} act={act} />)}</div>}
@@ -186,6 +189,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
       <div className="pd-meta">
         <span className={`pd-date ${b.builtAt ? 'is-built' : ''}`} title={`Added ${fmtTime(b.createdAt)}`}><Icon name={b.builtAt ? 'check-circle' : 'clock'} size={13} />{b.builtAt ? `Built ${fmtDate(b.builtAt)}` : `Added ${fmtDate(b.createdAt)}`}</span>
         {p.total > 0 && <span className="pd-est"><Icon name="check-circle" size={13} />{p.done}/{p.total} steps{p.minutesLeft ? ` · ${core.formatMinutes(p.minutesLeft)} left` : ''}</span>}
+        <ModelChips screen="orchestrator" view={buildView(b)} build={b.id} onAct={act} title={b.title} />
         {core.MODELS.map((m) => (p.byModel as Record<string, number>)[m] ? <span key={m} className={`oc-model is-${m.toLowerCase()}`}>{m} {core.formatMinutes((p.byModel as Record<string, number>)[m])}</span> : null)}
         {p.switches > 0 && <span title="Model switches; an upgrade waits for your approval, a downgrade does not"><Icon name="zap" size={13} />{p.switches} switch{p.switches === 1 ? '' : 'es'}</span>}
         {split.needsSplit && !core.isFinished(b.status) && <span className="pd-split" title={split.reasons.join('; ')}><Icon name="alert" size={13} />needs splitting</span>}
@@ -269,6 +273,7 @@ function StepRow({ b, s, locked, busy, act, last }: { b: Build; s: Step & { inde
       <time>{s.id}{s.estimate && <span className="pd-est"> · ~{s.estimate}</span>}</time>
       <p>{s.text}{s.why && <span className="fx-muted"> — {s.why}</span>}{s.session === 'new' && <span className="oc-flag"> new session</span>}{s.agent && <span className="oc-flag"> sub-agent ok</span>}</p>
       <span className="oc-steptools">
+        <ModelChips screen="orchestrator" view={stepView(s)} build={b.id} step={s.id} onAct={act} compact title={`${b.title} ${s.id}`} />
         <button data-fx-row className={`oc-model is-${s.model.toLowerCase()}`} disabled={busy || s.done} title={`Switch this step to ${other}`} onClick={() => act({ action: 'edit-step', id: b.id, step: s.id, stepData: { model: other } })}>{s.model}</button>
         <button className="fx-iconbtn" disabled={busy || s.index === 0} title="Move up" onClick={() => act({ action: 'move-step', id: b.id, step: s.id, dir: 'up' })}><Icon name="chevron-up" size={13} /></button>
         <button className="fx-iconbtn" disabled={busy || s.index === last} title="Move down" onClick={() => act({ action: 'move-step', id: b.id, step: s.id, dir: 'down' })}><Icon name="chevron-down" size={13} /></button>
@@ -431,6 +436,9 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
       render: (b) => <span className="oc-cell-title" title={b.detail || b.title}><strong><AgentAvatar inText={`${b.id}\n${b.detail}`} size="small" /> {b.title}{b.hidden && <span className="fx-muted fx-small"> · hidden</span>}</strong>{summary(b) && <span className="fx-small fx-muted">{summary(b)}</span>}</span> },
     { id: 'status', label: 'Status', width: 'calc(var(--fx-font-size) * 7.5)', sortable: true, sortValue: (b) => core.STATUSES.indexOf(b.status),
       render: (b) => <span className={`pd-badge oc-badge is-${b.status}`}>{(core.STATUS_LABEL as Record<string, string>)[b.status]}</span> },
+    // model-advice@1: model · thinking chips and the check / triangle (right-click the icon: why, Apply, Dismiss; Brett only)
+    { id: 'advice', label: 'Model · thinking', width: 'calc(var(--fx-font-size) * 13)', sortable: true, sortValue: (b) => { const v = buildView(b); return `${v.reviewStatus === 'look' ? 0 : 1}${v.model}`; },
+      render: (b) => <span onClick={(e) => e.stopPropagation()}><ModelChips screen="orchestrator" view={buildView(b)} build={b.id} onAct={act} title={b.title} /></span> },
     { id: 'next', label: 'Next', width: 'calc(var(--fx-font-size) * 6)', sortable: true, sortValue: (b) => core.nextUp(b, rules).step?.model ?? 'zz',
       render: (b) => { const n = core.nextUp(b, rules); return n.done ? <span className="fx-muted">—</span> : n.needsApproval ? <span className="oc-flag" title="The next phase upgrades the model: only you can approve it">your OK → {n.phase?.model}</span> : n.step ? <span className={`oc-model is-${n.step.model.toLowerCase()}`}>{n.step.model} {n.step.id}</span> : <span className="fx-muted">—</span>; } },
     { id: 'steps', label: 'Steps', width: 'calc(var(--fx-font-size) * 3.5)', align: 'end', sortable: true, sortValue: (b) => core.progress(b).total,
@@ -491,8 +499,8 @@ function StepGrid({ b, rules, busy, act, hidden, setHidden }: { b: Build; rules:
     { id: 'id', label: '#', width: 'calc(var(--fx-font-size) * 3.5)', sortable: true, sortValue: (s) => s.index, render: (s) => <span className="fx-small fx-mono">{s.id}{s.next && <span className="oc-flag"> next</span>}</span> },
     { id: 'text', label: 'Step', width: 'minmax(calc(var(--fx-font-size) * 14), calc(var(--fx-font-size) * 22))', fixed: true, sortable: true, sortValue: (s) => s.text.toLowerCase(),
       render: (s) => <span className="oc-cell-title" title={s.why ? `${s.text} — ${s.why}` : s.text}><span className={s.done ? 'oc-done' : ''}>{s.text}</span>{(s.why || s.session === 'new' || s.agent) && <span className="fx-small fx-muted">{s.why}{s.session === 'new' ? ' · new session' : ''}{s.agent ? ' · sub-agent ok' : ''}</span>}</span> },
-    { id: 'model', label: 'Model', width: 'calc(var(--fx-font-size) * 4.5)', sortable: true, sortValue: (s) => s.model,
-      render: (s) => { const other = s.model === 'Fable' ? 'Opus' : 'Fable'; return <button data-fx-row className={`oc-model is-${s.model.toLowerCase()}`} disabled={busy || s.done} title={`Switch this step to ${other}`} onClick={(e) => { e.stopPropagation(); void act({ action: 'edit-step', id: b.id, step: s.id, stepData: { model: other } }); }}>{s.model}</button>; } },
+    { id: 'model', label: 'Model · thinking', width: 'calc(var(--fx-font-size) * 13)', sortable: true, sortValue: (s) => `${stepView(s).reviewStatus === 'look' ? 0 : 1}${s.model}`,
+      render: (s) => { const other = s.model === 'Fable' ? 'Opus' : 'Fable'; return <span className="oc-steptools" onClick={(e) => e.stopPropagation()}><ModelChips screen="orchestrator" view={stepView(s)} build={b.id} step={s.id} onAct={act} title={`${b.title} ${s.id}`} /><button data-fx-row className={`oc-model is-${s.model.toLowerCase()}`} disabled={busy || s.done} title={`Switch this step to ${other}`} onClick={(e) => { e.stopPropagation(); void act({ action: 'edit-step', id: b.id, step: s.id, stepData: { model: other } }); }} aria-label={`Switch this step to ${other}`}><Icon name="shuffle" size={12} /></button></span>; } },
     { id: 'group', label: 'Group', width: 'calc(var(--fx-font-size) * 9)', sortable: true, sortValue: (s) => s.group, render: (s) => <span className="fx-small">{s.group || <span className="fx-muted">—</span>}</span> },
     { id: 'est', label: 'Time', width: 'calc(var(--fx-font-size) * 4)', align: 'end', sortable: true, sortValue: (s) => core.estimateMinutes(s.estimate) ?? -1, render: (s) => <span className="fx-small">{s.estimate || '—'}</span> },
     { id: 'cost', label: 'Cost', width: 'calc(var(--fx-font-size) * 4)', align: 'end', sortable: true, sortValue: (s) => usdFor(s.model, core.estimateMinutes(s.estimate) ?? 0), render: (s) => <span className="fx-small">{money(usdFor(s.model, core.estimateMinutes(s.estimate) ?? 0))}</span> },

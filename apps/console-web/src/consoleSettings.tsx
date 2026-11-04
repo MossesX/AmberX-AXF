@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, useRuntime } from './axf/react';
+import { Button, installModelAdvice, useRuntime } from './axf/react';
 import type { AxfWebLibrary } from './axf/react/library';
 import { getToken, health, isBackendUp, post, setToken } from './api';
 import { PluginsPanel } from './views/Plugins';
@@ -92,6 +92,8 @@ export const consoleSettings: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.settings',
   label: 'Console settings',
   version: '0.1.0',
+  // model-advice@1 (Nov 4 2026): Settings → Builds → Show model & thinking (+ per-screen override) and the voice actions
+  register(rt) { installModelAdvice(rt); },
   settingsPanels: [
     { id: 'console.token', tab: 'account', title: 'Console token', icon: 'lock', order: 30, render: () => <TokenPanel /> },
     { id: 'console.backend', tab: 'connections', title: 'Console backend', icon: 'terminal', order: 10, render: () => <BackendPanel /> },

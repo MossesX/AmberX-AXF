@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { BuildOrigin, Button, Icon, Slot, useRuntime } from '../axf/react';
+import { AdviceFilterBar, BuildOrigin, Button, Icon, ModelChips, Slot, matchesFilter, useAdviceFilter, useRuntime, type AdviceView } from '../axf/react';
 import * as api from '../api';
 import * as core from '../axf/plan/pending-core.mjs';
 import pricing from '../axf/schemas/model-pricing.json';
@@ -22,6 +22,9 @@ const STATUS_TONE: Record<PendingStatus, string> = { pending: 'fx-chip--warning'
 const fmtDate = (v: string) => { if (!v) return '—'; const d = new Date(v); return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); };
 const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
 const SORT_LABEL: Record<PendingSort, string> = { status: 'Status', added: 'Date added', built: 'Date built' };
+/** model-advice@1: the view the Pending projection carries on an item or a step (model, thinking, recommendation, check / triangle). */
+const adviceOf = (x: { model?: string; thinking?: string; recommendedModel?: string; recommendedThinking?: string; reviewStatus?: string; modelWhy?: string; verdict?: string; adviceCost?: AdviceView['adviceCost']; stepsToLook?: number }): AdviceView =>
+  ({ model: x.model === 'Fable' ? 'Fable' : 'Opus', thinking: x.thinking ?? '', recommendedModel: x.recommendedModel ?? '', recommendedThinking: x.recommendedThinking ?? '', reviewStatus: x.reviewStatus ?? 'ok', modelWhy: x.modelWhy, verdict: x.verdict as AdviceView['verdict'], adviceCost: x.adviceCost ?? null, stepsToLook: x.stepsToLook ?? 0 });
 type Mode = 'note' | 'sub' | 'confirm' | 'edit' | null;
 
 export function Pending() {
@@ -63,10 +66,11 @@ export function Pending() {
     finally { setBusy(false); }
   };
 
+  const [advice] = useAdviceFilter(); // model-advice@1: the shared model / thinking / needs-a-look filter
   const items = useMemo(() => {
-    const all = state?.items ?? [];
+    const all = (state?.items ?? []).filter((i) => matchesFilter(adviceOf(i), advice));
     return core.sortItems(filter ? all.filter((i) => i.status === filter) : all, sort, dir);
-  }, [state, sort, dir, filter]);
+  }, [state, sort, dir, filter, advice]);
   if (!state) return <div className="fx-empty">Loading pending builds…</div>;
   const counts = core.counts(state.items);
   const pickSort = (k: PendingSort) => { if (k === sort) setDir((d) => (d === 'asc' ? 'desc' : 'asc')); else { setSort(k); setDir(k === 'status' ? 'asc' : 'desc'); } };
@@ -105,6 +109,7 @@ export function Pending() {
         ))}
         {filter && <button className="fx-chip is-on" onClick={() => setFilter('')}><Icon name="x" size={13} />{core.STATUS_LABEL[filter]} only</button>}
       </div>
+      <AdviceFilterBar screen="pending" counts={{ look: (state.items ?? []).filter((i) => i.reviewStatus === 'look').length }} />
 
       <div className="pd-list" role="list">
         {items.length === 0
@@ -160,6 +165,7 @@ function PendingRow({ it, busy, act }: { it: PendingItem; busy: boolean; act: (c
         <span className={`pd-date ${date.label === 'Built' ? 'is-built' : ''}`} title={`Added ${fmtTime(it.createdAt)}${it.builtAt ? ` · built ${fmtTime(it.builtAt)}` : ''}`}><Icon name={date.label === 'Built' ? 'check-circle' : 'clock'} size={13} />{date.label} {fmtDate(date.at)}</span>
         {date.label === 'Built' && <span>Added {fmtDate(it.createdAt)}</span>}
         <span>Waits on {it.model}</span>
+        <ModelChips screen="pending" view={adviceOf(it)} build={it.id} title={it.title} />
         {core.itemEstimate(it) && <span className="pd-est" title={`${progress.total && it.subPrompts.every((sp) => core.estimateMinutes(sp.estimate) != null) ? 'Build time: the steps added up' : 'Build time (estimate)'}${usdFor(it.model, core.entryMinutes(it)) ? ` · about ${usdFor(it.model, core.entryMinutes(it))} on ${it.model}` : ''}`}><Icon name="zap" size={13} />~{core.itemEstimate(it)}{usdFor(it.model, core.entryMinutes(it)) ? ` · ~${usdFor(it.model, core.entryMinutes(it))}` : ''}</span>}
         {progress.total > 0 && it.status !== 'complete' && <span className="pd-est" title={`${progress.done} of ${progress.total} steps done · ${core.formatMinutes(progress.minutesLeft) || '0 min'} left`}><Icon name="check-circle" size={13} />{progress.done}/{progress.total} steps{progress.minutesLeft ? ` · ${core.formatMinutes(progress.minutesLeft)} left${progress.done && usdFor(it.model, progress.minutesLeft) ? ` (~${usdFor(it.model, progress.minutesLeft)})` : ''}` : ''}</span>}
         {split.needsSplit && it.status !== 'complete' && <span className="pd-split" title={`Small steps for big builds: ${split.reasons.join('; ')}`}><Icon name="alert" size={13} />needs splitting</span>}
@@ -173,7 +179,7 @@ function PendingRow({ it, busy, act }: { it: PendingItem; busy: boolean; act: (c
           <label className="pd-field">Build time (e.g. 45 min, 2 h, 1.5 d; blank = the steps added up)<input className="fx-input" value={estimate} onChange={(e) => setEstimate(e.target.value)} /></label>
         </div>
       ) : it.detail && <p className="pd-detail">{it.detail}</p>}
-      {it.subPrompts.length > 0 && <Thread label={progress.total > 1 ? 'Steps' : 'Sub prompts'} list={it.subPrompts} model={it.model} mono onTick={it.status === 'complete' ? undefined : (i, done) => void act({ action: 'step', id: it.id, index: i, done })} busy={busy} />}
+      {it.subPrompts.length > 0 && <Thread label={progress.total > 1 ? 'Steps' : 'Sub prompts'} list={it.subPrompts} model={it.model} mono build={it.id} onTick={it.status === 'complete' ? undefined : (i, done) => void act({ action: 'step', id: it.id, index: i, done })} busy={busy} />}
       {it.notes.length > 0 && <Thread label="Notes" list={it.notes} />}
       {(mode === 'note' || mode === 'sub') && (
         <textarea className="fx-input" rows={3} autoFocus value={text} onChange={(e) => setText(e.target.value)} placeholder={mode === 'note' ? 'Add a note' : 'Add a sub prompt: extra instructions for when this build runs'} />
@@ -202,7 +208,7 @@ function PendingRow({ it, busy, act }: { it: PendingItem; busy: boolean; act: (c
   );
 }
 
-function Thread({ label, list, model, mono, onTick, busy }: { label: string; list: { text: string; at: string; estimate?: string; done?: boolean; doneAt?: string }[]; model?: string; mono?: boolean; onTick?: (index: number, done: boolean) => void; busy?: boolean }) {
+function Thread({ label, list, model, mono, onTick, busy, build }: { label: string; list: ({ text: string; at: string; estimate?: string; done?: boolean; doneAt?: string; stepId?: string } & Parameters<typeof adviceOf>[0])[]; model?: string; mono?: boolean; onTick?: (index: number, done: boolean) => void; busy?: boolean; build?: string }) {
   return (
     <div className="pd-thread">
       <h3>{label}</h3>
@@ -210,7 +216,7 @@ function Thread({ label, list, model, mono, onTick, busy }: { label: string; lis
         <div key={i} className={`pd-entry ${mono ? 'is-mono' : ''} ${e.done ? 'is-done' : ''}`}>
           {onTick && <input type="checkbox" className="pd-tick" checked={!!e.done} disabled={busy} onChange={(ev) => onTick(i, ev.target.checked)} aria-label={`Step ${i + 1} done`} title={e.done && e.doneAt ? `Done ${fmtTime(e.doneAt)}` : 'Mark this step done'} />}
           <time dateTime={e.at}>{onTick ? `${i + 1}.` : fmtDate(e.at)}{e.estimate && <span className="pd-est"> · ~{e.estimate}{model && usdFor(model, core.estimateMinutes(e.estimate)) ? ` · ~${usdFor(model, core.estimateMinutes(e.estimate))}` : ''}</span>}</time>
-          <p>{e.text}</p>
+          <p>{e.text}{build && <> <ModelChips screen="pending" view={adviceOf(e)} build={build} step={e.stepId} compact title={`${build} ${e.stepId ?? i + 1}`} /></>}</p>
         </div>
       ))}
     </div>

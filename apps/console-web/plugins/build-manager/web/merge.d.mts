@@ -4,7 +4,10 @@ export type Origin = 'prompt' | 'auto';
 export type Model = 'Fable' | 'Opus' | 'Sonnet';
 export type SortKey = 'order' | 'left' | 'model';
 export interface Helpers { estimateMinutes(text: unknown): number | null; formatMinutes(min: number | null | undefined): string; cost?(model: string, minutes: number): number | null }
-export interface Step { text: string; estimate: number | null; estimateText: string; done: boolean; doneAt: string }
+/** model-advice@1 view fields the builds store projects on items, epics and steps (read-only). */
+export interface AdviceFields { model?: string; thinking?: string; recommendedModel?: string; recommendedThinking?: string; reviewStatus?: string; modelWhy?: string; verdict?: string; adviceCost?: { minutes: number; usd: number; what: string }; stepsToLook?: number }
+export function adviceOf(o: unknown): AdviceFields;
+export interface Step extends AdviceFields { text: string; estimate: number | null; estimateText: string; done: boolean; doneAt: string }
 export interface Timing { total: number | null; left: number | null; stepsDone: number; stepsTotal: number; needsSplit: boolean; estimateText: string }
 export interface Row extends Timing {
   key: string; id: string; source: Source; title: string; detail: string; model: Model; status: string; statusLabel: string; order: number;
@@ -14,6 +17,8 @@ export interface Row extends Timing {
   brett?: unknown;
   steps: Step[]; planId?: string; queuePosition?: number; effort?: string; features?: { id: string; title: string; status: string }[];
   building: boolean; startedAt: number; fable: boolean; aliases: string[];
+  /** model-advice@1 on the build itself (the Pending item or the queue epic), when the store gave it */
+  advice?: AdviceFields;
   /** Set when the list thinks it's already built or removed (the Clean up button). */
   gone?: { kind: GoneKind; why: string };
   /** USD for the time left / the whole build on its model (helpers.cost), null without a price or a time. */

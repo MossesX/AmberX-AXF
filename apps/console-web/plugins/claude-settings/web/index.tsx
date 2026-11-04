@@ -5,7 +5,8 @@
  * otherwise and the message shows under the row).
  */
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Container, Icon, Note, SelectField, Switch, TextField } from '@console/axf/react';
+import { Button, Container, Icon, MODEL_THINKING_KEY, Note, SelectField, Switch, TextField } from '@console/axf/react';
+import type { AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -31,7 +32,14 @@ interface View { ok: boolean; live: boolean; store: string; groups: Group[]; set
 
 let shared: View | null = null;
 const listeners = new Set<(v: View | null) => void>();
-function publish(v: View | null) { shared = v; for (const l of listeners) l(v); }
+/** The console runtime (set on register): the shared "Show model & thinking" switch mirrors into its settings (model-advice@1). */
+let runtime: AxfRuntime | null = null;
+const SHOW_KEY = 'builds.showModelThinking';
+function publish(v: View | null) {
+  shared = v; for (const l of listeners) l(v);
+  // axHub → console: the live value becomes the console's global switch (Settings → Builds), so every screen follows it
+  if (v && runtime && SHOW_KEY in v.values) { const on = v.values[SHOW_KEY] !== false; if ((runtime.settings.get(MODEL_THINKING_KEY) !== false) !== on) runtime.settings.set(MODEL_THINKING_KEY, on); }
+}
 
 async function load(): Promise<View> {
   const r = await pluginFetch(FOLDER, 'settings');
@@ -203,6 +211,12 @@ export const plugin: AxfWebLibrary = {
   appMenu,
   register(rt) {
     rt.actions.register('claude-settings.open', () => rt.dispatch(`settings.open:${VIEW}`), { label: 'Claude settings' });
+    // console → axHub: flipping the console switch (Settings → Builds, or the model-advice.show action by voice) saves the shared setting
+    runtime = rt;
+    rt.settings.subscribe(() => {
+      const on = rt.settings.get(MODEL_THINKING_KEY) !== false;
+      if (shared && SHOW_KEY in shared.values && (shared.values[SHOW_KEY] !== false) !== on) void save({ [SHOW_KEY]: on }).catch(() => undefined);
+    });
   },
   views: { [VIEW]: { title: 'Claude', icon: 'sparkles', render: () => <ClaudePage /> } },
   nav: { label: 'Plugins', items: [{ id: VIEW, label: 'Claude', icon: 'sparkles', view: VIEW }] },

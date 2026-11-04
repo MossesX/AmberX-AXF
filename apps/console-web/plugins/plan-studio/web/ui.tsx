@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useState, type DragEvent } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, Markdown, Segmented, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, IconButton, Markdown, ModelChips, Segmented, buildView, useRuntime, type AdviceView } from '@console/axf/react';
+
+/** model-advice@1 on a plan: the plan file carries the recommendation (model-advice.mjs plans --write); the view is computed like a build's. */
+function planAdvice(p: Plan): AdviceView {
+  const x = p as Plan & { thinking?: string; recommendedModel?: string; recommendedThinking?: string; modelWhy?: string; verdict?: string; adviceCost?: AdviceView['adviceCost']; reviewOk?: unknown };
+  return buildView({ ...x, status: p.status === 'done' ? 'complete' : p.status === 'dropped' ? 'archived' : 'pending', steps: p.steps.map((s) => ({ ...s, model: s.model === 'Fable' ? 'Fable' : 'Opus', estimate: s.minutes ? `${s.minutes} min` : '' })) });
+}
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as pc from './plan-core.mjs';
 import type { CatNode, Filter, Plan, SavedView } from './plan-core.mjs';
@@ -200,6 +206,7 @@ function Row({ p, sel, pick, onOpen }: { p: Plan; sel: Set<string>; pick: (id: s
           <span className="axp-plan-studio__rmeta">{p.category && <span className="fx-muted">{p.category}</span>}{t.steps > 0 && <span>{t.done}/{t.steps}</span>}{p.effort.left > 0 && <span>{pc.fmtMinutes(p.effort.left)}</span>}{p.targetDate && <span>{fmtDay(p.targetDate)}</span>}</span>
         </button>
         <Chip tone={st.tone || undefined}>{st.label}</Chip>
+        <ModelChips screen="plan-studio" view={planAdvice(p)} build={p.build?.id} title={p.title} compact />
         <IconButton icon="edit" label={`Open ${p.title}`} onClick={() => onOpen(p)} />
       </div>
       {open && (

@@ -4,7 +4,7 @@
  * its steps, the files it changed with their live diff, its recent tool calls with their cost, links and Stop.
  */
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { AgentAvatar, Button, Icon, IconButton, ModelBadge, Segmented, TextField, setAgentDirectory, useRuntime } from '@console/axf/react';
+import { AgentAvatar, Button, Icon, IconButton, ModelBadge, ModelChips, Segmented, TextField, buildView, setAgentDirectory, stepView, useRuntime } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import { followSse, sseJson } from '@console/axf/core/sse';
 import { layoutViewports } from '@console/axf/core/engines/layout';
@@ -222,7 +222,7 @@ export function Detail({ r }: { r: Run }) {
               <li key={s.id} className={`axp-crew__step is-${s.state}`}>
                 <span className="axp-crew__stepMark" aria-label={s.state}>{s.state === 'done' ? <Icon name="check" size={12} /> : s.state === 'now' ? <Icon name="play" size={12} /> : <Icon name="minus" size={12} />}</span>
                 <span className="fx-grow">{s.id} {s.text}</span>
-                {s.model ? <ModelBadge model={s.model} compact /> : null}
+                {s.model ? <ModelChips screen="crew" view={stepView({ ...s, done: s.state === 'done' })} build={r.build!.id} step={s.id} compact /> : null}
               </li>
             ))}
           </ol>
@@ -285,7 +285,7 @@ export function CrewView() {
     { id: 'status', label: 'Doing', width: 'minmax(calc(var(--fx-space) * 24), 4fr)', sortable: true, render: (r) => (
       <span className="axp-crew__doing"><span className="axp-crew__step1">{stepLine(r.build)}</span><span className="fx-small fx-muted axp-crew__now1">{r.now}</span></span>
     ) },
-    { id: 'model', label: 'Model', width: 'calc(var(--fx-space) * 11)', render: (r) => <ModelBadge model={r.modelKey || r.model} compact /> },
+    { id: 'model', label: 'Model', width: 'calc(var(--fx-space) * 16)', render: (r) => (r.build ? <ModelChips screen="crew" view={{ ...buildView({ ...r.build, steps: r.build.steps.map((s) => ({ ...s, done: s.state === 'done' })) }), model: /fable/i.test(r.modelKey || r.model) ? 'Fable' : /opus/i.test(r.modelKey || r.model) ? 'Opus' : buildView(r.build).model }} build={r.build.id} compact /> : <ModelBadge model={r.modelKey || r.model} compact />) },
     { id: 'started', label: 'Time', width: 'calc(var(--fx-space) * 18)', sortable: true, sortValue: (r) => r.startedAt ?? '', render: (r) => <Timer r={r} now={now} /> },
     { id: 'cost', label: 'Cost', width: 'calc(var(--fx-space) * 13)', align: 'end', sortable: true, sortValue: (r) => r.costUsd, render: (r) => <span className="fx-mono axp-crew__num" title={r.costExact ? 'Exact (from the run\'s result)' : 'Live, from the usage streamed so far'}>{usd(r.costUsd)}</span> },
     { id: 'tokens', label: 'Tokens', width: 'calc(var(--fx-space) * 11)', align: 'end', sortable: true, sortValue: (r) => r.tokensTotal, render: (r) => <span className="fx-mono axp-crew__num">{tokensText(r.tokensTotal)}</span> },

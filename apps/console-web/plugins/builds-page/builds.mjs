@@ -16,6 +16,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from '../../../../framework/plan/builds-store-core.mjs';
 import { subtitle } from '../../../../framework/core/build-origin.mjs';
+import { buildView as adviceBuildView, stepView as adviceStepView } from '../../../../framework/core/model-advice.mjs';
 import { applyDraftNow, loadStore, withStore } from '../../../../framework/cli/builds-store.mjs';
 import { activeProfile, readProfiles } from '../../../../framework/cli/persist.mjs';
 
@@ -26,7 +27,7 @@ const pickProfile = (p) => { const reg = readProfiles(); return reg.profiles.som
 function stepView(s, b, i) {
   const t = `${s.title} ${s.text}`.toLowerCase();
   const kind = /\b(fix|bug|broken|repair|red ci|regression)\b/.test(t) ? 'fix' : /\b(remove|delete|retire|drop|uninstall)\b/.test(t) ? 'removal' : /\b(add|new|create|build|introduce|first)\b/.test(t) ? 'creation' : 'edit';
-  return { ...s, index: i, build: b.id, buildTitle: b.title, buildSaid: subtitle(b.origin, 200), kind, target: s.files[0] || s.group || s.phase || '', next: false };
+  return { ...s, index: i, build: b.id, buildTitle: b.title, buildSaid: subtitle(b.origin, 200), kind, target: s.files[0] || s.group || s.phase || '', next: false, advice: adviceStepView(s) };
 }
 function buildView(b, profile) {
   const p = core.buildProgress(b);
@@ -38,6 +39,7 @@ function buildView(b, profile) {
     profiles: b.profiles, order: b.order[profile] ?? 0, rev: b.rev, createdAt: b.createdAt, updatedAt: b.updatedAt, builtAt: b.builtAt,
     hidden: b.hidden, rearranged: b.rearranged, hasDefault: b.defaultSteps.length > 0, notes: b.notes.slice(-5), pendingStatus: core.pendingStatusOf(b),
     progress: p, minutesLeft, steps, origin: b.origin ?? null, // build-origin@1: what Brett said
+    advice: adviceBuildView(b), // model-advice@1: model, thinking, the recommendation, verdict, cost, check / triangle
   };
 }
 const estimateMin = (e) => { const m = /^\s*~?\s*(\d+(?:\.\d+)?)\s*(m|min|mins|minutes?|h|hr|hrs|hours?|d|days?)?\s*$/i.exec(String(e ?? '')); if (!m) return null; const n = Number(m[1]); const u = (m[2] || 'min').toLowerCase(); return Math.round(u.startsWith('h') ? n * 60 : u.startsWith('d') ? n * 480 : n); };

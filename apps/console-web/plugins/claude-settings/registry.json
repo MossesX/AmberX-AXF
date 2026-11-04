@@ -43,6 +43,8 @@
       "description": "Every build is booked on a named agent's card. Locked on." },
     { "key": "builds.uiReviewGate", "group": "builds", "label": "UI Review gate", "kind": "toggle", "default": true, "owner": true, "level": "developer",
       "description": "A PR with UI waits for Brett's UI Review approval before it is called ready." },
+    { "key": "builds.showModelThinking", "group": "builds", "label": "Show model & thinking", "kind": "toggle", "default": true, "level": "simple", "shared": "Model & thinking",
+      "description": "Next to every build and step, everywhere: the model it is on, the thinking level, the recommended ones and a check (all set) or a yellow triangle (needs a look). Off hides the chips and icons on every screen; the recommendations stay stored. The console mirrors it to Settings > Builds, where each screen can override it." },
 
     { "key": "verification.mode", "group": "verification", "label": "Verify builds", "kind": "choice", "default": "on-conflict", "level": "developer",
       "options": [{ "value": "on-conflict", "label": "Trust the live store, verify on conflict" }, { "value": "always", "label": "Always verify" }],

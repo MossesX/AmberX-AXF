@@ -51,12 +51,14 @@ export function adviseBuild(build: unknown, opts?: { price?: Record<string, numb
 export function reviewStatus(rec: Partial<AdviceRecord> | null | undefined, cur: { model?: unknown; thinking?: unknown }): ReviewStatus;
 export function stepView(step: unknown, build?: { id?: string }): StepView;
 export function buildView(build: unknown): BuildView;
-export function whyLines(view: Partial<BuildView & StepView> | null | undefined): WhyLine[];
+/** Any object carrying the view fields as plain strings (a BuildView / StepView, or a projection read off the API). */
+export interface AdviceLike { model?: string; thinking?: string; recommendedModel?: string; recommendedThinking?: string; reviewStatus?: string; modelWhy?: string; verdict?: string; adviceCost?: AdviceCost | null; stepsToLook?: number }
+export function whyLines(view: AdviceLike | null | undefined): WhyLine[];
 export function parseFilter(input: unknown): AdviceFilter;
 export function normFilter(f: unknown): AdviceFilter;
 export function filterIsEmpty(f: unknown): boolean;
-export function matchesFilter(view: Partial<BuildView & StepView> | null | undefined, filter: unknown): boolean;
+export function matchesFilter(view: AdviceLike | null | undefined, filter: unknown): boolean;
 export function filterLabel(filter: unknown): string;
 export function normReviewOk(v: unknown): ReviewOk | null;
 export function adviceRecord(o: unknown, opts?: { build?: boolean }): AdviceRecord;
-export function reviewOkFor(view: Partial<BuildView & StepView> | null | undefined, opts?: { at?: string; by?: string; via?: string; how?: 'apply' | 'dismiss'; note?: string }): ReviewOk | null;
+export function reviewOkFor(view: AdviceLike | null | undefined, opts?: { at?: string; by?: string; via?: string; how?: 'apply' | 'dismiss'; note?: string }): ReviewOk | null;

@@ -428,6 +428,7 @@ export function itemOfBuild(b, now = nowIso()) {
       ...(s.done ? { done: true, doneAt: s.doneAt || b.updatedAt || now } : {}),
       ...(s.skip ? { skip: true } : {}),
       ...(s.fm ? { fm: s.fm } : {}),
+      stepId: s.id, // the orchestrator step id (apply / dismiss a step's recommendation from the Pending list)
       ...adviceView(stepView(s)),
     })),
     ...(({ model: _m, ...rest }) => rest)(adviceView(bv, true)), // the item's own `model` (above) stays: Sonnet items keep their word

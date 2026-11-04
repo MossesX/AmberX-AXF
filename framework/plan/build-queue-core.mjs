@@ -168,15 +168,19 @@ export function recordSteps(rec) {
     ...(s?.done === true ? { done: true, doneAt: iso(s?.doneAt) } : {}),
     ...(s?.skip === true ? { skip: true } : {}), // feature-matrix@1: skipped, never removed
     ...(String(s?.fm ?? '').trim() ? { fm: String(s.fm).trim().slice(0, 80) } : {}),
+    ...adviceOf(s), // model-advice@1: the read-only view the store projects (model, thinking, recommendation, reviewStatus)
   })).filter((s) => s.text);
 }
+/** model-advice@1 view fields on a projected step or record, when the store gave them (older files: none). */
+const ADVICE_VIEW = ['model', 'thinking', 'recommendedModel', 'recommendedThinking', 'reviewStatus', 'modelWhy', 'verdict', 'adviceCost', 'stepsToLook'];
+export function adviceOf(o) { const out = {}; for (const k of ADVICE_VIEW) if (o && typeof o === 'object' && o[k] !== undefined && o[k] !== '' && o[k] !== null) out[k] = o[k]; return out; }
 function stepsView(rec) {
   const steps = recordSteps(rec);
   const estimate = String(rec?.estimate ?? '').trim();
   const entry = { estimate, steps };
   const p = stepsProgress(entry);
   const c = splitCheck(entry);
-  return { estimate: itemEstimate(entry) || formatMinutes(p.minutesTotal), steps, stepsDone: p.done, minutesTotal: p.minutesTotal, minutesLeft: p.minutesLeft, needsSplit: c.needsSplit, splitReasons: c.reasons };
+  return { estimate: itemEstimate(entry) || formatMinutes(p.minutesTotal), steps, stepsDone: p.done, minutesTotal: p.minutesTotal, minutesLeft: p.minutesLeft, needsSplit: c.needsSplit, splitReasons: c.reasons, ...(rec?.advice ? { advice: adviceOf(rec.advice) } : {}) };
 }
 
 /**

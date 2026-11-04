@@ -1714,3 +1714,24 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 .fx-dcard__bar { flex: 1 1 0; min-width: 0; background: var(--fx-accent); border-radius: var(--fx-radius-sm) var(--fx-radius-sm) 0 0 }
 .fx-dcard__table { font-size: var(--fx-type-scale-sm) }
 .fx-dcard__table td { overflow-wrap: anywhere }
+
+/* ---------- model & thinking (model-advice@1, Nov 4 2026): chips, the check / triangle, the why-panel, the filters ---------- */
+.fx-advice { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); flex-wrap: wrap; vertical-align: middle; }
+.fx-advice__model, .fx-advice__thinking { gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-2xs) var(--fx-dens-gap-lg); font-size: var(--fx-type-root-xs); font-weight: 600; letter-spacing: .02em; white-space: nowrap; cursor: default; }
+.fx-advice__thinking { color: var(--fx-muted); background: color-mix(in srgb, var(--fx-muted) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.fx-advice__rec { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-2xs); margin-inline-start: var(--fx-dens-gap-xs); padding-inline-start: var(--fx-dens-gap-xs); border-inline-start: var(--fx-border-w) solid color-mix(in srgb, currentColor calc(var(--fx-opacity-muted) * 100%), transparent); color: var(--fx-warning); }
+.fx-advice__icon { display: inline-flex; align-items: center; justify-content: center; inline-size: calc(var(--fx-font-size) * 1.5); block-size: calc(var(--fx-font-size) * 1.5); border-radius: 999px; cursor: context-menu; border: var(--fx-border-w) solid transparent; }
+.fx-advice__icon.is-ok, .fx-advice__icon.is-dismissed { color: var(--fx-success); }
+.fx-advice__icon.is-look { color: var(--fx-warning); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.fx-advice__icon.is-open { border-color: currentColor; }
+.fx-advice__icon:focus-visible { outline: var(--fx-border-w) solid var(--fx-accent); outline-offset: var(--fx-dens-gap-2xs); }
+.fx-advice--compact .fx-advice__model { padding-inline: var(--fx-dens-gap-md); }
+.fx-advice__why { flex-basis: 100%; inline-size: 100%; box-sizing: border-box; display: grid; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-xl); margin-block-start: var(--fx-dens-gap-md); border: var(--fx-border-w) solid color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-muted) * 100%), transparent); border-radius: var(--fx-radius-md); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 50%), var(--fx-surface)); font-size: var(--fx-type-root-sm); cursor: default; }
+.fx-advice__lines { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-xl); margin: 0; }
+.fx-advice__line { display: contents; }
+.fx-advice__line dt { color: var(--fx-muted); font-weight: 600; white-space: nowrap; }
+.fx-advice__line dd { margin: 0; color: var(--fx-text); overflow-wrap: anywhere; }
+.fx-advice__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); }
+.fx-advice__filters { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); }
+.fx-advice__filters .fx-chip.is-on { color: var(--fx-accent); border-color: var(--fx-accent); background: var(--fx-accent-soft); }
+.fx-advice__pick { inline-size: auto; min-inline-size: calc(var(--fx-font-size) * 8); padding-block: var(--fx-dens-gap-xs); font-size: var(--fx-type-root-sm); }
