@@ -683,9 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 12:47 UTC · `profile-manager` note (current) · foreign-write
-- 2026-11-04 12:47 UTC · `molly-console-commands` → complete, note (current) · foreign-write
-- 2026-11-04 12:47 UTC · `git-status-board` note (current) · foreign-write
 - 2026-11-04 12:47 UTC · `urgent-main-ci-green` → complete, note (current) · foreign-write
 - 2026-11-04 12:47 UTC · `terminal-tabs-left` note (current) · foreign-write
 - 2026-11-04 12:47 UTC · `gizmo-companion` note (current) · foreign-write
@@ -1083,6 +1080,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 16:16 UTC · `app-voice-commands` note (current) · foreign-write
 - 2026-11-04 16:20 UTC · `settings-placement-everywhere` branch claude/settings-placement-everywhere, note (current) · reconciler
 - 2026-11-04 16:23 UTC · `tab-group-assets` s3 done (current) · foreign-write
+- 2026-11-04 16:23 UTC · `app-voice-commands` note (current) · foreign-write
+- 2026-11-04 16:23 UTC · `settings-placement-everywhere` added (24 steps) (current) · foreign-write
+- 2026-11-04 16:23 UTC · `molly-multi-instance-tabs` added (4 steps) (current) · foreign-write
 
 ## Token passes (log)
 
