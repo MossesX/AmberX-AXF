@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 948,
- "updatedAt": "2026-11-04T20:45:55.028Z",
+ "rev": 949,
+ "updatedAt": "2026-11-04T20:46:36.305Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -83225,12 +83225,16 @@
    "branch": "claude/molly-banner-match",
    "pr": "",
    "createdAt": "2026-11-04T17:18:47.970Z",
-   "updatedAt": "2026-11-04T20:43:52.913Z",
+   "updatedAt": "2026-11-04T20:44:25.053Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: branch claude/molly-banner-match (no PR yet)",
      "at": "2026-11-04T20:41:55.871Z"
+    },
+    {
+     "text": "Reconciler: branch claude/molly-banner-match (no PR yet)",
+     "at": "2026-11-04T20:44:25.053Z"
     },
     {
      "text": "Reconciler: branch claude/molly-banner-match (no PR yet)",

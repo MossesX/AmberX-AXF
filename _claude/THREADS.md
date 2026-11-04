@@ -698,7 +698,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:38 UTC · `profile-lists-home-card` s4 done, → complete (current) · foreign-write
 - 2026-11-04 14:38 UTC · `profile-filter-tables` added (4 steps) (current) · foreign-write
 - 2026-11-04 14:39 UTC · `fable-no-approval` added (3 steps) (current) · fable-no-approval
 - 2026-11-04 14:39 UTC · `fable-review-nov3` added (7 steps) (current) · fable-no-approval
@@ -1098,6 +1097,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 20:43 UTC · `molly-banner-match` branch claude/molly-banner-match, note (current) · reconciler
 - 2026-11-04 20:44 UTC · `drag-to-tab` added (5 steps) (angel) · orchestrator
 - 2026-11-04 20:44 UTC · `drag-to-tab` removed (angel) · orchestrator
+- 2026-11-04 20:44 UTC · `molly-banner-match` branch claude/molly-banner-match, note (current) · reconciler
 
 ## Token passes (log)
 

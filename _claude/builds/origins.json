@@ -481,6 +481,18 @@
    "from": "detail",
    "addenda": []
   },
+  "build-optimizer": {
+   "said": "In Build manager, add a button to optimize builds, which will take all the steps and sort them all into a smaller amount of builds, just moving all the steps over and combining builds. Yeah. And optimize, it will create a new package of builds, and it will list them all in a dialog to confirm. It will list the build with all of its steps.",
+   "at": "2026-11-04T20:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "headless",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "build-orchestrator": {
    "said": "everything from today and the refactor goes into the Refactor profile).",
    "at": "2026-10-27",
