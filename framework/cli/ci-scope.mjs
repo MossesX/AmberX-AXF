@@ -19,7 +19,7 @@
  *          match main's outside _claude/), nothing runs again except the Android publish when Android changed.
  */
 import { spawnSync } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -148,6 +148,17 @@ export function changedFiles({ event, ref, before = '' }) {
  * Has the merge queue already run CI green on this code? A queue/pr-* branch whose files equal HEAD's outside
  * _claude/, and whose head commit has a successful run of this workflow (GitHub API, the job's own token).
  */
+/**
+ * Is the merge queue on for CI? The repo variable AXF_MERGE_QUEUE wins when it is set (on | off); without it, the
+ * committed switch `.github/merge-queue.json` ({ "on": true }) decides (Nov 4 2026: the token the queue runner has may
+ * not write Actions variables, and every PR then paid for a full run).
+ */
+export function queueIsOn(env = process.env, file = '.github/merge-queue.json') {
+  const v = String(env.AXF_MERGE_QUEUE || '').trim().toLowerCase();
+  if (v === 'on' || v === 'off') return v === 'on';
+  try { return JSON.parse(readFileSync(file, 'utf8'))?.on === true; } catch { return false; }
+}
+
 export async function queueTested({ repo = process.env.GITHUB_REPOSITORY, token = process.env.GH_TOKEN, workflow = process.env.GITHUB_WORKFLOW } = {}) {
   git(['fetch', '-q', 'origin', '+refs/heads/queue/*:refs/remotes/origin/queue/*']);
   const refs = lines(git(['for-each-ref', '--format=%(objectname)', 'refs/remotes/origin/queue/']).out);
@@ -171,7 +182,7 @@ async function main(argv) {
     const event = opt('event'); const ref = opt('ref');
     // no base to compare with (main itself, a brand-new history): treat it as touching everything
     const files = changedFiles({ event, ref, before: opt('before') }) || ['*'];
-    const queueOn = String(process.env.AXF_MERGE_QUEUE || '').toLowerCase() === 'on';
+    const queueOn = queueIsOn();
     const tested = event === 'push' && ref === 'main' && files[0] !== '*' ? (await queueTested()).tested : false;
     const o = outputs({ event, ref, queueOn, files, tested });
     for (const [k, v] of Object.entries(o)) console.log(`${k}=${v}`);

@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { KEYS, scopeFor, outputs, sameCode, lightCommands, touchedPlugins, needsOf } from '../cli/ci-scope.mjs';
+import { KEYS, scopeFor, outputs, sameCode, lightCommands, touchedPlugins, needsOf, queueIsOn } from '../cli/ci-scope.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 let n = 0;
@@ -67,5 +67,13 @@ t('android.yml: runs on queue/**, every heavy job waits on scope and reads its o
     assert.match(block, new RegExp(`needs\\.scope\\.outputs\\.${key} == 'true'`), job);
   }
   for (const k of ['axhubweb', 'amberxweb', 'molly', 'walkthrough']) assert.match(y, new RegExp(`needs\\.scope\\.outputs\\.${k} == 'true'`));
+});
+t('the queue switch: the repo variable wins, else the committed .github/merge-queue.json', () => {
+  const f = join(ROOT, '.github/merge-queue.json');
+  assert.equal(JSON.parse(readFileSync(f, 'utf8')).on, true);
+  assert.equal(queueIsOn({}, f), true);
+  assert.equal(queueIsOn({ AXF_MERGE_QUEUE: 'off' }, f), false);
+  assert.equal(queueIsOn({ AXF_MERGE_QUEUE: 'on' }, '/nonexistent'), true);
+  assert.equal(queueIsOn({}, '/nonexistent'), false);
 });
 console.log(`ci-scope: ${n} checks passed`);

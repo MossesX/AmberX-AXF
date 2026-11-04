@@ -1,0 +1,5 @@
+{
+  "$axf": "merge-queue-ci@1",
+  "on": true,
+  "why": "Only the merge queue merges (Brett, Nov 4 2026). PRs run the light checks; the full run happens once, on the PR's queue branch. The repo variable AXF_MERGE_QUEUE (on | off) overrides this file when it is set."
+}
