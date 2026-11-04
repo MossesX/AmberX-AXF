@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T21:31:38.538Z",
+ "updatedAt": "2026-11-04T21:31:54.561Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4125,6 +4125,143 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw2mrdvw0ggysc"
+    }
+   ]
+  },
+  {
+   "id": "three-layouts-per-screen",
+   "title": "Three layouts per screen",
+   "category": "Framework",
+   "detail": "plugin@1 screens: every NEW plugin screen declares 3 layout variants with a default; shared hidden-by-default layout-switcher toolbar (one asset, per-plugin copy via inherit); scaffold (templates, axf new-plugin); CI check with grandfather baseline; UI Review layout choices helper; docs + rule. Existing plugins are not retrofitted.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/three-layouts-per-screen",
+   "pr": "",
+   "createdAt": "2026-11-04T21:31:37.965Z",
+   "updatedAt": "2026-11-04T21:31:38.957Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "From now on, all plugin screens get three layouts, and come with a toolbar to select which one, with the toolbar hidden by default. Not old ones, only new ones.",
+    "at": "2026-11-04T00:00:00.000Z",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "Brett",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": [
+     {
+      "said": "So UI Review will only allow you to select from the three layouts it is going to generate.",
+      "at": "2026-11-04T00:00:00.000Z",
+      "source": "voice",
+      "by": "",
+      "verbatim": true
+     },
+     {
+      "said": "Yep.",
+      "at": "2026-11-04T00:00:00.000Z",
+      "source": "voice",
+      "by": "",
+      "verbatim": true
+     }
+    ]
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Contract: plugin@1 screens (3 layouts, default), engine screen-layouts.mjs, validators (plugins.mjs, console server, JSON Schema), fixture",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2mtciz06rrtc"
+    },
+    {
+     "id": "s2",
+     "text": "Runtime + shared toolbar asset layout-switcher (provider, actions, context items, per-screen per-device choice, copy / shared), React hook + LayoutToolbar, Toolbars settings panel",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2mtciz07gl3a"
+    },
+    {
+     "id": "s3",
+     "text": "Scaffold: _template plugins, library templates, axf new-plugin",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2mtciz085m9f"
+    },
+    {
+     "id": "s4",
+     "text": "CI: check-screen-layouts.mjs with grandfather baseline, plugins.mjs --check, workflow",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2mtciz0955y5"
+    },
+    {
+     "id": "s5",
+     "text": "UI Review layout choices helper + CLI, docs (SCREEN-LAYOUTS.md, README, PORTING, rules, brief template), tests, report, PR",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2mtciz0acmmj"
     }
    ]
   }
