@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 697,
- "updatedAt": "2026-11-04T13:52:47.183Z",
+ "rev": 698,
+ "updatedAt": "2026-11-04T13:53:13.090Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -73046,9 +73046,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/follow-amber-switch",
-   "pr": "",
+   "pr": "#312",
    "createdAt": "2026-11-04T13:33:57.300Z",
-   "updatedAt": "2026-11-04T13:50:23.162Z",
+   "updatedAt": "2026-11-04T13:53:11.874Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -73214,7 +73214,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
