@@ -217,6 +217,13 @@ function useWindowDrag(w: WindowSpec) {
   return { startMove, startResize };
 }
 
+/**
+ * Every floating window (and its grips) shares one z-index; the host draws them sorted by `w.z`, so DOM order stacks
+ * them. `60 + w.z` used to climb past the dialog backdrop (70), menus and toasts after a few focus taps, so a dialog
+ * opened from a window (the Terminal's settings, its tab picker) opened behind it (window-resize-fix, Nov 3 2026).
+ */
+const WINDOW_LAYER = 60;
+
 function FloatingWindow({ w }: { w: WindowSpec }) {
   const rt = useRuntime();
   const wm = rt.windows;
@@ -236,7 +243,7 @@ function FloatingWindow({ w }: { w: WindowSpec }) {
   return (
     <WindowCtx.Provider value={w}>
       <FrameCtx.Provider value={hooks}>
-        <div className={`fx-window fx-window--${w.type} fx-window--${frame} ${maximized ? 'is-maximized' : ''} ${s.focused === w.id ? 'is-focused' : ''} ${brandHost.className}`.trim()} style={{ left: w.x, top: w.y, width: w.width, height: w.height, zIndex: 60 + w.z, opacity: w.settings.opacity }} onPointerDown={() => wm.focus(w.id)} data-fx-brand-mode={brandHost['data-fx-brand-mode']} data-fx-window={w.id}>
+        <div className={`fx-window fx-window--${w.type} fx-window--${frame} ${maximized ? 'is-maximized' : ''} ${s.focused === w.id ? 'is-focused' : ''} ${brandHost.className}`.trim()} style={{ left: w.x, top: w.y, width: w.width, height: w.height, zIndex: WINDOW_LAYER, opacity: w.settings.opacity }} onPointerDown={() => wm.focus(w.id)} data-fx-brand-mode={brandHost['data-fx-brand-mode']} data-fx-window={w.id}>
           {frame === 'standard' && (
             <div className="fx-window__title" onPointerDown={startMove} onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); rt.openContext(e.clientX, e.clientY, 'window-title', w.id); }} data-fx-ctx-target="window-title" data-fx-ctx-payload={w.id}>
               {brand?.svg && <BrandMark slot={brandSlot} height={14} className="fx-window__brand" />}
@@ -250,8 +257,10 @@ function FloatingWindow({ w }: { w: WindowSpec }) {
           )}
           {frame === 'standard' && effectiveToolbar(w) && <WindowToolbar w={w} />}
           <div className="fx-window__body">{layout ? <DockHost windowId={w.id} empty={<div className="fx-empty">Empty window</div>} /> : <div className="fx-empty">Empty window</div>}<BrandWatermark slot={brandSlot} /></div>
-          {!maximized && <WindowResizeHandles onStart={startResize} />}
         </div>
+        {/* window-resize-fix (Nov 3 2026): the handles sit in their own layer just above the window (same z, drawn after
+            it), so the bands straddle the border instead of being clipped inside it by the window's rounded overflow */}
+        {!maximized && <div className={`fx-window__grips fx-window__grips--${frame}`} style={{ left: w.x, top: w.y, width: w.width, height: w.height, zIndex: WINDOW_LAYER }} data-fx-window-grips={w.id}><WindowResizeHandles onStart={startResize} /></div>}
       </FrameCtx.Provider>
     </WindowCtx.Provider>
   );

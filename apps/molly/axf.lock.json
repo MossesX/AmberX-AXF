@@ -639,7 +639,7 @@
     "src/axf/libs/recorder/index.tsx": "e21b40fcbae20d5a",
     "src/axf/libs/recorder/library.json": "a66898197518cad3",
     "src/axf/libs/recorder/recorder.css": "a39f75631eec52f0",
-    "src/axf/libs/settings/index.tsx": "8ec04eb8f6a40abe",
+    "src/axf/libs/settings/index.tsx": "dea2efbfe2411dcb",
     "src/axf/libs/settings/levels.tsx": "2fa6f39d1df720ac",
     "src/axf/libs/toolbars/index.tsx": "e8eb898244268914",
     "src/axf/libs/toolbars/library.json": "e26eb451b153b922",
@@ -694,7 +694,7 @@
     "src/axf/react/studio/builtinDialogs.tsx": "5d35a316a9d81b93",
     "src/axf/react/tapConfirm.ts": "e849fd0f75c59020",
     "src/axf/react/windows/DockHost.tsx": "aed2738feff1e3c9",
-    "src/axf/react/windows/WindowHost.tsx": "1a3acfcd12c967dd",
+    "src/axf/react/windows/WindowHost.tsx": "6162b796db005140",
     "src/axf/schemas/ai-providers.json": "2e1e445fb70ba223",
     "src/axf/schemas/app-structure.json": "b757aff49521a626",
     "src/axf/schemas/asset-types.android.json": "c31b8af1ae8fa030",
@@ -782,6 +782,6 @@
     "src/axf/schemas/shared-assets.json": "7d6a5bb4f0b2a9c3",
     "src/axf/schemas/swarm.json": "72c7999aebb9e8c2",
     "src/axf/schemas/ui-review.json": "6cbca899c45dd994",
-    "src/axf/ui/axf.css": "65d8fc2f2b8945c5"
+    "src/axf/ui/axf.css": "0d9bd008c9ff5a54"
   }
 }
