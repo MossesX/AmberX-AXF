@@ -669,7 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:29 UTC · `crew-live` s4 done (urgent) · orchestrator
 - 2026-11-03 18:29 UTC · `md-studio` s3 done (urgent) · orchestrator
 - 2026-11-03 18:29 UTC · `md-studio` s4 done (urgent) · orchestrator
 - 2026-11-03 18:29 UTC · `md-studio` s5 done (urgent) · orchestrator
@@ -1069,6 +1068,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:48 UTC · `merge-queue` s5 done (current) · orchestrator
 - 2026-11-04 14:48 UTC · `merge-queue` s1 done, s2 done, s3 done (current) · foreign-write
 - 2026-11-04 14:48 UTC · `merge-queue` s4 done, s5 done (current) · foreign-write
+- 2026-11-04 15:00 UTC · `browser-automation` → pending, note (current) · reconciler
 
 ## Token passes (log)
 
