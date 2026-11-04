@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 770,
- "updatedAt": "2026-11-04T15:09:08.466Z",
+ "rev": 771,
+ "updatedAt": "2026-11-04T15:09:21.111Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -79378,12 +79378,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T14:43:48.090Z",
-   "updatedAt": "2026-11-04T14:43:51.934Z",
+   "updatedAt": "2026-11-04T15:09:08.676Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Assigned: Reel Rhonda (no Polo card). Headless worktree /root/axf-builds/app-voice-commands, session runs on Fable per the brief's standing Fable order (s1 Fable; the Opus steps run in the same session, no model switch, no upgrade phase).",
      "at": "2026-11-04T14:43:49.640Z"
+    },
+    {
+     "text": "s1 done: voice-command@1 rules + type + schema + fixture + check + forFramework manifest rules (commit 340483ee0 on claude/app-voice-commands). s0: Expenses fix pushed to claude/expenses-port, PR #307 CI green, auto-merge pending.",
+     "at": "2026-11-04T15:09:08.676Z"
     }
    ],
    "approvals": [],
@@ -79416,12 +79420,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T15:09:07.606Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T14:43:48.095Z",
-     "updatedAt": "2026-11-04T14:43:48.095Z"
+     "updatedAt": "2026-11-04T15:09:09.645Z"
     },
     {
      "id": "s2",
@@ -79542,10 +79546,27 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-04T14:43:48.090Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw288vhh07t3c0": "2026-11-04T14:43:48.095Z",
+     "st-mw288vhh087w8r": "2026-11-04T14:43:48.095Z",
+     "st-mw288vhh09e63j": "2026-11-04T14:43:48.095Z",
+     "st-mw288vhh0awe54": "2026-11-04T14:43:48.095Z",
+     "st-mw288vhh0b68y3": "2026-11-04T14:43:48.095Z",
+     "st-mw288vhh0cvfyx": "2026-11-04T14:43:48.095Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-04T14:43:48.095Z",
    "rearranged": false,

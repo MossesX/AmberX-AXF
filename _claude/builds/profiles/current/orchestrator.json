@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T15:09:08.466Z",
+ "updatedAt": "2026-11-04T15:09:21.111Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -12104,12 +12104,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T14:43:48.090Z",
-   "updatedAt": "2026-11-04T14:43:51.934Z",
+   "updatedAt": "2026-11-04T15:09:08.676Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Assigned: Reel Rhonda (no Polo card). Headless worktree /root/axf-builds/app-voice-commands, session runs on Fable per the brief's standing Fable order (s1 Fable; the Opus steps run in the same session, no model switch, no upgrade phase).",
      "at": "2026-11-04T14:43:49.640Z"
+    },
+    {
+     "text": "s1 done: voice-command@1 rules + type + schema + fixture + check + forFramework manifest rules (commit 340483ee0 on claude/app-voice-commands). s0: Expenses fix pushed to claude/expenses-port, PR #307 CI green, auto-merge pending.",
+     "at": "2026-11-04T15:09:08.676Z"
     }
    ],
    "approvals": [],
@@ -12140,8 +12144,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T15:09:07.606Z",
      "note": "",
      "uid": "st-mw288vhh07t3c0"
     },

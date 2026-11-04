@@ -669,7 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 05:27 UTC · `build-prompt-origin` note (current) · foreign-write
 - 2026-11-04 05:27 UTC · `banner-ref-links` note (current) · foreign-write
 - 2026-11-04 05:27 UTC · `whats-new-open-fix` note (current) · foreign-write
 - 2026-11-04 05:27 UTC · `terminal-drag-chain-tree` note (current) · foreign-write
@@ -1069,6 +1068,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:09 UTC · `console-wake-finish` s5 done, → complete, note (current) · foreign-write
 - 2026-11-04 15:09 UTC · `merge-queue` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, → complete (current) · foreign-write
 - 2026-11-04 15:09 UTC · `apps-control-surface` added (5 steps) (current) · foreign-write
+- 2026-11-04 15:09 UTC · `app-voice-commands` s1 done, note (current) · foreign-write
 
 ## Token passes (log)
 
