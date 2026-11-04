@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 985,
- "updatedAt": "2026-11-04T21:50:51.873Z",
+ "rev": 986,
+ "updatedAt": "2026-11-04T21:51:35.934Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -84579,15 +84579,15 @@
    "title": "Follow Amber flash",
    "category": "Feature",
    "detail": "console_show: the referenced item (highlight match; else the opened screen/dialog) scrolls into view and its background flashes 5 times, alternating yellow/orange (flash-a/flash-b colour tokens), pure CSS, reduced-motion = one outline pulse, no layout shift. Settings in Follow Amber: on/off, two colours, count, speed. Best match for repeated text; the console_show result names what flashed (flashed).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "voice",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/follow-amber-flash",
+   "pr": "#345",
    "createdAt": "2026-11-04T21:41:59.597Z",
-   "updatedAt": "2026-11-04T21:42:11.583Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T21:51:22.292Z",
+   "builtAt": "2026-11-04T21:51:22.292Z",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
@@ -84685,12 +84685,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:51:22.292Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T21:41:59.598Z",
-     "updatedAt": "2026-11-04T21:41:59.598Z"
+     "updatedAt": "2026-11-04T21:51:22.506Z"
     }
    ],
    "profiles": [
@@ -84701,7 +84701,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

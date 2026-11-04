@@ -698,7 +698,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 15:24 UTC · `gizmo-companion` → running, note (current) · orchestrator
 - 2026-11-04 15:25 UTC · `gizmo-companion` merged, note (current) · reconciler
 - 2026-11-04 15:25 UTC · `urgent-land-gizmo-chat` merged, note (current) · reconciler
 - 2026-11-04 15:29 UTC · `urgent-land-gizmo-chat` → complete, note (current) · foreign-write
@@ -1098,6 +1097,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 21:45 UTC · `shipped-features-r2` added (10 steps) (angel) · gina (headless)
 - 2026-11-04 21:45 UTC · `shipped-features-r2` → running (angel) · gina (headless)
 - 2026-11-04 21:47 UTC · `ui-review-alarm` → pending, note (angel) · reconciler
+- 2026-11-04 21:51 UTC · `follow-amber-flash` s4 done, → built, branch claude/follow-amber-flash, PR #345 (angel) · builds-live
 
 ## Token passes (log)
 
