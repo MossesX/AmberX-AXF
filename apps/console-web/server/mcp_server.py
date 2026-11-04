@@ -60,7 +60,9 @@ Chat and voice sessions (claude.ai, Amber): whenever you act, post one short lin
 live in the Terminal's sessions nav and jumps in from there.
 
 Follow Amber: check `console_follow`; while it is on, call `console_show` every time you mention something in Brett's
-console (a screen, settings tab, dialog, build, plugin, UI Review item), and his approvals pop up in the console."""
+console (a screen, settings tab, dialog, build, plugin, PR, UI Review item), casual mentions included: he doesn't have
+to ask you to show it (Claude setting followAmber.casual, on by default; `casual` in console_follow's answer). His
+approvals pop up in the console. He switches it by tapping the Claude badge on the banner."""
 
 
 def _compact(f: dict[str, Any]) -> dict[str, Any]:
@@ -922,8 +924,9 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
     @mcp.tool(annotations=NAVIGATE)
     async def console_show(target: str, highlight: str = "", say: str = "", to: Delivery = "recent") -> dict[str, Any]:
         """Follow Amber: call this EVERY time you mention something in Brett's Dev Console (a screen, a settings tab, a
-        dialog, a build, a plugin, a UI Review item, anything that needs him). When Follow Amber is on, his console opens
-        it right away, focused and highlighted, with `say` as a note; when it's off this does nothing (shown: false).
+        dialog, a build, a plugin, a PR, a UI Review item, anything that needs him), even a casual mention in passing:
+        nobody has to ask you to show it (unless console_follow says casual: false). When Follow Amber is on, his console
+        opens it right away, focused and highlighted, with `say` as a note; when it's off this does nothing (shown: false).
         `target` = a screen, settings tab, dialog or navigation-only action by id, title or words ("plan studio",
         "plugins/<plugin>"), or kind:name (screen:, settings:, dialog:, action:, approval:<id> pops up a waiting
         axHub approval). `highlight` = a CSS selector or exact visible text to flash once it's open. Only navigates."""
@@ -931,9 +934,20 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
 
     @mcp.tool(annotations=READ)
     async def console_follow() -> dict[str, Any]:
-        """Is Follow Amber on? {on, by, at, clients}. On: call console_show whenever you mention something in the
-        console, and Brett's approvals pop up there. Only Brett switches it (in the console)."""
+        """Is Follow Amber on? {on, by, at, clients, casual}. On: call console_show whenever you mention something in the
+        console, casual mentions included when casual is true (the default), and Brett's approvals pop up there. Only
+        Brett switches it (in the console: tap the Claude badge, or Settings → Plugins → Follow Amber)."""
         return await follow("state")
+
+
+def _casual(services: Any) -> bool:
+    """Claude setting followAmber.casual: open what Amber mentions even in passing (default on)."""
+    try:
+        cs = services.get("axf.claude-settings@1") if any(s["name"] == "axf.claude-settings@1" for s in services.available()) else None
+        v = ((cs.get() if cs is not None else {}) or {}).get("values", {}).get("followAmber.casual")
+    except Exception:  # noqa: BLE001 — the default stands
+        v = None
+    return v is not False
 
 
 def follow_call(op: str, args: dict[str, Any]) -> dict[str, Any]:
@@ -950,7 +964,7 @@ def follow_call(op: str, args: dict[str, Any]) -> dict[str, Any]:
         if svc is None:
             return {"ok": False, "code": "not_implemented", "message": "the Follow Amber plugin is turned off (Settings → Plugins)"}
         if op == "state":
-            return {"ok": True, **svc.state()}
+            return {"ok": True, **svc.state(), "casual": _casual(plugin_services)}
         return svc.show(str(args.get("target") or ""), "", str(args.get("highlight") or ""), str(args.get("say") or ""), str(args.get("to") or "recent"), "amber (mcp)")
     import urllib.error
     import urllib.request

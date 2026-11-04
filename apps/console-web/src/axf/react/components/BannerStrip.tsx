@@ -54,7 +54,7 @@ function StripWidgets() {
       <div className="fx-banner__side is-right">
         {list.map((a) => {
           const data = (rt.registry.get(a.type as never, a.id) as { data: unknown } | undefined)?.data;
-          return <span key={`${a.type}:${a.id}`} className="fx-banner__item" data-axf-banner-item={`${a.type}:${a.id}`}>{a.type === 'badge' ? <BannerBadge data={data as BadgeData} /> : <WidgetView type={a.type} id={a.id} host="banner" />}</span>;
+          return <span key={`${a.type}:${a.id}`} className="fx-banner__item" data-axf-banner-item={`${a.type}:${a.id}`}>{a.type === 'badge' ? <BannerBadge data={data as BadgeData} id={a.id} /> : <WidgetView type={a.type} id={a.id} host="banner" />}</span>;
         })}
       </div>
     </div>

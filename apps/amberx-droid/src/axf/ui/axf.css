@@ -179,6 +179,84 @@ html[data-axf-strip='on'] .fx-main__inner { padding: 0; margin: 0; max-width: no
 button.fx-banner__badge { cursor: pointer; }
 button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); outline-offset: 1px; }
 .fx-banner__dot { width: 40%; height: 40%; border-radius: 999px; background: currentColor; }
+/* Badge looks, two tones and motion (badge data look / tone2 / color2 / motion / speed / intensity / once / pulse;
+   badgeLook() in core/engines/banner.ts). Tokens only; every animation is CSS (no timers) and reduced motion draws it static. */
+.fx-banner__badge { position: relative; isolation: isolate; --fx-badge-c2f: color-mix(in srgb, var(--fx-badge-c2, currentColor) calc(var(--fx-opacity-muted) * 100%), var(--fx-surface)); }
+.fx-banner__badge > * { position: relative; }
+.fx-banner__badge-text { font-size: var(--fx-type-root-xs); font-weight: 800; letter-spacing: 0.02em; line-height: 1; }
+.fx-banner__mark { display: inline-flex; align-items: center; }
+.fx-banner__mark svg { display: block; }
+.fx-banner__badge.is-two-tone { overflow: hidden; background: none; border-right-color: var(--fx-badge-c2); border-bottom-color: var(--fx-badge-c2); }
+.fx-banner__badge.is-two-tone::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit;
+  background: linear-gradient(120deg, color-mix(in srgb, currentColor calc(var(--fx-opacity-tint) * 200%), transparent) 0 42%, var(--fx-badge-c2f) 58% 100%);
+  background-size: 220% 100%; background-position: 0 0;
+  animation-duration: calc(var(--fx-badge-speed, 4) * 1s); animation-iteration-count: infinite; animation-timing-function: ease-in-out; animation-direction: alternate;
+}
+.fx-banner__badge.is-two-tone::after {
+  content: ''; position: absolute; pointer-events: none; z-index: -1; opacity: 0;
+  animation-duration: calc(var(--fx-badge-speed, 4) * 1s); animation-iteration-count: infinite; animation-timing-function: linear;
+}
+.fx-banner__badge[data-once]::before, .fx-banner__badge[data-once]::after, .fx-banner__badge[data-once] { animation-iteration-count: 1 !important; }
+.fx-banner__badge[data-motion='sweep']::before { animation-name: fx-badge-sweep; }
+.fx-banner__badge[data-motion='breathe']::before { animation-name: fx-badge-breathe; background-position: 50% 0; }
+.fx-banner__badge[data-motion='rotate']::before { inset: -150%; border-radius: 0; background: conic-gradient(from 0deg, color-mix(in srgb, currentColor calc(var(--fx-opacity-tint) * 200%), transparent), var(--fx-badge-c2f), color-mix(in srgb, currentColor calc(var(--fx-opacity-tint) * 200%), transparent)); animation-name: fx-badge-rotate; animation-timing-function: linear; animation-direction: normal; }
+.fx-banner__badge[data-motion='shimmer']::after { inset: 0 auto 0 -60%; width: 60%; opacity: var(--fx-badge-int); background: linear-gradient(100deg, transparent, color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-glass) * 100%), transparent), transparent); animation-name: fx-badge-shimmer; z-index: 0; }
+.fx-banner__badge[data-motion='ripple'] { animation: fx-badge-ripple calc(var(--fx-badge-speed, 4) * 0.5s) ease-out infinite; }
+.fx-banner__badge[data-motion='glow'] { animation: fx-badge-glow calc(var(--fx-badge-speed, 4) * 0.5s) ease-in-out infinite alternate; }
+.fx-banner__badge[data-motion='wave']::before { background: repeating-linear-gradient(110deg, color-mix(in srgb, currentColor calc(var(--fx-opacity-tint) * 200%), transparent) 0 25%, var(--fx-badge-c2f) 50% 75%); background-size: 200% 100%; animation-name: fx-badge-wave; animation-timing-function: linear; animation-direction: normal; }
+.fx-banner__badge[data-motion='orbit']::after { top: 50%; left: 50%; width: calc(var(--fx-banner-h) * 0.14); height: calc(var(--fx-banner-h) * 0.14); margin: calc(var(--fx-banner-h) * -0.07); border-radius: 999px; background: var(--fx-badge-c2); opacity: calc(0.4 + var(--fx-badge-int) * 0.6); z-index: 1; animation-name: fx-badge-orbit; }
+.fx-banner__badge[data-motion='heartbeat'] { animation: fx-badge-heartbeat calc(var(--fx-badge-speed, 4) * 0.4s) ease-in-out infinite; }
+.fx-banner__badge[data-motion='aurora']::before { background: radial-gradient(circle at 20% 30%, var(--fx-badge-c2f), transparent 55%), radial-gradient(circle at 80% 70%, color-mix(in srgb, currentColor calc(var(--fx-opacity-tint) * 300%), transparent), transparent 60%), linear-gradient(120deg, color-mix(in srgb, currentColor calc(var(--fx-opacity-tint) * 100%), transparent), var(--fx-badge-c2f)); background-size: 300% 300%; animation-name: fx-badge-aurora; }
+.fx-banner__badge[data-motion='sparkle']::after { inset: 0; background: radial-gradient(circle, var(--fx-badge-c2) 0 12%, transparent 14%) 0 0 / 34% 70%, radial-gradient(circle, color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-glass) * 100%), transparent) 0 10%, transparent 12%) 17% 35% / 34% 70%; z-index: 0; animation-name: fx-badge-sparkle; animation-timing-function: steps(4); }
+.fx-banner__badge[data-motion='tide']::before { background: linear-gradient(0deg, var(--fx-badge-c2f) 0 45%, color-mix(in srgb, currentColor calc(var(--fx-opacity-tint) * 200%), transparent) 55% 100%); background-size: 100% 220%; animation-name: fx-badge-tide; }
+@keyframes fx-badge-sweep { from { background-position: 0 0; } to { background-position: 100% 0; } }
+@keyframes fx-badge-breathe { from { opacity: 1; } to { opacity: calc(1 - var(--fx-badge-int) * 0.8); } }
+@keyframes fx-badge-rotate { to { transform: rotate(1turn); } }
+@keyframes fx-badge-shimmer { from { transform: translateX(0); } to { transform: translateX(300%); } }
+@keyframes fx-badge-ripple { from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--fx-badge-c2) calc(var(--fx-badge-int) * 100%), transparent); } to { box-shadow: 0 0 0 calc(var(--fx-border-w) * 6) transparent; } }
+@keyframes fx-badge-glow { from { box-shadow: 0 0 0 0 transparent; } to { box-shadow: 0 0 calc(var(--fx-dens-gap-md) * var(--fx-badge-int) * 2) color-mix(in srgb, var(--fx-badge-c2) calc(var(--fx-badge-int) * 100%), transparent); } }
+@keyframes fx-badge-wave { to { background-position: -200% 0; } }
+@keyframes fx-badge-orbit { from { transform: rotate(0turn) translateX(calc(var(--fx-banner-h) * 0.28)); } to { transform: rotate(1turn) translateX(calc(var(--fx-banner-h) * 0.28)); } }
+@keyframes fx-badge-heartbeat { 0%, 40%, 100% { transform: scale(1); } 12%, 28% { transform: scale(calc(1 + var(--fx-badge-int) * 0.1)); } }
+@keyframes fx-badge-aurora { 0% { background-position: 0 0; } 50% { background-position: 100% 60%; } 100% { background-position: 30% 100%; } }
+@keyframes fx-badge-sparkle { 0%, 100% { opacity: 0; } 50% { opacity: var(--fx-badge-int); } }
+@keyframes fx-badge-tide { from { background-position: 0 100%; } to { background-position: 0 0; } }
+/* one bright pulse when `pulse` goes up (Amber just opened something) */
+.fx-banner__badge-pulse { position: absolute !important; inset: 0; border-radius: inherit; pointer-events: none; z-index: 1; opacity: 0; animation: fx-badge-pulse-glow 0.9s ease-out 1; }
+.fx-banner__badge-pulse[data-motion='ripple'] { animation-name: fx-badge-pulse-ripple; }
+.fx-banner__badge-pulse[data-motion='sweep'], .fx-banner__badge-pulse[data-motion='shimmer'] { animation-name: fx-badge-pulse-sweep; background: linear-gradient(100deg, transparent 20%, var(--fx-badge-c2, var(--fx-accent)) 50%, transparent 80%); background-size: 300% 100%; }
+.fx-banner__badge-pulse[data-motion='heartbeat'] { animation-name: fx-badge-pulse-heart; }
+@keyframes fx-badge-pulse-glow { 0% { opacity: 1; background: var(--fx-badge-c2, var(--fx-accent)); box-shadow: inset 0 0 calc(var(--fx-dens-gap-md) * 2) var(--fx-surface); } 100% { opacity: 0; } }
+@keyframes fx-badge-pulse-ripple { 0% { opacity: 1; background: radial-gradient(circle, var(--fx-badge-c2, var(--fx-accent)) 0 20%, transparent 22%) center / 100% 100% no-repeat; } 100% { opacity: 0; background: radial-gradient(circle, var(--fx-badge-c2, var(--fx-accent)) 0 20%, transparent 22%) center / 600% 600% no-repeat; } }
+@keyframes fx-badge-pulse-sweep { 0% { opacity: 1; background-position: 100% 0; } 100% { opacity: 0; background-position: 0 0; } }
+@keyframes fx-badge-pulse-heart { 0%, 50% { opacity: 1; background: var(--fx-badge-c2, var(--fx-accent)); } 25%, 100% { opacity: 0; } }
+/* the looks */
+.fx-banner__badge.is-look-ring { background: transparent; border-width: calc(var(--fx-border-w) * 2); }
+.fx-banner__badge.is-look-split { background: linear-gradient(90deg, color-mix(in srgb, currentColor calc(var(--fx-opacity-tint) * 300%), transparent) 0 50%, transparent 50%); }
+.fx-banner__badge.is-look-split.is-two-tone::before { background: linear-gradient(90deg, color-mix(in srgb, currentColor calc(var(--fx-opacity-tint) * 300%), transparent) 0 50%, var(--fx-badge-c2f) 50% 100%); background-size: 100% 100%; }
+.fx-banner__badge.is-look-diamond, .fx-banner__badge.is-look-shield, .fx-banner__badge.is-look-hexagon, .fx-banner__badge.is-look-monogram { border-color: transparent; border-radius: 0; background: color-mix(in srgb, currentColor calc(var(--fx-opacity-tint) * 300%), transparent); }
+.fx-banner__badge.is-look-diamond { clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+.fx-banner__badge.is-look-shield { clip-path: polygon(50% 0, 100% 16%, 100% 56%, 50% 100%, 0 56%, 0 16%); }
+.fx-banner__badge.is-look-hexagon, .fx-banner__badge.is-look-monogram { clip-path: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0 50%); }
+.fx-banner__badge.is-look-avatar { box-shadow: 0 0 0 var(--fx-border-w) var(--fx-surface), 0 0 0 calc(var(--fx-border-w) * 2) var(--fx-badge-c2, currentColor); background: color-mix(in srgb, currentColor calc(var(--fx-opacity-tint) * 200%), var(--fx-surface)); }
+.fx-banner__badge.is-look-chip { border-radius: var(--fx-radius-sm); }
+.fx-banner__badge.is-look-bar { height: calc(var(--fx-banner-h) * 0.3); width: calc(var(--fx-banner-h) * 1.3); padding: 0; background: color-mix(in srgb, currentColor calc(var(--fx-opacity-tint) * 400%), transparent); }
+.fx-banner__badge.is-look-bar .fx-banner__dot { display: none; }
+.fx-banner__badge.is-look-neon { background: transparent; box-shadow: 0 0 var(--fx-dens-gap-md) currentColor, inset 0 0 var(--fx-dens-gap-sm) currentColor; text-shadow: 0 0 var(--fx-dens-gap-sm) currentColor; }
+.fx-banner__badge.is-look-glass { background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-glass) * 100%), transparent); backdrop-filter: blur(var(--fx-dens-gap-md)); border-color: color-mix(in srgb, currentColor calc(var(--fx-opacity-muted) * 100%), transparent); }
+.fx-banner__badge.is-look-orb { border-color: transparent; background: radial-gradient(circle at 32% 30%, color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-glass) * 100%), transparent) 0 18%, currentColor 60%, color-mix(in srgb, currentColor 60%, var(--fx-text)) 100%); }
+.fx-banner__badge.is-look-orb .fx-icon, .fx-banner__badge.is-look-orb svg { color: var(--fx-surface); }
+.fx-banner__badge.is-look-led { border-color: transparent; background: transparent; }
+.fx-banner__badge.is-look-led .fx-banner__dot { width: 46%; height: 46%; box-shadow: 0 0 var(--fx-dens-gap-md) currentColor, inset 0 0 0 var(--fx-border-w) color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-muted) * 100%), transparent); }
+.fx-banner__badge.is-look-tag { border-radius: var(--fx-radius-sm); border-left-width: calc(var(--fx-border-w) * 3); font-family: var(--fx-font-mono); text-transform: uppercase; letter-spacing: 0.04em; font-size: var(--fx-type-root-xs); }
+.fx-banner__badge.is-look-brand { border-color: transparent; background: transparent; }
+.fx-banner__badge.is-look-brand-pill { border-radius: 999px; }
+.fx-banner__badge.is-look-brand-anim { border-color: transparent; background: transparent; }
+.fx-banner__badge.is-look-glyph { border-radius: var(--fx-radius-md); }
+@media (prefers-reduced-motion: reduce) {
+  .fx-banner__badge, .fx-banner__badge::before, .fx-banner__badge::after, .fx-banner__badge-pulse, .fx-banner__mark { animation: none !important; }
+}
 .fx-banner__pop {
   /* in the flow, next to its attachment: the neighbours make room for it (snap, never overlap) instead of being covered */
   position: relative; flex: none; margin-inline-start: var(--fx-dens-gap-xl); white-space: nowrap;

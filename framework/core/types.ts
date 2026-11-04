@@ -428,6 +428,18 @@ export interface BadgeData {
   shape: 'pill' | 'icon' | 'dot';
   tooltip?: string;
   link?: string;
+  /** Optional look and motion (all additive; an app that ignores them draws the plain badge). */
+  look?: string;
+  tone2?: BadgeData['tone'];
+  color2?: string;
+  motion?: string;
+  speed?: number;
+  intensity?: number;
+  once?: boolean;
+  pulse?: number;
+  pulseMotion?: string;
+  mark?: string;
+  text?: string;
 }
 
 /* ---------- controls ---------- */

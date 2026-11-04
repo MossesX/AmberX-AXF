@@ -134,8 +134,22 @@ def _put(request: Request, values: dict[str, Any]) -> JSONResponse:
     # the owner-set answer already carries the view; a reread is needed only when the clock's system-off ran above
     out = cli("get") if action == "grant" and (r.get("passResult") or {}).get("approval") else {"ok": True, **(r.get("view") or {})}
     out["changed"] = r.get("changed", [])
+    _follow_switch(r.get("changed", []), by)
     out["passResult"] = r.get("passResult")
     return answer(with_pass(out))
+
+
+def _follow_switch(changed: list[dict[str, Any]], by: str) -> None:
+    """followAmber.enabled is the Follow Amber switch: a change here switches it there (capability follow-amber@1)."""
+    c = next((x for x in changed if isinstance(x, dict) and x.get("key") == "followAmber.enabled"), None)
+    if c is None or not any(sv["name"] == "follow-amber@1" for sv in plugin_services.available()):
+        return
+    svc = plugin_services.get("follow-amber@1")
+    if svc is not None and hasattr(svc, "set_state"):
+        try:
+            svc.set_state(c.get("to") is True, by, sync=False)
+        except Exception:  # noqa: BLE001 — the settings change already stands
+            pass
 
 
 def apply_pass(request: Request, action: str, inp: dict[str, Any]) -> dict[str, Any]:
@@ -181,6 +195,12 @@ class ClaudeSettings:
 
     def get(self) -> dict[str, Any]:
         return cli("get")
+
+    def set(self, values: dict[str, Any], by: str = "console") -> dict[str, Any]:
+        """Non-owner settings only (owner-only ones answer denied), e.g. the Follow Amber plugin keeping
+        followAmber.enabled the same as its switch."""
+        args = [f"{k}={json.dumps(v) if not isinstance(v, str) else v}" for k, v in values.items()]
+        return cli("set", *args, "--by", by or "console")
 
 
 plugin_services.provide("axf.claude-settings@1", ClaudeSettings(), FOLDER)

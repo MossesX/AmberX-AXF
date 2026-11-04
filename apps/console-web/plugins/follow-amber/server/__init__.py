@@ -12,6 +12,9 @@ about opens on his screen right away, and axHub's held / confirm calls pop up in
   GET  stream?client=<id>                         server-sent events, one follow-amber@1 frame per `data:`
   GET  recent                                     the last things shown
 
+The switch is Claude settings' followAmber.enabled (one setting, never a copy): switching it here writes that key
+through axf.claude-settings@1, and a change of the key there switches it here.
+
 Showing only ever navigates. A show runs through the Console commands plugin (capability console-commands@1) with the
 single grant `control.console.navigate`, so its runner refuses anything that would change data; screens, settings
 tabs and dialogs open, navigation-only actions run, nothing else. When no console is open, Console commands' own
@@ -81,7 +84,22 @@ def load_state() -> dict[str, Any]:
         return {"on": False, "by": "", "at": ""}
 
 
-def save_state(on: bool, by: str) -> dict[str, Any]:
+def _sync_setting(on: bool, by: str) -> None:
+    """Claude settings' followAmber.enabled is this same switch (one setting, never a copy): keep it equal."""
+    if not any(sv["name"] == "axf.claude-settings@1" for sv in plugin_services.available()):
+        return
+    svc = plugin_services.get("axf.claude-settings@1")
+    if svc is None or not hasattr(svc, "set"):
+        return
+    try:
+        svc.set({"followAmber.enabled": bool(on)}, by)
+    except Exception:  # noqa: BLE001 — the switch itself already changed
+        pass
+
+
+def save_state(on: bool, by: str, sync: bool = True) -> dict[str, Any]:
+    if sync:  # off the request: the settings write runs Node
+        threading.Thread(target=_sync_setting, args=(bool(on), _text(by, 80) or "console"), daemon=True).start()
     s = {"on": bool(on), "by": _text(by, 80) or "console", "at": _now_iso()}
     d = _data()
     d.mkdir(parents=True, exist_ok=True)
@@ -288,6 +306,12 @@ class FollowAmber:
 
     def state(self) -> dict[str, Any]:
         return {**load_state(), "clients": client_count()}
+
+    def set_state(self, on: bool, by: str = "console", sync: bool = True) -> dict[str, Any]:
+        """Switch it (Claude settings' followAmber.enabled calls this with sync=False: it is already saved there)."""
+        if load_state()["on"] == bool(on):
+            return load_state()
+        return save_state(bool(on), by, sync)
 
     def show(self, target: str, kind: str = "", highlight: str = "", say: str = "", to: str = "recent", by: str = "amber") -> dict[str, Any]:
         return show(target, kind, highlight, say, to, by)

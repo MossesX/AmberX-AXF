@@ -15,7 +15,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Request
 
 import console_context as cx
 import plugin_services
@@ -104,3 +104,152 @@ def status() -> dict[str, Any]:
         last["state"] = classify(bool(last.get("ok")), str(last.get("error") or ""))
     return {"last": last}
 
+
+
+# ---------------------------------------------------------------------- the badge's look and animations
+# Brett, Nov 4 2026 (build follow-amber-switch): ~20 badge looks (badge assets in looks.json, brand-icon looks among
+# them), any brand-package icon as the badge's icon, and an animation per state (Follow Amber on / Amber just opened
+# something / connecting / error). One style per console, kept in the plugin's data folder (style.json), so REST, MCP
+# (claude_badge_styles_list / _style_set / _animation_set) and the CLI (axf claude-badge styles-list …) all change it.
+
+LOOKS_FILE = Path(__file__).resolve().parents[1] / "looks.json"
+TONES = ("neutral", "success", "warning", "danger", "accent", "muted")
+HEX = re.compile(r"^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
+ICON = re.compile(r"^(?:icon:[a-z0-9-]{1,40}|mark:[a-z0-9-]{1,60}|anim:[a-z0-9-]{1,60}|glyph:[a-z0-9-]{1,60}/[a-z0-9-]{1,40})$")
+
+
+def looks() -> dict[str, Any]:
+    try:
+        return json.loads(LOOKS_FILE.read_text("utf-8"))
+    except (OSError, ValueError):
+        return {"looks": [], "motions": [], "states": []}
+
+
+def default_style() -> dict[str, Any]:
+    lk = looks()
+    return {"look": "pill", "icon": "", "tone2": "accent", "color2": "",
+            "animations": {s["id"]: dict(s["default"]) for s in lk.get("states", [])}}
+
+
+def load_style() -> dict[str, Any]:
+    st = default_style()
+    try:
+        saved = json.loads((data_dir() / "style.json").read_text("utf-8"))
+    except (OSError, ValueError):
+        return st
+    if isinstance(saved, dict):
+        for k in ("look", "icon", "tone2", "color2"):
+            if isinstance(saved.get(k), str):
+                st[k] = saved[k]
+        for sid, a in (saved.get("animations") or {}).items():
+            if sid in st["animations"] and isinstance(a, dict):
+                st["animations"][sid].update({k: v for k, v in a.items() if k in ("motion", "speed", "intensity", "loop")})
+    return st
+
+
+def _bad(msg: str) -> None:
+    raise HTTPException(400, msg)
+
+
+def check_animation(a: dict[str, Any], motions: set[str]) -> dict[str, Any]:
+    out: dict[str, Any] = {}
+    if "motion" in a:
+        if a["motion"] not in motions:
+            _bad(f"motion is one of {', '.join(sorted(motions))}")
+        out["motion"] = a["motion"]
+    for k, lo, hi in (("speed", 0.3, 30), ("intensity", 0, 1)):
+        if k in a:
+            v = a[k]
+            if isinstance(v, str):
+                try:
+                    v = float(v)
+                except ValueError:
+                    _bad(f"{k} must be a number")
+            if not isinstance(v, (int, float)) or isinstance(v, bool) or not lo <= v <= hi:
+                _bad(f"{k} must be a number from {lo} to {hi}")
+            out[k] = float(v)
+    if "loop" in a:
+        v = a["loop"]
+        if isinstance(v, str) and v in ("true", "false"):
+            v = v == "true"
+        if not isinstance(v, bool):
+            _bad("loop must be true or false")
+        out["loop"] = v
+    return out
+
+
+def save_style(patch: dict[str, Any]) -> dict[str, Any]:
+    lk = looks()
+    ids = {l["data"]["look"] for l in lk.get("looks", [])}
+    motions = {m["id"] for m in lk.get("motions", [])}
+    st = load_style()
+    if "look" in patch:
+        look = str(patch["look"]).removeprefix("claude-look-")
+        if look not in ids:
+            _bad(f"look is one of {', '.join(sorted(ids))}")
+        st["look"] = look
+    if "icon" in patch:
+        icon = str(patch["icon"] or "")
+        if icon and not ICON.match(icon):
+            _bad("icon is '' (the look's own), icon:<name>, mark:<logo-mark id>, anim:<animated-logo id> or glyph:<icon-pack id>/<glyph>")
+        st["icon"] = icon
+    if "tone2" in patch:
+        if patch["tone2"] not in TONES:
+            _bad(f"tone2 is one of {', '.join(TONES)}")
+        st["tone2"] = patch["tone2"]
+    if "color2" in patch:
+        c = str(patch["color2"] or "")
+        if c and not HEX.match(c):
+            _bad("color2 is '' (use tone2) or #rgb / #rrggbb")
+        st["color2"] = c
+    for sid, a in (patch.get("animations") or {}).items():
+        if sid not in st["animations"]:
+            _bad(f"animation state is one of {', '.join(st['animations'])}")
+        if not isinstance(a, dict):
+            _bad("each animation is {motion?, speed?, intensity?, loop?}")
+        st["animations"][sid].update(check_animation(a, motions))
+    with _lock:
+        storage.write_json(data_dir() / "style.json", st, indent=1)
+    return st
+
+
+async def _json(request: Request) -> dict[str, Any]:
+    try:
+        b = await request.json()
+    except Exception:  # noqa: BLE001 — no body = no fields
+        return {}
+    if isinstance(b, dict) and isinstance(b.get("input"), dict):
+        b = {**b["input"], **{k: v for k, v in b.items() if k != "input"}}
+    return b if isinstance(b, dict) else {}
+
+
+@router.get("/styles-list")
+def styles_list() -> dict[str, Any]:
+    """Every badge look (with its data), every animation, the four animation states and the style in use."""
+    lk = looks()
+    return {"ok": True, "looks": [{"id": l["data"]["look"], "asset": l["id"], "name": l["name"], "description": l.get("description", ""),
+                                   "brand": "brand" in l.get("tags", []), "data": l["data"]} for l in lk.get("looks", [])],
+            "motions": lk.get("motions", []), "states": lk.get("states", []), "style": load_style()}
+
+
+@router.get("/style")
+def style_get() -> dict[str, Any]:
+    return {"ok": True, "style": load_style()}
+
+
+@router.post("/style-set")
+async def style_set(request: Request) -> dict[str, Any]:
+    """Change the look: {look?, icon?, tone2?, color2?, animations?: {state: {motion?, speed?, intensity?, loop?}}}."""
+    b = await _json(request)
+    st = save_style({k: b[k] for k in ("look", "icon", "tone2", "color2", "animations") if k in b})
+    cx.log("system", f"Claude badge look: {st['look']}{' · icon ' + st['icon'] if st['icon'] else ''}", "ok")
+    return {"ok": True, "style": st}
+
+
+@router.post("/animation-set")
+async def animation_set(request: Request) -> dict[str, Any]:
+    """One state's animation: {state: follow|opened|connecting|error, motion?, speed?, intensity?, loop?}."""
+    b = await _json(request)
+    sid = str(b.get("state") or "follow")
+    st = save_style({"animations": {sid: {k: b[k] for k in ("motion", "speed", "intensity", "loop") if k in b}}})
+    return {"ok": True, "state": sid, "animation": st["animations"][sid], "style": st}

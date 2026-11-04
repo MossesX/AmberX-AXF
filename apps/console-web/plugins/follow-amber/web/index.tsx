@@ -14,7 +14,11 @@
  * Off: nothing opens by itself; approvals stay in the approvals banner.
  *
  * The switch is one value for all of Brett's consoles (the server keeps it, so Amber can read it): Settings → Plugins →
- * Follow Amber, the right-click menu on every target, the app menu, or the banner chip (shown while it's on).
+ * Follow Amber, the right-click menu on every target, the app menu, the Claude badge (tap; it draws two-tone while
+ * following), or the banner chip (off by default since the badge shows it).
+ * Actions any widget may dispatch: followAmber.toggle [on|off], followAmber.reopen (the last thing shown),
+ * followAmber.recent (the recent list); counter followAmber.opened goes up on every show, setting followAmber.last
+ * holds the last one ({kind, target, label, at} as JSON).
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
@@ -33,9 +37,14 @@ import './follow-amber.css';
 const ID = 'ai.amberx.axf.console.follow-amber';
 const FOLDER = 'follow-amber';
 const DIALOG = 'follow-amber.approval';
+const RECENT_DIALOG = 'follow-amber.recent';
 const ASSET_ID = 'follow-amber';
 const COUNTER = 'follow-amber.on';
-const KEY = 'follow-amber.on';
+/** The shared switch (Claude settings' followAmber.enabled): one key name everywhere, never a copy. */
+const KEY = 'followAmber.enabled';
+/** Neutral signals any banner widget can read without naming this plugin: a counter that goes up on every show, the last one shown. */
+const OPENED = 'followAmber.opened';
+const LAST = 'followAmber.last';
 const CHIP_KEY = 'follow-amber.chip';
 
 /* ---------------- a tiny store: the switch, the hub, the approvals queue ---------------- */
@@ -87,6 +96,43 @@ function paint(rt: AxfRuntime) {
   rt.setBadge(COUNTER, st.on ? 1 : 0);
   if (st.on && rt.settings.get(CHIP_KEY) !== false) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'left', order: 22, origin: ID });
   else rt.detachFromBanner(`status:${ASSET_ID}`);
+}
+
+/* ---------------- what Amber showed: the counter, the last one, the recent list ---------------- */
+
+interface Shown { kind: string; target: string; label: string; at: string }
+function noteShown(rt: AxfRuntime, kind: string, target: string, label: string) {
+  rt.setBadge(OPENED, rt.badge(OPENED) + 1);
+  rt.settings.set(LAST, JSON.stringify({ kind, target, label, at: new Date().toISOString() } satisfies Shown));
+}
+export function lastShown(rt: AxfRuntime): Shown | null {
+  try { const v = rt.settings.get(LAST); const j = typeof v === 'string' && v ? (JSON.parse(v) as Shown) : null; return j && j.target ? j : null; } catch { return null; }
+}
+/** Show it again (navigate only, same as Amber's own show). */
+async function reopen(rt: AxfRuntime, item: { kind?: string; target: string } | null) {
+  if (!item) { rt.toast('Amber hasn\'t opened anything yet.', 'info', 'Follow Amber'); return; }
+  const r = await post('show', { target: item.kind ? `${item.kind}:${item.target}` : item.target, by: 'console (reopen)' }).catch(() => null);
+  const j = r ? ((await r.json().catch(() => ({}))) as { shown?: boolean; message?: string }) : {};
+  if (!j.shown) rt.toast(j.message || 'Could not open it again.', 'warning', 'Follow Amber');
+}
+
+interface RecentItem { at: string; by: string; kind: string; target: string; ok: boolean; shown: boolean; message: string }
+function RecentDialog() {
+  const rt = useRuntime();
+  const [items, setItems] = useState<RecentItem[] | null>(null);
+  useEffect(() => { void pluginFetch(FOLDER, 'recent').then((r) => r.json()).then((j: { items?: RecentItem[] }) => setItems((j.items ?? []).filter((i) => i.shown))).catch(() => setItems([])); }, []);
+  if (!items) return <p className="fx-small fx-muted">Reading…</p>;
+  if (!items.length) return <p className="fx-small fx-muted">Amber hasn't opened anything yet.</p>;
+  return (
+    <div className="fx-stack" role="list">
+      {items.map((i, n) => (
+        <div key={`${i.at}-${n}`} className="fx-row fx-row--wrap" role="listitem">
+          <Button size="sm" tone="ghost" icon="external" onClick={() => { rt.closeDialog(); void reopen(rt, i); }}>{i.target}</Button>
+          <span className="fx-small fx-muted">{i.kind || 'screen'} · {new Date(i.at).toLocaleTimeString()} · {i.by}</span>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 /* ---------------- approvals: watch the feed while following, pop new ones up ---------------- */
@@ -188,6 +234,7 @@ function FollowClient() {
         if (!st.on) return;
         if (m.type === 'show') {
           highlight(m.highlight ?? '');
+          noteShown(rt, m.kind, m.target, m.label || m.target);
           rt.toast(m.say ? `Amber: ${m.say}` : `Amber opened ${m.label || m.target}`, 'info', 'Follow Amber');
           return;
         }
@@ -331,6 +378,10 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     runtime = rt;
     rt.actions.register('follow-amber.toggle', ([v]) => void setFollow(v === 'on' ? true : v === 'off' ? false : !st.on), { label: 'Follow Amber on / off', keywords: ['follow', 'amber', 'approvals', 'show'] } as never);
+    // Neutral ids (no plugin name) for widgets such as the Claude badge: switch, show the last one again, the recent list.
+    rt.actions.register('followAmber.toggle', ([v]) => void setFollow(v === 'on' ? true : v === 'off' ? false : !st.on), { label: 'Follow Amber on / off', keywords: ['follow', 'amber'] } as never);
+    rt.actions.register('followAmber.reopen', () => void reopen(rt, lastShown(rt)), { label: 'Open again what Amber opened last', keywords: ['follow', 'amber', 'last'] } as never);
+    rt.actions.register('followAmber.recent', () => rt.openDialog(RECENT_DIALOG, {}), { label: 'What Amber opened recently', keywords: ['follow', 'amber', 'recent'] } as never);
     rt.actions.register('follow-amber.approvals', () => { const n = pickNext(st.queue); if (n) { set({ current: n.id }); rt.openDialog(DIALOG, { id: n.id }); } else rt.toast('Nothing waiting for you on axHub.', 'info', 'Follow Amber'); }, { label: 'Show waiting approvals', keywords: ['approvals', 'veto', 'axhub'] } as never);
     // On every right-click menu in the console.
     rt.contextExtras.set('*:follow-amber', () => [{ id: 'follow-amber.toggle', label: st.on ? 'Follow Amber: on (turn off)' : 'Follow Amber: off (turn on)', icon: 'eye', action: 'follow-amber.toggle' }]);
@@ -345,6 +396,7 @@ export const plugin: AxfWebLibrary = {
   slots: { 'app.frame.cover': [{ id: 'follow-amber.client', order: 98, render: () => <FollowClient /> }] },
   dialogs: {
     [DIALOG]: { title: 'Approval waiting', icon: 'shield', render: (p) => <ApprovalDialog id={typeof p.id === 'string' ? p.id : ''} /> },
+    [RECENT_DIALOG]: { title: 'What Amber opened', icon: 'eye', render: () => <RecentDialog /> },
   },
   settingsTabs: [{ id: FOLDER, label: 'Follow Amber', icon: 'eye', order: 91, parent: 'plugins', description: 'The console opens what Amber talks about; approvals pop up here' }],
   settings: [{
@@ -352,7 +404,7 @@ export const plugin: AxfWebLibrary = {
     description: 'One switch for all your consoles.',
     settings: [
       { key: KEY, label: 'Follow Amber', kind: 'toggle', default: false, scope: 'device', description: 'On: what Amber mentions opens here and approvals pop up. The same value for every console.' },
-      { key: CHIP_KEY, label: 'Show the banner chip while following', kind: 'toggle', default: true, scope: 'device', description: 'A small "Following Amber" chip in the banner; tap it to turn Follow Amber off.' },
+      { key: CHIP_KEY, label: 'Show the banner chip while following', kind: 'toggle', default: false, scope: 'device', description: 'A separate "Following Amber" chip in the banner; tap it to turn Follow Amber off. Off by default: the Claude badge already turns two-tone while following.' },
     ],
   }],
   settingsPanels: [

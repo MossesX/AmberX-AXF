@@ -1096,7 +1096,18 @@
       },
       "optional_fields": {
         "tooltip": "string — shown on hover/long-press",
-        "link": "string — action spec run on tap (e.g. settings.open:x)"
+        "link": "string — action spec run on tap (e.g. settings.open:x)",
+        "look": "string — badge look (open registry: pill, dot, ring, split, diamond, shield, hexagon, avatar, chip, bar, neon, glass, orb, led, tag, brand, brand-pill, monogram, brand-anim, glyph); unknown looks draw as the shape",
+        "tone2": "string — a second tone (same values as tone): the badge draws two-tone, the second tone faded",
+        "color2": "string — a custom second colour (#rgb / #rrggbb), instead of tone2's theme colour",
+        "motion": "string — animation on the two tones (sweep, breathe, rotate, shimmer, ripple, glow, wave, orbit, heartbeat, aurora, sparkle, tide, none); reduced motion = static",
+        "speed": "number — seconds per animation loop (default 4)",
+        "intensity": "number — 0..1, how strong the animation is (default 0.6)",
+        "once": "boolean — play the animation once instead of looping",
+        "pulse": "number — bump it to play one bright pulse on top (a counter)",
+        "pulseMotion": "string — the animation the pulse plays (default glow)",
+        "mark": "string — draw a logo-mark asset instead of the icon (its id), anim:<animated-logo id>, or glyph:<icon-pack id>/<glyph>",
+        "text": "string — short text drawn instead of the icon (monogram, tag looks)"
       }
     },
     "settings": {

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T12:19:18.215Z",
+ "updatedAt": "2026-11-04T13:50:31.902Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2493,7 +2493,7 @@
    "title": "Retire Patches and Build Pilot (remove everywhere)",
    "category": "Cleanup",
    "detail": "Brett, Nov 3 2026 (voice): Patches is dead, Build Pilot is dead. Delete both and every reference: repo code, rules, docs, CI, store builds; VPS containers + Coolify apps (snapshotted to /root/archive/retired-2026-11-03/ first); axHub projects tree + axHub repo PR; archive (not delete) MossesX/Build-Pilot.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -2501,8 +2501,8 @@
    "pr": "#258",
    "mergedAt": "2026-11-03T16:23:48.889Z",
    "createdAt": "2026-11-03T14:10:11.184Z",
-   "updatedAt": "2026-11-03T16:24:26.329Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
+   "builtAt": "2026-11-04T12:44:12.117Z",
    "notes": [
     {
      "text": "s7 partial: axHub PR #32 open; /projects/patches* snapshotted not deleted (no axHub MCP here, needs veto call); MossesX/Build-Pilot archive needs Brett (token 403); DNS records remain.",
@@ -2515,6 +2515,10 @@
     {
      "text": "s7 partly open: axHub repo PR landed; removing the /projects trees and archiving MossesX/Build-Pilot are deletes/outward actions left for Brett's call (land-everything did not do them).",
      "at": "2026-11-03T16:24:26.329Z"
+    },
+    {
+     "text": "Reconciler: PR #258 merged: complete",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -3780,7 +3784,7 @@
    "title": "Toolbars plugin: tap-to-confirm on touch, per-toolbar settings + editor, drag-and-drop hooks",
    "category": "Toolbars",
    "detail": "Brett, Nov 3 2026 (voice) + Addendum 1. Every existing and future toolbar: first tap on touch shows the tip and arms the button for 3 s (configurable), second tap within the window runs it; mouse/pen stays single click with hover tooltip; decided per interaction. All of it is one Toolbars plugin (plugin@1) owning every toolbar: global settings, per-toolbar settings (synced), context-menu hooks (Toolbar settings / Edit toolbar / All toolbars), Toolbar editor (save as asset), drag-and-drop hooks anywhere via hook@1 + drop-target@1 contracts with per-target configure dialogs, move/copy, undo. Banners: only the generic drop target, no banner-pack/banner-editor/banners-one changes. Agent: Landin' Lenny. Note: no Terminal 'Tooltip mode' exists on main or any branch (headless-tabs #259 has 7 steps, no s8), so it is built fresh in the framework.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -3788,8 +3792,8 @@
    "pr": "#272",
    "mergedAt": "2026-11-04T04:11:27Z",
    "createdAt": "2026-11-03T18:23:45.044Z",
-   "updatedAt": "2026-11-04T04:13:39.547Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
+   "builtAt": "2026-11-04T12:44:12.117Z",
    "notes": [
     {
      "text": "Agent: Landin' Lenny (headless, Opus). Phase 1 (s1-s12) Opus; s13-s14 contracts pinned Fable need Brett's upgrade approval.",
@@ -3806,6 +3810,10 @@
     {
      "text": "Reconciler: PR #272 merged; PR #272 names s8 done",
      "at": "2026-11-04T04:13:39.547Z"
+    },
+    {
+     "text": "Reconciler: PR #272 merged: complete",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],

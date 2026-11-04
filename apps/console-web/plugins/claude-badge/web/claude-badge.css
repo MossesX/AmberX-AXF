@@ -1,0 +1,8 @@
+/* Claude badge settings: layout only; the badge itself is the framework's (axf.css, banner badge looks). */
+.axp-claude-badge__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-space) * 7), 1fr)); gap: var(--fx-dens-gap-md); }
+.axp-claude-badge__tile { display: flex; flex-direction: column; align-items: center; gap: var(--fx-dens-gap-sm); }
+.axp-claude-badge__tile.is-on { outline: var(--fx-border-w) solid var(--fx-accent); }
+.axp-claude-badge__name { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axp-claude-badge__preview { display: inline-flex; align-items: center; justify-content: center; min-height: calc(var(--fx-banner-h) * 1.1); min-width: calc(var(--fx-banner-h) * 1.1); }
+.axp-claude-badge__previews { align-items: center; gap: var(--fx-dens-gap-md); }
+.axp-claude-badge__anim { gap: var(--fx-dens-gap-md); padding-bottom: var(--fx-dens-gap-lg); border-bottom: var(--fx-border-w) solid var(--fx-border); }

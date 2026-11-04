@@ -14,3 +14,9 @@ Routes (console token, 404 when disabled): `POST /test`, `GET /status`. Data: `.
 parts of the framework.
 
 Self-test: `python3 apps/console-web/plugins/claude-badge/test.py`.
+
+## Follow Amber, looks and animations (Nov 4 2026)
+
+Tap the badge to switch Follow Amber (when that plugin is on; action `followAmber.toggle`, shared key `followAmber.enabled`). While it's on the badge draws two-tone and animated, and pulses when Amber opens something (counter `followAmber.opened`). Right-click / long-press: open again what Amber opened last, the recent list, Change badge, Pick a brand icon, Test the AI connection, settings.
+
+Looks are badge assets in `looks.json` (20, brand-icon looks among them); the icon can be any logo mark, animated logo or icon-pack glyph in the registry. The style lives in the data folder (`style.json`): `GET styles-list`, `GET style`, `POST style-set {look?, icon?, tone2?, color2?, animations?}`, `POST animation-set {state, motion?, speed?, intensity?, loop?}` (MCP `claude_badge_*`, CLI `axf claude-badge …`).

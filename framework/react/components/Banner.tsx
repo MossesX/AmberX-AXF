@@ -5,8 +5,9 @@
  * popup (rt.showBannerPopup) pops a short message out to the right of its attachment for a few seconds; tapping it
  * dismisses it early. Theme tokens only.
  */
-import { useEffect, useState } from 'react';
-import { BANNER_SIDES, badgeToneToken, bannerSurface, clockTickMs, formatClock, type ClockParts, type PlacedAttachment } from '../../core/engines/banner';
+import { useEffect, useState, type CSSProperties } from 'react';
+import { animationFor, glyphSvg, markSvg } from '../../core/engines/brand';
+import { BANNER_SIDES, badgeLook, badgeToneToken, bannerSurface, clockTickMs, formatClock, type ClockParts, type PlacedAttachment } from '../../core/engines/banner';
 import type { BadgeData, ClockData } from '../../core/types';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
@@ -40,15 +41,44 @@ export function BannerClock({ data }: { data: ClockData }) {
   return <time className={`fx-banner__clock${data.mono === false ? '' : ' is-mono'}`} aria-label={`Time ${text}`} title={data.timezone || undefined}>{text}</time>;
 }
 
-export function BannerBadge({ data }: { data: BadgeData }) {
+/** A logo-mark, animated logo or icon-pack glyph from the registry, drawn as the badge's icon (brand looks). */
+function BadgeMark({ spec, size }: { spec: string; size: number }) {
   const rt = useRuntime();
+  const [kind, rest] = spec.startsWith('anim:') ? ['anim', spec.slice(5)] : spec.startsWith('glyph:') ? ['glyph', spec.slice(6)] : ['mark', spec];
+  if (kind === 'glyph') {
+    const [pack, name] = rest.split('/');
+    const p = rt.registry.get('icon-pack' as never, pack ?? '') as { data: unknown } | undefined;
+    const svg = p && name ? glyphSvg(p.data, name, size) : null;
+    return svg ? <span className="fx-banner__mark" aria-hidden="true" dangerouslySetInnerHTML={{ __html: svg }} /> : null;
+  }
+  const anim = kind === 'anim' ? rt.registry.get('animated-logo' as never, rest) as { data: { mark?: string } } | undefined : undefined;
+  const mark = rt.registry.get('logo-mark' as never, anim ? String(anim.data.mark ?? '') : rest) as { data: unknown } | undefined;
+  if (!mark) return null;
+  const reduced = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const a = anim ? animationFor(anim.data, reduced) : null;
+  const style = a ? ({ ...a.vars, animationName: a.name, animationDuration: `${a.durationMs}ms`, animationDelay: `${a.delayMs}ms`, animationIterationCount: a.iteration } as CSSProperties) : undefined;
+  return <span className={`fx-banner__mark ${a?.className ?? ''}`.trim()} style={style} aria-hidden="true" dangerouslySetInnerHTML={{ __html: markSvg(mark.data, { height: size, title: '', text: false }) }} />;
+}
+
+export function BannerBadge({ data, id }: { data: BadgeData; id?: string }) {
+  const rt = useRuntime();
+  const look = badgeLook(data);
+  const glyph = data.mark ? <BadgeMark spec={data.mark} size={14} /> : data.text ? <span className="fx-banner__badge-text">{data.text}</span> : <Icon name={data.icon} size={12} />;
   const body = (
     <>
-      {data.shape === 'dot' ? <span className="fx-banner__dot" /> : <Icon name={data.icon} size={12} />}
+      {data.shape === 'dot' ? <span className="fx-banner__dot" /> : glyph}
       {data.shape === 'pill' && <span className="fx-banner__badge-label">{data.label}</span>}
+      {/* one bright pulse on top each time `pulse` goes up (a remount restarts the CSS animation; no timers) */}
+      {typeof data.pulse === 'number' && data.pulse > 0 && <span key={data.pulse} className="fx-banner__badge-pulse" data-motion={data.pulseMotion || 'glow'} aria-hidden="true" />}
     </>
   );
-  const props = { className: `fx-banner__badge is-${data.shape}`, 'data-tone': data.tone, 'data-token': badgeToneToken(data), title: data.tooltip ?? data.label, 'aria-label': data.tooltip ?? data.label };
+  const props = {
+    className: `fx-banner__badge is-${data.shape} ${look.className}`.trim(), 'data-tone': data.tone, 'data-tone2': data.tone2, 'data-token': badgeToneToken(data),
+    'data-motion': look.motion, 'data-once': look.once ? '' : undefined, style: look.vars as CSSProperties,
+    // right-click / long-press: the banner's own menu, plus whatever a module offers for `badge:<id>` (rt.contextExtras)
+    'data-fx-ctx-target': id ? 'banner' : undefined, 'data-fx-ctx-payload': id ? `badge:${id}` : undefined,
+    title: data.tooltip ?? data.label, 'aria-label': data.tooltip ?? data.label,
+  };
   return data.link
     ? <button type="button" {...props} onClick={() => rt.dispatch(data.link!)}>{body}</button>
     : <span role="img" {...props}>{body}</span>;
@@ -62,7 +92,7 @@ function Attached({ a }: { a: PlacedAttachment }) {
   const pop = state.bannerPopup && state.bannerPopup.key === a.key ? state.bannerPopup : null;
   return (
     <>
-      {a.type === 'badge' ? <BannerBadge data={asset.data as BadgeData} /> : <WidgetView type={a.type} id={a.id} host="banner" />}
+      {a.type === 'badge' ? <BannerBadge data={asset.data as BadgeData} id={a.id} /> : <WidgetView type={a.type} id={a.id} host="banner" />}
       {pop && <span className="fx-banner__pop" role="status" onClick={() => rt.dismissBannerPopup()}>{pop.text}</span>}
     </>
   );

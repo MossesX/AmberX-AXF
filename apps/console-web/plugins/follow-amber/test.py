@@ -165,4 +165,31 @@ c.post(f"{P}/state", json={"on": True})
 r = svc.show("plan studio")
 ok(r["ok"] is False and r.get("code") == "not_implemented", "without Console commands: a clear not_implemented")
 
+# one switch: Claude settings' followAmber.enabled follows it, and a change there switches it here
+import threading as _th  # noqa: E402
+import time as _time  # noqa: E402
+
+
+class FakeSettings:
+    def __init__(self) -> None:
+        self.sets: list[tuple[dict, str]] = []
+        self.done = _th.Event()
+
+    def set(self, values: dict, by: str = "console") -> dict:
+        self.sets.append((values, by))
+        self.done.set()
+        return {"ok": True}
+
+
+fs = FakeSettings()
+plugin_services.provide("axf.claude-settings@1", fs, folder="claude-settings")
+c.post(f"{P}/state", json={"on": False})
+fs.done.wait(5)
+ok(fs.sets and fs.sets[-1][0] == {"followAmber.enabled": False}, "switching it writes Claude settings' followAmber.enabled")
+fs.sets.clear(); fs.done.clear()
+r = svc.set_state(True, "brett", sync=False)
+_time.sleep(0.2)
+ok(r["on"] is True and svc.state()["on"] is True and not fs.sets, "a change from Claude settings switches it without writing back")
+plugin_services.provide("axf.claude-settings@1", None, folder="claude-settings")
+
 print(f"✓ follow amber server — {checks} checks")

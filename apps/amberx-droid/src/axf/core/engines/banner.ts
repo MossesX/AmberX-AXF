@@ -58,6 +58,30 @@ export function badgeToneToken(b: Pick<BadgeData, 'tone'>): string {
   return BADGE_TONE_TOKEN[b.tone] ?? 'text';
 }
 
+/** Badge looks the base stylesheet draws (`.fx-banner__badge.is-look-<look>`); an open list: unknown looks draw as the shape. */
+export const BADGE_LOOKS = ['pill', 'dot', 'ring', 'split', 'diamond', 'shield', 'hexagon', 'avatar', 'chip', 'bar', 'neon', 'glass', 'orb', 'led', 'tag', 'brand', 'brand-pill', 'monogram', 'brand-anim', 'glyph'] as const;
+/** Animations on a two-tone badge (`data-motion`), CSS only; `none` = static. Reduced motion always draws static. */
+export const BADGE_MOTIONS = ['sweep', 'breathe', 'rotate', 'shimmer', 'ripple', 'glow', 'wave', 'orbit', 'heartbeat', 'aurora', 'sparkle', 'tide', 'none'] as const;
+const HEX = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
+const clampNum = (v: unknown, lo: number, hi: number, d: number) => (typeof v === 'number' && Number.isFinite(v) ? Math.min(hi, Math.max(lo, v)) : d);
+
+/** How a badge draws its look, second tone and motion: class names, data attributes and CSS variables (tokens only). */
+export interface BadgeLook { look: string; twoTone: boolean; motion: string; once: boolean; vars: Record<string, string>; className: string }
+export function badgeLook(b: Partial<BadgeData>): BadgeLook {
+  const look = typeof b.look === 'string' && /^[a-z][a-z0-9-]{0,30}$/.test(b.look) ? b.look : '';
+  const c2 = typeof b.color2 === 'string' && HEX.test(b.color2) ? b.color2 : '';
+  const t2 = b.tone2 && BADGE_TONE_TOKEN[b.tone2] ? b.tone2 : undefined;
+  const twoTone = !!(t2 || c2);
+  const motion = twoTone && typeof b.motion === 'string' && (BADGE_MOTIONS as readonly string[]).includes(b.motion) ? b.motion : 'none';
+  const vars: Record<string, string> = {
+    '--fx-badge-speed': String(clampNum(b.speed, 0.3, 30, 4)),
+    '--fx-badge-int': String(clampNum(b.intensity, 0, 1, 0.6)),
+  };
+  if (twoTone) vars['--fx-badge-c2'] = c2 || `var(--fx-${BADGE_TONE_TOKEN[t2!]})`;
+  const className = [look ? `is-look-${look}` : '', twoTone ? 'is-two-tone' : ''].filter(Boolean).join(' ');
+  return { look, twoTone, motion, once: b.once === true, vars, className };
+}
+
 /** Clock parts (in the clock's time zone); the UI layer fills them from the platform clock. */
 export interface ClockParts { year: number; month: number; day: number; weekday: number; hour: number; minute: number; second: number }
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

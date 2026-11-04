@@ -27,6 +27,8 @@
 
     { "key": "followAmber.enabled", "group": "follow", "label": "Follow Amber", "kind": "toggle", "default": false, "level": "simple", "shared": "Follow Amber",
       "description": "The console follows the screen Amber is working on. The same switch the Follow Amber build reads: one setting, never a copy." },
+    { "key": "followAmber.casual", "group": "follow", "label": "Open what Amber mentions in passing", "kind": "toggle", "default": true, "level": "basic",
+      "description": "While Follow Amber is on, Amber opens anything in the console she mentions, even in passing (a screen, settings tab, build, plugin, PR, UI Review item), without being asked to show it. Off: only what she is asked to show." },
 
     { "key": "builds.defaultModel", "group": "builds", "label": "Default model", "kind": "choice", "default": "split", "owner": true, "level": "basic",
       "options": [{ "value": "split", "label": "Split per step (orchestrator)" }, { "value": "opus", "label": "Opus" }, { "value": "fable", "label": "Fable" }],

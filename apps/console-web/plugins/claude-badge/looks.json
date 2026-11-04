@@ -1,0 +1,526 @@
+{
+ "$axf": "badge-looks@1",
+ "description": "Claude badge looks: badge assets (asset@1, type badge). The look's data is laid over the badge's state (tone, tooltip, link); a picked brand icon replaces its mark.",
+ "looks": [
+  {
+   "$axf": "asset@1",
+   "type": "badge",
+   "id": "claude-look-pill",
+   "name": "Pill with label",
+   "version": "1.0.0",
+   "description": "The classic: icon and label in a pill.",
+   "author": "Claude badge plugin",
+   "tags": [
+    "badge-look",
+    "claude"
+   ],
+   "data": {
+    "icon": "sparkles",
+    "label": "Claude",
+    "tone": "success",
+    "shape": "pill",
+    "look": "pill"
+   }
+  },
+  {
+   "$axf": "asset@1",
+   "type": "badge",
+   "id": "claude-look-dot",
+   "name": "Dot",
+   "version": "1.0.0",
+   "description": "Just a coloured dot.",
+   "author": "Claude badge plugin",
+   "tags": [
+    "badge-look",
+    "claude"
+   ],
+   "data": {
+    "icon": "sparkles",
+    "label": "Claude",
+    "tone": "success",
+    "shape": "dot",
+    "look": "dot"
+   }
+  },
+  {
+   "$axf": "asset@1",
+   "type": "badge",
+   "id": "claude-look-ring",
+   "name": "Ring",
+   "version": "1.0.0",
+   "description": "A thick ring around the icon.",
+   "author": "Claude badge plugin",
+   "tags": [
+    "badge-look",
+    "claude"
+   ],
+   "data": {
+    "icon": "sparkles",
+    "label": "Claude",
+    "tone": "success",
+    "shape": "icon",
+    "look": "ring"
+   }
+  },
+  {
+   "$axf": "asset@1",
+   "type": "badge",
+   "id": "claude-look-split",
+   "name": "Split circle",
+   "version": "1.0.0",
+   "description": "A circle split down the middle; the two tones sit side by side.",
+   "author": "Claude badge plugin",
+   "tags": [
+    "badge-look",
+    "claude"
+   ],
+   "data": {
+    "icon": "sparkles",
+    "label": "Claude",
+    "tone": "success",
+    "shape": "icon",
+    "look": "split"
+   }
+  },
+  {
+   "$axf": "asset@1",
+   "type": "badge",
+   "id": "claude-look-diamond",
+   "name": "Diamond",
+   "version": "1.0.0",
+   "description": "A diamond tile.",
+   "author": "Claude badge plugin",
+   "tags": [
+    "badge-look",
+    "claude"
+   ],
+   "data": {
+    "icon": "sparkles",
+    "label": "Claude",
+    "tone": "success",
+    "shape": "icon",
+    "look": "diamond"
+   }
+  },
+  {
+   "$axf": "asset@1",
+   "type": "badge",
+   "id": "claude-look-shield",
+   "name": "Shield",
+   "version": "1.0.0",
+   "description": "A shield.",
+   "author": "Claude badge plugin",
+   "tags": [
+    "badge-look",
+    "claude"
+   ],
+   "data": {
+    "icon": "sparkles",
+    "label": "Claude",
+    "tone": "success",
+    "shape": "icon",
+    "look": "shield"
+   }
+  },
+  {
+   "$axf": "asset@1",
+   "type": "badge",
+   "id": "claude-look-hexagon",
+   "name": "Hexagon",
+   "version": "1.0.0",
+   "description": "A hexagon tile, like the AmberX gem.",
+   "author": "Claude badge plugin",
+   "tags": [
+    "badge-look",
+    "claude"
+   ],
+   "data": {
+    "icon": "sparkles",
+    "label": "Claude",
+    "tone": "success",
+    "shape": "icon",
+    "look": "hexagon"
+   }
+  },
+  {
+   "$axf": "asset@1",
+   "type": "badge",
+   "id": "claude-look-avatar",
+   "name": "Avatar ring",
+   "version": "1.0.0",
+   "description": "Amber's initial in a double ring.",
+   "author": "Claude badge plugin",
+   "tags": [
+    "badge-look",
+    "claude"
+   ],
+   "data": {
+    "icon": "sparkles",
+    "label": "Claude",
+    "tone": "success",
+    "shape": "icon",
+    "look": "avatar",
+    "text": "A"
+   }
+  },
+  {
+   "$axf": "asset@1",
+   "type": "badge",
+   "id": "claude-look-chip",
+   "name": "Chip with icon",
+   "version": "1.0.0",
+   "description": "A squarer chip: icon and label.",
+   "author": "Claude badge plugin",
+   "tags": [
+    "badge-look",
+    "claude"
+   ],
+   "data": {
+    "icon": "sparkles",
+    "label": "Claude",
+    "tone": "success",
+    "shape": "pill",
+    "look": "chip"
+   }
+  },
+  {
+   "$axf": "asset@1",
+   "type": "badge",
+   "id": "claude-look-bar",
+   "name": "Mini bar",
+   "version": "1.0.0",
+   "description": "A short coloured bar.",
+   "author": "Claude badge plugin",
+   "tags": [
+    "badge-look",
+    "claude"
+   ],
+   "data": {
+    "icon": "sparkles",
+    "label": "Claude",
+    "tone": "success",
+    "shape": "dot",
+    "look": "bar"
+   }
+  },
+  {
+   "$axf": "asset@1",
+   "type": "badge",
+   "id": "claude-look-neon",
+   "name": "Neon outline",
+   "version": "1.0.0",
+   "description": "A glowing outline.",
+   "author": "Claude badge plugin",
+   "tags": [
+    "badge-look",
+    "claude"
+   ],
+   "data": {
+    "icon": "sparkles",
+    "label": "Claude",
+    "tone": "success",
+    "shape": "pill",
+    "look": "neon"
+   }
+  },
+  {
+   "$axf": "asset@1",
+   "type": "badge",
+   "id": "claude-look-glass",
+   "name": "Glass",
+   "version": "1.0.0",
+   "description": "Frosted glass with a tinted edge.",
+   "author": "Claude badge plugin",
+   "tags": [
+    "badge-look",
+    "claude"
+   ],
+   "data": {
+    "icon": "sparkles",
+    "label": "Claude",
+    "tone": "success",
+    "shape": "pill",
+    "look": "glass"
+   }
+  },
+  {
+   "$axf": "asset@1",
+   "type": "badge",
+   "id": "claude-look-orb",
+   "name": "Gradient orb",
+   "version": "1.0.0",
+   "description": "A shiny orb.",
+   "author": "Claude badge plugin",
+   "tags": [
+    "badge-look",
+    "claude"
+   ],
+   "data": {
+    "icon": "sparkles",
+    "label": "Claude",
+    "tone": "success",
+    "shape": "icon",
+    "look": "orb"
+   }
+  },
+  {
+   "$axf": "asset@1",
+   "type": "badge",
+   "id": "claude-look-led",
+   "name": "LED",
+   "version": "1.0.0",
+   "description": "A small glowing LED.",
+   "author": "Claude badge plugin",
+   "tags": [
+    "badge-look",
+    "claude"
+   ],
+   "data": {
+    "icon": "sparkles",
+    "label": "Claude",
+    "tone": "success",
+    "shape": "dot",
+    "look": "led"
+   }
+  },
+  {
+   "$axf": "asset@1",
+   "type": "badge",
+   "id": "claude-look-tag",
+   "name": "Text tag",
+   "version": "1.0.0",
+   "description": "A compact monospace tag.",
+   "author": "Claude badge plugin",
+   "tags": [
+    "badge-look",
+    "claude"
+   ],
+   "data": {
+    "icon": "zap",
+    "label": "Claude",
+    "tone": "success",
+    "shape": "pill",
+    "look": "tag"
+   }
+  },
+  {
+   "$axf": "asset@1",
+   "type": "badge",
+   "id": "claude-look-brand",
+   "name": "AmberX mark",
+   "version": "1.0.0",
+   "description": "The AmberX logo mark from the brand library.",
+   "author": "Claude badge plugin",
+   "tags": [
+    "badge-look",
+    "claude",
+    "brand"
+   ],
+   "data": {
+    "icon": "sparkles",
+    "label": "Claude",
+    "tone": "success",
+    "shape": "icon",
+    "look": "brand",
+    "mark": "amberx"
+   }
+  },
+  {
+   "$axf": "asset@1",
+   "type": "badge",
+   "id": "claude-look-brand-pill",
+   "name": "AmberX mark pill",
+   "version": "1.0.0",
+   "description": "The AmberX mark with the label.",
+   "author": "Claude badge plugin",
+   "tags": [
+    "badge-look",
+    "claude",
+    "brand"
+   ],
+   "data": {
+    "icon": "sparkles",
+    "label": "Claude",
+    "tone": "success",
+    "shape": "pill",
+    "look": "brand-pill",
+    "mark": "amberx"
+   }
+  },
+  {
+   "$axf": "asset@1",
+   "type": "badge",
+   "id": "claude-look-monogram",
+   "name": "Brand monogram",
+   "version": "1.0.0",
+   "description": "AX in a hexagon.",
+   "author": "Claude badge plugin",
+   "tags": [
+    "badge-look",
+    "claude",
+    "brand"
+   ],
+   "data": {
+    "icon": "sparkles",
+    "label": "Claude",
+    "tone": "success",
+    "shape": "icon",
+    "look": "monogram",
+    "text": "AX"
+   }
+  },
+  {
+   "$axf": "asset@1",
+   "type": "badge",
+   "id": "claude-look-brand-anim",
+   "name": "Animated brand icon",
+   "version": "1.0.0",
+   "description": "The animated AmberX pulse logo.",
+   "author": "Claude badge plugin",
+   "tags": [
+    "badge-look",
+    "claude",
+    "brand"
+   ],
+   "data": {
+    "icon": "sparkles",
+    "label": "Claude",
+    "tone": "success",
+    "shape": "icon",
+    "look": "brand-anim",
+    "mark": "anim:amberx-pulse"
+   }
+  },
+  {
+   "$axf": "asset@1",
+   "type": "badge",
+   "id": "claude-look-glyph",
+   "name": "Brand icon pack glyph",
+   "version": "1.0.0",
+   "description": "A glyph from the AmberX outline icon pack.",
+   "author": "Claude badge plugin",
+   "tags": [
+    "badge-look",
+    "claude",
+    "brand"
+   ],
+   "data": {
+    "icon": "sparkles",
+    "label": "Claude",
+    "tone": "success",
+    "shape": "icon",
+    "look": "glyph",
+    "mark": "glyph:amberx-outline/star"
+   }
+  }
+ ],
+ "motions": [
+  {
+   "id": "sweep",
+   "label": "Sweep",
+   "description": "The two tones slide back and forth."
+  },
+  {
+   "id": "breathe",
+   "label": "Breathe",
+   "description": "The second tone fades in and out."
+  },
+  {
+   "id": "rotate",
+   "label": "Rotate",
+   "description": "A conic gradient turns round."
+  },
+  {
+   "id": "shimmer",
+   "label": "Shimmer",
+   "description": "A light band runs across."
+  },
+  {
+   "id": "ripple",
+   "label": "Ripple",
+   "description": "A ring ripples outward."
+  },
+  {
+   "id": "glow",
+   "label": "Glow pulse",
+   "description": "A soft glow swells and fades."
+  },
+  {
+   "id": "wave",
+   "label": "Wave",
+   "description": "Stripes of both tones flow by."
+  },
+  {
+   "id": "orbit",
+   "label": "Orbit dot",
+   "description": "A dot circles the badge."
+  },
+  {
+   "id": "heartbeat",
+   "label": "Heartbeat",
+   "description": "A double beat, then a rest."
+  },
+  {
+   "id": "aurora",
+   "label": "Aurora",
+   "description": "Soft colour clouds drift."
+  },
+  {
+   "id": "sparkle",
+   "label": "Sparkle",
+   "description": "Little points twinkle."
+  },
+  {
+   "id": "tide",
+   "label": "Tide",
+   "description": "The second tone rises and falls."
+  },
+  {
+   "id": "none",
+   "label": "None",
+   "description": "Static two-tone."
+  }
+ ],
+ "states": [
+  {
+   "id": "follow",
+   "label": "Follow Amber on",
+   "default": {
+    "motion": "sweep",
+    "speed": 4,
+    "intensity": 0.6,
+    "loop": true
+   }
+  },
+  {
+   "id": "opened",
+   "label": "Amber just opened something",
+   "default": {
+    "motion": "glow",
+    "speed": 1,
+    "intensity": 1,
+    "loop": false
+   }
+  },
+  {
+   "id": "connecting",
+   "label": "Connecting",
+   "default": {
+    "motion": "breathe",
+    "speed": 1.6,
+    "intensity": 0.7,
+    "loop": true
+   }
+  },
+  {
+   "id": "error",
+   "label": "Error / out of credits",
+   "default": {
+    "motion": "none",
+    "speed": 4,
+    "intensity": 0.5,
+    "loop": true
+   }
+  }
+ ]
+}
