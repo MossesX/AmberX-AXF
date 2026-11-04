@@ -73,7 +73,17 @@ its banner editing runs inside the strip like any other banner action.
 - `tsc --noEmit`: apps/molly and apps/console-web clean. `vite build`: both green.
 - `check-theme.mjs` ✓, `check-controls.mjs` ✓, `plugin-lifecycle check banners` ✓, `project.mjs validate --all` ✓,
   `shared-assets.mjs check --all` ✓, `rebake.mjs status` current for the four apps.
-- Live (Playwright, local Molly + console builds, live console API): see "Live run" below.
+- Live (Playwright, local Molly + console builds served at their real addresses, live console API; VPS load ~100):
+  - desktop: the strip shows the console's live banners (activity, builds, codebase changes, branches not on main…) and
+    8 chips (alerts bell + count, Plan, What's new, Claude badge, profile, main build, axHub) at full width, above the
+    console frame; the console frame shows no banner of its own;
+  - tapping What's new in the strip: the strip covered Molly's whole window, the console's What's new dialog showed over
+    Molly; Escape closed it and the strip went back to its strip (`cover` true → false);
+  - phone (412×915): the chip row shows and scrolls sideways; the banners were still loading when it was captured;
+  - **not verified live:** a banner item that opens a console view (no view-opening item was on screen in either run).
+    That path is covered only by `check-banner-strip.mts` (the channel messages) and by reading the code.
+- UI Review: item r-20261104-269b05db, group "molly-banners - Nov 4 12:10 AM" (desktop with the Console open, the
+  What's new dialog over Molly, phone), waiting for Brett.
 
 ## Known gaps
 
