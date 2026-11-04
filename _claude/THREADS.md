@@ -991,6 +991,18 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 12:44 UTC · `browser-automation` → pending, note (current) · reconciler
 - 2026-11-04 12:44 UTC · `profile-switcher-widget` → pending, note (current) · reconciler
 - 2026-11-04 12:44 UTC · `app-style-override` → pending, note (current) · reconciler
+- 2026-11-04 12:44 UTC · `orch-step-click` note (refactor) · foreign-write
+- 2026-11-04 12:44 UTC · `molly-opus` → complete, note (big-dog) · foreign-write
+- 2026-11-04 12:44 UTC · `walkthrough-random-look` → complete, note (refactor) · foreign-write
+- 2026-11-04 12:44 UTC · `profile-manager` note (current) · foreign-write
+- 2026-11-04 12:44 UTC · `molly-console-commands` → complete, note (current) · foreign-write
+- 2026-11-04 12:44 UTC · `git-status-board` note (current) · foreign-write
+- 2026-11-04 12:44 UTC · `urgent-main-ci-green` → complete, note (current) · foreign-write
+- 2026-11-04 12:44 UTC · `terminal-tabs-left` note (current) · foreign-write
+- 2026-11-04 12:44 UTC · `gizmo-companion` note (current) · foreign-write
+- 2026-11-04 12:44 UTC · `browser-automation` note (current) · foreign-write
+- 2026-11-04 12:44 UTC · `profile-switcher-widget` note (current) · foreign-write
+- 2026-11-04 12:44 UTC · `app-style-override` note (current) · foreign-write
 
 ## Token passes (log)
 
