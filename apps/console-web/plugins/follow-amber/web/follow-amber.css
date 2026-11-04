@@ -1,0 +1,14 @@
+/* Follow Amber: layout only; every control is the framework's and every value a theme token. */
+.axp-follow-amber__ask { gap: var(--fx-dens-gap-xl) }
+.axp-follow-amber__top { align-items: center; gap: var(--fx-dens-gap-md) }
+.axp-follow-amber__title { margin: 0 }
+.axp-follow-amber__desc { margin: 0; white-space: pre-wrap }
+.axp-follow-amber__count { font-family: var(--fx-font-mono); font-variant-numeric: tabular-nums; font-size: var(--fx-type-root-lg); color: var(--fx-warning) }
+.axp-follow-amber__count.is-urgent { color: var(--fx-danger) }
+.axp-follow-amber__call { display: block; white-space: pre-wrap; word-break: break-word; font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm) }
+/* the two big buttons share the row (layout only: they stay framework buttons in their own tones) */
+.axp-follow-amber__acts { gap: var(--fx-dens-gap-xl); flex-wrap: nowrap }
+.axp-follow-amber__acts > .fx-btn { flex: 1 1 0; justify-content: center; min-height: calc(var(--fx-row-h) * 1.5) }
+.axp-follow-amber__foot { justify-content: flex-end; gap: var(--fx-dens-gap-md) }
+.axp-follow-amber__frame { width: 100%; height: min(60vh, calc(var(--fx-row-h) * 20)); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
+.axp-follow-amber__done { align-items: center; text-align: center; padding: calc(var(--fx-space) * 4) }
