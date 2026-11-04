@@ -962,6 +962,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 12:06 UTC · `land-round-2` s1 done, → running (current) · orchestrator
 - 2026-11-04 12:06 UTC · `land-round-2` note (current) · orchestrator
 - 2026-11-04 12:16 UTC · `molly-banners` → complete, merged (current) · builds-live
+- 2026-11-04 12:19 UTC · `hotfix-build-manager` added (4 steps) (current) · foreign-write
 
 ## Token passes (log)
 
