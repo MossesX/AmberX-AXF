@@ -1,0 +1,263 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "live-sessions-help",
+  "name": "live-sessions help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:live-sessions (Live sessions).",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:live-sessions",
+    "entries": [
+      {
+        "target": "action:live-sessions.open",
+        "title": "Live sessions",
+        "text": "Opens the grid of every Claude session going on: human and headless, on every account, with the agent running each.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:live-sessions.recordings",
+        "title": "Session recordings",
+        "text": "Opens the Session browser: every recorded human session, searchable, with real-time playback.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:live-sessions.watch",
+        "title": "Watch live",
+        "text": "Opens a live view of one session's output; voice too on a human session whose phone runs AmberX.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "watch-live",
+        "title": "Watch live",
+        "text": "Streams this session live: messages, tool calls and results. Brett only; the person on a human session sees 'You're being watched'.",
+        "kind": "button"
+      },
+      {
+        "target": "agent-pick",
+        "title": "Who's running this session?",
+        "text": "Picks the crew agent this session works as. One agent can't run two live human sessions at once.",
+        "kind": "field"
+      },
+      {
+        "target": "kind",
+        "title": "Human / Headless",
+        "text": "All, only sessions with a person on them, or only headless builds and agent jobs.",
+        "kind": "button"
+      },
+      {
+        "target": "layout",
+        "title": "Grid / List",
+        "text": "Cards in a grid (tap the arrow to fold a card to its avatar and name) or one row each.",
+        "kind": "button"
+      },
+      {
+        "target": "ended-too",
+        "title": "Ended too",
+        "text": "Also shows sessions that ended in the last week.",
+        "kind": "field"
+      },
+      {
+        "target": "jump-to-live",
+        "title": "Jump to live",
+        "text": "Scrolls to the newest output and drops voice that piled up while paused.",
+        "kind": "button"
+      },
+      {
+        "target": "pop-out",
+        "title": "Pop out",
+        "text": "Opens this watch in its own window.",
+        "kind": "button"
+      },
+      {
+        "target": "play",
+        "title": "Play",
+        "text": "Replays the session in real time: the context window fills in as it did, in sync with the voice.",
+        "kind": "button"
+      },
+      {
+        "target": "speed",
+        "title": "Speed",
+        "text": "Plays back at 0.5x to 4x.",
+        "kind": "button"
+      },
+      {
+        "target": "skip-silence",
+        "title": "Skip silence",
+        "text": "Jumps over the stretches where nobody was talking.",
+        "kind": "field"
+      },
+      {
+        "target": "in-context-now",
+        "title": "In context now",
+        "text": "Shows what was in the context window at this moment: tokens and what had been compacted.",
+        "kind": "button"
+      },
+      {
+        "target": "export",
+        "title": "Export",
+        "text": "Downloads the whole recording (log and audio) as a zip file.",
+        "kind": "button"
+      },
+      {
+        "target": "keep-forever",
+        "title": "Keep forever",
+        "text": "Pins the recording so retention never deletes it.",
+        "kind": "button"
+      },
+      {
+        "target": "delete-recording",
+        "title": "Delete",
+        "text": "Deletes the recording for good after you confirm. Brett only, logged.",
+        "kind": "button"
+      },
+      {
+        "target": "storage",
+        "title": "Recordings \u203a Storage",
+        "text": "Where recordings live: their own container (the primary) plus mirrors in a VPS container, a private repo (Git LFS) or a device.",
+        "kind": "card"
+      },
+      {
+        "target": "move",
+        "title": "Move",
+        "text": "Moves every recording to a new path, checking each file's hash before the old copy is deleted.",
+        "kind": "button"
+      },
+      {
+        "target": "watch-log",
+        "title": "Watch log",
+        "text": "Every watch start and stop, refused watch, delete, export, move and storage change.",
+        "kind": "card"
+      },
+      {
+        "target": "show-the-sessions-count-on-the-banner",
+        "title": "Show the sessions count on the banner",
+        "text": "Shows or hides the '2 human \u00b7 4 headless' widget on the banner.",
+        "kind": "field"
+      },
+      {
+        "target": "live-sessions",
+        "title": "Live sessions",
+        "text": "The grid of every Claude session going on, human and headless.",
+        "kind": "tab"
+      },
+      {
+        "target": "whos-running-this-session",
+        "title": "Who's running this session?",
+        "text": "Picks the crew agent this session works as; the last pick on that account and device becomes the default.",
+        "kind": "field"
+      },
+      {
+        "target": "human",
+        "title": "Human",
+        "text": "Only sessions with a person on them: Claude Code terminals, claude.ai chats and voice, AmberX.",
+        "kind": "tab"
+      },
+      {
+        "target": "headless",
+        "title": "Headless",
+        "text": "Only headless builds and agent-swarm jobs (no person on the other end, no voice).",
+        "kind": "tab"
+      },
+      {
+        "target": "account",
+        "title": "Account",
+        "text": "Only sessions on one Claude account: main (Brett) or a helper.",
+        "kind": "field"
+      },
+      {
+        "target": "agent",
+        "title": "Agent",
+        "text": "Only the sessions one crew agent is running.",
+        "kind": "field"
+      },
+      {
+        "target": "play-from-here",
+        "title": "Play from here",
+        "text": "Moves the player to this message and plays on from there.",
+        "kind": "button"
+      },
+      {
+        "target": "favourites",
+        "title": "Favourites",
+        "text": "Shows only the recordings you starred.",
+        "kind": "toggle"
+      },
+      {
+        "target": "search-every-transcript",
+        "title": "Search every transcript",
+        "text": "Finds recordings by anything said or done in them: words, builds, tools.",
+        "kind": "field"
+      },
+      {
+        "target": "sessions",
+        "title": "Sessions",
+        "text": "Back to the list of recordings.",
+        "kind": "button"
+      },
+      {
+        "target": "record-every-human-session",
+        "title": "Record every human session",
+        "text": "Records the context-window log and both sides of the voice for every human session. On by default; the session shows 'Recording' while it's on.",
+        "kind": "toggle"
+      },
+      {
+        "target": "container",
+        "title": "Container",
+        "text": "The running VPS container that keeps a mirror of the recordings.",
+        "kind": "field"
+      },
+      {
+        "target": "path-inside-it",
+        "title": "Path inside it",
+        "text": "The folder inside that container the recordings are copied to.",
+        "kind": "field"
+      },
+      {
+        "target": "repo",
+        "title": "Repo",
+        "text": "The GitHub repo that keeps a mirror (Git LFS). Public repos are refused unless you confirm.",
+        "kind": "field"
+      },
+      {
+        "target": "i-understand-store-them-there-anyway",
+        "title": "I understand, store them there anyway",
+        "text": "Lets recordings go to a PUBLIC repo, where anyone can read and hear them. Only Brett can tick it.",
+        "kind": "toggle"
+      },
+      {
+        "target": "mirror",
+        "title": "Mirror",
+        "text": "Keeps a synced copy of every recording on this target.",
+        "kind": "toggle"
+      },
+      {
+        "target": "vps-container",
+        "title": "VPS container",
+        "text": "Adds a VPS container as a mirror.",
+        "kind": "button"
+      },
+      {
+        "target": "local",
+        "title": "Local",
+        "text": "Adds a device (AmberX, a browser) that keeps its own synced copy.",
+        "kind": "button"
+      },
+      {
+        "target": "save-storage",
+        "title": "Save storage",
+        "text": "Saves the targets; mirrors start syncing in the background.",
+        "kind": "button"
+      },
+      {
+        "target": "move-the-working-store-to",
+        "title": "Move the working store to",
+        "text": "A new folder for every recording. Preview first; files are hash-checked before the old copies go.",
+        "kind": "field"
+      }
+    ]
+  }
+}

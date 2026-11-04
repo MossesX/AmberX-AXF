@@ -54,6 +54,10 @@ class CrewService:
             raise ValueError(r.get("error") or "booking failed")
         return r.get("run") or {}
 
+    def post(self, text: str) -> bool:
+        """One line in the group chat as Brett's side of the room (no tokens; False while the chat is off)."""
+        return bool(_run("act", json.dumps({"action": "say", "text": str(text)[:1000]})).get("ok"))
+
 
 plugin_services.provide("axf.crew@1", CrewService(), CLI.parent.name)
 
