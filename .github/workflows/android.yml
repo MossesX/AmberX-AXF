@@ -174,6 +174,10 @@ jobs:
             npx -y tsx framework/spec/check-banner-strip.mts           # banner strip: a host shows an app's live banners as its one banner region (Molly)
             npx -y tsx framework/spec/check-meters.mts                 # gauge + meter control assets: fixture replay, starters, enums
             npx -y tsx framework/spec/check-customize.mts              # tab-group asset + per-asset appearance tokens, 100 icon sets, apply to all
+            npx -y tsx framework/spec/check-tab-group.mts              # tab-group@1: position / display / overflow / sticky / collapsible / closable / badges / rememberLast, starters, fixture replay, stylesheet tokens only
+            npx -y tsx framework/spec/check-chrome-settings.mts        # chrome-settings@1: one shared default settings interface per chrome type + a custom copy per app (extends), default selected, dialog fields = asset fields
+            node framework/cli/chrome-settings.mjs check               # every app (shared-assets apps + Expenses) carries its custom chrome settings interfaces
+            node framework/cli/check-chrome-assets.mjs                 # every tab group, toolbar, banner and nav is framework chrome with the right-click settings; ratchet spec/chrome-baseline.json
             npx -y tsx framework/spec/check-settings-ui.mts            # settings interface asset: fixture replay, starters, enums
             npx -y tsx framework/spec/check-design-package.mts         # design-package@1 + behavior-theme@1 rules, starters, the Amber context menu
             npx -y tsx framework/spec/check-scale.mts                  # typography@1 + density@1 + sizing@1: registry, defaults, tokens, fixture, starters, validators agree, hub slots
@@ -184,6 +188,7 @@ jobs:
             npx -y tsx framework/spec/check-agent-card.mts             # agent-card@1: registry, fixture replay, validators agree, four starters, schema
             npx -y tsx framework/spec/check-job-type.mts               # job-type@1: registry, fixture replay, validators agree, starter job types, schema
             npx -y tsx framework/spec/check-headless-tabs.mts          # headless tabs: live cost meter + context chain (deploy/claude-meter.mjs), terminal pure helpers
+            npx -y tsx framework/spec/check-claude-session.mts         # claude-session lib: Terminal reads it, companion helpers (Gizmo)
             npx -y tsx framework/spec/check-terminal-nav.mts           # terminal sessions nav: search / filter / sort, mirror vs jump in, chat link guard
             npx -y tsx framework/spec/check-swarm.mts                  # agent swarm contracts (agent@1 … swarm-run@1): fixture replay, field-naming validators, model policy, schema snapshots, shipped roster, plugin uses the framework's
             npx -y tsx framework/spec/check-help.mts                   # help@1 + Help mode: registry, fixture replay (auto ids, index, intros, coverage, ratchet), validators agree, every shipped pack, runtime switch

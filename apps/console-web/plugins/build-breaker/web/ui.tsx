@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Container, Icon, IconButton, ModelBadge, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Icon, IconButton, ModelBadge, TabGroup, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import { registerRowRefTarget, rowHooks, useDataset, useDatasetsRevision } from '@console/axf/libs/datagrid';
@@ -105,13 +105,7 @@ export function BuildBreakerPage() {
       <Head doc={doc} />
       <TotalsStrip t={t} filtered={filtering} of={all.length} />
       <div className="axp-build-breaker__bar">
-        <div className="fx-tabs axp-build-breaker__tabs" role="tablist" aria-label="View">
-          {TABS.map((x) => (
-            <button key={x.id} type="button" role="tab" aria-selected={tab === x.id} className={`fx-tab${tab === x.id ? ' is-active' : ''}`} onClick={() => setTab(x.id)}>
-              <Icon name={x.icon} size={12} />{x.label}<span className="axp-build-breaker__n">{x.n}</span>
-            </button>
-          ))}
-        </div>
+        <TabGroup id="build-breaker.view" label="View" className="axp-build-breaker__tabs" value={tab} onChange={setTab} tabs={TABS.map((x) => ({ value: x.id, label: x.label, icon: x.icon, badge: x.n }))} />
         <div className="axp-build-breaker__tools" role="toolbar" aria-label="Filter and sort">
           <label className="fx-search axp-build-breaker__search">
             <Icon name="search" size={13} />

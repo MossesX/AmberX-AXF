@@ -473,14 +473,36 @@ export interface GaugeData {
 
 /** Progress meter control asset: how every progress bar looks (engines/components.ts meterStyle). */
 /** tab-group asset: how every tab row looks (page tabs + window tab bars). Engine tabGroupStyle (engines/components.ts). */
+/**
+ * tab-group@1 (Brett, Nov 4 2026, build tab-group-assets: "all tab groups are supposed to be assets"): how every tab
+ * row looks and behaves. Fields added Nov 4 2026 are all optional with the pre-existing look as their default, so
+ * every earlier asset renders unchanged. Engine: normalizeTabGroup / tabGroupStyle in engines/components.ts.
+ */
 export interface TabGroupData {
-  style: 'underline' | 'pills' | 'boxed' | 'segmented' | 'plain';
+  style: 'underline' | 'pills' | 'boxed' | 'segmented' | 'plain' | 'chips';
   align: 'start' | 'center' | 'end' | 'stretch';
-  position?: 'top' | 'bottom';
+  /** where the row sits against its panel: top (default) / bottom; left / right = a vertical rail */
+  position?: 'top' | 'bottom' | 'left' | 'right';
   density?: ChromeDensity;
-  overflow?: 'scroll' | 'wrap';
+  /** what a row does when its tabs don't fit: scroll (default) / wrap / more (the rest under a More menu) / dropdown (one button that opens the list) */
+  overflow?: 'scroll' | 'wrap' | 'more' | 'dropdown';
+  /** icons + text (both, default) / text only / icons only (text becomes the tooltip) */
+  display?: 'both' | 'text' | 'icons';
+  /** @deprecated use `display: 'text'`; kept for older assets (false = text only) */
   showIcons?: boolean;
   divider?: boolean;
+  /** the row stays at the top of its scrolling panel */
+  sticky?: boolean;
+  /** a fold button hides every tab but the active one (per device) */
+  collapsible?: boolean;
+  /** tabs show a close button where the host allows closing (default true; false hides it) */
+  closable?: boolean;
+  /** tabs can be dragged into another order where the host allows it (default true; false turns it off) */
+  reorderable?: boolean;
+  /** count badges on tabs (default true) */
+  badges?: boolean;
+  /** the row reopens on the tab it was on last time (per device) */
+  rememberLast?: boolean;
 }
 
 export interface MeterData {
