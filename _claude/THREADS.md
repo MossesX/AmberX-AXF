@@ -683,8 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 11:09 UTC · `expenses-port` added (6 steps) (current) · orchestrator
-- 2026-11-04 11:11 UTC · `expenses-port` note (current) · orchestrator
 - 2026-11-04 11:12 UTC · `expenses-port` s1 done, → running (current) · orchestrator
 - 2026-11-04 11:12 UTC · `expenses-port` s2 done (current) · orchestrator
 - 2026-11-04 11:15 UTC · `expenses-port` s3 done (current) · orchestrator
@@ -1083,6 +1081,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:25 UTC · `gizmo-companion` merged, note (current) · reconciler
 - 2026-11-04 15:25 UTC · `urgent-land-gizmo-chat` merged, note (current) · reconciler
 - 2026-11-04 15:29 UTC · `urgent-land-gizmo-chat` → complete, note (current) · foreign-write
+- 2026-11-04 15:29 UTC · `tab-group-assets` added (6 steps) (current) · orchestrator
+- 2026-11-04 15:29 UTC · `tab-group-assets` → running (current) · orchestrator
 
 ## Token passes (log)
 
