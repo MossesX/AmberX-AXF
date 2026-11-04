@@ -233,7 +233,7 @@ export function SessionsRail({ hostId, drawer, onDrawer }: { hostId: string; dra
               {(['all', 'live', 'working', 'waiting'] as Filter[]).map((f) => (
                 <button key={f} type="button" className={`fx-chip ${prefs.filter === f ? 'is-on' : ''}`} aria-pressed={prefs.filter === f} onClick={() => patch({ filter: f })}>{f}</button>
               ))}
-              <button type="button" className="fx-chip" title="Sort" onClick={() => patch({ sort: prefs.sort === 'started' ? 'activity' : prefs.sort === 'activity' ? 'name' : 'started' })}><Icon name="list" size={11} /> {prefs.sort}</button>
+              <button type="button" className="fx-chip" title="Sort" onClick={() => patch({ sort: prefs.sort === 'started' ? 'recent' : prefs.sort === 'recent' ? 'name' : 'started' })}><Icon name="list" size={11} /> {prefs.sort}</button>
             </div>
           </div>
         )}

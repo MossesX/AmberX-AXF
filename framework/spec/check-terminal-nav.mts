@@ -23,7 +23,7 @@ check(matches(run, 'earl opus') && matches(chat, 'checking') && !matches(mine, '
 check(passes(mine, 'live') && !passes(done, 'live') && passes(run, 'waiting') && !passes(run, 'working') && passes(conn, 'working'), 'filter: live / working / waiting; connections always pass');
 check(sortItems([mine, tab, chat], 'started').map((x) => x.name).join() === 'axt-console-ab,chat:Amber,claude-main', 'sort: newest started first');
 check(sortItems([tab, mine, chat], 'name').map((x) => x.title).join() === 'Amber,axt-console-ab,claude-main', 'sort: by name');
-check(sortItems([mine, tab, chat], 'activity')[0] === chat, 'sort: last activity first');
+check(sortItems([mine, tab, chat], 'recent')[0] === chat, 'sort: last activity first');
 const m: NavModel = { $axf: 'terminal-nav@1', now: 0, vps: { ready: true, why: '' }, mine: [mine, tab, chat], agents: [run], connections: [conn], recent: [done] };
 const v = view(m, '', 'all', 'started');
 check(v.mine.length === 3 && v.agents[0] === run && v.connections[0] === conn && v.recent[0] === done, 'view: the four sections');

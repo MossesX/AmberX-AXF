@@ -444,6 +444,12 @@
         "title": "Stop session",
         "text": "Ends this tmux session for good, for every device attached to it, Moshi included. Detaching a tab does not do this.",
         "kind": "button"
+      },
+      {
+        "target": "action:terminal.sessions",
+        "title": "Terminal sessions",
+        "text": "Opens the Terminal's sessions rail: your sessions, agents, connections and recent ones, to mirror or jump into.",
+        "kind": "menu-item"
       }
     ],
     "intros": []

@@ -17,7 +17,7 @@ export const SECTIONS: { id: SectionId; label: string; icon: string }[] = [
   { id: 'mine', label: 'My sessions', icon: 'user' }, { id: 'agents', label: 'Agents', icon: 'sparkles' },
   { id: 'connections', label: 'Connections', icon: 'shuffle' }, { id: 'recent', label: 'Recent', icon: 'clock' },
 ];
-export type Sort = 'started' | 'name' | 'activity';
+export type Sort = 'started' | 'name' | 'recent';
 export type Filter = 'all' | 'live' | 'working' | 'waiting';
 
 /** 3s, 4m 05s, 1h 02m, 2d 3h. Pure. */
@@ -45,7 +45,7 @@ export function passes(it: NavItem, f: Filter): boolean {
 export function sortItems(items: NavItem[], by: Sort): NavItem[] {
   const out = [...items];
   if (by === 'name') out.sort((a, b) => a.title.localeCompare(b.title));
-  else if (by === 'activity') out.sort((a, b) => (b.lastAt ?? b.startedAt ?? 0) - (a.lastAt ?? a.startedAt ?? 0));
+  else if (by === 'recent') out.sort((a, b) => (b.lastAt ?? b.startedAt ?? 0) - (a.lastAt ?? a.startedAt ?? 0));
   else out.sort((a, b) => (b.startedAt ?? 0) - (a.startedAt ?? 0));
   return out;
 }
