@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 960,
- "updatedAt": "2026-11-04T21:12:40.031Z",
+ "rev": 961,
+ "updatedAt": "2026-11-04T21:12:59.745Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -83878,7 +83878,7 @@
    "branch": "claude/ui-review-alarm",
    "pr": "",
    "createdAt": "2026-11-04T21:04:36.261Z",
-   "updatedAt": "2026-11-04T21:12:38.359Z",
+   "updatedAt": "2026-11-04T21:12:41.879Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -83933,12 +83933,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:12:40.131Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T21:04:36.262Z",
-     "updatedAt": "2026-11-04T21:04:36.262Z"
+     "updatedAt": "2026-11-04T21:12:40.207Z"
     },
     {
      "id": "s3",
@@ -83955,12 +83955,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T21:12:41.879Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T21:04:36.262Z",
-     "updatedAt": "2026-11-04T21:04:36.262Z"
+     "updatedAt": "2026-11-04T21:12:42.180Z"
     },
     {
      "id": "s4",
@@ -84125,7 +84125,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
