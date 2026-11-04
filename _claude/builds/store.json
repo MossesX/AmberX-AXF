@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 702,
- "updatedAt": "2026-11-04T14:04:16.439Z",
+ "rev": 703,
+ "updatedAt": "2026-11-04T14:04:27.865Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -72523,7 +72523,7 @@
    "branch": "claude/plugin-lazy-load",
    "pr": "#298",
    "createdAt": "2026-11-04T12:29:55.129Z",
-   "updatedAt": "2026-11-04T12:36:33.404Z",
+   "updatedAt": "2026-11-04T14:04:15.625Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -72600,12 +72600,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T14:04:15.625Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T12:29:55.130Z",
-     "updatedAt": "2026-11-04T12:29:55.130Z"
+     "updatedAt": "2026-11-04T14:04:17.375Z"
     },
     {
      "id": "s4",
@@ -72638,10 +72638,25 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-04T12:29:55.129Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw23gp6505x0u7": "2026-11-04T12:29:55.130Z",
+     "st-mw23gp6506ftt8": "2026-11-04T12:29:55.130Z",
+     "st-mw23gp6507ymi1": "2026-11-04T12:29:55.130Z",
+     "st-mw23gp6508tldc": "2026-11-04T12:29:55.130Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-04T12:29:55.130Z",
    "rearranged": false,
