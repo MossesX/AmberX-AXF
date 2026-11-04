@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T02:19:52.567Z",
+ "updatedAt": "2026-11-04T03:33:38.233Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4415,7 +4415,7 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-04T02:10:56.963Z",
-     "note": "",
+     "note": "PR #299 (claude/browser-automation)",
      "uid": "st-mw1dt95p0j4y85"
     },
     {
@@ -4666,7 +4666,7 @@
    "branch": "claude/profile-switcher-widget",
    "pr": "#300",
    "createdAt": "2026-11-04T00:40:48.340Z",
-   "updatedAt": "2026-11-04T02:14:30.962Z",
+   "updatedAt": "2026-11-04T02:35:08.371Z",
    "builtAt": "",
    "notes": [
     {
@@ -4801,11 +4801,16 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/main-area-tabs",
-   "pr": "",
+   "pr": "#301",
    "createdAt": "2026-11-04T01:34:59.457Z",
-   "updatedAt": "2026-11-04T01:34:59.457Z",
+   "updatedAt": "2026-11-04T03:12:51.746Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #301",
+     "at": "2026-11-04T03:12:51.746Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -5901,11 +5906,16 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/app-style-override",
-   "pr": "",
+   "pr": "#302",
    "createdAt": "2026-11-04T01:44:48.256Z",
-   "updatedAt": "2026-11-04T01:45:30.745Z",
+   "updatedAt": "2026-11-04T03:12:51.746Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #302",
+     "at": "2026-11-04T03:12:51.746Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -5958,8 +5968,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T02:46:41.562Z",
      "note": "",
      "uid": "st-mw1gf3s50ev7ob"
     },
@@ -5976,8 +5986,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T02:47:09.560Z",
      "note": "",
      "uid": "st-mw1gf3s50fsmyk"
     },
