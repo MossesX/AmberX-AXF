@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 966,
- "updatedAt": "2026-11-04T21:18:12.331Z",
+ "rev": 967,
+ "updatedAt": "2026-11-04T21:26:04.832Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -83896,9 +83896,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-review-alarm",
-   "pr": "",
+   "pr": "#343",
    "createdAt": "2026-11-04T21:04:36.261Z",
-   "updatedAt": "2026-11-04T21:17:54.922Z",
+   "updatedAt": "2026-11-04T21:26:03.247Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -84145,7 +84145,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
