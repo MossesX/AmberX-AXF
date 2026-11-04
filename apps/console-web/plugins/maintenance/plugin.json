@@ -35,7 +35,8 @@
       "AXF_MAINT_NO_MONITOR",
       "AXF_MAINT_BUILD_ROOTS",
       "AXF_MAINT_TMP_ROOTS",
-      "AXF_MAINT_LOG_ROOTS"
+      "AXF_MAINT_LOG_ROOTS",
+      "AXF_MAINT_AREAS"
     ],
     "mentions": [
       "apps/console-web/plugins/README.md",

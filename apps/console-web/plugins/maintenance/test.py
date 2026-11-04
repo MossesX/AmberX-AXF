@@ -24,7 +24,7 @@ BUILDS, LOGS, TMPS = TMP / "axf-builds", TMP / "log", TMP / "tmp"
 for d in (DATA, BUILDS, LOGS, TMPS):
     d.mkdir(parents=True)
 os.environ.update(AXF_MAINT_DATA_DIR=str(DATA), AXF_MAINT_NO_MONITOR="1", AXF_MAINT_BUILD_ROOTS=str(BUILDS),
-                  AXF_MAINT_TMP_ROOTS=str(TMPS), AXF_MAINT_LOG_ROOTS=str(LOGS), AXF_MAINT_HOST_ROOT="/opt/axf")
+                  AXF_MAINT_TMP_ROOTS=str(TMPS), AXF_MAINT_LOG_ROOTS=str(LOGS), AXF_MAINT_AREAS=f"Logs={LOGS},tmp={TMPS},Builds={BUILDS},Locked=/root/axf-builds", AXF_MAINT_HOST_ROOT="/opt/axf")
 os.environ.pop("AXHUB_TOKEN", None)
 sys.path.insert(0, str(HERE.parent.parent / "server"))
 

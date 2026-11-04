@@ -227,6 +227,14 @@ def du(path: Path, run: Runner = _run) -> int:
     return total
 
 
+def isdir(p: Path) -> bool:
+    """Path.is_dir() that answers False instead of raising on a folder this user can't read (Python 3.12)."""
+    try:
+        return p.is_dir()
+    except OSError:
+        return False
+
+
 def inside(path: Path, roots: Iterable[Path]) -> bool:
     """True when path (not followed if it is a link) sits strictly inside one of the roots."""
     try:
@@ -280,7 +288,7 @@ def newest_mtime(path: Path, depth: int = 2, limit: int = 4000) -> float:
         best = os.lstat(path).st_mtime
     except OSError:
         return 0.0
-    if not path.is_dir() or path.is_symlink():
+    if not isdir(path) or path.is_symlink():
         return best
     seen = 0
     stack = [(path, 0)]
@@ -392,11 +400,23 @@ def log_roots() -> list[Path]:
     return [Path(p) for p in env.split(":") if p] if env else [Path("/var/log")]
 
 
+AREAS = (("Logs (/var/log)", "/var/log"), ("/tmp", "/tmp"), ("/var/tmp", "/var/tmp"), ("Build worktrees", "/root/axf-builds"),
+         ("axfbuild home", "/home/axfbuild"), ("Root home", "/root"), ("/opt", "/opt"))
+
+
+def area_list() -> list[tuple[str, str]]:
+    """The folders measured for "biggest space users" (AXF_MAINT_AREAS = label=path,label=path overrides them)."""
+    env = os.environ.get("AXF_MAINT_AREAS")
+    if env:
+        return [tuple(x.split("=", 1)) for x in env.split(",") if "=" in x]  # type: ignore[misc]
+    return list(AREAS)
+
+
 def worktree_dirs(roots: list[Path]) -> list[Path]:
     """/root/axf-builds/<build> and /home/axfbuild/wt-* (never _archive, hidden folders or the home itself)."""
     out = []
     for r in roots:
-        if not r.is_dir():
+        if not isdir(r):
             continue
         only_wt = r.name == "axfbuild"
         try:
@@ -632,10 +652,9 @@ def snapshot(s: dict[str, Any] | None = None, run: Runner = _run) -> dict[str, A
         wts.append(row)
     snap["builds"] = {"roots": [str(r) for r in build_roots()], "count": len(wts), "size": sum(w["size"] for w in wts), "items": wts}
     areas = []
-    for label, path in (("Logs (/var/log)", "/var/log"), ("/tmp", "/tmp"), ("/var/tmp", "/var/tmp"),
-                        ("Build worktrees", "/root/axf-builds"), ("axfbuild home", "/home/axfbuild"), ("Root home", "/root"), ("/opt", "/opt")):
+    for label, path in area_list():
         p = Path(path)
-        if p.is_dir():
+        if isdir(p):
             areas.append({"label": label, "path": path, "size": du(p, run)})
     snap["logs"] = {"size": next((a["size"] for a in areas if a["path"] == "/var/log"), 0)}
     snap["tmp"] = {"size": sum(a["size"] for a in areas if a["path"] in ("/tmp", "/var/tmp"))}
