@@ -27,7 +27,7 @@ const reg = loadRegistry();
 ok(reg.settings.length >= 25 && reg.groups.length >= 7, 'registry has the groups and settings');
 for (const k of ['noWait.enabled', 'noWait.includeIrreversible', 'noWait.duration', 'builds.launchWithoutAsking', 'builds.uiReviewGate', 'builds.defaultModel']) ok(reg.settings.find((s) => s.key === k)?.owner === true, `${k} is owner-only`);
 ok(reg.settings.find((s) => s.key === 'builds.alwaysNamedAgent')?.locked === true, 'named agent is locked on');
-ok(reg.settings.find((s) => s.key === 'followAmber.enabled')?.shared === 'follow-amber', 'Follow Amber is the shared switch');
+ok(reg.settings.find((s) => s.key === 'followAmber.enabled')?.shared === 'Follow Amber', 'Follow Amber is the shared switch');
 const more = loadRegistry({ extra: [{ groups: [{ id: 'x', label: 'Extra' }], settings: [{ key: 'x.flag', group: 'x', label: 'Flag', kind: 'toggle', default: false }, { key: 'bad', kind: 'toggle', default: 'no' }] }] });
 ok(more.settings.some((s) => s.key === 'x.flag') && !more.settings.some((s) => s.key === 'bad'), 'open registry: a data entry adds a setting, an invalid one is dropped');
 ok(valid({ kind: 'time' }, '23:00') && !valid({ kind: 'time' }, '24:00'), 'time values checked');

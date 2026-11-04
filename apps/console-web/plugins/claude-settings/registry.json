@@ -25,7 +25,7 @@
     { "key": "noWait.nightEnd", "group": "no-wait", "label": "Night ends", "kind": "time", "default": "07:00", "owner": true, "level": "developer",
       "description": "End of the night window." },
 
-    { "key": "followAmber.enabled", "group": "follow", "label": "Follow Amber", "kind": "toggle", "default": false, "level": "simple", "shared": "follow-amber",
+    { "key": "followAmber.enabled", "group": "follow", "label": "Follow Amber", "kind": "toggle", "default": false, "level": "simple", "shared": "Follow Amber",
       "description": "The console follows the screen Amber is working on. The same switch the Follow Amber build reads: one setting, never a copy." },
 
     { "key": "builds.defaultModel", "group": "builds", "label": "Default model", "kind": "choice", "default": "split", "owner": true, "level": "basic",
