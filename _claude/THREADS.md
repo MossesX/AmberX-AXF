@@ -669,7 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 17:53 UTC · `builds-one-page` s5 done (refactor) · snap-sully
 - 2026-11-03 17:53 UTC · `builds-one-page` s6 done (refactor) · snap-sully
 - 2026-11-03 17:53 UTC · `builds-one-page` s12 done (refactor) · snap-sully
 - 2026-11-03 17:53 UTC · `builds-one-page` s14 done (refactor) · snap-sully
@@ -1069,6 +1068,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:29 UTC · `plugin-lazy-load` → complete, note (current) · foreign-write
 - 2026-11-04 14:30 UTC · `urgent-land-lazy-loader` note (current) · foreign-write
 - 2026-11-04 14:30 UTC · `urgent-land-lazy-loader` note (current) · orchestrator
+- 2026-11-04 14:30 UTC · `urgent-land-lazy-loader` note (current) · builds-live
 
 ## Token passes (log)
 
