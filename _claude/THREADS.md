@@ -662,8 +662,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 16:05 UTC · `crew-retrain` s2 done (breakroom) · orchestrator
-- 2026-11-03 16:05 UTC · `crew-retrain` s3 done (breakroom) · orchestrator
 - 2026-11-03 16:05 UTC · `crew-retrain` s4 done (breakroom) · orchestrator
 - 2026-11-03 16:07 UTC · `notes-vault` PR #256, merged (urgent) · builds-live
 - 2026-11-03 16:07 UTC · `land-everything` note (urgent) · orchestrator
@@ -1062,6 +1060,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 14:16 UTC · `console-wake-finish` added (5 steps) (current) · foreign-write
 - 2026-11-04 14:16 UTC · `profile-lists-home-card` added (4 steps) (current) · orchestrator
 - 2026-11-04 14:16 UTC · `profile-lists-home-card` s1 done, → running (current) · orchestrator
+- 2026-11-04 14:15 UTC · `console-wake-finish` added (5 steps) (current) · orchestrator
+- 2026-11-04 14:16 UTC · `profile-lists-home-card` added (4 steps) (current) · foreign-write
 
 ## Token passes (log)
 

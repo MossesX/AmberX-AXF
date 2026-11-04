@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 716,
- "updatedAt": "2026-11-04T14:16:26.548Z",
+ "rev": 717,
+ "updatedAt": "2026-11-04T14:17:00.300Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -73611,13 +73611,13 @@
   {
    "id": "console-wake-finish",
    "title": "Console wake: finish (Follow Amber reaches a sleeping console)",
-   "category": "",
+   "category": "Urgent",
    "detail": "Follow Amber is on, but the console tab sleeps in the background while Brett is in the Claude app on a voice call, so console_show commands sit undelivered. Confirm #288 carried console-wake (#266), close superseded PRs, land axHub amberx.open_url (#35) + redeploy, make sure AmberX handles open_url, and wake automatically when console_show gets no foreground answer within 4 s.",
    "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "console-wake-finish",
-   "branch": "",
+   "branch": "claude/console-wake-finish",
    "pr": "",
    "createdAt": "2026-11-04T14:15:32.628Z",
    "updatedAt": "2026-11-04T14:15:32.628Z",
@@ -73640,6 +73640,116 @@
    "steps": [
     {
      "id": "s1",
+     "uid": "st-mw278j9m06ty2l",
+     "title": "",
+     "text": "Audit #266/#288/#308: what is on main, close superseded",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T14:15:32.630Z",
+     "updatedAt": "2026-11-04T14:15:32.630Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw278j9m07lngq",
+     "title": "",
+     "text": "axHub claude/amberx-open-url (#35): land + redeploy",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T14:15:32.630Z",
+     "updatedAt": "2026-11-04T14:15:32.630Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw278j9m08wdbh",
+     "title": "",
+     "text": "AmberX app handles open_url (APK if needed)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T14:15:32.630Z",
+     "updatedAt": "2026-11-04T14:15:32.630Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw278j9m09mj4y",
+     "title": "",
+     "text": "console_show: no foreground answer in 4 s -> wake via AmberX, deliver on wake + tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T14:15:32.630Z",
+     "updatedAt": "2026-11-04T14:15:32.630Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mw278j9m0a7u3i",
+     "title": "",
+     "text": "PR, report, deploy console",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-04T14:15:32.630Z",
+     "updatedAt": "2026-11-04T14:15:32.630Z"
+    },
+    {
+     "id": "s6-5",
      "uid": "st-mw279c5w017o63",
      "title": "",
      "text": "Audit #266/#288/#308: what is on main, close superseded",
@@ -73661,7 +73771,7 @@
      "updatedAt": "2026-11-04T14:16:10.161Z"
     },
     {
-     "id": "s2",
+     "id": "s7-6",
      "uid": "st-mw279c5w02vpm4",
      "title": "",
      "text": "axHub claude/amberx-open-url (#35): land + redeploy",
@@ -73683,7 +73793,7 @@
      "updatedAt": "2026-11-04T14:16:10.161Z"
     },
     {
-     "id": "s3",
+     "id": "s8-7",
      "uid": "st-mw279c5w03f1ja",
      "title": "",
      "text": "AmberX app handles open_url (APK if needed)",
@@ -73705,7 +73815,7 @@
      "updatedAt": "2026-11-04T14:16:10.161Z"
     },
     {
-     "id": "s4",
+     "id": "s9-8",
      "uid": "st-mw279c5w04k6y3",
      "title": "",
      "text": "console_show: no foreground answer in 4 s -> wake via AmberX, deliver on wake + tests",
@@ -73727,7 +73837,7 @@
      "updatedAt": "2026-11-04T14:16:10.161Z"
     },
     {
-     "id": "s5",
+     "id": "s10-9",
      "uid": "st-mw279c5w05z598",
      "title": "",
      "text": "PR, report, deploy console",
@@ -73749,7 +73859,7 @@
      "updatedAt": "2026-11-04T14:16:10.161Z"
     },
     {
-     "id": "s6-5",
+     "id": "s11-10",
      "uid": "st-mw278jqj01kqgj",
      "title": "",
      "text": "Audit #266/#288/#308: what is on main, close superseded",
@@ -73771,7 +73881,7 @@
      "updatedAt": "2026-11-04T14:15:33.168Z"
     },
     {
-     "id": "s7-6",
+     "id": "s12-11",
      "uid": "st-mw278jqj02zywe",
      "title": "",
      "text": "axHub claude/amberx-open-url (#35): land + redeploy",
@@ -73793,7 +73903,7 @@
      "updatedAt": "2026-11-04T14:15:33.168Z"
     },
     {
-     "id": "s8-7",
+     "id": "s13-12",
      "uid": "st-mw278jqj03n3il",
      "title": "",
      "text": "AmberX app handles open_url (APK if needed)",
@@ -73815,7 +73925,7 @@
      "updatedAt": "2026-11-04T14:15:33.168Z"
     },
     {
-     "id": "s9-8",
+     "id": "s14-13",
      "uid": "st-mw278jqj04unns",
      "title": "",
      "text": "console_show: no foreground answer in 4 s -> wake via AmberX, deliver on wake + tests",
@@ -73837,7 +73947,7 @@
      "updatedAt": "2026-11-04T14:15:33.168Z"
     },
     {
-     "id": "s10-9",
+     "id": "s15-14",
      "uid": "st-mw278jqj05ytdp",
      "title": "",
      "text": "PR, report, deploy console",
