@@ -684,7 +684,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:24 UTC · `profile-switcher-widget` note (current) · foreign-write
 - 2026-11-04 14:24 UTC · `land-round-2` note (current) · foreign-write
 - 2026-11-04 14:24 UTC · `crew-profiles` s4 done, s5 done (current) · foreign-write
 - 2026-11-04 14:24 UTC · `urgent-land-gizmo-chat` added (4 steps) (current) · foreign-write
@@ -1084,6 +1083,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 19:45 UTC · `handoff-2` s6 done, s7 done, s8 done, s9 done (current) · foreign-write
 - 2026-11-04 19:45 UTC · `fable-packager` s3 done (current) · orchestrator
 - 2026-11-04 19:45 UTC · `fable-packager` s4 done (current) · orchestrator
+- 2026-11-04 19:49 UTC · `handoff-2` note (current) · orchestrator
 
 ## Token passes (log)
 

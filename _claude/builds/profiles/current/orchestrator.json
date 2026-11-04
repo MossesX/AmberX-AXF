@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T19:45:51.391Z",
+ "updatedAt": "2026-11-04T19:49:35.574Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -11719,9 +11719,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T18:45:40.326Z",
-   "updatedAt": "2026-11-04T19:44:32.721Z",
+   "updatedAt": "2026-11-04T19:49:33.773Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "From fable-packager (Package builds): please expose offer(req, who) and replan(req, who) on the axf.session-sync@1 capability (thin wrappers over _run('offer'|'replan', args, who)); the orchestrator's Send to helper calls offer({build, mode: 'whole', to, reason, priority: 'now'|'normal'}) and replan({dryRun: false}) through the capability. Until then a package stays in the primary's orchestrator. Report: _claude/builds/reports/fable-packager.md",
+     "at": "2026-11-04T19:49:33.773Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 914,
- "updatedAt": "2026-11-04T19:45:51.391Z",
+ "rev": 915,
+ "updatedAt": "2026-11-04T19:49:35.574Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -82208,9 +82208,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T18:45:40.326Z",
-   "updatedAt": "2026-11-04T19:44:32.721Z",
+   "updatedAt": "2026-11-04T19:49:33.773Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "From fable-packager (Package builds): please expose offer(req, who) and replan(req, who) on the axf.session-sync@1 capability (thin wrappers over _run('offer'|'replan', args, who)); the orchestrator's Send to helper calls offer({build, mode: 'whole', to, reason, priority: 'now'|'normal'}) and replan({dryRun: false}) through the capability. Until then a package stays in the primary's orchestrator. Report: _claude/builds/reports/fable-packager.md",
+     "at": "2026-11-04T19:49:33.773Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -82477,7 +82482,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
