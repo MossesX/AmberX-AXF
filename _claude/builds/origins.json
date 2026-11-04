@@ -666,6 +666,18 @@
    "from": "brief",
    "addenda": []
   },
+  "claude-account-switcher": {
+   "said": "Can you store that key so I can use it to switch back and forth from the console? ... You're gonna build the switcher now... at least something temporary. ... Make a quick plugin so I can do it all from the console.",
+   "at": "2026-11-04T23:57:00.641Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "claude-settings": {
    "said": "I need a plugin called Claude. Claude settings. A setting to enable your no-wait in that. A whole bunch of settings that are for Claude, that you check on axHub and then act accordingly.",
    "at": "2026-11-03",
