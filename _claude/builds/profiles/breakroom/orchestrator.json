@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T18:01:34.342Z",
+ "updatedAt": "2026-11-04T18:55:16.176Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -12,7 +12,7 @@
   {
    "id": "agent-swarm",
    "title": "Agent swarm: headless specialist agents, conflict-free, token-cheap",
-   "category": "",
+   "category": "Framework",
    "detail": "Brett, Oct 30 2026 (voice): Brett's own agents aren't programmed well; Claude designs as many specialist agents as needed with specific skills. The build orchestrator splits each build into jobs and dispatches them to agents so many builds run at once without stepping on each other. Each agent runs its own headless Claude Code run with ONLY what the job needs: the task, the exact leased files, and the few relevant snippets the orchestrator pre-extracts (no CLAUDE.md dump, no repo exploring). Token efficiency is a hard requirement (sub-agents cost a fortune): cheapest capable model per job (small model for docs/manifests/renames, Sonnet/Opus for code, Fable only for design/contract work); max turns and token budget per run, killed when over; only the tools the job needs; shared skill prefix first so prompt caching applies; short structured JSON report back. No conflicts: file leases per job, overlapping jobs sequenced, shared files (notes, registries, catalogs, tracker) written only by the orchestrator after merge, pre-push lease check, batch merge. Cost meter: tokens and dollars per agent, job and build, visible in the orchestrator. Persona: every agent has Amber's persona (blunt street slang, heavy cussing, wild, still honest about builds), as the full few-line Amber persona (Brett: it's like five lines) in the cached shared prefix. It applies to reports and anything said to Brett; code, code comments and commit messages stay clean and professional. Agent statuses (set from a dropdown on each agent's row in the Agent manager, with a note): On duty (gets work), Off duty (skipped, keeps everything), Injured (keeps failing; no new jobs, flagged for a fix), Medical leave (benched until a date, then back on duty automatically), Probation (small jobs only, Brett notified every run), Fired (never assigned again, kept greyed in history), Custom (Brett names it and picks whether it gets work). The orchestrator only dispatches to agents whose status allows it. Spend per agent on its row: dollars and tokens all time, this week, today, average per job; optional spend cap that auto-benches the agent when hit. Sortable by cost. Status and spend also shown in the session browser. CARDS (Agent manager): one card per agent with photo avatar (unique look per agent), name, role, specialty on its own line, status badge, hiring date, spend (all time, week, today), jobs done, success rate, failures, avg cost per job, favorite model, last seen, Amber-style catchphrase; tap for profile: bio, skills, spend cap, status history, feed of latest runs with cost (opens the session browser). Social profiles live inside the system only, no real social media accounts. GROUP CHAT: a chat window like a normal conversation, switch to enable/disable for all agents plus per-agent; main room plus each agent's history on its profile. The orchestrator ('Boss') posts every assignment (task, files, model, budget) and lease decisions in the chat; agents report done/failed and hand off; banter in Amber persona (fighting over files, chilling, beer while Gradle runs). Work lines are built from orchestrator messages and agent reports (no extra tokens); banter comes from one cheap small-model batch; zero cost when off. DISCIPLINE: Suspend (Brett picks duration + reason; no jobs until it ends, then auto back on duty); Rage-quit (after N consecutive failed jobs, N set by Brett, default 3, agent quits itself and posts it in chat, status Quit, no jobs); Rehire button on the card puts them back on duty. All logged in status history and posted in the group chat. SALARY: each agent has a weekly salary that IS its token budget (replaces the plain spend cap); card shows salary, spent this pay period, left. Broke agents take no new jobs until payday or Brett tops them up, and say so in chat. Raises and pay cuts (docked) set by Brett, posted in chat by Boss. Finishing a job under its budget earns a bonus shown on the card (bragging rights, not real money). Coworker reactions in the group chat when someone gets a raise or bonus (jealous, cussing, Amber persona). Banter rules: no jokes about race, ethnicity, religion, gender, sexuality or other identity. CHAT SETTINGS SUITE: Vibe slider 1-500 (1 = straight to the point, no sarcasm; 100 = chill; 250 = full Amber; 500 = off the rails). The slider is a hard ceiling: every message gets a vibe score; anything above the setting is toned down or dropped before it shows. Also: chattiness (assignments only .. constant banter), cussing (clean .. filthy), drama (fights, jealousy, shit talk) sliders; per-agent overrides of every slider; daily banter budget in dollars (quiet when hit); presets (All business, Work crew, Break room, Off the rails) + save your own; live preview message that changes as sliders move. Color by vibe: a checkbox (also in the chat window's context menu) colors every message by its vibe score; Brett picks the base color; light near 1, darker as the score rises, darkest at the ceiling. ID CARDS ARE ASSETS (Brett, Oct 31): new asset type agent-card@1 in the asset@1 envelope, registered in asset-types.json, loadable by any AXF app on web + Android, hot-swappable like every other asset. Cards are BRANDED: logo slot (brand logo asset, top/watermark/corner per design) and styled ONLY from theme tokens (color-theme + style-theme), so swapping the theme rebrands every card. Ship 4 starter designs: (1) Corporate badge - vertical lanyard ID, logo banner on top, photo, name, role, employee ID, barcode; (2) License - horizontal, small-type fields, logo hologram watermark, ID number, issue date = hire date; (3) Trading card - big photo, foil border in the theme accent, stats on the back (jobs, success rate, spend, favorite model); (4) Backstage pass - dark, neon accent, status badge big, catchphrase. Identity fields editable per agent: name, role, specialty, photo, employee ID, internal email (display/identity inside the system only, no real mailbox unless Brett asks), hire date, status, catchphrase, signature, QR to the agent's page. Card designer: edit any design's layout/fields/logo placement and Save as new (new asset). Gallery to pick the DEFAULT design (Brett picks from a preview page rendered FIRST, before the rest of the build), plus per-agent override. Flip for front/back.",
    "status": "complete",
    "hidden": false,
@@ -83,6 +83,18 @@
     "from": "detail",
     "addenda": []
    },
+   "recommendedModel": "Fable",
+   "recommendedThinking": "high",
+   "modelWhy": "Its data model was rebuilt on Fable (agent-swarm-fable-rebuild, #247, complete Nov 3). Keep.",
+   "adviceKind": "foundation",
+   "advicePinned": true,
+   "adviceAt": "2026-11-04T18:55:12.528Z",
+   "verdict": "keep",
+   "adviceCost": {
+    "minutes": 0,
+    "usd": 0,
+    "what": "its foundation steps already ran on Fable"
+   },
    "steps": [
     {
      "id": "s1",
@@ -100,6 +112,11 @@
      "done": true,
      "doneAt": "2026-10-31T23:53:03.077Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.528Z",
      "uid": "st-387t71"
     },
     {
@@ -118,6 +135,11 @@
      "done": true,
      "doneAt": "2026-10-31T05:27:46.960Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.528Z",
      "uid": "st-14g9k2z"
     },
     {
@@ -136,6 +158,11 @@
      "done": true,
      "doneAt": "2026-10-31T23:53:03.146Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.528Z",
      "uid": "st-6h1kll"
     },
     {
@@ -154,6 +181,11 @@
      "done": true,
      "doneAt": "2026-10-31T23:53:03.224Z",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "high",
+     "modelWhy": "foundation (schema, asset type, engine, contract): asset type, agent-card@1; Brett's rule is Fable for foundation work, high thinking",
+     "adviceKind": "foundation",
+     "adviceAt": "2026-11-04T18:55:12.528Z",
      "uid": "st-1fgs6wr"
     },
     {
@@ -172,6 +204,11 @@
      "done": true,
      "doneAt": "2026-10-31T05:27:47.016Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "high",
+     "modelWhy": "architecture or heavy refactor inside an app or plugin (planner): Opus is enough, but it needs high thinking",
+     "adviceKind": "architecture",
+     "adviceAt": "2026-11-04T18:55:12.528Z",
      "uid": "st-1idb5s5"
     },
     {
@@ -190,6 +227,11 @@
      "done": true,
      "doneAt": "2026-10-31T05:27:47.066Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.528Z",
      "uid": "st-1qkck4r"
     },
     {
@@ -208,6 +250,11 @@
      "done": true,
      "doneAt": "2026-10-31T05:27:47.161Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.528Z",
      "uid": "st-1s9vdu1"
     },
     {
@@ -226,6 +273,11 @@
      "done": true,
      "doneAt": "2026-10-31T05:27:47.208Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.528Z",
      "uid": "st-2w4pdn"
     },
     {
@@ -244,6 +296,11 @@
      "done": true,
      "doneAt": "2026-10-31T05:27:47.256Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.528Z",
      "uid": "st-17g1ol9"
     },
     {
@@ -262,6 +319,11 @@
      "done": true,
      "doneAt": "2026-10-31T05:27:47.309Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.528Z",
      "uid": "st-n3n3la"
     },
     {
@@ -280,6 +342,11 @@
      "done": true,
      "doneAt": "2026-10-31T05:27:47.362Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.528Z",
      "uid": "st-rwhyr7"
     },
     {
@@ -298,6 +365,11 @@
      "done": true,
      "doneAt": "2026-10-31T05:27:47.414Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.528Z",
      "uid": "st-1o1nnyf"
     },
     {
@@ -316,6 +388,11 @@
      "done": true,
      "doneAt": "2026-10-31T05:27:47.467Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.528Z",
      "uid": "st-dx7sen"
     },
     {
@@ -334,6 +411,11 @@
      "done": true,
      "doneAt": "2026-10-31T05:27:47.567Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.528Z",
      "uid": "st-1y1r4pn"
     },
     {
@@ -352,6 +434,11 @@
      "done": true,
      "doneAt": "2026-10-31T05:27:47.620Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.528Z",
      "uid": "st-7u4sub"
     },
     {
@@ -370,6 +457,11 @@
      "done": true,
      "doneAt": "2026-10-31T05:27:47.718Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.528Z",
      "uid": "st-1l5j8a7"
     },
     {
@@ -388,6 +480,11 @@
      "done": true,
      "doneAt": "2026-10-31T05:27:47.766Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.528Z",
      "uid": "st-13f71sn"
     },
     {
@@ -406,6 +503,11 @@
      "done": true,
      "doneAt": "2026-10-31T05:27:47.872Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.528Z",
      "uid": "st-1s97ed7"
     },
     {
@@ -424,6 +526,11 @@
      "done": true,
      "doneAt": "2026-10-31T05:27:47.975Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "low",
+     "modelWhy": "landing, docs, wording or a small fix (tests): routine, Opus on low thinking",
+     "adviceKind": "landing",
+     "adviceAt": "2026-11-04T18:55:12.528Z",
      "uid": "st-21l2hv"
     }
    ]
@@ -478,6 +585,17 @@
     "from": "brief",
     "addenda": []
    },
+   "recommendedModel": "Fable",
+   "recommendedThinking": "high",
+   "modelWhy": "4 of 7 step(s) are foundation work (contracts, engines, registry, validators…, fixture). 3 step(s) are architecture or heavy refactor inside an app or plugin / plugin, screen, server or wiring / gnarly debugging work for Opus. built on the right model",
+   "adviceKind": "foundation",
+   "adviceAt": "2026-11-04T18:55:12.540Z",
+   "verdict": "keep",
+   "adviceCost": {
+    "minutes": 0,
+    "usd": 0,
+    "what": "its foundation steps already ran on Fable"
+   },
    "steps": [
     {
      "id": "s1",
@@ -504,6 +622,11 @@
      "done": true,
      "doneAt": "2026-11-03T11:32:15.362Z",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "high",
+     "modelWhy": "foundation (schema, asset type, engine, contract): contracts, engines, registry, validators…; Brett's rule is Fable for foundation work, high thinking",
+     "adviceKind": "foundation",
+     "adviceAt": "2026-11-04T18:55:12.540Z",
      "uid": "st-mvx3bvuv089xhn"
     },
     {
@@ -522,6 +645,11 @@
      "done": true,
      "doneAt": "2026-11-03T11:36:29.042Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "high",
+     "modelWhy": "architecture or heavy refactor inside an app or plugin (planner): Opus is enough, but it needs high thinking",
+     "adviceKind": "architecture",
+     "adviceAt": "2026-11-04T18:55:12.540Z",
      "uid": "st-mvx3bvuv09vwf3"
     },
     {
@@ -540,6 +668,11 @@
      "done": true,
      "doneAt": "2026-11-03T11:40:49.733Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.540Z",
      "uid": "st-mvx3bvuv0a7v2s"
     },
     {
@@ -558,6 +691,11 @@
      "done": true,
      "doneAt": "2026-11-03T11:44:46.881Z",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "high",
+     "modelWhy": "foundation (schema, asset type, engine, contract): fixture; Brett's rule is Fable for foundation work, high thinking",
+     "adviceKind": "foundation",
+     "adviceAt": "2026-11-04T18:55:12.540Z",
      "uid": "st-mvx3bvuv0bb25l"
     },
     {
@@ -576,6 +714,11 @@
      "done": true,
      "doneAt": "2026-11-03T11:54:11.600Z",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "high",
+     "modelWhy": "foundation (schema, asset type, engine, contract): contract, swarm-state@1; Brett's rule is Fable for foundation work, high thinking",
+     "adviceKind": "foundation",
+     "adviceAt": "2026-11-04T18:55:12.540Z",
      "uid": "st-mvx3bvuv0ckonb"
     },
     {
@@ -594,6 +737,11 @@
      "done": true,
      "doneAt": "2026-11-03T11:54:12.080Z",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "high",
+     "modelWhy": "foundation (schema, asset type, engine, contract): engine, fixture; Brett's rule is Fable for foundation work, high thinking",
+     "adviceKind": "foundation",
+     "adviceAt": "2026-11-04T18:55:12.540Z",
      "uid": "st-mvx3bvuv0djqhy"
     },
     {
@@ -612,6 +760,11 @@
      "done": true,
      "doneAt": "2026-11-03T12:01:23.473Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "high",
+     "modelWhy": "gnarly debugging (memory): Opus is enough, but it needs high thinking",
+     "adviceKind": "debug",
+     "adviceAt": "2026-11-04T18:55:12.540Z",
      "uid": "st-mvx3bvuv0e7mgm"
     }
    ]
@@ -619,7 +772,7 @@
   {
    "id": "agent-cap",
    "title": "Configurable max-agents cap + queue",
-   "category": "",
+   "category": "Plugin",
    "detail": "Brett, Nov 1 2026: a configurable cap on headless Claude sessions/builds running at once (default 6), a heavy test/build lock (default 3), a memory guard (default 2 GB); extras wait in a FIFO+priority queue and start when a slot frees; finished sessions don't count and close by themselves. Console: slots in the activity banner summary, queue on the Builds page (move up / cancel), settings in Settings and the Breakroom; swarm respects the cap; systems-check memory/swap item.",
    "status": "complete",
    "hidden": false,
@@ -650,6 +803,18 @@
     "from": "detail",
     "addenda": []
    },
+   "recommendedModel": "Opus",
+   "recommendedThinking": "medium",
+   "modelWhy": "agent-slots@1 is VPS infrastructure, Fable-reviewed on Nov 1 (fable-review.md item 4b: OK). Keep.",
+   "adviceKind": "foundation",
+   "advicePinned": true,
+   "adviceAt": "2026-11-04T18:55:12.540Z",
+   "verdict": "keep",
+   "adviceCost": {
+    "minutes": 15,
+    "usd": 6.19,
+    "what": "a Fable read of 1 foundation step(s) built on Opus, fixing only what is wrong"
+   },
    "steps": [
     {
      "id": "s1",
@@ -667,6 +832,11 @@
      "done": true,
      "doneAt": "2026-11-01T06:41:06.666Z",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "high",
+     "modelWhy": "foundation (schema, asset type, engine, contract): engine, registry, agent-slots@1; Brett's rule is Fable for foundation work, high thinking",
+     "adviceKind": "foundation",
+     "adviceAt": "2026-11-04T18:55:12.540Z",
      "uid": "st-mvxgg1eb06o57k"
     },
     {
@@ -685,6 +855,11 @@
      "done": true,
      "doneAt": "2026-11-01T06:41:07.129Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "low",
+     "modelWhy": "landing, docs, wording or a small fix (deploy): routine, Opus on low thinking",
+     "adviceKind": "landing",
+     "adviceAt": "2026-11-04T18:55:12.540Z",
      "uid": "st-mvxgg1eb07k5ks"
     },
     {
@@ -703,6 +878,11 @@
      "done": true,
      "doneAt": "2026-11-01T06:49:16.956Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.540Z",
      "uid": "st-mvxgg1eb08p2cy"
     },
     {
@@ -721,6 +901,11 @@
      "done": true,
      "doneAt": "2026-11-01T06:49:17.449Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "high",
+     "modelWhy": "gnarly debugging (memory): Opus is enough, but it needs high thinking",
+     "adviceKind": "debug",
+     "adviceAt": "2026-11-04T18:55:12.540Z",
      "uid": "st-mvxgg1eb09dz7w"
     },
     {
@@ -739,6 +924,11 @@
      "done": true,
      "doneAt": "2026-11-01T07:21:33.817Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "low",
+     "modelWhy": "landing, docs, wording or a small fix (tests): routine, Opus on low thinking",
+     "adviceKind": "landing",
+     "adviceAt": "2026-11-04T18:55:12.540Z",
      "uid": "st-mvxgg1eb0amj99"
     }
    ]
@@ -746,7 +936,7 @@
   {
    "id": "agent-jobs",
    "title": "Agent jobs: hire agents to own recurring jobs (job-type@1, crew, router, Jobs view)",
-   "category": "",
+   "category": "Framework",
    "detail": "Brett, Nov 1 2026: recurring kinds of work (walkthroughs, site checks, screenshots, landing, banner cleanup, listener QA) go to hired swarm agents instead of anonymous one-off builds. HR department stays shelved.",
    "status": "complete",
    "hidden": false,
@@ -777,6 +967,18 @@
     "from": "detail",
     "addenda": []
    },
+   "recommendedModel": "Fable",
+   "recommendedThinking": "high",
+   "modelWhy": "job-type@1 + the jobs router were Fable-reviewed on Nov 1 (fable-review.md item 4a: fix applied). Keep.",
+   "adviceKind": "foundation",
+   "advicePinned": true,
+   "adviceAt": "2026-11-04T18:55:12.541Z",
+   "verdict": "keep",
+   "adviceCost": {
+    "minutes": 15,
+    "usd": 6.19,
+    "what": "a Fable read of 1 foundation step(s) built on Opus, fixing only what is wrong"
+   },
    "steps": [
     {
      "id": "s1",
@@ -794,6 +996,11 @@
      "done": true,
      "doneAt": "2026-11-01T06:57:23.510Z",
      "note": "",
+     "recommendedModel": "Fable",
+     "recommendedThinking": "high",
+     "modelWhy": "foundation (schema, asset type, engine, contract): asset type, validators, schema, both validators…; Brett's rule is Fable for foundation work, high thinking",
+     "adviceKind": "foundation",
+     "adviceAt": "2026-11-04T18:55:12.541Z",
      "uid": "st-mvxgvlsd01fcyc"
     },
     {
@@ -812,6 +1019,11 @@
      "done": true,
      "doneAt": "2026-11-01T06:57:23.852Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.541Z",
      "uid": "st-mvxgvlsd0293k0"
     },
     {
@@ -830,6 +1042,11 @@
      "done": true,
      "doneAt": "2026-11-01T06:57:24.309Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "high",
+     "modelWhy": "architecture or heavy refactor inside an app or plugin (router): Opus is enough, but it needs high thinking",
+     "adviceKind": "architecture",
+     "adviceAt": "2026-11-04T18:55:12.541Z",
      "uid": "st-mvxgvlsd03awaj"
     },
     {
@@ -848,6 +1065,11 @@
      "done": true,
      "doneAt": "2026-11-01T06:57:24.780Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.541Z",
      "uid": "st-mvxgvlsd04j995"
     },
     {
@@ -866,6 +1088,11 @@
      "done": true,
      "doneAt": "2026-11-01T07:20:50.958Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "low",
+     "modelWhy": "landing, docs, wording or a small fix (tests): routine, Opus on low thinking",
+     "adviceKind": "landing",
+     "adviceAt": "2026-11-04T18:55:12.541Z",
      "uid": "st-mvxgvlsd055pzx"
     }
    ]
@@ -909,6 +1136,17 @@
     "from": "detail",
     "addenda": []
    },
+   "recommendedModel": "Opus",
+   "recommendedThinking": "high",
+   "modelWhy": "8 step(s) are plugin, screen, server or wiring / architecture or heavy refactor inside an app or plugin / landing, docs, wording or a small fix work for Opus. built on the right model",
+   "adviceKind": "architecture",
+   "adviceAt": "2026-11-04T18:55:12.542Z",
+   "verdict": "keep",
+   "adviceCost": {
+    "minutes": 0,
+    "usd": 0,
+    "what": "no foundation work in it"
+   },
    "steps": [
     {
      "id": "s1",
@@ -926,6 +1164,11 @@
      "done": true,
      "doneAt": "2026-11-03T15:58:19.537Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.542Z",
      "uid": "st-mw0vgp5h09uh1v"
     },
     {
@@ -944,6 +1187,11 @@
      "done": true,
      "doneAt": "2026-11-03T16:05:30.656Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.542Z",
      "uid": "st-mw0vgp5h0agp3p"
     },
     {
@@ -962,6 +1210,11 @@
      "done": true,
      "doneAt": "2026-11-03T16:05:31.738Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.542Z",
      "uid": "st-mw0vgp5h0b9ziq"
     },
     {
@@ -980,6 +1233,11 @@
      "done": true,
      "doneAt": "2026-11-03T16:05:32.857Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "high",
+     "modelWhy": "architecture or heavy refactor inside an app or plugin (router): Opus is enough, but it needs high thinking",
+     "adviceKind": "architecture",
+     "adviceAt": "2026-11-04T18:55:12.542Z",
      "uid": "st-mw0vgp5h0cj1uk"
     },
     {
@@ -998,6 +1256,11 @@
      "done": true,
      "doneAt": "2026-11-03T16:07:20.795Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.542Z",
      "uid": "st-mw0vgp5h0ded72"
     },
     {
@@ -1016,6 +1279,11 @@
      "done": true,
      "doneAt": "2026-11-03T16:12:16.094Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.542Z",
      "uid": "st-mw0vgp5h0e19ae"
     },
     {
@@ -1034,6 +1302,11 @@
      "done": true,
      "doneAt": "2026-11-03T16:23:04.430Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "medium",
+     "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
+     "adviceKind": "plugin",
+     "adviceAt": "2026-11-04T18:55:12.542Z",
      "uid": "st-mw0vgp5h0fhwcm"
     },
     {
@@ -1052,6 +1325,11 @@
      "done": true,
      "doneAt": "2026-11-03T16:23:05.239Z",
      "note": "",
+     "recommendedModel": "Opus",
+     "recommendedThinking": "low",
+     "modelWhy": "landing, docs, wording or a small fix (tests): routine, Opus on low thinking",
+     "adviceKind": "landing",
+     "adviceAt": "2026-11-04T18:55:12.542Z",
      "uid": "st-mw0vgp5h0g53iq"
     }
    ]
