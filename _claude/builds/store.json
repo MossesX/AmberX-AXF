@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 754,
- "updatedAt": "2026-11-04T14:43:40.697Z",
+ "rev": 755,
+ "updatedAt": "2026-11-04T14:44:00.453Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55550,8 +55550,8 @@
    "pr": "#272",
    "mergedAt": "2026-11-04T04:11:27Z",
    "createdAt": "2026-11-03T18:23:45.044Z",
-   "updatedAt": "2026-11-04T14:40:26.654Z",
-   "builtAt": "2026-11-04T14:40:26.654Z",
+   "updatedAt": "2026-11-04T14:40:45.811Z",
+   "builtAt": "2026-11-04T14:40:45.811Z",
    "notes": [
     {
      "text": "Agent: Landin' Lenny (headless, Opus). Phase 1 (s1-s12) Opus; s13-s14 contracts pinned Fable need Brett's upgrade approval.",
@@ -55576,6 +55576,10 @@
     {
      "text": "Model switch: phase 2 (Contracts) Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
      "at": "2026-11-04T14:38:23.212Z"
+    },
+    {
+     "text": "Reconciler: PR #272 merged: complete",
+     "at": "2026-11-04T14:40:45.811Z"
     },
     {
      "text": "Reconciler: PR #272 merged: complete",
@@ -77241,7 +77245,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T14:39:06.943Z",
-     "updatedAt": "2026-11-04T14:43:19.427Z"
+     "updatedAt": "2026-11-04T14:43:47.432Z"
     }
    ],
    "profiles": [
