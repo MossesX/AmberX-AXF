@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Chip, Container, Icon, IconButton, Note, Segmented, SelectField, Switch, TextField } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridSort } from '@console/axf/libs/datagrid';
 import { pluginApi } from '@console/plugins';
@@ -32,7 +32,7 @@ export function ChatViewer() {
   const [only, setOnly] = useState<string>(() => readLocal('only', 'all'));
   const [hits, setHits] = useState<Hit[] | null>(null);
   const [sort, setSort] = useState<GridSort>(() => readLocal('sort', { col: 'updated', dir: -1 }));
-  const [hidden, setHidden] = useState<string[]>(() => readLocal('hidden', narrow() ? ['started', 'project', 'source'] : ['started', 'project']));
+  const hidden = useMemo(() => (narrow() ? ['started', 'project', 'source'] : ['started', 'project']), []);
   const fileRef = useRef<HTMLInputElement>(null);
   const [importing, setImporting] = useState('');
 
@@ -48,7 +48,6 @@ export function ChatViewer() {
   useEffect(() => { load().catch((e) => setError((e as Error).message)).finally(() => { void check(); }); }, [load, check]);
   useEffect(() => { writeLocal('only', only); }, [only]);
   useEffect(() => { writeLocal('sort', sort); }, [sort]);
-  useEffect(() => { writeLocal('hidden', hidden); }, [hidden]);
   useEffect(() => {
     if (q.trim().length < 2) { setHits(null); return; }
     const t = setTimeout(() => { api.call<{ hits: Hit[] }>(`search?q=${enc(q.trim())}${only !== 'all' ? `&source=${only}` : ''}`).then((r) => setHits(r.hits), () => setHits([])); }, 250);
@@ -106,7 +105,6 @@ export function ChatViewer() {
               groups={[{ id: 'all', title: `Sessions (${shown.length})`, icon: 'list', rows: sortRows(shown, sort, cols), groups: [], fixed: true }]}
               columns={cols} rowId={(r) => r.id} rowLabel={(r) => r.title} rowTone={(r) => (core.badge(r) ? 'accent' : 'muted')}
               sort={sort} onSort={(c) => setSort(sortFor(sort, c))} hidden={hidden}
-              onToggleColumn={(c, show) => setHidden(show === true || (show === undefined && hidden.includes(c)) ? hidden.filter((x) => x !== c) : [...hidden, c])} onShowAll={() => setHidden([])}
               onRowClick={(r) => setOpen({ id: r.id })} empty="No session matches." />
           </div>}
     </div>

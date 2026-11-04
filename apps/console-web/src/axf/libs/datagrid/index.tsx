@@ -1,12 +1,15 @@
 /**
  * lib-datagrid — categorized grid (library@1 `ai.amberx.axf.datagrid`). The app gives groups (with rows and sub-groups)
  * and column definitions with a renderer each; the grid draws the header, the group headers with totals and a meter, the
- * rows (status edge, selection) and an expandable detail. Column visibility, sort and expanded rows are the app's state,
- * reported through callbacks, so it can keep them wherever it likes. The header's context menu (target
- * `axf-grid-header:<grid id>`, payload = column id) hides and shows columns; drag uses lib-dnd.
+ * rows (status edge, selection) and an expandable detail. Sort and expanded rows are the app's state, reported through
+ * callbacks. Column visibility is the grid's own (grid-columns@1, columns.ts): right-click / long-press any column header
+ * (target `axf-grid-header:<grid id>`, payload = column id) to hide it, tick columns in a checklist, show all or reset;
+ * the choice is saved per grid in the app's settings (per device) unless the app passes `hidden` + `onToggleColumn`
+ * itself. Columns declare `fixed` (never hidden) and `hidden` (hidden until shown). Action `axf.grid.columns` does the
+ * same by name (console_action, so Amber can "hide the cost column in Build manager"). Drag uses lib-dnd.
  * Parts (installed config `libraries.datagrid.parts`): groups, column-menu {hidden}, sort, expand, drag {trash}, compact.
  */
-import { useEffect, useMemo, type CSSProperties, type ReactNode, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent } from 'react';
+import { useEffect, useMemo, useSyncExternalStore, type CSSProperties, type ReactNode, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent } from 'react';
 import { Icon, IconButton, Meter, Slot, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { partOn, partParams, type LibraryPart } from '../../core/library';
@@ -14,6 +17,8 @@ import { registerZone, startDrag, type DropPos } from '../dnd';
 import spec from './library.json';
 import { anyRowHooks, applyDataset, DATASET_TOOLBAR_SLOT, datasetFiltered, noteDrawnRef, registerRowRefTarget, rowHooks, rowRefForContext, runRowHook, useDataset, useDatasetsRevision, type DatasetField, type RowRef } from './datasets';
 export * from './datasets';
+import { columnsChanged, gridColumnsKey, hiddenColumns, matchByName, setColumn, showAllColumns } from './columns';
+export * from './columns';
 import './datagrid.css';
 
 export const DATAGRID_LIBRARY_ID = 'ai.amberx.axf.datagrid';
@@ -37,8 +42,10 @@ export interface GridColumn<R> {
   id: string; label: string;
   /** a CSS grid track (tokens, e.g. `calc(var(--fx-space) * 12)` or `minmax(…, 3fr)`) */
   width: string;
-  /** always shown (the title column) */
+  /** always shown, can't be hidden (the title / name column) */
   fixed?: boolean;
+  /** hidden until the user shows it (the column menu lists it) */
+  hidden?: boolean;
   sortable?: boolean;
   align?: 'end';
   sortValue?: (r: R) => number | string;
@@ -53,9 +60,15 @@ export interface DataGridProps<R> {
   columns: GridColumn<R>[];
   rowId: (r: R) => string;
   rowLabel?: (r: R) => string;
-  hidden: readonly string[];
+  /**
+   * Columns hidden. With `onToggleColumn` the app owns visibility (controlled); without it the grid keeps it itself,
+   * saved per grid and device, and `hidden` only adds to the columns' own defaults. Omit both for the usual case.
+   */
+  hidden?: readonly string[];
   onToggleColumn?: (col: string, show?: boolean) => void;
   onShowAll?: () => void;
+  /** controlled grids: back to the app's default columns (uncontrolled grids reset by themselves) */
+  onResetColumns?: () => void;
   onChooseColumns?: () => void;
   sort?: GridSort;
   onSort?: (col: string | null) => void;
@@ -108,7 +121,8 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   const rt = useRuntime();
   const zone = p.zone ?? `axf-grid:${p.id}`;
   const drag = config.drag && p.onMove ? config.drag : false;
-  const cols = p.columns.filter((c) => c.fixed || !config.columnMenu || !p.hidden.includes(c.id));
+  const vis = useGridColumns(p.id, p.columns, p.hidden, p.onToggleColumn ? p : null);
+  const cols = p.columns.filter((c) => c.fixed || !config.columnMenu || !vis.hidden.includes(c.id));
   useDatasetsRevision(); // row hooks registered later redraw the grid
   const tail = p.rowRef && anyRowHooks() ? 'minmax(calc(var(--fx-space) * 4), max-content)' : 'calc(var(--fx-space) * 4)';
   const template = { '--axf-grid-cols': `calc(var(--fx-space) * 3) ${cols.map((c) => c.width).join(' ')} ${tail}` } as CSSProperties;
@@ -121,18 +135,20 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   const filtered = dsId ? datasetFiltered(dsId) : false;
 
   useEffect(() => {
-    if (!config.columnMenu || !p.onToggleColumn) return;
+    if (!config.columnMenu) return;
     rt.contextExtras.set(headerTarget, (_t, col = '') => {
       const c = p.columns.find((x) => x.id === col);
+      const hideable = p.columns.filter((x) => !x.fixed);
       return [
         ...(c?.sortable && config.sort && p.onSort ? [{ id: 'sort', label: `Sort by ${c.label}`, icon: 'list', action: `axf.grid.do:${p.id}:sort:${col}` }, { id: 'unsort', label: 'Original order', icon: 'list', action: `axf.grid.do:${p.id}:unsort` }, { id: 's0', separator: true }] : []),
-        ...(c && !c.fixed ? [{ id: 'hide', label: `Hide ${c.label}`, icon: 'eye', action: `axf.grid.do:${p.id}:col:${col}` }] : []),
-        { id: 'cols', label: 'Columns', icon: 'list', items: p.columns.filter((x) => !x.fixed).map((x) => ({ id: `c-${x.id}`, label: x.label, icon: p.hidden.includes(x.id) ? 'minus' : 'check', action: `axf.grid.do:${p.id}:col:${x.id}` })) },
-        { id: 'all', label: 'Show every column', icon: 'eye', action: `axf.grid.do:${p.id}:all` },
+        ...(c && !c.fixed ? [{ id: 'hide', label: `Hide ${c.label}`, icon: 'eye', action: `axf.grid.do:${p.id}:hide:${col}` }] : []),
+        ...(hideable.length ? [{ id: 'cols', label: 'Columns', icon: 'list', items: hideable.map((x) => ({ id: `c-${x.id}`, label: x.label, icon: vis.hidden.includes(x.id) ? 'minus' : 'check', action: `axf.grid.do:${p.id}:col:${x.id}` })) }] : []),
+        { id: 'all', label: 'Show all columns', icon: 'eye', action: `axf.grid.do:${p.id}:all` },
+        { id: 'reset', label: 'Reset columns to default', icon: 'undo', action: `axf.grid.do:${p.id}:reset` },
         ...(p.onChooseColumns ? [{ id: 'choose', label: 'Choose columns…', icon: 'sliders', action: `axf.grid.do:${p.id}:choose` }] : []),
       ];
     });
-    grids.set(p.id, { col: (c) => p.onToggleColumn!(c), all: () => p.onShowAll?.(), choose: () => p.onChooseColumns?.(), sort: (c) => p.onSort?.(c) });
+    grids.set(p.id, { label: p.label ?? p.id, columns: p.columns.map((c) => ({ id: c.id, label: c.label, fixed: !!c.fixed })), hidden: () => vis.hidden, set: vis.set, all: vis.all, reset: vis.reset, choose: () => p.onChooseColumns?.(), sort: (c) => p.onSort?.(c) });
     return () => { rt.contextExtras.delete(headerTarget); grids.delete(p.id); };
   });
   useEffect(() => {
@@ -233,7 +249,61 @@ export function RowHookButtons({ rowRef, dataset, size }: { rowRef: RowRef | nul
 }
 
 /** header-menu actions of the grids on screen (one action, `axf.grid.do:<grid>:<what>[:<col>]`) */
-const grids = new Map<string, { col: (c: string) => void; all: () => void; choose: () => void; sort: (c: string | null) => void }>();
+interface GridOnScreen { label: string; columns: { id: string; label: string; fixed: boolean }[]; hidden: () => readonly string[]; set: (c: string, show?: boolean) => void; all: () => void; reset: () => void; choose: () => void; sort: (c: string | null) => void }
+const grids = new Map<string, GridOnScreen>();
+
+/** The grids on screen now, with their columns and what is hidden (for the console catalog and voice). */
+export function gridsOnScreen(): { id: string; label: string; columns: { id: string; label: string; fixed: boolean; hidden: boolean }[] }[] {
+  return [...grids].map(([id, g]) => ({ id, label: g.label, columns: g.columns.map((c) => ({ ...c, hidden: g.hidden().includes(c.id) })) }));
+}
+
+/**
+ * Hide / show / toggle / show all / reset columns of a grid on screen, both named loosely (id or label: "Build manager",
+ * "cost"). → what happened, or why not (no such grid or column, a column that can't be hidden).
+ */
+export function gridColumnsDo(grid: string, op: string, col = ''): { ok: boolean; message: string } {
+  const list = [...grids].map(([id, g]) => ({ id, label: g.label, g }));
+  const hit = matchByName(list, grid);
+  if (!hit) return { ok: false, message: `No grid on screen called "${grid}" (on screen: ${list.map((x) => x.label).join(', ') || 'none'}).` };
+  const g = hit.g;
+  if (op === 'all') { g.all(); return { ok: true, message: `${g.label}: every column shown.` }; }
+  if (op === 'reset') { g.reset(); return { ok: true, message: `${g.label}: columns back to default.` }; }
+  const c = matchByName(g.columns, col);
+  if (!c) return { ok: false, message: `${g.label} has no column "${col}" (columns: ${g.columns.map((x) => x.label).join(', ')}).` };
+  if (c.fixed) return { ok: false, message: `${g.label}: "${c.label}" can't be hidden.` };
+  const show = op === 'show' ? true : op === 'hide' ? false : undefined;
+  g.set(c.id, show);
+  return { ok: true, message: `${g.label}: ${c.label} ${g.hidden().includes(c.id) ? 'hidden' : 'shown'}.` };
+}
+
+/**
+ * A grid's column visibility. Controlled (the app passes `hidden` + `onToggleColumn`) = the app's lists; otherwise the
+ * grid's own, saved under `axf.grid.<id>.columns` in the app's settings.
+ */
+function useGridColumns<R>(id: string, columns: GridColumn<R>[], extra: readonly string[] | undefined, ctl: DataGridProps<R> | null) {
+  const rt = useRuntime();
+  const key = gridColumnsKey(id);
+  useSyncExternalStore(rt.settings.subscribe, rt.settings.getRevision);
+  const saved = rt.settings.get(key);
+  if (ctl) {
+    const hidden = (ctl.hidden ?? []).filter((c) => !columns.find((x) => x.id === c)?.fixed);
+    return {
+      hidden,
+      set: (c: string, show?: boolean) => ctl.onToggleColumn!(c, show),
+      all: () => (ctl.onShowAll ? ctl.onShowAll() : hidden.forEach((c) => ctl.onToggleColumn!(c, true))),
+      reset: () => (ctl.onResetColumns ?? ctl.onShowAll ?? (() => hidden.forEach((c) => ctl.onToggleColumn!(c, true))))(),
+      changed: false,
+    };
+  }
+  const ex = extra ?? [];
+  return {
+    hidden: hiddenColumns(columns, saved, ex),
+    set: (c: string, show?: boolean) => rt.settings.set(key, setColumn(columns, rt.settings.get(key), c, show, ex)),
+    all: () => rt.settings.set(key, showAllColumns(columns, ex)),
+    reset: () => rt.settings.clear(key),
+    changed: columnsChanged(saved),
+  };
+}
 
 export const library: AxfWebLibrary = {
   id: DATAGRID_LIBRARY_ID,
@@ -244,8 +314,15 @@ export const library: AxfWebLibrary = {
     configureDataGrid((rt.manifest as { libraries?: Record<string, { parts?: Record<string, unknown> }> }).libraries?.datagrid);
     rt.actions.register('axf.grid.do', ([grid = '', what = '', col = '']) => {
       const g = grids.get(grid); if (!g) return;
-      if (what === 'col') g.col(col); else if (what === 'all') g.all(); else if (what === 'choose') g.choose(); else if (what === 'sort') g.sort(col); else if (what === 'unsort') g.sort(null);
-    }, { label: 'Grid columns', params: true } as never);
+      if (what === 'col') g.set(col); else if (what === 'hide') g.set(col, false); else if (what === 'show') g.set(col, true);
+      else if (what === 'all') g.all(); else if (what === 'reset') g.reset(); else if (what === 'choose') g.choose(); else if (what === 'sort') g.sort(col); else if (what === 'unsort') g.sort(null);
+    }, { label: 'Grid header menu', params: true, effect: 'navigate' } as never);
+    // by name, for the console catalog / console_action ("axf.grid.columns:Build manager:hide:cost"): a view preference only
+    rt.actions.register('axf.grid.columns', ([grid = '', op = 'toggle', col = '']) => {
+      const r = gridColumnsDo(grid, op, col);
+      if (r.ok) rt.terminal.ok('grid', r.message); else rt.terminal.warn('grid', r.message);
+      return r;
+    }, { label: 'Hide or show grid columns (grid : hide|show|toggle|all|reset : column)', params: true, effect: 'navigate' } as never);
     // row hooks (grid-hook@1): right-click / long-press on any row whose ref is known lists the hooks for its kind
     registerRowRefTarget(ROW_TARGET, (payload) => { const i = payload.indexOf(':'); return i > 0 ? { kind: payload.slice(0, i), id: payload.slice(i + 1) } : null; });
     rt.contextExtras.set('*:axf.row-hooks', (target, payload) => {

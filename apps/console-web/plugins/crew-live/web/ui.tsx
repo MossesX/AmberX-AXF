@@ -258,11 +258,10 @@ export function CrewView() {
   const [q, setQ] = useState(() => consoleApi.readLocal('crew-q', ''));
   const [only, setOnly] = useState<RunStatus | ''>(() => consoleApi.readLocal('crew-status', ''));
   const [sort, setSort] = useState<GridSort>(() => consoleApi.readLocal('crew-sort', null));
-  const [hidden, setHidden] = useState<string[]>(() => consoleApi.readLocal('crew-hidden', []));
   const [expanded, setExpanded] = useState<string[]>(() => consoleApi.readLocal('crew-expanded', []));
   const [groupsShut, setGroupsShut] = useState<string[]>(() => consoleApi.readLocal('crew-groups-shut', ['finished', 'off']));
   useEffect(() => { consoleApi.writeLocal('crew-q', q); consoleApi.writeLocal('crew-status', only); }, [q, only]);
-  useEffect(() => { consoleApi.writeLocal('crew-sort', sort); consoleApi.writeLocal('crew-hidden', hidden); }, [sort, hidden]);
+  useEffect(() => { consoleApi.writeLocal('crew-sort', sort); }, [sort]);
   useEffect(() => { consoleApi.writeLocal('crew-expanded', expanded); consoleApi.writeLocal('crew-groups-shut', groupsShut); }, [expanded, groupsShut]);
   // crew.agent:<agent id | run>: open that row
   useEffect(() => {
@@ -322,7 +321,6 @@ export function CrewView() {
       <DataGrid<Run>
         id="crew-runs" label="Agents at work" compact groups={groups} columns={narrow ? cols.filter((c) => !NARROW_HIDDEN.includes(c.id)) : cols}
         rowId={(r) => r.id} rowLabel={(r) => `${r.agent.name} ${r.name}`}
-        hidden={hidden} onToggleColumn={(c, show) => setHidden((h) => (show ?? h.includes(c)) ? h.filter((x) => x !== c) : [...h, c])} onShowAll={() => setHidden([])}
         sort={sort} onSort={(col) => setSort((s) => (!col ? null : s?.col === col ? (s.dir === 1 ? { col, dir: -1 } : null) : { col, dir: 1 }))}
         expanded={expanded} onToggleExpand={(id) => setExpanded((xs) => (xs.includes(id) ? xs.filter((x) => x !== id) : [...xs, id]))}
         onRowClick={(r, e) => { if (!(e.target as HTMLElement).closest('a, button, input')) setExpanded((xs) => (xs.includes(r.id) ? xs.filter((x) => x !== r.id) : [...xs, r.id])); }}

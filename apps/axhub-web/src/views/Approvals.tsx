@@ -169,7 +169,6 @@ const SOURCE_FILTER_OWNER = 'axhub-web.source';
  */
 function ApprovalsTable({ items, onDone }: { items: ApprovalItem[]; onDone: () => void }) {
   const [sort, setSort] = useState<GridSort>(null);
-  const [hidden, setHidden] = useState<string[]>([]);
   // Open rows live in lib-approvals' open-row store (scope 'axhub'): a poll, a re-render or coming back to the page keeps
   // them open (Brett, Nov 1 2026: every approval row expandable, stays open on refresh).
   const [expanded, setExpanded] = useState<string[]>(() => items.filter((i) => approvalsOpenStore.isOpen('axhub', i.id)).map((i) => i.id));
@@ -236,9 +235,6 @@ function ApprovalsTable({ items, onDone }: { items: ApprovalItem[]; onDone: () =
         columns={columns}
         rowId={(r) => r.id}
         rowLabel={(r) => `${r.title} ${sourceWho(r)} ${r.tool}`}
-        hidden={hidden}
-        onToggleColumn={(c, show) => setHidden((h) => (show ?? h.includes(c) ? h.filter((x) => x !== c) : [...h, c]))}
-        onShowAll={() => setHidden([])}
         sort={sort}
         onSort={(c) => setSort((s0) => nextSort(s0, c))}
         expanded={expanded}

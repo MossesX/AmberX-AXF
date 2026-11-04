@@ -356,10 +356,10 @@ function BuiltView({ query }: { query: string }) {
 /* ---------------- Sessions: every session ever, each expanding into what it was asked to build ---------------- */
 
 const SESSION_PREFS = 'axp-build-manager:sessions';
-type SessionPrefs = { byDay: boolean; hidden: string[]; itemHidden: string[]; sort: GridSort };
+type SessionPrefs = { byDay: boolean; sort: GridSort };
 const readSessionPrefs = (): SessionPrefs => {
-  const d: SessionPrefs = { byDay: true, hidden: [], itemHidden: [], sort: null };
-  try { const j = JSON.parse(localStorage.getItem(SESSION_PREFS) ?? '{}'); return { byDay: j.byDay !== false, hidden: Array.isArray(j.hidden) ? j.hidden : [], itemHidden: Array.isArray(j.itemHidden) ? j.itemHidden : [], sort: j.sort && typeof j.sort.col === 'string' ? { col: j.sort.col, dir: j.sort.dir === -1 ? -1 : 1 } : null }; } catch { return d; }
+  const d: SessionPrefs = { byDay: true, sort: null };
+  try { const j = JSON.parse(localStorage.getItem(SESSION_PREFS) ?? '{}'); return { byDay: j.byDay !== false, sort: j.sort && typeof j.sort.col === 'string' ? { col: j.sort.col, dir: j.sort.dir === -1 ? -1 : 1 } : null }; } catch { return d; }
 };
 const when = (t: number) => (t ? new Date(t).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—');
 const STATUS_TONE: Record<string, string> = { running: 'accent', queued: 'info', stalled: 'warning', failed: 'danger', done: 'success', question: 'muted' };
@@ -374,7 +374,7 @@ function sortFor(sort: GridSort, col: string | null): GridSort {
 }
 
 /** The subgrid: every request the session was asked for, oldest first. */
-function SessionRequests({ row, hidden, setHidden }: { row: SessionRow; hidden: string[]; setHidden: (h: string[]) => void }) {
+function SessionRequests({ row }: { row: SessionRow }) {
   const rt = useRuntime();
   const [sort, setSort] = useState<GridSort>(null);
   const [open, setOpen] = useState<string[]>([]);
@@ -399,7 +399,6 @@ function SessionRequests({ row, hidden, setHidden }: { row: SessionRow; hidden: 
         groups={[{ id: 'all', title: `Asked to build (${row.requests}${row.questions ? ` + ${row.questions} question${row.questions > 1 ? 's' : ''}` : ''})`, icon: 'list', rows: row.items, groups: [], fixed: true,
           summary: `${timeText(row.minutes, row.minutesEstimated)} · ${costText(row.cost, row.costEstimated)}` }]}
         columns={cols} rowId={(i) => i.id} rowLabel={(i) => i.title} rowTone={(i) => STATUS_TONE[i.status] ?? 'muted'}
-        hidden={hidden} onToggleColumn={(c, show) => setHidden(toggleIn(hidden, c, show))} onShowAll={() => setHidden([])}
         sort={sort} onSort={(c) => setSort(sortFor(sort, c))}
         expanded={open} onToggleExpand={(id) => setOpen((o) => toggleIn(o, id))}
         rowCtx={(i) => ({ target: 'axf-change-entry', payload: i.id })} rowRef={(i) => ({ kind: 'change', id: i.id })}
@@ -505,11 +504,10 @@ function SessionsView({ query }: { query: string }) {
             <div className="axp-build-manager__grid">
               <DataGrid<SessionRow> id="bm-sessions" label="Every session" groups={groups} columns={cols} rowId={(r) => r.key} rowLabel={(r) => r.label}
                 rowTone={(r) => STATUS_TONE[r.status] ?? 'muted'}
-                hidden={prefs.hidden} onToggleColumn={(c, show) => setPrefs({ hidden: toggleIn(prefs.hidden, c, show) })} onShowAll={() => setPrefs({ hidden: [] })}
                 sort={prefs.sort} onSort={(c) => setPrefs({ sort: sortFor(prefs.sort, c) })}
                 expanded={open} onToggleExpand={(id) => setOpen((o) => toggleIn(o, id))} onRowClick={(r) => setOpen((o) => toggleIn(o, r.key))}
                 onToggleGroup={(id) => setCollapsed((c) => toggleIn(c, id))}
-                renderDetail={(r) => <SessionRequests row={r} hidden={prefs.itemHidden} setHidden={(h) => setPrefs({ itemHidden: h })} />} />
+                renderDetail={(r) => <SessionRequests row={r} />} />
             </div>
           )}
       {shown.length > limit && <div className="axp-build-manager__actions"><Button onClick={() => setLimit(limit + 100)}>Show more ({shown.length - limit})</Button></div>}

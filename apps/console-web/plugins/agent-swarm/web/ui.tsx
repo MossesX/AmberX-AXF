@@ -65,19 +65,16 @@ export function SwarmPage() {
 }
 
 /** One row per agent: status dropdown + note (custom name / works, medical-leave return date). */
-const toggleIn = (list: string[], v: string, show?: boolean) => ((show ?? list.includes(v)) ? list.filter((x) => x !== v) : [...list, v]);
 /** Click a header: ascending, then descending, then the original order. */
 export function sortFor(sort: GridSort, col: string | null): GridSort {
   if (!col) return null;
   return sort?.col === col ? (sort.dir === 1 ? { col, dir: -1 } : null) : { col, dir: 1 };
 }
-/** Grid sort, filter and hidden columns, kept on this device per grid. */
+/** Grid sort, kept on this device per grid (hidden columns are the grid's own, saved by lib-datagrid). */
 function useGridPrefs(key: string, initial: GridSort) {
   const [sort, setSort] = useState<GridSort>(() => consoleApi.readLocal(`swarm-${key}-sort`, initial));
-  const [hidden, setHidden] = useState<string[]>(() => consoleApi.readLocal(`swarm-${key}-hidden`, []));
   useEffect(() => { consoleApi.writeLocal(`swarm-${key}-sort`, sort); }, [key, sort]);
-  useEffect(() => { consoleApi.writeLocal(`swarm-${key}-hidden`, hidden); }, [key, hidden]);
-  return { sort, onSort: (c: string | null) => setSort(sortFor(sort, c)), hidden, onToggleColumn: (c: string, show?: boolean) => setHidden(toggleIn(hidden, c, show)), onShowAll: () => setHidden([]) };
+  return { sort, onSort: (c: string | null) => setSort(sortFor(sort, c)) };
 }
 
 const money = (u: { usd: number; tokens: number } | undefined) => (u ? <><b>{core.fmtUsd(u.usd)}</b><br /><span className="fx-muted">{core.fmtTokens(u.tokens)}</span></> : '—');
