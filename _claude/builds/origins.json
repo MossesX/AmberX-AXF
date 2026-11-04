@@ -805,6 +805,18 @@
    "from": "brief",
    "addenda": []
   },
+  "hotfix-build-manager": {
+   "said": "Can you check build manager to see what's going? It says 21 things are going. ... When I click them, they don't open up, and the steps in the build menu don't work.",
+   "at": "2026-11-04T00:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "hub-runs-approved": {
    "said": "send the command to axHub; axHub waits for approval and runs it or not; the session does not wait. Today a confirm call returns confirmation_required and drops the call, so the session must re-send it with the confirmation_id after approval, which is why sessions poll (each check re-reads the whole chat). Change: axHub stores the full call on create; Approve = the hub runs it itself and keeps the result; Reject/expire = dropped. The session gets an approval id at once and moves on; it reads the result once later only if needed. Replaces the polling rule (15 s x10 then 1 min). HELD: queued in Refactor; Brett says go.",
    "at": "2026-10-28",
@@ -1599,6 +1611,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "urgent-land-lazy-loader": {
+   "said": "Move it to next... start it right away.",
+   "at": "2026-11-04T12:29:55.129Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "veto-everywhere": {

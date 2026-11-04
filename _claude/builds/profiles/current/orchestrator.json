@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T12:16:11.569Z",
+ "updatedAt": "2026-11-04T12:48:07.846Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -372,16 +372,21 @@
    "title": "Build profiles manager (browse, view, create, edit, switch, duplicate, merge, move builds, archive, delete/restore, cleanup)",
    "category": "Builds",
    "detail": "Brett, Nov 3 2026 (voice): grow the build-profiles plugin into a full manager page. Assigned agent: Landin' Lenny. Keep the plugin id, data and every existing feature. Commands declared once -> REST + MCP + CLI (reads allow, changes veto, data delete confirm).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "voice",
    "pendingId": "",
    "branch": "claude/profile-manager",
    "pr": "",
    "createdAt": "2026-11-03T19:59:06.499Z",
-   "updatedAt": "2026-11-03T20:14:29.392Z",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-04T12:44:12.117Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -912,7 +917,7 @@
    "title": "Molly: console commands reach the embedded console; every app gets the control surface",
    "category": "Molly",
    "detail": "",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -920,12 +925,16 @@
    "pr": "#288",
    "mergedAt": "2026-11-04T12:05:57.348Z",
    "createdAt": "2026-11-03T21:05:30.629Z",
-   "updatedAt": "2026-11-04T12:05:58.643Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
+   "builtAt": "2026-11-04T12:44:12.117Z",
    "notes": [
     {
      "text": "Fix on PR #288 (stacked on #266). s6/s7 addendum open.",
      "at": "2026-11-03T21:48:58.463Z"
+    },
+    {
+     "text": "Reconciler: PR #288 merged: complete",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -2954,16 +2963,21 @@
    "title": "Git status board (grids for push / pull / CI / merge / held / deployed / stale)",
    "category": "Console > Plugins",
    "detail": "Brett, Nov 3 2026 (voice): \"Where do I view items at git status? ... what needs to be pulled, merged ... I want to be able to view everything in grids with expandable rows.\" Replaces pending batch-manager (batch grid + badges, PR sub-grid + Fix, dense phone pass, PR browser rows with plain-English lead, Merge/Hold, left click review, right-click menu). Predicted shots live in ui-review-predicted. Built by Snap Sully (session).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "git-status-board",
    "branch": "claude/git-status-board",
    "pr": "#291",
    "createdAt": "2026-11-03T21:10:39.295Z",
-   "updatedAt": "2026-11-03T22:21:08.405Z",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-04T12:44:12.117Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -3082,7 +3096,7 @@
    "title": "URGENT: main CI green (widgets fixture, xlayout opens, Kotlin widget tests)",
    "category": "Ops",
    "detail": "Found by window-resize-fix (#278): main CI red on three jobs, blocking auto-merge for every PR. Agent: Earl the Ear (headless).",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -3090,8 +3104,8 @@
    "pr": "#284",
    "mergedAt": "2026-11-03T22:42:17Z",
    "createdAt": "2026-11-03T21:12:18.212Z",
-   "updatedAt": "2026-11-03T22:54:25.249Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
+   "builtAt": "2026-11-04T12:44:12.117Z",
    "notes": [
     {
      "text": "Agent: Earl the Ear (headless). Six CI failures fixed at the root on PR #284; ci-main health check names failing jobs, Auto fix queues new ci-fix job (Greenlight Gina). s3 waits for #284 to go green and merge, then the waiting PRs get updated from main.",
@@ -3100,6 +3114,10 @@
     {
      "text": "Reconciler: PR #284 merged",
      "at": "2026-11-03T22:54:25.249Z"
+    },
+    {
+     "text": "Reconciler: PR #284 merged: complete",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -3587,14 +3605,14 @@
    "title": "Terminal: tab position setting (top, left / right stack, bottom)",
    "category": "Terminal",
    "detail": "Brett (Nov 3 2026, voice): \"I want a setting in terminal to put all the tabs on the left side in a stack instead of across the top.\" Setting Tab position: Top | Left stack | Right stack | Bottom, per device, also in the tab context menu. Stack: title, agent, model, live cost, status dot, close; collapse to icons; resizable; drag to reorder; scrolls; title bar still drags. Phone: slide-out. Server default + REST/MCP/CLI get/set. Agent: Janitor Joey (headless worktree session; router not on this branch's main). Overlaps: terminal-sessions-nav (#286, open, adds a left rail) and terminal-drag-chain-tree (running, rewrites strip pointer handling): changes kept to a new TabStack file + CSS so all three merge cleanly.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/terminal-tabs-left",
    "pr": "#293",
    "createdAt": "2026-11-03T22:02:33.805Z",
-   "updatedAt": "2026-11-03T22:54:25.249Z",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
    "builtAt": "",
    "notes": [
     {
@@ -3608,6 +3626,10 @@
     {
      "text": "Reconciler: PR #293",
      "at": "2026-11-03T22:54:25.249Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -3834,14 +3856,14 @@
    "title": "Gizmo: full Claude companion plugin in AmberX",
    "category": "AmberX",
    "detail": "## What Brett said (verbatim, Nov 3 2026, voice)\n\"I need a companion assistant... a sidekick that allows me to chat to your partner... put the plug-in in AmberX.\" \"A full all-out Claude companion, as full, powerful, as complete as the Claude app itself, with everything, all the features, every setting, the connectors, plugins, a full Claude suite.\" \"We can harvest the assistant code out in AmberX to build the new plugin.\" \"Build the plugin for Claude in AmberX, but make it full, complete. It's gotta be powerful.\"\n\nBooked to agent Gizmo (all-rounder, $8.00/h, AmberX guide/assistant; replaces agent Molly).\n\nDecisions: lives in AmberX (apps/amberx-droid) as a plugin; harvest AmberX assistant code + console Terminal Claude session code into a shared framework lib (claude-session) + AmberX plugin `companion`; console Terminal keeps working on the shared lib; brains run on the VPS as Claude Code sessions reached through axHub, no API keys in the APK; Gizmo is the face, Molly is no longer an agent.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "session",
    "pendingId": "",
    "branch": "claude/gizmo-companion",
    "pr": "#296",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-04T01:15:50.561Z",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
    "builtAt": "",
    "notes": [
     {
@@ -3859,6 +3881,10 @@
     {
      "text": "Reconciler: PR #296",
      "at": "2026-11-03T23:36:42.140Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -4456,14 +4482,14 @@
    "title": "Automated Browser plugin (drive, record, edit, schedule)",
    "category": "Console > Plugins",
    "detail": "Brett, Nov 3 2026 (voice), verbatim: \"Make me a plugin that shows a browser that can be driven by the app, give it the ability to be automated and to record automation routines through the browser, like make it record in real time what you do and save the events, so you can redo everything that you just recorded, and have a powerful editor to see what each step is doing. Make it so that you can create workflows through the automated browser and record the steps, or do them automatically and record as you go, or record manually, and full powerful editing, able to tweak the JavaScript and whatever you gotta do to make it follow a routine, like go to a site and log in, or go to a site and go to a products page and grab something, and then have a scheduler built into it that you can schedule when to perform these routines.\" Addendum: \"Be able to manually record, or tell you to do it, so it needs to be integrated with the assistant or with its own access to the assistant.\" Browser runs on the VPS (Playwright + headless Chromium), live view over CDP screencast; REST + MCP + CLI; secrets by vault reference only. Booked to Snap Sully (no Polo card).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/browser-automation",
    "pr": "#299",
    "createdAt": "2026-11-04T00:31:47.837Z",
-   "updatedAt": "2026-11-04T02:11:39.850Z",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
    "builtAt": "",
    "notes": [
     {
@@ -4473,6 +4499,10 @@
     {
      "text": "s3 done: live view + settings; tsc clean (1 unused import fixed), theme/controls checks clean. Phone/desktop shots still to take: Vite page load timed out at 240 s with load avg ~95; retry with --start-timeout/--nav-timeout when the box is quieter.",
      "at": "2026-11-04T02:11:39.850Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -4773,14 +4803,14 @@
    "title": "Profile switcher widget (filter builds by profile, All profiles, attach to any toolbar or banner)",
    "category": "Builds",
    "detail": "What Brett said (verbatim, Nov 3 2026, voice): \"I need a plugin that makes a widget that can be attached to a toolbar or a banner or whatever, that lets you select their build package. Also, select something that combines all build profiles.\" Addendum 1: \"So basically it's like a filter. They're all shown everywhere, but only one of them is rendered. Basically make it a filter. Always just show everything in every build profile, but it just effectively filters to hide them.\" Addendum 2: \"That said, it's gonna act upon what's visible.\" Profiles are a view filter (multi-select, All = no filter) shared by every builds table; bulk actions act only on what is visible; the active profile stays the target for new builds. Assigned agent: Ping Paulie (no Polo card).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "voice",
    "pendingId": "",
    "branch": "claude/profile-switcher-widget",
    "pr": "#300",
    "createdAt": "2026-11-04T00:40:48.340Z",
-   "updatedAt": "2026-11-04T02:35:08.371Z",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
    "builtAt": "",
    "notes": [
     {
@@ -4790,6 +4820,10 @@
     {
      "text": "Reconciler: PR #300",
      "at": "2026-11-04T02:14:30.962Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -6033,19 +6067,23 @@
    "title": "App style override: axHub is the style source, per-app Override design / colors, reload + save to axHub",
    "category": "Appearance",
    "detail": "What Brett said (Nov 3 2026, voice): \"Put a button in each app's settings to override axHub's style, in design and colors.\" Addendum 1: \"And the hook will reload axHub, and you can also save design back to axHub.\" Context: axHub defines the default look for every app; apps inherit it live; manual edits override per setting with an 'Overriding axHub' note (same rule as molly-nav-submenus Addendum 6 and gizmo-companion's appearance add-on). Agent: Ping Paulie (no Polo card). Model: Opus for every step (Claude decides); additive web-only contract, Android twin deferred in PORTING.md; Fable review recommended per the shared rule.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/app-style-override",
    "pr": "#302",
    "createdAt": "2026-11-04T01:44:48.256Z",
-   "updatedAt": "2026-11-04T03:12:51.746Z",
+   "updatedAt": "2026-11-04T12:44:12.117Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: PR #302",
      "at": "2026-11-04T03:12:51.746Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-04T12:44:12.117Z"
     }
    ],
    "approvals": [],
@@ -6597,6 +6635,214 @@
      "doneAt": "2026-11-04T11:35:37.941Z",
      "note": "Report _claude/builds/reports/expenses-port.md, THREADS, shots in UI Review Screenshots, PR #307",
      "uid": "st-mw20kuv40crqm9"
+    }
+   ]
+  },
+  {
+   "id": "hotfix-build-manager",
+   "title": "Hotfix: Build manager rows open, step actions work, running count is real",
+   "category": "",
+   "detail": "URGENT. Build rows do not open; step actions (tick, open, context menu) dead; banner says 21 going when only land-round-2 runs. Fix regressions, reconcile stale running statuses against live processes, add a zero-token reconciler rule so it cannot drift.",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "hotfix-build-manager",
+   "branch": "claude/hotfix-build-manager",
+   "pr": "#309",
+   "createdAt": "2026-11-04T12:18:43.490Z",
+   "updatedAt": "2026-11-04T12:47:56.932Z",
+   "builtAt": "2026-11-04T12:47:56.382Z",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Can you check build manager to see what's going? It says 21 things are going. ... When I click them, they don't open up, and the steps in the build menu don't work.",
+    "at": "2026-11-04T00:00:00Z",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Find and fix: build row click opens nothing",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T12:47:53.779Z",
+     "note": "",
+     "uid": "st-mw2330s90131ge"
+    },
+    {
+     "id": "s2",
+     "text": "Fix step actions in the build menu",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T12:47:54.565Z",
+     "note": "",
+     "uid": "st-mw2330s902501z"
+    },
+    {
+     "id": "s3",
+     "text": "Reconciler rule: running only when a process is alive; banner count = running; clean stale statuses",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T12:47:55.501Z",
+     "note": "",
+     "uid": "st-mw2330s90341od"
+    },
+    {
+     "id": "s4",
+     "text": "Tests, screenshot, report, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T12:47:56.382Z",
+     "note": "",
+     "uid": "st-mw2330s904xbbr"
+    }
+   ]
+  },
+  {
+   "id": "urgent-land-lazy-loader",
+   "title": "Land PR #298: console plugin lazy loader",
+   "category": "",
+   "detail": "",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/plugin-lazy-load",
+   "pr": "#298",
+   "createdAt": "2026-11-04T12:29:55.129Z",
+   "updatedAt": "2026-11-04T12:36:33.404Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Move it to next... start it right away.",
+    "at": "2026-11-04T12:29:55.129Z",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "Brett",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Update claude/plugin-lazy-load from main, resolve conflicts, register every plugin",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T12:36:30.617Z",
+     "note": "",
+     "uid": "st-mw23gp6505x0u7"
+    },
+    {
+     "id": "s2",
+     "text": "Check s1/s2 completeness, fill gaps",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-04T12:36:32.259Z",
+     "note": "",
+     "uid": "st-mw23gp6506ftt8"
+    },
+    {
+     "id": "s3",
+     "text": "Type-check, tests, measure bundle before/after, report",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw23gp6507ymi1"
+    },
+    {
+     "id": "s4",
+     "text": "CI green, merge, redeploy console, confirm it loads",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw23gp6508tldc"
     }
    ]
   }
