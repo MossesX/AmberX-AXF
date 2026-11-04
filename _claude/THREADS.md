@@ -578,7 +578,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 20:37 UTC · `profile-manager` s3 done, s4 done, s5 done (current) · foreign-write
 - 2026-11-03 20:37 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
 - 2026-11-03 20:37 UTC · `plugin-settings-placement` added (18 steps) (current) · foreign-write
 - 2026-11-03 20:37 UTC · `smart-menus` s6 done (urgent) · orchestrator
@@ -978,3 +977,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 01:23 UTC · `lenny-land-all` s1 done, s5 done, note (current) · foreign-write
 - 2026-11-04 01:23 UTC · `browser-automation` s1 done, s2 done (current) · foreign-write
 - 2026-11-04 01:23 UTC · `profile-switcher-widget` added (5 steps) (current) · foreign-write
+- 2026-11-04 01:29 UTC · `plugin-lazy-load` note (current) · foreign-write
