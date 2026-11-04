@@ -15,7 +15,7 @@
  *     plugin keeps it in step with its server copy (the CLI / MCP default)
  *   - Settings → Plugins → Profile switcher: counts, compact/full, tones, hidden profiles and order, placements
  */
-import { useEffect, useState, useSyncExternalStore } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
 import { Button, Chip, IconButton, Note, Segmented, SelectField, Switch, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
