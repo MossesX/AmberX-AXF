@@ -84,3 +84,4 @@ export interface VoiceBridgeMessage { $axf: 'voice-bridge@1'; type: VoiceBridgeT
 export function voiceBridgeMessage(type: VoiceBridgeType, fields?: Record<string, unknown>): VoiceBridgeMessage;
 export function parseVoiceBridge(data: unknown): VoiceBridgeMessage | null;
 export function helpQuestion(text: string): string | null;
+export function fillSlot(command: unknown, slots: Record<string, unknown> | undefined, name: string, text: string, now?: string): { ok: boolean; slots: Record<string, unknown>; missing: string[]; confirm: boolean; question: string };
