@@ -684,7 +684,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:04 UTC · `terminal-no-focus` → complete, merged, note (current) · reconciler
 - 2026-11-04 14:04 UTC · `urgent-land-lazy-loader` note (current) · foreign-write
 - 2026-11-04 14:05 UTC · `crew-profiles` added (6 steps) (current) · orchestrator
 - 2026-11-04 14:05 UTC · `crew-profiles` → running (current) · orchestrator
@@ -1084,6 +1083,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 17:19 UTC · `live-sessions-plugin` → built, branch claude/live-sessions-plugin, PR #331 (current) · builds-live
 - 2026-11-04 17:19 UTC · `live-sessions-plugin` note (current) · orchestrator
 - 2026-11-04 17:26 UTC · `urgent-console-perf` → pending, note (urgent) · reconciler
+- 2026-11-04 17:31 UTC · `land-round-2` note (current) · foreign-write
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 854,
- "updatedAt": "2026-11-04T17:27:38.449Z",
+ "rev": 855,
+ "updatedAt": "2026-11-04T17:31:29.545Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -71842,7 +71842,7 @@
    "branch": "claude/land-round-2",
    "pr": "#313",
    "createdAt": "2026-11-04T10:43:58.630Z",
-   "updatedAt": "2026-11-04T14:21:11.648Z",
+   "updatedAt": "2026-11-04T17:31:27.232Z",
    "builtAt": "",
    "notes": [
     {
@@ -71868,6 +71868,10 @@
     {
      "text": "Skip PR #296: urgent-land-gizmo-chat (Reel Rhonda) is landing it (main merged in, window look added, CI running).",
      "at": "2026-11-04T14:21:11.648Z"
+    },
+    {
+     "text": "Reconciler: PR #313 merged",
+     "at": "2026-11-04T17:31:27.232Z"
     }
    ],
    "approvals": [],
@@ -72092,7 +72096,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
