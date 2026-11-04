@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, Markdown, SelectField, Segmented, TextField, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, IconButton, JumpMenu, Markdown, SelectField, Segmented, TextField, useRuntime } from '@console/axf/react';
 import * as pc from './plan-core.mjs';
 import type { History, ListId, Plan, Step, TextItem } from './plan-core.mjs';
 import { call, deletePlan, fmtWhen, getPlan, KEYS, restorePlan, savePlan, statusInfo, turnIntoBuild, useBusy, useStudio, type SaveResult } from './api';
@@ -7,7 +7,8 @@ import { CommandBox, VoicePanel } from './ai';
 import { canListen } from './voice';
 
 /*
- * The plan editor: one page, sections you jump between (phone: a sideways strip of section chips), every plan@1 field.
+ * The plan editor: one page, sections you jump between with a jump-menu@1 asset (`plan-studio.plan`: right-click it for
+ * its settings, another jump menu or a new location; Brett, Nov 4 2026), every plan@1 field.
  * Drafts autosave to the device on every keystroke and, for plans already saved, to the store after a pause (each
  * autosave is one coalesced version). New plans save on Save, after the duplicate check.
  */
@@ -76,7 +77,6 @@ export function PlanEditor({ initial, isNew, onClose, onOpen }: { initial: Plan;
   });
   const t = pc.totals(plan);
   const cats = useMemo(() => pc.withParents([...(state?.categories.paths ?? []), ...(state?.plans ?? []).map((p) => p.category).filter(Boolean)]), [state]);
-  const jump = (id: string) => document.getElementById(`axp-ps-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   return (
     <div className="axp-plan-studio__editor">
@@ -99,7 +99,7 @@ export function PlanEditor({ initial, isNew, onClose, onOpen }: { initial: Plan;
       )}
       {voice && <VoicePanel plan={saved} onClose={() => setVoice(false)} onOpen={onOpen} />}
       {!isNew && <CommandBox plan={saved} onOpen={onOpen} />}
-      <nav className="axp-plan-studio__jump" aria-label="Sections">{SECTIONS.map((s) => <button key={s.id} type="button" className="fx-chip" onClick={() => jump(s.id)}><Icon name={s.icon} size={11} />{s.label}</button>)}</nav>
+      <JumpMenu id="plan-studio.plan" sections={SECTIONS} targetId={(s) => `axp-ps-${s.id}`} label="Plan sections" className="axp-plan-studio__body">
       <div className="axp-plan-studio__strip" aria-label="Totals">
         <span><b>{t.steps}</b> steps</span><span><b>{t.progress}%</b> done</span><span><b>{pc.fmtMinutes(t.minutes) || '0 min'}</b> effort</span>
         <span><b>{pc.fmtMinutes(t.left) || '0 min'}</b> left</span><span><b>{pc.fmtCost(t.cost) || '$0'}</b> est. cost</span>
@@ -170,6 +170,7 @@ export function PlanEditor({ initial, isNew, onClose, onOpen }: { initial: Plan;
       <Sec id="comments" title={`Comments (${plan.comments.length})`} icon="info">
         <Comments plan={plan} onChange={(comments) => edit({ comments })} />
       </Sec>
+      </JumpMenu>
 
       {!isNew && (
         <div className="fx-row axp-plan-studio__danger">

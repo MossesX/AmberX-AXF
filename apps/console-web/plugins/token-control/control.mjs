@@ -92,7 +92,7 @@ export async function runControl(raw, { grants = ['*'], by = '', preset = null, 
 
 /* ------------------------------------------------------------------ CLI → command */
 
-const TOKEN_SETS = ['theme', 'style', 'layout', 'typography', 'density', 'sizing', 'look', 'custom', 'slots'];
+const TOKEN_SETS = ['theme', 'style', 'layout', 'typography', 'density', 'sizing', 'look', 'custom', 'slots', 'nav', 'jump'];
 
 /** A CLI word as a value: JSON when it parses (numbers, true/false, objects), else the plain string. */
 export function parseValue(s) {

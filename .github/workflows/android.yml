@@ -165,6 +165,7 @@ jobs:
             (cd framework && npm install --no-audit --no-fund --silent)
             npx -y tsx framework/spec/check-alerts.mts
             npx -y tsx framework/spec/check-widgets.mts
+            npx -y tsx framework/spec/check-jumpmenu.mts              # jump-menu@1: registry, fixture replay (normalize, output, scroll-spy, overflow, overrides), validators agree, six starters, control@1 tokens.jump, schema
             npx -y tsx framework/spec/check-tapconfirm.mts            # toolbar tap-to-confirm: touch arms then runs, mouse/pen/keyboard click once, re-arm, window, per-toolbar settings
             npx -y tsx framework/spec/check-menu-fit.mts               # menu-fit@1: menus flip / shift to stay on screen and scroll only when taller than the room
             npx -y tsx framework/spec/check-windows.mts                # window engine: 8 resize handles, maximize / restore, frames, snapping (windows.json)

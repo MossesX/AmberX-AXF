@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "jump-menu",
+  "id": "bottom-tabs",
+  "name": "Bottom tabs",
+  "version": "1.0.0",
+  "description": "Text tabs along the bottom edge of the page, underline style, sticky, wrapping to a second line when they don't fit. Thumb-reach on a phone.",
+  "author": "AmberX AXF",
+  "tags": [
+    "bottom",
+    "tabs",
+    "phone"
+  ],
+  "data": {
+    "location": "bottom",
+    "display": "text",
+    "variant": "underline",
+    "size": "md",
+    "density": "theme",
+    "sticky": true,
+    "collapsible": false,
+    "collapsed": false,
+    "spy": true,
+    "smooth": true,
+    "overflow": "wrap",
+    "offset": 4
+  }
+}

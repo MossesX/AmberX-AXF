@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/jump-menu.schema.json",
+  "title": "AmberX AXF Jump menu asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "jump-menu"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "location": {
+          "enum": [
+            "top",
+            "left",
+            "right",
+            "bottom",
+            "floating"
+          ],
+          "default": "top"
+        },
+        "display": {
+          "enum": [
+            "icons-text",
+            "text",
+            "icons",
+            "numbered"
+          ],
+          "default": "icons-text"
+        },
+        "variant": {
+          "enum": [
+            "chips",
+            "underline",
+            "rail",
+            "pill"
+          ],
+          "default": "chips"
+        },
+        "size": {
+          "enum": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
+        },
+        "density": {
+          "enum": [
+            "theme",
+            "compact",
+            "regular",
+            "roomy"
+          ],
+          "default": "theme"
+        },
+        "sticky": {
+          "type": "boolean",
+          "default": true
+        },
+        "collapsible": {
+          "type": "boolean",
+          "default": false
+        },
+        "collapsed": {
+          "type": "boolean",
+          "default": false
+        },
+        "spy": {
+          "type": "boolean",
+          "default": true
+        },
+        "smooth": {
+          "type": "boolean",
+          "default": true
+        },
+        "overflow": {
+          "enum": [
+            "wrap",
+            "scroll",
+            "more"
+          ],
+          "default": "scroll"
+        },
+        "offset": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 12,
+          "default": 4
+        },
+        "sections": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "object",
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._:-]{0,79}$"
+              },
+              "label": {
+                "type": "string",
+                "maxLength": 60
+              },
+              "icon": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

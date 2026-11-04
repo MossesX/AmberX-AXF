@@ -1198,6 +1198,38 @@
       "hideable": false,
       "optional": true
     },
+    "jump-menu": {
+      "label": "Jump menu",
+      "group": "Navigation",
+      "icon": "list",
+      "description": "An in-page section index (jump-menu@1, engine core/engines/jumpmenu.ts, fields in jumpmenu-rules.mjs): a long page (Plan Studio's plan view, a settings page, a report, an MD Studio doc) lists its sections, the jump menu draws them, scrolls to the one you tap and lights the one on screen (scroll-spy). It never opens sections one at a time: it only moves within the page. Every field is one scalar: location (top, left, right, bottom, floating), display (icons-text, text, icons, numbered), variant (chips, underline, rail, pill), size, density, sticky, collapsible + collapsed, spy, smooth, overflow (wrap, scroll, more), offset (× space, room above a jumped-to heading). Styling comes only from theme tokens. Right-click / long-press a jump menu: Jump menu settings, Change jump menu, Move. A page's own settings are control@1 overrides on tokens.jump under menu.<menu id>.<field> (menu.<menu id>.asset picks that page's asset); plain fields are app-wide. Settings dialog: framework/react/components/JumpMenu.tsx.",
+      "required": [],
+      "enums": {
+        "location": ["top", "left", "right", "bottom", "floating"],
+        "display": ["icons-text", "text", "icons", "numbered"],
+        "variant": ["chips", "underline", "rail", "pill"],
+        "size": ["sm", "md", "lg"],
+        "density": ["theme", "compact", "regular", "roomy"],
+        "overflow": ["wrap", "scroll", "more"]
+      },
+      "optional_fields": {
+        "location": "top (default) | left | right | bottom | floating — where the menu sits relative to the content it indexes",
+        "display": "icons-text (default) | text | icons | numbered — what each entry shows (icons falls back to the number for a section without an icon)",
+        "variant": "chips (default) | underline | rail | pill — the visual family, every one drawn from theme tokens",
+        "size": "sm | md (default) | lg — text step and icon size",
+        "density": "theme (default) | compact | regular | roomy — entry padding",
+        "sticky": "boolean, default true — stays on screen while the page scrolls",
+        "collapsible": "boolean, default false — a chevron folds the menu to a thin handle (remembered per device: axf.jumpmenu.collapsed)",
+        "collapsed": "boolean, default false — starts folded (only with collapsible)",
+        "spy": "boolean, default true — the section on screen is lit",
+        "smooth": "boolean, default true — smooth scrolling on tap (reduced motion turns it off)",
+        "overflow": "wrap | scroll (default) | more — when the entries don't fit: wrap to more lines, scroll sideways with snap, or fold the rest under a More menu",
+        "offset": "number 0..12 (× space), default 4 — room left above a section when jumped to, so a sticky banner never covers its heading",
+        "sections": "[{ id, label, icon? }] — fixed entries (normally none: the page supplies its sections at run time)"
+      },
+      "hideable": false,
+      "optional": true
+    },
     "behavior-theme": {
       "label": "Behaviour theme",
       "group": "Themes",

@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "jump-menu",
+  "id": "classic-chips",
+  "name": "Classic chips",
+  "version": "1.0.0",
+  "description": "A row of chips across the top of the page, icon and name on each, sticky, scrolling sideways when they don't fit. The section on screen is lit.",
+  "author": "AmberX AXF",
+  "tags": [
+    "top",
+    "chips",
+    "default"
+  ],
+  "data": {
+    "location": "top",
+    "display": "icons-text",
+    "variant": "chips",
+    "size": "md",
+    "density": "theme",
+    "sticky": true,
+    "collapsible": false,
+    "collapsed": false,
+    "spy": true,
+    "smooth": true,
+    "overflow": "scroll",
+    "offset": 4
+  }
+}

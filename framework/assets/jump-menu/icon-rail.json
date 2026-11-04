@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "jump-menu",
+  "id": "icon-rail",
+  "name": "Icon rail",
+  "version": "1.0.0",
+  "description": "A narrow column of icons on the right of the page, a number for any section without an icon, compact and sticky. Hover or long-press an icon for its name.",
+  "author": "AmberX AXF",
+  "tags": [
+    "right",
+    "icons",
+    "compact"
+  ],
+  "data": {
+    "location": "right",
+    "display": "icons",
+    "variant": "rail",
+    "size": "md",
+    "density": "compact",
+    "sticky": true,
+    "collapsible": false,
+    "collapsed": false,
+    "spy": true,
+    "smooth": true,
+    "overflow": "scroll",
+    "offset": 4
+  }
+}

@@ -15,7 +15,7 @@ export const GUIDES: Guide[] = [
 \`\`\`
 
 - **op**: \`list\` · \`get\` · \`set\` · \`reset\` · \`add\` · \`remove\` · \`act\`
-- **target**: a token set (\`tokens.theme\`, \`tokens.style\`, \`tokens.layout\`, \`tokens.typography\`, \`tokens.density\`, \`tokens.sizing\`, \`tokens.nav\`, \`tokens.slots\`), AmberX (\`amberx.items\`, \`amberx.lists\`) or the planner (\`planner.plans\`, \`planner.builds\`)
+- **target**: a token set (\`tokens.theme\`, \`tokens.style\`, \`tokens.layout\`, \`tokens.typography\`, \`tokens.density\`, \`tokens.sizing\`, \`tokens.nav\`, \`tokens.jump\`, \`tokens.slots\`), AmberX (\`amberx.items\`, \`amberx.lists\`) or the planner (\`planner.plans\`, \`planner.builds\`)
 - **path**: the token id or the record id
 - **value** / **action** + **input** / **select**: what to set, which verb to run, which filters to list with
 

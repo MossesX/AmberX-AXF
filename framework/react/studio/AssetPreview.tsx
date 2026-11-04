@@ -1,6 +1,7 @@
 /** Miniature live previews of any asset — used by asset cards in the studio. */
 import type * as React from 'react';
 import { compileLayout, type Asset, type AssetEnvelope, type AssetType } from '../../core';
+import { normalizeJumpMenu } from '../../core/engines/jumpmenu';
 import { Icon } from '../components/Icon';
 
 const box = (style: React.CSSProperties = {}): React.CSSProperties => ({
@@ -183,6 +184,28 @@ export function AssetPreview({ asset }: { asset: AssetEnvelope }) {
                 {g.items.slice(0, 3).map((i) => (t.variant === 'labels' ? <span key={i.id} style={{ fontSize: 'var(--fx-type-root-2xs)' }}>{i.label}</span> : <Icon key={i.id} name={i.icon} size={12} />))}
               </span>
             ))}
+          </div>
+        </Screen>
+      );
+    }
+    case 'jump-menu': {
+      const j = normalizeJumpMenu((a as { data: unknown }).data);
+      const names = ['Basics', 'Steps', 'Links', 'Notes'];
+      const chip = (i: number, on: boolean) => (
+        <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--fx-dens-gap-xs)', padding: 'var(--fx-border-w) var(--fx-dens-gap-md)', borderRadius: j.variant === 'underline' ? 0 : j.variant === 'rail' ? 'var(--fx-radius-sm)' : '999px', background: on ? 'var(--fx-accent-soft)' : j.variant === 'chips' ? 'var(--fx-surface3)' : 'transparent', color: on ? 'var(--fx-accent)' : 'var(--fx-muted)', fontSize: 'var(--fx-type-root-2xs)', borderBottom: j.variant === 'underline' ? `calc(var(--fx-border-w) * 2) solid ${on ? 'var(--fx-accent)' : 'transparent'}` : undefined }}>
+          {j.display !== 'text' && j.display !== 'numbered' && <Icon name={['edit', 'list', 'external', 'file'][i]!} size={9} />}
+          {j.display !== 'icons' && <span>{j.display === 'numbered' ? `${i + 1}. ` : ''}{names[i]}</span>}
+        </span>
+      );
+      const column = j.location === 'left' || j.location === 'right';
+      const bar = <div style={{ display: 'flex', flexDirection: column ? 'column' : 'row', gap: 'var(--fx-dens-gap-xs)', padding: j.variant === 'pill' ? 'var(--fx-dens-gap-xs)' : 0, borderRadius: j.variant === 'pill' ? '999px' : 0, background: j.variant === 'pill' ? 'var(--fx-surface2)' : 'transparent', alignSelf: j.location === 'floating' ? 'flex-end' : undefined }}>{names.map((_, i) => chip(i, i === 1))}</div>;
+      const body = <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 'var(--fx-dens-gap-xs)' }}>{[0, 1, 2].map((i) => <div key={i} style={{ height: 'var(--fx-dens-gap-lg)', borderRadius: 'var(--fx-radius-sm)', background: 'var(--fx-surface2)', width: ['70%', '90%', '55%'][i] }} />)}</div>;
+      return (
+        <Screen>
+          <div style={{ display: 'flex', flexDirection: column ? 'row' : 'column', gap: 'var(--fx-dens-gap-md)', alignItems: column ? 'flex-start' : 'stretch', color: 'var(--fx-text)' }}>
+            {(j.location === 'top' || j.location === 'left') && bar}
+            {body}
+            {(j.location === 'bottom' || j.location === 'right' || j.location === 'floating') && bar}
           </div>
         </Screen>
       );

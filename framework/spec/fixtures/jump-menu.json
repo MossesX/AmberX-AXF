@@ -1,0 +1,1443 @@
+{
+  "contract": "jump-menu@1",
+  "fields": {
+    "location": {
+      "kind": "enum",
+      "options": [
+        "top",
+        "left",
+        "right",
+        "bottom",
+        "floating"
+      ],
+      "default": "top"
+    },
+    "display": {
+      "kind": "enum",
+      "options": [
+        "icons-text",
+        "text",
+        "icons",
+        "numbered"
+      ],
+      "default": "icons-text"
+    },
+    "variant": {
+      "kind": "enum",
+      "options": [
+        "chips",
+        "underline",
+        "rail",
+        "pill"
+      ],
+      "default": "chips"
+    },
+    "size": {
+      "kind": "enum",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md"
+    },
+    "density": {
+      "kind": "enum",
+      "options": [
+        "theme",
+        "compact",
+        "regular",
+        "roomy"
+      ],
+      "default": "theme"
+    },
+    "sticky": {
+      "kind": "boolean",
+      "default": true
+    },
+    "collapsible": {
+      "kind": "boolean",
+      "default": false
+    },
+    "collapsed": {
+      "kind": "boolean",
+      "default": false
+    },
+    "spy": {
+      "kind": "boolean",
+      "default": true
+    },
+    "smooth": {
+      "kind": "boolean",
+      "default": true
+    },
+    "overflow": {
+      "kind": "enum",
+      "options": [
+        "wrap",
+        "scroll",
+        "more"
+      ],
+      "default": "scroll"
+    },
+    "offset": {
+      "kind": "number",
+      "min": 0,
+      "max": 12,
+      "default": 4,
+      "unit": "space"
+    }
+  },
+  "starters": {
+    "bottom-tabs": {
+      "normalized": {
+        "location": "bottom",
+        "display": "text",
+        "variant": "underline",
+        "size": "md",
+        "density": "theme",
+        "sticky": true,
+        "collapsible": false,
+        "collapsed": false,
+        "spy": true,
+        "smooth": true,
+        "overflow": "wrap",
+        "offset": 4,
+        "sections": []
+      },
+      "errors": [],
+      "valid": {
+        "ok": true,
+        "errors": []
+      },
+      "output": {
+        "vars": {
+          "--fx-jump-offset": "calc(var(--fx-space) * 4)",
+          "--fx-jump-font": "var(--fx-type-scale-sm)",
+          "--fx-jump-icon": "calc(var(--fx-font-size) * 1)"
+        },
+        "attrs": {
+          "data-fx-jump": "on",
+          "data-fx-jump-location": "bottom",
+          "data-fx-jump-axis": "row",
+          "data-fx-jump-display": "text",
+          "data-fx-jump-variant": "underline",
+          "data-fx-jump-size": "md",
+          "data-fx-jump-overflow": "wrap",
+          "data-fx-jump-sticky": "on",
+          "data-fx-jump-collapsible": "off",
+          "data-fx-jump-collapsed": "off",
+          "data-fx-jump-spy": "on",
+          "data-fx-jump-smooth": "on"
+        }
+      },
+      "reduced": {
+        "vars": {
+          "--fx-jump-offset": "calc(var(--fx-space) * 4)",
+          "--fx-jump-font": "var(--fx-type-scale-sm)",
+          "--fx-jump-icon": "calc(var(--fx-font-size) * 1)"
+        },
+        "attrs": {
+          "data-fx-jump": "on",
+          "data-fx-jump-location": "bottom",
+          "data-fx-jump-axis": "row",
+          "data-fx-jump-display": "text",
+          "data-fx-jump-variant": "underline",
+          "data-fx-jump-size": "md",
+          "data-fx-jump-overflow": "wrap",
+          "data-fx-jump-sticky": "on",
+          "data-fx-jump-collapsible": "off",
+          "data-fx-jump-collapsed": "off",
+          "data-fx-jump-spy": "on",
+          "data-fx-jump-smooth": "off"
+        }
+      },
+      "folded": {
+        "vars": {
+          "--fx-jump-offset": "calc(var(--fx-space) * 4)",
+          "--fx-jump-font": "var(--fx-type-scale-sm)",
+          "--fx-jump-icon": "calc(var(--fx-font-size) * 1)"
+        },
+        "attrs": {
+          "data-fx-jump": "on",
+          "data-fx-jump-location": "bottom",
+          "data-fx-jump-axis": "row",
+          "data-fx-jump-display": "text",
+          "data-fx-jump-variant": "underline",
+          "data-fx-jump-size": "md",
+          "data-fx-jump-overflow": "wrap",
+          "data-fx-jump-sticky": "on",
+          "data-fx-jump-collapsible": "off",
+          "data-fx-jump-collapsed": "off",
+          "data-fx-jump-spy": "on",
+          "data-fx-jump-smooth": "on"
+        }
+      }
+    },
+    "classic-chips": {
+      "normalized": {
+        "location": "top",
+        "display": "icons-text",
+        "variant": "chips",
+        "size": "md",
+        "density": "theme",
+        "sticky": true,
+        "collapsible": false,
+        "collapsed": false,
+        "spy": true,
+        "smooth": true,
+        "overflow": "scroll",
+        "offset": 4,
+        "sections": []
+      },
+      "errors": [],
+      "valid": {
+        "ok": true,
+        "errors": []
+      },
+      "output": {
+        "vars": {
+          "--fx-jump-offset": "calc(var(--fx-space) * 4)",
+          "--fx-jump-font": "var(--fx-type-scale-sm)",
+          "--fx-jump-icon": "calc(var(--fx-font-size) * 1)"
+        },
+        "attrs": {
+          "data-fx-jump": "on",
+          "data-fx-jump-location": "top",
+          "data-fx-jump-axis": "row",
+          "data-fx-jump-display": "icons-text",
+          "data-fx-jump-variant": "chips",
+          "data-fx-jump-size": "md",
+          "data-fx-jump-overflow": "scroll",
+          "data-fx-jump-sticky": "on",
+          "data-fx-jump-collapsible": "off",
+          "data-fx-jump-collapsed": "off",
+          "data-fx-jump-spy": "on",
+          "data-fx-jump-smooth": "on"
+        }
+      },
+      "reduced": {
+        "vars": {
+          "--fx-jump-offset": "calc(var(--fx-space) * 4)",
+          "--fx-jump-font": "var(--fx-type-scale-sm)",
+          "--fx-jump-icon": "calc(var(--fx-font-size) * 1)"
+        },
+        "attrs": {
+          "data-fx-jump": "on",
+          "data-fx-jump-location": "top",
+          "data-fx-jump-axis": "row",
+          "data-fx-jump-display": "icons-text",
+          "data-fx-jump-variant": "chips",
+          "data-fx-jump-size": "md",
+          "data-fx-jump-overflow": "scroll",
+          "data-fx-jump-sticky": "on",
+          "data-fx-jump-collapsible": "off",
+          "data-fx-jump-collapsed": "off",
+          "data-fx-jump-spy": "on",
+          "data-fx-jump-smooth": "off"
+        }
+      },
+      "folded": {
+        "vars": {
+          "--fx-jump-offset": "calc(var(--fx-space) * 4)",
+          "--fx-jump-font": "var(--fx-type-scale-sm)",
+          "--fx-jump-icon": "calc(var(--fx-font-size) * 1)"
+        },
+        "attrs": {
+          "data-fx-jump": "on",
+          "data-fx-jump-location": "top",
+          "data-fx-jump-axis": "row",
+          "data-fx-jump-display": "icons-text",
+          "data-fx-jump-variant": "chips",
+          "data-fx-jump-size": "md",
+          "data-fx-jump-overflow": "scroll",
+          "data-fx-jump-sticky": "on",
+          "data-fx-jump-collapsible": "off",
+          "data-fx-jump-collapsed": "off",
+          "data-fx-jump-spy": "on",
+          "data-fx-jump-smooth": "on"
+        }
+      }
+    },
+    "floating-pill": {
+      "normalized": {
+        "location": "floating",
+        "display": "icons",
+        "variant": "pill",
+        "size": "sm",
+        "density": "compact",
+        "sticky": true,
+        "collapsible": true,
+        "collapsed": false,
+        "spy": true,
+        "smooth": true,
+        "overflow": "more",
+        "offset": 4,
+        "sections": []
+      },
+      "errors": [],
+      "valid": {
+        "ok": true,
+        "errors": []
+      },
+      "output": {
+        "vars": {
+          "--fx-jump-offset": "calc(var(--fx-space) * 4)",
+          "--fx-jump-font": "var(--fx-type-scale-xs)",
+          "--fx-jump-icon": "calc(var(--fx-font-size) * 0.85)",
+          "--fx-jump-py": "calc(var(--fx-space) * 0.25)"
+        },
+        "attrs": {
+          "data-fx-jump": "on",
+          "data-fx-jump-location": "floating",
+          "data-fx-jump-axis": "row",
+          "data-fx-jump-display": "icons",
+          "data-fx-jump-variant": "pill",
+          "data-fx-jump-size": "sm",
+          "data-fx-jump-overflow": "more",
+          "data-fx-jump-sticky": "on",
+          "data-fx-jump-collapsible": "on",
+          "data-fx-jump-collapsed": "off",
+          "data-fx-jump-spy": "on",
+          "data-fx-jump-smooth": "on"
+        }
+      },
+      "reduced": {
+        "vars": {
+          "--fx-jump-offset": "calc(var(--fx-space) * 4)",
+          "--fx-jump-font": "var(--fx-type-scale-xs)",
+          "--fx-jump-icon": "calc(var(--fx-font-size) * 0.85)",
+          "--fx-jump-py": "calc(var(--fx-space) * 0.25)"
+        },
+        "attrs": {
+          "data-fx-jump": "on",
+          "data-fx-jump-location": "floating",
+          "data-fx-jump-axis": "row",
+          "data-fx-jump-display": "icons",
+          "data-fx-jump-variant": "pill",
+          "data-fx-jump-size": "sm",
+          "data-fx-jump-overflow": "more",
+          "data-fx-jump-sticky": "on",
+          "data-fx-jump-collapsible": "on",
+          "data-fx-jump-collapsed": "off",
+          "data-fx-jump-spy": "on",
+          "data-fx-jump-smooth": "off"
+        }
+      },
+      "folded": {
+        "vars": {
+          "--fx-jump-offset": "calc(var(--fx-space) * 4)",
+          "--fx-jump-font": "var(--fx-type-scale-xs)",
+          "--fx-jump-icon": "calc(var(--fx-font-size) * 0.85)",
+          "--fx-jump-py": "calc(var(--fx-space) * 0.25)"
+        },
+        "attrs": {
+          "data-fx-jump": "on",
+          "data-fx-jump-location": "floating",
+          "data-fx-jump-axis": "row",
+          "data-fx-jump-display": "icons",
+          "data-fx-jump-variant": "pill",
+          "data-fx-jump-size": "sm",
+          "data-fx-jump-overflow": "more",
+          "data-fx-jump-sticky": "on",
+          "data-fx-jump-collapsible": "on",
+          "data-fx-jump-collapsed": "on",
+          "data-fx-jump-spy": "on",
+          "data-fx-jump-smooth": "on"
+        }
+      }
+    },
+    "icon-rail": {
+      "normalized": {
+        "location": "right",
+        "display": "icons",
+        "variant": "rail",
+        "size": "md",
+        "density": "compact",
+        "sticky": true,
+        "collapsible": false,
+        "collapsed": false,
+        "spy": true,
+        "smooth": true,
+        "overflow": "scroll",
+        "offset": 4,
+        "sections": []
+      },
+      "errors": [],
+      "valid": {
+        "ok": true,
+        "errors": []
+      },
+      "output": {
+        "vars": {
+          "--fx-jump-offset": "calc(var(--fx-space) * 4)",
+          "--fx-jump-font": "var(--fx-type-scale-sm)",
+          "--fx-jump-icon": "calc(var(--fx-font-size) * 1)",
+          "--fx-jump-py": "calc(var(--fx-space) * 0.25)"
+        },
+        "attrs": {
+          "data-fx-jump": "on",
+          "data-fx-jump-location": "right",
+          "data-fx-jump-axis": "column",
+          "data-fx-jump-display": "icons",
+          "data-fx-jump-variant": "rail",
+          "data-fx-jump-size": "md",
+          "data-fx-jump-overflow": "scroll",
+          "data-fx-jump-sticky": "on",
+          "data-fx-jump-collapsible": "off",
+          "data-fx-jump-collapsed": "off",
+          "data-fx-jump-spy": "on",
+          "data-fx-jump-smooth": "on"
+        }
+      },
+      "reduced": {
+        "vars": {
+          "--fx-jump-offset": "calc(var(--fx-space) * 4)",
+          "--fx-jump-font": "var(--fx-type-scale-sm)",
+          "--fx-jump-icon": "calc(var(--fx-font-size) * 1)",
+          "--fx-jump-py": "calc(var(--fx-space) * 0.25)"
+        },
+        "attrs": {
+          "data-fx-jump": "on",
+          "data-fx-jump-location": "right",
+          "data-fx-jump-axis": "column",
+          "data-fx-jump-display": "icons",
+          "data-fx-jump-variant": "rail",
+          "data-fx-jump-size": "md",
+          "data-fx-jump-overflow": "scroll",
+          "data-fx-jump-sticky": "on",
+          "data-fx-jump-collapsible": "off",
+          "data-fx-jump-collapsed": "off",
+          "data-fx-jump-spy": "on",
+          "data-fx-jump-smooth": "off"
+        }
+      },
+      "folded": {
+        "vars": {
+          "--fx-jump-offset": "calc(var(--fx-space) * 4)",
+          "--fx-jump-font": "var(--fx-type-scale-sm)",
+          "--fx-jump-icon": "calc(var(--fx-font-size) * 1)",
+          "--fx-jump-py": "calc(var(--fx-space) * 0.25)"
+        },
+        "attrs": {
+          "data-fx-jump": "on",
+          "data-fx-jump-location": "right",
+          "data-fx-jump-axis": "column",
+          "data-fx-jump-display": "icons",
+          "data-fx-jump-variant": "rail",
+          "data-fx-jump-size": "md",
+          "data-fx-jump-overflow": "scroll",
+          "data-fx-jump-sticky": "on",
+          "data-fx-jump-collapsible": "off",
+          "data-fx-jump-collapsed": "off",
+          "data-fx-jump-spy": "on",
+          "data-fx-jump-smooth": "on"
+        }
+      }
+    },
+    "left-rail": {
+      "normalized": {
+        "location": "left",
+        "display": "icons-text",
+        "variant": "rail",
+        "size": "md",
+        "density": "theme",
+        "sticky": true,
+        "collapsible": true,
+        "collapsed": false,
+        "spy": true,
+        "smooth": true,
+        "overflow": "scroll",
+        "offset": 4,
+        "sections": []
+      },
+      "errors": [],
+      "valid": {
+        "ok": true,
+        "errors": []
+      },
+      "output": {
+        "vars": {
+          "--fx-jump-offset": "calc(var(--fx-space) * 4)",
+          "--fx-jump-font": "var(--fx-type-scale-sm)",
+          "--fx-jump-icon": "calc(var(--fx-font-size) * 1)"
+        },
+        "attrs": {
+          "data-fx-jump": "on",
+          "data-fx-jump-location": "left",
+          "data-fx-jump-axis": "column",
+          "data-fx-jump-display": "icons-text",
+          "data-fx-jump-variant": "rail",
+          "data-fx-jump-size": "md",
+          "data-fx-jump-overflow": "scroll",
+          "data-fx-jump-sticky": "on",
+          "data-fx-jump-collapsible": "on",
+          "data-fx-jump-collapsed": "off",
+          "data-fx-jump-spy": "on",
+          "data-fx-jump-smooth": "on"
+        }
+      },
+      "reduced": {
+        "vars": {
+          "--fx-jump-offset": "calc(var(--fx-space) * 4)",
+          "--fx-jump-font": "var(--fx-type-scale-sm)",
+          "--fx-jump-icon": "calc(var(--fx-font-size) * 1)"
+        },
+        "attrs": {
+          "data-fx-jump": "on",
+          "data-fx-jump-location": "left",
+          "data-fx-jump-axis": "column",
+          "data-fx-jump-display": "icons-text",
+          "data-fx-jump-variant": "rail",
+          "data-fx-jump-size": "md",
+          "data-fx-jump-overflow": "scroll",
+          "data-fx-jump-sticky": "on",
+          "data-fx-jump-collapsible": "on",
+          "data-fx-jump-collapsed": "off",
+          "data-fx-jump-spy": "on",
+          "data-fx-jump-smooth": "off"
+        }
+      },
+      "folded": {
+        "vars": {
+          "--fx-jump-offset": "calc(var(--fx-space) * 4)",
+          "--fx-jump-font": "var(--fx-type-scale-sm)",
+          "--fx-jump-icon": "calc(var(--fx-font-size) * 1)"
+        },
+        "attrs": {
+          "data-fx-jump": "on",
+          "data-fx-jump-location": "left",
+          "data-fx-jump-axis": "column",
+          "data-fx-jump-display": "icons-text",
+          "data-fx-jump-variant": "rail",
+          "data-fx-jump-size": "md",
+          "data-fx-jump-overflow": "scroll",
+          "data-fx-jump-sticky": "on",
+          "data-fx-jump-collapsible": "on",
+          "data-fx-jump-collapsed": "on",
+          "data-fx-jump-spy": "on",
+          "data-fx-jump-smooth": "on"
+        }
+      }
+    },
+    "numbered-outline": {
+      "normalized": {
+        "location": "left",
+        "display": "numbered",
+        "variant": "underline",
+        "size": "md",
+        "density": "roomy",
+        "sticky": true,
+        "collapsible": true,
+        "collapsed": false,
+        "spy": true,
+        "smooth": true,
+        "overflow": "wrap",
+        "offset": 4,
+        "sections": []
+      },
+      "errors": [],
+      "valid": {
+        "ok": true,
+        "errors": []
+      },
+      "output": {
+        "vars": {
+          "--fx-jump-offset": "calc(var(--fx-space) * 4)",
+          "--fx-jump-font": "var(--fx-type-scale-sm)",
+          "--fx-jump-icon": "calc(var(--fx-font-size) * 1)",
+          "--fx-jump-py": "calc(var(--fx-space) * 0.875)"
+        },
+        "attrs": {
+          "data-fx-jump": "on",
+          "data-fx-jump-location": "left",
+          "data-fx-jump-axis": "column",
+          "data-fx-jump-display": "numbered",
+          "data-fx-jump-variant": "underline",
+          "data-fx-jump-size": "md",
+          "data-fx-jump-overflow": "wrap",
+          "data-fx-jump-sticky": "on",
+          "data-fx-jump-collapsible": "on",
+          "data-fx-jump-collapsed": "off",
+          "data-fx-jump-spy": "on",
+          "data-fx-jump-smooth": "on"
+        }
+      },
+      "reduced": {
+        "vars": {
+          "--fx-jump-offset": "calc(var(--fx-space) * 4)",
+          "--fx-jump-font": "var(--fx-type-scale-sm)",
+          "--fx-jump-icon": "calc(var(--fx-font-size) * 1)",
+          "--fx-jump-py": "calc(var(--fx-space) * 0.875)"
+        },
+        "attrs": {
+          "data-fx-jump": "on",
+          "data-fx-jump-location": "left",
+          "data-fx-jump-axis": "column",
+          "data-fx-jump-display": "numbered",
+          "data-fx-jump-variant": "underline",
+          "data-fx-jump-size": "md",
+          "data-fx-jump-overflow": "wrap",
+          "data-fx-jump-sticky": "on",
+          "data-fx-jump-collapsible": "on",
+          "data-fx-jump-collapsed": "off",
+          "data-fx-jump-spy": "on",
+          "data-fx-jump-smooth": "off"
+        }
+      },
+      "folded": {
+        "vars": {
+          "--fx-jump-offset": "calc(var(--fx-space) * 4)",
+          "--fx-jump-font": "var(--fx-type-scale-sm)",
+          "--fx-jump-icon": "calc(var(--fx-font-size) * 1)",
+          "--fx-jump-py": "calc(var(--fx-space) * 0.875)"
+        },
+        "attrs": {
+          "data-fx-jump": "on",
+          "data-fx-jump-location": "left",
+          "data-fx-jump-axis": "column",
+          "data-fx-jump-display": "numbered",
+          "data-fx-jump-variant": "underline",
+          "data-fx-jump-size": "md",
+          "data-fx-jump-overflow": "wrap",
+          "data-fx-jump-sticky": "on",
+          "data-fx-jump-collapsible": "on",
+          "data-fx-jump-collapsed": "on",
+          "data-fx-jump-spy": "on",
+          "data-fx-jump-smooth": "on"
+        }
+      }
+    }
+  },
+  "normalize": [
+    {
+      "name": "nothing",
+      "raw": null,
+      "out": {
+        "location": "top",
+        "display": "icons-text",
+        "variant": "chips",
+        "size": "md",
+        "density": "theme",
+        "sticky": true,
+        "collapsible": false,
+        "collapsed": false,
+        "spy": true,
+        "smooth": true,
+        "overflow": "scroll",
+        "offset": 4,
+        "sections": []
+      }
+    },
+    {
+      "name": "string",
+      "raw": "x",
+      "out": {
+        "location": "top",
+        "display": "icons-text",
+        "variant": "chips",
+        "size": "md",
+        "density": "theme",
+        "sticky": true,
+        "collapsible": false,
+        "collapsed": false,
+        "spy": true,
+        "smooth": true,
+        "overflow": "scroll",
+        "offset": 4,
+        "sections": []
+      }
+    },
+    {
+      "name": "bad values",
+      "raw": {
+        "location": "middle",
+        "display": "pictures",
+        "variant": "neon",
+        "size": "xl",
+        "density": 7,
+        "sticky": "yes",
+        "overflow": "hide",
+        "offset": 99,
+        "sections": [
+          {
+            "id": "Bad Id!",
+            "label": "x"
+          },
+          {
+            "label": "no id"
+          },
+          {
+            "id": "a"
+          },
+          {
+            "id": "a",
+            "label": "twice"
+          }
+        ]
+      },
+      "out": {
+        "location": "top",
+        "display": "icons-text",
+        "variant": "chips",
+        "size": "md",
+        "density": "theme",
+        "sticky": true,
+        "collapsible": false,
+        "collapsed": false,
+        "spy": true,
+        "smooth": true,
+        "overflow": "scroll",
+        "offset": 12,
+        "sections": [
+          {
+            "id": "a",
+            "label": "a"
+          }
+        ]
+      }
+    },
+    {
+      "name": "sections not a list",
+      "raw": {
+        "sections": "basics,steps"
+      },
+      "out": {
+        "location": "top",
+        "display": "icons-text",
+        "variant": "chips",
+        "size": "md",
+        "density": "theme",
+        "sticky": true,
+        "collapsible": false,
+        "collapsed": false,
+        "spy": true,
+        "smooth": true,
+        "overflow": "scroll",
+        "offset": 4,
+        "sections": []
+      }
+    },
+    {
+      "name": "empty",
+      "raw": {},
+      "out": {
+        "location": "top",
+        "display": "icons-text",
+        "variant": "chips",
+        "size": "md",
+        "density": "theme",
+        "sticky": true,
+        "collapsible": false,
+        "collapsed": false,
+        "spy": true,
+        "smooth": true,
+        "overflow": "scroll",
+        "offset": 4,
+        "sections": []
+      }
+    },
+    {
+      "name": "collapsed without collapsible",
+      "raw": {
+        "collapsed": true
+      },
+      "out": {
+        "location": "top",
+        "display": "icons-text",
+        "variant": "chips",
+        "size": "md",
+        "density": "theme",
+        "sticky": true,
+        "collapsible": false,
+        "collapsed": false,
+        "spy": true,
+        "smooth": true,
+        "overflow": "scroll",
+        "offset": 4,
+        "sections": []
+      }
+    },
+    {
+      "name": "strings coerced",
+      "raw": {
+        "sticky": "false",
+        "offset": "2.6",
+        "size": "lg"
+      },
+      "out": {
+        "location": "top",
+        "display": "icons-text",
+        "variant": "chips",
+        "size": "lg",
+        "density": "theme",
+        "sticky": false,
+        "collapsible": false,
+        "collapsed": false,
+        "spy": true,
+        "smooth": true,
+        "overflow": "scroll",
+        "offset": 3,
+        "sections": []
+      }
+    },
+    {
+      "name": "sections cleaned",
+      "raw": {
+        "sections": [
+          {
+            "id": "basics",
+            "label": "  Basics ",
+            "icon": "edit"
+          },
+          {
+            "id": "steps"
+          },
+          {
+            "id": "steps",
+            "label": "again"
+          },
+          {
+            "id": "x",
+            "label": "y",
+            "icon": "Not An Icon"
+          }
+        ]
+      },
+      "out": {
+        "location": "top",
+        "display": "icons-text",
+        "variant": "chips",
+        "size": "md",
+        "density": "theme",
+        "sticky": true,
+        "collapsible": false,
+        "collapsed": false,
+        "spy": true,
+        "smooth": true,
+        "overflow": "scroll",
+        "offset": 4,
+        "sections": [
+          {
+            "id": "basics",
+            "label": "Basics",
+            "icon": "edit"
+          },
+          {
+            "id": "steps",
+            "label": "steps"
+          },
+          {
+            "id": "x",
+            "label": "y"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "name": "nothing",
+      "raw": null,
+      "errors": [
+        "data must be an object"
+      ]
+    },
+    {
+      "name": "string",
+      "raw": "x",
+      "errors": [
+        "data must be an object"
+      ]
+    },
+    {
+      "name": "bad values",
+      "raw": {
+        "location": "middle",
+        "display": "pictures",
+        "variant": "neon",
+        "size": "xl",
+        "density": 7,
+        "sticky": "yes",
+        "overflow": "hide",
+        "offset": 99,
+        "sections": [
+          {
+            "id": "Bad Id!",
+            "label": "x"
+          },
+          {
+            "label": "no id"
+          },
+          {
+            "id": "a"
+          },
+          {
+            "id": "a",
+            "label": "twice"
+          }
+        ]
+      },
+      "errors": [
+        "location: one of top, left, right, bottom, floating",
+        "display: one of icons-text, text, icons, numbered",
+        "variant: one of chips, underline, rail, pill",
+        "size: one of sm, md, lg",
+        "density: one of theme, compact, regular, roomy",
+        "sticky: true or false",
+        "overflow: one of wrap, scroll, more",
+        "offset: a number 0..12 (space)",
+        "sections[0]: needs an id (letters, digits, . _ : -) and a label",
+        "sections[1]: needs an id (letters, digits, . _ : -) and a label",
+        "sections: ids must be unique"
+      ]
+    },
+    {
+      "name": "sections not a list",
+      "raw": {
+        "sections": "basics,steps"
+      },
+      "errors": [
+        "sections: a list of { id, label, icon? }"
+      ]
+    }
+  ],
+  "fieldErrors": [
+    {
+      "path": "location",
+      "value": "left",
+      "errors": []
+    },
+    {
+      "path": "location",
+      "value": "middle",
+      "errors": [
+        "value must be one of top, left, right, bottom, floating"
+      ]
+    },
+    {
+      "path": "offset",
+      "value": 6,
+      "errors": []
+    },
+    {
+      "path": "offset",
+      "value": 99,
+      "errors": [
+        "value must be a number 0..12 (space)"
+      ]
+    },
+    {
+      "path": "sticky",
+      "value": false,
+      "errors": []
+    },
+    {
+      "path": "sticky",
+      "value": "maybe",
+      "errors": [
+        "value must be true or false"
+      ]
+    },
+    {
+      "path": "menu.plan-studio.plan.display",
+      "value": "icons",
+      "errors": []
+    },
+    {
+      "path": "menu.plan-studio.plan.display",
+      "value": "pictures",
+      "errors": [
+        "value must be one of icons-text, text, icons, numbered"
+      ]
+    },
+    {
+      "path": "menu.plan-studio.plan.asset",
+      "value": "icon-rail",
+      "errors": []
+    },
+    {
+      "path": "menu.plan-studio.plan.asset",
+      "value": "Not Ok",
+      "errors": [
+        "value must be a jump-menu asset id"
+      ]
+    },
+    {
+      "path": "menu.plan-studio.plan.nope",
+      "value": 1,
+      "errors": [
+        "unknown jump-menu path menu.plan-studio.plan.nope (menu.<menu id>.<field> or menu.<menu id>.asset)"
+      ]
+    },
+    {
+      "path": "menu..display",
+      "value": "text",
+      "errors": [
+        "unknown jump-menu path menu..display (menu.<menu id>.<field> or menu.<menu id>.asset)"
+      ]
+    },
+    {
+      "path": "nope",
+      "value": 1,
+      "errors": [
+        "unknown jump-menu field nope"
+      ]
+    }
+  ],
+  "config": {
+    "overrides": {
+      "location": "left",
+      "menu.plan-studio.plan.display": "numbered",
+      "menu.plan-studio.plan.asset": "icon-rail",
+      "menu.other.location": "floating",
+      "menu.plan-studio.plan.offset": 40,
+      "nonsense": "x"
+    },
+    "plan": {
+      "config": {
+        "location": "left",
+        "display": "numbered",
+        "variant": "chips",
+        "size": "md",
+        "density": "theme",
+        "sticky": true,
+        "collapsible": false,
+        "collapsed": false,
+        "spy": true,
+        "smooth": true,
+        "overflow": "scroll",
+        "offset": 12,
+        "sections": []
+      },
+      "asset": "icon-rail"
+    },
+    "other": {
+      "config": {
+        "location": "floating",
+        "display": "icons-text",
+        "variant": "chips",
+        "size": "md",
+        "density": "theme",
+        "sticky": true,
+        "collapsible": false,
+        "collapsed": false,
+        "spy": true,
+        "smooth": true,
+        "overflow": "scroll",
+        "offset": 4,
+        "sections": []
+      },
+      "asset": null
+    },
+    "none": {
+      "config": {
+        "location": "left",
+        "display": "icons-text",
+        "variant": "chips",
+        "size": "md",
+        "density": "theme",
+        "sticky": true,
+        "collapsible": false,
+        "collapsed": false,
+        "spy": true,
+        "smooth": true,
+        "overflow": "scroll",
+        "offset": 4,
+        "sections": []
+      },
+      "asset": null
+    },
+    "bare": {
+      "config": {
+        "location": "top",
+        "display": "icons-text",
+        "variant": "chips",
+        "size": "md",
+        "density": "theme",
+        "sticky": true,
+        "collapsible": false,
+        "collapsed": false,
+        "spy": true,
+        "smooth": true,
+        "overflow": "scroll",
+        "offset": 4,
+        "sections": []
+      },
+      "asset": null
+    }
+  },
+  "items": {
+    "icons-text": [
+      {
+        "id": "basics",
+        "label": "Basics",
+        "icon": "edit",
+        "n": 1,
+        "showIcon": true,
+        "showText": true,
+        "text": "Basics",
+        "name": "Basics"
+      },
+      {
+        "id": "steps",
+        "label": "Steps",
+        "icon": "list",
+        "n": 2,
+        "showIcon": true,
+        "showText": true,
+        "text": "Steps",
+        "name": "Steps"
+      },
+      {
+        "id": "lists",
+        "label": "Requirements",
+        "n": 3,
+        "showIcon": false,
+        "showText": true,
+        "text": "Requirements",
+        "name": "Requirements"
+      },
+      {
+        "id": "notes",
+        "label": "Notes",
+        "icon": "file",
+        "n": 4,
+        "showIcon": true,
+        "showText": true,
+        "text": "Notes",
+        "name": "Notes"
+      }
+    ],
+    "text": [
+      {
+        "id": "basics",
+        "label": "Basics",
+        "icon": "edit",
+        "n": 1,
+        "showIcon": false,
+        "showText": true,
+        "text": "Basics",
+        "name": "Basics"
+      },
+      {
+        "id": "steps",
+        "label": "Steps",
+        "icon": "list",
+        "n": 2,
+        "showIcon": false,
+        "showText": true,
+        "text": "Steps",
+        "name": "Steps"
+      },
+      {
+        "id": "lists",
+        "label": "Requirements",
+        "n": 3,
+        "showIcon": false,
+        "showText": true,
+        "text": "Requirements",
+        "name": "Requirements"
+      },
+      {
+        "id": "notes",
+        "label": "Notes",
+        "icon": "file",
+        "n": 4,
+        "showIcon": false,
+        "showText": true,
+        "text": "Notes",
+        "name": "Notes"
+      }
+    ],
+    "icons": [
+      {
+        "id": "basics",
+        "label": "Basics",
+        "icon": "edit",
+        "n": 1,
+        "showIcon": true,
+        "showText": false,
+        "text": "",
+        "name": "Basics"
+      },
+      {
+        "id": "steps",
+        "label": "Steps",
+        "icon": "list",
+        "n": 2,
+        "showIcon": true,
+        "showText": false,
+        "text": "",
+        "name": "Steps"
+      },
+      {
+        "id": "lists",
+        "label": "Requirements",
+        "n": 3,
+        "showIcon": false,
+        "showText": true,
+        "text": "3",
+        "name": "Requirements"
+      },
+      {
+        "id": "notes",
+        "label": "Notes",
+        "icon": "file",
+        "n": 4,
+        "showIcon": true,
+        "showText": false,
+        "text": "",
+        "name": "Notes"
+      }
+    ],
+    "numbered": [
+      {
+        "id": "basics",
+        "label": "Basics",
+        "icon": "edit",
+        "n": 1,
+        "showIcon": false,
+        "showText": true,
+        "text": "1. Basics",
+        "name": "Basics"
+      },
+      {
+        "id": "steps",
+        "label": "Steps",
+        "icon": "list",
+        "n": 2,
+        "showIcon": false,
+        "showText": true,
+        "text": "2. Steps",
+        "name": "Steps"
+      },
+      {
+        "id": "lists",
+        "label": "Requirements",
+        "n": 3,
+        "showIcon": false,
+        "showText": true,
+        "text": "3. Requirements",
+        "name": "Requirements"
+      },
+      {
+        "id": "notes",
+        "label": "Notes",
+        "icon": "file",
+        "n": 4,
+        "showIcon": false,
+        "showText": true,
+        "text": "4. Notes",
+        "name": "Notes"
+      }
+    ]
+  },
+  "spy": {
+    "positions": [
+      {
+        "id": "basics",
+        "top": 0,
+        "bottom": 400
+      },
+      {
+        "id": "steps",
+        "top": 400,
+        "bottom": 900
+      },
+      {
+        "id": "lists",
+        "top": 900,
+        "bottom": 1500
+      },
+      {
+        "id": "notes",
+        "top": 1500,
+        "bottom": 1600
+      }
+    ],
+    "cases": [
+      {
+        "scrollTop": 0,
+        "viewport": 600,
+        "scrollMax": 1600,
+        "offset": 32,
+        "active": "basics"
+      },
+      {
+        "scrollTop": 399,
+        "viewport": 600,
+        "scrollMax": 1600,
+        "offset": 32,
+        "active": "steps"
+      },
+      {
+        "scrollTop": 420,
+        "viewport": 600,
+        "scrollMax": 1600,
+        "offset": 32,
+        "active": "steps"
+      },
+      {
+        "scrollTop": 905,
+        "viewport": 600,
+        "scrollMax": 1600,
+        "offset": 32,
+        "active": "lists"
+      },
+      {
+        "scrollTop": 1000,
+        "viewport": 600,
+        "scrollMax": 1600,
+        "offset": 32,
+        "active": "notes"
+      },
+      {
+        "scrollTop": 1100,
+        "viewport": 600,
+        "scrollMax": 1600,
+        "offset": 32,
+        "active": "notes"
+      },
+      {
+        "scrollTop": 1000,
+        "viewport": 600,
+        "scrollMax": 0,
+        "offset": 32,
+        "active": "lists"
+      }
+    ],
+    "empty": null
+  },
+  "more": [
+    {
+      "widths": [
+        80,
+        90,
+        100,
+        110
+      ],
+      "room": 500,
+      "more": 60,
+      "gap": 8,
+      "out": {
+        "shown": 4,
+        "more": false
+      }
+    },
+    {
+      "widths": [
+        80,
+        90,
+        100,
+        110
+      ],
+      "room": 300,
+      "more": 60,
+      "gap": 8,
+      "out": {
+        "shown": 2,
+        "more": true
+      }
+    },
+    {
+      "widths": [
+        80,
+        90,
+        100,
+        110
+      ],
+      "room": 100,
+      "more": 60,
+      "gap": 8,
+      "out": {
+        "shown": 1,
+        "more": true
+      }
+    },
+    {
+      "widths": [],
+      "room": 300,
+      "more": 60,
+      "gap": 8,
+      "out": {
+        "shown": 0,
+        "more": false
+      }
+    },
+    {
+      "widths": [
+        400
+      ],
+      "room": 100,
+      "more": 60,
+      "gap": 0,
+      "out": {
+        "shown": 1,
+        "more": true
+      }
+    }
+  ],
+  "step": [
+    {
+      "current": "steps",
+      "dir": 1,
+      "out": "lists"
+    },
+    {
+      "current": "notes",
+      "dir": 1,
+      "out": "basics"
+    },
+    {
+      "current": "basics",
+      "dir": -1,
+      "out": "notes"
+    },
+    {
+      "current": null,
+      "dir": 1,
+      "out": "basics"
+    },
+    {
+      "current": null,
+      "dir": -1,
+      "out": "notes"
+    },
+    {
+      "current": "steps",
+      "dir": "first",
+      "out": "basics"
+    },
+    {
+      "current": "steps",
+      "dir": "last",
+      "out": "notes"
+    }
+  ],
+  "collapsed": {
+    "parsed": [
+      {
+        "a": true,
+        "b": false
+      },
+      {
+        "a": true
+      },
+      {},
+      {}
+    ],
+    "with": [
+      {
+        "a": true,
+        "b": true
+      },
+      {
+        "b": true
+      },
+      {
+        "x": false
+      }
+    ]
+  }
+}

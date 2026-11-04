@@ -19,7 +19,7 @@
  * A command:
  *   { $axf: 'control@1', op, target, path?, value?, action?, select?, confirm?, by?, reason? }
  *   op      list | get | set | reset | add | remove | act
- *   target  tokens.theme | tokens.style | tokens.layout | tokens.typography | tokens.density | tokens.sizing | tokens.nav |
+ *   target  tokens.theme | tokens.style | tokens.layout | tokens.typography | tokens.density | tokens.sizing | tokens.nav | tokens.jump |
  *           tokens.look | tokens.custom | tokens.slots | amberx.items | amberx.lists | planner.plans | planner.builds |
  *           console.screens | console.dialogs | console.settings | console.actions | console.nav | console.clients |
  *           pass.scopes (timed veto passes, core/engines/control-pass.mjs) |
@@ -40,6 +40,7 @@
 import { SCALE_FIELDS, SCALE_ENUMS, scaleErrors } from './scale-rules.mjs';
 import { LAYOUT_ENUMS, LAYOUT_FIELDS, LAYOUT_SWITCHES, layoutErrors, layoutToken } from './layout-rules.mjs';
 import { NAV_ACCENT_PREFIX, navFieldErrors, navStyleTokens } from './navstyle-rules.mjs';
+import { JUMP_MENU_PREFIX, jumpFieldErrors, jumpMenuPath, jumpMenuTokens } from './jumpmenu-rules.mjs';
 import { PASS_ACTS, PASS_SCOPES, PASS_SCOPE_IDS, PASS_TARGET, passGrantErrors } from './control-pass.mjs';
 
 export const CONTROL_FRAME = 'control@1';
@@ -116,6 +117,7 @@ export const CONTROL_TARGETS = {
   'plugins.commands': { domain: 'plugins', label: 'Plugin commands', ops: ['list', 'get', 'act'], paths: 'host', select: PLUGIN_SELECT, acts: { run: {} }, actEffect: { run: 'write' }, doc: `Every command of every plugin, made automatically from what the plugin has (core/engines/plugin-commands.mjs): its server routes, its registered actions and its plugin.json commands. path = <plugin>/<command> (list names them); act run runs it with input = what it takes. A command that deletes needs control.plugins.delete and a confirm token (the same two-step flow as remove); an action runs in the open console like console.actions.` },
   'plugins.reads': { domain: 'plugins', label: 'Plugin reads', ops: ['list', 'get', 'act'], paths: 'host', select: PLUGIN_SELECT, acts: { read: {} }, actEffect: { read: 'read' }, doc: 'Everything a plugin lets you read: its GET routes, its data folder (data, data-file) and its info. path = <plugin>/<read>; act read answers it (input = its query).' },
   'tokens.nav': { domain: 'tokens', label: 'Navigation style tokens', asset: 'nav-style', ops: TOKEN_OPS, paths: 'static', value: 'field', doc: 'nav-style@1 (core/engines/navstyle-rules.mjs): the navigation menu with sub menus: colours (colour-theme token ids), font, icons, density, width, the sub-menu animation, behaviour (one or many open, tap or hover, auto-collapse, remember, follow the active page, swipe), pinned / hidden / ordered items (comma-separated ids) and accents.<item id>. Only navs that opt in (nav-menu navStyle: true) read it.' },
+  'tokens.jump': { domain: 'tokens', label: 'Jump menu tokens', asset: 'jump-menu', ops: TOKEN_OPS, paths: 'static', value: 'field', doc: 'jump-menu@1 (core/engines/jumpmenu-rules.mjs): the in-page section index (Plan Studio\'s plan view, long settings pages, reports): location (top, left, right, bottom, floating), display (icons-text, text, icons, numbered), variant, size, density, sticky, collapsible / collapsed, scroll-spy, smooth scrolling, overflow (wrap, scroll, more) and the scroll offset. A plain field is app-wide; menu.<menu id>.<field> is one page\'s own setting and menu.<menu id>.asset picks the jump-menu asset that page uses (its right-click Change jump menu).' },
 };
 export const CONTROL_TARGET_IDS = Object.keys(CONTROL_TARGETS);
 
@@ -172,6 +174,7 @@ export function controlPaths(target) {
       ];
     }
     case 'tokens.nav': return navStyleTokens().map((t) => ({ ...t, token: `nav-style ${t.id}` }));
+    case 'tokens.jump': return jumpMenuTokens().map((t) => ({ ...t, token: `jump-menu ${t.id}` }));
     case 'console.nav': return [{ id: 'here', kind: 'location' }];
     case PASS_TARGET: return PASS_SCOPE_IDS.map((id) => ({ id, kind: 'scope', label: PASS_SCOPES[id].label, targets: [...PASS_SCOPES[id].targets], ops: [...PASS_SCOPES[id].ops] }));
     default: return null;
@@ -181,6 +184,7 @@ export function controlPaths(target) {
 /** Is `path` a path of a static token target? (host / entity targets: the host decides.) */
 export function controlPathKnown(target, path) {
   if (target === 'tokens.nav' && typeof path === 'string' && path.startsWith(NAV_ACCENT_PREFIX)) return /^accents\.[a-z0-9][a-z0-9._:/-]{0,119}$/i.test(path);
+  if (target === 'tokens.jump' && typeof path === 'string' && path.startsWith(JUMP_MENU_PREFIX)) return jumpMenuPath(path) !== null;
   const ps = controlPaths(target);
   return ps ? ps.some((p) => p.id === path) : null;
 }
@@ -230,6 +234,7 @@ export function controlValueErrors(target, path, value) {
     case 'tokens.layout': return layoutErrors('layout', { [path]: value });
     case 'tokens.typography': case 'tokens.density': case 'tokens.sizing': { const [g, f] = path.split('.'); return scaleErrors(target.slice('tokens.'.length), { [g]: { [f]: value } }); }
     case 'tokens.nav': return navFieldErrors(path, value);
+    case 'tokens.jump': return jumpFieldErrors(path, value);
     default: return [];
   }
 }

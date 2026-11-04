@@ -1526,6 +1526,37 @@
         "target": "apply-layout",
         "title": "Apply layout",
         "text": "Lays the open tabs out on the layout you picked, spread evenly over its panes. The pane limit holds: a layout with more panes uses only its first ones."
+      },
+      {
+        "target": "more",
+        "title": "More",
+        "text": "The sections that don’t fit on the jump menu’s line. Tap it to pick one and the page scrolls there.",
+        "kind": "button"
+      },
+      {
+        "target": "this-page",
+        "title": "This page",
+        "text": "These jump menu settings apply to this page only and beat the app-wide ones here. Right-click any jump menu to get back to them.",
+        "kind": "tab",
+        "tryIt": "Pick Left under Location and watch the page’s section index move to the side."
+      },
+      {
+        "target": "every-jump-menu",
+        "title": "Every jump menu",
+        "text": "These settings apply to every jump menu in the app. A page with its own settings keeps those on top.",
+        "kind": "tab"
+      },
+      {
+        "target": "jump-menu-for-this-page",
+        "title": "Jump menu for this page",
+        "text": "Which jump-menu asset this page draws its section index with (chips, a rail, numbered outline, a floating pill…). The app’s own stays for every other page.",
+        "kind": "field"
+      },
+      {
+        "target": "jump-menu-for-the-app",
+        "title": "Jump menu for the app",
+        "text": "Which jump-menu asset every page in the app draws its section index with, unless a page picked its own.",
+        "kind": "field"
       }
     ],
     "intros": [

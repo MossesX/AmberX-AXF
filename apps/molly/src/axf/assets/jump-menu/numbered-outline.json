@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "jump-menu",
+  "id": "numbered-outline",
+  "name": "Numbered outline",
+  "version": "1.0.0",
+  "description": "A numbered table of contents down the left, underline style, roomy, sticky. Reads like a document outline.",
+  "author": "AmberX AXF",
+  "tags": [
+    "left",
+    "numbered",
+    "outline"
+  ],
+  "data": {
+    "location": "left",
+    "display": "numbered",
+    "variant": "underline",
+    "size": "md",
+    "density": "roomy",
+    "sticky": true,
+    "collapsible": true,
+    "collapsed": false,
+    "spy": true,
+    "smooth": true,
+    "overflow": "wrap",
+    "offset": 4
+  }
+}

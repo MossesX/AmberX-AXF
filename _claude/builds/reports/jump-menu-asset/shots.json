@@ -1,0 +1,70 @@
+[
+  {
+    "name": "plan-editor-classic-chips",
+    "steps": [
+      { "wait": 15000 }, { "eval": "location.reload()" }, { "wait": 20000 },
+      { "search": "Plan Studio" }, { "wait": 8000 },
+      { "click": "text=New plan" }, { "wait": 2500 },
+      { "eval": "window.AXF.settings.clear('axf.tokens.jump')" }, { "wait": 800 }
+    ]
+  },
+  {
+    "name": "plan-editor-left-rail",
+    "steps": [
+      { "wait": 15000 }, { "eval": "location.reload()" }, { "wait": 20000 },
+      { "search": "Plan Studio" }, { "wait": 8000 },
+      { "click": "text=New plan" }, { "wait": 2500 },
+      { "eval": "window.AXF.settings.set('axf.tokens.jump', { '*': { 'menu.plan-studio.plan.asset': 'left-rail' } })" }, { "wait": 1200 }
+    ]
+  },
+  {
+    "name": "plan-editor-numbered-outline-spy",
+    "steps": [
+      { "wait": 15000 }, { "eval": "location.reload()" }, { "wait": 20000 },
+      { "search": "Plan Studio" }, { "wait": 8000 },
+      { "click": "text=New plan" }, { "wait": 2500 },
+      { "eval": "window.AXF.settings.set('axf.tokens.jump', { '*': { 'menu.plan-studio.plan.asset': 'numbered-outline' } })" }, { "wait": 1200 },
+      { "eval": "document.getElementById('axp-ps-links')?.scrollIntoView({ block: 'start' })" }, { "wait": 1500 }
+    ]
+  },
+  {
+    "name": "plan-editor-floating-pill",
+    "steps": [
+      { "wait": 15000 }, { "eval": "location.reload()" }, { "wait": 20000 },
+      { "search": "Plan Studio" }, { "wait": 8000 },
+      { "click": "text=New plan" }, { "wait": 2500 },
+      { "eval": "window.AXF.settings.set('axf.tokens.jump', { '*': { 'menu.plan-studio.plan.asset': 'floating-pill' } })" }, { "wait": 1200 },
+      { "eval": "document.getElementById('axp-ps-steps')?.scrollIntoView({ block: 'start' })" }, { "wait": 1500 }
+    ]
+  },
+  {
+    "name": "plan-editor-context-menu",
+    "steps": [
+      { "wait": 15000 }, { "eval": "location.reload()" }, { "wait": 20000 },
+      { "search": "Plan Studio" }, { "wait": 8000 },
+      { "click": "text=New plan" }, { "wait": 2500 },
+      { "eval": "window.AXF.settings.clear('axf.tokens.jump')" }, { "wait": 800 },
+      { "eval": "(() => { const el = document.querySelector('[data-axf-jump=\"plan-studio.plan\"] .fx-jump__item'); const r = el.getBoundingClientRect(); el.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true, clientX: r.left + 20, clientY: r.top + 10 })); })()" }, { "wait": 1200 }
+    ]
+  },
+  {
+    "name": "jump-menu-settings-dialog",
+    "steps": [
+      { "wait": 15000 }, { "eval": "location.reload()" }, { "wait": 20000 },
+      { "search": "Plan Studio" }, { "wait": 8000 },
+      { "click": "text=New plan" }, { "wait": 2500 },
+      { "eval": "window.AXF.settings.clear('axf.tokens.jump')" }, { "wait": 500 },
+      { "eval": "window.AXF.openDialog('jump-menu-settings', { id: 'plan-studio.plan' })" }, { "wait": 1500 }
+    ]
+  },
+  {
+    "name": "assets-screen-jump-menu",
+    "steps": [
+      { "wait": 15000 }, { "eval": "location.reload()" }, { "wait": 20000 },
+      { "eval": "window.AXF.navigate('assets')" }, { "wait": 4000 },
+      { "click": "text=Navigation" }, { "wait": 1500 },
+      { "eval": "(() => { const h = [...document.querySelectorAll('h2, h3')].find((x) => /Jump menu/.test(x.textContent || '')); h?.scrollIntoView({ block: 'start' }); })()" }, { "wait": 1200 }
+    ],
+    "viewports": ["desktop"]
+  }
+]

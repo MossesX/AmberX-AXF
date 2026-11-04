@@ -33,6 +33,7 @@ import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProvide
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
 import { navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
+import { jumpConfig, type JumpMenuData } from './engines/jumpmenu';
 import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
 import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, resolveInterface, scopeAttrs, scopeSheet, scopeVarsCss, type InterfaceData, type ResolvedInterface } from './engines/interface';
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceChange, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
@@ -623,6 +624,25 @@ export class AxfRuntime {
     const a = this.assetOrNull('nav-style' as AssetType);
     if (!a) return null;
     return normalizeNavStyle(this.withTokenOverrides('tokens.nav', 'nav-style' as AssetType, a.data));
+  }
+
+  /**
+   * The jump menu in force for one page (jump-menu@1, core/engines/jumpmenu-rules.mjs): the app's slot asset (or the
+   * asset that page picked with `menu.<id>.asset`) with the control@1 `tokens.jump` overrides written in: plain fields
+   * app-wide, then that page's own `menu.<id>.<field>`. `overrides` is the flat map in force (for the settings dialog).
+   */
+  jumpMenuData(menuId?: string): { data: JumpMenuData; assetId: string | null; overrides: Record<string, unknown> } {
+    const type = 'jump-menu' as AssetType;
+    const raw = this.settings.get(CONTROL_TOKEN_SLOTS['tokens.jump'].key);
+    const slot = this.assetOrNull(type);
+    const overrides = effectiveTokenOverrides(raw, slot?.id) as Record<string, unknown>;
+    const pick = jumpConfig(slot?.data, overrides, menuId);
+    if (pick.asset && pick.asset !== slot?.id && this.registry.has(type, pick.asset)) {
+      const a = this.registry.get(type, pick.asset)!;
+      const o = effectiveTokenOverrides(raw, a.id) as Record<string, unknown>;
+      return { data: jumpConfig(a.data, o, menuId).config, assetId: a.id, overrides: o };
+    }
+    return { data: pick.config, assetId: slot?.id ?? null, overrides };
   }
 
   /** Nav sections libraries and plugins added, in the order they were added. */

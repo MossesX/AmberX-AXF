@@ -42,6 +42,7 @@ import { DEFAULT_DOCK_RULES, DOCK_CONTRACT, DOCK_LAYOUT_MAX_PANES, DOCK_SIDES, D
 import type { Pane, TabGroup } from '../core/engines/windows';
 import { NAV_STYLE_FIELDS, NAV_STYLE_FRAME, navArrange, navFollow, navPathTo, navStyleErrors, navStyleOutput, navToggle, normalizeNavStyle } from '../core/engines/navstyle';
 import { navFieldErrors } from '../core/engines/navstyle-rules.mjs';
+import { JUMP_FIELDS, JUMP_MENU_FRAME, jumpConfig, jumpFieldErrors, jumpItems, jumpMenuErrors, jumpMenuOutput, jumpMoreSplit, jumpSpy, jumpStep, normalizeJumpMenu, parseJumpCollapsed, withJumpCollapsed } from '../core/engines/jumpmenu';
 import { CHROME_KINDS, DEFAULT_MERGE, DEFAULT_PRESETS, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, dockRulesOf, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId as xNsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
 import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES as CHROME_WIDGET_TONES, WIDGET_TYPES as CHROME_WIDGET_TYPES, activeNav, chromePicks, emptyChrome, mergeChrome, parseChromeBundle, routePick, type ChromeBundle } from '../core/engines/chrome';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
@@ -1733,6 +1734,47 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     merge: Object.entries(mergeCases).map(([name, m]) => { const d = normalizeXLayout({ apps: starters[0]!.data.apps, merge: m }); return { name, merge: d.merge, hidden: guestHidden(d), takes: guestTakes(d), url: guestUrl(d, d.apps[0]!), urlRoute: guestUrl(d, d.apps[2]!, 'molly', '#/build'), userAgent: guestUserAgent(d) }; }),
     toolbars: { all: visibleToolbars(molly), top: visibleToolbars(molly, 'top'), bottom: visibleToolbars(molly, 'bottom'), everyOn: visibleToolbars({ toolbars: molly.toolbars.map((t) => ({ ...t, visible: true })) }).map((t) => t.slot) },
     presets: { offered: idePresets(molly, ['ide', 'single', 'two-columns', 'other']), none: idePresets(molly, []), rules: dockRulesOf(molly), rulesClamped: dockRulesOf(normalizeXLayout({ apps: [], ide: { paneLimit: 99 } })) },
+  });
+}
+// Jump menu (jump-menu@1, build jump-menu-asset, Nov 4 2026; core/engines/jumpmenu.ts + jumpmenu-rules.mjs): an in-page
+// section index — normalize, validate, compile to tokens, overrides (app-wide + per page), scroll-spy, overflow, keys, folded map.
+{
+  const starters = load('jump-menu');
+  const bad: Record<string, unknown> = {
+    nothing: null, string: 'x',
+    'bad values': { location: 'middle', display: 'pictures', variant: 'neon', size: 'xl', density: 7, sticky: 'yes', overflow: 'hide', offset: 99, sections: [{ id: 'Bad Id!', label: 'x' }, { label: 'no id' }, { id: 'a' }, { id: 'a', label: 'twice' }] },
+    'sections not a list': { sections: 'basics,steps' },
+  };
+  const normalizeInputs: Record<string, unknown> = { ...bad, empty: {}, 'collapsed without collapsible': { collapsed: true }, 'strings coerced': { sticky: 'false', offset: '2.6', size: 'lg' }, 'sections cleaned': { sections: [{ id: 'basics', label: '  Basics ', icon: 'edit' }, { id: 'steps' }, { id: 'steps', label: 'again' }, { id: 'x', label: 'y', icon: 'Not An Icon' }] } };
+  const sections = [{ id: 'basics', label: 'Basics', icon: 'edit' }, { id: 'steps', label: 'Steps', icon: 'list' }, { id: 'lists', label: 'Requirements' }, { id: 'notes', label: 'Notes', icon: 'file' }];
+  const overrides = { location: 'left', 'menu.plan-studio.plan.display': 'numbered', 'menu.plan-studio.plan.asset': 'icon-rail', 'menu.other.location': 'floating', 'menu.plan-studio.plan.offset': 40, nonsense: 'x' };
+  const positions = [{ id: 'basics', top: 0, bottom: 400 }, { id: 'steps', top: 400, bottom: 900 }, { id: 'lists', top: 900, bottom: 1500 }, { id: 'notes', top: 1500, bottom: 1600 }];
+  write('jump-menu.json', {
+    contract: JUMP_MENU_FRAME,
+    fields: JUMP_FIELDS,
+    starters: Object.fromEntries(starters.map((a) => [a.id, { normalized: normalizeJumpMenu(a.data), errors: jumpMenuErrors(a.data), valid: validateAsset(a), output: jumpMenuOutput(a.data), reduced: jumpMenuOutput(a.data, { reducedMotion: true }), folded: jumpMenuOutput(a.data, { collapsed: true }) }])),
+    normalize: Object.entries(normalizeInputs).map(([name, raw]) => ({ name, raw, out: normalizeJumpMenu(raw) })),
+    errors: Object.entries(bad).map(([name, raw]) => ({ name, raw, errors: jumpMenuErrors(raw) })),
+    fieldErrors: [['location', 'left'], ['location', 'middle'], ['offset', 6], ['offset', 99], ['sticky', false], ['sticky', 'maybe'], ['menu.plan-studio.plan.display', 'icons'], ['menu.plan-studio.plan.display', 'pictures'], ['menu.plan-studio.plan.asset', 'icon-rail'], ['menu.plan-studio.plan.asset', 'Not Ok'], ['menu.plan-studio.plan.nope', 1], ['menu..display', 'text'], ['nope', 1]].map(([path, value]) => ({ path, value, errors: jumpFieldErrors(path as string, value) })),
+    config: {
+      overrides,
+      plan: jumpConfig(starters.find((a) => a.id === 'classic-chips')!.data, overrides, 'plan-studio.plan'),
+      other: jumpConfig(starters.find((a) => a.id === 'classic-chips')!.data, overrides, 'other'),
+      none: jumpConfig(starters.find((a) => a.id === 'classic-chips')!.data, overrides, undefined),
+      bare: jumpConfig(undefined, {}, 'x'),
+    },
+    items: Object.fromEntries((['icons-text', 'text', 'icons', 'numbered'] as const).map((d) => [d, jumpItems(sections, d)])),
+    spy: {
+      positions,
+      cases: [[0, 600, 1600], [399, 600, 1600], [420, 600, 1600], [905, 600, 1600], [1000, 600, 1600], [1100, 600, 1600], [1000, 600, 0]].map(([top, vp, max]) => ({ scrollTop: top, viewport: vp, scrollMax: max, offset: 32, active: jumpSpy(positions, top!, vp!, max!, 32) })),
+      empty: jumpSpy([], 0, 600, 1600),
+    },
+    more: [[[80, 90, 100, 110], 500, 60, 8], [[80, 90, 100, 110], 300, 60, 8], [[80, 90, 100, 110], 100, 60, 8], [[], 300, 60, 8], [[400], 100, 60, 0]].map(([widths, room, more, gap]) => ({ widths, room, more, gap, out: jumpMoreSplit(widths as number[], room as number, more as number, gap as number) })),
+    step: [['steps', 1], ['notes', 1], ['basics', -1], [null, 1], [null, -1], ['steps', 'first'], ['steps', 'last']].map(([cur, dir]) => ({ current: cur, dir, out: jumpStep(sections.map((s) => s.id), cur as string | null, dir as never) })),
+    collapsed: {
+      parsed: [parseJumpCollapsed('{"a":true,"b":false,"Bad Id!":true,"c":"yes"}'), parseJumpCollapsed({ a: true }), parseJumpCollapsed('nope'), parseJumpCollapsed(null)],
+      with: [withJumpCollapsed({ a: true }, 'b', true), withJumpCollapsed({ a: true, b: true }, 'a', null), withJumpCollapsed(undefined, 'x', false)],
+    },
   });
 }
 // Navigation style (nav-style@1, build molly-nav-submenus, Nov 3 2026; core/engines/navstyle.ts + navstyle-rules.mjs): the

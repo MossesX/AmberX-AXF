@@ -97,8 +97,9 @@
 .axp-plan-studio__editor { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); min-width: 0; }
 .axp-plan-studio__edbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); position: sticky; top: 0; z-index: 6; background: var(--fx-surface); padding-block: var(--fx-dens-gap-sm); border-bottom: var(--axp-ps-hair); }
 .axp-plan-studio__edtitle { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 60%; }
-.axp-plan-studio__jump { display: flex; gap: var(--fx-dens-gap-sm); overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
-.axp-plan-studio__jump > * { flex: 0 0 auto; scroll-snap-align: start; white-space: nowrap; }
+/* the section index is a jump-menu@1 asset (framework JumpMenu, menu id plan-studio.plan): it lays the sections out per its location */
+.axp-plan-studio__body { gap: var(--fx-dens-gap-2xl); }
+.axp-plan-studio__body > .fx-jump-host__content { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xl); min-width: 0; }
 .axp-plan-studio__sec { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); scroll-margin-top: calc(var(--fx-font-size) * 4); min-width: 0; }
 .axp-plan-studio__sech { margin: 0; display: flex; align-items: center; gap: var(--fx-dens-gap-md); font-size: var(--fx-font-size); padding-bottom: var(--fx-dens-gap-xs); border-bottom: var(--axp-ps-hair); }
 .axp-plan-studio__grid2 { display: grid; grid-template-columns: 1fr; gap: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl); }

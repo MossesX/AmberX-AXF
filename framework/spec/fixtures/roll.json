@@ -34,6 +34,7 @@
     "dock-layout": false,
     "xlayout": false,
     "nav-style": true,
+    "jump-menu": true,
     "behavior-theme": true,
     "design-package": false,
     "style-package": false,
@@ -394,6 +395,14 @@
           "soft-fade",
           "standard",
           "still"
+        ],
+        "jump-menu": [
+          "bottom-tabs",
+          "classic-chips",
+          "floating-pill",
+          "icon-rail",
+          "left-rail",
+          "numbered-outline"
         ],
         "behavior-theme": [
           "alert",
@@ -796,6 +805,14 @@
           "soft-fade",
           "standard",
           "still"
+        ],
+        "jump-menu": [
+          "bottom-tabs",
+          "classic-chips",
+          "floating-pill",
+          "icon-rail",
+          "left-rail",
+          "numbered-outline"
         ],
         "behavior-theme": [
           "alert",
@@ -1205,6 +1222,14 @@
           "standard",
           "still"
         ],
+        "jump-menu": [
+          "bottom-tabs",
+          "classic-chips",
+          "floating-pill",
+          "icon-rail",
+          "left-rail",
+          "numbered-outline"
+        ],
         "behavior-theme": [
           "alert",
           "amber",
@@ -1607,6 +1632,14 @@
           "standard",
           "still"
         ],
+        "jump-menu": [
+          "bottom-tabs",
+          "classic-chips",
+          "floating-pill",
+          "icon-rail",
+          "left-rail",
+          "numbered-outline"
+        ],
         "behavior-theme": [
           "alert",
           "amber",
@@ -1980,6 +2013,14 @@
           "soft-fade",
           "standard",
           "still"
+        ],
+        "jump-menu": [
+          "bottom-tabs",
+          "classic-chips",
+          "floating-pill",
+          "icon-rail",
+          "left-rail",
+          "numbered-outline"
         ],
         "behavior-theme": [
           "alert",
@@ -2382,6 +2423,14 @@
           "soft-fade",
           "standard",
           "still"
+        ],
+        "jump-menu": [
+          "bottom-tabs",
+          "classic-chips",
+          "floating-pill",
+          "icon-rail",
+          "left-rail",
+          "numbered-outline"
         ],
         "behavior-theme": [
           "alert",

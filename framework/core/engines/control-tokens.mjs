@@ -7,7 +7,7 @@
  * Nov 1 2026: "Any theme change applies to all"): one settings key per token set,
  *
  *   axf.tokens.theme | axf.tokens.style | axf.tokens.layout | axf.tokens.typography | axf.tokens.density | axf.tokens.sizing |
- *   axf.tokens.nav
+ *   axf.tokens.nav | axf.tokens.jump
  *     = { "*": { "<path>": value, … }, "<asset id>"?: { … } }
  *
  * `*` applies on top of whichever asset is active in the slot (what the control API writes today); an asset id entry
@@ -28,6 +28,7 @@ export const CONTROL_TOKEN_SLOTS = {
   'tokens.density': { slot: 'density', key: `${CONTROL_TOKENS_PREFIX}density`, root: '' },
   'tokens.sizing': { slot: 'sizing', key: `${CONTROL_TOKENS_PREFIX}sizing`, root: '' },
   'tokens.nav': { slot: 'nav-style', key: `${CONTROL_TOKENS_PREFIX}nav`, root: '' },
+  'tokens.jump': { slot: 'jump-menu', key: `${CONTROL_TOKENS_PREFIX}jump`, root: '' },
 };
 
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);

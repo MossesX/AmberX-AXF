@@ -6,6 +6,7 @@ import { ContextMenuHost, DialogHost, ToastHost, type DialogMap } from './compon
 import { Inspector } from './studio/Inspector';
 import { builtinDialogs } from './studio/builtinDialogs';
 import { bannerSettingsDialog } from './components/BannerSettings';
+import { jumpMenuDialog } from './components/JumpMenu';
 import { FloatingWindowsHost, TabRenderersProvider, windowDialogs, useWindowShortcuts, type TabRenderers } from './windows/WindowHost';
 import { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
 import { useSearchHost } from './components/Search';
@@ -64,7 +65,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
   const showToolbar = layout.showToolbar && regionAccepts(slots, 'toolbar', 'toolbar') && !rt.slotHidden('toolbar');
   const showNav = regionAccepts(slots, 'nav', 'nav-menu') && !rt.slotHidden('nav-menu');
   useWindowShortcuts();
-  const allDialogs: DialogMap = { ...builtinDialogs, ...bannerSettingsDialog, ...windowDialogs, ...terminalDialog, ...dialogs };
+  const allDialogs: DialogMap = { ...builtinDialogs, ...bannerSettingsDialog, ...jumpMenuDialog, ...windowDialogs, ...terminalDialog, ...dialogs };
   // Live search: views, dialogs and page text go into the runtime's search index; picks are focused here.
   useSearchHost(declaredViews, allDialogs);
   const view = views[state.view] ?? Object.values(views)[0];

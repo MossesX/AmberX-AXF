@@ -30,6 +30,7 @@ export * from './engines/job-type-rules.mjs';
 export * as cardRules from './engines/card-rules.mjs';
 export type { CardData, CardModel as DataCardModel, HomeLayout, HomeCard } from './engines/card-rules.mjs';
 export * from './engines/help';
+export * from './engines/jumpmenu';
 export * from './engines/appearance';
 export * from './engines/banner';
 export * from './engines/bannerhide';

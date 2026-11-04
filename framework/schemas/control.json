@@ -2221,6 +2221,130 @@
       ],
       "value": "field",
       "doc": "nav-style@1 (core/engines/navstyle-rules.mjs): the navigation menu with sub menus: colours (colour-theme token ids), font, icons, density, width, the sub-menu animation, behaviour (one or many open, tap or hover, auto-collapse, remember, follow the active page, swipe), pinned / hidden / ordered items (comma-separated ids) and accents.<item id>. Only navs that opt in (nav-menu navStyle: true) read it."
+    },
+    "tokens.jump": {
+      "domain": "tokens",
+      "label": "Jump menu tokens",
+      "asset": "jump-menu",
+      "ops": [
+        "list",
+        "get",
+        "set",
+        "reset"
+      ],
+      "paths": [
+        {
+          "id": "location",
+          "kind": "enum",
+          "options": [
+            "top",
+            "left",
+            "right",
+            "bottom",
+            "floating"
+          ],
+          "default": "top",
+          "token": "jump-menu location"
+        },
+        {
+          "id": "display",
+          "kind": "enum",
+          "options": [
+            "icons-text",
+            "text",
+            "icons",
+            "numbered"
+          ],
+          "default": "icons-text",
+          "token": "jump-menu display"
+        },
+        {
+          "id": "variant",
+          "kind": "enum",
+          "options": [
+            "chips",
+            "underline",
+            "rail",
+            "pill"
+          ],
+          "default": "chips",
+          "token": "jump-menu variant"
+        },
+        {
+          "id": "size",
+          "kind": "enum",
+          "options": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md",
+          "token": "jump-menu size"
+        },
+        {
+          "id": "density",
+          "kind": "enum",
+          "options": [
+            "theme",
+            "compact",
+            "regular",
+            "roomy"
+          ],
+          "default": "theme",
+          "token": "jump-menu density"
+        },
+        {
+          "id": "sticky",
+          "kind": "boolean",
+          "default": true,
+          "token": "jump-menu sticky"
+        },
+        {
+          "id": "collapsible",
+          "kind": "boolean",
+          "default": false,
+          "token": "jump-menu collapsible"
+        },
+        {
+          "id": "collapsed",
+          "kind": "boolean",
+          "default": false,
+          "token": "jump-menu collapsed"
+        },
+        {
+          "id": "spy",
+          "kind": "boolean",
+          "default": true,
+          "token": "jump-menu spy"
+        },
+        {
+          "id": "smooth",
+          "kind": "boolean",
+          "default": true,
+          "token": "jump-menu smooth"
+        },
+        {
+          "id": "overflow",
+          "kind": "enum",
+          "options": [
+            "wrap",
+            "scroll",
+            "more"
+          ],
+          "default": "scroll",
+          "token": "jump-menu overflow"
+        },
+        {
+          "id": "offset",
+          "kind": "number",
+          "min": 0,
+          "max": 12,
+          "default": 4,
+          "token": "jump-menu offset"
+        }
+      ],
+      "value": "field",
+      "doc": "jump-menu@1 (core/engines/jumpmenu-rules.mjs): the in-page section index (Plan Studio's plan view, long settings pages, reports): location (top, left, right, bottom, floating), display (icons-text, text, icons, numbered), variant, size, density, sticky, collapsible / collapsed, scroll-spy, smooth scrolling, overflow (wrap, scroll, more) and the scroll offset. A plain field is app-wide; menu.<menu id>.<field> is one page's own setting and menu.<menu id>.asset picks the jump-menu asset that page uses (its right-click Change jump menu)."
     }
   },
   "aliases": {
@@ -2304,7 +2428,8 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "tokens.jump"
             ],
             "description": "what to control"
           },
@@ -2358,7 +2483,8 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "tokens.jump"
             ],
             "description": "what to control"
           },
@@ -2413,7 +2539,8 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "tokens.jump"
             ],
             "description": "what to control"
           },
@@ -2475,7 +2602,8 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "tokens.jump"
             ],
             "description": "what to control"
           },
@@ -2537,7 +2665,8 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "tokens.jump"
             ],
             "description": "what to control"
           },
@@ -2599,7 +2728,8 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "tokens.jump"
             ],
             "description": "what to control"
           },
@@ -2665,7 +2795,8 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "tokens.jump"
             ],
             "description": "what to control"
           },
@@ -2796,7 +2927,8 @@
       "pass.scopes",
       "plugins.commands",
       "plugins.reads",
-      "tokens.nav"
+      "tokens.nav",
+      "tokens.jump"
     ]
   },
   "schema": {
@@ -2847,7 +2979,8 @@
           "pass.scopes",
           "plugins.commands",
           "plugins.reads",
-          "tokens.nav"
+          "tokens.nav",
+          "tokens.jump"
         ]
       },
       "path": {
@@ -3954,6 +4087,29 @@
           "items.order",
           "items.hidden",
           "items.pinned"
+        ]
+      },
+      "tokens.jump": {
+        "description": "jump-menu@1 (core/engines/jumpmenu-rules.mjs): the in-page section index (Plan Studio's plan view, long settings pages, reports): location (top, left, right, bottom, floating), display (icons-text, text, icons, numbered), variant, size, density, sticky, collapsible / collapsed, scroll-spy, smooth scrolling, overflow (wrap, scroll, more) and the scroll offset. A plain field is app-wide; menu.<menu id>.<field> is one page's own setting and menu.<menu id>.asset picks the jump-menu asset that page uses (its right-click Change jump menu).",
+        "ops": [
+          "list",
+          "get",
+          "set",
+          "reset"
+        ],
+        "paths": [
+          "location",
+          "display",
+          "variant",
+          "size",
+          "density",
+          "sticky",
+          "collapsible",
+          "collapsed",
+          "spy",
+          "smooth",
+          "overflow",
+          "offset"
         ]
       }
     }

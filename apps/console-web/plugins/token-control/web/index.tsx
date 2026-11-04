@@ -19,7 +19,7 @@ interface TargetInfo { domain: string; label: string; ops: string[]; paths: unkn
 interface Registry { ops: string[]; targets: Record<string, TargetInfo>; tools: { name: string; description: string; effect: string }[]; routes: { op: string; method: string; path: string; body?: string; note?: string }[]; cli: { usage: string[]; aliases: Record<string, string> } }
 interface TokenRow { id: string; token?: string; kind: string; unit?: string; min?: number; max?: number; options?: string[]; value: unknown; base?: unknown; overridden?: boolean; asset?: string }
 
-const TOKEN_SETS = ['tokens.theme', 'tokens.style', 'tokens.layout', 'tokens.typography', 'tokens.density', 'tokens.sizing', 'tokens.nav', 'tokens.slots'];
+const TOKEN_SETS = ['tokens.theme', 'tokens.style', 'tokens.layout', 'tokens.typography', 'tokens.density', 'tokens.sizing', 'tokens.nav', 'tokens.jump', 'tokens.slots'];
 const show = (v: unknown) => (v === null || v === undefined ? '–' : typeof v === 'object' ? JSON.stringify(v) : String(v));
 const parse = (s: string): unknown => { try { return JSON.parse(s); } catch { return s; } };
 

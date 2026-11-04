@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "jump-menu",
+  "id": "floating-pill",
+  "name": "Floating pill",
+  "version": "1.0.0",
+  "description": "A pill of icons floating over the bottom of the page, small, folds to a single button; entries that don't fit go under More. Made for the phone.",
+  "author": "AmberX AXF",
+  "tags": [
+    "floating",
+    "pill",
+    "phone"
+  ],
+  "data": {
+    "location": "floating",
+    "display": "icons",
+    "variant": "pill",
+    "size": "sm",
+    "density": "compact",
+    "sticky": true,
+    "collapsible": true,
+    "collapsed": false,
+    "spy": true,
+    "smooth": true,
+    "overflow": "more",
+    "offset": 4
+  }
+}

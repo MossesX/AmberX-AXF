@@ -721,6 +721,71 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-navs-items__name { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: calc(var(--fx-space) * 12); }
 .fx-navs-settings__title { font-size: var(--fx-type-scale-md); margin: 0; }
 
+/* ---------------- Jump menu (jump-menu@1, core/engines/jumpmenu.ts): an in-page section index ----------------
+   Tokens come from the engine on the <nav> (--fx-jump-offset / -font / -icon / -py) and data-fx-jump-* attributes;
+   colours and shapes are the theme's chip / tab / nav rules, so a theme swap restyles every jump menu. */
+.fx-jump-host { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0; }
+.fx-jump-host[data-fx-jump-axis='column'] { flex-direction: row; align-items: flex-start; }
+.fx-jump-host__content { flex: 1 1 auto; min-width: 0; }
+.fx-jump { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0; font-size: var(--fx-jump-font); scroll-margin-top: var(--fx-jump-offset); }
+.fx-jump__list { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0; flex: 1 1 auto; }
+.fx-jump[data-fx-jump-axis='column'], .fx-jump[data-fx-jump-axis='column'] .fx-jump__list { flex-direction: column; align-items: stretch; }
+.fx-jump[data-fx-jump-axis='column'] { flex: 0 0 auto; max-width: calc(var(--fx-space) * 28); }
+.fx-jump[data-fx-jump-display='icons'][data-fx-jump-axis='column'] { max-width: none; }
+/* overflow: scroll sideways with snap (row) / down (column), wrap to more lines, or More (the component folds the rest) */
+.fx-jump[data-fx-jump-overflow='scroll'] .fx-jump__list { overflow: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
+.fx-jump[data-fx-jump-overflow='scroll'] .fx-jump__list > * { flex: 0 0 auto; scroll-snap-align: start; }
+.fx-jump[data-fx-jump-overflow='scroll'][data-fx-jump-axis='column'] .fx-jump__list { scroll-snap-type: y proximity; max-height: 80dvh; }
+.fx-jump[data-fx-jump-overflow='wrap'] .fx-jump__list { flex-wrap: wrap; }
+.fx-jump[data-fx-jump-overflow='more'] .fx-jump__list { overflow: hidden; flex-wrap: nowrap; }
+.fx-jump__more-wrap { position: relative; flex: 0 0 auto; }
+.fx-jump__menu { position: absolute; top: 100%; right: 0; margin-top: var(--fx-dens-gap-xs); min-width: calc(var(--fx-space) * 20); }
+.fx-jump[data-fx-jump-axis='row'] .fx-jump__list > * { white-space: nowrap; }
+/* sticky: top / bottom stick to their edge of the scrolling box, left / right to its top; floating rides the bottom */
+.fx-jump[data-fx-jump-sticky='on'] { position: sticky; z-index: 2; }
+.fx-jump[data-fx-jump-sticky='on'][data-fx-jump-location='top'], .fx-jump[data-fx-jump-sticky='on'][data-fx-jump-axis='column'] { top: 0; }
+.fx-jump[data-fx-jump-sticky='on'][data-fx-jump-location='bottom'] { bottom: 0; }
+.fx-jump[data-fx-jump-location='top'], .fx-jump[data-fx-jump-location='bottom'] { background: var(--fx-bg); padding: var(--fx-dens-gap-xs) 0; }
+.fx-jump[data-fx-jump-location='floating'] { position: sticky; bottom: var(--fx-dens-gap-xl); align-self: flex-end; z-index: 3; margin-top: calc(var(--fx-dens-gap-xl) * -1); max-width: 100%; }
+/* entries: one control class per variant so the theme's chip / tab / nav rules draw them */
+.fx-jump__item { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md); font: inherit; font-size: inherit; cursor: pointer; border: var(--fx-border-w) solid transparent; background: transparent; color: var(--fx-muted); white-space: nowrap; min-height: var(--fx-size-chip-h); }
+.fx-jump__item:hover:not(:disabled) { color: var(--fx-text); }
+.fx-jump__item:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w); }
+.fx-jump__icon { width: var(--fx-jump-icon); height: var(--fx-jump-icon); flex: none; }
+.fx-jump[data-fx-jump-display='icons'] .fx-jump__item { justify-content: center; min-width: var(--fx-row-h); }
+.fx-jump[data-fx-jump-axis='column'] .fx-jump__item { justify-content: flex-start; width: 100%; }
+.fx-jump[data-fx-jump-axis='column'][data-fx-jump-display='icons'] .fx-jump__item { justify-content: center; width: auto; }
+/* chips: the theme's chip */
+.fx-jump--chips .fx-jump__item { padding: var(--fx-jump-py, var(--fx-border-w)) var(--fx-dens-gap-xl); border-radius: 999px; background: var(--fx-surface3); font-weight: 600; }
+.fx-jump--chips .fx-jump__item.is-on { background: var(--fx-accent-soft); color: var(--fx-accent); border-color: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent); }
+/* underline: the theme's tab */
+.fx-jump--underline .fx-jump__item { padding: var(--fx-jump-py, var(--fx-dens-gap-sm)) var(--fx-dens-gap-lg); border-radius: 0; border-bottom-width: calc(var(--fx-border-w) * 2); }
+.fx-jump--underline[data-fx-jump-axis='column'] .fx-jump__item { border-bottom-width: var(--fx-border-w); border-left-width: calc(var(--fx-border-w) * 2); }
+.fx-jump--underline .fx-jump__item.is-on { color: var(--fx-accent); border-bottom-color: var(--fx-accent); }
+.fx-jump--underline[data-fx-jump-axis='column'] .fx-jump__item.is-on { border-bottom-color: transparent; border-left-color: var(--fx-accent); }
+/* rail: the theme's nav item */
+.fx-jump--rail .fx-jump__item { padding: var(--fx-jump-py, var(--fx-dens-gap-sm)) var(--fx-dens-gap-lg); border-radius: var(--fx-radius-sm); }
+.fx-jump--rail .fx-jump__item:hover:not(:disabled) { background: var(--fx-surface2); }
+.fx-jump--rail .fx-jump__item.is-on { background: var(--fx-accent-soft); color: var(--fx-accent); }
+/* pill: one glass pill holding every entry */
+.fx-jump--pill { padding: var(--fx-dens-gap-xs); border-radius: 999px; background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-glass) * 100%), transparent); backdrop-filter: blur(var(--fx-blur)); -webkit-backdrop-filter: blur(var(--fx-blur)); border: var(--fx-border-w) solid var(--fx-border); box-shadow: var(--fx-shadow-md); }
+.fx-jump--pill .fx-jump__item { padding: var(--fx-jump-py, var(--fx-dens-gap-xs)) var(--fx-dens-gap-lg); border-radius: 999px; }
+.fx-jump--pill .fx-jump__item.is-on { background: var(--fx-accent); color: var(--fx-accent-text); }
+/* fold handle */
+.fx-jump__fold { flex: none; margin-left: auto; }
+.fx-jump[data-fx-jump-axis='column'] .fx-jump__fold { margin-left: 0; align-self: flex-end; }
+.fx-jump.is-folded { gap: 0; }
+.fx-jump.is-folded .fx-jump__fold { margin-left: 0; }
+.fx-jump--pill.is-folded { padding: var(--fx-dens-gap-xs); }
+/* settings dialog + preview */
+.fx-jump-settings__bar { flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-lg); }
+.fx-jump-settings__grow { flex: 1 1 auto; }
+.fx-jump-preview { display: flex; min-height: calc(var(--fx-space) * 10); padding: var(--fx-dens-gap-xl); border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); overflow: hidden; }
+.fx-jump-preview[data-fx-jump-location='bottom'], .fx-jump-preview[data-fx-jump-location='floating'] { align-items: flex-end; }
+.fx-jump-preview[data-fx-jump-location='right'] { justify-content: flex-end; }
+.fx-jump-preview .fx-jump { position: static; max-width: 100%; }
+.fx-jump-preview .fx-jump[data-fx-jump-location='floating'] { margin-top: 0; align-self: flex-end; }
+
 /* ---------------- typography & page ---------------- */
 
 .fx-pagehead { display: flex; gap: var(--fx-dens-gap-3xl); justify-content: space-between; align-items: flex-end; flex-wrap: wrap; }

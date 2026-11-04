@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "jump-menu",
+  "id": "left-rail",
+  "name": "Left rail",
+  "version": "1.0.0",
+  "description": "A column of entries down the left of the page, icon and name, sticky to the top of the window, foldable to a thin handle.",
+  "author": "AmberX AXF",
+  "tags": [
+    "left",
+    "rail",
+    "sticky"
+  ],
+  "data": {
+    "location": "left",
+    "display": "icons-text",
+    "variant": "rail",
+    "size": "md",
+    "density": "theme",
+    "sticky": true,
+    "collapsible": true,
+    "collapsed": false,
+    "spy": true,
+    "smooth": true,
+    "overflow": "scroll",
+    "offset": 4
+  }
+}
