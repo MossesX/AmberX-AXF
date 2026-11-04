@@ -14,6 +14,8 @@ export const K = {
   ideOn: 'xlayout.ide.on',
   preset: 'xlayout.ide.preset',
   paneLimit: 'xlayout.ide.paneLimit',
+  /** how many copies of one app may be open as tabs at once (molly-multi-instance-tabs) */
+  maxInstances: 'xlayout.ide.maxInstances',
   /** the IDE dock as last arranged (dock@1 snapshot), restored when IDE mode comes back */
   dock: 'xlayout.ide.dock',
   visible: (slot: number) => `xlayout.toolbar.${slot}.visible`,
@@ -43,6 +45,7 @@ export function effectiveXLayout(rt: AxfRuntime): XLayoutData {
   if (has(K.ideOn)) ide.on = saved[K.ideOn] === true;
   if (has(K.preset)) ide.preset = saved[K.preset];
   if (has(K.paneLimit)) ide.paneLimit = Number(saved[K.paneLimit]);
+  if (has(K.maxInstances)) ide.maxInstances = Number(saved[K.maxInstances]);
   const bars = Array.isArray(raw.toolbars) ? (raw.toolbars as Record<string, unknown>[]).map((t) => ({ ...t })) : [];
   for (const slot of SLOTS) {
     let t = bars.find((b) => b.slot === slot);

@@ -4,29 +4,45 @@
  * by the splitters between them, and capped at the xlayout's pane limit (a drop past it joins as a tab). An app opens in
  * the main area, a floating window or a pane (`openApp`); a layout preset lays the open apps out (the layout picker,
  * with a preview before it applies). The arrangement is kept (`xlayout.ide.dock`) and comes back with the switch.
+ *
+ * molly-multi-instance-tabs (Brett, Nov 4 2026: "Need to be able to add a tab so I can have multiple instances", "How do
+ * I reset the layout?"): the "+" at the end of every tab group opens the new-tab picker (an app, a copy of an app up to
+ * the xlayout's `maxInstances`, any Molly view, Duplicate this tab); each copy is its own tab, frame and session (tab
+ * `instance`, frame key `console#2`, console client "Console 2"); tabs rename and are remembered with the arrangement;
+ * Reset layout (View menu, the right-click of any pane or tab, xLayout settings, the console action) confirms first
+ * and can be undone, like every drop.
  */
 import { useEffect, useMemo, useState } from 'react';
 import type { AxfRuntime } from '../../../src/axf/core';
 import type { TabSpec } from '../../../src/axf/core/engines/windows';
-import { paneGroups } from '../../../src/axf/core/engines/windows';
+import { instanceOf, instanceTab, instancesOf, nextInstance, paneGroups } from '../../../src/axf/core/engines/windows';
 import { normalizeDockLayout, type DockLayoutData } from '../../../src/axf/core/engines/dock';
-import { dockRulesOf, idePresets, type OpenTarget } from '../../../src/axf/core/engines/xlayout';
+import { PLACED_VIEW_TAB } from '../../../src/axf/core/engines/placement';
+import { canAddInstance, dockRulesOf, idePresets, instanceKey, instanceLabel, newTabChoices, type NewTabChoice, type OpenTarget } from '../../../src/axf/core/engines/xlayout';
 import { Button, Icon, useAxfState, useRuntime } from '../../../src/axf/react';
 import { DockHost, DockPresetThumb } from '../../../src/axf/react/windows/DockHost';
 import { useWindowState } from '../../../src/axf/react/windows/WindowHost';
 import { AppSlot } from '../../../src/molly/FrameDeck';
 import { MOLLY_APPS, mollyApp } from '../../../src/molly/apps';
+import { appOfView } from '../../../src/molly/host';
 import { effectiveXLayout, K } from './model';
 
-/** Tab kind of an app in a pane (payload = the app id). */
+/** Tab kind of an app in a pane (payload = the app id; `instance` = which copy). */
 export const APP_TAB = 'molly-app';
 export const LAYOUT_DIALOG = 'xlayout.layout';
+export const NEW_TAB_DIALOG = 'xlayout.newtab';
+export const RESET_DIALOG = 'xlayout.reset';
 const tabId = (app: string) => `molly-app:${app}`;
 const tabOf = (app: string): TabSpec => { const a = mollyApp(app); return { id: tabId(app), title: a?.label ?? app, kind: APP_TAB, payload: app, icon: a?.icon ?? 'box', closable: true }; };
+/** The frame key of an app tab (`console`, `console#2`). */
+export const frameKeyOf = (t: Pick<TabSpec, 'payload' | 'instance'>) => instanceKey(t.payload ?? '', instanceOf(t));
 
-/** Where an app's tab is in the dock (group + index), or null. */
-function findTab(rt: AxfRuntime, app: string): { group: string; index: number; windowId: string } | null {
-  for (const g of Object.values(rt.windows.state.groups)) { const i = g.tabs.findIndex((t) => t.id === tabId(app)); if (i >= 0) return { group: g.id, index: i, windowId: g.windowId }; }
+/** Where an app's tab is in the dock (group + index), or null; `instance` picks a copy (default: the first open one). */
+function findTab(rt: AxfRuntime, app: string, instance?: number): { group: string; index: number; windowId: string } | null {
+  const copies = instancesOf(rt.windows.allTabs(), APP_TAB, app);
+  const want = instance ? copies.find((t) => instanceOf(t) === instance) : copies[0];
+  if (!want) return null;
+  for (const g of Object.values(rt.windows.state.groups)) { const i = g.tabs.findIndex((t) => t.id === want.id); if (i >= 0) return { group: g.id, index: i, windowId: g.windowId }; }
   return null;
 }
 
@@ -47,6 +63,41 @@ export function showInDock(rt: AxfRuntime, app: string): void {
   const g = currentGroup(rt);
   if (g) { wm.addTab(g, tabOf(app)); const now = findTab(rt, app); if (now) wm.activate(now.group, now.index); }
   else wm.openGroup([tabOf(app)]);
+}
+
+/** How many copies of each app are open (by app id). */
+export function openInstances(rt: AxfRuntime): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const t of rt.windows.allTabs()) if (t.kind === APP_TAB && t.payload) out[t.payload] = (out[t.payload] ?? 0) + 1;
+  return out;
+}
+
+/**
+ * Another copy of an app as a new tab in `group` (the current pane when none): "Console 2", its own frame and session.
+ * Past the xlayout's `maxInstances` nothing opens (a toast says so). Returns the new tab's id, or null.
+ */
+export function openInstance(rt: AxfRuntime, app: string, group?: string | null): string | null {
+  const a = mollyApp(app); if (!a) return null;
+  const l = effectiveXLayout(rt);
+  const open = openInstances(rt)[app] ?? 0;
+  if (!canAddInstance(l, open)) { rt.toast(`At most ${l.ide.maxInstances} ${a.label} tab${l.ide.maxInstances === 1 ? '' : 's'} at once (xLayout settings).`, 'info', 'New tab'); return null; }
+  const wm = rt.windows;
+  const n = nextInstance(wm.allTabs(), APP_TAB, app);
+  const tab = instanceTab(tabOf(app), n);
+  const g = group && wm.state.groups[group] ? group : currentGroup(rt);
+  if (g) wm.addTab(g, tab); else wm.openGroup([tab]);
+  return tab.id;
+}
+
+/** A Molly view (a plugin's screen, a page) as a tab in `group` (placed-view tab, drawn by the shell). */
+export function openViewTab(rt: AxfRuntime, view: string, label: string, icon: string, group?: string | null): string {
+  const wm = rt.windows;
+  const open = wm.allTabs().find((t) => t.kind === PLACED_VIEW_TAB && t.payload === view);
+  if (open) { const gid = wm.groupOf(open.id)!; wm.activate(gid, wm.state.groups[gid]!.tabs.findIndex((t) => t.id === open.id)); return open.id; }
+  const tab: TabSpec = { id: `molly-view:${view.replace(/[^A-Za-z0-9._:-]+/g, '-')}`, title: label, kind: PLACED_VIEW_TAB, payload: view, icon, closable: true };
+  const g = group && wm.state.groups[group] ? group : currentGroup(rt);
+  if (g) wm.addTab(g, tab); else wm.openGroup([tab]);
+  return tab.id;
 }
 
 /**
@@ -88,15 +139,38 @@ export function enterIde(rt: AxfRuntime): void {
   if (mollyApp(view)) showInDock(rt, view);
 }
 
-/** Keep the arrangement (a dock@1 snapshot of the main dock's app tabs) so IDE mode comes back the same. */
+/** Keep the arrangement (a dock@1 snapshot of the main dock's tabs: apps, copies, names) so IDE mode comes back the same. */
 export function keepIde(rt: AxfRuntime): void {
   const snap = rt.windows.snapshot();
-  if (snap) rt.settings.set(K.dock, JSON.stringify(snap));
+  rt.settings.set(K.dock, snap ? JSON.stringify(snap) : '');
 }
 
-/** The tab body of an app in a pane: its frame's slot, covering only the pane. */
-export function AppTab({ app }: { app: string }) {
-  return <AppSlot id={app} fill="self" />;
+/**
+ * Reset the layout (Brett: "How do I reset the layout? Because I run it IDE style and I made a bunch of tabs"): every
+ * pane and tab closes, the saved arrangement goes, and the app on screen comes back alone in one pane. Undoable
+ * (`undoLayout`): the dock engine remembers what was there.
+ */
+export function resetLayout(rt: AxfRuntime): void {
+  const wm = rt.windows;
+  wm.resetDock();
+  rt.settings.set(K.dock, '');
+  const view = rt.getState().view.split('/')[0] ?? '';
+  const app = mollyApp(view) ? view : MOLLY_APPS[0]!.id;
+  wm.openGroup([tabOf(app)]);
+  if (!mollyApp(view)) rt.navigate(app);
+  keepIde(rt);
+  rt.toast('One pane, one tab again. View → Undo layout change puts everything back.', 'success', 'Layout reset');
+}
+
+/** Undo the last layout change in the main dock (a drop, a pop-out, a close-others, a reset…). */
+export function undoLayout(rt: AxfRuntime): void {
+  if (rt.windows.undoLayout()) { keepIde(rt); rt.toast('Layout put back.', 'info', 'Undo'); }
+  else rt.toast('Nothing to undo.', 'info', 'Undo');
+}
+
+/** The tab body of an app in a pane: its frame's slot (one per copy), covering only the pane. */
+export function AppTab({ tab }: { tab: TabSpec }) {
+  return <AppSlot id={frameKeyOf(tab)} fill="self" />;
 }
 
 /** IDE mode's main area: the dock of the main window, the app on screen brought up in it. */
@@ -187,6 +261,83 @@ export function LayoutPicker({ close }: { close: () => void }) {
       <div className="fx-form__actions">
         <Button onClick={close}>Cancel</Button>
         <Button tone="primary" icon="layout" disabled={!chosen} onClick={apply}>Apply layout</Button>
+      </div>
+    </div>
+  );
+}
+
+/** Molly's own screens a tab can show: every registered view that is not an app or one of an app's pages. */
+function mollyViews(rt: AxfRuntime): { id: string; label: string; icon?: string }[] {
+  const out: { id: string; label: string; icon?: string }[] = [];
+  for (const e of rt.search.entries()) {
+    if (e.kind !== 'view' || !e.id.startsWith('view:')) continue;
+    const id = e.id.slice(5);
+    if (appOfView(id) || id.startsWith('axf.placed:')) continue;
+    out.push({ id, label: e.label, ...(e.icon ? { icon: e.icon } : {}) });
+  }
+  return out;
+}
+
+/**
+ * The new-tab picker (the "+" at the end of a tab group, the tab menu's New tab…): an app (another copy when it is
+ * open already, up to `maxInstances`), any Molly view (a plugin's screen, Home, Account), or a copy of the current tab.
+ * `arg` = the group the tab goes in.
+ */
+export function NewTabPicker({ group, close }: { group: string; close: () => void }) {
+  const rt = useRuntime();
+  const l = effectiveXLayout(rt);
+  const wm = rt.windows;
+  const g = wm.state.groups[group];
+  const current = g ? g.tabs[g.active] : undefined;
+  const choices = newTabChoices(l, openInstances(rt), mollyViews(rt), !!current);
+  const pick = (c: NewTabChoice) => {
+    if (c.kind === 'app') { const id = openInstance(rt, c.id, group); if (!id) return; }
+    else if (c.kind === 'view') openViewTab(rt, c.id, c.label, c.icon, group);
+    else if (current && !wm.duplicateTab(current.id, undefined, current.kind === APP_TAB ? l.ide.maxInstances : 0)) { rt.toast(`At most ${l.ide.maxInstances} copies of one app at once (xLayout settings).`, 'info', 'Duplicate'); return; }
+    keepIde(rt);
+    close();
+  };
+  const apps = choices.filter((c) => c.kind === 'app'), views = choices.filter((c) => c.kind === 'view'), dup = choices.find((c) => c.kind === 'duplicate');
+  const row = (c: NewTabChoice, hint: string) => (
+    <button key={`${c.kind}:${c.id}`} type="button" data-fx-row className="axp-xlayout-choice" disabled={c.allowed === false} onClick={() => pick(c)} title={c.allowed === false ? `At most ${l.ide.maxInstances} at once` : undefined}>
+      <Icon name={c.icon} size={16} /><span className="fx-grow">{c.label}</span><span className="fx-muted">{hint}</span>
+    </button>
+  );
+  return (
+    <div className="fx-stack axp-xlayout-picker">
+      <section>
+        <h3 className="axp-xlayout-h">Apps</h3>
+        <div className="fx-stack">{apps.map((c) => row(c, c.open ? `${c.open} open · ${c.allowed === false ? 'at the limit' : `opens ${instanceLabel(c.label, (c.open ?? 0) + 1)}`}` : 'open'))}</div>
+      </section>
+      {views.length > 0 && (
+        <section>
+          <h3 className="axp-xlayout-h">Molly</h3>
+          <div className="fx-stack">{views.map((c) => row(c, 'screen'))}</div>
+        </section>
+      )}
+      {dup && current && (
+        <section>
+          <h3 className="axp-xlayout-h">This tab</h3>
+          <div className="fx-stack">{row(dup, `copies ${current.title}`)}</div>
+        </section>
+      )}
+      <div className="fx-form__actions"><Button onClick={close}>Cancel</Button></div>
+    </div>
+  );
+}
+
+/** Reset layout, confirmed first (it closes every tab; Undo brings them back). */
+export function ResetLayoutDialog({ close }: { close: () => void }) {
+  const rt = useRuntime();
+  const tabs = rt.windows.allTabs().length;
+  const panes = rt.windows.paneCount();
+  return (
+    <div className="fx-form">
+      <p>Close {tabs} tab{tabs === 1 ? '' : 's'} in {panes} pane{panes === 1 ? '' : 's'} and start again with one pane holding the app on screen?</p>
+      <p className="fx-muted">You can undo it afterwards: View → Undo layout change.</p>
+      <div className="fx-form__actions">
+        <Button onClick={close}>Cancel</Button>
+        <Button tone="danger" icon="refresh" onClick={() => { resetLayout(rt); close(); }}>Reset layout</Button>
       </div>
     </div>
   );
