@@ -53,6 +53,12 @@
         "title": "Next screen, every column",
         "text": "Steps every column on one screen together, so phone and desktop stay lined up.",
         "kind": "button"
+      },
+      {
+        "target": "re-capture",
+        "title": "Re-capture",
+        "text": "Takes this screenshot again from the live app and replaces the picture that failed to load.",
+        "kind": "button"
       }
     ],
     "intros": []

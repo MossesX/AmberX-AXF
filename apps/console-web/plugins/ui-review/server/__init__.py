@@ -360,6 +360,76 @@ except OSError:
 plugin_services.provide("ui-review@1", UiReviewService(), FOLDER)
 router.include_router(shots_router(shots, promote_shot, migrate_shots))
 
+# ---------------------------------------------------------------- health@1: every open item's pictures load
+
+HEALTH_ID = "ui-review-shots"
+_health_done = False
+
+
+_load_fails: dict[str, dict] = {}  # src -> {at, reason}: pictures a browser couldn't load (POST shot-failed)
+LOAD_FAIL_WINDOW_S = 15 * 60
+
+
+@router.post("/shot-failed")
+async def post_shot_failed(request: Request) -> dict:
+    """{src, reason} — a browser couldn't load this picture (timeout, HTTP error); the health check reports it."""
+    body = await _json(request)
+    src = _s(body.get("src"), 300)
+    if not (_ITEM_SHOT.match(src) or _PACK_SHOT.match(src)):
+        raise HTTPException(400, "bad screenshot path")
+    _load_fails[src] = {"at": time.time(), "reason": _s(body.get("reason"), 120)}
+    while len(_load_fails) > 500:
+        _load_fails.pop(next(iter(_load_fails)))
+    return {"ok": True}
+
+
+def recent_load_fails(now: float | None = None) -> list[dict]:
+    now = now or time.time()
+    return [{"src": k, **v} for k, v in list(_load_fails.items()) if now - v["at"] < LOAD_FAIL_WINDOW_S]
+
+
+def health_probe() -> dict:
+    a = shot_audit()
+    if not a["broken"]:
+        fails = recent_load_fails()
+        if fails:
+            return {"status": "warn", "summary": f"{len(fails)} UI Review screenshot(s) are on disk but a browser couldn't load them in the last 15 min (console too busy or the request timed out).",
+                    "details": [f"{f['src']}: {f['reason'] or 'failed'}" for f in fails[:40]]}
+        return {"status": "ok", "summary": f"All {a['checked']} screenshot(s) of the open UI Review items load."}
+    names = ", ".join(sorted({b["title"] or b["id"] for b in a["broken"]})[:4])
+    return {"status": "error", "summary": f"{len(a['broken'])} screenshot(s) of {len(a['items'])} UI Review item(s) don't load: {names}.",
+            "details": [f"{b['id']}: {b['src']}" for b in a["broken"][:40]]}
+
+
+def ensure_health() -> bool:
+    """Registers the check on the systems check once it provides axf.health@1 (plugins load in any order)."""
+    global _health_done
+    if _health_done:
+        return True
+    reg = plugin_services.get("axf.health@1")
+    if reg is None:
+        return False
+    try:
+        reg.register({"id": HEALTH_ID, "label": "UI Review pictures load", "service": "console", "order": 62, "severity": "error",
+                      "run": health_probe,
+                      "breaks": "Brett sees UI Review items without their pictures and can't approve them.",
+                      "instructions": ["Open UI Review: a broken picture shows 'Shot missing' with Re-capture.",
+                                       "On the VPS: `curl -H 'Authorization: Bearer …' …/api/plugins/ui-review/audit` lists them."]}, FOLDER)
+    except Exception:  # noqa: BLE001 — UI Review works without its health item
+        return False
+    _health_done = True
+    return True
+
+
+def _register_later(tries: int = 12) -> None:
+    if not ensure_health() and tries > 1:
+        t = threading.Timer(5.0, _register_later, args=(tries - 1,))
+        t.daemon = True
+        t.start()
+
+
+_register_later()
+
 
 async def _json(request: Request, limit: int = 65536) -> dict:
     raw = await request.body()
@@ -467,8 +537,79 @@ def get_index() -> dict:
     return index()
 
 
+def _magic_ok(f: Path) -> bool:
+    try:
+        with f.open("rb") as fh:
+            head = fh.read(12)
+    except OSError:
+        return False
+    return head.startswith(b"\x89PNG") or head.startswith(b"\xff\xd8") or head[8:12] == b"WEBP"
+
+
+def _item_files(it: dict) -> list[str]:
+    files = it.get("files") if isinstance(it.get("files"), dict) else {}
+    srcs = [f.get("src") for side in ("before", "after") for f in (files.get(side) or []) if isinstance(f, dict)]
+    srcs += [(s.get("src") if isinstance(s, dict) else s) for s in (it.get("shots") or [])]
+    return [s for s in srcs if isinstance(s, str) and s]
+
+
+def shot_audit(statuses: tuple[str, ...] = ("waiting", "pending", "changes")) -> dict:
+    """Every screenshot of the open items checked on disk: present, non-empty and a PNG/JPEG/WebP. The health@1 check reads it."""
+    base = data_dir() / "shots"
+    broken: list[dict] = []
+    checked = 0
+    for it in _submitted(_items_doc()):
+        if it.get("status") not in statuses:
+            continue
+        for src in _item_files(it):
+            checked += 1
+            m = _ITEM_SHOT.match(src)
+            f = base / m.group(1) / m.group(2) if m else (PACKS / src if _PACK_SHOT.match(src) else None)
+            if f is None or not f.is_file() or f.stat().st_size == 0 or not _magic_ok(f):
+                broken.append({"id": it.get("id"), "title": it.get("name") or it.get("title") or "", "src": src})
+    return {"checked": checked, "broken": broken, "items": sorted({b["id"] for b in broken})}
+
+
+@router.get("/audit")
+def get_audit() -> dict:
+    return {"ok": True, **shot_audit()}
+
+
+@router.post("/recapture")
+async def post_recapture(request: Request) -> dict:
+    """{id | src} — hand a re-capture of that item's screen to the agent who owns the ui-screenshots job (agent-job.mjs)."""
+    body = await _json(request)
+    src = _s(body.get("src"), 300)
+    m = _ITEM_SHOT.match(src) if src else None
+    iid = m.group(1) if m else _s(body.get("id"), 80)
+    it = next((x for x in _submitted(_items_doc()) if x.get("id") == iid), None)
+    if not it:
+        raise HTTPException(404, "no such item")
+    g = it.get("group")
+    group = g.get("name", "") if isinstance(g, dict) else ""
+    inputs = {"app": it.get("app") or "console-web", "screen": it.get("screen") or "home",
+              "name": f"Re-capture for UI Review item {iid}: {it.get('name') or it.get('title') or ''}"[:300], "groupName": group}
+    cli = cx.ROOT / "framework" / "cli" / "agent-job.mjs"
+    args = ["node", str(cli), "ui-screenshots", *[x for k, v in inputs.items() for x in ("--input", f"{k}={v}")], "--json"]
+    try:
+        proc = subprocess.run(args, cwd=cx.ROOT, capture_output=True, text=True, timeout=90)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        raise HTTPException(503, f"couldn't start the re-capture: {e}") from e
+    out = proc.stdout.strip().splitlines()
+    try:
+        res = json.loads(out[-1]) if out else {}
+    except json.JSONDecodeError:
+        res = {}
+    if proc.returncode == 3:
+        return {"ok": False, "unassigned": True, "message": "Nobody owns the UI Review screenshots job yet: hire one in Breakroom → Jobs."}
+    if proc.returncode != 0:
+        return {"ok": False, "message": (res.get("error") if isinstance(res, dict) else "") or (proc.stderr or proc.stdout).strip()[-400:] or "re-capture failed"}
+    return {"ok": True, "item": iid, "job": res, "message": "Re-capture handed to the screenshots agent; the new pictures land in its group."}
+
+
 @router.get("/shot")
-def shot(path: str = ""):
+async def shot(path: str = ""):
+    """async on purpose: served on the event loop, never queued behind slow sync routes in the threadpool."""
     if _PACK_SHOT.match(path):
         base, f = PACKS, PACKS / path
     else:

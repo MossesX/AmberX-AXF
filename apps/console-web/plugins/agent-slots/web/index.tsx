@@ -39,16 +39,24 @@ let st: { status: Status | null; error: string } = { status: null, error: '' };
 const subs = new Set<() => void>();
 const set = (p: Partial<typeof st>) => { st = { ...st, ...p }; subs.forEach((f) => f()); };
 let timer: ReturnType<typeof setInterval> | null = null;
-async function load() {
-  try { const s = await api.call<Status>('status'); set(s.error ? { error: s.error } : { status: s, error: '' }); } catch (e) { set({ error: (e as Error).message }); }
+let inFlight = false;
+let again = false;
+async function load(): Promise<void> {
+  if (inFlight) { again = true; return; } // one request at a time; a call made meanwhile (after an action) runs once after it
+  inFlight = true;
+  try { const s = await api.call<Status>('status'); set(s.error ? { error: s.error } : { status: s, error: '' }); } catch (e) { set({ error: (e as Error).message }); } finally { inFlight = false; }
+  if (again) { again = false; await load(); }
 }
+/* Module-level on purpose: an inline subscribe is a new function every render, so React re-subscribes after every
+   emit; with one consumer that stopped the timer and loaded again at once (a request storm, ~45 calls/s). */
+function subscribe(f: () => void) {
+  subs.add(f);
+  if (!timer) { void load(); timer = setInterval(() => { if (document.visibilityState === 'visible') void load(); }, POLL_MS); }
+  return () => { subs.delete(f); if (!subs.size && timer) { clearInterval(timer); timer = null; } };
+}
+const snapshot = () => st;
 function useStatus() {
-  const v = useSyncExternalStore((f) => {
-    subs.add(f);
-    if (!timer) { void load(); timer = setInterval(() => { if (document.visibilityState === 'visible') void load(); }, POLL_MS); }
-    return () => { subs.delete(f); if (!subs.size && timer) { clearInterval(timer); timer = null; } };
-  }, () => st);
-  return v;
+  return useSyncExternalStore(subscribe, snapshot);
 }
 
 const ago = (iso?: string) => {
