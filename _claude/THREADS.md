@@ -661,9 +661,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:54 UTC · `xlayout` s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done (big-dog) · builds-live
-- 2026-11-03 14:45 UTC · `headless-tabs` s1–s7 done (urgent) · PR #259 · UI Review r-20261103-3sp5x01
-- 2026-11-03 13:55 UTC · `orch-live-sync` s2 done (urgent) · orchestrator
 - 2026-11-03 13:55 UTC · `orch-live-sync` s3 done (urgent) · orchestrator
 - 2026-11-03 13:55 UTC · `orch-live-sync` s4 done (urgent) · orchestrator
 - 2026-11-03 13:56 UTC · `urgent-builds` → archived, merged, note (urgent) · orch-live-sync
@@ -1061,6 +1058,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 13:37 UTC · `land-round-2` s2 done, s3 done (current) · foreign-write
 - 2026-11-04 13:37 UTC · `bugs-board` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · foreign-write
 - 2026-11-04 13:37 UTC · `follow-amber-switch` added (5 steps) (current) · foreign-write
+- 2026-11-04 13:26 UTC · `bugs-board` s1 done (current) · foreign-write
+- 2026-11-04 13:27 UTC · `hotfix-build-manager` s1 undone, → running (current) · builds-page
+- 2026-11-04 13:27 UTC · `hotfix-build-manager` s1 done, → complete (current) · builds-page
 
 ## Token passes (log)
 
