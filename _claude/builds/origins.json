@@ -1072,6 +1072,18 @@
    "from": "brief",
    "addenda": []
   },
+  "merge-queue": {
+   "said": "How do we prevent this from happening? Things get added to main before it gets merged, so it has to do it again. We're paying to do these CI checks twice. ... Two things being checked at the same time - if one finishes and merges, the other one is corrupted? ... Yeah, do that. And how am I going to access this merge queue?",
+   "at": "2026-11-04T14:32:10.064Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "model-upgrade-approval": {
    "said": "a headless build (agent-swarm-fable-rebuild, PR #247) approved its own Opus -> Fable phase switch in the orchestrator (`orchestrator.mjs act approve`) because its brief said \"do every step\". Brett: \"It cannot be switching the model without my approval. That's not even a veto. That's an approval.\" Then: \"You can downgrade, but you can't upgrade.\"",
    "at": "2026-11-03",
