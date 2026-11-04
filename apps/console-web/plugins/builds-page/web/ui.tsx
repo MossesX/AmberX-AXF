@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent as RKeyboardEvent, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { Button, Checkbox, Chip, Icon, IconButton, Meter, Segmented, SelectField, Slot, Switch, useRuntime } from '@console/axf/react';
+import { AgentAvatar, Button, Checkbox, Chip, Icon, IconButton, Meter, Segmented, SelectField, Slot, Switch, useRuntime } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridGroup } from '@console/axf/libs/datagrid';
 import { pluginApi } from '@console/plugins';
 import './builds.css';
@@ -270,7 +270,7 @@ function BuildsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
   const rename = (b: BuildV) => (title: string) => send('ops', { ops: [{ op: 'rename-build', id: b.id, title }] }, rt.toast);
   const columns: GridColumn<BuildV>[] = [
     { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-space) * 30), 4fr)', fixed: true, sortable: true, sortValue: (b) => b.title.toLowerCase(),
-      render: (b) => <span className="axp-builds__cell-title"><InlineName label="Build name" value={b.title} onSave={rename(b)} /><span className="fx-small fx-muted fx-mono">{b.id}{b.profiles.length > 1 ? ` · also in ${b.profiles.filter((p) => p !== state.profile).join(', ')}` : ''}</span></span> },
+      render: (b) => <span className="axp-builds__cell-title"><AgentAvatar inText={`${b.id}\n${b.detail}`} size="small" /><InlineName label="Build name" value={b.title} onSave={rename(b)} /><span className="fx-small fx-muted fx-mono">{b.id}{b.profiles.length > 1 ? ` · also in ${b.profiles.filter((p) => p !== state.profile).join(', ')}` : ''}</span></span> },
     { id: 'status', label: 'Status', width: 'calc(var(--fx-space) * 14)', sortable: true, sortValue: (b) => b.status, render: (b) => <StatusChip b={b} /> },
     { id: 'progress', label: 'Progress', width: 'calc(var(--fx-space) * 22)', sortable: true, sortValue: (b) => b.progress.pct, render: (b) => <Bar p={b.progress} label={`${b.title}: ${b.progress.done} of ${b.progress.total} steps`} /> },
     { id: 'steps', label: 'Steps', width: 'calc(var(--fx-space) * 9)', align: 'end', sortable: true, sortValue: (b) => b.progress.total, render: (b) => <span className="fx-small">{b.progress.done}/{b.progress.total}</span> },
