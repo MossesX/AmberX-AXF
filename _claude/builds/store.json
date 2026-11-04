@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 767,
- "updatedAt": "2026-11-04T15:06:43.345Z",
+ "rev": 768,
+ "updatedAt": "2026-11-04T15:08:14.834Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -73814,7 +73814,7 @@
    "title": "Console wake: finish (Follow Amber reaches a sleeping console)",
    "category": "Urgent",
    "detail": "Follow Amber is on, but the console tab sleeps in the background while Brett is in the Claude app on a voice call, so console_show commands sit undelivered. Confirm #288 carried console-wake (#266), close superseded PRs, land axHub amberx.open_url (#35) + redeploy, make sure AmberX handles open_url, and wake automatically when console_show gets no foreground answer within 4 s.",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -73952,7 +73952,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T14:15:32.630Z",
-     "updatedAt": "2026-11-04T15:06:21.896Z"
+     "updatedAt": "2026-11-04T15:08:12.201Z"
     }
    ],
    "profiles": [
@@ -76707,9 +76707,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/merge-queue",
-   "pr": "",
+   "pr": "#320",
    "createdAt": "2026-11-04T14:32:10.064Z",
-   "updatedAt": "2026-11-04T14:48:17.770Z",
+   "updatedAt": "2026-11-04T15:08:12.451Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -76868,7 +76868,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

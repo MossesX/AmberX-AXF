@@ -669,10 +669,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 04:52 UTC · `lenny-land-all` s4 done (current) · orchestrator
-- 2026-11-04 04:52 UTC · `lenny-land-all` note (current) · orchestrator
-- 2026-11-04 05:11 UTC · `claude-settings` → complete, merged, note (urgent) · reconciler
-- 2026-11-04 05:11 UTC · `home-cards-live` → complete, merged, note (urgent) · reconciler
 - 2026-11-04 05:11 UTC · `terminal-sessions-nav` → complete, merged, note (current) · reconciler
 - 2026-11-04 05:11 UTC · `build-prompt-origin` → complete, merged, note (current) · reconciler
 - 2026-11-04 05:11 UTC · `banner-ref-links` → complete, merged, note (current) · reconciler
@@ -1069,6 +1065,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:06 UTC · `apps-control-surface` added (5 steps) (current) · foreign-write
 - 2026-11-04 15:06 UTC · `console-wake-finish` s5 done, → built (current) · orchestrator
 - 2026-11-04 15:06 UTC · `console-wake-finish` note (current) · orchestrator
+- 2026-11-04 15:08 UTC · `urgent-land-gizmo-chat` note (current) · foreign-write
+- 2026-11-04 15:08 UTC · `console-wake-finish` s5 done, → complete, note (current) · foreign-write
+- 2026-11-04 15:08 UTC · `apps-control-surface` added (5 steps) (current) · foreign-write
+- 2026-11-04 15:08 UTC · `merge-queue` PR #320 (current) · builds-live
 
 ## Token passes (log)
 
