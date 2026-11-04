@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 695,
- "updatedAt": "2026-11-04T13:50:31.902Z",
+ "rev": 696,
+ "updatedAt": "2026-11-04T13:52:35.970Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -71675,7 +71675,7 @@
    "branch": "claude/land-round-2",
    "pr": "",
    "createdAt": "2026-11-04T10:43:58.630Z",
-   "updatedAt": "2026-11-04T13:31:14.733Z",
+   "updatedAt": "2026-11-04T13:52:34.961Z",
    "builtAt": "",
    "notes": [
     {
@@ -71685,6 +71685,10 @@
     {
      "text": "#288 merged (b14674b5) with #266 inside; #266 closed as superseded. The lost GitHub push event (PR outage) needed a fresh push. The shared GitHub token ran out of its 5000/h budget twice (other pollers).",
      "at": "2026-11-04T12:06:01.519Z"
+    },
+    {
+     "text": "Stopped at the $15 per-build cap (~$42 in tokens). Landed #288 (+#266), #294, #295; closed #266 #297. #296 pushed (CI unread: GitHub budget out); #298 #281 #291 #293 #289 #269 resolved on local branches land/<pr> (#281 now conflicts with #295 in runtime.ts); #300 needs a rework on #269. Blocker: the shared GitHub token empties its 5000/h budget in ~25 min. Report _claude/builds/reports/land-round-2.md",
+     "at": "2026-11-04T13:52:34.961Z"
     }
    ],
    "approvals": [],
@@ -71909,7 +71913,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
