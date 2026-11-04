@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 934,
- "updatedAt": "2026-11-04T20:11:50.980Z",
+ "rev": 935,
+ "updatedAt": "2026-11-04T20:18:11.235Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -83015,10 +83015,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/grid-column-hiding",
+   "pr": "#340",
    "createdAt": "2026-11-04T19:59:59.405Z",
-   "updatedAt": "2026-11-04T20:10:24.422Z",
+   "updatedAt": "2026-11-04T20:18:09.949Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -83177,7 +83177,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

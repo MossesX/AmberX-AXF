@@ -691,7 +691,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 14:28 UTC · `plugin-lazy-load` → complete, note (current) · reconciler
 - 2026-11-04 14:31 UTC · `urgent-land-lazy-loader` note (current) · foreign-write
 - 2026-11-04 14:31 UTC · `console-wake-finish` s2 done (current) · orchestrator
 - 2026-11-04 14:31 UTC · `console-wake-finish` s4 done (current) · orchestrator
@@ -1091,6 +1090,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 20:11 UTC · `land-merge-queue-first` s4 done (urgent) · orchestrator
 - 2026-11-04 20:11 UTC · `land-merge-queue-first` s5 done (urgent) · orchestrator
 - 2026-11-04 20:11 UTC · `land-merge-queue-first` branch claude/land-batch-1, PR #339 (urgent) · builds-live
+- 2026-11-04 20:18 UTC · `grid-column-hiding` branch claude/grid-column-hiding, PR #340 (current) · builds-live
 
 ## Token passes (log)
 

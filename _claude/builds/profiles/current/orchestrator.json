@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T20:11:50.980Z",
+ "updatedAt": "2026-11-04T20:18:11.235Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -12087,10 +12087,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/grid-column-hiding",
+   "pr": "#340",
    "createdAt": "2026-11-04T19:59:59.405Z",
-   "updatedAt": "2026-11-04T20:10:24.422Z",
+   "updatedAt": "2026-11-04T20:18:09.949Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
