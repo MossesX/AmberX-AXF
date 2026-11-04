@@ -13,6 +13,7 @@ export { Banner, BannerBadge, BannerClock } from './components/Banner';
 export { ArrangeBar, arrangedSide, useArrange, type ArrangeApi } from './components/Arrange';
 export { Gauge, Meter, type GaugeProps, type MeterProps } from './components/Meters';
 export { AgentCard, type AgentCardProps } from './components/AgentCard';
+export { DataCard, CardBody, type DataCardProps } from './components/DataCard';
 export { HelpLayer, HelpModeButton, HelpPanel, HelpIntroCard, useHelpMode, describeHelpElement, findHelpTarget, placeTip } from './components/Help';
 export { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from './components/Brand';
 export { InterfaceScope, usePortalRoot, useScopeId } from './components/InterfaceScope';
