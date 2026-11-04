@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T00:55:46.151Z",
+ "updatedAt": "2026-11-04T00:59:04.857Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4193,9 +4193,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T23:03:01.354Z",
-   "updatedAt": "2026-11-03T23:04:15.928Z",
+   "updatedAt": "2026-11-04T00:56:46.854Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "#270 auto-land merged (3caf0ee0) after two landing fixes (THREADS plugin references; UI Review read through the push banner's ui-review@1 route). #267 closed as superseded by #284. #251/#254 set to draft so auto-merge leaves them for Brett.",
+     "at": "2026-11-04T00:56:46.854Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -4212,8 +4217,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T00:55:26.046Z",
      "note": "",
      "uid": "st-mw1adfon08byz9"
     },
@@ -4284,8 +4289,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T00:56:03.656Z",
      "note": "",
      "uid": "st-mw1adfon0cl6wg"
     },

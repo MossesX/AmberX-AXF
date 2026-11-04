@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 578,
- "updatedAt": "2026-11-04T00:55:46.151Z",
+ "rev": 579,
+ "updatedAt": "2026-11-04T00:59:04.857Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -67404,9 +67404,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T23:03:01.354Z",
-   "updatedAt": "2026-11-03T23:04:15.928Z",
+   "updatedAt": "2026-11-04T00:56:46.854Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "#270 auto-land merged (3caf0ee0) after two landing fixes (THREADS plugin references; UI Review read through the push banner's ui-review@1 route). #267 closed as superseded by #284. #251/#254 set to draft so auto-merge leaves them for Brett.",
+     "at": "2026-11-04T00:56:46.854Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -67425,12 +67430,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T00:55:26.046Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:55:32.443Z",
-     "updatedAt": "2026-11-03T22:55:32.443Z"
+     "updatedAt": "2026-11-04T00:57:29.844Z"
     },
     {
      "id": "s2",
@@ -67513,12 +67518,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-04T00:56:03.656Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:55:32.443Z",
-     "updatedAt": "2026-11-03T22:55:32.443Z"
+     "updatedAt": "2026-11-04T00:57:29.844Z"
     },
     {
      "id": "s6",
@@ -67573,10 +67578,28 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-03T23:03:01.354Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw1adfon08byz9": "2026-11-03T23:03:01.355Z",
+     "st-mw1adfon09n9wc": "2026-11-03T23:03:01.355Z",
+     "st-mw1adfon0acxc1": "2026-11-03T23:03:01.355Z",
+     "st-mw1adfon0bjteu": "2026-11-03T23:03:01.355Z",
+     "st-mw1adfon0cl6wg": "2026-11-03T23:03:01.355Z",
+     "st-mw1adfon0djrrf": "2026-11-03T23:03:01.355Z",
+     "st-mw1adfon0el0oz": "2026-11-03T23:03:01.355Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-03T22:55:32.443Z",
    "rearranged": false,
