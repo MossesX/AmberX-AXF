@@ -271,7 +271,7 @@ function Tools({ items, flash }: { items: { seq: number; m: Message }[]; flash: 
   const has = flash !== null && items.some((i) => i.seq === flash);
   const names = [...new Set(items.map((i) => i.m.toolName || 'tool'))].slice(0, 4).join(', ');
   return (
-    <details className="axp-chat-viewer-tools" open={has}>
+    <details className="axp-chat-viewer-tools" data-axf-not-toolbar="tool steps of a chat transcript, not actions" open={has}>
       <summary><Icon name="terminal" size={12} />{items.length} tool {items.length > 1 ? 'steps' : 'step'} · {names}</summary>
       {items.map((i) => (
         <div key={i.seq} id={`axp-cv-m-${i.seq}`} className={`axp-chat-viewer-tool${flash === i.seq ? ' is-active' : ''}`}>

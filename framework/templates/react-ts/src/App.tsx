@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { AccountView, AppShell, AssetStudio, installLibraries, useRuntime, type ViewMap } from './axf/react';
 import { library as settingsLibrary } from './axf/libs/settings';
+import { toolbarsLibrary } from './axf/libs/toolbars';
 import { dialogs } from './dialogs';
 import { Home } from './views/Home';
 import { Components } from './views/Components';
@@ -19,7 +20,7 @@ const views: ViewMap = {
  * panels or sub-tabs to Settings → Plugins through their `AxfWebLibrary`, and the Plugins tab lists every installed
  * library with its health (plugin inventory engine). Add more libraries to this list.
  */
-const libraries = [settingsLibrary];
+const libraries = [settingsLibrary, toolbarsLibrary];
 
 export function App() {
   const rt = useRuntime();

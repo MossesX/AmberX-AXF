@@ -231,7 +231,7 @@ export function Detail({ r }: { r: Run }) {
       <Section title="Files"><Files run={r} /></Section>
       <Section title="Recent commands">
         {r.tools.length ? (
-          <ul className="axp-crew__tools">
+          <ul className="axp-crew__tools" data-axf-not-toolbar="a list of the agent's recent tool calls">
             {r.tools.map((t) => (
               <li key={t.id} className={`axp-crew__tool is-${t.state}`}>
                 <span className="axp-crew__toolName fx-mono">{t.tool}</span>

@@ -4,6 +4,7 @@
 import { HubAppearanceSource } from '../../react/hubAppearance';
 import type { AppearanceSource, AxfRuntime } from '../../core/runtime';
 import type { AppearanceSourceState } from '../../core/engines/appearance';
+import { isAppearanceSetting } from '../../core/engines/designpackage';
 import { HubData, HubSettings, type HubState } from '../hubstore';
 import { HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY } from '../../core/engines/help-rules.mjs';
 import { CONNECTION_KEY, dataFolderFor, describeSync, followState, resolveHubSync, settingsFileFor, type HubSyncConfig } from './core';
@@ -162,5 +163,7 @@ export function savedConnection(rt: AxfRuntime): unknown {
  */
 const DEVICE_ONLY = new Set([CONNECTION_KEY, HELP_MODE_KEY, HELP_INTROS_KEY, HELP_SEEN_KEY]);
 function mirrored(rt: AxfRuntime, key: string): boolean {
+  // look settings ride the shared appearance document (every app), not this app's own settings file (Nov 1 2026)
+  if (isAppearanceSetting(key)) return false;
   return !DEVICE_ONLY.has(key) && rt.settings.spec(key)?.scope !== 'device';
 }

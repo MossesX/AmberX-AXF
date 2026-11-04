@@ -127,7 +127,7 @@ function McpView({ host, store, perms }: { host: McpHost; store: ServerStore; pe
         </Container>
       ) : (
         <>
-          <div className={`${P}__bar`}>
+          <div className={`${P}__bar`} role="toolbar" aria-label="MCP server">
             <label className={`${P}__field`}>Server
               <select className="fx-input" value={sid} onChange={(e) => setSid(e.target.value)}>
                 {list.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}

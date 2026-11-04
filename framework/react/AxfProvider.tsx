@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from 'react';
 import type { AssetType, AxfRuntime, MenuItem } from '../core';
+import { installTapConfirm } from './tapConfirm';
 import { installMenuFit } from './components/menuFit';
 
 export const AxfContext = createContext<AxfRuntime | null>(null);
@@ -123,6 +124,12 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
     document.addEventListener('pointerdown', leave, true);
     document.addEventListener('keydown', leave, true);
     return () => { window.removeEventListener('keydown', onKey); document.removeEventListener('pointerdown', leave, true); document.removeEventListener('keydown', leave, true); };
+  }, [runtime]);
+
+  // Tap-to-confirm on every toolbar (framework/react/tapConfirm.ts): touch arms first, a second tap runs; mouse clicks once.
+  useEffect(() => {
+    const host = installTapConfirm(document, (key) => runtime.settings.get(key));
+    return () => host.dispose();
   }, [runtime]);
 
   return <AxfContext.Provider value={runtime}>{children}</AxfContext.Provider>;

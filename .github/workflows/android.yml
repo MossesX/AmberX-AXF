@@ -60,6 +60,8 @@ jobs:
         run: node framework/cli/check-theme.mjs
       - name: Asset conformance — every web button is a framework control (apps, plugins, libraries, templates)
         run: node framework/cli/check-controls.mjs
+      - name: Toolbars — every toolbar is a framework toolbar (role="toolbar" + settings id; tap-to-confirm off in code only with a recorded reason)
+        run: node framework/cli/check-toolbars.mjs
       - name: Asset conformance — the checker and the adopter agree (scale-adopt self-test)
         run: node framework/spec/check-conform.mjs
       - name: Plugin pages follow the design language (page heads with eyebrow + title + one sentence, no spinners; DESIGN-LANGUAGE §12)
@@ -156,6 +158,7 @@ jobs:
             (cd framework && npm install --no-audit --no-fund --silent)
             npx -y tsx framework/spec/check-alerts.mts
             npx -y tsx framework/spec/check-widgets.mts
+            npx -y tsx framework/spec/check-tapconfirm.mts            # toolbar tap-to-confirm: touch arms then runs, mouse/pen/keyboard click once, re-arm, window, per-toolbar settings
             npx -y tsx framework/spec/check-menu-fit.mts               # menu-fit@1: menus flip / shift to stay on screen and scroll only when taller than the room
             npx -y tsx framework/spec/check-windows.mts                # window engine: 8 resize handles, maximize / restore, frames, snapping (windows.json)
             npx -y tsx framework/spec/check-dock.mts                   # dock engine (dock@1): pane tree, drop zones, pane limit, splitters, snapshots, dock-layout@1 presets (dock.json)

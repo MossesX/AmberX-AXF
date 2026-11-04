@@ -133,7 +133,7 @@ function ItemCard({ s, it, selecting, selected, onSelect }: { s: Store; it: Item
         )}
       </button>
       {!shared && !selecting && (
-        <span className="axp-notes-card__tools">
+        <span className="axp-notes-card__tools" role="toolbar" aria-label="Note actions">
           <IconButton icon="chevron-up" label={it.pinned ? 'Unpin' : 'Pin to the top'} aria-pressed={it.pinned} onClick={() => void tryDo(rt, (st) => updateItem(st, it.id, { pinned: !it.pinned }))} />
           <IconButton icon="star" label={it.starred ? 'Unstar' : 'Star'} aria-pressed={it.starred} onClick={() => void tryDo(rt, (st) => updateItem(st, it.id, { starred: !it.starred }))} />
         </span>
