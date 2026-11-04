@@ -2,7 +2,7 @@
   "$axf": "change-log@1",
   "id": "chg-20261104-146867671e",
   "createdAt": "2026-11-04T14:14:16.339Z",
-  "updatedAt": "2026-11-04T15:06:33.571Z",
+  "updatedAt": "2026-11-04T14:28:23.302Z",
   "kind": "build",
   "title": "# Build: console-wake-finish (Current profile) - URGENT, front of line ## What Brett said (voice, N…",
   "asked": "# Build: console-wake-finish (Current profile) - URGENT, front of line ## What Brett said (voice, Nov 4 2026) \"Why isn't Follow Amber working?\" -> Follow Amber is on, but his console tab sleeps in the background while he's in the Claude app on a voice call, so console_show commands sit undelivered. Amber offered to bump console wake up the line: \"Yes.\" Book to Ping Paulie (he built console-wake #266) or any free agent. Register id `console-wake-finish` in the `current` profile + banner entry + What Brett said block. ## Do 1. Check what's already live: #288 (merged 12:05 today) carried #266 console-wake (queue commands with TTL/dedupe, deliver on reconnect, wake Chrome via AmberX open_url). Confirm which parts are on main and deployed; close #266 as superseded if fully contained; land #308 (console wake settings help, currently RED) after fixing it. 2. axHub side: branch `claude/amberx-open-url` in MossesX/axHub (amberx device service `open_url`, allowlisted to amberxai.com, high-priority notification fallback) - merge it and redeploy axHub so `amberx.open_url` works. 3. AmberX side: make sure the AmberX app handles open_url (foreground the console tab / open console.amberxai.com in Chrome, or full-screen notification on Android 14+). If a new APK is required, build it and put it where Brett installs from, and tell him in the report and a banner: 'Install the new AmberX APK' with the link. 4. Make delivery automatic: when console_show (Follow Amber) finds no foreground console within 4 s, it wakes it via AmberX and delivers when the tab wakes. Test end to end if possible. - Small and focused. Type-check, tests, PRs merge when CI green, redeploy console + axHub. Never leave tsc/vite/playwright running. Report `_claude/builds/reports/console-wake-finish.md` (what Brett must do: install APK y/n). Commits clean and professional. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Opus) is fine. An UPGRADE (e.g. Opus → Fable) needs Brett's approval: when you reach one, run `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>`, ask once, and stop. Never approve a model switch upgrade yourself (no `act approve` on an upgrade), never relaunch on a higher model.",
@@ -22,94 +22,43 @@
       "state": "done",
       "startedAt": "2026-11-04T14:16:58.368Z",
       "finishedAt": "2026-11-04T14:16:58.368Z"
-    },
-    {
-      "text": "console_show wakes a sleeping console (PR #317), axHub #35 merged + deployed",
-      "state": "done",
-      "startedAt": "2026-11-04T14:31:25.981Z",
-      "finishedAt": "2026-11-04T14:31:25.981Z"
     }
   ],
-  "result": {
-    "state": "done",
-    "summary": "Follow Amber wakes a console asleep in the background (PR #317, CI green); axHub #35 merged + redeployed; #308 closed; Brett must install AmberX b1227+",
-    "branch": "claude/console-wake-finish",
-    "commits": [
-      {
-        "sha": "afd35c77a"
-      },
-      {
-        "sha": "390e884ab"
-      }
-    ],
-    "filesChanged": 6,
-    "tests": {
-      "console-commands": {
-        "before": "72",
-        "after": "86"
-      },
-      "follow-amber": {
-        "before": "33",
-        "after": "36"
-      }
-    },
-    "links": {
-      "report": "_claude/builds/reports/console-wake-finish.md"
-    }
-  },
+  "result": null,
   "closed": null,
-  "state": "done",
-  "status": "done",
+  "state": "running",
+  "status": "running",
   "buildRef": {
     "kind": "orch",
     "id": "console-wake-finish"
   },
   "surface": "headless",
   "startedAt": "2026-11-04T14:14:16.339Z",
-  "finishedAt": "2026-11-04T15:06:23.054Z",
-  "lastSeenAt": "2026-11-04T15:06:00.710Z",
+  "lastSeenAt": "2026-11-04T14:28:23.302Z",
   "estimate": {
     "minutes": 100,
     "costUsd": 14
   },
-  "actual": {
-    "minutes": 52,
-    "costUsd": 5.0118,
-    "inputTokens": 232,
-    "outputTokens": 53249,
-    "cacheReadTokens": 15401417,
-    "cacheWriteTokens": 173127,
-    "source": "transcript"
-  },
-  "costEstimated": false,
+  "costEstimated": true,
   "branch": "claude/console-wake-finish",
   "areas": [
     "apps/console-web/plugins/console-commands",
     "apps/console-web/plugins/follow-amber"
   ],
+  "doing": "Running: Check console env file and how it's loaded",
   "progress": 1,
   "resume": {
     "repo": "MossesX/AmberX-AXF",
     "folder": "/root/axf-builds/console-wake-finish",
     "branch": "claude/console-wake-finish",
     "base": "5e29a5207159cd6905a73bb961a867b8b1ec550f",
-    "head": "390e884ab5509753cf4686f91357b1997e9d79dc",
+    "head": "5e29a5207159cd6905a73bb961a867b8b1ec550f",
     "pushed": true,
-    "dirty": 167,
-    "pr": "https://github.com/MossesX/AmberX-AXF/pull/317",
-    "plan": "console_show wakes a console asleep in the background (console-commands wake_hidden, FRONT_WAIT_S 4 s)",
-    "next": "PR #317 auto-merges on green CI; Brett installs AmberX b1227+ and opens it (no phone paired)",
+    "dirty": 166,
     "files": [
-      "_claude/THREADS.md",
-      "_claude/builds/reports/console-wake-finish.md",
-      "apps/console-web/plugins/console-commands/server/__init__.py",
-      "apps/console-web/plugins/console-commands/server/test_console_commands.py",
-      "apps/console-web/plugins/follow-amber/server/__init__.py",
-      "apps/console-web/plugins/follow-amber/test.py",
       ".axf-queue.log",
       "_claude/builds/journal/2026-11.jsonl",
       "_claude/builds/orchestrator.json",
-      "_claude/builds/origins.json",
       "_claude/builds/profiles/angel/orchestrator.json",
       "_claude/builds/profiles/big-dog/orchestrator.json",
       "_claude/builds/profiles/breakroom/orchestrator.json",
@@ -274,12 +223,6 @@
       "sessions/archive/2026/11/cc-fba1c47b-7807-4650-8918-8dd909a0ab03.json",
       "sessions/archive/2026/11/cc-fd531e5f-67f8-4088-9ea3-a0ce6511d2d6.json"
     ],
-    "read": [
-      "_claude/builds/reports/console-wake-finish.md"
-    ],
-    "tests": [
-      "python apps/console-web/plugins/console-commands/server/test_console_commands.py"
-    ],
-    "at": "2026-11-04T15:06:34.785Z"
+    "at": "2026-11-04T14:14:16.531Z"
   }
 }

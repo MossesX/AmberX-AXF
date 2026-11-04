@@ -27,7 +27,7 @@ what it needs, and what it answers are decided here once, so the docs, the tools
 | Field | Meaning |
 |---|---|
 | `op` | `list` · `get` · `set` · `reset` · `add` · `remove` · `act` |
-| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `pass.scopes` · `plugins.commands` · `plugins.reads` |
+| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `console.placement` · `pass.scopes` · `plugins.commands` · `plugins.reads` |
 | `path` | the token id (`navWidth`, `accent`, `scale.md`, `button.radius@amber`) or the record id; `get`/`set`/`remove`/`act` need it, `reset` without one resets the whole target |
 | `value` | what to set (a token value, or the fields to change on a record) · the new record for `add` |
 | `action` + `input` | the verb for `act` and what it wants (`done`, `move {list}`, `approve {phase}`, `step {step, done}` …) |
@@ -67,6 +67,12 @@ goes there. `console.screens`, `console.dialogs` and `console.settings` (tabs an
 takes `get` (where the console is) and `act back | home | close`; `console.clients` lists the consoles open for the caller. Every
 list and resolve runs against the catalog the open consoles report (their search index: views, settings tabs, dialogs, actions),
 so plugins' screens are found too. Every act takes `input.to`: `recent` (default, the console Brett is looking at: a client in front wins, then the one used last), `all`, or a client id.
+`console.placement` (settings-placement@1, build `settings-placement-everywhere`, Nov 4 2026) is the one console target with a
+value: where settings pop up, for every screen (`screen:<view id>`, its title or words), every plugin with settings
+(`plugin:<id>` or its name) and the app default (path `app`). `list` shows each with where it opens now; `set` takes a placement
+word (`dialog` · `panel-left` · `panel-right` · `sheet` · `inside` · `page` · `window`; spoken forms such as "side panel left",
+"bottom sheet" or "in a dialog" resolve); `reset` goes back to the app default (the app default itself back to the page). It is
+the last target in the registry (append-only), after `tokens.nav`.
 A console inside a host says so (Nov 3 2026, build `molly-console-commands`): `app: molly/console-web`, `host: molly`, and `front` (its page is visible
 and the host shows its frame, embed@1 `shown`); before it runs a command while hidden it asks the host to bring it forward (embed@1 `show`), and
 Molly with xLayout opens the Console frame hidden at start (`warm`), so a command while Molly is open always lands in Molly.

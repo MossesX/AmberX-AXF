@@ -1,0 +1,123 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-4ab73e5e-c2f6-4221-b4da-8430671d2173",
+ "source": "claude-code",
+ "sessionId": "4ab73e5e-c2f6-4221-b4da-8430671d2173",
+ "project": "amberx-axf",
+ "title": "# Build: molly-multi-instance-tabs (FABLE: touches xlayout@1 / windows / dock contracts) ## What Brett said (verbatim, …",
+ "startedAt": "2026-11-04T16:03:13.021Z",
+ "endedAt": "2026-11-04T16:41:20.057Z",
+ "minutes": 38,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/molly-multi-instance-tabs",
+  "repo": "",
+  "branch": "claude/molly-multi-instance-tabs"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-fable-5-1"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-04T16:03:35.807Z",
+   "kind": "prompt",
+   "text": "# Build: molly-multi-instance-tabs (FABLE: touches xlayout@1 / windows / dock contracts) ## What Brett said (verbatim, Nov 4 2026, voice) In Molly's xLayout IDE mode: \"How do I make a new tab in Molly?\" ... (there's no + button) ... \"Need to be able to add a tab so I can have multiple instances.\" Also: \"How do I reset the layout? Because I run it IDE style and I made a bunch of tabs.\" He couldn't find Reset layout (it exists as the workspace action `layout-reset` in src/axf/libs/workspace, but he can't see it). Book to a free named agent. ## Do - **New tab (+)** at the end of every tab group …",
+   "model": "claude-fable-5-1",
+   "tokens": {
+    "input": 2274,
+    "output": 173621,
+    "cacheRead": 24787463,
+    "cacheWrite": 479425,
+    "thinking": 43494
+   },
+   "costUsd": 20.8939,
+   "costEstimated": false,
+   "seconds": 2263,
+   "tools": {
+    "Bash": 124,
+    "Read": 15,
+    "Edit": 34,
+    "Write": 4
+   },
+   "commands": 124,
+   "files": [
+    "/root/axf-builds/molly-multi-instance-tabs/framework/core/engines/windows.ts",
+    "/root/axf-builds/molly-multi-instance-tabs/framework/core/engines/dock.ts",
+    "/root/axf-builds/molly-multi-instance-tabs/framework/core/engines/xlayout.ts",
+    "/root/axf-builds/molly-multi-instance-tabs/framework/core/engines/embed.ts",
+    "/root/axf-builds/molly-multi-instance-tabs/framework/core/engines/console-commands.mjs",
+    "/root/axf-builds/molly-multi-instance-tabs/framework/core/runtime.ts",
+    "/root/axf-builds/molly-multi-instance-tabs/framework/schemas/asset-types.json",
+    "/root/axf-builds/molly-multi-instance-tabs/framework/react/windows/WindowHost.tsx",
+    "/root/axf-builds/molly-multi-instance-tabs/framework/react/components/Overlays.tsx",
+    "/root/axf-builds/molly-multi-instance-tabs/apps/molly/src/molly/FrameDeck.tsx",
+    "/root/axf-builds/molly-multi-instance-tabs/apps/molly/src/molly/host.ts",
+    "/root/axf-builds/molly-multi-instance-tabs/apps/molly/plugins/xlayout/web/workspace.tsx",
+    "/tmp/mmit-shot.mjs",
+    "/root/axf-builds/molly-multi-instance-tabs/_claude/builds/reports/molly-multi-instance-tabs.md"
+   ],
+   "changeIds": [
+    "chg-20261104-7e7fa9548e"
+   ],
+   "features": [
+    "orchestrator:molly-multi-instance-tabs",
+    "pending:molly-multi-instance-tabs",
+    "queue:xlayout"
+   ],
+   "output": "Done. PR #328 is open and the push banner lands it once CI is green. **What you get in Molly (IDE mode)** - **+ at the end of every tab bar.** It opens a picker: AmberX / axHub / Console / Expenses (shows how many copies are open), any Molly screen, and *Duplicate this tab*. - **Multiple instances.…"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/molly-multi-instance-tabs/framework/core/engines/windows.ts",
+  "/root/axf-builds/molly-multi-instance-tabs/framework/core/engines/dock.ts",
+  "/root/axf-builds/molly-multi-instance-tabs/framework/core/engines/xlayout.ts",
+  "/root/axf-builds/molly-multi-instance-tabs/framework/core/engines/embed.ts",
+  "/root/axf-builds/molly-multi-instance-tabs/framework/core/engines/console-commands.mjs",
+  "/root/axf-builds/molly-multi-instance-tabs/framework/core/runtime.ts",
+  "/root/axf-builds/molly-multi-instance-tabs/framework/schemas/asset-types.json",
+  "/root/axf-builds/molly-multi-instance-tabs/framework/react/windows/WindowHost.tsx",
+  "/root/axf-builds/molly-multi-instance-tabs/framework/react/components/Overlays.tsx",
+  "/root/axf-builds/molly-multi-instance-tabs/apps/molly/src/molly/FrameDeck.tsx",
+  "/root/axf-builds/molly-multi-instance-tabs/apps/molly/src/molly/host.ts",
+  "/root/axf-builds/molly-multi-instance-tabs/apps/molly/plugins/xlayout/web/workspace.tsx",
+  "/tmp/mmit-shot.mjs",
+  "/root/axf-builds/molly-multi-instance-tabs/_claude/builds/reports/molly-multi-instance-tabs.md"
+ ],
+ "changeIds": [
+  "chg-20261104-7e7fa9548e"
+ ],
+ "features": [
+  "orchestrator:molly-multi-instance-tabs",
+  "pending:molly-multi-instance-tabs",
+  "queue:xlayout"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 2274,
+  "output": 173621,
+  "cacheRead": 24787463,
+  "cacheWrite": 479425,
+  "thinking": 43494,
+  "costUsd": 20.8939,
+  "costEstimated": false,
+  "toolCalls": 177,
+  "commands": 124,
+  "filesTouched": 14,
+  "reportedUsd": 24.4892
+ },
+ "ingestedAt": "2026-11-04T16:41:20.714Z"
+}

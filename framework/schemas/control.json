@@ -1644,24 +1644,6 @@
       },
       "doc": "Where the open console is (get here: screen, dialog, settings tab) and moving it: back (closes an open dialog first, else the screen before), home (the first screen), close (the open dialog). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
     },
-    "console.placement": {
-      "domain": "console",
-      "label": "Where settings open",
-      "ops": [
-        "list",
-        "get",
-        "set",
-        "reset"
-      ],
-      "paths": "host",
-      "value": "host",
-      "select": {
-        "q": "string",
-        "limit": "number",
-        "client": "string"
-      },
-      "doc": "Where settings pop up in the open console (settings-placement@1), for every screen (\"screen:<view id>\", its title or words), every plugin with settings (\"plugin:<id>\" or its name) and the app default (path \"app\"). list shows each with where it opens now; set value = a placement word: dialog | panel-left | panel-right | sheet | inside | page | window (spoken forms work: \"side panel left\", \"bottom sheet\", \"in a dialog\", \"inside as a split view\"); reset = back to the app default (the app default itself back to the page). Molly: the same through Molly's console. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
-    },
     "console.clients": {
       "domain": "console",
       "label": "Open consoles",
@@ -2239,6 +2221,24 @@
       ],
       "value": "field",
       "doc": "nav-style@1 (core/engines/navstyle-rules.mjs): the navigation menu with sub menus: colours (colour-theme token ids), font, icons, density, width, the sub-menu animation, behaviour (one or many open, tap or hover, auto-collapse, remember, follow the active page, swipe), pinned / hidden / ordered items (comma-separated ids) and accents.<item id>. Only navs that opt in (nav-menu navStyle: true) read it."
+    },
+    "console.placement": {
+      "domain": "console",
+      "label": "Where settings open",
+      "ops": [
+        "list",
+        "get",
+        "set",
+        "reset"
+      ],
+      "paths": "host",
+      "value": "host",
+      "select": {
+        "q": "string",
+        "limit": "number",
+        "client": "string"
+      },
+      "doc": "Where settings pop up in the open console (settings-placement@1), for every screen (\"screen:<view id>\", its title or words), every plugin with settings (\"plugin:<id>\" or its name) and the app default (path \"app\"). list shows each with where it opens now; set value = a placement word: dialog | panel-left | panel-right | sheet | inside | page | window (spoken forms work: \"side panel left\", \"bottom sheet\", \"in a dialog\", \"inside as a split view\"); reset = back to the app default (the app default itself back to the page). Molly: the same through Molly's console. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
     }
   },
   "aliases": {
@@ -2318,12 +2318,12 @@
               "console.settings",
               "console.actions",
               "console.nav",
-              "console.placement",
               "console.clients",
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "console.placement"
             ],
             "description": "what to control"
           },
@@ -2373,12 +2373,12 @@
               "console.settings",
               "console.actions",
               "console.nav",
-              "console.placement",
               "console.clients",
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "console.placement"
             ],
             "description": "what to control"
           },
@@ -2429,12 +2429,12 @@
               "console.settings",
               "console.actions",
               "console.nav",
-              "console.placement",
               "console.clients",
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "console.placement"
             ],
             "description": "what to control"
           },
@@ -2492,12 +2492,12 @@
               "console.settings",
               "console.actions",
               "console.nav",
-              "console.placement",
               "console.clients",
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "console.placement"
             ],
             "description": "what to control"
           },
@@ -2555,12 +2555,12 @@
               "console.settings",
               "console.actions",
               "console.nav",
-              "console.placement",
               "console.clients",
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "console.placement"
             ],
             "description": "what to control"
           },
@@ -2618,12 +2618,12 @@
               "console.settings",
               "console.actions",
               "console.nav",
-              "console.placement",
               "console.clients",
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "console.placement"
             ],
             "description": "what to control"
           },
@@ -2685,12 +2685,12 @@
               "console.settings",
               "console.actions",
               "console.nav",
-              "console.placement",
               "console.clients",
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "console.placement"
             ],
             "description": "what to control"
           },
@@ -2817,12 +2817,12 @@
       "console.settings",
       "console.actions",
       "console.nav",
-      "console.placement",
       "console.clients",
       "pass.scopes",
       "plugins.commands",
       "plugins.reads",
-      "tokens.nav"
+      "tokens.nav",
+      "console.placement"
     ]
   },
   "schema": {
@@ -2869,12 +2869,12 @@
           "console.settings",
           "console.actions",
           "console.nav",
-          "console.placement",
           "console.clients",
           "pass.scopes",
           "plugins.commands",
           "plugins.reads",
-          "tokens.nav"
+          "tokens.nav",
+          "console.placement"
         ]
       },
       "path": {
@@ -3818,27 +3818,6 @@
           "here"
         ]
       },
-      "console.placement": {
-        "description": "Where settings pop up in the open console (settings-placement@1), for every screen (\"screen:<view id>\", its title or words), every plugin with settings (\"plugin:<id>\" or its name) and the app default (path \"app\"). list shows each with where it opens now; set value = a placement word: dialog | panel-left | panel-right | sheet | inside | page | window (spoken forms work: \"side panel left\", \"bottom sheet\", \"in a dialog\", \"inside as a split view\"); reset = back to the app default (the app default itself back to the page). Molly: the same through Molly's console. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
-        "ops": [
-          "list",
-          "get",
-          "set",
-          "reset"
-        ],
-        "select": {
-          "q": {
-            "type": "string"
-          },
-          "limit": {
-            "type": "number"
-          },
-          "client": {
-            "type": "string"
-          }
-        },
-        "paths": "host"
-      },
       "console.clients": {
         "description": "The consoles open right now for the caller (one per browser tab: id, app, title, device, screen, last used). Console commands go to the one used last unless input.to says otherwise.",
         "ops": [
@@ -4003,6 +3982,27 @@
           "items.hidden",
           "items.pinned"
         ]
+      },
+      "console.placement": {
+        "description": "Where settings pop up in the open console (settings-placement@1), for every screen (\"screen:<view id>\", its title or words), every plugin with settings (\"plugin:<id>\" or its name) and the app default (path \"app\"). list shows each with where it opens now; set value = a placement word: dialog | panel-left | panel-right | sheet | inside | page | window (spoken forms work: \"side panel left\", \"bottom sheet\", \"in a dialog\", \"inside as a split view\"); reset = back to the app default (the app default itself back to the page). Molly: the same through Molly's console. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
+        "ops": [
+          "list",
+          "get",
+          "set",
+          "reset"
+        ],
+        "select": {
+          "q": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "client": {
+            "type": "string"
+          }
+        },
+        "paths": "host"
       }
     }
   }

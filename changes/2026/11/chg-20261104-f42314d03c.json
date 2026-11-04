@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261104-f42314d03c",
+  "createdAt": "2026-11-04T17:44:34.182Z",
+  "updatedAt": "2026-11-04T17:44:42.498Z",
+  "kind": "build",
+  "title": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-…",
+  "asked": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /root/axf-builds/lmq-batch/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.",
+  "repos": [],
+  "model": "opus",
+  "who": {
+    "session": "223822bb-0cc",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "surface": "headless",
+  "startedAt": "2026-11-04T17:44:34.182Z",
+  "finishedAt": "2026-11-04T17:44:42.498Z",
+  "lastSeenAt": "2026-11-04T17:44:42.278Z",
+  "actual": {
+    "minutes": 0,
+    "costUsd": 0.0899,
+    "inputTokens": 4,
+    "outputTokens": 296,
+    "cacheReadTokens": 37737,
+    "cacheWriteTokens": 15276,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "doing": "Waiting for the next message"
+}

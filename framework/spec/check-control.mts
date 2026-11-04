@@ -47,7 +47,7 @@ eq(Object.keys(CONTROL_PERMISSIONS).length, 19, 'six domains × read / write / d
 eq(controlPermission('plugins.reads', 'act', 'read'), 'control.plugins.read', 'a plugin read only reads');
 eq(controlPermission('plugins.commands', 'act', 'run'), 'control.plugins.write', 'a plugin command writes (a deleting one asks for more)');
 eq(CONTROL_TARGET_IDS.slice(20, 22), ['plugins.commands', 'plugins.reads'], 'plugin targets come after the console and pass ones (append-only)');
-eq(CONTROL_TARGET_IDS.slice(22), ['tokens.nav'], 'the nav-style token set comes after the plugin ones (append-only, build molly-nav-submenus)');
+eq(CONTROL_TARGET_IDS.slice(22), ['tokens.nav', 'console.placement'], 'the nav-style token set comes after the plugin ones, then where settings open (append-only, builds molly-nav-submenus, settings-placement-everywhere)');
 eq(controlPermission('console.screens', 'act', 'open'), 'control.console.navigate', 'opening a screen only navigates');
 eq(controlPermission('console.nav', 'act', 'back'), 'control.console.navigate', 'going back only navigates');
 eq(controlPermission('console.actions', 'act', 'run'), 'control.console.write', 'running an action writes (the host may ask for more)');

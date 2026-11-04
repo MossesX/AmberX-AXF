@@ -2,7 +2,7 @@
   "$axf": "change-log@1",
   "id": "chg-20261104-5d61647dc1",
   "createdAt": "2026-11-04T14:13:32.250Z",
-  "updatedAt": "2026-11-04T15:52:33.492Z",
+  "updatedAt": "2026-11-04T14:27:20.895Z",
   "kind": "build",
   "title": "# Build: urgent-land-gizmo-chat (Current profile) - land PR #296 NOW ## What Brett said (voice, Nov…",
   "asked": "# Build: urgent-land-gizmo-chat (Current profile) - land PR #296 NOW ## What Brett said (voice, Nov 4 2026) \"Is the Claude chat feature built yet?\" -> built (PR #296, gizmo-companion basic chat), green, conflicts with main. \"So put another agent on to do it now.\" Book to a free named agent (Gizmo if his card exists - it's his chat - else Reel Rhonda). Register id `urgent-land-gizmo-chat` in the `current` profile + banner entry + What Brett said block. ## Do 1. Update `claude/gizmo-companion` (PR #296) from current main; resolve conflicts keeping every feature from both sides (main got #288 console-in-Molly, #294 Molly banners, last night's batch). 2. Make sure step 1 of gizmo-companion is complete and working: basic chat with Gizmo in AmberX (type, streamed answer from a Claude Code session on the VPS through axHub, history kept), Windows-Terminal-style window look, shared claude-session library with the console Terminal still working on it. If anything is half-done, finish it; queue the remaining steps (gizmo-voice first) per /root/axf-builds/gizmo-companion/.brief.md addenda. 3. Type-check, tests, CI green -> merge -> redeploy AmberX web (and console if the shared lib changed it). Confirm Gizmo's chat loads and answers one message. 4. Lenny (land-round-2) is told to skip #296. If he's mid-merge on main, wait and re-update. - Heavy steps through agent-slots; never leave tsc/vite/playwright running. No screenshot passes beyond one phone shot filed to UI Review (non-blocking). Report `_claude/builds/reports/urgent-land-gizmo-chat.md`. Commits clean and professional. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Opus) is fine. An UPGRADE (e.g. Opus → Fable) needs Brett's approval: when you reach one, run `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>`, ask once, and stop. Never approve a model switch upgrade yourself (no `act approve` on an upgrade), never relaunch on a higher model.",
@@ -31,81 +31,55 @@
     },
     {
       "text": "CI on PR #296",
-      "state": "done",
-      "startedAt": "2026-11-04T14:21:18.771Z",
-      "finishedAt": "2026-11-04T15:52:20.389Z"
+      "state": "running",
+      "startedAt": "2026-11-04T14:21:18.771Z"
     },
     {
       "text": "Re-merge main (moved again: #298 lazy loader); CI on 66421052f",
-      "state": "done",
-      "startedAt": "2026-11-04T14:27:20.895Z",
-      "finishedAt": "2026-11-04T15:52:20.389Z"
+      "state": "running",
+      "startedAt": "2026-11-04T14:27:20.895Z"
     }
   ],
-  "result": {
-    "state": "done",
-    "summary": "PR #296 (Gizmo basic chat) landed: main merged in 3x, Terminal-style frameless window added, CI fixes (toolbar, page head, lifecycle refs), merged 471e66fe; AmberX web + console redeployed; live Gizmo answered one message. Queued gizmo-voice, gizmo-terminal.",
-    "branch": "claude/gizmo-companion",
-    "commits": [
-      {
-        "sha": "471e66fe"
-      }
-    ],
-    "tests": {
-      "PR CI": {
-        "before": "red",
-        "after": "green"
-      }
-    },
-    "links": {
-      "report": "_claude/builds/reports/urgent-land-gizmo-chat.md"
-    }
-  },
+  "result": null,
   "closed": null,
-  "state": "done",
-  "status": "done",
+  "state": "running",
+  "status": "running",
   "buildRef": {
     "kind": "queue",
     "id": "urgent-land-gizmo-chat"
   },
   "surface": "headless",
   "startedAt": "2026-11-04T14:13:32.250Z",
-  "finishedAt": "2026-11-04T15:52:20.389Z",
-  "lastSeenAt": "2026-11-04T15:51:56.755Z",
+  "lastSeenAt": "2026-11-04T14:27:20.895Z",
   "estimate": {
     "minutes": 120,
     "costUsd": 16.8
   },
-  "actual": {
-    "minutes": 99,
-    "costUsd": 7.2459,
-    "inputTokens": 330,
-    "outputTokens": 66628,
-    "cacheReadTokens": 24604158,
-    "cacheWriteTokens": 198230,
-    "source": "transcript"
-  },
-  "costEstimated": false,
+  "costEstimated": true,
   "branch": "claude/gizmo-companion",
   "areas": [
     "apps/amberx-droid",
     "framework/libs",
     "apps/console-web"
   ],
-  "progress": 1,
+  "doing": "CI on PR #296",
+  "progress": 0.5,
   "resume": {
     "repo": "MossesX/AmberX-AXF",
     "folder": "/root/axf-builds/urgent-land-gizmo-chat",
-    "branch": "claude/urgent-land-gizmo-chat-report",
-    "base": "83ffca36fb78b5e4dcbe57d3c0d168261751e19d",
-    "head": "7facd563fea12b268acada32a4f555a7878ee5cb",
-    "pushed": false,
-    "dirty": 150,
+    "branch": "claude/urgent-land-gizmo-chat",
+    "base": "f92d09693b890f74ed9a3e01d20bcc190b449c51",
+    "head": "f92d09693b890f74ed9a3e01d20bcc190b449c51",
+    "pushed": true,
+    "dirty": 155,
     "pr": "https://github.com/MossesX/AmberX-AXF/pull/296",
     "plan": "Main merged into claude/gizmo-companion, window look added, CI fixes; auto-merge lands it",
     "next": "CI green on f0af58261 -> auto-merge -> AmberX auto-update -> live check of Gizmo answering one message",
     "files": [
-      "_claude/builds/reports/urgent-land-gizmo-chat.md",
+      "_claude/builds/reports/profile-switcher-widget.md",
+      "_claude/builds/reports/profile-switcher-widget/",
+      "_claude/shared/memory/vision.md",
+      "_claude/shared/memory/write-ups.md",
       "changes/2026/11/chg-20261103-0376df55aa.json",
       "changes/2026/11/chg-20261103-07159440e5.json",
       "changes/2026/11/chg-20261103-143254e6c2.json",
@@ -151,6 +125,7 @@
       "changes/2026/11/chg-20261104-532511d5c1.json",
       "changes/2026/11/chg-20261104-58a9fd11fd.json",
       "changes/2026/11/chg-20261104-5922d86774.json",
+      "changes/2026/11/chg-20261104-5b88419cc3.json",
       "changes/2026/11/chg-20261104-6018779d9c.json",
       "changes/2026/11/chg-20261104-61aaa7618a.json",
       "changes/2026/11/chg-20261104-6406342232.json",
@@ -255,16 +230,11 @@
       "sessions/archive/2026/11/cc-f2da85ae-10a8-492d-929d-36844ba6f661.json",
       "sessions/archive/2026/11/cc-f60ff30a-c7b8-4f1e-a806-5035409996ab.json",
       "sessions/archive/2026/11/cc-fba1c47b-7807-4650-8918-8dd909a0ab03.json",
-      "sessions/archive/2026/11/cc-fd531e5f-67f8-4088-9ea3-a0ce6511d2d6.json",
-      "_claude/builds/reports/profile-switcher-widget.md",
-      "_claude/builds/reports/profile-switcher-widget/",
-      "_claude/shared/memory/vision.md",
-      "_claude/shared/memory/write-ups.md",
-      "changes/2026/11/chg-20261104-5b88419cc3.json"
+      "sessions/archive/2026/11/cc-fd531e5f-67f8-4088-9ea3-a0ce6511d2d6.json"
     ],
     "read": [
       "_claude/builds/reports/urgent-land-gizmo-chat.md"
     ],
-    "at": "2026-11-04T15:52:34.153Z"
+    "at": "2026-11-04T14:25:40.599Z"
   }
 }
