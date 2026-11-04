@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T15:38:11.470Z",
+ "updatedAt": "2026-11-04T15:42:18.416Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -12297,7 +12297,7 @@
    "branch": "claude/apps-control-surface",
    "pr": "#322",
    "createdAt": "2026-11-04T15:00:59.141Z",
-   "updatedAt": "2026-11-04T15:37:59.010Z",
+   "updatedAt": "2026-11-04T15:42:17.208Z",
    "builtAt": "2026-11-04T15:37:57.962Z",
    "notes": [
     {
@@ -12307,6 +12307,10 @@
     {
      "text": "PR #322 open (CI pending, auto-merge when green). Report _claude/builds/reports/apps-control-surface.md. UI Review waiting for the console settings page + Remote control sub-tab (no browser in this session).",
      "at": "2026-11-04T15:37:59.010Z"
+    },
+    {
+     "text": "CI round 1: Node sweep red on help coverage (two relabelled wake settings) → fixed, pushed. tracker --check, session-checkin test and plugins --check are red on main too (urgent-main-ci-green).",
+     "at": "2026-11-04T15:42:17.208Z"
     }
    ],
    "approvals": [

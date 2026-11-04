@@ -683,7 +683,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 12:29 UTC · `urgent-land-lazy-loader` added (4 steps) (current) · orchestrator
 - 2026-11-04 12:29 UTC · `urgent-land-lazy-loader` → running (current) · orchestrator
 - 2026-11-04 12:36 UTC · `urgent-land-lazy-loader` s1 done (current) · orchestrator
 - 2026-11-04 12:36 UTC · `urgent-land-lazy-loader` s2 done (current) · orchestrator
@@ -1083,6 +1082,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 15:37 UTC · `apps-control-surface` PR #322 (current) · builds-live
 - 2026-11-04 15:37 UTC · `apps-control-surface` s5 done, → built (current) · orchestrator
 - 2026-11-04 15:37 UTC · `apps-control-surface` note (current) · orchestrator
+- 2026-11-04 15:42 UTC · `apps-control-surface` note (current) · orchestrator
 
 ## Token passes (log)
 
