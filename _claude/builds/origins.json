@@ -1156,6 +1156,18 @@
    "from": "brief",
    "addenda": []
   },
+  "molly-multi-instance-tabs": {
+   "said": "In Molly's xLayout IDE mode: \"How do I make a new tab in Molly?\" ... (there's no + button) ... \"Need to be able to add a tab so I can have multiple instances.\"\nAlso: \"How do I reset the layout? Because I run it IDE style and I made a bunch of tabs.\" He couldn't find Reset layout (it exists as the workspace action `layout-reset` in src/axf/libs/workspace, but he can't see it).\n\nADDENDUM 1 (Brett, voice, Nov 4): \"Any screen or any UI whatsoever can be dragged.\"",
+   "at": "2026-11-04T16:00:00.000Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "molly-opus": {
    "said": "combine AmberX, axHub and the console into one interface but keep them separate apps. Opus version named Molly at molly.amberxai.com; a Fable version comes later in its own build. New app apps/molly (own manifest, baked framework, shared assets) is a shell that shows each app at its own live URL in a kept-alive frame with one banner, one app switcher, one hub sign-in and the look from axHub. Hard rule: AmberX, axHub and the console are not edited and keep running on their own URLs exactly as now; the only allowed outside change is a frame-ancestors header allowing molly.amberxai.com, if needed. No embed marker, no takes, no hiding or merging their menus (same as the Patches rule). No plain axHub hub page, all data on axHub, no storage picker. Patches code is not touched (paused).",
    "at": "2026-11-02",
@@ -1572,6 +1584,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "settings-placement-everywhere": {
+   "said": "\"Set the settings interface for Molly to open in a dialog.\" ... \"I should be able to select in every screen where its settings pops up.\" Addendum 1: \"Every settings interface should have a setting to declare where it pops up.\"",
+   "at": "2026-11-04T00:00:00.000Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "share-search": {
