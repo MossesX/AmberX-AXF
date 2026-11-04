@@ -42,7 +42,24 @@ under *Not in the queue yet* with the reason and joins by itself once approved.
 
 ## CI minutes, before and after (estimate)
 
-See the numbers block below; method: average job durations of recent `Android framework + console` runs.
+Measured on the last 8 `Android framework + console` runs (Nov 4 2026, runner minutes per job): engine sweep 1.7,
+Web Dev Console + Python API 5.4, AmberX APK 1.5, Gradle 4.5 → **~13 min per full run**.
+
+| Per PR | Before | After |
+|---|---|---|
+| On the PR | full run, 13 | light checks, ~3 (npm ci + tsc + validators + its plugin's tests) |
+| Main moved on, retest | 13 per pull-in (auto-merge / auto-land pull main in and re-test; typically 1–3 times) | 0 (the queue run covers the PRs ahead) |
+| Queue run | – | what the combined diff touches: console-only ≈ 7 (engine + console), shared framework 13 |
+| Push to main | full run again, 13 | ~0.3 (scope job only; Android publish only when Android changed) |
+| **Total, console-only PR, 2 pull-ins** | **≈ 52 min** | **≈ 10 min** |
+| **Total, shared-framework PR, 2 pull-ins** | **≈ 52 min** | **≈ 16 min** |
+
+A kicked-out PR costs one extra queue run for each PR rebuilt behind it (at most `queueDepth − 1`, default 2).
+
+**Live dry run (15:06 UTC, real repo, nothing pushed):** 12 ready PRs lined up. The first 3 were stacked
+(#158, #307, #313). #205–#211 wait because they conflict in code with #158 ahead of them, so they get tested once it
+merges. The oldest open PRs sit at the front because the order is oldest-first; Brett reorders with drag or
+Jump to front.
 
 ## Tests
 
