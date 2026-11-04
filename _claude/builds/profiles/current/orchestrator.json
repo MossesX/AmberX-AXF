@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T17:34:09.947Z",
+ "updatedAt": "2026-11-04T17:39:57.790Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -11128,6 +11128,10 @@
     {
      "text": "PR #331 open. Gaps: live voice needs AmberX to stream segments (new APK); addendum 6 audio editor not started; phases 1+2 in one PR (addendum 7 read late).",
      "at": "2026-11-04T17:19:23.689Z"
+    },
+    {
+     "text": "Reconciler: branch claude/live-sessions-plugin (no PR yet)",
+     "at": "2026-11-04T17:19:23.645Z"
     }
    ],
    "approvals": [],

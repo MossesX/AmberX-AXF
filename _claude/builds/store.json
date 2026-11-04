@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 857,
- "updatedAt": "2026-11-04T17:34:09.947Z",
+ "rev": 858,
+ "updatedAt": "2026-11-04T17:39:57.790Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -81138,6 +81138,10 @@
     {
      "text": "PR #331 open. Gaps: live voice needs AmberX to stream segments (new APK); addendum 6 audio editor not started; phases 1+2 in one PR (addendum 7 read late).",
      "at": "2026-11-04T17:19:23.689Z"
+    },
+    {
+     "text": "Reconciler: branch claude/live-sessions-plugin (no PR yet)",
+     "at": "2026-11-04T17:19:23.645Z"
     }
    ],
    "approvals": [],
@@ -81285,7 +81289,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-04T16:46:03.385Z",
-     "updatedAt": "2026-11-04T17:19:21.435Z"
+     "updatedAt": "2026-11-04T17:19:23.463Z"
     }
    ],
    "profiles": [
