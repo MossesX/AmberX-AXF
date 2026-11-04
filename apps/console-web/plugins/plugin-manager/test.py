@@ -238,5 +238,16 @@ else:
     r = c.get("/api/plugins/plugin-manager/logs/llm?level=error")
     check(r.status_code == 200 and [x["at"] for x in r.json()["lines"]] == [2], "GET /logs/{folder}")
     check(c.get("/api/plugins/plugin-manager/logs/llm?level=bogus").status_code == 400, "bad level refused")
+    # lazy loader config (plugin-lazy@1): REST / MCP / CLI read and change it here
+    r = c.get("/api/plugins/plugin-manager/lazy")
+    check(r.status_code == 200 and r.json()["config"]["preloadCount"] == 5 and r.json()["report"] is None, "GET /lazy: defaults, no report yet")
+    r = c.put("/api/plugins/plugin-manager/lazy", json={"config": {"preloadCount": 9, "idle": {"on": False}}})
+    check(r.status_code == 200 and r.json()["config"]["preloadCount"] == 9 and r.json()["config"]["idle"] == {"on": False, "count": 5}, "PUT /lazy merges")
+    check(c.put("/api/plugins/plugin-manager/lazy/plugin/llm", json={"mode": "off"}).json()["config"]["modes"] == {"llm": "off"}, "PUT /lazy/plugin/{folder}")
+    check(c.put("/api/plugins/plugin-manager/lazy/plugin/plugin-manager", json={"mode": "off"}).status_code == 400, "core plugin can't be switched off")
+    check(c.put("/api/plugins/plugin-manager/lazy/plugin/llm", json={"mode": "maybe"}).status_code == 400, "bad mode refused")
+    check(c.post("/api/plugins/plugin-manager/lazy/report", json={"plugins": [{"folder": "llm", "state": "loaded"}]}).status_code == 200
+          and c.get("/api/plugins/plugin-manager/lazy").json()["report"]["plugins"][0]["state"] == "loaded", "POST /lazy/report, read back by GET /lazy")
+    check(c.post("/api/plugins/plugin-manager/lazy/reset").json()["config"]["preloadCount"] == 5, "POST /lazy/reset")
 
 print(f"plugin-manager self-test: {passed} checks passed")
