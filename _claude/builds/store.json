@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 878,
- "updatedAt": "2026-11-04T18:26:39.250Z",
+ "rev": 879,
+ "updatedAt": "2026-11-04T18:30:28.048Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -81949,12 +81949,17 @@
    "hidden": false,
    "source": "code",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/build-todo-sync",
    "pr": "",
    "createdAt": "2026-11-04T18:24:34.029Z",
-   "updatedAt": "2026-11-04T18:26:23.190Z",
+   "updatedAt": "2026-11-04T18:30:27.075Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: branch claude/build-todo-sync (no PR yet)",
+     "at": "2026-11-04T18:30:27.075Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -82162,7 +82167,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

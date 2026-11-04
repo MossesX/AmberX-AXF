@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T18:26:39.250Z",
+ "updatedAt": "2026-11-04T18:30:28.048Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -11506,12 +11506,17 @@
    "hidden": false,
    "source": "code",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/build-todo-sync",
    "pr": "",
    "createdAt": "2026-11-04T18:24:34.029Z",
-   "updatedAt": "2026-11-04T18:26:23.190Z",
+   "updatedAt": "2026-11-04T18:30:27.075Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: branch claude/build-todo-sync (no PR yet)",
+     "at": "2026-11-04T18:30:27.075Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
