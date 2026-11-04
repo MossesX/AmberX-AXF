@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 923,
- "updatedAt": "2026-11-04T19:57:21.318Z",
+ "rev": 924,
+ "updatedAt": "2026-11-04T19:59:02.236Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -82217,10 +82217,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/handoff-2",
+   "pr": "#338",
    "createdAt": "2026-11-04T18:45:40.326Z",
-   "updatedAt": "2026-11-04T19:55:50.253Z",
+   "updatedAt": "2026-11-04T19:59:00.805Z",
    "builtAt": "",
    "notes": [
     {
@@ -82494,7 +82494,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
