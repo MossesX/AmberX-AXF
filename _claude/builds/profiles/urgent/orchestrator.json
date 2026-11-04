@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T18:19:14.252Z",
+ "updatedAt": "2026-11-04T18:20:28.046Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -54,10 +54,11 @@
    },
    "recommendedModel": "Fable",
    "recommendedThinking": "max",
-   "modelWhy": "4 of 12 step(s) are foundation work (migration, builds@1, store core, journal). 8 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus. built on Opus though it is foundation work: redo on Fable",
+   "modelWhy": "The one builds store (builds@1) was Fable-reviewed on Nov 1 (fable-review.md item 1: fix applied). Keep.",
    "adviceKind": "migration",
-   "adviceAt": "2026-11-04T18:19:11.349Z",
-   "verdict": "redo-on-fable",
+   "advicePinned": true,
+   "adviceAt": "2026-11-04T18:20:25.127Z",
+   "verdict": "keep",
    "adviceCost": {
     "minutes": 120,
     "usd": 72.6,
@@ -84,7 +85,7 @@
      "recommendedThinking": "max",
      "modelWhy": "schema migration / store contract: migration; Brett's rule is Fable for foundation work, max thinking",
      "adviceKind": "migration",
-     "adviceAt": "2026-11-04T18:19:11.349Z",
+     "adviceAt": "2026-11-04T18:20:25.127Z",
      "uid": "st-eeozm1"
     },
     {
@@ -107,7 +108,7 @@
      "recommendedThinking": "max",
      "modelWhy": "schema migration / store contract: builds@1, store core; Brett's rule is Fable for foundation work, max thinking",
      "adviceKind": "migration",
-     "adviceAt": "2026-11-04T18:19:11.349Z",
+     "adviceAt": "2026-11-04T18:20:25.127Z",
      "uid": "st-1oie0p3"
     },
     {
@@ -130,7 +131,7 @@
      "recommendedThinking": "max",
      "modelWhy": "schema migration / store contract: journal, migration; Brett's rule is Fable for foundation work, max thinking",
      "adviceKind": "migration",
-     "adviceAt": "2026-11-04T18:19:11.349Z",
+     "adviceAt": "2026-11-04T18:20:25.127Z",
      "uid": "st-1qe2isl"
     },
     {
@@ -153,7 +154,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.349Z",
+     "adviceAt": "2026-11-04T18:20:25.127Z",
      "uid": "st-1oi8t27"
     },
     {
@@ -176,7 +177,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.349Z",
+     "adviceAt": "2026-11-04T18:20:25.127Z",
      "uid": "st-ygvde9"
     },
     {
@@ -199,7 +200,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.349Z",
+     "adviceAt": "2026-11-04T18:20:25.127Z",
      "uid": "st-2pk7gn"
     },
     {
@@ -222,7 +223,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.349Z",
+     "adviceAt": "2026-11-04T18:20:25.127Z",
      "uid": "st-13xlycl"
     },
     {
@@ -245,7 +246,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.349Z",
+     "adviceAt": "2026-11-04T18:20:25.127Z",
      "uid": "st-1ft1mj3"
     },
     {
@@ -268,7 +269,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.349Z",
+     "adviceAt": "2026-11-04T18:20:25.127Z",
      "uid": "st-njrdbd"
     },
     {
@@ -291,7 +292,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.349Z",
+     "adviceAt": "2026-11-04T18:20:25.127Z",
      "uid": "st-1vpxpki"
     },
     {
@@ -314,7 +315,7 @@
      "recommendedThinking": "max",
      "modelWhy": "schema migration / store contract: migration; Brett's rule is Fable for foundation work, max thinking",
      "adviceKind": "migration",
-     "adviceAt": "2026-11-04T18:19:11.349Z",
+     "adviceAt": "2026-11-04T18:20:25.127Z",
      "uid": "st-u55nhr"
     },
     {
@@ -337,7 +338,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (report): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.349Z",
+     "adviceAt": "2026-11-04T18:20:25.127Z",
      "uid": "st-a28gqr"
     }
    ]
@@ -369,7 +370,7 @@
    "recommendedThinking": "high",
    "modelWhy": "2 of 4 step(s) are foundation work (engine, fixture, kotlin twin). 2 step(s) are plugin, screen, server or wiring work for Opus. built on the right model",
    "adviceKind": "foundation",
-   "adviceAt": "2026-11-04T18:19:11.361Z",
+   "adviceAt": "2026-11-04T18:20:25.138Z",
    "verdict": "keep",
    "adviceCost": {
     "minutes": 0,
@@ -397,7 +398,7 @@
      "recommendedThinking": "high",
      "modelWhy": "foundation (schema, asset type, engine, contract): engine; Brett's rule is Fable for foundation work, high thinking",
      "adviceKind": "foundation",
-     "adviceAt": "2026-11-04T18:19:11.361Z",
+     "adviceAt": "2026-11-04T18:20:25.138Z",
      "uid": "st-mw02odif05ltyd"
     },
     {
@@ -420,7 +421,7 @@
      "recommendedThinking": "high",
      "modelWhy": "foundation (schema, asset type, engine, contract): fixture, engine, kotlin twin; Brett's rule is Fable for foundation work, high thinking",
      "adviceKind": "foundation",
-     "adviceAt": "2026-11-04T18:19:11.361Z",
+     "adviceAt": "2026-11-04T18:20:25.138Z",
      "uid": "st-mw02odif06xc5b"
     },
     {
@@ -443,7 +444,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.361Z",
+     "adviceAt": "2026-11-04T18:20:25.138Z",
      "uid": "st-mw02odif07d08o"
     },
     {
@@ -466,7 +467,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.361Z",
+     "adviceAt": "2026-11-04T18:20:25.138Z",
      "uid": "st-mw02odif08osb7"
     }
    ]
@@ -522,7 +523,7 @@
    "recommendedThinking": "high",
    "modelWhy": "1 of 14 step(s) are foundation work (engine). 13 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix / gnarly debugging work for Opus. foundation steps built on Opus: a Fable review (read and fix) is enough",
    "adviceKind": "foundation",
-   "adviceAt": "2026-11-04T18:19:11.361Z",
+   "adviceAt": "2026-11-04T18:20:25.138Z",
    "verdict": "fable-review",
    "adviceCost": {
     "minutes": 15,
@@ -550,7 +551,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.361Z",
+     "adviceAt": "2026-11-04T18:20:25.138Z",
      "uid": "st-mw02odym0b636d"
     },
     {
@@ -573,7 +574,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.361Z",
+     "adviceAt": "2026-11-04T18:20:25.138Z",
      "uid": "st-mw02odym0c8uin"
     },
     {
@@ -596,7 +597,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.361Z",
+     "adviceAt": "2026-11-04T18:20:25.138Z",
      "uid": "st-mw02odym0djd50"
     },
     {
@@ -619,7 +620,7 @@
      "recommendedThinking": "high",
      "modelWhy": "foundation (schema, asset type, engine, contract): engine; Brett's rule is Fable for foundation work, high thinking",
      "adviceKind": "foundation",
-     "adviceAt": "2026-11-04T18:19:11.361Z",
+     "adviceAt": "2026-11-04T18:20:25.138Z",
      "uid": "st-mw02odym0e0lk8"
     },
     {
@@ -642,7 +643,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.361Z",
+     "adviceAt": "2026-11-04T18:20:25.138Z",
      "uid": "st-mw02odym0ftsxm"
     },
     {
@@ -665,7 +666,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.361Z",
+     "adviceAt": "2026-11-04T18:20:25.138Z",
      "uid": "st-mw02odym0gf805"
     },
     {
@@ -688,7 +689,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.361Z",
+     "adviceAt": "2026-11-04T18:20:25.138Z",
      "uid": "st-mw02odym0h24yd"
     },
     {
@@ -711,7 +712,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.361Z",
+     "adviceAt": "2026-11-04T18:20:25.138Z",
      "uid": "st-mw02odym0itdti"
     },
     {
@@ -734,7 +735,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.361Z",
+     "adviceAt": "2026-11-04T18:20:25.138Z",
      "uid": "st-mw02odym0jhiaz"
     },
     {
@@ -757,7 +758,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (tests): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.361Z",
+     "adviceAt": "2026-11-04T18:20:25.138Z",
      "uid": "st-mw02odym0kawwn"
     },
     {
@@ -783,7 +784,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.361Z",
+     "adviceAt": "2026-11-04T18:20:25.138Z",
      "uid": "st-mw0rkw0w01h950"
     },
     {
@@ -806,7 +807,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.361Z",
+     "adviceAt": "2026-11-04T18:20:25.138Z",
      "uid": "st-mw0zm9ji01g5pi"
     },
     {
@@ -829,7 +830,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.361Z",
+     "adviceAt": "2026-11-04T18:20:25.138Z",
      "uid": "st-mw0zmkzu01jd8f"
     },
     {
@@ -852,7 +853,7 @@
      "recommendedThinking": "high",
      "modelWhy": "gnarly debugging (memory): Opus is enough, but it needs high thinking",
      "adviceKind": "debug",
-     "adviceAt": "2026-11-04T18:19:11.361Z",
+     "adviceAt": "2026-11-04T18:20:25.138Z",
      "uid": "st-mw0zmopu017gnw"
     }
    ]
@@ -900,7 +901,7 @@
    "recommendedThinking": "high",
    "modelWhy": "1 of 5 step(s) are foundation work (asset types). 4 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus. foundation steps built on Opus: a Fable review (read and fix) is enough",
    "adviceKind": "foundation",
-   "adviceAt": "2026-11-04T18:19:11.362Z",
+   "adviceAt": "2026-11-04T18:20:25.139Z",
    "verdict": "fable-review",
    "adviceCost": {
     "minutes": 15,
@@ -928,7 +929,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.362Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw02oei306092d"
     },
     {
@@ -951,7 +952,7 @@
      "recommendedThinking": "high",
      "modelWhy": "foundation (schema, asset type, engine, contract): asset types; Brett's rule is Fable for foundation work, high thinking",
      "adviceKind": "foundation",
-     "adviceAt": "2026-11-04T18:19:11.362Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw02oei3075o82"
     },
     {
@@ -974,7 +975,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.362Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw02oei308ow81"
     },
     {
@@ -997,7 +998,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.362Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw02oei309crve"
     },
     {
@@ -1020,7 +1021,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (tests): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.362Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw02oei30awyca"
     }
    ]
@@ -1069,7 +1070,7 @@
    "modelWhy": "control@1 (s1, s3) ran on Fable; the server write path to the appearance document and the try-it docs ran on Opus (#250). A Fable read of the write path is enough.",
    "adviceKind": "foundation",
    "advicePinned": true,
-   "adviceAt": "2026-11-04T18:19:11.362Z",
+   "adviceAt": "2026-11-04T18:20:25.139Z",
    "verdict": "fable-review",
    "adviceCost": {
     "minutes": 15,
@@ -1097,7 +1098,7 @@
      "recommendedThinking": "high",
      "modelWhy": "foundation (schema, asset type, engine, contract): asset type, schema, engine, fixtures; Brett's rule is Fable for foundation work, high thinking",
      "adviceKind": "foundation",
-     "adviceAt": "2026-11-04T18:19:11.362Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw02yrmz0fpbbh"
     },
     {
@@ -1120,7 +1121,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.362Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw02yrmz0gfinn"
     },
     {
@@ -1143,7 +1144,7 @@
      "recommendedThinking": "high",
      "modelWhy": "foundation (schema, asset type, engine, contract): contract, schema, control@1; Brett's rule is Fable for foundation work, high thinking",
      "adviceKind": "foundation",
-     "adviceAt": "2026-11-04T18:19:11.362Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw02yrmz0ht1h3"
     },
     {
@@ -1166,7 +1167,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.362Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw02yrmz0iq6o2"
     },
     {
@@ -1189,7 +1190,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.362Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw02yrmz0jnoy3"
     },
     {
@@ -1212,7 +1213,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.362Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw02yrmz0kj1ky"
     },
     {
@@ -1235,7 +1236,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.362Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw02yrmz0la49w"
     },
     {
@@ -1258,7 +1259,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.362Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw02yrmz0m3nbk"
     },
     {
@@ -1281,7 +1282,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.362Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw02yrmz0n9mut"
     },
     {
@@ -1304,7 +1305,7 @@
      "recommendedThinking": "high",
      "modelWhy": "architecture or heavy refactor inside an app or plugin (planner): Opus is enough, but it needs high thinking",
      "adviceKind": "architecture",
-     "adviceAt": "2026-11-04T18:19:11.362Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw02yrmz0omoxy"
     },
     {
@@ -1327,7 +1328,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.362Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw02yrmz0pprbg"
     },
     {
@@ -1350,7 +1351,7 @@
      "recommendedThinking": "high",
      "modelWhy": "foundation (schema, asset type, engine, contract): schema, control@1; Brett's rule is Fable for foundation work, high thinking",
      "adviceKind": "foundation",
-     "adviceAt": "2026-11-04T18:19:11.362Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw02yrmz0qtqii"
     },
     {
@@ -1373,7 +1374,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (docs): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.362Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw02yrmz0rne7c"
     },
     {
@@ -1396,7 +1397,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (tests): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.362Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw02yrmz0s00qx"
     }
    ]
@@ -1440,7 +1441,7 @@
    "recommendedThinking": "high",
    "modelWhy": "6 step(s) are plugin, screen, server or wiring / architecture or heavy refactor inside an app or plugin / landing, docs, wording or a small fix work for Opus. built on the right model",
    "adviceKind": "architecture",
-   "adviceAt": "2026-11-04T18:19:11.367Z",
+   "adviceAt": "2026-11-04T18:20:25.141Z",
    "verdict": "keep",
    "adviceCost": {
     "minutes": 0,
@@ -1468,7 +1469,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0ofxx6072tca"
     },
     {
@@ -1491,7 +1492,7 @@
      "recommendedThinking": "high",
      "modelWhy": "architecture or heavy refactor inside an app or plugin (orchestrator core): Opus is enough, but it needs high thinking",
      "adviceKind": "architecture",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0ofxx608i9e9"
     },
     {
@@ -1514,7 +1515,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0ofxx609lb7d"
     },
     {
@@ -1537,7 +1538,7 @@
      "recommendedThinking": "high",
      "modelWhy": "architecture or heavy refactor inside an app or plugin (planner): Opus is enough, but it needs high thinking",
      "adviceKind": "architecture",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0ofxx60a8q4g"
     },
     {
@@ -1560,7 +1561,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (readme): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0ofxx60bt5fj"
     },
     {
@@ -1583,7 +1584,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (tests): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0ofxx60clwya"
     }
    ]
@@ -1627,7 +1628,7 @@
    "recommendedThinking": "high",
    "modelWhy": "1 of 7 step(s) are foundation work (contract). 6 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus. foundation steps built on Opus: a Fable review (read and fix) is enough",
    "adviceKind": "foundation",
-   "adviceAt": "2026-11-04T18:19:11.367Z",
+   "adviceAt": "2026-11-04T18:20:25.141Z",
    "verdict": "fable-review",
    "adviceCost": {
     "minutes": 15,
@@ -1655,7 +1656,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0u13sq08mw8t"
     },
     {
@@ -1678,7 +1679,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0u13sq09v7el"
     },
     {
@@ -1701,7 +1702,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0u13sq0aramw"
     },
     {
@@ -1724,7 +1725,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0u13sq0b16ms"
     },
     {
@@ -1747,7 +1748,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (doc): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0u13sq0ct7mb"
     },
     {
@@ -1770,7 +1771,7 @@
      "recommendedThinking": "high",
      "modelWhy": "foundation (schema, asset type, engine, contract): contract; Brett's rule is Fable for foundation work, high thinking",
      "adviceKind": "foundation",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0u13sq0dofga"
     },
     {
@@ -1793,7 +1794,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (report, threads, pr): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0u13sq0eu8ac"
     }
    ]
@@ -1837,7 +1838,7 @@
    "recommendedThinking": "high",
    "modelWhy": "1 of 6 step(s) are foundation work (schema). 5 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus. foundation steps built on Opus: a Fable review (read and fix) is enough",
    "adviceKind": "foundation",
-   "adviceAt": "2026-11-04T18:19:11.369Z",
+   "adviceAt": "2026-11-04T18:20:25.141Z",
    "verdict": "fable-review",
    "adviceCost": {
     "minutes": 15,
@@ -1865,7 +1866,7 @@
      "recommendedThinking": "high",
      "modelWhy": "foundation (schema, asset type, engine, contract): schema; Brett's rule is Fable for foundation work, high thinking",
      "adviceKind": "foundation",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0u2vv5076u3i"
     },
     {
@@ -1888,7 +1889,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0u2vv5086sdz"
     },
     {
@@ -1911,7 +1912,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0u2vv509iujl"
     },
     {
@@ -1934,7 +1935,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (report): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0u2vv50a9asc"
     },
     {
@@ -1957,7 +1958,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0u2vv50bdglp"
     },
     {
@@ -1980,7 +1981,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (docs): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0u2vv50cjo31"
     }
    ]
@@ -2024,7 +2025,7 @@
    "recommendedThinking": "high",
    "modelWhy": "2 of 8 step(s) are foundation work (schema, fixtures, engine, engines). 6 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus. foundation steps built on Opus: a Fable review (read and fix) is enough",
    "adviceKind": "foundation",
-   "adviceAt": "2026-11-04T18:19:11.366Z",
+   "adviceAt": "2026-11-04T18:20:25.141Z",
    "verdict": "fable-review",
    "adviceCost": {
     "minutes": 21,
@@ -2052,7 +2053,7 @@
      "recommendedThinking": "high",
      "modelWhy": "foundation (schema, asset type, engine, contract): schema, fixtures; Brett's rule is Fable for foundation work, high thinking",
      "adviceKind": "foundation",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0ow6xh094uy1"
     },
     {
@@ -2075,7 +2076,7 @@
      "recommendedThinking": "high",
      "modelWhy": "foundation (schema, asset type, engine, contract): engine, engines; Brett's rule is Fable for foundation work, high thinking",
      "adviceKind": "foundation",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0ow6xh0axdo4"
     },
     {
@@ -2098,7 +2099,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0ow6xh0busnx"
     },
     {
@@ -2121,7 +2122,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0ow6xh0c2yfl"
     },
     {
@@ -2144,7 +2145,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0ow6xh0dnq1r"
     },
     {
@@ -2167,7 +2168,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0ow6xh0e7es8"
     },
     {
@@ -2190,7 +2191,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (docs): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0ow6xh0fy7e5"
     },
     {
@@ -2213,7 +2214,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (tests): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0ow6xh0ggrea"
     }
    ]
@@ -2258,7 +2259,7 @@
    "modelWhy": "control-pass@1 (timed veto passes) is a security contract shared by axHub and the console: its scope matching decides what runs without Brett's veto. Built on Opus (#264); the matching rules deserve a Fable rebuild.",
    "adviceKind": "foundation",
    "advicePinned": true,
-   "adviceAt": "2026-11-04T18:19:11.367Z",
+   "adviceAt": "2026-11-04T18:20:25.141Z",
    "verdict": "redo-on-fable",
    "adviceCost": {
     "minutes": 60,
@@ -2286,7 +2287,7 @@
      "recommendedThinking": "high",
      "modelWhy": "foundation (schema, asset type, engine, contract): engine, schema, control-pass@1; Brett's rule is Fable for foundation work, high thinking",
      "adviceKind": "foundation",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0vb4lw063ze6"
     },
     {
@@ -2309,7 +2310,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0vb4lw07e6ht"
     },
     {
@@ -2332,7 +2333,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0vb4lw08qyoz"
     },
     {
@@ -2355,7 +2356,7 @@
      "recommendedThinking": "high",
      "modelWhy": "foundation (schema, asset type, engine, contract): contract; Brett's rule is Fable for foundation work, high thinking",
      "adviceKind": "foundation",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0vb4lw09va96"
     },
     {
@@ -2378,7 +2379,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (note, pr, threads): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0vb4lw0axukf"
     }
    ]
@@ -2445,7 +2446,7 @@
    "modelWhy": "builds-merge-core (newer-wins per build and step), the journal merge and the axf-builds git merge driver are the contract every session's store writes go through on their way to main; built on Opus (#255). A flaw here loses ticks and notes between sessions without anyone noticing.",
    "adviceKind": "migration",
    "advicePinned": true,
-   "adviceAt": "2026-11-04T18:19:11.363Z",
+   "adviceAt": "2026-11-04T18:20:25.139Z",
    "verdict": "redo-on-fable",
    "adviceCost": {
     "minutes": 55,
@@ -2476,7 +2477,7 @@
      "recommendedThinking": "max",
      "modelWhy": "schema migration / store contract: newer-wins, journal, framework/plan/; Brett's rule is Fable for foundation work, max thinking",
      "adviceKind": "migration",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw0qib74086zoo"
     },
     {
@@ -2499,7 +2500,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw0qib7409si5s"
     },
     {
@@ -2522,7 +2523,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw0qib740ar92l"
     },
     {
@@ -2545,7 +2546,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (threads, threads.md): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw0qib740busjm"
     },
     {
@@ -2568,7 +2569,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw0qib740cp96r"
     },
     {
@@ -2591,7 +2592,7 @@
      "recommendedThinking": "high",
      "modelWhy": "foundation (schema, asset type, engine, contract): engine; Brett's rule is Fable for foundation work, high thinking",
      "adviceKind": "foundation",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw0qib740dp920"
     },
     {
@@ -2614,7 +2615,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (tests): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw0qib740en9dq"
     }
    ]
@@ -2658,7 +2659,7 @@
    "recommendedThinking": "medium",
    "modelWhy": "7 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus. built on the right model",
    "adviceKind": "plugin",
-   "adviceAt": "2026-11-04T18:19:11.366Z",
+   "adviceAt": "2026-11-04T18:20:25.140Z",
    "verdict": "keep",
    "adviceCost": {
     "minutes": 0,
@@ -2686,7 +2687,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0r3ltf088i2a"
     },
     {
@@ -2709,7 +2710,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0r3ltf09bvp4"
     },
     {
@@ -2732,7 +2733,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0r3ltf0a77iz"
     },
     {
@@ -2755,7 +2756,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0r3ltf0bef6q"
     },
     {
@@ -2778,7 +2779,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0r3ltf0cvulu"
     },
     {
@@ -2801,7 +2802,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0r3ltf0d4goj"
     },
     {
@@ -2824,7 +2825,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (ui review, report, threads.md, pr): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0r3ltf0eiufi"
     }
    ]
@@ -2868,7 +2869,7 @@
    "recommendedThinking": "medium",
    "modelWhy": "5 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus. built on the right model",
    "adviceKind": "plugin",
-   "adviceAt": "2026-11-04T18:19:11.366Z",
+   "adviceAt": "2026-11-04T18:20:25.140Z",
    "verdict": "keep",
    "adviceCost": {
     "minutes": 0,
@@ -2896,7 +2897,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0rf3bt06pknc"
     },
     {
@@ -2919,7 +2920,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0rf3bt075p6w"
     },
     {
@@ -2942,7 +2943,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0rf3bt08jx0l"
     },
     {
@@ -2965,7 +2966,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0rf3bt09vg1v"
     },
     {
@@ -2988,7 +2989,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (ui review, report, threads, pr): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0rf3bt0a8tis"
     }
    ]
@@ -3027,7 +3028,7 @@
    "recommendedThinking": "medium",
    "modelWhy": "6 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus. built on the right model",
    "adviceKind": "plugin",
-   "adviceAt": "2026-11-04T18:19:11.363Z",
+   "adviceAt": "2026-11-04T18:20:25.140Z",
    "verdict": "keep",
    "adviceCost": {
     "minutes": 0,
@@ -3055,7 +3056,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0rksji0734t4"
     },
     {
@@ -3078,7 +3079,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0rksji08rkog"
     },
     {
@@ -3101,7 +3102,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0rksji09p1rw"
     },
     {
@@ -3124,7 +3125,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0rksji0a06ja"
     },
     {
@@ -3147,7 +3148,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0rksji0bjf1f"
     },
     {
@@ -3170,7 +3171,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (tests): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0rksji0cv0wp"
     }
    ]
@@ -3226,7 +3227,7 @@
    "recommendedThinking": "high",
    "modelWhy": "8 step(s) are landing, docs, wording or a small fix / architecture or heavy refactor inside an app or plugin work for Opus. built on the right model",
    "adviceKind": "architecture",
-   "adviceAt": "2026-11-04T18:19:11.366Z",
+   "adviceAt": "2026-11-04T18:20:25.140Z",
    "verdict": "keep",
    "adviceCost": {
     "minutes": 0,
@@ -3254,7 +3255,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (cleanup): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0rlsih09h7qw"
     },
     {
@@ -3277,7 +3278,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (deploy, cleanup): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0rlsih0awxn6"
     },
     {
@@ -3300,7 +3301,7 @@
      "recommendedThinking": "high",
      "modelWhy": "architecture or heavy refactor inside an app or plugin (rewrite): Opus is enough, but it needs high thinking",
      "adviceKind": "architecture",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0rlsih0b1esl"
     },
     {
@@ -3323,7 +3324,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (cleanup): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0rlsih0c6yl3"
     },
     {
@@ -3346,7 +3347,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (pr, cleanup): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0rlsih0ddwo9"
     },
     {
@@ -3369,7 +3370,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (cleanup): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0rlsih0e8ey2"
     },
     {
@@ -3392,7 +3393,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (pr, cleanup): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0rlsih0fbd3d"
     },
     {
@@ -3415,7 +3416,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (report, cleanup): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.366Z",
+     "adviceAt": "2026-11-04T18:20:25.140Z",
      "uid": "st-mw0rlsih0gtf2c"
     }
    ]
@@ -3459,7 +3460,7 @@
    "recommendedThinking": "medium",
    "modelWhy": "6 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus. built on the right model",
    "adviceKind": "plugin",
-   "adviceAt": "2026-11-04T18:19:11.367Z",
+   "adviceAt": "2026-11-04T18:20:25.141Z",
    "verdict": "keep",
    "adviceCost": {
     "minutes": 0,
@@ -3487,7 +3488,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0ygshp074x2i"
     },
     {
@@ -3510,7 +3511,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0ygshp08u4wg"
     },
     {
@@ -3533,7 +3534,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0ygshp091v3r"
     },
     {
@@ -3556,7 +3557,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0ygshp0ajpyd"
     },
     {
@@ -3579,7 +3580,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0ygshp0bvfnd"
     },
     {
@@ -3602,7 +3603,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (tests): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.367Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0ygshp0cuh19"
     }
    ]
@@ -3718,7 +3719,7 @@
    "recommendedThinking": "medium",
    "modelWhy": "11 step(s) are landing, docs, wording or a small fix / plugin, screen, server or wiring work for Opus. built on the right model",
    "adviceKind": "plugin",
-   "adviceAt": "2026-11-04T18:19:11.363Z",
+   "adviceAt": "2026-11-04T18:20:25.139Z",
    "verdict": "keep",
    "adviceCost": {
     "minutes": 0,
@@ -3746,7 +3747,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (land): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw0uj4uc0c3tyz"
     },
     {
@@ -3769,7 +3770,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (land): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw0uj4uc0d46ul"
     },
     {
@@ -3792,7 +3793,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (land): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw0uj4uc0ewtjn"
     },
     {
@@ -3815,7 +3816,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (land): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw0uj4uc0fd2na"
     },
     {
@@ -3838,7 +3839,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (land): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw0uj4uc0g79td"
     },
     {
@@ -3861,7 +3862,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (land): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw0uj4uc0hgx0t"
     },
     {
@@ -3884,7 +3885,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (land): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw0uj4uc0ieadw"
     },
     {
@@ -3907,7 +3908,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (land): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw0uj4uc0j16t8"
     },
     {
@@ -3930,7 +3931,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (land): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw0uj4uc0khig5"
     },
     {
@@ -3953,7 +3954,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw0uj4uc0l84ua"
     },
     {
@@ -3976,7 +3977,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (report, land): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.363Z",
+     "adviceAt": "2026-11-04T18:20:25.139Z",
      "uid": "st-mw0uj4uc0mytjc"
     }
    ]
@@ -4019,7 +4020,7 @@
    "recommendedThinking": "medium",
    "modelWhy": "5 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus. built on the right model",
    "adviceKind": "plugin",
-   "adviceAt": "2026-11-04T18:19:11.369Z",
+   "adviceAt": "2026-11-04T18:20:25.141Z",
    "verdict": "keep",
    "adviceCost": {
     "minutes": 0,
@@ -4047,7 +4048,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0zkivu06l3u5"
     },
     {
@@ -4070,7 +4071,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0zkivu07qkyg"
     },
     {
@@ -4093,7 +4094,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0zkivu08m6x3"
     },
     {
@@ -4116,7 +4117,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0zkivu09jex7"
     },
     {
@@ -4139,7 +4140,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (tests): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.141Z",
      "uid": "st-mw0zkivu0atp8d"
     }
    ]
@@ -4187,7 +4188,7 @@
    "recommendedThinking": "high",
    "modelWhy": "1 of 6 step(s) are foundation work (engine). 5 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus. foundation steps built on Opus: a Fable review (read and fix) is enough",
    "adviceKind": "foundation",
-   "adviceAt": "2026-11-04T18:19:11.369Z",
+   "adviceAt": "2026-11-04T18:20:25.142Z",
    "verdict": "fable-review",
    "adviceCost": {
     "minutes": 15,
@@ -4215,7 +4216,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw0zp51a07fsw1"
     },
     {
@@ -4238,7 +4239,7 @@
      "recommendedThinking": "high",
      "modelWhy": "foundation (schema, asset type, engine, contract): engine; Brett's rule is Fable for foundation work, high thinking",
      "adviceKind": "foundation",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw0zp51a08w87d"
     },
     {
@@ -4261,7 +4262,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw0zp51a09tapx"
     },
     {
@@ -4284,7 +4285,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw0zp51a0aimnm"
     },
     {
@@ -4307,7 +4308,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (tests): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw0zp51a0bj0hy"
     },
     {
@@ -4330,7 +4331,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (screenshots, ui review, report): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw0zp51a0ccubx"
     }
    ]
@@ -4390,7 +4391,7 @@
    "recommendedThinking": "medium",
    "modelWhy": "8 step(s) are landing, docs, wording or a small fix / plugin, screen, server or wiring work for Opus. built on the right model",
    "adviceKind": "plugin",
-   "adviceAt": "2026-11-04T18:19:11.369Z",
+   "adviceAt": "2026-11-04T18:20:25.142Z",
    "verdict": "keep",
    "adviceCost": {
     "minutes": 0,
@@ -4418,7 +4419,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (land, report, pr): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw0zviev099tgk"
     },
     {
@@ -4441,7 +4442,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (merge main, threads): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw0zviev0asz30"
     },
     {
@@ -4464,7 +4465,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (ui review): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw0zviev0b0kp8"
     },
     {
@@ -4487,7 +4488,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (landing): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw0zviev0claol"
     },
     {
@@ -4510,7 +4511,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw0zviev0ddqjs"
     },
     {
@@ -4533,7 +4534,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw0zviev0emr3p"
     },
     {
@@ -4556,7 +4557,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (land, ui review): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw0zviev0f32ar"
     },
     {
@@ -4579,7 +4580,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (report, land, threads, pr): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.369Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw0zviev0gwt4z"
     }
    ]
@@ -4627,7 +4628,7 @@
    "recommendedThinking": "medium",
    "modelWhy": "7 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus. built on the right model",
    "adviceKind": "plugin",
-   "adviceAt": "2026-11-04T18:19:11.370Z",
+   "adviceAt": "2026-11-04T18:20:25.142Z",
    "verdict": "keep",
    "adviceCost": {
     "minutes": 0,
@@ -4655,7 +4656,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10d4gb08pi4g"
     },
     {
@@ -4678,7 +4679,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10d4gb09ahtj"
     },
     {
@@ -4701,7 +4702,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10d4gb0af9fw"
     },
     {
@@ -4724,7 +4725,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10d4gb0b5y4x"
     },
     {
@@ -4747,7 +4748,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10d4gb0cduyc"
     },
     {
@@ -4770,7 +4771,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10d4gb0d2z76"
     },
     {
@@ -4793,7 +4794,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (tests): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10d4gb0e7le4"
     }
    ]
@@ -4884,7 +4885,7 @@
    "recommendedThinking": "high",
    "modelWhy": "3 of 21 step(s) are foundation work (contracts, asset-types, schemas, fixtures…, engine). 18 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus. built on the right model",
    "adviceKind": "foundation",
-   "adviceAt": "2026-11-04T18:19:11.370Z",
+   "adviceAt": "2026-11-04T18:20:25.142Z",
    "verdict": "keep",
    "adviceCost": {
     "minutes": 0,
@@ -4912,7 +4913,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10nvlk0mhi1i"
     },
     {
@@ -4935,7 +4936,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10nvlk0nv7sf"
     },
     {
@@ -4958,7 +4959,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10nvlk0o27r0"
     },
     {
@@ -4981,7 +4982,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10nvlk0pbnyr"
     },
     {
@@ -5004,7 +5005,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10nvlk0qmsal"
     },
     {
@@ -5027,7 +5028,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10nvlk0ro7i1"
     },
     {
@@ -5050,7 +5051,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10nvlk0s5siw"
     },
     {
@@ -5073,7 +5074,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10nvlk0ti8km"
     },
     {
@@ -5096,7 +5097,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10nvlk0uf0bu"
     },
     {
@@ -5119,7 +5120,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10nvlk0vxdfl"
     },
     {
@@ -5142,7 +5143,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10nvlk0wj4az"
     },
     {
@@ -5165,7 +5166,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10nvlk0xjal7"
     },
     {
@@ -5188,7 +5189,7 @@
      "recommendedThinking": "high",
      "modelWhy": "foundation (schema, asset type, engine, contract): contracts, asset-types, schemas, fixtures…; Brett's rule is Fable for foundation work, high thinking",
      "adviceKind": "foundation",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10nvlk0yh0zr"
     },
     {
@@ -5211,7 +5212,7 @@
      "recommendedThinking": "high",
      "modelWhy": "foundation (schema, asset type, engine, contract): engine, fixture; Brett's rule is Fable for foundation work, high thinking",
      "adviceKind": "foundation",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10nvlk0zgyvu"
     },
     {
@@ -5234,7 +5235,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10nvlk10hp3p"
     },
     {
@@ -5257,7 +5258,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10nvlk11m5ui"
     },
     {
@@ -5280,7 +5281,7 @@
      "recommendedThinking": "high",
      "modelWhy": "foundation (schema, asset type, engine, contract): contract; Brett's rule is Fable for foundation work, high thinking",
      "adviceKind": "foundation",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10nvlk12z0hz"
     },
     {
@@ -5303,7 +5304,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10nvlk13x2nd"
     },
     {
@@ -5326,7 +5327,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10nvlk14ntfv"
     },
     {
@@ -5349,7 +5350,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (tests): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10nvlk15weqd"
     },
     {
@@ -5372,7 +5373,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (screenshots, ui review, report, threads): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.142Z",
      "uid": "st-mw10nvlk16md8o"
     }
    ]
@@ -5432,7 +5433,7 @@
    "recommendedThinking": "high",
    "modelWhy": "1 of 7 step(s) are foundation work (registry, claude-settings@1). 6 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus. foundation steps built on Opus: a Fable review (read and fix) is enough",
    "adviceKind": "foundation",
-   "adviceAt": "2026-11-04T18:19:11.370Z",
+   "adviceAt": "2026-11-04T18:20:25.150Z",
    "verdict": "fable-review",
    "adviceCost": {
     "minutes": 15,
@@ -5460,7 +5461,7 @@
      "recommendedThinking": "high",
      "modelWhy": "foundation (schema, asset type, engine, contract): registry, claude-settings@1; Brett's rule is Fable for foundation work, high thinking",
      "adviceKind": "foundation",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.150Z",
      "uid": "st-mw121cei08m7ra"
     },
     {
@@ -5483,7 +5484,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.150Z",
      "uid": "st-mw121cei091fyb"
     },
     {
@@ -5506,7 +5507,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.150Z",
      "uid": "st-mw121cei0a9vjp"
     },
     {
@@ -5529,7 +5530,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.150Z",
      "uid": "st-mw121cei0b4r0i"
     },
     {
@@ -5552,7 +5553,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (tests): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.150Z",
      "uid": "st-mw121cei0cjn7j"
     },
     {
@@ -5575,7 +5576,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (docs, report, threads): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.150Z",
      "uid": "st-mw121cei0d00tv"
     },
     {
@@ -5598,7 +5599,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (screenshots, ui review, pr): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.370Z",
+     "adviceAt": "2026-11-04T18:20:25.150Z",
      "uid": "st-mw121cei0eodnv"
     }
    ]
@@ -5654,7 +5655,7 @@
    "recommendedThinking": "medium",
    "modelWhy": "7 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus. built on the right model",
    "adviceKind": "plugin",
-   "adviceAt": "2026-11-04T18:19:11.371Z",
+   "adviceAt": "2026-11-04T18:20:25.150Z",
    "verdict": "keep",
    "adviceCost": {
     "minutes": 0,
@@ -5682,7 +5683,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.371Z",
+     "adviceAt": "2026-11-04T18:20:25.150Z",
      "uid": "st-mw121tzm08a0ol"
     },
     {
@@ -5705,7 +5706,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.371Z",
+     "adviceAt": "2026-11-04T18:20:25.150Z",
      "uid": "st-mw121tzm095e48"
     },
     {
@@ -5728,7 +5729,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.371Z",
+     "adviceAt": "2026-11-04T18:20:25.150Z",
      "uid": "st-mw121tzm0a27p6"
     },
     {
@@ -5751,7 +5752,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.371Z",
+     "adviceAt": "2026-11-04T18:20:25.150Z",
      "uid": "st-mw121tzm0bivrc"
     },
     {
@@ -5774,7 +5775,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (tests): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.371Z",
+     "adviceAt": "2026-11-04T18:20:25.150Z",
      "uid": "st-mw121tzm0c4p9l"
     },
     {
@@ -5797,7 +5798,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (docs): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.371Z",
+     "adviceAt": "2026-11-04T18:20:25.150Z",
      "uid": "st-mw121tzm0dg5rh"
     },
     {
@@ -5820,7 +5821,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (screenshots, ui review, report, threads): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.371Z",
+     "adviceAt": "2026-11-04T18:20:25.150Z",
      "uid": "st-mw121tzm0ehrwl"
     }
    ]
@@ -5868,7 +5869,7 @@
    "recommendedThinking": "medium",
    "modelWhy": "9 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus. built on the right model",
    "adviceKind": "plugin",
-   "adviceAt": "2026-11-04T18:19:11.371Z",
+   "adviceAt": "2026-11-04T18:20:25.151Z",
    "verdict": "keep",
    "adviceCost": {
     "minutes": 0,
@@ -5896,7 +5897,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.371Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw1245uq0a71q5"
     },
     {
@@ -5919,7 +5920,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.371Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw1245uq0bszvz"
     },
     {
@@ -5942,7 +5943,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.371Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw1245uq0c9u0d"
     },
     {
@@ -5965,7 +5966,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.371Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw1245uq0d9wrm"
     },
     {
@@ -5988,7 +5989,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.371Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw1245uq0ep7du"
     },
     {
@@ -6011,7 +6012,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.371Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw1245uq0f2ldz"
     },
     {
@@ -6034,7 +6035,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.371Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw1245uq0goxc9"
     },
     {
@@ -6057,7 +6058,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (tests): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.371Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw1245uq0hf4no"
     },
     {
@@ -6080,7 +6081,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (screenshots, ui review, report, threads): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.371Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw1245uq0i5so3"
     }
    ]
@@ -6140,7 +6141,7 @@
    "recommendedThinking": "high",
    "modelWhy": "5 step(s) are landing, docs, wording or a small fix / gnarly debugging / plugin, screen, server or wiring work for Opus. built on the right model",
    "adviceKind": "debug",
-   "adviceAt": "2026-11-04T18:19:11.371Z",
+   "adviceAt": "2026-11-04T18:20:25.151Z",
    "verdict": "keep",
    "adviceCost": {
     "minutes": 0,
@@ -6168,7 +6169,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (ui review): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.371Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw12a64y06vom2"
     },
     {
@@ -6191,7 +6192,7 @@
      "recommendedThinking": "high",
      "modelWhy": "gnarly debugging (starves): Opus is enough, but it needs high thinking",
      "adviceKind": "debug",
-     "adviceAt": "2026-11-04T18:19:11.371Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw12a64y07dz09"
     },
     {
@@ -6214,7 +6215,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.371Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw12a64y08osj0"
     },
     {
@@ -6237,7 +6238,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.371Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw12a64y09zzl4"
     },
     {
@@ -6260,7 +6261,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (tests): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.371Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw12a64y0afy36"
     }
    ]
@@ -6324,7 +6325,7 @@
    "recommendedThinking": "high",
    "modelWhy": "1 of 6 step(s) are foundation work (registry). 5 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus. foundation steps built on Opus: a Fable review (read and fix) is enough",
    "adviceKind": "foundation",
-   "adviceAt": "2026-11-04T18:19:11.372Z",
+   "adviceAt": "2026-11-04T18:20:25.151Z",
    "verdict": "fable-review",
    "adviceCost": {
     "minutes": 15,
@@ -6352,7 +6353,7 @@
      "recommendedThinking": "high",
      "modelWhy": "foundation (schema, asset type, engine, contract): registry; Brett's rule is Fable for foundation work, high thinking",
      "adviceKind": "foundation",
-     "adviceAt": "2026-11-04T18:19:11.372Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw13hw6d07pb4u"
     },
     {
@@ -6375,7 +6376,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.372Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw13hw6d081k6f"
     },
     {
@@ -6398,7 +6399,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.372Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw13hw6d09wam6"
     },
     {
@@ -6421,7 +6422,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.372Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw13hw6h0a7gfa"
     },
     {
@@ -6444,7 +6445,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.372Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw13hw6h0b1se8"
     },
     {
@@ -6467,7 +6468,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (screenshots, ui review, report, threads): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.372Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw13hw6h0c4lfl"
     }
    ]
@@ -6541,7 +6542,7 @@
    "modelWhy": "The smart-menu ranking engine is a new framework engine built on Opus (#281); its report asks for a Fable review (fable-review-nov3 s5).",
    "adviceKind": "foundation",
    "advicePinned": true,
-   "adviceAt": "2026-11-04T18:19:11.372Z",
+   "adviceAt": "2026-11-04T18:20:25.151Z",
    "verdict": "fable-review",
    "adviceCost": {
     "minutes": 15,
@@ -6569,7 +6570,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.372Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw13kt3508ztno"
     },
     {
@@ -6592,7 +6593,7 @@
      "recommendedThinking": "high",
      "modelWhy": "foundation (schema, asset type, engine, contract): engine; Brett's rule is Fable for foundation work, high thinking",
      "adviceKind": "foundation",
-     "adviceAt": "2026-11-04T18:19:11.372Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw13kt35090ld5"
     },
     {
@@ -6615,7 +6616,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.372Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw13kt350alzef"
     },
     {
@@ -6638,7 +6639,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.372Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw13kt350bbrrg"
     },
     {
@@ -6661,7 +6662,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.372Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw13kt350crpsr"
     },
     {
@@ -6684,7 +6685,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.372Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw13kt350dc3bn"
     },
     {
@@ -6707,7 +6708,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (tests): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.372Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw13kt350eenav"
     }
    ]
@@ -6763,7 +6764,7 @@
    "recommendedThinking": "medium",
    "modelWhy": "6 step(s) are plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus. built on the right model",
    "adviceKind": "plugin",
-   "adviceAt": "2026-11-04T18:19:11.373Z",
+   "adviceAt": "2026-11-04T18:20:25.151Z",
    "verdict": "keep",
    "adviceCost": {
     "minutes": 0,
@@ -6791,7 +6792,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.373Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw13wc2w07es00"
     },
     {
@@ -6814,7 +6815,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (ui review): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.373Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw13wc2w08nlqt"
     },
     {
@@ -6837,7 +6838,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.373Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw13wc2w09d589"
     },
     {
@@ -6860,7 +6861,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.373Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw13wc2w0ajehe"
     },
     {
@@ -6883,7 +6884,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.373Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw13wc2w0bi2db"
     },
     {
@@ -6906,7 +6907,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (screenshots, report, threads, pr): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.373Z",
+     "adviceAt": "2026-11-04T18:20:25.151Z",
      "uid": "st-mw13wc2w0cmw1i"
     }
    ]
@@ -6949,7 +6950,7 @@
    "recommendedThinking": "high",
    "modelWhy": "5 step(s) are gnarly debugging / plugin, screen, server or wiring / landing, docs, wording or a small fix work for Opus",
    "adviceKind": "debug",
-   "adviceAt": "2026-11-04T18:19:11.411Z",
+   "adviceAt": "2026-11-04T18:20:25.173Z",
    "adviceCost": {
     "minutes": 0,
     "usd": 0,
@@ -6976,7 +6977,7 @@
      "recommendedThinking": "high",
      "modelWhy": "gnarly debugging (regression): Opus is enough, but it needs high thinking",
      "adviceKind": "debug",
-     "adviceAt": "2026-11-04T18:19:11.411Z",
+     "adviceAt": "2026-11-04T18:20:25.173Z",
      "uid": "st-mw2d9kbx06uncr"
     },
     {
@@ -6999,7 +7000,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.411Z",
+     "adviceAt": "2026-11-04T18:20:25.173Z",
      "uid": "st-mw2d9kbx073net"
     },
     {
@@ -7022,7 +7023,7 @@
      "recommendedThinking": "high",
      "modelWhy": "gnarly debugging (stale): Opus is enough, but it needs high thinking",
      "adviceKind": "debug",
-     "adviceAt": "2026-11-04T18:19:11.411Z",
+     "adviceAt": "2026-11-04T18:20:25.173Z",
      "uid": "st-mw2d9kbx08lol9"
     },
     {
@@ -7045,7 +7046,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.411Z",
+     "adviceAt": "2026-11-04T18:20:25.173Z",
      "uid": "st-mw2d9kbx096xbt"
     },
     {
@@ -7068,7 +7069,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (report, pr, redeploy): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.411Z",
+     "adviceAt": "2026-11-04T18:20:25.173Z",
      "uid": "st-mw2d9kbx0anew0"
     }
    ]
@@ -7106,7 +7107,7 @@
    "recommendedThinking": "medium",
    "modelWhy": "6 step(s) are landing, docs, wording or a small fix / plugin, screen, server or wiring work for Opus",
    "adviceKind": "plugin",
-   "adviceAt": "2026-11-04T18:19:11.412Z",
+   "adviceAt": "2026-11-04T18:20:25.173Z",
    "adviceCost": {
     "minutes": 0,
     "usd": 0,
@@ -7133,7 +7134,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (land): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.412Z",
+     "adviceAt": "2026-11-04T18:20:25.173Z",
      "uid": "st-mw2ebw5l07fjnd"
     },
     {
@@ -7156,7 +7157,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (land): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.412Z",
+     "adviceAt": "2026-11-04T18:20:25.173Z",
      "uid": "st-mw2ebw5l08r9ph"
     },
     {
@@ -7179,7 +7180,7 @@
      "recommendedThinking": "medium",
      "modelWhy": "plugin, screen, server or wiring: Opus, medium thinking",
      "adviceKind": "plugin",
-     "adviceAt": "2026-11-04T18:19:11.412Z",
+     "adviceAt": "2026-11-04T18:20:25.173Z",
      "uid": "st-mw2ebw5l0944kh"
     },
     {
@@ -7202,7 +7203,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (land): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.412Z",
+     "adviceAt": "2026-11-04T18:20:25.173Z",
      "uid": "st-mw2ebw5l0a34zp"
     },
     {
@@ -7225,7 +7226,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (land, deploy): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.412Z",
+     "adviceAt": "2026-11-04T18:20:25.173Z",
      "uid": "st-mw2ebw5l0bpllr"
     },
     {
@@ -7248,7 +7249,7 @@
      "recommendedThinking": "low",
      "modelWhy": "landing, docs, wording or a small fix (report): routine, Opus on low thinking",
      "adviceKind": "landing",
-     "adviceAt": "2026-11-04T18:19:11.412Z",
+     "adviceAt": "2026-11-04T18:20:25.173Z",
      "uid": "st-mw2ebw5l0c80os"
     }
    ]
