@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1062,
- "updatedAt": "2026-11-05T19:10:19.008Z",
+ "rev": 1063,
+ "updatedAt": "2026-11-05T20:00:33.996Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -85469,20 +85469,25 @@
    "title": "Claude account switcher",
    "category": "Plugin",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/claude-account-switcher",
    "pr": "#351",
+   "mergedAt": "2026-11-05T19:58:36Z",
    "priority": "P0",
    "createdAt": "2026-11-04T23:57:00.641Z",
-   "updatedAt": "2026-11-05T13:43:50.285Z",
+   "updatedAt": "2026-11-05T20:00:32.173Z",
    "builtAt": "2026-11-05T00:13:31.433Z",
    "notes": [
     {
      "text": "PR 351 open, in the merge queue. Report _claude/builds/reports/claude-account-switcher.md. No real switch was run; the hold path used a fake hub.",
      "at": "2026-11-05T00:13:32.220Z"
+    },
+    {
+     "text": "Reconciler: PR #351 merged",
+     "at": "2026-11-05T20:00:32.173Z"
     }
    ],
    "approvals": [],
@@ -85619,7 +85624,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
