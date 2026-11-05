@@ -1,7 +1,8 @@
 """AI keys — server part. Mounted at /api/plugins/ai-keys/ (console token on every method, 404 when disabled, never
 on the console MCP).
 
-A keyring for Anthropic keys: API keys (sk-ant-api…, kind `anthropic`) and Claude subscription tokens (sk-ant-oat…
+A keyring for Anthropic keys: API keys (sk-ant-api03…, sk-ant-usr… and any newer sk-ant- API format, kind `anthropic`;
+classified by `axf.anthropic_keys`, never by one hard-coded prefix) and Claude subscription tokens (sk-ant-oat…
 + a refresh token sk-ant-ort…, kind `claude-code`). Every key is tested before it is saved and can be re-tested; the
 active key of each kind is what the AI assistant uses for profiles of that kind (it reads it through the capability
 service axf.ai-keys@1, never by folder). Keys live only in <dataDir>/keys.json (0600); the browser only ever sees the
@@ -46,6 +47,7 @@ from fastapi import APIRouter, HTTPException
 import console_context as cx
 import plugin_services
 import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf import anthropic_keys as ak
 from axf_server import http, storage
 
 router = APIRouter()
@@ -94,21 +96,20 @@ def _save(db: dict[str, Any]) -> None:
 
 
 def kind_of(key: str) -> str:
-    if key.startswith("sk-ant-oat"):
-        return "claude-code"
-    if key.startswith("sk-ant-api") or key.startswith("sk-ant-admin"):
-        return "anthropic"
-    return ""
+    """'anthropic' (any API key format, known or a new sk-ant- one) | 'claude-code' (sk-ant-oat…) | '' (anything else)."""
+    k = ak.kind_of(key)
+    return k if k in KINDS else ""
 
 
 def _default_test(kind: str, key: str) -> dict[str, Any]:
-    """Anthropic API key: list models (free). Subscription token: one tiny turn through the Claude Code CLI."""
+    """Anthropic API key: the live check (list models, then a 1-token turn on the cheapest one for credit) → status
+    ok | invalid | no-credit | error. Subscription token: one tiny turn through the Claude Code CLI."""
     from axf.assistant_host import providers
     prof = {"kind": kind, "key": key, "noKeyOverride": True}
     started = time.monotonic()
     if kind == "anthropic":
-        models = providers.list_models(prof)
-        return {"ok": True, "ms": int((time.monotonic() - started) * 1000), "detail": f"{len(models)} models available"}
+        r = ak.live_check(key)
+        return {"ok": r["ok"], "status": r["status"], "ms": int((time.monotonic() - started) * 1000), "detail": r["detail"], "error": r["error"]}
     r = providers.test_profile(prof, "haiku")
     return {"ok": True, "ms": r.get("ms", 0), "detail": "Claude Code answered" + (f": {r['reply']}" if r.get("reply") else "")}
 
@@ -301,7 +302,7 @@ def run_test(kind: str, key: str) -> dict[str, Any]:
         res.update(TESTER(kind, key))
     except Exception as e:  # noqa: BLE001
         msg = str(e).strip("'\"") or e.__class__.__name__
-        res["error"] = msg.replace(key, "…")[:300]  # never echo the key
+        res["error"] = ak.scrub(msg.replace(key, "…"))[:300]  # never echo the key (nor any other key in the error)
     return res
 
 
@@ -340,12 +341,10 @@ def add_key(body: dict[str, Any]) -> dict[str, Any]:
     pair = parse_pair(body)
     if pair:
         return _add_pair(pair, label, bool(body.get("activate")))
-    key = re.sub(r"\s+", "", str(body.get("key") or ""))
-    if not KEY_RE.match(key):
-        raise _err(400, "that doesn't look like an Anthropic key: API keys start with sk-ant-api…, subscription tokens (from `claude setup-token`) with sk-ant-oat…")
+    key = ak.clean(body.get("key"))
     kind = kind_of(key)
     if not kind:
-        raise _err(400, "unknown key type: API keys start with sk-ant-api…, subscription tokens with sk-ant-oat…")
+        raise _err(400, ak.refusal(key) or "that key can't be stored here")
     if kind == "claude-code":  # unreachable (parse_pair takes every oat key), kept as a guard
         raise _err(400, "a subscription token needs its refresh token too (sk-ant-ort…): both are required")
     with _lock:
@@ -355,16 +354,17 @@ def add_key(body: dict[str, Any]) -> dict[str, Any]:
         if any(secrets.compare_digest(str(v.get("key", "")), key) for v in db["keys"].values()):
             raise _err(409, "that key is already stored")
     test = run_test(kind, key)  # outside the lock: the CLI test can take seconds
-    if not test["ok"]:
+    no_credit = test.get("status") == "no-credit"  # a real key on an empty account: kept, so a top-up only needs a re-test
+    if not test["ok"] and not no_credit:
         raise _err(400, f"the key didn't work, so it wasn't saved: {test['error'] or 'no answer'}")
     with _lock:
         db = _load()
         kid = secrets.token_hex(6)
         db["keys"][kid] = {"label": label or f"{KINDS[kind]} …{key[-4:]}", "kind": kind, "key": key, "createdAt": int(time.time() * 1000), "lastTest": test}
-        if body.get("activate") or not db["active"].get(kind):
+        if body.get("activate") or (not db["active"].get(kind) and not no_credit):
             db["active"][kind] = kid
         _save(db)
-    cx.log("system", f"AI keys: added {KINDS[kind]} …{key[-4:]}", "ok")
+    cx.log("system", f"AI keys: added {KINDS[kind]} {ak.mask(key)}" + (" (no credit on the account yet)" if no_credit else ""), "warn" if no_credit else "ok")
     return {"key": public(kid, db["keys"][kid], db["active"]), **listing(db)}
 
 
@@ -645,14 +645,15 @@ def validate_step(body: dict[str, Any]) -> dict[str, Any]:
     step = str(body.get("step") or "")
     out: dict[str, Any] = {"ok": False, "error": ""}
     if step == "api":
-        key = re.sub(r"\s+", "", str(body.get("key") or ""))
-        if not KEY_RE.match(key) or kind_of(key) != "anthropic":
-            return {**out, "error": "that isn't an Anthropic API key (it starts with sk-ant-api…)"}
+        key = ak.clean(body.get("key"))
+        why = ak.refusal(key, "anthropic")
+        if why:
+            return {**out, "error": why}
         with _lock:
             if _dupe(_load(), key):
                 return {**out, "error": "that key is already saved"}
         t = run_test("anthropic", key)
-        return {**out, "ok": t["ok"], "error": t.get("error") or "", "detail": t.get("detail") or ""}
+        return {**out, "ok": t["ok"], "status": t.get("status") or ("ok" if t["ok"] else "error"), "error": t.get("error") or "", "detail": t.get("detail") or ""}
     if step == "access":
         pair = {"key": re.sub(r"\s+", "", str(body.get("key") or "")), "refresh": "", "expiresAt": None}
         if not pair["key"].startswith("sk-ant-oat") or not KEY_RE.match(pair["key"]):
