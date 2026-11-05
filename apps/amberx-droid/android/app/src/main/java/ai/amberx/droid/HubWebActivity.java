@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.webkit.CookieManager;
+import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 public class HubWebActivity extends Activity {
     static final String EXTRA_URL = "url";
     private WebView web;
+    private LinearLayout failed;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -64,10 +66,39 @@ public class HubWebActivity extends Activity {
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest req) {
                 return !HubRules.isHub(hub, req.getUrl().toString()); // stay on the hub, refuse anything else
             }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest req, WebResourceError err) {
+                if (req.isForMainFrame()) showFailed(root, url);
+            }
         });
         root.addView(web, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f));
         setContentView(root);
         web.loadUrl(url);
+    }
+
+    /** Never the WebView's "Web page not available": a plain card, Try again, or the phone's browser (its own sign-in). */
+    private void showFailed(LinearLayout root, String url) {
+        if (failed != null) return;
+        web.setVisibility(android.view.View.GONE);
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setGravity(Gravity.CENTER);
+        box.setPadding(48, 48, 48, 48);
+        TextView note = new TextView(this);
+        note.setText("axHub's page didn't open here. Your approvals are still on AmberX's Approvals page.");
+        note.setGravity(Gravity.CENTER);
+        box.addView(note);
+        Button again = new Button(this);
+        again.setText("Try again");
+        again.setOnClickListener(v -> { root.removeView(box); failed = null; web.setVisibility(android.view.View.VISIBLE); web.loadUrl(url); });
+        box.addView(again);
+        Button browser = new Button(this);
+        browser.setText("Open in axHub");
+        browser.setOnClickListener(v -> { try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url))); } catch (Exception ignored) { /* no browser */ } });
+        box.addView(browser);
+        failed = box;
+        root.addView(box, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f));
     }
 
     @Override

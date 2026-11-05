@@ -28,6 +28,25 @@ public class HubRulesTest {
         assertFalse(HubRules.isDataPath(HUB, "https://evil.example/data/x"));
     }
 
+    @Test public void watchAlarmTiming() {
+        assertEquals(60_000L, HubRules.watchDelayMs(0));
+        assertEquals(20_000L, HubRules.watchDelayMs(2));
+        long now = 1_000_000L;
+        assertFalse(HubRules.feedFresh(0, now, 30)); // never read
+        assertTrue(HubRules.feedFresh(now - 40_000, now, 30));
+        assertFalse(HubRules.feedFresh(now - 60_000, now, 30)); // the service slept through its timer
+        assertTrue(HubRules.feedFresh(now - 250_000, now, 300)); // a long interval is respected
+    }
+
+    @Test public void decideRepliesAndActions() {
+        assertTrue(HubRules.decidedReply("approve", 200, "{\"ok\":true,\"result\":\"approved\"}"));
+        assertTrue(HubRules.decidedReply("decline", 200, "{\"ok\":true,\"result\":\"rejected\"}"));
+        assertFalse(HubRules.decidedReply("approve", 200, "{\"ok\":true,\"result\":\"rejected\"}"));
+        assertFalse(HubRules.decidedReply("decline", 409, "{\"ok\":true}"));
+        assertFalse(HubRules.decide(HUB, ID, "revoke", "c")); // only approve and decline, before any network
+        assertFalse(HubRules.decide(HUB, "../x", "approve", "c"));
+    }
+
     @Test public void approvalPagesAreRebuilt() {
         assertEquals(HUB + "/auth/admin/approvals/" + ID, HubRules.approvalUrl(HUB, ID));
         assertNull(HubRules.approvalUrl(HUB, "../../etc"));

@@ -13,7 +13,7 @@ import { DingGate, deviceStore } from '../../../listeners';
 import { mayMakeSound } from '../../../sound';
 import { hubWatcher } from '../../../axf/libs/hub/react';
 import { HUB } from '../../../hub/useHub';
-import { isNative, native, reportWebMonitor, type MonitorStatus } from '../../../native';
+import { isNative, native, reportWebMonitor, type MonitorStatus, type PhoneHealth } from '../../../native';
 import { K as VOICE } from '../../voice/web';
 import { phraseList } from '../../voice/web/core';
 import { autoApproves, watchConfig } from './core';
@@ -125,7 +125,73 @@ function MonitorView() {
           <tr><td>Auto-approval</td><td className="fx-muted">{cfg.autoApprove.all ? 'everything except vps.run' : cfg.autoApprove.on ? cfg.autoApprove.tools || 'nothing listed' : 'off'}</td></tr>
         </tbody></table>
       </Section>
+      <Section title="Phone gets approvals"><PhoneHealthPanel /></Section>
       <Button icon="settings" onClick={() => rt.dispatch('settings.open:monitor')}>Monitoring settings</Button>
+    </div>
+  );
+}
+
+const HEALTH_ROWS: { key: keyof PhoneHealth; label: string; bad: string; fix?: 'battery' | 'notifications' | 'alarms' }[] = [
+  { key: 'watching', label: 'Watching axHub', bad: 'Off: turn on Watch axHub in the background.' },
+  { key: 'notifications', label: 'Notifications allowed', bad: 'Android is blocking AmberX’s notifications.', fix: 'notifications' },
+  { key: 'channels', label: 'Approval alerts on', bad: 'The Approvals or Held command channel is switched off.', fix: 'notifications' },
+  { key: 'battery', label: 'Battery: not restricted', bad: 'Android can put AmberX to sleep, and approvals then wait until you open it. Allow it to run in the background.', fix: 'battery' },
+  { key: 'alarms', label: 'Exact alarms allowed', bad: 'Without them the watch can be late while the phone sleeps.', fix: 'alarms' },
+];
+
+/** Asks for the battery exemption at most once a week: it's one system dialog, and it's what keeps the watch alive. */
+const BATTERY_ASKED = 'amberx.monitor.batteryAsked';
+async function askBatteryOnce() {
+  const h = await native.phoneHealth().catch(() => null);
+  if (!h || h.battery) return;
+  const last = Number(localStorage.getItem(BATTERY_ASKED) ?? 0);
+  if (Date.now() - last < 7 * 24 * 3600_000) return;
+  localStorage.setItem(BATTERY_ASKED, String(Date.now()));
+  await native.phoneFix({ what: 'battery' }).catch(() => undefined);
+}
+
+/** Settings → Monitoring and the Monitor page: what stands between a held call and this phone, and a real test. */
+function PhoneHealthPanel() {
+  const rt = useRuntime();
+  const [h, setH] = useState<PhoneHealth | null>(null);
+  const [old, setOld] = useState(false);
+  const [sent, setSent] = useState('');
+  useEffect(() => {
+    if (!isNative()) return undefined;
+    const read = () => void native.phoneHealth().then(setH).catch(() => setOld(true));
+    read();
+    const t = setInterval(read, 5_000);
+    return () => clearInterval(t);
+  }, []);
+  const test = async () => {
+    setSent('Sending…');
+    const r = await fetch('/api/phone-test', { method: 'POST' }).catch(() => null);
+    const j = r?.ok ? await r.json().catch(() => null) : null;
+    setSent(j?.message ?? 'Couldn’t send it: the console didn’t answer.');
+    if (!j) rt.toast('Couldn’t send a test approval.', 'warning', 'Approvals');
+  };
+  return (
+    <div className="fx-stack">
+      {old && <Note tone="warning">This AmberX is an older build: update it from the Apps page to see these checks and keep the watch alive.</Note>}
+      {!isNative() && <p className="fx-muted">Install the Android app to get approvals with the screen off.</p>}
+      {h && (
+        <table className="fx-table"><tbody>
+          {HEALTH_ROWS.map((row) => (
+            <tr key={row.key}>
+              <td>{row.label}</td>
+              <td className="fx-muted">{h[row.key] ? 'OK' : row.bad}</td>
+              <td>{!h[row.key] && row.fix && <Button size="sm" onClick={() => void native.phoneFix({ what: row.fix! })}>Fix</Button>}</td>
+            </tr>
+          ))}
+          <tr><td>Last read of axHub</td><td className="fx-muted">{h.lastCheckAt ? `${new Date(h.lastCheckAt).toLocaleTimeString()} · ${h.status}` : 'not yet'}</td><td /></tr>
+        </tbody></table>
+      )}
+      {h?.quiet && <Note tone="info">Quiet is on: approvals show but make no sound.</Note>}
+      <div className="fx-row fx-row--wrap">
+        <Button tone="primary" icon="bell" onClick={() => void test()}>Send test approval</Button>
+        {sent && <span className="fx-small fx-muted" role="status">{sent}</span>}
+      </div>
+      <p className="fx-small fx-muted">The test is a real held call of a harmless command. Close the app, turn the screen off, and it should pop up within a minute.</p>
     </div>
   );
 }
@@ -133,13 +199,14 @@ function MonitorView() {
 export const library: AxfWebLibrary = {
   id: ID,
   label: 'Background monitoring',
-  version: '0.1.1',
+  version: '0.1.2',
   builtWith: { model: 'opus', builtAt: '2026-10-25' },
   dependsOn: ['ai.amberx.amberx.voice'],
   provides: ['amberx.monitor'],
   views: { monitor: { title: 'Monitor', icon: 'eye', keywords: ['monitor', 'watch', 'background', 'alerts', 'auto approve'], render: () => <MonitorView /> } },
   nav: { label: 'Work', items: [{ id: 'monitor', label: 'Monitor', icon: 'eye', view: 'monitor' }] },
   settingsTabs: [{ id: 'monitor', label: 'Monitoring', icon: 'eye', order: 21, parent: 'plugins' }],
+  settingsPanels: [{ id: 'amberx.monitor.phone', tab: 'monitor', title: 'Phone gets approvals', icon: 'bell', order: 1, render: () => <PhoneHealthPanel /> }],
   settings: [
     {
       id: 'amberx.monitor', label: 'Background monitoring', icon: 'eye', tab: 'monitor', settings: [
@@ -167,10 +234,11 @@ export const library: AxfWebLibrary = {
       else rt.toast('Nothing is waiting.', 'info', 'Approvals');
     }, { label: 'Review the first approval' });
     // A tapped alert: its approval page on the hub (native.hubOpen accepts only the hub).
-    // An approval page (…/auth/admin/approvals/<id>) opens the assistant's approvals popover when an app plugin offers
-    // one (action approvals.popover); anything else, or no popover, opens in the hub view as before.
+    // An approval page (…/auth/admin/approvals/<id>) opens the native approval dialog (action approvals.review), else
+    // the assistant's approvals popover (approvals.popover); anything else opens in the hub view as before.
     void native.addListener('open', ({ url }) => {
       const id = approvalIdOf(url);
+      if (id && rt.actions.get('approvals.review')) { rt.dispatch(`approvals.review:${id}`); return; }
       if (id && rt.actions.get('approvals.popover')) { rt.dispatch(`approvals.popover:${id}`); return; }
       void native.hubOpen({ url }).catch(() => undefined);
     }).catch(() => undefined);
@@ -183,7 +251,7 @@ export const library: AxfWebLibrary = {
         const firstRun = last === '';
         last = next;
         // On by default now (every push comes from AmberX): ask for notification permission before the first start.
-        void (firstRun ? native.permissions().catch(() => undefined) : Promise.resolve()).then(() => native.monitorStart(JSON.parse(next))).catch(() => undefined);
+        void (firstRun ? native.permissions().catch(() => undefined) : Promise.resolve()).then(() => native.monitorStart(JSON.parse(next))).then(() => { if (firstRun) void askBatteryOnce(); }).catch(() => undefined);
       }
     };
     rt.subscribe(sync);

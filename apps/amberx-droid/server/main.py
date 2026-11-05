@@ -80,6 +80,8 @@ def _console_plugins() -> frozenset[str]:
 
 CONSOLE_PLUGINS = _console_plugins()
 CONSOLE_PREFIX = "/api/console/plugins/"
+# Single console routes AmberX forwards for plugins it doesn't load: Settings → Send test approval.
+CONSOLE_ROUTES = frozenset({("systems-check", "phone-test")})
 CONSOLE_MAX_BODY = 12 * 1024 * 1024  # chat images
 CONSOLE_PASS_HEADERS = ("content-type", "accept", "last-event-id")
 WALL = wallmod.Wall("AMBERX_")
@@ -470,9 +472,14 @@ def make_app(router: Router | None = None) -> FastAPI:
 
     # ---- console plugins (AI assistant, Agent manager): same chats, agents and live sessions as the console
 
+    @app.post("/api/phone-test")
+    async def phone_test(request: Request) -> Response:
+        """Settings → Send test approval: the console sends one real held call of a harmless command."""
+        return await console_plugin("systems-check", "phone-test", request)
+
     @app.api_route(CONSOLE_PREFIX + "{folder}/{rest:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
     async def console_plugin(folder: str, rest: str, request: Request) -> Response:
-        if folder not in CONSOLE_PLUGINS:
+        if folder not in CONSOLE_PLUGINS and (folder, rest) not in CONSOLE_ROUTES:
             raise HTTPException(404, f"{folder} isn't a console plugin AmberX forwards")
         if "\\" in rest or any(seg in ("..", ".") for seg in rest.split("/")):
             raise HTTPException(400, "bad path")

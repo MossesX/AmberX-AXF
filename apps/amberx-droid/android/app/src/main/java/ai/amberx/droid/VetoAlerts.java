@@ -40,6 +40,9 @@ final class VetoAlerts {
     static final String ACTION_DENY = "ai.amberx.droid.VETO_DENY";
     static final String ACTION_APPROVE = "ai.amberx.droid.VETO_APPROVE";
     static final String ACTION_SHELVE = "ai.amberx.droid.VETO_SHELVE";
+    /** Approve / Deny on a call waiting for an approval (not held): the hub's plain decide route. */
+    static final String ACTION_ALLOW = "ai.amberx.droid.APPROVAL_APPROVE";
+    static final String ACTION_DECLINE = "ai.amberx.droid.APPROVAL_DECLINE";
     static final String EXTRA_ID = "ai.amberx.droid.VETO_ID";
     static final String[] PHASES = { "held", "warning", "running" };
     private static final String TAG = "veto:";
@@ -213,7 +216,7 @@ final class VetoAlerts {
         return b.build();
     }
 
-    private static PendingIntent action(Context c, String what, String id) {
+    static PendingIntent action(Context c, String what, String id) {
         Intent i = new Intent(c, Receiver.class).setAction(what).putExtra(EXTRA_ID, id);
         return PendingIntent.getBroadcast(c, (what + ":" + id).hashCode(), i, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
@@ -268,6 +271,7 @@ final class VetoAlerts {
         @Override public void onReceive(Context context, Intent intent) {
             if (intent == null) return;
             String what = intent.getAction();
+            if (ACTION_ALLOW.equals(what) || ACTION_DECLINE.equals(what)) { decide(context, intent, ACTION_ALLOW.equals(what)); return; }
             String action = ACTION_DENY.equals(what) ? "deny" : ACTION_APPROVE.equals(what) ? "approve-now" : ACTION_SHELVE.equals(what) ? "shelve" : null;
             String id = intent.getStringExtra(EXTRA_ID);
             if (action == null || id == null) return;
@@ -286,6 +290,26 @@ final class VetoAlerts {
                     done.finish();
                 }
             }, "amberx-veto-action").start();
+        }
+
+        /** Approve / Deny on an approval's card. On a refusal the card goes and the approval opens on the hub. */
+        private void decide(Context context, Intent intent, boolean allow) {
+            String id = intent.getStringExtra(EXTRA_ID);
+            if (id == null) return;
+            PendingResult done = goAsync();
+            Context app = context.getApplicationContext();
+            new Thread(() -> {
+                try {
+                    boolean ok = HubRules.decide(HubRules.HUB, id, allow ? "approve" : "decline", CookieManager.getInstance().getCookie(HubRules.HUB));
+                    app.getSystemService(NotificationManager.class).cancel(id, 0);
+                    if (!ok) {
+                        Intent open = new Intent(app, HubWebActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).putExtra(HubWebActivity.EXTRA_URL, HubRules.approvalUrl(HubRules.HUB, id));
+                        try { app.startActivity(open); } catch (Exception ignored) { /* background start refused */ }
+                    }
+                } finally {
+                    done.finish();
+                }
+            }, "amberx-approval-action").start();
         }
     }
 }

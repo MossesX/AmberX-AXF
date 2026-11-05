@@ -58,6 +58,7 @@ public class MainActivity extends BridgeActivity {
     public void onResume() {
         super.onResume();
         WatchService.inApp = true;
+        if (WatchService.prefs(this).getBoolean("on", false)) WatchAlarm.arm(this, WatchAlarm.delayMs(0)); // re-arms after an update or a force stop
         SecureScreen.apply(this, SecureScreen.sensitive);
         // Mic turned back on from the tile or the notification while AmberX was in the background: Android may have
         // refused the microphone then, so hands-free picks it up now that AmberX is on screen.

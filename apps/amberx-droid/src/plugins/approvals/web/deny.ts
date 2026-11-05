@@ -34,7 +34,7 @@ export const deny = (t: Track) => actOn(t, 'deny');
 /**
  * lib-approvals' deciding path on the phone (the assistant title bar badge): Deny or Approve (run it now) a held call with
  * the phone's hub session (the veto host), falling back to its page; Approve / Decline on a call waiting for an approval
- * open it in the signed-in hub web view.
+ * go through the same session (`approvalDecide`), falling back to the signed-in hub web view (an APK without it).
  */
 export async function decideFromPhone(item: ApprovalItem, d: ApprovalDecision): Promise<DecideResult> {
   const act = vetoHost().act;
@@ -43,6 +43,10 @@ export async function decideFromPhone(item: ApprovalItem, d: ApprovalDecision): 
     const r = await act(item.id, action).catch((e) => ({ ok: false, error: String(e?.message ?? e) }));
     if (r.ok) { if (action === 'deny') markDenied(item.id); void checkVeto(); return { ok: true, message: `${DONE[action]}: ${item.title}` }; }
     runtime?.toast(`Couldn't ${VETO_ACTION_LABELS[action].toLowerCase()} it here (${r.error ?? 'hub refused'}). Opening it on the hub.`, 'warning', 'Approvals');
+  }
+  if (item.kind !== 'held') {
+    const r = await native.approvalDecide({ id: item.id, action: d === 'approve' ? 'approve' : 'decline' }).catch(() => ({ ok: false }));
+    if (r.ok) return { ok: true, message: d === 'approve' ? `Approved: ${item.title}` : `Declined: ${item.title}` };
   }
   await native.hubOpen({ url: item.url }).catch(() => undefined);
   void checkVeto();

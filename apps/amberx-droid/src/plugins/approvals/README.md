@@ -28,6 +28,6 @@ Remove: `node framework/cli/plugin-catalog.mjs app-uninstall amberx approvals`.
 This plugin also plugs the phone's deciding path into lib-approvals (`framework/libs/approvals`), whose badge sits in
 the assistant's title bar (the AI plugin's Ask view, and the console AI assistant's chat when it runs here):
 `setApprovalsHost({ hub, frame: false, decide: decideFromPhone })` in `register`. Deny = the veto host's `act` (the
-phone's hub session; fallback: the call's page); Approve / Decline open the approval in the signed-in hub web view.
+phone's hub session; fallback: the call's page); Approve / Decline use the same session (`approvalDecide`), fallback the signed-in hub web view.
 A tapped approval notification dispatches `approvals.popover:<id>` (the monitor's `open` listener) and the popover
 opens on that item.

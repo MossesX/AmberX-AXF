@@ -51,6 +51,9 @@
                 android:value="Watches the owner's axHub for approvals waiting on them and alerts them, and listens hands-free for the owner's voice commands" />
         </service>
 
+        <!-- Reads the approvals feed when the phone sleeps or the service was killed, and brings the service back -->
+        <receiver android:name=".WatchAlarm" android:exported="false" />
+
         <!-- Audio Extract's screen recorder: screen + app playback sound, never the microphone -->
         <service
             android:name=".ScreenRecordService"
@@ -123,6 +126,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- The watch survives Samsung's sleeping apps and Doze: asked for once, read by WatchAlarm -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />

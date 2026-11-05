@@ -24,7 +24,7 @@ from typing import Any, Callable
 import console_context as cx
 import plugin_services
 
-from . import probes
+from . import mosses, phonecheck, probes
 from .health import Registry
 
 OWNER = "systems-check"
@@ -222,6 +222,11 @@ def register_builtins(reg: Registry, *, root: Path, repo: str, hub_jobs: Callabl
     reg.register({"id": "push-path", "label": "Push to AmberX", "service": "console", "order": 5, "run": push_path,
                   "fix": {"type": "settings", "tab": "alerts", "label": "Open alert settings"},
                   "instructions": ["Settings → Alerts: turn the System source on and keep the bell on.", "AmberX → Monitor: Dev Console alerts on."]}, OWNER)
+
+    reg.register({"id": "phone-approvals", "label": "Phone gets approvals", "service": "console", "order": 7, "interval": 15 * 60,
+                  "run": lambda: phonecheck.check(mosses.call), "breaks": phonecheck.BREAKS, "instructions": phonecheck.STEPS,
+                  "links": [{"label": "axHub approvals", "url": "https://axhub.amberxai.com/auth/admin/approvals"}]}, OWNER)
+    reg.add_autofix("phone-approvals", {"label": "Send a test approval", "mode": "ask", "run": lambda: phonecheck.send_test(mosses.call)}, OWNER)
 
     reg.register({"id": "git-push", "label": "git push from the VPS checkout", "service": "github", "order": 13,
                   "when": lambda: (root / ".git").exists(), "run": lambda: probes.git_push(str(root)),

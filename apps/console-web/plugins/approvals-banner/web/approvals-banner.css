@@ -7,7 +7,8 @@ button.axp-approvals-banner__text { all: unset; flex: 1; min-width: 0; display: 
 .axp-approvals-banner__sum { font-weight: 400; color: var(--fx-muted); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100% }
 .axp-approvals-banner__go { text-decoration: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm) }
 .axp-approvals-banner__tool { font-weight: 600; white-space: nowrap }
-.axp-approvals-review__frame { width: 100%; height: min(70vh, calc(var(--fx-row-h) * 24)); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
+.axp-approvals-review__urgent { color: var(--fx-danger) }
+.axp-approvals-review__first { align-items: center; justify-content: flex-end }
 .axp-approvals-review__stuck { align-items: center; text-align: center; padding: calc(var(--fx-space) * 6) calc(var(--fx-space) * 4); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
 .axp-approvals-review__foot { justify-content: space-between; align-items: center }
 

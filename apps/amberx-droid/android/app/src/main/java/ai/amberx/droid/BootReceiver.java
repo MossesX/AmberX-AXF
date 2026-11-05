@@ -12,6 +12,7 @@ public class BootReceiver extends BroadcastReceiver {
         if (!Intent.ACTION_BOOT_COMPLETED.equals(a) && !Intent.ACTION_MY_PACKAGE_REPLACED.equals(a)) return;
         boolean watching = WatchService.prefs(context).getBoolean("on", false);
         if (!watching && !WatchService.handsFree(context)) return;
+        if (watching) WatchAlarm.arm(context, WatchAlarm.delayMs(0));
         try { WatchService.refresh(context); } catch (Exception ignored) { /* Android refused: next app open */ }
     }
 }

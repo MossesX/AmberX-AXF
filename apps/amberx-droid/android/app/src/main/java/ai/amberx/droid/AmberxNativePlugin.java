@@ -150,6 +150,34 @@ public class AmberxNativePlugin extends Plugin {
         });
     }
 
+    /** Approve / Decline a call waiting for an approval, with the phone's hub session. */
+    @PluginMethod
+    public void approvalDecide(PluginCall call) {
+        String id = call.getString("id", "");
+        String action = call.getString("action", "");
+        if (HubRules.approvalUrl(HubRules.HUB, id) == null) { call.reject("Not a request id."); return; }
+        io.execute(() -> {
+            boolean ok = HubRules.decide(HubRules.HUB, id, action, CookieManager.getInstance().getCookie(HubRules.HUB));
+            if (ok) getContext().getSystemService(android.app.NotificationManager.class).cancel(id, 0);
+            call.resolve(new JSObject().put("ok", ok));
+        });
+    }
+
+    /** Whether this phone can get an approval with the app closed: the switches Android holds, and the watch's last read. */
+    @PluginMethod
+    public void phoneHealth(PluginCall call) { call.resolve(js(WatchAlarm.health(getContext()))); }
+
+    /** Opens the Android screen for one of them: battery | notifications | alarms. */
+    @PluginMethod
+    public void phoneFix(PluginCall call) {
+        try {
+            getContext().startActivity(WatchAlarm.fixIntent(getContext(), call.getString("what", "")).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK));
+            call.resolve();
+        } catch (Exception e) {
+            call.reject("Android wouldn't open that screen.");
+        }
+    }
+
     /** The banner plugin's alarm settings (VetoAlarm). */
     @PluginMethod
     public void vetoAlarm(PluginCall call) {
