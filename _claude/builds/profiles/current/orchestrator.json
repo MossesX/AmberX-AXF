@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-05T22:37:32.345Z",
+ "updatedAt": "2026-11-05T22:40:41.043Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -13884,7 +13884,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw44lxlx05eoip"
+     "uid": "st-mw44pz1701ep7d"
     },
     {
      "id": "s2",
@@ -13902,7 +13902,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw44lxlx06kcz7"
+     "uid": "st-mw44pz1702iip9"
     },
     {
      "id": "s3",
@@ -13920,10 +13920,82 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw44lxlx07ij77"
+     "uid": "st-mw44pz1703hlmc"
     },
     {
      "id": "s4",
+     "text": "Readme, report, THREADS row, PR to merge queue",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw44pz17044z4v"
+    },
+    {
+     "id": "s5-4",
+     "text": "build-login.mjs: snapshot/release/who per-build CLAUDE_CONFIG_DIR (verify mechanism on installed Claude Code)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw44lxlx05eoip"
+    },
+    {
+     "id": "s6-5",
+     "text": "Wire claude-headless.sh (inner run, no-tmux fallback, limit-switch re-snapshot, log header, note) + other launchers (agent swarm, orchestrate/claudefix fallbacks)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw44lxlx06kcz7"
+    },
+    {
+     "id": "s7-6",
+     "text": "Scripted test with a fake claude binary (logout/switch during a run)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw44lxlx07ij77"
+    },
+    {
+     "id": "s8-7",
      "text": "Readme, report, THREADS row, PR to merge queue",
      "model": "Opus",
      "why": "",
