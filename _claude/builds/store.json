@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1049,
- "updatedAt": "2026-11-05T11:11:50.222Z",
+ "rev": 1050,
+ "updatedAt": "2026-11-05T11:15:16.882Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -86374,7 +86374,7 @@
    "branch": "claude/handoff-2-addenda-r2",
    "pr": "",
    "createdAt": "2026-11-05T11:07:45.303Z",
-   "updatedAt": "2026-11-05T11:07:45.303Z",
+   "updatedAt": "2026-11-05T11:15:14.949Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -86429,12 +86429,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T11:15:14.949Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-05T11:07:45.303Z",
-     "updatedAt": "2026-11-05T11:07:45.303Z"
+     "updatedAt": "2026-11-05T11:15:15.041Z"
     },
     {
      "id": "s3",
@@ -86577,7 +86577,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
