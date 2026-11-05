@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-05T02:46:46.112Z",
+ "updatedAt": "2026-11-05T02:50:03.438Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -13155,12 +13155,16 @@
    "branch": "claude/banner-widgets",
    "pr": "#352",
    "createdAt": "2026-11-05T02:08:38.606Z",
-   "updatedAt": "2026-11-05T02:46:44.391Z",
+   "updatedAt": "2026-11-05T02:49:59.859Z",
    "builtAt": "",
    "notes": [
     {
      "text": "PR #352 pushed; local console + engine job steps run; light CI running, then merge queue front, then deploy.",
      "at": "2026-11-05T02:46:44.391Z"
+    },
+    {
+     "text": "Light CI green; #352 in the merge queue at the front.",
+     "at": "2026-11-05T02:49:59.859Z"
     }
    ],
    "approvals": [],
