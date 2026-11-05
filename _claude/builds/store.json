@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1074,
- "updatedAt": "2026-11-05T23:10:25.559Z",
+ "rev": 1075,
+ "updatedAt": "2026-11-05T23:30:37.495Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -86851,12 +86851,16 @@
    "branch": "claude/build-own-login-r2",
    "pr": "#357",
    "createdAt": "2026-11-05T22:37:31.309Z",
-   "updatedAt": "2026-11-05T22:49:50.702Z",
+   "updatedAt": "2026-11-05T23:28:05.856Z",
    "builtAt": "2026-11-05T22:49:50.702Z",
    "notes": [
     {
      "text": "Branch claude/build-own-login-r2: deploy/claude-login.mjs + claude-headless.sh + swarm runner; test 50/50",
      "at": "2026-11-05T22:49:17.229Z"
+    },
+    {
+     "text": "Reconciler: PR #357 merged",
+     "at": "2026-11-05T23:28:05.856Z"
     }
    ],
    "approvals": [],
@@ -86971,10 +86975,25 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-05T22:37:31.309Z",
+    "builtAt": "2026-11-05T22:49:50.702Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw44pz1701ep7d": "2026-11-05T22:37:31.310Z",
+     "st-mw44pz1702iip9": "2026-11-05T22:37:31.310Z",
+     "st-mw44pz1703hlmc": "2026-11-05T22:37:31.310Z",
+     "st-mw44pz17044z4v": "2026-11-05T22:37:31.310Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-05T22:37:31.310Z",
    "rearranged": false,
