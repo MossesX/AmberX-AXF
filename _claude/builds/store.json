@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1033,
- "updatedAt": "2026-11-05T02:36:45.103Z",
+ "rev": 1034,
+ "updatedAt": "2026-11-05T02:37:06.366Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -85948,9 +85948,14 @@
    "branch": "claude/amberx-approvals-fix",
    "pr": "#353",
    "createdAt": "2026-11-05T02:14:31.670Z",
-   "updatedAt": "2026-11-05T02:36:21.747Z",
+   "updatedAt": "2026-11-05T02:36:57.204Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "PR #353 in the merge queue, UI Review r-20261105-a07d27ac waiting. axHub PR #38 green, not merged (the session had no axHub call grant). Needs a new APK after merge. Report _claude/builds/reports/amberx-approvals-fix.md",
+     "at": "2026-11-05T02:36:57.204Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -86107,7 +86112,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
