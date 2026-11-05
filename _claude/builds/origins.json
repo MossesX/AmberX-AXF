@@ -85,6 +85,18 @@
    "from": "detail",
    "addenda": []
   },
+  "amberx-approvals-fix": {
+   "said": "Why isn't AmberX launching approvals on my phone? It used to always pop up approvals. ... Nope, only when I open AmberX, and it says 'web page not available' in the approval waiting dialog. ... (Queue a fix?) Yep.",
+   "at": "2026-11-05T02:14:31.670Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "amberx-assistant-agents": {
    "said": "Install assistant and agent manager in amberx",
    "at": "2026-10-28",
