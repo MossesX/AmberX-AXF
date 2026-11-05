@@ -700,10 +700,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 15:57 UTC · `jump-menu-asset` s4 done (current) · orchestrator
-- 2026-11-04 15:58 UTC · `tab-group-assets` s2 done (current) · foreign-write
-- 2026-11-04 15:58 UTC · `jump-menu-asset` branch claude/jump-menu-asset, PR #326 (current) · builds-live
-- 2026-11-04 16:03 UTC · `settings-placement-everywhere` added (6 steps) (current) · orchestrator
 - 2026-11-04 16:04 UTC · `settings-placement-everywhere` added (6 steps) (current) · foreign-write
 - 2026-11-04 16:03 UTC · `settings-placement-everywhere` added (6 steps) (current) · foreign-write
 - 2026-11-04 16:09 UTC · `molly-multi-instance-tabs` added (4 steps) (current) · orchestrator
@@ -1100,6 +1096,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-05 02:17 UTC · `banner-widgets` s1 done (current) · orchestrator
 - 2026-11-05 02:17 UTC · `banner-widgets` s2 done (current) · orchestrator
 - 2026-11-05 02:29 UTC · `banner-widgets` branch claude/banner-widgets, PR #352 (current) · builds-live
+- 2026-11-05 02:29 UTC · `banner-widgets` s3 done (current) · orchestrator
+- 2026-11-05 02:29 UTC · `banner-widgets` s4 done (current) · orchestrator
+- 2026-11-05 02:29 UTC · `banner-widgets` s5 done (current) · orchestrator
+- 2026-11-05 02:29 UTC · `banner-widgets` s6 done (current) · orchestrator
 
 ## Token passes (log)
 
