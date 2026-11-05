@@ -1,6 +1,6 @@
 import { LayoutToolbar, useScreenLayout, type AxfWebLibrary } from '../../../axf/react';
 
-const PLUGIN_ai.amberx.axhub.example = 'ID';
+const PLUGIN_ID = 'ai.amberx.axhub.example';
 const VIEW = 'example';
 /** Three layouts per screen (screen-layouts@1, Brett Nov 4 2026): rename to what fits this screen; mirrored in plugin.json "screens". */
 const LAYOUTS = [
