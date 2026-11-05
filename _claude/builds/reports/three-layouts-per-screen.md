@@ -73,6 +73,7 @@ Screenshots: UI Review → Screenshots, group `three-layouts-per-screen - Nov 5 
 
 ## CI replay
 
-Every step of the `engine` and `console` jobs was replayed locally: console, axHub web, AmberX and Molly builds (with the
-plugin template installed), theme swap and the console window checks all pass. The one remaining red in the replay was
-the plugin lifecycle step, on a git-ignored `public/data/pending.json` the replay itself generated, not on this build's files.
+Every step of the `engine` and `console` jobs passes locally on the final commit: console, axHub web and AmberX builds with
+the plugin template installed, theme swap and the console window checks. Molly passed before the last template fix, which
+doesn't touch it. Plugin lifecycle passes on a clean checkout; it only failed when run after other steps had left generated
+files in the tree. The Android job was not replayed.
