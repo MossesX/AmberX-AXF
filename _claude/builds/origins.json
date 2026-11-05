@@ -85,6 +85,18 @@
    "from": "detail",
    "addenda": []
   },
+  "amberx-approvals-fix": {
+   "said": "Why isn't AmberX launching approvals on my phone? It used to always pop up approvals. ... Nope, only when I open AmberX, and it says 'web page not available' in the approval waiting dialog. ... (Queue a fix?) Yep.",
+   "at": "2026-11-05T02:14:31.670Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "amberx-assistant-agents": {
    "said": "Install assistant and agent manager in amberx",
    "at": "2026-10-28",
@@ -179,6 +191,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "amberx-voice-echo-fix": {
+   "said": "Echo fix\n\nMaine but how do I make it so I don't have to keep cooking the mic to talk to you",
+   "at": "2026-11-05T01:38:10.037Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "amberx-voice-fix": {
@@ -325,6 +349,18 @@
    "from": "detail",
    "addenda": []
   },
+  "assistant-chat-mode": {
+   "said": "\"What's up with the Claude chat in AmberX? Gizmo was loading all the tools, and we were supposed to fix that. So we didn't load the tools, so I could talk quick, like I'm talking to you.\" (Nov 5 2026, voice). Started by, Nov 4 2026, voice: \"In the Claude in my app, it calls all kinds of tools. It takes forever. Why is it calling all these tools?\" … \"Yeah, build that right now.\"",
+   "at": "2026-11-05T18:36:01.911Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "assistant-no-subagents": {
    "said": "Disable sub agents in assistant. 01:56: Mosses chats crash with Claude Code exited with code 1 (CLAUDE_CODE_SUBPROCESS_ENV_SCRUB needs managed settings); the flag set by mosses-build-tools is removed.",
    "at": "2026-10-29",
@@ -431,6 +467,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "banner-widgets": {
+   "said": "I need that [usage meter] to be in the banner too. And then I need to right-click the banner and select which widgets appear in it. It's getting cluttered. And some of them are way too big. I need settings for them all so I can change how big they are, how much room they take up.\n\nAddendum (voice, Nov 4): Start that as a second build right now. Merge it right away. Deploy it.",
+   "at": "2026-11-05T02:08:38.606Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "basic-filter": {
@@ -664,6 +712,18 @@
    "brief": "# Chat Viewer: every session stored, synced, searchable, exportable as 2-voice audio (Brett, Nov 1 ~3 AM)\n\nRead CLAUDE.md, _claude/shared/rules/RULES.md, _claude/persona.md. Opus, one session. Git login works: plain `git push`. Merge origin/main first (other builds are landing).\n\nBrett: store ALL our sessions (claude.ai text + voice chats, Claude Code sessions, headless build sessions) as transcripts in a viewer. When it loads, it checks for updates: new sessions, continued ones, changed ones, and updates the stored copies. Export any session as AUDIO with two separate voices: one for Brett, one for Claude (Amber).\n\nIMPORTANT reality: claude.ai has no API to pull a user's chats, and we must NOT scrape claude.ai with Brett's login/cookies. Supported inputs:\n1. Claude data export: Brett downloads it from claude.ai (Settings > Privacy > Export data) and uploads the zip (or conversations.json) in the viewer (phone file picker). Parse it, upsert by conversation uuid, detect new/changed by updated_at + message count/hash, keep versions.\n2. Claude Code sessions: auto-sync the JSONL session files from ~/.claude/projects (root and axfbuild) on the VPS on a timer + on viewer load; incremental (byte offset/mtime).\n3. Headless build logs (/root/axf-builds/*/*.log, /home/axfbuild/wt-*/*.log) as 'build sessions'.\n4. Hub drop folder: Claude chat sessions can push conversations through axHub memory_write into project amberx-axf, area data, path `sessions/claude-ai/<uuid>.json` (schema below); the viewer ingests that folder too. Document the schema and add a line to _claude/shared/rules/RULES.md: when Brett says 'sync my chats', Claude uses recent_chats/read_conversation and writes each new/updated conversation there.\n\n## Store\nsession@1 schema (framework/schemas + validators): id, source (claude-ai-text|claude-ai-voice|claude-code|headless|hub-drop), title, startedAt, updatedAt, project, messages [{role: user|assistant|tool, text, at, kind (speech|text|tool), toolName?}], hash, version history. Stored on the console data volume (SQLite or JSON files; your call, justify), not in git. Redact secrets (tokens/keys/passwords patterns) on ingest.\n\n## Viewer (console plugin + AmberX entry 'Chats')\n- List: framework DataGrid (sort/filter/search, date columns), source badges, 'updated' badge for changed sessions, counts.\n- Full-text search across everything (SQLite FTS or similar), jump to the hit.\n- Session view: chat bubbles (Brett vs Amber), tool calls collapsible, timestamps, copy/share, export text/markdown.\n- 'Check for updates' on load + button: shows new/changed/unchanged counts.\n\n## Audio export\n- Export a session (or a range) as an audio file with TWO voices: Brett's voice and Amber's voice (configurable). Use a TTS that runs on this VPS for free by default (e.g. Piper with two different English voices; install into a container or venv, no GPU), with an optional provider setting (OpenAI/ElevenLabs) if a key is saved in the console keys. Skip tool-call noise; read only spoken/text turns; short pause between turns; chapters per hour. Output mp3/ogg stored on the hub, with a player in the viewer and a download link. Long sessions render in the background with progress.\n\nFramework controls + theme/scale tokens only, phone-first. Tests: export-zip parsing + upsert/new/changed detection, Claude Code JSONL incremental sync, hub-drop ingest, redaction, search, audio render (short sample) with two voices. Local test block from .github/workflows/android.yml + theme/controls/lifecycle/menu-reach checks. Phone + desktop screenshots to UI Review via framework/cli/shot.mjs, group 'Chat viewer - Nov 1' (use demo/redacted sessions in screenshots). Add an install_steps part. Commit, fetch+merge origin/main, retest, `git push origin HEAD:main` (never force). Report at _claude/builds/reports/chat-viewer.md incl. how Brett gets his claude.ai export in.",
    "verbatim": false,
    "from": "brief",
+   "addenda": []
+  },
+  "claude-account-switcher": {
+   "said": "Can you store that key so I can use it to switch back and forth from the console? ... You're gonna build the switcher now... at least something temporary. ... Make a quick plugin so I can do it all from the console.",
+   "at": "2026-11-04T23:57:00.641Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "claude-settings": {
@@ -1120,6 +1180,18 @@
    "session": "",
    "link": "",
    "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "handoff-2-addenda-r2": {
+   "said": "Restart the builds that died on credits, on Opus. (Nov 4, on the add-ons:) Okay, do it... put them all. Do that now. ... The helper account needs to use its own subscription ... You can pass Fable to helpers. The helpers just have to check to make sure they have Fable. If not, they reject it, send it back to you in the group chat, and tell you to keep it. ... Give it to Brownie. She can handle the helpers. ... Give Brownie an attitude. Make her crack the whip. ... Can you store that key so I can use it to switch back and forth from the console?",
+   "at": "2026-11-05T11:07:45.303Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
    "brief": "",
    "verbatim": true,
    "from": "",
@@ -1748,6 +1820,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "priority-tags": {
+   "said": "Put a priority tag on everything in your building. And when you click on it, it shows everything waiting for it. ... Do it. Yes.",
+   "at": "2026-11-05T04:53:51.522Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "profile-lists-home-card": {

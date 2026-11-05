@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T23:10:23.812Z",
+ "updatedAt": "2026-11-05T19:10:19.008Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -19800,6 +19800,96 @@
      "doneAt": "2026-11-04T19:56:47.921Z",
      "note": "",
      "uid": "st-mw2je9uu06ajys"
+    }
+   ]
+  },
+  {
+   "id": "amberx-voice-echo-fix",
+   "title": "AmberX: stop the Note saved to Inbox echo loop",
+   "category": "AmberX",
+   "detail": "The mic hears the app speak Note saved to Inbox and the notes parser (apps/amberx-droid/src/plugins/notes/web/core.ts:615, any sentence starting with note = add note) saves it again. Fix: parser ignores the app own reply lines (Note/Task/Todo saved to ...), speechgate.ts echo guard matches near copies of what was just spoken, regression test replays the loop.",
+   "status": "pending",
+   "hidden": false,
+   "source": "voice",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-05T01:38:10.037Z",
+   "updatedAt": "2026-11-05T01:38:10.037Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Echo fix\n\nMaine but how do I make it so I don't have to keep cooking the mic to talk to you",
+    "at": "2026-11-05T01:38:10.037Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Notes parser skips the app own reply lines (Note/Task/Todo saved to ...), with unit tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25m",
+     "files": [
+      "apps/amberx-droid/src/plugins/notes/web/core.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2vme6104bin9"
+    },
+    {
+     "id": "s2",
+     "text": "speechgate.ts echo guard: fuzzy match against recently spoken lines, with unit tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25m",
+     "files": [
+      "apps/amberx-droid/src/speechgate.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2vme610514qv"
+    },
+    {
+     "id": "s3",
+     "text": "Regression test that replays the spoken reply into the listener and proves no second note is saved; branch, PR, merge queue",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw2vme610605xb"
     }
    ]
   }

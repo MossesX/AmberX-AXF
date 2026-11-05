@@ -85,7 +85,7 @@ function paint(rt: AxfRuntime) {
     data: { counter: COUNTER, onLabel: 'Following Amber', offLabel: 'Not following', onTone: 'accent', offTone: 'muted', dot: true, link: 'follow-amber.toggle' },
   }, 'app', ID);
   rt.setBadge(COUNTER, st.on ? 1 : 0);
-  if (st.on && rt.settings.get(CHIP_KEY) !== false) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'left', order: 22, origin: ID });
+  if (st.on && rt.settings.get(CHIP_KEY) !== false) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'left', order: 22, origin: ID, widget: { label: 'Following Amber', size: 'compact', priority: 4, aliases: ['follow amber', 'following'] } });
   else rt.detachFromBanner(`status:${ASSET_ID}`);
 }
 

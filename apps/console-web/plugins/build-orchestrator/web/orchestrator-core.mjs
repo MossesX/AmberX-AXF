@@ -96,6 +96,7 @@ function normBuild(b) {
     branch: str(o.branch, 200),
     pr: str(o.pr, 200),
     ...(str(o.mergedAt) ? { mergedAt: str(o.mergedAt, 40) } : {}),
+    ...(/^P[0-3]$/.test(str(o.priority)) ? { priority: o.priority } : {}),
     createdAt: str(o.createdAt, 40) || now(),
     updatedAt: str(o.updatedAt, 40) || now(),
     builtAt: isFinished(o.status) ? str(o.builtAt, 40) : '',

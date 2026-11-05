@@ -140,7 +140,7 @@ export async function queueRound({ s, git, gh, api, dry = false, now = () => new
   const prs = [];
   for (const p of pulls) {
     const b = buildOf(p.head.ref); const old = prevAll.get(p.number) || {};
-    const fact = { number: p.number, title: String(p.title || '').slice(0, 200), branch: p.head.ref, head: p.head.sha, draft: !!p.draft, createdAt: p.created_at, url: p.html_url || '', build: b?.id || '', agent: agentOf(b, p) };
+    const fact = { number: p.number, title: String(p.title || '').slice(0, 200), branch: p.head.ref, head: p.head.sha, draft: !!p.draft, createdAt: p.created_at, url: p.html_url || '', build: b?.id || '', agent: agentOf(b, p), priority: q.buildPriority(b) };
     if (old.head === fact.head && ['success', 'failure'].includes(old.prCi)) fact.ci = old.prCi;
     else { try { fact.ci = ciOf((await gh('GET', `/repos/${s.slug}/commits/${fact.head}/check-runs?per_page=100`))?.check_runs || []).ci; } catch { fact.ci = 'running'; } }
     // no PR checks at all: does it conflict with main? (git, no API call)
@@ -151,7 +151,7 @@ export async function queueRound({ s, git, gh, api, dry = false, now = () => new
     prs.push(fact);
   }
   ctl = q.pruneControl(ctl, prs.map((p) => p.number));
-  const ready = q.queueOrder(prs.filter((p) => !p.why), ctl, rank);
+  const ready = q.queueOrder(prs.filter((p) => !p.why), ctl, rank, prev.stack || []);
 
   // 2. what of last round's stack still holds: main must have the code the stack was built on
   const expect = prev.expect || '';
@@ -216,7 +216,7 @@ export async function queueRound({ s, git, gh, api, dry = false, now = () => new
 
   // 4. fill the stack up to depth, in queue order
   const mergedNow = new Set(merged.filter((m) => m.at === at).map((m) => m.pr));
-  const order = q.queueOrder(prs.filter((p) => !p.why && !mergedNow.has(p.number)), ctl, rank);
+  const order = q.queueOrder(prs.filter((p) => !p.why && !mergedNow.has(p.number)), ctl, rank, stack);
   const skipped = new Map();
   for (const p of order) {
     if (stack.length >= cfg.depth) break;
@@ -257,10 +257,10 @@ export async function queueRound({ s, git, gh, api, dry = false, now = () => new
     const startedMin = e.startedAt ? (nowMs - Date.parse(e.startedAt)) / 60000 : 0;
     const state = e.state || (e.ci === 'success' ? 'passed' : 'testing');
     const why = e.why || (e.ci === 'failure' ? 'its run failed; waits for the PRs ahead of it to finish to see which one broke it' : '');
-    items.push({ pr: e.pr, title: p.title || '', url: p.url || '', branch: p.branch || '', head: e.head, build: p.build || '', agent: p.agent || '', state, ci: e.ci, queueBranch: q.queueBranch(e.pr), queueSha: e.sha, ahead: e.ahead, runUrl: e.runUrl || '', why, etaMin: q.etaMinutes(i, { depth: cfg.depth, avg, startedMin }) });
+    items.push({ pr: e.pr, title: p.title || '', url: p.url || '', branch: p.branch || '', head: e.head, build: p.build || '', agent: p.agent || '', priority: p.priority || '', state, ci: e.ci, queueBranch: q.queueBranch(e.pr), queueSha: e.sha, ahead: e.ahead, runUrl: e.runUrl || '', why, etaMin: q.etaMinutes(i, { depth: cfg.depth, avg, startedMin }) });
   }
   const rest = order.filter((p) => !stack.some((e) => e.pr === p.number) && !p.why);
-  for (const [j, p] of rest.entries()) items.push({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, state: 'waiting', ci: '', why: skipped.get(p.number) || '', etaMin: q.etaMinutes(stack.length + j, { depth: cfg.depth, avg }) });
+  for (const [j, p] of rest.entries()) items.push({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, priority: p.priority, state: 'waiting', ci: '', why: skipped.get(p.number) || '', etaMin: q.etaMinutes(stack.length + j, { depth: cfg.depth, avg }) });
   const waiting = prs.filter((p) => p.why && !mergedNow.has(p.number)).map((p) => ({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, state: p.why.startsWith('kicked out') ? 'kicked' : 'held', why: p.why, prCi: p.ci }));
   for (const it of items) { const p = prs.find((x) => x.number === it.pr); if (p) it.prCi = p.ci; }
   const st = { ...base, mainSha, expect: newExpect || mainSha, avgMin: avg, history: history.slice(-20), stack, items, waiting, kicked: kicked.filter((k) => prs.some((p) => p.number === k.pr)).slice(-20), merged, ...v };

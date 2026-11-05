@@ -33,6 +33,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 ## Active
 
 | Thread | State | Branch | PR | Queued / next | Updated |
+| Priority tags (`priority-tags`, Opus, agent Snap Sully; Brett Nov 5 voice: "Put a priority tag on everything in your building. And when you click on it, it shows everything waiting for it."): tag on every build, waiting-on list, both queues follow priority, Build queue shows the real agent queue | built, waiting on the merge queue, then deploy | `claude/priority-tags` | (see Live build log) | Report `_claude/builds/reports/priority-tags.md`. Open point for Brett: tone chips across the console are uncoloured (`.fx-chip { all: unset }` in axf.css), left alone | 2026-11-05 |
 | Tab groups, toolbars, banners and nav menus are assets with an asset settings interface (Current `tab-group-assets`, Fable; Brett Nov 4 voice: "all tab groups are supposed to be assets. With a settings interface, that's also an asset." + addenda: all four chrome kinds, one shared default settings interface per type + a custom copy per app, the default selected by default): tab-group@1 extended (position left/right, display, overflow more/dropdown, chips, sticky, collapsible, closable, reorderable, badges, rememberLast; 7 starters), chrome-settings@1 (`settings/chrome-<type>` + `chrome-<type>-<app>` with `extends`, `axf.chrome.settings.<type>`), framework `TabGroup`, shared chrome context menu (Settings… / Change… / Move) on every tab group, toolbar, banner, nav and menu bar, 40 hard-coded tab rows migrated (console, AmberX, framework), CI `check-chrome-assets.mjs` + ratchet, console actions `chrome.*` for voice | review (s1–s6 done: all checks + 4 app typechecks green, 9 shots in UI Review → Screenshots group "tab-group-assets - Nov 4 11:38 AM"; PR open, push banner lands it) | `claude/tab-group-assets` | [#327](https://github.com/MossesX/AmberX-AXF/pull/327) | Report `_claude/builds/reports/tab-group-assets.md`; after merge: redeploy console, AmberX, axHub web | 2026-11-04 |
 | Terminal stops stealing focus (Current `terminal-no-focus`, Opus, agent Janitor Joey; Brett Nov 4 voice: "I don't want the terminal to come to the front on every session."): new Terminal setting *When a new session starts* (Add tab quietly = default, background tab + count on the Terminal toolbar icon, never pops or switches; Do nothing; Bring Terminal to front), REST/MCP/CLI `new-session` | review (PR open, merges on green CI) | `claude/terminal-no-focus` | [#305](https://github.com/MossesX/AmberX-AXF/pull/305) | Report `_claude/builds/reports/terminal-no-focus.md`. Brett: none needed | 2026-11-04 |
 | Fable upgrades need no approval (Current `fable-no-approval`, Opus, agent Snap Sully; Brett Nov 4 voice: "I don't want the approvals. Just put everything that needs to be on Fable on Fable."): owner-only Claude setting *Fable upgrades need my approval* (`builds.fableUpgradeApproval`, off by default); orchestrator, launch gate, swarm and briefs follow it; 8 waiting upgrade phases (6 builds) switched; Fable review `fable-review-nov3` queued (7 Fable steps); rule in RULES.md. Report `_claude/builds/reports/fable-no-approval.md`. | built (CI red on an unrelated ai-assistant check, re-run) | `claude/fable-no-approval` | #319 | `fable-review-nov3` (Fable) queued; toolbar-tap-confirm s9–s21 need a follow-up build (PR #272 merged) | Nov 4 2026 |
@@ -40,6 +41,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Build manager hotfix (Current `hotfix-build-manager`, urgent, Opus; agent Ping Paulie; Brett Nov 4 voice: "It says 21 things are going." "When I click them, they don't open up, and the steps in the build menu don't work."): Builds page rows open on tap, step ticks no longer flipped back by stale polls, orchestrator steps open on tap, changes banner counts only live sessions, reconciler pauses builds no live process runs (store cleaned: 7 → complete, 9 → paused) | PR open, auto-merge when CI is green; then redeploy the console | `claude/hotfix-build-manager` | (see live log) | Report `_claude/builds/reports/hotfix-build-manager.md` | 2026-11-04 |
 | UI Review shows its pictures again (Urgent `ui-review-shots`, Opus, agent Snap Sully; Brett Nov 3 voice: "items but NO pictures"): files were all on disk and served 200; two console pollers (agent-slots, token-control pass) re-subscribed on every render and fired ~45 status calls/s, starving the picture fetches; on phones a today-made selector (`:where(:not([data-fx-narrow]))`, always true) squeezed the preview to zero width. Fixed both + layout-adopt codemod, shot timeout/retry, "Shot missing" + Re-capture, health@1 `ui-review-shots`, `review.mjs` worktree warning | review (all 5 steps done; PR open, UI Review waiting) | `claude/ui-review-shots` | [#277](https://github.com/MossesX/AmberX-AXF/pull/277) | Report `_claude/builds/reports/ui-review-shots.md`. Console redeploy (on merge) stops the storm. Brett: approve UI Review r-20261103-17ef4a40 | 2026-11-03 |
 | Land round 2 (Current `land-round-2`, Opus; agent Landin' Lenny; Brett Nov 4 voice: catch up and land the rest, Molly first): landed #288 (with #266, closed as superseded), #294, #295; #297 closed (orphan duplicate of #284); console + Molly redeployed after #288. Stopped at the $15 per-build cap (~$42). #296 pushed (CI unread), #298 #281 #291 #293 #289 #269 resolved locally on `land/<pr>`, #300 needs a rework on top of #269 | stopped (budget cap) | `claude/land-round-2` | (report PR) | Report `_claude/builds/reports/land-round-2.md`. Fix first: the shared GitHub token empties its 5000/h budget in ~25 min. Then land the rest from the local `land/<pr>` branches | 2026-11-04 |
+| Banner widgets (`banner-widgets`, Opus, agent Gina; Brett Nov 4 voice: right-click the banner, pick widgets, set sizes; fast-track): picker, per-widget settings, ⋯ overflow, compact defaults, one registry + CI check | built, waiting on the merge queue, then deploy | `claude/banner-widgets` | (see Live build log) | Report `_claude/builds/reports/banner-widgets.md`. Usage meter chip joins by itself once `usage-meter` lands | 2026-11-05 |
 | Land everything finished (Current `lenny-land-all`, freeze plan step two, Opus; agent Landin' Lenny; Brett Nov 3 voice: "Number two." "Give me Lenny."): 19 PRs landed (#270 first, then #268 #265 #277 #271 #273 #280 #274 #279 #285 #272 #276, and batch #303 = #275 #282 #283 #286 #287 #290 #292), #267 closed (superseded by #284), #251/#254 set to draft for Brett, older #207-#236 listed for him. Held with reasons: #266 #288 (racy console-wake test), #269 (AmberX build: @console/api), #289 (placement system vs #278), #281 (menu engines vs #268, Fable work), #291 (WIP, paused by Brett). Console was down ~12 min: stacked update installers; flock added | done | `claude/lenny-land-all` | (report PR) | Report `_claude/builds/reports/lenny-land-all.md`. Next: the held PRs' authors fix them; Brett decides #289 placement and reviews #251/#254 | 2026-11-04 |
 |---|---|---|---|---|---|
 | Console slow to load (Urgent `urgent-console-perf`, Opus; Brett Nov 4 voice: "How come console is taking forever to load? I thought lazy loader was in."): /api/build-queue 500 (store lock + never-recorded export = every read took the write lock), node spawned per read per client, client fell back to stale /data on any 5xx, zombies, reconcile storms | PR open | `claude/urgent-console-perf` | (opening) | CI → auto-merge → console auto-update (flock); measured 6-round load: CPU 112 → 11.5 s, peak node 35 → 4, round 10–18 → 0.7–2.6 s. Report `_claude/builds/reports/urgent-console-perf.md` | 2026-11-04 |
@@ -700,72 +702,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 15:50 UTC · `jump-menu-asset` s1 done (current) · foreign-write
-- 2026-11-04 15:50 UTC · `urgent-land-gizmo-chat` s4 done, note (current) · foreign-write
-- 2026-11-04 15:50 UTC · `molly-console-commands` note (current) · foreign-write
-- 2026-11-04 15:50 UTC · `urgent-land-gizmo-chat` → complete, note (current) · foreign-write
-- 2026-11-04 15:50 UTC · `app-voice-commands` s2 done, s3 done, s4 done, s5 done, note (current) · foreign-write
-- 2026-11-04 15:50 UTC · `apps-control-surface` s2 done, s3 done, s4 done, s5 done, → complete, note (current) · foreign-write
-- 2026-11-04 15:50 UTC · `tab-group-assets` added (6 steps) (current) · foreign-write
-- 2026-11-04 15:50 UTC · `jump-menu-asset` added (5 steps) (current) · foreign-write
-- 2026-11-04 15:50 UTC · `urgent-land-gizmo-chat` s4 done (current) · orchestrator
-- 2026-11-04 15:50 UTC · `urgent-land-gizmo-chat` note (current) · orchestrator
-- 2026-11-04 15:57 UTC · `urgent-land-gizmo-chat` s4 done, note (current) · foreign-write
-- 2026-11-04 15:57 UTC · `app-voice-commands` s5 done, note (current) · foreign-write
-- 2026-11-04 15:57 UTC · `tab-group-assets` s1 done (current) · foreign-write
-- 2026-11-04 15:57 UTC · `jump-menu-asset` s1 done, s2 done (current) · foreign-write
-- 2026-11-04 15:57 UTC · `jump-menu-asset` s2 done, s3 done, s4 done (current) · foreign-write
-- 2026-11-04 15:57 UTC · `tab-group-assets` s2 done (current) · foreign-write
-- 2026-11-04 15:57 UTC · `tab-group-assets` s2 done (current) · orchestrator
-- 2026-11-04 15:57 UTC · `jump-menu-asset` s3 done, s4 done (current) · foreign-write
-- 2026-11-04 15:57 UTC · `jump-menu-asset` s2 done (current) · orchestrator
-- 2026-11-04 15:57 UTC · `jump-menu-asset` s3 done (current) · orchestrator
-- 2026-11-04 15:57 UTC · `jump-menu-asset` s4 done (current) · orchestrator
-- 2026-11-04 15:58 UTC · `tab-group-assets` s2 done (current) · foreign-write
-- 2026-11-04 15:58 UTC · `jump-menu-asset` branch claude/jump-menu-asset, PR #326 (current) · builds-live
-- 2026-11-04 16:03 UTC · `settings-placement-everywhere` added (6 steps) (current) · orchestrator
-- 2026-11-04 16:04 UTC · `settings-placement-everywhere` added (6 steps) (current) · foreign-write
-- 2026-11-04 16:03 UTC · `settings-placement-everywhere` added (6 steps) (current) · foreign-write
-- 2026-11-04 16:09 UTC · `molly-multi-instance-tabs` added (4 steps) (current) · orchestrator
-- 2026-11-04 16:09 UTC · `molly-multi-instance-tabs` → running (current) · orchestrator
-- 2026-11-04 16:09 UTC · `molly-multi-instance-tabs` branch claude/molly-multi-instance-tabs (current) · builds-live
-- 2026-11-04 16:15 UTC · `urgent-land-gizmo-chat` s4 done, note (current) · foreign-write
-- 2026-11-04 16:15 UTC · `tab-group-assets` s2 done (current) · foreign-write
-- 2026-11-04 16:15 UTC · `jump-menu-asset` s2 done, s3 done, s4 done (current) · foreign-write
-- 2026-11-04 16:15 UTC · `settings-placement-everywhere` added (12 steps) (current) · foreign-write
-- 2026-11-04 16:15 UTC · `molly-multi-instance-tabs` added (4 steps) (current) · foreign-write
-- 2026-11-04 16:15 UTC · `app-voice-commands` note (current) · orchestrator
-- 2026-11-04 16:16 UTC · `app-voice-commands` note (current) · foreign-write
-- 2026-11-04 16:20 UTC · `settings-placement-everywhere` branch claude/settings-placement-everywhere, note (current) · reconciler
-- 2026-11-04 16:23 UTC · `tab-group-assets` s3 done (current) · foreign-write
-- 2026-11-04 16:23 UTC · `app-voice-commands` note (current) · foreign-write
-- 2026-11-04 16:23 UTC · `settings-placement-everywhere` added (24 steps) (current) · foreign-write
-- 2026-11-04 16:23 UTC · `molly-multi-instance-tabs` added (4 steps) (current) · foreign-write
-- 2026-11-04 16:24 UTC · `tab-group-assets` s4 done, s5 done (current) · foreign-write
-- 2026-11-04 16:23 UTC · `tab-group-assets` s3 done (current) · orchestrator
-- 2026-11-04 16:23 UTC · `tab-group-assets` s4 done (current) · orchestrator
-- 2026-11-04 16:23 UTC · `tab-group-assets` s5 done (current) · orchestrator
-- 2026-11-04 16:24 UTC · `app-voice-commands` note (current) · foreign-write
-- 2026-11-04 16:24 UTC · `tab-group-assets` s3 done, s4 done, s5 done (current) · foreign-write
-- 2026-11-04 16:24 UTC · `settings-placement-everywhere` note (current) · foreign-write
-- 2026-11-04 16:24 UTC · `tab-group-assets` branch claude/tab-group-assets, PR #327 (current) · builds-live
-- 2026-11-04 16:25 UTC · `molly-multi-instance-tabs` s1 done (current) · foreign-write
-- 2026-11-04 16:24 UTC · `molly-multi-instance-tabs` s1 done (current) · orchestrator
-- 2026-11-04 16:33 UTC · `molly-multi-instance-tabs` s2 done (current) · orchestrator
-- 2026-11-04 16:33 UTC · `molly-multi-instance-tabs` s3 done (current) · orchestrator
-- 2026-11-04 16:35 UTC · `app-voice-commands` note (current) · foreign-write
-- 2026-11-04 16:35 UTC · `tab-group-assets` s3 done, s4 done, s5 done (current) · foreign-write
-- 2026-11-04 16:35 UTC · `settings-placement-everywhere` added (24 steps) (current) · foreign-write
-- 2026-11-04 16:35 UTC · `molly-multi-instance-tabs` added (4 steps) (current) · foreign-write
-- 2026-11-04 16:35 UTC · `jump-menu-asset` s5 done, → built (current) · orchestrator
-- 2026-11-04 16:35 UTC · `jump-menu-asset` note (current) · orchestrator
-- 2026-11-04 16:38 UTC · `jump-menu-asset` s5 done, → complete, note (current) · foreign-write
-- 2026-11-04 16:38 UTC · `molly-multi-instance-tabs` PR #328 (current) · builds-live
-- 2026-11-04 16:38 UTC · `molly-multi-instance-tabs` s4 done, → built (current) · orchestrator
-- 2026-11-04 16:40 UTC · `jump-menu-asset` s5 done, → complete, note (current) · foreign-write
-- 2026-11-04 16:40 UTC · `molly-multi-instance-tabs` s1 done, s2 done, s3 done, s4 done, → complete (current) · foreign-write
-- 2026-11-04 16:40 UTC · `tab-group-assets` s6 done, → built, note (current) · builds-live
-- 2026-11-04 16:40 UTC · `jump-menu-asset` → complete (current) · builds-live
 - 2026-11-04 16:40 UTC · `molly-multi-instance-tabs` → complete (current) · builds-live
 - 2026-11-04 16:40 UTC · `tab-group-assets` s6 done, → built (current) · orchestrator
 - 2026-11-04 16:40 UTC · `tab-group-assets` note (current) · orchestrator
@@ -1100,6 +1036,72 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-04 22:42 UTC · `notes-views` s5 done, → built (current) · claude:notes-views
 - 2026-11-04 23:01 UTC · `fable-review-shipped-features-build-hook-contrac` added (0 steps) (current) · pending
 - 2026-11-04 23:10 UTC · `shipped-features-r2` PR #350, note (angel) · reconciler
+- 2026-11-04 23:57 UTC · `claude-account-switcher` added (5 steps) (current) · orchestrator
+- 2026-11-04 23:57 UTC · `claude-account-switcher` added (5 steps) (current) · foreign-write
+- 2026-11-05 00:11 UTC · `claude-account-switcher` s4 done, → running (current) · orchestrator
+- 2026-11-05 00:11 UTC · `claude-account-switcher` s4 done (current) · foreign-write
+- 2026-11-05 00:11 UTC · `claude-account-switcher` s1 done (current) · orchestrator
+- 2026-11-05 00:11 UTC · `claude-account-switcher` s2 done (current) · orchestrator
+- 2026-11-05 00:11 UTC · `claude-account-switcher` s3 done (current) · orchestrator
+- 2026-11-05 00:12 UTC · `claude-account-switcher` s2 done, s3 done (current) · foreign-write
+- 2026-11-05 00:13 UTC · `claude-account-switcher` branch claude/claude-account-switcher, PR #351 (current) · builds-live
+- 2026-11-05 00:13 UTC · `claude-account-switcher` s5 done, → complete, note (current) · foreign-write
+- 2026-11-05 00:13 UTC · `claude-account-switcher` s5 done, → built (current) · orchestrator
+- 2026-11-05 00:13 UTC · `claude-account-switcher` note (current) · orchestrator
+- 2026-11-05 01:38 UTC · `amberx-voice-echo-fix` added (3 steps) (main-framework) · orchestrator
+- 2026-11-05 02:08 UTC · `banner-widgets` added (7 steps) (current) · orchestrator
+- 2026-11-05 02:08 UTC · `banner-widgets` → running (current) · orchestrator
+- 2026-11-05 02:14 UTC · `amberx-approvals-fix` added (6 steps) (urgent) · orchestrator
+- 2026-11-05 02:14 UTC · `amberx-approvals-fix` s1 done, → running (urgent) · orchestrator
+- 2026-11-05 02:17 UTC · `banner-widgets` s1 done (current) · orchestrator
+- 2026-11-05 02:17 UTC · `banner-widgets` s2 done (current) · orchestrator
+- 2026-11-05 02:29 UTC · `banner-widgets` branch claude/banner-widgets, PR #352 (current) · builds-live
+- 2026-11-05 02:29 UTC · `banner-widgets` s3 done (current) · orchestrator
+- 2026-11-05 02:29 UTC · `banner-widgets` s4 done (current) · orchestrator
+- 2026-11-05 02:29 UTC · `banner-widgets` s5 done (current) · orchestrator
+- 2026-11-05 02:29 UTC · `banner-widgets` s6 done (current) · orchestrator
+- 2026-11-05 02:36 UTC · `banner-widgets` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · foreign-write
+- 2026-11-05 02:36 UTC · `amberx-approvals-fix` branch claude/amberx-approvals-fix, PR #353 (urgent) · builds-live
+- 2026-11-05 02:36 UTC · `amberx-approvals-fix` s2 done (urgent) · orchestrator
+- 2026-11-05 02:36 UTC · `amberx-approvals-fix` s3 done (urgent) · orchestrator
+- 2026-11-05 02:36 UTC · `amberx-approvals-fix` s4 done (urgent) · orchestrator
+- 2026-11-05 02:36 UTC · `amberx-approvals-fix` s5 done (urgent) · orchestrator
+- 2026-11-05 02:36 UTC · `amberx-approvals-fix` note (urgent) · orchestrator
+- 2026-11-05 02:46 UTC · `banner-widgets` note (current) · orchestrator
+- 2026-11-05 02:49 UTC · `banner-widgets` note (current) · orchestrator
+- 2026-11-05 03:00 UTC · `amberx-approvals-fix` → pending, note (urgent) · reconciler
+- 2026-11-05 03:20 UTC · `banner-widgets` → pending, note (current) · reconciler
+- 2026-11-05 03:30 UTC · `banner-widgets` merged, note (current) · reconciler
+- 2026-11-05 04:53 UTC · `priority-tags` added (6 steps) (current) · orchestrator
+- 2026-11-05 04:53 UTC · `priority-tags` branch claude/priority-tags (current) · builds-live
+- 2026-11-05 05:10 UTC · `priority-tags` PR #354, note (current) · reconciler
+- 2026-11-05 05:10 UTC · `priority-tags` PR #354 (current) · builds-live
+- 2026-11-05 05:10 UTC · `priority-tags` s1 done, s2 done, s3 done, s4 done, s5 done, → running (current) · builds-live
+- 2026-11-05 05:11 UTC · `priority-tags` s6 done, → built (current) · orchestrator
+- 2026-11-05 05:11 UTC · `priority-tags` s6 done, → built (current) · builds-live
+- 2026-11-05 06:01 UTC · `priority-tags` → complete, merged, note (current) · reconciler
+- 2026-11-05 11:04 UTC · `three-layouts-per-screen` → running (angel) · orchestrator
+- 2026-11-05 11:04 UTC · `three-layouts-per-screen` note (angel) · orchestrator
+- 2026-11-05 11:04 UTC · `three-layouts-per-screen` branch claude/three-layouts-per-screen-r2 (angel) · builds-live
+- 2026-11-05 11:08 UTC · `handoff-2-addenda-r2` added (8 steps) (current) · foreign-write
+- 2026-11-05 11:08 UTC · `three-layouts-per-screen` s1 done (angel) · orchestrator
+- 2026-11-05 11:08 UTC · `three-layouts-per-screen` s2 done (angel) · orchestrator
+- 2026-11-05 11:08 UTC · `three-layouts-per-screen` s3 done (angel) · orchestrator
+- 2026-11-05 11:08 UTC · `three-layouts-per-screen` s4 done (angel) · orchestrator
+- 2026-11-05 11:11 UTC · `ui-review-alarm` → running, note (angel) · orchestrator
+- 2026-11-05 11:19 UTC · `handoff-2-addenda-r2` s2 done, s3 done, s4 done (current) · foreign-write
+- 2026-11-05 11:19 UTC · `three-layouts-per-screen` s5 done, → complete (angel) · orchestrator
+- 2026-11-05 11:19 UTC · `three-layouts-per-screen` → built, PR #355 (angel) · builds-live
+- 2026-11-05 11:20 UTC · `three-layouts-per-screen` PR #355, note (angel) · reconciler
+- 2026-11-05 11:50 UTC · `ui-review-alarm` → pending, note (angel) · reconciler
+- 2026-11-05 11:50 UTC · `handoff-2-addenda-r2` → pending, note (current) · reconciler
+- 2026-11-05 18:36 UTC · `assistant-chat-mode` added (8 steps) (current) · orchestrator
+- 2026-11-05 18:36 UTC · `assistant-chat-mode` → running (current) · orchestrator
+- 2026-11-05 18:36 UTC · `assistant-chat-mode` s1 done (current) · orchestrator
+- 2026-11-05 18:42 UTC · `assistant-chat-mode` s2 done (current) · orchestrator
+- 2026-11-05 18:42 UTC · `assistant-chat-mode` s3 done (current) · orchestrator
+- 2026-11-05 18:42 UTC · `assistant-chat-mode` s4 done (current) · orchestrator
+- 2026-11-05 19:10 UTC · `assistant-chat-mode` → pending, note (current) · reconciler
 
 ## Token passes (log)
 

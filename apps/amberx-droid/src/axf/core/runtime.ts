@@ -25,6 +25,7 @@ import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
 import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
+import { BANNER_FIXED_SHAPE, bannerWidgetEmpty, bannerWidgetView, findBannerWidget, normalizeBannerWidgetPrefs, patchBannerWidget, BANNER_WIDGET_SIZES, type BannerWidgetHint, type BannerWidgetPrefs, type BannerWidgetSize, type BannerWidgetView } from './engines/bannerwidgets';
 import { hostSpec, hostSpecs, moveOnHost, normalizeArrangement, placeHost, placeToolbarWidgets, type HostArrangement, type HostAttachment, type PlacedAttachment } from './engines/widgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
@@ -99,6 +100,26 @@ export const NAV_WIDTH_KEY = 'axf.nav.width';
 export const NAV_OPEN_KEY = 'axf.nav.open';
 /** Where a person put the widgets of one host (banner, toolbar, …): JSON of a HostArrangement (core/engines/widgets.ts). */
 export const ARRANGE_KEY = (host: string) => `axf.widgets.arrange.${host}`;
+/** Dialog id of the banner's Widgets picker (react/components/BannerWidgets.tsx). */
+export const BANNER_WIDGETS_DIALOG = 'axf.banner.widgets';
+
+/** One widget the banner knows about: on the bar now or not. */
+export interface BannerWidget {
+  key: string;
+  type: string;
+  id: string;
+  label: string;
+  icon?: string;
+  aliases: string[];
+  origin: string;
+  /** Is it on the host right now? A chip its plugin took down stays listed, so a choice for it can still be made. */
+  attached: boolean;
+  /** Is it being drawn on the bar right now (attached, not hidden, not hidden for being empty)? */
+  shown: boolean;
+  at: string;
+  order: number;
+  view: BannerWidgetView;
+}
 /** Spacing choice (Settings → Appearance → Spacing): tight | compact | regular; absent = tight (engines/spacing.ts). */
 export const SPACING_KEY = 'axf.appearance.spacing';
 /**
@@ -900,6 +921,7 @@ export class AxfRuntime {
     else if (!this.registry.has(a.type as AssetType, a.id)) this.terminal.warn('widgets', `${key} (attached to ${host} by ${a.origin}) is not registered; it shows once it is`);
     const list = this.hostExtra.get(host) ?? [];
     this.hostExtra.set(host, [...list.filter((x) => attachmentKey(x.type, x.id) !== key), { ...a }]);
+    if (host === 'banner') this.bannerSeen.set(key, { type: a.type, id: a.id, origin: a.origin, at: a.at, order: a.order ?? 1000, hint: a.widget });
     this.set({});
     return () => this.detachFromHost(host, key);
   }
@@ -919,6 +941,8 @@ export class AxfRuntime {
       const next = list.filter((x) => x.origin !== origin);
       if (next.length !== list.length) { this.hostExtra.set(host, next); changed = true; }
     }
+    // a plugin switched off takes its widgets out of the picker too; a chip that only took itself down stays listed
+    for (const [key, w] of this.bannerSeen) if (w.origin === origin) { this.bannerSeen.delete(key); changed = true; }
     if (changed) this.set({});
   }
 
@@ -931,11 +955,94 @@ export class AxfRuntime {
   /** Remove run-time banner attachments by key (`type:id`) or by origin (a module / plugin id). */
   detachFromBanner(keyOrOrigin: string): void { this.detachFromHost('banner', keyOrOrigin); }
 
-  /** The banner to draw: its data (null = no banner or hidden) and where every attachment goes. */
-  banner(): { data: Asset<'banner'>['data'] | null; placed: PlacedBanner } {
+  /** The banner to draw: its data (null = no banner or hidden) and where every attachment goes. `all` keeps the widgets the person hid. */
+  banner(opts?: { all?: boolean }): { data: Asset<'banner'>['data'] | null; placed: PlacedBanner } {
     const b = this.slotHidden('banner') ? null : this.assetOrNull('banner')?.data ?? null;
     const placed = placeAttachments(b, b ? (this.hostExtra.get('banner') as BannerAttachment[] | undefined) ?? [] : [], (t, id) => this.registry.has(t as AssetType, id), this.hostArrangement('banner'));
-    return { data: b, placed };
+    if (opts?.all) return { data: b, placed };
+    const shown = Object.fromEntries(Object.entries(placed).map(([s, list]) => [s, list.filter((p) => this.bannerWidgetShown(p.key))])) as PlacedBanner;
+    return { data: b, placed: shown };
+  }
+
+  /* ---------------- banner widgets (core/engines/bannerwidgets.ts): one registry, the person's choices ---------------- */
+
+  /** Everything that ever attached itself to the banner while this page ran. */
+  /** The widget under the last right-click or long-press on the banner (`type:id`), set by the context menu host. */
+  contextBannerWidget: string | null = null;
+  private readonly bannerSeen = new Map<string, { type: string; id: string; origin: string; at: string; order: number; hint?: BannerWidgetHint }>();
+
+  /** The setting holding the widget choices: one per app and form factor. A look setting, so it syncs through axHub. */
+  bannerWidgetsKey(): string {
+    const app = this.manifest.app.id.toLowerCase().replace(/[^a-z0-9-]+/g, '-').slice(0, 40) || 'app';
+    const g = globalThis as { matchMedia?: (q: string) => { matches: boolean } };
+    return `axf.banners.widgets.${app}.${g.matchMedia?.('(max-width: 640px)').matches ? 'phone' : 'desktop'}`;
+  }
+
+  /** The person's widget choices on this app and form factor. */
+  bannerWidgetPrefs(): BannerWidgetPrefs { return normalizeBannerWidgetPrefs(this.settings.get(this.bannerWidgetsKey())); }
+
+  private bannerWidgetHint(key: string): BannerWidgetHint | undefined {
+    const seen = this.bannerSeen.get(key);
+    if (seen?.hint) return seen.hint;
+    const own = (this.assetOrNull('banner')?.data as { attach?: HostAttachment[] } | undefined)?.attach;
+    return own?.find((a) => attachmentKey(a.type, a.id) === key)?.widget;
+  }
+
+  /** How one widget is drawn (`type:id`). */
+  bannerWidgetView(key: string): BannerWidgetView {
+    return bannerWidgetView(key.split(':')[0] ?? '', this.bannerWidgetHint(key), this.bannerWidgetPrefs()[key]);
+  }
+
+  /** Does this widget get drawn: not hidden, and not empty with hide-when-empty on? */
+  bannerWidgetShown(key: string): boolean {
+    const v = this.bannerWidgetView(key);
+    if (v.hidden) return false;
+    if (!v.hideWhenEmpty) return true;
+    const i = key.indexOf(':');
+    const data = (this.registry.get(key.slice(0, i) as AssetType, key.slice(i + 1)) as { data: unknown } | undefined)?.data;
+    return !bannerWidgetEmpty(key.slice(0, i), data, (c) => this.badge(c));
+  }
+
+  /** Every widget the banner has, in bar order (left, center, right), then the ones not on the bar right now. */
+  bannerWidgets(): BannerWidget[] {
+    const rows: BannerWidget[] = [];
+    const row = (key: string, type: string, id: string, origin: string, at: string, order: number, attached: boolean): BannerWidget => {
+      const asset = this.registry.get(type as AssetType, id) as { name?: string; data?: { label?: string; icon?: string } } | undefined;
+      const hint = this.bannerWidgetHint(key);
+      return {
+        key, type, id, origin, at, order, attached,
+        label: hint?.label || (type === 'clock' ? 'Clock' : asset?.name || asset?.data?.label || id),
+        ...(hint?.icon || asset?.data?.icon ? { icon: hint?.icon || asset?.data?.icon } : {}),
+        // "the clock", "the search bar": a one-of-a-kind widget also answers to its type
+        aliases: [...(hint?.aliases ?? []), ...(BANNER_FIXED_SHAPE.includes(type) ? [type.replace(/-/g, ' ')] : [])],
+        shown: attached && this.bannerWidgetShown(key),
+        view: this.bannerWidgetView(key),
+      };
+    };
+    const { placed } = this.banner({ all: true });
+    for (const side of Object.keys(placed)) for (const p of placed[side as keyof PlacedBanner]) rows.push(row(p.key, p.type, p.id, p.origin, p.at, p.order, true));
+    for (const [key, w] of this.bannerSeen) if (!rows.some((r) => r.key === key)) rows.push(row(key, w.type, w.id, w.origin, w.at, w.order, false));
+    return rows;
+  }
+
+  /** Find a widget from what someone said ("clock", "ticker") or its key. */
+  findBannerWidget(query: string): BannerWidget | null { return findBannerWidget(this.bannerWidgets(), query); }
+
+  /** Change one widget's choices; saved at once, drawn at once. A field set to null goes back to its default. */
+  setBannerWidget(key: string, patch: Record<string, unknown>): boolean {
+    if (!this.canArrange()) { this.toast('Your account can\'t change the look.', 'warning', 'Banner widgets'); return false; }
+    const next = patchBannerWidget(this.bannerWidgetPrefs(), key, patch);
+    if (Object.keys(next).length) this.settings.set(this.bannerWidgetsKey(), next as never); else this.settings.clear(this.bannerWidgetsKey());
+    this.terminal.ok('widgets', `banner: ${key} ${JSON.stringify(patch)}`);
+    this.set({});
+    return true;
+  }
+
+  /** Every widget choice and the arrangement back to the defaults. */
+  resetBannerWidgets(): void {
+    if (!this.canArrange()) return;
+    this.settings.clear(this.bannerWidgetsKey());
+    this.resetHostArrangement('banner');
   }
 
   /** Attach a widget (clock, search bar) to the toolbar at run time (at: start | end). Same type + id replaces. Returns detach. */
@@ -965,7 +1072,7 @@ export class AxfRuntime {
 
   /** Every attachment of a host where it is drawn now (banner and toolbar use their own rules; other hosts the generic one). */
   hostPlaced(host: string): Record<string, PlacedAttachment[]> {
-    if (host === 'banner') return this.banner().placed;
+    if (host === 'banner') return this.banner({ all: true }).placed;
     if (host === 'toolbar') return this.toolbarWidgets();
     const data = (this.registry.has(host as AssetType, this.state.active[host as AssetType] ?? '') ? this.assetOrNull(host as AssetType)?.data : null) as Record<string, unknown> | null;
     return placeHost(host, data ?? null, this.hostExtra.get(host) ?? [], (t, id) => this.registry.has(t as AssetType, id), true, this.hostArrangement(host));
@@ -2420,6 +2527,18 @@ export class AxfRuntime {
     a.register('widgets.arrange', ([host]) => { const h = host || 'banner'; this.setArranging(this.arranging(h) ? null : h); }, { label: 'Arrange widgets (drag to move)', requires: 'assets.swap', params: true });
     a.register('widgets.arrange.done', () => this.setArranging(null), { label: 'Done arranging widgets', searchable: false });
     a.register('widgets.reset', ([host]) => this.resetHostArrangement(host || 'banner'), { label: 'Put widgets back where they were', requires: 'assets.swap', params: true });
+    // Banner widgets: the picker, and what voice and the API say (`banner.widget:<clock|ticker|…>:hide|show|<size>`).
+    a.register('banner.widgets', (args) => this.openDialog(BANNER_WIDGETS_DIALOG, args.length ? { key: args.join(':') } : {}), { label: 'Banner widgets…', requires: 'assets.swap' });
+    a.register('banner.widgets.reset', () => this.resetBannerWidgets(), { label: 'Reset the banner widgets', requires: 'assets.swap' });
+    a.register('banner.widget', (args) => {
+      const what = args[args.length - 1] ?? '';
+      const w = this.findBannerWidget(args.slice(0, -1).join(':'));
+      if (!w) { this.toast(`No banner widget "${args.slice(0, -1).join(':')}"`, 'warning', 'Banner widgets'); return; }
+      if (what === 'hide' || what === 'show') this.setBannerWidget(w.key, { hidden: what === 'hide' });
+      else if ((BANNER_WIDGET_SIZES as readonly string[]).includes(what)) this.setBannerWidget(w.key, { size: what as BannerWidgetSize });
+      else if (what === 'reset') this.setBannerWidget(w.key, { hidden: null, size: null, show: null, maxWidth: null, maxUnit: null, priority: null, hideWhenEmpty: null, overflow: null });
+      else this.toast(`"${what}": use hide, show, reset or a size (${BANNER_WIDGET_SIZES.join(', ')})`, 'warning', 'Banner widgets');
+    }, { label: 'Change a banner widget', requires: 'assets.swap', params: true, searchable: false });
     a.register('assets.reset', () => this.reset(), { label: 'Reset to defaults' });
     // design.package:<id> · design.package:next|prev|random steps through the registered packages and applies one
     // (swap:design-package:next would only move the slot, never apply the package's themes).
@@ -2487,7 +2606,16 @@ export class AxfRuntime {
     this.contextExtras.set('*:widgets', (target) => {
       const host = target && hostSpec(target) ? target : null;
       if (!host || !this.canArrange() || !Object.values(this.hostPlaced(host)).some((l) => l.length)) return [];
-      const items: import('./engines/windows').MenuEntry[] = [{ id: `widgets-arrange-${host}`, label: this.arranging(host) ? 'Done arranging widgets' : 'Arrange widgets…', icon: 'move', action: `widgets.arrange:${host}` }];
+      const items: import('./engines/windows').MenuEntry[] = [];
+      if (host === 'banner') {
+        items.push({ id: 'banner-widgets', label: 'Widgets…', icon: 'layers', action: 'banner.widgets' });
+        const hit = this.contextBannerWidget ? this.bannerWidgets().find((w) => w.key === this.contextBannerWidget) : null;
+        if (hit) items.push(
+          { id: 'banner-widget-settings', label: `Widget settings: ${hit.label}`, icon: 'settings', action: `banner.widgets:${hit.key}` },
+          { id: 'banner-widget-hide', label: `Hide ${hit.label}`, icon: 'eye', action: `banner.widget:${hit.key}:hide` },
+        );
+      }
+      items.push({ id: `widgets-arrange-${host}`, label: this.arranging(host) ? 'Done arranging widgets' : 'Arrange widgets…', icon: 'move', action: `widgets.arrange:${host}` });
       if (Object.keys(this.hostArrangement(host)).length) items.push({ id: `widgets-reset-${host}`, label: 'Put widgets back', icon: 'undo', action: `widgets.reset:${host}` });
       return items;
     });

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-04T23:10:23.812Z",
+ "updatedAt": "2026-11-05T19:10:19.008Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3747,7 +3747,7 @@
    "branch": "claude/ui-review-alarm",
    "pr": "#343",
    "createdAt": "2026-11-04T21:04:36.261Z",
-   "updatedAt": "2026-11-04T21:47:15.384Z",
+   "updatedAt": "2026-11-05T11:50:16.057Z",
    "builtAt": "",
    "notes": [
     {
@@ -3757,6 +3757,14 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-04T21:47:15.384Z"
+    },
+    {
+     "text": "From three-layouts-per-screen: the Layout dropdown (addendum 5) must offer only the screen's declared layouts. Use reviewLayoutChoicesFor(screen) from @console/screenLayouts (options with the default marked; disabled with 'no layout variants' for older screens). Not built in three-layouts-per-screen because the dropdown and Apply live in this build and PR #343 changes the same UI Review files. Spec: framework/spec/SCREEN-LAYOUTS.md.",
+     "at": "2026-11-05T11:11:49.338Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-05T11:50:16.057Z"
     }
    ],
    "approvals": [],
@@ -4146,19 +4154,27 @@
    "title": "Three layouts per screen",
    "category": "Framework",
    "detail": "plugin@1 screens: every NEW plugin screen declares 3 layout variants with a default; shared hidden-by-default layout-switcher toolbar (one asset, per-plugin copy via inherit); scaffold (templates, axf new-plugin); CI check with grandfather baseline; UI Review layout choices helper; docs + rule. Existing plugins are not retrofitted.",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/three-layouts-per-screen",
-   "pr": "",
+   "branch": "claude/three-layouts-per-screen-r2",
+   "pr": "#355",
    "createdAt": "2026-11-04T21:31:37.965Z",
-   "updatedAt": "2026-11-04T22:00:46.386Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-05T11:20:22.522Z",
+   "builtAt": "2026-11-05T11:20:22.522Z",
    "notes": [
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-04T22:00:46.386Z"
+    },
+    {
+     "text": "r2 (Brett, Nov 5): resumed on Opus after run 1 died on credits; this account has no Fable, so steps are downgraded to Opus and new formats are marked 'Opus, possible Fable review'. Salvaged run 1's uncommitted work (feature files only). Branch claude/three-layouts-per-screen-r2, agent Reel Rhonda.",
+     "at": "2026-11-05T11:04:26.310Z"
+    },
+    {
+     "text": "Reconciler: PR #355",
+     "at": "2026-11-05T11:20:22.522Z"
     }
    ],
    "approvals": [],
@@ -4194,7 +4210,7 @@
     {
      "id": "s1",
      "text": "Contract: plugin@1 screens (3 layouts, default), engine screen-layouts.mjs, validators (plugins.mjs, console server, JSON Schema), fixture",
-     "model": "Fable",
+     "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
@@ -4204,15 +4220,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T11:08:37.077Z",
      "note": "",
      "uid": "st-mw2mtciz06rrtc"
     },
     {
      "id": "s2",
      "text": "Runtime + shared toolbar asset layout-switcher (provider, actions, context items, per-screen per-device choice, copy / shared), React hook + LayoutToolbar, Toolbars settings panel",
-     "model": "Fable",
+     "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
@@ -4222,15 +4238,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T11:08:37.686Z",
      "note": "",
      "uid": "st-mw2mtciz07gl3a"
     },
     {
      "id": "s3",
      "text": "Scaffold: _template plugins, library templates, axf new-plugin",
-     "model": "Fable",
+     "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
@@ -4240,15 +4256,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T11:08:38.332Z",
      "note": "",
      "uid": "st-mw2mtciz085m9f"
     },
     {
      "id": "s4",
      "text": "CI: check-screen-layouts.mjs with grandfather baseline, plugins.mjs --check, workflow",
-     "model": "Fable",
+     "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
@@ -4258,15 +4274,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T11:08:38.912Z",
      "note": "",
      "uid": "st-mw2mtciz0955y5"
     },
     {
      "id": "s5",
      "text": "UI Review layout choices helper + CLI, docs (SCREEN-LAYOUTS.md, README, PORTING, rules, brief template), tests, report, PR",
-     "model": "Fable",
+     "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
@@ -4276,8 +4292,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T11:19:54.538Z",
      "note": "",
      "uid": "st-mw2mtciz0acmmj"
     }
