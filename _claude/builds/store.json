@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1041,
- "updatedAt": "2026-11-05T04:54:09.960Z",
+ "rev": 1042,
+ "updatedAt": "2026-11-05T05:10:24.905Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -86155,11 +86155,16 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/priority-tags",
-   "pr": "",
+   "pr": "#354",
    "createdAt": "2026-11-05T04:53:51.522Z",
-   "updatedAt": "2026-11-05T04:53:52.464Z",
+   "updatedAt": "2026-11-05T05:10:23.939Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #354",
+     "at": "2026-11-05T05:10:23.939Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -86316,7 +86321,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

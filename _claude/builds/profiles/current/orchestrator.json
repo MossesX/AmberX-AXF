@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-05T04:54:09.960Z",
+ "updatedAt": "2026-11-05T05:10:24.905Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -13329,11 +13329,16 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/priority-tags",
-   "pr": "",
+   "pr": "#354",
    "createdAt": "2026-11-05T04:53:51.522Z",
-   "updatedAt": "2026-11-05T04:53:52.464Z",
+   "updatedAt": "2026-11-05T05:10:23.939Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #354",
+     "at": "2026-11-05T05:10:23.939Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
