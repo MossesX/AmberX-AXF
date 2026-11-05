@@ -50,6 +50,11 @@
 # finds it), the log's first line is `# agent <id> · <name>`, and the run's usage, cost and report are booked on the
 # agent's card when the sweep closes it. A run the job router launched itself (AXF_AGENT_BOOKED) is not booked twice.
 # Without the agent swarm plugin the run starts unbooked with a warning. AXF_AGENT_BOOK=off skips it (tests).
+# Helper subscriptions (Brett, Nov 4 2026: "The helper account needs to use its own subscription"): a build a helper holds
+# (session-link@1) runs on that helper's own Claude login or not at all. `session-sync launch-gate` opens its sealed token for
+# this one run: it reaches the private env file below, stays unexported, and only the `claude` command gets it, with its own
+# CLAUDE_CONFIG_DIR and no API key. No login, an expired one or a limit = exit 3, the job waits with a badge and a chat line.
+# There is no path from a helper's job to the main account: the account switch below is skipped and only Take back moves it.
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export PATH="$HOME/.local/bin:$PATH"   # vps.run / cron shells don't load the profile; Claude Code installs here
@@ -118,6 +123,15 @@ if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$GA
   fi
 fi
 
+# A helper's job runs on the helper's login or waits (see the header). Only a missing plugin passes unchecked.
+SYNC_CLI="$HERE/../apps/console-web/plugins/session-sync/sync.mjs"  # axf-plugin:session-sync
+helper_gate() { node "$SYNC_CLI" launch-gate --build "${AXF_BUILD_ID:-$name}" "$@"; }  # axf-plugin:session-sync
+helper_on() { [[ "${AXF_SESSION_SYNC_ON:-1}" != 0 ]] && command -v node >/dev/null && [[ -f "$SYNC_CLI" ]]; }  # axf-plugin:session-sync
+if [[ -z "$inner" && -z "$queued" ]] && helper_on; then  # axf-plugin:session-sync
+  verdict="$(helper_gate 2>&1)"; gate_st=$?  # axf-plugin:session-sync
+  if (( gate_st != 0 )); then echo "claude-headless: not started: ${verdict:-the session link could not be read}" >&2; echo "${verdict:-waiting: the session link could not be read}"; exit 3; fi  # axf-plugin:session-sync
+fi  # axf-plugin:session-sync
+
 # What Brett said (build-origin@1, Nov 3 2026): the brief's "## Brett said (verbatim)" block (and any "## Addendum N"
 # blocks) go onto the build's record in the builds store as origin.said / addenda, with the brief and who launched it,
 # so every view of the build shows his exact words. Once, before the slot (like the gate). Never stops the run.
@@ -179,17 +193,28 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   # AI keys switches to the next saved account that still answers and writes it to the VPS (the AI keys plugin),
   # then the run starts again on it. At most AXF_ACCOUNT_SWITCHES times (default 3; 0 turns it off).
   switches=0 max_switches="${AXF_ACCOUNT_SWITCHES:-3}"
+  # A helper's run never switches: its login is the only one it may use.  # axf-plugin:session-sync
+  claude_run() {  # axf-plugin:session-sync
+    if [[ -n "${AXF_HELPER_ACCOUNT:-}" ]]; then  # axf-plugin:session-sync
+      ( unset ANTHROPIC_API_KEY ANTHROPIC_AUTH_TOKEN; CLAUDE_CONFIG_DIR="$AXF_HELPER_DIR" CLAUDE_CODE_OAUTH_TOKEN="$AXF_HELPER_TOKEN" exec claude "$@" )  # axf-plugin:session-sync
+    else claude "$@"; fi  # axf-plugin:session-sync
+  }  # axf-plugin:session-sync
   while :; do
     if command -v node >/dev/null; then
       ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"; meter=()
       hdir_ready && meter=(--meter "$HDIR/$ses.meter.json" --chain "$HDIR/$ses.chain.json" --session "$ses" --name "$name" --agent "$agent" --model "$model")
-      claude -p "$@" --output-format stream-json --verbose "$prompt" 2>&1 | tee "$raw" | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; node "$HERE/claude-stream.mjs" "${meter[@]}"; } | tee "$log"
+      claude_run -p "$@" --output-format stream-json --verbose "$prompt" 2>&1 | tee "$raw" | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; node "$HERE/claude-stream.mjs" "${meter[@]}"; } | tee "$log"
     else
-      claude -p "$@" "$prompt" 2>&1 | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; cat; } | tee "$log"
+      claude_run -p "$@" "$prompt" 2>&1 | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; cat; } | tee "$log"
     fi
     st=${PIPESTATUS[0]}
+    limit_hit=""; tail -n 40 "$log" 2>/dev/null | grep -qiE "hit your (weekly |daily |session |5-hour )?limit|usage limit reached|out of credits|credit balance is too low" && limit_hit=1
+    if [[ -n "${AXF_HELPER_ACCOUNT:-}" ]]; then  # axf-plugin:session-sync
+      [[ -n "$limit_hit" ]] && node "$SYNC_CLI" token-limited --account "$AXF_HELPER_ACCOUNT" >/dev/null 2>&1  # axf-plugin:session-sync
+      break  # axf-plugin:session-sync
+    fi  # axf-plugin:session-sync
     (( switches < max_switches )) || break
-    tail -n 40 "$log" 2>/dev/null | grep -qiE "hit your (weekly |daily |session |5-hour )?limit|usage limit reached|out of credits|credit balance is too low" || break
+    [[ -n "$limit_hit" ]] || break
     sw_js="$HERE/../apps/console-web/plugins/ai-keys/switch.mjs"  # axf-plugin:ai-keys
     command -v node >/dev/null && [[ -f "$sw_js" ]] || break
     printf '\n\033[1m── this Claude account hit its limit: switching accounts ──\033[0m\n'
@@ -259,6 +284,7 @@ elif slots_on; then
   slot="$slot_id"
 fi
 if ! command -v tmux >/dev/null; then
+  if helper_on && [[ "$(helper_gate 2>/dev/null)" != main ]]; then echo "claude-headless: a helper's job needs tmux to keep its login private; not started" >&2; [[ -n "$slot" ]] && slots_on && node "$SLOTS" release "$slot" --exit 3 >/dev/null 2>&1; exit 3; fi  # axf-plugin:session-sync
   nohup claude -p "$@" "$(cat "$brief")" > "$log" 2>&1 &
   [[ -n "$slot" ]] && slots_on && node "$SLOTS" bind "$slot" --pid "$!" >/dev/null 2>&1
   echo "started pid $! in $(pwd) (tmux missing: the console can't show it)"
@@ -278,6 +304,10 @@ secret="$(umask 077; mktemp "${TMPDIR:-/tmp}/axf-headless-env-XXXXXX")"
   if [[ -z "$tok" && -r /opt/axf/.axf-console/env ]]; then tok="$(sed -n 's/^AXHUB_TOKEN=//p' /opt/axf/.axf-console/env | head -1 | tr -d '"'"'"'\r')"; fi
   [[ -n "$tok" ]] && printf 'export AXHUB_TOKEN=%q\n' "$tok"
 } > "$secret"
+if helper_on; then  # axf-plugin:session-sync
+  verdict="$(helper_gate --env 2>/dev/null >>"$secret"; echo $?)"  # axf-plugin:session-sync
+  if [[ "$verdict" != 0 ]]; then rm -f "$secret"; [[ -n "$slot" ]] && slots_on && node "$SLOTS" release "$slot" --exit 3 >/dev/null 2>&1; echo "claude-headless: not started: this helper's login can't be used right now; the job waits" >&2; exit 3; fi  # axf-plugin:session-sync
+fi  # axf-plugin:session-sync
 tmux new-session -d -s "$session" -x 200 -y 50 -c "$(pwd)" "${envs[@]}" \
   bash "$HERE/claude-headless.sh" --inner --name "$slug" --agent "$agent" --envfile "$secret" --brief "$brief" --log "$log" ${slot:+--slot "$slot"} -- "$@"
 tmux set-option -t "$session" history-limit 50000 >/dev/null 2>&1 || true

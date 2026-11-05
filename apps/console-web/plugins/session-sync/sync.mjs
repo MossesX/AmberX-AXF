@@ -30,6 +30,14 @@
  *   … hooks install|remove|status [--settings <file>]   the hook in ~/.claude/settings.json
  *   … events [--after n]                                typed change events (SSE resume)
  *   … op <name> '<json>'                                one op on the link file (the console server's path)
+ *   … pair                                              helper: a one-time link for the page that takes this account's token
+ *   … pair-ingest                                       (console server) stdin {code, token}: verify, seal, answer labels only
+ *   … creds-init                                        on the VPS host: make the sealing key once
+ *   … launch-gate --build b [--step s] [--env]          may this run start? exit 0 main or helper, 4 = it waits (never falls back)
+ *   … token-limited [--account a] [--resets iso]        a helper's login hit its limit: its jobs wait
+ *   … token-revoke <account>                            Brett only: drop the sealed token
+ *   … check-models [--models opus,fable]                real check of this account's models, reported on the link
+ *   … desk-sweep                                        run Brownie's timers once
  *   --json on any command prints JSON.
  *
  * Where the link lives: AXF_SESSION_LINK_FILE, else the console's data folder (AXF_CONSOLE_ROOT, default /opt/axf, when
@@ -39,7 +47,7 @@
  * names another plugin. Identity: AXF_SESSION / AXF_ACCOUNT / AXF_AGENT / AXF_CLIENT, else `.axf-console/session-sync/me.json`
  * in this checkout (made once). No model is ever called.
  */
-import { closeSync, existsSync, mkdirSync, openSync, readFileSync, renameSync, rmSync, statSync, unlinkSync, writeFileSync, appendFileSync } from 'node:fs';
+import { closeSync, existsSync, mkdirSync, openSync, readdirSync, readFileSync, renameSync, rmSync, statSync, unlinkSync, writeFileSync, appendFileSync } from 'node:fs';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { createHash, randomBytes } from 'node:crypto';
 import { hostname, homedir, userInfo } from 'node:os';
@@ -50,6 +58,7 @@ import { PROJECT_NAME, REPO_ROOT, activeProfile } from '../../../../framework/cl
 import * as bstore from '../../../../framework/cli/builds-store.mjs';
 import * as bcore from '../../../../framework/plan/builds-store-core.mjs';
 import { publishFiles } from '../../../../framework/cli/builds-live.mjs';
+import { accountId, accountsDir, credsApi, scrub, TOKEN_LIFE_MS, TOKEN_RE, verifyToken, probeModel } from './creds.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const FOLDER = 'session-sync';
@@ -88,6 +97,7 @@ function lock(f, staleMs = 30000) {
     }
   }
 }
+export const creds = credsApi(dataDir);
 export const readLink = () => H.normLink({ ...readJson(linkFile(), {}), project: readJson(linkFile(), {}).project || projectName() });
 const audit = (line) => { try { mkdirSync(dataDir(), { recursive: true, mode: 0o700 }); appendFileSync(auditFile(), `${JSON.stringify({ at: nowIso(), ...line })}\n`, { mode: 0o600 }); } catch { /* audit is best effort */ } };
 
@@ -122,6 +132,12 @@ export function me({ create = true } = {}) {
   const out = { session: id, account, agent: env('AXF_AGENT') || saved.agent || '', client: env('AXF_CLIENT') || (env('AXF_SURFACE') === 'headless' ? 'headless' : saved.client || 'code'), machine: hostname(), branch: gitOut(['rev-parse', '--abbrev-ref', 'HEAD']) };
   if (create && (saved.session !== out.session || saved.account !== out.account || saved.agent !== out.agent)) { try { writeJsonAtomic(meFile(), { session: out.session, account: out.account, agent: out.agent, client: out.client, since: saved.since || nowIso() }); } catch { /* read-only checkout */ } }
   return out;
+}
+/** The crew, for the desk: the server passes it; a bare CLI reads any plugin's agents/roster.json (never by folder name). */
+export function crewNow() {
+  try { const c = JSON.parse(env('AXF_SESSION_SYNC_CREW') || 'null'); if (Array.isArray(c)) return c; } catch { /* fall through */ }
+  const root = join(REPO_ROOT, 'apps/console-web/plugins');
+  try { return readdirSync(root).flatMap((d) => readJson(join(root, d, 'agents/roster.json'), { agents: [] }).agents ?? []).map((a) => ({ id: a.id, name: a.name, models: a.models })); } catch { return []; }
 }
 const brettClick = () => !!env('AXF_APPROVER') && env('AXF_APPROVER_VIA') === 'console' && !env('CLAUDECODE') && !env('AXF_SESSION_SYNC_CALLER');
 
@@ -225,9 +241,13 @@ export const OPS = {
     mustSession(link, ctx);
     const id = str(args?.id, 60); const key = link.assignments[id] ? 'assignment' : 'offer';
     const r = H.respond(link, { session: ctx.session, [key]: id, response: args?.response, reason: args?.reason, backAt: args?.backAt }, now);
-    return { ok: true, assignment: r.assignment, offer: r.offer, reaction: r.reaction };
+    let bounce = null;
+    if (args?.response === 'accept' && r.assignment) { const b = allBuildsNow().find((x) => x.id === (r.assignment.parent || r.assignment.build)); if (b) bounce = H.bounceGaps(link, r.assignment, b, crewNow(), now, namesOf(link)); }
+    return { ok: true, assignment: r.assignment, offer: r.offer, reaction: r.reaction, bounce };
   }),
-  step: gated('step', (link, args, ctx, now) => { mustSession(link, ctx); const r = H.stepState(link, { session: ctx.session, assignment: args?.assignment, step: args?.step, state: args?.state, reason: args?.reason }, now); return { ok: true, ...r }; }),
+  step: gated('step', (link, args, ctx, now) => { mustSession(link, ctx); const r = H.stepState(link, { session: ctx.session, assignment: args?.assignment, step: args?.step, state: args?.state, reason: args?.reason }, now);
+    if (r.assignment.status === 'done') { const a = r.assignment; const sg = H.settingsOf(link); H.pushEvent(link, 'desk', { kind: 'landed', from: sg.deskAgent, build: a.parent || a.build, assignment: a.id, line: H.deskLine('landed', { ref: a.parent || a.build, helper: namesOf(link)[a.agent] || a.agent || a.session }, sg.sass, link.seq) }, now, { id: a.id }); }
+    return { ok: true, ...r }; }),
   'take-back': gated('take-back', (link, args, _ctx, now) => H.takeBack(link, args ?? {}, now)),
   undo: gated('take-back', (link, args, _ctx, now) => H.undoHandover(link, Number(args?.seq) || 0, now)),
   replan: gated('replan', (link, args, _ctx, now) => {
@@ -250,6 +270,34 @@ export const OPS = {
     return { ok: true, settings: H.settingsOf(link) };
   },
   'make-primary': gated('make-primary', (link, args, _ctx, now) => { const s = link.sessions[str(args?.session, 120)]; if (!s) throw new Error('unknown session'); link.primary = { session: s.id, account: s.account, agent: s.agent, since: now }; for (const x of Object.values(link.sessions)) x.role = H.roleOf(link, x.id) === 'primary' ? 'primary' : 'secondary'; H.pushEvent(link, 'link', { action: 'make-primary', session: s.id, account: s.account }, now, { session: s.id }); return { ok: true, primary: link.primary }; }),
+  // a session's own account: which models it can run, and that it hit a limit. It can only say this about itself.
+  'account-report': gated('account-report', (link, args, ctx, now) => {
+    const x = H.ensureAccount(link, ctx.account);
+    if (args?.models && typeof args.models === 'object') { x.models = H.normAccount({ models: { can: { ...x.models.can, ...args.models }, checkedAt: now } }).models; }
+    if (args?.limited) { x.credential.state = 'limited'; x.credential.resetsAt = str(args.limited.resetsAt, 40); }
+    if (Number.isFinite(args?.usagePct)) x.credential.usagePct = args.usagePct;
+    H.pushEvent(link, 'session', { action: 'account', account: ctx.account, models: x.models.can }, now, { id: ctx.account, session: ctx.session });
+    return { ok: true, account: x };
+  }),
+  // the console server, after a verified pairing (labels only: the token is sealed and gone)
+  'account-credential': gated('revoke', (link, args, _ctx, now) => {
+    const x = H.ensureAccount(link, str(args?.account, 120)); const c = args?.credential ?? {};
+    link.accounts[x.id] = H.normAccount({ ...x, credential: { ...x.credential, ...c, checkedAt: now }, models: args?.models ? { can: args.models, checkedAt: now } : x.models });
+    H.pushEvent(link, 'session', { action: 'credential', account: x.id, credentialState: link.accounts[x.id].credential.state, email: link.accounts[x.id].credential.email }, now, { id: x.id });
+    return { ok: true, account: link.accounts[x.id] };
+  }),
+  'pair-start': gated('pair-start', (link, _a, ctx) => pairStart(link, ctx)),
+  'accounts-read': gated('accounts-read', (link, _a, ctx, now) => {
+    const rows = Object.values(link.accounts).filter((x) => ctx.role !== 'secondary' || x.id === ctx.account).map((x) => ({ ...x, id: x.id, label: `Helper ${x.helperNo || '?'}`, problem: H.credentialProblem(x, now), expiringSoon: H.expiresSoon(x, now), hasToken: (() => { try { return creds.hasToken(accountId(x.id)); } catch { return false; } })(), sessions: Object.values(link.sessions).filter((s) => s.account === x.id && !s.endedAt).map((s) => ({ id: s.id, agent: s.agent })), writeups: link.writeups.filter((w) => w.account === x.id).slice(-5) }));
+    return { ok: true, accounts: rows, canSeal: creds.canSeal(), desk: H.HELPER_DESK };
+  }),
+  'desk-sweep': gated('desk-sweep', (link, _a, _c, now) => ({ ok: true, fired: H.deskSweep(link, allBuildsNow(), crewNow(), now, namesOf(link)) })),
+  'desk-wait': gated('account-report', (link, args, _c, now) => {
+    const build = str(args?.build, 120); const why = str(args?.why, 200); const sg = H.settingsOf(link);
+    if (link.events.slice(-50).some((e) => e.type === 'desk' && e.data.kind === 'waiting' && e.data.build === build && e.data.why === why)) return { ok: true, posted: false };
+    H.pushEvent(link, 'desk', { kind: 'waiting', from: sg.deskAgent, build, why, line: H.deskLine('waiting', { ref: build, why }, sg.sass, link.seq) }, now, { id: build });
+    return { ok: true, posted: true };
+  }),
   sync: gated('sync', (link, args, ctx, now) => writeSyncFile(link, ctx, now, args ?? {})),
 };
 
@@ -326,9 +374,69 @@ export function runOp(name, args = {}, who = null) {
   try {
     const { result, events } = withLink((link, now) => op(link, args, ctxOf(link, w), now), { by: w.session || w.account || 'cli', action: name });
     const r = result ?? { ok: true };
-    if (events.some((e) => ['handover', 'assignment', 'offer', 'session'].includes(e.type)) && !env('AXF_SESSION_SYNC_NO_STORE')) r.store = syncStore(readLink());
+    if (events.some((e) => ['handover', 'assignment', 'offer', 'session', 'desk'].includes(e.type)) && !env('AXF_SESSION_SYNC_NO_STORE')) r.store = syncStore(readLink());
     return { ...r, events };
   } catch (e) { return { ok: false, code: 'error', message: e.message }; }
+}
+
+/* ------------------------------------------------------------------ helper logins (spec § 14; creds.mjs keeps them sealed) */
+
+function pairStart(link, my) {
+  if (!link.sessions[my.session]) return { ok: false, code: 'no-session', message: 'join first (session-sync join)' };
+  if (H.roleOf(link, my.session) !== 'secondary') return { ok: false, code: 'primary', message: 'the main account needs no pairing: only helpers bring their own login' };
+  if (!creds.canSeal()) return { ok: false, code: 'not-ready', message: 'the VPS has no sealing key yet: run session-sync creds-init on the host' };
+  const { code, expiresAt } = creds.pairStart({ account: my.account, session: my.session, agent: my.agent });
+  return { ok: true, url: `${env('AXF_CONSOLE_URL') || 'https://console.amberxai.com'}/#/session-sync?pair=${code}`, expiresAt };
+}
+export const pairLink = (my) => pairStart(readLink(), my);
+/** The console server pipes `{code, token}` here on stdin (never argv). Verifies before anything is kept; answers labels only. */
+export async function pairIngest(raw) {
+  let body; try { body = JSON.parse(raw); } catch { return { ok: false, message: 'bad request' }; }
+  const token = typeof body?.token === 'string' ? body.token.trim() : '';
+  if (!TOKEN_RE.test(token)) return { ok: false, message: 'that is not a subscription token: run `claude setup-token` and paste what it prints' };
+  if (!creds.pairPeek(body?.code)) return { ok: false, message: 'this pairing link has expired or was already used: run session-sync pair again' };
+  try {
+    const v = await verifyToken(token); if (!v.ok) return { ok: false, message: v.why };
+    const p = creds.pairConsume(body.code); if (!p) return { ok: false, message: 'this pairing link was already used' };
+    const id = accountId(p.account); creds.seal(id, token);
+    const at = nowIso();
+    const credential = { state: v.limited ? 'limited' : 'ok', email: v.email, plan: v.plan, last4: token.slice(-4), addedAt: at, expiresAt: new Date(Date.now() + TOKEN_LIFE_MS).toISOString(), resetsAt: v.limited?.resetsAt ?? '' };
+    return { ok: true, account: p.account, session: p.session, agent: p.agent, credential, models: v.can };
+  } catch (e) { return { ok: false, message: scrub(e.message) }; }
+}
+export function revokeToken(account, my) {
+  if (!my.brett && !brettClick()) return { ok: false, code: 'owner', message: 'only Brett can do that: revoke' };
+  creds.drop(accountId(account));
+  return runOp('account-credential', { account, credential: { state: 'revoked', last4: '', expiresAt: '', resetsAt: '' } }, { ...my, brett: true });
+}
+/** The real check of the session's own account: its token when it has one here, else its logged-in Claude Code (one tiny call per model). */
+export async function checkModels(models, my) {
+  const token = env('CLAUDE_CODE_OAUTH_TOKEN'); const can = {};
+  for (const m of models) {
+    if (token) { const p = await probeModel(token, m); if (p.result === 'yes') can[m] = true; if (p.result === 'no') can[m] = false; continue; }
+    const r = spawnSync('claude', ['-p', 'ok', '--model', m, '--max-turns', '1'], { encoding: 'utf8', timeout: 60000, stdio: ['ignore', 'pipe', 'pipe'] });
+    if (r.status === 0) can[m] = true; else if (/model|access|not available|not found|upgrade/i.test(`${r.stdout}${r.stderr}`) && !/limit|credit/i.test(`${r.stdout}${r.stderr}`)) can[m] = false;
+  }
+  const r = runOp('account-report', { models: can }, { ...my, brett: false });
+  return r.ok === false ? r : { ok: true, can };
+}
+/**
+ * The launcher's question. Fails closed: if the owner of a build can't be read, or a helper's token can't be opened, the run waits.
+ * `wantEnv` answers shell lines for the run's private env file; the variables stay unexported until the one `claude` that needs them.
+ */
+export function launchGate({ build, step = '', wantEnv = false, now = nowIso() }) {
+  const link = readLink();
+  const g = H.launchGate(link, build, now, step);
+  if (g.ok && g.owner === 'main') return g;
+  const wait = (reason) => { try { runOp('desk-wait', { build, why: reason }, { session: 'launcher', account: g.account, brett: false }); } catch { /* the wait still holds */ } return { ok: false, wait: true, owner: 'helper', account: g.account, reason }; };
+  if (!g.ok) return wait(g.reason);
+  const id = accountId(g.account);
+  let token = ''; try { token = creds.unseal(id); } catch (e) { return wait(`Helper ${g.helperNo}: login needed (${scrub(e.message)})`); }
+  if (!TOKEN_RE.test(token)) return wait(`Helper ${g.helperNo}: login needed`);
+  const cfg = join(accountsDir(), id); mkdirSync(cfg, { recursive: true, mode: 0o700 });
+  if (!wantEnv) return g;
+  const q = (v) => `'${String(v).replace(/'/g, `'\\''`)}'`;
+  return { ...g, env: `AXF_HELPER_ACCOUNT=${q(g.account)}\nAXF_HELPER_DIR=${q(cfg)}\nAXF_HELPER_TOKEN=${q(token)}\n` };
 }
 
 /* ------------------------------------------------------------------ checks: commits and consistency */
@@ -475,6 +583,14 @@ export async function main(argv = process.argv.slice(2)) {
   if (cmd === 'hook-config') { console.log(JSON.stringify({ hooks: hookConfig() }, null, 2)); return 0; }
   if (cmd === 'hooks') { const r = rest[0] === 'install' ? installHooks(opt.settings) : rest[0] === 'remove' ? removeHooks(opt.settings) : hooksStatus(opt.settings); return fmt(r); }
   if (cmd === 'events') return fmt(runOp('events', { after: opt.after }, my));
+  if (cmd === 'creds-init') return fmt(creds.initKeys(), 'sealing key ready');
+  if (cmd === 'pair') { const r = pairLink(my); return fmt(r, r.ok ? `Open this once, signed in, and paste the token from \`claude setup-token\` there (never here, never in chat):\n${r.url}\nIt works for 10 minutes.` : r.message); }
+  if (cmd === 'pair-ingest') { let raw = ''; try { raw = readFileSync(0, 'utf8'); } catch { /* no stdin */ } const r = await pairIngest(raw); console.log(JSON.stringify(r)); return r.ok ? 0 : 1; }
+  if (cmd === 'launch-gate') { const r = launchGate({ build: opt.build || rest[0] || '', step: opt.step || '', wantEnv: !!opt.env }); if (r.env) { process.stdout.write(r.env); return 0; } if (r.ok) { console.log(r.owner === 'helper' ? `helper ${r.account}` : 'main'); return 0; } console.log(r.reason); return 4; }
+  if (cmd === 'token-limited') { const account = String(opt.account || my.account); return fmt(runOp('account-report', { limited: { resetsAt: opt.resets || '' } }, { session: my.session, account, brett: false })); }
+  if (cmd === 'token-revoke') return fmt(revokeToken(rest[0] || '', my));
+  if (cmd === 'check-models') { const r = await checkModels(list(opt.models).length ? list(opt.models) : ['opus', 'fable'], my); return fmt(r, r.ok ? Object.entries(r.can).map(([m, ok]) => `${m}: ${ok ? 'yes' : 'no'}`).join(', ') || 'nothing could be checked' : r.message); }
+  if (cmd === 'desk-sweep') return fmt(runOp('desk-sweep', {}, my));
   if (cmd === 'where') return fmt({ ok: true, link: linkFile(), me: meFile(), sync: syncPaths().json, consoleRoot: consoleRoot() });
   return fmt({ ok: false, message: `unknown command ${cmd}` });
 }
