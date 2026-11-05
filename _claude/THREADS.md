@@ -702,10 +702,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 16:24 UTC · `tab-group-assets` branch claude/tab-group-assets, PR #327 (current) · builds-live
-- 2026-11-04 16:25 UTC · `molly-multi-instance-tabs` s1 done (current) · foreign-write
-- 2026-11-04 16:24 UTC · `molly-multi-instance-tabs` s1 done (current) · orchestrator
-- 2026-11-04 16:33 UTC · `molly-multi-instance-tabs` s2 done (current) · orchestrator
 - 2026-11-04 16:33 UTC · `molly-multi-instance-tabs` s3 done (current) · orchestrator
 - 2026-11-04 16:35 UTC · `app-voice-commands` note (current) · foreign-write
 - 2026-11-04 16:35 UTC · `tab-group-assets` s3 done, s4 done, s5 done (current) · foreign-write
@@ -1102,6 +1098,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-05 11:04 UTC · `three-layouts-per-screen` note (angel) · orchestrator
 - 2026-11-05 11:04 UTC · `three-layouts-per-screen` branch claude/three-layouts-per-screen-r2 (angel) · builds-live
 - 2026-11-05 11:08 UTC · `handoff-2-addenda-r2` added (8 steps) (current) · foreign-write
+- 2026-11-05 11:08 UTC · `three-layouts-per-screen` s1 done (angel) · orchestrator
+- 2026-11-05 11:08 UTC · `three-layouts-per-screen` s2 done (angel) · orchestrator
+- 2026-11-05 11:08 UTC · `three-layouts-per-screen` s3 done (angel) · orchestrator
+- 2026-11-05 11:08 UTC · `three-layouts-per-screen` s4 done (angel) · orchestrator
 
 ## Token passes (log)
 
