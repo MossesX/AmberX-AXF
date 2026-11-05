@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-05T22:50:06.543Z",
+ "updatedAt": "2026-11-05T23:10:25.559Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -13952,16 +13952,22 @@
    "title": "AI keys: accept new Anthropic API key formats (sk-ant-usr…)",
    "category": "Console > AI keys",
    "detail": "The console AI keys page rejected real Anthropic API keys starting sk-ant-usr with \"unknown key type\". Classify by a prefix table with an unknown sk-ant- fallback (accepted, verified live); sk-ant-oat stays a subscription login; live check on save OK / invalid / no credit; keys never echoed (last 4 only).",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ai-keys-new-format-r4",
    "pr": "#356",
+   "mergedAt": "2026-11-05T23:09:21Z",
    "createdAt": "2026-11-05T22:41:21.410Z",
-   "updatedAt": "2026-11-05T22:42:24.481Z",
+   "updatedAt": "2026-11-05T23:10:24.525Z",
    "builtAt": "2026-11-05T22:42:24.481Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #356 merged",
+     "at": "2026-11-05T23:10:24.525Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {

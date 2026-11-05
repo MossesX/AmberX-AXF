@@ -703,7 +703,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 16:57 UTC · `plugin-settings-placement` note (current) · foreign-write
 - 2026-11-04 16:57 UTC · `tab-group-assets` note (current) · foreign-write
 - 2026-11-04 16:57 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
 - 2026-11-04 16:57 UTC · `live-sessions-plugin` s1 done, s2 done, s3 done (current) · foreign-write
@@ -1103,6 +1102,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-05 22:49 UTC · `build-own-login` branch claude/build-own-login-r2, PR #357 (current) · builds-live
 - 2026-11-05 22:49 UTC · `build-own-login` s4 done, → built, branch claude/build-own-login-r2, PR #357 (current) · builds-live
 - 2026-11-05 22:49 UTC · `build-own-login` s4 done, → built (current) · orchestrator
+- 2026-11-05 23:10 UTC · `ai-keys-new-format` → complete, merged, note (current) · reconciler
 
 ## Token passes (log)
 
