@@ -762,6 +762,18 @@
    "from": "brief",
    "addenda": []
   },
+  "console-account-picker": {
+   "said": "I need to be able to flip them from the console.",
+   "at": "2026-11-05T23:30:48.450Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "console-android-app-tabs": {
    "said": "the Android console app needs Pilot and axHub tabs like the web console's App tabs plugin. Option A: every tab runs inside the app — Build Pilot (pilot.amberxai.com) and axHub (axhub.amberxai.com, Apps page + approvals) in locked-down in-app web views; nothing ever opens the phone's browser. Fable (the Compose AppShell gains the shared page slots the web shell has). Broken into small builds (sub prompts) so it can be worked on a little at a time; each sub prompt stands alone and leaves the app building.",
    "at": "2026-10-20",
