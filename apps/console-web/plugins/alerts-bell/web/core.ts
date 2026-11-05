@@ -42,5 +42,5 @@ export function placeBell(rt: BannerHost, show: boolean, side: Side): void {
   rt.detachFromBanner(ID);
   if (!show) return;
   rt.attachToBanner({ type: 'action-button', id: ASSET_ID, at: side, order: 30, origin: ID, widget: { label: 'Alerts bell', icon: 'bell', priority: 9, overflow: false, aliases: ['bell', 'alerts'] } });
-  rt.attachToBanner({ type: 'counter', id: ASSET_ID, at: side, order: 31, origin: ID, widget: { label: 'Alerts count', icon: 'bell', priority: 9, hideWhenEmpty: true, aliases: ['alert count'] } });
+  rt.attachToBanner({ type: 'counter', id: ASSET_ID, at: side, order: 31, origin: ID, widget: { label: 'Alerts count', icon: 'bell', priority: 9, aliases: ['alert count'] } });
 }
