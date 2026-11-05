@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1053,
- "updatedAt": "2026-11-05T11:20:13.105Z",
+ "rev": 1054,
+ "updatedAt": "2026-11-05T11:20:23.411Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -84439,8 +84439,8 @@
    "branch": "claude/three-layouts-per-screen-r2",
    "pr": "#355",
    "createdAt": "2026-11-04T21:31:37.965Z",
-   "updatedAt": "2026-11-05T11:19:55.133Z",
-   "builtAt": "2026-11-05T11:19:54.539Z",
+   "updatedAt": "2026-11-05T11:20:22.522Z",
+   "builtAt": "2026-11-05T11:20:22.522Z",
    "notes": [
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
@@ -84449,6 +84449,10 @@
     {
      "text": "r2 (Brett, Nov 5): resumed on Opus after run 1 died on credits; this account has no Fable, so steps are downgraded to Opus and new formats are marked 'Opus, possible Fable review'. Salvaged run 1's uncommitted work (feature files only). Branch claude/three-layouts-per-screen-r2, agent Reel Rhonda.",
      "at": "2026-11-05T11:04:26.310Z"
+    },
+    {
+     "text": "Reconciler: PR #355",
+     "at": "2026-11-05T11:20:22.522Z"
     }
    ],
    "approvals": [],
