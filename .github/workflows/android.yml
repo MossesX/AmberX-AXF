@@ -284,6 +284,7 @@ jobs:
             python framework/python/axf_libs/mcp/test.py              # Python MCP client replays the same fixture
             python framework/python/axf/contracts/test.py             # assistant@1 + agent-definition@1 Python ports replay their fixtures
             python framework/python/axf/assistant_host/test.py        # live-session@1 host, providers, safety (shared assistant host runtime)
+            python framework/python/axf/test_anthropic_keys.py         # Anthropic key prefixes (api03, usr, unknown sk-ant- fallback) + live check (OK / invalid / no credit)
             node framework/spec/check-axf-server.mjs                  # axf_server fixtures: wall signature + plugin-package@1 (= plugin-catalog.mjs)
             node framework/spec/check-github.mjs                      # lib-github (Node): fixtures/github.json + client guards
             node framework/spec/check-github-app.mjs                  # github-app@1 broker against a fake GitHub

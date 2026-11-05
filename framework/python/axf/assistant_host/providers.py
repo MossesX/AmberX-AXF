@@ -44,6 +44,8 @@ import urllib.request
 from pathlib import Path
 from typing import Any, Callable, Iterator
 
+from axf import anthropic_keys as _ak
+
 # ---------------------------------------------------------------- catalog (assistant@1: framework/schemas/ai-providers.json)
 
 # framework/python/axf/assistant_host/providers.py → framework/schemas/ai-providers.json; AXF_PROVIDERS_FILE overrides
@@ -322,7 +324,7 @@ def _stream_anthropic(profile, messages, system, model, tools, params, cancel):
     if not key:
         raise ProviderError("no API key: add one in the profile or set its environment variable", 400)
     if key.startswith("sk-ant-oat"):
-        raise ProviderError("this profile holds a Claude Code subscription token (sk-ant-oat…), which the Anthropic API rejects. Move it to the “Claude Code (subscription)” provider and give this one an API key (sk-ant-api…) from console.anthropic.com", 400)
+        raise ProviderError("this profile holds a Claude Code subscription token (sk-ant-oat…), which the Anthropic API rejects. Move it to the “Claude Code (subscription)” provider and give this one an API key (sk-ant-…) from console.anthropic.com", 400)
     body: dict[str, Any] = {"model": model, "max_tokens": int(params.get("max_tokens") or 8192), "messages": _to_anthropic(messages), "stream": True}
     if system:
         body["system"] = [{"type": "text", "text": system, "cache_control": {"type": "ephemeral"}}]
@@ -581,8 +583,8 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=Non
     token = resolve_key(profile)
     if not token:
         raise ProviderError("no Claude Code token: run `claude setup-token` and paste it, or set CLAUDE_CODE_OAUTH_TOKEN", 400)
-    if token.startswith("sk-ant-api"):
-        raise ProviderError("this profile holds an Anthropic API key (sk-ant-api…). The subscription provider needs a Claude Code token: run `claude setup-token` on the VPS and paste the sk-ant-oat01-… token it prints. Put the API key in the “Anthropic (Claude)” provider instead", 400)
+    if _ak.is_api_key(token):
+        raise ProviderError("this profile holds an Anthropic API key (sk-ant-api03… / sk-ant-usr…). The subscription provider needs a Claude Code token: run `claude setup-token` on the VPS and paste the sk-ant-oat01-… token it prints. Put the API key in the “Anthropic (Claude)” provider instead", 400)
     if not cli_available():
         raise ProviderError(f"the `claude` CLI is not installed on {HOST_LABEL}", 400)
     # The CLI keeps no session for us here: earlier turns go in as a transcript, on stdin (no argv size limit).

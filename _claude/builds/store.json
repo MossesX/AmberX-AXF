@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1073,
- "updatedAt": "2026-11-05T22:50:06.543Z",
+ "rev": 1074,
+ "updatedAt": "2026-11-05T23:10:25.559Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -87096,16 +87096,22 @@
    "title": "AI keys: accept new Anthropic API key formats (sk-ant-usr…)",
    "category": "Console > AI keys",
    "detail": "The console AI keys page rejected real Anthropic API keys starting sk-ant-usr with \"unknown key type\". Classify by a prefix table with an unknown sk-ant- fallback (accepted, verified live); sk-ant-oat stays a subscription login; live check on save OK / invalid / no credit; keys never echoed (last 4 only).",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ai-keys-new-format-r4",
    "pr": "#356",
+   "mergedAt": "2026-11-05T23:09:21Z",
    "createdAt": "2026-11-05T22:41:21.410Z",
-   "updatedAt": "2026-11-05T22:42:24.481Z",
+   "updatedAt": "2026-11-05T23:10:24.525Z",
    "builtAt": "2026-11-05T22:42:24.481Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #356 merged",
+     "at": "2026-11-05T23:10:24.525Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -87196,7 +87202,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
