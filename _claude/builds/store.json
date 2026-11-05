@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1046,
- "updatedAt": "2026-11-05T11:07:46.220Z",
+ "rev": 1047,
+ "updatedAt": "2026-11-05T11:08:37.629Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -84428,19 +84428,23 @@
    "title": "Three layouts per screen",
    "category": "Framework",
    "detail": "plugin@1 screens: every NEW plugin screen declares 3 layout variants with a default; shared hidden-by-default layout-switcher toolbar (one asset, per-plugin copy via inherit); scaffold (templates, axf new-plugin); CI check with grandfather baseline; UI Review layout choices helper; docs + rule. Existing plugins are not retrofitted.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/three-layouts-per-screen",
+   "branch": "claude/three-layouts-per-screen-r2",
    "pr": "",
    "createdAt": "2026-11-04T21:31:37.965Z",
-   "updatedAt": "2026-11-04T22:00:46.386Z",
+   "updatedAt": "2026-11-05T11:04:26.807Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-04T22:00:46.386Z"
+    },
+    {
+     "text": "r2 (Brett, Nov 5): resumed on Opus after run 1 died on credits; this account has no Fable, so steps are downgraded to Opus and new formats are marked 'Opus, possible Fable review'. Salvaged run 1's uncommitted work (feature files only). Branch claude/three-layouts-per-screen-r2, agent Reel Rhonda.",
+     "at": "2026-11-05T11:04:26.310Z"
     }
    ],
    "approvals": [],
@@ -84478,7 +84482,7 @@
      "uid": "st-mw2mtciz06rrtc",
      "title": "",
      "text": "Contract: plugin@1 screens (3 layouts, default), engine screen-layouts.mjs, validators (plugins.mjs, console server, JSON Schema), fixture",
-     "model": "Fable",
+     "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
@@ -84491,16 +84495,16 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T21:31:37.967Z",
-     "updatedAt": "2026-11-04T21:31:37.967Z"
+     "updatedAt": "2026-11-05T11:04:20.322Z"
     },
     {
      "id": "s2",
      "uid": "st-mw2mtciz07gl3a",
      "title": "",
      "text": "Runtime + shared toolbar asset layout-switcher (provider, actions, context items, per-screen per-device choice, copy / shared), React hook + LayoutToolbar, Toolbars settings panel",
-     "model": "Fable",
+     "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
@@ -84513,16 +84517,16 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T21:31:37.967Z",
-     "updatedAt": "2026-11-04T21:31:37.967Z"
+     "updatedAt": "2026-11-05T11:04:21.564Z"
     },
     {
      "id": "s3",
      "uid": "st-mw2mtciz085m9f",
      "title": "",
      "text": "Scaffold: _template plugins, library templates, axf new-plugin",
-     "model": "Fable",
+     "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
@@ -84535,16 +84539,16 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T21:31:37.967Z",
-     "updatedAt": "2026-11-04T21:31:37.967Z"
+     "updatedAt": "2026-11-05T11:04:22.918Z"
     },
     {
      "id": "s4",
      "uid": "st-mw2mtciz0955y5",
      "title": "",
      "text": "CI: check-screen-layouts.mjs with grandfather baseline, plugins.mjs --check, workflow",
-     "model": "Fable",
+     "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
@@ -84557,16 +84561,16 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T21:31:37.967Z",
-     "updatedAt": "2026-11-04T21:31:37.967Z"
+     "updatedAt": "2026-11-05T11:04:24.043Z"
     },
     {
      "id": "s5",
      "uid": "st-mw2mtciz0acmmj",
      "title": "",
      "text": "UI Review layout choices helper + CLI, docs (SCREEN-LAYOUTS.md, README, PORTING, rules, brief template), tests, report, PR",
-     "model": "Fable",
+     "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
@@ -84579,9 +84583,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T21:31:37.967Z",
-     "updatedAt": "2026-11-04T21:31:37.967Z"
+     "updatedAt": "2026-11-05T11:04:24.953Z"
     }
    ],
    "profiles": [
@@ -84592,7 +84596,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
