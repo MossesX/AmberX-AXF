@@ -109,6 +109,8 @@ export function validateAsset(raw) {
   if (raw.type === 'context-menu' && isObj(raw.data.targets)) {
     for (const [t, items] of Object.entries(raw.data.targets)) errors.push(...validateMenuItems(items, `data.targets.${t}`));
   }
+  // skin@1 — mirrors skinErrors in core/engines/skin.ts (check-skin.mts keeps them equal)
+  if (raw.type === 'skin') errors.push(...skinErrors(raw.data));
   // design-package@1 — mirrors designPackageErrors in core/engines/designpackage.ts (theme ids + extras slot rules)
   if (raw.type === 'design-package') {
     const ID = /^[a-z0-9][a-z0-9-]*$/;
@@ -185,6 +187,33 @@ export function validateAsset(raw) {
     errors.push('data.defaultRole must reference a role id');
   }
   return { ok: errors.length === 0, errors };
+}
+
+/* skin@1 — mirrors core/engines/skin.ts (check-skin.mts keeps the messages equal). */
+const SKIN_THEMES = { layoutTheme: 'layout', colorTheme: 'color-theme', styleTheme: 'style-theme' };
+const SKIN_NEVER = ['uac-policy', 'help', 'skin', 'design-package', 'interface'];
+export function skinErrors(d) {
+  const isO = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
+  const ID = /^[a-z0-9][a-z0-9-]*$/;
+  if (!isO(d)) return ['data must be an object'];
+  const errors = [];
+  for (const [k, t] of Object.entries(SKIN_THEMES)) if (typeof d[k] !== 'string' || !ID.test(d[k])) errors.push(`data.${k} must be a ${t} asset id`);
+  if (!isO(d.assets)) errors.push('data.assets must be an object (slot → asset id)');
+  else for (const [t, id] of Object.entries(d.assets)) {
+    if (SKIN_NEVER.includes(t) || Object.values(SKIN_THEMES).includes(t)) errors.push(`data.assets.${t}: a skin never sets ${t} here`);
+    else if (typeof id !== 'string' || !ID.test(id)) errors.push(`data.assets.${t} must be an asset id`);
+  }
+  if ('preview' in d && !isO(d.preview)) errors.push('data.preview must be an object');
+  if ('extras' in d) {
+    const x = d.extras;
+    if (!isO(x)) errors.push('data.extras must be an object');
+    else {
+      if ('spacing' in x && !['tight', 'compact', 'regular'].includes(x.spacing)) errors.push('data.extras.spacing must be tight, compact or regular');
+      if ('hidden' in x && (!isO(x.hidden) || Object.values(x.hidden).some((v) => typeof v !== 'boolean'))) errors.push('data.extras.hidden must map asset types to true / false');
+      if ('settings' in x && !isO(x.settings)) errors.push('data.extras.settings must be an object');
+    }
+  }
+  return errors;
 }
 
 /* behavior-theme@1 + design-package@1 — mirrors core/engines/behavior.ts and designpackage.ts (kept equal by check-design-package.mts). */

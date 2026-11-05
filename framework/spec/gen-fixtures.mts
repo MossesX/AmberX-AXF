@@ -6,6 +6,7 @@
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
+import { backToSkin, composeLook, lookAfterChange, newAppLook, normalizeSkin, pickSkin, restoreAppDefault, setUseSkin, skinErrors, skinFromDesignPackage, skinSlots, snapshotLook, undoRestore } from '../core/engines/skin';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
 import { AGENT_CARD_SAMPLE, agentCardErrors, avatarColors, avatarModel, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
 import { AVATAR_FACES, AVATAR_GEAR } from '../core/engines/swarm-rules.mjs';
@@ -1957,5 +1958,34 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     frames: ['standard', 'frameless'], frameDefault: 'standard',
     rect: r, hits, resizes, maximize,
     snap: { rules: DEFAULT_SNAP_RULES, zonesList: SNAP_ZONES, viewport: vp, work, others, moving, snaps, zones, zoneRects, overlap, split: { target, cases: splits, odd: oddSplit }, topmost: { stack, probes: topmost }, arm: { steps: armSteps, zeroDwell: armZero } },
+  });
+}
+
+/* ---- skin@1 + app-look@1 ---- */
+{
+  const skin = { layoutTheme: 'windows-explorer', colorTheme: 'windows-light', styleTheme: 'windows', assets: { button: 'windows', banner: 'windows-titlebar' }, preview: { caption: 'Windows' }, extras: { spacing: 'compact', hidden: { toolbar: false } } };
+  const shared = { $axf: 'appearance@1', slots: { layout: 'focus-top', 'color-theme': 'arctic-daylight', 'style-theme': 'hub', button: 'rounded-solid', 'design-package': 'hub-default' }, spacing: 'tight', hidden: { toolbar: true }, settings: { 'axf.banners.group': 'a', 'axf.tokens.button': 'x' } };
+  const look0 = newAppLook('app', snapshotLook(shared as never));
+  const on = setUseSkin(pickSkin(look0, 'windows'), true);
+  const overridden = lookAfterChange(on, { slots: { 'color-theme': 'aurora-night' } }, skin as never);
+  const own = lookAfterChange(look0, { slots: { button: 'terminal' }, hidden: { toolbar: false } }, null);
+  const restored = restoreAppDefault(overridden, '2026-11-05T00:00:00Z');
+  const movedShared = { ...shared, slots: { ...shared.slots, 'color-theme': 'other-theme' }, settings: { 'axf.tokens.button': 'y', 'axf.banners.group': 'other' } };
+  write('skin.json', {
+    contract: 'skin@1',
+    normalize: { good: normalizeSkin(skin), junk: normalizeSkin({ layoutTheme: 'BAD', assets: { 'uac-policy': 'x', button: 'ok', layout: 'nope' }, extras: { spacing: 'huge' } }) },
+    errors: { good: skinErrors(skin), noThemes: skinErrors({ assets: {} }), never: skinErrors({ ...skin, assets: { 'uac-policy': 'x', layout: 'y' } }), badExtras: skinErrors({ ...skin, extras: { spacing: 'huge', hidden: { a: 1 } } }) },
+    slots: skinSlots(normalizeSkin(skin)),
+    fromDesignPackage: skinFromDesignPackage({ 'style-theme': 's', 'color-theme': 'c', layout: 'l', 'behavior-theme': 'b', extras: { slots: { button: 'x' }, spacing: 'tight', hidden: { toolbar: true } } }),
+    look: {
+      shared, snapshot: look0.default,
+      off: composeLook(shared as never, look0, null),
+      offSharedMoved: composeLook(movedShared as never, look0, null),
+      on: composeLook(shared as never, on, skin as never),
+      unknownSkin: composeLook(shared as never, on, null),
+      overridden: { doc: overridden, composed: composeLook(shared as never, overridden, skin as never), backToSkin: composeLook(shared as never, backToSkin(overridden, 'color-theme'), skin as never) },
+      own: { doc: own, composed: composeLook(shared as never, own, null) },
+      restored: { doc: restored, composed: composeLook(shared as never, restored, null), undone: undoRestore(restored).skin, undoneTwice: undoRestore(undoRestore(restored)).skin },
+    },
   });
 }

@@ -285,6 +285,9 @@
   "exists": [
     "action-button:help",
     "action-button:settings",
+    "action-button:win-close",
+    "action-button:win-maximize",
+    "action-button:win-minimize",
     "avatar:account",
     "avatar:agent-avatar",
     "badge:new",

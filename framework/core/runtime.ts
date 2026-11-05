@@ -8,7 +8,7 @@ import { SettingsRegistry, type SettingValue } from './settings';
 import { AssetRegistry, serializeAsset, type RegisteredAsset } from './registry';
 import { announceWatchLiveRuntime } from './watch-live';
 import { ActionBus, FRAMEWORK_MODULE, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
-import { colorThemeVars, styleThemeVars, type VarMap } from './engines/theme';
+import { colorThemeVars, scrollbarVars, styleThemeVars, type VarMap } from './engines/theme';
 import { scaleThemeVars } from './engines/scale';
 import { LAYOUT_VIEWPORTS, layoutViewports, layoutVars } from './engines/layout';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
@@ -31,6 +31,7 @@ import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded,
 import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
+import { backToSkin, composeLook, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, restoreAppDefault, setUseSkin, skinEntries, skinFromDesignPackage, snapshotLook, undoRestore, SKIN_TYPE, type AppLookDocument, type AppLookStore, type SkinData, type SkinEntry } from './engines/skin';
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
 import { navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
@@ -128,6 +129,10 @@ export const SPACING_KEY = 'axf.appearance.spacing';
  * aside, not deleted. The look from axHub still applies. Not an appearance setting itself, so Restore keeps it.
  */
 export const APPEARANCE_LOCK_KEY = 'axf.lock.appearance';
+/** app-look@1 of an app without a hub source (engines/skin.ts). Not an appearance setting: it holds them. */
+export const APP_LOOK_KEY = 'axf.skin.look';
+/** The app whose colours the shared document's palette follows (axHub's own pages draw with it). */
+const HUB_PALETTE_APP = 'axhub-web';
 export const LOCKED_APPEARANCE_PERMS: readonly string[] = ['assets.swap', 'assets.import'];
 /**
  * Retired (Nov 1 2026, Brett: "The apps should only get appearance from axhub period"): a developer app always reads
@@ -246,6 +251,8 @@ export interface AppearanceSource {
   refresh(): void;
   /** Save a change. `change` is this app's keys only; the source merges into the latest document it holds (last write wins per key). */
   save(change: AppearanceChange): void;
+  /** This app's own look document, when the source keeps one (engines/skin.ts). Read before the first document is sent. */
+  appLook?: AppLookStore;
 }
 
 /** What `rt.brandPlace(slot)` gives a UI piece to draw. */
@@ -429,6 +436,8 @@ export class AxfRuntime {
   /** true while the runtime applies a pushed document, so the change isn't echoed back to the source */
   private applyingAppearance = false;
   private lastAppearance: AppearanceDocument | null = null;
+  /** The document last applied: the shared one with this app's look over it. */
+  private lastEffective: AppearanceDocument | null = null;
 
   /**
    * Make this a developer app: its appearance comes from the source (and goes back to it). Until the source is
@@ -437,6 +446,7 @@ export class AxfRuntime {
   attachAppearanceSource(source: AppearanceSource): void {
     this.detachAppearanceSource();
     this.appearanceSource = source;
+    this.useLookStore(source.appLook ?? null);
     this.appearanceOff = source.subscribe((ev) => {
       if ('state' in ev) {
         if (ev.state.status === 'ready') this.appearanceWasReady = true;
@@ -465,6 +475,7 @@ export class AxfRuntime {
     this.appearanceWasReady = false;
     this.appearanceSource = null;
     this.lastAppearance = null;
+    this.useLookStore(null);
     this.set({ appearance: null });
   }
 
@@ -513,7 +524,7 @@ export class AxfRuntime {
   }
 
   /** What the last document resolved to in this app, for Settings → Appearance to explain skipped ids. */
-  appearanceSkipped(): string[] { return resolveAppearance(this.lastAppearance, (t, id) => this.registry.has(t as AssetType, id)).skipped; }
+  appearanceSkipped(): string[] { return resolveAppearance(this.lastEffective, (t, id) => this.registry.has(t as AssetType, id)).skipped; }
 
   /**
    * Apply a document from the source: every appearance slot starts from the app's own default, then takes the
@@ -521,8 +532,11 @@ export class AxfRuntime {
    * through the same settings keys the UI uses. Nothing here needs a permission: the document *is* the saved setting,
    * the UAC gate sits on changing it (swap / setSpacing / setSlotHidden still decide who may).
    */
-  private applyAppearance(doc: AppearanceDocument | null): void {
-    this.lastAppearance = doc;
+  private applyAppearance(shared: AppearanceDocument | null): void {
+    this.lastAppearance = shared;
+    const look = this.ensureLook();
+    const doc = look ? composeLook(shared, look, look.skin.use ? this.skinData(look.skin.id) : null) : shared;
+    this.lastEffective = doc;
     let retired: string[] = [];
     const r = resolveAppearance(doc, (t, id) => this.registry.has(t as AssetType, id));
     this.applyingAppearance = true;
@@ -576,9 +590,9 @@ export class AxfRuntime {
       this.applyingAppearance = false;
     }
     // A document still carrying retired look settings is cleaned once (the next one won't list them).
-    if (retired.length) this.pushAppearance({ settings: Object.fromEntries(retired.map((k) => [k, null])) });
+    if (retired.length && !look) this.pushAppearance({ settings: Object.fromEntries(retired.map((k) => [k, null])) });
     // The hub doesn't hold look settings yet: this app's become the shared ones (sent once; the next document lists them).
-    if (doc && !doc.settings) {
+    if (doc && !doc.settings && !look) {
       const mine = this.lookSettings();
       if (Object.keys(mine).length) this.pushAppearance({ settings: mine });
     }
@@ -593,8 +607,119 @@ export class AxfRuntime {
 
   /** Push a local change to the source (no-op without one, or while applying a pushed document). */
   private pushAppearance(change: AppearanceChange): void {
-    if (!this.appearanceSource || !this.appearanceRunning || this.applyingAppearance) return;
+    if (this.applyingAppearance) return;
+    const store = this.lookStore();
+    if (this.lookLayerOn() && store.status() === 'failed') { this.terminal.warn('appearance', "this app's look document can't be read, so this change isn't saved"); return; }
+    const look = this.lookLayerOn() ? store.get() : null;
+    if (look) {
+      this.saveLook(lookAfterChange(look, change, look.skin.use ? this.skinData(look.skin.id) : null));
+      // the hub's own pages take their colours from axHub's look, the one thing the shared document still carries
+      if (change.palette && this.manifest.app.id === HUB_PALETTE_APP && this.appearanceRunning) this.appearanceSource?.save({ palette: change.palette });
+      return;
+    }
+    if (!this.appearanceSource || !this.appearanceRunning) return;
     this.appearanceSource.save(change);
+  }
+
+  /* ---------------- skins and each app's own look (engines/skin.ts) ---------------- */
+
+  private lookStoreRef: AppLookStore | null = null;
+  private lookStoreOff: (() => void) | null = null;
+  private localLookStore: AppLookStore | null = null;
+
+  private useLookStore(store: AppLookStore | null): void {
+    this.lookStoreOff?.();
+    this.lookStoreOff = store?.subscribe(() => { this.applyAppearance(this.lastAppearance); this.bumpLook(); }) ?? null;
+    this.lookStoreRef = store;
+  }
+
+  /** A source that keeps no app-look (older sources, tests): the shared document alone is the look. */
+  private lookLayerOn(): boolean { return !this.appearanceSource || !!this.lookStoreRef; }
+
+  /** Where this app's look document lives: the hub for a developer app, a setting otherwise. */
+  private lookStore(): AppLookStore {
+    return this.lookStoreRef ?? (this.localLookStore ??= {
+      get: () => { const v = this.settings.get(APP_LOOK_KEY); return typeof v === 'string' ? parseAppLook(v) : null; },
+      status: () => (this.settings.get(APP_LOOK_KEY) === null ? 'missing' : 'ready'),
+      save: (doc) => { this.settings.set(APP_LOOK_KEY, JSON.stringify(doc)); },
+      subscribe: () => () => {},
+    });
+  }
+
+  /** The app's look document; the first read saves the snapshot, so the app's current look is its default from then on. */
+  private ensureLook(): AppLookDocument | null {
+    if (!this.lookLayerOn()) return null;
+    const store = this.lookStore();
+    const cur = store.get();
+    if (cur || store.status() !== 'missing') return cur;
+    const doc = newAppLook(this.manifest.app.id, snapshotLook(this.lookStoreRef ? this.lastAppearance : this.currentAppearance()));
+    this.saveLook(doc);
+    this.terminal.ok('appearance', 'saved the current look as this app\'s default');
+    return doc;
+  }
+
+  private saveLook(doc: AppLookDocument): void {
+    this.lookStore().save({ ...doc, updatedBy: this.manifest.app.id, updatedAt: new Date().toISOString() });
+  }
+
+  private bumpLook(): void { this.set({ swaps: this.state.swaps + 1 }); }
+
+  /** Save a look change and draw it. */
+  private changeLook(next: (cur: AppLookDocument) => AppLookDocument): boolean {
+    if (this.lockedByAppearance('assets.swap')) { this.lockedToast(); return false; }
+    if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
+    const cur = this.ensureLook();
+    if (!cur) { this.toast("This app's look can't be read from axHub right now.", 'warning', 'Appearance'); return false; }
+    this.saveLook(next(cur));
+    this.applyAppearance(this.lastAppearance);
+    this.bumpLook();
+    return true;
+  }
+
+  private skinData(id: string): SkinData | null {
+    const s = this.registry.get(SKIN_TYPE as AssetType, id);
+    if (s) return normalizeSkin(s.data);
+    const p = this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id);
+    return p ? skinFromDesignPackage(p.data) : null;
+  }
+
+  /** Every skin this app can use: the skins, then the design packages. */
+  skinList(): SkinEntry[] {
+    return skinEntries(this.registry.list(SKIN_TYPE as AssetType) as never, this.registry.list(DESIGN_PACKAGE_TYPE as AssetType) as never);
+  }
+
+  /** This app's look document (null while it can't be read). */
+  appLook(): AppLookDocument | null { return this.ensureLook(); }
+
+  /** The slots where a pick beats the skin. */
+  skinOverrides(): string[] { return overriddenSlots(this.appLook()); }
+
+  /** The 'Use skin' switch. `id` picks the skin too; on with none picked takes the first skin. */
+  useSkin(on: boolean, id?: string): boolean {
+    const pick = id ?? this.appLook()?.skin.id ?? '';
+    const skin = pick || (on ? this.skinList()[0]?.id ?? '' : '');
+    if (on && !this.skinData(skin)) { this.toast(`No skin "${skin}" in this app.`, 'warning', 'Skin'); return false; }
+    if (!this.changeLook((cur) => setUseSkin(skin ? pickSkin(cur, skin) : cur, on))) return false;
+    this.terminal.ok('hot-swap', on ? `skin ${skin} on for this app` : 'skin off: back to this app\'s own look');
+    this.lookApplied('default', skin);
+    return true;
+  }
+
+  /** Pick a skin; it shows only while Use skin is on. */
+  pickSkin(id: string): boolean {
+    if (!this.skinData(id)) { this.toast(`No skin "${id}" in this app.`, 'warning', 'Skin'); return false; }
+    return this.changeLook((cur) => pickSkin(cur, id));
+  }
+
+  /** Per-item "Back to skin": drop this slot's override. */
+  backToSkin(slot: string): boolean { return this.changeLook((cur) => backToSkin(cur, slot)); }
+
+  /** Undo the last Restore to default (one level). */
+  undoRestoreDefault(): boolean {
+    if (!this.appLook()?.undo) return false;
+    if (!this.changeLook(undoRestore)) return false;
+    this.toast('Look brought back.', 'success', 'Appearance');
+    return true;
   }
 
   /** The palette the hub's own pages use, from this app's active colour theme. */
@@ -1504,6 +1629,12 @@ export class AxfRuntime {
   restoreDefaultAppearance(): void {
     if (this.lockedByAppearance('assets.swap')) return this.lockedToast();
     if (!this.can('assets.swap')) return this.toast('Your role cannot change the look.', 'danger', 'Permission denied');
+    if (this.lookStore().get() && this.changeLook((cur) => restoreAppDefault(cur, new Date().toISOString()))) {
+      this.terminal.ok('hot-swap', 'back to this app\'s default look');
+      this.toast('Back to this app\'s default look.', 'success', 'Appearance');
+      this.lookApplied('default', '');
+      return;
+    }
     for (const k of Object.keys(this.settings.savedValues())) if (isAppearanceSetting(k) || k === SPACING_KEY || k === PACKAGE_APPLIED_KEY || k === DESIGN_APPLIED_KEY) this.settings.clear(k);
     this.reset();
     this.pushAppearance({ spacing: this.spacing() });
@@ -2222,6 +2353,7 @@ export class AxfRuntime {
     const vars: VarMap = {
       ...colorThemeVars(color),
       ...styleThemeVars(this.withTokenOverrides('tokens.style', 'style-theme', this.asset('style-theme').data), this.spacing()),
+      ...scrollbarVars(this.asset('style-theme').data),
       // the scale assets (typography, density, sizing): every size the stylesheet and components read; defaults when an app has none
       ...scaleThemeVars({
         typography: this.withTokenOverrides('tokens.typography', 'typography' as AssetType, this.assetOrNull('typography' as AssetType)?.data ?? (this.settings.get(CONTROL_TOKEN_SLOTS['tokens.typography'].key) ? {} : undefined)),
@@ -2563,6 +2695,21 @@ export class AxfRuntime {
         if (a) this.toast(`${a.name} applied.`, 'success', 'Style package');
       }
     }, { label: 'Apply a style package (id, next, prev or random)', requires: 'assets.swap', params: true });
+    // Skins (engines/skin.ts). skin.use:<id> turns Use skin on for this app, skin.off goes back to its own look.
+    a.register('skin.use', ([id]) => { this.useSkin(true, id || undefined); }, { label: 'Use a skin in this app', requires: 'assets.swap', params: true });
+    a.register('skin.off', () => { this.useSkin(false); }, { label: "Back to this app's own look", requires: 'assets.swap' });
+    a.register('skin.restore', () => this.restoreDefaultAppearance(), { label: 'Restore this app to its default look', requires: 'assets.swap' });
+    a.register('skin.undo', () => { this.undoRestoreDefault(); }, { label: 'Undo Restore to default', requires: 'assets.swap' });
+    // Title bar buttons of a Windows-style skin: they drive the front floating window; the app's own page can only go full screen
+    const front = () => { const id = this.windows.state.focused; return id && id !== this.windows.mainWindowId ? id : ''; };
+    a.register('skin.window.minimize', () => { const id = front(); if (id) this.windows.minimizeToNextCorner(id); }, { label: 'Minimize the front window', searchable: false });
+    a.register('skin.window.maximize', () => {
+      const id = front();
+      if (id) return this.windows.toggleMaximize(id);
+      if (typeof document === 'undefined') return;
+      if (document.fullscreenElement) void document.exitFullscreen(); else void document.documentElement.requestFullscreen?.();
+    }, { label: 'Maximize the front window', searchable: false });
+    a.register('skin.window.close', () => { const id = front(); if (id) this.windows.close(id); else this.navigate('home'); }, { label: 'Close the front window', searchable: false });
     a.register('appearance.package', ([id]) => { if (id) this.applyDesignPackage(id); }, { label: 'Apply a design package (old name)', requires: 'assets.swap', params: true, searchable: false });
     a.register('appearance.restore', () => this.restoreDefaultAppearance(), { label: 'Restore default appearance', requires: 'assets.swap' });
     // No `requires`: these must work while the lock greys out every assets.swap control (setAppearanceLocked checks the role).
