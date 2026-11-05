@@ -120,19 +120,19 @@ try {
   if (spawnSync('sh', ['-c', 'command -v tmux']).status === 0) {
     await op('account-credential', { account: 'acct2', credential: { state: 'ok', resetsAt: '', expiresAt: '2999-01-01T00:00:00Z' } });
     r = await run('A', ['offer', 'opus-only', '--to', 's-two']); await run('B', ['respond', r.offer.id, 'accept']);
-    const bin = join(T, 'bin'); mkdirSync(bin); const seen = join(T, 'seen.log');
+    const home = join(T, 'home'); const bin = join(home, '.local/bin'); mkdirSync(bin, { recursive: true }); const seen = join(T, 'seen.log');
     writeFileSync(join(bin, 'claude'), `#!/bin/sh\necho "run token=\${CLAUDE_CODE_OAUTH_TOKEN:-none} dir=\${CLAUDE_CONFIG_DIR:-none} api=\${ANTHROPIC_API_KEY:-none}" >> "${seen}"\necho "You've hit your weekly limit"\nexit 1\n`); chmodSync(join(bin, 'claude'), 0o755);
     const brief = join(T, 'wt', 'brief.md'); mkdirSync(dirname(brief)); writeFileSync(brief, '# test');
-    const name = `opus-only`; const session = `axf-${name}`;
-    spawnSync('tmux', ['kill-session', '-t', `=${session}`]);
-    const env = { ...base, ...who.A, PATH: `${bin}:${process.env.PATH}`, ANTHROPIC_API_KEY: MAIN_TOKEN_SENTINEL, AXF_SLOTS: 'off', AXF_AGENT_BOOK: 'off', AXF_WATCH_LIVE: 'off', AXF_ORIGIN: 'off', AXF_LOOK_GATE: 'off', AXF_HEADLESS_DIR: join(T, 'h'), AXF_ACCOUNT_SWITCHES: '3' };
+    const name = 'opus-only'; const killAll = () => { for (const s of spawnSync('tmux', ['ls', '-F', '#S'], { encoding: 'utf8' }).stdout.split('\n')) if (s.startsWith(`axf-${name}`)) spawnSync('tmux', ['kill-session', '-t', `=${s}`]); };
+    killAll();
+    const env = { ...base, ...who.A, HOME: home, PATH: `${bin}:${process.env.PATH}`, ANTHROPIC_API_KEY: MAIN_TOKEN_SENTINEL, AXF_SLOTS: 'off', AXF_AGENT_BOOK: 'off', AXF_WATCH_LIVE: 'off', AXF_ORIGIN: 'off', AXF_LOOK_GATE: 'off', AXF_HEADLESS_DIR: join(T, 'h'), AXF_ACCOUNT_SWITCHES: '3' };
     const l = spawnSync('bash', [join(ROOT, 'deploy/claude-headless.sh'), '--name', name, '--brief', brief, '--log', 'run.log', '--', '--model', 'opus'], { cwd: dirname(brief), env, encoding: 'utf8' });
     captured.push(l.stdout, l.stderr);
-    for (let i = 0; i < 100 && !(existsSync(seen) && link().accounts.acct2.credential.state === 'limited'); i++) await new Promise((res) => setTimeout(res, 100));
-    spawnSync('tmux', ['kill-session', '-t', `=${session}`]);
+    for (let i = 0; i < 200 && !(existsSync(seen) && link().accounts.acct2.credential.state === 'limited'); i++) await new Promise((res) => setTimeout(res, 100));
+    killAll();
     const lines = existsSync(seen) ? readFileSync(seen, 'utf8').trim().split('\n') : [];
     const stamp = lines[0] ?? ''; rmSync(seen, { force: true });
-    check('the launcher ran the job once, on the helper\'s token and config dir, without the main API key', lines.length === 1 && stamp.includes(`token=${TOKEN}`) && stamp.includes(`dir=${join(ACCTS, 'acct2')}`) && stamp.includes('api=none'), `${l.stderr.slice(0, 200)} ${lines.length}`);
+    check('the launcher ran the job once, on the helper\'s token and config dir, without the main API key', lines.length === 1 && stamp.includes(`token=${TOKEN}`) && stamp.includes(`dir=${join(ACCTS, 'acct2')}`) && stamp.includes('api=none'), `${l.stdout.slice(0, 200)} | ${l.stderr.slice(0, 200)} | ${lines.length} | ${(() => { try { return readFileSync(join(dirname(brief), 'run.log'), 'utf8').slice(-400); } catch { return 'no log'; } })()} | ${spawnSync('tmux', ['ls'], { encoding: 'utf8' }).stdout.split('\n').filter((x) => x.includes('opus-only')).join()}`);
     check('NEVER FALLS BACK: a helper run that hits its limit is not switched or retried; the account goes limited', link().accounts.acct2.credential.state === 'limited');
     const blocked = spawnSync('bash', [join(ROOT, 'deploy/claude-headless.sh'), '--name', name, '--brief', brief, '--log', 'run2.log', '--', '--model', 'opus'], { cwd: dirname(brief), env, encoding: 'utf8' }); captured.push(blocked.stdout, blocked.stderr);
     check('NEVER FALLS BACK: the next launch is refused while limited, nothing starts', blocked.status === 3 && !existsSync(seen), `${blocked.status} ${blocked.stderr}`);
