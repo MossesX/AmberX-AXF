@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-05T22:49:51.090Z",
+ "updatedAt": "2026-11-05T22:50:06.543Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -13843,15 +13843,15 @@
    "title": "Every headless build keeps its own Claude login",
    "category": "Builds",
    "detail": "Snapshot the active saved Claude account into a private per-build CLAUDE_CONFIG_DIR at launch; record account per build; cover every launcher; scripted test with a fake claude.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/build-own-login-r2",
    "pr": "#357",
    "createdAt": "2026-11-05T22:37:31.309Z",
-   "updatedAt": "2026-11-05T22:49:50.130Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-05T22:49:50.702Z",
+   "builtAt": "2026-11-05T22:49:50.702Z",
    "notes": [
     {
      "text": "Branch claude/build-own-login-r2: deploy/claude-login.mjs + claude-headless.sh + swarm runner; test 50/50",
@@ -13940,8 +13940,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T22:49:50.702Z",
      "note": "",
      "uid": "st-mw44pz17044z4v"
     }

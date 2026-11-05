@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1072,
- "updatedAt": "2026-11-05T22:49:51.090Z",
+ "rev": 1073,
+ "updatedAt": "2026-11-05T22:50:06.543Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -86844,15 +86844,15 @@
    "title": "Every headless build keeps its own Claude login",
    "category": "Builds",
    "detail": "Snapshot the active saved Claude account into a private per-build CLAUDE_CONFIG_DIR at launch; record account per build; cover every launcher; scripted test with a fake claude.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/build-own-login-r2",
    "pr": "#357",
    "createdAt": "2026-11-05T22:37:31.309Z",
-   "updatedAt": "2026-11-05T22:49:50.130Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-05T22:49:50.702Z",
+   "builtAt": "2026-11-05T22:49:50.702Z",
    "notes": [
     {
      "text": "Branch claude/build-own-login-r2: deploy/claude-login.mjs + claude-headless.sh + swarm runner; test 50/50",
@@ -86955,12 +86955,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T22:49:50.702Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-05T22:37:31.310Z",
-     "updatedAt": "2026-11-05T22:40:39.762Z"
+     "updatedAt": "2026-11-05T22:49:50.758Z"
     }
    ],
    "profiles": [
@@ -86971,7 +86971,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
