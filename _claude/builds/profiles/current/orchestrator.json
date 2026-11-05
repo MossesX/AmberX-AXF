@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-05T22:40:41.043Z",
+ "updatedAt": "2026-11-05T22:41:22.352Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14011,6 +14011,92 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw44lxlx080d8m"
+    }
+   ]
+  },
+  {
+   "id": "ai-keys-new-format",
+   "title": "AI keys: accept new Anthropic API key formats (sk-ant-usr…)",
+   "category": "Console > AI keys",
+   "detail": "The console AI keys page rejected real Anthropic API keys starting sk-ant-usr with \"unknown key type\". Classify by a prefix table with an unknown sk-ant- fallback (accepted, verified live); sk-ant-oat stays a subscription login; live check on save OK / invalid / no credit; keys never echoed (last 4 only).",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-05T22:41:21.410Z",
+   "updatedAt": "2026-11-05T22:41:21.410Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Put someone else on it.",
+    "at": "2026-11-05T00:00:00Z",
+    "source": "voice",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "axf.anthropic_keys: prefix table + unknown sk-ant- fallback + live check",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw44qv5k04n10l"
+    },
+    {
+     "id": "s2",
+     "text": "ai-keys server + web, ai-assistant, providers, amberx-droid, forensics mask use it",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw44qv5k05tt8p"
+    },
+    {
+     "id": "s3",
+     "text": "Tests (fake keys), CI, docs, report, PR to the merge queue",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw44qv5k068jtd"
     }
    ]
   }
