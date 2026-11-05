@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-05T18:42:15.130Z",
+ "updatedAt": "2026-11-05T18:42:32.381Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -13664,7 +13664,7 @@
    "branch": "claude/assistant-chat-mode-r3",
    "pr": "",
    "createdAt": "2026-11-05T18:36:01.911Z",
-   "updatedAt": "2026-11-05T18:42:14.020Z",
+   "updatedAt": "2026-11-05T18:42:15.606Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -13731,8 +13731,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T18:42:14.823Z",
      "note": "",
      "uid": "st-mw3vzdti0b19ke"
     },
@@ -13749,8 +13749,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T18:42:15.606Z",
      "note": "",
      "uid": "st-mw3vzdti0cdbbl"
     },

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1060,
- "updatedAt": "2026-11-05T18:42:15.130Z",
+ "rev": 1061,
+ "updatedAt": "2026-11-05T18:42:32.381Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -86615,7 +86615,7 @@
    "branch": "claude/assistant-chat-mode-r3",
    "pr": "",
    "createdAt": "2026-11-05T18:36:01.911Z",
-   "updatedAt": "2026-11-05T18:42:14.020Z",
+   "updatedAt": "2026-11-05T18:42:15.606Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -86692,12 +86692,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T18:42:14.823Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-05T18:36:01.932Z",
-     "updatedAt": "2026-11-05T18:36:01.932Z"
+     "updatedAt": "2026-11-05T18:42:14.899Z"
     },
     {
      "id": "s4",
@@ -86714,12 +86714,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T18:42:15.606Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-05T18:36:01.932Z",
-     "updatedAt": "2026-11-05T18:36:01.932Z"
+     "updatedAt": "2026-11-05T18:42:15.675Z"
     },
     {
      "id": "s5",
@@ -86818,7 +86818,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
