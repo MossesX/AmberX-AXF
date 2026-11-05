@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1059,
- "updatedAt": "2026-11-05T18:36:23.311Z",
+ "rev": 1060,
+ "updatedAt": "2026-11-05T18:42:15.130Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -86615,7 +86615,7 @@
    "branch": "claude/assistant-chat-mode-r3",
    "pr": "",
    "createdAt": "2026-11-05T18:36:01.911Z",
-   "updatedAt": "2026-11-05T18:36:05.849Z",
+   "updatedAt": "2026-11-05T18:42:14.020Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -86670,12 +86670,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T18:42:14.020Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-05T18:36:01.932Z",
-     "updatedAt": "2026-11-05T18:36:01.932Z"
+     "updatedAt": "2026-11-05T18:42:14.083Z"
     },
     {
      "id": "s3",
@@ -86818,7 +86818,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
