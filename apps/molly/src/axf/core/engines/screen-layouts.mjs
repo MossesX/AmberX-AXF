@@ -287,7 +287,7 @@ export function layoutToolbarMenu(view, pluginId, hasCopy) {
     hasCopy
       ? { id: 'layout-toolbar-shared', label: 'Go back to the shared toolbar', icon: 'layers', action: `${SCREEN_LAYOUT_ACTIONS.shared}:${pluginId}` }
       : { id: 'layout-toolbar-copy', label: 'Give this plugin its own copy', icon: 'copy', action: `${SCREEN_LAYOUT_ACTIONS.copy}:${pluginId}` },
-    { id: 'layout-toolbar-settings', label: 'Toolbar settings', icon: 'settings', action: 'settings.open:toolbars' },
+    { id: 'layout-toolbar-settings', label: 'All layout toolbars…', icon: 'settings', action: 'settings.open:toolbars' },
     { id: 'layout-toolbar-sep', separator: true },
     { id: 'layout-toolbar-hide', label: 'Hide layout toolbar', icon: 'x', action: `${SCREEN_LAYOUT_ACTIONS.toolbar}:hide:${view}` },
   ];

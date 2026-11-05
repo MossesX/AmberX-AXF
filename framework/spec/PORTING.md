@@ -129,3 +129,7 @@ Regenerate fixtures after changing a reference engine: `npx -y tsx framework/spe
 ## Deferred: build priority (Nov 5 2026)
 
 `framework/core/build-priority.mjs` and `framework/react/components/PriorityTag.tsx` have no Kotlin twin. Android work is on hold; builds show only in the web console today. A port needs the same levels (P0-P3), the same read-time default and the same `waitingOn` rows.
+
+## Deferred: screen layouts (Nov 5 2026)
+
+`framework/core/engines/screen-layouts.mjs` (screen-layouts@1), the runtime's screen layout methods and `framework/react/components/ScreenLayouts.tsx` have no Kotlin twin, because Android work is on hold. A port needs the same `screens` contract (3 to 8 layouts, a default), the settings keys `axf.screen.<view>.layout`, `axf.screen.<view>.layoutToolbar`, `axf.screens.layoutToolbar` and `axf.screens.layoutToolbar.copy.<plugin id>`, the actions in `SCREEN_LAYOUT_ACTIONS`, the shared `layout-switcher` toolbar and the fixture `spec/fixtures/screen-layouts.json`. Spec: `framework/spec/SCREEN-LAYOUTS.md`.

@@ -733,7 +733,7 @@
       },
       {
         "id": "layout-toolbar-settings",
-        "label": "Toolbar settings",
+        "label": "All layout toolbars…",
         "icon": "settings",
         "action": "settings.open:toolbars"
       },
@@ -757,7 +757,7 @@
       },
       {
         "id": "layout-toolbar-settings",
-        "label": "Toolbar settings",
+        "label": "All layout toolbars…",
         "icon": "settings",
         "action": "settings.open:toolbars"
       },

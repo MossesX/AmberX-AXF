@@ -61,7 +61,8 @@ Claude project with its homes on GitHub / the VPS / a local git folder and a Cla
 
 WebSockets in a plugin: get a one-time ticket from `POST /api/ws-ticket` (`{"path": "/api/plugins/<folder>/…"}`, 30 s, single use) and connect with `?ticket=` (the console token never goes in a URL). Banners: `AxfWebLibrary.banners`. Items on every context menu: `rt.contextExtras.set('*:<owner>', (target, payload) => [...])`. Boxes inside a view: `AxfWebLibrary.slots` (`<Slot name=… />`, e.g. the Plan view's `plan.top` / `plan.feature`). Start an assistant chat from anywhere: action `ai.chat.start:<uri-encoded JSON {agentId, message, title, profileId?, model?}>`.
 
-Start a plugin: `cp -r plugins/_template plugins/<folder>`, then edit `plugin.json` (id, name, description,
+Start a plugin: `node framework/cli/axf.mjs new-plugin <folder>` (three layouts per screen and the hidden layout toolbar
+come with it, see `framework/spec/SCREEN-LAYOUTS.md`), or `cp -r plugins/_template plugins/<folder>`, then edit `plugin.json` (id, name, description,
 `lifecycle.dataDir`), the `id`, `FOLDER` and views in `web/index.tsx`, the routes in `server/__init__.py`, and the
 folder name in `install.mjs` / `uninstall.mjs`.
 

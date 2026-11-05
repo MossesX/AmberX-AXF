@@ -577,7 +577,7 @@
     "src/axf/core/engines/scale-rules.mjs": "f39243eef41e798b",
     "src/axf/core/engines/scale.ts": "b9b74588047d36d9",
     "src/axf/core/engines/screen-layouts.d.mts": "a140f994458c931b",
-    "src/axf/core/engines/screen-layouts.mjs": "c3413c08ebb37008",
+    "src/axf/core/engines/screen-layouts.mjs": "12c9bd7ac085336f",
     "src/axf/core/engines/search.ts": "d0cf48d2f2c87bbd",
     "src/axf/core/engines/settingsui.ts": "1acade240ee24105",
     "src/axf/core/engines/spacing.ts": "07ac205d9eb189e2",

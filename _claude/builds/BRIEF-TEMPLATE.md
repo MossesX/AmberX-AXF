@@ -12,6 +12,7 @@ Source: voice · At: 2026-11-03T14:05:00Z · Session: <session or conversation i
 
 ## What to build
 Your paraphrase, the plan, the steps (s1 …), checks.
+A new plugin screen gets 3 layouts and the hidden layout toolbar: start with `axf new-plugin` (framework/spec/SCREEN-LAYOUTS.md).
 
 ## Addendum 1 (Brett, Nov 4 2026 (voice))
 > A later change he asked for, verbatim. Each one is its own block, numbered, oldest first. Also:
