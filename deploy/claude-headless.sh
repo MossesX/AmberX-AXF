@@ -39,7 +39,7 @@
 # reads and deletes at once, never on a command line (tmux -e would show them in `ps`).
 # Agent cap (agent-slots@1, Brett, Nov 1 2026): before starting, the run asks framework/cli/agent-slots.mjs for a slot
 # (max running agents, memory guard; settings hot-reloaded from the console). No slot = it joins the queue (FIFO within
-# --priority boss|urgent|normal|low, or the priority rules), prints "queued at position N (<id>) …" and a background
+# --priority boss|urgent|high|normal|low, the build's own priority tag, or the priority rules), prints "queued at position N (<id>) …" and a background
 # waiter starts it by itself when a slot frees (cancelled from the console = it never starts). Inside tmux the run binds
 # its slot, marks it finished when Claude exits (finished sessions don't count) and closes after closeFinishedAfterSec
 # (the log stays). Heavy steps go through `agent-slots.mjs heavy -- <cmd>` (the brief says so). AXF_SLOTS=off skips it.
@@ -245,7 +245,11 @@ if [[ -n "$queued" ]]; then   # the background waiter: hold until the queue hand
 elif slots_on; then
   node "$SLOTS" sweep >/dev/null 2>&1 || true   # close finished sessions first: they don't hold a slot
   slot_id="" slot_started=1 slot_pos=0 slot_reason=none
-  eval "$(node "$SLOTS" enqueue --name "$slug" --kind headless ${priority:+--priority "$priority"} --pid "$$" --cwd "$(pwd)" --sh 2>/dev/null | grep -E '^slot_id=[A-Za-z0-9-]+ slot_started=[01] slot_pos=[0-9]+ slot_reason=[a-z]+$')"
+  # the build's priority tag (framework/cli/build-priority.mjs) sets its place in line; an explicit --priority beats it
+  slot_build=""
+  read -r tag_level slot_build < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$slug" --brief "$brief" 2>/dev/null) || true
+  [[ -z "$priority" && -n "${tag_level:-}" ]] && priority="$tag_level"
+  eval "$(node "$SLOTS" enqueue --name "$slug" --kind headless ${priority:+--priority "$priority"} ${slot_build:+--build "$slot_build"} --pid "$$" --cwd "$(pwd)" --sh 2>/dev/null | grep -E '^slot_id=[A-Za-z0-9-]+ slot_started=[01] slot_pos=[0-9]+ slot_reason=[a-z]+$')"
   if [[ -n "$slot_id" && "$slot_started" == 0 ]]; then
     ${SETSID:-$(command -v setsid)} nohup bash "$HERE/claude-headless.sh" --queued "$slot_id" --name "$name" --agent "$agent" --brief "$brief" --log "$log" -- "$@" > .axf-queue.log 2>&1 &
     why=""; [[ "$slot_reason" == memory ]] && why=", waiting for free memory"

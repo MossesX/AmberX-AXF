@@ -46,4 +46,13 @@ r = srv.sees_probe({"total": 276, "running": [{"id": "x"}]}, ["auto-land"])
 check(r["status"] == "ok" and "276 build(s)" in r["summary"], "builds seen = green")
 r = srv.sees_probe(None, [])
 check(r["status"] == "ok" and "build(s)" in r["summary"], "the real read (framework/cli/build-queue.mjs buildsSummary) answers")
+# the CLIs this server runs exist (ROOT once pointed at apps/, so the origin and live ones were never found)
+for f in (srv.CLI, srv.ORIGIN_CLI, srv.LIVE_CLI, srv.PRIORITY_CLI):
+    check(f.is_file(), f"{f.name} is where the server looks for it")
+try:
+    srv.priority_get("build-priority-no-such-build-at-all")
+    check(False, "an unknown build is a 404")
+except srv.HTTPException as e:
+    check(e.status_code == 404, "an unknown build is a 404")
+check("map" in srv.priority_list(), "the tag list answers through the real CLI")
 print(f"build-orchestrator: {n} checks passed")

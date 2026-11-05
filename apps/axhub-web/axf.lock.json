@@ -511,6 +511,8 @@
     "src/axf/core/assistant.ts": "1d1b21a4b63aba2b",
     "src/axf/core/build-origin.d.mts": "06f24a33582e3ff6",
     "src/axf/core/build-origin.mjs": "f2923181df39063a",
+    "src/axf/core/build-priority.d.mts": "f4864780baaea162",
+    "src/axf/core/build-priority.mjs": "38865276350bf78d",
     "src/axf/core/catalog.ts": "294110261dff040c",
     "src/axf/core/diagnostics.ts": "b46cda9f38e88006",
     "src/axf/core/engines/actions.ts": "947962c3da4fb06b",
@@ -692,7 +694,7 @@
     "src/axf/libs/workspace/library.json": "50c0d38f889ff785",
     "src/axf/libs/workspace/store.ts": "633e7e776264e141",
     "src/axf/libs/workspace/workspace.css": "c3c3322143caab3c",
-    "src/axf/react/AppShell.tsx": "20be02a0a9ab3c50",
+    "src/axf/react/AppShell.tsx": "0a8aa5bccc79c321",
     "src/axf/react/AxfProvider.tsx": "395ef3773cc17ad1",
     "src/axf/react/bannerStrip.ts": "c4217d5b8a6251a1",
     "src/axf/react/components/AgentAvatar.tsx": "56b3990cd19b119d",
@@ -722,6 +724,7 @@
     "src/axf/react/components/NavStyleSettings.tsx": "611d1ac127c314cd",
     "src/axf/react/components/NavTree.tsx": "5acf47bba5e98154",
     "src/axf/react/components/Overlays.tsx": "88972b0d76084284",
+    "src/axf/react/components/PriorityTag.tsx": "dd92370c4246cbcc",
     "src/axf/react/components/RefText.tsx": "fc367771ed39849a",
     "src/axf/react/components/Repeat.tsx": "c5368747700eb7c0",
     "src/axf/react/components/Search.tsx": "dbb8df7fbb7ee827",
@@ -733,7 +736,7 @@
     "src/axf/react/components/menuFit.ts": "04c0539214743de1",
     "src/axf/react/editorSync.ts": "4d2dfe9847350acb",
     "src/axf/react/hubAppearance.ts": "d7f3983fdd82b80b",
-    "src/axf/react/index.ts": "3efbf5f0682cfeb2",
+    "src/axf/react/index.ts": "fa8fa7abcd3d8298",
     "src/axf/react/library.ts": "a1e3ee41389eca00",
     "src/axf/react/placeTip.ts": "72554dc0b42e13a3",
     "src/axf/react/placement.tsx": "e50243526c856169",
@@ -836,6 +839,6 @@
     "src/axf/schemas/shared-assets.json": "7d6a5bb4f0b2a9c3",
     "src/axf/schemas/swarm.json": "35dd72b97f7a4a89",
     "src/axf/schemas/ui-review.json": "292b3b2d3482fbad",
-    "src/axf/ui/axf.css": "a0262a8c10566f6d"
+    "src/axf/ui/axf.css": "d3ea360b5f522422"
   }
 }

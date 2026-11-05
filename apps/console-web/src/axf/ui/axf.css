@@ -1805,3 +1805,16 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 .fx-dcard__bar { flex: 1 1 0; min-width: 0; background: var(--fx-accent); border-radius: var(--fx-radius-sm) var(--fx-radius-sm) 0 0 }
 .fx-dcard__table { font-size: var(--fx-type-scale-sm) }
 .fx-dcard__table td { overflow-wrap: anywhere }
+
+/* Priority tag on a build (components/PriorityTag.tsx): a tappable chip, and its dialog's list of what is waiting */
+.axf-priority { cursor: pointer; white-space: nowrap; }
+.axf-priority[data-axf-priority='P0'] { background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-danger); color: var(--fx-danger); }
+.axf-priority[data-axf-priority='P1'] { background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: var(--fx-warning); color: var(--fx-warning); }
+.axf-priority[data-axf-priority='P2'] { background: var(--fx-accent-soft); border-color: transparent; color: var(--fx-accent); }
+.axf-priority[data-axf-priority='P3'] { background: var(--fx-surface3); border-color: transparent; color: var(--fx-muted); }
+.axf-priority:focus-visible { outline: var(--fx-border-w) solid var(--fx-accent); }
+.axf-priority-panel__build { margin: 0; overflow-wrap: anywhere; }
+.axf-priority-panel__head { margin: 0; }
+.axf-priority-panel__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap); }
+.axf-priority-panel__row { width: 100%; justify-content: flex-start; flex-wrap: wrap; column-gap: var(--fx-dens-gap-xl); text-align: start; height: auto; }
+.axf-priority-panel__title { overflow-wrap: anywhere; }

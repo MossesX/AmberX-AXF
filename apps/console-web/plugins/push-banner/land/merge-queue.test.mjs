@@ -159,4 +159,23 @@ await t('remove + add + move go through the control file', async () => {
   assert.deepEqual(JSON.parse(readFileSync(join(data, 'merge-queue-control.json'), 'utf8')).added, [2]);
 });
 
+await t('priority: higher lands first, manual order wins, a running stack is never thrown away', () => {
+  const prs = [{ number: 1, head: 'h1', createdAt: '1' }, { number: 2, head: 'h2', createdAt: '2', priority: 'P0' }, { number: 3, head: 'h3', createdAt: '3', priority: 'P3' }];
+  assert.deepEqual(q.queueOrder(prs).map((x) => x.number), [2, 1, 3]);
+  assert.deepEqual(q.queueOrder(prs, { order: [3] }).map((x) => x.number), [3, 2, 1]);
+  const stack = [{ pr: 1, head: 'h1', sha: 's1', ahead: [] }, { pr: 3, head: 'h3', sha: 's3', ahead: [1] }];
+  const line = q.queueOrder(prs, {}, {}, stack);
+  assert.deepEqual(line.map((x) => x.number), [1, 3, 2]);
+  assert.equal(q.keepStack(stack, line).length, 2);
+  assert.deepEqual(q.queueOrder(prs, { order: [2] }, {}, stack).map((x) => x.number), [2, 1, 3]); // Brett's move still rebuilds it
+});
+
+await t('priority: the host copy of the rule matches framework/core/build-priority.mjs', async () => {
+  const { effectivePriority } = await import('../../../../../framework/core/build-priority.mjs');
+  for (const b of [{ id: 'x', title: 'Plain' }, { id: 'urgent-ci', title: 'CI' }, { id: 'x', title: 'Hotfix: y' }, { id: 'x', title: 'x', profiles: ['urgent'] },
+    { id: 'x', title: 'x', detail: 'URGENT: down' }, { id: 'x', title: 'x', detail: 'not urgent' }, { id: 'x', title: 'x', detail: 'urgent\nnow' }, { id: 'urgent-x', title: 'x', priority: 'P3' }, null]) {
+    assert.equal(q.buildPriority(b), effectivePriority(b), JSON.stringify(b));
+  }
+});
+
 console.log(`merge queue: ${n} checks passed`);

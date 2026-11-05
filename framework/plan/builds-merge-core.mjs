@@ -72,7 +72,7 @@ export function mergeBuild(a, b) {
   out.steps = win.steps.map((s) => { const o = other.get(s.uid); if (o && newer(o, s) > 0) { combined = true; return clone(o); } return clone(s); });
   const have = new Set(out.steps.map((s) => s.uid));
   lose.steps.forEach((s, i) => { if (!have.has(s.uid) && str(s.createdAt) > str(win.updatedAt)) { combined = true; out.steps.splice(Math.min(i, out.steps.length), 0, clone(s)); } });
-  for (const k of ['branch', 'pr', 'mergedAt', 'category']) if (!str(out[k]) && str(lose[k])) { out[k] = lose[k]; combined = true; }
+  for (const k of ['branch', 'pr', 'mergedAt', 'category', 'priority']) if (!str(out[k]) && str(lose[k])) { out[k] = lose[k]; combined = true; }
   // what Brett said that started it: never blanked or replaced by a copy that has less (build-origin@1)
   if (win.origin || lose.origin) { const og = mergeOrigin(win.origin, lose.origin); if (og) out.origin = og; }
   const key = (n) => `${n.at}|${n.text}`;
