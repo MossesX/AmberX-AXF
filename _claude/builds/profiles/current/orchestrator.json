@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-05T03:20:34.921Z",
+ "updatedAt": "2026-11-05T03:30:55.078Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -13154,8 +13154,9 @@
    "pendingId": "",
    "branch": "claude/banner-widgets",
    "pr": "#352",
+   "mergedAt": "2026-11-05T03:21:37Z",
    "createdAt": "2026-11-05T02:08:38.606Z",
-   "updatedAt": "2026-11-05T03:20:33.815Z",
+   "updatedAt": "2026-11-05T03:30:52.219Z",
    "builtAt": "",
    "notes": [
     {
@@ -13169,6 +13170,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-05T03:20:33.815Z"
+    },
+    {
+     "text": "Reconciler: PR #352 merged",
+     "at": "2026-11-05T03:30:52.219Z"
     }
    ],
    "approvals": [],
