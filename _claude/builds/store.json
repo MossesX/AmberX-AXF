@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1029,
- "updatedAt": "2026-11-05T02:17:30.981Z",
+ "rev": 1030,
+ "updatedAt": "2026-11-05T02:29:18.764Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -85741,10 +85741,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/banner-widgets",
+   "pr": "#352",
    "createdAt": "2026-11-05T02:08:38.606Z",
-   "updatedAt": "2026-11-05T02:17:08.309Z",
+   "updatedAt": "2026-11-05T02:29:17.051Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -85925,7 +85925,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
