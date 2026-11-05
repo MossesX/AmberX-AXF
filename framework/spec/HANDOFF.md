@@ -253,3 +253,59 @@ keys), `approve-account` (Brett only), `events` (SSE, skipped in the registry), 
 `framework/spec/fixtures/handoff.json` replays: the role gate; claim overlap and expiry; two sessions racing for the
 same area (the second gets `claimed`); offer → accept → step done → replan; reject → take-back; hold → wait; release →
 re-offer; dedupe match; slot split; helper status; sync render / parse round trip. `check-handoff.mjs` runs it (CI).
+
+## 13. Add-ons: `session` chip
+
+Directly under the model badge wherever a build or step shows its model: **Main**, or **Helper 2**, **Helper 3**… Numbers are per
+account, given on first join and never reshuffled (`link.accounts[account].helperNo`; Main has none, helpers start at 2). Queued work
+nobody has taken shows nothing. `sessionChip(link, build, step, now)` is the one answer; the web draws `SessionChip`, REST / MCP / CLI
+read it as `session` (`GET /chip`, `snapshot.running[].session`). The tooltip names the agent, the account, since when, models,
+usage and the desk. A login problem reads in the label: `Helper 2: login needed`.
+
+## 14. Add-ons: every helper on its own subscription
+
+Brett, Nov 4 2026: "The helper account needs to use its own subscription." **Opus-built, possible Fable review.**
+
+- **Pairing:** `session-sync pair` (or `POST /pair/start`) makes a one-time link: 32 random bytes, only the SHA-256 kept, single use,
+  10 minutes. A signed-in person opens it and pastes a token from `claude setup-token`. Bearer tokens, session headers and agents are
+  refused on that page, and no command takes a token.
+- **Verify on connect:** a tiny call per model and the OAuth profile, before anything is kept. A setup-token may lack the profile
+  scope; then the account shows its name instead of an email.
+- **Sealed:** X25519 + HKDF-SHA256 + AES-256-GCM with the account id as AAD (`creds.mjs`, `sealed-token@1`). The console holds only the
+  public key and can seal but never open. The private key is on the VPS host (`/root/.claude-accounts/.seal-key`, 0600), outside the
+  console's mounts. `session-sync creds-init` makes it once, on the host. Without it pairing refuses; nothing is kept in the clear.
+- **Not axHub's vault (yet):** the brief asked for axHub's secret store, but that vault is write-only by design (axHub decision #19):
+  values reach connectors inside the hub and no API hands one back, so the VPS launcher couldn't use a token kept there, and there is
+  no HTTP route to store one. Moving there needs a change to axHub's contract, which is Brett's call. `creds.mjs` is the one seam.
+- **Launch:** `launchGate` decides. Main work runs as before. A helper's job gets its token through the launcher's private 0600 env
+  file, unexported, handed only to the one `claude` process with `CLAUDE_CONFIG_DIR=/root/.claude-accounts/<id>` and no API key.
+- **Never fall back:** missing, expired, revoked or limited = exit 3, no run, a chat line, a bell alert and a badge. A helper run that
+  hits its limit marks the account `limited` and stops: it skips both account switches. The launch fails closed if the link can't be
+  read. Only Take back moves a job to Main.
+- **Manager:** Settings → Plugins → Session sync → Helper logins lists every account with labels only, Revoke and Replace (Brett's), the
+  expiry and an alert 14 days before it (the systems check row). `setup-token` lifetimes aren't reported by the API, so the date is
+  counted as one year from pairing.
+
+## 15. Add-ons: model check, bounce, the helper desk
+
+**Brownie runs the helper desk** (`HELPER_DESK`, skill `helper-desk`); Patches keeps the main queue. Sending is never blocked.
+
+- **Check:** `session-sync check-models` (or the pairing's own calls) makes a real call per model and reports it on the link. An unchecked
+  model is never a guess: it isn't bounced, and the accept answers `unknown` so the helper checks.
+- **Bounce:** on accept, `bounceGaps` keeps the steps the account can run and sends the rest back in the same transaction; nothing
+  runnable = rejected. They go to a free crew agent on Main that can run the model (`deskPick`), in their own place. If nobody can,
+  including when Main's own login lacks the model, they stay put and Brownie says so.
+- **Every hop** is a `desk` event posted as its actor: helper "Rejected b s1: no Fable access on this account, back to you @Brownie",
+  Brownie "reassigning…", the agent "Picked up…".
+- **Timers** (`deskSweep`, plain code, every minute while a helper works): nudge at 2× the step's estimate, whip-crack at 3×, at 4× or
+  `missedHeartbeatSec` she yanks it, reassigns it and writes a line on the helper's record (`link.writeups`). Each fires once per step.
+- **Sass:** `deskLine(kind, ctx, sass)`, Mild / Spicy / Savage, default Spicy. Every line names the build and step, the status and what
+  is next. Persona notes: the agent's notes file. Thresholds and sass are in Settings.
+
+## 16. Add-ons: Claude account switcher
+
+The Claude accounts plugin, over `/usr/local/bin/claude-account` and `/root/.claude-accounts/`,
+is the switcher: saved accounts, Switch and Save current login as, as a held axHub `vps.run`. Session sync adds the fallback order
+(`fallbackOrder`, `fallbackAuto`, owner-only, off by default): when a run stops on a limit, `nextFallback` picks the next saved account
+that can run the model, never for a helper's job and never mid-run. `api-credit` ends the chain and stops: there is no API key
+to switch to yet.

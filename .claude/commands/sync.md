@@ -6,8 +6,8 @@ argument-hint: [amberx | ses | session | <project name>]
 Session sync (`framework/spec/HANDOFF.md`, Session sync plugin). Arguments: $ARGUMENTS
 
 Run it from the repo of the project named (`amberx` / `ses` / `session` / nothing = this checkout's project, read from
-`project.manifest.json`). The CLI is `node apps/console-web/plugins/session-sync/sync.mjs` in an AmberX-AXF checkout;
-in another project use `$AXF_HOME`, `~/AmberX-AXF` or `/opt/axf` for the `apps/console-web/plugins/session-sync/sync.mjs` path.
+`project.manifest.json`). The CLI is `node apps/console-web/plugins/session-sync/sync.mjs` in an AmberX-AXF checkout; <!-- axf-plugin:session-sync -->
+in another project use `$AXF_HOME`, `~/AmberX-AXF` or `/opt/axf` for the `apps/console-web/plugins/session-sync/sync.mjs` path. <!-- axf-plugin:session-sync -->
 
 1. `node <sync.mjs> join` — registers this session on the project's link (first in = **primary**, you own the
    orchestrator; otherwise **secondary**: you take only what the orchestrator offers; a new account waits for

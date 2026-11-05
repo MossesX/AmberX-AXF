@@ -25,7 +25,7 @@ const stepOf = (payload: string) => payload.split('.').slice(1).join('.');
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Session sync',
-  version: '0.1.0',
+  version: '0.2.0',
   register(rt) {
     rt.actions.register('session-sync.open', () => rt.navigate(VIEW), { label: 'Open the Sessions panel' });
     rt.actions.register('session-sync.sync', () => void actions.sync(), { label: 'Sync session: write the sync file' });

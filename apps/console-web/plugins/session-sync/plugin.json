@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.session-sync",
   "name": "Session sync",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Two Claude sessions (any accounts, Claude Code or claude.ai) work on one project side by side without conflicts (handoff@1 + session-link@1, framework/spec/HANDOFF.md). /sync writes _claude/sync/<project>.{json,md} so any session can jump in; sessions talk in the Breakroom's Sessions channel; area / path claims are enforced leases; the primary (first to sync) owns the orchestrator and hands whole builds or steps to helpers, who accept / reject / hold / release while the orchestrator reacts, replans and dedupes. Sessions panel, join dialog, helper status widget (attachable to the banner, a toolbar or any window title bar through Add widgets\u2026), multi-select Send to helper, helper badges, Managed by orchestrator for helpers, live push (SSE) and a Claude Code hook that delivers the channel at every step. Replaces the threads log and the handoff notes.",
+  "description": "Two Claude sessions (any accounts, Claude Code or claude.ai) work on one project side by side without conflicts (handoff@1 + session-link@1, framework/spec/HANDOFF.md). /sync writes _claude/sync/<project>.{json,md} so any session can jump in; sessions talk in the Breakroom's Sessions channel; area / path claims are enforced leases; the primary (first to sync) owns the orchestrator and hands whole builds or steps to helpers, who accept / reject / hold / release while the orchestrator reacts, replans and dedupes. Sessions panel, join dialog, helper status widget (attachable to the banner, a toolbar or any window title bar through Add widgets\u2026), multi-select Send to helper, helper badges, Managed by orchestrator for helpers, live push (SSE) and a Claude Code hook that delivers the channel at every step. Replaces the threads log and the handoff notes. Helper logins (Nov 5 2026): every helper runs on its own Claude subscription through a one-time pairing page (sealed for the VPS host, never logged, never falls back to main), a multi-token manager, a Main / Helper N chip under model badges, a real model-access check that bounces steps a helper can't run, and Brownie's helper desk with timers and sass levels.",
   "targets": [
     "axf-console",
     "molly",
@@ -19,6 +19,7 @@
     "dialog:session-sync.join",
     "dialog:session-sync.send",
     "dialog:session-sync.widgets",
+    "dialog:session-sync.pair",
     "settings-tab:session-sync",
     "banner:session-sync",
     "action:session-sync.sync",
@@ -53,7 +54,12 @@
       "AXF_SESSION_LINK_FILE",
       "AXF_SESSION_SYNC_ON",
       "AXF_SESSION_SYNC_WATCH",
-      "AXF_SYNC_PUBLISH"
+      "AXF_SYNC_PUBLISH",
+      "AXF_SESSION_CREDS_DIR",
+      "AXF_CLAUDE_ACCOUNTS_DIR",
+      "AXF_CLAUDE_API_URL",
+      "AXF_SESSION_SYNC_CREW",
+      "AXF_SESSION_SYNC_DESK_S"
     ],
     "mentions": [
       "CLAUDE.md",
@@ -64,12 +70,14 @@
       "install_instructions.md",
       "_claude/shared/rules/RULES.md",
       "_claude/rules/RULES.md",
-      "_claude/memory/decisions.md"
+      "_claude/memory/decisions.md",
+      "deploy/claude-headless.sh"
     ],
     "keeps": [
       "_claude/sync/ in the repo: the sync file (handoff@1) sessions read to jump in; take it out by hand (git rm) if it is no longer wanted",
       ".claude/commands/sync.md: the /sync command; remove it with the plugin's uninstall --all",
-      "~/.claude/settings.json hooks: node \u2026/session-sync/sync.mjs hooks remove"
+      "~/.claude/settings.json hooks: node \u2026/session-sync/sync.mjs hooks remove",
+      "/root/.claude-accounts/.seal-key and helper config dirs on the VPS host: remove them by hand with the saved logins"
     ]
   },
   "commands": {
@@ -283,6 +291,83 @@
         "route": "POST /consistency",
         "id": "consistency-fix",
         "title": "Make every store agree with the link"
+      },
+      {
+        "route": "GET /accounts",
+        "id": "accounts",
+        "title": "Helper logins",
+        "description": "Every connected account with labels only: state, email, plan, last 4, expiry, models, usage, write-ups. Never a token."
+      },
+      {
+        "route": "GET /chip",
+        "id": "chip",
+        "title": "Session chip of a build or step",
+        "description": "Main, Helper N, or nothing while nobody has taken it.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string"
+            },
+            "step": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        }
+      },
+      {
+        "route": "POST /pair/start",
+        "id": "pair-start",
+        "title": "Start pairing a helper's login",
+        "description": "A one-time link, good for 10 minutes, to the page that takes this account's token. Never send a token in chat."
+      },
+      {
+        "route": "POST /pair/peek",
+        "skip": "browser page only: a signed-in person"
+      },
+      {
+        "route": "POST /pair/redeem",
+        "skip": "browser page only: a token is never accepted through a command"
+      },
+      {
+        "route": "POST /accounts/revoke",
+        "id": "accounts-revoke",
+        "title": "Revoke a helper's login",
+        "description": "Brett only. Drops the sealed token; its jobs wait.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "account": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "account"
+          ]
+        }
+      },
+      {
+        "route": "POST /account-report",
+        "id": "account-report",
+        "title": "Report this account's model access",
+        "description": "A session reports its own models, limit or usage after a real check.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "models": {
+              "type": "object"
+            },
+            "limited": {
+              "type": "object"
+            },
+            "usagePct": {
+              "type": "number"
+            }
+          }
+        }
       }
     ]
   },

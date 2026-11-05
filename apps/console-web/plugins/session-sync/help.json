@@ -3,7 +3,7 @@
   "type": "help",
   "id": "session-sync-help",
   "name": "Session sync help",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Help mode entries (help@1) for the Session sync plugin: the Sessions panel, the join dialog, the helper widget, Send to helper, the settings.",
   "author": "Brett",
   "tags": [
@@ -33,7 +33,7 @@
       {
         "target": "dialog:session-sync.widgets",
         "title": "Add widgets",
-        "text": "Picks any attachable widget (helper status, clock, counters, status lights, avatars, links\u2026) and puts it on this window's title bar, the banner or the toolbar. Right-click a widget to move or remove it.",
+        "text": "Picks any attachable widget (helper status, clock, counters, status lights, avatars, links…) and puts it on this window's title bar, the banner or the toolbar. Right-click a widget to move or remove it.",
         "kind": "screen"
       },
       {
@@ -192,7 +192,7 @@
       {
         "target": "remember-this-choice-dont-ask-again",
         "title": "Remember this choice",
-        "text": "Uses the picked option every time without asking. Change it in Settings \u2192 Plugins \u2192 Session sync.",
+        "text": "Uses the picked option every time without asking. Change it in Settings → Plugins → Session sync.",
         "kind": "toggle"
       },
       {
@@ -263,7 +263,7 @@
       },
       {
         "target": "add-widgets",
-        "title": "Add widgets\u2026",
+        "title": "Add widgets…",
         "text": "Opens the widget picker: put any attachable widget on the banner, the toolbar or a window's title bar.",
         "kind": "button"
       },
@@ -278,6 +278,11 @@
         "title": "Check every store agrees",
         "text": "Runs the consistency check: the builds store, exports and claims must match the session link for every handed-over build and step, and fixes drift.",
         "kind": "button"
+      },
+      {
+        "target": "dialog:session-sync.pair",
+        "title": "Connect a helper account",
+        "text": "The one place a helper's token is typed. Run claude setup-token in that account and paste what it prints. It is checked, sealed for the VPS and never shown or logged. Never paste a token in a chat."
       }
     ],
     "intros": [

@@ -50,6 +50,14 @@ voice through Molly: `sync`, `join`, `heartbeat`, `end`, `state`, `snapshot`, `c
 `X-Axf-Session` / `X-Axf-Account` / `X-Axf-Agent` headers (the CLI, the hook, claude.ai through axHub) or Brett's own
 signed-in console click.
 
+## Helper add-ons (spec § 13-16; credential, role and protocol parts are Opus-built, possible Fable review)
+
+- **Chip:** Main / Helper N under the model badge (`SessionChip`, `GET /chip`).
+- **Own subscription:** `sync.mjs pair`, one-time page, verified, sealed for the VPS host (`creds.mjs`). Run `sync.mjs creds-init` once on the host. Jobs run on that login or wait; there is no path to the main account but Take back.
+- **Bounce:** a real model check (`sync.mjs check-models`); steps a helper can't run go back to Brownie's desk and on to a crew agent on Main.
+- **Desk:** Brownie posts every hop, runs the nudge / whip / yank timers, sass Mild / Spicy / Savage in Settings.
+- **Accounts:** the Claude accounts plugin is the switcher; fallback order is in Settings here (owner-only, off by default).
+
 ## Where things are
 
 - Data: `.axf-console/plugins/session-sync/` (`link.json`, `link.journal.jsonl`, `audit.jsonl`, `posted.json`).
@@ -58,5 +66,6 @@ signed-in console click.
 - Repo: `_claude/sync/<project>.{json,md}` (kept on uninstall; `git rm` it), `.claude/commands/sync.md`, one line in CLAUDE.md.
 - Tests: `python3 apps/console-web/plugins/session-sync/test.py` (routes, roles, SSE, approval through a fake axHub,
   Breakroom posting through a fake crew, consistency), `node apps/console-web/plugins/session-sync/test.mjs` (CLI: two
-  sessions racing, offers, child builds, hook, commit check, sync file).
+  sessions racing, offers, child builds, hook, commit check, sync file), `node apps/console-web/plugins/session-sync/test-helpers.mjs`
+  (pairing, sealing, bounce, the real launcher with a fake claude: never falls back, token never logged).
 - Remove: `node apps/console-web/plugins/session-sync/uninstall.mjs --all`.
