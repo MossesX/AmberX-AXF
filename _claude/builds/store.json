@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1026,
- "updatedAt": "2026-11-05T02:14:33.462Z",
+ "rev": 1027,
+ "updatedAt": "2026-11-05T02:14:57.620Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -85941,14 +85941,14 @@
    "title": "AmberX approvals fix",
    "category": "Fix",
    "detail": "",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-05T02:14:31.670Z",
-   "updatedAt": "2026-11-05T02:14:31.670Z",
+   "updatedAt": "2026-11-05T02:14:32.846Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -85981,12 +85981,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T02:14:32.846Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-05T02:14:31.678Z",
-     "updatedAt": "2026-11-05T02:14:31.678Z"
+     "updatedAt": "2026-11-05T02:14:32.934Z"
     },
     {
      "id": "s2",
@@ -86107,7 +86107,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
