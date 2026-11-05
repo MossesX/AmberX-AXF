@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-05T11:20:23.411Z",
+ "updatedAt": "2026-11-05T11:50:16.901Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -13474,16 +13474,21 @@
    "title": "Handoff 2 add-ons (session chip, helper subscriptions, model bounce, Brownie's helper desk, account switcher)",
    "category": "Plugin extension (session-sync)",
    "detail": "Resume of handoff-2-addenda (died on credits on turn 1, nothing to salvage). All Opus by Brett's override; credential/role/protocol steps are marked 'Opus, possible Fable review'.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/handoff-2-addenda-r2",
    "pr": "",
    "createdAt": "2026-11-05T11:07:45.303Z",
-   "updatedAt": "2026-11-05T11:15:18.069Z",
+   "updatedAt": "2026-11-05T11:50:16.057Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-05T11:50:16.057Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-05T11:20:23.411Z",
+ "updatedAt": "2026-11-05T11:50:16.901Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3740,14 +3740,14 @@
    "title": "UI Review alarm",
    "category": "Feature",
    "detail": "Open UI Review on new items; alarm at 30 min unreviewed; 5 min grace then auto-approve or hold (switch). Addenda: sort/group by PR + ids on rows + deep links; default newest-first; live previews in active theme; per-item Color/Style/Layout preview pickers; Layout Apply adds a follow-up step; layout list = the screen's 3 generated layouts.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-review-alarm",
    "pr": "#343",
    "createdAt": "2026-11-04T21:04:36.261Z",
-   "updatedAt": "2026-11-05T11:11:49.338Z",
+   "updatedAt": "2026-11-05T11:50:16.057Z",
    "builtAt": "",
    "notes": [
     {
@@ -3761,6 +3761,10 @@
     {
      "text": "From three-layouts-per-screen: the Layout dropdown (addendum 5) must offer only the screen's declared layouts. Use reviewLayoutChoicesFor(screen) from @console/screenLayouts (options with the default marked; disabled with 'no layout variants' for older screens). Not built in three-layouts-per-screen because the dropdown and Apply live in this build and PR #343 changes the same UI Review files. Spec: framework/spec/SCREEN-LAYOUTS.md.",
      "at": "2026-11-05T11:11:49.338Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-05T11:50:16.057Z"
     }
    ],
    "approvals": [],
