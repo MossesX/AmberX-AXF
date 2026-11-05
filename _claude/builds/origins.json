@@ -349,6 +349,18 @@
    "from": "detail",
    "addenda": []
   },
+  "assistant-chat-mode": {
+   "said": "\"What's up with the Claude chat in AmberX? Gizmo was loading all the tools, and we were supposed to fix that. So we didn't load the tools, so I could talk quick, like I'm talking to you.\" (Nov 5 2026, voice). Started by, Nov 4 2026, voice: \"In the Claude in my app, it calls all kinds of tools. It takes forever. Why is it calling all these tools?\" … \"Yeah, build that right now.\"",
+   "at": "2026-11-05T18:36:01.911Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "assistant-no-subagents": {
    "said": "Disable sub agents in assistant. 01:56: Mosses chats crash with Claude Code exited with code 1 (CLAUDE_CODE_SUBPROCESS_ENV_SCRUB needs managed settings); the flag set by mosses-build-tools is removed.",
    "at": "2026-10-29",
