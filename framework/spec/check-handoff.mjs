@@ -155,6 +155,47 @@ out.linkErrors = { ok: H.linkErrors(link), bad: H.linkErrors({ $axf: 'x', sessio
 out.normRoundTrip = isDeepStrictEqual(H.normLink(clone(link)), link);
 out.registry = H.registrySnapshot();
 
+/* ---- the add-ons: helper numbers, chip, launch gate, model bounce, the desk's timers ---- */
+{
+  const crew = [{ id: 'brownie', models: ['opus', 'fable'] }, { id: 'earl', models: ['opus', 'fable'] }, { id: 'joey', models: ['opus'] }];
+  const dn = { brownie: 'Brownie', earl: 'Earl the Ear', paulie: 'Ping Paulie', joey: 'Janitor Joey' };
+  const l = H.emptyLink('amberx-axf');
+  H.join(l, { id: 'm', account: 'brett', agent: 'rio' }, T(0)); H.join(l, { id: 'h2', account: 'acct2', agent: 'paulie' }, T(1)); H.join(l, { id: 'h3', account: 'acct3', agent: 'sully' }, T(1));
+  H.approveAccount(l, 'acct2', T(1)); H.approveAccount(l, 'acct3', T(1));
+  H.join(l, { id: 'h2b', account: 'acct2', agent: 'tex' }, T(2));
+  const numbers = { acct2: l.accounts.acct2.helperNo, acct3: l.accounts.acct3.helperNo, brett: l.accounts.brett?.helperNo ?? 0 };
+  const b = { id: 'b1', title: 'B', status: 'running', steps: [{ id: 's1', model: 'Fable', estimate: '10 min' }, { id: 's2', model: 'Opus', estimate: '10 min' }, { id: 's3', model: 'Opus', estimate: '10 min' }] };
+  const gateBefore = H.launchGate(l, 'b1', T(3));
+  const queuedChip = H.sessionChip(l, { id: 'q', status: 'pending', steps: [] }, '', T(3));
+  const mainChip = H.sessionChip(l, b, '', T(3));
+  const o = H.makeOffer(l, { build: 'b1', mode: 'whole', to: 'h2', from: 'm' }, T(3)).offer;
+  const acc = H.respond(l, { session: 'h2', offer: o.id, response: 'accept' }, T(4));
+  const noLogin = H.launchGate(l, 'b1', T(4));
+  const noLoginChip = H.sessionChip(l, 'b1', '', T(4));
+  l.accounts.acct2 = H.normAccount({ ...l.accounts.acct2, credential: { state: 'ok', email: 'two@example.com', plan: 'max', last4: 'wxyz', expiresAt: T(600) }, models: { checkedAt: T(4), can: { opus: true, fable: false } } });
+  const ok = H.launchGate(l, 'b1', T(5));
+  const helperChip = H.sessionChip(l, 'b1', '', T(5));
+  const limited = H.normLink(H.normLink(clone(l))); limited.accounts.acct2.credential.state = 'limited'; limited.accounts.acct2.credential.resetsAt = T(100);
+  const limit = H.launchGate(limited, 'b1', T(6)); const limitOver = H.launchGate(limited, 'b1', T(101));
+  const expired = H.launchGate(clone(l), 'b1', T(601));
+  const eventsBefore = l.events.length;
+  const bounce = H.bounceGaps(l, acc.assignment, b, crew, T(6), dn);
+  const hops = l.events.slice(eventsBefore).map((e) => ({ kind: e.data.kind, from: e.data.from, line: H.channelLine(e, dn) }));
+  const fullReject = (() => { const x = H.emptyLink('p'); H.join(x, { id: 'm', account: 'brett' }, T(0)); H.join(x, { id: 'h', account: 'a2', agent: 'paulie' }, T(0)); x.accounts.brett = H.normAccount({ id: 'brett', models: { can: { fable: false } } }); x.accounts.a2.models.can.fable = false; const bb = { id: 'f', steps: [{ id: 's1', model: 'Fable' }] }; const of = H.makeOffer(x, { build: 'f', mode: 'whole', to: 'h', from: 'm' }, T(0)).offer; const a = H.respond(x, { session: 'h', offer: of.id, response: 'accept' }, T(0)).assignment; const r = H.bounceGaps(x, a, bb, crew, T(0), dn); return { r, status: a.status, lines: x.events.filter((e) => e.type === 'desk').map((e) => e.data.kind) }; })();
+  const unknownNotBounced = H.modelGaps(H.emptyLink('p'), 'x', b, null);
+  const sweep = H.normLink(clone(l)); const sa = Object.values(sweep.assignments).find((a) => !a.main);
+  H.stepState(sweep, { session: 'h2', assignment: sa.id, step: 's2', state: 'started' }, T(10));
+  const hb = (min) => { sweep.sessions.h2.lastSeenAt = T(min); };
+  hb(19); const at19 = H.deskSweep(sweep, [b], crew, T(19), dn);
+  hb(30); const at30 = H.deskSweep(sweep, [b], crew, T(30), dn); const again = H.deskSweep(sweep, [b], crew, T(31), dn);
+  hb(40); const at40 = H.deskSweep(sweep, [b], crew, T(40), dn);
+  hb(50); const at50 = H.deskSweep(sweep, [b], crew, T(50), dn);
+  const sweepKinds = sweep.events.filter((e) => e.type === 'desk' && e.seq > l.seq).map((e) => e.data.kind);
+  const missed = H.normLink(clone(l)); const ma = Object.values(missed.assignments).find((a) => !a.main); H.stepState(missed, { session: 'h2', assignment: ma.id, step: 's2', state: 'started' }, T(10)); missed.sessions.h2.lastSeenAt = T(10); const firedMissed = H.deskSweep(missed, [b], crew, T(30), dn);
+  const lines = Object.fromEntries(H.SASS_LEVELS.map((s) => [s, H.deskLine('nudge', { ref: 'b1 s2', helper: 'Ping Paulie', minutes: 40 }, s)]));
+  out.desk = { numbers, gateBefore, queuedChip, mainChip, noLogin, noLoginChip, ok, helperChip, limit, limitOver, expired, bounce, hops, assignmentAfter: { steps: acc.assignment.steps, status: acc.assignment.status }, fullReject, unknownNotBounced, at19, at30, again, at40, at50, sweepKinds, writeups: sweep.writeups, yanked: sa.id, yankedStatus: sweep.assignments[sa.id].status, firedMissed, missedReason: missed.assignments[ma.id].reason, lines, fallback: { next: H.nextFallback(['main', 'account-2', 'api-credit'], [{ name: 'main' }, { name: 'account-2', models: { fable: false } }], 'main', 'opus'), skipsNoFable: H.nextFallback(['main', 'account-2', 'api-credit'], [{ name: 'main' }, { name: 'account-2', models: { fable: false } }], 'main', 'fable'), end: H.nextFallback(['main', 'account-2'], [{ name: 'account-2' }], 'account-2') }, tokenSafe: !/sk-ant/.test(JSON.stringify(H.normAccount({ id: 'x', token: 'sk-ant-oat-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', credential: { state: 'ok', token: 'sk-ant-oat-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', last4: 'sk-ant-oat' } }))), soon: H.expiresSoon(l.accounts.acct2, T(0), 1) };
+}
+
 /* ---- compare or update ---- */
 if (update) {
   writeFileSync(FX, JSON.stringify({ $axf: 'handoff-fixture@1', note: 'Generated by framework/spec/check-handoff.mjs --update from framework/core/engines/handoff.mjs. Do not edit by hand.', results: out }, null, 1) + '\n');
@@ -209,6 +250,18 @@ check('every event that matters becomes a channel line with the agent\'s name', 
 check('chat filters', out.filters.handovers > 0 && out.filters.blockers.length > 0 && out.filters.mine > 0);
 check('events: resume, next, gap', out.events.since0.events.length === 5 && out.events.since0.more && out.events.sinceLast.events.length === 0 && out.events.gap.gap && out.eventLimit.kept === 5);
 check('link validation', out.linkErrors.ok.length === 0 && out.linkErrors.bad.length >= 5 && out.normRoundTrip);
+
+check('helper numbers are stable: Main has none, helpers start at 2, a second session of an account keeps the number', out.desk.numbers.acct2 === 2 && out.desk.numbers.acct3 === 3 && out.desk.numbers.brett === 0);
+check('session chip: nothing on untaken work, Main on running work, Helper N with the login problem', out.desk.queuedChip === null && out.desk.mainChip.label === 'Main' && out.desk.noLoginChip.label === 'Helper 2: login needed' && out.desk.helperChip.label === 'Helper 2' && /Helper desk: Brownie/.test(out.desk.helperChip.tooltip) && /two@example.com/.test(out.desk.helperChip.tooltip) && /fable no/.test(out.desk.helperChip.tooltip));
+check('never fall back to main: a helper job with no login, an expired login or a limit waits; none of those answers ok or names main', out.desk.gateBefore.owner === 'main' && [out.desk.noLogin, out.desk.limit, out.desk.expired].every((g) => g.ok === false && g.wait === true && g.owner === 'helper') && out.desk.ok.ok === true && out.desk.ok.owner === 'helper' && out.desk.ok.account === 'acct2' && out.desk.limitOver.ok === true);
+check('model bounce: the helper keeps what it can run, the rest goes to the desk, every hop posted as its actor', out.desk.bounce.bounced.join() === 's1' && out.desk.assignmentAfter.steps.join() === 's2,s3' && out.desk.assignmentAfter.status === 'queued' && out.desk.hops.map((h) => `${h.kind}:${h.from}`).join() === 'bounce:paulie,reassign:brownie,picked:earl' && /Rejected b1 s1: no Fable access on this account, back to you @Brownie/.test(out.desk.hops[0].line.text) && /Earl the Ear/.test(out.desk.hops[1].line.text) && /Picked up b1 s1/.test(out.desk.hops[2].line.text));
+check('nothing runnable: the whole job is rejected; nobody on Main can run it either = it waits, no agent invented', out.desk.fullReject.status === 'rejected' && out.desk.fullReject.lines.join() === 'bounce,no-agent');
+check('an unchecked model is never a guess: no gaps, reported unknown', out.desk.unknownNotBounced.gaps.length === 0 && out.desk.unknownNotBounced.unknown.includes('fable'));
+check('the whip: nudge at 2x, whip at 3x, yank at 4x with a write-up and a reassign, each once', out.desk.at19.length === 0 && out.desk.at30[0]?.level === 1 && out.desk.again.length === 0 && out.desk.at40[0]?.level === 2 && out.desk.at50[0]?.level === 3 && out.desk.yankedStatus === 'taken-back' && out.desk.writeups.length === 1 && out.desk.sweepKinds.join() === 'nudge,whip,yank,reassign,picked');
+check('a missed heartbeat yanks straight away', out.desk.firedMissed[0]?.level === 3 && /missed heartbeat/.test(out.desk.missedReason));
+check('sass levels differ and each names the build, step and what is next', new Set(Object.values(out.desk.lines)).size === 3 && Object.values(out.desk.lines).every((x) => /b1 s2/.test(x) && !/\{/.test(x)));
+check('fallback order respects model access', out.desk.fallback.next.name === 'account-2' && out.desk.fallback.skipsNoFable.name === 'api-credit' && out.desk.fallback.end === null);
+check('the link never carries a token', out.desk.tokenSafe);
 
 console.log(`${fails ? '✗' : '✓'} handoff@1 / session-link@1: ${n - fails}/${n} checks`);
 process.exit(fails ? 1 : 0);

@@ -563,7 +563,10 @@
     "backAt": "",
     "reason": "",
     "stepStates": {},
-    "parent": ""
+    "parent": "",
+    "main": false,
+    "bouncedFrom": "",
+    "escalation": null
    },
    "offerStatus": "accepted",
    "reaction": {
@@ -1831,6 +1834,7 @@
     "replan",
     "handover",
     "sync",
+    "desk",
     "audit"
    ],
    "helperStates": [
@@ -1839,6 +1843,35 @@
     "working",
     "lunch"
    ],
+   "credentialStates": [
+    "none",
+    "ok",
+    "expired",
+    "limited",
+    "revoked"
+   ],
+   "sassLevels": [
+    "mild",
+    "spicy",
+    "savage"
+   ],
+   "deskKinds": [
+    "bounce",
+    "reassign",
+    "picked",
+    "no-agent",
+    "nudge",
+    "whip",
+    "yank",
+    "landed",
+    "waiting"
+   ],
+   "helperDesk": {
+    "agent": "brownie",
+    "name": "Brownie",
+    "title": "Helper desk: Brownie",
+    "skill": "helper-desk"
+   },
    "channel": "sessions",
    "messageKinds": [
     "session",
@@ -1892,12 +1925,23 @@
     "eventLimit": 2000,
     "freshForSec": 1800,
     "approveNewAccounts": true,
-    "offerTtlSec": 3600
+    "offerTtlSec": 3600,
+    "deskAgent": "brownie",
+    "sass": "spicy",
+    "nudgeAt": 2,
+    "whipAt": 3,
+    "yankAt": 4,
+    "missedHeartbeatSec": 900,
+    "defaultStepMin": 30,
+    "fallbackOrder": [],
+    "fallbackAuto": false
    },
    "ownerSettings": [
     "enforce",
     "approveNewAccounts",
-    "slotSplit"
+    "slotSplit",
+    "fallbackOrder",
+    "fallbackAuto"
    ],
    "actions": {
     "state": {
@@ -2039,8 +2083,304 @@
     "revoke": {
      "primary": false,
      "secondary": false
+    },
+    "account-report": {
+     "primary": true,
+     "secondary": true
+    },
+    "pair-start": {
+     "primary": true,
+     "secondary": true
+    },
+    "desk-sweep": {
+     "primary": true,
+     "secondary": false
+    },
+    "accounts-read": {
+     "primary": true,
+     "secondary": true
     }
    }
+  },
+  "desk": {
+   "numbers": {
+    "acct2": 2,
+    "acct3": 3,
+    "brett": 0
+   },
+   "gateBefore": {
+    "ok": true,
+    "owner": "main"
+   },
+   "queuedChip": null,
+   "mainChip": {
+    "kind": "main",
+    "label": "Main",
+    "agent": "rio",
+    "account": "brett",
+    "since": "2026-11-04T19:00:00.000Z",
+    "desk": "",
+    "problem": null,
+    "assignment": "",
+    "tooltip": "Main session · agent rio · account brett"
+   },
+   "noLogin": {
+    "ok": false,
+    "wait": true,
+    "owner": "helper",
+    "account": "acct2",
+    "assignment": "a-8",
+    "helperNo": 2,
+    "reason": "Helper 2: login needed",
+    "problem": {
+     "kind": "login",
+     "text": "login needed",
+     "resetsAt": ""
+    }
+   },
+   "noLoginChip": {
+    "kind": "helper",
+    "label": "Helper 2: login needed",
+    "agent": "paulie",
+    "account": "acct2",
+    "since": "2026-11-04T19:04:00.000Z",
+    "desk": "Helper desk: Brownie",
+    "problem": {
+     "kind": "login",
+     "text": "login needed",
+     "resetsAt": ""
+    },
+    "assignment": "a-8",
+    "tooltip": "Helper 2 · agent paulie · account acct2 · since 2026-11-04T19:04:00.000Z · Helper desk: Brownie"
+   },
+   "ok": {
+    "ok": true,
+    "owner": "helper",
+    "account": "acct2",
+    "assignment": "a-8",
+    "helperNo": 2
+   },
+   "helperChip": {
+    "kind": "helper",
+    "label": "Helper 2",
+    "agent": "paulie",
+    "account": "acct2",
+    "since": "2026-11-04T19:04:00.000Z",
+    "desk": "Helper desk: Brownie",
+    "problem": null,
+    "assignment": "a-8",
+    "tooltip": "Helper 2 · agent paulie · account two@example.com · since 2026-11-04T19:04:00.000Z · models: opus yes, fable no · Helper desk: Brownie"
+   },
+   "limit": {
+    "ok": false,
+    "wait": true,
+    "owner": "helper",
+    "account": "acct2",
+    "assignment": "a-8",
+    "helperNo": 2,
+    "reason": "Helper 2: limit reached",
+    "problem": {
+     "kind": "limit",
+     "text": "limit reached",
+     "resetsAt": "2026-11-04T20:40:00.000Z"
+    }
+   },
+   "limitOver": {
+    "ok": true,
+    "owner": "helper",
+    "account": "acct2",
+    "assignment": "a-8",
+    "helperNo": 2
+   },
+   "expired": {
+    "ok": false,
+    "wait": true,
+    "owner": "helper",
+    "account": "acct2",
+    "assignment": "a-8",
+    "helperNo": 2,
+    "reason": "Helper 2: login needed",
+    "problem": {
+     "kind": "login",
+     "text": "login needed",
+     "resetsAt": ""
+    }
+   },
+   "bounce": {
+    "bounced": [
+     "s1"
+    ],
+    "reason": "no Fable access on this account",
+    "rejected": false,
+    "reassigned": [
+     {
+      "reassigned": true,
+      "assignment": {
+       "id": "a-10",
+       "build": "b1",
+       "steps": [
+        "s1"
+       ],
+       "session": "m",
+       "account": "brett",
+       "agent": "earl",
+       "offer": "",
+       "status": "queued",
+       "order": 0,
+       "since": "2026-11-04T19:06:00.000Z",
+       "updatedAt": "2026-11-04T19:06:00.000Z",
+       "claims": [],
+       "backAt": "",
+       "reason": "no Fable access on this account",
+       "stepStates": {},
+       "parent": "",
+       "main": true,
+       "bouncedFrom": "h2",
+       "escalation": null
+      },
+      "agent": "earl"
+     }
+    ],
+    "unknown": []
+   },
+   "hops": [
+    {
+     "kind": "bounce",
+     "from": "paulie",
+     "line": {
+      "kind": "handover",
+      "channel": "sessions",
+      "text": "Rejected b1 s1: no Fable access on this account, back to you @Brownie",
+      "jobId": "b1.s1",
+      "from": "paulie"
+     }
+    },
+    {
+     "kind": "reassign",
+     "from": "brownie",
+     "line": {
+      "kind": "handover",
+      "channel": "sessions",
+      "text": "No fable? Cute. Back to the big leagues, Earl the Ear's got b1 s1. Status: back with the desk.",
+      "jobId": "b1.s1",
+      "from": "brownie"
+     }
+    },
+    {
+     "kind": "picked",
+     "from": "earl",
+     "line": {
+      "kind": "handover",
+      "channel": "sessions",
+      "text": "Picked up b1 s1.",
+      "jobId": "b1.s1",
+      "from": "earl"
+     }
+    }
+   ],
+   "assignmentAfter": {
+    "steps": [
+     "s2",
+     "s3"
+    ],
+    "status": "queued"
+   },
+   "fullReject": {
+    "r": {
+     "bounced": [
+      "s1"
+     ],
+     "reason": "no Fable access on this account",
+     "rejected": true,
+     "reassigned": [
+      {
+       "reassigned": false
+      }
+     ],
+     "unknown": []
+    },
+    "status": "rejected",
+    "lines": [
+     "bounce",
+     "no-agent"
+    ]
+   },
+   "unknownNotBounced": {
+    "gaps": [],
+    "unknown": [
+     "fable",
+     "opus"
+    ],
+    "keep": [
+     "s1",
+     "s2",
+     "s3"
+    ]
+   },
+   "at19": [],
+   "at30": [
+    {
+     "assignment": "a-8",
+     "level": 1
+    }
+   ],
+   "again": [],
+   "at40": [
+    {
+     "assignment": "a-8",
+     "level": 2
+    }
+   ],
+   "at50": [
+    {
+     "assignment": "a-8",
+     "level": 3
+    }
+   ],
+   "sweepKinds": [
+    "nudge",
+    "whip",
+    "yank",
+    "reassign",
+    "picked"
+   ],
+   "writeups": [
+    {
+     "at": "2026-11-04T19:50:00.000Z",
+     "account": "acct2",
+     "agent": "paulie",
+     "build": "b1",
+     "step": "s2",
+     "line": "40 min on a 10 min step on b1 s2"
+    }
+   ],
+   "yanked": "a-8",
+   "yankedStatus": "taken-back",
+   "firedMissed": [
+    {
+     "assignment": "a-8",
+     "level": 3
+    }
+   ],
+   "missedReason": "yanked by the helper desk: missed heartbeat",
+   "lines": {
+    "mild": "Ping Paulie, b1 s2 is past twice its estimate (40 min in). Please post a status or hand it back.",
+    "spicy": "Ping Paulie, you been sittin' on b1 s2 for 40 minutes. Move it or lose it.",
+    "savage": "Ping Paulie, 40 minutes on b1 s2? My grandmother ships faster. Post a status or give it back."
+   },
+   "fallback": {
+    "next": {
+     "name": "account-2",
+     "api": false
+    },
+    "skipsNoFable": {
+     "name": "api-credit",
+     "api": true
+    },
+    "end": null
+   },
+   "tokenSafe": true,
+   "soon": true
   }
  }
 }

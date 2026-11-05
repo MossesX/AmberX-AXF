@@ -81,6 +81,7 @@
     "replan",
     "handover",
     "sync",
+    "desk",
     "audit"
   ],
   "helperStates": [
@@ -89,6 +90,35 @@
     "working",
     "lunch"
   ],
+  "credentialStates": [
+    "none",
+    "ok",
+    "expired",
+    "limited",
+    "revoked"
+  ],
+  "sassLevels": [
+    "mild",
+    "spicy",
+    "savage"
+  ],
+  "deskKinds": [
+    "bounce",
+    "reassign",
+    "picked",
+    "no-agent",
+    "nudge",
+    "whip",
+    "yank",
+    "landed",
+    "waiting"
+  ],
+  "helperDesk": {
+    "agent": "brownie",
+    "name": "Brownie",
+    "title": "Helper desk: Brownie",
+    "skill": "helper-desk"
+  },
   "channel": "sessions",
   "messageKinds": [
     "session",
@@ -142,12 +172,23 @@
     "eventLimit": 2000,
     "freshForSec": 1800,
     "approveNewAccounts": true,
-    "offerTtlSec": 3600
+    "offerTtlSec": 3600,
+    "deskAgent": "brownie",
+    "sass": "spicy",
+    "nudgeAt": 2,
+    "whipAt": 3,
+    "yankAt": 4,
+    "missedHeartbeatSec": 900,
+    "defaultStepMin": 30,
+    "fallbackOrder": [],
+    "fallbackAuto": false
   },
   "ownerSettings": [
     "enforce",
     "approveNewAccounts",
-    "slotSplit"
+    "slotSplit",
+    "fallbackOrder",
+    "fallbackAuto"
   ],
   "actions": {
     "state": {
@@ -289,6 +330,22 @@
     "revoke": {
       "primary": false,
       "secondary": false
+    },
+    "account-report": {
+      "primary": true,
+      "secondary": true
+    },
+    "pair-start": {
+      "primary": true,
+      "secondary": true
+    },
+    "desk-sweep": {
+      "primary": true,
+      "secondary": false
+    },
+    "accounts-read": {
+      "primary": true,
+      "secondary": true
     }
   }
 }
