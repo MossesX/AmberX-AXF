@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-05T23:30:58.045Z",
+ "updatedAt": "2026-11-05T23:51:04.095Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14163,6 +14163,92 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw46igjy0ayc9l"
+    }
+   ]
+  },
+  {
+   "id": "ai-keys-console-store",
+   "title": "AI keys: one console-wide store, VPS accounts listed and switchable by API",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-05T23:51:02.650Z",
+   "updatedAt": "2026-11-05T23:51:02.650Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "AI keys: store every key in the console, not per user\n\nBrett saved 4 Claude subscription accounts and 1 API key (5 keys) in AI keys while logged into the console as himself. The VPS side (apps/console-web/plugins/ai-keys/switch.mjs, deploy/claude-headless.sh, the /api/plugins/ai-keys routes called with AXF_TOKEN from /opt/axf/.axf-console/env) authenticates as a different console identity, and GET /keys returns NO keys. So Amber and the VPS can't see or switch accounts without Brett pressing a button.",
+    "at": "2026-11-05T23:51:02.650Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Admin + service-token guard, per-user store migration with .bak, tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw478hgt04i202"
+    },
+    {
+     "id": "s2",
+     "text": "VPS accounts in GET /keys, POST /active and /switch through axf.claude-accounts@1, fix dropped [token]/[api key] rows",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw478hgt05vqub"
+    },
+    {
+     "id": "s3",
+     "text": "Docs section 8, all gates, PR to the merge queue, redeploy, verify",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw478hgt066hff"
     }
    ]
   }

@@ -73,6 +73,18 @@
    "from": "detail",
    "addenda": []
   },
+  "ai-keys-console-store": {
+   "said": "AI keys: store every key in the console, not per user\n\nBrett saved 4 Claude subscription accounts and 1 API key (5 keys) in AI keys while logged into the console as himself. The VPS side (apps/console-web/plugins/ai-keys/switch.mjs, deploy/claude-headless.sh, the /api/plugins/ai-keys routes called with AXF_TOKEN from /opt/axf/.axf-console/env) authenticates as a different console identity, and GET /keys returns NO keys. So Amber and the VPS can't see or switch accounts without Brett pressing a button.",
+   "at": "2026-11-05T23:51:02.650Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "ai-keys-new-format": {
    "said": "Put someone else on it.",
    "at": "2026-11-05T00:00:00Z",
