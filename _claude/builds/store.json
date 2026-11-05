@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1078,
- "updatedAt": "2026-11-05T23:51:19.314Z",
+ "rev": 1079,
+ "updatedAt": "2026-11-05T23:53:38.647Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -87407,10 +87407,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/ai-keys-console-store-2",
+   "pr": "#358",
    "createdAt": "2026-11-05T23:51:02.650Z",
-   "updatedAt": "2026-11-05T23:51:04.566Z",
+   "updatedAt": "2026-11-05T23:53:37.899Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -87503,7 +87503,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

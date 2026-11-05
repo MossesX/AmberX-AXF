@@ -704,7 +704,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 16:56 UTC · `settings-placement-everywhere` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
 - 2026-11-04 16:56 UTC · `live-sessions-plugin` s3 done (current) · orchestrator
 - 2026-11-04 17:03 UTC · `live-sessions-plugin` s4 done (current) · orchestrator
 - 2026-11-04 17:03 UTC · `plugin-settings-placement` note (current) · foreign-write
@@ -1104,6 +1103,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-05 23:51 UTC · `ai-keys-console-store` s1 done, → running (current) · orchestrator
 - 2026-11-05 23:51 UTC · `ai-keys-console-store` s2 done (current) · orchestrator
 - 2026-11-05 23:51 UTC · `console-account-picker` note (current) · orchestrator
+- 2026-11-05 23:53 UTC · `ai-keys-console-store` branch claude/ai-keys-console-store-2, PR #358 (current) · builds-live
 
 ## Token passes (log)
 

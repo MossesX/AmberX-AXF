@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-05T23:51:19.314Z",
+ "updatedAt": "2026-11-05T23:53:38.647Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14180,10 +14180,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/ai-keys-console-store-2",
+   "pr": "#358",
    "createdAt": "2026-11-05T23:51:02.650Z",
-   "updatedAt": "2026-11-05T23:51:04.566Z",
+   "updatedAt": "2026-11-05T23:53:37.899Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
