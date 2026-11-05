@@ -122,6 +122,8 @@ jobs:
         run: node framework/spec/check-conform.mjs
       - name: Plugin pages follow the design language (page heads with eyebrow + title + one sentence, no spinners; DESIGN-LANGUAGE §12)
         run: node framework/cli/check-plugin-pages.mjs
+      - name: Three layouts per screen — every new plugin screen declares 3 layouts + a default in plugin.json "screens" (screen-layouts@1; older screens grandfathered in framework/spec/screen-layouts-baseline.json)
+        run: node framework/cli/check-screen-layouts.mjs
       - name: Session check-in plugin (installer keeps other hooks, archive scrubs secrets, hook output)
         run: node apps/console-web/plugins/session-checkin/test.mjs
       - name: Project wizard plugin (new AXF app / GitHub / folder sources, GitHub + VPS homes, Claude.ai kit, folder guard)
@@ -260,6 +262,7 @@ jobs:
             npx -y tsx framework/spec/check-brand.mts                  # logo-mark / animated-logo / icon-pack / branding rules, SVG output, starters
             npx -y tsx framework/spec/check-design-language.mts        # DESIGN-LANGUAGE.md quality bar over every starter + the brand generators
             npx -y tsx framework/spec/check-toolbars.mts               # toolbar library: live groups (providers), toggles, widgets, TOOLBARS.md + asset-library.mjs --check
+            npx -y tsx framework/spec/check-screen-layouts.mts         # screen-layouts@1: plugin@1 screens contract, hidden-by-default layout switcher, shared toolbar + a plugin's copy, UI Review choices, runtime actions
             npx -y tsx framework/spec/check-style-packages.mts         # style-package@1: validators agree, 25 starter sets ship + are distinct, runtime apply paths
             node framework/cli/brand-gen.mjs library --check                # brand library: 250 logos + 250 animated + 100 icon packs, valid, in sync, within the size budget
             npx -y tsx framework/spec/check-interface.mts              # interface@1 + scopes: rules, resolution, scoped sheets, runtime scoped view

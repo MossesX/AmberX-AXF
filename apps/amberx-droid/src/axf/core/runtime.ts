@@ -14,6 +14,8 @@ import { LAYOUT_VIEWPORTS, layoutViewports, layoutVars } from './engines/layout'
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
 import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normalizeCustomSlot, type CustomSlot, type CustomValues } from './engines/customize';
 import { CONTROL_TOKEN_SLOTS, applyTokenOverrides, effectiveTokenOverrides } from './engines/control-tokens.mjs';
+import { CHROME_INSTANCE_KEY, normalizeInstanceOverride } from './engines/chrome-settings-rules.mjs';
+import { LAYOUT_SWITCHER_TOOLBAR, SCREEN_LAYOUTS_PROVIDER, SCREEN_LAYOUT_ACTIONS, SCREEN_LAYOUT_CTX, SCREEN_LAYOUT_KEYS, layoutMenuItems, layoutToolbarMenu, layoutToolbarShown, newToolbarCopy, normalizeScreen, parseToolbarCopy, resolveLayoutToolbar, resolveScreenLayout, screenLayoutKey, screenTitleMenu, screenToolbarKey, toolbarCopyKey, viewOfLayoutKey, type ResolvedLayoutToolbar, type ScreenSpec } from './engines/screen-layouts.mjs';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { normalizeDockLayout } from './engines/dock';
@@ -723,7 +725,9 @@ export class AxfRuntime {
     return {
       gate: (r) => this.gate(r),
       counter: (n) => this.badge(n),
-      setting: (k) => this.settings.get(k),
+      // `axf.screen.<view>.layout` reads as the effective pick (the default when nothing is saved), so the switcher's
+      // check mark is right on first sight (screen-layouts@1)
+      setting: (k) => { const v = viewOfLayoutKey(k); return v && this.screenLayouts(v) ? this.screenLayout(v) : this.settings.get(k); },
       hidden: (t) => this.slotHidden(t as AssetType),
       providers: this.appMenuProviderIds(),
       taken: (it) => this.takenByHost(it),
@@ -791,6 +795,8 @@ export class AxfRuntime {
       }).filter((i) => i.action);
     // Every registered view (so hiding the nav loses nothing); the nav-menu's own tree; the toolbar's items and widget actions.
     this.registerAppMenuProvider('views', { items: fromSearch(['view'], 'layout', (f) => (f.view ? `nav:${f.view}` : undefined)), max: 40, module: 'axf' });
+    // The current screen's layouts (screen-layouts@1): the shared layout-switcher toolbar's buttons; empty on a screen without them.
+    this.registerAppMenuProvider(SCREEN_LAYOUTS_PROVIDER, { module: 'axf', max: 8, items: () => this.screenLayoutRows(this.state.view) });
     this.registerAppMenuProvider('nav', {
       module: 'axf', max: 40,
       items: () => {
@@ -829,6 +835,91 @@ export class AxfRuntime {
     this.registerAppMenuProvider('dialogs', { items: fromSearch(['dialog'], 'box', (f) => (f.id ? `dialog:${f.id}` : undefined)), max: 30, module: 'axf' });
     this.registerAppMenuProvider('chrome', { items: () => chromeToggleItems(), module: 'axf' });
   }
+
+  /* ---------------- screen layouts (screen-layouts@1; engines/screen-layouts.mjs) ---------------- */
+
+  private readonly screenLayoutDecls = new Map<string, { module: string; spec: ScreenSpec }>();
+
+  /**
+   * A library declares a screen's layouts (`ViewDef.layouts` / `defaultLayout`, read by installLibraries; plugin.json
+   * `screens` says the same for tooling). Three or more, one default; the switcher and the title menu read them here.
+   */
+  declareScreenLayouts(module: string, view: string, spec: unknown): void {
+    const n = normalizeScreen(spec);
+    if (n && n.layouts.length) this.screenLayoutDecls.set(view, { module, spec: n });
+  }
+
+  /** Drop every declaration of a module (its library was removed). */
+  undeclareScreenLayouts(module: string): void {
+    for (const [v, d] of this.screenLayoutDecls) if (d.module === module) this.screenLayoutDecls.delete(v);
+  }
+
+  /** A screen's declared layouts, or null when it has none (an older plugin, or not a plugin screen). */
+  screenLayouts(view: string): ScreenSpec | null { return this.screenLayoutDecls.get(view)?.spec ?? null; }
+
+  /** The module (plugin / library id) that declared a screen's layouts, '' when none. */
+  screenLayoutOwner(view: string): string { return this.screenLayoutDecls.get(view)?.module ?? ''; }
+
+  /** Every screen with layouts: view → { module, spec } (settings, UI Review). */
+  screensWithLayouts(): { view: string; module: string; spec: ScreenSpec }[] {
+    return [...this.screenLayoutDecls.entries()].map(([view, d]) => ({ view, module: d.module, spec: d.spec }));
+  }
+
+  /** The layout a screen shows now: its saved pick on this device, else its default. '' without layouts. */
+  screenLayout(view: string): string { return resolveScreenLayout(this.screenLayouts(view), this.settings.get(screenLayoutKey(view))); }
+
+  /** Pick a screen's layout (remembered per screen, per device). An unknown id is ignored with a note. */
+  setScreenLayout(view: string, id: string): void {
+    const spec = this.screenLayouts(view);
+    if (!spec) return;
+    if (!spec.layouts.some((l) => l.id === id)) { this.terminal.warn('screens', `${view}: no layout "${id}"`); return; }
+    if (id === spec.default) this.settings.clear(screenLayoutKey(view)); else this.settings.set(screenLayoutKey(view), id);
+    this.set({});
+  }
+
+  /** The switcher's rows for a screen (the `screen-layouts` live list). */
+  screenLayoutRows(view: string): MenuItem[] { return layoutMenuItems(view, this.screenLayouts(view), this.screenLayout(view)) as MenuItem[]; }
+
+  /** Is the layout toolbar shown on a screen? Hidden by default; the screen's own choice beats the app-wide switch. */
+  layoutToolbarShown(view: string): boolean { return layoutToolbarShown((k) => this.settings.get(k), view, this.screenLayouts(view)); }
+
+  /** Show (true), hide (false) or inherit (null) the layout toolbar on a screen, on this device. */
+  setLayoutToolbarShown(view: string, on: boolean | null): void {
+    if (on === null) this.settings.clear(screenToolbarKey(view)); else this.settings.set(screenToolbarKey(view), on ? 'show' : 'hide');
+    this.set({});
+  }
+
+  /** Show the layout toolbar on every screen that has layouts (setting `axf.screens.layoutToolbar`, off by default). */
+  layoutToolbarDefault(): boolean { return this.settings.get(SCREEN_LAYOUT_KEYS.toolbarDefault) === true; }
+  setLayoutToolbarDefault(on: boolean): void { if (on) this.settings.set(SCREEN_LAYOUT_KEYS.toolbarDefault, true); else this.settings.clear(SCREEN_LAYOUT_KEYS.toolbarDefault); this.set({}); }
+
+  /** A plugin's own copy of the switcher ({ id, data }: only what it changed; inherits the rest), or null = the shared one. */
+  layoutToolbarCopy(pluginId: string): import('./engines/screen-layouts.mjs').ToolbarCopy | null {
+    return parseToolbarCopy(this.settings.get(toolbarCopyKey(pluginId)), pluginId);
+  }
+
+  /** Give a plugin its own copy (a fresh one inherits everything) or take it back (null). Stored on this device. */
+  setLayoutToolbarCopy(pluginId: string, copy: import('./engines/screen-layouts.mjs').ToolbarCopy | null): void {
+    const had = this.layoutToolbarCopy(pluginId);
+    if (copy) this.settings.set(toolbarCopyKey(pluginId), JSON.stringify(copy)); else this.settings.clear(toolbarCopyKey(pluginId));
+    if (!copy && had) this.settings.clear(CHROME_INSTANCE_KEY('toolbar', had.id)); // its edits go with it
+    this.toast(copy ? 'This plugin now has its own copy of the layout toolbar. It follows the shared one until you edit it.' : 'Back to the shared layout toolbar.', 'success', 'Layout toolbar');
+    this.set({});
+  }
+
+  /**
+   * The toolbar a plugin's layout toolbar draws: the shared `layout-switcher` asset as registered now, or the plugin's
+   * copy over it. null when the shared asset isn't registered in this app.
+   */
+  resolveLayoutToolbar(pluginId: string): ResolvedLayoutToolbar | null {
+    const shared = this.registry.get('toolbar', LAYOUT_SWITCHER_TOOLBAR) as { id: string; name: string; data: Record<string, unknown> } | undefined;
+    const copy = pluginId ? this.layoutToolbarCopy(pluginId) : null;
+    const overrides = (id: string) => normalizeInstanceOverride('toolbar', this.settings.get(CHROME_INSTANCE_KEY('toolbar', id)));
+    return resolveLayoutToolbar(shared, copy, { shared: overrides(LAYOUT_SWITCHER_TOOLBAR), copy: copy ? overrides(copy.id) : {} });
+  }
+
+  /** The chrome-settings instance a plugin's layout toolbar edits: the shared toolbar, or the plugin's copy once it has one. */
+  layoutToolbarInstance(pluginId: string): string { return this.layoutToolbarCopy(pluginId)?.id ?? LAYOUT_SWITCHER_TOOLBAR; }
 
   /* ---------------- contributed context-menu items ---------------- */
 
@@ -2622,6 +2713,18 @@ export class AxfRuntime {
     // Window tab groups (payload = a group id) get the windowing menu; every other tab row (a TabGroup component,
     // payload = its settings id) gets only the shared chrome block (react/components/ChromeContext.tsx).
     this.contextExtras.set('tab-group', (_t, payload) => (payload && wm.state.groups[payload] ? wm.groupMenu() : []));
+    // screen-layouts@1 (Brett, Nov 4 2026): pick a screen's layout, show / hide its layout toolbar, give a plugin its
+    // own copy of the shared switcher or go back to it. Every one takes the current screen when no view is named.
+    a.register(SCREEN_LAYOUT_ACTIONS.pick, ([id, view]) => { if (id) this.setScreenLayout(view || this.state.view, id); }, { label: 'Pick a screen layout', params: true });
+    a.register(SCREEN_LAYOUT_ACTIONS.toolbar, ([v = 'toggle', view]) => {
+      const target = view || this.state.view;
+      const on = v === 'toggle' ? !this.layoutToolbarShown(target) : v === 'show' ? true : v === 'hide' ? false : null;
+      this.setLayoutToolbarShown(target, on);
+    }, { label: 'Show or hide the layout toolbar', params: true });
+    a.register(SCREEN_LAYOUT_ACTIONS.copy, ([plugin]) => { if (plugin) this.setLayoutToolbarCopy(plugin, newToolbarCopy(plugin)); }, { label: 'Give this plugin its own copy of the layout toolbar', params: true });
+    a.register(SCREEN_LAYOUT_ACTIONS.shared, ([plugin]) => { if (plugin) this.setLayoutToolbarCopy(plugin, null); }, { label: 'Go back to the shared layout toolbar', params: true });
+    this.contextExtras.set(SCREEN_LAYOUT_CTX.title, (_t, payload) => { const view = payload || this.state.view; return screenTitleMenu(view, this.screenLayouts(view), this.layoutToolbarShown(view)) as import('./engines/windows').MenuEntry[]; });
+    this.contextExtras.set(SCREEN_LAYOUT_CTX.toolbar, (_t, payload) => { const plugin = payload || ''; return layoutToolbarMenu(this.state.view, plugin, !!this.layoutToolbarCopy(plugin)) as import('./engines/windows').MenuEntry[]; });
     this.contextExtras.set('window-title', () => wm.windowMenu());
   }
 }

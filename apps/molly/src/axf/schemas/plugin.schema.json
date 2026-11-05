@@ -212,6 +212,35 @@
       "type": "object",
       "description": "plugin-lifecycle@1: dataDir, env, mentions"
     },
+    "screens": {
+      "description": "screen-layouts@1 (Brett, Nov 4 2026: \"From now on, all plugin screens get three layouts, and come with a toolbar to select which one, with the toolbar hidden by default.\" \"Not old ones, only new ones.\"): for every page the plugin provides (view:<id>), its layout presets (three or more; Compact / Standard / Spacious, List / Grid / Split, whatever fits that screen) and which is the default. The web library declares the same on the view (views.<id>.layouts / defaultLayout); this mirrors it so tooling (CI, UI Review, the scaffold) reads it without loading code. The switcher is the one shared toolbar asset toolbar/layout-switcher (axf.toolbar.layout-switcher), hidden by default. Required for every plugin screen added after Nov 4 2026 (framework/cli/check-screen-layouts.mjs; earlier screens are grandfathered in framework/spec/screen-layouts-baseline.json).",
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$" },
+      "additionalProperties": {
+        "type": "object",
+        "required": ["layouts"],
+        "additionalProperties": false,
+        "properties": {
+          "layouts": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "required": ["id", "label"],
+              "additionalProperties": false,
+              "properties": {
+                "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,31}$" },
+                "label": { "type": "string", "minLength": 1, "maxLength": 40 },
+                "icon": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,39}$" },
+                "description": { "type": "string", "maxLength": 200 }
+              }
+            }
+          },
+          "default": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,31}$", "description": "one of the layout ids (default: the first)" }
+        }
+      }
+    },
     "opens": {
       "description": "Where the plugin's primary UI (opensUi, else its first page, else its first dialog) opens by default: the main application area, a floating window, a dialog or a tab group (engines/placement.ts). Its settings tab carries the choice (setting axf.placement.<id>), which wins. false = it has no page or dialog. Filled by the build engine (build-defaults@1 plugin.opens.main: main).",
       "default": "main",

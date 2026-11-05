@@ -1,0 +1,950 @@
+{
+  "spec": {
+    "schema": "screen-layouts@1",
+    "toolbar": "layout-switcher",
+    "qualified": "axf.toolbar.layout-switcher",
+    "provider": "screen-layouts",
+    "min": 3,
+    "max": 8,
+    "keys": {
+      "toolbarDefault": "axf.screens.layoutToolbar",
+      "perScreen": "axf.screen.",
+      "copy": "axf.screens.layoutToolbar.copy."
+    },
+    "actions": {
+      "pick": "screen.layout",
+      "toolbar": "screen.layout-toolbar",
+      "copy": "screen.layout-toolbar.copy",
+      "shared": "screen.layout-toolbar.shared"
+    },
+    "ctx": {
+      "title": "screen-title",
+      "toolbar": "layout-toolbar"
+    },
+    "starters": [
+      {
+        "id": "compact",
+        "label": "Compact",
+        "icon": "list",
+        "description": "Tight rows, more on one screen."
+      },
+      {
+        "id": "standard",
+        "label": "Standard",
+        "icon": "layout",
+        "description": "The everyday arrangement."
+      },
+      {
+        "id": "spacious",
+        "label": "Spacious",
+        "icon": "grid",
+        "description": "Room around every block, big targets."
+      }
+    ],
+    "starterDefault": "standard",
+    "overrides": [
+      "inherit",
+      "show",
+      "hide"
+    ]
+  },
+  "keys": {
+    "layout": "axf.screen.home.layout",
+    "toolbar": "axf.screen.home.layoutToolbar",
+    "copy": "axf.screens.layoutToolbar.copy.a.b.ok",
+    "viewOf": {
+      "axf.screen.home.layout": "home",
+      "axf.screen.home.layoutToolbar": null,
+      "other": null
+    }
+  },
+  "manifests": {
+    "ok-three": {
+      "id": "a.b.ok",
+      "provides": [
+        "view:home"
+      ],
+      "screens": {
+        "home": {
+          "layouts": [
+            {
+              "id": "compact",
+              "label": "Compact",
+              "icon": "list"
+            },
+            {
+              "id": "standard",
+              "label": "Standard",
+              "icon": "layout",
+              "description": "The everyday arrangement."
+            },
+            {
+              "id": "spacious",
+              "label": "Spacious",
+              "icon": "grid"
+            }
+          ],
+          "default": "standard"
+        }
+      }
+    },
+    "ok-no-default": {
+      "id": "a.b.nodef",
+      "provides": [
+        "view:home"
+      ],
+      "screens": {
+        "home": {
+          "layouts": [
+            {
+              "id": "compact",
+              "label": "Compact",
+              "icon": "list"
+            },
+            {
+              "id": "standard",
+              "label": "Standard",
+              "icon": "layout",
+              "description": "The everyday arrangement."
+            },
+            {
+              "id": "spacious",
+              "label": "Spacious",
+              "icon": "grid"
+            }
+          ]
+        }
+      }
+    },
+    "two-layouts": {
+      "id": "a.b.two",
+      "provides": [
+        "view:home"
+      ],
+      "screens": {
+        "home": {
+          "layouts": [
+            {
+              "id": "compact",
+              "label": "Compact",
+              "icon": "list"
+            },
+            {
+              "id": "standard",
+              "label": "Standard",
+              "icon": "layout",
+              "description": "The everyday arrangement."
+            }
+          ]
+        }
+      }
+    },
+    "bad-default": {
+      "id": "a.b.baddef",
+      "provides": [
+        "view:home"
+      ],
+      "screens": {
+        "home": {
+          "layouts": [
+            {
+              "id": "compact",
+              "label": "Compact",
+              "icon": "list"
+            },
+            {
+              "id": "standard",
+              "label": "Standard",
+              "icon": "layout",
+              "description": "The everyday arrangement."
+            },
+            {
+              "id": "spacious",
+              "label": "Spacious",
+              "icon": "grid"
+            }
+          ],
+          "default": "nope"
+        }
+      }
+    },
+    "dup-id": {
+      "id": "a.b.dup",
+      "provides": [
+        "view:home"
+      ],
+      "screens": {
+        "home": {
+          "layouts": [
+            {
+              "id": "compact",
+              "label": "Compact",
+              "icon": "list"
+            },
+            {
+              "id": "compact",
+              "label": "Compact",
+              "icon": "list"
+            },
+            {
+              "id": "spacious",
+              "label": "Spacious",
+              "icon": "grid"
+            }
+          ]
+        }
+      }
+    },
+    "unknown-keys": {
+      "id": "a.b.keys",
+      "provides": [
+        "view:home"
+      ],
+      "screens": {
+        "home": {
+          "layouts": [
+            {
+              "id": "compact",
+              "label": "Compact",
+              "icon": "list",
+              "colour": "red"
+            },
+            {
+              "id": "standard",
+              "label": "Standard",
+              "icon": "layout",
+              "description": "The everyday arrangement."
+            },
+            {
+              "id": "spacious",
+              "label": "Spacious",
+              "icon": "grid"
+            }
+          ],
+          "default": "compact",
+          "extra": 1
+        }
+      }
+    },
+    "not-provided": {
+      "id": "a.b.np",
+      "provides": [
+        "view:home"
+      ],
+      "screens": {
+        "other": {
+          "layouts": [
+            {
+              "id": "compact",
+              "label": "Compact",
+              "icon": "list"
+            },
+            {
+              "id": "standard",
+              "label": "Standard",
+              "icon": "layout",
+              "description": "The everyday arrangement."
+            },
+            {
+              "id": "spacious",
+              "label": "Spacious",
+              "icon": "grid"
+            }
+          ],
+          "default": "standard"
+        }
+      }
+    },
+    "not-an-object": {
+      "id": "a.b.str",
+      "provides": [
+        "view:home"
+      ],
+      "screens": "three"
+    },
+    "none-declared": {
+      "id": "a.b.none",
+      "provides": [
+        "view:home"
+      ]
+    },
+    "too-many": {
+      "id": "a.b.many",
+      "provides": [
+        "view:home"
+      ],
+      "screens": {
+        "home": {
+          "layouts": [
+            {
+              "id": "l0",
+              "label": "L0"
+            },
+            {
+              "id": "l1",
+              "label": "L1"
+            },
+            {
+              "id": "l2",
+              "label": "L2"
+            },
+            {
+              "id": "l3",
+              "label": "L3"
+            },
+            {
+              "id": "l4",
+              "label": "L4"
+            },
+            {
+              "id": "l5",
+              "label": "L5"
+            },
+            {
+              "id": "l6",
+              "label": "L6"
+            },
+            {
+              "id": "l7",
+              "label": "L7"
+            },
+            {
+              "id": "l8",
+              "label": "L8"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "contract": {
+    "ok-three": {
+      "strict": [],
+      "grandfathered": [],
+      "lenient": [],
+      "normalized": {
+        "home": {
+          "layouts": [
+            {
+              "id": "compact",
+              "label": "Compact",
+              "icon": "list"
+            },
+            {
+              "id": "standard",
+              "label": "Standard",
+              "icon": "layout",
+              "description": "The everyday arrangement."
+            },
+            {
+              "id": "spacious",
+              "label": "Spacious",
+              "icon": "grid"
+            }
+          ],
+          "default": "standard"
+        }
+      }
+    },
+    "ok-no-default": {
+      "strict": [],
+      "grandfathered": [],
+      "lenient": [],
+      "normalized": {
+        "home": {
+          "layouts": [
+            {
+              "id": "compact",
+              "label": "Compact",
+              "icon": "list"
+            },
+            {
+              "id": "standard",
+              "label": "Standard",
+              "icon": "layout",
+              "description": "The everyday arrangement."
+            },
+            {
+              "id": "spacious",
+              "label": "Spacious",
+              "icon": "grid"
+            }
+          ],
+          "default": "compact"
+        }
+      }
+    },
+    "two-layouts": {
+      "strict": [
+        "screen \"home\" declares 2 layout(s); every new plugin screen has at least 3 (Brett, Nov 4 2026)"
+      ],
+      "grandfathered": [],
+      "lenient": [],
+      "normalized": {
+        "home": {
+          "layouts": [
+            {
+              "id": "compact",
+              "label": "Compact",
+              "icon": "list"
+            },
+            {
+              "id": "standard",
+              "label": "Standard",
+              "icon": "layout",
+              "description": "The everyday arrangement."
+            }
+          ],
+          "default": "compact"
+        }
+      }
+    },
+    "bad-default": {
+      "strict": [
+        "screen \"home\": \"default\" names one of its layouts"
+      ],
+      "grandfathered": [
+        "screen \"home\": \"default\" names one of its layouts"
+      ],
+      "lenient": [
+        "screen \"home\": \"default\" names one of its layouts"
+      ],
+      "normalized": {
+        "home": {
+          "layouts": [
+            {
+              "id": "compact",
+              "label": "Compact",
+              "icon": "list"
+            },
+            {
+              "id": "standard",
+              "label": "Standard",
+              "icon": "layout",
+              "description": "The everyday arrangement."
+            },
+            {
+              "id": "spacious",
+              "label": "Spacious",
+              "icon": "grid"
+            }
+          ],
+          "default": "nope"
+        }
+      }
+    },
+    "dup-id": {
+      "strict": [
+        "screen \"home\" layout 2: layout id \"compact\" is used twice"
+      ],
+      "grandfathered": [
+        "screen \"home\" layout 2: layout id \"compact\" is used twice"
+      ],
+      "lenient": [
+        "screen \"home\" layout 2: layout id \"compact\" is used twice"
+      ],
+      "normalized": {
+        "home": {
+          "layouts": [
+            {
+              "id": "compact",
+              "label": "Compact",
+              "icon": "list"
+            },
+            {
+              "id": "compact",
+              "label": "Compact",
+              "icon": "list"
+            },
+            {
+              "id": "spacious",
+              "label": "Spacious",
+              "icon": "grid"
+            }
+          ],
+          "default": "compact"
+        }
+      }
+    },
+    "unknown-keys": {
+      "strict": [
+        "screen \"home\" has an unknown key \"extra\"",
+        "screen \"home\" layout 1 has an unknown key \"colour\""
+      ],
+      "grandfathered": [
+        "screen \"home\" has an unknown key \"extra\"",
+        "screen \"home\" layout 1 has an unknown key \"colour\""
+      ],
+      "lenient": [
+        "screen \"home\" has an unknown key \"extra\"",
+        "screen \"home\" layout 1 has an unknown key \"colour\""
+      ],
+      "normalized": {
+        "home": {
+          "layouts": [
+            {
+              "id": "compact",
+              "label": "Compact",
+              "icon": "list"
+            },
+            {
+              "id": "standard",
+              "label": "Standard",
+              "icon": "layout",
+              "description": "The everyday arrangement."
+            },
+            {
+              "id": "spacious",
+              "label": "Spacious",
+              "icon": "grid"
+            }
+          ],
+          "default": "compact"
+        }
+      }
+    },
+    "not-provided": {
+      "strict": [
+        "screen \"other\" isn't a page the plugin provides (\"view:other\")",
+        "screen \"other\" isn't a view in its web code",
+        "screen \"home\" declares no layouts: every new plugin screen lists 3 in plugin.json \"screens\" (Brett, Nov 4 2026)"
+      ],
+      "grandfathered": [
+        "screen \"other\" isn't a page the plugin provides (\"view:other\")",
+        "screen \"other\" isn't a view in its web code"
+      ],
+      "lenient": [
+        "screen \"other\" isn't a page the plugin provides (\"view:other\")"
+      ],
+      "normalized": {
+        "other": {
+          "layouts": [
+            {
+              "id": "compact",
+              "label": "Compact",
+              "icon": "list"
+            },
+            {
+              "id": "standard",
+              "label": "Standard",
+              "icon": "layout",
+              "description": "The everyday arrangement."
+            },
+            {
+              "id": "spacious",
+              "label": "Spacious",
+              "icon": "grid"
+            }
+          ],
+          "default": "standard"
+        }
+      }
+    },
+    "not-an-object": {
+      "strict": [
+        "\"screens\" is an object: { \"<view id>\": { \"layouts\": [...], \"default\": \"<id>\" } }"
+      ],
+      "grandfathered": [
+        "\"screens\" is an object: { \"<view id>\": { \"layouts\": [...], \"default\": \"<id>\" } }"
+      ],
+      "lenient": [
+        "\"screens\" is an object: { \"<view id>\": { \"layouts\": [...], \"default\": \"<id>\" } }"
+      ],
+      "normalized": {}
+    },
+    "none-declared": {
+      "strict": [
+        "screen \"home\" declares no layouts: every new plugin screen lists 3 in plugin.json \"screens\" (Brett, Nov 4 2026)"
+      ],
+      "grandfathered": [],
+      "lenient": [],
+      "normalized": {}
+    },
+    "too-many": {
+      "strict": [
+        "screen \"home\" declares 9 layouts; at most 8"
+      ],
+      "grandfathered": [
+        "screen \"home\" declares 9 layouts; at most 8"
+      ],
+      "lenient": [
+        "screen \"home\" declares 9 layouts; at most 8"
+      ],
+      "normalized": {
+        "home": {
+          "layouts": [
+            {
+              "id": "l0",
+              "label": "L0"
+            },
+            {
+              "id": "l1",
+              "label": "L1"
+            },
+            {
+              "id": "l2",
+              "label": "L2"
+            },
+            {
+              "id": "l3",
+              "label": "L3"
+            },
+            {
+              "id": "l4",
+              "label": "L4"
+            },
+            {
+              "id": "l5",
+              "label": "L5"
+            },
+            {
+              "id": "l6",
+              "label": "L6"
+            },
+            {
+              "id": "l7",
+              "label": "L7"
+            },
+            {
+              "id": "l8",
+              "label": "L8"
+            }
+          ],
+          "default": "l0"
+        }
+      }
+    }
+  },
+  "resolution": {
+    "no-save": "standard",
+    "saved-valid": "compact",
+    "saved-unknown": "standard",
+    "no-default-field": "compact",
+    "bad-default": "compact",
+    "no-screen": ""
+  },
+  "toolbar": {
+    "default-hidden": false,
+    "app-wide-on": true,
+    "screen-show": true,
+    "screen-hide-beats-app": false,
+    "no-layouts-never": false
+  },
+  "menus": {
+    "rows": [
+      {
+        "id": "layout:compact",
+        "label": "Compact",
+        "icon": "list",
+        "action": "screen.layout:compact:home",
+        "checked": "setting:axf.screen.home.layout=compact"
+      },
+      {
+        "id": "layout:standard",
+        "label": "Standard",
+        "icon": "layout",
+        "action": "screen.layout:standard:home",
+        "checked": "setting:axf.screen.home.layout=standard",
+        "detail": "The everyday arrangement.",
+        "current": true
+      },
+      {
+        "id": "layout:spacious",
+        "label": "Spacious",
+        "icon": "grid",
+        "action": "screen.layout:spacious:home",
+        "checked": "setting:axf.screen.home.layout=spacious"
+      }
+    ],
+    "rows-none": [],
+    "title-hidden": [
+      {
+        "id": "screen-layout-compact",
+        "label": "Compact",
+        "icon": "list",
+        "action": "screen.layout:compact:home",
+        "checked": "setting:axf.screen.home.layout=compact"
+      },
+      {
+        "id": "screen-layout-standard",
+        "label": "Standard",
+        "icon": "layout",
+        "action": "screen.layout:standard:home",
+        "checked": "setting:axf.screen.home.layout=standard"
+      },
+      {
+        "id": "screen-layout-spacious",
+        "label": "Spacious",
+        "icon": "grid",
+        "action": "screen.layout:spacious:home",
+        "checked": "setting:axf.screen.home.layout=spacious"
+      },
+      {
+        "id": "screen-layout-sep",
+        "separator": true
+      },
+      {
+        "id": "screen-layout-toolbar",
+        "label": "Show layout toolbar",
+        "icon": "sliders",
+        "action": "screen.layout-toolbar:show:home"
+      }
+    ],
+    "title-shown": [
+      {
+        "id": "screen-layout-compact",
+        "label": "Compact",
+        "icon": "list",
+        "action": "screen.layout:compact:home",
+        "checked": "setting:axf.screen.home.layout=compact"
+      },
+      {
+        "id": "screen-layout-standard",
+        "label": "Standard",
+        "icon": "layout",
+        "action": "screen.layout:standard:home",
+        "checked": "setting:axf.screen.home.layout=standard"
+      },
+      {
+        "id": "screen-layout-spacious",
+        "label": "Spacious",
+        "icon": "grid",
+        "action": "screen.layout:spacious:home",
+        "checked": "setting:axf.screen.home.layout=spacious"
+      },
+      {
+        "id": "screen-layout-sep",
+        "separator": true
+      },
+      {
+        "id": "screen-layout-toolbar",
+        "label": "Hide layout toolbar",
+        "icon": "x",
+        "action": "screen.layout-toolbar:hide:home"
+      }
+    ],
+    "title-none": [],
+    "toolbar-shared": [
+      {
+        "id": "layout-toolbar-copy",
+        "label": "Give this plugin its own copy",
+        "icon": "copy",
+        "action": "screen.layout-toolbar.copy:a.b.ok"
+      },
+      {
+        "id": "layout-toolbar-settings",
+        "label": "Toolbar settings",
+        "icon": "settings",
+        "action": "settings.open:toolbars"
+      },
+      {
+        "id": "layout-toolbar-sep",
+        "separator": true
+      },
+      {
+        "id": "layout-toolbar-hide",
+        "label": "Hide layout toolbar",
+        "icon": "x",
+        "action": "screen.layout-toolbar:hide:home"
+      }
+    ],
+    "toolbar-copy": [
+      {
+        "id": "layout-toolbar-shared",
+        "label": "Go back to the shared toolbar",
+        "icon": "layers",
+        "action": "screen.layout-toolbar.shared:a.b.ok"
+      },
+      {
+        "id": "layout-toolbar-settings",
+        "label": "Toolbar settings",
+        "icon": "settings",
+        "action": "settings.open:toolbars"
+      },
+      {
+        "id": "layout-toolbar-sep",
+        "separator": true
+      },
+      {
+        "id": "layout-toolbar-hide",
+        "label": "Hide layout toolbar",
+        "icon": "x",
+        "action": "screen.layout-toolbar:hide:home"
+      }
+    ]
+  },
+  "copies": {
+    "copy-id": "ls-ai-amberx-axf-console-example",
+    "copy-id-long": "ls-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "copy-id-empty": "ls-plugin",
+    "parse-fresh": {
+      "id": "ls-a-b-ok",
+      "data": {}
+    },
+    "parse-edited": {
+      "id": "ls-a-b-ok",
+      "data": {
+        "variant": "icons"
+      }
+    },
+    "parse-bad": null,
+    "parse-bad-id": {
+      "id": "ls-a-b-ok",
+      "data": {}
+    },
+    "resolve-shared": {
+      "id": "layout-switcher",
+      "name": "Layout switcher",
+      "data": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "layouts",
+            "provider": "screen-layouts",
+            "items": []
+          }
+        ]
+      },
+      "shared": true
+    },
+    "resolve-fresh-copy": {
+      "id": "ls-a-b-ok",
+      "name": "Layout switcher (copy)",
+      "data": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "layouts",
+            "provider": "screen-layouts",
+            "items": []
+          }
+        ]
+      },
+      "shared": false,
+      "inherits": "layout-switcher",
+      "edited": false
+    },
+    "resolve-edited-copy": {
+      "id": "ls-a-b-ok",
+      "name": "Layout switcher (copy)",
+      "data": {
+        "variant": "icons",
+        "align": "start",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "layouts",
+            "provider": "screen-layouts",
+            "items": []
+          }
+        ]
+      },
+      "shared": false,
+      "inherits": "layout-switcher",
+      "edited": true
+    },
+    "resolve-no-shared": null
+  },
+  "review": {
+    "three": {
+      "view": "home",
+      "options": [
+        {
+          "value": "compact",
+          "label": "Compact",
+          "default": false
+        },
+        {
+          "value": "standard",
+          "label": "Standard (default)",
+          "default": true
+        },
+        {
+          "value": "spacious",
+          "label": "Spacious",
+          "default": false
+        }
+      ],
+      "disabled": false,
+      "reason": "",
+      "default": "standard"
+    },
+    "none": {
+      "view": "other",
+      "options": [],
+      "disabled": true,
+      "reason": "no layout variants",
+      "default": ""
+    },
+    "empty": {
+      "view": "home",
+      "options": [],
+      "disabled": true,
+      "reason": "no layout variants",
+      "default": ""
+    },
+    "of-manifests": {
+      "home": {
+        "layouts": [
+          {
+            "id": "compact",
+            "label": "Compact",
+            "icon": "list"
+          },
+          {
+            "id": "standard",
+            "label": "Standard",
+            "icon": "layout",
+            "description": "The everyday arrangement."
+          },
+          {
+            "id": "spacious",
+            "label": "Spacious",
+            "icon": "grid"
+          }
+        ],
+        "default": "standard",
+        "plugin": "a.b.ok"
+      }
+    }
+  },
+  "sources": {
+    "literal": [
+      "home",
+      "my-page"
+    ],
+    "const-same-file": [
+      "thing"
+    ],
+    "const-imported": [
+      "thing",
+      "other"
+    ],
+    "unresolved": [
+      "?VIEW"
+    ],
+    "nested": [
+      "a",
+      "b"
+    ],
+    "none": []
+  },
+  "grandfather": {
+    "baseline": {
+      "screens": [
+        "old/home",
+        "wild/*"
+      ]
+    },
+    "cases": {
+      "old/home": true,
+      "old/other": false,
+      "wild/any": true,
+      "none": false
+    }
+  }
+}

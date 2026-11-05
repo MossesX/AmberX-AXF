@@ -12,6 +12,9 @@ import { fileURLToPath } from 'node:url';
 import { dataPath } from './persist.mjs';
 import { applyDefaults } from './build-defaults.mjs';
 import { instanceClashes } from './plugin-instances.mjs';
+import { checkScreens, viewIdsInSource, grandfathered } from '../core/engines/screen-layouts.mjs';
+
+const BASELINE = 'framework/spec/screen-layouts-baseline.json';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const INDEX = 'framework/catalog/plugins.json';
@@ -102,6 +105,22 @@ export function checkBanner(m, sourceIds = null) {
   return [];
 }
 
+/**
+ * `screens` (plugin@1, screen-layouts@1, Nov 4 2026): every plugin screen added after the rule declares three or more
+ * layouts and a default; screens that predate it are grandfathered (`<folder>/<view>` in framework/spec/screen-layouts-baseline.json).
+ * `folder` is the plugin folder (repo-relative); the views come from its web/index.tsx. The structure is checked for
+ * every plugin; the count only for screens that aren't grandfathered. Same rules as `_plugin_screens` in server/main.py.
+ */
+export function checkPluginScreens(m, folder, { baseline = null, root = ROOT } = {}) {
+  const base = baseline ?? (existsSync(join(root, BASELINE)) ? readJson(join(root, BASELINE)) : { screens: [] });
+  const index = join(root, folder, 'web', 'index.tsx');
+  const sibling = (rel) => { const base = resolve(join(root, folder, 'web'), rel); for (const f of [base, `${base}.ts`, `${base}.tsx`, `${base}.mts`, `${base}.mjs`, join(base, 'index.ts'), join(base, 'index.tsx')]) if (existsSync(f)) try { return readFileSync(f, 'utf8'); } catch { /* next */ } return null; };
+  const views = existsSync(index) ? viewIdsInSource(readFileSync(index, 'utf8'), sibling) : null;
+  const name = folder.split('/').pop();
+  const gf = (views ?? []).concat(Object.keys(m?.screens ?? {})).filter((v) => grandfathered(base, name, v) || grandfathered(base, folder, v));
+  return checkScreens(m, { enforceCount: true, views, grandfathered: [...new Set(gf)] });
+}
+
 /** The banner ids every .ts/.tsx file under a plugin's web/ folder contributes (vendor/ skipped). */
 export function webBannerIds(folder) {
   const out = new Set();
@@ -160,6 +179,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     for (const it of readJson(join(ROOT, INDEX)).items ?? []) if (done.includes(it.id)) console.log(`note: ${it.id} is built now; its planned entry can go`);
     for (const p of builtPlugins()) for (const x of checkTabable(p.manifest)) problems.push(`${p.folder}/plugin.json: ${x}`);
     for (const p of builtPlugins()) for (const x of checkBanner(p.manifest, webBannerIds(join(ROOT, p.folder)))) problems.push(`${p.folder}/plugin.json: ${x}`);
+    // screen-layouts@1 (Nov 4 2026): new plugin screens declare three layouts; older ones are grandfathered (framework/cli/check-screen-layouts.mjs says more)
+    for (const p of builtPlugins()) for (const x of checkPluginScreens(p.manifest, p.folder)) problems.push(`${p.folder}/plugin.json: ${x}`);
     // build-defaults@1 (Oct 23 2026): every rule for plugins holds (a missing default = run build-defaults.mjs apply --write)
     for (const p of builtPlugins()) {
       const r = applyDefaults('plugin', p.manifest);

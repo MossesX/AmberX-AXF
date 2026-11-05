@@ -150,6 +150,8 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
     const why = embedSkipReason(rt.embedded, l.embed?.skipWhen);
     if (why) { skipped.push({ id: l.id, label: l.label, version: l.version, reason: why }); continue; }
     rt.actions.withModule(l.id, () => l.register?.(rt));
+    // screen-layouts@1: a view's layouts (three or more, one default) go to the runtime, where the switcher reads them
+    for (const [id, v] of Object.entries(l.views ?? {})) if (v.layouts?.length) rt.declareScreenLayouts(l.id, id, { layouts: v.layouts, default: v.defaultLayout ?? v.layouts[0]?.id });
     Object.assign(views, l.views ?? {});
     Object.assign(dialogs, l.dialogs ?? {});
     Object.assign(tabs, l.tabs ?? {});

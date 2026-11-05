@@ -22,11 +22,13 @@ import { SelectField, Note } from '../../react/components/Forms';
 import { Button } from '../../react/components/Controls';
 import { TAP_ARM_DEFAULT_MS, TAP_ARM_RANGE, TAP_KEYS, TAP_OVERRIDES, tapConfig, type TapOverride } from '../../core/engines/tapconfirm';
 import { toolbarElementId } from '../../react/tapConfirm';
+import { SCREEN_LAYOUT_KEYS, TOOLBAR_OVERRIDES, screenToolbarKey } from '../../core/engines/screen-layouts.mjs';
 import './toolbars.css';
 
 export const TOOLBARS_ID = 'ai.amberx.axf.toolbars';
 export const TOOLBARS_TAB = 'toolbars';
 export const ALL_TOOLBARS_PANEL = 'toolbars.all';
+export const LAYOUT_TOOLBARS_PANEL = 'toolbars.layouts';
 
 /** The settings key of one toolbar's tap-to-confirm override. */
 export const tapOverrideKey = (toolbarId: string) => `${TAP_KEYS.perToolbar}${toolbarId}.tapConfirm`;
@@ -80,6 +82,51 @@ function AllToolbarsPanel() {
   );
 }
 
+const TOOLBAR_SHOW_LABEL: Record<string, string> = { inherit: 'Same as all', show: 'Shown', hide: 'Hidden' };
+
+/**
+ * Layout toolbars (screen-layouts@1, Brett Nov 4 2026): every plugin screen with layouts, the layout it shows, whether
+ * its layout toolbar is shown on this device, and whether its plugin uses the shared switcher or its own copy.
+ */
+function LayoutToolbarsPanel() {
+  const rt = useRuntime();
+  useAxfState();
+  const screens = rt.screensWithLayouts().sort((a, b) => a.view.localeCompare(b.view));
+  const plugins = [...new Set(screens.map((s) => s.module))];
+  const get = (k: string) => rt.settings.get(k);
+  if (!screens.length) return <Note tone="info">No screen in this app declares layouts yet. Every new plugin screen comes with three and this toolbar; older plugins keep their one layout.</Note>;
+  return (
+    <div className="fx-stack" data-axf-toolbars-panel="">
+      <Note tone="info">Every new plugin screen has three layouts and a layout toolbar to pick one, hidden until you show it (right-click the screen's title, or here). The toolbar is one shared asset: edit it once and every plugin's changes; a plugin can keep its own copy instead.</Note>
+      {screens.map((s) => (
+        <div key={s.view} className="axf-toolbars__row">
+          <div className="axf-toolbars__name">
+            <strong>{s.view}</strong>
+            <span className="fx-small fx-muted">{s.spec.layouts.map((l) => (l.id === rt.screenLayout(s.view) ? `[${l.label}]` : l.label)).join(' · ')} · {s.module}</span>
+          </div>
+          <SelectField label="Layout toolbar" className="axf-toolbars__pick" value={(get(screenToolbarKey(s.view)) as string) || 'inherit'}
+            options={TOOLBAR_OVERRIDES.map((v) => ({ value: v, label: TOOLBAR_SHOW_LABEL[v] ?? v }))}
+            onChange={(v) => rt.setLayoutToolbarShown(s.view, v === 'show' ? true : v === 'hide' ? false : null)} />
+        </div>
+      ))}
+      {plugins.map((id) => {
+        const copy = rt.layoutToolbarCopy(id);
+        return (
+          <div key={id} className="axf-toolbars__row">
+            <div className="axf-toolbars__name">
+              <strong>{id}</strong>
+              <span className="fx-small fx-muted">{copy ? `own copy of the layout toolbar (${copy.id})${Object.keys(copy.data).length ? ', edited' : ', follows the shared one until edited'}` : 'uses the shared layout toolbar'}</span>
+            </div>
+            {copy
+              ? <Button size="sm" icon="layers" onClick={() => rt.dispatch(`screen.layout-toolbar.shared:${id}`)}>Back to shared</Button>
+              : <Button size="sm" icon="copy" onClick={() => rt.dispatch(`screen.layout-toolbar.copy:${id}`)}>Give it its own copy</Button>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export const toolbarsLibrary: AxfWebLibrary = {
   id: TOOLBARS_ID,
   label: 'Toolbars',
@@ -92,8 +139,17 @@ export const toolbarsLibrary: AxfWebLibrary = {
       { key: TAP_KEYS.enabled, label: 'Tap twice on touch', kind: 'toggle', default: true, scope: 'device' },
       { key: TAP_KEYS.armMs, label: 'Ready for the second tap', description: 'How long a button stays lit after the first tap.', kind: 'choice', default: String(TAP_ARM_DEFAULT_MS), options: ARM_CHOICES, scope: 'device' },
     ],
+  }, {
+    id: 'toolbars.layouts', tab: TOOLBARS_TAB, label: 'Layout toolbars', icon: 'layout', order: 25,
+    description: 'Plugin screens with three layouts carry a layout toolbar to pick one. It is hidden by default (screen-layouts@1); switch it on for every screen here, or per screen below and from a screen title’s right-click.',
+    settings: [
+      { key: SCREEN_LAYOUT_KEYS.toolbarDefault, label: 'Show layout toolbars on every screen', kind: 'toggle', default: false, scope: 'device' },
+    ],
   }],
-  settingsPanels: [{ id: ALL_TOOLBARS_PANEL, tab: TOOLBARS_TAB, title: 'All toolbars', icon: 'list', order: 20, render: () => <AllToolbarsPanel /> }],
+  settingsPanels: [
+    { id: ALL_TOOLBARS_PANEL, tab: TOOLBARS_TAB, title: 'All toolbars', icon: 'list', order: 20, render: () => <AllToolbarsPanel /> },
+    { id: LAYOUT_TOOLBARS_PANEL, tab: TOOLBARS_TAB, title: 'Layout toolbars', icon: 'layout', order: 30, render: () => <LayoutToolbarsPanel /> },
+  ],
 };
 
 export default toolbarsLibrary;

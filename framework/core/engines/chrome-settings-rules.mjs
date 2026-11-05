@@ -74,7 +74,7 @@ export const isChromeInstanceId = (id) => typeof id === 'string' && INSTANCE.tes
 /* ---------------- context targets + moves ---------------- */
 
 /** data-fx-ctx-target names each chrome kind reports on right-click / long-press (several per kind: older names kept). */
-export const CHROME_TARGETS = { 'tab-group': ['tab-group'], toolbar: ['toolbar'], banner: ['banner', 'axf-banner'], 'nav-menu': ['nav', 'nav-item'], 'app-menu': ['app-menu', 'menubar'], 'context-menu': [] };
+export const CHROME_TARGETS = { 'tab-group': ['tab-group'], toolbar: ['toolbar', 'layout-toolbar'], banner: ['banner', 'axf-banner'], 'nav-menu': ['nav', 'nav-item'], 'app-menu': ['app-menu', 'menubar'], 'context-menu': [] };
 export function chromeTypeOfTarget(target) {
   if (typeof target !== 'string') return null;
   for (const t of CHROME_TYPES) if (CHROME_TARGETS[t].includes(target)) return t;

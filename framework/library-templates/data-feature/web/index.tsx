@@ -1,18 +1,26 @@
 import { useState } from 'react';
-import { Button, Container, useRuntime } from '../../react';
+import { Button, Container, LayoutToolbar, useRuntime, useScreenLayout } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 
 /** {{LABEL}} — generated from the `{{TEMPLATE}}` library template (web port of {{MODULE_ID}}). */
 export interface {{CLASS}}Item { id: string; title: string; done: boolean }
+/** Three layouts per screen (screen-layouts@1): rename to what fits this screen; the page branches on `screen.layout`. */
+const LAYOUTS = [
+  { id: 'compact', label: 'Compact', icon: 'list', description: 'Tight rows, more on one screen.' },
+  { id: 'standard', label: 'Standard', icon: 'layout', description: 'The everyday arrangement.' },
+  { id: 'spacious', label: 'Spacious', icon: 'grid', description: 'Room around every block, big targets.' },
+];
 
 export function {{CLASS}}View() {
   const rt = useRuntime();
+  const screen = useScreenLayout('{{ROUTE}}');
   const [opened, setOpened] = useState(0);
   const [items, setItems] = useState<{{CLASS}}Item[]>([]);
   const [draft, setDraft] = useState('');
   return (
-    <div className="fx-stack fx-stack--lg">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">{{MODULE_NAME}} · {{TEMPLATE}}</p><h1>{{LABEL}}</h1><p className="fx-muted">{{DESCRIPTION}}</p></div></header>
+    <div className="fx-stack fx-stack--lg" {...screen.rootProps}>
+      <header className="fx-pagehead"><div {...screen.headProps}><p className="fx-eyebrow">{{MODULE_NAME}} · {{TEMPLATE}}</p><h1>{{LABEL}}</h1><p className="fx-muted">{{DESCRIPTION}}</p></div></header>
+      <LayoutToolbar view="{{ROUTE}}" plugin="{{MODULE_ID}}" />
       <Container title="{{P_ITEM}}s" icon="list">
         <form className="fx-row" onSubmit={(e) => { e.preventDefault(); if (draft.trim()) { setItems([...items, { id: Date.now().toString(36), title: draft.trim(), done: false }]); setDraft(''); } }}>
           <input className="fx-input" value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="New {{P_ITEM}}" /><Button tone="primary" icon="plus" type="submit">Add</Button>
@@ -36,5 +44,5 @@ export const library: AxfWebLibrary = {
   register(rt) {
     rt.actions.register('{{ROUTE}}.open', () => rt.navigate('{{ROUTE}}'), { label: 'Open {{LABEL}}' });
   },
-  views: { '{{ROUTE}}': { title: '{{LABEL}}', icon: 'box', render: () => <{{CLASS}}View /> } },
+  views: { '{{ROUTE}}': { title: '{{LABEL}}', icon: 'box', render: () => <{{CLASS}}View />, layouts: LAYOUTS, defaultLayout: 'standard' } },
 };

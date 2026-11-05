@@ -83,6 +83,8 @@ function underPlugins(p: BundledPlugin): AxfWebLibrary {
     ...(m.builtWith?.model ? { builtWith: { model: m.builtWith.model, ...(m.builtWith.builtAt ? { builtAt: m.builtWith.builtAt } : {}) } } : {}),
     ...(m.opens ? { opens: m.opens } : {}),
     ...(m.opensUi ? { opensUi: m.opensUi } : {}),
+    // screen-layouts@1 (Nov 4 2026): plugin.json `screens` fills a view's layouts when its web code didn't declare them
+    ...(m.screens && lib.views ? { views: Object.fromEntries(Object.entries(lib.views).map(([id, v]) => [id, v.layouts?.length || !m.screens?.[id] ? v : { ...v, layouts: m.screens[id]!.layouts, defaultLayout: m.screens[id]!.default ?? m.screens[id]!.layouts[0]?.id }])) } : {}),
   };
   // Plugin theme override (Brett, Oct 28 2026): every plugin UI root carries data-axf-plugin and its settings tab gets an
   // Appearance panel (framework/libs/plugintheme), so no plugin needs code of its own.

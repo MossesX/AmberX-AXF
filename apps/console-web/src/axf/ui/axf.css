@@ -755,6 +755,13 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-small { font-size: var(--fx-type-scale-sm); }
 .fx-stack { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xl); }
 .fx-stack--lg { gap: var(--fx-dens-gap-4xl); }
+/* Screen layouts (screen-layouts@1): a plugin screen's root carries data-axf-layout = its picked preset. The base
+   sheet only tightens or widens the stack for the starter presets; a screen's own CSS keys off the same attribute. */
+.fx-stack[data-axf-layout='compact'] { gap: var(--fx-dens-gap-lg); }
+.fx-stack[data-axf-layout='spacious'] { gap: var(--fx-dens-gap-4xl); }
+/* The layout switcher (the shared layout-switcher toolbar, or a plugin's copy) sits under the page head, full width. */
+.fx-layout-switch { display: flex; }
+.fx-layout-switch > .fx-toolbar { flex: 1; }
 .fx-row { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); }
 .fx-row--wrap { flex-wrap: wrap; }
 .fx-row--end { justify-content: flex-end; flex-wrap: wrap; }

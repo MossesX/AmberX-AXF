@@ -21,6 +21,7 @@
  *                               save a non-review screenshot to UI Review → Screenshots (framework/cli/shot.mjs)
  *   axf templates               list app templates (react-ts, android-compose, …)
  *   axf new-module <name> [--label "Name"] [--capabilities a,b] [--depends-on id,id] [--no-compose]
+ *   axf new-plugin <folder> [--label "Name"] [--view <id>] [--app apps/console-web]   console plugin: 3 layouts per screen + hidden layout toolbar
  *                               scaffold framework/android/lib-<name> (Android port)
  *   axf new-demo <library>      create apps/demo-<library>, an Android app showcasing one library
  *   axf modules                 list Android framework modules
@@ -94,7 +95,7 @@ if (cmd === 'console') {
 // plugin commands (control@1 plugins domain): `axf plugins [plugin]`, `axf plugin <plugin> <command> …`, and
 // `axf <plugin> <command> …` for any console plugin whose folder isn't an axf command; they go to the plugin that
 // provides plugin-commands@1 (never by folder name).
-const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas']);
+const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-plugin', 'new-demo', 'modules', 'repo', 'shot', 'schemas']);
 {
   const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
   const { join: joinPath } = await import('node:path');
@@ -330,6 +331,12 @@ try {
       if (!args[0]) throw new Error('Usage: axf new-module <name> [--label "Name"] [--capabilities a,b]');
       const r = newModule({ name: args[0], label: flags.label, capabilities: flags.capabilities ? String(flags.capabilities).split(',') : [], dependsOn: flags['depends-on'] ? String(flags['depends-on']).split(',') : [], compose: !flags['no-compose'], log: (m) => console.log(c.dim(m)) });
       console.log(c.ok(`✓ created ${relative(process.cwd(), r.dir)} (${r.moduleId})`));
+      break;
+    }
+    case 'new-plugin': {
+      // screen-layouts@1: a console plugin from plugins/_template with three layouts per screen + the hidden layout switcher
+      const { main: newPluginMain } = await import('./new-plugin.mjs');
+      process.exitCode = newPluginMain(process.argv.slice(3));
       break;
     }
     case 'new-demo': {

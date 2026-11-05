@@ -285,12 +285,19 @@ export function truthy(v: unknown): boolean {
   return true;
 }
 
-/** The check state of a binding (null = no check mark). */
+/**
+ * The check state of a binding (null = no check mark). `setting:<key>=<value>` (screen-layouts@1, Nov 4 2026) is on
+ * while the setting equals that value, so a row of choices (a screen's layouts) shows one check mark.
+ */
 export function resolveChecked(binding: string | undefined, env: Pick<AppMenuEnv, 'counter' | 'setting' | 'hidden'>): boolean | null {
   const p = parseChecked(binding);
   if (!p) return null;
   switch (p.kind) {
-    case 'setting': return truthy(env.setting(p.ref));
+    case 'setting': {
+      const eq = p.ref.indexOf('=');
+      if (eq > 0) { const v = env.setting(p.ref.slice(0, eq)); return String(v ?? '') === p.ref.slice(eq + 1); }
+      return truthy(env.setting(p.ref));
+    }
     case 'counter': return env.counter(p.ref) > 0;
     case 'slot': return !env.hidden(p.ref);
     case 'hidden': return env.hidden(p.ref);

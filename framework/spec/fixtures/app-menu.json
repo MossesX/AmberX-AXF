@@ -53,6 +53,27 @@
       },
       "resolved": true
     },
+    "setting:a=yes": {
+      "parsed": {
+        "kind": "setting",
+        "ref": "a=yes"
+      },
+      "resolved": true
+    },
+    "setting:a=no": {
+      "parsed": {
+        "kind": "setting",
+        "ref": "a=no"
+      },
+      "resolved": false
+    },
+    "setting:missing=": {
+      "parsed": {
+        "kind": "setting",
+        "ref": "missing="
+      },
+      "resolved": true
+    },
     "counter:c": {
       "parsed": {
         "kind": "counter",
