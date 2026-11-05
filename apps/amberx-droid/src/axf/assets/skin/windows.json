@@ -1,0 +1,41 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "windows",
+  "name": "Windows",
+  "version": "1.0.0",
+  "description": "Makes the app look like a Windows 11 program: Segoe UI, Mica colours, a title bar, a menu bar, an Explorer layout, and Windows-style menus, dialogs, buttons and scrollbars. It runs inside the browser, so it can't replace the real OS title bar or native pickers such as the file picker. Segoe UI needs a device that has the font.",
+  "author": "AmberX AXF",
+  "tags": [
+    "windows",
+    "skin"
+  ],
+  "data": {
+    "layoutTheme": "windows-explorer",
+    "colorTheme": "windows-light",
+    "styleTheme": "windows",
+    "assets": {
+      "banner": "windows-titlebar",
+      "app-menu": "standard-desktop",
+      "button": "windows",
+      "dialog": "windows",
+      "context-menu": "windows",
+      "toolbar": "windows",
+      "container": "windows",
+      "typography": "windows",
+      "density": "compact",
+      "sizing": "compact"
+    },
+    "preview": {
+      "caption": "Windows 11 look: title bar, menu bar, Explorer layout."
+    },
+    "extras": {
+      "hidden": {
+        "toolbar": false,
+        "nav-menu": false,
+        "banner": false,
+        "app-menu": false
+      }
+    }
+  }
+}

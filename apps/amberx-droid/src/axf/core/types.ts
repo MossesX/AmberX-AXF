@@ -45,6 +45,7 @@ export const ASSET_TYPES = [
   'nav-style',
   'behavior-theme',
   'design-package',
+  'skin',
   'style-package',
   'interface',
   'logo-mark',
@@ -62,7 +63,7 @@ export const ASSET_TYPES = [
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'nav-style', 'behavior-theme', 'design-package', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'nav-style', 'behavior-theme', 'design-package', 'skin', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -203,6 +204,8 @@ export interface StyleThemeData {
   /* ---- behaviour ---- */
   /** every section / group (Container) gets a collapse toggle top-right; build option --wrap-groups (default false) */
   wrapGroups?: boolean;
+  /** 'thin' = thin themed scrollbars; unset = the browser's own. */
+  scrollbar?: 'thin';
 }
 
 export interface LayoutData {
@@ -618,6 +621,7 @@ export interface AssetDataMap {
   'nav-style': import('./engines/navstyle-rules.mjs').NavStyleData;
   'behavior-theme': BehaviorThemeData;
   'design-package': DesignPackageData;
+  skin: import('./engines/skin').SkinData;
   'style-package': import('./engines/stylepackage').StylePackageData;
   interface: InterfaceData;
   'logo-mark': MarkData;
@@ -638,7 +642,7 @@ export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
 /** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'nav-style' | 'behavior-theme' | 'design-package' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'card' | 'help';
+export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'nav-style' | 'behavior-theme' | 'design-package' | 'skin' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'card' | 'help';
 
 export interface AxfManifest {
   $axf: 'manifest@1';

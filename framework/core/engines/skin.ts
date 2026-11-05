@@ -17,7 +17,8 @@
  */
 import type { AppearanceChange, AppearanceDocument } from './appearance';
 import { APPEARANCE_FRAME } from './appearance';
-import { DESIGN_OVERRIDES_KEY, normalizeDesignPackage, type DesignPackageData } from './designpackage';
+import { DESIGN_OVERRIDES_KEY, normalizeDesignPackage } from './designpackage';
+import type { DesignPackageData } from '../types';
 import { spacingOf } from './spacing';
 import { SKIN_NEVER, normalizeLookPart, type AppLookDocument, type LookPart } from './skin-rules.mjs';
 

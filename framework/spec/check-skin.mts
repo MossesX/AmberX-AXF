@@ -140,6 +140,31 @@ ok(!a.rt.useSkin(true, 'no-such-skin'), 'an unknown skin is refused');
 a.rt.restoreDefaultAppearance();
 eq(a.active(), before, 'and back');
 
+/* the picker's preview draws the skin and saves nothing */
+const docBefore = JSON.stringify(a.store.doc);
+ok(a.rt.previewSkin('windows'), 'preview a skin');
+eq(a.active()['color-theme'], 'windows-light', 'the preview is on screen');
+eq(a.rt.previewedSkin(), 'windows', 'the preview is known');
+eq(JSON.stringify(a.store.doc), docBefore, 'a preview saves nothing');
+eq(a.src.saved, [], 'a preview writes nothing to the shared document');
+eq(b.active(), before, 'a preview stays in its own app');
+ok(a.rt.previewSkin(null), 'cancel the preview');
+eq(a.active(), before, 'cancel puts the look back');
+ok(!a.rt.previewSkin('no-such-skin'), 'an unknown skin has no preview');
+a.rt.previewSkin('windows');
+a.rt.useSkin(true, 'windows');
+eq(a.rt.previewedSkin(), null, 'Apply ends the preview');
+eq(a.store.doc?.skin.use, true, 'Apply saves the skin');
+a.rt.previewSkin('hub-default');
+a.rt.restoreDefaultAppearance();
+eq(a.rt.previewedSkin(), null, 'Reset ends the preview');
+eq(a.active(), before, 'Reset = the snapshot');
+const scope = a.rt.scoped('skin-scope', a.rt.registry.list('interface' as never)[0]?.id ?? '');
+scope.previewSkin('windows');
+eq(a.rt.previewedSkin(), 'windows', 'a preview from a scoped view reaches the app');
+scope.previewSkin(null);
+eq(a.active(), before, 'and goes away again');
+
 /* a broken document: nothing is written, the shared one is not touched */
 const c = boot('app-d');
 c.store.st = 'failed'; c.store.doc = null;

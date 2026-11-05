@@ -534,7 +534,8 @@ export class AxfRuntime {
    */
   private applyAppearance(shared: AppearanceDocument | null): void {
     this.lastAppearance = shared;
-    const look = this.ensureLook();
+    const saved = this.ensureLook();
+    const look = saved && this.lookPreview ? setUseSkin(pickSkin(saved, this.lookPreview), true) : saved;
     const doc = look ? composeLook(shared, look, look.skin.use ? this.skinData(look.skin.id) : null) : shared;
     this.lastEffective = doc;
     let retired: string[] = [];
@@ -626,6 +627,8 @@ export class AxfRuntime {
   private lookStoreRef: AppLookStore | null = null;
   private lookStoreOff: (() => void) | null = null;
   private localLookStore: AppLookStore | null = null;
+  /** The skin the picker is showing; drawn only, never saved. */
+  private lookPreview: string | null = null;
 
   private useLookStore(store: AppLookStore | null): void {
     this.lookStoreOff?.();
@@ -670,6 +673,7 @@ export class AxfRuntime {
     if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
     const cur = this.ensureLook();
     if (!cur) { this.toast("This app's look can't be read from axHub right now.", 'warning', 'Appearance'); return false; }
+    this.lookPreview = null;
     this.saveLook(next(cur));
     this.applyAppearance(this.lastAppearance);
     this.bumpLook();
@@ -710,6 +714,24 @@ export class AxfRuntime {
     if (!this.skinData(id)) { this.toast(`No skin "${id}" in this app.`, 'warning', 'Skin'); return false; }
     return this.changeLook((cur) => pickSkin(cur, id));
   }
+
+  /**
+   * Show a skin on this screen without saving anything; null puts the saved look back. The picker's preview: it reaches
+   * no document and no other tab, and any saved change ends it.
+   */
+  previewSkin(id: string | null): boolean {
+    const want = id ?? null;
+    if (want === this.lookPreview) return true;
+    if (want && !this.skinData(want)) return false;
+    if (want && (!this.can('assets.swap') || this.lockedByAppearance('assets.swap') || !this.ensureLook())) return false;
+    this.lookPreview = want;
+    this.applyAppearance(this.lastAppearance);
+    this.bumpLook();
+    return true;
+  }
+
+  /** The skin being previewed, if any. */
+  previewedSkin(): string | null { return this.lookPreview; }
 
   /** Per-item "Back to skin": drop this slot's override. */
   backToSkin(slot: string): boolean { return this.changeLook((cur) => backToSkin(cur, slot)); }
@@ -2506,6 +2528,12 @@ export class AxfRuntime {
       applyDesignPackage: { value: (pid: string) => base.applyDesignPackage(pid) },
       applyInterface: { value: (iid: string) => base.applyInterface(iid) },
       restoreDefaultAppearance: { value: () => base.restoreDefaultAppearance() },
+      useSkin: { value: (on: boolean, sid?: string) => base.useSkin(on, sid) },
+      pickSkin: { value: (sid: string) => base.pickSkin(sid) },
+      previewSkin: { value: (sid: string | null) => base.previewSkin(sid) },
+      previewedSkin: { value: () => base.previewedSkin() },
+      backToSkin: { value: (slot: string) => base.backToSkin(slot) },
+      undoRestoreDefault: { value: () => base.undoRestoreDefault() },
       scoped: { value: (sid: string, iid: string) => base.scoped(sid, iid) },
       // anything opened through the scoped view belongs to the scope (its own hosts draw it)
       openDialog: { value: (did: string, props?: Record<string, unknown>) => { base.enterScope(scopeId); base.openDialog(did, props); } },

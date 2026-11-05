@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "action-button",
+  "id": "win-close",
+  "name": "Close",
+  "version": "1.0.0",
+  "description": "Closes the front window, or goes back home.",
+  "author": "AmberX AXF",
+  "tags": [
+    "windows",
+    "skin"
+  ],
+  "data": {
+    "icon": "close",
+    "label": "Close",
+    "action": "skin.window.close",
+    "show": "icon"
+  }
+}
