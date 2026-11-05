@@ -71,7 +71,7 @@ const listeners = new Set<(r: TestResult | null) => void>();
 
 function show(rt: AxfRuntime, r: TestResult | null, checking: boolean) {
   rt.registry.register(badgeAsset(rt, r, checking), 'app', ID);
-  rt.attachToBanner({ type: 'badge', id: BADGE_ID, at: 'left', order: 5, origin: ID });
+  rt.attachToBanner({ type: 'badge', id: BADGE_ID, at: 'left', order: 5, origin: ID, widget: { label: 'Claude badge', priority: 8, aliases: ['claude'] } });
 }
 
 /** Run the connection test, repaint the badge and pop the tooltip out for 5 s. */

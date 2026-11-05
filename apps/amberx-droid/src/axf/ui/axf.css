@@ -154,6 +154,30 @@ html[data-axf-strip='on'] .fx-main__inner { padding: 0; margin: 0; max-width: no
 .fx-banner .fx-widget-search { min-width: calc(var(--fx-space) * 12); }
 /* while arranging, the drop bar under the banner must show (and dragging needs no scroll) */
 .fx-banner.is-arranging { overflow: visible; }
+/* Banner widgets: a widget never takes more room than its size allows; long text ends in an ellipsis. */
+[data-fx-wsize] { display: inline-flex; align-items: center; min-width: 0; }
+[data-fx-wsize] > :where(.fx-widget-status, .fx-widget-counter, .fx-widget-label, .fx-widget-link, .fx-widget-button, .fx-banner__badge) { min-width: 0; max-width: 100%; }
+[data-fx-wsize] :where(.fx-widget-status > span:last-child, .fx-widget-counter__label, .fx-widget-link > span, .fx-widget-button > span, .fx-banner__badge-label), [data-fx-wsize] > .fx-widget-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+[data-fx-wsize] > .fx-widget-label { display: block; }
+[data-fx-wshow='icon'] :where(.fx-widget-status > span:last-child:not(.fx-widget-status__dot), .fx-widget-counter__label, .fx-widget-button > span, .fx-widget-theme > span, .fx-banner__badge-label), [data-fx-wshow='icon'] .fx-widget-link:has(svg) > span { display: none; }
+[data-fx-wshow='text'] :where(.fx-widget-status__dot, .fx-widget-counter > svg, .fx-widget-button > svg, .fx-widget-link > svg, .fx-widget-theme > svg) { display: none; }
+.fx-banner__more-btn { position: relative; }
+.fx-banner__more { position: fixed; z-index: 70; display: flex; flex-direction: column; align-items: flex-start; gap: var(--fx-dens-gap-md); min-width: calc(var(--fx-space) * 20); max-width: calc(100vw - var(--fx-space) * 2); max-height: 70vh; overflow-y: auto; padding: var(--fx-dens-gap-lg); font-size: var(--fx-type-root-sm); }
+.fx-banner__more-item { display: flex; align-items: center; min-height: var(--fx-row-h); max-width: 100%; }
+.fx-banner__more-item > [data-fx-wsize] { max-width: 100% !important; }
+.fx-banner-widgets { display: grid; gap: var(--fx-dens-gap-xl); min-width: 0; }
+.fx-banner-widgets__preview { border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); }
+.fx-banner-widgets__preview .fx-banner { display: flex; flex-wrap: wrap; align-items: center; height: auto; min-height: var(--fx-banner-h); overflow: visible; padding-block: var(--fx-dens-gap-sm); gap: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); pointer-events: none; }
+.fx-banner-widgets__preview .fx-banner__side { flex-wrap: wrap; height: auto; min-height: var(--fx-banner-h); }
+.fx-banner-widgets__side { display: grid; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.fx-banner-widgets__title { margin: 0; color: var(--fx-muted); font-size: var(--fx-type-root-sm); font-weight: 600; }
+.fx-banner-widgets__row { border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface); min-width: 0; }
+.fx-banner-widgets__row.is-dragging { border-color: var(--fx-accent); background: var(--fx-accent-soft); }
+.fx-banner-widgets__line { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); min-height: var(--fx-row-h); padding: 0 var(--fx-dens-gap-md); min-width: 0; }
+.fx-banner-widgets__check { min-width: 0; }
+.fx-banner-widgets__grip { display: inline-flex; flex: none; padding: var(--fx-dens-gap-sm); color: var(--fx-muted); cursor: grab; touch-action: none; }
+.fx-banner-widgets__wide { grid-column: 1 / -1; }
+.fx-banner-widgets__fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 24), 1fr)); gap: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-md); border-top: var(--fx-border-w) solid var(--fx-border); }
 :where([data-fx-tiny]) .fx-banner__side.is-left { justify-content: flex-start; } :where([data-fx-tiny]) .fx-banner__side .fx-widget-label, :where([data-fx-tiny]) .fx-banner__side .fx-widget-progress__label { display: none; }
 .fx-banner__side.is-center { justify-content: center; justify-content: safe center; }
 .fx-banner__side.is-right { justify-content: flex-end; justify-content: safe flex-end; }
