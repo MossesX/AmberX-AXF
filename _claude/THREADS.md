@@ -700,7 +700,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 16:15 UTC · `app-voice-commands` note (current) · orchestrator
 - 2026-11-04 16:16 UTC · `app-voice-commands` note (current) · foreign-write
 - 2026-11-04 16:20 UTC · `settings-placement-everywhere` branch claude/settings-placement-everywhere, note (current) · reconciler
 - 2026-11-04 16:23 UTC · `tab-group-assets` s3 done (current) · foreign-write
@@ -1100,6 +1099,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-05 02:46 UTC · `banner-widgets` note (current) · orchestrator
 - 2026-11-05 02:49 UTC · `banner-widgets` note (current) · orchestrator
 - 2026-11-05 03:00 UTC · `amberx-approvals-fix` → pending, note (urgent) · reconciler
+- 2026-11-05 03:20 UTC · `banner-widgets` → pending, note (current) · reconciler
 
 ## Token passes (log)
 
