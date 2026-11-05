@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1067,
- "updatedAt": "2026-11-05T22:41:37.305Z",
+ "rev": 1068,
+ "updatedAt": "2026-11-05T22:42:24.786Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -87074,10 +87074,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/ai-keys-new-format-r4",
+   "pr": "#356",
    "createdAt": "2026-11-05T22:41:21.410Z",
-   "updatedAt": "2026-11-05T22:41:26.850Z",
+   "updatedAt": "2026-11-05T22:42:23.756Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -87170,7 +87170,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
