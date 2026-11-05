@@ -24,7 +24,9 @@ Saved logins stay in `/root/.claude-accounts/` on the host. The active one is co
   Answers carry names, the active marker, email and plan.
 - **Owner only:** a signed-in non-admin gets 403. Brett's session and the console token can ask. The hold is what
   guards the change: Deny stops it, Approve runs it at once, and otherwise it runs after the veto countdown.
-- **Builds:** running builds keep their account; new launches use the active one.
+- **Builds:** running builds keep their account; new launches use the active one. Each headless build runs on its own
+  copy of the login (`deploy/claude-login.mjs`, `CLAUDE_CONFIG_DIR`), so a logout, switch or new login here never
+  touches a running build. The launcher only reads the saved logins; it never runs save or use.
 
 ## Adding an account
 
