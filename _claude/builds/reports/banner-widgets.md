@@ -17,6 +17,10 @@ Asked: pick which widgets sit on the top banner, settings for each one's size an
 - Optional `widget` hint on a host attachment (`HostAttachment.widget`). No asset type or schema changed; `check-widgets.mts` covers the engine, there is no fixture yet.
 - Kotlin twin deferred in `framework/spec/PORTING.md`.
 
+## Also fixed
+
+CI: `refresh-check.mts` ran on every console run, but axhub-web's packages were only installed when a PR touched axhub-web, so console-only PRs (#351, for one) failed in the queue on a missing `react`. It now installs them when they are missing.
+
 ## Known gaps
 
 - **Usage meter:** the `usage-meter` build had not landed when this was written (branch has no commits, queued behind the agent cap). Its chip appears by itself once it attaches; docs give the exact call. It was exercised here with a stand-in chip of the same shape.
