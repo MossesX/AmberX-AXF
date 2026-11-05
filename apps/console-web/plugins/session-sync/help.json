@@ -283,6 +283,54 @@
         "target": "dialog:session-sync.pair",
         "title": "Connect a helper account",
         "text": "The one place a helper's token is typed. Run claude setup-token in that account and paste what it prints. It is checked, sealed for the VPS and never shown or logged. Never paste a token in a chat."
+      },
+      {
+        "target": "brownies-sass",
+        "title": "Brownie's sass",
+        "text": "How rough Brownie's helper desk posts are: Mild, Spicy or Savage. Every post still names the build, step, status and next action.",
+        "kind": "field"
+      },
+      {
+        "target": "nudge-at-estimate",
+        "title": "Nudge at (× estimate)",
+        "text": "Brownie nudges a helper once a step has taken this many times its estimate.",
+        "kind": "field"
+      },
+      {
+        "target": "whip-crack-at",
+        "title": "Whip-crack at",
+        "text": "Brownie posts a stronger warning once a step has taken this many times its estimate.",
+        "kind": "field"
+      },
+      {
+        "target": "yank-at",
+        "title": "Yank at",
+        "text": "At this many times the estimate Brownie takes the step back, reassigns it and adds a write-up line.",
+        "kind": "field"
+      },
+      {
+        "target": "missed-heartbeat-s",
+        "title": "Missed heartbeat (s)",
+        "text": "If a working helper is quiet this many seconds, Brownie takes its work back straight away.",
+        "kind": "field"
+      },
+      {
+        "target": "switch-account-when-one-runs-out",
+        "title": "Switch account when one runs out",
+        "text": "When a run stops on a usage limit, move to the next saved account in the order below. Never mid-step, never for a helper's job. Only Brett changes this.",
+        "kind": "toggle"
+      },
+      {
+        "target": "order-first-to-last",
+        "title": "Order, first to last",
+        "text": "Saved account names in the order to try them, separated by commas. Accounts that can't run the model are skipped.",
+        "kind": "field"
+      },
+      {
+        "target": "subscription-token",
+        "title": "Subscription token",
+        "text": "The token printed by claude setup-token in the helper's account. It is checked, sealed for the VPS and never shown again.",
+        "kind": "field"
       }
     ],
     "intros": [

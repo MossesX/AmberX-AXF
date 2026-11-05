@@ -21,7 +21,6 @@
     "dialog:session-sync.widgets",
     "dialog:session-sync.pair",
     "settings-tab:session-sync",
-    "banner:session-sync",
     "action:session-sync.sync",
     "action:session-sync.open",
     "action:session-sync.join",
@@ -42,9 +41,7 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
-  "banner": [
-    "session-sync"
-  ],
+  "banner": false,
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",

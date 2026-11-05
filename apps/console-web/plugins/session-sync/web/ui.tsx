@@ -4,7 +4,7 @@
  * join watcher. Framework controls and tokens only.
  */
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { AgentAvatar, Button, Checkbox, Chip, Container, Icon, Note, SelectField, SelectionBar, Switch, TextField, useIsPhone, useMultiSelect, useRuntime } from '@console/axf/react';
+import { AgentAvatar, Button, Checkbox, Chip, Container, Icon, Note, SelectField, SelectionBar, Switch, TabGroup, TextField, useIsPhone, useMultiSelect, useRuntime } from '@console/axf/react';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { DIALOG_SEND, DIALOG_WIDGETS, FOLDER, KEYS, VIEW, actions, addWidget, call, post, attachableWidgets, getStore, hostLabel, loadMessages, loadSnapshot, loadState, openWindows, removeWidget, savedWidgets, subscribe, type AccountV, type AssignmentV, type MessageV, type OfferV, type SessionV, type SnapshotV, type StateV } from './core';
 
@@ -165,9 +165,7 @@ export function Channel({ compact = false }: { compact?: boolean }) {
   useEffect(() => { void loadMessages(); }, []);
   return (
     <div className="fx-stack">
-      <div className="fx-seg fx-seg--sm" role="tablist" aria-label="Channel filter" data-help="sessions-filter">
-        {FILTERS.map((f) => <button key={f.id} type="button" role="tab" aria-selected={filter === f.id} className={`fx-seg__opt${filter === f.id ? ' is-on' : ''}`} onClick={() => void loadMessages(f.id)}>{f.label}</button>)}
-      </div>
+      <TabGroup id="session-sync.channel-filter" label="Channel filter" size="sm" value={filter} onChange={(v) => void loadMessages(v)} tabs={FILTERS.map((f) => ({ value: f.id, label: f.label }))} />
       <div className="axp-session-sync__chat" style={compact ? { maxHeight: '30vh' } : undefined}>
         {messages.length === 0 && <p className="fx-empty">Quiet. Lines show up as sessions join, claim, hand over and finish steps.</p>}
         {messages.map((m) => <Message key={m.id} m={m} />)}
