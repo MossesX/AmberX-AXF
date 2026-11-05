@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1020,
- "updatedAt": "2026-11-05T00:13:31.780Z",
+ "rev": 1021,
+ "updatedAt": "2026-11-05T00:13:47.013Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -85452,16 +85452,21 @@
    "title": "Claude account switcher",
    "category": "Plugin",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/claude-account-switcher",
    "pr": "#351",
    "createdAt": "2026-11-04T23:57:00.641Z",
-   "updatedAt": "2026-11-05T00:13:30.628Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-05T00:13:32.220Z",
+   "builtAt": "2026-11-05T00:13:31.433Z",
+   "notes": [
+    {
+     "text": "PR 351 open, in the merge queue. Report _claude/builds/reports/claude-account-switcher.md. No real switch was run; the hold path used a fake hub.",
+     "at": "2026-11-05T00:13:32.220Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -85580,12 +85585,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T00:13:31.433Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-04T23:57:00.643Z",
-     "updatedAt": "2026-11-04T23:57:00.643Z"
+     "updatedAt": "2026-11-05T00:13:45.479Z"
     }
    ],
    "profiles": [
@@ -85599,7 +85604,23 @@
    "rev": 6,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-04T23:57:00.641Z",
+    "builtAt": "2026-11-05T00:13:31.433Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw2s0b03062djq": "2026-11-04T23:57:00.643Z",
+     "st-mw2s0b03078oht": "2026-11-04T23:57:00.643Z",
+     "st-mw2s0b03080ia7": "2026-11-04T23:57:00.643Z",
+     "st-mw2s0b0309t7v8": "2026-11-04T23:57:00.643Z",
+     "st-mw2s0b030azt3i": "2026-11-04T23:57:00.643Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-04T23:57:00.643Z",
    "rearranged": false,
