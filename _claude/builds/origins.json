@@ -181,6 +181,18 @@
    "from": "detail",
    "addenda": []
   },
+  "amberx-voice-echo-fix": {
+   "said": "Echo fix\n\nMaine but how do I make it so I don't have to keep cooking the mic to talk to you",
+   "at": "2026-11-05T01:38:10.037Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "amberx-voice-fix": {
    "said": "the voice monitor misses what he says, filters swears, text does not show in real time, and it constantly makes a tone. Fix all of it. Android exception (AmberX). Built in this session (Brett).",
    "at": "2026-10-28",

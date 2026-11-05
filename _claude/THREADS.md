@@ -700,7 +700,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 15:57 UTC · `tab-group-assets` s1 done (current) · foreign-write
 - 2026-11-04 15:57 UTC · `jump-menu-asset` s1 done, s2 done (current) · foreign-write
 - 2026-11-04 15:57 UTC · `jump-menu-asset` s2 done, s3 done, s4 done (current) · foreign-write
 - 2026-11-04 15:57 UTC · `tab-group-assets` s2 done (current) · foreign-write
@@ -1100,6 +1099,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-05 00:13 UTC · `claude-account-switcher` s5 done, → complete, note (current) · foreign-write
 - 2026-11-05 00:13 UTC · `claude-account-switcher` s5 done, → built (current) · orchestrator
 - 2026-11-05 00:13 UTC · `claude-account-switcher` note (current) · orchestrator
+- 2026-11-05 01:38 UTC · `amberx-voice-echo-fix` added (3 steps) (main-framework) · orchestrator
 
 ## Token passes (log)
 
