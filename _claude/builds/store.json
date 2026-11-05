@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1066,
- "updatedAt": "2026-11-05T22:41:22.352Z",
+ "rev": 1067,
+ "updatedAt": "2026-11-05T22:41:37.305Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -87070,14 +87070,14 @@
    "title": "AI keys: accept new Anthropic API key formats (sk-ant-usr…)",
    "category": "Console > AI keys",
    "detail": "The console AI keys page rejected real Anthropic API keys starting sk-ant-usr with \"unknown key type\". Classify by a prefix table with an unknown sk-ant- fallback (accepted, verified live); sk-ant-oat stays a subscription login; live check on save OK / invalid / no credit; keys never echoed (last 4 only).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-05T22:41:21.410Z",
-   "updatedAt": "2026-11-05T22:41:21.410Z",
+   "updatedAt": "2026-11-05T22:41:26.850Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -87110,12 +87110,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T22:41:26.122Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-05T22:41:21.411Z",
-     "updatedAt": "2026-11-05T22:41:21.411Z"
+     "updatedAt": "2026-11-05T22:41:26.186Z"
     },
     {
      "id": "s2",
@@ -87132,12 +87132,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T22:41:26.850Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-05T22:41:21.411Z",
-     "updatedAt": "2026-11-05T22:41:21.411Z"
+     "updatedAt": "2026-11-05T22:41:26.908Z"
     },
     {
      "id": "s3",
@@ -87170,7 +87170,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
