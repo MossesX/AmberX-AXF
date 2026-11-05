@@ -232,3 +232,6 @@ menu-fit@1: `framework/core/engines/menufit.ts` (pure `fitMenu` / `menuBox`; che
 menu box, `.fx-menu__li` static), context menus and plugin ⋯ menus flip / shift to stay on screen and only then scroll,
 with `data-fx-more` fade + chevron hints and contained overscroll. Re-baked console, axHub web, AmberX, Molly. Android
 twin deferred (PORTING.md). Report `_claude/builds/reports/menu-scroll.md`.
+
+## Shipped features (Nov 4–5 2026, shipped-features-r2; s1–s2 Fable, s3–s15 Opus, Fable review pending; branch `claude/shipped-features-r2`, PR #350) <!-- axf-plugin:shipped-features -->
+Every feature of AmberX-AXF and axHub from planned to live, with later changes as edits: plugin `apps/console-web/plugins/shipped-features` (SQLite ledger, feature-ledger@1; Builds → Shipped features). Planned the moment a build is created: build-hook@1 (`framework/core/build-hook.mjs` + `framework/cli/build-hooks.mjs`) fires from every builds store write. Live dates from the deploy log (deploy-log@1, `axf_deploy_log` in `framework/deploy/axf-deploy.sh`; console + site installers call it, axHub's installer still needs it). Backfill: builds journal, merged PRs, early commits, AI seed file (empty until a model pass). Not deployed yet; on first open the console runs the import. Report `_claude/builds/reports/shipped-features.md`.

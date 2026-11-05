@@ -63,4 +63,6 @@ ok(c.get("/api/plugins/shipped-features/feature/f-nope").status_code == 404, "un
 csv = c.get("/api/plugins/shipped-features/export", params={"kind": "csv", "view": json.dumps({"hideCancelled": True})})
 ok(csv.status_code == 200 and "Status chips" in csv.text, "export csv")
 ok(c.get("/api/plugins/shipped-features/export", params={"kind": "pdf"}).status_code == 400, "export kind checked")
+sm = c.get("/api/plugins/shipped-features/summary").json()
+ok(sm["ready"] and sm["beingEdited"] == 1 and sm["statuses"].get("planned") == 1 and sm["active"] == 1, "summary: counts for the menu badge")
 print(f"shipped-features server: {n} checks passed")

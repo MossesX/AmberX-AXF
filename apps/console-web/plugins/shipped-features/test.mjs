@@ -82,5 +82,20 @@ t('live: first successful deploy containing the merge commit, per target; backfi
   assert.deepEqual(liveFor(recs, 'zzzzzzz', 'amberx-axf', contains), {});
 });
 
+t('full lifecycle on a scratch deploy log: merged → live from the deploy that contains the merge commit', async () => {
+  const { mkdtempSync, writeFileSync } = await import('node:fs'); const { tmpdir } = await import('node:os'); const { join } = await import('node:path');
+  const dir = mkdtempSync(join(tmpdir(), 'axf-sf-live-')); process.env.AXF_DEPLOY_LOG = join(dir, 'log.jsonl');
+  writeFileSync(process.env.AXF_DEPLOY_LOG, `${JSON.stringify({ target: 'console', sha: '1111111', at: '2026-11-05T00:10:00Z' })}\n${JSON.stringify({ target: 'console', sha: '2222222', at: '2026-11-05T00:20:00Z' })}\n`);
+  const { syncDeploys } = await import('./ledger/live.mjs');
+  const db = D.openDb(':memory:');
+  const f = D.putFeature(db, { name: 'Grid', plugin: 'shipped-features', status: 'merged', mergedAt: '2026-11-05T00:00:00Z', mergeCommit: 'aaaaaaa' });
+  const g = D.putFeature(db, { name: 'Old thing', plugin: 'shipped-features', status: 'merged', mergedAt: '2026-10-01T00:00:00Z', mergeCommit: 'bbbbbbb' });
+  const contains = (dep, m) => (m === 'aaaaaaa' && dep === '2222222') || (m === 'bbbbbbb');
+  const r = await syncDeploys(db, { contains });
+  assert.equal(r.deploys, 2); const live = D.getFeature(db, f.id); assert.equal(live.status, 'live'); assert.equal(live.liveAt.console.at, '2026-11-05T00:20:00Z'); assert.equal(live.liveAt.console.guessed, false);
+  assert.equal(D.getFeature(db, g.id).liveAt.console.at, '2026-11-05T00:10:00Z');
+  delete process.env.AXF_DEPLOY_LOG; D.closeDb(':memory:');
+});
+
 for (const [name, fn] of tests) { try { await fn(); n += 1; } catch (e) { console.error(`✗ ${name}`); throw e; } }
 console.log(`shipped-features: ${n} checks passed`);

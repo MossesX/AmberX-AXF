@@ -21,7 +21,7 @@
       "title": "Grid",
       "text": "Three-level grid",
       "files": [
-       "apps/console-web/plugins/shipped-features/web/index.tsx"
+       "apps/console-web/plugins/example-grid/web/index.tsx"
       ],
       "model": "Opus"
      }
@@ -53,7 +53,7 @@
       "title": "Grid",
       "text": "Three-level grid",
       "files": [
-       "apps/console-web/plugins/shipped-features/web/index.tsx"
+       "apps/console-web/plugins/example-grid/web/index.tsx"
       ],
       "model": "Opus"
      }
@@ -87,7 +87,7 @@
       "title": "Grid",
       "text": "Three-level grid",
       "files": [
-       "apps/console-web/plugins/shipped-features/web/index.tsx"
+       "apps/console-web/plugins/example-grid/web/index.tsx"
       ],
       "model": "Opus"
      }
@@ -119,7 +119,7 @@
       "title": "Grid",
       "text": "Three-level grid",
       "files": [
-       "apps/console-web/plugins/shipped-features/web/index.tsx"
+       "apps/console-web/plugins/example-grid/web/index.tsx"
       ],
       "model": "Opus"
      }
@@ -147,7 +147,7 @@
       "title": "Grid",
       "text": "Three-level grid",
       "files": [
-       "apps/console-web/plugins/shipped-features/web/index.tsx"
+       "apps/console-web/plugins/example-grid/web/index.tsx"
       ],
       "model": "Opus"
      },
@@ -185,7 +185,7 @@
       "title": "Grid",
       "text": "Three-level grid",
       "files": [
-       "apps/console-web/plugins/shipped-features/web/index.tsx"
+       "apps/console-web/plugins/example-grid/web/index.tsx"
       ],
       "model": "Opus"
      },
@@ -220,7 +220,7 @@
       "title": "Grid",
       "text": "Three-level grid",
       "files": [
-       "apps/console-web/plugins/shipped-features/web/index.tsx"
+       "apps/console-web/plugins/example-grid/web/index.tsx"
       ],
       "model": "Opus",
       "done": true,
@@ -260,7 +260,7 @@
       "title": "Grid",
       "text": "Three-level grid",
       "files": [
-       "apps/console-web/plugins/shipped-features/web/index.tsx"
+       "apps/console-web/plugins/example-grid/web/index.tsx"
       ],
       "model": "Opus"
      }
@@ -288,7 +288,7 @@
       "title": "Grid",
       "text": "Three-level grid",
       "files": [
-       "apps/console-web/plugins/shipped-features/web/index.tsx"
+       "apps/console-web/plugins/example-grid/web/index.tsx"
       ],
       "model": "Opus"
      }
@@ -326,7 +326,7 @@
       "title": "Grid",
       "text": "Three-level grid",
       "files": [
-       "apps/console-web/plugins/shipped-features/web/index.tsx"
+       "apps/console-web/plugins/example-grid/web/index.tsx"
       ],
       "model": "Opus"
      }
@@ -354,7 +354,7 @@
       "title": "Grid",
       "text": "Three-level grid",
       "files": [
-       "apps/console-web/plugins/shipped-features/web/index.tsx"
+       "apps/console-web/plugins/example-grid/web/index.tsx"
       ],
       "model": "Opus"
      }
@@ -387,7 +387,7 @@
       "title": "Grid",
       "text": "Three-level grid",
       "files": [
-       "apps/console-web/plugins/shipped-features/web/index.tsx"
+       "apps/console-web/plugins/example-grid/web/index.tsx"
       ],
       "model": "Opus"
      }
@@ -416,7 +416,7 @@
       "title": "Grid",
       "text": "Three-level grid",
       "files": [
-       "apps/console-web/plugins/shipped-features/web/index.tsx"
+       "apps/console-web/plugins/example-grid/web/index.tsx"
       ],
       "model": "Opus"
      }
@@ -449,7 +449,7 @@
       "title": "Grid",
       "text": "Three-level grid",
       "files": [
-       "apps/console-web/plugins/shipped-features/web/index.tsx"
+       "apps/console-web/plugins/example-grid/web/index.tsx"
       ],
       "model": "Opus"
      }
@@ -477,7 +477,7 @@
       "title": "Grid",
       "text": "Three-level grid",
       "files": [
-       "apps/console-web/plugins/shipped-features/web/index.tsx"
+       "apps/console-web/plugins/example-grid/web/index.tsx"
       ],
       "model": "Opus"
      }
@@ -508,7 +508,7 @@
       "title": "Grid",
       "text": "Three-level grid",
       "files": [
-       "apps/console-web/plugins/shipped-features/web/index.tsx"
+       "apps/console-web/plugins/example-grid/web/index.tsx"
       ],
       "model": "Opus"
      }
@@ -536,7 +536,7 @@
       "title": "Grid",
       "text": "Three-level grid",
       "files": [
-       "apps/console-web/plugins/shipped-features/web/index.tsx"
+       "apps/console-web/plugins/example-grid/web/index.tsx"
       ],
       "model": "Opus"
      }
@@ -568,7 +568,7 @@
       "title": "Grid",
       "text": "Three-level grid",
       "files": [
-       "apps/console-web/plugins/shipped-features/web/index.tsx"
+       "apps/console-web/plugins/example-grid/web/index.tsx"
       ],
       "model": "Opus"
      }
@@ -597,7 +597,7 @@
       "title": "Grid",
       "text": "Three-level grid",
       "files": [
-       "apps/console-web/plugins/shipped-features/web/index.tsx"
+       "apps/console-web/plugins/example-grid/web/index.tsx"
       ],
       "model": "Opus"
      }
@@ -628,7 +628,7 @@
       "title": "Grid",
       "text": "Three-level grid",
       "files": [
-       "apps/console-web/plugins/shipped-features/web/index.tsx"
+       "apps/console-web/plugins/example-grid/web/index.tsx"
       ],
       "model": "Opus"
      }
@@ -656,7 +656,7 @@
       "title": "Grid",
       "text": "Three-level grid",
       "files": [
-       "apps/console-web/plugins/shipped-features/web/index.tsx"
+       "apps/console-web/plugins/example-grid/web/index.tsx"
       ],
       "model": "Opus"
      }
@@ -707,7 +707,7 @@
        "title": "Grid",
        "text": "Three-level grid",
        "files": [
-        "apps/console-web/plugins/shipped-features/web/index.tsx"
+        "apps/console-web/plugins/example-grid/web/index.tsx"
        ],
        "model": "Opus",
        "done": false,
@@ -757,7 +757,7 @@
        "title": "Grid",
        "text": "Three-level grid",
        "files": [
-        "apps/console-web/plugins/shipped-features/web/index.tsx"
+        "apps/console-web/plugins/example-grid/web/index.tsx"
        ],
        "model": "Opus",
        "done": false,
@@ -834,7 +834,7 @@
        "title": "Grid",
        "text": "Three-level grid",
        "files": [
-        "apps/console-web/plugins/shipped-features/web/index.tsx"
+        "apps/console-web/plugins/example-grid/web/index.tsx"
        ],
        "model": "Opus",
        "done": false,
@@ -951,7 +951,7 @@
        "title": "Grid",
        "text": "Three-level grid",
        "files": [
-        "apps/console-web/plugins/shipped-features/web/index.tsx"
+        "apps/console-web/plugins/example-grid/web/index.tsx"
        ],
        "model": "Opus",
        "done": true,

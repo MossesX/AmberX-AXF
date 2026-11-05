@@ -6,6 +6,7 @@ only); every write goes through the Node side (ledger/ledger.mjs), so the refere
 
     GET  /ledger              every feature, edit, PR, build, prompt and deploy (the grid filters / sorts / groups on
                               the client with framework/core/feature-ledger.mjs) + meta (schema, counts, last sync)
+    GET  /summary             counts per status, being edited, live in the last day (menu badge, Home cards)
     GET  /feature/{id}        one feature: its edits (newest first), prompts, earlier versions
     POST /sync                new build events + recent PRs + the deploy log (also runs by itself every SYNC_S while
                               the grid is open, and on the first read after a restart)
@@ -111,6 +112,24 @@ def ledger() -> dict[str, Any]:
         out["updatedAt"] = m.get("updated_at", "")
         out["meta"] = {**meta, "schema": int(m.get("schema_version", "0") or 0), "importedAt": m.get("imported_at", ""), "counts": {t: len(out[t]) for t in TABLES}}
         return out
+    finally:
+        c.close()
+
+
+@router.get("/summary")
+def summary() -> dict[str, Any]:
+    """Counts for the menu badge and Home cards: per status, being edited, gone live in the last day."""
+    _maybe_sync()
+    c = _connect()
+    if c is None:
+        return {"ready": False, "statuses": {}, "beingEdited": 0, "active": 0, "liveToday": 0, "editsPending": 0}
+    try:
+        st = {r["status"]: r["n"] for r in c.execute("SELECT status, COUNT(*) AS n FROM features GROUP BY status")}
+        editing = c.execute("SELECT COUNT(*) AS n FROM features WHERE being_edited = 1").fetchone()["n"]
+        day = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() - 86400))
+        live = c.execute("SELECT COUNT(*) AS n FROM features WHERE first_live_at >= ?", (day,)).fetchone()["n"]
+        ep = c.execute("SELECT COUNT(*) AS n FROM edits WHERE status IN ('planned', 'queued', 'building', 'in-pr')").fetchone()["n"]
+        return {"ready": True, "statuses": st, "beingEdited": editing, "active": st.get("building", 0) + st.get("in-pr", 0) + editing, "liveToday": live, "editsPending": ep}
     finally:
         c.close()
 

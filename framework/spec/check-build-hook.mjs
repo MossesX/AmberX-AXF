@@ -20,7 +20,7 @@ const ta = async (name, fn) => { try { await fn(); n += 1; } catch (e) { console
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const AT = '2026-11-04T22:00:00Z';
 
-const s1 = { id: 's1', uid: 'u1', title: 'Grid', text: 'Three-level grid', files: ['apps/console-web/plugins/shipped-features/web/index.tsx'], model: 'Opus' };
+const s1 = { id: 's1', uid: 'u1', title: 'Grid', text: 'Three-level grid', files: ['apps/console-web/plugins/example-grid/web/index.tsx'], model: 'Opus' };
 const s2 = { id: 's2', uid: 'u2', title: 'Edits', text: 'Edits table', model: 'Fable' };
 const origin = { said: 'Where is the list of features?', at: '2026-11-04T12:00:00Z', source: 'voice', verbatim: true };
 const base = { id: 'shipped', title: 'Shipped features', profiles: ['angel'], status: 'pending', createdAt: '2026-11-04T12:00:00Z', rev: 1, steps: [s1], origin };
