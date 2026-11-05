@@ -22,9 +22,7 @@ Hint fields: `label`, `icon`, `size`, `show`, `priority`, `hideWhenEmpty`, `over
 
 Console action `banner.widget:<name>:<hide|show|reset|icon|compact|normal|wide>`, where the name is what you'd say ("clock", "ticker"). `banner.widgets` opens the picker, `banner.widgets.reset` resets.
 
-```bash
-node apps/console-web/plugins/console-commands/console.mjs action banner.widget clock hide
-```
+CLI: `console.mjs action banner.widget clock hide` (the Console commands plugin).
 
 MCP: `console_action("banner.widget", ["ticker", "compact"])`. Voice goes through the same tool.
 
