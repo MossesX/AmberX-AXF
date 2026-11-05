@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1042,
- "updatedAt": "2026-11-05T05:10:24.905Z",
+ "rev": 1043,
+ "updatedAt": "2026-11-05T05:10:47.427Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -86150,14 +86150,14 @@
    "title": "Priority tags",
    "category": "Feature",
    "detail": "A priority tag (Urgent / High / Normal / Low = P0-P3) on every build everywhere it shows, changeable by tap or right-click and in bulk. Priority drives the agent-slots queue and the merge queue; tapping the tag shows everything waiting on the build. Also fixes the console Build queue screen so it shows the real server queue.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/priority-tags",
    "pr": "#354",
    "createdAt": "2026-11-05T04:53:51.522Z",
-   "updatedAt": "2026-11-05T05:10:23.939Z",
+   "updatedAt": "2026-11-05T05:10:46.385Z",
    "builtAt": "",
    "notes": [
     {
@@ -86195,12 +86195,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T05:10:41.010Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-05T04:53:51.523Z",
-     "updatedAt": "2026-11-05T04:53:51.523Z"
+     "updatedAt": "2026-11-05T05:10:41.078Z"
     },
     {
      "id": "s2",
@@ -86217,12 +86217,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T05:10:41.665Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-05T04:53:51.523Z",
-     "updatedAt": "2026-11-05T04:53:51.523Z"
+     "updatedAt": "2026-11-05T05:10:41.732Z"
     },
     {
      "id": "s3",
@@ -86239,12 +86239,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T05:10:42.440Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-05T04:53:51.523Z",
-     "updatedAt": "2026-11-05T04:53:51.523Z"
+     "updatedAt": "2026-11-05T05:10:42.509Z"
     },
     {
      "id": "s4",
@@ -86261,12 +86261,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T05:10:43.274Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-05T04:53:51.523Z",
-     "updatedAt": "2026-11-05T04:53:51.523Z"
+     "updatedAt": "2026-11-05T05:10:43.329Z"
     },
     {
      "id": "s5",
@@ -86283,12 +86283,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T05:10:44.063Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-05T04:53:51.523Z",
-     "updatedAt": "2026-11-05T04:53:51.523Z"
+     "updatedAt": "2026-11-05T05:10:44.133Z"
     },
     {
      "id": "s6",
@@ -86321,10 +86321,27 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-05T04:53:51.522Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw32m1yp07cyot": "2026-11-05T04:53:51.523Z",
+     "st-mw32m1yp08ih6c": "2026-11-05T04:53:51.523Z",
+     "st-mw32m1yp09csoa": "2026-11-05T04:53:51.523Z",
+     "st-mw32m1yp0af5lu": "2026-11-05T04:53:51.523Z",
+     "st-mw32m1yp0bwrvg": "2026-11-05T04:53:51.523Z",
+     "st-mw32m1yp0c69u2": "2026-11-05T04:53:51.523Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-05T04:53:51.523Z",
    "rearranged": false,
