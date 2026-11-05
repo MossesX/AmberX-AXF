@@ -171,6 +171,64 @@ r = c.get(f"{P}/sync-file", headers=A)
 check("the sync file reads back fresh", r.status_code == 200 and r.json()["exists"] and r.json()["fresh"] and r.json()["doc"]["$axf"] == "handoff@1")
 svc = plugin_services.get("axf.session-sync@1")
 check("the capability answers role and assignment", svc is not None and svc.role_of("s-two", "acct2") == "secondary" and svc.role_of("s-brett") == "primary" and (svc.assigned("foo") or {}).get("session") == "s-two")
+# helper logins: only a signed-in person reaches the token page; a token never comes back, in a body or a log
+import http.server  # noqa: E402
+import subprocess  # noqa: E402
+import threading  # noqa: E402
+
+TOKEN = "sk-ant-oat01-" + "Qw3" * 20
+
+
+class FakeAnthropic(http.server.BaseHTTPRequestHandler):
+    def _go(self):
+        n = int(self.headers.get("content-length") or 0)
+        body = self.rfile.read(n).decode()
+        ok = self.headers.get("authorization") == f"Bearer {TOKEN}"
+        status = 401 if not ok else 403 if "fable" in body else 200
+        out = json.dumps({"account": {"email": "two@example.com"}, "organization": {"organization_type": "claude_pro"}}).encode()
+        self.send_response(status)
+        self.send_header("content-length", str(len(out)))
+        self.end_headers()
+        self.wfile.write(out)
+
+    do_GET = do_POST = _go
+
+    def log_message(self, *a):
+        pass
+
+
+fake = http.server.HTTPServer(("127.0.0.1", 0), FakeAnthropic)
+threading.Thread(target=fake.serve_forever, daemon=True).start()
+os.environ.update(AXF_CLAUDE_API_URL=f"http://127.0.0.1:{fake.server_port}", AXF_CLAUDE_ACCOUNTS_DIR=str(T / "accounts"))
+subprocess.run(["node", str(mod.CLI), "creds-init"], env={**os.environ, "AXF_SESSION_LINK_FILE": str(mod.link_file())}, cwd=REPO, capture_output=True)
+r = c.post(f"{P}/pair/start", headers=A, json={})
+check("the main account has nothing to pair", r.status_code == 403 and "main account" in r.text, r.text)
+r = c.post(f"{P}/pair/start", headers=B, json={})
+check("a helper gets a one-time link", r.status_code == 200 and "pair=" in r.json()["url"], r.text)
+code = r.json()["url"].split("pair=")[1]
+r = c.post(f"{P}/pair/redeem", headers=B, json={"code": code, "token": TOKEN})
+check("a session can never hand a token over: the page is for a signed-in person", r.status_code == 403, r.text)
+r = c.post(f"{P}/pair/redeem", json={"code": code, "token": TOKEN})
+check("nor can a bare console token", r.status_code == 403, r.text)
+r = c.post(f"{P}/pair/peek", headers=BRETT, json={"code": code})
+check("the page says whose link it is", r.status_code == 200 and r.json()["account"] == "acct2" and r.json()["label"] == "Helper 2", r.text)
+r = c.post(f"{P}/pair/redeem", headers=BRETT, json={"code": code, "token": "sk-ant-oat01-" + "z" * 40})
+check("a refused token is not kept and not echoed", r.status_code == 400 and "sk-ant" not in r.text, r.text)
+r = c.post(f"{P}/pair/redeem", headers=BRETT, json={"code": code, "token": TOKEN})
+check("a good token connects, labels only", r.status_code == 200 and r.json()["credential"]["email"] == "two@example.com" and r.json()["models"] == {"opus": True, "fable": False} and TOKEN not in r.text, r.text)
+r = c.post(f"{P}/pair/redeem", headers=BRETT, json={"code": code, "token": TOKEN})
+check("the code works once", r.status_code == 400, r.text)
+r = c.get(f"{P}/accounts", headers=BRETT)
+row = next((x for x in r.json()["accounts"] if x["id"] == "acct2"), {})
+check("the manager lists it masked, with its models", row.get("label") == "Helper 2" and row.get("hasToken") is True and row["credential"]["last4"] == TOKEN[-4:] and row["models"]["can"]["fable"] is False and TOKEN not in r.text, r.text[:300])
+check("a helper sees only its own account", all(x["id"] == "acct2" for x in c.get(f"{P}/accounts", headers=B).json()["accounts"]))
+r = c.post(f"{P}/accounts/revoke", headers=B, json={"account": "acct2"})
+check("a session can't revoke", r.status_code == 403, r.text)
+hay = "\n".join(p.read_text(errors="ignore") for p in T.rglob("*") if p.is_file() and not p.name.endswith(".sealed"))
+check("the token is in no file: link, journal, audit, Breakroom", TOKEN not in hay and TOKEN[13:40] not in hay)
+r = c.post(f"{P}/accounts/revoke", headers=BRETT, json={"account": "acct2"})
+check("Brett revokes: the sealed token is gone", r.status_code == 200 and not list((T / "link" / "creds").glob("*.sealed")), r.text)
+fake.shutdown()
 r = c.post(f"{P}/end", headers=B, json={"summary": "done"})
 check("ending the helper gives foo back", r.status_code == 200 and r.json()["givenBack"])
 for f in (REPO / "_claude/sync/amberx-axf.json", REPO / "_claude/sync/amberx-axf.md"):
