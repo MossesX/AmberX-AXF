@@ -217,7 +217,7 @@ class Router:
                     raise ValueError("that doesn't look like a key")
                 if p["kind"] == "anthropic" and key.startswith("sk-ant-oat"):
                     raise ValueError("that is a Claude subscription token: put it on the Claude plan profile")
-                if p["kind"] == "claude-code" and key.startswith("sk-ant-api"):
+                if p["kind"] == "claude-code" and key.startswith("sk-ant-") and not key.startswith(("sk-ant-oat", "sk-ant-ort")):  # api03, usr or newer = API key
                     raise ValueError("that is an Anthropic API key: put it on the Claude API profile")
                 p["key"] = key
                 if refresh:

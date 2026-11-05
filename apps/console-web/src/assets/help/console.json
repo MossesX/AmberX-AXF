@@ -856,7 +856,7 @@
       {
         "target": "api-key",
         "title": "API key",
-        "text": "Paste an Anthropic API key (sk-ant-api…). It's tested before it's saved.",
+        "text": "Paste an Anthropic API key (sk-ant-api03…, sk-ant-usr… or a newer sk-ant- format). It's checked live before it's saved: OK, invalid, or no credit.",
         "kind": "field"
       },
       {
