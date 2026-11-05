@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1079,
- "updatedAt": "2026-11-05T23:53:38.647Z",
+ "rev": 1080,
+ "updatedAt": "2026-11-05T23:53:52.579Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -87410,9 +87410,14 @@
    "branch": "claude/ai-keys-console-store-2",
    "pr": "#358",
    "createdAt": "2026-11-05T23:51:02.650Z",
-   "updatedAt": "2026-11-05T23:53:37.899Z",
+   "updatedAt": "2026-11-05T23:53:46.269Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "PR #358 open, CI running, added to the merge queue. Tokens not copied into keys.json: AI keys rotates refresh tokens; importing them is Brett's call.",
+     "at": "2026-11-05T23:53:46.269Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -87503,7 +87508,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
