@@ -39,14 +39,15 @@ const scratchDir = () => { const d = process.env.AXF_DATA_DIR; return d && d !==
 export const storeFile = () => process.env.AXF_BUILDS_STORE || (scratchDir() ? join(scratchDir(), STORE_REL) : join(REPO_ROOT, STORE_REL));
 export const journalDir = () => join(dirname(storeFile()), process.env.AXF_BUILDS_STORE ? `${storeFile().replace(/^.*\//, '').replace(/\.json$/, '')}.journal` : 'journal');
 
-function lock(f) {
+export class StoreLocked extends Error {}
+function lock(f, waitMs = 20000) {
   const l = `${f}.lock`; const t0 = Date.now();
   for (;;) {
     try { mkdirSync(dirname(l), { recursive: true }); closeSync(openSync(l, 'wx')); return () => rmSync(l, { force: true }); }
     catch (e) {
       if (e.code !== 'EEXIST') throw e;
       try { if (Date.now() - statSync(l).mtimeMs > 30000) rmSync(l, { force: true }); } catch { /* gone */ }
-      if (Date.now() - t0 > 20000) throw new Error(`builds store is locked (${l})`);
+      if (Date.now() - t0 > waitMs) throw new StoreLocked(`builds store is locked (${l})`);
       Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 50);
     }
   }
@@ -89,7 +90,12 @@ function readStore() {
 }
 /** The store. If an old file was written directly since the last export, that write is taken into the store first. */
 export function loadStore() {
-  if (exportsOn() && foreignWrites().length) return withStore((s) => s, { by: 'foreign-write', action: 'absorb' }).store;
+  // A read never fails on the lock (urgent-console-perf, Nov 4 2026): when another process holds it, that writer
+  // absorbs the foreign write itself, so the read takes the store as it is instead of waiting 20 s and erroring.
+  if (exportsOn() && foreignWrites().length) {
+    try { return withStore((s) => s, { by: 'foreign-write', action: 'absorb', lockWaitMs: 2000 }).store; }
+    catch (e) { if (!(e instanceof StoreLocked)) throw e; }
+  }
   return readStore();
 }
 
@@ -158,7 +164,9 @@ function exportAll(store) {
   const ex = readExports();
   for (const t of exportTargets()) {
     const e = exportText(store, t.kind, t.profile);
-    if (!e) continue;
+    // Nothing to export (e.g. a profile without a queue) but the file exists: it was absorbed just before this, so
+    // record it as seen. Unrecorded, it read as a foreign write forever and every read took the lock to absorb it.
+    if (!e) { const s = sig(t.file); if (s) ex[t.file] = { sig: s, kind: t.kind, profile: t.profile, rev: store.rev }; continue; }
     const { doc, text } = e;
     if (t.kind === 'orchestrator' && !doc.builds.length && !existsSync(t.file)) continue;
     let old = ''; try { old = readFileSync(t.file, 'utf8'); } catch { /* new */ }
@@ -225,7 +233,7 @@ export function saveStore(before, after, { by = 'cli', action = 'write', note = 
 /** Read, change, save under a lock. fn(store) returns the new store (or { store, ...extra }). */
 export function withStore(fn, meta = {}) {
   const f = storeFile();
-  const unlock = lock(f);
+  const unlock = lock(f, meta.lockWaitMs);
   try {
     const before = readStore();
     const foreign = [];

@@ -88,7 +88,7 @@ export function NavStylePreview() {
   return (
     <div className="fx-stack">
       <div className="fx-navs fx-navs--preview" data-orient="vertical" aria-label="Navigation preview">
-        <nav className="fx-nav fx-nav--list" data-orient="vertical" aria-hidden="true">
+        <nav className="fx-nav fx-nav--list" data-orient="vertical" aria-hidden="true" data-axf-not-nav="a live preview of the nav style, not the app's navigation">
           <div className="fx-nav__section">
             <div className="fx-nav__label">Apps</div>
             <div className="fx-nav__group" data-open={open ? 'true' : 'false'}>

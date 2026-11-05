@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { WatchLiveFor } from '@console/watchLive';
-import { BuildOrigin, Button, Icon, IconButton, RefText, Slot, Switch, originSubtitle, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { BuildOrigin, Button, Icon, IconButton, PriorityTag, RefText, Slot, Switch, TabGroup, originSubtitle, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { addedByLabel, addedByOf, filterRows, GONE_LABEL, goneRows, MODELS, ORIGIN_LABEL, ORIGINS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type GoneKind, type LiveEntry, type Origin, type Row, type SortKey, type Source } from './merge.mjs';
 import { abandonBuild, bannerOn, defaultSort, isStuckLive, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, helpers, takeOff, tickStep, useStore, onStore, usd, verifyBuild, type StartPlan, type Store } from './store';
 import { builtRows, builtTotals, filterBuilt, filterSessions, ITEM_STATUS_LABEL, liveFromChanges, matches, money, PERIOD_LABEL, PERIODS, sessionsFromChanges, type ChangeLive, type Period, type SessionItem, type SessionRow } from './history.mjs';
@@ -647,6 +647,7 @@ function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; o
         </span>
         {originSubtitle(row.brett) && <span className="axf-origin-sub" title={originSubtitle(row.brett, 600)}>“{originSubtitle(row.brett)}”</span>}
         <span className="axp-build-manager__chips">
+          <PriorityTag build={row.id} />
           <Badge icon={SOURCE_ICON[row.source]}>{SOURCE_LABEL[row.source]}</Badge>
           {row.origin === 'auto' && <Badge icon={ORIGIN_ICON.auto} title={`Added automatically by ${addedByLabel(row.addedBy)}`}>auto</Badge>}
           <ModelChip model={row.model} />
@@ -785,13 +786,8 @@ export function BuildManagerView() {
         {query && <button type="button" className="fx-iconbtn" aria-label="Clear the search" onClick={() => setQuery('')}><Icon name="x" size={14} /></button>}
       </div>
 
-      <div className="axp-build-manager__tabs" role="tablist" aria-label="Build manager views">
-        {([['remaining', 'Remaining', base.length, 'list'], ['live', 'Live', liveCount, 'refresh'], ['built', 'Built', builtCount, 'check-circle'], ['sessions', 'Sessions', sessionRows.length, 'users']] as const).map(([id, label, n, icon]) => (
-          <button key={id} type="button" role="tab" aria-selected={tab === id} className={`fx-tab axp-build-manager__tab${id === 'live' && liveCount ? ' is-busy' : ''}`} onClick={() => setTab(id)}>
-            <Icon name={icon} size={12} />{label} <span className="axp-build-manager__tab-n">{hits ? `${hits[id]}/${n}` : n}</span>
-          </button>
-        ))}
-      </div>
+      <TabGroup id="build-manager.views" label="Build manager views" className={`axp-build-manager__tabs${liveCount ? ' has-live' : ''}`} value={tab} onChange={setTab}
+        tabs={([['remaining', 'Remaining', base.length, 'list'], ['live', 'Live', liveCount, 'refresh'], ['built', 'Built', builtCount, 'check-circle'], ['sessions', 'Sessions', sessionRows.length, 'users']] as const).map(([id, label, n, icon]) => ({ value: id, label, icon, badge: hits ? `${hits[id]}/${n}` : n }))} />
 
       {tab === 'live' && <LiveTracker query={query} />}
       {tab === 'built' && <BuiltView query={query} />}

@@ -53,7 +53,7 @@ one round every 3 minutes (settings autoMerge + autoPr, both on by default):
   3. branch protection on main (require a PR, branches up to date, the CI checks every PR runs) is set where the token
      may and never loosened; where it can't, the systems check shows why with an Auto fix that tries again.
 
-Auto-land (Nov 3 2026, Brett: "zero tokens for merging"; settings autoLand + landWaitUi, both on): land/land.mjs runs
+Auto-land (Nov 3 2026, Brett: "zero tokens for merging"; settings autoLand (off since Nov 4 2026: the merge queue merges) + landWaitUi (on)): land/land.mjs runs
 on the VPS host and lands every finished build with plain scripts (worktree cleaned, main merged in with the builds files
 newer-wins, PR opened, CI started), and writes land.json. Auto-merge reads it: finished builds' PRs go first in its
 dependency order, their main pull-ins are left to the host (GitHub's update would conflict on the builds store), and
@@ -74,6 +74,7 @@ import json
 import os
 import re
 import subprocess
+import copy
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -81,7 +82,7 @@ from pathlib import Path
 from typing import Any, Callable
 from urllib.parse import quote
 
-from fastapi import APIRouter, Body, HTTPException
+from fastapi import APIRouter, Body, HTTPException, Request
 
 import console_context as cx
 import axf_framework  # noqa: F401 — framework/python on sys.path
@@ -104,11 +105,17 @@ HEALTH_ID = "push-banner-github"
 STATUS_ONLY_MARK = "[skip ci]"   # status-only commits on main (framework/cli/builds-live.mjs); = land-core.mjs
 STATUS_PATHS = "_claude/"          # the only paths they touch
 LAND_SCRIPT = Path(__file__).resolve().parent.parent / "land" / "land.mjs"
+# merge queue (Nov 4 2026): land/merge-queue.mjs on the VPS host runs it every auto-land round; commands go through it too
+QUEUE_SCRIPT = Path(__file__).resolve().parent.parent / "land" / "merge-queue.mjs"
+QUEUE_DEPTH_MAX = 6
+AGENT_HEADERS = ("x-axhub-session", "x-axhub-source")
 LAND_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,80}\Z")
 UI_REVIEW_CAP = "ui-review@1"  # PRs whose UI is waiting, has changes asked or is rejected in UI Review don't merge
 UI_REVIEW_REPO = os.environ.get("AXF_GITHUB_REPO") or "MossesX/AmberX-AXF"  # the repo UI Review's PR numbers belong to
 NO_ROUTE = "the console can't reach GitHub: neither axHub (AXHUB_TOKEN) nor GITHUB_TOKEN is set on the console server"
 MAX_REPOS = 10
+MEM_MAX = 4000  # finished check-run answers kept per commit (cleared when full)
+CHECKS_KEEP_S = 15 * 60
 MAX_BRANCHES = 150  # per repo, newest first by GitHub's listing
 MAX_HIDDEN = 300
 MAX_PULLS = 60  # open PRs per repo
@@ -189,6 +196,14 @@ class Pushes:
         self.clock = clock
         self._lock = threading.Lock()
         self._cache: tuple[float, str, dict[str, Any]] | None = None
+        # Save compute (Brett, Nov 4 2026: "Save the compute"): one refresh used to cost a compare + head + checks call
+        # for every branch (150 in AmberX-AXF) every 2 minutes, the whole 5000/h on its own. A branch's answer is kept
+        # until its own commit changes; when main moved only by status commits under _claude/ (builds-live) it is
+        # reused with `behind` moved on by those commits (one compare per repo, not one per branch). Finished check
+        # runs never change, so they are kept per commit.
+        self._mem_lock = threading.Lock()
+        self._mem: dict[str, Any] = {"checks": {}, "branch": {}, "full": {}, "base": {}}
+        self._stacked: dict[str, list[dict[str, Any]]] = {}
 
     # ---- config
     def config(self) -> dict[str, Any]:
@@ -201,13 +216,18 @@ class Pushes:
                 "autoMerge": raw.get("autoMerge") is not False,
                 # Every branch gets a PR (Oct 30 2026, Brett: "I want everything to need a PR"): on unless switched off.
                 "autoPr": raw.get("autoPr") is not False,
-                # Auto-land (Nov 3 2026, Brett: "zero tokens for merging"): land/land.mjs lands finished builds; on unless off.
-                "autoLand": raw.get("autoLand") is not False,
+                # Auto-land (Nov 3 2026, Brett: "zero tokens for merging"): land/land.mjs lands finished builds. Off unless
+                # switched on (Nov 4 2026, Brett: "Stop merging these things one at a time"): only the merge queue merges.
+                "autoLand": raw.get("autoLand") is True,
                 # UI Review stays the gate: a held PR waits and merges by itself once Brett approves. On unless off.
-                "landWaitUi": raw.get("landWaitUi") is not False}
+                "landWaitUi": raw.get("landWaitUi") is not False,
+                # Merge queue (Nov 4 2026, Brett: "We're paying to do these CI checks twice."): each ready PR is tested
+                # once on top of main + the PRs ahead of it and merges with no retest. On unless switched off.
+                "mergeQueue": raw.get("mergeQueue") is not False,
+                "queueDepth": raw["queueDepth"] if isinstance(raw.get("queueDepth"), int) and not isinstance(raw.get("queueDepth"), bool) and 1 <= raw["queueDepth"] <= QUEUE_DEPTH_MAX else 3}
 
     def save_config(self, body: Any) -> dict[str, Any]:
-        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi"}:
+        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue", "queueDepth"}:
             raise HTTPException(400, "send {repos: [owner/name …], hidden: [\"owner/name:branch\" …]}")
         cur = self.config()
         repos, hidden = cur["repos"], cur["hidden"]
@@ -224,10 +244,13 @@ class Pushes:
                     raise HTTPException(400, f"hidden entries look like owner/name:branch[@sha] ({_text(e, 80)!r})")
             hidden = list(dict.fromkeys(h))
         flags = {}
-        for k in ("claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi"):
+        for k in ("claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue"):
             if k in body and not isinstance(body[k], bool):
                 raise HTTPException(400, f"{k} is true or false")
             flags[k] = body[k] if k in body else cur[k]
+        if "queueDepth" in body and (not isinstance(body["queueDepth"], int) or isinstance(body["queueDepth"], bool) or not 1 <= body["queueDepth"] <= QUEUE_DEPTH_MAX):
+            raise HTTPException(400, f"queueDepth is 1 to {QUEUE_DEPTH_MAX}")
+        flags["queueDepth"] = body.get("queueDepth", cur["queueDepth"])
         storage.write_json(data_dir() / "config.json", {"$axf": "push-banner-config@1", "repos": repos, "hidden": hidden, **flags})
         with self._lock:
             self._cache = None
@@ -265,6 +288,41 @@ class Pushes:
         data = gh.get(github.repo_path(repo, "commits", sha, "check-runs", query={"per_page": 100}))
         runs = data.get("check_runs", []) if isinstance(data, dict) else []
         return [r for r in runs if isinstance(r, dict)] if isinstance(runs, list) else []
+
+    def _checks_listed(self, gh: github.GitHubClient, repo: str, sha: str) -> list[dict[str, Any]]:
+        """_checks for the banner's listing: a finished result is kept for CHECKS_KEEP_S (a re-run shows up after
+        that). Merging never reads this: it always asks GitHub."""
+        key = f"{repo}@{sha}"
+        mem = self._mem
+        hit = mem["checks"].get(key)
+        if hit and time.time() - hit[0] < CHECKS_KEEP_S:
+            return hit[1]
+        out = self._checks(gh, repo, sha)
+        if ci_state(out) in ("success", "failure"):
+            with self._mem_lock:
+                if len(mem["checks"]) > MEM_MAX:
+                    mem["checks"].clear()
+                mem["checks"][key] = (time.time(), out)
+        return out
+
+    def _base_shift(self, gh: github.GitHubClient, repo: str, base_sha: str) -> tuple[str, int] | None:
+        """The base commit last refresh's branch answers were computed on, and how many commits main gained since, when
+        those commits only touch _claude/ (status data): the answers still hold, `behind` + that many. None = recompute."""
+        old = self._mem["base"].get(repo)
+        if not old or not base_sha:
+            return None
+        if old == base_sha:
+            return old, 0
+        try:
+            cmp = gh.get(f"{github.repo_path(repo, 'compare')}/{quote(old, safe='')}...{quote(base_sha, safe='')}?per_page=100")
+        except (github.GitHubError, ValueError):
+            return None
+        if not isinstance(cmp, dict) or cmp.get("behind_by") or not isinstance(cmp.get("ahead_by"), int):
+            return None
+        files = [str(f.get("filename") or "") for f in cmp.get("files") or [] if isinstance(f, dict)]
+        if len(files) >= 300 or not all(f.startswith("_claude/") for f in files):
+            return None
+        return old, cmp["ahead_by"]
 
     def _head(self, gh: github.GitHubClient, repo: str, branch: str) -> dict[str, Any]:
         """The newest commit on a branch (the commits list: no file diffs, unlike compare's)."""
@@ -323,27 +381,116 @@ class Pushes:
             raise HTTPException(400, _text(r.stderr.strip() or r.stdout.strip() or f"land.mjs {cmd} failed"))
         return {"ok": True, "command": cmd, "build": body["build"], **self.land()}
 
+    # ---- merge queue (land/merge-queue.mjs on the VPS host writes merge-queue.json; commands write merge-queue-control.json)
+    def queue(self) -> dict[str, Any]:
+        st = storage.read_json(data_dir() / "merge-queue.json", {}) or {}
+        cfg = self.config()
+        lst = lambda k: [x for x in st.get(k, []) if isinstance(x, dict)] if isinstance(st.get(k), list) else []  # noqa: E731
+        items = lst("items")
+        kicked = lst("kicked")
+        return {"$axf": "merge-queue@1", "on": cfg["mergeQueue"], "depth": cfg["queueDepth"], "repo": UI_REVIEW_REPO, "at": st.get("at"),
+                "items": items, "waiting": lst("waiting"), "kicked": kicked, "merged": lst("merged")[-10:],
+                "avgMin": st.get("avgMin") if isinstance(st.get("avgMin"), int) else None,
+                "variable": _text(st.get("variable"), 10), "variableError": _text(st.get("variableError"), 300),
+                "chip": {"label": f"Merge queue: {len(items)}", "count": len(items), "testing": sum(1 for x in items if x.get("state") == "testing"),
+                         "kicked": len(kicked), "tone": "warning" if kicked else "info" if items else "muted"}}
+
+    def queue_command(self, cmd: str, body: Any, owner: str = "") -> dict[str, Any]:
+        """add | remove | move: one implementation, land/merge-queue.mjs (the same file the CLI and the host runner use).
+        Jump to front (move to 0) is Brett's own click: a script, session or agent may move a PR anywhere but the front."""
+        if not isinstance(body, dict) or set(body) - {"pr", "why", "to"}:
+            raise HTTPException(400, "send {pr: <PR number>, why?, to?}")
+        pr = body.get("pr")
+        if not isinstance(pr, int) or isinstance(pr, bool) or pr <= 0:
+            raise HTTPException(400, "pr is the PR number")
+        args = ["node", str(QUEUE_SCRIPT), cmd, str(pr)]
+        if cmd == "move":
+            to = body.get("to", 0)
+            if not isinstance(to, int) or isinstance(to, bool) or to < 0:
+                raise HTTPException(400, "to is the new index (0 = front)")
+            if to == 0 and not owner:
+                raise HTTPException(403, "Jump to front is Brett's own click in the console (signed in on axHub)")
+            args.append(str(to))
+        if cmd == "remove" and isinstance(body.get("why"), str) and body["why"].strip():
+            args += ["--why", _text(body["why"], 200)]
+        try:
+            r = subprocess.run([*args, "--json"], capture_output=True, text=True, timeout=30, env={**os.environ, "AXF_PUSH_BANNER_DIR": str(data_dir())})
+        except (OSError, subprocess.TimeoutExpired) as e:
+            raise HTTPException(502, _text(str(e))) from None
+        if r.returncode != 0:
+            raise HTTPException(400, _text(r.stderr.strip() or r.stdout.strip() or f"merge-queue.mjs {cmd} failed"))
+        return {"ok": True, "command": cmd, "pr": pr, "note": "takes effect at the next queue round (within 3 minutes)", **self.queue()}
+
     def _repo(self, gh: github.GitHubClient, repo: str, hidden: set[str]) -> dict[str, Any]:
         out: dict[str, Any] = {"repo": repo, "base": "main", "url": f"{github.GIT_BASE}/{repo}", "branches": [], "pulls": [], "error": ""}
         try:
             info = gh.repo(repo)
             base = info.get("default_branch") if isinstance(info, dict) and valid_branch(info.get("default_branch")) else "main"
             out["base"] = base
-            names = [b.get("name") for b in gh.paginate(github.repo_path(repo, "branches", query={"per_page": 100}), max_pages=3, max_items=MAX_BRANCHES)
-                     if isinstance(b, dict)]
+            listed = [b for b in gh.paginate(github.repo_path(repo, "branches", query={"per_page": 100}), max_pages=3, max_items=MAX_BRANCHES)
+                      if isinstance(b, dict)]
+            names = [b.get("name") for b in listed]
             pulls = gh.paginate(github.repo_path(repo, "pulls", query={"state": "open", "per_page": 100}), max_pages=2, max_items=MAX_PULLS)
         except (github.GitHubError, ValueError) as e:
             out["error"] = _text(str(e))
             return out
         prs: dict[str, dict[str, Any]] = {}
+        stacked: list[dict[str, Any]] = []
         for p in pulls:
             head = p.get("head") if isinstance(p, dict) else None
             same = isinstance(head, dict) and ((head.get("repo") or {}).get("full_name") or "").lower() == repo.lower()
+            on = (p.get("base") or {}).get("ref") if isinstance(p, dict) else None
+            if same and on and on != base:  # a PR stacked on another branch: the priority tag lists it as waiting on that build
+                stacked.append({"number": p.get("number"), "title": _text(p.get("title")), "url": _safe_url(p.get("html_url")), "base": _text(on), "branch": _text(head.get("ref"))})
             if same and valid_branch(head.get("ref")) and ((p.get("base") or {}).get("ref") == base):
                 prs[head["ref"]] = p
+        self._stacked[repo] = stacked
         todo = [n for n in names if valid_branch(n) and n != base and n not in ALWAYS_HIDDEN]
+        sha_of = {b.get("name"): _text((b.get("commit") or {}).get("sha") if isinstance(b.get("commit"), dict) else "", 40) for b in listed}
+        base_sha = sha_of.get(base, "")
+        shift = self._base_shift(gh, repo, base_sha)
+        mem_branch: dict[str, Any] = self._mem["branch"]
 
         def one(name: str) -> dict[str, Any] | None:
+            key = f"{repo}:{name}"
+            hit = mem_branch.get(key)
+            if shift and hit and hit["sha"] and hit["sha"] == sha_of.get(name) and hit["base"] == shift[0]:
+                item = copy.deepcopy(hit["item"])
+                if item is None:
+                    return None
+                if isinstance(item.get("behind"), int):
+                    item["behind"] += shift[1]
+                item["hidden"] = is_hidden(hidden, f"{repo}:{name}", item.get("sha", ""))
+                p = prs.get(name)
+                if p:  # the PR's title / number / draft may have changed; its CI is per commit (cached when finished)
+                    sha = _text((p.get("head") or {}).get("sha"), 40)
+                    pr = {"number": p.get("number") if isinstance(p.get("number"), int) else None, "title": _text(p.get("title")),
+                          "url": _safe_url(p.get("html_url")), "draft": p.get("draft") is True, "ci": "none"}
+                    try:
+                        pr["ci"] = ci_state(self._checks_listed(gh, repo, sha)) if sha else "none"
+                    except (github.GitHubError, ValueError):
+                        pr["ci"] = "unknown"
+                    item["pr"] = pr
+                    item.pop("clean", None); item.pop("canMerge", None); item.pop("ci", None)
+                else:
+                    item["pr"] = None
+                    if item["behind"] == 0 and item["sha"]:
+                        try:
+                            item["ci"] = ci_state(self._checks_listed(gh, repo, item["sha"]))
+                        except (github.GitHubError, ValueError):
+                            item["ci"] = "unknown"
+                        item["clean"] = True
+                        item["canMerge"] = item["ci"] == "success"
+                    else:
+                        item.pop("clean", None); item.pop("canMerge", None); item.pop("ci", None)
+                return item
+            item = fresh(name)
+            if item is None or not item.get("error"):
+                with self._mem_lock:
+                    mem_branch[key] = {"sha": sha_of.get(name, ""), "base": base_sha, "item": copy.deepcopy(item)}
+            return item
+
+        def fresh(name: str) -> dict[str, Any] | None:
             try:
                 cmp = gh.get(compare_path(repo, base, name))
             except (github.GitHubError, ValueError) as e:
@@ -365,14 +512,14 @@ class Pushes:
                       "url": _safe_url(p.get("html_url")), "draft": p.get("draft") is True, "ci": "none"}
                 sha = _text((p.get("head") or {}).get("sha"), 40)
                 try:
-                    pr["ci"] = ci_state(self._checks(gh, repo, sha)) if sha else "none"
+                    pr["ci"] = ci_state(self._checks_listed(gh, repo, sha)) if sha else "none"
                 except (github.GitHubError, ValueError):
                     pr["ci"] = "unknown"
                 item["pr"] = pr
             elif item["behind"] == 0 and item["sha"]:
                 # No PR, nothing on the default branch it lacks: it merges cleanly (fast-forward). Its CI decides Merge.
                 try:
-                    item["ci"] = ci_state(self._checks(gh, repo, item["sha"]))
+                    item["ci"] = ci_state(self._checks_listed(gh, repo, item["sha"]))
                 except (github.GitHubError, ValueError):
                     item["ci"] = "unknown"
                 item["clean"] = True
@@ -381,6 +528,16 @@ class Pushes:
 
         with ThreadPoolExecutor(max_workers=8) as pool:
             got = [r for r in pool.map(one, todo) if r]
+        with self._mem_lock:
+            if base_sha:
+                self._mem["base"][repo] = base_sha
+                for k, v in list(mem_branch.items()):  # every kept answer now stands on the new base
+                    if k.startswith(f"{repo}:") and shift and v["base"] == shift[0] and v["sha"] == sha_of.get(k.split(":", 1)[1]):
+                        if v["item"] is not None and isinstance(v["item"].get("behind"), int):
+                            v["item"]["behind"] += shift[1]
+                        v["base"] = base_sha
+                    elif k.startswith(f"{repo}:") and v["base"] != base_sha:
+                        del mem_branch[k]
         got.sort(key=lambda b: b.get("date") or "", reverse=True)
         out["branches"] = got
         behind_of = {g["name"]: g.get("behind") for g in got}
@@ -400,11 +557,20 @@ class Pushes:
                 "hidden": is_hidden(hidden, f"{repo}:#{n}", sha), "sha": sha,
             }
             try:
-                item["ci"] = ci_state(self._checks(gh, repo, sha)) if sha else "none"
+                item["ci"] = ci_state(self._checks_listed(gh, repo, sha)) if sha else "none"
             except (github.GitHubError, ValueError):
                 item["ci"] = "unknown"
             try:
-                full = gh.get(github.repo_path(repo, "pulls", n))
+                fkey = f"{repo}#{n}"
+                fh = self._mem["full"].get(fkey)
+                if fh and fh["sha"] == sha and (fh["base"] == base_sha or (shift and fh["base"] == shift[0])) and isinstance(fh["data"].get("mergeable"), bool):
+                    full = fh["data"]
+                    fh["base"] = base_sha
+                else:
+                    full = gh.get(github.repo_path(repo, "pulls", n))
+                    if isinstance(full, dict):
+                        with self._mem_lock:
+                            self._mem["full"][fkey] = {"sha": sha, "base": base_sha, "data": {"mergeable": full.get("mergeable"), "mergeable_state": full.get("mergeable_state")}}
                 m = full.get("mergeable") if isinstance(full, dict) else None
                 item["mergeable"] = m if isinstance(m, bool) else None
                 st = full.get("mergeable_state") if isinstance(full, dict) else None
@@ -720,6 +886,11 @@ class Pushes:
             queue.sort(key=lambda p: (p.get("created") or p.get("updated") or "", p["number"]))  # oldest first
             if repo == UI_REVIEW_REPO and rank:  # finished builds first, in auto-land's dependency order (land.json)
                 queue.sort(key=lambda p: rank.get(p["number"], len(rank)))
+            if repo == UI_REVIEW_REPO and cfg["mergeQueue"]:
+                # the merge queue merges this repo (land/merge-queue.mjs): each PR tested once on top of the ones ahead
+                # of it, so pulling main in here (a new head, a second CI run) is exactly what it saves
+                done.append({"pr": repo, "merged": False, "why": "merged by the merge queue"})
+                continue
             for p in queue:
                 key = f"{repo}#{p['number']}"
                 line = {"pr": key, "title": p.get("title", "")}
@@ -815,7 +986,8 @@ class Pushes:
         rsc = cur.get("required_status_checks") if isinstance(cur.get("required_status_checks"), dict) else None
         rpr = cur.get("required_pull_request_reviews") if isinstance(cur.get("required_pull_request_reviews"), dict) else None
         have_checks = [c for c in (rsc or {}).get("contexts", []) if isinstance(c, str)] if rsc else []
-        if rsc and rsc.get("strict") is True and rpr is not None and have_checks:
+        queued = repo == UI_REVIEW_REPO and self.config()["mergeQueue"]
+        if rsc and (rsc.get("strict") is True or queued) and rpr is not None and have_checks:
             return {**out, "state": "protected", "checks": have_checks}
         if rpr and (rpr.get("dismissal_restrictions") or rpr.get("bypass_pull_request_allowances")):
             # rewriting those could loosen them: leave the branch as it is and say what's missing
@@ -828,7 +1000,10 @@ class Pushes:
             reviews.setdefault("required_approving_review_count", 0)
         restr = cur.get("restrictions") if isinstance(cur.get("restrictions"), dict) else None
         body = {
-            "required_status_checks": {"strict": True, "contexts": sorted(set(want))},
+            # with the merge queue on, "up to date before merging" is the queue's job (it tests main + the PRs ahead):
+            # new protection leaves GitHub's own strict rule off, which would re-test every stacked PR after the one
+            # ahead of it merged; a strict rule already set is kept (never loosened)
+            "required_status_checks": {"strict": True if not queued else bool(rsc and rsc.get("strict")), "contexts": sorted(set(want))},
             # unchanged when set; admins are held to it too when it's new, so nothing reaches main except through a PR
             "enforce_admins": bool((cur.get("enforce_admins") or {}).get("enabled")) if cur else True,
             "required_pull_request_reviews": reviews,
@@ -1002,6 +1177,17 @@ class Pushes:
 
 
 PUSHES = Pushes()
+
+
+class MergeQueueService:
+    """axf.merge-queue@1: what other plugins may read of the merge queue. Never calls GitHub (last refresh only)."""
+    version = 1
+
+    def queue(self) -> dict[str, Any]:
+        return PUSHES.queue()
+
+    def stacked(self) -> list[dict[str, Any]]:
+        return [p for rows in PUSHES._stacked.values() for p in rows]
 CLAUDE = claudefix.Launches(lambda: PUSHES.config())
 
 
@@ -1045,6 +1231,7 @@ class ProtectionChecks:
         raise HTTPException(409, f"{repo}: still can't protect it: {_text(st.get('error'), 200) or 'GITHUB_TOKEN isn’t set'}")
 
 
+claudefix.plugin_services.provide("axf.merge-queue@1", MergeQueueService(), Path(__file__).resolve().parents[1].name)
 claudefix.plugin_services.provide("axf.syscheck.items@1:push-protection", ProtectionChecks(), "push-banner")
 
 AUTO_MERGE_EVERY_S = max(60, int(os.environ.get("AXF_PUSH_AUTOMERGE_S", "180") or 180))
@@ -1171,7 +1358,7 @@ def auto_merge_now() -> dict[str, Any]:
 def auto_merge_last() -> dict[str, Any]:
     raw = storage.read_json(data_dir() / "auto-merge.json", {}) or {}
     cfg = PUSHES.config()
-    return {"on": cfg["autoMerge"], "autoPr": cfg["autoPr"], "everyS": AUTO_MERGE_EVERY_S, "last": raw.get("last", []), "at": raw.get("at"),
+    return {"on": cfg["autoMerge"], "autoPr": cfg["autoPr"], "mergeQueue": cfg["mergeQueue"], "everyS": AUTO_MERGE_EVERY_S, "last": raw.get("last", []), "at": raw.get("at"),
             "protection": PUSHES.protection()["repos"]}
 
 
@@ -1253,6 +1440,38 @@ def land_hold(body: Any = Body(None)) -> dict[str, Any]:
 @router.post("/land/release")
 def land_release(body: Any = Body(None)) -> dict[str, Any]:
     return PUSHES.land_command("release", body)
+
+
+def _owner(request: Request) -> str:
+    """Brett's own click: a signed-in hub admin, no agent or session header (same rule as the build orchestrator)."""
+    c = getattr(request.state, "axf_user", None)
+    if c is None or getattr(c, "via", "token") != "session" or not getattr(c, "admin", False):
+        return ""
+    for h in AGENT_HEADERS:
+        v = (request.headers.get(h) or "").strip()
+        if v and v != "console":
+            return ""
+    return str(getattr(c, "name", "") or "brett")[:120]
+
+
+@router.get("/queue")
+def queue_list() -> dict[str, Any]:
+    return PUSHES.queue()
+
+
+@router.post("/queue/add")
+def queue_add(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.queue_command("add", body)
+
+
+@router.post("/queue/remove")
+def queue_remove(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.queue_command("remove", body)
+
+
+@router.post("/queue/move")
+def queue_move(request: Request, body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.queue_command("move", body, owner=_owner(request))
 
 
 @router.get("/config")

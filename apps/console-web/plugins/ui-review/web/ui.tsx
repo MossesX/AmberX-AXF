@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { AgentAvatar, Button, Checkbox, Icon, IconButton, Segmented, useRuntime } from '@console/axf/react';
+import { AgentAvatar, Button, Checkbox, Icon, IconButton, Segmented, TabGroup, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { OriginFor } from '@console/buildOrigin';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -243,19 +243,14 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
             {tab === 'review' && <IconButton icon="refresh" label="Reload" onClick={() => void load()} />}
           </div>
         </header>
-        <Segmented<Tab> label="UI Review tabs" value={tab} onChange={setTab} className="axp-ui-review__tabs"
-          options={[{ value: 'review', label: `Review · ${c.waiting} waiting`, icon: 'eye' }, { value: 'shots', label: shotCount !== null ? `Screenshots · ${shotCount}` : 'Screenshots', icon: 'monitor' }]} />
+        <TabGroup<Tab> id="ui-review.tabs" label="UI Review tabs" value={tab} onChange={setTab} className="axp-ui-review__tabs"
+          tabs={[{ value: 'review', label: 'Review', icon: 'eye', badge: c.waiting ? `${c.waiting} waiting` : undefined }, { value: 'shots', label: 'Screenshots', icon: 'monitor', badge: shotCount ?? undefined }]} />
         {tab === 'shots' ? <ScreenshotsTab onCount={setShotCount} /> : <>
         {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
 
-        <nav className="axp-ui-review__sections" aria-label="Sections">
-          <button type="button" className={`fx-chip ${!kind ? 'fx-chip--accent' : ''}`} aria-pressed={!kind} onClick={() => setKind('')}>All <span className="axp-ui-review__n">{c.waiting}/{c.total}</span></button>
-          {kinds.map((k) => { const n = counts[k.id] ?? { waiting: 0, total: 0 }; return (
-            <button type="button" key={k.id} className={`fx-chip ${kind === k.id ? 'fx-chip--accent' : ''}`} aria-pressed={kind === k.id} onClick={() => setKind(k.id)} title={k.desc}>
-              <Icon name={k.icon} size={12} />{k.label} <span className="axp-ui-review__n">{n.waiting}/{n.total}</span>
-            </button>
-          ); })}
-        </nav>
+        {/* The category row is a tab group (Brett, Nov 4 2026): right-click it for its settings / tab style / position. */}
+        <TabGroup id="ui-review.sections" label="Sections" className="axp-ui-review__sections" value={kind} onChange={setKind}
+          tabs={[{ value: '', label: 'All', badge: `${c.waiting}/${c.total}` }, ...kinds.map((k) => { const n = counts[k.id] ?? { waiting: 0, total: 0 }; return { value: k.id, label: k.label, icon: k.icon, title: k.desc, badge: `${n.waiting}/${n.total}` }; })]} />
 
         <div className="axp-ui-review__bar" role="toolbar" aria-label="Filter and view">
           <input className="fx-input axp-ui-review__search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search: title, app, branch, #PR…" aria-label="Search" />

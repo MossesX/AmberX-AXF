@@ -5,10 +5,15 @@ name: Android framework + console
 
 on:
   push:
-    branches: [main]
-    paths: ['framework/**', 'apps/**', '.github/workflows/android.yml']
+    # main, and the merge queue's queue/pr-<n> branches (main + every PR ahead + this one: the one full run a PR gets)
+    branches: [main, 'queue/**']
   pull_request:
   workflow_dispatch:
+
+# A queue branch that is rebuilt (a PR ahead of it was kicked out) cancels its old run instead of paying for both.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/heads/queue/') || github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
@@ -21,8 +26,52 @@ env:
   AXF_BUILD_PROFILE: main-framework
 
 jobs:
+  # What this change needs (framework/cli/ci-scope.mjs): path filters per job, light checks on PRs while the merge queue
+  # is on (repo variable AXF_MERGE_QUEUE=on), and nothing again on main when the queue already ran CI on the same code.
+  scope:
+    name: CI scope (what changed)
+    runs-on: ubuntu-latest
+    outputs:
+      mode: ${{ steps.s.outputs.mode }}
+      light: ${{ steps.s.outputs.light }}
+      engine: ${{ steps.s.outputs.engine }}
+      console: ${{ steps.s.outputs.console }}
+      axhubweb: ${{ steps.s.outputs.axhubweb }}
+      amberxweb: ${{ steps.s.outputs.amberxweb }}
+      molly: ${{ steps.s.outputs.molly }}
+      walkthrough: ${{ steps.s.outputs.walkthrough }}
+      amberx: ${{ steps.s.outputs.amberx }}
+      android: ${{ steps.s.outputs.android }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - id: s
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AXF_MERGE_QUEUE: ${{ vars.AXF_MERGE_QUEUE }}
+        run: node framework/cli/ci-scope.mjs gha --event "${{ github.event_name }}" --ref "${{ github.ref_name }}" --before "${{ github.event.before }}" >> "$GITHUB_OUTPUT"
+
+  light:
+    name: Light PR checks (full run happens once, in the merge queue)
+    needs: scope
+    if: ${{ needs.scope.outputs.light == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install --quiet -r apps/console-web/server/requirements.txt httpx
+      - run: node framework/cli/ci-scope.mjs light --run
+
   engine:
     name: Build engine sweep (Node)
+    needs: scope
+    if: ${{ needs.scope.outputs.engine == 'true' }}
     runs-on: ubuntu-latest
     env:
       AXF_BUILD_PROFILE: main-framework   # the sweep checks the base profile's data whatever profile Brett has saved
@@ -43,9 +92,11 @@ jobs:
       - run: node framework/spec/check-profiles.mjs                 # every build profile folder is registered in framework/plan/profiles.json
       - run: node framework/spec/check-feature-matrix.mjs           # feature-matrix@1: contract + Apply engine replay fixtures/feature-matrix.json
       - run: node framework/spec/check-builds-store.mjs             # builds@1: migration loses nothing, projections round-trip, reorder, rename, divide, harvest, Restore default, Apply/Discard
+      - run: node framework/spec/check-builds-store-lock.mjs        # a store read never fails on the lock (GET /api/build-queue 500, urgent-console-perf)
       - run: node framework/spec/check-build-origin.mjs            # build-origin@1: Brett's verbatim words on every build, never lost on merge, brief capture, backfill
       - run: node framework/spec/check-builds-live.mjs              # builds-live: store writes reach main (status-only commits, rebase-retry, never forced), parallel writers, newer-wins merge driver, heal, reconciler matching
       - run: node framework/spec/check-agent-slots.mjs              # agent-slots@1: cap, queue order, priority, auto-start, finished sessions closed, memory guard, hot reload, heavy lock, claude-headless.sh end to end
+      - run: node framework/spec/check-build-priority.mjs           # priority tags: levels, backfill, what waits on a build, the agent queue follows priority
       - run: node framework/spec/check-model-policy.mjs             # model-policy@1: Opus or Fable only, never Sonnet; job types, roster, plan picker and the builds store read one registry
       - run: node framework/spec/check-card.mjs                     # card@1 + home-layout@1: binding, view pick, live refresh, layout, suggestions, drops, zero tokens, fixture
       - run: node framework/cli/builds-store.mjs verify            # every build, step, note and status of the read-only old files is in the store
@@ -69,6 +120,8 @@ jobs:
         run: node framework/cli/check-controls.mjs
       - name: Toolbars — every toolbar is a framework toolbar (role="toolbar" + settings id; tap-to-confirm off in code only with a recorded reason)
         run: node framework/cli/check-toolbars.mjs
+      - name: Banner widgets — every banner chip comes through the one widget registry, none hard-coded
+        run: node framework/cli/check-banner-widgets.mjs
       - name: Asset conformance — the checker and the adopter agree (scale-adopt self-test)
         run: node framework/spec/check-conform.mjs
       - name: Plugin pages follow the design language (page heads with eyebrow + title + one sentence, no spinners; DESIGN-LANGUAGE §12)
@@ -89,6 +142,10 @@ jobs:
         run: node apps/console-web/plugins/claude-settings/test.mjs  # axf-plugin:claude-settings
       - name: Auto-land (push banner) — zero tokens (no model client in the merge pipeline), landing rules, rounds on fake builds  # axf-plugin:push-banner
         run: node apps/console-web/plugins/push-banner/land/land.test.mjs  # axf-plugin:push-banner
+      - name: Merge queue (push banner) — stacking, blame + kick-out, rebuild without it, no retest on merge; real git, fake GitHub  # axf-plugin:push-banner
+        run: node apps/console-web/plugins/push-banner/land/merge-queue.test.mjs  # axf-plugin:push-banner
+      - name: CI scope — path filters per job, light PR checks while the merge queue is on, main skips what the queue already ran
+        run: node framework/spec/check-ci-scope.mjs
       - name: Deploy helpers (framework/deploy) — bash -n, shellcheck, self-test; installers that source them
         run: |
           set -e
@@ -117,6 +174,8 @@ jobs:
 
   console:
     name: Web Dev Console (React/TS) + Python API
+    needs: scope
+    if: ${{ needs.scope.outputs.console == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -134,21 +193,25 @@ jobs:
           sed -i 's/"builtWith": { "model": "", "builtAt": "" }/"builtWith": { "model": "opus", "builtAt": "2026-10-23" }/' plugins/ci-example/plugin.json
           npm ci && npm run build
       - name: axhub-web — re-bake the framework into it and build it
+        if: ${{ needs.scope.outputs.axhubweb == 'true' }}
         working-directory: apps/axhub-web
         run: |
           rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done && node ../../framework/cli/shared-assets.mjs bake .
           npm install --no-audit --no-fund --silent && npm run build
       - name: amberx-droid — re-bake the framework into it and build it
+        if: ${{ needs.scope.outputs.amberxweb == 'true' }}
         working-directory: apps/amberx-droid
         run: |
           rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done && node ../../framework/cli/shared-assets.mjs bake .
           npm install --no-audit --no-fund --silent && npm run build
       - name: molly — re-bake the framework into it and build it
+        if: ${{ needs.scope.outputs.molly == 'true' }}
         working-directory: apps/molly
         run: |
           rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done && node ../../framework/cli/shared-assets.mjs bake .
           npm install --no-audit --no-fund --silent && npm run build
       - name: walkthrough-studio — re-bake the framework into it and build it
+        if: ${{ needs.scope.outputs.walkthrough == 'true' }}
         working-directory: apps/walkthrough-studio
         run: |
           rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done
@@ -161,6 +224,7 @@ jobs:
           node scripts/theme-swap.mjs
           npx tsx scripts/interface-scope-check.mts     # two <InterfaceScope>s read their own interfaces, the app keeps its own
           npx tsx scripts/window-handles-check.mts      # every floating window has its 8 resize handles, windows stay under dialogs, settings 'Opens in' dialog
+          npx tsx scripts/fetch-share-check.mts         # one shared /api GET per source, hidden tab quiet, 5xx exponential backoff
       - name: Alerts + MCP client + axf_server — engines match their fixtures (TS, Python), conflict detection, console alert server, web push encryption
         run: |
           set -o pipefail
@@ -178,6 +242,10 @@ jobs:
             npx -y tsx framework/spec/check-banner-strip.mts           # banner strip: a host shows an app's live banners as its one banner region (Molly)
             npx -y tsx framework/spec/check-meters.mts                 # gauge + meter control assets: fixture replay, starters, enums
             npx -y tsx framework/spec/check-customize.mts              # tab-group asset + per-asset appearance tokens, 100 icon sets, apply to all
+            npx -y tsx framework/spec/check-tab-group.mts              # tab-group@1: position / display / overflow / sticky / collapsible / closable / badges / rememberLast, starters, fixture replay, stylesheet tokens only
+            npx -y tsx framework/spec/check-chrome-settings.mts        # chrome-settings@1: one shared default settings interface per chrome type + a custom copy per app (extends), default selected, dialog fields = asset fields
+            node framework/cli/chrome-settings.mjs check               # every app (shared-assets apps + Expenses) carries its custom chrome settings interfaces
+            node framework/cli/check-chrome-assets.mjs                 # every tab group, toolbar, banner and nav is framework chrome with the right-click settings; ratchet spec/chrome-baseline.json
             npx -y tsx framework/spec/check-settings-ui.mts            # settings interface asset: fixture replay, starters, enums
             npx -y tsx framework/spec/check-design-package.mts         # design-package@1 + behavior-theme@1 rules, starters, the Amber context menu
             npx -y tsx framework/spec/check-scale.mts                  # typography@1 + density@1 + sizing@1: registry, defaults, tokens, fixture, starters, validators agree, hub slots
@@ -213,7 +281,7 @@ jobs:
             npx -y tsx framework/spec/check-looktokens.mts             # look@1 tokens: only-changed storage, compact to no space, theme-token CSS
             npx -y tsx framework/spec/check-work.mts                   # work@1: work.json replay (same file as the kernel's WorkConformanceTest) + a host over the reducer
             npx -y tsx apps/axhub-web/test.mjs                         # AXHub web app: what a hub reply means, what is thrown away, sizes and times
-            (cd apps/axhub-web && npx -y tsx scripts/refresh-check.mts)  # AXHub web app: refreshes, failed reads, look re-reads and countdown ticks never flash "Reading the hub" or remount rows
+            (cd apps/axhub-web && { [ -d node_modules ] || npm install --no-audit --no-fund --silent; } && npx -y tsx scripts/refresh-check.mts)  # AXHub web app: refreshes, failed reads, look re-reads and countdown ticks never flash "Reading the hub" or remount rows
             npx -y tsx apps/amberx-droid/test.mjs                      # AmberX: hub rules + voice command matching + monitoring / auto-approval rules
             npx -y tsx apps/walkthrough-studio/test.mts                # Walkthrough Studio: outline moves, trash, incremental compile, exports
             python framework/python/axf_libs/mcp/test.py              # Python MCP client replays the same fixture
@@ -240,6 +308,7 @@ jobs:
             python apps/console-web/server/test_plugin_catalog.py
             python apps/console-web/server/test_app_catalog.py
             python apps/console-web/server/test_build_profiles.py
+            python apps/console-web/server/test_readcache.py         # shared read cache (single-flight, stale-while-revalidate, file-change) + node spawn cap
             python apps/console-web/server/test_previews.py          # Watch live: registry, signed keys, /preview proxy auth (HTTP + HMR WebSocket)
             python apps/console-web/plugins/console-commands/server/test_console_commands.py  # console commands: consoles announce + stream, resolve, deliver + ack, per-user mailbox, confirm  # axf-plugin:console-commands
             python apps/console-web/plugins/ref-links/server/test_ref_links.py  # reference links: targets (catalog, agents, UI Review), find, resolve, open → refs.<how> through console-commands@1  # axf-plugin:ref-links
@@ -307,6 +376,8 @@ jobs:
 
   amberx:
     name: AmberX — web app in the Capacitor Android shell (APK + native unit tests)
+    needs: scope
+    if: ${{ needs.scope.outputs.amberx == 'true' }}
     runs-on: ubuntu-latest
     env:
       AXF_BUILD_NUMBER: ${{ github.run_number }}
@@ -356,8 +427,8 @@ jobs:
     name: Gradle — framework modules, kernel tests, console APK
     runs-on: ubuntu-latest
     # Waits for the AmberX shell so its APK joins the app catalog bundle; runs whatever that job's result.
-    needs: amberx
-    if: ${{ !cancelled() }}
+    needs: [scope, amberx]
+    if: ${{ !cancelled() && needs.scope.outputs.android == 'true' }}
     env:
       # Every app's versionCode = this run number, so each catalog build installs over the previous one.
       AXF_BUILD_NUMBER: ${{ github.run_number }}
@@ -423,7 +494,9 @@ jobs:
           name: amberx-debug.apk
           path: apps/amberx-droid/android/app/build/outputs/apk/debug/
       - name: App catalog bundle (every app's APK + apps.json, read by the Dev Console into the hub's app catalog)
-        run: node framework/cli/app-bundle.mjs collect dist/app-apks --build "${{ github.run_number }}" --commit "${{ github.sha }}" --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        # the AmberX shell's APK comes from its own job; when CI scope skipped that job (nothing it builds changed), the
+        # bundle is made without it rather than failing main (Nov 4 2026)
+        run: node framework/cli/app-bundle.mjs collect dist/app-apks --build "${{ github.run_number }}" --commit "${{ github.sha }}" --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" ${{ needs.amberx.result != 'success' && '--skip apps/amberx-droid' || '' }}
       - name: Report compiler errors to the "CI build errors" issue (readable without artifact downloads)
         if: failure()
         env: { GH_TOKEN: '${{ github.token }}' }

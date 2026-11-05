@@ -140,6 +140,8 @@ CA_HOST="$DIR/apps/console-web/plugins/container-access/deploy/host.sh"  # axf-p
 [ -f "$CA_HOST" ] && { mapfile -t PLUGIN_ARGS < <(NAME="$NAME" bash "$CA_HOST" up) || say "Docker socket proxy didn't start"; }  # axf-plugin:container-access
 CV_HOST="$DIR/apps/console-web/plugins/chat-viewer/deploy/host.sh"  # axf-plugin:chat-viewer
 [ -f "$CV_HOST" ] && { mapfile -t CV_ARGS < <(bash "$CV_HOST" up) && PLUGIN_ARGS+=("${CV_ARGS[@]}") || say "Chat viewer mounts skipped"; }  # axf-plugin:chat-viewer
+MT_HOST="$DIR/apps/console-web/plugins/maintenance/deploy/host.sh"  # axf-plugin:maintenance
+[ -f "$MT_HOST" ] && { bash "$MT_HOST" up || say "Maintenance host part skipped"; }  # axf-plugin:maintenance
 _PA=(); for a in "${PLUGIN_ARGS[@]}"; do [ -n "$a" ] && _PA+=("$a"); done; PLUGIN_ARGS=("${_PA[@]}")  # never pass an empty arg to docker run (it would be read as the image name)
 # Sidecars of plugins whose folder is gone (label axf.plugin=<folder>) are removed; nothing is run for them.
 for c in $(docker ps -aq --filter label=axf.plugin); do
@@ -209,6 +211,10 @@ fi
 # Pull main every 5 minutes; re-run this installer when it changed, and also while the sign-in wall waits for the hub.
 # Progress goes to update-status.json for the console's Activity banner. The script is root-only (0700): it carries
 # GITHUB_TOKEN for the re-run.
+# One deploy per merge-queue stack (Brett, Nov 4 2026: "Save the compute"): while the queue is merging a stack it
+# keeps push-banner/queue-merging fresh; the update waits until the last PR of the stack is in (stale after 15 min).
+QUEUE_HOLD="$DIR/.axf-console/plugins/push-banner/queue-merging"  # axf-plugin:push-banner
+AXF_UPDATE_PRELUDE="[ -n \"\$(find \"$QUEUE_HOLD\" -mmin -15 2>/dev/null)\" ] && exit 0  # the merge queue is landing a stack: one deploy once it is all in" \
 axf_update_script /usr/local/bin/axf-console-update "$DIR" "$BRANCH" /var/log/axf-console-update.log \
   "GITHUB_TOKEN=\"$GITHUB_TOKEN\" DOMAIN=\"$DOMAIN\" NAME=\"$NAME\" DIR=\"$DIR\" PORT=\"$PORT\" bash \"$DIR/deploy/install-console.sh\"" \
   "$DIR/.axf-console/update-status.json" "$DIR/.axf-console/wall-waiting"

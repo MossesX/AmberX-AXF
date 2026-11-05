@@ -2,16 +2,17 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.push-banner",
   "name": "Push banner",
-  "version": "0.6.0",
+  "version": "0.7.1",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "A banner listing every branch that isn't on main yet in AmberX-AXF and axHub (commits ahead/behind, age, last commit, its open PR and that PR's CI), with Open PR and Merge: every change reaches main only through its PR (one is opened for every branch), brought up to date with main and re-tested before it merges (not behind, CI passed on the pinned head; re-checked on the server). Auto-merge takes ready PRs oldest first, one merge per round, and sets branch protection on main where the token may. Auto-land (land/land.mjs, plain scripts on the VPS, no model calls) lands every finished build: worktree cleaned, main merged in with the builds files newer-wins, PR opened, CI started, merged here in dependency order once green and not held by UI Review; blocked builds are pushed to Brett once, in plain words. The console server talks to GitHub with its own token, which never reaches the browser.",
+  "description": "A banner listing every branch that isn't on main yet in AmberX-AXF and axHub (commits ahead/behind, age, last commit, its open PR and that PR's CI), with Open PR and Merge: every change reaches main only through its PR (one is opened for every branch), brought up to date with main and re-tested before it merges (not behind, CI passed on the pinned head; re-checked on the server). Auto-merge takes ready PRs oldest first, one merge per round, and sets branch protection on main where the token may. Auto-land (land/land.mjs, plain scripts on the VPS, no model calls) lands every finished build: worktree cleaned, main merged in with the builds files newer-wins, PR opened, CI started, merged here in dependency order once green and not held by UI Review; blocked builds are pushed to Brett once, in plain words. The console server talks to GitHub with its own token, which never reaches the browser. Merge queue (0.7.0): GitHub's own merge queue needs an organisation-owned repo, so the queue is ours: ready PRs line up, each is tested once on top of main + every PR ahead of it (queue/pr-<n> branches), the green head merges with no retest, a red one is kicked out with the reason in plain words and the ones behind it are retested without it; CI runs only what a change touches, PRs run light checks while the queue is on. Merge queue view, banner chip, REST + MCP + CLI. 0.7.1 (Nov 4 2026, Brett: \"Stop merging these things one at a time\"): auto-land is off by default and only the merge queue merges AmberX-AXF; GitHub reads are cached with ETags (a 304 costs no API call) and held back when the shared limit runs low; the console redeploys once per stack.",
   "targets": [
     "axf-console"
   ],
   "provides": [
     "banner:push-banner",
+    "service:axf.merge-queue@1",
     "settings-tab:push-banner"
   ],
   "optional": [
@@ -96,6 +97,76 @@
             "build"
           ]
         }
+      },
+      {
+        "id": "mergequeue-list",
+        "title": "Merge queue: the line",
+        "description": "Every PR in the merge queue in order: title, agent, test state (waiting, testing, passed, kicked out and why), ETA in minutes; plus the open PRs not in it and why, the last merged and kicked-out ones. Each PR is tested once on top of main + the PRs ahead of it and merges with no retest.",
+        "route": "GET /queue",
+        "readOnly": true
+      },
+      {
+        "id": "mergequeue-add",
+        "title": "Merge queue: add a PR",
+        "description": "Put a PR (back) in the merge queue: undoes Remove from queue or a kick-out at the same head. It still has to be ready (PR checks green, not a draft, not held by UI Review). Takes effect at the next round (within 3 minutes).",
+        "route": "POST /queue/add",
+        "input": {
+          "type": "object",
+          "properties": {
+            "pr": {
+              "type": "integer",
+              "description": "PR number"
+            }
+          },
+          "required": [
+            "pr"
+          ]
+        }
+      },
+      {
+        "id": "mergequeue-remove",
+        "title": "Merge queue: remove a PR",
+        "description": "Take a PR out of the merge queue until it gets a new commit or is added again; the PRs behind it are retested without it.",
+        "route": "POST /queue/remove",
+        "input": {
+          "type": "object",
+          "properties": {
+            "pr": {
+              "type": "integer",
+              "description": "PR number"
+            },
+            "why": {
+              "type": "string",
+              "description": "optional reason"
+            }
+          },
+          "required": [
+            "pr"
+          ]
+        }
+      },
+      {
+        "id": "mergequeue-move",
+        "title": "Merge queue: move a PR",
+        "description": "Move a PR to a new place in the merge queue (index, 0 = front). Jump to front is Brett's own click in the console; a session or agent may move a PR anywhere else. The stack behind the new place is retested in the new order.",
+        "route": "POST /queue/move",
+        "input": {
+          "type": "object",
+          "properties": {
+            "pr": {
+              "type": "integer",
+              "description": "PR number"
+            },
+            "to": {
+              "type": "integer",
+              "description": "new index, 1 or more from a session (0 = front is Brett's click)"
+            }
+          },
+          "required": [
+            "pr",
+            "to"
+          ]
+        }
       }
     ]
   },
@@ -115,6 +186,7 @@
     ],
     "mentions": [
       "CLAUDE.md",
+      "_claude/rules/RULES.md",
       "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md",
       "_claude/shared/rules/RULES.md",

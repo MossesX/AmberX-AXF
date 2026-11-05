@@ -85,6 +85,18 @@
    "from": "detail",
    "addenda": []
   },
+  "amberx-approvals-fix": {
+   "said": "Why isn't AmberX launching approvals on my phone? It used to always pop up approvals. ... Nope, only when I open AmberX, and it says 'web page not available' in the approval waiting dialog. ... (Queue a fix?) Yep.",
+   "at": "2026-11-05T02:14:31.670Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "amberx-assistant-agents": {
    "said": "Install assistant and agent manager in amberx",
    "at": "2026-10-28",
@@ -133,6 +145,18 @@
    "from": "detail",
    "addenda": []
   },
+  "amberx-live-audio": {
+   "said": "Amber: \"Live voice doesn't work yet, because AmberX only uploads audio in 30-minute chunks... Want me to queue the AmberX update so it streams audio live?\" Brett: \"Yeah.\"",
+   "at": "2026-11-04T00:00:00Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "amberx-notes": {
    "said": "voice-controlled notes in lists/sub-lists (Plugins root: one list per plugin, made automatically), sort/transcribe/rename/move, task manager + todo, AI parsing with Claude plan/API switch + any LLM through AmberX own server, integrated web component, voice command section from the codebase, tabs. Data shared on axHub with Voice notes/Voice Vault. Sub-agents allowed (Brett).",
    "at": "2026-10-27",
@@ -167,6 +191,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "amberx-voice-echo-fix": {
+   "said": "Echo fix\n\nMaine but how do I make it so I don't have to keep cooking the mic to talk to you",
+   "at": "2026-11-05T01:38:10.037Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "amberx-voice-fix": {
@@ -421,6 +457,18 @@
    "from": "detail",
    "addenda": []
   },
+  "banner-widgets": {
+   "said": "I need that [usage meter] to be in the banner too. And then I need to right-click the banner and select which widgets appear in it. It's getting cluttered. And some of them are way too big. I need settings for them all so I can change how big they are, how much room they take up.\n\nAddendum (voice, Nov 4): Start that as a second build right now. Merge it right away. Deploy it.",
+   "at": "2026-11-05T02:08:38.606Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "basic-filter": {
    "said": "'Add new plugin called basic filter that opens a dialog with search and filter options that you can attach to any dataset. Also comes with a toolbar customized in the plugins settings like hide and show and interface to configure using preset actions to select from in a grid with expandable rows that display everything about the action and style. Live floating preview of toolbar that hot renders when something is edited. By default toolbar is on with 1 button to open the sort and filter dialog. Attach it to the dataset in plugin switches.' Datasets = every lib-datagrid grid (registers itself) + anything registering through the new lib-datagrid dataset registry; web only, Android twin deferred. All Opus (console plugin UI + small web lib hook). Profile: Refactor (Brett's pick).",
    "at": "2026-10-28",
@@ -457,6 +505,18 @@
    "from": "",
    "addenda": []
   },
+  "build-docs-walkthroughs": {
+   "said": "For everything that's already been built, every step that's already been built, I need to be able to right-click a step or a build and say: create documentation for this. Create a video for this build, which will then record a live video of a browser walkthrough, and I'll be able to select how long I want it to be and different things, and I'll also be able to input special stuff that I want covered.",
+   "at": "2026-11-04T00:00:00.000Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "build-manager-history": {
    "said": "every session on every machine reports builds to axHub (change-log@1 with build stats: ref, model, estimate, actual tokens/cost, status, heartbeat, surface, host, areas); Build manager shows them live, adds a Built history (cost + time by model/week), a search bar, and a context-menu Start build now (dependency closure, overlap guard, axHub vps.run headless Claude Code, verification). Backfill of everything already built. Branch feat/build-manager-history.",
    "at": "2026-10-21",
@@ -468,6 +528,54 @@
    "verbatim": false,
    "from": "detail",
    "addenda": []
+  },
+  "build-optimizer": {
+   "said": "In Build manager, add a button to optimize builds, which will take all the steps and sort them all into a smaller amount of builds, just moving all the steps over and combining builds. Yeah. And optimize, it will create a new package of builds, and it will list them all in a dialog to confirm. It will list the build with all of its steps.",
+   "at": "2026-11-04T20:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "headless",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": [
+    {
+     "said": "And you can drag steps from one build to another build. If multiple builds are open in different tabs or different windows, you can drag steps from one to the other.",
+     "at": "",
+     "source": "voice",
+     "by": "earl",
+     "verbatim": true
+    },
+    {
+     "said": "This build optimizer needs to be done without AI. It can use AI if AI is connected, but it shouldn't have to have AI.",
+     "at": "",
+     "source": "voice",
+     "by": "earl",
+     "verbatim": true
+    },
+    {
+     "said": "Well, if the AI is on it, it does a much better job. It does a thorough investigation, it does thorough syncing.",
+     "at": "",
+     "source": "voice",
+     "by": "earl",
+     "verbatim": true
+    },
+    {
+     "said": "And you get a notification if AI isn't active. You get a notification either way if you want it. Enable it or turn it off.",
+     "at": "",
+     "source": "voice",
+     "by": "earl",
+     "verbatim": true
+    },
+    {
+     "said": "The optimizer needs a bunch of settings and filters to control how it works.",
+     "at": "",
+     "source": "voice",
+     "by": "earl",
+     "verbatim": true
+    }
+   ]
   },
   "build-orchestrator": {
    "said": "everything from today and the refactor goes into the Refactor profile).",
@@ -505,6 +613,47 @@
    "from": "",
    "addenda": []
   },
+  "build-todo-sync": {
+   "said": "For every build from now on, like this plugin build, prompt me for a name which will be used to reference it in the to-do manager. Then we're going to add a list in the to-do manager with all the steps that Orchestrator broke it into. And then it will check off each one in real time as the orchestrator processes each step. So the to-do list for every build has the same exact steps as items in the to-do list that the orchestrator broke the build down into. The builds into categories: plugins, plugin extensions, add-ons, framework, app, feature, module. Sync the build manager with the to-do manager and the real-time checklist. Put this in the planner.",
+   "at": "2026-11-04T16:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "build-todo-sync (Snap Sully)",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": [
+    {
+     "said": "This is a plugin too.",
+     "at": "2026-11-04T16:20:00Z",
+     "source": "voice",
+     "by": "build-todo-sync (Snap Sully)",
+     "verbatim": true
+    },
+    {
+     "said": "From now on, put every build in Plan Studio. Every new plugin or app or whatever goes to Plan Studio. Plan Studio is updated whenever you want edits made to it. Every build will be able to attach a list to it of planned things to do, and you can check off the fixes as they happen. You can add things to fix and all that, and track everything in the planner.",
+     "at": "2026-11-04T16:40:00Z",
+     "source": "voice",
+     "by": "build-todo-sync (Snap Sully)",
+     "verbatim": true
+    },
+    {
+     "said": "And that needs an API so it can be voice controlled.",
+     "at": "2026-11-04T16:45:00Z",
+     "source": "voice",
+     "by": "build-todo-sync (Snap Sully)",
+     "verbatim": true
+    },
+    {
+     "said": "And the planner will also have links to documentation that's under development.",
+     "at": "2026-11-04T16:50:00Z",
+     "source": "voice",
+     "by": "build-todo-sync (Snap Sully)",
+     "verbatim": true
+    }
+   ]
+  },
   "builds-one-page": {
    "said": "Plans, Tracker, Build queue, Pending builds and the Build orchestrator are separate files (plan.json, tracker.json, build-queue.json, pending.json, _claude/builds/orchestrator.json) that drift (pending complete never marks the plan built; 91 of 100 pending items unlinked). Merge into one dataset; one Builds page with the views selectable from a toolbar and everywhere else that fits (app menu, context menu, shortcuts, banners, deep links). Every view, Orchestrator included, defaults to the Pending builds look: a table with expandable rows; better nested info in every list. Folds in pending-grid-view. tracker.json stays a generated export for the Android console and /tracker. Web only (Android hold).",
    "at": "2026-10-27",
@@ -529,6 +678,18 @@
    "from": "brief",
    "addenda": []
   },
+  "changes-chat-log": {
+   "said": "This needs to be displayed like the chat log.",
+   "at": "2026-11-04T21:53:46.271Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "chat-viewer": {
    "said": "",
    "at": "",
@@ -539,6 +700,18 @@
    "brief": "# Chat Viewer: every session stored, synced, searchable, exportable as 2-voice audio (Brett, Nov 1 ~3 AM)\n\nRead CLAUDE.md, _claude/shared/rules/RULES.md, _claude/persona.md. Opus, one session. Git login works: plain `git push`. Merge origin/main first (other builds are landing).\n\nBrett: store ALL our sessions (claude.ai text + voice chats, Claude Code sessions, headless build sessions) as transcripts in a viewer. When it loads, it checks for updates: new sessions, continued ones, changed ones, and updates the stored copies. Export any session as AUDIO with two separate voices: one for Brett, one for Claude (Amber).\n\nIMPORTANT reality: claude.ai has no API to pull a user's chats, and we must NOT scrape claude.ai with Brett's login/cookies. Supported inputs:\n1. Claude data export: Brett downloads it from claude.ai (Settings > Privacy > Export data) and uploads the zip (or conversations.json) in the viewer (phone file picker). Parse it, upsert by conversation uuid, detect new/changed by updated_at + message count/hash, keep versions.\n2. Claude Code sessions: auto-sync the JSONL session files from ~/.claude/projects (root and axfbuild) on the VPS on a timer + on viewer load; incremental (byte offset/mtime).\n3. Headless build logs (/root/axf-builds/*/*.log, /home/axfbuild/wt-*/*.log) as 'build sessions'.\n4. Hub drop folder: Claude chat sessions can push conversations through axHub memory_write into project amberx-axf, area data, path `sessions/claude-ai/<uuid>.json` (schema below); the viewer ingests that folder too. Document the schema and add a line to _claude/shared/rules/RULES.md: when Brett says 'sync my chats', Claude uses recent_chats/read_conversation and writes each new/updated conversation there.\n\n## Store\nsession@1 schema (framework/schemas + validators): id, source (claude-ai-text|claude-ai-voice|claude-code|headless|hub-drop), title, startedAt, updatedAt, project, messages [{role: user|assistant|tool, text, at, kind (speech|text|tool), toolName?}], hash, version history. Stored on the console data volume (SQLite or JSON files; your call, justify), not in git. Redact secrets (tokens/keys/passwords patterns) on ingest.\n\n## Viewer (console plugin + AmberX entry 'Chats')\n- List: framework DataGrid (sort/filter/search, date columns), source badges, 'updated' badge for changed sessions, counts.\n- Full-text search across everything (SQLite FTS or similar), jump to the hit.\n- Session view: chat bubbles (Brett vs Amber), tool calls collapsible, timestamps, copy/share, export text/markdown.\n- 'Check for updates' on load + button: shows new/changed/unchanged counts.\n\n## Audio export\n- Export a session (or a range) as an audio file with TWO voices: Brett's voice and Amber's voice (configurable). Use a TTS that runs on this VPS for free by default (e.g. Piper with two different English voices; install into a container or venv, no GPU), with an optional provider setting (OpenAI/ElevenLabs) if a key is saved in the console keys. Skip tool-call noise; read only spoken/text turns; short pause between turns; chapters per hour. Output mp3/ogg stored on the hub, with a player in the viewer and a download link. Long sessions render in the background with progress.\n\nFramework controls + theme/scale tokens only, phone-first. Tests: export-zip parsing + upsert/new/changed detection, Claude Code JSONL incremental sync, hub-drop ingest, redaction, search, audio render (short sample) with two voices. Local test block from .github/workflows/android.yml + theme/controls/lifecycle/menu-reach checks. Phone + desktop screenshots to UI Review via framework/cli/shot.mjs, group 'Chat viewer - Nov 1' (use demo/redacted sessions in screenshots). Add an install_steps part. Commit, fetch+merge origin/main, retest, `git push origin HEAD:main` (never force). Report at _claude/builds/reports/chat-viewer.md incl. how Brett gets his claude.ai export in.",
    "verbatim": false,
    "from": "brief",
+   "addenda": []
+  },
+  "claude-account-switcher": {
+   "said": "Can you store that key so I can use it to switch back and forth from the console? ... You're gonna build the switcher now... at least something temporary. ... Make a quick plugin so I can do it all from the console.",
+   "at": "2026-11-04T23:57:00.641Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "claude-settings": {
@@ -707,6 +880,18 @@
    "from": "detail",
    "addenda": []
   },
+  "drag-to-tab": {
+   "said": "I want to be able to drag [items] to their containers and drop them as new tabs. Like grab something from the navigation menu, or from one tab, drag it over to another area and drop it as a new tab.",
+   "at": "2026-11-04T00:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "element-inspector": {
    "said": "Left click only. Press-drag: panel follows, live updates to element under pointer. Release closes. Double click pins; pinned panel drags and resizes. Current fields + size.",
    "at": "2026-10-30",
@@ -755,9 +940,33 @@
    "from": "",
    "addenda": []
   },
+  "fable-packager": {
+   "said": "From the orchestrator, package Fable, or make a build package. You select all the things that are waiting to be built with Fable: you open up a dialog or a window to list them all, then you select them and combine them into a build, and then you either send the build to a helper or add it to your own orchestrator as its own build. So you can easily create just-Fable builds alone, prioritize them, and send them to another helper to be done immediately.",
+   "at": "2026-11-04T16:31:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "fable-review-nov3": {
    "said": "I don't want the approvals. Just put everything that needs to be on Fable on Fable. No more approvals. If it needs Fable, set it to be Fable. And what about yesterday? Was anything that needed to be Fable done with Opus?",
    "at": "2026-11-04T00:00:00Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "fable-review-shipped-features-build-hook-contrac": {
+   "said": "Alright, then add the Fable rebuild to the to-do list.",
+   "at": "",
    "source": "",
    "session": "",
    "link": "",
@@ -825,6 +1034,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "follow-amber-flash": {
+   "said": "When you open something, every time I ask you to open a screen for me, whatever item I'm referencing, flash the background a certain color. Five times.\n\n(Asked which color:) Yellow and orange.",
+   "at": "2026-11-04T00:00:00Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "follow-amber-switch": {
@@ -916,6 +1137,18 @@
    "from": "",
    "addenda": []
   },
+  "grid-column-hiding": {
+   "said": "Every grid needs to be able to hide columns. If you right-click on the column, you can select which ones to hide. And every grid, framework wide.",
+   "at": "2026-11-04T19:59:59.405Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "grid-sort-filter": {
    "said": "Every grid that lists builds, tasks, asks or anything else is sortable, searchable and filterable, taking little screen. Basic filter attached by default. Tap header sorts, tap again reverses, long-press adds a second sort. One thin row: small search box + filter icon; on phones just a search icon. Filters hidden until used, then small clearable chips. Custom tables move onto the framework grid. Android parity. Per grid: right-click a grid or its header -> Filter -> off/on for this grid; 'All grids...' lists every grid in the app with the right-clicked one scrolled into view and highlighted, a switch per grid; a default switch decides whether new grids get the filter (on). Defaults are decided per grid by the build: on for data grids with many rows or columns (builds, asks, changes, plugins, PRs), off for small lists (settings, keys, short pickers); record the choice and reason per grid. On grids where it is off, hovering the header for a moment shows a tooltip 'Add the filter to this grid?' with Enable (long-press on phones). Framework grid (part of the app, not the filter plugin): every grid that has no date/time column gets an automatic 'Date and time' column (row created / last changed), hidden by default; grids that already show a date/time get nothing. Right-click the header -> Show/Hide 'Date and time'. Web + Android. UPDATE (Brett): build BOTH into the framework grid. Sort/search/filter live in the framework (not the Basic filter plugin); smart per-grid defaults, right-click on/off, All grids list and hover offer all framework features. Date and time column is ensured at first render: if a grid renders without one, the framework adds the hidden column then. New grids get everything automatically. CI check flags any table not built on the framework grid.",
    "at": "2026-10-30",
@@ -926,6 +1159,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "handoff-2": {
+   "said": "Is there a way to have two sessions working on the project at the same time without building stuff that's gonna conflict with the other one? ... Doesn't it already exist in the handoff? ... Let's scratch the whole handoff system as we know it and create one based on spec. Here's what I want to do. I want to press the button in the console. It'll say prepare handoff to share a second account. And then it will open the browser tab in Claude, or then it'll give me a cut and paste prompt that I'll prompt into the new session from the other account, and run it. And then they'll both be working side by side and being able to talk to each other.",
+   "at": "2026-11-04T00:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "headless-tabs": {
@@ -1060,6 +1305,18 @@
    "from": "brief",
    "addenda": []
   },
+  "land-merge-queue-first": {
+   "said": "You gotta stop merging these one at a time or they're gonna have to run checks again. That's what happened last time. ... Land the queue first. Stop everything. Stop merging these things one at a time so they don't step on each other's toes. Save the compute.",
+   "at": "2026-11-04T17:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Landin' Lenny",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "land-round-2": {
    "said": "After lenny-land-all, every remaining PR conflicts with main. Brett agreed: one agent catches them up and lands them, Molly first (commands must reach the console inside Molly).",
    "at": "2026-11-04T10:43:58.630Z",
@@ -1108,6 +1365,18 @@
    "from": "detail",
    "addenda": []
   },
+  "live-sessions-plugin": {
+   "said": "Make a plugin with a widget that lists the active Claude accounts only. The ones that actually have a human involved, either this one or the helper. It needs to list any account that's actively being run, any session being run by a human, and then you can click a button and you can watch its output live, including voice. It will be able to hear you talking to me, and me talking to you.\n\nAsked whether the person on a watched session should know: \"You can have it: 'you're being watched'.\"\n\n## Addendum 1 (Brett, Nov 4 2026 (voice))\nActually, make it list all sessions, but note whether it's a human or a headless. Only allow voice monitoring of the human.\n\n## Addendum 2 (Brett, Nov 4 2026 (voice))\nIn the session list, it needs to list the sessions in a grid, and it needs to show the agent that's running that session. Every time you open a session, you are prompted with a list of agents to select from: who you are, or who do you want to run this session, and then you pick one of the agents. So when you see the sessions listed and you want to assign jobs to one, you open it as a helper and just see who's running it.\n\n## Addendum 3 (Brett, Nov 4 2026 (voice))\nAll human sessions need to be meticulously logged so that in the future they can be browsed. It will open it and you can watch in real time the context window and hear or listen to our conversation, as the whole entire session is played back.\n\n## Addendum 4 (Brett, Nov 4 2026 (voice))\nYou can configure where to store recordings in the plugin settings interface. You can choose whether you want to store it on the VPS, or in the repo, or in its own container. If you choose VPS, you can select the container from a dropdown list of containers. Or a repo: you can select from a dropdown list of repos. Or you can even store it locally if you want to and have them all synced.\n\n## Addendum 5 (Brett, Nov 4 2026 (voice))\nAfter the session is done, it needs to compress the audio to remove all the dead space where it's not you talking or me talking. Obviously the dead space needs to stay to maintain its real time, but it needs to cut that data out of the stream.",
+   "at": "2026-11-04T16:46:03.374Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Ping Paulie (headless)",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "md-studio": {
    "said": "build MD Studio. It was planned but NEVER built (no branch, no log). Assigned agent: **Reel Rhonda** (book on her agent-swarm card; set AXF_AGENT=reel-rhonda if supported, else record in report + store note).",
    "at": "2026-11-03",
@@ -1144,6 +1413,33 @@
    "from": "",
    "addenda": []
   },
+  "model-thinking-audit": {
+   "said": "Go through my list of things that can be done and see what should be redone with Fable and put that next to it, and put the level of thinking that it should be on.",
+   "at": "2026-11-04T15:50:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Reel Rhonda",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": [
+    {
+     "said": "I also want to see in the steps list the same thing, and anywhere a build or a step is shown I want a check mark if it's all set and doesn't need to be looked at, and like a yellow triangle if it's been changed and needs to be looked at. And if you right-click that icon, instead of expanding to its information, expand the row explaining why. And all that stuff about why you should change it.",
+     "at": "2026-11-04T15:52:00Z",
+     "source": "voice",
+     "by": "Brett",
+     "verbatim": true
+    },
+    {
+     "said": "Model. And thinking model. Not just the review, any query or anything that shows a build or a step or anything anywhere. But make it a filter. Make it so you can turn that feature on or off.",
+     "at": "2026-11-04T15:54:00Z",
+     "source": "voice",
+     "by": "Brett",
+     "verbatim": true
+    }
+   ]
+  },
   "model-upgrade-approval": {
    "said": "a headless build (agent-swarm-fable-rebuild, PR #247) approved its own Opus -> Fable phase switch in the orchestrator (`orchestrator.mjs act approve`) because its brief said \"do every step\". Brett: \"It cannot be switching the model without my approval. That's not even a veto. That's an approval.\" Then: \"You can downgrade, but you can't upgrade.\"",
    "at": "2026-11-03",
@@ -1154,6 +1450,18 @@
    "brief": "# Model UPGRADES need Brett's approval; downgrades don't (Urgent, Opus)\n\nReplaces the stopped build model-switch-approval (folder /root/axf-builds/model-switch-approval, ignore any work there).\n\nBrett Nov 3 2026 (voice), angry: a headless build (agent-swarm-fable-rebuild, PR #247) approved its own Opus -> Fable phase switch in the orchestrator (`orchestrator.mjs act approve`) because its brief said \"do every step\". Brett: \"It cannot be switching the model without my approval. That's not even a veto. That's an approval.\" Then: \"You can downgrade, but you can't upgrade.\"\n\nNew project rule (add to _claude/rules/RULES.md and the decisions log, dated Nov 3 2026): a build may switch to a LOWER model on its own (downgrade, e.g. Fable -> Opus): allowed, no approval, just recorded. Switching to a HIGHER model (upgrade, e.g. Opus -> Fable) needs Brett's explicit APPROVAL (confirm policy), never a veto countdown and never self-approved by a session, agent, headless build or the orchestrator. Ranking: Fable is above Opus (Brett's call). Put the ranking in model-policy (one ordered list, config not code) so future models slot in. A session that reaches an upgrade stops there and asks.\n\nEnforce it:\n1. orchestrator approve/phase logic (orchestrator-core.mjs apply + CLI + console server): a downgrade phase passes by itself (record it); an upgrade phase refuses unless approved by Brett: his own signed-in console click or an axHub approval he approves. Detect non-human sources with the same signals used for 'who asked' on approvals (X-Axhub-Source, AXF headless env, agent env). Record who approved and when.\n2. vps.build_start / claude-headless.sh / agent job router: launching or relaunching a build on a higher model than its orchestrator step's model is an upgrade too: refuse or hold for approval the same way.\n3. Briefs (orchestrator `brief`, headless guidance, agent jobs): say plainly upgrades need Brett and the session stops and asks; downgrades are fine. Remove any wording that lets a session approve an upgrade.\n4. Request path: an axHub approval (confirm policy, not veto) titled with the build, the phase and from -> to model; approving it records the approval in the orchestrator.\n5. Audit: list every upgrade approved so far by a non-human source (the store's journal), report in the PR; mark agent-swarm-fable-rebuild's s7 Opus -> Fable as self-approved (not Brett's). Note: xlayout-opus and token-control-opus were Fable -> Opus (downgrades), fine under the new rule.\n6. Tests for refusal, downgrade pass-through and the approval path; THREADS row (profile urgent); PR (push banner merges it).\n\nRules: one session, no sub-agents, stay on Opus. Don't approve any phase yourself while doing this.",
    "verbatim": false,
    "from": "brief",
+   "addenda": []
+  },
+  "molly-banner-match": {
+   "said": "Make Molly's top banner asset the same as console. And when console's open in Molly, don't display its own banner.",
+   "at": "2026-11-04T15:25:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "headless",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "molly-multi-instance-tabs": {
@@ -1202,6 +1510,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "notes-views": {
+   "said": "\"Make the sections in your note collapsible.\" (Asked: just this note or every note?) \"Yeah, make a couple of views. One view is the same way it is now, but with collapsible sections, and another view is the notes in a grid with expandable rows that shows the note.\"",
+   "at": "2026-11-04T21:40:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "orch-live-sync": {
@@ -1478,6 +1798,18 @@
    "from": "detail",
    "addenda": []
   },
+  "priority-tags": {
+   "said": "Put a priority tag on everything in your building. And when you click on it, it shows everything waiting for it. ... Do it. Yes.",
+   "at": "2026-11-05T04:53:51.522Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "profile-lists-home-card": {
    "said": "I want a card on the home screen for build profiles. ... And I don't want them to be all one list and filters anymore. I want it back to separate lists. [then] Actually, no, never mind. Leave it as filters.",
    "at": "2026-11-04T14:16:24.131Z",
@@ -1512,6 +1844,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "readme-rule-every-build": {
+   "said": "We gotta structure the documentation engine later anyway, so leave that out. Just get basic documentation. In Markdown.\n\n(Asked whether every future build should include a basic Markdown readme:) Yeah.",
+   "at": "2026-11-04T00:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "refactor-all": {
@@ -1609,6 +1953,61 @@
    "verbatim": false,
    "from": "detail",
    "addenda": []
+  },
+  "shipped-features-r2": {
+   "said": "Where's the list of features that can be sorted, and when they went live? ... I need a list of individual features, and you can view the features or you can view the builds that made the features. The builds will have an expanding row to show all its information along with the features. Tap in the expanded row. And there will also be another table that uses the features themselves as the root.",
+   "at": "2026-11-04T12:00:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Greenlight Gina (headless, Fable)",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": [
+    {
+     "said": "Create a database, create a grid that lists all the features going back for days and days, all the way back: all the features that were built and what PR they belong to. If you're sorted by PR, you select the PR, it opens an expanded row which shows all the features, which open another expanded row which shows all the information about it, including the prompt that I wrote that spawned it. And make it so the initial row you can view by PR, view by plugin, view by app, view by feature type.",
+     "at": "2026-11-04T13:00:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    },
+    {
+     "said": "If the repo was first day, it was way before the third.",
+     "at": "2026-11-04T14:00:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    },
+    {
+     "said": "Just AmberX and axHub, not any of those other repos.",
+     "at": "2026-11-04T15:00:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    },
+    {
+     "said": "As soon as a prompt goes through that plans on building the features, they go into that list, and have it sortable so you can hide completed ones and pending ones.",
+     "at": "2026-11-04T16:00:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    },
+    {
+     "said": "Anytime a feature in that list is getting changed or altered, it will appear as an edit. It will update that list and show edits to that feature.",
+     "at": "2026-11-04T17:00:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    },
+    {
+     "said": "I want you to work on the Fable part right now. ... Take the whole task from him. I'm gonna shut him down. Then you take the whole task. Start it right now.",
+     "at": "2026-11-04T21:30:00Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    }
+   ]
   },
   "smart-menus": {
    "said": "I need a dynamic context menu that draws itself depending on where it is and what it's doing. Most common / most likely things at the top. It learns and remembers, predicts what I'm most likely gonna want, keeps that at the top.",
@@ -1740,6 +2139,33 @@
    "from": "detail",
    "addenda": []
   },
+  "three-layouts-per-screen": {
+   "said": "From now on, all plugin screens get three layouts, and come with a toolbar to select which one, with the toolbar hidden by default. Not old ones, only new ones.",
+   "at": "2026-11-04T00:00:00.000Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "Brett",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": [
+    {
+     "said": "So UI Review will only allow you to select from the three layouts it is going to generate.",
+     "at": "2026-11-04T00:00:00.000Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    },
+    {
+     "said": "Yep.",
+     "at": "2026-11-04T00:00:00.000Z",
+     "source": "voice",
+     "by": "",
+     "verbatim": true
+    }
+   ]
+  },
   "token-control": {
    "said": "new plugin, powerful API and MCP and CLI server/client that can change every single token (theme, style, layout); every layout parameter is a token. Connect MCP, API and CLI to Claude and axHub. API and MCP control every aspect of AmberX tasks, to-dos and notes, and the console's planner (Brett: both Plan Studio and the Build orchestrator). Extensive interactive documentation. Folds in the dead VPS build amberx-full-mcp-api (do not relaunch it separately). Overlaps the blocked interactive docs engine (docs-engine/plan.md): reuse it if it lands first.",
    "at": "2026-11-02",
@@ -1832,6 +2258,18 @@
    "from": "detail",
    "addenda": []
   },
+  "ui-review-alarm": {
+   "said": "From now on, open UI Review, but if they don't get approved in 30 minutes, set an alarm off on my phone, a loud-ass alarm. That gives me five more minutes before it gets approved. … After 30 minutes, if it's not been reviewed, it needs to do a loud alarm five minutes before it's gonna be run. And if the alarm is unanswered, then don't run it. No, then run it. Make it a switch. Either or.",
+   "at": "2026-11-04T21:04:36.261Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "ui-review-predicted": {
    "said": "UI Review must show PREDICTED pictures - what a build will probably look like - BEFORE it's built, so he can approve the look before an agent spends money. Assigned agent: **Snap Sully** (book on his card; he's also on ui-review-shots - run after it or build on its storage fix; if the all-rounder router is on main and he's busy, whoever is free - record who). Register in Urgent (id `ui-review-predicted`) + banner entry. Mark the predicted-shots part of pending item `batch-manager` as moved here (pending_change note).",
    "at": "2026-11-03",
@@ -1866,6 +2304,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "urgent-console-perf": {
+   "said": "How come console is taking forever to load? I thought lazy loader was in. ... Can we dig into it? ... (after the diagnosis) Yes.",
+   "at": "2026-11-04T16:13:00Z",
+   "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "urgent-land-gizmo-chat": {

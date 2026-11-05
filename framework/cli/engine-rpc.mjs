@@ -20,7 +20,7 @@ import { compileLibrary, listLibraryTemplates, newLibrary, portLibrary, removeLi
 import { buildPlan, deleteFeature, loadPlan, saveMedia, upsertFeature } from './plan.mjs';
 import { buildsSummary, queueView, reorderQueue, reprocessQueue, stepQueue, stepsQueue, syncBuildQueue } from './build-queue.mjs';
 import { actPending, loadPending } from './pending.mjs';
-import { dataPath } from './persist.mjs';
+import { baseDataPath, dataPath } from './persist.mjs';
 import { RULES_REL, baseRules, checkProject, findProjects, loadRules, validateProjectManifest, validateProjectRules } from './project.mjs';
 const syncAfter = () => { try { syncBuildQueue({ by: 'feature-tracker', log: (m) => log(`build queue: ${m}`) }); } catch (e) { log(`build queue sync failed: ${e.message}`); } };
 
@@ -67,7 +67,8 @@ function run() {
     case 'catalog': return readJson(join(FRAMEWORK_DIR, 'catalog/catalog.json'));
     case 'tracker': return existsSync(dataPath('tracker.json')) ? readJson(dataPath('tracker.json')) : { items: [], summary: {} };
     case 'status': { // { id, status, wave?, module?, notes? } → status.json + regenerate tracker.json + libraries.json
-      const f = dataPath('framework/catalog/status.json');
+      // the feature tracker is the framework's one tracker (every profile references it), so its status is the base one
+      const f = baseDataPath('framework/catalog/status.json');
       const s = existsSync(f) ? readJson(f) : {};
       s[b.id] = { ...(s[b.id] ?? {}), status: b.status, ...(b.wave ? { wave: b.wave } : {}), ...(b.module ? { module: b.module } : {}), ...(b.notes != null ? { notes: b.notes } : {}) };
       writeFileSync(f, JSON.stringify(s, null, 2) + '\n');

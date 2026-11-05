@@ -87,6 +87,7 @@ t('rename keeps the id; an empty name is refused', () => {
 });
 // CLI round-trip on a scratch builds store (builds@1): the orchestrator writes the store, the Pending list is its projection
 const dir = mkdtempSync(join(tmpdir(), 'orch-')); process.env.AXF_BUILDS_STORE = join(dir, 'store.json'); delete process.env.AXF_ORCH_FILE; delete process.env.AXF_PENDING_FILE;
+process.env.AXF_FABLE_UPGRADE_APPROVAL = '1'; // these checks cover the approval rule (setting on); the off case is below
 const cli = await import('./orchestrator.mjs');
 const { loadPending } = await import('../../../../framework/cli/pending.mjs');
 cli.act({ action: 'add', title: 'Cli', steps: [{ text: 'one', model: 'Opus', estimate: '5 min' }] });
@@ -112,7 +113,15 @@ const store = JSON.parse(readFileSync(new URL('../../../../_claude/builds/store.
 // same scope as before the store: the Main framework orchestrator's builds, plus builds added through the orchestrator since
 // finished builds are out of scope: the small-steps rule is about work still to do
 const own = store.builds.filter((x) => !x.deleted && ((x.legacy ?? []).some((l) => l.file === '_claude/builds/orchestrator.json') || (!x.pending && x.kind !== 'epic' && !(x.legacy ?? []).length && x.steps.length)));
-t('repo store: orchestrator builds are valid and small-stepped', () => { assert.equal(store.$axf, 'builds@1'); const st = c.normalizeState({ builds: own }); assert.ok(st.builds.length >= 1); for (const bb of st.builds.filter((x) => !['built', 'complete', 'archived'].includes(x.status))) assert.equal(c.splitCheck(bb, st.rules).needsSplit, false, bb.id); });
+t('repo store: orchestrator builds are valid and small-stepped', () => { assert.equal(store.$axf, 'builds@1'); const st = c.normalizeState({ builds: own }); assert.ok(st.builds.length >= 1); for (const bb of st.builds.filter((x) => !['built', 'complete', 'archived'].includes(x.status))) {
+  // the repo store is live data (every session's builds land on main within a minute): a step over the limit fails,
+  // a step still waiting for its estimate is flagged (pending.mjs --check-steps warns the same way), so a build another
+  // session is still writing can't turn every PR's CI red (Nov 4 2026, land-merge-queue-first)
+  const { reasons } = c.splitCheck(bb, st.rules);
+  const big = reasons.filter((r) => !/has no estimate|no steps yet/.test(r));
+  if (reasons.length > big.length) console.warn(`  ! ${bb.id}: ${reasons.length - big.length} step(s) without an estimate yet`);
+  assert.deepEqual(big, [], bb.id);
+} });
 // feature-matrix@1 Apply engine output (framework/spec/fixtures/feature-matrix.json): skipped steps leave sums, next and the brief
 const fmx = JSON.parse(readFileSync(new URL('../../../../framework/spec/fixtures/feature-matrix.json', import.meta.url), 'utf8'));
 t('matrix-applied build: skipped step leaves progress, phases and the brief', () => {
@@ -125,5 +134,37 @@ t('matrix-applied build: skipped step leaves progress, phases and the brief', ()
 t('every brief carries the asset-conformance rule', () => {
   const b2 = c.normalizeState({ builds: [fmx.apply.after.build] }).builds[0];
   assert.ok(c.brief(b2).includes(c.ASSET_RULE));
+});
+// Fable upgrades need my approval = off (Brett, Nov 4 2026: "If it needs Fable, set it to be Fable."): upgrades run by themselves, recorded
+t('approvals off: an upgrade phase is clear, ticking it records the switch (approvals + a build note)', () => {
+  c.setUpgradePolicy({ approvalRequired: false, source: 'test' });
+  try {
+    let x = c.apply(c.emptyState(), { action: 'add', title: 'Auto', steps: [{ text: 'a', model: 'Opus', estimate: '5 min' }, { text: 'b', model: 'Fable', estimate: '5 min' }] }).state;
+    x = c.apply(x, { action: 'step', id: 'auto', step: 's1' }).state;
+    assert.equal(c.nextUp(x.builds[0]).needsApproval, false); assert.notEqual(x.builds[0].status, 'waiting');
+    const br = c.brief(x.builds[0], x.rules); assert.doesNotMatch(br, /STOP/); assert.match(br, /no approval needed/); assert.match(br, /set to Fable and runs on Fable/);
+    const r = c.apply(x, { action: 'step', id: 'auto', step: 's2' }); x = r.state;
+    const a = x.builds[0].approvals.find((y) => y.phase === 1);
+    assert.equal(a.kind, 'upgrade'); assert.equal(a.by, 'auto'); assert.equal(a.via, 'policy'); assert.match(a.note, /Fable upgrades need my approval is off/);
+    assert.match(x.builds[0].notes.at(-1).text, /Model switch: phase 2 Opus → Fable/); assert.ok(r.log.some((l) => /upgraded by itself/.test(l)));
+  } finally { c.setUpgradePolicy({ approvalRequired: true, source: 'test' }); }
+});
+t('approvals off: request-upgrade upgrades at once (closes nothing open), raising a step needs nobody, deny still needs Brett', () => {
+  c.setUpgradePolicy({ approvalRequired: false, source: 'test' });
+  try {
+    let x = c.apply(c.emptyState(), { action: 'add', title: 'Req', steps: [{ text: 'a', model: 'Opus', estimate: '5 min', done: true }, { text: 'b', model: 'Fable', estimate: '5 min' }] }).state;
+    x = c.apply(x, { action: 'request-upgrade', id: 'req', phase: 1 }).state;
+    assert.equal(x.builds[0].upgradeRequests.length, 0); assert.equal(x.builds[0].approvals[0].via, 'policy');
+    x = c.apply(x, { action: 'add', title: 'Raise', steps: [{ text: 'a', model: 'Opus', estimate: '5 min' }] }).state;
+    x = c.apply(x, { action: 'edit-step', id: 'raise', step: 's1', stepData: { model: 'Fable' } }).state; assert.equal(x.builds[1].steps[0].model, 'Fable');
+    assert.throws(() => c.apply(x, { action: 'deny-upgrade', id: 'req', phase: 1 }), /needs Brett's approval/);
+  } finally { c.setUpgradePolicy({ approvalRequired: true, source: 'test' }); }
+});
+t('approvals off: an open request filed while they were on is closed when the phase starts', () => {
+  let x = c.apply(c.emptyState(), { action: 'add', title: 'Old', steps: [{ text: 'a', model: 'Opus', estimate: '5 min', done: true }, { text: 'b', model: 'Fable', estimate: '5 min' }] }).state;
+  x = c.apply(x, { action: 'request-upgrade', id: 'old', phase: 1 }).state; assert.equal(x.builds[0].upgradeRequests[0].state, 'open');
+  c.setUpgradePolicy({ approvalRequired: false, source: 'test' });
+  try { x = c.apply(x, { action: 'step', id: 'old', step: 's2' }).state; assert.equal(x.builds[0].upgradeRequests[0].state, 'approved'); }
+  finally { c.setUpgradePolicy({ approvalRequired: true, source: 'test' }); }
 });
 console.log(`build-orchestrator: ${n} checks passed`);

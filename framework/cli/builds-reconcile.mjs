@@ -14,11 +14,11 @@
  *   … --json                                            the report as JSON
  *
  * Runs at every session start (the project's SessionStart hook) and every 10 minutes on the VPS (cron
- * axf-builds-reconcile, installed by deploy/install-console.sh). Report: <hub data>/builds/reconcile.json (else
+ * axf-builds-reconcile, installed by deploy/install-console.sh), at most every AXF_RECONCILE_EVERY_MIN min (5; --force). Report: <hub data>/builds/reconcile.json (else
  * .axf-console/builds-reconcile.json in the checkout). GitHub: framework/cli/github.mjs (GitHub App token first).
  */
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { closeSync, existsSync, mkdirSync, openSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
@@ -160,9 +160,38 @@ function text(r, brief) {
   return L.join('\n') || `in sync: ${r.prs} PRs, ${r.branches} branches checked`;
 }
 
+/*
+ * Throttle (urgent-console-perf, Nov 4 2026): every session start and the 10-min cron used to run a full reconcile
+ * (GitHub reads + a store write), and many sessions starting together hit GitHub's rate limit and held the store lock.
+ * An --apply run is skipped when the last report is younger than AXF_RECONCILE_EVERY_MIN minutes (default 5) or another
+ * reconcile is running; the last report is printed instead. --force always runs. Never called in a request path.
+ */
+export const everyMin = () => { const n = Number(process.env.AXF_RECONCILE_EVERY_MIN); return Number.isFinite(n) && n >= 0 ? n : 5; };
+export function recentReport(now = Date.now(), file = reportFile()) {
+  try {
+    const r = JSON.parse(readFileSync(file, 'utf8'));
+    const age = (now - Date.parse(r.at)) / 60000;
+    return r.apply && age >= 0 && age < everyMin() ? r : null;
+  } catch { return null; }
+}
+const runLock = () => `${reportFile()}.running`;
+function takeRunLock() {
+  const l = runLock();
+  try { if (Date.now() - statSync(l).mtimeMs > 10 * 60000) rmSync(l, { force: true }); } catch { /* none */ }
+  try { mkdirSync(dirname(l), { recursive: true }); closeSync(openSync(l, 'wx')); return () => rmSync(l, { force: true }); } catch { return null; }
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const argv = process.argv.slice(2);
-  reconcile({ apply: argv.includes('--apply') }).then((r) => {
+  const apply = argv.includes('--apply');
+  const recent = apply && !argv.includes('--force') ? recentReport() : null;
+  const release = apply && !recent ? takeRunLock() : () => {};
+  if (recent || !release) {
+    const r = recent ?? (() => { try { return JSON.parse(readFileSync(reportFile(), 'utf8')); } catch { return null; } })();
+    const why = recent ? `reconciled ${Math.round((Date.now() - Date.parse(recent.at)) / 60000)} min ago (runs at most every ${everyMin()} min; --force to run now)` : 'another reconcile is running';
+    if (argv.includes('--json')) console.log(JSON.stringify({ ...(r ?? {}), skipped: why }));
+    else console.log(r ? `${text(r, argv.includes('--brief'))}\n(skipped: ${why})` : `skipped: ${why}`);
+  } else reconcile({ apply }).finally(release).then((r) => {
     console.log(argv.includes('--json') ? JSON.stringify(r) : text(r, argv.includes('--brief')));
   }).catch((e) => { console.error(e.message); process.exitCode = 1; });
 }

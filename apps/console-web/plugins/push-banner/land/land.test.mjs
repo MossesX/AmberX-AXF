@@ -22,12 +22,13 @@ const check = (c, m) => { if (c) { ok++; console.log(`  ✓ ${m}`); } else { bad
 // ------------------------------------------------------------------ 1. zero tokens
 console.log('zero tokens: the merge pipeline never calls a model');
 const LLM = [/@anthropic-ai\//, /\banthropic\b/i, /\bopenai\b/i, /claude-agent-sdk/, /\bclaude\s+-p\b/, /['"]claude['"]\s*,/, /claude-headless\.sh/, /axf\.llm@1/, /\bllm\b.*\bimport\b|\bimport\b.*\bllm\b/i, /chat[-_]engine/, /swarm-chat/, /\bgenerativeai\b|\bmistral\b|\bollama\b|\bcohere\b/i];
-const landFiles = readdirSync(HERE).filter((f) => /\.(mjs|js|ts|py|sh)$/.test(f) && f !== 'land.test.mjs');
+const landFiles = readdirSync(HERE).filter((f) => /\.(mjs|js|ts|py|sh)$/.test(f) && !/\.test\.mjs$/.test(f));
+const LOCAL = new Set(['./land-core.mjs', './land.mjs', './merge-queue-core.mjs', './merge-queue.mjs']);
 for (const f of landFiles) {
   const text = readFileSync(join(HERE, f), 'utf8');
   const imports = [...text.matchAll(/^\s*import\s[^;]*?from\s+['"]([^'"]+)['"]|import\(\s*['"]([^'"]+)['"]\s*\)|require\(\s*['"]([^'"]+)['"]\s*\)/gm)].map((m) => m[1] || m[2] || m[3]);
-  const foreign = imports.filter((i) => !i.startsWith('node:') && i !== './land-core.mjs');
-  check(!foreign.length, `${f}: imports only node built-ins and land-core.mjs${foreign.length ? ` (found ${foreign.join(', ')})` : ''}`);
+  const foreign = imports.filter((i) => !i.startsWith('node:') && !LOCAL.has(i));
+  check(!foreign.length, `${f}: imports only node built-ins and this folder${foreign.length ? ` (found ${foreign.join(', ')})` : ''}`);
   const code = text.replace(/^\s*(\*|\/\/|#).*$/gm, '');
   const hit = LLM.find((re) => re.test(code));
   check(!hit, `${f}: no model client, chat engine or headless launch${hit ? ` (matches ${hit})` : ''}`);
@@ -162,6 +163,8 @@ const gh = async (method, path, body) => {
 const api = async (method, path, body) => { calls.api.push({ method, path, body }); if (path.includes('/ui-hold')) return path.includes('claude%2Fui') ? { hold: 'waiting' } : { hold: '' }; return { ok: true }; };
 const s = { repo, slug: 'MossesX/AmberX-AXF', dataDir: join(tmp, 'data'), archive: join(tmp, 'archive'), console: 'off', api: '', workflow: 'android.yml', projects, remote: 'origin', base: 'main' };
 mkdirSync(s.dataDir, { recursive: true });
+// these rounds check auto-land's own main merging; with the merge queue on, main is combined in on queue branches instead (merge-queue.test.mjs)
+writeFileSync(join(s.dataDir, 'config.json'), JSON.stringify({ mergeQueue: false, autoLand: true }));
 control(s, 'hold', 'held', { why: 'Brett wants to look first' });
 const git = makeGit(repo);
 const st = await round({ s, git, gh, api, agentJob: (job) => { calls.jobs.push(job); return { job: job.type, exit: 0 }; } });
@@ -209,6 +212,9 @@ writeFileSync(join(s.dataDir, 'config.json'), JSON.stringify({ autoLand: false }
 const n = calls.gh.length;
 const off = await round({ s, git, gh, api });
 check(off.on === false && calls.gh.length === n, 'Auto-land finished builds off = the runner does nothing');
+writeFileSync(join(s.dataDir, 'config.json'), JSON.stringify({}));
+const dflt = await round({ s, git, gh, api });
+check(dflt.on === false && calls.gh.length === n, 'Auto-land is off by default (Nov 4 2026: only the merge queue merges)');
 
 rmSync(tmp, { recursive: true, force: true });
 console.log(`auto-land: ${ok} checks passed${bad ? `, ${bad} FAILED` : ''}`);

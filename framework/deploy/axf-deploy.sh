@@ -184,6 +184,9 @@ axf_update_script() {
   shift 5; [ "$#" -gt 0 ] && shift
   local _axf_cond='[ "$before" = "$(git rev-parse HEAD)" ]' _axf_data='git diff --quiet "$before" HEAD -- . '"'"':(exclude)_claude'"'"'' _axf_m
   for _axf_m in "$@"; do _axf_cond="$_axf_cond && [ ! -f \"$_axf_m\" ]"; _axf_data="$_axf_data && [ ! -f \"$_axf_m\" ]"; done
+  # A run that failed part way (it may already have removed the old container) is retried on the next tick even when
+  # main hasn't moved; before Nov 4 2026 the next tick saw "unchanged" and the app stayed down until the next merge.
+  [ -n "$_axf_st" ] && { _axf_cond="$_axf_cond && ! grep -qs '\"state\":\"failed\"' \"$_axf_st\""; _axf_data="$_axf_data && ! grep -qs '\"state\":\"failed\"' \"$_axf_st\""; }
   {
     printf '%s\n' '#!/usr/bin/env bash' \
       '# Written by framework/deploy/axf-deploy.sh (axf_update_script). One block, so bash reads it all before running:' \

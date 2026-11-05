@@ -3,6 +3,7 @@ export { AppShell, type ViewDef, type ViewMap, type AppShellProps } from './AppS
 export { Button, IconButton, Segmented, Slider, Container, Chip, Kbd, type ButtonProps, type SegmentedOption, type SliderProps, type ContainerProps } from './components/Controls';
 export { ModelBadge, modelLabel, modelFamily } from './components/ModelBadge';
 export { BuildOrigin, originSubtitle, originSearch, originWhen } from './components/BuildOrigin';
+export { PriorityTag, setPriorityHost, setBuildPriority, PRIORITY_DIALOG, priorityDialogs, type PriorityHost } from './components/PriorityTag';
 export { Switch, Checkbox, ColorField, Field, TextField, SelectField, ChoiceGrid, Note, Section, LibraryParamField, type SwitchProps, type CheckboxProps, type ColorFieldProps, type FieldProps, type TextFieldProps, type SelectFieldProps, type SelectOption, type ChoiceGridProps, type Choice, type NoteProps, type NoteTone, type SectionProps, type LibraryParamFieldProps } from './components/Forms';
 export { Markdown, safeHref, type MarkdownProps } from './components/Markdown';
 export { Icon, ICON_NAMES } from './components/Icon';
@@ -50,3 +51,6 @@ export { RefText, REFS_SETTING, addRefSource, refSourcesChanged, refIndexOf, ope
 export { HelperBadge, useAssignment } from './components/HelperBadge';
 export { useMultiSelect, SelectBox, SelectionBar, LONG_PRESS_MS, type MultiSelect, type SelectAction, type SelectMode } from './components/MultiSelect';
 export { setAssignments, clearAssignments, findAssignment, listAssignments, subscribeAssignments, BUILD_CONTEXT_TARGET, STEP_CONTEXT_TARGET, type AssignmentBadge } from '../core/assignments';
+export { TabGroup, useTabGroupData, tabGroupDataFor, type TabDef, type TabGroupProps } from './components/TabGroup';
+export { BannerWidgetsPanel, BannerMore, bannerItemAttrs, bannerWidgetsDialog, useBannerOverflow } from './components/BannerWidgets';
+export { CHROME_SETTINGS_DIALOG, CHROME_PICK_DIALOG, CHROME_APP_INSTANCE, CHROME_ACTION_IDS, ChromeSettingsPanel, ChromeAssetPicker, chromeDialogs, chromeMenu, chromeSettingsUi, installChrome, moveChrome, setChromeField, swapChrome } from './components/ChromeContext';

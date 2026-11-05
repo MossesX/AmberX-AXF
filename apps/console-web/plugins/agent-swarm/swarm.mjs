@@ -37,6 +37,9 @@ import * as chatRules from '../../../../framework/core/engines/swarm-chat.mjs';
 import { spawnSync } from 'node:child_process';
 import { runJob, worktreeFor } from './runner.mjs';
 import { withSlot } from '../../../../framework/cli/agent-slots.mjs';
+import { loadUpgradePolicy } from '../../../../framework/cli/upgrade-policy.mjs';
+
+loadUpgradePolicy(); // Fable upgrades need my approval (owner-only Claude setting): held upgrade phases only while it is on
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');

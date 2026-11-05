@@ -511,6 +511,11 @@
         "text": "Brings this banner back."
       },
       {
+        "target": "action:banner.widgets",
+        "title": "Banner widgets",
+        "text": "Picks which widgets sit on the top bar, their order, size and how much room they take."
+      },
+      {
         "target": "action:banners.settings",
         "title": "Banner settings",
         "text": "Opens the settings of this banner: its look, how it behaves and the plugin's own settings."

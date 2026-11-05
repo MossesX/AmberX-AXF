@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { AgentAvatar, Button, Switch } from '@console/axf/react';
+import { AgentAvatar, Button, Switch, TabGroup } from '@console/axf/react';
 import * as core from './swarm-core.mjs';
 import * as watch from './chat-watch.mjs';
 import { KEYS, useSetting } from './chat-settings';
@@ -51,9 +51,7 @@ export function ChatTab({ state, act }: { state: SwarmState; act: Act }) {
         {state.roster.agents.map((a) => <Switch key={a.id} label={a.name} checked={state.swarm.chat.agents[a.id] !== false} disabled={!on} onChange={(v) => void act({ action: 'chat', agent: a.id, on: v })} />)}
       </div>
       <div className="sw-bar">
-        <div className="fx-seg fx-seg--sm" role="tablist" aria-label="Show">
-          {VIEWS.map((v) => <button key={v.id} type="button" role="tab" aria-selected={view === v.id} className={`fx-seg__opt${view === v.id ? ' is-on' : ''}`} onClick={() => setView(v.id)}>{v.label} ({counts[v.id]})</button>)}
-        </div>
+        <TabGroup id="agent-swarm.chat-view" label="Show" size="sm" value={view} onChange={setView} tabs={VIEWS.map((v) => ({ value: v.id, label: v.label, badge: counts[v.id] }))} />
         {view === 'sessions' && <span className="fx-muted">The Sessions channel: what the Claude sessions on this project and the orchestrator say to each other (handovers, claims, steps). Post with the box below.</span>}
         {view !== 'all' && view !== 'sessions' && <span className="fx-muted">What the crew says about Brett, the boss or the owner. Secrets are redacted. Sessions read the same list on axHub: data path {watch.HUB_FOLDER}/mentions.json.</span>}
       </div>

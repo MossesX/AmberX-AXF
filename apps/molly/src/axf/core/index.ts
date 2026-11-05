@@ -23,6 +23,7 @@ export * from './engines/interface';
 export * from './engines/roller';
 export * from './engines/behavior';
 export * from './engines/tapconfirm';
+export * from './engines/chrome-settings-rules.mjs';
 export * from './engines/scale';
 export * from './engines/agent-card-rules.mjs';
 export * from './engines/job-type-rules.mjs';
@@ -32,6 +33,7 @@ export type { CardData, CardModel as DataCardModel, HomeLayout, HomeCard } from 
 export * from './engines/help';
 export * from './engines/appearance';
 export * from './engines/banner';
+export * from './engines/bannerwidgets';
 export * from './engines/bannerhide';
 export { WIDGET_TYPES, ATTACHABLE_ASSET_TYPES, TOOLBAR_SIDES, SEARCH_BAR_WIDTH, SEARCH_BAR_MAX_RESULTS, isWidgetType, isHost, hostSpec, hostSpecs, registerHost, placeOnHost, placeHost, normalizeArrangement, moveOnHost, snapIndex, ARRANGEMENT_MAX, placeToolbarWidgets, validateHostAttachments, searchBarConfig, WIDGET_TONES, widgetTone, counterText, statusOn, progressPercent, avatarInitials, linkHref, imageSrc, spacerUnits, logoSize, avatarSize, progressWidth, themeSwitchNext, type HostAttachment, type HostArrangement, type HostSpec, type SearchBarConfig, type WidgetTone } from './engines/widgets';
 export * from './engines/search';

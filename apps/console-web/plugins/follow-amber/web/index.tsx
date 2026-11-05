@@ -16,7 +16,7 @@
  * The switch is one value for all of Brett's consoles (the server keeps it, so Amber can read it): Settings → Plugins →
  * Follow Amber, the right-click menu on every target, the app menu, or the banner chip (shown while it's on).
  */
-import { useEffect, useState, useSyncExternalStore } from 'react';
+import { Component, useEffect, useState, useSyncExternalStore, type ErrorInfo, type ReactNode } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
 import { Button, Chip, Container, Icon, Note, flashWhenReady, useRuntime, type AxfWebLibrary } from '@console/axf/react';
 import { followSse, sseJson } from '@console/axf/core/sse';
@@ -26,7 +26,7 @@ import { approvalsWatcher, countdownOf, type ApprovalItem } from '@console/axf/l
 import { approvalsHost } from '@console/axf/libs/approvals/react';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
-import { arrived, decide, highlightIsSelector, offers, parseFrame, pickNext, queueOf, routeOf, type FollowDecision } from './core';
+import { arrived, decide, drawable, highlightIsSelector, offers, parseFrame, pickNext, queueOf, routeOf, type DecideEnv, type FollowDecision } from './core';
 import { appMenu } from './menu';
 import './follow-amber.css';
 
@@ -85,7 +85,7 @@ function paint(rt: AxfRuntime) {
     data: { counter: COUNTER, onLabel: 'Following Amber', offLabel: 'Not following', onTone: 'accent', offTone: 'muted', dot: true, link: 'follow-amber.toggle' },
   }, 'app', ID);
   rt.setBadge(COUNTER, st.on ? 1 : 0);
-  if (st.on && rt.settings.get(CHIP_KEY) !== false) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'left', order: 22, origin: ID });
+  if (st.on && rt.settings.get(CHIP_KEY) !== false) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'left', order: 22, origin: ID, widget: { label: 'Following Amber', size: 'compact', priority: 4, aliases: ['follow amber', 'following'] } });
   else rt.detachFromBanner(`status:${ASSET_ID}`);
 }
 
@@ -202,6 +202,24 @@ function FollowClient() {
 
 /* ---------------- the approval pop-up ---------------- */
 
+/** Opens a hub page the app's way (its signed-in hub view), else a new tab. */
+function openOnHub(url: string) {
+  const h = vetoHost();
+  if (h.open) h.open(url); else globalThis.open(url, '_blank', 'noopener,noreferrer');
+}
+
+/** Where a decision can go from this page (the hub frames its page only for the origins it lists: `frame`). */
+const decideEnv = (hub: string): DecideEnv => ({ hub, origin: globalThis.location?.origin ?? '', vetoAct: vetoHost().act, approvalDecide: approvalsHost().decide, frame: approvalsHost().frame === true });
+
+/** One tap from either the pop-up or its fallback: the decision, or axHub's page when the console can't sign it. */
+async function tapDecision(item: ApprovalItem, approve: boolean, hub: string): Promise<FollowDecision> {
+  const r = await decide(item, approve, decideEnv(hub)).catch((e: unknown) => ({ ok: false, route: 'open', open: true, message: `Couldn't reach axHub (${(e as Error)?.message ?? e}): opened its page instead.` }) as FollowDecision);
+  if (r.open && item.url) openOnHub(item.url);
+  if (r.ok) { decided.add(item.id); runtime?.toast(r.message, approve ? 'success' : 'info', 'Follow Amber'); set({ queue: queueOf(st.queue, decided) }); void checkFor(); }
+  else if (r.open) runtime?.toast(r.message, 'info', 'Follow Amber');
+  return r;
+}
+
 /** How long the hub's page gets to load in the frame before the pop-up offers Open on axHub instead. */
 const FRAME_LOAD_MS = 8_000;
 
@@ -213,12 +231,11 @@ function HubFrame({ url }: { url: string }) {
     const t = setTimeout(() => setFrame((f) => (f === 'loading' ? 'stuck' : f)), FRAME_LOAD_MS);
     return () => clearTimeout(t);
   }, [url]);
-  const openOnHub = () => { const h = vetoHost(); if (h.open) h.open(url); else globalThis.open(url, '_blank', 'noopener,noreferrer'); };
   if (frame === 'stuck') {
     return (
       <div className="fx-stack axp-follow-amber__done" role="status">
         <p className="fx-small fx-muted">axHub's page didn't open in here. Open it on the hub to approve or deny.</p>
-        <Button tone="primary" icon="external" onClick={openOnHub}>Open on axHub</Button>
+        <Button tone="primary" icon="external" onClick={() => openOnHub(url)}>Open on axHub</Button>
       </div>
     );
   }
@@ -236,7 +253,7 @@ function ApprovalDialog({ id }: { id: string }) {
   const [, tick] = useState(0);
   const [busy, setBusy] = useState<'approve' | 'deny' | ''>('');
   const [result, setResult] = useState<FollowDecision | null>(null);
-  const item = s.queue.find((i) => i.id === (s.current || id)) ?? pickNext(s.queue, s.current || id);
+  const item = drawable(s.queue.find((i) => i.id === (s.current || id)) ?? pickNext(s.queue, s.current || id));
   useEffect(() => { const t = setInterval(() => tick((n) => n + 1), 1_000); return () => clearInterval(t); }, []);
   // Fast reads while it's open, so a decision on another screen (or the countdown running out) shows here.
   useEffect(() => { const t = setInterval(() => void checkFor(), 3_000); return () => clearInterval(t); }, []);
@@ -251,8 +268,7 @@ function ApprovalDialog({ id }: { id: string }) {
       </div>
     );
   }
-  const env = { hub: s.hub, origin: globalThis.location?.origin ?? '', vetoAct: vetoHost().act, approvalDecide: approvalsHost().decide };
-  const route = routeOf(item, env);
+  const route = routeOf(item, decideEnv(s.hub));
   const left = countdownOf(item);
   const urgent = left !== null && left <= VETO_WARNING_SECONDS;
   const pos = s.queue.findIndex((i) => i.id === item.id);
@@ -262,10 +278,10 @@ function ApprovalDialog({ id }: { id: string }) {
   };
   const tap = async (approve: boolean) => {
     setBusy(approve ? 'approve' : 'deny');
-    const r = await decide(item, approve, env);
+    const r = await tapDecision(item, approve, s.hub);
     setBusy('');
     setResult(r);
-    if (r.ok) { decided.add(item.id); rt.toast(r.message, approve ? 'success' : 'info', 'Follow Amber'); set({ queue: queueOf(s.queue, decided) }); void checkFor(); next(); }
+    if (r.ok) next();
   };
   return (
     <div className="fx-stack axp-follow-amber__ask">
@@ -290,15 +306,60 @@ function ApprovalDialog({ id }: { id: string }) {
           <Button tone="success" icon="check" busy={busy === 'approve'} disabled={busy !== '' || !offers(item, true)} aria-label={`Approve: ${item.title}`} onClick={() => void tap(true)} data-axf-one-tap="">Approve</Button>
         </div>
       )}
-      {route === 'frame' && !result?.frame && <p className="fx-small fx-muted">The console can't sign this from here: the tap opens axHub's own page to confirm it.</p>}
-      {result && !result.ok && !result.frame && <Note tone="danger">{result.message}</Note>}
+      {(route === 'frame' || route === 'open') && !result?.frame && <p className="fx-small fx-muted">The console can't sign this from here: the tap opens axHub's own page to confirm it.</p>}
+      {result && !result.ok && !result.frame && <Note tone={result.open ? 'info' : 'danger'}>{result.message}</Note>}
       <div className="fx-row fx-row--wrap axp-follow-amber__foot">
         {s.queue.length > 1 && <Button size="sm" tone="ghost" icon="chevron-right" onClick={() => { const n = s.queue[(pos + 1) % s.queue.length]; if (n) set({ current: n.id }); }}>Next</Button>}
-        <Button size="sm" tone="ghost" icon="external" onClick={() => { const h = vetoHost(); if (h.open) h.open(item.url); else globalThis.open(item.url, '_blank', 'noopener,noreferrer'); }}>Open on axHub</Button>
+        <Button size="sm" tone="ghost" icon="external" onClick={() => openOnHub(item.url)}>Open on axHub</Button>
         <Button size="sm" tone="ghost" onClick={() => rt.closeDialog()}>Later</Button>
       </div>
     </div>
   );
+}
+
+/**
+ * The pop-up's last line (Brett, Nov 4 2026: "Why is the approval pop-up dialog just showing the sad face?"): if drawing
+ * it still throws, this shows the raw call with Approve / Deny / Open in axHub instead of a broken dialog.
+ */
+function ApprovalFallback({ id, error }: { id: string; error: string }) {
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState('');
+  const raw = st.queue.find((i) => i.id === (st.current || id)) ?? st.queue[0];
+  const item = drawable(raw);
+  const hubPage = item?.url || `${st.hub}/auth/admin/approvals`;
+  const tap = async (approve: boolean) => {
+    if (!item) return;
+    setBusy(true);
+    const r = await tapDecision(item, approve, st.hub);
+    setBusy(false);
+    setMsg(r.message);
+    if (r.ok) runtime?.closeDialog();
+  };
+  let call = '';
+  try { call = item ? (item.command ? `$ ${item.command}` : item.summary || item.tool) : JSON.stringify(raw ?? null); } catch { call = ''; }
+  return (
+    <div className="fx-stack axp-follow-amber__ask" role="alert">
+      <Note tone="warning">Couldn't draw this approval{error ? ` (${error})` : ''}. Here is the raw call.</Note>
+      {item && <strong>{item.title}</strong>}
+      {call && <code className="axp-follow-amber__call">{call}</code>}
+      <div className="fx-row axp-follow-amber__acts">
+        <Button tone="danger" icon="x" busy={busy} disabled={busy || !item} onClick={() => void tap(false)} data-axf-one-tap="">Deny</Button>
+        <Button tone="success" icon="check" busy={busy} disabled={busy || !item} onClick={() => void tap(true)} data-axf-one-tap="">Approve</Button>
+      </div>
+      {msg && <p className="fx-small fx-muted">{msg}</p>}
+      <div className="fx-row fx-row--wrap axp-follow-amber__foot">
+        <Button size="sm" tone="ghost" icon="external" onClick={() => openOnHub(hubPage)}>Open in axHub</Button>
+        <Button size="sm" tone="ghost" onClick={() => runtime?.closeDialog()}>Later</Button>
+      </div>
+    </div>
+  );
+}
+
+class ApprovalBoundary extends Component<{ id: string; children?: ReactNode }, { error: string }> {
+  state = { error: '' };
+  static getDerivedStateFromError(e: unknown) { return { error: String((e as Error)?.message ?? e).slice(0, 200) || 'unknown error' }; }
+  componentDidCatch(e: unknown, info: ErrorInfo) { console.error('[follow-amber] the approval pop-up failed to draw', e, info.componentStack); }
+  render() { return this.state.error ? <ApprovalFallback id={this.props.id} error={this.state.error} /> : this.props.children; }
 }
 
 /* ---------------- settings ---------------- */
@@ -344,7 +405,7 @@ export const plugin: AxfWebLibrary = {
   },
   slots: { 'app.frame.cover': [{ id: 'follow-amber.client', order: 98, render: () => <FollowClient /> }] },
   dialogs: {
-    [DIALOG]: { title: 'Approval waiting', icon: 'shield', render: (p) => <ApprovalDialog id={typeof p.id === 'string' ? p.id : ''} /> },
+    [DIALOG]: { title: 'Approval waiting', icon: 'shield', render: (p) => { const id = typeof p?.id === 'string' ? p.id : ''; return <ApprovalBoundary id={id}><ApprovalDialog id={id} /></ApprovalBoundary>; } },
   },
   settingsTabs: [{ id: FOLDER, label: 'Follow Amber', icon: 'eye', order: 91, parent: 'plugins', description: 'The console opens what Amber talks about; approvals pop up here' }],
   settings: [{

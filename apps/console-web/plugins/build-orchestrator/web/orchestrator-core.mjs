@@ -11,7 +11,7 @@
  */
 
 import { normOrigin, originText } from '../../../../../framework/core/build-origin.mjs';
-import { SWITCH_RULE, normApproval, normRequest, phaseApproved, switchKind, upgradeLine, modelRank } from '../../../../../framework/core/model-switch.mjs';
+import { AUTO_UPGRADE_NOTE, normApproval, normRequest, phaseApproved, setUpgradePolicy, switchKind, switchRule, upgradeLine, upgradeNeedsApproval, upgradePolicy, modelRank } from '../../../../../framework/core/model-switch.mjs';
 
 export const SCHEMA = 'orchestrator@1';
 export const MODELS = ['Fable', 'Opus'];
@@ -96,6 +96,7 @@ function normBuild(b) {
     branch: str(o.branch, 200),
     pr: str(o.pr, 200),
     ...(str(o.mergedAt) ? { mergedAt: str(o.mergedAt, 40) } : {}),
+    ...(/^P[0-3]$/.test(str(o.priority)) ? { priority: o.priority } : {}),
     createdAt: str(o.createdAt, 40) || now(),
     updatedAt: str(o.updatedAt, 40) || now(),
     builtAt: isFinished(o.status) ? str(o.builtAt, 40) : '',
@@ -130,7 +131,7 @@ export function phases(build) {
     p.name = p.label || `Phase ${p.index + 1}`;
     p.done = p.steps.every((s) => !open(s));
     p.upgrade = p.gate && p.kind === 'upgrade';
-    p.approved = phaseApproved(build.approvals, p); // downgrades pass; upgrades only with Brett's approval
+    p.approved = phaseApproved(build.approvals, p); // downgrades pass; upgrades with Brett's approval, or by themselves while that setting is off
     p.minutesLeft = p.steps.filter(open).reduce((t, s) => t + (estimateMinutes(s.estimate) ?? 0), 0);
     p.groups = [];
     for (const s of p.steps) {
@@ -223,7 +224,8 @@ export function brief(build, rules = DEFAULT_RULES) {
     build.origin?.said || build.origin?.addenda?.length ? `What Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\n${originText(build.origin)}` : '',
     n.needsApproval ? `STOP: ${upgradeLine(build.id, p)}. That is a model UPGRADE: only Brett can approve it. Do no work on this phase: run \`orchestrator.mjs request-upgrade ${build.id} ${p.index}\` (files the axHub approval), tell Brett, and end the session. Never approve it yourself.` : '',
     p.gate && p.kind === 'downgrade' ? `This phase downgrades ${p.from} → ${p.model}: fine, no approval needed (it is recorded when you tick its first step).` : '',
-    SWITCH_RULE,
+    p.upgrade && !n.needsApproval && !build.approvals.some((a) => a.phase === p.index && a.to === p.model) ? `This phase upgrades ${p.from} → ${p.model}: no approval needed (Fable upgrades need my approval is off); it is recorded when you tick its first step.` : '',
+    switchRule(),
     `Rules: ${rules.sameSession ? 'stay in this one session' : 'new session allowed'}; ${rules.subAgents ? 'sub-agents allowed' : 'no sub-agents'}; steps ≤ ${rules.maxStepMinutes} min; read only the files listed; stop at the end of this phase.`,
     `Look: ${ASSET_RULE}`,
     build.branch ? `Branch: ${build.branch}${build.pr ? ` · PR ${build.pr}` : ''}` : '',
@@ -243,12 +245,22 @@ export function brief(build, rules = DEFAULT_RULES) {
  * server from the signed-in hub admin, the console's axHub-approved MCP tool) puts { by, via } on the change as
  * `approver` only after its own check (framework/core/model-switch.mjs approverFrom). Without it an upgrade is refused.
  */
-function needApprover(c, what) {
+function needApprover(c, what, allowAuto = true) {
   const a = c.approver && typeof c.approver === 'object' ? c.approver : null;
   const by = str(a?.by, 120).trim(); const via = str(a?.via, 20);
-  if (!by || !['console', 'axhub'].includes(via)) throw new Error(`${what}: a model upgrade needs Brett's approval (his console click or an axHub approval); a session, agent or the orchestrator can't give it. Ask: orchestrator.mjs request-upgrade <id> <phase>`);
-  return { by, via };
+  if (by && ['console', 'axhub'].includes(via)) return { by, via };
+  if (allowAuto && !upgradeNeedsApproval()) return { by: 'auto', via: 'policy' }; // Fable upgrades need my approval: off
+  throw new Error(`${what}: a model upgrade needs Brett's approval (his console click or an axHub approval); a session, agent or the orchestrator can't give it. Ask: orchestrator.mjs request-upgrade <id> <phase>`);
 }
+/** An upgrade while approvals are off: record it (approvals[], a build note), close open requests, say so. */
+function autoUpgrade(b, p, log) {
+  b.approvals.push(normApproval({ phase: p.index, from: p.from, to: p.model, at: now(), by: 'auto', via: 'policy', kind: 'upgrade', note: AUTO_UPGRADE_NOTE }));
+  for (const r of b.upgradeRequests) if (r.phase === p.index && r.state === 'open') r.state = 'approved';
+  b.notes.push({ text: `Model switch: phase ${p.index + 1}${p.label ? ` (${p.label})` : ''} ${p.from} → ${p.model}. ${AUTO_UPGRADE_NOTE}.`, at: now() });
+  log.push(`${upgradeLine(b.id, p)}: upgraded by itself (Fable upgrades need my approval is off), recorded on the build`);
+}
+export { setUpgradePolicy, upgradePolicy };
+
 /** Apply one change. Returns { state, build?, log: string[] } or throws Error with a plain message. */
 export function apply(state, change) {
   const s = normalizeState(state);
@@ -283,6 +295,7 @@ export function apply(state, change) {
     case 'step': { b = find(); const st = stepOf(b); const ps = phases(b); const ph = ps.find((p) => p.steps.some((x) => x.id === st.id));
       if (c.done !== false && ph && !ph.approved) throw new Error(`${upgradeLine(b.id, ph)}: a model upgrade needs Brett's approval first (orchestrator.mjs request-upgrade ${b.id} ${ph.index})`);
       if (c.done !== false && ph && ph.gate && ph.kind === 'downgrade' && !b.approvals.some((a) => a.phase === ph.index && a.to === ph.model)) { b.approvals.push(normApproval({ phase: ph.index, from: ph.from, to: ph.model, at: now(), by: 'auto', kind: 'downgrade' })); log.push(`${b.id}: downgrade ${ph.from} → ${ph.model} recorded (phase ${ph.index + 1})`); }
+      if (c.done !== false && ph && ph.upgrade && !upgradeNeedsApproval() && !b.approvals.some((a) => a.phase === ph.index && a.to === ph.model)) autoUpgrade(b, ph, log);
       st.done = c.done !== false; st.doneAt = st.done ? now() : ''; if (typeof c.note === 'string') st.note = str(c.note, 1000); log.push(`${b.id} ${st.id} ${st.done ? 'done' : 'not done'}`); break; }
     case 'add-step': { b = find(); const st = normStep({ ...c.stepData, id: `s${b.steps.length + 1}` }, b.steps.length); if (!st.text) throw new Error('step text needed'); const at = Number.isInteger(c.at) ? c.at : b.steps.length; b.steps.splice(at, 0, st); log.push(`${b.id} + ${st.id}`); break; }
     case 'edit-step': { b = find(); const st = stepOf(b); if (!st.done && c.stepData?.model && modelRank(c.stepData.model) > modelRank(st.model)) needApprover(c, `raising ${b.id} ${st.id} from ${st.model} to ${c.stepData.model}`); Object.assign(st, normStep({ ...st, ...c.stepData, id: st.id, done: st.done, doneAt: st.doneAt }, 0)); log.push(`${b.id} ${st.id} edited`); break; }
@@ -295,16 +308,17 @@ export function apply(state, change) {
         log.push(`${b.id}: downgrade ${p.from} → ${p.model} needs no approval; recorded (phase ${p.index + 1})`); break; }
       const who = needApprover(c, upgradeLine(b.id, p));
       const req = b.upgradeRequests.find((r) => r.phase === p.index && r.to === p.model && r.state === 'open');
-      if (!p.approved) b.approvals.push(normApproval({ phase: p.index, from: p.from, to: p.model, at: now(), by: who.by, via: who.via, kind: 'upgrade', request: req?.id ?? '' }));
+      if (!b.approvals.some((a) => a.phase === p.index && a.to === p.model)) b.approvals.push(normApproval({ phase: p.index, from: p.from, to: p.model, at: now(), by: who.by, via: who.via, kind: 'upgrade', request: req?.id ?? '', ...(who.via === 'policy' ? { note: AUTO_UPGRADE_NOTE } : {}) }));
       if (req) req.state = 'approved';
       log.push(`${upgradeLine(b.id, p)}: approved by ${who.by} (${who.via})`); break; }
     case 'request-upgrade': { b = find(); const p = phases(b)[Number(c.phase)]; if (!p || !p.upgrade) throw new Error('that phase is not a model upgrade (a downgrade needs no approval)');
+      if (!upgradeNeedsApproval()) { if (!b.approvals.some((a) => a.phase === p.index && a.to === p.model)) autoUpgrade(b, p, log); else log.push(`${upgradeLine(b.id, p)}: no approval needed (Fable upgrades need my approval is off)`); break; }
       if (p.approved) { log.push(`${upgradeLine(b.id, p)}: already approved`); break; }
       let req = b.upgradeRequests.find((r) => r.phase === p.index && r.to === p.model && r.state === 'open');
       if (!req) { req = normRequest({ id: `${b.id}.p${p.index + 1}.${Date.now().toString(36)}`, phase: p.index, from: p.from, to: p.model, at: now(), by: str(c.by, 120) || 'session' }); b.upgradeRequests.push(req); }
       if (str(c.job)) req.job = str(c.job, 120);
       log.push(`${upgradeLine(b.id, p)}: asked Brett (request ${req.id})`); break; }
-    case 'deny-upgrade': { b = find(); const who = needApprover(c, 'answering an upgrade request');
+    case 'deny-upgrade': { b = find(); const who = needApprover(c, 'answering an upgrade request', false);
       const req = b.upgradeRequests.find((r) => r.phase === Number(c.phase) && r.state === 'open'); if (!req) throw new Error('no open upgrade request on that phase');
       req.state = 'denied'; log.push(`${b.id}: upgrade request ${req.id} denied by ${who.by}`); break; }
     case 'rules': { for (const k of Object.keys(DEFAULT_RULES)) if (k in (c.rules ?? {})) s.rules[k] = typeof DEFAULT_RULES[k] === 'number' ? Math.max(5, Math.min(240, Number(c.rules[k]) || 30)) : c.rules[k] === true; log.push('rules saved'); break; }
