@@ -31,3 +31,6 @@
 .axp-session-sync__widgets { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
 .axp-session-sync__widgets li { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); }
 .axp-session-sync__kind { font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-xs); color: var(--fx-muted); }
+.axp-session-sync__logins { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); }
+.axp-session-sync__logins li { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); }
+.axp-session-sync__login-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); }

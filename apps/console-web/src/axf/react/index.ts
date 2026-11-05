@@ -49,6 +49,7 @@ export { WatchLiveLink, WatchLiveWindow, watchLiveSrc, type WatchLivePreview } f
 export { installTapConfirm, toolbarOf, toolbarElementId, tipTextOf, type TapConfirmHost } from './tapConfirm';
 export { RefText, REFS_SETTING, addRefSource, refSourcesChanged, refIndexOf, openRef, refLink, type RefTextProps, type RefHow } from './components/RefText';
 export { HelperBadge, useAssignment } from './components/HelperBadge';
+export { SessionChip } from './components/SessionChip';
 export { useMultiSelect, SelectBox, SelectionBar, LONG_PRESS_MS, type MultiSelect, type SelectAction, type SelectMode } from './components/MultiSelect';
 export { setAssignments, clearAssignments, findAssignment, listAssignments, subscribeAssignments, BUILD_CONTEXT_TARGET, STEP_CONTEXT_TARGET, type AssignmentBadge } from '../core/assignments';
 export { TabGroup, useTabGroupData, tabGroupDataFor, type TabDef, type TabGroupProps } from './components/TabGroup';

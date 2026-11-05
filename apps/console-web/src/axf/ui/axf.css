@@ -1806,6 +1806,12 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 .fx-dcard__table { font-size: var(--fx-type-scale-sm) }
 .fx-dcard__table td { overflow-wrap: anywhere }
 
+/* Session chip under a model badge (components/SessionChip.tsx): Main / Helper 2 */
+.fx-model-stack { display: inline-flex; flex-direction: column; align-items: flex-start; gap: calc(var(--fx-dens-gap-md) / 2); }
+.fx-session-chip { display: inline-block; padding: 0 var(--fx-dens-gap-md); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-border); color: var(--fx-muted); font-size: var(--fx-type-scale-sm); white-space: nowrap; }
+.fx-session-chip.is-helper { border-color: var(--fx-accent); color: var(--fx-accent); }
+.fx-session-chip.is-problem { border-color: var(--fx-warning); color: var(--fx-warning); }
+
 /* ---------------- session sync (spec/HANDOFF.md): helper badges, multi-select lists, window title widgets ---------------- */
 .fx-helper-badge { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md); padding: 0 var(--fx-dens-gap-lg); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-border); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-fg); font-size: var(--fx-type-scale-sm); line-height: calc(var(--fx-dens-gap-xl) * 2); white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
 .fx-helper-badge.is-working { border-color: var(--fx-accent); }

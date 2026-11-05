@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent as RKeyboardEvent, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { AgentAvatar, BuildOrigin, Button, Checkbox, Chip, HelperBadge, Icon, IconButton, Meter, PriorityTag, Segmented, SelectField, Slot, Switch, originSubtitle, setBuildPriority, useRuntime } from '@console/axf/react';
+import { AgentAvatar, BuildOrigin, Button, Checkbox, Chip, HelperBadge, Icon, IconButton, Meter, PriorityTag, Segmented, SelectField, SessionChip, Slot, Switch, originSubtitle, setBuildPriority, useRuntime } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridGroup } from '@console/axf/libs/datagrid';
 import { pluginApi } from '@console/plugins';
 import './builds.css';
@@ -337,7 +337,7 @@ function BuildDetail({ b }: { b: BuildV }) {
           <li key={s.uid} className={s.done ? 'is-done' : s.next ? 'is-next' : ''} data-fx-ctx-target="axf-step" data-fx-ctx-payload={`${b.id}.${s.id}`}>
             <StepTick s={s} toast={rt.toast} /><HelperBadge build={b.id} step={s.id} />
             <Bar p={{ total: 1, done: s.done ? 1 : 0, pct: s.done ? 100 : 0, active: s.next && b.status === 'running' }} label={`${s.id}: ${s.done ? 'done' : s.next ? 'next' : 'to do'}`} />
-            <span className="fx-mono fx-small">{s.id}</span> <Chip tone={s.model === 'Fable' ? 'accent' : undefined}>{s.model}</Chip> <span>{stepName(s)}</span>{s.estimate && <span className="fx-small fx-muted"> · ~{s.estimate}</span>}
+            <span className="fx-mono fx-small">{s.id}</span> <span className="fx-model-stack"><Chip tone={s.model === 'Fable' ? 'accent' : undefined}>{s.model}</Chip><SessionChip build={b.id} step={s.id} running={b.status === 'running' && !s.done} /></span> <span>{stepName(s)}</span>{s.estimate && <span className="fx-small fx-muted"> · ~{s.estimate}</span>}
           </li>
         ))}
       </ol>
@@ -387,7 +387,7 @@ function StepsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
     { id: 'profile', label: 'Profile', width: 'calc(var(--fx-space) * 12)', render: () => <span className="fx-small fx-mono">{state.profile}</span> },
     { id: 'kind', label: 'Kind', width: 'calc(var(--fx-space) * 10)', sortable: true, sortValue: (s) => s.kind, render: (s) => <Chip tone={s.kind === 'fix' ? 'warning' : s.kind === 'removal' ? 'danger' : s.kind === 'creation' ? 'success' : undefined}>{s.kind}</Chip> },
     { id: 'target', label: 'Target', width: 'minmax(calc(var(--fx-space) * 12), 2fr)', render: (s) => <span className="fx-small fx-mono">{s.target}</span> },
-    { id: 'model', label: 'Model', width: 'calc(var(--fx-space) * 9)', sortable: true, sortValue: (s) => s.model, render: (s) => <Chip tone={s.model === 'Fable' ? 'accent' : undefined}>{s.model}</Chip> },
+    { id: 'model', label: 'Model', width: 'calc(var(--fx-space) * 9)', sortable: true, sortValue: (s) => s.model, render: (s) => <span className="fx-model-stack"><Chip tone={s.model === 'Fable' ? 'accent' : undefined}>{s.model}</Chip><SessionChip build={s.build} step={s.id} /></span> },
     { id: 'estimate', label: 'Time', width: 'calc(var(--fx-space) * 8)', align: 'end', render: (s) => <span className="fx-small">{s.estimate}</span> },
     { id: 'progress', label: 'Progress', width: 'calc(var(--fx-space) * 16)', render: (s) => <Bar p={{ total: 1, done: s.done ? 1 : 0, pct: s.done ? 100 : 0, active: s.next && state.builds.find((b) => b.id === s.build)?.status === 'running' }} label={`${s.id} ${s.done ? 'done' : 'to do'}`} /> },
   ];

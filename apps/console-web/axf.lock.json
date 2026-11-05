@@ -508,7 +508,7 @@
     "src/axf/assets/uac-policy/strict-enterprise.json": "307b10d413f7ccb3",
     "src/axf/core/agent-directory.ts": "40b52b963a42c9bb",
     "src/axf/core/agents.ts": "8c0f9d3bed06ed90",
-    "src/axf/core/assignments.ts": "ce6262d27878e803",
+    "src/axf/core/assignments.ts": "ba3fa6898f380fc7",
     "src/axf/core/assistant.ts": "1d1b21a4b63aba2b",
     "src/axf/core/build-origin.d.mts": "06f24a33582e3ff6",
     "src/axf/core/build-origin.mjs": "f2923181df39063a",
@@ -548,7 +548,7 @@
     "src/axf/core/engines/designpackage.ts": "8cad05f07c559ee9",
     "src/axf/core/engines/dock.ts": "7d97d9d1a1e319ae",
     "src/axf/core/engines/embed.ts": "1b5d8a8db2401aab",
-    "src/axf/core/engines/handoff.mjs": "f21cef50e4cc323b",
+    "src/axf/core/engines/handoff.mjs": "d87ee0294e228c42",
     "src/axf/core/engines/help-rules.d.mts": "ae099ec1e9dc9456",
     "src/axf/core/engines/help-rules.mjs": "488c7547e26c4e35",
     "src/axf/core/engines/help.ts": "7fe31aa2bfd63c00",
@@ -732,6 +732,7 @@
     "src/axf/react/components/RefText.tsx": "fc367771ed39849a",
     "src/axf/react/components/Repeat.tsx": "c5368747700eb7c0",
     "src/axf/react/components/Search.tsx": "dbb8df7fbb7ee827",
+    "src/axf/react/components/SessionChip.tsx": "559f45415e3a6f66",
     "src/axf/react/components/Slots.tsx": "bab3b097bda69aa1",
     "src/axf/react/components/TabGroup.tsx": "05e0c0ac3854c3c5",
     "src/axf/react/components/Waiting.tsx": "ca0d5d0572d7b5b0",
@@ -740,7 +741,7 @@
     "src/axf/react/components/menuFit.ts": "04c0539214743de1",
     "src/axf/react/editorSync.ts": "4d2dfe9847350acb",
     "src/axf/react/hubAppearance.ts": "d7f3983fdd82b80b",
-    "src/axf/react/index.ts": "3497503202610140",
+    "src/axf/react/index.ts": "426d51b6a4bd5554",
     "src/axf/react/library.ts": "a1e3ee41389eca00",
     "src/axf/react/placeTip.ts": "72554dc0b42e13a3",
     "src/axf/react/placement.tsx": "e50243526c856169",
@@ -762,7 +763,7 @@
     "src/axf/schemas/build-options.json": "f146ff353b0871aa",
     "src/axf/schemas/control.json": "dc5fe0facafe758a",
     "src/axf/schemas/customize.json": "45631345a054d553",
-    "src/axf/schemas/handoff.json": "09169fe75913c59f",
+    "src/axf/schemas/handoff.json": "b79ba53d4b4f91f3",
     "src/axf/schemas/icon-sets.json": "84be8de92e3f9b5c",
     "src/axf/schemas/json/action-button.schema.json": "c192be97524c1f34",
     "src/axf/schemas/json/agent-card.schema.json": "6990ae625c447b32",
@@ -844,6 +845,6 @@
     "src/axf/schemas/shared-assets.json": "7d6a5bb4f0b2a9c3",
     "src/axf/schemas/swarm.json": "292246b2e4a81520",
     "src/axf/schemas/ui-review.json": "292b3b2d3482fbad",
-    "src/axf/ui/axf.css": "78f62124c0e42106"
+    "src/axf/ui/axf.css": "286af12248eed14b"
   }
 }

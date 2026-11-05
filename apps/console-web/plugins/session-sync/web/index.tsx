@@ -7,12 +7,18 @@
  */
 import { useEffect } from 'react';
 import { useRuntime, type AxfWebLibrary } from '@console/axf/react';
-import { JoinDialog, JoinWatcher, SendDialog, SessionsPage, SettingsPanel, WidgetsDialog } from './ui';
-import { DIALOG_JOIN, DIALOG_SEND, DIALOG_WIDGETS, FOLDER, ID, VIEW, actions, isSecondary, startLive } from './core';
+import { JoinDialog, JoinWatcher, PairDialog, SendDialog, SessionsPage, SettingsPanel, WidgetsDialog } from './ui';
+import { DIALOG_JOIN, DIALOG_PAIR, DIALOG_SEND, DIALOG_WIDGETS, FOLDER, ID, VIEW, actions, isSecondary, startLive } from './core';
 import { appMenu } from './menu';
 import './session-sync.css';
 
-function Live() { const rt = useRuntime(); useEffect(() => startLive(rt), [rt]); return <JoinWatcher />; }
+function Live() {
+  const rt = useRuntime();
+  useEffect(() => startLive(rt), [rt]);
+  // a pairing link: open its page and take the code out of the address bar and history straight away
+  useEffect(() => { const m = /[?&]pair=([\w-]+)/.exec(window.location.hash); if (!m) return; window.history.replaceState(null, '', window.location.pathname + window.location.search); rt.openDialog(DIALOG_PAIR, { code: m[1] }); }, [rt]);
+  return <JoinWatcher />;
+}
 const buildOf = (payload: string) => payload.split('.')[0] ?? '';
 const stepOf = (payload: string) => payload.split('.').slice(1).join('.');
 
@@ -39,6 +45,7 @@ export const plugin: AxfWebLibrary = {
   dialogs: {
     [DIALOG_JOIN]: { title: "What's going on?", icon: 'log-in', searchable: true, render: (_p, close) => <JoinDialog close={close} /> },
     [DIALOG_SEND]: { title: 'Send to helper', icon: 'send', searchable: false, render: (props, close) => <SendDialog props={props} close={close} /> },
+    [DIALOG_PAIR]: { title: 'Connect a helper account', icon: 'lock', searchable: false, render: (props, close) => <PairDialog props={props} close={close} /> },
     [DIALOG_WIDGETS]: { title: 'Add widgets…', icon: 'layout', searchable: true, render: (props, close) => <WidgetsDialog props={props} close={close} /> },
   },
   slots: {

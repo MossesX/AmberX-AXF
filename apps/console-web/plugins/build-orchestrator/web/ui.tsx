@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AgentAvatar, BuildOrigin, Button, HelperBadge, Icon, PriorityTag, Segmented, SelectBox, SelectionBar, Slot, TabGroup, originSubtitle, useMultiSelect, useRuntime, type MultiSelect } from '@console/axf/react';
+import { AgentAvatar, BuildOrigin, Button, HelperBadge, Icon, PriorityTag, SessionChip, Segmented, SelectBox, SelectionBar, Slot, TabGroup, originSubtitle, useMultiSelect, useRuntime, type MultiSelect } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import { WatchLiveFor } from '@console/watchLive';
@@ -269,7 +269,7 @@ function StepRow({ b, s, locked, busy, act, last, sel }: { b: Build; s: Step & {
       <time>{s.id}{s.estimate && <span className="pd-est"> · ~{s.estimate}</span>}</time>
       <p>{s.text}{s.why && <span className="fx-muted"> — {s.why}</span>}{s.session === 'new' && <span className="oc-flag"> new session</span>}{s.agent && <span className="oc-flag"> sub-agent ok</span>} <HelperBadge build={b.id} step={s.id} /></p>
       <span className="oc-steptools">
-        <button data-fx-row className={`oc-model is-${s.model.toLowerCase()}`} disabled={busy || s.done} title={`Switch this step to ${other}`} onClick={() => act({ action: 'edit-step', id: b.id, step: s.id, stepData: { model: other } })}>{s.model}</button>
+        <span className="fx-model-stack"><button data-fx-row className={`oc-model is-${s.model.toLowerCase()}`} disabled={busy || s.done} title={`Switch this step to ${other}`} onClick={() => act({ action: 'edit-step', id: b.id, step: s.id, stepData: { model: other } })}>{s.model}</button><SessionChip build={b.id} step={s.id} running={b.status === 'running' && !s.done} /></span>
         <button className="fx-iconbtn" disabled={busy || s.index === 0} title="Move up" onClick={() => act({ action: 'move-step', id: b.id, step: s.id, dir: 'up' })}><Icon name="chevron-up" size={13} /></button>
         <button className="fx-iconbtn" disabled={busy || s.index === last} title="Move down" onClick={() => act({ action: 'move-step', id: b.id, step: s.id, dir: 'down' })}><Icon name="chevron-down" size={13} /></button>
         <button className="fx-iconbtn" disabled={busy} title="Remove step" onClick={() => act({ action: 'remove-step', id: b.id, step: s.id })}><Icon name="x" size={13} /></button>
@@ -496,7 +496,7 @@ function StepGrid({ b, rules, busy, act, hidden, setHidden }: { b: Build; rules:
     { id: 'text', label: 'Step', width: 'minmax(calc(var(--fx-font-size) * 14), calc(var(--fx-font-size) * 22))', fixed: true, sortable: true, sortValue: (s) => s.text.toLowerCase(),
       render: (s) => <span className="oc-cell-title" title={s.why ? `${s.text} — ${s.why}` : s.text}><span className={s.done ? 'oc-done' : ''}>{s.text}</span>{(s.why || s.session === 'new' || s.agent) && <span className="fx-small fx-muted">{s.why}{s.session === 'new' ? ' · new session' : ''}{s.agent ? ' · sub-agent ok' : ''}</span>}</span> },
     { id: 'model', label: 'Model', width: 'calc(var(--fx-font-size) * 4.5)', sortable: true, sortValue: (s) => s.model,
-      render: (s) => { const other = s.model === 'Fable' ? 'Opus' : 'Fable'; return <button data-fx-row className={`oc-model is-${s.model.toLowerCase()}`} disabled={busy || s.done} title={`Switch this step to ${other}`} onClick={(e) => { e.stopPropagation(); void act({ action: 'edit-step', id: b.id, step: s.id, stepData: { model: other } }); }}>{s.model}</button>; } },
+      render: (s) => { const other = s.model === 'Fable' ? 'Opus' : 'Fable'; return <span className="fx-model-stack"><button data-fx-row className={`oc-model is-${s.model.toLowerCase()}`} disabled={busy || s.done} title={`Switch this step to ${other}`} onClick={(e) => { e.stopPropagation(); void act({ action: 'edit-step', id: b.id, step: s.id, stepData: { model: other } }); }}>{s.model}</button><SessionChip build={b.id} step={s.id} running={b.status === 'running' && !s.done} /></span>; } },
     { id: 'group', label: 'Group', width: 'calc(var(--fx-font-size) * 9)', sortable: true, sortValue: (s) => s.group, render: (s) => <span className="fx-small">{s.group || <span className="fx-muted">—</span>}</span> },
     { id: 'est', label: 'Time', width: 'calc(var(--fx-font-size) * 4)', align: 'end', sortable: true, sortValue: (s) => core.estimateMinutes(s.estimate) ?? -1, render: (s) => <span className="fx-small">{s.estimate || '—'}</span> },
     { id: 'cost', label: 'Cost', width: 'calc(var(--fx-font-size) * 4)', align: 'end', sortable: true, sortValue: (s) => usdFor(s.model, core.estimateMinutes(s.estimate) ?? 0), render: (s) => <span className="fx-small">{money(usdFor(s.model, core.estimateMinutes(s.estimate) ?? 0))}</span> },

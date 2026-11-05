@@ -6,7 +6,7 @@
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { AgentAvatar, Button, Checkbox, Chip, Container, Icon, Note, SelectField, SelectionBar, Switch, TextField, useIsPhone, useMultiSelect, useRuntime } from '@console/axf/react';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
-import { DIALOG_SEND, DIALOG_WIDGETS, FOLDER, KEYS, VIEW, actions, addWidget, attachableWidgets, getStore, hostLabel, loadMessages, loadSnapshot, loadState, openWindows, removeWidget, savedWidgets, subscribe, type AssignmentV, type MessageV, type OfferV, type SessionV, type SnapshotV, type StateV } from './core';
+import { DIALOG_SEND, DIALOG_WIDGETS, FOLDER, KEYS, VIEW, actions, addWidget, call, post, attachableWidgets, getStore, hostLabel, loadMessages, loadSnapshot, loadState, openWindows, removeWidget, savedWidgets, subscribe, type AccountV, type AssignmentV, type MessageV, type OfferV, type SessionV, type SnapshotV, type StateV } from './core';
 
 export const useSync = () => useSyncExternalStore(subscribe, getStore, getStore);
 const ago = (iso: string) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return ''; const m = Math.round((Date.now() - t) / 60000); return m < 1 ? 'just now' : m < 60 ? `${m} min ago` : m < 1440 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} d ago`; };
@@ -324,6 +324,16 @@ export function SettingsPanel() {
   const brett = state?.me.session.startsWith('console-') && state?.me.role === 'primary';
   return (
     <div className="fx-stack fx-stack--lg" data-help="session-sync">
+      <Logins />
+      <Container title="Helper desk" icon="users">
+        <p className="fx-muted">{state?.desk?.name ?? 'Brownie'} runs the helpers: offers, bounces, reassignments, take backs and the timers below (times the step's estimate).</p>
+        <SelectField label="Brownie's sass" value={String(s.sass ?? 'spicy')} onChange={(v) => void actions.settings({ sass: v })} options={[{ value: 'mild', label: 'Mild' }, { value: 'spicy', label: 'Spicy' }, { value: 'savage', label: 'Savage' }]} />
+        <div className="axp-session-sync__bar"><TextField label="Nudge at (× estimate)" value={String(num('nudgeAt', 2))} onChange={setNum('nudgeAt')} /><TextField label="Whip-crack at" value={String(num('whipAt', 3))} onChange={setNum('whipAt')} /><TextField label="Yank at" value={String(num('yankAt', 4))} onChange={setNum('yankAt')} /><TextField label="Missed heartbeat (s)" value={String(num('missedHeartbeatSec', 900))} onChange={setNum('missedHeartbeatSec')} /></div>
+      </Container>
+      <Container title="Account fallback" icon="refresh">
+        <Switch label="Switch account when one runs out" checked={s.fallbackAuto === true} disabled={!brett} onChange={(v) => void actions.settings({ fallbackAuto: v })} hint={brett ? 'Only when a run stops on a limit, never mid-step, and never for a helper job. A step goes only to an account that can run its model.' : 'Only Brett changes this.'} />
+        <TextField label="Order, first to last" value={Array.isArray(s.fallbackOrder) ? (s.fallbackOrder as string[]).join(', ') : ''} disabled={!brett} onChange={(v) => void actions.settings({ fallbackOrder: v.split(',').map((x) => x.trim()).filter(Boolean) })} hint="Saved account names, e.g. main, account-2" />
+      </Container>
       <Container title="Claims" icon="lock">
         <Switch label="Enforce claims" checked={s.enforce !== false} disabled={!brett} onChange={(v) => void actions.settings({ enforce: v })} hint={brett ? 'Off: builds run unrestricted, with a warning in the banner, the hook and the systems check.' : "Owner-only: Brett's own click changes it."} />
         <div className="axp-session-sync__bar"><TextField label="Claim lease (s)" value={String(num('claimTtlSec', 1200))} onChange={setNum('claimTtlSec')} /><TextField label="Heartbeat (s)" value={String(num('heartbeatSec', 60))} onChange={setNum('heartbeatSec')} /><TextField label="Idle after (s)" value={String(num('idleSec', 600))} onChange={setNum('idleSec')} /><TextField label="Lunch after (s)" value={String(num('lunchSec', 1800))} onChange={setNum('lunchSec')} /><TextField label="Offline after (s)" value={String(num('offlineSec', 3600))} onChange={setNum('offlineSec')} /></div>
@@ -343,6 +353,62 @@ export function SettingsPanel() {
         <Button icon="check" onClick={() => void actions.consistency()}>Check every store agrees with the link</Button>
       </Container>
       <PluginLifecyclePanel folder={FOLDER} />
+    </div>
+  );
+}
+
+const fmtWhen = (iso: string) => { const t = Date.parse(iso); return Number.isFinite(t) ? new Date(t).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : ''; };
+
+/** The multi-token manager: every helper account, labels only. A token is never shown; Revoke / Replace are Brett's. */
+export function Logins() {
+  const [rows, setRows] = useState<AccountV[] | null>(null);
+  const [canSeal, setCanSeal] = useState(true);
+  const [link, setLink] = useState('');
+  const { state } = useSync();
+  const rt = useRuntime();
+  const brett = state?.me.session.startsWith('console-') && state?.me.role === 'primary';
+  const load = () => { void call<{ accounts: AccountV[]; canSeal: boolean }>('accounts').then((r) => { setRows(r.accounts); setCanSeal(r.canSeal); }).catch(() => setRows([])); };
+  useEffect(load, [state?.rev]);
+  return (
+    <Container title="Helper logins" icon="lock">
+      <p className="fx-muted">Every helper runs on its own Claude subscription. A job on a helper never moves to the main account by itself: with no login it waits, and only Take back moves it.</p>
+      {!canSeal && <Note tone="warning">The VPS has no sealing key yet, so no helper can connect. Run <code>session-sync creds-init</code> on the host.</Note>}
+      {rows?.length === 0 && <p className="fx-muted">No helper account has connected yet.</p>}
+      <ul className="axp-session-sync__logins">
+        {rows?.map((x) => (
+          <li key={x.id} data-account={x.id}>
+            <span className="axp-session-sync__login-head"><b>{x.label}</b> <span>{x.credential.email || x.id}</span> <Chip tone={x.problem ? 'warning' : x.credential.state === 'ok' ? 'success' : undefined}>{x.problem ? x.problem.text : x.credential.state}</Chip>{x.expiringSoon && <Chip tone="warning">expires soon</Chip>}</span>
+            <span className="fx-small fx-muted">{x.credential.last4 ? `····${x.credential.last4}` : 'no token'}{x.credential.plan ? ` · ${x.credential.plan}` : ''}{x.credential.expiresAt ? ` · expires ${fmtWhen(x.credential.expiresAt)}` : ''}{x.credential.resetsAt ? ` · resets ${fmtWhen(x.credential.resetsAt)}` : ''}{x.credential.usagePct >= 0 ? ` · usage ${x.credential.usagePct}%` : ''}</span>
+            <span className="fx-small fx-muted">Models: {Object.entries(x.models.can).map(([m, ok]) => `${m} ${ok ? 'yes' : 'no'}`).join(', ') || 'not checked yet'}</span>
+            {x.writeups?.map((w) => <span key={`${w.at}${w.line}`} className="fx-small fx-muted">Write-up: {w.line}</span>)}
+            {brett && <span className="axp-session-sync__bar"><Button icon="refresh" onClick={() => void actions.replaceLink(x.id).then((r) => setLink(r.url)).catch((e: Error) => rt.toast(e.message, 'danger', 'Session sync'))}>Replace</Button><Button icon="x" confirm={`Revoke ${x.label}'s login? Its jobs wait until it connects again or you take them back.`} onClick={() => void actions.revokeLogin(x.id).then(load)}>Revoke</Button></span>}
+          </li>
+        ))}
+      </ul>
+      {link && <Note tone="info">One-time link, good for 10 minutes: <code>{link}</code></Note>}
+    </Container>
+  );
+}
+
+/** The one place a token is typed. It goes to the console once over HTTPS, is checked, sealed for the VPS, and the box is cleared. */
+export function PairDialog({ props, close }: { props: Record<string, unknown>; close: () => void }) {
+  const code = String(props.code ?? '');
+  const [who, setWho] = useState<{ account: string; agent: string; label: string; expiresAt: string } | null>(null);
+  const [err, setErr] = useState('');
+  const [token, setToken] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState<{ credential: { email: string; plan: string }; models: Record<string, boolean> } | null>(null);
+  useEffect(() => { void post<{ ok: boolean; account: string; agent: string; label: string; expiresAt: string; message?: string }>('pair/peek', { code }).then((r) => { if (r.ok) setWho(r); else setErr(r.message ?? 'This pairing link has expired or was already used.'); }).catch((e: Error) => setErr(e.message)); }, [code]);
+  const send = () => { setBusy(true); setErr(''); void post<{ credential: { email: string; plan: string }; models: Record<string, boolean> }>('pair/redeem', { code, token }).then((r) => { setDone(r); void loadState(); }).catch((e: Error) => setErr(e.message)).finally(() => { setToken(''); setBusy(false); }); };
+  if (done) return <div className="fx-stack"><Note tone="success">Connected: {done.credential.email || who?.account}. Models: {Object.entries(done.models).map(([m, ok]) => `${m} ${ok ? 'yes' : 'no'}`).join(', ')}.</Note><Button tone="primary" onClick={close}>Done</Button></div>;
+  return (
+    <div className="fx-stack" data-help="session-sync">
+      {err && <Note tone="danger">{err}</Note>}
+      {who && <>
+        <p>Connecting <b>{who.label}</b> ({who.account}). Run <code>claude setup-token</code> in that account and paste what it prints here. Never paste it in a chat.</p>
+        <TextField label="Subscription token" type="password" value={token} onChange={setToken} autoComplete="off" />
+        <div className="axp-session-sync__bar"><Button tone="primary" icon="lock" disabled={busy || !token} onClick={send}>{busy ? 'Checking…' : 'Connect'}</Button><Button onClick={close}>Cancel</Button></div>
+      </>}
     </div>
   );
 }

@@ -30,6 +30,8 @@ export interface AssignmentBadge {
   assignment?: string;
   /** the child build a step was handed over as (shown as "with helper" on the parent) */
   withHelper?: string;
+  /** the session chip under the model badge: `Main` / `Helper 2` / `Helper 2: login needed` */
+  chip?: { label: string; kind: 'main' | 'helper'; tooltip: string; problem: boolean } | null;
 }
 
 /** The context-menu target every build reference carries (payload = the build id) and every step (payload = `build.step`). */

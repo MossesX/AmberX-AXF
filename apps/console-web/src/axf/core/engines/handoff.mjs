@@ -36,8 +36,14 @@ export const ASSIGNMENT_STATUSES = ['queued', 'working', 'done', 'blocked', 'hel
 export const RESPONSES = ['accept', 'reject', 'hold', 'release'];
 export const STEP_STATES = ['done', 'blocked', 'started'];
 export const REACTIONS = ['take-back', 're-offer', 're-split', 'reassign', 'wait', 'replan', 'none'];
-export const EVENT_TYPES = ['link', 'session', 'claim', 'offer', 'assignment', 'message', 'build', 'replan', 'handover', 'sync', 'audit'];
+export const EVENT_TYPES = ['link', 'session', 'claim', 'offer', 'assignment', 'message', 'build', 'replan', 'handover', 'sync', 'desk', 'audit'];
 export const HELPER_STATES = ['none', 'idle', 'working', 'lunch'];
+/** A helper account's own Claude login, as the link knows it. The link never holds a token: only these labels. */
+export const CREDENTIAL_STATES = ['none', 'ok', 'expired', 'limited', 'revoked'];
+export const SASS_LEVELS = ['mild', 'spicy', 'savage'];
+export const DESK_KINDS = ['bounce', 'reassign', 'picked', 'no-agent', 'nudge', 'whip', 'yank', 'landed', 'waiting'];
+/** Brownie runs the helper desk (Brett, Nov 4 2026: "Give it to Brownie. She can handle the helpers."); Patches keeps the main queue. */
+export const HELPER_DESK = { agent: 'brownie', name: 'Brownie', title: 'Helper desk: Brownie', skill: 'helper-desk' };
 /** Message kinds the Sessions channel adds to the Breakroom chat (swarm-chat@1 `channel: "sessions"`). */
 export const CHANNEL = 'sessions';
 export const MESSAGE_KINDS = ['session', 'handover', 'claim', 'report'];
@@ -58,9 +64,11 @@ export const DEFAULT_SETTINGS = {
   enforce: true, claimTtlSec: 1200, heartbeatSec: 60, idleSec: 600, lunchSec: 1800, offlineSec: 3600,
   slotSplit: {}, sendDefault: 'ask', askOnSend: true, hideDisconnected: false, eventLimit: 2000, freshForSec: 1800,
   approveNewAccounts: true, offerTtlSec: 3600,
+  deskAgent: HELPER_DESK.agent, sass: 'spicy', nudgeAt: 2, whipAt: 3, yankAt: 4, missedHeartbeatSec: 900, defaultStepMin: 30,
+  fallbackOrder: [], fallbackAuto: false,
 };
 /** Settings only Brett changes (his console click or an axHub approval). */
-export const OWNER_SETTINGS = ['enforce', 'approveNewAccounts', 'slotSplit'];
+export const OWNER_SETTINGS = ['enforce', 'approveNewAccounts', 'slotSplit', 'fallbackOrder', 'fallbackAuto'];
 
 /** The role gate (spec § 7): what each role may do. Brett's own click is always allowed (checked by the server). */
 export const ACTIONS = {
@@ -77,7 +85,8 @@ export const ACTIONS = {
   offer: { primary: true, secondary: false }, assign: { primary: true, secondary: false }, 'take-back': { primary: true, secondary: false },
   replan: { primary: true, secondary: false }, 'claim-job': { primary: true, secondary: false },
   settings: { primary: false, secondary: false }, 'make-primary': { primary: false, secondary: false }, 'approve-account': { primary: false, secondary: false },
-  revoke: { primary: false, secondary: false },
+  revoke: { primary: false, secondary: false }, 'account-report': { primary: true, secondary: true }, 'pair-start': { primary: true, secondary: true },
+  'desk-sweep': { primary: true, secondary: false }, 'accounts-read': { primary: true, secondary: true },
 };
 
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : '');
@@ -94,7 +103,7 @@ export const settingsOf = (link) => ({ ...DEFAULT_SETTINGS, ...(isObj(link?.sett
 /* ------------------------------------------------------------------ */
 
 export function emptyLink(project = '') {
-  return { $axf: FRAMES.link, project: str(project, 80), rev: 0, updatedAt: '', seq: 0, primary: null, sessions: {}, claims: {}, offers: {}, assignments: {}, events: [], stats: {}, settings: {} };
+  return { $axf: FRAMES.link, project: str(project, 80), rev: 0, updatedAt: '', seq: 0, primary: null, sessions: {}, claims: {}, offers: {}, assignments: {}, accounts: {}, writeups: [], events: [], stats: {}, settings: {} };
 }
 
 export const normSession = (s) => ({
@@ -124,8 +133,16 @@ export const normAssignment = (a) => ({
   status: ASSIGNMENT_STATUSES.includes(a?.status) ? a.status : 'queued', order: num(a?.order, 0), since: str(a?.since, 40), updatedAt: str(a?.updatedAt, 40),
   claims: arr(a?.claims).map((c) => str(c, 60)), backAt: str(a?.backAt, 40), reason: str(a?.reason, 500),
   stepStates: isObj(a?.stepStates) ? Object.fromEntries(Object.entries(a.stepStates).map(([k, v]) => [str(k, 40), { state: STEP_STATES.includes(v?.state) ? v.state : 'started', at: str(v?.at, 40), reason: str(v?.reason, 300) }])) : {},
-  parent: str(a?.parent, 120),
+  parent: str(a?.parent, 120), main: a?.main === true, bouncedFrom: str(a?.bouncedFrom, 120),
+  escalation: isObj(a?.escalation) ? { step: str(a.escalation.step, 40), level: num(a.escalation.level, 0) } : null,
 });
+/** One account on the link: its stable helper number and what is known about its login. Labels only, never a token. */
+export const normAccount = (x) => ({
+  id: str(x?.id, 120), helperNo: num(x?.helperNo, 0),
+  credential: { state: CREDENTIAL_STATES.includes(x?.credential?.state) ? x.credential.state : 'none', email: str(x?.credential?.email, 200), plan: str(x?.credential?.plan, 40), last4: str(x?.credential?.last4, 4), addedAt: str(x?.credential?.addedAt, 40), expiresAt: str(x?.credential?.expiresAt, 40), checkedAt: str(x?.credential?.checkedAt, 40), resetsAt: str(x?.credential?.resetsAt, 40), usagePct: num(x?.credential?.usagePct, -1) },
+  models: { checkedAt: str(x?.models?.checkedAt, 40), can: Object.fromEntries(Object.entries(isObj(x?.models?.can) ? x.models.can : {}).filter(([, v]) => typeof v === 'boolean').map(([k, v]) => [str(k, 20).toLowerCase(), v])) },
+});
+const normWriteup = (w) => ({ at: str(w?.at, 40), account: str(w?.account, 120), agent: str(w?.agent, 40), build: str(w?.build, 120), step: str(w?.step, 40), line: str(w?.line, 300) });
 const normEvent = (e) => ({ seq: num(e?.seq, 0), at: str(e?.at, 40), type: EVENT_TYPES.includes(e?.type) ? e.type : 'link', id: str(e?.id, 120), session: str(e?.session, 120), data: isObj(e?.data) ? e.data : {} });
 const normStats = (s) => ({ offers: num(s?.offers, 0), accepts: num(s?.accepts, 0), rejects: num(s?.rejects, 0), holds: num(s?.holds, 0), released: num(s?.released, 0), stepsDone: num(s?.stepsDone, 0), msPerStep: arr(s?.msPerStep).filter((n) => Number.isFinite(n)).slice(-50) });
 const mapOf = (o, norm) => Object.fromEntries(Object.entries(isObj(o) ? o : {}).map(([k, v]) => [k, norm({ ...v, id: v?.id || k })]).filter(([, v]) => v.id));
@@ -134,7 +151,7 @@ export function normLink(raw) {
   const l = emptyLink(raw?.project);
   l.rev = num(raw?.rev, 0); l.updatedAt = str(raw?.updatedAt, 40); l.seq = num(raw?.seq, 0);
   l.primary = isObj(raw?.primary) && str(raw.primary.session) ? { session: str(raw.primary.session, 120), account: str(raw.primary.account, 120), agent: str(raw.primary.agent, 40), since: str(raw.primary.since, 40) } : null;
-  l.sessions = mapOf(raw?.sessions, normSession); l.claims = mapOf(raw?.claims, normClaim); l.offers = mapOf(raw?.offers, normOffer); l.assignments = mapOf(raw?.assignments, normAssignment);
+  l.sessions = mapOf(raw?.sessions, normSession); l.claims = mapOf(raw?.claims, normClaim); l.offers = mapOf(raw?.offers, normOffer); l.assignments = mapOf(raw?.assignments, normAssignment); l.accounts = mapOf(raw?.accounts, normAccount); l.writeups = arr(raw?.writeups).map(normWriteup).slice(-200);
   l.events = arr(raw?.events).map(normEvent).filter((e) => e.seq > 0);
   l.stats = Object.fromEntries(Object.entries(isObj(raw?.stats) ? raw.stats : {}).map(([k, v]) => [str(k, 120), normStats(v)]));
   l.settings = isObj(raw?.settings) ? Object.fromEntries(Object.entries(raw.settings).filter(([k]) => k in DEFAULT_SETTINGS)) : {};
@@ -241,6 +258,7 @@ export function join(link, who, now) {
   if (!link.primary) { link.primary = { session: id, account, agent: s.agent, since: now }; becamePrimary = true; }
   s.role = roleOf({ ...link, sessions: { ...link.sessions, [id]: s } }, id) === 'primary' ? 'primary' : 'secondary';
   link.sessions[id] = s;
+  if (s.role === 'secondary') ensureAccount(link, account);
   pushEvent(link, 'session', { action: 'join', role: s.role, agent: s.agent, account, approved: s.approved, becamePrimary }, now, { id, session: id });
   return { session: s, becamePrimary, needsApproval: s.approved === false };
 }
@@ -497,7 +515,7 @@ export function assignedBadge(link, buildId, stepId = '', now = '', settings = D
   const stepIds = a.steps ?? arr(build?.steps).filter((x) => !x.skip).map((x) => x.id);
   const total = stepIds.length; const done = stepIds.filter((x) => a.stepStates[x]?.state === 'done' || (!a.steps && arr(build?.steps).find((y) => y.id === x)?.done)).length;
   const idx = Object.values(link.assignments).filter((x) => x.session === a.session && live(x)).sort((x, y) => x.order - y.order).findIndex((x) => x.id === a.id) + 1;
-  const name = `${a.agent || a.session} (helper)`;
+  const name = `${a.agent || a.session} (${a.main ? 'Main' : 'helper'})`;
   if (a.status === 'working') return { kind: 'working', animated: st === 'working', agent: a.agent, session: a.session, account: a.account, text: `${name}${total ? ` · step ${Math.min(done + 1, total)}/${total}` : ''}`, since: a.since, updatedAt: a.updatedAt, assignment: a.id, status: a.status };
   if (a.status === 'queued') return { kind: 'queued', animated: false, agent: a.agent, session: a.session, account: a.account, text: `In ${a.agent || a.session}'s queue (#${idx})`, since: a.since, updatedAt: a.updatedAt, assignment: a.id, status: a.status };
   return { kind: a.status, animated: false, agent: a.agent, session: a.session, account: a.account, text: `${a.status === 'held' ? 'On hold at' : a.status === 'blocked' ? 'Blocked at' : 'Rejected by'} ${a.agent || a.session}${a.reason ? `: ${a.reason}` : ''}`, since: a.since, updatedAt: a.updatedAt, assignment: a.id, status: a.status };
@@ -736,6 +754,7 @@ export function channelLine(ev, names = {}) {
       if (d.action === 'join') return { kind: 'session', channel: CHANNEL, text: `${agent} joined as ${d.role}${d.becamePrimary ? ' (primary: owns the orchestrator)' : ''}${d.approved === false ? ' — waiting for Brett to approve the new account' : ''}`, jobId: '' };
       if (d.action === 'end') return { kind: 'session', channel: CHANNEL, text: `${agent} signed off${d.summary ? `: ${d.summary}` : ''}${d.givenBack?.length ? ` · gave back ${d.givenBack.length} assignment(s)` : ''}${d.primaryTo ? ` · primary → ${who(d.primaryTo)}` : ''}`, jobId: '' };
       if (d.action === 'approve-account') return { kind: 'session', channel: CHANNEL, text: `Brett approved account ${d.account}`, jobId: '' };
+      if (d.action === 'credential') return d.credentialState === 'ok' ? { kind: 'session', channel: CHANNEL, text: `Account ${d.email || d.account} is connected on its own subscription`, jobId: '', from: 'brownie' } : d.credentialState === 'revoked' ? { kind: 'session', channel: CHANNEL, text: `Brett revoked the login of account ${d.account}`, jobId: '', from: 'brownie' } : null;
       return null;
     }
     case 'claim': return d.action === 'claim' ? { kind: 'claim', channel: CHANNEL, text: `${agent} claimed ${d.kind === 'area' ? `area ${d.area}` : (d.paths ?? []).join(', ')}${d.build ? ` for ${d.build}${d.step ? ` ${d.step}` : ''}` : ''}`, jobId: d.build ? `${d.build}${d.step ? `.${d.step}` : ''}` : '' } : { kind: 'claim', channel: CHANNEL, text: `${agent} released ${(d.claims ?? []).length} claim(s)`, jobId: '' };
@@ -749,6 +768,7 @@ export function channelLine(ev, names = {}) {
       return { kind: 'handover', channel: CHANNEL, text: `${agent} ${d.action === 'hold' ? 'put on hold' : d.action === 'reject' ? 'rejected' : 'released'} ${d.build}${d.reason ? ` (${d.reason})` : ''}${d.backAt ? `, back ${d.backAt}` : ''} — ${d.reaction?.why ?? ''}`.trim(), jobId: d.build };
     }
     case 'assignment': return { kind: d.state === 'blocked' ? 'report' : 'report', channel: CHANNEL, text: `${agent} ${d.state === 'done' ? 'finished' : d.state === 'blocked' ? 'is blocked on' : 'started'} ${d.build} ${d.step}${d.reason ? ` (${d.reason})` : ''}${d.reaction?.why && d.state !== 'started' ? ` — ${d.reaction.why}` : ''}`, jobId: `${d.build}.${d.step}` };
+    case 'desk': return d.line ? { kind: 'handover', channel: CHANNEL, text: str(d.line, 900), jobId: d.build ? `${d.build}${d.step ? `.${d.step}` : ''}` : '', from: str(d.from, 40) } : null;
     case 'replan': return d.moves?.length ? { kind: 'handover', channel: CHANNEL, text: `Replanned: ${d.moves.map((m) => `moved ${m.id} ${m.to < m.from ? 'above' : 'below'} ${m.why ? `because ${m.why}` : ''}`).join('; ')}`, jobId: '' } : null;
     case 'sync': return { kind: 'session', channel: CHANNEL, text: `${agent} wrote the sync file${d.path ? ` ${d.path}` : ''}`, jobId: '' };
     case 'message': return d.text ? { kind: MESSAGE_KINDS.includes(d.kind) ? d.kind : 'session', channel: CHANNEL, text: `${d.build ? `[${d.build}${d.step ? ` ${d.step}` : ''}] ` : ''}${d.text}${d.files?.length ? ` (${d.files.slice(0, 5).join(', ')}${d.files.length > 5 ? ` +${d.files.length - 5}` : ''})` : ''}`, jobId: str(d.build, 120), from: d.agent || ev.session } : null;
@@ -765,7 +785,166 @@ export function filterChannel(messages, filter, sessionAgent = '', myJobs = []) 
   return list;
 }
 
+/* ------------------------------------------------------------------ */
+/* Accounts, session chip, model bounce, the helper desk (spec § 13-16) */
+/* ------------------------------------------------------------------ */
+
+/** The account's record, created on first sight; a helper's number is given once and never reshuffled (Main is 1). */
+export function ensureAccount(link, account) {
+  const id = str(account, 120); if (!id) throw new Error('an account needs a name');
+  const x = (link.accounts[id] ??= normAccount({ id }));
+  if (!x.helperNo && link.primary?.account !== id) x.helperNo = Math.max(1, ...Object.values(link.accounts).map((a) => a.helperNo)) + 1;
+  return x;
+}
+/** What the desk tells a helper's login is doing: null = fine, else `{ kind: login | limit, text, resetsAt }`. */
+export function credentialProblem(account, now) {
+  const c = account?.credential;
+  if (!c || c.state === 'none' || c.state === 'revoked') return { kind: 'login', text: 'login needed', resetsAt: '' };
+  if (c.state === 'expired' || (c.expiresAt && ms(c.expiresAt) <= ms(now))) return { kind: 'login', text: 'login needed', resetsAt: '' };
+  if (c.state === 'limited' && (!c.resetsAt || ms(c.resetsAt) > ms(now))) return { kind: 'limit', text: c.resetsAt ? 'limit reached' : 'limit reached, reset time unknown', resetsAt: c.resetsAt };
+  return null;
+}
+/** True when the login expires within `days`: the pre-expiry alert. */
+export const expiresSoon = (account, now, days = 14) => { const e = ms(account?.credential?.expiresAt); return !!e && e > ms(now) && e - ms(now) < days * 86400000; };
+const liveFor = (link, buildId, stepId) => assignmentsOf(link, buildId).filter((a) => !stepId || !a.steps || a.steps.includes(stepId));
+/**
+ * The chip under a model badge: `{ kind: main | helper, label, agent, account, since, desk, problem, assignment, tooltip }`, or null for
+ * queued work nobody has taken. `build` is an id or a build record (a record lets a running build with no assignment read "Main").
+ */
+export function sessionChip(link, build, stepId = '', now = '') {
+  const buildId = typeof build === 'string' ? build : str(build?.id, 120);
+  const as = liveFor(link, buildId, stepId); const a = as.find((x) => x.status === 'working') ?? as[0];
+  const primary = link.primary;
+  if (!a || a.main) {
+    if (!a && !(isObj(build) && isRunning(build))) return null;
+    const agent = a?.agent || primary?.agent || '';
+    return { kind: 'main', label: 'Main', agent, account: primary?.account ?? '', since: a?.since || primary?.since || '', desk: '', problem: null, assignment: a?.id ?? '', tooltip: ['Main session', agent && `agent ${agent}`, primary?.account && `account ${primary.account}`].filter(Boolean).join(' · ') };
+  }
+  const acct = link.accounts[a.account]; const problem = credentialProblem(acct, now);
+  const label = `Helper ${acct?.helperNo || '?'}`;
+  const models = Object.entries(acct?.models?.can ?? {}).map(([m, ok]) => `${m} ${ok ? 'yes' : 'no'}`).join(', ');
+  const usage = (acct?.credential?.usagePct ?? -1) >= 0 ? `usage ${acct.credential.usagePct}%` : '';
+  return { kind: 'helper', label: problem ? `${label}: ${problem.text}` : label, agent: a.agent, account: a.account, since: a.since, desk: HELPER_DESK.title, problem, assignment: a.id, tooltip: [label, a.agent && `agent ${a.agent}`, `account ${acct?.credential?.email || a.account}`, a.since && `since ${a.since}`, models && `models: ${models}`, usage, HELPER_DESK.title].filter(Boolean).join(' · ') };
+}
+/**
+ * May this run start, and on which account? Main-owned work: `{ ok, owner: 'main' }`. Helper-owned work runs on that helper's
+ * own login or it waits: `{ ok: false, wait: true, … }`. There is deliberately no path from a helper's job to the main account;
+ * only Take back moves it.
+ */
+export function launchGate(link, buildId, now, stepId = '') {
+  const a = liveFor(link, str(buildId, 120), stepId).find((x) => !x.main);
+  if (!a) return { ok: true, owner: 'main' };
+  const acct = link.accounts[a.account]; const problem = credentialProblem(acct, now); const helper = `Helper ${acct?.helperNo || '?'}`;
+  if (problem) return { ok: false, wait: true, owner: 'helper', account: a.account, assignment: a.id, helperNo: acct?.helperNo ?? 0, reason: `${helper}: ${problem.text}`, problem };
+  return { ok: true, owner: 'helper', account: a.account, assignment: a.id, helperNo: acct.helperNo };
+}
+export const modelKey = (m) => { const s = String(m ?? '').toLowerCase(); return ['fable', 'opus', 'sonnet', 'haiku'].find((k) => s.includes(k)) ?? s; };
+/** The steps an account can't run. Only a checked "no" counts: an unchecked model is `unknown`, never a guess. */
+export function modelGaps(link, account, build, stepIds) {
+  const can = link.accounts[str(account, 120)]?.models?.can ?? {};
+  const wanted = arr(build?.steps).filter((s) => !s.skip && !s.done && (!stepIds || stepIds.includes(s.id)));
+  const out = { gaps: [], unknown: [], keep: [] };
+  for (const s of wanted) { const m = modelKey(s.model); if (m && can[m] === false) out.gaps.push({ step: s.id, model: m }); else { out.keep.push(s.id); if (m && can[m] === undefined) out.unknown.push(m); } }
+  out.unknown = [...new Set(out.unknown)];
+  return out;
+}
+/** A free crew agent on the main account that can run `model`: never the desk herself, never one already holding work. */
+export function deskPick(link, crew, model, now = '') {
+  const settings = settingsOf(link); const m = modelKey(model);
+  if (m && link.primary && link.accounts[link.primary.account]?.models?.can?.[m] === false) return null; // Main's own login can't run it either
+  const busy = new Set([...Object.values(link.assignments).filter(live).map((a) => a.agent), ...Object.values(link.sessions).filter((s) => !s.endedAt && sessionStatus(s, now, settings) === 'working').map((s) => s.agent)]);
+  return arr(crew).find((a) => a.id && a.id !== settings.deskAgent && !busy.has(a.id) && (!m || !arr(a.models).length || arr(a.models).map(modelKey).includes(m))) ?? null;
+}
+
+const pick = (list, seed) => list[Math.abs(num(seed, 0)) % list.length];
+const LINES = {
+  reassign: { mild: ['{ref} goes to {agent} ({model}, Main). {status} Next: {agent} picks it up.'], spicy: ['Got it, reassigning {ref} to {agent} (Main, {model}). {status} {agent}, move.', 'No {model}? Cute. Back to the big leagues, {agent}\'s got {ref}. {status}'], savage: ['{ref} is coming off that helper\'s plate. {agent} (Main, {model}), it\'s yours, don\'t make me ask twice. {status}'] },
+  'no-agent': { mild: ['Nobody on Main can run {ref} on {model} right now. It keeps its place in the queue until someone can.'], spicy: ['{ref} needs {model} and nobody on Main can touch it right now. It holds its spot. Boss, your call.'], savage: ['Not one soul on Main can run {ref} on {model}. Great crew. It sits in its spot until somebody can.'] },
+  nudge: { mild: ['{helper}, {ref} is past twice its estimate ({minutes} min in). Please post a status or hand it back.'], spicy: ['{helper}, you been sittin\' on {ref} for {minutes} minutes. Move it or lose it.'], savage: ['{helper}, {minutes} minutes on {ref}? My grandmother ships faster. Post a status or give it back.'] },
+  whip: { mild: ['{helper}, {ref} is at three times its estimate ({minutes} min). It gets pulled back at four.'], spicy: ['{helper}! {ref}, {minutes} minutes, three times the estimate. One more round and I yank it. Finish it or say why.'], savage: ['{helper}, {ref} has been rotting {minutes} minutes. Next stop is me pulling it off your desk. Get your ass in gear.'] },
+  yank: { mild: ['{ref} is back from {helper} ({why}). A write-up line went on the card. Next: reassigning it.'], spicy: ['That\'s it. {ref} is yanked from {helper} ({why}). Write-up is on the card. Reassigning now.'], savage: ['Time\'s up, {helper}. {ref} is off your desk ({why}) and you just earned a write-up. Reassigning to someone who shows up.'] },
+  landed: { mild: ['{helper} finished {ref}. Nice work.'], spicy: ['Fine. Good job, {helper}, {ref} landed. Don\'t let it go to your head.'], savage: ['{helper} actually finished {ref}. Mark the calendar. Next.'] },
+  waiting: { mild: ['{ref} is waiting: {why}. Brett can Take back to move it to Main.'], spicy: ['{ref} is parked: {why}. It stays parked till that\'s fixed or the boss hits Take back.'], savage: ['{ref} is dead in the water: {why}. Not touching Main\'s account, so fix it or the boss takes it back.'] },
+};
+const fill = (tpl, ctx) => tpl.replace(/\{(\w+)\}/g, (_, k) => String(ctx[k] ?? ''));
+/** One of Brownie's lines, at her sass level. It always names the build / step, the status and the next action. */
+export function deskLine(kind, ctx, sass = 'spicy', seed = 0) {
+  const table = LINES[kind]; if (!table) return '';
+  return fill(pick(table[SASS_LEVELS.includes(sass) ? sass : 'spicy'], seed), { status: '', ...ctx }).replace(/\s+/g, ' ').trim();
+}
+const refOf = (build, steps) => `${build}${steps?.length ? ` ${steps.join(', ')}` : ''}`;
+const nameOf = (names, id) => names?.[id] || id;
+const deskEvent = (link, kind, data, now, extra = {}) => pushEvent(link, 'desk', { kind, ...data }, now, extra);
+
+/** Hand steps to a free crew agent on Main, keeping their place; every hop is a Sessions channel line, as its actor. */
+export function deskReassign(link, req, crew, now, names = {}) {
+  const settings = settingsOf(link); const build = str(req?.build, 120); const steps = arr(req?.steps).map((s) => str(s, 40)); const model = modelKey(req?.model);
+  const ref = refOf(build, steps); const desk = settings.deskAgent; const seed = link.seq;
+  const agent = deskPick(link, crew, model, now);
+  if (!agent) { deskEvent(link, 'no-agent', { from: desk, build, step: steps[0] ?? '', line: deskLine('no-agent', { ref, model: model || 'that model' }, settings.sass, seed) }, now, { id: build }); return { reassigned: false }; }
+  const name = nameOf(names, agent.id);
+  const a = normAssignment({ id: `a-${link.seq + 1}`, build, steps: steps.length ? steps : null, session: link.primary?.session ?? '', account: link.primary?.account ?? '', agent: agent.id, status: 'queued', since: now, updatedAt: now, main: true, bouncedFrom: str(req?.from, 120), reason: str(req?.reason, 300) });
+  link.assignments[a.id] = a;
+  deskEvent(link, 'reassign', { from: desk, build, step: steps[0] ?? '', assignment: a.id, to: agent.id, line: deskLine('reassign', { ref, agent: name, model: model || 'its model', status: 'Status: back with the desk.' }, settings.sass, seed) }, now, { id: a.id });
+  deskEvent(link, 'picked', { from: agent.id, build, step: steps[0] ?? '', assignment: a.id, line: `Picked up ${ref}.` }, now, { id: a.id });
+  return { reassigned: true, assignment: a, agent: agent.id };
+}
+/**
+ * After an accept: the helper keeps what its account can run and bounces the rest, in the same transaction. Whole build unrunnable =
+ * rejected. The helper says so as itself, then the desk takes over. Bounces count as rejects in the helper's stats.
+ */
+export function bounceGaps(link, a, build, crew, now, names = {}) {
+  const check = modelGaps(link, a.account, build, a.steps); if (!check.gaps.length) return { bounced: [], unknown: check.unknown };
+  const home = a.parent || a.build; const models = [...new Set(check.gaps.map((g) => g.model))]; const label = models.map((m) => m[0].toUpperCase() + m.slice(1)).join(' / ');
+  const reason = `no ${label} access on this account`; const allGone = !check.keep.length;
+  statsOf(link, a.account).rejects++;
+  if (allGone) { a.status = 'rejected'; a.reason = reason; for (const cid of a.claims) delete link.claims[cid]; a.claims = []; } else a.steps = check.keep;
+  a.updatedAt = now;
+  const steps = check.gaps.map((g) => g.step);
+  const helper = nameOf(names, a.agent || a.session);
+  deskEvent(link, 'bounce', { from: a.agent, build: home, step: steps[0], assignment: a.id, steps, reason, line: `Rejected ${refOf(home, steps)}: ${reason}, back to you @${HELPER_DESK.name}` }, now, { id: a.id, session: a.session });
+  const groups = {}; for (const g of check.gaps) (groups[g.model] ??= []).push(g.step);
+  const results = Object.entries(groups).map(([model, list]) => deskReassign(link, { build: home, steps: list, model, from: a.session, reason }, crew, now, names));
+  return { bounced: steps, reason, rejected: allGone, reassigned: results, unknown: check.unknown };
+}
+/** What a helper's assignment is doing against its estimates: the plain-code timers behind the whip. */
+export function deskSweep(link, builds, crew, now, names = {}) {
+  const settings = settingsOf(link); const fired = [];
+  for (const a of Object.values(link.assignments)) {
+    if (a.main || a.status !== 'working') continue;
+    const s = link.sessions[a.session]; const quiet = s ? (ms(now) - ms(s.lastSeenAt)) / 1000 : Infinity;
+    const home = a.parent || a.build; const build = arr(builds).find((b) => b.id === home);
+    const started = Object.entries(a.stepStates).filter(([, v]) => v.state === 'started').sort((x, y) => ms(y[1].at) - ms(x[1].at))[0];
+    const step = started?.[0] ?? ''; const minutes = started ? Math.round((ms(now) - ms(started[1].at)) / 60000) : 0;
+    const est = minutesOf(arr(build?.steps).find((x) => x.id === step)?.estimate) || settings.defaultStepMin;
+    const ratio = est ? minutes / est : 0; const missed = quiet > settings.missedHeartbeatSec;
+    const level = missed || ratio >= settings.yankAt ? 3 : ratio >= settings.whipAt ? 2 : ratio >= settings.nudgeAt ? 1 : 0;
+    const prev = a.escalation?.step === step ? a.escalation.level : 0;
+    if (level <= prev) continue;
+    a.escalation = { step, level }; a.updatedAt = now;
+    const helper = nameOf(names, a.agent || a.session); const ref = refOf(home, step ? [step] : a.steps);
+    const ctx = { ref, helper, minutes };
+    if (level < 3) { deskEvent(link, level === 1 ? 'nudge' : 'whip', { from: settings.deskAgent, build: home, step, assignment: a.id, line: deskLine(level === 1 ? 'nudge' : 'whip', ctx, settings.sass, link.seq) }, now, { id: a.id }); fired.push({ assignment: a.id, level }); continue; }
+    const why = missed ? 'missed heartbeat' : `${minutes} min on a ${est} min step`;
+    const steps = a.steps?.filter((x) => a.stepStates[x]?.state !== 'done') ?? (build ? arr(build.steps).filter((x) => !x.done && !x.skip).map((x) => x.id) : []);
+    const line = deskLine('yank', { ...ctx, why }, settings.sass, link.seq);
+    a.status = 'taken-back'; a.reason = `yanked by the helper desk: ${why}`; for (const cid of a.claims) delete link.claims[cid]; a.claims = [];
+    link.writeups = [...link.writeups, normWriteup({ at: now, account: a.account, agent: a.agent, build: home, step, line: `${why} on ${ref}` })].slice(-200);
+    deskEvent(link, 'yank', { from: settings.deskAgent, build: home, step, assignment: a.id, why, line }, now, { id: a.id });
+    const model = modelKey(arr(build?.steps).find((x) => x.id === (step || steps[0]))?.model);
+    deskReassign(link, { build: home, steps, model, from: a.session, reason: why }, crew, now, names);
+    fired.push({ assignment: a.id, level: 3 });
+  }
+  return fired;
+}
+/** The next account to fall back to when one runs out: the order setting, skipping `from` and anything that can't run `model`. */
+export function nextFallback(order, accounts, from, model = '') {
+  const m = modelKey(model); const list = arr(order).map((x) => str(x, 120)); const at = list.indexOf(str(from, 120));
+  for (const name of list.slice(at + 1)) { const a = arr(accounts).find((x) => x.name === name); if (name === 'api-credit') return { name, api: true }; if (a && (!m || a.models?.[m] !== false)) return { name, api: false }; }
+  return null;
+}
+
 /** The registry snapshot (framework/schemas/handoff.json). */
 export function registrySnapshot() {
-  return { $axf: 'handoff-registry@1', frames: FRAMES, roles: ROLES, clients: CLIENTS, sessionStatuses: SESSION_STATUSES, claimKinds: CLAIM_KINDS, offerModes: OFFER_MODES, offerStatuses: OFFER_STATUSES, assignmentStatuses: ASSIGNMENT_STATUSES, responses: RESPONSES, stepStates: STEP_STATES, reactions: REACTIONS, eventTypes: EVENT_TYPES, helperStates: HELPER_STATES, channel: CHANNEL, messageKinds: MESSAGE_KINDS, chatFilters: CHAT_FILTERS, areas: AREAS, defaultSettings: DEFAULT_SETTINGS, ownerSettings: OWNER_SETTINGS, actions: ACTIONS };
+  return { $axf: 'handoff-registry@1', frames: FRAMES, roles: ROLES, clients: CLIENTS, sessionStatuses: SESSION_STATUSES, claimKinds: CLAIM_KINDS, offerModes: OFFER_MODES, offerStatuses: OFFER_STATUSES, assignmentStatuses: ASSIGNMENT_STATUSES, responses: RESPONSES, stepStates: STEP_STATES, reactions: REACTIONS, eventTypes: EVENT_TYPES, helperStates: HELPER_STATES, credentialStates: CREDENTIAL_STATES, sassLevels: SASS_LEVELS, deskKinds: DESK_KINDS, helperDesk: HELPER_DESK, channel: CHANNEL, messageKinds: MESSAGE_KINDS, chatFilters: CHAT_FILTERS, areas: AREAS, defaultSettings: DEFAULT_SETTINGS, ownerSettings: OWNER_SETTINGS, actions: ACTIONS };
 }

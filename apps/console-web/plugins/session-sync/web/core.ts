@@ -16,20 +16,23 @@ export const VIEW = 'session-sync';
 export const DIALOG_JOIN = 'session-sync.join';
 export const DIALOG_SEND = 'session-sync.send';
 export const DIALOG_WIDGETS = 'session-sync.widgets';
+export const DIALOG_PAIR = 'session-sync.pair';
 export const CHIP_ASSET = 'session-sync';
 export const MANAGED_ASSET = 'session-sync-managed';
 export const COUNTERS = { chip: 'sessions.on', helpers: 'sessions.helpers', working: 'sessions.working', lunch: 'sessions.lunch', offers: 'sessions.offers', managed: 'sessions.managed' } as const;
 export const KEYS = { chip: 'session-sync.chip', widgets: 'session-sync.widgets', widgetHost: 'session-sync.widget-host', hideDisconnected: 'session-sync.hide-disconnected', sendDefault: 'session-sync.send-default', askOnSend: 'session-sync.ask-on-send', joinSeen: 'session-sync.join-seen', role: 'axf.session.role', managedBy: 'axf.session.managedBy' } as const;
 const PROFILE_CHIP_KEY = 'status:build-profile'; // the build-profile chip's attachment key (an asset id, not a plugin)
 
+export interface AccountV { id: string; helperNo: number; credential: { state: string; email: string; plan: string; last4: string; addedAt: string; expiresAt: string; checkedAt: string; resetsAt: string; usagePct: number }; models: { checkedAt: string; can: Record<string, boolean> }; problem: { kind: string; text: string; resetsAt: string } | null; hasToken?: boolean; expiringSoon?: boolean; label?: string; sessions?: { id: string; agent: string }[]; writeups?: { at: string; build: string; step: string; line: string }[] }
 export interface SessionV { id: string; account: string; agent: string; client: string; role: string; approved?: boolean; status: string; helper: { state: string; tooltip: string }; doing: { build: string; step: string; note: string }; startedAt: string; lastSeenAt: string; endedAt: string; branch: string; pause: { reason: string; until: string } | null; summary?: string }
 export interface ClaimV { id: string; session: string; kind: string; area: string; paths: string[]; reason: string; build: string; step: string; since: string; expiresAt: string }
 export interface OfferV { id: string; build: string; steps: string[] | null; mode: string; childBuild: string; to: string; from: string; reason: string; at: string; expiresAt: string; status: string }
-export interface AssignmentV { id: string; build: string; steps: string[] | null; session: string; account: string; agent: string; offer: string; status: string; order: number; since: string; updatedAt: string; backAt: string; reason: string; stepStates: Record<string, { state: string; at: string; reason: string }>; parent: string }
+export interface AssignmentV { main?: boolean; id: string; build: string; steps: string[] | null; session: string; account: string; agent: string; offer: string; status: string; order: number; since: string; updatedAt: string; backAt: string; reason: string; stepStates: Record<string, { state: string; at: string; reason: string }>; parent: string }
 export interface ScopedBuild { id: string; title: string; steps: { id: string; text?: string; done?: boolean; model?: string }[]; assignedTo: { assignment: string; session: string; agent: string; status: string } | null; offer: { id: string; mode: string; status: string } | null; managedBy: string; pending?: boolean }
 export interface StateV {
   ok: boolean; project: string; rev: number; seq: number; updatedAt: string; primary: { session: string; account: string; agent: string; since: string } | null;
   me: { session: string; account: string; agent: string; role: string }; sessions: SessionV[]; claims: ClaimV[]; settings: Record<string, unknown>; caps: Record<string, number>; stats: Record<string, { offers: number; accepts: number; rejects: number; holds: number; released: number; stepsDone: number; msPerStep: number[] }>;
+  accounts?: AccountV[]; desk?: { agent: string; name: string; title: string };
   scoped: boolean; managedBy?: string; offers: OfferV[]; assignments: AssignmentV[]; builds?: ScopedBuild[]; helpers?: SessionV[];
 }
 export interface SnapshotV {
@@ -104,6 +107,8 @@ export const actions = {
   approveAccount: (account: string) => act('approve-account', { account }, `Account ${account} approved`),
   makePrimary: (session: string) => act('make-primary', { session }, 'Primary changed'),
   settings: async (patch: Record<string, unknown>) => { try { const r = await put<{ settings: Record<string, unknown> }>('settings', patch); await loadState(); return r.settings; } catch (e) { toast((e as Error).message, 'danger'); return null; } },
+  revokeLogin: (account: string) => act('accounts/revoke', { account }, `Login of ${account} revoked: its jobs wait`),
+  replaceLink: (account: string) => post<{ url: string }>('pair/start', { account }),
   consistency: () => act<{ drift: number; fixed: { changed: string[] } | null }>('consistency', {}, (r) => (r.drift ? `Fixed ${r.fixed?.changed.length ?? 0} place(s)` : 'Every store agrees with the link')),
 };
 
@@ -136,6 +141,13 @@ const HELPER_TONE: Record<string, 'muted' | 'neutral' | 'accent' | 'warning' | '
 const helperAssetId = (session: string) => `helper-${session.replace(/[^a-z0-9-]+/gi, '-').toLowerCase()}`;
 export const isSecondary = () => st.state?.me.role === 'secondary';
 
+const chipOf = (s: StateV, a: AssignmentV): AssignmentBadge['chip'] => {
+  if (a.main) return { label: 'Main', kind: 'main', tooltip: ['Main session', a.agent && `agent ${a.agent}`, s.primary?.account && `account ${s.primary.account}`].filter(Boolean).join(' · '), problem: false };
+  const x = s.accounts?.find((c) => c.id === a.account); const label = `Helper ${x?.helperNo || '?'}`;
+  const models = Object.entries(x?.models.can ?? {}).map(([m, ok]) => `${m} ${ok ? 'yes' : 'no'}`).join(', ');
+  const usage = (x?.credential.usagePct ?? -1) >= 0 ? `usage ${x?.credential.usagePct}%` : '';
+  return { label: x?.problem ? `${label}: ${x.problem.text}` : label, kind: 'helper', problem: !!x?.problem, tooltip: [label, a.agent && `agent ${a.agent}`, `account ${x?.credential.email || a.account}`, a.since && `since ${a.since}`, models && `models: ${models}`, usage, s.desk?.title].filter(Boolean).join(' · ') };
+};
 /** Badges, counters, the chip, one widget per helper, the managed chip. Called on every state load. */
 export function paint(rt: AxfRuntime) {
   const s = st.state; if (!s) return;
@@ -143,11 +155,11 @@ export function paint(rt: AxfRuntime) {
   // helper badges everywhere: the assignment directory
   const badges: AssignmentBadge[] = s.assignments.filter((a) => ['queued', 'working', 'held', 'blocked', 'rejected'].includes(a.status)).map((a) => {
     const sess = s.sessions.find((x) => x.id === a.session);
-    const name = `${a.agent || names.get(a.session) || a.session} (helper)`;
+    const name = `${a.agent || names.get(a.session) || a.session} (${a.main ? 'Main' : 'helper'})`;
     const total = a.steps?.length ?? 0; const done = a.steps ? a.steps.filter((x) => a.stepStates[x]?.state === 'done').length : 0;
     const idx = s.assignments.filter((x) => x.session === a.session && ['queued', 'working'].includes(x.status)).sort((x, y) => x.order - y.order).findIndex((x) => x.id === a.id) + 1;
     const text = a.status === 'working' ? `${name}${total ? ` · step ${Math.min(done + 1, total)}/${total}` : ''}` : a.status === 'queued' ? `In ${a.agent || a.session}'s queue (#${idx})` : `${a.status === 'held' ? 'On hold at' : a.status === 'blocked' ? 'Blocked at' : 'Rejected by'} ${a.agent || a.session}${a.reason ? `: ${a.reason}` : ''}`;
-    return { build: a.build, steps: a.steps, status: a.status, kind: a.status, animated: a.status === 'working' && sess?.status === 'working', agent: a.agent, session: a.session, account: a.account, text, since: a.since, updatedAt: a.updatedAt, assignment: a.id, withHelper: a.parent };
+    return { build: a.build, steps: a.steps, status: a.status, kind: a.status, animated: a.status === 'working' && sess?.status === 'working', agent: a.agent, session: a.session, account: a.account, text, since: a.since, updatedAt: a.updatedAt, assignment: a.id, withHelper: a.parent, chip: chipOf(s, a) };
   });
   setAssignments(ID, badges);
   // counters + the chip

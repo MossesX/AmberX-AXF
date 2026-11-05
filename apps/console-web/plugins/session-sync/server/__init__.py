@@ -447,6 +447,12 @@ def accounts(request: Request) -> dict[str, Any]:
     return _answer(_run("accounts-read", {}, caller(request)))
 
 
+@router.get("/chip")
+def chip(request: Request, build: str = "", step: str = "") -> dict[str, Any]:
+    """The session chip of a build or step: Main, Helper N, or nothing while nobody has taken it (the `session` field for API / MCP / CLI)."""
+    return _answer(_run("chip", {"build": build, "step": step}, caller(request)))
+
+
 @router.get("/settings")
 def get_settings(request: Request) -> dict[str, Any]:
     return _answer(_run("settings", {}, caller(request)))
