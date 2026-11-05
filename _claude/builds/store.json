@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1069,
- "updatedAt": "2026-11-05T22:42:39.259Z",
+ "rev": 1070,
+ "updatedAt": "2026-11-05T22:49:16.232Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -86844,14 +86844,14 @@
    "title": "Every headless build keeps its own Claude login",
    "category": "Builds",
    "detail": "Snapshot the active saved Claude account into a private per-build CLAUDE_CONFIG_DIR at launch; record account per build; cover every launcher; scripted test with a fake claude.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-05T22:37:31.309Z",
-   "updatedAt": "2026-11-05T22:37:31.309Z",
+   "updatedAt": "2026-11-05T22:49:15.162Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -86884,12 +86884,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T22:49:15.162Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-05T22:37:31.310Z",
-     "updatedAt": "2026-11-05T22:40:39.762Z"
+     "updatedAt": "2026-11-05T22:49:15.223Z"
     },
     {
      "id": "s2",
@@ -87054,7 +87054,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
