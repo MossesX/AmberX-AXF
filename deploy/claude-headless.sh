@@ -215,6 +215,10 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     fi  # axf-plugin:session-sync
     (( switches < max_switches )) || break
     [[ -n "$limit_hit" ]] || break
+    # Brett's fallback order (Session sync settings, off by default): the next saved account that can run this model.
+    if helper_on && next_account="$(node "$SYNC_CLI" fallback --from "$(cat /root/.claude-accounts/.active 2>/dev/null)" --model "$model" 2>/dev/null)" && [[ -n "$next_account" && "$next_account" != api-credit ]]; then  # axf-plugin:session-sync
+      claude-account use "$next_account" >/dev/null 2>&1 && { printf '\n\033[1m── limit hit: on to %s ──\033[0m\n' "$next_account"; switches=$((switches + 1)); continue; }  # axf-plugin:session-sync
+    fi  # axf-plugin:session-sync
     sw_js="$HERE/../apps/console-web/plugins/ai-keys/switch.mjs"  # axf-plugin:ai-keys
     command -v node >/dev/null && [[ -f "$sw_js" ]] || break
     printf '\n\033[1m── this Claude account hit its limit: switching accounts ──\033[0m\n'

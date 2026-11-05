@@ -113,7 +113,7 @@ try {
   writeFileSync(A.sealedFile('acct2'), keep, { mode: 0o600 });
   const waitLines = link().events.filter((e) => e.type === 'desk' && e.data.kind === 'waiting');
   check('a waiting job is said once per reason, by the desk', waitLines.length >= 2 && waitLines.every((e) => e.data.from === 'brownie'), String(waitLines.length));
-  r = await run('B', ['token-revoke', 'acct2']); check('a session can not revoke', r.ok === false && r.code === 'owner');
+  r = await run('B', ['token-revoke', 'acct2']); check('a session can not revoke', r.ok === false && r.code === 'owner' && existsSync(A.sealedFile('acct2')));
   r = await run('A', ['op', 'account-credential', JSON.stringify({ account: 'acct2', credential: { state: 'ok' } })]); check('a session can not set a credential', r.ok === false);
 
   /* the real launcher, with a fake claude */

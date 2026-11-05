@@ -142,6 +142,16 @@
    "bio": "Mops up dead sessions and stuck lines. Treats a stale heartbeat as a personal insult."
   },
   {
+   "$axf": "agent@1", "id": "brownie", "name": "Brownie", "role": "QA Inspector · Helper desk", "skill": "tests", "jobsOnly": true, "skills": ["*", "helper-desk"], "home": "feature-build",
+   "specialty": "Checks every build works before it reaches Brett's UI Review, and runs the helper desk: offers, bounces, reassignments, take backs",
+   "keywords": [], "paths": [],
+   "models": ["opus", "fable"], "tools": ["Read", "Edit", "Write", "Grep", "Glob", "Bash(node:*)", "Bash(git status:*)", "Bash(git diff:*)"],
+   "maxTurns": 40, "tokenBudget": 300000, "salary": 15, "hiredAt": "2026-11-04",
+   "avatar": {"face": "square", "hair": 1, "gear": "glasses", "hue": 25},
+   "catchphrase": "Clicked every button. Two of them lied.",
+   "bio": "Opens the app like a customer would and writes down everything that breaks. Also cracks the whip on the helpers."
+  },
+  {
    "$axf": "agent@1", "id": "earl", "name": "Earl the Ear", "role": "Listener fixer / QA", "skill": "listener-qa", "jobsOnly": true, "skills": ["*"], "home": "listener-qa",
    "specialty": "Voice and listener regressions in AmberX",
    "keywords": [], "paths": [],

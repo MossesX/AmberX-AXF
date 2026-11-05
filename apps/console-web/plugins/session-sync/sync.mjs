@@ -286,7 +286,8 @@ export const OPS = {
     H.pushEvent(link, 'session', { action: 'credential', account: x.id, credentialState: link.accounts[x.id].credential.state, email: link.accounts[x.id].credential.email }, now, { id: x.id });
     return { ok: true, account: link.accounts[x.id] };
   }),
-  'pair-start': gated('pair-start', (link, _a, ctx) => pairStart(link, ctx)),
+  'pair-start': gated('pair-start', (link, args, ctx) => pairStart(link, ctx, args)),
+  'token-revoke': gated('revoke', (link, args, ctx, now) => { const account = str(args?.account, 120); creds.drop(accountId(account)); return OPS['account-credential'](link, { account, credential: { state: 'revoked', last4: '', expiresAt: '', resetsAt: '' } }, ctx, now); }),
   'accounts-read': gated('accounts-read', (link, _a, ctx, now) => {
     const rows = Object.values(link.accounts).filter((x) => ctx.role !== 'secondary' || x.id === ctx.account).map((x) => ({ ...x, id: x.id, label: `Helper ${x.helperNo || '?'}`, problem: H.credentialProblem(x, now), expiringSoon: H.expiresSoon(x, now), hasToken: (() => { try { return creds.hasToken(accountId(x.id)); } catch { return false; } })(), sessions: Object.values(link.sessions).filter((s) => s.account === x.id && !s.endedAt).map((s) => ({ id: s.id, agent: s.agent })), writeups: link.writeups.filter((w) => w.account === x.id).slice(-5) }));
     return { ok: true, accounts: rows, canSeal: creds.canSeal(), desk: H.HELPER_DESK };
@@ -381,9 +382,11 @@ export function runOp(name, args = {}, who = null) {
 
 /* ------------------------------------------------------------------ helper logins (spec § 14; creds.mjs keeps them sealed) */
 
-function pairStart(link, my) {
-  if (!link.sessions[my.session]) return { ok: false, code: 'no-session', message: 'join first (session-sync join)' };
-  if (H.roleOf(link, my.session) !== 'secondary') return { ok: false, code: 'primary', message: 'the main account needs no pairing: only helpers bring their own login' };
+function pairStart(link, my, args = {}) {
+  const replacing = my.brett === true && str(args?.account, 120); // Brett's Replace button, for a helper that can't run the command
+  if (replacing) my = { ...my, account: replacing, session: '', agent: '' };
+  else if (!link.sessions[my.session]) return { ok: false, code: 'no-session', message: 'join first (session-sync join)' };
+  if (!replacing && H.roleOf(link, my.session) !== 'secondary') return { ok: false, code: 'primary', message: 'the main account needs no pairing: only helpers bring their own login' };
   if (!creds.canSeal()) return { ok: false, code: 'not-ready', message: 'the VPS has no sealing key yet: run session-sync creds-init on the host' };
   const { code, expiresAt } = creds.pairStart({ account: my.account, session: my.session, agent: my.agent });
   return { ok: true, url: `${env('AXF_CONSOLE_URL') || 'https://console.amberxai.com'}/#/session-sync?pair=${code}`, expiresAt };
@@ -403,11 +406,6 @@ export async function pairIngest(raw) {
     const credential = { state: v.limited ? 'limited' : 'ok', email: v.email, plan: v.plan, last4: token.slice(-4), addedAt: at, expiresAt: new Date(Date.now() + TOKEN_LIFE_MS).toISOString(), resetsAt: v.limited?.resetsAt ?? '' };
     return { ok: true, account: p.account, session: p.session, agent: p.agent, credential, models: v.can };
   } catch (e) { return { ok: false, message: scrub(e.message) }; }
-}
-export function revokeToken(account, my) {
-  if (!my.brett && !brettClick()) return { ok: false, code: 'owner', message: 'only Brett can do that: revoke' };
-  creds.drop(accountId(account));
-  return runOp('account-credential', { account, credential: { state: 'revoked', last4: '', expiresAt: '', resetsAt: '' } }, { ...my, brett: true });
 }
 /** The real check of the session's own account: its token when it has one here, else its logged-in Claude Code (one tiny call per model). */
 export async function checkModels(models, my) {
@@ -588,7 +586,9 @@ export async function main(argv = process.argv.slice(2)) {
   if (cmd === 'pair-ingest') { let raw = ''; try { raw = readFileSync(0, 'utf8'); } catch { /* no stdin */ } const r = await pairIngest(raw); console.log(JSON.stringify(r)); return r.ok ? 0 : 1; }
   if (cmd === 'launch-gate') { const r = launchGate({ build: opt.build || rest[0] || '', step: opt.step || '', wantEnv: !!opt.env }); if (r.env) { process.stdout.write(r.env); return 0; } if (r.ok) { if (!opt.env) console.log(r.owner === 'helper' ? `helper ${r.account}` : 'main'); return 0; } console.log(r.reason); return 4; }
   if (cmd === 'token-limited') { const account = String(opt.account || my.account); return fmt(runOp('account-report', { limited: { resetsAt: opt.resets || '' } }, { session: my.session, account, brett: false })); }
-  if (cmd === 'token-revoke') return fmt(revokeToken(rest[0] || '', my));
+  if (cmd === 'token-revoke') return fmt(runOp('token-revoke', { account: rest[0] }, my));
+  if (cmd === 'pair-peek') { let raw = ''; try { raw = readFileSync(0, 'utf8'); } catch { /* no stdin */ } let code = ''; try { code = JSON.parse(raw).code; } catch { /* bad */ } const p = creds.pairPeek(code); return fmt(p ? { ok: true, account: p.account, agent: p.agent, expiresAt: p.expiresAt, label: `Helper ${readLink().accounts[p.account]?.helperNo || '?'}` } : { ok: false, message: 'this pairing link has expired or was already used' }); }
+  if (cmd === 'fallback') { const lk = readLink(); const sg = H.settingsOf(lk); if (!sg.fallbackAuto) return 1; const n = H.nextFallback(sg.fallbackOrder, sg.fallbackOrder.map((name) => ({ name, models: lk.accounts[name]?.models?.can })), String(opt.from || ''), String(opt.model || '')); if (!n) return 1; console.log(n.name); return 0; }
   if (cmd === 'check-models') { const r = await checkModels(list(opt.models).length ? list(opt.models) : ['opus', 'fable'], my); return fmt(r, r.ok ? Object.entries(r.can).map(([m, ok]) => `${m}: ${ok ? 'yes' : 'no'}`).join(', ') || 'nothing could be checked' : r.message); }
   if (cmd === 'desk-sweep') return fmt(runOp('desk-sweep', {}, my));
   if (cmd === 'where') return fmt({ ok: true, link: linkFile(), me: meFile(), sync: syncPaths().json, consoleRoot: consoleRoot() });

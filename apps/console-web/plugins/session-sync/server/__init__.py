@@ -17,6 +17,10 @@ through `axf.crew@1.post` — this server is the only Breakroom poster, so the C
 plugin commands plugin turns the routes into REST, MCP (`session_sync_<command>`) and CLI (`axf session-sync …`).
 A new account's first join files one axHub approval (`axf.session_sync_approve_account`) so Brett can approve it from
 his phone; his console click approves it too. No model is ever called.
+
+Helper logins (spec § 14): `POST /pair/redeem` takes a helper's `claude setup-token` token once, from a signed-in browser,
+and pipes it to the CLI on stdin; the CLI verifies it, seals it for the VPS host and answers labels only. The token is never
+logged, audited, stored here or sent back. Brownie's helper desk (spec § 15) runs on a timer thread (`_desk`).
 """
 from __future__ import annotations
 
@@ -46,6 +50,7 @@ TAG = "session-link@1"
 CREW = "axf.crew@1"
 HEALTH = "axf.health@1"
 MAX_BODY = 256 * 1024
+DESK_EVERY_S = 60
 ID = re.compile(r"^[A-Za-z0-9._:@-]{1,120}$")
 AGENT_HEADERS = ("x-axhub-session", "x-axhub-source")
 SESSION_HEADERS = ("x-axf-session", "x-axf-account", "x-axf-agent", "x-axf-client")
@@ -85,6 +90,17 @@ def _names() -> dict[str, str]:
             pass
     _crew_cache.update(at=time.time(), names=names, ids=set(names))
     return names
+
+
+def _crew_rows() -> list[dict[str, Any]]:
+    """The crew for the desk's reassignments: id, name, models. Empty without the crew capability (the CLI then reads the roster)."""
+    crew = plugin_services.get(CREW)
+    if crew is None:
+        return []
+    try:
+        return [{"id": a["id"], "name": a.get("name") or a["id"], "models": a.get("models") or []} for a in crew.crew() if isinstance(a, dict) and a.get("id")]
+    except Exception:  # noqa: BLE001 — the crew is optional
+        return []
 
 
 def brett_click(request: Request) -> str:
@@ -139,7 +155,7 @@ def _read_link() -> dict[str, Any]:
 
 def _run(op: str, args: dict[str, Any], who: dict[str, Any]) -> dict[str, Any]:
     env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}
-    env.update(AXF_SESSION_LINK_FILE=str(link_file()), AXF_SESSION_SYNC_CALLER=json.dumps(who), AXF_SESSION_SYNC_NAMES=json.dumps(_names()))
+    env.update(AXF_SESSION_LINK_FILE=str(link_file()), AXF_SESSION_SYNC_CALLER=json.dumps(who), AXF_SESSION_SYNC_NAMES=json.dumps(_names()), AXF_SESSION_SYNC_CREW=json.dumps(_crew_rows()))
     if who.get("brett"):
         env.update(AXF_APPROVER=str(who.get("name") or "Brett"), AXF_APPROVER_VIA="console")
     proc = subprocess.run(["node", str(CLI), "op", op, json.dumps(args)], cwd=ROOT, capture_output=True, text=True, timeout=90, env=env)
@@ -151,6 +167,9 @@ def _run(op: str, args: dict[str, Any], who: dict[str, Any]) -> dict[str, Any]:
     if res.get("events"):
         _deliver(res["events"])
     return res
+
+
+DESK_CALLER = {"session": "helper-desk", "account": "helper-desk", "agent": "brownie", "client": "console", "brett": True, "name": "helper desk"}
 
 
 def _answer(res: dict[str, Any]) -> dict[str, Any]:
@@ -220,6 +239,7 @@ def _deliver(events: list[dict[str, Any]]) -> None:
             pass
     for e in fresh:
         _broadcast(e)
+        _alert_for(e)
     crew = plugin_services.get(CREW)
     if crew is not None and hasattr(crew, "post"):
         try:
@@ -230,6 +250,17 @@ def _deliver(events: list[dict[str, Any]]) -> None:
             cx.log(FOLDER, f"Breakroom post failed: {exc}", "warn")
     if any(e.get("type") in ("handover", "assignment", "session") for e in fresh):
         _emit_health()
+
+
+def _alert_for(event: dict[str, Any]) -> None:
+    """A job parked on a helper's login is something Brett must see: one bell alert per build and reason."""
+    d = event.get("data") or {}
+    if event.get("type") != "desk" or d.get("kind") != "waiting":
+        return
+    try:
+        cx.raise_alert({"source": FOLDER, "severity": "warning", "title": f"{d.get('build')} is waiting", "body": str(d.get("why") or "")[:300], "key": f"session-sync:wait:{d.get('build')}:{d.get('why')}", "link": "nav:session-sync"})
+    except Exception:  # noqa: BLE001 — the chat line stands
+        pass
 
 
 def _broadcast(event: dict[str, Any]) -> None:
@@ -264,8 +295,27 @@ def _watch() -> None:
         time.sleep(float(os.environ.get("AXF_SESSION_SYNC_WATCH_S") or 1.0))
 
 
+def _desk_tick() -> dict[str, Any]:
+    """One round of Brownie's timers, only while a helper is working on something."""
+    link = _read_link()
+    if not any(a.get("status") == "working" and not a.get("main") for a in (link.get("assignments") or {}).values()):
+        return {"ok": True, "fired": []}
+    return _run("desk-sweep", {}, DESK_CALLER)
+
+
+def _desk() -> None:
+    while True:
+        time.sleep(float(os.environ.get("AXF_SESSION_SYNC_DESK_S") or DESK_EVERY_S))
+        try:
+            if cx.plugin_enabled(FOLDER):
+                _desk_tick()
+        except Exception as exc:  # noqa: BLE001
+            cx.log(FOLDER, f"helper desk: {type(exc).__name__}", "warn")
+
+
 if os.environ.get("AXF_SESSION_SYNC_WATCH") != "0":
     threading.Thread(target=_watch, name="session-sync-watch", daemon=True).start()
+    threading.Thread(target=_desk, name="session-sync-desk", daemon=True).start()
 
 
 @router.get("/events")
@@ -389,6 +439,12 @@ def sync_file(request: Request) -> dict[str, Any]:
 def consistency(request: Request) -> dict[str, Any]:
     caller(request)
     return _consistency(False)
+
+
+@router.get("/accounts")
+def accounts(request: Request) -> dict[str, Any]:
+    """The multi-token manager: every connected account with labels only (state, email, plan, last 4, expiry, models, usage, write-ups). A helper sees its own."""
+    return _answer(_run("accounts-read", {}, caller(request)))
 
 
 @router.get("/settings")
@@ -550,6 +606,70 @@ async def put_settings(request: Request) -> dict[str, Any]:
     return _answer(_run("settings", body, who))
 
 
+@router.post("/pair/start")
+async def pair_start(request: Request) -> dict[str, Any]:
+    """Helper: a one-time link for the page that takes this account's token. Brett may pass `account` to replace a helper's token."""
+    return await _write(request, "pair-start")
+
+
+def _signed_in(request: Request) -> None:
+    """The token page needs a person in a browser: a signed-in hub session, never a bearer token, a session header or an agent."""
+    c = getattr(request.state, "axf_user", None)
+    if c is None or getattr(c, "via", "token") != "session":
+        raise HTTPException(403, "sign in to the console in a browser to do this")
+    for h in (*AGENT_HEADERS, *SESSION_HEADERS):
+        v = (request.headers.get(h) or "").strip()
+        if v and v != "console":
+            raise HTTPException(403, "this page is for a person, not a session")
+
+
+def _node_json(args: list[str], stdin: str = "") -> dict[str, Any]:
+    """Run the CLI with stdin (never argv, so a token can't show in `ps`). Answers its JSON; stderr is dropped, not logged."""
+    env = {**os.environ, "AXF_SESSION_LINK_FILE": str(link_file())}
+    proc = subprocess.run(["node", str(CLI), *args], cwd=ROOT, input=stdin, capture_output=True, text=True, timeout=120, env=env)
+    try:
+        return json.loads(proc.stdout.strip().splitlines()[-1])
+    except (ValueError, IndexError):
+        return {"ok": False, "message": "the token check failed; nothing was kept"}
+
+
+@router.post("/pair/peek")
+async def pair_peek(request: Request) -> dict[str, Any]:
+    """Whose pairing link is this (the page's first line). In the body, so the code stays out of access logs. Doesn't use it up."""
+    _signed_in(request)
+    body = await _json_body(request)
+    return _node_json(["pair-peek", "--json"], json.dumps({"code": str(body.get("code") or "")[:200]}))
+
+
+@router.post("/pair/redeem")
+async def pair_redeem(request: Request) -> dict[str, Any]:
+    """The one place a token is typed: `code` + `token`, from a signed-in browser. Verified, sealed for the VPS host, then gone."""
+    _signed_in(request)
+    body = await _json_body(request)
+    res = _node_json(["pair-ingest"], json.dumps({"code": body.get("code"), "token": body.get("token")}))
+    body.clear()
+    if not res.get("ok"):
+        raise HTTPException(400, str(res.get("message") or "refused")[:300])
+    done = _run("account-credential", {"account": res["account"], "credential": res["credential"], "models": res.get("models") or {}}, DESK_CALLER)
+    return {"ok": done.get("ok") is not False, "account": res["account"], "agent": res.get("agent", ""), "credential": res["credential"], "models": res.get("models") or {}}
+
+
+@router.post("/accounts/revoke")
+async def accounts_revoke(request: Request) -> dict[str, Any]:
+    """Brett only: drop a helper's sealed token (`account`). Its jobs wait until it pairs again or he takes them back."""
+    body = await _json_body(request)
+    who = caller(request, body)
+    if not who["brett"]:
+        raise HTTPException(403, "only Brett can do that: revoke")
+    return _answer(_run("token-revoke", {"account": str(body.get("account") or "")[:120]}, who))
+
+
+@router.post("/account-report")
+async def account_report(request: Request) -> dict[str, Any]:
+    """A session reports its own account's model access (`models`), limit (`limited`) or usage (`usagePct`)."""
+    return await _write(request, "account-report")
+
+
 @router.post("/consistency")
 async def fix_consistency(request: Request) -> dict[str, Any]:
     """Make every store that tracks a handover agree with the link (Auto fix)."""
@@ -618,12 +738,32 @@ def _emit_health() -> None:
         pass
 
 
+def _login_problems(link: dict[str, Any]) -> list[str]:
+    """Helpers holding work whose login needs a person, and logins about to expire (the pre-expiry alert)."""
+    now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    soon = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() + 14 * 86400))
+    held = {a.get("account") for a in (link.get("assignments") or {}).values() if a.get("status") in ("queued", "working") and not a.get("main")}
+    out = []
+    for name, x in (link.get("accounts") or {}).items():
+        c = x.get("credential") or {}
+        label = f"Helper {x.get('helperNo') or '?'}"
+        exp = str(c.get("expiresAt") or "")
+        if name in held and (c.get("state") in ("none", "expired", "revoked", None) or (exp and exp <= now)):
+            out.append(f"{label}: login needed, its jobs are waiting")
+        elif c.get("state") == "ok" and exp and exp <= soon:
+            out.append(f"{label}: login expires {exp[:10]}")
+    return out
+
+
 def _health_item() -> dict[str, Any]:
     r = _consistency(False)
     link = _read_link()
     live = [s for s in (link.get("sessions") or {}).values() if not s.get("endedAt")]
     if not cx.plugin_enabled(FOLDER):
         return {"status": "warn", "summary": "Session sync is off: claims are not enforced, builds run unrestricted"}
+    logins = _login_problems(link)
+    if logins:
+        return {"status": "warn", "summary": "; ".join(logins)[:300]}
     if r.get("drift"):
         return {"status": "warn", "summary": f"{r['drift']} place(s) disagree with the session link", "details": {k: r.get(k) for k in ("patches", "missingChildren", "staleStore")}}
     return {"status": "ok", "summary": f"{len(live)} session(s) linked, every store agrees"}
