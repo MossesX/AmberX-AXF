@@ -37,6 +37,7 @@
     ],
     "mentions": [
       "_claude/memory/STATUS.md",
+      "deploy/claude-login.test.mjs",
       "_claude/rules/RULES.md",
       "_claude/THREADS.md",
       "deploy/claude-headless.sh",

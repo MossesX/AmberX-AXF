@@ -36,7 +36,7 @@
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/claude-accounts",
     "env": ["AXF_CLAUDE_ACCOUNTS_DATA_DIR"],
-    "mentions": [],
+    "mentions": ["deploy/claude-login.mjs"],
     "keeps": [
       "/root/.claude-accounts and /usr/local/bin/claude-account on the VPS host: the saved logins and the script belong to the host, not to this plugin"
     ]
