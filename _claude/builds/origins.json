@@ -445,6 +445,18 @@
    "from": "detail",
    "addenda": []
   },
+  "banner-widgets": {
+   "said": "I need that [usage meter] to be in the banner too. And then I need to right-click the banner and select which widgets appear in it. It's getting cluttered. And some of them are way too big. I need settings for them all so I can change how big they are, how much room they take up.\n\nAddendum (voice, Nov 4): Start that as a second build right now. Merge it right away. Deploy it.",
+   "at": "2026-11-05T02:08:38.606Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "basic-filter": {
    "said": "'Add new plugin called basic filter that opens a dialog with search and filter options that you can attach to any dataset. Also comes with a toolbar customized in the plugins settings like hide and show and interface to configure using preset actions to select from in a grid with expandable rows that display everything about the action and style. Live floating preview of toolbar that hot renders when something is edited. By default toolbar is on with 1 button to open the sort and filter dialog. Attach it to the dataset in plugin switches.' Datasets = every lib-datagrid grid (registers itself) + anything registering through the new lib-datagrid dataset registry; web only, Android twin deferred. All Opus (console plugin UI + small web lib hook). Profile: Refactor (Brett's pick).",
    "at": "2026-10-28",
