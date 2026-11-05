@@ -9,6 +9,9 @@ Claude reports: the saved logins stay on the host and nothing here reads them.
   POST use        { name }: asks to switch (one held axHub vps.run, fixed command)
   POST save       { name }: asks to save the current login under that name (same)
 
+Capability axf.claude-accounts@1 gives other plugins the same view and the same held switch (AI keys lists these accounts
+beside its own keys); it hands out names, types, emails and plans, never a credential.
+
 Reads go over the Terminal's VPS host connection (capability axf.headless@1). Writes are one held axHub `vps.run` through
 Vinny (axf.vinny@1), so nothing changes on the host until Brett's veto window or Approve in the Follow Amber pop-up.
 Every command here is a constant plus a name that passed NAME, so no caller can reach a free-form shell.
@@ -37,7 +40,8 @@ SEP = "---axf-accounts---"
 READ_COMMAND = f'export PATH="$HOME/.local/bin:$PATH"; {SCRIPT} list; echo {SEP}; timeout 15 claude auth status 2>/dev/null || true'
 READ_TTL_S = 30.0
 PENDING_TTL_S = 180.0  # the 90 s veto countdown and some room; a call he denied clears by itself after this
-LIST_LINE = re.compile(r"^(\*)?\s*([a-z0-9-]{1,32})(?: \(active\))?$")
+LIST_LINE = re.compile(r"^(\*)?\s*([a-z0-9-]{1,32})(?: \[(token|api key)\])?(?: \(active\))?$")
+TYPES = {"": "login", "token": "token", "api key": "api-key"}  # what `claude-account list` marks each row with
 NOTE = "Running builds keep their account; new launches use the active one."
 
 _lock = threading.RLock()
@@ -73,16 +77,17 @@ def clean_name(raw: Any) -> str:
     return name
 
 
-def parse_list(text: str) -> tuple[list[str], str]:
-    """`claude-account list` → (names, active name). Anything that isn't a well-formed row is dropped."""
-    names, active = [], ""
+def parse_list(text: str) -> tuple[list[str], str, dict[str, str]]:
+    """`claude-account list` → (names, active name, name → type). Anything that isn't a well-formed row is dropped."""
+    names, active, types = [], "", {}
     for line in (text or "").splitlines():
         m = LIST_LINE.match(line.rstrip())
         if m:
             names.append(m.group(2))
+            types[m.group(2)] = TYPES[m.group(3) or ""]
             if m.group(1):
                 active = m.group(2)
-    return names, active
+    return names, active, types
 
 
 def parse_login(text: str) -> dict[str, str]:
@@ -108,8 +113,8 @@ def _read() -> dict[str, Any]:
         else:
             r = svc.vps_read(READ_COMMAND, 25)
         listing, _, status = str(r.get("out") or "").partition(SEP)
-        names, active = parse_list(listing)
-        value = {"ready": bool(r.get("ready")), "why": str(r.get("why") or "")[:200], "names": names, "active": active, "login": parse_login(status.strip())}
+        names, active, types = parse_list(listing)
+        value = {"ready": bool(r.get("ready")), "why": str(r.get("why") or "")[:200], "names": names, "active": active, "types": types, "login": parse_login(status.strip())}
         _cache.update(at=now, value=value)
         return value
 
@@ -140,7 +145,8 @@ def view() -> dict[str, Any]:
     if active and login.get("email") and not changed:
         _remember(active, login)
         seen[active] = login
-    rows = [{"name": n, "active": n == active, "email": str((seen.get(n) or {}).get("email") or ""), "plan": str((seen.get(n) or {}).get("plan") or "")} for n in names]
+    rows = [{"name": n, "active": n == active, "type": v["types"].get(n, "login"), "email": str((seen.get(n) or {}).get("email") or ""),
+             "plan": str((seen.get(n) or {}).get("plan") or "")} for n in names]
     return {"ok": True, "ready": v["ready"], "why": v["why"], "accounts": rows, "active": active, "login": login, "loginChanged": changed, "pending": pending, "note": NOTE}
 
 
@@ -234,3 +240,16 @@ async def save(request: Request) -> dict[str, Any]:
     by = _who(request)
     name = await _name(request)
     return await run_in_threadpool(ask, "save", name, by)
+
+
+class AccountsService:
+    """axf.claude-accounts@1: the accounts on the VPS (no credentials) and the one held switch."""
+
+    def view(self) -> dict[str, Any]:
+        return view()
+
+    def use(self, name: str, by: str) -> dict[str, Any]:
+        return ask("use", clean_name(name), by)
+
+
+plugin_services.provide("axf.claude-accounts@1", AccountsService(), FOLDER)

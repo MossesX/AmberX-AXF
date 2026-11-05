@@ -22,13 +22,25 @@ POST /active {kind, id}  (id "" = no active key of that kind: the assistant prof
 POST /keys {label, key, refresh} | {label, credentials} for a pair · PATCH /keys/{id} {refresh} adds the refresh token
 to an older single token · GET /vps · POST /vps/sync · POST /switch {kind, reason} · POST /order {ids} (account
 priority) · POST /validate {step, …} (the add-account wizard checks one step without saving or renewing anything) ·
-POST /keys/{id}/test {part: "access"} tests only the access token (no renewal)
+POST /keys/{id}/test {part: "access"} tests only the access token (no renewal). GET /keys also answers `vpsAccounts`;
+POST /active {id: "vps:<name>"} and POST /switch reach them (below).
 
 Several Claude accounts (Brett, Nov 2 2026): every subscription pair shows the email of the Claude account it belongs to
 (Anthropic's OAuth profile, looked up when the pair is added, re-tested or first refreshed; never blocks a save). When a
 headless build stops on "You've hit your weekly limit" (or any usage/credit limit), deploy/claude-headless.sh calls
 POST /switch: the next saved account that still answers becomes active, is written to the VPS, and the build re-runs on
 it. The banner's Claude badge names the active account's email.
+
+One store for the whole console (Brett, Nov 5 2026): keys.json holds the keys, active choice, priority order and VPS state
+for every caller; nothing here is keyed on who is asking. Only console admins and the console's own token (AXF_TOKEN) get
+in (`_admins_only`, on top of the console's plugin gate). Per-user keyring files, should any turn up in the data folder,
+are merged into keys.json at startup and kept as .bak (`migrate_user_stores`).
+
+The logins saved on the VPS (Claude accounts plugin, `claude-account`, ~/.claude-accounts) are a second keyring this
+plugin doesn't own: GET /keys lists them as `vpsAccounts` (name, kind, email, plan; never a credential) and POST /active
+{id: "vps:<name>"} or POST /switch moves between them with the Claude accounts plugin's one held switch
+(axf.claude-accounts@1). Their tokens are deliberately never copied here: this plugin renews every pair it holds, and a
+renewal rotates the refresh token, which would log out the saved copy and every build running on a snapshot of it.
 """
 from __future__ import annotations
 
@@ -42,7 +54,7 @@ import time
 from pathlib import Path
 from typing import Any, Callable
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 
 import console_context as cx
 import plugin_services
@@ -50,7 +62,17 @@ import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf import anthropic_keys as ak
 from axf_server import http, storage
 
-router = APIRouter()
+
+
+def _admins_only(request: Request) -> None:
+    """A console admin (signed in through the wall) or the console's token, never a wall user, whatever they were granted.
+    Who passes makes no difference to what they see: there is one store."""
+    user = getattr(request.state, "axf_user", None)
+    if user is not None and not getattr(user, "admin", False):
+        raise HTTPException(403, "AI keys is for console admins only.")
+
+
+router = APIRouter(dependencies=[Depends(_admins_only)])
 _lock = threading.Lock()
 FOLDER = "ai-keys"
 KINDS = {"anthropic": "Anthropic API key", "claude-code": "Claude subscription"}
@@ -62,6 +84,8 @@ OAUTH_CLIENT_ID = os.environ.get("AXF_CLAUDE_OAUTH_CLIENT_ID") or "9d1c250a-e61b
 REFRESH_AHEAD_MS = 30 * 60 * 1000  # the thread refreshes pairs this close to expiry
 FRESH_MS = 5 * 60 * 1000  # a read refreshes a pair this close to expiry
 VPS_LOG_MAX = 30
+VPS_PREFIX = "vps:"  # ids of the accounts saved on the VPS, which live in ~/.claude-accounts and not in keys.json
+HOST_LIMIT_MS = 24 * 3600 * 1000  # a VPS account that hit a limit isn't picked again for this long
 PROFILE_URL = os.environ.get("AXF_CLAUDE_PROFILE_URL") or "https://api.anthropic.com/api/oauth/profile"
 # A Claude account that can't take more work right now: out of credits, or over its weekly / daily / 5-hour limit.
 LIMIT_RE = re.compile(r"hit your (?:weekly |daily |session |5-hour )?limit|weekly limit|usage limit|limit reached|rate limit"
@@ -81,7 +105,8 @@ def _load() -> dict[str, Any]:
     active = raw.get("active") if isinstance(raw.get("active"), dict) else {}
     vps = raw.get("vps") if isinstance(raw.get("vps"), dict) else {}
     order = [str(x) for x in raw.get("order") or [] if str(x) in keys]
-    return {"keys": keys, "active": {k: str(active.get(k) or "") for k in KINDS}, "vps": vps, "order": order}
+    limited = raw.get("hostLimited") if isinstance(raw.get("hostLimited"), dict) else {}
+    return {"keys": keys, "active": {k: str(active.get(k) or "") for k in KINDS}, "vps": vps, "order": order, "hostLimited": limited}
 
 
 def ranked(db: dict[str, Any], kind: str) -> list[str]:
@@ -93,6 +118,73 @@ def ranked(db: dict[str, Any], kind: str) -> list[str]:
 
 def _save(db: dict[str, Any]) -> None:
     storage.write_json(data_dir() / "keys.json", db, indent=None)  # atomic, 0600, folder 0700
+
+
+def _user_stores() -> list[Path]:
+    """Per-user keyrings in the data folder, oldest first: users/<name>/keys.json, users/<name>.json, keys-<name>.json."""
+    d = data_dir()
+    found = [*d.glob("users/*/keys.json"), *d.glob("users/*.json"), *d.glob("keys-*.json")]
+    return sorted((f for f in found if f.is_file()), key=lambda f: f.stat().st_mtime)
+
+
+def _same_key(a: dict[str, Any], b: dict[str, Any]) -> bool:
+    return any(a.get(f) and b.get(f) and secrets.compare_digest(str(a[f]), str(b[f])) for f in ("key", "refresh"))
+
+
+def migrate_user_stores() -> dict[str, Any]:
+    """Merge every per-user keyring into keys.json: no duplicates (same key or refresh token), labels, emails, pairs, tests
+    and priority kept, an active choice already set wins, then the newest store's. Each source becomes <file>.bak, never
+    deleted; a file that can't be read is left alone. Logs counts and file names, never a key."""
+    out: dict[str, Any] = {"stores": 0, "added": 0, "duplicates": 0, "skipped": []}
+    with _lock:
+        sources = _user_stores()
+        if not sources:
+            return out
+        db, merged = _load(), []
+        chosen = {kind for kind in KINDS if db["active"].get(kind) in db["keys"]}  # the console's own pick stays
+        for src in sources:
+            try:
+                raw = json.loads(src.read_text("utf-8"))
+                keys = raw["keys"]
+                if not isinstance(keys, dict):
+                    raise ValueError
+            except (OSError, ValueError, KeyError, TypeError):
+                out["skipped"].append(src.name)
+                continue
+            ids: dict[str, str] = {}
+            for kid, rec in keys.items():
+                if not isinstance(rec, dict) or rec.get("kind") not in KINDS or not rec.get("key"):
+                    continue
+                same = next((k for k, v in db["keys"].items() if _same_key(v, rec)), "")
+                if same:
+                    db["keys"][same] = {**rec, **db["keys"][same]}  # what's stored wins, the copy only fills gaps
+                    ids[kid] = same
+                    out["duplicates"] += 1
+                    continue
+                new = str(kid) if str(kid) not in db["keys"] else secrets.token_hex(6)
+                db["keys"][new] = rec
+                ids[kid] = new
+                out["added"] += 1
+            active = raw.get("active") if isinstance(raw.get("active"), dict) else {}
+            for kind in KINDS:  # oldest first, so the newest store that has a choice decides
+                if kind not in chosen and ids.get(active.get(kind)):
+                    db["active"][kind] = ids[active[kind]]
+            db["order"] += [ids[k] for k in raw.get("order") or [] if k in ids and ids[k] not in db["order"]]
+            if not db.get("vps") and isinstance(raw.get("vps"), dict):
+                db["vps"] = raw["vps"]
+            merged.append(src)
+            out["stores"] += 1
+        if merged:
+            _save(db)  # first, so a crash below leaves a source to merge again (it dedupes), never a lost key
+            for src in merged:
+                bak, n = src.with_name(src.name + ".bak"), 1
+                while bak.exists():
+                    bak, n = src.with_name(f"{src.name}.bak{n}"), n + 1
+                src.rename(bak)
+    if merged or out["skipped"]:
+        cx.log("system", f"AI keys: merged {out['stores']} per-user store(s) into the console store: {out['added']} key(s) added, "
+                         f"{out['duplicates']} duplicate(s), {len(out['skipped'])} unreadable", "warn" if out["skipped"] else "info")
+    return out
 
 
 def kind_of(key: str) -> str:
@@ -330,9 +422,79 @@ def _err(status: int, msg: str) -> HTTPException:
     return HTTPException(status, msg)
 
 
+def _by(request: Request) -> str:
+    return str(getattr(getattr(request.state, "axf_user", None), "name", "") or "console")
+
+
+def _host_view() -> dict[str, Any]:
+    """What the Claude accounts plugin sees on the VPS, {} when it's off or can't answer: AI keys works without it."""
+    svc = plugin_services.get("axf.claude-accounts@1")
+    if svc is None:
+        return {}
+    try:
+        return svc.view()
+    except Exception as e:  # noqa: BLE001
+        cx.log("system", f"AI keys: couldn't read the accounts on the VPS: {str(e)[:200]}", "warn")
+        return {}
+
+
+def vps_accounts(view: dict[str, Any] | None = None) -> list[dict[str, Any]]:
+    """The accounts saved on the VPS, as listing rows: names, kinds, emails and plans only (they hold no key to show)."""
+    limited = _load()["hostLimited"]
+    rows = []
+    for a in (_host_view() if view is None else view).get("accounts") or []:
+        kind = "anthropic" if a.get("type") == "api-key" else "claude-code"
+        rows.append({"id": VPS_PREFIX + a["name"], "label": a["name"], "kind": kind, "kindLabel": KINDS[kind], "type": a.get("type") or "login",
+                     "active": bool(a.get("active")), "email": a.get("email") or "", "plan": a.get("plan") or "",
+                     "limitedAt": limited.get(a["name"]), "source": "vps"})
+    return rows
+
+
+def _host_use(name: str, by: str) -> dict[str, Any]:
+    """The Claude accounts plugin's one held switch: runs after the veto countdown unless Brett denies it."""
+    svc = plugin_services.get("axf.claude-accounts@1")
+    if svc is None:
+        raise _err(503, "the Claude accounts plugin is off, so the accounts on the VPS can't be switched")
+    return svc.use(name, by)
+
+
+def _host_switch(reason: str, by: str) -> dict[str, Any]:
+    """A limit hit with no pair of AI keys' own: mark the active VPS account and ask for the next subscription one down the
+    list (API-key accounts are never picked: they cost money, so that's a choice for Brett). No probe: the tokens aren't
+    here, so an account that turns out to be limited too is marked by the next hit."""
+    rows = [r for r in vps_accounts() if r["kind"] == "claude-code"]
+    cur = next((r for r in rows if r["active"]), None)
+    now = _now()
+    with _lock:
+        db = _load()
+        if cur:
+            db["hostLimited"][cur["label"]] = now
+            _save(db)
+        limited = db["hostLimited"]
+    at = rows.index(cur) + 1 if cur else 0
+    cands = [r for r in rows[at:] + rows[:at] if r is not cur and now - (limited.get(r["label"]) or 0) > HOST_LIMIT_MS]
+    answer: dict[str, Any] = {"switched": None, "tried": [], "account": {}, "vps": vps_public(_load())}
+    lab = cur["label"] if cur else "the active account"
+    if cands:
+        r = cands[0]
+        try:
+            res = _host_use(r["label"], by)
+            state, error = str(res.get("state") or ""), str(res.get("message") or "") if res.get("state") == "failed" else ""
+        except HTTPException as e:
+            state, error = "error", str(e.detail)
+        answer["tried"].append({"id": r["id"], "label": r["label"], "state": state, "error": error})
+        if state in ("done", "waiting"):
+            answer["switched"] = {"from": cur["id"] if cur else "", "to": r["id"], "label": r["label"], "host": True, "state": state}
+            answer["account"] = {"id": r["id"], "label": r["label"], "email": r["email"], "name": "", "kind": "claude-code"}
+            cx.log("system", f"AI keys: {lab} on the VPS hit a limit{(' (' + reason + ')') if reason else ''}; switching to {r['label']}", "warn")
+            return answer
+    cx.log("system", f"AI keys: {lab} on the VPS hit a limit and no other saved account could take over", "error")
+    return answer
+
+
 @router.get("/keys")
 def get_keys() -> dict[str, Any]:
-    return listing()
+    return {**listing(), "vpsAccounts": vps_accounts()}
 
 
 @router.post("/keys")
@@ -506,8 +668,10 @@ def test_key(kid: str, body: dict[str, Any] | None = None) -> dict[str, Any]:
 
 
 @router.post("/active")
-def set_active(body: dict[str, Any]) -> dict[str, Any]:
+def set_active(body: dict[str, Any], request: Request) -> dict[str, Any]:
     kind, kid = str(body.get("kind") or ""), str(body.get("id") or "")
+    if kid.startswith(VPS_PREFIX):
+        return {**listing(), "vpsSwitch": _host_use(kid[len(VPS_PREFIX):], _by(request))}
     with _lock:
         db = _load()
         if kid:
@@ -601,9 +765,10 @@ class KeysService:
 
 
 @router.post("/switch")
-def switch_account(body: dict[str, Any]) -> dict[str, Any]:
+def switch_account(body: dict[str, Any], request: Request) -> dict[str, Any]:
     """The active account hit a limit (a headless build's "You've hit your weekly limit", say): mark it and make the next
-    saved account that still answers the active one (written to the VPS). {switched: null} when none can take over."""
+    saved account that still answers the active one (written to the VPS). {switched: null} when none can take over.
+    With no subscription saved here, the switch moves between the accounts saved on the VPS (`switched.host`)."""
     kind = str(body.get("kind") or "claude-code")
     if kind not in KINDS:
         raise _err(400, f"kind is one of {', '.join(KINDS)}")
@@ -611,6 +776,11 @@ def switch_account(body: dict[str, Any]) -> dict[str, Any]:
     with _lock:
         db = _load()
         was = db["active"].get(kind) or ""
+        host = kind == "claude-code" and not ranked(db, kind)
+    if host:
+        return _host_switch(reason, _by(request))
+    with _lock:
+        db = _load()
         if was in db["keys"]:
             db["keys"][was]["limitedAt"] = _now()
             _save(db)
@@ -845,6 +1015,11 @@ def _refresh_loop() -> None:
             cx.log("system", f"AI keys: refresh pass failed: {str(e)[:200]}", "warn")
         time.sleep(600)
 
+
+try:
+    migrate_user_stores()
+except Exception as e:  # noqa: BLE001 — a bad old file must not take the plugin down
+    cx.log("system", f"AI keys: merging per-user stores failed: {e.__class__.__name__}", "error")
 
 if not os.environ.get("AXF_AI_KEYS_NO_THREAD"):
     threading.Thread(target=_refresh_loop, name="ai-keys-refresh", daemon=True).start()
