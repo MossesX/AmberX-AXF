@@ -702,8 +702,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 16:38 UTC · `molly-multi-instance-tabs` PR #328 (current) · builds-live
-- 2026-11-04 16:38 UTC · `molly-multi-instance-tabs` s4 done, → built (current) · orchestrator
 - 2026-11-04 16:40 UTC · `jump-menu-asset` s5 done, → complete, note (current) · foreign-write
 - 2026-11-04 16:40 UTC · `molly-multi-instance-tabs` s1 done, s2 done, s3 done, s4 done, → complete (current) · foreign-write
 - 2026-11-04 16:40 UTC · `tab-group-assets` s6 done, → built, note (current) · builds-live
@@ -1102,6 +1100,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-05 11:50 UTC · `ui-review-alarm` → pending, note (angel) · reconciler
 - 2026-11-05 11:50 UTC · `handoff-2-addenda-r2` → pending, note (current) · reconciler
 - 2026-11-05 18:36 UTC · `assistant-chat-mode` added (8 steps) (current) · orchestrator
+- 2026-11-05 18:36 UTC · `assistant-chat-mode` → running (current) · orchestrator
+- 2026-11-05 18:36 UTC · `assistant-chat-mode` s1 done (current) · orchestrator
 
 ## Token passes (log)
 
