@@ -119,7 +119,7 @@ export function statusAsset(items: FeedItem[], read: Set<string>, n: number, loa
 export interface BannerHost {
   registry: { register(raw: unknown, source: 'app', origin: string): unknown };
   setBadge(name: string, n: number): void;
-  attachToBanner(a: { type: string; id: string; at: 'left' | 'center' | 'right'; order?: number; origin: string }): unknown;
+  attachToBanner(a: { type: string; id: string; at: 'left' | 'center' | 'right'; order?: number; origin: string; widget?: Record<string, unknown> }): unknown;
   detachFromBanner(keyOrOrigin: string): void;
 }
 
@@ -127,7 +127,7 @@ export interface BannerHost {
 export function paintWhatsNew(rt: BannerHost, items: FeedItem[], read: Set<string>, n: number, show: boolean, loading = false): void {
   rt.registry.register(statusAsset(items, read, n, loading), 'app', ID);
   rt.setBadge(COUNTER, unread(items, read).length);
-  if (show) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'right', order: 22, origin: ID });
+  if (show) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'right', order: 22, origin: ID, widget: { label: "What's new ticker", icon: 'sparkles', size: 'compact', priority: 2, aliases: ['ticker', 'whats new', 'new changes'] } });
   else rt.detachFromBanner(`status:${ASSET_ID}`);
 }
 

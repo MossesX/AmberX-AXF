@@ -6,6 +6,7 @@ import { ContextMenuHost, DialogHost, ToastHost, type DialogMap } from './compon
 import { Inspector } from './studio/Inspector';
 import { builtinDialogs } from './studio/builtinDialogs';
 import { bannerSettingsDialog } from './components/BannerSettings';
+import { bannerWidgetsDialog } from './components/BannerWidgets';
 import { chromeDialogs, installChrome } from './components/ChromeContext';
 import { FloatingWindowsHost, TabRenderersProvider, windowDialogs, useWindowShortcuts, type TabRenderers } from './windows/WindowHost';
 import { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
@@ -67,7 +68,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
   useWindowShortcuts();
   // chrome-settings@1: Settings / Change / Move on every tab group, toolbar, banner, nav and menu bar (once per runtime)
   installChrome(rt);
-  const allDialogs: DialogMap = { ...builtinDialogs, ...bannerSettingsDialog, ...chromeDialogs, ...windowDialogs, ...terminalDialog, ...dialogs };
+  const allDialogs: DialogMap = { ...builtinDialogs, ...bannerSettingsDialog, ...bannerWidgetsDialog, ...chromeDialogs, ...windowDialogs, ...terminalDialog, ...dialogs };
   // Live search: views, dialogs and page text go into the runtime's search index; picks are focused here.
   useSearchHost(declaredViews, allDialogs);
   const view = views[state.view] ?? Object.values(views)[0];

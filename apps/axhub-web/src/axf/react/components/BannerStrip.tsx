@@ -9,14 +9,13 @@
  * `useBannerStripFollower` runs in the app's own frame inside the same host: it opens those views.
  */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import type { BadgeData } from '../../core/types';
 import type { AxfRuntime } from '../../core/runtime';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { BANNER_STRIP_CHANNEL, BANNER_STRIP_MESSAGE, parseBannerStripChannel, parseBannerStripMessage, type BannerStripChannelMessage, type BannerStripMessage } from '../bannerStrip';
-import { BannerBadge } from './Banner';
+import { BannerWidgetBody } from './Banner';
 import { bannerLabel, bannerPrefs, setBannerPrefs, useBannerPrefsTick, useKnownBanners } from './BannerSettings';
+import { BannerMore, bannerItemAttrs, useBannerOverflow } from './BannerWidgets';
 import { FrameBanners } from './Slots';
-import { WidgetView } from './Widgets';
 
 /** Anything the strip opened that draws outside it (the framework's dialogs, menus, toasts, windows; a plugin's portal). */
 const OVERLAY = '.fx-backdrop, [role="dialog"], [role="menu"], [role="listbox"], .fx-toast, .fx-window, [data-fx-overlay]';
@@ -47,15 +46,20 @@ const toHost = (m: BannerStripMessage) => { if (window.parent !== window) window
 function StripWidgets() {
   const rt = useRuntime();
   useAxfState();
-  const list = rt.hostAttachments('banner').filter((a) => rt.registry.has(a.type as never, a.id));
+  const root = useRef<HTMLDivElement>(null);
+  // the same choices as the app's own bar: hidden stays hidden, sizes hold, what doesn't fit goes into ⋯
+  const list = rt.hostAttachments('banner')
+    .filter((a) => rt.registry.has(a.type as never, a.id))
+    .map((a) => ({ ...a, key: `${a.type}:${a.id}` }))
+    .filter((a) => rt.bannerWidgetShown(a.key));
+  const overflow = useBannerOverflow(root, list, true);
   if (!list.length) return null;
+  const typed = (k: string) => { const a = list.find((x) => x.key === k); return a ? <span data-axf-banner-item={k} {...bannerItemAttrs(rt, k)}><BannerWidgetBody type={a.type} id={a.id} /></span> : null; };
   return (
-    <div className="fx-banner fx-banner-strip__widgets" role="toolbar" aria-label="Banner widgets" data-fx-ctx-target="banner">
+    <div ref={root} className="fx-banner fx-banner-strip__widgets" role="toolbar" aria-label="Banner widgets" data-fx-ctx-target="banner">
       <div className="fx-banner__side is-right">
-        {list.map((a) => {
-          const data = (rt.registry.get(a.type as never, a.id) as { data: unknown } | undefined)?.data;
-          return <span key={`${a.type}:${a.id}`} className="fx-banner__item" data-axf-banner-item={`${a.type}:${a.id}`}>{a.type === 'badge' ? <BannerBadge data={data as BadgeData} /> : <WidgetView type={a.type} id={a.id} host="banner" />}</span>;
-        })}
+        {list.filter((a) => !overflow.includes(a.key)).map((a) => <span key={a.key} className="fx-banner__item" data-axf-banner-item={a.key} {...bannerItemAttrs(rt, a.key)}><BannerWidgetBody type={a.type} id={a.id} /></span>)}
+        <BannerMore keys={overflow} draw={typed} />
       </div>
     </div>
   );

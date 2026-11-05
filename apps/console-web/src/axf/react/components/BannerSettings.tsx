@@ -482,6 +482,9 @@ export function BannerSettingsPanel({ initial }: { initial?: string }) {
   };
   return (
     <div className="fx-banner-settings">
+      <div className="fx-row fx-row--wrap">
+        <Button tone="ghost" icon="layers" onClick={() => rt.dispatch('banner.widgets')}>Widgets on the top bar…</Button>
+      </div>
       <ApplyToAllLook />
       <TabGroup id="banner-settings.banners" label="Banners" className="fx-banner-settings__tabs" value={tab} onChange={setTab} tabs={list.map((x) => ({ value: x.id, label: bannerLabel(x), icon: x.icon ?? 'bell' }))} />
       {b && (

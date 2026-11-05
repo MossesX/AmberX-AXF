@@ -52,7 +52,7 @@ function paint(rt: AxfRuntime) {
   painted = key;
   rt.registry.register(badgeAsset(s.known, s.provider), 'app', ID);
   rt.setBadge(COUNTER, s.ok ? 1 : 0);
-  if (show) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'right', order: 23, origin: ID });
+  if (show) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'right', order: 23, origin: ID, widget: { label: 'AI status', size: 'compact', priority: 6, aliases: ['ai'] } });
   else rt.detachFromBanner(`status:${ASSET_ID}`);
 }
 
