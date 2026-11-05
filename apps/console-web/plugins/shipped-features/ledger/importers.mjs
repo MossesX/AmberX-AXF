@@ -90,7 +90,7 @@ export function applyPr(db, pr, { existing = D.listFeatures(db), builds = D.list
     for (const f of D.featuresOfBuild(db, build.key)) {
       if (!f.builds.some((x) => x.id === build.id && x.role === 'added')) continue;
       const to = f.status === 'cancelled' ? f.status : L.laterStatus(f.status, 'merged');
-      D.putFeature(db, { ...f, status: to, mergedAt: f.mergedAt || p.mergedAt, mergeCommit: f.mergeCommit || p.mergeCommit, prs: [...f.prs, { repo: p.repo, number: p.number, role: 'added' }], files: f.files.length ? f.files : p.files.slice(0, 60) }, { replace: true, why: `PR ${p.key} merged` });
+      D.putFeature(db, { ...f, status: to, plannedAt: f.plannedAt && p.mergedAt && f.plannedAt > p.mergedAt ? p.mergedAt : f.plannedAt, mergedAt: f.mergedAt || p.mergedAt, mergeCommit: f.mergeCommit || p.mergeCommit, prs: [...f.prs, { repo: p.repo, number: p.number, role: 'added' }], files: f.files.length ? f.files : p.files.slice(0, 60) }, { replace: true, why: `PR ${p.key} merged` });
       n += 1;
     }
     for (const e of D.editsOfBuild(db, build.id)) D.putEdit(db, { ...e, status: L.laterStatus(e.status, 'merged'), mergedAt: e.mergedAt || p.mergedAt, pr: e.pr || p.number, commit: e.commit || p.mergeCommit });

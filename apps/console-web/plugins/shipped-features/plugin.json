@@ -23,7 +23,7 @@
   "tabable": {
     "view": "shipped-features",
     "label": "Shipped",
-    "icon": "list-checks"
+    "icon": "check-circle"
   },
   "buildHooks": "ledger/hook.mjs",
   "lifecycle": {
