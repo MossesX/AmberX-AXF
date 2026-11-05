@@ -700,7 +700,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 16:15 UTC · `jump-menu-asset` s2 done, s3 done, s4 done (current) · foreign-write
 - 2026-11-04 16:15 UTC · `settings-placement-everywhere` added (12 steps) (current) · foreign-write
 - 2026-11-04 16:15 UTC · `molly-multi-instance-tabs` added (4 steps) (current) · foreign-write
 - 2026-11-04 16:15 UTC · `app-voice-commands` note (current) · orchestrator
@@ -1100,6 +1099,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-05 02:36 UTC · `amberx-approvals-fix` s4 done (urgent) · orchestrator
 - 2026-11-05 02:36 UTC · `amberx-approvals-fix` s5 done (urgent) · orchestrator
 - 2026-11-05 02:36 UTC · `amberx-approvals-fix` note (urgent) · orchestrator
+- 2026-11-05 02:46 UTC · `banner-widgets` note (current) · orchestrator
 
 ## Token passes (log)
 
