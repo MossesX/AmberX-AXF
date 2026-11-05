@@ -23,6 +23,8 @@ Build `priority-tags`, Opus, agent Snap Sully. Spec and usage: `_claude/memory/d
 
 `.fx-chip { all: unset }` further down `axf.css` wipes every `fx-chip--danger/warning/success` tone, so tone chips across the console render uncoloured. Not fixed here: it would recolour the whole console. The tag colours itself through `data-axf-priority`.
 
+A second one, fixed here: `ROOT` in the orchestrator server was `CLI.parents[3]`, which is `apps/`, not the repo root. The server's origin routes (What Brett said) and the `builds-live` health item looked for their CLIs in `apps/framework/cli/`, where nothing exists. It is now `parents[4]`, with a test that every CLI the server runs is really there.
+
 ## Limits
 
 - Bulk change is on the Builds page through the steps selection; the builds grid has no row selection.
@@ -32,6 +34,6 @@ Build `priority-tags`, Opus, agent Snap Sully. Spec and usage: `_claude/memory/d
 
 ## Tests
 
-`check-build-priority.mjs` 8 new, `merge-queue.test.mjs` 9→11, `land.test.mjs` 92, `check-builds-store.mjs` 37, `build-orchestrator/test.mjs` 33, push-banner 178, agent-slots 19, plugin-commands 41. Theme, controls, toolbars, chrome and help checks pass. Console typecheck and build pass.
+`check-build-priority.mjs` 8 new, `merge-queue.test.mjs` 9→11, `land.test.mjs` 92, `check-builds-store.mjs` 37, `build-orchestrator/test.mjs` 33, `build-orchestrator/test.py` 5→11, push-banner 178, agent-slots 19, plugin-commands 41. Theme, controls, toolbars, chrome and help checks pass. Console typecheck and build pass.
 
 Shots: `priority-tags/shots/` (mock data).

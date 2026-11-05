@@ -32,7 +32,7 @@ import plugin_services
 
 router = APIRouter()
 CLI = Path(__file__).resolve().parent.parent / "orchestrator.mjs"
-ROOT = CLI.parents[3]
+ROOT = CLI.parents[4]  # the repo root
 MAX_BODY = 256 * 1024
 FOLDER = CLI.parent.name
 LIVE_CLI = ROOT / "framework" / "cli" / "builds-live.mjs"
