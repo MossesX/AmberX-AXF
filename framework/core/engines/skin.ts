@@ -19,17 +19,15 @@ import type { AppearanceChange, AppearanceDocument } from './appearance';
 import { APPEARANCE_FRAME } from './appearance';
 import { DESIGN_OVERRIDES_KEY, normalizeDesignPackage, type DesignPackageData } from './designpackage';
 import { spacingOf } from './spacing';
+import { SKIN_NEVER, normalizeLookPart, type AppLookDocument, type LookPart } from './skin-rules.mjs';
+
+export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, SKIN_NEVER, appLookPath, backToSkin, newAppLook, normalizeAppLook, overriddenSlots, parseAppLook, pickSkin, restoreAppDefault, setUseSkin, undoRestore } from './skin-rules.mjs';
+export type { AppLookDocument, AppSkinState, LookPart } from './skin-rules.mjs';
 
 export const SKIN_TYPE = 'skin';
 export const SKIN_FRAME = 'skin@1';
-export const APP_LOOK_FRAME = 'app-look@1';
-export const APP_LOOK_PROJECT = 'shared';
-export const APP_LOOK_MAX_BYTES = 48 * 1024;
-export const appLookPath = (appId: string): string => `settings/looks/${appId}.json`;
 /** Setting keys of a shared document that still reach every app: control@1 token overrides. */
 export const SHARED_SETTING_PREFIXES: readonly string[] = ['axf.tokens.'];
-/** Slots a skin never sets. */
-export const SKIN_NEVER: readonly string[] = ['uac-policy', 'help', SKIN_TYPE, 'design-package', 'interface'];
 
 export interface SkinExtras { spacing?: string; hidden?: Record<string, boolean>; settings?: Record<string, unknown> }
 export interface SkinData {
@@ -42,20 +40,6 @@ export interface SkinData {
   preview?: { caption?: string; image?: string };
   /** Spacing and chrome the skin needs shown or hidden. */
   extras?: SkinExtras;
-}
-/** A look: what a snapshot holds and what picks add. */
-export interface LookPart { slots?: Record<string, string>; spacing?: string; hidden?: Record<string, boolean>; settings?: Record<string, unknown> }
-export interface AppSkinState { use: boolean; id: string; overrides: Record<string, string> }
-export interface AppLookDocument {
-  $axf: typeof APP_LOOK_FRAME;
-  app: string;
-  default: LookPart;
-  own: LookPart;
-  skin: AppSkinState;
-  /** What Restore replaced: one undo. */
-  undo?: { own: LookPart; skin: AppSkinState; at: string } | null;
-  updatedBy?: string;
-  updatedAt?: string;
 }
 /** Where an app's app-look document is kept: the hub, or a setting without one. `failed` = unreadable: nothing is written. */
 export interface AppLookStore {
@@ -70,6 +54,11 @@ export interface SkinEntry { id: string; name: string; kind: 'skin' | 'design-pa
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
 const ID = /^[a-z0-9][a-z0-9-]*$/;
 const THEMES = { layoutTheme: 'layout', colorTheme: 'color-theme', styleTheme: 'style-theme' } as const;
+
+/** The parts of a document a snapshot keeps (never the palette or who saved it). */
+export function snapshotLook(doc: AppearanceDocument | null): LookPart {
+  return normalizeLookPart(doc ?? {});
+}
 
 function idMap(raw: unknown): Record<string, string> {
   const out: Record<string, string> = {};
@@ -153,51 +142,6 @@ export function skinEntries(skins: readonly { id: string; name: string; descript
   return out;
 }
 
-function normalizePart(raw: unknown): LookPart {
-  const d = isObj(raw) ? raw : {};
-  const out: LookPart = {};
-  if (isObj(d.slots)) {
-    out.slots = {};
-    for (const [k, v] of Object.entries(d.slots)) if (ID.test(k) && typeof v === 'string' && ID.test(v)) out.slots[k] = v;
-  }
-  if (typeof d.spacing === 'string' && spacingOf(d.spacing) === d.spacing) out.spacing = d.spacing;
-  if (isObj(d.hidden)) out.hidden = boolMap(d.hidden);
-  if (isObj(d.settings)) out.settings = { ...d.settings };
-  return out;
-}
-function normalizeSkinState(raw: unknown): AppSkinState {
-  const d = isObj(raw) ? raw : {};
-  return { use: d.use === true, id: typeof d.id === 'string' && ID.test(d.id) ? d.id : '', overrides: idMap(d.overrides) };
-}
-
-/** A new app-look: `snapshot` as the default, nothing picked, no skin. */
-export function newAppLook(app: string, snapshot: LookPart): AppLookDocument {
-  return { $axf: APP_LOOK_FRAME, app, default: normalizePart(snapshot), own: {}, skin: { use: false, id: '', overrides: {} }, undo: null };
-}
-
-/** The parts of a document a snapshot keeps (never the palette or who saved it). */
-export function snapshotLook(doc: AppearanceDocument | null): LookPart {
-  return normalizePart(doc ?? {});
-}
-
-export function normalizeAppLook(raw: unknown): AppLookDocument | null {
-  if (!isObj(raw) || raw.$axf !== APP_LOOK_FRAME || typeof raw.app !== 'string' || !isObj(raw.default)) return null;
-  const out = newAppLook(raw.app, raw.default as LookPart);
-  out.own = normalizePart(raw.own);
-  out.skin = normalizeSkinState(raw.skin);
-  if (isObj(raw.undo)) out.undo = { own: normalizePart(raw.undo.own), skin: normalizeSkinState(raw.undo.skin), at: String(raw.undo.at ?? '') };
-  if (typeof raw.updatedBy === 'string') out.updatedBy = raw.updatedBy;
-  if (typeof raw.updatedAt === 'string') out.updatedAt = raw.updatedAt;
-  return out;
-}
-
-export function parseAppLook(text: string | null | undefined): AppLookDocument | null {
-  if (!text || text.length > APP_LOOK_MAX_BYTES) return null;
-  try { return normalizeAppLook(JSON.parse(text)); } catch { return null; }
-}
-
-const without = <T extends Record<string, unknown>>(o: T, keys: readonly string[]): T => Object.fromEntries(Object.entries(o).filter(([k]) => !keys.includes(k))) as T;
-
 /**
  * The document the runtime applies for this app. `shared` only adds the shared token overrides: its slots, spacing and
  * chrome belong to the snapshot now. `skin` is the data of the app's skin; null (unknown id) reads as Use skin off.
@@ -253,29 +197,4 @@ export function lookAfterChange(look: AppLookDocument, change: AppearanceChange,
     next.own.settings = settings;
   }
   return next;
-}
-
-/** Use skin on / off. Off keeps the picked skin and its overrides, so on again is the same look. */
-export function setUseSkin(look: AppLookDocument, on: boolean): AppLookDocument {
-  return { ...look, skin: { ...look.skin, use: on } };
-}
-/** Pick a skin: a different one starts with no overrides. */
-export function pickSkin(look: AppLookDocument, id: string): AppLookDocument {
-  return { ...look, skin: { use: look.skin.use, id, overrides: id === look.skin.id ? look.skin.overrides : {} } };
-}
-/** Per-item "Back to skin". */
-export function backToSkin(look: AppLookDocument, slot: string): AppLookDocument {
-  return { ...look, skin: { ...look.skin, overrides: without(look.skin.overrides, [slot]) } };
-}
-/** Slots where a pick beats the skin (the "overridden" dot). */
-export function overriddenSlots(look: AppLookDocument | null): string[] {
-  return look?.skin.use ? Object.keys(look.skin.overrides) : [];
-}
-/** Back to the snapshot. What it replaced is kept as the one undo. */
-export function restoreAppDefault(look: AppLookDocument, at: string): AppLookDocument {
-  return { ...look, own: {}, skin: { use: false, id: look.skin.id, overrides: {} }, undo: { own: look.own, skin: look.skin, at } };
-}
-/** Undo the last Restore; a second undo does nothing. */
-export function undoRestore(look: AppLookDocument): AppLookDocument {
-  return look.undo ? { ...look, own: look.undo.own, skin: look.undo.skin, undo: null } : look;
 }

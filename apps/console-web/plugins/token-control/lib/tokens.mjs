@@ -14,6 +14,7 @@ import { dirname, join } from 'node:path';
 import { controlPaths } from '../../../../../framework/core/engines/control-rules.mjs';
 import { CONTROL_TOKEN_SLOTS, effectiveTokenOverrides, normalizeTokenOverrides, tokenValueIn, withTokenOverride, withoutTokenOverride } from '../../../../../framework/core/engines/control-tokens.mjs';
 import { ROOT, DATA_DIR, ControlError } from './common.mjs';
+import { setSlotEverywhere } from '../../../../../framework/cli/skins.mjs';
 
 const ASSETS = join(ROOT, 'framework', 'assets');
 const APPEARANCE_MAX = 16 * 1024;
@@ -48,6 +49,8 @@ export function writeAppearance(change, by) {
   writeFileSync(tmp, `${text}\n`);
   renameSync(tmp, f);
   return doc;
+  // apps draw their slots from their own look documents now: a slot set from outside still reaches them all
+  for (const [slot, id] of Object.entries(change.slots ?? {})) setSlotEverywhere(slot, id, doc.updatedBy);
 }
 
 const assetCache = new Map();

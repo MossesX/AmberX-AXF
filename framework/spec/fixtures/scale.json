@@ -524,7 +524,7 @@
           "size": 0.66,
           "weight": 600,
           "tracking": 0,
-          "case": "upper"
+          "case": "normal"
         },
         "mono": {
           "size": 0.88
@@ -553,7 +553,7 @@
         "--fx-type-eyebrow-weight": "600",
         "--fx-type-eyebrow-tracking": "0em",
         "--fx-type-mono-size": "0.88em",
-        "--fx-type-eyebrow-case": "uppercase",
+        "--fx-type-eyebrow-case": "none",
         "--fx-type-root-2xs": "calc(var(--fx-font-size) * 0.66)",
         "--fx-type-root-xs": "calc(var(--fx-font-size) * 0.74)",
         "--fx-type-root-sm": "calc(var(--fx-font-size) * 0.82)",

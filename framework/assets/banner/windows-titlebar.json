@@ -14,7 +14,8 @@
     "height": 32,
     "surface": "flat",
     "logo": {
-      "show": true
+      "show": true,
+      "text": "AmberX"
     },
     "attach": [
       {

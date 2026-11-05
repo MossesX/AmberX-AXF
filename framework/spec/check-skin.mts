@@ -155,5 +155,5 @@ local.useSkin(false);
 eq({ ...local.getState().active, skin: '' }, { ...localBefore, skin: '' }, 'local skin off');
 
 /* the toolbar and title bar actions exist */
-ok(['skin.use', 'skin.off', 'skin.restore', 'skin.undo', 'skin.window.minimize', 'skin.window.maximize', 'skin.window.close'].every((id) => a.rt.actions.has(id)), 'the skin actions are registered');
+ok(['skin.use', 'skin.off', 'skin.restore', 'skin.undo', 'skin.window.minimize', 'skin.window.maximize', 'skin.window.close'].every((id) => a.rt.actions.list().some((x) => x.id === id)), 'the skin actions are registered');
 console.log(`check-skin: ${n} checks passed`);
