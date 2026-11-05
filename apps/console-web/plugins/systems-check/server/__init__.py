@@ -52,7 +52,7 @@ import plugin_services
 import readcache
 from credentials import CREDENTIALS
 
-from . import claudefix, derive, githubsvc, health, healthchecks, hostfix, mosses, probes, routine, store, whatsnew  # noqa: F401 — mosses: every Auto fix goes through him
+from . import claudefix, derive, githubsvc, health, healthchecks, hostfix, mosses, phonecheck, probes, routine, store, whatsnew  # noqa: F401 — mosses: every Auto fix goes through him
 from .checks import HOST_SCRIPT, SERVICES, SysCheck, _http, github_token_page
 
 router = APIRouter()
@@ -250,6 +250,12 @@ def health_autofix(cid: str) -> dict[str, Any]:
     st = MONITOR.autofix_now(cid, by="console")
     SVC.invalidate()
     return {"id": cid, "autofix": st}
+
+
+@router.post("/phone-test")
+def phone_test() -> dict[str, Any]:
+    """AmberX Settings → Send test approval: one real held call of a harmless command."""
+    return phonecheck.send_test(mosses.call)
 
 
 class RouteReq(BaseModel):

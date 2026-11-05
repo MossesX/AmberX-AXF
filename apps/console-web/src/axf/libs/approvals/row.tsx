@@ -150,6 +150,8 @@ export function ApprovalRow({ details: d, scope, onDecide, busy = '', actions, c
 export interface ApprovalDetailsPanelProps extends Pick<ApprovalRowProps, 'details' | 'onDecide' | 'busy' | 'children' | 'openPage' | 'hub' | 'follow'> {
   id?: string;
   className?: string;
+  /** The exact call folded, one tap to read it (a dialog that shows the decision first). */
+  foldCall?: boolean;
 }
 
 /**
@@ -157,7 +159,7 @@ export interface ApprovalDetailsPanelProps extends Pick<ApprovalRowProps, 'detai
  * reason, the exact call, who asked, tool + policy + risk, the timeline, the result, the approval page link and Deny /
  * Approve while it waits. Ticks every second while a countdown or a run is live; follows the job stream for the output.
  */
-export function ApprovalDetailsPanel({ id, details: d, onDecide, busy = '', children, openPage, hub, follow = true, className }: ApprovalDetailsPanelProps) {
+export function ApprovalDetailsPanel({ id, details: d, onDecide, busy = '', children, openPage, hub, follow = true, className, foldCall }: ApprovalDetailsPanelProps) {
   const left = detailsCountdown(d);
   useTick(left !== null || d.phase === 'running');
   const tail = useJobTail(hub, d.streamUrl, follow && hasResult(d));
@@ -166,6 +168,16 @@ export function ApprovalDetailsPanel({ id, details: d, onDecide, busy = '', chil
   const exitCode = d.exitCode !== undefined ? d.exitCode : tail.exitCode;
   const page = (e: { preventDefault: () => void }) => { if (openPage) { e.preventDefault(); openPage(d.url); } };
   const timeline = timelineOf(d);
+  const call = (
+    <>
+      {d.command && <pre className="fx-mono axf-apx__code" aria-label="Command">{d.command}</pre>}
+      <pre className="fx-mono axf-apx__code" aria-label="Arguments">{d.arguments || '(no arguments)'}</pre>
+      <div className="axf-apx__row">
+        {d.command && <CopyText text={d.command} label="Copy command" />}
+        <CopyText text={d.arguments} label="Copy arguments" />
+      </div>
+    </>
+  );
   return (
     <div className={`axf-apx__body ${className ?? ''}`.trim()} id={id}>
       <section className="axf-apx__sec">
@@ -174,15 +186,9 @@ export function ApprovalDetailsPanel({ id, details: d, onDecide, busy = '', chil
         {d.description ? <p className="axf-apx__text">{d.description}</p> : <p className="fx-small fx-muted axf-apx__text">No reason was given. Read the command before you approve it.</p>}
       </section>
 
-      <section className="axf-apx__sec">
-        <p className="fx-eyebrow">Exact call</p>
-        {d.command && <pre className="fx-mono axf-apx__code" aria-label="Command">{d.command}</pre>}
-        <pre className="fx-mono axf-apx__code" aria-label="Arguments">{d.arguments || '(no arguments)'}</pre>
-        <div className="axf-apx__row">
-          {d.command && <CopyText text={d.command} label="Copy command" />}
-          <CopyText text={d.arguments} label="Copy arguments" />
-        </div>
-      </section>
+      {foldCall
+        ? <details className="axf-apx__sec"><summary className="fx-eyebrow">Exact call</summary>{call}</details>
+        : <section className="axf-apx__sec"><p className="fx-eyebrow">Exact call</p>{call}</section>}
 
       <section className="axf-apx__sec axf-apx__grid">
         <div>

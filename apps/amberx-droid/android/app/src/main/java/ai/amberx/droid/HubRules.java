@@ -405,9 +405,26 @@ final class HubRules {
         }
     }
 
-    static boolean approve(String hub, String id, String cookie) {
+    static boolean approve(String hub, String id, String cookie) { return decide(hub, id, "approve", cookie); }
+
+    /** The watch alarm's next firing: every minute, sooner while a command is held. */
+    static long watchDelayMs(int held) { return held > 0 ? 20_000L : 60_000L; }
+
+    /** The feed was read recently enough that the watch alarm has nothing to add. */
+    static boolean feedFresh(long lastPollAt, long now, int intervalSec) {
+        return lastPollAt > 0 && now - lastPollAt < Math.max(45, intervalSec) * 1000L + 5_000L;
+    }
+
+    /** The hub's reply word for a decision. */
+    static boolean decidedReply(String action, int code, String body) {
+        if ("approve".equals(action)) return approvedReply(code, body);
+        return code == 200 && body != null && body.contains("\"ok\":true");
+    }
+
+    /** Approve or decline one waiting call with the phone's hub session, under the hub's Origin + CSRF. */
+    static boolean decide(String hub, String id, String action, String cookie) {
         String url = approvalApiUrl(hub, id);
-        if (url == null || cookie == null || !isHub(HUB, hub)) return false;
+        if (url == null || cookie == null || !isHub(HUB, hub) || !("approve".equals(action) || "decline".equals(action))) return false;
         try {
             Reply session = get(hub + SESSION_PATH, cookie);
             String csrf = session.status == 200 ? csrfFromSession(session.body) : null;
@@ -422,10 +439,10 @@ final class HubRules {
                 c.setRequestProperty("Content-Type", "application/json");
                 c.setRequestProperty("Accept", "application/json");
                 c.setRequestProperty("X-AxHub-CSRF", csrf);
-                c.getOutputStream().write("{\"action\":\"approve\"}".getBytes(StandardCharsets.UTF_8));
+                c.getOutputStream().write(("{\"action\":\"" + action + "\"}").getBytes(StandardCharsets.UTF_8));
                 int code = c.getResponseCode();
                 InputStream in = code >= 400 ? c.getErrorStream() : c.getInputStream();
-                return approvedReply(code, in == null ? "" : readLimited(in, FEED_MAX_BYTES));
+                return decidedReply(action, code, in == null ? "" : readLimited(in, FEED_MAX_BYTES));
             } finally {
                 c.disconnect();
             }

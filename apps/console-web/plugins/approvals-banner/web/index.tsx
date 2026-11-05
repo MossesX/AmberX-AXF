@@ -35,11 +35,11 @@ import type { AxfRuntime } from '@console/axf/core';
 import { Button, Icon, useBannerLaunchOpen, BannerIcon } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { HUB_DEFAULT, approvalUrl, normalizeHub, approvalsUrl, type HubApproval, type HubFeedStatus } from '@console/axf/libs/hub/hub';
-import { onVetoHost, vetoHost, VETO_ACTIONS, type VetoAction, type VetoCall } from '@console/axf/libs/hub/veto';
+import { formatCountdown, onVetoHost, vetoHost, VETO_ACTIONS, type VetoAction, type VetoCall } from '@console/axf/libs/hub/veto';
 import { ALARM_KEYS, START_AT, TONES, VIBRATIONS, ALARM_DEFAULTS } from './alarm';
 import { act, actResult, AlarmPanel, syncNativeAlarm, VetoButtons, VetoScreen, watch, type VetoDeps } from './veto';
-import { approvalsHost, ApprovalRow } from '@console/axf/libs/approvals/react';
-import { approvalExpandKey, detailsOfItem, fetchApprovals, heldDecisions, registerApprovalsLookup, type ApprovalDecision, type ApprovalItem, type DecideResult } from '@console/axf/libs/approvals';
+import { approvalsHost, ApprovalDetailsPanel, ApprovalRow } from '@console/axf/libs/approvals/react';
+import { approvalExpandKey, detailsCountdown, detailsOfItem, fetchApprovals, heldDecisions, registerApprovalsLookup, type ApprovalDecision, type ApprovalItem, type DecideResult } from '@console/axf/libs/approvals';
 import { decidedState, decisionButtons } from '@console/axf/libs/approvals/menu';
 import type { MenuActResult, MenuItem } from '@console/axf/core';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -346,53 +346,64 @@ function ApprovalsBanner() {
   );
 }
 
-/* ---------------- the review dialog: the hub's own page, in a frame ---------------- */
+/* ---------------- the review dialog: native, from the hub's feed ---------------- */
 
-/** How long the hub's page gets to load in the frame before the dialog shows the Open-on-the-hub card instead. */
-export const FRAME_LOAD_MS = 8_000;
-
+/**
+ * One approval from the feed, drawn here: title, plain description, the exact call (folded), the countdown and Deny /
+ * Approve on the first screen. It never frames the hub's page (Nov 5 2026: a refused frame shows the WebView's "Web page
+ * not available", and a frame that fails still fires `load`). A surface that can't sign a decision (the console) opens
+ * the call on the hub for that tap.
+ */
 function ReviewDialog({ id }: { id: string }) {
   const s = useApprovals();
   const [decided, setDecided] = useState(false);
-  // The frame's state: loading → loaded, or stuck (no load in FRAME_LOAD_MS: the hub refused to be framed here, or the
-  // network is gone). Stuck = no dead frame: a plain card with the Open-on-the-hub button.
-  const [frame, setFrame] = useState<'loading' | 'loaded' | 'stuck'>('loading');
-  const p = s.pending.find((x) => x.id === id) ?? s.held.find((x) => x.id === id);
+  const [busy, setBusy] = useState('');
+  const [, tick] = useState(0);
+  const p = s.pending.find((x) => x.id === id);
+  const c = s.held.find((x) => x.id === id);
+  const it = itemOf(id);
   const url = p?.url ?? approvalUrl(s.hub, id) ?? s.approvalsUrl;
   const openOnHub = () => { const h = vetoHost(); if (h.open) h.open(url); else globalThis.open(url, '_blank', 'noopener,noreferrer'); };
-  useEffect(() => {
-    setFrame('loading');
-    const t = setTimeout(() => setFrame((f) => (f === 'loading' ? 'stuck' : f)), FRAME_LOAD_MS);
-    return () => clearTimeout(t);
-  }, [url]);
+  const decide = (d: ApprovalDecision) => {
+    setBusy(`${id}:${d}`);
+    const run: Promise<unknown> = c ? actResult(deps, c, d === 'approve' ? 'approve-now' : 'deny')
+      : p && approvalsHost().decide ? decidePending(p, d)
+      : Promise.resolve(openOnHub());
+    void run.finally(() => setBusy(''));
+  };
+  useEffect(() => { const t = setInterval(() => tick((n) => n + 1), 1_000); return () => clearInterval(t); }, []);
   // Fast checks while it's open; once the request leaves the waiting list it was decided (or expired): close.
   useEffect(() => { const t = setInterval(() => void checkNow(), 2_000); return () => { clearInterval(t); if (reviewing === id) reviewing = null; }; }, [id]);
   useEffect(() => {
-    if (s.status !== 'ok' || p) return;
+    if (s.status !== 'ok' || p || c) return;
     setDecided(true);
     const t = setTimeout(() => { if (reviewing === id) reviewing = null; runtime?.closeDialog(); }, 2_500);
     return () => clearTimeout(t);
-  }, [s.status, s.checkedAt, p, id]);
+  }, [s.status, s.checkedAt, p, c, id]);
+  const details = it ? detailsOfItem(it) : null;
+  const left = details ? detailsCountdown(details) : null;
+  const denyAs: ApprovalDecision = c ? 'deny' : 'decline';
   return (
     <div className="fx-stack axp-approvals-review">
       {decided && <p className="fx-small" role="status" style={{ margin: 0 }}><Icon name="check" size={14} /> Decided. Closing…</p>}
-      {frame === 'stuck' ? (
+      {(p || c) && (
+        <div className="fx-row fx-row--wrap axp-approvals-review__first">
+          {left !== null && <strong role="timer" className={left <= 30 ? 'axp-approvals-review__urgent' : undefined}>{formatCountdown(left)}</strong>}
+          <Button tone="danger" icon="x" disabled={!!busy} onClick={() => decide(denyAs)}>Deny</Button>
+          <Button tone="primary" icon="check" disabled={!!busy} onClick={() => decide('approve')}>Approve</Button>
+        </div>
+      )}
+      {details ? <ApprovalDetailsPanel details={details} hub={s.hub} foldCall openPage={openOnHub} /> : (
         <div className="fx-stack axp-approvals-review__stuck" role="status">
           <Icon name="shield" size={24} />
-          <strong>{p ? `${p.tool}` : 'Approval waiting'}</strong>
-          <p className="fx-small fx-muted" style={{ margin: 0 }}>axHub's page didn't open in here. Open it on the hub to approve or decline.</p>
-          <Button tone="primary" icon="external" onClick={openOnHub}>Open on the hub</Button>
-        </div>
-      ) : (
-        <iframe className="axp-approvals-review__frame" title="Approval on axHub" src={url} sandbox="allow-scripts allow-forms allow-same-origin" referrerPolicy="no-referrer" onLoad={() => setFrame('loaded')} />
-      )}
-      {frame !== 'stuck' && (
-        <div className="fx-row fx-row--wrap axp-approvals-review__foot">
-          <p className="fx-small fx-muted" style={{ margin: 0 }}>This is axHub's own page: Approve or Decline runs there.</p>
-          {p && <WatchLiveFor text={JSON.stringify(p)} />}
-          <Button size="sm" icon="external" onClick={openOnHub}>Open on the hub</Button>
+          <strong>{p?.tool ?? c?.tool ?? 'Approval waiting'}</strong>
+          <p className="fx-small fx-muted" style={{ margin: 0 }}>{s.status === 'ok' || s.status === 'idle' ? 'Reading it from axHub…' : "Can't read axHub right now. Open it on the hub to decide."}</p>
         </div>
       )}
+      <div className="fx-row fx-row--wrap axp-approvals-review__foot">
+        {it && <WatchLiveFor text={JSON.stringify(it)} />}
+        <Button size="sm" icon="external" onClick={openOnHub}>Open in axHub</Button>
+      </div>
     </div>
   );
 }
@@ -488,8 +499,8 @@ export const plugin: AxfWebLibrary = {
     rt.subscribe(sync);
     rt.actions.register('approvals.check', () => void checkNow(), { label: 'Check axHub approvals' });
     rt.actions.register('approvals.open', () => { globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Open axHub approvals' });
-    // approvals.review:<id> — that request on the hub's own page, in the review dialog (menu live list)
-    rt.actions.register('approvals.review', ([id]) => { if (id && (st.pending.some((x) => x.id === id) || st.held.some((x) => x.id === id))) openReview(id); else globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Review an axHub approval', params: true, searchable: false });
+    // approvals.review:<id> — that request in the native review dialog (menu live list, a tapped notification)
+    rt.actions.register('approvals.review', ([id]) => { if (id) openReview(id); else globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Review an axHub approval', params: true, searchable: false });
   },
   banners: [{ id: 'approvals', label: 'Approvals', icon: 'shield', settingsTab: 'approvals-banner', order: 5, render: () => <ApprovalsBanner /> }],
   dialogs: {

@@ -12,7 +12,7 @@ import * as notes from './src/plugins/notes/web/core.ts';
 import * as hf from './src/plugins/voice/web/handsfree.ts';
 import * as companion from './src/plugins/companion/web/core.ts';
 import { HOSTED_URL, sharesHubSite } from './src/hosted.ts';
-import { readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../framework/libs/hub/apps.ts';
 
 let checks = 0;
@@ -1588,6 +1588,29 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   ok(/MicGuard\.set\(this, !MicGuard\.off\(this\)\)/.test(java('MicTile.java')), 'android: the tile flips Mic off');
   const rules = java('MicRules.java');
   ok(/static boolean micSource\(int source\)/.test(rules) && /source != 8/.test(rules), 'android: playback capture and the hotword detector never count as another app\'s mic');
+}
+
+// Never a dead page (Nov 5 2026): the approval dialog is native, and a frame needs both the hub and the web app to allow it.
+{
+  const text = (f) => readFileSync(new URL(f, import.meta.url), 'utf8');
+  // Whichever console plugin owns the `approvals.review` dialog that AmberX loads.
+  const pluginsDir = new URL('../console-web/plugins/', import.meta.url);
+  const dialog = readdirSync(pluginsDir).map((d) => new URL(`${d}/web/index.tsx`, pluginsDir)).filter((u) => existsSync(u))
+    .map((u) => readFileSync(u, 'utf8')).find((t) => t.includes("'approvals.review': {")) ?? '';
+  ok(!/<iframe/.test(dialog) && /<ApprovalDetailsPanel/.test(dialog), 'approval dialog: native panel from the feed, no frame');
+  ok(/decide\(denyAs\)/.test(dialog) && /Open in axHub/.test(dialog), 'approval dialog: Deny, Approve and Open in axHub');
+  const nginx = text('../axhub-web/deploy/nginx.conf');
+  ok(['console', 'molly', 'amberx'].every((a) => nginx.includes(`https://${a}.amberxai.com`)), 'hub web app: console, Molly and AmberX may frame it');
+  ok(!nginx.includes('patches'), 'hub web app: no retired origin');
+  const web = text('android/app/src/main/java/ai/amberx/droid/HubWebActivity.java');
+  ok(/onReceivedError/.test(web) && /isForMainFrame/.test(web) && /Open in axHub/.test(web), 'hub web view: a failed page shows the card, never the WebView error');
+  const manifest = text('android/app/src/main/AndroidManifest.xml');
+  ok(/\.WatchAlarm/.test(manifest) && /REQUEST_IGNORE_BATTERY_OPTIMIZATIONS/.test(manifest) && /USE_EXACT_ALARM/.test(manifest) && /WAKE_LOCK/.test(manifest), 'watch: alarm receiver and its permissions declared');
+  const svc = text('android/app/src/main/java/ai/amberx/droid/WatchService.java');
+  ok(/static long poll\(Context c, Handler work\)/.test(svc) && /WatchAlarm\.arm/.test(svc), 'watch: the alarm can read the feed without the service');
+  ok(/ACTION_ALLOW/.test(svc) && /ACTION_DECLINE/.test(svc), 'approval notification: Approve and Deny on the card');
+  const server = text('server/main.py');
+  ok(/CONSOLE_ROUTES = frozenset\(\{\("systems-check", "phone-test"\)\}\)/.test(server) && /"\/api\/phone-test"/.test(server), 'server: forwards only the test approval route of that plugin');
 }
 
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);

@@ -18,6 +18,7 @@ import subprocess
 import sys
 import tempfile
 import types
+import threading
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -888,4 +889,24 @@ check(any(f["id"] == "github-token" for f in h["autoFixes"]) and isinstance(h["h
 
 root = os.environ["AXF_SYSTEMS_CHECK_DIR"]
 check(all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_file()), "data files private")
+
+# ---- Phone gets approvals (Nov 5 2026)
+_spec = importlib.util.spec_from_file_location("phonecheck", Path(__file__).parent / "server" / "phonecheck.py")
+pc = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(pc)
+check(pc.check(lambda *a: {"ok": '{"online": true}'})["status"] == "ok", "phone online: ok")
+_off = pc.check(lambda *a: {"ok": '{"data": {"online": false}}'})
+check(_off["status"] == "warn" and _off["breaks"] == pc.BREAKS, "phone not heard from: amber, says what it breaks")
+check(pc.check(lambda *a: {"ok": "nope"})["status"] == "warn", "an answer that doesn't say stays amber")
+def _boom(*a):
+    raise RuntimeError("no hub")
+check(pc.check(_boom)["unreachable"] is True, "no hub: unreachable, not red")
+_seen = []
+_done = threading.Event()
+def _call(tool, args, cid, timeout):
+    _seen.append((tool, args["command"]))
+    _done.set()
+    return {"confirm": "x"}
+check(pc.send_test(_call)["state"] == "started" and _done.wait(2) and _seen == [("vps.run", pc.TEST_COMMAND)], "test approval: one held call of the harmless command")
+
 print(f"all {ok} checks passed")

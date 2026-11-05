@@ -36,7 +36,7 @@ import org.json.JSONObject;
  * AmberX's background half: one foreground service that keeps watching while the app is closed or the screen is off.
  *
  * - **Approvals:** reads the hub's approvals feed with the phone's hub session every `intervalSec` (15–300 s; 5 min
- *   while signed out), raises one alert per new approval (tap = its page on the hub, in [HubWebActivity]) and, when
+ *   while signed out; [WatchAlarm] keeps it going when the phone sleeps or Android kills the service), raises one alert per new approval (tap = its page on the hub, in [HubWebActivity]) and, when
  *   auto-approval is on and the tool matches, approves it on the hub's own form ([HubRules#approve]).
  * - **Hands-free listening (Oct 27 2026):** its own switch (Voice control → Hands-free, on by default), independent of
  *   watching axHub. It listens on screen and in the background for the wake phrases, or for everything when "always
@@ -107,6 +107,7 @@ public class WatchService extends Service {
 
     static void start(Context c, JSONObject config) {
         prefs(c).edit().putString("config", config.toString()).putBoolean("on", true).apply();
+        WatchAlarm.arm(c, WatchAlarm.delayMs(0));
         ContextCompat.startForegroundService(c, new Intent(c, WatchService.class));
     }
 
@@ -209,10 +210,16 @@ public class WatchService extends Service {
             // Android refused (e.g. a microphone service started from the background): run without the microphone.
             wantMic = false;
             try { ServiceCompat.startForeground(this, ID_ONGOING, ongoing(false), Build.VERSION.SDK_INT >= 29 ? ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE : 0); }
-            catch (Exception again) { stopSelf(); return START_NOT_STICKY; }
+            catch (Exception again) {
+                // Android refused a background start (a sticky restart after the process was killed): the alarm keeps
+                // reading the feed and tries the service again.
+                if (watching) WatchAlarm.arm(this, WatchAlarm.delayMs(0));
+                stopSelf();
+                return START_NOT_STICKY;
+            }
         }
         work.removeCallbacksAndMessages(null);
-        if (watching) work.post(this::check);
+        if (watching) { work.post(this::check); WatchAlarm.arm(this, WatchAlarm.delayMs(0)); }
         else setStatus(listeningOnly());
         // Pending main-thread work goes (a one-shot's start, its guard, a stream restore): end any one-shot first and
         // put back muted streams, so nothing is left stuck or silent. The classic loop mutes again on its next turn.
@@ -245,42 +252,59 @@ public class WatchService extends Service {
 
     private void check() {
         if (!prefs(this).getBoolean("on", false)) return;
-        JSONObject cfg = config(this);
-        String hub = HubRules.isHub(HubRules.HUB, cfg.optString("hub", "")) ? HubRules.HUB : null;
-        int every = Math.max(15, Math.min(300, cfg.optInt("intervalSec", 30)));
-        HubRules.Feed feed;
-        int held = 0;
-        if (hub == null) feed = new HubRules.Feed("unreachable", 0, new ArrayList<>());
-        else {
-            String cookie = CookieManager.getInstance().getCookie(hub);
-            String body = null;
-            try {
-                HubRules.Reply r = HubRules.get(hub + HubRules.FEED_PATH, cookie);
-                feed = HubRules.interpret(hub, r.status, r.body);
-                body = r.body;
-            } catch (Exception e) {
-                feed = new HubRules.Feed("unreachable", 0, new ArrayList<>());
-            }
-            if ("ok".equals(feed.status)) {
-                handleNew(hub, cookie, feed, cfg.optJSONObject("autoApprove"));
-                // Held veto calls (veto@1): their own notifications with Deny, never treated as approvals.
-                List<HubRules.Veto> vetoes = HubRules.vetoes(hub, body, System.currentTimeMillis());
-                held = vetoes.size();
-                VetoAlerts.update(this, work, vetoes);
-            }
-        }
-        int alerts = cfg.optBoolean("consoleAlerts", true) ? consoleAlerts() : -1;
-        JSONObject s = new JSONObject();
-        try {
-            s.put("running", true).put("listening", listening).put("lastCheck", Instant.now().toString())
-                .put("status", feed.status).put("waiting", feed.count).put("alerts", alerts);
-        } catch (Exception ignored) {}
-        withPhase(s);
-        setStatus(s);
-        long next = "signed-out".equals(feed.status) || "not-admin".equals(feed.status) ? 300_000L : every * 1000L;
-        // While a command is held, read every 10 s so a Deny elsewhere takes its card away quickly.
-        if (held > 0) next = Math.min(next, 10_000L);
+        long next = poll(this, work);
         work.postDelayed(this::check, next);
+    }
+
+    private static final Object POLL = new Object();
+    /** Local clock (ms) of the last feed read, by the service or the alarm. */
+    static volatile long lastPollAt;
+
+    /**
+     * One read of the approvals feed: new approvals alert, held calls update their cards, the status follows. Runs on the
+     * service's thread, or from [WatchAlarm] when the service isn't there or the phone slept through its timer, so an alert
+     * doesn't depend on the service surviving. Returns the wait until the next read.
+     */
+    static long poll(Context c, Handler work) {
+        synchronized (POLL) {
+            lastPollAt = System.currentTimeMillis();
+            JSONObject cfg = config(c);
+            String hub = HubRules.isHub(HubRules.HUB, cfg.optString("hub", "")) ? HubRules.HUB : null;
+            int every = Math.max(15, Math.min(300, cfg.optInt("intervalSec", 30)));
+            HubRules.Feed feed;
+            int held = 0;
+            if (hub == null) feed = new HubRules.Feed("unreachable", 0, new ArrayList<>());
+            else {
+                String cookie = CookieManager.getInstance().getCookie(hub);
+                String body = null;
+                try {
+                    HubRules.Reply r = HubRules.get(hub + HubRules.FEED_PATH, cookie);
+                    feed = HubRules.interpret(hub, r.status, r.body);
+                    body = r.body;
+                } catch (Exception e) {
+                    feed = new HubRules.Feed("unreachable", 0, new ArrayList<>());
+                }
+                if ("ok".equals(feed.status)) {
+                    handleNew(c, hub, cookie, feed, cfg.optJSONObject("autoApprove"));
+                    // Held veto calls (veto@1): their own notifications with Deny, never treated as approvals.
+                    List<HubRules.Veto> vetoes = HubRules.vetoes(hub, body, System.currentTimeMillis());
+                    held = vetoes.size();
+                    VetoAlerts.update(c, work, vetoes);
+                }
+            }
+            int alerts = cfg.optBoolean("consoleAlerts", true) ? consoleAlerts(c) : -1;
+            WatchService w = running;
+            JSONObject s = new JSONObject();
+            try {
+                s.put("running", w != null).put("listening", w != null && w.listening).put("lastCheck", Instant.now().toString())
+                    .put("status", feed.status).put("waiting", feed.count).put("alerts", alerts);
+            } catch (Exception ignored) {}
+            if (w != null) w.withPhase(s);
+            setStatus(s);
+            long next = "signed-out".equals(feed.status) || "not-admin".equals(feed.status) ? 300_000L : every * 1000L;
+            // While a command is held, read every 10 s so a Deny elsewhere takes its card away quickly.
+            return held > 0 ? Math.min(next, 10_000L) : next;
+        }
     }
 
     private void withPhase(JSONObject s) {
@@ -292,20 +316,21 @@ public class WatchService extends Service {
         if (work != null) work.removeCallbacksAndMessages(token);
     }
 
-    private void handleNew(String hub, String cookie, HubRules.Feed feed, JSONObject auto) {
-        SharedPreferences p = prefs(this);
+    private static void handleNew(Context c, String hub, String cookie, HubRules.Feed feed, JSONObject auto) {
+        SharedPreferences p = prefs(c);
         Set<String> seen = new HashSet<>(p.getStringSet("seen", new HashSet<>()));
         Set<String> now = new HashSet<>();
-        NotificationManager nm = getSystemService(NotificationManager.class);
+        NotificationManager nm = c.getSystemService(NotificationManager.class);
         for (HubRules.Approval a : feed.pending) {
             now.add(a.id);
             if (seen.contains(a.id)) continue;
             boolean approve = auto != null && HubRules.autoApproves(auto.optBoolean("on"), auto.optBoolean("all"), auto.optString("tools", ""), a.tool);
             if (approve && HubRules.approve(hub, a.id, cookie)) {
-                nm.notify(a.id, 0, alert(CH_APPROVALS, "Auto-approved " + a.tool, a.summary, a.url, false));
+                nm.notify(a.id, 0, alert(c, CH_APPROVALS, "Auto-approved " + a.tool, a.summary, a.url, null));
             } else {
-                soundThrough();
-                nm.notify(a.id, 0, alert(CH_APPROVALS, "Approval waiting: " + a.tool, a.summary, a.url, true));
+                WatchService w = running;
+                if (w != null) w.soundThrough();
+                nm.notify(a.id, 0, alert(c, CH_APPROVALS, "Approval waiting: " + a.tool, a.summary, a.url, a.id));
             }
         }
         for (String gone : seen) if (!now.contains(gone)) nm.cancel(gone, 0); // decided elsewhere: take its alert away
@@ -317,7 +342,7 @@ public class WatchService extends Service {
      * (the hub's sign-in wall lets a signed-in admin through). Errors and warnings alert once per change; resolved or read
      * ones are taken away. Returns how many are open, or -1 when the console can't be read (signed out, unreachable).
      */
-    private int consoleAlerts() {
+    private static int consoleAlerts(Context ctx) {
         String cookie = CookieManager.getInstance().getCookie(HubRules.CONSOLE);
         if (cookie == null) return -1;
         HubRules.Alerts a;
@@ -328,15 +353,15 @@ public class WatchService extends Service {
             return -1;
         }
         if (a == null) return -1;
-        SharedPreferences p = prefs(this);
+        SharedPreferences p = prefs(ctx);
         Set<String> seen = new HashSet<>(p.getStringSet("alertsSeen", new HashSet<>()));
         Set<String> now = new HashSet<>();
-        NotificationManager nm = getSystemService(NotificationManager.class);
+        NotificationManager nm = ctx.getSystemService(NotificationManager.class);
         for (String key : a.closed) nm.cancel("console:" + key, 0);
         for (HubRules.ConsoleAlert c : a.open) {
             now.add(c.stamp);
             if (seen.contains(c.stamp)) continue;
-            nm.notify("console:" + c.key, 0, consoleAlert(c));
+            nm.notify("console:" + c.key, 0, consoleAlert(ctx, c));
         }
         p.edit().putStringSet("alertsSeen", now).apply();
         return a.open.size();
@@ -792,31 +817,36 @@ public class WatchService extends Service {
         return b.build();
     }
 
-    private Notification alert(String channel, String title, String text, String url, boolean full) {
-        Intent open = new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP).putExtra(MainActivity.EXTRA_OPEN, url);
-        PendingIntent pi = PendingIntent.getActivity(this, url.hashCode(), open, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        NotificationCompat.Builder b = new NotificationCompat.Builder(this, channel)
+    /** An approval's notification; [decideId] adds Approve / Deny on the card (tapping opens the native dialog). */
+    private static Notification alert(Context c, String channel, String title, String text, String url, String decideId) {
+        Intent open = new Intent(c, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP).putExtra(MainActivity.EXTRA_OPEN, url);
+        PendingIntent pi = PendingIntent.getActivity(c, url.hashCode(), open, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        NotificationCompat.Builder b = new NotificationCompat.Builder(c, channel)
             .setSmallIcon(R.mipmap.ic_launcher).setContentTitle(title).setContentText(text)
             .setPriority(NotificationCompat.PRIORITY_HIGH).setContentIntent(pi).setAutoCancel(true)
             // The lock screen shows only that something is waiting, never what.
             .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
-            .setPublicVersion(new NotificationCompat.Builder(this, channel).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Approval waiting").build());
-        if (full) b.setCategory(NotificationCompat.CATEGORY_REMINDER);
-        if (Quiet.on(this)) b.setSilent(true); // Quiet: shown, never heard
+            .setPublicVersion(new NotificationCompat.Builder(c, channel).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Approval waiting").build());
+        if (decideId != null) {
+            b.setCategory(NotificationCompat.CATEGORY_REMINDER);
+            b.addAction(0, "Deny", VetoAlerts.action(c, VetoAlerts.ACTION_DECLINE, decideId));
+            b.addAction(0, "Approve", VetoAlerts.action(c, VetoAlerts.ACTION_ALLOW, decideId));
+        }
+        if (Quiet.on(c)) b.setSilent(true); // Quiet: shown, never heard
         return b.build();
     }
 
     /** A console alert: tap opens the Dev Console in the browser (its own sign-in), never inside the app. */
-    private Notification consoleAlert(HubRules.ConsoleAlert c) {
+    private static Notification consoleAlert(Context ctx, HubRules.ConsoleAlert c) {
         Intent view = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(HubRules.CONSOLE)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pi = PendingIntent.getActivity(this, ("console:" + c.key).hashCode(), view, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pi = PendingIntent.getActivity(ctx, ("console:" + c.key).hashCode(), view, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         String label = "critical".equals(c.severity) || "error".equals(c.severity) ? "Console error" : "Console warning";
-        return new NotificationCompat.Builder(this, CH_CONSOLE)
+        return new NotificationCompat.Builder(ctx, CH_CONSOLE)
             .setSmallIcon(R.mipmap.ic_launcher).setContentTitle(label + ": " + c.title).setContentText(c.body)
             .setStyle(new NotificationCompat.BigTextStyle().bigText(c.body))
             .setPriority(NotificationCompat.PRIORITY_HIGH).setContentIntent(pi).setAutoCancel(true)
             .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
-            .setPublicVersion(new NotificationCompat.Builder(this, CH_CONSOLE).setSmallIcon(R.mipmap.ic_launcher).setContentTitle(label).build())
+            .setPublicVersion(new NotificationCompat.Builder(ctx, CH_CONSOLE).setSmallIcon(R.mipmap.ic_launcher).setContentTitle(label).build())
             .build();
     }
 
