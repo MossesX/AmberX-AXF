@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1077,
- "updatedAt": "2026-11-05T23:51:04.095Z",
+ "rev": 1078,
+ "updatedAt": "2026-11-05T23:51:19.314Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -87245,9 +87245,14 @@
    "branch": "claude/console-account-picker",
    "pr": "",
    "createdAt": "2026-11-05T23:30:48.450Z",
-   "updatedAt": "2026-11-05T23:30:48.450Z",
+   "updatedAt": "2026-11-05T23:51:05.516Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Clash note (ai-keys-console-store, Nov 5): that build fixes the claude-accounts parser so [token]/[api key] rows are no longer dropped, adds account types and capability axf.claude-accounts@1, and makes ai-keys /switch fall back to the next VPS subscription account (held). s2 keeps labels + status tests, s3 the UI, s4 can build on the fallback instead of rotating in the headless script.",
+     "at": "2026-11-05T23:51:05.516Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -87382,7 +87387,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -87398,14 +87403,14 @@
    "title": "AI keys: one console-wide store, VPS accounts listed and switchable by API",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-05T23:51:02.650Z",
-   "updatedAt": "2026-11-05T23:51:02.650Z",
+   "updatedAt": "2026-11-05T23:51:04.566Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -87438,12 +87443,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T23:51:03.652Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-05T23:51:02.651Z",
-     "updatedAt": "2026-11-05T23:51:02.651Z"
+     "updatedAt": "2026-11-05T23:51:03.725Z"
     },
     {
      "id": "s2",
@@ -87460,12 +87465,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T23:51:04.566Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-05T23:51:02.651Z",
-     "updatedAt": "2026-11-05T23:51:02.651Z"
+     "updatedAt": "2026-11-05T23:51:04.625Z"
     },
     {
      "id": "s3",
@@ -87498,7 +87503,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

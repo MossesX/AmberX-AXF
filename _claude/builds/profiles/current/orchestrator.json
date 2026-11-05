@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-05T23:51:04.095Z",
+ "updatedAt": "2026-11-05T23:51:19.314Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14056,9 +14056,14 @@
    "branch": "claude/console-account-picker",
    "pr": "",
    "createdAt": "2026-11-05T23:30:48.450Z",
-   "updatedAt": "2026-11-05T23:30:48.450Z",
+   "updatedAt": "2026-11-05T23:51:05.516Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Clash note (ai-keys-console-store, Nov 5): that build fixes the claude-accounts parser so [token]/[api key] rows are no longer dropped, adds account types and capability axf.claude-accounts@1, and makes ai-keys /switch fall back to the next VPS subscription account (held). s2 keeps labels + status tests, s3 the UI, s4 can build on the fallback instead of rotating in the headless script.",
+     "at": "2026-11-05T23:51:05.516Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -14171,14 +14176,14 @@
    "title": "AI keys: one console-wide store, VPS accounts listed and switchable by API",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-05T23:51:02.650Z",
-   "updatedAt": "2026-11-05T23:51:02.650Z",
+   "updatedAt": "2026-11-05T23:51:04.566Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -14209,8 +14214,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T23:51:03.652Z",
      "note": "",
      "uid": "st-mw478hgt04i202"
     },
@@ -14227,8 +14232,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-05T23:51:04.566Z",
      "note": "",
      "uid": "st-mw478hgt05vqub"
     },
