@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1031,
- "updatedAt": "2026-11-05T02:29:39.915Z",
+ "rev": 1032,
+ "updatedAt": "2026-11-05T02:36:13.685Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -85782,7 +85782,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-05T02:08:38.607Z",
-     "updatedAt": "2026-11-05T02:17:07.136Z"
+     "updatedAt": "2026-11-05T02:36:11.763Z"
     },
     {
      "id": "s2",
@@ -85804,7 +85804,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-05T02:08:38.607Z",
-     "updatedAt": "2026-11-05T02:17:08.372Z"
+     "updatedAt": "2026-11-05T02:36:11.763Z"
     },
     {
      "id": "s3",
@@ -85826,7 +85826,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-05T02:08:38.607Z",
-     "updatedAt": "2026-11-05T02:29:18.058Z"
+     "updatedAt": "2026-11-05T02:36:11.763Z"
     },
     {
      "id": "s4",
@@ -85848,7 +85848,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-05T02:08:38.607Z",
-     "updatedAt": "2026-11-05T02:29:19.672Z"
+     "updatedAt": "2026-11-05T02:36:11.763Z"
     },
     {
      "id": "s5",
@@ -85870,7 +85870,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-05T02:08:38.607Z",
-     "updatedAt": "2026-11-05T02:29:21.107Z"
+     "updatedAt": "2026-11-05T02:36:11.763Z"
     },
     {
      "id": "s6",
@@ -85892,7 +85892,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-05T02:08:38.607Z",
-     "updatedAt": "2026-11-05T02:29:22.353Z"
+     "updatedAt": "2026-11-05T02:36:11.763Z"
     },
     {
      "id": "s7",
@@ -85945,10 +85945,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/amberx-approvals-fix",
+   "pr": "#353",
    "createdAt": "2026-11-05T02:14:31.670Z",
-   "updatedAt": "2026-11-05T02:14:32.846Z",
+   "updatedAt": "2026-11-05T02:36:11.996Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -86107,7 +86107,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

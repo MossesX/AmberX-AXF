@@ -700,8 +700,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 16:04 UTC · `settings-placement-everywhere` added (6 steps) (current) · foreign-write
-- 2026-11-04 16:03 UTC · `settings-placement-everywhere` added (6 steps) (current) · foreign-write
 - 2026-11-04 16:09 UTC · `molly-multi-instance-tabs` added (4 steps) (current) · orchestrator
 - 2026-11-04 16:09 UTC · `molly-multi-instance-tabs` → running (current) · orchestrator
 - 2026-11-04 16:09 UTC · `molly-multi-instance-tabs` branch claude/molly-multi-instance-tabs (current) · builds-live
@@ -1100,6 +1098,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-05 02:29 UTC · `banner-widgets` s4 done (current) · orchestrator
 - 2026-11-05 02:29 UTC · `banner-widgets` s5 done (current) · orchestrator
 - 2026-11-05 02:29 UTC · `banner-widgets` s6 done (current) · orchestrator
+- 2026-11-05 02:36 UTC · `banner-widgets` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done (current) · foreign-write
+- 2026-11-05 02:36 UTC · `amberx-approvals-fix` branch claude/amberx-approvals-fix, PR #353 (urgent) · builds-live
 
 ## Token passes (log)
 
