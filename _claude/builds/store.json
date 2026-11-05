@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1056,
- "updatedAt": "2026-11-05T13:36:05.963Z",
+ "rev": 1057,
+ "updatedAt": "2026-11-05T13:43:51.147Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -85475,8 +85475,9 @@
    "pendingId": "",
    "branch": "claude/claude-account-switcher",
    "pr": "#351",
+   "priority": "P0",
    "createdAt": "2026-11-04T23:57:00.641Z",
-   "updatedAt": "2026-11-05T00:13:32.220Z",
+   "updatedAt": "2026-11-05T13:43:50.285Z",
    "builtAt": "2026-11-05T00:13:31.433Z",
    "notes": [
     {
@@ -85618,7 +85619,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
