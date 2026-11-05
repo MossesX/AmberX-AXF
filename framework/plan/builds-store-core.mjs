@@ -45,6 +45,7 @@
 
 import { normApproval, normRequest } from '../core/model-switch.mjs';
 import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
+import { effectivePriority, normPriority } from '../core/build-priority.mjs';
 
 export const SCHEMA = 'builds@1';
 export const MODELS = ['Fable', 'Opus'];
@@ -62,7 +63,7 @@ const stepModel = (m) => (m === 'Fable' ? 'Fable' : 'Opus');
 const clone = (o) => JSON.parse(JSON.stringify(o));
 const nowIso = () => new Date().toISOString();
 export const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
-const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
+const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'priority', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
 const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note'];
 
 // ------------------------------------------------------------------ records
@@ -128,6 +129,7 @@ export function normBuild(b, ctx = {}) {
     branch: str(o.branch, 200),
     pr: str(o.pr, 200),
     ...(str(o.mergedAt) ? { mergedAt: str(o.mergedAt, 40) } : {}), // when its PR merged (built → complete)
+    ...(normPriority(o.priority) ? { priority: normPriority(o.priority) } : {}), // optional: unset = worked out on read (core/build-priority.mjs)
     createdAt: str(o.createdAt, 40) || at,
     updatedAt: str(o.updatedAt, 40) || at,
     builtAt: FINISHED.includes(o.status) ? str(o.builtAt, 40) : '',
@@ -403,6 +405,7 @@ export function itemOfBuild(b, now = nowIso()) {
   const next = b.steps.find((s) => !s.done && !s.skip) ?? b.steps[b.steps.length - 1];
   const at = p.stepAt ?? {};
   const item = {
+    priority: effectivePriority(b),
     id: b.pendingId || b.id, title: b.title, detail: b.detail,
     model: p.model === 'Sonnet' && !b.steps.length ? 'Sonnet' : next ? stepModel(next.model) : (p.model || 'Opus'),
     status,

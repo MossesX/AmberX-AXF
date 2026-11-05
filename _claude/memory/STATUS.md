@@ -232,3 +232,7 @@ menu-fit@1: `framework/core/engines/menufit.ts` (pure `fitMenu` / `menuBox`; che
 menu box, `.fx-menu__li` static), context menus and plugin ⋯ menus flip / shift to stay on screen and only then scroll,
 with `data-fx-more` fade + chevron hints and contained overscroll. Re-baked console, axHub web, AmberX, Molly. Android
 twin deferred (PORTING.md). Report `_claude/builds/reports/menu-scroll.md`.
+
+## Priority tags (Nov 5 2026, priority-tags, Opus)
+
+Every build has an Urgent / High / Normal / Low tag on every build view; tap or right-click to change it and see what is waiting on it. The agent queue and merge queue follow it; manual moves win. The Build queue screen now shows the real agent queue. Docs `_claude/memory/docs/priority-tags.md`, report `_claude/builds/reports/priority-tags.md`.

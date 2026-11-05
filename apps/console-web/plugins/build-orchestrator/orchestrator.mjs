@@ -28,6 +28,7 @@ import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from '
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './web/orchestrator-core.mjs';
+import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { approverFrom, upgradeLine, upgradePolicy } from '../../../../framework/core/model-switch.mjs';
 import { loadUpgradePolicy } from '../../../../framework/cli/upgrade-policy.mjs';
 
@@ -84,7 +85,7 @@ export function upgradeAsk(b, p, req) {
 function line(b, rules) {
   const p = core.progress(b); const n = core.nextUp(b, rules);
   const next = n.done ? 'done' : n.needsApproval ? `Brett: upgrade ${n.phase.from}→${n.phase.model}` : `${n.step?.model} ${n.step?.id}`;
-  return `${b.id.padEnd(34)} ${core.STATUS_LABEL[b.status].padEnd(15)} ${String(p.done).padStart(2)}/${p.total} steps · ${core.formatMinutes(p.minutesLeft) || '0 min'} left · next: ${next}`;
+  return `${b.id.padEnd(34)} ${priorityLabel(effectivePriority(b)).padEnd(7)} ${core.STATUS_LABEL[b.status].padEnd(15)} ${String(p.done).padStart(2)}/${p.total} steps · ${core.formatMinutes(p.minutesLeft) || '0 min'} left · next: ${next}`;
 }
 
 async function main(argv) {

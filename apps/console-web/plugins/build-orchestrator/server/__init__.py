@@ -10,6 +10,8 @@ X-Axhub-Session / X-Axhub-Source header naming a session, build or agent. Only t
 AXF_APPROVER (his hub name) and AXF_APPROVER_VIA=console. The console token alone is not Brett: scripts and Claude
 sessions hold it too. Downgrades need nobody.
 
+Priority tags (Nov 5 2026): GET /priority (every tag), GET /priority/{build} (what is waiting on it), POST /priority.
+
 Live sync (Nov 3 2026, orch-live-sync): the systems check gets the item `builds-live` (axf.health@1): red when store
 changes can't reach main (framework/cli/builds-live.mjs keeps them queued), amber when the reconciler
 (framework/cli/builds-reconcile.mjs) finds open PRs or claude/* branches that belong to no build, or hasn't run lately.
@@ -73,6 +75,80 @@ def brett_click(request: Request) -> str:
 def state() -> dict[str, Any]:
     ensure_health()
     return _run("state")
+
+
+# ---- priority tags (framework/core/build-priority.mjs, framework/cli/build-priority.mjs)
+PRIORITY_CLI = ROOT / "framework" / "cli" / "build-priority.mjs"
+PRIORITY_CACHE_S = 5
+_priority_cache: dict[str, Any] = {"at": 0.0, "value": None}
+
+
+def _priority_sources() -> dict[str, Any]:
+    """What the other plugins know about a build, each through its capability; a plugin that is off adds nothing."""
+    out: dict[str, Any] = {}
+    calls = {
+        "slots": ("axf.agent-slots@1", lambda s: s.status()),
+        "mergeQueue": ("axf.merge-queue@1", lambda s: s.queue()),
+        "pulls": ("axf.merge-queue@1", lambda s: s.stacked()),
+        "ui": ("ui-review@1", lambda s: s.items()),
+        "plans": ("plans@1", lambda s: s.list()),
+    }
+    for key, (cap, read) in calls.items():
+        svc = plugin_services.get(cap)
+        if svc is None:
+            continue
+        try:
+            value = read(svc)
+        except Exception:  # noqa: BLE001 - a source that can't answer leaves its rows out, never the tag
+            continue
+        out[key] = value
+    return out
+
+
+def _priority(*args: str, sources: bool = False) -> dict[str, Any]:
+    cmd = ["node", str(PRIORITY_CLI), *args, "--json"]
+    if sources:
+        cmd.append("--sources")
+    body = json.dumps(_priority_sources()) if sources else None
+    proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, timeout=30, input=body)
+    out = proc.stdout.strip().splitlines()
+    try:
+        res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+    if not res.get("ok"):
+        raise HTTPException(404 if "no build" in str(res.get("error")) else 400, str(res.get("error") or "priority failed")[:400])
+    return res
+
+
+@router.get("/priority")
+def priority_list() -> dict[str, Any]:
+    """Every build's priority tag and how much waits on it (cached: every tag on every screen reads this one list)."""
+    if _priority_cache["value"] is None or time.time() - _priority_cache["at"] > PRIORITY_CACHE_S:
+        _priority_cache.update(value=_priority("list", sources=True), at=time.time())
+    return _priority_cache["value"]
+
+
+@router.get("/priority/{build}")
+def priority_get(build: str) -> dict[str, Any]:
+    """One build (id or name): its priority and everything waiting on it."""
+    if len(build) > 200:
+        raise HTTPException(400, "bad build")
+    return _priority("get", build, sources=True)
+
+
+@router.post("/priority")
+async def priority_set(request: Request) -> dict[str, Any]:
+    """{builds: [id or name…], priority: urgent|high|normal|low|P0-P3}. Higher priority starts and lands first."""
+    body = await _json_body(request)
+    builds = body.get("builds") if isinstance(body.get("builds"), list) else [body.get("build")]
+    names = [str(x)[:200] for x in builds if isinstance(x, str) and x.strip()][:100]
+    priority = str(body.get("priority") or "")[:10]
+    if not names or not priority:
+        raise HTTPException(400, "needs builds and priority")
+    res = _priority("set", *names, priority, "--by", brett_click(request) or "console")
+    _priority_cache.update(value=None)
+    return res
 
 
 @router.get("/brief/{build_id}")

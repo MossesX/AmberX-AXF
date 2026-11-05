@@ -3,6 +3,7 @@ export { AppShell, type ViewDef, type ViewMap, type AppShellProps } from './AppS
 export { Button, IconButton, Segmented, Slider, Container, Chip, Kbd, type ButtonProps, type SegmentedOption, type SliderProps, type ContainerProps } from './components/Controls';
 export { ModelBadge, modelLabel, modelFamily } from './components/ModelBadge';
 export { BuildOrigin, originSubtitle, originSearch, originWhen } from './components/BuildOrigin';
+export { PriorityTag, setPriorityHost, setBuildPriority, PRIORITY_DIALOG, priorityDialogs, type PriorityHost } from './components/PriorityTag';
 export { Switch, Checkbox, ColorField, Field, TextField, SelectField, ChoiceGrid, Note, Section, LibraryParamField, type SwitchProps, type CheckboxProps, type ColorFieldProps, type FieldProps, type TextFieldProps, type SelectFieldProps, type SelectOption, type ChoiceGridProps, type Choice, type NoteProps, type NoteTone, type SectionProps, type LibraryParamFieldProps } from './components/Forms';
 export { Markdown, safeHref, type MarkdownProps } from './components/Markdown';
 export { Icon, ICON_NAMES } from './components/Icon';

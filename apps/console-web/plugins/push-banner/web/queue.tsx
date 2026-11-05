@@ -6,7 +6,7 @@
  * the mergequeue-list command). Theme tokens and framework controls only.
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { AgentAvatar, Button, Icon, useRuntime } from '@console/axf/react';
+import { AgentAvatar, Button, Icon, PriorityTag, useRuntime } from '@console/axf/react';
 import { cardFromDrop } from '@console/axf/core/engines/card-rules.mjs';
 import { api, FOLDER } from './store';
 
@@ -52,6 +52,7 @@ function Row({ it, i, count, onDrop }: { it: QueueItem; i: number; count: number
         <span className="axp-push-banner__line">
           <AgentAvatar agent={it.agent || null} size="small" />
           {it.url ? <a className="axp-push-banner__name" href={it.url} target="_blank" rel="noreferrer">#{it.pr} {it.title}</a> : <span className="axp-push-banner__name">#{it.pr} {it.title}</span>}
+          <PriorityTag build={it.build} />
         </span>
         <span className="axp-push-banner__meta">
           <span className={`axp-mq__state is-${it.state}`}><Icon name={STATE_ICON[it.state]} size={14} /> {STATE_WORD[it.state]}</span>

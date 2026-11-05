@@ -2,7 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.build-orchestrator",
   "name": "Build orchestrator",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
@@ -19,7 +19,12 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
-  "optional": [],
+  "optional": [
+    "service:axf.agent-slots@1",
+    "service:axf.merge-queue@1",
+    "service:plans@1",
+    "service:ui-review@1"
+  ],
   "banner": false,
   "tabable": {
     "view": "build-orchestrator",
@@ -36,13 +41,70 @@
       "_claude/THREADS.md",
       "_claude/builds/README.md",
       "_claude/rules/RULES.md",
-      "_claude/shared/rules/RULES.md", "deploy/claude-headless.sh", "framework/spec/check-builds-live.mjs"
+      "_claude/shared/rules/RULES.md",
+      "deploy/claude-headless.sh",
+      "framework/spec/check-builds-live.mjs"
     ]
   },
   "commands": {
     "$axf": "plugin-commands@1",
     "auto": true,
     "items": [
+      {
+        "id": "priority-list",
+        "route": "GET /priority",
+        "title": "Build priorities",
+        "description": "Every build's priority tag (Urgent, High, Normal, Low = P0-P3) and how many things wait on it.",
+        "readOnly": true,
+        "output": "{ map: { <build>: { priority, set, waiting } } }"
+      },
+      {
+        "id": "priority-get",
+        "route": "GET /priority/{build}",
+        "title": "What's waiting on a build",
+        "description": "A build's priority and everything waiting for it: builds behind it in the agent queue, builds that depend on it, PRs stacked on it or behind it in the merge queue, UI Review items, linked plans. Say 'what's waiting on skins'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or spoken name"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ id, title, priority, label, waiting: [{ kind, id, title, why }] }"
+      },
+      {
+        "id": "priority-set",
+        "route": "POST /priority",
+        "title": "Set build priority",
+        "description": "Set the priority of one or more builds: 'make banner widgets urgent'. Higher priority starts first in the agent queue and lands first in the merge queue; Brett's manual moves still win.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "builds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Build ids or spoken names"
+            },
+            "priority": {
+              "type": "string",
+              "description": "urgent, high, normal, low or P0-P3"
+            }
+          },
+          "required": [
+            "builds",
+            "priority"
+          ]
+        },
+        "output": "{ ids, priority, label, slotsMoved }"
+      },
       {
         "id": "origin",
         "route": "GET /origin/{build_id}",
