@@ -39,6 +39,9 @@ Added in r2, on top of run 1:
 - `framework/cli/screen-layouts.mjs`, which run 1 referred to but never wrote.
 - The spec, rules, brief template line and Android deferral note.
 - The grandfather list brought up to date (see below).
+- A help entry for the toolbar's Hide button (help coverage had dropped below its ratchet).
+- A fix for run 1's axHub web and AmberX plugin templates, whose plugin id constant was mangled and did not compile.
+- The layout toolbar's right-click had two "Toolbar settings" rows; the older one is now "All layout toolbars…".
 
 ## Tests
 
@@ -67,3 +70,9 @@ Screenshots: UI Review → Screenshots, group `three-layouts-per-screen - Nov 5 
 - **The hub-wide look:** toolbar settings from the right-click are device settings. Changing the asset itself changes every
   plugin.
 - **Android twin deferred** (`framework/spec/PORTING.md`).
+
+## CI replay
+
+Every step of the `engine` and `console` jobs was replayed locally: console, axHub web, AmberX and Molly builds (with the
+plugin template installed), theme swap and the console window checks all pass. The one remaining red in the replay was
+the plugin lifecycle step, on a git-ignored `public/data/pending.json` the replay itself generated, not on this build's files.

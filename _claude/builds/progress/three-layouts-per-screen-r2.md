@@ -7,6 +7,6 @@ Branch `claude/three-layouts-per-screen-r2`. Spec: `/root/axf-builds/three-layou
 - [x] s2 Runtime + shared toolbar, per-plugin copy, chrome Settings on its right-click (new in r2)
 - [x] s3 Scaffold: templates, library templates, `axf new-plugin`
 - [x] s4 CI: `check-screen-layouts.mjs`, baseline (maintenance added in r2)
-- [ ] s5 UI Review helper + CLI (done), docs, tests, shots, report, PR
+- [x] s5 UI Review helper + CLI, docs, tests, shots, report, PR
 
 Resume: read this file, then `_claude/builds/reports/three-layouts-per-screen.md` once it exists.
