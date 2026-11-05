@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1061,
- "updatedAt": "2026-11-05T18:42:32.381Z",
+ "rev": 1062,
+ "updatedAt": "2026-11-05T19:10:19.008Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -86608,16 +86608,21 @@
    "title": "Fast talk: Gizmo and the console assistant answer plain chat without loading tools",
    "category": "Feature",
    "detail": "Chat mode for assistant@1: no tool definitions, no CLAUDE.md or hooks, short prompt, fastest allowed model, streaming; tools load per turn by intent (only the relevant group) then drop back. Chip + force setting in Gizmo and the console. Measured before/after. Runs assistant-chat-mode and -r2 died on the usage limit; this is r3, branch claude/assistant-chat-mode-r3.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/assistant-chat-mode-r3",
    "pr": "",
    "createdAt": "2026-11-05T18:36:01.911Z",
-   "updatedAt": "2026-11-05T18:42:15.606Z",
+   "updatedAt": "2026-11-05T19:10:18.022Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-05T19:10:18.022Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -86818,7 +86823,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
