@@ -702,7 +702,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 16:40 UTC · `tab-group-assets` s6 done, → built (current) · orchestrator
 - 2026-11-04 16:40 UTC · `tab-group-assets` note (current) · orchestrator
 - 2026-11-04 16:09 UTC · `molly-multi-instance-tabs` added (4 steps) (current) · foreign-write
 - 2026-11-04 16:42 UTC · `app-voice-commands` note (current) · foreign-write
@@ -1102,6 +1101,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-05 18:42 UTC · `assistant-chat-mode` s4 done (current) · orchestrator
 - 2026-11-05 19:10 UTC · `assistant-chat-mode` → pending, note (current) · reconciler
 - 2026-11-05 20:00 UTC · `claude-account-switcher` → complete, merged, note (current) · reconciler
+- 2026-11-05 22:37 UTC · `build-own-login` added (4 steps) (current) · orchestrator
 
 ## Token passes (log)
 
