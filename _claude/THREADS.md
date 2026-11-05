@@ -702,8 +702,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 16:35 UTC · `tab-group-assets` s3 done, s4 done, s5 done (current) · foreign-write
-- 2026-11-04 16:35 UTC · `settings-placement-everywhere` added (24 steps) (current) · foreign-write
 - 2026-11-04 16:35 UTC · `molly-multi-instance-tabs` added (4 steps) (current) · foreign-write
 - 2026-11-04 16:35 UTC · `jump-menu-asset` s5 done, → built (current) · orchestrator
 - 2026-11-04 16:35 UTC · `jump-menu-asset` note (current) · orchestrator
@@ -1102,6 +1100,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-05 11:08 UTC · `three-layouts-per-screen` s4 done (angel) · orchestrator
 - 2026-11-05 11:11 UTC · `ui-review-alarm` → running, note (angel) · orchestrator
 - 2026-11-05 11:19 UTC · `handoff-2-addenda-r2` s2 done, s3 done, s4 done (current) · foreign-write
+- 2026-11-05 11:19 UTC · `three-layouts-per-screen` s5 done, → complete (angel) · orchestrator
+- 2026-11-05 11:19 UTC · `three-layouts-per-screen` → built, PR #355 (angel) · builds-live
 
 ## Token passes (log)
 
