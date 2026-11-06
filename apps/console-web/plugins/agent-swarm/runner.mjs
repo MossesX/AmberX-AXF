@@ -22,6 +22,7 @@ export function ownLogin(dir, session, opts = {}) {
   if (!loginMod || !dir || opts.ownLogin === false || process.env.AXF_OWN_LOGIN === 'off') return null;
   try {
     const snap = loginMod.snapshot({ dir, session, account: opts.account || process.env.AXF_CLAUDE_ACCOUNT || 'active' });
+    loginMod.watchCopy?.(snap.dir);   // a rotated token is saved back while the run works
     return { env: loginMod.childEnv(snap), who: loginMod.describe(snap), release: () => { try { loginMod.release({ dir, session }); } catch { /* gone */ } } };
   } catch (e) { process.stderr.write(`claude-login: ${e.message}; using the shared login\n`); return null; }
 }

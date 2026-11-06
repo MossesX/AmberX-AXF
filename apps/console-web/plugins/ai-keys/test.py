@@ -10,6 +10,7 @@ import json
 import os
 import sys
 import tempfile
+import threading
 import types
 from pathlib import Path
 
@@ -432,6 +433,36 @@ check(r["switched"] is None and r["tried"][0]["state"] == "failed", "vps account
 plugin_services.withdraw("claude-accounts")
 check(g.get("/p/keys", headers=hdr("service")).json()["vpsAccounts"] == [], "vps accounts: plugin off, an empty list and AI keys carries on")
 check(g.post("/p/active", json={"id": "vps:account-1"}, headers=hdr("service")).status_code == 503, "vps accounts: plugin off, a switch says why")
+# Rotated tokens reach the other side at once (token-rotation@1, deploy/claude-token-save.mjs).
+check(mod.token_hash("abc") == "ba7816bf8f01cfea414140de5dae2223", "token hash: the same value as the host's tokenHash")
+db = mod._load()
+rot_old = "sk-ant-ort01-r" + "t" * 40
+db["keys"]["rot1"] = {"label": "Rot", "kind": "claude-code", "key": "sk-ant-oat01-" + "t" * 40, "refresh": rot_old, "expiresAt": mod._now() - 1, "email": "x@example.com"}
+mod._save(db)
+results: list[bool] = []
+threads = [threading.Thread(target=lambda: results.append(mod.refresh_record("rot1"))) for _ in range(4)]
+spent_before = ROT["n"]
+for t in threads:
+    t.start()
+for t in threads:
+    t.join()
+check(ROT["n"] == spent_before + 1 and results.count(True) == 1 and not mod._load()["keys"]["rot1"].get("refreshError"), "four threads renewing one pair spend its token once")
+renewed = mod._load()["keys"]["rot1"]
+drop = mod.rotations_dir() / f"to-host-{mod.token_hash(rot_old)}.json"
+d = json.loads(drop.read_text())
+check(d["$axf"] == "token-rotation@1" and d["old"] == [mod.token_hash(rot_old)] and d["fresh"]["refreshToken"] == renewed["refresh"] and d["fresh"]["accessToken"] == renewed["key"], "a renewal leaves the new pair for the host at once")
+check((drop.stat().st_mode & 0o777) == 0o600 and rot_old not in drop.read_text(), "the drop file is 0600 and doesn't hold the spent token")
+drop.unlink()
+host_new = "sk-ant-ort01-r" + "u" * 40
+inbox = mod.rotations_dir() / f"to-console-{mod.token_hash(host_new)}.json"
+inbox.write_text(json.dumps({"$axf": "token-rotation@1", "old": [mod.token_hash(renewed["refresh"])], "at": 1,
+                             "fresh": {"accessToken": "sk-ant-oat01-" + "u" * 40, "refreshToken": host_new, "expiresAt": mod._now() + 8 * 3600_000}}))
+spent_before = ROT["n"]
+check(mod.refresh_record("rot1", force=True) and mod._load()["keys"]["rot1"].get("refresh") != renewed["refresh"] and renewed["refresh"] not in SPENT, "a pair the host renewed replaces the spent one before anything is refreshed")
+check(not inbox.exists(), "the host's drop file is deleted once absorbed")
+db = mod._load(); del db["keys"]["rot1"]; mod._save(db)
+for f in mod.rotations_dir().glob("*"):
+    f.unlink()
 plugin_services.withdraw("ai-keys")
 check(providers.resolve_key({"kind": "anthropic", "key": "own"}) == "own", "plugin off: the profile's own key applies")
 print(f"all {ok} checks passed")

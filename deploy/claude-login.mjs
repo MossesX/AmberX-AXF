@@ -6,7 +6,8 @@
  * accounts or adding one killed or re-pointed every running build. Now each launch snapshots a login into a private
  * per-build Claude config dir and runs `claude` with CLAUDE_CONFIG_DIR pointed at it (Claude Code reads
  * $CLAUDE_CONFIG_DIR/.credentials.json and $CLAUDE_CONFIG_DIR/.claude.json instead of ~/.claude and ~/.claude.json,
- * verified on Claude Code 2.1.318). A token refresh during the build writes only to that copy.
+ * verified on Claude Code 2.1.318). A token refresh during the build lands in that copy and is saved back at once to
+ * every store of that login (deploy/claude-token-save.mjs), so the next run never starts on a spent token.
  *
  *   node deploy/claude-login.mjs snapshot --dir <build folder> --session <name> [--account active|live|<saved name>] [--sh|--json]
  *   node deploy/claude-login.mjs release  --dir <build folder> --session <name>
@@ -20,6 +21,7 @@
  *   token.env           0600 shell line: `export CLAUDE_CODE_OAUTH_TOKEN=…` when the account has a saved token, else
  *                       `unset CLAUDE_CODE_OAUTH_TOKEN`, so an inherited token never beats the snapshot
  *   build-login.json    build-login@1: { account, email, source, at } — never a credential
+ *   token-chain.json    token-chain@1: hashes of the refresh tokens this copy has held + where its stores are
  *   everything else     symlinks to the shared config dir (settings.json + hooks, CLAUDE.md, projects/ transcripts,
  *                       plugins, skills…), so a build behaves exactly as before apart from whose login it uses
  *
@@ -41,11 +43,13 @@ import { chmodSync, copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync
 import { homedir } from 'node:os';
 import { basename, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { beginChain, places as tokenPlaces, saveBack, tokenHash, watchCopy } from './claude-token-save.mjs';
 
+export { watchCopy };
 export const MARKER = 'build-login.json';
 export const FOLDER = '.axf-claude';
 const NAME_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
-const SKIP = new Set(['.credentials.json', '.claude.json', MARKER, 'token.env']);
+const SKIP = new Set(['.credentials.json', '.claude.json', MARKER, 'token.env', 'token-chain.json']);
 
 export function paths(env = process.env) {
   const home = env.HOME || homedir();
@@ -79,11 +83,12 @@ export function accounts(env = process.env) {
 
 const liveEmail = (p) => String(readJson(p.global)?.oauthAccount?.emailAddress || '');
 const bytes = (f) => { try { return readFileSync(f); } catch { return null; } };
+const refreshHash = (f) => tokenHash(readJson(f)?.claudeAiOauth?.refreshToken);
 
 /**
  * Work out where the login comes from. Returns { account, email, source: 'saved'|'live', creds: file|'', tokenFile: file|'' }.
- * Who the live login is: the saved account whose copy is byte-identical to it, else (refreshed since the switch, or a
- * new login) the active one. ~/.claude.json's cached account is no guide: the switcher swaps only the credentials
+ * Who the live login is: the saved account whose copy is byte-identical to it or holds the same refresh token, else
+ * (refreshed since the switch, or a new login) the active one. ~/.claude.json's cached account is no guide: the switcher swaps only the credentials
  * file, so that email goes stale on every switch.
  */
 export function pick(want = 'active', env = process.env) {
@@ -92,7 +97,9 @@ export function pick(want = 'active', env = process.env) {
   const liveCreds = join(p.shared, '.credentials.json');
   const liveBuf = bytes(liveCreds);
   const hasLive = !!liveBuf && isFile(liveCreds);
-  const owner = hasLive ? list.find((a) => a.creds && bytes(join(p.accounts, a.name, '.credentials.json'))?.equals(liveBuf)) || null : null;
+  const liveToken = hasLive ? refreshHash(liveCreds) : '';
+  const isLive = (f) => bytes(f)?.equals(liveBuf) || (!!liveToken && refreshHash(f) === liveToken);
+  const owner = hasLive ? list.find((a) => a.creds && isLive(join(p.accounts, a.name, '.credentials.json'))) || null : null;
   const act = list.find((a) => a.active) || null;
   const saved = (a) => ({ account: a.name, email: a.email, source: 'saved',
     creds: a.creds ? join(p.accounts, a.name, '.credentials.json') : '', tokenFile: a.token ? join(p.accounts, a.name, 'token') : '' });
@@ -127,10 +134,14 @@ export function snapshot({ dir, session, account = process.env.AXF_CLAUDE_ACCOUN
   const parent = join(resolve(dir), FOLDER);
   const out = loginDir(dir, session);
   mkdirSync(parent, { recursive: true, mode: 0o700 }); chmodSync(parent, 0o700);
+  try { saveBack(out); } catch { /* no earlier copy */ }   // a crashed run under this name may hold the newest token
   rmSync(out, { recursive: true, force: true });
   mkdirSync(out, { mode: 0o700 }); chmodSync(out, 0o700);
-  // the login itself: a real file, so Claude's refresh writes land here and nowhere else
-  if (choice.creds) { copyFileSync(choice.creds, join(out, '.credentials.json')); chmodSync(join(out, '.credentials.json'), 0o600); }
+  // the login itself: a real file, so Claude's refresh writes land here; saveBack carries them to the login's stores
+  if (choice.creds) {
+    copyFileSync(choice.creds, join(out, '.credentials.json')); chmodSync(join(out, '.credentials.json'), 0o600);
+    beginChain(out, { live: join(p.shared, '.credentials.json'), accounts: p.accounts, aiKeys: tokenPlaces(env).aiKeys });
+  }
   // the global config: MCP servers, onboarding, trust. The cached account belongs to the live login only.
   const g = readJson(p.global);
   if (g && typeof g === 'object') {
@@ -167,6 +178,7 @@ export function release({ dir, session } = {}) {
   const out = loginDir(dir, session);
   if (!existsSync(out)) return { released: false, why: 'nothing to release' };
   if (lstatSync(out).isSymbolicLink() || readJson(join(out, MARKER))?.$axf !== 'build-login@1') return { released: false, why: 'not a build login copy; left alone' };
+  try { saveBack(out); } catch { /* the watcher already saved it, or nothing to save */ }
   rmSync(out, { recursive: true, force: true });   // symlinks are removed, never followed
   try { rmdirSync(join(resolve(dir), FOLDER)); } catch { /* other builds' copies still there */ }
   return { released: true };
