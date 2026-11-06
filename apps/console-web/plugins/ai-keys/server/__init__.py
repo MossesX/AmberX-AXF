@@ -828,6 +828,15 @@ class KeysService:
             return {}
         return {"id": kid, "label": rec.get("label") or kid, "email": rec.get("email") or "", "name": rec.get("accountName") or "", "kind": kind}
 
+    def limited_at(self, name: str = "") -> int:
+        """When the Claude login on the VPS last hit a limit (ms), 0 when it hasn't in the last HOST_LIMIT_MS. `name` is the
+        account active on the VPS. Both places a hit lands count: the active pair and the saved VPS account. No model call."""
+        with _lock:
+            db = _load()
+        rec = db["keys"].get(db["active"].get("claude-code") or "") or {}
+        at = max(int(rec.get("limitedAt") or 0), int(db["hostLimited"].get(name) or 0))
+        return at if _now() - at < HOST_LIMIT_MS else 0
+
 
 @router.post("/switch")
 def switch_account(body: dict[str, Any], request: Request) -> dict[str, Any]:
