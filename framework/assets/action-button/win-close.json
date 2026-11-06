@@ -11,7 +11,7 @@
     "skin"
   ],
   "data": {
-    "icon": "close",
+    "icon": "x",
     "label": "Close",
     "action": "skin.window.close",
     "show": "icon"

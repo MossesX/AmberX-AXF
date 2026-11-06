@@ -68,6 +68,14 @@ const win = assets.find((a) => a.type === 'skin' && a.id === 'windows');
 eq(validateAsset(win).errors, [], 'the Windows skin validates');
 for (const [t, id] of Object.entries(skinSlots(normalizeSkin(win!.data)))) ok(assets.some((a) => a.type === t && a.id === id), `windows: ${t} ${id} exists`);
 
+const bar = (assets.find((a) => a.type === 'banner' && a.id === 'windows-titlebar')!.data) as { logo: { text: string }; attach: { type: string; id: string; order?: number; widget?: { overflow?: boolean } }[] };
+eq(bar.logo.text, '{app}', "the title bar shows each app's own name");
+const winButtons = bar.attach.filter((x) => x.type === 'action-button');
+eq(winButtons.map((x) => x.id), ['win-minimize', 'win-maximize', 'win-close'], 'minimize, maximize, close, in that order');
+ok(winButtons.every((x) => (x.order ?? 0) >= 100000 && x.widget?.overflow === false), 'the window buttons stay last on the bar and never go in the ⋯ menu');
+const iconSource = readFileSync(join(root, 'react/components/Icon.tsx'), 'utf8');
+for (const x of winButtons) { const icon = (assets.find((a) => a.type === 'action-button' && a.id === x.id)!.data as { icon: string }).icon; ok(new RegExp(`^  '?${icon}'?:`, 'm').test(iconSource), `${x.id}: the icon "${icon}" exists`); }
+
 /* ---- the runtime: two apps on one shared document ---- */
 const defaults = JSON.parse(readFileSync(join(root, 'defaults.json'), 'utf8'));
 const manifest = (id: string): AxfManifest => ({ $axf: 'manifest@1', app: { id, name: id, version: '0' }, framework: { version: '0.2.0', template: 'react-ts' }, targets: ['web'], defaults } as unknown as AxfManifest);
