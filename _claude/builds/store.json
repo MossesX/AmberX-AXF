@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1097,
- "updatedAt": "2026-11-06T14:34:35.528Z",
+ "rev": 1098,
+ "updatedAt": "2026-11-06T14:35:15.648Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -95531,7 +95531,7 @@
    "branch": "claude/headless-progress-lean-chain",
    "pr": "",
    "createdAt": "2026-11-06T14:24:50.004Z",
-   "updatedAt": "2026-11-06T14:34:34.636Z",
+   "updatedAt": "2026-11-06T14:35:14.673Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -95596,12 +95596,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T14:35:14.673Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T14:24:50.005Z",
-     "updatedAt": "2026-11-06T14:24:50.005Z"
+     "updatedAt": "2026-11-06T14:35:14.734Z"
     },
     {
      "id": "s4",
@@ -95722,7 +95722,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
