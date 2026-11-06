@@ -705,25 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 21:04 UTC · `ui-review-alarm` branch claude/ui-review-alarm (angel) · builds-live
-- 2026-11-04 21:08 UTC · `build-optimizer` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done (current) · foreign-write
-- 2026-11-04 21:12 UTC · `ui-review-alarm` s1 done, → running (angel) · claude
-- 2026-11-04 21:12 UTC · `ui-review-alarm` s2 done (angel) · claude
-- 2026-11-04 21:12 UTC · `ui-review-alarm` s3 done (angel) · claude
-- 2026-11-04 21:14 UTC · `merge-queue` note (current) · foreign-write
-- 2026-11-04 21:14 UTC · `app-voice-commands` note (current) · foreign-write
-- 2026-11-04 21:14 UTC · `settings-placement-everywhere` note (current) · foreign-write
-- 2026-11-04 21:14 UTC · `handoff-2` s10 done, s11 done, → complete, note (current) · foreign-write
-- 2026-11-04 21:14 UTC · `fable-packager` s5 done, → complete (current) · foreign-write
-- 2026-11-04 21:14 UTC · `molly-banner-match` added (5 steps) (current) · foreign-write
-- 2026-11-04 21:14 UTC · `grid-column-hiding` added (6 steps) (current) · foreign-write
-- 2026-11-04 21:14 UTC · `drag-to-tab` added (5 steps) (current) · foreign-write
-- 2026-11-04 21:14 UTC · `build-optimizer` added (9 steps) (current) · foreign-write
-- 2026-11-04 21:14 UTC · `build-optimizer` branch claude/build-optimizer, PR #342 (current) · builds-live
-- 2026-11-04 21:14 UTC · `build-optimizer` s9 done, → built (current) · orchestrator
-- 2026-11-04 21:17 UTC · `build-optimizer` s9 done, → complete (current) · foreign-write
-- 2026-11-04 21:17 UTC · `ui-review-alarm` s4 done (angel) · claude
-- 2026-11-04 21:17 UTC · `ui-review-alarm` s5 done (angel) · claude
 - 2026-11-04 21:26 UTC · `ui-review-alarm` PR #343 (angel) · builds-live
 - 2026-11-04 21:26 UTC · `ui-review-alarm` s10 done (angel) · claude
 - 2026-11-04 21:26 UTC · `ui-review-alarm` note (angel) · claude
@@ -1105,6 +1086,25 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 18:57 UTC · `assistant-chat-mode` s8 done, → built (current) · orchestrator
 - 2026-11-06 19:00 UTC · `assistant-chat-mode` s7 done, s8 done, → complete (current) · foreign-write
 - 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s7 done (current) · orchestrator
+- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s8 done (current) · orchestrator
+- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s9 done (current) · orchestrator
+- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s10 done (current) · orchestrator
+- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s11 done (current) · orchestrator
+- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s12 done (current) · orchestrator
+- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s13 done (current) · orchestrator
+- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s14 done (current) · orchestrator
+- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s15 done (current) · orchestrator
+- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s16 done (current) · orchestrator
+- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s23-22 done (current) · orchestrator
+- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s24-23 done (current) · orchestrator
+- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s25-24 done (current) · orchestrator
+- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s26-25 done (current) · orchestrator
+- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s27-26 done (current) · orchestrator
+- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s28-27 done (current) · orchestrator
+- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s29-28 done (current) · orchestrator
+- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s30-29 done (current) · orchestrator
+- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s31-30 done (current) · orchestrator
+- 2026-11-06 19:07 UTC · `headless-session-efficiency-shared-chain-control` s32-31 done, → complete (current) · orchestrator
 
 ## Token passes (log)
 
