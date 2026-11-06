@@ -141,7 +141,7 @@ function KeysDialog() {
             { value: 'api', label: 'API key', icon: 'key' },
           ]} />
           <TextField label="Name" value={label} onChange={setLabel} placeholder="e.g. Brett's Max plan" />
-          {mode === 'api' && <TextField label="API key" type="password" mono value={key} onChange={setKey} placeholder="sk-ant-api…" hint="Tested before it's saved; a key that doesn't work is refused." />}
+          {mode === 'api' && <TextField label="API key" type="password" mono value={key} onChange={setKey} placeholder="sk-ant-api… or sk-ant-usr…" hint="Tested before it's saved; a key that doesn't work is refused." />}
           {mode === 'pair' && <>
             <TextField label="Access token" type="password" mono value={key} onChange={setKey} placeholder="sk-ant-oat…" />
             <TextField label="Refresh token" type="password" mono value={refresh} onChange={setRefresh} placeholder="sk-ant-ort…" hint="Both are required. The pair is authorised only when both work together: the access token answers, the refresh token gets a new one, and that one answers too." />

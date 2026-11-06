@@ -96,7 +96,11 @@ def _save(db: dict[str, Any]) -> None:
 def kind_of(key: str) -> str:
     if key.startswith("sk-ant-oat"):
         return "claude-code"
-    if key.startswith("sk-ant-api") or key.startswith("sk-ant-admin"):
+    if key.startswith("sk-ant-ort"):
+        return ""  # a refresh token is never a key on its own
+    # Every other sk-ant- prefix is an API key: sk-ant-api03 (old), sk-ant-usr (new console keys), sk-ant-admin, and
+    # whatever Anthropic issues next. Saving still runs a live test, so a bad key is caught there, not by its prefix.
+    if key.startswith("sk-ant-"):
         return "anthropic"
     return ""
 
@@ -342,10 +346,10 @@ def add_key(body: dict[str, Any]) -> dict[str, Any]:
         return _add_pair(pair, label, bool(body.get("activate")))
     key = re.sub(r"\s+", "", str(body.get("key") or ""))
     if not KEY_RE.match(key):
-        raise _err(400, "that doesn't look like an Anthropic key: API keys start with sk-ant-api…, subscription tokens (from `claude setup-token`) with sk-ant-oat…")
+        raise _err(400, "that doesn't look like an Anthropic key: API keys start with sk-ant- (sk-ant-api…, sk-ant-usr…), subscription tokens (from `claude setup-token`) with sk-ant-oat…")
     kind = kind_of(key)
     if not kind:
-        raise _err(400, "unknown key type: API keys start with sk-ant-api…, subscription tokens with sk-ant-oat…")
+        raise _err(400, "unknown key type: API keys start with sk-ant- (sk-ant-api…, sk-ant-usr…), subscription tokens with sk-ant-oat…")
     if kind == "claude-code":  # unreachable (parse_pair takes every oat key), kept as a guard
         raise _err(400, "a subscription token needs its refresh token too (sk-ant-ort…): both are required")
     with _lock:
@@ -647,7 +651,7 @@ def validate_step(body: dict[str, Any]) -> dict[str, Any]:
     if step == "api":
         key = re.sub(r"\s+", "", str(body.get("key") or ""))
         if not KEY_RE.match(key) or kind_of(key) != "anthropic":
-            return {**out, "error": "that isn't an Anthropic API key (it starts with sk-ant-api…)"}
+            return {**out, "error": "that isn't an Anthropic API key (it starts with sk-ant-api… or sk-ant-usr…)"}
         with _lock:
             if _dupe(_load(), key):
                 return {**out, "error": "that key is already saved"}
