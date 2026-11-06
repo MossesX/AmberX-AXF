@@ -705,9 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-05 02:08 UTC · `banner-widgets` added (7 steps) (current) · orchestrator
-- 2026-11-05 02:08 UTC · `banner-widgets` → running (current) · orchestrator
-- 2026-11-05 02:14 UTC · `amberx-approvals-fix` added (6 steps) (urgent) · orchestrator
 - 2026-11-05 02:14 UTC · `amberx-approvals-fix` s1 done, → running (urgent) · orchestrator
 - 2026-11-05 02:17 UTC · `banner-widgets` s1 done (current) · orchestrator
 - 2026-11-05 02:17 UTC · `banner-widgets` s2 done (current) · orchestrator
@@ -1105,6 +1102,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 23:34 UTC · `badges-notify-followup` added (4 steps) (current) · orchestrator
 - 2026-11-06 23:34 UTC · `badges-notify-followup` → running (current) · orchestrator
 - 2026-11-06 23:54 UTC · `gizmo-voice` note (current) · foreign-write
+- 2026-11-06 23:54 UTC · `badges-notify-followup` s1 done (current) · orchestrator
+- 2026-11-06 23:54 UTC · `badges-notify-followup` s2 done (current) · orchestrator
+- 2026-11-06 23:54 UTC · `badges-notify-followup` s3 done (current) · orchestrator
 
 ## Token passes (log)
 
