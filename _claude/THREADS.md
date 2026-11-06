@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 22:19 UTC · `land-merge-queue-first` branch claude/ci-bundle-skipped-shell, PR #348 (urgent) · builds-live
 - 2026-11-04 22:20 UTC · `fable-no-approval` → complete, merged, note (current) · reconciler
 - 2026-11-04 22:20 UTC · `tab-group-assets` → complete, merged, note (current) · reconciler
 - 2026-11-04 22:20 UTC · `land-merge-queue-first` → complete, note (urgent) · reconciler
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 22:37 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
 - 2026-11-06 22:45 UTC · `gizmo-rebuild-fable` s2 done (current) · foreign-write
 - 2026-11-06 22:45 UTC · `ui-registry-shortcuts` added (6 steps) (current) · orchestrator
+- 2026-11-06 22:54 UTC · `ui-registry-shortcuts` added (6 steps) (current) · foreign-write
 
 ## Token passes (log)
 
