@@ -20,7 +20,7 @@ notifications."
   changes.
 - **`notify.quiet*` had no reader either.** They now drive the panel's quiet hours, one setting, no copy.
 
-## Inventory: 35 types and 11 status banners
+## Inventory: 36 types and 11 status banners
 
 ### Approvals and veto
 
@@ -46,6 +46,7 @@ notifications."
 | `builds.failed` Build failed or broke | Pending list poll, console core | Alert hub gate | high |
 | `builds.done` Build finished | Pending list poll, console core | Alert hub gate | normal |
 | `activity.done` Long task finished | Activity banner | Alert hub gate | normal |
+| `activity.chime` Activity chime | Activity banner | Console, browser check | normal |
 | `builds.start-approval` Start build waits for you | Build manager | Alert hub gate | high |
 
 ### Merge queue and CI
@@ -122,6 +123,6 @@ AmberX's Java lines were placed to merge cleanly with #365.
 - Quiet hours hold web push and ntfy by dropping them: they are not re-sent when quiet ends. AmberX does get held alerts.
 - An alert shown on the phone before quiet hours can buzz once more when they end, if it is still open.
 - `activity.done` also has its own push settings in Settings → Plugins → Activity; the panel can only narrow them.
-- Console per-app switches cover where it lands. axHub is not one of them: it shows nothing that isn't already a row.
+- Per-app switches cover where it lands: console, AmberX, web push / ntfy. axHub isn't one, because it sends nothing.
 - Registry, capability and the `notify` field in `/api/alerts` are additive and were built on Opus. They touch a
   cross-app reply, so a Fable review is the right next step.

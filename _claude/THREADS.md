@@ -198,6 +198,9 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 ## To carry on
 
+### Notifications control panel (`notifications-control-panel`, Current, Opus) — branch `claude/notifications-control-panel`, PR #367
+Asked: "You need to have an administration panel. I need to control all the notifications. I need you to build a console control panel to enable and control all possible notifications." State: built, in the merge queue, held on UI Review. Steps left: Brett approves the shots, the queue lands it; then a new AmberX APK to mute approvals and veto on the phone. Coordinates with PR #365 (its type is registered, nothing rebuilt). Read: the plugin's README, `_claude/builds/reports/notifications-control-panel.md`. Check: `python` the plugin's `test.py`. Next (optional): Fable review of the registry and the `notify` field in `/api/alerts`.
+
 ### Merge queue (`merge-queue`, Current, Opus) — branch `claude/merge-queue`
 - **Asked:** Brett (voice, Nov 4 2026): stop paying for CI twice; stacked merge queue; "how am I going to access this merge queue?" Full brief in the build's origin (`node framework/cli/build-origin.mjs get merge-queue`).
 - **On the branch:** `push-banner/land/merge-queue-core.mjs`, `merge-queue.mjs`, `merge-queue.test.mjs`; `land.mjs` (queue round in every run, no main merge-in while the queue is on); push banner server (`/queue` routes, `mergeQueue` + `queueDepth`, auto-merge skips AmberX-AXF), web `queue.tsx` (view + chip), help, plugin.json 0.7.0; `framework/cli/ci-scope.mjs`, `framework/spec/check-ci-scope.mjs`, `.github/workflows/android.yml` (scope + light jobs, `queue/**`). Report `_claude/builds/reports/merge-queue.md`. <!-- axf-plugin:push-banner -->
