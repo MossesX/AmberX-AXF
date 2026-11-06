@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-06T20:04:15.820Z",
+ "updatedAt": "2026-11-06T20:04:32.616Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -11987,15 +11987,15 @@
    "title": "Fable review: Shipped features build hook contract",
    "category": "",
    "detail": "Shipped features s4 (the build hook contract: one framework event every build creator fires for create, status change, PR open/merge) was built on Opus by Brett's override, since the main account ran out of credits mid-build. Fable reviews it and rebuilds it where needed, along with feature-ledger@1 and deploy-log@1 (built on Fable by Gina but cut off before review/tests). Branch claude/shipped-features-r2; progress file _claude/builds/progress/shipped-features.md. Do it after the Shipped features PR lands, as a follow-up PR through the merge queue.",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "mcp",
    "pendingId": "fable-review-shipped-features-build-hook-contrac",
    "branch": "claude/shipped-features-fable",
    "pr": "#364",
    "createdAt": "2026-11-04T23:01:17.835Z",
-   "updatedAt": "2026-11-06T20:04:14.800Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-06T20:04:15.490Z",
+   "builtAt": "2026-11-06T20:04:15.490Z",
    "notes": [
     {
      "text": "Fable review done Nov 6 2026 (Fable, worktree shipped-features-fable): buildRepo, step model via model-policy@1, delete-without-after, delivery lock, statusFromBuild, ISO offsets, mergeLedgers edits, migrate fixed; tests 25 + 66. PR #364 in the merge queue (supersedes r2/r3/r4, #350 closed); UI Review r-20261106-f8fd11bb waiting",

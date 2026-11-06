@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-06T20:04:15.820Z",
+ "updatedAt": "2026-11-06T20:04:32.616Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4408,15 +4408,15 @@
    "title": "Shipped features",
    "category": "Plugin",
    "detail": "Feature database (SQLite on the data volume) of every individual feature ever shipped from MossesX/AmberX-AXF and MossesX/axHub, split out of PRs and builds and linked to Brett's verbatim prompt; deploy log for real live dates; three-level expanding grid (View by PR / Plugin / App / Feature type / Build / Day / Repo / Flat); Live / Merged-not-deployed badges on Build manager + Codebase changes; API/MCP/CLI + voice. Planned features appear the moment a build is created (Addendum 4); later changes to a feature show as edits (Addendum 5). Foundation on Fable: feature-ledger@1, build-events@1 (one hook every build creator fires), deploy-log@1. Then Opus for the database, importer, grid, badges, commands and UI. Full brief: /root/axf-builds/shipped-features/.brief.md + takeover brief (Nov 4 2026). Taken over from the helper account (branch claude/shipped-features-acct2 never existed; fresh start).",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/shipped-features-fable",
    "pr": "#364",
    "createdAt": "2026-11-04T21:45:16.217Z",
-   "updatedAt": "2026-11-06T20:02:26.997Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-06T20:04:31.580Z",
+   "builtAt": "2026-11-06T20:04:31.580Z",
    "notes": [
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
