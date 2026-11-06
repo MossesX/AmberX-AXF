@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 17:07 UTC · `settings-placement-everywhere` note (current) · foreign-write
 - 2026-11-04 17:07 UTC · `molly-multi-instance-tabs` s1 done, s2 done, s3 done, s4 done, → complete (current) · foreign-write
 - 2026-11-04 17:07 UTC · `live-sessions-plugin` added (6 steps) (current) · foreign-write
 - 2026-11-04 17:07 UTC · `app-voice-commands` note (current) · foreign-write
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 02:39 UTC · `planner-select-items-and-build-them` added (0 steps) (current) · foreign-write
 - 2026-11-06 12:14 UTC · `amberx-slim-down-voice-queue` → pending, note (current) · reconciler
 - 2026-11-06 12:17 UTC · `console-approvals-in-place` added (5 steps) (current) · orchestrator
+- 2026-11-06 12:30 UTC · `console-approvals-in-place` s1 done, → running (current) · orchestrator
 
 ## Token passes (log)
 
