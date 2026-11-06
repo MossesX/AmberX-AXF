@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1088,
- "updatedAt": "2026-11-06T02:37:36.182Z",
+ "rev": 1089,
+ "updatedAt": "2026-11-06T02:39:09.380Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -88078,7 +88078,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T02:30:29.394Z",
-   "updatedAt": "2026-11-06T02:36:59.911Z",
+   "updatedAt": "2026-11-06T02:38:32.471Z",
    "builtAt": "",
    "notes": [
     {
@@ -88104,6 +88104,18 @@
     {
      "text": "CORRECTION from Brett: the build manager already tracks build progress, so drop the console-tracking and progress-file notes above. NEW: every build (anything Amber or anyone starts) automatically creates a plan in Plan Studio and goes into a build registry. That plan uses the same steps the build manager will use, so they stay in sync (one source of truth) and tick off together, along with the linked AmberX checklist rows. Registry and planner are categorized by app, plugin, edit, feature, in collapsible trees with sorting and filters.",
      "at": "2026-11-06T02:36:59.911Z"
+    },
+    {
+     "text": "Brett: the build manager and the planner both read and write progress in the SAME registry, one source of truth, with no separate copies to sync.",
+     "at": "2026-11-06T02:37:35.506Z"
+    },
+    {
+     "text": "Brett: backfill the registry: import every existing build (the 79 finished-but-not-landed, the running/queued ones, and landed ones, going back as far as the history goes) as plans with their steps and status, read from the build dirs, briefs, logs, and git branches.",
+     "at": "2026-11-06T02:38:13.740Z"
+    },
+    {
+     "text": "Brett: each registry/plan entry shows its addenda and amendments: every later change, note, or restart (e.g. r2/r3 runs), in order with timestamps, in expandable rows. Backfill them too.",
+     "at": "2026-11-06T02:38:32.471Z"
     }
    ],
    "approvals": [],
