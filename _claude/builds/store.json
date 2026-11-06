@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1169,
- "updatedAt": "2026-11-06T23:33:31.499Z",
+ "rev": 1170,
+ "updatedAt": "2026-11-06T23:33:48.315Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -97946,16 +97946,21 @@
    "title": "UI registry + UI shortcuts: every screen, dialog, pop-up, settings interface, menu, menu entry, button and link is a registered asset (ui-registry@1), on the API / MCP / CLI, opened by voice",
    "category": "Framework > UI assets",
    "detail": "Audit what is already an asset (chrome assets, settings-ui@1, tab-group@1, jump-menu@1, control@1 console catalog, voice-command@1) and report the gap; one framework contract ui-registry@1 (asset type ui-registry, one per app: id, kind, owner, label, aliases, how to open) filled by plugin declarations + a scanner, CI check; REST/MCP/CLI list/search/get/open; console plugin ui-shortcuts: open any registered item by voice (aliases, fuzzy), user-defined shortcuts, wired to voice-command@1 + Gizmo through the MCP tools. Stays out of Gizmo, badges and notifications code.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "headless",
    "pendingId": "",
    "branch": "claude/ui-registry-shortcuts",
    "pr": "#369",
    "createdAt": "2026-11-06T22:45:12.082Z",
-   "updatedAt": "2026-11-06T23:33:30.239Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-06T23:33:45.782Z",
+   "builtAt": "2026-11-06T23:33:31.889Z",
+   "notes": [
+    {
+     "text": "All 6 steps done. PR #369 open and in the merge queue; UI Review waiting (group 'ui-registry-shortcuts - Nov 6 6:35 PM': quick-open dialog + settings tab, desktop + phone). Report _claude/builds/reports/ui-registry-shortcuts.md. Registries: console 676, AmberX 118, axHub web 113, Molly 50 items.",
+     "at": "2026-11-06T23:33:30.996Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -98030,12 +98035,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T23:33:45.782Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T22:45:12.084Z",
-     "updatedAt": "2026-11-06T22:45:12.084Z"
+     "updatedAt": "2026-11-06T23:33:45.852Z"
     },
     {
      "id": "s4",
@@ -98112,7 +98117,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
