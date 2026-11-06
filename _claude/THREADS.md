@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 21:42 UTC · `follow-amber-flash` s3 done (angel) · orchestrator
 - 2026-11-04 21:44 UTC · `build-docs-walkthroughs` s3 done (angel) · orchestrator
 - 2026-11-04 21:45 UTC · `shipped-features-r2` added (10 steps) (angel) · gina (headless)
 - 2026-11-04 21:45 UTC · `shipped-features-r2` → running (angel) · gina (headless)
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 20:02 UTC · `ui-review-notify-session-audio` added (6 steps) (current) · foreign-write
 - 2026-11-06 20:02 UTC · `fable-review-shipped-features-build-hook-contrac` branch claude/shipped-features-fable, PR #364 (current) · builds-live
 - 2026-11-06 20:02 UTC · `shipped-features-r2` branch claude/shipped-features-fable, PR #364 (angel) · builds-live
+- 2026-11-06 20:04 UTC · `fable-review-shipped-features-build-hook-contrac` note (current) · orchestrator
 
 ## Token passes (log)
 

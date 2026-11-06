@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1132,
- "updatedAt": "2026-11-06T20:02:46.351Z",
+ "rev": 1133,
+ "updatedAt": "2026-11-06T20:04:15.820Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -88613,9 +88613,14 @@
    "branch": "claude/shipped-features-fable",
    "pr": "#364",
    "createdAt": "2026-11-04T23:01:17.835Z",
-   "updatedAt": "2026-11-06T20:02:26.075Z",
+   "updatedAt": "2026-11-06T20:04:14.800Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Fable review done Nov 6 2026 (Fable, worktree shipped-features-fable): buildRepo, step model via model-policy@1, delete-without-after, delivery lock, statusFromBuild, ISO offsets, mergeLedgers edits, migrate fixed; tests 25 + 66. PR #364 in the merge queue (supersedes r2/r3/r4, #350 closed); UI Review r-20261106-f8fd11bb waiting",
+     "at": "2026-11-06T20:04:14.800Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -88639,7 +88644,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
