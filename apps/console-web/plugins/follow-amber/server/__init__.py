@@ -184,6 +184,9 @@ def show(target: str, kind: str = "", highlight: str = "", say: str = "", to: st
 def approval(aid: str = "", by: str = "amber", say: str = "") -> dict[str, Any]:
     """A held / confirm call is waiting for Brett: the follow clients read the feed now and pop it up."""
     st = load_state()
+    gate = plugin_services.get("axf.notify@1")
+    if gate is not None and not gate.allowed("follow.approval", "popup"):
+        return {"ok": True, "shown": False, "follow": st["on"], "message": "the approval pop-up is off in the Notifications panel"}
     if not st["on"]:
         return {"ok": True, "shown": False, "follow": False, "message": "Follow Amber is off: the call waits in the approvals banner / axHub as usual"}
     n = broadcast({"type": "approval", "id": _text(aid, 80), "say": _text(say), "by": by})
