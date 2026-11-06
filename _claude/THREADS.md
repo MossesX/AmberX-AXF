@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 20:44 UTC · `drag-to-tab` removed (angel) · orchestrator
 - 2026-11-04 20:44 UTC · `molly-banner-match` branch claude/molly-banner-match, note (current) · reconciler
 - 2026-11-04 20:46 UTC · `build-optimizer` added (9 steps) (current) · orchestrator
 - 2026-11-04 20:50 UTC · `plugin-settings-placement` note (current) · foreign-write
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 18:07 UTC · `token-usage-log-accounts-plan-studio-control` s17 done (current) · builds-live
 - 2026-11-06 18:07 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` note (current) · builds-live
 - 2026-11-06 18:07 UTC · `first-refresh-token-saved-every-time-it-s-used-v` added (1 steps) (current) · builds-live
+- 2026-11-06 18:15 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s17 done (current) · orchestrator
 
 ## Token passes (log)
 
