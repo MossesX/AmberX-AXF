@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 21:26 UTC · `drag-to-tab` → built, branch claude/drag-to-tab, PR #344 (current) · builds-live
 - 2026-11-04 21:26 UTC · `drag-to-tab` s3 done, s4 done, s5 done, → complete (current) · foreign-write
 - 2026-11-04 21:28 UTC · `molly-banner-match` note (current) · foreign-write
 - 2026-11-04 21:27 UTC · `molly-banner-match` → pending, note (current) · reconciler
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 18:46 UTC · `first-refresh-token-saved-every-time-it-s-used-v` → complete, merged, note (current) · reconciler
 - 2026-11-06 19:31 UTC · `notes-tasks-sync` added (5 steps) (current) · orchestrator
 - 2026-11-06 19:31 UTC · `notes-tasks-sync` s1 done, → running (current) · orchestrator
+- 2026-11-06 19:38 UTC · `notes-tasks-sync` s2 done (current) · orchestrator
 
 ## Token passes (log)
 
