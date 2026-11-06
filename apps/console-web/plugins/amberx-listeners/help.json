@@ -1,0 +1,82 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "amberx-listeners-help",
+  "name": "AmberX listeners help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the AmberX listeners plugin (help@1): the page, its controls and its settings tab.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:amberx-listeners",
+    "entries": [
+      {
+        "target": "view:amberx-listeners",
+        "title": "AmberX listeners",
+        "text": "Every AmberX phone (and browser tab) that reports its background listeners: hands-free, the Speak button, Gizmo's talk mode, the recorder mic, the axHub watch, the veto alarm. Each row shows what the listener is doing, who holds the microphone and its last error. The switches change the same settings the phone has, on axHub, so every device follows within a minute.",
+        "more": "Allowed turns a listener off everywhere. Pause for calls and Pause for other apps let it hand the microphone over and come back by itself. Start sound plays only for a start Brett asked for; restarts are always silent. Restarts before it gives up is how many quick refusals in a row a listener tolerates before it stops with the reason. Restart asks every phone to restart that listener. A device that has not reported for ten minutes is marked stale.",
+        "tryIt": "Switch Pause for calls off on hands-free, then start a call on the phone: hands-free keeps listening through it."
+      },
+      {
+        "target": "amberx-listeners",
+        "title": "AmberX listeners settings",
+        "text": "How often the page re-reads the hub, and the plugin's install and uninstall. The listener policies themselves live on the page (and in AmberX's own settings on axHub)."
+      },
+      {
+        "target": "action:amberx-listeners.open",
+        "title": "AmberX listeners",
+        "text": "Opens the AmberX listeners page."
+      },
+      {
+        "target": "allowed",
+        "title": "Allowed",
+        "text": "Off: this listener never opens the microphone (or runs) on any AmberX device. On: it runs when its own switch in AmberX is on. Saved on axHub; every phone follows on its next refresh.",
+        "kind": "toggle"
+      },
+      {
+        "target": "pause-for-calls",
+        "title": "Pause for calls",
+        "text": "On: the listener lets go of the microphone while the phone rings or is in a call (a phone call or a VoIP call such as the Claude app's voice mode) and comes back by itself three seconds after the call ends. Off: it keeps listening through calls.",
+        "kind": "toggle"
+      },
+      {
+        "target": "pause-for-other-apps",
+        "title": "Pause for other apps",
+        "text": "On: the listener lets go while another app records or takes the phone's audio, and comes back when that app is done. Off: it holds the microphone; the other app may get silence.",
+        "kind": "toggle"
+      },
+      {
+        "target": "start-sound",
+        "title": "Start sound",
+        "text": "On: the listener's start tone plays for a start Brett asked for (tapping Speak, saying the wake phrase). Restarts after errors and resumes after a call are always silent, whatever this says: that was the tone that played over and over.",
+        "kind": "toggle"
+      },
+      {
+        "target": "restarts-before-it-gives-up",
+        "title": "Restarts before it gives up",
+        "text": "How many times in a row a listener may be refused at once (another app has the microphone, the recognizer is busy, no audio) before it stops with the reason. It waits 1 s, then 2 s, 4 s… up to 30 s between tries; after giving up it tries once more a minute later. Keep trying never gives up; Never restart stops at the first refusal.",
+        "kind": "field"
+      },
+      {
+        "target": "restart-on-every-phone",
+        "title": "Restart on every phone",
+        "text": "Asks every AmberX phone to stop and start this listener (allowed off, then on). The request rides axHub with the settings, so a phone picks it up on its next refresh, within about a minute while AmberX is open.",
+        "kind": "button"
+      },
+      {
+        "target": "re-read-the-hub-every-seconds",
+        "title": "Re-read the hub every (seconds)",
+        "text": "How often this page re-reads the phones' listener reports from axHub while it is open and visible. Five seconds to five minutes; 15 by default.",
+        "kind": "field"
+      },
+      {
+        "target": "open-the-page",
+        "title": "Open the page",
+        "text": "Opens the AmberX listeners page (Apps → AmberX → Listeners).",
+        "kind": "field"
+      }
+    ]
+  }
+}
