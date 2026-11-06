@@ -18,7 +18,7 @@
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '../../../axf/core';
-import { Button, Chip, Container, Icon, Note, SelectField, Switch, useRuntime, type AxfWebLibrary } from '../../../axf/react';
+import { Button, Chip, Container, Note, SelectField, Switch, useRuntime, type AxfWebLibrary } from '../../../axf/react';
 import { HubData, type Row } from '../../../axf/libs/hubstore';
 import { hubSync } from '../../../axf/libs/hubsync';
 import {
@@ -170,16 +170,19 @@ export function ListenersView() {
   const publishOn = rt.settings.get(K.publish) !== false;
   return (
     <div className="axp-listeners" data-help="amberx-listeners">
-      <div className="axp-listeners__head">
-        <Icon name="mic" size={18} />
-        <strong>{doc?.name ?? 'This device'}</strong>
-        <span className="fx-muted axp-listeners__grow">{doc ? deviceSummary(doc) : 'Reading…'}</span>
-        {doc?.micOff && <Chip tone="danger">Mic off</Chip>}
-        {doc?.micHolder && <Chip tone="accent">Mic: {listenerLabel(doc.micHolder)}</Chip>}
-        <Button size="sm" icon="refresh" onClick={() => void readNative(rt)}>Refresh</Button>
-      </div>
+      <header className="fx-pagehead">
+        <div>
+          <p className="fx-eyebrow">Listeners</p>
+          <h1>{doc?.name ?? 'This device'}</h1>
+          <p className="fx-muted">{doc ? deviceSummary(doc) : 'Reading…'}. One listener owns the microphone at a time; one that keeps getting refused backs off and stops with the reason, and every switch here is kept on axHub.</p>
+        </div>
+        <div className="axp-listeners__head">
+          {doc?.micOff && <Chip tone="danger">Mic off</Chip>}
+          {doc?.micHolder && <Chip tone="accent">Mic: {listenerLabel(doc.micHolder)}</Chip>}
+          <Button size="sm" icon="refresh" onClick={() => void readNative(rt)}>Refresh</Button>
+        </div>
+      </header>
       {st.error && <Note tone="warning">{st.error}</Note>}
-      <p className="fx-muted">One listener owns the microphone at a time (Gizmo's talk mode first, then Speak, then hands-free). A listener that keeps getting refused backs off and stops with the reason instead of restarting forever; its start sound never plays for a restart. Every switch here is kept on axHub, so it is the same on every device and in the Dev Console.</p>
       <div className="axp-listeners__grid">
         {rows.map((l) => <ListenerRow key={l.id} l={l} micHolder={doc?.micHolder ?? null} />)}
       </div>

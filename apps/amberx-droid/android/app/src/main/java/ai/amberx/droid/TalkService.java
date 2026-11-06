@@ -198,7 +198,7 @@ public class TalkService extends Service {
             main.postDelayed(pageWatch, PAGE_TIMEOUT_MS);
             startTurn();
         } else {
-            notify();
+            refreshNote();
         }
         ListenerRegistry.changed();
     }
@@ -244,14 +244,14 @@ public class TalkService extends Service {
         if (running != this) return;
         pageSeenAt = System.currentTimeMillis();
         if (l != null && !l.isEmpty()) line = l.length() > 120 ? l.substring(0, 120) + "…" : l;
-        if (!"listening".equals(p) && !"thinking".equals(p) && !"speaking".equals(p)) { notify(); return; }
+        if (!"listening".equals(p) && !"thinking".equals(p) && !"speaking".equals(p)) { refreshNote(); return; }
         main.removeCallbacks(thinkWatch);
-        if ("paused".equals(phase)) { pausedWhyKept = p; notify(); return; } // yielded: remembered, applied when the mic is back
+        if ("paused".equals(phase)) { pausedWhyKept = p; refreshNote(); return; } // yielded: remembered, applied when the mic is back
         phase = p;
         if ("listening".equals(p)) startTurn();
         else if ("speaking".equals(p)) { if (listenWhileSpeaking) startTurn(); else closeTurn(); }
         else { closeTurn(); main.postDelayed(thinkWatch, THINK_TIMEOUT_MS); }
-        notify();
+        refreshNote();
         ListenerRegistry.changed();
     }
     private String pausedWhyKept = "listening";
@@ -270,7 +270,7 @@ public class TalkService extends Service {
         JSONObject e = new JSONObject();
         try { e.put("reason", why).put("label", ListenerRules.yieldLabel(why)); } catch (Exception ignored) {}
         emit("paused", e);
-        notify();
+        refreshNote();
         ListenerRegistry.changed();
         main.removeCallbacks(resumeCheck);
         main.postDelayed(resumeCheck, MicRules.CHECK_EVERY_MS);
@@ -292,7 +292,7 @@ public class TalkService extends Service {
         emit("resumed", null);
         if (focus != null && !focus.held()) focus.request();
         if ("listening".equals(phase) || "speaking".equals(phase) && listenWhileSpeaking) startTurn();
-        notify();
+        refreshNote();
         ListenerRegistry.changed();
     }
 
@@ -363,11 +363,11 @@ public class TalkService extends Service {
             try { e.put("text", t).put("final", true).put("phase", phase); } catch (Exception ignored) {}
             emit("heard", e);
             // Said while Gizmo talks (an interrupt, or an aside): the page decides; we keep listening meanwhile.
-            if ("speaking".equals(phase)) { startTurn(); notify(); return; }
+            if ("speaking".equals(phase)) { startTurn(); refreshNote(); return; }
             phase = "thinking";
             main.removeCallbacks(thinkWatch);
             main.postDelayed(thinkWatch, THINK_TIMEOUT_MS);
-            notify();
+            refreshNote();
         }
         @Override public void onError(int error) { if (g == gen) turnEnded(g, error); }
         @Override public void onReadyForSpeech(Bundle b) {}
@@ -431,7 +431,7 @@ public class TalkService extends Service {
             .build();
     }
 
-    private void notify() {
+    private void refreshNote() {
         if (running != this) return;
         try { getSystemService(NotificationManager.class).notify(ID_ONGOING, ongoing()); } catch (Exception ignored) { /* notifications off */ }
     }

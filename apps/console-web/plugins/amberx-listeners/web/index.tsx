@@ -9,7 +9,7 @@
  * The rules and words come from the framework's listeners library (the same copy the phone runs).
  */
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Chip, Container, Icon, Note, SelectField, Switch, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Note, SelectField, Switch, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { RETRY_CHOICES, listenerLabel, policyFieldsFor, stateLabel, stateTone, type ListenerInfo, type ListenerPolicy, type ListenerState } from '@console/axf/libs/listeners';
 import { pluginFetch } from '@console/plugins';
@@ -105,12 +105,16 @@ export function ListenersPage() {
   const policies = st ? Object.entries(st.policies) : [];
   return (
     <div className="axp-amberx-listeners" data-help="view:amberx-listeners">
-      <div className="axp-amberx-listeners__head">
-        <Icon name="mic" size={18} />
-        <strong>AmberX listeners</strong>
-        <span className="fx-muted axp-amberx-listeners__grow">{st ? `${st.devices.length} device${st.devices.length === 1 ? '' : 's'} reporting${st.live ? '' : ' · the hub is not mounted here'}` : 'Reading…'}</span>
-        <Button size="sm" icon="refresh" onClick={refresh}>Refresh</Button>
-      </div>
+      <header className="fx-pagehead">
+        <div>
+          <p className="fx-eyebrow">AmberX</p>
+          <h1>AmberX listeners</h1>
+          <p className="fx-muted">{st ? `${st.devices.length} device${st.devices.length === 1 ? '' : 's'} reporting${st.live ? '' : ' · the hub is not mounted here'}` : 'Reading…'}. Every phone's background listeners and the switches that control them, from the hub.</p>
+        </div>
+        <div className="axp-amberx-listeners__head">
+          <Button size="sm" icon="refresh" onClick={refresh}>Refresh</Button>
+        </div>
+      </header>
       {err && <Note tone="warning">{err}</Note>}
       {st && !st.devices.length && <Note tone="info">No AmberX device has published its listeners yet. Open AmberX on the phone (Listeners page, or just leave it running): it reports every few minutes and on every change.</Note>}
       {st?.devices.map((d) => <DeviceCard key={d.device} d={d} onSet={onSet} onRestart={onRestart} />)}
