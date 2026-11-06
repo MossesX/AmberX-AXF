@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-06T00:50:24.117Z",
+ "updatedAt": "2026-11-06T02:30:09.216Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14266,6 +14266,46 @@
      "uid": "st-mw478hgt066hff"
     }
    ]
+  },
+  {
+   "id": "amberx-slim-down-voice-queue",
+   "title": "AmberX: slim down + voice queue",
+   "category": "",
+   "detail": "1) Voice queue: AmberX holds everything Brett says; nothing sent to Claude until he says \"process\", then sends the whole batch in one turn (save tokens).\n2) Scrap the bloat. AmberX keeps ONLY: to-do, notes, task manager, session recorder, screen recording, Gizmo chat (agent chat). Remove/disable everything else.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "amberx-slim-down-voice-queue",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-06T02:27:27.755Z",
+   "updatedAt": "2026-11-06T02:29:22.109Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Brett: \"Amberex needs to be able to run ma the maintenance too.\" Keep/add a Maintenance runner in AmberX.",
+     "at": "2026-11-06T02:28:05.401Z"
+    },
+    {
+     "text": "Brett added: a media library and editor for AmberX screen and audio recordings, opened from the console. Full player; crop, cut, and join; AI on/off; lots of prewritten no-AI automation tools. Build restarted as amberx-slim-queue-r2.",
+     "at": "2026-11-06T02:29:22.109Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want you to put it in the Amber X and I also want you to fucking scrap a lot of shit in Amber X. It's too bloated, don't work. All I want Amber X to have the to-do, the notes, the task manager. I want it to have this, the session recorder, um, the, sc the um, screen recording, um, and what else? And uh, I think that's it. Oh, yeah. And oh yeah, Gizmo chat, the agent chat.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

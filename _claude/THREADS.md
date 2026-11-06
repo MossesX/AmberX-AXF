@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 17:03 UTC · `settings-placement-everywhere` note (current) · foreign-write
 - 2026-11-04 17:03 UTC · `live-sessions-plugin` added (6 steps) (current) · foreign-write
 - 2026-11-04 17:04 UTC · `urgent-console-perf` added (5 steps) (urgent) · orchestrator
 - 2026-11-04 17:04 UTC · `urgent-console-perf` s1 done, → running (urgent) · orchestrator
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 00:15 UTC · `skins` added (11 steps) (main-framework) · orchestrator
 - 2026-11-06 00:40 UTC · `ai-keys-console-store` → pending, merged, note (current) · reconciler
 - 2026-11-06 00:50 UTC · `skins` → pending, note (main-framework) · reconciler
+- 2026-11-06 02:30 UTC · `amberx-slim-down-voice-queue` added (0 steps) (current) · foreign-write
 
 ## Token passes (log)
 

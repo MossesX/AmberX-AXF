@@ -205,6 +205,18 @@
    "from": "detail",
    "addenda": []
   },
+  "amberx-slim-down-voice-queue": {
+   "said": "I want you to put it in the Amber X and I also want you to fucking scrap a lot of shit in Amber X. It's too bloated, don't work. All I want Amber X to have the to-do, the notes, the task manager. I want it to have this, the session recorder, um, the, sc the um, screen recording, um, and what else? And uh, I think that's it. Oh, yeah. And oh yeah, Gizmo chat, the agent chat.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "amberx-voice-center": {
    "said": "lots of voice commands for notes and todo, categories in a tab group dialog (Notes, Tasks, Developer, AI snippets), each with tab + trigger; sortable filterable searchable grid in a scrolling pane, rows expand to details + per-command settings, record button (two matching recordings or pick predefined); inner tab group Commands / Chains & wizards; voice wizard for recording/editing chains; AI-unavailable page with fix hooks; new agent Molly on axHub (like Mosses/Vinny): root VPS through approvals, knows the codebase, answers questions, narrated console walkthroughs in a floating window with next/previous. One agent, here (Brett).",
    "at": "2026-10-28",
