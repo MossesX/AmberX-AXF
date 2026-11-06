@@ -2450,6 +2450,18 @@
    "from": "detail",
    "addenda": []
   },
+  "ui-registry-shortcuts": {
+   "said": "Let's go with a UI shortcuts plugin. All the UIs need to be in a registry. Every single dialog, pop-up, settings interface, main plugin screen, every UI element has to be an asset. Every single asset in the whole app and all its plugins, from a button to a pop-up to a link to a menu to a menu entry, every thing needs to be an asset. That needs to be visible to the API. Create a registry so I can open them with my voice.",
+   "at": "2026-11-06T22:45:12.082Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "ui-review": {
    "said": "rename the Design packs console plugin to UI Review (folder ui-review) and make it one all-in-one UI approval plugin. Every UI a build makes is submitted there for his approval, separated by kind (open registry: Design packs, Whole apps / programs, Screens & pages, Settings interfaces, Dialogs & popups, Menus & toolbars, Banners & cards, Other). Items: title, kind, app, build/branch/PR, desktop + phone shots, notes, status (waiting / approved / changes asked / rejected), his comment, history. Views: tree, collapsible grid, grid with sub-grids, gallery, compare; multi-select + bulk decisions in every view. Builds submit through review.mjs, the plugin API and rebuild-shots --submit; capability ui-review@1. Design-pack picks (MAX 3) migrate. Profile: Angel. Web only.",
    "at": "2026-10-30",
