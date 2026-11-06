@@ -705,7 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 21:31 UTC · `drag-to-tab` s3 done, s4 done, s5 done, → complete (current) · foreign-write
 - 2026-11-04 21:31 UTC · `three-layouts-per-screen` added (5 steps) (angel) · orchestrator
 - 2026-11-04 21:31 UTC · `three-layouts-per-screen` → running (angel) · orchestrator
 - 2026-11-04 21:38 UTC · `build-docs-walkthroughs` s1 done (angel) · orchestrator
@@ -1105,6 +1104,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 19:41 UTC · `notes-views` note (current) · orchestrator
 - 2026-11-06 19:42 UTC · `notes-tasks-sync` branch claude/notes-tasks-sync, PR #363 (current) · builds-live
 - 2026-11-06 19:42 UTC · `notes-tasks-sync` s5 done, → built (current) · builds-live
+- 2026-11-06 19:42 UTC · `notes-tasks-sync` s5 done, → built (current) · orchestrator
 
 ## Token passes (log)
 
