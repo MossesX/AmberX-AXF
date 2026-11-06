@@ -129,3 +129,5 @@ Regenerate fixtures after changing a reference engine: `npx -y tsx framework/spe
 ## Deferred: build priority (Nov 5 2026)
 
 `framework/core/build-priority.mjs` and `framework/react/components/PriorityTag.tsx` have no Kotlin twin. Android work is on hold; builds show only in the web console today. A port needs the same levels (P0-P3), the same read-time default and the same `waitingOn` rows.
+
+- **chain-control@1 (Nov 6 2026), deferred:** `framework/core/chain-control.mjs` configures headless Claude sessions on the VPS. It is Node tooling with no UI engine behind it, so Android needs no twin unless a phone client edits the registry; the API at `/api/chain-control` already serves one.
