@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 1156,
- "updatedAt": "2026-11-06T22:54:46.494Z",
+ "rev": 1157,
+ "updatedAt": "2026-11-06T22:55:05.224Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -97714,7 +97714,7 @@
    "branch": "claude/gizmo-rebuild-fable",
    "pr": "",
    "createdAt": "2026-11-06T22:31:04.507Z",
-   "updatedAt": "2026-11-06T22:41:45.430Z",
+   "updatedAt": "2026-11-06T22:54:46.837Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -97791,12 +97791,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T22:54:45.826Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T22:31:04.511Z",
-     "updatedAt": "2026-11-06T22:31:04.511Z"
+     "updatedAt": "2026-11-06T22:54:45.919Z"
     },
     {
      "id": "s4",
@@ -97813,12 +97813,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T22:54:46.837Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-06T22:31:04.511Z",
-     "updatedAt": "2026-11-06T22:31:04.511Z"
+     "updatedAt": "2026-11-06T22:54:46.933Z"
     },
     {
      "id": "s5",
@@ -97917,7 +97917,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
