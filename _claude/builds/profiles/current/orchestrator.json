@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-06T18:05:48.678Z",
+ "updatedAt": "2026-11-06T18:06:06.510Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14821,7 +14821,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T14:13:14.290Z",
-   "updatedAt": "2026-11-06T18:05:47.684Z",
+   "updatedAt": "2026-11-06T18:05:51.885Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -14840,8 +14840,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:05:48.362Z",
      "note": "",
      "uid": "st-mw52nz5g1eb6mj"
     },
@@ -14858,8 +14858,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:05:48.999Z",
      "note": "",
      "uid": "st-mw52nz5g1fgpcu"
     },
@@ -14876,8 +14876,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:05:49.716Z",
      "note": "",
      "uid": "st-mw52nz5g1glr97"
     },
@@ -14894,8 +14894,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:05:50.467Z",
      "note": "",
      "uid": "st-mw52nz5g1h80xn"
     },
@@ -14912,8 +14912,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:05:51.176Z",
      "note": "",
      "uid": "st-mw52nz5g1ief9z"
     },
@@ -14930,8 +14930,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-06T18:05:51.885Z",
      "note": "",
      "uid": "st-mw52nz5g1jkl2e"
     },

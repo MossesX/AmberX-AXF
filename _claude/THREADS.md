@@ -705,12 +705,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-04 20:11 UTC · `grid-column-hiding` added (6 steps) (current) · foreign-write
-- 2026-11-04 20:11 UTC · `land-merge-queue-first` s2 done (urgent) · orchestrator
-- 2026-11-04 20:11 UTC · `land-merge-queue-first` s4 done (urgent) · orchestrator
-- 2026-11-04 20:11 UTC · `land-merge-queue-first` s5 done (urgent) · orchestrator
-- 2026-11-04 20:11 UTC · `land-merge-queue-first` branch claude/land-batch-1, PR #339 (urgent) · builds-live
-- 2026-11-04 20:18 UTC · `grid-column-hiding` branch claude/grid-column-hiding, PR #340 (current) · builds-live
 - 2026-11-04 20:18 UTC · `grid-column-hiding` s12-11 done, → built (current) · orchestrator
 - 2026-11-04 20:18 UTC · `grid-column-hiding` s12-11 done, → built (current) · foreign-write
 - 2026-11-04 20:20 UTC · `land-merge-queue-first` → complete, note (urgent) · reconciler
@@ -1105,6 +1099,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-06 18:01 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s15 done, → running (current) · orchestrator
 - 2026-11-06 18:03 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s15 done (current) · foreign-write
 - 2026-11-06 18:05 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s16 done (current) · orchestrator
+- 2026-11-06 18:05 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s1 done (current) · orchestrator
+- 2026-11-06 18:05 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s2 done (current) · orchestrator
+- 2026-11-06 18:05 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s3 done (current) · orchestrator
+- 2026-11-06 18:05 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s4 done (current) · orchestrator
+- 2026-11-06 18:05 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s5 done (current) · orchestrator
+- 2026-11-06 18:05 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s6 done (current) · orchestrator
 
 ## Token passes (log)
 
